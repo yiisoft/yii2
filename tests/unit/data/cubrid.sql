@@ -5,8 +5,10 @@
 
 DROP TABLE IF EXISTS `composite_fk`;
 DROP TABLE IF EXISTS `order_item`;
+DROP TABLE IF EXISTS `order_item_with_null_fk`;
 DROP TABLE IF EXISTS `item`;
 DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS `order_with_null_fk`;
 DROP TABLE IF EXISTS `category`;
 DROP TABLE IF EXISTS `customer`;
 DROP TABLE IF EXISTS `profile`;
@@ -60,6 +62,14 @@ CREATE TABLE `order` (
   CONSTRAINT `FK_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE
 );
 
+CREATE TABLE `order_with_null_fk` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11),
+  `created_at` int(11) NOT NULL,
+  `total` decimal(10,0) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
 CREATE TABLE `order_item` (
   `order_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL,
@@ -68,6 +78,13 @@ CREATE TABLE `order_item` (
   PRIMARY KEY (`order_id`,`item_id`),
   CONSTRAINT `FK_order_item_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_order_item_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `order_item_with_null_fk` (
+  `order_id` int(11),
+  `item_id` int(11),
+  `quantity` int(11) NOT NULL,
+  `subtotal` decimal(10,0) NOT NULL
 );
 
 CREATE TABLE null_values (
@@ -124,9 +141,20 @@ INSERT INTO `order` (customer_id, created_at, total) VALUES (1, 1325282384, 110.
 INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
 INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
+INSERT INTO `order_with_null_fk` (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO `order_with_null_fk` (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO `order_with_null_fk` (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);

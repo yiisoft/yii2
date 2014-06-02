@@ -36,6 +36,10 @@ class Customer extends ActiveRecord
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
     }
+    public function getOrdersWithNullFK()
+    {
+        return $this->hasMany(OrderWithNullFK::className(), ['customer_id' => 'id'])->orderBy('id');
+    }
 
     public function getOrders2()
     {

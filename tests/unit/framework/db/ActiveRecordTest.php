@@ -7,6 +7,8 @@ use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
+use yiiunit\data\ar\OrderItemWithNullFK;
+use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
@@ -44,6 +46,15 @@ class ActiveRecordTest extends DatabaseTestCase
     public function getOrderItemClass()
     {
         return OrderItem::className();
+    }
+
+    public function getOrderWithNullFKClass()
+    {
+        return OrderWithNullFK::className();
+    }
+    public function getOrderIteWithNullFKmClass()
+    {
+        return OrderItemWithNullFK::className();
     }
 
     public function testCustomColumns()
