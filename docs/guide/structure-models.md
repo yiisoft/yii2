@@ -1,118 +1,153 @@
-Model
-=====
+Models
+======
 
-> Note: This section is under development.
+Models are objects representing business data, rules and logic. They are part of
+the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 
-In keeping with the MVC approach, a model in Yii is intended for storing or temporarily representing application data, as well as defining the busines rules by which the data must abide.
+You can create model classes by extending [[yii\base\Model]] or its child classes. The base class
+[[yii\base\Model]] supports many useful features:
 
-Yii models have the following basic features:
+* Attributes: represent the business data;
+* Attribute labels: specify the display labels for attributes;
+* Massive attribute assignment: supports populating multiple attributes in a single step;
+* Data validation: validates input data based on the declared validation rules;
+* Data export: allows exporting model data in terms of arrays without customizable formats;
+* Array access: supports accessing model data like an associative array.
 
-- Attribute declaration: a model defines what is considered an attribute.
-- Attribute labels: each attribute may be associated with a label for display purpose.
-- Massive attribute assignment: the ability to populate multiple model attributes in one step.
-- Scenario-based data validation.
+The `Model` class is also the base class for more advanced models, such as [Active Record](db-active-record.md).
+Please refer to the relevant documentation for more details about these advanced models.
 
-Models in Yii extend from the [[yii\base\Model]] class. Models are typically used to both hold data and define
-the validation rules for that data (aka, the business logic). The business logic greatly simplifies the generation
-of models from complex web forms by providing validation and error reporting.
+> Info: You are not required to base your model classes on [[yii\base\Model]]. However, because there are many Yii
+  components built to support [[yii\base\Model]], it is usually the preferable base model classes.
 
-The Model class is also the base class for more advanced models with additional functionality, such
-as [Active Record](active-record.md).
 
-Attributes
-----------
+## Attributes
 
-The actual data represented by a model is stored in the model's *attributes*. Model attributes can
-be accessed like the member variables of any object. For example, a `Post` model
-may contain a `title` attribute and a `content` attribute, accessible as follows:
+Attributes are the properties that represent business data. By default, attributes are *non-static public*
+member variables if your model class extends directly from [[yii\base\Model]].
 
-```php
-$post = new Post();
-$post->title = 'Hello, world';
-$post->content = 'Something interesting is happening.';
-echo $post->title;
-echo $post->content;
-```
-
-Since [[yii\base\Model|Model]] implements the [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) interface,
-you can also access the attributes as if they were array elements:
+The following code creates a `ContactForm` model class with four attributes: `name`, `email`, `subject` and `body`.
 
 ```php
-$post = new Post();
-$post['title'] = 'Hello, world';
-$post['content'] = 'Something interesting is happening';
-echo $post['title'];
-echo $post['content'];
-```
+namespace app\models;
 
-By default, [[yii\base\Model|Model]] requires that attributes be declared as *public* and *non-static*
-class member variables. In the following example, the `LoginForm` model class declares two attributes:
-`username` and `password`.
+use yii\base\Model;
 
-```php
-// LoginForm has two attributes: username and password
-class LoginForm extends \yii\base\Model
+class ContactForm extends Model
 {
-    public $username;
-    public $password;
+    public $name;
+    public $email;
+    public $subject;
+    public $body;
 }
 ```
 
-Derived model classes may declare attributes in different ways, by overriding the [[yii\base\Model::attributes()|attributes()]]
-method. For example, [[yii\db\ActiveRecord]] defines attributes using the column names of the database table
-that is associated with the class.
-
-
-Attribute Labels
-----------------
-
-Attribute labels are mainly used for display purpose. For example, given an attribute `firstName`, we can declare
-a label `First Name` that is more user-friendly when displayed to end users in places such as form labels and
-error messages. Given an attribute name, you can obtain its label by calling [[yii\base\Model::getAttributeLabel()]].
-
-To declare attribute labels, override the [[yii\base\Model::attributeLabels()]] method. The overridden method returns
-a mapping of attribute names to attribute labels, as shown in the example below. If an attribute is not found
-in this mapping, its label will be generated using the [[yii\base\Model::generateAttributeLabel()]] method.
-In many cases, [[yii\base\Model::generateAttributeLabel()]] will generate reasonable labels (e.g. `username` to `Username`,
-`orderNumber` to `Order Number`).
+Naturally, you can access an attribute like accessing a normal object property:
 
 ```php
-// LoginForm has two attributes: username and password
-class LoginForm extends \yii\base\Model
+$model = new \app\models\ContactForm;
+$model->name = 'example';
+echo $model->name;
+```
+
+You can also access attributes like accessing array elements, thanks to the support for
+[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) and [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+by [[yii\base\Model]]:
+
+```php
+$model = new \app\models\ContactForm;
+
+// accessing attributes like array elements
+$model['name'] = 'example';
+echo $model['name'];
+
+// iterate attributes
+foreach ($model as $name => $value) {
+    echo "$name: $value\n";
+}
+```
+
+You may override [[yii\base\Model::attributes()]] if you want to support different ways of defining attributes.
+For example, [[yii\db\ActiveRecord]] does so and defines attributes according to table columns. Note that you
+may also need to override the magic methods such as `__get()`, `__set()` so that the attributes can be accessed
+like normal object properties.
+
+
+## Attribute Labels
+
+When displaying values or getting input for attributes, you often need to display some labels associated
+with attributes. For example, given an attribute named `firstName`, you may want to display a label `First Name`
+which is more user-friendly when displayed to end users in places such as form inputs and error messages.
+
+By default, attribute labels are automatically generated from attribute names. The generation is done by
+the method [[yii\base\Model::generateAttributeLabel()]]. It will turn camel-case variable names into
+multiple words with the first letter in each word in upper case. For example, `username` becomes `Username`,
+and `firstName` becomes `First Name`.
+
+If you do not want to use automatically generated labels, you may override [[yii\base\Model::attributeLabels()]]
+to explicitly declare attribute labels. For example,
+
+```php
+namespace app\models;
+
+use yii\base\Model;
+
+class ContactForm extends Model
 {
-    public $username;
-    public $password;
+    public $name;
+    public $email;
+    public $subject;
+    public $body;
 
     public function attributeLabels()
     {
         return [
-            'username' => 'Your name',
-            'password' => 'Your password',
+            'name' => 'Your name',
+            'email' => 'Your email address',
+            'subject' => 'Subject',
+            'body' => 'Content',
         ];
     }
 }
 ```
 
-Scenarios
----------
-
-A model may be used in different *scenarios*. For example, a `User` model may be used to collect user login inputs,
-but it may also be used for user registration purposes. In the one scenario, every piece of data is required;
-in the other, only the username and password would be.
-
-To easily implement the business logic for different scenarios, each model has a property named `scenario`
-that stores the name of the scenario that the model is currently being used in. As will be explained in the next
-few sections, the concept of scenarios is mainly used for data validation and massive attribute assignment.
-
-Associated with each scenario is a list of attributes that are *active* in that particular scenario. For example,
-in the `login` scenario, only the `username` and `password` attributes are active; while in the `register` scenario,
-additional attributes such as `email` are *active*. When an attribute is *active* this means that it is subject to validation.
-
-Possible scenarios should be listed in the `scenarios()` method. This method returns an array whose keys are the scenario
-names and whose values are lists of attributes that should be active in that scenario:
+For applications supporting multiple languages, you may want to translate attribute labels. This can be done
+in the [[yii\base\Model::attributeLabels()|attributeLabels()]] method as well, like the following:
 
 ```php
-class User extends \yii\db\ActiveRecord
+public function attributeLabels()
+{
+    return [
+        'name' => \Yii::t('app', 'Your name'),
+        'email' => \Yii::t('app', 'Your email address'),
+        'subject' => \Yii::t('app', 'Subject'),
+        'body' => \Yii::t('app', 'Content'),
+    ];
+}
+```
+
+> Info: Strictly speaking, attribute labels are part of [views](structure-views.md). But declaring labels
+  in models is often very convenient and can result in very clean and reusable code.
+
+
+## Scenarios
+
+A model may be used in different *scenarios*. For example, a `User` model may be used to collect user login inputs,
+but it may also be used for the user registration purpose. In different scenarios, a model may use different
+business rules and logic. For example, the `email` attribute may be required during user registration,
+but not so during user login.
+
+A model uses the [[yii\base\Model::scenario]] property to keep track of the scenario it is being used in.
+By default, a model supports only a single scenario named `default`.
+
+To support multiple scenarios, you may override the [[yii\base\Model::scenarios()]] method, like the following:
+
+```php
+namespace app\models;
+
+use yii\db\ActiveRecord;
+
+class User extends ActiveRecord
 {
     public function scenarios()
     {
@@ -124,13 +159,24 @@ class User extends \yii\db\ActiveRecord
 }
 ```
 
-If `scenarios` method is not defined, default scenario is applied. That means attributes with validation rules are
-considered *active*.
+> Info: In the above and following examples, the model classes are extending from [[yii\db\ActiveRecord]]
+  because the usage of multiple scenarios usually happens to [Active Record](db-active-record.md) classes.
 
-If you want to keep the default scenario available besides your own scenarios, use inheritance to include it:
+The `scenarios()` method returns an array whose keys are the scenario names and values the corresponding
+*active attributes*. An active attribute can be [massively assigned](#massive-assignment) and is subject
+to [validation](#validation). In the above example, the `username` and `password` attributes are active
+in the `login` scenario; while in the `register` scenario, `email` is also active besides `username` and `password`.
+
+The default implementation of `scenarios()` will return all scenarios found in the validation rule declaration
+method [[yii\base\Model::rules()]]. When overriding `scenarios()`, if you want to introduce new scenarios
+in addition to the default ones, you may write code like the following:
 
 ```php
-class User extends \yii\db\ActiveRecord
+namespace app\models;
+
+use yii\db\ActiveRecord;
+
+class User extends ActiveRecord
 {
     public function scenarios()
     {
@@ -142,48 +188,12 @@ class User extends \yii\db\ActiveRecord
 }
 ```
 
-
-Sometimes, we want to mark an attribute as not safe for massive assignment (but we still want the attribute to be validated).
-We may do so by prefixing an exclamation character to the attribute name when declaring it in `scenarios()`. For example:
-
-```php
-['username', 'password', '!secret']
-```
-
-In this example `username`, `password` and `secret` are *active* attributes but only `username` and `password` are
-considered safe for massive assignment.
-
-Identifying the active model scenario can be done using one of the following approaches:
-
-```php
-class EmployeeController extends \yii\web\Controller
-{
-    public function actionCreate($id = null)
-    {
-        // first way
-        $employee = new Employee(['scenario' => 'managementPanel']);
-
-        // second way
-        $employee = new Employee();
-        $employee->scenario = 'managementPanel';
-
-        // third way
-        $employee = Employee::find()->where('id = :id', [':id' => $id])->one();
-        if ($employee !== null) {
-            $employee->scenario = 'managementPanel';
-        }
-    }
-}
-```
-
-The example above presumes that the model is based upon [Active Record](active-record.md). For basic form models,
-scenarios are rarely needed, as the basic form model is normally tied directly to a single form and, as noted above,
-the default implementation of the `scenarios()` returns every property with active validation rule making it always
-available for mass assignment and validation.
+The scenario feature is primarily used by [validation](#validation) and [massive attribute assignment](#massive-assignment).
+You can, however, use it for other purposes. For example, you may declare [attribute labels](#attribute-labels)
+differently based on the current scenario.
 
 
-Validation
-----------
+## Validation <a name="validation"></a>
 
 When a model is used to collect user input data via its attributes, it usually needs to validate the affected attributes
 to make sure they satisfy certain requirements, such as an attribute cannot be empty, an attribute must contain letters
@@ -308,8 +318,7 @@ public function rules()
 ```
 
 
-Massive Attribute Retrieval and Assignment
-------------------------------------------
+## Massive Attribute Assignment <a name="massive-assignment"></a>
 
 Attributes can be massively retrieved via the `attributes` property.
 The following code will return *all* attributes in the `$post` model
@@ -338,6 +347,46 @@ var_dump($post->attributes);
 In the code above we're assigning corresponding data to model attributes named as array keys. The key difference from mass
 retrieval that always works for all attributes is that in order to be assigned an attribute should be **safe** else
 it will be ignored.
+
+
+
+Sometimes, we want to mark an attribute as not safe for massive assignment (but we still want the attribute to be validated).
+We may do so by prefixing an exclamation character to the attribute name when declaring it in `scenarios()`. For example:
+
+```php
+['username', 'password', '!secret']
+```
+
+In this example `username`, `password` and `secret` are *active* attributes but only `username` and `password` are
+considered safe for massive assignment.
+
+Identifying the active model scenario can be done using one of the following approaches:
+
+```php
+class EmployeeController extends \yii\web\Controller
+{
+    public function actionCreate($id = null)
+    {
+        // first way
+        $employee = new Employee(['scenario' => 'managementPanel']);
+
+        // second way
+        $employee = new Employee();
+        $employee->scenario = 'managementPanel';
+
+        // third way
+        $employee = Employee::find()->where('id = :id', [':id' => $id])->one();
+        if ($employee !== null) {
+            $employee->scenario = 'managementPanel';
+        }
+    }
+}
+```
+
+The example above presumes that the model is based upon [Active Record](active-record.md). For basic form models,
+scenarios are rarely needed, as the basic form model is normally tied directly to a single form and, as noted above,
+the default implementation of the `scenarios()` returns every property with active validation rule making it always
+available for mass assignment and validation.
 
 
 Validation rules and mass assignment
@@ -494,8 +543,10 @@ array(
 )
 ```
 
-See also
---------
+## Data Exporting
 
-- [Model validation reference](validation.md)
-- [[yii\base\Model]]
+## Best Practices
+
+scenarios
+validation rules
+labels
