@@ -1297,8 +1297,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function unlinkAll($name, $delete = false)
     {
         $relation = $this->getRelation($name);
-        /** @var Command $command */
-        $command = static::getDb()->createCommand();
         $columns = [];
         $condition = [];
         if (empty($relation->via)) {
@@ -1308,18 +1306,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 foreach ($relation->link as $a => $b) {
                     $condition[$a] = $this->$b;
                 }
-                $command->delete($viaClass::tableName(), $condition)->execute();
+                $viaClass::deleteAll($condition);
             } else {
                 foreach ($relation->link as $a => $b) {
                     $columns[$a] = null;
                     $condition[$a] = $this->$b;
                 }
-                $command->update($viaClass::tableName(), $columns, $condition)->execute();
+                $viaClass::updateAll($columns, $condition);
             }
         } else {
-            $viaTable = $viaTable = reset($relation->via->from);
+            $viaTable = reset($relation->via->from);
+
             /** @var ActiveQuery $viaRelation */
             $viaRelation = $relation->via;
+
+            /** @var Command $command */
+            $command = static::getDb()->createCommand();
             if ($delete) {
                 foreach ($viaRelation->link as $a => $b) {
                     $condition[$a] = $this->$b;

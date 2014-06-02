@@ -45,6 +45,10 @@ trait ActiveRecordTestTrait
      */
     abstract public function getItemClass();
 
+    abstract public function getOrderWithNullFKClass();
+
+    abstract public function getOrderItemWithNullFKmClass();
+
     /**
      * can be overridden to do things after save()
      */
@@ -724,7 +728,7 @@ trait ActiveRecordTestTrait
 
     public function testUnlinkAll()
     {
-        /** @var \yii\db\ActiveRecordInterface $customerClass */
+        /** @var \yii\db\ActiveRecordInterface $customewdfsdfdfsfd
         $customerClass = $this->getCustomerClass();
         /** @var \yii\db\ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
