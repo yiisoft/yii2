@@ -408,7 +408,7 @@ class PostController extends Controller
 
         if ($model !== null) {
             return $this->render('view', [
-                'model' => $models,
+                'model' => $model,
             ]);
         } else {
             throw new NotFoundHttpException;
@@ -435,10 +435,15 @@ is loaded successfully, it will display it using the view named `view`. Otherwis
 
 In the `create` action, the code is similar. It first tries to populate the model using the request data
 and save the model. If both succeed it will redirect the browser to the `view` action with the ID of
-the newly model. Otherwise it will display the `create` view through which users can provide the needed input.
+the newly created model. Otherwise it will display the `create` view through which users can provide the needed input.
 
-In summary, the code in a controller may access the [request](runtime-requests.md) and [response](runtime-responses.md)
-objects, [models](structure-models.md) and [views](structure-views.md). It should not, however, try to
-process the request data or build up response result - those are the jobs of [models](structure-models.md) and
-[views](structure-views.md). If your controller is rather complicated, it is usually an indication that
-you should refactor your controller code.
+In summary, a controller
+
+* may access the [request](runtime-requests.md) data;
+* may send commands to [models](structure-models.md) and [views](structure-views.md);
+* should return the [response](runtime-responses.md) data;
+* should NOT process the request data;
+* should NOT build the response data.
+
+If your controller is rather complicated, it usually indicates that you should refactor it and move some code
+to other classes.
