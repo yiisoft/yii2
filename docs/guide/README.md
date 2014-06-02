@@ -40,6 +40,7 @@ Application Structure
 * **TBD** [Filters](structure-filters.md)
 * **TBD** [Widgets](structure-widgets.md)
 * **TBD** [Modules](structure-modules.md)
+* [Assets](structure-assets.md)
 * **TBD** [Extensions](structure-extensions.md)
 
 
@@ -100,7 +101,6 @@ Displaying Data
 * **TBD** [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
 * [Data Widgets](output-data-widgets.md)
-* [Managing Assets](output-assets.md)
 * [Theming](output-theming.md)
 
 
