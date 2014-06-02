@@ -52,7 +52,7 @@ class ActiveRecordTest extends DatabaseTestCase
     {
         return OrderWithNullFK::className();
     }
-    public function getOrderIteWithNullFKmClass()
+    public function getOrderItemWithNullFKmClass()
     {
         return OrderItemWithNullFK::className();
     }

@@ -681,7 +681,7 @@ trait ActiveRecordTestTrait
         /** @var \yii\db\ActiveRecordInterface $orderWithNullFKClass */
         $orderWithNullFKClass = $this->getOrderWithNullFKClass();
         /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
-        $orderItemsWithNullFKClass = $this->getOrderIteWithNullFKmClass();
+        $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
 
 
@@ -732,7 +732,7 @@ trait ActiveRecordTestTrait
         $orderWithNullFKClass = $this->getOrderWithNullFKClass();
 
         /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
-        $orderItemsWithNullFKClass = $this->getOrderIteWithNullFKmClass();
+        $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
         /** @var TestCase|ActiveRecordTestTrait $this */
         // has many with delete

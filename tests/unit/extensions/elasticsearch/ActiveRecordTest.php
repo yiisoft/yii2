@@ -40,6 +40,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
         return OrderItem::className();
     }
 
+    public function getOrderWithNullFKClass()
+    {
+        return OrderWithNullFK::className();
+    }
+    public function getOrderItemWithNullFKmClass()
+    {
+        return OrderItemWithNullFK::className();
+    }
+
     /**
      * can be overridden to do things after save()
      */
