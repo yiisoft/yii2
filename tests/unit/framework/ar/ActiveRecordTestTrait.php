@@ -728,7 +728,7 @@ trait ActiveRecordTestTrait
 
     public function testUnlinkAll()
     {
-        /** @var \yii\db\ActiveRecordInterface $customewdfsdfdfsfd
+        /** @var \yii\db\ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
         /** @var \yii\db\ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
