@@ -67,6 +67,7 @@ Yii Framework 2 Change Log
 - Enh #3574: Add integrity check support for SQLite (zeeke)
 - Enh #3597: Nested array support for HTML5 custom "data-*" attributes (armab)
 - Enh #3607: Added support for limit in migrations actions: history, new, redo (Ragazzo)
+- Enh #3631: Added property `currencyCode` to `yii\i18n\Formatter` (leandrogehlen)
 - Enh #3636: Hide menu container tag with empty items in `yii\widgets\Menu` (arturf)
 - Enh #3643: Improved Mime-Type detection by using the `mime.types` file from apache http project to dected mime types by file extension (cebe, pavel-voronin, trejder)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
