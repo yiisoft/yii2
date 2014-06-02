@@ -247,7 +247,14 @@ class Generator extends \yii\gii\Generator
             } else {
                 $input = 'textInput';
             }
-            if ($column->phpType !== 'string' || $column->size === null) {
+            if(is_array($column->enumValues) && count($column->enumValues) > 0){
+                $dropDownOptions = "'' => '', ";
+                foreach ($column->enumValues as $enumValue)
+                {
+                    $dropDownOptions .= "'".$enumValue."' => '".$enumValue."', ";
+                }
+                return "\$form->field(\$model, '$attribute')->dropDownList([".$dropDownOptions."])";
+            } else if ($column->phpType !== 'string' || $column->size === null) {
                 return "\$form->field(\$model, '$attribute')->$input()";
             } else {
                 return "\$form->field(\$model, '$attribute')->$input(['maxlength' => $column->size])";
