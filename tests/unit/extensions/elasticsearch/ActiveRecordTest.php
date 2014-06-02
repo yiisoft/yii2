@@ -11,6 +11,8 @@ use yiiunit\data\ar\elasticsearch\Customer;
 use yiiunit\data\ar\elasticsearch\OrderItem;
 use yiiunit\data\ar\elasticsearch\Order;
 use yiiunit\data\ar\elasticsearch\Item;
+use yiiunit\data\ar\elasticsearch\OrderWithNullFK;
+use yiiunit\data\ar\elasticsearch\OrderItemWithNullFK;
 use yiiunit\TestCase;
 
 /**
