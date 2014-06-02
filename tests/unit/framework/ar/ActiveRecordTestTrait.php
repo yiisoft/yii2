@@ -678,24 +678,95 @@ trait ActiveRecordTestTrait
         $customerClass = $this->getCustomerClass();
         /** @var \yii\db\ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
+        /** @var \yii\db\ActiveRecordInterface $orderWithNullFKClass */
+        $orderWithNullFKClass = $this->getOrderWithNullFKClass();
+        /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
+        $orderItemsWithNullFKClass = $this->getOrderIteWithNullFKmClass();
+
+
 
         /** @var TestCase|ActiveRecordTestTrait $this */
-        // has many
+        // has many without delete
+        $customer = $customerClass::findOne(2);
+        $this->assertEquals(2, count($customer->ordersWithNullFK));
+        $customer->unlink('ordersWithNullFK', $customer->ordersWithNullFK[1], false);
+
+        $this->assertEquals(1, count($customer->ordersWithNullFK));
+        $orderWithNullFK = $orderWithNullFKClass::findOne(3);
+
+        $this->assertEquals(3,$orderWithNullFK->id);
+        $this->assertNull($orderWithNullFK->customer_id);
+
+        // has many with delete
         $customer = $customerClass::findOne(2);
         $this->assertEquals(2, count($customer->orders));
         $customer->unlink('orders', $customer->orders[1], true);
-        $this->afterSave();
+
         $this->assertEquals(1, count($customer->orders));
         $this->assertNull($orderClass::findOne(3));
 
-        // via model
+        // via model with delete
         $order = $orderClass::findOne(2);
         $this->assertEquals(3, count($order->items));
         $this->assertEquals(3, count($order->orderItems));
         $order->unlink('items', $order->items[2], true);
-        $this->afterSave();
+
         $this->assertEquals(2, count($order->items));
         $this->assertEquals(2, count($order->orderItems));
+
+        // via model without delete
+        $this->assertEquals(3, count($order->itemsWithNullFK));
+        $order->unlink('itemsWithNullFK', $order->itemsWithNullFK[2], false);
+
+        $this->assertEquals(2, count($order->itemsWithNullFK));
+        $this->assertEquals(2, count($order->orderItems));
+    }
+
+    public function testUnlinkAll()
+    {
+        /** @var \yii\db\ActiveRecordInterface $customerClass */
+        $customerClass = $this->getCustomerClass();
+        /** @var \yii\db\ActiveRecordInterface $orderClass */
+        $orderClass = $this->getOrderClass();
+
+        $orderWithNullFKClass = $this->getOrderWithNullFKClass();
+
+        /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
+        $orderItemsWithNullFKClass = $this->getOrderIteWithNullFKmClass();
+
+        /** @var TestCase|ActiveRecordTestTrait $this */
+        // has many with delete
+        $customer = $customerClass::findOne(2);
+        $this->assertEquals(2, count($customer->orders));
+        $customer->unlinkAll('orders', true);
+
+        $this->assertEquals(0, count($customer->orders));
+
+        $this->assertNull($orderClass::findOne(2));
+        $this->assertNull($orderClass::findOne(3));
+
+
+        // has many without delete
+        $customer = $customerClass::findOne(2);
+        $this->assertEquals(2, count($customer->ordersWithNullFK));
+        $customer->unlinkAll('ordersWithNullFK', false);
+
+        $this->assertEquals(0, count($customer->ordersWithNullFK));
+
+        $this->assertEquals(2,$orderWithNullFKClass::find()->where('(id=2 OR id=3) AND customer_id IS NULL')->count());
+
+        // via model with delete
+        /** @var Order $order */
+        $order = $orderClass::findOne(1);
+        $this->assertEquals(2, count($order->books));
+        $order->unlinkAll('books', true);
+        $this->assertEquals(0, count($order->books));
+
+        // via model without delete
+        $books = $order->booksWithNullFK;
+        $this->assertEquals(2, count($books));
+        $order->unlinkAll('booksWithNullFK',false);
+        $this->assertEquals(2,$orderItemsWithNullFKClass::find()->where('(item_id=1 OR item_id=2) AND order_id IS NULL')->count());
     }
 
     public static $afterSaveNewRecord;
