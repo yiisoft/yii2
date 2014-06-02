@@ -52,7 +52,8 @@ Handling Requests
 * **TBD** [Responses](runtime-responses.md)
 * **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
 * [URL Parsing and Generation](runtime-url-handling.md)
-
+* [Handling Errors](runtime-handling-errors.md)
+* [Logging](runtime-logging.md)
 
 
 Key Concepts
@@ -100,6 +101,7 @@ Displaying Data
 * [Data Providers](output-data-providers.md)
 * [Data Widgets](output-data-widgets.md)
 * [Managing Assets](output-assets.md)
+* [Theming](output-theming.md)
 
 
 Security
@@ -171,14 +173,11 @@ Special Topics
 * [Advanced Application Template](tutorial-advanced-app.md)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
-* [Handling Errors](tutorial-handling-errors.md)
 * [Internationalization](tutorial-i18n.md)
-* [Logging](tutorial-logging.md)
 * [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
 * **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
-* [Theming](tutorial-theming.md)
 
 
 Widgets

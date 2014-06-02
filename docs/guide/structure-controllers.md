@@ -382,3 +382,63 @@ to fulfill the request:
    * By default, each `afterAction()` method call will trigger an `afterAction` event to which you can attach a handler.
 6. The application will take the action result and assign it to the [response](runtime-responses.md).
 
+
+## Best Practices <a name="best-practices"></a>
+
+In a well-designed application, controllers are often very thin with each action containing only a few lines of code.
+The main role of these code is to invoke appropriate [models](structure-models.md) with the request data
+and use [views](structure-views.md) to present the models.
+
+The following code is a typical example showing how the `view` and `create` actions should be implemented
+in a controller.
+
+```php
+namespace app\controllers;
+
+use Yii;
+use app\models\Post;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+
+class PostController extends Controller
+{
+    public function actionView($id)
+    {
+        $model = Post::findOne($id);
+
+        if ($model !== null) {
+            return $this->render('view', [
+                'model' => $models,
+            ]);
+        } else {
+            throw new NotFoundHttpException;
+        }
+    }
+
+    public function actionCreate()
+    {
+        $model = new Post;
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+}
+```
+
+In the `view` action, the code first loads the model according to the requested model ID; If the model
+is loaded successfully, it will display it using the view named `view`. Otherwise, it will throw an exception.
+
+In the `create` action, the code is similar. It first tries to populate the model using the request data
+and save the model. If both succeed it will redirect the browser to the `view` action with the ID of
+the newly model. Otherwise it will display the `create` view through which users can provide the needed input.
+
+In summary, the code in a controller may access the [request](runtime-requests.md) and [response](runtime-responses.md)
+objects, [models](structure-models.md) and [views](structure-views.md). It should not, however, try to
+process the request data or build up response result - those are the jobs of [models](structure-models.md) and
+[views](structure-views.md). If your controller is rather complicated, it is usually an indication that
+you should refactor your controller code.
