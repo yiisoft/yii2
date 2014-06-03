@@ -244,7 +244,6 @@ class RbacController extends Controller
         $author = $auth->createRole('author');
         $auth->add($author);
         $auth->addChild($author, $createPost);
-        $auth->addChild($author, $reader);
 
         // add "admin" role and give this role the "updatePost" permission
         // as well as the permissions of the "author" role
