@@ -49,6 +49,7 @@ Yii Framework 2 Change Log
 - Enh #3088: The debug and gii modules will manage their own URL rules now (hiltonjanfield, qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
+- Enh #3196: Masked input upgraded to use jquery.inputmask plugin with more features. (kartik-v)
 - Enh #3132: `yii\rbac\PhpManager` now supports more compact data file format (qiangxue)
 - Enh #3154: Added validation error display for `GridView` filters (ivan-kolmychek)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)

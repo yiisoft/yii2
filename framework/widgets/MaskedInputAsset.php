@@ -10,16 +10,12 @@ namespace yii\widgets;
 use yii\web\AssetBundle;
 
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 2.0
  */
 class MaskedInputAsset extends AssetBundle
 {
     public $sourcePath = '@yii/assets';
-    public $js = [
-        'jquery.maskedinput.js',
-    ];
-    public $depends = [
-        'yii\web\YiiAsset',
-    ];
+    public $js = ['jquery.inputmask.bundle.min.js'];
+    public $depends = ['yii\web\YiiAsset'];
 }
