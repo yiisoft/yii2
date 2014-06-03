@@ -72,7 +72,7 @@ CREATE TABLE "order_item_with_null_fk" (
   order_id INTEGER,
   item_id INTEGER,
   quantity INTEGER NOT NULL,
-  subtotal decimal(10,0) NOT NULL,
+  subtotal decimal(10,0) NOT NULL
 );
 
 CREATE TABLE "composite_fk" (
