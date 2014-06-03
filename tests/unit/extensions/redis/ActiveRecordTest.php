@@ -8,6 +8,8 @@ use yiiunit\data\ar\redis\Customer;
 use yiiunit\data\ar\redis\OrderItem;
 use yiiunit\data\ar\redis\Order;
 use yiiunit\data\ar\redis\Item;
+use yiiunit\data\ar\redis\OrderItemWithNullFK;
+use yiiunit\data\ar\redis\OrderWithNullFK;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 
 /**
@@ -35,6 +37,16 @@ class ActiveRecordTest extends RedisTestCase
     public function getOrderItemClass()
     {
         return OrderItem::className();
+    }
+
+    public function getOrderWithNullFKClass()
+    {
+        return OrderWithNullFK::className();
+    }
+
+    public function getOrderItemWithNullFKmClass()
+    {
+        return OrderItemWithNullFK::className();
     }
 
     public function setUp()
