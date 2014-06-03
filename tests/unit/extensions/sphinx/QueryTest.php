@@ -281,7 +281,7 @@ class QueryTest extends SphinxTestCase
 
         $query = new Query;
         $rows = $query->from('yii2_test_article_index')
-            ->match('about"@^')
+            ->match('about\"')
             ->all($connection);
         $this->assertNotEmpty($rows);
     }
