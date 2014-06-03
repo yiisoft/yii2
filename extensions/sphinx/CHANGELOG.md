@@ -4,6 +4,7 @@ Yii Framework 2 sphinx extension Change Log
 2.0.0-rc under development
 --------------------------
 
+- Bug #3668: Escaping of the special characters at 'MATCH' statement added (klimov-paul)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 
 

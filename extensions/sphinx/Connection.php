@@ -128,4 +128,19 @@ class Connection extends \yii\db\Connection
     {
         throw new NotSupportedException('"' . __METHOD__ . '" is not supported.');
     }
+
+    /**
+     * Escapes all special characters from 'MATCH' statement argument.
+     * Make sure you are using this method whenever composing 'MATCH' search statement.
+     * @param string $str string to be escaped.
+     * @return string the properly escaped string.
+     */
+    public function escapeMatchValue($str)
+    {
+        return str_replace(
+            ['/', '"', "'", '(', ')', '|', '-', '!', '@', '~', '&', '^', '$', '=', "\x00", "\n", "\r", "\x1a"],
+            ['\\/', '\\"', "\\'", '\\(', '\\)', '\\|', '\\-', '\\!', '\\@', '\\~', '\\&', '\\^', '\\$', '\\=', "\\x00", "\\n", "\\r", "\\x1a"],
+            $str
+        );
+    }
 }

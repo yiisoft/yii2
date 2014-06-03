@@ -63,9 +63,14 @@ class QueryBuilder extends Object
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
         if ($query->match !== null) {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = (string) $query->match;
-            $query->andWhere('MATCH(' . $phName . ')');
+            if ($query->match instanceof Expression) {
+                $query->andWhere('MATCH(' . $query->match->expression . ')');
+                $params = array_merge($query->match->params);
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = $this->db->escapeMatchValue($query->match);
+                $query->andWhere('MATCH(' . $phName . ')');
+            }
         }
 
         $from = $query->from;

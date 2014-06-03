@@ -253,4 +253,35 @@ class QueryTest extends SphinxTestCase
             ->count('*', $connection);
         $this->assertEquals(2, $count);
     }
+
+    /**
+     * @depends testRun
+     */
+    public function testWhereQuotedValue()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query;
+        $rows = $query->from('yii2_test_article_index')
+            ->andWhere(['author_id' => 'some"'])
+            //->match('about"')
+            ->all($connection);
+        $this->assertEmpty($rows);
+    }
+
+    /**
+     * @depends testRun
+     *
+     * @see https://github.com/yiisoft/yii2/issues/3668
+     */
+    public function testMatchSpecialCharValue()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query;
+        $rows = $query->from('yii2_test_article_index')
+            ->match('about"@^')
+            ->all($connection);
+        $this->assertNotEmpty($rows);
+    }
 }

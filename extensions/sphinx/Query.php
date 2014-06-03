@@ -72,8 +72,10 @@ class Query extends Component implements QueryInterface
      */
     public $from;
     /**
-     * @var string text, which should be searched in fulltext mode.
+     * @var string|Expression text, which should be searched in fulltext mode.
      * This value will be composed into MATCH operator inside the WHERE clause.
+     * Note: this value will be processed by [[Connection::escapeMatchValue()]],
+     * if you need to compose complex match condition use [[Expression]].
      */
     public $match;
     /**
@@ -381,13 +383,14 @@ class Query extends Component implements QueryInterface
     /**
      * Sets the fulltext query text. This text will be composed into
      * MATCH operator inside the WHERE clause.
+     * Note: this value will be processed by [[Connection::escapeMatchValue()]],
+     * if you need to compose complex match condition use [[Expression]].
      * @param string $query fulltext query text.
      * @return static the query object itself
      */
     public function match($query)
     {
         $this->match = $query;
-
         return $this;
     }
 
