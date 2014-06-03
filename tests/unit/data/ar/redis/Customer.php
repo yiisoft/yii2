@@ -28,6 +28,14 @@ class Customer extends ActiveRecord
     }
 
     /**
+     * @return \yii\redis\ActiveQuery
+     */
+    public function getOrdersWithNullFK()
+    {
+        return $this->hasMany(OrderWithNullFK::className(), ['customer_id' => 'id']);
+    }
+
+    /**
      * @inheritdoc
      */
     public function afterSave($insert)
