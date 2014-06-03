@@ -2,6 +2,7 @@
 
 namespace yiiunit\extensions\sphinx;
 
+use yii\db\Expression;
 use yii\sphinx\Query;
 
 /**
@@ -41,7 +42,7 @@ class QueryTest extends SphinxTestCase
 
         $command = $query->createCommand($this->getConnection(false));
         $this->assertContains('MATCH(', $command->getSql(), 'No MATCH operator present!');
-        $this->assertContains($match, $command->params, 'No match query among params!');
+        $this->assertContains($match, $command->getSql(), 'No match query in SQL!');
     }
 
     public function testWhere()
@@ -281,6 +282,20 @@ class QueryTest extends SphinxTestCase
         $query = new Query;
         $rows = $query->from('yii2_test_article_index')
             ->match('about"@^')
+            ->all($connection);
+        $this->assertNotEmpty($rows);
+    }
+
+    /**
+     * @depends testMatchSpecialCharValue
+     */
+    public function testMatchComplex()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query;
+        $rows = $query->from('yii2_test_article_index')
+            ->match(new Expression("'@(content) " . $connection->escapeMatchValue('about"') . "'"))
             ->all($connection);
         $this->assertNotEmpty($rows);
     }
