@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
-- Enh #3196: Masked input upgraded to use jquery.inputmask plugin with more features. (kartik-v)
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
 - Bug #2801: Fixed the issue that GridView gets footer content before data cells content (ElisDN)
@@ -34,6 +33,7 @@ Yii Framework 2 Change Log
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 - Chg #3175: InvalidCallException, InvalidParamException, UnknownMethodException are now extended from SPL BadMethodCallException (samdark)
+- Enh #3196: Masked input upgraded to use jquery.inputmask plugin with more features. (kartik-v)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
