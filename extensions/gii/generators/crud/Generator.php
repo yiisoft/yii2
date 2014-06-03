@@ -247,10 +247,9 @@ class Generator extends \yii\gii\Generator
             } else {
                 $input = 'textInput';
             }
-            if(is_array($column->enumValues) && count($column->enumValues) > 0){
+            if (is_array($column->enumValues) && count($column->enumValues) > 0) {
                 $dropDownOptions = "'' => '', ";
-                foreach ($column->enumValues as $enumValue)
-                {
+                foreach ($column->enumValues as $enumValue) {
                     $dropDownOptions .= "'".$enumValue."' => '".$enumValue."', ";
                 }
                 return "\$form->field(\$model, '$attribute')->dropDownList([".$dropDownOptions."])";
