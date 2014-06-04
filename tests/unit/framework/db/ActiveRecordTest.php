@@ -543,30 +543,30 @@ class ActiveRecordTest extends DatabaseTestCase
         /** @var \yii\db\ActiveRecordInterface $orderItemClass */
         $orderItemClass = $this->getOrderItemClass();
         /** @var \yii\db\ActiveRecordInterface $itemClass */
-        $itemClass = $this->getOrderItemClass();
+        $itemClass = $this->getItemClass();
         /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
         $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
         // via table with delete
         /** @var Order $order */
         $order = $orderClass::findOne(1);
-        $this->assertEquals(2, count($order->books));
-        $this->assertEquals(6, $orderItemClass::find()->count());
+        $this->assertEquals(2, count($order->booksViaTable));
+        $orderItemCount = $orderItemClass::find()->count();
         $this->assertEquals(5, $itemClass::find()->count());
         $order->unlinkAll('booksViaTable', true);
         $this->afterSave();
         $this->assertEquals(5, $itemClass::find()->count());
-        $this->assertEquals(4, $orderItemClass::find()->count());
-        $this->assertEquals(0, count($order->books));
+        $this->assertEquals($orderItemCount - 2, $orderItemClass::find()->count());
+        $this->assertEquals(0, count($order->booksViaTable));
 
         // via table without delete
-        $this->assertEquals(2, count($order->booksWithNullFK));
-        $this->assertEquals(6, $orderItemsWithNullFKClass::find()->count());
+        $this->assertEquals(2, count($order->booksWithNullFKViaTable));
+        $orderItemCount = $orderItemsWithNullFKClass::find()->count();
         $this->assertEquals(5, $itemClass::find()->count());
         $order->unlinkAll('booksWithNullFKViaTable',false);
-        $this->assertEquals(0, count($order->booksWithNullFK));
+        $this->assertEquals(0, count($order->booksWithNullFKViaTable));
         $this->assertEquals(2,$orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
-        $this->assertEquals(6, $orderItemsWithNullFKClass::find()->count());
+        $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
         $this->assertEquals(5, $itemClass::find()->count());
     }
 }

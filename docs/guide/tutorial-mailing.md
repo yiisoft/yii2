@@ -204,6 +204,23 @@ Then inside view file you can use following code:
 ```
 
 
+Testing and debugging
+---------------------
+
+Developer often a to check, what actual emails are sent by application, what was their content and so on.
+Such ability is granted by Yii via `yii\mail\BaseMailer::useFileTransport`. If enabled, this option enforces
+saving mail message data into the local files instead of regular sending. These files will be saved under
+`yii\mail\BaseMailer::fileTransportPath`, which is '@runtime/mail' by default.
+
+> Note: you can either save messages to the file or send them to actual recipients, but can not do both simultaneously.
+
+Mail message file can be opened by regular text file editor, so you can browse actual message headers, content and so on.
+This mechanism amy prove itself, while debugging application or running unit test.
+
+> Note: mail message file content is composed via `\yii\mail\MessageInterface::toString()`, so it depends on actual
+  mail extension you are using in your application.
+
+
 Creating your own mail solution
 -------------------------------
 
