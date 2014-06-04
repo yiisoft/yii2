@@ -32,6 +32,11 @@ class Order extends ActiveRecord
         return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
     }
 
+    public function getOrderItemsWithNullFK()
+    {
+        return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id']);
+    }
+
     public function getItems()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
@@ -72,7 +77,7 @@ class Order extends ActiveRecord
     public function getBooksWithNullFK()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
-            ->via('orderItemsWithNullFk')
+            ->via('orderItemsWithNullFK')
             ->where(['category_id' => 1]);
     }
 
