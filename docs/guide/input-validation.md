@@ -5,6 +5,87 @@ Model validation reference
 
 As a model both represents data and defines the business rules to which that data must adhere, comprehending data validation is key to using Yii. In order to learn model validation basics, please refer to [Model, Validation subsection](model.md#Validation).
 
+
+### Creating your own validators (Inline validators)
+
+If none of the built in validators fit your needs, you can create your own validator by creating a method in you model class.
+This method will be wrapped by an [[yii\validators\InlineValidator|InlineValidator]] an be called upon validation.
+You will do the validation of the attribute and [[yii\base\Model::addError()|add errors]] to the model when validation fails.
+
+The method has the following signature `public function myValidator($attribute, $params)` while you are free to choose the name.
+
+Here is an example implementation of a validator validating the age of a user:
+
+```php
+public function validateAge($attribute, $params)
+{
+    $value = $this->$attribute;
+    if (strtotime($value) > strtotime('now - ' . $params['min'] . ' years')) {
+        $this->addError($attribute, 'You must be at least ' . $params['min'] . ' years old to register for this service.');
+    }
+}
+
+public function rules()
+{
+    return [
+        // ...
+        [['birthdate'], 'validateAge', 'params' => ['min' => '12']],
+    ];
+}
+```
+
+You may also set other properties of the [[yii\validators\InlineValidator|InlineValidator]] in the rules definition,
+for example the [[yii\validators\InlineValidator::$skipOnEmpty|skipOnEmpty]] property:
+
+```php
+[['birthdate'], 'validateAge', 'params' => ['min' => '12'], 'skipOnEmpty' => false],
+```
+
+### Conditional validation
+
+To validate attributes only when certain conditions apply, e.g. the validation of
+one field depends on the value of another field you can use [[yii\validators\Validator::when|the `when` property]]
+to define such conditions:
+
+```php
+['state', 'required', 'when' => function($model) { return $model->country == Country::USA; }],
+['stateOthers', 'required', 'when' => function($model) { return $model->country != Country::USA; }],
+['mother', 'required', 'when' => function($model) { return $model->age < 18 && $model->married != true; }],
+```
+
+For better readability the conditions can also be written like this:
+
+```php
+public function rules()
+{
+    $usa = function($model) { return $model->country == Country::USA; };
+    $notUsa = function($model) { return $model->country != Country::USA; };
+    $child = function($model) { return $model->age < 18 && $model->married != true; };
+    return [
+        ['state', 'required', 'when' => $usa],
+        ['stateOthers', 'required', 'when' => $notUsa], // note that it is not possible to write !$usa
+        ['mother', 'required', 'when' => $child],
+    ];
+}
+```
+
+When you need conditional validation logic on client-side (`enableClientValidation` is true), don't forget
+to add `whenClient`:
+
+```php
+public function rules()
+{
+    $usa = [
+        'server-side' => function($model) { return $model->country == Country::USA; },
+        'client-side' => "function (attribute, value) {return $('#country').value == 'USA';}"
+    ];
+
+    return [
+        ['state', 'required', 'when' => $usa['server-side'], 'whenClient' => $usa['client-side']],
+    ];
+}
+```
+
 This guide describes all of Yii's validators and their parameters.
 
 

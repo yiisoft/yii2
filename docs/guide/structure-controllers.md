@@ -8,8 +8,56 @@ pass them to [models](structure-models.md), inject model results into [views](st
 and finally generate outgoing responses.
 
 Controllers are composed by *actions* which are the most basic units that end users can address and request for
-execution. A controller can have one or multiple actions. For example, you can have a `post` controller which
-contains a `view` action. End users can request this `view` action which may display a requested post.
+execution. A controller can have one or multiple actions.
+
+The following example shows a `post` controller with two actions: `view` and `create`:
+
+```php
+namespace app\controllers;
+
+use Yii;
+use app\models\Post;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+
+class PostController extends Controller
+{
+    public function actionView($id)
+    {
+        $model = Post::findOne($id);
+
+        if ($model !== null) {
+            return $this->render('view', [
+                'model' => $model,
+            ]);
+        } else {
+            throw new NotFoundHttpException;
+        }
+    }
+
+    public function actionCreate()
+    {
+        $model = new Post;
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+}
+```
+
+In the `view` action (defined by the `actionView()` method), the code first loads the [model](structure-models.md)
+according to the requested model ID; If the model is loaded successfully, it will display it using
+a [view](structure-views.md) named `view`. Otherwise, it will throw an exception.
+
+In the `create` action (defined by the `actionCreate()` method), the code is similar. It first tries to populate
+the [model](structure-models.md) using the request data and save the model. If both succeed it will redirect
+the browser to the `view` action with the ID of the newly created model. Otherwise it will display
+the `create` view through which users can provide the needed input.
 
 
 ## Routes <a name="routes"></a>
@@ -386,64 +434,13 @@ to fulfill the request:
 ## Best Practices <a name="best-practices"></a>
 
 In a well-designed application, controllers are often very thin with each action containing only a few lines of code.
-The main role of these code is to invoke appropriate [models](structure-models.md) with the request data
-and use [views](structure-views.md) to present the models.
-
-The following code is a typical example showing how the `view` and `create` actions should be implemented
-in a controller.
-
-```php
-namespace app\controllers;
-
-use Yii;
-use app\models\Post;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-
-class PostController extends Controller
-{
-    public function actionView($id)
-    {
-        $model = Post::findOne($id);
-
-        if ($model !== null) {
-            return $this->render('view', [
-                'model' => $model,
-            ]);
-        } else {
-            throw new NotFoundHttpException;
-        }
-    }
-
-    public function actionCreate()
-    {
-        $model = new Post;
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-}
-```
-
-In the `view` action, the code first loads the model according to the requested model ID; If the model
-is loaded successfully, it will display it using the view named `view`. Otherwise, it will throw an exception.
-
-In the `create` action, the code is similar. It first tries to populate the model using the request data
-and save the model. If both succeed it will redirect the browser to the `view` action with the ID of
-the newly created model. Otherwise it will display the `create` view through which users can provide the needed input.
-
-In summary, a controller
-
-* may access the [request](runtime-requests.md) data;
-* may send commands to [models](structure-models.md) and [views](structure-views.md);
-* should return the [response](runtime-responses.md) data;
-* should NOT process the request data;
-* should NOT build the response data.
-
 If your controller is rather complicated, it usually indicates that you should refactor it and move some code
 to other classes.
+
+In summary, controllers
+
+* may access the [request](runtime-requests.md) data;
+* may call methods of [models](structure-models.md) and other service components with request data;
+* may use [views](structure-views.md) to compose responses;
+* should NOT process the request data - this should be done in [models](structure-models.md);
+* should avoid embedding HTML or other presentational code - this is better done in [views](structure-views.md).
