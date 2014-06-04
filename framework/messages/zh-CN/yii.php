@@ -71,7 +71,7 @@ return [
     '{attribute} must be less than "{compareValue}".' => '{attribute}的值必须小于"{compareValue}"。',
     '{attribute} must be less than or equal to "{compareValue}".' => '{attribute}的值必须小于或等于"{compareValue}"。',
     '{attribute} must be no greater than {max}.' => '{attribute}的值必须不大于{max}。',
-    '{attribute} must be no less than {min}.' => '{attribute}的值必须不小于{max}。',
+    '{attribute} must be no less than {min}.' => '{attribute}的值必须不小于{min}。',
     '{attribute} must be repeated exactly.' => '{attribute}必须重复。',
     '{attribute} must not be equal to "{compareValue}".' => '{attribute}的值不得等于"{compareValue}"。',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute}应该包含至少{min, number}个字符。',
