@@ -1190,7 +1190,7 @@ class Request extends \yii\base\Request
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => @unserialize($value),
-                        'expire'=>null
+                        'expire'=> null
                     ]);
                 }
             }
@@ -1199,7 +1199,7 @@ class Request extends \yii\base\Request
                 $cookies[$name] = new Cookie([
                     'name' => $name,
                     'value' => $value,
-                    'expire'=>null
+                    'expire'=> null
                 ]);
             }
         }
