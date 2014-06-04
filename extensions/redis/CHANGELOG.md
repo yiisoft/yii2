@@ -4,7 +4,7 @@ Yii Framework 2 redis extension Change Log
 2.0.0-rc under development
 --------------------------
 
-- no changes in this release.
+- Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
 
 
 2.0.0-beta April 13, 2014

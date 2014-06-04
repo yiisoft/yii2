@@ -7,6 +7,7 @@ Yii Framework 2 elasticsearch extension Change Log
 - Chg: asArray in ActiveQuery is now equal to using the normal Query. This means, that the output structure has changed and `with` is supported anymore. (cebe)
 - Chg: Deletion of a record is now also considered successful if the record did not exist. (cebe)
 - Chg: Requirement changes: Yii now requires elasticsearch version 1.0 or higher (cebe)
+- Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
 - Enh #3527: Added `highlight` property to Query and ActiveRecord. (Borales)
 
 
