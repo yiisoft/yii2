@@ -218,7 +218,7 @@ should be displayed to help the user to fix the errors.
 You may call [[yii\base\Model::validate()]] to trigger validation. The method will go through every *active rule*
 and make sure it is satisfied. If not, an error message will be generated for each failed rule and attribute.
 The method returns a boolean value indicating whether all rules are satisfied. If not, you may retrieve the
-error messages through the property [[yii\base\Model::errors]]. For example,
+error messages through the property [[yii\base\Model::errors]] or [[yii\base\Model::firstErrors]]. For example,
 
 ```php
 $model = new \app\models\ContactForm;

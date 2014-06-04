@@ -35,8 +35,8 @@ Application Structure
 * [Applications](structure-applications.md)
 * [Application Components](structure-application-components.md)
 * [Controllers](structure-controllers.md)
-* [Views](structure-views.md)
 * [Models](structure-models.md)
+* [Views](structure-views.md)
 * **TBD** [Filters](structure-filters.md)
 * **TBD** [Widgets](structure-widgets.md)
 * **TBD** [Modules](structure-modules.md)
@@ -88,9 +88,9 @@ Getting Data from Users
 -----------------------
 
 * [Creating Forms](input-forms.md)
-* [Input Validation](input-validation.md)
-* **TBD** [Uploading Files](input-file-uploading.md)
-* **TBD** [Inputs for Multiple Models](input-multiple-models.md)
+* [Validating Input](input-validation.md)
+* **TBD** [Uploading Files](input-file-upload.md)
+* **TBD** [Getting Data for Multiple Models](input-multiple-models.md)
 
 
 Displaying Data
