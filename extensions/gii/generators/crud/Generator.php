@@ -13,6 +13,7 @@ use yii\db\BaseActiveRecord;
 use yii\db\Schema;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 
 /**
@@ -248,11 +249,12 @@ class Generator extends \yii\gii\Generator
                 $input = 'textInput';
             }
             if (is_array($column->enumValues) && count($column->enumValues) > 0) {
-                $dropDownOptions = "'' => '', ";
+                $dropDownOptions = [];
                 foreach ($column->enumValues as $enumValue) {
-                    $dropDownOptions .= "'".$enumValue."' => '".$enumValue."', ";
+                    $dropDownOptions[$enumValue] = Inflector::humanize($enumValue);
                 }
-                return "\$form->field(\$model, '$attribute')->dropDownList([".$dropDownOptions."])";
+                return "\$form->field(\$model, '$attribute')->dropDownList("
+                    . preg_replace("/\n\s*/", ' ', VarDumper::export($dropDownOptions)).", ['prompt' => ''])";
             } else if ($column->phpType !== 'string' || $column->size === null) {
                 return "\$form->field(\$model, '$attribute')->$input()";
             } else {
