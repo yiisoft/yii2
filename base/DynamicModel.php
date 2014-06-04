@@ -10,7 +10,7 @@ namespace yii\base;
 use yii\validators\Validator;
 
 /**
- * DynamicModel is a model class primarily used to support ad-hoc data validation.
+ * DynamicModel is a model class primarily used to support ad hoc data validation.
  *
  * The typical usage of DynamicModel is as follows,
  *
