@@ -22,21 +22,24 @@ use yii\web\View;
  * To use MaskedInput, you must set the [[mask]] property. The following example
  * shows how to use MaskedInput to collect phone numbers:
  *
- * ~~~
+ * ```php
  * echo MaskedInput::widget([
  *     'name' => 'phone',
  *     'mask' => '999-999-9999',
  * ]);
- * ~~~
+ * ```
  *
  * The masked text field is implemented based on the
- * [jQuery input mask plugin](https://github.com/RobinHerbots/jquery.inputmask).
+ * [jQuery input masked plugin](https://github.com/RobinHerbots/jquery.inputmask).
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 2.0
  */
 class MaskedInput extends InputWidget
 {
+    /**
+     * The name of the jQuery plugin to use for this widget.
+     */
     const PLUGIN_NAME = 'inputmask';
 
     /**
@@ -47,36 +50,34 @@ class MaskedInput extends InputWidget
      * - `9`: represents a numeric character (0-9)
      * - `*`: represents an alphanumeric character (A-Z, a-z, 0-9)
      * - `[` and `]`: anything entered between the square brackets is considered optional user input. This is
-     *    based on the `optionalmarker` setting in `clientOptions`.
+     *    based on the `optionalmarker` setting in [[clientOptions]].
      *
-     * Additional definitions can be set through definitions property.
+     * Additional definitions can be set through the [[definitions]] property.
      */
     public $mask;
-
     /**
-     * @var array custom mask definitions to use. Should be configured as `$maskSymbol => $settings`, where:
-     * - `maskSymbol`: string, a character to identify your mask definition
-     * - `settings`: array, consisiting of the following entries:
-     *   - `validator`:  string, a JS regular expression or a JS function.
+     * @var array custom mask definitions to use. Should be configured as `maskSymbol => settings`, where
+     *
+     * - `maskSymbol` is a string, containing a character to identify your mask definition and
+     * - `settings` is an array, consisiting of the following entries:
+     *   - `validator`: string, a JS regular expression or a JS function.
      *   - `cardinality`: int, specifies how many characters are represented and validated for the definition.
      *   - `prevalidator`: array, validate the characters before the definition cardinality is reached.
      *   - `definitionSymbol`: string, allows shifting values from other definitions, with this `definitionSymbol`.
      */
     public $definitions;
-
     /**
-     * @var array custom aliases to use. Should be configured as `$maskAlias` => $settings`, where:
-     * - `maskAlias`: string, a text to identify your mask alias definition (e.g. 'phone')
-     * - `settings`: array settings for the mask symbol, exactly similar to parameters as passed in `clientOptions`
+     * @var array custom aliases to use. Should be configured as `maskAlias => settings`, where
+     *
+     * - `maskAlias` is a string containing a text to identify your mask alias definition (e.g. 'phone') and
+     * - `settings` is an array containing settings for the mask symbol, exactly similar to parameters as passed in [[clientOptions]].
      */
     public $aliases;
-
     /**
      * @var array the JQuery plugin options for the input mask plugin.
      * @see https://github.com/RobinHerbots/jquery.inputmask
      */
     public $clientOptions = [];
-
     /**
      * @var array the HTML attributes for the input tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -87,6 +88,7 @@ class MaskedInput extends InputWidget
      * @var string the hashed variable to store the pluginOptions
      */
     protected $_hashVar;
+
 
     /**
      * Initializes the widget.
@@ -102,10 +104,7 @@ class MaskedInput extends InputWidget
     }
 
     /**
-     *
-     * Runs the widget.
-     *
-     * @return string|void
+     * @inheritdoc
      */
     public function run()
     {
@@ -121,6 +120,7 @@ class MaskedInput extends InputWidget
      * Generates a hashed variable to store the plugin `clientOptions`. Helps in reusing the variable for similar
      * options passed for other widgets on the same page. The following special data attributes will also be
      * setup for the input widget, that can be accessed through javascript:
+     *
      * - 'data-plugin-options' will store the hashed variable storing the plugin options.
      * - 'data-plugin-name' the name of the plugin
      *

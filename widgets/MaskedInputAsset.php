@@ -11,6 +11,7 @@ use yii\web\AssetBundle;
 
 /**
  * The asset bundle for the [[MaskedInput]] widget.
+ *
  * Includes client assets of [jQuery input mask plugin](https://github.com/RobinHerbots/jquery.inputmask).
  * 
  * @author Kartik Visweswaran <kartikv2@gmail.com>
@@ -19,6 +20,10 @@ use yii\web\AssetBundle;
 class MaskedInputAsset extends AssetBundle
 {
     public $sourcePath = '@yii/assets';
-    public $js = ['jquery.inputmask.bundle.min.js'];
-    public $depends = ['yii\web\YiiAsset'];
+    public $js = [
+        'jquery.inputmask.bundle.min.js'
+    ];
+    public $depends = [
+        'yii\web\YiiAsset'
+    ];
 }
