@@ -62,7 +62,7 @@ Yii Framework 2 Change Log
 - Enh #3380: Allow `value` in `defaultValueValidator` to be a closure (Alex-Code)
 - Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Enh #3518: `yii\helpers\Html::encode()` now replaces invalid code sequences with "�" (DaSourcerer)
-- Enh #3520 Added Unlink all relationship in current model (NmDimas)
+- Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
 - Enh #3521: Added `yii\filters\HttpCache::sessionCacheLimiter` (qiangxue)
 - Enh #3542: Removed requirement to specify `extensions` in application config (samdark)
 - Enh #3562: Adding rotateByCopy to yii\log\FileTarget (pawzar)
