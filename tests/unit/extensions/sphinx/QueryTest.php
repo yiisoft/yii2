@@ -271,19 +271,42 @@ class QueryTest extends SphinxTestCase
     }
 
     /**
+     * Data provider for [[testMatchSpecialCharValue()]]
+     * @return array test data
+     */
+    public function dataProviderMatchSpecialCharValue()
+    {
+        return [
+            ["'"],
+            ['"'],
+            ['@'],
+            ['\\'],
+            ['()'],
+            ['\\' . "'"],
+            ["\x00"],
+            ["\n"],
+            ["\r"],
+            ["\x1a"]
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderMatchSpecialCharValue
      * @depends testRun
+     *
+     * @param string $char char to be tested
      *
      * @see https://github.com/yiisoft/yii2/issues/3668
      */
-    public function testMatchSpecialCharValue()
+    public function testMatchSpecialCharValue($char)
     {
         $connection = $this->getConnection();
 
         $query = new Query;
         $rows = $query->from('yii2_test_article_index')
-            ->match('about\"')
+            ->match('about' . $char)
             ->all($connection);
-        $this->assertNotEmpty($rows);
+        $this->assertTrue(is_array($rows)); // no query error
     }
 
     /**
