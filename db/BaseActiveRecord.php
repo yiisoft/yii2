@@ -1228,15 +1228,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             foreach ($relation->link as $a => $b) {
                 $columns[$b] = $model->$a;
             }
+            $nulls = [];
+            foreach (array_keys($columns) as $a) {
+                $nulls[$a] = null;
+            }
             if (is_array($relation->via)) {
                 /** @var $viaClass ActiveRecordInterface */
                 if ($delete) {
                     $viaClass::deleteAll($columns);
                 } else {
-                    $nulls = [];
-                    foreach (array_keys($columns) as $a) {
-                        $nulls[$a] = null;
-                    }
                     $viaClass::updateAll($nulls, $columns);
                 }
             } else {
@@ -1246,10 +1246,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 if ($delete) {
                     $command->delete($viaTable, $columns)->execute();
                 } else {
-                    $nulls = [];
-                    foreach (array_keys($columns) as $a) {
-                        $nulls[$a] = null;
-                    }
                     $command->update($viaTable, $nulls, $columns)->execute();
                 }
             }
@@ -1286,10 +1282,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Destroys the relationship in current model.
      *
-     *  The model with the foreign key of the relationship will be deleted if `$delete` is true.
-     *  Otherwise, the foreign key will be set null and the model will be saved without validation.
+     * The model with the foreign key of the relationship will be deleted if `$delete` is true.
+     * Otherwise, the foreign key will be set null and the model will be saved without validation.
      *
-     *  Note to destroy the relationship without removing records make sure your keys can be set to null
+     * Note that to destroy the relationship without removing records make sure your keys can be set to null
      *
      * @param string $name the case sensitive name of the relationship.
      * @param boolean $delete whether to delete the model that contains the foreign key.
@@ -1297,53 +1293,57 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function unlinkAll($name, $delete = false)
     {
         $relation = $this->getRelation($name);
-        $columns = [];
-        $condition = [];
-        if (empty($relation->via)) {
-            /** @var $viaClass \yii\db\ActiveRecord */
-            $viaClass = $relation->modelClass;
-            if ($delete) {
-                foreach ($relation->link as $a => $b) {
-                    $condition[$a] = $this->$b;
-                }
-                $viaClass::deleteAll($condition);
+
+        if ($relation->via !== null) {
+            if (is_array($relation->via)) {
+                /** @var ActiveQuery $viaRelation */
+                list($viaName, $viaRelation) = $relation->via;
+                $viaClass = $viaRelation->modelClass;
+                unset($this->_related[$viaName]);
             } else {
-                foreach ($relation->link as $a => $b) {
-                    $columns[$a] = null;
-                    $condition[$a] = $this->$b;
+                $viaRelation = $relation->via;
+                $viaTable = reset($relation->via->from);
+            }
+            $condition = [];
+            $nulls = [];
+            foreach ($viaRelation->link as $a => $b) {
+                $nulls[$a] = null;
+                $condition[$a] = $this->$b;
+            }
+            if (is_array($relation->via)) {
+                /** @var $viaClass ActiveRecordInterface */
+                if ($delete) {
+                    $viaClass::deleteAll($condition);
+                } else {
+                    $viaClass::updateAll($nulls, $condition);
                 }
-                $viaClass::updateAll($columns, $condition);
+            } else {
+                /** @var $viaTable string */
+                /** @var Command $command */
+                $command = static::getDb()->createCommand();
+                if ($delete) {
+                    $command->delete($viaTable, $condition)->execute();
+                } else {
+                    $command->update($viaTable, $nulls, $condition)->execute();
+                }
             }
         } else {
-            $viaTable = reset($relation->via->from);
-
-            /** @var ActiveQuery $viaRelation */
-            $viaRelation = $relation->via;
-
-            /** @var Command $command */
-            $command = static::getDb()->createCommand();
+            /** @var $relatedModel ActiveRecordInterface */
+            $relatedModel = $relation->modelClass;
+            $nulls = [];
+            $condition = [];
+            foreach ($relation->link as $a => $b) {
+                $nulls[$a] = null;
+                $condition[$a] = $this->$b;
+            }
             if ($delete) {
-                foreach ($viaRelation->link as $a => $b) {
-                    $condition[$a] = $this->$b;
-                }
-                $command->delete($viaTable, $condition)->execute();
+                $relatedModel::deleteAll($condition);
             } else {
-                foreach ($viaRelation->link as $a => $b) {
-                    $columns[$a] = null;
-                    $condition[$a] = $this->$b;
-                }
-                $command->update($viaTable, $columns,$condition)->execute();
+                $relatedModel::updateAll($nulls, $condition);
             }
         }
 
-        if (!$relation->multiple) {
-            unset($this->_related[$name]);
-        } elseif (isset($this->_related[$name])) {
-            /** @var ActiveRecordInterface $b */
-            foreach (array_keys($this->_related[$name]) as $a) {
-                unset($this->_related[$name][$a]);
-            }
-        }
+        unset($this->_related[$name]);
     }
 
     /**
