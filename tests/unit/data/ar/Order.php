@@ -65,11 +65,25 @@ class Order extends ActiveRecord
     public function getBooks()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
-            ->viaTable('order_item', ['order_id' => 'id'])
+            ->via('orderItems')
             ->where(['category_id' => 1]);
     }
 
     public function getBooksWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItemsWithNullFk')
+            ->where(['category_id' => 1]);
+    }
+
+    public function getBooksViaTable()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->viaTable('order_item', ['order_id' => 'id'])
+            ->where(['category_id' => 1]);
+    }
+
+    public function getBooksWithNullFKViaTable()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->viaTable('order_item_with_null_fk', ['order_id' => 'id'])

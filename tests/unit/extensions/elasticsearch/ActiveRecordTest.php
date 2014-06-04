@@ -77,6 +77,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
         Item::setUpMapping($command);
         Order::setUpMapping($command);
         OrderItem::setUpMapping($command);
+        OrderWithNullFK::setUpMapping($command);
+        OrderItemWithNullFK::setUpMapping($command);
 
         $db->createCommand()->flushIndex('yiitest');
 
@@ -146,6 +148,38 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $orderItem->setAttributes(['order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0], false);
         $orderItem->save(false);
         $orderItem = new OrderItem();
+        $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
+        $orderItem->save(false);
+
+        $order = new OrderWithNullFK();
+        $order->id = 1;
+        $order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
+        $order->save(false);
+        $order = new OrderWithNullFK();
+        $order->id = 2;
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
+        $order->save(false);
+        $order = new OrderWithNullFK();
+        $order->id = 3;
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
+        $order->save(false);
+
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 2, 'quantity' => 2, 'subtotal' => 40.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 4, 'quantity' => 1, 'subtotal' => 10.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 5, 'quantity' => 1, 'subtotal' => 15.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
         $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
         $orderItem->save(false);
 

@@ -40,6 +40,17 @@ class Order extends ActiveRecord
             ->via('orderItems')->orderBy('id');
     }
 
+    public function getItemsWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItemsWithNullFK');
+    }
+
+    public function getOrderItemsWithNullFK()
+    {
+        return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id']);
+    }
+
     public function getItemsInOrder1()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
@@ -56,12 +67,19 @@ class Order extends ActiveRecord
             })->orderBy('name');
     }
 
-//	public function getBooks()
-//	{
-//		return $this->hasMany('Item', ['id' => 'item_id'])
-//			->viaTable('order_item', ['order_id' => 'id'])
-//			->where(['category_id' => 1]);
-//	}
+    public function getBooks()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems')
+            ->where(['category_id' => 1]);
+    }
+
+    public function getBooksWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItemsWithNullFK')
+            ->where(['category_id' => 1]);
+    }
 
     public function beforeSave($insert)
     {
@@ -90,6 +108,5 @@ class Order extends ActiveRecord
                 ]
             ]
         ]);
-
     }
 }
