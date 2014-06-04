@@ -59,6 +59,19 @@ Currently there is only the `bootstrap` template available.
 You may also add the `yii\apidoc\commands\RenderController` to your console application class map and
 run it inside of your applications console app.
 
+Creating a PDF from the guide
+-----------------------------
+
+You need `pdflatex` and `make` for this.
+
+```
+vendor/bin/apidoc guide source/docs ./output --template=pdf
+cd ./output
+make pdf
+```
+
+If all runs without errors the PDF will be `guide.pdf` in the `output` dir.
+
 Creating your own templates
 ---------------------------
 

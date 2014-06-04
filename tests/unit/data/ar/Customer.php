@@ -13,57 +13,64 @@ use yiiunit\framework\db\ActiveRecordTest;
  * @property string $address
  * @property integer $status
  *
- * @method CustomerQuery|Customer|null find($q = null) static
  * @method CustomerQuery findBySql($sql, $params = []) static
  */
 class Customer extends ActiveRecord
 {
-	const STATUS_ACTIVE = 1;
-	const STATUS_INACTIVE = 2;
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 2;
 
-	public $status2;
+    public $status2;
 
-	public static function tableName()
-	{
-		return 'tbl_customer';
-	}
+    public static function tableName()
+    {
+        return 'customer';
+    }
 
-	public function getProfile()
-	{
-		return $this->hasOne(Profile::className(), ['id' => 'profile_id']);
-	}
+    public function getProfile()
+    {
+        return $this->hasOne(Profile::className(), ['id' => 'profile_id']);
+    }
 
-	public function getOrders()
-	{
-		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
-	}
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
+    }
+    public function getOrdersWithNullFK()
+    {
+        return $this->hasMany(OrderWithNullFK::className(), ['customer_id' => 'id'])->orderBy('id');
+    }
 
-	public function getOrders2()
-	{
-		return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer2')->orderBy('id');
-	}
+    public function getOrders2()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer2')->orderBy('id');
+    }
 
-	// deeply nested table relation
-	public function getOrderItems()
-	{
-		/** @var ActiveQuery $rel */
-		$rel = $this->hasMany(Item::className(), ['id' => 'item_id']);
-		return $rel->viaTable('tbl_order_item', ['order_id' => 'id'], function ($q) {
-			/** @var ActiveQuery $q */
-			$q->viaTable('tbl_order', ['customer_id' => 'id']);
-		})->orderBy('id');
-	}
+    // deeply nested table relation
+    public function getOrderItems()
+    {
+        /** @var ActiveQuery $rel */
+        $rel = $this->hasMany(Item::className(), ['id' => 'item_id']);
 
-	public function afterSave($insert)
-	{
-		ActiveRecordTest::$afterSaveInsert = $insert;
-		ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
-		parent::afterSave($insert);
-	}
+        return $rel->viaTable('order_item', ['order_id' => 'id'], function ($q) {
+            /** @var ActiveQuery $q */
+            $q->viaTable('order', ['customer_id' => 'id']);
+        })->orderBy('id');
+    }
 
-	public static function createQuery($config = [])
-	{
-		$config['modelClass'] = get_called_class();
-		return new CustomerQuery($config);
-	}
+    public function afterSave($insert)
+    {
+        ActiveRecordTest::$afterSaveInsert = $insert;
+        ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
+        parent::afterSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     * @return CustomerQuery
+     */
+    public static function find()
+    {
+        return new CustomerQuery(get_called_class());
+    }
 }

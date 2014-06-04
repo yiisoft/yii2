@@ -14,10 +14,20 @@ defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
 define('YII_DEBUG', true);
 
-$vendor = __DIR__ . '/../vendor/autoload.php';
-if (file_exists($vendor)) {
-	require($vendor);
-} else {
+$composerAutoload = [
+    __DIR__ . '/../vendor/autoload.php', // yii2 as the root package
+    __DIR__ . '/../../../autoload.php', // yii2-basic or yii2-advanced as the root package
+];
+
+foreach ($composerAutoload as $autoload) {
+    if (file_exists($autoload)) {
+        require($autoload);
+        $vendorPath = dirname($autoload);
+        break;
+    }
+}
+
+if (!isset($vendorPath)) {
 	echo "composer autoloader could not be found.\nYou should run `composer install` in repo root directory.\n";
 	exit(1);
 }

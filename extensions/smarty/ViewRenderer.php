@@ -1,9 +1,7 @@
 <?php
 /**
- * Smarty view renderer class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -23,76 +21,76 @@ use yii\helpers\Url;
  */
 class ViewRenderer extends BaseViewRenderer
 {
-	/**
-	 * @var string the directory or path alias pointing to where Smarty cache will be stored.
-	 */
-	public $cachePath = '@runtime/Smarty/cache';
+    /**
+     * @var string the directory or path alias pointing to where Smarty cache will be stored.
+     */
+    public $cachePath = '@runtime/Smarty/cache';
 
-	/**
-	 * @var string the directory or path alias pointing to where Smarty compiled templates will be stored.
-	 */
-	public $compilePath = '@runtime/Smarty/compile';
+    /**
+     * @var string the directory or path alias pointing to where Smarty compiled templates will be stored.
+     */
+    public $compilePath = '@runtime/Smarty/compile';
 
-	/**
-	 * @var Smarty
-	 */
-	public $smarty;
+    /**
+     * @var Smarty
+     */
+    public $smarty;
 
-	public function init()
-	{
-		$this->smarty = new Smarty();
-		$this->smarty->setCompileDir(Yii::getAlias($this->compilePath));
-		$this->smarty->setCacheDir(Yii::getAlias($this->cachePath));
+    public function init()
+    {
+        $this->smarty = new Smarty();
+        $this->smarty->setCompileDir(Yii::getAlias($this->compilePath));
+        $this->smarty->setCacheDir(Yii::getAlias($this->cachePath));
 
-		$this->smarty->registerPlugin('function', 'path', [$this, 'smarty_function_path']);
-	}
+        $this->smarty->registerPlugin('function', 'path', [$this, 'smarty_function_path']);
+    }
 
-	/**
-	 * Smarty template function to get a path for using in links
-	 *
-	 * Usage is the following:
-	 *
-	 * {path route='blog/view' alias=$post.alias user=$user.id}
-	 *
-	 * where route is Yii route and the rest of parameters are passed as is.
-	 *
-	 * @param $params
-	 * @param \Smarty_Internal_Template $template
-	 *
-	 * @return string
-	 */
-	public function smarty_function_path($params, \Smarty_Internal_Template $template)
-	{
-		if (!isset($params['route'])) {
-			trigger_error("path: missing 'route' parameter");
-		}
+    /**
+     * Smarty template function to get a path for using in links
+     *
+     * Usage is the following:
+     *
+     * {path route='blog/view' alias=$post.alias user=$user.id}
+     *
+     * where route is Yii route and the rest of parameters are passed as is.
+     *
+     * @param $params
+     * @param \Smarty_Internal_Template $template
+     *
+     * @return string
+     */
+    public function smarty_function_path($params, \Smarty_Internal_Template $template)
+    {
+        if (!isset($params['route'])) {
+            trigger_error("path: missing 'route' parameter");
+        }
 
-		array_unshift($params, $params['route']) ;
-		unset($params['route']);
+        array_unshift($params, $params['route']) ;
+        unset($params['route']);
 
-		return Url::to($params);
-	}
+        return Url::to($params);
+    }
 
-	/**
-	 * Renders a view file.
-	 *
-	 * This method is invoked by [[View]] whenever it tries to render a view.
-	 * Child classes must implement this method to render the given view file.
-	 *
-	 * @param View $view the view object used for rendering the file.
-	 * @param string $file the view file.
-	 * @param array $params the parameters to be passed to the view file.
-	 *
-	 * @return string the rendering result
-	 */
-	public function render($view, $file, $params)
-	{
-		/** @var \Smarty_Internal_Template $template */
-		$template = $this->smarty->createTemplate($file, null, null, empty($params) ? null : $params, true);
+    /**
+     * Renders a view file.
+     *
+     * This method is invoked by [[View]] whenever it tries to render a view.
+     * Child classes must implement this method to render the given view file.
+     *
+     * @param View $view the view object used for rendering the file.
+     * @param string $file the view file.
+     * @param array $params the parameters to be passed to the view file.
+     *
+     * @return string the rendering result
+     */
+    public function render($view, $file, $params)
+    {
+        /** @var \Smarty_Internal_Template $template */
+        $template = $this->smarty->createTemplate($file, null, null, empty($params) ? null : $params, true);
 
-		$template->assign('app', \Yii::$app);
-		$template->assign('this', $view);
+        $template->assign('app', \Yii::$app);
+        $template->assign('this', $view);
 
-		return $template->fetch();
-	}
+        return $template->fetch();
+    }
 }

@@ -7,12 +7,12 @@ To use this extension,  simply add the following code in your application config
 
 ```php
 return [
-	//....
-	'components' => [
-		'mail' => [
-			'class' => 'yii\swiftmailer\Mailer',
-		],
-	],
+    //....
+    'components' => [
+        'mail' => [
+            'class' => 'yii\swiftmailer\Mailer',
+        ],
+    ],
 ];
 ```
 

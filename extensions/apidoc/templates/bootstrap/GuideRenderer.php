@@ -6,19 +6,11 @@
  */
 
 namespace yii\apidoc\templates\bootstrap;
-use yii\apidoc\helpers\ApiMarkdown;
-use yii\apidoc\models\ClassDoc;
-use yii\apidoc\models\ConstDoc;
-use yii\apidoc\models\Context;
-use yii\apidoc\models\EventDoc;
-use yii\apidoc\models\InterfaceDoc;
-use yii\apidoc\models\MethodDoc;
-use yii\apidoc\models\PropertyDoc;
-use yii\apidoc\models\TraitDoc;
-use yii\console\Controller;
+
 use Yii;
+use yii\apidoc\helpers\ApiIndexer;
 use yii\helpers\Console;
-use yii\helpers\Html;
+use yii\helpers\FileHelper;
 
 /**
  *
@@ -27,27 +19,40 @@ use yii\helpers\Html;
  */
 class GuideRenderer extends \yii\apidoc\templates\html\GuideRenderer
 {
-	use RendererTrait;
+    use RendererTrait;
 
-	public $layout = '@yii/apidoc/templates/bootstrap/layouts/guide.php';
+    public $layout = '@yii/apidoc/templates/bootstrap/layouts/guide.php';
 
-	/**
-	 * @inheritDoc
-	 */
-	public function render($files, $targetDir)
-	{
-		$types = array_merge($this->apiContext->classes, $this->apiContext->interfaces, $this->apiContext->traits);
+    /**
+     * @inheritDoc
+     */
+    public function render($files, $targetDir)
+    {
+        $types = array_merge($this->apiContext->classes, $this->apiContext->interfaces, $this->apiContext->traits);
 
-		$extTypes = [];
-		foreach ($this->extensions as $k => $ext) {
-			$extType = $this->filterTypes($types, $ext);
-			if (empty($extType)) {
-				unset($this->extensions[$k]);
-				continue;
-			}
-			$extTypes[$ext] = $extType;
-		}
+        $extTypes = [];
+        foreach ($this->extensions as $k => $ext) {
+            $extType = $this->filterTypes($types, $ext);
+            if (empty($extType)) {
+                unset($this->extensions[$k]);
+                continue;
+            }
+            $extTypes[$ext] = $extType;
+        }
 
-		parent::render($files, $targetDir);
-	}
+        parent::render($files, $targetDir);
+
+        if ($this->controller !== null) {
+            $this->controller->stdout('generating search index...');
+        }
+
+        $indexer = new ApiIndexer();
+        $indexer->indexFiles(FileHelper::findFiles($targetDir, ['only' => ['*.html']]), $targetDir);
+        $js = $indexer->exportJs();
+        file_put_contents($targetDir . '/jssearch.index.js', $js);
+
+        if ($this->controller !== null) {
+            $this->controller->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+        }
+    }
 }

@@ -17,17 +17,17 @@ use yii\web\View;
  */
 class AssetBundle extends \yii\web\AssetBundle
 {
-	public $sourcePath = '@yii/apidoc/templates/bootstrap/assets/css';
-	public $css = [
+    public $sourcePath = '@yii/apidoc/templates/bootstrap/assets/css';
+    public $css = [
 //		'api.css',
-		'style.css',
-	];
-	public $depends = [
-		'yii\web\JqueryAsset',
-		'yii\bootstrap\BootstrapAsset',
-		'yii\bootstrap\BootstrapPluginAsset',
-	];
-	public $jsOptions = [
-		'position' => View::POS_HEAD,
-	];
+        'style.css',
+    ];
+    public $depends = [
+        'yii\web\JqueryAsset',
+        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
+    ];
+    public $jsOptions = [
+        'position' => View::POS_HEAD,
+    ];
 }

@@ -31,9 +31,9 @@ To use this extension,  simply add the following code in your application config
 
 ```php
 'controllerMap' => [
-	'fixture' => [
-		'class' => 'yii\faker\FixtureController',
-	],
+    'fixture' => [
+        'class' => 'yii\faker\FixtureController',
+    ],
 ],
 ```
 Set valid ```test``` alias in your console config, for example for ```basic``` application template, this should be added
@@ -44,17 +44,17 @@ generate fixtures template files, according to the given format:
 ```php
 //users.php file under template path (by default @tests/unit/templates/fixtures)
 return [
-	[
-		'table_column0' => 'faker_formatter',
-		...
-		'table_columnN' => 'other_faker_formatter'
-		'body' => function ($fixture, $faker, $index) {
-			//set needed fixture fields based on different conditions
+    [
+        'table_column0' => 'faker_formatter',
+        ...
+        'table_columnN' => 'other_faker_formatter'
+        'body' => function ($fixture, $faker, $index) {
+            //set needed fixture fields based on different conditions
 
-			$fixture['body'] = $faker->sentence(7,true); //generate sentence exact with 7 words.
-			return $fixture;
-		}
-	],
+            $fixture['body'] = $faker->sentence(7,true); //generate sentence exact with 7 words.
+            return $fixture;
+        }
+    ],
 ];
 ```
 
@@ -62,7 +62,7 @@ If you use callback as a attribute value, then it will be called as shown with t
 
 * ```$fixture``` - current fixture array. 
 * ```$faker``` - faker generator instance
-* ```$index``` - current fixture index. For example if user need to generate 3 fixtures for tbl_user, it will be 0..2.
+* ```$index``` - current fixture index. For example if user need to generate 3 fixtures for user table, it will be 0..2.
 
 After you set all needed fields in callback, you need to return $fixture array back from the callback.
 
@@ -72,17 +72,17 @@ Another example of valid template:
 use yii\helpers\Security;
 
 return [
-	'name' => 'firstName',
-	'phone' => 'phoneNumber',
-	'city' => 'city',
-	'password' => function ($fixture, $faker, $index) {
-		$fixture['password'] = Security::generatePasswordHash('password_' . $index);
-		return $fixture;
-	},
-	'auth_key' => function ($fixture, $faker, $index) {
-		$fixture['auth_key'] = Security::generateRandomKey();
-		return $fixture;
-	},
+    'name' => 'firstName',
+    'phone' => 'phoneNumber',
+    'city' => 'city',
+    'password' => function ($fixture, $faker, $index) {
+        $fixture['password'] = Security::generatePasswordHash('password_' . $index);
+        return $fixture;
+    },
+    'auth_key' => function ($fixture, $faker, $index) {
+        $fixture['auth_key'] = Security::generateRandomKey();
+        return $fixture;
+    },
 ];
 ```
 
@@ -135,16 +135,16 @@ After you created custom provider, for example:
 ```php
 class Book extends \Faker\Provider\Base
 {
-	public function title($nbWords = 5)
-	{
-		$sentence = $this->generator->sentence($nbWords);
-		return mb_substr($sentence, 0, mb_strlen($sentence) - 1);
-	}
+    public function title($nbWords = 5)
+    {
+        $sentence = $this->generator->sentence($nbWords);
+        return mb_substr($sentence, 0, mb_strlen($sentence) - 1);
+    }
 
-	public function ISBN()
-	{
-		return $this->generator->randomNumber(13);
-	}
+    public function ISBN()
+    {
+        return $this->generator->randomNumber(13);
+    }
 
  }
 ```
@@ -153,11 +153,11 @@ You can use it by adding it to the ```$providers``` property of the current comm
 
 ```php
 'controllerMap' => [
-	'fixture' => [
-		'class' => 'yii\faker\FixtureController',
-		'providers' => [
-			'app\tests\unit\faker\providers\Book',
-		],
-	],
+    'fixture' => [
+        'class' => 'yii\faker\FixtureController',
+        'providers' => [
+            'app\tests\unit\faker\providers\Book',
+        ],
+    ],
 ]
 ```

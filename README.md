@@ -5,11 +5,11 @@ Thank you for choosing Yii 2 - a modern PHP framework designed for professional 
 
 Yii 2 is a complete rewrite of its previous version Yii 1.1 which is one of the most popular PHP frameworks.
 Yii 2 inherits the main spirit behind Yii for being simple, fast and highly extensible.
-Yii 2 requires PHP 5.4 and embraces best practices and protocols found in modern Web application development.
+Yii 2 requires PHP 5.4 and embraces the best practices and protocols found in modern Web application development.
 
 
 **Yii 2 is not ready for production use yet.** We may make significant changes without prior notices.
-We expect to make the first stable release of Yii 2 in early 2014.
+We expect to make the first stable release of Yii 2 in the middle of 2014.
 
 If you mainly want to learn Yii with no real project development requirement, we highly recommend
 you start with Yii 2 as it will be our main focus for the next few years.
@@ -24,19 +24,22 @@ which is the latest stable release of Yii.
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
+[![Code Climate](https://codeclimate.com/github/yiisoft/yii2.png)](https://codeclimate.com/github/yiisoft/yii2)
 
 DIRECTORY STRUCTURE
 -------------------
 
-      apps/                ready-to-use application templates
-          advanced/        a template suitable for building sophisticated Web applications
-          basic/           a template suitable for building simple Web applications
-          benchmark/       an application demonstrating the performance of Yii
-      build/               internally used build tools
-      docs/                documentation
-      extensions/          extensions
-      framework/           core framework code
-      tests/               tests of the core framework code
+```
+apps/                ready-to-use application templates
+    advanced/        a template suitable for building sophisticated Web applications
+    basic/           a template suitable for building simple Web applications
+    benchmark/       an application demonstrating the performance of Yii
+build/               internally used build tools
+docs/                documentation
+extensions/          extensions
+framework/           core framework code
+tests/               tests of the core framework code
+```
 
 
 REQUIREMENTS
@@ -48,13 +51,16 @@ The minimum requirement by Yii is that your Web server supports PHP 5.4.
 DOCUMENTATION
 -------------
 
-A draft of the [Definitive Guide](docs/guide/index.md) is available.
+A draft of the [Definitive Guide](docs/guide/README.md) is available.
 
 API docs and a rendering of the definitive guide are currently
-available at http://stuff.cebe.cc/yii2docs/ (updated four times per hour).
-We will make guide and API docs available on yiiframework.com with the beta release.
+available under the following urls:
 
-For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/upgrade-from-v1.md)
+- http://stuff.cebe.cc/yii2docs/ API and Definitive Guide (updated every 15 minutes from the github source)
+- http://www.yiiframework.com/doc-2.0/guide-index.html API and Definitive Guide (last updated for the beta release)
+- http://stuff.cebe.cc/yii2-guide.pdf The PDF version of the Guide
+
+For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.
 
 

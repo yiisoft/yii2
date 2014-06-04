@@ -40,54 +40,54 @@ use yii\authclient\OAuth2;
  */
 class GoogleOAuth extends OAuth2
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $authUrl = 'https://accounts.google.com/o/oauth2/auth';
-	/**
-	 * @inheritdoc
-	 */
-	public $tokenUrl = 'https://accounts.google.com/o/oauth2/token';
-	/**
-	 * @inheritdoc
-	 */
-	public $apiBaseUrl = 'https://www.googleapis.com/oauth2/v1';
+    /**
+     * @inheritdoc
+     */
+    public $authUrl = 'https://accounts.google.com/o/oauth2/auth';
+    /**
+     * @inheritdoc
+     */
+    public $tokenUrl = 'https://accounts.google.com/o/oauth2/token';
+    /**
+     * @inheritdoc
+     */
+    public $apiBaseUrl = 'https://www.googleapis.com/oauth2/v1';
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->scope === null) {
-			$this->scope = implode(' ', [
-				'https://www.googleapis.com/auth/userinfo.profile',
-				'https://www.googleapis.com/auth/userinfo.email',
-			]);
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->scope === null) {
+            $this->scope = implode(' ', [
+                'https://www.googleapis.com/auth/userinfo.profile',
+                'https://www.googleapis.com/auth/userinfo.email',
+            ]);
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function initUserAttributes()
-	{
-		return $this->api('userinfo', 'GET');
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function initUserAttributes()
+    {
+        return $this->api('userinfo', 'GET');
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultName()
-	{
-		return 'google';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultName()
+    {
+        return 'google';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultTitle()
-	{
-		return 'Google';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultTitle()
+    {
+        return 'Google';
+    }
 }

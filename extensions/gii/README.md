@@ -32,11 +32,12 @@ Once the extension is installed, simply modify your application configuration as
 
 ```php
 return [
-	'modules' => [
-		'gii' => 'yii\gii\Module',
-		...
-	],
-	...
+    'bootstrap' => ['gii'],
+    'modules' => [
+        'gii' => 'yii\gii\Module',
+        // ...
+    ],
+    // ...
 ];
 ```
 
@@ -44,4 +45,10 @@ You can then access Gii through the following URL:
 
 ```
 http://localhost/path/to/index.php?r=gii
+```
+
+or if you have enabled pretty URLs, you may use the following URL:
+
+```
+http://localhost/path/to/index.php/gii
 ```

@@ -1,0 +1,158 @@
+\documentclass[a4paper,11pt,twoside]{book}
+
+% english and utf8
+%\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage[british,russian]{babel}
+\usepackage[british]{babel}
+
+% url support
+\usepackage{url}
+
+% make links clickable
+\usepackage{hyperref}
+
+% code listings
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{codebg}{rgb}{0.9,0.9,0.9}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+% TODO ensure copyable indentation:
+% http://tex.stackexchange.com/questions/142617/copy-pasting-leading-whitespace-and-blank-lines-in-listings-package-pdf
+
+\lstset{%
+  backgroundcolor=\color{codebg},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\ttfamily\footnotesize, % the size of the fonts that are used for the code
+  columns=fullflexible,
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+%
+  commentstyle=\color{mygreen},    % comment style
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+%
+% language=Octave,                 % the language of the code
+% morekeywords={*,...},            % if you want to add more keywords to the set
+% deletekeywords={...},            % if you want to delete keywords from the given language
+%
+  numbers=none,                    % where to put the line-numbers; possible values are (none, left, right), not using line numbers to allow copy&paste
+  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+%
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+%
+  tabsize=2,                       % sets default tabsize to 2 spaces
+%  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+%
+    literate={-}{-}1,
+    %    {\'}{'}1,
+    %    {\"}{\"}1
+}
+
+\lstdefinelanguage{json}{
+	morekeywords={},
+	sensitive=false,
+	morestring=[b]",
+}
+
+\lstdefinelanguage{css}{
+	morekeywords={},
+	sensitive=false,
+	morestring=[b]",
+}
+
+\lstdefinelanguage{javascript}{
+	morekeywords={},
+	sensitive=false,
+	morestring=[b]",
+}
+
+% include images
+\usepackage{graphicx}
+
+% support github markdown strikethrough
+% http://tex.stackexchange.com/questions/23711/strikethrough-text
+\usepackage{ulem}
+
+\newcommand{\centeronpage}{% Horizontal adjustment of image
+  \ifodd\value{page}\hspace*{\dimexpr\evensidemargin-\oddsidemargin}\else\hspace*{-\dimexpr\evensidemargin-\oddsidemargin}\fi%
+}
+
+\title{The definitive Guide to Yii 2.0}
+\author{
+    Qiang Xue,
+    Alexander Makarov,
+    Carsten Brandt,
+    Klimov Paul
+    and
+    many contributors from the Yii community
+}
+
+% uncomment for debugging layout issues
+%\usepackage{showframe}
+
+\begin{document}
+
+    \frontmatter
+
+    \begin{titlepage}
+        % ensure centering the title page by ignoring odd and even margin
+        \setlength{\oddsidemargin}{-1in}
+        \setlength{\evensidemargin}{-1in}
+        \setlength{\textwidth}{\paperwidth}
+
+        \vspace*{\fill}
+
+        % typesetting the title line
+        \noindent
+        \parbox{\textwidth}{\centering \bfseries \Huge
+            The Definitive Guide
+        }\vspace{.5cm}
+        \parbox{\textwidth}{\centering \bfseries \Huge
+            to
+        }\vspace{.5cm}
+        \parbox{\textwidth}{\centering \bfseries \Huge
+            Yii 2.0
+        }
+
+        \vfill
+
+        % typesetting authors
+        \noindent
+        \parbox{\textwidth}{\centering \Large
+            Qiang Xue,\\
+            Alexander Makarov,\\
+            Carsten Brandt,\\
+            Klimov Paul\\
+            and\\
+            the Yii community
+        }
+
+        \vspace*{\fill}
+
+        \noindent
+        \parbox{\textwidth}{\centering
+            Copyright 2014 Yii Software LLC.
+        }
+    \end{titlepage}
+
+    %Take a blank Page
+    \pagebreak \thispagestyle{empty} \cleardoublepage
+
+    \setcounter{tocdepth}{1}
+    \tableofcontents
+
+    \mainmatter
+
+	\include{guide}
+
+\end{document}

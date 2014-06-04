@@ -33,13 +33,13 @@ To use this extension, simply add the following code in your application configu
 
 ```php
 return [
-	//....
-	'components' => [
-		'mongodb' => [
-			'class' => '\yii\mongodb\Connection',
-			'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
-		],
-	],
+    //....
+    'components' => [
+        'mongodb' => [
+            'class' => '\yii\mongodb\Connection',
+            'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
+        ],
+    ],
 ];
 ```
 
@@ -59,8 +59,8 @@ use yii\mongodb\Query;
 $query = new Query;
 // compose the query
 $query->select(['name', 'status'])
-	->from('customer')
-	->limit(10);
+    ->from('customer')
+    ->limit(10);
 // execute the query
 $rows = $query->all();
 ```
@@ -103,17 +103,17 @@ use yii\mongodb\Query;
 
 class ItemController extends Controller
 {
-	/**
-	 * @param string $id MongoId string (not object)
-	 */
-	public function actionUpdate($id)
-	{
-		$query = new Query;
-		$row = $query->from('item')
-			where(['_id' => $id]) // implicit typecast to [[\MongoId]]
-			->one();
-		...
-	}
+    /**
+     * @param string $id MongoId string (not object)
+     */
+    public function actionUpdate($id)
+    {
+        $query = new Query;
+        $row = $query->from('item')
+            where(['_id' => $id]) // implicit typecast to [[\MongoId]]
+            ->one();
+        ...
+    }
 }
 ```
 
@@ -133,21 +133,21 @@ use yii\mongodb\ActiveRecord;
 
 class Customer extends ActiveRecord
 {
-	/**
-	 * @return string the name of the index associated with this ActiveRecord class.
-	 */
-	public static function collectionName()
-	{
-		return 'customer';
-	}
+    /**
+     * @return string the name of the index associated with this ActiveRecord class.
+     */
+    public static function collectionName()
+    {
+        return 'customer';
+    }
 
-	/**
-	 * @return array list of attribute names.
-	 */
-	public function attributes()
-	{
-		return ['_id', 'name', 'email', 'address', 'status'];
-	}
+    /**
+     * @return array list of attribute names.
+     */
+    public function attributes()
+    {
+        return ['_id', 'name', 'email', 'address', 'status'];
+    }
 }
 ```
 
@@ -162,10 +162,10 @@ use yii\mongodb\Query;
 $query = new Query;
 $query->from('customer')->where(['status' => 2]);
 $provider = new ActiveDataProvider([
-	'query' => $query,
-	'pagination' => [
-		'pageSize' => 10,
-	]
+    'query' => $query,
+    'pagination' => [
+        'pageSize' => 10,
+    ]
 ]);
 $models = $provider->getModels();
 ```
@@ -175,10 +175,10 @@ use yii\data\ActiveDataProvider;
 use app\models\Customer;
 
 $provider = new ActiveDataProvider([
-	'query' => Customer::find(),
-	'pagination' => [
-		'pageSize' => 10,
-	]
+    'query' => Customer::find(),
+    'pagination' => [
+        'pageSize' => 10,
+    ]
 ]);
 $models = $provider->getModels();
 ```
@@ -193,11 +193,11 @@ For example: instead of:
 
 ```
 {
-	content: "some content",
-	author: {
-		name: author1,
-		email: author1@domain.com
-	}
+    content: "some content",
+    author: {
+        name: author1,
+        email: author1@domain.com
+    }
 }
 ```
 
@@ -205,9 +205,9 @@ use following:
 
 ```
 {
-	content: "some content",
-	author_name: author1,
-	author_email: author1@domain.com
+    content: "some content",
+    author_name: author1,
+    author_email: author1@domain.com
 }
 ```
 
@@ -231,13 +231,13 @@ you also have to configure the `cache` component to be `yii\mongodb\Cache`:
 
 ```php
 return [
-	//....
-	'components' => [
-		// ...
-		'cache' => [
-			'class' => 'yii\mongodb\Cache',
-		],
-	]
+    //....
+    'components' => [
+        // ...
+        'cache' => [
+            'class' => 'yii\mongodb\Cache',
+        ],
+    ]
 ];
 ```
 
@@ -250,12 +250,12 @@ you also have to configure the `session` component to be `yii\mongodb\Session`:
 
 ```php
 return [
-	//....
-	'components' => [
-		// ...
-		'session' => [
-			'class' => 'yii\mongodb\Session',
-		],
-	]
+    //....
+    'components' => [
+        // ...
+        'session' => [
+            'class' => 'yii\mongodb\Session',
+        ],
+    ]
 ];
 ```

@@ -1,13 +1,15 @@
-IF OBJECT_ID('[dbo].[tbl_order_item]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_order_item];
-IF OBJECT_ID('[dbo].[tbl_item]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_item];
-IF OBJECT_ID('[dbo].[tbl_order]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_order];
-IF OBJECT_ID('[dbo].[tbl_category]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_category];
-IF OBJECT_ID('[dbo].[tbl_customer]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_customer];
-IF OBJECT_ID('[dbo].[tbl_profile]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_profile];
-IF OBJECT_ID('[dbo].[tbl_type]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_type];
-IF OBJECT_ID('[dbo].[tbl_null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[tbl_null_values];
+IF OBJECT_ID('[dbo].[order_item]', 'U') IS NOT NULL DROP TABLE [dbo].[order_item];
+IF OBJECT_ID('[dbo].[order_item_with_null_fk]', 'U') IS NOT NULL DROP TABLE [dbo].[order_item_with_null_fk];
+IF OBJECT_ID('[dbo].[item]', 'U') IS NOT NULL DROP TABLE [dbo].[item];
+IF OBJECT_ID('[dbo].[order]', 'U') IS NOT NULL DROP TABLE [dbo].[order];
+IF OBJECT_ID('[dbo].[order_with_null_fk]', 'U') IS NOT NULL DROP TABLE [dbo].[order_with_null_fk];
+IF OBJECT_ID('[dbo].[category]', 'U') IS NOT NULL DROP TABLE [dbo].[category];
+IF OBJECT_ID('[dbo].[customer]', 'U') IS NOT NULL DROP TABLE [dbo].[customer];
+IF OBJECT_ID('[dbo].[profile]', 'U') IS NOT NULL DROP TABLE [dbo].[profile];
+IF OBJECT_ID('[dbo].[type]', 'U') IS NOT NULL DROP TABLE [dbo].[type];
+IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_values];
 
-CREATE TABLE [dbo].[tbl_profile] (
+CREATE TABLE [dbo].[profile] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[description] [varchar](128) NOT NULL,
 	CONSTRAINT [PK_customer] PRIMARY KEY CLUSTERED (
@@ -15,7 +17,7 @@ CREATE TABLE [dbo].[tbl_profile] (
 	) ON [PRIMARY]
 );
 
-CREATE TABLE [dbo].[tbl_customer] (
+CREATE TABLE [dbo].[customer] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[email] [varchar](128) NOT NULL,
 	[name] [varchar](128),
@@ -27,7 +29,7 @@ CREATE TABLE [dbo].[tbl_customer] (
 	) ON [PRIMARY]
 );
 
-CREATE TABLE [dbo].[tbl_category] (
+CREATE TABLE [dbo].[category] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](128) NOT NULL,
 	CONSTRAINT [PK_category] PRIMARY KEY CLUSTERED (
@@ -35,7 +37,7 @@ CREATE TABLE [dbo].[tbl_category] (
 	) ON [PRIMARY]
 );
 
-CREATE TABLE [dbo].[tbl_item] (
+CREATE TABLE [dbo].[item] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[name] [varchar](128) NOT NULL,
 	[category_id] [int] NOT NULL,
@@ -44,7 +46,7 @@ CREATE TABLE [dbo].[tbl_item] (
 	) ON [PRIMARY]
 );
 
-CREATE TABLE [dbo].[tbl_order] (
+CREATE TABLE [dbo].[order] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[customer_id] [int] NOT NULL,
 	[created_at] [int] NOT NULL,
@@ -54,7 +56,14 @@ CREATE TABLE [dbo].[tbl_order] (
 	) ON [PRIMARY]
 );
 
-CREATE TABLE [dbo].[tbl_order_item] (
+CREATE TABLE [dbo].[order_with_null_fk] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[customer_id] [int] ,
+	[created_at] [int] NOT NULL,
+	[total] [decimal](10,0) NOT NULL
+);
+
+CREATE TABLE [dbo].[order_item] (
 	[order_id] [int] NOT NULL,
 	[item_id] [int] NOT NULL,
 	[quantity] [int] NOT NULL,
@@ -63,9 +72,15 @@ CREATE TABLE [dbo].[tbl_order_item] (
 		[order_id] ASC,
 		[item_id] ASC
 	) ON [PRIMARY]
+
+);CREATE TABLE [dbo].[order_item_with_null_fk] (
+	[order_id] [int],
+	[item_id] [int],
+	[quantity] [int] NOT NULL,
+	[subtotal] [decimal](10,0) NOT NULL
 );
 
-CREATE TABLE [dbo].[tbl_null_values] (
+CREATE TABLE [dbo].[null_values] (
   id [int] UNSIGNED NOT NULL,
   var1 [int] UNSIGNED NULL,
   var2 [int] NULL,
@@ -74,7 +89,7 @@ CREATE TABLE [dbo].[tbl_null_values] (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE [dbo].[tbl_type] (
+CREATE TABLE [dbo].[type] (
 	[int_col] [int] NOT NULL,
 	[int_col2] [int] DEFAULT '1',
 	[char_col] [char](100) NOT NULL,
@@ -89,29 +104,40 @@ CREATE TABLE [dbo].[tbl_type] (
 	[bool_col2] [tinyint] DEFAULT '1'
 );
 
-INSERT INTO [dbo].[tbl_profile] ([description]) VALUES ('profile customer 1');
-INSERT INTO [dbo].[tbl_profile] ([description]) VALUES ('profile customer 3');
+INSERT INTO [dbo].[profile] ([description]) VALUES ('profile customer 1');
+INSERT INTO [dbo].[profile] ([description]) VALUES ('profile customer 3');
 
-INSERT INTO [dbo].[tbl_customer] ([email], [name], [address], [status], [profile_id]) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
-INSERT INTO [dbo].[tbl_customer] ([email], [name], [address], [status]) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO [dbo].[tbl_customer] ([email], [name], [address], [status], [profile_id]) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
+INSERT INTO [dbo].[customer] ([email], [name], [address], [status], [profile_id]) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
+INSERT INTO [dbo].[customer] ([email], [name], [address], [status]) VALUES ('user2@example.com', 'user2', 'address2', 1);
+INSERT INTO [dbo].[customer] ([email], [name], [address], [status], [profile_id]) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
 
-INSERT INTO [dbo].[tbl_category] ([name]) VALUES ('Books');
-INSERT INTO [dbo].[tbl_category] ([name]) VALUES ('Movies');
+INSERT INTO [dbo].[category] ([name]) VALUES ('Books');
+INSERT INTO [dbo].[category] ([name]) VALUES ('Movies');
 
-INSERT INTO [dbo].[tbl_item] ([name], [category_id]) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
-INSERT INTO [dbo].[tbl_item] ([name], [category_id]) VALUES ('Yii 1.1 Application Development Cookbook', 1);
-INSERT INTO [dbo].[tbl_item] ([name], [category_id]) VALUES ('Ice Age', 2);
-INSERT INTO [dbo].[tbl_item] ([name], [category_id]) VALUES ('Toy Story', 2);
-INSERT INTO [dbo].[tbl_item] ([name], [category_id]) VALUES ('Cars', 2);
+INSERT INTO [dbo].[item] ([name], [category_id]) VALUES ('Agile Web Application Development with Yii1.1 and PHP5', 1);
+INSERT INTO [dbo].[item] ([name], [category_id]) VALUES ('Yii 1.1 Application Development Cookbook', 1);
+INSERT INTO [dbo].[item] ([name], [category_id]) VALUES ('Ice Age', 2);
+INSERT INTO [dbo].[item] ([name], [category_id]) VALUES ('Toy Story', 2);
+INSERT INTO [dbo].[item] ([name], [category_id]) VALUES ('Cars', 2);
 
-INSERT INTO [dbo].[tbl_order] ([customer_id], [created_at], [total]) VALUES (1, 1325282384, 110.0);
-INSERT INTO [dbo].[tbl_order] ([customer_id], [created_at], [total]) VALUES (2, 1325334482, 33.0);
-INSERT INTO [dbo].[tbl_order] ([customer_id], [created_at], [total]) VALUES (2, 1325502201, 40.0);
+INSERT INTO [dbo].[order] ([customer_id], [created_at], [total]) VALUES (1, 1325282384, 110.0);
+INSERT INTO [dbo].[order] ([customer_id], [created_at], [total]) VALUES (2, 1325334482, 33.0);
+INSERT INTO [dbo].[order] ([customer_id], [created_at], [total]) VALUES (2, 1325502201, 40.0);
 
-INSERT INTO [dbo].[tbl_order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 1, 1, 30.0);
-INSERT INTO [dbo].[tbl_order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 2, 2, 40.0);
-INSERT INTO [dbo].[tbl_order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 4, 1, 10.0);
-INSERT INTO [dbo].[tbl_order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 5, 1, 15.0);
-INSERT INTO [dbo].[tbl_order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 3, 1, 8.0);
-INSERT INTO [dbo].[tbl_order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (3, 2, 1, 40.0);
+INSERT INTO [dbo].[order_with_null_fk] ([customer_id], [created_at], [total]) VALUES (1, 1325282384, 110.0);
+INSERT INTO [dbo].[order_with_null_fk] ([customer_id], [created_at], [total]) VALUES (2, 1325334482, 33.0);
+INSERT INTO [dbo].[order_with_null_fk] ([customer_id], [created_at], [total]) VALUES (2, 1325502201, 40.0);
+
+INSERT INTO [dbo].[order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 1, 1, 30.0);
+INSERT INTO [dbo].[order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 2, 2, 40.0);
+INSERT INTO [dbo].[order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 4, 1, 10.0);
+INSERT INTO [dbo].[order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 5, 1, 15.0);
+INSERT INTO [dbo].[order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 3, 1, 8.0);
+INSERT INTO [dbo].[order_item] ([order_id], [item_id], [quantity], [subtotal]) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 1, 1, 30.0);
+INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (1, 2, 2, 40.0);
+INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 4, 1, 10.0);
+INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 5, 1, 15.0);
+INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (2, 3, 1, 8.0);
+INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (3, 2, 1, 40.0);

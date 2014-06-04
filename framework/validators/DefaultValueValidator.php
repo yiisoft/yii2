@@ -18,23 +18,35 @@ namespace yii\validators;
  */
 class DefaultValueValidator extends Validator
 {
-	/**
-	 * @var mixed the default value to be set to the specified attributes.
-	 */
-	public $value;
-	/**
-	 * @var boolean this property is overwritten to be false so that this validator will
-	 * be applied when the value being validated is empty.
-	 */
-	public $skipOnEmpty = false;
+    /**
+     * @var mixed a PHP callable returning the default value or the default value to be set to the specified attributes.
+     * The function signature must be as follows,
+     *
+     * ~~~
+     * function foo($object, $attribute) {
+     *     // compute value
+     *     return $value;
+     * }
+     * ~~~
+     */
+    public $value;
+    /**
+     * @var boolean this property is overwritten to be false so that this validator will
+     * be applied when the value being validated is empty.
+     */
+    public $skipOnEmpty = false;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function validateAttribute($object, $attribute)
-	{
-		if ($this->isEmpty($object->$attribute)) {
-			$object->$attribute = $this->value;
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function validateAttribute($object, $attribute)
+    {
+        if ($this->isEmpty($object->$attribute)) {
+            if ($this->value instanceof \Closure) {
+                $object->$attribute = call_user_func($this->value, $object, $attribute);
+            } else {
+                $object->$attribute = $this->value;
+            }
+        }
+    }
 }

@@ -21,108 +21,113 @@ use Yii;
  */
 abstract class BaseController extends Controller
 {
-	/**
-	 * @var string template to use for rendering
-	 */
-	public $template = 'bootstrap';
-	/**
-	 * @var string|array files to exclude.
-	 */
-	public $exclude;
+    /**
+     * @var string template to use for rendering
+     */
+    public $template = 'bootstrap';
+    /**
+     * @var string|array files to exclude.
+     */
+    public $exclude;
 
+    protected function normalizeTargetDir($target)
+    {
+        $target = rtrim(Yii::getAlias($target), '\\/');
+        if (file_exists($target)) {
+            if (is_dir($target) && !$this->confirm('TargetDirectory already exists. Overwrite?', true)) {
+                $this->stderr('User aborted.' . PHP_EOL);
 
-	protected function normalizeTargetDir($target)
-	{
-		$target = rtrim(Yii::getAlias($target), '\\/');
-		if (file_exists($target)) {
-			if (is_dir($target) && !$this->confirm('TargetDirectory already exists. Overwrite?', true)) {
-				$this->stderr('User aborted.' . PHP_EOL);
-				return false;
-			}
-			if (is_file($target)) {
-				$this->stderr("Error: Target directory \"$target\" is a file!" . PHP_EOL);
-				return false;
-			}
-		} else {
-			mkdir($target, 0777, true);
-		}
-		return $target;
-	}
+                return false;
+            }
+            if (is_file($target)) {
+                $this->stderr("Error: Target directory \"$target\" is a file!" . PHP_EOL);
 
-	protected function searchFiles($sourceDirs)
-	{
-		$this->stdout('Searching files to process... ');
-		$files = [];
+                return false;
+            }
+        } else {
+            mkdir($target, 0777, true);
+        }
 
-		if (is_array($this->exclude)) {
-			$exclude = $this->exclude;
-		} elseif (is_string($this->exclude)) {
-			$exclude = explode(',', $this->exclude);
-		} else {
-			$exclude = [];
-		}
+        return $target;
+    }
 
-		foreach ($sourceDirs as $source) {
-			foreach ($this->findFiles($source, $exclude) as $fileName) {
-				$files[$fileName] = $fileName;
-			}
-		}
-		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+    protected function searchFiles($sourceDirs)
+    {
+        $this->stdout('Searching files to process... ');
+        $files = [];
 
-		if (empty($files)) {
-			$this->stderr('Error: No files found to process.' . PHP_EOL);
-			return false;
-		}
-		return $files;
-	}
+        if (is_array($this->exclude)) {
+            $exclude = $this->exclude;
+        } elseif (is_string($this->exclude)) {
+            $exclude = explode(',', $this->exclude);
+        } else {
+            $exclude = [];
+        }
 
-	protected abstract function findFiles($dir, $except = []);
+        foreach ($sourceDirs as $source) {
+            foreach ($this->findFiles($source, $exclude) as $fileName) {
+                $files[$fileName] = $fileName;
+            }
+        }
+        $this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
 
-	protected function loadContext($location)
-	{
-		$context = new Context();
+        if (empty($files)) {
+            $this->stderr('Error: No files found to process.' . PHP_EOL);
 
-		$cacheFile = $location . '/cache/apidoc.data';
-		$this->stdout('Loading apidoc data from cache... ');
-		if (file_exists($cacheFile)) {
-			$context = unserialize(file_get_contents($cacheFile));
-			$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
-		} else {
-			$this->stdout('no data available.' . PHP_EOL, Console::FG_YELLOW);
-		}
-		return $context;
-	}
+            return false;
+        }
 
-	protected function storeContext($context, $location)
-	{
-		$cacheFile = $location . '/cache/apidoc.data';
-		if (!is_dir($dir = dirname($cacheFile))) {
-			mkdir($dir, 0777, true);
-		}
-		file_put_contents($cacheFile, serialize($context));
-	}
+        return $files;
+    }
 
-	/**
-	 * @param Context $context
-	 */
-	protected function updateContext($context)
-	{
-		$this->stdout('Updating cross references and backlinks... ');
-		$context->updateReferences();
-		$this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
-	}
+    abstract protected function findFiles($dir, $except = []);
 
-	/**
-	 * @param string $template
-	 * @return BaseRenderer
-	 */
-	protected abstract function findRenderer($template);
+    protected function loadContext($location)
+    {
+        $context = new Context();
 
-	/**
-	 * @inheritdoc
-	 */
-	public function options($id)
-	{
-		return array_merge(parent::options($id), ['template', 'exclude']);
-	}
+        $cacheFile = $location . '/cache/apidoc.data';
+        $this->stdout('Loading apidoc data from cache... ');
+        if (file_exists($cacheFile)) {
+            $context = unserialize(file_get_contents($cacheFile));
+            $this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+        } else {
+            $this->stdout('no data available.' . PHP_EOL, Console::FG_YELLOW);
+        }
+
+        return $context;
+    }
+
+    protected function storeContext($context, $location)
+    {
+        $cacheFile = $location . '/cache/apidoc.data';
+        if (!is_dir($dir = dirname($cacheFile))) {
+            mkdir($dir, 0777, true);
+        }
+        file_put_contents($cacheFile, serialize($context));
+    }
+
+    /**
+     * @param Context $context
+     */
+    protected function updateContext($context)
+    {
+        $this->stdout('Updating cross references and backlinks... ');
+        $context->updateReferences();
+        $this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
+    }
+
+    /**
+     * @param string $template
+     * @return BaseRenderer
+     */
+    abstract protected function findRenderer($template);
+
+    /**
+     * @inheritdoc
+     */
+    public function options($actionId)
+    {
+        return array_merge(parent::options($actionId), ['template', 'exclude']);
+    }
 }

@@ -13,39 +13,40 @@ Yii::setAlias('@yii/elasticsearch', __DIR__ . '/../../../../extensions/elasticse
  */
 class ElasticSearchTestCase extends TestCase
 {
-	protected function setUp()
-	{
-		$this->mockApplication();
+    protected function setUp()
+    {
+        $this->mockApplication();
 
-		$databases = $this->getParam('databases');
-		$params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : null;
-		if ($params === null || !isset($params['dsn'])) {
-			$this->markTestSkipped('No elasticsearch server connection configured.');
-		}
-		$dsn = explode('/', $params['dsn']);
-		$host = $dsn[2];
-		if (strpos($host, ':')===false) {
-			$host .= ':9200';
-		}
-		if (!@stream_socket_client($host, $errorNumber, $errorDescription, 0.5)) {
-			$this->markTestSkipped('No elasticsearch server running at ' . $params['dsn'] . ' : ' . $errorNumber . ' - ' . $errorDescription);
-		}
+        $databases = self::getParam('databases');
+        $params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : null;
+        if ($params === null || !isset($params['dsn'])) {
+            $this->markTestSkipped('No elasticsearch server connection configured.');
+        }
+        $dsn = explode('/', $params['dsn']);
+        $host = $dsn[2];
+        if (strpos($host, ':')===false) {
+            $host .= ':9200';
+        }
+        if (!@stream_socket_client($host, $errorNumber, $errorDescription, 0.5)) {
+            $this->markTestSkipped('No elasticsearch server running at ' . $params['dsn'] . ' : ' . $errorNumber . ' - ' . $errorDescription);
+        }
 
-		parent::setUp();
-	}
+        parent::setUp();
+    }
 
-	/**
-	 * @param boolean $reset whether to clean up the test database
-	 * @return Connection
-	 */
-	public function getConnection($reset = true)
-	{
-		$databases = $this->getParam('databases');
-		$params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : [];
-		$db = new Connection();
-		if ($reset) {
-			$db->open();
-		}
-		return $db;
-	}
+    /**
+     * @param  boolean    $reset whether to clean up the test database
+     * @return Connection
+     */
+    public function getConnection($reset = true)
+    {
+        $databases = self::getParam('databases');
+        $params = isset($databases['elasticsearch']) ? $databases['elasticsearch'] : [];
+        $db = new Connection();
+        if ($reset) {
+            $db->open();
+        }
+
+        return $db;
+    }
 }

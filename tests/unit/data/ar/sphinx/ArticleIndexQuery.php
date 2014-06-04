@@ -9,9 +9,10 @@ use yii\sphinx\ActiveQuery;
  */
 class ArticleIndexQuery extends ActiveQuery
 {
-	public function favoriteAuthor()
-	{
-		$this->andWhere('author_id=1');
-		return $this;
-	}
+    public function favoriteAuthor()
+    {
+        $this->andWhere('author_id=1');
+
+        return $this;
+    }
 }

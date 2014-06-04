@@ -36,99 +36,98 @@ use yii\web\JsExpression;
  */
 class MaskedInput extends InputWidget
 {
-	/**
-	 * @var string the input mask (e.g. '99/99/9999' for date input). The following characters are predefined:
-	 *
-	 * - `a`: represents an alpha character (A-Z, a-z)
-	 * - `9`: represents a numeric character (0-9)
-	 * - `*`: represents an alphanumeric character (A-Z, a-z, 0-9)
-	 * - `?`: anything listed after '?' within the mask is considered optional user input
-	 *
-	 * Additional characters can be defined by specifying the [[charMap]] property.
-	 */
-	public $mask;
-	/**
-	 * @var array the mapping between mask characters and the corresponding patterns.
-	 * For example, `['~' => '[+-]']` specifies that the '~' character expects '+' or '-' input.
-	 * Defaults to null, meaning using the map as described in [[mask]].
-	 */
-	public $charMap;
-	/**
-	 * @var string the character prompting for user input. Defaults to underscore '_'.
-	 */
-	public $placeholder;
-	/**
-	 * @var string a JavaScript function callback that will be invoked when user finishes the input.
-	 */
-	public $completed;
-	/**
-	 * @var array the HTML attributes for the input tag.
-	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
-	 */
-	public $options = ['class' => 'form-control'];
+    /**
+     * @var string the input mask (e.g. '99/99/9999' for date input). The following characters are predefined:
+     *
+     * - `a`: represents an alpha character (A-Z, a-z)
+     * - `9`: represents a numeric character (0-9)
+     * - `*`: represents an alphanumeric character (A-Z, a-z, 0-9)
+     * - `?`: anything listed after '?' within the mask is considered optional user input
+     *
+     * Additional characters can be defined by specifying the [[charMap]] property.
+     */
+    public $mask;
+    /**
+     * @var array the mapping between mask characters and the corresponding patterns.
+     * For example, `['~' => '[+-]']` specifies that the '~' character expects '+' or '-' input.
+     * Defaults to null, meaning using the map as described in [[mask]].
+     */
+    public $charMap;
+    /**
+     * @var string the character prompting for user input. Defaults to underscore '_'.
+     */
+    public $placeholder;
+    /**
+     * @var string a JavaScript function callback that will be invoked when user finishes the input.
+     */
+    public $completed;
+    /**
+     * @var array the HTML attributes for the input tag.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $options = ['class' => 'form-control'];
 
+    /**
+     * Initializes the widget.
+     * @throws InvalidConfigException if the "mask" property is not set.
+     */
+    public function init()
+    {
+        parent::init();
+        if (empty($this->mask)) {
+            throw new InvalidConfigException('The "mask" property must be set.');
+        }
+    }
 
-	/**
-	 * Initializes the widget.
-	 * @throws InvalidConfigException if the "mask" property is not set.
-	 */
-	public function init()
-	{
-		parent::init();
-		if (empty($this->mask)) {
-			throw new InvalidConfigException('The "mask" property must be set.');
-		}
-	}
+    /**
+     * Runs the widget.
+     */
+    public function run()
+    {
+        if ($this->hasModel()) {
+            echo Html::activeTextInput($this->model, $this->attribute, $this->options);
+        } else {
+            echo Html::textInput($this->name, $this->value, $this->options);
+        }
+        $this->registerClientScript();
+    }
 
-	/**
-	 * Runs the widget.
-	 */
-	public function run()
-	{
-		if ($this->hasModel()) {
-			echo Html::activeTextInput($this->model, $this->attribute, $this->options);
-		} else {
-			echo Html::textInput($this->name, $this->value, $this->options);
-		}
-		$this->registerClientScript();
-	}
+    /**
+     * Registers the needed JavaScript.
+     */
+    public function registerClientScript()
+    {
+        $options = $this->getClientOptions();
+        $options = empty($options) ? '' : ',' . Json::encode($options);
+        $js = '';
+        if (is_array($this->charMap) && !empty($this->charMap)) {
+            $js .= 'jQuery.mask.definitions=' . Json::encode($this->charMap) . ";\n";
+        }
+        $id = $this->options['id'];
+        $js .= "jQuery(\"#{$id}\").mask(\"{$this->mask}\"{$options});";
+        $view = $this->getView();
+        MaskedInputAsset::register($view);
+        $view->registerJs($js);
+    }
 
-	/**
-	 * Registers the needed JavaScript.
-	 */
-	public function registerClientScript()
-	{
-		$options = $this->getClientOptions();
-		$options = empty($options) ? '' : ',' . Json::encode($options);
-		$js = '';
-		if (is_array($this->charMap) && !empty($this->charMap)) {
-			$js .= 'jQuery.mask.definitions=' . Json::encode($this->charMap) . ";\n";
-		}
-		$id = $this->options['id'];
-		$js .= "jQuery(\"#{$id}\").mask(\"{$this->mask}\"{$options});";
-		$view = $this->getView();
-		MaskedInputAsset::register($view);
-		$view->registerJs($js);
-	}
+    /**
+     * @return array the options for the text field
+     */
+    protected function getClientOptions()
+    {
+        $options = [];
+        if ($this->placeholder !== null) {
+            $options['placeholder'] = $this->placeholder;
+        }
 
-	/**
-	 * @return array the options for the text field
-	 */
-	protected function getClientOptions()
-	{
-		$options = [];
-		if ($this->placeholder !== null) {
-			$options['placeholder'] = $this->placeholder;
-		}
+        if ($this->completed !== null) {
+            if ($this->completed instanceof JsExpression) {
+                $options['completed'] = $this->completed;
+            } else {
+                $options['completed'] = new JsExpression($this->completed);
+            }
+        }
 
-		if ($this->completed !== null) {
-			if ($this->completed instanceof JsExpression) {
-				$options['completed'] = $this->completed;
-			} else {
-				$options['completed'] = new JsExpression($this->completed);
-			}
-		}
-
-		return $options;
-	}
+        return $options;
+    }
 }

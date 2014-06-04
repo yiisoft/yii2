@@ -75,146 +75,150 @@ use yii\mail\BaseMailer;
  */
 class Mailer extends BaseMailer
 {
-	/**
-	 * @var string message default class name.
-	 */
-	public $messageClass = 'yii\swiftmailer\Message';
-	/**
-	 * @var \Swift_Mailer Swift mailer instance.
-	 */
-	private $_swiftMailer;
-	/**
-	 * @var \Swift_Transport|array Swift transport instance or its array configuration.
-	 */
-	private $_transport = [];
+    /**
+     * @var string message default class name.
+     */
+    public $messageClass = 'yii\swiftmailer\Message';
+    /**
+     * @var \Swift_Mailer Swift mailer instance.
+     */
+    private $_swiftMailer;
+    /**
+     * @var \Swift_Transport|array Swift transport instance or its array configuration.
+     */
+    private $_transport = [];
 
-	/**
-	 * @return array|\Swift_Mailer Swift mailer instance or array configuration.
-	 */
-	public function getSwiftMailer()
-	{
-		if (!is_object($this->_swiftMailer)) {
-			$this->_swiftMailer = $this->createSwiftMailer();
-		}
-		return $this->_swiftMailer;
-	}
+    /**
+     * @return array|\Swift_Mailer Swift mailer instance or array configuration.
+     */
+    public function getSwiftMailer()
+    {
+        if (!is_object($this->_swiftMailer)) {
+            $this->_swiftMailer = $this->createSwiftMailer();
+        }
 
-	/**
-	 * @param array|\Swift_Transport $transport
-	 * @throws InvalidConfigException on invalid argument.
-	 */
-	public function setTransport($transport)
-	{
-		if (!is_array($transport) && !is_object($transport)) {
-			throw new InvalidConfigException('"' . get_class($this) . '::transport" should be either object or array, "' . gettype($transport) . '" given.');
-		}
-		$this->_transport = $transport;
-	}
+        return $this->_swiftMailer;
+    }
 
-	/**
-	 * @return array|\Swift_Transport
-	 */
-	public function getTransport()
-	{
-		if (!is_object($this->_transport)) {
-			$this->_transport = $this->createTransport($this->_transport);
-		}
-		return $this->_transport;
-	}
+    /**
+     * @param array|\Swift_Transport $transport
+     * @throws InvalidConfigException on invalid argument.
+     */
+    public function setTransport($transport)
+    {
+        if (!is_array($transport) && !is_object($transport)) {
+            throw new InvalidConfigException('"' . get_class($this) . '::transport" should be either object or array, "' . gettype($transport) . '" given.');
+        }
+        $this->_transport = $transport;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function sendMessage($message)
-	{
-		$address = $message->getTo();
-		if (is_array($address)) {
-			$address = implode(', ', array_keys($address));
-		}
-		Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
-		return $this->getSwiftMailer()->send($message->getSwiftMessage()) > 0;
-	}
+    /**
+     * @return array|\Swift_Transport
+     */
+    public function getTransport()
+    {
+        if (!is_object($this->_transport)) {
+            $this->_transport = $this->createTransport($this->_transport);
+        }
 
-	/**
-	 * Creates Swift mailer instance.
-	 * @return \Swift_Mailer mailer instance.
-	 */
-	protected function createSwiftMailer()
-	{
-		return \Swift_Mailer::newInstance($this->getTransport());
-	}
+        return $this->_transport;
+    }
 
-	/**
-	 * Creates email transport instance by its array configuration.
-	 * @param array $config transport configuration.
-	 * @throws \yii\base\InvalidConfigException on invalid transport configuration.
-	 * @return \Swift_Transport transport instance.
-	 */
-	protected function createTransport(array $config)
-	{
-		if (!isset($config['class'])) {
-			$config['class'] = 'Swift_MailTransport';
-		}
-		if (isset($config['plugins'])) {
-			$plugins = $config['plugins'];
-			unset($config['plugins']);
-		}
-		/** @var \Swift_MailTransport $transport */
-		$transport = $this->createSwiftObject($config);
-		if (isset($plugins)) {
-			foreach ($plugins as $plugin) {
-				if (is_array($plugin) && isset($plugin['class'])) {
-					$plugin = $this->createSwiftObject($plugin);
-				}
-				$transport->registerPlugin($plugin);
-			}
-		}
-		return $transport;
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function sendMessage($message)
+    {
+        $address = $message->getTo();
+        if (is_array($address)) {
+            $address = implode(', ', array_keys($address));
+        }
+        Yii::info('Sending email "' . $message->getSubject() . '" to "' . $address . '"', __METHOD__);
 
-	/**
-	 * Creates Swift library object, from given array configuration.
-	 * @param array $config object configuration
-	 * @return Object created object
-	 * @throws \yii\base\InvalidConfigException on invalid configuration.
-	 */
-	protected function createSwiftObject(array $config)
-	{
-		if (isset($config['class'])) {
-			$className = $config['class'];
-			unset($config['class']);
-		} else {
-			throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
-		}
-		if (isset($config['constructArgs'])) {
-			$args = [];
-			foreach ($config['constructArgs'] as $arg) {
-				if (is_array($arg) && isset($arg['class'])) {
-					$args[] = $this->createSwiftObject($arg);
-				} else {
-					$args[] = $arg;
-				}
-			}
-			unset($config['constructArgs']);
-			array_unshift($args, $className);
-			$object = call_user_func_array(['Yii', 'createObject'], $args);
-		} else {
-			$object = new $className;
-		}
-		if (!empty($config)) {
-			foreach ($config as $name => $value) {
-				if (property_exists($object, $name)) {
-					$object->$name = $value;
-				} else {
-					$setter = 'set' . $name;
-					if (method_exists($object, $setter) || method_exists($object, '__call')) {
-						$object->$setter($value);
-					} else {
-						throw new InvalidConfigException('Setting unknown property: ' . $className . '::' . $name);
-					}
-				}
-			}
-		}
-		return $object;
-	}
+        return $this->getSwiftMailer()->send($message->getSwiftMessage()) > 0;
+    }
+
+    /**
+     * Creates Swift mailer instance.
+     * @return \Swift_Mailer mailer instance.
+     */
+    protected function createSwiftMailer()
+    {
+        return \Swift_Mailer::newInstance($this->getTransport());
+    }
+
+    /**
+     * Creates email transport instance by its array configuration.
+     * @param array $config transport configuration.
+     * @throws \yii\base\InvalidConfigException on invalid transport configuration.
+     * @return \Swift_Transport transport instance.
+     */
+    protected function createTransport(array $config)
+    {
+        if (!isset($config['class'])) {
+            $config['class'] = 'Swift_MailTransport';
+        }
+        if (isset($config['plugins'])) {
+            $plugins = $config['plugins'];
+            unset($config['plugins']);
+        }
+        /** @var \Swift_MailTransport $transport */
+        $transport = $this->createSwiftObject($config);
+        if (isset($plugins)) {
+            foreach ($plugins as $plugin) {
+                if (is_array($plugin) && isset($plugin['class'])) {
+                    $plugin = $this->createSwiftObject($plugin);
+                }
+                $transport->registerPlugin($plugin);
+            }
+        }
+
+        return $transport;
+    }
+
+    /**
+     * Creates Swift library object, from given array configuration.
+     * @param array $config object configuration
+     * @return Object created object
+     * @throws \yii\base\InvalidConfigException on invalid configuration.
+     */
+    protected function createSwiftObject(array $config)
+    {
+        if (isset($config['class'])) {
+            $className = $config['class'];
+            unset($config['class']);
+        } else {
+            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
+        }
+        if (isset($config['constructArgs'])) {
+            $args = [];
+            foreach ($config['constructArgs'] as $arg) {
+                if (is_array($arg) && isset($arg['class'])) {
+                    $args[] = $this->createSwiftObject($arg);
+                } else {
+                    $args[] = $arg;
+                }
+            }
+            unset($config['constructArgs']);
+            $object = Yii::createObject($className, $args);
+        } else {
+            $object = Yii::createObject($className);
+        }
+        if (!empty($config)) {
+            foreach ($config as $name => $value) {
+                if (property_exists($object, $name)) {
+                    $object->$name = $value;
+                } else {
+                    $setter = 'set' . $name;
+                    if (method_exists($object, $setter) || method_exists($object, '__call')) {
+                        $object->$setter($value);
+                    } else {
+                        throw new InvalidConfigException('Setting unknown property: ' . $className . '::' . $name);
+                    }
+                }
+            }
+        }
+
+        return $object;
+    }
 }

@@ -26,9 +26,9 @@ use yii\helpers\Html;
  * and [[end()]] calls within the widget container:
  *
  * ~~~php
- * ProgressBar::widget([
+ * ProgressBar::begin([
  *     'clientOptions' => ['value' => 75],
-  * ]);
+ * ]);
  *
  * echo '<div class="progress-label">Loading...</div>';
  *
@@ -40,21 +40,21 @@ use yii\helpers\Html;
  */
 class ProgressBar extends Widget
 {
-	/**
-	 * Initializes the widget.
-	 */
-	public function init()
-	{
-		parent::init();
-		echo Html::beginTag('div', $this->options) . "\n";
-	}
+    /**
+     * Initializes the widget.
+     */
+    public function init()
+    {
+        parent::init();
+        echo Html::beginTag('div', $this->options) . "\n";
+    }
 
-	/**
-	 * Renders the widget.
-	 */
-	public function run()
-	{
-		echo Html::endTag('div') . "\n";
-		$this->registerWidget('progressbar', ProgressBarAsset::className());
-	}
+    /**
+     * Renders the widget.
+     */
+    public function run()
+    {
+        echo Html::endTag('div') . "\n";
+        $this->registerWidget('progressbar', ProgressBarAsset::className());
+    }
 }

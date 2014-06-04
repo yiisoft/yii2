@@ -29,7 +29,7 @@ use yii\helpers\Html;
  *     'name'  => 'country',
  *     'clientOptions' => ['step' => 2],
  * ]);
- *```
+ * ```
  *
  * @see http://api.jqueryui.com/spinner/
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -37,32 +37,32 @@ use yii\helpers\Html;
  */
 class Spinner extends InputWidget
 {
-	/**
-	 * @inheritDoc
-	 */
-	protected $clientEventMap = [
-		'spin' => 'spin',
-	];
+    /**
+     * @inheritDoc
+     */
+    protected $clientEventMap = [
+        'spin' => 'spin',
+    ];
 
-	/**
-	 * Renders the widget.
-	 */
-	public function run()
-	{
-		echo $this->renderWidget();
-		$this->registerWidget('spinner', SpinnerAsset::className());
-	}
+    /**
+     * Renders the widget.
+     */
+    public function run()
+    {
+        echo $this->renderWidget();
+        $this->registerWidget('spinner', SpinnerAsset::className());
+    }
 
-	/**
-	 * Renders the Spinner widget.
-	 * @return string the rendering result.
-	 */
-	public function renderWidget()
-	{
-		if ($this->hasModel()) {
-			return Html::activeTextInput($this->model, $this->attribute, $this->options);
-		} else {
-			return Html::textInput($this->name, $this->value, $this->options);
-		}
-	}
+    /**
+     * Renders the Spinner widget.
+     * @return string the rendering result.
+     */
+    public function renderWidget()
+    {
+        if ($this->hasModel()) {
+            return Html::activeTextInput($this->model, $this->attribute, $this->options);
+        } else {
+            return Html::textInput($this->name, $this->value, $this->options);
+        }
+    }
 }

@@ -15,14 +15,14 @@ use yii\web\AssetBundle;
  */
 class CoreAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.core.js',
-		'jquery.ui.widget.js',
-		'jquery.ui.position.js',
-		'jquery.ui.mouse.js',
-	];
-	public $depends = [
-		'yii\web\JqueryAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.core.js',
+        'jquery.ui.widget.js',
+        'jquery.ui.position.js',
+        'jquery.ui.mouse.js',
+    ];
+    public $depends = [
+        'yii\web\JqueryAsset',
+    ];
 }

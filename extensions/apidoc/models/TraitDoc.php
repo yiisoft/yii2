@@ -15,27 +15,27 @@ namespace yii\apidoc\models;
  */
 class TraitDoc extends TypeDoc
 {
-	// classes using the trait
-	// will be set by Context::updateReferences()
-	public $usedBy = [];
+    // classes using the trait
+    // will be set by Context::updateReferences()
+    public $usedBy = [];
 
-	public $traits = [];
+    public $traits = [];
 
-	/**
-	 * @param \phpDocumentor\Reflection\TraitReflector $reflector
-	 * @param Context $context
-	 * @param array $config
-	 */
-	public function __construct($reflector = null, $context = null, $config = [])
-	{
-		parent::__construct($reflector, $context, $config);
+    /**
+     * @param \phpDocumentor\Reflection\TraitReflector $reflector
+     * @param Context $context
+     * @param array $config
+     */
+    public function __construct($reflector = null, $context = null, $config = [])
+    {
+        parent::__construct($reflector, $context, $config);
 
-		if ($reflector === null) {
-			return;
-		}
+        if ($reflector === null) {
+            return;
+        }
 
-		foreach ($reflector->getTraits() as $trait) {
-			$this->traits[] = ltrim($trait, '\\');
-		}
-	}
+        foreach ($reflector->getTraits() as $trait) {
+            $this->traits[] = ltrim($trait, '\\');
+        }
+    }
 }

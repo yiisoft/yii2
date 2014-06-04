@@ -39,73 +39,73 @@ use yii\helpers\Html;
  */
 class CheckboxColumn extends Column
 {
-	/**
-	 * @var string the name of the input checkbox input fields. This will be appended with `[]` to ensure it is an array.
-	 */
-	public $name = 'selection';
-	/**
-	 * @var array HTML attributes for the checkboxes.
-	 * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
-	 */
-	public $checkboxOptions = [];
-	/**
-	 * @var bool whether it is possible to select multiple rows. Defaults to `true`.
-	 */
-	public $multiple = true;
+    /**
+     * @var string the name of the input checkbox input fields. This will be appended with `[]` to ensure it is an array.
+     */
+    public $name = 'selection';
+    /**
+     * @var array HTML attributes for the checkboxes.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $checkboxOptions = [];
+    /**
+     * @var bool whether it is possible to select multiple rows. Defaults to `true`.
+     */
+    public $multiple = true;
 
+    /**
+     * @inheritdoc
+     * @throws \yii\base\InvalidConfigException if [[name]] is not set.
+     */
+    public function init()
+    {
+        parent::init();
+        if (empty($this->name)) {
+            throw new InvalidConfigException('The "name" property must be set.');
+        }
+        if (substr($this->name, -2) !== '[]') {
+            $this->name .= '[]';
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 * @throws \yii\base\InvalidConfigException if [[name]] is not set.
-	 */
-	public function init()
-	{
-		parent::init();
-		if (empty($this->name)) {
-			throw new InvalidConfigException('The "name" property must be set.');
-		}
-		if (substr($this->name, -2) !== '[]') {
-			$this->name .= '[]';
-		}
-	}
+    /**
+     * Renders the header cell content.
+     * The default implementation simply renders [[header]].
+     * This method may be overridden to customize the rendering of the header cell.
+     * @return string the rendering result
+     */
+    protected function renderHeaderCellContent()
+    {
+        $name = rtrim($this->name, '[]') . '_all';
+        $id = $this->grid->options['id'];
+        $options = json_encode([
+            'name' => $this->name,
+            'multiple' => $this->multiple,
+            'checkAll' => $name,
+        ]);
+        $this->grid->getView()->registerJs("jQuery('#$id').yiiGridView('setSelectionColumn', $options);");
 
-	/**
-	 * Renders the header cell content.
-	 * The default implementation simply renders [[header]].
-	 * This method may be overridden to customize the rendering of the header cell.
-	 * @return string the rendering result
-	 */
-	protected function renderHeaderCellContent()
-	{
-		$name = rtrim($this->name, '[]') . '_all';
-		$id = $this->grid->options['id'];
-		$options = json_encode([
-			'name' => $this->name,
-			'multiple' => $this->multiple,
-			'checkAll' => $name,
-		]);
-		$this->grid->getView()->registerJs("jQuery('#$id').yiiGridView('setSelectionColumn', $options);");
+        if ($this->header !== null || !$this->multiple) {
+            return parent::renderHeaderCellContent();
+        } else {
+            return Html::checkBox($name, false, ['class' => 'select-on-check-all']);
+        }
+    }
 
-		if ($this->header !== null || !$this->multiple) {
-			return parent::renderHeaderCellContent();
-		} else {
-			return Html::checkBox($name, false, ['class' => 'select-on-check-all']);
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function renderDataCellContent($model, $key, $index)
+    {
+        if ($this->checkboxOptions instanceof Closure) {
+            $options = call_user_func($this->checkboxOptions, $model, $key, $index, $this);
+        } else {
+            $options = $this->checkboxOptions;
+            if (!isset($options['value'])) {
+                $options['value'] = is_array($key) ? json_encode($key) : $key;
+            }
+        }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function renderDataCellContent($model, $key, $index)
-	{
-		if ($this->checkboxOptions instanceof Closure) {
-			$options = call_user_func($this->checkboxOptions, $model, $key, $index, $this);
-		} else {
-			$options = $this->checkboxOptions;
-			if (!isset($options['value'])) {
-				$options['value'] = is_array($key) ? json_encode($key) : $key;
-			}
-		}
-		return Html::checkbox($this->name, !empty($options['checked']), $options);
-	}
+        return Html::checkbox($this->name, !empty($options['checked']), $options);
+    }
 }

@@ -33,8 +33,8 @@ In order to setup Sphinx "searchd" to support MySQL protocol following configura
 ```
 searchd
 {
-	listen = localhost:9306:mysql41
-	...
+    listen = localhost:9306:mysql41
+    ...
 }
 ```
 
@@ -46,15 +46,15 @@ To use this extension, simply add the following code in your application configu
 
 ```php
 return [
-	//....
-	'components' => [
-		'sphinx' => [
-			'class' => 'yii\sphinx\Connection',
-			'dsn' => 'mysql:host=127.0.0.1;port=9306;',
-			'username' => '',
-			'password' => '',
-		],
-	],
+    //....
+    'components' => [
+        'sphinx' => [
+            'class' => 'yii\sphinx\Connection',
+            'dsn' => 'mysql:host=127.0.0.1;port=9306;',
+            'username' => '',
+            'password' => '',
+        ],
+    ],
 ];
 ```
 
@@ -67,13 +67,13 @@ use yii\sphinx\ActiveRecord;
 
 class Article extends ActiveRecord
 {
-	/**
-	 * @return string the name of the index associated with this ActiveRecord class.
-	 */
-	public static function indexName()
-	{
-		return 'idx_article';
-	}
+    /**
+     * @return string the name of the index associated with this ActiveRecord class.
+     */
+    public static function indexName()
+    {
+        return 'idx_article';
+    }
 }
 ```
 
@@ -86,10 +86,10 @@ use yii\sphinx\Query;
 $query = new Query;
 $query->from('yii2_test_article_index')->match('development');
 $provider = new ActiveDataProvider([
-	'query' => $query,
-	'pagination' => [
-		'pageSize' => 10,
-	]
+    'query' => $query,
+    'pagination' => [
+        'pageSize' => 10,
+    ]
 ]);
 $models = $provider->getModels();
 ```
@@ -99,10 +99,10 @@ use yii\data\ActiveDataProvider;
 use app\models\Article;
 
 $provider = new ActiveDataProvider([
-	'query' => Article::find(),
-	'pagination' => [
-		'pageSize' => 10,
-	]
+    'query' => Article::find(),
+    'pagination' => [
+        'pageSize' => 10,
+    ]
 ]);
 $models = $provider->getModels();
 ```

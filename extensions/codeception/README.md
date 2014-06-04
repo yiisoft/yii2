@@ -69,7 +69,7 @@ use Codeception\Event\TestEvent;
 
 public function testSomething()
 {
-	$this->fire('myevent', new TestEvent($this));
+    $this->fire('myevent', new TestEvent($this));
 }
 ```
 this event can be catched in modules and helpers. If your test is in the group, then event name will be followed by the groupname, 
@@ -84,15 +84,15 @@ Execution of special tests methods is (for example on ```UserTest``` class):
 ```
 tests\unit\models\UserTest::setUpBeforeClass();
 
-	tests\unit\models\UserTest::_before();
+    tests\unit\models\UserTest::_before();
 
-		tests\unit\models\UserTest::setUp();
+        tests\unit\models\UserTest::setUp();
 
-			tests\unit\models\UserTest::testSomething();
+            tests\unit\models\UserTest::testSomething();
 
-		tests\unit\models\UserTest::tearDown();
+        tests\unit\models\UserTest::tearDown();
 
-	tests\unit\models\UserTest::_after();
+    tests\unit\models\UserTest::_after();
 
 tests\unit\models\UserTest::tearDownAfterClass();
 ```
@@ -109,8 +109,8 @@ You may need to specify different configuration files per test cases, to do this
 
 SomeConsoleTest extends \yii\codeception\TestCase
 {
-	// this is the config file to load as application config
-	public $appConfig = '@app/path/to/my/custom/config/for/test.php';
+    // this is the config file to load as application config
+    public $appConfig = '@app/path/to/my/custom/config/for/test.php';
 }
 ```
 
@@ -120,14 +120,14 @@ application class in the config, for example for testing console commands or fea
 
 ```php
 return yii\helpers\ArrayHelper::merge(
-	require(__DIR__ . '/../../config/console.php'),
-	require(__DIR__ . '/../_config.php'),
-	[
-		'class' => 'yii\console\Application',
-		'components' => [
-			//override console components if needed
-		],
-	]
+    require(__DIR__ . '/../../config/console.php'),
+    require(__DIR__ . '/../_config.php'),
+    [
+        'class' => 'yii\console\Application',
+        'components' => [
+            //override console components if needed
+        ],
+    ]
 );
 ```
 
@@ -139,7 +139,7 @@ use \yii\codeception\TestCase;
 
 class ConsoleTestCase extends TestCase
 {
-	public $appConfig = '@tests/unit/_console.php';
+    public $appConfig = '@tests/unit/_console.php';
 }
 ```
 
@@ -160,15 +160,15 @@ use Yii;
 class MailTest extends TestCase
 {
 
-	protected function setUp()
-	{
-		// don't forget to call parent method that will setup Yii application
-		parent::setUp();
+    protected function setUp()
+    {
+        // don't forget to call parent method that will setup Yii application
+        parent::setUp();
 
-		Yii::$app->mail->fileTransportCallback = function ($mailer, $message) {
-			return 'testing_message.eml';
-		};
-	}
+        Yii::$app->mail->fileTransportCallback = function ($mailer, $message) {
+            return 'testing_message.eml';
+        };
+    }
 
 }
 ```
@@ -186,29 +186,29 @@ use \yii\codeception\TestCase;
 class SomeMyTest extends TestCase
 {
 
-	public function testOne()
-	{
-		...
-	}
+    public function testOne()
+    {
+        ...
+    }
 
-	public function testTwo()
-	{
-		$this->mockApplication([
-			'language' => 'ru-RU',
-			'components' => [
-				'db' => [
-					//your custom configuration here
-				],
-			],
-		]);
+    public function testTwo()
+    {
+        $this->mockApplication([
+            'language' => 'ru-RU',
+            'components' => [
+                'db' => [
+                    //your custom configuration here
+                ],
+            ],
+        ]);
 
-		//your expectations and assertions goes here
-	}
+        //your expectations and assertions goes here
+    }
 
-	public function testThree()
-	{
-		...
-	}
+    public function testThree()
+    {
+        ...
+    }
 
 }
 ```
@@ -226,12 +226,12 @@ use Codeception\Util\Debug;
 
 SomeDebugTest extends \yii\codeception\TestCase
 {
-	public function testSmth()
-	{
-		Debug::debug('some string');
-		Debug::debug($someArray);
-		Debug::debug($someObject);
-	}
+    public function testSmth()
+    {
+        Debug::debug('some string');
+        Debug::debug($someArray);
+        Debug::debug($someObject);
+    }
 
 }
 ```

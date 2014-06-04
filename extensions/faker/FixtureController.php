@@ -52,7 +52,7 @@ use yii\helpers\FileHelper;
  *
  * - `$fixture` - current fixture array.
  * - `$faker` - faker generator instance
- * - `$index` - current fixture index. For example if user need to generate 3 fixtures for tbl_user, it will be 0..2
+ * - `$index` - current fixture index. For example if user need to generate 3 fixtures for user table, it will be 0..2
  *
  * After you set all needed fields in callback, you need to return $fixture array back from the callback.
  *
@@ -138,233 +138,238 @@ use yii\helpers\FileHelper;
  */
 class FixtureController extends \yii\console\controllers\FixtureController
 {
-	/**
-	 * type of fixture generating
-	 */
-	const GENERATE_ALL = 'all';
+    /**
+     * type of fixture generating
+     */
+    const GENERATE_ALL = 'all';
 
-	/**
-	 * @var string controller default action ID.
-	 */
-	public $defaultAction = 'generate';
-	/**
-	 * @var string Alias to the template path, where all tables templates are stored.
-	 */
-	public $templatePath = '@tests/unit/templates/fixtures';
-	/**
-	 * @var string Alias to the fixture data path, where data files should be written.
-	 */
-	public $fixtureDataPath = '@tests/unit/fixtures/data';
-	/**
-	 * @var string Language to use when generating fixtures data.
-	 */
-	public $language;
-	/**
-	 * @var array Additional data providers that can be created by user and will be added to the Faker generator.
-	 * More info in [Faker](https://github.com/fzaninotto/Faker.) library docs.
-	 */
-	public $providers = [];
-	/**
-	 * @var \Faker\Generator Faker generator instance
-	 */
-	private $_generator;
+    /**
+     * @var string controller default action ID.
+     */
+    public $defaultAction = 'generate';
+    /**
+     * @var string Alias to the template path, where all tables templates are stored.
+     */
+    public $templatePath = '@tests/unit/templates/fixtures';
+    /**
+     * @var string Alias to the fixture data path, where data files should be written.
+     */
+    public $fixtureDataPath = '@tests/unit/fixtures/data';
+    /**
+     * @var string Language to use when generating fixtures data.
+     */
+    public $language;
+    /**
+     * @var array Additional data providers that can be created by user and will be added to the Faker generator.
+     * More info in [Faker](https://github.com/fzaninotto/Faker.) library docs.
+     */
+    public $providers = [];
+    /**
+     * @var \Faker\Generator Faker generator instance
+     */
+    private $_generator;
 
 
-	/**
-	 * Returns the names of the global options for this command.
-	 * @return array the names of the global options for this command.
-	 */
-	public function options($id)
-	{
-		return array_merge(parent::options($id), [
-			'templatePath', 'language', 'fixtureDataPath'
-		]);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function options($actionId)
+    {
+        return array_merge(parent::options($actionId), [
+            'templatePath', 'language', 'fixtureDataPath'
+        ]);
+    }
 
-	public function beforeAction($action)
-	{
-		if (parent::beforeAction($action)) {
-			$this->checkPaths();
-			$this->addProviders();
-			return true;
-		} else {
-			return false;
-		}
-	}
+    public function beforeAction($action)
+    {
+        if (parent::beforeAction($action)) {
+            $this->checkPaths();
+            $this->addProviders();
 
-	/**
-	 * Generates fixtures and fill them with Faker data.
-	 * @param string $file filename for the table template. You can generate all fixtures for all tables
-	 * by specifying keyword "all" as filename.
-	 * @param integer $times how much fixtures do you want per table
-	 */
-	public function actionGenerate(array $file, $times = 2)
-	{
-		$templatePath = Yii::getAlias($this->templatePath);
-		$fixtureDataPath = Yii::getAlias($this->fixtureDataPath);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		if ($this->needToGenerateAll($file[0])) {
-			$files = FileHelper::findFiles($templatePath, ['only' => ['*.php']]);
-		} else {
-			$filesToSearch = [];
-			foreach ($file as $fileName) {
-				$filesToSearch[] = $fileName . '.php';
-			}
-			$files = FileHelper::findFiles($templatePath, ['only' => $filesToSearch]);
-		}
+    /**
+     * Generates fixtures and fill them with Faker data.
+     *
+     * @param array|string $file filename for the table template.
+     * You can generate all fixtures for all tables by specifying keyword "all" as filename.
+     * @param integer $times how much fixtures do you want per table
+     * @throws \yii\base\InvalidParamException
+     * @throws \yii\console\Exception
+     */
+    public function actionGenerate(array $file, $times = 2)
+    {
+        $templatePath = Yii::getAlias($this->templatePath);
+        $fixtureDataPath = Yii::getAlias($this->fixtureDataPath);
 
-		if (empty($files)) {
-			throw new Exception("No files were found by name: \"" . implode(', ', $file) . "\".\n"
-				. "Check that template with these name exists, under template path: \n\"{$templatePath}\"."
-			);
-		}
+        if ($this->needToGenerateAll($file[0])) {
+            $files = FileHelper::findFiles($templatePath, ['only' => ['*.php']]);
+        } else {
+            $filesToSearch = [];
+            foreach ($file as $fileName) {
+                $filesToSearch[] = $fileName . '.php';
+            }
+            $files = FileHelper::findFiles($templatePath, ['only' => $filesToSearch]);
+        }
 
-		if (!$this->confirmGeneration($files)) {
-			return;
-		}
+        if (empty($files)) {
+            throw new Exception("No files were found by name: \"" . implode(', ', $file) . "\".\n"
+                . "Check that template with these name exists, under template path: \n\"{$templatePath}\"."
+            );
+        }
 
-		foreach ($files as $templateFile) {
-			$fixtureFileName = basename($templateFile);
-			$template = $this->getTemplate($templateFile);
-			$fixtures = [];
+        if (!$this->confirmGeneration($files)) {
+            return;
+        }
 
-			for ($i = 0; $i < $times; $i++) {
-				$fixtures[$i] = $this->generateFixture($template, $i);
-			}
+        foreach ($files as $templateFile) {
+            $fixtureFileName = basename($templateFile);
+            $template = $this->getTemplate($templateFile);
+            $fixtures = [];
 
-			$content = $this->exportFixtures($fixtures);
-			FileHelper::createDirectory($fixtureDataPath);
-			file_put_contents($fixtureDataPath . '/'. $fixtureFileName, $content);
+            for ($i = 0; $i < $times; $i++) {
+                $fixtures[$i] = $this->generateFixture($template, $i);
+            }
 
-			$this->stdout("Fixture file was generated under: $fixtureDataPath\n", Console::FG_GREEN);
-		}
-	}
+            $content = $this->exportFixtures($fixtures);
+            FileHelper::createDirectory($fixtureDataPath);
+            file_put_contents($fixtureDataPath . '/'. $fixtureFileName, $content);
 
-	/**
-	 * Returns Faker generator instance. Getter for private property.
-	 * @return \Faker\Generator
-	 */
-	public function getGenerator()
-	{
-		if (is_null($this->_generator)) {
-			//replacing - on _ because Faker support only en_US format and not intl
+            $this->stdout("Fixture file was generated under: $fixtureDataPath\n", Console::FG_GREEN);
+        }
+    }
 
-			$language = is_null($this->language) ? str_replace('-', '_', Yii::$app->language) : $this->language;
-			$this->_generator = \Faker\Factory::create($language);
-		}
+    /**
+     * Returns Faker generator instance. Getter for private property.
+     * @return \Faker\Generator
+     */
+    public function getGenerator()
+    {
+        if (is_null($this->_generator)) {
+            //replacing - on _ because Faker support only en_US format and not intl
 
-		return $this->_generator;
-	}
+            $language = is_null($this->language) ? str_replace('-', '_', Yii::$app->language) : $this->language;
+            $this->_generator = \Faker\Factory::create($language);
+        }
 
-	/**
-	 * Check if the template path and migrations path exists and writable.
-	 */
-	public function checkPaths()
-	{
-		$path = Yii::getAlias($this->templatePath);
+        return $this->_generator;
+    }
 
-		if (!is_dir($path)) {
-			throw new Exception("The template path \"{$this->templatePath}\" not exist");
-		}
-	}
+    /**
+     * Check if the template path and migrations path exists and writable.
+     */
+    public function checkPaths()
+    {
+        $path = Yii::getAlias($this->templatePath);
 
-	/**
-	 * Adds users providers to the faker generator.
-	 */
-	public function addProviders()
-	{
-		foreach ($this->providers as $provider) {
-			$this->generator->addProvider(new $provider($this->generator));
-		}
-	}
+        if (!is_dir($path)) {
+            throw new Exception("The template path \"{$this->templatePath}\" not exist");
+        }
+    }
 
-	/**
-	 * Checks if needed to generate all fixtures.
-	 * @param string $file
-	 * @return bool
-	 */
-	public function needToGenerateAll($file)
-	{
-		return $file == self::GENERATE_ALL;
-	}
+    /**
+     * Adds users providers to the faker generator.
+     */
+    public function addProviders()
+    {
+        foreach ($this->providers as $provider) {
+            $this->generator->addProvider(new $provider($this->generator));
+        }
+    }
 
-	/**
-	 * Returns generator template for the given fixture name
-	 * @param string $file template file
-	 * @return array generator template
-	 * @throws \yii\console\Exception if wrong file format
-	 */
-	public function getTemplate($file)
-	{
-		$template = require($file);
+    /**
+     * Checks if needed to generate all fixtures.
+     * @param string $file
+     * @return bool
+     */
+    public function needToGenerateAll($file)
+    {
+        return $file == self::GENERATE_ALL;
+    }
 
-		if (!is_array($template)) {
-			throw new Exception("The template file \"$file\" has wrong format. It should return valid template array");
-		}
+    /**
+     * Returns generator template for the given fixture name
+     * @param string $file template file
+     * @return array generator template
+     * @throws \yii\console\Exception if wrong file format
+     */
+    public function getTemplate($file)
+    {
+        $template = require($file);
 
-		return $template;
-	}
+        if (!is_array($template)) {
+            throw new Exception("The template file \"$file\" has wrong format. It should return valid template array");
+        }
 
-	/**
-	 * Returns exported to the string representation of given fixtures array.
-	 * @param array $fixtures
-	 * @return string exported fixtures format
-	 */
-	public function exportFixtures($fixtures)
-	{
-		$content = "<?php\n\nreturn [";
+        return $template;
+    }
 
-		foreach ($fixtures as $fixture) {
+    /**
+     * Returns exported to the string representation of given fixtures array.
+     * @param array $fixtures
+     * @return string exported fixtures format
+     */
+    public function exportFixtures($fixtures)
+    {
+        $content = "<?php\n\nreturn [";
 
-			$content .= "\n\t[";
+        foreach ($fixtures as $fixture) {
 
-			foreach ($fixture as $name => $value) {
-				$content .= "\n\t\t'{$name}' => '{$value}',";
-			}
+            $content .= "\n\t[";
 
-			$content .= "\n\t],";
+            foreach ($fixture as $name => $value) {
+                $content .= "\n\t\t'{$name}' => '{$value}',";
+            }
 
-		}
-		$content .= "\n];\n";
-		return $content;
-	}
+            $content .= "\n\t],";
 
-	/**
-	 * Generates fixture from given template
-	 * @param array $template fixture template
-	 * @param integer $index current fixture index
-	 * @return array fixture
-	 */
-	public function generateFixture($template, $index)
-	{
-		$fixture = [];
+        }
+        $content .= "\n];\n";
 
-		foreach ($template as $attribute => $fakerProperty) {
-			if (!is_string($fakerProperty)) {
-				$fixture = call_user_func_array($fakerProperty, [$fixture, $this->generator, $index]);
-			} else {
-				$fixture[$attribute] = $this->generator->$fakerProperty;
-			}
-		}
+        return $content;
+    }
 
-		return $fixture;
-	}
+    /**
+     * Generates fixture from given template
+     * @param array $template fixture template
+     * @param integer $index current fixture index
+     * @return array fixture
+     */
+    public function generateFixture($template, $index)
+    {
+        $fixture = [];
 
-	/**
-	 * Prompts user with message if he confirm generation with given fixture templates files.
-	 * @param array $files
-	 * @return boolean
-	 */
-	public function confirmGeneration($files)
-	{
-		$this->stdout("Fixtures will be generated under the path: \n", Console::FG_YELLOW);
-		$this->stdout("\t" . Yii::getAlias($this->fixtureDataPath) . "\n\n", Console::FG_GREEN);
-		$this->stdout("Templates will be taken from path: \n", Console::FG_YELLOW);
-		$this->stdout("\t" . Yii::getAlias($this->templatePath) . "\n\n", Console::FG_GREEN);
+        foreach ($template as $attribute => $fakerProperty) {
+            if (!is_string($fakerProperty)) {
+                $fixture = call_user_func_array($fakerProperty, [$fixture, $this->generator, $index]);
+            } else {
+                $fixture[$attribute] = $this->generator->$fakerProperty;
+            }
+        }
 
-		foreach ($files as $index => $fileName) {
-			$this->stdout("    " . ($index + 1) . ". " . basename($fileName) . "\n", Console::FG_GREEN);
-		}
-		return $this->confirm('Generate above fixtures?');
-	}
+        return $fixture;
+    }
+
+    /**
+     * Prompts user with message if he confirm generation with given fixture templates files.
+     * @param array $files
+     * @return boolean
+     */
+    public function confirmGeneration($files)
+    {
+        $this->stdout("Fixtures will be generated under the path: \n", Console::FG_YELLOW);
+        $this->stdout("\t" . Yii::getAlias($this->fixtureDataPath) . "\n\n", Console::FG_GREEN);
+        $this->stdout("Templates will be taken from path: \n", Console::FG_YELLOW);
+        $this->stdout("\t" . Yii::getAlias($this->templatePath) . "\n\n", Console::FG_GREEN);
+
+        foreach ($files as $index => $fileName) {
+            $this->stdout("    " . ($index + 1) . ". " . basename($fileName) . "\n", Console::FG_GREEN);
+        }
+
+        return $this->confirm('Generate above fixtures?');
+    }
 }
