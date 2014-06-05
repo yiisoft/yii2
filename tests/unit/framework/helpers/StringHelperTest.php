@@ -86,4 +86,23 @@ class StringHelperTest extends TestCase
         $this->assertEquals('это тестовая multibyte!!!', StringHelper::truncateWords('это тестовая multibyte строка', 3, '!!!'));
         $this->assertEquals('это строка с          неожиданными...', StringHelper::truncateWords('это строка с          неожиданными пробелами', 4));
     }
+	
+    public function testParseUri()
+    {
+        $r = StringHelper::parseUri('http://google.de/search?q=yii2');
+        $this->assertArrayNotHasKey('fragment', $r);
+        $this->assertEquals(['scheme' => 'http', 'authority' => 'google.de', 'path' => '/search', 'query' => 'q=yii2'], $r);
+        $r = StringHelper::parseUri('assets://my/path/file.css');
+        $this->assertArrayNotHasKey('query', $r);
+        $this->assertEquals(['scheme' => 'assets', 'authority' => 'my', 'path' => '/path/file.css'], $r);
+        $this->assertEquals(['scheme' => 'assets', 'path' => '/my/path/file.css'], $r = StringHelper::parseUri('assets:///my/path/file.css'));
+        $this->assertArrayNotHasKey('authority', $r);
+        $this->assertArrayNotHasKey('matches', $r);
+        $this->assertArrayHasKey('matches', StringHelper::parseUri('assets://localhost/path', true));
+        $this->assertEmpty(StringHelper::parseUri(''));
+        $this->assertEquals(['authority' => 'abc', 'path' => '/fdg'], StringHelper::parseUri('//abc/fdg'));
+        $this->assertEquals(['path' => 'testfile.php'], StringHelper::parseUri('testfile.php'));
+        $this->assertEquals(['path' => '/file'], StringHelper::parseUri('///file'));
+        $this->assertEquals(['scheme' => 'file', 'path' =>'/'], StringHelper::parseUri('file:///'));
+    }
 }

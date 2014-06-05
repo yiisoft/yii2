@@ -87,7 +87,7 @@ class BaseStringHelper
             return '';
         }
     }
-    
+
     /**
      * Truncates a string to the number of characters specified.
      *
@@ -99,13 +99,13 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null)
     {
-        if (mb_strlen($string, $encoding ?: \Yii::$app->charset) > $length) {
-            return trim(mb_substr($string, 0, $length, $encoding ?: \Yii::$app->charset)) . $suffix;
+        if (mb_strlen($string, $encoding ? : \Yii::$app->charset) > $length) {
+            return trim(mb_substr($string, 0, $length, $encoding ? : \Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
     }
-    
+
     /**
      * Truncates a string to the number of words specified.
      *
@@ -122,5 +122,46 @@ class BaseStringHelper
         } else {
             return $string;
         }
+    }
+
+    /**
+     * Parse a uri to components
+     *
+     * This function can be used to parse a given uri string to the scheme, authority, path, query and fragment
+     * components. The string is split according to rfc 2396 Appendix B.
+     * This function should not be used to validate a given uri-string as it tries to get every component possible.
+     * One may use this function to parse URIs that are not parsable by PHPs own parse_url (E.g. 'assets:///path').
+     * Note: The authority component equals parse_urls host result. 'Authority' is however used in URI contexts in the
+     * already named rfc.
+     * @param string $uri The uri to be parsed
+     * @param bool $appendMatches Determent if the original result from the regular expression used to parse the uri string
+     * should be returned in a 'matches' key of the result array.
+     * @return array The result array. This array **may** contain the following keys: ´scheme´, ´authority´, ´path´, ´query´,
+     * and ´fragment´. None of this keys is guaranteed to be present.
+     */
+    public static function parseUri($uri, $appendMatches = false)
+    {
+        static $regex, $components;
+        if ($regex === null) {
+            // rfc 2396 Page 28 Appendix B
+            $regex = '/^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?/';
+            $components = ['scheme' => 2, 'authority' => 4, 'path' => 5, 'query' => 7, 'fragment' => 9];
+        }
+
+        $matches = [];
+        preg_match($regex, $uri, $matches);
+        $result = [];
+
+        foreach ($components as $componentName => $componentPosition) {
+            if (!empty($matches[$componentPosition])) {
+                $result[$componentName] = $matches[$componentPosition];
+            }
+        }
+
+        if ($appendMatches) {
+            $result['matches'] = $matches;
+        }
+
+        return $result;
     }
 }
