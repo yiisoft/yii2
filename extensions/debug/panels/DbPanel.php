@@ -141,7 +141,7 @@ class DbPanel extends Panel
             $timings = $this->calculateTimings();
 
             foreach ($timings as $seq => $dbTiming) {
-                $this->_models[] = 	[
+                $this->_models[] = [
                     'type' => $this->getQueryType($dbTiming['info']),
                     'query' => $dbTiming['info'],
                     'duration' => ($dbTiming['duration'] * 1000), // in milliseconds
