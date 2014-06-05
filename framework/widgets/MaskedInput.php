@@ -125,6 +125,7 @@ class MaskedInput extends InputWidget
      * - 'data-plugin-name' the name of the plugin
      *
      * @param View $view the view instance
+     * @author [Thiago Talma](https://github.com/thiagotalma)
      */
     protected function hashPluginOptions($view)
     {
