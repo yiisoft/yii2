@@ -234,7 +234,7 @@ class ActiveRecord extends BaseActiveRecord
     public static function deleteAll($condition = null)
     {
         $pks = self::fetchPks($condition);
-        if(empty($pks)) {
+        if (empty($pks)) {
             return 0;
         }
 
