@@ -233,11 +233,11 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function deleteAll($condition = null)
     {
-        $db = static::getDb();
-        $attributeKeys = [];
         $pks = self::fetchPks($condition);
         if(!$pks) return 0;
 
+        $db = static::getDb();
+        $attributeKeys = [];
         $db->executeCommand('MULTI');
         foreach ($pks as $pk) {
             $pk = static::buildKey($pk);
