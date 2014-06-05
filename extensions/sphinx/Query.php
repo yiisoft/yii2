@@ -386,12 +386,12 @@ class Query extends Component implements QueryInterface
      * MATCH operator inside the WHERE clause.
      * Note: this value will be processed by [[Connection::escapeMatchValue()]],
      * if you need to compose complex match condition use [[Expression]]:
-     * ```
+     * ~~~
      * $query = new Query;
      * $query->from('my_index')
      *     ->match(new Expression(':match', ['match' => '@(content) ' . Yii::$app->sphinx->escapeMatchValue($matchValue)]))
      *     ->all();
-     * ```
+     * ~~~
      *
      * @param string $query fulltext query text.
      * @return static the query object itself
