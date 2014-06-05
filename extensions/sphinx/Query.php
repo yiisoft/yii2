@@ -27,7 +27,7 @@ use yii\db\QueryTrait;
  *
  * ~~~
  * $query = new Query;
- * $query->select('id, groupd_id')
+ * $query->select('id, group_id')
  *     ->from('idx_item')
  *     ->limit(10);
  * // build and execute the query
