@@ -156,7 +156,7 @@ class DbPanel extends Panel
     }
 
     /**
-     * Returns databse query type.
+     * Returns database query type.
      *
      * @param string $timing timing procedure string
      * @return string query type such as select, insert, delete, etc.
