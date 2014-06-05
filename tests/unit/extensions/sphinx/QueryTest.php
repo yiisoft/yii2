@@ -42,7 +42,7 @@ class QueryTest extends SphinxTestCase
 
         $command = $query->createCommand($this->getConnection(false));
         $this->assertContains('MATCH(', $command->getSql(), 'No MATCH operator present!');
-        $this->assertContains($match, $command->getSql(), 'No match query in SQL!');
+        $this->assertContains($match, $command->params, 'No match query among params!');
     }
 
     public function testWhere()
@@ -258,14 +258,13 @@ class QueryTest extends SphinxTestCase
     /**
      * @depends testRun
      */
-    public function testWhereQuotedValue()
+    public function testWhereSpecialCharValue()
     {
         $connection = $this->getConnection();
 
         $query = new Query;
         $rows = $query->from('yii2_test_article_index')
             ->andWhere(['author_id' => 'some"'])
-            //->match('about"')
             ->all($connection);
         $this->assertEmpty($rows);
     }
@@ -282,11 +281,14 @@ class QueryTest extends SphinxTestCase
             ['@'],
             ['\\'],
             ['()'],
-            ['\\' . "'"],
+            ['<<<'],
+            ['>>>'],
             ["\x00"],
             ["\n"],
             ["\r"],
-            ["\x1a"]
+            ["\x1a"],
+            ['\\' . "'"],
+            ['\\' . '"'],
         ];
     }
 
@@ -318,7 +320,7 @@ class QueryTest extends SphinxTestCase
 
         $query = new Query;
         $rows = $query->from('yii2_test_article_index')
-            ->match(new Expression("'@(content) " . $connection->escapeMatchValue('about"') . "'"))
+            ->match(new Expression(':match', ['match' => '@(content) ' . $connection->escapeMatchValue('about\\"')]))
             ->all($connection);
         $this->assertNotEmpty($rows);
     }

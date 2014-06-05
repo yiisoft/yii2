@@ -75,7 +75,8 @@ class Query extends Component implements QueryInterface
      * @var string|Expression text, which should be searched in fulltext mode.
      * This value will be composed into MATCH operator inside the WHERE clause.
      * Note: this value will be processed by [[Connection::escapeMatchValue()]],
-     * if you need to compose complex match condition use [[Expression]].
+     * if you need to compose complex match condition use [[Expression]],
+     * see [[match()]] for details.
      */
     public $match;
     /**
@@ -384,7 +385,14 @@ class Query extends Component implements QueryInterface
      * Sets the fulltext query text. This text will be composed into
      * MATCH operator inside the WHERE clause.
      * Note: this value will be processed by [[Connection::escapeMatchValue()]],
-     * if you need to compose complex match condition use [[Expression]].
+     * if you need to compose complex match condition use [[Expression]]:
+     * ```
+     * $query = new Query;
+     * $query->from('my_index')
+     *     ->match(new Expression(':match', ['match' => '@(content) ' . Yii::$app->sphinx->escapeMatchValue($matchValue)]))
+     *     ->all();
+     * ```
+     *
      * @param string $query fulltext query text.
      * @return static the query object itself
      */
