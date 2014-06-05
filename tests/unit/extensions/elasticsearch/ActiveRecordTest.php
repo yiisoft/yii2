@@ -186,6 +186,16 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $db->createCommand()->flushIndex('yiitest');
     }
 
+    public function testSaveNoChanges()
+    {
+        // this should not fail with exception
+        $customer = new Customer();
+        // insert
+        $customer->save(false);
+        // update
+        $customer->save(false);
+    }
+
     public function testFindAsArray()
     {
         // asArray

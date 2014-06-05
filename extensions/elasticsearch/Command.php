@@ -80,7 +80,11 @@ class Command extends Component
      */
     public function insert($index, $type, $data, $id = null, $options = [])
     {
-        $body = is_array($data) ? Json::encode($data) : $data;
+        if (empty($data)) {
+            $body = '{}';
+        } else {
+            $body = is_array($data) ? Json::encode($data) : $data;
+        }
 
         if ($id !== null) {
             return $this->db->put([$index, $type, $id], $options, $body);
