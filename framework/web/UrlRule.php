@@ -161,6 +161,8 @@ class UrlRule extends Object implements UrlRuleInterface
             ']' => '\\]',
             '(' => '\\(',
             ')' => '\\)',
+            '{' => '(?:',
+            '}?' => ')?',
         ];
         $tr2 = [];
         if (preg_match_all('/<(\w+):?([^>]+)?>/', $this->pattern, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
