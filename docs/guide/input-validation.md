@@ -1,24 +1,93 @@
 Validating Input
 ================
 
-> Note: This section is under development.
-
-In the [Models](structure-models.md#validation) section, we have described how data validation works
-in general. In this section, we will mainly focus on describing core validators, how to define your
-own validators, and different ways of using validators.
+As a rule of thumb, you should never trust the data coming from end users and should always validate them
+before putting them to good use. In the [Models](structure-models.md#validation) section, we have described
+how validation works in general. In this section, we will give more details about validation.
 
 
-## Declaring Validation Rules
+## Validating Input
 
-## Data Validation
+Assume you have a model that takes user input. In order to validate the input, you should define a set
+of validation rules by overriding the [[yii\base\Model::rules()]] method, like the following,
 
-### Getting Error Messages
+```php
+public function rules()
+{
+    return [
+        // the name, email, subject and body attributes are required
+        [['name', 'email', 'subject', 'body'], 'required'],
 
-### Empty Values
+        // the email attribute should be a valid email address
+        ['email', 'email'],
+    ];
+}
+```
 
-### Array Values
+The `rules()` method returns an array of rules, each of which is an array in the following format:
 
-## Data Filtering
+```php
+[
+    // required, specifies which attributes should be validated by this rule.
+    // For single attribute, you can use the attribute name directly
+    // without having it in an array instead of an array
+    ['attribute1', 'attribute2', ...],
+
+    // required, specifies the type of this rule.
+    // It can be a class name, validator alias, or a validation method name
+    'validator',
+
+    // optional, specifies in which scenario(s) this rule should be applied
+    // if not given, it means the rule applies to all scenarios
+    'on' => ['scenario1', 'scenario2', ...],
+
+    // optional, specifies additional configurations for the validator object
+    'property1' => 'value1', 'property2' => 'value2', ...
+]
+```
+
+
+
+When the `validate()` method is called, it does the following steps to perform validation:
+
+1. Determine which attributes should be validated by checking the current [[yii\base\Model::scenario|scenario]]
+   against the scenarios declared in [[yii\base\Model::scenarios()]]. These attributes are the active attributes.
+2. Determine which rules should be applied by checking the current [[yii\base\Model::scenario|scenario]]
+   against the rules declared in [[yii\base\Model::rules()]]. These rules are the active rules.
+3. Use each active rule to validate each active attribute which is associated with the rule.
+
+According to the above validation steps, an attribute will be validated if and only if it is
+an active attribute declared in `scenarios()` and it is associated with one or multiple active rules
+declared in `rules()`.
+
+Yii provides a set of [built-in validators](tutorial-core-validators.md) to support commonly needed data
+validation tasks. You may also create your own validators by extending [[yii\validators\Validator]] or
+writing an inline validation method within model classes. For more details about the built-in validators
+and how to create your own validators, please refer to the [Input Validation](input-validation.md) section.
+
+### Declaring Validation Rules
+
+### Error Messages
+
+### Core Validators
+
+### Conditional Validation
+
+### Ad Hoc Validation
+
+### Data Filtering
+
+
+
+## Creating Validators
+
+### Inline Validators
+
+### Standalone Validators
+
+### Empty Inputs and Array Inputs
+
+### Client-Side Validation
 
 
 

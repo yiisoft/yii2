@@ -171,7 +171,8 @@ $model->scenario = 'login';
 $model = new User(['scenario' => 'login']);
 ```
 
-To support multiple scenarios by a single model, you may override the [[yii\base\Model::scenarios()]] method,
+By default, the scenarios supported by a model are determined by the [validation rules](#validation) declared
+in the model. However, you can customize this behavior by overriding the [[yii\base\Model::scenarios()]] method,
 like the following:
 
 ```php
@@ -233,10 +234,10 @@ you may want to make sure all attributes are not empty and the `email` attribute
 If the values for some attributes do not satisfy the corresponding business rules, appropriate error messages
 should be displayed to help the user to fix the errors.
 
-You may call [[yii\base\Model::validate()]] to trigger validation. The method will go through every *active rule*
-and make sure it is satisfied. If not, an error message will be generated for each failed rule and attribute.
-The method returns a boolean value indicating whether all rules are satisfied. If not, you may retrieve the
-error messages through the property [[yii\base\Model::errors]] or [[yii\base\Model::firstErrors]]. For example,
+You may call [[yii\base\Model::validate()]] to validate the received data. The method will use
+the validation rules declared in [[yii\base\Model::rules()]] to validate every relevant attribute. If no error
+is found, it will return true. Otherwise, it will keep the errors in the [[yii\base\Model::errors]] property
+and return false. For example,
 
 ```php
 $model = new \app\models\ContactForm;
@@ -254,7 +255,7 @@ if ($model->validate()) {
 
 
 To declare validation rules associated with a model, override the [[yii\base\Model::rules()]] method by returning
-the rules that the model data should satisfy. The following example should the validation rules
+the rules that the model attributes should satisfy. The following example shows the validation rules declared
 for the `ContactForm` model:
 
 ```php
@@ -270,47 +271,28 @@ public function rules()
 }
 ```
 
-The `rules()` method returns an array of rules, each of which is an array in the following format:
+A rule can be used to validate one or multiple attributes, and an attribute may be validated by one or multiple rules.
+Please refer to the [Validating Input](input-validation.md) section for more details on how to declare
+validation rules.
+
+Sometimes, you may want a rule to be applied only in certain [scenarios](#scenarios). To do so, you can
+specify the `on` property of a rule, like the following:
 
 ```php
-[
-    // required, specifies which attributes should be validated by this rule.
-    // For single attribute, you can use the attribute name directly
-    // without having it in an array instead of an array
-    ['attribute1', 'attribute2', ...],
+public function rules()
+{
+    return [
+        // username, email and password are all required in "register" scenario
+        [['username', 'email', 'password'], 'required', 'on' => 'register'],
 
-    // required, specifies the type of this rule.
-    // It can be a class name, validator alias, or a validation method name
-    'validator',
-
-    // optional, specifies in which scenario(s) this rule should be applied
-    // if not given, it means the rule applies to all scenarios
-    'on' => ['scenario1', 'scenario2', ...],
-
-    // optional, specifies additional configurations for the validator object
-    'property1' => 'value1', 'property2' => 'value2', ...
-]
+        // username and password are required in "login" scenario
+        [['username', 'password'], 'required', 'on' => 'login'],
+    ];
+}
 ```
 
-A rule may be applied to one or multiple attributes. A rule may be applicable only in certain [scenarios](#scenarios).
-When a rule is applicable in a scenario, it is called an *active rule* in that scenario.
-
-When the `validate()` method is called, it does the following steps to perform validation:
-
-1. Determine which attributes should be validated by checking the current [[yii\base\Model::scenario|scenario]]
-   against the scenarios declared in [[yii\base\Model::scenarios()]]. These attributes are the active attributes.
-2. Determine which rules should be applied by checking the current [[yii\base\Model::scenario|scenario]]
-   against the rules declared in [[yii\base\Model::rules()]]. These rules are the active rules.
-3. Use each active rule to validate each active attribute which is associated with the rule.
-
-According to the above validation steps, an attribute will be validated if and only if it is
-an active attribute declared in `scenarios()` and it is associated with one or multiple active rules
-declared in `rules()`.
-
-Yii provides a set of [built-in validators](tutorial-core-validators.md) to support commonly needed data
-validation tasks. You may also create your own validators by extending [[yii\validators\Validator]] or
-writing an inline validation method within model classes. For more details about the built-in validators
-and how to create your own validators, please refer to the [Input Validation](input-validation.md) section.
+If you do not specify the `on` property, the rule would be applied in all scenarios. A rule is called
+an *active rule* if it can be applied in the current [[yii\base\Model::scenario|scenario]].
 
 
 ## Massive Assignment <a name="massive-assignment"></a>
