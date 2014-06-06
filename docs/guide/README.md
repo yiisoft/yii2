@@ -173,6 +173,7 @@ Special Topics
 * [Advanced Application Template](tutorial-advanced-app.md)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
+* [Core Validators](tutorial-core-validators.md)
 * [Internationalization](tutorial-i18n.md)
 * [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
