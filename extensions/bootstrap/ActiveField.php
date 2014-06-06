@@ -206,7 +206,7 @@ class ActiveField extends \yii\widgets\ActiveField
         if ($enclosedByLabel) {
             if (!isset($options['template'])) {
                 $this->template = $this->form->layout === 'horizontal' ?
-                    $this->horizontalCheckboxTemplate : $this->checkBoxTemplate;
+                    $this->horizontalCheckboxTemplate : $this->checkboxTemplate;
             } else {
                 $this->template = $options['template'];
                 unset($options['template']);
