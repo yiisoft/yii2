@@ -780,7 +780,7 @@ class BaseConsole
             }
             static::output(" ? - Show help");
             goto top;
-        } elseif (!in_array($input, array_keys($options))) {
+        } elseif (!array_key_exists($input, $options)) {
             goto top;
         }
 
