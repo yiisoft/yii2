@@ -550,7 +550,7 @@ class View extends \yii\base\View
      */
     public function registerCsrfTags(Request $request)
     {
-        if ($request->enableCsrfValidation) {
+        if ($request->enableCsrfValidation && !$request->getIsAjax()) {
             $this->registerMetaTag(['name' => 'csrf-param', 'content' => $request->csrfParam]);
             $this->registerMetaTag(['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
         }
