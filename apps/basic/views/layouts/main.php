@@ -10,6 +10,12 @@ use app\assets\AppAsset;
  * @var string $content
  */
 AppAsset::register($this);
+
+$request = Yii::$app->getRequest();
+if ($request->enableCsrfValidation) {
+    $this->registerMetaTag(['name' => 'csrf-param', 'content' => $request->csrfParam]);
+    $this->registerMetaTag(['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
+}
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

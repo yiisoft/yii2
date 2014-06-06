@@ -98,9 +98,19 @@ class Request extends \yii\base\Request
      * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
      * from the same application. If not, a 400 HTTP exception will be raised.
      *
-     * Note, this feature requires that the user client accepts cookie. Also, to use this feature,
-     * forms submitted via POST method must contain a hidden input whose name is specified by [[csrfParam]].
-     * You may use [[\yii\helpers\Html::beginForm()]] to generate his hidden input.
+     * Note, this feature requires that the user client accepts cookie.
+     *
+     * Attention, to use this feature, forms submitted via POST method must contain a hidden input whose name
+     * is specified by [[csrfParam]]. You may use [[\yii\helpers\Html::beginForm()]] to generate his hidden input.
+     * Also, CSRF meta tags should be manually added to page. You may add them in the main layout file:
+     *
+     * ~~~
+     * $request = Yii::$app->getRequest();
+     * if ($request->enableCsrfValidation) {
+     *     $this->registerMetaTag(['name' => 'csrf-param', 'content' => $request->csrfParam]);
+     *     $this->registerMetaTag(['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
+     * }
+     * ~~~
      *
      * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
