@@ -310,7 +310,7 @@ abstract class Generator extends Model
      */
     public function render($template, $params = [])
     {
-        $view = new View;
+        $view = new View();
         $params['generator'] = $this;
 
         return $view->renderFile($this->getTemplatePath() . '/' . $template, $params, $this);
