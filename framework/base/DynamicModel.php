@@ -184,8 +184,9 @@ class DynamicModel extends Model
                     throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
                 }
             }
-            $model->validate();
         }
+
+        $model->validate();
 
         return $model;
     }
