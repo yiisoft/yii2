@@ -161,11 +161,12 @@ class Request extends \yii\base\Request
     private $_headers;
 
     /**
-     * @inheritdoc
+     * Resolves the current request into a route and the associated parameters.
+     * @return array the first element is the route, and the second is the associated parameters.
+     * @throws HttpException if the request cannot be resolved.
      */
-    public function init()
+    public function resolve()
     {
-        parent::init();
         if ($this->enableCsrfValidation) {
             $view = Yii::$app->getView();
             if ($view instanceof View) {
@@ -173,15 +174,7 @@ class Request extends \yii\base\Request
                 $view->registerMetaTag(['name' => 'csrf-token', 'content' => $this->getCsrfToken()], __CLASS__ . '::csrfToken');
             }
         }
-    }
 
-    /**
-     * Resolves the current request into a route and the associated parameters.
-     * @return array the first element is the route, and the second is the associated parameters.
-     * @throws HttpException if the request cannot be resolved.
-     */
-    public function resolve()
-    {
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
