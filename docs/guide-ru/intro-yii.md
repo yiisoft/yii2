@@ -1,58 +1,39 @@
-What is Yii
+Что такое Yii?
 ===========
 
-Yii is a high performance, component-based PHP framework for rapidly developing modern Web applications.
-The name Yii (pronounced `Yee` or `[ji:]`) means "simple and evolutionary" in Chinese. It can also
-be thought of as an acronym for **Yes It Is**!
+Yii – это высокопроизводительный компонентный PHP фреймворк предназначенный для быстрой разработки современных Web приложений. Слово Yii (произносится `Йи` `[ji:]`) в китайском языке означает «простой и развивающийся». Так же, Yii расшифровывается как акроним **Yes It Is**!
 
 
-What is Yii Best for?
+Для каких задач Yii больше всего подходит?
 ---------------------
 
-Yii is a generic Web programming framework, meaning that it can be used for developing all kinds
-of Web applications based on PHP. Because of its component-based architecture and sophisticated caching
-support, it is especially suitable for developing large-scale applications such as portals, forums, content
-management systems (CMS), e-commerce projects, RESTful Web services, and so on.
+Yii – это универсальный фреймворк для Web разработки и может быть задействован во всех типах Web приложений. Благодаря его модульной структуре и мощной поддержке кеширования Yii особенно подходит для разработки таких крупных проектов как порталы, форумы, CMS, сервисы электронной коммерции, RESTful-приложения и т.п.
 
 
-How does Yii Compare with Other Frameworks?
+Сравнение Yii с другими фреймворками
 -------------------------------------------
 
-- Like most PHP frameworks, Yii implements the MVC (Model-View-Controller) design pattern and promotes code
-  organization based on this pattern.
-- Yii takes the philosophy that code should be written in a simple yet elegant way. It will never try to
-  over-design things mainly for the purpose of following some design pattern.
-- Yii is a full-stack framework providing many proven and ready-to-use features, such as: query builders
-  and ActiveRecord, for both relational and NoSQL databases; RESTful API development support; multi-tier
-  caching support; and more.
-- Yii is extremely extensible. You can customize or replace nearly every piece of core code. You can also
-  take advantage of its solid extension architecture, to use or develop redistributable extensions.
-- High performance is always a primary goal of Yii.
+- Как и многие другие PHP фреймворки, в Yii реализована модель MVC (Model-View-Controller). Предполагается, что Ваш код     будет организован в соответствии с этой моделью.
+- Yii придерживается философии простого и элегантного кода не пытаясь усложнять дизайн только ради того, что бы следовать   каким-либо принципам проектирования.
+- Yii представляет собой full-stack фреймворк включая такой проверенный и готовый к использованию функционал, как           ActiveRecord для реляционных и NoSQL баз данных, поддержка разработки RESTful API, многоуровневое кеширование и т.д.
+- Yii черезвычайно масштабируем. Вы можете настраивать и изменять практически любую часть основного кода. Используйте       преимущества модульной архитектуры применяя существующие или разрабатывая свои собственные расширения.
+- Одна из главных целей Yii – производительность.
 
-Yii is not a one-man show, it is backed up by a [strong core developer team][] as well as a large community
-with many professionals constantly contributing to the development of Yii. The Yii developer team
-keeps a close eye on the latest trends of Web development, and on the best practices and features
-found in other frameworks and projects. The most relevant best practices and features found elsewhere are regularly incorporated into the core framework and exposed
-via simple and elegant interfaces.
+Yii — не проект одного человека. Он поддерживается и развивается силами [небольшой команды][] и довольно большим сообществом разработчиков, которые им помогают. Разработчики фреймворка следят за тенденциями веб разработки и развитием других проектов. Наиболее интересные возможности и лучшие практики регулярно внедряются в фреймворк в виде простых и элегантных интерфейсов.
 
-[strong core developer team]: http://www.yiiframework.com/about/
+[небольшой команды]: http://www.yiiframework.com/about/
 
-Yii Versions
+Версии Yii
 ------------
 
-Yii currently has two major versions available: 1.1 and 2.0. Version 1.1 is the old generation and is now in maintenance mode. Version 2.0 is a complete rewrite of Yii, adopting the latest
-technologies and protocols, including Composer, PSR, namespaces, traits, and so forth. Version 2.0 represents the latest
-generation of the framework and will receive our main development efforts in the next few years.
-This guide is mainly about version 2.0.
+На данный момент существует две основные ветки Yii: 1.1 и 2.0. Версия 1.1 является предыдущим поколением и находится в поддерживаемом состоянии. Версия 2.0 – это полностью переписанный Yii адоптированный к таким последним технологиям и протоколам как Composer, PSR, пространство имен, типажи (traits) и многие другие. Версия 2.0 представляет собой последнее поколение фреймворка и на ней будут сосредоточены основные усилия разработчиков несколько следующих лет. Данное руководство именно о версии 2.0.
 
 
-Requirements and Prerequisites
+Требования и предпосылки
 ------------------------------
 
 Yii 2.0 requires PHP 5.4.0 or above. You can find more detailed requirements for individual features
 by running the requirement checker included in every Yii release.
 
-Using Yii requires basic knowledge about object-oriented programming (OOP), as Yii is a pure OOP-based framework.
-Yii 2.0 also makes use of the latest features of PHP, such as [namespaces](http://www.php.net/manual/en/language.namespaces.php) and [traits](http://www.php.net/manual/en/language.oop5.traits.php). Understanding these concepts will help
-you more easily pick up Yii 2.0.
+Для работы Yii 2.0 необходим PHP 5.4.0 и выше. Детальные требования покажет и проверит соответствующий скрипт, который включен в Yii. Для использования Yii требуются базовые знания Объектно-Ориентированного программирования, т.к. Yii основан на ООП. Yii 2.0 так же использует такой новый функционал PHP как  [пространство имен](http://www.php.net/manual/en/language.namespaces.php) и [типажи](http://www.php.net/manual/en/language.oop5.traits.php). Понимание этих концепций поможет быстрее разобраться в Yii 2.0.
 
