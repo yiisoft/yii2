@@ -52,10 +52,10 @@ class ImageValidator extends FileValidator
      */
     public $maxHeight;
     /**
-     * @var array|string a list of file mime types that are allowed to be uploaded.
-     * This can be either an array or a string consisting of file mime types
+     * @var array|string a list of file MIME types that are allowed to be uploaded.
+     * This can be either an array or a string consisting of file MIME types
      * separated by space or comma (e.g. "image/jpeg, image/png").
-     * Mime type names are case-insensitive. Defaults to null, meaning all mime types
+     * Mime type names are case-insensitive. Defaults to null, meaning all MIME types
      * are allowed.
      * @see wrongMimeType
      */

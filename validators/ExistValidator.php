@@ -61,7 +61,6 @@ class ExistValidator extends Validator
      * is the [[\yii\db\Query|Query]] object that you can modify in the function.
      */
     public $filter;
-
     /**
      * @var boolean whether to allow array type attribute.
      */

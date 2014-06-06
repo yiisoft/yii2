@@ -76,6 +76,7 @@ class Validator extends Component
         'trim' => [
             'class' => 'yii\validators\FilterValidator',
             'filter' => 'trim',
+            'skipOnArray' => true,
         ],
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
