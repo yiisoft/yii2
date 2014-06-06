@@ -167,6 +167,14 @@ class Request extends \yii\base\Request
      */
     public function resolve()
     {
+        if ($this->enableCsrfValidation) {
+            $view = Yii::$app->getView();
+            if ($view instanceof View) {
+                $view->registerMetaTag(['name' => 'csrf-param', 'content' => $this->csrfParam], __CLASS__ . '::csrfParam');
+                $view->registerMetaTag(['name' => 'csrf-token', 'content' => $this->getCsrfToken()], __CLASS__ . '::csrfToken');
+            }
+        }
+
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
             list ($route, $params) = $result;
