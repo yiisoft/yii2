@@ -5,6 +5,8 @@ Yii Framework 2 redis extension Change Log
 -----------------------
 
 - Bug #4745: value of simple string returns was ignored by redis client and `true` is returned instead, now only `OK` will result in a `true` while all other values are returned as is (cebe)
+- Enh #3714: Added support for connecting to redis server using a unix socket (savvot, robregonm)
+
 
 2.0.0 October 12, 2014
 ----------------------
