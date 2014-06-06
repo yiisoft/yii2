@@ -1,65 +1,61 @@
-Installing Yii
+Установка Yii
 ==============
 
-You can install Yii in two ways, using [Composer](http://getcomposer.org/) or downloading an archive file.
-The former is the preferred way as it allows you to install new [extensions](structure-extensions.md)
-or update Yii by running a single command.
+Вы можете установить Yii двумя способами: используя [Composer](http://getcomposer.org/) или скачав архив.
+Первый способ предпочтительнее т.к. позволяет установить установить новые [расширения](structure-extensions.md)
+или обновить Yii одной командой.
 
 
-Installing via Composer <a name="installing-via-composer"></a>
+Установка при помощи Composer <a name="installing-via-composer"></a>
 -----------------------
 
-If you do not already have Composer installed, you may get it by following the instructions at
-[getcomposer.org](https://getcomposer.org/download/), or simply
+Если Composer еще не установлен это просто сделать по инструкции на
+[getcomposer.org](https://getcomposer.org/download/), или одним из нижеперечисленных способов:
 
-* on Linux or Mac, run the following commands:
+* на Linux или Mac, используйте следующую команду:
 
   ```
   curl -s http://getcomposer.org/installer | php
   mv composer.phar /usr/local/bin/composer
   ```
-* on Windows, download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
+* на Windows, скачайте и запустите [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
-Please refer to the [Composer Documentation](https://getcomposer.org/doc/) if you encounter any
-problems or want to learn more about the Composer usage.
+Вы можете обращаться к документации [Composer Documentation](https://getcomposer.org/doc/) в случае возникновения проблем или если будет необходима более детальная информация.
 
-With Composer installed, you can install Yii by running the following command under a Web accessible folder:
+После установки Composer можно устанавливать Yii. Запуститие команду :
 
 ```
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-The above command installs Yii as a directory named `basic`.
+в папке доступной через Web. Composer установит Yii (шаблонное приложение basic) в папку `basic`.
 
-> Tip: If you want to install the latest development version of Yii, you may use the following command
-which adds a `stability` option:
+> Совет: Если хотите установить последнюю (экспериментальную) версию Yii, Вы можете добавить ключ `stability`:
 ```
 composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 ```
-Note that the development version of Yii should not be used for production as it may break your running code.
+Обратите внимание: не используйте экспериментальную версию Yii в продакшн т.к. данный релиз не стабилен.
 
 
-Installing from an Archive File <a name="installing-from-archive-file"></a>
+Установка из архива <a name="installing-from-archive-file"></a>
 -------------------------------
 
-Installing Yii from an archive file involves two steps:
+Установка Yii из архива состоит из двух шагов:
 
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/yii2-basic);
-2. Unpack the downloaded file to a Web accessible folder.
+1. Скачайте архив по адресу [yiiframework.com](http://www.yiiframework.com/download/yii2-basic);
+2. Распакуйте скачанный архив в папку, доступную из Web.
 
 
-Other Installation Options <a name="other-installation-options"></a>
+Другие опции установки <a name="other-installation-options"></a>
 --------------------------
 
-The above installation instructions show how to install Yii in terms of a basic Web application that works out of box.
-It is a good start for small projects or if you just start learning Yii.
+Нижеприведенные инструкции покажут как установить Yii в виде базового приложения готового к работе.
+Это отличный вариант для небольших проектов или для тех, кто только начинает изучать Yii.
 
-There are other installation options available:
+Есть два основных варианта такой установки:
 
-* If you only want to install the core framework and would like to build an application from scratch,
-  you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
-* If you want to start with a more sophisticated application that supports team development environment,
-  you may consider [Advanced Application Template](tutorial-advanced-app.md).
+* Если Вам нужен только сам фреймворк и Вы хотели бы создать приложение "с чистого листа" воспользуйтесь инструкцией [простой шаблон приложения](tutorial-start-from-scratch.md).
+* Если хотите начать с более продвинутого приложения которое поддерживает командную среду разработки и разделено на несколько слоев (frontend/backend) [продвинутый шаблон приложения](tutorial-advanced-app.md).
 
 
 Verifying Installation <a name="verifying-installation"></a>
