@@ -276,12 +276,22 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     public function render($view, $params = [], $layout = false)
     {
+        // Temporary disable Csrf Validation since it's not needed in emails
+        $request = Yii::$app->getRequest();
+        $isWebRequest = $request instanceof yii\web\Request;
+        if ($isWebRequest) {
+            $enableCsrfValidation = $request->enableCsrfValidation;
+            $request->enableCsrfValidation = false;
+        }
+
         $output = $this->getView()->render($view, $params, $this);
         if ($layout !== false) {
-            return $this->getView()->render($layout, ['content' => $output], $this);
-        } else {
-            return $output;
+            $output = $this->getView()->render($layout, ['content' => $output], $this);
         }
+        if ($isWebRequest) {
+            $request->enableCsrfValidation = $enableCsrfValidation;
+        }
+        return $output;
     }
 
     /**

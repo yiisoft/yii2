@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #3268: Fixed the bug that the schema name in a table name was not respected by `yii\db\mysql\Schema` (terazoid, qiangxue)
 - Bug #3311: Fixed the bug that `yii\di\Container::has()` did not return correct value (mgrechanik, qiangxue)
 - Bug #3327: Fixed "Unable to find debug data" when logging objects with circular references (jarekkozak, samdark)
+- Bug #3358: Fixed the issue of csrf tags being rendered in html emails (mbman)
 - Bug #3368: Fix for comparing numeric attributes in JavaScript (technixp)
 - Bug #3393: Fix `yii\helpers\FileHelper::copyDirectory()` pattern not working (klimov-paul)
 - Bug #3431: Allow using extended ErrorHandler class from the app namespace (cebe)
