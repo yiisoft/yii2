@@ -18,7 +18,7 @@ The `Model` class is also the base class for more advanced models, such as [Acti
 Please refer to the relevant documentation for more details about these advanced models.
 
 > Info: You are not required to base your model classes on [[yii\base\Model]]. However, because there are many Yii
-  components built to support [[yii\base\Model]], it is usually the preferable base model classes.
+  components built to support [[yii\base\Model]], it is usually the preferable base class for a model.
 
 
 ## Attributes <a name="attributes"></a>
@@ -27,6 +27,7 @@ Attributes are the properties that represent business data. By default, attribut
 member variables if your model class extends directly from [[yii\base\Model]].
 
 The following code creates a `ContactForm` model class with four attributes: `name`, `email`, `subject` and `body`.
+This model represents the input data that is received from an HTML form.
 
 ```php
 namespace app\models;
@@ -66,6 +67,8 @@ foreach ($model as $name => $value) {
     echo "$name: $value\n";
 }
 ```
+
+### Extending model attributes
 
 The method [[yii\base\Model::attributes()]] defines and returns the names of the attributes in a model.
 You may override this method to support different ways of defining attributes. For example, [[yii\db\ActiveRecord]]
