@@ -542,4 +542,17 @@ class View extends \yii\base\View
 
         return empty($lines) ? '' : implode("\n", $lines);
     }
+
+    /**
+     * Registers all necessary meta tags to support CSRF protection specified by request.
+     * Note, this method should be called before [[head()]].
+     * @param Request $request request instance.
+     */
+    public function registerCsrfTags(Request $request)
+    {
+        if ($request->enableCsrfValidation) {
+            $this->registerMetaTag(['name' => 'csrf-param', 'content' => $request->csrfParam]);
+            $this->registerMetaTag(['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
+        }
+    }
 }

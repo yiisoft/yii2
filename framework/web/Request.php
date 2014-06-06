@@ -102,15 +102,7 @@ class Request extends \yii\base\Request
      *
      * Attention, to use this feature, forms submitted via POST method must contain a hidden input whose name
      * is specified by [[csrfParam]]. You may use [[\yii\helpers\Html::beginForm()]] to generate his hidden input.
-     * Also, CSRF meta tags should be manually added to page. You may add them in the main layout file:
-     *
-     * ~~~
-     * $request = Yii::$app->getRequest();
-     * if ($request->enableCsrfValidation) {
-     *     $this->registerMetaTag(['name' => 'csrf-param', 'content' => $request->csrfParam]);
-     *     $this->registerMetaTag(['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
-     * }
-     * ~~~
+     * Also, CSRF meta tags should be manually added to page. You may do this via [[\yii\web\View::registerCsrfTags()]].
      *
      * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
