@@ -49,7 +49,7 @@ composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic bas
 Другие опции установки <a name="other-installation-options"></a>
 --------------------------
 
-Нижеприведенные инструкции покажут как установить Yii в виде базового приложения готового к работе.
+Ниже приведены инструкции, которые покажут как установить Yii в виде базового приложения готового к работе.
 Это отличный вариант для небольших проектов или для тех, кто только начинает изучать Yii.
 
 Есть два основных варианта такой установки:
@@ -58,12 +58,10 @@ composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic bas
 * Если хотите начать с более продвинутого приложения которое поддерживает командную среду разработки и разделено на несколько слоев (frontend/backend) [продвинутый шаблон приложения](tutorial-advanced-app.md).
 
 
-Verifying Installation <a name="verifying-installation"></a>
+Проверка установки <a name="verifying-installation"></a>
 ----------------------
 
-After installation, you can use your browser to access the installed Yii application with the following URL,
-assuming you have installed Yii in a directory named `basic` that is under the document root of your Web server
-and the server name is `hostname`,
+После установки приложения можно зайти браузером на сервер, где происходила установка Yii приложения. Если Вы, по примеру выше, развернули приложение в директории `basic` в корне (DocumentRoot) вашего Web сервера, то URL доступа к точке входа в приложение будет следующим:
 
 ```
 http://hostname/basic/web/index.php
@@ -71,28 +69,25 @@ http://hostname/basic/web/index.php
 
 ![Successful Installation of Yii](images/start-app-installed.png)
 
-You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
-Yii's requirements by using one of the following approaches:
+В результате, Вы должны увидеть страницу приветствия "Congratulations!". Если нет - проверьте в первую очередь требования и зависимости Yii одним из способов:
 
-* Use a browser to access the URL `http://hostname/basic/requirements.php`
-* Run the following commands:
+* Браузером перейдите по адресу `http://hostname/basic/requirements.php`
+* Или выполните команду в консоли: 
 
   ```
   cd basic
   php requirements.php
   ```
 
-You should configure your PHP installation so that it meets the minimum requirement of Yii.
-In general, you should have PHP 5.4 or above. And you should install
-the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a corresponding database driver
-(such as `pdo_mysql` for MySQL databases), if your application needs a database.
+Для корректной работы фреймворка Вам нужно настроить PHP в соответствии с требованиями Yii приведенными в этом скрипте.
+Самое важное - PHP версии 5.4 и выше. Так же, необходимо установить [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) и соответствующий драйвер 
+(Например, `pdo_mysql` для MySQL), если Вы планируете использовать базы данных в своем приложении.
 
 
-Configuring Web Servers <a name="configuring-web-servers"></a>
+Настройка Web сервера <a name="configuring-web-servers"></a>
 -----------------------
 
-> Info: You may skip this sub-section for now if you are just testing driving Yii with no intention
-  of deploying it to a production server.
+> Замечание: можете пропустить этот подраздел если Вы лишь тестируете приложение и не разворачиваете его на продакшн сервере.
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
