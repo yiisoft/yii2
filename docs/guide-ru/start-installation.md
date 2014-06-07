@@ -89,52 +89,42 @@ http://hostname/basic/web/index.php
 
 > Замечание: можете пропустить этот подраздел если Вы лишь тестируете приложение и не разворачиваете его на продакшн сервере.
 
-The application installed according to the above instructions should work out of box with either
-an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-either Windows or Linux.
+Приложение, установленное по инструкциям данного раздела находится в рабочем состоянии сразу же после установки как с Web сервером [Apache](http://httpd.apache.org/), так и с [Nginx HTTP server](http://nginx.org/), как в окружении Windows, так и в Linux.
 
-On a production server, you may want to configure your Web server so that the application can be accessed
-via the URL `http://hostname/index.php` instead of `http://hostname/basic/web/index.php`. This
-requires pointing the document root of your Web server to the `basic/web` folder. And you may also
-want to hide `index.php` from the URL, as described in the [URL Parsing and Generation](runtime-url-handling.md) section.
-In this subsection, we will show how to configure your Apache or Nginx server to achieve these goals.
+На рабочем сервере Вам наверняка захочется изменить URL путь к приложению на более удобный, такой как  `http://hostname/index.php` вместо `http://hostname/basic/web/index.php`. Для этого лишь нужно изменить корневую директорию в настройках Web сервера так, что бы та указывала на `basic/web`. Так же, можно спрятать `index.php` из URL строки, подробности описаны в разделе [Разбор и генерация URL](runtime-url-handling.md). 
+В данном подразделе мы увидим как настроить Apache и Nginx соответствующим образом.
 
-> Info: By setting `basic/web` as the document root, you also prevent end users from accessing
-your private application code and sensitive data files that are stored in the sibling directories
-of `basic/web`. This makes your application more secure.
+> Замечание: Устанавливая `basic/web` корневой директорией Web сервера Вы защищаете от нежелательного доступа через Web программную часть приложения и данные, находящиеся на одном уровне с `basic/web`. Такие настройки делают Ваш сервер более защищенным.
 
-> Info: If your application will run in a shared hosting environment where you do not have the permission
-to modify its Web server setting, you may adjust the structure of your application. Please refer to
-the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
+> Замечание: Если Вы работаете на хостинге где нет доступа к настройкам Web сервера, то можно настроить под себя структуру приложения как это описано в разделе [Работа на Shared хостинге](tutorial-shared-hosting.md).
 
 
-### Recommended Apache Configuration <a name="recommended-apache-configuration"></a>
+### Рекомендуемые настройки Apache <a name="recommended-apache-configuration"></a>
 
-Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
-should replace `path/to/basic/web` with the actual path of `basic/web`.
+Добавьте следующую конфигурацию в `httpd.conf` Web сервера Apache или в конфигурационный файл виртуального сервера. Не забудьте заменить `path/to/basic/web` на свой корректный путь к `basic/web`.
 
 ```
-# Set document root to be "basic/web"
+# Устанавливаем корневой директорией "basic/web"
 DocumentRoot "path/to/basic/web"
 
 <Directory "path/to/basic/web">
     RewriteEngine on
 
-    # If a directory or a file exists, use the request directly
+    # Если запрашиваемая в URL директория или файл сущесвуют обращаемся к ним напрямую
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    # Otherwise forward the request to index.php
+    # Если нет - перенаправляем запрос на index.php
     RewriteRule . index.php
 
-    # ...other settings...
+    # ...прочие настройки...
 </Directory>
 ```
 
 
-### Recommended Nginx Configuration <a name="recommended-nginx-configuration"></a>
+### Рекомендуемые параметры для Nginx <a name="recommended-nginx-configuration"></a>
 
-You should have installed PHP as an [FPM SAPI](http://php.net/install.fpm) for [Nginx](http://wiki.nginx.org/).
-Use the following Nginx configuration and replace `path/to/basic/web` with the actual path of `basic/web`.
+PHP должен быть установлен как [FPM SAPI](http://php.net/install.fpm) для [Nginx](http://wiki.nginx.org/).
+Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на свой корректный путь к `basic/web`.
 
 ```
 server {
@@ -152,11 +142,11 @@ server {
     error_log   /path/to/project/log/error.log;
 
     location / {
-        # Redirect everything that isn't a real file to index.php
+        # Перенаправляем все запросы к несуществующим директориям и файлам к index.php
         try_files $uri $uri/ /index.php?$args;
     }
 
-    # uncomment to avoid processing of calls to non-existing static files by Yii
+    # раскомментируйте строки ниже во избежание обработки Yii обращений к несуществующим статическим файлам
     #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
     #    try_files $uri =404;
     #}
@@ -174,8 +164,6 @@ server {
 }
 ```
 
-When using this configuration, you should set `cgi.fix_pathinfo=0` in the `php.ini` file
-in order to avoid many unnecessary system `stat()` calls.
+Используя данную конфигурацию установите параметр `cgi.fix_pathinfo=0` в `php.ini` что бы предотвратить лишние системные вызовы `stat()`.
 
-Also note that when running an HTTPS server you need to add `fastcgi_param HTTPS on;` so that Yii
-can properly detect if a connection is secure.
+Учтите что используя HTTPS необходимо задавать `fastcgi_param HTTPS on;` что бы Yii мог корректно определять защищенное соединение.
