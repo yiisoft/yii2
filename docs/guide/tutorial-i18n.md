@@ -70,7 +70,7 @@ Yii tries to load appropriate translation from one of the message sources define
             'app*' => [
                 'class' => 'yii\i18n\PhpMessageSource',
                 //'basePath' => '@app/messages',
-                //'sourceLanguage' => 'en',
+                //'sourceLanguage' => 'en-US',
                 'fileMap' => [
                     'app' => 'app.php',
                     'app/error' => 'error.php',
@@ -323,7 +323,7 @@ class Module extends \yii\base\Module
     {
         Yii::$app->i18n->translations['modules/users/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
-            'sourceLanguage' => 'en',
+            'sourceLanguage' => 'en-US',
             'basePath' => '@app/modules/users/messages',
             'fileMap' => [
                 'modules/users/validation' => 'validation.php',
@@ -370,7 +370,7 @@ class Menu extends Widget
         $i18n = Yii::$app->i18n;
         $i18n->translations['widgets/menu/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
-            'sourceLanguage' => 'en',
+            'sourceLanguage' => 'en-US',
             'basePath' => '@app/widgets/menu/messages',
             'fileMap' => [
                 'widgets/menu/messages' => 'messages.php',
@@ -407,7 +407,7 @@ Sometimes you want to correct default framework message translation for your app
         'translations' => [
             'yii' => [
                 'class' => 'yii\i18n\PhpMessageSource',
-                'sourceLanguage' => 'en',
+                'sourceLanguage' => 'en-US',
                 'basePath' => '/path/to/my/message/files'
             ],
         ],
