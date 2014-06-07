@@ -156,17 +156,27 @@ class ViewRenderer extends BaseViewRenderer
         }));
 
         $this->twig->addFunction(new \Twig_SimpleFunction('static', function($name, $method, $args = []) {
+            $args = func_get_args();
+            $name = $args[0];
+            $method = $args[1];
+            unset($args[0], $args[1]);
+
             if(isset($this->namespaces[$name]))
                 $name = $this->namespaces[$name];
 
-            $name::$method($args);
+            call_user_func_array([$name, $method], $args);
         }));
 
         $this->twig->addFunction(new \Twig_SimpleFunction('echo_static', function($name, $method, $args = []) {
+            $args = func_get_args();
+            $name = $args[0];
+            $method = $args[1];
+            unset($args[0], $args[1]);
+
             if(isset($this->namespaces[$name]))
                 $name = $this->namespaces[$name];
 
-            return $name::$method($args);
+            return call_user_func_array([$name, $method], $args);
         },['is_safe' => ['html']]));
 
         $this->twig->addFunction(new \Twig_SimpleFunction('widget', function ($name, $args = []) {
