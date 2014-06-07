@@ -208,7 +208,7 @@ The typical usage of DynamicModel is as follows,
 public function actionSearch($name, $email)
 {
     $model = DynamicModel::validateData(compact('name', 'email'), [
-        [['name', 'email'], 'string', 'max' => 128]],
+        [['name', 'email'], 'string', 'max' => 128],
         ['email', 'email'],
     ]);
     if ($model->hasErrors()) {
