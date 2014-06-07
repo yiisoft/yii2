@@ -3,7 +3,7 @@
 namespace common\tests\unit\models;
 
 use Yii;
-use frontend\tests\unit\TestCase;
+use common\tests\unit\TestCase;
 use common\models\User;
 use yii\helpers\Security;
 
