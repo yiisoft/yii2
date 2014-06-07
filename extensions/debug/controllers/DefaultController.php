@@ -101,7 +101,7 @@ class DefaultController extends Controller
         $filePath = Yii::getAlias($this->module->panels['mail']->mailPath) . '/' . basename($file);
 
         if ((mb_strpos($file, '\\') !== false || mb_strpos($file, '/') !== false) || !is_file($filePath)) {
-            throw new NotFoundHttpException('Mail file not found');
+            throw new NotFoundHttpException('Mail file not found.');
         }
 
         Yii::$app->response->sendFile($filePath);
