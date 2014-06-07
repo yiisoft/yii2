@@ -70,7 +70,7 @@ class DefaultController extends Controller
                 }
             }
         }
-        throw new NotFoundHttpException("Code file not found: $file");
+        throw new NotFoundHttpException("Code file '$file' not found.");
     }
 
     public function actionDiff($id, $file)
@@ -85,7 +85,7 @@ class DefaultController extends Controller
                 }
             }
         }
-        throw new NotFoundHttpException("Code file not found: $file");
+        throw new NotFoundHttpException("Code file '$file' not found.");
     }
 
     /**
@@ -104,7 +104,7 @@ class DefaultController extends Controller
         if (method_exists($generator, $method)) {
             return $generator->$method();
         } else {
-            throw new NotFoundHttpException("Unknown generator action: $name");
+            throw new NotFoundHttpException("Unknown generator action '$name'.");
         }
     }
 
@@ -123,7 +123,7 @@ class DefaultController extends Controller
 
             return $this->generator;
         } else {
-            throw new NotFoundHttpException("Code generator not found: $id");
+            throw new NotFoundHttpException("Code generator '$id' not found.");
         }
     }
 }

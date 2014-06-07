@@ -174,7 +174,7 @@ class Request extends \yii\base\Request
 
             return [$route, $_GET];
         } else {
-            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+            throw new NotFoundHttpException();
         }
     }
 

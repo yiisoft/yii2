@@ -7,6 +7,8 @@
 
 namespace yii\web;
 
+use Yii;
+
 /**
  * NotFoundHttpException represents a "Not Found" HTTP exception with status code 404.
  *
@@ -23,6 +25,10 @@ class NotFoundHttpException extends HttpException
      */
     public function __construct($message = null, $code = 0, \Exception $previous = null)
     {
+        if ($message === null) {
+            $message = Yii::t('yii', 'The requested page does not exist.');
+        }
+
         parent::__construct(404, $message, $code, $previous);
     }
 }

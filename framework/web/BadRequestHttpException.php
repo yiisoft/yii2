@@ -7,6 +7,8 @@
 
 namespace yii\web;
 
+use Yii;
+
 /**
  * BadRequestHttpException represents a "Bad Request" HTTP exception with status code 400.
  *
@@ -29,6 +31,10 @@ class BadRequestHttpException extends HttpException
      */
     public function __construct($message = null, $code = 0, \Exception $previous = null)
     {
+        if ($message = null) {
+            $message = Yii::t('yii', 'Bad request.');
+        }
+
         parent::__construct(400, $message, $code, $previous);
     }
 }

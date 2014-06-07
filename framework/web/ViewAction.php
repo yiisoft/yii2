@@ -123,7 +123,7 @@ class ViewAction extends Action
 
         if (!is_string($viewName) || !preg_match('/^\w[\w\/\-\.]*$/', $viewName)) {
             if (YII_DEBUG) {
-                throw new NotFoundHttpException("The requested view \"$viewName\" must start with a word character and can contain only word characters, forward slashes, dots and dashes.");
+                throw new NotFoundHttpException("The requested view '$viewName' must start with a word character and can contain only word characters, forward slashes, dots and dashes.");
             } else {
                 throw new NotFoundHttpException(Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewName]));
             }
