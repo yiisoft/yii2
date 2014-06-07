@@ -9,18 +9,18 @@ All Rights Reserved.
 
 
 Введение
-------------
+--------
 
 * [О Yii](intro-yii.md)
 * [Обновление с версии 1.1](intro-upgrade-from-v1.md)
 
 
-Getting Started
----------------
+Первое знакомство
+-----------------
 
 * [Установка Yii](start-installation.md)
 * [Запуск приложения](start-workflow.md)
-* [Говорим "привет"](start-hello.md)
+* [Говорим «привет»](start-hello.md)
 * [Работа с формами](start-forms.md)
 * [Работа с базами данных](start-databases.md)
 * [Генерация кода при помощи Gii](start-gii.md)
