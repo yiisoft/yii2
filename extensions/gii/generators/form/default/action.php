@@ -14,7 +14,7 @@ echo "<?php\n";
 
 public function action<?= Inflector::id2camel(trim(basename($generator->viewName), '_')) ?>()
 {
-    $model = new <?= $generator->modelClass ?><?= empty($generator->scenarioName) ? "" : "(['scenario' => '{$generator->scenarioName}'])" ?>;
+    $model = new <?= $generator->modelClass ?><?= empty($generator->scenarioName) ? "()" : "(['scenario' => '{$generator->scenarioName}'])" ?>;
 
     if ($model->load(Yii::$app->request->post())) {
         if ($model->validate()) {
