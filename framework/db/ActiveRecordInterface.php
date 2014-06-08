@@ -391,4 +391,10 @@ interface ActiveRecordInterface
      * If true, the model containing the foreign key will be deleted.
      */
     public function unlink($name, $model, $delete = false);
+
+    /**
+     * Returns the connection used by this AR class.
+     * @return mixed the database connection used by this AR class.
+     */
+    public static function getDb();
 }
