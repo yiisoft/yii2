@@ -325,8 +325,8 @@ without touching any dependent code.
 
 #### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
 
-This property specifies the language that the application code is written in. The default value is `'en'`,
-meaning English. You should configure this property if the text content in your code is not in English.
+This property specifies the language that the application code is written in. The default value is `'en-US'`,
+meaning English (United States). You should configure this property if the text content in your code is not in English.
 
 Like the [language](#language) property, you should configure this property in terms of
 an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,

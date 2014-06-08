@@ -95,7 +95,7 @@ the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a
 Configuring Web Servers <a name="configuring-web-servers"></a>
 -----------------------
 
-> Info: You may skip this sub-section for now if you are just testing driving Yii with no intention
+> Info: You may skip this sub-section for now if you are just test driving Yii with no intention
   of deploying it to a production server.
 
 The application installed according to the above instructions should work out of box with either

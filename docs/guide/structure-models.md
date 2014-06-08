@@ -23,30 +23,15 @@ Please refer to the relevant documentation for more details about these advanced
 
 ## Attributes <a name="attributes"></a>
 
-Attributes are the properties that represent business data. By default, attributes are *non-static public*
-member variables if your model class extends directly from [[yii\base\Model]].
+Models represent business data in terms of *attributes*. Each attribute is like a publicly accessible property
+of a model. The method [[yii\base\Model::attributes()]] specifies what attributes a model class has.
 
-The following code creates a `ContactForm` model class with four attributes: `name`, `email`, `subject` and `body`.
-This model represents the input data that is received from an HTML form.
-
-```php
-namespace app\models;
-
-use yii\base\Model;
-
-class ContactForm extends Model
-{
-    public $name;
-    public $email;
-    public $subject;
-    public $body;
-}
-```
-
-Naturally, you can access an attribute like accessing a normal object property:
+You can access an attribute like accessing a normal object property:
 
 ```php
 $model = new \app\models\ContactForm;
+
+// "name" is an attribute of ContactForm
 $model->name = 'example';
 echo $model->name;
 ```
@@ -68,12 +53,33 @@ foreach ($model as $name => $value) {
 }
 ```
 
-### Extending model attributes
 
-The method [[yii\base\Model::attributes()]] defines and returns the names of the attributes in a model.
-You may override this method to support different ways of defining attributes. For example, [[yii\db\ActiveRecord]]
-does so by returning table column names as attribute names. Note that you may also need to override the magic
-methods such as `__get()`, `__set()` so that the attributes can be accessed like normal object properties.
+### Defining Attributes <a name="defining-attributes"></a>
+
+By default, if your model class extends directly from [[yii\base\Model]], all its *non-static public* member
+variables are attributes. For example, the `ContactForm` model class below has four attributes: `name`, `email`,
+`subject` and `body`. The `ContactForm` model is used to represent the input data received from an HTML form.
+
+```php
+namespace app\models;
+
+use yii\base\Model;
+
+class ContactForm extends Model
+{
+    public $name;
+    public $email;
+    public $subject;
+    public $body;
+}
+```
+
+
+You may override [[yii\base\Model::attributes()]] to define attributes in a different way. The method should
+return the names of the attributes in a model. For example, [[yii\db\ActiveRecord]] does so by returning
+the column names of the associated database table as its attribute names. Note that you may also need to
+override the magic methods such as `__get()`, `__set()` so that the attributes can be accessed like
+normal object properties.
 
 
 ## Attribute Labels <a name="attribute-labels"></a>
@@ -81,6 +87,15 @@ methods such as `__get()`, `__set()` so that the attributes can be accessed like
 When displaying values or getting input for attributes, you often need to display some labels associated
 with attributes. For example, given an attribute named `firstName`, you may want to display a label `First Name`
 which is more user-friendly when displayed to end users in places such as form inputs and error messages.
+
+You can get the label of an attribute by calling [[yii\base\Model::getAttributeLabel()]]. For example,
+
+```php
+$model = new \app\models\ContactForm;
+
+// displays "Label"
+echo $model->getAttributeLabel('name');
+```
 
 By default, attribute labels are automatically generated from attribute names. The generation is done by
 the method [[yii\base\Model::generateAttributeLabel()]]. It will turn camel-case variable names into
@@ -156,7 +171,8 @@ $model->scenario = 'login';
 $model = new User(['scenario' => 'login']);
 ```
 
-To support multiple scenarios by a single model, you may override the [[yii\base\Model::scenarios()]] method,
+By default, the scenarios supported by a model are determined by the [validation rules](#validation) declared
+in the model. However, you can customize this behavior by overriding the [[yii\base\Model::scenarios()]] method,
 like the following:
 
 ```php
@@ -218,10 +234,10 @@ you may want to make sure all attributes are not empty and the `email` attribute
 If the values for some attributes do not satisfy the corresponding business rules, appropriate error messages
 should be displayed to help the user to fix the errors.
 
-You may call [[yii\base\Model::validate()]] to trigger validation. The method will go through every *active rule*
-and make sure it is satisfied. If not, an error message will be generated for each failed rule and attribute.
-The method returns a boolean value indicating whether all rules are satisfied. If not, you may retrieve the
-error messages through the property [[yii\base\Model::errors]] or [[yii\base\Model::firstErrors]]. For example,
+You may call [[yii\base\Model::validate()]] to validate the received data. The method will use
+the validation rules declared in [[yii\base\Model::rules()]] to validate every relevant attribute. If no error
+is found, it will return true. Otherwise, it will keep the errors in the [[yii\base\Model::errors]] property
+and return false. For example,
 
 ```php
 $model = new \app\models\ContactForm;
@@ -239,7 +255,7 @@ if ($model->validate()) {
 
 
 To declare validation rules associated with a model, override the [[yii\base\Model::rules()]] method by returning
-the rules that the model data should satisfy. The following example should the validation rules
+the rules that the model attributes should satisfy. The following example shows the validation rules declared
 for the `ContactForm` model:
 
 ```php
@@ -255,50 +271,31 @@ public function rules()
 }
 ```
 
-The `rules()` method returns an array of rules, each of which is an array in the following format:
+A rule can be used to validate one or multiple attributes, and an attribute may be validated by one or multiple rules.
+Please refer to the [Validating Input](input-validation.md) section for more details on how to declare
+validation rules.
+
+Sometimes, you may want a rule to be applied only in certain [scenarios](#scenarios). To do so, you can
+specify the `on` property of a rule, like the following:
 
 ```php
-[
-    // required, specifies which attributes should be validated by this rule.
-    // For single attribute, you can use the attribute name directly
-    // without having it in an array instead of an array
-    ['attribute1', 'attribute2', ...],
+public function rules()
+{
+    return [
+        // username, email and password are all required in "register" scenario
+        [['username', 'email', 'password'], 'required', 'on' => 'register'],
 
-    // required, specifies the type of this rule.
-    // It can be a class name, validator alias, or a validation method name
-    'validator',
-
-    // optional, specifies in which scenario(s) this rule should be applied
-    // if not given, it means the rule applies to all scenarios
-    'on' => ['scenario1', 'scenario2', ...],
-
-    // optional, specifies additional configurations for the validator object
-    'property1' => 'value1', 'property2' => 'value2', ...
-]
+        // username and password are required in "login" scenario
+        [['username', 'password'], 'required', 'on' => 'login'],
+    ];
+}
 ```
 
-A rule may be applied to one or multiple attributes. A rule may be applicable only in certain [scenarios](#scenarios).
-When a rule is applicable in a scenario, it is called an *active rule* in that scenario.
+If you do not specify the `on` property, the rule would be applied in all scenarios. A rule is called
+an *active rule* if it can be applied in the current [[yii\base\Model::scenario|scenario]].
 
-When the `validate()` method is called, it does the following steps to perform validation:
-
-1. Determine which attributes should be validated by checking the current [[yii\base\Model::scenario|scenario]]
-   against the scenarios declared in [[yii\base\Model::scenarios()]]. These attributes are the active attributes.
-2. Determine which rules should be applied by checking the current [[yii\base\Model::scenario|scenario]]
-   against the rules declared in [[yii\base\Model::rules()]]. These rules are the active rules.
-3. Use each active rule to validate each active attribute which is associated with the rule.
-
-According to the above validation steps, an attribute will be validated if and only if it is
-an active attribute declared in `scenarios()` and it is associated with one or multiple active rules
-declared in `rules()`.
-
-Yii provides a set of built-in validators to support commonly needed data validation tasks. You may also
-create your own validators by extending [[yii\validators\Validator]] or writing an inline validation method
-within model classes. For more details about the built-in validators and how to create your own validators,
-please refer to the [Input Validation](input-validation.md) section.
-
-> Note: As a rule of thumb, never trust the data coming from end users and always validate them before
-  putting them to some good use.
+An attribute will be validated if and only if it is an active attribute declared in `scenarios()` and
+is associated with one or multiple active rules declared in `rules()`.
 
 
 ## Massive Assignment <a name="massive-assignment"></a>

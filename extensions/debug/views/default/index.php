@@ -61,8 +61,9 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
             [
                 'attribute' => 'time',
                 'value' => function ($data) use ($timeFormatter) {
-                    return $timeFormatter->asDateTime($data['time'], 'short');
+                    return '<span class="nowrap">' . $timeFormatter->asDateTime($data['time'], 'short') . '</span>';
                 },
+                'format' => 'html',
             ],
             'ip',
             [
