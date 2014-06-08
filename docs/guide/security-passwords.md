@@ -132,7 +132,7 @@ Securing Cookies
 ----------------
 
 - validation
-- httpOnly
+- httpOnly is default
 
 See also
 --------
