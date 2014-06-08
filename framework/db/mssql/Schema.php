@@ -235,7 +235,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findColumns($table)
     {
-        $columnsTableName = 'information_schema.columns';
+        $columnsTableName = 'INFORMATION_SCHEMA.COLUMNS';
         $whereSql = "[t1].[table_name] = '{$table->name}'";
         if ($table->catalogName !== null) {
             $columnsTableName = "{$table->catalogName}.{$columnsTableName}";
@@ -292,8 +292,8 @@ SQL;
      */
     protected function findPrimaryKeys($table)
     {
-        $keyColumnUsageTableName = 'information_schema.key_column_usage';
-        $tableConstraintsTableName = 'information_schema.table_constraints';
+        $keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
+        $tableConstraintsTableName = 'INFORMATION_SCHEMA.TABLE_CONSTRAINTS';
         if ($table->catalogName !== null) {
             $keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
             $tableConstraintsTableName = $table->catalogName . '.' . $tableConstraintsTableName;
@@ -325,8 +325,8 @@ SQL;
      */
     protected function findForeignKeys($table)
     {
-        $referentialConstraintsTableName = 'information_schema.referential_constraints';
-        $keyColumnUsageTableName = 'information_schema.key_column_usage';
+        $referentialConstraintsTableName = 'INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS';
+        $keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
         if ($table->catalogName !== null) {
             $referentialConstraintsTableName = $table->catalogName . '.' . $referentialConstraintsTableName;
             $keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
@@ -374,7 +374,7 @@ SQL;
 
         $sql = <<<SQL
 SELECT [t].[table_name]
-FROM [information_schema].[tables] AS [t]
+FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
 SQL;
 
