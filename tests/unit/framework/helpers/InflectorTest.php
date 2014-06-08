@@ -124,9 +124,21 @@ class InflectorTest extends TestCase
 
     public function testSlug()
     {
-        $this->assertEquals("privet-hello-jii-framework-kak-dela-how-it-goes", Inflector::slug('Привет Hello Йии-- Framework !--- Как дела ? How it goes ?'));
+        $data = [
+            'Привет. Hello, Йии-- Framework !--- Как дела ? How it goes ?' => 'privet-hello-jii-framework-kak-dela-how-it-goes',
+            'this is a title' => 'this-is-a-title',
+            'недвижимость' => 'nedvizimost',
+            'áàâéèêíìîóòôúùûã' => 'aaaeeeiiiooouuua',
+            'Ναδάλης ṃỹṛèşưḿĕ' => 'nadales-myresume',
+            'E=mc²' => 'e-mc2',
+            'è¼å¥' => 'e14a',
+        ];
 
-        $this->assertEquals("this-is-a-title", Inflector::slug('this is a title'));
+        foreach ($data as $source => $expected) {
+            $this->assertEquals($expected, Inflector::slug($source));
+        }
+
+        //$this->assertEquals('this-is-my-text-', Inflector::slug('! this is my / text $## '));
     }
 
     public function testClassify()
