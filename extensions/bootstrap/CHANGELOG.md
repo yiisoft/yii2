@@ -5,6 +5,7 @@ Yii Framework 2 bootstrap extension Change Log
 --------------------------
 
 - Bug #3292: Fixed dropdown widgets rendering incorrect HTML (it3rmit)
+- Bug #3740: Fixed hint CSS class name (tadaszelvys)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 
 

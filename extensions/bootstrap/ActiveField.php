@@ -328,7 +328,7 @@ class ActiveField extends \yii\widgets\ActiveField
         $config = [
             'hintOptions' => [
                 'tag' => 'p',
-                'class' => 'help-block',
+                'class' => 'hint-block',
             ],
             'errorOptions' => [
                 'tag' => 'p',
@@ -357,7 +357,7 @@ class ActiveField extends \yii\widgets\ActiveField
             $config['wrapperOptions'] = ['class' => $cssClasses['wrapper']];
             $config['labelOptions'] = ['class' => 'control-label ' . $cssClasses['label']];
             $config['errorOptions'] = ['class' => 'help-block ' . $cssClasses['error']];
-            $config['hintOptions'] = ['class' => 'help-block ' . $cssClasses['hint']];
+            $config['hintOptions'] = ['class' => 'hint-block ' . $cssClasses['hint']];
         } elseif ($layout === 'inline') {
             $config['labelOptions'] = ['class' => 'sr-only'];
             $config['enableError'] = false;
