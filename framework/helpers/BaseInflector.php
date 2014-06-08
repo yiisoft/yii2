@@ -469,7 +469,7 @@ class BaseInflector
         if (extension_loaded('intl') === true) {
             $options = 'Any-Latin; NFKD; [:Punctuation:] Remove; [^\u0000-\u007E] Remove';
             $string = transliterator_transliterate($options, $string);
-            $string = preg_replace('/[=-\s]+/', $replacement, $string);
+            $string = preg_replace('/[-=\s]+/', $replacement, $string);
         } else {
             $string = str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
             $string = preg_replace('/[^\p{L}\p{Nd}]+/u', $replacement, $string);
