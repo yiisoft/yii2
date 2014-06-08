@@ -63,7 +63,7 @@ Yii Framework 2 Change Log
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
 - Enh #3380: Allow `value` in `defaultValueValidator` to be a closure (Alex-Code)
-- Enh #3399: Added support for MS SQL Server older than 2012 (fourteenmeister, samdark)
+- Enh #3399, #3241: Added support for MS SQL Server older than 2012 (fourteenmeister, samdark)
 - Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Enh #3518: `yii\helpers\Html::encode()` now replaces invalid code sequences with "�" (DaSourcerer)
 - Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
