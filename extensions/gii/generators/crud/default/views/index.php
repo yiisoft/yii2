@@ -19,8 +19,8 @@ use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\w
 
 /**
  * @var yii\web\View $this
- * @var yii\data\ActiveDataProvider $dataProvider
 <?= !empty($generator->searchModelClass) ? " * @var " . ltrim($generator->searchModelClass, '\\') . " \$searchModel\n" : '' ?>
+ * @var yii\data\ActiveDataProvider $dataProvider
  */
 
 $this->title = <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>;
