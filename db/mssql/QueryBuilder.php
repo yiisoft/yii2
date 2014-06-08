@@ -139,4 +139,91 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
     }
+    
+    public function buildOrderBy($columns)
+    {
+        if (empty($columns)) {
+            return 'ORDER BY (SELECT NULL)'; // hack so limit will work if no order by is specified
+        } else {
+            return parent::buildOrderBy($columns);
+        }
+    }
+    
+    public function build($query, $params = [])
+    {
+        $query->prepareBuild($this);
+
+        $params = empty($params) ? $query->params : array_merge($params, $query->params);
+
+        $clauses = [
+            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
+            $this->buildFrom($query->from, $params),
+            $this->buildJoin($query->join, $params),
+            $this->buildWhere($query->where, $params),
+            $this->buildGroupBy($query->groupBy),
+            $this->buildHaving($query->having, $params),
+            $this->buildOrderBy($query->orderBy),
+            $this->olderMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
+        ];
+
+        $sql = implode($this->separator, array_filter($clauses));
+        if ($this->olderMssql())
+            $sql = $this->applyLimit($sql, $query);
+        $union = $this->buildUnion($query->union, $params);
+        if ($union !== '') {
+            $sql = "($sql){$this->separator}$union";
+        }
+
+
+        return [$sql, $params];
+    }
+
+    public function applyLimit($sql, $query)
+    {
+        $limit = $query->limit !== null ? (int)$query->limit : -1;
+        $offset = $query->offset !== null ? (int)$query->offset : -1;
+        if ($limit > 0 || $offset >= 0)
+            $sql = $this->rewriteLimitOffsetSql($sql, $limit, $offset, $query);
+        return $sql;
+    }
+
+    protected function rewriteLimitOffsetSql($sql, $limit, $offset, $query)
+    {
+        $originalOrdering = $this->buildOrderBy($query->orderBy);
+        if ($query->select) {
+            $select = implode(', ', $query->select);
+        }
+        else {
+            $select = $query->select = '*';
+        }
+        if ($select === '*') {
+            $columns = $this->getAllColumnNames($query->modelClass);
+            if ($columns && is_array($columns))
+                $select = implode(', ', $columns);
+            else
+                $select = $columns;
+        }
+        $sql = str_replace($originalOrdering, '', $sql);
+        $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ({$originalOrdering}),", $sql);
+        $sql = "SELECT TOP {$limit} {$select} FROM ($sql) sub WHERE rowNum > {$offset}";
+        return $sql;
+    }
+
+    protected function getAllColumnNames($modelClass = null)
+    {
+        if (!$modelClass) {
+            return null;
+        }
+        $model = new $modelClass;
+        $schema = $model->getTableSchema();
+        $columns = array_keys($schema->columns);
+        return $columns;
+    }
+
+    protected function olderMssql()
+    {
+        $this->db->open();
+        $version = preg_split("/\./", $this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+        return $version[0] < 11;
+    }
 }
