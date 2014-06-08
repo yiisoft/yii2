@@ -11,6 +11,7 @@ use frontend\widgets\Alert;
  * @var string $content
  */
 AppAsset::register($this);
+$this->registerCsrfTags(Yii::$app->getRequest());
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

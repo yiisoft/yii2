@@ -44,3 +44,6 @@ Upgrade from Yii 2.0 Beta
   in this release.
 
 * `yii\console\controllers\AssetController` is now using hashes instead of timestamps. Replace all `{ts}` with `{hash}`.
+
+* If you are using CSRF protection feature, you should add corresponding meta tags manually into your page HTML.
+  This can be done via `yii\web\View::registerCsrfTags()`.

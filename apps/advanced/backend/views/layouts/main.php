@@ -10,6 +10,7 @@ use yii\widgets\Breadcrumbs;
  * @var string $content
  */
 AppAsset::register($this);
+$this->registerCsrfTags(Yii::$app->getRequest());
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
