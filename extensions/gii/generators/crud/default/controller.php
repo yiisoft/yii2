@@ -68,8 +68,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
 <?php else: ?>
         $dataProvider = new ActiveDataProvider([
