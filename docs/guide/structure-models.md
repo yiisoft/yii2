@@ -294,6 +294,9 @@ public function rules()
 If you do not specify the `on` property, the rule would be applied in all scenarios. A rule is called
 an *active rule* if it can be applied in the current [[yii\base\Model::scenario|scenario]].
 
+An attribute will be validated if and only if it is an active attribute declared in `scenarios()` and
+is associated with one or multiple active rules declared in `rules()`.
+
 
 ## Massive Assignment <a name="massive-assignment"></a>
 
