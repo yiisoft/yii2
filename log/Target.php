@@ -60,9 +60,12 @@ abstract class Target extends Component
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
     /**
-     * @var callable a PHP callable that returns a string to be prefix to every exported message.
-     * If not set, [[getMessagePrefix()]] will be used, which prefixes user IP, user ID and session ID
-     * to every message. The signature of the callable should be `function ($message)`.
+     * @var callable a PHP callable that returns a string to be prefixed to every exported message.
+     *
+     * If not set, [[getMessagePrefix()]] will be used, which prefixes the message with context information
+     * such as user IP, user ID and session ID.
+     *
+     * The signature of the callable should be `function ($message)`.
      */
     public $prefix;
     /**
@@ -78,6 +81,7 @@ abstract class Target extends Component
     public $messages = [];
 
     private $_levels = 0;
+
 
     /**
      * Exports log [[messages]] to a specific destination.
@@ -177,7 +181,8 @@ abstract class Target extends Component
 
     /**
      * Filters the given messages according to their categories and levels.
-     * @param array $messages messages to be filtered
+     * @param array $messages messages to be filtered.
+     * The message structure follows that in [[Logger::messages]].
      * @param integer $levels the message levels to filter by. This is a bitmap of
      * level values. Value 0 means allowing all levels.
      * @param array $categories the message categories to filter by. If empty, it means all categories are allowed.
@@ -214,14 +219,13 @@ abstract class Target extends Component
                 unset($messages[$i]);
             }
         }
-
         return $messages;
     }
 
     /**
-     * Formats a log message.
-     * The message structure follows that in [[Logger::messages]].
+     * Formats a log message for display as a string.
      * @param array $message the log message to be formatted.
+     * The message structure follows that in [[Logger::messages]].
      * @return string the formatted message
      */
     public function formatMessage($message)
@@ -229,30 +233,38 @@ abstract class Target extends Component
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            $text = var_export($text, true);
+            $text = VarDumper::export($text, true);
         }
 
-        $prefix = $this->prefix ? call_user_func($this->prefix, $message) : $this->getMessagePrefix($message);
-
+        $prefix = $this->getMessagePrefix($message);
         return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text";
     }
 
     /**
      * Returns a string to be prefixed to the given message.
+     * If [[prefix]] is configured it will return the result of the callback.
      * The default implementation will return user IP, user ID and session ID as a prefix.
-     * @param array $message the message being exported
+     * @param array $message the message being exported.
+     * The message structure follows that in [[Logger::messages]].
      * @return string the prefix string
      */
     public function getMessagePrefix($message)
     {
+        if ($this->prefix !== null) {
+            return call_user_func($this->prefix, $message);
+        }
+
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
+
         /** @var \yii\web\User $user */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         $userID = $user ? $user->getId(false) : '-';
+
         /** @var \yii\web\Session $session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
+
         return "[$ip][$userID][$sessionID]";
     }
 }

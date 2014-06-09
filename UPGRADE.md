@@ -44,3 +44,6 @@ Upgrade from Yii 2.0 Beta
   in this release.
 
 * `yii\console\controllers\AssetController` is now using hashes instead of timestamps. Replace all `{ts}` with `{hash}`.
+
+* The database table of the `yii\log\DbTarget` now needs a `prefix` column to store context information.
+  You can add it with `ALTER TABLE log ADD COLUMN prefix TEXT AFTER log_time;`.
