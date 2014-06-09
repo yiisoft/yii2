@@ -373,7 +373,7 @@ a validator that supports client-side validation *in addition to* server-side va
 
 Many [core validators](tutorial-core-validators.md) support client-side validation out-of-box. All you need to do
 is just to use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
-rules: one ues the [required](tutorial-core-validators.md#required) core validator which is supported on both
+rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
 client and server sides; the other uses the `validatePassword` inline validator which is only supported on the server
 side.
 
