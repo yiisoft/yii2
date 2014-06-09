@@ -186,8 +186,8 @@ http://hostname/index.php?r=site/entry
 Вы можете модифицировать подписи следующим образом:
 
 ```php
-<?= $form->field($model, 'name')->label('Your Name') ?>
-<?= $form->field($model, 'email')->label('Your Email') ?>
+<?= $form->field($model, 'name')->label('Ваше имя') ?>
+<?= $form->field($model, 'email')->label('Ваш Email') ?>
 ```
 
 > Информация: Yii дает возможность использовать подобные виджеты, чтобы обеспечить быстрое построение сложных и динамичных представлений.
