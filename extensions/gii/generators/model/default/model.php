@@ -13,11 +13,15 @@
  */
 
 echo "<?php\n";
+$class = new \ReflectionClass($generator->baseClass);
 ?>
 
 namespace <?= $generator->ns ?>;
 
 use Yii;
+<?php if ('\\' . ltrim($generator->ns, '\\') !== '\\' . ltrim($class->getNamespaceName(), '\\')): ?>
+use <?= ltrim($generator->baseClass, '\\') ?>;
+<?php endif; ?>
 
 /**
  * This is the model class for table "<?= $tableName ?>".
@@ -32,7 +36,7 @@ use Yii;
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
+class <?= $className ?> extends <?= $class->getShortName() . "\n" ?>
 {
     /**
      * @inheritdoc
