@@ -63,7 +63,6 @@ class LogPanel extends Panel
     {
         $target = $this->module->logTarget;
         $messages = $target->filterMessages($target->messages, Logger::LEVEL_ERROR | Logger::LEVEL_INFO | Logger::LEVEL_WARNING | Logger::LEVEL_TRACE);
-
         return ['messages' => $messages];
     }
 

@@ -15,6 +15,9 @@ Basic logging is as simple as calling one method:
 \Yii::info('Hello, I am a test log message');
 ```
 
+You can log simple strings as well as more complex data structures such as arrays or objects.
+When logging data that is not a string the defaulf yii log targets will serialize the value using [[yii\helpers\Vardumper::export()]].
+
 ### Message category
 
 Additionally to the message itself message category could be specified in order to allow filtering such messages and
