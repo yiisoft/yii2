@@ -3,14 +3,29 @@
 namespace common\tests\unit\models;
 
 use Yii;
-use frontend\tests\unit\TestCase;
-use common\models\User;
-use yii\helpers\Security;
+use common\tests\unit\DbTestCase;
+use Codeception\Specify;
+use common\models\LoginForm;
+use common\tests\fixtures\UserFixture;
 
-class LoginFormTest extends TestCase
+class LoginFormTest extends DbTestCase
 {
 
-    use \Codeception\Specify;
+    use Specify;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        Yii::configure(Yii::$app, [
+            'components' => [
+                'user' => [
+                    'class' => 'yii\web\User',
+                    'identityClass' => 'common\models\User',
+                ],
+            ],
+        ]);
+    }
 
     protected function tearDown()
     {
@@ -20,10 +35,10 @@ class LoginFormTest extends TestCase
 
     public function testLoginNoUser()
     {
-        $model = $this->mockUser(null);
-
-        $model->username = 'some_username';
-        $model->password = 'some_password';
+        $model = new LoginForm([
+            'username' => 'not_existing_username',
+            'password' => 'not_existing_password',
+        ]);
 
         $this->specify('user should not be able to login, when there is no identity', function () use ($model) {
             expect('model should not login user', $model->login())->false();
@@ -33,10 +48,10 @@ class LoginFormTest extends TestCase
 
     public function testLoginWrongPassword()
     {
-        $model = $this->mockUser(new User(['password_hash' => Security::generatePasswordHash('will-not-match')]));
-
-        $model->username = 'demo';
-        $model->password = 'wrong-password';
+        $model = new LoginForm([
+            'username' => 'bayer.hudson',
+            'password' => 'wrong_password',
+        ]);
 
         $this->specify('user should not be able to login with wrong password', function () use ($model) {
             expect('model should not login user', $model->login())->false();
@@ -47,10 +62,11 @@ class LoginFormTest extends TestCase
 
     public function testLoginCorrect()
     {
-        $model = $this->mockUser(new User(['password_hash' => Security::generatePasswordHash('demo')]));
 
-        $model->username = 'demo';
-        $model->password = 'demo';
+        $model = new LoginForm([
+            'username' => 'bayer.hudson',
+            'password' => 'password_0',
+        ]);
 
         $this->specify('user should be able to login with correct credentials', function () use ($model) {
             expect('model should login user', $model->login())->true();
@@ -59,11 +75,14 @@ class LoginFormTest extends TestCase
         });
     }
 
-    private function mockUser($user)
+    public function fixtures()
     {
-        $loginForm = $this->getMock('common\models\LoginForm', ['getUser']);
-        $loginForm->expects($this->any())->method('getUser')->will($this->returnValue($user));
-
-        return $loginForm;
+        return [
+            'user' => [
+                'class' => UserFixture::className(),
+                'dataFile' => '@common/tests/unit/fixtures/data/models/user.php'
+            ],
+        ];
     }
+
 }
