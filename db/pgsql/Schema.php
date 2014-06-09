@@ -430,7 +430,7 @@ SQL;
         $column->comment = $info['column_comment'];
         $column->dbType = $info['data_type'];
         $column->defaultValue = $info['column_default'];
-        $column->enumValues = explode(',', str_replace(["''"], ["'"], $info['enum_values']));
+        $column->enumValues = ($info['enum_values'] !== null) ? explode(',', str_replace(["''"], ["'"], $info['enum_values'])) : null;
         $column->unsigned = false; // has no meaning in PG
         $column->isPrimaryKey = $info['is_pkey'];
         $column->name = $info['column_name'];
