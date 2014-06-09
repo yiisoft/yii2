@@ -11,9 +11,9 @@ use yii\base\Component;
 use yii\helpers\StringHelper;
 
 /**
- * Cache is the base class for cache classes supporting different cache storage implementation.
+ * Cache is the base class for cache classes supporting different cache storage implementations.
  *
- * A data item can be stored in cache by calling [[set()]] and be retrieved back
+ * A data item can be stored in the cache by calling [[set()]] and be retrieved back
  * later (in the same or different request) by [[get()]]. In both operations,
  * a key identifying the data item is required. An expiration time and/or a [[Dependency|dependency]]
  * can also be specified when calling [[set()]]. If the data item expires or the dependency
@@ -21,23 +21,23 @@ use yii\helpers\StringHelper;
  *
  * A typical usage pattern of cache is like the following:
  *
- * ~~~
+ * ```php
  * $key = 'demo';
  * $data = $cache->get($key);
  * if ($data === false) {
  *     // ...generate $data here...
  *     $cache->set($key, $data, $duration, $dependency);
  * }
- * ~~~
+ * ```
  *
  * Because Cache implements the ArrayAccess interface, it can be used like an array. For example,
  *
- * ~~~
+ * ```php
  * $cache['foo'] = 'some data';
  * echo $cache['foo'];
- * ~~~
+ * ```
  *
- * Derived classes should implement the following methods:
+ * Derived classes should implement the following methods which do the actual cache storage operations:
  *
  * - [[getValue()]]: retrieve the value with a key (if any) from cache
  * - [[setValue()]]: store the value with a key into cache
