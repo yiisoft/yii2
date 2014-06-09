@@ -340,8 +340,150 @@ instead of `validateAttribute()` and `validate()` because by default the latter 
 by calling `validateValue()`.
 
 
-### Handling Empty and Array Inputs <a name="handling-empty-array-inputs"></a>
+### Handling Empty Inputs <a name="handling-empty-inputs"></a>
+
+Validators often need to check if an input is empty or not. You may call [[yii\validators\Validator::isEmpty()]]
+to perform this check. By default, this method will return true if a value is an empty string, an empty array or null.
+
+Users of validators can customize the default empty detection logic by configuring
+the [[yii\validators\Validator::isEmpty]] property. For example,
+
+```php
+[
+    ['agree', 'required', 'isEmpty' => function ($value) {
+        return empty($value);
+    }],
+]
+```
 
 
+## Client-Side Validation <a name="client-side-validation"></a>
 
-### Client-Side Validation <a name="client-side-validation"></a>
+Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
+it allows users to find out input errors faster and thus provides better user experience. You may use or implement
+a validator that supports client-side validation *in addition to* server-side validation.
+
+> Info: While client-side validation is desirable, it is not a must. It main purpose is to provider users better
+  experience. Like input data coming from end users, you should never trust client-side validation. For this reason,
+  you should always perform server-side validation by calling [[yii\base\Model::validate()]], like
+  described in the previous subsections.
+
+
+### Using Client-Side Validation <a name="using-client-side-validation"></a>
+
+Many [core validators](tutorial-core-validators.md) support client-side validation out-of-box. All you need to do
+is just to use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
+rules: one ues the [required](tutorial-core-validators.md#required) core validator which is supported on both
+client and server sides; the other uses the `validatePassword` inline validator which is only supported on the server
+side.
+
+```php
+namespace app\models;
+
+use yii\base\Model;
+use app\models\User;
+
+class LoginForm extends Model
+{
+    public $username;
+    public $password;
+
+    public function rules()
+    {
+        return [
+            // username and password are both required
+            [['username', 'password'], 'required'],
+
+            // password is validated by validatePassword()
+            ['password', 'validatePassword'],
+        ];
+    }
+
+    public function validatePassword()
+    {
+        $user = User::findByUsername($this->username);
+
+        if (!$user || !$user->validatePassword($this->password)) {
+            $this->addError('password', 'Incorrect username or password.');
+        }
+    }
+}
+```
+
+The HTML form built by the following code contains two input fields `username` and `password`.
+If you submit the form without entering anything, you will find the error messages requiring you
+to enter something appear right away without any communication with the server.
+
+```php
+<?php $form = yii\widgets\ActiveForm::begin(); ?>
+    <?= $form->field($model, 'username') ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
+    <?= Html::submitButton('Login') ?>
+<?php yii\widgets\ActiveForm::end(); ?>
+```
+
+Behind the scene, [[yii\widgets\ActiveForm]] will read the validation rules declared in the model
+and generate appropriate JavaScript code for validators that support client-side validation. When a user
+changes the value of an input field or submit the form, the client-side validation JavaScript will be triggered.
+
+If you do not want client-side validation, you may simply configure the [[yii\widgets\ActiveForm::enableClientValidation]]
+property to be false.
+
+
+### Implementing Client-Side Validation <a name="implementing-client-side-validation"></a>
+
+To create a validator that supports client-side validation, you should implement the
+[[yii\validators\Validator::clientValidateAttribute()]] method which returns a piece of JavaScript code
+that performs the validation on the client side. Within the JavaScript code, you may use the following
+predefined variables:
+
+- `attribute`: the name of the attribute being validated.
+- `value`: the value being validated.
+- `messages`: an array used to hold the validation error messages for the attribute.
+
+In the following example, we create a `StatusValidator` which validates if an input is a valid status input
+against the existing status data. The validator supports both server side and client side validation.
+
+```php
+namespace app\components;
+
+use yii\validators\Validator;
+use app\models\Status;
+
+class StatusValidator extends Validator
+{
+    public function init()
+    {
+        parent::init();
+        $this->message = 'Invalid status input.';
+    }
+
+    public function validateAttribute($model, $attribute)
+    {
+        $value = $model->$attribute;
+        if (!Status::find()->where(['id' => $value])->exists()) {
+            $model->addError($attribute, $this->message);
+        }
+    }
+
+    public function clientValidateAttribute($model, $attribute, $view)
+    {
+        $statuses = json_encode(Status::find()->select('id')->asArray()->column());
+        $message = json_encode($this->message);
+        return <<<JS
+if (!$.inArray(value, $statuses)) {
+    messages.push($message);
+}
+JS;
+    }
+}
+```
+
+> Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
+  you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
+  write the validation rule like the following:
+```php
+[
+    ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
+]
+```
