@@ -14,12 +14,15 @@
 
 echo "<?php\n";
 $baseClass = new \ReflectionClass($generator->baseClass);
+$classNs = '\\' . ltrim($generator->ns, '\\');
+$baseClassNs = '\\' . ltrim($baseClass->getNamespaceName(), '\\');
+$baseClassShortName = $baseClass->getShortName();
 ?>
 
 namespace <?= $generator->ns ?>;
 
 use Yii;
-<?php if ($className !== $baseClass->getShortName() && '\\' . ltrim($generator->ns, '\\') !== '\\' . ltrim($baseClass->getNamespaceName(), '\\')): ?>
+<?php if ($className !== $baseClassShortName && $classNs !== $baseClassNs && !class_exists($classNs . '\\' . $baseClassShortName)): ?>
 use <?= ltrim($generator->baseClass, '\\') ?>;
 <?php endif; ?>
 
@@ -36,7 +39,7 @@ use <?= ltrim($generator->baseClass, '\\') ?>;
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?= $className ?> extends <?= $className === $baseClass->getShortName() ? '\\' . ltrim($baseClass->getNamespaceName(), '\\') : $baseClass->getShortName() . "\n" ?>
+class <?= $className ?> extends <?= $className === $baseClassShortName || class_exists($classNs . '\\' . $baseClassShortName) ? $baseClass : $baseClassShortName . "\n" ?>
 {
     /**
      * @inheritdoc
