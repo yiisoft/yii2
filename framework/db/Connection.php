@@ -396,7 +396,7 @@ class Connection extends Component
             'sql' => $sql,
         ]);
 
-        return $params === [] ? $command : $command->bindValues($params);
+        return $command->bindValues($params);
     }
 
     /**
