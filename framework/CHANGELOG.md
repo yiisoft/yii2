@@ -58,6 +58,7 @@ Yii Framework 2 Change Log
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
 - Enh #3230: Added `yii\filters\AccessControl::user` to support access control with different actors (qiangxue)
 - Enh #3232: Added `export()` and `exportAsString()` methods to `yii\helpers\BaseVarDumper` (klimov-paul)
+- Enh #3244: Allow logging complex data such as arrays and object via the log system (cebe)
 - Enh #3252: Added support for case insensitive matching using ILIKE to PostgreSQL QueryBuilder (cebe)
 - Enh #3284: Added support for checking multiple ETags by `yii\filters\HttpCache` (qiangxue)
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
@@ -105,6 +106,8 @@ Yii Framework 2 Change Log
 - Chg: `yii\data\ActiveDataProvider::$query` will not be modified directly with pagination and sorting anymore so it will be reuseable (cebe)
 - Chg: Removed `yii\rest\ActiveController::$transactional` property and connected functionality (samdark)
 - Chg: Changed the default value of the `keyPrefix` property of cache components to be null (qiangxue)
+- Chg: Added `prefix` column to `yii\log\DbTarget` to have the same amount of information logged as in files and emails (cebe)
+
 
 2.0.0-beta April 13, 2014
 -------------------------
