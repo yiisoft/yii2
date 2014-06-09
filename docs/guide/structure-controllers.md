@@ -188,7 +188,7 @@ You may change the default controller with the following [application configurat
 
 ## Creating Actions <a name="creating-actions"></a>
 
-Creating actions can be as simple as defining the so-called *action methods*. An action method is
+Creating actions can be as simple as defining the so-called *action methods* in a controller class. An action method is
 a *public* method whose name starts with the word `action`. The return value of an action method represents
 the response data to be sent to end users. The following code defines two actions `index` and `hello-world`:
 

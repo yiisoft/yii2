@@ -1,8 +1,10 @@
 Running Applications
 ====================
 
-After installing Yii, you have a working Yii application that can be accessed via the URL  `http://hostname/basic/web/index.php` or `http://hostname/index.php`, depending upon your configuration. This section will introduce the application's built-in fucntionality, how the code is organized,
-and how the application handles requests in general.
+After installing Yii, you have a working Yii application that can be accessed via
+the URL `http://hostname/basic/web/index.php` or `http://hostname/index.php`, depending
+upon your configuration. This section will introduce the application's built-in functionality,
+how the code is organized, and how the application handles requests in general.
 
 > Info: For simplicity, throughout this "Getting Started" tutorial, it's assumed that you have set `basic/web`
   as the document root of your Web server, and configured, the URL for accessing
@@ -11,14 +13,14 @@ and how the application handles requests in general.
 
 
 Functionality <a name="functionality"></a>
----------------
+-------------
 
 The basic application installed contains four pages:
 
-* the homepage, displayed when you access the URL `http://hostname/index.php`
-* the "About" page
-* the "Contact" page displays a contact form that allows end users to contact you via email
-* the "Login" page displays a login form that can be used to authenticate end users. Try logging in
+* The homepage, displayed when you access the URL `http://hostname/index.php`,
+* the "About" page,
+* the "Contact" page, which displays a contact form that allows end users to contact you via email,
+* and the "Login" page, which displays a login form that can be used to authenticate end users. Try logging in
   with "admin/admin", and you will find the "Login" main menu item will change to "Logout".
 
 These pages share a common header and footer. The header contains a main menu bar to allow navigation
@@ -46,13 +48,13 @@ basic/                  application base path
     vendor/             contains the installed Composer packages, including the Yii framework itself
     views/              contains view files
     web/                application Web root, contains Web accessible files
-        assets/         contains published asset files (js, css) by Yii
+        assets/         contains published asset files (javascript and css) by Yii
         index.php       the entry (or bootstrap) script for the application
     yii                 the Yii console command execution script
 ```
 
 In general, the files in the application can be divided into two types: those under `basic/web` and those
-under other directories. The former can be directly accessed from via HTTP (i.e., in a browser), while the latter can not and should not be.
+under other directories. The former can be directly accessed via HTTP (i.e., in a browser), while the latter can not and should not be.
 
 Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) design pattern,
 which is reflected in the above directory organization. The `models` directory contains all [model classes](structure-models.md),

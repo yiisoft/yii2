@@ -2,27 +2,27 @@ Saying Hello
 ============
 
 This section describes how to create a new "Hello" page in your application.
-To achieve this goal, you will create an [action](structure-controllers.md) and 
+To achieve this goal, you will create an [action](structure-controllers.md#creating-actions) and
 a [view](structure-views.md):
 
 * The application will dispatch the page request to the action
-* And the action will in turn render the view that shows "Hello" to the end user
+* and the action will in turn render the view that shows the word "Hello" to the end user.
 
-Through this tutorial, you will learn how:
+Through this tutorial, you will learn three things:
 
-* To create an [action](structure-controllers.md) to respond to requests
-* To create a [view](structure-views.md) to compose the response's content
-* An application dispatches requests to [actions](structure-controllers.md)
+1. How to create an [action](structure-controllers.md) to respond to requests,
+2. how to create a [view](structure-views.md) to compose the response's content, and
+3. how an application dispatches requests to [actions](structure-controllers.md#creating-actions).
 
 
 Creating an Action <a name="creating-action"></a>
 ------------------
 
-For the "Hello" task, you will create a `say` [action](structure-controllers.md) that reads
+For the "Hello" task, you will create a `say` [action](structure-controllers.md#creating-actions) that reads
 a `message` parameter from the request and displays that message back to the user. If the request
 does not provide a `message` parameter, the action will display the default "Hello" message.
 
-> Info: [Actions](structure-controllers.md) are the objects that end users can directly refer to for
+> Info: [Actions](structure-controllers.md#creating-actions) are the objects that end users can directly refer to for
   execution. Actions are grouped by [controllers](structure-controllers.md). The execution result of
   an action is the response that an end user will receive.
 
@@ -48,17 +48,21 @@ class SiteController extends Controller
 }
 ```
 
-In the above code, the `say` action is defined as a method named `actionSay` in `SiteController`.
+In the above code, the `say` action is defined as a method named `actionSay` in the `SiteController` class.
 Yii uses the prefix `action` to differentiate action methods from non-action methods in a controller class.
-The name after the `action` prefix is maps to the action's ID.
+The name after the `action` prefix maps to the action's ID.
 
-When it comes to naming your actions, you should understand how Yii treats action IDs. Action IDs are always referenced in lower case. If an action ID requires multiple words, they will be concatenated by dashes (e.g., `create-comment`). Action method names are mapped to action IDs by removing any dashes from the IDs,
-  capitalizing the first letter in each word, and prefixing the resulting with `action`. For example,
-  the action ID `create-comment` corresponds to the action method name `actionCreateComment`.
+When it comes to naming your actions, you should understand how Yii treats action IDs. Action IDs are always
+referenced in lower case. If an action ID requires multiple words, they will be concatenated by dashes
+(e.g., `create-comment`). Action method names are mapped to action IDs by removing any dashes from the IDs,
+capitalizing the first letter in each word, and prefixing the resulting with `action`. For example,
+the action ID `create-comment` corresponds to the action method name `actionCreateComment`.
 
-The action method takes a parameter `$message`, whose value defaults to `"Hello"` (in exatly the same way you set a default value for any function or method argument in PHP). When the application
+The action method in our example takes a parameter `$message`, whose value defaults to `"Hello"` (in exactly
+the same way you set a default value for any function or method argument in PHP). When the application
 receives a request and determines that the `say` action is responsible for handling said request, the application will
-populate this parameter with the same named parameter found in the request. In other words, if the request includes a `message` paremter with a value of `"Goodbye"`, the $message variable within the action will be assigned that value.
+populate this parameter with the same named parameter found in the request. In other words, if the request includes
+a `message` parameter with a value of `"Goodbye"`, the `$message` variable within the action will be assigned that value.
 
 Within the action method, [[yii\web\Controller::render()|render()]] is called to render
 a [view](structure-views.md) file named `say`. The `message` parameter is also passed to the view
@@ -80,7 +84,7 @@ use yii\helpers\Html;
 ```
 
 The `say` view should be saved in the file `views/site/say.php`. When the method [[yii\web\Controller::render()|render()]]
-is called in an action, it will look for a PHP file named as `views/ControllerID/ActionID/ViewName.php`.
+is called in an action, it will look for a PHP file named as `views/ControllerID/ViewName.php`.
 
 Note that in the above code, the `message` parameter is [[yii\helpers\Html::encode()|HTML-encoded]]
 before being printed. This is necessary as the parameter comes from an end user, making it vulnerable to
@@ -95,7 +99,7 @@ The content printed by the view script will be returned to the application as th
 Trying it Out <a name="trying-it-out"></a>
 -------------
 
-After creating the action and the view, you may access the new page by the following URL:
+After creating the action and the view, you may access the new page by accessing the following URL:
 
 ```
 http://hostname/index.php?r=site/say&message=Hello+World
@@ -109,9 +113,10 @@ If you omit the `message` parameter in the URL, you would see the page display j
 the default value of `"Hello"` will be used instead.
 
 > Info: The new page shares the same header and footer as other pages because the [[yii\web\Controller::render()|render()]]
-  method will automatically embed the result of the `say` view in a so-called [layout](structure-views.md) `views/layouts/main.php`.
+  method will automatically embed the result of the `say` view in a so-called [layout](structure-views.md#layouts) which in this
+  case is located at `views/layouts/main.php`.
 
-The `r` parameter requires more explanation. It stands for [route](runtime-routing.md), a globally unique ID
+The `r` parameter in the above URL requires more explanation. It stands for [route](runtime-routing.md), an application wide unique ID
 that refers to an action. The route's format is `ControllerID/ActionID`. When the application receives
 a request, it will check this parameter, using the `ControllerID` part to determine which controller
 class should be instantiated to handle the request. Then, the controller will use the `ActionID` part
