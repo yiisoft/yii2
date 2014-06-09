@@ -76,7 +76,6 @@ Yii Framework 2 Change Log
 - Enh #3631: Added property `currencyCode` to `yii\i18n\Formatter` (leandrogehlen)
 - Enh #3636: Hide menu container tag with empty items in `yii\widgets\Menu` (arturf)
 - Enh #3643: Improved Mime-Type detection by using the `mime.types` file from apache http project to dected mime types by file extension (cebe, pavel-voronin, trejder)
-- Enh #3744: `yii\db\Connection` now skips `bindValues` if there are no parameters to bind (samdark, novalicious)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
