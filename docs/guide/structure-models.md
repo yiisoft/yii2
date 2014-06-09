@@ -1,8 +1,8 @@
 Models
 ======
 
-Models are objects representing business data, rules and logic. They are part of
-the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
+Models are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
+They are objects representing business data, rules and logic.
 
 You can create model classes by extending [[yii\base\Model]] or its child classes. The base class
 [[yii\base\Model]] supports many useful features:
@@ -11,7 +11,7 @@ You can create model classes by extending [[yii\base\Model]] or its child classe
   or array elements;
 * [Attribute labels](#attribute-labels): specify the display labels for attributes;
 * [Massive assignment](#massive-assignment): supports populating multiple attributes in a single step;
-* [Validation](#validation): ensures input data based on the declared validation rules;
+* [Validation rules](#validation-rules): ensures input data based on the declared validation rules;
 * [Data Exporting](#data-exporting): allows model data to be exported in terms of arrays with customizable formats.
 
 The `Model` class is also the base class for more advanced models, such as [Active Record](db-active-record.md).
@@ -82,7 +82,7 @@ override the magic methods such as `__get()`, `__set()` so that the attributes c
 normal object properties.
 
 
-## Attribute Labels <a name="attribute-labels"></a>
+### Attribute Labels <a name="attribute-labels"></a>
 
 When displaying values or getting input for attributes, you often need to display some labels associated
 with attributes. For example, given an attribute named `firstName`, you may want to display a label `First Name`
@@ -171,7 +171,7 @@ $model->scenario = 'login';
 $model = new User(['scenario' => 'login']);
 ```
 
-By default, the scenarios supported by a model are determined by the [validation rules](#validation) declared
+By default, the scenarios supported by a model are determined by the [validation rules](#validation-rules) declared
 in the model. However, you can customize this behavior by overriding the [[yii\base\Model::scenarios()]] method,
 like the following:
 
@@ -197,7 +197,7 @@ class User extends ActiveRecord
 
 The `scenarios()` method returns an array whose keys are the scenario names and values the corresponding
 *active attributes*. An active attribute can be [massively assigned](#massive-assignment) and is subject
-to [validation](#validation). In the above example, the `username` and `password` attributes are active
+to [validation](#validation-rules). In the above example, the `username` and `password` attributes are active
 in the `login` scenario; while in the `register` scenario, `email` is also active besides `username` and `password`.
 
 The default implementation of `scenarios()` will return all scenarios found in the validation rule declaration
@@ -221,12 +221,12 @@ class User extends ActiveRecord
 }
 ```
 
-The scenario feature is primarily used by [validation](#validation) and [massive attribute assignment](#massive-assignment).
+The scenario feature is primarily used by [validation](#validation-rules) and [massive attribute assignment](#massive-assignment).
 You can, however, use it for other purposes. For example, you may declare [attribute labels](#attribute-labels)
 differently based on the current scenario.
 
 
-## Validation <a name="validation"></a>
+## Validation Rules <a name="validation-rules"></a>
 
 When the data for a model is received from end users, it should be validated to make sure it satisfies
 certain rules (called *validation rules*, also known as *business rules*). For example, given a `ContactForm` model,

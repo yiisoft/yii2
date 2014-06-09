@@ -1,10 +1,100 @@
-View
-====
+Views
+=====
 
-> Note: This section is under development.
+Views are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
+They are responsible for presenting data to end users. In a Yii application, the view layer is composed by
+[view templates](#view-templates) and [view components](#view-components). The former contains presentational
+code (e.g. HTML), while the latter provides common view-related features and is responsible for turning view
+templates into response content. We often use "views" to refer to view templates.
 
-The view component is an important part of MVC. The view acts as the interface to the application, making it responsible
-for presenting data to end users, displaying forms, and so forth.
+
+## View Templates
+
+You turn a view template into response content by pushing [model](structure-models.md) data into
+the template and rendering it. For example, in the `post/view` action below, the `view` template
+is rendered with the `$model` data. The rendering result is a string which is returned by the action as the response content.
+
+```php
+namespace app\controllers;
+
+use Yii;
+use app\models\Post;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+
+class PostController extends Controller
+{
+    public function actionView($id)
+    {
+        $model = Post::findOne($id);
+        if ($model === null) {
+            throw new NotFoundHttpException;
+        }
+
+        return $this->render('view', [
+            'model' => $model,
+        ]);
+    }
+}
+```
+
+### Rendering Views in Controllers
+
+### Rendering Views in Widgets
+
+### Rendering Views in Views
+
+### View Names
+
+By default, a view template is simply a PHP script file (called *view file*). Like [models](structure-models.md)
+and [controllers](structure-controllers.md), view files are usually organized under the so-called *view paths*.
+For views rendered by controllers that directly belong to an application, they are located under the `@app/views` path.
+
+* applications:
+* modules:
+* controllers:
+* widgets and other components:
+
+When rendering a view template, you can specify it using a view name, a view file path,
+or an [alias](concept-aliases.md) to the view file path.
+
+If a view name is used, it will be resolved into a view file path according to the current
+[[yii\base\View::context|view context]] using one of the following rules:
+
+* If the view name starts with double slashes `//`, the corresponding view file path is considered to be
+  `@app/views/ViewName`. For example, `//site/about` will be resolved into `@app/views/site/about`.
+* If the view name starts with a single slash `/`, the view file path is formed by prefixing the view name
+  with the [[yii\base\Module::viewPath|view path]] of the currently active [module](structure-modules.md).
+  If there is no active module, `@app/views/ViewName` will be used. For example, `/user/create` will be resolved into
+  `@app/modules/user/views/user/create`, if the currently active module is `user`. If there is no active module,
+  the view file path would be `@app/views/user/create`.
+* If the view is rendered with a [[yii\base\View::context|context]], the view file path will be prefixed with
+  the [[yii\base\ViewContextInterface::getViewPath()|view path]]. For example, `site/about` will be resolved
+  into `@app/views/site/about` if the context is the `SiteController`.
+* If a view was previously rendered, the directory containing that view file will be prefixed to
+  the new view name.
+
+
+## Layouts
+
+### Nested Layouts
+
+
+### Accessing Data
+
+## View Components
+
+## Creating Views
+
+### Setting page title
+### Adding meta tags
+### Registering link tags
+### Registering CSS
+### Registering scripts
+### Static Pages
+### Assets
+
+## Alternative Template Engines
 
 
 Basics
