@@ -68,10 +68,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columnSchemas = [];
         }
 
-        foreach ($columns as $i => $name) {
-            $columns[$i] = $this->db->quoteColumnName($name);
-        }
-
         $values = [];
         foreach ($rows as $row) {
             $vs = [];
@@ -89,6 +85,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $vs[] = $value;
             }
             $values[] = implode(', ', $vs);
+        }
+
+        foreach ($columns as $i => $name) {
+            $columns[$i] = $this->db->quoteColumnName($name);
         }
 
         return 'INSERT INTO ' . $this->db->quoteTableName($table)
