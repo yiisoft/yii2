@@ -9,19 +9,26 @@ use frontend\models\ResetPasswordForm;
 class ResetPasswordFormTest extends DbTestCase
 {
 
-    use \Codeception\Specify;
-
-    public function testResetPassword()
+    /**
+     * @expectedException yii\base\InvalidParamException
+     */
+    public function testResetWrongToken()
     {
-        $this->specify('wrong reset token', function () {
-            $this->setExpectedException('\Exception', 'Wrong password reset token.');
-            new ResetPasswordForm('notexistingtoken_1391882543');
-        });
+        new ResetPasswordForm('notexistingtoken_1391882543');
+    }
 
-        $this->specify('not correct token', function () {
-            $this->setExpectedException('yii\base\InvalidParamException', 'Password reset token cannot be blank.');
-            new ResetPasswordForm('');
-        });
+    /**
+     * @expectedException yii\base\InvalidParamException
+     */
+    public function testResetEmptyToken()
+    {
+        new ResetPasswordForm('');
+    }
+
+    public function testResetCorrectToken()
+    {
+        $form = new ResetPasswordForm($this->user[0]['password_reset_token']);
+        expect('password should be resetted', $form->resetPassword())->true();
     }
 
     public function fixtures()
@@ -29,8 +36,9 @@ class ResetPasswordFormTest extends DbTestCase
         return [
             'user' => [
                 'class' => UserFixture::className(),
-                'dataFile' => '@frontend/tests/unit/fixtures/data/user.php'
+                'dataFile' => '@frontend/tests/unit/fixtures/data/models/user.php'
             ],
         ];
     }
+
 }

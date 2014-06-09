@@ -100,7 +100,7 @@ TESTING
 -------
 
 Install additional composer packages:
-* `php composer.phar require --dev "codeception/codeception: 1.8.*@dev" "codeception/specify: *" "codeception/verify: *"`
+* `php composer.phar require --dev "codeception/codeception: 1.8.*@dev" "codeception/specify: *" "codeception/verify: *" "yiisoft/yii2-faker: *"`
 
 This application boilerplate use database in testing, so you should create three databases that are used in tests:
 * `yii2_advanced_unit` - database for unit tests;
@@ -124,3 +124,4 @@ After that is done you should be able to run your tests, for example to run `fro
 In similar way you can run tests for other application tiers - `backend`, `console`, `common`.
 
 You also can adjust you application suite configs and `_bootstrap.php` settings to use other urls and files, as it is can be done in `yii2-basic`.
+Current template also includes [yii2-faker](https://github.com/yiisoft/yii2/tree/master/extensions/faker) extension, that is correctly setup for each application tier.
