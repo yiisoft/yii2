@@ -233,7 +233,7 @@ abstract class Target extends Component
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            $text = VarDumper::export($text, true);
+            $text = VarDumper::export($text);
         }
 
         $prefix = $this->getMessagePrefix($message);
