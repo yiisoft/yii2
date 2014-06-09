@@ -57,7 +57,6 @@ class Dropdown extends Widget
     public function run()
     {
         echo $this->renderItems($this->items);
-        $this->registerPlugin('dropdown');
     }
 
     /**
