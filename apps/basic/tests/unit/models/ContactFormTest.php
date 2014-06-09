@@ -4,10 +4,11 @@ namespace tests\unit\models;
 
 use Yii;
 use yii\codeception\TestCase;
+use Codeception\Specify;
 
 class ContactFormTest extends TestCase
 {
-    use \Codeception\Specify;
+    use Specify;
 
     protected function setUp()
     {
@@ -55,4 +56,5 @@ class ContactFormTest extends TestCase
     {
         return Yii::getAlias(Yii::$app->mail->fileTransportPath) . '/testing_message.eml';
     }
+
 }
