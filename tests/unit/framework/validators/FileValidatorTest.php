@@ -21,7 +21,7 @@ class FileValidatorTest extends TestCase
     public function testAssureMessagesSetOnInit()
     {
         $val = new FileValidator();
-        foreach (['message', 'uploadRequired', 'tooMany', 'wrongType', 'tooBig', 'tooSmall'] as $attr) {
+        foreach (['message', 'uploadRequired', 'tooMany', 'wrongType', 'tooBig', 'tooSmall', 'wrongMimeType'] as $attr) {
             $this->assertTrue(is_string($val->$attr));
         }
     }
@@ -30,16 +30,42 @@ class FileValidatorTest extends TestCase
     {
         $val = new FileValidator(['types' => 'jpeg, jpg, gif']);
         $this->assertEquals(['jpeg', 'jpg', 'gif'], $val->types);
+
         $val = new FileValidator(['types' => 'jpeg']);
         $this->assertEquals(['jpeg'], $val->types);
+
         $val = new FileValidator(['types' => '']);
         $this->assertEquals([], $val->types);
+
         $val = new FileValidator(['types' => []]);
         $this->assertEquals([], $val->types);
+
         $val = new FileValidator();
         $this->assertEquals([], $val->types);
+
         $val = new FileValidator(['types' => ['jpeg', 'exe']]);
         $this->assertEquals(['jpeg', 'exe'], $val->types);
+    }
+
+    public function testMimeTypeSplitOnInit()
+    {
+        $val = new FileValidator(['mimeTypes' => 'text/plain, image/png']);
+        $this->assertEquals(['text/plain', 'image/png'], $val->mimeTypes);
+
+        $val = new FileValidator(['mimeTypes' => 'text/plain']);
+        $this->assertEquals(['text/plain'], $val->mimeTypes);
+
+        $val = new FileValidator(['mimeTypes' => '']);
+        $this->assertEquals([], $val->mimeTypes);
+
+        $val = new FileValidator(['mimeTypes' => []]);
+        $this->assertEquals([], $val->mimeTypes);
+
+        $val = new FileValidator();
+        $this->assertEquals([], $val->mimeTypes);
+
+        $val = new FileValidator(['mimeTypes' => ['text/plain', 'image/png']]);
+        $this->assertEquals(['text/plain', 'image/png'], $val->mimeTypes);
     }
 
     public function testGetSizeLimit()
