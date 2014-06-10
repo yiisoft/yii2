@@ -5,6 +5,7 @@ Yii Framework 2 gii extension Change Log
 --------------------------
 
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
+- Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)
 - Bug #3265: Fixed incorrect controller class name validation (suralc)
 - Bug #3693: Fixed broken Gii preview when a file is unchanged (cebe)
 - Enh #2018: Search model is not required anymore in CRUD generator (johonunu)

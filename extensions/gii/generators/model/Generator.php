@@ -322,10 +322,14 @@ class Generator extends \yii\gii\Generator
 
                 // Add relation for the referenced table
                 $hasMany = false;
-                foreach ($fks as $key) {
-                    if (!in_array($key, $table->primaryKey, true)) {
-                        $hasMany = true;
-                        break;
+                if (count($table->primaryKey) > count($fks)) {
+                    $hasMany = true;
+                } else {
+                    foreach ($fks as $key) {
+                        if (!in_array($key, $table->primaryKey, true)) {
+                            $hasMany = true;
+                            break;
+                        }
                     }
                 }
                 $link = $this->generateRelationLink($refs);
