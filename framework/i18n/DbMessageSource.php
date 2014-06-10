@@ -141,7 +141,7 @@ class DbMessageSource extends MessageSource
     {
         $mainQuery = new Query();
         $mainQuery->select(['t1.message message', 't2.translation translation'])
-            ->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
+            ->from(["$this->sourceMessageTable t1", "$this->messageTable t2"])
             ->where('t1.id = t2.id AND t1.category = :category AND t2.language = :language')
             ->params([':category' => $category, ':language' => $language]);
 
@@ -149,9 +149,9 @@ class DbMessageSource extends MessageSource
         if ($fallbackLanguage != $language) {
             $fallbackQuery = new Query();
             $fallbackQuery->select(['t1.message message', 't2.translation translation'])
-                ->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
+                ->from(["$this->sourceMessageTable t1", "$this->messageTable t2"])
                 ->where('t1.id = t2.id AND t1.category = :category AND t2.language = :fallbackLanguage')
-                ->andWhere('t2.id NOT IN (SELECT id FROM '.$this->messageTable.' WHERE language = :language)')
+                ->andWhere("t2.id NOT IN (SELECT id FROM $this->messageTable WHERE language = :language)")
                 ->params([':category' => $category, ':language' => $language, ':fallbackLanguage' => $fallbackLanguage]);
 
             $mainQuery->union($fallbackQuery, true);
