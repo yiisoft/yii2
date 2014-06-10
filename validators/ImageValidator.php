@@ -9,7 +9,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\web\UploadedFile;
-use yii\helpers\FileHelper;
 
 /**
  * ImageValidator verifies if an attribute is receiving a valid image.
@@ -52,15 +51,6 @@ class ImageValidator extends FileValidator
      */
     public $maxHeight;
     /**
-     * @var array|string a list of file MIME types that are allowed to be uploaded.
-     * This can be either an array or a string consisting of file MIME types
-     * separated by space or comma (e.g. "image/jpeg, image/png").
-     * Mime type names are case-insensitive. Defaults to null, meaning all MIME types
-     * are allowed.
-     * @see wrongMimeType
-     */
-    public $mimeTypes;
-    /**
      * @var string the error message used when the image is under [[minWidth]].
      * You may use the following tokens in the message:
      *
@@ -96,16 +86,7 @@ class ImageValidator extends FileValidator
      * - {limit}: the value of [[maxHeight]]
      */
     public $overHeight;
-    /**
-     * @var string the error message used when the file has an mime type
-     * that is not listed in [[mimeTypes]].
-     * You may use the following tokens in the message:
-     *
-     * - {attribute}: the attribute name
-     * - {file}: the uploaded file name
-     * - {mimeTypes}: the value of [[mimeTypes]]
-     */
-    public $wrongMimeType;
+
 
     /**
      * @inheritdoc
@@ -129,12 +110,6 @@ class ImageValidator extends FileValidator
         if ($this->overHeight === null) {
             $this->overHeight = Yii::t('yii', 'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
         }
-        if ($this->wrongMimeType === null) {
-            $this->wrongMimeType = Yii::t('yii', 'Only files with these MIME types are allowed: {mimeTypes}.');
-        }
-        if (!is_array($this->mimeTypes)) {
-            $this->mimeTypes = preg_split('/[\s,]+/', strtolower($this->mimeTypes), -1, PREG_SPLIT_NO_EMPTY);
-        }
     }
 
     /**
@@ -155,10 +130,6 @@ class ImageValidator extends FileValidator
      */
     protected function validateImage($image)
     {
-        if (!empty($this->mimeTypes) && !in_array(FileHelper::getMimeType($image->tempName), $this->mimeTypes, true)) {
-            return [$this->wrongMimeType, ['file' => $image->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
-        }
-
         if (false === ($imageInfo = getimagesize($image->tempName))) {
             return [$this->notImage, ['file' => $image->name]];
         }

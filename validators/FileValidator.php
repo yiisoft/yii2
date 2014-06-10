@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\web\UploadedFile;
+use yii\helpers\FileHelper;
 
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.
@@ -29,6 +30,15 @@ class FileValidator extends Validator
      * @see wrongType
      */
     public $types;
+    /**
+     * @var array|string a list of file MIME types that are allowed to be uploaded.
+     * This can be either an array or a string consisting of file MIME types
+     * separated by space or comma (e.g. "text/plain, image/png").
+     * Mime type names are case-insensitive. Defaults to null, meaning all MIME types
+     * are allowed.
+     * @see wrongMimeType
+     */
+    public $mimeTypes;
     /**
      * @var integer the minimum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
@@ -93,6 +103,17 @@ class FileValidator extends Validator
      * - {limit}: the value of [[maxFiles]]
      */
     public $tooMany;
+    /**
+     * @var string the error message used when the file has an mime type
+     * that is not listed in [[mimeTypes]].
+     * You may use the following tokens in the message:
+     *
+     * - {attribute}: the attribute name
+     * - {file}: the uploaded file name
+     * - {mimeTypes}: the value of [[mimeTypes]]
+     */
+    public $wrongMimeType;
+
 
     /**
      * @inheritdoc
@@ -120,6 +141,12 @@ class FileValidator extends Validator
         }
         if (!is_array($this->types)) {
             $this->types = preg_split('/[\s,]+/', strtolower($this->types), -1, PREG_SPLIT_NO_EMPTY);
+        }
+        if ($this->wrongMimeType === null) {
+            $this->wrongMimeType = Yii::t('yii', 'Only files with these MIME types are allowed: {mimeTypes}.');
+        }
+        if (!is_array($this->mimeTypes)) {
+            $this->mimeTypes = preg_split('/[\s,]+/', strtolower($this->mimeTypes), -1, PREG_SPLIT_NO_EMPTY);
         }
     }
 
@@ -178,6 +205,8 @@ class FileValidator extends Validator
                     return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
                 } elseif (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
                     return [$this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]];
+                } elseif (!empty($this->mimeTypes) && !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, true)) {
+                    return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
                 }
