@@ -860,44 +860,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
-     * Determines which fields can be returned by [[toArray()]].
-     * This method will check the requested fields against those declared in [[fields()]] and [[extraFields()]]
-     * to determine which fields can be returned.
-     * @param array $fields the fields being requested for exporting
-     * @param array $expand the additional fields being requested for exporting
-     * @return array the list of fields to be exported. The array keys are the field names, and the array values
-     * are the corresponding object property names or PHP callables returning the field values.
-     */
-    protected function resolveFields(array $fields, array $expand)
-    {
-        $result = [];
-
-        foreach ($this->fields() as $field => $definition) {
-            if (is_integer($field)) {
-                $field = $definition;
-            }
-            if (empty($fields) || in_array($field, $fields, true)) {
-                $result[$field] = $definition;
-            }
-        }
-
-        if (empty($expand)) {
-            return $result;
-        }
-
-        foreach ($this->extraFields() as $field => $definition) {
-            if (is_integer($field)) {
-                $field = $definition;
-            }
-            if (in_array($field, $expand, true)) {
-                $result[$field] = $definition;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Returns an iterator for traversing the attributes in the model.
      * This method is required by the interface IteratorAggregate.
      * @return ArrayIterator an iterator for traversing the items in the list.
