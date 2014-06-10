@@ -361,6 +361,52 @@ In `search()` you then just add another filter condition with `$query->andFilter
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
 
+There is also other approach that can be faster and more useful - sql views. So for example if we need to show gridview 
+with users and their profiles we can do it in this way:
+
+```php
+CREATE OR REPLACE VIEW vw_user_info AS
+    SELECT user.*, user_profile.lastname, user_profile.firstname
+    FROM users, user_profile
+    WHERE user.id = user_profile.user_id
+```
+
+Then you need to create ActiveRecord that will be representing this view:
+
+```php
+
+namespace app\models\views\grid;
+
+use yii\db\ActiveRecord;
+
+class UserView extends ActiveRecord
+{
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'vw_user_info';
+    }
+
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
+}
+```
+
+After that you can youse this UserView active record with search models, without additional specifying of sorting and filtering attributes.
+All attributes will be working out of the box. Note that this approach has several pros and cons:
+
+- you dont need to specify different sorting and filtering conditions and other things. Everything works out of the box;
+- it can be much faster because of data size, count of sql queries performed (for each relation you will need additional query);
+- since this is a just simple mupping UI on sql view it lacks of some domain logic that is in your entities, so if you will have some methods like `isActive`,
+`isDeleted` or other that will influence on UI you will need to duplicate them in this class too.
+
+
 ### Multiple GridViews on one page
 
 You can use more than one GridView on a single page but some additional configuration is needed so that
