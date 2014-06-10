@@ -361,13 +361,15 @@ In `search()` you then just add another filter condition with `$query->andFilter
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
 
+#### Using sql views for filtering, sorting and displaying data
+
 There is also other approach that can be faster and more useful - sql views. So for example if we need to show gridview 
 with users and their profiles we can do it in this way:
 
 ```php
 CREATE OR REPLACE VIEW vw_user_info AS
     SELECT user.*, user_profile.lastname, user_profile.firstname
-    FROM users, user_profile
+    FROM user, user_profile
     WHERE user.id = user_profile.user_id
 ```
 
@@ -394,6 +396,27 @@ class UserView extends ActiveRecord
     {
         return ['id'];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            // define here your rules
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function attributeLabels()
+    {
+        return [
+            // define here your attribute labels
+        ];
+    }
+
 
 }
 ```
