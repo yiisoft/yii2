@@ -245,7 +245,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class PostSearch extends Model
+class PostSearch extends Post
 {
     public function rules()
     {
