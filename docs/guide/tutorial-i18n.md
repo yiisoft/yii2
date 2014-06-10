@@ -29,7 +29,9 @@ Target language is what's currently used. It's defined in application configurat
 return [
     'id' => 'applicationID',
     'basePath' => dirname(__DIR__),
-    'language' => 'ru-RU' // ← here!
+    'language' => 'ru-RU' // <- here!
+    // ...
+]
 ```
 
 Later you can easily change it in runtime:
@@ -45,7 +47,7 @@ Format is `ll-CC` where `ll` is  two- or three-letter lowercase code for a langu
 If there's no translation for `ru-RU` Yii will try `ru` as well before failing.
 
 > **Note**: you can further customize details specifying language
-> [as documented in ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+> [as documented in the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
 Message translation
 -------------------

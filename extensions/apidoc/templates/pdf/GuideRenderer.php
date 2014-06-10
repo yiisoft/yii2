@@ -44,9 +44,6 @@ class GuideRenderer extends \yii\apidoc\templates\html\GuideRenderer
         $fileData = [];
         $chapters = $this->loadGuideStructure($files);
         foreach ($files as $file) {
-            if (basename($file) == 'tutorial-i18n.md') {
-                continue; // TODO avoid i18n tut because of non displayable characters right now. need to fix it.
-            }
             $fileData[basename($file)] = file_get_contents($file);
 //            if (preg_match("/^(.*)\n=+/", $fileData[$file], $matches)) {
 //                $headlines[$file] = $matches[1];
