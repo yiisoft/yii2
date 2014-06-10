@@ -205,7 +205,7 @@ class FileValidator extends Validator
                     return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
                 } elseif (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
                     return [$this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]];
-                } elseif (!empty($this->mimeTypes) && !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, true)) {
+                } elseif (!empty($this->mimeTypes) && !in_array(FileHelper::getMimeType($file->name), $this->mimeTypes, true)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
