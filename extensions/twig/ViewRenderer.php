@@ -56,7 +56,7 @@ class ViewRenderer extends BaseViewRenderer
     public $filters = [];
     /**
      * @var array Custom extensions.
-     * Example: `['Twig_Extension_Sandbox', 'Twig_Extension_Text']`
+     * Example: `['Twig_Extension_Sandbox', new \Twig_Extension_Text()]`
      */
     public $extensions = [];
     /**
@@ -83,13 +83,6 @@ class ViewRenderer extends BaseViewRenderer
             'cache' => Yii::getAlias($this->cachePath),
             'charset' => Yii::$app->charset,
         ], $this->options));
-
-        // Adding custom extensions
-        if (!empty($this->extensions)) {
-            foreach ($this->extensions as $extension) {
-                $this->twig->addExtension(new $extension());
-            }
-        }
 
         // Adding custom globals (objects or static classes)
         if (!empty($this->globals)) {
@@ -198,7 +191,7 @@ class ViewRenderer extends BaseViewRenderer
     public function addExtensions($extensions)
     {
         foreach ($extensions as $extName) {
-            $this->twig->addExtension(new $extName());
+            $this->twig->addExtension(is_object($extName) ? $extName : new $extName());
         }
     }
 
