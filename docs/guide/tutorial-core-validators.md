@@ -241,6 +241,9 @@ This validator checks if the input is a valid uploaded file.
   an array or a string consisting of file extension names separated by space or comma (e.g. "gif, jpg").
   Extension names are case-insensitive. Defaults to null, meaning all file name
   extensions are allowed.
+- `mimeTypes`: a list of file MIME types that are allowed to be uploaded. This can be either an array
+  or a string consisting of file MIME types separated by space or comma (e.g. "image/jpeg, image/png").
+  Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
 - `minSize`: the minimum number of bytes required for the uploaded file. Defaults to null, meaning no lower limit.
 - `maxSize`: the maximum number of bytes allowed for the uploaded file. Defaults to null, meaning no upper limit.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
@@ -298,9 +301,6 @@ validation purpose:
 - `maxWidth`: the maximum width of the image. Defaults to null, meaning no upper limit.
 - `minHeight`: the minimum height of the image. Defaults to null, meaning no lower limit.
 - `maxHeight`: the maximum height of the image. Defaults to null, meaning no upper limit.
-- `mimeTypes`: a list of file MIME types that are allowed to be uploaded. This can be either an array
-  or a string consisting of file MIME types separated by space or comma (e.g. "image/jpeg, image/png").
-  Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
 
 
 ## [[yii\validators\RangeValidator|in]] <a name="in"></a>
