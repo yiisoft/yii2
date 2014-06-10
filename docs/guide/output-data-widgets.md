@@ -231,8 +231,8 @@ echo GridView::widget([
 For filtering data the GridView needs a [model](model.md) that takes the input from the filtering
 form and adjusts the query of the dataProvider to respect the search criteria.
 A common practice when using [active records](active-record.md) is to create a search Model class
-that extends from the active record class. This class then defines the validation rules for the search
-and provides a `search()` method that will return the data provider.
+that provides needed functionality (it can be generated for you by Gii). This class defines the validation 
+rules for the search and provides a `search()` method that will return the data provider.
 
 To add search capability for the `Post` model we can create `PostSearch` like in the following example:
 
@@ -245,7 +245,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class PostSearch extends Post
+class PostSearch extends Model
 {
     public function rules()
     {
@@ -290,7 +290,7 @@ You can use this function in the controller to get the dataProvider for the Grid
 
 ```php
 $searchModel = new PostSearch();
-$dataProvider = $searchModel->search($_GET);
+$dataProvider = $searchModel->search(Yii::$app->request->get());
 
 return $this->render('myview', [
     'dataProvider' => $dataProvider,
