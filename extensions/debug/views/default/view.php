@@ -65,6 +65,7 @@ $this->title = 'Yii Debugger';
                         echo ButtonGroup::widget([
                             'buttons' => [
                                 Html::a('All', ['index'], ['class' => 'btn btn-default']),
+                                Html::a('Latest', ['view', 'panel' => $activePanel->id], ['class' => 'btn btn-default']),
                                 ButtonDropdown::widget([
                                     'label' => 'Last 10',
                                     'options' => ['class' => 'btn-default'],
