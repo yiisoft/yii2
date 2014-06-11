@@ -8,7 +8,6 @@
 namespace yii\gii\controllers;
 
 use Yii;
-use yii\helpers\Inflector;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -126,13 +125,5 @@ class DefaultController extends Controller
         } else {
             throw new NotFoundHttpException("Code generator not found: $id");
         }
-    }
-
-    /**
-     * @param string $tableName
-     * @return string
-     */
-    public function actionClassify($tableName){
-        return Inflector::classify($tableName);
     }
 }
