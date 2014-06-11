@@ -47,4 +47,11 @@ return array(
         in <code>Yii::t()</code>, <abbr title="Internationalized domain names">IDN</abbr>-feature of
         <code>EmailValidator</code> or <code>UrlValidator</code> or the <code>yii\i18n\Formatter</code> class.'
     ),
+    array(
+        'name' => 'Fileinfo extension',
+        'mandatory' => true,
+        'condition' => extension_loaded('fileinfo'),
+        'by' => '<a href="http://www.php.net/manual/en/book.fileinfo.php">File Information</a>',
+        'memo' => 'Required for files upload to detect correct file mime-types.'
+    ),
 );
