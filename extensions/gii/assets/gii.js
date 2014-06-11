@@ -151,6 +151,21 @@ yii.gii = (function ($) {
                 $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
             }).change();
 
+      //model generator: translate table name to model class
+            $('#generator-tablename').on('blur', function () {
+                var tableName = $(this).val();
+                if (tableName && tableName !== '*'){
+                    $.ajax({
+                        type: "GET",
+                        url: "default/classify",
+                        data: {tableName: tableName},
+                        success: function (modelName) {
+                            $('#generator-modelclass').val(modelName);
+                        }
+                    });
+                }
+            });
+
             // hide message category when I18N is disabled
             $('form #generator-enablei18n').change(function () {
                 $('form .field-generator-messagecategory').toggle($(this).is(':checked'));
