@@ -155,14 +155,12 @@ yii.gii = (function ($) {
             $('#generator-tablename').on('blur', function () {
                 var tableName = $(this).val();
                 if ($('#generator-modelclass').val()=='' && tableName && tableName !== '*'){
-                    $.ajax({
-                        type: "GET",
-                        url: "default/classify",
-                        data: {tableName: tableName},
-                        success: function (modelName) {
-                            $('#generator-modelclass').val(modelName);
-                        }
+                    var modelClass='';
+                    $.each(tableName.split('_'), function() {
+                        if(this.length>0)
+                            modelClass+=this.substring(0,1).toUpperCase()+this.substring(1);
                     });
+                    $('#generator-modelclass').val(modelClass);
                 }
             });
 
