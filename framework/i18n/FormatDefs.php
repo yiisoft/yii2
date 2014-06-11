@@ -1,6 +1,6 @@
 <?php
 
-namespace guggach\helpers;
+namespace yii\i18n;
 
 /** 
  * International format definitions for decimal separator, thousand separator, dates,

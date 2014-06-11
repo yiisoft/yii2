@@ -5,8 +5,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
-//namespace yii\base;
-namespace guggach\helpers;
+namespace yii\base;
+
 
 use Yii;
 use DateTime;
@@ -16,7 +16,7 @@ use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
-use guggach\helpers\FormatDefs;
+use yii\i18n\FormatDefs;
 
 
 /**
@@ -567,7 +567,7 @@ class Formatter extends yii\base\Component
     /**
      * Set a new local different to Yii configuration for temporale reason.
      * @param string $locale language code and country code.
-     * @return \guggach\helpers\Formatter object
+     * @return Formatter object
      */
     public function setLocale($locale = 'en-US'){
         $this->locale = $locale;
@@ -724,7 +724,7 @@ class Formatter extends yii\base\Component
  * standard (icu) will be taken. Without loaded "intl" extension the definition can be
  * adapted in FormatDefs.php.
  * @param string $sign: one sign which is set.
- * @return \guggach\helpers\Formatter
+ * @return Formatter object
  */
     public function setDecimalSeparator($sign = null){
         if ($sign === null){
@@ -754,7 +754,7 @@ class Formatter extends yii\base\Component
  * standard (icu) will be taken. Without loaded "intl" extension the definition can be
  * adapted in FormatDefs.php.
  * @param string $sign: one sign which is set.
- * @return \guggach\helpers\Formatter
+ * @return Formatter object
  */
     public function setThousandSeparator($sign = null){
         if ($sign === null){
