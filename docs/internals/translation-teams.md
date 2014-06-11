@@ -1,15 +1,20 @@
 Translation teams
 =================
 
-Russian
--------
-
-- **Alexander Makarov, @samdark, sam@rmcreative.ru**
-- @MUTOgen
-- @prozacUa
-
 Brazilian Portuguese
 --------------------
 
-- **@wbraganca**
-- @alanwillms
+- **[@wbraganca](https://github.com/wbraganca)**
+- [@alanwillms](https://github.com/alanwillms)
+
+German
+------
+
+- Carsten Brandt, [@cebe](https://github.com/cebe), mail@cebe.cc
+ 
+Russian
+-------
+
+- **Alexander Makarov, [@samdark](https://github.com/samdark), sam@rmcreative.ru**
+- [@MUTOgen](https://github.com/MUTOgen)
+- [@prozacUa](https://github.com/prozacUa)
