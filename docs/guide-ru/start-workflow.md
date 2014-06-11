@@ -1,37 +1,29 @@
-Running Applications
+Запуск приложения
 ====================
 
-After installing Yii, you have a working Yii application that can be accessed via the URL  `http://hostname/basic/web/index.php` or `http://hostname/index.php`, depending upon your configuration. This section will introduce the application's built-in fucntionality, how the code is organized,
-and how the application handles requests in general.
+ После установки Yii, базовое приложение будет доступно либо по URL `http://hostname/basic/web/index.php`, либо по `http://hostname/index.php`, в зависимости от настроек Web сервера. Данный раздел - общее введение в орагнизацию кода, встроенный функционал и обработку обращений приложением Yii.
 
-> Info: For simplicity, throughout this "Getting Started" tutorial, it's assumed that you have set `basic/web`
-  as the document root of your Web server, and configured, the URL for accessing
-  your application to be `http://hostname/index.php` or something similar.
-  For your needs, please adjust the URLs in our descriptions accordingly.
+> Информация: Далее, в данном руководстве предполагается что Yii установлен в директорию `basic/web`, которая, в свою очередь, установлена как корневой каталог в настройках Web сервера. В результате, обратившись по URL `http://hostname/index.php` Вы получите доступ к приложению, расположенному в `basic/web`. Детальнее с процессом начальной настройки можно познакомиться в разделе [Установка Yii](start-installation.md).
 
-
-Functionality <a name="functionality"></a>
+Функционал <a name="functionality"></a>
 ---------------
 
-The basic application installed contains four pages:
+Установленный шаблон простого приложения состоит из четырех страниц:
 
-* the homepage, displayed when you access the URL `http://hostname/index.php`
-* the "About" page
-* the "Contact" page displays a contact form that allows end users to contact you via email
-* the "Login" page displays a login form that can be used to authenticate end users. Try logging in
-  with "admin/admin", and you will find the "Login" main menu item will change to "Logout".
+* домашняя страница, отображается при переходе по URL `http://hostname/index.php`
+* "About" ("О нас")
+* на странице "Contact" находится форма обратной связи, на которой пользователь может обратиться к разработчику по e-mail
+* на странице "Login" отображается форма авторизации. Попытайтесь авторизоваться с логином/паролем "admin/admin". Обратите внимание на изменение раздела "Login" в главном меню на "Logout".
 
-These pages share a common header and footer. The header contains a main menu bar to allow navigation
-among different pages.
+Эти страницы используют смежный хидер (шапка сайта) и футер (подвал). В "шапке" находится главное меню, при помощи которого пользователь перемещается по сайту. В "подвале" - копирайт и общая информация.
 
-You should also see a toolbar at the bottom of the browser window.
-This is a useful [debugger tool](tool-debugger.md) provided by Yii to record and display a lot of debugging information, such as log messages, response statuses, the database queries run, and so on.
+В самой верхней части окна Вы будете видеть системные сообщения Yii - журнал, отладочная информация, сообщения об ошибках, запросы к базе данных и т.п. Выводом данной информации руководит [встроенный отладчик](tool-debugger.md), он записывает и отображает информацию о ходе выполнения приложения.
 
 
-Application Structure <a name="application-structure"></a>
+Структура приложения Yii <a name="application-structure"></a>
 ---------------------
 
-The most important directories and files in your application are (assuming the application's root directory is `basic`):
+Ниже приведен список основных директорий и файлов вашего приложения The most important directories and files in your application are (assuming the application's root directory is `basic`):
 
 ```
 basic/                  application base path
