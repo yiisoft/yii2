@@ -1682,14 +1682,14 @@ class Formatter extends yii\base\Component
                 $timezone = new \DateTimeZone($this->timeZone);
 
                 if ($referenceTime === null) {
-                  //  $dateNow = new DateTime('now', $timezone);
+                    $dateNow = new DateTime('now', $timezone);
                 } else {
                     $referenceTime = $this->normalizeDatetimeValue($referenceTime);
-                 //   $dateNow = new DateTime(null, $timezone);
+                    $dateNow = new DateTime(null, $timezone);
                     $dateNow->setTimestamp($referenceTime);
                 }
 
-            //    $dateThen = new DateTime(null, $timezone);
+                $dateThen = new DateTime(null, $timezone);
                 $dateThen->setTimestamp($timestamp);
 
                 $interval = $dateThen->diff($dateNow);
