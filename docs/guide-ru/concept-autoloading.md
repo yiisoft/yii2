@@ -1,7 +1,7 @@
 Автозагрузка классов
 =================
 
-Для подключения и загрузки классов в Yii используется [автозагрузка классов](http://www.php.net/manual/en/language.oop5.autoload.php). Автозагрузчик классов в Yii совместим со стандартом автозагрузки[PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md) и работает быстро.
+Для подключения и загрузки классов в Yii используется [автозагрузка классов](http://www.php.net/manual/en/language.oop5.autoload.php). Автозагрузчик классов в Yii совместим со стандартом автозагрузки [PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md) и работает быстро.
 
 Автозагрузчик устанавливается когда вы включаете файл `Yii.php` в свой скрипт.
 
