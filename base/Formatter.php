@@ -1384,7 +1384,7 @@ class Formatter extends yii\base\Component
      */
     public function asNumber($value, $decimals = 0, $roundIncr = null, $grouping = true)
     {
-        return asDouble($value, $decimals, $roundIncr, $grouping);
+        return $this->asDouble($value, $decimals, $roundIncr, $grouping);
     }
     public function ufNumber($value){
         return $this->ufDouble($value);
@@ -1400,7 +1400,7 @@ class Formatter extends yii\base\Component
      */
     public function asDecimal($value, $decimals = 2, $roundIncr = null, $grouping = true)
     {
-        return asDouble($value, $decimals, $roundIncr, $grouping);
+        return $this->asDouble($value, $decimals, $roundIncr, $grouping);
     }
     public function ufDecimal($value){
         return $this->ufDouble($value);
@@ -1432,7 +1432,6 @@ class Formatter extends yii\base\Component
      //   if (true === false){
         if ($this->_intlLoaded){
             $f = $this->createNumberFormatter(NumberFormatter::PERCENT, $format);
-        //    $f->setAttribute(NumberFormatter::ROUNDING_MODE, NumberFormatter::ROUND_HALFUP);
             $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
             if ($decimals <= 5){
                 $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
