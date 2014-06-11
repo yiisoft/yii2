@@ -103,7 +103,7 @@ class Sortable extends Widget
 
     /**
      * Renders sortable items as specified on [[items]].
-     * @return string                  the rendering result.
+     * @return string the rendering result.
      * @throws InvalidConfigException.
      */
     public function renderItems()

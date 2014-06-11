@@ -13,6 +13,7 @@ use yii\debug\models\search\Mail;
 use yii\debug\Panel;
 use yii\mail\BaseMailer;
 use yii\helpers\FileHelper;
+use yii\mail\MessageInterface;
 
 /**
  * Debugger panel that collects and displays the generated emails.
@@ -24,7 +25,6 @@ use yii\helpers\FileHelper;
  */
 class MailPanel extends Panel
 {
-
     /**
      * @var string path where all emails will be saved. should be an alias.
      */
@@ -34,45 +34,67 @@ class MailPanel extends Panel
      */
     private $_messages = [];
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
         Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function ($event) {
 
-            $message = $event->message->getSwiftMessage();
-            $textBody = $message->getBody();
-            $fileName = $event->sender->generateMessageFileName();
-
-            FileHelper::createDirectory(Yii::getAlias($this->mailPath));
-            file_put_contents(Yii::getAlias($this->mailPath) . '/' . $fileName, $message->toString());
-
-            $this->_messages[] = [
+            /** @var MessageInterface $message */
+            $message = $event->message;
+            $messageData = [
                     'isSuccessful' => $event->isSuccessful,
-                    'time' => $message->getDate(),
-                    'headers' => $message->getHeaders(),
                     'from' => $this->convertParams($message->getFrom()),
                     'to' => $this->convertParams($message->getTo()),
                     'reply' => $this->convertParams($message->getReplyTo()),
                     'cc' => $this->convertParams($message->getCc()),
                     'bcc' => $this->convertParams($message->getBcc()),
                     'subject' => $message->getSubject(),
-                    'body' => $textBody,
                     'charset' => $message->getCharset(),
-                    'file' => $fileName,
             ];
+
+            // add more information when message is a SwiftMailer message
+            if ($message instanceof \yii\swiftmailer\Message) {
+                /** @var \Swift_Message $swiftMessage */
+                $swiftMessage = $message->getSwiftMessage();
+
+                $messageData['body'] = $swiftMessage->getBody();
+                $messageData['time'] = $swiftMessage->getDate();
+                $messageData['headers'] = $swiftMessage->getHeaders();
+
+            }
+
+            // store message as file
+            $fileName = $event->sender->generateMessageFileName();
+            FileHelper::createDirectory(Yii::getAlias($this->mailPath));
+            file_put_contents(Yii::getAlias($this->mailPath) . '/' . $fileName, $message->toString());
+            $messageData['file'] = $fileName;
+
+            $this->_messages[] = $messageData;
         });
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getName()
     {
         return 'Mail';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSummary()
     {
         return Yii::$app->view->render('panels/mail/summary', ['panel' => $this, 'mailCount' => count($this->data)]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDetail()
     {
         $searchModel = new Mail();
@@ -85,6 +107,9 @@ class MailPanel extends Panel
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function save()
     {
         return $this->getMessages();

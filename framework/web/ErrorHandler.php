@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Exception;
 use yii\base\ErrorException;
 use yii\base\UserException;
+use yii\helpers\VarDumper;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -127,6 +128,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
         }
         if (YII_DEBUG) {
             $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
+            if ($exception instanceof \yii\db\Exception) {
+                $array['error-info'] = $exception->errorInfo;
+            }
         }
         if (($prev = $exception->getPrevious()) !== null) {
             $array['previous'] = $this->convertExceptionToArray($prev);
@@ -152,11 +156,10 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function addTypeLinks($code)
     {
-        if (preg_match('/(.*?)::([^(]+)\((.*)\)/', $code, $matches)) {
+        if (preg_match('/(.*?)::([^(]+)/', $code, $matches)) {
             $class = $matches[1];
             $method = $matches[2];
-            $args = $matches[3];
-            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method) . '(' . $args . ')';
+            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method);
         } else {
             $class = $code;
             $text = $this->htmlEncode($class);
@@ -169,7 +172,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
         $url = "http://www.yiiframework.com/doc-2.0/$page.html";
         if (isset($method)) {
-            $url .= "#$method-detail";
+            $url .= "#$method()-detail";
         }
 
         return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
@@ -259,7 +262,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $request = '';
         foreach (['_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV'] as $name) {
             if (!empty($GLOBALS[$name])) {
-                $request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
+                $request .= '$' . $name . ' = ' . VarDumper::export($GLOBALS[$name]) . ";\n\n";
             }
         }
 
@@ -378,5 +381,18 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $out = implode(", ", $args);
 
         return $out;
+    }
+
+    /**
+     * Returns human-readable exception name
+     * @param \Exception $exception
+     * @return string human-readable exception name or null if it cannot be determined
+     */
+    public function getExceptionName($exception)
+    {
+        if ($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\InvalidCallException || $exception instanceof \yii\base\InvalidParamException || $exception instanceof \yii\base\UnknownMethodException) {
+            return $exception->getName();
+        }
+        return null;
     }
 }

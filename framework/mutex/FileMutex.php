@@ -12,6 +12,29 @@ use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
 
 /**
+ * FileMutex implements mutex "lock" mechanism via local file system files.
+ * This component relies on PHP `flock()` function.
+ *
+ * Application configuration example:
+ *
+ * ```
+ * [
+ *     'components' => [
+ *         'mutex'=> [
+ *             'class' => 'yii\mutex\FileMutex'
+ *         ],
+ *     ],
+ * ]
+ * ```
+ *
+ * Note: this component can maintain the locks only for the single web server,
+ * it probably will not suffice to your in case you are using cloud server solution.
+ *
+ * Warning: due to `flock()` function nature this component is unreliable when
+ * using a multithreaded server API like ISAPI.
+ *
+ * @see Mutex
+ *
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */

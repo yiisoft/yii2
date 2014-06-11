@@ -10,6 +10,7 @@ namespace yii\rbac;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
 use Yii;
+use yii\helpers\VarDumper;
 
 /**
  * PhpManager represents an authorization manager that stores authorization
@@ -21,9 +22,6 @@ use Yii;
  * PhpManager is mainly suitable for authorization data that is not too big
  * (for example, the authorization data for a personal blog system).
  * Use [[DbManager]] for more complex authorization data.
- *
- * @property Item[] $items The authorization items of the specific type. This property is read-only.
- * @property Rule[] $rules This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -539,7 +537,7 @@ class PhpManager extends BaseManager
         $this->_items[$item->name] = $item;
         if ($name !== $item->name) {
             if (isset($this->_items[$item->name])) {
-                throw new InvalidParamException("Unable to change the item name. The name '{$item->name} is already used by another item.");
+                throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
             }
             if (isset($this->_items[$name])) {
                 unset ($this->_items[$name]);
@@ -706,6 +704,6 @@ class PhpManager extends BaseManager
      */
     protected function saveToFile($data, $file)
     {
-        file_put_contents($file, "<?php\nreturn " . var_export($data, true) . ";\n", LOCK_EX);
+        file_put_contents($file, "<?php\nreturn " . VarDumper::export($data) . ";\n", LOCK_EX);
     }
 }

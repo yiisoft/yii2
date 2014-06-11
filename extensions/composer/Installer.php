@@ -89,7 +89,7 @@ class Installer extends LibraryInstaller
             $extension['alias'] = $alias;
         }
         $extra = $package->getExtra();
-        if (isset($extra[self::EXTRA_BOOTSTRAP]) && is_string($extra[self::EXTRA_BOOTSTRAP])) {
+        if (isset($extra[self::EXTRA_BOOTSTRAP])) {
             $extension['bootstrap'] = $extra[self::EXTRA_BOOTSTRAP];
         }
 
@@ -110,7 +110,7 @@ class Installer extends LibraryInstaller
             foreach ($autoload['psr-0'] as $name => $path) {
                 $name = str_replace('\\', '/', trim($name, '\\'));
                 if (!$fs->isAbsolutePath($path)) {
-                    $path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
+                    $path = $this->vendorDir . '/' . $package->getPrettyName() . '/' . $path;
                 }
                 $path = $fs->normalizePath($path);
                 if (strpos($path . '/', $vendorDir . '/') === 0) {
@@ -125,7 +125,7 @@ class Installer extends LibraryInstaller
             foreach ($autoload['psr-4'] as $name => $path) {
                 $name = str_replace('\\', '/', trim($name, '\\'));
                 if (!$fs->isAbsolutePath($path)) {
-                    $path = $this->vendorDir . '/' . $package->getName() . '/' . $path;
+                    $path = $this->vendorDir . '/' . $package->getPrettyName() . '/' . $path;
                 }
                 $path = $fs->normalizePath($path);
                 if (strpos($path . '/', $vendorDir . '/') === 0) {
@@ -196,12 +196,12 @@ class Installer extends LibraryInstaller
             file_put_contents($yiiDir . '/' . $file, <<<EOF
 <?php
 /**
-* This is a link provided by the yiisoft/yii2-dev package via yii2-composer plugin.
-*
-* @link http://www.yiiframework.com/
-* @copyright Copyright (c) 2008 Yii Software LLC
-* @license http://www.yiiframework.com/license/
-*/
+ * This is a link provided by the yiisoft/yii2-dev package via yii2-composer plugin.
+ *
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return require(__DIR__ . '/../yii2-dev/framework/$file');
 

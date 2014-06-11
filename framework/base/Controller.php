@@ -18,7 +18,7 @@ use Yii;
  * property is read-only.
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any). This property is
  * read-only.
- * @property View $view The view object that can be used to render views or view files.
+ * @property View|\yii\web\View $view The view object that can be used to render views or view files.
  * @property string $viewPath The directory containing the view files for this controller. This property is
  * read-only.
  *
@@ -216,7 +216,7 @@ class Controller extends Component implements ViewContextInterface
             $methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
             if (method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
-                if ($method->getName() === $methodName) {
+                if ($method->isPublic() && $method->getName() === $methodName) {
                     return new InlineAction($id, $this, $methodName);
                 }
             }
@@ -398,20 +398,19 @@ class Controller extends Component implements ViewContextInterface
      * The [[render()]], [[renderPartial()]] and [[renderFile()]] methods will use
      * this view object to implement the actual view rendering.
      * If not set, it will default to the "view" application component.
-     * @return View the view object that can be used to render views or view files.
+     * @return View|\yii\web\View the view object that can be used to render views or view files.
      */
     public function getView()
     {
         if ($this->_view === null) {
             $this->_view = Yii::$app->getView();
         }
-
         return $this->_view;
     }
 
     /**
      * Sets the view object to be used by this controller.
-     * @param View $view the view object that can be used to render views or view files.
+     * @param View|\yii\web\View $view the view object that can be used to render views or view files.
      */
     public function setView($view)
     {

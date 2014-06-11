@@ -114,7 +114,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @inheritdoc
-     * @return static[]|array an array of ActiveRecord instance, or an empty array if nothing matches.
+     * @return static[] an array of ActiveRecord instance, or an empty array if nothing matches.
      */
     public static function findAll($condition)
     {
@@ -1228,15 +1228,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             foreach ($relation->link as $a => $b) {
                 $columns[$b] = $model->$a;
             }
+            $nulls = [];
+            foreach (array_keys($columns) as $a) {
+                $nulls[$a] = null;
+            }
             if (is_array($relation->via)) {
                 /** @var $viaClass ActiveRecordInterface */
                 if ($delete) {
                     $viaClass::deleteAll($columns);
                 } else {
-                    $nulls = [];
-                    foreach (array_keys($columns) as $a) {
-                        $nulls[$a] = null;
-                    }
                     $viaClass::updateAll($nulls, $columns);
                 }
             } else {
@@ -1246,10 +1246,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 if ($delete) {
                     $command->delete($viaTable, $columns)->execute();
                 } else {
-                    $nulls = [];
-                    foreach (array_keys($columns) as $a) {
-                        $nulls[$a] = null;
-                    }
                     $command->update($viaTable, $nulls, $columns)->execute();
                 }
             }
@@ -1281,6 +1277,73 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
             }
         }
+    }
+
+    /**
+     * Destroys the relationship in current model.
+     *
+     * The model with the foreign key of the relationship will be deleted if `$delete` is true.
+     * Otherwise, the foreign key will be set null and the model will be saved without validation.
+     *
+     * Note that to destroy the relationship without removing records make sure your keys can be set to null
+     *
+     * @param string $name the case sensitive name of the relationship.
+     * @param boolean $delete whether to delete the model that contains the foreign key.
+     */
+    public function unlinkAll($name, $delete = false)
+    {
+        $relation = $this->getRelation($name);
+
+        if ($relation->via !== null) {
+            if (is_array($relation->via)) {
+                /** @var ActiveQuery $viaRelation */
+                list($viaName, $viaRelation) = $relation->via;
+                $viaClass = $viaRelation->modelClass;
+                unset($this->_related[$viaName]);
+            } else {
+                $viaRelation = $relation->via;
+                $viaTable = reset($relation->via->from);
+            }
+            $condition = [];
+            $nulls = [];
+            foreach ($viaRelation->link as $a => $b) {
+                $nulls[$a] = null;
+                $condition[$a] = $this->$b;
+            }
+            if (is_array($relation->via)) {
+                /** @var $viaClass ActiveRecordInterface */
+                if ($delete) {
+                    $viaClass::deleteAll($condition);
+                } else {
+                    $viaClass::updateAll($nulls, $condition);
+                }
+            } else {
+                /** @var $viaTable string */
+                /** @var Command $command */
+                $command = static::getDb()->createCommand();
+                if ($delete) {
+                    $command->delete($viaTable, $condition)->execute();
+                } else {
+                    $command->update($viaTable, $nulls, $condition)->execute();
+                }
+            }
+        } else {
+            /** @var $relatedModel ActiveRecordInterface */
+            $relatedModel = $relation->modelClass;
+            $nulls = [];
+            $condition = [];
+            foreach ($relation->link as $a => $b) {
+                $nulls[$a] = null;
+                $condition[$a] = $this->$b;
+            }
+            if ($delete) {
+                $relatedModel::deleteAll($condition);
+            } else {
+                $relatedModel::updateAll($nulls, $condition);
+            }
+        }
+
+        unset($this->_related[$name]);
     }
 
     /**

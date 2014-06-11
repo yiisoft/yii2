@@ -13,7 +13,7 @@ use yii\helpers\Html;
 
     <p>Empty.</p>
 
-<?php else:	?>
+<?php else: ?>
 
     <table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
         <thead>

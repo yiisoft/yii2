@@ -86,7 +86,7 @@ class Widget extends \yii\base\Widget
     /**
      * Registers a specific jQuery UI widget options
      * @param string $name the name of the jQuery UI widget
-     * @param string $id   the ID of the widget
+     * @param string $id the ID of the widget
      */
     protected function registerClientOptions($name, $id)
     {
@@ -100,7 +100,7 @@ class Widget extends \yii\base\Widget
     /**
      * Registers a specific jQuery UI widget events
      * @param string $name the name of the jQuery UI widget
-     * @param string $id   the ID of the widget
+     * @param string $id the ID of the widget
      */
     protected function registerClientEvents($name, $id)
     {
@@ -120,9 +120,9 @@ class Widget extends \yii\base\Widget
 
     /**
      * Registers a specific jQuery UI widget asset bundle, initializes it with client options and registers related events
-     * @param string $name        the name of the jQuery UI widget
+     * @param string $name the name of the jQuery UI widget
      * @param string $assetBundle the asset bundle for the widget
-     * @param string $id          the ID of the widget. If null, it will use the `id` value of [[options]].
+     * @param string $id the ID of the widget. If null, it will use the `id` value of [[options]].
      */
     protected function registerWidget($name, $assetBundle, $id = null)
     {

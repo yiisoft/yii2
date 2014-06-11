@@ -21,14 +21,14 @@ use Yii;
 class InlineAction extends Action
 {
     /**
-     * @var string the controller method that  this inline action is associated with
+     * @var string the controller method that this inline action is associated with
      */
     public $actionMethod;
 
     /**
      * @param string $id the ID of this action
      * @param Controller $controller the controller that owns this action
-     * @param string $actionMethod the controller method that  this inline action is associated with
+     * @param string $actionMethod the controller method that this inline action is associated with
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($id, $controller, $actionMethod, $config = [])

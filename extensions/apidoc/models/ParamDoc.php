@@ -32,8 +32,8 @@ class ParamDoc extends Object
 
     /**
      * @param \phpDocumentor\Reflection\FunctionReflector\ArgumentReflector $reflector
-     * @param Context                                                       $context
-     * @param array                                                         $config
+     * @param Context $context
+     * @param array $config
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

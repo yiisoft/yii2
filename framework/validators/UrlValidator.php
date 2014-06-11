@@ -32,13 +32,13 @@ class UrlValidator extends Validator
     /**
      * @var array list of URI schemes which should be considered valid. By default, http and https
      * are considered to be valid schemes.
-     **/
+     */
     public $validSchemes = ['http', 'https'];
     /**
      * @var string the default URI scheme. If the input doesn't contain the scheme part, the default
      * scheme will be prepended to it (thus changing the input). Defaults to null, meaning a URL must
      * contain the scheme part.
-     **/
+     */
     public $defaultScheme;
     /**
      * @var boolean whether validation process should take into account IDN (internationalized

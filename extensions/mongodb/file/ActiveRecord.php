@@ -206,8 +206,8 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 
     /**
      * Extracts filename from given raw file value.
-     * @param  mixed                           $file raw file value.
-     * @return string                          file name.
+     * @param mixed $file raw file value.
+     * @return string file name.
      * @throws \yii\base\InvalidParamException on invalid file value.
      */
     protected function extractFileName($file)
@@ -239,7 +239,7 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 
     /**
      * Returns the associated file content.
-     * @return null|string                     file content.
+     * @return null|string file content.
      * @throws \yii\base\InvalidParamException on invalid file attribute value.
      */
     public function getFileContent()
@@ -272,8 +272,8 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 
     /**
      * Writes the the internal file content into the given filename.
-     * @param  string                          $filename full filename to be written.
-     * @return boolean                         whether the operation was successful.
+     * @param string $filename full filename to be written.
+     * @return boolean whether the operation was successful.
      * @throws \yii\base\InvalidParamException on invalid file attribute value.
      */
     public function writeFile($filename)
@@ -303,7 +303,7 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
      * This method returns a stream resource that can be used with all file functions in PHP,
      * which deal with reading files. The contents of the file are pulled out of MongoDB on the fly,
      * so that the whole file does not have to be loaded into memory first.
-     * @return resource                        file stream resource.
+     * @return resource file stream resource.
      * @throws \yii\base\InvalidParamException on invalid file attribute value.
      */
     public function getFileResource()

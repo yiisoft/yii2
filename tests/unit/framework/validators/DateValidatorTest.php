@@ -7,6 +7,9 @@ use yii\validators\DateValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
+/**
+ * @group validators
+ */
 class DateValidatorTest extends TestCase
 {
     protected function setUp()

@@ -216,7 +216,7 @@ class Response extends \yii\base\Response
         450 => 'Blocked by Windows Parental Controls',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
-        502 => 'Bad Gateway ou Proxy Error',
+        502 => 'Bad Gateway or Proxy Error',
         503 => 'Service Unavailable',
         504 => 'Gateway Time-out',
         505 => 'HTTP Version not supported',
@@ -242,7 +242,7 @@ class Response extends \yii\base\Response
     public function init()
     {
         if ($this->version === null) {
-            if (isset($_SERVER['SERVER_PROTOCOL']) && $_SERVER['SERVER_PROTOCOL'] === '1.0') {
+            if (isset($_SERVER['SERVER_PROTOCOL']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.0') {
                 $this->version = '1.0';
             } else {
                 $this->version = '1.1';
@@ -609,8 +609,8 @@ class Response extends \yii\base\Response
      * ~~~
      *
      * @param string $filePath file name with full path
-     * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
      * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
      * @param string $xHeader the name of the x-sendfile header.
      * @return static the response object itself
      */

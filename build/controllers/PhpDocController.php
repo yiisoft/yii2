@@ -22,17 +22,17 @@ use yii\helpers\FileHelper;
 class PhpDocController extends Controller
 {
     public $defaultAction = 'property';
-
     /**
      * @var boolean whether to update class docs directly. Setting this to false will just output docs
      * for copy and paste.
      */
     public $updateFiles = true;
 
+
     /**
-     * Generates `@property annotations` in class files from getters and setters
+     * Generates `@property` annotations in class files from getters and setters
      *
-     * Property description will be taken from getter or setter or from an `@property annotation`
+     * Property description will be taken from getter or setter or from an `@property` annotation
      * in the getters docblock if there is one defined.
      *
      * See https://github.com/yiisoft/yii2/wiki/Core-framework-code-style#documentation for details.
@@ -84,6 +84,7 @@ class PhpDocController extends Controller
             $lines = preg_split('/(\r\n|\n|\r)/', $contents);
 
             $this->fixFileDoc($lines);
+            $this->fixDocBlockIndentation($lines);
 
             $newContent = implode("\n", $lines);
             if ($sha !== sha1($newContent)) {
@@ -124,6 +125,7 @@ class PhpDocController extends Controller
                 '/build/',
                 '/docs/',
                 '/extensions/apidoc/helpers/PrettyPrinter.php',
+                '/extensions/apidoc/helpers/ApiIndexer.php',
                 '/extensions/codeception/TestCase.php',
                 '/extensions/codeception/DbTestCase.php',
                 '/extensions/composer/',
@@ -132,6 +134,7 @@ class PhpDocController extends Controller
                 '/extensions/twig/TwigSimpleFileLoader.php',
                 '/framework/BaseYii.php',
                 '/framework/Yii.php',
+                'assets/',
                 'tests/',
                 'vendor/',
             ];
@@ -191,6 +194,62 @@ class PhpDocController extends Controller
                 $namespaceLine,
                 ""
             ], $lines);
+        }
+    }
+
+    /**
+     * Markdown aware fix of whitespace issues in doc comments
+     */
+    protected function fixDocBlockIndentation(&$lines)
+    {
+        $docBlock = false;
+        $codeBlock = false;
+        $listIndent = '';
+        $tag = false;
+        $indent = '';
+        foreach($lines as $i => $line) {
+            if (preg_match('~^(\s*)/\*\*$~', $line, $matches)) {
+                $docBlock = true;
+                $indent = $matches[1];
+            } elseif (preg_match('~^(\s*)\*+/~', $line)) {
+                if ($docBlock) { // could be the end of normal comment
+                    $lines[$i] = $indent . ' */';
+                }
+                $docBlock = false;
+                $codeBlock = false;
+                $listIndent = '';
+                $tag = false;
+            } elseif ($docBlock) {
+                $line = ltrim($line);
+                if (isset($line[0]) && $line[0] === '*') {
+                    $line = substr($line, 1);
+                }
+                if (isset($line[0]) && $line[0] === ' ') {
+                    $line = substr($line, 1);
+                }
+                $docLine = str_replace("\t", '    ', rtrim($line));
+                if (empty($docLine)) {
+                    $listIndent = '';
+                } elseif ($docLine[0] === '@') {
+                    $listIndent = '';
+                    $codeBlock = false;
+                    $tag = true;
+                    $docLine = preg_replace('/\s+/', ' ', $docLine);
+                } elseif (preg_match('/^(~~~|```)/', $docLine)) {
+                    $codeBlock = !$codeBlock;
+                    $listIndent = '';
+                } elseif (preg_match('/^(\s*)([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
+                    $listIndent = str_repeat(' ', strlen($matches[0]));
+                    $tag = false;
+                    $lines[$i] = $indent . ' * ' . $docLine;
+                    continue;
+                }
+                if ($codeBlock) {
+                    $lines[$i] = rtrim($indent . ' * ' . $docLine);
+                } else {
+                    $lines[$i] = rtrim($indent . ' * ' . (empty($listIndent) && !$tag ? $docLine : ($listIndent . ltrim($docLine))));
+                }
+            }
         }
     }
 
@@ -357,11 +416,11 @@ class PhpDocController extends Controller
             $gets = $this->match(
                 '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content']);
+                $class['content'], true);
             $sets = $this->match(
                 '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content']);
+                $class['content'], true);
             // check for @property annotations in getter and setter
             $properties = $this->match(
                 '#\* @(?<kind>property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
@@ -441,15 +500,24 @@ class PhpDocController extends Controller
         return [$className, $phpdoc];
     }
 
-    protected function match($pattern, $subject)
+    protected function match($pattern, $subject, $split = false)
     {
         $sets = [];
-        preg_match_all($pattern . 'suU', $subject, $sets, PREG_SET_ORDER);
-        foreach ($sets as &$set)
-            foreach ($set as $i => $match)
-                if (is_numeric($i) /*&& $i != 0*/)
-                    unset($set[$i]);
+        // split subject by double newlines because regex sometimes has problems with matching
+        // in the complete set of methods
+        // example: yii\di\ServiceLocator setComponents() is not recognized in the whole but in
+        // a part of the class.
+        $parts = $split ? explode("\n\n", $subject) : [$subject];
+        foreach($parts as $part) {
+            preg_match_all($pattern . 'suU', $part, $matches, PREG_SET_ORDER);
+            foreach ($matches as &$set) {
+                foreach ($set as $i => $match)
+                    if (is_numeric($i) /*&& $i != 0*/)
+                        unset($set[$i]);
 
+                $sets[] = $set;
+            }
+        }
         return $sets;
     }
 

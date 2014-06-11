@@ -37,7 +37,7 @@ use yii\helpers\Json;
  *         'dateFormat' => 'yy-mm-dd',
  *     ],
  * ]);
- *```
+ * ```
  *
  * @see http://api.jqueryui.com/datepicker/
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -79,7 +79,7 @@ class DatePicker extends InputWidget
         echo $this->renderWidget() . "\n";
         $containerID = $this->inline ? $this->containerOptions['id'] : $this->options['id'];
         $language = $this->language ? $this->language : Yii::$app->language;
-        if ($language != 'en') {
+        if ($language != 'en-US') {
             $view = $this->getView();
             DatePickerRegionalAsset::register($view);
 

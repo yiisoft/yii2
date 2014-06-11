@@ -6,6 +6,9 @@ use yii\validators\StringValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
+/**
+ * @group validators
+ */
 class StringValidatorTest extends TestCase
 {
     public function setUp()

@@ -7,17 +7,17 @@ To use this extension, simply add the following code in your application configu
 
 ```php
 return [
-	//....
-	'components' => [
-		'view' => [
-			'renderers' => [
-				'tpl' => [
-					'class' => 'yii\smarty\ViewRenderer',
-					//'cachePath' => '@runtime/Smarty/cache',
-				],
-			],
-		],
-	],
+    //....
+    'components' => [
+        'view' => [
+            'renderers' => [
+                'tpl' => [
+                    'class' => 'yii\smarty\ViewRenderer',
+                    //'cachePath' => '@runtime/Smarty/cache',
+                ],
+            ],
+        ],
+    ],
 ];
 ```
 

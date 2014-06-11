@@ -23,8 +23,8 @@ class TraitDoc extends TypeDoc
 
     /**
      * @param \phpDocumentor\Reflection\TraitReflector $reflector
-     * @param Context                                  $context
-     * @param array                                    $config
+     * @param Context $context
+     * @param array $config
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

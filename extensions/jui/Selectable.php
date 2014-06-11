@@ -94,7 +94,7 @@ class Selectable extends Widget
 
     /**
      * Renders selectable items as specified on [[items]].
-     * @return string                  the rendering result.
+     * @return string the rendering result.
      * @throws InvalidConfigException.
      */
     public function renderItems()

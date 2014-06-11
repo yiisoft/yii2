@@ -117,11 +117,11 @@ class SideNavWidget extends \yii\bootstrap\Widget
 
     /**
      * Renders a widget's item.
-     * @param  string|array                     $item      the item to render.
-     * @param  boolean                          $collapsed whether to collapse item if not active
+     * @param string|array $item the item to render.
+     * @param boolean $collapsed whether to collapse item if not active
      * @throws \yii\base\InvalidConfigException
-     * @return string                           the rendering result.
-     * @throws InvalidConfigException           if label is not defined
+     * @return string the rendering result.
+     * @throws InvalidConfigException if label is not defined
      */
     public function renderItem($item, $collapsed = true)
     {

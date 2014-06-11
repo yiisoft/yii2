@@ -27,7 +27,7 @@ class LogTarget extends Target
 
     /**
      * @param \yii\debug\Module $module
-     * @param array             $config
+     * @param array $config
      */
     public function __construct($module, $config = [])
     {
@@ -63,8 +63,8 @@ class LogTarget extends Target
     /**
      * Updates index file with summary log data
      *
-     * @param  string                           $indexFile path to index file
-     * @param  array                            $summary   summary log data
+     * @param string $indexFile path to index file
+     * @param array $summary summary log data
      * @throws \yii\base\InvalidConfigException
      */
     private function updateIndexFile($indexFile, $summary)
@@ -100,9 +100,9 @@ class LogTarget extends Target
      * Processes the given log messages.
      * This method will filter the given messages with [[levels]] and [[categories]].
      * And if requested, it will also export the filtering result to specific medium (e.g. email).
-     * @param array   $messages log messages to be processed. See [[\yii\log\Logger::messages]] for the structure
-     *                          of each message.
-     * @param boolean $final    whether this method is called at the end of the current application
+     * @param array $messages log messages to be processed. See [[\yii\log\Logger::messages]] for the structure
+     * of each message.
+     * @param boolean $final whether this method is called at the end of the current application
      */
     public function collect($messages, $final)
     {

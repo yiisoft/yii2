@@ -9,6 +9,9 @@ use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\TestValidator;
 use yiiunit\TestCase;
 
+/**
+ * @group validators
+ */
 class ValidatorTest extends TestCase
 {
     protected function setUp()

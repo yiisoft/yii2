@@ -628,7 +628,7 @@ class BaseConsole
      */
     public static function stdin($raw = false)
     {
-        return $raw ? fgets(STDIN) : rtrim(fgets(STDIN), PHP_EOL);
+        return $raw ? fgets(\STDIN) : rtrim(fgets(\STDIN), PHP_EOL);
     }
 
     /**
@@ -639,7 +639,7 @@ class BaseConsole
      */
     public static function stdout($string)
     {
-        return fwrite(STDOUT, $string);
+        return fwrite(\STDOUT, $string);
     }
 
     /**
@@ -650,7 +650,7 @@ class BaseConsole
      */
     public static function stderr($string)
     {
-        return fwrite(STDERR, $string);
+        return fwrite(\STDERR, $string);
     }
 
     /**
@@ -780,7 +780,7 @@ class BaseConsole
             }
             static::output(" ? - Show help");
             goto top;
-        } elseif (!in_array($input, array_keys($options))) {
+        } elseif (!array_key_exists($input, $options)) {
             goto top;
         }
 

@@ -32,7 +32,7 @@ class I18N extends Component
      * for creating the [[MessageSource]] objects.
      *
      * The message category patterns can contain the wildcard '*' at the end to match multiple categories with the same prefix.
-     * For example, 'app\*' matches both 'app\cat1' and 'app\cat2'.
+     * For example, 'app/*' matches both 'app/cat1' and 'app/cat2'.
      *
      * The '*' category pattern will match all categories that do not match any other category patterns.
      *
@@ -57,7 +57,7 @@ class I18N extends Component
         if (!isset($this->translations['yii']) && !isset($this->translations['yii*'])) {
             $this->translations['yii'] = [
                 'class' => 'yii\i18n\PhpMessageSource',
-                'sourceLanguage' => 'en',
+                'sourceLanguage' => 'en-US',
                 'basePath' => '@yii/messages',
             ];
         }

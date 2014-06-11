@@ -10,6 +10,9 @@ namespace yiiunit\framework\helpers;
 use yiiunit\TestCase;
 use yii\helpers\Security;
 
+/**
+ * @group helpers
+ */
 class SecurityTest extends TestCase
 {
     public function testPasswordHash()

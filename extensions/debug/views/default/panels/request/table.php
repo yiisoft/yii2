@@ -1,11 +1,11 @@
 <?php
-use yii\helpers\Html;
-use yii\helpers\VarDumper;
-
 /**
  * @var string $caption
  * @var array $values
  */
+
+use yii\helpers\Html;
+use yii\helpers\VarDumper;
 ?>
 <h3><?= $caption ?></h3>
 

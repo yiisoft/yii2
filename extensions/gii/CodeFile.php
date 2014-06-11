@@ -56,7 +56,7 @@ class CodeFile extends Object
 
     /**
      * Constructor.
-     * @param string $path    the file path that the new code should be saved to.
+     * @param string $path the file path that the new code should be saved to.
      * @param string $content the newly generated code content.
      */
     public function __construct($path, $content)
@@ -166,8 +166,8 @@ class CodeFile extends Object
     /**
      * Renders diff between two sets of lines
      *
-     * @param  mixed  $lines1
-     * @param  mixed  $lines2
+     * @param mixed $lines1
+     * @param mixed $lines2
      * @return string
      */
     private function renderDiff($lines1, $lines2)

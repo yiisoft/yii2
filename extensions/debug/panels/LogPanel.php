@@ -63,7 +63,6 @@ class LogPanel extends Panel
     {
         $target = $this->module->logTarget;
         $messages = $target->filterMessages($target->messages, Logger::LEVEL_ERROR | Logger::LEVEL_INFO | Logger::LEVEL_WARNING | Logger::LEVEL_TRACE);
-
         return ['messages' => $messages];
     }
 
@@ -71,8 +70,8 @@ class LogPanel extends Panel
      * Returns an array of models that represents logs of the current request.
      * Can be used with data providers, such as \yii\data\ArrayDataProvider.
      *
-     * @param  boolean $refresh if need to build models from log messages and refresh them.
-     * @return array   models
+     * @param boolean $refresh if need to build models from log messages and refresh them.
+     * @return array models
      */
     protected function getModels($refresh = false)
     {

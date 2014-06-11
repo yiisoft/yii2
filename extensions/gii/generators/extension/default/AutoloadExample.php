@@ -7,7 +7,7 @@ echo "<?php\n";
 
 namespace <?= substr($generator->namespace, 0, -1) ?>;
 
-class AutoloadExample extends \yii\base\widget
+class AutoloadExample extends \yii\base\Widget
 {
     public function run()
     {

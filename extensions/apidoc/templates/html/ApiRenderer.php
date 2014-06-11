@@ -138,7 +138,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
     }
 
     /**
-     * @param  ClassDoc $class
+     * @param ClassDoc $class
      * @return string
      */
     public function renderInheritance($class)
@@ -159,7 +159,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
     }
 
     /**
-     * @param  array  $names
+     * @param array $names
      * @return string
      */
     public function renderInterfaces($names)
@@ -178,7 +178,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
     }
 
     /**
-     * @param  array  $names
+     * @param array $names
      * @return string
      */
     public function renderTraits($names)
@@ -197,7 +197,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
     }
 
     /**
-     * @param  array  $names
+     * @param array $names
      * @return string
      */
     public function renderClasses($names)
@@ -216,7 +216,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
     }
 
     /**
-     * @param  PropertyDoc $property
+     * @param PropertyDoc $property
      * @return string
      */
     public function renderPropertySignature($property)
@@ -238,7 +238,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
     }
 
     /**
-     * @param  MethodDoc $method
+     * @param MethodDoc $method
      * @return string
      */
     public function renderMethodSignature($method)

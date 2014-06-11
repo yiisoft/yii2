@@ -11,6 +11,8 @@ use yiiunit\data\ar\elasticsearch\Customer;
 use yiiunit\data\ar\elasticsearch\OrderItem;
 use yiiunit\data\ar\elasticsearch\Order;
 use yiiunit\data\ar\elasticsearch\Item;
+use yiiunit\data\ar\elasticsearch\OrderWithNullFK;
+use yiiunit\data\ar\elasticsearch\OrderItemWithNullFK;
 use yiiunit\TestCase;
 
 /**
@@ -40,6 +42,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
         return OrderItem::className();
     }
 
+    public function getOrderWithNullFKClass()
+    {
+        return OrderWithNullFK::className();
+    }
+    public function getOrderItemWithNullFKmClass()
+    {
+        return OrderItemWithNullFK::className();
+    }
+
     /**
      * can be overridden to do things after save()
      */
@@ -66,6 +77,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
         Item::setUpMapping($command);
         Order::setUpMapping($command);
         OrderItem::setUpMapping($command);
+        OrderWithNullFK::setUpMapping($command);
+        OrderItemWithNullFK::setUpMapping($command);
 
         $db->createCommand()->flushIndex('yiitest');
 
@@ -138,7 +151,49 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
         $orderItem->save(false);
 
+        $order = new OrderWithNullFK();
+        $order->id = 1;
+        $order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
+        $order->save(false);
+        $order = new OrderWithNullFK();
+        $order->id = 2;
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
+        $order->save(false);
+        $order = new OrderWithNullFK();
+        $order->id = 3;
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
+        $order->save(false);
+
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 2, 'quantity' => 2, 'subtotal' => 40.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 4, 'quantity' => 1, 'subtotal' => 10.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 5, 'quantity' => 1, 'subtotal' => 15.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
+        $orderItem->save(false);
+
         $db->createCommand()->flushIndex('yiitest');
+    }
+
+    public function testSaveNoChanges()
+    {
+        // this should not fail with exception
+        $customer = new Customer();
+        // insert
+        $customer->save(false);
+        // update
+        $customer->save(false);
     }
 
     public function testFindAsArray()
@@ -151,8 +206,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
             'name' => 'user2',
             'address' => 'address2',
             'status' => 1,
-            '_score' => 1.0
-        ], $customer);
+//            '_score' => 1.0
+        ], $customer['_source']);
     }
 
     public function testSearch()
@@ -174,21 +229,21 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(3, $result['total']);
         $customers = $result['hits'];
         $this->assertEquals(3, count($customers));
-        $this->assertArrayHasKey('id', $customers[0]);
-        $this->assertArrayHasKey('name', $customers[0]);
-        $this->assertArrayHasKey('email', $customers[0]);
-        $this->assertArrayHasKey('address', $customers[0]);
-        $this->assertArrayHasKey('status', $customers[0]);
-        $this->assertArrayHasKey('id', $customers[1]);
-        $this->assertArrayHasKey('name', $customers[1]);
-        $this->assertArrayHasKey('email', $customers[1]);
-        $this->assertArrayHasKey('address', $customers[1]);
-        $this->assertArrayHasKey('status', $customers[1]);
-        $this->assertArrayHasKey('id', $customers[2]);
-        $this->assertArrayHasKey('name', $customers[2]);
-        $this->assertArrayHasKey('email', $customers[2]);
-        $this->assertArrayHasKey('address', $customers[2]);
-        $this->assertArrayHasKey('status', $customers[2]);
+        $this->assertArrayHasKey('id', $customers[0]['_source']);
+        $this->assertArrayHasKey('name', $customers[0]['_source']);
+        $this->assertArrayHasKey('email', $customers[0]['_source']);
+        $this->assertArrayHasKey('address', $customers[0]['_source']);
+        $this->assertArrayHasKey('status', $customers[0]['_source']);
+        $this->assertArrayHasKey('id', $customers[1]['_source']);
+        $this->assertArrayHasKey('name', $customers[1]['_source']);
+        $this->assertArrayHasKey('email', $customers[1]['_source']);
+        $this->assertArrayHasKey('address', $customers[1]['_source']);
+        $this->assertArrayHasKey('status', $customers[1]['_source']);
+        $this->assertArrayHasKey('id', $customers[2]['_source']);
+        $this->assertArrayHasKey('name', $customers[2]['_source']);
+        $this->assertArrayHasKey('email', $customers[2]['_source']);
+        $this->assertArrayHasKey('address', $customers[2]['_source']);
+        $this->assertArrayHasKey('status', $customers[2]['_source']);
 
         // TODO test asArray() + fields() + indexBy()
 
@@ -387,35 +442,67 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(2, count($customers));
     }
 
+    public function testScriptFields()
+    {
+        $orderItems = OrderItem::find()->fields(['quantity', 'subtotal', 'total' => ['script' => "doc['quantity'].value * doc['subtotal'].value"]])->all();
+        foreach($orderItems as $item) {
+            $this->assertEquals($item->subtotal * $item->quantity, $item->total);
+        }
+    }
+
     public function testFindAsArrayFields()
     {
         /** @var TestCase|ActiveRecordTestTrait $this */
         // indexBy + asArray
         $customers = Customer::find()->asArray()->fields(['id', 'name'])->all();
         $this->assertEquals(3, count($customers));
-        $this->assertArrayHasKey('id', $customers[0]);
-        $this->assertArrayHasKey('name', $customers[0]);
-        $this->assertArrayNotHasKey('email', $customers[0]);
-        $this->assertArrayNotHasKey('address', $customers[0]);
-        $this->assertArrayNotHasKey('status', $customers[0]);
-        $this->assertArrayHasKey('id', $customers[1]);
-        $this->assertArrayHasKey('name', $customers[1]);
-        $this->assertArrayNotHasKey('email', $customers[1]);
-        $this->assertArrayNotHasKey('address', $customers[1]);
-        $this->assertArrayNotHasKey('status', $customers[1]);
-        $this->assertArrayHasKey('id', $customers[2]);
-        $this->assertArrayHasKey('name', $customers[2]);
-        $this->assertArrayNotHasKey('email', $customers[2]);
-        $this->assertArrayNotHasKey('address', $customers[2]);
-        $this->assertArrayNotHasKey('status', $customers[2]);
+        $this->assertArrayHasKey('id', $customers[0]['fields']);
+        $this->assertArrayHasKey('name', $customers[0]['fields']);
+        $this->assertArrayNotHasKey('email', $customers[0]['fields']);
+        $this->assertArrayNotHasKey('address', $customers[0]['fields']);
+        $this->assertArrayNotHasKey('status', $customers[0]['fields']);
+        $this->assertArrayHasKey('id', $customers[1]['fields']);
+        $this->assertArrayHasKey('name', $customers[1]['fields']);
+        $this->assertArrayNotHasKey('email', $customers[1]['fields']);
+        $this->assertArrayNotHasKey('address', $customers[1]['fields']);
+        $this->assertArrayNotHasKey('status', $customers[1]['fields']);
+        $this->assertArrayHasKey('id', $customers[2]['fields']);
+        $this->assertArrayHasKey('name', $customers[2]['fields']);
+        $this->assertArrayNotHasKey('email', $customers[2]['fields']);
+        $this->assertArrayNotHasKey('address', $customers[2]['fields']);
+        $this->assertArrayNotHasKey('status', $customers[2]['fields']);
     }
 
-    public function testFindIndexByFields()
+    public function testFindAsArraySourceFilter()
+    {
+        /** @var TestCase|ActiveRecordTestTrait $this */
+        // indexBy + asArray
+        $customers = Customer::find()->asArray()->source(['id', 'name'])->all();
+        $this->assertEquals(3, count($customers));
+        $this->assertArrayHasKey('id', $customers[0]['_source']);
+        $this->assertArrayHasKey('name', $customers[0]['_source']);
+        $this->assertArrayNotHasKey('email', $customers[0]['_source']);
+        $this->assertArrayNotHasKey('address', $customers[0]['_source']);
+        $this->assertArrayNotHasKey('status', $customers[0]['_source']);
+        $this->assertArrayHasKey('id', $customers[1]['_source']);
+        $this->assertArrayHasKey('name', $customers[1]['_source']);
+        $this->assertArrayNotHasKey('email', $customers[1]['_source']);
+        $this->assertArrayNotHasKey('address', $customers[1]['_source']);
+        $this->assertArrayNotHasKey('status', $customers[1]['_source']);
+        $this->assertArrayHasKey('id', $customers[2]['_source']);
+        $this->assertArrayHasKey('name', $customers[2]['_source']);
+        $this->assertArrayNotHasKey('email', $customers[2]['_source']);
+        $this->assertArrayNotHasKey('address', $customers[2]['_source']);
+        $this->assertArrayNotHasKey('status', $customers[2]['_source']);
+    }
+
+
+    public function testFindIndexBySource()
     {
         $customerClass = $this->getCustomerClass();
         /** @var TestCase|ActiveRecordTestTrait $this */
         // indexBy + asArray
-        $customers = Customer::find()->indexBy('name')->fields('id', 'name')->all();
+        $customers = Customer::find()->indexBy('name')->source('id', 'name')->all();
         $this->assertEquals(3, count($customers));
         $this->assertTrue($customers['user1'] instanceof $customerClass);
         $this->assertTrue($customers['user2'] instanceof $customerClass);
@@ -467,42 +554,89 @@ class ActiveRecordTest extends ElasticSearchTestCase
         // indexBy + asArray
         $customers = Customer::find()->indexBy('name')->asArray()->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
-        $this->assertArrayHasKey('id', $customers['user1']);
-        $this->assertArrayHasKey('name', $customers['user1']);
-        $this->assertArrayNotHasKey('email', $customers['user1']);
-        $this->assertArrayNotHasKey('address', $customers['user1']);
-        $this->assertArrayNotHasKey('status', $customers['user1']);
-        $this->assertArrayHasKey('id', $customers['user2']);
-        $this->assertArrayHasKey('name', $customers['user2']);
-        $this->assertArrayNotHasKey('email', $customers['user2']);
-        $this->assertArrayNotHasKey('address', $customers['user2']);
-        $this->assertArrayNotHasKey('status', $customers['user2']);
-        $this->assertArrayHasKey('id', $customers['user3']);
-        $this->assertArrayHasKey('name', $customers['user3']);
-        $this->assertArrayNotHasKey('email', $customers['user3']);
-        $this->assertArrayNotHasKey('address', $customers['user3']);
-        $this->assertArrayNotHasKey('status', $customers['user3']);
+        $this->assertArrayHasKey('id', $customers['user1']['fields']);
+        $this->assertArrayHasKey('name', $customers['user1']['fields']);
+        $this->assertArrayNotHasKey('email', $customers['user1']['fields']);
+        $this->assertArrayNotHasKey('address', $customers['user1']['fields']);
+        $this->assertArrayNotHasKey('status', $customers['user1']['fields']);
+        $this->assertArrayHasKey('id', $customers['user2']['fields']);
+        $this->assertArrayHasKey('name', $customers['user2']['fields']);
+        $this->assertArrayNotHasKey('email', $customers['user2']['fields']);
+        $this->assertArrayNotHasKey('address', $customers['user2']['fields']);
+        $this->assertArrayNotHasKey('status', $customers['user2']['fields']);
+        $this->assertArrayHasKey('id', $customers['user3']['fields']);
+        $this->assertArrayHasKey('name', $customers['user3']['fields']);
+        $this->assertArrayNotHasKey('email', $customers['user3']['fields']);
+        $this->assertArrayNotHasKey('address', $customers['user3']['fields']);
+        $this->assertArrayNotHasKey('status', $customers['user3']['fields']);
 
         // indexBy callable + asArray
         $customers = Customer::find()->indexBy(function ($customer) {
-            return $customer['id'] . '-' . $customer['name'];
+            return reset($customer['fields']['id']) . '-' . reset($customer['fields']['name']);
         })->asArray()->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
-        $this->assertArrayHasKey('id', $customers['1-user1']);
-        $this->assertArrayHasKey('name', $customers['1-user1']);
-        $this->assertArrayNotHasKey('email', $customers['1-user1']);
-        $this->assertArrayNotHasKey('address', $customers['1-user1']);
-        $this->assertArrayNotHasKey('status', $customers['1-user1']);
-        $this->assertArrayHasKey('id', $customers['2-user2']);
-        $this->assertArrayHasKey('name', $customers['2-user2']);
-        $this->assertArrayNotHasKey('email', $customers['2-user2']);
-        $this->assertArrayNotHasKey('address', $customers['2-user2']);
-        $this->assertArrayNotHasKey('status', $customers['2-user2']);
-        $this->assertArrayHasKey('id', $customers['3-user3']);
-        $this->assertArrayHasKey('name', $customers['3-user3']);
-        $this->assertArrayNotHasKey('email', $customers['3-user3']);
-        $this->assertArrayNotHasKey('address', $customers['3-user3']);
-        $this->assertArrayNotHasKey('status', $customers['3-user3']);
+        $this->assertArrayHasKey('id', $customers['1-user1']['fields']);
+        $this->assertArrayHasKey('name', $customers['1-user1']['fields']);
+        $this->assertArrayNotHasKey('email', $customers['1-user1']['fields']);
+        $this->assertArrayNotHasKey('address', $customers['1-user1']['fields']);
+        $this->assertArrayNotHasKey('status', $customers['1-user1']['fields']);
+        $this->assertArrayHasKey('id', $customers['2-user2']['fields']);
+        $this->assertArrayHasKey('name', $customers['2-user2']['fields']);
+        $this->assertArrayNotHasKey('email', $customers['2-user2']['fields']);
+        $this->assertArrayNotHasKey('address', $customers['2-user2']['fields']);
+        $this->assertArrayNotHasKey('status', $customers['2-user2']['fields']);
+        $this->assertArrayHasKey('id', $customers['3-user3']['fields']);
+        $this->assertArrayHasKey('name', $customers['3-user3']['fields']);
+        $this->assertArrayNotHasKey('email', $customers['3-user3']['fields']);
+        $this->assertArrayNotHasKey('address', $customers['3-user3']['fields']);
+        $this->assertArrayNotHasKey('status', $customers['3-user3']['fields']);
+    }
+
+    public function testFindIndexByAsArray()
+    {
+        /** @var \yii\db\ActiveRecordInterface $customerClass */
+        $customerClass = $this->getCustomerClass();
+
+        /** @var TestCase|ActiveRecordTestTrait $this */
+        // indexBy + asArray
+        $customers = $customerClass::find()->asArray()->indexBy('name')->all();
+        $this->assertEquals(3, count($customers));
+        $this->assertArrayHasKey('id', $customers['user1']['_source']);
+        $this->assertArrayHasKey('name', $customers['user1']['_source']);
+        $this->assertArrayHasKey('email', $customers['user1']['_source']);
+        $this->assertArrayHasKey('address', $customers['user1']['_source']);
+        $this->assertArrayHasKey('status', $customers['user1']['_source']);
+        $this->assertArrayHasKey('id', $customers['user2']['_source']);
+        $this->assertArrayHasKey('name', $customers['user2']['_source']);
+        $this->assertArrayHasKey('email', $customers['user2']['_source']);
+        $this->assertArrayHasKey('address', $customers['user2']['_source']);
+        $this->assertArrayHasKey('status', $customers['user2']['_source']);
+        $this->assertArrayHasKey('id', $customers['user3']['_source']);
+        $this->assertArrayHasKey('name', $customers['user3']['_source']);
+        $this->assertArrayHasKey('email', $customers['user3']['_source']);
+        $this->assertArrayHasKey('address', $customers['user3']['_source']);
+        $this->assertArrayHasKey('status', $customers['user3']['_source']);
+
+        // indexBy callable + asArray
+        $customers = $customerClass::find()->indexBy(function ($customer) {
+            return $customer['_source']['id'] . '-' . $customer['_source']['name'];
+        })->asArray()->all();
+        $this->assertEquals(3, count($customers));
+        $this->assertArrayHasKey('id', $customers['1-user1']['_source']);
+        $this->assertArrayHasKey('name', $customers['1-user1']['_source']);
+        $this->assertArrayHasKey('email', $customers['1-user1']['_source']);
+        $this->assertArrayHasKey('address', $customers['1-user1']['_source']);
+        $this->assertArrayHasKey('status', $customers['1-user1']['_source']);
+        $this->assertArrayHasKey('id', $customers['2-user2']['_source']);
+        $this->assertArrayHasKey('name', $customers['2-user2']['_source']);
+        $this->assertArrayHasKey('email', $customers['2-user2']['_source']);
+        $this->assertArrayHasKey('address', $customers['2-user2']['_source']);
+        $this->assertArrayHasKey('status', $customers['2-user2']['_source']);
+        $this->assertArrayHasKey('id', $customers['3-user3']['_source']);
+        $this->assertArrayHasKey('name', $customers['3-user3']['_source']);
+        $this->assertArrayHasKey('email', $customers['3-user3']['_source']);
+        $this->assertArrayHasKey('address', $customers['3-user3']['_source']);
+        $this->assertArrayHasKey('status', $customers['3-user3']['_source']);
     }
 
     public function testAfterFindGet()

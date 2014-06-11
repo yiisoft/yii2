@@ -113,6 +113,22 @@ class Module extends \yii\base\Module implements BootstrapInterface
         } else {
             throw new ForbiddenHttpException('You are not allowed to access this page.');
         }
+
+        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
+            $this->generators[$id] = Yii::createObject($config);
+        }
+
+        $this->resetGlobalSettings();
+
+        return true;
+    }
+
+    /**
+     * Resets potentially incompatible global settings done in app config.
+     */
+    protected function resetGlobalSettings()
+    {
+        Yii::$app->assetManager->bundles = [];
     }
 
     /**

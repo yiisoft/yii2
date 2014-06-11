@@ -28,16 +28,15 @@ use yii\caching\Dependency;
  * {
  *     return [
  *         'pageCache' => [
- *             'class' => \yii\filters\PageCache::className(),
- *             'only' => ['list'],
+ *             'class' => 'yii\filters\PageCache',
+ *             'only' => ['index'],
  *             'duration' => 60,
  *             'dependency' => [
  *                 'class' => 'yii\caching\DbDependency',
  *                 'sql' => 'SELECT COUNT(*) FROM post',
  *             ],
  *             'variations' => [
- *                 Yii::$app->language,
- *                 Yii::$app->user->id
+ *                 \Yii::$app->language,
  *             ]
  *         ],
  *     ];
@@ -71,7 +70,7 @@ class PageCache extends ActionFilter
      * ~~~
      * [
      *     'class' => 'yii\caching\DbDependency',
-     *     'sql' => 'SELECT MAX(lastModified) FROM Post',
+     *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
      * ~~~
      *

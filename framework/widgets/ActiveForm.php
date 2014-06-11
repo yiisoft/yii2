@@ -25,11 +25,23 @@ class ActiveForm extends Widget
 {
     /**
      * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @see method for specifying the HTTP method for this form.
      */
     public $action = '';
     /**
-     * @var string the form submission method. This should be either 'post' or 'get'.
-     * Defaults to 'post'.
+     * @var string the form submission method. This should be either 'post' or 'get'. Defaults to 'post'.
+     *
+     * When you set this to 'get' you may see the url parameters repeated on each request.
+     * This is because the default value of [[action]] is set to be the current request url and each submit
+     * will add new parameters instead of replacing existing ones.
+     * You may set [[action]] explicitly to avoid this:
+     *
+     * ```php
+     * $form = ActiveForm::begin([
+     *     'method' => 'get',
+     *     'action' => ['controller/action'],
+     * ]);
+     * ```
      */
     public $method = 'post';
     /**
@@ -217,41 +229,12 @@ class ActiveForm extends Widget
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[\yii\helpers\Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
      * @return string the generated error summary
+     * @see errorSummaryCssClass
      */
     public function errorSummary($models, $options = [])
     {
-        if (!is_array($models)) {
-            $models = [$models];
-        }
-
-        $lines = [];
-        foreach ($models as $model) {
-            /** @var Model $model */
-            foreach ($model->getFirstErrors() as $error) {
-                $lines[] = Html::encode($error);
-            }
-        }
-
-        $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
-        $footer = isset($options['footer']) ? $options['footer'] : '';
-        unset($options['header'], $options['footer']);
-
-        if (!isset($options['class'])) {
-            $options['class'] = $this->errorSummaryCssClass;
-        } else {
-            $options['class'] .= ' ' . $this->errorSummaryCssClass;
-        }
-
-        if (!empty($lines)) {
-            $content = "<ul><li>" . implode("</li>\n<li>", $lines) . "</li></ul>";
-
-            return Html::tag('div', $header . $content . $footer, $options);
-        } else {
-            $content = "<ul></ul>";
-            $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
-
-            return Html::tag('div', $header . $content . $footer, $options);
-        }
+        Html::addCssClass($options, $this->errorSummaryCssClass);
+        return Html::errorSummary($models, $options);
     }
 
     /**

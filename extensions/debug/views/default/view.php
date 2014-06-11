@@ -1,10 +1,4 @@
 <?php
-
-use yii\bootstrap\ButtonDropdown;
-use yii\bootstrap\ButtonGroup;
-use yii\helpers\Url;
-use yii\helpers\Html;
-
 /**
  * @var \yii\web\View $this
  * @var array $summary
@@ -13,6 +7,11 @@ use yii\helpers\Html;
  * @var \yii\debug\Panel[] $panels
  * @var \yii\debug\Panel $activePanel
  */
+
+use yii\bootstrap\ButtonDropdown;
+use yii\bootstrap\ButtonGroup;
+use yii\helpers\Url;
+use yii\helpers\Html;
 
 $this->title = 'Yii Debugger';
 ?>

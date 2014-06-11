@@ -11,6 +11,7 @@ use yii\base\Object;
 use yii\caching\Cache;
 use Yii;
 use yii\caching\GroupDependency;
+use yii\db\Exception;
 
 /**
  * Schema represents the Sphinx schema information.
@@ -78,7 +79,7 @@ class Schema extends Object
 
     /**
      * Loads the metadata for the specified index.
-     * @param  string      $name index name
+     * @param string $name index name
      * @return IndexSchema driver dependent index metadata. Null if the index does not exist.
      */
     protected function loadIndexSchema($name)
@@ -97,7 +98,7 @@ class Schema extends Object
     /**
      * Resolves the index name.
      * @param IndexSchema $index the index metadata object
-     * @param string      $name  the index name
+     * @param string $name the index name
      */
     protected function resolveIndexNames($index, $name)
     {
@@ -117,8 +118,8 @@ class Schema extends Object
 
     /**
      * Obtains the metadata for the named index.
-     * @param  string      $name    index name. The index name may contain schema name if any. Do not quote the index name.
-     * @param  boolean     $refresh whether to reload the index schema even if it is found in the cache.
+     * @param string $name index name. The index name may contain schema name if any. Do not quote the index name.
+     * @param boolean $refresh whether to reload the index schema even if it is found in the cache.
      * @return IndexSchema index metadata. Null if the named index does not exist.
      */
     public function getIndexSchema($name, $refresh = false)
@@ -153,8 +154,8 @@ class Schema extends Object
 
     /**
      * Returns the cache key for the specified index name.
-     * @param  string $name the index name
-     * @return mixed  the cache key
+     * @param string $name the index name
+     * @return mixed the cache key
      */
     protected function getCacheKey($name)
     {
@@ -182,10 +183,10 @@ class Schema extends Object
 
     /**
      * Returns the metadata for all indexes in the database.
-     * @param  boolean       $refresh whether to fetch the latest available index schemas. If this is false,
-     *                                cached data may be returned if available.
+     * @param boolean $refresh whether to fetch the latest available index schemas. If this is false,
+     * cached data may be returned if available.
      * @return IndexSchema[] the metadata for all indexes in the Sphinx.
-     *                               Each array element is an instance of [[IndexSchema]] or its child class.
+     * Each array element is an instance of [[IndexSchema]] or its child class.
      */
     public function getIndexSchemas($refresh = false)
     {
@@ -201,8 +202,8 @@ class Schema extends Object
 
     /**
      * Returns all index names in the Sphinx.
-     * @param  boolean  $refresh whether to fetch the latest available index names. If this is false,
-     *                           index names fetched previously (if available) will be returned.
+     * @param boolean $refresh whether to fetch the latest available index names. If this is false,
+     * index names fetched previously (if available) will be returned.
      * @return string[] all index names in the Sphinx.
      */
     public function getIndexNames($refresh = false)
@@ -216,9 +217,9 @@ class Schema extends Object
 
     /**
      * Returns all index types in the Sphinx.
-     * @param  boolean $refresh whether to fetch the latest available index types. If this is false,
-     *                          index types fetched previously (if available) will be returned.
-     * @return array   all index types in the Sphinx in format: index name => index type.
+     * @param boolean $refresh whether to fetch the latest available index types. If this is false,
+     * index types fetched previously (if available) will be returned.
+     * @return array all index types in the Sphinx in format: index name => index type.
      */
     public function getIndexTypes($refresh = false)
     {
@@ -269,7 +270,7 @@ class Schema extends Object
 
     /**
      * Determines the PDO type for the given PHP data value.
-     * @param  mixed   $data the data whose PDO type is to be determined
+     * @param mixed $data the data whose PDO type is to be determined
      * @return integer the PDO type
      * @see http://www.php.net/manual/en/pdo.constants.php
      */
@@ -316,7 +317,7 @@ class Schema extends Object
     /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
-     * @param  string $str string to be quoted
+     * @param string $str string to be quoted
      * @return string the properly quoted string
      * @see http://www.php.net/manual/en/function.PDO-quote.php
      */
@@ -335,7 +336,7 @@ class Schema extends Object
      * If the index name contains schema prefix, the prefix will also be properly quoted.
      * If the index name is already quoted or contains '(' or '{{',
      * then this method will do nothing.
-     * @param  string $name index name
+     * @param string $name index name
      * @return string the properly quoted index name
      * @see quoteSimpleTableName
      */
@@ -353,7 +354,7 @@ class Schema extends Object
      * If the column name contains prefix, the prefix will also be properly quoted.
      * If the column name is already quoted or contains '(', '[[' or '{{',
      * then this method will do nothing.
-     * @param  string $name column name
+     * @param string $name column name
      * @return string the properly quoted column name
      * @see quoteSimpleColumnName
      */
@@ -375,7 +376,7 @@ class Schema extends Object
     /**
      * Quotes a index name for use in a query.
      * A simple index name has no schema prefix.
-     * @param  string $name index name
+     * @param string $name index name
      * @return string the properly quoted index name
      */
     public function quoteSimpleIndexName($name)
@@ -386,7 +387,7 @@ class Schema extends Object
     /**
      * Quotes a column name for use in a query.
      * A simple column name has no prefix.
-     * @param  string $name column name
+     * @param string $name column name
      * @return string the properly quoted column name
      */
     public function quoteSimpleColumnName($name)
@@ -398,7 +399,7 @@ class Schema extends Object
      * Returns the actual name of a given index name.
      * This method will strip off curly brackets from the given index name
      * and replace the percentage character '%' with [[Connection::indexPrefix]].
-     * @param  string $name the index name to be converted
+     * @param string $name the index name to be converted
      * @return string the real name of the given index name
      */
     public function getRawIndexName($name)
@@ -414,8 +415,8 @@ class Schema extends Object
 
     /**
      * Extracts the PHP type from abstract DB type.
-     * @param  ColumnSchema $column the column schema information
-     * @return string       PHP type name
+     * @param ColumnSchema $column the column schema information
+     * @return string PHP type name
      */
     protected function getColumnPhpType($column)
     {
@@ -441,9 +442,9 @@ class Schema extends Object
 
     /**
      * Collects the metadata of index columns.
-     * @param  IndexSchema $index the index metadata
-     * @return boolean     whether the index exists in the database
-     * @throws \Exception  if DB query fails
+     * @param IndexSchema $index the index metadata
+     * @return boolean whether the index exists in the database
+     * @throws \Exception if DB query fails
      */
     protected function findColumns($index)
     {
@@ -471,7 +472,7 @@ class Schema extends Object
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param  array        $info column information
+     * @param array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -498,5 +499,23 @@ class Schema extends Object
         $column->phpType = $this->getColumnPhpType($column);
 
         return $column;
+    }
+
+    /**
+     * Handles database error
+     *
+     * @param \Exception $e
+     * @param string $rawSql SQL that produced exception
+     * @throws Exception
+     */
+    public function handleException(\Exception $e, $rawSql)
+    {
+        if ($e instanceof Exception) {
+            throw $e;
+        } else {
+            $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+            $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+        }
     }
 }

@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var yii\debug\panels\DbPanel $panel
+ * @var integer $queryCount
+ * @var integer $queryTime
+ */
+?>
 <?php if ($queryCount): ?>
 <div class="yii-debug-toolbar-block">
     <a href="<?= $panel->getUrl() ?>" title="Executed <?= $queryCount ?> database queries which took <?= $queryTime ?>.">

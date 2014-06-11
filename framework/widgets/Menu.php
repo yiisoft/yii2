@@ -166,9 +166,11 @@ class Menu extends Widget
             $this->params = Yii::$app->request->getQueryParams();
         }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
-        $options = $this->options;
-        $tag = ArrayHelper::remove($options, 'tag', 'ul');
-        echo Html::tag($tag, $this->renderItems($items), $options);
+        if (!empty($items)) {
+            $options = $this->options;
+            $tag = ArrayHelper::remove($options, 'tag', 'ul');
+            echo Html::tag($tag, $this->renderItems($items), $options);
+        }
     }
 
     /**

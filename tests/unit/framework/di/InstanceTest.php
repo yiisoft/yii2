@@ -22,10 +22,11 @@ class InstanceTest extends TestCase
     {
         $container = new Container;
         $className = Component::className();
-        $instance = Instance::of($className, $container);
+        $instance = Instance::of($className);
+
         $this->assertTrue($instance instanceof Instance);
-        $this->assertTrue($instance->get() instanceof Component);
-        $this->assertTrue(Instance::ensure($instance, $className) instanceof Component);
-        $this->assertTrue($instance->get() !== Instance::ensure($instance, $className));
+        $this->assertTrue($instance->get($container) instanceof Component);
+        $this->assertTrue(Instance::ensure($instance, $className, $container) instanceof Component);
+        $this->assertTrue($instance->get($container) !== Instance::ensure($instance, $className, $container));
     }
 }

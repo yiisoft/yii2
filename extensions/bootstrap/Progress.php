@@ -112,7 +112,7 @@ class Progress extends Widget
 
     /**
      * Renders the progress.
-     * @return string                 the rendering result.
+     * @return string the rendering result.
      * @throws InvalidConfigException if the "percent" option is not set in a stacked progress bar.
      */
     protected function renderProgress()
@@ -135,10 +135,10 @@ class Progress extends Widget
 
     /**
      * Generates a bar
-     * @param  integer $percent the percentage of the bar
-     * @param  string  $label,  optional, the label to display at the bar
-     * @param  array   $options the HTML attributes of the bar
-     * @return string  the rendering result.
+     * @param integer $percent the percentage of the bar
+     * @param string $label, optional, the label to display at the bar
+     * @param array $options the HTML attributes of the bar
+     * @return string the rendering result.
      */
     protected function renderBar($percent, $label = '', $options = [])
     {

@@ -7,7 +7,7 @@ use yii\validators\UrlValidator;
 use yiiunit\TestCase;
 
 /**
- * UrlValidatorTest
+ * @group validators
  */
 class UrlValidatorTest extends TestCase
 {

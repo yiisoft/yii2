@@ -45,6 +45,10 @@ trait ActiveRecordTestTrait
      */
     abstract public function getItemClass();
 
+    abstract public function getOrderWithNullFKClass();
+
+    abstract public function getOrderItemWithNullFKmClass();
+
     /**
      * can be overridden to do things after save()
      */
@@ -69,25 +73,6 @@ trait ActiveRecordTestTrait
         $this->assertTrue($customers[0] instanceof $customerClass);
         $this->assertTrue($customers[1] instanceof $customerClass);
         $this->assertTrue($customers[2] instanceof $customerClass);
-
-        // find all asArray
-        $customers = $customerClass::find()->asArray()->all();
-        $this->assertEquals(3, count($customers));
-        $this->assertArrayHasKey('id', $customers[0]);
-        $this->assertArrayHasKey('name', $customers[0]);
-        $this->assertArrayHasKey('email', $customers[0]);
-        $this->assertArrayHasKey('address', $customers[0]);
-        $this->assertArrayHasKey('status', $customers[0]);
-        $this->assertArrayHasKey('id', $customers[1]);
-        $this->assertArrayHasKey('name', $customers[1]);
-        $this->assertArrayHasKey('email', $customers[1]);
-        $this->assertArrayHasKey('address', $customers[1]);
-        $this->assertArrayHasKey('status', $customers[1]);
-        $this->assertArrayHasKey('id', $customers[2]);
-        $this->assertArrayHasKey('name', $customers[2]);
-        $this->assertArrayHasKey('email', $customers[2]);
-        $this->assertArrayHasKey('address', $customers[2]);
-        $this->assertArrayHasKey('status', $customers[2]);
 
         // find by a single primary key
         $customer = $customerClass::findOne(2);
@@ -136,6 +121,25 @@ trait ActiveRecordTestTrait
             'status' => 1,
             'profile_id' => null,
         ], $customer);
+
+        // find all asArray
+        $customers = $customerClass::find()->asArray()->all();
+        $this->assertEquals(3, count($customers));
+        $this->assertArrayHasKey('id', $customers[0]);
+        $this->assertArrayHasKey('name', $customers[0]);
+        $this->assertArrayHasKey('email', $customers[0]);
+        $this->assertArrayHasKey('address', $customers[0]);
+        $this->assertArrayHasKey('status', $customers[0]);
+        $this->assertArrayHasKey('id', $customers[1]);
+        $this->assertArrayHasKey('name', $customers[1]);
+        $this->assertArrayHasKey('email', $customers[1]);
+        $this->assertArrayHasKey('address', $customers[1]);
+        $this->assertArrayHasKey('status', $customers[1]);
+        $this->assertArrayHasKey('id', $customers[2]);
+        $this->assertArrayHasKey('name', $customers[2]);
+        $this->assertArrayHasKey('email', $customers[2]);
+        $this->assertArrayHasKey('address', $customers[2]);
+        $this->assertArrayHasKey('status', $customers[2]);
     }
 
     public function testFindScalar()
@@ -678,24 +682,117 @@ trait ActiveRecordTestTrait
         $customerClass = $this->getCustomerClass();
         /** @var \yii\db\ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
+        /** @var \yii\db\ActiveRecordInterface $orderWithNullFKClass */
+        $orderWithNullFKClass = $this->getOrderWithNullFKClass();
+        /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
+        $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
+
+
 
         /** @var TestCase|ActiveRecordTestTrait $this */
-        // has many
+        // has many without delete
+        $customer = $customerClass::findOne(2);
+        $this->assertEquals(2, count($customer->ordersWithNullFK));
+        $customer->unlink('ordersWithNullFK', $customer->ordersWithNullFK[1], false);
+
+        $this->assertEquals(1, count($customer->ordersWithNullFK));
+        $orderWithNullFK = $orderWithNullFKClass::findOne(3);
+
+        $this->assertEquals(3,$orderWithNullFK->id);
+        $this->assertNull($orderWithNullFK->customer_id);
+
+        // has many with delete
         $customer = $customerClass::findOne(2);
         $this->assertEquals(2, count($customer->orders));
         $customer->unlink('orders', $customer->orders[1], true);
         $this->afterSave();
+
         $this->assertEquals(1, count($customer->orders));
         $this->assertNull($orderClass::findOne(3));
 
-        // via model
+        // via model with delete
         $order = $orderClass::findOne(2);
         $this->assertEquals(3, count($order->items));
         $this->assertEquals(3, count($order->orderItems));
         $order->unlink('items', $order->items[2], true);
         $this->afterSave();
+
         $this->assertEquals(2, count($order->items));
         $this->assertEquals(2, count($order->orderItems));
+
+        // via model without delete
+        $this->assertEquals(3, count($order->itemsWithNullFK));
+        $order->unlink('itemsWithNullFK', $order->itemsWithNullFK[2], false);
+        $this->afterSave();
+
+        $this->assertEquals(2, count($order->itemsWithNullFK));
+        $this->assertEquals(2, count($order->orderItems));
+    }
+
+    public function testUnlinkAll()
+    {
+        /** @var \yii\db\ActiveRecordInterface $customerClass */
+        $customerClass = $this->getCustomerClass();
+        /** @var \yii\db\ActiveRecordInterface $orderClass */
+        $orderClass = $this->getOrderClass();
+        /** @var \yii\db\ActiveRecordInterface $orderItemClass */
+        $orderItemClass = $this->getOrderItemClass();
+        /** @var \yii\db\ActiveRecordInterface $itemClass */
+        $itemClass = $this->getItemClass();
+        /** @var \yii\db\ActiveRecordInterface $orderWithNullFKClass */
+        $orderWithNullFKClass = $this->getOrderWithNullFKClass();
+        /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
+        $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
+
+        /** @var TestCase|ActiveRecordTestTrait $this */
+        // has many with delete
+        $customer = $customerClass::findOne(2);
+        $this->assertEquals(2, count($customer->orders));
+        $this->assertEquals(3, $orderClass::find()->count());
+        $customer->unlinkAll('orders', true);
+        $this->afterSave();
+        $this->assertEquals(1, $orderClass::find()->count());
+        $this->assertEquals(0, count($customer->orders));
+
+        $this->assertNull($orderClass::findOne(2));
+        $this->assertNull($orderClass::findOne(3));
+
+
+        // has many without delete
+        $customer = $customerClass::findOne(2);
+        $this->assertEquals(2, count($customer->ordersWithNullFK));
+        $this->assertEquals(3, $orderWithNullFKClass::find()->count());
+        $customer->unlinkAll('ordersWithNullFK', false);
+        $this->afterSave();
+        $this->assertEquals(0, count($customer->ordersWithNullFK));
+        $this->assertEquals(3, $orderWithNullFKClass::find()->count());
+        $this->assertEquals(2, $orderWithNullFKClass::find()->where(['AND', ['id' => [2, 3]], ['customer_id' => null]])->count());
+
+
+        // via model with delete
+        /** @var Order $order */
+        $order = $orderClass::findOne(1);
+        $this->assertEquals(2, count($order->books));
+        $orderItemCount = $orderItemClass::find()->count();
+        $this->assertEquals(5, $itemClass::find()->count());
+        $order->unlinkAll('books', true);
+        $this->afterSave();
+        $this->assertEquals(5, $itemClass::find()->count());
+        $this->assertEquals($orderItemCount - 2, $orderItemClass::find()->count());
+        $this->assertEquals(0, count($order->books));
+
+        // via model without delete
+        $this->assertEquals(2, count($order->booksWithNullFK));
+        $orderItemCount = $orderItemsWithNullFKClass::find()->count();
+        $this->assertEquals(5, $itemClass::find()->count());
+        $order->unlinkAll('booksWithNullFK',false);
+        $this->afterSave();
+        $this->assertEquals(0, count($order->booksWithNullFK));
+        $this->assertEquals(2, $orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
+        $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
+        $this->assertEquals(5, $itemClass::find()->count());
+
+        // via table is covered in \yiiunit\framework\db\ActiveRecordTest::testUnlinkAllViaTable()
     }
 
     public static $afterSaveNewRecord;

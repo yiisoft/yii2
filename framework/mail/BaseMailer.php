@@ -24,7 +24,7 @@ use yii\base\MailEvent;
  * @property View $view View instance. Note that the type of this property differs in getter and setter. See
  * [[getView()]] and [[setView()]] for details.
  * @property string $viewPath The directory that contains the view files for composing mail messages Defaults
- * to '@app/mail'. This property is read-only.
+ * to '@app/mail'.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -186,6 +186,10 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
             if (isset($text)) {
                 $message->setTextBody($text);
             } elseif (isset($html)) {
+                if (preg_match('|<body[^>]*>(.*?)</body>|is', $html, $match)) {
+                    $html = $match[1];
+                }
+                $html = preg_replace('|<style[^>]*>(.*?)</style>|is', '', $html);
                 $message->setTextBody(strip_tags($html));
             }
         }

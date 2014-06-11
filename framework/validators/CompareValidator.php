@@ -12,7 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
 /**
- * CompareValidator compares the specified attribute value with another value and validates if they are equal.
+ * CompareValidator compares the specified attribute value with another value.
  *
  * The value being compared with can be another attribute value
  * (specified via [[compareAttribute]]) or a constant (specified via
@@ -47,14 +47,14 @@ class CompareValidator extends Validator
     /**
      * @var string the operator for comparison. The following operators are supported:
      *
-     * - '==': validates to see if the two values are equal. The comparison is done is non-strict mode.
-     * - '===': validates to see if the two values are equal. The comparison is done is strict mode.
-     * - '!=': validates to see if the two values are NOT equal. The comparison is done is non-strict mode.
-     * - '!==': validates to see if the two values are NOT equal. The comparison is done is strict mode.
-     * - `>`: validates to see if the value being validated is greater than the value being compared with.
-     * - `>=`: validates to see if the value being validated is greater than or equal to the value being compared with.
-     * - `<`: validates to see if the value being validated is less than the value being compared with.
-     * - `<=`: validates to see if the value being validated is less than or equal to the value being compared with.
+     * - `==`: check if two values are equal. The comparison is done is non-strict mode.
+     * - `===`: check if two values are equal. The comparison is done is strict mode.
+     * - `!=`: check if two values are NOT equal. The comparison is done is non-strict mode.
+     * - `!==`: check if two values are NOT equal. The comparison is done is strict mode.
+     * - `>`: check if value being validated is greater than the value being compared with.
+     * - `>=`: check if value being validated is greater than or equal to the value being compared with.
+     * - `<`: check if value being validated is less than the value being compared with.
+     * - `<=`: check if value being validated is less than or equal to the value being compared with.
      */
     public $operator = '==';
     /**

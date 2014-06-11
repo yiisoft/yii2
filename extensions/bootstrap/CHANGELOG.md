@@ -4,7 +4,10 @@ Yii Framework 2 bootstrap extension Change Log
 2.0.0-rc under development
 --------------------------
 
-- no changes in this release.
+- Bug #3292: Fixed dropdown widgets rendering incorrect HTML (it3rmit)
+- Bug #3740: Fixed duplicate error message when client validation is enabled (tadaszelvys)
+- Bug #3749: Fixed invalid plugin registration and ensure clickable links in dropdown (kartik-v)
+- Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 
 
 2.0.0-beta April 13, 2014

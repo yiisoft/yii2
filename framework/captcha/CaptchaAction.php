@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
+use yii\web\Response;
 
 /**
  * CaptchaAction renders a CAPTCHA image.
@@ -82,7 +83,7 @@ class CaptchaAction extends Action
     /**
      * @var integer the offset between characters. Defaults to -2. You can adjust this property
      * in order to decrease or increase the readability of the captcha.
-     **/
+     */
     public $offset = -2;
     /**
      * @var string the TrueType font file. This can be either a file path or path alias.
@@ -127,7 +128,7 @@ class CaptchaAction extends Action
             ]);
         } else {
             $this->setHttpHeaders();
-
+            Yii::$app->response->format = Response::FORMAT_RAW;
             return $this->renderImage($this->getVerifyCode());
         }
     }

@@ -32,8 +32,8 @@ class FunctionDoc extends BaseDoc
 
     /**
      * @param \phpDocumentor\Reflection\FunctionReflector $reflector
-     * @param Context                                     $context
-     * @param array                                       $config
+     * @param Context $context
+     * @param array $config
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

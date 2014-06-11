@@ -100,7 +100,7 @@ class Accordion extends Widget
 
     /**
      * Renders collapsible items as specified on [[items]].
-     * @return string                  the rendering result.
+     * @return string the rendering result.
      * @throws InvalidConfigException.
      */
     protected function renderItems()

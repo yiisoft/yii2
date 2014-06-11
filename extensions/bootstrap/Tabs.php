@@ -120,7 +120,7 @@ class Tabs extends Widget
 
     /**
      * Renders tab items as specified on [[items]].
-     * @return string                  the rendering result.
+     * @return string the rendering result.
      * @throws InvalidConfigException.
      */
     protected function renderItems()
@@ -192,9 +192,9 @@ class Tabs extends Widget
     /**
      * Normalizes dropdown item options by removing tab specific keys `content` and `contentOptions`, and also
      * configure `panes` accordingly.
-     * @param  array                  $items the dropdown items configuration.
-     * @param  array                  $panes the panes reference array.
-     * @return boolean                whether any of the dropdown items is `active` or not.
+     * @param array $items the dropdown items configuration.
+     * @param array $panes the panes reference array.
+     * @return boolean whether any of the dropdown items is `active` or not.
      * @throws InvalidConfigException
      */
     protected function renderDropdown(&$items, &$panes)

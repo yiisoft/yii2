@@ -42,6 +42,8 @@ use yii\helpers\StringHelper;
  *
  * @property float $score Returns the score of this record when it was retrieved via a [[find()]] query. This
  * property is read-only.
+ * @property array $highlight Returns a list of arrays with highlighted excerpts indexed by field names. This
+ * property is read-only.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -51,6 +53,7 @@ class ActiveRecord extends BaseActiveRecord
     private $_id;
     private $_score;
     private $_version;
+    private $_highlight;
 
     /**
      * Returns the database connection used by this AR class.
@@ -100,11 +103,11 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Gets a record by its primary key.
      *
-     * @param  mixed       $primaryKey the primaryKey value
-     * @param  array       $options    options given in this parameter are passed to elasticsearch
-     *                                 as request URI parameters.
-     *                                 Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
-     *                                 for more details on these options.
+     * @param mixed $primaryKey the primaryKey value
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters.
+     * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
+     * for more details on these options.
      * @return static|null The record instance or null if it was not found.
      */
     public static function get($primaryKey, $options = [])
@@ -114,7 +117,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         $command = static::getDb()->createCommand();
         $result = $command->get(static::index(), static::type(), $primaryKey, $options);
-        if ($result['exists']) {
+        if ($result['found']) {
             $model = static::instantiate($result);
             static::populateRecord($model, $result);
             $model->afterFind();
@@ -129,8 +132,8 @@ class ActiveRecord extends BaseActiveRecord
      * Gets a list of records by its primary keys.
      *
      * @param array $primaryKeys an array of primaryKey values
-     * @param array $options     options given in this parameter are passed to elasticsearch
-     *                           as request URI parameters.
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters.
      *
      * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html)
      * for more details on these options.
@@ -150,7 +153,7 @@ class ActiveRecord extends BaseActiveRecord
         $result = $command->mget(static::index(), static::type(), $primaryKeys, $options);
         $models = [];
         foreach ($result['docs'] as $doc) {
-            if ($doc['exists']) {
+            if ($doc['found']) {
                 $model = static::instantiate($doc);
                 static::populateRecord($model, $doc);
                 $model->afterFind();
@@ -176,8 +179,16 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
+     * @return array|null A list of arrays with highlighted excerpts indexed by field names.
+     */
+    public function getHighlight()
+    {
+        return $this->_highlight;
+    }
+
+    /**
      * Sets the primary key
-     * @param  mixed                          $value
+     * @param mixed $value
      * @throws \yii\base\InvalidCallException when record is not new
      */
     public function setPrimaryKey($value)
@@ -282,11 +293,27 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function populateRecord($record, $row)
     {
-        parent::populateRecord($record, $row['_source']);
-        $pk = static::primaryKey()[0];
+        $attributes = [];
+        if (isset($row['_source'])) {
+            $attributes = $row['_source'];
+        }
+        if (isset($row['fields'])) {
+            // reset fields in case it is scalar value TODO use field metadata for this
+            foreach($row['fields'] as $key => $value) {
+                if (count($value) == 1) {
+                    $row['fields'][$key] = reset($value);
+                }
+            }
+            $attributes = array_merge($attributes, $row['fields']);
+        }
+
+        parent::populateRecord($record, $attributes);
+
+        $pk = static::primaryKey()[0];//TODO should always set ID in case of fields are not returned
         if ($pk === '_id') {
             $record->_id = $row['_id'];
         }
+        $record->_highlight = isset($row['highlight']) ? $row['highlight'] : null;
         $record->_score = isset($row['_score']) ? $row['_score'] : null;
         $record->_version = isset($row['_version']) ? $row['_version'] : null; // TODO version should always be available...
     }
@@ -301,11 +328,11 @@ class ActiveRecord extends BaseActiveRecord
      * depends on the row data to be populated into the record.
      * For example, by creating a record based on the value of a column,
      * you may implement the so-called single-table inheritance mapping.
-     * @param  array  $row row data to be populated into the record.
-     *                     This array consists of the following keys:
-     *                     - `_source`: refers to the attributes of the record.
-     *                     - `_type`: the type this record is stored in.
-     *                     - `_index`: the index this record is stored in.
+     * @param array $row row data to be populated into the record.
+     * This array consists of the following keys:
+     *  - `_source`: refers to the attributes of the record.
+     *  - `_type`: the type this record is stored in.
+     *  - `_index`: the index this record is stored in.
      * @return static the newly created active record
      */
     public static function instantiate($row)
@@ -347,11 +374,11 @@ class ActiveRecord extends BaseActiveRecord
      * ~~~
      *
      * @param boolean $runValidation whether to perform validation before saving the record.
-     *                               If the validation fails, the record will not be inserted into the database.
-     * @param array   $attributes    list of attributes that need to be saved. Defaults to null,
-     *                               meaning all attributes will be saved.
-     * @param array   $options       options given in this parameter are passed to elasticsearch
-     *                               as request URI parameters. These are among others:
+     * If the validation fails, the record will not be inserted into the database.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes will be saved.
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters. These are among others:
      *
      * - `routing` define shard placement of this record.
      * - `parent` by giving the primaryKey of another record this defines a parent-child relation
@@ -379,9 +406,9 @@ class ActiveRecord extends BaseActiveRecord
                 $options
             );
 
-            if (!isset($response['ok'])) {
-                return false;
-            }
+//            if (!isset($response['ok'])) {
+//                return false;
+//            }
             $pk = static::primaryKey()[0];
             $this->$pk = $response['_id'];
             if ($pk != '_id') {
@@ -407,9 +434,9 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::updateAll(['status' => 1], [2, 3, 4]);
      * ~~~
      *
-     * @param  array   $attributes attribute values (name-value pairs) to be saved into the table
-     * @param  array   $condition  the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                             Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+     * @param array $attributes attribute values (name-value pairs) to be saved into the table
+     * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
      */
     public static function updateAll($attributes, $condition = [])
@@ -444,13 +471,13 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['update']['error'])) {
-                $errors[] = $item['update'];
-            } elseif ($item['update']['ok']) {
+            if (isset($item['update']['status']) && $item['update']['status'] == 200) {
                 $n++;
+            } else {
+                $errors[] = $item['update'];
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed updating records.', $errors);
         }
 
@@ -465,11 +492,11 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::updateAllCounters(['age' => 1]);
      * ~~~
      *
-     * @param  array        $counters  the counters to be updated (attribute name => increment value).
-     *                                 Use negative values if you want to decrement the counters.
-     * @param  string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                                 Please refer to [[Query::where()]] on how to specify this parameter.
-     * @return integer      the number of rows updated
+     * @param array $counters the counters to be updated (attribute name => increment value).
+     * Use negative values if you want to decrement the counters.
+     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @return integer the number of rows updated
      */
     public static function updateAllCounters($counters, $condition = [])
     {
@@ -508,13 +535,13 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['update']['error'])) {
-                $errors[] = $item['update'];
-            } elseif ($item['update']['ok']) {
+            if (isset($item['update']['status']) && $item['update']['status'] == 200) {
                 $n++;
+            } else {
+                $errors[] = $item['update'];
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed updating records counters.', $errors);
         }
 
@@ -531,8 +558,8 @@ class ActiveRecord extends BaseActiveRecord
      * Customer::deleteAll('status = 3');
      * ~~~
      *
-     * @param  array   $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-     *                            Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
+     * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+     * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows deleted
      */
     public static function deleteAll($condition = [])
@@ -563,13 +590,15 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['delete']['error'])) {
+            if (isset($item['delete']['status']) && $item['delete']['status'] == 200) {
+                if (isset($item['delete']['found']) && $item['delete']['found']) {
+                    $n++;
+                }
+            } else {
                 $errors[] = $item['delete'];
-            } elseif ($item['delete']['found'] && $item['delete']['ok']) {
-                $n++;
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed deleting records.', $errors);
         }
 

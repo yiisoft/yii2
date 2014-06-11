@@ -79,8 +79,8 @@ abstract class ActiveRecord extends BaseActiveRecord
      * $customers = Article::findBySql("SELECT * FROM `idx_article` WHERE MATCH('development')")->all();
      * ~~~
      *
-     * @param  string      $sql    the SQL statement to be executed
-     * @param  array       $params parameters to be bound to the SQL statement during execution.
+     * @param string $sql the SQL statement to be executed
+     * @param array $params parameters to be bound to the SQL statement during execution.
      * @return ActiveQuery the newly created [[ActiveQuery]] instance
      */
     public static function findBySql($sql, $params = [])
@@ -99,11 +99,11 @@ abstract class ActiveRecord extends BaseActiveRecord
      * Article::updateAll(['status' => 1], 'status = 2');
      * ~~~
      *
-     * @param  array        $attributes attribute values (name-value pairs) to be saved into the table
-     * @param  string|array $condition  the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                                  Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param  array        $params     the parameters (name => value) to be bound to the query.
-     * @return integer      the number of rows updated
+     * @param array $attributes attribute values (name-value pairs) to be saved into the table
+     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return integer the number of rows updated
      */
     public static function updateAll($attributes, $condition = '', $params = [])
     {
@@ -122,10 +122,10 @@ abstract class ActiveRecord extends BaseActiveRecord
      * Article::deleteAll('status = 3');
      * ~~~
      *
-     * @param  string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-     *                                 Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param  array        $params    the parameters (name => value) to be bound to the query.
-     * @return integer      the number of rows deleted
+     * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * @return integer the number of rows deleted
      */
     public static function deleteAll($condition = '', $params = [])
     {
@@ -157,7 +157,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns the schema information of the Sphinx index associated with this AR class.
-     * @return IndexSchema            the schema information of the Sphinx index associated with this AR class.
+     * @return IndexSchema the schema information of the Sphinx index associated with this AR class.
      * @throws InvalidConfigException if the index for the AR class does not exist.
      */
     public static function getIndexSchema()
@@ -186,12 +186,12 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * Builds a snippet from provided data and query, using specified index settings.
-     * @param  string|array $source  is the source data to extract a snippet from.
-     *                               It could be either a single string or array of strings.
-     * @param  string       $match   the full-text query to build snippets for.
-     * @param  array        $options list of options in format: optionName => optionValue
+     * @param string|array $source is the source data to extract a snippet from.
+     * It could be either a single string or array of strings.
+     * @param string $match the full-text query to build snippets for.
+     * @param array $options list of options in format: optionName => optionValue
      * @return string|array built snippet in case "source" is a string, list of built snippets
-     *                              in case "source" is an array.
+     * in case "source" is an array.
      */
     public static function callSnippets($source, $match, $options = [])
     {
@@ -206,9 +206,9 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns tokenized and normalized forms of the keywords, and, optionally, keyword statistics.
-     * @param  string  $text           the text to break down to keywords.
-     * @param  boolean $fetchStatistic whether to return document and hit occurrence statistics
-     * @return array   keywords and statistics
+     * @param string $text the text to break down to keywords.
+     * @param boolean $fetchStatistic whether to return document and hit occurrence statistics
+     * @return array keywords and statistics
      */
     public static function callKeywords($text, $fetchStatistic = false)
     {
@@ -228,8 +228,8 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns current snippet value or generates new one from given match.
-     * @param  string $match   snippet source query
-     * @param  array  $options list of options in format: optionName => optionValue
+     * @param string $match snippet source query
+     * @param array $options list of options in format: optionName => optionValue
      * @return string snippet value
      */
     public function getSnippet($match = null, $options = [])
@@ -243,8 +243,8 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * Builds up the snippet value from the given query.
-     * @param  string $match   the full-text query to build snippets for.
-     * @param  array  $options list of options in format: optionName => optionValue
+     * @param string $match the full-text query to build snippets for.
+     * @param array $options list of options in format: optionName => optionValue
      * @return string snippet value.
      */
     protected function fetchSnippet($match, $options = [])
@@ -263,7 +263,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      *     return $this->snippetSourceRelation->content;
      * }
      * ~~~
-     * @return string                          snippet source string.
+     * @return string snippet source string.
      * @throws \yii\base\NotSupportedException if this is not supported by the Active Record class
      */
     public function getSnippetSource()
@@ -296,7 +296,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      * in a transaction.
      *
      * @return array the declarations of transactional operations. The array keys are scenarios names,
-     *               and the array values are the corresponding transaction operations.
+     * and the array values are the corresponding transaction operations.
      */
     public function transactions()
     {
@@ -342,11 +342,11 @@ abstract class ActiveRecord extends BaseActiveRecord
      * $article->insert();
      * ~~~
      *
-     * @param  boolean    $runValidation whether to perform validation before saving the record.
-     *                                   If the validation fails, the record will not be inserted.
-     * @param  array      $attributes    list of attributes that need to be saved. Defaults to null,
-     *                                   meaning all attributes that are loaded from index will be saved.
-     * @return boolean    whether the attributes are valid and the record is inserted successfully.
+     * @param boolean $runValidation whether to perform validation before saving the record.
+     * If the validation fails, the record will not be inserted.
+     * @param array $attributes list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from index will be saved.
+     * @return boolean whether the attributes are valid and the record is inserted successfully.
      * @throws \Exception in case insert failed.
      */
     public function insert($runValidation = true, $attributes = null)
@@ -441,15 +441,15 @@ abstract class ActiveRecord extends BaseActiveRecord
      * }
      * ~~~
      *
-     * @param  boolean              $runValidation whether to perform validation before saving the record.
-     *                                             If the validation fails, the record will not be inserted into the database.
-     * @param  array                $attributeNames    list of attributes that need to be saved. Defaults to null,
-     *                                             meaning all attributes that are loaded from DB will be saved.
-     * @return integer|boolean      the number of rows affected, or false if validation fails
-     *                                            or [[beforeSave()]] stops the updating process.
+     * @param boolean $runValidation whether to perform validation before saving the record.
+     * If the validation fails, the record will not be inserted into the database.
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from DB will be saved.
+     * @return integer|boolean the number of rows affected, or false if validation fails
+     * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
-     *                                            being updated is outdated.
-     * @throws \Exception           in case update failed.
+     * being updated is outdated.
+     * @throws \Exception in case update failed.
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -551,11 +551,11 @@ abstract class ActiveRecord extends BaseActiveRecord
      * In the above step 1 and 3, events named [[EVENT_BEFORE_DELETE]] and [[EVENT_AFTER_DELETE]]
      * will be raised by the corresponding methods.
      *
-     * @return integer|boolean      the number of rows deleted, or false if the deletion is unsuccessful for some reason.
-     *                              Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+     * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+     * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
-     *                              being deleted is outdated.
-     * @throws \Exception           in case delete failed.
+     * being deleted is outdated.
+     * @throws \Exception in case delete failed.
      */
     public function delete()
     {
@@ -599,8 +599,8 @@ abstract class ActiveRecord extends BaseActiveRecord
      * Returns a value indicating whether the given active record is the same as the current one.
      * The comparison is made by comparing the index names and the primary key values of the two active records.
      * If one of the records [[isNewRecord|is new]] they are also considered not equal.
-     * @param  ActiveRecord $record record to compare to
-     * @return boolean      whether the two active records refer to the same row in the same index.
+     * @param ActiveRecord $record record to compare to
+     * @return boolean whether the two active records refer to the same row in the same index.
      */
     public function equals($record)
     {
@@ -627,7 +627,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns a value indicating whether the specified operation is transactional in the current [[scenario]].
-     * @param  integer $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
+     * @param integer $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
      * @return boolean whether the specified operation is transactional in the current [[scenario]].
      */
     public function isTransactional($operation)

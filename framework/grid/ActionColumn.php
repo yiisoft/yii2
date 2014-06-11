@@ -61,6 +61,17 @@ class ActionColumn extends Column
      *
      * where `$url` is the URL that the column creates for the button, and `$model` is the model object
      * being rendered for the current row.
+     *
+     * You can add further conditions to the button, for example only display it, when the model is
+     * editable (here assuming you have a status field that indicates that):
+     *
+     * ```php
+     * [
+     *     'update' => function ($url, $model) {
+     *         return $model->status == 'editable' ? Html::a('Update', $url) : '';
+     *     };
+     * ],
+     * ```
      */
     public $buttons = [];
     /**
@@ -69,6 +80,7 @@ class ActionColumn extends Column
      * If this property is not set, button URLs will be created using [[createUrl()]].
      */
     public $urlCreator;
+
 
     /**
      * @inheritdoc

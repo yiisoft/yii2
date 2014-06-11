@@ -68,10 +68,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columnSchemas = [];
         }
 
-        foreach ($columns as $i => $name) {
-            $columns[$i] = $this->db->quoteColumnName($name);
-        }
-
         $values = [];
         foreach ($rows as $row) {
             $vs = [];
@@ -89,6 +85,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $vs[] = $value;
             }
             $values[] = implode(', ', $vs);
+        }
+
+        foreach ($columns as $i => $name) {
+            $columns[$i] = $this->db->quoteColumnName($name);
         }
 
         return 'INSERT INTO ' . $this->db->quoteTableName($table)
@@ -139,7 +139,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+        return 'PRAGMA foreign_keys='.(int)$check;
     }
 
     /**
@@ -254,7 +254,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $name the name of the primary key constraint to be removed.
      * @param string $table the table that the primary key constraint will be removed from.
      * @return string the SQL statement for removing a primary key constraint from an existing table.
-     * @throws NotSupportedException this is not supported by SQLite	 *
+     * @throws NotSupportedException this is not supported by SQLite
      */
     public function dropPrimaryKey($name, $table)
     {

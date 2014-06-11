@@ -77,6 +77,7 @@ use Yii;
 class Object
 {
     /**
+     * Returns the fully qualified name of this class.
      * @return string the fully qualified name of this class.
      */
     public static function className()
@@ -214,7 +215,7 @@ class Object
      */
     public function __call($name, $params)
     {
-        throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
+        throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
     }
 
     /**

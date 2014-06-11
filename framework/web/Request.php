@@ -1136,6 +1136,20 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Gets the Etags.
+     *
+     * @return array The entity tags
+     */
+    public function getETags()
+    {
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+            return preg_split('/[\s,]+/', $_SERVER['HTTP_IF_NONE_MATCH'], -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * Returns the cookie collection.
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
@@ -1176,6 +1190,7 @@ class Request extends \yii\base\Request
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => @unserialize($value),
+                        'expire'=> null
                     ]);
                 }
             }
@@ -1184,6 +1199,7 @@ class Request extends \yii\base\Request
                 $cookies[$name] = new Cookie([
                     'name' => $name,
                     'value' => $value,
+                    'expire'=> null
                 ]);
             }
         }

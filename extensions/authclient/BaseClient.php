@@ -226,8 +226,8 @@ abstract class BaseClient extends Component implements ClientInterface
     }
 
     /**
-     * Normalize given user attributes according to {@link normalizeUserAttributeMap}.
-     * @param  array $attributes raw attributes.
+     * Normalize given user attributes according to [[normalizeUserAttributeMap]].
+     * @param array $attributes raw attributes.
      * @return array normalized attributes.
      */
     protected function normalizeUserAttributes($attributes)

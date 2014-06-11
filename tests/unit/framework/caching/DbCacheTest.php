@@ -40,7 +40,7 @@ class DbCacheTest extends CacheTestCase
     public function getConnection($reset = true)
     {
         if ($this->_connection === null) {
-            $databases = $this->getParam('databases');
+            $databases = self::getParam('databases');
             $params = $databases['mysql'];
             $db = new \yii\db\Connection;
             $db->dsn = $params['dsn'];

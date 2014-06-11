@@ -98,8 +98,8 @@ class Collection extends Object
 
     /**
      * Composes log/profile token.
-     * @param  string $command   command name
-     * @param  array  $arguments command arguments.
+     * @param string $command command name
+     * @param array $arguments command arguments.
      * @return string token.
      */
     protected function composeLogToken($command, $arguments = [])
@@ -114,7 +114,7 @@ class Collection extends Object
 
     /**
      * Encodes complex log data into JSON format string.
-     * @param  mixed  $data raw data.
+     * @param mixed $data raw data.
      * @return string encoded data string.
      */
     protected function encodeLogData($data)
@@ -124,7 +124,7 @@ class Collection extends Object
 
     /**
      * Pre-processes the log data before sending it to `json_encode()`.
-     * @param  mixed $data raw data.
+     * @param mixed $data raw data.
      * @return mixed the processed data.
      */
     protected function processLogData($data)
@@ -173,7 +173,7 @@ class Collection extends Object
     /**
      * Drops this collection.
      * @throws Exception on failure.
-     * @return boolean   whether the operation successful.
+     * @return boolean whether the operation successful.
      */
     public function drop()
     {
@@ -194,21 +194,21 @@ class Collection extends Object
 
     /**
      * Creates an index on the collection and the specified fields.
-     * @param  array|string $columns column name or list of column names.
-     *                               If array is given, each element in the array has as key the field name, and as
-     *                               value either 1 for ascending sort, or -1 for descending sort.
-     *                               You can specify field using native numeric key with the field name as a value,
-     *                               in this case ascending sort will be used.
-     *                               For example:
-     *                               ~~~
-     *                               [
-     *                               'name',
-     *                               'status' => -1,
-     *                               ]
-     *                               ~~~
-     * @param  array        $options list of options in format: optionName => optionValue.
-     * @throws Exception    on failure.
-     * @return boolean      whether the operation successful.
+     * @param array|string $columns column name or list of column names.
+     * If array is given, each element in the array has as key the field name, and as
+     * value either 1 for ascending sort, or -1 for descending sort.
+     * You can specify field using native numeric key with the field name as a value,
+     * in this case ascending sort will be used.
+     * For example:
+     * ~~~
+     * [
+     *     'name',
+     *     'status' => -1,
+     * ]
+     * ~~~
+     * @param array $options list of options in format: optionName => optionValue.
+     * @throws Exception on failure.
+     * @return boolean whether the operation successful.
      */
     public function createIndex($columns, $options = [])
     {
@@ -234,22 +234,22 @@ class Collection extends Object
 
     /**
      * Drop indexes for specified column(s).
-     * @param  string|array $columns column name or list of column names.
-     *                               If array is given, each element in the array has as key the field name, and as
-     *                               value either 1 for ascending sort, or -1 for descending sort.
-     *                               Use value 'text' to specify text index.
-     *                               You can specify field using native numeric key with the field name as a value,
-     *                               in this case ascending sort will be used.
-     *                               For example:
-     *                               ~~~
-     *                               [
-     *                               'name',
-     *                               'status' => -1,
-     *                               'description' => 'text',
-     *                               ]
-     *                               ~~~
-     * @throws Exception    on failure.
-     * @return boolean      whether the operation successful.
+     * @param string|array $columns column name or list of column names.
+     * If array is given, each element in the array has as key the field name, and as
+     * value either 1 for ascending sort, or -1 for descending sort.
+     * Use value 'text' to specify text index.
+     * You can specify field using native numeric key with the field name as a value,
+     * in this case ascending sort will be used.
+     * For example:
+     * ~~~
+     * [
+     *     'name',
+     *     'status' => -1,
+     *     'description' => 'text',
+     * ]
+     * ~~~
+     * @throws Exception on failure.
+     * @return boolean whether the operation successful.
      */
     public function dropIndex($columns)
     {
@@ -272,7 +272,7 @@ class Collection extends Object
 
     /**
      * Compose index keys from given columns/keys list.
-     * @param  array $columns raw columns/keys list.
+     * @param array $columns raw columns/keys list.
      * @return array normalizes index keys array.
      */
     protected function normalizeIndexKeys($columns)
@@ -292,7 +292,7 @@ class Collection extends Object
     /**
      * Drops all indexes for this collection.
      * @throws Exception on failure.
-     * @return integer   count of dropped indexes.
+     * @return integer count of dropped indexes.
      */
     public function dropAllIndexes()
     {
@@ -312,8 +312,8 @@ class Collection extends Object
     /**
      * Returns a cursor for the search results.
      * In order to perform "find" queries use [[Query]] class.
-     * @param  array        $condition query condition
-     * @param  array        $fields    fields to be selected
+     * @param array $condition query condition
+     * @param array $fields fields to be selected
      * @return \MongoCursor cursor for the search results
      * @see Query
      */
@@ -324,8 +324,8 @@ class Collection extends Object
 
     /**
      * Returns a single document.
-     * @param  array      $condition query condition
-     * @param  array      $fields    fields to be selected
+     * @param array $condition query condition
+     * @param array $fields fields to be selected
      * @return array|null the single document. Null is returned if the query results in nothing.
      * @see http://www.php.net/manual/en/mongocollection.findone.php
      */
@@ -336,12 +336,12 @@ class Collection extends Object
 
     /**
      * Updates a document and returns it.
-     * @param  array      $condition query condition
-     * @param  array      $update    update criteria
-     * @param  array      $fields    fields to be returned
-     * @param  array      $options   list of options in format: optionName => optionValue.
+     * @param array $condition query condition
+     * @param array $update update criteria
+     * @param array $fields fields to be returned
+     * @param array $options list of options in format: optionName => optionValue.
      * @return array|null the original document, or the modified document when $options['new'] is set.
-     * @throws Exception  on failure.
+     * @throws Exception on failure.
      * @see http://www.php.net/manual/en/mongocollection.findandmodify.php
      */
     public function findAndModify($condition, $update, $fields = [], $options = [])
@@ -363,10 +363,10 @@ class Collection extends Object
 
     /**
      * Inserts new data into collection.
-     * @param  array|object $data    data to be inserted.
-     * @param  array        $options list of options in format: optionName => optionValue.
-     * @return \MongoId     new record id instance.
-     * @throws Exception    on failure.
+     * @param array|object $data data to be inserted.
+     * @param array $options list of options in format: optionName => optionValue.
+     * @return \MongoId new record id instance.
+     * @throws Exception on failure.
      */
     public function insert($data, $options = [])
     {
@@ -387,9 +387,9 @@ class Collection extends Object
 
     /**
      * Inserts several new rows into collection.
-     * @param  array     $rows    array of arrays or objects to be inserted.
-     * @param  array     $options list of options in format: optionName => optionValue.
-     * @return array     inserted data, each row will have "_id" key assigned to it.
+     * @param array $rows array of arrays or objects to be inserted.
+     * @param array $options list of options in format: optionName => optionValue.
+     * @return array inserted data, each row will have "_id" key assigned to it.
      * @throws Exception on failure.
      */
     public function batchInsert($rows, $options = [])
@@ -413,11 +413,11 @@ class Collection extends Object
      * Updates the rows, which matches given criteria by given data.
      * Note: for "multiple" mode Mongo requires explicit strategy "$set" or "$inc"
      * to be specified for the "newData". If no strategy is passed "$set" will be used.
-     * @param  array           $condition description of the objects to update.
-     * @param  array           $newData   the object with which to update the matching records.
-     * @param  array           $options   list of options in format: optionName => optionValue.
+     * @param array $condition description of the objects to update.
+     * @param array $newData the object with which to update the matching records.
+     * @param array $options list of options in format: optionName => optionValue.
      * @return integer|boolean number of updated documents or whether operation was successful.
-     * @throws Exception       on failure.
+     * @throws Exception on failure.
      */
     public function update($condition, $newData, $options = [])
     {
@@ -449,10 +449,10 @@ class Collection extends Object
 
     /**
      * Update the existing database data, otherwise insert this data
-     * @param  array|object $data    data to be updated/inserted.
-     * @param  array        $options list of options in format: optionName => optionValue.
-     * @return \MongoId     updated/new record id instance.
-     * @throws Exception    on failure.
+     * @param array|object $data data to be updated/inserted.
+     * @param array $options list of options in format: optionName => optionValue.
+     * @return \MongoId updated/new record id instance.
+     * @throws Exception on failure.
      */
     public function save($data, $options = [])
     {
@@ -473,10 +473,10 @@ class Collection extends Object
 
     /**
      * Removes data from the collection.
-     * @param  array           $condition description of records to remove.
-     * @param  array           $options   list of options in format: optionName => optionValue.
+     * @param array $condition description of records to remove.
+     * @param array $options list of options in format: optionName => optionValue.
      * @return integer|boolean number of updated documents or whether operation was successful.
-     * @throws Exception       on failure.
+     * @throws Exception on failure.
      * @see http://www.php.net/manual/en/mongocollection.remove.php
      */
     public function remove($condition = [], $options = [])
@@ -503,10 +503,10 @@ class Collection extends Object
 
     /**
      * Returns a list of distinct values for the given column across a collection.
-     * @param  string        $column    column to use.
-     * @param  array         $condition query parameters.
+     * @param string $column column to use.
+     * @param array $condition query parameters.
      * @return array|boolean array of distinct values, or "false" on failure.
-     * @throws Exception     on failure.
+     * @throws Exception on failure.
      */
     public function distinct($column, $condition = [])
     {
@@ -527,10 +527,10 @@ class Collection extends Object
 
     /**
      * Performs aggregation using Mongo Aggregation Framework.
-     * @param  array     $pipeline         list of pipeline operators, or just the first operator
-     * @param  array     $pipelineOperator additional pipeline operator. You can specify additional
-     *                                     pipelines via third argument, fourth argument etc.
-     * @return array     the result of the aggregation.
+     * @param array $pipeline list of pipeline operators, or just the first operator
+     * @param array $pipelineOperator additional pipeline operator. You can specify additional
+     * pipelines via third argument, fourth argument etc.
+     * @return array the result of the aggregation.
      * @throws Exception on failure.
      * @see http://docs.mongodb.org/manual/applications/aggregation/
      */
@@ -554,18 +554,18 @@ class Collection extends Object
 
     /**
      * Performs aggregation using Mongo "group" command.
-     * @param  mixed             $keys    fields to group by. If an array or non-code object is passed,
-     *                                    it will be the key used to group results. If instance of [[\MongoCode]] passed,
-     *                                    it will be treated as a function that returns the key to group by.
-     * @param  array             $initial Initial value of the aggregation counter object.
-     * @param  \MongoCode|string $reduce  function that takes two arguments (the current
-     *                                    document and the aggregation to this point) and does the aggregation.
-     *                                    Argument will be automatically cast to [[\MongoCode]].
-     * @param  array             $options optional parameters to the group command. Valid options include:
-     *                                    - condition - criteria for including a document in the aggregation.
-     *                                    - finalize - function called once per unique key that takes the final output of the reduce function.
-     * @return array             the result of the aggregation.
-     * @throws Exception         on failure.
+     * @param mixed $keys fields to group by. If an array or non-code object is passed,
+     * it will be the key used to group results. If instance of [[\MongoCode]] passed,
+     * it will be treated as a function that returns the key to group by.
+     * @param array $initial Initial value of the aggregation counter object.
+     * @param \MongoCode|string $reduce function that takes two arguments (the current
+     * document and the aggregation to this point) and does the aggregation.
+     * Argument will be automatically cast to [[\MongoCode]].
+     * @param array $options optional parameters to the group command. Valid options include:
+     *  - condition - criteria for including a document in the aggregation.
+     *  - finalize - function called once per unique key that takes the final output of the reduce function.
+     * @return array the result of the aggregation.
+     * @throws Exception on failure.
      * @see http://docs.mongodb.org/manual/reference/command/group/
      */
     public function group($keys, $initial, $reduce, $options = [])
@@ -623,24 +623,24 @@ class Collection extends Object
      * $results = $query->from($resultCollectionName)->all();
      * ~~~
      *
-     * @param  \MongoCode|string $map       function, which emits map data from collection.
-     *                                      Argument will be automatically cast to [[\MongoCode]].
-     * @param  \MongoCode|string $reduce    function that takes two arguments (the map key
-     *                                      and the map values) and does the aggregation.
-     *                                      Argument will be automatically cast to [[\MongoCode]].
-     * @param  string|array      $out       output collection name. It could be a string for simple output
-     *                                      ('outputCollection'), or an array for parametrized output (['merge' => 'outputCollection']).
-     *                                      You can pass ['inline' => true] to fetch the result at once without temporary collection usage.
-     * @param  array             $condition criteria for including a document in the aggregation.
-     * @param  array             $options   additional optional parameters to the mapReduce command. Valid options include:
-     *                                      - sort - array - key to sort the input documents. The sort key must be in an existing index for this collection.
-     *                                      - limit - the maximum number of documents to return in the collection.
-     *                                      - finalize - function, which follows the reduce method and modifies the output.
-     *                                      - scope - array - specifies global variables that are accessible in the map, reduce and finalize functions.
-     *                                      - jsMode - boolean -Specifies whether to convert intermediate data into BSON format between the execution of the map and reduce functions.
-     *                                      - verbose - boolean - specifies whether to include the timing information in the result information.
-     * @return string|array      the map reduce output collection name or output results.
-     * @throws Exception         on failure.
+     * @param \MongoCode|string $map function, which emits map data from collection.
+     * Argument will be automatically cast to [[\MongoCode]].
+     * @param \MongoCode|string $reduce function that takes two arguments (the map key
+     * and the map values) and does the aggregation.
+     * Argument will be automatically cast to [[\MongoCode]].
+     * @param string|array $out output collection name. It could be a string for simple output
+     * ('outputCollection'), or an array for parametrized output (['merge' => 'outputCollection']).
+     * You can pass ['inline' => true] to fetch the result at once without temporary collection usage.
+     * @param array $condition criteria for including a document in the aggregation.
+     * @param array $options additional optional parameters to the mapReduce command. Valid options include:
+     *  - sort - array - key to sort the input documents. The sort key must be in an existing index for this collection.
+     *  - limit - the maximum number of documents to return in the collection.
+     *  - finalize - function, which follows the reduce method and modifies the output.
+     *  - scope - array - specifies global variables that are accessible in the map, reduce and finalize functions.
+     *  - jsMode - boolean -Specifies whether to convert intermediate data into BSON format between the execution of the map and reduce functions.
+     *  - verbose - boolean - specifies whether to include the timing information in the result information.
+     * @return string|array the map reduce output collection name or output results.
+     * @throws Exception on failure.
      */
     public function mapReduce($map, $reduce, $out, $condition = [], $options = [])
     {
@@ -685,15 +685,15 @@ class Collection extends Object
 
     /**
      * Performs full text search.
-     * @param  string    $search    string of terms that MongoDB parses and uses to query the text index.
-     * @param  array     $condition criteria for filtering a results list.
-     * @param  array     $fields    list of fields to be returned in result.
-     * @param  array     $options   additional optional parameters to the mapReduce command. Valid options include:
-     *                              - limit - the maximum number of documents to include in the response (by default 100).
-     *                              - language - the language that determines the list of stop words for the search
-     *                              and the rules for the stemmer and tokenizer. If not specified, the search uses the default
-     *                              language of the index.
-     * @return array     the highest scoring documents, in descending order by score.
+     * @param string $search string of terms that MongoDB parses and uses to query the text index.
+     * @param array $condition criteria for filtering a results list.
+     * @param array $fields list of fields to be returned in result.
+     * @param array $options additional optional parameters to the mapReduce command. Valid options include:
+     *  - limit - the maximum number of documents to include in the response (by default 100).
+     *  - language - the language that determines the list of stop words for the search
+     *    and the rules for the stemmer and tokenizer. If not specified, the search uses the default
+     *    language of the index.
+     * @return array the highest scoring documents, in descending order by score.
      * @throws Exception on failure.
      */
     public function fullTextSearch($search, $condition = [], $fields = [], $options = [])
@@ -728,7 +728,7 @@ class Collection extends Object
 
     /**
      * Checks if command execution result ended with an error.
-     * @param  mixed     $result raw command execution result.
+     * @param mixed $result raw command execution result.
      * @throws Exception if an error occurred.
      */
     protected function tryResultError($result)
@@ -765,7 +765,7 @@ class Collection extends Object
 
     /**
      * Converts "\yii\db\*" quick condition keyword into actual Mongo condition keyword.
-     * @param  string $key raw condition key.
+     * @param string $key raw condition key.
      * @return string actual key.
      */
     protected function normalizeConditionKeyword($key)
@@ -787,7 +787,7 @@ class Collection extends Object
     /**
      * Converts given value into [[MongoId]] instance.
      * If array given, each element of it will be processed.
-     * @param  mixed          $rawId raw id(s).
+     * @param mixed $rawId raw id(s).
      * @return array|\MongoId normalized id(s).
      */
     protected function ensureMongoId($rawId)
@@ -818,9 +818,9 @@ class Collection extends Object
 
     /**
      * Parses the condition specification and generates the corresponding Mongo condition.
-     * @param  array                 $condition the condition specification. Please refer to [[Query::where()]]
-     *                                          on how to specify a condition.
-     * @return array                 the generated Mongo condition
+     * @param array $condition the condition specification. Please refer to [[Query::where()]]
+     * on how to specify a condition.
+     * @return array the generated Mongo condition
      * @throws InvalidParamException if the condition is in bad format
      */
     public function buildCondition($condition)
@@ -858,7 +858,7 @@ class Collection extends Object
 
     /**
      * Creates a condition based on column-value pairs.
-     * @param  array $condition the condition specification.
+     * @param array $condition the condition specification.
      * @return array the generated Mongo condition.
      */
     public function buildHashCondition($condition)
@@ -892,9 +892,9 @@ class Collection extends Object
 
     /**
      * Connects two or more conditions with the `AND` operator.
-     * @param  string $operator the operator to use for connecting the given operands
-     * @param  array  $operands the Mongo conditions to connect.
-     * @return array  the generated Mongo condition.
+     * @param string $operator the operator to use for connecting the given operands
+     * @param array $operands the Mongo conditions to connect.
+     * @return array the generated Mongo condition.
      */
     public function buildAndCondition($operator, $operands)
     {
@@ -909,9 +909,9 @@ class Collection extends Object
 
     /**
      * Connects two or more conditions with the `OR` operator.
-     * @param  string $operator the operator to use for connecting the given operands
-     * @param  array  $operands the Mongo conditions to connect.
-     * @return array  the generated Mongo condition.
+     * @param string $operator the operator to use for connecting the given operands
+     * @param array $operands the Mongo conditions to connect.
+     * @return array the generated Mongo condition.
      */
     public function buildOrCondition($operator, $operands)
     {
@@ -926,10 +926,10 @@ class Collection extends Object
 
     /**
      * Creates an Mongo condition, which emulates the `BETWEEN` operator.
-     * @param  string                $operator the operator to use
-     * @param  array                 $operands the first operand is the column name. The second and third operands
-     *                                         describe the interval that column value should be in.
-     * @return array                 the generated Mongo condition.
+     * @param string $operator the operator to use
+     * @param array $operands the first operand is the column name. The second and third operands
+     * describe the interval that column value should be in.
+     * @return array the generated Mongo condition.
      * @throws InvalidParamException if wrong number of operands have been given.
      */
     public function buildBetweenCondition($operator, $operands)
@@ -957,11 +957,11 @@ class Collection extends Object
 
     /**
      * Creates an Mongo condition with the `IN` operator.
-     * @param  string                $operator the operator to use (e.g. `IN` or `NOT IN`)
-     * @param  array                 $operands the first operand is the column name. If it is an array
-     *                                         a composite IN condition will be generated.
-     *                                         The second operand is an array of values that column value should be among.
-     * @return array                 the generated Mongo condition.
+     * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
+     * @param array $operands the first operand is the column name. If it is an array
+     * a composite IN condition will be generated.
+     * The second operand is an array of values that column value should be among.
+     * @return array the generated Mongo condition.
      * @throws InvalidParamException if wrong number of operands have been given.
      */
     public function buildInCondition($operator, $operands)
@@ -1000,10 +1000,10 @@ class Collection extends Object
 
     /**
      * Creates a Mongo condition, which emulates the `LIKE` operator.
-     * @param  string                $operator the operator to use
-     * @param  array                 $operands the first operand is the column name.
-     *                                         The second operand is a single value that column value should be compared with.
-     * @return array                 the generated Mongo condition.
+     * @param string $operator the operator to use
+     * @param array $operands the first operand is the column name.
+     * The second operand is a single value that column value should be compared with.
+     * @return array the generated Mongo condition.
      * @throws InvalidParamException if wrong number of operands have been given.
      */
     public function buildLikeCondition($operator, $operands)

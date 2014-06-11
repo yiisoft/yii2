@@ -11,6 +11,7 @@ use Yii;
 use yii\base\View;
 use yii\base\ViewRenderer as BaseViewRenderer;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /**
  * TwigViewRenderer allows you to use Twig templates in views.
@@ -23,7 +24,8 @@ use yii\helpers\Url;
 class ViewRenderer extends BaseViewRenderer
 {
     /**
-     * @var string the directory or path alias pointing to where Twig cache will be stored.
+     * @var string the directory or path alias pointing to where Twig cache will be stored. Set to false to disable
+     * templates cache.
      */
     public $cachePath = '@runtime/Twig/cache';
     /**
@@ -122,6 +124,18 @@ class ViewRenderer extends BaseViewRenderer
             return Url::to(array_merge([$path], $args));
         }));
 
+        $this->twig->addFunction('url', new \Twig_Function_Function(function ($path, $args = []) {
+            return Url::to(array_merge([$path], $args), true);
+        }));
+
+        $this->twig->addFunction('form_begin', new \Twig_Function_Function(function ($args = []) {
+            return ActiveForm::begin($args);
+        }));
+
+        $this->twig->addFunction('form_end', new \Twig_Function_Function(function () {
+            ActiveForm::end();
+        }));
+
         $this->twig->addGlobal('app', \Yii::$app);
     }
 
@@ -131,9 +145,9 @@ class ViewRenderer extends BaseViewRenderer
      * This method is invoked by [[View]] whenever it tries to render a view.
      * Child classes must implement this method to render the given view file.
      *
-     * @param View   $view   the view object used for rendering the file.
-     * @param string $file   the view file.
-     * @param array  $params the parameters to be passed to the view file.
+     * @param View $view the view object used for rendering the file.
+     * @param string $file the view file.
+     * @param array $params the parameters to be passed to the view file.
      *
      * @return string the rendering result
      */
@@ -200,8 +214,8 @@ class ViewRenderer extends BaseViewRenderer
 
     /**
      * Adds custom function or filter
-     * @param  string     $classType 'Function' or 'Filter'
-     * @param  array      $elements  Parameters of elements to add
+     * @param string $classType 'Function' or 'Filter'
+     * @param array $elements Parameters of elements to add
      * @throws \Exception
      */
     private function _addCustom($classType, $elements)

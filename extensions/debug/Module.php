@@ -31,7 +31,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
-     * @var string the namespace that controller classes are in.
+     * @inheritdoc
      */
     public $controllerNamespace = 'yii\debug\controllers';
     /**
@@ -60,6 +60,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * You may want to enable the debug logs if you want to investigate how the debug module itself works.
      */
     public $enableDebugLogs = false;
+
 
     /**
      * Returns Yii logo ready to use in `<img src="`
@@ -129,20 +130,21 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function beforeAction($action)
     {
-        if (!parent::beforeAction($action)) {
-            return false;
-        }
-
         if (!$this->enableDebugLogs) {
             foreach (Yii::$app->getLog()->targets as $target) {
                 $target->enabled = false;
             }
         }
 
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
         // do not display debug toolbar when in debug view mode
         Yii::$app->getView()->off(View::EVENT_END_BODY, [$this, 'renderToolbar']);
 
         if ($this->checkAccess()) {
+            $this->resetGlobalSettings();
             return true;
         } elseif ($action->id === 'toolbar') {
             // Accessing toolbar remotely is normal. Do not throw exception.
@@ -150,6 +152,14 @@ class Module extends \yii\base\Module implements BootstrapInterface
         } else {
             throw new ForbiddenHttpException('You are not allowed to access this page.');
         }
+    }
+
+    /**
+     * Resets potentially incompatible global settings done in app config.
+     */
+    protected function resetGlobalSettings()
+    {
+        Yii::$app->assetManager->bundles = [];
     }
 
     /**

@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\VarDumper;
 use yii\web\HttpException;
 
 /**
@@ -46,7 +47,7 @@ abstract class ErrorHandler extends Component
 
 
     /**
-     * Register this errorhandler
+     * Register this error handler
      */
     public function register()
     {
@@ -57,6 +58,15 @@ abstract class ErrorHandler extends Component
             $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
         }
         register_shutdown_function([$this, 'handleFatalError']);
+    }
+
+    /**
+     * Unregisters this error handler by restoring the PHP error and exception handlers.
+     */
+    public function unregister()
+    {
+        restore_error_handler();
+        restore_exception_handler();
     }
 
     /**
@@ -98,7 +108,7 @@ abstract class ErrorHandler extends Component
                     echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
                 }
             }
-            $msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
+            $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
             error_log($msg);
             exit(1);
         }

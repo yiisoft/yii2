@@ -29,7 +29,7 @@ class RegularExpressionValidator extends Validator
     /**
      * @var boolean whether to invert the validation logic. Defaults to false. If set to true,
      * the regular expression defined via [[pattern]] should NOT match the attribute value.
-     **/
+     */
     public $not = false;
 
     /**

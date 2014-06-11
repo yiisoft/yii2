@@ -11,5 +11,12 @@ return yii\helpers\ArrayHelper::merge(
                 'dsn' => 'mysql:host=localhost;dbname=yii2_advanced_unit',
             ],
         ],
+        'controllerMap' => [
+            'fixture' => [
+                'class' => 'yii\faker\FixtureController',
+                'fixtureDataPath' => '@common/tests/unit/fixtures/data',
+                'templatePath' => '@common/tests/templates/fixtures'
+            ],
+        ],
     ]
 );

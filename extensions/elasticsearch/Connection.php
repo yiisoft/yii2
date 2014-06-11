@@ -17,6 +17,7 @@ use yii\helpers\Json;
  *
  * @property string $driverName Name of the DB driver. This property is read-only.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
+ * @property QueryBuilder $queryBuilder This property is read-only.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -108,7 +109,7 @@ class Connection extends Component
             if (strncmp($host, 'inet[/', 6) == 0) {
                 $host = substr($host, 6, -1);
             }
-            $response = $this->httpRequest('GET', 'http://' . $host . '/_cluster/nodes');
+            $response = $this->httpRequest('GET', 'http://' . $host . '/_nodes');
             $this->nodes = $response['nodes'];
             if (empty($this->nodes)) {
                 throw new Exception('cluster autodetection did not find any active node.');
@@ -161,7 +162,7 @@ class Connection extends Component
 
     /**
      * Creates a command for execution.
-     * @param  array   $config the configuration for the Command class
+     * @param array $config the configuration for the Command class
      * @return Command the DB command
      */
     public function createCommand($config = [])

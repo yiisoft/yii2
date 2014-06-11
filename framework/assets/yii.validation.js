@@ -65,7 +65,7 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.tooLong, value);
             }
             if (options.is !== undefined && value.length != options.is) {
-                pub.addMessage(messages, options.is, value);
+                pub.addMessage(messages, options.notEqual, value);
             }
         },
 
@@ -91,10 +91,24 @@ yii.validation = (function ($) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
-            var valid = !options.not && $.inArray(value, options.range) > -1
-                || options.not && $.inArray(value, options.range) == -1;
 
-            if (!valid) {
+            if (!options.allowArray && $.isArray(value)) {
+                pub.addMessage(messages, options.message, value);
+                return;
+            }
+
+            var inArray = true;
+
+            $.each($.isArray(value) ? value : [value], function(i, v) {
+                if ($.inArray(v, options.range) == -1) {
+                    inArray = false;
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+
+            if (options.not === inArray) {
                 pub.addMessage(messages, options.message, value);
             }
         },
@@ -203,16 +217,16 @@ yii.validation = (function ($) {
                     valid = value !== compareValue;
                     break;
                 case '>':
-                    valid = value > compareValue;
+                    valid = parseFloat(value) > parseFloat(compareValue);
                     break;
                 case '>=':
-                    valid = value >= compareValue;
+                    valid = parseFloat(value) >= parseFloat(compareValue);
                     break;
                 case '<':
-                    valid = value < compareValue;
+                    valid = parseFloat(value) < parseFloat(compareValue);
                     break;
                 case '<=':
-                    valid = value <= compareValue;
+                    valid = parseFloat(value) <= parseFloat(compareValue);
                     break;
                 default:
                     valid = false;

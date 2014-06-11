@@ -86,10 +86,16 @@ class Module extends ServiceLocator
      */
     public $controllerMap = [];
     /**
-     * @var string the namespace that controller classes are in. If not set,
-     * it will use the "controllers" sub-namespace under the namespace of this module.
+     * @var string the namespace that controller classes are in.
+     * This namespace will be used to load controller classes by prepending it to the controller
+     * class name.
+     *
+     * If not set, it will use the `controllers` sub-namespace under the namespace of this module.
      * For example, if the namespace of this module is "foo\bar", then the default
      * controller namespace would be "foo\bar\controllers".
+     *
+     * See also the [guide section on autoloading][guide-concept-autoloading] to learn more about
+     * defining namespaces and how classes are loaded.
      */
     public $controllerNamespace;
     /**
@@ -242,7 +248,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the layout files.
-     * @param string $path the root directory of layout files.
+     * @param string $path the root directory or path alias of layout files.
      * @throws InvalidParamException if the directory is invalid
      */
     public function setLayoutPath($path)
@@ -263,8 +269,8 @@ class Module extends ServiceLocator
      *
      * ~~~
      * [
-     *	'@models' => '@app/models', // an existing alias
-     *	'@backend' => __DIR__ . '/../backend',  // a directory
+     *     '@models' => '@app/models', // an existing alias
+     *     '@backend' => __DIR__ . '/../backend',  // a directory
      * ]
      * ~~~
      */
@@ -531,7 +537,7 @@ class Module extends ServiceLocator
         }
 
         if (is_subclass_of($className, 'yii\base\Controller')) {
-            return new $className($id, $this);
+            return Yii::createObject($className, [$id, $this]);
         } elseif (YII_DEBUG) {
             throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
         } else {

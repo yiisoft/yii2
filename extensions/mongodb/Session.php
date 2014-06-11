@@ -111,7 +111,7 @@ class Session extends \yii\web\Session
     /**
      * Session read handler.
      * Do not call this method directly.
-     * @param  string $id session ID
+     * @param string $id session ID
      * @return string the session data
      */
     public function readSession($id)
@@ -131,8 +131,8 @@ class Session extends \yii\web\Session
     /**
      * Session write handler.
      * Do not call this method directly.
-     * @param  string  $id   session ID
-     * @param  string  $data session data
+     * @param string $id session ID
+     * @param string $data session data
      * @return boolean whether session write is successful
      */
     public function writeSession($id, $data)
@@ -164,7 +164,7 @@ class Session extends \yii\web\Session
     /**
      * Session destroy handler.
      * Do not call this method directly.
-     * @param  string  $id session ID
+     * @param string $id session ID
      * @return boolean whether session is destroyed successfully
      */
     public function destroySession($id)
@@ -180,7 +180,7 @@ class Session extends \yii\web\Session
     /**
      * Session GC (garbage collection) handler.
      * Do not call this method directly.
-     * @param  integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
+     * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
      * @return boolean whether session is GCed successfully
      */
     public function gcSession($maxLifetime)

@@ -7,6 +7,8 @@ use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Item;
+use yiiunit\data\ar\OrderItemWithNullFK;
+use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
@@ -44,6 +46,15 @@ class ActiveRecordTest extends DatabaseTestCase
     public function getOrderItemClass()
     {
         return OrderItem::className();
+    }
+
+    public function getOrderWithNullFKClass()
+    {
+        return OrderWithNullFK::className();
+    }
+    public function getOrderItemWithNullFKmClass()
+    {
+        return OrderItemWithNullFK::className();
     }
 
     public function testCustomColumns()
@@ -523,5 +534,39 @@ class ActiveRecordTest extends DatabaseTestCase
 
         $model->loadDefaultValues(false);
         $this->assertEquals('something', $model->char_col2);
+    }
+
+    public function testUnlinkAllViaTable()
+    {
+        /** @var \yii\db\ActiveRecordInterface $orderClass */
+        $orderClass = $this->getOrderClass();
+        /** @var \yii\db\ActiveRecordInterface $orderItemClass */
+        $orderItemClass = $this->getOrderItemClass();
+        /** @var \yii\db\ActiveRecordInterface $itemClass */
+        $itemClass = $this->getItemClass();
+        /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
+        $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
+
+        // via table with delete
+        /** @var Order $order */
+        $order = $orderClass::findOne(1);
+        $this->assertEquals(2, count($order->booksViaTable));
+        $orderItemCount = $orderItemClass::find()->count();
+        $this->assertEquals(5, $itemClass::find()->count());
+        $order->unlinkAll('booksViaTable', true);
+        $this->afterSave();
+        $this->assertEquals(5, $itemClass::find()->count());
+        $this->assertEquals($orderItemCount - 2, $orderItemClass::find()->count());
+        $this->assertEquals(0, count($order->booksViaTable));
+
+        // via table without delete
+        $this->assertEquals(2, count($order->booksWithNullFKViaTable));
+        $orderItemCount = $orderItemsWithNullFKClass::find()->count();
+        $this->assertEquals(5, $itemClass::find()->count());
+        $order->unlinkAll('booksWithNullFKViaTable',false);
+        $this->assertEquals(0, count($order->booksWithNullFKViaTable));
+        $this->assertEquals(2,$orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
+        $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
+        $this->assertEquals(5, $itemClass::find()->count());
     }
 }

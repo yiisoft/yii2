@@ -22,8 +22,8 @@ class InterfaceDoc extends TypeDoc
 
     /**
      * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
-     * @param Context                                      $context
-     * @param array                                        $config
+     * @param Context $context
+     * @param array $config
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

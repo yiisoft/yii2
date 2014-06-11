@@ -1,7 +1,11 @@
-Bootstrap widgets
+Bootstrap Widgets
 =================
 
-Out of the box, Yii includes support for the [Bootstrap 3](http://getbootstrap.com/) markup and components framework (also known as "Twitter Bootstrap"). Bootstrap is an excellent, responsive framework that can greatly speed up the client-side of your development process.
+> Note: This section is under development.
+
+Out of the box, Yii includes support for the [Bootstrap 3](http://getbootstrap.com/) markup and components framework
+(also known as "Twitter Bootstrap"). Bootstrap is an excellent, responsive framework that can greatly speed up the
+client-side of your development process.
 
 The core of Bootstrap is represented by two parts:
 
@@ -14,7 +18,7 @@ Basics
 Yii doesn't wrap the bootstrap basics into PHP code since HTML is very simple by itself in this case. You can find details
 about using the basics at [bootstrap documentation website](http://getbootstrap.com/css/). Still Yii provides a
 convenient way to include bootstrap assets in your pages with a single line added to `AppAsset.php` located in your
-`config` directory:
+`@app/assets` directory:
 
 ```php
 public $depends = [
@@ -54,7 +58,7 @@ Using the .less files of Bootstrap directly
 If you want to include the [Bootstrap css directly in your less files](http://getbootstrap.com/getting-started/#customizing)
 you may need to disable the original bootstrap css files to be loaded.
 You can do this by setting the css property of the [[yii\bootstrap\BootstrapAsset|BootstrapAsset]] to be empty.
-For this you need to configure the `assetManagner` application component as follows:
+For this you need to configure the `assetManager` application component as follows:
 
 ```php
     'assetManager' => [

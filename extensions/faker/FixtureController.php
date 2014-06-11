@@ -283,7 +283,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
     /**
      * Checks if needed to generate all fixtures.
-     * @param  string $file
+     * @param string $file
      * @return bool
      */
     public function needToGenerateAll($file)
@@ -293,8 +293,8 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
     /**
      * Returns generator template for the given fixture name
-     * @param  string                 $file template file
-     * @return array                  generator template
+     * @param string $file template file
+     * @return array generator template
      * @throws \yii\console\Exception if wrong file format
      */
     public function getTemplate($file)
@@ -310,7 +310,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
     /**
      * Returns exported to the string representation of given fixtures array.
-     * @param  array  $fixtures
+     * @param array $fixtures
      * @return string exported fixtures format
      */
     public function exportFixtures($fixtures)
@@ -335,9 +335,9 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
     /**
      * Generates fixture from given template
-     * @param  array   $template fixture template
-     * @param  integer $index    current fixture index
-     * @return array   fixture
+     * @param array $template fixture template
+     * @param integer $index current fixture index
+     * @return array fixture
      */
     public function generateFixture($template, $index)
     {
@@ -356,7 +356,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
     /**
      * Prompts user with message if he confirm generation with given fixture templates files.
-     * @param  array   $files
+     * @param array $files
      * @return boolean
      */
     public function confirmGeneration($files)

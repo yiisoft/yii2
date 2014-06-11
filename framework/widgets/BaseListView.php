@@ -101,7 +101,6 @@ abstract class BaseListView extends Widget
         if ($this->emptyText === null) {
             $this->emptyText = Yii::t('yii', 'No results found.');
         }
-        $this->dataProvider->prepare();
     }
 
     /**
@@ -220,8 +219,8 @@ abstract class BaseListView extends Widget
             return '';
         }
         /** @var LinkPager $class */
-        $class = ArrayHelper::remove($this->pager, 'class', LinkPager::className());
         $pager = $this->pager;
+        $class = ArrayHelper::remove($pager, 'class', LinkPager::className());
         $pager['pagination'] = $pagination;
         $pager['view'] = $this->getView();
 
@@ -239,8 +238,8 @@ abstract class BaseListView extends Widget
             return '';
         }
         /** @var LinkSorter $class */
-        $class = ArrayHelper::remove($this->sorter, 'class', LinkSorter::className());
         $sorter = $this->sorter;
+        $class = ArrayHelper::remove($sorter, 'class', LinkSorter::className());
         $sorter['sort'] = $sort;
         $sorter['view'] = $this->getView();
 

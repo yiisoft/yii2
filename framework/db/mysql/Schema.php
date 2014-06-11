@@ -168,7 +168,7 @@ class Schema extends \yii\db\Schema
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        if ($column->type !== 'timestamp' || $info['Default'] !== 'CURRENT_TIMESTAMP') {
+        if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['Default'] !== 'CURRENT_TIMESTAMP')) {
             $column->defaultValue = $column->typecast($info['Default']);
         }
 
@@ -183,7 +183,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findColumns($table)
     {
-        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
+        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteTableName($table->fullName);
         try {
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
@@ -254,8 +254,8 @@ class Schema extends \yii\db\Schema
      *
      * ~~~
      * [
-     *	 'IndexName1' => ['col1' [, ...]],
-     *	 'IndexName2' => ['col2' [, ...]],
+     *  'IndexName1' => ['col1' [, ...]],
+     *  'IndexName2' => ['col2' [, ...]],
      * ]
      * ~~~
      *

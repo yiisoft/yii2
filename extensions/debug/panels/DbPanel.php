@@ -115,7 +115,7 @@ class DbPanel extends Panel
     /**
      * Returns total query time.
      *
-     * @param  array   $timings
+     * @param array $timings
      * @return integer total time
      */
     protected function getTotalQueryTime($timings)
@@ -141,7 +141,7 @@ class DbPanel extends Panel
             $timings = $this->calculateTimings();
 
             foreach ($timings as $seq => $dbTiming) {
-                $this->_models[] = 	[
+                $this->_models[] = [
                     'type' => $this->getQueryType($dbTiming['info']),
                     'query' => $dbTiming['info'],
                     'duration' => ($dbTiming['duration'] * 1000), // in milliseconds
@@ -156,9 +156,9 @@ class DbPanel extends Panel
     }
 
     /**
-     * Returns databse query type.
+     * Returns database query type.
      *
-     * @param  string $timing timing procedure string
+     * @param string $timing timing procedure string
      * @return string query type such as select, insert, delete, etc.
      */
     protected function getQueryType($timing)
@@ -172,7 +172,7 @@ class DbPanel extends Panel
     /**
      * Check if given queries count is critical according settings.
      *
-     * @param  integer $count queries count
+     * @param integer $count queries count
      * @return boolean
      */
     public function isQueryCountCritical($count)

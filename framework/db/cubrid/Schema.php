@@ -65,6 +65,14 @@ class Schema extends \yii\db\Schema
     ];
 
     /**
+     * @var array map of DB errors and corresponding exceptions
+     * If left part is found in DB error message exception class from the right part is used.
+     */
+    public $exceptionMap = [
+        'Operation would have caused one or more unique constraint violations' => 'yii\db\IntegrityException',
+    ];
+
+    /**
      * @inheritdoc
      */
     public function releaseSavepoint($name)
@@ -218,6 +226,10 @@ class Schema extends \yii\db\Schema
         }
 
         $column->phpType = $this->getColumnPhpType($column);
+
+        if ($column->isPrimaryKey) {
+            return $column;
+        }
 
         if ($column->type === 'timestamp' && $info['Default'] === 'CURRENT_TIMESTAMP' ||
             $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' ||

@@ -18,7 +18,7 @@ use yii\base\Object;
  * @property boolean $isExpired Is token expired. This property is read-only.
  * @property boolean $isValid Is token valid. This property is read-only.
  * @property array $params This property is read-only.
- * @property string $token Token value. This property is read-only.
+ * @property string $token Token value.
  * @property string $tokenSecret Token secret value.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -27,15 +27,15 @@ use yii\base\Object;
 class OAuthToken extends Object
 {
     /**
-     * @var string key in {@link _params} array, which stores token key.
+     * @var string key in [[params]] array, which stores token key.
      */
     public $tokenParamKey = 'oauth_token';
     /**
-     * @var string key in {@link _params} array, which stores token secret key.
+     * @var string key in [[params]] array, which stores token secret key.
      */
     public $tokenSecretParamKey = 'oauth_token_secret';
     /**
-     * @var string key in {@link _params} array, which stores token expiration duration.
+     * @var string key in [[params]] array, which stores token expiration duration.
      * If not set will attempt to fetch its value automatically.
      */
     private $_expireDurationParamKey;
@@ -93,8 +93,8 @@ class OAuthToken extends Object
 
     /**
      * Sets param by name.
-     * @param string $name  param name.
-     * @param mixed  $value param value,
+     * @param string $name param name.
+     * @param mixed $value param value,
      */
     public function setParam($name, $value)
     {
@@ -103,8 +103,8 @@ class OAuthToken extends Object
 
     /**
      * Returns param by name.
-     * @param  string $name param name.
-     * @return mixed  param value.
+     * @param string $name param name.
+     * @return mixed param value.
      */
     public function getParam($name)
     {
@@ -113,7 +113,7 @@ class OAuthToken extends Object
 
     /**
      * Sets token value.
-     * @param  string $token token value.
+     * @param string $token token value.
      * @return static self reference.
      */
     public function setToken($token)

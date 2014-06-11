@@ -3,6 +3,7 @@
 namespace yiiunit\framework\helpers;
 
 use Yii;
+use yii\base\DynamicModel;
 use yii\helpers\Html;
 use yiiunit\TestCase;
 
@@ -38,7 +39,7 @@ class HtmlTest extends TestCase
 
     public function testEncode()
     {
-        $this->assertEquals("a&lt;&gt;&amp;&quot;&#039;", Html::encode("a<>&\"'"));
+        $this->assertEquals("a&lt;&gt;&amp;&quot;&#039;�", Html::encode("a<>&\"'\x80"));
     }
 
     public function testDecode()
@@ -85,12 +86,14 @@ class HtmlTest extends TestCase
     {
         $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
         $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
+        $this->assertEquals("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
     }
 
     public function testJsFile()
     {
         $this->assertEquals('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
         $this->assertEquals('<script src="/test"></script>', Html::jsFile(''));
+        $this->assertEquals("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
     }
 
     public function testBeginForm()
@@ -153,6 +156,13 @@ class HtmlTest extends TestCase
     {
         $this->assertEquals('<button type="reset">Reset</button>', Html::resetButton());
         $this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', ['name' => 'test', 'value' => 'value', 'class' => 't']));
+    }
+
+    public function testInputId()
+    {
+        $model = new DynamicModel(['test', 'relation.name']);
+        $this->assertEquals('<input type="text" id="dynamicmodel-test" name="DynamicModel[test]">', Html::activeTextInput($model, 'test'));
+        $this->assertEquals('<input type="text" id="dynamicmodel-relation-name" name="DynamicModel[relation.name]">', Html::activeTextInput($model, 'relation.name'));
     }
 
     public function testInput()
@@ -291,10 +301,17 @@ EOD;
         $expected = <<<EOD
 <select name="test" size="4">
 <option value="value1&lt;&gt;">text1&lt;&gt;</option>
-<option value="value  2">text&nbsp;&nbsp;2</option>
+<option value="value  2">text  2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2()));
+        $expected = <<<EOD
+<select name="test" size="4">
+<option value="value1&lt;&gt;">text1&lt;&gt;</option>
+<option value="value  2">text&nbsp;&nbsp;2</option>
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2(), ['encodeSpaces' => true]));
         $expected = <<<EOD
 <select name="test" size="4">
 <option value="value1">text1</option>
@@ -493,8 +510,20 @@ EOD;
             'groups' => [
                 'group12' => ['class' => 'group'],
             ],
+            'encodeSpaces' => true,
         ];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
+
+        $attributes = [
+            'prompt' => 'please select<>',
+            'options' => [
+                'value111' => ['class' => 'option'],
+            ],
+            'groups' => [
+                'group12' => ['class' => 'group'],
+            ],
+        ];
+        $this->assertEqualsWithoutLE(str_replace('&nbsp;', ' ', $expected), Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
     }
 
     public function testRenderAttributes()

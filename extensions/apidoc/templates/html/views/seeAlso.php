@@ -5,6 +5,8 @@
  * @var yii\web\View $this
  */
 
+$type = $object instanceof \yii\apidoc\models\TypeDoc ? $object : $object->definedBy;
+
 $see = [];
 foreach ($object->tags as $tag) {
     /** @var $tag phpDocumentor\Reflection\DocBlock\Tag\SeeTag */
@@ -13,7 +15,7 @@ foreach ($object->tags as $tag) {
         if (strpos($ref, '://') === false) {
             $ref = '[[' . $ref . ']]';
         }
-        $see[] = rtrim(\yii\apidoc\helpers\ApiMarkdown::process($ref . ' ' . $tag->getDescription(), $object->definedBy, true), ". \r\n");
+        $see[] = rtrim(\yii\apidoc\helpers\ApiMarkdown::process($ref . ' ' . $tag->getDescription(), $type, true), ". \r\n");
     }
 }
 if (empty($see)) {

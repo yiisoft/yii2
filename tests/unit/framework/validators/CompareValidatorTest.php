@@ -6,6 +6,9 @@ use yii\validators\CompareValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
+/**
+ * @group validators
+ */
 class CompareValidatorTest extends TestCase
 {
     protected function setUp()

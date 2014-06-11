@@ -22,7 +22,7 @@ class LuaScriptBuilder extends \yii\base\Object
 {
     /**
      * Builds a Lua script for finding a list of records
-     * @param  ActiveQuery $query the query used to build the script
+     * @param ActiveQuery $query the query used to build the script
      * @return string
      */
     public function buildAll($query)
@@ -37,7 +37,7 @@ class LuaScriptBuilder extends \yii\base\Object
 
     /**
      * Builds a Lua script for finding one record
-     * @param  ActiveQuery $query the query used to build the script
+     * @param ActiveQuery $query the query used to build the script
      * @return string
      */
     public function buildOne($query)
@@ -52,8 +52,8 @@ class LuaScriptBuilder extends \yii\base\Object
 
     /**
      * Builds a Lua script for finding a column
-     * @param  ActiveQuery $query  the query used to build the script
-     * @param  string      $column name of the column
+     * @param ActiveQuery $query the query used to build the script
+     * @param string $column name of the column
      * @return string
      */
     public function buildColumn($query, $column)
@@ -68,7 +68,7 @@ class LuaScriptBuilder extends \yii\base\Object
 
     /**
      * Builds a Lua script for getting count of records
-     * @param  ActiveQuery $query the query used to build the script
+     * @param ActiveQuery $query the query used to build the script
      * @return string
      */
     public function buildCount($query)
@@ -78,8 +78,8 @@ class LuaScriptBuilder extends \yii\base\Object
 
     /**
      * Builds a Lua script for finding the sum of a column
-     * @param  ActiveQuery $query  the query used to build the script
-     * @param  string      $column name of the column
+     * @param ActiveQuery $query the query used to build the script
+     * @param string $column name of the column
      * @return string
      */
     public function buildSum($query, $column)
@@ -93,8 +93,8 @@ class LuaScriptBuilder extends \yii\base\Object
 
     /**
      * Builds a Lua script for finding the average of a column
-     * @param  ActiveQuery $query  the query used to build the script
-     * @param  string      $column name of the column
+     * @param ActiveQuery $query the query used to build the script
+     * @param string $column name of the column
      * @return string
      */
     public function buildAverage($query, $column)
@@ -108,8 +108,8 @@ class LuaScriptBuilder extends \yii\base\Object
 
     /**
      * Builds a Lua script for finding the min value of a column
-     * @param  ActiveQuery $query  the query used to build the script
-     * @param  string      $column name of the column
+     * @param ActiveQuery $query the query used to build the script
+     * @param string $column name of the column
      * @return string
      */
     public function buildMin($query, $column)
@@ -123,8 +123,8 @@ class LuaScriptBuilder extends \yii\base\Object
 
     /**
      * Builds a Lua script for finding the max value of a column
-     * @param  ActiveQuery $query  the query used to build the script
-     * @param  string      $column name of the column
+     * @param ActiveQuery $query the query used to build the script
+     * @param string $column name of the column
      * @return string
      */
     public function buildMax($query, $column)
@@ -137,9 +137,9 @@ class LuaScriptBuilder extends \yii\base\Object
     }
 
     /**
-     * @param  ActiveQuery                    $query       the query used to build the script
-     * @param  string                         $buildResult the lua script for building the result
-     * @param  string                         $return      the lua variable that should be returned
+     * @param ActiveQuery $query the query used to build the script
+     * @param string $buildResult the lua script for building the result
+     * @param string $return the lua variable that should be returned
      * @throws NotSupportedException when query contains unsupported order by condition
      * @return string
      */
@@ -188,8 +188,8 @@ EOF;
 
     /**
      * Adds a column to the list of columns to retrieve and creates an alias
-     * @param  string $column  the column name to add
-     * @param  array  $columns list of columns given by reference
+     * @param string $column the column name to add
+     * @param array $columns list of columns given by reference
      * @return string the alias generated for the column name
      */
     private function addColumn($column, &$columns)
@@ -205,7 +205,7 @@ EOF;
     /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string or int, it will be returned without change.
-     * @param  string $str string to be quoted
+     * @param string $str string to be quoted
      * @return string the properly quoted string
      */
     private function quoteValue($str)
@@ -219,11 +219,11 @@ EOF;
 
     /**
      * Parses the condition specification and generates the corresponding Lua expression.
-     * @param  string|array                    $condition the condition specification. Please refer to [[ActiveQuery::where()]]
-     *                                                    on how to specify a condition.
-     * @param  array                           $columns   the list of columns and aliases to be used
-     * @return string                          the generated SQL expression
-     * @throws \yii\db\Exception               if the condition is in bad format
+     * @param string|array $condition the condition specification. Please refer to [[ActiveQuery::where()]]
+     * on how to specify a condition.
+     * @param array $columns the list of columns and aliases to be used
+     * @return string the generated SQL expression
+     * @throws \yii\db\Exception if the condition is in bad format
      * @throws \yii\base\NotSupportedException if the condition is not an array
      */
     public function buildCondition($condition, &$columns)

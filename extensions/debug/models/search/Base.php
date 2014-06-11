@@ -22,9 +22,9 @@ class Base extends Model
     /**
      * Adds filtering condition for a given attribute
      *
-     * @param Filter  $filter    filter instance
-     * @param string  $attribute attribute to filter
-     * @param boolean $partial   if partial match should be used
+     * @param Filter $filter filter instance
+     * @param string $attribute attribute to filter
+     * @param boolean $partial if partial match should be used
      */
     public function addCondition(Filter $filter, $attribute, $partial = false)
     {

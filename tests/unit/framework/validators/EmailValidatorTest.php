@@ -6,7 +6,6 @@ use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
 /**
- * EmailValidatorTest
  * @group validators
  */
 class EmailValidatorTest extends TestCase

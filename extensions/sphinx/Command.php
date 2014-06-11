@@ -63,9 +63,9 @@ class Command extends \yii\db\Command
      *
      * Note that the values in each row must match the corresponding column names.
      *
-     * @param  string $index   the index that new rows will be inserted into.
-     * @param  array  $columns the column names
-     * @param  array  $rows    the rows to be batch inserted into the index
+     * @param string $index the index that new rows will be inserted into.
+     * @param array $columns the column names
+     * @param array $rows the rows to be batch inserted into the index
      * @return static the command object itself
      */
     public function batchInsert($index, $columns, $rows)
@@ -91,8 +91,8 @@ class Command extends \yii\db\Command
      *
      * Note that the created command is not executed until [[execute()]] is called.
      *
-     * @param  string $index   the index that new rows will be replaced into.
-     * @param  array  $columns the column data (name => value) to be replaced into the index.
+     * @param string $index the index that new rows will be replaced into.
+     * @param array $columns the column data (name => value) to be replaced into the index.
      * @return static the command object itself
      */
     public function replace($index, $columns)
@@ -117,9 +117,9 @@ class Command extends \yii\db\Command
      *
      * Note that the values in each row must match the corresponding column names.
      *
-     * @param  string $index   the index that new rows will be replaced.
-     * @param  array  $columns the column names
-     * @param  array  $rows    the rows to be batch replaced in the index
+     * @param string $index the index that new rows will be replaced.
+     * @param array $columns the column names
+     * @param array $rows the rows to be batch replaced in the index
      * @return static the command object itself
      */
     public function batchReplace($index, $columns, $rows)
@@ -142,13 +142,13 @@ class Command extends \yii\db\Command
      *
      * Note that the created command is not executed until [[execute()]] is called.
      *
-     * @param  string       $index     the index to be updated.
-     * @param  array        $columns   the column data (name => value) to be updated.
-     * @param  string|array $condition the condition that will be put in the WHERE part. Please
-     *                                 refer to [[Query::where()]] on how to specify condition.
-     * @param  array        $params    the parameters to be bound to the command
-     * @param  array        $options   list of options in format: optionName => optionValue
-     * @return static       the command object itself
+     * @param string $index the index to be updated.
+     * @param array $columns the column data (name => value) to be updated.
+     * @param string|array $condition the condition that will be put in the WHERE part. Please
+     * refer to [[Query::where()]] on how to specify condition.
+     * @param array $params the parameters to be bound to the command
+     * @param array $options list of options in format: optionName => optionValue
+     * @return static the command object itself
      */
     public function update($index, $columns, $condition = '', $params = [], $options = [])
     {
@@ -159,7 +159,7 @@ class Command extends \yii\db\Command
 
     /**
      * Creates a SQL command for truncating a runtime index.
-     * @param  string $index the index to be truncated. The name will be properly quoted by the method.
+     * @param string $index the index to be truncated. The name will be properly quoted by the method.
      * @return static the command object itself
      */
     public function truncateIndex($index)
@@ -171,12 +171,12 @@ class Command extends \yii\db\Command
 
     /**
      * Builds a snippet from provided data and query, using specified index settings.
-     * @param  string       $index   name of the index, from which to take the text processing settings.
-     * @param  string|array $source  is the source data to extract a snippet from.
-     *                               It could be either a single string or array of strings.
-     * @param  string       $match   the full-text query to build snippets for.
-     * @param  array        $options list of options in format: optionName => optionValue
-     * @return static       the command object itself
+     * @param string $index name of the index, from which to take the text processing settings.
+     * @param string|array $source is the source data to extract a snippet from.
+     * It could be either a single string or array of strings.
+     * @param string $match the full-text query to build snippets for.
+     * @param array $options list of options in format: optionName => optionValue
+     * @return static the command object itself
      */
     public function callSnippets($index, $source, $match, $options = [])
     {
@@ -188,10 +188,10 @@ class Command extends \yii\db\Command
 
     /**
      * Returns tokenized and normalized forms of the keywords, and, optionally, keyword statistics.
-     * @param  string  $index          the name of the index from which to take the text processing settings
-     * @param  string  $text           the text to break down to keywords.
-     * @param  boolean $fetchStatistic whether to return document and hit occurrence statistics
-     * @return string  the SQL statement for call keywords.
+     * @param string $index the name of the index from which to take the text processing settings
+     * @param string $text the text to break down to keywords.
+     * @param boolean $fetchStatistic whether to return document and hit occurrence statistics
+     * @return string the SQL statement for call keywords.
      */
     public function callKeywords($index, $text, $fetchStatistic = false)
     {

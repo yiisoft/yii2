@@ -93,8 +93,8 @@ class Mail extends Base
 
     /**
      * Returns data provider with filled models. Filter applied if needed.
-     * @param  array                       $params
-     * @param  array                       $models
+     * @param array $params
+     * @param array $models
      * @return \yii\data\ArrayDataProvider
      */
     public function search($params, $models)

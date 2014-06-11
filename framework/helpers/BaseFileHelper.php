@@ -48,7 +48,7 @@ class BaseFileHelper
         // the path may contain ".", ".." or double slashes, need to clean them up
         $parts = [];
         foreach (explode($ds, $path) as $part) {
-            if ($part === '..' && !empty($parts)) {
+            if ($part === '..' && !empty($parts) && end($parts) !== '..') {
                 array_pop($parts);
             } elseif ($part === '.' || $part === '' && !empty($parts)) {
                 continue;
@@ -56,7 +56,8 @@ class BaseFileHelper
                 $parts[] = $part;
             }
         }
-        return implode($ds, $parts);
+        $path = implode($ds, $parts);
+        return $path === '' ? '.' : $path;
     }
 
     /**
@@ -207,6 +208,9 @@ class BaseFileHelper
         $handle = opendir($src);
         if ($handle === false) {
             throw new InvalidParamException('Unable to open directory: ' . $src);
+        }
+        if (!isset($options['basePath'])) {
+            $options['basePath'] = realpath($src);
         }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {

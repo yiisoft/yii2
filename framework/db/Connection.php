@@ -76,17 +76,15 @@ use yii\caching\Cache;
  * configuration like the following:
  *
  * ~~~
- * [
- *	 'components' => [
- *		 'db' => [
- *			 'class' => '\yii\db\Connection',
- *			 'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
- *			 'username' => 'root',
- *			 'password' => '',
- *			 'charset' => 'utf8',
- *		 ],
- *	 ],
- * ]
+ * 'components' => [
+ *     'db' => [
+ *         'class' => '\yii\db\Connection',
+ *         'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+ *         'username' => 'root',
+ *         'password' => '',
+ *         'charset' => 'utf8',
+ *     ],
+ * ],
  * ~~~
  *
  * @property string $driverName Name of the DB driver.

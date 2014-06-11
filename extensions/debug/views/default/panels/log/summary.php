@@ -1,4 +1,9 @@
 <?php
+/**
+ * @var yii\debug\panels\LogPanel $panel
+ * @var array $data
+ */
+
 use yii\log\Target;
 use yii\log\Logger;
 

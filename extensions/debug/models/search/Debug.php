@@ -93,8 +93,8 @@ class Debug extends Base
 
     /**
      * Returns data provider with filled models. Filter applied if needed.
-     * @param  array                       $params an array of parameter values indexed by parameter names
-     * @param  array                       $models data to return provider for
+     * @param array $params an array of parameter values indexed by parameter names
+     * @param array $models data to return provider for
      * @return \yii\data\ArrayDataProvider
      */
     public function search($params, $models)
@@ -130,7 +130,7 @@ class Debug extends Base
     /**
      * Checks if code is critical.
      *
-     * @param  integer $code
+     * @param integer $code
      * @return boolean
      */
     public function isCodeCritical($code)

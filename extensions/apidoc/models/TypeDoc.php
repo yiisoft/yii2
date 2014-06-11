@@ -131,8 +131,8 @@ class TypeDoc extends BaseDoc
     }
 
     /**
-     * @param  null          $visibility
-     * @param  null          $definedBy
+     * @param null $visibility
+     * @param null $definedBy
      * @return PropertyDoc[]
      */
     private function getFilteredProperties($visibility = null, $definedBy = null)
@@ -156,8 +156,8 @@ class TypeDoc extends BaseDoc
 
     /**
      * @param \phpDocumentor\Reflection\InterfaceReflector $reflector
-     * @param Context                                      $context
-     * @param array                                        $config
+     * @param Context $context
+     * @param array $config
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

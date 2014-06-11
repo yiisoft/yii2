@@ -26,7 +26,7 @@ class Filter extends Component
     /**
      * Adds data filtering rule.
      *
-     * @param string           $name attribute name
+     * @param string $name attribute name
      * @param MatcherInterface $rule
      */
     public function addMatcher($name, MatcherInterface $rule)
@@ -39,7 +39,7 @@ class Filter extends Component
     /**
      * Applies filter on a given array and returns filtered data.
      *
-     * @param  array $data data to filter
+     * @param array $data data to filter
      * @return array filtered data
      */
     public function filter(array $data)
@@ -58,7 +58,7 @@ class Filter extends Component
     /**
      * Checks if the given data satisfies filters.
      *
-     * @param  array   $row data
+     * @param array $row data
      * @return boolean if data passed filtering
      */
     private function passesFilter(array $row)

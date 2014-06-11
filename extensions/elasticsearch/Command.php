@@ -38,11 +38,16 @@ class Command extends Component
      * @var array list of arrays or json strings that become parts of a query
      */
     public $queryParts;
+    /**
+     * @var array list of arrays to highlight search results on one or more fields
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
+     */
+    public $highlight;
 
     public $options = [];
 
     /**
-     * @param  array $options
+     * @param array $options
      * @return mixed
      */
     public function search($options = [])
@@ -65,17 +70,21 @@ class Command extends Component
 
     /**
      * Inserts a document into an index
-     * @param  string       $index
-     * @param  string       $type
-     * @param  string|array $data    json string or array of data to store
-     * @param  null         $id      the documents id. If not specified Id will be automatically chosen
-     * @param  array        $options
+     * @param string $index
+     * @param string $type
+     * @param string|array $data json string or array of data to store
+     * @param null $id the documents id. If not specified Id will be automatically chosen
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-index_.html
      */
     public function insert($index, $type, $data, $id = null, $options = [])
     {
-        $body = is_array($data) ? Json::encode($data) : $data;
+        if (empty($data)) {
+            $body = '{}';
+        } else {
+            $body = is_array($data) ? Json::encode($data) : $data;
+        }
 
         if ($id !== null) {
             return $this->db->put([$index, $type, $id], $options, $body);
@@ -89,7 +98,7 @@ class Command extends Component
      * @param $index
      * @param $type
      * @param $id
-     * @param  array $options
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-get.html
      */
@@ -105,7 +114,7 @@ class Command extends Component
      * @param $index
      * @param $type
      * @param $ids
-     * @param  array $options
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-multi-get.html
      */
@@ -147,7 +156,7 @@ class Command extends Component
      * @param $index
      * @param $type
      * @param $id
-     * @param  array $options
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete.html
      */
@@ -161,7 +170,7 @@ class Command extends Component
      * @param $index
      * @param $type
      * @param $id
-     * @param  array $options
+     * @param array $options
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html
      */
@@ -176,7 +185,7 @@ class Command extends Component
     /**
      * creates an index
      * @param $index
-     * @param  array $configuration
+     * @param array $configuration
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-create-index.html
      */
@@ -315,18 +324,18 @@ class Command extends Component
     {
         $body = $mapping !== null ? (is_string($mapping) ? $mapping : Json::encode($mapping)) : null;
 
-        return $this->db->put([$index, $type, '_mapping'], $options, $body);
+        return $this->db->put([$index, '_mapping', $type], $options, $body);
     }
 
     /**
-     * @param  string $index
-     * @param  string $type
+     * @param string $index
+     * @param string $type
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-mapping.html
      */
     public function getMapping($index = '_all', $type = '_all')
     {
-        return $this->db->get([$index, $type, '_mapping']);
+        return $this->db->get([$index, '_mapping', $type]);
     }
 
     /**
@@ -337,19 +346,20 @@ class Command extends Component
      */
     public function deleteMapping($index, $type)
     {
-        return $this->db->delete([$index, $type]);
+        return $this->db->delete([$index, '_mapping', $type]);
     }
 
     /**
      * @param $index
-     * @param  string $type
+     * @param string $type
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html
      */
-    public function getFieldMapping($index, $type = '_all')
-    {
-        return $this->db->put([$index, $type, '_mapping']);
-    }
+//    public function getFieldMapping($index, $type = '_all')
+//    {
+//		// TODO implement
+//        return $this->db->put([$index, $type, '_mapping']);
+//    }
 
     /**
      * @param $options
@@ -368,7 +378,7 @@ class Command extends Component
      * @param $pattern
      * @param $settings
      * @param $mappings
-     * @param  integer $order
+     * @param integer $order
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-templates.html
      */

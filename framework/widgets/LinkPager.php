@@ -98,6 +98,10 @@ class LinkPager extends Widget
      * @see registerLinkTags()
      */
     public $registerLinkTags = false;
+    /**
+     * @var boolean Hide widget when only one page exist. Defaults to `false`.
+     */
+    public $hideOnSinglePage = false;
 
     /**
      * Initializes the pager.
@@ -140,9 +144,12 @@ class LinkPager extends Widget
      */
     protected function renderPageButtons()
     {
-        $buttons = [];
-
         $pageCount = $this->pagination->getPageCount();
+        if ($pageCount < 2 && $this->hideOnSinglePage) {
+            return '';
+        }
+
+        $buttons = [];
         $currentPage = $this->pagination->getPage();
 
         // first page

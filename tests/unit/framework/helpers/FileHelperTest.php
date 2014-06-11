@@ -367,6 +367,20 @@ class FileHelperTest extends TestCase
         $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a/.\\b//../../c'));
         $this->assertEquals("c", FileHelper::normalizePath('/a/.\\b/../..//../c'));
         $this->assertEquals("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
+
+        // relative paths
+        $this->assertEquals(".", FileHelper::normalizePath('.'));
+        $this->assertEquals(".", FileHelper::normalizePath('./'));
+        $this->assertEquals("a", FileHelper::normalizePath('.\\a'));
+        $this->assertEquals("a{$ds}b", FileHelper::normalizePath('./a\\b'));
+        $this->assertEquals(".", FileHelper::normalizePath('./a\\../'));
+        $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a'));
+        $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a/../a'));
+        $this->assertEquals("..{$ds}..{$ds}b", FileHelper::normalizePath('../..\\a/../b'));
+        $this->assertEquals("..{$ds}a", FileHelper::normalizePath('./..\\a'));
+        $this->assertEquals("..{$ds}a", FileHelper::normalizePath('././..\\a'));
+        $this->assertEquals("..{$ds}a", FileHelper::normalizePath('./..\\a/../a'));
+        $this->assertEquals("..{$ds}b", FileHelper::normalizePath('./..\\a/../b'));
     }
 
     public function testLocalizedDirectory()
@@ -392,5 +406,43 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $currentLanguage . DIRECTORY_SEPARATOR . 'faq.php',
             FileHelper::localize($viewFile, $currentLanguage, $sourceLanguage)
         );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/3393
+     *
+     * @depends testCopyDirectory
+     * @depends testFindFiles
+     */
+    public function testCopyDirectoryExclude()
+    {
+        $srcDirName = 'test_src_dir';
+        $textFiles = [
+            'file1.txt' => 'text file 1 content',
+            'file2.txt' => 'text file 2 content',
+        ];
+        $dataFiles = [
+            'file1.dat' => 'data file 1 content',
+            'file2.dat' => 'data file 2 content',
+        ];
+        $this->createFileStructure([
+            $srcDirName => array_merge($textFiles, $dataFiles)
+        ]);
+
+        $basePath = $this->testFilePath;
+        $srcDirName = $basePath . DIRECTORY_SEPARATOR . $srcDirName;
+        $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_dst_dir';
+
+        FileHelper::copyDirectory($srcDirName, $dstDirName, ['only' => ['*.dat']]);
+
+        $this->assertFileExists($dstDirName, 'Destination directory does not exist!');
+        $copiedFiles = FileHelper::findFiles($dstDirName);
+        $this->assertCount(2, $copiedFiles, 'wrong files count copied');
+
+        foreach ($dataFiles as $name => $content) {
+            $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
+            $this->assertFileExists($fileName);
+            $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+        }
     }
 }

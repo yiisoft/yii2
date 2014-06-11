@@ -3,7 +3,7 @@ use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
- * @var \yii\mail\BaseMessage $content
+ * @var string $content
  */
 ?>
 <?php $this->beginPage() ?>

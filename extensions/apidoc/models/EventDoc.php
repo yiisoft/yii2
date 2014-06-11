@@ -22,8 +22,8 @@ class EventDoc extends ConstDoc
 
     /**
      * @param \phpDocumentor\Reflection\ClassReflector\ConstantReflector $reflector
-     * @param Context                                                    $context
-     * @param array                                                      $config
+     * @param Context $context
+     * @param array $config
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {
@@ -39,11 +39,7 @@ class EventDoc extends ConstDoc
                 $this->type = $eventTag->getType();
                 $this->types = $eventTag->getTypes();
                 $this->description = ucfirst($eventTag->getDescription());
-                if (($pos = strpos($this->description, '.')) !== false) {
-                    $this->shortDescription = substr($this->description, 0, $pos);
-                } else {
-                    $this->shortDescription = $this->description;
-                }
+                $this->shortDescription = BaseDoc::extractFirstSentence($this->description);
                 unset($this->tags[$i]);
             }
         }
