@@ -33,7 +33,7 @@ Estructura de una Aplicación
 * [Pantallazo](structure-overview.md)
 * [Scripts de Entrada](structure-entry-scripts.md)
 * [Aplicaciones](structure-applications.md)
-* [Componentes de una Apliación](structure-application-components.md)
+* [Componentes de una Aplicación](structure-application-components.md)
 * [Controladores](structure-controllers.md)
 * [Modelos](structure-models.md)
 * [Vistas](structure-views.md)
@@ -47,7 +47,7 @@ Estructura de una Aplicación
 Manejando Requests
 ------------------
 
-* **TBD** [Arranque](runtime-bootstrapping.md)
+* **TBD** [Bootstrapping](runtime-bootstrapping.md)
 * **TBD** [Routing](runtime-routing.md)
 * **TBD** [Requests](runtime-requests.md)
 * **TBD** [Responses](runtime-responses.md)
@@ -63,21 +63,21 @@ Conceptos Clave
 * [Componentes](concept-components.md)
 * [Propiedades](concept-properties.md)
 * [Eventos](concept-events.md)
-* [Comportamientos](concept-behaviors.md)
+* [Comportamientos (Behaviors)](concept-behaviors.md)
 * [Configuraciones](concept-configurations.md)
 * [Alias](concept-aliases.md)
 * [Autocargando Clases](concept-autoloading.md)
-* [Localizador de Servicios](concept-service-locator.md)
+* [Localizador de Servicios (Service Locator)](concept-service-locator.md)
 * [Inyección de Dependencias](concept-di-container.md)
 
 
 Trabajando con Bases de Datos
 -----------------------------
 
-* [Data Access Objects](db-dao.md) - Connecting to a database, basic queries, transactions and schema manipulation
-* [Query Builder](db-query-builder.md) - Querying the database using a simple abstraction layer
-* [Active Record](db-active-record.md) - The active record ORM, retrieving and manipulating records and defining relations
-* [Migraciones](db-migrations.md) - Version control your databases in a team development environment
+* [Data Access Objects](db-dao.md) - Conectando a una base de datos, consultas básicas, transacciones y manipulación de esquemas
+* [Query Builder](db-query-builder.md) - Consultando la base de datos usando una simple capa de abstracción
+* [Active Record](db-active-record.md) - El ORM Active Record, trayendo y manipulando registros y definiendo relaciones
+* [Migraciones](db-migrations.md) - Versionando tus bases de datos en el entorno de un equipo de desarrollo
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
@@ -88,7 +88,7 @@ Obteniendo Datos de Usuarios
 ----------------------------
 
 * [Creando Formularios](input-forms.md)
-* [Validando](input-validation.md)
+* [Validando Datos](input-validation.md)
 * **TBD** [Subiendo Archivos](input-file-upload.md)
 * **TBD** [Obteniendo Datos de Múltiples Modelos](input-multiple-models.md)
 
@@ -128,7 +128,7 @@ RESTful Web Services
 --------------------
 
 * [Guía Breve](rest-quick-start.md)
-* [Recursos](rest-resources.md)
+* [Recursos (Resources)](rest-resources.md)
 * [Controladores](rest-controllers.md)
 * [Routing](rest-routing.md)
 * [Response Formatting](rest-response-formatting.md)
@@ -171,11 +171,11 @@ Temas Especiales
 ----------------
 
 * [Template de Aplicación Avanzada](tutorial-advanced-app.md)
-* [Generando una Apliación Desde Cero](tutorial-start-from-scratch.md)
+* [Generando una Aplicación Desde Cero](tutorial-start-from-scratch.md)
 * [Comandos de Consola](tutorial-console.md)
 * [Validadores del Núcleo](tutorial-core-validators.md)
 * [Internacionalización](tutorial-i18n.md)
-* [Mailing](tutorial-mailing.md)
+* [Enviando Emails](tutorial-mailing.md)
 * [Ajustando la Performance](tutorial-performance-tuning.md)
 * **TBD** [Entorno en Hosting Compartido](tutorial-shared-hosting.md)
 * [Motores de Templates](tutorial-template-engines.md)
