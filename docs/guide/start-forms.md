@@ -96,6 +96,9 @@ class SiteController extends Controller
 }
 ```
 
+>Note: In this very simple example we prompt confirmation dialog, however when you process POST data you 
+should also use [[yii\web\Controller::refresh()|refresh()]] or [[yii\web\Controller::redirect()|redirect()]] to avoid [resubmitting](http://en.wikipedia.org/wiki/Post/Redirect/Get) forms.
+
 The action first creates an `EntryForm` object. It then tries to populate the model
 with the data from `$_POST` which is provided in Yii through [[yii\web\Request::post()]].
 If the model is successfully populated (i.e., the user has submitted the HTML form),
