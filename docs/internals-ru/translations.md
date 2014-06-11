@@ -30,7 +30,7 @@ Yii переводится на множество языков, в том чи�
 в директории `build` и выполнив:
 
 ```
-php build translation "../docs/guide" "../docs/guide_ru" "Russian guide translation report" > report_guide_ru.html
+php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translation report" > report_guide_ru.html
 ```
 
 Если ругается на composer, выполните `composer install` в корневой директории.

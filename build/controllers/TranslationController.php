@@ -15,7 +15,7 @@ use yii\helpers\Html;
 /**
  * TranslationController handles tasks related to framework translations.
  *
- * build translation "../docs/guide" "../docs/guide_ru" "Russian guide translation report" > report_guide_ru.html
+ * build translation "../docs/guide" "../docs/guide-ru" "Russian guide translation report" > report_guide_ru.html
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  */

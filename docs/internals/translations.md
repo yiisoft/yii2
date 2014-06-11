@@ -39,7 +39,7 @@ After initial work is done you can get what's changed since last translation of 
 `build` directory:
 
 ```
-php build translation "../docs/guide" "../docs/guide_ru" "Russian guide translation report" > report_guide_ru.html
+php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translation report" > report_guide_ru.html
 ```
 
 If it will complain about composer, perform `composer install` in the source root dir.
