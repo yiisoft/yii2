@@ -120,14 +120,14 @@ class BaseFileHelper
      */
     public static function getMimeType($file, $magicFile = null, $checkExtension = true)
     {
-        if (function_exists('finfo_open')) {
-            $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
-            if ($info) {
-                $result = finfo_file($info, $file);
-                finfo_close($info);
-                if ($result !== false) {
-                    return $result;
-                }
+        $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
+
+        if ($info) {
+            $result = finfo_file($info, $file);
+            finfo_close($info);
+
+            if ($result !== false) {
+                return $result;
             }
         }
 
