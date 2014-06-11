@@ -154,7 +154,7 @@ yii.gii = (function ($) {
       //model generator: translate table name to model class
             $('#generator-tablename').on('blur', function () {
                 var tableName = $(this).val();
-                if (tableName && tableName !== '*'){
+                if ($('#generator-modelclass').val()=='' && tableName && tableName !== '*'){
                     $.ajax({
                         type: "GET",
                         url: "default/classify",
