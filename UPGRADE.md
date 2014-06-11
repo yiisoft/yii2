@@ -48,4 +48,5 @@ Upgrade from Yii 2.0 Beta
 * The database table of the `yii\log\DbTarget` now needs a `prefix` column to store context information.
   You can add it with `ALTER TABLE log ADD COLUMN prefix TEXT AFTER log_time;`.
 
-* Extension `Fileinfo` added to requirement checker. This extension is [builtin](http://www.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
+* The  `fileinfo`  PHP extension is now required by Yii. If you use  `yii\helpers\FileHelper::getMimeType()`, make sure 
+  you have enabled this extension. This extension is [builtin](http://www.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
