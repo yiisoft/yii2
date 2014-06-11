@@ -1,4 +1,10 @@
 <?php
+/**
+ * @var yii\debug\panels\LogPanel $panel
+ * @var yii\debug\models\search\Log $searchModel
+ * @var yii\data\ArrayDataProvider $dataProvider
+ */
+
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\VarDumper;

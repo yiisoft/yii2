@@ -5,6 +5,7 @@
  * @var string $tag
  * @var string $position
  */
+
 use yii\helpers\Url;
 
 $minJs = <<<EOD

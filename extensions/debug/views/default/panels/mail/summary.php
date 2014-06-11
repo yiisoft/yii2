@@ -1,6 +1,7 @@
 <?php
 /**
  * @var yii\debug\panels\MailPanel $panel
+ * @var integer $mailCount
  */
 if ($mailCount): ?>
 <div class="yii-debug-toolbar-block">

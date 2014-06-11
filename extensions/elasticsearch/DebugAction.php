@@ -28,9 +28,13 @@ class DebugAction extends Action
      */
     public $db;
     /**
-     * @var Panel
+     * @var DebugPanel
      */
     public $panel;
+    /**
+     * @var \yii\debug\controllers\DefaultController
+     */
+    public $controller;
 
     public function run($logId, $tag)
     {

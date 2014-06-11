@@ -25,7 +25,6 @@ use yii\mail\MessageInterface;
  */
 class MailPanel extends Panel
 {
-
     /**
      * @var string path where all emails will be saved. should be an alias.
      */
@@ -35,6 +34,9 @@ class MailPanel extends Panel
      */
     private $_messages = [];
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -74,16 +76,25 @@ class MailPanel extends Panel
         });
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getName()
     {
         return 'Mail';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSummary()
     {
         return Yii::$app->view->render('panels/mail/summary', ['panel' => $this, 'mailCount' => count($this->data)]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDetail()
     {
         $searchModel = new Mail();
@@ -96,6 +107,9 @@ class MailPanel extends Panel
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function save()
     {
         return $this->getMessages();
