@@ -30,7 +30,7 @@ Yii переводится на множество языков, в том чи�
 в директории `build` и выполнив:
 
 ```
-build translation ../docs/guide" "../docs/guide-ru" --title="Russian guide translation report" > report-guide-ru.html
+build translation "../docs/guide" "../docs/guide_ru" "Russian guide translation report" > report_guide_ru.html
 ```
 
 Перед тем, как начать перевод, убедитесь, что никто им ещё не занимается и запишите себя в

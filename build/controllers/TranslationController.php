@@ -15,7 +15,7 @@ use yii\helpers\Html;
 /**
  * TranslationController handles tasks related to framework translations.
  *
- * build translation ../docs/guide" "../docs/guide_ru" --title="Russian guide translation report" > report_guide_ru.html
+ * build translation "../docs/guide" "../docs/guide_ru" "Russian guide translation report" > report_guide_ru.html
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  */
@@ -122,7 +122,7 @@ class TranslationController extends Controller
      * @param string $diff DIFF
      * @return string highlighted DIFF
      */
-    protected function highlightDiff($diff)
+    public function highlightDiff($diff)
     {
         $lines = explode("\n", $diff);
         foreach ($lines as $key => $val) {

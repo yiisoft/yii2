@@ -39,5 +39,5 @@ After initial work is done you can get what's changed since last translation of 
 `build` directory:
 
 ```
-build translation ../docs/guide" "../docs/guide-ru" --title="Russian guide translation report" > report-guide-ru.html
+build translation "../docs/guide" "../docs/guide_ru" "Russian guide translation report" > report_guide_ru.html
 ```
