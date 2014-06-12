@@ -30,7 +30,7 @@ Comenzando
 Estructura de una Aplicación
 ----------------------------
 
-* [Pantallazo](structure-overview.md)
+* [Información General](structure-overview.md)
 * [Scripts de Entrada](structure-entry-scripts.md)
 * [Aplicaciones](structure-applications.md)
 * [Componentes de una Aplicación](structure-application-components.md)
@@ -117,7 +117,7 @@ Seguridad
 Caching
 -------
 
-* [Pantallazo](caching-overview.md)
+* [Información General](caching-overview.md)
 * [Caching de Datos](caching-data.md)
 * [Caching de Fragmentos](caching-fragment.md)
 * [Caching de Páginas](caching-page.md)
@@ -149,7 +149,7 @@ Herramientas de Desarrollo
 Testing
 -------
 
-* [Pantallazo](test-overview.md)
+* [Información General](test-overview.md)
 * **TBD** [Tests de Unidad](test-unit.md)
 * **TBD** [Tests Funcionales](test-functional.md)
 * **TBD** [Tests de Aceptación](test-acceptance.md)
@@ -199,7 +199,7 @@ Widgets
 Helpers
 -------
 
-* [Pantallazo](helper-overview.md)
+* [Información General](helper-overview.md)
 * **TBD** [ArrayHelper](helper-array.md)
 * **TBD** [Html](helper-html.md)
 * **TBD** [Url](helper-url.md)
