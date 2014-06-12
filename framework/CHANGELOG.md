@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
-- Bug #3824: Allow yii\db\Expression as return value for ActiveRecord::tableName() (Obramko)
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
@@ -46,6 +45,7 @@ Yii Framework 2 Change Log
 - Bug #3752: `QueryBuilder::batchInsert()` does not typecast input values (qiangxue)
 - Bug #3756: Fix number formatting error for `\yii\base\Formatter` by converting strings to float (kartik-v)
 - Bug #3817: `yii\rbac\PhpManager::getChildren()` returns null instead of expected empty array (qiangxue)
+- Bug #3824: Allow yii\db\Expression as return value for ActiveRecord::tableName() (Obramko)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
