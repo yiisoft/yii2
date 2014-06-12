@@ -95,34 +95,35 @@ abstract class Schema extends Object
      */
     public function getTableSchema($name, $refresh = false)
     {
-        if (array_key_exists($name, $this->_tables) && !$refresh) {
-            return $this->_tables[$name];
+        $nameString = (string) $name;
+        if (array_key_exists($nameString, $this->_tables) && !$refresh) {
+            return $this->_tables[$nameString];
         }
 
         $db = $this->db;
-        $realName = $this->getRawTableName($name);
+        $realName = $this->getRawTableName($nameString);
 
-        if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
+        if ($db->enableSchemaCache && !in_array($nameString, $db->schemaCacheExclude, true)) {
             /** @var Cache $cache */
             $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache, false) : $db->schemaCache;
             if ($cache instanceof Cache) {
-                $key = $this->getCacheKey($name);
+                $key = $this->getCacheKey($nameString);
                 if ($refresh || ($table = $cache->get($key)) === false) {
-                    $this->_tables[$name] = $table = $this->loadTableSchema($realName);
+                    $this->_tables[$nameString] = $table = $this->loadTableSchema($realName);
                     if ($table !== null) {
                         $cache->set($key, $table, $db->schemaCacheDuration, new GroupDependency([
                             'group' => $this->getCacheGroup(),
                         ]));
                     }
                 } else {
-                    $this->_tables[$name] = $table;
+                    $this->_tables[$nameString] = $table;
                 }
 
-                return $this->_tables[$name];
+                return $this->_tables[$nameString];
             }
         }
 
-        return $this->_tables[$name] = $this->loadTableSchema($realName);
+        return $this->_tables[$nameString] = $this->loadTableSchema($realName);
     }
 
     /**
