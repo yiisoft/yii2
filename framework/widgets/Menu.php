@@ -305,16 +305,30 @@ class Menu extends Widget
             }
             unset($item['url']['#']);
             if (count($item['url']) > 1) {
-                foreach (array_splice($item['url'], 1) as $name => $value) {
-                    if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
-                        return false;
-                    }
-                }
+                return $this->isSimilar($this->params, array_splice($item['url'], 1));
+            } elseif (count($this->params)) {
+                return false;
             }
 
             return true;
         }
 
         return false;
+    }
+
+    private function isSimilar(array $params, array $values) {
+        if (!count($params) && count($values) || !count($values)) {
+            return false;
+        }
+        foreach ($values as $name => $value) {
+            if ($value === null) {
+
+            } elseif (is_scalar($value) && (!isset($params[$name]) || $params[$name] != $value)) {
+                return false;
+            } elseif (is_array($value) && (!isset($params[$name]) || !$this->isSimilar($params[$name], $value))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
