@@ -353,7 +353,7 @@ Yii 2.0 introduce muchos comúnmente utilizados helpers estáticos, incluyendo.
 * [[yii\helpers\Json]]
 * [[yii\helpers\Security]]
 
-Por favor consulta la sección [Pantallazo de Helpers](helper-overview.md) para más detalles.
+Por favor consulta la sección [Información General de Helpers](helper-overview.md) para más detalles.
 
 Formularios
 -----------
