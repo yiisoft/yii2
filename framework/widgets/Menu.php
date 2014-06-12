@@ -255,9 +255,7 @@ class Menu extends Widget
             if (!isset($item['label'])) {
                 $item['label'] = '';
             }
-            if ($this->encodeLabels) {
-                $items[$i]['label'] = Html::encode($item['label']);
-            }
+            $items[$i]['label'] = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
             $hasActiveChild = false;
             if (isset($item['items'])) {
                 $items[$i]['items'] = $this->normalizeItems($item['items'], $hasActiveChild);
