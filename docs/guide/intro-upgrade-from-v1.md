@@ -158,7 +158,7 @@ Views
 The most significant change about views in Yii 2 is that the special variable `$this` in a view no longer refers to
 the current controller or widget. Instead, `$this` now refers to a *view* object, a new concept
 introduced in 2.0. The *view* object is of type [[yii\web\View]], which represents the view part
-of the MVC pattern. In you want to access the controller or widget in a view, you can use `$this->context`.
+of the MVC pattern. If you want to access the controller or widget in a view, you can use `$this->context`.
 
 To render a partial view within another view, you use `$this->render()`, not `$this->renderPartial()`. The call to `render` also now has to be explicitly echoed, as the `render()` method returns the rendering
 result, rather than directly displaying it. For example:
