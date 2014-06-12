@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Bug #3752: `QueryBuilder::batchInsert()` does not typecast input values (qiangxue)
 - Bug #3756: Fix number formatting error for `\yii\base\Formatter` by converting strings to float (kartik-v)
 - Bug #3817: `yii\rbac\PhpManager::getChildren()` returns null instead of expected empty array (qiangxue)
+- Bug #3824: Allow yii\db\Expression as return value for ActiveRecord::tableName() (Obramko)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)

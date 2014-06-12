@@ -219,7 +219,7 @@ EOD;
     protected function findConstraints($table)
     {
 
-        $tableName = $this->quoteValue($table->name);
+        $tableName = $this->quoteValue($this->unquoteTableName($table->name));
         $tableSchema = $this->quoteValue($table->schemaName);
 
         //We need to extract the constraints de hard way since:
@@ -268,7 +268,7 @@ SQL;
      */
     protected function getUniqueIndexInformation($table)
     {
-        $tableName = $this->quoteValue($table->name);
+        $tableName = $this->quoteValue($this->unquoteTableName($table->name));
         $tableSchema = $this->quoteValue($table->schemaName);
 
         $sql = <<<SQL
@@ -337,7 +337,7 @@ SQL;
      */
     protected function findColumns($table)
     {
-        $tableName = $this->db->quoteValue($table->name);
+        $tableName = $this->db->quoteValue($this->unquoteTableName($table->name));
         $schemaName = $this->db->quoteValue($table->schemaName);
         $sql = <<<SQL
 SELECT
@@ -445,5 +445,18 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         return $column;
+    }
+
+    /**
+     * Removes double quotes surrounding table name (if there are some)
+     * @param $name table name
+     * @return string table name without quotes
+     */
+    private function unquoteTableName($name)
+    {
+        if (substr($name,0,1) == '"' && substr($name,-1) == '"')
+            $name = substr($name, 1, -1);
+
+        return $name;
     }
 }
