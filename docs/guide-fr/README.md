@@ -156,8 +156,8 @@ Tests
 * [Fixtures](test-fixtures.md)
 
 
-Extending Yii
--------------
+Etendre Yii
+-----------
 
 * [Créer des extensions](extend-creating-extensions.md)
 * [Personnalisation du code du noyau](extend-customizing-core.md)
@@ -167,7 +167,7 @@ Extending Yii
 * [Utiliser Composer](extend-using-composer.md)
 
 
-Special Topics
+Sujets avancés
 --------------
 
 * [Modèle application avancée](tutorial-advanced-app.md)
