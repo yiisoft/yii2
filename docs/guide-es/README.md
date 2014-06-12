@@ -1,7 +1,7 @@
 Guía Definitiva de Yii 2.0
 ==========================
 
-Este tutorial está liberado bajo los [Términos de Documentación YII](http://www.yiiframework.com/doc/terms/).
+Este tutorial está liberado bajo los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
 
 Todos los derechos reservados.
 
@@ -12,7 +12,7 @@ Introducción
 ------------
 
 * [Acerca de Yii](intro-yii.md)
-* [Actualizando desde YII 1.1](intro-upgrade-from-v1.md)
+* [Actualizando desde Yii 1.1](intro-upgrade-from-v1.md)
 
 
 Comenzando
