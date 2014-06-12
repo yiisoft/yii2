@@ -45,7 +45,7 @@ Namespace
 ---------
 
 El cambio más obvio en Yii 2.0 es el uso de namespaces. Casi todas las clases del núcleo
-utilizan namespaces, e.j., `yii\web\Request`. El prefijo "C" no se utiliza más en los nombre de clases.
+utilizan namespaces, ej., `yii\web\Request`. El prefijo "C" no se utiliza más en los nombre de clases.
 El esquema de nombre ahora utiliza la ruta de directorios. Por ejemplo, `yii\web\Request`
 indica que el archivo de la clase correspondiente es `web/Request.php`, en el directorio de Yii.
 
@@ -114,7 +114,7 @@ Se puede encontrar mayor detalle acerca del tema en la sección [Configuración 
 Eventos
 -------
 
-En Yii 1, los eventos eran creados definiendo un método `on` (e.j., `onBeforeSave`). En Yii 2, puedes utilizar cualquier nombre de evento.
+En Yii 1, los eventos eran creados definiendo un método `on` (ej., `onBeforeSave`). En Yii 2, puedes utilizar cualquier nombre de evento.
 Ahora puedes disparar un evento utilizando el método [[yii\base\Component::trigger()|trigger()]]:
 
 ```php
@@ -282,7 +282,7 @@ Las aplicaciones de consola ahora están organizadas en controladores, tal como 
 deben extender de [[yii\console\Controller]], similar a `CConsoleCommand` en 1.1.
 
 Para correr un comando de consola, utiliza `yii <ruta>`, donde `<ruta>` se refiere a la ruta del controlador
-(e.j. `sitemap/index`). Los argumentos anónimos adicionales son pasados como parámetros al método de la acción correspondiente
+(ej. `sitemap/index`). Los argumentos anónimos adicionales son pasados como parámetros al método de la acción correspondiente
 del controlador, mientras que los argumentos especificados son pasados de acuerdo a las declaraciones en [[yii\console\Controller::options()]].
 
 Yii 2.0 soporta la generación automática de información de ayuda de los comandos a través de los bloques de comentarios del archivo.
@@ -332,7 +332,7 @@ Assets
 
 Yii 2.0 introduce un nuevo concepto llamado *asset bundle* que reemplaza el concepto de script package encontrado en Yii 1.1.
 
-Un asset bundle es una colección de assets (e.j. archivos JavaScript, archivos CSS, imágenes, etc.) dentro de un directorio.
+Un asset bundle es una colección de assets (ej. archivos JavaScript, archivos CSS, imágenes, etc.) dentro de un directorio.
 Cada asset bundle por una clase que extiende de [[yii\web\AssetBundle]].
 Al registrar un asset bundle a través de [[yii\web\AssetBundle::register()]], haces que los assets de dicho bundle sean accesibles
 vía Web. A diferencia de Yii 1, la página que registra el bundle contendrá automáticamente las referencias a los archivos
