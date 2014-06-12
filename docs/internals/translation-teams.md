@@ -5,7 +5,7 @@ Brazilian Portuguese
 --------------------
 
 - **[@wbraganca](https://github.com/wbraganca)**
-- [@alanwillms](https://github.com/alanwillms)
+- Alan Michel Willms Quinot, [@alanwillms](https://github.com/alanwillms), dyulax@gmail.com
 
 German
 ------
