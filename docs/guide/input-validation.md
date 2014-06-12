@@ -342,17 +342,27 @@ by calling `validateValue()`.
 
 ### Handling Empty Inputs <a name="handling-empty-inputs"></a>
 
-Validators often need to check if an input is empty or not. You may call [[yii\validators\Validator::isEmpty()]]
+Validators often need to check if an input is empty or not. In your validator, you may call [[yii\validators\Validator::isEmpty()]]
 to perform this check. By default, this method will return true if a value is an empty string, an empty array or null.
 
 Users of validators can customize the default empty detection logic by configuring
-the [[yii\validators\Validator::isEmpty]] property. For example,
+the [[yii\validators\Validator::isEmpty]] property with a PHP callable. For example,
 
 ```php
 [
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
     }],
+]
+```
+
+When input data are submitted from HTML forms, you often need to assign some default values to the inputs
+if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
+
+```php
+[
+    // set "level" to be 1 if it is empty
+    ['level', 'default', 'value' => 1],
 ]
 ```
 
