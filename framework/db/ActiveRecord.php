@@ -236,7 +236,7 @@ class ActiveRecord extends BaseActiveRecord
      * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is 'tbl_',
      * 'Customer' becomes 'tbl_customer', and 'OrderItem' becomes 'tbl_order_item'. You may override this method
      * if the table is not named after this convention.
-     * @return string the table name
+     * @return string|Expression the table name or quoted [[Expression]] if name contains whitespaces
      */
     public static function tableName()
     {
