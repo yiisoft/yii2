@@ -1,7 +1,7 @@
 Автозагрузка классов
 =================
 
-Для подключения и загрузки классов в Yii используется [автозагрузка классов](http://www.php.net/manual/en/language.oop5.autoload.php). Автозагрузчик классов в Yii совместим со стандартом автозагрузки [PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md) и работает быстро.
+Для подключения и загрузки классов в Yii используется [автозагрузка классов](http://www.php.net/manual/ru/language.oop5.autoload.php). Автозагрузчик классов в Yii совместим со стандартом автозагрузки [PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md) и работает быстро.
 
 Автозагрузчик устанавливается когда вы включаете файл `Yii.php` в свой скрипт.
 
@@ -23,15 +23,15 @@ $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 ```
 
 Например, если полное имя класса `foo\bar\MyClass`, то  [псевдоним пути(alias)](concept-aliases.md) данного файла будет 
-`@foo/bar/MyClass.php`. Для того, чтобы данный псевдоним превратился в путь файла в файловой системе нужно чтобы либо `@foo` либо `@foo/bar` был [корневой ссылкой(root alias)](concept-aliases.md#defining-aliases).
+`@foo/bar/MyClass.php`. Для того, чтобы данный псевдоним превратился в путь файла в файловой системе нужно чтобы либо `@foo` либо `@foo/bar` был [корневым псевдонимом(root alias)](concept-aliases.md#defining-aliases).
 
 При использовании [простого шаблона приложения (Basic Application Template)](start-basic.md), вы можете хранить свои классы в пространствах имен ниже `app`, тогда вам не понадобится указывать новый псевдоним пути для автозагрузки вашего класса. Это работает потому что
-`@app` является [уже установленной ссылкой](concept-aliases.md#predefined-aliases), а такое имя класса как `app\components\MyClass`
+`@app` является [системным псевдонимом](concept-aliases.md#predefined-aliases), а такое имя класса как `app\components\MyClass`
 преобразуется в путь 
 `папкавашегоприложения/components/MyClass.php`.
 
 
-В [шаблоне продвинутого приложения (Advanced Application Template)](tutorial-advanced-app.md), каждый уровень приложения обладает собственной корневой ссылкой. Например, для front-end части корневой ссылкой является `@frontend`, а для back-end части `@backend`. Это позволяет включать классы front-end части в пространство имен(namespace) ниже 'frontend', а для back-end части ниже 'backend'. При таком подходе ваши классы будут автоматически загружены автозагрузчиком Yii.
+В [шаблоне продвинутого приложения (Advanced Application Template)](tutorial-advanced-app.md), каждый уровень приложения обладает собственным корневым псевдонимом. Например, для front-end части корневым псевдонимом является `@frontend`, а для back-end части `@backend`. Это позволяет включать классы front-end части в пространство имен(namespace) ниже 'frontend', а для back-end части ниже 'backend'. При таком подходе ваши классы будут автоматически загружены автозагрузчиком Yii.
 
 
 Карта классов <a name="class-map"></a>
@@ -47,7 +47,7 @@ $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 ```
 
-[Ссылки](concept-aliases.md) могут быть использованы для указания пути к файлу класса. Карту классов необходимо указать в разделе [загрузки фреймворка](runtime-bootstrapping.md) т.к. карта должна быть создана до того, как будут использованы ваши классы.
+[Псевдонимы](concept-aliases.md) могут быть использованы для указания пути к файлу класса. Карту классов необходимо указать в разделе [загрузки фреймворка](runtime-bootstrapping.md) т.к. карта должна быть создана до того, как будут использованы ваши классы.
 
 
 Использование других автозагрузчиков <a name="using-other-autoloaders"></a>
