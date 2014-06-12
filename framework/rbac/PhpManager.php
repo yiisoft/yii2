@@ -410,7 +410,7 @@ class PhpManager extends BaseManager
      */
     public function getChildren($name)
     {
-        return (isset($this->_children[$name])) ? $this->_children[$name] : [];
+        return isset($this->_children[$name]) ? $this->_children[$name] : [];
     }
 
     /**
