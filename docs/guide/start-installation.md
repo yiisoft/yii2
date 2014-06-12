@@ -25,7 +25,7 @@ With Composer installed, you can install Yii by running the following command un
 
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-The above command installs Yii as a directory named `basic`.
+The above command installs Yii in a directory named `basic`.
 
 > Tip: If you want to install the latest development version of Yii, you may use the following command,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
@@ -68,7 +68,7 @@ http://localhost/basic/web/index.php
 ```
 
 This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine (`localhost`), you may have to adjust it to your installation environment.
+and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
 
 ![Successful Installation of Yii](images/start-app-installed.png)
 
