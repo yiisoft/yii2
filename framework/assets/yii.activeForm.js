@@ -245,7 +245,7 @@
             clearTimeout(data.settings.timer);
         }
         data.settings.timer = setTimeout(function () {
-            if (data.submitting || $form.is(':hidden')) {
+            if (data.submitting) {
                 return;
             }
             $.each(data.attributes, function () {
