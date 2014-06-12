@@ -7,7 +7,6 @@
 
 namespace yii\base;
 
-
 use Yii;
 use DateTime;
 use IntlDateFormatter;
@@ -567,7 +566,7 @@ class Formatter extends yii\base\Component
     /**
      * Set a new local different to Yii configuration for temporale reason.
      * @param string $locale language code and country code.
-     * @return Formatter object
+     * @return \guggach\helpers\Formatter object
      */
     public function setLocale($locale = 'en-US'){
         $this->locale = $locale;
@@ -577,8 +576,8 @@ class Formatter extends yii\base\Component
         $this->setFormatPattern($this->_originalConfig['time'], 'time');
         $this->setFormatPattern($this->_originalConfig['datetime'], 'datetime');
         
-        $this->setDecimalSeparator($this->decimalSeparator);
-        $this->setThousandSeparator($this->thousandSeparator);
+        $this->setDecimalSeparator();
+        $this->setThousandSeparator();
        
         return $this;
     }
@@ -724,7 +723,7 @@ class Formatter extends yii\base\Component
  * standard (icu) will be taken. Without loaded "intl" extension the definition can be
  * adapted in FormatDefs.php.
  * @param string $sign: one sign which is set.
- * @return Formatter object
+ * @return \guggach\helpers\Formatter
  */
     public function setDecimalSeparator($sign = null){
         if ($sign === null){
@@ -754,7 +753,7 @@ class Formatter extends yii\base\Component
  * standard (icu) will be taken. Without loaded "intl" extension the definition can be
  * adapted in FormatDefs.php.
  * @param string $sign: one sign which is set.
- * @return Formatter object
+ * @return \guggach\helpers\Formatter
  */
     public function setThousandSeparator($sign = null){
         if ($sign === null){
@@ -1321,9 +1320,11 @@ class Formatter extends yii\base\Component
       //  if (true === false){
         if ($this->_intlLoaded){
             $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, $format);
-            $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
-            if ($decimals <= 5){
-                $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+            if ($decimals !== null){
+                $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+                if ($decimals <= 5){
+                    $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+                }
             }
             if ($roundIncr == null and $this->roundingIncrement != null){
                 $roundIncr = $this->roundingIncrement;
@@ -1337,7 +1338,7 @@ class Formatter extends yii\base\Component
             return $f->format($value);
         } else {
             
-              if ($roundIncr !== null){
+            if ($roundIncr !== null){
                 $part = explode('.', (string)$roundIncr);
                 if ((string)$roundIncr != '0.05'){  // exception for Swiss rounding.
                     $roundIncr = $decimals;
@@ -1359,7 +1360,9 @@ class Formatter extends yii\base\Component
                     $value = round($value/5,2)*5;
                 }
             }
-
+            if ($decimals === null){
+                $decimals = 0;
+            }
             $grouping = $grouping === true ? $this->thousandSeparator : '';
             return number_format($value, $decimals, $this->decimalSeparator, $grouping);
             
@@ -1398,7 +1401,7 @@ class Formatter extends yii\base\Component
      * for details on how to specify a format.
      * @return string the formatted result.
      */
-    public function asDecimal($value, $decimals = 2, $roundIncr = null, $grouping = true)
+    public function asDecimal($value, $decimals = null, $roundIncr = null, $grouping = true)
     {
         return $this->asDouble($value, $decimals, $roundIncr, $grouping);
     }
@@ -1409,11 +1412,12 @@ class Formatter extends yii\base\Component
      /**
      * Formats the value as a percent number with "%" sign.
      * @param mixed $value the value to be formatted. It must be a factor eg. 0.75 -> 75%
-     * @param string $decimals the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
+     * @param string $decimals Number of decimals (default = 2) or format pattern ICU
+      * Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
      * for details on how to specify a format.
      * @return string the formatted result.
      */
-    public function asPercent($value, $decimals = 2, $grouping = true)
+    public function asPercent($value, $decimals = 0, $grouping = true)
     {
          $format = null;
         if(is_numeric($decimals)){
@@ -1432,18 +1436,23 @@ class Formatter extends yii\base\Component
      //   if (true === false){
         if ($this->_intlLoaded){
             $f = $this->createNumberFormatter(NumberFormatter::PERCENT, $format);
-            $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
-            if ($decimals <= 5){
-                $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+            if ($decimals !== null){
+                $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+                if ($decimals <= 5){
+                    $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+                }
             }
             if ($grouping === false){
                 $f->setAttribute(NumberFormatter::GROUPING_USED, false);
             }
             return $f->format($value);
         } else {
+            if ($decimals === null){
+                $decimals = 0;
+            }
             $value = $value * 100;
             $grouping = $grouping === true ? $this->thousandSeparator : '';
-            return number_format($value, $decimals, $this->decimalSeparator, $grouping) . ' %';
+            return number_format($value, $decimals, $this->decimalSeparator, $grouping) . '%';
             
         }
     }
@@ -1461,7 +1470,7 @@ class Formatter extends yii\base\Component
      * for details on how to specify a format.
      * @return string the formatted result.
      */
-    public function asScientific($value, $decimals = 4)
+    public function asScientific($value, $decimals = null)
     {
         $format = null;
         if(is_numeric($decimals)){
@@ -1480,10 +1489,16 @@ class Formatter extends yii\base\Component
      //   if (true === false){
         if ($this->_intlLoaded){
             $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $format);
-            $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+            if ($decimals !== null){
+                $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+            }
             return $f->format($value);
         } else {
-            return sprintf("%.{$decimals}E", $value);
+            if ($decimals !== null){
+                return sprintf("%.{$decimals}E", $value);
+            } else {
+                return sprintf("%.E", $value);
+            }
         }
 
     }
@@ -1545,7 +1560,7 @@ class Formatter extends yii\base\Component
             if ($roundIncr !== null){
                 $f->setAttribute(NumberFormatter::ROUNDING_INCREMENT, $roundIncr);
             }
-            if ($currency === null or trim($currency != '')){
+            if ($currency === null){
                 return $f->format($value);
             } else {
                 return $f->formatCurrency($value, $currency);
@@ -1748,7 +1763,11 @@ class Formatter extends yii\base\Component
         $formatter = new NumberFormatter($this->locale, $type);
         if ($format !== null) {
             $formatter->setPattern($format);
+        } else {
+            $formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $this->decimalSeparator);
+            $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
         }
+        
         if (!empty($this->numberFormatOptions)) {
             foreach ($this->numberFormatOptions as $name => $attribute) {
                 $formatter->setAttribute($name, $attribute);
