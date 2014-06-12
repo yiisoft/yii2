@@ -75,7 +75,7 @@ Trabajando con Bases de Datos
 -----------------------------
 
 * [Data Access Objects](db-dao.md) - Conectando a una base de datos, consultas básicas, transacciones y manipulación de esquemas
-* [Query Builder](db-query-builder.md) - Consultando la base de datos usando una simple capa de abstracción
+* [Query Builder](db-query-builder.md) - Consultando la base de datos utilizando una simple capa de abstracción
 * [Active Record](db-active-record.md) - El ORM Active Record, trayendo y manipulando registros y definiendo relaciones
 * [Migraciones](db-migrations.md) - Versionando tus bases de datos en el entorno de un equipo de desarrollo
 * **TBD** [Sphinx](db-sphinx.md)
@@ -101,7 +101,7 @@ Mostrando Datos
 * **TBD** [Ordenando](output-sorting.md)
 * [Data Providers](output-data-providers.md)
 * [Data Widgets](output-data-widgets.md)
-* [Usando Themes](output-theming.md)
+* [Utilizando Themes](output-theming.md)
 
 
 Seguridad
@@ -161,10 +161,10 @@ Extendiendo Yii
 
 * [Creando Extensiones](extend-creating-extensions.md)
 * [Personalizando el Código del Núcleo](extend-customizing-core.md)
-* [Usando Librerías de Terceros](extend-using-libs.md)
-* **TBD** [Usando Yii en Sistemas de Terceros](extend-embedding-in-others.md)
-* **TBD** [Usando Yii 1.1 y 2.0 Juntos](extend-using-v1-v2.md)
-* [Usando Composer](extend-using-composer.md)
+* [Utilizando Librerías de Terceros](extend-using-libs.md)
+* **TBD** [Utilizando Yii en Sistemas de Terceros](extend-embedding-in-others.md)
+* **TBD** [Utilizando Yii 1.1 y 2.0 Juntos](extend-using-v1-v2.md)
+* [Utilizando Composer](extend-using-composer.md)
 
 
 Temas Especiales
