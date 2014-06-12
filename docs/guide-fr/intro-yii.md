@@ -20,8 +20,8 @@ Comment se positionne Yii vis-à-vis des autres Frameworks?
 
 - Comme la plupart des frameworks PHP, Yii est basé sur le modèle de conception MVC et encourage une
 organisation du code basée sur ce modèle.
-- Yii prend la philosophie que le code devrait être écrit de façon simple et élégante. Il ne sera jamais essayer de 
-choses essentiellement dans le but de suivre un certain modèle de conception sur-conception. 
+- Yii repose sur l'idée que le code doit être écrit de façon simple et élégante. Il ne sera jamais question de
+surcharger le code de Yii uniquement pour respecter un modèle de conception.
 - Yii est un framework complet offrant de nombreuses caractéristiques éprouvées et prêtes à l'emploi, telles que:
 constructeur de requêtes et ActiveRecord, à la fois pour les bases de données relationnelles et NoSQL; support RESTful API;
 support cache multi-niveaux; et plus. 
