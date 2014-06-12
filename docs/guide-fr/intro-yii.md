@@ -31,8 +31,8 @@ profiter de son architecture extensible solide, afin d'utiliser ou développer d
 
 Yii n'est pas un one-man show, il est soutenu par une [solide équipe de développement du noyau][] ainsi que d'une grande communauté 
 avec de nombreux professionnels qui contribuent constamment au développement de Yii. L'équipe de développeurs de Yii 
-garde un œil attentif sur les dernières tendances en développement Web, et sur ​​les meilleures pratiques et les caractéristiques 
-trouvées dans d'autres frameworks ou projets. Les meilleures pratiques et les caractéristiques les plus pertinentes trouvées ailleurs sont régulièrement intégrées dans le code du noyau et utilisables
+garde un œil attentif sur les dernières tendances en développement Web, et sur ​​les meilleures pratiques et caractéristiques 
+trouvées dans d'autres frameworks ou projets. Les meilleures pratiques et caractéristiques les plus pertinentes trouvées ailleurs sont régulièrement intégrées dans le code du noyau et utilisables
 via des interfaces simples et élégantes.
 
 [solide équipe de développement du noyau]: http://www.yiiframework.com/about/
@@ -40,7 +40,7 @@ via des interfaces simples et élégantes.
 Versions de Yii
 ---------------
 
-Yii a actuellement deux versions majeures disponibles : 1.1 et 2.0. La version 1.1 est l'ancienne génération et est maintenant en mode de maintenance. La version 2.0 est une réécriture complète de Yii, adoptant les dernières
+Yii a actuellement deux versions majeures disponibles : 1.1 et 2.0. La version 1.1 est l'ancienne génération et est maintenant en mode maintenance. La version 2.0 est une réécriture complète de Yii, adoptant les dernières
 technologies et protocoles, y compris Composer, PSR, les espaces de noms, les traits, et ainsi de suite. la version 2.0 est la dernière 
 génération du framework et recevra nos principaux efforts de développement dans les prochaines années. 
 Ce guide est principalement pour la version 2.0.
@@ -54,5 +54,5 @@ en utilisant le script de test de la configuration inclus dans chaque distributi
 
 Utiliser Yii requiert des connaissances de base sur la programmation objet (OOP), en effet Yii est un framework basé sur ce type de programmation.
 Yii 2.0 utilise aussi des fonctionnalités récentes de PHP, telles que les [espaces de noms](http://www.php.net/manual/fr/language.namespaces.php) et les [traits](http://www.php.net/manual/fr/language.oop5.traits.php).
-Comprendre ces concepts vous aidera à meiux prendre en main Yii.
+Comprendre ces concepts vous aidera à mieux prendre en main Yii.
 
