@@ -32,7 +32,7 @@ Debajo hay un resumen de los mayores cambios en relación a PHP:
 - [Namespaces](http://php.net/manual/es/language.namespaces.php).
 - [Funciones anónimas](http://php.net/manual/es/functions.anonymous.php).
 - Sintáxis cortas de Arrays `[...elementos...]` es utilizado en vez de `array(...elementos...)`.
-- Etiquetas cortas de `echo` `<?=` es usado en las vistas. Esto se puede utilizar desde PHP 5.4.
+- Etiquetas cortas de `echo`. Ahora en las vistas se usa `<?=`. Esto se puede utilizar desde PHP 5.4.
 - [SPL - Biblioteca estándar de PHP](http://php.net/manual/es/book.spl.php).
 - [Enlace estático en tiempo de ejecución](http://php.net/manual/es/language.oop5.late-static-bindings.php).
 - [Fecha y Hora](http://php.net/manual/es/book.datetime.php).
@@ -471,7 +471,7 @@ Hay muchos otros cambios y mejoras con respecto a ActiveRecord. Por favor consul
 la sección [Active Record](db-active-record.md) para más detalles.
 
 
-User y IdentityInterface
+User e IdentityInterface
 ------------------------
 
 La clase `CWebUser` de 1.1 es reemplazada por [[yii\web\User]], y la clase `CUserIdentity` ya no existe.
