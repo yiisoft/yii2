@@ -45,6 +45,18 @@ abstract class ManagerTestCase extends TestCase
 
         // todo: check duplication of name
     }
+
+    public function testGetChildren()
+    {
+        $user = $this->auth->createRole('user');
+        $this->auth->add($user);
+        $this->assertCount(0, $this->auth->getChildren($user->name));
+
+        $changeName = $this->auth->createPermission('changeName');
+        $this->auth->add($changeName);
+        $this->auth->addChild($user, $changeName);
+        $this->assertCount(1, $this->auth->getChildren($user->name));
+    }
 /*
     public function testRemove()
     {
