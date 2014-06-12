@@ -68,7 +68,7 @@ http://localhost/basic/web/index.php
 ```
 
 This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine(`localhost`), you may have to adjust it to your installation environment.
+and that the Web server is running on your local machine (`localhost`), you may have to adjust it to your installation environment.
 
 ![Successful Installation of Yii](images/start-app-installed.png)
 
