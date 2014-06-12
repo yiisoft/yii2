@@ -453,8 +453,9 @@ class Schema extends Object
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
             $previous = $e->getPrevious();
-            if ($previous instanceof \PDOException && $previous->getCode() == '42S02') {
+            if ($previous instanceof \PDOException && strpos($previous->getMessage(), 'SQLSTATE[42S02') !== false) {
                 // index does not exist
+                // https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_bad_table_error
                 return false;
             }
             throw $e;

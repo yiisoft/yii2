@@ -9,7 +9,7 @@ use yii\rbac\PhpManager;
  * @group rbac
  * @property \yii\rbac\PhpManager $auth
  */
-class PhpManagerTestCase extends ManagerTestCase
+class PhpManagerTest extends ManagerTestCase
 {
     protected function setUp()
     {
@@ -32,7 +32,7 @@ class PhpManagerTestCase extends ManagerTestCase
     {
         $this->prepareData();
         $this->auth->save();
-        $this->auth->clearAll();
+        $this->auth->removeAll();
         $this->auth->load();
         // TODO : Check if loaded and saved data are the same.
     }

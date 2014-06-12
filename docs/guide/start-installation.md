@@ -25,7 +25,7 @@ With Composer installed, you can install Yii by running the following command un
 
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-The above command installs Yii as a directory named `basic`.
+The above command installs Yii in a directory named `basic`.
 
 > Tip: If you want to install the latest development version of Yii, you may use the following command,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
@@ -68,7 +68,7 @@ http://localhost/basic/web/index.php
 ```
 
 This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine(`localhost`), you may have to adjust it to your installation environment.
+and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
 
 ![Successful Installation of Yii](images/start-app-installed.png)
 
@@ -108,7 +108,7 @@ In this subsection, you'll learn how to configure your Apache or Nginx server to
 your private application code and sensitive data files that are stored in the sibling directories
 of `basic/web`. Denying access to those other folders is a producent security improvement.
 
-> Info: If your application will run in a shared hosting environment where you do not have  permission
+> Info: If your application will run in a shared hosting environment where you do not have permission
 to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
 the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
 
@@ -138,7 +138,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Recommended Nginx Configuration <a name="recommended-nginx-configuration"></a>
 
-You should have installed PHP as an [FPM SAPI](http://php.net/install.fpm) to use  [Nginx](http://wiki.nginx.org/).
+You should have installed PHP as an [FPM SAPI](http://php.net/install.fpm) to use [Nginx](http://wiki.nginx.org/).
 Use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for `basic/web` and `mysite.local` with
 the actual hostname to serve.
 
