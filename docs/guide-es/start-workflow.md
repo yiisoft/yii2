@@ -1,7 +1,7 @@
 Corriendo Aplicaciones
 ======================
 
-Después de instala Yii, tienes una aplicación totalmente funcional a la que se puede acceder a través de
+Luego de instalar Yii, tienes una aplicación totalmente funcional a la que se puede acceder a través de
 la URL `http://hostname/basic/web/index.php` o `http://hostname/index.php`, dependiendo de tu configuración.
 Esta sección será una introducción a la funcionalidad incluida de la aplicación, cómo se organiza el código,
 y cómo la aplicación maneja los requests en general.
