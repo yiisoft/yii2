@@ -104,6 +104,7 @@ class Request extends \yii\base\Request
      *
      * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
+     * You also need to include CSRF meta tags in your pages by using [[\yii\helpers\Html::csrfMetaTags()]].
      *
      * @see Controller::enableCsrfValidation
      * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
