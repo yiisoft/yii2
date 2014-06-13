@@ -322,7 +322,7 @@ public function behaviors()
 }
 ```
 
-Please refer to the [Filtering](runtime-filtering.md) section for more details.
+Please refer to the [Filtering](structure-filters.md) section for more details.
 
 
 Assets
@@ -336,7 +336,7 @@ By registering an asset bundle via [[yii\web\AssetBundle::register()]], you make
 the assets in that bundle accessible via the Web. Unlike in Yii 1, the page registering the bundle will automatically
 contain the references to the JavaScript and CSS files specified in that bundle.
 
-Please refer to the [Managing Assets](output-assets.md) section for more details.
+Please refer to the [Assets](structure-assets.md) section for more details.
 
 
 Helpers
