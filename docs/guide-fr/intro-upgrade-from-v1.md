@@ -2,7 +2,7 @@ Mise à jour depuis la version 1.1
 =================================
 
 Il y a beaucoup de différences entre les versions 1.1 et 2.0 de Yii, le framework ayant été complètement réécrit pour la 2.0. 
-En conséquence, la mise à jour depuis la version 1.1 n'est pas aussi simple que la mise à jour entre deux versions mineures. Dans ce guide, vous
+En conséquence, la mise à jour depuis la version 1.1 n'est pas aussi triviale que la mise à jour entre deux versions mineures. Dans ce guide, vous
 trouverez les principales différences entre les deux versions. 
 
 Si vous n'avez pas utilisé Yii 1.1 avant, vous pouvez ignorer cette section et passer directement à la partie "[Mise en route] (start-installation.md)". 
@@ -35,51 +35,51 @@ Voici un résumé des principaux changements concernant PHP:
 - Syntaxe courte pour les tableaux : `[...elements...]` est utilisé au lieu de `array(...elements...)`.
 - Syntaxe courte pour echo : `<?=` est utilisé dans les vues. Cela ne pose aucun problème à partir de PHP 5.4.
 - [Classes SPL et interfaces](http://php.net/manual/fr/book.spl.php).
-- [Late Static Bindings (Résolution statique à la volée)](http://php.net/manual/fr/language.oop5.late-static-bindings.php).
+- [Late Static Bindings (résolution statique à la volée)](http://php.net/manual/fr/language.oop5.late-static-bindings.php).
 - [Date et heure](http://php.net/manual/fr/book.datetime.php).
 - [Traits](http://php.net/manual/fr/language.oop5.traits.php).
 - [intl](http://php.net/manual/fr/book.intl.php). Yii 2.0 utilise l'extension PHP `intl`
   pour les fonctionnalités d'internationalisation.
 
 
-Namespace
----------
+Espaces de Noms
+---------------
 
-The most obvious change in Yii 2.0 is the use of namespaces. Almost every core class
-is namespaced, e.g., `yii\web\Request`. The "C" prefix is no longer used in class names.
-The naming scheme now follows the directory structure. For example, `yii\web\Request`
-indicates that the corresponding class file is `web/Request.php` under the Yii framework folder.
+Le changement le plus évident dans Yii 2.0 est l'utilisation des espaces de noms. La majorité des classes du noyau
+utilise les espace de noms, par exemple, `yii\web\Request`. Le préfixe «C» n'est plus utilisé dans les noms de classe.
+Le schéma de nommage suit maintenant la structure des répertoires. Par exemple, `yii\web\Request` 
+indique que le fichier de classe correspondant est `web/Request.php` dans le dossier du framework. 
 
-(You can use any core class without explicitly including that class file, thanks to the Yii
-class loader.)
+(Vous pouvez utiliser n'importe quelle classe du noyau sans inclure explicitement le fichier correspondant, grâce au
+chargeur de classe de Yii.)
 
 
-Component and Object
---------------------
+Composants et objets 
+-------------------- 
 
-Yii 2.0 breaks the `CComponent` class in 1.1 into two classes: [[yii\base\Object]] and [[yii\base\Component]].
-The [[yii\base\Object|Object]] class is a lightweight base class that allows defining [object properties](concept-properties.md)
-via getters and setters. The [[yii\base\Component|Component]] class extends from [[yii\base\Object|Object]] and supports
-[events](concept-events.md) and [behaviors](concept-behaviors.md).
+Yii 2.0 décompose la classe `CComponent` 1.1 en deux classes: [[yii\base\Object]] et [[yii\base\Component]]. 
+Le classe [[yii\base\Object|Object]] est une classe de base légère qui permet de définir les [Propriétés de l'objet] (concept properties.md) 
+via des accesseurs. La classe [[yii\base\Component|Component]] est une sous classe de [[yii\base\Object|Object]] et supporte 
+les [Evénements] (concept events.md) et les [Comportements] (concept behaviors.md). 
 
-If your class does not need the event or behavior feature, you should consider using
-[[yii\base\Object|Object]] as the base class. This is usually the case for classes that represent basic
-data structures.
+Si votre classe n'a pas besoin des événements et des comportements, vous devriez envisager d'utiliser 
+[[yii\base\Object|Object]] comme classe de base. C'est généralement le cas pour les classes qui représentent
+une structures de données basique.
 
 
 Object Configuration
 --------------------
 
-The [[yii\base\Object|Object]] class introduces a uniform way of configuring objects. Any descendant class
-of [[yii\base\Object|Object]] should declare its constructor (if needed) in the following way so that
-it can be properly configured:
+La classe [[yii\base\Object|Object]] introduit une manière uniforme pour configurer les objets. Toute sous classe
+de [[yii\base\Object|Object]] doit déclarer son constructeur (si besoin) de la manière suivante afin qu'elle 
+puisse être configurée correctement:
 
 ```php
 class MyClass extends \yii\base\Object
 {
     public function __construct($param1, $param2, $config = [])
     {
-        // ... initialization before configuration is applied
+        // ... initialisation avant que la configuration soit appliquée
 
         parent::__construct($config);
     }
@@ -88,18 +88,18 @@ class MyClass extends \yii\base\Object
     {
         parent::init();
 
-        // ... initialization after configuration is applied
+        // ... initialization après que la configuration soit appliquée
     }
 }
 ```
 
-In the above, the last parameter of the constructor must take a configuration array
-that contains name-value pairs for initializing the properties at the end of the constructor.
-You can override the [[yii\base\Object::init()|init()]] method to do initialization work that should be done after
-the configuration has been applied.
+Dans ce qui précède, le dernier paramètre du constructeur doit être un tableau de configuration 
+qui contient des entrées nom-valeur pour initialiser les propriétés à la fin du constructeur. 
+Vous pouvez remplacer la méthode [[yii\base\Object::init()|init()]] pour le travail d'initialisation qui doit être fait après 
+que la configuration ait été appliquée.
 
-By following this convention, you will be able to create and configure new objects
-using a configuration array:
+En suivant cette convention, vous serez en mesure de créer et de configurer de nouveaux objets 
+en utilisant un tableau de configuration:
 
 ```php
 $object = Yii::createObject([
@@ -109,29 +109,28 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-More details about configurations can be found in the [Object Configurations](concept-configurations.md) section.
+Plus de détails sur les configurations peuvent être trouvés dans la section [Configuration d'object](concept-configurations.md) section.
 
 
-Events
-------
+Evénements
+----------
 
-In Yii 1, events were created by defining an `on`-method (e.g., `onBeforeSave`). In Yii 2, you can now use any event name. You trigger an event by calling
-the [[yii\base\Component::trigger()|trigger()]] method:
+Avec Yii 1, les événements étaient créés par la définition d'une  méthode `on` (par exemple `onBeforeSave`). Avec Yii 2, vous pouvez maintenant utiliser n'importe quel nom de l'événement. Vous déclenchez un événement en appelant 
+la méthode [[yii\base\Component::trigger()|trigger()]] :
 
 ```php
 $event = new \yii\base\Event;
 $component->trigger($eventName, $event);
 ```
 
-To attach a handler to an event, use the [[yii\base\Component::on()|on()]] method:
+Pour attacher un gestionnaire à un événement, utilisez la méthode [[yii\base\Component::on()|on()]]:
 
 ```php
 $component->on($eventName, $handler);
-// To detach the handler, use:
+// Pour détacher le gestionnaire, utilisez :
 // $component->off($eventName, $handler);
 ```
-
-There are many enhancements to the event features. For more details, please refer to the [Events](concept-events.md) section.
+Il y a de nombreuses améliorations dans la gestion des événements. Pour plus de détails, merci de lire la partie [Evénements](concept events.md).
 
 
 Path Aliases
