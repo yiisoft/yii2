@@ -23,3 +23,8 @@ Spanish
 -------
 
 - Luciano Baraglia, [@lucianobaraglia](https://github.com/lucianobaraglia)
+
+Ukrainian
+---------
+
+- Alexandr Bordun [@borales](https://github.com/Borales), admin@yiiframework.com.ua
