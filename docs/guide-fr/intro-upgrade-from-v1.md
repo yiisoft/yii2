@@ -67,8 +67,8 @@ Si votre classe n'a pas besoin des événements et des comportements, vous devri
 une structures de données basique.
 
 
-Object Configuration
---------------------
+Configuration d'Objet
+---------------------
 
 La classe [[yii\base\Object|Object]] introduit une manière uniforme pour configurer les objets. Toute sous classe
 de [[yii\base\Object|Object]] doit déclarer son constructeur (si besoin) de la manière suivante afin qu'elle 
@@ -109,7 +109,7 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-Plus de détails sur les configurations peuvent être trouvés dans la section [Configuration d'object](concept-configurations.md) section.
+Plus de détails sur les configurations peuvent être trouvés dans la partie [Configurations d'objet](concept-configurations.md).
 
 
 Evénements
@@ -156,9 +156,9 @@ Vues
 ----
 
 Le changement le plus significatif à propos des vues dans Yii 2 est que la variable spéciale `$this` dans une vue ne fait plus référence au
-le contrôleur ou widget. Au lieu de cela, `$this` correspond maintenant à un objet *vue*, un nouveau concept 
-introduit dans la version 2.0. L'objet *vue* est de type [[yii\web\View]], qui représente la partie vue 
-du modèle MVC. Si vous souhaitez accéder au contrôleur ou un widget dans une vue, vous pouvez utiliser `$this->context`.
+contrôleur ou widget. Au lieu de cela, `$this` correspond maintenant à un objet *vue*, un nouveau concept 
+introduit dans la version 2.0. L'objet *vue* est de type [[yii\web\View]], et représente la partie vue 
+du modèle MVC. Si vous souhaitez accéder au contrôleur ou widget dans une vue, vous pouvez utiliser `$this->context`.
 
 Pour afficher une vue depuis une autre vue, utilisez `$this->render()`, et non `$this->renderPartial()`. Le résultat retourné par la méthode `render()` doit être explictement envoyé à la sortie, en effet `render()` retournera la vue au lieu de l'afficher. Par exemple :
 
@@ -175,11 +175,11 @@ Pour utiliser ces moteurs de gabarit, vous devez configurer le composant `view` 
 Modèles
 -------
 
-Yii 2.0 uses [[yii\base\Model]] as the base model, similar to `CModel` in 1.1.
-The class `CFormModel` has been dropped entirely. Instead, in Yii 2 you should extend [[yii\base\Model]] to create a form model class.
+Yii 2.0 utilise la classe [[yii\base\Model]] comme modèle de base, similaire à la classe `CModel` dans la version 1.1.
+La classe `CFormModel` a été supprimée. Vous pouvez, à la place, étendre la classe [[yii\base\Model]] afin de créer une classe modèle pour un formulaire.
 
-Yii 2.0 introduces a new method called [[yii\base\Model::scenarios()|scenarios()]] to declare
-supported scenarios, and to indicate under which scenario an attribute needs to be validated, can be considered as safe or not, etc. For example:
+Yii 2.0 introduit une nouvelle méthode appelée [[yii\base\Model::scenarios()|scenarios()]] pour déclarer 
+les scénarios pris en charge, et indiquer dans quel scénario un attribut doit être validé, peut être considéré comme sûr ou non, etc. Par exemple:
 
 ```php
 public function scenarios()
@@ -191,27 +191,26 @@ public function scenarios()
 }
 ```
 
-In the above, two scenarios are declared: `backend` and `frontend`. For the `backend` scenario, both the
-`email` and `role` attributes are safe, and can be massively assigned. For the `frontend` scenario,
-`email` can be massively assigned while `role` cannot. Both `email` and `role` should be validated using rules.
+Dans ce qui précède, deux scénarios sont déclarés: `backend` et `frontend`. Pour le scénario `backend` les 
+propriétés `email` et `role` sont sûres et peuvent être affectées massivement. Pour le scénario `frontend`, 
+`email` peut être affectée massivement tandis que `role` ne peut pas. `email` et `rôle` doivent être validées en utilisant des règles.
 
-The [[yii\base\Model::rules()|rules()]] method is still used to declare the validation rules. Note that due to the introduction of [[yii\base\Model::scenarios()|scenarios()]], there is no longer an `unsafe` validator.
+La méthode [[yii\base\Model::rules()|rules()]] est toujours utilisée pour déclarer les règles de validation. Remarque : suite à l'introduction de la méthode [[yii\base\Model::scenarios()|scenarios()]], le validateur `unsafe` n'as plus de raison d'être.
 
-In most cases, you do not need to override [[yii\base\Model::scenarios()|scenarios()]]
-if the [[yii\base\Model::rules()|rules()]] method fully specifies the scenarios that will exist, and if there is no need to declare
-`unsafe` attributes.
+Dans la plupart des cas, vous n'avez pas besoin de surcharger la méthode [[yii\base\Model::scenarios()|scenarios()]]
+lorsque les scénarios existants sont déclarés via la méthode [[yii\base\Model::rules()|rules()]], et il n'y a pas besoin de déclarer de propriétés `unsafe`.
 
-To learn more details about models, please refer to the [Models](basic-models.md) section.
+Pour en savoir plus sur les modèles, merci de lire la partie [Modèles](basic-models.md).
 
 
-Controllers
+Contrôleurs
 -----------
 
-Yii 2.0 uses [[yii\web\Controller]] as the base controller class, similar to `CWebController` in Yii 1.1.
-[[yii\base\Action]] is the base class for action classes.
+Yii 2.0 utilise la classe [[yii\web\Controller]] comme classe de base des contrôleurs, similaire à la classe `CWebController` dans la version Yii 1.1.
+[[yii\base\Action]] est la classe de base pour les actions.
 
-The most obvious impact of these changes on your code is that a controller action should return the content
-that you want to render instead of echoing it:
+L'impact le plus évident de ces changements sur votre code est qu'une action de contrôleur doit retourner le contenu 
+que vous voulez afficher au lieu de l'envoyer vers la sortie :
 
 ```php
 public function actionView($id)
@@ -225,86 +224,85 @@ public function actionView($id)
 }
 ```
 
-Please refer to the [Controllers](structure-controllers.md) section for more details about controllers.
+Merci de lire la partie [Contrôleurs](structure-controllers.md) pour plus de détails.
 
 
 Widgets
 -------
 
-Yii 2.0 uses [[yii\base\Widget]] as the base widget class, similar to `CWidget` in Yii 1.1.
+Yii 2.0 utilise la classe [[yii\base\Widget]] comme classe de base pour les widgets, similaire à la classe `CWidget` de Yii 1.1.
 
-To get better support for the framework in IDEs, Yii 2.0 introduces a new syntax for using widgets. The static methods
-[[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]], and [[yii\base\Widget::widget()|widget()]]
-have been introduced, to be used like so:
+Pour avoir un meilleur support du framework dans les EDI, Yii2 introduit une nouvelle syntaxe pour utiliser les widgets. Les methodes statiques
+[[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]], et [[yii\base\Widget::widget()|widget()]]
+ont été créées et sont utilisables comme suit :
 
 ```php
 use yii\widgets\Menu;
 use yii\widgets\ActiveForm;
 
-// Note that you have to "echo" the result to display it
+// Remarque : vous devez utiliser echo pour afficher le résultat
 echo Menu::widget(['items' => $items]);
 
-// Passing an array to initialize the object properties
+// Utilisation d'un tableau pour initialiser les propriétés de l'objet
 $form = ActiveForm::begin([
     'options' => ['class' => 'form-horizontal'],
     'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
 ]);
-... form input fields here ...
+... champs du formulaire ici ...
 ActiveForm::end();
 ```
 
-Please refer to the [Widgets](structure-widgets.md) section for more details.
+Merci de lire la partie [Widgets](structure-widgets.md) pour en savoir plus.
 
 
-Themes
+Thèmes
 ------
 
-Themes work completely differently in 2.0. They are now based on a path mapping mechanism that maps a source
-view file path to a themed view file path. For example, if the path map for a theme is
-`['/web/views' => '/web/themes/basic']`, then the themed version for the view file
-`/web/views/site/index.php` will be `/web/themes/basic/site/index.php`. For this reason, themes can now
-be applied to any view file, even a view rendered outside of the context of a controller or a widget.
+Les thèmes fonctionnent tout à fait différemment dans la version 2.0. Ils sont maintenant basés sur un mécanisme de mappage de chemin qui mappe un chemin
+de fichier de vue à un chemin de fichier de vue thématisée. Par exemple, si le mappage pour un thème est 
+`['/web/views' => '/web/themes/basic']`, alors la version thématisée du fichier de vue 
+`/web/views/site/index.php` sera `/web/themes/basic/site/index.php`. Pour cette raison, les thèmes peuvent maintenant 
+être appliqués à n'importe quel fichier de vue, même une vue utilisée en dehors du contexte d'un contrôleur ou d'un widget. 
 
-Also, there is no more `CThemeManager` component. Instead, `theme` is a configurable property of the `view`
-application component.
+En outre, il n'y a plus de composant `CThemeManager`. A la place, `theme` est une propriété configurable du composant `view` 
+de l'application. 
 
-Please refer to the [Theming](tutorial-theming.md) section for more details.
+Merci de lire la partie [Thématisation](tutoriel theming.md) pour plus de détails.
 
 
-Console Applications
---------------------
+Applications en ligne de commande
+---------------------------------
 
-Console applications are now organized as controllers, like Web applications. Console controllers
-should extend from [[yii\console\Controller]], similar to `CConsoleCommand` in 1.1.
+Les applications en ligne de commande (console) sont désormais organisées en contrôleurs, comme les applications Web. ces contrôleurs
+doivent étendre la classe [[yii\console\Controller]], similaire à la classe `CConsoleCommand` de la version 1.1.
 
-To run a console command, use `yii <route>`, where `<route>` stands for a controller route
-(e.g. `sitemap/index`). Additional anonymous arguments are passed as the parameters to the
-corresponding controller action method, while named arguments are parsed according to
-the declarations in [[yii\console\Controller::options()]].
+Pour exécuter une commande console, utilisez `yii <route>`, où `<route>` correspond à une route vers un contrôleur
+(par exemple `sitemap/index`). Les arguments anonymes supplémentaires sont passés comme paramètres à
+l'action du contrôleur correspondant, alors que les arguments nommés sont analysés selon 
+les options déclarées dans la méthode [[yii\console\Controller::options()]].
 
-Yii 2.0 supports automatic generation of command help information from comment blocks.
+Yii 2.0 prend en charge la génération automatique d'aide à partir des blocs de commentaire.
 
-Please refer to the [Console Commands](tutorial-console.md) section for more details.
+Merci de lire la partie [Commandes console](tutoriel-console.md) pour plus de détails.
 
 
 I18N
 ----
 
-Yii 2.0 removes the built-in date formatter and number formatter pieces in favor of the [PECL intl PHP module](http://pecl.php.net/package/intl).
+Yii 2.0 supprime les fonctionnalités internes de formattage de dates et nombres, en faveur du [module PHP PECL intl] (http://pecl.php.net/package/intl). 
 
-Message translation is now performed via the `i18n` application component.
-This component manages a set of message sources, which allows you to use different message
-sources based on message categories.
+La traduction de message est désormais effectuée via le composant d'application `i18n`. 
+Ce composant gère un ensemble de sources de messages, ce qui vous permet d'utiliser différentes 
+sources de messages en fonction de catégories.
 
-Please refer to the [Internationalization](tutorial-i18n.md) section for more details.
+Merci de lire la partie [Internationalisation](tutoriel i18n.md) pour plus de détails.
 
 
-Action Filters
---------------
+Filtres d'action
+----------------
 
-Action filters are implemented via behaviors now. To define a new, custom filter, extend from [[yii\base\ActionFilter]]. To use a filter, attach the filter class to the controller
-as a behavior. For example, to use the [[yii\filters\AccessControl]] filter, you would have the following
-code in a controller:
+Les filtres d'action sont maintenant implémentés comme des comportements. Pour définir un nouveau filtre personnalisé, étendez la classe [[yii\base\ActionFilter]]. Pour utiliser un filtre, déclarez le
+comme un comportement du contrôleur.  Par exemple, pour utilser le filtre [[yii\filters\AccessControl]], vous aurez le code suivant dans le contrôleur :
 
 ```php
 public function behaviors()
@@ -320,21 +318,20 @@ public function behaviors()
 }
 ```
 
-Please refer to the [Filtering](runtime-filtering.md) section for more details.
+Merci de lire la partie [Filtres](runtime-filtering.md) pour plus de détails.
 
 
-Assets
-------
+Ressources
+----------
 
-Yii 2.0 introduces a new concept called *asset bundle* that replaces the script package concept found in Yii 1.1.
+Yii 2.0 introduit un nouveau concept de packet de ressources (*asset bundle*) qui remplace le concept de gestionnaire de ressources (*asset manager*) de la version 1.1.
 
-An asset bundle is a collection of asset files (e.g. JavaScript files, CSS files, image files, etc.)
-within a directory. Each asset bundle is represented as a class extending [[yii\web\AssetBundle]].
-By registering an asset bundle via [[yii\web\AssetBundle::register()]], you make
-the assets in that bundle accessible via the Web. Unlike in Yii 1, the page registering the bundle will automatically
-contain the references to the JavaScript and CSS files specified in that bundle.
+Un packet de ressources est une collection de fichiers (par exemple : fichier JavaScript, CSS, image, etc.)
+dans un dossier. Chaque paquet est représenté par une classe étendant [[yii\web\AssetBundle]].
+En *enregistrant* un packet via [[yii\web\AssetBundle::register()]], vous rendez les ressources du packet accessibles via le Web. Contrairement à Yii 1.1, la page *enregistrant* le paquet
+contiendra automatiquement les références vers les fichiers déclarés dans le paquet.
 
-Please refer to the [Managing Assets](output-assets.md) section for more details.
+Merci de lire la partie [Assets](structure-assets.md) pour plus de détails.
 
 
 Helpers
