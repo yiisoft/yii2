@@ -22,4 +22,4 @@ Russian
 Spanish
 -------
 
-- **Luciano Baraglia** [@lucianobaraglia](https://github.com/lucianobaraglia)
+- Luciano Baraglia, [@lucianobaraglia](https://github.com/lucianobaraglia)
