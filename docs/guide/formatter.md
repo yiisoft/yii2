@@ -16,7 +16,7 @@ Formatter uses the php extension "intl" if the extension is loaded. "Intl" uses 
 by IBM. "intl" internally knows all formats of all countries and it translates month or day names into the corrcect language. 
 Unfortunately ICU don't use same format patterns like php (eg. ICU: 'yyyy-mm-dd' php: 'Y-m-d' or icu: 'yy-m-d' php: 'y-n-j'). 
 Therefore formatter class has built in a pattern conversions from php to icu or icu to php. Formatter communicates in their interface
-functions per standard with php patterns, but it's also possible to communicate with icu patterns.
+functions per standard with php patterns, but it's also possible to communicate with icu patterns. (compare patterns see [PDF](http://www.guggach.com/tl_files/yii2/Difference%20of%20Date%20formats%20%20used%20in%20Yii2.pdf))
 
 If "intl" isn't loaded formatter works also in the same way. Even the named date, time or datetime formats from icu "short", "medium", "long"
 and "full" are supported. Without a separate localized format definition US formats are used. Formatter provides a possibility to enter
