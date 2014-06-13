@@ -206,7 +206,7 @@ class View extends Component
      * Otherwise, it will simply include the view file as a normal PHP file, capture its output and
      * return it as a string.
      *
-     * @param string $viewFile the view file. This can be either a file path or a path alias.
+     * @param string $viewFile the view file. This can be either an absolute file path or an alias of it.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @param object $context the context that the view should use for rendering the view. If null,
      * existing [[context]] will be used.
