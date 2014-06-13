@@ -443,7 +443,7 @@ records by filtering with the primary keys of the primary records.
 
 Instead of returning [[yii\db\ActiveRecord|ActiveRecord]] objects, you may chain the [[yii\db\ActiveQuery::asArray()|asArray()]]
 method when building a query to return a large number of records. This will cause the query result to be returned
-as arrays, which can significantly reduce the needed CPU time and memory if large number of records . For example,
+as arrays, which can significantly reduce the needed CPU time and memory if large number of records . For example:
 
 ```php
 $customers = Customer::find()->asArray()->all();
