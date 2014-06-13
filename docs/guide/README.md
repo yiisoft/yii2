@@ -193,7 +193,7 @@ Widgets
 * LinkPager: link to demo page
 * LinkSorter: link to demo page
 * [Bootstrap Widgets](bootstrap-widgets.md)
-* **TBD** [Jquery UI Widgets](jui-widgets.md)
+* [Jquery UI Widgets](jui-widgets.md)
 
 
 Helpers
