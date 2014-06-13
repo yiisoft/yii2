@@ -1,18 +1,111 @@
 Views
 =====
 
+> Note: This section is under development.
+
 Views are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
-They are responsible for presenting data to end users. In a Yii application, the view layer is composed by
-[view templates](#view-templates) and [view components](#view-components). The former contains presentational
-code (e.g. HTML), while the latter provides common view-related features and is responsible for turning view
-templates into response content. We often use "views" to refer to view templates.
+They are code responsible for presenting data to end users. In a Web application, views are usually created
+in terms of *view templates* which are PHP script files containing mainly HTML code and presentational PHP code.
+They are managed by the [[yii\web\View|view]] application component which provides commonly used methods
+to facilitate view composition and rendering. For simplicity, we often call view templates or view template files
+as views.
 
 
-## View Templates
+## Creating Views
 
-You turn a view template into response content by pushing [model](structure-models.md) data into
-the template and rendering it. For example, in the `post/view` action below, the `view` template
-is rendered with the `$model` data. The rendering result is a string which is returned by the action as the response content.
+As aforementioned, a view is simply a PHP script mixed with HTML and PHP code. The following is the view
+that presents a login form. As you can see, PHP code is used to generate the dynamic content, such as the
+page title and the form, while HTML code organizes them into a presentable HTML page.
+
+```php
+<?php
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/**
+ * @var yii\web\View $this
+ * @var yii\widgets\ActiveForm $form
+ * @var app\models\LoginForm $model
+ */
+$this->title = 'Login';
+?>
+<h1><?= Html::encode($this->title) ?></h1>
+
+<p>Please fill out the following fields to login:</p>
+
+<?php $form = ActiveForm::begin(); ?>
+    <?= $form->field($model, 'username') ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
+    <?= Html::submitButton('Login') ?>
+<?php ActiveForm::end(); ?>
+```
+
+Within a view, you can access `$this` which refers to the [[yii\web\View|view component]] managing
+and rendering this view template.
+
+Besides `$this`, there may be other predefined variables in a view, such as `$form` and `$model` in the above
+example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
+or other objects whose trigger the [view rendering](#rendering-views).
+
+> Tip: The predefined variables are listed in a comment block at beginning of a view so that they can
+  be recognized by IDEs. It is also a good practice to document your views.
+
+TODO: features in creating views
+
+
+## Organizing Views
+
+Like [controllers](structure-controllers.md) and [models](structure-models.md), there are conventions to organize views.
+
+* For views rendered in a controller, they should be put under the directory `@app/views/ControllerID` by default,
+  where `ControllerID` refers to [the ID of the controller](structure-controllers.md#routes). For example, if
+  the controller class is `PostController`, the directory would be `@app/views/post`; If the class is `PostCommentController`,
+  the directory would be `@app/views/post-comment`. In case the controller belongs to a module, the directory
+  would be `views/ControllerID` under the [[yii\base\Module::basePath|module directory]].
+* For views rendered in a [widget](structure-widgets.md), they should be put under the `WidgetPath/views` directory by
+  default, where `WidgetPath` stands for the directory containing the widget class file.
+* For views rendered by other objects, it is recommended that you follow the similar convention as that for widgets.
+
+You may customize these default view directories by overriding the [[yii\base\ViewContextInterface::getViewPath()]]
+method of controllers or widgets.
+
+
+## Rendering Views
+
+You can render views in [controllers](structure-controllers.md), [widgets](structure-widgets.md), or any
+other places. There are different view rendering methods provided by different classes. However, they share the
+similar method signature as follows,
+
+```
+/**
+ * @param string $view view name or file path, depending on the actual rendering method
+ * @param array $params the parameters to be pushed into the view
+ */
+methodName($view, $params = [])
+```
+
+
+### Passing Data to Views
+
+As you can see, the first parameter specifies which view to be rendered. We will describe more about it in the
+[Named Views](#named-views) subsection. The second parameter specifies what data should be "pushed" into the view
+and made accessible there. When the rendering method renders a view, it will "extract" the `$params` array so that each
+keyed array element is turned into a variable of the same name in the view. For example, if `$params`
+is `['a' => 1, 'b' => 2]`, in the view you will be able to access variable `$a` and `$b` whose values are 1 and 2,
+respectively.
+
+
+### Rendering in Controllers
+
+Within [controllers](structure-controllers.md), you may call the following controller methods to render views.
+
+* [[yii\base\Controller::render()|render()]]: renders a [named view](#named-views) and applies a [layout](#layouts)
+  to the rendering result.
+* [[yii\base\Controller::renderPartial()|renderPartial()]]: renders a [named view](#named-views) without any layout.
+* [[yii\base\Controller::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
+  [alias](concept-aliases.md).
+
+For example,
 
 ```php
 namespace app\controllers;
@@ -31,6 +124,7 @@ class PostController extends Controller
             throw new NotFoundHttpException;
         }
 
+        // renders a view named "view" and applies a layout to it
         return $this->render('view', [
             'model' => $model,
         ]);
@@ -38,49 +132,126 @@ class PostController extends Controller
 }
 ```
 
-### Rendering Views in Controllers
 
-### Rendering Views in Widgets
+### Rendering in Widgets
 
-### Rendering Views in Views
+Within [widgets](structure-widgets.md), you may call the following widget methods to render views.
 
-### View Names
+* [[yii\base\Widget::render()|render()]]: renders a [named view](#named-views).
+* [[yii\base\Widget::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
+  [alias](concept-aliases.md).
 
-By default, a view template is simply a PHP script file (called *view file*). Like [models](structure-models.md)
-and [controllers](structure-controllers.md), view files are usually organized under the so-called *view paths*.
-For views rendered by controllers that directly belong to an application, they are located under the `@app/views` path.
+For example,
 
-* applications:
-* modules:
-* controllers:
-* widgets and other components:
+```php
+namespace app\components;
 
-When rendering a view template, you can specify it using a view name, a view file path,
-or an [alias](concept-aliases.md) to the view file path.
+use yii\base\Widget;
+use yii\helpers\Html;
 
-If a view name is used, it will be resolved into a view file path according to the current
-[[yii\base\View::context|view context]] using one of the following rules:
+class ListWidget extends Widget
+{
+    public $items = [];
 
-* If the view name starts with double slashes `//`, the corresponding view file path is considered to be
-  `@app/views/ViewName`. For example, `//site/about` will be resolved into `@app/views/site/about`.
+    public function run()
+    {
+        // renders a view named "list"
+        return $this->render('list', [
+            'items' => $this->items,
+        ]);
+    }
+}
+```
+
+
+### Rendering in Other Places
+
+In any place, you can render views by calling the following methods of the [[yii\base\View|view]] application component.
+
+* [[yii\base\View::render()|render()]]: renders a [named view](#named-views).
+* [[yii\base\View::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
+  [alias](concept-aliases.md).
+
+For example,
+
+```php
+// displays the view file "@app/views/site/license.php"
+echo \Yii::$app->view->renderFile('@app/views/site/license.php');
+```
+
+If you are rendering a view within another view, you can use the following code, because `$this` in a view refers to
+the [[yii\base\View|view]] component:
+
+```php
+<?= $this->renderFile('@app/views/site/license.php') ?>
+```
+
+
+## Named Views
+
+When you render a view, you can specify the view using either a view name or a view file path/alias. In most cases,
+you would use the former because it is more concise and flexible. We call views specified using names as *named views*.
+
+A view name is resolved into the corresponding view file path according to the following rules:
+
+* A view name may omit the file extension name. In this case, `.php` will be used as the extension. For example,
+  the view name `about` corresponds to the file name `about.php`.
+* If the view name starts with double slashes `//`, the corresponding view file path would be `@app/views/ViewName`.
+  That is, the view is looked for under the [[yii\base\Application::viewPath|application's view path]].
+  For example, `//site/about` will be resolved into `@app/views/site/about.php`.
 * If the view name starts with a single slash `/`, the view file path is formed by prefixing the view name
   with the [[yii\base\Module::viewPath|view path]] of the currently active [module](structure-modules.md).
   If there is no active module, `@app/views/ViewName` will be used. For example, `/user/create` will be resolved into
-  `@app/modules/user/views/user/create`, if the currently active module is `user`. If there is no active module,
-  the view file path would be `@app/views/user/create`.
-* If the view is rendered with a [[yii\base\View::context|context]], the view file path will be prefixed with
-  the [[yii\base\ViewContextInterface::getViewPath()|view path]]. For example, `site/about` will be resolved
-  into `@app/views/site/about` if the context is the `SiteController`.
-* If a view was previously rendered, the directory containing that view file will be prefixed to
-  the new view name.
+  `@app/modules/user/views/user/create.php`, if the currently active module is `user`. If there is no active module,
+  the view file path would be `@app/views/user/create.php`.
+* If the view is rendered with a [[yii\base\View::context|context]] and the context implements [[yii\base\ViewContextInterface]],
+  the view file path is formed by prefixing the [[yii\base\ViewContextInterface::getViewPath()|view path]] of the
+  context to the view name. This mainly applies to the views rendered within controllers and widgets. For example,
+  `site/about` will be resolved into `@app/views/site/about.php` if the context is the controller `SiteController`.
+* If a view is rendered within another view, the directory containing the other view file will be prefixed to
+  the new view name to form the actual view file path. For example, `item` will be resolved into `@app/views/post/item`
+  if it is being rendered in the view `@app/views/post/index.php`.
+
+According to the above rules, the following code in a controller is actually rendering the view file
+`@app/views/post/view.php`
+
+```php
+namespace app\controllers;
+
+use Yii;
+use app\models\Post;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+
+class PostController extends Controller
+{
+    public function actionView($id)
+    {
+        $model = Post::findOne($id);
+        if ($model === null) {
+            throw new NotFoundHttpException;
+        }
+
+        // renders a view named "view" and applies a layout to it
+        return $this->render('view', [
+            'model' => $model,
+        ]);
+    }
+}
+```
+
+And the following code in the view `@app/views/post/view.php` is actually rendering the view file
+`@app/views/post/overview.php`:
+
+```php
+<?= $this->render('overview', ['model' => $model]) ?>
+```
 
 
 ## Layouts
 
 ### Nested Layouts
 
-
-### Accessing Data
 
 ## View Components
 

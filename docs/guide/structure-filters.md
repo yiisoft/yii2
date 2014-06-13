@@ -1,3 +1,8 @@
+Filters
+=======
+
+> Note: This section is under development.
+
 You may apply some action filters to controller actions to accomplish tasks such as determining
 who can access the current action, decorating the result of the action, etc.
 
