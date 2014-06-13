@@ -302,9 +302,10 @@ class AssetController extends Controller
             $this->compressCssFiles($inputFiles, $tempFile);
         }
 
-        $outputFile = $target->basePath . '/' . strtr($target->$type, ['{hash}' => md5_file($tempFile)]);
+        $targetFile = strtr($target->$type, ['{hash}' => md5_file($tempFile)]);
+        $outputFile = $target->basePath . '/' . $targetFile;
         rename($tempFile, $outputFile);
-        $target->$type = [$outputFile];
+        $target->$type = [$targetFile];
     }
 
     /**
