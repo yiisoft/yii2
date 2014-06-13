@@ -197,7 +197,7 @@ class ActiveForm extends Widget
     protected function getClientOptions()
     {
         $options = [
-            'errorSummary' => '.' . $this->errorSummaryCssClass,
+            'errorSummary' => '.' . implode('.', explode(' ', $this->errorSummaryCssClass)),
             'validateOnSubmit' => $this->validateOnSubmit,
             'errorCssClass' => $this->errorCssClass,
             'successCssClass' => $this->successCssClass,
