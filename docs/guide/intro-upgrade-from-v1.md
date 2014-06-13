@@ -203,7 +203,7 @@ In most cases, you do not need to override [[yii\base\Model::scenarios()|scenari
 if the [[yii\base\Model::rules()|rules()]] method fully specifies the scenarios that will exist, and if there is no need to declare
 `unsafe` attributes.
 
-To learn more details about models, please refer to the [Models](basic-models.md) section.
+To learn more details about models, please refer to the [Models](structure-models.md) section.
 
 
 Controllers
