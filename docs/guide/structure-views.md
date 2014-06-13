@@ -1,8 +1,6 @@
 Views
 =====
 
-> Note: This section is under development.
-
 Views are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are code responsible for presenting data to end users. In a Web application, views are usually created
 in terms of *view templates* which are PHP script files containing mainly HTML code and presentational PHP code.
@@ -53,6 +51,8 @@ or other objects whose trigger the [view rendering](#rendering-views).
 TODO: features in creating views
 
 
+
+
 ## Organizing Views
 
 Like [controllers](structure-controllers.md) and [models](structure-models.md), there are conventions to organize views.
@@ -73,35 +73,27 @@ method of controllers or widgets.
 ## Rendering Views
 
 You can render views in [controllers](structure-controllers.md), [widgets](structure-widgets.md), or any
-other places. There are different view rendering methods provided by different classes. However, they share the
-similar method signature as follows,
+other places by calling view rendering methods. These methods share a similar signature shown as follows,
 
 ```
 /**
  * @param string $view view name or file path, depending on the actual rendering method
- * @param array $params the parameters to be pushed into the view
+ * @param array $params the data to be passed to the view
+ * @return string rendering result
  */
 methodName($view, $params = [])
 ```
 
 
-### Passing Data to Views
-
-As you can see, the first parameter specifies which view to be rendered. We will describe more about it in the
-[Named Views](#named-views) subsection. The second parameter specifies what data should be "pushed" into the view
-and made accessible there. When the rendering method renders a view, it will "extract" the `$params` array so that each
-keyed array element is turned into a variable of the same name in the view. For example, if `$params`
-is `['a' => 1, 'b' => 2]`, in the view you will be able to access variable `$a` and `$b` whose values are 1 and 2,
-respectively.
-
-
 ### Rendering in Controllers
 
-Within [controllers](structure-controllers.md), you may call the following controller methods to render views.
+Within [controllers](structure-controllers.md), you may call the following controller methods to render views:
 
 * [[yii\base\Controller::render()|render()]]: renders a [named view](#named-views) and applies a [layout](#layouts)
   to the rendering result.
 * [[yii\base\Controller::renderPartial()|renderPartial()]]: renders a [named view](#named-views) without any layout.
+* [[yii\web\Controller::renderAjax()|renderAjax()]]: renders a [named view](#named-views) without any layout,
+  and injects all registered JS/CSS scripts and files. It is usually used in response to AJAX Web requests.
 * [[yii\base\Controller::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
   [alias](concept-aliases.md).
 
@@ -166,9 +158,12 @@ class ListWidget extends Widget
 
 ### Rendering in Other Places
 
-In any place, you can render views by calling the following methods of the [[yii\base\View|view]] application component.
+In any place, you can render views with the help of the [[yii\base\View|view]] application component by calling
+its following methods:
 
 * [[yii\base\View::render()|render()]]: renders a [named view](#named-views).
+* [[yii\web\View::renderAjax()|renderAjax()]]: renders a [named view](#named-views) and injects all registered
+  JS/CSS scripts and files. It is usually used in response to AJAX Web requests.
 * [[yii\base\View::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
   [alias](concept-aliases.md).
 
@@ -241,21 +236,177 @@ class PostController extends Controller
 ```
 
 And the following code in the view `@app/views/post/view.php` is actually rendering the view file
-`@app/views/post/overview.php`:
+`@app/views/post/_overview.php`:
 
 ```php
-<?= $this->render('overview', ['model' => $model]) ?>
+<?= $this->render('_overview', ['model' => $model]) ?>
 ```
+
+
+### Accessing Data in Views
+
+There are two approaches to access data within a view: push and pull.
+
+By passing the data as the second parameter to the view rendering methods, you are using the push approach.
+The data should be represented be an array of name-value pairs. When the view is being rendered, the PHP
+`extract()` function will be called on this array so that the array is extracted into variables in the view.
+For example, the following view rendering code in a controller will push two variables to the `report` view:
+`$foo = 1` and `$bar = 2`.
+
+```php
+echo $this->render('report', [
+    'foo' => 1,
+    'bar' => 2,
+]);
+```
+
+The pull approach actively retrieves data from the [[yii\base\View::context|view context object]]. Using the above
+code as an example, within the view you can get the controller object by the expression `$this->context`.
+As a result, it is possible for you to access any properties or methods of the controller in the `report` view.
+For example, in the `report` view you may pull the `id` data like the following:
+
+```php
+The controller ID is: <?= $this->context->id ?>
+?>
+```
+
+The pull approach is usually the preferred way of accessing data in views, because it makes views less dependent
+on context objects. Its drawback is that you need to manually build the data array all the time, which could
+becomes tedious and error prone if a view is shared and rendered in different places.
 
 
 ## Layouts
 
+Layouts are a special type of views that represent the common parts of multiple views. For example, the pages
+for most Web applications share the same page header and footer. While you can repeat the same page header and footer
+in every view, a better way is to do this once in a layout and embed the rendering result of a content view at
+an appropriate place in the layout.
+
+
+### Creating Layouts
+
+Because layouts are also views, they can be created in the similar way as normal views. The following example
+shows how a layout looks like:
+
+```php
+<?php
+use yii\helpers\Html;
+/**
+ * @var yii\web\View $this
+ * @var string $content
+ */
+?>
+<?php $this->beginPage() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>">
+<head>
+    <meta charset="<?= Yii::$app->charset ?>"/>
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
+</head>
+<body>
+<?php $this->beginBody() ?>
+    <div class="container">
+        <?= $content ?>
+    </div>
+    <footer class="footer">&copy; 2014 by me :)</footer>
+<?php $this->endBody() ?>
+</body>
+</html>
+<?php $this->endPage() ?>
+```
+
+The above layout is used to generate HTML pages. It generates HTML tags that are common to all pages. You may
+also generate other common HTML tags in the layout, such as head tags, main menu, etc.
+
+Within a layout, you have access to a special variable named `$content`. This is the only variable injected into
+the layout by the controller when the [[yii\base\Controller::render()]] method is called to render a view.
+The value of `$content` represents the rendering result of the view. As you can see in the above code,
+`$content` is embedded within the body part of the layout.
+
+Besides `$content`, you can also access the [[yii\base\View|view]] component via `$this`, like in normal views.
+
+
+### Organizing Layouts
+
+
+
+
+### Using Layouts
+
+A layout is applied when you call the [[yii\base\Controller::render()|render()]] method in a controller. The method
+will first render the view being requested; it will then render the layout specified by the [[yii\base\Controller::layout]]
+property of the controller and push the rendering result of the view into the layout as a variable `$content`.
+
+
+
+### View Events
+
+
+The [[yii\base\View|view]] component provides several *placeholder* methods, such as `head()` and `beginBody()`,
+which generate placeholders which will be replaced later by
+
+
+
+ code shows a typical layout
+A layout is a very convenient way to represent the part of the page that is common for all or at least for most pages
+generated by your application. Typically it includes `<head>` section, footer, main menu and alike elements.
+You can find a fine example of the layout in a [basic application template](apps-basic.md). Here we'll review the very
+basic one without any widgets or extra markup.
+
+
+In the markup above there's some code. First of all, `$content` is a variable that will contain result of views rendered
+with controller's `$this->render()` method.
+
+We are importing [[yii\helpers\Html|Html]] helper via standard PHP `use` statement. This helper is typically used for almost all views
+where one need to escape outputted data.
+
+Several special methods such as [[yii\web\View::beginPage()|beginPage()]]/[[yii\web\View::endPage()|endPage()]],
+[[yii\web\View::head()|head()]], [[yii\web\View::beginBody()|beginBody()]]/[[yii\web\View::endBody()|endBody()]]
+are triggering page rendering events that are used for registering scripts, links and process page in many other ways.
+Always include these in your layout in order for the rendering to work correctly.
+
+By default layout is loaded from `views/layouts/main.php`. You may change it at controller or module level by setting
+different value to `layout` property.
+
+In order to pass data from controller to layout, that you may need for breadcrumbs or similar elements, use view component
+params property. In controller it can be set as:
+
+```php
+$this->view->params['breadcrumbs'][] = 'Contact';
+```
+
+In a view it will be:
+
+```php
+$this->params['breadcrumbs'][] = 'Contact';
+```
+
+In layout file the value can be used like the following:
+
+```php
+<?= Breadcrumbs::widget([
+    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+]) ?>
+```
+
+You may also wrap the view render result into a layout using [[yii\base\View::beginContent()]], [[yii\base\View::endContent()]].
+This approach can be used while applying nested layouts:
+
+```php
+<?php $this->beginContent('//layouts/overall') ?>
+<div class="content">
+    <?= $content ?>
+<div>
+<?php $this->endContent() ?>
+```
+
 ### Nested Layouts
+
+### Accessing Data in Layouts
 
 
 ## View Components
-
-## Creating Views
 
 ### Setting page title
 ### Adding meta tags
@@ -264,128 +415,60 @@ And the following code in the view `@app/views/post/view.php` is actually render
 ### Registering scripts
 ### Static Pages
 ### Assets
+### Alternative Template Engines
 
-## Alternative Template Engines
 
+### Rendering Static Pages
 
-Basics
-------
+Static pages refer to those Web pages whose main content are mostly static without the need of accessing
+dynamic data pushed from controllers.
 
-By default, Yii uses PHP in view templates to generate content and elements. A web application view typically contains
-some combination of HTML, along with PHP `echo`, `foreach`, `if`, and other basic constructs.
-Using complex PHP code in views is considered to be bad practice. When complex logic and functionality is needed,
-such code should either be moved to a controller or a widget.
-
-The view is typically called from controller action using the [[yii\base\Controller::render()|render()]] method:
+You can generate static pages using the code like the following in a controller:
 
 ```php
-public function actionIndex()
+public function actionAbout()
 {
-    return $this->render('index', ['username' => 'samdark']);
+    return $this->render('about');
 }
 ```
 
-The first argument to [[yii\base\Controller::render()|render()]] is the name of the view to display.
-In the context of the controller, Yii will search for its views in `views/site/` where `site`
-is the controller ID. For details on how the view name is resolved, refer to the [[yii\base\Controller::render()]] method.
-
-The second argument to [[yii\base\Controller::render()|render()]] is a data array of key-value pairs.
-Through this array, data can be passed to the view, making the value available in the view as a variable
-named the same as the corresponding key.
-
-The view for the action above would be `views/site/index.php` and can be something like:
+If a Web site contains many static pages, it would be very tedious repeating the similar code many times.
+To solve this problem, you may introduce a [standalone action](structure-controllers.md#standalone-actions)
+called [[yii\web\ViewAction]] in a controller. For example,
 
 ```php
-<p>Hello, <?= $username ?>!</p>
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+    public function actions()
+    {
+        return [
+            'page' => [
+                'class' => 'yii\web\ViewAction',
+            ],
+        ];
+    }
+}
 ```
 
-Any data type can be passed to the view, including arrays or objects.
+Now if you create a view named `about` under the directory `@app/views/site/pages`, you will be able to
+display this view by the following URL:
 
-Besides the above [[yii\web\Controller::render()|render()]] method, the [[yii\web\Controller]] class also provides
-several other rendering methods. Below is a summary of these methods:
-
-* [[yii\web\Controller::render()|render()]]: renders a view and applies the layout to the rendering result.
-  This is most commonly used to render a complete page.
-* [[yii\web\Controller::renderPartial()|renderPartial()]]: renders a view without applying any layout.
-  This is often used to render a fragment of a page.
-* [[yii\web\Controller::renderAjax()|renderAjax()]]: renders a view without applying any layout, and injects all
-  registered JS/CSS scripts and files. It is most commonly used to render an HTML output to respond to an AJAX request.
-* [[yii\web\Controller::renderFile()|renderFile()]]: renders a view file. This is similar to
-  [[yii\web\Controller::renderPartial()|renderPartial()]] except that it takes the file path
-  of the view instead of the view name.
-
-
-Widgets
--------
-
-Widgets are self-contained building blocks for your views, a way to combine complex logic, display, and functionality into a single component. A widget:
-
-* May contain advanced PHP programming
-* Is typically configurable
-* Is often provided data to be displayed
-* Returns HTML to be shown within the context of the view
-
-There are a good number of widgets bundled with Yii, such as [active form](form.md),
-breadcrumbs, menu, and [wrappers around bootstrap component framework](bootstrap-widgets.md). Additionally there are
-extensions that provide more widgets, such as the official widget for [jQueryUI](http://www.jqueryui.com) components.
-
-In order to use a widget, your view file would do the following:
-
-```php
-// Note that you have to "echo" the result to display it
-echo \yii\widgets\Menu::widget(['items' => $items]);
-
-// Passing an array to initialize the object properties
-$form = \yii\widgets\ActiveForm::begin([
-    'options' => ['class' => 'form-horizontal'],
-    'fieldConfig' => ['inputOptions' => ['class' => 'input-xlarge']],
-]);
-... form inputs here ...
-\yii\widgets\ActiveForm::end();
+```
+http://localhost/index.php?r=site/page&view=about
 ```
 
-In the first example in the code above, the [[yii\base\Widget::widget()|widget()]] method is used to invoke a widget
-that just outputs content. In the second example, [[yii\base\Widget::begin()|begin()]] and [[yii\base\Widget::end()|end()]]
-are used for a
-widget that wraps content between method calls with its own output. In case of the form this output is the `<form>` tag
-with some properties set.
+The `GET` parameter `view` tells [[yii\web\ViewAction]] which view is requested. The action will then look
+for this view under the directory `@app/views/site/pages`. You may configure [[yii\web\ViewAction::viewPrefix]]
+to change the directory for searching these views.
 
 
-Security
---------
+## Best Practices
 
-One of the main security principles is to always escape output. If violated it leads to script execution and,
-most probably, to cross-site scripting known as XSS leading to leaking of admin passwords, making a user to automatically
-perform actions etc.
 
-Yii provides a good tool set in order to help you escape your output. The very basic thing to escape is a text without any
-markup. You can deal with it like the following:
-
-```php
-<?php
-use yii\helpers\Html;
-?>
-
-<div class="username">
-    <?= Html::encode($user->name) ?>
-</div>
-```
-
-When you want to render HTML it becomes complex so we're delegating the task to excellent
-[HTMLPurifier](http://htmlpurifier.org/) library which is wrapped in Yii as a helper [[yii\helpers\HtmlPurifier]]:
-
-```php
-<?php
-use yii\helpers\HtmlPurifier;
-?>
-
-<div class="post">
-    <?= HtmlPurifier::process($post->text) ?>
-</div>
-```
-
-Note that besides HTMLPurifier does excellent job making output safe it's not very fast so consider
-[caching result](caching.md).
 
 Alternative template languages
 ------------------------------
@@ -684,59 +767,7 @@ the view file will be looked for under the view path of the currently active mod
 will be looked for under the application view path.
 
 
-### Accessing context
 
-Views are generally used either by controller or by widget. In both cases the object that called view rendering is
-available in the view as `$this->context`. For example if we need to print out the current internal request route in a
-view rendered by controller we can use the following:
-
-```php
-echo $this->context->getRoute();
-```
-
-### Static Pages
-
-If you need to render static pages you can use class `ViewAction`. It represents an action that displays a view according
-to a user-specified parameter.
-
-Usage of the class is simple. In your controller use the class via `actions` method:
-
-```php
-class SiteController extends Controller
-{
-    public function actions()
-    {
-        return [
-            'static' => [
-                'class' => '\yii\web\ViewAction',
-            ],
-        ];
-    }
-
-    //...
-}
-```
-
-Then create `index.php` in `@app/views/site/pages/`:
-
-```php
-//index.php
-<h1>Hello, I am a static page!</h1>
-```
-
-That's it. Now you can try it using `/index.php?r=site/static`.
-
-By default, the view being displayed is specified via the `view` GET parameter. 
-If you open `/index.php?r=site/static?&view=about` then `@app/views/site/pages/about.php` view file will be used.
-
-If not changed or specified via GET defaults are the following:
-
-- GET parameter name: `view`.
-- View file used if parameter is missing: `index.php`.
-- Directory where views are stored (`viewPrefix`): `pages`.
-- Layout for the page rendered matches the one used in controller.
-
-For more information see [[yii\web\ViewAction]].
 
 ### Caching blocks
 
@@ -759,3 +790,40 @@ return [
     ],
 ];
 ```
+
+
+Security
+--------
+
+One of the main security principles is to always escape output. If violated it leads to script execution and,
+most probably, to cross-site scripting known as XSS leading to leaking of admin passwords, making a user to automatically
+perform actions etc.
+
+Yii provides a good tool set in order to help you escape your output. The very basic thing to escape is a text without any
+markup. You can deal with it like the following:
+
+```php
+<?php
+use yii\helpers\Html;
+?>
+
+<div class="username">
+    <?= Html::encode($user->name) ?>
+</div>
+```
+
+When you want to render HTML it becomes complex so we're delegating the task to excellent
+[HTMLPurifier](http://htmlpurifier.org/) library which is wrapped in Yii as a helper [[yii\helpers\HtmlPurifier]]:
+
+```php
+<?php
+use yii\helpers\HtmlPurifier;
+?>
+
+<div class="post">
+    <?= HtmlPurifier::process($post->text) ?>
+</div>
+```
+
+Note that besides HTMLPurifier does excellent job making output safe it's not very fast so consider
+[caching result](caching.md).
