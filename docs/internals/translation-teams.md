@@ -22,4 +22,4 @@ Russian
 Spanish
 -------
 
-- **Alexander Makarov** [@lucianobaraglia](https://github.com/lucianobaraglia)
+- **Luciano Baraglia** [@lucianobaraglia](https://github.com/lucianobaraglia)
