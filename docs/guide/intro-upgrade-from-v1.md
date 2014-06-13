@@ -336,7 +336,7 @@ By registering an asset bundle via [[yii\web\AssetBundle::register()]], you make
 the assets in that bundle accessible via the Web. Unlike in Yii 1, the page registering the bundle will automatically
 contain the references to the JavaScript and CSS files specified in that bundle.
 
-Please refer to the [Managing Assets](output-assets.md) section for more details.
+Please refer to the [Managing Assets](structure-assets.md) section for more details.
 
 
 Helpers
