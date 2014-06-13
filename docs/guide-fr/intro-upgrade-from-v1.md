@@ -334,10 +334,10 @@ contiendra automatiquement les références vers les fichiers déclarés dans le
 Merci de lire la partie [Assets](structure-assets.md) pour plus de détails.
 
 
-Helpers
--------
+Assistants
+----------
 
-Yii 2.0 introduces many commonly used static helper classes, including.
+Yii 2.0 introduit de nombreuses assistants couramment utilisés, sous la forme de classes statiques, y compris :
 
 * [[yii\helpers\Html]]
 * [[yii\helpers\ArrayHelper]]
@@ -346,15 +346,16 @@ Yii 2.0 introduces many commonly used static helper classes, including.
 * [[yii\helpers\Json]]
 * [[yii\helpers\Security]]
 
-Please refer to the [Helper Overview](helper-overview.md) section for more details.
+Merci de lire la partie [Assistants](helper-overview.md) pour plus de détails.
 
-Forms
------
 
-Yii 2.0 introduces the *field* concept for building a form using [[yii\widgets\ActiveForm]]. A field
-is a container consisting of a label, an input, an error message, and/or a hint text.
-A field is represented as an [[yii\widgets\ActiveField|ActiveField]] object.
-Using fields, you can build a form more cleanly than before:
+Formulaires
+-----------
+
+Yii 2.0 introduit le concept de *champ* pour la construction d'un formulaire à l'aide de la classe [[yii\widgets\ActiveForm]]. Un champ 
+est un conteneur constitué d'une étiquette, d'une entrée, d'un message d'erreur, et/ou d'un texte d'aide.
+Un champ est représenté comme un objet de la classe [[yii\widgets\ActiveField|ActiveField]]. 
+En utilisant des champs, vous pouvez construire un formulaire plus proprement qu'avant:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -366,16 +367,16 @@ Using fields, you can build a form more cleanly than before:
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-Please refer to the [Creating Forms](input-forms.md) section for more details.
+Merci de lire la partie [Créer des formulaires](input-forms.md) pour plus de détails.
 
 
-Query Builder
--------------
+Constructeur de requête
+-----------------------
 
-In 1.1, query building was scattered among several classes, including `CDbCommand`,
-`CDbCriteria`, and `CDbCommandBuilder`. Yii 2.0 represents a DB query in terms of a [[yii\db\Query|Query]] object
-that can be turned into a SQL statement with the help of [[yii\db\QueryBuilder|QueryBuilder]] behind the scene.
-For example:
+Dans la version 1.1, la construction des requêtes était dispersée dans plusieurs classes, y compris `CDbCommand`, 
+`CDbCriteria` et `CDbCommandBuilder`. Avec Yii 2.0, une requête de base de données est représentée par un objet de la classe [[yii\db\Query|Query]]
+qui peut être transformé en une instruction SQL à l'aide de la classe [[yii\db\QueryBuilder|QueryBuilder]].
+Par exemple:
 
 ```php
 $query = new \yii\db\Query();
@@ -388,9 +389,9 @@ $sql = $command->sql;
 $rows = $command->queryAll();
 ```
 
-Best of all, such query building methods can also be used when working with [Active Record](db-active-record.md).
+De plus, ces méthodes de construction de requête peuvent également être utilisées lorsque vous travaillez avec [Active Record](db-active-record.md).
 
-Please refer to the [Query Builder](db-query-builder.md) section for more details.
+Merci de lire la partie [Constructeur de requête](db-query-builder.md) pour plus de détails.
 
 
 Active Record
