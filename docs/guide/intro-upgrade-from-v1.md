@@ -270,7 +270,7 @@ be applied to any view file, even a view rendered outside of the context of a co
 Also, there is no more `CThemeManager` component. Instead, `theme` is a configurable property of the `view`
 application component.
 
-Please refer to the [Theming](tutorial-theming.md) section for more details.
+Please refer to the [Theming](output-theming.md) section for more details.
 
 
 Console Applications
@@ -493,7 +493,7 @@ the same goal.
 ]
 ```
 
-Please refer to the [Url manager docs](url.md) section for more details.
+Please refer to the [Url manager docs](runtime-url-handling.md) section for more details.
 
 Using Yii 1.1 and 2.x together
 ------------------------------
