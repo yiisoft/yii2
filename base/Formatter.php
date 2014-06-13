@@ -1204,9 +1204,9 @@ class Formatter extends yii\base\Component
             }
         } else {
             $FormatPatterns = $this->dbFormat;
-            $FormatPatterns['date'] = $this->dateFormat;
-            $FormatPatterns['time'] = $this->timeFormat;
-            $FormatPatterns['datetime'] = $this->datetimeFormat;
+            $FormatPatterns['locDate'] = $this->dateFormat;
+            $FormatPatterns['locTime'] = $this->timeFormat;
+            $FormatPatterns['locDatetime'] = $this->datetimeFormat;
         }
         
         if (is_string($value)) {
