@@ -33,14 +33,14 @@ Voici un résumé des principaux changements concernant PHP:
 
 - [Espaces de noms](http://php.net/manual/fr/language.namespaces.php).
 - [Fonctions anonymes](http://php.net/manual/fr/functions.anonymous.php).
-- Syntaxe courte pour les tableaux : `[...elements...]` est utilisé au lieu de `array(...elements...)`.
+- Syntaxe courte pour les tableaux : `[...éléments...]` est utilisé au lieu de `array(...éléments...)`.
 - Syntaxe courte pour echo : `<?=` est utilisé dans les vues. Cela ne pose aucun problème à partir de PHP 5.4.
 - [Classes SPL et interfaces](http://php.net/manual/fr/book.spl.php).
 - [Late Static Bindings (résolution statique à la volée)](http://php.net/manual/fr/language.oop5.late-static-bindings.php).
 - [Date et heure](http://php.net/manual/fr/book.datetime.php).
 - [Traits](http://php.net/manual/fr/language.oop5.traits.php).
-- [intl](http://php.net/manual/fr/book.intl.php). Yii 2.0 utilise l'extension PHP `intl`
-  pour les fonctionnalités d'internationalisation.
+- [intl](http://php.net/manual/fr/book.intl.php). Yii 2.0 utilise l'extension PHP `intl` pour les fonctionnalités
+  d'internationalisation.
 
 
 Espaces de Noms
@@ -59,9 +59,10 @@ Composants et objets
 --------------------
 
 Yii 2.0 décompose la classe `CComponent` 1.1 en deux classes: [[yii\base\Object]] et [[yii\base\Component]].
-Le classe [[yii\base\Object|Object]] est une classe de base légère qui permet de définir les [Propriétés de l'objet] (concept properties.md)
-via des accesseurs. La classe [[yii\base\Component|Component]] est une sous classe de [[yii\base\Object|Object]] et supporte
-les [Evénements] (concept events.md) et les [Comportements] (concept behaviors.md).
+Le classe [[yii\base\Object|Object]] est une classe de base légère qui permet de définir les
+[Propriétés de l'objet](concept-properties.md) via des accesseurs. La classe [[yii\base\Component|Component]] est une
+sous classe de [[yii\base\Object|Object]] et supporte les [Evénements] (concept events.md) et les
+[Comportements](concept-behaviors.md).
 
 Si votre classe n'a pas besoin des événements et des comportements, vous devriez envisager d'utiliser
 [[yii\base\Object|Object]] comme classe de base. C'est généralement le cas pour les classes qui représentent
@@ -89,18 +90,18 @@ class MyClass extends \yii\base\Object
     {
         parent::init();
 
-        // ... initialization après que la configuration soit appliquée
+        // ... initialisation après que la configuration soit appliquée
     }
 }
 ```
 
 Dans ce qui précède, le dernier paramètre du constructeur doit être un tableau de configuration
 qui contient des entrées nom-valeur pour initialiser les propriétés à la fin du constructeur.
-Vous pouvez remplacer la méthode [[yii\base\Object::init()|init()]] pour le travail d'initialisation qui doit être fait après
-que la configuration ait été appliquée.
+Vous pouvez remplacer la méthode [[yii\base\Object::init()|init()]] pour le travail d'initialisation qui doit être fait
+après que la configuration ait été appliquée.
 
-En suivant cette convention, vous serez en mesure de créer et de configurer de nouveaux objets
-en utilisant un tableau de configuration:
+En suivant cette convention, vous serez en mesure de créer et de configurer de nouveaux objets en utilisant un tableau
+de configuration :
 
 ```php
 $object = Yii::createObject([
@@ -110,13 +111,15 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-Plus de détails sur les configurations peuvent être trouvés dans la partie [Configurations d'objet](concept-configurations.md).
+Plus de détails sur les configurations peuvent être trouvés dans la partie
+[Configurations d'objet](concept-configurations.md).
 
 
 Evénements
 ----------
 
-Avec Yii 1, les événements étaient créés par la définition d'une  méthode `on` (par exemple `onBeforeSave`). Avec Yii 2, vous pouvez maintenant utiliser n'importe quel nom de l'événement. Vous déclenchez un événement en appelant
+Avec Yii 1, les événements étaient créés par la définition d'une  méthode `on` (par exemple `onBeforeSave`). Avec Yii 2,
+vous pouvez maintenant utiliser n'importe quel nom de l'événement. Vous déclenchez un événement en appelant
 la méthode [[yii\base\Component::trigger()|trigger()]] :
 
 ```php
@@ -131,7 +134,7 @@ $component->on($eventName, $handler);
 // Pour détacher le gestionnaire, utilisez :
 // $component->off($eventName, $handler);
 ```
-Il y a de nombreuses améliorations dans la gestion des événements. Pour plus de détails, merci de lire la partie [Evénements](concept events.md).
+Il y a de nombreuses améliorations dans la gestion des événements. Pour plus de détails, merci de lire la partie [Evénements](concept-events.md).
 
 
 Alias
@@ -201,7 +204,7 @@ La méthode [[yii\base\Model::rules()|rules()]] est toujours utilisée pour déc
 Dans la plupart des cas, vous n'avez pas besoin de surcharger la méthode [[yii\base\Model::scenarios()|scenarios()]]
 lorsque les scénarios existants sont déclarés via la méthode [[yii\base\Model::rules()|rules()]], et il n'y a pas besoin de déclarer de propriétés `unsafe`.
 
-Pour en savoir plus sur les modèles, merci de lire la partie [Modèles](basic-models.md).
+Pour en savoir plus sur les modèles, merci de lire la partie [Modèles](structure-models.md).
 
 
 Contrôleurs
@@ -268,7 +271,7 @@ de fichier de vue à un chemin de fichier de vue thématisée. Par exemple, si l
 En outre, il n'y a plus de composant `CThemeManager`. A la place, `theme` est une propriété configurable du composant `view`
 de l'application.
 
-Merci de lire la partie [Thématisation](tutoriel theming.md) pour plus de détails.
+Merci de lire la partie [Thématisation](tutorial-theming.md) pour plus de détails.
 
 
 Applications en ligne de commande
@@ -284,7 +287,7 @@ les options déclarées dans la méthode [[yii\console\Controller::options()]].
 
 Yii 2.0 prend en charge la génération automatique d'aide à partir des blocs de commentaire.
 
-Merci de lire la partie [Commandes console](tutoriel-console.md) pour plus de détails.
+Merci de lire la partie [Commandes console](tutorial-console.md) pour plus de détails.
 
 
 I18N
@@ -296,7 +299,7 @@ La traduction de message est désormais effectuée via le composant d'applicatio
 Ce composant gère un ensemble de sources de messages, ce qui vous permet d'utiliser différentes
 sources de messages en fonction de catégories.
 
-Merci de lire la partie [Internationalisation](tutoriel i18n.md) pour plus de détails.
+Merci de lire la partie [Internationalisation](tutorial-i18n.md) pour plus de détails.
 
 
 Filtres d'action
@@ -319,7 +322,7 @@ public function behaviors()
 }
 ```
 
-Merci de lire la partie [Filtres](runtime-filtering.md) pour plus de détails.
+Merci de lire la partie [Filtres](structure-filters.md) pour plus de détails.
 
 
 Ressources
