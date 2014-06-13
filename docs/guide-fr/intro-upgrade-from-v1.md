@@ -133,49 +133,47 @@ $component->on($eventName, $handler);
 Il y a de nombreuses améliorations dans la gestion des événements. Pour plus de détails, merci de lire la partie [Evénements](concept events.md).
 
 
-Path Aliases
-------------
-
-Yii 2.0 expands the usage of path aliases to both file/directory paths and URLs. Yii 2.0 also now requires
-an alias name to start with the `@` character, to differentiate aliases from normal file/directory paths or URLs.
-For example, the alias `@yii` refers to the Yii installation directory. Path aliases are
-supported in most places in the Yii core code. For example, [[yii\caching\FileCache::cachePath]] can take
-both a path alias and a normal directory path.
-
-A path alias is also closely related to a class namespace. It is recommended that a path
-alias be defined for each root namespace, thereby allowing you to use Yii the class autoloader without
-any further configuration. For example, because `@yii` refers to the Yii installation directory,
-a class like `yii\web\Request` can be autoloaded. If you use a third party library,
-such as the Zend Framework, you may define a path alias `@Zend` that refers to that framework's installation
-directory. Once you've done that, Yii will be able to autoload any class in that Zend Framework library, too.
-
-More on path aliases can be found in the [Path Aliases](concept-aliases.md) section.
-
-
-Views
+Alias
 -----
 
-The most significant change about views in Yii 2 is that the special variable `$this` in a view no longer refers to
-the current controller or widget. Instead, `$this` now refers to a *view* object, a new concept
-introduced in 2.0. The *view* object is of type [[yii\web\View]], which represents the view part
-of the MVC pattern. If you want to access the controller or widget in a view, you can use `$this->context`.
+Yii 2.0 étend l'utilisation des alias aux fichiers/répertoires et aux URL. Yii 2.0 impose maintenant 
+aux alias de commencer par le caractère `@`, pour différencier les alias de fichiers/répertoires ou URL. 
+Par exemple, l'alias `@yii` fait référence au répertoire d'installation de Yii. Les alias ​​sont 
+supportés dans la plupart du code de Yii. Par exemple, [[yii\caching\FileCache::cachePath]] peut prendre 
+à la fois un alias et un chemin de répertoire normal.
 
-To render a partial view within another view, you use `$this->render()`, not `$this->renderPartial()`. The call to `render` also now has to be explicitly echoed, as the `render()` method returns the rendering
-result, rather than directly displaying it. For example:
+Un alias est aussi étroitement liée aux espaces de noms des classes. Il est recommandé de définir
+un alias pour chaque espace de nom racine, ce qui vous permet d'utiliser le chargeur automatique de classe de Yii sans 
+sans devoir en faire d'avantage. Par exemple, vu que `@yii` fait référence au dossier d'installation de Yii, 
+une classe comme `yii\web\Request` peut être chargée automatiquement. Si vous utilisez une librairie tierce, 
+telle que Zend Framework, vous pouvez définir un alias de chemin `@Zend` qui fera référence au dossier
+d'installation de Zend Framework. Une fois que vous avez fait cela, Yii sera aussi en mesure de charger automatiquement une classe de ce framework.
+
+Pour en savoir plus, consultez la partie [Alias](concept-aliases.md).
+
+
+Vues
+----
+
+Le changement le plus significatif à propos des vues dans Yii 2 est que la variable spéciale `$this` dans une vue ne fait plus référence au
+le contrôleur ou widget. Au lieu de cela, `$this` correspond maintenant à un objet *vue*, un nouveau concept 
+introduit dans la version 2.0. L'objet *vue* est de type [[yii\web\View]], qui représente la partie vue 
+du modèle MVC. Si vous souhaitez accéder au contrôleur ou un widget dans une vue, vous pouvez utiliser `$this->context`.
+
+Pour afficher une vue depuis une autre vue, utilisez `$this->render()`, et non `$this->renderPartial()`. Le résultat retourné par la méthode `render()` doit être explictement envoyé à la sortie, en effet `render()` retournera la vue au lieu de l'afficher. Par exemple :
 
 ```php
 echo $this->render('_item', ['item' => $item]);
 ```
 
-Besides using PHP as the primary template language, Yii 2.0 is also equipped with official
-support for two popular template engines: Smarty and Twig. The Prado template engine is no longer supported.
-To use these template engines, you need to configure the `view` application component by setting the
-[[yii\base\View::$renderers|View::$renderers]] property. Please refer to the [Template Engines](tutorial-template-engines.md)
-section for more details.
+Outre l'utilisation de PHP comme langage principal de gabarit, Yii 2.0 supporte également
+deux moteurs de gabarit populaires : Smarty et Twig. Le moteur de gabarit Prado n'est plus supporté. 
+Pour utiliser ces moteurs de gabarit, vous devez configurer le composant `view` de l'application en définissant la propriété
+[[yii\base\View::$renderers|View::$renderers]]. Merci de lire la partie [Moteur de gabarit](tutorial-template-engines.md) pour en savoir plus.
 
 
-Models
-------
+Modèles
+-------
 
 Yii 2.0 uses [[yii\base\Model]] as the base model, similar to `CModel` in 1.1.
 The class `CFormModel` has been dropped entirely. Instead, in Yii 2 you should extend [[yii\base\Model]] to create a form model class.
