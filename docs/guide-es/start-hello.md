@@ -95,7 +95,7 @@ De hecho, el view `dice` es sólo un script PHP que es ejecutado por el método 
 El contenido impreso por el script view será regresado a la aplicación como la respuesta del resultado. La aplicación a cambio mostrará el resultado al usuario final.
 
 
-Probándo <a name="trying-it-out"></a>
+Probando <a name="trying-it-out"></a>
 --------
 
 Después de crear la acción y la vista, puedes abrir la nueva página abriendo el siguiente URL:
