@@ -13,6 +13,7 @@ use yii\base\BootstrapInterface;
 use yii\helpers\Url;
 use yii\web\View;
 use yii\web\ForbiddenHttpException;
+use Highlight\Highlighter;
 
 /**
  * The Yii Debug Module provides the debug toolbar and debugger
@@ -60,7 +61,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * You may want to enable the debug logs if you want to investigate how the debug module itself works.
      */
     public $enableDebugLogs = false;
-
+    /**
+     * @var \Highlight\Highlighter highlighter instance
+     */
+    private $_highlighter;
 
     /**
      * Returns Yii logo ready to use in `<img src="`
@@ -213,4 +217,18 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'mail' => ['class' => 'yii\debug\panels\MailPanel'],
         ];
     }
+
+    /**
+     * Returns current module highlighter instance
+     * @return \Highlight\Highlighter
+     */
+    public function getHighlighter()
+    {
+        if ($this->_highlighter == null) {
+            $this->_highlighter = new Highlighter();
+        }
+
+        return $this->_highlighter;
+    }
+
 }

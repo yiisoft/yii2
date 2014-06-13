@@ -13,6 +13,8 @@ use yii\grid\GridView;
 
 <?php
 
+$highlighter = $this->context->module->highlighter;
+
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'id' => 'db-panel-detailed-grid',
@@ -49,24 +51,34 @@ echo GridView::widget([
         [
             'attribute' => 'type',
             'value' => function ($data) {
-                return Html::encode(mb_strtoupper($data['type'], 'utf8'));
+
+                $content = Html::tag('span', Html::encode(mb_strtoupper($data['type'], 'utf8')), [
+                    'class' => 'hljs-variable'
+                ]);
+
+                return Html::tag('pre', $content, [
+                    'class' => 'hljs php'
+                ]);
             },
+            'format' => 'html',
         ],
         [
             'attribute' => 'query',
-            'value' => function ($data) {
-                $query = Html::encode($data['query']);
+            'value' => function ($data) use ($highlighter) {
+                $highlighted = $highlighter->highlight('sql', $data['query']);
+                $text = Html::tag('pre', $highlighted->value, [
+                    'class' => 'hljs sql'
+                ]);
 
                 if (!empty($data['trace'])) {
-                    $query .= Html::ul($data['trace'], [
+                    $text .= Html::ul($data['trace'], [
                         'class' => 'trace',
                         'item' => function ($trace) {
-                            return "<li>{$trace['file']} ({$trace['line']})</li>";
+                            return "<li>" . Html::encode($trace['file']) . " " . Html::encode($trace['line']) . "</li>";
                         },
                     ]);
                 }
-
-                return $query;
+                return $text;
             },
             'format' => 'html',
             'options' => [

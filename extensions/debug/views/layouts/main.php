@@ -6,6 +6,7 @@
 use yii\helpers\Html;
 
 yii\debug\DebugAsset::register($this);
+yii\debug\HighlightAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
