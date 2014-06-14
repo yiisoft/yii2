@@ -206,13 +206,13 @@ class FileValidator extends Validator
 
         switch ($file->error) {
             case UPLOAD_ERR_OK:
-                if ($this->maxSize !== null && !$this->validateMaxSize($file)) {
+                if ($this->maxSize !== null && $file->size > $this->maxSize) {
                     return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
-                } elseif ($this->minSize !== null && !$this->validateMinSize($file)) {
+                } elseif ($this->minSize !== null && $file->size < $this->minSize) {
                     return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
                 } elseif (!empty($this->types) && !$this->validateType($file)) {
                     return [$this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]];
-                } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($file)) {
+                } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, true)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
@@ -316,36 +316,6 @@ class FileValidator extends Validator
         }
 
         return true;
-    }
-
-    /**
-     * Checks if given uploaded file have correct mime-type.
-     * @param \yii\web\UploadedFile $file
-     * @return boolean
-     */
-    public function validateMimeType($file)
-    {
-        return in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, true);
-    }
-
-    /**
-     * Checks if given uploaded file have correct size according current max size.
-     * @param \yii\web\UploadedFile $file
-     * @return boolean
-     */
-    public function validateMaxSize($file)
-    {
-        return $this->maxSize > $file->size;
-    }
-
-    /**
-     * Checks if given uploaded file have correct size according current min size.
-     * @param \yii\web\UploadedFile $file
-     * @return boolean
-     */
-    public function validateMinSize($file)
-    {
-        return $this->minSize < $file->size;
     }
 
 }
