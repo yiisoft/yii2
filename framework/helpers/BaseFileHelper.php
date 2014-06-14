@@ -162,6 +162,26 @@ class BaseFileHelper
     }
 
     /**
+     * Determines the extensions by given mime-type.
+     * This method will use a local map between extension names and MIME types.
+     * @param string $mimeType file mime-type.
+     * @param string $magicFile the path of the file that contains all available MIME type information.
+     * If this is not set, the default file aliased by `@yii/util/mimeTypes.php` will be used.
+     * @return array.
+     */
+    public static function getExtensionsByMimeType($mimeType, $magicFile = null)
+    {
+        static $mimeTypes = [];
+
+        if (!count($mimeTypes)) {
+            $magicFile = __DIR__ . '/mimeTypes.php';
+            $mimeTypes = require($magicFile);
+        }
+
+        return array_keys($mimeTypes, mb_strtolower($mimeType, 'utf-8'));
+    }
+
+    /**
      * Copies a whole directory as another one.
      * The files and sub-directories will also be copied over.
      * @param string $src the source directory
