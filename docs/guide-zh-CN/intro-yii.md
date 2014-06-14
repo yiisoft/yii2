@@ -1,58 +1,49 @@
 Yii 是什么
 ===========
 
-Yii 是一个高性能的、基于组件的 PHP 框架，用于快速开发现代 Web 应用程序。
-名字 Yii (读作 `Yee` 或 `[ji:]`) 在汉语中的意思是“简单、发展变化”。
-也可以看作是  **Yes It Is**! 的缩写。
+Yii 是一个高性能的、基于组件的 PHP 框架，用于快速开发现代 Web 应用程序。名字 Yii （读作 `Yee` 或 `[ji:]`） 在汉语中的意
+思是“简单、发展变化”。也可以看作是  **Yes It Is**! 的缩写。
 
 
-What is Yii Best for?
+Yii 最适合做什么？
 ---------------------
 
-Yii is a generic Web programming framework, meaning that it can be used for developing all kinds
-of Web applications based on PHP. Because of its component-based architecture and sophisticated caching
-support, it is especially suitable for developing large-scale applications such as portals, forums, content
-management systems (CMS), e-commerce projects, RESTful Web services, and so on.
+Yii 是一个通用的 Web 编程框架，意味着它可以用于开发任意类型的 PHP Web 应用程序。由于它基于组件的架构和精致的缓存支持，它
+特别适用于开发大型的应用程序，例门户，论坛，内容管理系统（CMS），电子商务项目，RESTful Web 服务等等。
 
 
-How does Yii Compare with Other Frameworks?
+Yii 和其他框架作个比较呢？
 -------------------------------------------
 
-- Like most PHP frameworks, Yii implements the MVC (Model-View-Controller) design pattern and promotes code
-  organization based on this pattern.
-- Yii takes the philosophy that code should be written in a simple yet elegant way. It will never try to
-  over-design things mainly for the purpose of following some design pattern.
-- Yii is a full-stack framework providing many proven and ready-to-use features, such as: query builders
-  and ActiveRecord, for both relational and NoSQL databases; RESTful API development support; multi-tier
-  caching support; and more.
-- Yii is extremely extensible. You can customize or replace nearly every piece of core code. You can also
-  take advantage of its solid extension architecture, to use or develop redistributable extensions.
-- High performance is always a primary goal of Yii.
+- 和其他 PHP 框架类似，Yii 实现了 MVC（Model-View-Controller）设计模式并基于该模式组织代码。
+- Yii 遵循一个哲学——代码要写的简单而又优雅。它永远不会为了要遵循某个设计模式而过度设计代码。
+- Yii 是一个一站式框架，提供了大量经过验证的、入手可用的特性，例如：对关系型和NoSQL数据库都提供了查询构建器
+（query builders）和 ActiveRecord；RESTful API 开发支持；多层缓存支持；还有更多。
+- Yii 非常易于扩展。你可以自定义或替换几乎任何一处核心代码。你也会受益于它一致性的扩展架构，开发可再分发的扩展。
+- 高性能始终是 Yii 的一个主要目标。
 
-Yii is not a one-man show, it is backed up by a [strong core developer team][] as well as a large community
-with many professionals constantly contributing to the development of Yii. The Yii developer team
-keeps a close eye on the latest trends of Web development, and on the best practices and features
-found in other frameworks and projects. The most relevant best practices and features found elsewhere are regularly incorporated into the core framework and exposed
-via simple and elegant interfaces.
+Yii 不是一场独角戏，它有一个[强大的开发者团队][]提供支持，也有一个庞大的专家社区，持续不断地对Yii的开发作出贡献。
+Yii 开发者团队始终对 Web 开发最新潮流和其他框架及项目中的优秀实践和特性保持密切的关注，其他地方出现的最相关优秀实践及
+特性会被不定期的整合进核心框架中，并提供简单优雅的接口。
 
-[strong core developer team]: http://www.yiiframework.com/about/
+[强大的开发者团队]: http://www.yiiframework.com/about/
 
-Yii Versions
+Yii 版本
 ------------
 
-Yii currently has two major versions available: 1.1 and 2.0. Version 1.1 is the old generation and is now in maintenance mode. Version 2.0 is a complete rewrite of Yii, adopting the latest
-technologies and protocols, including Composer, PSR, namespaces, traits, and so forth. Version 2.0 represents the latest
-generation of the framework and will receive our main development efforts in the next few years.
-This guide is mainly about version 2.0.
+Yii 当前有两个主要版本：1.1 和 2.0。 1.1 版是一个旧版本，现处于维护状态。2.0是一个彻底重写的 Yii，采用了最新的技术和协
+议，包括 Composer，PSR，命名空间，trait 等等。 2.0 版本代表了最新一代的框架，是未来几年中的主力开发版本。本指南主要基于
+2.0 版本编写。
 
 
-Requirements and Prerequisites
+系统要求和前置条件
 ------------------------------
 
-Yii 2.0 requires PHP 5.4.0 or above. You can find more detailed requirements for individual features
-by running the requirement checker included in every Yii release.
+Yii 2.0 需要 PHP 5.4.0 或以上版本支持。你可以通过运行任何 Yii 发行包中附带的系统要求检查器查看每个具体特性所需的 PHP 配
+置。
 
-Using Yii requires basic knowledge about object-oriented programming (OOP), as Yii is a pure OOP-based framework.
-Yii 2.0 also makes use of the latest features of PHP, such as [namespaces](http://www.php.net/manual/en/language.namespaces.php) and [traits](http://www.php.net/manual/en/language.oop5.traits.php). Understanding these concepts will help
-you more easily pick up Yii 2.0.
+使用 Yii 需要对面向对象编程（OOP）有基本的了解，因为 Yii 是一个纯面向对象的框架。
+Yii 2.0 还是用了 PHP 的最新特性，例如 [命名空间](http://www.php.net/manual/en/language.namespaces.php) 和
+[trait](http://www.php.net/manual/en/language.oop5.traits.php)。
+理解这些概念有助于你更快地掌握 Yii 2.0。
 
