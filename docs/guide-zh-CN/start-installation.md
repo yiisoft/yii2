@@ -43,79 +43,73 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 2. 将下载的文件解压缩到 Web 目录中。
 
 
-Other Installation Options <a name="other-installation-options"></a>
+其他安装方式 <a name="other-installation-options"></a>
 --------------------------
 
-The above installation instructions show how to install Yii, which also creates a basic Web application that works out of the box.
-This approach is a good starting point for small projects, or for when you just start learning Yii.
+上文介绍了两种安装 Yii 的方法，安装的同时也会创建一个立即可用的 Web 应用程序。对于小的项目或学习，这是一个很好的起点。
 
-But there are other installation options available:
+但是还可以有其他的安装方式：
 
-* If you only want to install the core framework and would like to build an entire  application from scratch,
-  you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
-* If you want to start with a more sophisticated application, better suited to team development environments,
-  you may consider installing the [Advanced Application Template](tutorial-advanced-app.md).
+* 如果你只想安装核心框架，然后从头开始构建一个应用程序，可以参考
+ [从头开始构建应用程序](tutorial-start-from-scratch.md) 一节的介绍。
+* 如果你要开始一个更复杂的项目，更好的地适用于团队开发环境的，你可以考虑安装
+ [高级应用程序模板](tutorial-advanced-app.md).
 
 
-Verifying the Installation <a name="verifying-installation"></a>
+验证安装 <a name="verifying-installation"></a>
 --------------------------
 
-After installation, you can use your browser to access the installed Yii application with the following URL:
+安装完成后，就可以使用浏览器通过如下 URL 访问刚安装完的 Yii 应用程序了：
 
 ```
 http://localhost/basic/web/index.php
 ```
 
-This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
+这个 URL 假设你将 Yii 安装到了一个位于 Web 服务器文档根目录下的 `basic` 目录中，且该 Web 服务器正运行在你自己的电脑上
+（`localhost`）。你可能需要将其调整为自己的安装环境。
 
-![Successful Installation of Yii](images/start-app-installed.png)
+![Yii 安装成功](images/start-app-installed.png)
 
-You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
-Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
+你应该可以在浏览器中看到如上所示的 "Congratulations!" 页面。如果没有，请检查你安装的 PHP 环境是否符合 Yii 的需求，
+可以通过如下任意一种方式检查是否满足最小需求：
 
-* Use a browser to access the URL `http://localhost/basic/requirements.php`
-* Run the following commands:
+* 通过浏览器访问 URL `http://localhost/basic/requirements.php`
+* 执行如下命令：
 
   ```
   cd basic
   php requirements.php
   ```
 
-You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you should have PHP 5.4 or above. You should also install
-the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a corresponding database driver
-(such as `pdo_mysql` for MySQL databases), if your application needs a database.
+你需要配置好 PHP 安装环境，使其符合 Yii 的最小需求。最重要的是需要有 PHP 5.4 以上版本。如果你的应用程序需要用到数据库，
+那还要安装 [PDO PHP 扩展](http://www.php.net/manual/en/pdo.installation.php) 和相应的数据库驱动
+（例如访问 MySQL 数据库所需的 `pdo_mysql` ）。
 
 
-Configuring Web Servers <a name="configuring-web-servers"></a>
+配置 Web 服务器 <a name="configuring-web-servers"></a>
 -----------------------
 
-> Info: You may skip this subsection for now if you are just test driving Yii with no intention
-  of deploying it to a production server.
+> Info: 如果你现在只是要试用 Yii 而不是要将其部署到生产环境中的服务器上，下面的这一节可以跳过。
 
-The application installed according to the above instructions should work out of box with either
-an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
- Windows, Mac OS X, or Linux.
+通过上述方法安装的应用程序在 Windows，Max OS X 或 Linux 中的  [Apache HTTP server](http://httpd.apache.org/)
+或者 [Nginx HTTP server](http://nginx.org/) 上都可以直接运行。
 
-On a production server, you may want to configure your Web server so that the application can be accessed
-via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
-requires pointing the document root of your Web server to the `basic/web` folder. You may also
-want to hide `index.php` from the URL, as described in the [URL Parsing and Generation](runtime-url-handling.md) section.
-In this subsection, you'll learn how to configure your Apache or Nginx server to achieve these goals.
+在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过 URL `http://www.example.com/index.php` 访问而不是通过
+`http://www.example.com/basic/web/index.php` 。这种配置需要将 Web 服务器的文档根目录指向 `basic/web` 目录。
+可能你还会想隐藏掉 URL 中的 `index.php` ， [URL Parsing and Generation](runtime-url-handling.md) 一章中有介绍。.
+在这一节中，你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 
-> Info: By setting `basic/web` as the document root, you also prevent end users from accessing
-your private application code and sensitive data files that are stored in the sibling directories
-of `basic/web`. Denying access to those other folders is a producent security improvement.
+> Info: 将 `basic/web` 设置为文档根目录，可以防止终端用户访问 `basic/web` 相邻目录中的私有应用程序代码和敏感数据文件。
+禁止对其他目录的访问是一个切实可行的安全改进。
 
-> Info: If your application will run in a shared hosting environment where you do not have permission
-to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
-the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
+> Info: 如果你的应用程序将来要运行在共享的主机环境中，没有权限修改它的 Web 服务器配置，你依然可以调整应用程序的结构
+提升安全性。详情请参考 [共享的主机环境](tutorial-shared-hosting.md) 一章。
 
 
-### Recommended Apache Configuration <a name="recommended-apache-configuration"></a>
+### 推荐使用的 Apache 配置 <a name="recommended-apache-configuration"></a>
 
-Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
-should replace `path/to/basic/web` with the actual path for `basic/web`.
+在 Apache 的 `httpd.conf` 文件或在一个虚拟主机配置文件中使用如下配置。
+注意，你应该将 `path/to/basic/web` 替换为实际的 `basic/web` 目录。
 
 ```
 # Set document root to be "basic/web"
@@ -135,11 +129,10 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Recommended Nginx Configuration <a name="recommended-nginx-configuration"></a>
+### 推荐使用的 Nginx 配置 <a name="recommended-nginx-configuration"></a>
 
-You should have installed PHP as an [FPM SAPI](http://php.net/install.fpm) to use [Nginx](http://wiki.nginx.org/).
-Use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for `basic/web` and `mysite.local` with
-the actual hostname to serve.
+为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为  [FPM SAPI](http://php.net/install.fpm) 了。
+使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录， `mysite.local` 替换为实际的主机名以提供服务。
 
 ```
 server {
@@ -179,8 +172,6 @@ server {
 }
 ```
 
-When using this configuration, you should also set `cgi.fix_pathinfo=0` in the `php.ini` file
-in order to avoid many unnecessary system `stat()` calls.
+使用该配置时，你还应该在 `php.ini` 文件中设置 `cgi.fix_pathinfo=0` 以避免很多不必要的 `stat()` 系统调用。
 
-Also note that when running an HTTPS server, you need to add `fastcgi_param HTTPS on;` so that Yii
-can properly detect if a connection is secure.
+还要注意当运行一个 HTTPS 服务器时，需要添加 `fastcgi_param HTTPS on;` 一行，这样 Yii 才能正确地判断连接是否安全。

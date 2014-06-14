@@ -170,14 +170,14 @@ RESTful Web 服务
 专题
 --------------
 
-* [高级应用模板](tutorial-advanced-app.md)
+* [高级应用程序模板](tutorial-advanced-app.md)
 * [从头开始构建应用程序](tutorial-start-from-scratch.md)
 * [控制台命令](tutorial-console.md)
 * [核心验证器](tutorial-core-validators.md)
 * [国际化](tutorial-i18n.md)
 * [发送邮件](tutorial-mailing.md)
 * [性能调节](tutorial-performance-tuning.md)
-* **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
+* **TBD** [共享的主机环境](tutorial-shared-hosting.md)
 * [模板引擎](tutorial-template-engines.md)
 
 
