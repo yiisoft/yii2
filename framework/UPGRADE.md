@@ -53,3 +53,6 @@ Upgrade from Yii 2.0 Beta
 
 * Please update your main layout file by adding this line in the `<head>` section: `<?= Html::csrfMetaTags() ?>`.
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.
+
+* `FileValidator::types` attribute was changed to `FileValidator::extensions` for consistency. If you use this attribute in your code you
+  should consider this replacement.
