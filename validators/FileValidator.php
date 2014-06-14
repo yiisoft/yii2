@@ -31,9 +31,8 @@ class FileValidator extends Validator
      */
     public $extensions;
     /**
-     *
      * @var boolean whether to check file type (extension) with mime-type. If extension produced by
-     * file mime-type check differs from uploaded file extension, file will be counted as not valid.
+     * file mime-type check differs from uploaded file extension, the file will be considered as invalid.
      */
     public $checkExtensionByMimeType = true;
     /**
@@ -93,6 +92,14 @@ class FileValidator extends Validator
      */
     public $tooSmall;
     /**
+     * @var string the error message used if the count of multiple uploads exceeds limit.
+     * You may use the following tokens in the message:
+     *
+     * - {attribute}: the attribute name
+     * - {limit}: the value of [[maxFiles]]
+     */
+    public $tooMany;
+    /**
      * @var string the error message used when the uploaded file has an extension name
      * that is not listed in [[extensions]]. You may use the following tokens in the message:
      *
@@ -101,14 +108,6 @@ class FileValidator extends Validator
      * - {extensions}: the list of the allowed extensions.
      */
     public $wrongExtension;
-    /**
-     * @var string the error message used if the count of multiple uploads exceeds limit.
-     * You may use the following tokens in the message:
-     *
-     * - {attribute}: the attribute name
-     * - {limit}: the value of [[maxFiles]]
-     */
-    public $tooMany;
     /**
      * @var string the error message used when the file has an mime type
      * that is not listed in [[mimeTypes]].
@@ -296,23 +295,28 @@ class FileValidator extends Validator
 
     /**
      * Checks if given uploaded file have correct type (extension) according current validator settings.
-     * @param \yii\web\UploadedFile $file
+     * @param UploadedFile $file
      * @return boolean
      */
-    public function validateExtension($file)
+    protected function validateExtension($file)
     {
-        $fileExtension = mb_strtolower($file->extension, 'utf-8');
+        $extension = mb_strtolower($file->extension, 'utf-8');
 
         if ($this->checkExtensionByMimeType) {
 
-            $extensionsByMimeType = FileHelper::getExtensionsByMimeType(FileHelper::getMimeType($file->tempName));
+            $mimeType = FileHelper::getMimeType($file->tempName);
+            if ($mimeType === null) {
+                return false;
+            }
 
-            if (!in_array($fileExtension, $extensionsByMimeType, true)) {
+            $extensionsByMimeType = FileHelper::getExtensionsByMimeType($mimeType);
+
+            if (!in_array($extension, $extensionsByMimeType, true)) {
                 return false;
             }
         }
 
-        if (!in_array($fileExtension, $this->extensions, true)) {
+        if (!in_array($extension, $this->extensions, true)) {
             return false;
         }
 
