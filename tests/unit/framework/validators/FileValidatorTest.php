@@ -102,7 +102,9 @@ class FileValidatorTest extends TestCase
 
     public function testValidateAttributeMultiple()
     {
-        $val = new FileValidator(['maxFiles' => 2]);
+        $val = new FileValidator([
+            'maxFiles' => 2,
+        ]);
         $m = FakedValidationModel::createWithAttributes(['attr_files' => 'path']);
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors('attr_files'));
@@ -221,7 +223,7 @@ class FileValidatorTest extends TestCase
                 continue;
             }
             $name = isset($param['name']) ? $param['name'] : $rndString();
-            $tempName = \Yii::getAlias('@yiiunit/runtime/validators/file/tmp') . $name;
+            $tempName = \Yii::getAlias('@yiiunit/runtime/validators/file/tmp/') . $name;
             if (is_readable($tempName)) {
                 $size = filesize($tempName);
             } else {
@@ -303,7 +305,10 @@ class FileValidatorTest extends TestCase
 
     public function testValidateAttributeType()
     {
-        $val = new FileValidator(['types' => 'jpeg, jpg']);
+        $val = new FileValidator([
+            'types' => 'jpeg, jpg',
+            'checkTypeAgainstMime' => false,
+        ]);
         $m = FakedValidationModel::createWithAttributes(
             [
                 'attr_jpg' => $this->createTestFiles([['name' => 'one.jpeg']]),
