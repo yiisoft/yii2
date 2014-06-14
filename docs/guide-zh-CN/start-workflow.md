@@ -1,15 +1,12 @@
 运行应用程序
 ====================
 
-After installing Yii, you have a working Yii application that can be accessed via
-the URL `http://hostname/basic/web/index.php` or `http://hostname/index.php`, depending
-upon your configuration. This section will introduce the application's built-in functionality,
-how the code is organized, and how the application handles requests in general.
+Yii 安装后，就有了一个可以运行的 Yii 应用程序了，你可以通过 URL `http://hostname/basic/web/index.php` 或
+ `http://hostname/index.php` 访问它，具体取决于你的配置。本章将介绍此应用程序的内置功能，代码的组织方式以及总体上程序是
+ 怎样处理请求的。
 
-> Info: For simplicity, throughout this "Getting Started" tutorial, it's assumed that you have set `basic/web`
-  as the document root of your Web server, and configured, the URL for accessing
-  your application to be `http://hostname/index.php` or something similar.
-  For your needs, please adjust the URLs in our descriptions accordingly.
+> Info: 为简单起见，这个“入门”教程假设你已经将 `basic/web` 设置为了 Web 服务器的文档根目录。访问此程序的是类似
+ `http://hostname/index.php` 的 URL 。请根据你的实际情况，在下文描述中作相应调整。
 
 
 Functionality <a name="functionality"></a>
