@@ -21,30 +21,30 @@ class FileValidatorTest extends TestCase
     public function testAssureMessagesSetOnInit()
     {
         $val = new FileValidator();
-        foreach (['message', 'uploadRequired', 'tooMany', 'wrongType', 'tooBig', 'tooSmall', 'wrongMimeType'] as $attr) {
+        foreach (['message', 'uploadRequired', 'tooMany', 'wrongExtension', 'tooBig', 'tooSmall', 'wrongMimeType'] as $attr) {
             $this->assertTrue(is_string($val->$attr));
         }
     }
 
     public function testTypeSplitOnInit()
     {
-        $val = new FileValidator(['types' => 'jpeg, jpg, gif']);
-        $this->assertEquals(['jpeg', 'jpg', 'gif'], $val->types);
+        $val = new FileValidator(['extensions' => 'jpeg, jpg, gif']);
+        $this->assertEquals(['jpeg', 'jpg', 'gif'], $val->extensions);
 
-        $val = new FileValidator(['types' => 'jpeg']);
-        $this->assertEquals(['jpeg'], $val->types);
+        $val = new FileValidator(['extensions' => 'jpeg']);
+        $this->assertEquals(['jpeg'], $val->extensions);
 
-        $val = new FileValidator(['types' => '']);
-        $this->assertEquals([], $val->types);
+        $val = new FileValidator(['extensions' => '']);
+        $this->assertEquals([], $val->extensions);
 
-        $val = new FileValidator(['types' => []]);
-        $this->assertEquals([], $val->types);
+        $val = new FileValidator(['extensions' => []]);
+        $this->assertEquals([], $val->extensions);
 
         $val = new FileValidator();
-        $this->assertEquals([], $val->types);
+        $this->assertEquals([], $val->extensions);
 
-        $val = new FileValidator(['types' => ['jpeg', 'exe']]);
-        $this->assertEquals(['jpeg', 'exe'], $val->types);
+        $val = new FileValidator(['extensions' => ['jpeg', 'exe']]);
+        $this->assertEquals(['jpeg', 'exe'], $val->extensions);
     }
 
     public function testMimeTypeSplitOnInit()
@@ -306,8 +306,8 @@ class FileValidatorTest extends TestCase
     public function testValidateAttributeType()
     {
         $val = new FileValidator([
-            'types' => 'jpeg, jpg',
-            'checkTypeAgainstMime' => false,
+            'extensions' => 'jpeg, jpg',
+            'checkExtensionByMimeType' => false,
         ]);
         $m = FakedValidationModel::createWithAttributes(
             [
