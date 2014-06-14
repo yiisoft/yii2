@@ -48,11 +48,10 @@ Upgrade from Yii 2.0 Beta
 * The database table of the `yii\log\DbTarget` now needs a `prefix` column to store context information.
   You can add it with `ALTER TABLE log ADD COLUMN prefix TEXT AFTER log_time;`.
 
-* The  `fileinfo`  PHP extension is now required by Yii. If you use  `yii\helpers\FileHelper::getMimeType()`, make sure 
+* The `fileinfo` PHP extension is now required by Yii. If you use  `yii\helpers\FileHelper::getMimeType()`, make sure
   you have enabled this extension. This extension is [builtin](http://www.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
 
 * Please update your main layout file by adding this line in the `<head>` section: `<?= Html::csrfMetaTags() ?>`.
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.
 
-* `FileValidator::types` attribute was changed to `FileValidator::extensions` for consistency. If you use this attribute in your code you
-  should consider this replacement.
+* If your model code is using the `file` validation rule, you should rename its `types` option to `extensions`.

@@ -110,7 +110,7 @@ Yii Framework 2 Change Log
 - Chg #3640: All cookies are now httpOnly by default in order to increase overall security (samdark)
 - Chg #3687: Default `sourceLanguage` and `language` are now `en-US` in order for i18n formatter to work correctly (samdark)
 - Chg #3804: Added `fileinfo` PHP extension to the basic requirement of Yii (Ragazzo)
-- Chg #3866: `FileValidator::types` attribute changed to `FileValidator::extensions` (Ragazzo)
+- Chg #3866: The `FileValidator::types` property is renamed to `FileValidator::extensions` (Ragazzo)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
