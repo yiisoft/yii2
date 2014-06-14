@@ -10,7 +10,7 @@ namespace yii\bootstrap;
 use yii\web\AssetBundle;
 
 /**
- * Bootstrap 2 theme for Bootstrap 3.
+ * Asset bundle for the Twitter bootstrap default theme.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0

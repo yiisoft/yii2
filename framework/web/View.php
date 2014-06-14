@@ -460,12 +460,6 @@ class View extends \yii\base\View
             $lines[] = implode("\n", $this->metaTags);
         }
 
-        $request = Yii::$app->getRequest();
-        if ($request instanceof \yii\web\Request && $request->enableCsrfValidation && !$request->getIsAjax()) {
-            $lines[] = Html::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]);
-            $lines[] = Html::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
-        }
-
         if (!empty($this->linkTags)) {
             $lines[] = implode("\n", $this->linkTags);
         }
