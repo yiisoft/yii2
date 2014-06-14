@@ -31,6 +31,12 @@ class FileValidator extends Validator
      */
     public $types;
     /**
+     *
+     * @var boolean whether to check file type (extension) with mime-type. If extension produced by
+     * file mime-type check differs from uploaded file extension, file will be counted as not valid.
+     */
+    public $checkTypeAgainstMime = true;
+    /**
      * @var array|string a list of file MIME types that are allowed to be uploaded.
      * This can be either an array or a string consisting of file MIME types
      * separated by space or comma (e.g. "text/plain, image/png").
@@ -197,15 +203,16 @@ class FileValidator extends Validator
         if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
             return [$this->uploadRequired, []];
         }
+
         switch ($file->error) {
             case UPLOAD_ERR_OK:
-                if ($this->maxSize !== null && $file->size > $this->maxSize) {
+                if ($this->maxSize !== null && !$this->validateMaxSize($file)) {
                     return [$this->tooBig, ['file' => $file->name, 'limit' => $this->getSizeLimit()]];
-                } elseif ($this->minSize !== null && $file->size < $this->minSize) {
+                } elseif ($this->minSize !== null && !$this->validateMinSize($file)) {
                     return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
-                } elseif (!empty($this->types) && !in_array(strtolower(pathinfo($file->name, PATHINFO_EXTENSION)), $this->types, true)) {
+                } elseif (!empty($this->types) && !$this->validateType($file)) {
                     return [$this->wrongType, ['file' => $file->name, 'extensions' => implode(', ', $this->types)]];
-                } elseif (!empty($this->mimeTypes) && !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, true)) {
+                } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($file)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
@@ -287,4 +294,58 @@ class FileValidator extends Validator
                 return (int) $sizeStr;
         }
     }
+
+    /**
+     * Checks if given uploaded file have correct type (extension) according current validator settings.
+     * @param \yii\web\UploadedFile $file
+     * @return boolean
+     */
+    public function validateType($file)
+    {
+        if ($this->checkTypeAgainstMime) {
+
+            $extensionsByMimeType = FileHelper::getExtensionsByMimeType(FileHelper::getMimeType($file->tempName));
+
+            if (!in_array($file->extension, $extensionsByMimeType, true)) {
+                return false;
+            }
+        }
+
+        if (!in_array($file->extension, $this->types, true)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if given uploaded file have correct mime-type.
+     * @param \yii\web\UploadedFile $file
+     * @return boolean
+     */
+    public function validateMimeType($file)
+    {
+        return in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, true);
+    }
+
+    /**
+     * Checks if given uploaded file have correct size according current max size.
+     * @param \yii\web\UploadedFile $file
+     * @return boolean
+     */
+    public function validateMaxSize($file)
+    {
+        return $this->maxSize > $file->size;
+    }
+
+    /**
+     * Checks if given uploaded file have correct size according current min size.
+     * @param \yii\web\UploadedFile $file
+     * @return boolean
+     */
+    public function validateMinSize($file)
+    {
+        return $this->minSize < $file->size;
+    }
+
 }
