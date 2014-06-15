@@ -14,6 +14,8 @@ use yii\log\Logger;
 <h1>Log Messages</h1>
 <?php
 
+$highlighter = $this->context->module->highlighter;
+
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'id' => 'log-panel-detailed-grid',
@@ -54,20 +56,42 @@ echo GridView::widget([
                 Logger::LEVEL_ERROR => ' Error ',
             ],
         ],
-        'category',
+        [
+            'attribute' => 'category',
+            'value' => function ($data) {
+
+                $content = Html::tag('span', Html::encode($data['category']), [
+                    'class' => 'hljs-variable'
+                ]);
+
+                return Html::tag('pre', $content, [
+                    'class' => 'hljs php'
+                ]);
+            },
+            'format' => 'html',
+        ],
         [
             'attribute' => 'message',
-            'value' => function ($data) {
-                $message = Html::encode(is_string($data['message']) ? $data['message'] : VarDumper::export($data['message']));
+            'value' => function ($data) use ($highlighter) {
+                $message = is_string($data['message']) ? $data['message'] : VarDumper::export($data['message']);
+
+                $highlighter->setAutodetectLanguages(['php', 'sql']);
+                $highlighted = $highlighter->highlightAuto($message);
+
+                $text = Html::tag('pre', $highlighted->value, [
+                    'class' => 'hljs ' . $highlighted->language,
+                ]);
+
                 if (!empty($data['trace'])) {
-                    $message .= Html::ul($data['trace'], [
+                    $text .= Html::ul($data['trace'], [
                         'class' => 'trace',
                         'item' => function ($trace) {
-                            return "<li>{$trace['file']} ({$trace['line']})</li>";
+                            return "<li>" . Html::encode($trace['file']) . " " . Html::encode($trace['line']) ."</li>";
                         }
                     ]);
                 };
-                return $message;
+
+                return $text;
             },
             'format' => 'html',
             'options' => [

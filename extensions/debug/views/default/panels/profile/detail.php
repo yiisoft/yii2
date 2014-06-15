@@ -14,6 +14,9 @@ use yii\helpers\Html;
 <h1>Performance Profiling</h1>
 <p>Total processing time: <b><?= $time ?></b>; Peak memory: <b><?= $memory ?></b>.</p>
 <?php
+
+$highlighter = $this->context->module->highlighter;
+
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'id' => 'profile-panel-detailed-grid',
@@ -47,11 +50,32 @@ echo GridView::widget([
                 'class' => 'sort-numerical'
             ]
         ],
-        'category',
+        [
+            'attribute' => 'category',
+            'value' => function ($data) {
+
+                $content = Html::tag('span', Html::encode($data['category']), [
+                    'class' => 'hljs-variable'
+                ]);
+
+                return Html::tag('pre', $content, [
+                    'class' => 'hljs php'
+                ]);
+            },
+            'format' => 'html',
+        ],
         [
             'attribute' => 'info',
-            'value' => function ($data) {
-                return str_repeat('<span class="indent">→</span>', $data['level']) . Html::encode($data['info']);
+            'value' => function ($data) use ($highlighter) {
+
+                $highlighter->setAutodetectLanguages(['php', 'sql']);
+                $highlighted = $highlighter->highlightAuto($data['info']);
+
+                $text = Html::tag('pre', $highlighted->value, [
+                    'class' => 'hljs ' . $highlighted->language,
+                ]);
+
+                return str_repeat('<span class="indent">→</span>', $data['level']) . $text;
             },
             'format' => 'html',
             'options' => [
