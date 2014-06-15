@@ -231,13 +231,13 @@ either a single column or multiple columns.
 [
     // checks if "primaryImage" is an uploaded image file in PNG, JPG or GIF format.
     // the file size must be less than 1MB
-    ['primaryImage', 'file', 'types' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
+    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
 ]
 ```
 
 This validator checks if the input is a valid uploaded file.
 
-- `types`: a list of file name extensions that are allowed to be uploaded. This can be either
+- `extensions`: a list of file name extensions that are allowed to be uploaded. This can be either
   an array or a string consisting of file extension names separated by space or comma (e.g. "gif, jpg").
   Extension names are case-insensitive. Defaults to null, meaning all file name
   extensions are allowed.
@@ -249,6 +249,9 @@ This validator checks if the input is a valid uploaded file.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
   the input must be a single uploaded file. If it is greater than 1, then the input must be an array
   consisting of at most `maxFiles` number of uploaded files.
+- `checkExtensionByMimeType`: whether to check file type (extension) with mime-type. If extension produced by
+  file mime-type check differs from uploaded file extension, the file will be considered as invalid. Defaults to true,
+  meaning perform check.
 
 `FileValidator` is used together with [[yii\web\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
 section for complete coverage about uploading files and performing validation about the uploaded files.
@@ -286,7 +289,7 @@ back to the attribute being validated.
 ```php
 [
     // checks if "primaryImage" is a valid image with proper size
-    ['primaryImage', 'image', 'types' => 'png, jpg',
+    ['primaryImage', 'image', 'extensions' => 'png, jpg',
         'minWidth' => 100, 'maxWidth' => 1000,
         'minHeight' => 100, 'maxHeight' => 1000,
     ],
