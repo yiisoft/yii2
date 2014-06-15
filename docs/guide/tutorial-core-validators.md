@@ -249,9 +249,9 @@ This validator checks if the input is a valid uploaded file.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
   the input must be a single uploaded file. If it is greater than 1, then the input must be an array
   consisting of at most `maxFiles` number of uploaded files.
-- `checkExtensionByMimeType`: whether to check file type (extension) with mime-type. If extension produced by
-  file mime-type check differs from uploaded file extension, the file will be considered as invalid. Defaults to true,
-  meaning perform check.
+- `checkExtensionByMimeType`: whether to check the file extension by the file's MIME type. If the extension produced by
+  MIME type check differs from the uploaded file extension, the file will be considered as invalid. Defaults to true,
+  meaning perform such check.
 
 `FileValidator` is used together with [[yii\web\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
 section for complete coverage about uploading files and performing validation about the uploaded files.
