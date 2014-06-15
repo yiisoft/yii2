@@ -5,22 +5,22 @@ En esta sección, describiremos como crear una nueva página para solicitar info
 La página mostrará un formulario con un campo de input para el nombre y un campo de input para el email.
 Después de recibir estos datos del usuario, la página le mostrará la información de vuelta al usuario para la confirmación.
 
-Para lograr este objetivo, además de crear un [action](structure-controllers.md) (acción) y
-dos [views](structure-views.md) (vistas), también crearás un [model](structure-models.md) (modelo).
+Para lograr este objetivo, además de crear una [acción](structure-controllers.md) y
+dos [vistas](structure-views.md), también crearás un [modelo](structure-models.md).
 
 A través de este tutorial, aprenderás
 
-* Cómo crear un [model](structure-models.md) para representar los datos ingresados por un usuario;
+* Cómo crear un [modelo](structure-models.md) para representar los datos ingresados por un usuario;
 * Cómo declarar reglas para validar los datos ingresado por los usuarios;
-* Cómo construir un formulario HTML en un [view](structure-views.md).
+* Cómo construir un formulario HTML en una [vista](structure-views.md).
 
 
 Creando un Modelo <a name="creating-model"></a>
 -----------------
 
 Para representar los datos ingresados por un usuario, crea una clase modelo `EntryForm` cómo se muestra abajo y
-guarda la clase en el archivo `models/EntryForm.php`. Por favor ver la sección [Class Autoloading](concept-autoloading.md)
-para más detalles acerca de la convención de como nombrar los archivos de clase.
+guarda la clase en el archivo `models/EntryForm.php`. Por favor ver la sección [Autocargando Clases](concept-autoloading.md)
+para más detalles acerca de la convención de nombres de los archivos de clase.
 
 ```php
 <?php
@@ -89,7 +89,7 @@ class SiteController extends Controller
 
             return $this->render('entry-confirm', ['model' => $model]);
         } else {
-            // La página es mostrada inicialmente o hay algún error de validación
+            // la página es mostrada inicialmente o hay algún error de validación
             return $this->render('entry', ['model' => $model]);
         }
     }
@@ -98,15 +98,15 @@ class SiteController extends Controller
 
 La acción primero crea un objeto `EntryForm`. Luego intenta poblar el modelo
 con los datos del `$_POST` que es proporcionado por Yii a través de [[yii\web\Request::post()]].
-Si el modelo es llenado satisfactoriamente (p.e., el usuario ha enviado (submit) el formulario HTML),
-llamará [[yii\base\Model::validate()|validate()]] para asegurarse que los datos ingresados
+Si el modelo es llenado satisfactoriamente (ej., el usuario ha enviado el formulario HTML),
+llamará a [[yii\base\Model::validate()|validate()]] para asegurarse que los datos ingresados
 son válidos.
 
-Si todo está bien, la acción mostrará (render) una vista llamada `entry-confirm` para confirmar
+Si todo está bien, la acción mostrará una vista llamada `entry-confirm` para confirmar
 con el usuario que acepta los datos que ha ingresado. De otra manera, la vista `entry` será
 mostrada, y mostrará el formulario HTML junto con los mensajes de error de validación (si es que hay alguno).
 
-> Info: La expresión `Yii::$app` representa la instancia de la [application](structure-applications.md) (aplicación)
+> Información: La expresión `Yii::$app` representa la instancia de la [aplicación](structure-applications.md)
   que es un singleton globalmente accesible. También es un [service locator](concept-service-locator.md) (localizador de servicio)
   que provee los componentes, tales como `request`, `response`, `db`, etc. para soportar funcionalidades específicas.
   En el código de arriba, el componente `request` es utilizado para acceder los datos `$_POST`.
@@ -160,10 +160,10 @@ y el segundo del dato "email". Después de los campos de input, el método [[yii
 es llamado para general el botón de submit (enviar).
 
 
-Probando <a name="trying-it-out"></a>
---------
+Intentándolo <a name="trying-it-out"></a>
+------------
 
-Para ver como funciona, utiliza tu navegador para ir al siguiente URL:
+Para ver cómo funciona, utiliza tu navegador para ir al siguiente URL:
 
 ```
 http://hostname/index.php?r=site/entry
@@ -171,15 +171,14 @@ http://hostname/index.php?r=site/entry
 
 Verás una página que muestra un formulario con dos campos de input. Adelante de cada campo de input, será mostrada también 
 una etiqueta indicando que dato necesitas ingresar. Si haces click en el botón de submit sin ingresar nada, 
-o si ingresas una dirección de correo inválida, verás un mensaje de error que
-se mostrará al lado del campo que tiene problemas.
+o si ingresas una dirección de correo inválida, verás un mensaje de error que se mostrará al lado del campo que tiene problemas.
 
-![Form with Validation Errors](images/start-form-validation.png)
+![Formulario con Errores de Validación](images/start-form-validation.png)
 
 Después de ingresar un nombre y dirección de correo válidos y haciendo click en el botón de submit, verás una nueva página
 mostrando los datos que acabas de ingresar.
 
-![Confirmation of Data Entry](images/start-entry-confirmation.png)
+![Confirmación de los Datos de Entrada](images/start-entry-confirmation.png)
 
 
 
