@@ -193,7 +193,7 @@ called [application components](#structure-application-components.md) that you c
 ]
 ```
 
-Each application component is specified as a key-value pair in the array. The key represents the application ID,
+Each application component is specified as a key-value pair in the array. The key represents the component ID,
 while the value represents the component class name or [configuration](concept-configurations.md).
 
 You can register any component with an application, and the component can later be accessed globally
