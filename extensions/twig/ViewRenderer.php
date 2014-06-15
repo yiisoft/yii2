@@ -111,11 +111,6 @@ class ViewRenderer extends BaseViewRenderer
             $this->addExtensions($this->extensions);
         }
 
-        // Change lexer syntax
-        if (!empty($this->lexerOptions)) {
-            $this->setLexerOptions($this->lexerOptions);
-        }
-
         // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
         $this->twig->addFunction('void', new \Twig_Function_Function(function ($argument) {
         }));
@@ -137,6 +132,11 @@ class ViewRenderer extends BaseViewRenderer
         }));
 
         $this->twig->addGlobal('app', \Yii::$app);
+
+        // Change lexer syntax (must be set after other settings)
+        if (!empty($this->lexerOptions)) {
+            $this->setLexerOptions($this->lexerOptions);
+        }
     }
 
     /**
