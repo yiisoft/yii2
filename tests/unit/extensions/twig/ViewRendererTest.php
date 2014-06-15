@@ -52,6 +52,9 @@ class ViewRendererTest extends TestCase
                     'functions' => [
                         't' => '\Yii::t',
                         'json_encode' => '\yii\helpers\Json::encode'
+                    ],
+                    'lexerOptions' => [
+                        'tag_comment' => [ '{*', '*}' ],
                     ]
                 ],
             ],
