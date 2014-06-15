@@ -126,6 +126,20 @@ to describe the validation failure when the value being validated is too big and
 You may configure these error messages like configuring other properties of validators in a validation rule.
 
 
+### Validation Events <a name="validation-events"></a>
+
+When [[yii\base\Model::validate()]] is called, it will call two methods that you may override to customize
+the validation process:
+
+* [[yii\base\Model::beforeValidate()]]: the default implementation will trigger a [[yii\base\Model::EVENT_BEFORE_VALIDATE]]
+  event. You may either override this method or respond to this event to do some preprocessing work
+  (e.g. normalizing data inputs) before the validation occurs. The method should return a boolean value indicating
+  whether the validation should proceed or not.
+* [[yii\base\Model::afterValidate()]]: the default implementation will trigger a [[yii\base\Model::EVENT_AFTER_VALIDATE]]
+  event. You may either override this method or respond to this event to do some postprocessing work after
+  the validation is completed.
+
+
 ### Conditional Validation <a name="conditional-validation"></a>
 
 To validate attributes only when certain conditions apply, e.g. the validation of one attribute depends
