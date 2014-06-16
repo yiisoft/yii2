@@ -619,9 +619,6 @@ class BaseHtml
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   When this option is specified, the radio button will be enclosed by a label tag.
      * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
-     * - container: array, the HTML attributes for the container tag. This is only used when the "label" option is specified.
-     *   If it is not set, no container will be rendered. If it is an array or not, a "div" container will be rendered
-     *   around the the radio button.
      *
      * The rest of the options will be rendered as the attributes of the resulting radio button tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
