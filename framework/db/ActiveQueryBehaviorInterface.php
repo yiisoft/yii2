@@ -20,5 +20,5 @@ interface ActiveQueryBehaviorInterface
      * Returns definition of the behavior, which should be attached to the [[ActiveQuery]] instance.
      * @return mixed behavior instance or configuration.
      */
-    public static function queryBehavior();
+    public function queryBehavior();
 }

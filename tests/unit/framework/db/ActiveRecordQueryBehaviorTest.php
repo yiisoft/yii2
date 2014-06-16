@@ -41,7 +41,7 @@ class CustomerEx extends Customer
 
 class ArBehavior extends Behavior implements ActiveQueryBehaviorInterface
 {
-    public static function queryBehavior()
+    public function queryBehavior()
     {
         return [
             'class' => QueryBehavior::className()

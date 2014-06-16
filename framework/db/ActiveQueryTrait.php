@@ -6,6 +6,7 @@
  */
 
 namespace yii\db;
+use Yii;
 
 /**
  * ActiveQueryTrait implements the common methods and properties for active record query classes.
@@ -35,7 +36,7 @@ trait ActiveQueryTrait
      */
     public function ensureModelBehaviors()
     {
-        /** @var ActiveRecord $modelClass */
+        /* @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         $behaviors = [];
         foreach ($modelClass::behaviors() as $modelBehavior) {
@@ -46,9 +47,12 @@ trait ActiveQueryTrait
             } else {
                 $behaviorClass = $modelBehavior;
             }
-            // @todo extract special interface
             if (is_subclass_of($behaviorClass, 'yii\db\ActiveQueryBehaviorInterface')) {
-                $behaviors[] = $behaviorClass::queryBehavior();
+                /* @var \yii\db\ActiveQueryBehaviorInterface $modelBehavior */
+                if (!is_object($modelBehavior)) {
+                    $modelBehavior = Yii::createObject($modelBehavior);
+                }
+                $behaviors[] = $modelBehavior->queryBehavior();
             }
         }
         if (!empty($behaviors)) {
