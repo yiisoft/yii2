@@ -19,7 +19,7 @@ This section will summarize the Yii resources available to help you be more prod
     - The Wiki Articles:
       The wiki articles are written by Yii users based on their own experiences. Most of them are written
       like cookbook recipes, and show how to solve particular problems using Yii. While the quality of these
-      articles may be as good as the Definitive Guide, they are useful in that they cover broader topics
+      articles may not be as good as the Definitive Guide, they are useful in that they cover broader topics
       and can often provide ready-to-use solutions.
     - Books
 * [Extensions](http://www.yiiframework.com/extensions/):
