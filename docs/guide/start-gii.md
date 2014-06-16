@@ -49,31 +49,31 @@ http://hostname/index.php?r=gii
 Generating an Active Record Class <a name="generating-ar"></a>
 ---------------------------------
 
-To use Gii to generate an Active Record class, select the "Model Generator" and fill out the form as follows,
+To use Gii to generate an Active Record class, select the "Model Generator" (by clicking the link on the Gii index page). Then fill out the form as follows:
 
 * Table Name: `country`
 * Model Class: `Country`
 
 ![Model Generator](images/start-gii-model.png)
 
-Click on the "Preview" button. You will see `models/Country.php` is listed in the result.
-You may click on it to preview its content.
+Next, click on the "Preview" button. You will see `models/Country.php` is listed in the resulting class file to be created. You may click on the name of the class file to preview its content.
 
-Because in the last section, you have already created the same file `models/Country.php`, if you click
-the `diff` button next to the file name, you will see the difference between the code to be generated
-and the code that you have already written.
+When using Gii, if you have already created the same file and would be overwriting it, click
+the `diff` button next to the file name to see the differences between the code to be generated
+and the existing version.
 
 ![Model Generator Preview](images/start-gii-model-preview.png)
 
-Check the checkbox next to "overwrite" and then click on the "Generate" button. You will see
-a confirmation page indicating the code has been successfully generated and your existing `models/Country.php`
-is overwritten with the newly generated code.
+When overwriting an existing file, check the box next to "overwrite" and then click  the "Generate" button. If creating a new file, you can just click "Generate". 
+
+Next, you will see
+a confirmation page indicating the code has been successfully generated. If you had an existing file, you'll also see a message indicating that it was overwritten with the newly generated code.
 
 
 Generating CRUD Code <a name="generating-crud"></a>
 --------------------
 
-To create CRUD code, select the "CRUD Generator". Fill out the form as follows:
+CRUD stands for Create, Read, Update, and Delete, representing the four common tasks taken with data on most Web sites. To create CRUD functionality using Gii, select the "CRUD Generator" (by clicking the link on the Gii index page). For the "country" example, fill out the resulting form as follows:
 
 * Model Class: `app\models\Country`
 * Search Model Class: `app\models\CountrySearch`
@@ -81,7 +81,9 @@ To create CRUD code, select the "CRUD Generator". Fill out the form as follows:
 
 ![CRUD Generator](images/start-gii-crud.png)
 
-Click on the "Preview" button. You will see a list of files to be generated, as shown below.
+Next, click on the "Preview" button. You will see a list of files to be generated, as shown below.
+
+[[NEED THE IMAGE HERE]]
 
 Make sure you have checked the overwrite checkboxes for both `controllers/CountryController.php` and
 `views/country/index.php` files. This is needed because you have already created these files
