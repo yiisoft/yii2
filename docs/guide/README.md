@@ -37,9 +37,9 @@ Application Structure
 * [Controllers](structure-controllers.md)
 * [Models](structure-models.md)
 * [Views](structure-views.md)
-* **TBD** [Filters](structure-filters.md)
-* **TBD** [Widgets](structure-widgets.md)
-* **TBD** [Modules](structure-modules.md)
+* [Modules](structure-modules.md)
+* [Filters](structure-filters.md)
+* [Widgets](structure-widgets.md)
 * [Asset Bundles](structure-assets.md)
 * **TBD** [Extensions](structure-extensions.md)
 
