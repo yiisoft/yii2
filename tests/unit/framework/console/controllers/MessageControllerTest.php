@@ -174,7 +174,7 @@ class MessageControllerTest extends TestCase
     {
         $language = 'en';
 
-        $category = 'test_category';
+        $category = 'test_category1';
         $message = 'test message';
         $sourceFileContent = "Yii::t('{$category}', '{$message}')";
         $this->createSourceFile($sourceFileContent);
@@ -201,7 +201,7 @@ class MessageControllerTest extends TestCase
     {
         $language = 'en';
 
-        $category = 'test_category';
+        $category = 'test_category2';
         $message = 'test message';
         $sourceFileContent = "Yii::t('{$category}', '{$message}')";
         $this->createSourceFile($sourceFileContent);
@@ -231,7 +231,7 @@ class MessageControllerTest extends TestCase
     public function testMerge()
     {
         $language = 'en';
-        $category = 'test_category';
+        $category = 'test_category3';
         $messageFileName = $language . DIRECTORY_SEPARATOR . $category . '.php';
 
         $existingMessage = 'test existing message';
@@ -266,7 +266,7 @@ class MessageControllerTest extends TestCase
     public function testNoLongerNeedTranslation()
     {
         $language = 'en';
-        $category = 'test_category';
+        $category = 'test_category4';
         $messageFileName = $language . DIRECTORY_SEPARATOR . $category . '.php';
 
         $oldMessage = 'test old message';
@@ -299,7 +299,7 @@ class MessageControllerTest extends TestCase
     public function testMergeWithContentZero()
     {
         $language = 'en';
-        $category = 'test_category';
+        $category = 'test_category5';
         $messageFileName = $language . DIRECTORY_SEPARATOR . $category . '.php';
 
         $zeroMessage = 'test zero message';
@@ -336,7 +336,7 @@ class MessageControllerTest extends TestCase
     public function testMultiplyTranslators()
     {
         $language = 'en';
-        $category = 'test_category';
+        $category = 'test_category6';
 
         $translators = [
             'Yii::t',
