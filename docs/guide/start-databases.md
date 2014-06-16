@@ -1,36 +1,35 @@
 Working with Databases
 ======================
 
-In this section, we will describe how to create a new page to display the country data fetched from
-from a database table `country`. To achieve this goal, you will configure a database connection,
-create an [Active Record](db-active-record.md) class, and then create an [action](structure-controllers.md)
-and a [view](structure-views.md).
+This section will describe how to create a new page that displays country data fetched from
+from a database table named `country`. To achieve this goal, you will configure a database connection,
+create an [Active Record](db-active-record.md) class, and define an [action](structure-controllers.md),
+and create a [view](structure-views.md).
 
-Through this tutorial, you will learn
+Through this tutorial, you will learn how to:
 
-* How to configure a DB connection;
-* How to define an Active Record class;
-* How to query data using the Active Record class;
-* How to display data in a view in a paginated fashion.
+* Configure a DB connection
+* Define an Active Record class
+* Query data using the Active Record class
+* Display data in a view in a paginated fashion
 
-Note that in order to finish this section, you should have basic knowledge and experience about databases.
-In particular, you should know how to create a database and how to execute SQL statements using a DB client tool.
+Note that in order to finish this section, you should have basic knowledge and experience using databases.
+In particular, you should know how to create a database, and how to execute SQL statements using a DB client tool.
 
 
-Preparing a Database <a name="preparing-database"></a>
+Preparing the Database <a name="preparing-database"></a>
 --------------------
 
-To begin with, create a database named `yii2basic` from which you will fetch data in your application.
-You may create a SQLite, MySQL, PostgreSQL, MSSQL or Oracle database. For simplicity, we will use MySQL
-in the following description.
+To begin, create a database named `yii2basic`, from which you will fetch data in your application.
+You may create an SQLite, MySQL, PostgreSQL, MSSQL or Oracle database, as Yii has built-in support for many database applications. For simplicity, MySQL will be assumed in the following description.
 
-Create a table named `country` in the database and insert some sample data. You may run the following SQL statements.
+Next, create a table named `country` in the database, and insert some sample data. You may run the following SQL statements to do so:
 
 ```sql
 CREATE TABLE `country` (
-  `code` char(2) NOT NULL PRIMARY KEY,
-  `name` char(52) NOT NULL,
-  `population` int(11) NOT NULL DEFAULT '0'
+  `code` CHAR(2) NOT NULL PRIMARY KEY,
+  `name` CHAR(52) NOT NULL,
+  `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `Country` VALUES ('AU','Australia',18886000);
@@ -45,19 +44,17 @@ INSERT INTO `Country` VALUES ('RU','Russia',146934000);
 INSERT INTO `Country` VALUES ('US','United States',278357000);
 ```
 
-To this end, you have a database named `yii2basic`, and within this database there is a `country` table
-with ten rows of data.
+At this point, you have a database named `yii2basic`, and within it a `country` table with three columns, containing ten rows of data.
 
-
-Configuring a DB Connection <a name="configuring-db-connection"></a>
+Configuring the DB Connection <a name="configuring-db-connection"></a>
 ---------------------------
 
-Make sure you have installed the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
+Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
 the PDO driver for the database you are using (e.g. `pdo_mysql` for MySQL). This is a basic requirement
 if your application uses a relational database.
 
-Open the file `config/db.php` and adjust the content based on your database information. By default,
-the file contains the following content:
+With those installed, open the file `config/db.php` and change the parameters to be correct for your database. By default,
+the file contains the following:
 
 ```php
 <?php
@@ -71,13 +68,13 @@ return [
 ];
 ```
 
-This is a typical file-based [configuration](concept-configurations.md). It specifies the parameters
+The `config/db.php` file is a typical file-based [configuration](concept-configurations.md) tool. This particular configuration file specifies the parameters
 needed to create and initialize a [[yii\db\Connection]] instance through which you can make SQL queries
 against the underlying database.
 
-The DB connection configured above can be accessed in the code via the expression `Yii::$app->db`.
+The DB connection configured above can be accessed in the application code via the expression `Yii::$app->db`.
 
-> Info: The `config/db.php` file will be included in the main application configuration `config/web.php`
+> Info: The `config/db.php` file will be included by the main application configuration `config/web.php`, 
   which specifies how the [application](structure-applications.md) instance should be initialized.
   For more information, please refer to the [Configurations](concept-configurations.md) section.
 
@@ -85,8 +82,8 @@ The DB connection configured above can be accessed in the code via the expressio
 Creating an Active Record <a name="creating-active-record"></a>
 -------------------------
 
-To represent and fetch the data in the `country` table, create an [Active Record](db-active-record.md)
-class named `Country` and save it in the file `models/Country.php`.
+To represent and fetch the data in the `country` table, create an [Active Record](db-active-record.md)-derived
+class named `Country`, and save it in the file `models/Country.php`.
 
 ```php
 <?php
@@ -100,12 +97,13 @@ class Country extends ActiveRecord
 }
 ```
 
-The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it.
-Yii will guess the associated table name from the class name. In case this does not work, you may
+The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it! With just the above code, 
+Yii will guess the associated table name from the class name. 
+
+> Inof: If no direct match can be made from the class name to the table name, you can
 override the [[yii\db\ActiveRecord::tableName()]] method to explicitly specify the associated table name.
 
-Using the `Country` class, you can manipulate the data in the `country` table easily. Below are some
-code snippets showing how you can make use of the `Country` class.
+Using the `Country` class, you can easily manipulate data in the `country` table, as shown in these snippets:
 
 ```php
 use app\models\Country;
@@ -124,9 +122,8 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info: Active Record is a powerful way of accessing and manipulating database data in an object-oriented fashion.
-You may find more detailed information in the [Active Record](db-active-record.md). Besides Active Record, you may also
-use a lower-level data accessing method called [Data Access Objects](db-dao.md).
+> Info: Active Record is a powerful way to access and manipulate database data in an object-oriented fashion.
+You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Data Access Objects](db-dao.md).
 
 
 Creating an Action <a name="creating-action"></a>
