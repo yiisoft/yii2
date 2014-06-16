@@ -30,6 +30,32 @@ trait ActiveQueryTrait
      */
     public $asArray;
 
+    /**
+     * Makes sure that query behaviors declared by model behaviors are attached to this component.
+     */
+    public function ensureModelBehaviors()
+    {
+        /** @var ActiveRecord $modelClass */
+        $modelClass = $this->modelClass;
+        $behaviors = [];
+        foreach ($modelClass::behaviors() as $modelBehavior) {
+            if (is_object($modelBehavior)) {
+                $behaviorClass = get_class($modelBehavior);
+            } elseif (is_array($modelBehavior)) {
+                $behaviorClass = $modelBehavior['class'];
+            } else {
+                $behaviorClass = $modelBehavior;
+            }
+            // @todo extract special interface
+            if (is_subclass_of($behaviorClass, 'yii\base\Behavior')) {
+                $behaviors[] = $modelBehavior;
+            }
+        }
+        if (!empty($behaviors)) {
+            /* @var \yii\base\Component $this */
+            $this->attachBehaviors($behaviors);
+        }
+    }
 
     /**
      * Sets the [[asArray]] property.
