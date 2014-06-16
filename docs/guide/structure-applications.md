@@ -412,7 +412,7 @@ In the special case when you want to maintain extensions manually, you may confi
 
 As you can see, the property takes an array of extension specifications. Each extension is specified with an array
 consisting of `name` and `version` elements. If an extension needs to run during the [bootstrap](runtime-bootstrapping.md)
-property, a `bootstrap` element may be specified with a bootstrap class name or a [configuration](concept-configurations.md)
+process, a `bootstrap` element may be specified with a bootstrap class name or a [configuration](concept-configurations.md)
 array. An extension may also define a few [aliases](concept-aliases.md).
 
 
