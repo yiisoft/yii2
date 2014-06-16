@@ -230,6 +230,10 @@ class MessageControllerTest extends TestCase
      */
     public function testMerge()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('Can not test on HHVM because modified files can not be reloaded.');
+        }
+
         $language = 'en';
         $category = 'test_category3';
         $messageFileName = $language . DIRECTORY_SEPARATOR . $category . '.php';
@@ -265,6 +269,10 @@ class MessageControllerTest extends TestCase
      */
     public function testNoLongerNeedTranslation()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('Can not test on HHVM because modified files can not be reloaded.');
+        }
+
         $language = 'en';
         $category = 'test_category4';
         $messageFileName = $language . DIRECTORY_SEPARATOR . $category . '.php';
@@ -298,6 +306,10 @@ class MessageControllerTest extends TestCase
      */
     public function testMergeWithContentZero()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('Can not test on HHVM because modified files can not be reloaded.');
+        }
+
         $language = 'en';
         $category = 'test_category5';
         $messageFileName = $language . DIRECTORY_SEPARATOR . $category . '.php';
@@ -335,6 +347,10 @@ class MessageControllerTest extends TestCase
      */
     public function testMultiplyTranslators()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('Can not test on HHVM because modified files can not be reloaded.');
+        }
+
         $language = 'en';
         $category = 'test_category6';
 
