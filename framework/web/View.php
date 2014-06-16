@@ -251,7 +251,7 @@ class View extends \yii\base\View
      * Removes a bundle from [[assetBundles]] once files are registered.
      * @param string $name name of the bundle to register
      */
-    private function registerAssetFiles($name)
+    protected function registerAssetFiles($name)
     {
         if (!isset($this->assetBundles[$name])) {
             return;
