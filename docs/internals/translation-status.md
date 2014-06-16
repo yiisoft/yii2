@@ -1,7 +1,7 @@
 Documentation status
 ====================
 
-File                                | Ready for transltion
+File                                | Ready for translation
 ------------------------------------|---------------------
 README.md                           | Yes
 intro-yii.md                        | Yes
@@ -18,7 +18,7 @@ structure-entry-scripts.md          | Yes
 structure-applications.md           | Yes
 structure-application-components.md | Yes
 structure-controllers.md            | Yes
-structure-views.md                  |
+structure-views.md                  | Yes
 structure-models.md                 | Yes
 structure-filters.md                |
 structure-widgets.md                |
