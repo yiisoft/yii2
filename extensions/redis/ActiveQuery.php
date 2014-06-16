@@ -86,6 +86,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
     public function __construct($modelClass, $config = [])
     {
         $this->modelClass = $modelClass;
+        $this->ensureModelBehaviors();
         parent::__construct($config);
     }
 
