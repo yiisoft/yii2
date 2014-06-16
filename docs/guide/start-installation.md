@@ -106,7 +106,7 @@ In this subsection, you'll learn how to configure your Apache or Nginx server to
 
 > Info: By setting `basic/web` as the document root, you also prevent end users from accessing
 your private application code and sensitive data files that are stored in the sibling directories
-of `basic/web`. Denying access to those other folders is a producent security improvement.
+of `basic/web`. Denying access to those other folders is a security improvement.
 
 > Info: If your application will run in a shared hosting environment where you do not have permission
 to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
