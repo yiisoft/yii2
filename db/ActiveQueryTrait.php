@@ -163,7 +163,7 @@ trait ActiveQueryTrait
         foreach ($relations as $name => $relation) {
             if ($relation->asArray === null) {
                 // inherit asArray from primary query
-                $relation->asArray = $this->asArray;
+                $relation->asArray($this->asArray);
             }
             $relation->populateRelation($name, $models);
         }
