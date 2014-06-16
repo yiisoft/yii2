@@ -278,7 +278,7 @@ EOL;
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
-        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
+        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config2.php';
         $this->createCompressConfigFile($configFile, $bundles);
 
         // When :
