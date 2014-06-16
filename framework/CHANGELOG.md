@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
-- Enh #2359: Refactored formatter class. One class with or without intl extension and PHP format pattern as standard. (Erik_r)
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
@@ -100,6 +99,8 @@ Yii Framework 2 Change Log
 - Enh: Added param `hideOnSinglePage` to `yii\widgets\LinkPager` (arturf)
 - Enh: Added support for array attributes in `in` validator (creocoder)
 - Enh: Improved `yii\helpers\Inflector::slug` to support more cases for Russian, Hebrew and special characters (samdark)
+- Chg #2359: Refactored formatter class. One class with or without intl extension and PHP format pattern as standard (Erik_r, cebe)
+   - `yii\i18n\Formatter` functionality has been merged into `yii\base\Formatter`
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
