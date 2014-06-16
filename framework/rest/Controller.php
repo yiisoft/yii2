@@ -43,7 +43,7 @@ class Controller extends \yii\web\Controller
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             'contentNegotiator' => [

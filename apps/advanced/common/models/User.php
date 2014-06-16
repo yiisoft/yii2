@@ -31,7 +31,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             'timestamp' => [

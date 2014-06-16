@@ -27,7 +27,7 @@ use yii\web\ForbiddenHttpException;
  * and "update" actions and deny all other users from accessing these two actions.
  *
  * ~~~
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         'access' => [

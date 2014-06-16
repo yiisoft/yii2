@@ -60,7 +60,7 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * ```php
  * use yii\web\Response;
  *
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         [

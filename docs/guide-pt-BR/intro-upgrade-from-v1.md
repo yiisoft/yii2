@@ -355,7 +355,7 @@ behavior. Por exemplo, para usar o filtro [[yii\filters\AccessControl]],
 você teria o seguinte código em um controller:
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         'access' => [

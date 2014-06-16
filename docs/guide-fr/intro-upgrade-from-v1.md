@@ -309,7 +309,7 @@ Les filtres d'action sont maintenant implémentés comme des comportements. Pour
 comme un comportement du contrôleur.  Par exemple, pour utilser le filtre [[yii\filters\AccessControl]], vous aurez le code suivant dans le contrôleur :
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         'access' => [

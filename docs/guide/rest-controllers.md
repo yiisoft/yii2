@@ -65,7 +65,7 @@ For example, if you only want to use HTTP basic authentication, you may write th
 ```php
 use yii\filters\auth\HttpBasicAuth;
 
-public function behaviors()
+public static function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [

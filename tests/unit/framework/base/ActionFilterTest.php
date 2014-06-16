@@ -24,21 +24,29 @@ class ActionFilterTest extends TestCase
         $this->mockApplication();
     }
 
+    /**
+     * @param array $behaviors behaviors to apply.
+     * @return FakeController controller instance.
+     */
+    protected function createFakeController(array $behaviors = [])
+    {
+        FakeController::$behaviors = $behaviors;
+        return new FakeController('fake', Yii::$app);
+    }
+
     public function testFilter()
     {
         // no filters
-        $controller = new FakeController('fake', Yii::$app);
+        $controller = $this->createFakeController();
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
         $this->assertEquals('x', $result);
         $this->assertNull($controller->result);
 
         // all filters pass
-        $controller = new FakeController('fake', Yii::$app, [
-            'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
-            ],
+        $controller = $this->createFakeController([
+            'filter1' => Filter1::className(),
+            'filter3' => Filter3::className(),
         ]);
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
@@ -46,12 +54,10 @@ class ActionFilterTest extends TestCase
         $this->assertEquals([1, 3], $controller->result);
 
         // a filter stops in the middle
-        $controller = new FakeController('fake', Yii::$app, [
-            'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter2' => Filter2::className(),
-                'filter3' => Filter3::className(),
-            ],
+        $controller = $this->createFakeController([
+            'filter1' => Filter1::className(),
+            'filter2' => Filter2::className(),
+            'filter3' => Filter3::className(),
         ]);
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
@@ -59,12 +65,10 @@ class ActionFilterTest extends TestCase
         $this->assertEquals([1, 2], $controller->result);
 
         // the first filter stops
-        $controller = new FakeController('fake', Yii::$app, [
-            'behaviors' => [
-                'filter2' => Filter2::className(),
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
-            ],
+        $controller = $this->createFakeController([
+            'filter2' => Filter2::className(),
+            'filter1' => Filter1::className(),
+            'filter3' => Filter3::className(),
         ]);
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
@@ -72,12 +76,10 @@ class ActionFilterTest extends TestCase
         $this->assertEquals([2], $controller->result);
 
         // the last filter stops
-        $controller = new FakeController('fake', Yii::$app, [
-            'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
-                'filter2' => Filter2::className(),
-            ],
+        $controller = $this->createFakeController([
+            'filter1' => Filter1::className(),
+            'filter3' => Filter3::className(),
+            'filter2' => Filter2::className(),
         ]);
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
@@ -88,12 +90,12 @@ class ActionFilterTest extends TestCase
 
 class FakeController extends Controller
 {
+    public static $behaviors = [];
     public $result;
-    public $behaviors = [];
 
-    public function behaviors()
+    public static function behaviors()
     {
-        return $this->behaviors;
+        return static::$behaviors;
     }
 
     public function actionTest()

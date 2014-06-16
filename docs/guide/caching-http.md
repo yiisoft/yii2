@@ -33,7 +33,7 @@ function ($action, $params)
 The following is an example of making use of the `Last-Modified` header:
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         [
@@ -78,7 +78,7 @@ function ($action, $params)
 The following is an example of making use of the `ETag` header:
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         [

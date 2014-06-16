@@ -309,7 +309,7 @@ as a behavior. For example, to use the [[yii\filters\AccessControl]] filter, you
 code in a controller:
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         'access' => [

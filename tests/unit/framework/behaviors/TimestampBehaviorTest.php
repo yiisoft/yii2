@@ -96,7 +96,7 @@ class TimestampBehaviorTest extends TestCase
  */
 class ActiveRecordTimestamp extends ActiveRecord
 {
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             TimestampBehavior::className(),

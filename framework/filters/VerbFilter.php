@@ -25,7 +25,7 @@ use yii\web\MethodNotAllowedHttpException;
  * request methods for REST CRUD actions.
  *
  * ~~~
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         'verbs' => [

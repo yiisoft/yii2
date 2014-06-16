@@ -12,7 +12,7 @@ To use an action filter, attach it as a behavior to a controller or a module. Th
 example shows how to enable HTTP caching for the `index` action:
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         'httpCache' => [

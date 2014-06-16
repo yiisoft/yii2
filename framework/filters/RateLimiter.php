@@ -19,7 +19,7 @@ use yii\web\TooManyRequestsHttpException;
  * You may use RateLimiter by attaching it as a behavior to a controller or module, like the following,
  *
  * ```php
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         'rateLimiter' => [

@@ -8,7 +8,7 @@ Page caching is supported by [[yii\filters\PageCache]], an [action filter](runti
 It can be used like the following in a controller class:
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         [
