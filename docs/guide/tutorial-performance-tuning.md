@@ -143,7 +143,7 @@ Forming proper headers is time consuming task so Yii provides a shortcut in form
 the following:
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         'httpCache' => [

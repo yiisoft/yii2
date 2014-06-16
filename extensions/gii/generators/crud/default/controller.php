@@ -45,7 +45,7 @@ use yii\filters\VerbFilter;
  */
 class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             'verbs' => [

@@ -22,7 +22,7 @@ use yii\filters\AccessControl;
 
 class SiteController extends Controller
 {
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             'access' => [
@@ -118,7 +118,7 @@ use yii\filters\AccessControl;
 
 class SiteController extends Controller
 {
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             'access' => [

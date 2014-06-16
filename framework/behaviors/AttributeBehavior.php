@@ -23,7 +23,7 @@ use yii\base\Event;
  * ~~~
  * use yii\behaviors\AttributeBehavior;
  *
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         'attributeStamp' => [

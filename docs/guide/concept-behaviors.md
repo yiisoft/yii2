@@ -71,7 +71,7 @@ use app\components\MyBehavior;
 
 class User extends ActiveRecord
 {
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             // anonymous behavior, behavior class name only
@@ -249,7 +249,7 @@ class User extends ActiveRecord
 {
     // ...
 
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             [

@@ -12,7 +12,7 @@ class BarClass extends Component
 
 class FooClass extends Component
 {
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             'foo' => __NAMESPACE__ . '\BarBehavior',

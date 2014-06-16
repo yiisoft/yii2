@@ -69,7 +69,7 @@ the following in your API controller classes:
 ```php
 use yii\web\Response;
 
-public function behaviors()
+public static function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_HTML;

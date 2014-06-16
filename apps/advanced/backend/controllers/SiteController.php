@@ -15,7 +15,7 @@ class SiteController extends Controller
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             'access' => [

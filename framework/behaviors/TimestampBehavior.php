@@ -18,7 +18,7 @@ use yii\db\Expression;
  * ```php
  * use yii\behaviors\TimestampBehavior;
  *
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         TimestampBehavior::className(),
@@ -36,7 +36,7 @@ use yii\db\Expression;
  * ```php
  * use yii\db\Expression;
  *
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         'timestamp' => [

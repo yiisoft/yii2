@@ -311,7 +311,7 @@ al controlador como un comportamiento. Por ejemplo, para utilizar el filtro [[yi
 el siguiente código en el controlador:
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     return [
         'access' => [

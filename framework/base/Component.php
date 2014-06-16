@@ -431,7 +431,7 @@ class Component extends Object
      *
      * @return array the behavior configurations.
      */
-    public function behaviors()
+    public static function behaviors()
     {
         return [];
     }
@@ -652,7 +652,7 @@ class Component extends Object
     {
         if ($this->_behaviors === null) {
             $this->_behaviors = [];
-            foreach ($this->behaviors() as $name => $behavior) {
+            foreach (static::behaviors() as $name => $behavior) {
                 $this->attachBehaviorInternal($name, $behavior);
             }
         }

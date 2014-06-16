@@ -25,7 +25,7 @@ will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded
 as follows in your REST controller classes,
 
 ```php
-public function behaviors()
+public static function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['rateLimiter']['enableRateLimitHeaders'] = false;

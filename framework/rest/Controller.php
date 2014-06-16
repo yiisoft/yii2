@@ -43,7 +43,7 @@ class Controller extends \yii\web\Controller
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public static function behaviors()
     {
         return [
             'contentNegotiator' => [
@@ -55,7 +55,7 @@ class Controller extends \yii\web\Controller
             ],
             'verbFilter' => [
                 'class' => VerbFilter::className(),
-                'actions' => $this->verbs(),
+                'actions' => static::verbs(),
             ],
             'authenticator' => [
                 'class' => CompositeAuth::className(),
@@ -80,7 +80,7 @@ class Controller extends \yii\web\Controller
      * Please refer to [[VerbFilter::actions]] on how to declare the allowed verbs.
      * @return array the allowed HTTP verbs.
      */
-    protected function verbs()
+    protected static function verbs()
     {
         return [];
     }

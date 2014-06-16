@@ -24,7 +24,7 @@ use yii\caching\Dependency;
  * the application language and user id.
  *
  * ~~~
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         'pageCache' => [

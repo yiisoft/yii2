@@ -35,7 +35,7 @@ For example, to use HTTP Basic Auth, you may configure `authenticator` as follow
 ```php
 use yii\filters\auth\HttpBasicAuth;
 
-public function behaviors()
+public static function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
@@ -53,7 +53,7 @@ use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 
-public function behaviors()
+public static function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [

@@ -21,7 +21,7 @@ use yii\base\Action;
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
  * ~~~
- * public function behaviors()
+ * public static function behaviors()
  * {
  *     return [
  *         'httpCache' => [
