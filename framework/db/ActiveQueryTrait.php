@@ -47,8 +47,8 @@ trait ActiveQueryTrait
                 $behaviorClass = $modelBehavior;
             }
             // @todo extract special interface
-            if (is_subclass_of($behaviorClass, 'yii\base\Behavior')) {
-                $behaviors[] = $modelBehavior;
+            if (is_subclass_of($behaviorClass, 'yii\db\ActiveQueryBehaviorInterface')) {
+                $behaviors[] = $behaviorClass::queryBehavior();
             }
         }
         if (!empty($behaviors)) {

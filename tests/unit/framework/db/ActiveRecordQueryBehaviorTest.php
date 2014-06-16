@@ -3,6 +3,7 @@
 namespace yiiunit\framework\db;
 
 use yii\base\Behavior;
+use yii\db\ActiveQueryBehaviorInterface;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 
@@ -32,8 +33,18 @@ class CustomerEx extends Customer
     {
         return [
             'query' => [
-                'class' => QueryBehavior::className()
+                'class' => ArBehavior::className()
             ]
+        ];
+    }
+}
+
+class ArBehavior extends Behavior implements ActiveQueryBehaviorInterface
+{
+    public static function queryBehavior()
+    {
+        return [
+            'class' => QueryBehavior::className()
         ];
     }
 }
