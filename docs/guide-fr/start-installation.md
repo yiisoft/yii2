@@ -127,8 +127,8 @@ server {
     charset utf-8;
     client_max_body_size 128M;
 
-    listen 80; ## listen for ipv4
-    #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
+    listen 80; ## port pour ipv4
+    #listen [::]:80 default_server ipv6only=on; ## port pour ipv6
 
     server_name mysite.local;
     root        /path/to/basic/web;
@@ -138,11 +138,11 @@ server {
     error_log   /path/to/basic/log/error.log;
 
     location / {
-        # Redirect everything that isn't a real file to index.php
+        # Test fichier/dossier, sinon redirection vers index.php
         try_files $uri $uri/ /index.php?$args;
     }
 
-    # uncomment to avoid processing of calls to non-existing static files by Yii
+    # décommentez ces lignes pour évitez que Yii ne gère les requêtes vers des fichiers statiques inexistants
     #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
     #    try_files $uri =404;
     #}
