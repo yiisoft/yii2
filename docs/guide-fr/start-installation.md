@@ -90,7 +90,7 @@ L'application installée selon les instructions ci-dessus devrait fonctionner *o
 Sur un serveur de production, vous pouvez configurer votre serveur Web afin que l'application soit accessible via l'URL `http://www.example.com/index.php` au lieu de `http://www.example.com/basic/web/index.php`. Cela implique que le dossier racine de votre serveur Web pointe vers le dossier `basic/web`.
 Vous pouvez également cacher `index.php` dans l'URL, comme décrit dans la partie [Génération et traitement des URL](runtime-url-handling.md), vous y apprendrez comment configurer votre serveur Apache ou Nginx pour atteindre ces objectifs.
 
-> Remarque : En utilisant `basic/web` comme dossier racine, vous empêchez également aux utilisateurs finaux d'accéder à votre code d'application privé et fichiers de données sensibles qui sont stockés dans le dossier `basic`. Refuser l'accès à ces ressources est une amélioration de la sécurité en production.
+> Remarque : En utilisant `basic/web` comme dossier racine, vous empêchez également aux utilisateurs finaux d'accéder à votre code d'application privé et fichiers de données sensibles qui sont stockés dans le dossier `basic`. Refuser l'accès à ces ressources est une amélioration de la sécurité.
 
 > Remarque: Si votre application s'exécute dans un environnement d'hébergement mutualisé où vous n'avez pas la permission de modifier la configuration du serveur Web, vous pouvez ajuster la structure de votre application pour une meilleure sécurité. Merci de lire la partie [Environnement d'hébergement mutualisé](tutorial-shared-hosting.md) pour en savoir plus.
 
