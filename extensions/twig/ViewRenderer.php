@@ -75,11 +75,30 @@ class ViewRenderer extends BaseViewRenderer
     /**
      * @var \Twig_Environment twig environment object that do all rendering twig templates
      */
+     
+
+    public $define_layout = NULL;
+    /**
+     * @var string the directory pointing to where the extra layout template folder.
+     */
+	
     public $twig;
+    
+	public $loader;
 
     public function init()
     {
-        $this->twig = new \Twig_Environment(null, array_merge([
+        // Adding extra template layout
+        if (!empty($this->define_layout)) {
+			
+            $this->loader = new \Twig_Loader_Filesystem($_SERVER['DOCUMENT_ROOT'].$this->define_layout);
+        }
+		else
+		{
+			$this->loader = NULL;
+		}
+		
+        $this->twig = new \Twig_Environment($this->loader, array_merge([
             'cache' => Yii::getAlias($this->cachePath),
             'charset' => Yii::$app->charset,
         ], $this->options));
@@ -154,8 +173,16 @@ class ViewRenderer extends BaseViewRenderer
     public function render($view, $file, $params)
     {
         $this->twig->addGlobal('this', $view);
-        $this->twig->setLoader(new TwigSimpleFileLoader(dirname($file)));
 
+		if($this->loader)
+		{
+			$this->loader->addPath(dirname($file));
+		}
+		else
+		{
+			$this->twig->setLoader(new TwigSimpleFileLoader(dirname($file)));
+		}
+		
         return $this->twig->render(pathinfo($file, PATHINFO_BASENAME), $params);
     }
 
