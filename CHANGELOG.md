@@ -99,7 +99,7 @@ Yii Framework 2 Change Log
 - Enh: Added param `hideOnSinglePage` to `yii\widgets\LinkPager` (arturf)
 - Enh: Added support for array attributes in `in` validator (creocoder)
 - Enh: Improved `yii\helpers\Inflector::slug` to support more cases for Russian, Hebrew and special characters (samdark)
-- Enh: `yii\widgets\Breadcrumbs::$links`. Allows individual link to have its `ownTemplate` (creocoder|umneeq)
+- Enh #3926: `yii\widgets\Breadcrumbs::$links`. Allows individual link to have its `ownTemplate` (creocoder, umneeq)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
