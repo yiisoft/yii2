@@ -2,9 +2,9 @@
 ==============
 
 你可以通过两种方式安装 Yii：使用 [Composer](http://getcomposer.org/) 或下载一个存档文件。推荐使用前者，
-这样只需执行一条简单的命令就可以安装新的 [扩展](extend-creating-extensions.md) 或更新 Yii 了。
+这样只需执行一条简单的命令就可以安装新的 [创建扩展](extend-creating-extensions.md) 或更新 Yii 了。
 
-> Note: 和 Yii 1 版本不同，以标准方式安装 Yii 2 时会同时下载并安装框架本身和一个应用程序骨架。
+> 注意：和 Yii 1 版本不同，以标准方式安装 Yii 2 时会同时下载并安装框架本身和一个应用程序骨架。
 
 
 通过 Composer 安装 <a name="installing-via-composer"></a>
@@ -18,7 +18,7 @@
 
 在 Windows 中，你需要下载并运行 [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe)。
 
-如果遇到了任何问题或者想更深入地学习 Composer，请参考  [Composer 文档](https://getcomposer.org/doc/)。
+如果遇到了任何问题或者想更深入地学习 Composer，请参考  [Composer 文档（英文）](https://getcomposer.org/doc/)，[Composer 中文](https://github.com/5-say/composer-doc-cn)。
 
 Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
 
@@ -26,7 +26,7 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 
 如上命令会将 Yii 安装在一个名为 `basic` 的目录中。
 
-> Tip: 如果你想安装 Yii 的最新开发版本，可以使用如下命令，它添加了一个
+> 技巧：如果你想安装 Yii 的最新开发版本，可以使用如下命令，它添加了一个
 > [stability 选项](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
@@ -51,9 +51,9 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 但是还可以有其他的安装方式：
 
 * 如果你只想安装核心框架，然后从头开始构建一个应用程序，可以参考
-[从头开始构建应用程序](tutorial-start-from-scratch.md) 一节的介绍。
+[从头构建自定义模版](tutorial-start-from-scratch.md) 一节的介绍。
 * 如果你要开始一个更复杂的项目，更好的地适用于团队开发环境的，你可以考虑安装
- [高级应用程序模板](tutorial-advanced-app.md).
+ [高级应用模版](tutorial-advanced-app.md).
 
 
 验证安装 <a name="verifying-installation"></a>
@@ -81,29 +81,27 @@ http://localhost/basic/web/index.php
   php requirements.php
   ```
 
-你需要配置好 PHP 安装环境，使其符合 Yii 的最小需求。最重要的是需要有 PHP 5.4 以上版本。如果你的应用程序需要用到数据库，
-那还要安装 [PDO PHP 扩展](http://www.php.net/manual/en/pdo.installation.php) 和相应的数据库驱动
-（例如访问 MySQL 数据库所需的 `pdo_mysql` ）。
+你需要配置好 PHP 安装环境，使其符合 Yii 的最小需求。最重要的是需要有 PHP 5.4 以上版本。如果你的应用程序需要用到数据库，那还要安装 [PDO PHP 扩展](http://www.php.net/manual/en/pdo.installation.php) 和相应的数据库驱动（例如访问 MySQL 数据库所需的 `pdo_mysql` ）。
 
 
 配置 Web 服务器 <a name="configuring-web-servers"></a>
 -----------------------
 
-> Info: 如果你现在只是要试用 Yii 而不是要将其部署到生产环境中的服务器上，下面的这一节可以跳过。
+>补充：如果你现在只是要试用 Yii 而不是要将其部署到生产环境中的服务器上，下面的这一节可以跳过。
 
-通过上述方法安装的应用程序在 Windows，Max OS X 或 Linux 中的  [Apache HTTP server](http://httpd.apache.org/)
-或者 [Nginx HTTP server](http://nginx.org/) 上都可以直接运行。
+通过上述方法安装的应用程序在 Windows，Max OS X 或 Linux 中的 [Apache HTTP 服务器](http://httpd.apache.org/)
+或者 [Nginx HTTP 服务器](http://nginx.org/) 上都可以直接运行。
 
 在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过 URL `http://www.example.com/index.php` 访问而不是通过
 `http://www.example.com/basic/web/index.php`。这种配置需要将 Web 服务器的文档根目录指向 `basic/web` 目录。
-可能你还会想隐藏掉 URL 中的 `index.php`，[URL Parsing and Generation](runtime-url-handling.md) 一章中有介绍。.
+可能你还会想隐藏掉 URL 中的 `index.php`，[URL 解析和生成](runtime-url-handling.md) 一章中有介绍。
 在这一节中，你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 
-> Info: 将 `basic/web` 设置为文档根目录，可以防止终端用户访问 `basic/web` 相邻目录中的私有应用程序代码和敏感数据文件。
+>补充：将 `basic/web` 设置为文档根目录，可以防止终端用户访问 `basic/web` 相邻目录中的私有应用程序代码和敏感数据文件。
 禁止对其他目录的访问是一个切实可行的安全改进。
 
-> Info: 如果你的应用程序将来要运行在共享的主机环境中，没有权限修改它的 Web 服务器配置，你依然可以调整应用程序的结构
-提升安全性。详情请参考 [共享的主机环境](tutorial-shared-hosting.md) 一章。
+>补充：如果你的应用程序将来要运行在共享的主机环境中，没有权限修改它的 Web 服务器配置，你依然可以调整应用程序的结构
+提升安全性。详情请参考 [共享主机环境](tutorial-shared-hosting.md) 一章。
 
 
 ### 推荐使用的 Apache 配置 <a name="recommended-apache-configuration"></a>
@@ -132,7 +130,7 @@ DocumentRoot "path/to/basic/web"
 ### 推荐使用的 Nginx 配置 <a name="recommended-nginx-configuration"></a>
 
 为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为  [FPM SAPI](http://php.net/install.fpm) 了。
-使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录，`mysite.local` 替换为实际的主机名以提供服务。
+使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录， `mysite.local` 替换为实际的主机名以提供服务。
 
 ```
 server {
