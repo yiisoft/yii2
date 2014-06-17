@@ -47,6 +47,7 @@ Yii Framework 2 Change Log
 - Bug #3817: `yii\rbac\PhpManager::getChildren()` returns null instead of expected empty array (qiangxue)
 - Bug #3843: Fixed Menu bug when using `template` with `encodeLabel` => false (creocoder, umneeq)
 - Bug #3863: Fixed incorrect js selector for `\yii\widgets\ActiveForm::errorSummaryCssClass` when it contains multiple classes (creocoder, umneeq)
+- Bug #3909: `Html::to()` should not prefix base URL to URLs that already contain scheme (qiangxue)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
