@@ -2,12 +2,12 @@
 ==============
 
 你可以通过两种方式安装 Yii：使用 [Composer](http://getcomposer.org/) 或下载一个存档文件。推荐使用前者，
-这样只需执行一条简单的命令就可以安装新的 [扩展](structure-extensions.md) 或更新 Yii 了。
+这样只需执行一条简单的命令就可以安装新的 [扩展](extend-creating-extensions.md) 或更新 Yii 了。
 
 > Note: 和 Yii 1 版本不同，以标准方式安装 Yii 2 时会同时下载并安装框架本身和一个应用程序骨架。
 
 
-通过 Composer 安装<a name="installing-via-composer"></a>
+通过 Composer 安装 <a name="installing-via-composer"></a>
 -----------------------
 
 如果还没有安装 Composer，你可以按 [getcomposer.org](https://getcomposer.org/download/) 中的方法安装。
@@ -18,7 +18,7 @@
 
 在 Windows 中，你需要下载并运行 [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe)。
 
-如果遇到了任何问题或者想更深入地学习 Composer，请参考  [Composer 文档](https://getcomposer.org/doc/) 。
+如果遇到了任何问题或者想更深入地学习 Composer，请参考  [Composer 文档](https://getcomposer.org/doc/)。
 
 Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
 
@@ -51,7 +51,7 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 但是还可以有其他的安装方式：
 
 * 如果你只想安装核心框架，然后从头开始构建一个应用程序，可以参考
- [从头开始构建应用程序](tutorial-start-from-scratch.md) 一节的介绍。
+[从头开始构建应用程序](tutorial-start-from-scratch.md) 一节的介绍。
 * 如果你要开始一个更复杂的项目，更好的地适用于团队开发环境的，你可以考虑安装
  [高级应用程序模板](tutorial-advanced-app.md).
 
@@ -95,8 +95,8 @@ http://localhost/basic/web/index.php
 或者 [Nginx HTTP server](http://nginx.org/) 上都可以直接运行。
 
 在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过 URL `http://www.example.com/index.php` 访问而不是通过
-`http://www.example.com/basic/web/index.php` 。这种配置需要将 Web 服务器的文档根目录指向 `basic/web` 目录。
-可能你还会想隐藏掉 URL 中的 `index.php` ， [URL Parsing and Generation](runtime-url-handling.md) 一章中有介绍。.
+`http://www.example.com/basic/web/index.php`。这种配置需要将 Web 服务器的文档根目录指向 `basic/web` 目录。
+可能你还会想隐藏掉 URL 中的 `index.php`，[URL Parsing and Generation](runtime-url-handling.md) 一章中有介绍。.
 在这一节中，你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 
 > Info: 将 `basic/web` 设置为文档根目录，可以防止终端用户访问 `basic/web` 相邻目录中的私有应用程序代码和敏感数据文件。
@@ -132,7 +132,7 @@ DocumentRoot "path/to/basic/web"
 ### 推荐使用的 Nginx 配置 <a name="recommended-nginx-configuration"></a>
 
 为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为  [FPM SAPI](http://php.net/install.fpm) 了。
-使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录， `mysite.local` 替换为实际的主机名以提供服务。
+使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录，`mysite.local` 替换为实际的主机名以提供服务。
 
 ```
 server {
