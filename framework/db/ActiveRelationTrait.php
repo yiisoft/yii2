@@ -236,15 +236,15 @@ trait ActiveRelationTrait
 
             $link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
             foreach ($primaryModels as $i => $primaryModel) {
-                if ($this->multiple && count($link) < 2 && is_array($keys = $primaryModel->{reset($link)})) {
+                $key = $this->getModelKey($primaryModel, $link);
+                if (is_array($key)) {
                     $value = [];
-                    foreach ($keys as $key) {
-                        if (isset($buckets[$key])) {
-                            $value = array_merge($value, $buckets[$key]);
+                    foreach ($key as $subKey) {
+                        if (isset($buckets[$subKey])) {
+                            $value = array_merge($value, $buckets[$subKey]);
                         }
                     }
                 } else {
-                    $key = $this->getModelKey($primaryModel, $link);
                     $value = isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? [] : null);
                 }
                 if ($primaryModel instanceof ActiveRecordInterface) {
@@ -442,7 +442,7 @@ trait ActiveRelationTrait
     /**
      * @param ActiveRecord|array $model
      * @param array $attributes
-     * @return string
+     * @return string|array
      */
     private function getModelKey($model, $attributes)
     {
@@ -451,12 +451,13 @@ trait ActiveRelationTrait
             foreach ($attributes as $attribute) {
                 $key[] = $model[$attribute];
             }
-
             return serialize($key);
         } else {
             $attribute = reset($attributes);
             $key = $model[$attribute];
-
+            if ($this->multiple && is_array($key)) {
+                return $key;
+            }
             return is_scalar($key) ? $key : serialize($key);
         }
     }
