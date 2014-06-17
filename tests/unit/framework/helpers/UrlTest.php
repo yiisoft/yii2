@@ -115,6 +115,14 @@ class UrlTest extends TestCase
         \Yii::setAlias('@web4', '/test');
         \Yii::setAlias('@web5', '#test');
 
+        $this->assertEquals('/base/test/me1', Url::to('test/me1'));
+        $this->assertEquals('javascript:test/me1', Url::to('javascript:test/me1'));
+        $this->assertEquals('/base/java/script:test/me1', Url::to('java/script:test/me1'));
+        $this->assertEquals('#test/me1', Url::to('#test/me1'));
+        $this->assertEquals('.test/me1', Url::to('.test/me1'));
+        $this->assertEquals('http://example.com/base/test/me1', Url::to('test/me1', true));
+        $this->assertEquals('https://example.com/base/test/me1', Url::to('test/me1', 'https'));
+
         $this->assertEquals('http://test.example.com/test/me1', Url::to('@web1'));
         $this->assertEquals('http://test.example.com/test/me1', Url::to('@web1', true));
         $this->assertEquals('https://test.example.com/test/me1', Url::to('@web1', 'https'));
