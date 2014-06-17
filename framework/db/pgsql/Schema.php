@@ -429,7 +429,6 @@ SQL;
         $column->autoIncrement = $info['is_autoinc'];
         $column->comment = $info['column_comment'];
         $column->dbType = $info['data_type'];
-        $column->defaultValue = $info['column_default'];
         $column->enumValues = ($info['enum_values'] !== null) ? explode(',', str_replace(["''"], ["'"], $info['enum_values'])) : null;
         $column->unsigned = false; // has no meaning in PG
         $column->isPrimaryKey = $info['is_pkey'];
@@ -443,6 +442,7 @@ SQL;
             $column->type = self::TYPE_STRING;
         }
         $column->phpType = $this->getColumnPhpType($column);
+        $column->defaultValue = $column->typecast($info['column_default']);
 
         return $column;
     }
