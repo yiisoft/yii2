@@ -310,28 +310,30 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function validate($attributeNames = null, $clearErrors = true)
     {
+        if ($clearErrors) {
+            $this->clearErrors();
+        }
+
+        if (!$this->beforeValidate()) {
+            return false;
+        }
+
         $scenarios = $this->scenarios();
         $scenario = $this->getScenario();
         if (!isset($scenarios[$scenario])) {
             throw new InvalidParamException("Unknown scenario: $scenario");
         }
 
-        if ($clearErrors) {
-            $this->clearErrors();
-        }
         if ($attributeNames === null) {
             $attributeNames = $this->activeAttributes();
         }
-        if ($this->beforeValidate()) {
-            foreach ($this->getActiveValidators() as $validator) {
-                $validator->validateAttributes($this, $attributeNames);
-            }
-            $this->afterValidate();
 
-            return !$this->hasErrors();
+        foreach ($this->getActiveValidators() as $validator) {
+            $validator->validateAttributes($this, $attributeNames);
         }
+        $this->afterValidate();
 
-        return false;
+        return !$this->hasErrors();
     }
 
     /**

@@ -44,6 +44,7 @@ Yii Framework 2 Change Log
 - Bug #3751: Fixed postgreSQL schema data for enum values, do not add values if there are none (makroxyz)
 - Bug #3752: `QueryBuilder::batchInsert()` does not typecast input values (qiangxue)
 - Bug #3756: Fix number formatting error for `\yii\base\Formatter` by converting strings to float (kartik-v)
+- Bug #3772: Behaviors adding validation rules do not work as expected (qiangxue)
 - Bug #3817: `yii\rbac\PhpManager::getChildren()` returns null instead of expected empty array (qiangxue)
 - Bug #3843: Fixed Menu bug when using `template` with `encodeLabel` => false (creocoder, umneeq)
 - Bug #3863: Fixed incorrect js selector for `\yii\widgets\ActiveForm::errorSummaryCssClass` when it contains multiple classes (creocoder, umneeq)
