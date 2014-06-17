@@ -141,10 +141,11 @@ class Breadcrumbs extends Widget
         } else {
             throw new InvalidConfigException('The "label" element is required for each link.');
         }
+        $issetTemplate = isset($link['template']);
         if (isset($link['url'])) {
-            return strtr(isset($link['template']) ? $link['template'] : $template, ['{link}' => Html::a($label, $link['url'])]);
+            return strtr($issetTemplate ? $link['template'] : $template, ['{link}' => Html::a($label, $link['url'])]);
         } else {
-            return strtr(isset($link['template']) ? $link['template'] : $template, ['{link}' => $label]);
+            return strtr($issetTemplate ? $link['template'] : $template, ['{link}' => $label]);
         }
     }
 }
