@@ -2,7 +2,7 @@
 ==============
 
 你可以通过两种方式安装 Yii：使用 [Composer](http://getcomposer.org/) 或下载一个存档文件。推荐使用前者，
-这样只需执行一条简单的命令就可以安装新的 [创建扩展](extend-creating-extensions.md) 或更新 Yii 了。
+这样只需执行一条简单的命令就可以安装新的 [扩展](extend-creating-extensions.md) 或更新 Yii 了。
 
 > 注意：和 Yii 1 版本不同，以标准方式安装 Yii 2 时会同时下载并安装框架本身和一个应用程序骨架。
 
