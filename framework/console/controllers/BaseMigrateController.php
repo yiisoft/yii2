@@ -16,7 +16,6 @@ use yii\helpers\FileHelper;
  * BaseMigrateController is base class for migrate controllers.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @author Klimov Paul <klimov@zfort.com>
  * @since 2.0
  */
 abstract class BaseMigrateController extends Controller
@@ -528,7 +527,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * Creates a new migration instance.
      * @param string $class the migration class name
-     * @return \yii\db\Migration the migration instance
+     * @return \yii\db\MigrationInterface the migration instance
      */
     protected function createMigration($class)
     {
