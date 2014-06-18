@@ -57,6 +57,7 @@ use yii\db\Expression;
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
 class TimestampBehavior extends AttributeBehavior
