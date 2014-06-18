@@ -20,11 +20,9 @@ use yii\helpers\Inflector;
 class SluggableBehavior extends AttributeBehavior
 {
     /**
-     * @inheritdoc
+     * @var string
      */
-    public $attributes = [
-        BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'slug',
-    ];
+    public $slugAttribute = 'slug';
     /**
      * @var string
      */
@@ -35,6 +33,12 @@ class SluggableBehavior extends AttributeBehavior
      */
     public function init()
     {
+        parent::init();
+
+        if (empty($this->attributes)) {
+            $this->attributes = [BaseActiveRecord::EVENT_BEFORE_VALIDATE => $this->slugAttribute];
+        }
+
         if ($this->attribute === null && $this->value === null) {
             throw new InvalidConfigException('Either "attribute" or "value" properties must be specified.');
         }
