@@ -127,7 +127,7 @@ class InflectorTest extends TestCase
         $data = [
             'Привет. Hello, Йии-- Framework !--- Как дела ? How it goes ?' => 'privet-hello-jii-framework-kak-dela-how-it-goes',
             'this is a title' => 'this-is-a-title',
-            'недвижимость' => 'nedvizimost',
+            'недвижимость' => 'nedvizhimost',
             'áàâéèêíìîóòôúùûã' => 'aaaeeeiiiooouuua',
             'Ναδάλης ṃỹṛèşưḿĕ' => 'nadales-myresume',
             'E=mc²' => 'e-mc2',
