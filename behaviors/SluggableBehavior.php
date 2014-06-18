@@ -12,9 +12,9 @@ use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
 
 /**
- * SluggableBehavior automatically fills the specified attribute with the transliteration result of another attribute.
+ * SluggableBehavior automatically fills the specified attribute with the transliterated and adjusted version to use in URLs.
  *
- * To use SluggableBehavior, simply insert the following code to your ActiveRecord class:
+ * To use SluggableBehavior, insert the following code to your ActiveRecord class:
  *
  * ```php
  * use yii\behaviors\SluggableBehavior;
