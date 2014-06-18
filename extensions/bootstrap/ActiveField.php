@@ -258,7 +258,6 @@ class ActiveField extends \yii\widgets\ActiveField
             }
             if (!isset($options['itemOptions'])) {
                 $options['itemOptions'] = [
-                    'container' => false,
                     'labelOptions' => ['class' => 'checkbox-inline'],
                 ];
             }
@@ -281,7 +280,6 @@ class ActiveField extends \yii\widgets\ActiveField
             }
             if (!isset($options['itemOptions'])) {
                 $options['itemOptions'] = [
-                    'container' => false,
                     'labelOptions' => ['class' => 'radio-inline'],
                 ];
             }
