@@ -23,7 +23,7 @@ use yii\helpers\Inflector;
  * {
  *     return [
  *         [
- *             'class' => 'SluggableBehavior::className(),
+ *             'class' => SluggableBehavior::className(),
  *             'attribute' => 'title',
  *         ],
  *     ];
