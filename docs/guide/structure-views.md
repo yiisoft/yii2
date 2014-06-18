@@ -89,7 +89,7 @@ use yii\helpers\HtmlPurifier;
 
 Like [controllers](structure-controllers.md) and [models](structure-models.md), there are conventions to organize views.
 
-* For views rendered in a controller, they should be put under the directory `@app/views/ControllerID` by default,
+* For views rendered by a controller, they should be put under the directory `@app/views/ControllerID` by default,
   where `ControllerID` refers to the [controller ID](structure-controllers.md#routes). For example, if
   the controller class is `PostController`, the directory would be `@app/views/post`; If it is `PostCommentController`,
   the directory would be `@app/views/post-comment`. In case the controller belongs to a module, the directory
