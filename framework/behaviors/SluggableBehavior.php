@@ -31,6 +31,21 @@ use yii\helpers\Inflector;
  * }
  * ```
  *
+ * By default, SluggableBehavior will fill the `slug` attribute with a value that can be used a slug in a URL
+ * when the associated AR object is being validated. If your attribute name is different, you may configure
+ * the [[slugAttribute]] property like the following:
+ *
+ * ```php
+ * public function behaviors()
+ * {
+ *     return [
+ *         [
+ *             'class' => SluggableBehavior::className(),
+ *             'slugAttribute' => 'alias',
+ *         ],
+ *     ];
+ * }
+ * ```
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
