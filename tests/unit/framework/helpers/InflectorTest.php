@@ -137,8 +137,6 @@ class InflectorTest extends TestCase
         foreach ($data as $source => $expected) {
             $this->assertEquals($expected, Inflector::slug($source));
         }
-
-        //$this->assertEquals('this-is-my-text-', Inflector::slug('! this is my / text $## '));
     }
 
     public function testClassify()
