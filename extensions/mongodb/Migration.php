@@ -53,7 +53,6 @@ abstract class Migration extends Component implements MigrationInterface
      * Creates new collection with the specified options.
      * @param string|array $collection name of the collection
      * @param array $options collection options in format: "name" => "value"
-     * @return \MongoCollection new Mongo collection instance.
      */
     public function createCollection($collection, $options = [])
     {
@@ -118,6 +117,89 @@ abstract class Migration extends Component implements MigrationInterface
         $time = microtime(true);
         $this->db->getCollection($collection)->dropAllIndexes();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
+
+    /**
+     * Inserts new data into collection.
+     * @param array|string $collection collection name.
+     * @param array|object $data data to be inserted.
+     * @param array $options list of options in format: optionName => optionValue.
+     * @return \MongoId new record id instance.
+     */
+    public function insert($collection, $data, $options = [])
+    {
+        echo "    > insert into " . $this->composeCollectionLogName($collection) . ") ...";
+        $time = microtime(true);
+        $id = $this->db->getCollection($collection)->insert($data, $options);
+        echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        return $id;
+    }
+
+    /**
+     * Inserts several new rows into collection.
+     * @param array|string $collection collection name.
+     * @param array $rows array of arrays or objects to be inserted.
+     * @param array $options list of options in format: optionName => optionValue.
+     * @return array inserted data, each row will have "_id" key assigned to it.
+     */
+    public function batchInsert($collection, $rows, $options = [])
+    {
+        echo "    > insert into " . $this->composeCollectionLogName($collection) . ") ...";
+        $time = microtime(true);
+        $rows = $this->db->getCollection($collection)->batchInsert($rows, $options);
+        echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        return $rows;
+    }
+
+    /**
+     * Updates the rows, which matches given criteria by given data.
+     * Note: for "multiple" mode Mongo requires explicit strategy "$set" or "$inc"
+     * to be specified for the "newData". If no strategy is passed "$set" will be used.
+     * @param array|string $collection collection name.
+     * @param array $condition description of the objects to update.
+     * @param array $newData the object with which to update the matching records.
+     * @param array $options list of options in format: optionName => optionValue.
+     * @return integer|boolean number of updated documents or whether operation was successful.
+     */
+    public function update($collection, $condition, $newData, $options = [])
+    {
+        echo "    > update " . $this->composeCollectionLogName($collection) . ") ...";
+        $time = microtime(true);
+        $result = $this->db->getCollection($collection)->update($condition, $newData, $options);
+        echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        return $result;
+    }
+
+    /**
+     * Update the existing database data, otherwise insert this data
+     * @param array|string $collection collection name.
+     * @param array|object $data data to be updated/inserted.
+     * @param array $options list of options in format: optionName => optionValue.
+     * @return \MongoId updated/new record id instance.
+     */
+    public function save($collection, $data, $options = [])
+    {
+        echo "    > save " . $this->composeCollectionLogName($collection) . ") ...";
+        $time = microtime(true);
+        $id = $this->db->getCollection($collection)->save($data, $options);
+        echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        return $id;
+    }
+
+    /**
+     * Removes data from the collection.
+     * @param array|string $collection collection name.
+     * @param array $condition description of records to remove.
+     * @param array $options list of options in format: optionName => optionValue.
+     * @return integer|boolean number of updated documents or whether operation was successful.
+     */
+    public function remove($collection, $condition = [], $options = [])
+    {
+        echo "    > remove " . $this->composeCollectionLogName($collection) . ") ...";
+        $time = microtime(true);
+        $result = $this->db->getCollection($collection)->remove($condition, $options);
+        echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+        return $result;
     }
 
     /**
