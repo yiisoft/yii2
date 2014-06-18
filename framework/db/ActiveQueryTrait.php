@@ -30,6 +30,21 @@ trait ActiveQueryTrait
      */
     public $asArray;
 
+    /**
+     * Makes sure that query behaviors declared by model behaviors are attached to this component.
+     */
+    public function ensureModelBehaviors()
+    {
+        /* @var \yii\base\Model $model */
+        $modelClass = $this->modelClass;
+        $model = new $modelClass();
+        foreach ($model->getBehaviors() as $name => $behavior) {
+            if ($behavior instanceof ActiveQueryBehaviorInterface) {
+                /* @var \yii\base\Component $this */
+                $this->attachBehavior($name, $behavior->queryBehavior());
+            }
+        }
+    }
 
     /**
      * Sets the [[asArray]] property.
