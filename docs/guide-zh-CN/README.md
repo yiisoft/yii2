@@ -1,7 +1,7 @@
 Yii 2.0 权威指南
 ===============================
 
-本教程的发布遵循[ Yii 文档使用许可](http://www.yiiframework.com/doc/terms/).
+本教程的发布遵循 [Yii 文档使用许可](http://www.yiiframework.com/doc/terms/).
 
 版权所有
 
