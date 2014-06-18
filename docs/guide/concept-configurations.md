@@ -58,7 +58,7 @@ where
   Notice that the array keys are formed by prefixing event names with `on `. Please refer to
   the [Events](concept-events.md) section for supported event handler formats.
 * And the `as behaviorName` elements specify what [behaviors](concept-behaviors.md) should be attached to the object.
-  Notice that the array keys are formed by prefixing behavior names with `on `. `$behaviorConfig` represents
+  Notice that the array keys are formed by prefixing behavior names with `as `. `$behaviorConfig` represents
   the configuration for creating a behavior, like a normal configuration as we are describing here.
 
 Below is an example showing a configuration with property initial values, event handlers and behaviors:
@@ -80,7 +80,7 @@ Below is an example showing a configuration with property initial values, event 
 
 ## Using Configurations <a name="using-configurations"></a>
 
-Configurations are used in many places in Yii. At the beginning of this section, we have shown how to use
+Configurations are used in many places in Yii. At the beginning of this section, we have shown how to 
 create an object according to a configuration by using [[Yii::createObject()]]. In this subsection, we will
 describe application configurations and widget configurations - two major usages of configurations.
 
