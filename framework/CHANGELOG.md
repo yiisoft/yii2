@@ -124,6 +124,7 @@ Yii Framework 2 Change Log
 - Chg: Removed `yii\rest\ActiveController::$transactional` property and connected functionality (samdark)
 - Chg: Changed the default value of the `keyPrefix` property of cache components to be null (qiangxue)
 - Chg: Added `prefix` column to `yii\log\DbTarget` to have the same amount of information logged as in files and emails (cebe)
+- New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
 
 
 2.0.0-beta April 13, 2014
