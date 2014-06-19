@@ -72,6 +72,10 @@ use yii\base\InvalidParamException;
 class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
+     * @var boolean whether to persist flash messages between requests.
+     */
+    public $enablePersistentFlash = false;
+    /**
      * @var string the name of the session variable that stores the flash message data.
      */
     public $flashParam = '__flash';
@@ -125,7 +129,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);
-            $this->updateFlashCounters();
+            if (!$this->enablePersistentFlash) {
+                $this->updateFlashCounters();
+            }
         } else {
             $error = error_get_last();
             $message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
