@@ -116,7 +116,7 @@ yii = (function ($) {
             }
 
             var $form = $e.closest('form');
-            var action = $e.prop('href');
+            var action = $e.attr('href');
             var newForm = !$form.length || action && action != '#';
             if (newForm) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
