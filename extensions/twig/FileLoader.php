@@ -12,7 +12,7 @@ namespace yii\twig;
  *
  * @author dev-mraj <dev.meghraj@gmail.com>
  */
-class TwigSimpleFileLoader implements \Twig_LoaderInterface
+class FileLoader implements \Twig_LoaderInterface
 {
     /**
      * @var string Path to directory

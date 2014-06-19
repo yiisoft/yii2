@@ -8,6 +8,7 @@ Yii Framework 2 twig extension Change Log
 - Bug #3767: Fixed repeated adding of extensions when using config. One may now pass extension instances as well (grachov)
 - Bug #3877: Fixed `lexerOptions` throwing exception (dapatrese)
 - Enh #1799: Added `form_begin`, `form_end` to twig extension (samdark)
+- Chg: Renamed `TwigSimpleFileLoader` into `FileLoader` (samdark)
 
 2.0.0-beta April 13, 2014
 -------------------------
