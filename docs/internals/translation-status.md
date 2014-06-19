@@ -20,9 +20,9 @@ structure-application-components.md | Yes
 structure-controllers.md            | Yes
 structure-views.md                  | Yes
 structure-models.md                 | Yes
+structure-modules.md                | Yes
 structure-filters.md                |
 structure-widgets.md                |
-structure-modules.md                |
 structure-assets.md                 |
 structure-extensions.md             |
 runtime-bootstrapping.md            |

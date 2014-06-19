@@ -1,18 +1,17 @@
 Modules
 =======
 
-> Note: This section is under development.
-
 Modules are self-contained software units that consist of [models](structure-models.md), [views](structure-views.md),
 [controllers](structure-controllers.md), and other supporting components. End users can access the controllers
 of a module when it is installed in [application](structure-applications.md). Modules differ from
 [applications](structure-applications.md) in that the former cannot be deployed alone and must reside within the latter.
 
 
-## Creating Modules
+## Creating Modules <a name="creating-modules"></a>
 
 A module is organized as a directory which is called the [[yii\base\Module::basePath|base path]] of the module.
-The content in this directory is like the following:
+Within the directory, there are sub-directories, such as `controllers`, `models`, `views`, which hold controllers,
+models, views, and other code, just like in an application. The following example shows the content within a module:
 
 ```
 forum/
@@ -26,19 +25,16 @@ forum/
             index.php            the index view file
 ```
 
-As you can see, within the module's [[yii\base\Module::basePath|base path]], you can create sub-directories,
-such as `controllers`, `models`, `views`, to hold controllers, models, views that belong to the module.
 
+### Module Classes <a name="module-classes"></a>
 
-### Module Classes
-
-Each module should have a module class which extends from [[yii\base\Module]] and is located directly under
-the module's [[yii\base\Module::basePath|base path]]. When a module is being accessed, a single instance
-of the corresponding module class will be created and made accessible by the code within the module.
-Like [application instances](structure-applications.md), module instances are mainly used to share data and components
+Each module should have a module class which extends from [[yii\base\Module]]. The class should be located
+directly under the module's [[yii\base\Module::basePath|base path]] and should be [autoloadable](concept-autoloading.md).
+When a module is being accessed, a single instance of the corresponding module class will be created.
+Like [application instances](structure-applications.md), module instances are used to share data and components
 for code within modules.
 
-The following is an example of a module class:
+The following is an example how a module class may look like:
 
 ```php
 namespace app\modules\forum;
@@ -55,7 +51,7 @@ class Module extends \yii\base\Module
 }
 ```
 
-If the code in `init()` deals with a lot of module property initialization, you may also save them in terms
+If the `init()` method contains a lot of code initializing the module's properties, you may also save them in terms
 of a [configuration](concept-configurations.md) and load it with the following code in `init()`:
 
 ```php
@@ -82,77 +78,157 @@ return [
 ];
 ```
 
-> Note: Make sure that module classes are named in a way such that they are [autoloadable](concept-autoloading.md).
+
+### Controllers in Modules <a name="controllers-in-modules"></a>
+
+When creating controllers in a module, a convention is to put the controller classes under the `controllers`
+sub-namespace of the namespace of the module class. This also means the controller class files should be
+put in the `controllers` directory within the module's [[yii\base\Module::basePath|base path]].
+For example, to create a `post` controller in the `forum` module shown in the last subsection, you should
+declare the controller class like the following:
+
+```php
+namespace app\modules\forum\controllers;
+
+use yii\web\Controller;
+
+class PostController extends Controller
+{
+    // ...
+}
+```
+
+You may customize the namespace of controller classes by configuring the [[yii\base\Module::controllerNamespace]]
+property. In case when some of the controllers are out of this namespace, you may make them accessible
+by configuring the [[yii\base\Module::controllerMap]] property, similar to [what you do in an application](structure-applications.md#controller-map).
 
 
-### Controllers in Modules
+### Views in Modules <a name="views-in-modules"></a>
 
-You may create a module class
+Views in a module should be put in the `views` directory within the module's [[yii\base\Module::basePath|base path]].
+For views rendered by a controller in the module, they should be put under the directory `views/ControllerID`,
+where `ControllerID` refers to the [controller ID](structure-controllers.md#routes). For example, if
+the controller class is `PostController`, the directory would be `views/post` within the module's
+[[yii\base\Module::basePath|base path]].
 
-Like [application instances](structure-applications.md) are used to
-The module class serves as the central place for storing information shared among the module code. For example,
-we can use [CWebModule::params] to store module parameters, and use [CWebModule::components] to share
-[application components](/doc/guide/basics.application#application-component) at the module level.
-
-
-### Views in Modules
-
-
-## Using Modules
-
-To use a module, first place the module directory under `modules` of the [application base directory](/doc/guide/basics.application#application-base-directory). Then declare the module ID in the [modules|CWebApplication::modules] property of the application. For example, in order to use the above `forum` module, we can use the following [application configuration](/doc/guide/basics.application#application-configuration):
-
-~~~
-[php]
-return array(
-	......
-	'modules'=>array('forum',...),
-	......
-);
-~~~
-
-A module can also be configured with initial property values. The usage is very similar to configuring [application components](/doc/guide/basics.application#application-component). For example, the `forum` module may have a property named `postPerPage` in its module class which can be configured in the [application configuration](/doc/guide/basics.application#application-configuration) as follows:
-
-~~~
-[php]
-return array(
-	......
-	'modules'=>array(
-	    'forum'=>array(
-	        'postPerPage'=>20,
-	    ),
-	),
-	......
-);
-~~~
-
-The module instance may be accessed via the [module|CController::module] property of the currently active controller. Through the module instance, we can then access information that are shared at the module level. For example, in order to access the above `postPerPage` information, we can use the following expression:
-
-~~~
-[php]
-$postPerPage=Yii::app()->controller->module->postPerPage;
-// or the following if $this refers to the controller instance
-// $postPerPage=$this->module->postPerPage;
-~~~
-
-A controller action in a module can be accessed using the [route](/doc/guide/basics.controller#route) `moduleID/controllerID/actionID`. For example, assuming the above `forum` module has a controller named `PostController`, we can use the [route](/doc/guide/basics.controller#route) `forum/post/create` to refer to the `create` action in this controller. The corresponding URL for this route would be `http://www.example.com/index.php?r=forum/post/create`.
-
-> Tip: If a controller is in a sub-directory of `controllers`, we can still use the above [route](/doc/guide/basics.controller#route) format. For example, assuming `PostController` is under `forum/controllers/admin`, we can refer to the `create` action using `forum/admin/post/create`.
+A module can specify a [layout](structure-views.md#layouts) that is applied to the views rendered by the module's
+controllers. The layout should be put in the `views/layouts` directory by default, and you should configure
+the [[yii\base\Module::layout]] property to point to the layout name. If you do not configure the `layout` property,
+the application's layout will be used instead.
 
 
-## Nested Modules
+## Using Modules <a name="using-modules"></a>
 
-Modules can be nested in unlimited levels. That is, a module can contain another module which can contain yet another module. We call the former *parent module* while the latter *child module*. Child modules must be declared in the [modules|CWebModule::modules] property of their parent module, like we declare modules in the application configuration shown as above.
+To use a module in an application, simply configure the application by listing the module in
+the [[yii\base\Application::modules|modules]] property of the application. The following code in the
+[application configuration](structure-applications.md#application-configurations) uses the `forum` module:
 
-To access a controller action in a child module, we should use the route `parentModuleID/childModuleID/controllerID/actionID`.
+```php
+[
+    'modules' => [
+        'forum' => [
+            'class' => 'app\modules\forum\Module',
+            // ... other configurations for the module ...
+        ],
+    ],
+]
+```
+
+The [[yii\base\Application::modules|modules]] property takes an array of module configurations. Each array key
+represents a module ID which uniquely identifies the module among all modules in the application, and the corresponding
+array value is a [configuration](concept-configurations.md) for creating the module.
 
 
-## Best Practices
+### Routes <a name="routes"></a>
 
-Users can access the controllers in a module like they do with normal application controllers.
+Like accessing controllers in an application, [routes](structure-controllers.md#routes) are used to address
+controllers in a module. A route for a controller within a module must begin with the module ID followed by
+the controller ID and action ID. For example, if an application uses a module named `forum`, then the route
+`forum/post/index` would represent the `index` action of the `post` controller in the module. If the route
+only contains the module ID, then the [[yii\base\Module::defaultRoute]] property, which defaults to `default`,
+will determine which controller/action should be used. This means a route `forum` would represent the `default`
+controller in the `forum` module.
 
-Modules are useful in several scenarios. For a large-scale application, we may divide it into several modules,
-each being developed and maintained separately. Some commonly used features, such as user management,
-comment management, may be developed in terms of modules so that they can be reused easily in future projects.
+
+### Accessing Modules <a name="accessing-modules"></a>
+
+A module is instantiated when one of its controllers is accessed by end users. You may access the instance of a module
+using the approaches shown in the following example:
+
+```php
+// get the module whose ID is "forum"
+$module = \Yii::$app->getModule('forum');
+
+// get the module to which the currently requested controller belongs
+$module = \Yii::$app->controller->module;
+```
+
+The first approach is only useful in application code which has knowledge about the module ID, while the second approach
+is best used by the code within the module.
+
+Once getting hold of a module instance, you can access parameters or components registered with the module. For example,
+
+```php
+$maxPostCount = $module->params['maxPostCount'];
+```
 
 
+### Bootstrapping Modules <a name="bootstrapping-modules"></a>
+
+Some modules may need to be run for every request. The [[yii\debug\Module|debug]] module is such an example.
+To do so, list the IDs of such modules in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
+
+For example, the following application configuration makes sure the `debug` module is always load:
+
+```php
+[
+    'bootstrap' => [
+        'debug',
+    ],
+
+    'modules' => [
+        'debug' => 'yii\debug\Module',
+    ],
+]
+```
+
+
+## Nested Modules <a name="nested-modules"></a>
+
+Modules can be nested in unlimited levels. That is, a module can contain another module which can contain yet
+another module. We call the former *parent module* while the latter *child module*. Child modules must be declared
+in the [[yii\bas\Module::modules|modules]] property of their parent modules. For example,
+
+```php
+namespace app\modules\forum;
+
+class Module extends \yii\base\Module
+{
+    public function init()
+    {
+        parent::init();
+
+        $this->modules = [
+            'admin' => [
+                // you should consider using a shorter namespace here!
+                'class' => 'app\modules\forum\modules\admin\Module',
+            ],
+        ];
+    }
+}
+```
+
+For a controller within a nested module, its route should include the IDs of all its ancestor module.
+For example, the route `forum/admin/dashboard/index` represents the `index` action of the `dashboard` controller
+in the `admin` module which is a child module of the `forum` module.
+
+
+## Best Practices <a name="best-practices"></a>
+
+Modules are best used in large applications whose features can be divided into several groups, each consisting of
+a set of closely related features. Each such feature group can be developed as a module which is developed and
+maintained by a specific developer or team.
+
+Modules are also a good way of reusing code at the feature group level. Some commonly used features, such as
+user management, comment management, can all be developed in terms of modules so that they can be resued easily
+in future projects.

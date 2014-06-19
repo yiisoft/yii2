@@ -19,8 +19,8 @@ Creando un Modelo <a name="creating-model"></a>
 -----------------
 
 Para representar los datos ingresados por un usuario, crea una clase modelo `EntryForm` cómo se muestra abajo y
-guarda la clase en el archivo `models/EntryForm.php`. Por favor ver la sección [Autocargando Clases](concept-autoloading.md)
-para más detalles acerca de la convención de nombres de los archivos de clase.
+guarda la clase en el archivo `models/EntryForm.php`. Por favor, visita la sección [Autocargando Clases](concept-autoloading.md)
+para obtener más detalles acerca de la convención de nombres de los archivos de clase.
 
 ```php
 <?php
@@ -51,7 +51,7 @@ La clase contiene dos miembros públicos, `name` y `email`, que son utilizas par
 los datos ingresados por el usuario. También contiene el método llamado `rules()` que regresa un conjunto
 de reglas utilizadas para validar los datos. Las reglas de validación declaradas arriba indican que
 
-* que ambos datos tanto el `name` como el `email` son requeridos;
+* ambos datos, tanto el `name` como el `email`, son requeridos;
 * el dato `email` debe ser una dirección de correo válida.
 
 Si tienes un objeto `EntryForm` llenado con los datos ingresados por el usuario, puedes llamar
@@ -115,10 +115,10 @@ mostrada, y mostrará el formulario HTML junto con los mensajes de error de vali
 Creando Vistas <a name="creating-views"></a>
 --------------
 
-Finalmente, crea dos vistas llamadas `entry-confirm` y `entry` que son mostradas por la acción `entry`,
-como fue descrito en la última sub-sección.
+Finalmente, crea dos vistas llamadas `entry-confirm` y `entry` que sean mostradas por la acción `entry`,
+tal y como fue descrito en la última sub-sección.
 
-La vista `entry-confirm` simplemente muestra los datos de name y email. Debe ser guardada como el archivo `views/site/entry-confirm.php`.
+La vista `entry-confirm` simplemente muestra los datos de name y email. Ésta debe ser guardada como el archivo `views/site/entry-confirm.php`.
 
 ```php
 <?php
@@ -160,8 +160,8 @@ y el segundo del dato "email". Después de los campos de input, el método [[yii
 es llamado para general el botón de submit (enviar).
 
 
-Intentándolo <a name="trying-it-out"></a>
-------------
+Probándolo <a name="trying-it-out"></a>
+----------
 
 Para ver cómo funciona, utiliza tu navegador para ir al siguiente URL:
 
@@ -170,12 +170,12 @@ http://hostname/index.php?r=site/entry
 ```
 
 Verás una página que muestra un formulario con dos campos de input. Adelante de cada campo de input, será mostrada también 
-una etiqueta indicando que dato necesitas ingresar. Si haces click en el botón de submit sin ingresar nada, 
+una etiqueta indicando que dato necesitas ingresar. Si haces click en el botón de envío (Submit) sin ingresar nada, 
 o si ingresas una dirección de correo inválida, verás un mensaje de error que se mostrará al lado del campo que tiene problemas.
 
 ![Formulario con Errores de Validación](images/start-form-validation.png)
 
-Después de ingresar un nombre y dirección de correo válidos y haciendo click en el botón de submit, verás una nueva página
+Después de ingresar un nombre y dirección de correo válidos y haciendo click en el botón de envío (Submit), verás una nueva página
 mostrando los datos que acabas de ingresar.
 
 ![Confirmación de los Datos de Entrada](images/start-entry-confirmation.png)
@@ -184,15 +184,15 @@ mostrando los datos que acabas de ingresar.
 
 ### Magia Explicada <a name="magic-explained"></a>
 
-Te puedes preguntar como el formulario HTML funciona detrás de cámara, porque parece casi mágico que pueda 
+Te estarás preguntando cómo funciona toda esa automatización del formulario HTML, porque parece casi mágico que pueda 
 mostrar una etiqueta para cada campo de input y mostrar los mensajes de error si no ingresas los datos correctamente
 sin recargar la página.
 
-Si, la validación de los datos es realmente realizada en el lado del cliente utilizando JavaScript así como también en el lado del servidor.
-[[yii\widgets\ActiveForm]] es lo suficientemente inteligente para extraer las reglas de validación que has declarado en `EntryForm`,
+Si, la validación de los datos se realiza en el lado del cliente utilizando JavaScript así como también en el lado del servidor.
+[[yii\widgets\ActiveForm]] es lo suficientemente inteligente como para extraer las reglas de validación que has declarado en `EntryForm`,
 convertirlas en código Javascript, y utilizar el JavaScript para realizar la validación de los datos. En caso de que hayas deshabilitado 
-JavaScript en tu navegador, la validación igual se realizará en el lado del servidor, como se muestra en 
-el método `actionEntry()`. Esto garantiza la validez de los datos en todas las circunstancias.
+JavaScript en tu navegador, la validación se realizará igualmente en el lado del servidor, como se muestra en 
+el método `actionEntry()`. Esto garantiza la validez de los datos en cualquier circunstancias.
 
 Las etiquetas de los campos de input son generados por el método `field()` basado en los nombres de las propiedades del modelo.
 Por ejemplo, la etiqueta `Name` será generada de la propiedad `name`. Puedes personalizar una etiqueta con

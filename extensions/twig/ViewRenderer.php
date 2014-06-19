@@ -56,7 +56,7 @@ class ViewRenderer extends BaseViewRenderer
     public $filters = [];
     /**
      * @var array Custom extensions.
-     * Example: `['Twig_Extension_Sandbox', 'Twig_Extension_Text']`
+     * Example: `['Twig_Extension_Sandbox', new \Twig_Extension_Text()]`
      */
     public $extensions = [];
     /**
@@ -84,13 +84,6 @@ class ViewRenderer extends BaseViewRenderer
             'charset' => Yii::$app->charset,
         ], $this->options));
 
-        // Adding custom extensions
-        if (!empty($this->extensions)) {
-            foreach ($this->extensions as $extension) {
-                $this->twig->addExtension(new $extension());
-            }
-        }
-
         // Adding custom globals (objects or static classes)
         if (!empty($this->globals)) {
             $this->addGlobals($this->globals);
@@ -109,11 +102,6 @@ class ViewRenderer extends BaseViewRenderer
         // Adding custom extensions
         if (!empty($this->extensions)) {
             $this->addExtensions($this->extensions);
-        }
-
-        // Change lexer syntax
-        if (!empty($this->lexerOptions)) {
-            $this->setLexerOptions($this->lexerOptions);
         }
 
         // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
@@ -137,6 +125,11 @@ class ViewRenderer extends BaseViewRenderer
         }));
 
         $this->twig->addGlobal('app', \Yii::$app);
+
+        // Change lexer syntax (must be set after other settings)
+        if (!empty($this->lexerOptions)) {
+            $this->setLexerOptions($this->lexerOptions);
+        }
     }
 
     /**
@@ -154,7 +147,7 @@ class ViewRenderer extends BaseViewRenderer
     public function render($view, $file, $params)
     {
         $this->twig->addGlobal('this', $view);
-        $this->twig->setLoader(new TwigSimpleFileLoader(dirname($file)));
+        $this->twig->setLoader(new FileLoader(dirname($file)));
 
         return $this->twig->render(pathinfo($file, PATHINFO_BASENAME), $params);
     }
@@ -198,7 +191,7 @@ class ViewRenderer extends BaseViewRenderer
     public function addExtensions($extensions)
     {
         foreach ($extensions as $extName) {
-            $this->twig->addExtension(new $extName());
+            $this->twig->addExtension(is_object($extName) ? $extName : new $extName());
         }
     }
 

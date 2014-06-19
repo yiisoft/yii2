@@ -4,7 +4,7 @@ Getting started with Yii2 development
 The best way to have a locally runnable webapp that uses codebase cloned from main repository is to use `yii2-dev`
 Composer package. Here's how to do it:
 
-1. `git clone git@github.com:yiisoft/yii2-app-basic.git`.
+1. `git clone https://github.com/yiisoft/yii2-app-basic`.
 2. Remove `.git` directory from cloned directory.
 3. Change `composer.json`. Instead of all stable requirements add just one `"yiisoft/yii2-dev": "*"`.
 4. Execute `composer create-project`. Do not add `--prefer-dist` to the command since it will not download git repository

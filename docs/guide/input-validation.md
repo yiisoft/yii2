@@ -315,7 +315,7 @@ class MyForm extends Model
         ];
     }
 
-    public function validateType($attribute, $params)
+    public function validateCountry($attribute, $params)
     {
         if (!in_array($this->$attribute, ['USA', 'Web'])) {
             $this->addError($attribute, 'The country must be either "USA" or "Web".');

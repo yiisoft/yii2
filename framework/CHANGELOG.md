@@ -49,6 +49,8 @@ Yii Framework 2 Change Log
 - Bug #3843: Fixed Menu bug when using `template` with `encodeLabel` => false (creocoder, umneeq)
 - Bug #3863: Fixed incorrect js selector for `\yii\widgets\ActiveForm::errorSummaryCssClass` when it contains multiple classes (creocoder, umneeq)
 - Bug #3909: `Html::to()` should not prefix base URL to URLs that already contain scheme (qiangxue)
+- Bug #3934: yii.handleAction() in yii.js does not correctly detect if a hyperlink contains useful URL or not (joni-jones, qiangxue)
+- Bug #3968: Messages logged in shutdown functions are not handled (qiangxue)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
@@ -69,6 +71,7 @@ Yii Framework 2 Change Log
 - Enh #3232: Added `export()` and `exportAsString()` methods to `yii\helpers\BaseVarDumper` (klimov-paul)
 - Enh #3244: Allow logging complex data such as arrays and object via the log system (cebe)
 - Enh #3252: Added support for case insensitive matching using ILIKE to PostgreSQL QueryBuilder (cebe)
+- Enh #3280: Support dynamically attaching anonymous behaviors (qiangxue)
 - Enh #3284: Added support for checking multiple ETags by `yii\filters\HttpCache` (qiangxue)
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
@@ -88,6 +91,13 @@ Yii Framework 2 Change Log
 - Enh #3643: Improved Mime-Type detection by using the `mime.types` file from apache http project to dected mime types by file extension (cebe, pavel-voronin, trejder)
 - Enh #3773: Added `FileValidator::mimeTypes` to support validating MIME types of files (Ragazzo)
 - Enh #3774: Added `FileValidator::checkExtensionByMimeType` to support validating file types against file mime-types (Ragazzo)
+- Enh #3801: Base migration controller `yii\console\controllers\BaseMigrateController` extracted (klimov-paul)
+- Enh #3939: `\yii\Inflector::slug()` improvements (samdark)
+    - Added protected `\yii\Inflector::transliterate()` that could be replaced with custom translit implementation.
+    - Added proper tests for both intl-based slug and PHP fallback.
+    - Removed character maps for non-latin languages.
+    - Improved overall slug results.
+    - Added note about the fact that intl is required for non-latin languages to requirements checker.
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
@@ -122,6 +132,7 @@ Yii Framework 2 Change Log
 - Chg: Removed `yii\rest\ActiveController::$transactional` property and connected functionality (samdark)
 - Chg: Changed the default value of the `keyPrefix` property of cache components to be null (qiangxue)
 - Chg: Added `prefix` column to `yii\log\DbTarget` to have the same amount of information logged as in files and emails (cebe)
+- New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
 
 
 2.0.0-beta April 13, 2014

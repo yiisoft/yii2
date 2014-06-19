@@ -116,7 +116,10 @@ class Logger extends Component
     public function init()
     {
         parent::init();
-        register_shutdown_function([$this, 'flush'], true);
+        register_shutdown_function(function () {
+            // make sure "flush()" is called last when there are multiple shutdown functions
+            register_shutdown_function([$this, 'flush'], true);
+        });
     }
 
     /**

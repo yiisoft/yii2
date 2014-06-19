@@ -3,7 +3,7 @@ Trabajando con Bases de Datos
 
 En esta sección, explicaremos cómo crear una nueva página para mostrar datos de países traídos de una tabla de la
 base de datos llamada `country`. Para lograr este objetivo, configurarás una conexión a la base de datos,
-crearás una clase [Active Record](db-active-record.md), y también una [acción](structure-controllers.md)
+crearás una clase [Active Record](db-active-record.md), una [acción](structure-controllers.md)
 y una [vista](structure-views.md).
 
 A lo largo de este tutorial, aprenderás
@@ -47,7 +47,7 @@ INSERT INTO `Country` VALUES ('US','United States',278357000);
 ```
 
 Al final, tendrás una base de datos llamada `yii2basic`, y dentro de esta, una tabla llamada `country` con diez
-registras en ella.
+registros en ella.
 
 
 Configurando una conexión a la Base de Datos <a name="configuring-db-connection"></a>
@@ -76,7 +76,7 @@ Esta es una típica [configuración](concept-configurations.md) basada en archiv
 necesarios para crear e inicializar una instancia de [[yii\db\Connection]] a través de la cual puedes realizar
 consultas SQL contra la base de datos subyacente.
 
-La conexión a la base de datos realizada arriba puede ser accedida mediante `Yii::$app->db`.
+La conexión a la base de datos realizada anteriormente puede ser accedida mediante `Yii::$app->db`.
 
 > Información: El archivo `config/db.php` será incluido en el archivo principal de configuración `config/web.php`,
   el cual especifica cómo la instancia de la [aplicación](structure-applications.md) debe ser inicializada.
@@ -105,7 +105,7 @@ La clase `Country` extiende de [[yii\db\ActiveRecord]]. No necesitas escribir ni
 Yii adivinará la tabla correspondiente a la clase desde su nombre. En caso de que esto no funcione, puedes
 sobrescribir el método [[yii\db\ActiveRecord::tableName()]] para especificar la tabla asociada a la clase.
 
-Utilizando la clase `Country`, puedes manipular los datos de la tabla `country` fácilmente. Debajo hay simples
+Utilizando la clase `Country`, puedes manipular los datos de la tabla `country` fácilmente. Debajo hay sencillos
 ejemplos de código que muestran cómo utilizar la clase `Country`.
 
 ```php
@@ -136,7 +136,7 @@ Creando una Acción <a name="creating-action"></a>
 
 Para mostrar el país a los usuarios, necesitas crear una acción. En vez de hacerlo en el controlador `site`
 como lo hiciste en las secciones previas, tiene más sentido crear un nuevo controlador que englobe todas las
-acciones de manipulación de datos de la taba country. Llama a este nuevo controlador `CountryController` y define
+acciones de manipulación de datos de la tabla country. Llama a este nuevo controlador `CountryController` y define
 una acción `index` en él, como se muestra a continuación:
 
 ```php
@@ -176,7 +176,7 @@ Guarda el código anterior en el archivo `controllers/CountryController.php`.
 
 La acción `index` llama a `Country::find()` para generar una consulta a la base de datos y traer todos los datos
 de la tabla `country`.
-Para limitar la cantidad de registros traídos en cada request, la consulta es paginada con la ayuda de un objeto
+Para limitar la cantidad de registros traídos en cada petición, la consulta es paginada con la ayuda de un objeto
 [[yii\data\Pagination]]. El objeto `Pagination` sirve para dos propósitos:
 
 * Define las cláusulas `offset` y `limit` de la consulta SQL para así sólo devolver una sola página de datos
@@ -220,8 +220,8 @@ El widget `LinkPager` muestra una lista de botones que representan las páginas 
 de ellas mostrará los datos de países de la página correspondiente.
 
 
-Intentándolo <a name="trying-it-out"></a>
-------------
+Probándolo <a name="trying-it-out"></a>
+----------
 
 Para ver cómo funciona, utiliza a la siguiente URL en tu navegador:
 
@@ -239,14 +239,14 @@ Observa más cuidadosamente y verás que la URL en el navegador cambia a
 http://hostname/index.php?r=country/index&page=2
 ```
 
-Detrás de escenas, [[yii\data\Pagination|Pagination]] está realizando su magia.
+Entre bastidores, [[yii\data\Pagination|Pagination]] está realizando su magia.
 
 * Inicialmente, [[yii\data\Pagination|Pagination]] representa la primera página, que agrega a la consulta SQL
   a la base de datos con la cláusula `LIMIT 5 OFFSET 0`. Como resultado, los primeros cinco países serán traídos y mostrados.
 * El widget [[yii\widgets\LinkPager|LinkPager]] renderiza los botones de páginas usando las URLs
   creadas por [[yii\data\Pagination::createUrl()|Pagination]]. Las URLs contendrán el parámetro `page`
   representando los números de páginas.
-* Si haces click en el botón "2", se lanza y maneja un nuevo request a la ruta `country/index`.
+* Si haces click en el botón "2", se lanza y maneja una nueva petición a la ruta `country/index`.
   [[yii\data\Pagination|Pagination]] lee el parámetro `page` y define el número de página actual como "2".
   Por consiguiente, la consulta a la base de datos tendrá la cláusula `LIMIT 5 OFFSET 5` y devolverá los
   siguientes cinco países para mostrar.
@@ -260,5 +260,5 @@ datos paginados con la ayuda de [[yii\data\Pagination]] y [[yii\widgets\LinkPage
 
 En la siguiente sección, aprenderás a utilizar la poderosa herramienta de generación de código llamada [Gii](tool-gii.md),
 para ayudarte a implementar rápidamente algunas características comunes, como crear operaciones de Alta-Baja-Modificación
-(ABM, o CRUD en inglés) de los datos guardados en la base de datos. De hecho, el código que acabas de escribir fue automáticamente
-generado a través de esta herramienta.
+(ABM, o CRUD en inglés) de los datos guardados en la base de datos. De hecho, el código que acabas de escribir fue 
+generado automáticamente a través de esta herramienta.

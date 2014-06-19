@@ -126,6 +126,16 @@ $component->attachBehavior('myBehavior3', [
 ]);
 ```
 
+You may attach multiple behaviors at once by using the [[yii\base\Component::attachBehaviors()]] method.
+For example,
+
+```php
+$component->attachBehaviors([
+    'myBehavior1' => new MyBehavior,  // a named behavior
+    MyBehavior::className(),          // an anonymous behavior
+]);
+```
+
 You may also attach behaviors through [configurations](concept-configurations.md). For more details, please
 refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
