@@ -90,6 +90,12 @@ Yii Framework 2 Change Log
 - Enh #3773: Added `FileValidator::mimeTypes` to support validating MIME types of files (Ragazzo)
 - Enh #3774: Added `FileValidator::checkExtensionByMimeType` to support validating file types against file mime-types (Ragazzo)
 - Enh #3801: Base migration controller `yii\console\controllers\BaseMigrateController` extracted (klimov-paul)
+- Enh #3939: `\yii\Inflector::slug()` improvements (samdark)
+    - Added protected `\yii\Inflector::transliterate()` that could be replaced with custom translit implementation.
+    - Added proper tests for both intl-based slug and PHP fallback.
+    - Removed character maps for non-latin languages.
+    - Improved overall slug results.
+    - Added note about the fact that intl is required for non-latin languages to requirements checker.
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
