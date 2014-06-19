@@ -122,6 +122,8 @@ class MigrateController extends BaseMigrateController
      */
     protected function getMigrationHistory($limit)
     {
+        $this->ensureBaseMigrationHistory();
+
         $query = new Query;
         $rows = $query->select(['version', 'apply_time'])
             ->from($this->migrationCollection)
@@ -129,12 +131,30 @@ class MigrateController extends BaseMigrateController
             ->limit($limit)
             ->all($this->db);
         $history = ArrayHelper::map($rows, 'version', 'apply_time');
-        if (empty($history)) {
-            $this->addMigrationHistory(self::BASE_MIGRATION);
-        }
         unset($history[self::BASE_MIGRATION]);
 
         return $history;
+    }
+
+    /**
+     * Ensures migration history contains at least base migration entry.
+     */
+    protected function ensureBaseMigrationHistory()
+    {
+        static $ensured = false;
+
+        if (!$ensured) {
+            $query = new Query;
+            $row = $query->select(['version'])
+                ->from($this->migrationCollection)
+                ->andWhere(['version' => self::BASE_MIGRATION])
+                ->limit(1)
+                ->one($this->db);
+            if (empty($row)) {
+                $this->addMigrationHistory(self::BASE_MIGRATION);
+            }
+            $ensured = true;
+        }
     }
 
     /**
