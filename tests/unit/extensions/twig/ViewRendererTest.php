@@ -35,6 +35,18 @@ class ViewRendererTest extends TestCase
         $this->assertEquals(1, preg_match('#<script src="/assets/[0-9a-z]+/jquery\\.js"></script>\s*</body>#', $content), 'content does not contain the jquery js:' . $content);
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/3877
+     */
+    public function testLexerOptions()
+    {
+        $view = $this->mockView();
+        $content = $view->renderFile('@yiiunit/extensions/twig/views/layout.twig');
+
+        $this->assertFalse(strpos($content, 'CUSTOM_LEXER_TWIG_COMMENT') , 'custom comment lexerOption is not applied');
+        $this->assertTrue(0 < strpos($content, 'DEFAULT_TWIG_COMMENT') , 'default comment style not modified via lexerOptions');
+    }
+
     protected function mockView()
     {
         return new View([
@@ -52,6 +64,9 @@ class ViewRendererTest extends TestCase
                     'functions' => [
                         't' => '\Yii::t',
                         'json_encode' => '\yii\helpers\Json::encode'
+                    ],
+                    'lexerOptions' => [
+                        'tag_comment' => [ '{*', '*}' ],
                     ]
                 ],
             ],
