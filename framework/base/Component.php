@@ -660,7 +660,9 @@ class Component extends Object
 
     /**
      * Attaches a behavior to this component.
-     * @param string $name the name of the behavior.
+     * @param string|integer $name the name of the behavior. If this is an integer, it means the behavior
+     * is an anonymous one. Otherwise, the behavior is a named one and any existing behavior with the same name
+     * will be detached first.
      * @param string|array|Behavior $behavior the behavior to be attached
      * @return Behavior the attached behavior.
      */
@@ -669,11 +671,17 @@ class Component extends Object
         if (!($behavior instanceof Behavior)) {
             $behavior = Yii::createObject($behavior);
         }
-        if (isset($this->_behaviors[$name])) {
-            $this->_behaviors[$name]->detach();
+        if (is_int($name)) {
+            $behavior->attach($this);
+            $this->_behaviors[] = $behavior;
+        } else {
+            if (isset($this->_behaviors[$name])) {
+                $this->_behaviors[$name]->detach();
+            }
+            $behavior->attach($this);
+            $this->_behaviors[$name] = $behavior;
         }
-        $behavior->attach($this);
 
-        return $this->_behaviors[$name] = $behavior;
+        return $behavior;
     }
 }
