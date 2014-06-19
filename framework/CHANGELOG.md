@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
-- Bug #3934: Changed prop() method to attr() to get correct url (joni-jones)
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
@@ -50,7 +49,7 @@ Yii Framework 2 Change Log
 - Bug #3843: Fixed Menu bug when using `template` with `encodeLabel` => false (creocoder, umneeq)
 - Bug #3863: Fixed incorrect js selector for `\yii\widgets\ActiveForm::errorSummaryCssClass` when it contains multiple classes (creocoder, umneeq)
 - Bug #3909: `Html::to()` should not prefix base URL to URLs that already contain scheme (qiangxue)
-- Bug #3934: yii.handleAction() in yii.js does not handle the case when a hyperlink is a hash character (qiangxue)
+- Bug #3934: yii.handleAction() in yii.js does not correctly detect if a hyperlink contains useful URL or not (joni-jones, qiangxue)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
