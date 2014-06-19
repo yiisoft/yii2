@@ -17,7 +17,7 @@ use yii\helpers\ArrayHelper;
 /**
  * Manages application MongoDB migrations.
  *
- * This is an analog of [[\yii\console\controllers|MigrateController]] for MongoDB.
+ * This is an analog of [[\yii\console\controllers\MigrateController]] for MongoDB.
  *
  * This command provides support for tracking the migration history, upgrading
  * or downloading with migrations, and creating new migration skeletons.
@@ -40,8 +40,8 @@ use yii\helpers\ArrayHelper;
  * Below are some common usages of this command:
  *
  * ~~~
- * # creates a new migration named 'create_user_table'
- * yii mongodb-migrate/create create_user_table
+ * # creates a new migration named 'create_user_collection'
+ * yii mongodb-migrate/create create_user_collection
  *
  * # applies ALL new migrations
  * yii mongodb-migrate
