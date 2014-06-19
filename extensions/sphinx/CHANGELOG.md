@@ -17,6 +17,7 @@ Yii Framework 2 sphinx extension Change Log
 - Enh #1398: Refactor ActiveRecord to use BaseActiveRecord class of the framework (klimov-paul)
 - Enh #2002: Added filterWhere() method to yii\spinx\Query to allow easy addition of search filter conditions by ignoring empty search fields (samdark, cebe)
 - Enh #2892: ActiveRecord dirty attributes are now reset after call to `afterSave()` so information about changed attributes is available in `afterSave`-event (cebe)
+- Enh #3964: Gii generator for Active Record model added (klimov-paul)
 - Chg #2281: Renamed `ActiveRecord::create()` to `populateRecord()` and changed signature. This method will not call instantiate() anymore (cebe)
 - Chg #2146: Removed `ActiveRelation` class and moved the functionality to `ActiveQuery`.
              All relational queries are now directly served by `ActiveQuery` allowing to use
