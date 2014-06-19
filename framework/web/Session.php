@@ -76,6 +76,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public $flashParam = '__flash';
     /**
+     * @var int number of requests ater flash message data will be deleted automatically.
+     */
+    public $flashesQueueDepth = 1;    
+    /**
      * @var \SessionHandlerInterface|array an object implementing the SessionHandlerInterface or a configuration array. If set, will be used to provide persistency instead of build-in methods.
      */
     public $handler;
@@ -603,7 +607,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $counters = $this->get($this->flashParam, []);
         if (is_array($counters)) {
             foreach ($counters as $key => $count) {
-                if ($count) {
+                if ($count >= $this->flashesQueueDepth) {
                     unset($counters[$key], $_SESSION[$key]);
                 } else {
                     $counters[$key]++;
