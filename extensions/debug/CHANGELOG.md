@@ -5,6 +5,7 @@ Yii Framework 2 debug extension Change Log
 --------------------------
 
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
+- Bug #3956: Debug toolbar was affecting flash message removal (samdark) 
 - Enh #2299: Date and time in request list is now never wrapped (samdark)
 - Enh #3088: The debug module will manage their own URL rules now (qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
