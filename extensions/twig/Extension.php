@@ -193,6 +193,6 @@ class Extension extends \Twig_Extension
      */
     public function getName()
     {
-        return 'Twig Extension for Yii 2';
+        return 'yii2-twig';
     }
 }
