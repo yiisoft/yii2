@@ -603,9 +603,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $counters = $this->get($this->flashParam, []);
         if (is_array($counters)) {
             foreach ($counters as $key => $count) {
-                if ($count) {
+                if ($count > 0) {
                     unset($counters[$key], $_SESSION[$key]);
-                } else {
+                } elseif ($count == 0) {
                     $counters[$key]++;
                 }
             }
@@ -618,11 +618,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Returns a flash message.
-     * A flash message is available only in the current request and the next request.
      * @param string $key the key identifying the flash message
      * @param mixed $defaultValue value to be returned if the flash message does not exist.
      * @param boolean $delete whether to delete this flash message right after this method is called.
-     * If false, the flash message will be automatically deleted after the next request.
+     * If false, the flash message will be automatically deleted in the next request.
      * @return mixed the flash message
      * @see setFlash()
      * @see hasFlash()
@@ -636,6 +635,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             $value = $this->get($key, $defaultValue);
             if ($delete) {
                 $this->removeFlash($key);
+            } elseif ($counters[$key] < 0) {
+                // mark for deletion in the next request
+                $counters[$key] = 1;
+                $_SESSION[$this->flashParam] = $counters;
             }
 
             return $value;
@@ -661,46 +664,62 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      *
      * [bootstrap alert]: http://getbootstrap.com/components/#alerts
      *
+     * @param boolean $delete whether to delete the flash messages right after this method is called.
+     * If false, the flash messages will be automatically deleted in the next request.
      * @return array flash messages (key => message).
      * @see setFlash()
      * @see getFlash()
      * @see hasFlash()
      * @see removeFlash()
      */
-    public function getAllFlashes()
+    public function getAllFlashes($delete = false)
     {
         $counters = $this->get($this->flashParam, []);
         $flashes = [];
         foreach (array_keys($counters) as $key) {
-            if (isset($_SESSION[$key])) {
+            if (array_key_exists($key, $_SESSION)) {
                 $flashes[$key] = $_SESSION[$key];
+                if ($delete) {
+                    unset($counters[$key], $_SESSION[$key]);
+                } elseif ($counters[$key] < 0) {
+                    // mark for deletion in the next request
+                    $counters[$key] = 1;
+                }
+            } else {
+                unset($counters[$key]);
             }
         }
+
+        $_SESSION[$this->flashParam] = $counters;
 
         return $flashes;
     }
 
     /**
      * Stores a flash message.
-     * A flash message is available only in the current request and the next request.
+     * A flash message will be automatically deleted after it is accessed in a request and the deletion will happen
+     * in the next request.
      * @param string $key the key identifying the flash message. Note that flash messages
      * and normal session variables share the same name space. If you have a normal
      * session variable using the same name, its value will be overwritten by this method.
      * @param mixed $value flash message
+     * @param boolean $removeAfterAccess whether the flash message should be automatically removed only if
+     * it is accessed. If false, the flash message will be automatically removed after the next request,
+     * regardless if it is accessed or not. If true (default value), the flash message will remain until after
+     * it is accessed.
      * @see getFlash()
      * @see removeFlash()
      */
-    public function setFlash($key, $value = true)
+    public function setFlash($key, $value = true, $removeAfterAccess = true)
     {
         $counters = $this->get($this->flashParam, []);
-        $counters[$key] = 0;
+        $counters[$key] = $removeAfterAccess ? -1 : 0;
         $_SESSION[$key] = $value;
         $_SESSION[$this->flashParam] = $counters;
     }
 
     /**
      * Removes a flash message.
-     * Note that flash messages will be automatically removed after the next request.
      * @param string $key the key identifying the flash message. Note that flash messages
      * and normal session variables share the same name space.  If you have a normal
      * session variable using the same name, it will be removed by this method.
