@@ -324,6 +324,8 @@ class MyForm extends Model
 }
 ```
 
+> Note: inline validator will be skipped when the attribute value is null or an empty string, except if you set  [[yii\validators\Validator::$skipOnEmpty]] property to false.
+
 
 ### Standalone Validators <a name="standalone-validators"></a>
 
