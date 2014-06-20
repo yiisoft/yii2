@@ -1,16 +1,16 @@
-{{ this.beginPage() }}
+{{ use('yii/web/JqueryAsset') }}
+{{ register_jquery_asset() }}
+{{ begin_page() }}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="<?php echo Yii::$app->charset; ?>"/>
+    <meta charset="{{ app.charset }}"/>
     <title>{{ html.encode(this.title) }}</title>
-    {{ this.head() }}
+    {{ head() }}
 </head>
 <body>
-{{ this.beginBody() }}
-    {# DEFAULT_TWIG_COMMENT #}
-    {* CUSTOM_LEXER_TWIG_COMMENT *}
+{{ begin_body() }}
     body
-{{ this.endBody() }}
+{{ end_body() }}
 </body>
-{{ this.endPage() }}
+{{ end_page() }}
