@@ -105,7 +105,7 @@ declared in `rules()`.
 
 Most validators have default error messages that will be added to the model being validated when its attributes
 fail the validation. For example, the [[yii\validators\RequiredValidator|required]] validator will add
-a message "Username cannot be blank." to a model when its `username` attribute fails the rule using this validator.
+a message "Username cannot be blank." to a model when the `username` attribute fails the rule using this validator.
 
 You can customize the error message of a rule by specifying the `message` property when declaring the rule,
 like the following,
@@ -183,17 +183,20 @@ function whose return value determines whether to apply the rule or not. For exa
 ### Data Filtering <a name="data-filtering"></a>
 
 User inputs often need to be filtered or preprocessed. For example, you may want to trim the spaces around the
-`username` input. You may use validation rules to achieve this goal. The following rule declaration shows
-how to trim the spaces in the input by using the [trim](tutorial-core-validators.md#trim) core validator:
+`username` input. You may use validation rules to achieve this goal.
+
+The following examples shows how to trim the spaces in the inputs and turn empty inputs into nulls by using
+the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validators.md#default) core validators:
 
 ```php
 [
-    ['username', 'trim'],
+    [['username', 'email'], 'trim'],
+    [['username', 'email'], 'default'],
 ]
 ```
 
-You may also use the more general [filter](tutorial-core-validators.md#filter) validator if your data filtering
-need is more complex than space trimming.
+You may also use the more general [filter](tutorial-core-validators.md#filter) validator to perform more complex
+data filtering.
 
 As you can see, these validation rules do not really validate the inputs. Instead, they will process the values
 and save them back to the attributes being validated.
