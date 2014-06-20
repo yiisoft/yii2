@@ -221,7 +221,7 @@ class UrlManager extends Component
     {
         if ($this->enablePrettyUrl) {
             $pathInfo = $request->getPathInfo();
-            /** @var UrlRule $rule */
+            /* @var $rule UrlRule */
             foreach ($this->rules as $rule) {
                 if (($result = $rule->parseRequest($this, $request)) !== false) {
                     return $result;
@@ -301,7 +301,7 @@ class UrlManager extends Component
         $baseUrl = $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
-            /** @var UrlRule $rule */
+            /* @var $rule UrlRule */
             foreach ($this->rules as $rule) {
                 if (($url = $rule->createUrl($this, $route, $params)) !== false) {
                     if (strpos($url, '://') !== false) {

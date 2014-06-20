@@ -59,9 +59,9 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
             throw new InvalidConfigException('The "modelClass" property must be set.');
         }
         $row = $this->data[$name];
-        /** @var \yii\db\ActiveRecord $modelClass */
+        /* @var $modelClass \yii\db\ActiveRecord */
         $modelClass = $this->modelClass;
-        /** @var \yii\db\ActiveRecord $model */
+        /* @var $model \yii\db\ActiveRecord */
         $model = new $modelClass;
         $keys = [];
         foreach ($model->primaryKey() as $key) {

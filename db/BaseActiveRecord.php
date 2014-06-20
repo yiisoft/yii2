@@ -328,8 +328,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasOne($class, $link)
     {
-        /** @var ActiveRecordInterface $class */
-        /** @var ActiveQuery $query */
+        /* @var $class ActiveRecordInterface */
+        /* @var $query ActiveQuery */
         $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
@@ -369,8 +369,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasMany($class, $link)
     {
-        /** @var ActiveRecordInterface $class */
-        /** @var ActiveQuery $query */
+        /* @var $class ActiveRecordInterface */
+        /* @var $query ActiveQuery */
         $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
@@ -911,7 +911,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function refresh()
     {
-        /** @var BaseActiveRecord $record */
+        /* @var $record BaseActiveRecord */
         $record = $this->findOne($this->getPrimaryKey(true));
         if ($record === null) {
             return false;
@@ -1129,7 +1129,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
             }
             if (is_array($relation->via)) {
-                /** @var ActiveQuery $viaRelation */
+                /* @var $viaRelation ActiveQuery */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 // unset $viaName so that it can be reloaded to reflect the change
@@ -1149,15 +1149,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $columns[$k] = $v;
             }
             if (is_array($relation->via)) {
-                /** @var $viaClass ActiveRecordInterface */
-                /** @var $record ActiveRecordInterface */
+                /* @var $viaClass ActiveRecordInterface */
+                /* @var $record ActiveRecordInterface */
                 $record = new $viaClass();
                 foreach ($columns as $column => $value) {
                     $record->$column = $value;
                 }
                 $record->insert(false);
             } else {
-                /** @var $viaTable string */
+                /* @var $viaTable string */
                 static::getDb()->createCommand()
                     ->insert($viaTable, $columns)->execute();
             }
@@ -1213,7 +1213,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
-                /** @var ActiveQuery $viaRelation */
+                /* @var $viaRelation ActiveQuery */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
@@ -1233,15 +1233,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $nulls[$a] = null;
             }
             if (is_array($relation->via)) {
-                /** @var $viaClass ActiveRecordInterface */
+                /* @var $viaClass ActiveRecordInterface */
                 if ($delete) {
                     $viaClass::deleteAll($columns);
                 } else {
                     $viaClass::updateAll($nulls, $columns);
                 }
             } else {
-                /** @var $viaTable string */
-                /** @var Command $command */
+                /* @var $viaTable string */
+                /* @var $command Command */
                 $command = static::getDb()->createCommand();
                 if ($delete) {
                     $command->delete($viaTable, $columns)->execute();
@@ -1270,7 +1270,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if (!$relation->multiple) {
             unset($this->_related[$name]);
         } elseif (isset($this->_related[$name])) {
-            /** @var ActiveRecordInterface $b */
+            /* @var $b ActiveRecordInterface */
             foreach ($this->_related[$name] as $a => $b) {
                 if ($model->getPrimaryKey() == $b->getPrimaryKey()) {
                     unset($this->_related[$name][$a]);
@@ -1296,7 +1296,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
-                /** @var ActiveQuery $viaRelation */
+                /* @var $viaRelation ActiveQuery */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
@@ -1311,15 +1311,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $condition[$a] = $this->$b;
             }
             if (is_array($relation->via)) {
-                /** @var $viaClass ActiveRecordInterface */
+                /* @var $viaClass ActiveRecordInterface */
                 if ($delete) {
                     $viaClass::deleteAll($condition);
                 } else {
                     $viaClass::updateAll($nulls, $condition);
                 }
             } else {
-                /** @var $viaTable string */
-                /** @var Command $command */
+                /* @var $viaTable string */
+                /* @var $command Command */
                 $command = static::getDb()->createCommand();
                 if ($delete) {
                     $command->delete($viaTable, $condition)->execute();
@@ -1328,7 +1328,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
             }
         } else {
-            /** @var $relatedModel ActiveRecordInterface */
+            /* @var $relatedModel ActiveRecordInterface */
             $relatedModel = $relation->modelClass;
             $nulls = [];
             $condition = [];

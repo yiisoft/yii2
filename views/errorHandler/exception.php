@@ -1,8 +1,6 @@
 <?php
-/**
- * @var \Exception $exception
- * @var \yii\web\ErrorHandler $handler
- */
+/* @var $exception \Exception */
+/* @var $handler \yii\web\ErrorHandler */
 ?>
 <?php if (method_exists($this, 'beginPage')) $this->beginPage(); ?>
 <!doctype html>

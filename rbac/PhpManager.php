@@ -104,7 +104,7 @@ class PhpManager extends BaseManager
             return false;
         }
 
-        /** @var Item $item */
+        /* @var $item Item */
         $item = $this->_items[$itemName];
         Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission : $itemName", __METHOD__);
 
@@ -169,7 +169,7 @@ class PhpManager extends BaseManager
             return false;
         }
         foreach ($this->_children[$child->name] as $grandchild) {
-            /** @var Item $grandchild */
+            /* @var $grandchild Item */
             if ($this->detectLoop($parent, $grandchild)) {
                 return true;
             }
@@ -266,7 +266,7 @@ class PhpManager extends BaseManager
         $items = [];
 
         foreach ($this->_items as $name => $item) {
-            /** @var Item $item */
+            /* @var $item Item */
             if ($item->type == $type) {
                 $items[$name] = $item;
             }
@@ -645,7 +645,7 @@ class PhpManager extends BaseManager
     {
         $items = [];
         foreach ($this->_items as $name => $item) {
-            /** @var Item $item */
+            /* @var $item Item */
             $items[$name] = array_filter([
                 'type' => $item->type,
                 'description' => $item->description,
@@ -654,7 +654,7 @@ class PhpManager extends BaseManager
             ]);
             if (isset($this->_children[$name])) {
                 foreach ($this->_children[$name] as $child) {
-                    /** @var Item $child */
+                    /* @var $child Item */
                     $items[$name]['children'][] = $child->name;
                 }
             }
@@ -662,7 +662,7 @@ class PhpManager extends BaseManager
 
         foreach ($this->_assignments as $userId => $assignments) {
             foreach ($assignments as $name => $assignment) {
-                /** @var Assignment $assignment */
+                /* @var $assignment Assignment */
                 if (isset($items[$name])) {
                     $items[$name]['assignments'][$userId] = [
                         'roleName' => $assignment->roleName,

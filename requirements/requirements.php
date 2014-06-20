@@ -2,9 +2,9 @@
 /**
  * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
  * These requirements are mandatory for any Yii application.
- *
- * @var YiiRequirementChecker $this
  */
+
+/* @var $this YiiRequirementChecker */
 return array(
     array(
         'name' => 'PHP version',

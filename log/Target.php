@@ -257,11 +257,11 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /** @var \yii\web\User $user */
+        /* @var $user \yii\web\User */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         $userID = $user ? $user->getId(false) : '-';
 
-        /** @var \yii\web\Session $session */
+        /* @var $session \yii\web\Session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 

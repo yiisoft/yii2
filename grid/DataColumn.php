@@ -110,13 +110,13 @@ class DataColumn extends Column
 
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
-                /** @var Model $model */
+                /* @var $model Model */
                 $model = new $provider->query->modelClass;
                 $label = $model->getAttributeLabel($this->attribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
-                    /** @var Model $model */
+                    /* @var $model Model */
                     $label = $model->getAttributeLabel($this->attribute);
                 } else {
                     $label = Inflector::camel2words($this->attribute);
