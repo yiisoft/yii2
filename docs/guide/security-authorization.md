@@ -202,6 +202,9 @@ return [
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
+> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in the file `@app/data/rbac.php`.
+  Sometime you need to create this file manually.
+
 
 ### Building Authorization Data
 
@@ -222,6 +225,7 @@ command that will initialize authorization data once via APIs offered by `authMa
 <?php
 namespace app\commands;
 
+use Yii;
 use yii\console\Controller;
 
 class RbacController extends Controller
