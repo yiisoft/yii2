@@ -8,7 +8,7 @@ use yii\base\Model;
  */
 class Singer extends Model
 {
-    public $fistName;
+    public $firstName;
     public $lastName;
 
     public function rules()

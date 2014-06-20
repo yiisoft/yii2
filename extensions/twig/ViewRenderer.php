@@ -10,8 +10,6 @@ namespace yii\twig;
 use Yii;
 use yii\base\View;
 use yii\base\ViewRenderer as BaseViewRenderer;
-use yii\helpers\Url;
-use yii\widgets\ActiveForm;
 
 /**
  * TwigViewRenderer allows you to use Twig templates in views.
@@ -28,11 +26,13 @@ class ViewRenderer extends BaseViewRenderer
      * templates cache.
      */
     public $cachePath = '@runtime/Twig/cache';
+
     /**
      * @var array Twig options.
      * @see http://twig.sensiolabs.org/doc/api.html#environment-options
      */
     public $options = [];
+
     /**
      * @var array Objects or static classes.
      * Keys of the array are names to call in template, values are objects or names of static classes.
@@ -40,6 +40,7 @@ class ViewRenderer extends BaseViewRenderer
      * In the template you can use it like this: `{{ html.a('Login', 'site/login') | raw }}`.
      */
     public $globals = [];
+
     /**
      * @var array Custom functions.
      * Keys of the array are names to call in template, values are names of functions or static methods of some class.
@@ -47,6 +48,7 @@ class ViewRenderer extends BaseViewRenderer
      * In the template you can use it like this: `{{ rot13('test') }}` or `{{ a('Login', 'site/login') | raw }}`.
      */
     public $functions = [];
+
     /**
      * @var array Custom filters.
      * Keys of the array are names to call in template, values are names of functions or static methods of some class.
@@ -54,13 +56,16 @@ class ViewRenderer extends BaseViewRenderer
      * In the template you can use it like this: `{{ 'test'|rot13 }}` or `{{ model|jsonEncode }}`.
      */
     public $filters = [];
+
     /**
      * @var array Custom extensions.
      * Example: `['Twig_Extension_Sandbox', new \Twig_Extension_Text()]`
      */
     public $extensions = [];
+
     /**
      * @var array Twig lexer options.
+     *
      * Example: Smarty-like syntax:
      * ```php
      * [
@@ -72,8 +77,24 @@ class ViewRenderer extends BaseViewRenderer
      * @see http://twig.sensiolabs.org/doc/recipes.html#customizing-the-syntax
      */
     public $lexerOptions = [];
+
     /**
-     * @var \Twig_Environment twig environment object that do all rendering twig templates
+     * @var array namespaces and classes to import.
+     *
+     * Example:
+     *
+     * ```php
+     * [
+     *     'yii\bootstrap',
+     *     'app\assets',
+     *     \yii\bootstrap\NavBar::className(),
+     * ]
+     * ```
+     */
+    public $uses = [];
+
+    /**
+     * @var \Twig_Environment twig environment object that renders twig templates
      */
     public $twig;
 
@@ -99,30 +120,12 @@ class ViewRenderer extends BaseViewRenderer
             $this->addFilters($this->filters);
         }
 
+        $this->addExtensions([new Extension($this->uses)]);
+
         // Adding custom extensions
         if (!empty($this->extensions)) {
             $this->addExtensions($this->extensions);
         }
-
-        // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
-        $this->twig->addFunction('void', new \Twig_Function_Function(function ($argument) {
-        }));
-
-        $this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = []) {
-            return Url::to(array_merge([$path], $args));
-        }));
-
-        $this->twig->addFunction('url', new \Twig_Function_Function(function ($path, $args = []) {
-            return Url::to(array_merge([$path], $args), true);
-        }));
-
-        $this->twig->addFunction('form_begin', new \Twig_Function_Function(function ($args = []) {
-            return ActiveForm::begin($args);
-        }));
-
-        $this->twig->addFunction('form_end', new \Twig_Function_Function(function () {
-            ActiveForm::end();
-        }));
 
         $this->twig->addGlobal('app', \Yii::$app);
 

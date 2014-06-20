@@ -24,6 +24,7 @@ component's behavior:
                     //'cachePath' => '@runtime/Twig/cache',
                     //'options' => [], /*  Array of twig options */
                     'globals' => ['html' => '\yii\helpers\Html'],
+                    'uses' => ['yii\bootstrap'],
                 ],
                 // ...
             ],
@@ -78,15 +79,70 @@ In case you don't need result you shoud use `void` wrapper:
 
 ```
 {{ void(my_function({'a' : 'b'})) }}
-{{ void(myObject.my_function({'a' : 'b'})} }}
+{{ void(myObject.my_function({'a' : 'b'})) }}
 ```
+
+#### Importing namespaces and classes
+
+You can import additional classes and namespaces right in the template:
+
+```
+Namespace import:
+{{ use('/app/widgets') }}
+
+Class import:
+{{ use('/yii/widgets/ActiveForm') }}
+
+Aliased class import:
+{{ use({'alias' => '/app/widgets/MyWidget'}) }}
+```
+
+#### Widgets
+
+Extension helps using widgets in convenient way converting their syntax to function calls:
+
+```
+{{ use('yii/bootstrap') }}
+{{ nav_bar_begin({
+    'brandLabel': 'My Company',
+}) }}
+    {{ nav_widget({
+        'options': {
+            'class': 'navbar-nav navbar-right',
+        },
+        'items': [{
+            'label': 'Home',
+            'url': '/site/index',
+        }]
+    }) }}
+{{ nav_bar_end() }}
+```
+
+In the template above `nav_bar_begin`, `nav_bar_end` or `nav_widget` consists of two parts. First part is widget name
+coverted to lowercase and underscores: `NavBar` becomes `nav_bar`, `Nav` becomes `nav`. `_begin`, `_end` and `_widget`
+are the same as `::begin()`, `::end()` and `::widget()` calls of a widget.
+
+One could also use more generic `widget_end()` that executes `Widget::end()`.
+
+#### Assets
+
+Assets could be registered the following way:
+
+```
+{{ use('yii/web/JqueryAsset') }}
+{{ register_jquery_asset() }}
+```
+
+In the call above `register` identifies that we're working with assets while `jquery_asset` translates to `JqueryAsset`
+class that we've already imported with `use`.
 
 #### Forms
 
-There are two form helper functions `form_begin` and `form_end` to make using forms more convenient:
+You can build forms the following way:
 
 ```
-{% set form = form_begin({
+{{ use('yii/widgets/ActiveForm') }}
+{% set form = active_form_begin({
     'id' : 'login-form',
     'options' : {'class' : 'form-horizontal'},
 }) %}
@@ -96,7 +152,7 @@ There are two form helper functions `form_begin` and `form_end` to make using fo
     <div class="form-group">
         <input type="submit" value="Login" class="btn btn-primary" />
     </div>
-{{ form_end() }}
+{{ active_form_end() }}
 ```
 
 
