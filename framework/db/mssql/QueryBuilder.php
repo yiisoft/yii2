@@ -245,7 +245,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /** @var \yii\db\ActiveRecord $model */
+        /* @var $model \yii\db\ActiveRecord */
         $model = new $modelClass;
         $schema = $model->getTableSchema();
         $columns = array_keys($schema->columns);

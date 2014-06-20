@@ -1,13 +1,13 @@
 <?php
+/**
+ * This is the template for generating CRUD search class of the specified model.
+ */
 
 use yii\helpers\StringHelper;
 
-/**
- * This is the template for generating CRUD search class of the specified model.
- *
- * @var yii\web\View $this
- * @var yii\gii\generators\crud\Generator $generator
- */
+
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\crud\Generator */
 
 $modelClass = StringHelper::basename($generator->modelClass);
 $searchModelClass = StringHelper::basename($generator->searchModelClass);

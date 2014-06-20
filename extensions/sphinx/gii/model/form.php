@@ -1,9 +1,7 @@
 <?php
-/**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
- * @var yii\sphinx\gii\model\Generator $generator
- */
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $generator yii\sphinx\gii\model\Generator */
 
 echo $form->field($generator, 'indexName');
 echo $form->field($generator, 'modelClass');

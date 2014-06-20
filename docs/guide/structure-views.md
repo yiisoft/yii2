@@ -20,11 +20,10 @@ page title and the form, while HTML code organizes them into a presentable HTML 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
- * @var app\models\LoginForm $model
- */
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $model app\models\LoginForm */
+
 $this->title = 'Login';
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
@@ -323,10 +322,9 @@ the code in the layout. In practice, you may want to add more content to it, suc
 ```php
 <?php
 use yii\helpers\Html;
-/**
- * @var yii\web\View $this
- * @var string $content
- */
+
+/* @var $this yii\web\View */
+/* @var $content string */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

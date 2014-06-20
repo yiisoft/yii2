@@ -75,7 +75,7 @@ class QueryBuilder extends Object
 
         $from = $query->from;
         if ($from === null && $query instanceof ActiveQuery) {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $query->modelClass;
             $from = [$modelClass::indexName()];
         }

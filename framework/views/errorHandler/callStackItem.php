@@ -1,15 +1,13 @@
 <?php
-/**
- * @var string|null $file
- * @var integer|null $line
- * @var string|null $class
- * @var string|null $method
- * @var integer $index
- * @var string[] $lines
- * @var integer $begin
- * @var integer $end
- * @var \yii\web\ErrorHandler $handler
- */
+/* @var $file string|null */
+/* @var $line integer|null */
+/* @var $class string|null */
+/* @var $method string|null */
+/* @var $index integer */
+/* @var $lines string[] */
+/* @var $begin integer */
+/* @var $end integer */
+/* @var $handler \yii\web\ErrorHandler */
 ?>
 <li class="<?php if (!$handler->isCoreFile($file) || $index === 1) echo 'application'; ?> call-stack-item"
     data-line="<?= (int) ($line - $begin) ?>">

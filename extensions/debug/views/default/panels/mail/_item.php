@@ -1,7 +1,5 @@
 <?php
-/**
- * @var array $model
- */
+/* @var $model array */
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;

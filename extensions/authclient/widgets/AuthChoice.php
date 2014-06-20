@@ -142,7 +142,7 @@ class AuthChoice extends Widget
      */
     protected function defaultClients()
     {
-        /** @var $collection \yii\authclient\Collection */
+        /* @var $collection \yii\authclient\Collection */
         $collection = Yii::$app->get($this->clientCollection);
 
         return $collection->getClients();

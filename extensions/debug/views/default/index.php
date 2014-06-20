@@ -1,11 +1,9 @@
 <?php
-/**
- * @var \yii\web\View $this
- * @var array $manifest
- * @var \yii\debug\models\search\Debug $searchModel
- * @var ArrayDataProvider $dataProvider
- * @var \yii\debug\Panel[] $panels
- */
+/* @var $this \yii\web\View */
+/* @var $manifest array */
+/* @var $searchModel \yii\debug\models\search\Debug */
+/* @var $dataProvider ArrayDataProvider */
+/* @var $panels \yii\debug\Panel[] */
 
 use yii\helpers\Html;
 use yii\grid\GridView;

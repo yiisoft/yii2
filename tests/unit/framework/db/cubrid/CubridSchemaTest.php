@@ -25,7 +25,7 @@ class CubridSchemaTest extends SchemaTest
             [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
         ];
 
-        /** @var Schema $schema */
+        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {

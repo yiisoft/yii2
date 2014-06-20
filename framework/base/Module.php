@@ -422,7 +422,7 @@ class Module extends ServiceLocator
     {
         $parts = $this->createController($route);
         if (is_array($parts)) {
-            /** @var Controller $controller */
+            /* @var $controller Controller */
             list($controller, $actionID) = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;

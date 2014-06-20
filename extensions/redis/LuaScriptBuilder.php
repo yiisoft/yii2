@@ -28,7 +28,7 @@ class LuaScriptBuilder extends \yii\base\Object
     public function buildAll($query)
     {
         // TODO add support for orderBy
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $query->modelClass;
         $key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 
@@ -43,7 +43,7 @@ class LuaScriptBuilder extends \yii\base\Object
     public function buildOne($query)
     {
         // TODO add support for orderBy
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $query->modelClass;
         $key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 
@@ -59,7 +59,7 @@ class LuaScriptBuilder extends \yii\base\Object
     public function buildColumn($query, $column)
     {
         // TODO add support for orderBy and indexBy
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $query->modelClass;
         $key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 
@@ -84,7 +84,7 @@ class LuaScriptBuilder extends \yii\base\Object
      */
     public function buildSum($query, $column)
     {
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $query->modelClass;
         $key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 
@@ -99,7 +99,7 @@ class LuaScriptBuilder extends \yii\base\Object
      */
     public function buildAverage($query, $column)
     {
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $query->modelClass;
         $key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 
@@ -114,7 +114,7 @@ class LuaScriptBuilder extends \yii\base\Object
      */
     public function buildMin($query, $column)
     {
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $query->modelClass;
         $key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 
@@ -129,7 +129,7 @@ class LuaScriptBuilder extends \yii\base\Object
      */
     public function buildMax($query, $column)
     {
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $query->modelClass;
         $key = $this->quoteValue($modelClass::keyPrefix() . ':a:');
 
@@ -159,7 +159,7 @@ class LuaScriptBuilder extends \yii\base\Object
         $start = $query->offset === null ? 0 : $query->offset;
         $limitCondition = 'i>' . $start . ($query->limit === null ? '' : ' and i<=' . ($start + $query->limit));
 
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $query->modelClass;
         $key = $this->quoteValue($modelClass::keyPrefix());
         $loadColumnValues = '';

@@ -62,7 +62,7 @@ class ActiveRelationTest extends MongoDbTestCase
 
     public function testFindLazy()
     {
-        /** @var CustomerOrder $order */
+        /* @var $order CustomerOrder */
         $order = CustomerOrder::findOne(['number' => 2]);
         $this->assertFalse($order->isRelationPopulated('customer'));
         $customer = $order->customer;

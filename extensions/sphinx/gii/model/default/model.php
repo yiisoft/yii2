@@ -1,15 +1,15 @@
 <?php
 /**
  * This is the template for generating the model class of a specified Sphinx index.
- *
- * @var yii\web\View $this
- * @var yii\sphinx\gii\model\Generator $generator
- * @var string $indexName full table name
- * @var string $className class name
- * @var yii\sphinx\IndexSchema $indexSchema
- * @var string[] $labels list of attribute labels (name => label)
- * @var string[] $rules list of validation rules
  */
+
+/* @var $this yii\web\View */
+/* @var $generator yii\sphinx\gii\model\Generator */
+/* @var $indexName string full table name */
+/* @var $className string class name */
+/* @var $indexSchema yii\sphinx\IndexSchema */
+/* @var $labels string[] list of attribute labels (name => label) */
+/* @var $rules string[] list of validation rules */
 
 echo "<?php\n";
 ?>

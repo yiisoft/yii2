@@ -3,11 +3,10 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\captcha\Captcha;
 
-/**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
- * @var app\models\ContactForm $model
- */
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $model app\models\ContactForm */
+
 $this->title = 'Contact';
 $this->params['breadcrumbs'][] = $this->title;
 ?>

@@ -87,7 +87,7 @@ class ActiveRecordTest extends DatabaseTestCase
 
     public function testFindColumn()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         $this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->select('name')->column());
         $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->select('name')->column());
     }
@@ -111,7 +111,7 @@ class ActiveRecordTest extends DatabaseTestCase
 
     public function testFindLazyViaTable()
     {
-        /** @var Order $order */
+        /* @var $order Order */
         $order = Order::findOne(1);
         $this->assertEquals(1, $order->id);
         $this->assertEquals(2, count($order->books));
@@ -158,7 +158,7 @@ class ActiveRecordTest extends DatabaseTestCase
     // deeply nested table relation
     public function testDeeplyNestedTableRelation()
     {
-        /** @var Customer $customer */
+        /* @var $customer Customer */
         $customer = Customer::findOne(1);
         $this->assertNotNull($customer);
 
@@ -538,17 +538,17 @@ class ActiveRecordTest extends DatabaseTestCase
 
     public function testUnlinkAllViaTable()
     {
-        /** @var \yii\db\ActiveRecordInterface $orderClass */
+        /* @var $orderClass \yii\db\ActiveRecordInterface */
         $orderClass = $this->getOrderClass();
-        /** @var \yii\db\ActiveRecordInterface $orderItemClass */
+        /* @var $orderItemClass \yii\db\ActiveRecordInterface */
         $orderItemClass = $this->getOrderItemClass();
-        /** @var \yii\db\ActiveRecordInterface $itemClass */
+        /* @var $itemClass \yii\db\ActiveRecordInterface */
         $itemClass = $this->getItemClass();
-        /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
+        /* @var $orderItemsWithNullFKClass \yii\db\ActiveRecordInterface */
         $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
         // via table with delete
-        /** @var Order $order */
+        /* @var $order  Order */
         $order = $orderClass::findOne(1);
         $this->assertEquals(2, count($order->booksViaTable));
         $orderItemCount = $orderItemClass::find()->count();

@@ -3,10 +3,9 @@ use yii\bootstrap\NavBar;
 use yii\bootstrap\Nav;
 use yii\helpers\Html;
 
-/**
- * @var \yii\web\View $this
- * @var string $content
- */
+/* @var $this \yii\web\View */
+/* @var $content string */
+
 $asset = yii\gii\GiiAsset::register($this);
 ?>
 <?php $this->beginPage() ?>

@@ -49,11 +49,11 @@ class Customer extends ActiveRecord
     // deeply nested table relation
     public function getOrderItems()
     {
-        /** @var ActiveQuery $rel */
+        /* @var $rel ActiveQuery */
         $rel = $this->hasMany(Item::className(), ['id' => 'item_id']);
 
         return $rel->viaTable('order_item', ['order_id' => 'id'], function ($q) {
-            /** @var ActiveQuery $q */
+            /* @var $q ActiveQuery */
             $q->viaTable('order', ['customer_id' => 'id']);
         })->orderBy('id');
     }

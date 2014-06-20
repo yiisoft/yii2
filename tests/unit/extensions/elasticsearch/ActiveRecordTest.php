@@ -63,7 +63,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     {
         parent::setUp();
 
-        /** @var Connection $db */
+        /* @var $db Connection */
         $db = ActiveRecord::$db = $this->getConnection();
 
         // delete index
@@ -297,7 +297,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindLazy()
     {
-        /** @var $customer Customer */
+        /* @var $customer Customer */
         $customer = Customer::findOne(2);
         $orders = $customer->orders;
         $this->assertEquals(2, count($orders));
@@ -391,8 +391,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindLazyVia2()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
-        /** @var Order $order */
+        /* @var $this TestCase|ActiveRecordTestTrait */
+        /* @var $order Order */
         $orderClass = $this->getOrderClass();
         $pkName = 'id';
 
@@ -452,7 +452,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindAsArrayFields()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->asArray()->fields(['id', 'name'])->all();
         $this->assertEquals(3, count($customers));
@@ -475,7 +475,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindAsArraySourceFilter()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->asArray()->source(['id', 'name'])->all();
         $this->assertEquals(3, count($customers));
@@ -500,7 +500,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     public function testFindIndexBySource()
     {
         $customerClass = $this->getCustomerClass();
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->indexBy('name')->source('id', 'name')->all();
         $this->assertEquals(3, count($customers));
@@ -550,7 +550,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindIndexByAsArrayFields()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->indexBy('name')->asArray()->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
@@ -594,10 +594,10 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindIndexByAsArray()
     {
-        /** @var \yii\db\ActiveRecordInterface $customerClass */
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
 
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = $customerClass::find()->asArray()->indexBy('name')->all();
         $this->assertEquals(3, count($customers));
@@ -641,12 +641,12 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testAfterFindGet()
     {
-        /** @var BaseActiveRecord $customerClass */
+        /* @var $customerClass BaseActiveRecord */
         $customerClass = $this->getCustomerClass();
 
         $afterFindCalls = [];
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
-            /** @var BaseActiveRecord $ar */
+            /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
             $afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
