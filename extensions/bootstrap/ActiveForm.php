@@ -21,7 +21,7 @@ use yii\base\InvalidConfigException;
  * use yii\bootstrap\ActiveForm;
  *
  * $form = ActiveForm::begin(['layout' => 'horizontal'])
- *  ```
+ * ```
  *
  * This will set default values for the [[yii\bootstrap\ActiveField|ActiveField]]
  * to render horizontal form fields. In particular the [[yii\bootstrap\ActiveField::template|template]]
