@@ -51,6 +51,7 @@ Yii Framework 2 Change Log
 - Bug #3909: `Html::to()` should not prefix base URL to URLs that already contain scheme (qiangxue)
 - Bug #3934: yii.handleAction() in yii.js does not correctly detect if a hyperlink contains useful URL or not (joni-jones, qiangxue)
 - Bug #3968: Messages logged in shutdown functions are not handled (qiangxue)
+- Bug #3996: Traversing `Yii::$app->session` may cause a PHP error (qiangxue)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
