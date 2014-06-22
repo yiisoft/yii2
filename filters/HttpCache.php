@@ -12,11 +12,11 @@ use yii\base\ActionFilter;
 use yii\base\Action;
 
 /**
- * The HttpCache provides functionality for caching via HTTP Last-Modified and Etag headers.
+ * HttpCache implements client-side caching by utilizing the `Last-Modified` and `Etag` HTTP headers.
  *
  * It is an action filter that can be added to a controller and handles the `beforeAction` event.
  *
- * To use AccessControl, declare it in the `behaviors()` method of your controller class.
+ * To use HttpCache, declare it in the `behaviors()` method of your controller class.
  * In the following example the filter will be applied to the `list`-action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
@@ -24,7 +24,7 @@ use yii\base\Action;
  * public function behaviors()
  * {
  *     return [
- *         'httpCache' => [
+ *         [
  *             'class' => 'yii\filters\HttpCache',
  *             'only' => ['index'],
  *             'lastModified' => function ($action, $params) {
