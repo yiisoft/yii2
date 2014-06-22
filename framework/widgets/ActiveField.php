@@ -730,7 +730,7 @@ class ActiveField extends Component
     }
     
     /**
-     * This method will set a JsExpression object from the model validators, if any exists.
+     * This method will build and set a JsExpression to the passed-by-reference parameter.
      * It's used by the [[getClientOptions()]] method.
      * @param   string  $attribute  the attribute
      * @param   array   $options    the Collecting Parameter passed by reference
@@ -757,7 +757,8 @@ class ActiveField extends Component
     }
     
     /**
-     * Add options to the passed-by-reference $options.
+     * Add options to the passed-by-reference parameter.
+     * It's used by the [[getClientOptions()]] method.
      * @param   array $options  the Collecting Parameter passed by reference
      * @return  void
      */
