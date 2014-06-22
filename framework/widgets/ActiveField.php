@@ -724,9 +724,10 @@ class ActiveField extends Component
         if ($this->isClientValidationEnabled() && !empty($options['validate']) || $this->isAjaxValidationEnabled()) { 
             $this->addOptions($options);
             return $options;
-        } else {
-            return [];
         }
+        
+        return [];
+        
     }
     
     /**
@@ -767,16 +768,33 @@ class ActiveField extends Component
         $inputID = Html::getInputId($this->model, $this->attribute);
         $options['id'] = $inputID;
         $options['name'] = $this->attribute;
+        
         foreach (['validateOnChange', 'validateOnType', 'validationDelay'] as $name) {
             $options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
         }
-        $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";
-        $options['input'] = isset($this->selectors['input']) ? $this->selectors['input'] : "#$inputID";
+
+        $this->setOptionContainer($options);
+        $this->setOptionInput($options);
+        $this->setOptionError($options);
+    }
+    
+    private function setOptionError(array &$options)
+    {
         if (isset($this->errorOptions['class'])) {
             $options['error'] = '.' . implode('.', preg_split('/\s+/', $this->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
         } else {
             $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
-        }       
+        }          
+    }
+    
+    private function setOptionContainer(array &$options)
+    {
+       $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-{$options['id']}"; 
+    }
+    
+    private function setOptionInput(array &$options)
+    {
+        $options['input'] = isset($this->selectors['input']) ? $this->selectors['input'] : "#{$options['id']}";
     }
     
     /**
