@@ -136,8 +136,20 @@ $component->attachBehaviors([
 ]);
 ```
 
-You may also attach behaviors through [configurations](concept-configurations.md). For more details, please
-refer to the [Configurations](concept-configurations.md#configuration-format) section.
+You may also attach behaviors through [configurations](concept-configurations.md) like the following. For more details,
+please refer to the [Configurations](concept-configurations.md#configuration-format) section.
+
+```php
+[
+    'as myBehavior2' => MyBehavior::className(),
+
+    'as myBehavior3' => [
+        'class' => MyBehavior::className(),
+        'prop1' => 'value1',
+        'prop2' => 'value2',
+    ],
+]
+```
 
 
 Detaching Behaviors <a name="detaching-behaviors"></a>

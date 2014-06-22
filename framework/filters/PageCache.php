@@ -13,15 +13,14 @@ use yii\base\Action;
 use yii\caching\Dependency;
 
 /**
- * The PageCache provides functionality for whole page caching
+ * PageCache implements server-side caching of whole pages.
  *
  * It is an action filter that can be added to a controller and handles the `beforeAction` event.
  *
  * To use PageCache, declare it in the `behaviors()` method of your controller class.
- * In the following example the filter will be applied to the `list`-action and
+ * In the following example the filter will be applied to the `index` action and
  * cache the whole page for maximum 60 seconds or until the count of entries in the post table changes.
- * It also stores different versions of the page depended on the route ([[varyByRoute]] is true by default),
- * the application language and user id.
+ * It also stores different versions of the page depending on the application language.
  *
  * ~~~
  * public function behaviors()
