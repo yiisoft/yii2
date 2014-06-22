@@ -35,9 +35,9 @@ Yii 2.0 权威指南
 * **已定稿** [控制器（Controller）](structure-controllers.md)
 * **已定稿** [视图（View）](structure-views.md)
 * **已定稿** [模型（Model）](structure-models.md)
-* **待定中** [过滤器](structure-filters.md)
+* **已定稿** [过滤器](structure-filters.md)
 * **待定中** [小部件（Widget）](structure-widgets.md)
-* **待定中** [模块（Module）](structure-modules.md)
+* **已定稿** [模块（Module）](structure-modules.md)
 * **编撰中** [前端资源（Asset）](structure-assets.md)
 * **待定中** [扩展（extensions）](structure-extensions.md)
 
@@ -185,7 +185,7 @@ RESTful Web 服务
 助手类
 ------
 
-* **编撰中** [概述](helper-overview.md)
+* **编撰中** [助手一览](helper-overview.md)
 * **待定中** [ArrayHelper](helper-array.md)
 * **待定中** [Html](helper-html.md)
 * **待定中** [Url](helper-url.md)
