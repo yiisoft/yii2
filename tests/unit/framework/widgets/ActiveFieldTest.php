@@ -46,11 +46,14 @@ class ActiveFieldTest extends \yiiunit\TestCase
     
     public function testRenderNoContent()
     {
-        $expectedValue = "<div class=\"form-group field-dynamicmodel-attributename\">\n"
-            . "<label class=\"control-label\" for=\"dynamicmodel-attributename\">Attribute Name</label>\n"
-            . "<input type=\"text\" id=\"dynamicmodel-attributename\" class=\"form-control\" "
-            . "name=\"DynamicModel[{$this->attributeName}]\">\n\n"
-            . "<div class=\"help-block\"></div>\n</div>";
+        $expectedValue = <<<EOD
+<div class="form-group field-dynamicmodel-attributename">
+<label class="control-label" for="dynamicmodel-attributename">Attribute Name</label>
+<input type="text" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[{$this->attributeName}]">
+
+<div class="help-block"></div>
+</div>
+EOD;
         
         $actualValue = $this->activeField->render();
         $this->assertEquals($expectedValue, $actualValue);
@@ -66,16 +69,17 @@ class ActiveFieldTest extends \yiiunit\TestCase
         $content = function($field) {
             return "<div class=\"custom-container\"> $field </div>";
         };
-        
-        $expectedValue = "<div class=\"form-group field-dynamicmodel-attributename\">\n"
-            . "<div class=\"custom-container\"> "
-            . "<div class=\"form-group field-dynamicmodel-attributename\">\n"
-            . "<label class=\"control-label\" for=\"dynamicmodel-attributename\">Attribute Name</label>\n"
-            . "<input type=\"text\" id=\"dynamicmodel-attributename\" class=\"form-control\" "
-            . "name=\"DynamicModel[{$this->attributeName}]\">\n\n"
-            . "<div class=\"help-block\"></div>\n</div>"
-            . " </div>\n"        
-            . "</div>";
+
+        $expectedValue = <<<EOD
+<div class="form-group field-dynamicmodel-attributename">
+<div class="custom-container"> <div class="form-group field-dynamicmodel-attributename">
+<label class="control-label" for="dynamicmodel-attributename">Attribute Name</label>
+<input type="text" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[{$this->attributeName}]">
+
+<div class="help-block"></div>
+</div> </div>
+</div>
+EOD;
         
         $actualValue = $this->activeField->render($content);
         $this->assertEquals($expectedValue, $actualValue);
@@ -85,7 +89,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     {
         $this->helperModel->addError($this->attributeName, "Error Message");
         
-        $expectedValue = "<div class=\"form-group field-dynamicmodel-attributename has-error\">";
+        $expectedValue = '<div class="form-group field-dynamicmodel-attributename has-error">';
         $actualValue = $this->activeField->begin();
         
         $this->assertEquals($expectedValue, $actualValue);
@@ -95,7 +99,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     {
         $this->helperModel->addRule($this->attributeName, 'required');
         
-        $expectedValue = "<div class=\"form-group field-dynamicmodel-attributename required\">";
+        $expectedValue = '<div class="form-group field-dynamicmodel-attributename required">';
         $actualValue = $this->activeField->begin();
         
         $this->assertEquals($expectedValue, $actualValue);        
@@ -106,7 +110,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
         $this->helperModel->addError($this->attributeName, "Error Message");
         $this->helperModel->addRule($this->attributeName, 'required');
         
-        $expectedValue = "<div class=\"form-group field-dynamicmodel-attributename required has-error\">";
+        $expectedValue = '<div class="form-group field-dynamicmodel-attributename required has-error">';
         $actualValue = $this->activeField->begin();
         
         $this->assertEquals($expectedValue, $actualValue);
@@ -129,7 +133,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     
     public function testLabel()
     {
-        $expectedValue = "<label class=\"control-label\" for=\"dynamicmodel-attributename\">Attribute Name</label>";
+        $expectedValue = '<label class="control-label" for="dynamicmodel-attributename">Attribute Name</label>';
         $this->activeField->label();
         
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
@@ -142,7 +146,9 @@ class ActiveFieldTest extends \yiiunit\TestCase
         
         // $label = 'Label Name'
         $label = 'Label Name';
-        $expectedValue = "<label class=\"control-label\" for=\"dynamicmodel-attributename\">{$label}</label>";
+        $expectedValue = <<<EOT
+<label class="control-label" for="dynamicmodel-attributename">{$label}</label>
+EOT;
         $this->activeField->label($label);
         
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
@@ -151,7 +157,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     
     public function testError()
     {
-        $expectedValue = "<label class=\"control-label\" for=\"dynamicmodel-attributename\">Attribute Name</label>";
+        $expectedValue = '<label class="control-label" for="dynamicmodel-attributename">Attribute Name</label>';
         $this->activeField->label();
         
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
@@ -164,7 +170,9 @@ class ActiveFieldTest extends \yiiunit\TestCase
         
         // $label = 'Label Name'
         $label = 'Label Name';
-        $expectedValue = "<label class=\"control-label\" for=\"dynamicmodel-attributename\">{$label}</label>";
+        $expectedValue = <<<EOT
+<label class="control-label" for="dynamicmodel-attributename">{$label}</label>
+EOT;
         $this->activeField->label($label);
         
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
@@ -172,7 +180,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
 
     public function testHint()
     {
-        $expectedValue = "<div class=\"hint-block\">Hint Content</div>";
+        $expectedValue = '<div class="hint-block">Hint Content</div>';
         $this->activeField->hint('Hint Content');
         
         $this->assertEquals($expectedValue, $this->activeField->parts['{hint}']);
@@ -180,44 +188,49 @@ class ActiveFieldTest extends \yiiunit\TestCase
     
     public function testInput()
     {
-        $expectedValue = "<input type=\"password\" id=\"dynamicmodel-attributename\" class=\"form-control\""
-            . " name=\"DynamicModel[attributeName]\">";
+        $expectedValue = <<<EOD
+<input type="password" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]">
+EOD;
         $this->activeField->input("password");
         
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']); 
         
         // with options
-        $expectedValue = "<input type=\"password\" id=\"dynamicmodel-attributename\" class=\"form-control\""
-            . " name=\"DynamicModel[attributeName]\" weird-attribute=\"weird-value\">";
-        $this->activeField->input("password", ['weird-attribute' => 'weird-value']);
+        $expectedValue = <<<EOD
+<input type="password" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]" weird="value">
+EOD;
+        $this->activeField->input("password", ['weird' => 'value']);
         
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);         
     }
     
     public function testTextInput()
     {
-        $expectedValue = "<input type=\"text\" id=\"dynamicmodel-attributename\" class=\"form-control\""
-            . " name=\"DynamicModel[attributeName]\">";
+        $expectedValue = <<<EOD
+<input type="text" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]">
+EOD;
         $this->activeField->textInput();
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
     
     public function testHiddenInput()
     {
-        $expectedValue = "<input type=\"hidden\" id=\"dynamicmodel-attributename\" class=\"form-control\""
-            . " name=\"DynamicModel[attributeName]\">";
+        $expectedValue = <<<EOD
+<input type="hidden" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]">
+EOD;
         $this->activeField->hiddenInput();
-        
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
     
     public function testListBox()
     {
-        $expectedValue = "<input type=\"hidden\" name=\"DynamicModel[attributeName]\" value=\"\">"
-            . "<select id=\"dynamicmodel-attributename\" class=\"form-control\" name=\"DynamicModel[attributeName]\""
-            . " size=\"4\">\n<option value=\"1\">Item One</option>\n<option value=\"2\">Item 2</option>\n</select>";
+        $expectedValue = <<<EOD
+<input type="hidden" name="DynamicModel[attributeName]" value=""><select id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]" size="4">
+<option value="1">Item One</option>
+<option value="2">Item 2</option>
+</select>
+EOD;
         $this->activeField->listBox(["1" => "Item One", "2" => "Item 2"]);
-        
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
     
