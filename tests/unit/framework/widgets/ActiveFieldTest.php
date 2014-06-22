@@ -288,6 +288,35 @@ class ActiveFieldTest extends \yiiunit\TestCase
         $this->assertEquals($expectedError, $actualValue['error']);
     }
     
+    
+    public function testGetClientOptionsValidatorWhenClientSet()
+    {
+        $this->activeField->setClientOptionsEmpty(false);
+        $this->activeField->enableAjaxValidation = true;
+        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
+        
+        foreach($this->activeField->model->validators as $validator) {
+            $validator->whenClient = "function (attribute, value) { return 'yii2' == 'yii2'; }"; // js 
+        }
+        
+        $actualValue = $this->activeField->getClientOptions();
+        $expectedJsExpression = "function (attribute, value, messages) {if (function (attribute, value) "
+            . "{ return 'yii2' == 'yii2'; }(attribute, value)) { return true; }}";
+       
+        $expectedValidateOnChange = true;
+        $expectedValidateOnType = false;
+        $expectedValidationDelay = 200;
+        $expectedError = ".help-block";
+        
+        $actualJsExpression = $actualValue['validate'];
+        $this->assertEquals($expectedJsExpression, $actualJsExpression->expression);
+        $this->assertTrue($expectedValidateOnChange === $actualValue['validateOnChange']);
+        $this->assertTrue($expectedValidateOnType === $actualValue['validateOnType']);
+        $this->assertTrue($expectedValidationDelay === $actualValue['validationDelay']);
+        $this->assertTrue(1 === $actualValue['enableAjaxValidation']);
+        $this->assertEquals($expectedError, $actualValue['error']);
+    }    
+    
     /**
      * Helper methods
      */
@@ -333,9 +362,15 @@ class ActiveFieldExtend extends ActiveField
 
 class TestValidator extends \yii\validators\Validator
 {
+    
     public function clientValidateAttribute($object, $attribute, $view)
     {
         return "return true;";
+    }
+    
+    public function setWhenClient($js)
+    {
+        $this->whenClient = $js;
     }
 }
 
