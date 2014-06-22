@@ -126,7 +126,7 @@ class InflectorTest extends TestCase
     {
         $data = [
             '' => '',
-            'hello world' => 'hello-world',
+            'hello world 123' => 'hello-world-123',
             'remove.!?[]{}…symbols' => 'removesymbols',
             'minus-sign' => 'minus-sign',
             'mdash—sign' => 'mdash-sign',
