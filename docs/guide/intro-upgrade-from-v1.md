@@ -188,7 +188,7 @@ public function scenarios()
 {
     return [
         'backend' => ['email', 'role'],
-        'frontend' => ['email', '!name'],
+        'frontend' => ['email', '!role'],
     ];
 }
 ```
