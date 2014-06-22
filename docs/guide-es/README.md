@@ -23,11 +23,11 @@ Primeros pasos
 * [Hola a todos](start-hello.md)
 * [Trabajar con formularios](start-forms.md)
 * [Trabajar con bases de datos](start-databases.md)
-* [Generar código con Gii](start-gii.md)
+* [Generar códigos con Gii](start-gii.md)
 * [Adentrarse en Yii](start-looking-head.md)
 
 
-Estructura de una Aplicación
+Estructura de una aplicación
 ----------------------------
 
 * [Información general](structure-overview.md)
