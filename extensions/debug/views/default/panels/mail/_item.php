@@ -15,7 +15,7 @@ echo DetailView::widget([
         'charset',
         [
             'attribute' => 'time',
-            'value' => $timeFormatter->asDateTime($model['time'], 'short'),
+            'format' => 'datetime',
         ],
         'subject',
         [
