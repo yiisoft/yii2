@@ -1,7 +1,7 @@
 Guía Definitiva de Yii 2.0
 ==========================
 
-Este tutorial está publicado bajo los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
+Este tutorial se publica con arreglo a los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
 
 Todos los derechos reservados.
 
@@ -19,7 +19,7 @@ Primeros pasos
 --------------
 
 * [Instalar Yii](start-installation.md)
-* [funcionamiento de aplicaciones](start-workflow.md)
+* [Funcionamiento de aplicaciones](start-workflow.md)
 * [Hola a todos](start-hello.md)
 * [Trabajar con formularios](start-forms.md)
 * [Trabajar con bases de datos](start-databases.md)
@@ -49,7 +49,7 @@ Gestión de las peticiones
 
 * **TBD** [Bootstrapping](runtime-bootstrapping.md)
 * **TBD** [Rutas](runtime-routing.md)
-* **TBD** [Peticones](runtime-requests.md)
+* **TBD** [Peticiones](runtime-requests.md)
 * **TBD** [Respuestas](runtime-responses.md)
 * **TBD** [Sesiones y Cookies](runtime-sessions-cookies.md)
 * [Procesamiento y generación de las URL](runtime-url-handling.md)
@@ -74,9 +74,9 @@ Conceptos clave
 Trabajar con bases de datos
 -----------------------------
 
-* [Objeto de acceso a datos](db-dao.md) - Conectar a una base de datos, consultas básicas, transacciones y manipulación de esquemas
-* [Constructor de consultas](db-query-builder.md) - Consultar la base de datos utilizando una simple capa de abstracción
-* [Active Record](db-active-record.md) - El ORM Active Record, recuperar y manipular los registros y definir relaciones
+* [Objeto de acceso a datos](db-dao.md) - Conexión a una base de datos, consultas básicas, transacciones y manipulación de esquemas
+* [Constructor de consultas](db-query-builder.md) - Consulta de la base de datos utilizando una simple capa de abstracción
+* [Active Record](db-active-record.md) - ORM Active Record, recuperación y manipulación de registros y definición de relaciones
 * [Migraciones](db-migrations.md) - Control de versiones de bases de datos en el entorno de desarrollo en equipo
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
@@ -98,10 +98,10 @@ Visualizar datos
 
 * **TBD** [Formato de datos](output-formatting.md)
 * **TBD** [Paginación](output-pagination.md)
-* **TBD** [Ordenar](output-sorting.md)
+* **TBD** [Ordenación](output-sorting.md)
 * [Proveedores de datos](output-data-providers.md)
 * [Widgets de datos](output-data-widgets.md)
-* [Utilizar temas](output-theming.md)
+* [Utilización de temas](output-theming.md)
 
 
 Seguridad
@@ -114,8 +114,8 @@ Seguridad
 * **TBD** [Buenas prácticas](security-best-practices.md)
 
 
-Caching
--------
+Caché
+-----
 
 * [Información general](caching-overview.md)
 * [Caché de datos](caching-data.md)
@@ -127,29 +127,29 @@ Caching
 Servicios Web RESTful 
 ---------------------
 
-* [Guía Breve](rest-quick-start.md)
+* [Guía breve](rest-quick-start.md)
 * [Recursos (Resources)](rest-resources.md)
 * [Controladores](rest-controllers.md)
-* [Routing](rest-routing.md)
-* [Dar formato a respuestas](rest-response-formatting.md)
+* [Gestión de rutas](rest-routing.md)
+* [Formateo de respuestas](rest-response-formatting.md)
 * [Autenticación](rest-authentication.md)
 * [Límite de Rango](rest-rate-limiting.md)
 * [Gestión de versiones](rest-versioning.md)
-* [Gestióon de errores](rest-error-handling.md)
+* [Gestión de errores](rest-error-handling.md)
 
 
 Herramientas de Desarrollo
 --------------------------
 
-* [Depurador y Barra de Herramients de Depuración](tool-debugger.md)
-* [Generar código con Gii](tool-gii.md)
-* **TBD** [Generar documentación de API](tool-api-doc.md)
+* [Depurador y Barra de Herramientas de Depuración](tool-debugger.md)
+* [Generación de códigos con Gii](tool-gii.md)
+* **TBD** [Generación de documentación de API](tool-api-doc.md)
 
 
-Testing
--------
+Pruebas
+------
 
-* [Información General](test-overview.md)
+* [Información general](test-overview.md)
 * **TBD** [Pruebas unitarias](test-unit.md)
 * **TBD** [Pruebas funcionales](test-functional.md)
 * **TBD** [Pruebas de aceptación](test-acceptance.md)
@@ -167,7 +167,7 @@ Extender Yii
 * [Utilizar Composer](extend-using-composer.md)
 
 
-Temas Especiales
+Temas especiales
 ----------------
 
 * [Plantilla aplicación avanzada](tutorial-advanced-app.md)
@@ -175,8 +175,8 @@ Temas Especiales
 * [Comandos de consola](tutorial-console.md)
 * [Validadores de base](tutorial-core-validators.md)
 * [Internacionalización](tutorial-i18n.md)
-* [Enviar correos electrónicos](tutorial-mailing.md)
-* [Ajustar el rendimiento](tutorial-performance-tuning.md)
+* [Envío de correos electrónicos](tutorial-mailing.md)
+* [Mejora del rendimiento](tutorial-performance-tuning.md)
 * **TBD** [Entorno de alojamiento compartido](tutorial-shared-hosting.md)
 * [Motores de plantillas](tutorial-template-engines.md)
 
