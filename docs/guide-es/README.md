@@ -45,7 +45,7 @@ Estructura de una aplicación
 
 
 Gestión de las peticiones
-------------------
+-------------------------
 
 * **TBD** [Bootstrapping](runtime-bootstrapping.md)
 * **TBD** [Rutas](runtime-routing.md)
@@ -171,7 +171,7 @@ Temas especiales
 ----------------
 
 * [Plantilla aplicación avanzada](tutorial-advanced-app.md)
-* [Generar una aplicación desde cero](tutorial-start-from-scratch.md)
+* [Creación de una aplicación desde cero](tutorial-start-from-scratch.md)
 * [Comandos de consola](tutorial-console.md)
 * [Validadores de base](tutorial-core-validators.md)
 * [Internacionalización](tutorial-i18n.md)
