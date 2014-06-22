@@ -4,8 +4,6 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-$timeFormatter = extension_loaded('intl') ? Yii::createObject(['class' => 'yii\i18n\Formatter']) : Yii::$app->formatter;
-
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
