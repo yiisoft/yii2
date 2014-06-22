@@ -57,7 +57,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     }
     
     /**
-     * @todo    discuss|review  Expected HTML when content is callable shouldn't be the should
+     * @todo    discuss|review  Expected HTML shouldn't be wrapped only by the $content?
      */
     public function testRenderWithCallableContent()
     {
