@@ -60,11 +60,11 @@ class Tabs extends Widget
      * - label: string, required, the tab header label.
      * - headerOptions: array, optional, the HTML attributes of the tab header.
      * - linkOptions: array, optional, the HTML attributes of the tab header link tags.
-     * - content: array, required if `items` is not set. The content (HTML) of the tab pane.
+     * - content: string, required if `items` is not set. The content (HTML) of the tab pane.
      * - options: array, optional, the HTML attributes of the tab pane container.
      * - active: boolean, optional, whether the item tab header and pane should be visible or not.
      * - items: array, optional, if not set then `content` will be required. The `items` specify a dropdown items
-     *   configuration array. Each item can hold two extra keys, besides the above ones:
+     *   configuration array. Each item can hold three extra keys, besides the above ones:
      *     * active: boolean, optional, whether the item tab header and pane should be visible or not.
      *     * content: string, required if `items` is not set. The content (HTML) of the tab pane.
      *     * contentOptions: optional, array, the HTML attributes of the tab content container.
