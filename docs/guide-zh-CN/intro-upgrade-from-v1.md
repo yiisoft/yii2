@@ -20,9 +20,10 @@ Yii 2.0 完全拥抱 [Composer](https://getcomposer.org/) 的使用，它其实�
 PHP 需求
 ----------------
 
-Yii 2.0 requires PHP 5.4 or above, which is a huge improvement over PHP version 5.2 that is required by Yii 1.1.
-As a result, there are many differences on the language level that you should pay attention to.
-Below is a summary of the major changes regarding PHP:
+Yii 2.0 需求 PHP 5.4 或以上版本，该版本相对于 Yii 1.1 所需求的 PHP 5.2
+而言是一个巨大的改进。也因此，在语言层面上有很多的值得注意的不同之处。
+
+下面是在 PHP 层级发生的主要变化的一个小汇总：
 
 - [命名空间](http://php.net/manual/zh/language.namespaces.php)
 - [匿名函数](http://php.net/manual/zh/functions.anonymous.php)
@@ -236,14 +237,12 @@ ActiveForm::end();
 主题（Theme）
 ------
 
-Themes work completely differently in 2.0. They are now based on a path mapping mechanism that maps a source
-view file path to a themed view file path. For example, if the path map for a theme is
-`['/web/views' => '/web/themes/basic']`, then the themed version for the view file
-`/web/views/site/index.php` will be `/web/themes/basic/site/index.php`. For this reason, themes can now
-be applied to any view file, even a view rendered outside of the context of a controller or a widget.
+2.0 主题的运作方式跟以往完全不同了。它们现在基于一个
+**路径映射机制**，该机制会把一个源视图文件的路径映射到一个主题视图文件路径。举例来说，如果路径映射为
+`['/web/views' => '/web/themes/basic']`，那么 `/web/views/site/index.php` 视图的主题修饰版就会是
+`/web/themes/basic/site/index.php`。也因此让主题现在可以应用在任何视图文件之上，甚至是渲染于控制器或小部件的上下文环境之外的视图文件。
 
-Also, there is no more `CThemeManager` component. Instead, `theme` is a configurable property of the `view`
-application component.
+同样，`CThemeManager` 组件已经被移除了。取而代之的是，`theme` 成为了 `view` 应用组件的一个可配置属性。
 
 更多细节请参考[主题](output-theming.md)章节。
 
@@ -251,15 +250,13 @@ application component.
 控制台应用（Console Application）
 --------------------
 
-Console applications are now organized as controllers, like Web applications. Console controllers
-should extend from [[yii\console\Controller]], similar to `CConsoleCommand` in 1.1.
+控制台应用现在如普通的 Web 应用程序一样，由控制器组成，控制台的控制器继承自 [[yii\console\Controller]]
+，类似于1.1的 `CConsoleCommand` 。
 
-To run a console command, use `yii <route>`, where `<route>` stands for a controller route
-(e.g. `sitemap/index`). Additional anonymous arguments are passed as the parameters to the
-corresponding controller action method, while named arguments are parsed according to
-the declarations in [[yii\console\Controller::options()]].
+运行控制台命令使用 `yii <route>`，其中 `<route>` 代表控制器的路由（如 `sitemap/index`）。额外的匿名参数传递到对应的控制器操作，而有名的参数根据
+[[yii\console\Controller::options()]] 的声明来解析。
 
-Yii 2.0 supports automatic generation of command help information from comment blocks.
+Yii 2.0 支持基于代码注释自动生成相关命令的帮助（help）信息。
 
 更多细节请参阅[控制台命令](tutorial-console.md)章节。
 
@@ -301,13 +298,11 @@ public function behaviors()
 前端资源（Assets）
 ------
 
-Yii 2.0 introduces a new concept called *asset bundle* that replaces the script package concept found in Yii 1.1.
+Yii 2.0 引入了一个新的概念，称为 *资源包*（Asset Bundle），以代替 1.1 的脚本包概念。
 
-An asset bundle is a collection of asset files (e.g. JavaScript files, CSS files, image files, etc.)
-within a directory. Each asset bundle is represented as a class extending [[yii\web\AssetBundle]].
-By registering an asset bundle via [[yii\web\AssetBundle::register()]], you make
-the assets in that bundle accessible via the Web. Unlike in Yii 1, the page registering the bundle will automatically
-contain the references to the JavaScript and CSS files specified in that bundle.
+一个资源包是一个目录下的资源文件集合（如 JavaScript 文件、CSS 文件、图片文件等）。每一个资源包被表示为一个类，该类继承自
+[[yii\web\AssetBundle]]。用 [[yii\web\AssetBundle::register()]] 方法注册一个资源包后，就使它的资源可被 Web
+访问，注册了资源包的页面会自动包含和引用资源包内指定的 JS 和 CSS 文件。
 
 更多细节请参阅 [前端资源管理（Asset）](structure-assets.md) 章节。
 
@@ -329,10 +324,10 @@ Yii 2.0 很多常用的静态助手类，包括：
 表单
 -----
 
-Yii 2.0 introduces the *field* concept for building a form using [[yii\widgets\ActiveForm]]. A field
-is a container consisting of a label, an input, an error message, and/or a hint text.
-A field is represented as an [[yii\widgets\ActiveField|ActiveField]] object.
-Using fields, you can build a form more cleanly than before:
+Yii 2.0 引进了 *表单栏（field）* 的概念，用来创建一个基于 [[yii\widgets\ActiveForm]]
+的表单。一个表单栏是一个由标签、输入框、错误消息（可能还有提示文字）组成的容器，被表示为 [[yii\widgets\ActiveField|ActiveField]] 对象。
+
+使用表单栏建立表单的过程比以前更整洁利落：
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -350,10 +345,11 @@ Using fields, you can build a form more cleanly than before:
 查询生成器（Query Builder）
 -------------
 
-In 1.1, query building was scattered among several classes, including `CDbCommand`,
-`CDbCriteria`, and `CDbCommandBuilder`. Yii 2.0 represents a DB query in terms of a [[yii\db\Query|Query]] object
-that can be turned into a SQL statement with the help of [[yii\db\QueryBuilder|QueryBuilder]] behind the scene.
-For example:
+Yii 1.1中，查询语句的构建分散在多个类中，包括`CDbCommand`，`CDbCriteria` 以及
+`CDbCommandBuilder`。Yii 2.0 以 [[yii\db\Query|Query]] 对象的形式表示一个数据库查询，这个对象可以在
+[[yii\db\QueryBuilder|QueryBuilder]] 的帮助下于幕后生成 SQL 语句。
+
+例如：
 
 ```php
 $query = new \yii\db\Query();
@@ -366,7 +362,7 @@ $sql = $command->sql;
 $rows = $command->queryAll();
 ```
 
-Best of all, such query building methods can also be used when working with [Active Record](db-active-record.md).
+最绝的是，这些查询生成方法还TM可以和[活动记录](db-active-record.md)配合使用
 
 请参考[查询生成器（Query Builder）](db-query-builder.md) 章节了解更多内容。
 
@@ -374,25 +370,24 @@ Best of all, such query building methods can also be used when working with [Act
 活动记录（Active Record）
 -------------
 
-Yii 2.0 的[活动记录](db-active-record.md)改动了很多。两个最显而易见的改动分别涉及构建查询（query
+Yii 2.0 的[活动记录](db-active-record.md)改动了很多。两个最显而易见的改动分别涉及查询语句的构建（query
 building）和关联查询的处理（relational query handling）。
 
 在 1.1 中的 `CDbCriteria` 类在 Yii 2 中被 [[yii\db\ActiveQuery]] （活动查询）所替代。这个类是继承自
-[[yii\db\Query]]，且继承了所有的
-The `CDbCriteria` class in 1.1 is replaced by [[yii\db\ActiveQuery]] in Yii 2. That class extends from [[yii\db\Query]], and thus
-inherits all query building methods. You call [[yii\db\ActiveRecord::find()]] to start building a query:
+[[yii\db\Query]]，因此也继承了所有查询生成方法。当需要开始拼装一个查询了，你可以调用 [[yii\db\ActiveRecord::find()]]
+方法来开头：
 
 ```php
-// To retrieve all *active* customers and order them by their ID:
+// 检索所有 *活动的* 客户和订单，并以 ID 排序：
 $customers = Customer::find()
     ->where(['status' => $active])
     ->orderBy('id')
     ->all();
 ```
 
-To declare a relation, simply define a getter method that returns an [[yii\db\ActiveQuery|ActiveQuery]] object.
-The property name defined by the getter represents the relation name. For example, the following code declares
-an `orders` relation (in 1.1, you would have to declare relations in a central place `relations()`):
+要声明一个关联关系，只需简单地定义一个 getter 方法来返回一个 [[yii\db\ActiveQuery|ActiveQuery]]
+对象。getter 方法定义的属性名（译者注：即 getOrders() 中的 orders）表示关联关系名。如，以下代码声明了一个名为 `orders`
+的关系（1.1 中必须在 `relations()` 方法内声明关系）：
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -403,29 +398,24 @@ class Customer extends \yii\db\ActiveRecord
     }
 }
 ```
-
-Now you can use `$customer->orders` to access a customer's orders from the related table. You can also use the following code
-to perform an on-the-fly relational query with a customized query condition:
+现在你就可以通过调用 `$customer->orders`
+来从关联表中访问所有用户的订单了。你还可以用以下代码进行一场，使用定制的查询条件执行的“即时演算”关联查询：
 
 ```php
 $orders = $customer->getOrders()->andWhere('status=1')->all();
 ```
 
-When eager loading a relation, Yii 2.0 does it differently from 1.1. In particular, in 1.1 a JOIN query
-would be created to select both the primary and the relational records. In Yii 2.0, two SQL statements are executed
-without using JOIN: the first statement brings back the primary records and the second brings back the relational
-records by filtering with the primary keys of the primary records.
+当贪婪加载一段关联关系时，Yii 2.0 和 1.1 的运作机理并不相同。具体来说，在 1.1 中，为同时选出主表和关联记录，会生成一个 JOIN
+查询。在 Yii 2.0 中会使用两个没有 JOIN 的 SQL 语句：第一条语句取回主表记录，第二条取回用主表记录的主键信息筛选后的关联记录。
 
-Instead of returning [[yii\db\ActiveRecord|ActiveRecord]] objects, you may chain the [[yii\db\ActiveQuery::asArray()|asArray()]]
-method when building a query to return a large number of records. This will cause the query result to be returned
-as arrays, which can significantly reduce the needed CPU time and memory if large number of records . For example:
+当构建会返回大量记录的查询时，可以添加 [[yii\db\ActiveQuery::asArray()|asArray()]] 方法链的方法，这样会以数组的形式返回查询结果，而不必返回
+[[yii\db\ActiveRecord|ActiveRecord]] 对象，这能明显降低因大量记录读取所消耗的 CPU 时间和内存。如：
 
 ```php
 $customers = Customer::find()->asArray()->all();
 ```
 
-Another change is that you can't define attribute default values through public properties anymore.
-If you need those, you should set them in the init method of your record class.
+另一个改变是你不能再通过公共数据定义特性（Attribute）的默认值了。如果你需要这么做的话，你可以在你的记录类的 `init` 方法中设置它们。
 
 ```php
 public function init()
@@ -435,8 +425,8 @@ public function init()
 }
 ```
 
-There where some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
-version 2.0 anymore. Note that when adding parameters to the constructor you might have to override [[yii\db\ActiveRecord::instantiate()]].
+曾几何时，在 1.1 中重写一个活动记录类的构造器（Constructor）会导致一些问题。它们在 2.0
+中不会再出现了。需要注意的是，如果你需要在构造器中添加一些参数，你恐怕必须重写 [[yii\db\ActiveRecord::instantiate()]] 方法。
 
 活动记录方面还有很多其他的变化与改进，请参考 [活动记录](db-active-record.md) 章节以了解更多细节。
 
