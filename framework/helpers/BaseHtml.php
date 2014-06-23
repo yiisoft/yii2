@@ -640,11 +640,12 @@ class BaseHtml
         } else {
             $hidden = '';
         }
+        $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
+        unset($options['labelOptions']);
         if (isset($options['label'])) {
             $label = $options['label'];
-            $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
             $container = isset($options['container']) ? $options['container'] : ['class' => 'radio'];
-            unset($options['label'], $options['labelOptions'], $options['container']);
+            unset($options['label'], $options['container']);
             $content = static::label(static::input('radio', $name, $value, $options) . ' ' . $label, null, $labelOptions);
             if (is_array($container)) {
                 return $hidden . static::tag('div', $content, $container);
@@ -690,11 +691,12 @@ class BaseHtml
         } else {
             $hidden = '';
         }
+        $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
+        unset($options['labelOptions']);
         if (isset($options['label'])) {
             $label = $options['label'];
-            $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
             $container = isset($options['container']) ? $options['container'] : ['class' => 'checkbox'];
-            unset($options['label'], $options['labelOptions'], $options['container']);
+            unset($options['label'], $options['container']);
             $content = static::label(static::input('checkbox', $name, $value, $options) . ' ' . $label, null, $labelOptions);
             if (is_array($container)) {
                 return $hidden . static::tag('div', $content, $container);
@@ -1550,7 +1552,7 @@ class BaseHtml
         $groups = isset($tagOptions['groups']) ? $tagOptions['groups'] : [];
         unset($tagOptions['prompt'], $tagOptions['options'], $tagOptions['groups']);
         $options['encodeSpaces'] = ArrayHelper::getValue($options, 'encodeSpaces', $encodeSpaces);
-        
+
         foreach ($items as $key => $value) {
             if (is_array($value)) {
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
