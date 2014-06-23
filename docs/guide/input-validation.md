@@ -322,7 +322,7 @@ the method/function is:
  * @param string $attribute the attribute currently being validated
  * @param array $params the additional name-value pairs given in the rule
  */
-function ($model, $attribute)
+function ($attribute, $params)
 ```
 
 If an attribute fails the validation, the method/function should call [[yii\base\Model::addError()]] to save
@@ -364,9 +364,9 @@ class MyForm extends Model
 
 > Note: By default, inline validators will not be applied if their associated attributes receive empty inputs
   or if they have already failed some validation rules. If you want to make sure a rule is always applied,
-  you may configure the [[yii\base\Validator::skipOnEmpty|skipOnEmpty]] and/or [[yii\base\Validator::skipOnError|skipOnError]]
-  properties to be false in the rule declarations. For example,
-```php
+  you may configure the [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] and/or [[yii\validators\Validator::skipOnError|skipOnError]]
+  properties to be false in the rule declarations. For example:
+> ```php
 [
     ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
 ]
@@ -529,7 +529,7 @@ JS;
 > Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
   you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
   write the validation rule like the following:
-```php
+> ```php
 [
     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 ]
