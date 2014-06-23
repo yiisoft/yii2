@@ -1,5 +1,7 @@
 <?php
-$params = array_merge(
+use yii\helpers\ArrayHelper;
+
+$params = ArrayHelper::merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
     require(__DIR__ . '/params.php'),
