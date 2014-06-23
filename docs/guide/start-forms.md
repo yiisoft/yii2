@@ -118,7 +118,7 @@ If the model is successfully populated (i.e., if the user has submitted the HTML
 [[yii\base\Model::validate()|validate()]] to make sure the values entered are valid.
 
 If everything is fine, the action will render a view named `entry-confirm` to confirm the data entered 
-with the user that the data entered. If a problem occurred, the `entry` view will
+with the user that the data entered. If no data was submitted or the data contained errors, the `entry` view will
 be rendered, wherein the HTML form  will be shown, along with any validation error messages.
 
 > Info: The expression `Yii::$app` represents the [application](structure-applications.md) instance,
@@ -126,6 +126,9 @@ be rendered, wherein the HTML form  will be shown, along with any validation err
   provides components such as `request`, `response`, `db`, etc. to support specific functionality.
   In the above code, the `request` component of the application instance is used to access the `$_POST` data.
 
+> Note: In this very simple example we just render the confirmation page, however when you process POST data you
+  should better use [[yii\web\Controller::refresh()|refresh()]] or [[yii\web\Controller::redirect()|redirect()]]
+  to avoid [resubmitting](http://en.wikipedia.org/wiki/Post/Redirect/Get) forms.
 
 Creating Views <a name="creating-views"></a>
 --------------
