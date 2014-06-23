@@ -249,21 +249,35 @@ $command->execute();
 Transactions
 ------------
 
-You can perform transactional SQL queries like the following:
+When running multiple related queries in a sequence you may need to wrap them in a transaction to
+ensure you data is consistent. Yii provides a simple interface to work with transactions in simple
+cases but also for advanced usage when you need to define isolation levels.
+
+The following code shows a simple pattern that all code that uses transactional queries should follow:
 
 ```php
 $transaction = $connection->beginTransaction();
 try {
     $connection->createCommand($sql1)->execute();
-     $connection->createCommand($sql2)->execute();
+    $connection->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
     $transaction->commit();
-} catch(Exception $e) {
+} catch(\Exception $e) {
     $transaction->rollBack();
+    throw $e;
 }
 ```
 
-You can also nest multiple transactions, if needed:
+The first line starts a new transaction using the [[yii\db\Connection::beginTransaction()|beginTransaction()]]-method of the database connection
+object. The transaction itself is represented by a [[yii\db\Transaction]] object stored in `$transaction`.
+We wrap the execution of all queries in a try-catch-block to be able to handle errors.
+We call [[yii\db\Transaction::commit()|commit()]] on success to commit the transaction and
+[[yii\db\Transaction::rollBack()|rollBack()]] in case of an error. This will revert the effect of all queries
+that have been executed inside of the transaction.
+`throw $e` is used to re-throw the exception in case we can not handle the error ourselfs and deligate it
+to some other code or the yii errorhandler.
+
+It is also possible to nest multiple transactions, if needed:
 
 ```php
 // outer transaction
@@ -285,6 +299,36 @@ try {
     $transaction1->rollBack();
 }
 ```
+
+Note that your DBMS should have support for Savepoints for this to work as expected.
+The above code will work for any DBMS but transactional safety is only guaranteed if
+the underlying DBMS supports it.
+
+Yii also supports setting [isolation levels] for your transactions.
+When beginning a transaction it will run in the default isolation level set by you database system.
+You can specifying an isolation level explicitly when starting a transaction:
+
+```php
+$transaction = $connection->beginTransaction(\yii\db\Transaction::REPEATABLE_READ);
+```
+
+Yii provides four constants for the most common isolation levels:
+
+- [[\yii\db\Transaction::READ_UNCOMMITTED]] - the weakest level, Dirty reads, Non-repeatable reads and Phantoms may occur.
+- [[\yii\db\Transaction::READ_COMMITTED]] - avoid Dirty reads.
+- [[\yii\db\Transaction::REPEATABLE_READ]] - avoid Dirty reads and Non-repeatable reads.
+- [[\yii\db\Transaction::SERIALIZABLE]] - the strongest level, avoids all of the above named problems.
+
+You may use the constants named above but you can also use a string that represents a valid syntax that can be
+used in your DBMS following `SET TRANSACTION ISOLATION LEVEL`. For postgres this could be for example
+`SERIALIZABLE READ ONLY DEFERRABLE`.
+
+> Note: SQLite only supports two isolation levels, so you can only use `READ UNCOMMITTED` and `SERIALIZABLE`.
+  Usage of other levels will result in an exception to be thrown.
+
+> Note:
+
+[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
 Working with database schema
