@@ -138,7 +138,7 @@ class Tabs extends Widget
             if (!isset($item['label'])) {
                 throw new InvalidConfigException("The 'label' option is required.");
             }
-            $encodeLabel = $this->encodeLabels || isset($item['encode']) && $item['encode'] === true;
+            $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
             $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', []));
             $linkOptions = array_merge($this->linkOptions, ArrayHelper::getValue($item, 'linkOptions', []));
