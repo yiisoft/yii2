@@ -6,6 +6,7 @@ use yiiunit\data\ar\sphinx\ActiveRecord;
 use yiiunit\data\ar\ActiveRecord as ActiveRecordDb;
 use yiiunit\data\ar\sphinx\ArticleIndex;
 use yiiunit\data\ar\sphinx\ArticleDb;
+use yiiunit\data\ar\sphinx\TagDb;
 
 /**
  * @group sphinx
@@ -34,11 +35,14 @@ class ExternalActiveRelationTest extends SphinxTestCase
         $this->assertEquals(1, count($article->relatedRecords));
 
         // has many :
-        /*$this->assertFalse($article->isRelationPopulated('tags'));
+        $this->assertFalse($article->isRelationPopulated('tags'));
         $tags = $article->tags;
         $this->assertTrue($article->isRelationPopulated('tags'));
-        $this->assertEquals(3, count($tags));
-        $this->assertTrue($tags[0] instanceof TagDb);*/
+        $this->assertEquals(count($article->tag), count($tags));
+        $this->assertTrue($tags[0] instanceof TagDb);
+        foreach ($tags as $tag) {
+            $this->assertTrue(in_array($tag->id, $article->tag));
+        }
     }
 
     public function testFindEager()
@@ -52,10 +56,20 @@ class ExternalActiveRelationTest extends SphinxTestCase
         $this->assertTrue($articles[1]->source instanceof ArticleDb);
 
         // has many :
-        /*$articles = ArticleIndex::find()->with('tags')->all();
+        $articles = ArticleIndex::find()->with('tags')->all();
         $this->assertEquals(2, count($articles));
         $this->assertTrue($articles[0]->isRelationPopulated('tags'));
-        $this->assertTrue($articles[1]->isRelationPopulated('tags'));*/
+        $this->assertTrue($articles[1]->isRelationPopulated('tags'));
+        foreach ($articles as $article) {
+            $this->assertTrue($article->isRelationPopulated('tags'));
+            $tags = $article->tags;
+            $this->assertEquals(count($article->tag), count($tags));
+            //var_dump($tags);
+            $this->assertTrue($tags[0] instanceof TagDb);
+            foreach ($tags as $tag) {
+                $this->assertTrue(in_array($tag->id, $article->tag));
+            }
+        }
     }
 
     /**
