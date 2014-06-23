@@ -58,6 +58,7 @@ class Tabs extends Widget
      * tab with the following structure:
      *
      * - label: string, required, the tab header label.
+     * - encode: boolean, optional, whether this label should be HTML-encoded.
      * - headerOptions: array, optional, the HTML attributes of the tab header.
      * - linkOptions: array, optional, the HTML attributes of the tab header link tags.
      * - content: string, required if `items` is not set. The content (HTML) of the tab pane.
@@ -136,7 +137,8 @@ class Tabs extends Widget
             if (!isset($item['label'])) {
                 throw new InvalidConfigException("The 'label' option is required.");
             }
-            $label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
+            $encodeLabel = $this->encodeLabels || isset($item['encode']) && $item['encode'] === true;
+            $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', []));
             $linkOptions = array_merge($this->linkOptions, ArrayHelper::getValue($item, 'linkOptions', []));
 
