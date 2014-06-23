@@ -41,7 +41,7 @@ Application Structure
 * [Filters](structure-filters.md)
 * [Widgets](structure-widgets.md)
 * [Asset Bundles](structure-assets.md)
-* **TBD** [Extensions](structure-extensions.md)
+* [Extensions](structure-extensions.md)
 
 
 Handling Requests
