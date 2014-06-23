@@ -36,7 +36,7 @@ Yii 2.0 权威指南
 * **已定稿** [视图（View）](structure-views.md)
 * **已定稿** [模型（Model）](structure-models.md)
 * **已定稿** [过滤器](structure-filters.md)
-* **待定中** [小部件（Widget）](structure-widgets.md)
+* **已定稿** [小部件（Widget）](structure-widgets.md)
 * **已定稿** [模块（Module）](structure-modules.md)
 * **编撰中** [前端资源（Asset）](structure-assets.md)
 * **待定中** [扩展（extensions）](structure-extensions.md)
@@ -179,8 +179,8 @@ RESTful Web 服务
 * 菜单（Menu）：链接到 demo 页
 * LinkPager：链接到 demo 页
 * LinkSorter：链接到 demo 页
-* **编撰中** [Bootstrap 小部件](bootstrap-widgets.md)
-* **编撰中** [Jquery UI 小部件](jui-widgets.md)
+* **已完成** [Bootstrap 小部件](widget-bootstrap.md)
+* **已完成** [Jquery UI 小部件](widget-jui.md)
 
 助手类
 ------
