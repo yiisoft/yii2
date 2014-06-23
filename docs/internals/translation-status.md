@@ -22,7 +22,7 @@ structure-views.md                  | Yes
 structure-models.md                 | Yes
 structure-modules.md                | Yes
 structure-filters.md                | Yes
-structure-widgets.md                |
+structure-widgets.md                | Yes
 structure-assets.md                 |
 structure-extensions.md             |
 runtime-bootstrapping.md            |
