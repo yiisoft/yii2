@@ -340,6 +340,19 @@ abstract class Schema extends Object
     }
 
     /**
+     * Sets the isolation level of the current transaction.
+     * @param string $level The transaction isolation level to use for this transaction.
+     * This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]], [[Transaction::REPEATABLE_READ]]
+     * and [[Transaction::SERIALIZABLE]] but also a string containing DBMS specific syntax to be used
+     * after `SET TRANSACTION ISOLATION LEVEL`.
+     * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     */
+    public function setTransactionIsolationLevel($level)
+    {
+        $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level;")->execute();
+    }
+
+    /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
      * @param string $str string to be quoted

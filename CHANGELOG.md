@@ -68,6 +68,7 @@ Yii Framework 2 Change Log
 - Enh #3132: `yii\rbac\PhpManager` now supports more compact data file format (qiangxue)
 - Enh #3154: Added validation error display for `GridView` filters (ivan-kolmychek)
 - Enh #3196: Masked input upgraded to use jquery.inputmask plugin with more features. (kartik-v)
+- Enh #3220: Added support for setting transation isolation levels (cebe)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
 - Enh #3230: Added `yii\filters\AccessControl::user` to support access control with different actors (qiangxue)
 - Enh #3232: Added `export()` and `exportAsString()` methods to `yii\helpers\BaseVarDumper` (klimov-paul)
