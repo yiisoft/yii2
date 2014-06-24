@@ -42,4 +42,17 @@ class ActiveRelationTest extends SphinxTestCase
         $this->assertTrue($articles[0]->index instanceof ArticleIndex);
         $this->assertTrue($articles[1]->index instanceof ArticleIndex);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/4018
+     */
+    public function testFindCompositeLink()
+    {
+        $articles = ArticleIndex::find()->with('sourceCompositeLink')->all();
+        $this->assertEquals(2, count($articles));
+        $this->assertTrue($articles[0]->isRelationPopulated('sourceCompositeLink'));
+        $this->assertNotEmpty($articles[0]->sourceCompositeLink);
+        $this->assertTrue($articles[1]->isRelationPopulated('sourceCompositeLink'));
+        $this->assertNotEmpty($articles[1]->sourceCompositeLink);
+    }
 }
