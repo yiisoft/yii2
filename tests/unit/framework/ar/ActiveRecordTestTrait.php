@@ -867,7 +867,7 @@ trait ActiveRecordTestTrait
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
         /* @var $this TestCase|ActiveRecordTestTrait */
-        // save
+        /* @var $customer Customer */
         $customer = $customerClass::findOne(2);
         $this->assertTrue($customer instanceof $customerClass);
         $this->assertEquals('user2', $customer->name);
@@ -879,8 +879,8 @@ trait ActiveRecordTestTrait
         $this->afterSave();
         $this->assertEquals('user2x', $customer->name);
         $this->assertFalse($customer->isNewRecord);
-        $this->assertFalse(static::$afterSaveNewRecord);
-        $this->assertFalse(static::$afterSaveInsert);
+        $this->assertNull(static::$afterSaveNewRecord);
+        $this->assertNull(static::$afterSaveInsert);
         $customer2 = $customerClass::findOne(2);
         $this->assertEquals('user2x', $customer2->name);
 
