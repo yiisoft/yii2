@@ -34,6 +34,15 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
     echo "			<h1>Available Debug Data</h1>";
     $timeFormatter = extension_loaded('intl') ? Yii::createObject(['class' => 'yii\i18n\Formatter']) : Yii::$app->formatter;
 
+    $codes = [];
+    foreach ($manifest as $tag => $vals) {
+        if (!empty($vals['statusCode'])) {
+            $codes[] = $vals['statusCode'];
+        }
+    }
+    $codes = array_unique($codes, SORT_NUMERIC);
+    $status_codes = (!empty($codes)) ? array_combine($codes, $codes) : true;
+
     echo GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -104,7 +113,7 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
             ],
             [
                 'attribute' => 'statusCode',
-                'filter' => [200 => 200, 404 => 404, 403 => 403, 500 => 500],
+                'filter' => $status_codes,
                 'label' => 'Status code'
             ],
         ],
