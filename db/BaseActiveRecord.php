@@ -680,7 +680,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
-            $this->afterSave(false);
+            $this->afterSave(false, $values);
             return 0;
         }
         $condition = $this->getOldPrimaryKey(true);
@@ -699,10 +699,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
-        $this->afterSave(false);
         foreach ($values as $name => $value) {
             $this->_oldAttributes[$name] = $this->_attributes[$name];
         }
+        $this->afterSave(false, $values);
 
         return $rows;
     }
@@ -859,11 +859,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * When overriding this method, make sure you call the parent implementation so that
      * the event is triggered.
      * @param boolean $insert whether this method called while inserting a record.
+     * @param array $changedAttributes the attribute values that have changed during save.
      * If false, it means the method is called while updating a record.
      */
-    public function afterSave($insert)
+    public function afterSave($insert, $changedAttributes)
     {
-        $this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE);
+        $this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE, new ModelEvent([
+            'data' => ['changedAttributes' => $changedAttributes]
+        ]));
     }
 
     /**
