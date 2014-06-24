@@ -10,6 +10,7 @@ namespace yii\db\cubrid;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
+use yii\db\Transaction;
 
 /**
  * Schema is the class for retrieving metadata from a CUBRID database (version 9.1.x and higher).
@@ -284,4 +285,28 @@ class Schema extends \yii\db\Schema
 
         return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
     }
+
+	/**
+	 * @inheritdoc
+	 * @see http://www.cubrid.org/manual/91/en/sql/transaction.html#database-concurrency
+	 */
+	public function setTransactionIsolationLevel($level)
+	{
+		// translate SQL92 levels to CUBRID levels:
+		switch ($level) {
+			case Transaction::SERIALIZABLE:
+				$level = '6'; // SERIALIZABLE
+				break;
+			case Transaction::REPEATABLE_READ:
+				$level = '5'; // REPEATABLE READ CLASS with REPEATABLE READ INSTANCES
+				break;
+			case Transaction::READ_COMMITTED:
+				$level = '4'; // REPEATABLE READ CLASS with READ COMMITTED INSTANCES
+				break;
+			case Transaction::READ_UNCOMMITTED:
+				$level = '3'; // REPEATABLE READ CLASS with READ UNCOMMITTED INSTANCES
+				break;
+		}
+		return parent::setTransactionIsolationLevel($level);
+	}
 }

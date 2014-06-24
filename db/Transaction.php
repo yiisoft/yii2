@@ -86,6 +86,14 @@ class Transaction extends \yii\base\Object
      * also a string containing DBMS specific syntax to be used after `SET TRANSACTION ISOLATION LEVEL`.
      * If not specified (`null`) the isolation level will not be set explicitly and the DBMS default will be used.
      *
+     * > Note: This setting does not work for PostgreSQL, where setting the isolation level before the transaction
+     * has no effect. You have to call [[setIsolationLevel()]] in this case after the transaction has started.
+     *
+     * > Note: Some DBMS allow setting of the isolation level only for the whole connection so subsequent transactions
+     * may get the same isolation level even if you did not specify any. When using this feature
+     * you may need to set the isolation level for all transactions explicitly to avoid conflicting settings.
+     * At the time of this writing affected DBMS are MSSQL and SQLite.
+     *
      * [isolation level]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      * @throws InvalidConfigException if [[db]] is `null`.
      */
