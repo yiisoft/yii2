@@ -20,7 +20,8 @@
           <y:Geometry height="69.0" width="103.0" x="34.0" y="-11.5"/>
           <y:Fill color="#ADF4A6" transparent="false"/>
           <y:BorderStyle color="#FF0000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="36.68359375" x="33.158203125" y="25.1494140625">admin<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="微软雅黑" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="35.67578125" modelName="custom" textColor="#000000" visible="true" width="48.015625" x="27.4921875" y="16.662109375">admin
+(管理媛)<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -37,7 +38,8 @@
           <y:Geometry height="69.0" width="103.0" x="193.0" y="-11.5"/>
           <y:Fill color="#ADF4A6" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="38.025390625" x="32.4873046875" y="25.1494140625">author<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="微软雅黑" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="35.67578125" modelName="custom" textColor="#000000" visible="true" width="52.0" x="25.5" y="16.662109375">author
+（作者）<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -54,7 +56,7 @@
           <y:Geometry height="64.53585815429688" width="56.560157775878906" x="216.21992111206055" y="-132.03585815429688"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="62.37109375" x="-2.905467987060547" y="-27.814727783203125">John, ID=2<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="微软雅黑" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.837890625" modelName="custom" textColor="#000000" visible="true" width="66.208984375" x="-4.824413299560547" y="-28.951446533203125">John, ID=2<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -74,7 +76,7 @@
           <y:Geometry height="66.76200103759766" width="56.554100036621094" x="57.22294998168945" y="-133.14892959594727"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="62.37109375" x="-2.908496856689453" y="-27.701656341552734">Jane, ID=1<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="微软雅黑" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.837890625" modelName="custom" textColor="#000000" visible="true" width="64.6328125" x="-4.039356231689453" y="-28.838375091552734">Jane, ID=1<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -94,7 +96,8 @@
           <y:Geometry height="69.0" width="103.0" x="34.0" y="197.5"/>
           <y:Fill color="#99CCFF" transparent="false"/>
           <y:BorderStyle color="#FF0000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="64.71484375" x="19.142578125" y="25.1494140625">updatePost<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="微软雅黑" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="35.67578125" modelName="custom" textColor="#000000" visible="true" width="76.0" x="13.5" y="16.662109375">updatePost
+（编辑帖子）<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -111,7 +114,8 @@
           <y:Geometry height="69.0" width="103.0" x="193.0" y="197.5"/>
           <y:Fill color="#99CCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="89.388671875" x="6.8056640625" y="25.1494140625">updateOwnPost<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="微软雅黑" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="35.67578125" modelName="custom" textColor="#000000" visible="true" width="112.0" x="-4.5" y="16.662109375">updateOwnPost
+（编辑自己的帖子）<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -128,7 +132,8 @@
           <y:Geometry height="69.0" width="103.0" x="352.0" y="197.5"/>
           <y:Fill color="#99CCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="61.36328125" x="20.818359375" y="25.1494140625">createPost<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="微软雅黑" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="35.67578125" modelName="custom" textColor="#000000" visible="true" width="76.0" x="13.5" y="16.662109375">createPost
+（创建新帖）<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -145,7 +150,7 @@
           <y:Geometry height="29.535858154296875" width="103.0" x="193.0" y="167.96414184570312"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="custom" textColor="#000000" visible="true" width="64.03515625" x="19.482421875" y="5.4173431396484375">AuthorRule<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="微软雅黑" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.837890625" modelName="custom" textColor="#000000" visible="true" width="69.138671875" x="16.9306640625" y="4.8489837646484375">AuthorRule<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
