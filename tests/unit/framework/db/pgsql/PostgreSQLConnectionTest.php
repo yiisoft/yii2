@@ -71,7 +71,7 @@ class PostgreSQLConnectionTest extends ConnectionTest
 		$transaction->commit();
 
 		$transaction = $connection->beginTransaction();
-		$transaction->setIsolationLevel(Transaction::SERIALIZABLE . ' READ ONLY DEFERABLE');
+		$transaction->setIsolationLevel(Transaction::SERIALIZABLE . ' READ ONLY DEFERRABLE');
 		$transaction->commit();
 	}
 }
