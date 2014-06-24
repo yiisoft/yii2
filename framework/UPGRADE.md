@@ -55,3 +55,7 @@ Upgrade from Yii 2.0 Beta
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.
 
 * If your model code is using the `file` validation rule, you should rename its `types` option to `extensions`.
+
+* The behavior and signature of `ActiveRecord::afterSave()` has changed. `ActiveRecord::$isNewRecord` will now always be
+  false in afterSave and also dirty attributes are not available. This change has been made to have a more consistent and
+  expected behavior. The changed attributes are now available in the new parameter of afterSave() `$changedAttributes`.
