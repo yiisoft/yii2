@@ -323,10 +323,17 @@ You may use the constants named above but you can also use a string that represe
 used in your DBMS following `SET TRANSACTION ISOLATION LEVEL`. For postgres this could be for example
 `SERIALIZABLE READ ONLY DEFERRABLE`.
 
-> Note: SQLite only supports two isolation levels, so you can only use `READ UNCOMMITTED` and `SERIALIZABLE`.
-  Usage of other levels will result in an exception to be thrown.
+Note that some DBMS allow setting of the isolation level only for the whole connection so subsequent transactions
+may get the same isolation level even if you did not specify any. When using this feature
+you may need to set the isolation level for all transactions explicitly to avoid conflicting settings.
+At the time of this writing affected DBMS are MSSQL and SQLite.
 
-> Note:
+> Note: SQLite only supports two isolation levels, so you can only use `READ UNCOMMITTED` and `SERIALIZABLE`.
+Usage of other levels will result in an exception to be thrown.
+
+> Note: PostgreSQL does not allow settin the isolation level before the transaction starts so you can not
+specify the isolation level directly when starting the transaction.
+You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after the transaction has started.
 
 [isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
