@@ -48,10 +48,17 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
     /**
      * @inheritdoc
      */
-    public function scenarios()
+    public function attributes()
     {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
+        return (new <?= isset($modelAlias) ? $modelAlias : $modelClass ?>())->attributes();
+    }
+
+    /**
+    * @inheritdoc
+    */
+    public function attributeLabels()
+    {
+        return (new <?= isset($modelAlias) ? $modelAlias : $modelClass ?>())->attributeLabels();
     }
 
     /**
@@ -60,7 +67,7 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
      */
     public function search($params)
     {
-        $query = static::find();
+        $query = <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
