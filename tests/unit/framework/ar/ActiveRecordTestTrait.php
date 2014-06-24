@@ -816,7 +816,7 @@ trait ActiveRecordTestTrait
         $this->afterSave();
 
         $this->assertNotNull($customer->id);
-        $this->assertTrue(static::$afterSaveNewRecord);
+        $this->assertFalse(static::$afterSaveNewRecord);
         $this->assertTrue(static::$afterSaveInsert);
         $this->assertFalse($customer->isNewRecord);
     }

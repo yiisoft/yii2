@@ -644,16 +644,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Updates the specified attributes.
      *
      * This method is a shortcut to [[update()]] when data validation is not needed
-     * and only a list of attributes need to be updated.
+     * and only a small set attributes need to be updated.
      *
      * You may specify the attributes to be updated as name list or name-value pairs.
      * If the latter, the corresponding attribute values will be modified accordingly.
      * The method will then save the specified attributes into database.
      *
-     * Note that this method will NOT perform data validation.
+     * Note that this method will **not** perform data validation and will **not** trigger events.
      *
      * @param array $attributes the attributes (names or name-value pairs) to be updated
-     * @return integer|boolean the number of rows affected, or false if [[beforeSave()]] stops the updating process.
+     * @return integer the number of rows affected.
      */
     public function updateAttributes($attributes)
     {
@@ -666,7 +666,19 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $attrs[] = $name;
             }
         }
-        return $this->updateInternal($attrs);
+
+        $values = $this->getDirtyAttributes($attributes);
+        if (empty($values)) {
+            return 0;
+        }
+
+        $rows = $this->updateAll($values, $this->getOldPrimaryKey(true));
+
+        foreach ($values as $name => $value) {
+            $this->_oldAttributes[$name] = $this->_attributes[$name];
+        }
+
+        return $rows;
     }
 
     /**
