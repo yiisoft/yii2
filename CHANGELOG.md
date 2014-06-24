@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed Object of class Imagick could not be converted to string in CaptchaAction (eXprojects, cebe)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
+- Enh #2558: Enhanced support for memcached by adding `yii\caching\MemCache::persistentId` and `yii\caching\MemCache::options` (qiangxue)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
 - Enh #2906: Added support for using conditional comments for js and css files registered through asset bundles and Html helper (exromany, qiangxue)
 - Enh #2942: Added truncate and truncateWord methods (Alex-Code, samdark)
