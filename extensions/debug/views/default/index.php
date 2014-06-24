@@ -41,7 +41,7 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
         }
     }
     $codes = array_unique($codes, SORT_NUMERIC);
-    $status_codes = (!empty($codes)) ? array_combine($codes, $codes) : true;
+    $statusCodes = (!empty($codes)) ? array_combine($codes, $codes) : true;
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
@@ -113,7 +113,7 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
             ],
             [
                 'attribute' => 'statusCode',
-                'filter' => $status_codes,
+                'filter' => $statusCodes,
                 'label' => 'Status code'
             ],
         ],
