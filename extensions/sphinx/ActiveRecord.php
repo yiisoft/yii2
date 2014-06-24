@@ -618,8 +618,13 @@ abstract class ActiveRecord extends BaseActiveRecord
     {
         $columns = static::getIndexSchema()->columns;
         foreach ($row as $name => $value) {
-            if (isset($columns[$name]) && $columns[$name]->isMva) {
-                $row[$name] = explode(',', $value);
+            if (isset($columns[$name])) {
+                if ($columns[$name]->isMva) {
+                    $mvaValue = explode(',', $value);
+                    $row[$name] = array_map(array($columns[$name], 'typecast'), $mvaValue);
+                } else {
+                    $row[$name] = $columns[$name]->typecast($value);
+                }
             }
         }
         parent::populateRecord($record, $row);
