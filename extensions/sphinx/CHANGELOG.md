@@ -5,6 +5,7 @@ Yii Framework 2 sphinx extension Change Log
 --------------------------
 
 - Bug #3668: Escaping of the special characters at 'MATCH' statement added (klimov-paul)
+- Bug #4018: AR relation eager loading does not work with db models (klimov-paul)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
 
