@@ -40,6 +40,7 @@ Yii Framework 2 Change Log
 - Bug #3564: Fixed the bug that primary key columns should not take default values from schema (qiangxue)
 - Bug #3567: Fixed the bug that smallint was treated as string for PostgreSQL (qiangxue)
 - Bug #3578: Fixed postgreSQL column type detection, added missing types (MDMunir, cebe)
+- Bug #3583: Added typecast to auto value of primary key on insert of sql active record (cebe)
 - Bug #3591: Fixed incomplete obsolete filling in i18n `MessageController::saveMessagesToDb()` (advsm)
 - Bug #3601: Fixed the bug that the refresh URL was not generated correctly by `Captcha` (qiangxue, klevron)
 - Bug #3681: Fixed problem with AR::findOne() when a default scope joins another table so that PK name becomes ambigous (cebe)

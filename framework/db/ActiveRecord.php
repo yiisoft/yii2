@@ -466,7 +466,7 @@ class ActiveRecord extends BaseActiveRecord
         if ($table->sequenceName !== null) {
             foreach ($table->primaryKey as $name) {
                 if ($this->getAttribute($name) === null) {
-                    $id = $db->getLastInsertID($table->sequenceName);
+                    $id = $table->columns[$name]->typecast($db->getLastInsertID($table->sequenceName));
                     $this->setAttribute($name, $id);
                     $values[$name] = $id;
                     break;
