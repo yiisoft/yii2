@@ -380,8 +380,6 @@ class BaseConsole
             self::CROSSED_OUT => ['text-decoration' => ['line-through']],
             self::BLINK =>       ['text-decoration' => ['blink']],
             self::CONCEALED =>   ['visibility' => 'hidden'],
-//            self::ENCIRCLED:
-//            self::FRAMED:
         ] + $styleMap;
 
         $tags = 0;

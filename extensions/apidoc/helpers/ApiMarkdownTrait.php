@@ -107,4 +107,4 @@ trait ApiMarkdownTrait
 
         return ['[[', 2];
     }
-} 
+}

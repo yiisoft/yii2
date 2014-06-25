@@ -16,6 +16,9 @@ use yii\db\Transaction;
 /**
  * Schema is the class for retrieving metadata from a SQLite (2/3) database.
  *
+ * @property string $transactionIsolationLevel The transaction isolation level to use for this transaction.
+ * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
