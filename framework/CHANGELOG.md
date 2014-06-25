@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug #3578: Fixed postgreSQL column type detection, added missing types (MDMunir, cebe)
 - Bug #3591: Fixed incomplete obsolete filling in i18n `MessageController::saveMessagesToDb()` (advsm)
 - Bug #3601: Fixed the bug that the refresh URL was not generated correctly by `Captcha` (qiangxue, klevron)
+- Bug #3681: Fixed problem with AR::findOne() when a default scope joins another table so that PK name becomes ambigous (cebe)
 - Bug #3715: Fixed the bug that using a custom pager/sorter with `GridView` may generate two different pagers/sorters if the layout configures two pagers/sorters (qiangxue)
 - Bug #3716: `DynamicModel::validateData()` does not call `validate()` if the `$rules` parameter is empty (qiangxue)
 - Bug #3751: Fixed postgreSQL schema data for enum values, do not add values if there are none (makroxyz)

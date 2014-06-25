@@ -101,6 +101,10 @@ class PageCache extends ActionFilter
      */
     public $view;
 
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -128,7 +132,6 @@ class PageCache extends ActionFilter
             return true;
         } else {
             Yii::$app->getResponse()->content = ob_get_clean();
-
             return false;
         }
     }
@@ -140,7 +143,6 @@ class PageCache extends ActionFilter
     {
         echo $result;
         $this->view->endCache();
-
         return ob_get_clean();
     }
 }
