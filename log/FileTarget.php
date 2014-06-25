@@ -116,6 +116,7 @@ class FileTarget extends Target
         $file = $this->logFile;
         for ($i = $this->maxLogFiles; $i > 0; --$i) {
             $rotateFile = $file . '.' . $i;
+            clearstatcache();
             if (is_file($rotateFile)) {
                 // suppress errors because it's possible multiple processes enter into this section
                 if ($i === $this->maxLogFiles) {
