@@ -192,9 +192,9 @@ class SchemaTest extends DatabaseTestCase
                 'defaultValue' => 1.23,
             ],
             'blob_col' => [
-                'type' => 'string',
+                'type' => 'binary',
                 'dbType' => 'blob',
-                'phpType' => 'string',
+                'phpType' => 'resource',
                 'allowNull' => true,
                 'autoIncrement' => false,
                 'enumValues' => null,
