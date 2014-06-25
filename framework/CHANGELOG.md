@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #3478: Fixed yii\console\Controller::select accept empty input as '0' value (lynicidn)
 - Bug #3522: Fixed BaseFileHelper::normalizePath to allow a (.) for the current path. (skotos)
 - Bug #3548: Fixed the bug that X-Rate-Limit-Remaining header is always zero when using RateLimiter (qiangxue)
+- Bug #3559: Use native support for batchInsert in SQLite versions >= 3.7.11 and avoid limitations of the fallback (cebe)
 - Bug #3564: Fixed the bug that primary key columns should not take default values from schema (qiangxue)
 - Bug #3567: Fixed the bug that smallint was treated as string for PostgreSQL (qiangxue)
 - Bug #3578: Fixed postgreSQL column type detection, added missing types (MDMunir, cebe)
