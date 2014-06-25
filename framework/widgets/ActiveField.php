@@ -641,6 +641,15 @@ class ActiveField extends Component
      * If you want to use a widget that does not have `model` and `attribute` properties,
      * please use [[render()]] instead.
      *
+     * For example to use the [[MaskedInput]] widget to get some date input, you can use
+     * the following code, assuming that `$form` is your [[ActiveForm]] instance:
+     *
+     * ```php
+     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::className(), [
+     *     'mask' => '99/99/9999',
+     * ]);
+     * ```
+     *
      * @param string $class the widget class name
      * @param array $config name-value pairs that will be used to initialize the widget
      * @return static the field object itself
