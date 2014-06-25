@@ -1,13 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: cebe
- * Date: 26.05.14
- * Time: 18:15
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\apidoc\helpers;
-
 
 use cebe\markdown\Markdown;
 

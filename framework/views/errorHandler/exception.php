@@ -1,4 +1,5 @@
 <?php
+/* @var $this \yii\web\View */
 /* @var $exception \Exception */
 /* @var $handler \yii\web\ErrorHandler */
 ?>

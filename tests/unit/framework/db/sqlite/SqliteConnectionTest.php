@@ -47,14 +47,14 @@ class SqliteConnectionTest extends ConnectionTest
         $this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
     }
 
-	public function testTransactionIsolation()
-	{
-		$connection = $this->getConnection(true);
+    public function testTransactionIsolation()
+    {
+        $connection = $this->getConnection(true);
 
-		$transaction = $connection->beginTransaction(Transaction::READ_UNCOMMITTED);
-		$transaction->rollBack();
+        $transaction = $connection->beginTransaction(Transaction::READ_UNCOMMITTED);
+        $transaction->rollBack();
 
-		$transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
-		$transaction->rollBack();
-	}
+        $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
+        $transaction->rollBack();
+    }
 }
