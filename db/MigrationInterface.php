@@ -32,4 +32,4 @@ interface MigrationInterface
      * and should not proceed further. All other return values mean the migration succeeds.
      */
     public function down();
-} 
+}

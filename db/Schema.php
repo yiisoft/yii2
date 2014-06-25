@@ -25,6 +25,10 @@ use yii\caching\GroupDependency;
  * @property string[] $tableNames All table names in the database. This property is read-only.
  * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
  * instance of [[TableSchema]] or its child class. This property is read-only.
+ * @property string $transactionIsolationLevel The transaction isolation level to use for this transaction.
+ * This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]],
+ * [[Transaction::REPEATABLE_READ]] and [[Transaction::SERIALIZABLE]] but also a string containing DBMS specific
+ * syntax to be used after `SET TRANSACTION ISOLATION LEVEL`. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

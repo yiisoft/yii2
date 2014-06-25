@@ -42,6 +42,7 @@ use yii\helpers\StringHelper;
  * @property string $csrfToken The token used to perform CSRF validation. This property is read-only.
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
  * if no such header is sent. This property is read-only.
+ * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
