@@ -159,7 +159,7 @@ class CommandTest extends DatabaseTestCase
         $sql = 'INSERT INTO type (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)';
         $command = $db->createCommand($sql);
         $intCol = 123;
-        $charCol = 'abc';
+        $charCol = str_repeat('abc', 33) . 'x'; // a 100 char string
         $floatCol = 1.23;
         $blobCol = "\x10\x11\x12";
         $numericCol = '1.23';
@@ -172,13 +172,21 @@ class CommandTest extends DatabaseTestCase
         $command->bindParam(':bool_col', $boolCol);
         $this->assertEquals(1, $command->execute());
 
-        $sql = 'SELECT * FROM type';
-        $row = $db->createCommand($sql)->queryOne();
+        $command = $db->createCommand('SELECT int_col, char_col, float_col, blob_col, numeric_col, bool_col FROM type');
+//        $command->prepare();
+//        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
+        $row = $command->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, $row['char_col']);
         $this->assertEquals($floatCol, $row['float_col']);
-        $this->assertEquals($blobCol, $row['blob_col']);
+        if ($this->driverName === 'mysql' || $this->driverName === 'sqlite') {
+            $this->assertEquals($blobCol, $row['blob_col']);
+        } else {
+            $this->assertTrue(is_resource($row['blob_col']));
+            $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
+        }
         $this->assertEquals($numericCol, $row['numeric_col']);
+        $this->assertEquals($boolCol, $row['bool_col']);
 
         // bindValue
         $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';

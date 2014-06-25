@@ -14,8 +14,8 @@ use yii\db\BatchQueryResult;
 use yiiunit\data\ar\Customer;
 
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @group db
+ * @group mysql
  */
 class BatchQueryResultTest extends DatabaseTestCase
 {

@@ -87,7 +87,7 @@ class SchemaTest extends DatabaseTestCase
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
-            $this->assertEquals($value[1], $schema->getPdoType($value[0]));
+            $this->assertEquals($value[1], $schema->getPdoType($value[0]), 'type for value ' . print_r($value[0], true) . ' does not match.');
         }
         fclose($fp);
     }

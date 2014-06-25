@@ -4,6 +4,7 @@
  * and create an account 'postgres/postgres' which owns this test database.
  */
 
+DROP TABLE IF EXISTS "composite_fk" CASCADE;
 DROP TABLE IF EXISTS "order_item" CASCADE;
 DROP TABLE IF EXISTS "item" CASCADE;
 DROP TABLE IF EXISTS "order_item_with_null_fk" CASCADE;
@@ -78,6 +79,14 @@ CREATE TABLE "order_item_with_null_fk" (
   subtotal decimal(10,0) NOT NULL
 );
 
+CREATE TABLE "composite_fk" (
+  id integer NOT NULL,
+  order_id integer NOT NULL,
+  item_id integer NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_composite_fk_order_item FOREIGN KEY (order_id, item_id) REFERENCES "order_item" (order_id, item_id) ON DELETE CASCADE
+);
+
 CREATE TABLE "null_values" (
   id INT NOT NULL,
   var1 INT NULL,
@@ -101,7 +110,7 @@ CREATE TABLE "type" (
   bool_col smallint NOT NULL,
   bool_col2 smallint DEFAULT '1',
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  bit_col BIT NOT NULL DEFAULT B'10000010'
+  bit_col BIT(8) NOT NULL DEFAULT B'10000010'
 );
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
