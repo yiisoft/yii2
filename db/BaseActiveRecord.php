@@ -91,9 +91,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private $_related = [];
 
+
     /**
      * @inheritdoc
-     * @return static ActiveRecord instance matching the condition, or null if nothing matches.
+     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
     public static function findOne($condition)
     {
@@ -114,7 +115,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @inheritdoc
-     * @return static[] an array of ActiveRecord instance, or an empty array if nothing matches.
+     * @return static[] an array of ActiveRecord instances, or an empty array if nothing matches.
      */
     public static function findAll($condition)
     {

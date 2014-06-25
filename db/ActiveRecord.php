@@ -9,6 +9,7 @@ namespace yii\db;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
@@ -146,6 +147,48 @@ class ActiveRecord extends BaseActiveRecord
         $query->sql = $sql;
 
         return $query->params($params);
+    }
+
+    /**
+     * @inheritdoc
+     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
+     */
+    public static function findOne($condition)
+    {
+        $query = static::find();
+        if (ArrayHelper::isAssociative($condition)) {
+            // hash condition
+            return $query->andWhere($condition)->one();
+        } else {
+            // query by primary key
+            $primaryKey = static::primaryKey();
+            if (isset($primaryKey[0])) {
+                return $query->andWhere([static::tableName() . '.' . $primaryKey[0] => $condition])->one();
+            } else {
+                throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     * @return static[] an array of ActiveRecord instances, or an empty array if nothing matches.
+     */
+    public static function findAll($condition)
+    {
+        $query = static::find();
+        if (ArrayHelper::isAssociative($condition)) {
+            // hash condition
+            return $query->andWhere($condition)->all();
+        } else {
+            // query by primary key(s)
+            $primaryKey = static::primaryKey();
+            if (isset($primaryKey[0])) {
+                return $query->andWhere([static::tableName() . '.' . $primaryKey[0] => $condition])->all();
+            } else {
+                throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+            }
+        }
     }
 
     /**
