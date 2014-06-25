@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #3194: Date formatter works only for timestamps in the year range 1970 to 2038 (kartik-v)
 - Bug #3204: `yii\di\Container` did not handle the `$config` parameter well in case when it does not have a default value (qiangxue)
 - Bug #3216: Fixed the bug that `yii.activeForm.destroy()` did not remove `submit` event handlers (qiangxue)
+- Bug #3233: Ensure consistent behavior in ActiveRecord::afterSave() (cebe, qiangxue)
 - Bug #3236: Return value for DateTime->format('U') casted to double to allow correct date formatting (pgaultier)
 - Bug #3268: Fixed the bug that the schema name in a table name was not respected by `yii\db\mysql\Schema` (terazoid, qiangxue)
 - Bug #3311: Fixed the bug that `yii\di\Container::has()` did not return correct value (mgrechanik, qiangxue)

@@ -644,16 +644,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Updates the specified attributes.
      *
      * This method is a shortcut to [[update()]] when data validation is not needed
-     * and only a list of attributes need to be updated.
+     * and only a small set attributes need to be updated.
      *
      * You may specify the attributes to be updated as name list or name-value pairs.
      * If the latter, the corresponding attribute values will be modified accordingly.
      * The method will then save the specified attributes into database.
      *
-     * Note that this method will NOT perform data validation.
+     * Note that this method will **not** perform data validation and will **not** trigger events.
      *
      * @param array $attributes the attributes (names or name-value pairs) to be updated
-     * @return integer|boolean the number of rows affected, or false if [[beforeSave()]] stops the updating process.
+     * @return integer the number of rows affected.
      */
     public function updateAttributes($attributes)
     {
@@ -666,7 +666,19 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $attrs[] = $name;
             }
         }
-        return $this->updateInternal($attrs);
+
+        $values = $this->getDirtyAttributes($attrs);
+        if (empty($values)) {
+            return 0;
+        }
+
+        $rows = $this->updateAll($values, $this->getOldPrimaryKey(true));
+
+        foreach ($values as $name => $value) {
+            $this->_oldAttributes[$name] = $this->_attributes[$name];
+        }
+
+        return $rows;
     }
 
     /**
@@ -680,7 +692,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
-            $this->afterSave(false);
+            $this->afterSave(false, $values);
             return 0;
         }
         $condition = $this->getOldPrimaryKey(true);
@@ -699,10 +711,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
-        $this->afterSave(false);
         foreach ($values as $name => $value) {
             $this->_oldAttributes[$name] = $this->_attributes[$name];
         }
+        $this->afterSave(false, $values);
 
         return $rows;
     }
@@ -855,15 +867,18 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * This method is called at the end of inserting or updating a record.
      * The default implementation will trigger an [[EVENT_AFTER_INSERT]] event when `$insert` is true,
-     * or an [[EVENT_AFTER_UPDATE]] event if `$insert` is false.
+     * or an [[EVENT_AFTER_UPDATE]] event if `$insert` is false. The event class used is [[AfterSaveEvent]].
      * When overriding this method, make sure you call the parent implementation so that
      * the event is triggered.
      * @param boolean $insert whether this method called while inserting a record.
      * If false, it means the method is called while updating a record.
+     * @param array $changedAttributes The attribute values that had changed and were saved.
      */
-    public function afterSave($insert)
+    public function afterSave($insert, $changedAttributes)
     {
-        $this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE);
+        $this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE, new AfterSaveEvent([
+            'changedAttributes' => $changedAttributes
+        ]));
     }
 
     /**

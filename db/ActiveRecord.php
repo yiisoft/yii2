@@ -431,8 +431,8 @@ class ActiveRecord extends BaseActiveRecord
             }
         }
 
-        $this->afterSave(true);
         $this->setOldAttributes($values);
+        $this->afterSave(true, $values);
 
         return true;
     }

@@ -57,3 +57,12 @@ Upgrade from Yii 2.0 Beta
 * If your model code is using the `file` validation rule, you should rename its `types` option to `extensions`.
 
 * `MailEvent` class has been moved to the `yii\mail` namespace. You have to adjust all references that may exist in your code.
+
+* The behavior and signature of `ActiveRecord::afterSave()` has changed. `ActiveRecord::$isNewRecord` will now always be
+  false in afterSave and also dirty attributes are not available. This change has been made to have a more consistent and
+  expected behavior. The changed attributes are now available in the new parameter of afterSave() `$changedAttributes`.
+
+* `ActiveRecord::updateAttributes()` has been changed to not trigger events and not respect optimistic locking anymore to
+  differentiate it more from calling `update(false)` and to ensure it can be used in `afterSave()` without triggering infinite
+  loops.
+
