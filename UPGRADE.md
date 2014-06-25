@@ -66,3 +66,6 @@ Upgrade from Yii 2.0 Beta
   differentiate it more from calling `update(false)` and to ensure it can be used in `afterSave()` without triggering infinite
   loops.
 
+* If you are developing RESTful APIs and using an authentication method such as `yii\filters\auth\HttpBasicAuth`,
+  you should explicitly configure `yii\web\User::enableSession` in the application configuration to be false to avoid
+  starting a session when authentication is performed. Previously this was done automatically by authentication method.
