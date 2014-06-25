@@ -57,6 +57,7 @@ Yii Framework 2 Change Log
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
 - Bug: Fixed Object of class Imagick could not be converted to string in CaptchaAction (eXprojects, cebe)
+- Enh #87: Cryptographic strength `yii\helpers\Security` improved (klimov-paul)
 - Enh #422: Added Support for BIT(M) data type default values in Schema (cebe)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
