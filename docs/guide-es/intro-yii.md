@@ -23,10 +23,11 @@ servicios web compatibles con la arquitectura REST y muchas más.
 - Yii es extremadamente extensible; se puede personalizar o reemplazar prácticamente cualquier pieza de código de base, como se puede también aprovechar su sólida arquitectura de extensiones para utilizar o desarrollar extensiones distribuibles.
 - El alto rendimiento es siempre la meta principal de Yii.
 
-Detrás de Yii hay un [sólido equipo de desarrollo]: http://www.yiiframework.com/about/, así como una gran comunidad en la que numerosos profesionales contribuyen constantemente a su desarrollo. 
+Detrás de Yii hay un [sólido equipo de desarrollo][], así como una gran comunidad en la que numerosos profesionales contribuyen constantemente a su desarrollo. 
 El equipo de desarrollo de Yii se mantiene atento a las últimas tendencias de desarrollo web, así como a las mejores prácticas y características de otros marcos y proyectos. 
 Las buenas prácticas más relevantes de otros proyectos se incorporan regularmente a la base del marco y se exponen a través de interfaces simples y elegantes.
 
+[sólido equipo de desarrollo]: http://www.yiiframework.com/about/
 
 Versiones de Yii
 ----------------
