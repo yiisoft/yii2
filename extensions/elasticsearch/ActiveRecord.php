@@ -395,35 +395,31 @@ class ActiveRecord extends BaseActiveRecord
         if ($runValidation && !$this->validate($attributes)) {
             return false;
         }
-        if ($this->beforeSave(true)) {
-            $values = $this->getDirtyAttributes($attributes);
-
-            $response = static::getDb()->createCommand()->insert(
-                static::index(),
-                static::type(),
-                $values,
-                $this->getPrimaryKey(),
-                $options
-            );
-
-//            if (!isset($response['ok'])) {
-//                return false;
-//            }
-            $pk = static::primaryKey()[0];
-            $this->$pk = $response['_id'];
-            if ($pk != '_id') {
-                $values[$pk] = $response['_id'];
-            }
-            $this->_version = $response['_version'];
-            $this->_score = null;
-
-            $this->afterSave(true);
-            $this->setOldAttributes($values);
-
-            return true;
+        if (!$this->beforeSave(true)) {
+            return false;
         }
+        $values = $this->getDirtyAttributes($attributes);
 
-        return false;
+        $response = static::getDb()->createCommand()->insert(
+            static::index(),
+            static::type(),
+            $values,
+            $this->getPrimaryKey(),
+            $options
+        );
+
+        $pk = static::primaryKey()[0];
+        $this->$pk = $response['_id'];
+        if ($pk != '_id') {
+            $values[$pk] = $response['_id'];
+        }
+        $this->_version = $response['_version'];
+        $this->_score = null;
+
+        $this->setOldAttributes($values);
+        $this->afterSave(true, $values);
+
+        return true;
     }
 
     /**

@@ -99,38 +99,35 @@ class ActiveRecord extends BaseActiveRecord
         if ($runValidation && !$this->validate($attributes)) {
             return false;
         }
-        if ($this->beforeSave(true)) {
-            $db = static::getDb();
-            $values = $this->getDirtyAttributes($attributes);
-            $pk = [];
-            //			if ($values === []) {
-            foreach ($this->primaryKey() as $key) {
-                $pk[$key] = $values[$key] = $this->getAttribute($key);
-                if ($pk[$key] === null) {
-                    $pk[$key] = $values[$key] = $db->executeCommand('INCR', [static::keyPrefix() . ':s:' . $key]);
-                    $this->setAttribute($key, $values[$key]);
-                }
-            }
-            //			}
-            // save pk in a findall pool
-            $db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
-
-            $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
-            // save attributes
-            $args = [$key];
-            foreach ($values as $attribute => $value) {
-                $args[] = $attribute;
-                $args[] = $value;
-            }
-            $db->executeCommand('HMSET', $args);
-
-            $this->afterSave(true);
-            $this->setOldAttributes($values);
-
-            return true;
+        if (!$this->beforeSave(true)) {
+            return false;
         }
+        $db = static::getDb();
+        $values = $this->getDirtyAttributes($attributes);
+        $pk = [];
+        foreach ($this->primaryKey() as $key) {
+            $pk[$key] = $values[$key] = $this->getAttribute($key);
+            if ($pk[$key] === null) {
+                $pk[$key] = $values[$key] = $db->executeCommand('INCR', [static::keyPrefix() . ':s:' . $key]);
+                $this->setAttribute($key, $values[$key]);
+            }
+        }
+        // save pk in a findall pool
+        $db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
 
-        return false;
+        $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
+        // save attributes
+        $args = [$key];
+        foreach ($values as $attribute => $value) {
+            $args[] = $attribute;
+            $args[] = $value;
+        }
+        $db->executeCommand('HMSET', $args);
+
+        $this->setOldAttributes($values);
+        $this->afterSave(true, $values);
+
+        return true;
     }
 
     /**
