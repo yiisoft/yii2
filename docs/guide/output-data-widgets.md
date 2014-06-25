@@ -122,11 +122,11 @@ grid columns.
 - `visible` is the column should be visible.
 - `content` allows you to pass a valid PHP callback that will return data for a row. The format is the following:
 
-```php
-function ($model, $key, $index, $grid) {
-    return 'a string';
-}
-```
+  ```php
+  function ($model, $key, $index, $column) {
+      return 'a string';
+  }
+  ```
 
 You may specify various container HTML options passing arrays to:
 
