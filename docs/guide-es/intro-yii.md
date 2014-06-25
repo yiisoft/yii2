@@ -3,7 +3,7 @@
 
 Yii es un marco de programación del lenguaje PHP de alto rendimiento, basado en componentes para desarrollar aplicaciones web 
 modernas en poco tiempo. El nombre Yii significa "simple y evolutivo" en chino; también se puede considerar como un acrónimo 
-de **Yes It Is** (que en inglés significa **Sí, eso es**)!
+de _**Yes It Is**_ (que en inglés significa _**Sí, eso es**_)!
 
 
 ¿En qué es mejor Yii?
