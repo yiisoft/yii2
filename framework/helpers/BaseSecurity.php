@@ -221,15 +221,8 @@ class BaseSecurity
      */
     public static function generateRandomKey($length = 32)
     {
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            $key = strtr(base64_encode(openssl_random_pseudo_bytes($length, $strong)), '+/=', '_-.');
-            if ($strong) {
-                return substr($key, 0, $length);
-            }
-        }
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-
-        return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
+        static::openCryptModule();
+        return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
     }
 
     /**
@@ -351,15 +344,7 @@ class BaseSecurity
         }
 
         // Get 20 * 8bits of random entropy
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            // https://github.com/yiisoft/yii2/pull/2422
-            $rand = openssl_random_pseudo_bytes(20);
-        } else {
-            $rand = '';
-            for ($i = 0; $i < 20; ++$i) {
-                $rand .= chr(mt_rand(0, 255));
-            }
-        }
+        $rand = static::generateRandomKey(20);
 
         // Add the microtime for a little more entropy.
         $rand .= microtime(true);
