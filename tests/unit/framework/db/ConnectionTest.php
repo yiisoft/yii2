@@ -79,46 +79,46 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
     }
 
-	public function testTransaction()
-	{
-		$connection = $this->getConnection(false);
-		$this->assertNull($connection->transaction);
-		$transaction = $connection->beginTransaction();
-		$this->assertNotNull($connection->transaction);
-		$this->assertTrue($transaction->isActive);
+    public function testTransaction()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $transaction = $connection->beginTransaction();
+        $this->assertNotNull($connection->transaction);
+        $this->assertTrue($transaction->isActive);
 
-		$connection->createCommand()->insert('profile', ['description' => 'test transaction'])->execute();
+        $connection->createCommand()->insert('profile', ['description' => 'test transaction'])->execute();
 
-		$transaction->rollBack();
-		$this->assertFalse($transaction->isActive);
-		$this->assertNull($connection->transaction);
+        $transaction->rollBack();
+        $this->assertFalse($transaction->isActive);
+        $this->assertNull($connection->transaction);
 
-		$this->assertEquals(0, $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction';")->queryScalar());
+        $this->assertEquals(0, $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction';")->queryScalar());
 
-		$transaction = $connection->beginTransaction();
-		$connection->createCommand()->insert('profile', ['description' => 'test transaction'])->execute();
-		$transaction->commit();
-		$this->assertFalse($transaction->isActive);
-		$this->assertNull($connection->transaction);
+        $transaction = $connection->beginTransaction();
+        $connection->createCommand()->insert('profile', ['description' => 'test transaction'])->execute();
+        $transaction->commit();
+        $this->assertFalse($transaction->isActive);
+        $this->assertNull($connection->transaction);
 
-		$this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction';")->queryScalar());
-	}
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction';")->queryScalar());
+    }
 
-	public function testTransactionIsolation()
-	{
-		$connection = $this->getConnection(true);
+    public function testTransactionIsolation()
+    {
+        $connection = $this->getConnection(true);
 
-		$transaction = $connection->beginTransaction(Transaction::READ_UNCOMMITTED);
-		$transaction->commit();
+        $transaction = $connection->beginTransaction(Transaction::READ_UNCOMMITTED);
+        $transaction->commit();
 
-		$transaction = $connection->beginTransaction(Transaction::READ_COMMITTED);
-		$transaction->commit();
+        $transaction = $connection->beginTransaction(Transaction::READ_COMMITTED);
+        $transaction->commit();
 
-		$transaction = $connection->beginTransaction(Transaction::REPEATABLE_READ);
-		$transaction->commit();
+        $transaction = $connection->beginTransaction(Transaction::REPEATABLE_READ);
+        $transaction->commit();
 
-		$transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
-		$transaction->commit();
-	}
+        $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
+        $transaction->commit();
+    }
 
 }

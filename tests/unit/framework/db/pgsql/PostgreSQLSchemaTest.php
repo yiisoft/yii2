@@ -1,15 +1,17 @@
 <?php
-namespace yiiunit\framework\db\sqlite;
 
+namespace yiiunit\framework\db\pgsql;
+
+use yii\db\pgsql\Schema;
 use yiiunit\framework\db\SchemaTest;
 
 /**
  * @group db
- * @group sqlite
+ * @group pgsql
  */
-class SqliteSchemaTest extends SchemaTest
+class PostgreSQLSchemaTest extends SchemaTest
 {
-    protected $driverName = 'sqlite';
+    public $driverName = 'pgsql';
 
     public function getExpectedColumns()
     {
@@ -28,5 +30,4 @@ class SqliteSchemaTest extends SchemaTest
         $columns['bool_col2']['defaultValue'] = true;
         return $columns;
     }
-
 }

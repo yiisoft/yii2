@@ -7,6 +7,7 @@
 
 namespace yii\db\mysql;
 
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -132,11 +133,11 @@ class Schema extends \yii\db\Schema
         $column->comment = $info['Comment'];
 
         $column->dbType = $info['Type'];
-        $column->unsigned = strpos($column->dbType, 'unsigned') !== false;
+        $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
 
         $column->type = self::TYPE_STRING;
         if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
-            $type = $matches[1];
+            $type = strtolower($matches[1]);
             if (isset($this->typeMap[$type])) {
                 $column->type = $this->typeMap[$type];
             }
@@ -168,8 +169,12 @@ class Schema extends \yii\db\Schema
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['Default'] !== 'CURRENT_TIMESTAMP')) {
-            $column->defaultValue = $column->typecast($info['Default']);
+        if (!$column->isPrimaryKey) {
+            if ($column->type === 'timestamp' && $info['Default'] === 'CURRENT_TIMESTAMP') {
+                $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
+            } else {
+                $column->defaultValue = $column->typecast($info['Default']);
+            }
         }
 
         return $column;
