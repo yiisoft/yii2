@@ -8,6 +8,7 @@
 namespace yii\db\sqlite;
 
 use yii\base\NotSupportedException;
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 use yii\db\Transaction;
@@ -211,7 +212,7 @@ class Schema extends \yii\db\Schema
         $column->allowNull = !$info['notnull'];
         $column->isPrimaryKey = $info['pk'] != 0;
 
-        $column->dbType = $info['type'];
+        $column->dbType = strtolower($info['type']);
         $column->unsigned = strpos($column->dbType, 'unsigned') !== false;
 
         $column->type = self::TYPE_STRING;
@@ -241,11 +242,13 @@ class Schema extends \yii\db\Schema
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
-            $value = trim($info['dflt_value'], "'\"");
-            if ($column->type === 'string') {
-                $column->defaultValue = $value;
+            if ($info['dflt_value'] === 'null' || $info['dflt_value'] === '' || $info['dflt_value'] === null) {
+                $column->defaultValue = null;
+            } elseif ($column->type === 'timestamp' && $info['dflt_value'] === 'CURRENT_TIMESTAMP') {
+                $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } else {
-                $column->defaultValue = $column->typecast(strcasecmp($value, 'null') ? $value : null);
+                $value = trim($info['dflt_value'], "'\"");
+                $column->defaultValue = $column->typecast($value);
             }
         }
 

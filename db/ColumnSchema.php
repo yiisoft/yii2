@@ -99,6 +99,8 @@ class ColumnSchema extends Object
                 return (integer) $value;
             case 'boolean':
                 return (boolean) $value;
+            case 'double':
+                return (double) $value;
         }
 
         return $value;
