@@ -55,3 +55,15 @@ Upgrade from Yii 2.0 Beta
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.
 
 * If your model code is using the `file` validation rule, you should rename its `types` option to `extensions`.
+
+* If you have used `yii\helpers\Security` for encryption or hash generating, you need to configure it for the
+  legacy code support. To do so you need to declare your own `yii\helpers\Security` extending from `yii\helpers\BaseSecurity`
+  in following way:
+  ```
+  class yii\helpers\Security extends yii\helpers\BaseSecurity
+  {
+      public static $cryptBlockSize = 16;
+      public static $cryptKeySize = 24;
+      public static $derivationIterations = 1000;
+  }
+  ```

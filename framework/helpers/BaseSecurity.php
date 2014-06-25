@@ -24,24 +24,25 @@ use yii\base\InvalidParamException;
 class BaseSecurity
 {
     /**
-     * Uses AES, block size is 128-bit (16 bytes).
+     * @var integer crypt block size in bytes.
+     * For AES-128, AES-192, block size is 128-bit (16 bytes).
+     * For AES-256, block size is 256-bit (32 bytes).
      */
-    const CRYPT_BLOCK_SIZE = 16;
-
+    public static $cryptBlockSize = 32;
     /**
-     * Uses AES-192, key size is 192-bit (24 bytes).
+     * @var integer crypt key size in bytes.
+     * For AES-192, key size is 192-bit (24 bytes).
+     * For AES-256, key size is 256-bit (32 bytes).
      */
-    const CRYPT_KEY_SIZE = 24;
-
+    public static $cryptKeySize = 32;
     /**
-     * Uses SHA-256.
+     * @var string derivation hash algorithm name.
      */
-    const DERIVATION_HASH = 'sha256';
-
+    public static $derivationHash = 'sha256';
     /**
-     * Uses 1000 iterations.
+     * @var integer derivation iterations count.
      */
-    const DERIVATION_ITERATIONS = 1000;
+    public static $derivationIterations = 1000000;
 
     /**
      * Encrypts data.
@@ -55,7 +56,7 @@ class BaseSecurity
     {
         $module = static::openCryptModule();
         $data = static::addPadding($data);
-        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_RAND);
+        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_DEV_URANDOM);
         $key = static::deriveKey($password, $iv);
         mcrypt_generic_init($module, $key, $iv);
         $encrypted = $iv . mcrypt_generic($module, $data);
@@ -97,7 +98,7 @@ class BaseSecurity
      */
     protected static function addPadding($data)
     {
-        $pad = self::CRYPT_BLOCK_SIZE - (StringHelper::byteLength($data) % self::CRYPT_BLOCK_SIZE);
+        $pad = static::$cryptBlockSize - (StringHelper::byteLength($data) % static::$cryptBlockSize);
 
         return $data . str_repeat(chr($pad), $pad);
     }
@@ -128,16 +129,16 @@ class BaseSecurity
     protected static function deriveKey($password, $salt)
     {
         if (function_exists('hash_pbkdf2')) {
-            return hash_pbkdf2(self::DERIVATION_HASH, $password, $salt, self::DERIVATION_ITERATIONS, self::CRYPT_KEY_SIZE, true);
+            return hash_pbkdf2(static::$derivationHash, $password, $salt, static::$derivationIterations, static::$cryptKeySize, true);
         }
-        $hmac = hash_hmac(self::DERIVATION_HASH, $salt . pack('N', 1), $password, true);
+        $hmac = hash_hmac(static::$derivationHash, $salt . pack('N', 1), $password, true);
         $xorsum  = $hmac;
-        for ($i = 1; $i < self::DERIVATION_ITERATIONS; $i++) {
-            $hmac = hash_hmac(self::DERIVATION_HASH, $hmac, $password, true);
+        for ($i = 1; $i < static::$derivationIterations; $i++) {
+            $hmac = hash_hmac(static::$derivationHash, $hmac, $password, true);
             $xorsum ^= $hmac;
         }
 
-        return substr($xorsum, 0, self::CRYPT_KEY_SIZE);
+        return substr($xorsum, 0, static::$cryptKeySize);
     }
 
     /**
@@ -172,9 +173,16 @@ class BaseSecurity
         $n = StringHelper::byteLength($data);
         if ($n >= $hashSize) {
             $hash = StringHelper::byteSubstr($data, 0, $hashSize);
-            $data2 = StringHelper::byteSubstr($data, $hashSize, $n - $hashSize);
+            $pureData = StringHelper::byteSubstr($data, $hashSize, $n - $hashSize);
 
-            return $hash === hash_hmac($algorithm, $data2, $key) ? $data2 : false;
+            $calculatedHash = hash_hmac($algorithm, $pureData, $key);
+
+            // timing attack resistant approach:
+            $diff = 0;
+            for ($i = 0; $i < StringHelper::byteLength($calculatedHash); $i++) {
+                $diff |= (ord($calculatedHash[$i]) ^ ord($hash[$i]));
+            }
+            return $diff === 0 ? $pureData : false;
         } else {
             return false;
         }
@@ -214,15 +222,7 @@ class BaseSecurity
      */
     public static function generateRandomKey($length = 32)
     {
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            $key = strtr(base64_encode(openssl_random_pseudo_bytes($length, $strong)), '+/=', '_-.');
-            if ($strong) {
-                return substr($key, 0, $length);
-            }
-        }
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-
-        return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
+        return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
     }
 
     /**
@@ -236,8 +236,9 @@ class BaseSecurity
         if (!extension_loaded('mcrypt')) {
             throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
         }
-        // AES uses a 128-bit block size
-        $module = @mcrypt_module_open('rijndael-128', '', 'cbc', '');
+        // AES version depending on crypt block size
+        $algorithmName = 'rijndael-' . (static::$cryptBlockSize * 8);
+        $module = @mcrypt_module_open($algorithmName, '', 'cbc', '');
         if ($module === false) {
             throw new Exception('Failed to initialize the mcrypt module.');
         }
@@ -344,15 +345,7 @@ class BaseSecurity
         }
 
         // Get 20 * 8bits of random entropy
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            // https://github.com/yiisoft/yii2/pull/2422
-            $rand = openssl_random_pseudo_bytes(20);
-        } else {
-            $rand = '';
-            for ($i = 0; $i < 20; ++$i) {
-                $rand .= chr(mt_rand(0, 255));
-            }
-        }
+        $rand = static::generateRandomKey(20);
 
         // Add the microtime for a little more entropy.
         $rand .= microtime(true);
