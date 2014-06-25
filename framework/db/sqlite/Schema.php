@@ -251,7 +251,7 @@ class Schema extends \yii\db\Schema
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } else {
                 $value = trim($info['dflt_value'], "'\"");
-                $column->defaultValue = $column->typecast($value);
+                $column->defaultValue = $column->typecastToPhp($value);
             }
         }
 

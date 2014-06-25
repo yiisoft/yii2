@@ -174,7 +174,7 @@ EOD;
             if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
                 $c->defaultValue = null;
             } else {
-                $c->defaultValue = $c->typecast($column['DATA_DEFAULT']);
+                $c->defaultValue = $c->typecastToPhp($column['DATA_DEFAULT']);
             }
         }
 

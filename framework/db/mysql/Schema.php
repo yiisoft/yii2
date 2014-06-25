@@ -177,7 +177,7 @@ class Schema extends \yii\db\Schema
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim($info['Default'],'b\''));
             } else {
-                $column->defaultValue = $column->typecast($info['Default']);
+                $column->defaultValue = $column->typecastToPhp($info['Default']);
             }
         }
 
