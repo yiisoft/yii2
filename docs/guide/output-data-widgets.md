@@ -387,6 +387,13 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 >      'desc' => ['au.name' => SORT_DESC],
 > ];
 > ```
+>
+> Also when specifying the [[yii\data\Sort::defaultOrder|defaultOrder]] for sorting you need to use the relation name
+> instead of the alias:
+>
+> ```php
+> $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
+> ```
 
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
