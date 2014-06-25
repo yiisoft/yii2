@@ -225,7 +225,7 @@ class HelpController extends Controller
 
         if ($comment !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
-            echo "\n" . Console::renderColoredString($comment) . "\n\n";
+            echo "\n" . rtrim(Console::renderColoredString(Console::markdownToAnsi($comment))) . "\n\n";
         }
 
         $actions = $this->getActions($controller);
@@ -313,7 +313,7 @@ class HelpController extends Controller
 
         if ($tags['description'] !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
-            echo "\n" . Console::renderColoredString($tags['description']) . "\n\n";
+            echo "\n" . rtrim(Console::renderColoredString(Console::markdownToAnsi($tags['description']))) . "\n\n";
         }
 
         $this->stdout("\nUSAGE\n\n", Console::BOLD);

@@ -7,6 +7,8 @@
 
 namespace yii\helpers;
 
+use yii\console\Markdown;
+
 /**
  * BaseConsole provides concrete implementation for [[Console]].
  *
@@ -442,10 +444,13 @@ class BaseConsole
         return $result;
     }
 
-    // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
-    public function markdownToAnsi()
+    /**
+     * Converts Markdown to be better readable in console environments by applying some ANSI format
+     */
+    public static function markdownToAnsi($markdown)
     {
-        // TODO implement
+        $parser = new Markdown();
+        return $parser->parse($markdown);
     }
 
     /**
