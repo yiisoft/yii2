@@ -221,7 +221,6 @@ class BaseSecurity
      */
     public static function generateRandomKey($length = 32)
     {
-        static::openCryptModule();
         return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
     }
 
@@ -236,8 +235,9 @@ class BaseSecurity
         if (!extension_loaded('mcrypt')) {
             throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
         }
-        // AES uses a 128-bit block size
-        $module = @mcrypt_module_open('rijndael-128', '', 'cbc', '');
+        // AES version depending on crypt block size
+        $algorithmName = 'rijndael-' . (static::$cryptBlockSize * 8);
+        $module = @mcrypt_module_open($algorithmName, '', 'cbc', '');
         if ($module === false) {
             throw new Exception('Failed to initialize the mcrypt module.');
         }
