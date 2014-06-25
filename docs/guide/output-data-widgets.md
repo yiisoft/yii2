@@ -356,7 +356,37 @@ public function rules()
 }
 ```
 
-In `search()` you then just add another filter condition with `$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);`.
+In `search()` you then just add another filter condition with:
+
+```php
+$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
+```
+
+> Info: In the above we use the same string for the relation name and the table alias, however when your alias and relation name
+> differ, you have to pay attention on where to use the alias and where to use the relation name.
+> A simple rule for this is to use the alias in every place that is used to build the database query and the
+> relation name in all other definitions like in `attributes()` and `rules()` etc.
+>
+> For example you use the alias `au` for the author relation table, the joinWith statement looks like the following:
+>
+> ```php
+> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> ```
+> It is also possible to just call `$query->joinWith(['author']);` when the alias is defined in the relation definition.
+>
+> The alias has to be used in the filter condition but the attribute name stays the same:
+>
+> ```php
+> $query->andFilterWhere(['LIKE', 'au.name', $this->getAttribute('author.name')]);
+> ```
+>
+> Same is true for the sorting definition:
+> ```php
+> $dataProvider->sort->attributes['author.name'] = [
+>      'asc' => ['au.name' => SORT_ASC],
+>      'desc' => ['au.name' => SORT_DESC],
+> ];
+> ```
 
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
