@@ -12,7 +12,6 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\ViewContextInterface;
 use yii\web\View;
-use yii\base\MailEvent;
 
 /**
  * BaseMailer serves as a base class that implements the basic functions required by [[MailerInterface]].
@@ -32,12 +31,12 @@ use yii\base\MailEvent;
 abstract class BaseMailer extends Component implements MailerInterface, ViewContextInterface
 {
     /**
-     * @event \yii\base\MailEvent an event raised right before send.
-     * You may set [[\yii\base\MailEvent::isValid]] to be false to cancel the send.
+     * @event MailEvent an event raised right before send.
+     * You may set [[MailEvent::isValid]] to be false to cancel the send.
      */
     const EVENT_BEFORE_SEND = 'beforeSend';
     /**
-     * @event \yii\base\MailEvent an event raised right after send.
+     * @event MailEvent an event raised right after send.
      */
     const EVENT_AFTER_SEND = 'afterSend';
     /**
