@@ -867,17 +867,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * This method is called at the end of inserting or updating a record.
      * The default implementation will trigger an [[EVENT_AFTER_INSERT]] event when `$insert` is true,
-     * or an [[EVENT_AFTER_UPDATE]] event if `$insert` is false.
+     * or an [[EVENT_AFTER_UPDATE]] event if `$insert` is false. The event class used is [[AfterSaveEvent]].
      * When overriding this method, make sure you call the parent implementation so that
      * the event is triggered.
      * @param boolean $insert whether this method called while inserting a record.
-     * @param array $changedAttributes the attribute values that have changed during save.
      * If false, it means the method is called while updating a record.
+     * @param array $changedAttributes The attribute values that had changed and were saved.
      */
     public function afterSave($insert, $changedAttributes)
     {
-        $this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE, new ModelEvent([
-            'data' => ['changedAttributes' => $changedAttributes]
+        $this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE, new AfterSaveEvent([
+            'changedAttributes' => $changedAttributes
         ]));
     }
 
