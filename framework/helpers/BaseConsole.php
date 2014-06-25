@@ -48,6 +48,7 @@ class BaseConsole
     const ENCIRCLED   = 52;
     const OVERLINED   = 53;
 
+
     /**
      * Moves the terminal cursor up by sending ANSI control code CUU to the terminal.
      * If the cursor is already at the edge of the screen, this has no effect.
@@ -328,117 +329,117 @@ class BaseConsole
 
     /**
      * Converts an ANSI formatted string to HTML
-     * @param $string
-     * @return mixed
+     *
+     * Note: xTerm 256 bit colors are currently not supported.
+     *
+     * @param string $string the string to convert.
+     * @param array $styleMap an optional mapping of ANSI control codes such as
+     * [[FG_COLOR]] or [[BOLD]] to a set of css style definitions.
+     * The CSS style definitions are represented as an array where the array keys correspond
+     * to the css style attribute names and the values are the css values.
+     * values may be arrays that will be merged and imploded with `' '` when rendered.
+     * @return string HTML representation of the ANSI formatted string
      */
-    // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
-    public static function ansiToHtml($string)
+    public static function ansiToHtml($string, $styleMap = [])
     {
+        $styleMap = [
+            // http://www.w3.org/TR/CSS2/syndata.html#value-def-color
+            self::FG_BLACK =>    ['color' => 'black'],
+            self::FG_BLUE =>     ['color' => 'blue'],
+            self::FG_CYAN =>     ['color' => 'aqua'],
+            self::FG_GREEN =>    ['color' => 'lime'],
+            self::FG_GREY =>     ['color' => 'silver'],
+            // http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
+            // http://dev.w3.org/csswg/css-color/#valuedef-rebeccapurple
+            self::FG_PURPLE =>   ['color' => 'rebeccapurple'],
+            self::FG_RED =>      ['color' => 'red'],
+            self::FG_YELLOW =>   ['color' => 'yellow'],
+            self::BG_BLACK =>    ['background-color' => 'black'],
+            self::BG_BLUE =>     ['background-color' => 'blue'],
+            self::BG_CYAN =>     ['background-color' => 'aqua'],
+            self::BG_GREEN =>    ['background-color' => 'lime'],
+            self::BG_GREY =>     ['background-color' => 'silver'],
+            self::BG_PURPLE =>   ['background-color' => 'rebeccapurple'],
+            self::BG_RED =>      ['background-color' => 'red'],
+            self::BG_YELLOW =>   ['background-color' => 'yellow'],
+            self::BOLD =>        ['font-weight' => 'bold'],
+            self::ITALIC =>      ['font-style' => 'italic'],
+            self::UNDERLINE =>   ['text-decoration' => ['underline']],
+            self::OVERLINED =>   ['text-decoration' => ['overline']],
+            self::CROSSED_OUT => ['text-decoration' => ['line-through']],
+            self::BLINK =>       ['text-decoration' => ['blink']],
+            self::CONCEALED =>   ['visibility' => 'hidden'],
+//            self::ENCIRCLED:
+//            self::FRAMED:
+        ] + $styleMap;
+
         $tags = 0;
-
-        return preg_replace_callback(
-            '/\033\[[\d;]+m/',
-            function ($ansi) use (&$tags) {
-                $styleA = [];
-                foreach (explode(';', $ansi) as $controlCode) {
-                    $style = [];
-                    switch ($controlCode) {
-                        case self::FG_BLACK:
-                            $style = ['color' => '#000000'];
-                            break;
-                        case self::FG_BLUE:
-                            $style = ['color' => '#000078'];
-                            break;
-                        case self::FG_CYAN:
-                            $style = ['color' => '#007878'];
-                            break;
-                        case self::FG_GREEN:
-                            $style = ['color' => '#007800'];
-                            break;
-                        case self::FG_GREY:
-                            $style = ['color' => '#787878'];
-                            break;
-                        case self::FG_PURPLE:
-                            $style = ['color' => '#780078'];
-                            break;
-                        case self::FG_RED:
-                            $style = ['color' => '#780000'];
-                            break;
-                        case self::FG_YELLOW:
-                            $style = ['color' => '#787800'];
-                            break;
-                        case self::BG_BLACK:
-                            $style = ['background-color' => '#000000'];
-                            break;
-                        case self::BG_BLUE:
-                            $style = ['background-color' => '#000078'];
-                            break;
-                        case self::BG_CYAN:
-                            $style = ['background-color' => '#007878'];
-                            break;
-                        case self::BG_GREEN:
-                            $style = ['background-color' => '#007800'];
-                            break;
-                        case self::BG_GREY:
-                            $style = ['background-color' => '#787878'];
-                            break;
-                        case self::BG_PURPLE:
-                            $style = ['background-color' => '#780078'];
-                            break;
-                        case self::BG_RED:
-                            $style = ['background-color' => '#780000'];
-                            break;
-                        case self::BG_YELLOW:
-                            $style = ['background-color' => '#787800'];
-                            break;
-                        case self::BOLD:
-                            $style = ['font-weight' => 'bold'];
-                            break;
-                        case self::ITALIC:
-                            $style = ['font-style' => 'italic'];
-                            break;
-                        case self::UNDERLINE:
-                            $style = ['text-decoration' => ['underline']];
-                            break;
-                        case self::OVERLINED:
-                            $style = ['text-decoration' => ['overline']];
-                            break;
-                        case self::CROSSED_OUT:
-                            $style = ['text-decoration' => ['line-through']];
-                            break;
-                        case self::BLINK:
-                            $style = ['text-decoration' => ['blink']];
-                            break;
-                        case self::NEGATIVE: // ???
-                        case self::CONCEALED:
-                        case self::ENCIRCLED:
-                        case self::FRAMED:
-                            // TODO allow resetting codes
-                            break;
-                        case 0: // ansi reset
-                            $return = '';
-                            for (; $tags > 0; $tags--) {
-                                $return .= '</span>';
-                            }
-
-                            return $return;
+        $result = preg_replace_callback(
+            '/\033\[([\d;]+)m/',
+            function ($ansi) use (&$tags, $styleMap) {
+                $style = [];
+                $reset = false;
+                $negative = false;
+                foreach (explode(';', $ansi[1]) as $controlCode) {
+                    if ($controlCode == 0) {
+                        $style = [];
+                        $reset = true;
+                    } elseif ($controlCode == self::NEGATIVE) {
+                        $negative = true;
+                    } elseif (isset($styleMap[$controlCode])) {
+                        $style[] = $styleMap[$controlCode];
                     }
-
-                    $styleA = ArrayHelper::merge($styleA, $style);
                 }
-                $styleString = [];
-                foreach ($styleA as $name => $content) {
-                    if ($name === 'text-decoration') {
-                        $content = implode(' ', $content);
+
+                $return = '';
+                while($reset && $tags > 0) {
+                    $return .= '</span>';
+                    $tags--;
+                }
+                if (empty($style)) {
+                    return $return;
+                }
+
+                $currentStyle = [];
+                foreach ($style as $content) {
+                    $currentStyle = ArrayHelper::merge($currentStyle, $content);
+                }
+
+                // if negative is set, invert background and foreground
+                if ($negative) {
+                    if (isset($currentStyle['color'])) {
+                        $fgColor = $currentStyle['color'];
+                        unset($currentStyle['color']);
                     }
-                    $styleString[] = $name . ':' . $content;
+                    if (isset($currentStyle['background-color'])) {
+                        $bgColor = $currentStyle['background-color'];
+                        unset($currentStyle['background-color']);
+                    }
+                    if (isset($fgColor)) {
+                        $currentStyle['background-color'] = $fgColor;
+                    }
+                    if (isset($bgColor)) {
+                        $currentStyle['color'] = $bgColor;
+                    }
+                }
+
+                $styleString = '';
+                foreach($currentStyle as $name => $value) {
+                    if (is_array($value)) {
+                        $value = implode(' ', $value);
+                    }
+                    $styleString .= "$name: $value;";
                 }
                 $tags++;
-
-                return '<span' . (!empty($styleString) ? 'style="' . implode(';', $styleString) : '') . '>';
+                return "$return<span style=\"$styleString\">";
             },
             $string
         );
+        while($tags > 0) {
+            $result .= '</span>';
+            $tags--;
+        }
+        return $result;
     }
 
     // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
