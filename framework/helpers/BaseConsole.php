@@ -330,6 +330,15 @@ class BaseConsole
     }
 
     /**
+     * Returns the length of the string without ANSI color codes.
+     * @param string $string the string to measure
+     * @return int the length of the string not counting ANSI format characters
+     */
+    public static function ansiStrlen($string) {
+        return mb_strlen(static::stripAnsiFormat($string));
+    }
+
+    /**
      * Converts an ANSI formatted string to HTML
      *
      * Note: xTerm 256 bit colors are currently not supported.
@@ -876,7 +885,7 @@ class BaseConsole
         } else {
             self::$_progressPrefix = $prefix;
         }
-        $width -= mb_strlen($prefix);
+        $width -= static::ansiStrlen($prefix);
 
         $percent = ($total == 0) ? 1 : $done / $total;
         $info = sprintf("%d%% (%d/%d)", $percent * 100, $done, $total);
@@ -888,7 +897,7 @@ class BaseConsole
             $info .= sprintf(' ETA: %d sec.', $rate * ($total - $done));
         }
 
-        $width -= 3 + mb_strlen($info);
+        $width -= 3 + static::ansiStrlen($info);
         // skipping progress bar on very small display or if forced to skip
         if ($width < 5) {
             static::stdout("\r$prefix$info   ");
