@@ -165,6 +165,16 @@ and corresponding values to set.
 Setting `sourcePath` to `null` tells asset manager not to copy anything while `js` overrides local files with a link
 to CDN.
 
+> Tip: You may also use this procedure to configure different scripts dependent on the environment. For example
+> use minified files in production and normal files in development:
+>
+>  ```php
+'yii\web\JqueryAsset' => [
+    'js' => [
+        YII_ENV_DEV ? 'jquery.js' : 'jquery.min.js'
+    ]
+],
+```
 
 Enabling symlinks
 -----------------
