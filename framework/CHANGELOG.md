@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Bug #3817: `yii\rbac\PhpManager::getChildren()` returns null instead of expected empty array (qiangxue)
 - Bug #3843: Fixed Menu bug when using `template` with `encodeLabel` => false (creocoder, umneeq)
 - Bug #3863: Fixed incorrect js selector for `\yii\widgets\ActiveForm::errorSummaryCssClass` when it contains multiple classes (creocoder, umneeq)
+- Bug #3893: Headers did not overwrite default setting by webserver (cebe)
 - Bug #3909: `Html::to()` should not prefix base URL to URLs that already contain scheme (qiangxue)
 - Bug #3934: yii.handleAction() in yii.js does not correctly detect if a hyperlink contains useful URL or not (joni-jones, qiangxue)
 - Bug #3968: Messages logged in shutdown functions are not handled (qiangxue)
