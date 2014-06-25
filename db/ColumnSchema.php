@@ -93,6 +93,7 @@ class ColumnSchema extends Object
             return $value;
         }
         switch ($this->phpType) {
+            case 'resource':
             case 'string':
                 return is_resource($value) ? $value : (string) $value;
             case 'integer':
