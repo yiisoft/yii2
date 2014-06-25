@@ -60,7 +60,7 @@ class ColumnSchema extends Object
      * @param mixed $value input value
      * @return mixed converted value
      */
-    public function typecastToPhp($value)
+    public function typecast($value)
     {
         if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
             return $value;
@@ -89,10 +89,10 @@ class ColumnSchema extends Object
      * @return mixed converted value. This may also be an array containing the value as the first element
      * and the PDO type as the second element.
      */
-    public function typecastToDatabase($value)
+    public function dbTypecast($value)
     {
         // the default implementation does the same as casting for PHP but it should be possible
         // to override this with annotation of explicit PDO type.
-        return $this->typecastToPhp($value);
+        return $this->typecast($value);
     }
 }

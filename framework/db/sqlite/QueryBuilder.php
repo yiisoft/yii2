@@ -80,7 +80,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $vs = [];
             foreach ($row as $i => $value) {
                 if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
-                    $value = $columnSchemas[$columns[$i]]->typecastToDatabase($value);
+                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
                     $value = $this->db->quoteValue($value);

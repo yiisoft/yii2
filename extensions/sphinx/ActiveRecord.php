@@ -623,7 +623,7 @@ abstract class ActiveRecord extends BaseActiveRecord
                     $mvaValue = explode(',', $value);
                     $row[$name] = array_map(array($columns[$name], 'typecast'), $mvaValue);
                 } else {
-                    $row[$name] = $columns[$name]->typecastToPhp($value);
+                    $row[$name] = $columns[$name]->typecast($value);
                 }
             }
         }
