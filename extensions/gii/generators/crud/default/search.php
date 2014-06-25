@@ -38,14 +38,6 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
-        return <?= isset($modelAlias) ? $modelAlias : $modelClass ?>::tableName();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
