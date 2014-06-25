@@ -24,7 +24,7 @@ class Schema extends \yii\db\Schema
      */
     public $typeMap = [
         'tinyint' => self::TYPE_SMALLINT,
-        'bit' => self::TYPE_SMALLINT,
+        'bit' => self::TYPE_INTEGER,
         'smallint' => self::TYPE_SMALLINT,
         'mediumint' => self::TYPE_INTEGER,
         'int' => self::TYPE_INTEGER,
@@ -172,6 +172,8 @@ class Schema extends \yii\db\Schema
         if (!$column->isPrimaryKey) {
             if ($column->type === 'timestamp' && $info['Default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
+            } elseif (isset($type) && $type === 'bit') {
+                $column->defaultValue = bindec(trim($info['Default'],'b\''));
             } else {
                 $column->defaultValue = $column->typecast($info['Default']);
             }

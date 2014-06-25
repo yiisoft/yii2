@@ -55,8 +55,8 @@ class Schema extends \yii\db\Schema
         'blob' => self::TYPE_BINARY,
         'clob' => self::TYPE_BINARY,
         // Bit string data types
-        'bit' => self::TYPE_STRING,
-        'bit varying' => self::TYPE_STRING,
+        'bit' => self::TYPE_INTEGER,
+        'bit varying' => self::TYPE_INTEGER,
         // Collection data types (considered strings for now)
         'set' => self::TYPE_STRING,
         'multiset' => self::TYPE_STRING,
@@ -223,6 +223,15 @@ class Schema extends \yii\db\Schema
                     if (isset($values[1])) {
                         $column->scale = (int) $values[1];
                     }
+                    if ($column->size === 1 && $type === 'bit') {
+                        $column->type = 'boolean';
+                    } elseif ($type === 'bit') {
+                        if ($column->size > 32) {
+                            $column->type = 'bigint';
+                        } elseif ($column->size === 32) {
+                            $column->type = 'integer';
+                        }
+                    }
                 }
             }
         }
@@ -239,6 +248,8 @@ class Schema extends \yii\db\Schema
             $column->type === 'time' && $info['Default'] === 'SYS_TIME'
         ) {
             $column->defaultValue = new Expression($info['Default']);
+        } elseif (isset($type) && $type === 'bit') {
+            $column->defaultValue = hexdec(trim($info['Default'],'X\''));
         } else {
             $column->defaultValue = $column->typecast($info['Default']);
         }
