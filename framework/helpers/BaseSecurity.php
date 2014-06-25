@@ -25,9 +25,10 @@ class BaseSecurity
 {
     /**
      * @var integer crypt block size in bytes.
-     * For AES, block size is 128-bit (16 bytes).
+     * For AES-128, AES-192, block size is 128-bit (16 bytes).
+     * For AES-256, block size is 256-bit (32 bytes).
      */
-    public static $cryptBlockSize = 16;
+    public static $cryptBlockSize = 32;
     /**
      * @var integer crypt key size in bytes.
      * For AES-192, key size is 192-bit (24 bytes).
