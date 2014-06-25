@@ -24,24 +24,24 @@ use yii\base\InvalidParamException;
 class BaseSecurity
 {
     /**
-     * Uses AES, block size is 128-bit (16 bytes).
+     * @var integer crypt block size in bytes.
+     * For AES, block size is 128-bit (16 bytes).
      */
-    const CRYPT_BLOCK_SIZE = 16;
-
+    public static $cryptBlockSize = 16;
     /**
-     * Uses AES-192, key size is 192-bit (24 bytes).
+     * @var integer crypt key size in bytes.
+     * For AES-192, key size is 192-bit (24 bytes).
+     * For AES-256, key size is 256-bit (32 bytes).
      */
-    const CRYPT_KEY_SIZE = 24;
-
+    public static $cryptKeySize = 32;
     /**
-     * Uses SHA-256.
+     * @var string derivation hash algorithm name.
      */
-    const DERIVATION_HASH = 'sha256';
-
+    public static $derivationHash = 'sha256';
     /**
-     * Uses 1000 iterations.
+     * @var integer derivation iterations count.
      */
-    const DERIVATION_ITERATIONS = 1000;
+    public static $derivationIterations = 1000000;
 
     /**
      * Encrypts data.
@@ -97,7 +97,7 @@ class BaseSecurity
      */
     protected static function addPadding($data)
     {
-        $pad = self::CRYPT_BLOCK_SIZE - (StringHelper::byteLength($data) % self::CRYPT_BLOCK_SIZE);
+        $pad = static::$cryptBlockSize - (StringHelper::byteLength($data) % static::$cryptBlockSize);
 
         return $data . str_repeat(chr($pad), $pad);
     }
@@ -128,16 +128,16 @@ class BaseSecurity
     protected static function deriveKey($password, $salt)
     {
         if (function_exists('hash_pbkdf2')) {
-            return hash_pbkdf2(self::DERIVATION_HASH, $password, $salt, self::DERIVATION_ITERATIONS, self::CRYPT_KEY_SIZE, true);
+            return hash_pbkdf2(static::$derivationHash, $password, $salt, static::$derivationIterations, static::$cryptKeySize, true);
         }
-        $hmac = hash_hmac(self::DERIVATION_HASH, $salt . pack('N', 1), $password, true);
+        $hmac = hash_hmac(static::$derivationHash, $salt . pack('N', 1), $password, true);
         $xorsum  = $hmac;
-        for ($i = 1; $i < self::DERIVATION_ITERATIONS; $i++) {
-            $hmac = hash_hmac(self::DERIVATION_HASH, $hmac, $password, true);
+        for ($i = 1; $i < static::$derivationIterations; $i++) {
+            $hmac = hash_hmac(static::$derivationHash, $hmac, $password, true);
             $xorsum ^= $hmac;
         }
 
-        return substr($xorsum, 0, self::CRYPT_KEY_SIZE);
+        return substr($xorsum, 0, static::$cryptKeySize);
     }
 
     /**
