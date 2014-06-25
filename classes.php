@@ -88,6 +88,7 @@ return [
   'yii\db\ActiveRecord' => YII_PATH . '/db/ActiveRecord.php',
   'yii\db\ActiveRecordInterface' => YII_PATH . '/db/ActiveRecordInterface.php',
   'yii\db\ActiveRelationTrait' => YII_PATH . '/db/ActiveRelationTrait.php',
+  'yii\db\AfterSaveEvent' => YII_PATH . '/db/AfterSaveEvent.php',
   'yii\db\BaseActiveRecord' => YII_PATH . '/db/BaseActiveRecord.php',
   'yii\db\BatchQueryResult' => YII_PATH . '/db/BatchQueryResult.php',
   'yii\db\ColumnSchema' => YII_PATH . '/db/ColumnSchema.php',
