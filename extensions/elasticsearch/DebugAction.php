@@ -58,7 +58,7 @@ class DebugAction extends Action
 
         $options = ['pretty' => true];
 
-        /** @var Connection $db */
+        /* @var $db Connection */
         $db = \Yii::$app->get($this->db);
         $time = microtime(true);
         switch ($method) {

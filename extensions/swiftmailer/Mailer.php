@@ -162,7 +162,7 @@ class Mailer extends BaseMailer
             $plugins = $config['plugins'];
             unset($config['plugins']);
         }
-        /** @var \Swift_MailTransport $transport */
+        /* @var $transport \Swift_MailTransport */
         $transport = $this->createSwiftObject($config);
         if (isset($plugins)) {
             foreach ($plugins as $plugin) {

@@ -223,7 +223,7 @@ class User extends Component
      */
     public function loginByAccessToken($token, $type = null)
     {
-        /** @var IdentityInterface $class */
+        /* @var $class IdentityInterface */
         $class = $this->identityClass;
         $identity = $class::findIdentityByAccessToken($token, $type);
         $this->setIdentity($identity);
@@ -245,7 +245,7 @@ class User extends Component
             $data = json_decode($value, true);
             if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
                 list ($id, $authKey, $duration) = $data;
-                /** @var IdentityInterface $class */
+                /* @var $class IdentityInterface */
                 $class = $this->identityClass;
                 $identity = $class::findIdentity($id);
                 if ($identity !== null && $identity->validateAuthKey($authKey)) {
@@ -546,7 +546,7 @@ class User extends Component
         if ($id === null) {
             $identity = null;
         } else {
-            /** @var IdentityInterface $class */
+            /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
         }

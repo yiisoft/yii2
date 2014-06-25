@@ -197,13 +197,13 @@ trait ActiveRelationTrait
 
         if ($this->via instanceof self) {
             // via pivot table
-            /** @var ActiveRelationTrait $viaQuery */
+            /* @var $viaQuery ActiveRelationTrait */
             $viaQuery = $this->via;
             $viaModels = $viaQuery->findPivotRows($primaryModels);
             $this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
-            /** @var ActiveRelationTrait $viaQuery */
+            /* @var $viaQuery ActiveRelationTrait */
             list($viaName, $viaQuery) = $this->via;
             $viaQuery->primaryModel = null;
             $viaModels = $viaQuery->populateRelation($viaName, $primaryModels);
@@ -264,7 +264,7 @@ trait ActiveRelationTrait
             return;
         }
         $model = reset($models);
-        /** @var ActiveQueryInterface|ActiveQuery $relation */
+        /* @var $relation ActiveQueryInterface|ActiveQuery */
         $relation = $model instanceof ActiveRecordInterface ? $model->getRelation($name) : (new $this->modelClass)->getRelation($name);
 
         if ($relation->multiple) {
@@ -375,7 +375,7 @@ trait ActiveRelationTrait
     {
         if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
             if (empty($this->from)) {
-                /** @var ActiveRecord $modelClass */
+                /* @var $modelClass ActiveRecord */
                 $modelClass = $this->modelClass;
                 $alias = $modelClass::tableName();
             } else {
@@ -458,7 +458,7 @@ trait ActiveRelationTrait
             return [];
         }
         $this->filterByModels($primaryModels);
-        /** @var ActiveRecord $primaryModel */
+        /* @var $primaryModel ActiveRecord */
         $primaryModel = reset($primaryModels);
         if (!$primaryModel instanceof ActiveRecordInterface) {
             // when primaryModels are array of arrays (asArray case)

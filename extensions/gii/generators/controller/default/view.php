@@ -1,17 +1,15 @@
 <?php
 /**
  * This is the template for generating an action view file.
- *
- * @var yii\web\View $this
- * @var yii\gii\generators\controller\Generator $generator
- * @var string $action the action ID
  */
+
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\controller\Generator */
+/* @var $action string the action ID */
 
 echo "<?php\n";
 ?>
-/**
- * @var yii\web\View $this
- */
+/* @var $this yii\web\View */
 <?= "?>" ?>
 
 <h1><?= $generator->getControllerID() . '/' . $action ?></h1>

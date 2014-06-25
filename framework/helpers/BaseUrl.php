@@ -192,15 +192,19 @@ class BaseUrl
 
         if ($url === '') {
             $url = Yii::$app->getRequest()->getUrl();
-        } elseif ($url[0] !== '/' && $url[0] !== '#' && $url[0] !== '.' && strpos($url, '://') === false) {
-            $url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+        } else {
+            $hasScheme = ($pos = strpos($url, ':')) > 0 && ctype_alpha(substr($url, 0, $pos));
+            $char = $url[0];
+            if ($char !== '/' && $char !== '#' && $char !== '.' && !$hasScheme) {
+                $url = Yii::$app->getRequest()->getBaseUrl() . '/' . $url;
+            }
         }
 
         if ($scheme) {
-            if (strpos($url, '://') === false) {
+            if (empty($hasScheme)) {
                 $url = Yii::$app->getRequest()->getHostInfo() . '/' . ltrim($url, '/');
             }
-            if (is_string($scheme) && ($pos = strpos($url, '://')) !== false) {
+            if (is_string($scheme) && ($pos = strpos($url, ':')) !== false) {
                 $url = $scheme . substr($url, $pos);
             }
         }

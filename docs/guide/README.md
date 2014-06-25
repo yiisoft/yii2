@@ -37,11 +37,11 @@ Application Structure
 * [Controllers](structure-controllers.md)
 * [Models](structure-models.md)
 * [Views](structure-views.md)
-* **TBD** [Filters](structure-filters.md)
-* **TBD** [Widgets](structure-widgets.md)
-* **TBD** [Modules](structure-modules.md)
-* [Assets](structure-assets.md)
-* **TBD** [Extensions](structure-extensions.md)
+* [Modules](structure-modules.md)
+* [Filters](structure-filters.md)
+* [Widgets](structure-widgets.md)
+* [Asset Bundles](structure-assets.md)
+* [Extensions](structure-extensions.md)
 
 
 Handling Requests
@@ -101,6 +101,7 @@ Displaying Data
 * **TBD** [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
 * [Data Widgets](output-data-widgets.md)
+* [Working with Client Scripts](output-client-scripts.md)
 * [Theming](output-theming.md)
 
 
@@ -192,8 +193,8 @@ Widgets
 * Menu: link to demo page
 * LinkPager: link to demo page
 * LinkSorter: link to demo page
-* [Bootstrap Widgets](bootstrap-widgets.md)
-* **TBD** [Jquery UI Widgets](jui-widgets.md)
+* [Bootstrap Widgets](widget-bootstrap.md)
+* [Jquery UI Widgets](widget-jui.md)
 
 
 Helpers

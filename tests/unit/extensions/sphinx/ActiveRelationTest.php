@@ -23,7 +23,7 @@ class ActiveRelationTest extends SphinxTestCase
 
     public function testFindLazy()
     {
-        /** @var ArticleDb $article */
+        /* @var $article ArticleDb */
         $article = ArticleDb::findOne(['id' => 2]);
         $this->assertFalse($article->isRelationPopulated('index'));
         $index = $article->index;
@@ -41,5 +41,18 @@ class ActiveRelationTest extends SphinxTestCase
         $this->assertTrue($articles[1]->isRelationPopulated('index'));
         $this->assertTrue($articles[0]->index instanceof ArticleIndex);
         $this->assertTrue($articles[1]->index instanceof ArticleIndex);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/4018
+     */
+    public function testFindCompositeLink()
+    {
+        $articles = ArticleIndex::find()->with('sourceCompositeLink')->all();
+        $this->assertEquals(2, count($articles));
+        $this->assertTrue($articles[0]->isRelationPopulated('sourceCompositeLink'));
+        $this->assertNotEmpty($articles[0]->sourceCompositeLink);
+        $this->assertTrue($articles[1]->isRelationPopulated('sourceCompositeLink'));
+        $this->assertNotEmpty($articles[1]->sourceCompositeLink);
     }
 }

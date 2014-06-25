@@ -329,7 +329,7 @@ class GridView extends BaseListView
     {
         $requireColumnGroup = false;
         foreach ($this->columns as $column) {
-            /** @var Column $column */
+            /* @var $column Column */
             if (!empty($column->options)) {
                 $requireColumnGroup = true;
                 break;
@@ -355,7 +355,7 @@ class GridView extends BaseListView
     {
         $cells = [];
         foreach ($this->columns as $column) {
-            /** @var Column $column */
+            /* @var $column Column */
             $cells[] = $column->renderHeaderCell();
         }
         $content = Html::tag('tr', implode('', $cells), $this->headerRowOptions);
@@ -376,7 +376,7 @@ class GridView extends BaseListView
     {
         $cells = [];
         foreach ($this->columns as $column) {
-            /** @var Column $column */
+            /* @var $column Column */
             $cells[] = $column->renderFooterCell();
         }
         $content = Html::tag('tr', implode('', $cells), $this->footerRowOptions);
@@ -396,7 +396,7 @@ class GridView extends BaseListView
         if ($this->filterModel !== null) {
             $cells = [];
             foreach ($this->columns as $column) {
-                /** @var Column $column */
+                /* @var $column Column */
                 $cells[] = $column->renderFilterCell();
             }
 
@@ -453,7 +453,7 @@ class GridView extends BaseListView
     public function renderTableRow($model, $key, $index)
     {
         $cells = [];
-        /** @var Column $column */
+        /* @var $column Column */
         foreach ($this->columns as $column) {
             $cells[] = $column->renderDataCell($model, $key, $index);
         }

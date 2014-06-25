@@ -157,12 +157,30 @@ class HelpController extends Controller
             $files = scandir($controllerPath);
             foreach ($files as $file) {
                 if (strcmp(substr($file, -14), 'Controller.php') === 0) {
-                    $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
+                    $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
+                    if ($this->validateControllerClass($controllerClass)) {
+                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
+                    }
                 }
             }
         }
 
         return $commands;
+    }
+
+    /**
+     * Validates if the given class is a valid console controller class.
+     * @param string $controllerClass
+     * @return bool
+     */
+    protected function validateControllerClass($controllerClass)
+    {
+        if (class_exists($controllerClass)) {
+            $class = new \ReflectionClass($controllerClass);
+            return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
+        } else {
+            return false;
+        }
     }
 
     /**

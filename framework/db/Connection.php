@@ -410,16 +410,18 @@ class Connection extends Component
 
     /**
      * Starts a transaction.
+     * @param string|null $isolationLevel The isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
      * @return Transaction the transaction initiated
      */
-    public function beginTransaction()
+    public function beginTransaction($isolationLevel = null)
     {
         $this->open();
 
         if (($transaction = $this->getTransaction()) === null) {
             $transaction = $this->_transaction = new Transaction(['db' => $this]);
         }
-        $transaction->begin();
+        $transaction->begin($isolationLevel);
 
         return $transaction;
     }

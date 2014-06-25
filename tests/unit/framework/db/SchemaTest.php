@@ -13,7 +13,7 @@ class SchemaTest extends DatabaseTestCase
 {
     public function testGetTableNames()
     {
-        /** @var Schema $schema */
+        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         $tables = $schema->getTableNames();
@@ -27,7 +27,7 @@ class SchemaTest extends DatabaseTestCase
 
     public function testGetTableSchemas()
     {
-        /** @var Schema $schema */
+        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         $tables = $schema->getTableSchemas();
@@ -44,7 +44,7 @@ class SchemaTest extends DatabaseTestCase
 
     public function testSchemaCache()
     {
-        /** @var Schema $schema */
+        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         $schema->db->enableSchemaCache = true;
@@ -56,7 +56,7 @@ class SchemaTest extends DatabaseTestCase
 
     public function testCompositeFk()
     {
-        /** @var Schema $schema */
+        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('composite_fk');
@@ -82,7 +82,7 @@ class SchemaTest extends DatabaseTestCase
             [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
         ];
 
-        /** @var Schema $schema */
+        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {

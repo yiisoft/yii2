@@ -128,7 +128,7 @@ class ActiveDataProvider extends BaseDataProvider
 
             return $keys;
         } elseif ($this->query instanceof ActiveQueryInterface) {
-            /** @var \yii\db\ActiveRecord $class */
+            /* @var $class \yii\db\ActiveRecord */
             $class = $this->query->modelClass;
             $pks = $class::primaryKey();
             if (count($pks) === 1) {
@@ -171,7 +171,7 @@ class ActiveDataProvider extends BaseDataProvider
     {
         parent::setSort($value);
         if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQueryInterface) {
-            /** @var Model $model */
+            /* @var $model Model */
             $model = new $this->query->modelClass;
             foreach ($model->attributes() as $attribute) {
                 $sort->attributes[$attribute] = [

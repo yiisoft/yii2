@@ -1,9 +1,7 @@
 <?php
-/**
- * @var yii\debug\panels\LogPanel $panel
- * @var yii\debug\models\search\Log $searchModel
- * @var yii\data\ArrayDataProvider $dataProvider
- */
+/* @var $panel yii\debug\panels\LogPanel */
+/* @var $searchModel yii\debug\models\search\Log */
+/* @var $dataProvider yii\data\ArrayDataProvider */
 
 use yii\helpers\Html;
 use yii\grid\GridView;
