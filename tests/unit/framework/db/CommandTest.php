@@ -186,7 +186,11 @@ class CommandTest extends DatabaseTestCase
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
-        $this->assertEquals($boolCol, $row['bool_col']);
+        if ($this->driverName !== 'mysql') {
+            $this->assertEquals($boolCol, (int)$row['bool_col']);
+        } else {
+            $this->assertEquals($boolCol, $row['bool_col']);
+        }
 
         // bindValue
         $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
