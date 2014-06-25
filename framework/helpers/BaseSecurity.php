@@ -172,9 +172,16 @@ class BaseSecurity
         $n = StringHelper::byteLength($data);
         if ($n >= $hashSize) {
             $hash = StringHelper::byteSubstr($data, 0, $hashSize);
-            $data2 = StringHelper::byteSubstr($data, $hashSize, $n - $hashSize);
+            $pureData = StringHelper::byteSubstr($data, $hashSize, $n - $hashSize);
 
-            return $hash === hash_hmac($algorithm, $data2, $key) ? $data2 : false;
+            $calculatedHash = hash_hmac($algorithm, $pureData, $key) ? $pureData : false;
+
+            // timing attack resistant approach:
+            $diff = 0;
+            for ($i = 0; $i < StringHelper::byteLength($calculatedHash); $i++) {
+                $diff |= (ord($calculatedHash[$i]) ^ ord($hash[$i]));
+            }
+            return $diff === 0;
         } else {
             return false;
         }
