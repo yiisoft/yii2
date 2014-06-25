@@ -55,3 +55,5 @@ Upgrade from Yii 2.0 Beta
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.
 
 * If your model code is using the `file` validation rule, you should rename its `types` option to `extensions`.
+
+* `MailEvent` class has been moved to the `yii\mail` namespace. You have to adjust all references that may exist in your code.
