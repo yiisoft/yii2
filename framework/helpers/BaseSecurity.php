@@ -55,7 +55,7 @@ class BaseSecurity
     {
         $module = static::openCryptModule();
         $data = static::addPadding($data);
-        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_RAND);
+        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_DEV_URANDOM);
         $key = static::deriveKey($password, $iv);
         mcrypt_generic_init($module, $key, $iv);
         $encrypted = $iv . mcrypt_generic($module, $data);
@@ -174,14 +174,14 @@ class BaseSecurity
             $hash = StringHelper::byteSubstr($data, 0, $hashSize);
             $pureData = StringHelper::byteSubstr($data, $hashSize, $n - $hashSize);
 
-            $calculatedHash = hash_hmac($algorithm, $pureData, $key) ? $pureData : false;
+            $calculatedHash = hash_hmac($algorithm, $pureData, $key);
 
             // timing attack resistant approach:
             $diff = 0;
             for ($i = 0; $i < StringHelper::byteLength($calculatedHash); $i++) {
                 $diff |= (ord($calculatedHash[$i]) ^ ord($hash[$i]));
             }
-            return $diff === 0;
+            return $diff === 0 ? $pureData : false;
         } else {
             return false;
         }
