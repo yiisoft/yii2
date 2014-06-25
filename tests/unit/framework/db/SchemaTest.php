@@ -263,6 +263,18 @@ class SchemaTest extends DatabaseTestCase
                 'scale' => null,
                 'defaultValue' => new Expression('CURRENT_TIMESTAMP'),
             ],
+            'bit_col' => [
+                'type' => 'integer',
+                'dbType' => 'bit(8)',
+                'phpType' => 'integer',
+                'allowNull' => false,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => 8,
+                'precision' => 8,
+                'scale' => null,
+                'defaultValue' => 130, // b'10000010'
+            ],
         ];
     }
 

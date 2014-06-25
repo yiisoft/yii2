@@ -29,9 +29,9 @@ class Schema extends \yii\db\Schema
      * @see http://www.postgresql.org/docs/current/static/datatype.html#DATATYPE-TABLE
      */
     public $typeMap = [
-        'bit' => self::TYPE_STRING,
-        'bit varying' => self::TYPE_STRING,
-        'varbit' => self::TYPE_STRING,
+        'bit' => self::TYPE_INTEGER,
+        'bit varying' => self::TYPE_INTEGER,
+        'varbit' => self::TYPE_INTEGER,
 
         'bool' => self::TYPE_BOOLEAN,
         'boolean' => self::TYPE_BOOLEAN,
@@ -408,7 +408,9 @@ SQL;
                 }
                 $column->defaultValue = null;
             } elseif ($column->defaultValue) {
-                if (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches) || preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
+                if (stripos($column->dbType, 'bit') === 0 || stripos($column->dbType, 'varbit') === 0) {
+                    $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
+                } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches) || preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
                 }
             }

@@ -15,6 +15,7 @@ class SqliteSchemaTest extends SchemaTest
     {
         $columns = parent::getExpectedColumns();
         unset($columns['enum_col']);
+        unset($columns['bit_col']);
         $columns['int_col']['dbType'] = 'integer';
         $columns['int_col']['size'] = null;
         $columns['int_col']['precision'] = null;

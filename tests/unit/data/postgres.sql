@@ -100,7 +100,8 @@ CREATE TABLE "type" (
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   bool_col smallint NOT NULL,
   bool_col2 smallint DEFAULT '1',
-  ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  bit_col BIT NOT NULL DEFAULT B'10000010'
 );
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');

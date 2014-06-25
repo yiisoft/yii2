@@ -111,7 +111,8 @@ CREATE TABLE "type" (
   "time" timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   "bool_col" tinyint NOT NULL,
   "bool_col2" tinyint DEFAULT '1',
-  "ts_default" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  "ts_default" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "bit_col" BIT(8) NOT NULL DEFAULT b'10000010'
 );
 
 CREATE TABLE "composite_fk" (
