@@ -116,7 +116,6 @@ class FileTarget extends Target
         $file = $this->logFile;
         for ($i = $this->maxLogFiles; $i > 0; --$i) {
             $rotateFile = $file . '.' . $i;
-            clearstatcache();
             if (is_file($rotateFile)) {
                 // suppress errors because it's possible multiple processes enter into this section
                 if ($i === $this->maxLogFiles) {
@@ -137,5 +136,7 @@ class FileTarget extends Target
         if (is_file($file)) {
             @rename($file, $file . '.1'); // suppress errors because it's possible multiple processes enter into this section
         }
+        // clear stat cache after moving files to later file size check is not cached
+        clearstatcache();
     }
 }
