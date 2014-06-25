@@ -124,6 +124,7 @@ Yii Framework 2 Change Log
 - Enh: Improved `yii\helpers\Inflector::slug` to support more cases for Russian, Hebrew and special characters (samdark)
 - Enh #3926: `yii\widgets\Breadcrumbs::$links`. Allows individual link to have its own `template` (creocoder, umneeq)
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
+- Chg #2287: Split `yii\db\ColumnSchema::typecast()` into two methods `typecastToPhp()` and `typecastToDatabase()` to allow specifying PDO type explicitly (cebe)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
