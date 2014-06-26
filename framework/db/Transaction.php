@@ -113,6 +113,8 @@ class Transaction extends \yii\base\Object
                 $this->db->getSchema()->setTransactionIsolationLevel($isolationLevel);
             }
             Yii::trace('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : ''), __METHOD__);
+
+            $this->db->trigger(Connection::EVENT_BEGIN_TRANSACTION);
             $this->db->pdo->beginTransaction();
             $this->_level = 1;
 
@@ -143,7 +145,7 @@ class Transaction extends \yii\base\Object
         if ($this->_level == 0) {
             Yii::trace('Commit transaction', __METHOD__);
             $this->db->pdo->commit();
-
+            $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION);
             return;
         }
 
@@ -163,14 +165,16 @@ class Transaction extends \yii\base\Object
     public function rollBack()
     {
         if (!$this->getIsActive()) {
-            throw new Exception('Failed to roll back transaction: transaction was inactive.');
+            // do nothing if transaction is not active: this could be the transaction is committed
+            // but the event handler to "commitTransaction" throw an exception
+            return;
         }
 
         $this->_level--;
         if ($this->_level == 0) {
             Yii::trace('Roll back transaction', __METHOD__);
             $this->db->pdo->rollBack();
-
+            $this->db->trigger(Connection::EVENT_ROLLBACK_TRANSACTION);
             return;
         }
 
