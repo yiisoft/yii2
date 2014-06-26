@@ -151,7 +151,7 @@ yii.gii = (function ($) {
                 $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
             }).change();
 
-      //model generator: translate table name to model class
+            // model generator: translate table name to model class
             $('#generator-tablename').on('blur', function () {
                 var tableName = $(this).val();
                 if ($('#generator-modelclass').val()=='' && tableName && tableName.indexOf('*') === -1){
