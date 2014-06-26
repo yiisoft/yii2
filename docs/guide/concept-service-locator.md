@@ -34,7 +34,7 @@ $locator->set('db', [
     'password' => '',
 ]);
 
-// register "db" using an anonymous function that builds a component
+// register "search" using an anonymous function that builds a component
 $locator->set('search', function () {
     return new app\components\SolrService;
 });
