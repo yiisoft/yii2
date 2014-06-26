@@ -27,7 +27,7 @@ class Schema extends \yii\db\Schema
     {
         parent::init();
         if ($this->defaultSchema === null) {
-            $this->defaultSchema = $this->db->username;
+            $this->defaultSchema = strtoupper($this->db->username);
         }
     }
 
@@ -170,7 +170,7 @@ EOD;
         $this->extractColumnType($c, $column['DATA_TYPE']);
         $this->extractColumnSize($c, $column['DATA_TYPE']);
 
-        if (!$column->isPrimaryKey) {
+        if (!$c->isPrimaryKey) {
             if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
                 $c->defaultValue = null;
             } else {
