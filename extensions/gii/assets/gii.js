@@ -151,6 +151,19 @@ yii.gii = (function ($) {
                 $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
             }).change();
 
+      //model generator: translate table name to model class
+            $('#generator-tablename').on('blur', function () {
+                var tableName = $(this).val();
+                if ($('#generator-modelclass').val()=='' && tableName && tableName.indexOf('*') === -1){
+                    var modelClass='';
+                    $.each(tableName.split('_'), function() {
+                        if(this.length>0)
+                            modelClass+=this.substring(0,1).toUpperCase()+this.substring(1);
+                    });
+                    $('#generator-modelclass').val(modelClass);
+                }
+            });
+
             // hide message category when I18N is disabled
             $('form #generator-enablei18n').change(function () {
                 $('form .field-generator-messagecategory').toggle($(this).is(':checked'));
