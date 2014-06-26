@@ -175,10 +175,26 @@ class Dispatcher extends Component
      */
     public function dispatch($messages, $final)
     {
+        $targetErrors = [];
         foreach ($this->targets as $target) {
             if ($target->enabled) {
-                $target->collect($messages, $final);
+                try {
+                    $target->collect($messages, $final);
+                } catch (\Exception $e) {
+                    $target->enabled = false;
+                    $targetErrors[] = [
+                        'Unable to send log via '.  get_class($target) .': ' . $e->getMessage(),
+                        Logger::LEVEL_WARNING,
+                        __METHOD__,
+                        microtime(true),
+                        [],
+                    ];
+                }
             }
+        }
+
+        if (!empty($targetErrors)) {
+            $this->dispatch($targetErrors, true);
         }
     }
 }
