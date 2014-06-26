@@ -43,6 +43,7 @@ Yii Framework 2 Change Log
 - Bug #3583: Added typecast to auto value of primary key on insert of sql active record (cebe)
 - Bug #3591: Fixed incomplete obsolete filling in i18n `MessageController::saveMessagesToDb()` (advsm)
 - Bug #3601: Fixed the bug that the refresh URL was not generated correctly by `Captcha` (qiangxue, klevron)
+- Bug #3638: `yii\filters\HttpCache` does not work as expected when session is started before the filter (qiangxue)
 - Bug #3681: Fixed problem with AR::findOne() when a default scope joins another table so that PK name becomes ambigous (cebe)
 - Bug #3715: Fixed the bug that using a custom pager/sorter with `GridView` may generate two different pagers/sorters if the layout configures two pagers/sorters (qiangxue)
 - Bug #3716: `DynamicModel::validateData()` does not call `validate()` if the `$rules` parameter is empty (qiangxue)
