@@ -105,13 +105,7 @@ abstract class Target extends Component
             if (($context = $this->getContextMessage()) !== '') {
                 $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
             }
-            try {
-                $this->export();
-            } catch (\Exception $e) {
-                $this->enabled = false;
-                \Yii::warning('Unable to send log via '.  get_class($this) .': ' . $e->getMessage(), __METHOD__);
-                \Yii::getLogger()->flush(true);
-            }
+            $this->export();
             $this->messages = [];
         }
     }
