@@ -121,6 +121,9 @@ class ActiveRecordTest extends DatabaseTestCase
         $order = Order::findOne(2);
         $this->assertEquals(2, $order->id);
         $this->assertEquals(0, count($order->books));
+
+        $order = Order::find()->where(['id' => 1])->asArray()->one();
+        $this->assertTrue(is_array($order));
     }
 
     public function testFindEagerViaTable()
@@ -146,6 +149,7 @@ class ActiveRecordTest extends DatabaseTestCase
         // https://github.com/yiisoft/yii2/issues/1402
         $orders = Order::find()->with('books')->orderBy('id')->asArray()->all();
         $this->assertEquals(3, count($orders));
+        $this->assertTrue(is_array($orders[0]['orderItems'][0]));
 
         $order = $orders[0];
         $this->assertTrue(is_array($order));
