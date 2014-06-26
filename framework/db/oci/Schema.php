@@ -20,6 +20,19 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    const TYPE_PK = 'NUMBER(10) NOT NULL PRIMARY KEY';
+    const TYPE_STRING = 'VARCHAR2(255)';
+    const TYPE_TEXT = 'CLOB';
+    const TYPE_INTEGER = 'NUMBER(10)';
+    const TYPE_FLOAT = 'NUMBER';
+    const TYPE_DECIMAL = 'NUMBER';
+    const TYPE_DATETIME = 'TIMESTAMP';
+    const TYPE_TIMESTAMP = 'TIMESTAMP';
+    const TYPE_TIME = 'TIMESTAMP';
+    const TYPE_DATE = 'DATE';
+    const TYPE_BINARY = 'BLOB';
+    const TYPE_BOOLEAN = 'NUMBER(1)';
+    const TYPE_MONEY = 'NUMBER(19,4)';
     /**
      * @inheritdoc
      */
@@ -151,12 +164,48 @@ EOD;
             $table->columns[$c->name] = $c;
             if ($c->isPrimaryKey) {
                 $table->primaryKey[] = $c->name;
-                $table->sequenceName = '';
+                $table->sequenceName = $this->getTableSequenceName($table->name);
                 $c->autoIncrement = true;
             }
         }
-
         return true;
+    }
+
+    /**
+     * Sequence name of table
+     *
+     * @param $tablename
+     * @internal param \yii\db\TableSchema $table ->name the table schema
+     * @return string whether the sequence exists
+     */
+
+    protected function getTableSequenceName($tablename){
+
+        $seq_name_sql="select ud.referenced_name as sequence_name
+                        from   user_dependencies ud
+                               join user_triggers ut on (ut.trigger_name = ud.name)
+                        where ut.table_name='{$tablename}'
+                              and ud.type='TRIGGER'
+                              and ud.referenced_type='SEQUENCE'";
+        return $this->db->createCommand($seq_name_sql)->queryScalar();
+    }
+
+    /*
+     * @Overrides method in class 'Schema'
+     * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
+     *
+     * Returns the ID of the last inserted row or sequence value.
+     * @param string $sequenceName name of the sequence object (required by some DBMS)
+     * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
+     * @throws InvalidCallException if the DB connection is not active
+     */
+    public function getLastInsertID($sequenceName = '')
+    {
+        if ($this->db->isActive) {
+            return $this->db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
+        } else {
+            throw new InvalidCallException('DB Connection is not active.');
+        }
     }
 
     protected function createColumn($column)
