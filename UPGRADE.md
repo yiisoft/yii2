@@ -69,3 +69,6 @@ Upgrade from Yii 2.0 Beta
 * If you are developing RESTful APIs and using an authentication method such as `yii\filters\auth\HttpBasicAuth`,
   you should explicitly configure `yii\web\User::enableSession` in the application configuration to be false to avoid
   starting a session when authentication is performed. Previously this was done automatically by authentication method.
+
+* `mail` component was renamed to `mailer`, `yii\log\EmailTarget::$mail` was renamed to `yii\log\EmailTarget::$mailer`.
+  Please update all references in the code and config files.
