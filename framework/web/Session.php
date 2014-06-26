@@ -125,7 +125,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);
-            $this->updateFlashCounters();
         } else {
             $error = error_get_last();
             $message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
@@ -631,6 +630,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getFlash($key, $defaultValue = null, $delete = false)
     {
+        $this->updateFlashCounters();
         $counters = $this->get($this->flashParam, []);
         if (isset($counters[$key])) {
             $value = $this->get($key, $defaultValue);
@@ -675,6 +675,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getAllFlashes($delete = false)
     {
+        $this->updateFlashCounters();
         $counters = $this->get($this->flashParam, []);
         $flashes = [];
         foreach (array_keys($counters) as $key) {
