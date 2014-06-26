@@ -24,7 +24,7 @@ if ($data === false) {
 
 ## 缓存组件 <a name="cache-components"></a>
 
-数据缓存需要称作“*缓存组件*”的东西提供支持，它代表着各种缓存存储介质，例如内存，文件，数据库。
+数据缓存需要称作“*缓存组件*”的东西提供支持，它代表着各种缓存存储器，例如内存，文件，数据库。
 
 缓存组件通常注册为应用程序组件，这样它们就可以接受全局性配置和调用。如下代码演示了如何配置 `cache`
 应用程序组件使用两个 [memcached](http://memcached.org/) 服务器:
@@ -66,41 +66,30 @@ if ($data === false) {
 > Tip: 你可以注册多个缓存组件，很多依赖缓存的类默认调用名为 `cache` 的组件（例如 [[yii\web\UrlManager]]）。
 
 
-### Supported Cache Storage <a name="supported-cache-storage"></a>
+### 支持的缓存存储器 <a name="supported-cache-storage"></a>
 
-Yii supports a wide range of cache storage. The following is a summary:
+Yii 支持一系列缓存存储器，概况如下：
 
-* [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
-  considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
-  server, no dedicated load balancers, etc.).
-* [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
-  create a table as specified in [[yii\caching\DbCache::cacheTable]].
-* [[yii\caching\DummyCache]]: serves as a cache placeholder which does no real caching.
-  The purpose of this component is to simplify the code that needs to check the availability of cache.
-  For example, during development or if the server doesn't have actual cache support, you may configure
-  a cache component to use this cache. When an actual cache support is enabled, you can switch to use
-  the corresponding cache component. In both cases, you may use the same code
-  `Yii::$app->cache->get($key)` to attempt retrieving data from the cache without worrying that
-  `Yii::$app->cache` might be `null`.
-* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
-  to cache large chunk of data, such as page content.
-* [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
-  and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
-  the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
-  balancers, etc.)
-* [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
-  (redis version 2.6.12 or higher is required).
-* [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
-  ([see also](http://php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]]: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
-* [[yii\caching\ZendDataCache]]: uses
+* [[yii\caching\ApcCache]]: 使用 PHP [APC](http://php.net/manual/en/book.apc.php) 扩展。这个选项可以认为是集中式应用程序环境中（例如：单一服务器，没有独立的负载均衡器等）最快的缓存方案。
+* [[yii\caching\DbCache]]: 使用一个数据库的表存储缓存数据。要使用这个缓存，你必须创建一个 [[yii\caching\DbCache::cacheTable]] 对应的表。
+* [[yii\caching\DummyCache]]: 仅作为一个缓存占位符，不实现任何真正的缓存功能。
+  这个组件的目的是为了简化那些需要查询缓存有效性的代码。例如，在开发中如果服务器没有实际的缓存支持，你就可以用它配置一个缓存组件。
+  一个真正的缓存服务启用后，就可以切换为使用相应的缓存组件。两种条件下你都可以使用同样的代码
+  `Yii::$app->cache->get($key)` 尝试从缓存中获取数据而不用担心
+  `Yii::$app->cache` 可能是 `null`。
+* [[yii\caching\FileCache]]: 使用标准文件存储缓存数据。这个特别适用于缓存大块数据，例如一个网页的内容。
+* [[yii\caching\MemCache]]: 使用 PHP [memcache](http://php.net/manual/en/book.memcache.php) 和
+  [memcached](http://php.net/manual/en/book.memcached.php) 扩展。这个选项可以认为是分布式应用程序环境中（例如：多台服务器，有负载均衡等）最快的缓存方案。
+* [[yii\redis\Cache]]: 实现了一个基于 [Redis](http://redis.io/) 键值对存储器的缓存组件（需要 redis 2.6.12 及以上版本的支持 ）。
+* [[yii\caching\WinCache]]: 使用 PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
+  ([另可参考](http://php.net/manual/en/book.wincache.php)) 扩展.
+* [[yii\caching\XCache]]: 使用 PHP [XCache](http://xcache.lighttpd.net/) 扩展。
+* [[yii\caching\ZendDataCache]]: 使用
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  as the underlying caching medium.
+  作为底层缓存介质。
 
 
-> Tip: You may use different cache storage in the same application. A common strategy is to use memory-based
-  cache storage to store data that is small but constantly used (e.g. statistical data), and use file-based
-  or database-based cache storage to store data that is big and less frequently used (e.g. page content).
+> Tip: 你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器存储小而常用的数据（例如：统计数据），使用基于文件或数据库的缓存存储器存储大而不太常用的数据（例如：网页内容）。
 
 
 ## Cache APIs <a name="cache-apis"></a>
