@@ -26,7 +26,7 @@ class MessageTest extends VendorTestCase
     {
         $this->mockApplication([
             'components' => [
-                'mail' => $this->createTestEmailComponent()
+                'mailer' => $this->createTestEmailComponent()
             ]
         ]);
         $filePath = $this->getTestFilePath();
@@ -68,7 +68,7 @@ class MessageTest extends VendorTestCase
      */
     protected function createTestMessage()
     {
-        return Yii::$app->get('mail')->compose();
+        return Yii::$app->get('mailer')->compose();
     }
 
     /**
