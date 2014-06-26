@@ -24,7 +24,7 @@ use Yii;
  * @property \yii\base\Formatter|\yii\i18n\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
  * @property \yii\log\Dispatcher $log The log dispatcher component. This property is read-only.
- * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
+ * @property \yii\mail\MailerInterface $mailer The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
  * read-only.
@@ -566,9 +566,9 @@ abstract class Application extends Module
      * Returns the mailer component.
      * @return \yii\mail\MailerInterface the mailer interface
      */
-    public function getMail()
+    public function getMailer()
     {
-        return $this->get('mail');
+        return $this->get('mailer');
     }
 
     /**
@@ -601,7 +601,7 @@ abstract class Application extends Module
             'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\base\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
-            'mail' => ['class' => 'yii\swiftmailer\Mailer'],
+            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
         ];

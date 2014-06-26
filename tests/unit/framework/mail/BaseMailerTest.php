@@ -18,7 +18,7 @@ class BaseMailerTest extends TestCase
     {
         $this->mockApplication([
             'components' => [
-                'mail' => $this->createTestMailComponent(),
+                'mailer' => $this->createTestMailComponent(),
             ]
         ]);
         $filePath = $this->getTestFilePath();
@@ -59,7 +59,7 @@ class BaseMailerTest extends TestCase
      */
     protected function getTestMailComponent()
     {
-        return Yii::$app->get('mail');
+        return Yii::$app->get('mailer');
     }
 
     // Tests :
