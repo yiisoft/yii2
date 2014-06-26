@@ -16,7 +16,28 @@ use yii\mail\MailerInterface;
  * EmailTarget sends selected log messages to the specified email addresses.
  *
  * You may configure the email to be sent by setting the [[message]] property, through which
- * you can set the target email addresses, subject, etc.
+ * you can set the target email addresses, subject, etc.:
+ *
+ * ```php
+ * 'components' => [
+ *     'log' => [
+ *          'targets' => [
+ *              [
+ *                  'class' => 'yii\log\EmailTarget',
+ *                  'mail' =>'mail',
+ *                  'levels' => ['error', 'warning'],
+ *                  'message' => [
+ *                      'from' => ['log@example.com'],
+ *                      'to' => ['developer1@example.com', 'developer2@example.com'],
+ *                      'subject' => 'Log message',
+ *                  ],
+ *              ],
+ *          ],
+ *     ],
+ * ],
+ * ```
+ *
+ * In the above `mail` is ID of the component that sends email and should be already configured.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
