@@ -98,19 +98,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public static function findOne($condition)
     {
-        $query = static::find();
-        if (ArrayHelper::isAssociative($condition)) {
-            // hash condition
-            return $query->andWhere($condition)->one();
-        } else {
-            // query by primary key
-            $primaryKey = static::primaryKey();
-            if (isset($primaryKey[0])) {
-                return $query->andWhere([$primaryKey[0] => $condition])->one();
-            } else {
-                throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
-            }
-        }
+        return static::findByCondition($condition, true);
     }
 
     /**
@@ -119,19 +107,33 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public static function findAll($condition)
     {
+        return static::findByCondition($condition, false);
+    }
+
+    /**
+     * Finds ActiveRecord instance(s) by the given condition.
+     * This method is internally called by [[findOne()]] and [[findAll()]].
+     * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
+     * @param boolean $one whether this method is called by [[findOne()]] or [[findAll()]]
+     * @return static|static[]
+     * @throws InvalidConfigException if there is no primary key defined
+     * @internal
+     */
+    protected static function findByCondition($condition, $one)
+    {
         $query = static::find();
-        if (ArrayHelper::isAssociative($condition)) {
-            // hash condition
-            return $query->andWhere($condition)->all();
-        } else {
-            // query by primary key(s)
+
+        if (!ArrayHelper::isAssociative($condition)) {
+            // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
-                return $query->andWhere([$primaryKey[0] => $condition])->all();
+                $condition = [$primaryKey[0] => $condition];
             } else {
                 throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
             }
         }
+
+        return $one ? $query->andWhere($condition)->one() : $query->andWhere($condition)->all();
     }
 
     /**
