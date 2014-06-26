@@ -74,6 +74,7 @@ Yii Framework 2 Change Log
 - Enh #2942: Added truncate and truncateWord methods (Alex-Code, samdark)
 - Enh #3008: Added `Html::errorSummary()` (qiangxue)
 - Enh #3088: The debug and gii modules will manage their own URL rules now (hiltonjanfield, qiangxue)
+- Enh #3101: Improved handling of log target failures. It will now skip target and log reason instead of going into infinite cycle (samdark)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
 - Enh #3132: `yii\rbac\PhpManager` now supports more compact data file format (qiangxue)
