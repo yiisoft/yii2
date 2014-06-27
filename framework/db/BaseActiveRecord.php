@@ -877,7 +877,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * the event is triggered.
      * @param boolean $insert whether this method called while inserting a record.
      * If false, it means the method is called while updating a record.
-     * @param array $changedAttributes The attribute values that had changed and were saved contain old values.
+     * @param array $changedAttributes The old values of attributes that had changed and were saved.
      */
     public function afterSave($insert, $changedAttributes)
     {
