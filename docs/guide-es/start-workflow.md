@@ -1,7 +1,7 @@
 Corriendo Aplicaciones
 ======================
 
-Luego de instalar Yii, tienes una aplicación totalmente funcional a la que se puede acceder a través de
+Después de haber instalado Yii, tienes una aplicación totalmente funcional a la que se puede acceder a través de
 la URL `http://hostname/basic/web/index.php` o `http://hostname/index.php`, dependiendo de tu configuración.
 Esta sección será una introducción a la funcionalidad incluida de la aplicación, cómo se organiza el código,
 y cómo la aplicación maneja los requests en general.
@@ -27,9 +27,9 @@ La aplicación básica contiene 4 páginas:
 Estas páginas comparten un encabezado y un pie. El encabezado contiene una barra con el menú principal que permite
 la navegación entre las diferentes páginas.
 
-También deberías ver una barra en la parte de abajo de la ventana del navegador.
+También deberías ver una barra en la parte inferior de la ventana del navegador.
 Esta es la útil [herramienta de depuración](tool-debugger.md) provista por Yii para registrar y mostrar mucha información de depuración,
-tal como mensajes de log, response status, las consultas ejecutadas a la base de datos, y más.
+tal como los mensajes de log, response status, las consultas ejecutadas a la base de datos, y más.
 
 
 Estructura de la aplicación <a name="application-structure"></a>
@@ -68,25 +68,25 @@ El siguiente diagrama muestra la estructura estática de una aplicación.
 ![Estructura Estática de una Aplicación](images/application-structure.png)
 
 Cada aplicación tiene un script de entrada `web/index.php` que es el único script PHP accesible vía web.
-El script de entrada toma un request entrante y crea una instancia de una [aplicación](structure-applications.md) para manejarlo.
-La [aplicación](structure-applications.md) resuelve el request con la ayuda de sus [componentes](concept-components.md),
-y envía el request a los elementos MVC. Los [widgets](structure-widgets.md) son usados en las [vistas](structure-views.md)
+El script de entrada toma una petición (request) entrante y crea una instancia de una [aplicación](structure-applications.md) para manejarlo.
+La [aplicación](structure-applications.md) resuelve la petición (request) con la ayuda de sus [componentes](concept-components.md),
+y la envía al resto de los elementos MVC. Los [widgets](structure-widgets.md) son usados en las [vistas](structure-views.md)
 para ayudar a construir elementos de interfáz complejos y dinámicos.
 
 
-Ciclo de Vida de un Request <a name="request-lifecycle"></a>
----------------------------
+Ciclo de Vida de una Petición (Request) <a name="request-lifecycle"></a>
+---------------------------------------
 
-El siguiente diagrama muestra cómo una aplicación maneja un request.
+El siguiente diagrama muestra cómo una aplicación maneja una petición.
 
 ![Ciclo de Vida de un Request](images/application-lifecycle.png)
 
-1. Un usuario realiza un request al [script de entrada](structure-entry-scripts.md) `web/index.php`.
+1. Un usuario realiza una petición al [script de entrada](structure-entry-scripts.md) `web/index.php`.
 2. El script de entrada carga la [configuración](concept-configurations.md) de la aplicación y crea
-   una instancia de la [aplicación](structure-applications.md) para manejar el request.
+   una instancia de la [aplicación](structure-applications.md) para manejar la consulta.
 3. La aplicación resuelve la [ruta](runtime-routing.md) solicitada con la ayuda del
    componente [request](runtime-requests.md) de la aplicación.
-4. La aplicación crea una instancia de un [controlador](structure-controllers.md) para manejar el request.
+4. La aplicación crea una instancia de un [controlador](structure-controllers.md) para manejar la petición.
 5. El controlador crea una instancia de una [acción](structure-controllers.md) y ejecuta los filtros de dicha acción.
 6. Si alguno de los filtros falla, la acción es cancelada.
 7. Si todos los filtros pasan, la acción es ejecutada.
