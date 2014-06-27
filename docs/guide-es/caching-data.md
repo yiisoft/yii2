@@ -81,36 +81,27 @@ se muestra un listado con los componentes de caché disponibles:
 * [[yii\caching\ApcCache]]: utiliza la extensión de PHP [APC](http://php.net/manual/en/book.apc.php). Esta opción puede
   ser considerada como la más rápida de entre todas las disponibles para una aplicación centralizada. (p. ej. un servidor,
   no dedicado balance de carga, etc).
-
 * [[yii\caching\DbCache]]: utiliza una tabla de base de datos para almacenar los datos. Por defecto, se creará y usará
   como base de datos [SQLite3](http://sqlite.org/) en el directorio runtime. Se puede especificar explicitamente que base
   de datos va a ser utilizada configurando la propiedad `db`.
-
 * [[yii\caching\DummyCache]]: dummy cache (caché tonta) que no almacena en caché nada. El propósito de este componente
   es simplificar el código necesario para chequear la disponibilidad de caché. Por ejemplo, durante el desarrollo o
   si el servidor no tiene soporte de caché actualmente, puede utilizarse este componente de caché. Cuando este disponible
   un soporte en caché, puede cambiarse el componente correspondiente. En ambos casos, puede utilizarse el mismo código
   `Yii::$app->cache->get($key)` para recuperar un dato sin la preocupación de que `Yii::$app->cache` pueda ser `null`.
-
 * [[yii\caching\FileCache]]: utiliza un fichero estándar para almacenar los datos. Esto es adecuado para almacenar
   grandes bloques de datos (como páginas).
-
 * [[yii\caching\MemCache]]: utiliza las extensiones de PHP [memcache](http://php.net/manual/en/book.memcache.php)
   y [memcached](http://php.net/manual/en/book.memcached.php). Esta opción puede ser considerada como la más rápida
   cuando la caché es manejada en una aplicación distribuida (p. ej. con varios servidores, con balance de carga, etc..)
-
 * [[yii\redis\Cache]]: implementa un componente de caché basado en [Redis](http://redis.io/) que almacenan pares
   clave-valor (requiere la versión 2.6.12 de redis).
-
 * [[yii\caching\WinCache]]: utiliza la extensión de PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([ver también](http://php.net/manual/en/book.wincache.php)).
-
 * [[yii\caching\XCache]]: utiliza la extensión de PHP [XCache](http://xcache.lighttpd.net/).
-
 * [[yii\caching\ZendDataCache]]: utiliza
   [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   como el medio fundamental de caché.
-
 
 > Nota: Puedes utililizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la
   de usar almacenamiento de caché en memoria par almacenar datos que son pequeños pero que son utilizados constantemente
@@ -285,7 +276,6 @@ El almacenamiento en caché de consultas se puede usar para [DAO](db-dao.md), as
   de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede
   especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
 
-
 ### Configuraciones <a name="query-caching-configs"></a>
 
 Las consultas en caché tienen dos opciones configurables a traves de [[yii\db\Connection]]:
@@ -296,7 +286,6 @@ Las consultas en caché tienen dos opciones configurables a traves de [[yii\db\C
 * [[yii\db\Connection::queryCache|queryCache]]: representa el ID del componente de aplicación de caché.
   Por defecto es `'cache'`. El almacenamiento en caché de consultas se habilita sólo cuando hay un componente de la
   aplicación de caché válido.
-
 
 ### Limitaciones <a name="query-caching-limitations"></a>
 
