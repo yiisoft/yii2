@@ -416,9 +416,9 @@ SQL;
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
                 } elseif (preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = $column->typecast($matches[1]);
+                    $column->defaultValue = $column->phpTypecast($matches[1]);
                 } else {
-                    $column->defaultValue = $column->typecast($column->defaultValue);
+                    $column->defaultValue = $column->phpTypecast($column->defaultValue);
                 }
             }
         }
