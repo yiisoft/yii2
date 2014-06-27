@@ -10,7 +10,6 @@ namespace yii\base;
 use yii\helpers\StringHelper;
 use Yii;
 
-
 /**
  * Security provides a set of methods to handle common security-related tasks.
  *
@@ -23,6 +22,13 @@ use Yii;
  * Additionally, Security provides [[getSecretKey()]] to support generating
  * named secret keys. These secret keys, once generated, will be stored in a file
  * and made available in future requests.
+ *
+ * This component provides several configuration parameters, which allow tuning your own balance
+ * between high security and high performance.
+ *
+ * Tip: you may add several `Security` components with different configurations to your application,
+ * this allows usage of different encryption strategies for different use cases or migrate encrypted data
+ * from outdated strategy to the new one.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
