@@ -48,8 +48,38 @@ class SecurityTest extends TestCase
         $this->assertFalse($this->security->validateData($hashedData, $key));
     }
 
-    public function testEncrypt()
+    /**
+     * Data provider for [[testEncrypt()]]
+     * @return array test data
+     */
+    public function dataProviderEncrypt()
     {
+        return [
+            [
+                'hmac',
+                false
+            ],
+            [
+                'pbkdf2',
+                !function_exists('hash_pbkdf2')
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderEncrypt
+     *
+     * @param string $deriveKeyStrategy
+     * @param boolean $isSkipped
+     */
+    public function testEncrypt($deriveKeyStrategy, $isSkipped)
+    {
+        if ($isSkipped) {
+            $this->markTestSkipped("Unable to test '{$deriveKeyStrategy}' derive key strategy");
+            return;
+        }
+        $this->security->deriveKeyStrategy = $deriveKeyStrategy;
+
         $data = 'known data';
         $key = 'secret';
         $encryptedData = $this->security->encrypt($data, $key);
