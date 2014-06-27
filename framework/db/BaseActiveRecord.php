@@ -714,10 +714,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
+        $this->afterSave(false, $values);
+
         foreach ($values as $name => $value) {
             $this->_oldAttributes[$name] = $this->_attributes[$name];
         }
-        $this->afterSave(false, $values);
+        
 
         return $rows;
     }
