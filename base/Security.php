@@ -184,12 +184,11 @@ class Security extends Component
 
             $calculatedHash = hash_hmac($algorithm, $pureData, $key);
 
-            // timing attack resistant approach:
-            $diff = 0;
-            for ($i = 0; $i < StringHelper::byteLength($calculatedHash); $i++) {
-                $diff |= (ord($calculatedHash[$i]) ^ ord($hash[$i]));
+            if ($this->compareString($hash, $calculatedHash)) {
+                return $pureData;
+            } else {
+                return false;
             }
-            return $diff === 0 ? $pureData : false;
         } else {
             return false;
         }
@@ -322,14 +321,7 @@ class Security extends Component
             return false;
         }
 
-        // Use a for-loop to compare two strings to prevent timing attacks. See:
-        // http://codereview.stackexchange.com/questions/13512
-        $check = 0;
-        for ($i = 0; $i < $n; ++$i) {
-            $check |= (ord($test[$i]) ^ ord($hash[$i]));
-        }
-
-        return $check === 0;
+        return $this->compareString($test, $hash);
     }
 
     /**
@@ -364,5 +356,22 @@ class Security extends Component
         $salt .= str_replace('+', '.', substr(base64_encode($rand), 0, 22));
 
         return $salt;
+    }
+
+    /**
+     * Performs string comparison using timing attack resistant approach.
+     * @see http://codereview.stackexchange.com/questions/13512
+     * @param string $expected string to compare.
+     * @param string $actual string to compare.
+     * @return boolean whether strings are equal.
+     */
+    protected function compareString($expected, $actual)
+    {
+        // timing attack resistant approach:
+        $diff = 0;
+        for ($i = 0; $i < StringHelper::byteLength($actual); $i++) {
+            $diff |= (ord($actual[$i]) ^ ord($expected[$i]));
+        }
+        return $diff === 0;
     }
 } 
