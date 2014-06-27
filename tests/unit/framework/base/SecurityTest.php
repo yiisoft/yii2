@@ -29,14 +29,6 @@ class SecurityTest extends TestCase
 
     // Tests :
 
-    public function testPasswordHash()
-    {
-        $password = 'secret';
-        $hash = $this->security->generatePasswordHash($password);
-        $this->assertTrue($this->security->validatePassword($password, $hash));
-        $this->assertFalse($this->security->validatePassword('test', $hash));
-    }
-
     public function testHashData()
     {
         $data = 'known data';
@@ -46,6 +38,40 @@ class SecurityTest extends TestCase
         $this->assertEquals($data, $this->security->validateData($hashedData, $key));
         $hashedData[strlen($hashedData) - 1] = 'A';
         $this->assertFalse($this->security->validateData($hashedData, $key));
+    }
+
+    public function dataProviderPasswordHash()
+    {
+        return [
+            [
+                'crypt',
+                false
+            ],
+            [
+                'password_hash',
+                !function_exists('password_hash')
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderPasswordHash
+     *
+     * @param string $passwordHashStrategy
+     * @param boolean $isSkipped
+     */
+    public function testPasswordHash($passwordHashStrategy, $isSkipped)
+    {
+        if ($isSkipped) {
+            $this->markTestSkipped("Unable to test '{$passwordHashStrategy}' password hash strategy");
+            return;
+        }
+        $this->security->passwordHashStrategy = $passwordHashStrategy;
+
+        $password = 'secret';
+        $hash = $this->security->generatePasswordHash($password);
+        $this->assertTrue($this->security->validatePassword($password, $hash));
+        $this->assertFalse($this->security->validatePassword('test', $hash));
     }
 
     /**
