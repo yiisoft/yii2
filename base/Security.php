@@ -58,10 +58,18 @@ class Security extends Component
     /**
      * @var string strategy, which should be used to derive a key for encryption.
      * Available strategies:
-     * - 'pbkdf2' - PBKDF2 key derivation, this option is recommended, but it requires PHP version >= 5.5.0
+     * - 'pbkdf2' - PBKDF2 key derivation. This option is recommended, but it requires PHP version >= 5.5.0
      * - 'hmac' - HMAC hash key derivation.
      */
     public $deriveKeyStrategy = 'hmac';
+    /**
+     * @var string strategy, which should be used to generate password hash.
+     * Available strategies:
+     * - 'password_hash' - use of PHP `password_hash()` function with PASSWORD_DEFAULT algorithm. This option is recommended,
+     *   but it requires PHP version >= 5.5.0
+     * - 'crypt' - use PHP `crypt()` function.
+     */
+    public $passwordHashStrategy = 'crypt';
 
     /**
      * Encrypts data.
@@ -154,7 +162,7 @@ class Security extends Component
             case 'hmac':
                 return $this->deriveKeyHmac($password, $salt);
             default:
-                throw new InvalidConfigException("Unknown Derive key strategy '{$this->deriveKeyStrategy}'");
+                throw new InvalidConfigException("Unknown derive key strategy '{$this->deriveKeyStrategy}'");
         }
     }
 
@@ -335,14 +343,23 @@ class Security extends Component
      */
     public function generatePasswordHash($password, $cost = 13)
     {
-        $salt = $this->generateSalt($cost);
-        $hash = crypt($password, $salt);
+        switch ($this->passwordHashStrategy) {
+            case 'password_hash':
+                if (!function_exists('password_hash')) {
+                    throw new InvalidConfigException('Password hash key strategy "password_hash" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
+                }
+                return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
+            case 'crypt':
+                $salt = $this->generateSalt($cost);
+                $hash = crypt($password, $salt);
 
-        if (!is_string($hash) || strlen($hash) < 32) {
-            throw new Exception('Unknown error occurred while generating hash.');
+                if (!is_string($hash) || strlen($hash) < 32) {
+                    throw new Exception('Unknown error occurred while generating hash.');
+                }
+                return $hash;
+            default:
+                throw new InvalidConfigException("Unknown password hash strategy '{$this->passwordHashStrategy}'");
         }
-
-        return $hash;
     }
 
     /**
@@ -351,6 +368,7 @@ class Security extends Component
      * @param string $hash The hash to verify the password against.
      * @return boolean whether the password is correct.
      * @throws InvalidParamException on bad password or hash parameters or if crypt() with Blowfish hash is not available.
+     * @throws InvalidConfigException on unsupported password hash strategy is configured.
      * @see generatePasswordHash()
      */
     public function validatePassword($password, $hash)
@@ -363,13 +381,22 @@ class Security extends Component
             throw new InvalidParamException('Hash is invalid.');
         }
 
-        $test = crypt($password, $hash);
-        $n = strlen($test);
-        if ($n < 32 || $n !== strlen($hash)) {
-            return false;
+        switch ($this->passwordHashStrategy) {
+            case 'password_hash':
+                if (!function_exists('password_verify')) {
+                    throw new InvalidConfigException('Password hash key strategy "password_hash" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
+                }
+                return password_verify($password, $hash);
+            case 'crypt':
+                $test = crypt($password, $hash);
+                $n = strlen($test);
+                if ($n < 32 || $n !== strlen($hash)) {
+                    return false;
+                }
+                return $this->compareString($test, $hash);
+            default:
+                throw new InvalidConfigException("Unknown password hash strategy '{$this->passwordHashStrategy}'");
         }
-
-        return $this->compareString($test, $hash);
     }
 
     /**
