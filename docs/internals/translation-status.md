@@ -102,8 +102,8 @@ tutorial-performance-tuning.md      |
 tutorial-shared-hosting.md          |
 tutorial-template-engines.md        |
 tutorial-core-validators.md         | Yes
-bootstrap-widgets.md                |
-jui-widgets.md                      |
+widget-bootstrap.md                 |
+widget-jui.md                       |
 helper-overview.md                  |
 helper-array.md                     |
 helper-html.md                      |
