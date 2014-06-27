@@ -1,8 +1,7 @@
 Mirando Hacia Adelante
 ======================
 
-Hasta ahora, has creado una aplicación completa en Yii, y has aprendido cómo implementar algunas típicas
-características necesarias, como la de obtener datos de los usuarios a través de un formulario HTML, y traer datos de la base de datos
+Hasta ahora, has creado una aplicación completa en Yii, y has aprendido cómo implementar algunas de las características más típicas y necesarias, como la de obtener datos de los usuarios a través de un formulario HTML, y traer datos de la base de datos
 para mostrarlos en forma paginada. También has aprendido cómo utilizar la herramienta [Gii](tool-gii.md) para generar
 código automáticamente, lo que transforma el hecho de programar en una tarea tan simple como la de completar algunos formularios.
 En esta sección, resumiremos los recursos acerca de Yii que ayudan a ser más productivos al utilizar la librería.
@@ -22,7 +21,7 @@ En esta sección, resumiremos los recursos acerca de Yii que ayudan a ser más p
       y puede a menudo ofrecer soluciones listas para usar.
     - Libros
 * [Extensiones](http://www.yiiframework.com/extensions/):
-  Yii cuenta con una librería de cientos de extensiones provistas por la comunidad de usuarios que pueden ser fácilmente integradas 
+  Yii cuenta con una librería de cientos de extensiones que han sido provistas por la comunidad de usuarios que pueden ser fácilmente integradas 
   en tu aplicación y lograr que sea más simple y rápido desarrollarla.
 * Comunidad
     - [Foro](http://www.yiiframework.com/forum/)
