@@ -160,7 +160,7 @@ class Module extends ServiceLocator
     public static function setInstance($instance)
     {
         if ($instance === null) {
-            unset(self::$_instances[get_class()]);
+            unset(self::$_instances[get_called_class()]);
         } else {
             self::$_instances[get_class($instance)] = $instance;
         }

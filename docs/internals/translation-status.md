@@ -12,7 +12,7 @@ start-hello.md                      | Yes
 start-forms.md                      | Yes
 start-databases.md                  | Yes
 start-gii.md                        | Yes
-start-looking-head.md               | Yes
+start-looking-ahead.md               | Yes
 structure-overview.md               | Yes
 structure-entry-scripts.md          | Yes
 structure-applications.md           | Yes
@@ -102,8 +102,8 @@ tutorial-performance-tuning.md      |
 tutorial-shared-hosting.md          |
 tutorial-template-engines.md        |
 tutorial-core-validators.md         | Yes
-bootstrap-widgets.md                |
-jui-widgets.md                      |
+widget-bootstrap.md                 |
+widget-jui.md                       |
 helper-overview.md                  |
 helper-array.md                     |
 helper-html.md                      |

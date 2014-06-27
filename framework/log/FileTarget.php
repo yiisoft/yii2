@@ -52,16 +52,18 @@ class FileTarget extends Target
      */
     public $dirMode = 0775;
     /**
-     * @var boolean Whether to rotate primary log by copy and truncate
-     * which is more compatible with log tailers. Defaults to `false`.
+     * @var boolean Whether to rotate log files by copy and truncate in contrast to rotation by
+     * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
+     * systems which do not play well with rename on open files. Rotation by renaming however is
+     * a bit faster.
      *
-     * This property can also be useful on windows systems where the
-     * [rename()](http://www.php.net/manual/en/function.rename.php) function has some problems.
-     * See the [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
-     * the PHP documentation for details. By setting rotateByCopy to `true` you can work
+     * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
+     * function does not work with files that are opened by some process is described in a
+     * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
+     * the PHP documentation. By setting rotateByCopy to `true` you can work
      * around this problem.
      */
-    public $rotateByCopy = false;
+    public $rotateByCopy = true;
 
 
     /**

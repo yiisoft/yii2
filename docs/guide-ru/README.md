@@ -24,7 +24,7 @@ All Rights Reserved.
 * [Работа с формами](start-forms.md)
 * [Работа с базами данных](start-databases.md)
 * [Генерация кода при помощи Gii](start-gii.md)
-* [Что дальше?](start-looking-head.md)
+* [Что дальше?](start-looking-ahead.md)
 
 
 Структура приложения

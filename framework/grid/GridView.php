@@ -219,9 +219,6 @@ class GridView extends BaseListView
         if (!$this->formatter instanceof Formatter) {
             throw new InvalidConfigException('The "formatter" property must be either a Format object or a configuration array.');
         }
-        if (!isset($this->options['id'])) {
-            $this->options['id'] = $this->getId();
-        }
         if (!isset($this->filterRowOptions['id'])) {
             $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
         }

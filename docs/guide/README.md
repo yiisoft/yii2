@@ -24,7 +24,7 @@ Getting Started
 * [Working with Forms](start-forms.md)
 * [Working with Databases](start-databases.md)
 * [Generating Code with Gii](start-gii.md)
-* [Looking Ahead](start-looking-head.md)
+* [Looking Ahead](start-looking-ahead.md)
 
 
 Application Structure
