@@ -7,7 +7,7 @@
 如下代码是一个典型的数据缓存使用模式。其中 `$cache` 代表一个 [缓存组件](#cache-components):
 
 ```php
-// 尝试从缓存中取出 $data 
+// 尝试从缓存中取回 $data 
 $data = $cache->get($key);
 
 if ($data === false) {
@@ -75,8 +75,7 @@ Yii 支持一系列缓存存储器，概况如下：
 * [[yii\caching\DummyCache]]: 仅作为一个缓存占位符，不实现任何真正的缓存功能。
   这个组件的目的是为了简化那些需要查询缓存有效性的代码。例如，在开发中如果服务器没有实际的缓存支持，你就可以用它配置一个缓存组件。
   一个真正的缓存服务启用后，就可以切换为使用相应的缓存组件。两种条件下你都可以使用同样的代码
-  `Yii::$app->cache->get($key)` 尝试从缓存中获取数据而不用担心
-  `Yii::$app->cache` 可能是 `null`。
+  `Yii::$app->cache->get($key)` 尝试从缓存中取回数据而不用担心 `Yii::$app->cache` 可能是 `null`。
 * [[yii\caching\FileCache]]: 使用标准文件存储缓存数据。这个特别适用于缓存大块数据，例如一个网页的内容。
 * [[yii\caching\MemCache]]: 使用 PHP [memcache](http://php.net/manual/en/book.memcache.php) 和
   [memcached](http://php.net/manual/en/book.memcached.php) 扩展。这个选项可以认为是分布式应用程序环境中（例如：多台服务器，有负载均衡等）最快的缓存方案。
@@ -92,182 +91,155 @@ Yii 支持一系列缓存存储器，概况如下：
 > Tip: 你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器存储小而常用的数据（例如：统计数据），使用基于文件或数据库的缓存存储器存储大而不太常用的数据（例如：网页内容）。
 
 
-## Cache APIs <a name="cache-apis"></a>
+## 缓存 API <a name="cache-apis"></a>
 
-All cache components have the same base class [[yii\caching\Cache]] and thus support the following APIs:
+所有缓存组件都有同样的基类 [[yii\caching\Cache]] ，因此都支持如下 API：
 
-* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A false
-  value will be returned if the data item is not found in the cache or is expired/invalidated.
-* [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
-* [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
-* [[yii\caching\Cache::mget()|mget()]]: retrieves multiple data items from cache with the specified keys.
-* [[yii\caching\Cache::mset()|mset()]]: stores multiple data items in cache. Each item is identified by a key.
-* [[yii\caching\Cache::madd()|madd()]]: stores multiple data items in cache. Each item is identified by a key.
-  If a key already exists in the cache, the data item will be skipped.
-* [[yii\caching\Cache::exists()|exists()]]: returns a value indicating whether the specified key is found in the cache.
-* [[yii\caching\Cache::delete()|delete()]]: removes a data item identified by a key from the cache.
-* [[yii\caching\Cache::flush()|flush()]]: removes all data items from the cache.
+* [[yii\caching\Cache::get()|get()]]: 通过一个指定的键（key）从缓存中取回一项数据。如果该项数据不存在于缓存中或者已经过期/失效，则返回值 false。
+* [[yii\caching\Cache::set()|set()]]: 将一项数据指定一个键，存放到缓存中。
+* [[yii\caching\Cache::add()|add()]]: 将一项数据指定一个键，如果缓存中未找到该键，则将其存放到缓存中。
+* [[yii\caching\Cache::mget()|mget()]]: 通过指定的多个键从缓存中取回多项数据。
+* [[yii\caching\Cache::mset()|mset()]]: 将多项数据存储到缓存中，每项数据对应一个键。
+* [[yii\caching\Cache::madd()|madd()]]: 将多项数据存储到缓存中，每项数据对应一个键。如果某个键已经存在于缓存中，则该项数据会被跳过。
+* [[yii\caching\Cache::exists()|exists()]]: 返回一个值，指明某个键是否存在于缓存中。
+* [[yii\caching\Cache::delete()|delete()]]: 通过一个键，删除缓存中对应的值。
+* [[yii\caching\Cache::flush()|flush()]]: 删除缓存中的所有数据。
 
-Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
-which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::mget()|mget()]]
-and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
-does not support this feature, it will be simulated.
+有些缓存存储器如 MemCache，APC 支持以批量模式取回缓存值，这样可以节省取回缓存数据的开支。 [[yii\caching\Cache::mget()|mget()]] 和
+[[yii\caching\Cache::madd()|madd()]] API提供对该特性的支持。如果底层缓存存储器不支持该特性，Yii 也会模拟实现。
 
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used liked an array. The followings
-are some examples:
+由于 [[yii\caching\Cache]] 实现了 `ArrayAccess`，缓存组件也可以像数组那样使用，下面是几个例子：
 
 ```php
-$cache['var1'] = $value1;  // equivalent to: $cache->set('var1', $value1);
-$value2 = $cache['var2'];  // equivalent to: $value2 = $cache->get('var2');
+$cache['var1'] = $value1;  // 等价于： $cache->set('var1', $value1);
+$value2 = $cache['var2'];  // 等价于： $value2 = $cache->get('var2');
 ```
 
 
-### Cache Keys <a name="cache-keys"></a>
+### 缓存键 <a name="cache-keys"></a>
 
-Each data item stored in cache is uniquely identified by a key. When you store a data item in cache,
-you have to specify a key for it. Later when you retrieve the data item from cache, you should provide
-the corresponding key.
+存储在缓存中的每项数据都通过键作唯一识别。当你在缓存中存储一项数据时，你必须为它指定一个键，稍后从缓存中取回数据时，也需要提供相应的键。
 
-You may use a string or an arbitrary value as a cache key. When a key is not a string, it will be automatically
-serialized into a string.
+你可以使用一个字符串或者任意值作为一个缓存键。当键不是一个字符串时，它将会自动被序列化为一个字符串。
 
-A common strategy of defining a cache key is to include all determining factors in terms of an array.
-For example, [[yii\db\Schema]] uses the following key to cache schema information about a database table:
+定义一个缓存键常见的一个策略就是在一个数组中包含所有的决定性因素。例如，[[yii\db\Schema]] 使用如下键存储一个数据表的结构信息。
 
 ```php
 [
-    __CLASS__,              // schema class name
-    $this->db->dsn,         // DB connection data source name
-    $this->db->username,    // DB connection login user
-    $name,                  // table name
+    __CLASS__,              // 结构类名
+    $this->db->dsn,         // 数据源名称
+    $this->db->username,    // 数据库登录用户名
+    $name,                  // 表名
 ];
 ```
 
-As you can see, the key includes all necessary information needed to uniquely specify a database table.
+如你所见，该键包含了可唯一指定一个数据库表所需的所有必要信息。
 
-When the same cache storage is used by different applications, you should specify a unique cache key prefix
-for each application to avoid conflicts of cache keys. This can be done by configuring the [[yii\caching\Cache::keyPrefix]]
-property. For example, in the application configuration you can write the following code:
+当同一个缓存存储器被用于多个不同的应用程序时，你应该为每个应用程序指定一个唯一的缓存键前缀以避免缓存键冲突。
+这可以通过配置 [[yii\caching\Cache::keyPrefix]] 属性实现。例如，在应用程序配置中，你可以编写如下代码：
 
 ```php
 'components' => [
     'cache' => [
         'class' => 'yii\caching\ApcCache',
-        'keyPrefix' => 'myapp',       // a unique cache key prefix
+        'keyPrefix' => 'myapp',       // 唯一键前缀
     ],
 ],
 ```
 
-To ensure interoperability, only alphanumeric characters should be used.
+为了确保互通性，此处只能使用字母和数字。
 
 
-### Cache Expiration <a name="cache-expiration"></a>
+### 缓存过期 <a name="cache-expiration"></a>
 
-A data item stored in a cache will remain there forever unless it is removed because of some caching policy
-enforcement (e.g. caching space is full and the oldest data are removed). To change this behavior, you can provide
-an expiration parameter when calling [[yii\caching\Cache::set()|set()]] to store a data item. The parameter
-indicates for how many seconds the data item can remain valid in the cache. When you call
-[[yii\caching\Cache::get()|get()]] to retrieve the data item, if it has passed the expiration time, the method
-will return false, indicating the data item is not found in the cache. For example,
+缓存中的一项数据会一直留在缓存中，除非它被某些缓存策略强制移除（例如：缓存空间已满，最老的数据会被移除）。要改变此特性，你可以在调用 [[yii\caching\Cache::set()|set()]] 
+存储一项数据时提供一个过期时间参数。该参数表明这项数据在缓存中可保持有效多少秒。当你调用
+[[yii\caching\Cache::get()|get()]] 取回数据时，如果它已经过了超时时间，该方法将返回 false，表明在缓存中找不到这项数据。例如：
 
 ```php
-// keep the data in cache for at most 45 seconds
+// 将数据在缓存中保留 45 秒
 $cache->set($key, $data, 45);
 
 sleep(50);
 
 $data = $cache->get($key);
 if ($data === false) {
-    // $data is expired or is not found in the cache
+    // $data 已过期，或者在缓存中找不到
 }
 ```
 
 
-### Cache Dependencies <a name="cache-dependencies"></a>
+### 缓存依赖 <a name="cache-dependencies"></a>
 
-Besides expiration setting, cached data item may also be invalidated by changes of the so-called *cache dependencies*.
-For example, [[yii\caching\FileDependency]] represents the dependency of a file's modification time.
-When this dependency changes, it means the corresponding file is modified. As a result, any outdated
-file content found in the cache should be invalidated and the [[yii\caching\Cache::get()|get()]] call
-should return false.
+除了超时设置，缓存数据还可能受称作*缓存依赖*的影响而失效。例如，[[yii\caching\FileDependency]] 表示对一个文件修改时间的依赖。
+这个依赖条件发生变化也就意味着相应的文件已经被修改。因此，缓存中任何过期的文件内容都应该被置为失效状态且对 [[yii\caching\Cache::get()|get()]] 
+的调用都应该返回 false。
 
-Cache dependencies are represented as objects of [[yii\caching\Dependency]] descendant classes. When you call
-[[yii\caching\Cache::set()|set()]] to store a data item in the cache, you can pass along an associated cache
-dependency object. For example,
+缓存依赖是以 [[yii\caching\Dependency]] 的子孙类所代表的。当你调用
+[[yii\caching\Cache::set()|set()]] 在缓存中存储一项数据时，你可以同时传递一个关联的缓存依赖对象。例如：
 
 ```php
-// Create a dependency on the modification time of file example.txt.
+// 创建一个对 example.txt 文件修改时间的缓存依赖
 $dependency = new \yii\caching\FileDependency(['fileName' => 'example.txt']);
 
-// The data will expire in 30 seconds.
-// It may also be invalidated earlier if example.txt is modified.
+// 缓存数据将在30秒后超时
+// 如果 example.txt 被修改，它也可能被更早地置为失效状态。
 $cache->set($key, $data, 30, $dependency);
 
-// The cache will check if the data has expired.
-// It will also check if the associated dependency was changed.
-// It will return false if any of these conditions is met.
+// 缓存会检查数据是否已超时。
+// 它还会检查关联的依赖是否已变化。
+// 符合任何一个条件时都会返回 false。
 $data = $cache->get($key);
 ```
 
-Below is a summary of the available cache dependencies:
+下面是可用的缓存依赖的概况：
 
-- [[yii\caching\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
-- [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
-- [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
-- [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[yii\caching\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
-  with the same group name all at once by calling [[yii\caching\GroupDependency::invalidate()]].
+- [[yii\caching\ChainedDependency]]: 如果链上任何一个依赖产生变化，则依赖改变。
+- [[yii\caching\DbDependency]]: 如果指定 SQL 语句的查询结果发生了变化，则依赖改变。
+- [[yii\caching\ExpressionDependency]]: 如果指定的 PHP 表达式执行结果发生变化，则依赖改变。
+- [[yii\caching\FileDependency]]: 如果文件的最后修改时间发生变化，则依赖改变。
+- [[yii\caching\GroupDependency]]: 将一项缓存数据标记到一个组名，你可以通过调用 [[yii\caching\GroupDependency::invalidate()]] 一次性将同样组名的缓存数据全部置为失效状态。
 
 
-## Query Caching <a name="query-caching"></a>
+## 查询缓存 <a name="query-caching"></a>
 
-Query caching is a special caching feature built on top of data caching. It is provided to cache the result
-of database queries.
+查询缓存是一个建立在数据缓存之上的特殊缓存特性。它用于缓存数据库查询的结果。
 
-Query caching requires a [[yii\db\Connection|DB connection]] and a valid `cache` application component.
-The basic usage of query caching is as follows, assuming `$db` is a [[yii\db\Connection]] instance:
+查询缓存需要一个 [[yii\db\Connection|数据库连接]] 和一个有效的 `cache` 应用程序组件。
+查询缓存的基本用法如下，假设 `$db` 是一个 [[yii\db\Connection]] 实例：
 
 ```php
-$duration = 60;     // cache query results for 60 seconds.
-$dependency = ...;  // optional dependency
+$duration = 60;     // 缓存查询结果60秒
+$dependency = ...;  // 可选的缓存依赖
 
 $db->beginCache($duration, $dependency);
 
-// ...performs DB queries here...
+// ...这儿执行数据库查询...
 
 $db->endCache();
 ```
 
-As you can see, any SQL queries in between the `beginCache()` and `endCache()` calls will be cached.
-If the result of the same query is found valid in the cache, the query will be skipped and the result
-will be served from the cache instead.
+如你所见，`beginCache()` 和 `endCache()` 中间的任何查询结果都会被缓存起来。
+如果缓存中找到了同样查询的结果，则查询会被跳过，直接从缓存中提取结果。
 
-Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-active-record.md).
+查询缓存可以用于 [DAO](db-dao.md) 和 [ActiveRecord](db-active-record.md)。
 
-> Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
-  also support query caching on the DB server side. You may choose to use either query caching mechanism.
-  The query caching described above has the advantage that you may specify flexible cache dependencies
-  and are potentially more efficient.
+> Info: 有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）
+  也支持数据库服务器端的查询缓存。你可以选择使用任一查询缓存机制。上文所述的查询缓存的好处在于你可以指定更灵活的缓存依赖因此可能更加高效。
 
 
-### Configurations <a name="query-caching-configs"></a>
+### 配置 <a name="query-caching-configs"></a>
 
-Query caching has two two configurable options through [[yii\db\Connection]]:
+查询缓存有两个通过 [[yii\db\Connection]] 设置的配置项:
 
-* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
-  that a query result can remain valid in the cache. The duration will be overwritten if you call
-  [[yii\db\Connection::beginCache()]] with an explicit duration parameter.
-* [[yii\db\Connection::queryCache|queryCache]]: this represents the ID of the cache application component.
-  It defaults to `'cache'`. Query caching is enabled only when there is a valid cache application component.
+* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: 查询结果在缓存中的有效期，以秒表示。如果在调用
+  [[yii\db\Connection::beginCache()]] 时传递了一个显式的时值参数，则配置中的有效期时值会被覆盖。
+* [[yii\db\Connection::queryCache|queryCache]]: 缓存应用程序组件的 ID。默认为 `'cache'`。只有在设置了一个有效的缓存应用程序组件时，查询缓存才会有效。
 
 
-### Limitations <a name="query-caching-limitations"></a>
+### 限制条件 <a name="query-caching-limitations"></a>
 
-Query caching does not work with query results that contain resource handles. For example,
-when using the `BLOB` column type in some DBMS, the query result will return a resource
-handle for the column data.
+当查询结果中含有资源句柄时，查询缓存无法使用。例如，在有些 DBMS 中使用了 `BLOB` 列的时候，缓存结果会为该数据列返回一个资源句柄。
 
-Some caching storage has size limitation. For example, memcache limits the maximum size
-of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,
-the caching will fail.
+有些缓存存储器有大小限制。例如，memcache 限制每条数据最大为 1MB。因此，如果查询结果的大小超出了该限制，则会导致缓存失败。
 
