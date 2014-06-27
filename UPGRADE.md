@@ -72,3 +72,21 @@ Upgrade from Yii 2.0 Beta
 
 * `mail` component was renamed to `mailer`, `yii\log\EmailTarget::$mail` was renamed to `yii\log\EmailTarget::$mailer`.
   Please update all references in the code and config files.
+
+* Static helper `yii\helpers\Security` has been converted into an application component. You should change all usage of
+  its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
+  If you have used `yii\helpers\Security` for encryption or hash generating, you need to explicitly configure 'security'
+  component for the legacy code support in following way:
+  ```
+  return [
+      'components' => [
+          'security' => [
+              'cryptBlockSize' => 16,
+              'cryptKeySize' => 24,
+              'derivationIterations' => 1000,
+          ],
+          // ...
+      ],
+      // ...
+  ];
+  ```
