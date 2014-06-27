@@ -8,6 +8,7 @@ Yii Framework 2 sphinx extension Change Log
 - Bug #4018: AR relation eager loading does not work with db models (klimov-paul)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
+- Chg #2287: Split `yii\sphinx\ColumnSchema::typecast()` into two methods `phpTypecast()` and `dbTypecast()` to allow specifying PDO type explicitly (cebe)
 
 
 2.0.0-beta April 13, 2014

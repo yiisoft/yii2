@@ -973,14 +973,14 @@ class QueryBuilder extends Object
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
                     $lineParts[] = $phName;
-                    $params[$phName] = (isset($columnSchema)) ? $columnSchema->typecast($subValue) : $subValue;
+                    $params[$phName] = (isset($columnSchema)) ? $columnSchema->dbTypecast($subValue) : $subValue;
                 }
             }
 
             return '(' . implode(',', $lineParts) . ')';
         } else {
             $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = (isset($columnSchema)) ? $columnSchema->typecast($value) : $value;
+            $params[$phName] = (isset($columnSchema)) ? $columnSchema->dbTypecast($value) : $value;
 
             return $phName;
         }
