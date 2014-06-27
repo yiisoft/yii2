@@ -17,7 +17,7 @@ When a user provides a password for the first time (e.g., upon registration), th
 
 
 ```php
-$hash = \yii\helpers\Yii::$app->getSecurity()->generatePasswordHash($password);
+$hash = Yii::$app->getSecurity()->generatePasswordHash($password);
 ```
 
 The hash can then be associated with the corresponding model attribute, so it can be stored in the database for later use.
@@ -42,7 +42,7 @@ Yii security helper makes generating pseudorandom data simple:
 
 
 ```php
-$key = \yii\helpers\Yii::$app->getSecurity()->generateRandomKey();
+$key = Yii::$app->getSecurity()->generateRandomKey();
 ```
 
 Note that you need to have the `openssl` extension installed in order to generate cryptographically secure random data.
@@ -56,7 +56,7 @@ For example, we need to store some information in our database but we need to ma
 
 ```php
 // $data and $secretKey are obtained from the form
-$encryptedData = \yii\helpers\Yii::$app->getSecurity()->encrypt($data, $secretKey);
+$encryptedData = Yii::$app->getSecurity()->encrypt($data, $secretKey);
 // store $encryptedData to database
 ```
 
@@ -64,7 +64,7 @@ Subsequently when user wants to read the data:
 
 ```php
 // $secretKey is obtained from user input, $encryptedData is from the database
-$data = \yii\helpers\Yii::$app->getSecurity()->decrypt($encryptedData, $secretKey);
+$data = Yii::$app->getSecurity()->decrypt($encryptedData, $secretKey);
 ```
 
 Confirming data integrity
@@ -77,14 +77,14 @@ Prefix the data with a hash generated from the secret key and data
 
 ```php
 // $secretKey our application or user secret, $genuineData obtained from a reliable source 
-$data = \yii\helpers\Yii::$app->getSecurity()->hashData($genuineData, $secretKey);
+$data = Yii::$app->getSecurity()->hashData($genuineData, $secretKey);
 ```
 
 Checks if the data integrity has been compromised
 
 ```php
 // $secretKey our application or user secret, $data obtained from an unreliable source 
-$data = \yii\helpers\Yii::$app->getSecurity()->validateData($data, $secretKey);
+$data = Yii::$app->getSecurity()->validateData($data, $secretKey);
 ```
 
 
