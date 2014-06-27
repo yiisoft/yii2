@@ -130,7 +130,7 @@ which may reduce the overhead involved in retrieving cached data. The APIs [[yii
 and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
 does not support this feature, it will be simulated.
 
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used liked an array. The followings
+Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The followings
 are some examples:
 
 ```php
@@ -269,7 +269,7 @@ Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-acti
 
 ### Configurations <a name="query-caching-configs"></a>
 
-Query caching has two two configurable options through [[yii\db\Connection]]:
+Query caching has two configurable options through [[yii\db\Connection]]:
 
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
   that a query result can remain valid in the cache. The duration will be overwritten if you call
@@ -280,9 +280,9 @@ Query caching has two two configurable options through [[yii\db\Connection]]:
 
 ### Limitations <a name="query-caching-limitations"></a>
 
-Query caching does not work with query results that contain resource handles. For example,
+Query caching does not work with query results that contain resource handlers. For example,
 when using the `BLOB` column type in some DBMS, the query result will return a resource
-handle for the column data.
+handler for the column data.
 
 Some caching storage has size limitation. For example, memcache limits the maximum size
 of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,
