@@ -14,13 +14,13 @@ use yii\apidoc\models\TypeDoc;
 /**
  * Class ApiMarkdownTrait
  *
- * @property TypeDoc $context
+ * @property TypeDoc $renderingContext
  */
 trait ApiMarkdownTrait
 {
     protected function parseApiLinks($text)
     {
-        $context = $this->context;
+        $context = $this->renderingContext;
 
         if (preg_match('/^\[\[([\w\d\\\\\(\):$]+)(\|[^\]]*)?\]\]/', $text, $matches)) {
 
