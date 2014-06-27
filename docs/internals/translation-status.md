@@ -12,7 +12,7 @@ start-hello.md                      | Yes
 start-forms.md                      | Yes
 start-databases.md                  | Yes
 start-gii.md                        | Yes
-start-looking-head.md               | Yes
+start-looking-ahead.md               | Yes
 structure-overview.md               | Yes
 structure-entry-scripts.md          | Yes
 structure-applications.md           | Yes

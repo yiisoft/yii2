@@ -24,7 +24,7 @@ Primeros pasos
 * [Trabajar con formularios](start-forms.md)
 * [Trabajar con bases de datos](start-databases.md)
 * [Generar códigos con Gii](start-gii.md)
-* [Adentrarse en Yii](start-looking-head.md)
+* [Adentrarse en Yii](start-looking-ahead.md)
 
 
 Estructura de una aplicación
