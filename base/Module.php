@@ -355,7 +355,7 @@ class Module extends ServiceLocator
                 if (is_array($this->_modules[$id]) && !isset($this->_modules[$id]['class'])) {
                     $this->_modules[$id]['class'] = 'yii\base\Module';
                 }
-                /** @var $module Module */
+                /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
                 $module->setInstance($module);
                 return $this->_modules[$id] = $module;
