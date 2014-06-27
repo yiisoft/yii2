@@ -277,32 +277,29 @@ class BaseFileHelper
      */
     public static function removeDirectory($dir, $options = [])
     {
-        if (!isset($options['traverseSymlinks'])) {
-            $options['traverseSymlinks'] = false;
-        }
-        if (!is_dir($dir) || !($handle = opendir($dir))) {
+        if (!is_dir($dir)) {
             return;
         }
-        while (($file = readdir($handle)) !== false) {
-            if ($file === '.' || $file === '..') {
-                continue;
+        if (!is_link($dir) || isset($options['traverseSymlinks']) && $options['traverseSymlinks']) {
+            if (!($handle = opendir($dir))) {
+                return;
             }
-            $path = $dir . DIRECTORY_SEPARATOR . $file;
-            if (is_link($path)) {
-                if ($options['traverseSymlinks'] && is_dir($path)) {
-                    static::removeDirectory($path, $options);
+            while (($file = readdir($handle)) !== false) {
+                if ($file === '.' || $file === '..') {
+                    continue;
                 }
-                unlink($path);
-            } else {
+                $path = $dir . DIRECTORY_SEPARATOR . $file;
                 if (is_file($path)) {
                     unlink($path);
                 } else {
                     static::removeDirectory($path, $options);
                 }
             }
+            closedir($handle);
         }
-        closedir($handle);
-        if (!is_link($dir)) {
+        if (is_link($dir)) {
+            unlink($dir);
+        } else {
             rmdir($dir);
         }
     }
