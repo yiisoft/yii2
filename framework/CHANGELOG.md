@@ -121,6 +121,7 @@ Yii Framework 2 Change Log
     - Added note about the fact that intl is required for non-latin languages to requirements checker.
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
 - Enh #4080: Added proper handling and support of the symlinked directories in `FileHelper`, added $options parameter in `FileHelper::removeDirectory()` (resurtm)
+- Enh #4086: changedAttributes of AfterSaveEvent contain an old values (dizews)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
@@ -152,7 +153,6 @@ Yii Framework 2 Change Log
 - Chg #3956: Flash messages set via `Yii::$app->session->setFlash()` will be removed only if they are accessed (qiangxue)
 - Chg #3989: The default value for `yii\log\FileTarget::$rotateByCopy` now defaults to true to work on windows by default (cebe)
 - Chg #4071: `mail` component renamed to `mailer`, `yii\log\EmailTarget::$mail` renamed to `yii\log\EmailTarget::$mailer` (samdark)
-- Chg #4086: changedAttributes of AfterSaveEvent contain an old values (dizews)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)

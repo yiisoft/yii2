@@ -224,8 +224,9 @@ abstract class ActiveRecord extends BaseActiveRecord
         $this->setAttribute('_id', $newId);
         $values['_id'] = $newId;
 
+        $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
-        $this->afterSave(true, $values);
+        $this->afterSave(true, $changedAttributes);
 
         return true;
     }
@@ -260,10 +261,12 @@ abstract class ActiveRecord extends BaseActiveRecord
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
+        $changedAttributes = [];
         foreach ($values as $name => $value) {
+            $changedAttributes[$name] = $this->getOldAttribute($name);
             $this->setOldAttribute($name, $this->getAttribute($name));
         }
-        $this->afterSave(false, $values);
+        $this->afterSave(false, $changedAttributes);
 
         return $rows;
     }
