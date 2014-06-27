@@ -82,6 +82,20 @@ class Security extends Component
      * If disabled this option reduces encrypted text length, but also reduces security.
      */
     public $useDeriveKeyUniqueSalt = true;
+    /**
+     * @var array list of predefined secret keys in format: keyVerboseName => keyValue
+     * While retrieving secret keys [[getSecretKey()]] method usage is recommended.
+     */
+    public $secretKeys = [];
+    /**
+     * @var boolean whether to automatically generate secret key, if it is missing at [[secretKeys]] list
+     * while being requested via [[getSecretKey()]].
+     * Usage of this feature is not recommended - it is better to explicitly define list of secret keys.
+     * However, you may enable this option while project is in development stage to simplify generating of the keys
+     * list for the future explicit configuration.
+     * Generated keys can be found under 'runtime' application directory in 'keys.json' file.
+     */
+    public $autoGenerateSecretKey = false;
 
     /**
      * Encrypts data.
@@ -273,29 +287,31 @@ class Security extends Component
 
     /**
      * Returns a secret key associated with the specified name.
-     * If the secret key does not exist, a random key will be generated
-     * and saved in the file "keys.json" under the application's runtime directory
-     * so that the same secret key can be returned in future requests.
+     * If the secret key does not exist and [[autoGenerateSecretKey]] enabled,
+     * a random key will be generated and saved in the file "keys.json" under the application's runtime
+     * directory so that the same secret key can be returned in future requests.
      * @param string $name the name that is associated with the secret key
      * @param integer $length the length of the key that should be generated if not exists
+     * @throws InvalidParamException if secret key not exist and its generation is not allowed
      * @return string the secret key associated with the specified name
      */
     public function getSecretKey($name, $length = 32)
     {
-        static $keys;
-        $keyFile = Yii::$app->getRuntimePath() . '/keys.json';
-        if ($keys === null) {
-            $keys = [];
+        if (!array_key_exists($name, $this->secretKeys)) {
+            if (!$this->autoGenerateSecretKey) {
+                throw new InvalidParamException("Unknown secret key '{$name}'");
+            }
+            $keyFile = Yii::$app->getRuntimePath() . '/keys.json';
             if (is_file($keyFile)) {
                 $keys = json_decode(file_get_contents($keyFile), true);
+                $this->secretKeys = array_merge($keys, $this->secretKeys);
+            }
+            if (!isset($this->secretKeys[$name])) {
+                $this->secretKeys[$name] = $this->generateRandomKey($length);
+                file_put_contents($keyFile, json_encode($this->secretKeys));
             }
         }
-        if (!isset($keys[$name])) {
-            $keys[$name] = $this->generateRandomKey($length);
-            file_put_contents($keyFile, json_encode($keys));
-        }
-
-        return $keys[$name];
+        return $this->secretKeys[$name];
     }
 
     /**
