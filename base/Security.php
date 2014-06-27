@@ -1,9 +1,8 @@
 <?php
 /**
- * @author Klimov Paul <klimov@zfort.com>
- * @link http://www.zfort.com/
- * @copyright Copyright &copy; 2000-2014 Zfort Group
- * @license http://www.zfort.com/terms-of-use
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\base;
