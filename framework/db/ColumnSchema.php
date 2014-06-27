@@ -99,7 +99,7 @@ class ColumnSchema extends Object
             case 'integer':
                 return (integer) $value;
             case 'boolean':
-                return (boolean) $value;
+                return filter_var($value, FILTER_VALIDATE_BOOLEAN);
             case 'double':
                 return (double) $value;
         }
