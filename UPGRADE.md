@@ -75,8 +75,8 @@ Upgrade from Yii 2.0 Beta
 
 * Static helper `yii\helpers\Security` has been converted into an application component. You should change all usage of
   its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
-  If you have used `yii\helpers\Security` for encryption or hash generating, you need to explicitly configure 'security'
-  component for the legacy code support in following way:
+  Default encryption and hash parameters has been upgraded. If you need to decrypt/validate data that was encrypted/hashed
+  before, use the following configuration of the 'security' component:
   ```
   return [
       'components' => [
