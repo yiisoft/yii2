@@ -357,7 +357,7 @@ class ActiveRecord extends BaseActiveRecord
         $columns = static::getTableSchema()->columns;
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
-                $row[$name] = $columns[$name]->typecast($value);
+                $row[$name] = $columns[$name]->phpTypecast($value);
             }
         }
         parent::populateRecord($record, $row);
@@ -454,7 +454,7 @@ class ActiveRecord extends BaseActiveRecord
         if ($table->sequenceName !== null) {
             foreach ($table->primaryKey as $name) {
                 if ($this->getAttribute($name) === null) {
-                    $id = $table->columns[$name]->typecast($db->getLastInsertID($table->sequenceName));
+                    $id = $table->columns[$name]->phpTypecast($db->getLastInsertID($table->sequenceName));
                     $this->setAttribute($name, $id);
                     $values[$name] = $id;
                     break;
