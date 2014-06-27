@@ -1,21 +1,19 @@
 <?php
 
-use yii\helpers\Security;
-
 return [
     'username' => 'userName',
     'auth_key' => function ($fixture, $faker, $index) {
-        $fixture['auth_key'] = Security::generateRandomKey();
+        $fixture['auth_key'] = Yii::$app->getSecurity()->generateRandomKey();
 
         return $fixture;
     },
     'password_hash' => function ($fixture, $faker, $index) {
-        $fixture['password_hash'] = Security::generatePasswordHash('password_' . $index);
+        $fixture['password_hash'] = Yii::$app->getSecurity()->generatePasswordHash('password_' . $index);
 
         return $fixture;
     },
     'password_reset_token' => function ($fixture, $faker, $index) {
-        $fixture['password_reset_token'] = Security::generateRandomKey() . '_' . time();
+        $fixture['password_reset_token'] = Yii::$app->getSecurity()->generateRandomKey() . '_' . time();
 
         return $fixture;
     },

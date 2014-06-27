@@ -349,7 +349,6 @@ Yii 2.0 introduces many commonly used static helper classes, including.
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
 Please refer to the [Helper Overview](helper-overview.md) section for more details.
 

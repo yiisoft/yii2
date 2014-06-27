@@ -348,7 +348,6 @@ Yii 2.0 introduit de nombreuses assistants couramment utilisés, sous la forme d
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
 Merci de lire la partie [Assistants](helper-overview.md) pour plus de détails.
 
