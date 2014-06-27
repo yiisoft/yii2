@@ -84,6 +84,9 @@ Upgrade from Yii 2.0 Beta
               'cryptBlockSize' => 16,
               'cryptKeySize' => 24,
               'derivationIterations' => 1000,
+              'deriveKeyStrategy' => 'hmac', // for PHP version < 5.5.0
+              //'deriveKeyStrategy' => 'pbkdf2', // for PHP version >= 5.5.0
+              'useDeriveKeyUniqueSalt' => false,
           ],
           // ...
       ],

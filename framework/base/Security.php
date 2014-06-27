@@ -79,7 +79,7 @@ class Security extends Component
     /**
      * @var boolean whether to generate unique salt while deriving encryption key.
      * If enabled (recommended) this option increases encrypted text length, but provide more security.
-     * If disabled this option reduces encrypted text length, but also reduce security.
+     * If disabled this option reduces encrypted text length, but also reduces security.
      */
     public $useDeriveKeyUniqueSalt = true;
 
