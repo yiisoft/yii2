@@ -223,12 +223,17 @@ class Security extends Component
 
     /**
      * Generates a random key. The key may contain uppercase and lowercase latin letters, digits, underscore, dash and dot.
+     * Note: for delivering high security key, this method requires PHP 'mcrypt' extension.
      * @param integer $length the length of the key that should be generated
      * @return string the generated random key
      */
     public function generateRandomKey($length = 32)
     {
-        return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        if (function_exists('mcrypt_create_iv')) {
+            return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        }
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
+        return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
     }
 
     /**
