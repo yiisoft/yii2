@@ -2,10 +2,10 @@ Controladores
 =============
 
 Los controladores son parte del patrón o arquitectura [MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
-Son objetos que extienden de [[yii\base\Controller]] y se encargan de procesar los `requests`
-generando `responses`. En particular, después de tomar el control desde las [aplicaciones](structure-applications.md),
-los controladores analizarán los datos que entran en el request, los pasan a los [modelos](structure-models.md), inyectan los
-modelos resultantes a las [vistas](structure-views.md), y finalmente generan los `responses` de salida.
+Son objetos que extienden de [[yii\base\Controller]] y se encargan de procesar los `requests` (consultas)
+generando `responses` (respuestas). Particularmente, después de tomar el control desde las [aplicaciones](structure-applications.md),
+los controladores analizarán los datos que entran en el `request`, los pasan a los [modelos](structure-models.md), inyectan los
+modelos resultantes a las [vistas](structure-views.md), y finalmente generan los `responses` (respuestas) de salida.
 
 
 ## Acciones <a name="actions"></a>
@@ -107,7 +107,7 @@ class SiteController extends Controller
 
 ### IDs de Controladores <a name="controller-ids"></a>
 
-Usualmente, un controlador está diseñado para manejar los `requests` de acuerdo a un tipo de recurso.
+Normalmente, un controlador está diseñado para manejar los `requests` de acuerdo a un tipo de recurso.
 Por esta razón, los IDs de controladores son a menudo sustantivos de los tipos de recurso que están manejando.
 Por ejemplo, podrías utilizar `article` como el ID de un controlador que maneja datos de artículos.
 
@@ -115,21 +115,21 @@ Por defecto, los IDs de controladores deberían contener sólo estos caracteres:
 guiones bajos y medios, y barras. Por ejemplo, `article`, `post-comment`, `admin/post2-comment` son todos
 IDs de controladores válidos, mientras que `article?`, `PostComment`, `admin\post` no lo son.
 
-Los guiones en un ID de controlador son utilizados para separa palabras, mientras que las barras para organizar los controladores
-en sub-directorios.
+Los guiones en un ID de controlador son utilizados para separar palabras, mientras que las barras diagonales lo son para
+organizar los controladores en sub-directorios.
 
 
 ### Nombres de Clases de Controladores <a name="controller-class-naming"></a>
 
-Los nombre de clases de controladores pueden ser derivados de los IDs de acuerdo a las siguientes reglas:
+Los nombres de clases de controladores pueden ser derivados de los IDs de acuerdo a las siguientes reglas:
 
 * Transforma la primera letra de cada palabra separada por guiones en mayúscula. Nota que si el ID del controlador
   contiene barras, esta regla sólo aplica a la porción después de la última barra dentro del ID.
-* Elimina guiones y reemplaza cualquier barra por barras invertidas.
+* Elimina guiones y reemplaza cualquier barra diagonal por barras invertidas.
 * Agrega el sufijo `Controller`.
 * Agrega al principio el [[yii\base\Application::controllerNamespace|controller namespace]].
 
-Los siguientes son algunos ejemplo, asumiendo que el [[yii\base\Application::controllerNamespace|controller namespace]]
+A continuación mostramos algunos ejemplos, asumiendo que el [[yii\base\Application::controllerNamespace|controller namespace]]
 toma el valor por defecto: `app\controllers`:
 
 * `article` deriva en `app\controllers\ArticleController`;
@@ -141,7 +141,7 @@ la clase del controlador `article` debe ser guardada en un archivo cuyo alias [a
 es `@app/controllers/ArticleController.php`; mientras que el controlador `admin/post2-comment` debería estar
 en `@app/controllers/admin/Post2CommentController.php`.
 
-> Información: El último ejemplo, `admin/post2-comment`, demuestra cómo puedes poner un controlador bajo un sub-directorio
+> Información: En el último ejemplo, `admin/post2-comment`, demuestra cómo puedes poner un controlador bajo un sub-directorio
   del [[yii\base\Application::controllerNamespace|controller namespace]]. Esto es útil cuando quieres organizar
   tus controladores en varias categorías pero sin utilizar [módulos](structure-modules.md).
 
@@ -150,7 +150,7 @@ en `@app/controllers/admin/Post2CommentController.php`.
 
 Puedes configurar [[yii\base\Application::controllerMap|controller map]] (mapeo de controladores) para superar las restricciones
 de los IDs de controladores y sus nombres de clase descritos arriba. Esto es principalmente útil cuando estás utilizando un
-controlador de terceros del cual no tiene control sobre sus nombres de clase.
+controlador de terceros del cual no tienes control alguno sobre sus nombres de clase.
 
 Puedes configurar [[yii\base\Application::controllerMap|controller map]] en la
 [configuración de la aplicación](structure-applications.md#application-configurations) de la siguiente manera:
@@ -226,14 +226,14 @@ guiones bajos y barras. Los guiones en un ID de acción son utilizados para sepa
 
 Puedes crear acciones de dos maneras: acciones en línea (inline) o acciones independientes (standalone). Una acción en línea
 es definida como un método en la clase del controlador, mientras que una acción independiente es una clase que extiende
-[[yii\base\Action]] o sus clases hijas. Acciones en línea son más fáciles de crear y por lo tanto preferidas
+[[yii\base\Action]] o sus clases hijas. Las acciones en línea son más fáciles de crear y por lo tanto preferidas
 si no tienes intenciones de volver a utilizarlas. Las acciones independientes, por otro lado, son principalmente
-creadas para ser reutilizadas en otros controladores o ser redistribuidas como [extensiones](structure-extensions.md).
+creadas para ser reutilizadas en otros controladores o para ser redistribuidas como [extensiones](structure-extensions.md).
 
 
 ### Acciones en Línea <a name="inline-actions"></a>
 
-Acciones en línea se refieren a acciones que son definidas en términos de métodos como se acaba de describir.
+Como acciones en línea nos referimos a acciones que son definidas en términos de métodos como acabamos de describir.
 
 Los nombre de métodos de acciones derivan de los IDs de acuerdo al siguiente criterio:
 
@@ -243,7 +243,7 @@ Los nombre de métodos de acciones derivan de los IDs de acuerdo al siguiente cr
 
 Por ejemplo, `index` se vuelve `actionIndex`, y `hello-world` se vuelve `actionHelloWorld`.
 
-> Nota: Los nombre de los métodos de acción son *case-sensitive* (distinguen entre minúsculas y mayúsculas). Si tienes un
+> Nota: Los nombres de los métodos de acción son *case-sensitive* (distinguen entre minúsculas y mayúsculas). Si tienes un
   método llamado `ActionIndex`, no será considerado como un método de acción, y como resultado, solicitar la acción `index`
   resultará en una excepción. También ten en cuenta que los métodos de acción deben ser `public`. Un método `private` o `protected`
   NO define un método de acción.
@@ -410,7 +410,7 @@ class SiteController extends Controller
 ## Ciclo de Vida del Controlador <a name="controller-lifecycle"></a>
 
 Cuando se procesa un `request`, la [aplicación](structure-applications.md) creará un controlador
-basada en la [ruta](#routes) solicitada. El controlador entonces irá a través del siguiente ciclo de vida
+basado en la [ruta](#routes) solicitada. El controlador entonces irá a través del siguiente ciclo de vida
 para completar el `request`:
 
 1. El método [[yii\base\Controller::init()]] es llamado después de que el controlador es creado y configurado.
