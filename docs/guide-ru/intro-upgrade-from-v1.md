@@ -344,7 +344,6 @@ public function behaviors()
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
 Более детальная информация представлена в разделе [Хелперы](helper-overview.md).
 

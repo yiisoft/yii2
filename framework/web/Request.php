@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
 /**
@@ -1188,7 +1187,7 @@ class Request extends \yii\base\Request
         if ($this->enableCookieValidation) {
             $key = $this->getCookieValidationKey();
             foreach ($_COOKIE as $name => $value) {
-                if (is_string($value) && ($value = Security::validateData($value, $key)) !== false) {
+                if (is_string($value) && ($value = Yii::$app->getSecurity()->validateData($value, $key)) !== false) {
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => @unserialize($value),
@@ -1218,7 +1217,7 @@ class Request extends \yii\base\Request
     public function getCookieValidationKey()
     {
         if ($this->_cookieValidationKey === null) {
-            $this->_cookieValidationKey = Security::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+            $this->_cookieValidationKey = Yii::$app->getSecurity()->getSecretKey(__CLASS__ . '/' . Yii::$app->id);
         }
 
         return $this->_cookieValidationKey;
@@ -1323,7 +1322,7 @@ class Request extends \yii\base\Request
     {
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
-        $options['value'] = Security::generateRandomKey();
+        $options['value'] = Yii::$app->getSecurity()->generateRandomKey();
 
         return new Cookie($options);
     }
