@@ -319,8 +319,7 @@ properties and methods to the primary class, they differ in many aspects. As exp
 both have pros and cons. They are more like complements rather than replacements to each other.
 
 
-<a name="pros-for-behaviors"></a>
-### Pros for Behaviors
+### Pros for Behaviors <a name="pros-for-behaviors"></a>
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
 can be considered as language-supported copy and paste. They do not support inheritance.
