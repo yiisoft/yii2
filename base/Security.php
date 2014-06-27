@@ -6,6 +6,7 @@
  */
 
 namespace yii\base;
+
 use yii\helpers\StringHelper;
 use Yii;
 
@@ -34,22 +35,33 @@ class Security extends Component
      * @var integer crypt block size in bytes.
      * For AES-128, AES-192, block size is 128-bit (16 bytes).
      * For AES-256, block size is 256-bit (32 bytes).
+     * Recommended value: 32
      */
     public $cryptBlockSize = 32;
     /**
      * @var integer crypt key size in bytes.
      * For AES-192, key size is 192-bit (24 bytes).
      * For AES-256, key size is 256-bit (32 bytes).
+     * Recommended value: 32
      */
     public $cryptKeySize = 32;
     /**
      * @var string derivation hash algorithm name.
+     * Recommended value: 'sha256'
      */
     public $derivationHash = 'sha256';
     /**
      * @var integer derivation iterations count.
+     * Recommended value: 1000000
      */
     public $derivationIterations = 1000000;
+    /**
+     * @var string strategy, which should be used to derive a key for encryption.
+     * Available strategies:
+     * - 'pbkdf2' - PBKDF2 key derivation, this option is recommended, but it requires PHP version >= 5.5.0
+     * - 'hmac' - HMAC hash key derivation.
+     */
+    public $deriveKeyStrategy = 'hmac';
 
     /**
      * Encrypts data.
@@ -131,20 +143,51 @@ class Security extends Component
      * Derives a key from the given password (PBKDF2).
      * @param string $password the source password
      * @param string $salt the random salt
+     * @throws InvalidConfigException if unsupported derive key strategy is configured.
      * @return string the derived key
      */
     protected function deriveKey($password, $salt)
     {
+        switch ($this->deriveKeyStrategy) {
+            case 'pbkdf2':
+                return $this->deriveKeyPbkdf2($password, $salt);
+            case 'hmac':
+                return $this->deriveKeyHmac($password, $salt);
+            default:
+                throw new InvalidConfigException("Unknown Derive key strategy '{$this->deriveKeyStrategy}'");
+        }
+    }
+
+    /**
+     * Derives a key from the given password using PBKDF2.
+     * @param string $password the source password
+     * @param string $salt the random salt
+     * @throws InvalidConfigException if environment does not allows PBKDF2.
+     * @return string the derived key
+     */
+    protected function deriveKeyPbkdf2($password, $salt)
+    {
         if (function_exists('hash_pbkdf2')) {
             return hash_pbkdf2($this->derivationHash, $password, $salt, $this->derivationIterations, $this->cryptKeySize, true);
+        } else {
+            throw new InvalidConfigException('Derive key strategy "pbkdf2" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
         }
+    }
+
+    /**
+     * Derives a key from the given password using HMAC.
+     * @param string $password the source password
+     * @param string $salt the random salt
+     * @return string the derived key
+     */
+    protected function deriveKeyHmac($password, $salt)
+    {
         $hmac = hash_hmac($this->derivationHash, $salt . pack('N', 1), $password, true);
         $xorsum  = $hmac;
         for ($i = 1; $i < $this->derivationIterations; $i++) {
             $hmac = hash_hmac($this->derivationHash, $hmac, $password, true);
             $xorsum ^= $hmac;
         }
-
         return substr($xorsum, 0, $this->cryptKeySize);
     }
 
