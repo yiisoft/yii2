@@ -87,6 +87,7 @@ Upgrade from Yii 2.0 Beta
               'deriveKeyStrategy' => 'hmac', // for PHP version < 5.5.0
               //'deriveKeyStrategy' => 'pbkdf2', // for PHP version >= 5.5.0
               'useDeriveKeyUniqueSalt' => false,
+              'autoGenerateSecretKey' => true,
           ],
           // ...
       ],
