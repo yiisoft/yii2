@@ -122,7 +122,10 @@ class Module extends ServiceLocator
      * @var array child modules of this module
      */
     private $_modules = [];
-
+    /**
+     * @var array list of currently requested modules indexed by their class names
+     */
+    private static $_instances = [];
 
     /**
      * Constructor.
@@ -135,6 +138,32 @@ class Module extends ServiceLocator
         $this->id = $id;
         $this->module = $parent;
         parent::__construct($config);
+    }
+
+    /**
+     * Returns the currently requested instance of this module class.
+     * If the module class is not currently requested, null will be returned.
+     * This method is provided so that you access the module instance from anywhere within the module.
+     * @return static|null the currently requested instance of this module class, or null if the module class is not requested.
+     */
+    public static function getInstance()
+    {
+        $class = get_called_class();
+        return isset(self::$_instances[$class]) ? self::$_instances[$class] : null;
+    }
+
+    /**
+     * Sets the currently requested instance of this module class.
+     * @param Module|null $instance the currently requested instance of this module class.
+     * If it is null, the instance of the calling class will be removed, if any.
+     */
+    public static function setInstance($instance)
+    {
+        if ($instance === null) {
+            unset(self::$_instances[get_class()]);
+        } else {
+            self::$_instances[get_class($instance)] = $instance;
+        }
     }
 
     /**
@@ -326,8 +355,10 @@ class Module extends ServiceLocator
                 if (is_array($this->_modules[$id]) && !isset($this->_modules[$id]['class'])) {
                     $this->_modules[$id]['class'] = 'yii\base\Module';
                 }
-
-                return $this->_modules[$id] = Yii::createObject($this->_modules[$id], [$id, $this]);
+                /** @var $module Module */
+                $module = Yii::createObject($this->_modules[$id], [$id, $this]);
+                $module->setInstance($module);
+                return $this->_modules[$id] = $module;
             }
         }
 

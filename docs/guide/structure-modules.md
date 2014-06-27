@@ -3,8 +3,9 @@ Modules
 
 Modules are self-contained software units that consist of [models](structure-models.md), [views](structure-views.md),
 [controllers](structure-controllers.md), and other supporting components. End users can access the controllers
-of a module when it is installed in [application](structure-applications.md). Modules differ from
-[applications](structure-applications.md) in that the former cannot be deployed alone and must reside within the latter.
+of a module when it is installed in [application](structure-applications.md). For these reasons, modules are
+often viewed as mini-applications. Modules differ from [applications](structure-applications.md) in that
+modules cannot be deployed alone and must reside within applications.
 
 
 ## Creating Modules <a name="creating-modules"></a>
@@ -135,7 +136,7 @@ the [[yii\base\Application::modules|modules]] property of the application. The f
 ```
 
 The [[yii\base\Application::modules|modules]] property takes an array of module configurations. Each array key
-represents a module ID which uniquely identifies the module among all modules in the application, and the corresponding
+represents a *module ID* which uniquely identifies the module among all modules in the application, and the corresponding
 array value is a [configuration](concept-configurations.md) for creating the module.
 
 
@@ -152,8 +153,24 @@ controller in the `forum` module.
 
 ### Accessing Modules <a name="accessing-modules"></a>
 
-A module is instantiated when one of its controllers is accessed by end users. You may access the instance of a module
-using the approaches shown in the following example:
+Within a module, you may often need to get the instance of the [module class](#module-classes) so that you can
+access the module ID, module parameters, module components, etc. You can do so by using the following statement:
+
+```php
+$module = MyModuleClass::getInstance();
+```
+
+where `MyModuleClass` refers to the name of the module class that you are interested in. The `getInstance()` method
+will return the currently requested instance of the module class. If the module is not requested, the method will
+return null. Note that You do not want to manually create a new instance of the module class because it will be
+different from the one created by Yii in response to a request.
+
+> Info: When developing a module, you should not assume the module will use a fixed ID. This is because a module
+  can be associated with an arbitrary ID when used in an application or within another module. In order to get
+  the module ID, you should use the above approach to get the module instance first, and then get the ID via
+  `$module->id`.
+
+You may also access the instance of a module using the following approaches:
 
 ```php
 // get the module whose ID is "forum"
@@ -163,8 +180,8 @@ $module = \Yii::$app->getModule('forum');
 $module = \Yii::$app->controller->module;
 ```
 
-The first approach is only useful in application code which has knowledge about the module ID, while the second approach
-is best used by the code within the module.
+The first approach is only useful when you know the module ID, while the second approach is best used when you
+know about the controllers being requested.
 
 Once getting hold of a module instance, you can access parameters or components registered with the module. For example,
 
@@ -230,5 +247,5 @@ a set of closely related features. Each such feature group can be developed as a
 maintained by a specific developer or team.
 
 Modules are also a good way of reusing code at the feature group level. Some commonly used features, such as
-user management, comment management, can all be developed in terms of modules so that they can be resued easily
+user management, comment management, can all be developed in terms of modules so that they can be reused easily
 in future projects.

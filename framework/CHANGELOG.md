@@ -66,6 +66,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
 - Bug: Fixed Object of class Imagick could not be converted to string in CaptchaAction (eXprojects, cebe)
 - Enh #422: Added Support for BIT(M) data type default values in Schema (cebe)
+- Enh #1452: Added `Module::getInstance()` to allow accessing the module instance from anywhere within the module (qiangxue)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
 - Enh #2558: Enhanced support for memcached by adding `yii\caching\MemCache::persistentId` and `yii\caching\MemCache::options` (qiangxue)
@@ -110,12 +111,14 @@ Yii Framework 2 Change Log
 - Enh #3774: Added `FileValidator::checkExtensionByMimeType` to support validating file types against file mime-types (Ragazzo)
 - Enh #3801: Base migration controller `yii\console\controllers\BaseMigrateController` extracted (klimov-paul)
 - Enh #3811: Now Gii model generator makes autocomplete for model class field (mitalcoi)
+- Enh #3926: `yii\widgets\Breadcrumbs::$links`. Allows individual link to have its own `template` (creocoder, umneeq)
 - Enh #3939: `\yii\Inflector::slug()` improvements (samdark)
     - Added protected `\yii\Inflector::transliterate()` that could be replaced with custom translit implementation.
     - Added proper tests for both intl-based slug and PHP fallback.
     - Removed character maps for non-latin languages.
     - Improved overall slug results.
     - Added note about the fact that intl is required for non-latin languages to requirements checker.
+- Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
@@ -129,8 +132,6 @@ Yii Framework 2 Change Log
 - Enh: Added param `hideOnSinglePage` to `yii\widgets\LinkPager` (arturf)
 - Enh: Added support for array attributes in `in` validator (creocoder)
 - Enh: Improved `yii\helpers\Inflector::slug` to support more cases for Russian, Hebrew and special characters (samdark)
-- Enh #3926: `yii\widgets\Breadcrumbs::$links`. Allows individual link to have its own `template` (creocoder, umneeq)
-- Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
 - Chg #2287: Split `yii\db\ColumnSchema::typecast()` into two methods `phpTypecast()` and `dbTypecast()` to allow specifying PDO type explicitly (cebe)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
