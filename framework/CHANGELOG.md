@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Bug #3909: `Html::to()` should not prefix base URL to URLs that already contain scheme (qiangxue)
 - Bug #3934: yii.handleAction() in yii.js does not correctly detect if a hyperlink contains useful URL or not (joni-jones, qiangxue)
 - Bug #3968: Messages logged in shutdown functions are not handled (qiangxue)
+- Bug #3989: Fixed yii\log\FileTarget::$rotateByCopy to avoid any rename (cebe)
 - Bug #3996: Traversing `Yii::$app->session` may cause a PHP error (qiangxue)
 - Bug #4020: OCI column detection did not work so gii and other things failed (Sanya1991)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
