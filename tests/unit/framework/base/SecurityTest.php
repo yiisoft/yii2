@@ -83,10 +83,22 @@ class SecurityTest extends TestCase
         return [
             [
                 'hmac',
-                false
+                true,
+                false,
+            ],
+            [
+                'hmac',
+                false,
+                false,
             ],
             [
                 'pbkdf2',
+                true,
+                !function_exists('hash_pbkdf2')
+            ],
+            [
+                'pbkdf2',
+                false,
                 !function_exists('hash_pbkdf2')
             ],
         ];
@@ -96,15 +108,17 @@ class SecurityTest extends TestCase
      * @dataProvider dataProviderEncrypt
      *
      * @param string $deriveKeyStrategy
+     * @param boolean $useDeriveKeyUniqueSalt
      * @param boolean $isSkipped
      */
-    public function testEncrypt($deriveKeyStrategy, $isSkipped)
+    public function testEncrypt($deriveKeyStrategy, $useDeriveKeyUniqueSalt, $isSkipped)
     {
         if ($isSkipped) {
             $this->markTestSkipped("Unable to test '{$deriveKeyStrategy}' derive key strategy");
             return;
         }
         $this->security->deriveKeyStrategy = $deriveKeyStrategy;
+        $this->security->useDeriveKeyUniqueSalt = $useDeriveKeyUniqueSalt;
 
         $data = 'known data';
         $key = 'secret';

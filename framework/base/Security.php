@@ -76,6 +76,12 @@ class Security extends Component
      * - 'crypt' - use PHP `crypt()` function.
      */
     public $passwordHashStrategy = 'crypt';
+    /**
+     * @var boolean whether to generate unique salt while deriving encryption key.
+     * If enabled (recommended) this option increases encrypted text length, but provide more security.
+     * If disabled this option reduces encrypted text length, but also reduce security.
+     */
+    public $useDeriveKeyUniqueSalt = true;
 
     /**
      * Encrypts data.
@@ -89,10 +95,18 @@ class Security extends Component
     {
         $module = $this->openCryptModule();
         $data = $this->addPadding($data);
-        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($module), MCRYPT_DEV_URANDOM);
-        $key = $this->deriveKey($password, $iv);
+        $ivSize = mcrypt_enc_get_iv_size($module);
+        $iv = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
+        if ($this->useDeriveKeyUniqueSalt) {
+            $keySalt = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
+            $encrypted = $keySalt;
+        } else {
+            $keySalt = $iv;
+            $encrypted = '';
+        }
+        $key = $this->deriveKey($password, $keySalt);
         mcrypt_generic_init($module, $key, $iv);
-        $encrypted = $iv . mcrypt_generic($module, $data);
+        $encrypted .= $iv . mcrypt_generic($module, $data);
         mcrypt_generic_deinit($module);
         mcrypt_module_close($module);
 
@@ -115,9 +129,15 @@ class Security extends Component
         $module = $this->openCryptModule();
         $ivSize = mcrypt_enc_get_iv_size($module);
         $iv = StringHelper::byteSubstr($data, 0, $ivSize);
-        $key = $this->deriveKey($password, $iv);
+        $keySalt = $iv;
+        $encrypted = StringHelper::byteSubstr($data, $ivSize, StringHelper::byteLength($data));
+        if ($this->useDeriveKeyUniqueSalt) {
+            $iv = StringHelper::byteSubstr($encrypted, 0, $ivSize);
+            $encrypted = StringHelper::byteSubstr($encrypted, $ivSize, StringHelper::byteLength($encrypted));
+        }
+        $key = $this->deriveKey($password, $keySalt);
         mcrypt_generic_init($module, $key, $iv);
-        $decrypted = mdecrypt_generic($module, StringHelper::byteSubstr($data, $ivSize, StringHelper::byteLength($data)));
+        $decrypted = mdecrypt_generic($module, $encrypted);
         mcrypt_generic_deinit($module);
         mcrypt_module_close($module);
 
