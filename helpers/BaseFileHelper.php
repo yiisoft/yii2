@@ -269,9 +269,17 @@ class BaseFileHelper
     /**
      * Removes a directory (and all its content) recursively.
      * @param string $dir the directory to be deleted recursively.
+     * @param array $options options for directory remove. Valid options are:
+     *
+     * - traverseSymlinks: boolean, whether symlinks to the directories should be traversed too.
+     *   Defaults to `false`, meaning the content of the symlinked directory would not be deleted.
+     *   Only symlink would be removed in that default case.
      */
-    public static function removeDirectory($dir)
+    public static function removeDirectory($dir, $options = [])
     {
+        if (!isset($options['traverseSymlinks'])) {
+            $options['traverseSymlinks'] = false;
+        }
         if (!is_dir($dir) || !($handle = opendir($dir))) {
             return;
         }
@@ -280,14 +288,23 @@ class BaseFileHelper
                 continue;
             }
             $path = $dir . DIRECTORY_SEPARATOR . $file;
-            if (is_file($path)) {
+            if (is_link($path)) {
+                if ($options['traverseSymlinks'] && is_dir($path)) {
+                    static::removeDirectory($path, $options);
+                }
                 unlink($path);
             } else {
-                static::removeDirectory($path);
+                if (is_file($path)) {
+                    unlink($path);
+                } else {
+                    static::removeDirectory($path, $options);
+                }
             }
         }
         closedir($handle);
-        rmdir($dir);
+        if (!is_link($dir)) {
+            rmdir($dir);
+        }
     }
 
     /**
