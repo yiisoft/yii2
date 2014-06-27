@@ -289,10 +289,10 @@ class BaseFileHelper
                     continue;
                 }
                 $path = $dir . DIRECTORY_SEPARATOR . $file;
-                if (is_file($path)) {
-                    unlink($path);
-                } else {
+                if (is_dir($path)) {
                     static::removeDirectory($path, $options);
+                } else {
+                    unlink($path);
                 }
             }
             closedir($handle);
