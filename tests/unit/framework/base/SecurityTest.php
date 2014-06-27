@@ -24,7 +24,10 @@ class SecurityTest extends TestCase
     {
         parent::setUp();
         $this->security = new Security();
+        $this->security->derivationIterations = 100; // speed up test running
     }
+
+    // Tests :
 
     public function testPasswordHash()
     {
