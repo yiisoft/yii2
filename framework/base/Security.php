@@ -30,6 +30,8 @@ use Yii;
  * this allows usage of different encryption strategies for different use cases or migrate encrypted data
  * from outdated strategy to the new one.
  *
+ * Note: this class requires 'mcrypt' PHP extension available, for the highest security level PHP version >= 5.5.0 required.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
  * @author Klimov Paul <klimov.paul@gmail.com>
