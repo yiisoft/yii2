@@ -317,7 +317,6 @@ Yii 2.0 很多常用的静态助手类，包括：
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
 请参考 [助手一览](helper-overview.md) 章节来了解更多。
 
