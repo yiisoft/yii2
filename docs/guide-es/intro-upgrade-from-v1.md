@@ -323,7 +323,7 @@ public function behaviors()
 }
 ```
 
-Consulta la sección [Filtrando](runtime-filtering.md) para una mayor información acerca del tema.
+Consulta la sección [Filtrando](structure-filters.md) para una mayor información acerca del tema.
 
 
 Assets
