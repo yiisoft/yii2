@@ -9,7 +9,7 @@ to a `label` property. You could use the following code to achieve this task:
 $object->label = trim($label);
 ```
 
-The drawback of the above code is that you have to call `trim()` everywhere in your code where you met set the `label`
+The drawback of the above code is that you have to call `trim()` everywhere in your code where you might set the `label`
 property. If in the future, the `label` property gets a new requirement, such as the first letter must be captialized, you would again have to modify every bit of code that assigns a value to `label`. The repetition of code leads to bugs and is a practice you want to avoid as much as possible.
 
 To solve this problem, Yii introduces a base class called [[yii\base\Object]] that supports defining properties
@@ -74,4 +74,4 @@ There are several special rules for, and limitations on, the properties defined 
   if the defining getter or setter method is public, protected or private.
 * The properties can only be defined by *non-static* getters and/or setters. Static methods will not be treated in this same manner.
 
-Returning back to the problem  described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned, `trim()` only needs to be invoked within the setter `setLabel()`. And if a new requirement comes that requires the label be initially capitalized, the `setLabel()` method can quickly be modified without touching any other code. The one change will universally affect every assignment to `label`.
+Returning back to the problem described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned, `trim()` only needs to be invoked within the setter `setLabel()`. And if a new requirement comes that requires the label be initially capitalized, the `setLabel()` method can quickly be modified without touching any other code. The one change will universally affect every assignment to `label`.
