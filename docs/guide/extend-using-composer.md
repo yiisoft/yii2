@@ -65,12 +65,12 @@ Adding more packages to your project
 To add two new packages to your project run the follwing command:
 
 ```
-composer.phar require "michelf/php-markdown:>=1.3" "ezyang/htmlpurifier:>4.5.0"
+composer.phar require "cebe/indent:>=1.0.2" "cebe/yii2-gravatar:>1.1"
 ```
 
 This will resolve the dependencies and then update your `composer.json` file.
-The above example says that a version greater than or equal to 1.3 of Michaelf's PHP-Markdown package is required
-and version 4.5.0 or greater of Ezyang's HTMLPurifier.
+The above example says that a version greater than or equal to 1.0.3 of indent converter package 
+and version 1.1 or greater of gravatar extension are required.
 
 For details of this syntax, see the [official Composer documentation](https://getcomposer.org/doc/01-basic-usage.md#package-versions).
 
