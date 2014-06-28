@@ -1,27 +1,24 @@
 属性（Property）
 ==========
 
-In PHP, class member variables are also called *properties*. These variables are part of the class definition, and are used
-to represent the state of a class instance (i.e., to differentiate one instance of the class from another). In practice, you may often want to handle the reading or writing of properties in special ways. For example, you may want to trim a string when it is being assigned
-to a `label` property. You could use the following code to achieve this task:
+PHP 中，类的成员变量也被称为 *属性(properties)*。它们是类定义的一部分，并用来表现一个实例的状态（比如，用于区分某类的各个实例）。在具体实践中，你会常常想用一个稍微特殊些的方法实现属性的读写。例如，如果你想要去掉赋值给 `label` 属性的字符串前后的空格，就可以用以下代码实现：
 
 ```php
 $object->label = trim($label);
 ```
 
-The drawback of the above code is that you have to call `trim()` everywhere in your code where you met set the `label`
-property. If in the future, the `label` property gets a new requirement, such as the first letter must be captialized, you would again have to modify every bit of code that assigns a value to `label`. The repetition of code leads to bugs and is a practice you want to avoid as much as possible.
+以上代码的缺点是，只要需要修改 `label` 属性就必须再次调用 `trim()` 函数。若将来提出了对 `label` 
+属性的新要求，比如首字母大写等，你就被迫必须修改所有给 `label` 
+属性赋值的代码。这种代码的重复会导致 bug，且这这种实践显然是你想要尽力避免的。
 
-To solve this problem, Yii introduces a base class called [[yii\base\Object]] that supports defining properties
-based on *getter* and *setter* class methods. If a class needs such support, it should extend from
-[[yii\base\Object]] or a child class.
+为解决该问题，Yii 引入了一个名为 [[yii\base\Object]] 的基类，它支持基于类内的 *getter* 和 *setter* 
+（读取器和设定器）方法来定义属性。如果某类需要支持这个特性，只需要继承自 [[yii\base\Object]] 或其子类即可。
 
-> Info: Nearly every core class in the Yii framework extends from [[yii\base\Object]] or a child class.
-  This means that whenever you see a getter or setter in a core class, you can use it like a property.
+> 补充：几乎每个 Yii 框架的核心类都继承自 [[yii\base\Object]] 或其子类。这意味着无论何时在核心类中见到一个 
+ getter 或 setter 方法，都可以像调用属性一样调用它。
 
-A getter method is a method whose name starts with the word `get`; a setter method starts with `set`.
-The name after the `get` or `set` prefix defines the name of a property. For example, a getter `getLabel()` and/or
-a setter `setLabel()` defines a property named `label`, as shown in the following code:
+getter 方法是方法名以 `get` 开头的方法，而 setter 方法名以 `set` 开头。方法名中 `get` 或 `set` 后面的部分就定义了该属性的名字。如下面代码所示，一个 getter 方法 `getLabel()` 或 setter 方法 `setLabel()` 
+就定义了一个名为 `label` 的属性：
 
 ```php
 namespace app\components;
@@ -44,34 +41,28 @@ class Foo extend Object
 }
 ```
 
-(To be clear, the getter and setter methods create the property `label`, which in this case internally refer to a private attributed named `_label`.)
+（详细解释：getter 和 setter 方法创建了一个名为 `label` 的属性，在这个例子里，它指向一个私有的内部属性 `_label`。译者注：习惯上一般把私有属性都定义为 `_` 下划线开头的名字。）
 
-Properties defined by getters and setters can be used like class member variables. The main difference is that
-when such a property is being read, the corresponding getter method will be called;  when the property is
-being assigned a value, the corresponding setter method will be called. For example:
+getters/setters 定义的属性能像类成员变量那样使用。两者主要的区别是：当这种属性被读取时，对应的 getter 
+方法将被调用；而当属性被赋值时，对应的 setter 方法就调用。如：
 
 ```php
-// equivalent to $label = $object->getLabel();
+// 等效于 $label = $object->getLabel();
 $label = $object->label;
 
-// equivalent to $object->setLabel('abc');
+// 等效于 $object->setLabel('abc');
 $object->label = 'abc';
 ```
 
-A property defined by a getter without a setter is *read only*. Trying to assign a value to such a property will cause
-an [[yii\base\InvalidCallException|InvalidCallException]]. Similarly, a property defined by a setter without a getter
-is *write only*, and trying to read such a property will also cause an exception. It is not common to have write-only
-properties.
+只定义了 getter 没有 setter 的属性是*只读属性*。尝试赋值给这样的属性将导致 [[yii\base\InvalidCallException|InvalidCallException]] 
+（无效调用）异常。类似的，只有 setter 方法而没有 getter 方法定义的属性是*只写属性*，尝试读取这种属性也会触发异常。使用只写属性的情况几乎没有。
 
-There are several special rules for, and limitations on, the properties defined via getters and setters:
+通过 getter 和 setter 定义的属性也有一些特殊规则和限制：
 
-* The names of such properties are *case-insensitive*. For example, `$object->label` and `$object->Label` are the same.
-  This is because method names in PHP are case-insensitive.
-* If the name of such a property is the same as a class member variable, the latter will take precedence.
-  For example, if the above `Foo` class has a member variable `label`, then the assignment `$object->label = 'abc'`
-  will affect the member variable 'label', that line would not call the  `setLabel()` setter method.
-* These properties do not support visibility. It makes no difference for the visibility of a property
-  if the defining getter or setter method is public, protected or private.
-* The properties can only be defined by *non-static* getters and/or setters. Static methods will not be treated in this same manner.
+* 这类属性的名字是 *不区分大小写* 的。如，`$object->label` 和 `$object->Label` 是同一个属性。因为 PHP 方法名是不区分大小写的。
+* 如果此类属性名和类成员变量相同，以后者为准。例如，假设以上 `Foo` 类有个 `label` 成员变量，然后给 
+`$object->label = 'abc'` 赋值，将赋给成员变量而不是 setter `setLabel()` 方法。
+* 这类属性不支持可见性（访问限制）。定义属性的 getter 和 setter 方法是 public、protected 还是 private 对属性的可见性没有任何影响。
+* 这类属性的 getter 和 setter 方法只能定义为 *非静态*的，若定义为静态方法（static）则不会以相同方式处理。
 
-Returning back to the problem  described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned, `trim()` only needs to be invoked within the setter `setLabel()`. And if a new requirement comes that requires the label be initially capitalized, the `setLabel()` method can quickly be modified without touching any other code. The one change will universally affect every assignment to `label`.
+回到开头处提到的问题，与其处处要调用 `trim()` 函数，现在我们只需在 setter `setLabel()` 方法内调用一次。如果 label 首字母变成大写的新要求来了，我们只需要修改`setLabel()` 方法，而无须接触任何其它代码。
