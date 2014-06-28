@@ -180,7 +180,7 @@ class Security extends Component
         $end = StringHelper::byteSubstr($data, -1, null);
         $last = ord($end);
         $n = StringHelper::byteLength($data) - $last;
-        if (StringHelper::byteSubstr($data, $n, null) == str_repeat($end, $last)) {
+        if (StringHelper::byteSubstr($data, $n, null) === str_repeat($end, $last)) {
             return StringHelper::byteSubstr($data, 0, $n);
         }
 
@@ -322,11 +322,7 @@ class Security extends Component
      */
     public function generateRandomKey($length = 32)
     {
-        if (function_exists('mcrypt_create_iv')) {
-            return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-        }
-        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-        return substr(str_shuffle(str_repeat($chars, 5)), 0, $length);
+        return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
     }
 
     /**
