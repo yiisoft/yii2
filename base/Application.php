@@ -30,6 +30,7 @@ use Yii;
  * read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
+ * @property \yii\base\Security $security The security application component.
  * @property string $timeZone The time zone used by this application.
  * @property string $uniqueId The unique ID of the module. This property is read-only.
  * @property \yii\web\UrlManager $urlManager The URL manager for this application. This property is read-only.
@@ -592,6 +593,15 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the security component.
+     * @return \yii\base\Security security component
+     */
+    public function getSecurity()
+    {
+        return $this->get('security');
+    }
+
+    /**
      * Returns the core application components.
      * @see set
      */
@@ -605,6 +615,7 @@ abstract class Application extends Module
             'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
+            'security' => ['class' => 'yii\base\Security'],
         ];
     }
 
