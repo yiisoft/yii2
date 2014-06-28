@@ -69,18 +69,16 @@ After you set all needed fields in callback, you need to return $fixture array b
 Another example of valid template:
 
 ```php
-use yii\helpers\Security;
-
 return [
     'name' => 'firstName',
     'phone' => 'phoneNumber',
     'city' => 'city',
     'password' => function ($fixture, $faker, $index) {
-        $fixture['password'] = Security::generatePasswordHash('password_' . $index);
+        $fixture['password'] = Yii::$app->getSecurity()->generatePasswordHash('password_' . $index);
         return $fixture;
     },
     'auth_key' => function ($fixture, $faker, $index) {
-        $fixture['auth_key'] = Security::generateRandomKey();
+        $fixture['auth_key'] = Yii::$app->getSecurity()->generateRandomKey();
         return $fixture;
     },
 ];
