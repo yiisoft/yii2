@@ -417,9 +417,6 @@ class Query extends Component implements QueryInterface
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         if ($this->select === null) {
-            if (!in_array('*', $columns)) {
-                array_unshift($columns, '*');
-            }
             $this->select = $columns;
         } else {
             $this->select = array_merge($this->select, $columns);
