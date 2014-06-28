@@ -13,7 +13,7 @@ El cargador se instala cuando incluyes el archivo `Yii.php`.
 Usando el Autocargador de Yii <a name="using-yii-autoloader"></a>
 -----------------------------
 
-Para utilizar el el autocargador de clases de Yii, deberías seguir dos reglas básicas cuando desarrolles y nombres tus
+Para utilizar el cargador automático de clases de Yii, deberías seguir dos reglas básicas cuando desarrolles y nombres tus
 clases:
 
 * Cada clase debe estar bajo un espacio de nombre (namespace). Por ejemplo `foo\bar\MyClass`.
@@ -24,70 +24,74 @@ clases:
 $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 ```
 
-For example, if a class name is `foo\bar\MyClass`, the [alias](concept-aliases.md) for the corresponding class file path
-would be `@foo/bar/MyClass.php`. In order for this alias to be able to be resolved into a file path,
-either `@foo` or `@foo/bar` must be a [root alias](concept-aliases.md#defining-aliases).
+Por ejemplo, si el nombre de una clase es `foo\bar\MyClass`, el [alias](concept-aliases.md) la correspondiente ruta de
+archivo de la clase sería `@foo/bar/MyClass.php`. Para que este sea capaz de ser resuelto como una ruta de archivo, ya sea
+`@foo` o `@foo/bar` debe ser un [alias de raíz](concept-aliases.md#defining-aliases) (root alias).
 
-When you are using the [Basic Application Template](start-basic.md), you may put your classes under the top-level
-namespace `app` so that they can be autoloaded by Yii without the need of defining a new alias. This is because
-`@app` is a [predefined alias](concept-aliases.md#predefined-aliases), and a class name like `app\components\MyClass`
-can be resolved into the class file `AppBasePath/components/MyClass.php`, according to the algorithm we just described.
+Cuando utilizas la [Plantilla de Aplicación Básica](start-basic.md), puede que pongas tus clases bajo el nivel superior
+de espacio de nombres `app` para que de esta manera pueda ser automáticamente cargado por Yii sin tener la necesidad de
+definir un nuevo alias. Esto es porque `@app` es un [alias predefinido](concept-aliases.md#predefined-aliases), y el
+nombre de una clase tal como `app\components\MyClass` puede ser resuelto en el archivo de la clase `AppBasePath/components/MyClass.php`,
+de acuerdo con el algoritmo previamente descrito.
 
-In the [Advanced Application Template](tutorial-advanced-app.md), each tier has its own root alias. For example,
-the front-end tier has a root alias `@frontend` while the back-end tier `@backend`. As a result, you may
-put the front-end classes under the namespace `frontend` while the back-end classes under `backend`. This will
-allow these classes to be autoloaded by the Yii autoloader.
+En la [Plantilla de Aplicación Avanzada](tutorial-advanced-app.md), cada nivel tiene su propio alias. Por ejemplo, el nivel
+`front-end` tiene un alias de raíz `@frontend` mientras que el nivel `back-end` tiene `@backend`. Como resultado, es posible
+poner las clases `front-end` bajo el espacio de nombres `frontend` mientras que las clases `back-end` pueden hacerlo bajo
+`backend`. Esto permitirá que estas clases sean automaticamente cargadas por el autocargador de Yii.
 
 
-Class Map <a name="class-map"></a>
----------
+Mapa de Clases <a name="class-map"></a>
+--------------
 
-The Yii class autoloader supports the *class map* feature which maps class names to the corresponding class file paths.
-When the autoloader is loading a class, it will first check if the class is found in the map. If so, the corresponding
-file path will be included directly without further check. This makes class autoloading super fast. In fact,
-all core Yii classes are being autoloaded this way.
+El autocargador de clases de Yii soporta el *mapa de clases*, que mapea nombres de clases to sus correpondientes rutas de
+archvios. Cuando el autocargador esta cargando una clase, primero chequeará si la clase se encuentra en el mapa. Si es así,
+el correspondiente archivo será incluido directamente sin más comprobación. Esto hace que la clase se cargue muy rápidamente.
+De hecho, todas las clases de Yii son autocargadas de esta manera.
 
-You may add a class to the class map `Yii::$classMap` as follows,
+Puedes añadir una clase al mapa de clases `Yii::$classMap` de la siguiente forma,
 
 ```php
 Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 ```
 
-[Aliases](concept-aliases.md) can be used to specify class file paths. You should set the class map in the
-[bootstrapping](runtime-bootstrapping.md) process so that the map is ready before your classes are used.
+[Alias](concept-aliases.md) puede ser usado para especificar la ruta de archivos de clases. Deberías iniciar el mapeo de
+clases en el proceso [bootstrapping](runtime-bootstrapping.md) de la aplicación para que de esta manera el mapa esté listo
+antes de que tus clases sean usadas.
 
 
-Using Other Autoloaders <a name="using-other-autoloaders"></a>
------------------------
+Usando otros Autocargadores <a name="using-other-autoloaders"></a>
+---------------------------
 
-Because Yii embraces Composer as a package dependency manager, it is recommended that you also install
-the Composer autoloader. If you are using some 3rd-party libraries that have their autoloaders, you should
-also install them.
+Debido a que Yii incluye Composer como un gestor de dependencias y extensions, es recomendado que también instales el
+autocargador de Composer. Si estás usando alguna librería externa que requiere sus autocargadores, también deberías
+instalarlos.
 
-When you are using the Yii autoloader together with other autoloaders, you should include the `Yii.php` file
-*after* all other autoloaders are installed. This will make the Yii autoloader to be the first one responding to
-any class autoloading request. For example, the following code is extracted from
-the [entry script](structure-entry-scripts.md) of the [Basic Application Template](start-basic.md). The first
-line installs the Composer autoloader, while the second line installs the Yii autoloader.
+Cuando se utiliza el cargador de clases automático de Yii conjuntamente con otros autocargadores, deberías incluir el
+archivo `Yii.php` *después* de que todos los demás autocargadores se hayan instalado. Esto hará que el autocargador de
+Yii sea el primero en responder a cualquier petición de carga automática de clases. Por ejemplo, el siguiente código ha
+sido extraido del [script de entrada](structure-entry-scripts.md) de la [Plantilla de Aplicación Básica](start-basic.md).
+La primera línea instala el autocargador de Composer, mientras que la segunda línea instala el autocargador de Yii.
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
 
-You may use the Composer autoloader alone without the Yii autoloader. However, by doing so, the performance
-of your class autoloading may be degraded, and you must follow the rules set by Composer in order for your classes
-to be autoloadable.
+Puedes usar el autocargador de Composer sin el autocargador de Yii. Sin embargo, al hacerlo, la eficacia de la carga de
+tus clases puede que se degrade, y además deberías seguir las reglas establecidas por Composer para que tus clases pudieran
+ser autocargables.
 
-> Info: If you do not want to use the Yii autoloader, you must create your own version of the `Yii.php` file
-  and include it in your [entry script](structure-entry-scripts.md).
+> Nota: Si no deseas utilizar el autocargador de Yii, tendrás que crear tu propia versión del archivo `Yii.php` e
+  incluirlo en tu [script de entrada](structure-entry-scripts.md).
 
 
-Autoloading Extension Classes <a name="autoloading-extension-classes"></a>
------------------------------
+Carga Automática de Clases de Extensiones <a name="autoloading-extension-classes"></a>
+-----------------------------------------
 
-The Yii autoloader is capable of autoloading [extension](structure-extensions.md) classes. The sole requirement
-is that an extension specifies the `autoload` section correctly in its `composer.json` file. Please refer to the
-[Composer documentation](https://getcomposer.org/doc/04-schema.md#autoload) for more details about specifying `autoload`.
+El autocargador de Yii es capaz de autocargar clases de [extensiones](structure-extensions.md). El único requirimiento es
+que la extensión especifique correctamente la sección de `autoload` (autocarga) en su archivo `composer.json`. Por favor,
+consulta la [documentación de Composer](https://getcomposer.org/doc/04-schema.md#autoload) para más detalles acerca de la
+especificación `autoload`.
 
-In case you do not use the Yii autoloader, the Composer autoloader can still autoload extension classes for you.
+En el caso de que no quieras usar el autocargador de Yii, el autocargador de Composer podría cargar las clases de extensiones
+por tí.
