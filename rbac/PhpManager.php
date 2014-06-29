@@ -38,7 +38,7 @@ class PhpManager extends BaseManager
      * @see loadFromFile()
      * @see saveToFile()
      */
-    public $itemsFile = '@app/data/rbac-items.php';
+    public $itemFile = '@app/rbac/items.php';
     /**
      * @var string the path of the PHP script that contains the authorization assignments.
      * This can be either a file path or a path alias to the file.
@@ -46,7 +46,7 @@ class PhpManager extends BaseManager
      * @see loadFromFile()
      * @see saveToFile()
      */
-    public $assignmentsFile = '@app/data/rbac-assignments.php';
+    public $assignmentFile = '@app/rbac/assignments.php';
 
     /**
      * @var string the path of the PHP script that contains the authorization rules.
@@ -55,7 +55,7 @@ class PhpManager extends BaseManager
      * @see loadFromFile()
      * @see saveToFile()
      */
-    public $rulesFile = '@app/data/rbac-rules.php';
+    public $ruleFile = '@app/rbac/rules.php';
     /**
      * @var Item[]
      */
@@ -82,9 +82,9 @@ class PhpManager extends BaseManager
     public function init()
     {
         parent::init();
-        $this->itemsFile = Yii::getAlias($this->itemsFile);
-        $this->assignmentsFile = Yii::getAlias($this->assignmentsFile);
-        $this->rulesFile = Yii::getAlias($this->rulesFile);
+        $this->itemFile = Yii::getAlias($this->itemFile);
+        $this->assignmentFile = Yii::getAlias($this->assignmentFile);
+        $this->ruleFile = Yii::getAlias($this->ruleFile);
         $this->load();
     }
 
@@ -615,11 +615,11 @@ class PhpManager extends BaseManager
         $this->assignments = [];
         $this->items = [];
 
-        $items = $this->loadFromFile($this->itemsFile);
-        $itemsMtime = @filemtime($this->itemsFile);
-        $assignments = $this->loadFromFile($this->assignmentsFile);
-        $assignmentsMtime = @filemtime($this->assignmentsFile);
-        $rules = $this->loadFromFile($this->rulesFile);
+        $items = $this->loadFromFile($this->itemFile);
+        $itemsMtime = @filemtime($this->itemFile);
+        $assignments = $this->loadFromFile($this->assignmentFile);
+        $assignmentsMtime = @filemtime($this->assignmentFile);
+        $rules = $this->loadFromFile($this->ruleFile);
 
         foreach ($items as $name => $item) {
             $class = $item['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
@@ -718,7 +718,7 @@ class PhpManager extends BaseManager
                 }
             }
         }
-        $this->saveToFile($items, $this->itemsFile);
+        $this->saveToFile($items, $this->itemFile);
     }
 
     /**
@@ -733,7 +733,7 @@ class PhpManager extends BaseManager
                 $assignmentData[$userId] = $assignment->roleName;
             }
         }
-        $this->saveToFile($assignmentData, $this->assignmentsFile);
+        $this->saveToFile($assignmentData, $this->assignmentFile);
     }
 
     /**
@@ -745,6 +745,6 @@ class PhpManager extends BaseManager
         foreach ($this->rules as $name => $rule) {
             $rules[$name] = serialize($rule);
         }
-        $this->saveToFile($rules, $this->rulesFile);
+        $this->saveToFile($rules, $this->ruleFile);
     }
 }

@@ -79,9 +79,9 @@ new ones save the following code as `convert.php` that should be placed in the s
 ```php
 <?php
 $oldFile = 'rbac.php';
-$itemsFile = 'rbac-items.php';
-$assignmentsFile = 'rbac-assignments.php';
-$rulesFile = 'rbac-rules.php';
+$itemsFile = 'items.php';
+$assignmentsFile = 'assignments.php';
+$rulesFile = 'rules.php';
 
 $oldData = include $oldFile;
 
@@ -119,7 +119,7 @@ echo "Done!\n";
 ```
 
 Run it once, delete `rbac.php`. If you've configured `authFile` property, remove the line from config and instead
-configure `itemsFile`, `assignmentsFile` and `rulesFile`.
+configure `itemFile`, `assignmentFile` and `ruleFile`.
 
 * Static helper `yii\helpers\Security` has been converted into an application component. You should change all usage of
   its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
