@@ -39,6 +39,13 @@ return array(
         'memo' => 'Required for multibyte encoding string processing.'
     ),
     array(
+        'name' => 'Mcrypt extension',
+        'mandatory' => false,
+        'condition' => extension_loaded('mcrypt'),
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-helpers-security.html">Security Helper</a>',
+        'memo' => 'Required by encrypt and decrypt methods.'
+    ),
+    array(
         'name' => 'Intl extension',
         'mandatory' => false,
         'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2', '>='),
