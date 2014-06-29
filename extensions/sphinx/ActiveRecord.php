@@ -395,9 +395,9 @@ abstract class ActiveRecord extends BaseActiveRecord
             return false;
         }
 
-		$changedAttributes = array_fill_keys(array_keys($values), null);
-		$this->setOldAttributes($values);
-		$this->afterSave(true, $changedAttributes);
+        $changedAttributes = array_fill_keys(array_keys($values), null);
+        $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
 
         return true;
     }
@@ -534,7 +534,7 @@ abstract class ActiveRecord extends BaseActiveRecord
         $changedAttributes = [];
         foreach ($values as $name => $value) {
             $changedAttributes[$name] = $this->getOldAttribute($name);
-            $this->setOldAttribute($name, $this->getAttribute($name));
+            $this->setOldAttribute($name, $value);
         }
         $this->afterSave(false, $changedAttributes);
 

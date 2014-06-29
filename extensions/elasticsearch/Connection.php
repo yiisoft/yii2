@@ -433,23 +433,23 @@ class Connection extends Component
         }
     }
 
-	/**
-	 * Try to decode error information if it is valid json, return it if not.
-	 * @param $body
-	 * @return mixed
-	 */
-	protected function decodeErrorBody($body)
-	{
-		try {
-			$decoded = Json::decode($body);
-			if (isset($decoded['error'])) {
-				$decoded['error'] = preg_replace('/\b\w+?Exception\[/', "<span style=\"color: red;\">\\0</span>\n               ", $decoded['error']);
-			}
-			return $decoded;
-		} catch(InvalidParamException $e) {
-			return $body;
-		}
-	}
+    /**
+     * Try to decode error information if it is valid json, return it if not.
+     * @param $body
+     * @return mixed
+     */
+    protected function decodeErrorBody($body)
+    {
+        try {
+            $decoded = Json::decode($body);
+            if (isset($decoded['error'])) {
+                $decoded['error'] = preg_replace('/\b\w+?Exception\[/', "<span style=\"color: red;\">\\0</span>\n               ", $decoded['error']);
+            }
+            return $decoded;
+        } catch(InvalidParamException $e) {
+            return $body;
+        }
+    }
 
     public function getNodeInfo()
     {

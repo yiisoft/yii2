@@ -264,7 +264,7 @@ abstract class ActiveRecord extends BaseActiveRecord
         $changedAttributes = [];
         foreach ($values as $name => $value) {
             $changedAttributes[$name] = $this->getOldAttribute($name);
-            $this->setOldAttribute($name, $this->getAttribute($name));
+            $this->setOldAttribute($name, $value);
         }
         $this->afterSave(false, $changedAttributes);
 

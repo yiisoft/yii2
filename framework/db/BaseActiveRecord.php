@@ -717,7 +717,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $changedAttributes = [];
         foreach ($values as $name => $value) {
             $changedAttributes[$name] = $this->_oldAttributes[$name];
-            $this->_oldAttributes[$name] = $this->_attributes[$name];
+            $this->_oldAttributes[$name] = $value;
         }
         $this->afterSave(false, $changedAttributes);
 
@@ -878,6 +878,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param boolean $insert whether this method called while inserting a record.
      * If false, it means the method is called while updating a record.
      * @param array $changedAttributes The old values of attributes that had changed and were saved.
+     * You can use this parameter to take action based on the changes made for example send an email
+     * when the password had changed or implement audit trail that tracks all the changes.
+     * `$changedAttributes` gives you the old attribute values while the active record (`$this`) has
+     * already the new, updated values.
      */
     public function afterSave($insert, $changedAttributes)
     {
