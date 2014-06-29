@@ -10,34 +10,34 @@ use Yii;
  */
 class PhpManagerTest extends ManagerTestCase
 {
-    protected function getItemsFile()
+    protected function getItemFile()
     {
         return Yii::$app->getRuntimePath() . '/rbac-items.php';
     }
 
-    protected function getAssignmentsFile()
+    protected function getAssignmentFile()
     {
         return Yii::$app->getRuntimePath() . '/rbac-assignments.php';
     }
 
-    protected function getRulesFile()
+    protected function getRuleFile()
     {
         return Yii::$app->getRuntimePath() . '/rbac-rules.php';
     }
 
     protected function removeDataFiles()
     {
-        @unlink($this->getItemsFile());
-        @unlink($this->getAssignmentsFile());
-        @unlink($this->getRulesFile());
+        @unlink($this->getItemFile());
+        @unlink($this->getAssignmentFile());
+        @unlink($this->getRuleFile());
     }
 
     protected function createManager()
     {
         return new ExposedPhpManager([
-            'itemsFile' => $this->getItemsFile(),
-            'assignmentsFile' => $this->getAssignmentsFile(),
-            'rulesFile' => $this->getRulesFile(),
+            'itemFile' => $this->getItemFile(),
+            'assignmentFile' => $this->getAssignmentFile(),
+            'ruleFile' => $this->getRuleFile(),
         ]);
     }
 

@@ -123,7 +123,7 @@ Yii Framework 2 Change Log
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
 - Enh #4072: `\yii\rbac\PhpManager` adjustments (samdark)
     - Data is now stored in three separate files for items, assignments and rules. File format is simpler.
-    - Removed `authFile`. Added `itemsFile`, `assignmentsFile` and `rulesFile`.
+    - Removed `authFile`. Added `itemFile`, `assignmentFile` and `ruleFile`.
     - `createdAt` and `updatedAt` are now properly filled with corresponding file modification time.
     - `save()` and `load()` are now protected instead of public.
     - Added unit test for saving and loading data.
