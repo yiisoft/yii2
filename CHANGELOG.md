@@ -121,6 +121,12 @@ Yii Framework 2 Change Log
     - Improved overall slug results.
     - Added note about the fact that intl is required for non-latin languages to requirements checker.
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
+- Enh #4072: `\yii\rbac\PhpManager` adjustments (samdark)
+    - Data is now stored in three separate files for items, assignments and rules. File format is simpler.
+    - Removed `authFile`. Added `itemFile`, `assignmentFile` and `ruleFile`.
+    - `createdAt` and `updatedAt` are now properly filled with corresponding file modification time.
+    - `save()` and `load()` are now protected instead of public.
+    - Added unit test for saving and loading data.
 - Enh #4080: Added proper handling and support of the symlinked directories in `FileHelper`, added $options parameter in `FileHelper::removeDirectory()` (resurtm)
 - Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
