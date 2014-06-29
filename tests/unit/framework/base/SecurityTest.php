@@ -131,25 +131,4 @@ class SecurityTest extends TestCase
         $decryptedData = $this->security->decrypt($encryptedData, $key);
         $this->assertEquals($data, $decryptedData);
     }
-
-    public function testGetSecretKey()
-    {
-        $this->security->autoGenerateSecretKey = false;
-        $keyName = 'testGet';
-        $keyValue = 'testGetValue';
-        $this->security->secretKeys = [
-            $keyName => $keyValue
-        ];
-        $this->assertEquals($keyValue, $this->security->getSecretKey($keyName));
-
-        $this->setExpectedException('yii\base\InvalidParamException');
-        $this->security->getSecretKey('notExistingKey');
-    }
-
-    /*public function testGenerateSecretKey()
-    {
-        $this->security->autoGenerateSecretKey = true;
-        $keyValue = $this->security->getSecretKey('test');
-        $this->assertNotEmpty($keyValue);
-    }*/
 }
