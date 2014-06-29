@@ -42,7 +42,7 @@ return array(
         'name' => 'Mcrypt extension',
         'mandatory' => false,
         'condition' => extension_loaded('mcrypt'),
-        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-helpers-security.html">Security Helper</a>',
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
         'memo' => 'Required by encrypt and decrypt methods.'
     ),
     array(
