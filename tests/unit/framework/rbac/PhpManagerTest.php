@@ -3,38 +3,74 @@
 namespace yiiunit\framework\rbac;
 
 use Yii;
-use yii\rbac\PhpManager;
 
 /**
  * @group rbac
- * @property \yii\rbac\PhpManager $auth
+ * @property ExposedPhpManager $auth
  */
 class PhpManagerTest extends ManagerTestCase
 {
+    protected function getItemFile()
+    {
+        return Yii::$app->getRuntimePath() . '/rbac-items.php';
+    }
+
+    protected function getAssignmentFile()
+    {
+        return Yii::$app->getRuntimePath() . '/rbac-assignments.php';
+    }
+
+    protected function getRuleFile()
+    {
+        return Yii::$app->getRuntimePath() . '/rbac-rules.php';
+    }
+
+    protected function removeDataFiles()
+    {
+        @unlink($this->getItemFile());
+        @unlink($this->getAssignmentFile());
+        @unlink($this->getRuleFile());
+    }
+
+    protected function createManager()
+    {
+        return new ExposedPhpManager([
+            'itemFile' => $this->getItemFile(),
+            'assignmentFile' => $this->getAssignmentFile(),
+            'ruleFile' => $this->getRuleFile(),
+        ]);
+    }
+
     protected function setUp()
     {
         parent::setUp();
         $this->mockApplication();
-        $authFile = Yii::$app->getRuntimePath() . '/rbac.php';
-        @unlink($authFile);
-        $this->auth = new PhpManager();
-        $this->auth->authFile = $authFile;
-        $this->auth->init();
+        $this->removeDataFiles();
+        $this->auth = $this->createManager();
     }
 
     protected function tearDown()
     {
+        $this->removeDataFiles();
         parent::tearDown();
-        @unlink($this->auth->authFile);
     }
 
     public function testSaveLoad()
     {
         $this->prepareData();
-        $this->auth->save();
-        $this->auth->removeAll();
-        $this->auth->load();
-        // TODO : Check if loaded and saved data are the same.
-    }
 
+        $items = $this->auth->items;
+        $children = $this->auth->children;
+        $assignments = $this->auth->assignments;
+        $rules = $this->auth->rules;
+        $this->auth->save();
+
+        $this->auth = $this->createManager();
+        $this->auth->load();
+
+        $this->assertEquals($items, $this->auth->items);
+        $this->assertEquals($children, $this->auth->children);
+        $this->assertEquals($assignments, $this->auth->assignments);
+        $this->assertEquals($rules, $this->auth->rules);
+    }
 } 
