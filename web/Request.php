@@ -1217,7 +1217,7 @@ class Request extends \yii\base\Request
     public function getCookieValidationKey()
     {
         if ($this->_cookieValidationKey === null) {
-            $this->_cookieValidationKey = Yii::$app->getSecurity()->getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+            $this->_cookieValidationKey = Yii::$app->getSecurity()->getSecretKey('cookie.validation.key');
         }
 
         return $this->_cookieValidationKey;
