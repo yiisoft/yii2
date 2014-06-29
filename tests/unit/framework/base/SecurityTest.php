@@ -131,4 +131,11 @@ class SecurityTest extends TestCase
         $decryptedData = $this->security->decrypt($encryptedData, $key);
         $this->assertEquals($data, $decryptedData);
     }
+
+    public function testGenerateRandomKey()
+    {
+        $keyLength = 20;
+        $key = $this->security->generateRandomKey($keyLength);
+        $this->assertEquals($keyLength, strlen($key));
+    }
 }

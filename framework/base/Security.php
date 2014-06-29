@@ -309,11 +309,19 @@ class Security extends Component
      * Generates a random key.
      * Note the generated key is a binary string with the specified number of bytes in it.
      * @param integer $length the length of the key that should be generated
+     * @throws Exception on failure.
      * @return string the generated random key
      */
     public function generateRandomKey($length = 32)
     {
-        return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        if (!extension_loaded('mcrypt')) {
+            throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
+        }
+        $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        if ($key === false) {
+            throw new Exception('Unable to generate random key.');
+        }
+        return $key;
     }
 
     /**
