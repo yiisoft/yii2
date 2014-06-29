@@ -298,7 +298,7 @@ class Security extends Component
         }
 
         if (!isset($this->_keys[$name]) || $regenerate) {
-            $this->_keys[$name] = utf8_encode(static::generateRandomKey($length));
+            $this->_keys[$name] = utf8_encode($this->generateRandomKey($length));
             file_put_contents($keyFile, json_encode($this->_keys));
         }
 
