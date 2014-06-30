@@ -7,7 +7,7 @@ a las otras clases son:
 
 * [Propiedades](concept-properties.md)
 * [Eventos](concept-events.md)
-* [Comportamientos](concept-behaviors.md),
+* [Comportamientos](concept-behaviors.md)
 
 Por separado y combinadas, estas características hacen que las clases Yii sean mucho mas personalizables y sean mucho
 más fáciles de usar. Por ejemplo, el incluido [[yii\jui\DatePicker|widget de selección de fecha]], un componente de la
