@@ -39,6 +39,13 @@ return array(
         'memo' => 'Required for multibyte encoding string processing.'
     ),
     array(
+        'name' => 'Mcrypt extension',
+        'mandatory' => false,
+        'condition' => extension_loaded('mcrypt'),
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
+        'memo' => 'Required by encrypt and decrypt methods.'
+    ),
+    array(
         'name' => 'Intl extension',
         'mandatory' => false,
         'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2', '>='),
@@ -50,7 +57,7 @@ return array(
     ),
     array(
         'name' => 'Fileinfo extension',
-        'mandatory' => true,
+        'mandatory' => false,
         'condition' => extension_loaded('fileinfo'),
         'by' => '<a href="http://www.php.net/manual/en/book.fileinfo.php">File Information</a>',
         'memo' => 'Required for files upload to detect correct file mime-types.'
