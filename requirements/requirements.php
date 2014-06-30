@@ -57,7 +57,7 @@ return array(
     ),
     array(
         'name' => 'Fileinfo extension',
-        'mandatory' => true,
+        'mandatory' => false,
         'condition' => extension_loaded('fileinfo'),
         'by' => '<a href="http://www.php.net/manual/en/book.fileinfo.php">File Information</a>',
         'memo' => 'Required for files upload to detect correct file mime-types.'
