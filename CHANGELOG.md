@@ -62,6 +62,7 @@ Yii Framework 2 Change Log
 - Bug #3989: Fixed yii\log\FileTarget::$rotateByCopy to avoid any rename (cebe)
 - Bug #3996: Traversing `Yii::$app->session` may cause a PHP error (qiangxue)
 - Bug #4020: OCI column detection did not work so gii and other things failed (Sanya1991)
+- Bug #4127: `CaptchaValidator` clientside error message wasn't formed properly (samdark)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
