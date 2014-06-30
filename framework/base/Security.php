@@ -212,7 +212,7 @@ class Security extends Component
         if (function_exists('hash_pbkdf2')) {
             return hash_pbkdf2($this->derivationHash, $password, $salt, $this->derivationIterations, $this->cryptKeySize, true);
         } else {
-            throw new InvalidConfigException('Derive key strategy "pbkdf2" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
+            throw new InvalidConfigException('Security::$deriveKeyStrategy is set to "pbkdf2", which requires PHP >= 5.5.0. Either upgrade your run-time environment or use another strategy.');
         }
     }
 
