@@ -8,6 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
@@ -117,9 +118,17 @@ class BaseFileHelper
      * @param boolean $checkExtension whether to use the file extension to determine the MIME type in case
      * `finfo_open()` cannot determine it.
      * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
+     * @throws InvalidConfigException when the `fileinfo` PHP extension is not installed and `$checkExtension` is `false`.
      */
     public static function getMimeType($file, $magicFile = null, $checkExtension = true)
     {
+        if (!extension_loaded('fileinfo')) {
+            if ($checkExtension) {
+                return static::getMimeTypeByExtension($file, $magicFile);
+            } else {
+                throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
+            }
+        }
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
         if ($info) {
@@ -131,7 +140,7 @@ class BaseFileHelper
             }
         }
 
-        return $checkExtension ? static::getMimeTypeByExtension($file) : null;
+        return $checkExtension ? static::getMimeTypeByExtension($file, $magicFile) : null;
     }
 
     /**
