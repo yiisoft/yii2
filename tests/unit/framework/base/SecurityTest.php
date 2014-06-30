@@ -137,5 +137,6 @@ class SecurityTest extends TestCase
         $keyLength = 20;
         $key = $this->security->generateRandomKey($keyLength);
         $this->assertEquals($keyLength, strlen($key));
+        $this->assertRegExp('/^[a-z0-9]+$/is', $key, 'Invalid character set!');
     }
 }

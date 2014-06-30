@@ -312,15 +312,16 @@ class Security extends Component
      * @throws Exception on failure.
      * @return string the generated random key
      */
-    public function generateRandomKey($length = 32)
+    public function generateRandomKey($length = 64)
     {
         if (!extension_loaded('mcrypt')) {
             throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
         }
-        $key = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-        if ($key === false) {
+        $binaryKey = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        if ($binaryKey === false) {
             throw new Exception('Unable to generate random key.');
         }
+        $key = StringHelper::byteSubstr(bin2hex($binaryKey), 0, $length);
         return $key;
     }
 
