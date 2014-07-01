@@ -54,22 +54,22 @@ class Security extends Component
      */
     public $cryptKeySize = 32;
     /**
+     * @var string strategy, which should be used to derive a key for encryption.
+     * Available strategies:
+     * - 'password' - input secret is a password. Derive encryption key using PBKDF2.
+     * - 'key' - input secret is a cryptographic key. Derive encryption key using HKDF.
+     */
+    public $deriveKeyStrategy = 'password';
+    /**
      * @var string derivation hash algorithm name.
      * Recommended value: 'sha256'
      */
     public $derivationHash = 'sha256';
     /**
      * @var integer derivation iterations count.
-     * Recommended value: 1000000
+     * Only used when @see $deriveKeyStrategy = 'password'. Recommended value: 1000000
      */
     public $derivationIterations = 1000000;
-    /**
-     * @var string strategy, which should be used to derive a key for encryption.
-     * Available strategies:
-     * - 'pbkdf2' - PBKDF2 key derivation. This option is recommended, but it requires PHP version >= 5.5.0
-     * - 'hmac' - HMAC hash key derivation.
-     */
-    public $deriveKeyStrategy = 'hmac';
     /**
      * @var string strategy, which should be used to generate password hash.
      * Available strategies:
@@ -94,12 +94,14 @@ class Security extends Component
     /**
      * Encrypts data.
      * @param string $data data to be encrypted.
-     * @param string $password the encryption password
+     * @param string $secret the encryption password or key
+     * @param string $info context/application specific information, e.g. a user ID.
+     * Only used when $deriveKeyStrategy = 'key'. See RFC 5869 Section 3.2 @link https://tools.ietf.org/html/rfc5869
      * @return string the encrypted data
      * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
      * @see decrypt()
      */
-    public function encrypt($data, $password)
+    public function encrypt($data, $secret, $info = '')
     {
         $module = $this->openCryptModule();
         $data = $this->addPadding($data);
@@ -112,7 +114,7 @@ class Security extends Component
             $keySalt = $iv;
             $encrypted = '';
         }
-        $key = $this->deriveKey($password, $keySalt);
+        $key = $this->deriveKey($secret, $keySalt, $info);
         mcrypt_generic_init($module, $key, $iv);
         $encrypted .= $iv . mcrypt_generic($module, $data);
         mcrypt_generic_deinit($module);
@@ -124,12 +126,13 @@ class Security extends Component
     /**
      * Decrypts data
      * @param string $data data to be decrypted.
-     * @param string $password the decryption password
+     * @param string $secret the decryption password or key
+     * @param string $info context/application specific information, @see encrypt()
      * @return string the decrypted data
      * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
      * @see encrypt()
      */
-    public function decrypt($data, $password)
+    public function decrypt($data, $secret, $info = '')
     {
         if ($data === null) {
             return null;
@@ -143,7 +146,7 @@ class Security extends Component
             $iv = StringHelper::byteSubstr($encrypted, 0, $ivSize);
             $encrypted = StringHelper::byteSubstr($encrypted, $ivSize, StringHelper::byteLength($encrypted));
         }
-        $key = $this->deriveKey($password, $keySalt);
+        $key = $this->deriveKey($secret, $keySalt, $info);
         mcrypt_generic_init($module, $key, $iv);
         $decrypted = mdecrypt_generic($module, $encrypted);
         mcrypt_generic_deinit($module);
@@ -182,22 +185,50 @@ class Security extends Component
     }
 
     /**
-     * Derives a key from the given password (PBKDF2).
-     * @param string $password the source password
+     * Derives a key from the given secret.
+     * @param string $secret the source password or key
      * @param string $salt the random salt
-     * @throws InvalidConfigException if unsupported derive key strategy is configured.
+     * @param string $info optional context/application specific information for HKDF
+     * @throws InvalidConfigException
      * @return string the derived key
      */
-    protected function deriveKey($password, $salt)
+    protected function deriveKey($secret, $salt, $info = '')
     {
         switch ($this->deriveKeyStrategy) {
-            case 'pbkdf2':
-                return $this->deriveKeyPbkdf2($password, $salt);
-            case 'hmac':
-                return $this->deriveKeyHmac($password, $salt);
+            case 'password':
+                return $this->deriveKeyPbkdf2($secret, $salt);
+            case 'key':
+                return $this->deriveKeyHkdf($secret, $salt, $info);
             default:
                 throw new InvalidConfigException("Unknown derive key strategy '{$this->deriveKeyStrategy}'");
         }
+    }
+
+    /**
+     * Derives a key from the given input key using HKDF.
+     * @param string $inputKey the source key
+     * @param string $salt the random salt
+     * @param string $info optional context and application specific information
+     * @return string the derived key
+     */
+    protected function deriveKeyHkdf($inputKey, $salt, $info = '')
+    {
+        // See RFC 5869 https://tools.ietf.org/html/rfc5869
+        $hashLength = StringHelper::byteLength(hash_hmac($this->derivationHash, '', '', true));
+        if (!$salt) {
+            $salt = str_repeat("\0", $hashLength);
+        }
+        $prKey = hash_hmac($this->derivationHash, $inputKey, $salt, true);
+
+        $hmac = '';
+        $outputKey = '';
+        $blocks = ceil($this->cryptKeySize / $hashLength);
+        for ($i = 1; $i <= $blocks; $i += 1) {
+            $hmac = hash_hmac($this->derivationHash, $hmac . $info . chr($i), $prKey, true);
+            $outputKey .= $hmac;
+        }
+
+        return substr($outputKey, 0, $this->cryptKeySize);
     }
 
     /**
@@ -210,27 +241,33 @@ class Security extends Component
     protected function deriveKeyPbkdf2($password, $salt)
     {
         if (function_exists('hash_pbkdf2')) {
-            return hash_pbkdf2($this->derivationHash, $password, $salt, $this->derivationIterations, $this->cryptKeySize, true);
+            return hash_pbkdf2(
+                $this->derivationHash,
+                $password,
+                $salt,
+                $this->derivationIterations,
+                $this->cryptKeySize,
+                true
+            );
         } else {
-            throw new InvalidConfigException('Security::$deriveKeyStrategy is set to "pbkdf2", which requires PHP >= 5.5.0. Either upgrade your run-time environment or use another strategy.');
-        }
-    }
+            $hashLength = StringHelper::byteLength(hash($this->derivationHash, '', true));
+            $blocks = ceil($this->cryptKeySize / $hashLength);
 
-    /**
-     * Derives a key from the given password using HMAC.
-     * @param string $password the source password
-     * @param string $salt the random salt
-     * @return string the derived key
-     */
-    protected function deriveKeyHmac($password, $salt)
-    {
-        $hmac = hash_hmac($this->derivationHash, $salt . pack('N', 1), $password, true);
-        $xorsum = $hmac;
-        for ($i = 1; $i < $this->derivationIterations; $i++) {
-            $hmac = hash_hmac($this->derivationHash, $hmac, $password, true);
-            $xorsum ^= $hmac;
+            $outputKey = '';
+            for ($j = 1; $j <= $blocks; $j += 1) {
+                $hmac = hash_hmac($this->derivationHash, $salt . pack('N', $j), $password, true);
+
+                $xorsum = $hmac;
+                for ($i = 1; $i < $this->derivationIterations; $i++) {
+                    $hmac = hash_hmac($this->derivationHash, $hmac, $password, true);
+                    $xorsum ^= $hmac;
+                }
+
+                $outputKey .= $xorsum;
+            }
+
+            return substr($outputKey, 0, $this->cryptKeySize);
         }
-        return substr($xorsum, 0, $this->cryptKeySize);
     }
 
     /**
@@ -502,4 +539,4 @@ class Security extends Component
         }
         return $diff === 0;
     }
-} 
+}
