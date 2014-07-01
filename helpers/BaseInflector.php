@@ -315,7 +315,7 @@ class BaseInflector
             '-',
             '_',
             '.'
-        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
+        ], ' ', preg_replace('/([A-Z])/', ' \0', $name))));
 
         return $ucwords ? ucwords($label) : $label;
     }
@@ -331,9 +331,9 @@ class BaseInflector
     public static function camel2id($name, $separator = '-')
     {
         if ($separator === '_') {
-            return trim(strtolower(preg_replace('/(?<![A-Z])[A-Z]/', '_\0', $name)), '_');
+            return trim(strtolower(preg_replace('/([A-Z])/', '_\0', $name)), '_');
         } else {
-            return trim(strtolower(str_replace('_', $separator, preg_replace('/(?<![A-Z])[A-Z]/', $separator . '\0', $name))), $separator);
+            return trim(strtolower(str_replace('_', $separator, preg_replace('/([A-Z])/', $separator . '\0', $name))), $separator);
         }
     }
 
