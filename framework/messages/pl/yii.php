@@ -20,6 +20,7 @@ return [
     '(not set)' => '(brak wartości)',
     'An internal server error occurred.' => 'Wystąpił wewnętrzny błąd serwera.',
     'Delete' => 'Usuń',
+    'Are you sure you want to delete this item?' => 'Czy na pewno usunąć ten element?',
     'Error' => 'Błąd',
     'File upload failed.' => 'Wgrywanie pliku nie powiodło się.',
     'Home' => 'Strona domowa',
