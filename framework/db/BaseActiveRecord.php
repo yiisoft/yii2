@@ -716,7 +716,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         $changedAttributes = [];
         foreach ($values as $name => $value) {
-            $changedAttributes[$name] = $this->_oldAttributes[$name];
+            $changedAttributes[$name] = $this->getOldAttribute($name);
             $this->_oldAttributes[$name] = $value;
         }
         $this->afterSave(false, $changedAttributes);
