@@ -20,7 +20,7 @@ use yii\helpers\Inflector;
  * When the server needs authentication, you can set the [[password]] property to
  * authenticate with the server after connect.
  *
- * The ecexution of [redis commands](http://redis.io/commands) is possible with via [[executeCommand()]].
+ * The execution of [redis commands](http://redis.io/commands) is possible with via [[executeCommand()]].
  *
  * @method mixed set($key, $value) Set the string value of a key
  * @method mixed get($key) Set the string value of a key
