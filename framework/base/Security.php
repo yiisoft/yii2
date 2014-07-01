@@ -215,7 +215,7 @@ class Security extends Component
     {
         // See RFC 5869 https://tools.ietf.org/html/rfc5869
         $hashLength = StringHelper::byteLength(hash_hmac($this->derivationHash, '', '', true));
-        if (!$salt) {
+        if ($salt === null) {
             $salt = str_repeat("\0", $hashLength);
         }
         $prKey = hash_hmac($this->derivationHash, $inputKey, $salt, true);

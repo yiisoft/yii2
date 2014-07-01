@@ -316,7 +316,7 @@ class SecurityTest extends TestCase
             [
                 'Hash' => 'sha1',
                 'IKM' => '0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c',
-                'salt' => '',
+                'salt' => null,
                 'info' => '',
                 'L' => 42,
                 'PRK' => '2adccada18779e7c2077ad2eb19d3f3e731385dd',
