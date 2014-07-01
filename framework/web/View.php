@@ -251,7 +251,7 @@ class View extends \yii\base\View
      * Removes a bundle from [[assetBundles]] once files are registered.
      * @param string $name name of the bundle to register
      */
-    private function registerAssetFiles($name)
+    protected function registerAssetFiles($name)
     {
         if (!isset($this->assetBundles[$name])) {
             return;
@@ -458,12 +458,6 @@ class View extends \yii\base\View
         $lines = [];
         if (!empty($this->metaTags)) {
             $lines[] = implode("\n", $this->metaTags);
-        }
-
-        $request = Yii::$app->getRequest();
-        if ($request instanceof \yii\web\Request && $request->enableCsrfValidation && !$request->getIsAjax()) {
-            $lines[] = Html::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]);
-            $lines[] = Html::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
         }
 
         if (!empty($this->linkTags)) {

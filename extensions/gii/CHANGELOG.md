@@ -11,6 +11,7 @@ Yii Framework 2 gii extension Change Log
 - Enh #2018: Search model is not required anymore in CRUD generator (johonunu)
 - Enh #3088: The gii module will manage their own URL rules now (qiangxue)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
+- Enh #3811: Now Gii model generator makes autocomplete for model class field (mitalcoi)
 
 
 2.0.0-beta April 13, 2014

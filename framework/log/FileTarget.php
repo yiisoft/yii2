@@ -18,7 +18,7 @@ use yii\helpers\FileHelper;
  * [[maxFileSize]] (in kilo-bytes), a rotation will be performed, which renames
  * the current log file by suffixing the file name with '.1'. All existing log
  * files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
- * The property [[maxLogFiles]] specifies how many files to keep.
+ * The property [[maxLogFiles]] specifies how many history files to keep.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -52,10 +52,18 @@ class FileTarget extends Target
      */
     public $dirMode = 0775;
     /**
-     * @var boolean Whether to rotate primary log by copy and truncate
-     * which is more compatible with log tailers. Defaults to false.
+     * @var boolean Whether to rotate log files by copy and truncate in contrast to rotation by
+     * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
+     * systems which do not play well with rename on open files. Rotation by renaming however is
+     * a bit faster.
+     *
+     * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
+     * function does not work with files that are opened by some process is described in a
+     * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
+     * the PHP documentation. By setting rotateByCopy to `true` you can work
+     * around this problem.
      */
-    public $rotateByCopy = false;
+    public $rotateByCopy = true;
 
 
     /**
@@ -93,6 +101,9 @@ class FileTarget extends Target
             throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");
         }
         @flock($fp, LOCK_EX);
+        // clear stat cache to ensure getting the real current file size and not a cached one
+        // this may result in rotating twice when cached file size is used on subsequent calls
+        clearstatcache();
         if (@filesize($this->logFile) > $this->maxFileSize * 1024) {
             $this->rotateFiles();
             @flock($fp, LOCK_UN);
@@ -114,8 +125,9 @@ class FileTarget extends Target
     protected function rotateFiles()
     {
         $file = $this->logFile;
-        for ($i = $this->maxLogFiles; $i > 0; --$i) {
-            $rotateFile = $file . '.' . $i;
+        for ($i = $this->maxLogFiles; $i >= 0; --$i) {
+            // $i == 0 is the original log file
+            $rotateFile = $file . ($i === 0 ? '' : '.' . $i);
             if (is_file($rotateFile)) {
                 // suppress errors because it's possible multiple processes enter into this section
                 if ($i === $this->maxLogFiles) {
@@ -132,9 +144,6 @@ class FileTarget extends Target
                     }
                 }
             }
-        }
-        if (is_file($file)) {
-            @rename($file, $file . '.1'); // suppress errors because it's possible multiple processes enter into this section
         }
     }
 }

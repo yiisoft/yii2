@@ -85,11 +85,9 @@ class RequestPanel extends Panel
         } else {
             $action = null;
         }
-        /** @var \yii\web\Session $session */
-        $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
 
         return [
-            'flashes' => $session ? $session->getAllFlashes() : [],
+            'flashes' => $this->getFlashes(),
             'statusCode' => Yii::$app->getResponse()->getStatusCode(),
             'requestHeaders' => $requestHeaders,
             'responseHeaders' => $responseHeaders,
@@ -108,5 +106,28 @@ class RequestPanel extends Panel
             'FILES' => empty($_FILES) ? [] : $_FILES,
             'SESSION' => empty($_SESSION) ? [] : $_SESSION,
         ];
+    }
+
+    /**
+     * Getting flash messages without deleting them or touching deletion counters
+     *
+     * @return array flash messages (key => message).
+     */
+    protected function getFlashes()
+    {
+        /* @var $session \yii\web\Session */
+        $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
+        if ($session === null) {
+            return [];
+        }
+
+        $counters = $session->get($session->flashParam, []);
+        $flashes = [];
+        foreach (array_keys($counters) as $key) {
+            if (array_key_exists($key, $_SESSION)) {
+                $flashes[$key] = $_SESSION[$key];
+            }
+        }
+        return $flashes;
     }
 }

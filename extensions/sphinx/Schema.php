@@ -132,7 +132,7 @@ class Schema extends Object
         $realName = $this->getRawIndexName($name);
 
         if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-            /** @var $cache Cache */
+            /* @var $cache Cache */
             $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache, false) : $db->schemaCache;
             if ($cache instanceof Cache) {
                 $key = $this->getCacheKey($name);
@@ -296,7 +296,7 @@ class Schema extends Object
      */
     public function refresh()
     {
-        /** @var $cache Cache */
+        /* @var $cache Cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
             GroupDependency::invalidate($cache, $this->getCacheGroup());
@@ -453,8 +453,9 @@ class Schema extends Object
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
             $previous = $e->getPrevious();
-            if ($previous instanceof \PDOException && $previous->getCode() == '42S02') {
+            if ($previous instanceof \PDOException && strpos($previous->getMessage(), 'SQLSTATE[42S02') !== false) {
                 // index does not exist
+                // https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_bad_table_error
                 return false;
             }
             throw $e;

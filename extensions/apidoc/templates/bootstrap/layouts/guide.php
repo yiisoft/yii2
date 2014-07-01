@@ -2,11 +2,9 @@
 
 use yii\apidoc\templates\bootstrap\SideNavWidget;
 
-/**
- * @var yii\web\View $this
- * @var string $content
- * @var array $chapters
- */
+/* @var $this yii\web\View */
+/* @var $content string */
+/* @var $chapters array */
 
 $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 

@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @var yii\apidoc\models\BaseDoc $object
- * @var yii\web\View $this
- */
+/* @var $object yii\apidoc\models\BaseDoc */
+/* @var $this yii\web\View */
 
 $type = $object instanceof \yii\apidoc\models\TypeDoc ? $object : $object->definedBy;
 

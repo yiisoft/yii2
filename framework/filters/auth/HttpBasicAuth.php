@@ -70,7 +70,7 @@ class HttpBasicAuth extends AuthMethod
             if ($username !== null || $password !== null) {
                 $identity = call_user_func($this->auth, $username, $password);
                 if ($identity !== null) {
-                    $user->setIdentity($identity);
+                    $user->switchIdentity($identity);
                 } else {
                     $this->handleFailure($response);
                 }

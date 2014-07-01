@@ -107,6 +107,18 @@ class Connection extends Component
      * @event Event an event that is triggered after a DB connection is established
      */
     const EVENT_AFTER_OPEN = 'afterOpen';
+    /**
+     * @event Event an event that is triggered right before a top-level transaction is started
+     */
+    const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
+    /**
+     * @event Event an event that is triggered right after a top-level transaction is committed
+     */
+    const EVENT_COMMIT_TRANSACTION = 'commitTransaction';
+    /**
+     * @event Event an event that is triggered right after a top-level transaction is rolled back
+     */
+    const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
 
     /**
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
@@ -410,16 +422,18 @@ class Connection extends Component
 
     /**
      * Starts a transaction.
+     * @param string|null $isolationLevel The isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
      * @return Transaction the transaction initiated
      */
-    public function beginTransaction()
+    public function beginTransaction($isolationLevel = null)
     {
         $this->open();
 
         if (($transaction = $this->getTransaction()) === null) {
             $transaction = $this->_transaction = new Transaction(['db' => $this]);
         }
-        $transaction->begin();
+        $transaction->begin($isolationLevel);
 
         return $transaction;
     }

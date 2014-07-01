@@ -2,10 +2,13 @@ Controllers
 ===========
 
 Controllers are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
-They are objects responsible for processing requests and generating responses. In particular, after
-taking over the control from [applications](structure-applications.md), controllers will analyze incoming request data,
-pass them to [models](structure-models.md), inject model results into [views](structure-views.md),
-and finally generate outgoing responses.
+They are objects of classes extending from [[yii\base\Controller]] and are responsible for processing requests and
+generating responses. In particular, after taking over the control from [applications](structure-applications.md),
+controllers will analyze incoming request data, pass them to [models](structure-models.md), inject model results
+into [views](structure-views.md), and finally generate outgoing responses.
+
+
+## Actions <a name="actions"></a>
 
 Controllers are composed by *actions* which are the most basic units that end users can address and request for
 execution. A controller can have one or multiple actions.
@@ -66,7 +69,7 @@ End users address actions through the so-called *routes*. A route is a string th
 * a module ID: this exists only if the controller belongs to a non-application [module](structure-modules.md);
 * a controller ID: a string that uniquely identifies the controller among all controllers within the same application
   (or the same module if the controller belongs to a module);
-* an action ID: a string t hat uniquely identifies the action among all actions within the same controller.
+* an action ID: a string that uniquely identifies the action among all actions within the same controller.
 
 Routes take the following format:
 

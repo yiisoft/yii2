@@ -14,11 +14,29 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
+$composerAutoload = [
+    __DIR__ . '/../vendor/autoload.php', // in yii2-dev repo
+    __DIR__ . '/../../autoload.php', // installed as a composer binary
+];
+$vendorPath = null;
+foreach ($composerAutoload as $autoload) {
+    if (file_exists($autoload)) {
+        require($autoload);
+        $vendorPath = dirname($autoload);
+        break;
+    }
+}
+
+
 require(__DIR__ . '/Yii.php');
 
 $application = new yii\console\Application([
     'id' => 'yii-console',
     'basePath' => __DIR__ . '/console',
+    'controllerNamespace' => 'yii\console\controllers',
 ]);
+if (isset($vendorPath)) {
+    $application->setVendorPath($vendorPath);
+}
 $exitCode = $application->run();
 exit($exitCode);

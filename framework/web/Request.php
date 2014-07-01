@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
 /**
@@ -42,6 +41,7 @@ use yii\helpers\StringHelper;
  * @property string $csrfToken The token used to perform CSRF validation. This property is read-only.
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
  * if no such header is sent. This property is read-only.
+ * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
@@ -104,6 +104,7 @@ class Request extends \yii\base\Request
      *
      * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
+     * You also need to include CSRF meta tags in your pages by using [[\yii\helpers\Html::csrfMetaTags()]].
      *
      * @see Controller::enableCsrfValidation
      * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
@@ -1186,7 +1187,7 @@ class Request extends \yii\base\Request
         if ($this->enableCookieValidation) {
             $key = $this->getCookieValidationKey();
             foreach ($_COOKIE as $name => $value) {
-                if (is_string($value) && ($value = Security::validateData($value, $key)) !== false) {
+                if (is_string($value) && ($value = Yii::$app->getSecurity()->validateData($value, $key)) !== false) {
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => @unserialize($value),
@@ -1216,7 +1217,7 @@ class Request extends \yii\base\Request
     public function getCookieValidationKey()
     {
         if ($this->_cookieValidationKey === null) {
-            $this->_cookieValidationKey = Security::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
+            $this->_cookieValidationKey = Yii::$app->getSecurity()->getSecretKey('cookie.validation.key');
         }
 
         return $this->_cookieValidationKey;
@@ -1321,7 +1322,7 @@ class Request extends \yii\base\Request
     {
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
-        $options['value'] = Security::generateRandomKey();
+        $options['value'] = Yii::$app->getSecurity()->generateRandomKey();
 
         return new Cookie($options);
     }

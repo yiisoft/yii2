@@ -42,7 +42,7 @@ class MailPanel extends Panel
         parent::init();
         Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function ($event) {
 
-            /** @var MessageInterface $message */
+            /* @var $message MessageInterface */
             $message = $event->message;
             $messageData = [
                     'isSuccessful' => $event->isSuccessful,
@@ -57,7 +57,7 @@ class MailPanel extends Panel
 
             // add more information when message is a SwiftMailer message
             if ($message instanceof \yii\swiftmailer\Message) {
-                /** @var \Swift_Message $swiftMessage */
+                /* @var $swiftMessage \Swift_Message */
                 $swiftMessage = $message->getSwiftMessage();
 
                 $messageData['body'] = $swiftMessage->getBody();

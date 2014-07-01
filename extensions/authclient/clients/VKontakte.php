@@ -101,4 +101,4 @@ class VKontakte extends OAuth2
     {
         return 'VKontakte';
     }
-} 
+}

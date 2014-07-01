@@ -1,7 +1,7 @@
 Authentication
 ==============
 
-Unlike Web applications, RESTful APIs should be stateless, which means sessions or cookies should not
+Unlike Web applications, RESTful APIs are usually stateless, which means sessions or cookies should not
 be used. Therefore, each request should come with some sort of authentication credentials because
 the user authentication status may not be maintained by sessions or cookies. A common practice is
 to send a secret access token with each request to authenticate the user. Since an access token
@@ -23,12 +23,27 @@ There are different ways to send an access token:
 
 Yii supports all of the above authentication methods. You can also easily create new authentication methods.
 
-To enable authentication for your APIs, do the following two steps:
+To enable authentication for your APIs, do the following steps:
 
-1. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
+1. Configure the [[yii\web\User::enableSession|enableSession]] property of the `user` application component to be false.
+2. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
    in your REST controller classes.
-2. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
+3. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
 
+Step 1 is not required but is recommended for RESTful APIs which should be stateless. When [[yii\web\User::enableSession|enableSession]]
+is false, the user authentication status will NOT be persisted across requests using sessions. Instead, authentication
+will be performed for every request, which is accomplished by Step 2 and 3.
+
+> Tip: You may configure [[yii\web\User::enableSession|enableSession]] of the `user` application component
+  in application configurations if you are developing RESTful APIs in terms of an application. If you develop
+  RESTful APIs as a module, you may put the following line in the module's `init()` method, like the following:
+> ```php
+public function init()
+{
+    parent::init();
+    \Yii::$app->user->enableSession = false;
+}
+```
 
 For example, to use HTTP Basic Auth, you may configure `authenticator` as follows,
 

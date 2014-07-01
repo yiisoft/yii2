@@ -395,8 +395,9 @@ abstract class ActiveRecord extends BaseActiveRecord
             return false;
         }
 
-        $this->afterSave(true);
+        $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
 
         return true;
     }
@@ -488,7 +489,7 @@ abstract class ActiveRecord extends BaseActiveRecord
         }
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
-            $this->afterSave(false);
+            $this->afterSave(false, $values);
             return 0;
         }
 
@@ -530,10 +531,12 @@ abstract class ActiveRecord extends BaseActiveRecord
             }
         }
 
-        $this->afterSave(false);
+        $changedAttributes = [];
         foreach ($values as $name => $value) {
-            $this->setOldAttribute($name, $this->getAttribute($name));
+            $changedAttributes[$name] = $this->getOldAttribute($name);
+            $this->setOldAttribute($name, $value);
         }
+        $this->afterSave(false, $changedAttributes);
 
         return $rows;
     }
@@ -618,8 +621,13 @@ abstract class ActiveRecord extends BaseActiveRecord
     {
         $columns = static::getIndexSchema()->columns;
         foreach ($row as $name => $value) {
-            if (isset($columns[$name]) && $columns[$name]->isMva) {
-                $row[$name] = explode(',', $value);
+            if (isset($columns[$name])) {
+                if ($columns[$name]->isMva) {
+                    $mvaValue = explode(',', $value);
+                    $row[$name] = array_map(array($columns[$name], 'phpTypecast'), $mvaValue);
+                } else {
+                    $row[$name] = $columns[$name]->phpTypecast($value);
+                }
             }
         }
         parent::populateRecord($record, $row);

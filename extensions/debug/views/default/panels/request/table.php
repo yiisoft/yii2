@@ -1,8 +1,6 @@
 <?php
-/**
- * @var string $caption
- * @var array $values
- */
+/* @var $caption string */
+/* @var $values array */
 
 use yii\helpers\Html;
 use yii\helpers\VarDumper;

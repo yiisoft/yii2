@@ -126,8 +126,30 @@ $component->attachBehavior('myBehavior3', [
 ]);
 ```
 
-You may also attach behaviors through [configurations](concept-configurations.md). For more details, please
-refer to the [Configurations](concept-configurations.md#configuration-format) section.
+You may attach multiple behaviors at once by using the [[yii\base\Component::attachBehaviors()]] method.
+For example,
+
+```php
+$component->attachBehaviors([
+    'myBehavior1' => new MyBehavior,  // a named behavior
+    MyBehavior::className(),          // an anonymous behavior
+]);
+```
+
+You may also attach behaviors through [configurations](concept-configurations.md) like the following. For more details,
+please refer to the [Configurations](concept-configurations.md#configuration-format) section.
+
+```php
+[
+    'as myBehavior2' => MyBehavior::className(),
+
+    'as myBehavior3' => [
+        'class' => MyBehavior::className(),
+        'prop1' => 'value1',
+        'prop2' => 'value2',
+    ],
+]
+```
 
 
 Detaching Behaviors <a name="detaching-behaviors"></a>
@@ -297,8 +319,7 @@ properties and methods to the primary class, they differ in many aspects. As exp
 both have pros and cons. They are more like complements rather than replacements to each other.
 
 
-<a name="pros-for-behaviors"></a>
-### Pros for Behaviors
+### Pros for Behaviors <a name="pros-for-behaviors"></a>
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
 can be considered as language-supported copy and paste. They do not support inheritance.

@@ -22,6 +22,20 @@ curl -s http://getcomposer.org/installer | php
 
 We strongly recommend a global composer installation.
 
+Installing Composer Class Autoloader
+------------------------------------
+
+Make sure the [entry script](concept-entry-scripts.md) of your application contains the following lines of code:
+
+```php
+// install Composer's class autoloader
+require(__DIR__ . '/../vendor/autoload.php');
+
+// include Yii class file
+require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+```
+
+
 Working with composer
 ---------------------
 
@@ -52,7 +66,7 @@ composer.phar update
 
 As an example, packages on `dev-master` will constantly get new updates when you run `update`, while running `install` won't, unless you've pulled an update of the `composer.lock` file.
 
-There are several paramaters available to the above commands. Very commonly used ones are `--no-dev`, which would skip packages in the `require-dev` section and `--prefer-dist`, which downloads archives if available, instead of checking out repositories to your `vendor` folder.
+There are several parameters available to the above commands. Very commonly used ones are `--no-dev`, which would skip packages in the `require-dev` section and `--prefer-dist`, which downloads archives if available, instead of checking out repositories to your `vendor` folder.
 
 > Composer commands must be executed within your Yii project's directory, where the `composer.json` file can be found.
 Depending upon your operating system and setup, you may need to provide paths to the PHP executable and
@@ -65,12 +79,12 @@ Adding more packages to your project
 To add two new packages to your project run the follwing command:
 
 ```
-composer.phar require "michelf/php-markdown:>=1.3" "ezyang/htmlpurifier:>4.5.0"
+composer.phar require "cebe/indent:>=1.0.2" "cebe/yii2-gravatar:>1.1"
 ```
 
 This will resolve the dependencies and then update your `composer.json` file.
-The above example says that a version greater than or equal to 1.3 of Michaelf's PHP-Markdown package is required
-and version 4.5.0 or greater of Ezyang's HTMLPurifier.
+The above example says that a version greater than or equal to 1.0.3 of indent converter package 
+and version 1.1 or greater of gravatar extension are required.
 
 For details of this syntax, see the [official Composer documentation](https://getcomposer.org/doc/01-basic-usage.md#package-versions).
 
@@ -100,7 +114,7 @@ afterwards.
 > Depending on the package additional configuration may be required (eg. you have to register a module in the config), but autoloading of the classes should be handled by composer.
 
 
-Using a specifc version of a package
+Using a specific version of a package
 ------------------------------------
 
 Yii always comes with the latest version of a required library that it is compatible with, but allows you to use an older version if you need to.

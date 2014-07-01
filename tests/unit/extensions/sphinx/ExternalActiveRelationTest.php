@@ -23,7 +23,7 @@ class ExternalActiveRelationTest extends SphinxTestCase
 
     public function testFindLazy()
     {
-        /** @var ArticleIndex $article */
+        /* @var $article ArticleIndex */
         $article = ArticleIndex::findOne(['id' => 2]);
 
         // has one :

@@ -1,10 +1,9 @@
 <?php
 use yii\helpers\Html;
 
-/**
- * @var \yii\web\View $this
- * @var string $content
- */
+/* @var $this \yii\web\View */
+/* @var $content string */
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

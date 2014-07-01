@@ -47,7 +47,7 @@ public function actionView($id)
 
 ## Filters <a name="filters"></a>
 
-Most RESTful API features provided by [[yii\rest\Controller]] are implemented in terms of [filters](runtime-filtering.md).
+Most RESTful API features provided by [[yii\rest\Controller]] are implemented in terms of [filters](structure-filters.md).
 In particular, the following filters will be executed in the order they are listed:
 
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: supports content negotiation, to be explained in

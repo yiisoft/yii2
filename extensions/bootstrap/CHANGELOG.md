@@ -7,8 +7,9 @@ Yii Framework 2 bootstrap extension Change Log
 - Bug #3292: Fixed dropdown widgets rendering incorrect HTML (it3rmit)
 - Bug #3740: Fixed duplicate error message when client validation is enabled (tadaszelvys)
 - Bug #3749: Fixed invalid plugin registration and ensure clickable links in dropdown (kartik-v)
+- Enh #4024: Added ability to `yii\bootstrap\Tabs` to encode each `Tabs::items['label']` separately (creocoder, umneeq)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
-
+- Enh #4120: Added ability for each item to choose it's encoding option in `Dropdown` and `Nav` (Alex-Code)
 
 2.0.0-beta April 13, 2014
 -------------------------

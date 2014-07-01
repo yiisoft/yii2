@@ -249,6 +249,22 @@ class BaseHtml
     }
 
     /**
+     * Generates the meta tags containing CSRF token information.
+     * @return string the generated meta tags
+     * @see Request::enableCsrfValidation
+     */
+    public static function csrfMetaTags()
+    {
+        $request = Yii::$app->getRequest();
+        if ($request instanceof Request && $request->enableCsrfValidation) {
+            return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]) . "\n    "
+                . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]) . "\n";
+        } else {
+            return '';
+        }
+    }
+
+    /**
      * Generates a form start tag.
      * @param array|string $action the form action URL. This parameter will be processed by [[Url::to()]].
      * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
@@ -1060,7 +1076,7 @@ class BaseHtml
             $models = [$models];
         }
         foreach ($models as $model) {
-            /** @var Model $model */
+            /* @var $model Model */
             foreach ($model->getFirstErrors() as $error) {
                 $lines[] = Html::encode($error);
             }
