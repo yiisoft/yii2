@@ -167,18 +167,10 @@ class ActiveField extends Component
     public function render($content = null)
     {
         if ($content === null) {
-            if (!isset($this->parts['{input}'])) {
-                $this->parts['{input}'] = Html::activeTextInput($this->model, $this->attribute, $this->inputOptions);
-            }
-            if (!isset($this->parts['{label}'])) {
-                $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $this->labelOptions);
-            }
-            if (!isset($this->parts['{error}'])) {
-                $this->parts['{error}'] = Html::error($this->model, $this->attribute, $this->errorOptions);
-            }
-            if (!isset($this->parts['{hint}'])) {
-                $this->parts['{hint}'] = '';
-            }
+            $this->setInputPart();
+            $this->setLabelPart();
+            $this->setErrorPart();
+            $this->setHintPart();
             $content = strtr($this->template, $this->parts);
         } elseif (!is_string($content)) {
             $content = call_user_func($content, $this);
@@ -186,7 +178,51 @@ class ActiveField extends Component
 
         return $this->begin() . "\n" . $content . "\n" . $this->end();
     }
-
+    
+    /**
+     * Sets the Input HTML element for the rendering field.
+     * @return void
+     */
+    protected function setInputPart()
+    {
+        if (!isset($this->parts['{input}'])) {
+            $this->parts['{input}'] = Html::activeTextInput($this->model, $this->attribute, $this->inputOptions);
+        }        
+    }
+    
+    /**
+     * Sets the Label HTML element for the rendering field.
+     * @return void
+     */    
+    protected function setLabelPart()
+    {
+        if (!isset($this->parts['{label}'])) {
+            $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $this->labelOptions);
+        }        
+    }
+    
+    /**
+     * Sets the Error HTML element for the rendering field.
+     * @return void
+     */    
+    protected function setErrorPart()
+    {
+        if (!isset($this->parts['{error}'])) {
+            $this->parts['{error}'] = Html::error($this->model, $this->attribute, $this->errorOptions);
+        }        
+    }
+    
+    /**
+     * Sets the Hint HTML element to empty for the rendering field if not already set.
+     * @return void
+     */
+    protected function setHintPart()
+    {
+        if (!isset($this->parts['{hint}'])) {
+            $this->parts['{hint}'] = '';
+        }        
+    }
+    
     /**
      * Renders the opening tag of the field container.
      * @return string the rendering result.
@@ -686,11 +722,33 @@ class ActiveField extends Component
         if (!in_array($attribute, $this->model->activeAttributes(), true)) {
             return [];
         }
-
+        
         $options = [];
-
-        $enableClientValidation = $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
-        if ($enableClientValidation) {
+        $this->addJsExpression($attribute, $options);
+        
+        if ($this->isAjaxValidationEnabled()) {
+            $options['enableAjaxValidation'] = 1;
+        }
+        
+        if ($this->isClientValidationEnabled() && !empty($options['validate']) || $this->isAjaxValidationEnabled()) { 
+            $this->addOptions($options);
+            return $options;
+        }
+        
+        return [];
+        
+    }
+    
+    /**
+     * This method will build and set a JsExpression to the passed-by-reference parameter.
+     * It's used by the [[getClientOptions()]] method.
+     * @param   string  $attribute  the attribute
+     * @param   array   $options    the Collecting Parameter passed by reference
+     * @return  void    
+     */
+    private function addJsExpression($attribute, &$options)
+    {
+        if ($this->isClientValidationEnabled()) {
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
                 /* @var $validator \yii\validators\Validator */
@@ -706,30 +764,63 @@ class ActiveField extends Component
                 $options['validate'] = new JsExpression("function (attribute, value, messages) {" . implode('', $validators) . '}');
             }
         }
-
-        $enableAjaxValidation = $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
-        if ($enableAjaxValidation) {
-            $options['enableAjaxValidation'] = 1;
+    }
+    
+    /**
+     * Add options to the passed-by-reference parameter.
+     * It's used by the [[getClientOptions()]] method.
+     * @param   array $options  the Collecting Parameter passed by reference
+     * @return  void
+     */
+    private function addOptions(&$options)
+    {
+        $inputID = Html::getInputId($this->model, $this->attribute);
+        $options['id'] = $inputID;
+        $options['name'] = $this->attribute;
+        
+        foreach (['validateOnChange', 'validateOnType', 'validationDelay'] as $name) {
+            $options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
         }
 
-        if ($enableClientValidation && !empty($options['validate']) || $enableAjaxValidation) {
-            $inputID = Html::getInputId($this->model, $this->attribute);
-            $options['id'] = $inputID;
-            $options['name'] = $this->attribute;
-            foreach (['validateOnChange', 'validateOnType', 'validationDelay'] as $name) {
-                $options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
-            }
-            $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";
-            $options['input'] = isset($this->selectors['input']) ? $this->selectors['input'] : "#$inputID";
-            if (isset($this->errorOptions['class'])) {
-                $options['error'] = '.' . implode('.', preg_split('/\s+/', $this->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
-            } else {
-                $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
-            }
-
-            return $options;
+        $this->setOptionContainer($options);
+        $this->setOptionInput($options);
+        $this->setOptionError($options);
+    }
+    
+    private function setOptionError(array &$options)
+    {
+        if (isset($this->errorOptions['class'])) {
+            $options['error'] = '.' . implode('.', preg_split('/\s+/', $this->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
         } else {
-            return [];
-        }
+            $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
+        }          
+    }
+    
+    private function setOptionContainer(array &$options)
+    {
+       $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-{$options['id']}"; 
+    }
+    
+    private function setOptionInput(array &$options)
+    {
+        $options['input'] = isset($this->selectors['input']) ? $this->selectors['input'] : "#{$options['id']}";
+    }
+    
+    /**
+     * Checks whether client-side data validation is enabled.
+     * @return boolean
+     */    
+    protected function isClientValidationEnabled()
+    {
+        return $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;        
+    }
+
+    /**
+     * Checks whether AJAX-based data validation is enabled.
+     * @return boolean
+     */      
+    protected function isAjaxValidationEnabled()
+    {
+        return $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;        
     }
 }
