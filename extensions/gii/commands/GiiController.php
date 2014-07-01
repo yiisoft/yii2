@@ -49,7 +49,7 @@ class GiiController extends Controller
     public function actions()
     {
         $actions = [];
-        foreach (Yii::$app->getModule('console-gii')->generators as $name => $generator) {
+        foreach (Yii::$app->getModule('gii')->generators as $name => $generator) {
             // create a generate action for every generator
             $actions[$name] = [
                 'class'         => '\yii\gii\commands\GenerateAction',
@@ -64,7 +64,7 @@ class GiiController extends Controller
      */
     public function options($id)
     {
-        $generator = \Yii::$app->getModule('console-gii')->generators[$id];
+        $generator = \Yii::$app->getModule('gii')->generators[$id];
         return array_merge(
             parent::options($id),
             ['generate'],

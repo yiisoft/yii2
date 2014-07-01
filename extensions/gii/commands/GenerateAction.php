@@ -84,9 +84,9 @@ class GenerateAction extends \yii\base\Action
      */
     private function loadGenerator($id)
     {
-        if (isset(\Yii::$app->getModule('console-gii')->generators[$this->generatorName])) {
+        if (isset(\Yii::$app->getModule('gii')->generators[$this->generatorName])) {
             // using a clone for multiple controller runs
-            $this->generator = clone(\Yii::$app->getModule('console-gii')->generators[$this->generatorName]);
+            $this->generator = clone(\Yii::$app->getModule('gii')->generators[$this->generatorName]);
             foreach ($this->generator->attributes AS $name => $attribute) {
                 if ($this->controller->$name) {
                     $this->generator->$name = $this->controller->$name;
