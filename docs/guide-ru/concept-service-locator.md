@@ -24,10 +24,10 @@ use yii\caching\FileCache;
 
 $locator = new ServiceLocator;
 
-// register "cache" using a class name that can be used to create a component
+// Зарегистрирует "cache", используя имя класса, которое может быть использовано для создания компонента.
 $locator->set('cache', 'yii\caching\ApcCache');
 
-// register "db" using a configuration array that can be used to create a component
+// Зарегистрирует "db", используя конфигурационный массив, который может быть использован для создания компонента.
 $locator->set('db', [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=localhost;dbname=demo',
@@ -35,12 +35,12 @@ $locator->set('db', [
     'password' => '',
 ]);
 
-// register "search" using an anonymous function that builds a component
+// Зарегистрирует "search", используя анонимную функцию, которая создаёт компонент
 $locator->set('search', function () {
     return new app\components\SolrService;
 });
 
-// register "pageCache" using a component
+// Зарегистрирует "pageCache", используя компонент
 $locator->set('pageCache', new FileCache);
 ```
 
@@ -49,7 +49,7 @@ $locator->set('pageCache', new FileCache);
 
 ```php
 $cache = $locator->get('cache');
-// or alternatively
+// или альтернативный
 $cache = $locator->cache;
 ```
 
