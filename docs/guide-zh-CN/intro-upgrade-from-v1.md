@@ -189,7 +189,7 @@ public function actionView($id)
 小部件（Widget）
 -------
 
-Yii 2.0 使用 [[yii\base\Widget]] 作为小部件基类，类似 于1.1 的 `CWidget`。
+Yii 2.0 使用 [[yii\base\Widget]] 作为小部件基类，类似于1.1 的 `CWidget`。
 
 为了让框架获得更好的 IDE 支持，Yii 2.0 引进了一个调用小部件的新语法。就是 [[yii\base\Widget::begin()|begin()]]，[[yii\base\Widget::end()|end()]] 和 [[yii\base\Widget::widget()|widget()]] 三个静态方法，用法如下：
 
