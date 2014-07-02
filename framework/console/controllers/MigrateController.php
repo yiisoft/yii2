@@ -177,11 +177,11 @@ class MigrateController extends Controller
 
         echo "\nLookup:\n";
         foreach (array_unique($migrations) as $migration => $alias) {
-            echo "    $alias\n";
+            echo "    ".$alias." (".\Yii::getAlias($alias).")\n";
         }
         echo "\nMigrations:\n";
         foreach ($migrations as $migration => $alias) {
-            echo "    $migration\n";
+            echo "    ".$migration." (".$alias.")\n";
         }
 
         if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
