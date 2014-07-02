@@ -95,12 +95,12 @@ class AssetBundle extends Object
      */
     public $css = [];
     /**
-     * @var array the options that will be passed to [[\yii\web\View::registerJsFile()]]
+     * @var array the options that will be passed to [[View::registerJsFile()]]
      * when registering the JS files in this bundle.
      */
     public $jsOptions = [];
     /**
-     * @var array the options that will be passed to [[\yii\web\View::registerCssFile()]]
+     * @var array the options that will be passed to [[View::registerCssFile()]]
      * when registering the CSS files in this bundle.
      */
     public $cssOptions = [];

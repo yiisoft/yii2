@@ -72,7 +72,7 @@ class View extends Component
      */
     public $defaultExtension = 'php';
     /**
-     * @var Theme|array the theme object or the configuration array for creating the theme object.
+     * @var Theme|array|string the theme object or the configuration for creating the theme object.
      * If not set, it means theming is not enabled.
      */
     public $theme;
@@ -113,6 +113,8 @@ class View extends Component
             if (!isset($this->theme['class'])) {
                 $this->theme['class'] = 'yii\base\Theme';
             }
+            $this->theme = Yii::createObject($this->theme);
+        } elseif (is_string($this->theme)) {
             $this->theme = Yii::createObject($this->theme);
         }
     }
@@ -204,7 +206,7 @@ class View extends Component
      * Otherwise, it will simply include the view file as a normal PHP file, capture its output and
      * return it as a string.
      *
-     * @param string $viewFile the view file. This can be either a file path or a path alias.
+     * @param string $viewFile the view file. This can be either an absolute file path or an alias of it.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @param object $context the context that the view should use for rendering the view. If null,
      * existing [[context]] will be used.
@@ -238,7 +240,7 @@ class View extends Component
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
                     $this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
                 }
-                /** @var ViewRenderer $renderer */
+                /* @var $renderer ViewRenderer */
                 $renderer = $this->renderers[$ext];
                 $output = $renderer->render($this, $viewFile, $params);
             } else {
@@ -444,7 +446,7 @@ class View extends Component
     {
         $properties['id'] = $id;
         $properties['view'] = $this;
-        /** @var FragmentCache $cache */
+        /* @var $cache FragmentCache */
         $cache = FragmentCache::begin($properties);
         if ($cache->getCachedContent() !== false) {
             $this->endCache();

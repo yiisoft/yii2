@@ -1,10 +1,10 @@
 <?php
 /**
  * This is the template for generating an action view file.
- *
- * @var yii\web\View $this
- * @var yii\gii\generators\form\Generator $generator
  */
+
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\form\Generator */
 
 echo "<?php\n";
 ?>
@@ -12,11 +12,9 @@ echo "<?php\n";
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/**
- * @var yii\web\View $this
- * @var <?= $generator->modelClass ?> $model
- * @var ActiveForm $form
- */
+/* @var $this yii\web\View */
+/* @var $model <?= $generator->modelClass ?> */
+/* @var $form ActiveForm */
 <?= "?>" ?>
 
 <div class="<?= str_replace('/', '-', trim($generator->viewName, '_')) ?>">

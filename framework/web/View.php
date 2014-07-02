@@ -251,7 +251,7 @@ class View extends \yii\base\View
      * Removes a bundle from [[assetBundles]] once files are registered.
      * @param string $name name of the bundle to register
      */
-    private function registerAssetFiles($name)
+    protected function registerAssetFiles($name)
     {
         if (!isset($this->assetBundles[$name])) {
             return;
@@ -362,6 +362,7 @@ class View extends \yii\base\View
      * @param string $url the CSS file to be registered.
      * @param array $depends the names of the asset bundles that this CSS file depends on
      * @param array $options the HTML attributes for the link tag.
+     * Please refer to [[Html::cssFile()]] for supported options.
      * @param string $key the key that identifies the CSS script file. If null, it will use
      * $url as the key. If two CSS files are registered with the same key, the latter
      * will overwrite the former.
@@ -422,6 +423,8 @@ class View extends \yii\base\View
      * - [[POS_BEGIN]]: at the beginning of the body section
      * - [[POS_END]]: at the end of the body section. This is the default value.
      *
+     * Please refer to [[Html::jsFile()]] for other supported options.
+     *
      * @param string $key the key that identifies the JS script file. If null, it will use
      * $url as the key. If two JS files are registered with the same key, the latter
      * will overwrite the former.
@@ -455,12 +458,6 @@ class View extends \yii\base\View
         $lines = [];
         if (!empty($this->metaTags)) {
             $lines[] = implode("\n", $this->metaTags);
-        }
-
-        $request = Yii::$app->getRequest();
-        if ($request instanceof \yii\web\Request && $request->enableCsrfValidation && !$request->getIsAjax()) {
-            $lines[] = Html::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]);
-            $lines[] = Html::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]);
         }
 
         if (!empty($this->linkTags)) {

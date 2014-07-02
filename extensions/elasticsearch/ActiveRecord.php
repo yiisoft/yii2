@@ -40,6 +40,8 @@ use yii\helpers\StringHelper;
  *
  * You may override [[index()]] and [[type()]] to define the index and type this record represents.
  *
+ * @property array|null $highlight A list of arrays with highlighted excerpts indexed by field names. This
+ * property is read-only.
  * @property float $score Returns the score of this record when it was retrieved via a [[find()]] query. This
  * property is read-only.
  *
@@ -51,6 +53,7 @@ class ActiveRecord extends BaseActiveRecord
     private $_id;
     private $_score;
     private $_version;
+    private $_highlight;
 
     /**
      * Returns the database connection used by this AR class.
@@ -114,7 +117,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         $command = static::getDb()->createCommand();
         $result = $command->get(static::index(), static::type(), $primaryKey, $options);
-        if ($result['exists']) {
+        if ($result['found']) {
             $model = static::instantiate($result);
             static::populateRecord($model, $result);
             $model->afterFind();
@@ -150,7 +153,7 @@ class ActiveRecord extends BaseActiveRecord
         $result = $command->mget(static::index(), static::type(), $primaryKeys, $options);
         $models = [];
         foreach ($result['docs'] as $doc) {
-            if ($doc['exists']) {
+            if ($doc['found']) {
                 $model = static::instantiate($doc);
                 static::populateRecord($model, $doc);
                 $model->afterFind();
@@ -173,6 +176,14 @@ class ActiveRecord extends BaseActiveRecord
     public function getScore()
     {
         return $this->_score;
+    }
+
+    /**
+     * @return array|null A list of arrays with highlighted excerpts indexed by field names.
+     */
+    public function getHighlight()
+    {
+        return $this->_highlight;
     }
 
     /**
@@ -282,11 +293,27 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function populateRecord($record, $row)
     {
-        parent::populateRecord($record, $row['_source']);
-        $pk = static::primaryKey()[0];
+        $attributes = [];
+        if (isset($row['_source'])) {
+            $attributes = $row['_source'];
+        }
+        if (isset($row['fields'])) {
+            // reset fields in case it is scalar value TODO use field metadata for this
+            foreach($row['fields'] as $key => $value) {
+                if (count($value) == 1) {
+                    $row['fields'][$key] = reset($value);
+                }
+            }
+            $attributes = array_merge($attributes, $row['fields']);
+        }
+
+        parent::populateRecord($record, $attributes);
+
+        $pk = static::primaryKey()[0];//TODO should always set ID in case of fields are not returned
         if ($pk === '_id') {
             $record->_id = $row['_id'];
         }
+        $record->_highlight = isset($row['highlight']) ? $row['highlight'] : null;
         $record->_score = isset($row['_score']) ? $row['_score'] : null;
         $record->_version = isset($row['_version']) ? $row['_version'] : null; // TODO version should always be available...
     }
@@ -368,35 +395,32 @@ class ActiveRecord extends BaseActiveRecord
         if ($runValidation && !$this->validate($attributes)) {
             return false;
         }
-        if ($this->beforeSave(true)) {
-            $values = $this->getDirtyAttributes($attributes);
-
-            $response = static::getDb()->createCommand()->insert(
-                static::index(),
-                static::type(),
-                $values,
-                $this->getPrimaryKey(),
-                $options
-            );
-
-            if (!isset($response['ok'])) {
-                return false;
-            }
-            $pk = static::primaryKey()[0];
-            $this->$pk = $response['_id'];
-            if ($pk != '_id') {
-                $values[$pk] = $response['_id'];
-            }
-            $this->_version = $response['_version'];
-            $this->_score = null;
-
-            $this->afterSave(true);
-            $this->setOldAttributes($values);
-
-            return true;
+        if (!$this->beforeSave(true)) {
+            return false;
         }
+        $values = $this->getDirtyAttributes($attributes);
 
-        return false;
+        $response = static::getDb()->createCommand()->insert(
+            static::index(),
+            static::type(),
+            $values,
+            $this->getPrimaryKey(),
+            $options
+        );
+
+        $pk = static::primaryKey()[0];
+        $this->$pk = $response['_id'];
+        if ($pk != '_id') {
+            $values[$pk] = $response['_id'];
+        }
+        $this->_version = $response['_version'];
+        $this->_score = null;
+
+        $changedAttributes = array_fill_keys(array_keys($values), null);
+        $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
+
+        return true;
     }
 
     /**
@@ -444,13 +468,13 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['update']['error'])) {
-                $errors[] = $item['update'];
-            } elseif ($item['update']['ok']) {
+            if (isset($item['update']['status']) && $item['update']['status'] == 200) {
                 $n++;
+            } else {
+                $errors[] = $item['update'];
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed updating records.', $errors);
         }
 
@@ -508,13 +532,13 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['update']['error'])) {
-                $errors[] = $item['update'];
-            } elseif ($item['update']['ok']) {
+            if (isset($item['update']['status']) && $item['update']['status'] == 200) {
                 $n++;
+            } else {
+                $errors[] = $item['update'];
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed updating records counters.', $errors);
         }
 
@@ -563,13 +587,15 @@ class ActiveRecord extends BaseActiveRecord
         $n = 0;
         $errors = [];
         foreach ($response['items'] as $item) {
-            if (isset($item['delete']['error'])) {
+            if (isset($item['delete']['status']) && $item['delete']['status'] == 200) {
+                if (isset($item['delete']['found']) && $item['delete']['found']) {
+                    $n++;
+                }
+            } else {
                 $errors[] = $item['delete'];
-            } elseif ($item['delete']['found'] && $item['delete']['ok']) {
-                $n++;
             }
         }
-        if (!empty($errors)) {
+        if (!empty($errors) || isset($response['errors']) && $response['errors']) {
             throw new Exception(__METHOD__ . ' failed deleting records.', $errors);
         }
 

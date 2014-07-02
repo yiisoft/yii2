@@ -809,7 +809,7 @@ class OpenId extends BaseClient implements ClientInterface
             $this->returnUrl .= (strpos($this->returnUrl, '?') ? '&' : '?') . 'openid.claimed_id=' . $claimedId;
         }
 
-        if ($this->data['openid_return_to'] != $this->returnUrl) {
+        if (!$this->compareUrl($this->data['openid_return_to'], $this->returnUrl)) {
             // The return_to url must match the url of current request.
             return false;
         }
@@ -948,5 +948,30 @@ class OpenId extends BaseClient implements ClientInterface
     protected function initUserAttributes()
     {
         return array_merge(['id' => $this->getClaimedId()], $this->fetchAttributes());
+    }
+
+    /**
+     * Compares 2 URLs taking in account possible GET parameters order miss match and URL encoding inconsistencies.
+     * @param string $expectedUrl expected URL.
+     * @param string $actualUrl actual URL.
+     * @return boolean whether URLs are equal.
+     */
+    protected function compareUrl($expectedUrl, $actualUrl)
+    {
+        $expectedUrlInfo = parse_url($expectedUrl);
+        $actualUrlInfo = parse_url($actualUrl);
+        foreach ($expectedUrlInfo as $name => $expectedValue) {
+            if ($name == 'query') {
+                parse_str($expectedValue, $expectedUrlParams);
+                parse_str($actualUrlInfo[$name], $actualUrlParams);
+                $paramsDiff = array_diff_assoc($expectedUrlParams, $actualUrlParams);
+                if (!empty($paramsDiff)) {
+                    return false;
+                }
+            } elseif ($expectedValue != $actualUrlInfo[$name]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

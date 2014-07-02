@@ -12,7 +12,6 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\Url;
 use yii\helpers\FileHelper;
-use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
 /**
@@ -216,7 +215,7 @@ class Response extends \yii\base\Response
         450 => 'Blocked by Windows Parental Controls',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
-        502 => 'Bad Gateway ou Proxy Error',
+        502 => 'Bad Gateway or Proxy Error',
         503 => 'Service Unavailable',
         504 => 'Gateway Time-out',
         505 => 'HTTP Version not supported',
@@ -296,7 +295,6 @@ class Response extends \yii\base\Response
         if ($this->_headers === null) {
             $this->_headers = new HeaderCollection;
         }
-
         return $this->_headers;
     }
 
@@ -346,8 +344,11 @@ class Response extends \yii\base\Response
             $headers = $this->getHeaders();
             foreach ($headers as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
+                // set replace for first occurance of header but false afterwards to allow multiple
+                $replace = true;
                 foreach ($values as $value) {
-                    header("$name: $value", false);
+                    header("$name: $value", $replace);
+                    $replace = false;
                 }
             }
         }
@@ -369,7 +370,7 @@ class Response extends \yii\base\Response
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
             if ($cookie->expire != 1  && isset($validationKey)) {
-                $value = Security::hashData(serialize($value), $validationKey);
+                $value = Yii::$app->getSecurity()->hashData(serialize($value), $validationKey);
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
@@ -609,8 +610,8 @@ class Response extends \yii\base\Response
      * ~~~
      *
      * @param string $filePath file name with full path
-     * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
      * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
      * @param string $xHeader the name of the x-sendfile header.
      * @return static the response object itself
      */

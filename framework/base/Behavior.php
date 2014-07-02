@@ -18,7 +18,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Behavior extends \yii\base\Object
+class Behavior extends Object
 {
     /**
      * @var Component the owner of this behavior
@@ -46,8 +46,8 @@ class Behavior extends \yii\base\Object
      *
      * ~~~
      * [
-     *  Model::EVENT_BEFORE_VALIDATE => 'myBeforeValidate',
-     *  Model::EVENT_AFTER_VALIDATE => 'myAfterValidate',
+     *     Model::EVENT_BEFORE_VALIDATE => 'myBeforeValidate',
+     *     Model::EVENT_AFTER_VALIDATE => 'myAfterValidate',
      * ]
      * ~~~
      *

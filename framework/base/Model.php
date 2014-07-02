@@ -310,28 +310,30 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function validate($attributeNames = null, $clearErrors = true)
     {
+        if ($clearErrors) {
+            $this->clearErrors();
+        }
+
+        if (!$this->beforeValidate()) {
+            return false;
+        }
+
         $scenarios = $this->scenarios();
         $scenario = $this->getScenario();
         if (!isset($scenarios[$scenario])) {
             throw new InvalidParamException("Unknown scenario: $scenario");
         }
 
-        if ($clearErrors) {
-            $this->clearErrors();
-        }
         if ($attributeNames === null) {
             $attributeNames = $this->activeAttributes();
         }
-        if ($this->beforeValidate()) {
-            foreach ($this->getActiveValidators() as $validator) {
-                $validator->validateAttributes($this, $attributeNames);
-            }
-            $this->afterValidate();
 
-            return !$this->hasErrors();
+        foreach ($this->getActiveValidators() as $validator) {
+            $validator->validateAttributes($this, $attributeNames);
         }
+        $this->afterValidate();
 
-        return false;
+        return !$this->hasErrors();
     }
 
     /**
@@ -763,7 +765,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public static function loadMultiple($models, $data)
     {
-        /** @var Model $model */
+        /* @var $model Model */
         $model = reset($models);
         if ($model === false) {
             return false;
@@ -799,7 +801,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public static function validateMultiple($models, $attributeNames = null)
     {
         $valid = true;
-        /** @var Model $model */
+        /* @var $model Model */
         foreach ($models as $model) {
             $valid = $model->validate($attributeNames) && $valid;
         }
@@ -857,44 +859,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         $fields = $this->attributes();
 
         return array_combine($fields, $fields);
-    }
-
-    /**
-     * Determines which fields can be returned by [[toArray()]].
-     * This method will check the requested fields against those declared in [[fields()]] and [[extraFields()]]
-     * to determine which fields can be returned.
-     * @param array $fields the fields being requested for exporting
-     * @param array $expand the additional fields being requested for exporting
-     * @return array the list of fields to be exported. The array keys are the field names, and the array values
-     * are the corresponding object property names or PHP callables returning the field values.
-     */
-    protected function resolveFields(array $fields, array $expand)
-    {
-        $result = [];
-
-        foreach ($this->fields() as $field => $definition) {
-            if (is_integer($field)) {
-                $field = $definition;
-            }
-            if (empty($fields) || in_array($field, $fields, true)) {
-                $result[$field] = $definition;
-            }
-        }
-
-        if (empty($expand)) {
-            return $result;
-        }
-
-        foreach ($this->extraFields() as $field => $definition) {
-            if (is_integer($field)) {
-                $field = $definition;
-            }
-            if (in_array($field, $expand, true)) {
-                $result[$field] = $definition;
-            }
-        }
-
-        return $result;
     }
 
     /**

@@ -6,7 +6,7 @@ After creating the basic application, follow these steps to prepare for the test
 1. Install additional composer packages:
 
    ```
-   php composer.phar require --dev "codeception/codeception: 1.8.*@dev" "codeception/specify: *" "codeception/verify: *"
+   php composer.phar require --dev "codeception/codeception: 2.0.*" "codeception/specify: *" "codeception/verify: *"
    ```
 2. In the file `_bootstrap.php`, modify the definition of the constant `TEST_ENTRY_URL` so
    that it points to the correct entry script URL.

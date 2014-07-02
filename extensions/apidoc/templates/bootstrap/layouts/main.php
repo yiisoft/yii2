@@ -5,9 +5,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Html;
 
-/**
- * @var yii\web\View $this
- */
+/* @var $this yii\web\View */
 
 \yii\apidoc\templates\bootstrap\assets\AssetBundle::register($this);
 
@@ -30,6 +28,7 @@ $this->beginPage();
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="language" content="en" />
+    <?= Html::csrfMetaTags() ?>
     <?php $this->head() ?>
     <title><?= Html::encode($this->context->pageTitle) ?></title>
 </head>
@@ -64,7 +63,7 @@ $this->beginPage();
     }
 
     if ($this->context->guideUrl !== null) {
-        $nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . BaseRenderer::GUIDE_PREFIX . 'index.html'];
+        $nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . BaseRenderer::GUIDE_PREFIX . 'README.html'];
     }
 
     echo Nav::widget([
@@ -80,7 +79,16 @@ $this->beginPage();
   </div>
 </div>
 <?php
-    $this->registerJsFile('./jssearch.index.js', 'yii\apidoc\templates\bootstrap\assets\JsSearchAsset');
+    \yii\apidoc\templates\bootstrap\assets\JsSearchAsset::register($this);
+
+    // defer loading of the search index: https://developers.google.com/speed/docs/best-practices/payload?csw=1#DeferLoadingJS
+    $this->registerJs(<<<JS
+var element = document.createElement("script");
+element.src = "./jssearch.index.js";
+document.body.appendChild(element);
+JS
+);
+
     $this->registerJs(<<<JS
 
 var searchBox = $('#searchbox');

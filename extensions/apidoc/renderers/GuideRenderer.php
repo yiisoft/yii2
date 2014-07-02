@@ -8,6 +8,7 @@
 namespace yii\apidoc\renderers;
 
 use Yii;
+use yii\apidoc\helpers\IndexFileAnalyzer;
 
 /**
  * Base class for all Guide documentation renderers
@@ -25,4 +26,24 @@ abstract class GuideRenderer extends BaseRenderer
      */
     abstract public function render($files, $targetDir);
 
+
+    protected function loadGuideStructure($files)
+    {
+        $chapters = [];
+        foreach ($files as $file) {
+            $contents = file_get_contents($file);
+            if (basename($file) == 'README.md') {
+                $indexAnalyzer = new IndexFileAnalyzer();
+                $chapters = $indexAnalyzer->analyze($contents);
+                break;
+            }
+            if (preg_match("/^(.*)\n=+/", $contents, $matches)) {
+                $headlines[$file] = $matches[1];
+            } else {
+                $headlines[$file] = basename($file);
+            }
+
+        }
+        return $chapters;
+    }
 }

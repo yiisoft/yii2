@@ -12,7 +12,7 @@ use yii\base\NotSupportedException;
 /**
  * HmacSha1 represents 'HMAC-SHA1' signature method.
  *
- * Note: This class require PHP "Hash" extension({@link http://php.net/manual/en/book.hash.php}).
+ * > **Note:** This class requires PHP "Hash" extension(<http://php.net/manual/en/book.hash.php>).
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

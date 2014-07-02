@@ -277,7 +277,7 @@ class Container extends Component
      */
     public function has($class)
     {
-        return isset($this->_singletons[$class]);
+        return isset($this->_definitions[$class]);
     }
 
     /**
@@ -350,7 +350,7 @@ class Container extends Component
      */
     protected function build($class, $params, $config)
     {
-        /** @var ReflectionClass $reflection */
+        /* @var $reflection ReflectionClass */
         list ($reflection, $dependencies) = $this->getDependencies($class);
 
         foreach ($params as $index => $param) {

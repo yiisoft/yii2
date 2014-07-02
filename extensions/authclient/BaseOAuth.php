@@ -58,7 +58,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     public $scope;
     /**
      * @var array cURL request options. Option values from this field will overwrite corresponding
-     * values from {@link defaultCurlOptions()}.
+     * values from [[defaultCurlOptions()]].
      */
     private $_curlOptions = [];
     /**
@@ -155,7 +155,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
-     * Composes default {@link returnUrl} value.
+     * Composes default [[returnUrl]] value.
      * @return string return URL.
      */
     protected function defaultReturnUrl()

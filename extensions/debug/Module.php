@@ -31,7 +31,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
-     * @var string the namespace that controller classes are in.
+     * @inheritdoc
      */
     public $controllerNamespace = 'yii\debug\controllers';
     /**
@@ -60,6 +60,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * You may want to enable the debug logs if you want to investigate how the debug module itself works.
      */
     public $enableDebugLogs = false;
+
 
     /**
      * Returns Yii logo ready to use in `<img src="`
@@ -175,7 +176,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'tag' => $this->logTarget->tag,
         ]);
         echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';
-        /** @var View $view */
+        /* @var $view View */
         $view = $event->sender;
         echo '<style>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.css') . '</style>';
         echo '<script>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.js') . '</script>';

@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
+use yii\helpers\VarDumper;
 
 /**
  * Extracts messages to be translated from source files.
@@ -54,7 +55,7 @@ class MessageController extends Controller
         $filePath = Yii::getAlias($filePath);
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
         }
         copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath);
@@ -172,7 +173,7 @@ class MessageController extends Controller
 
             if (isset($current[$category])) {
                 $new[$category] = array_diff($msgs, $current[$category]);
-                $obsolete = array_diff($current[$category], $msgs);
+                $obsolete += array_diff($current[$category], $msgs);
             } else {
                 $new[$category] = $msgs;
             }
@@ -298,7 +299,7 @@ class MessageController extends Controller
             if (array_keys($translated) == $messages) {
                 echo "nothing new...skipped.\n";
 
-                return;
+                return self::EXIT_CODE_NORMAL;
             }
             $merged = [];
             $untranslated = [];
@@ -374,7 +375,7 @@ class MessageController extends Controller
         if ($format === 'po') {
             $content = $merged;
         } else {
-            $array = str_replace("\r", '', var_export($merged, true));
+            $array = VarDumper::export($merged);
             $content = <<<EOD
 <?php
 /**

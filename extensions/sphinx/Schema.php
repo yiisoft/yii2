@@ -11,6 +11,7 @@ use yii\base\Object;
 use yii\caching\Cache;
 use Yii;
 use yii\caching\GroupDependency;
+use yii\db\Exception;
 
 /**
  * Schema represents the Sphinx schema information.
@@ -131,7 +132,7 @@ class Schema extends Object
         $realName = $this->getRawIndexName($name);
 
         if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-            /** @var $cache Cache */
+            /* @var $cache Cache */
             $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache, false) : $db->schemaCache;
             if ($cache instanceof Cache) {
                 $key = $this->getCacheKey($name);
@@ -295,7 +296,7 @@ class Schema extends Object
      */
     public function refresh()
     {
-        /** @var $cache Cache */
+        /* @var $cache Cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
             GroupDependency::invalidate($cache, $this->getCacheGroup());
@@ -452,8 +453,9 @@ class Schema extends Object
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
             $previous = $e->getPrevious();
-            if ($previous instanceof \PDOException && $previous->getCode() == '42S02') {
+            if ($previous instanceof \PDOException && strpos($previous->getMessage(), 'SQLSTATE[42S02') !== false) {
                 // index does not exist
+                // https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_bad_table_error
                 return false;
             }
             throw $e;
@@ -498,5 +500,23 @@ class Schema extends Object
         $column->phpType = $this->getColumnPhpType($column);
 
         return $column;
+    }
+
+    /**
+     * Handles database error
+     *
+     * @param \Exception $e
+     * @param string $rawSql SQL that produced exception
+     * @throws Exception
+     */
+    public function handleException(\Exception $e, $rawSql)
+    {
+        if ($e instanceof Exception) {
+            throw $e;
+        } else {
+            $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+            $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+        }
     }
 }

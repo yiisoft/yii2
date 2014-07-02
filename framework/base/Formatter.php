@@ -436,7 +436,7 @@ class Formatter extends Component
         $ds = isset($this->decimalSeparator) ? $this->decimalSeparator : '.';
         $ts = isset($this->thousandSeparator) ? $this->thousandSeparator : ',';
 
-        return number_format($value, $decimals, $ds, $ts);
+        return number_format((float) $value, $decimals, $ds, $ts);
     }
 
     /**

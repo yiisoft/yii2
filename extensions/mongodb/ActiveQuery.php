@@ -89,7 +89,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /** @var ActiveQuery $viaQuery */
+                /* @var $viaQuery ActiveQuery */
                 list($viaName, $viaQuery) = $this->via;
                 if ($viaQuery->multiple) {
                     $viaModels = $viaQuery->all();
@@ -150,7 +150,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             if ($this->asArray) {
                 $model = $row;
             } else {
-                /** @var ActiveRecord $class */
+                /* @var $class ActiveRecord */
                 $class = $this->modelClass;
                 $model = $class::instantiate($row);
                 $class::populateRecord($model, $row);
@@ -177,7 +177,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function getCollection($db = null)
     {
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();

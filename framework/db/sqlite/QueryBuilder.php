@@ -41,6 +41,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+
     /**
      * Generates a batch INSERT SQL statement.
      * For example,
@@ -62,14 +63,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows)
     {
+        // SQLite supports batch insert natively since 3.7.11
+        // http://www.sqlite.org/releaselog/3_7_11.html
+        if (version_compare(\SQLite3::version()['versionString'], '3.7.11', '>=')) {
+            return parent::batchInsert($table, $columns, $rows);
+        }
+
         if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
         } else {
             $columnSchemas = [];
-        }
-
-        foreach ($columns as $i => $name) {
-            $columns[$i] = $this->db->quoteColumnName($name);
         }
 
         $values = [];
@@ -77,7 +80,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $vs = [];
             foreach ($row as $i => $value) {
                 if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
-                    $value = $columnSchemas[$columns[$i]]->typecast($value);
+                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
                     $value = $this->db->quoteValue($value);
@@ -89,6 +92,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $vs[] = $value;
             }
             $values[] = implode(', ', $vs);
+        }
+
+        foreach ($columns as $i => $name) {
+            $columns[$i] = $this->db->quoteColumnName($name);
         }
 
         return 'INSERT INTO ' . $this->db->quoteTableName($table)
@@ -139,7 +146,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+        return 'PRAGMA foreign_keys='.(int)$check;
     }
 
     /**

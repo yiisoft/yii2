@@ -51,7 +51,7 @@ class DataColumn extends Column
     public $label;
     /**
      * @var string|\Closure an anonymous function that returns the value to be displayed for every data model.
-     * The signature of this function is `function ($model, $index, $widget)`.
+     * The signature of this function is `function ($model, $key, $index, $column)`.
      * If this is not set, `$model[$attribute]` will be used to obtain the value.
      *
      * You may also set this property to a string representing the attribute name to be displayed in this column.
@@ -110,13 +110,13 @@ class DataColumn extends Column
 
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
-                /** @var Model $model */
+                /* @var $model Model */
                 $model = new $provider->query->modelClass;
                 $label = $model->getAttributeLabel($this->attribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
-                    /** @var Model $model */
+                    /* @var $model Model */
                     $label = $model->getAttributeLabel($this->attribute);
                 } else {
                     $label = Inflector::camel2words($this->attribute);
@@ -176,7 +176,7 @@ class DataColumn extends Column
             if (is_string($this->value)) {
                 return ArrayHelper::getValue($model, $this->value);
             } else {
-                return call_user_func($this->value, $model, $index, $this);
+                return call_user_func($this->value, $model, $key, $index, $this);
             }
         } elseif ($this->attribute !== null) {
             return ArrayHelper::getValue($model, $this->attribute);

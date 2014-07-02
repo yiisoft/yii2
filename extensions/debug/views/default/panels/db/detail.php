@@ -1,4 +1,8 @@
 <?php
+/* @var $panel yii\debug\panels\DbPanel */
+/* @var $searchModel yii\debug\models\search\Db */
+/* @var $dataProvider yii\data\ArrayDataProvider */
+
 use yii\helpers\Html;
 use yii\grid\GridView;
 

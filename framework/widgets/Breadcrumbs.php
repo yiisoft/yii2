@@ -24,7 +24,13 @@ use yii\helpers\Html;
  * ~~~
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
+ *     'itemTemplate' => "<li><i>{link}</i></li>\n", // template for all links
  *     'links' => [
+ *         [
+ *             'label' => 'Post Category',
+ *             'url' => ['post-category/view', 'id' => 10],
+ *             'template' => '<li><b>{link}</b></li>\n', // template for this link only
+ *         ],
  *         ['label' => 'Sample Post', 'url' => ['post/edit', 'id' => 1]],
  *         'Edit',
  *     ],
@@ -76,6 +82,7 @@ class Breadcrumbs extends Widget
      * [
      *     'label' => 'label of the link',  // required
      *     'url' => 'url of the link',      // optional, will be processed by Url::to()
+     *     'template' => 'own template of the item', // optional, if not set $this->itemTemplate will be used
      * ]
      * ~~~
      *
@@ -134,10 +141,11 @@ class Breadcrumbs extends Widget
         } else {
             throw new InvalidConfigException('The "label" element is required for each link.');
         }
+        $issetTemplate = isset($link['template']);
         if (isset($link['url'])) {
-            return strtr($template, ['{link}' => Html::a($label, $link['url'])]);
+            return strtr($issetTemplate ? $link['template'] : $template, ['{link}' => Html::a($label, $link['url'])]);
         } else {
-            return strtr($template, ['{link}' => $label]);
+            return strtr($issetTemplate ? $link['template'] : $template, ['{link}' => $label]);
         }
     }
 }

@@ -27,7 +27,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * @param  mixed  $default default value to use when param is not set.
      * @return mixed  the value of the configuration param
      */
-    public function getParam($name, $default = null)
+    public static function getParam($name, $default = null)
     {
         if (static::$params === null) {
             static::$params = require(__DIR__ . '/data/config.php');

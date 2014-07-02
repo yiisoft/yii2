@@ -83,7 +83,8 @@
 		"twig/twig": "*",
 		"smarty/smarty": "*",
 		"imagine/imagine": "v0.5.0",
-		"swiftmailer/swiftmailer": "*"
+		"swiftmailer/swiftmailer": "*",
+		"cebe/indent": "*"
 	},
 	"suggest": {
 		"phpdocumentor/reflection": "required by yii2-apidoc extension",
@@ -120,5 +121,8 @@
 			"yii\\sphinx\\": "extensions/sphinx/",
 			"yii\\twig\\": "extensions/twig/"
 		}
-	}
+	},
+	"bin": [
+		"framework/yii"
+	]
 }

@@ -38,6 +38,11 @@ class Command extends Component
      * @var array list of arrays or json strings that become parts of a query
      */
     public $queryParts;
+    /**
+     * @var array list of arrays to highlight search results on one or more fields
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
+     */
+    public $highlight;
 
     public $options = [];
 
@@ -75,7 +80,11 @@ class Command extends Component
      */
     public function insert($index, $type, $data, $id = null, $options = [])
     {
-        $body = is_array($data) ? Json::encode($data) : $data;
+        if (empty($data)) {
+            $body = '{}';
+        } else {
+            $body = is_array($data) ? Json::encode($data) : $data;
+        }
 
         if ($id !== null) {
             return $this->db->put([$index, $type, $id], $options, $body);
@@ -315,7 +324,7 @@ class Command extends Component
     {
         $body = $mapping !== null ? (is_string($mapping) ? $mapping : Json::encode($mapping)) : null;
 
-        return $this->db->put([$index, $type, '_mapping'], $options, $body);
+        return $this->db->put([$index, '_mapping', $type], $options, $body);
     }
 
     /**
@@ -326,7 +335,7 @@ class Command extends Component
      */
     public function getMapping($index = '_all', $type = '_all')
     {
-        return $this->db->get([$index, $type, '_mapping']);
+        return $this->db->get([$index, '_mapping', $type]);
     }
 
     /**
@@ -337,7 +346,7 @@ class Command extends Component
      */
     public function deleteMapping($index, $type)
     {
-        return $this->db->delete([$index, $type]);
+        return $this->db->delete([$index, '_mapping', $type]);
     }
 
     /**
@@ -346,10 +355,11 @@ class Command extends Component
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html
      */
-    public function getFieldMapping($index, $type = '_all')
-    {
-        return $this->db->put([$index, $type, '_mapping']);
-    }
+//    public function getFieldMapping($index, $type = '_all')
+//    {
+//		// TODO implement
+//        return $this->db->put([$index, $type, '_mapping']);
+//    }
 
     /**
      * @param $options

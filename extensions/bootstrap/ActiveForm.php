@@ -12,7 +12,7 @@ use yii\helpers\Html;
 use yii\base\InvalidConfigException;
 
 /**
- * A Bootstrap 3 enhanced version of [[yii\widgets\ActiveForm]].
+ * A Bootstrap 3 enhanced version of [[\yii\widgets\ActiveForm]].
  *
  * This class mainly adds the [[layout]] property to choose a Bootstrap 3 form layout.
  * So for example to render a horizontal form you would:
@@ -21,7 +21,7 @@ use yii\base\InvalidConfigException;
  * use yii\bootstrap\ActiveForm;
  *
  * $form = ActiveForm::begin(['layout' => 'horizontal'])
- *  ```
+ * ```
  *
  * This will set default values for the [[yii\bootstrap\ActiveField|ActiveField]]
  * to render horizontal form fields. In particular the [[yii\bootstrap\ActiveField::template|template]]

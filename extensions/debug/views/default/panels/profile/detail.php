@@ -1,4 +1,10 @@
 <?php
+/* @var $panel yii\debug\panels\ProfilingPanel */
+/* @var $searchModel yii\debug\models\search\Profile */
+/* @var $dataProvider yii\data\ArrayDataProvider */
+/* @var $time integer */
+/* @var $memory integer */
+
 use yii\grid\GridView;
 use yii\helpers\Html;
 

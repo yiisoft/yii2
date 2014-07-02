@@ -5,11 +5,9 @@ use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
 
-/**
- * @var ClassDoc|InterfaceDoc|TraitDoc $type
- * @var yii\web\View $this
- * @var \yii\apidoc\templates\html\ApiRenderer $renderer
- */
+/* @var $type ClassDoc|InterfaceDoc|TraitDoc */
+/* @var $this yii\web\View */
+/* @var $renderer \yii\apidoc\templates\html\ApiRenderer */
 
 $renderer = $this->context;
 ?>
@@ -80,8 +78,10 @@ $renderer = $this->context;
 </table>
 
 <div id="classDescription">
-    <strong><?= ApiMarkdown::process($type->shortDescription, $type, true) ?></strong>
-    <p><?= ApiMarkdown::process($type->description, $type) ?></p>
+    <p><strong><?= ApiMarkdown::process($type->shortDescription, $type, true) ?></strong></p>
+    <?= ApiMarkdown::process($type->description, $type) ?>
+
+    <?= $this->render('seeAlso', ['object' => $type]) ?>
 </div>
 
 <a name="properties"></a>

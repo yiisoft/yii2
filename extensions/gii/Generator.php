@@ -11,6 +11,7 @@ use Yii;
 use ReflectionClass;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\helpers\VarDumper;
 use yii\web\View;
 
 /**
@@ -309,7 +310,7 @@ abstract class Generator extends Model
      */
     public function render($template, $params = [])
     {
-        $view = new View;
+        $view = new View();
         $params['generator'] = $this;
 
         return $view->renderFile($this->getTemplatePath() . '/' . $template, $params, $this);
@@ -496,9 +497,7 @@ abstract class Generator extends Model
         if ($this->enableI18N) {
             // If there are placeholders, use them
             if (!empty($placeholders)) {
-                $search = ['array (', ')'];
-                $replace = ['[', ']'];
-                $ph = ', ' . str_replace($search, $replace, var_export($placeholders, true));
+                $ph = ', ' . VarDumper::export($placeholders);
             } else {
                 $ph = '';
             }

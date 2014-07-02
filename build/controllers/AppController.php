@@ -8,9 +8,7 @@
 namespace yii\build\controllers;
 
 use Yii;
-use yii\base\InvalidParamException;
 use yii\console\Controller;
-use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
@@ -77,6 +75,12 @@ class AppController extends Controller
         $this->stdout("done.\n");
     }
 
+    /**
+     * Finds linkable applications
+     *
+     * @param string $dir directory to search in
+     * @return array list of applications command can link
+     */
     protected function findDirs($dir)
     {
         $list = [];

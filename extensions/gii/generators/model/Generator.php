@@ -55,6 +55,8 @@ class Generator extends \yii\gii\Generator
     {
         return array_merge(parent::rules(), [
             [['db', 'ns', 'tableName', 'modelClass', 'baseClass'], 'filter', 'filter' => 'trim'],
+            [['ns'], 'filter', 'filter' => function($value) { return trim($value, '\\'); }],
+
             [['db', 'ns', 'tableName', 'baseClass'], 'required'],
             [['db', 'modelClass'], 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
             [['ns', 'baseClass'], 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
@@ -111,6 +113,10 @@ class Generator extends \yii\gii\Generator
                 you may want to uncheck this option to accelerate the code generation process.',
             'generateLabelsFromComments' => 'This indicates whether the generator should generate attribute labels
                 by using the comments of the corresponding DB columns.',
+            'useTablePrefix' => 'This indicates whether the table name returned by the generated ActiveRecord class
+                should consider the <code>tablePrefix</code> setting of the DB connection. For example, if the
+                table name is <code>tbl_post</code> and <code>tablePrefix=tbl_</code>, the ActiveRecord class
+                will return the table name as <code>{{%post}}</code>.',
         ]);
     }
 
@@ -316,10 +322,14 @@ class Generator extends \yii\gii\Generator
 
                 // Add relation for the referenced table
                 $hasMany = false;
-                foreach ($fks as $key) {
-                    if (!in_array($key, $table->primaryKey, true)) {
-                        $hasMany = true;
-                        break;
+                if (count($table->primaryKey) > count($fks)) {
+                    $hasMany = true;
+                } else {
+                    foreach ($fks as $key) {
+                        if (!in_array($key, $table->primaryKey, true)) {
+                            $hasMany = true;
+                            break;
+                        }
                     }
                 }
                 $link = $this->generateRelationLink($refs);

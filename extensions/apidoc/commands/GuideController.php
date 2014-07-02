@@ -78,14 +78,12 @@ class GuideController extends BaseController
         file_put_contents($targetDir . '/guide-references.txt', implode("\n", $references));
     }
 
+
     /**
      * @inheritdoc
      */
     protected function findFiles($path, $except = [])
     {
-        if (empty($except)) {
-            $except = ['README.md'];
-        }
         $path = FileHelper::normalizePath($path);
         $options = [
             'only' => ['*.md'],

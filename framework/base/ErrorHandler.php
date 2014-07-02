@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\VarDumper;
 use yii\web\HttpException;
 
 /**
@@ -60,6 +61,15 @@ abstract class ErrorHandler extends Component
     }
 
     /**
+     * Unregisters this error handler by restoring the PHP error and exception handlers.
+     */
+    public function unregister()
+    {
+        restore_error_handler();
+        restore_exception_handler();
+    }
+
+    /**
      * Handles uncaught PHP exceptions.
      *
      * This method is implemented as a PHP exception handler.
@@ -98,7 +108,7 @@ abstract class ErrorHandler extends Component
                     echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
                 }
             }
-            $msg .= "\n\$_SERVER = " . var_export($_SERVER, true);
+            $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
             error_log($msg);
             exit(1);
         }
@@ -160,14 +170,17 @@ abstract class ErrorHandler extends Component
         if (ErrorException::isFatalError($error)) {
             $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
             $this->exception = $exception;
-            // use error_log because it's too late to use Yii log
-            // also do not log when on CLI SAPI because message will be sent to STDERR which has already been done by PHP
-            PHP_SAPI === 'cli' or error_log($exception);
+
+            $this->logException($exception);
 
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
             $this->renderException($exception);
+
+            // need to explicitly flush logs because exit() next will terminate the app immediately
+            Yii::getLogger()->flush(true);
+
             exit(1);
         }
     }

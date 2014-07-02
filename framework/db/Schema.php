@@ -25,6 +25,10 @@ use yii\caching\GroupDependency;
  * @property string[] $tableNames All table names in the database. This property is read-only.
  * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
  * instance of [[TableSchema]] or its child class. This property is read-only.
+ * @property string $transactionIsolationLevel The transaction isolation level to use for this transaction.
+ * This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]],
+ * [[Transaction::REPEATABLE_READ]] and [[Transaction::SERIALIZABLE]] but also a string containing DBMS specific
+ * syntax to be used after `SET TRANSACTION ISOLATION LEVEL`. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -73,6 +77,14 @@ abstract class Schema extends Object
     private $_builder;
 
     /**
+     * @var array map of DB errors and corresponding exceptions
+     * If left part is found in DB error message exception class from the right part is used.
+     */
+    public $exceptionMap = [
+        'SQLSTATE[23' => 'yii\db\IntegrityException',
+    ];
+
+    /**
      * Loads the metadata for the specified table.
      * @param string $name table name
      * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
@@ -95,7 +107,7 @@ abstract class Schema extends Object
         $realName = $this->getRawTableName($name);
 
         if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-            /** @var Cache $cache */
+            /* @var $cache Cache */
             $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache, false) : $db->schemaCache;
             if ($cache instanceof Cache) {
                 $key = $this->getCacheKey($name);
@@ -226,7 +238,7 @@ abstract class Schema extends Object
      */
     public function refresh()
     {
-        /** @var Cache $cache */
+        /* @var $cache Cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
             GroupDependency::invalidate($cache, $this->getCacheGroup());
@@ -329,6 +341,19 @@ abstract class Schema extends Object
     public function rollBackSavepoint($name)
     {
         $this->db->createCommand("ROLLBACK TO SAVEPOINT $name")->execute();
+    }
+
+    /**
+     * Sets the isolation level of the current transaction.
+     * @param string $level The transaction isolation level to use for this transaction.
+     * This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]], [[Transaction::REPEATABLE_READ]]
+     * and [[Transaction::SERIALIZABLE]] but also a string containing DBMS specific syntax to be used
+     * after `SET TRANSACTION ISOLATION LEVEL`.
+     * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     */
+    public function setTransactionIsolationLevel($level)
+    {
+        $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level;")->execute();
     }
 
     /**
@@ -468,6 +493,31 @@ abstract class Schema extends Object
             }
         } else {
             return 'string';
+        }
+    }
+
+    /**
+     * Handles database error
+     *
+     * @param \Exception $e
+     * @param string $rawSql SQL that produced exception
+     * @throws Exception
+     */
+    public function handleException(\Exception $e, $rawSql)
+    {
+        if ($e instanceof Exception) {
+            throw $e;
+        } else {
+            $exceptionClass = '\yii\db\Exception';
+            foreach ($this->exceptionMap as $error => $class) {
+                if (strpos($e->getMessage(), $error) !== false) {
+                    $exceptionClass = $class;
+                }
+            }
+
+            $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+            $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+            throw new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
         }
     }
 }

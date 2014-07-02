@@ -124,7 +124,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->from)) {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
             $this->from = [$tableName];
@@ -181,7 +181,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function removeDuplicatedModels($models)
     {
         $hash = [];
-        /** @var ActiveRecord $class */
+        /* @var $class ActiveRecord */
         $class = $this->modelClass;
         $pks = $class::primaryKey();
 
@@ -223,13 +223,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function one($db = null)
     {
-        $command = $this->createCommand($db);
-        $row = $command->queryOne();
+        $row = parent::one($db);
         if ($row !== false) {
             if ($this->asArray) {
                 $model = $row;
             } else {
-                /** @var ActiveRecord $class */
+                /* @var $class ActiveRecord */
                 $class = $this->modelClass;
                 $model = $class::instantiate($row);
                 $class::populateRecord($model, $row);
@@ -283,7 +282,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function createCommandInternal($db)
     {
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
@@ -314,7 +313,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
-            /** @var ActiveQuery $viaQuery */
+            /* @var $viaQuery ActiveQuery */
             list($viaName, $viaQuery) = $this->via;
             if ($viaQuery->multiple) {
                 $viaModels = $viaQuery->all();
@@ -511,7 +510,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function getQueryTableName($query)
     {
         if (empty($query->from)) {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $query->modelClass;
             $tableName = $modelClass::tableName();
         } else {

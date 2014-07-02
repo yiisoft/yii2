@@ -25,11 +25,23 @@ class ActiveForm extends Widget
 {
     /**
      * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @see method for specifying the HTTP method for this form.
      */
     public $action = '';
     /**
-     * @var string the form submission method. This should be either 'post' or 'get'.
-     * Defaults to 'post'.
+     * @var string the form submission method. This should be either 'post' or 'get'. Defaults to 'post'.
+     *
+     * When you set this to 'get' you may see the url parameters repeated on each request.
+     * This is because the default value of [[action]] is set to be the current request url and each submit
+     * will add new parameters instead of replacing existing ones.
+     * You may set [[action]] explicitly to avoid this:
+     *
+     * ```php
+     * $form = ActiveForm::begin([
+     *     'method' => 'get',
+     *     'action' => ['controller/action'],
+     * ]);
+     * ```
      */
     public $method = 'post';
     /**
@@ -185,7 +197,7 @@ class ActiveForm extends Widget
     protected function getClientOptions()
     {
         $options = [
-            'errorSummary' => '.' . $this->errorSummaryCssClass,
+            'errorSummary' => '.' . implode('.', preg_split('/\s+/', $this->errorSummaryCssClass, -1, PREG_SPLIT_NO_EMPTY)),
             'validateOnSubmit' => $this->validateOnSubmit,
             'errorCssClass' => $this->errorCssClass,
             'successCssClass' => $this->successCssClass,
@@ -289,7 +301,7 @@ class ActiveForm extends Widget
         } else {
             $models = [$model];
         }
-        /** @var Model $model */
+        /* @var $model Model */
         foreach ($models as $model) {
             $model->validate($attributes);
             foreach ($model->getErrors() as $attribute => $errors) {
@@ -325,7 +337,7 @@ class ActiveForm extends Widget
     public static function validateMultiple($models, $attributes = null)
     {
         $result = [];
-        /** @var Model $model */
+        /* @var $model Model */
         foreach ($models as $i => $model) {
             $model->validate($attributes);
             foreach ($model->getErrors() as $attribute => $errors) {

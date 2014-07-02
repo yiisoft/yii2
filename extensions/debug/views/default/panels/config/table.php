@@ -1,10 +1,8 @@
 <?php
 use yii\helpers\Html;
 
-/**
- * @var string $caption
- * @var array $values
- */
+/* @var $caption string */
+/* @var $values array */
 ?>
 
 <h3><?= $caption ?></h3>
@@ -13,7 +11,7 @@ use yii\helpers\Html;
 
     <p>Empty.</p>
 
-<?php else:	?>
+<?php else: ?>
 
     <table class="table table-condensed table-bordered table-striped table-hover" style="table-layout: fixed;">
         <thead>

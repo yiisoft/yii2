@@ -164,11 +164,41 @@ class Context extends Component
     {
         // TODO also for properties?
         foreach ($class->methods as $m) {
-            $inheritedMethod = $this->inheritMethodRecursive($m, $class);
-            foreach (['shortDescription', 'description', 'params', 'return', 'returnType', 'returnTypes', 'exceptions'] as $property) {
-                if (empty($m->$property)) {
-                    $m->$property = $inheritedMethod->$property;
+            if ($m->hasTag('inheritdoc')) {
+                $inheritedMethod = $this->inheritMethodRecursive($m, $class);
+                if (!$inheritedMethod) {
+                    $this->errors[] = [
+                        'line' => $m->startLine,
+                        'file' => $class->sourceFile,
+                        'message' => "Method {$m->name} has no parent to inherit from in {$class->name}.",
+                    ];
+                    continue;
                 }
+                foreach (['shortDescription', 'description', 'return', 'returnType', 'returnTypes', 'exceptions'] as $property) {
+                    if (empty($m->$property) || is_string($m->$property) && trim($m->$property) === '') {
+                        $m->$property = $inheritedMethod->$property;
+                    }
+                }
+                foreach ($m->params as $i => $param) {
+                    if (!isset($inheritedMethod->params[$i])) {
+                        $this->errors[] = [
+                            'line' => $m->startLine,
+                            'file' => $class->sourceFile,
+                            'message' => "Method param $i does not exist in parent method, @inheritdoc not possible in {$m->name} in {$class->name}.",
+                        ];
+                        continue;
+                    }
+                    if (empty($param->description) || trim($param->description) === '') {
+                        $param->description = $inheritedMethod->params[$i]->description;
+                    }
+                    if (empty($param->type) || trim($param->type) === '') {
+                        $param->type = $inheritedMethod->params[$i]->type;
+                    }
+                    if (empty($param->types) || trim($param->types) === '') {
+                        $param->types = $inheritedMethod->params[$i]->types;
+                    }
+                }
+                $m->removeTag('inheritdoc');
             }
         }
     }
@@ -179,21 +209,50 @@ class Context extends Component
      */
     private function inheritMethodRecursive($method, $class)
     {
-        if (!isset($this->classes[$class->parentClass])) {
-            return $method;
-        }
-        $parent = $this->classes[$class->parentClass];
-        foreach ($method->tags as $tag) {
-            if (strtolower($tag->getName()) == 'inheritdoc') {
-                if (isset($parent->methods[$method->name])) {
-                    $method = $parent->methods[$method->name];
-                }
+        $inheritanceCandidates = array_merge(
+            $this->getParents($class),
+            $this->getInterfaces($class)
+        );
 
-                return $this->inheritMethodRecursive($method, $parent);
+        $methods = [];
+        foreach($inheritanceCandidates as $candidate) {
+            if (isset($candidate->methods[$method->name])) {
+                $cmethod = $candidate->methods[$method->name];
+                if ($cmethod->hasTag('inheritdoc')) {
+                    $this->inheritDocs($candidate);
+                }
+                $methods[] = $cmethod;
             }
         }
 
-        return $method;
+        return reset($methods);
+    }
+
+    /**
+     * @param ClassDoc $class
+     * @return array
+     */
+    private function getParents($class)
+    {
+        if ($class->parentClass === null || !isset($this->classes[$class->parentClass])) {
+            return [];
+        }
+        return array_merge([$this->classes[$class->parentClass]], $this->getParents($this->classes[$class->parentClass]));
+    }
+
+    /**
+     * @param ClassDoc $class
+     * @return array
+     */
+    private function getInterfaces($class)
+    {
+        $interfaces = [];
+        foreach($class->interfaces as $interface) {
+            if (isset($this->interfaces[$interface])) {
+                $interfaces[] = $this->interfaces[$interface];
+            }
+        }
+        return $interfaces;
     }
 
     /**
@@ -209,7 +268,7 @@ class Context extends Component
             if ($method->isStatic) {
                 continue;
             }
-            if (!strncmp($name, 'get', 3) && $this->paramsOptional($method)) {
+            if (!strncmp($name, 'get', 3) && strlen($name) > 3 && $this->paramsOptional($method)) {
                 $propertyName = '$' . lcfirst(substr($method->name, 3));
                 if (isset($class->properties[$propertyName])) {
                     $property = $class->properties[$propertyName];
@@ -230,15 +289,14 @@ class Context extends Component
                         'isStatic' => false,
                         'type' => $method->returnType,
                         'types' => $method->returnTypes,
-                        'shortDescription' => (($pos = strpos($method->return, '.')) !== false) ?
-                                substr($method->return, 0, $pos) : $method->return,
+                        'shortDescription' => BaseDoc::extractFirstSentence($method->return),
                         'description' => $method->return,
                         'getter' => $method
                         // TODO set default value
                     ]);
                 }
             }
-            if (!strncmp($name, 'set', 3) && $this->paramsOptional($method, 1)) {
+            if (!strncmp($name, 'set', 3) && strlen($name) > 3 && $this->paramsOptional($method, 1)) {
                 $propertyName = '$' . lcfirst(substr($method->name, 3));
                 if (isset($class->properties[$propertyName])) {
                     $property = $class->properties[$propertyName];
@@ -260,8 +318,7 @@ class Context extends Component
                         'isStatic' => false,
                         'type' => $param->type,
                         'types' => $param->types,
-                        'shortDescription' => (($pos = strpos($param->description, '.')) !== false) ?
-                                substr($param->description, 0, $pos) : $param->description,
+                        'shortDescription' => BaseDoc::extractFirstSentence($param->description),
                         'description' => $param->description,
                         'setter' => $method
                     ]);
@@ -282,7 +339,6 @@ class Context extends Component
                 return false;
             }
         }
-
         return true;
     }
 
@@ -297,7 +353,6 @@ class Context extends Component
                 return $param;
             }
         }
-
         return null;
     }
 
@@ -320,7 +375,6 @@ class Context extends Component
                 return true;
             }
         }
-
         return false;
     }
 }

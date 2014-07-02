@@ -1,65 +1,65 @@
 html,
 body {
-	height: 100%;
+    height: 100%;
 }
 
 .guide-content, .api-content {
-	max-width: 1250px;
+    max-width: 1250px;
 }
 
 .wrap {
-	min-height: 100%;
-	height: auto;
-	width: auto;
-	margin: 60px 30px 0 30px;
-	padding: 0;
+    min-height: 100%;
+    height: auto;
+    width: auto;
+    margin: 60px 30px 0 30px;
+    padding: 0;
 }
 
 .footer {
-	height: 60px;
-	background-color: #f5f5f5;
-	border-top: 1px solid #ddd;
-	padding: 20px 30px;
+    height: 60px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    padding: 20px 30px;
 }
 
 #navigation {
-	margin-top: 20px;
+    margin-top: 20px;
 }
 
 .submenu a {
-	background: #f5f5f5;
-	border-radius: 0;
+    background: #f5f5f5;
+    border-radius: 0;
 }
 
 .submenu a:hover, .submenu a:active,
 .submenu a.active, .submenu a.active:hover, .submenu a.active:active {
-	background: #44b5f6;
-	border-color: #44b5f6;
-	border-radius: 0;
-	color: #fff;
+    background: #44b5f6;
+    border-color: #44b5f6;
+    border-radius: 0;
+    color: #fff;
 }
 
 .signature, .table-striped > tbody > tr > td.signature {
-	margin: 10px 0 10px 0;
-	padding: 8px;
+    margin: 10px 0 10px 0;
+    padding: 8px;
 
-	color: #000000;
-	background: rgba(230, 236, 255, 0.81);
-	border: 1px rgba(191, 207, 255, 0.81) solid;
+    color: #000000;
+    background: rgba(230, 236, 255, 0.81);
+    border: 1px rgba(191, 207, 255, 0.81) solid;
 
-	font-family: "courier new", "times new roman", monospace;
-	line-height: 1.3em;
-	white-space: pre-line;
-	word-wrap: break-word;
-	word-break: break-all;
+    font-family: "courier new", "times new roman", monospace;
+    line-height: 1.3em;
+    white-space: pre-line;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 blockquote {
-	font-size: 14px;
+    font-size: 14px;
 }
 
 td p {
-	margin: 0;
+    margin: 0;
 }
 
 table.detail-table .param-name-col { width: 15%; min-width: 100px; }
@@ -73,43 +73,72 @@ table.summary-table .col-event    { width: 20%; }
 table.summary-table .col-defined  { width: 15%; }
 
 .detail-header {
-	margin-top: 30px;
+    margin-top: 30px;
 }
 
 .doc-description {
-	border-left: solid 1px #ddd;
-	border-right: solid 1px #ddd;
-	padding: 10px 8px;
-	margin: 0;
+    border-left: solid 1px #ddd;
+    border-right: solid 1px #ddd;
+    padding: 10px 8px;
+    margin: 0;
 }
 
 .event-doc .doc-description {
-	border-bottom: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
 }
 
 .doc-description p:last-child {
-	margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .tool-link {
-	float: right;
-	color: #ddd;
-	margin: 0 8px;
+    float: right;
+    color: #ddd;
+    margin: 0 8px;
 }
 
 .icon-hash:before {
-	content: '#';
-	font-size: 32px;
-	font-weight: bold;
-	/*top: -10px;*/
-	line-height: 0.5;
+    content: '#';
+    font-size: 32px;
+    font-weight: bold;
+    /*top: -10px;*/
+    line-height: 0.5;
 }
 
 .tool-link:hover {
-	color: #bbb;
-	text-decoration: none;
+    color: #bbb;
+    text-decoration: none;
 }
 
+.hashlink {
+    display: none;
+}
+
+h1:hover .hashlink, h2:hover .hashlink, h3:hover .hashlink, h4:hover .hashlink, h5:hover .hashlink {
+    display: inline;
+}
+
+.toplink {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+
+    padding: 5px 8px 0 5px;
+
+    border: solid 1px #ddd;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.toplink a {
+    color: #bbb;
+    text-decoration: none;
+}
+
+.toplink a:hover {
+    color: #999;
+    text-decoration: none;
+}
 
 #search-resultbox {
     position: fixed;

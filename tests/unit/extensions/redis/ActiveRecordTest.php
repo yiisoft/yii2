@@ -8,6 +8,8 @@ use yiiunit\data\ar\redis\Customer;
 use yiiunit\data\ar\redis\OrderItem;
 use yiiunit\data\ar\redis\Order;
 use yiiunit\data\ar\redis\Item;
+use yiiunit\data\ar\redis\OrderItemWithNullFK;
+use yiiunit\data\ar\redis\OrderWithNullFK;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 
 /**
@@ -35,6 +37,16 @@ class ActiveRecordTest extends RedisTestCase
     public function getOrderItemClass()
     {
         return OrderItem::className();
+    }
+
+    public function getOrderWithNullFKClass()
+    {
+        return OrderWithNullFK::className();
+    }
+
+    public function getOrderItemWithNullFKmClass()
+    {
+        return OrderItemWithNullFK::className();
     }
 
     public function setUp()
@@ -99,9 +111,51 @@ class ActiveRecordTest extends RedisTestCase
         $orderItem = new OrderItem();
         $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
         $orderItem->save(false);
+
+        $order = new OrderWithNullFK();
+        $order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
+        $order->save(false);
+        $order = new OrderWithNullFK();
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
+        $order->save(false);
+        $order = new OrderWithNullFK();
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
+        $order->save(false);
+
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 2, 'quantity' => 2, 'subtotal' => 40.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 4, 'quantity' => 1, 'subtotal' => 10.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 5, 'quantity' => 1, 'subtotal' => 15.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
+        $orderItem->save(false);
+
     }
 
     public function testFindNullValues()
+    {
+        // https://github.com/yiisoft/yii2/issues/1311
+        $this->markTestSkipped('Redis does not store/find null values correctly.');
+    }
+
+    public function testUnlinkAll()
+    {
+        // https://github.com/yiisoft/yii2/issues/1311
+        $this->markTestSkipped('Redis does not store/find null values correctly.');
+    }
+
+    public function testUnlink()
     {
         // https://github.com/yiisoft/yii2/issues/1311
         $this->markTestSkipped('Redis does not store/find null values correctly.');
@@ -139,7 +193,7 @@ class ActiveRecordTest extends RedisTestCase
     public function testFindIndexBy()
     {
         $customerClass = $this->getCustomerClass();
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy
         $customers = Customer::find()->indexBy('name')/*->orderBy('id')*/->all();
         $this->assertEquals(3, count($customers));
@@ -160,7 +214,7 @@ class ActiveRecordTest extends RedisTestCase
     public function testFindLimit()
     {
         // TODO this test is duplicated because of missing orderBy support in redis
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // all()
         $customers = Customer::find()->all();
         $this->assertEquals(3, count($customers));
@@ -204,10 +258,10 @@ class ActiveRecordTest extends RedisTestCase
 
     public function testFindEagerViaRelation()
     {
-        /** @var \yii\db\ActiveRecordInterface $orderClass */
+        /* @var $orderClass \yii\db\ActiveRecordInterface */
         $orderClass = $this->getOrderClass();
 
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         $orders = $orderClass::find()->with('items')/*->orderBy('id')*/->all(); // TODO this test is duplicated because of missing orderBy support in redis
         $this->assertEquals(3, count($orders));
         $order = $orders[0];

@@ -1,16 +1,13 @@
 <?php
-/**
- * @var \yii\web\HttpException|\Exception $exception
- * @var \yii\web\ErrorHandler $handler
- */
+/* @var $exception \yii\web\HttpException|\Exception */
+/* @var $handler \yii\web\ErrorHandler */
 if ($exception instanceof \yii\web\HttpException) {
     $code = $exception->statusCode;
 } else {
     $code = $exception->getCode();
 }
-if ($exception instanceof \yii\base\Exception) {
-    $name = $exception->getName();
-} else {
+$name = $handler->getExceptionName($exception);
+if ($name === null) {
     $name = 'Error';
 }
 if ($code) {

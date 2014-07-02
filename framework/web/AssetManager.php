@@ -139,7 +139,7 @@ class AssetManager extends Component
             $bundle = Yii::createObject($name);
         }
         if ($publish) {
-            /** @var AssetBundle $bundle */
+            /* @var $bundle AssetBundle */
             $bundle->publish($this);
         }
 

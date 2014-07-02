@@ -122,11 +122,73 @@ class InflectorTest extends TestCase
         $this->assertEquals("customer_tables", Inflector::tableize('customerTable'));
     }
 
-    public function testSlug()
+    public function testSlugCommons()
     {
-        $this->assertEquals("privet-hello-jii-framework-kak-dela-how-it-goes", Inflector::slug('Привет Hello Йии-- Framework !--- Как дела ? How it goes ?'));
+        $data = [
+            '' => '',
+            'hello world 123' => 'hello-world-123',
+            'remove.!?[]{}…symbols' => 'removesymbols',
+            'minus-sign' => 'minus-sign',
+            'mdash—sign' => 'mdash-sign',
+            'ndash–sign' => 'ndash-sign',
+            'áàâéèêíìîóòôúùûã' => 'aaaeeeiiiooouuua',
+            'älä lyö ääliö ööliä läikkyy' => 'ala-lyo-aalio-oolia-laikkyy',
+        ];
 
-        $this->assertEquals("this-is-a-title", Inflector::slug('this is a title'));
+        foreach ($data as $source => $expected) {
+            if (extension_loaded('intl')) {
+                $this->assertEquals($expected, FallbackInflector::slug($source));
+            }
+            $this->assertEquals($expected, Inflector::slug($source));
+        }
+    }
+
+    public function testSlugIntl()
+    {
+        if (!extension_loaded('intl')) {
+            $this->markTestSkipped('intl extension is required.');
+        }
+
+        // Some test strings are from https://github.com/bergie/midgardmvc_helper_urlize. Thank you, Henri Bergius!
+        $data = [
+            // Korean
+            '해동검도' => 'haedong-geomdo',
+
+            // Hiragana
+            'ひらがな' => 'hiragana',
+
+            // Georgian
+            'საქართველო' => 'sakartvelo',
+
+            // Arabic
+            'العربي' => 'alrby',
+            'عرب' => 'rb',
+
+            // Hebrew
+            'עִבְרִית' => 'iberiyt',
+
+            // Turkish
+            'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'sanrm-hepimiz-ayn-seyi-dusunuyoruz',
+
+            // Russian
+            'недвижимость' => 'nedvizimost',
+            'Контакты' => 'kontakty',
+        ];
+
+        foreach ($data as $source => $expected) {
+            $this->assertEquals($expected, Inflector::slug($source));
+        }
+    }
+
+    public function testSlugPhp()
+    {
+        $data = [
+            'we have недвижимость' => 'we-have',
+        ];
+
+        foreach ($data as $source => $expected) {
+            $this->assertEquals($expected, FallbackInflector::slug($source));
+        }
     }
 
     public function testClassify()

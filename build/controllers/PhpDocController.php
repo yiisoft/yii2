@@ -126,6 +126,7 @@ class PhpDocController extends Controller
                 '/docs/',
                 '/extensions/apidoc/helpers/PrettyPrinter.php',
                 '/extensions/apidoc/helpers/ApiIndexer.php',
+                '/extensions/apidoc/helpers/ApiMarkdownLaTeX.php',
                 '/extensions/codeception/TestCase.php',
                 '/extensions/codeception/DbTestCase.php',
                 '/extensions/composer/',

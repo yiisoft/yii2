@@ -1,10 +1,8 @@
 <?php
+/* @var $panel yii\debug\panels\RequestPanel */
+
 use yii\helpers\Html;
 use yii\web\Response;
-
-/**
- * @var yii\debug\panels\RequestPanel $panel
- */
 
 $statusCode = $panel->data['statusCode'];
 if ($statusCode === null) {

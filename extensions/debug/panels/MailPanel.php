@@ -25,7 +25,6 @@ use yii\mail\MessageInterface;
  */
 class MailPanel extends Panel
 {
-
     /**
      * @var string path where all emails will be saved. should be an alias.
      */
@@ -35,12 +34,15 @@ class MailPanel extends Panel
      */
     private $_messages = [];
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
         Event::on(BaseMailer::className(), BaseMailer::EVENT_AFTER_SEND, function ($event) {
 
-            /** @var MessageInterface $message */
+            /* @var $message MessageInterface */
             $message = $event->message;
             $messageData = [
                     'isSuccessful' => $event->isSuccessful,
@@ -55,7 +57,7 @@ class MailPanel extends Panel
 
             // add more information when message is a SwiftMailer message
             if ($message instanceof \yii\swiftmailer\Message) {
-                /** @var \Swift_Message $swiftMessage */
+                /* @var $swiftMessage \Swift_Message */
                 $swiftMessage = $message->getSwiftMessage();
 
                 $messageData['body'] = $swiftMessage->getBody();
@@ -74,16 +76,25 @@ class MailPanel extends Panel
         });
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getName()
     {
         return 'Mail';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSummary()
     {
         return Yii::$app->view->render('panels/mail/summary', ['panel' => $this, 'mailCount' => count($this->data)]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDetail()
     {
         $searchModel = new Mail();
@@ -96,6 +107,9 @@ class MailPanel extends Panel
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function save()
     {
         return $this->getMessages();

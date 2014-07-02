@@ -24,9 +24,9 @@ class UrlManagerTest extends TestCase
             'cache' => null,
         ]);
         $url = $manager->createUrl(['post/view']);
-        $this->assertEquals('?r=post/view', $url);
+        $this->assertEquals('?r=post%2Fview', $url);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('?r=post/view&id=1&title=sample+post', $url);
+        $this->assertEquals('?r=post%2Fview&id=1&title=sample+post', $url);
 
         // default setting with '/test/' as base url
         $manager = new UrlManager([
@@ -34,7 +34,7 @@ class UrlManagerTest extends TestCase
             'cache' => null,
         ]);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/test?r=post/view&id=1&title=sample+post', $url);
+        $this->assertEquals('/test?r=post%2Fview&id=1&title=sample+post', $url);
 
         // pretty URL without rules
         $manager = new UrlManager([
@@ -123,14 +123,14 @@ class UrlManagerTest extends TestCase
             'cache' => null,
         ]);
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('http://www.example.com?r=post/view&id=1&title=sample+post', $url);
+        $this->assertEquals('http://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
 
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'https');
-        $this->assertEquals('https://www.example.com?r=post/view&id=1&title=sample+post', $url);
+        $this->assertEquals('https://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
 
         $manager->hostInfo = 'https://www.example.com';
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'http');
-        $this->assertEquals('http://www.example.com?r=post/view&id=1&title=sample+post', $url);
+        $this->assertEquals('http://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
     }
 
     public function testParseRequest()

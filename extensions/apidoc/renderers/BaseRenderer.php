@@ -9,6 +9,7 @@ namespace yii\apidoc\renderers;
 
 use Yii;
 use yii\apidoc\helpers\ApiMarkdown;
+use yii\apidoc\helpers\ApiMarkdownLaTeX;
 use yii\apidoc\models\BaseDoc;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\ConstDoc;
@@ -48,6 +49,7 @@ abstract class BaseRenderer extends Component
     public function init()
     {
         ApiMarkdown::$renderer = $this;
+        ApiMarkdownLaTeX::$renderer = $this;
     }
 
     /**
