@@ -315,7 +315,7 @@ class BaseInflector
             '-',
             '_',
             '.'
-        ], ' ', preg_replace('/([A-Z])/', ' \0', $name))));
+        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
 
         return $ucwords ? ucwords($label) : $label;
     }
@@ -326,14 +326,16 @@ class BaseInflector
      * For example, 'PostTag' will be converted to 'post-tag'.
      * @param string $name the string to be converted
      * @param string $separator the character used to concatenate the words in the ID
+     * @param string $strict where to insert a separator between two consecutive uppercase chars, defaults to false
      * @return string the resulting ID
      */
-    public static function camel2id($name, $separator = '-')
+    public static function camel2id($name, $separator = '-', $strict = false)
     {
+        $regex = ($strict)?'/[A-Z]/':'/(?<![A-Z])[A-Z]/';
         if ($separator === '_') {
-            return trim(strtolower(preg_replace('/([A-Z])/', '_\0', $name)), '_');
+            return trim(strtolower(preg_replace($regex, '_\0', $name)), '_');
         } else {
-            return trim(strtolower(str_replace('_', $separator, preg_replace('/([A-Z])/', $separator . '\0', $name))), $separator);
+            return trim(strtolower(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name))), $separator);
         }
     }
 
