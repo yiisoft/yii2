@@ -9,6 +9,7 @@ namespace yii\log;
 
 use Yii;
 use yii\base\Component;
+use yii\base\ErrorHandler;
 
 /**
  * Dispatcher manages a set of [[Target|log targets]].
@@ -183,7 +184,7 @@ class Dispatcher extends Component
                 } catch (\Exception $e) {
                     $target->enabled = false;
                     $targetErrors[] = [
-                        'Unable to send log via '.  get_class($target) .': ' . $e->getMessage(),
+                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToString($e),
                         Logger::LEVEL_WARNING,
                         __METHOD__,
                         microtime(true),
