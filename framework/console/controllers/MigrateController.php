@@ -693,6 +693,10 @@ class MigrateController extends Controller
             $applied[substr($version, 1, 13)] = true;
         }
 
+        if (isset(\Yii::$app->params['yii.migrations'])) {
+            $this->migrationLookup = ArrayHelper::merge($this->migrationLookup,\Yii::$app->params['yii.migrations']);
+        }
+
         $directories = ArrayHelper::merge([$this->migrationPath], $this->migrationLookup);
 
         $migrations = [];
