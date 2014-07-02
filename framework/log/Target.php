@@ -235,9 +235,16 @@ abstract class Target extends Component
         if (!is_string($text)) {
             $text = VarDumper::export($text);
         }
+        $traces = [];
+        if (isset($message[4])) {
+            foreach($message[4] as $trace) {
+                $traces[] = "in {$trace['file']}:{$trace['line']}";
+            }
+        }
 
         $prefix = $this->getMessagePrefix($message);
-        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text";
+        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text"
+            . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
     }
 
     /**
