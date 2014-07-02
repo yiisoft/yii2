@@ -331,7 +331,7 @@ class BaseInflector
      */
     public static function camel2id($name, $separator = '-', $strict = false)
     {
-        $regex = ($strict)?'/[A-Z]/':'/(?<![A-Z])[A-Z]/';
+        $regex = $strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/';
         if ($separator === '_') {
             return trim(strtolower(preg_replace($regex, '_\0', $name)), '_');
         } else {
