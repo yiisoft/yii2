@@ -100,7 +100,7 @@ TESTING
 -------
 
 Install additional composer packages:
-* `php composer.phar require --dev "codeception/codeception: 1.8.*@dev" "codeception/specify: *" "codeception/verify: *" "yiisoft/yii2-faker: *"`
+* `php composer.phar require --dev "codeception/codeception: 2.0.*" "codeception/specify: *" "codeception/verify: *" "yiisoft/yii2-faker: *"`
 
 This application boilerplate use database in testing, so you should create three databases that are used in tests:
 * `yii2_advanced_unit` - database for unit tests;
