@@ -90,7 +90,7 @@ class Cors extends ActionFilter
     {
         $this->request = Yii::$app->getRequest();
         $this->response = Yii::$app->getResponse();
-        $this->overrideSettings($action);
+        $this->overrideDefaultSettings($action);
 
         $requestCorsHeaders = $this->extractHeaders($this->request);
         $responseCorsHeaders = $this->prepareHeaders($requestCorsHeaders);
@@ -100,10 +100,10 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Override settings for current action
+     * Override settings for specific action
      * @param \yii\base\Action $action the action settings to override
      */
-    public function overrideSettings($action)
+    public function overrideDefaultSettings($action)
     {
         if (isset($this->actions[$action->id])) {
             $actionParams = $this->actions[$action->id];
@@ -132,6 +132,37 @@ class Cors extends ActionFilter
             }
         }
         return $headers;
+    }
+
+    /**
+     * For each CORS headers create the specific response
+     * @param array $requestHeaders CORS headers we have detected
+     * @return array CORS headers ready to be sent
+     */
+    public function prepareHeaders($requestHeaders)
+    {
+        $responseHeaders = [];
+        // handle Origin
+        if (isset($requestHeaders['Origin'])) {
+            if ((in_array('*', $this->cors['Origin']) === true)
+             || (in_array($requestHeaders['Origin'], $this->cors['Origin']))) {
+                $responseHeaders['Access-Control-Allow-Origin'] = $requestHeaders['Origin'];
+            }
+        }
+
+        $this->prepareAllowHeaders('Method', $requestHeaders, $responseHeaders);
+        $this->prepareAllowHeaders('Headers', $requestHeaders, $responseHeaders);
+
+        if ($this->cors['Access-Control-Allow-Credentials'] === true) {
+            $responseHeaders['Access-Control-Allow-Credentials'] = 'true';
+        } elseif ($this->cors['Access-Control-Allow-Credentials'] === false) {
+            $responseHeaders['Access-Control-Allow-Credentials'] = 'false';
+        }
+        if (($_SERVER['REQUEST_METHOD'] === 'OPTIONS') && ($this->cors['Access-Control-Max-Age'] !== null)) {
+            $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
+        }
+
+        return $responseHeaders;
     }
 
     /**
@@ -173,6 +204,21 @@ class Cors extends ActionFilter
     }
 
     /**
+     * Adds the CORS headers to the response
+     * @param Response $response
+     * @param array CORS headers which have been compouted
+     */
+    public function addCorsHeaders($response, $headers)
+    {
+        if (empty($headers) === false) {
+            $responseHeaders = $response->getHeaders();
+            foreach ($headers as $field => $value) {
+                $responseHeaders->set($field, $value);
+            }
+        }
+    }
+
+    /**
      * Convert any string (including php headers with HTTP prefix) to header format like :
      *  * X-PINGOTHER -> X-Pingother
      *  * HTTP_X_PINGOTHER -> X-Pingother
@@ -194,49 +240,5 @@ class Cors extends ActionFilter
     protected static function headerizeToPhp($string)
     {
         return 'HTTP_'.strtoupper(str_replace([' ', '-'], ['_', '_'], $string));
-    }
-
-    /**
-     * For each CORS headers create the specific response
-     * @param array $requestHeaders CORS headers we have detected
-     * @return array CORS headers ready to be sent
-     */
-    public function prepareHeaders($requestHeaders)
-    {
-        $responseHeaders = [];
-        // handle Origin
-        if (isset($requestHeaders['Origin'])) {
-            if ((in_array('*', $this->cors['Origin']) === true)
-             || (in_array($requestHeaders['Origin'], $this->cors['Origin']))) {
-                $responseHeaders['Access-Control-Allow-Origin'] = $requestHeaders['Origin'];
-            }
-        }
-        $this->prepareAllowHeaders('Method', $requestHeaders, $responseHeaders);
-        $this->prepareAllowHeaders('Headers', $requestHeaders, $responseHeaders);
-        if ($this->cors['Access-Control-Allow-Credentials'] === true) {
-            $responseHeaders['Access-Control-Allow-Credentials'] = 'true';
-        } elseif ($this->cors['Access-Control-Allow-Credentials'] === false) {
-            $responseHeaders['Access-Control-Allow-Credentials'] = 'false';
-        }
-        if (($_SERVER['REQUEST_METHOD'] === 'OPTIONS') && ($this->cors['Access-Control-Max-Age'] !== null)) {
-            $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
-        }
-
-        return $responseHeaders;
-    }
-
-    /**
-     * Adds the CORS headers to the response
-     * @param Response $response
-     * @param array CORS headers which have been compouted
-     */
-    public function addCorsHeaders($response, $headers)
-    {
-        if (empty($headers) === false) {
-            $responseHeaders = $response->getHeaders();
-            foreach ($headers as $field => $value) {
-                $responseHeaders->set($field, $value);
-            }
-        }
     }
 }
