@@ -99,18 +99,6 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 }, $data, false);
 ```
 
-Besides calling the `on()` method, you may also attach event handlers in [configurations](concept-configurations.md)
-like the following. For more details, please refer to the [Configurations](concept-configurations.md#configuration-format)
-section.
-
-```php
-[
-    'on hello' => function ($event) {
-        echo 'hello event is triggered';
-    }
-]
-```
-
 Triggering Events <a name="triggering-events"></a>
 -----------------
 
