@@ -22,4 +22,7 @@ class Exception extends \Exception
     {
         return 'Exception';
     }
+    public function getPrice(){
+        return 'dolar';
+    }
 }
