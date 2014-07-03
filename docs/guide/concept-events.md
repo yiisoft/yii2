@@ -122,18 +122,17 @@ class Foo extends Component
 }
 ```
 
-In the above code, when you call `bar()`, it will trigger an event named `hello`.
+With the above code, any calls to `bar()` will trigger an event named `hello`.
 
 > Tip: It is recommended to use class constants to represent event names. In the above example, the constant
-  `EVENT_HELLO` is used to represent `hello`. This approach has two benefits. First, it prevents typos and can impact IDE
-  auto-completion support. Second, you can tell what events are supported by a class by simply checking the constant
-  declarations.
+  `EVENT_HELLO` represents the `hello` event. This approach has three benefits. First, it prevents typos. Second, it can make events recognizable for IDE
+  auto-completion support. Third, you can tell what events are supported in a class by simply checking its constant declarations.
 
-Sometimes when triggering an event, you may want to pass along additional information to the event handlers.
+Sometimes when triggering an event you may want to pass along additional information to the event handlers.
 For example, a mailer may want pass the message information to the handlers of the `messageSent` event so that the handlers
 can know the particulars of the sent messages. To do so, you can provide an event object as the second parameter to
-the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class
-or a child class. For example:
+the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class,
+or of a child class. For example:
 
 ```php
 namespace app\components;
@@ -161,7 +160,7 @@ class Mailer extends Component
 }
 ```
 
-When the [[yii\base\Component::trigger()]] method is called, it will call handlers that are attached to
+When the [[yii\base\Component::trigger()]] method is called, it will call all handlers attached to
 the named event.
 
 
