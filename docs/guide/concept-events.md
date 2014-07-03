@@ -167,7 +167,7 @@ the named event.
 Detaching Event Handlers <a name="detaching-event-handlers"></a>
 ------------------------
 
-To detach a handler from an event, call the [[yii\base\Component::off()]] method. For example,
+To detach a handler from an event, call the [[yii\base\Component::off()]] method. For example:
 
 ```php
 // the handler is a global function
@@ -184,7 +184,7 @@ $foo->off(Foo::EVENT_HELLO, $anonymousFunction);
 ```
 
 Note that in general you should not try to detach an anonymous function unless you store it
-somewhere when it is attached to the event. In the above example, we assume the anonymous
+somewhere when it is attached to the event. In the above example, it is assumed that the anonymous
 function is stored as a variable `$anonymousFunction`.
 
 To detach ALL handlers from an event, simply call [[yii\base\Component::off()]] without the second parameter:
@@ -197,14 +197,14 @@ $foo->off(Foo::EVENT_HELLO);
 Class-Level Event Handlers <a name="class-level-event-handlers"></a>
 --------------------------
 
-In the above subsections, we have described how to attach a handler to an event at *instance level*.
-Sometimes, you may want to respond to an event triggered by EVERY instance of a class instead of
+The above subsections described how to attach a handler to an event on an *instance level*.
+Sometimes, you may want to respond to an event triggered by *every* instance of a class instead of only by
 a specific instance. Instead of attaching an event handler to every instance, you may attach the handler
-at *class level* by calling the static method [[yii\base\Event::on()]].
+on the *class level* by calling the static method [[yii\base\Event::on()]].
 
-For example, an [Active Record](db-active-record.md) object will trigger a [[yii\base\ActiveRecord::EVENT_AFTER_INSERT]]
-event whenever it inserts a new record into the database. In order to track insertions done by EVERY
-[Active Record](db-active-record.md) object, you may write the following code:
+For example, an [Active Record](db-active-record.md) object will trigger an [[yii\base\ActiveRecord::EVENT_AFTER_INSERT]]
+event whenever it inserts a new record into the database. In order to track insertions done by *every*
+[Active Record](db-active-record.md) object, you may use the following code:
 
 ```php
 use Yii;
@@ -216,15 +216,15 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 });
 ```
 
-The event handler will get invoked whenever an instance of [[yii\base\ActiveRecord|ActiveRecord]] or its child class triggers
+The event handler will be invoked whenever an instance of [[yii\base\ActiveRecord|ActiveRecord]], or one of its child classes, triggers
 the [[yii\base\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] event. In the handler, you can get the object
-that triggers the event through `$event->sender`.
+that triggered the event through `$event->sender`.
 
-When an object triggers an event, it will first call instance-level handlers, followed by class-level handlers.
+When an object triggers an event, it will first call instance-level handlers, followed by the class-level handlers.
 
-You may trigger an *class-level* event by calling the static method [[yii\base\Event::trigger()]]. A class-level
+You may trigger a *class-level* event by calling the static method [[yii\base\Event::trigger()]]. A class-level
 event is not associated with a particular object. As a result, it will cause the invocation of class-level event
-handlers only. For example,
+handlers only. For example:
 
 ```php
 use yii\base\Event;
@@ -236,12 +236,12 @@ Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 ```
 
-Note that in this case, `$event->sender` refers to the name of the class triggering the event instead of an object instance.
+Note that, in this case, `$event->sender` refers to the name of the class triggering the event instead of an object instance.
 
-> Note: Because a class-level handler will respond to an event triggered by any instance of that class or its child
-  class, you should use it carefully, especially if the class is a low-level base class, such as [[yii\base\Object]].
+> Note: Because a class-level handler will respond to an event triggered by any instance of that class, or any child
+  classes, you should use it carefully, especially if the class is a low-level base class, such as [[yii\base\Object]].
 
-To detach a class-level event handler, call [[yii\base\Event::off()]]. For example,
+To detach a class-level event handler, call [[yii\base\Event::off()]]. For example:
 
 ```php
 // detach $handler
@@ -255,11 +255,11 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 Global Events <a name="global-events"></a>
 -------------
 
-The so-called *global event* is actually a trick based on the event mechanism described above.
-It requires a globally accessible singleton, such as the [application](structure-applications.md) instance.
+Yii supports a so-called *global event*, which is actually a trick based on the event mechanism described above.
+The global event requires a globally accessible Singleton, such as the [application](structure-applications.md) instance itself.
 
-An event sender, instead of calling its own `trigger()` method, will call the singleton's `trigger()` method
-to trigger the event. Similarly, the event handlers are attached to the event of the singleton. For example,
+To create the global evant, an event sender calls the Singleton's `trigger()` method
+to trigger the event, instead of calling the sender's own `trigger()` method. Similarly, the event handlers are attached to the event on the Singleton. For example:
 
 ```php
 use Yii;
@@ -273,7 +273,7 @@ Yii::$app->on('bar', function ($event) {
 Yii::$app->trigger('bar', new Event(['sender' => new Foo]));
 ```
 
-A benefit of global events is that you do not need the object when attaching a handler to the event
+A benefit of using global events is that you do not need an object when attaching a handler to the event
 which will be triggered by the object. Instead, the handler attachment and the event triggering are both
 done through the singleton (e.g. the application instance).
 
