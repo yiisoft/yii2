@@ -14,7 +14,7 @@ property. If, in the future, the `label` property gets a new requirement, such a
 
 To solve this problem, Yii introduces a base class called [[yii\base\Object]] that supports defining properties
 based on *getter* and *setter* class methods. If a class needs that functionality, it should extend from
-[[yii\base\Object]], or a child class.
+[[yii\base\Object]], or from a child class.
 
 > Info: Nearly every core class in the Yii framework extends from [[yii\base\Object]] or a child class.
   This means that whenever you see a getter or setter in a core class, you can use it like a property.

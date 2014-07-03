@@ -7,7 +7,7 @@ a mailer object may trigger a `messageSent` event when it successfully sends a m
 track of the messages that are successfully sent, you could then simply attach the tracking code to the `messageSent` event.
 
 Yii introduces a base class called [[yii\base\Component]] to support events. If a class needs to trigger
-events, it should extend from [[yii\base\Component]] or a child class.
+events, it should extend from [[yii\base\Component]], or from a child class.
 
 
 Triggering Events <a name="triggering-events"></a>
