@@ -10,72 +10,6 @@ Yii introduces a base class called [[yii\base\Component]] to support events. If 
 events, it should extend from [[yii\base\Component]], or from a child class.
 
 
-Triggering Events <a name="triggering-events"></a>
------------------
-
-Events are triggered by calling the [[yii\base\Component::trigger()]] method. The method requires an *event name*,
-and optionally an event object that describes the parameters to be passed to the event handlers. For example:
-
-```php
-namespace app\components;
-
-use yii\base\Component;
-use yii\base\Event;
-
-class Foo extends Component
-{
-    const EVENT_HELLO = 'hello';
-
-    public function bar()
-    {
-        $this->trigger(self::EVENT_HELLO);
-    }
-}
-```
-
-In the above code, when you call `bar()`, it will trigger an event named `hello`.
-
-> Tip: It is recommended to use class constants to represent event names. In the above example, the constant
-  `EVENT_HELLO` is used to represent `hello`. This approach has two benefits. First, it prevents typos and can impact IDE
-  auto-completion support. Second, you can tell what events are supported by a class by simply checking the constant
-  declarations.
-
-Sometimes when triggering an event, you may want to pass along additional information to the event handlers.
-For example, a mailer may want pass the message information to the handlers of the `messageSent` event so that the handlers
-can know the particulars of the sent messages. To do so, you can provide an event object as the second parameter to
-the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class
-or a child class. For example:
-
-```php
-namespace app\components;
-
-use yii\base\Component;
-use yii\base\Event;
-
-class MessageEvent extends Event
-{
-    public $message;
-}
-
-class Mailer extends Component
-{
-    const EVENT_MESSAGE_SENT = 'messageSent';
-
-    public function send($message)
-    {
-        // ...sending $message...
-
-        $event = new MessageEvent;
-        $event->message = $message;
-        $this->trigger(self::EVENT_MESSAGE_SENT, $event);
-    }
-}
-```
-
-When the [[yii\base\Component::trigger()]] method is called, it will call handlers that are attached to
-the named event.
-
-
 Event Handlers <a name="event-handlers"></a>
 --------------
 
@@ -173,6 +107,71 @@ section.
     }
 ]
 ```
+
+Triggering Events <a name="triggering-events"></a>
+-----------------
+
+Events are triggered by calling the [[yii\base\Component::trigger()]] method. The method requires an *event name*,
+and optionally an event object that describes the parameters to be passed to the event handlers. For example:
+
+```php
+namespace app\components;
+
+use yii\base\Component;
+use yii\base\Event;
+
+class Foo extends Component
+{
+    const EVENT_HELLO = 'hello';
+
+    public function bar()
+    {
+        $this->trigger(self::EVENT_HELLO);
+    }
+}
+```
+
+In the above code, when you call `bar()`, it will trigger an event named `hello`.
+
+> Tip: It is recommended to use class constants to represent event names. In the above example, the constant
+  `EVENT_HELLO` is used to represent `hello`. This approach has two benefits. First, it prevents typos and can impact IDE
+  auto-completion support. Second, you can tell what events are supported by a class by simply checking the constant
+  declarations.
+
+Sometimes when triggering an event, you may want to pass along additional information to the event handlers.
+For example, a mailer may want pass the message information to the handlers of the `messageSent` event so that the handlers
+can know the particulars of the sent messages. To do so, you can provide an event object as the second parameter to
+the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class
+or a child class. For example:
+
+```php
+namespace app\components;
+
+use yii\base\Component;
+use yii\base\Event;
+
+class MessageEvent extends Event
+{
+    public $message;
+}
+
+class Mailer extends Component
+{
+    const EVENT_MESSAGE_SENT = 'messageSent';
+
+    public function send($message)
+    {
+        // ...sending $message...
+
+        $event = new MessageEvent;
+        $event->message = $message;
+        $this->trigger(self::EVENT_MESSAGE_SENT, $event);
+    }
+}
+```
+
+When the [[yii\base\Component::trigger()]] method is called, it will call handlers that are attached to
+the named event.
 
 
 Detaching Event Handlers <a name="detaching-event-handlers"></a>
