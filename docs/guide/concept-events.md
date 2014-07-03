@@ -14,46 +14,46 @@ Event Handlers <a name="event-handlers"></a>
 --------------
 
 An event handler is a [PHP callback](http://www.php.net/manual/en/language.types.callable.php) that gets executed
-when the event it is attached to is triggered. You can use one of the following callbacks:
+when the event it is attached to is triggered. You can use any of the following callbacks:
 
-- a global PHP function specified in terms of a string, e.g., `'trim()'`;
-- an object method specified in terms of an array of an object and a method name, e.g., `[$object, $method]`;
-- a static class method specified in terms of an array of a class name and a method name, e.g., `[$class, $method]`;
+- a global PHP function specified as a string (without parentheses), e.g., `'trim'`;
+- an object method specified as an array of an object and a method name as a string (without parenthess), e.g., `[$object, 'methodName']`;
+- a static class method specified as an array of a class name and a method name as a string (without parentheses), e.g., `[$class, 'methodName']`;
 - an anonymous function, e.g., `function ($event) { ... }`.
 
 The signature of an event handler is:
 
 ```php
 function ($event) {
-    // $event is an object of yii\base\Event or its child class
+    // $event is an object of yii\base\Event or a child class
 }
 ```
 
-Through the `$event` parameter, an event handler may get the following information about an event:
+Through the `$event` parameter, an event handler may get the following information about the event that occurred:
 
 - [[yii\base\Event::name|event name]]
-- [[yii\base\Event::sender|event sender]]: the object whose `trigger()` method is called.
-- [[yii\base\Event::data|custom data]]: the data that is provided when attaching the event handler (to be explained shortly).
+- [[yii\base\Event::sender|event sender]]: the object whose `trigger()` method was called
+- [[yii\base\Event::data|custom data]]: the data that is provided when attaching the event handler (to be explained next)
 
 
 Attaching Event Handlers <a name="attaching-event-handlers"></a>
 ------------------------
 
-You can attach a handler to an event by calling the [[yii\base\Component::on()]] method. For example,
+You can attach a handler to an event by calling the [[yii\base\Component::on()]] method. For example:
 
 ```php
 $foo = new Foo;
 
-// the handler is a global function
+// this handler is a global function
 $foo->on(Foo::EVENT_HELLO, 'function_name');
 
-// the handler is an object method
+// this handler is an object method
 $foo->on(Foo::EVENT_HELLO, [$object, 'methodName']);
 
-// the handler is a static class method
+// this handler is a static class method
 $foo->on(Foo::EVENT_HELLO, ['app\components\Bar', 'methodName']);
 
-// the handler is an anonymous function
+// this handler is an anonymous function
 $foo->on(Foo::EVENT_HELLO, function ($event) {
     // event handling logic
 });
@@ -64,20 +64,24 @@ refer to the [Configurations](concept-configurations.md#configuration-format) se
 
 
 When attaching an event handler, you may provide additional data as the third parameter to [[yii\base\Component::on()]].
-The data will be made available to the handler when the event is triggered and the handler is called. For example,
+The data will be made available to the handler when the event is triggered and the handler is called. For example:
 
 ```php
 // The following code will display "abc" when the event is triggered
-// because $event->data contains the data passed to "on"
-$foo->on(Foo::EVENT_HELLO, function ($event) {
+// because $event->data contains the data passed as the 3rd argument to "on"
+$foo->on(Foo::EVENT_HELLO, 'function_name', 'abc');
+
+function function_name($event) {
     echo $event->data;
-}, 'abc');
+}
 ```
 
-You may attach one or multiple handlers to a single event. When an event is triggered, the attached handlers
-will be called in the order they are attached to the event. If a handler needs to stop the invocation of the
-handlers behind it, it may set the [[yii\base\Event::handled]] property of the `$event` parameter to be true,
-like the following,
+Event Handler Order
+-------------------
+
+You may attach one or more handlers to a single event. When an event is triggered, the attached handlers
+will be called in the order that they were attached to the event. If a handler needs to stop the invocation of the
+handlers that follow it, it may set the [[yii\base\Event::handled]] property of the `$event` parameter to be true:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -87,8 +91,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 
 By default, a newly attached handler is appended to the existing handler queue for the event.
 As a result, the handler will be called in the last place when the event is triggered.
-To insert the new handler at the start of the handler queue so that the handler gets called first, y
-ou may call [[yii\base\Component::on()]] by passing the fourth parameter `$append` as false:
+To insert the new handler at the start of the handler queue so that the handler gets called first, you may call [[yii\base\Component::on()]], passing false for the fourth parameter `$append`:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
