@@ -82,7 +82,7 @@ return [
     'You are not allowed to perform this action.' => 'Вам не разрешено производить данное действие.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы не можете загружать более {limit, number} {limit, plural, one{файла} few{файлов} many{файлов} other{файла}}.',
     'the input value' => 'введённое значение',
-    '{attribute} "{value}" has already been taken.' => '{attribute} «{value}» уже занят.',
+    '{attribute} "{value}" has already been taken.' => '{attribute} «{value}» уже используется.',
     '{attribute} cannot be blank.' => 'Необходимо заполнить «{attribute}».',
     '{attribute} is invalid.' => 'Значение «{attribute}» не верно.',
     '{attribute} is not a valid URL.' => 'Значение «{attribute}» не является правильным URL.',
