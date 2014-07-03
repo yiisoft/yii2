@@ -176,6 +176,7 @@ Yii Framework 2 Change Log
 - Chg: Added `prefix` column to `yii\log\DbTarget` to have the same amount of information logged as in files and emails (cebe)
 - Chg: Use `limit(null)` instead of `limit(-1)` in migration controller to be compatible to more backends (cebe)
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
+- Enh: Added CORS filter to allow Cross Origin Resource Sharing (pgaultier) 
 
 
 2.0.0-beta April 13, 2014
