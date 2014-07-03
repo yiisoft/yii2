@@ -73,7 +73,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $response = new Response();
         }
 
-        $useErrorView = $response->format === \yii\web\Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
+        $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
         if ($useErrorView && $this->errorAction !== null) {
             $result = Yii::$app->runAction($this->errorAction);
@@ -82,7 +82,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             } else {
                 $response->data = $result;
             }
-        } elseif ($response->format === \yii\web\Response::FORMAT_HTML) {
+        } elseif ($response->format === Response::FORMAT_HTML) {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' || YII_ENV_TEST) {
                 // AJAX request
                 $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';

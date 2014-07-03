@@ -117,46 +117,6 @@ Also, the `psr-4` autoloader is specified in the above, which maps the `myname\m
 More details on this syntax can be found in the [Composer documentation](http://getcomposer.org/doc/04-schema.md#autoload).
 
 
-### Bootstrap with extension
-
-Sometimes, you may want your extension to execute some code during the bootstrap stage of an application.
-For example, your extension may want to respond to the application's `beginRequest` event. You can ask the extension user
-to explicitly attach your event handler in the extension to the application's event. A better way, however, is to
-do all these automatically.
-
-To achieve this goal, you can create a bootstrap class by implementing [[yii\base\BootstrapInterface]].
-
-```php
-namespace myname\mywidget;
-
-use yii\base\BootstrapInterface;
-use yii\base\Application;
-
-class MyBootstrapClass implements BootstrapInterface
-{
-    public function bootstrap($app)
-    {
-        $app->on(Application::EVENT_BEFORE_REQUEST, function () {
-             // do something here
-        });
-    }
-}
-```
-
-You then list this bootstrap class in `composer.json` as follows,
-
-```json
-{
-    "extra": {
-        "bootstrap": "myname\\mywidget\\MyBootstrapClass"
-    }
-}
-```
-
-When the extension is installed in an application, Yii will automatically hook up the bootstrap class
-and call its `bootstrap()` while initializing the application for every request.
-
-
 Working with database
 ---------------------
 

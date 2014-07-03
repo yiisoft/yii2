@@ -171,7 +171,7 @@ public function behaviors()
 
 Response formats and languages often need to be determined much earlier during
 the [application lifecycle](structure-applications.md#application-lifecycle). For this reason, ContentNegotiator
-is designed in a way such that it can also be used as a [bootstrap component](structure-applications.md#bootstrap)
+is designed in a way such that it can also be used as a [bootstrapping component](structure-applications.md#bootstrap)
 besides filter. For example, you may configure it in the [application configuration](structure-applications.md#application-configurations)
 like the following:
 

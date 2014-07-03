@@ -317,7 +317,7 @@ as early as possible. The followings are the recommended practices:
 * If you are the developer of an application, you can register dependencies in your
   application's [entry script](structure-entry-scripts.md) or in a script that is included by the entry script.
 * If you are the developer of a redistributable [extension](structure-extensions.md), you can register dependencies
-  in the bootstrap class of the extension.
+  in the bootstrapping class of the extension.
 
 
 Summary <a name="summary"></a>
