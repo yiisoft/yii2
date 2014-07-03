@@ -275,7 +275,7 @@ Yii::$app->trigger('bar', new Event(['sender' => new Foo]));
 
 A benefit of using global events is that you do not need an object when attaching a handler to the event
 which will be triggered by the object. Instead, the handler attachment and the event triggering are both
-done through the singleton (e.g. the application instance).
+done through the Singleton (e.g. the application instance).
 
 However, because the namespace of the global events is shared by all parties, you should name the global events
 wisely, such as introducing some sort of namespace (e.g. "frontend.mail.sent", "backend.mail.sent").
