@@ -14,7 +14,7 @@ return yii\helpers\ArrayHelper::merge(
         'controllerMap' => [
             'fixture' => [
                 'class' => 'yii\faker\FixtureController',
-                'fixtureDataPath' => '@console/tests/unit/fixtures/data',
+                'fixtureDataPath' => '@frontend/tests/unit/fixtures/data',
                 'templatePath' => '@common/tests/templates/fixtures'
             ],
         ],

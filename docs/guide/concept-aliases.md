@@ -109,7 +109,7 @@ The following is the list of the predefined aliases:
 - `@yii`: the directory where the `BaseYii.php` file is located (also called the framework directory).
 - `@app`: the [[yii\base\Application::basePath|base path]] of the currently running application.
 - `@runtime`: the [[yii\base\Application::runtimePath|runtime path]] of the currently running application.
-- `@vendor`: the [[yii\base\Application::vendorPath|Composer vendor directory].
+- `@vendor`: the [[yii\base\Application::vendorPath|Composer vendor directory]].
 - `@webroot`: the Web root directory of the currently running Web application.
 - `@web`: the base URL of the currently running Web application.
 

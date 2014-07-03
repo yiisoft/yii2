@@ -827,12 +827,14 @@ trait ActiveRecordTestTrait
         $customerClass = $this->getCustomerClass();
         /* @var $this TestCase|ActiveRecordTestTrait */
         // save
+        /* @var $customer Customer */
         $customer = $customerClass::findOne(2);
         $this->assertTrue($customer instanceof $customerClass);
         $this->assertEquals('user2', $customer->name);
         $this->assertFalse($customer->isNewRecord);
         static::$afterSaveNewRecord = null;
         static::$afterSaveInsert = null;
+        $this->assertEmpty($customer->dirtyAttributes);
 
         $customer->name = 'user2x';
         $customer->save();

@@ -212,7 +212,7 @@ class Security extends Component
         if (function_exists('hash_pbkdf2')) {
             return hash_pbkdf2($this->derivationHash, $password, $salt, $this->derivationIterations, $this->cryptKeySize, true);
         } else {
-            throw new InvalidConfigException('Derive key strategy "pbkdf2" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
+            throw new InvalidConfigException('Security::$deriveKeyStrategy is set to "pbkdf2", which requires PHP >= 5.5.0. Either upgrade your run-time environment or use another strategy.');
         }
     }
 
@@ -298,22 +298,46 @@ class Security extends Component
         }
 
         if (!isset($this->_keys[$name]) || $regenerate) {
-            $this->_keys[$name] = utf8_encode(static::generateRandomKey($length));
+            $this->_keys[$name] = $this->generateRandomKey($length);
             file_put_contents($keyFile, json_encode($this->_keys));
         }
 
-        return utf8_decode($this->_keys[$name]);
+        return $this->_keys[$name];
     }
 
     /**
-     * Generates a random key.
-     * Note the generated key is a binary string with the specified number of bytes in it.
-     * @param integer $length the length of the key that should be generated
+     * Generates specified number of random bytes.
+     * Note that output may not be ASCII.
+     * @see generateRandomKey() if you need a string.
+     *
+     * @param integer $length the number of bytes to generate
+     * @throws Exception on failure.
+     * @return string the generated random bytes
+     */
+    public function generateRandomBytes($length = 32)
+    {
+        if (!extension_loaded('mcrypt')) {
+            throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
+        }
+        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        if ($bytes === false) {
+            throw new Exception('Unable to generate random bytes.');
+        }
+        return $bytes;
+    }
+
+    /**
+     * Generates a random string of specified length.
+     * The string generated matches [A-Za-z0-9_.-]+
+     *
+     * @param integer $length the length of the key in characters
+     * @throws Exception Exception on failure.
      * @return string the generated random key
      */
     public function generateRandomKey($length = 32)
     {
-        return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        $bytes = $this->generateRandomBytes($length);
+        return strtr(StringHelper::byteSubstr(base64_encode($bytes), 0, $length), '+/=', '_-.');
     }
 
     /**
@@ -448,7 +472,7 @@ class Security extends Component
         }
 
         // Get 20 * 8bits of random entropy
-        $rand = $this->generateRandomKey(20);
+        $rand = $this->generateRandomBytes(20);
 
         // Add the microtime for a little more entropy.
         $rand .= microtime(true);

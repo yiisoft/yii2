@@ -124,8 +124,9 @@ class ActiveRecord extends BaseActiveRecord
         }
         $db->executeCommand('HMSET', $args);
 
+        $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
-        $this->afterSave(true, $values);
+        $this->afterSave(true, $changedAttributes);
 
         return true;
     }

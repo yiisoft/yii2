@@ -47,6 +47,6 @@ class QueryParamAuth extends AuthMethod
      */
     public function handleFailure($response)
     {
-        throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
+        throw new UnauthorizedHttpException(Yii::t('yii', 'You are requesting with an invalid access token.'));
     }
 }

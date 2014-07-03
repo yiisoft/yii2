@@ -1,9 +1,10 @@
 <?php
 namespace common\models;
 
-use yii\base\NotSupportedException;
-use yii\db\ActiveRecord;
 use Yii;
+use yii\base\NotSupportedException;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
@@ -25,7 +26,6 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
-
     const ROLE_USER = 10;
 
     /**
@@ -42,13 +42,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            'timestamp' => [
-                'class' => 'yii\behaviors\TimestampBehavior',
-                'attributes' => [
-                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
-                ],
-            ],
+            TimestampBehavior::className(),
         ];
     }
 
@@ -85,7 +79,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds user by username
      *
-     * @param  string      $username
+     * @param string $username
      * @return static|null
      */
     public static function findByUsername($username)
@@ -96,12 +90,12 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds user by password reset token
      *
-     * @param  string      $token password reset token
+     * @param string $token password reset token
      * @return static|null
      */
     public static function findByPasswordResetToken($token)
     {
-        $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
+        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         $parts = explode('_', $token);
         $timestamp = (int) end($parts);
         if ($timestamp + $expire < time()) {
@@ -142,7 +136,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Validates password
      *
-     * @param  string  $password password to validate
+     * @param string $password password to validate
      * @return boolean if password provided is valid for current user
      */
     public function validatePassword($password)

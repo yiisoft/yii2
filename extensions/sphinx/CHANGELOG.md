@@ -6,8 +6,9 @@ Yii Framework 2 sphinx extension Change Log
 
 - Bug #3668: Escaping of the special characters at 'MATCH' statement added (klimov-paul)
 - Bug #4018: AR relation eager loading does not work with db models (klimov-paul)
-- Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
+- Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
+- Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Chg #2287: Split `yii\sphinx\ColumnSchema::typecast()` into two methods `phpTypecast()` and `dbTypecast()` to allow specifying PDO type explicitly (cebe)
 
 

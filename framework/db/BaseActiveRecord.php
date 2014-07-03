@@ -714,10 +714,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
+        $changedAttributes = [];
         foreach ($values as $name => $value) {
-            $this->_oldAttributes[$name] = $this->_attributes[$name];
+            $changedAttributes[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
+            $this->_oldAttributes[$name] = $value;
         }
-        $this->afterSave(false, $values);
+        $this->afterSave(false, $changedAttributes);
 
         return $rows;
     }
@@ -875,7 +877,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * the event is triggered.
      * @param boolean $insert whether this method called while inserting a record.
      * If false, it means the method is called while updating a record.
-     * @param array $changedAttributes The attribute values that had changed and were saved.
+     * @param array $changedAttributes The old values of attributes that had changed and were saved.
+     * You can use this parameter to take action based on the changes made for example send an email
+     * when the password had changed or implement audit trail that tracks all the changes.
+     * `$changedAttributes` gives you the old attribute values while the active record (`$this`) has
+     * already the new, updated values.
      */
     public function afterSave($insert, $changedAttributes)
     {
