@@ -110,6 +110,7 @@ Each component listed in this property may be specified in one of the following 
 - a module ID as specified via [modules](#modules).
 - a class name.
 - a configuration array.
+- an anonymous function that creates and returns a component.
 
 For example,
 
@@ -120,16 +121,33 @@ For example,
         'demo',
 
         // a class name
-        'app\components\TrafficMonitor',
+        'app\components\Profiler',
 
         // a configuration array
         [
             'class' => 'app\components\Profiler',
             'level' => 3,
-        ]
+        ],
+
+        // an anonymous function
+        function () {
+            return \app\components\Profiler();
+        }
     ],
 ]
 ```
+
+> Info: If a module ID is the same as an application component ID, the application component will be used during
+  the bootstrapping process. If you want to use the module instead, you may specify it using an anonymous function
+  like the following:
+>```php
+[
+    function () {
+        return \Yii::$app->getModule('user');
+    },
+]
+```
+
 
 During the bootstrapping process, each component will be instantiated. If the component class
 implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
