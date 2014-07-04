@@ -1046,4 +1046,22 @@ trait ActiveRecordTestTrait
         Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
     }
 
+    public function testFindEmptyInCondition()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+        /* @var $this TestCase|ActiveRecordTestTrait */
+
+        $customers = $customerClass::find()->where(['id' => [1]])->all();
+        $this->assertEquals(1, count($customers));
+
+        $customers = $customerClass::find()->where(['id' => []])->all();
+        $this->assertEquals(0, count($customers));
+
+        $customers = $customerClass::find()->where(['IN', 'id', [1]])->all();
+        $this->assertEquals(1, count($customers));
+
+        $customers = $customerClass::find()->where(['IN', 'id', []])->all();
+        $this->assertEquals(0, count($customers));
+    }
 }

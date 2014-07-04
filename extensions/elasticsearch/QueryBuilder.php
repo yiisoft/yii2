@@ -205,8 +205,8 @@ class QueryBuilder extends \yii\base\Object
         $parts = [];
         foreach ($condition as $attribute => $value) {
             if ($attribute == '_id') {
-                if ($value == null) { // there is no null pk
-                    $parts[] = ['script' => ['script' => '0==1']];
+                if ($value === null) { // there is no null pk
+                    $parts[] = ['terms' => ['_uid' => []]]; // this condition is equal to WHERE false
                 } else {
                     $parts[] = ['ids' => ['values' => is_array($value) ? $value : [$value]]];
                 }
@@ -287,7 +287,7 @@ class QueryBuilder extends \yii\base\Object
         $values = (array) $values;
 
         if (empty($values) || $column === []) {
-            return $operator === 'in' ? ['script' => ['script' => '0==1']] : [];
+            return $operator === 'in' ? ['terms' => ['_uid' => []]] : []; // this condition is equal to WHERE false
         }
 
         if (count($column) > 1) {
@@ -307,7 +307,7 @@ class QueryBuilder extends \yii\base\Object
         }
         if ($column == '_id') {
             if (empty($values) && $canBeNull) { // there is no null pk
-                $filter = ['script' => ['script' => '0==1']];
+                $filter = ['terms' => ['_uid' => []]]; // this condition is equal to WHERE false
             } else {
                 $filter = ['ids' => ['values' => array_values($values)]];
                 if ($canBeNull) {
