@@ -99,7 +99,7 @@ class HttpWsseAuth extends AuthMethod
     {
         $authToken = null;
         $authType = $request->getHeaders()->get('Authorization');
-        if (preg_match('/WSSE\s+profile="UsernameToken"/', $authType) > 0) {
+        if (isset($_SERVER['HTTP_X_WSSE']) && preg_match('/WSSE\s+profile="UsernameToken"/', $authType) > 0) {
             $authHeader = $_SERVER['HTTP_X_WSSE'];
             $res = preg_match_all('/\s+([^=]+)="([^"]*)"[,]?/m', $authHeader, $matches);
             if ($res>0) {
