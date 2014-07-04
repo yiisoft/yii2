@@ -1,13 +1,13 @@
 使用表单
 ==================
 
-本小节将介绍如何创建一个从用户那搜集数据的表单页面。该页将显示一个包含 name 输入框和 email 输入框的表单。当搜集完这两部分信息后，页面将会显示用户输入的信息。
+本章节将介绍如何创建一个从用户那搜集数据的表单页。该页将显示一个包含 name 输入框和 email 输入框的表单。当搜集完这两部分信息后，页面将会显示用户输入的信息。
 
-为了实现这个目标，除了创建一个[操作](structure-controllers.md)和两个[视图](structure-views)外，你还需要创建一个[模型](structure-models.md)。
+为了实现这个目标，除了创建一个[操作](structure-controllers.md)和两个[视图](structure-views)外，还需要创建一个[模型](structure-models.md)。
 
 贯穿整个小节，你将会学到：
 
-* 创建一个[模型](structure-models.md)表示用户通过表单输入的数据
+* 创建一个[模型](structure-models.md)代表用户通过表单输入的数据
 * 声明规则去验证输入的数据
 * 在[视图](structure-views.md)中生成一个 HTML 表单
 
@@ -15,7 +15,7 @@
 创建模型 <a name="creating-model"></a>
 ----------------
 
-模型类 `EntryForm` 代表从用户那请求的数据，该类如下所示并存储在 `models/EntryForm.php` 文件中。请参考[类自动加载](concept-autoloading.md)小节获取更多关于类命名约定的介绍。
+模型类 `EntryForm` 代表从用户那请求的数据，该类如下所示并存储在 `models/EntryForm.php` 文件中。请参考[类自动加载](concept-autoloading.md)章节获取更多关于类命名约定的介绍。
 
 ```php
 <?php
@@ -48,7 +48,7 @@ class EntryForm extends Model
 * `name` 和 `email` 值都是必须的
 * `mail` 的值必须满足 email 地址验证
 
-如果你有一个从用户那搜集了数据的 `EntryForm` 对象，你可以调用它的 [[yii\base\Model::validate()|validate()]] 方法触发数据验证。如果有数据验证失败，将把 [[yii\base\Model::hasErrors|hasErrors]] 属性设为 ture，想要知道具体发生什么错误就调用 [[yii\base\Model::getErrors|getErrors]]。
+如果你有一个从用户那搜集数据的 `EntryForm` 对象，你可以调用它的 [[yii\base\Model::validate()|validate()]] 方法触发数据验证。如果有数据验证失败，将把 [[yii\base\Model::hasErrors|hasErrors]] 属性设为 ture，想要知道具体发生什么错误就调用 [[yii\base\Model::getErrors|getErrors]]。
 
 ```php
 <?php
@@ -104,7 +104,7 @@ class SiteController extends Controller
 
 > 补充：表达式 `Yii::$app` 代表[应用](structure-applications.md)实例，它是一个全局可访问的单例。同时它也是一个[服务定位器](concept-service-locator.md)，能提供 `request`，`response`，`db` 等等特定功能的组件。在上面的代码里就是使用 `request` 组件来访问应用实例收到的 `$_POST` 数据。
 
-用户提交表单后，操作将会渲染一个名为 `entry-confirm` 的视图去确认用户输入的数据。如果没填表单就提交，或数据包含错误（译者：如 email 格式不对），`entry` 视图将会渲染输出，连同表单一起输出的还有验证错误的信息。
+用户提交表单后，操作将会渲染一个名为 `entry-confirm` 的视图去确认用户输入的数据。如果没填表单就提交，或数据包含错误（译者：如 email 格式不对），`entry` 视图将会渲染输出，连同表单一起输出的还有验证错误的详细信息。
 
 > 注意：在这个简单例子里我们只是呈现了有效数据的确认页面。实践中你应该考虑使用 [[yii\web\Controller::refresh()|refresh()]] 或 [[yii\web\Controller::redirect()|redirect()]] 去避免[表单重复提交问题](http://en.wikipedia.org/wiki/Post/Redirect/Get)。
 
@@ -160,11 +160,11 @@ use yii\widgets\ActiveForm;
 http://hostname/index.php?r=site/entry
 ```
 
-你会看到一个包含两个输入框的表单的页面。每个输入框的前面都有一个标签指明应该输入的数据类型。如果什么都不填就点击提交按钮，或填入格式不正确的 email 地址，你将会看到在对应的输入框下显示错误信息。
+你会看到一个包含两个输入框的表单的页面。每个输入框的前面都有一个标签指明应该输入的数据类型。如果什么都不填就点击提交按钮，或填入格式不正确的 email 地址，将会看到在对应的输入框下显示错误信息。
 
 ![验证错误的表单](images/start-form-validation.png)
 
-输入有效的 name 和 email 信息并提交后，你将会看到一个显示你所提交数据的确认页面。
+输入有效的 name 和 email 信息并提交后，将会看到一个显示你所提交数据的确认页面。
 
 ![输入数据的确认页](images/start-entry-confirmation.png)
 
@@ -193,8 +193,8 @@ http://hostname/index.php?r=site/entry
 总结 <a name="summary"></a>
 -------
 
-本小节指南中你接触了 MVC 设计模式的每个部分。你学到了如何创建一个模型代表用户数据并验证它的有效性。
+本章节指南中你接触了 MVC 设计模式的每个部分。学到了如何创建一个模型代表用户数据并验证它的有效性。
 
 你还学到了如何从用户那获取数据并在浏览器上回显给用户。这本来是开发应用的过程中比较耗时的任务，好在 Yii 提供了强大的小部件让它变得如此简单。
 
-下一小节你将学习如何使用数据库，几乎每个应用都需要数据库。
+下一章你将学习如何使用数据库，几乎每个应用都需要数据库。

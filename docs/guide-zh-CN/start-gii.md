@@ -1,9 +1,9 @@
 使用 Gii 生成代码
 ========================
 
-本小节将介绍如何使用 [Gii](tool-gii.md) 去自动生成 Web 站点常用功能的代码。使用 Gii 生成代码非常简单，只要按照 Gii 页面上的介绍输入正确的信息即可。
+本章节将介绍如何使用 [Gii](tool-gii.md) 去自动生成 Web 站点常用功能的代码。使用 Gii 生成代码非常简单，只要按照 Gii 页面上的介绍输入正确的信息即可。
 
-贯穿本小节，你将会学到：
+贯穿本章节，你将会学到：
 
 * 在你的应用中开启 Gii
 * 使用 Gii 去生成活动记录类
@@ -14,7 +14,7 @@
 开始 Gii <a name="starting-gii"></a>
 ------------
 
-[Gii](tool-gii.md) 是 Yii 中的一个[模块](structure-modules.md)。你可以通过配置应用的 [[yii\base\Application::modules|modules]] 属性开启它。通常来讲在 `config/web.php` 文件中会有以下配置代码：
+[Gii](tool-gii.md) 是 Yii 中的一个[模块](structure-modules.md)。可以通过配置应用的 [[yii\base\Application::modules|modules]] 属性开启它。通常来讲在 `config/web.php` 文件中会有以下配置代码：
 
 ```php
 $config = [ ... ];
@@ -98,7 +98,7 @@ http://hostname/index.php?r=country/index
 
 ![编辑一个国家](images/start-gii-country-update.png)
 
-下面列出由 Gii 生成的文件，以便你也许想研习功能和实现，或修改它们。
+下面列出由 Gii 生成的文件，以便你研习功能和实现，或修改它们。
 
 * 控制器：`controllers/CountryController.php`
 * 模型：`models/Country.php` 和 `models/CountrySearch.php`
@@ -110,4 +110,4 @@ http://hostname/index.php?r=country/index
 总结 <a name="summary"></a>
 -------
 
-本小节学习了如何使用 Gii 去生成为数据表中数据实现完整 CRUD 功能的代码。
+本章学习了如何使用 Gii 去生成为数据表中数据实现完整 CRUD 功能的代码。
