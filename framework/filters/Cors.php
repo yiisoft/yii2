@@ -88,8 +88,9 @@ class Cors extends ActionFilter
      */
     public function beforeAction($action)
     {
-        $this->request = Yii::$app->getRequest();
-        $this->response = Yii::$app->getResponse();
+        $this->request = $this->request ? : Yii::$app->getRequest();
+        $this->response = $this->response ? : Yii::$app->getResponse();
+
         $this->overrideDefaultSettings($action);
 
         $requestCorsHeaders = $this->extractHeaders($this->request);
