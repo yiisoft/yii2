@@ -108,8 +108,9 @@ class Cors extends ActionFilter
     {
         if (isset($this->actions[$action->id])) {
             $actionParams = $this->actions[$action->id];
+            $actionParamsKeys = array_keys($actionParams);
             foreach ($this->cors as $headerField => $headerValue) {
-                if (isset($actionParams[$headerField])) {
+                if (in_array($headerField, $actionParamsKeys)) {
                     $this->cors[$headerField] = $actionParams[$headerField];
                 }
             }
