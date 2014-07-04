@@ -77,9 +77,9 @@ class RateLimiter extends ActionFilter
                 $action
             );
         } elseif ($user) {
-            Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.');
+            Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.', __METHOD__);
         } else {
-            Yii::info('Rate limit skipped: user not logged in.');
+            Yii::info('Rate limit skipped: user not logged in.', __METHOD__);
         }
         return true;
     }

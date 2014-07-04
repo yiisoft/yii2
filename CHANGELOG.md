@@ -71,6 +71,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed Object of class Imagick could not be converted to string in CaptchaAction (eXprojects, cebe)
 - Enh #87: Helper `yii\helpers\Security` converted into application component, cryptographic strength improved (klimov-paul)
 - Enh #422: Added Support for BIT(M) data type default values in Schema (cebe)
+- Enh #1160: Added $strict parameter to Inflector::camel2id() to handle consecutive uppercase chars (schmunk)
 - Enh #1452: Added `Module::getInstance()` to allow accessing the module instance from anywhere within the module (qiangxue)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
