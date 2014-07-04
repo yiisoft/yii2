@@ -51,8 +51,11 @@ Because this class is a behavior, when it is attached to a component, that compo
 
 > Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
 
+Handling Component Events
+------------------
+
 If a behavior needs to respond to the events triggered by the component it is attached to, it should override the
-[[yii\base\Behavior::events()]] method. For example,
+[[yii\base\Behavior::events()]] method. For example:
 
 ```php
 namespace app\components;
@@ -79,12 +82,12 @@ class MyBehavior extends Behavior
 ```
 
 The [[yii\base\Behavior::events()|events()]] method should return a list of events and their corresponding handlers.
-The above example declares that the [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event and
-its handler `beforeValidate()`. When specifying an event handler, you may use one of the following formats:
+The above example declares that the [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event exists and defines
+its handler, `beforeValidate()`. When specifying an event handler, you may use one of the following formats:
 
-* a string that refers to the name of a method of the behavior class, like the example above;
-* an array of an object or class name, and a method name, e.g., `[$object, 'methodName']`;
-* an anonymous function.
+* a string that refers to the name of a method of the behavior class, like the example above
+* an array of an object or class name, and a method name as a string (without parentheses), e.g., `[$object, 'methodName']`;
+* an anonymous function
 
 The signature of an event handler should be as follows, where `$event` refers to the event parameter. Please refer
 to the [Events](concept-events.md) section for more details about events.
