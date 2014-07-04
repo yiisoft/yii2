@@ -131,7 +131,7 @@ For example,
 
         // an anonymous function
         function () {
-            return new \app\components\Profiler();
+            return new app\components\Profiler();
         }
     ],
 ]
@@ -143,7 +143,7 @@ For example,
 >```php
 [
     function () {
-        return \Yii::$app->getModule('user');
+        return Yii::$app->getModule('user');
     },
 ]
 ```
