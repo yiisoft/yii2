@@ -11,7 +11,7 @@
 安装
 ------------
 
-Yii 2.0 完全拥抱 [Composer](https://getcomposer.org/)，它是事实上的 PHP 包管理工具。核心框架以及扩展的安装都通过 Composer 来处理。想要了解更多如何安装 Yii 2.0 请参阅本指南的 [安装 Yii](start-installation.md) 章节。如果你想创建新扩展，或者把你已有的 Yii 1.1 的扩展改写成兼容 2.0 的版本，你可以参考 [创建扩展](extend-creating-extensions.md) 章节。
+Yii 2.0 完全拥抱 [Composer](https://getcomposer.org/)，它是PHP中的一个依赖管理工具。核心框架以及扩展的安装都通过 Composer 来处理。想要了解更多如何安装 Yii 2.0 请参阅本指南的 [安装 Yii](start-installation.md) 章节。如果你想创建新扩展，或者把你已有的 Yii 1.1 的扩展改写成兼容 2.0 的版本，你可以参考 [创建扩展](extend-creating-extensions.md) 章节。
 
 
 PHP 需求
