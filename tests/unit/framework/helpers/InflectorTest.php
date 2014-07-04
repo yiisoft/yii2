@@ -95,6 +95,12 @@ class InflectorTest extends TestCase
 
         $this->assertEquals('post-tag', Inflector::camel2id('postTag'));
         $this->assertEquals('post_tag', Inflector::camel2id('postTag', '_'));
+
+        $this->assertEquals('foo-ybar', Inflector::camel2id('FooYBar', '-', false));
+        $this->assertEquals('foo_ybar', Inflector::camel2id('fooYBar', '_', false));
+
+        $this->assertEquals('foo-y-bar', Inflector::camel2id('FooYBar', '-', true));
+        $this->assertEquals('foo_y_bar', Inflector::camel2id('fooYBar', '_', true));
     }
 
     public function testId2camel()
@@ -104,6 +110,9 @@ class InflectorTest extends TestCase
 
         $this->assertEquals('PostTag', Inflector::id2camel('post-tag'));
         $this->assertEquals('PostTag', Inflector::id2camel('post_tag', '_'));
+
+        $this->assertEquals('FooYBar', Inflector::id2camel('foo-y-bar'));
+        $this->assertEquals('FooYBar', Inflector::id2camel('foo_y_bar', '_'));
     }
 
     public function testHumanize()
