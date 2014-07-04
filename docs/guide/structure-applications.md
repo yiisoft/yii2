@@ -131,7 +131,7 @@ For example,
 
         // an anonymous function
         function () {
-            return \app\components\Profiler();
+            return new \app\components\Profiler();
         }
     ],
 ]
