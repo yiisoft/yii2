@@ -179,9 +179,9 @@ class Cors extends ActionFilter
         if (isset($requestHeaders[$requestHeaderField])) {
             if (in_array('*', $this->cors[$requestHeaderField])) {
                 if ($type === 'Method') {
-                    $responseHeaders[$responseHeaderField] = strtoupper($responseHeaders[$responseHeaderField]);
+                    $responseHeaders[$responseHeaderField] = strtoupper($requestHeaders[$requestHeaderField]);
                 } elseif ($type === 'Headers') {
-                    $responseHeaders[$responseHeaderField] = static::headerize($responseHeaders[$responseHeaderField]);
+                    $responseHeaders[$responseHeaderField] = static::headerize($requestHeaders[$requestHeaderField]);
                 }
             } else {
                 $requestedData = preg_split("/[\s,]+/", $requestHeaders[$requestHeaderField], -1, PREG_SPLIT_NO_EMPTY);
@@ -190,7 +190,6 @@ class Cors extends ActionFilter
                     if ($type === 'Method') {
                         $req = strtoupper($req);
                     } elseif ($type === 'Headers') {
-                        // ucwords
                         $req = static::headerize($req);
                     }
                     if (in_array($req, $this->cors[$requestHeaderField])) {
@@ -222,13 +221,17 @@ class Cors extends ActionFilter
     /**
      * Convert any string (including php headers with HTTP prefix) to header format like :
      *  * X-PINGOTHER -> X-Pingother
-     *  * HTTP_X_PINGOTHER -> X-Pingother
+     *  * X_PINGOTHER -> X-Pingother
      * @param string $string string to convert
      * @return string the result in "header" format
      */
     protected static function headerize($string)
     {
-        return str_replace(' ', '-', ucwords(strtolower(str_replace(['_', '-'], [' ', ' '], $string))));
+        $headers = preg_split("/[\s,]+/", $string, -1, PREG_SPLIT_NO_EMPTY);
+        $headers = array_map(function($element) {
+            return str_replace(' ', '-', ucwords(strtolower(str_replace(['_', '-'], [' ', ' '], $element))));
+        }, $headers);
+        return implode(', ', $headers);
     }
 
     /**
