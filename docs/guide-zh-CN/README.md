@@ -60,7 +60,7 @@ Yii 2.0 权威指南
 * **已定稿** [属性（Property）](concept-properties.md)
 * **已定稿** [事件（Event）](concept-events.md)
 * **已定稿** [行为（Behavior）](concept-behaviors.md)
-* **已定稿** [配置（Configs）](concept-configurations.md)
+* **已定稿** [配置（Configurations）](concept-configurations.md)
 * **已定稿** [类自动加载（Autoloading）](concept-autoloading.md)
 * **已定稿** [别名（Alias）](concept-alias.md)
 * **已定稿** [服务定位器（Service Locator）](concept-service-locator.md)
