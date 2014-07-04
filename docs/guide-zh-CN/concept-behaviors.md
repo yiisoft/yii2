@@ -1,66 +1,56 @@
 行为（Behavior）
 =========
 
-行为（Behavior）是 [[yii\base\Behmixinsavior]] 或其子类的实例。 Behavior 也被称为[Mixin（理解为混合类型，英文维基）](http://en.wikipedia.org/wiki/Mixin)，允许你增强已有
-[[yii\base\Component|组件]] 类的功能，而无需改变类的继承结构。当一个行为被附加到组件之上是，他会向组件“注入”他的属性与方法。
-When a behavior is attached to a component, it will "inject" its methods and properties into the component,
-and you can access these methods and properties as if they are defined by the component class. Moreover, a behavior
-can respond to the [events](concept-events.md) triggered by the component so that it can customize or adapt the normal
-code execution of the component.
+行为（Behavior）是 [[yii\base\Behmixinsavior]] 或其子类的实例。 Behavior 也被称为
+[Mixin（Mix In可以理解为包含若干个类的部分方法和属性的混合类，英文维基）](http://en.wikipedia.org/wiki/Mixin)，允许你增强已有
+[[yii\base\Component|组件]] 类的功能，而无需改变类的继承结构。当一个行为被配属到组件之上是，他会向组件“注入”他的属性与方法，就好像这些方法原本就定义在组件里一样。此外，行为能响应由组件所触发的[事件](basic-events.md)，从而自定义或调整组件内默认的代码执行。
 
 
-Using Behaviors <a name="using-behaviors"></a>
+使用行为 <a name="using-behaviors"></a>
 ---------------
 
-To use a behavior, you first need to attach it to a [[yii\base\Component|component]]. We will describe how to
-attach a behavior in the next subsection.
+要使用行为，你首先需要把它配属到某个[[yii\base\Component|组件]]上。我们会在接下来的章节内讲解如何配属一个行为。
 
-Once a behavior is attached to a component, its usage is straightforward.
+行为被配属到组件之后，它的用法是很直截了当的。
 
-You can access a *public* member variable or a [property](concept-properties.md) defined by a getter and/or a setter
-of the behavior through the component it is attached to, like the following,
+可以通过行为所配属的组件，访问它的 *public* 成员变量或由 getter 和/或 setter 定义的[属性](concept-properties.md)，就像这样：
 
 ```php
-// "prop1" is a property defined in the behavior class
+// "prop1" 是一个定义在行为类中的属性
 echo $component->prop1;
 $component->prop1 = $value;
 ```
 
-You can also call a *public* method of the behavior similarly,
+与之相似的，你也可以调用行为类的 *public* 方法，
 
 ```php
-// bar() is a public method defined in the behavior class
+// bar() 是一个定义在行为类中的公共方法
 $component->bar();
 ```
 
-As you can see, although `$component` does not define `prop1` and `bar()`, they can be used as if they are part
-of the component definition.
+如你所见，尽管 `$component` 并没有定义 `prop1` 和 `bar()`，它们依旧好像是组件自身定义的一部分一样。
 
-If two behaviors define the same property or method and they are both attached to the same component,
-the behavior that is attached to the component first will take precedence when the property or method is being accessed.
+如果两个行为都定义了一样的属性或方法，并且它们都配属到同一个组件，那么先附加上的行为在属性或方法被访问时就有优先权。
 
-A behavior may be associated with a name when it is attached to a component. If this is the case, you may
-access the behavior object using the name, like the following,
+当行为配属到组件时可以关联一个行为名。此时就能使用这个名称来访问行为对象，如下所示：
 
 ```php
 $behavior = $component->getBehavior('myBehavior');
 ```
 
-You may also get all behaviors attached to a component:
+也能获取组件所配属的所有行为：
 
 ```php
 $behaviors = $component->getBehaviors();
 ```
 
 
-Attaching Behaviors <a name="attaching-behaviors"></a>
+配属行为 <a name="attaching-behaviors"></a>
 -------------------
 
-You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former
-is more commonly used in practice.
+可以选择静态或动态地配属行为到 [[yii\base\Component|组件]]。在具体实践中，前者更常见。
 
-To attach a behavior statically, override the [[yii\base\Component::behaviors()|behaviors()]] method of the component
-class that it is being attached. For example,
+要静态配属行为，重写目标组件类的 [[yii\base\Component::behaviors()|behaviors()]] 方法即可。如：
 
 ```php
 namespace app\models;
@@ -73,20 +63,20 @@ class User extends ActiveRecord
     public function behaviors()
     {
         return [
-            // anonymous behavior, behavior class name only
+            // 匿名行为 => 行为类名
             MyBehavior::className(),
 
-            // named behavior, behavior class name only
+            // 命名行为 => 行为类名
             'myBehavior2' => MyBehavior::className(),
 
-            // anonymous behavior, configuration array
+            // 匿名行为 => 配置数组
             [
                 'class' => MyBehavior::className(),
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
-            // named behavior, configuration array
+            // 命名行为 => 配置数组
             'myBehavior4' => [
                 'class' => MyBehavior::className(),
                 'prop1' => 'value1',
@@ -97,27 +87,22 @@ class User extends ActiveRecord
 }
 ```
 
-The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](concept-configurations.md).
-Each behavior configuration can be either a behavior class name or a configuration array.
+[[yii\base\Component::behaviors()|behaviors()]] 方法应该返回一个包含所有行为[配置信息](concept-configurations.md)的列表。每个行为的配置信息可以是行为的类名也可以是其配置数组。
 
-You may associate a name with a behavior by specifying the array key corresponding to the behavior configuration.
-In this case, the behavior is called a *named behavior*. In the above example, there are two named behaviors:
-`myBehavior2` and `myBehavior4`. If a behavior is not associated with a name, it is called an *anonymous behavior*.
+通过为行为配置信息指定相应的键名，可以给行为关联一个名称。这种行为称为**命名行为**。在上例中存在两个命名行为：`myBehavior2` 和 `myBehavior4` 。同理如果行为没有关联名称就是**匿名行为**。
 
-
-To attach a behavior dynamically, call the [[yii\base\Component::attachBehavior()]] method of the component
-that it is attached to. For example,
+要动态地配属行为，只需调用目标组件的 [[yii\base\Component::attachBehavior()]] 方法即可，如：
 
 ```php
 use app\components\MyBehavior;
 
-// attach a behavior object
+// 配属一个行为对象
 $component->attachBehavior('myBehavior1', new MyBehavior);
 
-// attach a behavior class
+// 配属行为类
 $component->attachBehavior('myBehavior2', MyBehavior::className());
 
-// attach a configuration array
+// 配属一个配置数组
 $component->attachBehavior('myBehavior3', [
     'class' => MyBehavior::className(),
     'prop1' => 'value1',
@@ -125,18 +110,16 @@ $component->attachBehavior('myBehavior3', [
 ]);
 ```
 
-You may attach multiple behaviors at once by using the [[yii\base\Component::attachBehaviors()]] method.
-For example,
+你也可以通过 [[yii\base\Component::attachBehaviors()]] 方法一次性配属多个行为。比如：
 
 ```php
 $component->attachBehaviors([
-    'myBehavior1' => new MyBehavior,  // a named behavior
-    MyBehavior::className(),          // an anonymous behavior
+    'myBehavior1' => new MyBehavior,  // 一个命名行为
+    MyBehavior::className(),          // 一个匿名行为
 ]);
 ```
 
-You may also attach behaviors through [configurations](concept-configurations.md) like the following. For more details,
-please refer to the [Configurations](concept-configurations.md#configuration-format) section.
+如下所示，你也可以通过[配置数组](concept-configurations.md)配属行为。更多细节，请参考[配置（Configs）](concept-configurations.md#configuration-format)章节。
 
 ```php
 [
@@ -151,23 +134,23 @@ please refer to the [Configurations](concept-configurations.md#configuration-for
 ```
 
 
-Detaching Behaviors <a name="detaching-behaviors"></a>
+拆卸行为 <a name="detaching-behaviors"></a>
 -------------------
 
-To detach a behavior, you can call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
+要拆卸行为，可以用行为的键名调用 [[yii\base\Component::detachBehavior()]] 方法：
 
 ```php
 $component->detachBehavior('myBehavior1');
 ```
 
-You may also detach *all* behaviors:
+也可以一次性拆卸掉**所有的**行为：
 
 ```php
 $component->detachBehaviors();
 ```
 
 
-Defining Behaviors <a name="defining-behaviors"></a>
+定义行为 <a name="defining-behaviors"></a>
 ------------------
 
 To define a behavior, create a class by extending from [[yii\base\Behavior]] or its child class. For example,
@@ -252,7 +235,7 @@ function ($event) {
 ```
 
 
-Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
+使用 `TimestampBehavior` <a name="using-timestamp-behavior"></a>
 -------------------------
 
 To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]] - a behavior that supports automatically
@@ -310,7 +293,7 @@ $user->touch('login_time');
 ```
 
 
-Comparison with Traits <a name="comparison-with-traits"></a>
+与 Traits（特质）的对比 <a name="comparison-with-traits"></a>
 ----------------------
 
 While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
@@ -318,7 +301,7 @@ properties and methods to the primary class, they differ in many aspects. As exp
 both have pros and cons. They are more like complements rather than replacements to each other.
 
 
-### Pros for Behaviors <a name="pros-for-behaviors"></a>
+### Behavior 的好处 <a name="pros-for-behaviors"></a>
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
 can be considered as language-supported copy and paste. They do not support inheritance.
@@ -336,7 +319,7 @@ Name conflict caused by different traits requires you to manually resolve it by 
 properties or methods.
 
 
-### Pros for Traits <a name="pros-for-traits"></a>
+### Traits 的好处 <a name="pros-for-traits"></a>
 
 Traits are much more efficient than behaviors because behaviors are objects which take both time and memory.
 
