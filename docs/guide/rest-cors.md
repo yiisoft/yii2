@@ -1,7 +1,7 @@
 Cross Origin Resource Sharing (CORS)
 ====================================
 
-Cross-origin resource sharing (CORS) is a mechanism that allows many resources (e.g. fonts, JavaScript, etc.)
+Cross-origin resource sharing [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) is a mechanism that allows many resources (e.g. fonts, JavaScript, etc.)
 on a web page to be requested from another domain outside the domain the resource originated from.
 In particular, JavaScript's AJAX calls can use the XMLHttpRequest mechanism. Such "cross-domain" requests would
 otherwise be forbidden by web browsers, per the same origin security policy.
