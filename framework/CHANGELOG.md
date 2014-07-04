@@ -427,6 +427,7 @@ Yii Framework 2 Change Log
 - Chg #2912: Relative view files will be looked for under the directory containing the view currently being rendered (qiangxue)
 - Chg #2955: Changed the signature of ActiveQuery constructors and replaced `ActiveRecord::createQuery()` with `find()` to simplify customizing ActiveQuery classes (qiangxue)
 - Chg #2999: Added `findOne()` and `findAll()` to replace the usage of `ActiveRecord::find($condition)`. (samdark, qiangxue)
+- Chg #4204: `yii\web\Request::getUserIP()` will return null if it cannot detect user IP address (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)
