@@ -127,7 +127,7 @@ class Cors extends ActionFilter
         $headers = [];
         $requestHeaders = array_keys($this->cors);
         foreach ($requestHeaders as $headerField) {
-            $serverField = static::headerizeToPhp($headerField);
+            $serverField = $this->headerizeToPhp($headerField);
             $headerData = isset($_SERVER[$serverField])?$_SERVER[$serverField]:null;
             if ($headerData !== null) {
                 $headers[$headerField] = $headerData;
@@ -182,7 +182,7 @@ class Cors extends ActionFilter
                 if ($type === 'Method') {
                     $responseHeaders[$responseHeaderField] = strtoupper($requestHeaders[$requestHeaderField]);
                 } elseif ($type === 'Headers') {
-                    $responseHeaders[$responseHeaderField] = static::headerize($requestHeaders[$requestHeaderField]);
+                    $responseHeaders[$responseHeaderField] = $this->headerize($requestHeaders[$requestHeaderField]);
                 }
             } else {
                 $requestedData = preg_split("/[\s,]+/", $requestHeaders[$requestHeaderField], -1, PREG_SPLIT_NO_EMPTY);
@@ -191,7 +191,7 @@ class Cors extends ActionFilter
                     if ($type === 'Method') {
                         $req = strtoupper($req);
                     } elseif ($type === 'Headers') {
-                        $req = static::headerize($req);
+                        $req = $this->headerize($req);
                     }
                     if (in_array($req, $this->cors[$requestHeaderField])) {
                         $acceptedData[] = $req;
@@ -226,7 +226,7 @@ class Cors extends ActionFilter
      * @param string $string string to convert
      * @return string the result in "header" format
      */
-    protected static function headerize($string)
+    protected function headerize($string)
     {
         $headers = preg_split("/[\s,]+/", $string, -1, PREG_SPLIT_NO_EMPTY);
         $headers = array_map(function($element) {
@@ -242,7 +242,7 @@ class Cors extends ActionFilter
      * @param string $string string to convert
      * @return string the result in "php $_SERVER header" format
      */
-    protected static function headerizeToPhp($string)
+    protected function headerizeToPhp($string)
     {
         return 'HTTP_'.strtoupper(str_replace([' ', '-'], ['_', '_'], $string));
     }
