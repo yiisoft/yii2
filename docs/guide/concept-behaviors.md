@@ -9,49 +9,89 @@ can respond to the [events](concept-events.md) triggered by the component, which
 code execution of the component.
 
 
-Using Behaviors <a name="using-behaviors"></a>
----------------
+Defining Behaviors <a name="defining-behaviors"></a>
+------------------
 
-To use a behavior, you first need to attach it to a [[yii\base\Component|component]]. We will describe how to
-attach a behavior in the next subsection.
-
-Once a behavior is attached to a component, its usage is straightforward.
-
-You can access a *public* member variable or a [property](concept-properties.md) defined by a getter and/or a setter
-of the behavior through the component it is attached to, like the following,
+To define a behavior, create a class by extending from [[yii\base\Behavior]] or its child class. For example,
 
 ```php
-// "prop1" is a property defined in the behavior class
-echo $component->prop1;
-$component->prop1 = $value;
+namespace app\components;
+
+use yii\base\Model;
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
+{
+    public $prop1;
+
+    private $_prop2;
+
+    public function getProp2()
+    {
+        return $this->_prop2;
+    }
+
+    public function setProp2($value)
+    {
+        $this->_prop2 = $value;
+    }
+
+    public function foo()
+    {
+        // ...
+    }
+}
 ```
 
-You can also call a *public* method of the behavior similarly,
+The above code defines the behavior class `app\components\MyBehavior` which will provide two properties
+`prop1` and `prop2`, and one method `foo()` to the component it is attached to. Note that property `prop2`
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is so because [[yii\base\Object]]
+is an ancestor class of [[yii\base\Behavior]], which supports defining [properties](concept-properties.md) by getters/setters.
+
+Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
+
+If a behavior needs to respond to the events triggered by the component it is attached to, it should override the
+[[yii\base\Behavior::events()]] method. For example,
 
 ```php
-// bar() is a public method defined in the behavior class
-$component->bar();
+namespace app\components;
+
+use yii\db\ActiveRecord;
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
+{
+    // ...
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
+        ];
+    }
+
+    public function beforeValidate($event)
+    {
+        // ...
+    }
+}
 ```
 
-As you can see, although `$component` does not define `prop1` and `bar()`, they can be used as if they are part
-of the component definition.
+The [[yii\base\Behavior::events()|events()]] method should return a list of events and their corresponding handlers.
+The above example declares that the [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event and
+its handler `beforeValidate()`. When specifying an event handler, you may use one of the following formats:
 
-If two behaviors define the same property or method and they are both attached to the same component,
-the behavior that is attached to the component first will take precedence when the property or method is being accessed.
+* a string that refers to the name of a method of the behavior class, like the example above;
+* an array of an object or class name, and a method name, e.g., `[$object, 'methodName']`;
+* an anonymous function.
 
-A behavior may be associated with a name when it is attached to a component. If this is the case, you may
-access the behavior object using the name, like the following,
+The signature of an event handler should be as follows, where `$event` refers to the event parameter. Please refer
+to the [Events](concept-events.md) section for more details about events.
 
 ```php
-$behavior = $component->getBehavior('myBehavior');
+function ($event) {
+}
 ```
-
-You may also get all behaviors attached to a component:
-
-```php
-$behaviors = $component->getBehaviors();
-```
-
 
 Attaching Behaviors <a name="attaching-behaviors"></a>
 -------------------
@@ -150,6 +190,51 @@ please refer to the [Configurations](concept-configurations.md#configuration-for
 ]
 ```
 
+Using Behaviors <a name="using-behaviors"></a>
+---------------
+
+To use a behavior, you first need to attach it to a [[yii\base\Component|component]]. We will describe how to
+attach a behavior in the next subsection.
+
+Once a behavior is attached to a component, its usage is straightforward.
+
+You can access a *public* member variable or a [property](concept-properties.md) defined by a getter and/or a setter
+of the behavior through the component it is attached to, like the following,
+
+```php
+// "prop1" is a property defined in the behavior class
+echo $component->prop1;
+$component->prop1 = $value;
+```
+
+You can also call a *public* method of the behavior similarly,
+
+```php
+// bar() is a public method defined in the behavior class
+$component->bar();
+```
+
+As you can see, although `$component` does not define `prop1` and `bar()`, they can be used as if they are part
+of the component definition.
+
+If two behaviors define the same property or method and they are both attached to the same component,
+the behavior that is attached to the component first will take precedence when the property or method is being accessed.
+
+A behavior may be associated with a name when it is attached to a component. If this is the case, you may
+access the behavior object using the name, like the following,
+
+```php
+$behavior = $component->getBehavior('myBehavior');
+```
+
+You may also get all behaviors attached to a component:
+
+```php
+$behaviors = $component->getBehaviors();
+```
+
+
+
 
 Detaching Behaviors <a name="detaching-behaviors"></a>
 -------------------
@@ -166,90 +251,6 @@ You may also detach *all* behaviors:
 $component->detachBehaviors();
 ```
 
-
-Defining Behaviors <a name="defining-behaviors"></a>
-------------------
-
-To define a behavior, create a class by extending from [[yii\base\Behavior]] or its child class. For example,
-
-```php
-namespace app\components;
-
-use yii\base\Model;
-use yii\base\Behavior;
-
-class MyBehavior extends Behavior
-{
-    public $prop1;
-
-    private $_prop2;
-
-    public function getProp2()
-    {
-        return $this->_prop2;
-    }
-
-    public function setProp2($value)
-    {
-        $this->_prop2 = $value;
-    }
-
-    public function foo()
-    {
-        // ...
-    }
-}
-```
-
-The above code defines the behavior class `app\components\MyBehavior` which will provide two properties
-`prop1` and `prop2`, and one method `foo()` to the component it is attached to. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is so because [[yii\base\Object]]
-is an ancestor class of [[yii\base\Behavior]], which supports defining [properties](concept-properties.md) by getters/setters.
-
-Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
-
-If a behavior needs to respond to the events triggered by the component it is attached to, it should override the
-[[yii\base\Behavior::events()]] method. For example,
-
-```php
-namespace app\components;
-
-use yii\db\ActiveRecord;
-use yii\base\Behavior;
-
-class MyBehavior extends Behavior
-{
-    // ...
-
-    public function events()
-    {
-        return [
-            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
-        ];
-    }
-
-    public function beforeValidate($event)
-    {
-        // ...
-    }
-}
-```
-
-The [[yii\base\Behavior::events()|events()]] method should return a list of events and their corresponding handlers.
-The above example declares that the [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event and
-its handler `beforeValidate()`. When specifying an event handler, you may use one of the following formats:
-
-* a string that refers to the name of a method of the behavior class, like the example above;
-* an array of an object or class name, and a method name, e.g., `[$object, 'methodName']`;
-* an anonymous function.
-
-The signature of an event handler should be as follows, where `$event` refers to the event parameter. Please refer
-to the [Events](concept-events.md) section for more details about events.
-
-```php
-function ($event) {
-}
-```
 
 
 Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
