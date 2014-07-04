@@ -12,7 +12,7 @@ code execution of the component.
 Defining Behaviors <a name="defining-behaviors"></a>
 ------------------
 
-To define a behavior, create a class by extending from [[yii\base\Behavior]] or its child class. For example,
+To define a behavior, create a class that extends [[yii\base\Behavior]], or extends a child class. For example:
 
 ```php
 namespace app\components;
@@ -43,12 +43,13 @@ class MyBehavior extends Behavior
 }
 ```
 
-The above code defines the behavior class `app\components\MyBehavior` which will provide two properties
-`prop1` and `prop2`, and one method `foo()` to the component it is attached to. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is so because [[yii\base\Object]]
-is an ancestor class of [[yii\base\Behavior]], which supports defining [properties](concept-properties.md) by getters/setters.
+The above code defines the behavior class `app\components\MyBehavior`, with two properties--
+`prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]], and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
-Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
+Because this class is a behavior, when it is attached to a component, that component will then also have the the `prop1` and `prop2` properties and the `foo()` method.
+
+> Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
 
 If a behavior needs to respond to the events triggered by the component it is attached to, it should override the
 [[yii\base\Behavior::events()]] method. For example,
