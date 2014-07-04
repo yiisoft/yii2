@@ -100,11 +100,11 @@ function ($event) {
 Attaching Behaviors <a name="attaching-behaviors"></a>
 -------------------
 
-You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former
-is more commonly used in practice.
+You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former is more common in practice.
 
 To attach a behavior statically, override the [[yii\base\Component::behaviors()|behaviors()]] method of the component
-class that it is being attached. For example,
+class to which the behavior is being attached. The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](concept-configurations.md).
+Each behavior configuration can be either a behavior class name or a configuration array:
 
 ```php
 namespace app\models;
@@ -141,16 +141,11 @@ class User extends ActiveRecord
 }
 ```
 
-The [[yii\base\Component::behaviors()|behaviors()]] method should return a list of behavior [configurations](concept-configurations.md).
-Each behavior configuration can be either a behavior class name or a configuration array.
-
-You may associate a name with a behavior by specifying the array key corresponding to the behavior configuration.
-In this case, the behavior is called a *named behavior*. In the above example, there are two named behaviors:
+You may associate a name with a behavior by specifying the array key corresponding to the behavior configuration. In this case, the behavior is called a *named behavior*. In the above example, there are two named behaviors:
 `myBehavior2` and `myBehavior4`. If a behavior is not associated with a name, it is called an *anonymous behavior*.
 
 
-To attach a behavior dynamically, call the [[yii\base\Component::attachBehavior()]] method of the component
-that it is attached to. For example,
+To attach a behavior dynamically, call the [[yii\base\Component::attachBehavior()]] method of the component to which the behavior is being attached:
 
 ```php
 use app\components\MyBehavior;
@@ -169,8 +164,7 @@ $component->attachBehavior('myBehavior3', [
 ]);
 ```
 
-You may attach multiple behaviors at once by using the [[yii\base\Component::attachBehaviors()]] method.
-For example,
+You may attach multiple behaviors at once using the [[yii\base\Component::attachBehaviors()]] method:
 
 ```php
 $component->attachBehaviors([
@@ -179,8 +173,7 @@ $component->attachBehaviors([
 ]);
 ```
 
-You may also attach behaviors through [configurations](concept-configurations.md) like the following. For more details,
-please refer to the [Configurations](concept-configurations.md#configuration-format) section.
+You may also attach behaviors through [configurations](concept-configurations.md) like the following: 
 
 ```php
 [
@@ -193,6 +186,9 @@ please refer to the [Configurations](concept-configurations.md#configuration-for
     ],
 ]
 ```
+
+For more details,
+please refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
 Using Behaviors <a name="using-behaviors"></a>
 ---------------
