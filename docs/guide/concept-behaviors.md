@@ -193,13 +193,10 @@ please refer to the [Configurations](concept-configurations.md#configuration-for
 Using Behaviors <a name="using-behaviors"></a>
 ---------------
 
-To use a behavior, you first need to attach it to a [[yii\base\Component|component]]. We will describe how to
-attach a behavior in the next subsection.
-
-Once a behavior is attached to a component, its usage is straightforward.
+To use a behavior, first attach it to a [[yii\base\Component|component]] per the instructions above. Once a behavior is attached to a component, its usage is straightforward.
 
 You can access a *public* member variable or a [property](concept-properties.md) defined by a getter and/or a setter
-of the behavior through the component it is attached to, like the following,
+of the behavior through the component it is attached to:
 
 ```php
 // "prop1" is a property defined in the behavior class
@@ -207,21 +204,21 @@ echo $component->prop1;
 $component->prop1 = $value;
 ```
 
-You can also call a *public* method of the behavior similarly,
+You can also call a *public* method of the behavior similarly:
 
 ```php
-// bar() is a public method defined in the behavior class
-$component->bar();
+// foo() is a public method defined in the behavior class
+$component->foo();
 ```
 
 As you can see, although `$component` does not define `prop1` and `bar()`, they can be used as if they are part
-of the component definition.
+of the component definition due to the attached behavior.
 
 If two behaviors define the same property or method and they are both attached to the same component,
-the behavior that is attached to the component first will take precedence when the property or method is being accessed.
+the behavior that is attached to the component *first* will take precedence when the property or method is accessed.
 
 A behavior may be associated with a name when it is attached to a component. If this is the case, you may
-access the behavior object using the name, like the following,
+access the behavior object using the name:
 
 ```php
 $behavior = $component->getBehavior('myBehavior');
@@ -234,12 +231,10 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-
-
 Detaching Behaviors <a name="detaching-behaviors"></a>
 -------------------
 
-To detach a behavior, you can call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
+To detach a behavior, call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
 
 ```php
 $component->detachBehavior('myBehavior1');
@@ -252,14 +247,13 @@ $component->detachBehaviors();
 ```
 
 
-
 Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
 -------------------------
 
-To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]] - a behavior that supports automatically
-updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] when it is being saved.
+To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior  supports automatically
+updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved (e.g., on insert or update).
 
-First, attach this behavior to the [[yii\db\ActiveRecord|Active Record]] class that you plan to use.
+First, attach this behavior to the [[yii\db\ActiveRecord|Active Record]] class that you plan to use:
 
 ```php
 namespace app\models\User;
@@ -286,13 +280,13 @@ class User extends ActiveRecord
 }
 ```
 
-The behavior configuration above specifies that
+The behavior configuration above specifies that when the record is being:
 
-* when the record is being inserted, the behavior should assign the current timestamp to
-  the `created_at` and `updated_at` attributes;
-* when the record is being updated, the behavior should assign the current timestamp to the `updated_at` attribute.
+* inserted, the behavior should assign the current timestamp to
+  the `created_at` and `updated_at` attributes
+* updated, the behavior should assign the current timestamp to the `updated_at` attribute
 
-Now if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
+With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
 filled with the current timestamp:
 
 ```php
@@ -303,43 +297,41 @@ echo $user->created_at;  // shows the current timestamp
 ```
 
 The [[yii\behaviors\TimestampBehavior|TimestampBehavior]] also offers a useful method
-[[yii\behaviors\TimestampBehavior::touch()|touch()]] which will assign the current timestamp
+[[yii\behaviors\TimestampBehavior::touch()|touch()]], which will assign the current timestamp
 to a specified attribute and save it to the database:
 
 ```php
 $user->touch('login_time');
 ```
 
-
-Comparison with Traits <a name="comparison-with-traits"></a>
+Comparing Behaviors with Traits <a name="comparison-with-traits"></a>
 ----------------------
 
 While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
 properties and methods to the primary class, they differ in many aspects. As explained below, they
-both have pros and cons. They are more like complements rather than replacements to each other.
+both have pros and cons. They are more like complements to each other rather than alternatives.
 
 
-### Pros for Behaviors <a name="pros-for-behaviors"></a>
+### Reasons to Use Behaviors <a name="pros-for-behaviors"></a>
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
 can be considered as language-supported copy and paste. They do not support inheritance.
 
-Behaviors can be attached and detached to a component dynamically without requiring you to modify the component class.
-To use a trait, you must modify the class using it.
+Behaviors can be attached and detached to a component dynamically without requiring modification of the component class. To use a trait, you must modify the class using it.
 
 Behaviors are configurable while traits are not.
 
 Behaviors can customize the code execution of a component by responding to its events.
 
-When there is name conflict among different behaviors attached to the same component, the conflict is
-automatically resolved by respecting the behavior that is attached to the component first.
-Name conflict caused by different traits requires you to manually resolve it by renaming the affected
+When there can be name conflicts among different behaviors attached to the same component, the conflicts are
+automatically resolved by prioritizing the behavior attached to the component first.
+Name conflicts caused by different traits requires manually resolution by renaming the affected
 properties or methods.
 
 
-### Pros for Traits <a name="pros-for-traits"></a>
+### Reasons to Use Traits <a name="pros-for-traits"></a>
 
-Traits are much more efficient than behaviors because behaviors are objects which take both time and memory.
+Traits are much more efficient than behaviors as behaviors are objects that take both time and memory.
 
 IDEs are more friendly to traits as they are language construct.
 
