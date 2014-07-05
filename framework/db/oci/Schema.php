@@ -65,7 +65,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleColumnName($name)
     {
-        return '"' . $name . '"';
+        return $name !== '*' ? '"' . $name . '"' : $name;
     }
 
     /**
