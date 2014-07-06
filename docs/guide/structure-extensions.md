@@ -11,7 +11,7 @@ other people your great work.
   that can be used without Yii, we will refer to them using the term "package" or "library".
 
 
-## Using Extensions
+## Using Extensions <a name="using-extensions"></a>
 
 To use an extension, you need to install it first. Most extensions are distributed as [Composer](https://getcomposer.org/)
 packages which can be installed by taking the following two simple steps:
@@ -19,8 +19,7 @@ packages which can be installed by taking the following two simple steps:
 1. modify the `composer.json` file of your application and specify which extensions (Composer packages) you want to install.
 2. run `php composer.phar install` to install the specified extensions.
 
-You may need to install [Composer](https://getcomposer.org/) if you do not have it. Composer is a dependency
-manager. This means when installing a package, it will install all its dependent packages automatically.
+Note that you may need to install [Composer](https://getcomposer.org/) if you do not have it.
 
 By default, Composer installs packages registered on [Packagist](https://packagist.org/) - the biggest repository
 for open source Composer packages. You can look for extensions on Packagist. You may also
@@ -28,7 +27,8 @@ for open source Composer packages. You can look for extensions on Packagist. You
 to use it. This is useful if you are developing closed open extensions and want to share within your projects.
 
 Extensions installed by Composer are stored in the `BasePath/vendor` directory, where `BasePath` refers to the
-application's [base path](structure-applications.md#basePath).
+application's [base path](structure-applications.md#basePath).  Because Composer is a dependency manager, when
+it installs a package, it will also install all its dependent packages.
 
 For example, to install the `yiisoft/yii2-imagine` extension, modify your `composer.json` like the following:
 
@@ -66,36 +66,53 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 > Info: Extension classes are autoloaded by the [Yii class autoloader](concept-autoloading.md).
 
 
-## Creating Extensions
+### Installing Extensions Manually <a name="installing-extensions-manually"></a>
 
+In some rare occasions, you may want to install some or all extensions manually, rather than relying on Composer.
+To do so, you should
+
+1. download the extension archive files and unpack them in the `vendor` directory.
+2. install the class autoloaders provided by the extensions, if any.
+3. download and install all dependent extensions as instructed.
+
+If an extension does not have a class autoloader but follows the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/),
+you may use the class autoloader provided by Yii to autoload the extension classes. All you need to do is just to
+declare a [root alias](concept-aliases.md#defining-aliases) for the extension root directory. For example,
+assuming you have installed an extension in the directory `vendor/mycompany/myext`, and the extension classes
+are under the `myext` namespace, then you can include the following code in your application configuration:
+
+```php
+[
+    'aliases' => [
+        '@myext' => '@vendor/mycompany/myext',
+    ],
+]
+```
+
+
+## Creating Extensions <a name="creating-extensions"></a>
+
+You may consider creating an extension when you feel the need to share with other people your great code.
 An extension can contain any code you like, such as a helper class, a widget, a module, etc.
-
-You may consider creating an extension when you feel the need to redistribute some of your great code so that
-they can be easily reused by other people or in your other projects.
 
 It is recommended that you create an extension in terms of a [Composer package](https://getcomposer.org/) so that
 it can be more easily installed and used by other users, liked described in the last subsection.
 
-
-### Basic Steps
-
-Below are the basic steps you may follow to create an extension.
+Below are the basic steps you may follow to create an extension as a Composer package.
 
 1. Create a project for your extension and host it on a VCS repository, such as [github.com](https://github.com).
-   Development and maintenance work about the extension should be done on this repository.
+   The development and maintenance work about the extension should be done on this repository.
 2. Under the root directory of the project, create a file named `composer.json` as required by Composer. Please
    refer to the next subsection for more details.
-3. Register your extension with a Composer repository so that other users can find and install your extension.
-   If you are creating an open source extension, you can register it with [Packagist](https://packagist.org/);
-   If you are creating a private extension for internal use, you may register it with
-   [your own repository](https://getcomposer.org/doc/05-repositories.md#hosting-your-own).
+3. Register your extension with a Composer repository, such as [Packagist](https://packagist.org/), so that
+   other users can find and install your extension using Composer.
 
 
-### `composer.json`
+### `composer.json` <a name="composer-json"></a>
 
 Each Composer package must have a `composer.json` file in its root directory. The file contains the metadata about
 the package. You may find complete specification about this file in the [Composer Manual](https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup).
-You may also refer to the following example which is the `composer.json` file for the `yiisoft/yii2-imagine` extension:
+The following example shows the `composer.json` file for the `yiisoft/yii2-imagine` extension:
 
 ```json
 {
@@ -137,36 +154,38 @@ You may also refer to the following example which is the `composer.json` file fo
 }
 ```
 
-> Info: It is important that you specify the package type as `yii2-extension` so that the package can
-  be recognized as a Yii extension when being installed.
+
+#### Package Name <a name="package-name"></a>
+
+Each Composer package should have a package name which uniquely identifies the package among all others.
+The format of package names is `vendorName/projectName`. For example, in the package name `yiisoft/yii2-imagine`,
+the vendor name and the project name are `yiisoft` and `yii2-imagine`, respectively.
+
+Do NOT use `yiisoft` as vendor name as it is reserved for use by the Yii core code.
+
+We recommend you prefix `yii2-` to the project name for packages representing Yii 2 extensions, for example,
+`myname/yii2-mywidget`. This will allow users to more easily tell whether a package is a Yii 2 extension.
 
 
-### Package Names
+#### Package Type <a name="package-type"></a>
 
-Each extension, when released as a Composer package, should have a package name which uniquely identifies itself
-among all other packages. The format of package names is `vendorName/projectName`. For example, in the package name
-`yiisoft/yii2-imagine`, the vendor name and the project name are `yiisoft` and `yii2-imagine`, respectively.
+It is important that you specify the package type of your extension as `yii2-extension` so that the package can
+be recognized as a Yii extension when being installed.
 
-Do NOT use `yiisoft` as vendor name as this is reserved for use by the Yii core code.
-
-Also, to easily tell from package name whether a package is a Yii extension, we recommend you prefix `yii2-`
-to the project name.
+When a user runs `php composer.phar install` to install an extension, the file `vendor/yiisoft/extensions.php`
+will be automatically updated to include the information about the new extension. From this file, Yii applications
+can know which extensions are installed (the information can be accessed via [[yii\base\Application::extensions]].
 
 
-### Namespaces
+#### Dependencies <a name="dependencies"></a>
 
-To avoid name collisions and make the classes in your extension autoloadable, you should use namespaces and
-name the classes in your extension by following the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) or
-[PSR-0 standard](http://www.php-fig.org/psr/psr-0/).
-
-You class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
-in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
-extension, we use `yii\imagine` as the namespace its classes.
-
-Do not use `yii`, `yii2` or `yiisoft` as vendor name. These names are reserved for use by the Yii core code.
+Your extension depends on Yii (of course). So you should list it in the `require` entry in `composer.json`.
+If your extension also depends on other extensions or third-party libraries, you should list them as well.
+Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependency. Use stable
+dependencies when your extension is released in a stable version.
 
 
-### Class Autoloading
+#### Class Autoloading <a name="class-autoloading"></a>
 
 In order for your classes to be autoloaded by the Yii class autoloader or the Composer class autoloader,
 you should specify the `autoload` entry in the `composer.json` file, like shown below:
@@ -185,12 +204,31 @@ you should specify the `autoload` entry in the `composer.json` file, like shown 
 
 You may list one or multiple root namespaces and their corresponding file paths.
 
-When the extension is installed in an application, Yii will create an [alias](concept-aliases.md#extension-aliases)
-for each listed root namespace. The alias will refer to the directory corresponding to the root namespace.
+When the extension is installed in an application, Yii will create for each listed root namespace
+an [alias](concept-aliases.md#extension-aliases) that refers to the directory corresponding to the namespace.
 For example, the above `autoload` declaration will correspond to an alias named `@yii/imagine`.
 
 
-### Bootstrapping Classes
+### Recommended Practices <a name="recommended-practices"></a>
+
+Because extensions are meant to be used by other people, you often need to take extra development effort. Below
+we introduce some common and recommended practices in creating high quality extensions.
+
+
+#### Namespaces <a name="namespaces"></a>
+
+To avoid name collisions and make the classes in your extension autoloadable, you should use namespaces and
+name the classes in your extension by following the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) or
+[PSR-0 standard](http://www.php-fig.org/psr/psr-0/).
+
+You class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
+in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
+extension, we use `yii\imagine` as the namespace its classes.
+
+Do not use `yii`, `yii2` or `yiisoft` as vendor name. These names are reserved for use by the Yii core code.
+
+
+#### Bootstrapping Classes <a name="bootstrapping-classes"></a>
 
 Sometimes, you may want your extension to execute some code during the [bootstrapping process](runtime-bootstrapping.md)
 stage of an application. For example, your extension may want to respond to the application's `beginRequest` event
@@ -230,37 +268,146 @@ You then list this class in the `composer.json` file of your extension like foll
 ```
 
 When the extension is installed in an application, Yii will automatically instantiate the bootstrapping class
-and call its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] during the bootstrapping process for
+and call its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method during the bootstrapping process for
 every request.
 
 
-## Installing Extensions Manually
+#### Working with Databases <a name="working-with-databases"></a>
 
-In some rare occasions, you may want to install some or all extensions manually, rather than relying on Composer.
-To do so, you should
+Your extension may need to access databases. Do not assume that the applications that use your extension will always
+use `Yii::$db` as the DB connection. Instead, you should declare a `db` property for the classes that require DB access.
+The property will allow users of your extension to customize which DB connection they would like your extension to use.
+As an example, you may refer to the [[yii\caching\DbCache]] class and see how it declares and uses the `db` property.
 
-1. download the extension archive files and unpack them in the `vendor` directory.
-2. install the class autoloaders provided by the extensions, if any.
-3. download and install all dependent extensions as instructed.
+If your extension needs to create specific DB tables or make changes to DB schema, you should
 
-If an extension does not have a class autoloader but follows the
-[PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md),
-you may use the class autoloader provided by Yii to autoload the extension classes. All you need to do is just to
-declare a [root alias](concept-aliases.md#defining-aliases) for the extension root directory. For example,
-assuming you have installed an extension in the directory `vendor/mycompany/myext`, and the extension classes
-are under the `myext` namespace, then you can include the following code in your application configuration:
-
-```php
-[
-    'aliases' => [
-        '@myext' => '@vendor/mycompany/myext',
-    ],
-]
-```
+- provide [migrations](db-migrations.md) to manipulate DB schema, rather than using plain SQL files;
+- try to make the migrations applicable to different DBMS;
+- avoid using [Active Record](db-active-record.md) in the migrations.
 
 
-## Core Extensions
+#### Using Assets <a name="using-assets"></a>
+
+If your extension is a widget or a module, chances are that it may require some [assets](structure-assets.md) to work.
+For example, a module may display some pages which contain images, JavaScript, and CSS. Because the files of an
+extension are all under the same directory which is not Web accessible when installed in an application, you have
+two choices to make the asset files directly accessible via Web:
+
+- ask users of the extension to manually copy the asset files to a specific Web-accessible folder;
+- declare an [asset bundle](structure-assets.md) and rely on the asset publishing mechanism to automatically
+  copy the files listed in the asset bundle to a Web-accessible folder.
+
+We recommend you use the second approach so that your extension can be more easily used by other people.
 
 
-## Best Practices
+### Internationalization and Localization <a name="i18n-l10n"></a>
 
+Your extension may be used by applications supporting different languages! Therefore, if your extension displays
+content to end users, you should try to [internationalize and localize](tutorial-i18n.md) it. In particular,
+
+- If the extension displays messages intended for end users, the messages should be wrapped into `Yii::t()`
+  so that they can be translated. Messages meant for developers (such as internal exception messages) do not need
+  to be translated.
+- If the extension displays numbers, dates, etc., they should be formatted using [[yii\base\Formatter]] with
+  appropriate formatting rules.
+
+For more details, please refer to the [Internationalization](tutorial-i18n.md) section.
+
+
+#### Testing <a name="testing"></a>
+
+You want your extension to run flawlessly without bringing problems to other people. To reach this goal, you should
+test your extension before releasing it to public.
+
+It is recommended that you create various test cases to cover your extension code rather than relying on manual tests.
+Each time before you release a new version of your extension, you may simply run these test cases to make sure
+everything is in good shape. Yii provides testing support, which can help you to more easily write unit tests,
+acceptance tests and functionality tests. For more details, please refer to the [Testing](test-overview.md) section.
+
+
+#### Versioning <a name="versioning"></a>
+
+You should give each release of your extension a version number (e.g. `1.0.1`). We recommend you follow the
+[semantic versioning](http://semver.org) practice when determining what version numbers should be used.
+
+
+#### Releasing <a name="releasing"></a>
+
+To let other people know your extension, you need to release it to public.
+
+If it is the first time you release an extension, you should register it on a Composer repository, such as
+[Packagist](https://packagist.org/). After that, all you need to do is simply creating a release tag (e.g. `v1.0.1`)
+on the VCS repository of your extension and notify the Composer repository about the new release. People will
+then be able to find the new release, and install or update the extension through the Composer repository.
+
+In the releases of your extension, besides code files you should also consider including the followings to
+help other people learn about and use your extension:
+
+* A readme file in the package root directory: it describes what your extension does and how to install and use it.
+  We recommend you write it in [Markdown](http://daringfireball.net/projects/markdown/) format and name the file
+  as `readme.md`.
+* A changelog file in the package root directory: it lists what changes are made in each release. The file
+  may be written in Markdown format and named as `changelog.md`.
+  also write it in Markdown format and name the file as `changelog.md`.
+* An upgrade file in the package root directory: it gives the instructions on how to upgrade from older releases
+  of the extension. The file may be written in Markdown format and named as `upgrade.md`.
+* Tutorials, demos, screenshots, etc.: these are needed if your extension provides many features that cannot be
+  fully covered in the readme file.
+* API documentation: your code should be well documented to allow other people more easily read and understand it.
+  You may refer to the [Object class file](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
+  to learn how to document your code.
+
+> Info: Your code comments can be written in Markdown format. The `yiisoft/yii2-apidoc` extension provides a tool
+  for you to generate pretty API documentation based on your code comments.
+
+> Info: While not a requirement, we suggest your extension adhere to certain coding styles. You may refer to
+  the [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+
+
+## Core Extensions <a name="core-extensions"></a>
+
+Yii provides the following core extensions that are developed and maintained by the Yii developer team. They are all
+registered on [Packagist](https://packagist.org/) and can be easily installed as described in the
+[Using Extensions](#using-extensions) subsection.
+
+- [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc):
+  provides an extensible and high-performance API documentation generator. It is also used to generate the core
+  framework API documentation.
+- [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient):
+  provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.
+- [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
+  provides a set of widgets that encapsulate the [Bootstrap](http://getbootstrap.com/) components and plugins.
+- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
+  provides testing support based on [Codeception](http://codeception.com/).
+- [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
+  provides debugging support for Yii applications. When this extension is used, a debugger toolbar will appear
+  at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
+  debug information.
+- [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
+  provides the support for using [Elasticsearch](http://www.elasticsearch.org/). It includes basic querying/search
+  support and also implements the [Active Record](db-active-record.md) pattern that allows you to store active records
+  in Elasticsearch.
+- [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
+  provides the support for using [Faker](https://github.com/fzaninotto/Faker) to generate fake data for you.
+- [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
+  provides a Web-based code generator that is highly extensible and can be used to quickly generate models,
+  forms, modules, CRUD, etc.
+- [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
+  provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
+- [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
+  provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
+- [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
+  provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
+  Active Record, migrations, caching, code generation, etc.
+- [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
+  provides the support for using [redis](http://redis.io/). It includes features such as basic query,
+  Active Record, caching, etc.
+- [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
+  provides a template engine based on [Smarty](http://www.smarty.net/).
+- [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
+  provides the support for using [Sphinx](http://sphinxsearch.com). It includes features such as basic query,
+  Active Record, code generation, etc.
+- [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
+  provides email sending features based on [swiftmailer](http://swiftmailer.org/).
+- [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
+  provides a template engine based on [Twig](http://twig.sensiolabs.org/).

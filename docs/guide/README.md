@@ -157,17 +157,6 @@ Testing
 * [Fixtures](test-fixtures.md)
 
 
-Extending Yii
--------------
-
-* [Creating Extensions](extend-creating-extensions.md)
-* [Customizing Core Code](extend-customizing-core.md)
-* [Using 3rd-Party Libraries](extend-using-libs.md)
-* **TBD** [Using Yii in 3rd-Party Systems](extend-embedding-in-others.md)
-* **TBD** [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md)
-* [Using Composer](extend-using-composer.md)
-
-
 Special Topics
 --------------
 
@@ -180,6 +169,7 @@ Special Topics
 * [Performance Tuning](tutorial-performance-tuning.md)
 * **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
+* [Working with Third-Party Code](tutorial-yii-integration.md)
 
 
 Widgets
