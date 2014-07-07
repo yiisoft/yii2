@@ -134,7 +134,6 @@ RESTful Web Services
 * [Routing](rest-routing.md)
 * [Response Formatting](rest-response-formatting.md)
 * [Authentication](rest-authentication.md)
-* [Cross Origin Resource Sharing](rest-cors.md)
 * [Rate Limiting](rest-rate-limiting.md)
 * [Versioning](rest-versioning.md)
 * [Error Handling](rest-error-handling.md)
