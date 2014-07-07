@@ -52,6 +52,14 @@ class Schema extends \yii\db\Schema
         // does nothing as Oracle does not support this
     }
 
+	/**
+	 * @inheritdoc
+	 */
+	public function quoteSimpleTableName($name)
+    {
+        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
+    }
+
     /**
      * @inheritdoc
      */
@@ -95,11 +103,6 @@ class Schema extends \yii\db\Schema
         }
 
         $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
-    }
-    
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
     }
 
     /**
