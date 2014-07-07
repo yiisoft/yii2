@@ -55,22 +55,6 @@ class Schema extends \yii\db\Schema
     /**
      * @inheritdoc
      */
-    public function quoteSimpleTableName($name)
-    {
-        return '"' . $name . '"';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function quoteSimpleColumnName($name)
-    {
-        return $name !== '*' ? '"' . $name . '"' : $name;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
