@@ -96,6 +96,11 @@ class Schema extends \yii\db\Schema
 
         $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
     }
+    
+    public function quoteSimpleTableName($name)
+    {
+        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
+    }
 
     /**
      * Collects the table column metadata.
