@@ -52,20 +52,12 @@ class Schema extends \yii\db\Schema
         // does nothing as Oracle does not support this
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function quoteSimpleTableName($name)
+	/**
+	 * @inheritdoc
+	 */
+	public function quoteSimpleTableName($name)
     {
-        return '"' . $name . '"';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function quoteSimpleColumnName($name)
-    {
-        return $name !== '*' ? '"' . $name . '"' : $name;
+        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
     }
 
     /**
