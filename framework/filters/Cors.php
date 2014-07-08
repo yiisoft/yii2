@@ -93,7 +93,7 @@ class Cors extends ActionFilter
 
         $this->overrideDefaultSettings($action);
 
-        $requestCorsHeaders = $this->extractHeaders($this->request);
+        $requestCorsHeaders = $this->extractHeaders();
         $responseCorsHeaders = $this->prepareHeaders($requestCorsHeaders);
         $this->addCorsHeaders($this->response, $responseCorsHeaders);
 
@@ -119,10 +119,9 @@ class Cors extends ActionFilter
 
     /**
      * Extract CORS headers fron the request
-     * @param Request $request
      * @return array CORS headers to handle
      */
-    public function extractHeaders($request)
+    public function extractHeaders()
     {
         $headers = [];
         $requestHeaders = array_keys($this->cors);
