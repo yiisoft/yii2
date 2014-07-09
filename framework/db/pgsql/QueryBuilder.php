@@ -99,7 +99,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $table = $this->db->getTableSchema($tableName);
         if ($table !== null && $table->sequenceName !== null) {
-            $sequence = '"' . $table->sequenceName . '"';
+            $sequence = substr($table->sequenceName, 0, 1) !== '"' ? '"' . $table->sequenceName . '"' : $table->sequenceName;
 
             if (strpos($sequence, '.') !== false) {
                 $sequence = str_replace('.', '"."', $sequence);
