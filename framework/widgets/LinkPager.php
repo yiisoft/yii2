@@ -101,7 +101,7 @@ class LinkPager extends Widget
     /**
      * @var boolean Hide widget when only one page exist. Defaults to `false`.
      */
-    public $hideOnSinglePage = false;
+    public $hideOnSinglePage = true;
 
     /**
      * Initializes the pager.
