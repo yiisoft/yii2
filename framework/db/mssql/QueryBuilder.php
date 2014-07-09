@@ -39,15 +39,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
-//	public function update($table, $columns, $condition, &$params)
-//	{
-//		return '';
-//	}
-
-//	public function delete($table, $condition, &$params)
-//	{
-//		return '';
-//	}
 
     /**
      * @param integer $limit
@@ -70,11 +61,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return '';
         }
     }
-
-//	public function resetSequence($table, $value = null)
-//	{
-//		return '';
-//	}
 
     /**
      * Builds a SQL statement for renaming a DB table.
@@ -143,24 +129,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function buildOrderBy($columns)
-    {
-        if (empty($columns)) {
-            // hack so LIMIT will work if no ORDER BY is specified
-            return 'ORDER BY (SELECT NULL)';
-        } else {
-            return parent::buildOrderBy($columns);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function build($query, $params = [])
     {
         $query->prepareBuild($this);
 
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
+
+        if (empty($query->orderBy) && ($this->hasLimit($query->limit) || $this->hasOffset($query->offset)) && $this->isOldMssql()) {
+            // hack so LIMIT will work because ROW_NUMBER requires an ORDER BY clause
+            $orderBy = 'ORDER BY (SELECT NULL)';
+        } else {
+            $orderBy = $this->buildOrderBy($query->orderBy);
+        }
 
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
@@ -169,7 +149,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
-            $this->buildOrderBy($query->orderBy),
+            $orderBy,
             $this->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
         ];
 
@@ -189,7 +169,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Applies limit and offset to SQL query
      *
      * @param string $sql SQL query
-     * @param \yii\db\ActiveQuery $query the [[Query]] object from which the SQL statement generated
+     * @param \yii\db\Query $query the [[Query]] object from which the SQL statement generated
      * @return string resulting SQL
      */
     private function applyLimitAndOffset($sql, $query)
