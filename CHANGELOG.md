@@ -245,6 +245,7 @@ Yii Framework 2 Change Log
 - Bug #2862: Using `DbCache` while enabling schema caching may cause infinite loops (qiangxue)
 - Bug #3052: Fixed the issue that cache dependency data is not reused when `reusable` is set true (qiangxue)
 - Bug #3691: Fixed the issue that `CookieCollection::has` always returns false for cookies from browser (sonicgd)
+- Bug #4212: MSSQL query builder should not generate the `ORDER BY` clause when it is not needed (qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
