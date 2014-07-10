@@ -3,5 +3,8 @@ namespace Codeception\Module;
 
 class TestHelper extends \Codeception\Module
 {
-    // here you can define custom methods for TestGuy
+    public function _beforeSuite($settings = [])
+    {
+        include __DIR__.'/../functional/_bootstrap.php';
+    }
 }
