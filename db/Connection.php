@@ -461,7 +461,7 @@ class Connection extends Component
     /**
      * Executes callback provided in a transaction.
      *
-     * @param \Closure $callback
+     * @param \Closure $callback a callback that performs the job. Accepts transaction instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
      * @throws \Exception
@@ -472,7 +472,7 @@ class Connection extends Component
         $transaction = $this->beginTransaction($isolationLevel);
 
         try {
-            $result = $callback();
+            $result = $callback($transaction);
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollBack();
