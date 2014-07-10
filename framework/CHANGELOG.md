@@ -99,6 +99,7 @@ Yii Framework 2 Change Log
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
 - Enh #3380: Allow `value` in `defaultValueValidator` to be a closure (Alex-Code)
+- Enh #3384: Transaction shortcut callback added (leandrogehlen, Ragazzo)
 - Enh #3399, #3241: Added support for MS SQL Server older than 2012 (fourteenmeister, samdark)
 - Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Enh #3518: `yii\helpers\Html::encode()` now replaces invalid code sequences with "�" (DaSourcerer)
@@ -117,7 +118,6 @@ Yii Framework 2 Change Log
 - Enh #3774: Added `FileValidator::checkExtensionByMimeType` to support validating file types against file mime-types (Ragazzo)
 - Enh #3801: Base migration controller `yii\console\controllers\BaseMigrateController` extracted (klimov-paul)
 - Enh #3811: Now Gii model generator makes autocomplete for model class field (mitalcoi)
-- Enh #3384: Transaction shortcut callback added (leandrogehlen, Ragazzo)
 - Enh #3926: `yii\widgets\Breadcrumbs::$links`. Allows individual link to have its own `template` (creocoder, umneeq)
 - Enh #3939: `\yii\Inflector::slug()` improvements (samdark)
     - Added protected `\yii\Inflector::transliterate()` that could be replaced with custom translit implementation.
