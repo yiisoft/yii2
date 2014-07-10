@@ -538,13 +538,13 @@ class Connection extends Component
     /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
-     * @param string $str string to be quoted
+     * @param string $value string to be quoted
      * @return string the properly quoted string
      * @see http://www.php.net/manual/en/function.PDO-quote.php
      */
-    public function quoteValue($str)
+    public function quoteValue($value)
     {
-        return $this->getSchema()->quoteValue($str);
+        return $this->getSchema()->quoteValue($value);
     }
 
     /**
