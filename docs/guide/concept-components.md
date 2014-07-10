@@ -67,7 +67,7 @@ class MyClass extends Object
 }
 ```
 
-Following these guideliness will make your components [configurable](concept-configurations.md) when they are instantiated. For example:
+Following these guidelines will make your components [configurable](concept-configurations.md) when they are created. For example:
 
 ```php
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);

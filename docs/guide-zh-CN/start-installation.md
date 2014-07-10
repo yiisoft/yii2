@@ -60,7 +60,7 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 http://localhost/basic/web/index.php
 ```
 
-这个 URL 假设你将 Yii 安装到了一个位于 Web 服务器根目录下的 `basic` 目录中，且该 Web 服务器正运行在你自己的电脑上 （`localhost`）。你可能需要将其调整为适应自己的安装环境。
+这个 URL 假设你将 Yii 安装到了一个位于 Web 文档根目录下的 `basic` 目录中，且该 Web 服务器正运行在你自己的电脑上 （`localhost`）。你可能需要将其调整为适应自己的安装环境。
 
 ![Yii 安装成功](images/start-app-installed.png)
 
@@ -84,7 +84,7 @@ http://localhost/basic/web/index.php
 
 通过上述方法安装的应用程序在 Windows，Max OS X， Linux 中的 [Apache HTTP 服务器](http://httpd.apache.org/)或 [Nginx HTTP 服务器](http://nginx.org/) 上都可以直接运行。
 
-在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过 URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/basic/web/index.php`。这种配置需要将 Web 服务器的根目录指向 `basic/web` 目录。可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md) 一章中有介绍，你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
+在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过 URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/basic/web/index.php`。这种配置需要将 Web 服务器的文档根目录指向 `basic/web` 目录。可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md) 一章中有介绍，你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 
 >补充：将 `basic/web` 设置为文档根目录，可以防止终端用户访问 `basic/web` 相邻目录中的私有应用程序代码和敏感数据文件。禁止对其他目录的访问是一个切实可行的安全改进。
 
