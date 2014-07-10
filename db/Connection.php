@@ -89,7 +89,7 @@ use yii\caching\Cache;
  * $connection->transaction(function() {
  * 
  *     // your code here
- * }, $connection->beginTransaction(Transaction::READ_UNCOMMITTED));
+ * }, Transaction::READ_UNCOMMITTED);
  * ~~~
  * 
  * Connection is often used as an application component and configured in the application
