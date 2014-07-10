@@ -136,14 +136,14 @@ class MigrateController extends BaseMigrateController
         return $history;
     }
 
+    private $baseMigrationEnsured = false;
+
     /**
      * Ensures migration history contains at least base migration entry.
      */
     protected function ensureBaseMigrationHistory()
     {
-        static $ensured = false;
-
-        if (!$ensured) {
+        if (!$this->baseMigrationEnsured) {
             $query = new Query;
             $row = $query->select(['version'])
                 ->from($this->migrationCollection)
@@ -153,7 +153,7 @@ class MigrateController extends BaseMigrateController
             if (empty($row)) {
                 $this->addMigrationHistory(self::BASE_MIGRATION);
             }
-            $ensured = true;
+            $this->baseMigrationEnsured = true;
         }
     }
 
