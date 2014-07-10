@@ -85,8 +85,8 @@ use yii\caching\Cache;
  * If needed you can pass transaction isolation level as a second parameter:
  * 
  * ~~~
- * $connection->transaction(function(Transaction $transaction) {
- *     // $transaction->db->...
+ * $connection->transaction(function(Connection $db) {
+ *     //return $db->...
  * }, Transaction::READ_UNCOMMITTED);
  * ~~~
  * 
@@ -459,7 +459,7 @@ class Connection extends Component
     /**
      * Executes callback provided in a transaction.
      *
-     * @param callable $callback a valid PHP callback that performs the job. Accepts transaction instance as parameter.
+     * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
      * @throws \Exception
@@ -470,7 +470,7 @@ class Connection extends Component
         $transaction = $this->beginTransaction($isolationLevel);
 
         try {
-            $result = call_user_func($callback, $transaction);
+            $result = call_user_func($callback, $this);
             if ($transaction->isActive) {
                 $transaction->commit();
             }
