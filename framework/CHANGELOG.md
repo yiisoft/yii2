@@ -117,6 +117,7 @@ Yii Framework 2 Change Log
 - Enh #3774: Added `FileValidator::checkExtensionByMimeType` to support validating file types against file mime-types (Ragazzo)
 - Enh #3801: Base migration controller `yii\console\controllers\BaseMigrateController` extracted (klimov-paul)
 - Enh #3811: Now Gii model generator makes autocomplete for model class field (mitalcoi)
+- Enh #3384: Transaction shortcut callback added (leandrogehlen, Ragazzo)
 - Enh #3926: `yii\widgets\Breadcrumbs::$links`. Allows individual link to have its own `template` (creocoder, umneeq)
 - Enh #3939: `\yii\Inflector::slug()` improvements (samdark)
     - Added protected `\yii\Inflector::transliterate()` that could be replaced with custom translit implementation.
