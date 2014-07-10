@@ -155,8 +155,8 @@ class ConnectionTest extends DatabaseTestCase
     {
         $connection = $this->getConnection(true);
 
-        $result = $connection->transaction(function () use ($connection) {
-            $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+        $result = $connection->transaction(function (Transaction $transaction) {
+            $transaction->db->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
             return true;
         }, Transaction::READ_UNCOMMITTED);
 
