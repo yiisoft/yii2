@@ -82,13 +82,11 @@ use yii\caching\Cache;
  * });
  * ~~~
  * 
- * If needed you can pass transaction object instance as a second parameter, for example when you need to
- * set custom transaction isolation level:
+ * If needed you can pass transaction isolation level as a second parameter:
  * 
  * ~~~
- * $connection->transaction(function() {
- * 
- *     // your code here
+ * $connection->transaction(function(Transaction $transaction) {
+ *     // $transaction->db->...
  * }, Transaction::READ_UNCOMMITTED);
  * ~~~
  * 
@@ -461,18 +459,18 @@ class Connection extends Component
     /**
      * Executes callback provided in a transaction.
      *
-     * @param \Closure $callback a callback that performs the job. Accepts transaction instance as parameter.
+     * @param mixed $callback a valid PHP callback that performs the job. Accepts transaction instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
      * @throws \Exception
      * @return mixed result of callback function
      */
-    public function transaction(\Closure $callback, $isolationLevel = null)
+    public function transaction($callback, $isolationLevel = null)
     {
         $transaction = $this->beginTransaction($isolationLevel);
 
         try {
-            $result = $callback($transaction);
+            $result = call_user_func($callback, $transaction);
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollBack();
