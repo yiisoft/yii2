@@ -71,7 +71,27 @@ use yii\caching\Cache;
  *     $transaction->rollBack();
  * }
  * ~~~
- *
+ * 
+ * You also can use shortcut for the above like the following:
+ * 
+ * ~~~
+ * $connection->transaction(function() {
+ *     $order = new Order($customer);
+ *     $order->save();
+ *     $order->addItems($items);
+ * });
+ * ~~~
+ * 
+ * If needed you can pass transaction object instance as a second parameter, for example when you need to
+ * set custom transaction isolation level:
+ * 
+ * ~~~
+ * $connection->transaction(function() {
+ * 
+ *     // your code here
+ * }, $connection->beginTransaction(Transaction::READ_UNCOMMITTED));
+ * ~~~
+ * 
  * Connection is often used as an application component and configured in the application
  * configuration like the following:
  *
@@ -436,6 +456,30 @@ class Connection extends Component
         $transaction->begin($isolationLevel);
 
         return $transaction;
+    }
+
+    /**
+     * Executes callback provided in a transaction.
+     *
+     * @param \Closure $callback
+     * @param string|null $isolationLevel The isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     * @throws \Exception
+     * @return mixed result of callback function
+     */
+    public function transaction(\Closure $callback, $isolationLevel = null)
+    {
+        $transaction = $this->beginTransaction($isolationLevel);
+
+        try {
+            $result = $callback();
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
+        return $result;
     }
 
     /**

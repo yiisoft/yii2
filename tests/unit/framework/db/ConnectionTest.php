@@ -121,4 +121,49 @@ class ConnectionTest extends DatabaseTestCase
         $transaction->commit();
     }
 
+    /**
+     * @expectedException \Exception
+     */
+    public function testTransactionShortcutException()
+    {
+        $connection = $this->getConnection(true);
+        $connection->transaction(function () use ($connection) {
+            $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+            throw new \Exception('Exception in transaction shortcut');
+        });
+
+        $profilesCount = $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")->queryScalar();
+        $this->assertEquals(0, $profilesCount, 'profile should not be inserted in transaction shortcut');
+    }
+
+    public function testTransactionShortcutCorrect()
+    {
+        $connection = $this->getConnection(true);
+
+        $result = $connection->transaction(function () use ($connection) {
+            $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+            return true;
+        });
+
+        $this->assertTrue($result, 'transaction shortcut valid value should be returned from callback');
+
+        $profilesCount = $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")->queryScalar();
+        $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
+    }
+
+    public function testTransactionShortcutCustom()
+    {
+        $connection = $this->getConnection(true);
+
+        $result = $connection->transaction(function () use ($connection) {
+            $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+            return true;
+        }, $connection->beginTransaction(Transaction::READ_UNCOMMITTED));
+
+        $this->assertTrue($result, 'transaction shortcut valid value should be returned from callback');
+
+        $profilesCount = $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")->queryScalar();
+        $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
+    }
+
 }
