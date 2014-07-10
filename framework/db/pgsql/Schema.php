@@ -405,7 +405,7 @@ SQL;
             if ($column->isPrimaryKey) {
                 $table->primaryKey[] = $column->name;
                 if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?\.?\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
-                    $table->sequenceName = trim(preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue), '"');
+                    $table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
                 }
                 $column->defaultValue = null;
             } elseif ($column->defaultValue) {
