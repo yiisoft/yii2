@@ -75,7 +75,7 @@ use yii\caching\Cache;
  * You also can use shortcut for the above like the following:
  * 
  * ~~~
- * $connection->inTransaction(function(){
+ * $connection->inTransaction(function() {
  *     $order = new Order($customer);
  *     $order->save();
  *     $order->addItems($items);
@@ -86,7 +86,7 @@ use yii\caching\Cache;
  * set custom transaction isolation level:
  * 
  * ~~~
- * $connection->inTransaction(function(){
+ * $connection->inTransaction(function() {
  * 
  *     // your code here
  * }, $connection->beginTransaction(Transaction::READ_UNCOMMITTED));
@@ -459,9 +459,9 @@ class Connection extends Component
     }
 
     /**
-     * Executes callback in current connection transaction.
+     * Executes callback provided in a transaction.
      * @param \Closure $callback
-     * @param Transaction|null $transaction valid transaction object instance or null. You can use this to pass
+     * @param Transaction $transaction valid transaction object instance or null. You can use this to pass
      * custom transaction instance if needed.
      * @return mixed result of callback function
      * @throws Exception if occured
@@ -473,14 +473,11 @@ class Connection extends Component
         }
 
         try {
-
             $result = $callback();
             $transaction->commit();
-
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw $e;
-
         }
 
         return $result;
