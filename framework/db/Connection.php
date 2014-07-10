@@ -459,19 +459,21 @@ class Connection extends Component
     /**
      * Executes callback provided in a transaction.
      *
-     * @param mixed $callback a valid PHP callback that performs the job. Accepts transaction instance as parameter.
+     * @param callable $callback a valid PHP callback that performs the job. Accepts transaction instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
      * @throws \Exception
      * @return mixed result of callback function
      */
-    public function transaction($callback, $isolationLevel = null)
+    public function transaction(callable $callback, $isolationLevel = null)
     {
         $transaction = $this->beginTransaction($isolationLevel);
 
         try {
             $result = call_user_func($callback, $transaction);
-            $transaction->commit();
+            if ($transaction->isActive) {
+                $transaction->commit();
+            }
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw $e;
