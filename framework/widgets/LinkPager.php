@@ -99,7 +99,7 @@ class LinkPager extends Widget
      */
     public $registerLinkTags = false;
     /**
-     * @var boolean Hide widget when only one page exist. Defaults to `false`.
+     * @var boolean Hide widget when only one page exist.
      */
     public $hideOnSinglePage = true;
 
