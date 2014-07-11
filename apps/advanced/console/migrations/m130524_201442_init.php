@@ -18,6 +18,7 @@ class m130524_201442_init extends Migration
             'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL',
             'password_hash' => Schema::TYPE_STRING . ' NOT NULL',
             'password_reset_token' => Schema::TYPE_STRING,
+            'password_digest' => Schema::TYPE_STRING . '(32) NOT NULL',
             'email' => Schema::TYPE_STRING . ' NOT NULL',
             'role' => Schema::TYPE_SMALLINT . ' NOT NULL DEFAULT 10',
 

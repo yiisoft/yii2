@@ -108,6 +108,39 @@ class User extends ActiveRecord implements IdentityInterface
             'status' => self::STATUS_ACTIVE,
         ]);
     }
+    
+    /**
+     * @inheritdoc
+     */
+    public static function findIdentityByCredential($username,$password, $type = null)
+    {        
+        if($username && $password){
+            $user = static::findByUsername($username);
+            if($user !== null && $user->validatePassword($password)){
+                return $user;
+            }
+            return null;
+        }else{
+            return null;
+        }
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public static function findIdentityByDigest($digest,$realm, $type = null)
+    {
+        $user = static::findByUsername($digest['username']);
+        $A1 = $user->password_digest;
+        $A2 = md5(\Yii::$app->request->getMethod().':'.$digest['uri']);
+        $valid_response = md5($A1.':'.$digest['nonce'].':'.$digest['nc'].':'.$digest['cnonce'].':'.$digest['qop'].':'.$A2);
+        
+        if ($digest['response'] != $valid_response){
+            return null;
+        }
+        
+        return $user;
+    }
 
     /**
      * @inheritdoc
@@ -151,7 +184,18 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
+        $this->password_digest = $this->generatePasswordDigest($password);
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+    
+    /**
+     * Generates password digest from usernamr, password, realm and sets it to the model
+     *
+     * @param string $password
+     */
+    public function generatePasswordDigest($password,$realm='api')
+    {
+        return md5(implode(':',[$this->username,$realm, $password]));
     }
 
     /**

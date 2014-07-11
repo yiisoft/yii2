@@ -40,6 +40,32 @@ namespace yii\web;
  *     {
  *         return $this->authKey === $authKey;
  *     }
+ *      
+ *      public function findIdentityByCredential($username,$password, $type = null){
+ *          if($username && $password){
+ *              $user = static::findByUsername($username);
+ *              if($user !== null && $user->validatePassword($password)){
+ *                  return $user;
+ *              }
+ *              return null;
+ *          }else{
+ *              return null;
+ *          }
+ *      }
+ * 
+ *      public static function findIdentityByDigest($digest,$realm, $type = null)
+ *      {
+ *             $user = static::findByUsername($digest['username']);
+ *             $A1 = $user->password_digest;
+ *             $A2 = md5(\Yii::$app->request->getMethod().':'.$digest['uri']);
+ *             $valid_response = md5($A1.':'.$digest['nonce'].':'.$digest['nc'].':'.$digest['cnonce'].':'.$digest['qop'].':'.$A2);
+ *             
+ *             if ($digest['response'] != $valid_response){
+ *                 return null;
+ *             }
+ *
+ *             return $user;
+ *      }
  * }
  * ~~~
  *
@@ -93,4 +119,27 @@ interface IdentityInterface
      * @see getAuthKey()
      */
     public function validateAuthKey($authKey);
+    
+    /**
+     * Finds an identity by the given credential
+     * @param string $username the username
+     * @param string $password password
+     * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
+     * For example, [[\common\filters\auth\HttpBasicAuth]] will set this parameter to be `common\filters\auth\HttpBasicAuth`.
+     * @return IdentityInterface the identity object that matches the given token.
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
+     */
+    public static function findIdentityByCredential($username,$password, $type = null);
+    
+    /**
+     * Finds an identity by the given secrete token.
+     * @param array $digest Http digest data in array format
+     * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
+     * For example, [[\common\filters\auth\HttpDigestAuth]] will set this parameter to be `common\filters\auth\HttpDigestAuth`.
+     * @return IdentityInterface the identity object that matches the given token.
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
+     */
+    public static function findIdentityByDigest($digest,$realm, $type = null);
 }
