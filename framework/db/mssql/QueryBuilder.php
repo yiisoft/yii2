@@ -41,25 +41,21 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
 
     /**
-     * @param integer $limit
-     * @param integer $offset
-     * @return string the LIMIT and OFFSET clauses built from [[\yii\db\Query::$limit]].
+     * @inheritdoc
      */
-    public function buildLimit($limit, $offset = 0)
+    public function buildLimit($sql, $limit, $offset = 0)
     {
         $hasOffset = $this->hasOffset($offset);
         $hasLimit = $this->hasLimit($limit);
         if ($hasOffset || $hasLimit) {
             // http://technet.microsoft.com/en-us/library/gg699618.aspx
-            $sql = 'OFFSET ' . ($hasOffset ? $offset : '0') . ' ROWS';
+            $sql .= ' OFFSET ' . ($hasOffset ? $offset : '0') . ' ROWS';
             if ($hasLimit) {
                 $sql .= " FETCH NEXT $limit ROWS ONLY";
             }
-
-            return $sql;
-        } else {
-            return '';
         }
+
+        return $sql;
     }
 
     /**
@@ -150,13 +146,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
             $orderBy,
-            $this->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
+
         if ($this->isOldMssql()) {
             $sql = $this->applyLimitAndOffset($sql, $query);
+        }else{
+            $sql = $this->buildLimit($sql, $query->limit, $query->offset);
         }
+
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
             $sql = "($sql){$this->separator}$union";

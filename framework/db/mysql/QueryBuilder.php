@@ -145,11 +145,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function buildLimit($limit, $offset)
+    public function buildLimit($sql, $limit, $offset)
     {
-        $sql = '';
         if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
+            $sql .= ' LIMIT ' . $limit;
             if ($this->hasOffset($offset)) {
                 $sql .= ' OFFSET ' . $offset;
             }
@@ -157,7 +156,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             // limit is not optional in MySQL
             // http://stackoverflow.com/a/271650/1106908
             // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
-            $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
+            $sql .= " LIMIT $offset, 18446744073709551615"; // 2^64-1
         }
 
         return $sql;

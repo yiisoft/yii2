@@ -17,8 +17,6 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
-    private $_sql;
-
     /**
      * @inheritdoc
      */
@@ -37,19 +35,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildHaving($query->having, $params),
             $this->buildOrderBy($query->orderBy),
         ];
-        $this->_sql = implode($this->separator, array_filter($clauses));
 
-        $this->_sql = $this->buildLimit($query->limit, $query->offset);
+        $sql = implode($this->separator, array_filter($clauses));
+        $sql = $this->buildLimit($sql, $query->limit, $query->offset);
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
-            $this->_sql = "{$this->_sql}{$this->separator}$union";
+            $sql = "{$sql}{$this->separator}$union";
         }
 
-        return [$this->_sql, $params];
+        return [$sql, $params];
     }
 
-    public function buildLimit($limit, $offset)
+    /**
+     * @inheritdoc
+     */
+    public function buildLimit($sql, $limit, $offset)
     {
         $filters = [];
         if ($this->hasOffset($offset) > 0) {
@@ -64,14 +65,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $filter = implode(' and ', $filters);
 
             return <<<EOD
-WITH USER_SQL AS ({$this->_sql}),
+WITH USER_SQL AS ({$sql}),
     PAGINATION AS (SELECT USER_SQL.*, rownum as rowNumId FROM USER_SQL)
 SELECT *
 FROM PAGINATION
 WHERE $filter
 EOD;
         } else {
-            return $this->_sql;
+            return $sql;
         }
     }
 
