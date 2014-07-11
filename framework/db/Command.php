@@ -272,11 +272,12 @@ class Command extends \yii\base\Component
         foreach ($values as $name => $value) {
             if (is_array($value)) {
                 $this->_pendingParams[$name] = $value;
+                $this->params[$name] = $value[0];
             } else {
                 $type = $this->db->getSchema()->getPdoType($value);
                 $this->_pendingParams[$name] = [$value, $type];
+                $this->params[$name] = $value;
             }
-            $this->params[$name] = $value;
         }
 
         return $this;

@@ -132,7 +132,11 @@ EOD;
         if ($value !== null) {
             $value = (int) $value;
         } else {
+            // use master connection to get the biggest PK value
+            $enableSlave = $this->db->enableSlave;
+            $this->db->enableSlave = false;
             $value = (int) $this->db->createCommand("SELECT MAX(\"{$tableSchema->primaryKey}\") FROM \"{$tableSchema->name}\"")->queryScalar();
+            $this->db->enableSlave = $enableSlave;
             $value++;
         }
 

@@ -143,8 +143,9 @@ class Schema extends \yii\db\Schema
      */
     protected function loadTableSchema($name)
     {
-        $this->db->open();
-        $tableInfo = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
+        $pdo = $this->db->getReadPdo();
+
+        $tableInfo = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
 
         if (!isset($tableInfo[0]['NAME'])) {
             return null;
@@ -161,7 +162,7 @@ class Schema extends \yii\db\Schema
             $table->columns[$column->name] = $column;
         }
 
-        $primaryKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
+        $primaryKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
         foreach ($primaryKeys as $key) {
             $column = $table->columns[$key['ATTR_NAME']];
             $column->isPrimaryKey = true;
@@ -171,7 +172,7 @@ class Schema extends \yii\db\Schema
             }
         }
 
-        $foreignKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
+        $foreignKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
         foreach ($foreignKeys as $key) {
             if (isset($table->foreignKeys[$key['FK_NAME']])) {
                 $table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
@@ -265,8 +266,8 @@ class Schema extends \yii\db\Schema
      */
     protected function findTableNames($schema = '')
     {
-        $this->db->open();
-        $tables = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
+        $pdo = $this->db->getReadPdo();
+        $tables =$pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
         $tableNames = [];
         foreach ($tables as $table) {
             // do not list system tables

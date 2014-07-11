@@ -120,7 +120,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
             if ($value === null) {
                 $key = reset($table->primaryKey);
                 $tableName = $db->quoteTableName($tableName);
+                $enableSlave = $this->db->enableSlave;
+                $this->db->enableSlave = false;
                 $value = $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                $this->db->enableSlave = $enableSlave;
             } else {
                 $value = (int) $value - 1;
             }

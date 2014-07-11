@@ -136,8 +136,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
         }
 
-        #enable to have ability to alter several tables
-        $this->db->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+        // enable to have ability to alter several tables
+        $this->db->getWritePdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
 
         return $command;
     }
