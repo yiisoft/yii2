@@ -195,7 +195,12 @@ EOD;
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
-            return $this->db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
+            // get the last insert id from the master connection
+            $enableSlave = $this->db->enableSlave;
+            $this->db->enableSlave = false;
+            $id = $this->db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
+            $this->db->enableSlave = $enableSlave;
+            return $id;
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }
