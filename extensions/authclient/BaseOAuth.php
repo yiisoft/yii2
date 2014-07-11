@@ -201,7 +201,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
             throw new Exception('Curl error requesting "' .  $url . '": #' . $errorNumber . ' - ' . $errorMessage);
         }
         if ($responseHeaders['http_code'] != 200) {
-            throw new Exception('Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
+            throw new InvalidResponseException($responseHeaders, $response, 'Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
         }
 
         return $this->processResponse($response, $this->determineContentTypeByHeaders($responseHeaders));
