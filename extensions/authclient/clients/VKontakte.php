@@ -12,7 +12,8 @@ use yii\authclient\OAuth2;
 /**
  * VKontakte allows authentication via VKontakte OAuth.
  *
- * In order to use VKontakte OAuth you must register your application at <http://vk.com/apps.php?act=add&site=1>.
+ * In order to use VKontakte OAuth you must register your application at <http://vk.com/editapp?act=create>.
+ *
  *
  * Example application configuration:
  *
@@ -32,7 +33,7 @@ use yii\authclient\OAuth2;
  * ]
  * ~~~
  *
- * @see http://vk.com/apps.php?act=add&site=1
+ * @see http://vk.com/editapp?act=create
  * @see http://vk.com/developers.php?oid=-1&p=users.get
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -73,17 +74,17 @@ class VKontakte extends OAuth2
                 'photo'
             ]),
         ]);
-        return $attributes;
+        return array_shift($attributes['response']);
     }
 
     /**
      * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params)
+    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
     {
         $params['uids'] = $accessToken->getParam('user_id');
         $params['access_token'] = $accessToken->getToken();
-        return $this->sendRequest($method, $url, $params);
+        return $this->sendRequest($method, $url, $params, $headers);
     }
 
     /**
@@ -100,5 +101,15 @@ class VKontakte extends OAuth2
     protected function defaultTitle()
     {
         return 'VKontakte';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultNormalizeUserAttributeMap()
+    {
+        return [
+            'id' => 'uid'
+        ];
     }
 }

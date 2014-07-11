@@ -151,14 +151,15 @@ class OAuth1 extends BaseOAuth
      * @param string $method request type.
      * @param string $url request URL.
      * @param array $params request params.
+     * @param array $headers additional request headers.
      * @return array response.
      */
-    protected function sendSignedRequest($method, $url, array $params = [])
+    protected function sendSignedRequest($method, $url, array $params = [], array $headers = [])
     {
         $params = array_merge($params, $this->generateCommonRequestParams());
         $params = $this->signRequest($method, $url, $params);
 
-        return $this->sendRequest($method, $url, $params);
+        return $this->sendRequest($method, $url, $params, $headers);
     }
 
     /**
@@ -206,19 +207,13 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Performs request to the OAuth API.
-     * @param OAuthToken $accessToken actual access token.
-     * @param string $url absolute API URL.
-     * @param string $method request method.
-     * @param array $params request parameters.
-     * @return array API response.
-     * @throws Exception on failure.
+     * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params)
+    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
     {
         $params['oauth_consumer_key'] = $this->consumerKey;
         $params['oauth_token'] = $accessToken->getToken();
-        $response = $this->sendSignedRequest($method, $url, $params);
+        $response = $this->sendSignedRequest($method, $url, $params, $headers);
 
         return $response;
     }
