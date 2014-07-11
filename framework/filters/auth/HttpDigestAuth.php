@@ -63,13 +63,13 @@ class HttpDigestAuth extends AuthMethod
      */
     public function authenticate($user, $request, $response)
     {
-        
-        if(empty($_SERVER['PHP_AUTH_DIGEST'])){
+        $digest = $request->getAuthDigest();
+        if($digest === null){
             return null;
         }
         
         // analyze the PHP_AUTH_DIGEST variable
-        if (!$data = $this->http_digest_parse($_SERVER['PHP_AUTH_DIGEST'])){
+        if (!$data = $this->http_digest_parse($digest)){
             $this->text = "cant parse your digest data.";
             $this->handleFailure($response);
         }
