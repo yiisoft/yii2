@@ -369,11 +369,12 @@ abstract class Schema extends Object
             return $str;
         }
 
-        $this->db->open();
-        if (($value = $this->db->pdo->quote($str)) !== false) {
-            return $value;
-        } else { // the driver doesn't support quote (e.g. oci)
+        $pdo = $this->db->getReadPdo();
 
+        if (($value = $pdo->quote($str)) !== false) {
+            return $value;
+        } else {
+            // the driver doesn't support quote (e.g. oci)
             return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
         }
     }
@@ -519,5 +520,11 @@ abstract class Schema extends Object
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
             throw new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
         }
+    }
+
+    public function isReadQuery($sql)
+    {
+        $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
+        return preg_match($pattern, $sql);
     }
 }
