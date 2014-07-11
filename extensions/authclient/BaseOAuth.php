@@ -223,7 +223,11 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         while (!empty($args)) {
             $next = array_shift($args);
             foreach ($next as $k => $v) {
-                $res[$k] = $v;
+                if (is_array($v) && !empty($res[$k]) && is_array($res[$k])) {
+                    $res[$k] = array_merge($res[$k], $v);
+                } else {
+                    $res[$k] = $v;
+                }
             }
         }
 
