@@ -241,51 +241,61 @@ class AssetManager extends Component
         if (is_file($src)) {
             $dir = $this->hash(dirname($src) . filemtime($src));
             $fileName = basename($src);
+            $srcDir = dirname($src);
             $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
+
+            $fileName = $this->publishFile($fileName, $srcDir, $dstDir, $options);
+
             $dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
-
-            if (!is_dir($dstDir)) {
-                FileHelper::createDirectory($dstDir, $this->dirMode, true);
-            }
-
-            if ($this->linkAssets) {
-                if (!is_file($dstFile)) {
-                    symlink($src, $dstFile);
-                }
-            } elseif (@filemtime($dstFile) < @filemtime($src)) {
-                copy($src, $dstFile);
-                if ($this->fileMode !== null) {
-                    @chmod($dstFile, $this->fileMode);
-                }
-            }
 
             return $this->_published[$path] = [$dstFile, $this->baseUrl . "/$dir/$fileName"];
         } else {
             $dir = $this->hash($src . filemtime($src));
             $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
-            if ($this->linkAssets) {
-                if (!is_dir($dstDir)) {
-                    symlink($src, $dstDir);
-                }
-            } elseif (!is_dir($dstDir) || !empty($options['forceCopy'])) {
-                $opts = [
-                    'dirMode' => $this->dirMode,
-                    'fileMode' => $this->fileMode,
-                ];
-                if (isset($options['beforeCopy'])) {
-                    $opts['beforeCopy'] = $options['beforeCopy'];
-                } else {
-                    $opts['beforeCopy'] = function ($from, $to) {
-                        return strncmp(basename($from), '.', 1) !== 0;
-                    };
-                }
-                if (isset($options['afterCopy'])) {
-                    $opts['afterCopy'] = $options['afterCopy'];
-                }
-                FileHelper::copyDirectory($src, $dstDir, $opts);
+
+            $srcFiles = FileHelper::findFiles($src);
+            foreach ($srcFiles as $srcFile) {
+                $fileName = basename($srcFile);
+                $srcDir = dirname($srcFile);
+                $pathDiff = str_replace($src, '', $srcDir);
+                $this->publishFile($fileName, $srcDir, $dstDir . $pathDiff, $options);
             }
 
             return $this->_published[$path] = [$dstDir, $this->baseUrl . '/' . $dir];
+        }
+    }
+
+    /**
+     * @param string $fileName asset file base name.
+     * @param string $srcPath source directory path.
+     * @param string $dstPath destination directory path.
+     * @param array $options
+     * @return string the actual asset file base name
+     */
+    protected function publishFile($fileName, $srcPath, $dstPath, $options)
+    {
+        $srcFile = $srcPath . DIRECTORY_SEPARATOR . $fileName;
+        $dstFile = $dstPath . DIRECTORY_SEPARATOR . $fileName;
+
+        if (!is_dir($dstPath)) {
+            FileHelper::createDirectory($dstPath, $this->dirMode, true);
+        }
+
+        $convertedFileName = $this->getConverter()->convert($fileName, $srcPath, $dstPath);
+        if ($convertedFileName === false) {
+            if ($this->linkAssets) {
+                if (!is_file($dstFile)) {
+                    symlink($srcFile, $dstFile);
+                }
+            } elseif (!empty($options['forceCopy']) || @filemtime($dstFile) < @filemtime($srcFile)) {
+                copy($srcFile, $dstFile);
+                if ($this->fileMode !== null) {
+                    @chmod($dstFile, $this->fileMode);
+                }
+            }
+            return $fileName;
+        } else {
+            return $convertedFileName;
         }
     }
 
