@@ -123,7 +123,7 @@ class QueryRunTest extends MongoDbTestCase
             ->where([
                 'name' => ['name1', 'name5', 'name10']
             ])
-            ->andWhere(['LIKE', 'name', '/me1/'])
+            ->andWhere(['LIKE', 'name', 'me1'])
             ->andWhere(['name' => 'name10'])
             ->all($connection);
         $this->assertEquals(1, count($rows));
@@ -180,12 +180,24 @@ class QueryRunTest extends MongoDbTestCase
         $this->assertEquals(1, count($rows));
     }
 
+    public function testRegex()
+    {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $rows = $query->from('customer')
+            ->where(['REGEX', 'name', '/me1/'])
+            ->all($connection);
+        $this->assertEquals(2, count($rows));
+        $this->assertEquals('name1', $rows[0]['name']);
+        $this->assertEquals('name10', $rows[1]['name']);
+    }
+
     public function testLike()
     {
         $connection = $this->getConnection();
         $query = new Query;
         $rows = $query->from('customer')
-            ->where(['LIKE', 'name', '/me1/'])
+            ->where(['LIKE', 'name', 'me1'])
             ->all($connection);
         $this->assertEquals(2, count($rows));
         $this->assertEquals('name1', $rows[0]['name']);
