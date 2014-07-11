@@ -282,6 +282,32 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
+     * @var boolean whether to enable read/write splitting by using [[slaves]] to read data.
+     */
+    public $enableSlave = true;
+    /**
+     * @var array list of slave connection configurations. When [[enableSlave]] is true, one of these slave
+     * configurations will be used to create a DB connection to perform read queries.
+     * @see enableSlave
+     */
+    public $slaves = [];
+    /**
+     * @var integer the timeout in seconds for determining whether a slave is dead or not
+     * @see enableSlave
+     */
+    public $slaveTimeout = 10;
+    /**
+     * @var Cache|string the cache object or the ID of the cache application component that is used to store
+     * the health status of the slaves.
+     * @see enableSlave
+     */
+    public $slaveCache = 'cache';
+    /**
+     * @var integer the retry interval in seconds for dead slaves.
+     */
+    public $slaveRetryInterval = 600;
+
+    /**
      * @var Transaction the currently active transaction
      */
     private $_transaction;
@@ -293,6 +319,11 @@ class Connection extends Component
      * @var string driver name
      */
     private $_driverName;
+    /**
+     * @var Connection the currently active slave
+     */
+    private $_slave = false;
+
 
     /**
      * Returns a value indicating whether the DB connection is established.
@@ -365,6 +396,11 @@ class Connection extends Component
             $this->pdo = null;
             $this->_schema = null;
             $this->_transaction = null;
+        }
+
+        if ($this->_slave) {
+            $this->_slave->close();
+            $this->_slave = null;
         }
     }
 
@@ -622,5 +658,72 @@ class Connection extends Component
     public function setDriverName($driverName)
     {
         $this->_driverName = strtolower($driverName);
+    }
+
+    /**
+     * Returns the currently active slave.
+     * If this method is called the first time, it will try to open a slave connection when [[enableSlave]] is true.
+     * @return Connection the currently active slave. Null is returned if there is slave available.
+     */
+    public function getSlave()
+    {
+        if (!$this->enableSlave) {
+            return null;
+        }
+
+        if ($this->_slave !== false) {
+            return $this->_slave;
+        } else {
+            return $this->_slave = $this->openSlave($this->slaves);
+        }
+    }
+
+    /**
+     * Selects a slave and opens the connection.
+     * @param array $slaves the list of candidate slave configurations
+     * @return Connection the opened slave connection, or null if no slave is available
+     * @throws InvalidConfigException if a slave configuration does not have "dsn" setting
+     */
+    protected function openSlave($slaves)
+    {
+        if (empty($slaves)) {
+            return null;
+        }
+
+        shuffle($slaves);
+
+        $cache = is_string($this->slaveCache) ? Yii::$app->get($this->slaveCache, false) : $this->slaveCache;
+
+        foreach ($slaves as $config) {
+            if (empty($config['dsn'])) {
+                throw new InvalidConfigException('One of the slave connections has an empty "dsn".');
+            }
+
+            $key = [__METHOD__, $config['dsn']];
+            if ($cache instanceof Cache && $cache->get($key)) {
+                // should not try this dead slave now
+                continue;
+            }
+
+            if (!isset($config['class'])) {
+                $config['class'] = get_class($this);
+            }
+            /* @var $slave Connection */
+            $slave = Yii::createObject($config);
+            if (!isset($slave->attributes[PDO::ATTR_TIMEOUT])) {
+                $slave->attributes[PDO::ATTR_TIMEOUT] = $this->slaveTimeout;
+            }
+            try {
+                $slave->open();
+                return $slave;
+            } catch (\Exception $e) {
+                Yii::warning("Slave ({$config['dsn']}) not available: " . $e->getMessage(), __METHOD__);
+                if ($cache instanceof Cache) {
+                    $cache->set($key, 1, $this->slaveRetryInterval);
+                }
+            }
+        }
+
+        return null;
     }
 }
