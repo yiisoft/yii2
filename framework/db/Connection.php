@@ -456,7 +456,6 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
-        $this->open();
         $command = new Command([
             'db' => $this,
             'sql' => $sql,
@@ -661,6 +660,29 @@ class Connection extends Component
     }
 
     /**
+     * Returns the PDO instance for read queries.
+     * When [[enableSlave]] is true, one of the slaves will be used for read queries, and its PDO instance
+     * will be returned by this method. If no slave is available, the [[writePdo]] will be returned.
+     * @return PDO the PDO instance for read queries.
+     */
+    public function getReadPdo()
+    {
+        $db = $this->getSlave();
+        return $db ? $db->pdo : $this->getWritePdo();
+    }
+
+    /**
+     * Returns the PDO instance for write queries.
+     * This method will open the master DB connection and then return [[pdo]].
+     * @return PDO the PDO instance for write queries.
+     */
+    public function getWritePdo()
+    {
+        $this->open();
+        return $this->pdo;
+    }
+
+    /**
      * Returns the currently active slave.
      * If this method is called the first time, it will try to open a slave connection when [[enableSlave]] is true.
      * @return Connection the currently active slave. Null is returned if there is slave available.
@@ -710,9 +732,11 @@ class Connection extends Component
             }
             /* @var $slave Connection */
             $slave = Yii::createObject($config);
+
             if (!isset($slave->attributes[PDO::ATTR_TIMEOUT])) {
                 $slave->attributes[PDO::ATTR_TIMEOUT] = $this->slaveTimeout;
             }
+
             try {
                 $slave->open();
                 return $slave;
