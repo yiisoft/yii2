@@ -83,7 +83,7 @@ class HttpDigestAuth extends AuthMethod
             }
             return $identity;
         }else{
-            $identity = $user->loginByDigest($data,  $this->realm, get_class($this));
+            $identity = $user->loginByAccessToken(['digest' => $data,'realm'=>$this->realm], get_class($this));
             if ($identity === null) {
                 $this->text = "can't authenticate with your digest data";
                 $this->handleFailure($response);
