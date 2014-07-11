@@ -77,7 +77,7 @@ class HttpBasicAuth extends AuthMethod
                 return $identity;
             }
         } elseif ($username !== null && $password !== null) {
-            $identity = $user->loginByCredential($username, $password, basename(get_class($this)));
+            $identity = $user->loginByCredential($username, $password, get_class($this));
             if ($identity === null) {
                 $this->handleFailure($response);
             }
