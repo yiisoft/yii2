@@ -168,15 +168,17 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $method request type.
      * @param string $url request URL.
      * @param array $params request params.
+     * @param array $headers additional request headers.
      * @return array response.
      * @throws Exception on failure.
      */
-    protected function sendRequest($method, $url, array $params = [])
+    protected function sendRequest($method, $url, array $params = [], array $headers = [])
     {
         $curlOptions = $this->mergeCurlOptions(
             $this->defaultCurlOptions(),
             $this->getCurlOptions(),
             [
+                CURLOPT_HTTPHEADER => $headers,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_URL => $url,
             ],
@@ -479,10 +481,11 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $apiSubUrl API sub URL, which will be append to [[apiBaseUrl]], or absolute API URL.
      * @param string $method request method.
      * @param array $params request parameters.
+     * @param array $headers additional request headers.
      * @return array API response
      * @throws Exception on failure.
      */
-    public function api($apiSubUrl, $method = 'GET', array $params = [])
+    public function api($apiSubUrl, $method = 'GET', array $params = [], array $headers = [])
     {
         if (preg_match('/^https?:\\/\\//is', $apiSubUrl)) {
             $url = $apiSubUrl;
@@ -494,7 +497,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
             throw new Exception('Invalid access token.');
         }
 
-        return $this->apiInternal($accessToken, $url, $method, $params);
+        return $this->apiInternal($accessToken, $url, $method, $params, $headers);
     }
 
     /**
@@ -520,8 +523,9 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $url absolute API URL.
      * @param string $method request method.
      * @param array $params request parameters.
+     * @param array $headers additional request headers.
      * @return array API response.
      * @throws Exception on failure.
      */
-    abstract protected function apiInternal($accessToken, $url, $method, array $params);
+    abstract protected function apiInternal($accessToken, $url, $method, array $params, array $headers);
 }
