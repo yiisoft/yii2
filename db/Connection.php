@@ -21,6 +21,11 @@ use yii\caching\Cache;
  * to provide data access to various DBMS in a common set of APIs. They are a thin wrapper
  * of the [[PDO PHP extension]](http://www.php.net/manual/en/ref.pdo.php).
  *
+ * Connection supports database replication and read-write splitting. In particular, a Connection component
+ * can be configured with multiple [[masters]] and [[slaves]]. It will do load balancing and failover by choosing
+ * appropriate servers. It will also automatically direct read operations to the slaves and write operations to
+ * the masters.
+ *
  * To establish a DB connection, set [[dsn]], [[username]] and [[password]], and then
  * call [[open()]] to be true.
  *
@@ -104,6 +109,7 @@ use yii\caching\Cache;
  *     ],
  * ],
  * ~~~
+ *
  *
  * @property string $driverName Name of the DB driver.
  * @property boolean $isActive Whether the DB connection is established. This property is read-only.
