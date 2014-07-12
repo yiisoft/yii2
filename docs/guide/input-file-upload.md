@@ -145,16 +145,25 @@ public function rules()
 ```
 
 The thing is that it validates only file extension and not the file content. In order to validate content as well use
-`mimeTypes` property of `ImageValidator`:
+`mimeTypes` property of `FileValidator`:
 
 ```php
 public function rules()
 {
     return [
-        [['file'], 'image', 'mimeTypes' => 'image/jpeg, image/png',],
+        [['file'], 'file', 'extensions' => 'jpg, png', 'mimeTypes' => 'image/jpeg, image/png',],
     ];
 }
 ```
+
+[List of common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types)
+
+### Validation upload Image
+
+If you upload the image, it may come in handy validator [[yii\validators\ImageValidator|ImageValidator]].
+`ImageValidator` verifies if an attribute is receiving a valid image.
+
+So after that you can use [Imagine Extension](https://github.com/yiisoft/yii2/tree/master/extensions/imagine)
 
 ### Uploading multiple files
 
