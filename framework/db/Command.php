@@ -160,6 +160,10 @@ class Command extends \yii\base\Component
 
         $sql = $this->getSql();
 
+        if ($this->db->getTransaction()) {
+            // master is in a transaction. use the same connection.
+            $forRead = false;
+        }
         if ($forRead || $forRead === null && $this->db->getSchema()->isReadQuery($sql)) {
             $pdo = $this->db->getSlavePdo();
         } else {
