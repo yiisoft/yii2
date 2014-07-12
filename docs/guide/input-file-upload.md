@@ -133,13 +133,13 @@ public function rules()
 
 ### MIME type
 
-It is wise to validate type of the file uploaded. FileValidator has property `$types` for the purpose:
+It is wise to validate type of the file uploaded. FileValidator has property `$extensions` for the purpose:
 
 ```php
 public function rules()
 {
     return [
-        [['file'], 'file', 'types' => 'gif, jpg',],
+        [['file'], 'file', 'extensions' => 'gif, jpg',],
     ];
 }
 ```
