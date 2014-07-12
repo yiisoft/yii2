@@ -296,12 +296,12 @@ class Connection extends Component
      * @var boolean whether to enable read/write splitting by using [[slaves]] to read data.
      * Note that if [[slaves]] is empty, read/write splitting will NOT be enabled no matter what value this property takes.
      */
-    public $enableSlave = true;
+    public $enableSlaves = true;
     /**
      * @var array list of slave connection configurations. Each configuration is used to create a slave DB connection.
-     * When [[enableSlave]] is true, one of these configurations will be chosen and used to create a DB connection
+     * When [[enableSlaves]] is true, one of these configurations will be chosen and used to create a DB connection
      * for performing read queries only.
-     * @see enableSlave
+     * @see enableSlaves
      * @see slaveConfig
      */
     public $slaves = [];
@@ -711,11 +711,12 @@ class Connection extends Component
     }
 
     /**
-     * Returns the PDO instance for read queries.
-     * When [[enableSlave]] is true, one of the slaves will be used for read queries, and its PDO instance
-     * will be returned by this method. If no slave is available, the [[writePdo]] will be returned.
+     * Returns the PDO instance for the currently active slave connection.
+     * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
+     * will be returned by this method.
      * @param boolean $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
-     * @return PDO the PDO instance for read queries. Null is returned if no server is available.
+     * @return PDO the PDO instance for the currently active slave connection. Null is returned if no slave connection
+     * is available and `$fallbackToMaster` is false.
      */
     public function getSlavePdo($fallbackToMaster = true)
     {
@@ -728,9 +729,9 @@ class Connection extends Component
     }
 
     /**
-     * Returns the PDO instance for write queries.
+     * Returns the PDO instance for the currently active master connection.
      * This method will open the master DB connection and then return [[pdo]].
-     * @return PDO the PDO instance for write queries.
+     * @return PDO the PDO instance for the currently active master connection.
      */
     public function getMasterPdo()
     {
@@ -740,13 +741,14 @@ class Connection extends Component
 
     /**
      * Returns the currently active slave connection.
-     * If this method is called the first time, it will try to open a slave connection when [[enableSlave]] is true.
-     * @param boolean $fallbackToMaster whether to return a master connection in case none of the slave connections is available.
-     * @return Connection the currently active slave. Null is returned if there is slave available.
+     * If this method is called the first time, it will try to open a slave connection when [[enableSlaves]] is true.
+     * @param boolean $fallbackToMaster whether to return a master connection in case there is no slave connection available.
+     * @return Connection the currently active slave connection. Null is returned if there is slave available and
+     * `$fallbackToMaster` is false.
      */
     public function getSlave($fallbackToMaster = true)
     {
-        if (!$this->enableSlave) {
+        if (!$this->enableSlaves) {
             return $fallbackToMaster ? $this : null;
         }
 
@@ -775,15 +777,16 @@ class Connection extends Component
      */
     public function useMaster(callable $callback)
     {
-        $enableSlave = $this->enableSlave;
-        $this->enableSlave = false;
+        $enableSlave = $this->enableSlaves;
+        $this->enableSlaves = false;
         $result = call_user_func($callback, $this);
-        $this->enableSlave = $enableSlave;
+        $this->enableSlaves = $enableSlave;
         return $result;
     }
 
     /**
      * Opens the connection to a server in the pool.
+     * This method implements the load balancing among the given list of the servers.
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
      * @return Connection the opened DB connection, or null if no server is available
@@ -824,6 +827,7 @@ class Connection extends Component
             } catch (\Exception $e) {
                 Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
                 if ($cache instanceof Cache) {
+                    // mark this server as dead and only retry it after the specified interval
                     $cache->set($key, 1, $this->serverRetryInterval);
                 }
             }

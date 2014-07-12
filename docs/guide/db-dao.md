@@ -495,6 +495,8 @@ $rows = $db->useMaster(function ($db) {
 });
 ```
 
+You may also directly set `$db->enableSlaves` to be false to direct all queries to the master connection.
+
 
 Working with database schema
 ----------------------------
