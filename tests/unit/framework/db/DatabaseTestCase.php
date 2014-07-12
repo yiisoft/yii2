@@ -51,16 +51,19 @@ abstract class DatabaseTestCase extends TestCase
         } else {
             $fixture = null;
         }
-        return $this->db = $this->prepareDatabase($config, $fixture);
+        return $this->db = $this->prepareDatabase($config, $fixture, $open);
     }
 
-    public function prepareDatabase($config, $fixture)
+    public function prepareDatabase($config, $fixture, $open = true)
     {
         if (!isset($config['class'])) {
             $config['class'] = 'yii\db\Connection';
         }
         /* @var $db \yii\db\Connection */
         $db = \Yii::createObject($config);
+        if (!$open) {
+            return $db;
+        }
         $db->open();
         if ($fixture !== null) {
             $lines = explode(';', file_get_contents($fixture));
