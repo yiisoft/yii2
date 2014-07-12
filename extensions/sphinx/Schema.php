@@ -518,4 +518,15 @@ class Schema extends Object
             throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
         }
     }
+
+    /**
+     * Returns a value indicating whether a SQL statement is for read purpose.
+     * @param string $sql the SQL statement
+     * @return boolean whether a SQL statement is for read purpose.
+     */
+    public function isReadQuery($sql)
+    {
+        $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
+        return preg_match($pattern, $sql) > 0;
+    }
 }
