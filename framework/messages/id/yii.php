@@ -17,6 +17,8 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'The requested view "{name}" was not found.' => 'View "{name}" yang diminta tidak ditemukan.',
+    'You are requesting with an invalid access token.' => 'Anda melakukan permintaan dengan akses token yang invalid.',
     '(not set)' => '(belum diset)',
     'An internal server error occurred.' => 'Terjadi kesalahan internal server.',
     'Are you sure you want to delete this item?' => 'Apakah Anda yakin ingin menghapus ini?',
