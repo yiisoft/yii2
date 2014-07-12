@@ -110,6 +110,7 @@ class AssetBundle extends Object
      */
     public $publishOptions = [];
 
+
     /**
      * @param View $view
      * @return static the registered asset bundle instance
