@@ -700,6 +700,31 @@ class Connection extends Component
     }
 
     /**
+     * Executes the provided callback by using the master connection.
+     *
+     * This method is provided so that you can temporarily force using the master connection to perform
+     * DB operations. For example,
+     *
+     * ```php
+     * $result = $db->useMaster(function ($db) {
+     *     return $db->createCommand('SELECT * FROM user LIMIT 1')->queryOne();
+     * });
+     * ```
+     *
+     * @param callable $callback a PHP callable to be executed by this method. Its signature is
+     * `function ($db)`. Its return value will be returned by this method.
+     * @return mixed the return value of the callback
+     */
+    public function useMaster(callable $callback)
+    {
+        $enableSlave = $this->enableSlave;
+        $this->enableSlave = false;
+        $result = call_user_func($callback, $this);
+        $this->enableSlave = $enableSlave;
+        return $result;
+    }
+
+    /**
      * Selects a slave and opens the connection.
      * @param array $slaves the list of candidate slave configurations
      * @return Connection the opened slave connection, or null if no slave is available
