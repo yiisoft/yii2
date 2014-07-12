@@ -68,10 +68,14 @@ class Command extends \yii\base\Component
     public $fetchMode = \PDO::FETCH_ASSOC;
     /**
      * @var array the parameters (name => value) that are bound to the current PDO statement.
-     * This property is maintained by methods such as [[bindValue()]].
-     * Do not modify it directly.
+     * This property is maintained by methods such as [[bindValue()]]. It is mainly provided for logging purpose
+     * and is used to generate [[rawSql]]. Do not modify it directly.
      */
     public $params = [];
+    /**
+     * @var array pending parameters to be bound to the current PDO statement.
+     */
+    private $_pendingParams = [];
     /**
      * @var string the SQL statement that this command represents
      */
@@ -97,6 +101,7 @@ class Command extends \yii\base\Component
         if ($sql !== $this->_sql) {
             $this->cancel();
             $this->_sql = $this->db->quoteSql($sql);
+            $this->_pendingParams = [];
             $this->params = [];
         }
 
@@ -143,19 +148,34 @@ class Command extends \yii\base\Component
      * this may improve performance.
      * For SQL statement with binding parameters, this method is invoked
      * automatically.
+     * @param boolean $forRead whether this method is called for a read query. If null, it means
+     * the SQL statement should be used to determine whether it is for read or write.
      * @throws Exception if there is any DB error
      */
-    public function prepare()
+    public function prepare($forRead = null)
     {
-        if ($this->pdoStatement == null) {
-            $sql = $this->getSql();
-            try {
-                $this->pdoStatement = $this->db->pdo->prepare($sql);
-            } catch (\Exception $e) {
-                $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
-                $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-                throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
-            }
+        if ($this->pdoStatement) {
+            return;
+        }
+
+        $sql = $this->getSql();
+
+        if ($this->db->getTransaction()) {
+            // master is in a transaction. use the same connection.
+            $forRead = false;
+        }
+        if ($forRead || $forRead === null && $this->db->getSchema()->isReadQuery($sql)) {
+            $pdo = $this->db->getSlavePdo();
+        } else {
+            $pdo = $this->db->getMasterPdo();
+        }
+
+        try {
+            $this->pdoStatement = $pdo->prepare($sql);
+        } catch (\Exception $e) {
+            $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
+            $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
         }
     }
 
@@ -184,6 +204,9 @@ class Command extends \yii\base\Component
     public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
     {
         $this->prepare();
+
+        $this->bindPendingParams();
+
         if ($dataType === null) {
             $dataType = $this->db->getSchema()->getPdoType($value);
         }
@@ -200,6 +223,18 @@ class Command extends \yii\base\Component
     }
 
     /**
+     * Binds pending parameters that were registered via [[bindValue()]] and [[bindValues()]].
+     * Note that this method requires an active [[pdoStatement]].
+     */
+    protected function bindPendingParams()
+    {
+        foreach ($this->_pendingParams as $name => $value) {
+            $this->pdoStatement->bindValue($name, $value[0], $value[1]);
+        }
+        $this->_pendingParams = [];
+    }
+
+    /**
      * Binds a value to a parameter.
      * @param string|integer $name Parameter identifier. For a prepared statement
      * using named placeholders, this will be a parameter name of
@@ -212,11 +247,10 @@ class Command extends \yii\base\Component
      */
     public function bindValue($name, $value, $dataType = null)
     {
-        $this->prepare();
         if ($dataType === null) {
             $dataType = $this->db->getSchema()->getPdoType($value);
         }
-        $this->pdoStatement->bindValue($name, $value, $dataType);
+        $this->_pendingParams[$name] = [$value, $dataType];
         $this->params[$name] = $value;
 
         return $this;
@@ -235,16 +269,17 @@ class Command extends \yii\base\Component
      */
     public function bindValues($values)
     {
-        if (!empty($values)) {
-            $this->prepare();
-            foreach ($values as $name => $value) {
-                if (is_array($value)) {
-                    $type = $value[1];
-                    $value = $value[0];
-                } else {
-                    $type = $this->db->getSchema()->getPdoType($value);
-                }
-                $this->pdoStatement->bindValue($name, $value, $type);
+        if (empty($values)) {
+            return $this;
+        }
+
+        foreach ($values as $name => $value) {
+            if (is_array($value)) {
+                $this->_pendingParams[$name] = $value;
+                $this->params[$name] = $value[0];
+            } else {
+                $type = $this->db->getSchema()->getPdoType($value);
+                $this->_pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;
             }
         }
@@ -271,11 +306,13 @@ class Command extends \yii\base\Component
             return 0;
         }
 
+        $this->prepare(false);
+        $this->bindPendingParams();
+
         $token = $rawSql;
         try {
             Yii::beginProfile($token, __METHOD__);
 
-            $this->prepare();
             $this->pdoStatement->execute();
             $n = $this->pdoStatement->rowCount();
 
@@ -390,11 +427,13 @@ class Command extends \yii\base\Component
             }
         }
 
+        $this->prepare(true);
+        $this->bindPendingParams();
+
         $token = $rawSql;
         try {
             Yii::beginProfile($token, 'yii\db\Command::query');
 
-            $this->prepare();
             $this->pdoStatement->execute();
 
             if ($method === '') {

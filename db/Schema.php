@@ -369,11 +369,10 @@ abstract class Schema extends Object
             return $str;
         }
 
-        $this->db->open();
-        if (($value = $this->db->pdo->quote($str)) !== false) {
+        if (($value = $this->db->getSlavePdo()->quote($str)) !== false) {
             return $value;
-        } else { // the driver doesn't support quote (e.g. oci)
-
+        } else {
+            // the driver doesn't support quote (e.g. oci)
             return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
         }
     }
@@ -519,5 +518,16 @@ abstract class Schema extends Object
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
             throw new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Returns a value indicating whether a SQL statement is for read purpose.
+     * @param string $sql the SQL statement
+     * @return boolean whether a SQL statement is for read purpose.
+     */
+    public function isReadQuery($sql)
+    {
+        $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
+        return preg_match($pattern, $sql) > 0;
     }
 }
