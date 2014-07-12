@@ -117,7 +117,7 @@ If authentication fails, a response with HTTP status 401 will be sent back toget
 
 After a user is authenticated, you probably want to check if he or she has the permission to perform the requested
 action for the requested resource. This process is called *authorization* which is covered in detail in
-the [Authorization section](authorization.md).
+the [Authorization section](security-authorization.md).
 
 If your controllers extend from [[yii\rest\ActiveController]], you may override
 the [[yii\rest\Controller::checkAccess()|checkAccess()]] method to perform authorization check. The method
