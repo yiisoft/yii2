@@ -92,5 +92,5 @@ interface IdentityInterface
      * @return boolean whether the given auth key is valid.
      * @see getAuthKey()
      */
-    public function validateAuthKey($authKey);    
+    public function validateAuthKey($authKey);
 }

@@ -70,11 +70,11 @@ class HttpDigestAuth extends AuthMethod
         
         // analyze the PHP_AUTH_DIGEST variable
         if (!$data = $this->http_digest_parse($digest)){
-            $this->text = "cant parse your digest data.";
+            $this->text = "Can't parse digest data";
             $this->handleFailure($response);
         }
         
-        if($this->auth){            
+        if($this->auth){
             $identity = call_user_func($this->auth, $data);
             if ($identity !== null) {
                 $user->setIdentity($identity);
@@ -85,13 +85,11 @@ class HttpDigestAuth extends AuthMethod
         }else{
             $identity = $user->loginByAccessToken(['digest' => $data,'realm'=>$this->realm], get_class($this));
             if ($identity === null) {
-                $this->text = "can't authenticate with your digest data";
+                $this->text = "Can't authenticate with digest data";
                 $this->handleFailure($response);
             }
             return $identity;
         }
-        
-        return null;
     }
 
     /**
