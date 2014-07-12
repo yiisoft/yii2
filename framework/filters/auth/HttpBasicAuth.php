@@ -51,8 +51,7 @@ class HttpBasicAuth extends AuthMethod
      * }
      * ```
      *
-     * If this property is not set, the username information will be considered as an access token
-     * while the password information will be ignored. The [[\yii\web\User::loginByAccessToken()]]
+     * If this property is not set. The [[\yii\web\User::loginByAccessToken()]]
      * method will be called to authenticate and login the user.
      */
     public $auth;

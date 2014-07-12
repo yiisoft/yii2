@@ -44,8 +44,21 @@ class HttpDigestAuth extends AuthMethod
      * The following code is a typical implementation of this callable:
      *
      * ```php
-     * function ($data) {
-     *     Need to implement as per requirement;
+     * function ($data,$realm) {
+     *     $user =  \app\models\User::findOne([
+     *                  'username' => $data['username'],
+     *               ]);
+     *      if($user === null){
+     *          return null;
+     *      }
+     *      $A1 = $user->password_digest;
+     *      $A2 = md5(\Yii::$app->request->getMethod().':'.$data['uri']);
+     *      $valid_response = md5($A1.':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':'.$A2);
+     *  
+     *      if ($data['response'] != $valid_response){
+     *          return null;
+     *      }        
+     *      return $user;
      * }
      * ```
      *
@@ -75,7 +88,7 @@ class HttpDigestAuth extends AuthMethod
         }
         
         if($this->auth){
-            $identity = call_user_func($this->auth, $data);
+            $identity = call_user_func($this->auth, $data,  $this->realm);
             if ($identity !== null) {
                 $user->setIdentity($identity);
             } else {
@@ -83,7 +96,7 @@ class HttpDigestAuth extends AuthMethod
             }
             return $identity;
         }else{
-            $identity = $user->loginByAccessToken(['digest' => $data,'realm'=>$this->realm], get_class($this));
+            $identity = $user->loginByAccessToken(['digest' => $data,'realm' => $this->realm], get_class($this));
             if ($identity === null) {
                 $this->text = "Can't authenticate with digest data";
                 $this->handleFailure($response);
@@ -113,9 +126,11 @@ class HttpDigestAuth extends AuthMethod
 
         preg_match_all('@(' . $keys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', $txt, $matches, PREG_SET_ORDER);
 
-        foreach ($matches as $m) {
-            $data[$m[1]] = $m[3] ? $m[3] : $m[4];
-            unset($needed_parts[$m[1]]);
+        if(is_array($matches)){
+            foreach ($matches as $m) {
+                $data[$m[1]] = $m[3] ? $m[3] : $m[4];
+                unset($needed_parts[$m[1]]);
+            }
         }
 
         return $needed_parts ? false : $data;
