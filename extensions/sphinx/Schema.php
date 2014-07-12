@@ -323,12 +323,11 @@ class Schema extends Object
      */
     public function quoteValue($str)
     {
-        if (!is_string($str)) {
+        if (is_string($str)) {
+            return $this->db->getSlavePdo()->quote($str);
+        } else {
             return $str;
         }
-        $this->db->open();
-
-        return $this->db->pdo->quote($str);
     }
 
     /**
@@ -518,5 +517,16 @@ class Schema extends Object
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
             throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Returns a value indicating whether a SQL statement is for read purpose.
+     * @param string $sql the SQL statement
+     * @return boolean whether a SQL statement is for read purpose.
+     */
+    public function isReadQuery($sql)
+    {
+        $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
+        return preg_match($pattern, $sql) > 0;
     }
 }
