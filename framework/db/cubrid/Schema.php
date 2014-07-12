@@ -116,7 +116,7 @@ class Schema extends \yii\db\Schema
             return $str;
         }
 
-        $pdo = $this->db->getReadPdo();
+        $pdo = $this->db->getSlavePdo();
 
         // workaround for broken PDO::quote() implementation in CUBRID 9.1.0 http://jira.cubrid.org/browse/APIS-658
         $version = $pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION);
@@ -143,7 +143,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadTableSchema($name)
     {
-        $pdo = $this->db->getReadPdo();
+        $pdo = $this->db->getSlavePdo();
 
         $tableInfo = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
 
@@ -266,7 +266,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findTableNames($schema = '')
     {
-        $pdo = $this->db->getReadPdo();
+        $pdo = $this->db->getSlavePdo();
         $tables =$pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
         $tableNames = [];
         foreach ($tables as $table) {

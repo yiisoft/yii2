@@ -71,9 +71,9 @@ use yii\caching\Cache;
  *     $transaction->rollBack();
  * }
  * ~~~
- * 
+ *
  * You also can use shortcut for the above like the following:
- * 
+ *
  * ~~~
  * $connection->transaction(function() {
  *     $order = new Order($customer);
@@ -81,15 +81,15 @@ use yii\caching\Cache;
  *     $order->addItems($items);
  * });
  * ~~~
- * 
+ *
  * If needed you can pass transaction isolation level as a second parameter:
- * 
+ *
  * ~~~
  * $connection->transaction(function(Connection $db) {
  *     //return $db->...
  * }, Transaction::READ_UNCOMMITTED);
  * ~~~
- * 
+ *
  * Connection is often used as an application component and configured in the application
  * configuration like the following:
  *
@@ -261,16 +261,16 @@ class Connection extends Component
      * [[Schema]] class to support DBMS that is not supported by Yii.
      */
     public $schemaMap = [
-        'pgsql' => 'yii\db\pgsql\Schema',    // PostgreSQL
-        'mysqli' => 'yii\db\mysql\Schema',   // MySQL
-        'mysql' => 'yii\db\mysql\Schema',    // MySQL
-        'sqlite' => 'yii\db\sqlite\Schema',  // sqlite 3
+        'pgsql' => 'yii\db\pgsql\Schema', // PostgreSQL
+        'mysqli' => 'yii\db\mysql\Schema', // MySQL
+        'mysql' => 'yii\db\mysql\Schema', // MySQL
+        'sqlite' => 'yii\db\sqlite\Schema', // sqlite 3
         'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
-        'sqlsrv' => 'yii\db\mssql\Schema',   // newer MSSQL driver on MS Windows hosts
-        'oci' => 'yii\db\oci\Schema',        // Oracle driver
-        'mssql' => 'yii\db\mssql\Schema',    // older MSSQL driver on MS Windows hosts
-        'dblib' => 'yii\db\mssql\Schema',    // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'cubrid' => 'yii\db\cubrid\Schema',  // CUBRID
+        'sqlsrv' => 'yii\db\mssql\Schema', // newer MSSQL driver on MS Windows hosts
+        'oci' => 'yii\db\oci\Schema', // Oracle driver
+        'mssql' => 'yii\db\mssql\Schema', // older MSSQL driver on MS Windows hosts
+        'dblib' => 'yii\db\mssql\Schema', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+        'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
     ];
     /**
      * @var string Custom PDO wrapper class. If not set, it will use "PDO" or "yii\db\mssql\PDO" when MSSQL is used.
@@ -282,30 +282,70 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
+     * @var Cache|string the cache object or the ID of the cache application component that is used to store
+     * the health status of the DB servers specified in [[masters]] and [[slaves]].
+     * This is used only when read/write splitting is enabled or [[masters]] is not empty.
+     */
+    public $serverStatusCache = 'cache';
+    /**
+     * @var integer the retry interval in seconds for dead servers listed in [[masters]] and [[slaves]].
+     * This is used together with [[serverStatusCache]].
+     */
+    public $serverRetryInterval = 600;
+    /**
      * @var boolean whether to enable read/write splitting by using [[slaves]] to read data.
+     * Note that if [[slaves]] is empty, read/write splitting will NOT be enabled no matter what value this property takes.
      */
     public $enableSlave = true;
     /**
-     * @var array list of slave connection configurations. When [[enableSlave]] is true, one of these slave
-     * configurations will be used to create a DB connection to perform read queries.
+     * @var array list of slave connection configurations. Each configuration is used to create a slave DB connection.
+     * When [[enableSlave]] is true, one of these configurations will be chosen and used to create a DB connection
+     * for performing read queries only.
      * @see enableSlave
+     * @see slaveConfig
      */
     public $slaves = [];
     /**
-     * @var integer the timeout in seconds for determining whether a slave is dead or not
-     * @see enableSlave
+     * @var array the configuration that should be merged with every slave configuration listed in [[slaves]].
+     * For example,
+     *
+     * ```php
+     * [
+     *     'username' => 'slave',
+     *     'password' => 'slave',
+     *     'attributes' => [
+     *         // use a smaller connection timeout
+     *         PDO::ATTR_TIMEOUT => 10,
+     *     ],
+     * ]
+     * ```
      */
-    public $slaveTimeout = 10;
+    public $slaveConfig = [];
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that is used to store
-     * the health status of the slaves.
-     * @see enableSlave
+     * @var array list of master connection configurations. Each configuration is used to create a master DB connection.
+     * When [[open()]] is called, one of these configurations will be chosen and used to create a DB connection
+     * which will be used by this object.
+     * Note that when this property is not empty, the connection setting (e.g. "dsn", "username") of this object will
+     * be ignored.
+     * @see masterConfig
      */
-    public $slaveCache = 'cache';
+    public $masters = [];
     /**
-     * @var integer the retry interval in seconds for dead slaves.
+     * @var array the configuration that should be merged with every master configuration listed in [[masters]].
+     * For example,
+     *
+     * ```php
+     * [
+     *     'username' => 'master',
+     *     'password' => 'master',
+     *     'attributes' => [
+     *         // use a smaller connection timeout
+     *         PDO::ATTR_TIMEOUT => 10,
+     *     ],
+     * ]
+     * ```
      */
-    public $slaveRetryInterval = 600;
+    public $masterConfig = [];
 
     /**
      * @var Transaction the currently active transaction
@@ -320,7 +360,7 @@ class Connection extends Component
      */
     private $_driverName;
     /**
-     * @var Connection the currently active slave
+     * @var Connection the currently active slave connection
      */
     private $_slave = false;
 
@@ -367,21 +407,33 @@ class Connection extends Component
      */
     public function open()
     {
-        if ($this->pdo === null) {
-            if (empty($this->dsn)) {
-                throw new InvalidConfigException('Connection::dsn cannot be empty.');
+        if ($this->pdo !== null) {
+            return;
+        }
+
+        if (!empty($this->masters)) {
+            $db = $this->openFromPool($this->masters, $this->masterConfig);
+            if ($db !== null) {
+                $this->pdo = $db->pdo;
+                return;
+            } else {
+                throw new InvalidConfigException('None of the master DB servers is available.');
             }
-            $token = 'Opening DB connection: ' . $this->dsn;
-            try {
-                Yii::trace($token, __METHOD__);
-                Yii::beginProfile($token, __METHOD__);
-                $this->pdo = $this->createPdoInstance();
-                $this->initConnection();
-                Yii::endProfile($token, __METHOD__);
-            } catch (\PDOException $e) {
-                Yii::endProfile($token, __METHOD__);
-                throw new Exception($e->getMessage(), $e->errorInfo, (int) $e->getCode(), $e);
-            }
+        }
+
+        if (empty($this->dsn)) {
+            throw new InvalidConfigException('Connection::dsn cannot be empty.');
+        }
+        $token = 'Opening DB connection: ' . $this->dsn;
+        try {
+            Yii::trace($token, __METHOD__);
+            Yii::beginProfile($token, __METHOD__);
+            $this->pdo = $this->createPdoInstance();
+            $this->initConnection();
+            Yii::endProfile($token, __METHOD__);
+        } catch (\PDOException $e) {
+            Yii::endProfile($token, __METHOD__);
+            throw new Exception($e->getMessage(), $e->errorInfo, (int)$e->getCode(), $e);
         }
     }
 
@@ -643,7 +695,7 @@ class Connection extends Component
             if (($pos = strpos($this->dsn, ':')) !== false) {
                 $this->_driverName = strtolower(substr($this->dsn, 0, $pos));
             } else {
-                $this->_driverName = strtolower($this->getReadPdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
+                $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
             }
         }
         return $this->_driverName;
@@ -662,12 +714,17 @@ class Connection extends Component
      * Returns the PDO instance for read queries.
      * When [[enableSlave]] is true, one of the slaves will be used for read queries, and its PDO instance
      * will be returned by this method. If no slave is available, the [[writePdo]] will be returned.
-     * @return PDO the PDO instance for read queries.
+     * @param boolean $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
+     * @return PDO the PDO instance for read queries. Null is returned if no server is available.
      */
-    public function getReadPdo()
+    public function getSlavePdo($fallbackToMaster = true)
     {
-        $db = $this->getSlave();
-        return $db ? $db->pdo : $this->getWritePdo();
+        $db = $this->getSlave(false);
+        if ($db === null) {
+            return $fallbackToMaster ? $this->getMasterPdo() : null;
+        } else {
+            return $db->pdo;
+        }
     }
 
     /**
@@ -675,35 +732,36 @@ class Connection extends Component
      * This method will open the master DB connection and then return [[pdo]].
      * @return PDO the PDO instance for write queries.
      */
-    public function getWritePdo()
+    public function getMasterPdo()
     {
         $this->open();
         return $this->pdo;
     }
 
     /**
-     * Returns the currently active slave.
+     * Returns the currently active slave connection.
      * If this method is called the first time, it will try to open a slave connection when [[enableSlave]] is true.
+     * @param boolean $fallbackToMaster whether to return a master connection in case none of the slave connections is available.
      * @return Connection the currently active slave. Null is returned if there is slave available.
      */
-    public function getSlave()
+    public function getSlave($fallbackToMaster = true)
     {
         if (!$this->enableSlave) {
-            return null;
+            return $fallbackToMaster ? $this : null;
         }
 
-        if ($this->_slave !== false) {
-            return $this->_slave;
-        } else {
-            return $this->_slave = $this->openSlave($this->slaves);
+        if ($this->_slave === false) {
+            $this->_slave = $this->openFromPool($this->slaves, $this->slaveConfig);
         }
+
+        return $this->_slave === null && $fallbackToMaster ? $this : $this->_slave;
     }
 
     /**
      * Executes the provided callback by using the master connection.
      *
      * This method is provided so that you can temporarily force using the master connection to perform
-     * DB operations. For example,
+     * DB operations even if they are read queries. For example,
      *
      * ```php
      * $result = $db->useMaster(function ($db) {
@@ -712,7 +770,7 @@ class Connection extends Component
      * ```
      *
      * @param callable $callback a PHP callable to be executed by this method. Its signature is
-     * `function ($db)`. Its return value will be returned by this method.
+     * `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
      */
     public function useMaster(callable $callback)
@@ -725,49 +783,48 @@ class Connection extends Component
     }
 
     /**
-     * Selects a slave and opens the connection.
-     * @param array $slaves the list of candidate slave configurations
-     * @return Connection the opened slave connection, or null if no slave is available
-     * @throws InvalidConfigException if a slave configuration does not have "dsn" setting
+     * Opens the connection to a server in the pool.
+     * @param array $pool the list of connection configurations in the server pool
+     * @param array $sharedConfig the configuration common to those given in `$pool`.
+     * @return Connection the opened DB connection, or null if no server is available
+     * @throws InvalidConfigException if a configuration does not specify "dsn"
      */
-    protected function openSlave($slaves)
+    protected function openFromPool(array $pool, array $sharedConfig)
     {
-        if (empty($slaves)) {
+        if (empty($pool)) {
             return null;
         }
 
-        shuffle($slaves);
+        if (!isset($sharedConfig['class'])) {
+            $sharedConfig['class'] = get_class($this);
+        }
 
-        $cache = is_string($this->slaveCache) ? Yii::$app->get($this->slaveCache, false) : $this->slaveCache;
+        $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
 
-        foreach ($slaves as $config) {
+        shuffle($pool);
+
+        foreach ($pool as $config) {
+            $config = array_merge($sharedConfig, $config);
             if (empty($config['dsn'])) {
-                throw new InvalidConfigException('One of the slave connections has an empty "dsn".');
+                throw new InvalidConfigException('The "dsn" option must be specified.');
             }
 
             $key = [__METHOD__, $config['dsn']];
             if ($cache instanceof Cache && $cache->get($key)) {
-                // should not try this dead slave now
+                // should not try this dead server now
                 continue;
             }
 
-            if (!isset($config['class'])) {
-                $config['class'] = get_class($this);
-            }
-            /* @var $slave Connection */
-            $slave = Yii::createObject($config);
-
-            if (!isset($slave->attributes[PDO::ATTR_TIMEOUT])) {
-                $slave->attributes[PDO::ATTR_TIMEOUT] = $this->slaveTimeout;
-            }
+            /* @var $db Connection */
+            $db = Yii::createObject($config);
 
             try {
-                $slave->open();
-                return $slave;
+                $db->open();
+                return $db;
             } catch (\Exception $e) {
-                Yii::warning("Slave ({$config['dsn']}) not available: " . $e->getMessage(), __METHOD__);
+                Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
                 if ($cache instanceof Cache) {
-                    $cache->set($key, 1, $this->slaveRetryInterval);
+                    $cache->set($key, 1, $this->serverRetryInterval);
                 }
             }
         }

@@ -369,7 +369,7 @@ abstract class Schema extends Object
             return $str;
         }
 
-        if (($value = $this->db->getReadPdo()->quote($str)) !== false) {
+        if (($value = $this->db->getSlavePdo()->quote($str)) !== false) {
             return $value;
         } else {
             // the driver doesn't support quote (e.g. oci)

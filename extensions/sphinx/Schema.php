@@ -324,7 +324,7 @@ class Schema extends Object
     public function quoteValue($str)
     {
         if (is_string($str)) {
-            return $this->db->getReadPdo()->quote($str);
+            return $this->db->getSlavePdo()->quote($str);
         } else {
             return $str;
         }
