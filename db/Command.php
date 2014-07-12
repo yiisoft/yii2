@@ -161,9 +161,9 @@ class Command extends \yii\base\Component
         $sql = $this->getSql();
 
         if ($forRead || $forRead === null && $this->db->getSchema()->isReadQuery($sql)) {
-            $pdo = $this->db->getReadPdo();
+            $pdo = $this->db->getSlavePdo();
         } else {
-            $pdo = $this->db->getWritePdo();
+            $pdo = $this->db->getMasterPdo();
         }
 
         try {

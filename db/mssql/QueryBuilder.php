@@ -239,7 +239,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function isOldMssql()
     {
-        $pdo = $this->db->getReadPdo();
+        $pdo = $this->db->getSlavePdo();
         $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
         return $version[0] < 11;
     }
