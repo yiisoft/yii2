@@ -115,6 +115,7 @@ Yii Framework 2 Change Log
 - Enh #3636: Hide menu container tag with empty items in `yii\widgets\Menu` (arturf)
 - Enh #3643: Improved Mime-Type detection by using the `mime.types` file from apache http project to dected mime types by file extension (cebe, pavel-voronin, trejder)
 - Enh #3765: Added `yii\web\User::enableSession` to support authentication without using session (qiangxue)
+- Enh #3708: Added database replication and automatic read-write splitting support for `yii\db\Connection` (qiangxue)
 - Enh #3773: Added `FileValidator::mimeTypes` to support validating MIME types of files (Ragazzo)
 - Enh #3774: Added `FileValidator::checkExtensionByMimeType` to support validating file types against file mime-types (Ragazzo)
 - Enh #3801: Base migration controller `yii\console\controllers\BaseMigrateController` extracted (klimov-paul)
