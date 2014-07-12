@@ -69,7 +69,7 @@ class Command extends \yii\base\Component
     /**
      * @var array the parameters (name => value) that are bound to the current PDO statement.
      * This property is maintained by methods such as [[bindValue()]]. It is mainly provided for logging purpose
-     * and is used to generated [[rawSql]]. Do not modify it directly.
+     * and is used to generate [[rawSql]]. Do not modify it directly.
      */
     public $params = [];
     /**

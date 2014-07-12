@@ -8,6 +8,7 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
+use yii\db\Connection;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -196,11 +197,9 @@ EOD;
     {
         if ($this->db->isActive) {
             // get the last insert id from the master connection
-            $enableSlave = $this->db->enableSlave;
-            $this->db->enableSlave = false;
-            $id = $this->db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
-            $this->db->enableSlave = $enableSlave;
-            return $id;
+            return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
+                return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
+            });
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }
