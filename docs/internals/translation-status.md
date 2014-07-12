@@ -12,7 +12,7 @@ start-hello.md                      | Yes
 start-forms.md                      | Yes
 start-databases.md                  | Yes
 start-gii.md                        | Yes
-start-looking-ahead.md               | Yes
+start-looking-ahead.md              | Yes
 structure-overview.md               | Yes
 structure-entry-scripts.md          | Yes
 structure-applications.md           | Yes
@@ -24,7 +24,7 @@ structure-modules.md                | Yes
 structure-filters.md                | Yes
 structure-widgets.md                | Yes
 structure-assets.md                 |
-structure-extensions.md             |
+structure-extensions.md             | Yes
 runtime-bootstrapping.md            |
 runtime-routing.md                  |
 runtime-requests.md                 |
@@ -87,12 +87,6 @@ test-unit.md                        |
 test-functional.md                  |
 test-acceptance.md                  |
 test-fixtures.md                    |
-extend-creating-extensions.md       |
-extend-customizing-core.md          |
-extend-using-libs.md                |
-extend-embedding-in-others.md       |
-extend-using-v1-v2.md               |
-extend-using-composer.md            |
 tutorial-advanced-app.md            |
 tutorial-start-from-scratch.md      |
 tutorial-console.md                 |
@@ -102,6 +96,7 @@ tutorial-performance-tuning.md      |
 tutorial-shared-hosting.md          |
 tutorial-template-engines.md        |
 tutorial-core-validators.md         | Yes
+tutorial-yii-integration.md         | Yes
 widget-bootstrap.md                 |
 widget-jui.md                       |
 helper-overview.md                  |

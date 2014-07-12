@@ -99,12 +99,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $table = $this->db->getTableSchema($tableName);
         if ($table !== null && $table->sequenceName !== null) {
-            $sequence = '"' . $table->sequenceName . '"';
-
-            if (strpos($sequence, '.') !== false) {
-                $sequence = str_replace('.', '"."', $sequence);
-            }
-
+            // c.f. http://www.postgresql.org/docs/8.1/static/functions-sequence.html
+            $sequence = $this->db->quoteTableName($table->sequenceName);
             $tableName = $this->db->quoteTableName($tableName);
             if ($value === null) {
                 $key = reset($table->primaryKey);

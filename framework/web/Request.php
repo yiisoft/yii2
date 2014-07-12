@@ -829,11 +829,11 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the user IP address.
-     * @return string user IP address
+     * @return string user IP address. Null is returned if the user IP address cannot be detected.
      */
     public function getUserIP()
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 
     /**

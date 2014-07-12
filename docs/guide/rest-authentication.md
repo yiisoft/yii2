@@ -5,7 +5,7 @@ Unlike Web applications, RESTful APIs are usually stateless, which means session
 be used. Therefore, each request should come with some sort of authentication credentials because
 the user authentication status may not be maintained by sessions or cookies. A common practice is
 to send a secret access token with each request to authenticate the user. Since an access token
-can be used to uniquely identify and authenticate a user, **the API requests should always be sent
+can be used to uniquely identify and authenticate a user, **API requests should always be sent
 via HTTPS to prevent from man-in-the-middle (MitM) attacks**.
 
 There are different ways to send an access token:

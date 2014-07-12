@@ -110,6 +110,7 @@ Each component listed in this property may be specified in one of the following 
 - a module ID as specified via [modules](#modules).
 - a class name.
 - a configuration array.
+- an anonymous function that creates and returns a component.
 
 For example,
 
@@ -120,23 +121,40 @@ For example,
         'demo',
 
         // a class name
-        'app\components\TrafficMonitor',
+        'app\components\Profiler',
 
         // a configuration array
         [
             'class' => 'app\components\Profiler',
             'level' => 3,
-        ]
+        ],
+
+        // an anonymous function
+        function () {
+            return new app\components\Profiler();
+        }
     ],
 ]
 ```
+
+> Info: If a module ID is the same as an application component ID, the application component will be used during
+  the bootstrapping process. If you want to use the module instead, you may specify it using an anonymous function
+  like the following:
+>```php
+[
+    function () {
+        return Yii::$app->getModule('user');
+    },
+]
+```
+
 
 During the bootstrapping process, each component will be instantiated. If the component class
 implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
 will be also be called.
 
 Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
-where the `debug` and `gii` modules are configured as bootstrap components when the application is running
+where the `debug` and `gii` modules are configured as bootstrapping components when the application is running
 in development environment,
 
 ```php
@@ -151,7 +169,7 @@ if (YII_ENV_DEV) {
 ```
 
 > Note: Putting too many components in `bootstrap` will degrade the performance of your application because
-  for each request, the same set of components need to be run. So use bootstrap components judiciously.
+  for each request, the same set of components need to be run. So use bootstrapping components judiciously.
 
 
 #### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
@@ -412,7 +430,7 @@ In the special case when you want to maintain extensions manually, you may confi
 
 As you can see, the property takes an array of extension specifications. Each extension is specified with an array
 consisting of `name` and `version` elements. If an extension needs to run during the [bootstrap](runtime-bootstrapping.md)
-process, a `bootstrap` element may be specified with a bootstrap class name or a [configuration](concept-configurations.md)
+process, a `bootstrap` element may be specified with a bootstrapping class name or a [configuration](concept-configurations.md)
 array. An extension may also define a few [aliases](concept-aliases.md).
 
 
@@ -581,7 +599,7 @@ an application will undergo the following lifecycle:
   * Register the [[yii\base\Application::errorHandler|error handler]].
   * Configure application properties.
   * [[yii\base\Application::init()|init()]] is called which further calls
-    [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrap components.
+    [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrapping components.
 3. The entry script calls [[yii\base\Application::run()]] to run the application:
   * Trigger the [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] event.
   * Handle the request: resolve the request into a [route](runtime-routing.md) and the associated parameters;

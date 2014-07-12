@@ -832,6 +832,7 @@ class Collection extends Object
             'NOT BETWEEN' => 'buildBetweenCondition',
             'IN' => 'buildInCondition',
             'NOT IN' => 'buildInCondition',
+            'REGEX' => 'buildRegexCondition',
             'LIKE' => 'buildLikeCondition',
         ];
 
@@ -999,6 +1000,27 @@ class Collection extends Object
     }
 
     /**
+     * Creates a Mongo regular expression condition.
+     * @param string $operator the operator to use
+     * @param array $operands the first operand is the column name.
+     * The second operand is a single value that column value should be compared with.
+     * @return array the generated Mongo condition.
+     * @throws InvalidParamException if wrong number of operands have been given.
+     */
+    public function buildRegexCondition($operator, $operands)
+    {
+        if (!isset($operands[0], $operands[1])) {
+            throw new InvalidParamException("Operator '$operator' requires two operands.");
+        }
+        list($column, $value) = $operands;
+        if (!($value instanceof \MongoRegex)) {
+            $value = new \MongoRegex($value);
+        }
+
+        return [$column => $value];
+    }
+
+    /**
      * Creates a Mongo condition, which emulates the `LIKE` operator.
      * @param string $operator the operator to use
      * @param array $operands the first operand is the column name.
@@ -1013,7 +1035,7 @@ class Collection extends Object
         }
         list($column, $value) = $operands;
         if (!($value instanceof \MongoRegex)) {
-            $value = new \MongoRegex($value);
+            $value = new \MongoRegex('/' . preg_quote($value) . '/');
         }
 
         return [$column => $value];

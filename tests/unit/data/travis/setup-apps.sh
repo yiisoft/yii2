@@ -7,14 +7,14 @@ else
     # basic application:
 
     composer install --dev --prefer-dist -d apps/basic
-    cd apps/basic && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
+    cd apps/basic && composer require --dev codeception/codeception:2.0.* codeception/specify:* codeception/verify:*
     php vendor/bin/codecept build && cd ../..
 
 
     # advanced application:
 
     composer install --dev --prefer-dist -d apps/advanced
-    cd apps/advanced && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
+    cd apps/advanced && composer require --dev codeception/codeception:2.0.* codeception/specify:* codeception/verify:*
     ./init --env=Development
     sed -i s/root/travis/ common/config/main-local.php
     cd backend && php ../vendor/bin/codecept build

@@ -62,13 +62,17 @@ Yii Framework 2 Change Log
 - Bug #3989: Fixed yii\log\FileTarget::$rotateByCopy to avoid any rename (cebe)
 - Bug #3996: Traversing `Yii::$app->session` may cause a PHP error (qiangxue)
 - Bug #4020: OCI column detection did not work so gii and other things failed (Sanya1991)
+- Bug #4123: Trace level in logger had no effect in Targets, traces where not logged (cebe)
 - Bug #4127: `CaptchaValidator` clientside error message wasn't formed properly (samdark)
+- Bug #4162: Fixed bug where schema name was not used in ’SHOW CREATE TABLE’ query in `yii\db\mysql\Schema` (stevekr)
+- Bug #4241: `yii\widgets\Pjax` was incorrectly setting container id (mitalcoi)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
 - Bug: Fixed Object of class Imagick could not be converted to string in CaptchaAction (eXprojects, cebe)
 - Enh #87: Helper `yii\helpers\Security` converted into application component, cryptographic strength improved (klimov-paul)
 - Enh #422: Added Support for BIT(M) data type default values in Schema (cebe)
+- Enh #1160: Added $strict parameter to Inflector::camel2id() to handle consecutive uppercase chars (schmunk)
 - Enh #1452: Added `Module::getInstance()` to allow accessing the module instance from anywhere within the module (qiangxue)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
@@ -96,6 +100,7 @@ Yii Framework 2 Change Log
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
 - Enh #3380: Allow `value` in `defaultValueValidator` to be a closure (Alex-Code)
+- Enh #3384: Added callback-style transactions (leandrogehlen, Ragazzo, samdark)
 - Enh #3399, #3241: Added support for MS SQL Server older than 2012 (fourteenmeister, samdark)
 - Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Enh #3518: `yii\helpers\Html::encode()` now replaces invalid code sequences with "�" (DaSourcerer)
@@ -121,6 +126,7 @@ Yii Framework 2 Change Log
     - Removed character maps for non-latin languages.
     - Improved overall slug results.
     - Added note about the fact that intl is required for non-latin languages to requirements checker.
+- Enh #3992: In mail layouts you can now access the message object via `$message` variable (qiangxue)
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
 - Enh #4072: `\yii\rbac\PhpManager` adjustments (samdark)
     - Data is now stored in three separate files for items, assignments and rules. File format is simpler.
@@ -163,6 +169,9 @@ Yii Framework 2 Change Log
 - Chg #3956: Flash messages set via `Yii::$app->session->setFlash()` will be removed only if they are accessed (qiangxue)
 - Chg #3989: The default value for `yii\log\FileTarget::$rotateByCopy` now defaults to true to work on windows by default (cebe)
 - Chg #4071: `mail` component renamed to `mailer`, `yii\log\EmailTarget::$mail` renamed to `yii\log\EmailTarget::$mailer` (samdark)
+- Chg #4147: `BaseMailer::compose()` will not overwrite the `message` parameter if it is explicitly provided (qiangxue)
+- Chg #4201: change default value of `SyslogTarget::facility` from LOG_SYSLOG to LOG_USER (dizews)
+- Chg #4227: `\yii\widgets\LinkPager::$hideOnSinglePage` is now `true` by default (samdark)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
@@ -170,6 +179,7 @@ Yii Framework 2 Change Log
 - Chg: Removed `yii\rest\ActiveController::$transactional` property and connected functionality (samdark)
 - Chg: Changed the default value of the `keyPrefix` property of cache components to be null (qiangxue)
 - Chg: Added `prefix` column to `yii\log\DbTarget` to have the same amount of information logged as in files and emails (cebe)
+- Chg: Use `limit(null)` instead of `limit(-1)` in migration controller to be compatible to more backends (cebe)
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
 
 
@@ -238,6 +248,8 @@ Yii Framework 2 Change Log
 - Bug #2862: Using `DbCache` while enabling schema caching may cause infinite loops (qiangxue)
 - Bug #3052: Fixed the issue that cache dependency data is not reused when `reusable` is set true (qiangxue)
 - Bug #3691: Fixed the issue that `CookieCollection::has` always returns false for cookies from browser (sonicgd)
+- Bug #4212: MSSQL query builder should not generate the `ORDER BY` clause when it is not needed (qiangxue)
+- Bug #4232: `TableSchema::sequenceName` for PostgreSQL should remove the enclosing quotes (katzz0, qiangxue)
 - Bug: Fixed `Call to a member function registerAssetFiles() on a non-object` in case of wrong `sourcePath` for an asset bundle (samdark)
 - Bug: Fixed incorrect event name for `yii\jui\Spinner` (samdark)
 - Bug: Json::encode() did not handle objects that implement JsonSerializable interface correctly (cebe)
@@ -420,6 +432,7 @@ Yii Framework 2 Change Log
 - Chg #2912: Relative view files will be looked for under the directory containing the view currently being rendered (qiangxue)
 - Chg #2955: Changed the signature of ActiveQuery constructors and replaced `ActiveRecord::createQuery()` with `find()` to simplify customizing ActiveQuery classes (qiangxue)
 - Chg #2999: Added `findOne()` and `findAll()` to replace the usage of `ActiveRecord::find($condition)`. (samdark, qiangxue)
+- Chg #4204: `yii\web\Request::getUserIP()` will return null if it cannot detect user IP address (qiangxue)
 - Chg: Renamed `yii\jui\Widget::clientEventsMap` to `clientEventMap` (qiangxue)
 - Chg: Renamed `ActiveRecord::getPopulatedRelations()` to `getRelatedRecords()` (qiangxue)
 - Chg: Renamed `attributeName` and `className` to `targetAttribute` and `targetClass` for `UniqueValidator` and `ExistValidator` (qiangxue)

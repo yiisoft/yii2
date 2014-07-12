@@ -7,6 +7,7 @@
 
 namespace yii\db\oci;
 
+use yii\base\InvalidCallException;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -57,15 +58,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleTableName($name)
     {
-        return '"' . $name . '"';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function quoteSimpleColumnName($name)
-    {
-        return '"' . $name . '"';
+        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
     }
 
     /**

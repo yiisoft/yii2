@@ -71,7 +71,25 @@ use yii\caching\Cache;
  *     $transaction->rollBack();
  * }
  * ~~~
- *
+ * 
+ * You also can use shortcut for the above like the following:
+ * 
+ * ~~~
+ * $connection->transaction(function() {
+ *     $order = new Order($customer);
+ *     $order->save();
+ *     $order->addItems($items);
+ * });
+ * ~~~
+ * 
+ * If needed you can pass transaction isolation level as a second parameter:
+ * 
+ * ~~~
+ * $connection->transaction(function(Connection $db) {
+ *     //return $db->...
+ * }, Transaction::READ_UNCOMMITTED);
+ * ~~~
+ * 
  * Connection is often used as an application component and configured in the application
  * configuration like the following:
  *
@@ -439,6 +457,32 @@ class Connection extends Component
     }
 
     /**
+     * Executes callback provided in a transaction.
+     *
+     * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
+     * @param string|null $isolationLevel The isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     * @throws \Exception
+     * @return mixed result of callback function
+     */
+    public function transaction(callable $callback, $isolationLevel = null)
+    {
+        $transaction = $this->beginTransaction($isolationLevel);
+
+        try {
+            $result = call_user_func($callback, $this);
+            if ($transaction->isActive) {
+                $transaction->commit();
+            }
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns the schema information for the database opened by this connection.
      * @return Schema the schema information for the database opened by this connection.
      * @throws NotSupportedException if there is no support for the current driver type
@@ -494,13 +538,13 @@ class Connection extends Component
     /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
-     * @param string $str string to be quoted
+     * @param string $value string to be quoted
      * @return string the properly quoted string
      * @see http://www.php.net/manual/en/function.PDO-quote.php
      */
-    public function quoteValue($str)
+    public function quoteValue($value)
     {
-        return $this->getSchema()->quoteValue($str);
+        return $this->getSchema()->quoteValue($value);
     }
 
     /**

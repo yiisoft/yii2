@@ -139,6 +139,34 @@ public function behaviors()
 For more details about access control in general, please refer to the [Authorization](security-authorization.md) section.
 
 
+### Authentication Method Filters <a name="auth-method-filters"></a>
+
+Authentication method filters are used to authenticate a user based using various methods, such as
+[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/).
+These filter classes are all under the `yii\filters\auth` namespace.
+
+The following example shows how you can use [[yii\filters\auth\HttpBasicAuth]] to authenticate a user using
+an access token based on HTTP Basic Auth method. Note that in order for this to work, your
+[[yii\web\User::identityClass|user identity class]] must implement the [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]
+method.
+
+```php
+use yii\filters\auth\HttpBasicAuth;
+
+public function behaviors()
+{
+    return [
+        'basicAuth' => [
+            'class' => HttpBasicAuth::className(),
+        ],
+    ];
+}
+```
+
+Authentication method filters are commonly used in implementing RESTful APIs. For more details, please refer to the
+RESTful [Authentication](rest-authentication.md) section.
+
+
 ### [[yii\filters\ContentNegotiator|ContentNegotiator]] <a name="content-negotiator"></a>
 
 ContentNegotiator supports response format negotiation and application language negotiation. It will try to
@@ -171,7 +199,7 @@ public function behaviors()
 
 Response formats and languages often need to be determined much earlier during
 the [application lifecycle](structure-applications.md#application-lifecycle). For this reason, ContentNegotiator
-is designed in a way such that it can also be used as a [bootstrap component](structure-applications.md#bootstrap)
+is designed in a way such that it can also be used as a [bootstrapping component](structure-applications.md#bootstrap)
 besides filter. For example, you may configure it in the [application configuration](structure-applications.md#application-configurations)
 like the following:
 
