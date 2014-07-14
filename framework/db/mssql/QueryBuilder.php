@@ -135,13 +135,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
-        if (empty($query->orderBy) && ($this->hasLimit($query->limit) || $this->hasOffset($query->offset)) && $this->isOldMssql()) {
-            // hack so LIMIT will work because ROW_NUMBER requires an ORDER BY clause
-            $orderBy = 'ORDER BY (SELECT NULL)';
-        } else {
-            $orderBy = $this->buildOrderBy($query->orderBy);
-        }
-
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
             $this->buildFrom($query->from, $params),
@@ -149,7 +142,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
-            $orderBy,
+            $this->buildOrderBy($query->orderBy),
             $this->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
         ];
 
@@ -209,6 +202,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
         $sql = str_replace($originalOrdering, '', $sql);
+
+        if ($originalOrdering === '') {
+            // hack so LIMIT will work because ROW_NUMBER requires an ORDER BY clause
+            $originalOrdering = 'ORDER BY (SELECT NULL)';
+        }
+
         $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ({$originalOrdering}),", $sql);
         $sql = "SELECT TOP {$limit} {$select} FROM ($sql) sub WHERE rowNum > {$offset}";
         return $sql;
