@@ -82,10 +82,24 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @inheritdoc
      */
+    public function init()
+    {
+        parent::init();
+        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
+            $this->generators[$id] = Yii::createObject($config);
+        }
+        if (Yii::$app instanceof \yii\console\Application) {
+            $this->controllerNamespace = 'yii\gii\commands';
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function bootstrap($app)
     {
         if ($app instanceof \yii\console\Application) {
-            $app->controllerMap[$this->id] = 'yii\gii\commands\GiiController';
+            //$app->controllerMap[$this->id] = 'yii\gii\commands\Gii2Controller';
         } else {
             $app->getUrlManager()->addRules([
                 $this->id => $this->id . '/default/index',
@@ -95,17 +109,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
-            $this->generators[$id] = Yii::createObject($config);
-        }
-    }
-    
     /**
      * @inheritdoc
      */
@@ -129,7 +132,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     protected function resetGlobalSettings()
     {
-        Yii::$app->assetManager->bundles = [];
+        if (!Yii::$app instanceof \yii\console\Application) {
+            Yii::$app->assetManager->bundles = [];
+        }
     }
 
     /**
