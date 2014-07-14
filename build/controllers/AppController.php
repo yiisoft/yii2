@@ -29,7 +29,7 @@ class AppController extends Controller
      */
     protected function unlink($file)
     {
-        if (is_dir($file) && strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+        if (is_dir($file) && !is_link($file)) {
             rmdir($file);
         } else {
             unlink($file);
