@@ -139,7 +139,7 @@ class DbManager extends BaseManager
         }
 
         if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-            $data = null;
+            $row['data'] = null;
         }
 
         return $this->populateItem($row);
