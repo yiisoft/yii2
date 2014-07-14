@@ -84,13 +84,15 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        $app->controllerMap[$this->id] = 'yii\gii\commands\GiiController';
-
-        $app->getUrlManager()->addRules([
-            $this->id => $this->id . '/default/index',
-            $this->id . '/<id:\w+>' => $this->id . '/default/view',
-            $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
-        ], false);
+        if ($app instanceof \yii\console\Application) {
+            $app->controllerMap[$this->id] = 'yii\gii\commands\GiiController';
+        } else {
+            $app->getUrlManager()->addRules([
+                $this->id => $this->id . '/default/index',
+                $this->id . '/<id:\w+>' => $this->id . '/default/view',
+                $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
+            ], false);
+        }
     }
 
     /**
@@ -109,13 +111,17 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function beforeAction($action)
     {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
         if (!$this->checkAccess()) {
             throw new ForbiddenHttpException('You are not allowed to access this page.');
         }
 
         $this->resetGlobalSettings();
 
-        return parent::beforeAction($action);
+        return true;
     }
 
     /**
