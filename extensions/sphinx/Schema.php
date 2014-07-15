@@ -10,7 +10,7 @@ namespace yii\sphinx;
 use yii\base\Object;
 use yii\caching\Cache;
 use Yii;
-use yii\caching\GroupDependency;
+use yii\caching\TagDependency;
 use yii\db\Exception;
 
 /**
@@ -139,8 +139,8 @@ class Schema extends Object
                 if ($refresh || ($index = $cache->get($key)) === false) {
                     $index = $this->loadIndexSchema($realName);
                     if ($index !== null) {
-                        $cache->set($key, $index, $db->schemaCacheDuration, new GroupDependency([
-                            'group' => $this->getCacheGroup(),
+                        $cache->set($key, $index, $db->schemaCacheDuration, new TagDependency([
+                            'tags' => $this->getCacheTag(),
                         ]));
                     }
                 }
@@ -168,11 +168,11 @@ class Schema extends Object
     }
 
     /**
-     * Returns the cache group name.
+     * Returns the cache tag name.
      * This allows [[refresh()]] to invalidate all cached index schemas.
-     * @return string the cache group name
+     * @return string the cache tag name
      */
-    protected function getCacheGroup()
+    protected function getCacheTag()
     {
         return md5(serialize([
             __CLASS__,
@@ -299,7 +299,7 @@ class Schema extends Object
         /* @var $cache Cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
-            GroupDependency::invalidate($cache, $this->getCacheGroup());
+            TagDependency::invalidate($cache, $this->getCacheTag());
         }
         $this->_indexNames = [];
         $this->_indexes = [];
