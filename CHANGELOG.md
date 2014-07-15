@@ -170,6 +170,7 @@ Yii Framework 2 Change Log
 - Chg #3899: Moved `MailEvent` class to `yii\mail` namespace (cebe)
 - Chg #3956: Flash messages set via `Yii::$app->session->setFlash()` will be removed only if they are accessed (qiangxue)
 - Chg #3989: The default value for `yii\log\FileTarget::$rotateByCopy` now defaults to true to work on windows by default (cebe)
+- Chg #4051: Renamed `yii\caching\GroupDependency` to `TagDependency` and added support for associating multiple tags to a single cached data item (qiangxue)
 - Chg #4071: `mail` component renamed to `mailer`, `yii\log\EmailTarget::$mail` renamed to `yii\log\EmailTarget::$mailer` (samdark)
 - Chg #4147: `BaseMailer::compose()` will not overwrite the `message` parameter if it is explicitly provided (qiangxue)
 - Chg #4201: change default value of `SyslogTarget::facility` from LOG_SYSLOG to LOG_USER (dizews)

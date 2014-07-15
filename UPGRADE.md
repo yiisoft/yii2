@@ -74,7 +74,11 @@ Upgrade from Yii 2.0 Beta
 * `mail` component was renamed to `mailer`, `yii\log\EmailTarget::$mail` was renamed to `yii\log\EmailTarget::$mailer`.
   Please update all references in the code and config files.
 
-* `\yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
+* `yii\caching\GroupDependency` was renamed to `TagDependency`. You should create such a dependency using the code
+  `new \yii\caching\TagDependency(['tags' => 'TagName'])`, where `TagName` is similar to the group name that you
+  previously used.
+
+* `yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
 new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in: 
 
   ```php
