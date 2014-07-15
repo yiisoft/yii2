@@ -155,7 +155,7 @@ $query = Article::find()->query([
     "fuzzy_like_this" => [
         "fields" => ["title", "description"],
         "like_text" => "This query will return articles that are similar to this text :-)",
-        "max_query_terms" : 12
+        "max_query_terms" => 12
     ]
 ]);
 
