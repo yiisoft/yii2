@@ -68,6 +68,14 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 ],
 ```
 
+Or dummy cache that can be used to remove caching without modifying any code:
+
+```php
+'components' => [
+    'cache' => new yii\caching\DummyCache,
+],
+```
+
 > Tip: You can register multiple cache application components. The component named `cache` is used
   by default by many cache-dependent classes (e.g. [[yii\web\UrlManager]]).
 
