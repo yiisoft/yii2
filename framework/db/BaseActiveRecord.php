@@ -1042,7 +1042,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
                 $record->_attributes[$name] = $value;
-            } else if(property_exists($record, $name)) {
+            } else if($record->canSetProperty($name)) {
                 $record->$name = $value;
             }
         }
