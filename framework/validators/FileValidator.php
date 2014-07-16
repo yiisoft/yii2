@@ -71,6 +71,8 @@ class FileValidator extends Validator
     public $message;
     /**
      * @var string the error message used when no file is uploaded.
+     * Note that this is the text of the validation error message. To make uploading files required,
+     * you have to set [[skipOnEmpty]] to `false`.
      */
     public $uploadRequired;
     /**
