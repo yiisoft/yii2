@@ -350,7 +350,11 @@ class BaseHtml
     public static function a($text, $url = null, $options = [])
     {
         if ($url !== null) {
-            $options['href'] = Url::to($url);
+            if (is_string($url) && Yii::$app instanceof \yii\console\Application) {
+                $options['href'] = $url;
+            } else {
+                $options['href'] = Url::to($url);
+            }
         }
         return static::tag('a', $text, $options);
     }
