@@ -229,14 +229,14 @@ class OpenId extends BaseClient implements ClientInterface
     }
 
     /**
-     * Sends HTTP request.
+     * Sends request to the server
      * @param string $url request URL.
      * @param string $method request method.
-     * @param array $params request params.
+     * @param array $params request parameters.
      * @return array|string response.
      * @throws \yii\base\Exception on failure.
      */
-    protected function sendCurlRequest($url, $method = 'GET', $params = [])
+    protected function sendRequest($url, $method = 'GET', $params = [])
     {
         $params = http_build_query($params, '', '&');
         $curl = curl_init($url . ($method == 'GET' && $params ? '?' . $params : ''));
@@ -283,112 +283,6 @@ class OpenId extends BaseClient implements ClientInterface
         }
 
         return $response;
-    }
-
-    /**
-     * Sends HTTP request.
-     * @param string $url request URL.
-     * @param string $method request method.
-     * @param array $params request params.
-     * @return array|string response.
-     * @throws \yii\base\Exception on failure.
-     * @throws \yii\base\NotSupportedException if request method is not supported.
-     */
-    protected function sendStreamRequest($url, $method = 'GET', $params = [])
-    {
-        if (!$this->hostExists($url)) {
-            throw new Exception('Invalid request.');
-        }
-
-        $params = http_build_query($params, '', '&');
-        switch ($method) {
-            case 'GET':
-                $options = [
-                    'http' => [
-                        'method' => 'GET',
-                        'header' => 'Accept: application/xrds+xml, */*',
-                        'ignore_errors' => true,
-                    ]
-                ];
-                $url = $url . ($params ? '?' . $params : '');
-                break;
-            case 'POST':
-                $options = [
-                    'http' => [
-                        'method' => 'POST',
-                        'header'  => 'Content-type: application/x-www-form-urlencoded',
-                        'content' => $params,
-                        'ignore_errors' => true,
-                    ]
-                ];
-                break;
-            case 'HEAD':
-                /* We want to send a HEAD request,
-                but since get_headers doesn't accept $context parameter,
-                we have to change the defaults.*/
-                $default = stream_context_get_options(stream_context_get_default());
-                stream_context_get_default([
-                    'http' => [
-                        'method' => 'HEAD',
-                        'header' => 'Accept: application/xrds+xml, */*',
-                        'ignore_errors' => true,
-                    ]
-                ]);
-
-                $url = $url . ($params ? '?' . $params : '');
-                $headersTmp = get_headers($url);
-                if (empty($headersTmp)) {
-                    return [];
-                }
-
-                // Parsing headers.
-                $headers = [];
-                foreach ($headersTmp as $header) {
-                    $pos = strpos($header, ':');
-                    $name = strtolower(trim(substr($header, 0, $pos)));
-                    $headers[$name] = trim(substr($header, $pos + 1));
-                }
-
-                // and restore them
-                stream_context_get_default($default);
-
-                return $headers;
-            default:
-                throw new NotSupportedException("Method {$method} not supported");
-        }
-
-        if ($this->verifyPeer) {
-            $options = array_merge(
-                $options,
-                [
-                    'ssl' => [
-                        'verify_peer' => true,
-                        'capath' => $this->capath,
-                        'cafile' => $this->cainfo,
-                    ]
-                ]
-            );
-        }
-
-        $context = stream_context_create($options);
-
-        return file_get_contents($url, false, $context);
-    }
-
-    /**
-     * Sends request to the server
-     * @param string $url request URL.
-     * @param string $method request method.
-     * @param array $params request parameters.
-     * @return array|string response.
-     */
-    protected function sendRequest($url, $method = 'GET', $params = [])
-    {
-        if (function_exists('curl_init') && !ini_get('safe_mode')) {
-            return $this->sendCurlRequest($url, $method, $params);
-        }
-
-        return $this->sendStreamRequest($url, $method, $params);
     }
 
     /**
