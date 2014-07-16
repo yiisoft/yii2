@@ -114,9 +114,7 @@ class OAuth2 extends BaseOAuth
                 $curlOptions[CURLOPT_POSTFIELDS] = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
                 break;
             }
-            case 'HEAD':
-            case 'PUT':
-            case 'DELETE': {
+            case 'HEAD': {
                 $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
                 if (!empty($params)) {
                     $curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
@@ -124,7 +122,10 @@ class OAuth2 extends BaseOAuth
                 break;
             }
             default: {
-                throw new Exception("Unknown request method '{$method}'.");
+                $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
+                if (!empty($params)) {
+                    $curlOptions[CURLOPT_POSTFIELDS] = $params;
+                }
             }
         }
 
