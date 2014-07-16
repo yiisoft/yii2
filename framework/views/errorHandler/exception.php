@@ -247,8 +247,13 @@ html,body{
     }
 }
 
+/* prevous callstack */
+.previous .call-stack {
+    background: #fff;
+}
+
 /* request */
-.request{
+.request {
     background-color: #fafafa;
     padding-top: 40px;
     padding-bottom: 40px;
