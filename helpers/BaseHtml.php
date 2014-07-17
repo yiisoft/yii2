@@ -976,18 +976,20 @@ class BaseHtml
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
-     * @return string the generated unordered list. An empty string is returned if `$items` is empty.
+     * @return string the generated unordered list. An empty list tag will be returned if `$items` is empty.
      */
     public static function ul($items, $options = [])
     {
-        if (empty($items)) {
-            return '';
-        }
         $tag = isset($options['tag']) ? $options['tag'] : 'ul';
         $encode = !isset($options['encode']) || $options['encode'];
         $formatter = isset($options['item']) ? $options['item'] : null;
         $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
         unset($options['tag'], $options['encode'], $options['item'], $options['itemOptions']);
+
+        if (empty($items)) {
+            return static::tag($tag, '', $options);
+        }
+
         $results = [];
         foreach ($items as $index => $item) {
             if ($formatter !== null) {
