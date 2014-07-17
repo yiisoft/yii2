@@ -65,6 +65,10 @@ class Nav extends Widget
      */
     public $items = [];
     /**
+     * @var boolean whether the nav subitems should be a [[Dropdown]] widget.
+     */
+    public $asDropdown = true;
+    /**
      * @var boolean whether the nav items labels should be HTML-encoded.
      */
     public $encodeLabels = true;
@@ -113,25 +117,25 @@ class Nav extends Widget
      */
     public function run()
     {
-        echo $this->renderItems();
+        echo $this->renderItems($this->items, $this->options);
         BootstrapAsset::register($this->getView());
     }
 
     /**
      * Renders widget items.
      */
-    public function renderItems()
+    public function renderItems($items, $options = [])
     {
-        $items = [];
-        foreach ($this->items as $i => $item) {
+        $rederedItems = [];
+        foreach ($items as $i => $item) {
             if (isset($item['visible']) && !$item['visible']) {
                 unset($items[$i]);
                 continue;
             }
-            $items[] = $this->renderItem($item);
+            $rederedItems[] = $this->renderItem($item);
         }
 
-        return Html::tag('ul', implode("\n", $items), $this->options);
+        return Html::tag('ul', implode("\n", $rederedItems), $options);
     }
 
     /**
@@ -162,20 +166,26 @@ class Nav extends Widget
         }
 
         if ($items !== null) {
+            if ($this->asDropdown) {
             $linkOptions['data-toggle'] = 'dropdown';
             Html::addCssClass($options, 'dropdown');
             Html::addCssClass($linkOptions, 'dropdown-toggle');
             $label .= ' ' . Html::tag('b', '', ['class' => 'caret']);
+            }
             if (is_array($items)) {
                 if ($this->activateItems) {
                     $items = $this->isChildActive($items, $active);
                 }
+                if ($this->asDropdown) {
                 $items = Dropdown::widget([
                     'items' => $items,
                     'encodeLabels' => $this->encodeLabels,
                     'clientOptions' => false,
                     'view' => $this->getView(),
                 ]);
+                } else {
+                    $items = $this->renderItems($items);
+                }
             }
         }
 
