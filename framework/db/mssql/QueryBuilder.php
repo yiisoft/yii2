@@ -143,11 +143,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
             $this->buildOrderBy($query->orderBy),
-            $this->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
+            $this->db->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
-        if ($this->isOldMssql()) {
+        if ($this->db->isOldMssql()) {
             $sql = $this->applyLimitAndOffset($sql, $query);
         }
         $union = $this->buildUnion($query->union, $params);
@@ -229,17 +229,5 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $schema = $model->getTableSchema();
         $columns = array_keys($schema->columns);
         return $columns;
-    }
-
-    /**
-     * @return boolean if MSSQL used is old
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
-    protected function isOldMssql()
-    {
-        $pdo = $this->db->getSlavePdo();
-        $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
-        return $version[0] < 11;
     }
 }
