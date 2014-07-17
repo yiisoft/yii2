@@ -40,13 +40,13 @@ will be added AFTER `jquery.js`. Without this dependency specification, the rela
 `main.js` and `jquery.js` would be undefined.
 
 Like for [[yii\web\View::registerCssFile()|registerCssFile()]], it is also highly recommended that you use
-[asset bundles](assets.md) to register external JS files rather than using [[yii\web\View::registerJsFile()|registerJsFile()]].
+[asset bundles](structure-assets.md) to register external JS files rather than using [[yii\web\View::registerJsFile()|registerJsFile()]].
 
 
 ### Registering asset bundles
 
 As was mentioned earlier it's preferred to use asset bundles instead of using CSS and JavaScript directly. You can get
-details on how to define asset bundles in [asset manager](assets.md) section of the guide. As for using already defined
+details on how to define asset bundles in [asset manager](structure-assets.md) section of the guide. As for using already defined
 asset bundle, it's very straightforward:
 
 ```php
@@ -90,6 +90,6 @@ The code above will add a link to CSS file to the head section of the page.
   used instead.
 
 
-It is highly recommended that you use [asset bundles](assets.md) to register external CSS files rather than
+It is highly recommended that you use [asset bundles](structure-assets.md) to register external CSS files rather than
 using [[yii\web\View::registerCssFile()|registerCssFile()]]. Using asset bundles allows you to combine and compress
 multiple CSS files, which is desirable for high traffic websites.

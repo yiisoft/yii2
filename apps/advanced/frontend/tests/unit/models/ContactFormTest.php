@@ -14,7 +14,7 @@ class ContactFormTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        Yii::$app->mail->fileTransportCallback = function ($mailer, $message) {
+        Yii::$app->mailer->fileTransportCallback = function ($mailer, $message) {
             return 'testing_message.eml';
         };
     }
@@ -54,6 +54,6 @@ class ContactFormTest extends TestCase
 
     private function getMessageFile()
     {
-        return Yii::getAlias(Yii::$app->mail->fileTransportPath) . '/testing_message.eml';
+        return Yii::getAlias(Yii::$app->mailer->fileTransportPath) . '/testing_message.eml';
     }
 }

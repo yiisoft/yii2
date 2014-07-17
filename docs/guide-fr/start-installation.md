@@ -1,7 +1,7 @@
 Installer Yii
 =============
 
-You pouvez installer Yii de deux façons, en utilisant [Composer](http://getcomposer.org/) ou en téléchargeant une archive.
+Vous pouvez installer Yii de deux façons, en utilisant [Composer](http://getcomposer.org/) ou en téléchargeant une archive.
 La première méthode est conseillée, étant donné qu'elle permet d'installer de nouvelles [extensions](extend-creating-extensions.md) ou de mettre à jour Yii en éxécutant simplement une commande.
 
 > Remarque : Contrairement à Yii 1, les installations standards de Yii 2 auront pour résultat le téléchargement et l'installation du framework, ainsi que d'un squelette d'application.
@@ -48,7 +48,7 @@ Autres options d'installation <a name="other-installation-options"></a>
 Les instructions d'installation ci-dessus montrent comment installer Yii, ce qui installe également une application Web de base qui fonctionne *out of the box*. 
 Cette approche est un bon point de départ pour les petits projets, ou pour quand vous commencer à apprendre Yii. 
 
-Mais il y a d'autres options d'installation disponibles : 
+Mais il y a d'autres options d'installation disponibles :
 
 * Si vous voulez installer uniquement le framework et que vous souhaitez créer une application à partir de zéro, vous pouvez suivre les instructions dans la partie [Construire une application à partir de zéro](tutorial-start-from-scratch.md).
 * Si vous voulez commencer par une application plus sophistiquée, mieux adaptée aux environnements d'équipe de développement, vous pouvez envisager l'installation du [Modèle d'application avancée](tutorial-advanced-app.md).
@@ -57,7 +57,7 @@ Mais il y a d'autres options d'installation disponibles :
 Vérifier l'installation <a name="verifying-installation"></a>
 -----------------------
 
-Après l'installation, vous pouvez utiliser votre navigateur pour accéder à l'application Yii avec l'URL suivante:
+Après l'installation, vous pouvez utiliser votre navigateur pour accéder à l'application Yii avec l'URL suivante :
 
 ```
 http://localhost/basic/web/index.php

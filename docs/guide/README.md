@@ -24,7 +24,7 @@ Getting Started
 * [Working with Forms](start-forms.md)
 * [Working with Databases](start-databases.md)
 * [Generating Code with Gii](start-gii.md)
-* [Looking Ahead](start-looking-head.md)
+* [Looking Ahead](start-looking-ahead.md)
 
 
 Application Structure
@@ -41,7 +41,7 @@ Application Structure
 * [Filters](structure-filters.md)
 * [Widgets](structure-widgets.md)
 * [Asset Bundles](structure-assets.md)
-* **TBD** [Extensions](structure-extensions.md)
+* [Extensions](structure-extensions.md)
 
 
 Handling Requests
@@ -157,17 +157,6 @@ Testing
 * [Fixtures](test-fixtures.md)
 
 
-Extending Yii
--------------
-
-* [Creating Extensions](extend-creating-extensions.md)
-* [Customizing Core Code](extend-customizing-core.md)
-* [Using 3rd-Party Libraries](extend-using-libs.md)
-* **TBD** [Using Yii in 3rd-Party Systems](extend-embedding-in-others.md)
-* **TBD** [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md)
-* [Using Composer](extend-using-composer.md)
-
-
 Special Topics
 --------------
 
@@ -180,6 +169,7 @@ Special Topics
 * [Performance Tuning](tutorial-performance-tuning.md)
 * **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
+* [Working with Third-Party Code](tutorial-yii-integration.md)
 
 
 Widgets
@@ -193,8 +183,8 @@ Widgets
 * Menu: link to demo page
 * LinkPager: link to demo page
 * LinkSorter: link to demo page
-* [Bootstrap Widgets](bootstrap-widgets.md)
-* [Jquery UI Widgets](jui-widgets.md)
+* [Bootstrap Widgets](widget-bootstrap.md)
+* [Jquery UI Widgets](widget-jui.md)
 
 
 Helpers

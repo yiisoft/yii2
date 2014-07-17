@@ -4,11 +4,9 @@ use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\helpers\ArrayHelper;
 
-/**
- * @var ClassDoc $type
- * @var yii\web\View $this
- * @var \yii\apidoc\templates\html\ApiRenderer $renderer
- */
+/* @var $type ClassDoc */
+/* @var $this yii\web\View */
+/* @var $renderer \yii\apidoc\templates\html\ApiRenderer */
 
 $renderer = $this->context;
 

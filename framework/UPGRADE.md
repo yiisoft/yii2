@@ -55,3 +55,94 @@ Upgrade from Yii 2.0 Beta
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.
 
 * If your model code is using the `file` validation rule, you should rename its `types` option to `extensions`.
+
+* `MailEvent` class has been moved to the `yii\mail` namespace. You have to adjust all references that may exist in your code.
+
+* The behavior and signature of `ActiveRecord::afterSave()` has changed. `ActiveRecord::$isNewRecord` will now always be
+  false in afterSave and also dirty attributes are not available. This change has been made to have a more consistent and
+  expected behavior. The changed attributes are now available in the new parameter of afterSave() `$changedAttributes`.
+  `$changedAttributes` contains the old values of attributes that had changed and were saved.
+
+* `ActiveRecord::updateAttributes()` has been changed to not trigger events and not respect optimistic locking anymore to
+  differentiate it more from calling `update(false)` and to ensure it can be used in `afterSave()` without triggering infinite
+  loops.
+
+* If you are developing RESTful APIs and using an authentication method such as `yii\filters\auth\HttpBasicAuth`,
+  you should explicitly configure `yii\web\User::enableSession` in the application configuration to be false to avoid
+  starting a session when authentication is performed. Previously this was done automatically by authentication method.
+
+* `mail` component was renamed to `mailer`, `yii\log\EmailTarget::$mail` was renamed to `yii\log\EmailTarget::$mailer`.
+  Please update all references in the code and config files.
+
+* `yii\caching\GroupDependency` was renamed to `TagDependency`. You should create such a dependency using the code
+  `new \yii\caching\TagDependency(['tags' => 'TagName'])`, where `TagName` is similar to the group name that you
+  previously used.
+
+* `yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
+new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in: 
+
+  ```php
+  <?php
+  $oldFile = 'rbac.php';
+  $itemsFile = 'items.php';
+  $assignmentsFile = 'assignments.php';
+  $rulesFile = 'rules.php';
+  
+  $oldData = include $oldFile;
+  
+  function saveToFile($data, $fileName) {
+      $out = var_export($data, true);
+      $out = "<?php\nreturn " . $out . ";";
+      $out = str_replace(['array (', ')'], ['[', ']'], $out);
+      file_put_contents($fileName, $out);
+  }
+  
+  $items = [];
+  $assignments = [];
+  if (isset($oldData['items'])) {
+      foreach ($oldData['items'] as $name => $data) {
+          if (isset($data['assignments'])) {
+              foreach ($data['assignments'] as $userId => $assignmentData) {
+                  $assignments[$userId] = $assignmentData['roleName'];
+              }
+              unset($data['assignments']);
+          }
+          $items[$name] = $data;
+      }
+  }
+  
+  $rules = [];
+  if (isset($oldData['rules'])) {
+      $rules = $oldData['rules'];
+  }
+  
+  saveToFile($items, $itemsFile);
+  saveToFile($assignments, $assignmentsFile);
+  saveToFile($rules, $rulesFile);
+  
+  echo "Done!\n";
+  ```
+
+  Run it once, delete `rbac.php`. If you've configured `authFile` property, remove the line from config and instead
+  configure `itemFile`, `assignmentFile` and `ruleFile`.
+
+* Static helper `yii\helpers\Security` has been converted into an application component. You should change all usage of
+  its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
+  Default encryption and hash parameters has been upgraded. If you need to decrypt/validate data that was encrypted/hashed
+  before, use the following configuration of the 'security' component:
+  ```
+  return [
+      'components' => [
+          'security' => [
+              'cryptBlockSize' => 16,
+              'cryptKeySize' => 24,
+              'derivationIterations' => 1000,
+              'deriveKeyStrategy' => 'hmac', // for PHP version < 5.5.0
+              //'deriveKeyStrategy' => 'pbkdf2', // for PHP version >= 5.5.0
+              'useDeriveKeyUniqueSalt' => false,
+          ],
+          // ...
+      ],
+      // ...
+  ];
+  ```

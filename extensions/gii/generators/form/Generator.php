@@ -147,7 +147,7 @@ EOD;
      */
     public function getModelAttributes()
     {
-        /** @var Model $model */
+        /* @var $model Model */
         $model = new $this->modelClass();
         if (!empty($this->scenarioName)) {
             $model->setScenario($this->scenarioName);

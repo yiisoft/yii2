@@ -63,7 +63,7 @@ class SiteController extends Controller
                 'class' => 'yii\authclient\AuthAction',
                 'successCallback' => [$this, 'successCallback'],
             ],
-        ]
+        ];
     }
 
     public function successCallback($client)

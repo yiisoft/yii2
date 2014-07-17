@@ -8,7 +8,7 @@ return [
             'password' => '',
             'charset' => 'utf8',
         ],
-        'mail' => [
+        'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'viewPath' => '@common/mail',
         ],

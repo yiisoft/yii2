@@ -63,7 +63,7 @@ class QueryTest extends MongoDbTestCase
             ->where(['file_index' => 5])
             ->all($connection);
         $this->assertEquals(1, count($rows));
-        /** @var $file \MongoGridFSFile */
+        /* @var $file \MongoGridFSFile */
         $file = $rows[0];
         $this->assertEquals('name5', $file['filename']);
     }

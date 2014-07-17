@@ -2,9 +2,9 @@
 /**
  * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
  * These requirements are mandatory for any Yii application.
- *
- * @var YiiRequirementChecker $this
  */
+
+/* @var $this YiiRequirementChecker */
 return array(
     array(
         'name' => 'PHP version',
@@ -39,6 +39,13 @@ return array(
         'memo' => 'Required for multibyte encoding string processing.'
     ),
     array(
+        'name' => 'Mcrypt extension',
+        'mandatory' => false,
+        'condition' => extension_loaded('mcrypt'),
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
+        'memo' => 'Required by encrypt and decrypt methods.'
+    ),
+    array(
         'name' => 'Intl extension',
         'mandatory' => false,
         'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2', '>='),
@@ -50,9 +57,16 @@ return array(
     ),
     array(
         'name' => 'Fileinfo extension',
-        'mandatory' => true,
+        'mandatory' => false,
         'condition' => extension_loaded('fileinfo'),
         'by' => '<a href="http://www.php.net/manual/en/book.fileinfo.php">File Information</a>',
         'memo' => 'Required for files upload to detect correct file mime-types.'
+    ),
+    array(
+        'name' => 'DOM extension',
+        'mandatory' => false,
+        'condition' => extension_loaded('dom'),
+        'by' => '<a href="http://php.net/manual/en/book.dom.php">Document Object Model</a>',
+        'memo' => 'Required for REST API to send XML responses via <code>yii\web\XmlResponseFormatter</code>.'
     ),
 );

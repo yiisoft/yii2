@@ -86,7 +86,7 @@ class ActiveFixture extends BaseActiveFixture
         if ($this->collectionName) {
             return $this->collectionName;
         } else {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
 
             return $modelClass::collectionName();

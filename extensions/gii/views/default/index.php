@@ -1,11 +1,10 @@
 <?php
 use yii\helpers\Html;
 
-/**
- * @var \yii\web\View $this
- * @var \yii\gii\Generator[] $generators
- * @var string $content
- */
+/* @var $this \yii\web\View */
+/* @var $generators \yii\gii\Generator[] */
+/* @var $content string */
+
 $generators = Yii::$app->controller->module->generators;
 $this->title = 'Welcome to Gii';
 ?>

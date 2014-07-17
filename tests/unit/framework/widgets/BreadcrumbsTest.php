@@ -13,14 +13,33 @@ use yii\widgets\Breadcrumbs;
 class BreadcrumbsTest extends \yiiunit\TestCase
 {
     private $breadcrumbs;
-    private $app;
     
     public function setUp()
     {
-        $this->app = $this->mockApplication();
-        Yii::setAlias('@testWeb', '/');
-        Yii::setAlias('@testWebRoot', '@yiiunit/data/web');        
+        // dirty way to have Request object not throwing exception when running testHomeLinkNull()
+        $_SERVER['SCRIPT_FILENAME'] = "index.php";
+        $_SERVER['SCRIPT_NAME'] = "index.php";
+        
+        $this->mockApplication([], 'yii\web\Application');    
         $this->breadcrumbs = new Breadcrumbs();
+    }
+    
+    public function testHomeLinkNull()
+    {
+        $this->breadcrumbs->homeLink = null;
+        $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
+        
+        $expectedHtml = "<ul class=\"breadcrumb\"><li><a href=\"./index.php\">Home</a></li>\n" 
+            . "<li class=\"active\">My Home Page</li>\n"
+            . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
+            . "</ul>";
+        
+        ob_start();
+        $this->breadcrumbs->run();
+        $actualHtml = ob_get_contents();
+        ob_end_clean();
+  
+        $this->assertEquals($expectedHtml, $actualHtml);        
     }
     
     public function testEmptyLinks()

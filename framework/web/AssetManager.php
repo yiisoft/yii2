@@ -94,6 +94,33 @@ class AssetManager extends Component
      * but read-only for other users.
      */
     public $dirMode = 0775;
+    /**
+     * @var callback a PHP callback that is called before copying each sub-directory or file.
+     * This option is used only when publishing a directory. If the callback returns false, the copy
+     * operation for the sub-directory or file will be cancelled.
+     *
+     * The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
+     * file to be copied from, while `$to` is the copy target.
+     *
+     * This is passed as a parameter `beforeCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].
+     */
+    public $beforeCopy;
+    /**
+     * @var callback a PHP callback that is called after a sub-directory or file is successfully copied.
+     * This option is used only when publishing a directory. The signature of the callback is the same as
+     * for [[beforeCopy]].
+     * This is passed as a parameter `afterCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].
+     */
+    public $afterCopy;
+    /**
+     * @var boolean whether the directory being published should be copied even if
+     * it is found in the target directory. This option is used only when publishing a directory.
+     * You may want to set this to be `true` during the development stage to make sure the published
+     * directory is always up-to-date. Do not set this to true on production servers as it will
+     * significantly degrade the performance.
+     */
+    public $forceCopy = false;
+
 
     /**
      * Initializes the component.
@@ -139,7 +166,7 @@ class AssetManager extends Component
             $bundle = Yii::createObject($name);
         }
         if ($publish) {
-            /** @var AssetBundle $bundle */
+            /* @var $bundle AssetBundle */
             $bundle->publish($this);
         }
 
@@ -211,18 +238,13 @@ class AssetManager extends Component
      * The following options are supported:
      *
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
-     *   This option is used only when publishing a directory. If the callback returns false, the copy
-     *   operation for the sub-directory or file will be cancelled.
-     *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
-     *   file to be copied from, while `$to` is the copy target.
+     *   This overrides [[beforeCopy]] if set.
      * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
-     *   This option is used only when publishing a directory. The signature of the callback is similar to that
-     *   of `beforeCopy`.
+     *   This overrides [[afterCopy]] if set.
      * - forceCopy: boolean, whether the directory being published should be copied even if
      *   it is found in the target directory. This option is used only when publishing a directory.
-     *   You may want to set this to be true during the development stage to make sure the published
-     *   directory is always up-to-date. Do not set this to true on production servers as it will
-     *   significantly degrade the performance.
+     *   This overrides [[forceCopy]] if set.
+     *
      * @return array the path (directory or file path) and the URL that the asset is published as.
      * @throws InvalidParamException if the asset to be published does not exist.
      */
@@ -267,13 +289,15 @@ class AssetManager extends Component
                 if (!is_dir($dstDir)) {
                     symlink($src, $dstDir);
                 }
-            } elseif (!is_dir($dstDir) || !empty($options['forceCopy'])) {
+            } elseif (!is_dir($dstDir) || !empty($options['forceCopy']) || (!isset($options['forceCopy']) && $this->forceCopy)) {
                 $opts = [
                     'dirMode' => $this->dirMode,
                     'fileMode' => $this->fileMode,
                 ];
                 if (isset($options['beforeCopy'])) {
                     $opts['beforeCopy'] = $options['beforeCopy'];
+                } elseif ($this->beforeCopy !== null) {
+                    $opts['beforeCopy'] = $this->beforeCopy;
                 } else {
                     $opts['beforeCopy'] = function ($from, $to) {
                         return strncmp(basename($from), '.', 1) !== 0;
@@ -281,6 +305,8 @@ class AssetManager extends Component
                 }
                 if (isset($options['afterCopy'])) {
                     $opts['afterCopy'] = $options['afterCopy'];
+                } elseif ($this->afterCopy !== null) {
+                    $opts['afterCopy'] = $this->afterCopy;
                 }
                 FileHelper::copyDirectory($src, $dstDir, $opts);
             }

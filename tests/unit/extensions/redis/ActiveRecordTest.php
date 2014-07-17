@@ -193,7 +193,7 @@ class ActiveRecordTest extends RedisTestCase
     public function testFindIndexBy()
     {
         $customerClass = $this->getCustomerClass();
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy
         $customers = Customer::find()->indexBy('name')/*->orderBy('id')*/->all();
         $this->assertEquals(3, count($customers));
@@ -214,7 +214,7 @@ class ActiveRecordTest extends RedisTestCase
     public function testFindLimit()
     {
         // TODO this test is duplicated because of missing orderBy support in redis
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // all()
         $customers = Customer::find()->all();
         $this->assertEquals(3, count($customers));
@@ -258,10 +258,10 @@ class ActiveRecordTest extends RedisTestCase
 
     public function testFindEagerViaRelation()
     {
-        /** @var \yii\db\ActiveRecordInterface $orderClass */
+        /* @var $orderClass \yii\db\ActiveRecordInterface */
         $orderClass = $this->getOrderClass();
 
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         $orders = $orderClass::find()->with('items')/*->orderBy('id')*/->all(); // TODO this test is duplicated because of missing orderBy support in redis
         $this->assertEquals(3, count($orders));
         $order = $orders[0];

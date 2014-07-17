@@ -3,7 +3,7 @@ Data Caching
 
 Data caching is about storing some PHP variable in cache and retrieving it later from cache.
 It is also the foundation for more advanced caching features, such as [query caching](#query-caching)
-and [content caching](caching-content.md).
+and [page caching](caching-page.md).
 
 The following code is a typical usage pattern of data caching, where `$cache` refers to
 a [cache component](#cache-components):
@@ -130,7 +130,7 @@ which may reduce the overhead involved in retrieving cached data. The APIs [[yii
 and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
 does not support this feature, it will be simulated.
 
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used liked an array. The followings
+Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The followings
 are some examples:
 
 ```php
@@ -232,8 +232,8 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
 - [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
 - [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[yii\caching\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
-  with the same group name all at once by calling [[yii\caching\GroupDependency::invalidate()]].
+- [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
+  the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
 
 ## Query Caching <a name="query-caching"></a>
@@ -269,7 +269,7 @@ Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-acti
 
 ### Configurations <a name="query-caching-configs"></a>
 
-Query caching has two two configurable options through [[yii\db\Connection]]:
+Query caching has two configurable options through [[yii\db\Connection]]:
 
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
   that a query result can remain valid in the cache. The duration will be overwritten if you call
@@ -280,9 +280,9 @@ Query caching has two two configurable options through [[yii\db\Connection]]:
 
 ### Limitations <a name="query-caching-limitations"></a>
 
-Query caching does not work with query results that contain resource handles. For example,
+Query caching does not work with query results that contain resource handlers. For example,
 when using the `BLOB` column type in some DBMS, the query result will return a resource
-handle for the column data.
+handler for the column data.
 
 Some caching storage has size limitation. For example, memcache limits the maximum size
 of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,

@@ -67,6 +67,8 @@ of the following format:
 
     // optional, specifies in which scenario(s) this rule should be applied
     // if not given, it means the rule applies to all scenarios
+    // You may also configure the "except" option if you want to apply the rule
+    // to all scenarios except the listed ones
     'on' => ['scenario1', 'scenario2', ...],
 
     // optional, specifies additional configurations for the validator object
@@ -105,7 +107,7 @@ declared in `rules()`.
 
 Most validators have default error messages that will be added to the model being validated when its attributes
 fail the validation. For example, the [[yii\validators\RequiredValidator|required]] validator will add
-a message "Username cannot be blank." to a model when its `username` attribute fails the rule using this validator.
+a message "Username cannot be blank." to a model when the `username` attribute fails the rule using this validator.
 
 You can customize the error message of a rule by specifying the `message` property when declaring the rule,
 like the following,
@@ -183,20 +185,56 @@ function whose return value determines whether to apply the rule or not. For exa
 ### Data Filtering <a name="data-filtering"></a>
 
 User inputs often need to be filtered or preprocessed. For example, you may want to trim the spaces around the
-`username` input. You may use validation rules to achieve this goal. The following rule declaration shows
-how to trim the spaces in the input by using the [trim](tutorial-core-validators.md#trim) core validator:
+`username` input. You may use validation rules to achieve this goal.
+
+The following examples shows how to trim the spaces in the inputs and turn empty inputs into nulls by using
+the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validators.md#default) core validators:
 
 ```php
 [
-    ['username', 'trim'],
+    [['username', 'email'], 'trim'],
+    [['username', 'email'], 'default'],
 ]
 ```
 
-You may also use the more general [filter](tutorial-core-validators.md#filter) validator if your data filtering
-need is more complex than space trimming.
+You may also use the more general [filter](tutorial-core-validators.md#filter) validator to perform more complex
+data filtering.
 
 As you can see, these validation rules do not really validate the inputs. Instead, they will process the values
 and save them back to the attributes being validated.
+
+
+### Handling Empty Inputs <a name="handling-empty-inputs"></a>
+
+When input data are submitted from HTML forms, you often need to assign some default values to the inputs
+if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
+
+```php
+[
+    // set "username" and "email" as null if they are empty
+    [['username', 'email'], 'default'],
+
+    // set "level" to be 1 if it is empty
+    ['level', 'default', 'value' => 1],
+]
+```
+
+By default, an input is considered empty if its value is an empty string, an empty array or a null.
+You may customize the default empty detection logic by configuring the the [[yii\validators\Validator::isEmpty]] property
+with a PHP callable. For example,
+
+```php
+[
+    ['agree', 'required', 'isEmpty' => function ($value) {
+        return empty($value);
+    }],
+]
+```
+
+> Note: Most validators do not handle empty inputs if their [[yii\base\Validator::skipOnEmpty]] property takes
+  the default value true. They will simply be skipped during validation if their associated attributes receive empty
+  inputs. Among the [core validators](tutorial-core-validators.md), only the `captcha`, `default`, `filter`,
+  `required`, and `trim` validators will handle empty inputs.
 
 
 ## Ad Hoc Validation <a name="ad-hoc-validation"></a>
@@ -284,7 +322,7 @@ the method/function is:
  * @param string $attribute the attribute currently being validated
  * @param array $params the additional name-value pairs given in the rule
  */
-function ($model, $attribute)
+function ($attribute, $params)
 ```
 
 If an attribute fails the validation, the method/function should call [[yii\base\Model::addError()]] to save
@@ -324,6 +362,16 @@ class MyForm extends Model
 }
 ```
 
+> Note: By default, inline validators will not be applied if their associated attributes receive empty inputs
+  or if they have already failed some validation rules. If you want to make sure a rule is always applied,
+  you may configure the [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] and/or [[yii\validators\Validator::skipOnError|skipOnError]]
+  properties to be false in the rule declarations. For example:
+> ```php
+[
+    ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
+]
+```
+
 
 ### Standalone Validators <a name="standalone-validators"></a>
 
@@ -352,33 +400,6 @@ If you want your validator to support validating a value without a model, you sh
 [[yii\validators\Validator::validate()]]. You may also override [[yii\validators\Validator::validateValue()]]
 instead of `validateAttribute()` and `validate()` because by default the latter two methods are implemented
 by calling `validateValue()`.
-
-
-### Handling Empty Inputs <a name="handling-empty-inputs"></a>
-
-Validators often need to check if an input is empty or not. In your validator, you may call [[yii\validators\Validator::isEmpty()]]
-to perform this check. By default, this method will return true if a value is an empty string, an empty array or null.
-
-Users of validators can customize the default empty detection logic by configuring
-the [[yii\validators\Validator::isEmpty]] property with a PHP callable. For example,
-
-```php
-[
-    ['agree', 'required', 'isEmpty' => function ($value) {
-        return empty($value);
-    }],
-]
-```
-
-When input data are submitted from HTML forms, you often need to assign some default values to the inputs
-if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
-
-```php
-[
-    // set "level" to be 1 if it is empty
-    ['level', 'default', 'value' => 1],
-]
-```
 
 
 ## Client-Side Validation <a name="client-side-validation"></a>
@@ -450,7 +471,9 @@ Behind the scene, [[yii\widgets\ActiveForm]] will read the validation rules decl
 and generate appropriate JavaScript code for validators that support client-side validation. When a user
 changes the value of an input field or submit the form, the client-side validation JavaScript will be triggered.
 
-If you do not want client-side validation, you may simply configure the [[yii\widgets\ActiveForm::enableClientValidation]]
+If you want to turn off client-side validation completely, you may configure the
+[[yii\widgets\ActiveForm::enableClientValidation]] property to be false. You may also turn off client-side
+validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
 property to be false.
 
 
@@ -506,7 +529,7 @@ JS;
 > Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
   you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
   write the validation rule like the following:
-```php
+> ```php
 [
     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 ]

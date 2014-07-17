@@ -1,10 +1,8 @@
 <?php
 use yii\helpers\Html;
 
-/**
- * @var string $caption
- * @var array $values
- */
+/* @var $caption string */
+/* @var $values array */
 ?>
 
 <h3><?= $caption ?></h3>

@@ -54,7 +54,7 @@ class Menu extends \yii\widgets\Menu
 
         $view = $this->getView();
         MenuAsset::register($view);
-        /** @var \yii\web\AssetBundle $themeAsset */
+        /* @var $themeAsset \yii\web\AssetBundle */
         $themeAsset = Widget::$theme;
         $themeAsset::register($view);
 

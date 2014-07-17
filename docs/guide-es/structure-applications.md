@@ -1,22 +1,23 @@
 Aplicaciones
 ============
 
-Las Applications (aplicaciones) son objetos que gobiernan la total estructura y ciclo de vida de aplicaciones hechas en Yii.
-Cada aplicación Yii contiene un objeto Application que es creado en el [script de entrada](structure-entry-scripts.md)
+Las `Applications` (aplicaciones) son objetos que gobiernan la estructura total y el ciclo de vida de las aplicaciones
+hechas en Yii.
+Cada aplicación Yii contiene un objeto `Application` que es creado en el [script de entrada](structure-entry-scripts.md)
 y es globalmente accesible a través de la expresión `\Yii::$app`.
 
-> Información: Dependiendo del contexto, cuando decimos "una aplicación", puede significar tanto un objeto Applicaction
-  o un sistema hecho en Yii.
+> Información: Dependiendo del contexto, cuando decimos "una aplicación", puede significar tanto un objeto Application
+  o un sistema desarrollado en Yii.
 
 Hay dos tipos de aplicaciones: [[yii\web\Application|aplicaciones Web]] y
 [[yii\console\Application|aplicaciones de consola]]. Como el nombre lo indica, la primera maneja principalmente
-Web requests mientras que la última maneja requests de la línea de comandos.
+Web requests mientras que la última maneja requests (peticiones) de la línea de comandos.
 
 
 ## Configuraciones de las Aplicaciones <a name="application-configurations"></a>
 
 Cuando un [script de entrada](structure-entry-scripts.md) crea una aplicación, cargará
-una [configuración](concept-configurations.md) y la aplicará a la aplicación, como a continuación:
+una [configuración](concept-configurations.md) y la aplicará a la aplicación, como se muestra a continuación:
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');
@@ -29,7 +30,7 @@ $config = require(__DIR__ . '/../config/web.php');
 (new yii\web\Application($config))->run();
 ```
 
-Como típica [configuración](concept-configurations.md), las configuraciones de la aplicación especifican
+Principalmente, las [configuraciones](concept-configurations.md) de una aplicación especifican
 como inicializar las propiedades de un objeto `application`. Debido a que estas configuraciones
 suelen ser complejas, son usualmente guardadas en [archivos de configuración](concept-configurations.md#configuration-files),
 como en el archivo `web.php` del ejemplo anterior.
@@ -52,7 +53,7 @@ y [[yii\base\Application::basePath|basePath]].
 #### [[yii\base\Application::id|id]] <a name="id"></a>
 
 La propiedad [[yii\base\Application::id|id]] especifica un ID único que diferencia una aplicación de otras.
-Es mayormente utilizada a nivel programación. A pesar de que no es un requerimiento, para mejor interoperabilidad
+Es mayormente utilizada a nivel programación. A pesar de que no es un requerimiento, para una mejor interoperabilidad,
 se recomienda utilizar sólo caracteres alfanuméricos.
 
 
@@ -80,7 +81,7 @@ diferentes aplicaciones.
 
 #### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
 
-Esta propiedad te permite definir un grupo de [alias](concept-aliases.md) en términos de un array.
+Esta propiedad te permite definir un grupo de [alias](concept-aliases.md) en términos de un array (matriz).
 Las claves del array son los nombres de los alias, y los valores su correspondiente definición.
 Por ejemplo:
 
@@ -93,7 +94,7 @@ Por ejemplo:
 ]
 ```
 
-Esta propiedad es provista de tal manera que puedas definir alias en términos de configuraciones de la aplicación
+Esta propiedad está provista de tal manera que puedas definir alias en términos de configuraciones de la aplicación
 en vez de llamadas al método [[Yii::setAlias()]].
 
 
@@ -155,8 +156,8 @@ if (YII_ENV_DEV) {
 
 #### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
 
-Esta propiedad es solamente soportada por [[yii\web\Application|aplicaciones Web]]. Especifica
-la [acción de controlador](structure-controllers.md) que debería manejar todos los requests del usuario. 
+Esta propiedad está solamente soportada por [[yii\web\Application|aplicaciones Web]]. Especifica
+la [acción de controlador](structure-controllers.md) que debería manejar todos los requests (peticiones) del usuario.
 Es mayormente utilizada cuando una aplicación está en "modo de mantenimiento" y necesita que todas las peticiones
 sean capturadas por una sola acción.
 
@@ -178,7 +179,7 @@ Por ejemplo:
 #### [[yii\base\Application::components|components]] <a name="components"></a>
 
 Esta es la propiedad más importante. Te permite registrar una lista de componentes llamados [componentes de aplicación](#structure-application-components.md)
-que puedes utilizar en otros lados. For example:
+que puedes utilizar en otras partes de tu aplicación. Por ejemplo:
 
 ```php
 [
@@ -200,7 +201,7 @@ mientras que el valor representa el nombre de la clase del componente o una [con
 Puedes registrar cualquier componente en una aplicación, y el componente puede ser globalmente accedido utilizando
 la expresión `\Yii::$app->ComponentID`.
 
-Por favor lee la sección [Componentes de la Aplicación](structure-application-components.md) para mayor detalle.
+Por favor, lee la sección [Componentes de la Aplicación](structure-application-components.md) para mayor detalle.
 
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
@@ -290,10 +291,10 @@ Por favor consulta la sección [Módulos](structure-modules.md) para más detall
 #### [[yii\base\Application::name|name]] <a name="name"></a>
 
 Esta propiedad especifica el nombre de la aplicación que será mostrado a los usuarios. Al contrario de
-[[yii\base\Application::id|id]], que debe tomar un valor único, el valor de esta propiedad es principalmente
-para propósito de visualización y no tiene que serlo.
+[[yii\base\Application::id|id]], que debe tomar un valor único, el valor de esta propiedad existe principalmente
+para propósito de visualización y no tiene porqué ser única.
 
-No siempre necesitas configurar esta propiedad si en tu aplicación no es utilizada.
+No siempre necesitas configurar esta propiedad si en tu aplicación no va a ser utilizada.
 
 
 #### [[yii\base\Application::params|params]] <a name="params"></a>
@@ -311,7 +312,7 @@ de las imágenes en miniatura de la siguiente manera:
 ]
 ```
 
-Entonces cuando necesites acceder al tamaño en tu aplicación, simplemente podrías escribir algo como el código que sigue:
+Entonces, cuando necesites acceder a esa configuración en tu aplicación, podrías hacerlo utilizando el código siguiente:
 
 ```php
 $size = \Yii::$app->params['thumbnail.size'];
@@ -386,7 +387,7 @@ Esta propiedad especifica la lista de [extensiones](structure-extensions.md) que
 por la aplicación.
 Por defecto, tomará el array devuelto por el archivo `@vendor/yiisoft/extensions.php`. El archivo `extensions.php`
 es generado y mantenido automáticamente cuando utilizas [Composer](http://getcomposer.org) para instalar extensiones.
-Por lo tanto en la mayoría de los casos no necesitas configurarla.
+Por lo tanto, en la mayoría de los casos no necesitas configurarla.
 
 En el caso especial de que quieras mantener las extensiones a mano, puedes configurar la propiedad como se muestra a continuación:
 
@@ -410,7 +411,7 @@ En el caso especial de que quieras mantener las extensiones a mano, puedes confi
 ```
 
 Como puedes ver, la propiedad toma un array de especificaciones de extensiones. Cada extensión es especificada mediante un array
-que consiste en los elementos `name` y `version`. Si una extensión necesita ser corrida durante el proceso de [`bootstrap`](runtime-bootstrapping.md),
+que consiste en los elementos `name` y `version`. Si una extensión necesita ser ejecutada durante el proceso de [`bootstrap`](runtime-bootstrapping.md),
 un elemento `bootstrap` puede ser especificado con un nombre de clase o un array de [configuración](concept-configurations.md).
 Una extensión también puede definir algunos [alias](concept-aliases.md).
 
@@ -511,8 +512,8 @@ basada en algunos parámetros.
 Este evento es disparado *after* (después) de que una aplicación finaliza el manejo de un `request` pero *before* (antes) de enviar el `response` (respuesta).
 El nombre del evento es `afterRequest`.
 
-Cuando este evento es disparado, el manejo del `request` está finalizado y puedes tomar esta posibilidad para hacer algún
-post-proceso del mismo o personalizar el `response`.
+Cuando este evento es disparado, el manejo del `request` está finalizado y puedes aprovechar para realizar algún
+post-proceso del mismo o personalizar el `response` (respuesta).
 
 Ten en cuenta que el componente [[yii\web\Response|response]] también dispara algunos eventos mientras está enviando el contenido
 a los usuarios finales. Estos eventos son disparados *after* (después) de este evento.
@@ -520,7 +521,7 @@ a los usuarios finales. Estos eventos son disparados *after* (después) de este 
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
-Este evento es disparado *before* (antes) de correr cualquier [acción de controlador](structure-controllers.md).
+Este evento es disparado *before* (antes) de ejecutar cualquier [acción de controlador](structure-controllers.md).
 El nombre de este evento es `beforeAction`.
 
 El parámetro evento es una instancia de [[yii\base\ActionEvent]]. Un manejador de eventos puede definir
@@ -546,7 +547,7 @@ como `false`, todos los eventos siguientes NO serán disparados.
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
-Este evento es disparado *after* (después) de correr cualquier [acción de controlador](structure-controllers.md).
+Este evento es disparado *after* (después) de ejecutar cualquier [acción de controlador](structure-controllers.md).
 El nombre de este evento es `afterAction`.
 
 El parámetro evento es una instancia de [[yii\base\ActionEvent]]. A través de la
@@ -586,7 +587,7 @@ una aplicación experimenta el siguiente ciclo de vida:
 3. El script de entrada llama a [[yii\base\Application::run()]] para correr la aplicación:
   * Dispara el evento [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]].
   * Maneja el `request`: lo resuelve en una [route (ruta)](runtime-routing.md) con los parámetros asociados;
-    crea el módulo, controlador y objetos acción como se especifica en dicha ruta; y entonces corre la acción.
+    crea el módulo, controlador y objetos acción como se especifica en dicha ruta; y entonces ejecuta la acción.
   * Dispara el evento [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]].
-  * Envía el `respone` (respuesta) al usuario.
+  * Envía el `response` (respuesta) al usuario.
 4. El script de entrada recibe el estado de salida de la aplicación y completa el proceso del `request`.

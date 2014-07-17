@@ -23,6 +23,20 @@ class AppController extends Controller
     public $defaultAction = 'link';
 
     /**
+     * Properly removes symlinked directory under Windows, MacOS and Linux
+     *
+     * @param string $file path to symlink
+     */
+    protected function unlink($file)
+    {
+        if (is_dir($file) && strncasecmp(PHP_OS, 'WIN', 3) === 0) {
+            rmdir($file);
+        } else {
+            unlink($file);
+        }
+    }
+
+    /**
      * This command runs the following shell commands in the dev repo root:
      *
      * - Run `composer update`
@@ -41,13 +55,13 @@ class AppController extends Controller
         // cleanup
         if (is_link($link = "$appDir/vendor/yiisoft/yii2")) {
             $this->stdout("Removing symlink $link.\n");
-            unlink($link);
+            $this->unlink($link);
         }
         $extensions = $this->findDirs("$appDir/vendor/yiisoft");
         foreach($extensions as $ext) {
             if (is_link($link = "$appDir/vendor/yiisoft/yii2-$ext")) {
                 $this->stdout("Removing symlink $link.\n");
-                unlink($link);
+                $this->unlink($link);
             }
         }
 

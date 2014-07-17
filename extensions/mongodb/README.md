@@ -89,7 +89,7 @@ You may face them in URL composition or attempt of saving "_id" to other storage
 In these cases, ensure you have converted [[\MongoId]] into the string:
 
 ```php
-/** @var yii\web\View $this */
+/* @var $this yii\web\View */
 echo $this->createUrl(['item/update', 'id' => (string)$row['_id']]);
 ```
 

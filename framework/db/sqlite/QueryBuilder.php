@@ -7,6 +7,7 @@
 
 namespace yii\db\sqlite;
 
+use yii\db\Connection;
 use yii\db\Exception;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
@@ -41,6 +42,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+
     /**
      * Generates a batch INSERT SQL statement.
      * For example,
@@ -62,6 +64,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows)
     {
+        // SQLite supports batch insert natively since 3.7.11
+        // http://www.sqlite.org/releaselog/3_7_11.html
+        if (version_compare(\SQLite3::version()['versionString'], '3.7.11', '>=')) {
+            return parent::batchInsert($table, $columns, $rows);
+        }
+
         if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
         } else {
@@ -73,7 +81,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $vs = [];
             foreach ($row as $i => $value) {
                 if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
-                    $value = $columnSchemas[$columns[$i]]->typecast($value);
+                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
                     $value = $this->db->quoteValue($value);
@@ -113,7 +121,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             if ($value === null) {
                 $key = reset($table->primaryKey);
                 $tableName = $db->quoteTableName($tableName);
-                $value = $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
+                    return $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                });
             } else {
                 $value = (int) $value - 1;
             }

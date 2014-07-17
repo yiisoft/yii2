@@ -60,6 +60,7 @@ class DefaultController extends Controller
             'panels' => $this->module->panels,
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
+            'manifest' => $this->getManifest(),
         ]);
     }
 

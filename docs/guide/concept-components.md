@@ -1,7 +1,7 @@
 Components
 ==========
 
-Components are the main building blocks of Yii applications. Components are instances of [[yii\base\Component]]
+Components are the main building blocks of Yii applications. Components are instances of [[yii\base\Component]],
 or an extended class. The three main features that components provide to other classes are:
 
 * [Properties](concept-properties.md)
@@ -26,10 +26,10 @@ echo DatePicker::widget([
 The widget's properties are easily writable because the class extends [[yii\base\Component]].
 
 While components are very powerful, they are a bit heavier than normal objects, due to the fact that
-it takes extra memory and CPU time to support [events](concept-events.md) and [behaviors](concept-behaviors.md) in particular.
+it takes extra memory and CPU time to support [event](concept-events.md) and [behavior](concept-behaviors.md) functionality in particular.
 If your components do not need these two features, you may consider extending your component class from
 [[yii\base\Object]] instead of [[yii\base\Component]]. Doing so will make your components as efficient as normal PHP objects,
-but with the added support for [properties](concept-properties.md).
+but with added support for [properties](concept-properties.md).
 
 When extending your class from [[yii\base\Component]] or [[yii\base\Object]], it is recommended that you follow
 these conventions:
@@ -67,7 +67,7 @@ class MyClass extends Object
 }
 ```
 
-Following these guideliness will make your components [configurable](concept-configurations.md) when they are created. For example:
+Following these guidelines will make your components [configurable](concept-configurations.md) when they are created. For example:
 
 ```php
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);
@@ -79,8 +79,7 @@ $component = \Yii::createObject([
 ], [1, 2]);
 ```
 
-> Info: While the approach of calling [[Yii::createObject()]] looks more complicated, it is more powerful due to
-  the fact that it is implemented on top of a [dependency injection container](concept-di-container.md).
+> Info: While the approach of calling [[Yii::createObject()]] looks more complicated, it is more powerful because it is implemented on top of a [dependency injection container](concept-di-container.md).
   
 
 The [[yii\base\Object]] class enforces the following object lifecycle:
@@ -90,5 +89,5 @@ The [[yii\base\Object]] class enforces the following object lifecycle:
 3. Post-initialization within [[yii\base\Object::init()|init()]]. You may override this method to perform sanity checks and normalization of the properties.
 4. Object method calls.
 
-The first three steps all happen within the object's constructor. This means that once you get an object instance,
-it has already been initialized to a proper state that you can reliably work with.
+The first three steps all happen within the object's constructor. This means that once you get a class instance (i.e., an object),
+that object has already been initialized to a proper, reliable state.

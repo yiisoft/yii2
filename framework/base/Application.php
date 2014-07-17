@@ -24,12 +24,13 @@ use Yii;
  * @property \yii\base\Formatter|\yii\i18n\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
  * @property \yii\log\Dispatcher $log The log dispatcher component. This property is read-only.
- * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
+ * @property \yii\mail\MailerInterface $mailer The mailer interface. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
  * read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
+ * @property \yii\base\Security $security The security application component.
  * @property string $timeZone The time zone used by this application.
  * @property string $uniqueId The unique ID of the module. This property is read-only.
  * @property \yii\web\UrlManager $urlManager The URL manager for this application. This property is read-only.
@@ -189,6 +190,7 @@ abstract class Application extends Module
     public function __construct($config = [])
     {
         Yii::$app = $this;
+        $this->setInstance($this);
 
         $this->state = self::STATE_BEGIN;
 
@@ -296,7 +298,7 @@ abstract class Application extends Module
                 } elseif ($this->hasModule($class)) {
                     $component = $this->getModule($class);
                 } elseif (strpos($class, '\\') === false) {
-                    throw new InvalidConfigException("Unknown bootstrap component ID: $class");
+                    throw new InvalidConfigException("Unknown bootstrapping component ID: $class");
                 }
             }
             if (!isset($component)) {
@@ -566,9 +568,9 @@ abstract class Application extends Module
      * Returns the mailer component.
      * @return \yii\mail\MailerInterface the mailer interface
      */
-    public function getMail()
+    public function getMailer()
     {
-        return $this->get('mail');
+        return $this->get('mailer');
     }
 
     /**
@@ -591,6 +593,15 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the security component.
+     * @return \yii\base\Security security component
+     */
+    public function getSecurity()
+    {
+        return $this->get('security');
+    }
+
+    /**
      * Returns the core application components.
      * @see set
      */
@@ -601,9 +612,10 @@ abstract class Application extends Module
             'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\base\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
-            'mail' => ['class' => 'yii\swiftmailer\Mailer'],
+            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
+            'security' => ['class' => 'yii\base\Security'],
         ];
     }
 

@@ -240,7 +240,7 @@ class View extends Component
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
                     $this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
                 }
-                /** @var ViewRenderer $renderer */
+                /* @var $renderer ViewRenderer */
                 $renderer = $this->renderers[$ext];
                 $output = $renderer->render($this, $viewFile, $params);
             } else {
@@ -446,7 +446,7 @@ class View extends Component
     {
         $properties['id'] = $id;
         $properties['view'] = $this;
-        /** @var FragmentCache $cache */
+        /* @var $cache FragmentCache */
         $cache = FragmentCache::begin($properties);
         if ($cache->getCachedContent() !== false) {
             $this->endCache();

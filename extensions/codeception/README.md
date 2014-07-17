@@ -165,7 +165,7 @@ class MailTest extends TestCase
         // don't forget to call parent method that will setup Yii application
         parent::setUp();
 
-        Yii::$app->mail->fileTransportCallback = function ($mailer, $message) {
+        Yii::$app->mailer->fileTransportCallback = function ($mailer, $message) {
             return 'testing_message.eml';
         };
     }

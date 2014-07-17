@@ -93,6 +93,11 @@ class Validator extends Component
      *
      * - `{attribute}`: the label of the attribute being validated
      * - `{value}`: the value of the attribute being validated
+     *
+     * Note that some validators may introduce other properties for error messages used when specific
+     * validation conditions are not met. Please refer to individual class API documentation for details
+     * about these properties. By convention, this property represents the primary error message
+     * used when the most important validation condition is not met.
      */
     public $message;
     /**

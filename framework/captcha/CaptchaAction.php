@@ -247,7 +247,7 @@ class CaptchaAction extends Action
     /**
      * Renders the CAPTCHA image based on the code using GD library.
      * @param string $code the verification code
-     * @return string image contents
+     * @return string image contents in PNG format.
      */
     protected function renderImageByGD($code)
     {
@@ -300,7 +300,7 @@ class CaptchaAction extends Action
     /**
      * Renders the CAPTCHA image based on the code using ImageMagick library.
      * @param string $code the verification code
-     * @return \Imagick image instance. Can be used as string. In this case it will contain image contents.
+     * @return string image contents in PNG format.
      */
     protected function renderImageByImagick($code)
     {
@@ -332,8 +332,7 @@ class CaptchaAction extends Action
         }
 
         $image->setImageFormat('png');
-
-        return $image;
+        return $image->getImageBlob();
     }
 
     /**

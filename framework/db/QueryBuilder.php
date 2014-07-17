@@ -147,7 +147,7 @@ class QueryBuilder extends \yii\base\Object
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $placeholders[] = $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($value) : $value;
+                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             }
         }
 
@@ -188,7 +188,7 @@ class QueryBuilder extends \yii\base\Object
             $vs = [];
             foreach ($row as $i => $value) {
                 if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
-                    $value = $columnSchemas[$columns[$i]]->typecast($value);
+                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
                     $value = $this->db->quoteValue($value);
@@ -247,7 +247,7 @@ class QueryBuilder extends \yii\base\Object
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->typecast($value) : $value;
+                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             }
         }
 

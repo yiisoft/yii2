@@ -235,9 +235,16 @@ abstract class Target extends Component
         if (!is_string($text)) {
             $text = VarDumper::export($text);
         }
+        $traces = [];
+        if (isset($message[4])) {
+            foreach($message[4] as $trace) {
+                $traces[] = "in {$trace['file']}:{$trace['line']}";
+            }
+        }
 
         $prefix = $this->getMessagePrefix($message);
-        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text";
+        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text"
+            . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
     }
 
     /**
@@ -257,11 +264,11 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /** @var \yii\web\User $user */
+        /* @var $user \yii\web\User */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         $userID = $user ? $user->getId(false) : '-';
 
-        /** @var \yii\web\Session $session */
+        /* @var $session \yii\web\Session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 

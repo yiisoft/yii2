@@ -368,7 +368,7 @@ public function behaviors()
 }
 ```
 
-Por favor consulte a seção [Filtering](runtime-filtering.md) para mais detalhes.
+Por favor consulte a seção [Filtering](structure-filters.md) para mais detalhes.
 
 
 Assets
@@ -398,7 +398,6 @@ O Yii 2.0 introduz muitas classes de helper estáticas comumente usadas, incluin
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
 Por favor consulte a seção [Visão Geral](helper-overview.md) dos helpers para mais detalhes.
 

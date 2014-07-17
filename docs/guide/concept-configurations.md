@@ -1,13 +1,12 @@
 Configurations
 ==============
 
-Configurations are widely used in Yii for creating new objects or initializing existing objects.
-They usually include the class names of the objects being created and a list of initial values
-that should be assigned to object [properties](concept-properties.md). They may also include a list of
-handlers that should be attached to the object [events](concept-events.md), and/or a list of
-[behaviors](concept-behaviors.md) that should be attached to the objects.
+Configurations are widely used in Yii when creating new objects or initializing existing objects. Configurations usually include the class name of the object being created, and a list of initial values
+that should be assigned to the object's [properties](concept-properties.md). Configurations may also include a list of
+handlers that should be attached to the object's [events](concept-events.md) and/or a list of
+[behaviors](concept-behaviors.md) that should also be attached to the object.
 
-In the following, a configuration is used to create and initialize a DB connection:
+In the following, a configuration is used to create and initialize a database connection:
 
 ```php
 $config = [
@@ -21,23 +20,22 @@ $config = [
 $db = Yii::createObject($config);
 ```
 
-The [[Yii::createObject()]] method takes a configuration and creates an object based on the class name
-specified in the configuration. When the object is being instantiated, the rest of the configuration
-will be used to initialize the object properties, event handlers and/or behaviors.
+The [[Yii::createObject()]] method takes a configuration array as its argument, and creates an object by instantiating the class named in the configuration. When the object is instantiated, the rest of the configuration
+will be used to initialize the object's properties, event handlers, and behaviors.
 
-If you already have an object, you may use [[Yii::configure()]] to initialize the object properties with
-a configuration, like the following,
+If you already have an object, you may use [[Yii::configure()]] to initialize the object's properties with
+a configuration array:
 
 ```php
 Yii::configure($object, $config);
 ```
 
-Note that in this case, the configuration should not contain the `class` element.
+Note that, in this case, the configuration array should not contain a `class` element.
 
 
 ## Configuration Format <a name="configuration-format"></a>
 
-The format of a configuration can be formally described as follows,
+The format of a configuration can be formally described as:
 
 ```php
 [
@@ -51,17 +49,17 @@ The format of a configuration can be formally described as follows,
 where
 
 * The `class` element specifies a fully qualified class name for the object being created.
-* The `propertyName` elements specify the property initial values. The keys are the property names, and the
+* The `propertyName` elements specify the initial values for the named property. The keys are the property names, and the
   values are the corresponding initial values. Only public member variables and [properties](concept-properties.md)
   defined by getters/setters can be configured.
-* The `on eventName` elements specify what handlers should be attached to the object [events](concept-events.md).
+* The `on eventName` elements specify what handlers should be attached to the object's [events](concept-events.md).
   Notice that the array keys are formed by prefixing event names with `on `. Please refer to
   the [Events](concept-events.md) section for supported event handler formats.
-* And the `as behaviorName` elements specify what [behaviors](concept-behaviors.md) should be attached to the object.
-  Notice that the array keys are formed by prefixing behavior names with `as `. `$behaviorConfig` represents
-  the configuration for creating a behavior, like a normal configuration as we are describing here.
+* The `as behaviorName` elements specify what [behaviors](concept-behaviors.md) should be attached to the object.
+  Notice that the array keys are formed by prefixing behavior names with `as `; the value, `$behaviorConfig`, represents
+  the configuration for creating a behavior, like a normal configuration  described here.
 
-Below is an example showing a configuration with property initial values, event handlers and behaviors:
+Below is an example showing a configuration with initial property values, event handlers, and behaviors:
 
 ```php
 [
@@ -102,7 +100,7 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'mail' => [
+        'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
         ],
         'log' => [
@@ -184,7 +182,7 @@ return [
     'cache' => [
         'class' => 'yii\caching\FileCache',
     ],
-    'mail' => [
+    'mailer' => [
         'class' => 'yii\swiftmailer\Mailer',
     ],
     'log' => [

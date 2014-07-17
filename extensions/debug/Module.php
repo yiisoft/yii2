@@ -176,7 +176,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'tag' => $this->logTarget->tag,
         ]);
         echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';
-        /** @var View $view */
+        /* @var $view View */
         $view = $event->sender;
         echo '<style>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.css') . '</style>';
         echo '<script>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.js') . '</script>';

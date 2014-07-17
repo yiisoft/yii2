@@ -1,12 +1,8 @@
 <?php
-/**
- * @var array $model
- */
+/* @var $model array */
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
-$timeFormatter = extension_loaded('intl') ? Yii::createObject(['class' => 'yii\i18n\Formatter']) : Yii::$app->formatter;
 
 echo DetailView::widget([
     'model' => $model,
@@ -17,7 +13,7 @@ echo DetailView::widget([
         'charset',
         [
             'attribute' => 'time',
-            'value' => $timeFormatter->asDateTime($model['time'], 'short'),
+            'format' => 'datetime',
         ],
         'subject',
         [

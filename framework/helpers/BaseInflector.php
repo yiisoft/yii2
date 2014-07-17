@@ -326,14 +326,16 @@ class BaseInflector
      * For example, 'PostTag' will be converted to 'post-tag'.
      * @param string $name the string to be converted
      * @param string $separator the character used to concatenate the words in the ID
+     * @param string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
      * @return string the resulting ID
      */
-    public static function camel2id($name, $separator = '-')
+    public static function camel2id($name, $separator = '-', $strict = false)
     {
+        $regex = $strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/';
         if ($separator === '_') {
-            return trim(strtolower(preg_replace('/(?<![A-Z])[A-Z]/', '_\0', $name)), '_');
+            return trim(strtolower(preg_replace($regex, '_\0', $name)), '_');
         } else {
-            return trim(strtolower(str_replace('_', $separator, preg_replace('/(?<![A-Z])[A-Z]/', $separator . '\0', $name))), $separator);
+            return trim(strtolower(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name))), $separator);
         }
     }
 
@@ -415,7 +417,7 @@ class BaseInflector
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
         $string = static::transliterate($string);
-        $string = preg_replace('/[^a-zA-Z=\s—–-]+/u', '', $string);
+        $string = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $string);
         $string = preg_replace('/[=\s—–-]+/u', $replacement, $string);
         $string = trim($string, $replacement);
 

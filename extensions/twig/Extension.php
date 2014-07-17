@@ -6,7 +6,7 @@
  */
 
 namespace yii\twig;
- 
+
 use yii\base\InvalidCallException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;

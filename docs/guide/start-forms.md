@@ -47,7 +47,8 @@ class EntryForm extends Model
 The class extends from [[yii\base\Model]], a base class provided by Yii, commonly used to
 represent form data.
 
-> Info: [[yii\base\Model]] is used as a parent for model classes *not* associated with database tables. [[yii\db\ActiveRecord]] is normally the parent for model classes that do correspond to database tables.
+> Info: [[yii\base\Model]] is used as a parent for model classes *not* associated with database tables.
+[[yii\db\ActiveRecord]] is normally the parent for model classes that do correspond to database tables.
 
 The `EntryForm` class contains two public members, `name` and `email`, which are used to store
 the data entered by the user. It also contains a method named `rules()`, which returns a set
@@ -117,14 +118,18 @@ with the data from `$_POST`, provided in Yii by [[yii\web\Request::post()]].
 If the model is successfully populated (i.e., if the user has submitted the HTML form), the action will call
 [[yii\base\Model::validate()|validate()]] to make sure the values entered are valid.
 
-If everything is fine, the action will render a view named `entry-confirm` to confirm the data entered 
-with the user that the data entered. If a problem occurred, the `entry` view will
-be rendered, wherein the HTML form  will be shown, along with any validation error messages.
-
 > Info: The expression `Yii::$app` represents the [application](structure-applications.md) instance,
-  which is a globally accessible singleton. It is also a [service locator](concept-service-locator.md) that 
+  which is a globally accessible singleton. It is also a [service locator](concept-service-locator.md) that
   provides components such as `request`, `response`, `db`, etc. to support specific functionality.
   In the above code, the `request` component of the application instance is used to access the `$_POST` data.
+
+If everything is fine, the action will render a view named `entry-confirm` to confirm the data entered 
+with the user that the data entered. If no data is submitted or the data contains errors, the `entry` view will
+be rendered, wherein the HTML form will be shown, along with any validation error messages.
+
+> Note: In this very simple example we just render the confirmation page upon valid data submission. In practice,
+  you should consider using [[yii\web\Controller::refresh()|refresh()]] or [[yii\web\Controller::redirect()|redirect()]]
+  to avoid [form resubmission problems](http://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Creating Views <a name="creating-views"></a>

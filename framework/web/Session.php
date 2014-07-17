@@ -507,6 +507,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getIterator()
     {
+        $this->open();
         return new SessionIterator;
     }
 
@@ -516,6 +517,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getCount()
     {
+        $this->open();
         return count($_SESSION);
     }
 
@@ -539,7 +541,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function get($key, $defaultValue = null)
     {
         $this->open();
-
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
     }
 

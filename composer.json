@@ -121,5 +121,8 @@
 			"yii\\sphinx\\": "extensions/sphinx/",
 			"yii\\twig\\": "extensions/twig/"
 		}
-	}
+	},
+	"bin": [
+		"framework/yii"
+	]
 }

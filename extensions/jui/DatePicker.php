@@ -20,7 +20,7 @@ use yii\helpers\Json;
  * echo DatePicker::widget([
  *     'language' => 'ru',
  *     'model' => $model,
- *     'attribute' => 'country',
+ *     'attribute' => 'from_date',
  *     'clientOptions' => [
  *         'dateFormat' => 'yy-mm-dd',
  *     ],
@@ -32,7 +32,7 @@ use yii\helpers\Json;
  * ```php
  * echo DatePicker::widget([
  *     'language' => 'ru',
- *     'name'  => 'country',
+ *     'name'  => 'from_date',
  *     'clientOptions' => [
  *         'dateFormat' => 'yy-mm-dd',
  *     ],

@@ -75,7 +75,7 @@ class UniqueValidator extends Validator
      */
     public function validateAttribute($object, $attribute)
     {
-        /** @var ActiveRecordInterface $targetClass */
+        /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
@@ -110,7 +110,7 @@ class UniqueValidator extends Validator
             $exists = $query->exists();
         } else {
             // if current $object is in the database already we can't use exists()
-            /** @var ActiveRecordInterface[] $objects */
+            /* @var $objects ActiveRecordInterface[] */
             $objects = $query->limit(2)->all();
             $n = count($objects);
             if ($n === 1) {

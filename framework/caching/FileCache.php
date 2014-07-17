@@ -212,7 +212,7 @@ class FileCache extends Cache
      * @param boolean $force whether to enforce the garbage collection regardless of [[gcProbability]].
      * Defaults to false, meaning the actual deletion happens with the probability as specified by [[gcProbability]].
      * @param boolean $expiredOnly whether to removed expired cache files only.
-     * If true, all cache files under [[cachePath]] will be removed.
+     * If false, all cache files under [[cachePath]] will be removed.
      */
     public function gc($force = false, $expiredOnly = true)
     {

@@ -208,6 +208,11 @@ $customers = Customer::find()
 // each element of $customers is an array of name-value pairs
 ```
 
+Note that while this method saves memory and improves performance it is a step to a lower abstraction
+layer and you will loose some features that the active record layer has.
+Fetching data using asArray is nearly equal to running a normal query using the [query builder](db-dao.md).
+When using asArray the result will be returned just as such a query and no typecasting is performed anymore
+so the result may contain string values for fields that are integer when accessed on the active record object.
 
 ### Retrieving Data in Batches
 

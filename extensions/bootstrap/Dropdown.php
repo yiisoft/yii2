@@ -80,7 +80,8 @@ class Dropdown extends Widget
             if (!isset($item['label'])) {
                 throw new InvalidConfigException("The 'label' option is required.");
             }
-            $label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
+            $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
+            $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $options = ArrayHelper::getValue($item, 'options', []);
             $linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
             $linkOptions['tabindex'] = '-1';

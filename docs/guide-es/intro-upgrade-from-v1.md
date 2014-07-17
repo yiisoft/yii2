@@ -189,7 +189,7 @@ public function scenarios()
 {
     return [
         'backend' => ['email', 'role'],
-        'frontend' => ['email', '!name'],
+        'frontend' => ['email', '!role'],
     ];
 }
 ```
@@ -323,7 +323,7 @@ public function behaviors()
 }
 ```
 
-Consulta la sección [Filtrando](runtime-filtering.md) para una mayor información acerca del tema.
+Consulta la sección [Filtrando](structure-filters.md) para una mayor información acerca del tema.
 
 
 Assets
@@ -350,7 +350,6 @@ Yii 2.0 introduce muchos helpers estáticos comúnmente utilizados, incluyendo:
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
 Por favor, consulta la sección [Información General de Helpers](helper-overview.md) para más detalles.
 

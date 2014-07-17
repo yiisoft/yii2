@@ -25,7 +25,7 @@
 		"yiisoft/yii2-gii": "*"
 	},
 	"suggest": {
-		"codeception/codeception": "Codeception, 1.8.*@dev is currently works well with Yii.",
+		"codeception/codeception": "Codeception, 2.0.* is currently works well with Yii.",
 		"codeception/specify": "BDD style code blocks for PHPUnit and Codeception",
 		"codeception/verify": "BDD Assertions for PHPUnit and Codeception"
 	},

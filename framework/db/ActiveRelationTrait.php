@@ -99,7 +99,7 @@ trait ActiveRelationTrait
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return static the relation object itself.
      */
-    public function via($relationName, $callable = null)
+    public function via($relationName, callable $callable = null)
     {
         $relation = $this->primaryModel->getRelation($relationName);
         $this->via = [$relationName, $relation];
@@ -197,14 +197,18 @@ trait ActiveRelationTrait
 
         if ($this->via instanceof self) {
             // via pivot table
-            /** @var ActiveRelationTrait $viaQuery */
+            /* @var $viaQuery ActiveRelationTrait */
             $viaQuery = $this->via;
             $viaModels = $viaQuery->findPivotRows($primaryModels);
             $this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
-            /** @var ActiveRelationTrait $viaQuery */
+            /* @var $viaQuery ActiveRelationTrait|ActiveQueryTrait */
             list($viaName, $viaQuery) = $this->via;
+            if ($viaQuery->asArray === null) {
+                // inherit asArray from primary query
+                $viaQuery->asArray($this->asArray);
+            }
             $viaQuery->primaryModel = null;
             $viaModels = $viaQuery->populateRelation($viaName, $primaryModels);
             $this->filterByModels($viaModels);
@@ -264,7 +268,7 @@ trait ActiveRelationTrait
             return;
         }
         $model = reset($models);
-        /** @var ActiveQueryInterface|ActiveQuery $relation */
+        /* @var $relation ActiveQueryInterface|ActiveQuery */
         $relation = $model instanceof ActiveRecordInterface ? $model->getRelation($name) : (new $this->modelClass)->getRelation($name);
 
         if ($relation->multiple) {
@@ -375,7 +379,7 @@ trait ActiveRelationTrait
     {
         if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
             if (empty($this->from)) {
-                /** @var ActiveRecord $modelClass */
+                /* @var $modelClass ActiveRecord */
                 $modelClass = $this->modelClass;
                 $alias = $modelClass::tableName();
             } else {
@@ -458,7 +462,7 @@ trait ActiveRelationTrait
             return [];
         }
         $this->filterByModels($primaryModels);
-        /** @var ActiveRecord $primaryModel */
+        /* @var $primaryModel ActiveRecord */
         $primaryModel = reset($primaryModels);
         if (!$primaryModel instanceof ActiveRecordInterface) {
             // when primaryModels are array of arrays (asArray case)

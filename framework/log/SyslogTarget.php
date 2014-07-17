@@ -26,7 +26,7 @@ class SyslogTarget extends Target
     /**
      * @var integer syslog facility.
      */
-    public $facility = LOG_SYSLOG;
+    public $facility = LOG_USER;
 
     /**
      * @var array syslog levels

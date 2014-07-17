@@ -765,7 +765,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public static function loadMultiple($models, $data)
     {
-        /** @var Model $model */
+        /* @var $model Model */
         $model = reset($models);
         if ($model === false) {
             return false;
@@ -801,7 +801,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public static function validateMultiple($models, $attributeNames = null)
     {
         $valid = true;
-        /** @var Model $model */
+        /* @var $model Model */
         foreach ($models as $model) {
             $valid = $model->validate($attributeNames) && $valid;
         }

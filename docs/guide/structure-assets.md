@@ -76,7 +76,7 @@ class can be placed anywhere but the convention for it is to be under `assets` d
 
 Additionally you may specify `$jsOptions`, `$cssOptions` and `$publishOptions` that will be passed to
 [[yii\web\View::registerJsFile()]], [[yii\web\View::registerCssFile()]] and [[yii\web\AssetManager::publish()]]
-respectively during registering and publising an asset.
+respectively during registering and publising an asset. For more details on this see [Setting special options](#setting-special-options).
 
 [alias]: basics.md#path-aliases "Yii Path alias"
 
@@ -135,6 +135,44 @@ AppAsset::register($this->view);
   copying them over.
 
 
+Setting special options <a name="setting-special-options"></a>
+-----------------------
+
+Asset bundles allow setting specific options for the files to be published.
+This can be done by configuring the [[yii\web\AssetBundle::$jsOptions|$jsOptions]],
+[[yii\web\AssetBundle::$cssOptions|$cssOptions]] or [[yii\web\AssetBundle::$publishOptions|$publishOptions]]
+property of the asset bundle.
+
+Some of these options are described in the following:
+
+- For setting conditional comments for your CSS files you can set the following option:
+
+  ```php
+  public $cssOptions = ['condition' => 'lte IE9'];
+  ```
+
+  This will result in a link tag generated as follows: `<!--[if lte IE9]><link .../><![endif]-->`.
+  You can only define one condition per asset bundle, if you have multiple files with different conditions,
+  you have to define multiple assets bundles.
+
+- For javascipt files you can define the position where they should be added in the HTML.
+  You can choose one of the following positions:
+
+  - [[yii\web\View::POS_HEAD]]: in the head section
+  - [[yii\web\View::POS_BEGIN]]: at the beginning of the body section
+  - [[yii\web\View::POS_END]]: at the end of the body section. This is the default value.
+
+  Example for putting all javascript files to the end of the body.
+
+  ```php
+  public $jsOptions = ['position' => \yii\web\View::POS_END];
+  ```
+
+  This option is also reflected when resolving dependencies.
+
+- For further javascript options, see [[yii\helpers\Html::jsFile()]].
+
+
 Overriding asset bundles
 ------------------------
 
@@ -165,6 +203,16 @@ and corresponding values to set.
 Setting `sourcePath` to `null` tells asset manager not to copy anything while `js` overrides local files with a link
 to CDN.
 
+> Tip: You may also use this procedure to configure different scripts dependent on the environment. For example
+> use minified files in production and normal files in development:
+>
+>  ```php
+'yii\web\JqueryAsset' => [
+    'js' => [
+        YII_ENV_DEV ? 'jquery.js' : 'jquery.min.js'
+    ]
+],
+```
 
 Enabling symlinks
 -----------------

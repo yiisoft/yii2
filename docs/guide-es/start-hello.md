@@ -11,8 +11,8 @@ una [vista](structure-views.md):
 A lo largo de este tutorial, aprenderás tres cosas:
 
 1. Cómo crear una [acción](structure-controllers.md) para responder peticiones (request),
-2. cómo crear una [vista](structure-views.md) para armar el contenido de la respuesta, y
-3. cómo una aplicación envía peticiones a las [acciones](structure-controllers.md#creating-actions).
+2. Cómo crear una [vista](structure-views.md) para armar el contenido de la respuesta, y
+3. Cómo una aplicación envía peticiones a las [acciones](structure-controllers.md#creating-actions).
 
 
 Creando una Acción <a name="creating-action"></a>
@@ -66,7 +66,7 @@ parámetro `message` con el valor de `"Adios"`, la variable `$message` dentro de
 
 Dentro del método de acción, [[yii\web\Controller::render()|render()]] es llamado para hacer render (mostrar o visualizar) un 
 archivo [vista](structure-views.md) (template) llamado `say`. El parámetro `message` tambien es pasado al  view para que pueda ser utilizado ahí. 
-El resultado es regresado al método de la acción. Ese resultado será recibido por la aplicación y mostrado al usuario final en el
+El resultado es devuelto al método de la acción. Ese resultado será recibido por la aplicación y mostrado al usuario final en el
 navegador (como parte de una página HTML completa).
 
 
@@ -83,20 +83,20 @@ use yii\helpers\Html;
 <?= Html::encode($message) ?>
 ```
 
-La vista `say` debe ser guardado en el archivo `views/site/say.php`. Cuando el método [[yii\web\Controller::render()|render()]]
+La vista `say` debe ser guardada en el archivo `views/site/say.php`. Cuando el método [[yii\web\Controller::render()|render()]]
 es llamado en una acción, buscará un archivo PHP llamado `views/ControllerID/NombreVista.php`.
 
 Nota que en el código de arriba, el parámetro `message` es procesado por [[yii\helpers\Html::encode()|HTML-encoded]]
 antes de ser impreso. Esto es necesario ya que el parámetro viene de un usuario final, haciéndolo vulnerable a 
 [ataques cross-site scripting (XSS)](http://es.wikipedia.org/wiki/Cross-site_scripting) pudiendo inyectar código de Javascript malicioso dentro del parámetro.
 
-Naturalmente, puedes colocar mas contenido en la vista `say`. El contenido puede consistir de etiquetas HTML, texto plano, e inlcusive código PHP.
+Naturalmente, puedes colocar mas contenido en la vista `say`. El contenido puede consistir de etiquetas HTML, texto plano, e inclusive código PHP.
 De hecho, la vista `say` es sólo un script PHP que es ejecutado por el método [[yii\web\Controller::render()|render()]].
 El contenido impreso por el script de la vista será regresado a la aplicación como la respuesta del resultado. La aplicación a cambio mostrará el resultado al usuario final.
 
 
-Intentándolo <a name="trying-it-out"></a>
-------------
+Probándolo <a name="trying-it-out"></a>
+----------
 
 Después de crear la acción y la vista, puedes acceder a la nueva página abriendo el siguiente URL:
 

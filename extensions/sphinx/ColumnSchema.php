@@ -55,12 +55,12 @@ class ColumnSchema extends Object
     public $isMva;
 
     /**
-     * Converts the input value according to [[phpType]].
+     * Converts the input value according to [[phpType]] after retrieval from the database.
      * If the value is null or an [[Expression]], it will not be converted.
      * @param mixed $value input value
      * @return mixed converted value
      */
-    public function typecast($value)
+    public function phpTypecast($value)
     {
         if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
             return $value;
@@ -70,13 +70,29 @@ class ColumnSchema extends Object
         }
         switch ($this->phpType) {
             case 'string':
-                return (string) $value;
+                return is_resource($value) ? $value : (string) $value;
             case 'integer':
                 return (integer) $value;
             case 'boolean':
                 return (boolean) $value;
+            case 'double':
+                return (double) $value;
         }
 
         return $value;
+    }
+
+    /**
+     * Converts the input value according to [[type]] and [[dbType]] for use in a db query.
+     * If the value is null or an [[Expression]], it will not be converted.
+     * @param mixed $value input value
+     * @return mixed converted value. This may also be an array containing the value as the first element
+     * and the PDO type as the second element.
+     */
+    public function dbTypecast($value)
+    {
+        // the default implementation does the same as casting for PHP but it should be possible
+        // to override this with annotation of explicit PDO type.
+        return $this->phpTypecast($value);
     }
 }

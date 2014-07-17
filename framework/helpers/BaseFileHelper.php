@@ -8,6 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
@@ -117,9 +118,17 @@ class BaseFileHelper
      * @param boolean $checkExtension whether to use the file extension to determine the MIME type in case
      * `finfo_open()` cannot determine it.
      * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
+     * @throws InvalidConfigException when the `fileinfo` PHP extension is not installed and `$checkExtension` is `false`.
      */
     public static function getMimeType($file, $magicFile = null, $checkExtension = true)
     {
+        if (!extension_loaded('fileinfo')) {
+            if ($checkExtension) {
+                return static::getMimeTypeByExtension($file, $magicFile);
+            } else {
+                throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
+            }
+        }
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
         if ($info) {
@@ -131,7 +140,7 @@ class BaseFileHelper
             }
         }
 
-        return $checkExtension ? static::getMimeTypeByExtension($file) : null;
+        return $checkExtension ? static::getMimeTypeByExtension($file, $magicFile) : null;
     }
 
     /**
@@ -269,25 +278,39 @@ class BaseFileHelper
     /**
      * Removes a directory (and all its content) recursively.
      * @param string $dir the directory to be deleted recursively.
+     * @param array $options options for directory remove. Valid options are:
+     *
+     * - traverseSymlinks: boolean, whether symlinks to the directories should be traversed too.
+     *   Defaults to `false`, meaning the content of the symlinked directory would not be deleted.
+     *   Only symlink would be removed in that default case.
      */
-    public static function removeDirectory($dir)
+    public static function removeDirectory($dir, $options = [])
     {
-        if (!is_dir($dir) || !($handle = opendir($dir))) {
+        if (!is_dir($dir)) {
             return;
         }
-        while (($file = readdir($handle)) !== false) {
-            if ($file === '.' || $file === '..') {
-                continue;
+        if (!is_link($dir) || isset($options['traverseSymlinks']) && $options['traverseSymlinks']) {
+            if (!($handle = opendir($dir))) {
+                return;
             }
-            $path = $dir . DIRECTORY_SEPARATOR . $file;
-            if (is_file($path)) {
-                unlink($path);
-            } else {
-                static::removeDirectory($path);
+            while (($file = readdir($handle)) !== false) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+                $path = $dir . DIRECTORY_SEPARATOR . $file;
+                if (is_dir($path)) {
+                    static::removeDirectory($path, $options);
+                } else {
+                    unlink($path);
+                }
             }
+            closedir($handle);
         }
-        closedir($handle);
-        rmdir($dir);
+        if (is_link($dir)) {
+            unlink($dir);
+        } else {
+            rmdir($dir);
+        }
     }
 
     /**

@@ -328,7 +328,7 @@ abstract class BaseMigrateController extends Controller
         }
 
         // try mark down
-        $migrations = array_keys($this->getMigrationHistory(-1));
+        $migrations = array_keys($this->getMigrationHistory(null));
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version . '_') === 0) {
                 if ($i === 0) {
@@ -544,7 +544,7 @@ abstract class BaseMigrateController extends Controller
     protected function migrateToTime($time)
     {
         $count = 0;
-        $migrations = array_values($this->getMigrationHistory(-1));
+        $migrations = array_values($this->getMigrationHistory(null));
         while ($count < count($migrations) && $migrations[$count] > $time) {
             ++$count;
         }
@@ -575,7 +575,7 @@ abstract class BaseMigrateController extends Controller
         }
 
         // try migrate down
-        $migrations = array_keys($this->getMigrationHistory(-1));
+        $migrations = array_keys($this->getMigrationHistory(null));
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version . '_') === 0) {
                 if ($i === 0) {
@@ -598,7 +598,7 @@ abstract class BaseMigrateController extends Controller
     protected function getNewMigrations()
     {
         $applied = [];
-        foreach ($this->getMigrationHistory(-1) as $version => $time) {
+        foreach ($this->getMigrationHistory(null) as $version => $time) {
             $applied[substr($version, 1, 13)] = true;
         }
 
@@ -621,7 +621,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Returns the migration history.
-     * @param integer $limit the maximum number of records in the history to be returned
+     * @param integer $limit the maximum number of records in the history to be returned. `null` for "no limit".
      * @return array the migration history
      */
     abstract protected function getMigrationHistory($limit);

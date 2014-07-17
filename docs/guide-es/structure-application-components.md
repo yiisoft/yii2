@@ -2,9 +2,9 @@ Componentes de la Aplicación
 ============================
 
 Las aplicaciones son [service locators](concept-service-locators.md) (localizadores de servicios). Ellas albergan
-un grupo de los llamados *componentes de aplicación* que proveen diferentes servicios para procesar el `request`.
-Por ejemplo, el componente `urlManager` es responsable por rutear Web `requests` a los controladores apropiados;
-el componente `db` provee servicios relacionados a base de datos; y así otros.
+un grupo de los llamados *componentes de aplicación* que proveen diferentes servicios para procesar el `request` (petición).
+Por ejemplo, el componente `urlManager` es responsable por rutear Web `requests` (peticiones) a los controladores apropiados;
+el componente `db` provee servicios relacionados a base de datos; y así sucesivamente.
 
 Cada componente de la aplicación tiene un ID que lo identifica de forma inequívoca de otros en la misma aplicación.
 Puedes acceder a un componente de la aplicación con la siguiente expresión:
@@ -42,10 +42,10 @@ Por ejemplo:
 ]
 ```
 
-> Información: A pesar de que puedes registrar tantos componentes como desees, deberías hacerlo criteriosamente.
-  Los componente de la aplicación son como variables globales. Usando demasiado de ellos puede resultar en
-  código más difícil de mantener y testear. En muchos casos, puedes simplemente crear un componente local
-  y utilizarlo cuando sea necesario.
+> Información: A pesar de que puedes registrar tantos componentes como desees, deberías hacerlo con criterio.
+  Los componente de la aplicación son como variables globales. Abusando demasiado de ellos puede resultar en
+  un código más difícil de mantener y testear. En muchos casos, puedes simplemente crear un componente local
+  y utilizarlo únicamente cuando sea necesario.
 
 
 ## Componentes del Núcleo de la Aplicación <a name="core-application-components"></a>
@@ -56,7 +56,7 @@ del `request` del usuario y resolverlo en una [ruta](runtime-routing.md); el com
 representa una conexión a la base de datos a través del cual realizar consultas a la misma.
 Es con ayuda de estos componentes del núcleo que Yii puede manejar los `request` del usuario.
 
-Debajo hay una lista de componentes predefinidos en el núcleo. Puedes configurarlos y personalizarlos
+A continuación, hay una lista de componentes predefinidos en el núcleo. Puedes configurarlos y personalizarlos
 como lo haces con componentes normales de la aplicación. Cuando configuras un componente del núcleo,
 si no especificas su nombre de clase, la clase por defecto será utilizada.
 

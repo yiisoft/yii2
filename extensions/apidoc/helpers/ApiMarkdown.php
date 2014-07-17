@@ -29,7 +29,7 @@ class ApiMarkdown extends GithubMarkdown
      */
     public static $renderer;
 
-    protected $context;
+    protected $renderingContext;
 
     /**
      * Renders a code block
@@ -104,7 +104,7 @@ class ApiMarkdown extends GithubMarkdown
         if (is_string($context)) {
             $context = static::$renderer->apiContext->getType($context);
         }
-        Markdown::$flavors['api']->context = $context;
+        Markdown::$flavors['api']->renderingContext = $context;
 
         if ($paragraph) {
             return Markdown::processParagraph($content, 'api');

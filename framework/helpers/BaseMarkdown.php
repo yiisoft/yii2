@@ -84,7 +84,7 @@ class BaseMarkdown
      */
     protected static function getParser($flavor)
     {
-        /** @var \cebe\markdown\Markdown $parser */
+        /* @var $parser \cebe\markdown\Markdown */
         if (!isset(static::$flavors[$flavor])) {
             throw new InvalidParamException("Markdown flavor '$flavor' is not defined.'");
         } elseif (!is_object($config = static::$flavors[$flavor])) {

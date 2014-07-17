@@ -1,11 +1,9 @@
 <?php
-/**
- * @var yii\debug\panels\ProfilingPanel $panel
- * @var yii\debug\models\search\Profile $searchModel
- * @var yii\data\ArrayDataProvider $dataProvider
- * @var integer $time
- * @var integer $memory
- */
+/* @var $panel yii\debug\panels\ProfilingPanel */
+/* @var $searchModel yii\debug\models\search\Profile */
+/* @var $dataProvider yii\data\ArrayDataProvider */
+/* @var $time integer */
+/* @var $memory integer */
 
 use yii\grid\GridView;
 use yii\helpers\Html;
