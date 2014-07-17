@@ -10,6 +10,7 @@ Yii Framework 2 mongodb extension Change Log
 - Enh #3778: Gii generator for Active Record model added (klimov-paul)
 - Enh #3947: Migration support added (klimov-paul)
 - Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
+- Enh #4335: `yii\mongodb\log\MongoDbTarget` log target added (klimov-paul)
 
 
 2.0.0-beta April 13, 2014

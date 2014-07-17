@@ -11,6 +11,7 @@ use Yii;
 use yii\db\Connection;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
+use yii\helpers\VarDumper;
 
 /**
  * DbTarget stores log messages in a database table.
@@ -80,7 +81,7 @@ class DbTarget extends Target
         foreach ($this->messages as $message) {
             list($text, $level, $category, $timestamp) = $message;
             if (!is_string($text)) {
-                $text = var_export($text, true);
+                $text = VarDumper::export($text);
             }
             $command->bindValues([
                 ':level' => $level,
