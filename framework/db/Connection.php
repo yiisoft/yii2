@@ -841,4 +841,16 @@ class Connection extends Component
 
         return null;
     }
+
+    /**
+     * @return boolean if MSSQL used is old
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    protected function isOldMssql()
+    {
+        $pdo = $this->getSlavePdo();
+        $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+        return $version[0] < 11;
+    }
 }
