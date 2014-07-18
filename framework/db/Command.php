@@ -103,9 +103,13 @@ class Command extends \yii\base\Component
      * @return $this
      */
     public function cache($duration, $dependency = null){
-        $this->enableQueryCache = true;
-        $this->queryCacheDuration = $duration;
-        $this->queryCacheDependency = $dependency;
+        if($duration !== 0){
+			$this->enableQueryCache = true;
+        	$this->queryCacheDuration = $duration;
+        	$this->queryCacheDependency = $dependency;
+		}else{
+			$this->enableQueryCache = false;
+		}
         return $this;
     }
 
