@@ -125,6 +125,7 @@ class UrlManager extends Component
     public $ruleConfig = ['class' => 'yii\web\UrlRule'];
 
     private $_baseUrl;
+    private $_scriptUrl;
     private $_hostInfo;
 
     /**
@@ -298,7 +299,8 @@ class UrlManager extends Component
 
         $route = trim($params[0], '/');
         unset($params[0]);
-        $baseUrl = $this->getBaseUrl();
+
+        $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
             /* @var $rule UrlRule */
@@ -364,18 +366,18 @@ class UrlManager extends Component
     }
 
     /**
-     * Returns the base URL that is used by [[createUrl()]] to prepend URLs it creates.
-     * It defaults to [[Request::scriptUrl]] if [[showScriptName]] is true or [[enablePrettyUrl]] is false;
-     * otherwise, it defaults to [[Request::baseUrl]].
-     * @return string the base URL that is used by [[createUrl()]] to prepend URLs it creates.
+     * Returns the base URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * It defaults to [[Request::baseUrl]].
+     * This is mainly used when [[enablePrettyUrl]] is true and [[showScriptName]] is false.
+     * @return string the base URL that is used by [[createUrl()]] to prepend to the URLs it creates.
      * @throws InvalidConfigException if running in console application and [[baseUrl]] is not configured.
      */
     public function getBaseUrl()
     {
         if ($this->_baseUrl === null) {
             $request = Yii::$app->getRequest();
-            if ($request instanceof \yii\web\Request) {
-                $this->_baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $request->getScriptUrl() : $request->getBaseUrl();
+            if ($request instanceof Request) {
+                $this->_baseUrl = $request->getBaseUrl();
             } else {
                 throw new InvalidConfigException('Please configure UrlManager::baseUrl correctly as you are running a console application.');
             }
@@ -385,12 +387,44 @@ class UrlManager extends Component
     }
 
     /**
-     * Sets the base URL that is used by [[createUrl()]] to prepend URLs it creates.
+     * Sets the base URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * This is mainly used when [[enablePrettyUrl]] is true and [[showScriptName]] is false.
      * @param string $value the base URL that is used by [[createUrl()]] to prepend URLs it creates.
      */
     public function setBaseUrl($value)
     {
         $this->_baseUrl = rtrim($value, '/');
+    }
+
+    /**
+     * Returns the entry script URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * It defaults to [[Request::scriptUrl]].
+     * This is mainly used when [[enablePrettyUrl]] is false or [[showScriptName]] is true.
+     * @return string the entry script URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * @throws InvalidConfigException if running in console application and [[scriptUrl]] is not configured.
+     */
+    public function getScriptUrl()
+    {
+        if ($this->_scriptUrl === null) {
+            $request = Yii::$app->getRequest();
+            if ($request instanceof Request) {
+                $this->_scriptUrl = $request->getScriptUrl();
+            } else {
+                throw new InvalidConfigException('Please configure UrlManager::scriptUrl correctly as you are running a console application.');
+            }
+        }
+
+        return $this->_scriptUrl;
+    }
+
+    /**
+     * Sets the entry script URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * This is mainly used when [[enablePrettyUrl]] is false or [[showScriptName]] is true.
+     * @param string $value the entry script URL that is used by [[createUrl()]] to prepend URLs it creates.
+     */
+    public function setScriptUrl($value)
+    {
+        $this->_scriptUrl = $value;
     }
 
     /**
