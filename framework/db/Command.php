@@ -103,15 +103,20 @@ class Command extends \yii\base\Component
      * @return $this
      */
     public function cache($duration, $dependency = null){
-        if($duration !== 0){
-			$this->enableQueryCache = true;
-        	$this->queryCacheDuration = $duration;
-        	$this->queryCacheDependency = $dependency;
-		}else{
-			$this->enableQueryCache = false;
-		}
+		$this->enableQueryCache = true;
+		$this->queryCacheDuration = $duration;
+		$this->queryCacheDependency = $dependency;
         return $this;
     }
+
+	/**
+	 * Turns off query caching for this command
+	 * @return $this
+	 */
+	public function noCache(){
+		$this->enableQueryCache = true;
+		return $this;
+	}
 
     /**
      * Get state of queryCache. If not set in this command, get from $db.

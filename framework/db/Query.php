@@ -136,6 +136,16 @@ class Query extends Component implements QueryInterface
         return $this;
     }
 
+	/**
+	 * Turns off query caching for this query
+	 * @return $this
+	 */
+	public function noCache(){
+		$this->enableQueryCache = true;
+		return $this;
+	}
+
+
     /**
      * Creates a DB command that can be used to execute this query.
      * @param Connection $db the database connection used to generate the SQL statement.
