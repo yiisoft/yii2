@@ -238,7 +238,7 @@ class UploadedFile extends Object
      * Checks whether the file was uploaded
      * @return bool
      */
-    public function uploaded()
+    private function uploaded()
     {
         return $this->error !== UPLOAD_ERR_NO_FILE;
     }
