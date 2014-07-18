@@ -121,13 +121,14 @@ class Command extends \yii\base\Component
         } else {
             $params = [];
             foreach ($this->params as $name => $value) {
-                if (is_string($value)) {
-                    $params[$name] = $this->db->quoteValue($value);
-                } elseif ($value === null) {
-                    $params[$name] = 'NULL';
-                } else {
-                    $params[$name] = $value;
-                }
+				$name = ':' . $name;
+				if (is_string($value)) {
+					$params[$name] = ':' . $this->db->quoteValue($value);
+				} elseif ($value === null) {
+					$params[$name] = ':NULL';
+				} else {
+					$params[$name] = ':' . $value;
+				}
             }
             if (isset($params[1])) {
                 $sql = '';
