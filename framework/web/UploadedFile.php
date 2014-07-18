@@ -108,7 +108,7 @@ class UploadedFile extends Object
     public static function getInstanceByName($name)
     {
         $files = self::loadFiles();
-        return isset($files[$name]) && $files[$name]->uploaded() ? $files[$name] : null;
+        return isset($files[$name]) ? $files[$name] : null;
     }
 
     /**
@@ -123,12 +123,12 @@ class UploadedFile extends Object
     public static function getInstancesByName($name)
     {
         $files = self::loadFiles();
-        if (isset($files[$name]) && $files[$name]->uploaded()) {
+        if (isset($files[$name])) {
             return [$files[$name]];
         }
         $results = [];
         foreach ($files as $key => $file) {
-            if (strpos($key, "{$name}[") === 0 && $file->uploaded()) {
+            if (strpos($key, "{$name}[") === 0) {
                 $results[] = $file;
             }
         }
@@ -223,7 +223,7 @@ class UploadedFile extends Object
             foreach ($names as $i => $name) {
                 self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
             }
-        } else {
+        } elseif ($errors !== UPLOAD_ERR_NO_FILE) {
             self::$_files[$key] = new static([
                 'name' => $names,
                 'tempName' => $tempNames,
@@ -232,14 +232,5 @@ class UploadedFile extends Object
                 'error' => $errors,
             ]);
         }
-    }
-
-    /**
-     * Checks whether the file was uploaded
-     * @return bool
-     */
-    private function uploaded()
-    {
-        return $this->error !== UPLOAD_ERR_NO_FILE;
     }
 }
