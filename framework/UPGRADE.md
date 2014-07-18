@@ -146,4 +146,3 @@ new ones save the following code as `convert.php` that should be placed in the s
       // ...
   ];
   ```
-* `yii\web\UploadedFile` has been changed to check for a UPLOAD_ERR_NO_FILE error
