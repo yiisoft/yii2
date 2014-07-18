@@ -121,7 +121,7 @@ class Command extends \yii\base\Component
         } else {
             $params = [];
             foreach ($this->params as $name => $value) {
-				$name = ':' . $name;
+				$name = strpos($name, ':')===0 ? $name : ':' . $name;
 				if (is_string($value)) {
 					$params[$name] = ':' . $this->db->quoteValue($value);
 				} elseif ($value === null) {
