@@ -66,7 +66,7 @@ class Dropdown extends Widget
      * @throws InvalidConfigException if the label option is not specified in one of the items.
      */
     protected function renderItems($items)
-    {
+    {   
         $lines = [];
         foreach ($items as $i => $item) {
             if (isset($item['visible']) && !$item['visible']) {
