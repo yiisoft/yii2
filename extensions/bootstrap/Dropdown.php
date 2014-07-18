@@ -66,7 +66,7 @@ class Dropdown extends Widget
      * @throws InvalidConfigException if the label option is not specified in one of the items.
      */
     protected function renderItems($items)
-    {
+    {   
         $lines = [];
         foreach ($items as $i => $item) {
             if (isset($item['visible']) && !$item['visible']) {
@@ -87,7 +87,9 @@ class Dropdown extends Widget
             $linkOptions['tabindex'] = '-1';
             $content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
             if (!empty($item['items'])) {
-                $content .= $this->renderItems($item['items']);
+                $content .= static::widget([
+                    'items' => $item['items'],
+                ]);
                 Html::addCssClass($options, 'dropdown-submenu');
             }
             $lines[] = Html::tag('li', $content, $options);
