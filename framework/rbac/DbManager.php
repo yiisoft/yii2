@@ -482,10 +482,6 @@ class DbManager extends BaseManager
             return null;
         }
 
-        if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-            $data = null;
-        }
-
         return new Assignment([
             'userId' => $row['user_id'],
             'roleName' => $row['item_name'],
@@ -504,9 +500,6 @@ class DbManager extends BaseManager
 
         $assignments = [];
         foreach ($query->all($this->db) as $row) {
-            if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-                $data = null;
-            }
             $assignments[$row['item_name']] = new Assignment([
                 'userId' => $row['user_id'],
                 'roleName' => $row['item_name'],
