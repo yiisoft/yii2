@@ -89,6 +89,7 @@ class Dropdown extends Widget
             if (!empty($item['items'])) {
                 $content .= static::widget([
                     'items' => $item['items'],
+                    'encodeLabels' => $this->encodeLabels,
                 ]);
                 Html::addCssClass($options, 'dropdown-submenu');
             }
