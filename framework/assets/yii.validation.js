@@ -17,7 +17,7 @@ yii.validation = (function ($) {
         },
 
         addMessage: function (messages, message, value) {
-            messages.push(message.replace(/\{value\}/g, value));
+            messages.push(message.replace(/\{(value|file)\}/g, value));
         },
 
         required: function (value, messages, options) {
@@ -67,6 +67,56 @@ yii.validation = (function ($) {
             if (options.is !== undefined && value.length != options.is) {
                 pub.addMessage(messages, options.notEqual, value);
             }
+        },
+        
+        file: function(value, messages, options, attribute) {
+            var files = $(attribute.input).get(0).files,
+                    index, ext;
+            
+            if ( options.message && !files ) {
+                pub.addMessage(messages, options.message, value);
+            }
+
+            if ( !options.skipOnEmpty && files.length == 0) {
+                pub.addMessage(messages, options.uploadRequired, value);
+            } else if ( files.length == 0) {
+                return;
+            }
+            
+            if ( options.maxFiles && options.maxFiles < files.length ) {
+                pub.addMessage(messages, options.tooMany);
+            }
+            
+            Array.prototype.slice.call(files).forEach(function(file) {
+                if ( options.extensions && options.extensions.length > 0 ) {
+                    index = file.name.lastIndexOf('.');
+                    
+                    if ( !~index ) {
+                        ext = '';
+                    } else {
+                        ext = file.name.substr(index+1, file.name.length).toLowerCase();
+                    }
+                    
+                    if ( !~options.extensions.indexOf(ext) ) {
+                        pub.addMessage(messages, options.wrongExtension, file);
+                    }
+                }
+                
+                if ( options.mimeTypes && options.mimeTypes.length > 0 ) {
+                    if ( !~options.mimeTypes.indexOf(file.type) ) {
+                        pub.addMessage(messages, options.wrongMimeType, file.name);
+                    }
+                }
+                
+                if ( options.maxSize && options.maxSize < file.size ) {
+                    pub.addMessage(messages, options.tooBig, file.name);
+                }
+                
+                if ( options.maxSize && options.minSize > file.size ) {
+                    pub.addMessage(messages, options.tooSmall, file.name);
+                }
+                
+            });
         },
 
         number: function (value, messages, options) {
