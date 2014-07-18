@@ -56,16 +56,17 @@ class Dropdown extends Widget
      */
     public function run()
     {
-        echo $this->renderItems($this->items);
+        echo $this->renderItems($this->items, $this->options);
     }
 
     /**
      * Renders menu items.
      * @param array $items the menu items to be rendered
+     * @param array $containerOptions the HTML attributes for the widget container tag
      * @return string the rendering result.
      * @throws InvalidConfigException if the label option is not specified in one of the items.
      */
-    protected function renderItems($items)
+    protected function renderItems($items, $containerOptions)
     {
         $lines = [];
         foreach ($items as $i => $item) {
@@ -87,8 +88,8 @@ class Dropdown extends Widget
             $linkOptions['tabindex'] = '-1';
             $content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
             if (!empty($item['items'])) {
-                unset($this->options['id']);
-                $this->renderItems($item['items']);
+                unset($containerOptions['id']);
+                $this->renderItems($item['items'], $containerOptions);
                 Html::addCssClass($options, 'dropdown-submenu');
             }
             $lines[] = Html::tag('li', $content, $options);
