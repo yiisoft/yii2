@@ -254,6 +254,7 @@ Yii Framework 2 Change Log
 - Bug #2848: Individual queries should be enclosed within parenthesis in a UNION query (qiangxue)
 - Bug #2862: Using `DbCache` while enabling schema caching may cause infinite loops (qiangxue)
 - Bug #3052: Fixed the issue that cache dependency data is not reused when `reusable` is set true (qiangxue)
+- Bug #3443: Fixed `yii\bootstrap\Nav` and `yii\bootstrap\Dropdown` were generating wrong ids for submenus (arturf)
 - Bug #3691: Fixed the issue that `CookieCollection::has` always returns false for cookies from browser (sonicgd)
 - Bug #4212: MSSQL query builder should not generate the `ORDER BY` clause when it is not needed (qiangxue)
 - Bug #4232: `TableSchema::sequenceName` for PostgreSQL should remove the enclosing quotes (katzz0, qiangxue)
