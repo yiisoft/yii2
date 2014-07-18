@@ -326,5 +326,59 @@ class FileValidator extends Validator
 
         return true;
     }
-
+    
+    public function clientValidateAttribute($object, $attribute, $view) {
+        $label = $object->getAttributeLabel($attribute);
+        
+        if ( $this->message !== null ){
+            $options['message'] = Yii::$app->getI18n()->format($this->message, [
+                'attribute' => $label,
+            ], Yii::$app->language);
+        }
+        
+        $options['skipOnEmpty'] = $this->skipOnEmpty;
+        
+        if ( !$this->skipOnEmpty ) {    
+            $options['uploadRequired'] = Yii::$app->getI18n()->format($this->uploadRequired, [], Yii::$app->language);
+        }
+        
+        if ( is_array($this->mimeTypes) ) {
+            $options['mimeTypes'] = $this->mimeTypes;
+            $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
+                'mimeTypes' => join(', ', $this->mimeTypes)
+            ], Yii::$app->language);
+        }
+        
+        if ( !empty($this->extensions) ) {
+            $options['extensions'] = $this->extensions;
+            $options['wrongExtension'] = Yii::$app->getI18n()->format($this->wrongExtension, [
+                'extensions' => join(', ', $this->extensions)
+            ], Yii::$app->language);
+        }
+        
+        if ( $this->minSize !== null ) {
+            $options['minSize'] = $this->minSize;
+            $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
+                'limit' => $this->minSize
+            ], Yii::$app->language);
+        }
+        
+        if ( $this->maxSize !== null ) {
+            $options['maxSize'] = $this->maxSize;
+            $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
+                'limit' => $this->maxSize
+            ], Yii::$app->language); 
+       }
+        
+        if ( $this->maxFiles !== null ) {
+            $options['maxFiles'] = $this->maxFiles;
+            $options['tooMany'] = Yii::$app->getI18n()->format($this->tooMany, [
+                'limit' => $this->maxFiles
+            ], Yii::$app->language);
+        }
+        
+        ValidationAsset::register($view);
+        
+        return 'yii.validation.file(value, messages, ' . json_encode($options) . ', attribute);';
+    }
 }
