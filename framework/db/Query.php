@@ -107,6 +107,34 @@ class Query extends Component implements QueryInterface
      */
     public $params = [];
 
+    /**
+     * @var boolean whether to enable caching for this query.
+     * If not set, then use global param from $db
+     */
+    public $enableQueryCache;
+    /**
+     * @var integer number of seconds that query results can remain valid in cache.
+     * If not set, then use global param from $db
+     */
+    public $queryCacheDuration;
+    /**
+     * @var \yii\caching\Dependency the dependency that will be used when saving query results into cache.
+     * If not set, then use global param from $db
+     */
+    public $queryCacheDependency;
+
+    /**
+     * Turns on query caching for this query
+     * @param integer $duration the number of seconds that query results may remain valid in cache.
+     * @param \yii\caching\Dependency $dependency the dependency for the cached query result.
+     * @return $this
+     */
+    public function cache($duration, $dependency = null){
+        $this->enableQueryCache = true;
+        $this->queryCacheDuration = $duration;
+        $this->queryCacheDependency = $dependency;
+        return $this;
+    }
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -121,7 +149,11 @@ class Query extends Component implements QueryInterface
         }
         list ($sql, $params) = $db->getQueryBuilder()->build($this);
 
-        return $db->createCommand($sql, $params);
+        $command = $db->createCommand($sql, $params);
+
+        return isset($this->enableQueryCache) && $this->enableQueryCache
+            ? $command->cache($this->queryCacheDuration, $this->queryCacheDependency)
+            : $command;
     }
 
     /**
