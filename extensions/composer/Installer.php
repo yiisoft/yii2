@@ -273,7 +273,7 @@ EOF
         $key = self::generateRandomString();
         foreach ((array) $extra[self::EXTRA_CONFIG] as $config) {
             if (is_file($config)) {
-                $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/i', "\\1'$key'", file_get_contents($config));
+                $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/', "\\1'$key'", file_get_contents($config));
                 file_put_contents($config, $content);
             }
         }
