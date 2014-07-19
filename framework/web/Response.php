@@ -365,7 +365,10 @@ class Response extends \yii\base\Response
         }
         $request = Yii::$app->getRequest();
         if ($request->enableCookieValidation) {
-            $validationKey = $request->getCookieValidationKey();
+            if ($request->cookieValidationKey == '') {
+                throw new InvalidConfigException(get_class($request) . '::cookieValidationKey must be configured with a secret key.');
+            }
+            $validationKey = $request->cookieValidationKey;
         }
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;

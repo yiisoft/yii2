@@ -78,6 +78,20 @@ Upgrade from Yii 2.0 Beta
   `new \yii\caching\TagDependency(['tags' => 'TagName'])`, where `TagName` is similar to the group name that you
   previously used.
 
+* You must explicitly configure `yii\web\Request::cookieValidationKey` with a secret key. Previously this is done automatically.
+  To do so, modify your application configuration like the following:
+
+  ```php
+  return [
+      // ...
+      'components' => [
+          'request' => [
+              'cookieValidationKey' => 'your secret key here',
+          ],
+      ],
+  ];
+  ```
+
 * `yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
 new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in: 
 
@@ -130,7 +144,8 @@ new ones save the following code as `convert.php` that should be placed in the s
   its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
   Default encryption and hash parameters has been upgraded. If you need to decrypt/validate data that was encrypted/hashed
   before, use the following configuration of the 'security' component:
-  ```
+
+  ```php
   return [
       'components' => [
           'security' => [
