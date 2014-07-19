@@ -348,6 +348,7 @@ class Security extends Component
             if ($outputKey === false) {
                 throw new InvalidParamException('Invalid parameters to hash_pbkdf2()');
             }
+            return $outputKey;
         }
 
         // todo: is there a nice way to reduce the repetition in hkdf() and pbkdf2()?
