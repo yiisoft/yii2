@@ -25,7 +25,7 @@ class SecurityTest extends TestCase
     {
         parent::setUp();
         $this->security = new Security();
-        $this->security->derivationIterations = 100; // speed up test running
+        $this->security->derivationIterations = 1000; // speed up test running
     }
 
     // Tests :
@@ -79,70 +79,43 @@ class SecurityTest extends TestCase
         $this->assertFalse($this->security->validatePassword('test', $hash));
     }
 
-    /**
-     * Data provider for [[testEncrypt()]]
-     * @return array test data
-     */
-    public function dataProviderEncrypt()
+    public function testEncryptByPassword()
     {
-        return [
-            [
-                'password',
-                true,
-                '',
-                false,
-            ],
-            [
-                'password',
-                false,
-                '',
-                false,
-            ],
-            [
-                'key',
-                true,
-                42,
-                false
-            ],
-            [
-                'key',
-                false,
-                hex2bin('f0f1f2f3f4f5f6f7f8f9'),
-                false
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderEncrypt
-     *
-     * @param string $deriveKeyStrategy
-     * @param string $info
-     * @param boolean $useDeriveKeyUniqueSalt
-     * @param boolean $isSkipped
-     */
-    public function testEncrypt($deriveKeyStrategy, $useDeriveKeyUniqueSalt, $info, $isSkipped)
-    {
-        if ($isSkipped) {
-            $this->markTestSkipped("Unable to test '{$deriveKeyStrategy}' derive key strategy");
-            return;
-        }
-        $this->security->deriveKeyStrategy = $deriveKeyStrategy;
-        $this->security->useDeriveKeyUniqueSalt = $useDeriveKeyUniqueSalt;
-
         $data = 'known data';
         $key = 'secret';
-        $encryptedData = $this->security->encrypt($data, $key, $info);
+
+        $encryptedData = $this->security->encryptByPassword($data, $key);
         $this->assertFalse($data === $encryptedData);
-        $decryptedData = $this->security->decrypt($encryptedData, $key, $info);
+        $decryptedData = $this->security->decryptByPassword($encryptedData, $key);
         $this->assertEquals($data, $decryptedData);
+
+        $tampered = $encryptedData;
+        $tampered[20] = ~$tampered[20];
+        $decryptedData = $this->security->decryptByPassword($tampered, $key);
+        $this->assertTrue(false === $decryptedData);
     }
 
-    public function testGenerateRandomBytes()
+    public function testEncryptByKey()
     {
-        $length = 21;
-        $key = $this->security->generateRandomBytes($length);
-        $this->assertEquals($length, strlen($key));
+        $data = 'known data';
+        $key = $this->security->generateRandomKey(80);
+
+        $encryptedData = $this->security->encryptByKey($data, $key);
+        $this->assertFalse($data === $encryptedData);
+        $decryptedData = $this->security->decryptByKey($encryptedData, $key);
+        $this->assertEquals($data, $decryptedData);
+
+        $encryptedData = $this->security->encryptByKey($data, $key, $key);
+        $decryptedData = $this->security->decryptByKey($encryptedData, $key, $key);
+        $this->assertEquals($data, $decryptedData);
+
+        $tampered = $encryptedData;
+        $tampered[20] = ~$tampered[20];
+        $decryptedData = $this->security->decryptByKey($tampered, $key);
+        $this->assertTrue(false === $decryptedData);
+
+        $decryptedData = $this->security->decryptByKey($encryptedData, $key, $key . "\0");
+        $this->assertTrue(false === $decryptedData);
     }
 
     public function testGenerateRandomKey()
@@ -150,10 +123,17 @@ class SecurityTest extends TestCase
         $length = 21;
         $key = $this->security->generateRandomKey($length);
         $this->assertEquals($length, strlen($key));
-        $this->assertEquals(1, preg_match('/[A-Za-z0-9_.-]+/', $key));
     }
 
-    public function dataProviderDeriveKeyPassword()
+    public function testGenerateRandomString()
+    {
+        $length = 21;
+        $key = $this->security->generateRandomString($length);
+        $this->assertEquals($length, strlen($key));
+        $this->assertEquals(1, preg_match('/[A-Za-z0-9_-]+/', $key));
+    }
+
+    public function dataProviderPbkdf2()
     {
         return [
             [
@@ -232,7 +212,7 @@ class SecurityTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderDeriveKeyPassword
+     * @dataProvider dataProviderPbkdf2
      *
      * @param string $hash
      * @param string $password
@@ -241,17 +221,10 @@ class SecurityTest extends TestCase
      * @param int $length
      * @param string $okm
      */
-    public function testDeriveKeyPassword($hash, $password, $salt, $iterations, $length, $okm)
+    public function testPbkdf2($hash, $password, $salt, $iterations, $length, $okm)
     {
-        $this->security->deriveKeyStrategy = 'password';
-        $this->security->derivationHash = $hash;
         $this->security->derivationIterations = $iterations;
-        $this->security->cryptKeySize = $length;
-
-        $deriveKey = new \ReflectionMethod($this->security, 'deriveKey');
-        $deriveKey->setAccessible(true);
-        $DK = $deriveKey->invoke($this->security, $password, $salt);
-
+        $DK = $this->security->pbkdf2($hash, $password, $salt, $iterations, $length);
         $this->assertEquals($okm, bin2hex($DK));
     }
 
@@ -336,16 +309,9 @@ class SecurityTest extends TestCase
      * @param string $prk
      * @param string $okm
      */
-    public function testDeriveKeyKey($hash, $ikm, $salt, $info, $l, $prk, $okm)
+    public function testHkdf($hash, $ikm, $salt, $info, $l, $prk, $okm)
     {
-        $this->security->deriveKeyStrategy = 'key';
-        $this->security->derivationHash = $hash;
-        $this->security->cryptKeySize = $l;
-
-        $deriveKey = new \ReflectionMethod($this->security, 'deriveKey');
-        $deriveKey->setAccessible(true);
-        $DK = $deriveKey->invoke($this->security, hex2bin($ikm), hex2bin($salt), hex2bin($info));
-
-        $this->assertEquals($okm, bin2hex($DK));
+        $dk = $this->security->hkdf($hash, hex2bin($ikm), hex2bin($salt), hex2bin($info), $l);
+        $this->assertEquals($okm, bin2hex($dk));
     }
 }

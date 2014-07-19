@@ -1322,7 +1322,7 @@ class Request extends \yii\base\Request
     {
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
-        $options['value'] = Yii::$app->getSecurity()->generateRandomKey();
+        $options['value'] = Yii::$app->getSecurity()->generateRandomString();
 
         return new Cookie($options);
     }
