@@ -53,6 +53,22 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         new $appClass(ArrayHelper::merge($defaultConfig, $config));
     }
 
+    protected function mockWebApplication($config = [], $appClass = '\yii\web\Application')
+    {
+        static $defaultConfig = [
+            'id' => 'testapp',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                ],
+            ]
+        ];
+        $defaultConfig['vendorPath'] = dirname(dirname(__DIR__)) . '/vendor';
+
+        new $appClass(ArrayHelper::merge($defaultConfig, $config));
+    }
+
     /**
      * Destroys application in Yii::$app by setting it to null.
      */
