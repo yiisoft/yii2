@@ -66,7 +66,7 @@ return [
   'yii\caching\ExpressionDependency' => YII_PATH . '/caching/ExpressionDependency.php',
   'yii\caching\FileCache' => YII_PATH . '/caching/FileCache.php',
   'yii\caching\FileDependency' => YII_PATH . '/caching/FileDependency.php',
-  'yii\caching\GroupDependency' => YII_PATH . '/caching/GroupDependency.php',
+  'yii\caching\TagDependency' => YII_PATH . '/caching/TagDependency.php',
   'yii\caching\MemCache' => YII_PATH . '/caching/MemCache.php',
   'yii\caching\MemCacheServer' => YII_PATH . '/caching/MemCacheServer.php',
   'yii\caching\WinCache' => YII_PATH . '/caching/WinCache.php',

@@ -255,7 +255,7 @@ class Generator extends \yii\gii\Generator
                 }
                 return "\$form->field(\$model, '$attribute')->dropDownList("
                     . preg_replace("/\n\s*/", ' ', VarDumper::export($dropDownOptions)).", ['prompt' => ''])";
-            } else if ($column->phpType !== 'string' || $column->size === null) {
+            } elseif ($column->phpType !== 'string' || $column->size === null) {
                 return "\$form->field(\$model, '$attribute')->$input()";
             } else {
                 return "\$form->field(\$model, '$attribute')->$input(['maxlength' => $column->size])";

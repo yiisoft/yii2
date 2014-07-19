@@ -3,8 +3,6 @@
 return [
     // string, required, root directory of all source files
     'sourcePath' => __DIR__,
-    // string, required, root directory containing message translations.
-    'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
     // array, required, list of language codes that the extracted messages
     // should be translated to. For example, ['zh-CN', 'de'].
     'languages' => ['de'],
@@ -44,9 +42,30 @@ return [
         '.hgkeep',
         '/messages',
     ],
-    // Generated file format. Can be either "php", "po" or "db".
+
+    // 'php' output format is for saving messages to php files.
     'format' => 'php',
-    // When format is "db", you may specify the following two options
-    //'db' => 'db',
-    //'sourceMessageTable' => '{{%source_message}}',
+    // Root directory containing message translations.
+    'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
+
+
+    /*
+    // 'db' output format is for saving messages to database.
+    'format' => 'db',
+    // Connection component to use. Optional.
+    'db' => 'db',
+    // Custom source message table. Optional.
+    // 'sourceMessageTable' => '{{%source_message}}',
+    // Custom name for translation message table. Optional.
+    // 'messageTable' => '{{%message}}',
+    */
+
+    /*
+    // 'po' output format is for saving messages to gettext po files.
+    'format' => 'po',
+    // Root directory containing message translations.
+    'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
+    // Name of the file that will be used for translations.
+    'catalog' => 'messages',
+    */
 ];

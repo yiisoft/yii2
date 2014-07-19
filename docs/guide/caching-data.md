@@ -232,8 +232,8 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
 - [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
 - [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[yii\caching\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
-  with the same group name all at once by calling [[yii\caching\GroupDependency::invalidate()]].
+- [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
+  the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
 
 ## Query Caching <a name="query-caching"></a>

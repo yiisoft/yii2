@@ -435,7 +435,7 @@ class Controller extends Component implements ViewContextInterface
      * Please refer to [[render()]] on how to specify this parameter.
      * @throws InvalidParamException if an invalid path alias is used to specify the layout.
      */
-    protected function findLayoutFile($view)
+    public function findLayoutFile($view)
     {
         $module = $this->module;
         if (is_string($this->layout)) {

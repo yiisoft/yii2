@@ -242,8 +242,8 @@ Aquí abajo se muestra un sumario de las dependencias disponibles:
 - [[yii\caching\DbDependency]]: la dependencia cambia si el resultado de la consulta de la sentencia SQL especificada cambia.
 - [[yii\caching\ExpressionDependency]]: la dependencia cambia si el resultado de la expresión de PHP especificada cambia.
 - [[yii\caching\FileDependency]]:  la dependencia cambia si se modifica la última fecha de modificación del archivo.
-- [[yii\caching\GroupDependency]]: marca un elemento de datos en caché con un nombre de grupo. Puedes invalidar los elementos de datos almacenados en caché
-  con el mismo nombre del grupo a la vez llamando a [[yii\caching\GroupDependency::invalidate()]].
+- [[yii\caching\TagDependency]]: marca un elemento de datos en caché con un nombre de grupo. Puedes invalidar los elementos de datos almacenados en caché
+  con el mismo nombre del grupo a la vez llamando a [[yii\caching\TagDependency::invalidate()]].
 
 
 ## Consultas en Caché <a name="query-caching"></a>

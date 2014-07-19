@@ -605,7 +605,7 @@ class ActiveField extends Component
      * A radio button list is like a checkbox list, except that it only allows single selection.
      * The selection of the radio buttons is taken from the value of the model attribute.
      * @param array $items the data item used to generate the radio buttons.
-     * The array keys are the labels, while the array values are the corresponding radio button values.
+     * The array values are the labels, while the array keys are the corresponding radio values.
      * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the radio button list. The following options are specially handled:
      *

@@ -667,5 +667,35 @@ class ActiveRecordTest extends ElasticSearchTestCase
         Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
     }
 
+    public function testFindEmptyPkCondition()
+    {
+        /* @var $this TestCase|ActiveRecordTestTrait */
+        /* @var $orderItemClass \yii\db\ActiveRecordInterface */
+        $orderItemClass = $this->getOrderItemClass();
+        $orderItem = new $orderItemClass();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0], false);
+        $orderItem->save(false);
+        $this->afterSave();
+
+        $orderItems = $orderItemClass::find()->where(['_id' => [$orderItem->getPrimaryKey()]])->all();
+        $this->assertEquals(1, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['_id' => []])->all();
+        $this->assertEquals(0, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['_id' => null])->all();
+        $this->assertEquals(0, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['IN', '_id', [$orderItem->getPrimaryKey()]])->all();
+        $this->assertEquals(1, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['IN', '_id', []])->all();
+        $this->assertEquals(0, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['IN', '_id', [null]])->all();
+        $this->assertEquals(0, count($orderItems));
+    }
+
+
     // TODO test AR with not mapped PK
 }

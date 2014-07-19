@@ -39,15 +39,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
-//	public function update($table, $columns, $condition, &$params)
-//	{
-//		return '';
-//	}
-
-//	public function delete($table, $condition, &$params)
-//	{
-//		return '';
-//	}
 
     /**
      * @param integer $limit
@@ -70,11 +61,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return '';
         }
     }
-
-//	public function resetSequence($table, $value = null)
-//	{
-//		return '';
-//	}
 
     /**
      * Builds a SQL statement for renaming a DB table.
@@ -143,19 +129,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function buildOrderBy($columns)
-    {
-        if (empty($columns)) {
-            // hack so LIMIT will work if no ORDER BY is specified
-            return 'ORDER BY (SELECT NULL)';
-        } else {
-            return parent::buildOrderBy($columns);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function build($query, $params = [])
     {
         $query->prepareBuild($this);
@@ -189,7 +162,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Applies limit and offset to SQL query
      *
      * @param string $sql SQL query
-     * @param \yii\db\ActiveQuery $query the [[Query]] object from which the SQL statement generated
+     * @param \yii\db\Query $query the [[Query]] object from which the SQL statement generated
      * @return string resulting SQL
      */
     private function applyLimitAndOffset($sql, $query)
@@ -229,6 +202,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
         $sql = str_replace($originalOrdering, '', $sql);
+
+        if ($originalOrdering === '') {
+            // hack so LIMIT will work because ROW_NUMBER requires an ORDER BY clause
+            $originalOrdering = 'ORDER BY (SELECT NULL)';
+        }
+
         $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ({$originalOrdering}),", $sql);
         $sql = "SELECT TOP {$limit} {$select} FROM ($sql) sub WHERE rowNum > {$offset}";
         return $sql;
@@ -259,8 +238,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function isOldMssql()
     {
-        $this->db->open();
-        $version = preg_split("/\./", $this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+        $pdo = $this->db->getSlavePdo();
+        $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
         return $version[0] < 11;
     }
 }

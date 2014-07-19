@@ -1,22 +1,22 @@
 使用数据库
 ======================
 
-本小节将介绍如何如何创建一个从数据表 `country` 中获取国家数据并显示出来的页面。为了实现这个目标，你将会配置一个数据库连接，创建一个[活动记录](db-active-record.md)类，并且创建一个[操作](structure-controllers.md)及一个[视图](structure-views.md)。
+本章节将介绍如何如何创建一个从数据表 `country` 中获取国家数据并显示出来的页面。为了实现这个目标，你将会配置一个数据库连接，创建一个[活动记录](db-active-record.md)类，并且创建一个[操作](structure-controllers.md)及一个[视图](structure-views.md)。
 
-贯穿整个小节，你将会学到：
+贯穿整个章节，你将会学到：
 
 * 配置一个数据库连接
 * 定义一个活动记录类
 * 使用活动记录从数据库中查询数据
 * 以分页方式在视图中显示数据
 
-请注意，为了掌握本小节你应该具备最基本的数据库知识和使用经验。尤其是你应该知道如何创建数据库，如何通过数据库终端执行 SQL 语句。
+请注意，为了掌握本章你应该具备最基本的数据库知识和使用经验。尤其是应该知道如何创建数据库，如何通过数据库终端执行 SQL 语句。
 
 
 准备数据库 <a name="preparing-database"></a>
 --------------------
 
-首先创建一个名为 `yii2basic` 的数据库，你的应用将从这个数据库中获取数据。你可以创建 SQLite，MySQL，PostregSQL，MSSQL 或 Oracle 数据库，Yii 内置多种数据库支持。简单起见后面的内容将以 MySQL 为例做演示。
+首先创建一个名为 `yii2basic` 的数据库，应用将从这个数据库中获取数据。你可以创建 SQLite，MySQL，PostregSQL，MSSQL 或 Oracle 数据库，Yii 内置多种数据库支持。简单起见后面的内容将以 MySQL 为例做演示。
 
 然后在数据库中创建一个名为 `country` 的表并插入简单的数据。可以执行下面的语句：
 
@@ -64,7 +64,7 @@ return [
 
 上面配置的数据库连接可以在应用中通过 `Yii::$app->db` 访问。
 
-> 补充：`config/db.php` 将被包含在应用配置文件 `config/web.php` 中，后者指定了整个[应用](structure-applications.md)如何初始化。请参考[配置](concept-configurations.md)小节了解更多信息。
+> 补充：`config/db.php` 将被包含在应用配置文件 `config/web.php` 中，后者指定了整个[应用](structure-applications.md)如何初始化。请参考[配置](concept-configurations.md)章节了解更多信息。
 
 
 创建活动记录 <a name="creating-active-record"></a>
@@ -86,9 +86,9 @@ class Country extends ActiveRecord
 
 这个 `Country` 类继承自 [[yii\db\ActiveRecord]]。你不用在里面写任何代码。只需要像现在这样，Yii 就能根据类名去猜测对应的数据表名。
 
-> 补充：如果类名和数据表名不能直接对应，你可以重写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
+> 补充：如果类名和数据表名不能直接对应，可以重写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
 
-使用 `Country` 类你可以很容易地操作 `country` 表数据，就像这段代码：
+使用 `Country` 类可以很容易地操作 `country` 表数据，就像这段代码：
 
 ```php
 use app\models\Country;
@@ -107,7 +107,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> 补充：活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)小节了解更多信息。除此之外你还可以使用另一种更原生的称做[数据访问对象](db-dao)的方法操作数据库数据。
+> 补充：活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。除此之外你还可以使用另一种更原生的称做[数据访问对象](db-dao)的方法操作数据库数据。
 
 
 创建操作 <a name="creating-action"></a>
@@ -210,6 +210,6 @@ http://hostname/index.php?r=country/index&page=2
 总结 <a name="summary"></a>
 -------
 
-本小节中你学到了如何使用数据库。你还学到了如何取出并使用 [[yii\data\Pagination]] 和 [[yii\widgets\LinkPager]] 显示数据。
+本章节中你学到了如何使用数据库。你还学到了如何取出并使用 [[yii\data\Pagination]] 和 [[yii\widgets\LinkPager]] 显示数据。
 
-下一小节中你会学到如何使用 Yii 中强大的代码生成器 [Gii](tool-gii.md)，去帮助你实现一些常用的功能需求，例如增查改善（CRUD）数据表中的数据。事实上你之前所写的代码全部都可以由 Gii 自动生成：）
+下一章中你会学到如何使用 Yii 中强大的代码生成器 [Gii](tool-gii.md)，去帮助你实现一些常用的功能需求，例如增查改删（CRUD）数据表中的数据。事实上你之前所写的代码全部都可以由 Gii 自动生成。
