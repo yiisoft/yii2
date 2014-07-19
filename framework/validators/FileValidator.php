@@ -342,14 +342,14 @@ class FileValidator extends Validator
             $options['uploadRequired'] = Yii::$app->getI18n()->format($this->uploadRequired, [], Yii::$app->language);
         }
         
-        if ( is_array($this->mimeTypes) ) {
+        if ( $this->mimeTypes !== null ) {
             $options['mimeTypes'] = $this->mimeTypes;
             $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
                 'mimeTypes' => join(', ', $this->mimeTypes)
             ], Yii::$app->language);
         }
         
-        if ( !empty($this->extensions) ) {
+        if ( $this->extensions !== null ) {
             $options['extensions'] = $this->extensions;
             $options['wrongExtension'] = Yii::$app->getI18n()->format($this->wrongExtension, [
                 'extensions' => join(', ', $this->extensions)

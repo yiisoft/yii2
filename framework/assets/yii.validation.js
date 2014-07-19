@@ -98,7 +98,7 @@ yii.validation = (function ($) {
                     }
                     
                     if ( !~options.extensions.indexOf(ext) ) {
-                        pub.addMessage(messages, options.wrongExtension, file);
+                        pub.addMessage(messages, options.wrongExtension, file.name);
                     }
                 }
                 
