@@ -319,9 +319,9 @@ public function behaviors()
 ### [[yii\filters\Cors|Cors]] <a name="cors"></a>
 
 Cross-origin resource sharing [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) is a mechanism that allows many resources (e.g. fonts, JavaScript, etc.)
-on a web page to be requested from another domain outside the domain the resource originated from.
+on a Web page to be requested from another domain outside the domain the resource originated from.
 In particular, JavaScript's AJAX calls can use the XMLHttpRequest mechanism. Such "cross-domain" requests would
-otherwise be forbidden by web browsers, per the same origin security policy.
+otherwise be forbidden by Web browsers, per the same origin security policy.
 CORS defines a way in which the browser and the server can interact to determine whether or not to allow the cross-origin request.
 
 The [[yii\filters\Cors|Cors filter]] should be defined before Authentication / Authorization filters to make sure the CORS headers
@@ -329,15 +329,15 @@ will always be sent.
 
 ```php
 use yii\filters\Cors;
+use yii\helpers\ArrayHelper;
 
 public function behaviors()
 {
-    $behaviors = ArrayHelper::merge([
-        'corsHeaders' => [
+    return ArrayHelper::merge([
+        [
             'class' => Cors::className(),
         ],
     ], parent::behaviors());
-    return $behaviors;
 }
 ```
 
@@ -353,11 +353,12 @@ For example, allowing CORS for origin : `http://www.myserver.net` with method `G
 
 ```php
 use yii\filters\Cors;
+use yii\helpers\ArrayHelper;
 
 public function behaviors()
 {
-    $behaviors = ArrayHelper::merge([
-        'corsHeaders' => [
+    return ArrayHelper::merge([
+        [
             'class' => Cors::className(),
             'cors' => [
                 'Origin' => ['http://www.myserver.net'],
@@ -366,20 +367,20 @@ public function behaviors()
             ],
         ],
     ], parent::behaviors());
-    return $behaviors;
 }
 ```
 
 You may tune the CORS headers by overriding default parameters on a per action basis.
-For example adding the `Access-Control-Allow-Credentials` for `login` action could be done like this :
+For example adding the `Access-Control-Allow-Credentials` for the `login` action could be done like this :
 
 ```php
 use yii\filters\Cors;
+use yii\helpers\ArrayHelper;
 
 public function behaviors()
 {
-    $behaviors = ArrayHelper::merge([
-        'corsHeaders' => [
+    return ArrayHelper::merge([
+        [
             'class' => Cors::className(),
             'cors' => [
                 'Origin' => ['http://www.myserver.net'],
@@ -393,8 +394,5 @@ public function behaviors()
             ]
         ],
     ], parent::behaviors());
-    return $behaviors;
 }
 ```
-
-
