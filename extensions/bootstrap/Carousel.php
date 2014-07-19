@@ -46,7 +46,7 @@ class Carousel extends Widget
     public $controls = ['&lsaquo;', '&rsaquo;'];
     /**
      * @var boolean
-     * If false carousel indicators (<ol> tag with anchors to items) should not be diaplayed.
+     * If false carousel indicators (<ol> tag with anchors to items) should not be displayed.
      */
     public $showIndicators = true;
     /**
