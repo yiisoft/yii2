@@ -13,6 +13,10 @@ return [
     'bootstrap' => ['log'],
     'modules' => [],
     'components' => [
+        'request' => [
+            // a secret key used to validate cookies. You may modify this key with your own one.
+            'cookieValidationKey' => '',
+        ],
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
