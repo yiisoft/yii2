@@ -80,6 +80,68 @@ class Command extends \yii\base\Component
      * @var string the SQL statement that this command represents
      */
     private $_sql;
+    /**
+     * @var boolean whether to enable caching for this command.
+     * If not set, get value from $this->db
+     */
+    public $enableQueryCache;
+    /**
+     * @var integer number of seconds that query results can remain valid in cache.
+     * If not set, get value from $this->db
+     */
+    public $queryCacheDuration;
+    /**
+     * @var \yii\caching\Dependency the dependency that will be used when saving query results into cache.
+     * If not set, get value from $this->db
+     */
+    public $queryCacheDependency;
+
+    /**
+     * Turns on query caching for this command
+     * @param integer $duration the number of seconds that query results may remain valid in cache.
+     * @param \yii\caching\Dependency $dependency the dependency for the cached query result.
+     * @return $this
+     */
+    public function cache($duration, $dependency = null){
+		$this->enableQueryCache = true;
+		$this->queryCacheDuration = $duration;
+		$this->queryCacheDependency = $dependency;
+        return $this;
+    }
+
+	/**
+	 * Turns off query caching for this command
+	 * @return $this
+	 */
+	public function noCache(){
+		$this->enableQueryCache = true;
+		return $this;
+	}
+
+    /**
+     * Get state of queryCache. If not set in this command, get from $db.
+     * @return bool
+     */
+    public function isQueryCacheEnabled(){
+        return isset($this->enableQueryCache)?$this->enableQueryCache:$this->db->enableQueryCache;
+    }
+
+    /**
+     * Get cache duration. If not set in this command, get from $db.
+     * @return integer
+     */
+    public function getQueryCacheDuration(){
+        return isset($this->queryCacheDuration)?$this->queryCacheDuration:$this->db->queryCacheDuration;
+    }
+
+    /**
+     * Get cache dependency. If not set in this command, get from $db.
+     * @return \yii\caching\Dependency
+     */
+    public function getQueryCacheDependency(){
+        return isset($this->queryCacheDependency)?$this->queryCacheDependency:$this->db->queryCacheDependency;
+    }
+
 
     /**
      * Returns the SQL statement for this command.
@@ -408,7 +470,7 @@ class Command extends \yii\base\Component
         Yii::info($rawSql, 'yii\db\Command::query');
 
         /* @var $cache \yii\caching\Cache */
-        if ($db->enableQueryCache && $method !== '') {
+        if ($this->isQueryCacheEnabled() && $method !== '') {
             $cache = is_string($db->queryCache) ? Yii::$app->get($db->queryCache, false) : $db->queryCache;
         }
 
@@ -449,7 +511,7 @@ class Command extends \yii\base\Component
             Yii::endProfile($token, 'yii\db\Command::query');
 
             if (isset($cache, $cacheKey) && $cache instanceof Cache) {
-                $cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
+                $cache->set($cacheKey, $result, $this->getQueryCacheDuration(), $this->getQueryCacheDependency());
                 Yii::trace('Saved query result in cache', 'yii\db\Command::query');
             }
 

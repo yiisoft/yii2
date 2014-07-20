@@ -312,7 +312,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $params = $this->params;
         }
 
-        return $db->createCommand($sql, $params);
+        $command = $db->createCommand($sql, $params);
+
+        return isset($this->enableQueryCache) && $this->enableQueryCache
+            ? $command->cache($this->queryCacheDuration, $this->queryCacheDependency)
+            : $command;
     }
 
     /**
