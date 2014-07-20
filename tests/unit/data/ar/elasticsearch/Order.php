@@ -21,7 +21,7 @@ class Order extends ActiveRecord
 
     public function attributes()
     {
-        return ['id', 'customer_id', 'created_at', 'total'];
+        return ['id', 'customer_id', 'created_at', 'total', 'itemsArray'];
     }
 
     public function getCustomer()
@@ -32,6 +32,14 @@ class Order extends ActiveRecord
     public function getOrderItems()
     {
         return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+    }
+
+    /**
+     * A relation to Item defined via array valued attribute
+     */
+    public function getItemsByArrayValue()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'itemsArray'])->indexBy('id');
     }
 
     public function getItems()
