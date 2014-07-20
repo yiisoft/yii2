@@ -289,13 +289,17 @@ class Security extends Component
      */
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
-        // todo: parameter sanity checking
-
         $test = @hash_hmac($algo, '', '', true);
         if (!$test) {
             throw new InvalidParamException('Failed to generate HMAC with hash algorithm: ' . $algo);
         }
         $hashLength = StringHelper::byteLength($test);
+        if (is_string($length) && preg_match('{^\d{1,16}$}', $length)) {
+            $length = (int) $length;
+        }
+        if (!is_integer($length) || $length < 0 || $length > 255 * $hashLength) {
+            throw new InvalidParamException('Invalid length');
+        }
         $blocks = $length !== 0 ? ceil($length / $hashLength) : 1;
 
         if ($salt === null) {
@@ -313,7 +317,7 @@ class Security extends Component
         if ($length !== 0) {
             $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
         }
-        return StringHelper::byteSubstr($outputKey, 0, $length);
+        return $outputKey;
     }
 
     /**
@@ -346,6 +350,18 @@ class Security extends Component
         $test = @hash_hmac($algo, '', '', true);
         if (!$test) {
             throw new InvalidParamException('Failed to generate HMAC with hash algorithm: ' . $algo);
+        }
+        if (is_string($iterations) && preg_match('{^\d{1,16}$}', $iterations)) {
+            $iterations = (int) $iterations;
+        }
+        if (!is_integer($iterations) || $iterations < 1) {
+            throw new InvalidParamException('Invalid iterations');
+        }
+        if (is_string($length) && preg_match('{^\d{1,16}$}', $length)) {
+            $length = (int) $length;
+        }
+        if (!is_integer($length) || $length < 0) {
+            throw new InvalidParamException('Invalid length');
         }
         $hashLength = StringHelper::byteLength($test);
         $blocks = $length !== 0 ? ceil($length / $hashLength) : 1;
