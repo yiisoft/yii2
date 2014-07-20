@@ -321,7 +321,7 @@ class Command extends \yii\base\Component
             return $n;
         } catch (\Exception $e) {
             Yii::endProfile($token, __METHOD__);
-            $this->db->getSchema()->handleException($e, $rawSql);
+            throw $this->db->getSchema()->convertException($e, $rawSql);
         }
     }
 
@@ -456,7 +456,7 @@ class Command extends \yii\base\Component
             return $result;
         } catch (\Exception $e) {
             Yii::endProfile($token, 'yii\db\Command::query');
-            $this->db->getSchema()->handleException($e, $rawSql);
+            throw $this->db->getSchema()->convertException($e, $rawSql);
         }
     }
 

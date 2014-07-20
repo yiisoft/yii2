@@ -22,6 +22,7 @@ class Installer extends LibraryInstaller
     const EXTRA_BOOTSTRAP = 'bootstrap';
     const EXTRA_WRITABLE = 'writable';
     const EXTRA_EXECUTABLE = 'executable';
+    const EXTRA_CONFIG = 'config';
 
     const EXTENSION_FILE = 'yiisoft/extensions.php';
 
@@ -257,5 +258,34 @@ EOF
                 return;
             }
         }
+    }
+
+    /**
+     * Generates a cookie validation key for every app config listed in "config" in extra section.
+     * @param CommandEvent $event
+     */
+    public static function generateCookieValidationKey($event)
+    {
+        $extra = $event->getComposer()->getPackage()->getExtra();
+        if (empty($extra[self::EXTRA_CONFIG])) {
+            return;
+        }
+        $key = self::generateRandomString();
+        foreach ((array) $extra[self::EXTRA_CONFIG] as $config) {
+            if (is_file($config)) {
+                $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/', "\\1'$key'", file_get_contents($config));
+                file_put_contents($config, $content);
+            }
+        }
+    }
+
+    public static function generateRandomString()
+    {
+        if (!extension_loaded('mcrypt')) {
+            throw new \Exception('The mcrypt PHP extension is required by Yii2.');
+        }
+        $length = 32;
+        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
     }
 }

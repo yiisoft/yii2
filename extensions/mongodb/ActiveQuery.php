@@ -64,6 +64,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     use ActiveQueryTrait;
     use ActiveRelationTrait;
 
+    /**
+     * @event Event an event that is triggered when the query is initialized via [[init()]].
+     */
+    const EVENT_INIT = 'init';
+
 
     /**
      * Constructor.
@@ -74,6 +79,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->modelClass = $modelClass;
         parent::__construct($config);
+    }
+
+    /**
+     * Initializes the object.
+     * This method is called at the end of the constructor. The default implementation will trigger
+     * an [[EVENT_INIT]] event. If you override this method, make sure you call the parent implementation at the end
+     * to ensure triggering of the event.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
     }
 
     /**

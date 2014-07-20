@@ -66,6 +66,7 @@ Yii Framework 2 Change Log
 - Bug #4127: `CaptchaValidator` clientside error message wasn't formed properly (samdark)
 - Bug #4162: Fixed bug where schema name was not used in ’SHOW CREATE TABLE’ query in `yii\db\mysql\Schema` (stevekr)
 - Bug #4241: `yii\widgets\Pjax` was incorrectly setting container id (mitalcoi)
+- Bug #4276: Added check for UPLOAD_ERR_NO_FILE in `yii\web\UploadedFile` and return null if no file was uploaded (OmgDef)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
@@ -129,6 +130,7 @@ Yii Framework 2 Change Log
     - Added note about the fact that intl is required for non-latin languages to requirements checker.
 - Enh #3992: In mail layouts you can now access the message object via `$message` variable (qiangxue)
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
+- Enh #4048: Added `init` event to `ActiveQuery` classes (qiangxue)
 - Enh #4072: `\yii\rbac\PhpManager` adjustments (samdark)
     - Data is now stored in three separate files for items, assignments and rules. File format is simpler.
     - Removed `authFile`. Added `itemFile`, `assignmentFile` and `ruleFile`.
@@ -178,6 +180,7 @@ Yii Framework 2 Change Log
 - Chg #4201: change default value of `SyslogTarget::facility` from LOG_SYSLOG to LOG_USER (dizews)
 - Chg #4227: `\yii\widgets\LinkPager::$hideOnSinglePage` is now `true` by default (samdark)
 - Chg #4318: `yii\helpers\Html::ul()` and `ol()` will return an empty list tag if an empty item array is given (qiangxue)
+- Chg #4331: `yii\helpers\Url` now uses `UrlManager` to determine base URL when generating URLs (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
@@ -186,7 +189,9 @@ Yii Framework 2 Change Log
 - Chg: Changed the default value of the `keyPrefix` property of cache components to be null (qiangxue)
 - Chg: Added `prefix` column to `yii\log\DbTarget` to have the same amount of information logged as in files and emails (cebe)
 - Chg: Use `limit(null)` instead of `limit(-1)` in migration controller to be compatible to more backends (cebe)
+- Chg: `yii\web\Request::cookieValidationKey` must be explicitly specified for each application that wants to use cookie validation (qiangxue)
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
+- New #4193: Added `yii\filters\Cors` CORS filter to allow Cross Origin Resource Sharing (pgaultier)
 
 
 2.0.0-beta April 13, 2014
@@ -253,6 +258,7 @@ Yii Framework 2 Change Log
 - Bug #2848: Individual queries should be enclosed within parenthesis in a UNION query (qiangxue)
 - Bug #2862: Using `DbCache` while enabling schema caching may cause infinite loops (qiangxue)
 - Bug #3052: Fixed the issue that cache dependency data is not reused when `reusable` is set true (qiangxue)
+- Bug #3443: Fixed `yii\bootstrap\Nav` and `yii\bootstrap\Dropdown` were generating wrong ids for submenus (arturf)
 - Bug #3691: Fixed the issue that `CookieCollection::has` always returns false for cookies from browser (sonicgd)
 - Bug #4212: MSSQL query builder should not generate the `ORDER BY` clause when it is not needed (qiangxue)
 - Bug #4232: `TableSchema::sequenceName` for PostgreSQL should remove the enclosing quotes (katzz0, qiangxue)
