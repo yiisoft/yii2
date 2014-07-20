@@ -62,6 +62,7 @@ trait ActiveRelationTrait
      */
     public $inverseOf;
 
+
     /**
      * Clones internal objects.
      */
@@ -106,7 +107,6 @@ trait ActiveRelationTrait
         if ($callable !== null) {
             call_user_func($callable, $relation);
         }
-
         return $this;
     }
 
@@ -133,7 +133,6 @@ trait ActiveRelationTrait
     public function inverseOf($relationName)
     {
         $this->inverseOf = $relationName;
-
         return $this;
     }
 
@@ -244,7 +243,14 @@ trait ActiveRelationTrait
                     $value = [];
                     foreach ($keys as $key) {
                         if (isset($buckets[$key])) {
-                            $value = array_merge($value, $buckets[$key]);
+                            if ($this->indexBy !== null) {
+                                // if indexBy is set, array_merge will cause renumbering of numeric array
+                                foreach($buckets[$key] as $bucketKey => $bucketValue) {
+                                    $value[$bucketKey] = $bucketValue;
+                                }
+                            } else {
+                                $value = array_merge($value, $buckets[$key]);
+                            }
                         }
                     }
                 } else {
