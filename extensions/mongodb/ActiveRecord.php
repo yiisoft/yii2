@@ -7,6 +7,7 @@
 
 namespace yii\mongodb;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\db\StaleObjectException;
@@ -96,7 +97,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
