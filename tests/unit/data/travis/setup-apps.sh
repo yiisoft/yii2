@@ -18,7 +18,7 @@ else
     cd apps/advanced && composer require --dev codeception/codeception:2.0.* codeception/specify:* codeception/verify:*
     ./init --env=Development
     sed -i s/root/travis/ common/config/main-local.php
-    sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" backend/config/main.php
+    sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" frontend/config/main.php
     sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" backend/config/main.php
     cd backend && php ../vendor/bin/codecept build
     cd ../common && php ../vendor/bin/codecept build
