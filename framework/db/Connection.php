@@ -432,7 +432,7 @@ class Connection extends Component
         }
         $token = 'Opening DB connection: ' . $this->dsn;
         try {
-            Yii::trace($token, __METHOD__);
+            Yii::info($token, __METHOD__);
             Yii::beginProfile($token, __METHOD__);
             $this->pdo = $this->createPdoInstance();
             $this->initConnection();
