@@ -465,7 +465,11 @@ class Connection extends Component
     {
         $info = end($this->_queryCacheInfo);
         if ($this->enableQueryCache) {
-            $cache = $this->queryCache instanceof Cache ? $this->queryCache : Yii::$app->get($this->queryCache, false);
+            if (is_string($this->queryCache) && Yii::$app) {
+                $cache = Yii::$app->get($this->queryCache, false);
+            } else {
+                $cache = $this->queryCache;
+            }
             if ($cache instanceof Cache) {
                 return is_array($info) ? [$cache, $info[0], $info[1]] : [$cache, null, null];
             }
