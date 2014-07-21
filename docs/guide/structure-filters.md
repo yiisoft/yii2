@@ -346,10 +346,10 @@ The Cors filtering could be tuned using the `cors` property.
 * `cors['Origin']`: array used to define allowed origins. Can be `['*']` (everyone) or `['http://www.myserver.net', 'http://www.myotherserver.com']`. Default to `['*']`.
 * `cors['Access-Control-Request-Method']`: array of allowed verbs like `['GET', 'OPTIONS', 'HEAD']`.  Default to `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
 * `cors['Access-Control-Request-Headers']`: array of allowed headers. Can be `['*']` all headers or specific ones `['X-Request-With']`. Default to `['*']`.
-* `cors['Access-Control-Allow-Credentials']`: define if current request can be made using credentials. Can be `true`, `false`. Default to `true`.
+* `cors['Access-Control-Allow-Credentials']`: define if current request can be made using credentials. Can be `true`, `false` or `null` (not set). Default to `null`.
 * `cors['Access-Control-Max-Age']`: define lifetime of pre-flight request. Default to `86400`.
 
-For example, allowing CORS for origin : `http://www.myserver.net` with method `GET`, `HEAD` and `OPTIONS` and do not send `Access-Control-Allow-Credentials` header :
+For example, allowing CORS for origin : `http://www.myserver.net` with method `GET`, `HEAD` and `OPTIONS` :
 
 ```php
 use yii\filters\Cors;
@@ -363,7 +363,6 @@ public function behaviors()
             'cors' => [
                 'Origin' => ['http://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
-                'Access-Control-Allow-Credentials' => null,
             ],
         ],
     ], parent::behaviors());
@@ -385,7 +384,6 @@ public function behaviors()
             'cors' => [
                 'Origin' => ['http://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
-                'Access-Control-Allow-Credentials' => null,
             ],
             'actions' => [
                 'login' => [
