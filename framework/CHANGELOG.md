@@ -199,6 +199,7 @@ Yii Framework 2 Change Log
 - Chg: `yii\web\Request::cookieValidationKey` must be explicitly specified for each application that wants to use cookie validation (qiangxue)
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
 - New #4193: Added `yii\filters\Cors` CORS filter to allow Cross Origin Resource Sharing (pgaultier)
+- Bug #4388: `yii\filters\Cors` set correct header ('s' was missing) in CORS filter and fix default value for `Access-Control-Allow-Credentials` to `not set` (pgaultier)
 
 
 2.0.0-beta April 13, 2014
