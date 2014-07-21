@@ -277,7 +277,7 @@ Query caching has three global configurable options through [[yii\db\Connection]
   It defaults to `'cache'`. Query caching is enabled only if there is a valid cache application component.
 
 
-### Usages <<a name="query-caching-usages"></a>
+### Usages <a name="query-caching-usages"></a>
 
 You can use [[yii\db\Connection::cache()]] if you have multiple SQL queries that need to take advantage of
 query caching. The usage is as follows,
