@@ -852,7 +852,6 @@ class Command extends Component
             Yii::endProfile($token, 'yii\db\Command::query');
         } catch (\Exception $e) {
             Yii::endProfile($token, 'yii\db\Command::query');
-            $this->db->resetQueryCacheInfo();
             throw $this->db->getSchema()->convertException($e, $rawSql);
         }
 

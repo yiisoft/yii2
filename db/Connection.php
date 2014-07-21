@@ -204,11 +204,12 @@ class Connection extends Component
      * @var boolean whether to enable query caching.
      * Note that in order to enable query caching, a valid cache component as specified
      * by [[queryCache]] must be enabled and [[enableQueryCache]] must be set true.
+     * Also, only the results of the queries enclosed within [[cache()]] will be cached.
      * @see queryCache
      * @see cache()
      * @see noCache()
      */
-    public $enableQueryCache = false;
+    public $enableQueryCache = true;
     /**
      * @var integer the default number of seconds that query results can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
@@ -399,6 +400,7 @@ class Connection extends Component
      * Use 0 to indicate that the cached data will never expire.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query results.
      * @return mixed the return result of the callable
+     * @throws \Exception if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see noCache()
@@ -406,9 +408,14 @@ class Connection extends Component
     public function cache(callable $callable, $duration = null, $dependency = null)
     {
         $this->_queryCacheInfo[] = [$duration === null ? $this->queryCacheDuration : $duration, $dependency];
-        $result = call_user_func($callable, $this);
-        array_pop($this->_queryCacheInfo);
-        return $result;
+        try {
+            $result = call_user_func($callable, $this);
+            array_pop($this->_queryCacheInfo);
+            return $result;
+        } catch (\Exception $e) {
+            array_pop($this->_queryCacheInfo);
+            throw $e;
+        }
     }
 
     /**
@@ -430,6 +437,7 @@ class Connection extends Component
      * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
      * The signature of the callable is `function (Connection $db)`.
      * @return mixed the return result of the callable
+     * @throws \Exception if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see cache()
@@ -437,9 +445,14 @@ class Connection extends Component
     public function noCache(callable $callable)
     {
         $this->_queryCacheInfo[] = false;
-        $result = call_user_func($callable, $this);
-        array_pop($this->_queryCacheInfo);
-        return $result;
+        try {
+            $result = call_user_func($callable, $this);
+            array_pop($this->_queryCacheInfo);
+            return $result;
+        } catch (\Exception $e) {
+            array_pop($this->_queryCacheInfo);
+            throw $e;
+        }
     }
 
     /**
@@ -458,16 +471,6 @@ class Connection extends Component
             }
         }
         return null;
-    }
-
-    /**
-     * Cleans up the query cache information.
-     * This method is used internally by [[Command]].
-     * @internal
-     */
-    public function resetQueryCacheInfo()
-    {
-        $this->_queryCacheInfo = [];
     }
 
     /**
