@@ -31,7 +31,7 @@ install:
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
 # basic and advanced application:
-  - tests/unit/data/travis/setup-apps.sh
+#  - tests/unit/data/travis/setup-apps.sh
 
 before_script:
   - echo 'elasticsearch version ' && curl http://localhost:9200/
@@ -40,16 +40,16 @@ before_script:
   - tests/unit/data/travis/sphinx-setup.sh
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 # basic and advanced application:
-  - tests/unit/data/travis/init-apps.sh
+#  - tests/unit/data/travis/init-apps.sh
 
 script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
-  - cd apps/basic && php vendor/bin/codecept run
-  - cd ../advanced/backend && ../vendor/bin/codecept run
-  - cd ../common && ../vendor/bin/codecept run
-  - cd ../frontend && ../vendor/bin/codecept run
+#  - cd apps/basic && php vendor/bin/codecept run
+#  - cd ../advanced/backend && ../vendor/bin/codecept run
+#  - cd ../common && ../vendor/bin/codecept run
+#  - cd ../frontend && ../vendor/bin/codecept run
 
 after_script:
-  - cd ../../..
+#  - cd ../../..
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
