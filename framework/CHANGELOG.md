@@ -167,6 +167,11 @@ Yii Framework 2 Change Log
 - Chg #3383: Added `$type` parameter to `IdentityInterface::findIdentityByAccessToken()` (qiangxue)
 - Chg #3531: \yii\grid\GridView now allows any character (except ":") in the attribute part of the shorthand syntax for columns (rawtaz)
 - Chg #3544: Added `$key` as a parameter to the callable specified via `yii\grid\DataColumn::value` (mdmunir)
+- Chg #3611: Query caching is refactored. (qiangxue)
+    - `yii\db\Connection::beginCache()` and `endCache()` are removed.
+    - Added `yii\db\Connection::cache()` and `noCache()`.
+    - Added `Command::cache()` and `noCache()`.
+    - `yii\db\Connection::queryCacheDuration` is now used as a default cache duration parameter.
 - Chg #3640: All cookies are now httpOnly by default in order to increase overall security (samdark)
 - Chg #3687: Default `sourceLanguage` and `language` are now `en-US` in order for i18n formatter to work correctly (samdark)
 - Chg #3804: Added `fileinfo` PHP extension to the basic requirement of Yii (Ragazzo)
