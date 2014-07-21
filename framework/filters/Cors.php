@@ -79,7 +79,7 @@ class Cors extends ActionFilter
         'Origin' => ['*'],
         'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
         'Access-Control-Request-Headers' => ['*'],
-        'Access-Control-Allow-Credentials' => true,
+        'Access-Control-Allow-Credentials' => null,
         'Access-Control-Max-Age' => 86400,
     ];
 
@@ -151,14 +151,19 @@ class Cors extends ActionFilter
             }
         }
 
-        $this->prepareAllowHeaders('Method', $requestHeaders, $responseHeaders);
+
         $this->prepareAllowHeaders('Headers', $requestHeaders, $responseHeaders);
+
+        if (isset($requestHeaders['Access-Control-Request-Method'])) {
+            $responseHeaders['Access-Control-Allow-Methods'] = implode(', ', $this->cors['Access-Control-Request-Method']);
+        }
 
         if ($this->cors['Access-Control-Allow-Credentials'] === true) {
             $responseHeaders['Access-Control-Allow-Credentials'] = 'true';
         } elseif ($this->cors['Access-Control-Allow-Credentials'] === false) {
             $responseHeaders['Access-Control-Allow-Credentials'] = 'false';
         }
+
         if (($_SERVER['REQUEST_METHOD'] === 'OPTIONS') && ($this->cors['Access-Control-Max-Age'] !== null)) {
             $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
         }
@@ -178,20 +183,12 @@ class Cors extends ActionFilter
         $responseHeaderField = 'Access-Control-Allow-'.$type;
         if (isset($requestHeaders[$requestHeaderField])) {
             if (in_array('*', $this->cors[$requestHeaderField])) {
-                if ($type === 'Method') {
-                    $responseHeaders[$responseHeaderField] = strtoupper($requestHeaders[$requestHeaderField]);
-                } elseif ($type === 'Headers') {
-                    $responseHeaders[$responseHeaderField] = $this->headerize($requestHeaders[$requestHeaderField]);
-                }
+                $responseHeaders[$responseHeaderField] = $this->headerize($requestHeaders[$requestHeaderField]);
             } else {
                 $requestedData = preg_split("/[\s,]+/", $requestHeaders[$requestHeaderField], -1, PREG_SPLIT_NO_EMPTY);
                 $acceptedData = [];
                 foreach ($requestedData as $req) {
-                    if ($type === 'Method') {
-                        $req = strtoupper($req);
-                    } elseif ($type === 'Headers') {
-                        $req = $this->headerize($req);
-                    }
+                    $req = $this->headerize($req);
                     if (in_array($req, $this->cors[$requestHeaderField])) {
                         $acceptedData[] = $req;
                     }
