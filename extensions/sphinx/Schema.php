@@ -88,6 +88,11 @@ class Schema extends Object
         $this->resolveIndexNames($index, $name);
         $this->resolveIndexType($index);
 
+        $localIndex = $this->getIndexFromDistributed($index);
+        if ($localIndex!=null) {
+            return $this->loadIndexSchema($localIndex);
+        }
+
         if ($this->findColumns($index)) {
             return $index;
         } else {
@@ -114,6 +119,27 @@ class Schema extends Object
         $indexTypes = $this->getIndexTypes();
         $index->type = array_key_exists($index->name, $indexTypes) ? $indexTypes[$index->name] : 'unknown';
         $index->isRuntime = ($index->type == 'rt');
+    }
+
+    /**
+     * Returns the name of the first local index of a distributed index. If the
+     * given index is not distributed, or if no local index exists inside, null
+     * is returned.
+     * @param IndexSchema $index the index metadata object
+     * @return string $name the local index name
+     */
+    protected function getIndexFromDistributed($index)
+    {
+        $sql = 'DESCRIBE ' . $this->quoteSimpleIndexName($index->name);
+        try {
+            $columns = $this->db->createCommand($sql)->queryAll();
+        } catch (Exception $ex) {
+            return null;
+        }
+        if (isset($columns[0]) && array_key_exists('Agent', $columns[0])) {
+            return $columns[0]['Agent'];
+        }
+        return null;
     }
 
     /**
