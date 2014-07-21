@@ -595,7 +595,7 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function assign($role, $userId, $rule = null, $data = null)
+    public function assign($role, $userId, $rule = null)
     {
         $assignment = new Assignment([
             'userId' => $userId,
