@@ -459,12 +459,19 @@ class Schema extends Object
             }
             throw $e;
         }
-        foreach ($columns as $info) {
-            $column = $this->loadColumnSchema($info);
-            $index->columns[$column->name] = $column;
-            if ($column->isPrimaryKey) {
-                $index->primaryKey = $column->name;
+
+        if (empty($columns[0]['Agent'])) {
+            foreach ($columns as $info) {
+                $column = $this->loadColumnSchema($info);
+                $index->columns[$column->name] = $column;
+                if ($column->isPrimaryKey) {
+                    $index->primaryKey = $column->name;
+                }
             }
+        } else {
+            // Distributed index :
+            $agent = $this->getIndexSchema($columns[0]['Agent']);
+            $index->columns = $agent->columns;
         }
 
         return true;
