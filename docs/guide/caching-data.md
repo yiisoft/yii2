@@ -267,7 +267,7 @@ Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-acti
 Query caching has three global configurable options through [[yii\db\Connection]]:
 
 * [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off query caching.
-  It defaults to false. Note that to effectively turn on query caching, you also need to have a valid
+  It defaults to true. Note that to effectively turn on query caching, you also need to have a valid
   cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
   that a query result can remain valid in the cache. You can use 0 to indicate a query result should
