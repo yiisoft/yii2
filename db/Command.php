@@ -8,8 +8,8 @@
 namespace yii\db;
 
 use Yii;
+use yii\base\Component;
 use yii\base\NotSupportedException;
-use yii\caching\Cache;
 
 /**
  * Command represents a SQL statement to be executed against a database.
@@ -51,7 +51,7 @@ use yii\caching\Cache;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Command extends \yii\base\Component
+class Command extends Component
 {
     /**
      * @var Connection the DB connection that this command is associated with
@@ -73,6 +73,19 @@ class Command extends \yii\base\Component
      */
     public $params = [];
     /**
+     * @var integer the default number of seconds that query results can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire. And use a negative number to indicate
+     * query cache should not be used.
+     * @see cache()
+     */
+    public $queryCacheDuration;
+    /**
+     * @var \yii\caching\Dependency the dependency to be associated with the cached query result for this command
+     * @see cache()
+     */
+    public $queryCacheDependency;
+
+    /**
      * @var array pending parameters to be bound to the current PDO statement.
      */
     private $_pendingParams = [];
@@ -80,6 +93,32 @@ class Command extends \yii\base\Component
      * @var string the SQL statement that this command represents
      */
     private $_sql;
+
+
+    /**
+     * Enables query cache for this command.
+     * @param integer $duration the number of seconds that query result of this command can remain valid in the cache.
+     * If this is not set, the value of [[Connection::queryCacheDuration]] will be used instead.
+     * Use 0 to indicate that the cached data will never expire.
+     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query result.
+     * @return static the command object itself
+     */
+    public function cache($duration = null, $dependency = null)
+    {
+        $this->queryCacheDuration = $duration === null ? $this->db->queryCacheDuration : $duration;
+        $this->queryCacheDependency = $dependency;
+        return $this;
+    }
+
+    /**
+     * Disables query cache for this command.
+     * @return static the command object itself
+     */
+    public function noCache()
+    {
+        $this->queryCacheDuration = -1;
+        return $this;
+    }
 
     /**
      * Returns the SQL statement for this command.
@@ -155,6 +194,7 @@ class Command extends \yii\base\Component
     public function prepare($forRead = null)
     {
         if ($this->pdoStatement) {
+            $this->bindPendingParams();
             return;
         }
 
@@ -172,6 +212,7 @@ class Command extends \yii\base\Component
 
         try {
             $this->pdoStatement = $pdo->prepare($sql);
+            $this->bindPendingParams();
         } catch (\Exception $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
@@ -204,8 +245,6 @@ class Command extends \yii\base\Component
     public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
     {
         $this->prepare();
-
-        $this->bindPendingParams();
 
         if ($dataType === null) {
             $dataType = $this->db->getSchema()->getPdoType($value);
@@ -288,44 +327,6 @@ class Command extends \yii\base\Component
     }
 
     /**
-     * Executes the SQL statement.
-     * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
-     * No result set will be returned.
-     * @return integer number of rows affected by the execution.
-     * @throws Exception execution failed
-     */
-    public function execute()
-    {
-        $sql = $this->getSql();
-
-        $rawSql = $this->getRawSql();
-
-        Yii::info($rawSql, __METHOD__);
-
-        if ($sql == '') {
-            return 0;
-        }
-
-        $this->prepare(false);
-        $this->bindPendingParams();
-
-        $token = $rawSql;
-        try {
-            Yii::beginProfile($token, __METHOD__);
-
-            $this->pdoStatement->execute();
-            $n = $this->pdoStatement->rowCount();
-
-            Yii::endProfile($token, __METHOD__);
-
-            return $n;
-        } catch (\Exception $e) {
-            Yii::endProfile($token, __METHOD__);
-            throw $this->db->getSchema()->convertException($e, $rawSql);
-        }
-    }
-
-    /**
      * Executes the SQL statement and returns query result.
      * This method is for executing a SQL query that returns result set, such as `SELECT`.
      * @return DataReader the reader object for fetching the query result
@@ -390,74 +391,6 @@ class Command extends \yii\base\Component
     public function queryColumn()
     {
         return $this->queryInternal('fetchAll', \PDO::FETCH_COLUMN);
-    }
-
-    /**
-     * Performs the actual DB query of a SQL statement.
-     * @param string $method method of PDOStatement to be called
-     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
-     * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
-     * @return mixed the method execution result
-     * @throws Exception if the query causes any problem
-     */
-    private function queryInternal($method, $fetchMode = null)
-    {
-        $db = $this->db;
-        $rawSql = $this->getRawSql();
-
-        Yii::info($rawSql, 'yii\db\Command::query');
-
-        /* @var $cache \yii\caching\Cache */
-        if ($db->enableQueryCache && $method !== '') {
-            $cache = is_string($db->queryCache) ? Yii::$app->get($db->queryCache, false) : $db->queryCache;
-        }
-
-        if (isset($cache) && $cache instanceof Cache) {
-            $cacheKey = [
-                __CLASS__,
-                $method,
-                $db->dsn,
-                $db->username,
-                $rawSql,
-            ];
-            if (($result = $cache->get($cacheKey)) !== false) {
-                Yii::trace('Query result served from cache', 'yii\db\Command::query');
-
-                return $result;
-            }
-        }
-
-        $this->prepare(true);
-        $this->bindPendingParams();
-
-        $token = $rawSql;
-        try {
-            Yii::beginProfile($token, 'yii\db\Command::query');
-
-            $this->pdoStatement->execute();
-
-            if ($method === '') {
-                $result = new DataReader($this);
-            } else {
-                if ($fetchMode === null) {
-                    $fetchMode = $this->fetchMode;
-                }
-                $result = call_user_func_array([$this->pdoStatement, $method], (array) $fetchMode);
-                $this->pdoStatement->closeCursor();
-            }
-
-            Yii::endProfile($token, 'yii\db\Command::query');
-
-            if (isset($cache, $cacheKey) && $cache instanceof Cache) {
-                $cache->set($cacheKey, $result, $db->queryCacheDuration, $db->queryCacheDependency);
-                Yii::trace('Saved query result in cache', 'yii\db\Command::query');
-            }
-
-            return $result;
-        } catch (\Exception $e) {
-            Yii::endProfile($token, 'yii\db\Command::query');
-            throw $this->db->getSchema()->convertException($e, $rawSql);
-        }
     }
 
     /**
@@ -805,5 +738,129 @@ class Command extends \yii\base\Component
         $sql = $this->db->getQueryBuilder()->checkIntegrity($check, $schema, $table);
 
         return $this->setSql($sql);
+    }
+
+    /**
+     * Executes the SQL statement.
+     * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
+     * No result set will be returned.
+     * @return integer number of rows affected by the execution.
+     * @throws Exception execution failed
+     */
+    public function execute()
+    {
+        $sql = $this->getSql();
+
+        $rawSql = $this->getRawSql();
+
+        Yii::info($rawSql, __METHOD__);
+
+        if ($sql == '') {
+            return 0;
+        }
+
+        $this->prepare(false);
+
+        $token = $rawSql;
+        try {
+            Yii::beginProfile($token, __METHOD__);
+
+            $this->pdoStatement->execute();
+            $n = $this->pdoStatement->rowCount();
+
+            Yii::endProfile($token, __METHOD__);
+
+            return $n;
+        } catch (\Exception $e) {
+            Yii::endProfile($token, __METHOD__);
+            throw $this->db->getSchema()->convertException($e, $rawSql);
+        }
+    }
+
+    /**
+     * Returns the effective query cache information.
+     * @return array the current query cache information, or null if query cache is not used.
+     */
+    private function getQueryCacheInfo()
+    {
+        $info = $this->db->getQueryCacheInfo();
+        if (is_array($info)) {
+            if ($this->queryCacheDuration !== null) {
+                $info[1] = $this->queryCacheDuration;
+            }
+            if ($this->queryCacheDependency !== null) {
+                $info[2] = $this->queryCacheDependency;
+            }
+            if ($info[1] !== null && $info[1] >= 0) {
+                return $info;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Performs the actual DB query of a SQL statement.
+     * @param string $method method of PDOStatement to be called
+     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
+     * @return mixed the method execution result
+     * @throws Exception if the query causes any problem
+     */
+    private function queryInternal($method, $fetchMode = null)
+    {
+        $rawSql = $this->getRawSql();
+
+        Yii::info($rawSql, 'yii\db\Command::query');
+
+        if ($method !== '') {
+            $info = $this->getQueryCacheInfo();
+            if (is_array($info)) {
+                /* @var $cache \yii\caching\Cache */
+                $cache = $info[0];
+                $cacheKey = [
+                    __CLASS__,
+                    $method,
+                    $this->db->dsn,
+                    $this->db->username,
+                    $rawSql,
+                ];
+                if (($result = $cache->get($cacheKey)) !== false) {
+                    Yii::trace('Query result served from cache', 'yii\db\Command::query');
+                    return $result;
+                }
+            }
+        }
+
+        $this->prepare(true);
+
+        $token = $rawSql;
+        try {
+            Yii::beginProfile($token, 'yii\db\Command::query');
+
+            $this->pdoStatement->execute();
+
+            if ($method === '') {
+                $result = new DataReader($this);
+            } else {
+                if ($fetchMode === null) {
+                    $fetchMode = $this->fetchMode;
+                }
+                $result = call_user_func_array([$this->pdoStatement, $method], (array) $fetchMode);
+                $this->pdoStatement->closeCursor();
+            }
+
+            Yii::endProfile($token, 'yii\db\Command::query');
+        } catch (\Exception $e) {
+            Yii::endProfile($token, 'yii\db\Command::query');
+            $this->db->resetQueryCacheInfo();
+            throw $this->db->getSchema()->convertException($e, $rawSql);
+        }
+
+        if (isset($cache, $cacheKey, $info)) {
+            $cache->set($cacheKey, $result, $info[1], $info[2]);
+            Yii::trace('Saved query result in cache', 'yii\db\Command::query');
+        }
+
+        return $result;
     }
 }
