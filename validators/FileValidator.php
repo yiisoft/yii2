@@ -14,6 +14,8 @@ use yii\helpers\FileHelper;
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.
  *
+ * Note that you should enable `fileinfo` PHP extension.
+ *
  * @property integer $sizeLimit The size limit for uploaded files. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -213,7 +215,7 @@ class FileValidator extends Validator
                     return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
                     return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, true)) {
+                } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, false)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
@@ -268,7 +270,7 @@ class FileValidator extends Validator
      */
     public function isEmpty($value, $trim = false)
     {
-        $value = is_array($value) && !empty($value) ? $value[0] : $value;
+        $value = is_array($value) ? reset($value) : $value;
         return !($value instanceof UploadedFile) || $value->error == UPLOAD_ERR_NO_FILE;
     }
 
@@ -306,7 +308,7 @@ class FileValidator extends Validator
 
         if ($this->checkExtensionByMimeType) {
 
-            $mimeType = FileHelper::getMimeType($file->tempName);
+            $mimeType = FileHelper::getMimeType($file->tempName, null, false);
             if ($mimeType === null) {
                 return false;
             }

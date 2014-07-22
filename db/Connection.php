@@ -204,29 +204,21 @@ class Connection extends Component
      * @var boolean whether to enable query caching.
      * Note that in order to enable query caching, a valid cache component as specified
      * by [[queryCache]] must be enabled and [[enableQueryCache]] must be set true.
-     *
-     * Methods [[beginCache()]] and [[endCache()]] can be used as shortcuts to turn on
-     * and off query caching on the fly.
-     * @see queryCacheDuration
+     * Also, only the results of the queries enclosed within [[cache()]] will be cached.
      * @see queryCache
-     * @see queryCacheDependency
-     * @see beginCache()
-     * @see endCache()
+     * @see cache()
+     * @see noCache()
      */
-    public $enableQueryCache = false;
+    public $enableQueryCache = true;
     /**
-     * @var integer number of seconds that query results can remain valid in cache.
-     * Defaults to 3600, meaning 3600 seconds, or one hour.
+     * @var integer the default number of seconds that query results can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
+     * Defaults to 3600, meaning 3600 seconds, or one hour. Use 0 to indicate that the cached data will never expire.
+     * The value of this property will be used when [[cache()]] is called without a cache duration.
      * @see enableQueryCache
+     * @see cache()
      */
     public $queryCacheDuration = 3600;
-    /**
-     * @var \yii\caching\Dependency the dependency that will be used when saving query results into cache.
-     * Defaults to null, meaning no dependency.
-     * @see enableQueryCache
-     */
-    public $queryCacheDependency;
     /**
      * @var Cache|string the cache object or the ID of the cache application component
      * that is used for query caching.
@@ -369,6 +361,10 @@ class Connection extends Component
      * @var Connection the currently active slave connection
      */
     private $_slave = false;
+    /**
+     * @var array query cache parameters for the [[cache()]] calls
+     */
+    private $_queryCacheInfo = [];
 
 
     /**
@@ -381,29 +377,104 @@ class Connection extends Component
     }
 
     /**
-     * Turns on query caching.
-     * This method is provided as a shortcut to setting two properties that are related
-     * with query caching: [[queryCacheDuration]] and [[queryCacheDependency]].
-     * @param integer $duration the number of seconds that query results may remain valid in cache.
-     * If not set, it will use the value of [[queryCacheDuration]]. See [[queryCacheDuration]] for more details.
-     * @param \yii\caching\Dependency $dependency the dependency for the cached query result.
-     * See [[queryCacheDependency]] for more details.
+     * Uses query cache for the queries performed with the callable.
+     * When query caching is enabled ([[enableQueryCache]] is true and [[queryCache]] refers to a valid cache),
+     * queries performed within the callable will be cached and their results will be fetched from cache if available.
+     * For example,
+     *
+     * ```php
+     * // The customer will be fetched from cache if available.
+     * // If not, the query will be made against DB and cached for use next time.
+     * $customer = $db->cache(function (Connection $db) {
+     *     return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
+     * });
+     * ```
+     *
+     * Note that query cache is only meaningful for queries that return results. For queries performed with
+     * [[Command::execute()]], query cache will not be used.
+     *
+     * @param callable $callable a PHP callable that contains DB queries which will make use of query cache.
+     * The signature of the callable is `function (Connection $db)`.
+     * @param integer $duration the number of seconds that query results can remain valid in the cache. If this is
+     * not set, the value of [[queryCacheDuration]] will be used instead.
+     * Use 0 to indicate that the cached data will never expire.
+     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query results.
+     * @return mixed the return result of the callable
+     * @throws \Exception if there is any exception during query
+     * @see enableQueryCache
+     * @see queryCache
+     * @see noCache()
      */
-    public function beginCache($duration = null, $dependency = null)
+    public function cache(callable $callable, $duration = null, $dependency = null)
     {
-        $this->enableQueryCache = true;
-        if ($duration !== null) {
-            $this->queryCacheDuration = $duration;
+        $this->_queryCacheInfo[] = [$duration === null ? $this->queryCacheDuration : $duration, $dependency];
+        try {
+            $result = call_user_func($callable, $this);
+            array_pop($this->_queryCacheInfo);
+            return $result;
+        } catch (\Exception $e) {
+            array_pop($this->_queryCacheInfo);
+            throw $e;
         }
-        $this->queryCacheDependency = $dependency;
     }
 
     /**
-     * Turns off query caching.
+     * Disables query cache temporarily.
+     * Queries performed within the callable will not use query cache at all. For example,
+     *
+     * ```php
+     * $db->cache(function (Connection $db) {
+     *
+     *     // ... queries that use query cache ...
+     *
+     *     return $db->noCache(function (Connection $db) {
+     *         // this query will not use query cache
+     *         return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
+     *     });
+     * });
+     * ```
+     *
+     * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
+     * The signature of the callable is `function (Connection $db)`.
+     * @return mixed the return result of the callable
+     * @throws \Exception if there is any exception during query
+     * @see enableQueryCache
+     * @see queryCache
+     * @see cache()
      */
-    public function endCache()
+    public function noCache(callable $callable)
     {
-        $this->enableQueryCache = false;
+        $this->_queryCacheInfo[] = false;
+        try {
+            $result = call_user_func($callable, $this);
+            array_pop($this->_queryCacheInfo);
+            return $result;
+        } catch (\Exception $e) {
+            array_pop($this->_queryCacheInfo);
+            throw $e;
+        }
+    }
+
+    /**
+     * Returns the current query cache information.
+     * This method is used internally by [[Command]].
+     * @return array the current query cache information, or null if query cache is not enabled.
+     * @internal
+     */
+    public function getQueryCacheInfo()
+    {
+        $info = end($this->_queryCacheInfo);
+        if ($this->enableQueryCache) {
+            if (is_string($this->queryCache) && Yii::$app) {
+                $cache = Yii::$app->get($this->queryCache, false);
+            } else {
+                $cache = $this->queryCache;
+            }
+            if ($cache instanceof Cache) {
+                return is_array($info) ? [$cache, $info[0], $info[1]] : [$cache, null, null];
+            }
+        }
+        return null;
     }
 
     /**

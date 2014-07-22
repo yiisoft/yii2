@@ -161,3 +161,14 @@ new ones save the following code as `convert.php` that should be placed in the s
       // ...
   ];
   ```
+
+* If you are using query caching, you should modify your relevant code as follows, as `beginCache()` and `endCache()` are
+  replaced by `cache()`:
+
+  ```php
+  $db->cache(function ($db) {
+
+     // ... SQL queries that need to use query caching
+
+  }, $duration, $dependency);
+  ```

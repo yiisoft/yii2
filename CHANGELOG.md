@@ -68,6 +68,7 @@ Yii Framework 2 Change Log
 - Bug #4162: Fixed bug where schema name was not used in ’SHOW CREATE TABLE’ query in `yii\db\mysql\Schema` (stevekr)
 - Bug #4241: `yii\widgets\Pjax` was incorrectly setting container id (mitalcoi)
 - Bug #4276: Added check for UPLOAD_ERR_NO_FILE in `yii\web\UploadedFile` and return null if no file was uploaded (OmgDef)
+- Bug #4342: mssql (dblib) driver does not support getting attributes (tof06)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
@@ -168,6 +169,11 @@ Yii Framework 2 Change Log
 - Chg #3383: Added `$type` parameter to `IdentityInterface::findIdentityByAccessToken()` (qiangxue)
 - Chg #3531: \yii\grid\GridView now allows any character (except ":") in the attribute part of the shorthand syntax for columns (rawtaz)
 - Chg #3544: Added `$key` as a parameter to the callable specified via `yii\grid\DataColumn::value` (mdmunir)
+- Chg #3611: Query caching is refactored. (qiangxue)
+    - `yii\db\Connection::beginCache()` and `endCache()` are removed.
+    - Added `yii\db\Connection::cache()` and `noCache()`.
+    - Added `Command::cache()` and `noCache()`.
+    - `yii\db\Connection::queryCacheDuration` is now used as a default cache duration parameter.
 - Chg #3640: All cookies are now httpOnly by default in order to increase overall security (samdark)
 - Chg #3687: Default `sourceLanguage` and `language` are now `en-US` in order for i18n formatter to work correctly (samdark)
 - Chg #3804: Added `fileinfo` PHP extension to the basic requirement of Yii (Ragazzo)
@@ -181,6 +187,7 @@ Yii Framework 2 Change Log
 - Chg #4147: `BaseMailer::compose()` will not overwrite the `message` parameter if it is explicitly provided (qiangxue)
 - Chg #4201: change default value of `SyslogTarget::facility` from LOG_SYSLOG to LOG_USER (dizews)
 - Chg #4227: `\yii\widgets\LinkPager::$hideOnSinglePage` is now `true` by default (samdark)
+- Chg #4310: Removed `$data` from signature of `yii\rbac\ManagerInterface` (samdark) 
 - Chg #4318: `yii\helpers\Html::ul()` and `ol()` will return an empty list tag if an empty item array is given (qiangxue)
 - Chg #4331: `yii\helpers\Url` now uses `UrlManager` to determine base URL when generating URLs (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)

@@ -167,11 +167,10 @@ interface ManagerInterface
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @param Rule $rule the rule to be associated with this assignment. If not null, the rule
      * will be executed when [[allow()]] is called to check the user permission.
-     * @param mixed $data additional data associated with this assignment.
      * @return Assignment the role assignment information.
      * @throws \Exception if the role has already been assigned to the user
      */
-    public function assign($role, $userId, $rule = null, $data = null);
+    public function assign($role, $userId, $rule = null);
 
     /**
      * Revokes a role from a user.
