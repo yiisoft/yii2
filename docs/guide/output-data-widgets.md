@@ -381,6 +381,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > ```
 >
 > Same is true for the sorting definition:
+>
 > ```php
 > $dataProvider->sort->attributes['author.name'] = [
 >      'asc' => ['au.name' => SORT_ASC],
