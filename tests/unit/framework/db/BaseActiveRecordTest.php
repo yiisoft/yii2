@@ -54,21 +54,21 @@ class BaseActiveRecordTest extends TestCase
      */
     public function nonDirtyProvider() {
         return [
-            [1,     1],
-            ['a',   'a'],
-            [TRUE, TRUE],
+            [1, 1],
+            ['a', 'a'],
+            [true, true],
             
-            [1,     '1'],
-            [1,     '1.0'],
-            [1.0,   '1.0'],
-            ['1',   '1.0'],
-            [0,     '0'],
+            [1, '1'],
+            [1, '1.0'],
+            [1.0, '1.0'],
+            ['1', '1.0'],
+            [0, '0'],
             
-            ['1',   1],
+            ['1', 1],
             ['1.0', 1],
             ['1.0', 1.0],
             ['1.0', '1'],
-            ['0',   0],
+            ['0', 0],
             
         ];
     }
@@ -78,7 +78,7 @@ class BaseActiveRecordTest extends TestCase
      */
     public function dirtyProvider()
     {
-        $values = ['', 0,  NULL, FALSE, []];
+        $values = ['', 0,  null, false, []];
 
         $falseData = [];
         foreach ($values as $val1) {
@@ -92,12 +92,12 @@ class BaseActiveRecordTest extends TestCase
         $trueData = [
             [1, 'a'],
             [1, '1a'],
-            [1, TRUE],
+            [1, true],
             [1, -1],
             
             ['a', 1],
             ['1a', 1],
-            [TRUE, 1],
+            [true, 1],
             [-1, 1],
         ];
         
