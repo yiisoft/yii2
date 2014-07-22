@@ -87,7 +87,7 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.tooMany);
             }
             
-            Array.prototype.slice.call(files).forEach(function(file) {
+            $(files).each(function(i, file) {
                 if ( options.extensions && options.extensions.length > 0 ) {
                     index = file.name.lastIndexOf('.');
                     
