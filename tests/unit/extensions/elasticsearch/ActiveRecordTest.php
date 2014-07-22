@@ -738,6 +738,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         /* @var $order Order */
         $order = Order::find()->with('itemsByArrayValue')->where(['id' => 2])->one();
+        $this->assertTrue($order->isRelationPopulated('itemsByArrayValue'));
         $items = $order->itemsByArrayValue;
         $this->assertEquals(3, count($items));
         $this->assertTrue(isset($items[3]));
@@ -747,6 +748,82 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertTrue($items[4] instanceof Item);
         $this->assertTrue($items[5] instanceof Item);
     }
+
+    public function testArrayAttributeRelationLink()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $item = Item::get(5);
+        $order->link('itemsByArrayValue', $item);
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue(isset($items[5]));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue(isset($items[5]));
+    }
+
+    public function testArrayAttributeRelationUnLink()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $item = Item::get(2);
+        $order->unlink('itemsByArrayValue', $item);
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertFalse(isset($items[2]));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertFalse(isset($items[2]));
+    }
+
+    public function testArrayAttributeRelationUnLinkAll()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $order->unlinkAll('itemsByArrayValue');
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(0, count($items));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(0, count($items));
+    }
+
 
     // TODO test AR with not mapped PK
 }
