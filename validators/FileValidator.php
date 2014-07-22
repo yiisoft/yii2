@@ -268,7 +268,7 @@ class FileValidator extends Validator
      */
     public function isEmpty($value, $trim = false)
     {
-        $value = is_array($value) && !empty($value) ? $value[0] : $value;
+        $value = is_array($value) ? reset($value) : $value;
         return !($value instanceof UploadedFile) || $value->error == UPLOAD_ERR_NO_FILE;
     }
 
