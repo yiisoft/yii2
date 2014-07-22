@@ -618,7 +618,7 @@ class BaseHtml
      * - label: string, a label displayed next to the radio button.  It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   When this option is specified, the radio button will be enclosed by a label tag.
-     * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+     * - labelOptions: array, the HTML attributes for the label tag. Do not set this option unless you set the "label" option.
      * - container: array|boolean, the HTML attributes for the container tag. This is only used when the "label" option is specified.
      *   If it is false, no container will be rendered. If it is an array or not, a "div" container will be rendered
      *   around the the radio button.
@@ -668,7 +668,7 @@ class BaseHtml
      * - label: string, a label displayed next to the checkbox.  It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   When this option is specified, the checkbox will be enclosed by a label tag.
-     * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+     * - labelOptions: array, the HTML attributes for the label tag. Do not set this option unless you set the "label" option.
      * - container: array|boolean, the HTML attributes for the container tag. This is only used when the "label" option is specified.
      *   If it is false, no container will be rendered. If it is an array or not, a "div" container will be rendered
      *   around the the radio button.
