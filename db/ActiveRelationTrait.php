@@ -239,7 +239,7 @@ trait ActiveRelationTrait
 
             $link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
             foreach ($primaryModels as $i => $primaryModel) {
-                if ($this->multiple && count($link) < 2 && is_array($keys = $primaryModel->{reset($link)})) {
+                if ($this->multiple && count($link) == 1 && is_array($keys = $primaryModel->{reset($link)})) {
                     $value = [];
                     foreach ($keys as $key) {
                         if (isset($buckets[$key])) {
