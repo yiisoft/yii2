@@ -23,7 +23,7 @@ if (empty($see)) {
 } else {
     echo '<p>See also:</p><ul>';
     foreach ($see as $ref) {
-        if (substr($ref, -1, 1) != '>') {
+        if (substr_compare($ref, '>', -1, 1)) {
             $ref .= '.';
         }
         echo "<li>$ref</li>";

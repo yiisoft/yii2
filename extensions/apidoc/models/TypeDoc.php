@@ -46,7 +46,7 @@ class TypeDoc extends BaseDoc
                 }
             }
         }
-        if (substr($subjectName, -2, 2) == '()') {
+        if (substr_compare($subjectName, '()', -2, 2) === 0) {
             return null;
         }
         if ($this->properties === null) {

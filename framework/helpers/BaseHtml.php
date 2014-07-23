@@ -803,7 +803,7 @@ class BaseHtml
         $options['name'] = $name;
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
-            if (substr($name, -2) === '[]') {
+            if (substr_compare($name, '[]', -2) === 0) {
                 $name = substr($name, 0, -2);
             }
             $hidden = static::hiddenInput($name, $options['unselect']);

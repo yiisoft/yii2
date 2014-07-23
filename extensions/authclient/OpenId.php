@@ -761,7 +761,7 @@ class OpenId extends BaseClient implements ClientInterface
         } else {
             // 'ax' prefix is either undefined, or points to another extension, so we search for another prefix
             foreach ($this->data as $key => $value) {
-                if (substr($key, 0, strlen('openid_ns_')) == 'openid_ns_' && $value == 'http://openid.net/srv/ax/1.0') {
+                if (substr_compare($key, 'openid_ns_', 0, 10) === 0  && $value == 'http://openid.net/srv/ax/1.0') {
                     $alias = substr($key, strlen('openid_ns_'));
                     break;
                 }
@@ -775,7 +775,7 @@ class OpenId extends BaseClient implements ClientInterface
         $attributes = [];
         foreach ($this->data as $key => $value) {
             $keyMatch = 'openid_' . $alias . '_value_';
-            if (substr($key, 0, strlen($keyMatch)) != $keyMatch) {
+            if (substr_compare($key, $keyMatch, 0, strlen($keyMatch))) {
                 continue;
             }
             $key = substr($key, strlen($keyMatch));
@@ -802,7 +802,7 @@ class OpenId extends BaseClient implements ClientInterface
         $sregToAx = array_flip($this->axToSregMap);
         foreach ($this->data as $key => $value) {
             $keyMatch = 'openid_sreg_';
-            if (substr($key, 0, strlen($keyMatch)) != $keyMatch) {
+            if (substr_compare($key, $keyMatch, 0, strlen($keyMatch))) {
                 continue;
             }
             $key = substr($key, strlen($keyMatch));
