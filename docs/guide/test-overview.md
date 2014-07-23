@@ -14,6 +14,7 @@ The testing support provided by Yii includes:
 - [Functional testing](test-functional.md) - verifies scenarios from a user's perspective via browser emulation.
 - [Acceptance testing](test-acceptance.md) - verifies scenarios from a user's perspective in a browser.
 
+Yii provides ready to use test sets for all three testing types in both basic and advanced application templates.  
 
 Test environment setup
 ----------------------
