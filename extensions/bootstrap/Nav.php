@@ -222,6 +222,17 @@ class Nav extends Widget
             if ($route[0] !== '/' && Yii::$app->controller) {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }
+
+            /** 
+             * add path to items for force active a item when action different than url but in one Controller
+             */
+            if(isset($item['path']) && !empty($item['path'])){
+                $pos = strpos($route, $item['path']);
+                if ($pos !== false) {
+                    return true; 
+                }
+            }
+
             if (ltrim($route, '/') !== $this->route) {
                 return false;
             }
