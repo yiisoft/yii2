@@ -35,8 +35,6 @@ use yii\helpers\StringHelper;
  * @property array $bodyParams The request parameters given in the request body.
  * @property string $contentType Request content-type. Null is returned if this information is not available.
  * This property is read-only.
- * @property string $cookieValidationKey The secret key used for cookie validation. If it was not set
- * previously, a random key will be generated and used.
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $csrfToken The token used to perform CSRF validation. This property is read-only.
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
@@ -124,6 +122,10 @@ class Request extends \yii\base\Request
      * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
      */
     public $enableCookieValidation = true;
+    /**
+     * @var string a secret key used for cookie validation. This property must be set if [[enableCookieValidation]] is true.
+     */
+    public $cookieValidationKey;
     /**
      * @var string the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
      * request tunneled through POST. Defaults to '_method'.
@@ -1180,14 +1182,17 @@ class Request extends \yii\base\Request
     /**
      * Converts `$_COOKIE` into an array of [[Cookie]].
      * @return array the cookies obtained from request
+     * @throws InvalidConfigException if [[cookieValidationKey]] is not set when [[enableCookieValidation]] is true
      */
     protected function loadCookies()
     {
         $cookies = [];
         if ($this->enableCookieValidation) {
-            $key = $this->getCookieValidationKey();
+            if ($this->cookieValidationKey == '') {
+                throw new InvalidConfigException(get_class($this) . '::cookieValidationKey must be configured with a secret key.');
+            }
             foreach ($_COOKIE as $name => $value) {
-                if (is_string($value) && ($value = Yii::$app->getSecurity()->validateData($value, $key)) !== false) {
+                if (is_string($value) && ($value = Yii::$app->getSecurity()->validateData($value, $this->cookieValidationKey)) !== false) {
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => @unserialize($value),
@@ -1206,30 +1211,6 @@ class Request extends \yii\base\Request
         }
 
         return $cookies;
-    }
-
-    private $_cookieValidationKey;
-
-    /**
-     * @return string the secret key used for cookie validation. If it was not set previously,
-     * a random key will be generated and used.
-     */
-    public function getCookieValidationKey()
-    {
-        if ($this->_cookieValidationKey === null) {
-            $this->_cookieValidationKey = Yii::$app->getSecurity()->getSecretKey('cookie.validation.key');
-        }
-
-        return $this->_cookieValidationKey;
-    }
-
-    /**
-     * Sets the secret key used for cookie validation.
-     * @param string $value the secret key used for cookie validation.
-     */
-    public function setCookieValidationKey($value)
-    {
-        $this->_cookieValidationKey = $value;
     }
 
     /**

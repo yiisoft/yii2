@@ -62,10 +62,13 @@ Yii Framework 2 Change Log
 - Bug #3989: Fixed yii\log\FileTarget::$rotateByCopy to avoid any rename (cebe)
 - Bug #3996: Traversing `Yii::$app->session` may cause a PHP error (qiangxue)
 - Bug #4020: OCI column detection did not work so gii and other things failed (Sanya1991)
+- Bug #4105: Html::dropDownlist options encodeSpaces was not applied to subgroups (MDMunir)
 - Bug #4123: Trace level in logger had no effect in Targets, traces where not logged (cebe)
 - Bug #4127: `CaptchaValidator` clientside error message wasn't formed properly (samdark)
 - Bug #4162: Fixed bug where schema name was not used in ’SHOW CREATE TABLE’ query in `yii\db\mysql\Schema` (stevekr)
 - Bug #4241: `yii\widgets\Pjax` was incorrectly setting container id (mitalcoi)
+- Bug #4276: Added check for UPLOAD_ERR_NO_FILE in `yii\web\UploadedFile` and return null if no file was uploaded (OmgDef)
+- Bug #4342: mssql (dblib) driver does not support getting attributes (tof06)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
@@ -73,6 +76,7 @@ Yii Framework 2 Change Log
 - Enh #87: Helper `yii\helpers\Security` converted into application component, cryptographic strength improved (klimov-paul)
 - Enh #422: Added Support for BIT(M) data type default values in Schema (cebe)
 - Enh #1160: Added $strict parameter to Inflector::camel2id() to handle consecutive uppercase chars (schmunk)
+- Enh #1249: Added support for Active Record relation via array attributes (klimov-paul, cebe)
 - Enh #1452: Added `Module::getInstance()` to allow accessing the module instance from anywhere within the module (qiangxue)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
@@ -115,6 +119,7 @@ Yii Framework 2 Change Log
 - Enh #3636: Hide menu container tag with empty items in `yii\widgets\Menu` (arturf)
 - Enh #3643: Improved Mime-Type detection by using the `mime.types` file from apache http project to dected mime types by file extension (cebe, pavel-voronin, trejder)
 - Enh #3765: Added `yii\web\User::enableSession` to support authentication without using session (qiangxue)
+- Enh #3708: Added database replication and automatic read-write splitting support for `yii\db\Connection` (qiangxue)
 - Enh #3773: Added `FileValidator::mimeTypes` to support validating MIME types of files (Ragazzo)
 - Enh #3774: Added `FileValidator::checkExtensionByMimeType` to support validating file types against file mime-types (Ragazzo)
 - Enh #3801: Base migration controller `yii\console\controllers\BaseMigrateController` extracted (klimov-paul)
@@ -128,6 +133,7 @@ Yii Framework 2 Change Log
     - Added note about the fact that intl is required for non-latin languages to requirements checker.
 - Enh #3992: In mail layouts you can now access the message object via `$message` variable (qiangxue)
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
+- Enh #4048: Added `init` event to `ActiveQuery` classes (qiangxue)
 - Enh #4072: `\yii\rbac\PhpManager` adjustments (samdark)
     - Data is now stored in three separate files for items, assignments and rules. File format is simpler.
     - Removed `authFile`. Added `itemFile`, `assignmentFile` and `ruleFile`.
@@ -137,6 +143,9 @@ Yii Framework 2 Change Log
 - Enh #4080: Added proper handling and support of the symlinked directories in `FileHelper`, added $options parameter in `FileHelper::removeDirectory()` (resurtm)
 - Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
 - Enh #4114: Added `Security::generateRandomBytes()`, improved tests (samdark)
+- Enh #4209: Added `beforeCopy`, `afterCopy`, `forceCopy` properties to AssetManager (cebe)
+- Enh #4297: Added check for DOM extension to requirements (samdark)
+- Enh #4317: Added `absoluteAuthTimeout` to yii\web\User (ivokund, nkovacs)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
@@ -160,6 +169,11 @@ Yii Framework 2 Change Log
 - Chg #3383: Added `$type` parameter to `IdentityInterface::findIdentityByAccessToken()` (qiangxue)
 - Chg #3531: \yii\grid\GridView now allows any character (except ":") in the attribute part of the shorthand syntax for columns (rawtaz)
 - Chg #3544: Added `$key` as a parameter to the callable specified via `yii\grid\DataColumn::value` (mdmunir)
+- Chg #3611: Query caching is refactored. (qiangxue)
+    - `yii\db\Connection::beginCache()` and `endCache()` are removed.
+    - Added `yii\db\Connection::cache()` and `noCache()`.
+    - Added `Command::cache()` and `noCache()`.
+    - `yii\db\Connection::queryCacheDuration` is now used as a default cache duration parameter.
 - Chg #3640: All cookies are now httpOnly by default in order to increase overall security (samdark)
 - Chg #3687: Default `sourceLanguage` and `language` are now `en-US` in order for i18n formatter to work correctly (samdark)
 - Chg #3804: Added `fileinfo` PHP extension to the basic requirement of Yii (Ragazzo)
@@ -168,10 +182,14 @@ Yii Framework 2 Change Log
 - Chg #3899: Moved `MailEvent` class to `yii\mail` namespace (cebe)
 - Chg #3956: Flash messages set via `Yii::$app->session->setFlash()` will be removed only if they are accessed (qiangxue)
 - Chg #3989: The default value for `yii\log\FileTarget::$rotateByCopy` now defaults to true to work on windows by default (cebe)
+- Chg #4051: Renamed `yii\caching\GroupDependency` to `TagDependency` and added support for associating multiple tags to a single cached data item (qiangxue)
 - Chg #4071: `mail` component renamed to `mailer`, `yii\log\EmailTarget::$mail` renamed to `yii\log\EmailTarget::$mailer` (samdark)
 - Chg #4147: `BaseMailer::compose()` will not overwrite the `message` parameter if it is explicitly provided (qiangxue)
 - Chg #4201: change default value of `SyslogTarget::facility` from LOG_SYSLOG to LOG_USER (dizews)
 - Chg #4227: `\yii\widgets\LinkPager::$hideOnSinglePage` is now `true` by default (samdark)
+- Chg #4310: Removed `$data` from signature of `yii\rbac\ManagerInterface` (samdark) 
+- Chg #4318: `yii\helpers\Html::ul()` and `ol()` will return an empty list tag if an empty item array is given (qiangxue)
+- Chg #4331: `yii\helpers\Url` now uses `UrlManager` to determine base URL when generating URLs (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
@@ -180,8 +198,10 @@ Yii Framework 2 Change Log
 - Chg: Changed the default value of the `keyPrefix` property of cache components to be null (qiangxue)
 - Chg: Added `prefix` column to `yii\log\DbTarget` to have the same amount of information logged as in files and emails (cebe)
 - Chg: Use `limit(null)` instead of `limit(-1)` in migration controller to be compatible to more backends (cebe)
+- Chg: `yii\web\Request::cookieValidationKey` must be explicitly specified for each application that wants to use cookie validation (qiangxue)
 - Chg #4211: BaseActiveRecord::populateRecord now silently hide selected columns that are not defined in AR instead of failing with an error 
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
+- New #4193: Added `yii\filters\Cors` CORS filter to allow Cross Origin Resource Sharing (pgaultier)
 
 
 2.0.0-beta April 13, 2014
@@ -248,6 +268,7 @@ Yii Framework 2 Change Log
 - Bug #2848: Individual queries should be enclosed within parenthesis in a UNION query (qiangxue)
 - Bug #2862: Using `DbCache` while enabling schema caching may cause infinite loops (qiangxue)
 - Bug #3052: Fixed the issue that cache dependency data is not reused when `reusable` is set true (qiangxue)
+- Bug #3443: Fixed `yii\bootstrap\Nav` and `yii\bootstrap\Dropdown` were generating wrong ids for submenus (arturf)
 - Bug #3691: Fixed the issue that `CookieCollection::has` always returns false for cookies from browser (sonicgd)
 - Bug #4212: MSSQL query builder should not generate the `ORDER BY` clause when it is not needed (qiangxue)
 - Bug #4232: `TableSchema::sequenceName` for PostgreSQL should remove the enclosing quotes (katzz0, qiangxue)

@@ -255,13 +255,13 @@ class MessageControllerTest extends TestCase
             'messagePath' => $this->messagePath,
             'overwrite' => true,
         ]);
-        $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $commandOutput = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
         $messages = require($this->messagePath . DIRECTORY_SEPARATOR . $messageFileName);
-        $this->assertTrue(array_key_exists($newMessage, $messages), 'Unable to add new message!');
-        $this->assertTrue(array_key_exists($existingMessage, $messages), 'Unable to keep existing message!');
-        $this->assertEquals('', $messages[$newMessage], 'Wrong new message content!');
-        $this->assertEquals($existingMessageContent, $messages[$existingMessage], 'Unable to keep existing message content!');
+        $this->assertTrue(array_key_exists($newMessage, $messages), 'Unable to add new message: "' . $newMessage . '". Command output was:' . "\n" . $commandOutput);
+        $this->assertTrue(array_key_exists($existingMessage, $messages), 'Unable to keep existing message: "' . $existingMessage . '". Command output was:' . "\n" . $commandOutput);
+        $this->assertEquals('', $messages[$newMessage], 'Wrong new message content!. Command output was:\n' . $commandOutput);
+        $this->assertEquals($existingMessageContent, $messages[$existingMessage], 'Unable to keep existing message content!. Command output was:' . "\n" . $commandOutput);
     }
 
     /**

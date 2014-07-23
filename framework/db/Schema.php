@@ -12,7 +12,7 @@ use yii\base\Object;
 use yii\base\NotSupportedException;
 use yii\base\InvalidCallException;
 use yii\caching\Cache;
-use yii\caching\GroupDependency;
+use yii\caching\TagDependency;
 
 /**
  * Schema is the base class for concrete DBMS-specific schema classes.
@@ -114,8 +114,8 @@ abstract class Schema extends Object
                 if ($refresh || ($table = $cache->get($key)) === false) {
                     $this->_tables[$name] = $table = $this->loadTableSchema($realName);
                     if ($table !== null) {
-                        $cache->set($key, $table, $db->schemaCacheDuration, new GroupDependency([
-                            'group' => $this->getCacheGroup(),
+                        $cache->set($key, $table, $db->schemaCacheDuration, new TagDependency([
+                            'tags' => $this->getCacheTag(),
                         ]));
                     }
                 } else {
@@ -145,11 +145,11 @@ abstract class Schema extends Object
     }
 
     /**
-     * Returns the cache group name.
+     * Returns the cache tag name.
      * This allows [[refresh()]] to invalidate all cached table schemas.
-     * @return string the cache group name
+     * @return string the cache tag name
      */
-    protected function getCacheGroup()
+    protected function getCacheTag()
     {
         return md5(serialize([
             __CLASS__,
@@ -241,7 +241,7 @@ abstract class Schema extends Object
         /* @var $cache Cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
-            GroupDependency::invalidate($cache, $this->getCacheGroup());
+            TagDependency::invalidate($cache, $this->getCacheTag());
         }
         $this->_tableNames = [];
         $this->_tables = [];
@@ -369,11 +369,10 @@ abstract class Schema extends Object
             return $str;
         }
 
-        $this->db->open();
-        if (($value = $this->db->pdo->quote($str)) !== false) {
+        if (($value = $this->db->getSlavePdo()->quote($str)) !== false) {
             return $value;
-        } else { // the driver doesn't support quote (e.g. oci)
-
+        } else {
+            // the driver doesn't support quote (e.g. oci)
             return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
         }
     }
@@ -497,27 +496,37 @@ abstract class Schema extends Object
     }
 
     /**
-     * Handles database error
+     * Converts a DB exception to a more concrete one if possible.
      *
      * @param \Exception $e
      * @param string $rawSql SQL that produced exception
-     * @throws Exception
+     * @return Exception
      */
-    public function handleException(\Exception $e, $rawSql)
+    public function convertException(\Exception $e, $rawSql)
     {
         if ($e instanceof Exception) {
-            throw $e;
-        } else {
-            $exceptionClass = '\yii\db\Exception';
-            foreach ($this->exceptionMap as $error => $class) {
-                if (strpos($e->getMessage(), $error) !== false) {
-                    $exceptionClass = $class;
-                }
-            }
-
-            $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
-            $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-            throw new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
+            return $e;
         }
+
+        $exceptionClass = '\yii\db\Exception';
+        foreach ($this->exceptionMap as $error => $class) {
+            if (strpos($e->getMessage(), $error) !== false) {
+                $exceptionClass = $class;
+            }
+        }
+        $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+        $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+        return new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
+    }
+
+    /**
+     * Returns a value indicating whether a SQL statement is for read purpose.
+     * @param string $sql the SQL statement
+     * @return boolean whether a SQL statement is for read purpose.
+     */
+    public function isReadQuery($sql)
+    {
+        $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
+        return preg_match($pattern, $sql) > 0;
     }
 }

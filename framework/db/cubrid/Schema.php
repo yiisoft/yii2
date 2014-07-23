@@ -116,13 +116,14 @@ class Schema extends \yii\db\Schema
             return $str;
         }
 
-        $this->db->open();
+        $pdo = $this->db->getSlavePdo();
+
         // workaround for broken PDO::quote() implementation in CUBRID 9.1.0 http://jira.cubrid.org/browse/APIS-658
-        $version = $this->db->pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION);
+        $version = $pdo->getAttribute(\PDO::ATTR_CLIENT_VERSION);
         if (version_compare($version, '8.4.4.0002', '<') || $version[0] == '9' && version_compare($version, '9.2.0.0002', '<=')) {
             return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
         } else {
-            return $this->db->pdo->quote($str);
+            return $pdo->quote($str);
         }
     }
 
@@ -142,8 +143,9 @@ class Schema extends \yii\db\Schema
      */
     protected function loadTableSchema($name)
     {
-        $this->db->open();
-        $tableInfo = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
+        $pdo = $this->db->getSlavePdo();
+
+        $tableInfo = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
 
         if (!isset($tableInfo[0]['NAME'])) {
             return null;
@@ -160,7 +162,7 @@ class Schema extends \yii\db\Schema
             $table->columns[$column->name] = $column;
         }
 
-        $primaryKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
+        $primaryKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
         foreach ($primaryKeys as $key) {
             $column = $table->columns[$key['ATTR_NAME']];
             $column->isPrimaryKey = true;
@@ -170,7 +172,7 @@ class Schema extends \yii\db\Schema
             }
         }
 
-        $foreignKeys = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
+        $foreignKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
         foreach ($foreignKeys as $key) {
             if (isset($table->foreignKeys[$key['FK_NAME']])) {
                 $table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
@@ -264,8 +266,8 @@ class Schema extends \yii\db\Schema
      */
     protected function findTableNames($schema = '')
     {
-        $this->db->open();
-        $tables = $this->db->pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
+        $pdo = $this->db->getSlavePdo();
+        $tables =$pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
         $tableNames = [];
         foreach ($tables as $table) {
             // do not list system tables
