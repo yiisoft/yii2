@@ -24,10 +24,10 @@ Unit tests
 To run the unit tests you have to install composer packages for the dev-repo.
 Run `composer update` in the repo root directory to get the latest packages.
 
-You can now execute unit tests by running `./vendor/bin/phpunit`.
+You can now execute unit tests by running `phpunit`.
 
 You may limit the tests to a group of tests you are working on e.g. to run only tests for the validators and redis
-`./vendor/bin/phpunit --group=validators,redis`.
+`phpunit --group=validators,redis`.
 
 Functional and acceptance tests
 -------------------------------
@@ -37,9 +37,6 @@ to test. Add the following four packages to your `composer.json` `require-dev` s
 
 ```
 "yiisoft/yii2-codeception": "*",
-"codeception/codeception": "2.0.*",
-"codeception/specify": "*",
-"codeception/verify": "*"
 ```
 
 For advanced application you may need `yiisoft/yii2-faker: *` as well.
@@ -51,16 +48,16 @@ After package installation is complete you can run the following for basic app:
 
 ```
 cd apps/basic
-vendor/bin/codecept build
-vendor/bin/codecept run
+codecept build
+codecept run
 ```
 
 For advanced application frontend it will be:
 
 ```
 cd apps/advanced/frontend
-../vendor/bin/codecept build
-../vendor/bin/codecept run
+codecept build
+codecept run
 ```
 
 Note that you need a running webserver in order to pass acceptance tests. That can be easily achieved with PHP's built-in
@@ -70,6 +67,18 @@ webserver:
 cd apps/advanced/frontend/www
 php -S 127.0.0.1:8080 index-test.php
 ```
+
+Note that you should have Codeception and PHPUnit installed globally:
+ 
+```
+composer global require "phpunit/phpunit=4.1.*"
+composer global require "codeception/codeception=2.0.*"
+composer global require "codeception/specify=*"
+composer global require "codeception/verify=*"
+```
+
+After running commands you'll see "Changed current directory to /your/global/composer/dir" message. If it's the
+first time you're installing a package globally you need to add `/your/global/composer/dir/vendor/bin/` to your `PATH`.
 
 Extensions
 ----------
