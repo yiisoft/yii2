@@ -298,7 +298,7 @@ abstract class Application extends Module
                 } elseif ($this->hasModule($class)) {
                     $component = $this->getModule($class);
                 } elseif (strpos($class, '\\') === false) {
-                    throw new InvalidConfigException("Unknown bootstrap component ID: $class");
+                    throw new InvalidConfigException("Unknown bootstrapping component ID: $class");
                 }
             }
             if (!isset($component)) {

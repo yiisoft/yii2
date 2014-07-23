@@ -57,8 +57,8 @@ interface IdentityInterface
      */
     public static function findIdentity($id);
     /**
-     * Finds an identity by the given secrete token.
-     * @param string $token the secrete token
+     * Finds an identity by the given token.
+     * @param mixed $token the token to be looked for
      * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
      * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
      * @return IdentityInterface the identity object that matches the given token.

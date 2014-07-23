@@ -21,6 +21,7 @@ class UrlManagerTest extends TestCase
         // default setting with '/' as base url
         $manager = new UrlManager([
             'baseUrl' => '/',
+            'scriptUrl' => '',
             'cache' => null,
         ]);
         $url = $manager->createUrl(['post/view']);
@@ -31,6 +32,7 @@ class UrlManagerTest extends TestCase
         // default setting with '/test/' as base url
         $manager = new UrlManager([
             'baseUrl' => '/test/',
+            'scriptUrl' => '/test',
             'cache' => null,
         ]);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
@@ -40,6 +42,7 @@ class UrlManagerTest extends TestCase
         $manager = new UrlManager([
             'enablePrettyUrl' => true,
             'baseUrl' => '/',
+            'scriptUrl' => '',
             'cache' => null,
         ]);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
@@ -47,13 +50,15 @@ class UrlManagerTest extends TestCase
         $manager = new UrlManager([
             'enablePrettyUrl' => true,
             'baseUrl' => '/test/',
+            'scriptUrl' => '/test',
             'cache' => null,
         ]);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals('/test/post/view?id=1&title=sample+post', $url);
         $manager = new UrlManager([
             'enablePrettyUrl' => true,
-            'baseUrl' => '/test/index.php',
+            'baseUrl' => '/test',
+            'scriptUrl' => '/test/index.php',
             'cache' => null,
         ]);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
@@ -72,6 +77,7 @@ class UrlManagerTest extends TestCase
                 ],
             ],
             'baseUrl' => '/',
+            'scriptUrl' => '',
         ]);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals('/post/1/sample+post', $url);
@@ -89,6 +95,7 @@ class UrlManagerTest extends TestCase
                 ],
             ],
             'baseUrl' => '/',
+            'scriptUrl' => '',
             'suffix' => '.html',
         ]);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
@@ -108,6 +115,7 @@ class UrlManagerTest extends TestCase
                 ],
             ],
             'baseUrl' => '/test',
+            'scriptUrl' => '/test',
         ]);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post', 'lang' => 'en']);
         $this->assertEquals('http://en.example.com/test/post/1/sample+post', $url);
@@ -119,6 +127,7 @@ class UrlManagerTest extends TestCase
     {
         $manager = new UrlManager([
             'baseUrl' => '/',
+            'scriptUrl' => '',
             'hostInfo' => 'http://www.example.com',
             'cache' => null,
         ]);

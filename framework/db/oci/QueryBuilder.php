@@ -8,6 +8,7 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidParamException;
+use yii\db\Connection;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -132,8 +133,10 @@ EOD;
         if ($value !== null) {
             $value = (int) $value;
         } else {
-            $value = (int) $this->db->createCommand("SELECT MAX(\"{$tableSchema->primaryKey}\") FROM \"{$tableSchema->name}\"")->queryScalar();
-            $value++;
+            // use master connection to get the biggest PK value
+            $value = $this->db->useMaster(function (Connection $db) use ($tableSchema) {
+                return $db->createCommand("SELECT MAX(\"{$tableSchema->primaryKey}\") FROM \"{$tableSchema->name}\"")->queryScalar();
+            }) + 1;
         }
 
         return "DROP SEQUENCE \"{$tableSchema->name}_SEQ\";"

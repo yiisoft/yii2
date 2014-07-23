@@ -223,7 +223,7 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function assign($role, $userId, $ruleName = null, $data = null)
+    public function assign($role, $userId, $ruleName = null)
     {
         if (!isset($this->items[$role->name])) {
             throw new InvalidParamException("Unknown role '{$role->name}'.");

@@ -457,6 +457,67 @@ specifies what is the parent layout. It can be either a layout file or alias.
 Using the above approach, you can nest layouts in more than one levels.
 
 
+### Using Blocks <a name="using-blocks"></a>
+
+Blocks allow you to specify the view content in one place while displaying it in another. They are often used together
+with layouts. For example, you can define a block in a content view and display it in the layout.
+
+You call [[yii\base\View::beginBlock()|beginBlock()]] and [[yii\base\View::endBlock()|endBlock()]] to define a block.
+The block can then be accessed via `$view->blocks[$blockID]`, where `$blockID` stands for a unique ID that you assign
+to the block when defining it.
+
+The following example shows how you can use blocks to customize specific parts of a layout in a content view.
+
+First, in a content view, define one or multiple blocks:
+
+```php
+...
+
+<?php $this->beginBlock('block1'); ?>
+
+...content of block1...
+
+<?php $this->endBlock(); ?>
+
+...
+
+<?php $this->beginBlock('block3'); ?>
+
+...content of block3...
+
+<?php $this->endBlock(); ?>
+```
+
+Then, in the layout view, render the blocks if they are available, or display some default content if a block is
+not defined.
+
+```php
+...
+<?php if (isset($this->blocks['block1'])): ?>
+    <?= $this->blocks['block1'] ?>
+<?php else: ?>
+    ... default content for block1 ...
+<?php endif; ?>
+
+...
+
+<?php if (isset($this->blocks['block2'])): ?>
+    <?= $this->blocks['block2'] ?>
+<?php else: ?>
+    ... default content for block2 ...
+<?php endif; ?>
+
+...
+
+<?php if (isset($this->blocks['block3'])): ?>
+    <?= $this->blocks['block3'] ?>
+<?php else: ?>
+    ... default content for block3 ...
+<?php endif; ?>
+...
+```
+
+
 ## Using View Components <a name="using-view-components"></a>
 
 [[yii\base\View|View components]] provides many view-related features. While you can get view components

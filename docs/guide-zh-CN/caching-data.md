@@ -1,8 +1,8 @@
 数据缓存
 ============
 
-数据缓存是指将一些 PHP 变量存储到缓存中，使用时再从缓存中取回。
-它也是更高级缓存特性的基础，例如 [查询缓存](#query-caching) 和 [内容缓存](caching-content.md).
+数据缓存是指将一些 PHP 变量存储到缓存中，使用时再从缓存中取回。它也是更高级缓存特性的基础，例如 
+[查询缓存](#query-caching) 和 [分页缓存](caching-page.md).
 
 如下代码是一个典型的数据缓存使用模式。其中 `$cache` 代表一个 [缓存组件](#cache-components):
 
@@ -51,8 +51,8 @@ if ($data === false) {
 
 然后你就可以通过  `Yii::$app->cache` 访问上面的缓存组件了。
 
-由于所有缓存组件都支持同样的一系列 API ，你并不需要修改使用缓存的那些代码就能直接替换为其他低层缓存组件，
-只需在应用程序配置中重新配置一下就可以。例如，你可以将上述配置修改为使用 [[yii\caching\ApcCache|APC cache]]:
+由于所有缓存组件都支持同样的一系列 API 
+，你并不需要修改使用缓存的那些代码就能直接替换为其他低层缓存组件，只需在应用程序配置中重新配置一下就可以。例如，你可以将上述配置修改为使用 [[yii\caching\ApcCache|APC cache]]:
 
 
 ```php
@@ -72,10 +72,8 @@ Yii 支持一系列缓存存储器，概况如下：
 
 * [[yii\caching\ApcCache]]: 使用 PHP [APC](http://php.net/manual/en/book.apc.php) 扩展。这个选项可以认为是集中式应用程序环境中（例如：单一服务器，没有独立的负载均衡器等）最快的缓存方案。
 * [[yii\caching\DbCache]]: 使用一个数据库的表存储缓存数据。要使用这个缓存，你必须创建一个 [[yii\caching\DbCache::cacheTable]] 对应的表。
-* [[yii\caching\DummyCache]]: 仅作为一个缓存占位符，不实现任何真正的缓存功能。
-  这个组件的目的是为了简化那些需要查询缓存有效性的代码。例如，在开发中如果服务器没有实际的缓存支持，你就可以用它配置一个缓存组件。
-  一个真正的缓存服务启用后，就可以切换为使用相应的缓存组件。两种条件下你都可以使用同样的代码
-  `Yii::$app->cache->get($key)` 尝试从缓存中取回数据而不用担心 `Yii::$app->cache` 可能是 `null`。
+* [[yii\caching\DummyCache]]: 仅作为一个缓存占位符，不实现任何真正的缓存功能。  这个组件的目的是为了简化那些需要查询缓存有效性的代码。例如，在开发中如果服务器没有实际的缓存支持，你就可以用它配置一个缓存组件。  一个真正的缓存服务启用后，就可以切换为使用相应的缓存组件。两种条件下你都可以使用同样的代码 
+`Yii::$app->cache->get($key)` 尝试从缓存中取回数据而不用担心 `Yii::$app->cache` 可能是 `null`。
 * [[yii\caching\FileCache]]: 使用标准文件存储缓存数据。这个特别适用于缓存大块数据，例如一个网页的内容。
 * [[yii\caching\MemCache]]: 使用 PHP [memcache](http://php.net/manual/en/book.memcache.php) 和
   [memcached](http://php.net/manual/en/book.memcached.php) 扩展。这个选项可以认为是分布式应用程序环境中（例如：多台服务器，有负载均衡等）最快的缓存方案。
@@ -198,7 +196,8 @@ $data = $cache->get($key);
 - [[yii\caching\DbDependency]]: 如果指定 SQL 语句的查询结果发生了变化，则依赖改变。
 - [[yii\caching\ExpressionDependency]]: 如果指定的 PHP 表达式执行结果发生变化，则依赖改变。
 - [[yii\caching\FileDependency]]: 如果文件的最后修改时间发生变化，则依赖改变。
-- [[yii\caching\GroupDependency]]: 将一项缓存数据标记到一个组名，你可以通过调用 [[yii\caching\GroupDependency::invalidate()]] 一次性将同样组名的缓存数据全部置为失效状态。
+- [[yii\caching\TagDependency]]: 为一项缓存数据添加一个或多个标签。你可以通过调用 [[yii\caching\TagDependency::invalidate()]]
+  一次性将具有指定标签的缓存数据全部置为失效状态。
 
 
 ## 查询缓存 <a name="query-caching"></a>

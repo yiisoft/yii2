@@ -10,7 +10,6 @@ class_name: TestGuy
 modules:
     enabled:
       - Filesystem
-      - TestHelper
       - Yii2
       - common\tests\_helpers\FixtureHelper
     config:

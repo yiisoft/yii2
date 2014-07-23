@@ -7,6 +7,7 @@
 
 namespace yii\db\sqlite;
 
+use yii\db\Connection;
 use yii\db\Exception;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
@@ -120,7 +121,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             if ($value === null) {
                 $key = reset($table->primaryKey);
                 $tableName = $db->quoteTableName($tableName);
-                $value = $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
+                    return $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                });
             } else {
                 $value = (int) $value - 1;
             }

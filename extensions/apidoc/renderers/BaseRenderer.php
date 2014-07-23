@@ -72,7 +72,7 @@ abstract class BaseRenderer extends Component
         foreach ($types as $type) {
             $postfix = '';
             if (!is_object($type)) {
-                if (substr($type, -2, 2) == '[]') {
+                if (substr_compare($type, '[]', -2, 2) === 0) {
                     $postfix = '[]';
                     $type = substr($type, 0, -2);
                 }

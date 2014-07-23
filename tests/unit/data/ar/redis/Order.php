@@ -27,6 +27,12 @@ class Order extends ActiveRecord
             });
     }
 
+    public function getItemsIndexed()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems')->indexBy('id');
+    }
+
     public function getItemsInOrder1()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])

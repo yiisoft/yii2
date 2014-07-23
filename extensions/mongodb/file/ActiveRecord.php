@@ -7,6 +7,7 @@
 
 namespace yii\mongodb\file;
 
+use Yii;
 use yii\base\InvalidParamException;
 use yii\db\StaleObjectException;
 use yii\web\UploadedFile;
@@ -49,7 +50,7 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
