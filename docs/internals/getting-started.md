@@ -18,7 +18,8 @@ git remote add upstream https://github.com/yiisoft/yii2.git
 
 Please refer to [Git workflow for Yii 2 contributors](git-workflow.md) for details about creating pull requests.
 
-### Unit tests
+Unit tests
+----------
 
 To run the unit tests you have to install composer packages for the dev-repo.
 Run `composer update` in the repo root directory to get the latest packages.
@@ -28,7 +29,50 @@ You can now execute unit tests by running `./vendor/bin/phpunit`.
 You may limit the tests to a group of tests you are working on e.g. to run only tests for the validators and redis
 `./vendor/bin/phpunit --group=validators,redis`.
 
-### Extensions
+Functional and acceptance tests
+-------------------------------
+
+In order to run functional and acceptance tests you need to install additional composer packages for the application you're going
+to test. Add the following four packages to your `composer.json` `require-dev` section: 
+
+```
+"yiisoft/yii2-codeception": "*",
+"codeception/codeception": "2.0.*",
+"codeception/specify": "*",
+"codeception/verify": "*"
+```
+
+For advanced application you may need `yiisoft/yii2-faker: *` as well.
+
+Then for the basic application template run `./build/build app/link basic`. For advanced template command is
+`./build/build app/link advanced`.
+
+After package installation is complete you can run the following for basic app:
+
+```
+cd apps/basic
+vendor/bin/codecept build
+vendor/bin/codecept run
+```
+
+For advanced application frontend it will be:
+
+```
+cd apps/advanced/frontend
+../vendor/bin/codecept build
+../vendor/bin/codecept run
+```
+
+Note that you need a running webserver in order to pass acceptance tests. That can be easily achieved with PHP's built-in
+webserver:
+
+```
+cd apps/advanced/frontend/www
+php -S 127.0.0.1:8080 index-test.php
+```
+
+Extensions
+----------
 
 To work on extensions you have to install them in the application you want to try them in.
 Just add them to the `composer.json` as you would normally do e.g. add `"yiisoft/yii2-redis": "*"` to the
