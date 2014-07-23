@@ -42,7 +42,7 @@ class BaseFileHelper
      */
     public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
     {
-        $path = rtrim(strtr($path, ['/' => $ds, '\\' => $ds]), $ds);
+        $path = rtrim(strtr($path, '/\\', $ds . $ds), $ds);
         if (strpos($ds . $path, "{$ds}.") === false && strpos($path, "{$ds}{$ds}") === false) {
             return $path;
         }
