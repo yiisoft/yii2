@@ -1,6 +1,12 @@
 Testing
 =======
 
+> Note: This section is under development.
+
+TODO:
+
+- https://github.com/yiisoft/yii2/blob/master/extensions/codeception/README.md
+
 Testing is an important part of software development. Whether we are aware of it or not, we conduct testing continuously.
 For example, when we write a class in PHP, we may debug it step by step or simply use echo or die statements to verify
 that implementation is correct. In case of web application we're entering some test data in forms to ensure the page
