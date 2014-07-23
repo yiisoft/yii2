@@ -497,7 +497,7 @@ class Security extends Component
     {
         // timing attack resistant approach:
         $diff = 0;
-        for ($i = 0; $i < StringHelper::byteLength($actual); $i++) {
+        for ($i = 0, $length = StringHelper::byteLength($actual); $i < $length; $i++) {
             $diff |= (ord($actual[$i]) ^ ord($expected[$i]));
         }
         return $diff === 0;
