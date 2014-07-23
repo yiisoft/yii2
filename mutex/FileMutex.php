@@ -70,7 +70,7 @@ class FileMutex extends Mutex
      */
     public function init()
     {
-        if (stripos(php_uname('s'), 'win') === 0) {
+        if (DIRECTORY_SEPARATOR === '\\') {
             throw new InvalidConfigException('FileMutex does not have MS Windows operating system support.');
         }
         $this->mutexPath = Yii::getAlias($this->mutexPath);
