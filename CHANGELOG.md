@@ -132,6 +132,7 @@ Yii Framework 2 Change Log
     - Removed character maps for non-latin languages.
     - Improved overall slug results.
     - Added note about the fact that intl is required for non-latin languages to requirements checker.
+- Enh #3957: Added more straightforward configurable properties to `BlameableBehavior`, `SluggableBehavior` and `TimestampBehavior` (creocoder)
 - Enh #3992: In mail layouts you can now access the message object via `$message` variable (qiangxue)
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
 - Enh #4048: Added `init` event to `ActiveQuery` classes (qiangxue)
