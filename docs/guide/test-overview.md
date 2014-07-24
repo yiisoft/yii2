@@ -25,27 +25,8 @@ Yii provides ready to use test sets for all three testing types in both basic an
 Test environment setup
 ----------------------
 
-The unit testing supported provided by Yii requires [PHPUnit](http://phpunit.de/). In order to run functional and
-acceptance tests you need [Codeception](http://codeception.com/).
-
-### Installing PHPUnit
-
-It's best to install PHPUnit globally. Since we have Composer we can do it with a single command:
-
-```
-composer global require "phpunit/phpunit=4.1.*"
-```
-
-After running the command you'll see "Changed current directory to /your/global/composer/dir" message. If it's the
-first time you're installing a package globally you need to add `/your/global/composer/dir/vendor/bin/` to your `PATH`.
-
-Now we're able to use `phpunit` from command line.
-
-Check [PHPUnit documentation](http://phpunit.de/manual/current/en/installation.html) for more ways of installing it.
-
-### Installing Codeception
-
-Codeception can be installed globally the same way as PHPUnit:
+In order to run tests with Yii you need to install [Codeception](http://codeception.com/). A good way to install it is
+the following:
 
 ```
 composer global require "codeception/codeception=2.0.*"
@@ -53,4 +34,4 @@ composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```
 
-Now we're able to use `codecept` from command line.
+That's it. Now we're able to use `codecept` from command line.
