@@ -461,7 +461,7 @@ class Formatter extends Component
 
             $value = $value / $this->sizeFormat['base'];
             $position++;
-        } while ($position < 6);
+        } while ($position < 5);
 
         $value = round($value, $this->sizeFormat['decimals']);
         $formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
