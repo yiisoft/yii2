@@ -18,6 +18,7 @@ interface FormatterInterface
     /**
      * Formats given HTTP document.
      * @param DocumentInterface $httpDocument HTTP document instance.
+     * @return string formatted content.
      */
     public function format(DocumentInterface $httpDocument);
 } 

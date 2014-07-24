@@ -113,7 +113,7 @@ trait DocumentTrait
     public function getContent()
     {
         if ($this->_content === null && !empty($this->_data)) {
-            $this->createFormatter()->format($this);
+            $this->_content = $this->createFormatter()->format($this);
         }
         return $this->_content;
     }
@@ -135,8 +135,8 @@ trait DocumentTrait
      */
     public function getData()
     {
-        if (!is_array($this->_data)) {
-            $this->createParser()->parse($this);
+        if ($this->_data === null) {
+            $this->_data = $this->createParser()->parse($this);
         }
         return $this->_data;
     }

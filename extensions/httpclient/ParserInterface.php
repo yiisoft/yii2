@@ -18,6 +18,7 @@ interface ParserInterface
     /**
      * Parses given HTTP document.
      * @param DocumentInterface $httpDocument HTTP document instance.
+     * @return array parsed content data.
      */
     public function parse(DocumentInterface $httpDocument);
 }
