@@ -25,6 +25,11 @@ abstract class BaseManager extends Component implements ManagerInterface
     public $defaultRoles = [];
 
     /**
+     * @var Assignment[] a list of temporary assignments that will override the regular assignments for a user if set
+     */
+    protected $tempAssignments = []; // userId, itemName => assignment
+
+    /**
      * Returns the named auth item.
      * @param string $name the auth item name.
      * @return Item the auth item corresponding to the specified name. Null is returned if no such item.
@@ -87,6 +92,29 @@ abstract class BaseManager extends Component implements ManagerInterface
      * @throws \Exception if data validation or saving fails (such as the name of the rule is not unique)
      */
     abstract protected function updateRule($name, $rule);
+
+    /**
+     * Assigns a temporary role to a user, which will only exist for the current request. If any
+     * temporary assignments exist for a user, they will override all regular assignments.
+     *
+     * @param Role $role
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param Rule $rule the rule to be associated with this assignment. If not null, the rule
+     * will be executed when [[allow()]] is called to check the user permission.
+     * @return Assignment the role assignment information.
+     */
+    public function tempAssign($role, $userId, $rule = null)
+    {
+        $assignment = new Assignment([
+            'userId'    => $userId,
+            'roleName'  => $role->name,
+            'createdAt' => time(),
+        ]);
+
+        $this->tempAssignments[$userId][$role->name] = $assignment;
+
+        return $assignment;
+    }
 
     /**
      * @inheritdoc

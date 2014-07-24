@@ -494,6 +494,10 @@ class DbManager extends BaseManager
      */
     public function getAssignments($userId)
     {
+        if (isset($this->tempAssignments[$userId])) {
+            return $this->tempAssignments[$userId];
+        }
+
         $query = (new Query)
             ->from($this->assignmentTable)
             ->where(['user_id' => $userId]);
