@@ -190,6 +190,23 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asNumber(null));
     }
 
+    public function testAsSize() {
+        // tests for base 1000
+        // TODO
+        
+        // tests for base 1024
+        $this->formatter->sizeFormat['base'] = 1024;
+        $this->assertSame("1 KiB", $this->formatter->asSize(1024));
+        $this->assertSame("1 MB", $this->formatter->asSize(1024 * 1024, false, false));
+        $this->assertSame("1023 B", $this->formatter->asSize(1023));
+        $this->assertSame("5 GiB", $this->formatter->asSize(5 * 1024 * 1024 * 1024));
+        //$this->assertSame("1 YiB", $this->formatter->asSize(pow(2, 80)));
+        $this->assertSame("2 GiB", $this->formatter->asSize(2147483647)); // round 1.999 up to 2
+        $this->formatter->sizeFormat['decimalSeparator'] = ',';
+        $this->formatter->sizeFormat['decimals'] = 3;
+        $this->assertSame("1,001 KiB", $this->formatter->asSize(1025));
+    }
+    
     public function testFormat()
     {
         $value = time();
