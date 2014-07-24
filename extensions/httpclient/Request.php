@@ -15,9 +15,9 @@ use yii\base\Object;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Request extends Object implements HttpDocumentInterface
+class Request extends Object implements DocumentInterface
 {
-    use HttpDocumentTrait;
+    use DocumentTrait;
 
     /**
      * @var string request method.

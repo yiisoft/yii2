@@ -2,15 +2,15 @@
 
 namespace yiiunit\extensions\httpclient;
 
-use yii\httpclient\HttpDocumentInterface;
-use yii\httpclient\HttpDocumentTrait;
+use yii\httpclient\DocumentInterface;
+use yii\httpclient\DocumentTrait;
 use yii\web\HeaderCollection;
 
-class HttpDocumentTraitTest extends TestCase
+class DocumentTraitTest extends TestCase
 {
     public function testSetupHeaders()
     {
-        $document = new HttpDocument();
+        $document = new Document();
 
         $headers = [
             'header1' => 'value1',
@@ -40,7 +40,7 @@ class HttpDocumentTraitTest extends TestCase
 
     public function testSetupFormat()
     {
-        $document = new HttpDocument();
+        $document = new Document();
 
         $format = 'json';
         $document->setFormat($format);
@@ -49,7 +49,7 @@ class HttpDocumentTraitTest extends TestCase
 
     public function testSetupBody()
     {
-        $document = new HttpDocument();
+        $document = new Document();
         $content = 'test raw body';
         $document->setContent($content);
         $this->assertEquals($content, $document->getContent());
@@ -57,7 +57,7 @@ class HttpDocumentTraitTest extends TestCase
 
     public function testSetupBodyFields()
     {
-        $document = new HttpDocument();
+        $document = new Document();
         $data = [
             'field1' => 'value1',
             'field2' => 'value2',
@@ -67,7 +67,7 @@ class HttpDocumentTraitTest extends TestCase
     }
 }
 
-class HttpDocument implements HttpDocumentInterface
+class Document implements DocumentInterface
 {
-    use HttpDocumentTrait;
+    use DocumentTrait;
 }

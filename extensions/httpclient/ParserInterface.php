@@ -8,12 +8,16 @@
 namespace yii\httpclient;
 
 /**
- * Interface HttpDocumentFormatterInterface
+ * Interface ParserInterface
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-interface HttpDocumentFormatterInterface
+interface ParserInterface
 {
-    public function format(HttpDocumentInterface $httpDocument);
-} 
+    /**
+     * Parses given HTTP document.
+     * @param DocumentInterface $httpDocument HTTP document instance.
+     */
+    public function parse(DocumentInterface $httpDocument);
+}

@@ -15,7 +15,7 @@ use yii\base\Object;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Response extends Object implements HttpDocumentInterface
+class Response extends Object implements DocumentInterface
 {
-    use HttpDocumentTrait;
+    use DocumentTrait;
 } 

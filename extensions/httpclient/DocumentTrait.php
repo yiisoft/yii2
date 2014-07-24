@@ -13,14 +13,14 @@ use yii\web\HeaderCollection;
 use Yii;
 
 /**
- * HttpDocumentTrait satisfies [[HttpDocumentInterface]].
+ * DocumentTrait satisfies [[DocumentInterface]].
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-trait HttpDocumentTrait
+trait DocumentTrait
 {
-    /* @var $this HttpDocumentInterface */
+    /* @var $this DocumentInterface */
 
     /**
      * @var array the formatters for converting data into the content of the specified [[format]].
@@ -193,7 +193,7 @@ trait HttpDocumentTrait
     }
 
     /**
-     * @return HttpDocumentFormatterInterface document formatter instance.
+     * @return FormatterInterface document formatter instance.
      * @throws \yii\base\InvalidConfigException
      */
     private function createFormatter()
@@ -207,7 +207,7 @@ trait HttpDocumentTrait
     }
 
     /**
-     * @return HttpDocumentParserInterface document parser instance.
+     * @return ParserInterface document parser instance.
      * @throws \yii\base\InvalidConfigException
      */
     private function createParser()

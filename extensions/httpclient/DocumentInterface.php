@@ -10,12 +10,12 @@ namespace yii\httpclient;
 use yii\web\HeaderCollection;
 
 /**
- * HttpDocumentInterface represents HTTP document.
+ * DocumentInterface represents HTTP document.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-interface HttpDocumentInterface
+interface DocumentInterface
 {
     const FORMAT_JSON = 'json'; // JSON format
     const FORMAT_URLENCODED = 'urlencoded'; // urlencoded query string, like name1=value1&name2=value2
