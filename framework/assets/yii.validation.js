@@ -17,7 +17,7 @@ yii.validation = (function ($) {
         },
 
         addMessage: function (messages, message, value) {
-            messages.push(message.replace(/\{(value|file)\}/g, value));
+            messages.push(message.replace(/\{value\}/g, value));
         },
 
         required: function (value, messages, options) {
@@ -68,54 +68,54 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.notEqual, value);
             }
         },
-        
-        file: function(value, messages, options, attribute) {
+
+        file: function (value, messages, options, attribute) {
             var files = $(attribute.input).get(0).files,
-                    index, ext;
-            
-            if ( options.message && !files ) {
+                index, ext;
+
+            if (options.message && !files) {
                 pub.addMessage(messages, options.message, value);
             }
 
-            if ( !options.skipOnEmpty && files.length == 0) {
+            if (!options.skipOnEmpty && files.length == 0) {
                 pub.addMessage(messages, options.uploadRequired, value);
-            } else if ( files.length == 0) {
+            } else if (files.length == 0) {
                 return;
             }
-            
-            if ( options.maxFiles && options.maxFiles < files.length ) {
+
+            if (options.maxFiles && options.maxFiles < files.length) {
                 pub.addMessage(messages, options.tooMany);
             }
-            
-            $(files).each(function(i, file) {
-                if ( options.extensions && options.extensions.length > 0 ) {
+
+            $.each(files, function (i, file) {
+                if (options.extensions && options.extensions.length > 0) {
                     index = file.name.lastIndexOf('.');
-                    
-                    if ( !~index ) {
+
+                    if (!~index) {
                         ext = '';
                     } else {
-                        ext = file.name.substr(index+1, file.name.length).toLowerCase();
+                        ext = file.name.substr(index + 1, file.name.length).toLowerCase();
                     }
-                    
-                    if ( !~options.extensions.indexOf(ext) ) {
-                        pub.addMessage(messages, options.wrongExtension, file.name);
-                    }
-                }
-                
-                if ( options.mimeTypes && options.mimeTypes.length > 0 ) {
-                    if ( !~options.mimeTypes.indexOf(file.type) ) {
-                        pub.addMessage(messages, options.wrongMimeType, file.name);
+
+                    if (!~options.extensions.indexOf(ext)) {
+                        messages.push(options.wrongExtension.replace(/\{file\}/g, file.name));
                     }
                 }
-                
-                if ( options.maxSize && options.maxSize < file.size ) {
-                    pub.addMessage(messages, options.tooBig, file.name);
+
+                if (options.mimeTypes && options.mimeTypes.length > 0) {
+                    if (!~options.mimeTypes.indexOf(file.type)) {
+                        messages.push(options.wrongMimeType.replace(/\{file\}/g, file.name));
+                    }
                 }
-                
-                if ( options.maxSize && options.minSize > file.size ) {
-                    pub.addMessage(messages, options.tooSmall, file.name);
+
+                if (options.maxSize && options.maxSize < file.size) {
+                    messages.push(options.tooBig.replace(/\{file\}/g, file.name));
                 }
-                
+
+                if (options.maxSize && options.minSize > file.size) {
+                    messages.push(options.tooSmall.replace(/\{file\}/g, file.name));
+                }
+
             });
         },
 
