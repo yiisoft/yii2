@@ -192,7 +192,12 @@ class FormatterTest extends TestCase
 
     public function testAsSize() {
         // tests for base 1000
-        // TODO
+        $this->formatter->sizeFormat['base'] = 1000;
+        $this->assertSame("1.05 MB", $this->formatter->asSize(1024 * 1024));
+        $this->assertSame("1.05 MB", $this->formatter->asSize(1024 * 1024, false, false));
+        $this->assertSame("1 KB", $this->formatter->asSize(1000));
+        $this->assertSame("1.02 KB", $this->formatter->asSize(1023));
+        $this->assertSame("3 gigabytes", $this->formatter->asSize(3 * 1000 * 1000 * 1000, true));
         
         // tests for base 1024
         $this->formatter->sizeFormat['base'] = 1024;
