@@ -193,11 +193,13 @@ class FormatterTest extends TestCase
     public function testAsSize() {
         // tests for base 1000
         $this->formatter->sizeFormat['base'] = 1000;
+        $this->assertSame("999 B", $this->formatter->asSize(999));
         $this->assertSame("1.05 MB", $this->formatter->asSize(1024 * 1024));
         $this->assertSame("1.05 MB", $this->formatter->asSize(1024 * 1024, false, false));
         $this->assertSame("1 KB", $this->formatter->asSize(1000));
         $this->assertSame("1.02 KB", $this->formatter->asSize(1023));
         $this->assertSame("3 gigabytes", $this->formatter->asSize(3 * 1000 * 1000 * 1000, true));
+        $this->assertNotSame("3 PB", $this->formatter->asSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
         
         // tests for base 1024
         $this->formatter->sizeFormat['base'] = 1024;
@@ -205,6 +207,8 @@ class FormatterTest extends TestCase
         $this->assertSame("1 MB", $this->formatter->asSize(1024 * 1024, false, false));
         $this->assertSame("1023 B", $this->formatter->asSize(1023));
         $this->assertSame("5 GiB", $this->formatter->asSize(5 * 1024 * 1024 * 1024));
+        $this->assertSame("5 gibibytes", $this->formatter->asSize(5 * 1024 * 1024 * 1024,true));
+        $this->assertNotSame("5 PiB", $this->formatter->asSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
         //$this->assertSame("1 YiB", $this->formatter->asSize(pow(2, 80)));
         $this->assertSame("2 GiB", $this->formatter->asSize(2147483647)); // round 1.999 up to 2
         $this->formatter->sizeFormat['decimalSeparator'] = ',';
