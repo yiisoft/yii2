@@ -446,22 +446,25 @@ class Formatter extends Component
      * Defaults to false meaning that short names will be used (e.g. B, KB, ...).
      * @param boolean $binaryPrefix if binary prefixes should be used for base 1024
      * Defaults to true meaning that binary prefixes are used (e.g. kibibyte/KiB, mebibyte/MiB, ...).
+     * @param integer $maximumPrefix the maximum amount of division to do, or the maximum prefix expected
+     * 0 for no prefix, 1-8 for available prefixes (ascending with multiples of base).
      * @link http://en.wikipedia.org/wiki/Binary_prefix
      * @return string the formatted result
      * @see sizeFormat
      */
-    public function asSize($value, $verbose = false, $binaryPrefix = true)
+    public function asSize($value, $verbose = false, $binaryPrefix = true, $maximumPrefix = 8)
     {
+        if (!is_numeric($value)) {
+            throw new InvalidParamException('$value must be numeric.');
+        }
+        ($maximumPrefix > 8 || $maximumPrefix < 0) ? $maximumPrefix = 8 : null;
+        
         $position = 0;
-
-        do {
-            if ($value < $this->sizeFormat['base']) {
-                break;
-            }
-
-            $value = $value / $this->sizeFormat['base'];
+        
+        while ($position < $maximumPrefix && $value >= $this->sizeFormat['base']) {
+            $value /= $this->sizeFormat['base'];
             $position++;
-        } while ($position < 5);
+        }
 
         $value = round($value, $this->sizeFormat['decimals']);
         $formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
@@ -479,8 +482,14 @@ class Formatter extends Component
                     return $verbose ? Yii::t('yii', '{n, plural, =1{# gibibyte} other{# gibibytes}}', $params) : Yii::t('yii', '{n} GiB', $params);
                 case 4:
                     return $verbose ? Yii::t('yii', '{n, plural, =1{# tebibyte} other{# tebibytes}}', $params) : Yii::t('yii', '{n} TiB', $params);
-                default:
+                case 5:
                     return $verbose ? Yii::t('yii', '{n, plural, =1{# pebibyte} other{# pebibytes}}', $params) : Yii::t('yii', '{n} PiB', $params);
+                case 6:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# exbibyte} other{# exbibytes}}', $params) : Yii::t('yii', '{n} EiB', $params);
+                case 7:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# zebibyte} other{# zebibytes}}', $params) : Yii::t('yii', '{n} ZiB', $params);
+                case 8:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# yobibyte} other{# yobibytes}}', $params) : Yii::t('yii', '{n} YiB', $params);
             }
         }
 
@@ -495,8 +504,14 @@ class Formatter extends Component
                 return $verbose ? Yii::t('yii', '{n, plural, =1{# gigabyte} other{# gigabytes}}', $params) : Yii::t('yii', '{n} GB', $params);
             case 4:
                 return $verbose ? Yii::t('yii', '{n, plural, =1{# terabyte} other{# terabytes}}', $params) : Yii::t('yii', '{n} TB', $params);
-            default:
+            case 5:
                 return $verbose ? Yii::t('yii', '{n, plural, =1{# petabyte} other{# petabytes}}', $params) : Yii::t('yii', '{n} PB', $params);
+            case 6:
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# exabyte} other{# exabytes}}', $params) : Yii::t('yii', '{n} EB', $params);
+            case 7:
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# zettabyte} other{# zettabytes}}', $params) : Yii::t('yii', '{n} ZB', $params);
+            case 8:
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# yottabyte} other{# yottabytes}}', $params) : Yii::t('yii', '{n} YB', $params);
         }
     }
     
