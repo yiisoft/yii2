@@ -6,8 +6,11 @@
  */
 
 namespace yii\httpclient;
+
 use yii\base\ErrorHandler;
+use yii\base\InvalidConfigException;
 use yii\web\HeaderCollection;
+use Yii;
 
 /**
  * HttpDocumentTrait satisfies [[HttpDocumentInterface]].
@@ -17,6 +20,20 @@ use yii\web\HeaderCollection;
  */
 trait HttpDocumentTrait
 {
+    /* @var $this HttpDocumentInterface */
+
+    /**
+     * @var array the formatters for converting data into the content of the specified [[format]].
+     * The array keys are the format names, and the array values are the corresponding configurations
+     * for creating the formatter objects.
+     */
+    public $formatters = [];
+    /**
+     * @var array the parsers for converting content of the specified [[format]] into the data.
+     * The array keys are the format names, and the array values are the corresponding configurations
+     * for creating the parser objects.
+     */
+    public $parsers = [];
     /**
      * @var HeaderCollection
      */
@@ -24,11 +41,11 @@ trait HttpDocumentTrait
     /**
      * @var string|null
      */
-    private $_body;
+    private $_content;
     /**
      * @var array
      */
-    private $_bodyFields;
+    private $_data;
     /**
      * @var string
      */
@@ -79,49 +96,49 @@ trait HttpDocumentTrait
     }
 
     /**
-     * Sets the HTTP document raw body.
-     * @param string $body raw body.
+     * Sets the HTTP document raw content.
+     * @param string $content raw content.
      * @return static self reference.
      */
-    public function setBody($body)
+    public function setContent($content)
     {
-        $this->_body = $body;
+        $this->_content = $content;
         return $this;
     }
 
     /**
-     * Returns HTTP document raw body.
+     * Returns HTTP document raw content.
      * @return string raw body.
      */
-    public function getBody()
+    public function getContent()
     {
-        if ($this->_body === null && !empty($this->_bodyFields)) {
-            ;
+        if ($this->_content === null && !empty($this->_data)) {
+            $this->createFormatter()->format($this);
         }
-        return $this->_body;
+        return $this->_content;
     }
 
     /**
-     * Sets the fields, which composes document body.
-     * @param array $fields body fields.
+     * Sets the data fields, which composes document content.
+     * @param array $data content data fields.
      * @return static self reference.
      */
-    public function setBodyFields(array $fields)
+    public function setData(array $data)
     {
-        $this->_bodyFields = $fields;
+        $this->_data = $data;
         return $this;
     }
 
     /**
-     * Returns the fields, parsed from raw body.
-     * @return array body fields.
+     * Returns the data fields, parsed from raw content.
+     * @return array content data fields.
      */
-    public function getBodyFields()
+    public function getData()
     {
-        if (!is_array($this->_bodyFields)) {
-            ;
+        if (!is_array($this->_data)) {
+            $this->createParser()->parse($this);
         }
-        return $this->_bodyFields;
+        return $this->_data;
     }
 
     /**
@@ -156,7 +173,7 @@ trait HttpDocumentTrait
                 $headerParts[] = "$name : $value";
             }
         }
-        return implode("\n", $headerParts) . "\n\n" . $this->getBody();
+        return implode("\n", $headerParts) . "\n\n" . $this->getContent();
     }
 
     /**
@@ -172,6 +189,34 @@ trait HttpDocumentTrait
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
             return '';
+        }
+    }
+
+    /**
+     * @return HttpDocumentFormatterInterface document formatter instance.
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function createFormatter()
+    {
+        $format = $this->getFormat();
+        if (array_key_exists($format, $this->formatters)) {
+            return Yii::createObject($this->formatters[$format]);
+        } else {
+            throw new InvalidConfigException("Unrecognized format '{$format}'");
+        }
+    }
+
+    /**
+     * @return HttpDocumentParserInterface document parser instance.
+     * @throws \yii\base\InvalidConfigException
+     */
+    private function createParser()
+    {
+        $format = $this->getFormat();
+        if (array_key_exists($format, $this->parsers)) {
+            return Yii::createObject($this->parsers[$format]);
+        } else {
+            throw new InvalidConfigException("Unrecognized format '{$format}'");
         }
     }
 }

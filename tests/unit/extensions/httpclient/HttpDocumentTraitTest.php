@@ -50,20 +50,20 @@ class HttpDocumentTraitTest extends TestCase
     public function testSetupBody()
     {
         $document = new HttpDocument();
-        $body = 'test raw body';
-        $document->setBody($body);
-        $this->assertEquals($body, $document->getBody());
+        $content = 'test raw body';
+        $document->setContent($content);
+        $this->assertEquals($content, $document->getContent());
     }
 
     public function testSetupBodyFields()
     {
         $document = new HttpDocument();
-        $bodyFields = [
+        $data = [
             'field1' => 'value1',
             'field2' => 'value2',
         ];
-        $document->setBodyFields($bodyFields);
-        $this->assertEquals($bodyFields, $document->getBodyFields());
+        $document->setData($data);
+        $this->assertEquals($data, $document->getData());
     }
 }
 
