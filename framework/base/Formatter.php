@@ -467,6 +467,7 @@ class Formatter extends Component
         $formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
         $params = ['n' => $formattedValue];
 
+
         if ($binaryPrefix && $this->sizeFormat['base'] === 1024) {
             switch ($position) {
                 case 0:
