@@ -467,7 +467,8 @@ class Formatter extends Component
         $formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
         $params = ['n' => $formattedValue];
 
-        if($binaryPrefix && $this->sizeFormat['base'] == 1024) {
+
+        if ($binaryPrefix && $this->sizeFormat['base'] === 1024) {
             switch ($position) {
                 case 0:
                     return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
@@ -483,7 +484,7 @@ class Formatter extends Component
                     return $verbose ? Yii::t('yii', '{n, plural, =1{# pebibyte} other{# pebibytes}}', $params) : Yii::t('yii', '{n} PiB', $params);
             }
         }
-        
+
         switch ($position) {
             case 0:
                 return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
