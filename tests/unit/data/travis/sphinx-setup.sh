@@ -1,5 +1,5 @@
 #!/bin/sh
-
+SCRIPT=$(readlink -f "$0")
 CWD=$(dirname "$SCRIPT")
 
 # log files
