@@ -548,10 +548,6 @@ class Module extends ServiceLocator
      */
     public function createControllerByID($id)
     {
-        if (!preg_match('%^[a-z0-9\\-_/]+$%', $id)) {
-            return null;
-        }
-
         $pos = strrpos($id, '/');
         if ($pos === false) {
             $prefix = '';
@@ -559,6 +555,13 @@ class Module extends ServiceLocator
         } else {
             $prefix = substr($id, 0, $pos + 1);
             $className = substr($id, $pos + 1);
+        }
+
+        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
+            return null;
+        }
+        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+            return null;
         }
 
         $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';

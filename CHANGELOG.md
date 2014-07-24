@@ -69,6 +69,7 @@ Yii Framework 2 Change Log
 - Bug #4241: `yii\widgets\Pjax` was incorrectly setting container id (mitalcoi)
 - Bug #4276: Added check for UPLOAD_ERR_NO_FILE in `yii\web\UploadedFile` and return null if no file was uploaded (OmgDef)
 - Bug #4342: mssql (dblib) driver does not support getting attributes (tof06)
+- Bug #4409: Upper case letters in subdirectory prefixes of controller IDs were not properly handled (qiangxue)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
