@@ -326,7 +326,10 @@ class FileValidator extends Validator
 
         return true;
     }
-    
+
+    /**
+     * @inheritdoc
+     */
     public function clientValidateAttribute($object, $attribute, $view) {
         $label = $object->getAttributeLabel($attribute);
         

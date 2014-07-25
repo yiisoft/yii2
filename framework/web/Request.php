@@ -1329,6 +1329,13 @@ class Request extends \yii\base\Request
             || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
     }
 
+    /**
+     * Validates CSRF token
+     *
+     * @param string $token
+     * @param string $trueToken
+     * @return boolean
+     */
     private function validateCsrfTokenInternal($token, $trueToken)
     {
         $token = base64_decode(str_replace('.', '+', $token));
