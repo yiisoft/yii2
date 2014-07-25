@@ -78,7 +78,7 @@ return [
         return $fixture;
     },
     'auth_key' => function ($fixture, $faker, $index) {
-        $fixture['auth_key'] = Yii::$app->getSecurity()->generateRandomKey();
+        $fixture['auth_key'] = Yii::$app->getSecurity()->generateRandomString();
         return $fixture;
     },
 ];
