@@ -8,6 +8,7 @@ Yii Framework 2 gii extension Change Log
 - Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)
 - Bug #3265: Fixed incorrect controller class name validation (suralc)
 - Bug #3693: Fixed broken Gii preview when a file is unchanged (cebe)
+- Bug #4410: Fixed Gii to preserve database column order in generated _form.php  (kmindi)
 - Enh #2018: Search model is not required anymore in CRUD generator (johonunu)
 - Enh #3088: The gii module will manage their own URL rules now (qiangxue)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
