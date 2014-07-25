@@ -173,6 +173,18 @@ interface ManagerInterface
     public function assign($role, $userId, $rule = null);
 
     /**
+     * Assigns a role to a user temporarily, which will only last for the current request. If any
+     * temporary assignments exist for a user, they will override all regular assignments.
+     *
+     * @param Role $role
+     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param Rule $rule the rule to be associated with this assignment. If not null, the rule
+     * will be executed when [[allow()]] is called to check the user permission.
+     * @return Assignment the role assignment information.
+     */
+    public function tempAssign($role, $userId, $rule = null);
+
+    /**
      * Revokes a role from a user.
      * @param Role $role
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])

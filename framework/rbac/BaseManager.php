@@ -94,14 +94,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     abstract protected function updateRule($name, $rule);
 
     /**
-     * Assigns a temporary role to a user, which will only exist for the current request. If any
-     * temporary assignments exist for a user, they will override all regular assignments.
-     *
-     * @param Role $role
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
-     * @param Rule $rule the rule to be associated with this assignment. If not null, the rule
-     * will be executed when [[allow()]] is called to check the user permission.
-     * @return Assignment the role assignment information.
+     * @inheritdoc
      */
     public function tempAssign($role, $userId, $rule = null)
     {
