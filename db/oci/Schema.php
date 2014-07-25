@@ -168,7 +168,7 @@ EOD;
         return $this->db->createCommand($seq_name_sql)->queryScalar();
     }
 
-    /*
+    /**
      * @Overrides method in class 'Schema'
      * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
      *
@@ -189,6 +189,12 @@ EOD;
         }
     }
 
+    /**
+     * Creates ColumnSchema instance
+     *
+     * @param array $column
+     * @return ColumnSchema
+     */
     protected function createColumn($column)
     {
         $c = new ColumnSchema();
@@ -211,6 +217,10 @@ EOD;
         return $c;
     }
 
+    /**
+     * Finds constraints and fills them into TableSchema object passed
+     * @param TableSchema $table
+     */
     protected function findConstraints($table)
     {
         $sql = <<<EOD

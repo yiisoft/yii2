@@ -72,6 +72,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return [$this->_sql, $params];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildLimit($limit, $offset)
     {
         $filters = [];

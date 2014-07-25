@@ -42,6 +42,9 @@ class Exception extends \yii\base\Exception
         return 'Database Exception';
     }
 
+    /**
+     * @return string readable representation of exception
+     */
     public function __toString()
     {
         return parent::__toString() . PHP_EOL

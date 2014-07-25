@@ -326,7 +326,7 @@ class BaseInflector
      * For example, 'PostTag' will be converted to 'post-tag'.
      * @param string $name the string to be converted
      * @param string $separator the character used to concatenate the words in the ID
-     * @param string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
+     * @param boolean|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
      * @return string the resulting ID
      */
     public static function camel2id($name, $separator = '-', $strict = false)

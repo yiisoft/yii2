@@ -686,6 +686,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @see update()
+     * @param array $attributes attributes to update
+     * @return integer number of rows updated
      * @throws StaleObjectException
      */
     protected function updateInternal($attributes = null)
