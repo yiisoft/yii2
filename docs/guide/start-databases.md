@@ -2,7 +2,7 @@ Working with Databases
 ======================
 
 This section will describe how to create a new page that displays country data fetched from
-from a database table named `country`. To achieve this goal, you will configure a database connection,
+a database table named `country`. To achieve this goal, you will configure a database connection,
 create an [Active Record](db-active-record.md) class, and define an [action](structure-controllers.md),
 and create a [view](structure-views.md).
 
