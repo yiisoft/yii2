@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0-rc under development
 --------------------------
 
+-
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)
 - Bug #2563: Theming is not working if the path map of the theme contains ".." or "." in the paths (qiangxue)
@@ -77,6 +78,7 @@ Yii Framework 2 Change Log
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
 - Bug: Fixed Object of class Imagick could not be converted to string in CaptchaAction (eXprojects, cebe)
+- Enh #4131: Added HKDF to `yii\base\Security`, reverted auto fallback to PHP PBKDF2, fixed PBKDF2 key truncation (tom--)
 - Enh #87: Helper `yii\helpers\Security` converted into application component, cryptographic strength improved (klimov-paul)
 - Enh #422: Added Support for BIT(M) data type default values in Schema (cebe)
 - Enh #1160: Added $strict parameter to Inflector::camel2id() to handle consecutive uppercase chars (schmunk)

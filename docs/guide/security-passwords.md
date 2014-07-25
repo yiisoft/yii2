@@ -42,7 +42,7 @@ Yii security helper makes generating pseudorandom data simple:
 
 
 ```php
-$key = Yii::$app->getSecurity()->generateRandomKey();
+$key = Yii::$app->getSecurity()->generateRandomString();
 ```
 
 Note that you need to have the `openssl` extension installed in order to generate cryptographically secure random data.
