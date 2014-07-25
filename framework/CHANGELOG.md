@@ -70,6 +70,7 @@ Yii Framework 2 Change Log
 - Bug #4276: Added check for UPLOAD_ERR_NO_FILE in `yii\web\UploadedFile` and return null if no file was uploaded (OmgDef)
 - Bug #4342: mssql (dblib) driver does not support getting attributes (tof06)
 - Bug #4409: Upper case letters in subdirectory prefixes of controller IDs were not properly handled (qiangxue)
+- Bug #4410: Fixed Gii to preserve database column order in generated _form.php  (kmindi)
 - Bug #4412: Formatter used SI Prefixes for base 1024, now uses binary prefixes (kmindi)
 - Bug #4427: Formatter could do one division too much (kmindi)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
