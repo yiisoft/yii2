@@ -110,6 +110,10 @@ class QueryBuilder extends \yii\base\Object
             $parts['facets'] = $query->facets;
         }
 
+        if (!empty($query->aggs)) {
+            $parts['aggs'] = $query->aggs;
+        }
+
         $options = [];
         if ($query->timeout !== null) {
             $options['timeout'] = $query->timeout;

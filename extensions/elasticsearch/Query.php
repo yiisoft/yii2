@@ -140,6 +140,8 @@ class Query extends Component implements QueryInterface
 
     public $facets = [];
 
+    public $aggs = [];
+
 
     public function init()
     {
@@ -477,6 +479,20 @@ class Query extends Component implements QueryInterface
     // TODO add validate query http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html
 
     // TODO support multi query via static method http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-multi-search.html
+
+    /**
+     * Adds a aggregation search to this query.
+     * @param string $name the name of this aggregation
+     * @param string $type the aggregation type. e.g. `terms`, `range`, `histogram`...
+     * @param string|array $options the configuration options for this aggregation. Can be an array or a json string.
+     * @return static the query object itself
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations.html
+     */
+    public function addAggs($name, $type, $options)
+    {
+        $this->aggs[$name] = [$type => $options];
+        return $this;
+    }
 
     /**
      * Sets the querypart of this search query.
