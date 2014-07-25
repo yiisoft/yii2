@@ -143,7 +143,7 @@ function foo($model, $attribute) {
 ```
 
 > Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#empty-values) section.
+  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
 
 
 ## [[yii\validators\NumberValidator|double]] <a name="double"></a>
