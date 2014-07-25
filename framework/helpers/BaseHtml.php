@@ -80,7 +80,7 @@ class BaseHtml
         'media',
     ];
     
-    const ATTRIBUTENAMEREGEX = '/(^|.*\])((?:[\p{L}\p{N}]+[\p{M}]*[\p{Pd}\p{Pc}\p{Po}]*)+)(\[.*|$)/u';
+    public static $attributeNameRegexPart = '(?:[\p{L}\p{N}]+[\p{M}]*[\p{Pd}\p{Pc}\p{Po}]*)+';
 
     /**
      * Encodes special characters into HTML entities.
@@ -1804,7 +1804,7 @@ class BaseHtml
      */
     public static function getAttributeName($attribute)
     {
-        if (preg_match(self::ATTRIBUTENAMEREGEX, $attribute, $matches)) {
+        if (preg_match("/(^|.*\])(".self::$attributeNameRegexPart.")(\[.*|$)/u", $attribute, $matches)) {
             return $matches[2];
         } else {
             throw new InvalidParamException('Attribute name must contain word characters only.');
@@ -1827,7 +1827,7 @@ class BaseHtml
      */
     public static function getAttributeValue($model, $attribute)
     {
-        if (!preg_match(self::ATTRIBUTENAMEREGEX, $attribute, $matches)) {
+        if (!preg_match("/(^|.*\])(".self::$attributeNameRegexPart.")(\[.*|$)/u", $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
         $attribute = $matches[2];
@@ -1877,7 +1877,7 @@ class BaseHtml
     public static function getInputName($model, $attribute)
     {
         $formName = $model->formName();
-        if (!preg_match(self::ATTRIBUTENAMEREGEX, $attribute, $matches)) {
+        if (!preg_match("/(^|.*\])(".self::$attributeNameRegexPart.")(\[.*|$)/u", $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
         $prefix = $matches[1];
