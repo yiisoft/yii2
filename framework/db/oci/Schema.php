@@ -15,26 +15,11 @@ use yii\db\ColumnSchema;
 /**
  * Schema is the class for retrieving metadata from an Oracle database
  *
- * @todo mapping from physical types to abstract types
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Schema extends \yii\db\Schema
 {
-    const TYPE_PK = 'NUMBER(10) NOT NULL PRIMARY KEY';
-    const TYPE_STRING = 'VARCHAR2(255)';
-    const TYPE_TEXT = 'CLOB';
-    const TYPE_INTEGER = 'NUMBER(10)';
-    const TYPE_FLOAT = 'NUMBER';
-    const TYPE_DECIMAL = 'NUMBER';
-    const TYPE_DATETIME = 'TIMESTAMP';
-    const TYPE_TIMESTAMP = 'TIMESTAMP';
-    const TYPE_TIME = 'TIMESTAMP';
-    const TYPE_DATE = 'DATE';
-    const TYPE_BINARY = 'BLOB';
-    const TYPE_BOOLEAN = 'NUMBER(1)';
-    const TYPE_MONEY = 'NUMBER(19,4)';
     /**
      * @inheritdoc
      */
@@ -172,7 +157,6 @@ EOD;
      * @internal param \yii\db\TableSchema $table ->name the table schema
      * @return string whether the sequence exists
      */
-
     protected function getTableSequenceName($tablename){
 
         $seq_name_sql="select ud.referenced_name as sequence_name
