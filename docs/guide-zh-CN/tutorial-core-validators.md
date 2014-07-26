@@ -226,31 +226,27 @@ function foo($model, $attribute) {
 `FileValidator` 通常与 [[yii\web\UploadedFile]] 共同使用。请参考 [文件上传](input-file-upload.md)章节来了解有关文件上传与上传文件的检验的全部内容。
 
 
-## [[yii\validators\FilterValidator|filter（过滤器）]] <a name="filter"></a>
+## [[yii\validators\FilterValidator|filter（滤镜）]] <a name="filter"></a>
 
 ```php
 [
-    // trim "username" and "email" inputs
+    // trim 掉 "username" 和 "email" 输入
     [['username', 'email'], 'filter', 'filter' => 'trim', 'skipOnArray' => true],
 
-    // normalize "phone" input
+    // 标准化 "phone" 输入
     ['phone', 'filter', 'filter' => function ($value) {
-        // normalize phone input here
+        // 在此处标准化输入的电话号码
         return $value;
     }],
 ]
 ```
 
-This validator does not validate data. Instead, it applies a filter on the input value and assigns it
-back to the attribute being validated.
+该验证器并不进行数据验证。而是，给输入值应用一个滤镜，并在检验过程之后把它赋值回特性变量。
 
-- `filter`：a PHP callback that defines a filter. This can be a global function name, an anonymous function, etc.
-  The function signature must be `function ($value) { return $newValue; }`. This property must be set.
-- `skipOnArray`：whether to skip the filter if the input value is an array. 默认为 false.
-  Note that if the filter cannot handle array input, you should set this property to be true. Otherwise some
-  PHP error might occur.
+- `filter`：用于定义滤镜的 PHP 回调函数。可以为全局函数名，匿名函数，或其他。该函数的样式必须是 `function ($value) { return $newValue; }`。该属性不能省略，必须设置。
+- `skipOnArray`：是否在输入值为数组时跳过滤镜。默认为 false。请注意如果滤镜不能处理数组输入，你就应该把该属性设为 true。否则可能会导致 PHP Error 的发生。
 
-> Tip：If you want to trim input values, you may directly use [trim](#trim) validator.
+> 技巧：如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
 
 
 ## [[yii\validators\ImageValidator|image（图片）]] <a name="image"></a>
