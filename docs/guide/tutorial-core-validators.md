@@ -368,7 +368,7 @@ This validator checks if the input value matches the specified regular expressio
 ]
 ```
 
-This validator checks if the input value is a number. It is equivalent to the [double](#double] validator.
+This validator checks if the input value is a number. It is equivalent to the [double](#double) validator.
 
 - `max`: the upper limit (inclusive) of the value. If not set, it means the validator does not check the upper limit.
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
