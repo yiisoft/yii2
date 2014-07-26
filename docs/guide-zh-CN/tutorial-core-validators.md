@@ -184,7 +184,7 @@ function foo($model, $attribute) {
 ]
 ```
 
-该验证器检查输入值是否在表字段中存在。它只对[活动记录](db-active-record.md)模型的特性起作用。它支持对一个或多过字段的验证。
+该验证器检查输入值是否在表字段中存在。它只对[活动记录](db-active-record.md)模型的特性起作用。它支持对一个或多个字段的验证。
 
 - `targetClass`：the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.
