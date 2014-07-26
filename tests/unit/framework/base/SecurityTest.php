@@ -8,7 +8,6 @@
 namespace yiiunit\framework\base;
 
 use yiiunit\TestCase;
-use yii\base\Security;
 
 /**
  * @group base
@@ -16,14 +15,14 @@ use yii\base\Security;
 class SecurityTest extends TestCase
 {
     /**
-     * @var Security
+     * @var ExposedSecurity
      */
     protected $security;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->security = new Security();
+        $this->security = new ExposedSecurity();
         $this->security->derivationIterations = 1000; // speed up test running
     }
 

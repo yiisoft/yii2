@@ -44,20 +44,30 @@ class Security extends Component
      */
     public $passwordHashStrategy = 'crypt';
 
-    // AES has 128-bit block size and three key sizes: 128, 192 and 256 bits.
-    // mcrypt offers the Rijndael cipher with block sizes of 128, 192 and 256
-    // bits but only the 128-bit Rijndael is standardized in AES.
-    // So to use AES in mycrypt, specify `'rijndael-128'` cipher and mcrypt
-    // chooses the appropriate AES based on the length of the supplied key.
+    /**
+     * AES has 128-bit block size and three key sizes: 128, 192 and 256 bits.
+     * mcrypt offers the Rijndael cipher with block sizes of 128, 192 and 256
+     * bits but only the 128-bit Rijndael is standardized in AES.
+     * So to use AES in mycrypt, specify `'rijndael-128'` cipher and mcrypt
+     * chooses the appropriate AES based on the length of the supplied key.
+     */
     const MCRYPT_CIPHER = 'rijndael-128';
     const MCRYPT_MODE = 'cbc';
-    // Same size for encryption keys, auth keys and KDF salt
+    /**
+     * Same size for encryption keys, auth keys and KDF salt
+     */
     const KEY_SIZE = 16;
-    // Hash algorithm for key derivation.
+    /**
+     * Hash algorithm for key derivation.
+     */
     const KDF_HASH = 'sha256';
-    // Hash algorithm for authentication.
+    /**
+     * Hash algorithm for authentication.
+     */
     const MAC_HASH = 'sha256';
-    // HKDF info value for auth keys
+    /**
+     * HKDF info value for auth keys
+     */
     const AUTH_KEY_INFO = 'AuthorizationKey';
 
     private $_cryptModule;
@@ -282,7 +292,7 @@ class Security extends Component
      * @throws InvalidParamException
      * @return string the derived key
      */
-    public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
+    protected function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
         $test = @hash_hmac($algo, '', '', true);
         if (!$test) {
@@ -329,7 +339,7 @@ class Security extends Component
      * @throws InvalidParamException
      * @return string the derived key
      */
-    public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
+    protected function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {
         if (function_exists('hash_pbkdf2')) {
             $outputKey = hash_pbkdf2($algo, $password, $salt, $iterations, $length, true);
@@ -599,7 +609,7 @@ class Security extends Component
      * @param string $actual string to compare.
      * @return boolean whether strings are equal.
      */
-    protected function compareString($expected, $actual)
+    public function compareString($expected, $actual)
     {
         // timing attack resistant approach:
         $length = StringHelper::byteLength($expected);
