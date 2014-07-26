@@ -68,6 +68,27 @@ class Facebook extends OAuth2
     /**
      * @inheritdoc
      */
+    public function buildAuthUrl(array $params = [])
+    {
+        $params['display'] = 'popup';
+
+        return parent::buildAuthUrl($params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultViewOptions()
+    {
+        return [
+            'popupWidth' => 450,
+            'popupHeight' => 380,
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function defaultName()
     {
         return 'facebook';
