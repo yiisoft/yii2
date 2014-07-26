@@ -74,9 +74,9 @@ public function rules()
 - `compareValue`：用于与输入值相比较的常量值。当该属性与 `compareAttribute` 属性同时被指定时，该属性优先被使用。
 - `operator`：比较操作符。默认为 `==`，意味着检查输入值是否与 `compareAttribute` 或 `compareValue` 的值相等。该属性支持如下操作符：
      * `==`：检查两值是否相等。比对为非严格模式。
-     * `===`：检查两值是否相等。比对为严格模式。
-     * `!=`：检查两值是否不等。 比对为非严格模式。
-     * `!==`：检查两值是否不等。比对为严格模式。
+     * `===`：检查两值是否全等。比对为严格模式。
+     * `!=`：检查两值是否不等。比对为非严格模式。
+     * `!==`：检查两值是否不全等。比对为严格模式。
      * `>`：检查待测目标值是否大于给定被测值。
      * `>=`：检查待测目标值是否大于等于给定被测值。
      * `<`：检查待测目标值是否小于给定被测值。
@@ -94,9 +94,8 @@ public function rules()
 该验证器检查输入值是否为适当格式的 date，time，或者 datetime。另外，它还可以帮你把输入值转换为一个 UNIX 时间戳并保存到 [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] 属性所指定的特性里。
 
 - `format`：待测的 日期/时间 格式。请参考
-  [date_create_from_format() 相关的 PHP 手册](http://www.php.net/manual/zh/datetime.createfromformat.php)
-  了解设定格式字符串的更多细节。默认值为 `'Y-m-d'`。
-- `timestampAttribute`：用于保存由输入时间/日期所转换的 UNIX 时间戳的特性名称。
+  [date_create_from_format() 相关的 PHP 手册](http://www.php.net/manual/zh/datetime.createfromformat.php)了解设定格式字符串的更多细节。默认值为 `'Y-m-d'`。
+- `timestampAttribute`：用于保存用输入时间/日期转换出来的 UNIX 时间戳的特性。
 
 
 ## [[yii\validators\DefaultValueValidator|default（默认值）]] <a name="default"></a>
@@ -116,7 +115,7 @@ public function rules()
 ]
 ```
 
-该验证器并不检查数据。而是，给为空的待测特性分配默认值。
+该验证器并不进行数据验证。而是，给为空的待测特性分配默认值。
 
 - `value`：默认值，或一个返回默认值的 PHP Callable 对象（即回调函数）。它们会分配给检测为空的待测特性。PHP 回调方法的样式如下：
 
@@ -158,30 +157,29 @@ function foo($model, $attribute) {
 
 - `allowName`：检查是否允许带名称的电子邮件地址 (e.g. `张三 <John.san@example.com>`)。 默认为 false。
 - `checkDNS`：检查邮箱域名是否存在，且有没有对应的 A 或 MX 记录。不过要知道，有的时候该项检查可能会因为临时性 DNS 故障而失败，哪怕它其实是有效的。默认为 false。
-- `enableIDN`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。
-  默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
+- `enableIDN`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
 
 
 ## [[yii\validators\ExistValidator|exist（存在）]] <a name="exist"></a>
 
 ```php
 [
-    // a1 needs to exist in the column represented by the "a1" attribute
+    // a1 需要在 "a1" 特性所代表的字段内存在
     ['a1', 'exist'],
 
-    // a1 needs to exist, but its value will use a2 to check for the existence
+    // a1 必需存在，但会用 a2 来检验其值的存在性
     ['a1', 'exist', 'targetAttribute' => 'a2'],
 
-    // a1 and a2 need to exist together, and they both will receive error message
+    // a1 和 a2 需要共同存在，且他们都会接收到错误信息
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 and a2 need to exist together, only a1 will receive error message
+    // a1 和 a2 需要共同存在，只有 a1 会接收到错误信息
     ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
 
     // a1 needs to exist by checking the existence of both a2 and a3 (using a1 value)
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 
-    // a1 needs to exist. If a1 is an array, then every element of it must exist.
+    // a1 必需存在，若 a1 为数组，则其每个子元素都必须存在。
     ['a1', 'exist', 'allowArray' => true],
 ]
 ```
@@ -204,39 +202,31 @@ function foo($model, $attribute) {
   this property cannot be set true if you are validating against multiple columns by setting `targetAttribute` as an array.
 
 
-## [[yii\validators\FileValidator|file]] <a name="file"></a>
+## [[yii\validators\FileValidator|file（文件）]] <a name="file"></a>
 
 ```php
 [
-    // checks if "primaryImage" is an uploaded image file in PNG, JPG or GIF format.
-    // the file size must be less than 1MB
+    // 检查 "primaryImage" 是否为 PNG, JPG 或 GIF 格式的上传图片。
+    // 文件大小必须小于  1MB
     ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
 ]
 ```
 
-This validator checks if the input is a valid uploaded file.
+该验证器检查输入值是否为一个有效的上传文件。
 
-- `extensions`：a list of file name extensions that are allowed to be uploaded. This can be either
-  an array or a string consisting of file extension names separated by space or comma (e.g. "gif, jpg").
-  Extension names are case-insensitive. 默认为 null, meaning all file name
-  extensions are allowed.
-- `mimeTypes`：a list of file MIME types that are allowed to be uploaded. This can be either an array
-  or a string consisting of file MIME types separated by space or comma (e.g. "image/jpeg, image/png").
-  Mime type names are case-insensitive. 默认为 null, meaning all MIME types are allowed.
-- `minSize`：the minimum number of bytes required for the uploaded file. 默认为 null, meaning no lower limit.
-- `maxSize`：the maximum number of bytes allowed for the uploaded file. 默认为 null, meaning no upper limit.
-- `maxFiles`：the maximum number of files that the given attribute can hold. 默认为 1, meaning
-  the input must be a single uploaded file. If it is greater than 1, then the input must be an array
-  consisting of at most `maxFiles` number of uploaded files.
-- `checkExtensionByMimeType`：whether to check the file extension by the file's MIME type. If the extension produced by
-  MIME type check differs from the uploaded file extension, the file will be considered as invalid. 默认为 true,
-  meaning perform such check.
+- `extensions`：可接受上传的文件扩展名列表。它可以是数组，也可以是用空格或逗号分隔各个扩展名的字符串 (e.g. "gif, jpg")。
+  扩展名大小写不敏感。默认为 null，意味着所有扩展名都被接受。
+- `mimeTypes`：可接受上传的 MIME 类型列表。它可以是数组，也可以是用空格或逗号分隔各个 MIME 的字符串 (e.g. "image/jpeg, image/png")。
+  Mime 类型名是大小写不敏感的。默认为 null，意味着所有 MIME 类型都被接受。
+- `minSize`：上传文件所需最少多少 Byte 的大小。默认为 null，代表没有下限。
+- `maxSize`：上传文件所需最多多少 Byte 的大小。默认为 null，代表没有上限。
+- `maxFiles`：给定特性最多能承载多少个文件。默认为 1，代表只允许单文件上传。若值大于一，那么输入值必须为包含最多 `maxFiles` 个上传文件元素的数组。
+- `checkExtensionByMimeType`：是否通过文件的 MIME 类型来判断其文件扩展。若由 MIME 判定的文件扩展与给定文件的扩展不一样，则文件会被认为无效。默认为 true，代表执行上述检测。
 
-`FileValidator` is used together with [[yii\web\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
-section for complete coverage about uploading files and performing validation about the uploaded files.
+`FileValidator` 通常与 [[yii\web\UploadedFile]] 共同使用。请参考 [文件上传](input-file-upload.md)章节来了解有关文件上传与上传文件的检验的全部内容。
 
 
-## [[yii\validators\FilterValidator|filter]] <a name="filter"></a>
+## [[yii\validators\FilterValidator|filter（过滤器）]] <a name="filter"></a>
 
 ```php
 [
@@ -263,11 +253,11 @@ back to the attribute being validated.
 > Tip：If you want to trim input values, you may directly use [trim](#trim) validator.
 
 
-## [[yii\validators\ImageValidator|image]] <a name="image"></a>
+## [[yii\validators\ImageValidator|image（图片）]] <a name="image"></a>
 
 ```php
 [
-    // checks if "primaryImage" is a valid image with proper size
+    // 检查 "primaryImage" 是否为适当尺寸的有效图片
     ['primaryImage', 'image', 'extensions' => 'png, jpg',
         'minWidth' => 100, 'maxWidth' => 1000,
         'minHeight' => 100, 'maxHeight' => 1000,
@@ -275,158 +265,141 @@ back to the attribute being validated.
 ]
 ```
 
-This validator checks if the input value represents a valid image file. It extends from the [file](#file) validator
-and thus inherits all its properties. Besides, it supports the following additional properties specific for image
-validation purpose:
+该验证器检查输入值是否为代表有效的图片文件。它继承自 [file](#file) 验证器，并因此继承有其全部属性。除此之外，它还支持以下为图片检验而设的额外属性：
 
-- `minWidth`：the minimum width of the image. 默认为 null, meaning no lower limit.
-- `maxWidth`：the maximum width of the image. 默认为 null, meaning no upper limit.
-- `minHeight`：the minimum height of the image. 默认为 null, meaning no lower limit.
-- `maxHeight`：the maximum height of the image. 默认为 null, meaning no upper limit.
+- `minWidth`：图片的最小宽度。默认为 null，代表无下限。
+- `maxWidth`：图片的最大宽度。默认为 null，代表无上限。
+- `minHeight`：图片的最小高度。 默认为 null，代表无下限。
+- `maxHeight`：图片的最大高度。默认为 null，代表无上限。
 
 
-## [[yii\validators\RangeValidator|in]] <a name="in"></a>
+## [[yii\validators\RangeValidator|in（范围）]] <a name="in"></a>
 
 ```php
 [
-    // checks if "level" is 1, 2 or 3
+    // 检查 "level" 是否为 1、2 或 3 中的一个
     ['level', 'in', 'range' => [1, 2, 3]],
 ]
 ```
 
-This validator checks if the input value can be found among the given list of values.
+该验证器检查输入值是否存在于给定列表的范围之中。
 
-- `range`：a list of given values within which the input value should be looked for.
-- `strict`：whether the comparison between the input value and the given values should be strict
-  (both the type and value must be the same). 默认为 false.
-- `not`：whether the validation result should be inverted. 默认为 false. When this property is set true,
-  the validator checks if the input value is NOT among the given list of values.
-- `allowArray`：whether to allow the input value to be an array. When this is true and the input value is an array,
-  every element in the array must be found in the given list of values, or the validation would fail.
+- `range`：用于检查输入值的给定值列表。
+- `strict`：输入值与给定值直接的比较是否为严格模式（也就是类型与值都要相同，即全等）。默认为 false。
+- `not`：是否对验证的结果取反。默认为 false。当该属性被设置为 true，验证器检查输入值是否**不在**给定列表内。
+- `allowArray`：是否接受输入值为数组。当该值为 true 且输入值为数组时，数组内的每一个元素都必须在给定列表内存在，否则返回验证失败。
 
 
-## [[yii\validators\NumberValidator|integer]] <a name="integer"></a>
+## [[yii\validators\NumberValidator|integer（整数）]] <a name="integer"></a>
 
 ```php
 [
-    // checks if "age" is an integer
+    // 检查 "age" 是否为整数
     ['age', 'integer'],
 ]
 ```
 
-This validator checks if the input value is an integer.
+该验证器检查输入值是否为整形。
 
-- `max`：the upper limit (inclusive) of the value. If not set, it means the validator does not check the upper limit.
-- `min`：the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
+- `max`：上限值（含界点）。若不设置，则验证器不检查上限。
+- `min`：下限值（含界点）。若不设置，则验证器不检查下限。
 
 
-## [[yii\validators\RegularExpressionValidator|match]] <a name="match"></a>
+## [[yii\validators\RegularExpressionValidator|match（正则表达式）]] <a name="match"></a>
 
 ```php
 [
-    // checks if "username" starts with a letter and contains only word characters
+    // 检查 "username" 是否由字母开头，且只包含单词字符
     ['username', 'match', 'pattern' => '/^[a-z]\w*$/i']
 ]
 ```
 
-This validator checks if the input value matches the specified regular expression.
+该验证器检查输入值是否匹配指定正则表达式。
 
-- `pattern`：the regular expression that the input value should match. This property must be set,
-  or an exception will be thrown.
-- `not`：whether to invert the validation result. 默认为 false, meaning the validation succeeds
-   only if the input value matches the pattern. If this is set true, the validation is considered
-   successful only if the input value does NOT match the pattern.
+- `pattern`：用于检测输入值的正则表达式。该属性是必须的，若不设置则会抛出异常。
+- `not`：是否对验证的结果取反。默认为 false，代表输入值匹配正则表达式时验证成功。如果设为 true，则输入值不匹配正则时返回匹配成功。
 
 
-## [[yii\validators\NumberValidator|number]] <a name="number"></a>
+## [[yii\validators\NumberValidator|number（数字）]] <a name="number"></a>
 
 ```php
 [
-    // checks if "salary" is a number
+    // 检查 "salary" 是否为数字
     ['salary', 'number'],
 ]
 ```
 
-This validator checks if the input value is a number. It is equivalent to the [double](#double] validator.
+该验证器检查输入值是否为数字。他等效于 [double](#double) 验证器。
 
-- `max`：the upper limit (inclusive) of the value. If not set, it means the validator does not check the upper limit.
-- `min`：the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
+- `max`：上限值（含界点）。若不设置，则验证器不检查上限。
+- `min`：下限值（含界点）。若不设置，则验证器不检查下限。
 
 
-## [[yii\validators\RequiredValidator|required]] <a name="required"></a>
+## [[yii\validators\RequiredValidator|required（必填）]] <a name="required"></a>
 
 ```php
 [
-    // checks if both "username" and "password" are not empty
+    // 检查 "username" 与 "password" 是否为空
     [['username', 'password'], 'required'],
 ]
 ```
 
-This validator checks if the input value is provided and not empty.
+该验证器检查输入值是否为空，还是已经提供了。
 
-- `requiredValue`：the desired value that the input should be. If not set, it means the input should not be empty.
-- `strict`：whether to check data types when validating a value. 默认为 false.
-  When `requiredValue` is not set, if this property is true, the validator will check if the input value is
-  not strictly null; If this property is false, the validator will use a loose rule to determine a value is empty or not.
-  When `requiredValue` is set, the comparison between the input and `requiredValue` will also check data types
-  if this property is true.
+- `requiredValue`：所期望的输入值。若没设置，意味着输入不能为空。
+- `strict`：检查输入值时是否检查类型。默认为 false。当没有设置 `requiredValue` 属性时，若该属性为 true，验证器会检查输入值是否严格为 null；若该属性设为 false，该验证器会用一个更加宽松的规则检验输入值是否为空。
 
-> Info：How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#empty-values) section.
+当设置了 `requiredValue` 属性时，若该属性为 true，输入值与 `requiredValue` 的比对会同时检查数据类型。
+
+> 补充：如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
 
 
-## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
+## [[yii\validators\SafeValidator|safe（安全）]] <a name="safe"></a>
 
 ```php
 [
-    // marks "description" to be a safe attribute
+    // 标记 "description" 为安全特性
     ['description', 'safe'],
 ]
 ```
 
-This validator does not perform data validation. Instead, it is used to mark an attribute to be
-a [safe attribute](structure-models.md#safe-attributes).
+该验证器并不进行数据验证。而是把一个特性标记为[安全特性](structure-models.md#safe-attributes)。
 
 
-## [[yii\validators\StringValidator|string]] <a name="string"></a>
+## [[yii\validators\StringValidator|string（字符串）]] <a name="string"></a>
 
 ```php
 [
-    // checks if "username" is a string whose length is between 4 and 24
+    // 检查 "username" 是否为长度 4 到 24 之间的字符串
     ['username', 'string', 'length' => [4, 24]],
 ]
 ```
 
-This validator checks if the input value
+该验证器检查输入值是否为特定长度的字符串。并检查特性的值是否为某个特定长度。
 
-Validates that the attribute value is of certain length.
-
-- `length`：specifies the length limit of the input string being validated. This can be specified
-   in one of the following forms:
-     * an integer：the exact length that the string should be of;
-     * an array of one element：the minimum length of the input string (e.g. `[8]`). This will overwrite `min`.
-     * an array of two elements：the minimum and maximum lengths of the input string (e.g. `[8, 128]`)`.
-     This will overwrite both `min` and `max`.
-- `min`：the minimum length of the input string. If not set, it means no minimum length limit.
-- `max`：the maximum length of the input string. If not set, it means no maximum length limit.
-- `encoding`：the encoding of the input string to be validated. If not set, it will use the application's
-  [[yii\base\Application::charset|charset]] value which defaults to `UTF-8`.
+- `length`：指定待测输入字符串的长度限制。该属性可以被指定为以下格式之一：
+     * 证书：the exact length that the string should be of;
+     * 单元素数组：代表输入字符串的最小长度 (e.g. `[8]`)。这会重写 `min` 属性。
+     * 包含两个元素的数组：代表输入字符串的最小和最大长度(e.g. `[8, 128]`)。
+     这会同时重写 `min` 和 `max` 属性。
+- `min`：输入字符串的最小长度。若不设置，则代表不设下限。
+- `max`：输入字符串的最大长度。若不设置，则代表不设上限。
+- `encoding`：待测字符串的编码方式。若不设置，则使用应用自身的 [[yii\base\Application::charset|charset]] 属性值，该值默认为 `UTF-8`。
 
 
-## [[yii\validators\FilterValidator|trim]] <a name="trim"></a>
+## [[yii\validators\FilterValidator|trim（译为修剪/裁边）]] <a name="trim"></a>
 
 ```php
 [
-    // trims the white spaces surrounding "username" and "email"
+    // trim 掉 "username" 和 "email" 两侧的多余空格
     [['username', 'email'], 'trim'],
 ]
 ```
 
-This validator does not perform data validation. Instead, it will trim the surrounding white spaces around
-the input value. Note that if the input value is an array, it will be ignored by this validator.
+该验证器并不进行数据验证。而是，trim 掉输入值两侧的多余空格。注意若该输入值为数组，那它会忽略掉该验证器。
 
 
-## [[yii\validators\UniqueValidator|unique]] <a name="unique"></a>
+## [[yii\validators\UniqueValidator|unique（唯一）]] <a name="unique"></a>
 
 ```php
 [
@@ -464,23 +437,17 @@ either a single column or multiple columns.
   is the [[yii\db\Query|Query]] object that you can modify in the function.
 
 
-## [[yii\validators\UrlValidator|url]] <a name="url"></a>
+## [[yii\validators\UrlValidator|url（网址）]] <a name="url"></a>
 
 ```php
 [
-    // checks if "website" is a valid URL. Prepend "http://" to the "website" attribute
-    // if it does not have a URI scheme
+    // 检查 "website" 是否为有效的 URL。若没有 URI 方案，则给 "website" 特性加 "http://" 前缀
     ['website', 'url', 'defaultScheme' => 'http'],
 ]
 ```
 
-This validator checks if the input value is a valid URL.
+该验证器检查输入值是否为有效 URL。
 
-- `validSchemes`：an array specifying the URI schemes that should be considered valid. 默认为 `['http', 'https']`,
-  meaning both `http` and `https` URLs are considered to be valid.
-- `defaultScheme`：the default URI scheme to be prepended to the input if it does not have the scheme part.
-  默认为 null, meaning do not modify the input value.
-- `enableIDN`：whether the validator should take into account IDN (internationalized domain names).
-  默认为 false. Note that in order to use IDN validation you have to install and enable the `intl` PHP
-  extension, otherwise an exception would be thrown.
-
+- `validSchemes`：用于指定那些 URI 方案会被视为有效的数组。默认为 `['http', 'https']`，代表 `http` 和 `https` URLs 会被认为有效。
+- `defaultScheme`：若输入值没有对应的方案前缀，会使用的默认 URI 方案前缀。默认为 null，代表不修改输入值本身。
+- `enableIDN`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
