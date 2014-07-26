@@ -450,7 +450,7 @@ class Security extends Component
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
-     * @see generateRandomKey() if you need a string.
+     * @see generateRandomString() if you need a string.
      *
      * @param integer $length the number of bytes to generate
      * @throws Exception on failure.
