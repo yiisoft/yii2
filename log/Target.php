@@ -105,7 +105,12 @@ abstract class Target extends Component
             if (($context = $this->getContextMessage()) !== '') {
                 $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
             }
+            // set exportInterval to 0 to avoid triggering export again while exporting
+            $oldExportInterval = $this->exportInterval;
+            $this->exportInterval = 0;
             $this->export();
+            $this->exportInterval = $oldExportInterval;
+
             $this->messages = [];
         }
     }
