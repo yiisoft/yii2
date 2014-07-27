@@ -296,7 +296,7 @@ class Security extends Component
      * @throws InvalidParamException
      * @return string the derived key
      */
-    protected function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
+    public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
         $test = @hash_hmac($algo, '', '', true);
         if (!$test) {
@@ -343,7 +343,7 @@ class Security extends Component
      * @throws InvalidParamException
      * @return string the derived key
      */
-    protected function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
+    public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {
         if (function_exists('hash_pbkdf2')) {
             $outputKey = hash_pbkdf2($algo, $password, $salt, $iterations, $length, true);
@@ -450,7 +450,7 @@ class Security extends Component
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
-     * @see generateRandomKey() if you need a string.
+     * @see generateRandomString() if you need a string.
      *
      * @param integer $length the number of bytes to generate
      * @throws Exception on failure.
