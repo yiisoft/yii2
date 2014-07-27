@@ -45,6 +45,7 @@ class Security extends Component
     public $passwordHashStrategy = 'crypt';
 
     /**
+     * Cipher algorithm for mcrypt module.
      * AES has 128-bit block size and three key sizes: 128, 192 and 256 bits.
      * mcrypt offers the Rijndael cipher with block sizes of 128, 192 and 256
      * bits but only the 128-bit Rijndael is standardized in AES.
@@ -52,9 +53,12 @@ class Security extends Component
      * chooses the appropriate AES based on the length of the supplied key.
      */
     const MCRYPT_CIPHER = 'rijndael-128';
+    /**
+     * Block cipher operation mode for mcrypt module.
+     */
     const MCRYPT_MODE = 'cbc';
     /**
-     * Same size for encryption keys, auth keys and KDF salt
+     * Size in bytes of encryption key, message authentication key and KDF salt.
      */
     const KEY_SIZE = 16;
     /**
@@ -62,11 +66,11 @@ class Security extends Component
      */
     const KDF_HASH = 'sha256';
     /**
-     * Hash algorithm for authentication.
+     * Hash algorithm for message authentication.
      */
     const MAC_HASH = 'sha256';
     /**
-     * HKDF info value for auth keys
+     * HKDF info value for derivation of message authentication key.
      */
     const AUTH_KEY_INFO = 'AuthorizationKey';
 
@@ -606,19 +610,18 @@ class Security extends Component
      * Performs string comparison using timing attack resistant approach.
      * @see http://codereview.stackexchange.com/questions/13512
      * @param string $expected string to compare.
-     * @param string $actual string to compare.
+     * @param string $actual user-supplied string.
      * @return boolean whether strings are equal.
      */
     public function compareString($expected, $actual)
     {
-        // timing attack resistant approach:
-        $length = StringHelper::byteLength($expected);
-        if ($length !== StringHelper::byteLength($actual)) {
-            return false;
-        }
-        $diff = 0;
-        for ($i = 0; $i < $length; $i++) {
-            $diff |= (ord($actual[$i]) ^ ord($expected[$i]));
+        $expected .= "\0";
+        $actual .= "\0";
+        $expectedLength = StringHelper::byteLength($expected);
+        $actualLength = StringHelper::byteLength($actual);
+        $diff = $expectedLength - $actualLength;
+        for ($i = 0; $i < $actualLength; $i++) {
+            $diff |= (ord($actual[$i]) ^ ord($expected[$i % $expectedLength]));
         }
         return $diff === 0;
     }
