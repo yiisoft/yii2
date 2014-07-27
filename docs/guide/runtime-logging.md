@@ -45,6 +45,7 @@ You may configure the targets in application configuration, like the following:
 
 ```php
 [
+    'bootstrap' => ['log'], // ensure logger gets loaded before application starts
     'components' => [
         'log' => [
             'targets' => [
@@ -79,6 +80,9 @@ Yii::$app->log->targets['file']->enabled = false;
 
 When the application ends or [[yii\log\Logger::flushInterval|flushInterval]] is reached, Logger will call
 [[yii\log\Logger::flush()|flush()]] to send logged messages to different log targets, such as file, email, web.
+
+> Note: In the above configuration we added the log component to the list of [bootstrap](runtime-bootstrapping.md) components that
+  get initialized when the application is initialized to ensure logging is enabled from the start.
 
 
 Profiling

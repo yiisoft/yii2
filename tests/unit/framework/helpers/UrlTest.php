@@ -24,6 +24,12 @@ class UrlTest extends TestCase
                     'hostInfo' => 'http://example.com/',
                     'url' => '/base/index.php&r=site%2Fcurrent&id=42'
                 ],
+                'urlManager' => [
+                    'class' => 'yii\web\UrlManager',
+                    'baseUrl' => '/base',
+                    'scriptUrl' => '/base/index.php',
+                    'hostInfo' => 'http://example.com/',
+                ]
             ],
         ], '\yii\web\Application');
     }

@@ -125,7 +125,8 @@ class SortTest extends TestCase
     public function testCreateUrl()
     {
         $manager = new UrlManager([
-            'baseUrl' => '/index.php',
+            'baseUrl' => '/',
+            'ScriptUrl' => '/index.php',
             'cache' => null,
         ]);
 
@@ -153,7 +154,8 @@ class SortTest extends TestCase
     {
         $this->mockApplication();
         $manager = new UrlManager([
-            'baseUrl' => '/index.php',
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
             'cache' => null,
         ]);
 

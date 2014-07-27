@@ -62,4 +62,11 @@ return array(
         'by' => '<a href="http://www.php.net/manual/en/book.fileinfo.php">File Information</a>',
         'memo' => 'Required for files upload to detect correct file mime-types.'
     ),
+    array(
+        'name' => 'DOM extension',
+        'mandatory' => false,
+        'condition' => extension_loaded('dom'),
+        'by' => '<a href="http://php.net/manual/en/book.dom.php">Document Object Model</a>',
+        'memo' => 'Required for REST API to send XML responses via <code>yii\web\XmlResponseFormatter</code>.'
+    ),
 );

@@ -316,6 +316,7 @@ abstract class Application extends Module
 
     /**
      * Registers the errorHandler component as a PHP error handler.
+     * @param array $config application config
      */
     protected function registerErrorHandler(&$config)
     {

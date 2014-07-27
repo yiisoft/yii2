@@ -7,6 +7,7 @@
 
 namespace yii\elasticsearch;
 
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
@@ -71,7 +72,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**

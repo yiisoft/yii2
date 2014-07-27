@@ -689,6 +689,13 @@ class QueryBuilder extends \yii\base\Object
         return implode($this->separator, $joins);
     }
 
+    /**
+     * Quotes table names passed
+     *
+     * @param array $tables
+     * @param array $params
+     * @return array
+     */
     private function quoteTableNames($tables, &$params)
     {
         foreach ($tables as $i => $table) {
@@ -1077,6 +1084,15 @@ class QueryBuilder extends \yii\base\Object
         }
     }
 
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
     protected function buildCompositeInCondition($operator, $columns, $values, &$params)
     {
         $vss = [];

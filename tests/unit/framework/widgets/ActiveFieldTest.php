@@ -27,7 +27,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
         $_SERVER['SCRIPT_FILENAME'] = "index.php";
         $_SERVER['SCRIPT_NAME'] = "index.php";
         
-        $this->mockApplication([], 'yii\web\Application');
+        $this->mockWebApplication();
         
         Yii::setAlias('@testWeb', '/');
         Yii::setAlias('@testWebRoot', '@yiiunit/data/web');

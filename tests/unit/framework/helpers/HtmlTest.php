@@ -439,6 +439,8 @@ EOD;
                 return "<li class=\"item-$index\">$item</li>";
             }
         ]));
+
+        $this->assertEquals('<ul class="test"></ul>', Html::ul([], ['class' => 'test']));
     }
 
     public function testOl()
@@ -469,6 +471,8 @@ EOD;
                 return "<li class=\"item-$index\">$item</li>";
             }
         ]));
+
+        $this->assertEquals('<ol class="test"></ol>', Html::ol([], ['class' => 'test']));
     }
 
     public function testRenderOptions()

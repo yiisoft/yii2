@@ -2,7 +2,7 @@
 	"name": "<?= $generator->vendorName ?>/<?= $generator->packageName ?>",
 	"description": "<?= $generator->description ?>",
 	"type": "<?= $generator->type ?>",
-	"keywords": "<?= $generator->keywordsArrayJson ?>",
+	"keywords": <?= $generator->keywordsArrayJson ?>,
 	"license": "<?= $generator->license ?>",
 	"authors": [
 		{

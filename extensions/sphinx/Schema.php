@@ -10,7 +10,7 @@ namespace yii\sphinx;
 use yii\base\Object;
 use yii\caching\Cache;
 use Yii;
-use yii\caching\GroupDependency;
+use yii\caching\TagDependency;
 use yii\db\Exception;
 
 /**
@@ -139,8 +139,8 @@ class Schema extends Object
                 if ($refresh || ($index = $cache->get($key)) === false) {
                     $index = $this->loadIndexSchema($realName);
                     if ($index !== null) {
-                        $cache->set($key, $index, $db->schemaCacheDuration, new GroupDependency([
-                            'group' => $this->getCacheGroup(),
+                        $cache->set($key, $index, $db->schemaCacheDuration, new TagDependency([
+                            'tags' => $this->getCacheTag(),
                         ]));
                     }
                 }
@@ -168,11 +168,11 @@ class Schema extends Object
     }
 
     /**
-     * Returns the cache group name.
+     * Returns the cache tag name.
      * This allows [[refresh()]] to invalidate all cached index schemas.
-     * @return string the cache group name
+     * @return string the cache tag name
      */
-    protected function getCacheGroup()
+    protected function getCacheTag()
     {
         return md5(serialize([
             __CLASS__,
@@ -299,7 +299,7 @@ class Schema extends Object
         /* @var $cache Cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
-            GroupDependency::invalidate($cache, $this->getCacheGroup());
+            TagDependency::invalidate($cache, $this->getCacheTag());
         }
         $this->_indexNames = [];
         $this->_indexes = [];
@@ -459,12 +459,19 @@ class Schema extends Object
             }
             throw $e;
         }
-        foreach ($columns as $info) {
-            $column = $this->loadColumnSchema($info);
-            $index->columns[$column->name] = $column;
-            if ($column->isPrimaryKey) {
-                $index->primaryKey = $column->name;
+
+        if (empty($columns[0]['Agent'])) {
+            foreach ($columns as $info) {
+                $column = $this->loadColumnSchema($info);
+                $index->columns[$column->name] = $column;
+                if ($column->isPrimaryKey) {
+                    $index->primaryKey = $column->name;
+                }
             }
+        } else {
+            // Distributed index :
+            $agent = $this->getIndexSchema($columns[0]['Agent']);
+            $index->columns = $agent->columns;
         }
 
         return true;
@@ -502,20 +509,20 @@ class Schema extends Object
     }
 
     /**
-     * Handles database error
+     * Converts a DB exception to a more concrete one if possible.
      *
      * @param \Exception $e
      * @param string $rawSql SQL that produced exception
-     * @throws Exception
+     * @return Exception
      */
-    public function handleException(\Exception $e, $rawSql)
+    public function convertException(\Exception $e, $rawSql)
     {
         if ($e instanceof Exception) {
-            throw $e;
+            return $e;
         } else {
             $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+            return new Exception($message, $errorInfo, (int) $e->getCode(), $e);
         }
     }
 

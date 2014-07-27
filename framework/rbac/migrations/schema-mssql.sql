@@ -9,10 +9,10 @@
  * @since 2.0
  */
 
-drop table if exists [auth_assignment];
-drop table if exists [auth_item_child];
-drop table if exists [auth_item];
-drop table if exists [auth_rule];
+drop table [auth_assignment];
+drop table [auth_item_child];
+drop table [auth_item];
+drop table [auth_rule];
 
 create table [auth_rule]
 (
@@ -33,9 +33,10 @@ create table [auth_item]
    [created_at]           integer,
    [updated_at]           integer,
    primary key ([name]),
-   foreign key ([rule_name]) references [auth_rule] ([name]) on delete set null on update cascade,
-   key [type] ([type])
+   foreign key ([rule_name]) references [auth_rule] ([name]) on delete set null on update cascade
 );
+
+create index [idx-auth_item-type] on [auth_item] ([type]);
 
 create table [auth_item_child]
 (

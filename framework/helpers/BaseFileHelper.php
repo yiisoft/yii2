@@ -42,7 +42,7 @@ class BaseFileHelper
      */
     public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
     {
-        $path = rtrim(strtr($path, ['/' => $ds, '\\' => $ds]), $ds);
+        $path = rtrim(strtr($path, '/\\', $ds . $ds), $ds);
         if (strpos($ds . $path, "{$ds}.") === false && strpos($path, "{$ds}{$ds}") === false) {
             return $path;
         }
@@ -602,10 +602,8 @@ class BaseFileHelper
             $result['flags'] |= self::PATTERN_NEGATIVE;
             $pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
         }
-        $len = StringHelper::byteLength($pattern);
-        if ($len && StringHelper::byteSubstr($pattern, -1, 1) == '/') {
+        if (StringHelper::byteLength($pattern) && StringHelper::byteSubstr($pattern, -1, 1) == '/') {
             $pattern = StringHelper::byteSubstr($pattern, 0, -1);
-            $len--;
             $result['flags'] |= self::PATTERN_MUSTBEDIR;
         }
         if (strpos($pattern, '/') === false) {

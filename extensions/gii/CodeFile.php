@@ -61,7 +61,7 @@ class CodeFile extends Object
      */
     public function __construct($path, $content)
     {
-        $this->path = strtr($path, ['/' => DIRECTORY_SEPARATOR, '\\' => DIRECTORY_SEPARATOR]);
+        $this->path = strtr($path, '/\\', DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR);
         $this->content = $content;
         $this->id = md5($this->path);
         if (is_file($path)) {

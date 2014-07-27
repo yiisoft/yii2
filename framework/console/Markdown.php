@@ -44,6 +44,10 @@ class Markdown extends \cebe\markdown\Parser
 
     /**
      * Consume lines for a fenced code block
+     *
+     * @param array $lines
+     * @param integer $current
+     * @return array
      */
     protected function consumeFencedCode($lines, $current)
     {
@@ -70,12 +74,18 @@ class Markdown extends \cebe\markdown\Parser
 
     /**
      * Renders a code block
+     *
+     * @param array $block
+     * @return string
      */
     protected function renderCode($block)
     {
         return Console::ansiFormat(implode("\n", $block['content']), [Console::BG_GREY]) . "\n";
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function renderParagraph($block)
     {
         return rtrim($this->parseInline(implode("\n", $block['content']))) . "\n";
@@ -97,6 +107,8 @@ class Markdown extends \cebe\markdown\Parser
 
     /**
      * Parses an inline code span `` ` ``.
+     * @param string $text
+     * @return array
      */
     protected function parseCode($text)
     {
@@ -120,6 +132,8 @@ class Markdown extends \cebe\markdown\Parser
 
     /**
      * Parses empathized and strong elements.
+     * @param string $text
+     * @return array
      */
     protected function parseEmphStrong($text)
     {
@@ -146,6 +160,8 @@ class Markdown extends \cebe\markdown\Parser
 
     /**
      * Parses the strikethrough feature.
+     * @param string $markdown
+     * @return array
      */
     protected function parseStrike($markdown)
     {
@@ -160,6 +176,8 @@ class Markdown extends \cebe\markdown\Parser
 
     /**
      * Parses escaped special characters.
+     * @param string $text
+     * @return array
      */
     protected function parseEscape($text)
     {

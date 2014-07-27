@@ -99,8 +99,15 @@ class User extends Component
      * @var integer the number of seconds in which the user will be logged out automatically if he
      * remains inactive. If this property is not set, the user will be logged out after
      * the current session expires (c.f. [[Session::timeout]]).
+     * Note that this will not work if [[enableAutoLogin]] is true.
      */
     public $authTimeout;
+    /**
+     * @var integer the number of seconds in which the user will be logged out automatically
+     * regardless of activity.
+     * Note that this will not work if [[enableAutoLogin]] is true.
+     */
+    public $absoluteAuthTimeout;
     /**
      * @var boolean whether to automatically renew the identity cookie each time a page is requested.
      * This property is effective only when [[enableAutoLogin]] is true.
@@ -119,6 +126,11 @@ class User extends Component
      * This is used when [[authTimeout]] is set.
      */
     public $authTimeoutParam = '__expire';
+    /**
+     * @var string the session variable name used to store the value of absolute expiration timestamp of the authenticated state.
+     * This is used when [[absoluteAuthTimeout]] is set.
+     */
+    public $absoluteAuthTimeoutParam = '__absolute_expire';
     /**
      * @var string the session variable name used to store the value of [[returnUrl]].
      */
@@ -544,6 +556,9 @@ class User extends Component
             if ($this->authTimeout !== null) {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }
+            if ($this->absoluteAuthTimeout !== null) {
+                $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
+            }
             if ($duration > 0 && $this->enableAutoLogin) {
                 $this->sendIdentityCookie($identity, $duration);
             }
@@ -577,11 +592,12 @@ class User extends Component
 
         $this->setIdentity($identity);
 
-        if ($this->authTimeout !== null && $identity !== null) {
-            $expire = $session->get($this->authTimeoutParam);
-            if ($expire !== null && $expire < time()) {
+        if (($this->authTimeout !== null || $this->absoluteAuthTimeout !== null) && $identity !== null) {
+            $expire = $this->authTimeout !== null ? $session->get($this->authTimeoutParam) : null;
+            $expireAbsolute = $this->absoluteAuthTimeout !== null ? $session->get($this->absoluteAuthTimeoutParam) : null;
+            if ($expire !== null && $expire < time() || $expireAbsolute !== null && $expireAbsolute < time()) {
                 $this->logout(false);
-            } else {
+            } elseif ($this->authTimeout !== null) {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }
         }

@@ -181,7 +181,8 @@ $data = $cache->get($key);
 - [[yii\caching\DbDependency]]: 如果指定 SQL 语句的查询结果发生了变化，则依赖改变。
 - [[yii\caching\ExpressionDependency]]: 如果指定的 PHP 表达式执行结果发生变化，则依赖改变。
 - [[yii\caching\FileDependency]]: 如果文件的最后修改时间发生变化，则依赖改变。
-- [[yii\caching\GroupDependency]]: 将一项缓存数据标记到一个组名，你可以通过调用 [[yii\caching\GroupDependency::invalidate()]] 一次性将相同组名的缓存全部置为失效状态。
+- [[yii\caching\TagDependency]]: 为一项缓存数据添加一个或多个标签。你可以通过调用 [[yii\caching\TagDependency::invalidate()]]
+一次性将具有指定标签的缓存数据全部置为失效状态。
 
 
 ## 查询缓存 <a name="query-caching"></a>
