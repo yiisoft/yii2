@@ -610,19 +610,18 @@ class Security extends Component
      * Performs string comparison using timing attack resistant approach.
      * @see http://codereview.stackexchange.com/questions/13512
      * @param string $expected string to compare.
-     * @param string $actual string to compare.
+     * @param string $actual user-supplied string.
      * @return boolean whether strings are equal.
      */
     public function compareString($expected, $actual)
     {
-        // timing attack resistant approach:
-        $length = StringHelper::byteLength($expected);
-        if ($length !== StringHelper::byteLength($actual)) {
-            return false;
-        }
-        $diff = 0;
-        for ($i = 0; $i < $length; $i++) {
-            $diff |= (ord($actual[$i]) ^ ord($expected[$i]));
+        $expected .= "\0";
+        $actual .= "\0";
+        $expectedLength = StringHelper::byteLength($expected);
+        $actualLength = StringHelper::byteLength($actual);
+        $diff = $expectedLength - $actualLength;
+        for ($i = 0; $i < $actualLength; $i++) {
+            $diff |= (ord($actual[$i]) ^ ord($expected[$i % $expectedLength]));
         }
         return $diff === 0;
     }
