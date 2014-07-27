@@ -144,7 +144,8 @@ class AssetManager extends Component
      * Returns the named asset bundle.
      *
      * This method will first look for the bundle in [[bundles]]. If not found,
-     * it will treat `$name` as the class of the asset bundle and create a new instance of it.
+     * it will treat `class` element as the class of the asset bundle and create a new instance of it.
+     * If `class` element not found, it will treat `$name` as the class of asset bundle.
      *
      * @param string $name the class name of the asset bundle
      * @param boolean $publish whether to publish the asset files in the asset bundle before it is returned.
@@ -158,7 +159,11 @@ class AssetManager extends Component
             if ($this->bundles[$name] instanceof AssetBundle) {
                 return $this->bundles[$name];
             } elseif (is_array($this->bundles[$name])) {
-                $bundle = Yii::createObject(array_merge(['class' => $name], $this->bundles[$name]));
+                $bundle = Yii::createObject(
+                    isset($this->bundles[$name]['class'])
+                        ? $this->bundles[$name]
+                        : array_merge(['class' =>  $name], $this->bundles[$name])
+                );
             } else {
                 throw new InvalidConfigException("Invalid asset bundle: $name");
             }
