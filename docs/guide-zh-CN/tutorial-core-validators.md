@@ -176,7 +176,7 @@ function foo($model, $attribute) {
     // a1 和 a2 需要共同存在，只有 a1 会接收到错误信息
     ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 needs to exist by checking the existence of both a2 and a3 (using a1 value)
+    // a1 必需存在，通过同时检查 a2 和 a3(会使用 a1 的值）来确保这一点
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 
     // a1 必需存在，若 a1 为数组，则其每个子元素都必须存在。
@@ -186,20 +186,10 @@ function foo($model, $attribute) {
 
 该验证器检查输入值是否在表字段中存在。它只对[活动记录](db-active-record.md)模型的特性起作用。它支持对一个或多个字段的验证。
 
-- `targetClass`：the name of the [Active Record](db-active-record.md) class that should be used
-  to look for the input value being validated. If not set, the class of the model currently being validated will be used.
-- `targetAttribute`：the name of the attribute in `targetClass` that should be used to validate the existence
-  of the input value. If not set, it will use the name of the attribute currently being validated.
-  You may use an array to validate the existence of multiple columns at the same time. The array values
-  are the attributes that will be used to validate the existence, while the array keys are the attributes
-  whose values are to be validated. If the key and the value are the same, you can just specify the value.
-- `filter`：additional filter to be applied to the DB query used to check the existence of the input value.
-  This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
-  on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
-  is the [[yii\db\Query|Query]] object that you can modify in the function.
-- `allowArray`：whether to allow the input value to be an array. 默认为 false. If this property is true
-  and the input is an array, then every element of the array must exist in the target column. Note that
-  this property cannot be set true if you are validating against multiple columns by setting `targetAttribute` as an array.
+- `targetClass`：用于查找输入值的[活动记录](db-active-record.md)类。若不设置，则会使用当前正在执行验证的模型类。
+- `targetAttribute`：用于检查输入值存在性的 `targetClass` 的模型特性。若不设置，它会使用当前验证的待测特性名。你也可以用数组的形式，同时指定多个用于验证存在性的表字段，数组的键和值都是代表字段的特性名，值表示用于检查存在性的数据源，而键表示待测的特性名。若键和值相同，你可以只指定值。
+- `filter`：用于检查输入值存在性必然会进行数据库查询，而该属性为用于进一步筛选该查询的过滤条件。可以为代表额外查询条件的字符串或数组（关于查询条件的格式，请参考 [[yii\db\Query::where()]]）；或者样式为 `function ($query)` 的匿名函数，`$query` 参数为你希望在该函数内进行修改的 [[yii\db\Query|Query]] 对象。
+- `allowArray`：是否允许输入值为数组。默认为 false。若该属性为 true 且输入值为数组，则数组的每个元素都必须在目标字段中存在。值得注意的是，若用吧 `targetAttribute` 设为多元素数组来验证被测值在多字段中的存在性时，该属性不能设置为 true。
 
 
 ## [[yii\validators\FileValidator|file（文件）]] <a name="file"></a>
@@ -399,38 +389,28 @@ function foo($model, $attribute) {
 
 ```php
 [
-    // a1 needs to be unique in the column represented by the "a1" attribute
+    // a1 需要在代表 "a1" 特性的表字段中唯一
     ['a1', 'unique'],
 
-    // a1 needs to be unique, but column a2 will be used to check the uniqueness of the a1 value
+    // a1 需要唯一，但会使用字段 a2 检验 a1 值的唯一性
     ['a1', 'unique', 'targetAttribute' => 'a2'],
 
-    // a1 and a2 need to be unique together, and they both will receive error message
+    // a1 和 a2 的组合需要唯一，且都会收到错误提示
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 and a2 need to be unique together, only a1 will receive error message
+    // a1 和 a2 的组合需要唯一，只有 a1 会接收错误提示
     ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 needs to be unique by checking the uniqueness of both a2 and a3 (using a1 value)
+    // a1 必需唯一，通过同时检查 a2 和 a3(会使用 a1 的值）来确保这一点
     ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 ]
 ```
 
-This validator checks if the input value is unique in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
-either a single column or multiple columns.
+该验证器检查输入值是否在某表字段中唯一。它只对[活动记录](db-active-record.md)模型的特性起作用。它支持对一个或多过字段的验证。
 
-- `targetClass`：the name of the [Active Record](db-active-record.md) class that should be used
-  to look for the input value being validated. If not set, the class of the model currently being validated will be used.
-- `targetAttribute`：the name of the attribute in `targetClass` that should be used to validate the uniqueness
-  of the input value. If not set, it will use the name of the attribute currently being validated.
-  You may use an array to validate the uniqueness of multiple columns at the same time. The array values
-  are the attributes that will be used to validate the uniqueness, while the array keys are the attributes
-  whose values are to be validated. If the key and the value are the same, you can just specify the value.
-- `filter`：additional filter to be applied to the DB query used to check the uniqueness of the input value.
-  This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
-  on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
-  is the [[yii\db\Query|Query]] object that you can modify in the function.
+- `targetClass`：用于查找输入值的[活动记录](db-active-record.md)类。若不设置，则会使用当前正在执行验证的模型类。
+- `targetAttribute`：用于检查输入值唯一性的 `targetClass` 的模型特性。若不设置，它会使用当前验证的待测特性名。你也可以用数组的形式，同时指定多个用于验证唯一性的表字段，数组的键和值都是代表字段的特性名，值表示用于检查唯一性的数据源，而键表示待测的特性名。若键和值相同，你可以只指定值。
+- `filter`：用于检查输入值唯一性必然会进行数据库查询，而该属性为用于进一步筛选该查询的过滤条件。可以为代表额外查询条件的字符串或数组（关于查询条件的格式，请参考 [[yii\db\Query::where()]]）；或者样式为 `function ($query)` 的匿名函数，`$query` 参数为你希望在该函数内进行修改的 [[yii\db\Query|Query]] 对象。
 
 
 ## [[yii\validators\UrlValidator|url（网址）]] <a name="url"></a>
