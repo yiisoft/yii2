@@ -86,7 +86,7 @@ $cache = new FileCache([
 预定义的别名 <a name="predefined-aliases"></a>
 ------------------
 
-Yii 预定义了一系列别名来简化常用路径和 URL的使用：
+Yii 预定义了一系列别名来简化常用路径和 URL 的使用：
 
 - `@yii` - `BaseYii.php` 文件所在的目录（也被称为框架安装目录）
 - `@app` - 当前运行的应用 [[yii\base\Application::basePath|根路径（base path）]] 
