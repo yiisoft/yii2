@@ -158,10 +158,11 @@ class AssetManager extends Component
             if ($this->bundles[$name] instanceof AssetBundle) {
                 return $this->bundles[$name];
             } elseif (is_array($this->bundles[$name])) {
-                $bundle = Yii::createObject(array_merge(
-                    ['class' => isset($this->bundles[$name]['class']) ? $this->bundles[$name]['class'] : $name],
-                    $this->bundles[$name]
-                ));
+                $bundle = Yii::createObject(
+                    isset($this->bundles[$name]['class'])
+                        ? $this->bundles[$name]
+                        : array_merge(['class' =>  $name], $this->bundles[$name])
+                );
             } else {
                 throw new InvalidConfigException("Invalid asset bundle: $name");
             }
