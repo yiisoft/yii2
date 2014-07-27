@@ -439,12 +439,10 @@ class Security extends Component
 
             if ($this->compareString($hash, $calculatedHash)) {
                 return $pureData;
-            } else {
-                return false;
             }
-        } else {
             return false;
         }
+        return false;
     }
 
     /**
