@@ -1,9 +1,7 @@
 依赖注入容器
 ==============================
 
-依赖注入（Dependency Injection，缩写 DI）容器就是一个对象，它知道怎样初始化并配置对象及其依赖的所有对象。
-[Martin 的文章](http://martinfowler.com/articles/injection.html) 已经解释了 DI 容器为什么很有用。这里我们主要讲解 Yii 提供的 DI
-容器的使用方法。
+依赖注入（Dependency Injection，DI）容器就是一个对象，它知道怎样初始化并配置对象及其依赖的所有对象。[Martin 的文章](http://martinfowler.com/articles/injection.html) 已经解释了 DI 容器为什么很有用。这里我们主要讲解 Yii 提供的 DI 容器的使用方法。
 
 
 依赖注入 <a name="dependency-injection"></a>
@@ -11,16 +9,14 @@
 
 Yii 通过 [[yii\di\Container]] 类提供 DI 容器特性。它支持如下几种类型的依赖注入：
 
-* 构造器注入;
+* 构造方法注入;
 * Setter 和属性注入;
 * PHP 回调注入.
 
 
-### 构造器注入 <a name="constructor-injection"></a>
+### 构造方法注入 <a name="constructor-injection"></a>
 
-在构造器参数类型提示的帮助下，DI 容器实现了构造器注入。
-当容器被用于创建一个新对象时，类型提示会告诉它要依赖什么类或接口。容器会尝试获取它所依赖的类或接口的实例，然后通过构造器将其注入新的对象。
-例如：
+在参数类型提示的帮助下，DI 容器实现了构造方法注入。当容器被用于创建一个新对象时，类型提示会告诉它要依赖什么类或接口。容器会尝试获取它所依赖的类或接口的实例，然后通过构造器将其注入新的对象。例如：
 
 ```php
 class Foo
@@ -39,8 +35,7 @@ $foo = new Foo($bar);
 
 ### Setter 和属性注入 <a name="setter-and-property-injection"></a>
 
-Setter 和属性注入是通过[配置](concept-configurations.md)提供支持的。当注册一个依赖或创建一个新对象时，你可以提供一个配置，该配置会
-提供给容器用于通过相应的 Setter 或属性注入依赖。例如：
+Setter 和属性注入是通过[配置](concept-configurations.md)提供支持的。当注册一个依赖或创建一个新对象时，你可以提供一个配置，该配置会提供给容器用于通过相应的 Setter 或属性注入依赖。例如：
 
 ```php
 use yii\base\Object;
@@ -71,7 +66,7 @@ $container->get('Foo', [], [
 
 ### PHP 回调注入 <a name="php-callable-injection"></a>
 
-这种情况下，容器将使用一个注册过的 PHP 回调构建一个类的新实例。回调负责解决依赖并将其恰当地注入新创建的对象。例如：
+这种情况下，容器将使用一个注册过的 PHP 回调创建一个类的新实例。回调负责解决依赖并将其恰当地注入新创建的对象。例如：
 
 ```php
 $container->set('Foo', function () {
@@ -85,8 +80,7 @@ $foo = $container->get('Foo');
 注册依赖关系 <a name="registering-dependencies"></a>
 ------------------------
 
-你可以用 [[yii\di\Container::set()]] 注册依赖关系。注册会用到一个依赖关系名称和一个依赖关系的定义。依赖关系名称可以是一个类名，一个接
-口名或者一个别名。依赖关系的定义可以是一个类名，一个配置数组，或者一个 PHP 回调。
+可以用 [[yii\di\Container::set()]] 注册依赖关系。注册会用到一个依赖关系名称和一个依赖关系的定义。依赖关系名称可以是一个类名，一个接口名或一个别名。依赖关系的定义可以是一个类名，一个配置数组，或者一个 PHP 回调。
 
 ```php
 $container = new \yii\di\Container;
@@ -134,8 +128,7 @@ $container->set('pageCache', new FileCache);
 
 > Tip: 如果依赖关系名称和依赖关系的定义相同，则不需要通过 DI 容器注册该依赖关系。
 
-每当依赖关系需要解决时，通过 `set()` 注册的依赖关系都会产生一个新实例。你可以使用 [[yii\di\Container::setSingleton()]] 注册一个依
-赖关系，它只会产生一个单例：
+通过 `set()` 注册的依赖关系，在每次使用时都会产生一个新实例。可以使用 [[yii\di\Container::setSingleton()]] 注册一个单例的依赖关系：
 
 ```php
 $container->setSingleton('yii\db\Connection', [
@@ -150,12 +143,9 @@ $container->setSingleton('yii\db\Connection', [
 解决依赖关系 <a name="resolving-dependencies"></a>
 ----------------------
 
-依赖关系注册后，就可以使用 DI 容器创建新对象了。容器会自动解决依赖关系，将它们实例化并注入新创建的对象。依赖关系的解决是递归的，意味着如
-果一个依赖关系中还有其他依赖关系，则这些依赖关系都会被自动解决。
+注册依赖关系后，就可以使用 DI 容器创建新对象了。容器会自动解决依赖关系，将依赖实例化并注入新创建的对象。依赖关系的解决是递归的，如果一个依赖关系中还有其他依赖关系，则这些依赖关系都会被自动解决。
 
-你可以使用 [[yii\di\Container::get()]] 创建新的对象。该方法接收一个依赖关系名称，它可以是一个类名，一个接口名或一个别名。依赖关系名
-可能是也可能不是通过 `set()` 或 `setSingleton()` 注册的。你可以随意地提供一个类的构造器参数列表和一个
-[configuration](concept-configurations.md) 用于配置新创建的对象。例如：
+可以使用 [[yii\di\Container::get()]] 创建新的对象。该方法接收一个依赖关系名称，它可以是一个类名，一个接口名或一个别名。依赖关系名或许是通过 `set()` 或 `setSingleton()` 注册的。你可以随意地提供一个类的构造器参数列表和一个[configuration](concept-configurations.md) 用于配置新创建的对象。例如：
 
 ```php
 // "db" 是前面定义过的一个别名
@@ -165,11 +155,9 @@ $db = $container->get('db');
 $engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
 ```
 
-代码背后，DI 容器做了比仅创建一个新对象还要多的多的工作。容器首先将检查类的构造器，找出依赖的类或接口名，然后自动递归解决这些依赖关系。
+代码背后，DI 容器做了比创建对象多的多的工作。容器首先将检查类的构造方法，找出依赖的类或接口名，然后自动递归解决这些依赖关系。
 
-如下代码展示了一个更复杂的示例。`UserLister` 类依赖一个实现了 `UserFinderInterface` 接口的对象；`UserFinder` 类实现了这个接口，并
-依赖于一个 `Connection` 对象。所有这些依赖关系都是通过类构造器参数的类型提示定义的。通过属性依赖关系的注册，DI 容器可以自动解决这些依赖
-关系并能通过一个简单的 `get('userLister')` 调用创建一个新的 `UserLister` 实例。
+如下代码展示了一个更复杂的示例。`UserLister` 类依赖一个实现了 `UserFinderInterface` 接口的对象；`UserFinder` 类实现了这个接口，并依赖于一个 `Connection` 对象。所有这些依赖关系都是通过类构造器参数的类型提示定义的。通过属性依赖关系的注册，DI 容器可以自动解决这些依赖关系并能通过一个简单的 `get('userLister')` 调用创建一个新的 `UserLister` 实例。
 
 ```php
 namespace app\models;
@@ -231,9 +219,7 @@ $lister = new UserLister($finder);
 实践中的运用 <a name="practical-usage"></a>
 ---------------
 
-当你在应用程序的[入口脚本](structure-entry-scripts.md)中引入 `Yii.php` 文件时，Yii 就创建了一个 DI 容器。这个 DI 容器可以通过
-[[Yii::$container]] 访问。当你调用 [[Yii::createObject()]] 时，此方法实际上会调用这个容器的 [[yii\di\Container::get()|get()]]
-方法创建一个新对象。如上所述，DI 容器会自动解决依赖关系（如果有）并将其注入新创建的对象中。因为 Yii 在其多数核心代码中都使用了
+当在应用程序的[入口脚本](structure-entry-scripts.md)中引入 `Yii.php` 文件时，Yii 就创建了一个 DI 容器。这个 DI 容器可以通过 [[Yii::$container]] 访问。当调用 [[Yii::createObject()]] 时，此方法实际上会调用这个容器的 [[yii\di\Container::get()|get()]] 方法创建新对象。如上所述，DI 容器会自动解决依赖关系（如果有）并将其注入新创建的对象中。因为 Yii 在其多数核心代码中都使用了
 [[Yii::createObject()]] 创建新对象，所以你可以通过 [[Yii::$container]] 全局性地自定义这些对象。
 
 例如，你可以全局性自定义 [[yii\widgets\LinkPager]] 中分页按钮的默认数量:
@@ -254,8 +240,7 @@ echo \yii\widgets\LinkPager::widget();
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
 
-另一个例子是借用 DI 容器中自动构造器注入带来的好处。假设你的控制器类依赖一些其他对象，例如一个旅馆预订服务。你可以通过一个构造器参数声明
-依赖关系，然后让 DI 容器帮你自动解决这个依赖关系。
+另一个例子是借用 DI 容器中自动构造方法注入带来的好处。假设你的控制器类依赖一些其他对象，例如一个旅馆预订服务。你可以通过一个构造器参数声明依赖关系，然后让 DI 容器帮你自动解决这个依赖关系。
 
 ```php
 namespace app\controllers;
@@ -275,8 +260,7 @@ class HotelController extends Controller
 }
 ```
 
-如果你从浏览器中访问这个控制器，你将看到一个报错信息，提醒你 `BookingInterface` 无法被实例化。这是因为你需要告诉 DI 容器怎样处理这个
-依赖关系。
+如果你从浏览器中访问这个控制器，你将看到一个报错信息，提醒你 `BookingInterface` 无法被实例化。这是因为你需要告诉 DI 容器怎样处理这个依赖关系。
 
 ```php
 \Yii::$container->set('app\components\BookingInterface', 'app\components\BookingService');
@@ -297,9 +281,7 @@ class HotelController extends Controller
 总结 <a name="summary"></a>
 -------
 
-依赖注入和[服务定位器](concept-service-locator.md) 都是流行的设计模式，它们使你可以用充分解耦且更利于测试的风格构建软件。我们强烈推荐
-你阅读 [Martin 的文章](http://martinfowler.com/articles/injection.html) ，对依赖注入和服务定位器有个更深入的理解。
+依赖注入和[服务定位器](concept-service-locator.md)都是流行的设计模式，它们使你可以用充分解耦且更利于测试的风格构建软件。强烈推荐你阅读 [Martin 的文章](http://martinfowler.com/articles/injection.html) ，对依赖注入和服务定位器有个更深入的理解。
 
-Yii 在依赖住入（DI）容器之上实现了它的[服务定位器](concept-service-locator.md)。当一个服务定位器尝试创建一个新的对象实例时，它会把
-调用转发到 DI 容器。后者将会像前文所述那样自动解决依赖关系。
+Yii 在依赖住入（DI）容器之上实现了它的[服务定位器](concept-service-locator.md)。当一个服务定位器尝试创建一个新的对象实例时，它会把调用转发到 DI 容器。后者将会像前文所述那样自动解决依赖关系。
 

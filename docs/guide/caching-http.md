@@ -96,7 +96,7 @@ public function behaviors()
 The above code states that HTTP caching should be enabled for the `view` action only. It should
 generate an `ETag` HTTP header based on the title and content of the requested post. When a browser visits
 the `view` page for the first time, the page will be generated on the server and sent to the browser;
-If the browser visits the same page again and there is change to the title and content of the post,
+If the browser visits the same page again and there is no change to the title and content of the post,
 the server will not re-generate the page, and the browser will use the cached version on the client side.
 As a result, server-side rendering and page content transmission are both skipped.
 

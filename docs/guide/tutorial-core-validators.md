@@ -368,7 +368,7 @@ This validator checks if the input value matches the specified regular expressio
 ]
 ```
 
-This validator checks if the input value is a number. It is equivalent to the [double](#double] validator.
+This validator checks if the input value is a number. It is equivalent to the [double](#double) validator.
 
 - `max`: the upper limit (inclusive) of the value. If not set, it means the validator does not check the upper limit.
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
@@ -393,7 +393,7 @@ This validator checks if the input value is provided and not empty.
   if this property is true.
 
 > Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#empty-values) section.
+  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
 
 
 ## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
@@ -418,15 +418,13 @@ a [safe attribute](structure-models.md#safe-attributes).
 ]
 ```
 
-This validator checks if the input value
-
-Validates that the attribute value is of certain length.
+This validator checks if the input value is a valid string with certain length.
 
 - `length`: specifies the length limit of the input string being validated. This can be specified
    in one of the following forms:
      * an integer: the exact length that the string should be of;
      * an array of one element: the minimum length of the input string (e.g. `[8]`). This will overwrite `min`.
-     * an array of two elements: the minimum and maximum lengths of the input string (e.g. `[8, 128]`)`.
+     * an array of two elements: the minimum and maximum lengths of the input string (e.g. `[8, 128]`).
      This will overwrite both `min` and `max`.
 - `min`: the minimum length of the input string. If not set, it means no minimum length limit.
 - `max`: the maximum length of the input string. If not set, it means no maximum length limit.
