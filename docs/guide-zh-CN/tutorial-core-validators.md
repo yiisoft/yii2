@@ -160,23 +160,23 @@ function foo($model, $attribute) {
 - `enableIDN`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
 
 
-## [[yii\validators\ExistValidator|exist（存在）]] <a name="exist"></a>
+## [[yii\validators\ExistValidator|exist（存在性）]] <a name="exist"></a>
 
 ```php
 [
     // a1 需要在 "a1" 特性所代表的字段内存在
     ['a1', 'exist'],
 
-    // a1 必需存在，但会用 a2 来检验其值的存在性
+    // a1 必需存在，但检验的是 a1 的值在字段 a2 中的存在性
     ['a1', 'exist', 'targetAttribute' => 'a2'],
 
-    // a1 和 a2 需要共同存在，且他们都会接收到错误信息
+    // a1 和 a2 的值都需要存在，且它们都能收到错误提示
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 和 a2 需要共同存在，只有 a1 会接收到错误信息
+    // a1 和 a2 的值都需要存在，只有 a1 能接收到错误信息
     ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 必需存在，通过同时检查 a2 和 a3(会使用 a1 的值）来确保这一点
+    // 通过同时在 a2 和 a3 字段中检查 a2 和 a1 的值来确定 a1 的存在性
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 
     // a1 必需存在，若 a1 为数组，则其每个子元素都必须存在。
@@ -184,12 +184,20 @@ function foo($model, $attribute) {
 ]
 ```
 
-该验证器检查输入值是否在表字段中存在。它只对[活动记录](db-active-record.md)模型的特性起作用。它支持对一个或多个字段的验证。
+该验证器检查输入值是否在某表字段中存在。它只对[活动记录](db-active-record.md)类型的模型类特性起作用，能支持对一个或多过字段的验证。
 
-- `targetClass`：用于查找输入值的[活动记录](db-active-record.md)类。若不设置，则会使用当前正在执行验证的模型类。
-- `targetAttribute`：用于检查输入值存在性的 `targetClass` 的模型特性。若不设置，它会使用当前验证的待测特性名。你也可以用数组的形式，同时指定多个用于验证存在性的表字段，数组的键和值都是代表字段的特性名，值表示用于检查存在性的数据源，而键表示待测的特性名。若键和值相同，你可以只指定值。
+- `targetClass`：用于查找输入值的目标 [AR](db-active-record.md) 类。若不设置，则会使用正在进行验证的当前模型类。
+- `targetAttribute`：用于检查输入值存在性的 `targetClass` 的模型特性。
+    - 若不设置，它会直接使用待测特性名（整个参数数组的首元素）。
+    - 除了指定为字符串以外，你也可以用数组的形式，同时指定多个用于验证的表字段，数组的键和值都是代表字段的特性名，值表示 `targetClass` 的待测数据源字段，而键表示当前模型的待测特性名。
+    - 若键和值相同，你可以只指定值。（如:`['a2']` 就代表 `['a2'=>'a2']`）
 - `filter`：用于检查输入值存在性必然会进行数据库查询，而该属性为用于进一步筛选该查询的过滤条件。可以为代表额外查询条件的字符串或数组（关于查询条件的格式，请参考 [[yii\db\Query::where()]]）；或者样式为 `function ($query)` 的匿名函数，`$query` 参数为你希望在该函数内进行修改的 [[yii\db\Query|Query]] 对象。
 - `allowArray`：是否允许输入值为数组。默认为 false。若该属性为 true 且输入值为数组，则数组的每个元素都必须在目标字段中存在。值得注意的是，若用吧 `targetAttribute` 设为多元素数组来验证被测值在多字段中的存在性时，该属性不能设置为 true。
+
+> 译者注：[exist](#exist) 和 [unique](#unique) 验证器的机理和参数都相似，有点像一体两面的阴和阳。
+- 他们的区别是 exist 要求 `targetAttribute` 键所代表的的属性在其值所代表字段中找得到；而 unique 正相反，要求键所代表的的属性不能在其值所代表字段中被找到。
+- 从另一个角度来理解：他们都会在验证的过程中执行数据库查询，查询的条件即为where $v=$k (假设 `targetAttribute` 的其中一对键值对为 `$k => $v`)。unique 要求查询的结果数 `$count==0`，而 exist 则要求查询的结果数 `$count>0`
+- 最后别忘了，unique 验证器不存在 `allowArray` 属性哦。
 
 
 ## [[yii\validators\FileValidator|file（文件）]] <a name="file"></a>
@@ -385,32 +393,40 @@ function foo($model, $attribute) {
 该验证器并不进行数据验证。而是，trim 掉输入值两侧的多余空格。注意若该输入值为数组，那它会忽略掉该验证器。
 
 
-## [[yii\validators\UniqueValidator|unique（唯一）]] <a name="unique"></a>
+## [[yii\validators\UniqueValidator|unique（唯一性）]] <a name="unique"></a>
 
 ```php
 [
-    // a1 需要在代表 "a1" 特性的表字段中唯一
+    // a1 需要在 "a1" 特性所代表的字段内唯一
     ['a1', 'unique'],
 
-    // a1 需要唯一，但会使用字段 a2 检验 a1 值的唯一性
+    // a1 需要唯一，但检验的是 a1 的值在字段 a2 中的唯一性
     ['a1', 'unique', 'targetAttribute' => 'a2'],
 
-    // a1 和 a2 的组合需要唯一，且都会收到错误提示
+    // a1 和 a2 的组合需要唯一，且它们都能收到错误提示
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 和 a2 的组合需要唯一，只有 a1 会接收错误提示
+    // a1 和 a2 的组合需要唯一，只有 a1 能接收错误提示
     ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 必需唯一，通过同时检查 a2 和 a3(会使用 a1 的值）来确保这一点
+    // 通过同时在 a2 和 a3 字段中检查 a2 和 a3 的值来确定 a1 的唯一性
     ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 ]
 ```
 
-该验证器检查输入值是否在某表字段中唯一。它只对[活动记录](db-active-record.md)模型的特性起作用。它支持对一个或多过字段的验证。
+该验证器检查输入值是否在某表字段中唯一。它只对[活动记录](db-active-record.md)类型的模型类特性起作用，能支持对一个或多过字段的验证。
 
-- `targetClass`：用于查找输入值的[活动记录](db-active-record.md)类。若不设置，则会使用当前正在执行验证的模型类。
-- `targetAttribute`：用于检查输入值唯一性的 `targetClass` 的模型特性。若不设置，它会使用当前验证的待测特性名。你也可以用数组的形式，同时指定多个用于验证唯一性的表字段，数组的键和值都是代表字段的特性名，值表示用于检查唯一性的数据源，而键表示待测的特性名。若键和值相同，你可以只指定值。
+- `targetClass`：用于查找输入值的目标 [AR](db-active-record.md) 类。若不设置，则会使用正在进行验证的当前模型类。
+- `targetAttribute`：用于检查输入值唯一性的 `targetClass` 的模型特性。
+    - 若不设置，它会直接使用待测特性名（整个参数数组的首元素）。
+    - 除了指定为字符串以外，你也可以用数组的形式，同时指定多个用于验证的表字段，数组的键和值都是代表字段的特性名，值表示 `targetClass` 的待测数据源字段，而键表示当前模型的待测特性名。
+    - 若键和值相同，你可以只指定值。（如:`['a2']` 就代表 `['a2'=>'a2']`）
 - `filter`：用于检查输入值唯一性必然会进行数据库查询，而该属性为用于进一步筛选该查询的过滤条件。可以为代表额外查询条件的字符串或数组（关于查询条件的格式，请参考 [[yii\db\Query::where()]]）；或者样式为 `function ($query)` 的匿名函数，`$query` 参数为你希望在该函数内进行修改的 [[yii\db\Query|Query]] 对象。
+
+> 译者注：[exist](#exist) 和 [unique](#unique) 验证器的机理和参数都相似，有点像一体两面的阴和阳。
+- 他们的区别是 exist 要求 `targetAttribute` 键所代表的的属性在其值所代表字段中找得到；而 unique 正相反，要求键所代表的的属性不能在其值所代表字段中被找到。
+- 从另一个角度来理解：他们都会在验证的过程中执行数据库查询，查询的条件即为where $v=$k (假设 `targetAttribute` 的其中一对键值对为 `$k => $v`)。unique 要求查询的结果数 `$count==0`，而 exist 则要求查询的结果数 `$count>0`
+- 最后别忘了，unique 验证器不存在 `allowArray` 属性哦。
 
 
 ## [[yii\validators\UrlValidator|url（网址）]] <a name="url"></a>
