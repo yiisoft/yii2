@@ -76,4 +76,4 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertEquals($assignments, $this->auth->assignments);
         $this->assertEquals($rules, $this->auth->rules);
     }
-} 
+}

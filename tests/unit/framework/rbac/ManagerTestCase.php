@@ -4,6 +4,7 @@ namespace yiiunit\framework\rbac;
 
 use yii\rbac\Item;
 use yii\rbac\Permission;
+use yii\rbac\PhpManager;
 use yii\rbac\Role;
 use yiiunit\TestCase;
 
@@ -267,5 +268,25 @@ abstract class ManagerTestCase extends TestCase
 
         $this->assertContains('reader', $roleNames, 'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames));
         $this->assertContains('author', $roleNames, 'Roles should contain author. Currently it has: ' . implode(', ', $roleNames));
+    }
+
+    public function testAssignmentsToIntegerId()
+    {
+        $this->prepareData();
+
+        $reader = $this->auth->getRole('reader');
+        $author = $this->auth->getRole('author');
+        $this->auth->assign($reader, 42);
+        $this->auth->assign($author, 1337);
+        $this->auth->assign($reader, 1337);
+        if ($this->auth instanceof PhpManager) {
+            $this->auth->save();
+        }
+
+        $this->auth = $this->createManager();
+
+        $this->assertEquals(0, count($this->auth->getAssignments(0)));
+        $this->assertEquals(1, count($this->auth->getAssignments(42)));
+        $this->assertEquals(2, count($this->auth->getAssignments(1337)));
     }
 }
