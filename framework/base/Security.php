@@ -31,8 +31,7 @@ class Security extends Component
 {
     /**
      * @var integer derivation iterations count.
-     * Only used when @see $deriveKeyStrategy = 'password'. Set as
-     * high as possible to hinder dictionary password attacks.
+     * Set as high as possible to hinder dictionary password attacks.
      */
     public $derivationIterations = 100000;
     /**
@@ -179,7 +178,6 @@ class Security extends Component
      * @param bool $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
      * @param string $info context/application specific information, e.g. a user ID
-     *     Only used when $deriveKeyStrategy = 'key'.
      *     See RFC 5869 Section 3.2 @link https://tools.ietf.org/html/rfc5869
      * @return string the encrypted data
      * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
