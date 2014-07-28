@@ -270,7 +270,22 @@
             });
         }, data.settings.validationDelay);
     };
-
+    
+    /**
+     * Returns an array prototype with a shortcut method for adding a new deferred.
+     * The context of the callback will be the deferred object so it can be resolved like ```this.resolve()```
+     * @returns Array
+     */
+    var deferredArray = function () {
+        var array = [];
+        array.add = function(callback) {
+            var deferred = new $.Deferred();
+            callback.call(deferred);
+            this.push(deferred);
+        };
+        return array;
+    };
+    
     /**
      * Performs validation.
      * @param $form jQuery the jquery representation of the form
@@ -281,7 +296,7 @@
         var data = $form.data('yiiActiveForm'),
             needAjaxValidation = false,
             messages = {},
-            deferreds = [];
+            deferreds = deferredArray();
 
         $.each(data.attributes, function () {
             if (data.submitting || this.status === 2 || this.status === 3) {
