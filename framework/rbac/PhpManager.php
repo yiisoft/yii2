@@ -644,12 +644,14 @@ class PhpManager extends BaseManager
             }
         }
 
-        foreach ($assignments as $userId => $role) {
-            $this->assignments[$userId][$role] = new Assignment([
-                'userId' => $userId,
-                'roleName' => $role,
-                'createdAt' => $assignmentsMtime,
-            ]);
+        foreach ($assignments as $userId => $roles) {
+            foreach ($roles as $role) {
+                $this->assignments[$userId][$role] = new Assignment([
+                    'userId' => $userId,
+                    'roleName' => $role,
+                    'createdAt' => $assignmentsMtime,
+                ]);
+            }
         }
 
         foreach ($rules as $name => $ruleData) {
@@ -730,7 +732,7 @@ class PhpManager extends BaseManager
         foreach ($this->assignments as $userId => $assignments) {
             foreach ($assignments as $name => $assignment) {
                 /* @var $assignment Assignment */
-                $assignmentData[$userId] = $assignment->roleName;
+                $assignmentData[$userId][] = $assignment->roleName;
             }
         }
         $this->saveToFile($assignmentData, $this->assignmentFile);

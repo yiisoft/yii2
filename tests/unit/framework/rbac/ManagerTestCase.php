@@ -17,6 +17,11 @@ abstract class ManagerTestCase extends TestCase
      */
     protected $auth;
 
+    /**
+     * @return \yii\rbac\ManagerInterface
+     */
+    abstract protected function createManager();
+
     public function testCreateRole()
     {
         $role = $this->auth->createRole('admin');
@@ -241,6 +246,26 @@ abstract class ManagerTestCase extends TestCase
         $roles = $this->auth->getRolesByUser('reader A');
         $this->assertTrue(reset($roles) instanceof Role);
         $this->assertEquals($roles['reader']->name, 'reader');
+    }
 
+    public function testAssignMultipleRoles()
+    {
+        $this->prepareData();
+
+        $reader = $this->auth->getRole('reader');
+        $author = $this->auth->getRole('author');
+        $this->auth->assign($reader, 'readingAuthor');
+        $this->auth->assign($author, 'readingAuthor');
+
+        $this->auth = $this->createManager();
+
+        $roles = $this->auth->getRolesByUser('readingAuthor');
+        $roleNames = [];
+        foreach ($roles as $role) {
+            $roleNames[] = $role->name;
+        }
+
+        $this->assertContains('reader', $roleNames, 'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames));
+        $this->assertContains('author', $roleNames, 'Roles should contain author. Currently it has: ' . implode(', ', $roleNames));
     }
 }

@@ -117,7 +117,7 @@ new ones save the following code as `convert.php` that should be placed in the s
       foreach ($oldData['items'] as $name => $data) {
           if (isset($data['assignments'])) {
               foreach ($data['assignments'] as $userId => $assignmentData) {
-                  $assignments[$userId] = $assignmentData['roleName'];
+                  $assignments[$userId][] = $assignmentData['roleName'];
               }
               unset($data['assignments']);
           }

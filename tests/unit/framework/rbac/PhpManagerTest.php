@@ -32,6 +32,9 @@ class PhpManagerTest extends ManagerTestCase
         @unlink($this->getRuleFile());
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function createManager()
     {
         return new ExposedPhpManager([
