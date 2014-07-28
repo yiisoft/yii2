@@ -8,6 +8,8 @@
 namespace yii\elasticsearch;
 
 use yii\base\Component;
+use yii\base\InvalidCallException;
+use yii\base\InvalidParamException;
 use yii\helpers\Json;
 
 /**
@@ -62,6 +64,32 @@ class Command extends Component
         ];
 
         return $this->db->get($url, array_merge($this->options, $options), $query);
+    }
+
+    /**
+     * Sends a request to the delete by query
+     * @param array $options
+     * @return mixed
+     */
+    public function deleteByQuery($options = [])
+    {
+        if (!isset($this->queryParts['query'])) {
+            throw new InvalidCallException('Can not call deleteByQuery when no query is given.');
+        }
+        $query = [
+            'query' => $this->queryParts['query'],
+        ];
+        if (isset($this->queryParts['filter'])) {
+            $query['filter'] = $this->queryParts['filter'];
+        }
+        $query = Json::encode($query);
+        $url = [
+            $this->index !== null ? $this->index : '_all',
+            $this->type !== null ? $this->type : '_all',
+            '_query'
+        ];
+
+        return $this->db->delete($url, array_merge($this->options, $options), $query);
     }
 
     /**

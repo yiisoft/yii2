@@ -267,17 +267,16 @@ class Query extends Component implements QueryInterface
     /**
      * Executes the query and deletes all matching documents.
      *
-     * This will not run facet queries.
+     * Everything except query and filter will be ignored.
      *
      * @param Connection $db the database connection used to execute the query.
      * If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return array the query results. If the query results in nothing, an empty array will be returned.
+     * @param array $options The options given with this query.
+     * @return array the query results.
      */
-    public function delete($db = null)
+    public function delete($db = null, $options = [])
     {
-        // TODO implement http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
-        // http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_search_requests.html
-        throw new NotSupportedException('Delete by query is not implemented yet.');
+        return $this->createCommand($db)->deleteByQuery($options);
     }
 
     /**
