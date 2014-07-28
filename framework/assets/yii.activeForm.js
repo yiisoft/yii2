@@ -280,70 +280,72 @@
     var validate = function ($form, successCallback, errorCallback) {
         var data = $form.data('yiiActiveForm'),
             needAjaxValidation = false,
-            messages = {};
+            messages = {},
+            deferreds = [];
 
         $.each(data.attributes, function () {
             if (data.submitting || this.status === 2 || this.status === 3) {
                 var msg = [];
+                messages[this.id] = msg;
                 if (!data.settings.beforeValidate || data.settings.beforeValidate($form, this, msg)) {
                     if (this.validate) {
-                        this.validate(this, getValue($form, this), msg);
+                        this.validate(this, getValue($form, this), msg, deferreds);
                     }
-                    if (msg.length) {
-                        messages[this.id] = msg;
-                    } else if (this.enableAjaxValidation) {
+                    if (this.enableAjaxValidation) {
                         needAjaxValidation = true;
                     }
                 }
             }
         });
 
-        if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
-            // Perform ajax validation when at least one input needs it.
-            // If the validation is triggered by form submission, ajax validation
-            // should be done only when all inputs pass client validation
-            var $button = data.submitObject,
-                extData = '&' + data.settings.ajaxParam + '=' + $form.prop('id');
-            if ($button && $button.length && $button.prop('name')) {
-                extData += '&' + $button.prop('name') + '=' + $button.prop('value');
-            }
-            $.ajax({
-                url: data.settings.validationUrl,
-                type: $form.prop('method'),
-                data: $form.serialize() + extData,
-                dataType: data.settings.ajaxDataType,
-                complete: function (jqXHR, textStatus) {
-                    if (data.settings.ajaxComplete) {
-                        data.settings.ajaxComplete($form, jqXHR, textStatus);
-                    }
-                },
-                beforeSend: function (jqXHR, textStatus) {
-                    if (data.settings.ajaxBeforeSend) {
-                        data.settings.ajaxBeforeSend($form, jqXHR, textStatus);
-                    }
-                },
-                success: function (msgs) {
-                    if (msgs !== null && typeof msgs === 'object') {
-                        $.each(data.attributes, function () {
-                            if (!this.enableAjaxValidation) {
-                                delete msgs[this.id];
-                            }
-                        });
-                        successCallback($.extend({}, messages, msgs));
-                    } else {
-                        successCallback(messages);
-                    }
-                },
-                error: errorCallback
-            });
-        } else if (data.submitting) {
-            // delay callback so that the form can be submitted without problem
-            setTimeout(function () {
+        $.when.apply(this, deferreds).always(function() {
+            if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
+                // Perform ajax validation when at least one input needs it.
+                // If the validation is triggered by form submission, ajax validation
+                // should be done only when all inputs pass client validation
+                var $button = data.submitObject,
+                    extData = '&' + data.settings.ajaxParam + '=' + $form.prop('id');
+                if ($button && $button.length && $button.prop('name')) {
+                    extData += '&' + $button.prop('name') + '=' + $button.prop('value');
+                }
+                $.ajax({
+                    url: data.settings.validationUrl,
+                    type: $form.prop('method'),
+                    data: $form.serialize() + extData,
+                    dataType: data.settings.ajaxDataType,
+                    complete: function (jqXHR, textStatus) {
+                        if (data.settings.ajaxComplete) {
+                            data.settings.ajaxComplete($form, jqXHR, textStatus);
+                        }
+                    },
+                    beforeSend: function (jqXHR, textStatus) {
+                        if (data.settings.ajaxBeforeSend) {
+                            data.settings.ajaxBeforeSend($form, jqXHR, textStatus);
+                        }
+                    },
+                    success: function (msgs) {
+                        if (msgs !== null && typeof msgs === 'object') {
+                            $.each(data.attributes, function () {
+                                if (!this.enableAjaxValidation) {
+                                    delete msgs[this.id];
+                                }
+                            });
+                            successCallback($.extend({}, messages, msgs));
+                        } else {
+                            successCallback(messages);
+                        }
+                    },
+                    error: errorCallback
+                });
+            } else if (data.submitting) {
+                // delay callback so that the form can be submitted without problem
+                setTimeout(function () {
+                    successCallback(messages);
+                }, 200);
+            } else {
                 successCallback(messages);
-            }, 200);
-        } else {
-            successCallback(messages);
-        }
+            }
+        });
     };
 
     /**
