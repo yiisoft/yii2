@@ -172,3 +172,8 @@ new ones save the following code as `convert.php` that should be placed in the s
 
   }, $duration, $dependency);
   ```
+  
+* Due to significant changes to security you need to upgrade your code to use `\yii\base\Security` component instead of
+  helper. If you have any data encrypted it should be re-encrypted. In order to do so you can use old security helper [as
+  explained by @docsolver at github](https://github.com/yiisoft/yii2/issues/4461#issuecomment-50237807).
+  
