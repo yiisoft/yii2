@@ -299,6 +299,12 @@
         });
 
         $.when.apply(this, deferreds).always(function() {
+            //Remove empty message arrays
+            for (var i in messages) {
+                if (0 === messages[i].length) {
+                    delete messages[i];
+                }
+            }
             if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
                 // Perform ajax validation when at least one input needs it.
                 // If the validation is triggered by form submission, ajax validation
