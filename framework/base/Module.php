@@ -241,7 +241,7 @@ class Module extends ServiceLocator
 
     /**
      * Returns the directory that contains the view files for this module.
-     * @return string the root directory of view files. Defaults to "[[basePath]]/view".
+     * @return string the root directory of view files. Defaults to "[[basePath]]/views".
      */
     public function getViewPath()
     {
