@@ -74,6 +74,7 @@ Yii Framework 2 Change Log
 - Bug #4427: Formatter could do one division too much (kmindi)
 - Bug #4453: `yii message/extract` wasn't properly writing to po files in case of multiple categories (samdark)
 - Bug #4469: Make `Security::compareString()` timing depend only on length of `$actual` input and add unit test. (tom--)
+- Bug #4470: Avoid endless loop when exporting logs with low values of flushInterval and eportInterval (cebe)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
