@@ -151,7 +151,7 @@ For example,
 
 During the bootstrapping process, each component will be instantiated. If the component class
 implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
-will be also be called.
+will be also called.
 
 Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
 where the `debug` and `gii` modules are configured as bootstrapping components when the application is running
@@ -391,11 +391,11 @@ does not specify one. The route may consist of child module ID, controller ID, a
 For example, `help`, `post/create`, `admin/post/create`. If action ID is not given, it will take the default
 value as specified in [[yii\base\Controller::defaultAction]].
 
-For [yii\web\Application|Web applications], the default value of this property is `'site'`, which means
+For [[yii\web\Application|Web applications]], the default value of this property is `'site'`, which means
 the `SiteController` controller and its default action should be used. As a result, if you access
 the application without specifying a route, it will show the result of `app\controllers\SiteController::actionIndex()`.
 
-For [yii\console\Application|console applications], the default value is `'help'`, which means the core command
+For [[yii\console\Application|console applications]], the default value is `'help'`, which means the core command
 [[yii\console\controllers\HelpController::actionIndex()]] should be used. As a result, if you run the command `yii`
 without providing any arguments, it will display the help information.
 
@@ -556,7 +556,7 @@ For example,
 ```
 
 Note that the same `beforeAction` event is also triggered by [modules](structure-modules.md)
-and [controllers)(structure-controllers.md). Application objects are the first ones
+and [controllers](structure-controllers.md). Application objects are the first ones
 triggering this event, followed by modules (if any), and finally controllers. If an event handler
 sets [[yii\base\ActionEvent::isValid]] to be `false`, all the following events will NOT be triggered.
 
@@ -582,7 +582,7 @@ For example,
 ```
 
 Note that the same `afterAction` event is also triggered by [modules](structure-modules.md)
-and [controllers)(structure-controllers.md). These objects trigger this event in the reverse order
+and [controllers](structure-controllers.md). These objects trigger this event in the reverse order
 as for that of `beforeAction`. That is, controllers are the first objects triggering this event,
 followed by modules (if any), and finally applications.
 
