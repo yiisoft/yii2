@@ -20,12 +20,16 @@ class Request extends Object implements DocumentInterface
     use DocumentTrait;
 
     /**
+     * @var Client
+     */
+    public $client;
+    /**
      * @var string request method.
      */
     public $method = 'get';
 
     public function send()
     {
-        ;
+        $this->client->send($this);
     }
 }

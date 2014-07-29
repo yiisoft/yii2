@@ -4,6 +4,8 @@ namespace yiiunit\extensions\httpclient;
 
 use yii\httpclient\DocumentInterface;
 use yii\httpclient\DocumentTrait;
+use yii\httpclient\FormatterUrlEncoded;
+use yii\httpclient\ParserUrlEncoded;
 use yii\web\HeaderCollection;
 
 class DocumentTraitTest extends TestCase
@@ -55,7 +57,7 @@ class DocumentTraitTest extends TestCase
         $this->assertEquals($content, $document->getContent());
     }
 
-    public function testSetupBodyFields()
+    public function testSetupData()
     {
         $document = new Document();
         $data = [
@@ -64,6 +66,45 @@ class DocumentTraitTest extends TestCase
         ];
         $document->setData($data);
         $this->assertEquals($data, $document->getData());
+    }
+
+    /**
+     * @depends testSetupBody
+     */
+    public function testParseBody()
+    {
+        $document = new Document();
+        $format = 'testFormat';
+        $document->setFormat($format);
+        $document->parsers = [
+            $format => [
+                'class' => ParserUrlEncoded::className()
+            ]
+        ];
+        $content = 'name=value';
+        $document->setContent($content);
+        $this->assertEquals(['name' => 'value'], $document->getData());
+    }
+
+    /**
+     * @depends testSetupData
+     */
+    public function testFormatData()
+    {
+        $document = new Document();
+        $format = 'testFormat';
+        $document->setFormat($format);
+        $document->formatters = [
+            $format => [
+                'class' => FormatterUrlEncoded::className()
+            ]
+        ];
+
+        $data = [
+            'name' => 'value',
+        ];
+        $document->setData($data);
+        $this->assertEquals('name=value', $document->getContent());
     }
 }
 
