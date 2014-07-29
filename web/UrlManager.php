@@ -31,9 +31,11 @@ use yii\caching\Cache;
  * ]
  * ~~~
  *
- * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend URLs it creates.
+ * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend to created URLs.
  * @property string $hostInfo The host info (e.g. "http://www.example.com") that is used by
- * [[createAbsoluteUrl()]] to prepend URLs it creates.
+ * [[createAbsoluteUrl()]] to prepend to created URLs.
+ * @property string $scriptUrl The entry script URL that is used by [[createUrl()]] to prepend to created
+ * URLs.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -366,10 +368,10 @@ class UrlManager extends Component
     }
 
     /**
-     * Returns the base URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * Returns the base URL that is used by [[createUrl()]] to prepend to created URLs.
      * It defaults to [[Request::baseUrl]].
      * This is mainly used when [[enablePrettyUrl]] is true and [[showScriptName]] is false.
-     * @return string the base URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * @return string the base URL that is used by [[createUrl()]] to prepend to created URLs.
      * @throws InvalidConfigException if running in console application and [[baseUrl]] is not configured.
      */
     public function getBaseUrl()
@@ -387,9 +389,9 @@ class UrlManager extends Component
     }
 
     /**
-     * Sets the base URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * Sets the base URL that is used by [[createUrl()]] to prepend to created URLs.
      * This is mainly used when [[enablePrettyUrl]] is true and [[showScriptName]] is false.
-     * @param string $value the base URL that is used by [[createUrl()]] to prepend URLs it creates.
+     * @param string $value the base URL that is used by [[createUrl()]] to prepend to created URLs.
      */
     public function setBaseUrl($value)
     {
@@ -397,10 +399,10 @@ class UrlManager extends Component
     }
 
     /**
-     * Returns the entry script URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * Returns the entry script URL that is used by [[createUrl()]] to prepend to created URLs.
      * It defaults to [[Request::scriptUrl]].
      * This is mainly used when [[enablePrettyUrl]] is false or [[showScriptName]] is true.
-     * @return string the entry script URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * @return string the entry script URL that is used by [[createUrl()]] to prepend to created URLs.
      * @throws InvalidConfigException if running in console application and [[scriptUrl]] is not configured.
      */
     public function getScriptUrl()
@@ -418,9 +420,9 @@ class UrlManager extends Component
     }
 
     /**
-     * Sets the entry script URL that is used by [[createUrl()]] to prepend to the URLs it creates.
+     * Sets the entry script URL that is used by [[createUrl()]] to prepend to created URLs.
      * This is mainly used when [[enablePrettyUrl]] is false or [[showScriptName]] is true.
-     * @param string $value the entry script URL that is used by [[createUrl()]] to prepend URLs it creates.
+     * @param string $value the entry script URL that is used by [[createUrl()]] to prepend to created URLs.
      */
     public function setScriptUrl($value)
     {
@@ -428,8 +430,8 @@ class UrlManager extends Component
     }
 
     /**
-     * Returns the host info that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
-     * @return string the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+     * Returns the host info that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
+     * @return string the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
      * @throws InvalidConfigException if running in console application and [[hostInfo]] is not configured.
      */
     public function getHostInfo()
@@ -447,8 +449,8 @@ class UrlManager extends Component
     }
 
     /**
-     * Sets the host info that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
-     * @param string $value the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend URLs it creates.
+     * Sets the host info that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
+     * @param string $value the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
      */
     public function setHostInfo($value)
     {
