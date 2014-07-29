@@ -7,6 +7,7 @@
 
 namespace yii\httpclient;
 
+use yii\base\Exception;
 use yii\base\Object;
 use yii\web\HeaderCollection;
 
@@ -29,6 +30,31 @@ class Response extends Object implements DocumentInterface
             $this->_format = $this->detectFormat();
         }
         return $this->_format;
+    }
+
+    /**
+     * Returns status code.
+     * @throws Exception on failure.
+     * @return string status code.
+     */
+    public function getStatusCode()
+    {
+        $headers = $this->getHeaders();
+        if ($headers->has('http-code')) {
+            return $headers->get('http-code');
+        } elseif ($headers->has('http_code')) {
+            return $headers->get('http_code');
+        }
+        throw new Exception('Unable to get status code: referred header information is missing.');
+    }
+
+    /**
+     * Checks if response status code is OK (200)
+     * @return boolean whether response is OK.
+     */
+    public function isOk()
+    {
+        return strcmp('200', $this->getStatusCode()) === 0;
     }
 
     /**

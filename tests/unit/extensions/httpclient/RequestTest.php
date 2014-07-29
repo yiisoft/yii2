@@ -6,6 +6,15 @@ use yii\httpclient\Request;
 
 class RequestTest extends TestCase
 {
+    public function testSetupUrl()
+    {
+        $request = new Request();
+
+        $url = 'test/url';
+        $request->setUrl($url);
+        $this->assertEquals($url, $request->getUrl());
+    }
+
     public function testSetupMethod()
     {
         $request = new Request();

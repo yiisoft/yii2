@@ -24,6 +24,10 @@ class Request extends Object implements DocumentInterface
      */
     public $client;
     /**
+     * @var string
+     */
+    private $_url;
+    /**
      * @var string request method.
      */
     private $_method = 'get';
@@ -31,6 +35,24 @@ class Request extends Object implements DocumentInterface
      * @var array CURL options
      */
     private $_options = [];
+
+    /**
+     * @param string $url
+     * @return static self reference.
+     */
+    public function setUrl($url)
+    {
+        $this->_url = $url;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->_url;
+    }
 
     /**
      * @param string $method

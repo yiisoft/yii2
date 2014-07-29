@@ -38,4 +38,23 @@ class ClientTest extends TestCase
         $response = $client->createResponse();
         $this->assertEquals($responseContent, $response->getContent());
     }
+
+    /**
+     * @depends testCreateRequest
+     * @depends testCreateResponse
+     */
+    public function testSend()
+    {
+        $client = new Client();
+        $client->baseUrl = 'http://uk.php.net';
+        $response = $client->createRequest()
+            ->setMethod('get')
+            ->setUrl('docs.php')
+            ->send();
+
+        $this->assertTrue($response->isOk());
+        $content = $response->getContent();
+        $this->assertNotEmpty($content);
+        $this->assertContains('<h1>Documentation</h1>', $content);
+    }
 } 

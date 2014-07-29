@@ -135,7 +135,7 @@ trait DocumentTrait
      */
     public function getData()
     {
-        if ($this->_data === null) {
+        if ($this->_data === null && !empty($this->_content)) {
             $this->_data = $this->createParser()->parse($this);
         }
         return $this->_data;

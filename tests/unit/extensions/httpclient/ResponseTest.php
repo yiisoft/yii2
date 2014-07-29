@@ -76,4 +76,38 @@ class ResponseTest extends TestCase
         $response->setContent($content);
         $this->assertEquals($expectedFormat, $response->getFormat());
     }
+
+    public function testGetStatusCode()
+    {
+        $response = new Response();
+        $statusCode = 123;
+        $response->setHeaders(['http-code' => $statusCode]);
+        $this->assertEquals($statusCode, $response->getStatusCode());
+    }
+
+    /**
+     * Data provider for [[testIsOk()]]
+     * @return array test data.
+     */
+    public function dataProviderIsOk()
+    {
+        return [
+            [200, true],
+            [400, false],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderIsOk
+     * @depends testGetStatusCode
+     *
+     * @param integer $statusCode
+     * @param boolean $isOk
+     */
+    public function testIsOk($statusCode, $isOk)
+    {
+        $response = new Response();
+        $response->setHeaders(['http-code' => $statusCode]);
+        $this->assertEquals($isOk, $response->isOk());
+    }
 }
