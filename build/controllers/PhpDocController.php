@@ -85,6 +85,7 @@ class PhpDocController extends Controller
 
             $this->fixFileDoc($lines);
             $this->fixDocBlockIndentation($lines);
+            $lines = array_values($this->fixLineSpacing($lines));
 
             $newContent = implode("\n", $lines);
             if ($sha !== sha1($newContent)) {
@@ -163,6 +164,9 @@ class PhpDocController extends Controller
         return FileHelper::findFiles($root, $options);
     }
 
+    /**
+     * Fix file PHPdoc
+     */
     protected function fixFileDoc(&$lines)
     {
         // find namespace
@@ -255,6 +259,110 @@ class PhpDocController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * Fixes line spacing code style for properties and constants
+     */
+    protected function fixLineSpacing($lines)
+    {
+        $propertiesOnly = false;
+        // remove blank lines between properties
+        $skip = true;
+        foreach($lines as $i => $line) {
+            if (strpos($line, 'class ') !== false) {
+                $skip = false;
+            }
+            if ($skip) {
+                continue;
+            }
+            if (trim($line) === '') {
+                unset($lines[$i]);
+            } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function') !== false) {
+                break;
+            } elseif (trim($line) === '}') {
+                $propertiesOnly = true;
+                break;
+            }
+        }
+        $lines = array_values($lines);
+
+        // add back some
+        $endofUse = false;
+        $endofConst = false;
+        $endofPublic = false;
+        $endofProtected = false;
+        $endofPrivate = false;
+        $skip = true;
+        $level = 0; // track array properties
+        $property = '';
+        foreach($lines as $i => $line) {
+            if (strpos($line, 'class ') !== false) {
+                $skip = false;
+            }
+            if ($skip) {
+                continue;
+            }
+            if ($level > 0) {
+                ${'endof'.$property} = $i;
+                $level -= substr_count($line, ']');
+            }
+
+            if (strncmp(trim($line), 'public $', 8) === 0 || strncmp(trim($line), 'public static $', 15) === 0) {
+                $endofPublic = $i;
+                $property = 'Public';
+            } elseif (strncmp(trim($line), 'protected $', 11) === 0 || strncmp(trim($line), 'protected static $', 18) === 0) {
+                $endofProtected = $i;
+                $property = 'Protected';
+            } elseif (strncmp(trim($line), 'private $', 9) === 0 || strncmp(trim($line), 'private static $', 16) === 0) {
+                $endofPrivate = $i;
+                $property = 'Private';
+            } elseif (substr(trim($line),0 , 6) === 'const ') {
+                $endofConst = $i;
+                $property = false;
+            } elseif (substr(trim($line),0 , 4) === 'use ') {
+                $endofUse = $i;
+                $property = false;
+            } elseif (ltrim($line)[0] === '*') {
+                $property = false;
+            } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function') !== false || trim($line) === '}') {
+                break;
+            }
+            // check for multi line array
+            if ($property !== false) {
+                $level += substr_count($line, '[') - substr_count($line, ']');
+            }
+        }
+
+        $endofAll = false;
+        foreach(['Private', 'Protected', 'Public', 'Const', 'Use'] as $var) {
+            if (${'endof'.$var} !== false) {
+                $endofAll = ${'endof'.$var};
+                break;
+            }
+        }
+
+//        $this->checkPropertyOrder($lineInfo);
+        $result = [];
+        foreach($lines as $i => $line) {
+            $result[] = $line;
+            if (!($propertiesOnly && $i === $endofAll)) {
+                if ($i === $endofUse || $i === $endofConst || $i === $endofPublic ||
+                    $i === $endofProtected || $i === $endofPrivate) {
+                    $result[] = '';
+                }
+                if ($i === $endofAll) {
+                    $result[] = '';
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    protected function checkPropertyOrder($lineInfo)
+    {
+        // TODO
     }
 
     protected function updateClassPropertyDocs($file, $className, $propertyDoc)
