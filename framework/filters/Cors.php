@@ -54,7 +54,6 @@ use yii\web\Response;
  * }
  * ```
  *
- *
  * @author Philippe Gaultier <pgaultier@gmail.com>
  * @since 2.0
  */
