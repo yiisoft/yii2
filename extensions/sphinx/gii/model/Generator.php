@@ -180,7 +180,7 @@ class Generator extends \yii\gii\Generator
                 $labels[$column->name] = 'ID';
             } else {
                 $label = Inflector::camel2words($column->name);
-                if (strcasecmp(substr($label, -3), ' id') === 0) {
+                if (substr_compare($label, ' id', -3, null, true) === 0) {
                     $label = substr($label, 0, -3) . ' ID';
                 }
                 $labels[$column->name] = $label;
@@ -266,7 +266,7 @@ class Generator extends \yii\gii\Generator
         if ($this->isReservedKeyword($this->modelClass)) {
             $this->addError('modelClass', 'Class name cannot be a reserved PHP keyword.');
         }
-        if (substr_compare($this->indexName, '*', -1) && $this->modelClass == '') {
+        if ((empty($this->indexName) || substr_compare($this->indexName, '*', -1)) && $this->modelClass == '') {
             $this->addError('modelClass', 'Model Class cannot be blank if table name does not end with asterisk.');
         }
     }
@@ -276,7 +276,7 @@ class Generator extends \yii\gii\Generator
      */
     public function validateIndexName()
     {
-        if (strpos($this->indexName, '*') !== false && substr($this->indexName, -1) !== '*') {
+        if (strpos($this->indexName, '*') !== false && substr_compare($this->indexName, '*', -1)) {
             $this->addError('indexName', 'Asterisk is only allowed as the last character.');
 
             return;

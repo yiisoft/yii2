@@ -170,12 +170,15 @@ class PhpDocController extends Controller
         $namespaceLine = '';
         $contentAfterNamespace = false;
         foreach($lines as $i => $line) {
-            if (substr(trim($line), 0, 9) === 'namespace') {
-                $namespace = $i;
-                $namespaceLine = trim($line);
-            } elseif ($namespace !== false && trim($line) !== '') {
-                $contentAfterNamespace = $i;
-                break;
+            $line = trim($line);
+            if (!empty($line)) {
+                if (substr_compare($line, 'namespace', 0, 9) === 0) {
+                    $namespace = $i;
+                    $namespaceLine = $line;
+                } elseif ($namespace !== false) {
+                    $contentAfterNamespace = $i;
+                    break;
+                }
             }
         }
 
@@ -275,14 +278,18 @@ class PhpDocController extends Controller
 
         // TODO move these checks to different action
         $lines = explode("\n", $newDoc);
-        if (trim($lines[1]) == '*' || substr(trim($lines[1]), 0, 3) == '* @') {
+        $firstLine = trim($lines[1]);
+        if ($firstLine === '*' || (!empty($firstLine) && substr_compare($firstLine, '* @', 0, 3) === 0)) {
             $this->stderr("[WARN] Class $className has no short description.\n", Console::FG_YELLOW, Console::BOLD);
         }
         foreach ($lines as $line) {
-            if (substr(trim($line), 0, 9) == '* @since ') {
-                $seenSince = true;
-            } elseif (substr(trim($line), 0, 10) == '* @author ') {
-                $seenAuthor = true;
+            $line = trim($line);
+            if (!empty($line)) {
+                if (substr_compare($line, '* @since ', 0, 9) === 0) {
+                    $seenSince = true;
+                } elseif (substr_compare($line, '* @author ', 0, 10) === 0) {
+                    $seenAuthor = true;
+                }
             }
         }
 
@@ -350,13 +357,14 @@ class PhpDocController extends Controller
         $propertyPart = false;
         $propertyPosition = false;
         foreach ($lines as $i => $line) {
-            if (substr(trim($line), 0, 12) == '* @property ') {
+            $line = trim($line);
+            if (!empty($line) && substr_compare($line, '* @property ', 0, 12) === 0) {
                 $propertyPart = true;
-            } elseif ($propertyPart && trim($line) == '*') {
+            } elseif ($propertyPart && $line == '*') {
                 $propertyPosition = $i;
                 $propertyPart = false;
             }
-            if (substr(trim($line), 0, 10) == '* @author ' && $propertyPosition === false) {
+            if (!empty($line) && substr_compare($line, '* @author ', 0, 10) === 0 && $propertyPosition === false) {
                 $propertyPosition = $i - 1;
                 $propertyPart = false;
             }

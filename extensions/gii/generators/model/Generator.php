@@ -196,7 +196,7 @@ class Generator extends \yii\gii\Generator
                 $labels[$column->name] = 'ID';
             } else {
                 $label = Inflector::camel2words($column->name);
-                if (strcasecmp(substr($label, -3), ' id') === 0) {
+                if (!empty($label) && substr_compare($label, ' id', -3, null, true)) {
                     $label = substr($label, 0, -3) . ' ID';
                 }
                 $labels[$column->name] = $label;
@@ -428,7 +428,7 @@ class Generator extends \yii\gii\Generator
      */
     protected function generateRelationName($relations, $className, $table, $key, $multiple)
     {
-        if (strcasecmp(substr($key, -2), 'id') === 0 && strcasecmp($key, 'id')) {
+        if (!empty($key) && substr_compare($key, 'id', -2, null, true) === 0 && strcasecmp($key, 'id')) {
             $key = rtrim(substr($key, 0, -2), '_');
         }
         if ($multiple) {
@@ -478,7 +478,7 @@ class Generator extends \yii\gii\Generator
         if ($this->isReservedKeyword($this->modelClass)) {
             $this->addError('modelClass', 'Class name cannot be a reserved PHP keyword.');
         }
-        if (substr_compare($this->tableName, '*', -1) && $this->modelClass == '') {
+        if ((empty($this->tableName) || substr_compare($this->tableName, '*', -1)) && $this->modelClass == '') {
             $this->addError('modelClass', 'Model Class cannot be blank if table name does not end with asterisk.');
         }
     }
@@ -488,7 +488,7 @@ class Generator extends \yii\gii\Generator
      */
     public function validateTableName()
     {
-        if (strpos($this->tableName, '*') !== false && substr($this->tableName, -1) !== '*') {
+        if (strpos($this->tableName, '*') !== false && substr_compare($this->tableName, '*', -1)) {
             $this->addError('tableName', 'Asterisk is only allowed as the last character.');
 
             return;

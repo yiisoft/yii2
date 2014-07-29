@@ -373,7 +373,7 @@ class Generator extends \yii\gii\Generator
                     $labels[$name] = 'ID';
                 } else {
                     $label = Inflector::camel2words($name);
-                    if (strcasecmp(substr($label, -3), ' id') === 0) {
+                    if (!empty($label) && substr_compare($label, ' id', -3, null, true) === 0) {
                         $label = substr($label, 0, -3) . ' ID';
                     }
                     $labels[$name] = $label;
