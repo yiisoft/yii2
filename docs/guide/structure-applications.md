@@ -151,7 +151,7 @@ For example,
 
 During the bootstrapping process, each component will be instantiated. If the component class
 implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
-will be also called.
+will also be called.
 
 Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
 where the `debug` and `gii` modules are configured as bootstrapping components when the application is running
