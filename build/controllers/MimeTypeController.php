@@ -9,6 +9,7 @@ namespace yii\build\controllers;
 
 use Yii;
 use yii\console\Controller;
+use yii\helpers\Console;
 use yii\helpers\VarDumper;
 
 /**
@@ -33,7 +34,10 @@ class MimeTypeController extends Controller
         if ($outFile === null) {
             $outFile = Yii::getAlias('@yii/helpers/mimeTypes.php');
         }
+        $this->stdout('downloading mime-type file from apache httpd repository...');
         if ($content = file_get_contents('http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=co')) {
+            $this->stdout("done.\n", Console::FG_GREEN);
+            $this->stdout("generating file $outFile...");
             $mimeMap = [];
             foreach(explode("\n", $content) as $line) {
                 $line = trim($line);
@@ -65,6 +69,7 @@ return $array;
 
 EOD;
             file_put_contents($outFile, $content);
+            $this->stdout("done.\n", Console::FG_GREEN);
         } else {
             $this->stderr("Failed to download mime.types file from apache SVN.\n");
         }
