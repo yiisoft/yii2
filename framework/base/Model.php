@@ -567,8 +567,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * Adds a new error to the specified attribute.
      * @param string $attribute attribute name
      * @param string $error new error message
+     * @param string $className the fully qualified class name that generated the error
      */
-    public function addError($attribute, $error = '')
+    public function addError($attribute, $error = '', $className = '')
     {
         $this->_errors[$attribute][] = $error;
     }
