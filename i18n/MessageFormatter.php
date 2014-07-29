@@ -390,7 +390,8 @@ class MessageFormatter extends Component
                         return false;
                     }
                     $selector = trim($plural[$i++]);
-                    if ($i == 1 && substr($selector, 0, 7) == 'offset:') {
+
+                    if ($i == 1 && !empty($selector) && substr_compare($selector, 'offset:', 0, 7) === 0) {
                         $offset = (int) trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7)) - 7));
                         $selector = trim(mb_substr($selector, $pos + 1));
                     }
