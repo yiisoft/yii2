@@ -30,20 +30,6 @@ use Yii;
 class Security extends Component
 {
     /**
-     * @var integer derivation iterations count.
-     * Set as high as possible to hinder dictionary password attacks.
-     */
-    public $derivationIterations = 100000;
-    /**
-     * @var string strategy, which should be used to generate password hash.
-     * Available strategies:
-     * - 'password_hash' - use of PHP `password_hash()` function with PASSWORD_DEFAULT algorithm.
-     *   This option is recommended, but it requires PHP version >= 5.5.0
-     * - 'crypt' - use PHP `crypt()` function.
-     */
-    public $passwordHashStrategy = 'crypt';
-
-    /**
      * Cipher algorithm for mcrypt module.
      * AES has 128-bit block size and three key sizes: 128, 192 and 256 bits.
      * mcrypt offers the Rijndael cipher with block sizes of 128, 192 and 256
@@ -73,7 +59,22 @@ class Security extends Component
      */
     const AUTH_KEY_INFO = 'AuthorizationKey';
 
+    /**
+     * @var integer derivation iterations count.
+     * Set as high as possible to hinder dictionary password attacks.
+     */
+    public $derivationIterations = 100000;
+    /**
+     * @var string strategy, which should be used to generate password hash.
+     * Available strategies:
+     * - 'password_hash' - use of PHP `password_hash()` function with PASSWORD_DEFAULT algorithm.
+     *   This option is recommended, but it requires PHP version >= 5.5.0
+     * - 'crypt' - use PHP `crypt()` function.
+     */
+    public $passwordHashStrategy = 'crypt';
+
     private $_cryptModule;
+
 
     /**
      * Encrypts data using a password.
@@ -178,7 +179,7 @@ class Security extends Component
      * @param bool $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
      * @param string $info context/application specific information, e.g. a user ID
-     *     See RFC 5869 Section 3.2 @link https://tools.ietf.org/html/rfc5869
+     * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
      * @return string the encrypted data
      * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
      * @see decrypt()

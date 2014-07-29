@@ -7,7 +7,6 @@
 
 namespace yii\caching;
 
-
 /**
  * TagDependency associates a cached data item with one or multiple [[tags]].
  *
