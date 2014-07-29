@@ -38,15 +38,11 @@ class Command extends Component
      * @var array list of arrays or json strings that become parts of a query
      */
     public $queryParts;
-    /**
-     * @var array list of arrays to highlight search results on one or more fields
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
-     */
-    public $highlight;
     public $options = [];
 
 
     /**
+     * Sends a request to the _search API and returns the result
      * @param array $options
      * @return mixed
      */
@@ -66,6 +62,29 @@ class Command extends Component
         ];
 
         return $this->db->get($url, array_merge($this->options, $options), $query);
+    }
+
+    /**
+     * Sends a request to the _suggest API and returns the result
+     * @param string|array $suggester the suggester body
+     * @param array $options
+     * @return mixed
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
+     */
+    public function suggest($suggester, $options = [])
+    {
+        if (empty($suggester)) {
+            $suggester = '{}';
+        }
+        if (is_array($suggester)) {
+            $suggester = Json::encode($suggester);
+        }
+        $url = [
+            $this->index !== null ? $this->index : '_all',
+            '_suggest'
+        ];
+
+        return $this->db->post($url, array_merge($this->options, $options), $suggester);
     }
 
     /**
