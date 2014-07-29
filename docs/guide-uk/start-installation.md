@@ -68,7 +68,7 @@ composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic bas
 http://hostname/basic/web/index.php
 ```
 
-![Успішно встановленний Yii](images/start-app-installed.png)
+![Успішно встановленний Yii](../guide/images/start-app-installed.png)
 
 Ви повинні побачити сторінку привітання «Congratulations!». Якщо ні — провірте вимоги Yii одним із способів:
 
