@@ -47,6 +47,7 @@ class MessageFormatter extends Component
     private $_errorCode = 0;
     private $_errorMessage = '';
 
+
     /**
      * Get the error code from the last operation
      * @link http://php.net/manual/en/messageformatter.geterrorcode.php

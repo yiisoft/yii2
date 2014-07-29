@@ -303,20 +303,24 @@ class PhpDocController extends Controller
             if ($skip) {
                 continue;
             }
+
+            // check for multi line array
             if ($level > 0) {
                 ${'endof'.$property} = $i;
-                $level -= substr_count($line, ']');
             }
 
             if (strncmp(trim($line), 'public $', 8) === 0 || strncmp(trim($line), 'public static $', 15) === 0) {
                 $endofPublic = $i;
                 $property = 'Public';
+                $level = 0;
             } elseif (strncmp(trim($line), 'protected $', 11) === 0 || strncmp(trim($line), 'protected static $', 18) === 0) {
                 $endofProtected = $i;
                 $property = 'Protected';
+                $level = 0;
             } elseif (strncmp(trim($line), 'private $', 9) === 0 || strncmp(trim($line), 'private static $', 16) === 0) {
                 $endofPrivate = $i;
                 $property = 'Private';
+                $level = 0;
             } elseif (substr(trim($line),0 , 6) === 'const ') {
                 $endofConst = $i;
                 $property = false;
@@ -328,8 +332,9 @@ class PhpDocController extends Controller
             } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function') !== false || trim($line) === '}') {
                 break;
             }
+
             // check for multi line array
-            if ($property !== false) {
+            if ($property !== false && strncmp(trim($line), "'SQLSTATE[", 10) !== 0) {
                 $level += substr_count($line, '[') - substr_count($line, ']');
             }
         }

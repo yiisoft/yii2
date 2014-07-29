@@ -80,6 +80,7 @@ class BaseHtml
         'media',
     ];
 
+
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.

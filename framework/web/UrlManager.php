@@ -130,6 +130,7 @@ class UrlManager extends Component
     private $_scriptUrl;
     private $_hostInfo;
 
+
     /**
      * Initializes UrlManager.
      */

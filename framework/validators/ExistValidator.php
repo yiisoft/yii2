@@ -66,6 +66,7 @@ class ExistValidator extends Validator
      */
     public $allowArray = false;
 
+
     /**
      * @inheritdoc
      */

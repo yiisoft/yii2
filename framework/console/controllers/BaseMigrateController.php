@@ -41,6 +41,7 @@ abstract class BaseMigrateController extends Controller
      */
     public $templateFile;
 
+
     /**
      * @inheritdoc
      */

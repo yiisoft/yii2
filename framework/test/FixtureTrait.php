@@ -32,6 +32,7 @@ trait FixtureTrait
      */
     private $_fixtures;
 
+
     /**
      * Declares the fixtures that are needed by the current test case.
      * The return value of this method must be an array of fixture configurations. For example,
