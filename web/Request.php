@@ -1228,12 +1228,11 @@ class Request extends \yii\base\Request
     {
         if ($this->_csrfCookie === null) {
             $this->_csrfCookie = $this->getCookies()->get($this->csrfParam);
-            if ($this->_csrfCookie === null) {
+            if ($this->_csrfCookie === null || empty($this->_csrfCookie->value)) {
                 $this->_csrfCookie = $this->createCsrfCookie();
                 Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
             }
         }
-
         return $this->_csrfCookie->value;
     }
 
@@ -1277,7 +1276,7 @@ class Request extends \yii\base\Request
         if ($n1 > $n2) {
             $token2 = str_pad($token2, $n1, $token2);
         } elseif ($n1 < $n2) {
-            $token1 = str_pad($token1, $n2, $token1);
+            $token1 = str_pad($token1, $n2, $n1 === 0 ? ' ' : $token1);
         }
 
         return $token1 ^ $token2;
@@ -1289,7 +1288,6 @@ class Request extends \yii\base\Request
     public function getCsrfTokenFromHeader()
     {
         $key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
-
         return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
     }
 
@@ -1304,7 +1302,6 @@ class Request extends \yii\base\Request
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
         $options['value'] = Yii::$app->getSecurity()->generateRandomString();
-
         return new Cookie($options);
     }
 
