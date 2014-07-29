@@ -170,7 +170,7 @@ class PhpDocController extends Controller
         $namespaceLine = '';
         $contentAfterNamespace = false;
         foreach($lines as $i => $line) {
-            if (substr_compare(trim($line), 'namespace', 0, 9) === 0) {
+            if (substr(trim($line), 0, 9) === 'namespace') {
                 $namespace = $i;
                 $namespaceLine = trim($line);
             } elseif ($namespace !== false && trim($line) !== '') {
@@ -275,13 +275,13 @@ class PhpDocController extends Controller
 
         // TODO move these checks to different action
         $lines = explode("\n", $newDoc);
-        if (trim($lines[1]) == '*' || substr_compare(trim($lines[1]), '* @', 0, 3) === 0) {
+        if (trim($lines[1]) == '*' || substr(trim($lines[1]), 0, 3) == '* @') {
             $this->stderr("[WARN] Class $className has no short description.\n", Console::FG_YELLOW, Console::BOLD);
         }
         foreach ($lines as $line) {
-            if (substr_compare(trim($line), '* @since ', 0, 9) === 0) {
+            if (substr(trim($line), 0, 9) == '* @since ') {
                 $seenSince = true;
-            } elseif (substr_compare(trim($line), '* @author ', 0, 10) === 0) {
+            } elseif (substr(trim($line), 0, 10) == '* @author ') {
                 $seenAuthor = true;
             }
         }
@@ -350,13 +350,13 @@ class PhpDocController extends Controller
         $propertyPart = false;
         $propertyPosition = false;
         foreach ($lines as $i => $line) {
-            if (substr_compare(trim($line), '* @property ', 0, 12) === 0) {
+            if (substr(trim($line), 0, 12) == '* @property ') {
                 $propertyPart = true;
             } elseif ($propertyPart && trim($line) == '*') {
                 $propertyPosition = $i;
                 $propertyPart = false;
             }
-            if (substr_compare(trim($line), '* @author ', 0, 10) === 0 && $propertyPosition === false) {
+            if (substr(trim($line), 0, 10) == '* @author ' && $propertyPosition === false) {
                 $propertyPosition = $i - 1;
                 $propertyPart = false;
             }
