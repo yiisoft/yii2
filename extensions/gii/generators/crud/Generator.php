@@ -38,6 +38,7 @@ class Generator extends \yii\gii\Generator
     public $indexWidgetType = 'grid';
     public $searchModelClass = '';
 
+
     /**
      * @inheritdoc
      */

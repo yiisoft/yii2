@@ -34,8 +34,8 @@ class TypeDoc extends BaseDoc
      * @var PropertyDoc[]
      */
     public $properties = [];
-
     public $namespace;
+
 
     public function findSubject($subjectName)
     {

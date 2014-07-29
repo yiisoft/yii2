@@ -45,7 +45,8 @@ class Dropdown extends Widget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     protected $_containerOptions = [];
-    
+
+
     /**
      * Initializes the widget.
      * If you override this method, make sure you call the parent implementation first.

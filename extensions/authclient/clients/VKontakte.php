@@ -53,6 +53,7 @@ class VKontakte extends OAuth2
      */
     public $apiBaseUrl = 'https://api.vk.com/method';
 
+
     /**
      * @inheritdoc
      */

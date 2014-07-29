@@ -85,6 +85,7 @@ class Accordion extends Widget
      */
     public $headerOptions = [];
 
+
     /**
      * Renders the widget.
      */

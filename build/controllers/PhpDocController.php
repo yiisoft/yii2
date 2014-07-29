@@ -278,7 +278,7 @@ class PhpDocController extends Controller
             }
             if (trim($line) === '') {
                 unset($lines[$i]);
-            } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function') !== false) {
+            } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function ') !== false) {
                 break;
             } elseif (trim($line) === '}') {
                 $propertiesOnly = true;
@@ -309,32 +309,33 @@ class PhpDocController extends Controller
                 ${'endof'.$property} = $i;
             }
 
-            if (strncmp(trim($line), 'public $', 8) === 0 || strncmp(trim($line), 'public static $', 15) === 0) {
+            $line = trim($line);
+            if (strncmp($line, 'public $', 8) === 0 || strncmp($line, 'public static $', 15) === 0) {
                 $endofPublic = $i;
                 $property = 'Public';
                 $level = 0;
-            } elseif (strncmp(trim($line), 'protected $', 11) === 0 || strncmp(trim($line), 'protected static $', 18) === 0) {
+            } elseif (strncmp($line, 'protected $', 11) === 0 || strncmp($line, 'protected static $', 18) === 0) {
                 $endofProtected = $i;
                 $property = 'Protected';
                 $level = 0;
-            } elseif (strncmp(trim($line), 'private $', 9) === 0 || strncmp(trim($line), 'private static $', 16) === 0) {
+            } elseif (strncmp($line, 'private $', 9) === 0 || strncmp($line, 'private static $', 16) === 0) {
                 $endofPrivate = $i;
                 $property = 'Private';
                 $level = 0;
-            } elseif (substr(trim($line),0 , 6) === 'const ') {
+            } elseif (substr($line,0 , 6) === 'const ') {
                 $endofConst = $i;
                 $property = false;
-            } elseif (substr(trim($line),0 , 4) === 'use ') {
+            } elseif (substr($line,0 , 4) === 'use ') {
                 $endofUse = $i;
                 $property = false;
-            } elseif (ltrim($line)[0] === '*') {
+            } elseif (!empty($line) && $line[0] === '*') {
                 $property = false;
-            } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function') !== false || trim($line) === '}') {
+            } elseif (!empty($line) && $line[0] !== '*' && strpos($line, 'function ') !== false || $line === '}') {
                 break;
             }
 
             // check for multi line array
-            if ($property !== false && strncmp(trim($line), "'SQLSTATE[", 10) !== 0) {
+            if ($property !== false && strncmp($line, "'SQLSTATE[", 10) !== 0) {
                 $level += substr_count($line, '[') - substr_count($line, ']');
             }
         }

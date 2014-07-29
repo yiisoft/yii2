@@ -39,12 +39,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      */
     public $version = '1.0';
     /**
-     * @var string URL, which user will be redirected after authentication at the OAuth provider web site.
-     * Note: this should be absolute URL (with http:// or https:// leading).
-     * By default current URL will be used.
-     */
-    private $_returnUrl;
-    /**
      * @var string API base URL.
      */
     public $apiBaseUrl;
@@ -56,6 +50,13 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @var string auth request scope.
      */
     public $scope;
+
+    /**
+     * @var string URL, which user will be redirected after authentication at the OAuth provider web site.
+     * Note: this should be absolute URL (with http:// or https:// leading).
+     * By default current URL will be used.
+     */
+    private $_returnUrl;
     /**
      * @var array cURL request options. Option values from this field will overwrite corresponding
      * values from [[defaultCurlOptions()]].
@@ -69,6 +70,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @var signature\BaseMethod|array signature method instance or its array configuration.
      */
     private $_signatureMethod = [];
+
 
     /**
      * @param string $returnUrl return URL

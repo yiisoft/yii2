@@ -26,6 +26,7 @@ class Generator extends \yii\gii\Generator
     public $moduleClass;
     public $moduleID;
 
+
     /**
      * @inheritdoc
      */

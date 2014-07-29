@@ -42,9 +42,9 @@ abstract class BaseRenderer extends Component
      * @var Controller the apidoc controller instance. Can be used to control output.
      */
     public $controller;
-
     public $guideUrl;
     public $guideReferences = [];
+
 
     public function init()
     {

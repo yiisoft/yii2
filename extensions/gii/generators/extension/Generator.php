@@ -34,6 +34,7 @@ class Generator extends \yii\gii\Generator
     public $authorName;
     public $authorEmail;
 
+
     /**
      * @inheritdoc
      */

@@ -26,13 +26,11 @@ class ViewRenderer extends BaseViewRenderer
      * templates cache.
      */
     public $cachePath = '@runtime/Twig/cache';
-
     /**
      * @var array Twig options.
      * @see http://twig.sensiolabs.org/doc/api.html#environment-options
      */
     public $options = [];
-
     /**
      * @var array Objects or static classes.
      * Keys of the array are names to call in template, values are objects or names of static classes.
@@ -40,7 +38,6 @@ class ViewRenderer extends BaseViewRenderer
      * In the template you can use it like this: `{{ html.a('Login', 'site/login') | raw }}`.
      */
     public $globals = [];
-
     /**
      * @var array Custom functions.
      * Keys of the array are names to call in template, values are names of functions or static methods of some class.
@@ -48,7 +45,6 @@ class ViewRenderer extends BaseViewRenderer
      * In the template you can use it like this: `{{ rot13('test') }}` or `{{ a('Login', 'site/login') | raw }}`.
      */
     public $functions = [];
-
     /**
      * @var array Custom filters.
      * Keys of the array are names to call in template, values are names of functions or static methods of some class.
@@ -56,13 +52,11 @@ class ViewRenderer extends BaseViewRenderer
      * In the template you can use it like this: `{{ 'test'|rot13 }}` or `{{ model|jsonEncode }}`.
      */
     public $filters = [];
-
     /**
      * @var array Custom extensions.
      * Example: `['Twig_Extension_Sandbox', new \Twig_Extension_Text()]`
      */
     public $extensions = [];
-
     /**
      * @var array Twig lexer options.
      *
@@ -77,7 +71,6 @@ class ViewRenderer extends BaseViewRenderer
      * @see http://twig.sensiolabs.org/doc/recipes.html#customizing-the-syntax
      */
     public $lexerOptions = [];
-
     /**
      * @var array namespaces and classes to import.
      *
@@ -92,11 +85,11 @@ class ViewRenderer extends BaseViewRenderer
      * ```
      */
     public $uses = [];
-
     /**
      * @var \Twig_Environment twig environment object that renders twig templates
      */
     public $twig;
+
 
     public function init()
     {

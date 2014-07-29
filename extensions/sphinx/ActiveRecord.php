@@ -54,6 +54,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      */
     private $_snippet;
 
+
     /**
      * Returns the Sphinx connection used by this AR class.
      * By default, the "sphinx" application component is used as the Sphinx connection.

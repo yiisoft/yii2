@@ -29,6 +29,7 @@ class Generator extends \yii\gii\Generator
     public $modelClass;
     public $baseClass = 'yii\mongodb\ActiveRecord';
 
+
     /**
      * @inheritdoc
      */

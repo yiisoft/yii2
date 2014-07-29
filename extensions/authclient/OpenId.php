@@ -68,7 +68,6 @@ class OpenId extends BaseClient implements ClientInterface
      * ~~~
      */
     public $optionalAttributes = [];
-
     /**
      * @var boolean whether to verify the peer's certificate.
      */
@@ -83,7 +82,6 @@ class OpenId extends BaseClient implements ClientInterface
      * This value will take effect only if [[verifyPeer]] is set.
      */
     public $cainfo;
-
     /**
      * @var string authentication return URL.
      */
@@ -96,6 +94,8 @@ class OpenId extends BaseClient implements ClientInterface
      * @var string client trust root (realm), by default [[\yii\web\Request::hostInfo]] value will be used.
      */
     private $_trustRoot;
+
+
     /**
      * @var array data, which should be used to retrieve the OpenID response.
      * If not set combination of GET and POST will be used.

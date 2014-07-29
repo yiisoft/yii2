@@ -67,6 +67,7 @@ class Connection extends \yii\db\Connection
         'mysql' => 'yii\sphinx\Schema',    // MySQL
     ];
 
+
     /**
      * Obtains the schema information for the named index.
      * @param string $name index name.

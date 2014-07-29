@@ -29,6 +29,7 @@ class Generator extends \yii\gii\Generator
     public $baseClass = 'yii\sphinx\ActiveRecord';
     public $useIndexPrefix = false;
 
+
     /**
      * @inheritdoc
      */

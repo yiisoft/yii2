@@ -32,6 +32,7 @@ class Generator extends \yii\gii\Generator
     public $generateLabelsFromComments = false;
     public $useTablePrefix = false;
 
+
     /**
      * @inheritdoc
      */
