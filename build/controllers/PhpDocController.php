@@ -176,7 +176,7 @@ class PhpDocController extends Controller
         foreach($lines as $i => $line) {
             $line = trim($line);
             if (!empty($line)) {
-                if (substr_compare($line, 'namespace', 0, 9) === 0) {
+                if (strncmp($line, 'namespace', 9) === 0) {
                     $namespace = $i;
                     $namespaceLine = $line;
                 } elseif ($namespace !== false) {
@@ -392,17 +392,15 @@ class PhpDocController extends Controller
         // TODO move these checks to different action
         $lines = explode("\n", $newDoc);
         $firstLine = trim($lines[1]);
-        if ($firstLine === '*' || (!empty($firstLine) && substr_compare($firstLine, '* @', 0, 3) === 0)) {
+        if ($firstLine === '*' || strncmp($firstLine, '* @', 3) === 0) {
             $this->stderr("[WARN] Class $className has no short description.\n", Console::FG_YELLOW, Console::BOLD);
         }
         foreach ($lines as $line) {
             $line = trim($line);
-            if (!empty($line)) {
-                if (substr_compare($line, '* @since ', 0, 9) === 0) {
-                    $seenSince = true;
-                } elseif (substr_compare($line, '* @author ', 0, 10) === 0) {
-                    $seenAuthor = true;
-                }
+            if (strncmp($line, '* @since ', 9) === 0) {
+                $seenSince = true;
+            } elseif (strncmp($line, '* @author ', 10) === 0) {
+                $seenAuthor = true;
             }
         }
 
@@ -471,13 +469,13 @@ class PhpDocController extends Controller
         $propertyPosition = false;
         foreach ($lines as $i => $line) {
             $line = trim($line);
-            if (!empty($line) && substr_compare($line, '* @property ', 0, 12) === 0) {
+            if (strncmp($line, '* @property ', 12) === 0) {
                 $propertyPart = true;
             } elseif ($propertyPart && $line == '*') {
                 $propertyPosition = $i;
                 $propertyPart = false;
             }
-            if (!empty($line) && substr_compare($line, '* @author ', 0, 10) === 0 && $propertyPosition === false) {
+            if (strncmp($line, '* @author ', 10) === 0 && $propertyPosition === false) {
                 $propertyPosition = $i - 1;
                 $propertyPart = false;
             }
