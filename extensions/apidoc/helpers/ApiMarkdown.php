@@ -7,10 +7,12 @@
 
 namespace yii\apidoc\helpers;
 
+use cebe\markdown\GithubMarkdown;
 use phpDocumentor\Reflection\DocBlock\Type\Collection;
-use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\TypeDoc;
-use yii\apidoc\templates\BaseRenderer;
+use yii\apidoc\renderers\BaseRenderer;
+use yii\helpers\Inflector;
+use yii\helpers\Markdown;
 
 /**
  * A Markdown helper with support for class reference links.
@@ -18,145 +20,96 @@ use yii\apidoc\templates\BaseRenderer;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ApiMarkdown extends Markdown
+class ApiMarkdown extends GithubMarkdown
 {
-	/**
-	 * @var BaseRenderer
-	 */
-	public static $renderer;
-	/**
-	 * @var ApiMarkdown
-	 */
-	private static $_instance;
+    use ApiMarkdownTrait;
 
-	private $context;
+    /**
+     * @var BaseRenderer
+     */
+    public static $renderer;
 
-	public function highlight(&$block, &$markup)
-	{
-		// TODO improve code highlighting
-		if (strncmp($block['text'], '<?php', 5) === 0) {
-			$text = highlight_string(trim($block['text']), true);
-		} else {
-			$text = highlight_string("<?php ".trim($block['text']), true);
-			$text = str_replace('&lt;?php', '', $text);
-			if (($pos = strpos($text, '&nbsp;')) !== false) {
-				$text = substr($text, 0, $pos) . substr($text, $pos + 6);
-			}
-		}
-		// remove <code><span style="color: #000000">\n and </span>tags added by php
-		$text = substr(trim($text), 36, -16);
+    protected $renderingContext;
 
-		$code = '<pre><code';
-		if (isset($block['language']))
-		{
-			if ($block['language'] !== 'php') {
-				return false;
-			}
-			$code .= ' class="language-'.$block['language'].'"';
-		}
-		$code .= '>'.$text.'</code></pre>'."\n";
+    /**
+     * Renders a code block
+     */
+    protected function renderCode($block)
+    {
+        if (isset($block['language'])) {
+            $class = isset($block['language']) ? ' class="language-' . $block['language'] . '"' : '';
 
-		$markup .= $code;
-		return true;
-	}
+            return "<pre><code$class>" . $this->highlight(implode("\n", $block['content']) . "\n", $block['language']) . '</code></pre>';
+        } else {
+            return parent::renderCode($block);
+        }
+    }
 
-	public function init()
-	{
-		$this->registerBlockHander('code', [$this, 'highlight']);
-		$this->registerBlockHander('fenced', [$this, 'highlight']);
+    public static function highlight($code, $language)
+    {
+        if ($language !== 'php') {
+            return htmlspecialchars($code, ENT_NOQUOTES, 'UTF-8');
+        }
 
-		$context = &$this->context;
-		// register marker for code links
-		$this->unregisterInlineMarkerHandler('[');
-		$this->registerInlineMarkerHandler('[[', function($text, &$markup) use (&$context) {
+        // TODO improve code highlighting
+        if (strncmp($code, '<?php', 5) === 0) {
+            $text = @highlight_string(trim($code), true);
+        } else {
+            $text = highlight_string("<?php ".trim($code), true);
+            $text = str_replace('&lt;?php', '', $text);
+            if (($pos = strpos($text, '&nbsp;')) !== false) {
+                $text = substr($text, 0, $pos) . substr($text, $pos + 6);
+            }
+        }
+        // remove <code><span style="color: #000000">\n and </span>tags added by php
+        $text = substr(trim($text), 36, -16);
 
-			if (preg_match('/^\[\[([\w\d\\\\\(\):$]+)(\|[^\]]*)?\]\]/', $text, $matches)) {
+        return $text;
+    }
 
-				$offset = strlen($matches[0]);
+    protected function inlineMarkers()
+    {
+        return array_merge(parent::inlineMarkers(), [
+            '[[' => 'parseApiLinks',
+        ]);
+    }
 
-				$object = $matches[1];
-				$title = (empty($matches[2]) || $matches[2] == '|') ? null : substr($matches[2], 1);
+    /**
+     * @inheritDoc
+     */
+    protected function renderHeadline($block)
+    {
+        $content = $this->parseInline($block['content']);
+        $hash = Inflector::slug(strip_tags($content));
+        $hashLink = "<a href=\"#$hash\" name=\"$hash\" class=\"hashlink\">&para;</a>";
+        $tag = 'h' . $block['level'];
 
-				if (($pos = strpos($object, '::')) !== false) {
-					$typeName = substr($object, 0, $pos);
-					$subjectName = substr($object, $pos + 2);
-					if ($context !== null) {
-						// Collection resolves relative types
-						$typeName = (new Collection([$typeName], $context->phpDocContext))->__toString();
-					}
-					$type = static::$renderer->context->getType($typeName);
-					if ($type === null) {
-						static::$renderer->context->errors[] = [
-							'file' => ($context !== null) ? $context->sourceFile : null,
-							'message' => 'broken link to ' . $typeName . '::' . $subjectName . (($context !== null) ? ' in ' . $context->name : ''),
-						];
-						$markup .= '<span style="background: #f00;">' . $typeName . '::' . $subjectName . '</span>';
-					} else {
-						if (($subject = $type->findSubject($subjectName)) !== null) {
-							if ($title === null) {
-								$title = $type->name . '::' . $subject->name;
-								if ($subject instanceof MethodDoc) {
-									$title .= '()';
-								}
-							}
-							$markup .= static::$renderer->subjectLink($subject, $title);
-						} else {
-							static::$renderer->context->errors[] = [
-								'file' => ($context !== null) ? $context->sourceFile : null,
-								'message' => 'broken link to ' . $type->name . '::' . $subjectName . (($context !== null) ? ' in ' . $context->name : ''),
-							];
-							$markup .= '<span style="background: #ff0;">' . $type->name . '</span><span style="background: #f00;">::' . $subjectName . '</span>';
-						}
-					}
-					return $offset;
-				} elseif ($context !== null && ($subject = $context->findSubject($object)) !== null) {
-					$markup .= static::$renderer->subjectLink($subject, $title);
-					return $offset;
-				}
-				if ($context !== null) {
-					// Collection resolves relative types
-					$object = (new Collection([$object], $context->phpDocContext))->__toString();
-				}
-				if (($type = static::$renderer->context->getType($object)) !== null) {
-					$markup .= static::$renderer->typeLink($type, $title);
-					return $offset;
-				}
-				static::$renderer->context->errors[] = [
-					'file' => ($context !== null) ? $context->sourceFile : null,
-					'message' => 'broken link to ' . $object . (($context !== null) ? ' in ' . $context->name : ''),
-				];
-				$markup .= '<span style="background: #f00;">' . $object . '</span>';
-				return $offset;
-			} else {
-				$markup .= '[[';
-				return 2;
-			}
-		});
-		$this->registerInlineMarkerHandler('[', null);
-	}
+        return "<$tag>$content $hashLink</$tag>";
+    }
 
-	/**
-	 * Converts markdown into HTML
-	 *
-	 * @param string $content
-	 * @param TypeDoc $context
-	 * @return string
-	 */
-	public static function process($content, $context = null, $line = false)
-	{
-		if (static::$_instance === null) {
-			static::$_instance = new static;
-		}
+    /**
+     * Converts markdown into HTML
+     *
+     * @param string $content
+     * @param TypeDoc $context
+     * @param boolean $paragraph
+     * @return string
+     */
+    public static function process($content, $context = null, $paragraph = false)
+    {
+        if (!isset(Markdown::$flavors['api'])) {
+            Markdown::$flavors['api'] = new static;
+        }
 
-		if (is_string($context)) {
-			$context = static::$renderer->context->getType($context);
-		}
-		static::$_instance->context = $context;
+        if (is_string($context)) {
+            $context = static::$renderer->apiContext->getType($context);
+        }
+        Markdown::$flavors['api']->renderingContext = $context;
 
-		if ($line) {
-			return static::$_instance->parseLine($content);
-		} else {
-			return static::$_instance->parse($content);
-		}
-	}
+        if ($paragraph) {
+            return Markdown::processParagraph($content, 'api');
+        } else {
+            return Markdown::process($content, 'api');
+        }
+    }
 }

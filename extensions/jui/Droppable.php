@@ -30,21 +30,21 @@ use yii\helpers\Html;
  */
 class Droppable extends Widget
 {
-	/**
-	 * Initializes the widget.
-	 */
-	public function init()
-	{
-		parent::init();
-		echo Html::beginTag('div', $this->options) . "\n";
-	}
+    /**
+     * Initializes the widget.
+     */
+    public function init()
+    {
+        parent::init();
+        echo Html::beginTag('div', $this->options) . "\n";
+    }
 
-	/**
-	 * Renders the widget.
-	 */
-	public function run()
-	{
-		echo Html::endTag('div') . "\n";
-		$this->registerWidget('droppable', DroppableAsset::className());
-	}
+    /**
+     * Renders the widget.
+     */
+    public function run()
+    {
+        echo Html::endTag('div') . "\n";
+        $this->registerWidget('droppable', DroppableAsset::className());
+    }
 }

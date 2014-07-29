@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-apidoc",
 	"description": "API Documentation generator for the Yii framework 2.0",
-	"keywords": ["yii", "phpdoc", "apidoc", "api", "documentation"],
+	"keywords": ["yii2", "phpdoc", "apidoc", "api", "documentation"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
@@ -17,12 +17,16 @@
 			"email": "mail@cebe.cc"
 		}
 	],
-    "minimum-stability": "dev",
+	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
 		"yiisoft/yii2-bootstrap": "*",
-		"phpdocumentor/reflection": "dev-master | >1.0.2",
-		"erusev/parsedown": "0.9.*"
+		"phpdocumentor/reflection": ">=1.0.3",
+		"phpdocumentor/reflection-docblock": ">2.0.1",
+		"nikic/php-parser": "0.9.*",
+		"cebe/js-search": "*",
+		"cebe/markdown": "dev-master as 0.9.0",
+		"cebe/markdown-latex": "*"
 	},
 	"autoload": {
 		"psr-4": { "yii\\apidoc\\": "" }

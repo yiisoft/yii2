@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-debug",
 	"description": "The debugger extension for the Yii framework",
-	"keywords": ["yii", "debug", "debugger"],
+	"keywords": ["yii2", "debug", "debugger"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

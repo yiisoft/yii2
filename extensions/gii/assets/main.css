@@ -1,217 +1,217 @@
 body {
-	padding-top: 70px;
+    padding-top: 70px;
 }
 
 .footer {
-	border-top: 1px solid #ddd;
-	margin-top: 30px;
-	padding: 15px 0 30px;
+    border-top: 1px solid #ddd;
+    margin-top: 30px;
+    padding: 15px 0 30px;
 }
 
 .jumbotron {
-	text-align: center;
-	background-color: transparent;
+    text-align: center;
+    background-color: transparent;
 }
 
 .jumbotron .btn {
-	font-size: 21px;
-	padding: 14px 24px;
+    font-size: 21px;
+    padding: 14px 24px;
 }
 
 .navbar-brand {
-	padding: 0;
-	margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 .default-index .generator {
-	min-height: 200px;
-	margin-bottom: 20px;
+    min-height: 200px;
+    margin-bottom: 20px;
 }
 
 .list-group .glyphicon {
-	float: right;
+    float: right;
 }
 
 .popover {
-	max-width: 400px;
-	width: 400px;
+    max-width: 400px;
+    width: 400px;
 }
 
 .hint-block {
-	display: none;
+    display: none;
 }
 
 .error-summary {
-	color: #a94442;
-	background: #fdf7f7;
-	border-left: 3px solid #eed3d7;
-	padding: 10px 20px;
-	margin: 0 0 15px 0;
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
 }
 
 .default-view .sticky-value {
-	padding: 6px 12px;
-	background: lightyellow;
-	white-space: pre;
-	word-wrap: break-word;
+    padding: 6px 12px;
+    background: lightyellow;
+    white-space: pre;
+    word-wrap: break-word;
 }
 
 .default-view .form-group label.help {
-	border-bottom: 1px dashed #888;
-	cursor: help;
+    border-bottom: 1px dashed #888;
+    cursor: help;
 }
 
 .default-view .modal-dialog {
-	width: 800px;
+    width: 800px;
 }
 
 .default-view .modal-dialog .error {
-	color: #d9534f;
+    color: #d9534f;
 }
 
 .default-view .modal-dialog .content {
-	background: #fafafa;
-	border-left: #eee 5px solid;
-	padding: 5px 10px;
-	overflow: auto;
+    background: #fafafa;
+    border-left: #eee 5px solid;
+    padding: 5px 10px;
+    overflow: auto;
 }
 
 .default-view .modal-dialog code {
-	background: transparent;
+    background: transparent;
 }
 
 .default-view-files table .action {
-	width: 100px;
+    width: 100px;
 }
 
 .default-view-files table .check {
-	width: 25px;
-	text-align: center;
+    width: 25px;
+    text-align: center;
 }
 
 .default-view-results pre {
-	overflow: auto;
-	background-color: #333;
-	max-height: 300px;
-	color: white;
-	padding: 10px;
-	border-radius: 0;
-	white-space: nowrap;
+    overflow: auto;
+    background-color: #333;
+    max-height: 300px;
+    color: white;
+    padding: 10px;
+    border-radius: 0;
+    white-space: nowrap;
 }
 
 .default-view-results pre .error {
-	background: #FFE0E1;
-	color: black;
-	padding: 1px;
+    background: #FFE0E1;
+    color: black;
+    padding: 1px;
 }
 
 .default-view-results .alert pre {
-	background: white;
+    background: white;
 }
 
 .default-diff pre {
-	padding: 0;
-	margin: 0;
-	background: transparent;
-	border: none;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
 }
 
 .default-diff pre del {
-	background: pink;
+    background: pink;
 }
 
 .default-diff pre ins {
-	background: lightgreen;
-	text-decoration: none;
+    background: lightgreen;
+    text-decoration: none;
 }
 
 
 .Differences {
-	width: 100%;
-	border-collapse: collapse;
-	border-spacing: 0;
-	empty-cells: show;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
 }
 
 .Differences thead {
-	display: none;
+    display: none;
 }
 
 .Differences tbody th {
-	text-align: right;
-	background: #FAFAFA;
-	padding: 1px 2px;
-	border-right: 1px solid #eee;
-	vertical-align: top;
-	font-size: 13px;
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
-	font-weight: normal;
-	color: #999;
-	width: 5px;
+    text-align: right;
+    background: #FAFAFA;
+    padding: 1px 2px;
+    border-right: 1px solid #eee;
+    vertical-align: top;
+    font-size: 13px;
+    font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+    font-weight: normal;
+    color: #999;
+    width: 5px;
 }
 
 .Differences td {
-	padding: 1px 2px;
-	font-size: 13px;
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+    padding: 1px 2px;
+    font-size: 13px;
+    font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 }
 
 .DifferencesSideBySide .ChangeInsert td.Left {
-	background: #dfd;
+    background: #dfd;
 }
 
 .DifferencesSideBySide .ChangeInsert td.Right {
-	background: #cfc;
+    background: #cfc;
 }
 
 .DifferencesSideBySide .ChangeDelete td.Left {
-	background: #f88;
+    background: #f88;
 }
 
 .DifferencesSideBySide .ChangeDelete td.Right {
-	background: #faa;
+    background: #faa;
 }
 
 .DifferencesSideBySide .ChangeReplace .Left {
-	background: #fe9;
+    background: #fe9;
 }
 
 .DifferencesSideBySide .ChangeReplace .Right {
-	background: #fd8;
+    background: #fd8;
 }
 
 .Differences ins, .Differences del {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 .DifferencesSideBySide .ChangeReplace ins, .DifferencesSideBySide .ChangeReplace del {
-	background: #fc0;
+    background: #fc0;
 }
 
 .Differences .Skipped {
-	background: #f7f7f7;
+    background: #f7f7f7;
 }
 
 .DifferencesInline .ChangeReplace .Left,
 .DifferencesInline .ChangeDelete .Left {
-	background: #fdd;
+    background: #fdd;
 }
 
 .DifferencesInline .ChangeReplace .Right,
 .DifferencesInline .ChangeInsert .Right {
-	background: #dfd;
+    background: #dfd;
 }
 
 .DifferencesInline .ChangeReplace ins {
-	background: #9e9;
+    background: #9e9;
 }
 
 .DifferencesInline .ChangeReplace del {
-	background: #e99;
+    background: #e99;
 }
 
 .DifferencesInline th[data-line-number]:before {
-	content: attr(data-line-number);
+    content: attr(data-line-number);
 }
 
 /* additional styles for typeahead.js-bootstrap.css */

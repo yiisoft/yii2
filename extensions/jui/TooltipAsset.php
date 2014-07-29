@@ -6,6 +6,7 @@
  */
 
 namespace yii\jui;
+
 use yii\web\AssetBundle;
 
 /**
@@ -14,12 +15,12 @@ use yii\web\AssetBundle;
  */
 class TooltipAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $js = [
-		'jquery.ui.tooltip.js',
-	];
-	public $depends = [
-		'yii\jui\CoreAsset',
-		'yii\jui\EffectAsset',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $js = [
+        'jquery.ui.tooltip.js',
+    ];
+    public $depends = [
+        'yii\jui\CoreAsset',
+        'yii\jui\EffectAsset',
+    ];
 }

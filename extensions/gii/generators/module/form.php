@@ -1,13 +1,12 @@
 <?php
-/**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
- * @var yii\gii\generators\module\Generator $generator
- */
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $generator yii\gii\generators\module\Generator */
+
 ?>
 <div class="module-form">
 <?php
-	echo $form->field($generator, 'moduleClass');
-	echo $form->field($generator, 'moduleID');
+    echo $form->field($generator, 'moduleClass');
+    echo $form->field($generator, 'moduleID');
 ?>
 </div>

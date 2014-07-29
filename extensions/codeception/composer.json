@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-codeception",
 	"description": "The Codeception integration for the Yii framework",
-	"keywords": ["yii", "codeception"],
+	"keywords": ["yii2", "codeception"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

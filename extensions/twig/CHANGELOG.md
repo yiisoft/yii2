@@ -1,12 +1,26 @@
 Yii Framework 2 twig extension Change Log
 =========================================
 
-2.0.0 beta under development
-----------------------------
+2.0.0-rc under development
+--------------------------
 
-- Add File based Twig loader for better caching and usability of twig's file based function (dev-mraj, samdark)
+- Bug #2925: Fixed throwing exception when accessing AR property with null value (samdark)
+- Bug #3767: Fixed repeated adding of extensions when using config. One may now pass extension instances as well (grachov)
+- Bug #3877: Fixed `lexerOptions` throwing exception (dapatrese)
+- Enh #1799: Added `form_begin`, `form_end` to twig extension (samdark)
+- Chg #3535: Syntax changes:
+    - Removed `form_begin`, `form_end` (samdark)
+    - Added `use()` and `ViewRenderer::uses` that are importing classes and namespaces (grachov, samdark)
+    - Added widget dynamic functions `*_begin`, `*_end`, `*_widget`, `widget_end` (grachov, samdark)
+    - Added more tests (samdark)
+- Chg: Renamed `TwigSimpleFileLoader` into `FileLoader` (samdark)
 
-2.0.0 alpha, December 1, 2013
+2.0.0-beta April 13, 2014
+-------------------------
+
+- Added file based Twig loader for better caching and usability of Twig's file based functions (dev-mraj, samdark)
+
+2.0.0-alpha, December 1, 2013
 -----------------------------
 
 - Initial release.

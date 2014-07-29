@@ -9,5 +9,5 @@ use yiiunit\framework\db\QueryTest;
  */
 class SqliteQueryTest extends QueryTest
 {
-	protected $driverName = 'sqlite';
+    protected $driverName = 'sqlite';
 }

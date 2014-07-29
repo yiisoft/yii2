@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-faker",
 	"description": "Fixture generator. The Faker integration for the Yii framework.",
-	"keywords": ["yii", "faker", "fixture"],
+	"keywords": ["yii2", "faker", "fixture"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

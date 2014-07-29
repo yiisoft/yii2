@@ -1,16 +1,11 @@
 <?php
-
-use yii\helpers\Html;
-
-/**
- * @var yii\debug\panels\ConfigPanel $panel
- */
+/* @var $panel yii\debug\panels\ConfigPanel */
 ?>
 <div class="yii-debug-toolbar-block">
-	<a href="<?= $panel->getUrl() ?>">
-		Yii
-		<span class="label label-info"><?= $panel->data['application']['yii'] ?></span>
-		PHP
-		<span class="label label-info"><?= $panel->data['php']['version'] ?></span>
-	</a>
+    <a href="<?= $panel->getUrl() ?>">
+        Yii
+        <span class="label"><?= $panel->data['application']['yii'] ?></span>
+        PHP
+        <span class="label"><?= $panel->data['php']['version'] ?></span>
+    </a>
 </div>

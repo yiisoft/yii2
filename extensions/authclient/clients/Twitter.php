@@ -40,52 +40,52 @@ use yii\authclient\OAuth1;
  */
 class Twitter extends OAuth1
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $authUrl = 'https://api.twitter.com/oauth/authorize';
-	/**
-	 * @inheritdoc
-	 */
-	public $requestTokenUrl = 'https://api.twitter.com/oauth/request_token';
-	/**
-	 * @inheritdoc
-	 */
-	public $requestTokenMethod = 'POST';
-	/**
-	 * @inheritdoc
-	 */
-	public $accessTokenUrl = 'https://api.twitter.com/oauth/access_token';
-	/**
-	 * @inheritdoc
-	 */
-	public $accessTokenMethod = 'POST';
-	/**
-	 * @inheritdoc
-	 */
-	public $apiBaseUrl = 'https://api.twitter.com/1.1';
+    /**
+     * @inheritdoc
+     */
+    public $authUrl = 'https://api.twitter.com/oauth/authorize';
+    /**
+     * @inheritdoc
+     */
+    public $requestTokenUrl = 'https://api.twitter.com/oauth/request_token';
+    /**
+     * @inheritdoc
+     */
+    public $requestTokenMethod = 'POST';
+    /**
+     * @inheritdoc
+     */
+    public $accessTokenUrl = 'https://api.twitter.com/oauth/access_token';
+    /**
+     * @inheritdoc
+     */
+    public $accessTokenMethod = 'POST';
+    /**
+     * @inheritdoc
+     */
+    public $apiBaseUrl = 'https://api.twitter.com/1.1';
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function initUserAttributes()
-	{
-		return $this->api('account/verify_credentials.json', 'GET');
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function initUserAttributes()
+    {
+        return $this->api('account/verify_credentials.json', 'GET');
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultName()
-	{
-		return 'twitter';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultName()
+    {
+        return 'twitter';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultTitle()
-	{
-		return 'Twitter';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultTitle()
+    {
+        return 'Twitter';
+    }
 }

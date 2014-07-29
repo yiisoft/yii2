@@ -4,7 +4,17 @@ php:
   - 5.4
   - 5.5
   - 5.6
-#  - hhvm # commented until composer or hhvm get fixed: https://github.com/facebook/hhvm/issues/1347
+  - hhvm
+  - hhvm-nightly
+
+# run build against PHP 5.6 and hhvm but allow them to fail
+# http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: 5.6
+    - php: hhvm
+    - php: hhvm-nightly
 
 services:
   - redis-server
@@ -15,17 +25,13 @@ services:
 install:
   - composer self-update && composer --version
 # core framework:
-#  - composer require satooshi/php-coveralls 0.6.* --dev --prefer-dist
   - composer install --prefer-dist
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
-# basic application:
-  - composer install --dev --prefer-dist -d apps/basic
-  - cd apps/basic && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
-  - php vendor/bin/codecept build && cd ../..
-  - cd apps && php -S localhost:8080 &
+# basic and advanced application:
+#  - tests/unit/data/travis/setup-apps.sh
 
 before_script:
   - echo 'elasticsearch version ' && curl http://localhost:9200/
@@ -33,11 +39,17 @@ before_script:
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - tests/unit/data/travis/sphinx-setup.sh
   - mongo yii2test --eval 'db.addUser("travis", "test");'
+# basic and advanced application:
+#  - tests/unit/data/travis/init-apps.sh
 
 script:
-#  - vendor/bin/phpunit --coverage-clover tests/unit/runtime/coveralls/clover.xml --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
-  - vendor/bin/phpunit --verbose --exclude-group mssql,oci,wincache,xcache,zenddata,vendor
-  - cd apps/basic && php vendor/bin/codecept run
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
+#  - cd apps/basic && php vendor/bin/codecept run
+#  - cd ../advanced/backend && ../vendor/bin/codecept run
+#  - cd ../common && ../vendor/bin/codecept run
+#  - cd ../frontend && ../vendor/bin/codecept run
 
-#after_script:
-#  - php vendor/bin/coveralls
+after_script:
+#  - cd ../../..
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

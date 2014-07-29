@@ -9,5 +9,5 @@ use yiiunit\framework\db\ActiveRecordTest;
  */
 class SqliteActiveRecordTest extends ActiveRecordTest
 {
-	protected $driverName = 'sqlite';
+    protected $driverName = 'sqlite';
 }

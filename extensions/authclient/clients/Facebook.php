@@ -40,44 +40,44 @@ use yii\authclient\OAuth2;
  */
 class Facebook extends OAuth2
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $authUrl = 'https://www.facebook.com/dialog/oauth';
-	/**
-	 * @inheritdoc
-	 */
-	public $tokenUrl = 'https://graph.facebook.com/oauth/access_token';
-	/**
-	 * @inheritdoc
-	 */
-	public $apiBaseUrl = 'https://graph.facebook.com';
-	/**
-	 * @inheritdoc
-	 */
-	public $scope = 'email';
+    /**
+     * @inheritdoc
+     */
+    public $authUrl = 'https://www.facebook.com/dialog/oauth';
+    /**
+     * @inheritdoc
+     */
+    public $tokenUrl = 'https://graph.facebook.com/oauth/access_token';
+    /**
+     * @inheritdoc
+     */
+    public $apiBaseUrl = 'https://graph.facebook.com';
+    /**
+     * @inheritdoc
+     */
+    public $scope = 'email';
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function initUserAttributes()
-	{
-		return $this->api('me', 'GET');
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function initUserAttributes()
+    {
+        return $this->api('me', 'GET');
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultName()
-	{
-		return 'facebook';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultName()
+    {
+        return 'facebook';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultTitle()
-	{
-		return 'Facebook';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultTitle()
+    {
+        return 'Facebook';
+    }
 }

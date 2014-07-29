@@ -40,54 +40,54 @@ use yii\authclient\OAuth2;
  */
 class GitHub extends OAuth2
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $authUrl = 'https://github.com/login/oauth/authorize';
-	/**
-	 * @inheritdoc
-	 */
-	public $tokenUrl = 'https://github.com/login/oauth/access_token';
-	/**
-	 * @inheritdoc
-	 */
-	public $apiBaseUrl = 'https://api.github.com';
+    /**
+     * @inheritdoc
+     */
+    public $authUrl = 'https://github.com/login/oauth/authorize';
+    /**
+     * @inheritdoc
+     */
+    public $tokenUrl = 'https://github.com/login/oauth/access_token';
+    /**
+     * @inheritdoc
+     */
+    public $apiBaseUrl = 'https://api.github.com';
 
-	/**
-	 * @inheritdoc
-	 */
-	public function init()
-	{
-		parent::init();
-		if ($this->scope === null) {
-			$this->scope = implode(' ', [
-				'user',
-				'user:email',
-			]);
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->scope === null) {
+            $this->scope = implode(' ', [
+                'user',
+                'user:email',
+            ]);
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function initUserAttributes()
-	{
-		return $this->api('user', 'GET');
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function initUserAttributes()
+    {
+        return $this->api('user', 'GET');
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultName()
-	{
-		return 'github';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultName()
+    {
+        return 'github';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultTitle()
-	{
-		return 'GitHub';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultTitle()
+    {
+        return 'GitHub';
+    }
 }

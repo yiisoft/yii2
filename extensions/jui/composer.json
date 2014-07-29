@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-jui",
 	"description": "The Jquery UI extension for the Yii framework",
-	"keywords": ["yii", "Jquery UI", "renderer"],
+	"keywords": ["yii2", "Jquery UI", "renderer"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

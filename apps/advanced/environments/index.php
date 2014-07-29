@@ -17,22 +17,28 @@
  * ```
  */
 return [
-	'Development' => [
-		'path' => 'dev',
-		'writable' => [
-			// handled by composer.json already
-		],
-		'executable' => [
-			'yii',
-		],
-	],
-	'Production' => [
-		'path' => 'prod',
-		'writable' => [
-			// handled by composer.json already
-		],
-		'executable' => [
-			'yii',
-		],
-	],
+    'Development' => [
+        'path' => 'dev',
+        'writable' => [
+            'backend/runtime',
+            'backend/web/assets',
+            'frontend/runtime',
+            'frontend/web/assets',
+        ],
+        'executable' => [
+            'yii',
+        ],
+    ],
+    'Production' => [
+        'path' => 'prod',
+        'writable' => [
+            'backend/runtime',
+            'backend/web/assets',
+            'frontend/runtime',
+            'frontend/web/assets',
+        ],
+        'executable' => [
+            'yii',
+        ],
+    ],
 ];

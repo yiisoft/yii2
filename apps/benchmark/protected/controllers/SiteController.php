@@ -6,10 +6,10 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-	public $defaultAction = 'hello';
+    public $defaultAction = 'hello';
 
-	public function actionHello()
-	{
-		return 'hello world';
-	}
+    public function actionHello()
+    {
+        return 'hello world';
+    }
 }

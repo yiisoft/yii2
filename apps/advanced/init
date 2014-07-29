@@ -5,7 +5,7 @@
  *
  * In order to run in non-interactive mode:
  *
- * init --env=dev --overwrite=n
+ * init --env=Development --overwrite=n
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  *

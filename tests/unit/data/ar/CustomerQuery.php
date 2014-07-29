@@ -1,5 +1,7 @@
 <?php
+
 namespace yiiunit\data\ar;
+
 use yii\db\ActiveQuery;
 
 /**
@@ -7,10 +9,10 @@ use yii\db\ActiveQuery;
  */
 class CustomerQuery extends ActiveQuery
 {
-	public function active()
-	{
-		$this->andWhere('status=1');
-		return $this;
-	}
+    public function active()
+    {
+        $this->andWhere('status=1');
+
+        return $this;
+    }
 }
- 

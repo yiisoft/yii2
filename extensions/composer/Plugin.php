@@ -19,17 +19,17 @@ use Composer\Plugin\PluginInterface;
  */
 class Plugin implements PluginInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function activate(Composer $composer, IOInterface $io)
-	{
-		$installer = new Installer($io, $composer);
-		$composer->getInstallationManager()->addInstaller($installer);
-		$file = rtrim($composer->getConfig()->get('vendor-dir'), '/') . '/yiisoft/extensions.php';
-		if (!is_file($file)) {
-			@mkdir(dirname($file));
-			file_put_contents($file, "<?php\n\nreturn [];\n");
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function activate(Composer $composer, IOInterface $io)
+    {
+        $installer = new Installer($io, $composer);
+        $composer->getInstallationManager()->addInstaller($installer);
+        $file = rtrim($composer->getConfig()->get('vendor-dir'), '/') . '/yiisoft/extensions.php';
+        if (!is_file($file)) {
+            @mkdir(dirname($file));
+            file_put_contents($file, "<?php\n\nreturn [];\n");
+        }
+    }
 }

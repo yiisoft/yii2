@@ -1,7 +1,7 @@
 Yii PHP Framework Version 2
 ===========================
 
-This is the core framework code of [Yii 2](https://github.com/yiisoft/yii2).
+This is the core framework code of [Yii 2](https://github.com/yiisoft/yii2#readme).
 
 
 Installation

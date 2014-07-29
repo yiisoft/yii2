@@ -10,21 +10,21 @@ use Yii;
  */
 class TestCase extends \yiiunit\TestCase
 {
-	/**
-	 * Adds sphinx extension files to [[Yii::$classPath]],
-	 * avoiding the necessity of usage Composer autoloader.
-	 */
-	public static function loadClassMap()
-	{
-		$baseNameSpace = 'yii/authclient';
-		$basePath = realpath(__DIR__. '/../../../../extensions/authclient');
-		$files = FileHelper::findFiles($basePath);
-		foreach ($files as $file) {
-			$classRelativePath = str_replace($basePath, '', $file);
-			$classFullName = str_replace(['/', '.php'], ['\\', ''], $baseNameSpace . $classRelativePath);
-			Yii::$classMap[$classFullName] = $file;
-		}
-	}
+    /**
+     * Adds sphinx extension files to [[Yii::$classPath]],
+     * avoiding the necessity of usage Composer autoloader.
+     */
+    public static function loadClassMap()
+    {
+        $baseNameSpace = 'yii/authclient';
+        $basePath = realpath(__DIR__. '/../../../../extensions/authclient');
+        $files = FileHelper::findFiles($basePath);
+        foreach ($files as $file) {
+            $classRelativePath = str_replace($basePath, '', $file);
+            $classFullName = str_replace(['/', '.php'], ['\\', ''], $baseNameSpace . $classRelativePath);
+            Yii::$classMap[$classFullName] = $file;
+        }
+    }
 }
 
 TestCase::loadClassMap();

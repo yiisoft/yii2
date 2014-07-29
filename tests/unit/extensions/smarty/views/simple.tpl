@@ -1,0 +1,1 @@
+simple view without parameters.

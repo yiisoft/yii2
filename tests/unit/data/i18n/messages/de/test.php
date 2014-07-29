@@ -3,5 +3,5 @@
  *
  */
 return [
-	'Hello world!' => 'Hallo Welt!',
+    'Hello world!' => 'Hallo Welt!',
 ];

@@ -9,5 +9,5 @@ use yiiunit\framework\db\QueryTest;
  */
 class CubridQueryTest extends QueryTest
 {
-	public $driverName = 'cubrid';
+    public $driverName = 'cubrid';
 }

@@ -15,10 +15,10 @@ namespace yiiunit\data\ar;
  */
 class ActiveRecord extends \yii\db\ActiveRecord
 {
-	public static $db;
+    public static $db;
 
-	public static function getDb()
-	{
-		return self::$db;
-	}
+    public static function getDb()
+    {
+        return self::$db;
+    }
 }

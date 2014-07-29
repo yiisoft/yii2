@@ -15,11 +15,11 @@ namespace yii\debug\components\search\matchers;
  */
 class LowerThan extends Base
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function match($value)
-	{
-		return ($value < $this->baseValue);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function match($value)
+    {
+        return ($value < $this->baseValue);
+    }
 }

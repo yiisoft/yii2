@@ -18,24 +18,25 @@ use PHPParser_Node_Expr_Array;
  */
 class PrettyPrinter extends \phpDocumentor\Reflection\PrettyPrinter
 {
-	public function pExpr_Array(PHPParser_Node_Expr_Array $node)
-	{
-		return '[' . $this->pCommaSeparated($node->items) . ']';
-	}
+    public function pExpr_Array(PHPParser_Node_Expr_Array $node)
+    {
+        return '[' . $this->pCommaSeparated($node->items) . ']';
+    }
 
-	/**
-	 * Returns a simple human readable output for a value.
-	 *
-	 * @param PHPParser_Node_Expr $value The value node as provided by PHP-Parser.
-	 * @return string
-	 */
-	public static function getRepresentationOfValue(PHPParser_Node_Expr $value)
-	{
-		if ($value === null) {
-			return '';
-		}
+    /**
+     * Returns a simple human readable output for a value.
+     *
+     * @param PHPParser_Node_Expr $value The value node as provided by PHP-Parser.
+     * @return string
+     */
+    public static function getRepresentationOfValue(PHPParser_Node_Expr $value)
+    {
+        if ($value === null) {
+            return '';
+        }
 
-		$printer = new static();
-		return $printer->prettyPrintExpr($value);
-	}
+        $printer = new static();
+
+        return $printer->prettyPrintExpr($value);
+    }
 }

@@ -27,18 +27,18 @@ namespace yii\grid;
  */
 class SerialColumn extends Column
 {
-	public $header = '#';
+    public $header = '#';
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function renderDataCellContent($model, $key, $index)
-	{
-		$pagination = $this->grid->dataProvider->getPagination();
-		if ($pagination !== false) {
-			return $pagination->getOffset() + $index + 1;
-		} else {
-			return $index + 1;
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function renderDataCellContent($model, $key, $index)
+    {
+        $pagination = $this->grid->dataProvider->getPagination();
+        if ($pagination !== false) {
+            return $pagination->getOffset() + $index + 1;
+        } else {
+            return $index + 1;
+        }
+    }
 }

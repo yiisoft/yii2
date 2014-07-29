@@ -15,20 +15,20 @@ namespace yii\debug\components\search\matchers;
  */
 class SameAs extends Base
 {
-	/**
-	 * @var boolean if partial match should be used.
-	 */
-	public $partial = false;
+    /**
+     * @var boolean if partial match should be used.
+     */
+    public $partial = false;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function match($value)
-	{
-		if (!$this->partial) {
-			return (mb_strtolower($this->baseValue, 'utf8') == mb_strtolower($value, 'utf8'));
-		} else {
-			return (mb_strpos(mb_strtolower($value, 'utf8'), mb_strtolower($this->baseValue, 'utf8')) !== false);
-		}
-	}
+    /**
+     * @inheritdoc
+     */
+    public function match($value)
+    {
+        if (!$this->partial) {
+            return (mb_strtolower($this->baseValue, 'utf8') == mb_strtolower($value, 'utf8'));
+        } else {
+            return (mb_strpos(mb_strtolower($value, 'utf8'), mb_strtolower($this->baseValue, 'utf8')) !== false);
+        }
+    }
 }

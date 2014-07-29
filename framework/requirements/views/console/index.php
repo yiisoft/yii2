@@ -1,7 +1,7 @@
 <?php
-/* @var YiiRequirementChecker $this */
-/* @var array $summary */
-/* @var array[] $requirements */
+/* @var $this YiiRequirementChecker */
+/* @var $summary array */
+/* @var $requirements array[] */
 
 echo "\nYii Application Requirement Checker\n\n";
 
@@ -15,18 +15,18 @@ echo "\n{$header}\n";
 echo str_pad('', strlen($header), '-')."\n\n";
 
 foreach ($requirements as $key => $requirement) {
-	if ($requirement['condition']) {
-		echo $requirement['name'].": OK\n";
-		echo "\n";
-	} else {
-		echo $requirement['name'].': '.($requirement['mandatory'] ? 'FAILED!!!' : 'WARNING!!!')."\n";
-		echo 'Required by: '.strip_tags($requirement['by'])."\n";
-		$memo = strip_tags($requirement['memo']);
-		if (!empty($memo)) {
-			echo 'Memo: '.strip_tags($requirement['memo'])."\n";
-		}
-		echo "\n";
-	}
+    if ($requirement['condition']) {
+        echo $requirement['name'].": OK\n";
+        echo "\n";
+    } else {
+        echo $requirement['name'].': '.($requirement['mandatory'] ? 'FAILED!!!' : 'WARNING!!!')."\n";
+        echo 'Required by: '.strip_tags($requirement['by'])."\n";
+        $memo = strip_tags($requirement['memo']);
+        if (!empty($memo)) {
+            echo 'Memo: '.strip_tags($requirement['memo'])."\n";
+        }
+        echo "\n";
+    }
 }
 
 $summaryString = 'Errors: '.$summary['errors'].'   Warnings: '.$summary['warnings'].'   Total checks: '.$summary['total'];

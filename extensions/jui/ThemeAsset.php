@@ -6,6 +6,7 @@
  */
 
 namespace yii\jui;
+
 use yii\web\AssetBundle;
 
 /**
@@ -14,8 +15,8 @@ use yii\web\AssetBundle;
  */
 class ThemeAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/jui/assets';
-	public $css = [
-		'theme/jquery.ui.css',
-	];
+    public $sourcePath = '@yii/jui/assets';
+    public $css = [
+        'theme/jquery.ui.css',
+    ];
 }

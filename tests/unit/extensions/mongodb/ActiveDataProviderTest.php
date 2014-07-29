@@ -12,80 +12,80 @@ use yiiunit\data\ar\mongodb\Customer;
  */
 class ActiveDataProviderTest extends MongoDbTestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
-		ActiveRecord::$db = $this->getConnection();
-		$this->setUpTestRows();
-	}
+    protected function setUp()
+    {
+        parent::setUp();
+        ActiveRecord::$db = $this->getConnection();
+        $this->setUpTestRows();
+    }
 
-	protected function tearDown()
-	{
-		$this->dropCollection(Customer::collectionName());
-		parent::tearDown();
-	}
+    protected function tearDown()
+    {
+        $this->dropCollection(Customer::collectionName());
+        parent::tearDown();
+    }
 
-	/**
-	 * Sets up test rows.
-	 */
-	protected function setUpTestRows()
-	{
-		$collection = $this->getConnection()->getCollection('customer');
-		$rows = [];
-		for ($i = 1; $i <= 10; $i++) {
-			$rows[] = [
-				'name' => 'name' . $i,
-				'email' => 'email' . $i,
-				'address' => 'address' . $i,
-				'status' => $i,
-			];
-		}
-		$collection->batchInsert($rows);
-	}
+    /**
+     * Sets up test rows.
+     */
+    protected function setUpTestRows()
+    {
+        $collection = $this->getConnection()->getCollection('customer');
+        $rows = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $rows[] = [
+                'name' => 'name' . $i,
+                'email' => 'email' . $i,
+                'address' => 'address' . $i,
+                'status' => $i,
+            ];
+        }
+        $collection->batchInsert($rows);
+    }
 
-	// Tests :
+    // Tests :
 
-	public function testQuery()
-	{
-		$query = new Query;
-		$query->from('customer');
+    public function testQuery()
+    {
+        $query = new Query;
+        $query->from('customer');
 
-		$provider = new ActiveDataProvider([
-			'query' => $query,
-			'db' => $this->getConnection(),
-		]);
-		$models = $provider->getModels();
-		$this->assertEquals(10, count($models));
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'db' => $this->getConnection(),
+        ]);
+        $models = $provider->getModels();
+        $this->assertEquals(10, count($models));
 
-		$provider = new ActiveDataProvider([
-			'query' => $query,
-			'db' => $this->getConnection(),
-			'pagination' => [
-				'pageSize' => 5,
-			]
-		]);
-		$models = $provider->getModels();
-		$this->assertEquals(5, count($models));
-	}
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'db' => $this->getConnection(),
+            'pagination' => [
+                'pageSize' => 5,
+            ]
+        ]);
+        $models = $provider->getModels();
+        $this->assertEquals(5, count($models));
+    }
 
-	public function testActiveQuery()
-	{
-		$provider = new ActiveDataProvider([
-			'query' => Customer::find()->orderBy('id ASC'),
-		]);
-		$models = $provider->getModels();
-		$this->assertEquals(10, count($models));
-		$this->assertTrue($models[0] instanceof Customer);
-		$keys = $provider->getKeys();
-		$this->assertTrue($keys[0] instanceof \MongoId);
+    public function testActiveQuery()
+    {
+        $provider = new ActiveDataProvider([
+            'query' => Customer::find()->orderBy('id ASC'),
+        ]);
+        $models = $provider->getModels();
+        $this->assertEquals(10, count($models));
+        $this->assertTrue($models[0] instanceof Customer);
+        $keys = $provider->getKeys();
+        $this->assertTrue($keys[0] instanceof \MongoId);
 
-		$provider = new ActiveDataProvider([
-			'query' => Customer::find(),
-			'pagination' => [
-				'pageSize' => 5,
-			]
-		]);
-		$models = $provider->getModels();
-		$this->assertEquals(5, count($models));
-	}
+        $provider = new ActiveDataProvider([
+            'query' => Customer::find(),
+            'pagination' => [
+                'pageSize' => 5,
+            ]
+        ]);
+        $models = $provider->getModels();
+        $this->assertEquals(5, count($models));
+    }
 }

@@ -2,24 +2,26 @@
 /**
  * This view is used by console/controllers/MigrateController.php
  * The following variables are available in this view:
- *
- * @var string $className the new migration class name
  */
+/* @var $className string the new migration class name */
+
 echo "<?php\n";
 ?>
 
 use yii\db\Schema;
+use yii\db\Migration;
 
-class <?= $className ?> extends \yii\db\Migration
+class <?= $className ?> extends Migration
 {
-	public function up()
-	{
+    public function up()
+    {
 
-	}
+    }
 
-	public function down()
-	{
-		echo "<?= $className ?> cannot be reverted.\n";
-		return false;
-	}
+    public function down()
+    {
+        echo "<?= $className ?> cannot be reverted.\n";
+
+        return false;
+    }
 }

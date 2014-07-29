@@ -11,26 +11,26 @@ use yii\web\CacheSession;
  */
 class CacheSessionTest extends \yiiunit\TestCase
 {
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->mockApplication();
-		Yii::$app->setComponent('cache', new FileCache());
-	}
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mockApplication();
+        Yii::$app->set('cache', new FileCache());
+    }
 
-	public function testCacheSession()
-	{
-		$session = new CacheSession();
+    public function testCacheSession()
+    {
+        $session = new CacheSession();
 
-		$session->writeSession('test', 'sessionData');
-		$this->assertEquals('sessionData', $session->readSession('test'));
-		$session->destroySession('test');
-		$this->assertEquals('', $session->readSession('test'));
-	}
+        $session->writeSession('test', 'sessionData');
+        $this->assertEquals('sessionData', $session->readSession('test'));
+        $session->destroySession('test');
+        $this->assertEquals('', $session->readSession('test'));
+    }
 
-	public function testInvalidCache()
-	{
-		$this->setExpectedException('yii\base\InvalidConfigException');
-		new CacheSession(['cache' => 'invalid']);
-	}
+    public function testInvalidCache()
+    {
+        $this->setExpectedException('\Exception');
+        new CacheSession(['cache' => 'invalid']);
+    }
 }

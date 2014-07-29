@@ -1,7 +1,7 @@
 {
 	"name": "yiisoft/yii2-redis",
 	"description": "Redis Cache, Session and ActiveRecord for the Yii framework",
-	"keywords": ["yii", "redis", "active-record", "cache", "session"],
+	"keywords": ["yii2", "redis", "active-record", "cache", "session"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {

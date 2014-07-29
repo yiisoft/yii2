@@ -15,19 +15,19 @@ namespace yii\authclient\signature;
  */
 class PlainText extends BaseMethod
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function getName()
-	{
-		return 'PLAINTEXT';
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getName()
+    {
+        return 'PLAINTEXT';
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function generateSignature($baseString, $key)
-	{
-		return $key;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function generateSignature($baseString, $key)
+    {
+        return $key;
+    }
 }

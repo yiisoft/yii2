@@ -7,19 +7,20 @@ To use this extension, simply add the following code in your application configu
 
 ```php
 return [
-	//....
-	'components' => [
-		'view' => [
-			'renderers' => [
-				'twig' => [
-					'class' => 'yii\twig\ViewRenderer',
-					//'cachePath' => '@runtime/Twig/cache',
-					//'options' => [], /*  Array of twig options */
-					// ... see ViewRenderer for more options
-				],
-			],
-		],
-	],
+    //....
+    'components' => [
+        'view' => [
+            'renderers' => [
+                'twig' => [
+                    'class' => 'yii\twig\ViewRenderer',
+                    // set cachePath to false in order to disable template caching
+                    //'cachePath' => '@runtime/Twig/cache',
+                    //'options' => [], /*  Array of twig options */
+                    // ... see ViewRenderer for more options
+                ],
+            ],
+        ],
+    ],
 ];
 ```
 

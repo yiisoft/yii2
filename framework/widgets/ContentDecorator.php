@@ -16,37 +16,37 @@ use yii\base\Widget;
  */
 class ContentDecorator extends Widget
 {
-	/**
-	 * @var string the view file that will be used to decorate the content enclosed by this widget.
-	 * This can be specified as either the view file path or path alias.
-	 */
-	public $viewFile;
-	/**
-	 * @var array the parameters (name => value) to be extracted and made available in the decorative view.
-	 */
-	public $params = [];
+    /**
+     * @var string the view file that will be used to decorate the content enclosed by this widget.
+     * This can be specified as either the view file path or path alias.
+     */
+    public $viewFile;
+    /**
+     * @var array the parameters (name => value) to be extracted and made available in the decorative view.
+     */
+    public $params = [];
 
-	/**
-	 * Starts recording a clip.
-	 */
-	public function init()
-	{
-		if ($this->viewFile === null) {
-			throw new InvalidConfigException('ContentDecorator::viewFile must be set.');
-		}
-		ob_start();
-		ob_implicit_flush(false);
-	}
+    /**
+     * Starts recording a clip.
+     */
+    public function init()
+    {
+        if ($this->viewFile === null) {
+            throw new InvalidConfigException('ContentDecorator::viewFile must be set.');
+        }
+        ob_start();
+        ob_implicit_flush(false);
+    }
 
-	/**
-	 * Ends recording a clip.
-	 * This method stops output buffering and saves the rendering result as a named clip in the controller.
-	 */
-	public function run()
-	{
-		$params = $this->params;
-		$params['content'] = ob_get_clean();
-		// render under the existing context
-		echo $this->view->renderFile($this->viewFile, $params);
-	}
+    /**
+     * Ends recording a clip.
+     * This method stops output buffering and saves the rendering result as a named clip in the controller.
+     */
+    public function run()
+    {
+        $params = $this->params;
+        $params['content'] = ob_get_clean();
+        // render under the existing context
+        echo $this->view->renderFile($this->viewFile, $params);
+    }
 }

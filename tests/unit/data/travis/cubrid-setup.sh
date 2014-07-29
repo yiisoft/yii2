@@ -2,6 +2,11 @@
 #
 # install CUBRID DBMS
 
+if (php --version | grep -i HHVM > /dev/null); then
+    echo "Skipping CUBRID on HHVM"
+    exit 0
+fi
+
 # cubrid dbms
 echo 'yes' | sudo add-apt-repository ppa:cubrid/cubrid
 sudo apt-get update

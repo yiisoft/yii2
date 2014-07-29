@@ -9,8 +9,8 @@ use yiiunit\TestCase;
  */
 class GettextMessageSourceTest extends TestCase
 {
-	public function testLoadMessages()
-	{
-		$this->markTestIncomplete();
-	}
+    public function testLoadMessages()
+    {
+        $this->markTestIncomplete();
+    }
 }
