@@ -351,7 +351,7 @@ class Validator extends Component
         $value = $object->$attribute;
         $params['attribute'] = $object->getAttributeLabel($attribute);
         $params['value'] = is_array($value) ? 'array()' : $value;
-        $object->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));
+        $object->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language), $this->className());
     }
 
     /**
