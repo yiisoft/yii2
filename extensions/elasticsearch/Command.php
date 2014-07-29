@@ -69,6 +69,28 @@ class Command extends Component
     }
 
     /**
+     * @param array $options
+     * @return mixed
+     */
+    public function suggest($options = [])
+    {
+        $query = $this->queryParts;
+        if (empty($query)) {
+            throw new InvalidParamException('No query specified');
+        }
+        if (is_array($query)) {
+            unset($query['size']);
+            $query = Json::encode($query);
+        }
+        $url = [
+            $this->index !== null ? $this->index : '_all',
+            '_suggest'
+        ];
+
+        return $this->db->post($url, array_merge($this->options, $options), $query);
+    }
+
+    /**
      * Inserts a document into an index
      * @param string $index
      * @param string $type

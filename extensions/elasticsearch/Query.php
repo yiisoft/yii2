@@ -245,6 +245,22 @@ class Query extends Component implements QueryInterface
         return $result;
     }
 
+    /**
+     * Executes the suggest query and returns the suggestion options, if any
+     * @return array the query results.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
+     */
+    public function suggest($db = null, $options = [])
+    {
+        $result = $this->createCommand($db)->suggest($options);
+
+        if (isset($result['query'])) {
+            return $result['query'][0]['options'];
+        } else {
+            return [];
+        }
+    }
+
     // TODO add query stats http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#stats-groups
 
     // TODO add scroll/scan http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-search-type.html#scan
@@ -471,8 +487,6 @@ class Query extends Component implements QueryInterface
     {
         return $this->addFacet($name, 'geo_distance', $options);
     }
-
-    // TODO add suggesters http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
 
     // TODO add validate query http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html
 
