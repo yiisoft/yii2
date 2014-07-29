@@ -26,10 +26,50 @@ class Request extends Object implements DocumentInterface
     /**
      * @var string request method.
      */
-    public $method = 'get';
+    private $_method = 'get';
+    /**
+     * @var array CURL options
+     */
+    private $_options = [];
+
+    /**
+     * @param string $method
+     * @return static self reference.
+     */
+    public function setMethod($method)
+    {
+        $this->_method = $method;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->_method;
+    }
+
+    /**
+     * @param array $options
+     * @return static self reference.
+     */
+    public function setOptions(array $options)
+    {
+        $this->_options = $options;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->_options;
+    }
 
     public function send()
     {
-        $this->client->send($this);
+        return $this->client->send($this);
     }
 }
