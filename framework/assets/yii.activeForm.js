@@ -39,10 +39,10 @@
         // function ($form) { ...return false to cancel submission...}
         beforeSubmit: undefined,
         // a callback that is called before validating each attribute. The signature of the callback should be:
-        // function ($form, attribute, messages) { ...return false to cancel the validation...}
+        // function ($form, attribute) { ...return false to cancel the validation...}
         beforeValidate: undefined,
         // a callback that is called after an attribute is validated. The signature of the callback should be:
-        // function ($form, attribute, messages)
+        // function ($form, attribute, messages, hasError)
         afterValidate: undefined,
         // a pre-request callback function on AJAX-based validation. The signature of the callback should be:
         // function ($form, jqXHR, textStatus)
@@ -152,36 +152,34 @@
                 clearTimeout(data.settings.timer);
             }
             data.submitting = true;
-            validate($form, function (messages) {
-                var errors = [];
-                $.each(data.attributes, function () {
-                    if (updateInput($form, this, messages)) {
-                        errors.push(this.input);
+            if (!data.settings.beforeValidate || data.settings.beforeValidate($form, data.attributes)) {
+                validate($form, function (messages) {
+                    var hasError = false;
+                    $.each(data.attributes, function () {
+                        hasError = updateInput($form, this, messages) || hasError;
+                    });
+                    updateSummary($form, messages);
+                    if(data.settings.afterValidate === undefined || data.settings.afterValidate($form, data.attributes, messages, hasError)){
+                        if (!hasError) {
+                            data.validated = true;
+                            var $button = data.submitObject || $form.find(':submit:first');
+                            // TODO: if the submission is caused by "change" event, it will not work
+                            if ($button.length) {
+                                $button.click();
+                            } else {
+                                // no submit button in the form
+                                $form.submit();
+                            }
+                            return;
+                        }
                     }
+                    data.submitting = false;
+                }, function () {
+                    data.submitting = false;
                 });
-                updateSummary($form, messages);
-                if (errors.length) {
-                    var top = $form.find(errors.join(',')).first().offset().top;
-                    var wtop = $(window).scrollTop();
-                    if (top < wtop || top > wtop + $(window).height) {
-                        $(window).scrollTop(top);
-                    }
-                } else {
-                    data.validated = true;
-                    var $button = data.submitObject || $form.find(':submit:first');
-                    // TODO: if the submission is caused by "change" event, it will not work
-                    if ($button.length) {
-                        $button.click();
-                    } else {
-                        // no submit button in the form
-                        $form.submit();
-                    }
-                    return;
-                }
+            } else {
                 data.submitting = false;
-            }, function () {
-                data.submitting = false;
-            });
+            }
             return false;
         },
 
@@ -285,15 +283,13 @@
         $.each(data.attributes, function () {
             if (data.submitting || this.status === 2 || this.status === 3) {
                 var msg = [];
-                if (!data.settings.beforeValidate || data.settings.beforeValidate($form, this, msg)) {
-                    if (this.validate) {
-                        this.validate(this, getValue($form, this), msg);
-                    }
-                    if (msg.length) {
-                        messages[this.id] = msg;
-                    } else if (this.enableAjaxValidation) {
-                        needAjaxValidation = true;
-                    }
+                if (this.validate) {
+                    this.validate(this, getValue($form, this), msg);
+                }
+                if (msg.length) {
+                    messages[this.id] = msg;
+                } else if (this.enableAjaxValidation) {
+                    needAjaxValidation = true;
                 }
             }
         });
@@ -358,9 +354,6 @@
             $input = findInput($form, attribute),
             hasError = false;
 
-        if (data.settings.afterValidate) {
-            data.settings.afterValidate($form, attribute, messages);
-        }
         attribute.status = 1;
         if ($input.length) {
             hasError = messages && $.isArray(messages[attribute.id]) && messages[attribute.id].length;
