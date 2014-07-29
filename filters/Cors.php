@@ -82,6 +82,7 @@ class Cors extends ActionFilter
         'Access-Control-Max-Age' => 86400,
     ];
 
+
     /**
      * @inheritdoc
      */

@@ -35,11 +35,9 @@ class Schema extends \yii\db\Schema
         'int' => self::TYPE_INTEGER,
         'tinyint' => self::TYPE_SMALLINT,
         'money' => self::TYPE_MONEY,
-
         // approximate numbers
         'float' => self::TYPE_FLOAT,
         'real' => self::TYPE_FLOAT,
-
         // date and time
         'date' => self::TYPE_DATE,
         'datetimeoffset' => self::TYPE_DATETIME,
@@ -47,22 +45,18 @@ class Schema extends \yii\db\Schema
         'smalldatetime' => self::TYPE_DATETIME,
         'datetime' => self::TYPE_DATETIME,
         'time' => self::TYPE_TIME,
-
         // character strings
         'char' => self::TYPE_STRING,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
-
         // unicode character strings
         'nchar' => self::TYPE_STRING,
         'nvarchar' => self::TYPE_STRING,
         'ntext' => self::TYPE_TEXT,
-
         // binary strings
         'binary' => self::TYPE_BINARY,
         'varbinary' => self::TYPE_BINARY,
         'image' => self::TYPE_BINARY,
-
         // other data types
         // 'cursor' type cannot be used with tables
         'timestamp' => self::TYPE_TIMESTAMP,
@@ -72,6 +66,7 @@ class Schema extends \yii\db\Schema
         'xml' => self::TYPE_STRING,
         'table' => self::TYPE_STRING,
     ];
+
 
     /**
      * @inheritdoc

@@ -74,6 +74,7 @@ class AttributeBehavior extends Behavior
      */
     public $value;
 
+
     /**
      * @inheritdoc
      */

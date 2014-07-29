@@ -216,7 +216,6 @@ class BaseInflector
         'wildebeest' => 'wildebeest',
         'Yengeese' => 'Yengeese',
     ];
-
     /**
      * @var array fallback map for transliteration used by [[slug()]] when intl isn't available.
      */
@@ -232,6 +231,7 @@ class BaseInflector
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
     ];
+
 
     /**
      * Converts a word to its plural form.

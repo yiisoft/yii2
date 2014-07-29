@@ -178,6 +178,7 @@ class ActiveForm extends Widget
      */
     public $attributes = [];
 
+
     /**
      * Initializes the widget.
      * This renders the form open tag.

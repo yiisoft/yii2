@@ -191,7 +191,6 @@ class GridView extends BaseListView
      * This is mainly used by [[Html::error()]] when rendering an error message next to every filter input field.
      */
     public $filterErrorOptions = ['class' => 'help-block'];
-
     /**
      * @var string the layout that determines how different sections of the list view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
@@ -203,6 +202,7 @@ class GridView extends BaseListView
      * - `{pager}`: the pager. See [[renderPager()]].
      */
     public $layout = "{summary}\n{items}\n{pager}";
+
 
     /**
      * Initializes the grid view.

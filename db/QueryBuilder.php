@@ -41,6 +41,7 @@ class QueryBuilder extends \yii\base\Object
      * Child classes should override this property to declare supported type mappings.
      */
     public $typeMap = [];
+
     /**
      * @var array map of query condition to builder methods.
      * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.

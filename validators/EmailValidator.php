@@ -50,6 +50,7 @@ class EmailValidator extends Validator
      */
     public $enableIDN = false;
 
+
     /**
      * @inheritdoc
      */

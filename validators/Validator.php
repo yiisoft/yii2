@@ -81,7 +81,6 @@ class Validator extends Component
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
     ];
-
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
      * please specify them as an array; for single attribute, you may use either a string or an array.
@@ -172,6 +171,7 @@ class Validator extends Component
      * @see when
      */
     public $whenClient;
+
 
     /**
      * Creates a validator object.

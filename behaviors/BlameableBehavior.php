@@ -75,6 +75,7 @@ class BlameableBehavior extends AttributeBehavior
      */
     public $value;
 
+
     /**
      * @inheritdoc
      */

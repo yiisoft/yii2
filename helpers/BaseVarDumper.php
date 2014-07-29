@@ -21,6 +21,7 @@ class BaseVarDumper
     private static $_output;
     private static $_depth;
 
+
     /**
      * Displays a variable.
      * This method achieves the similar functionality as var_dump and print_r
