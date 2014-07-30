@@ -29,6 +29,7 @@ class Message extends BaseMessage
      */
     private $_swiftMessage;
 
+
     /**
      * @return \Swift_Message Swift message instance.
      */

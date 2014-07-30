@@ -77,6 +77,7 @@ class Formatter extends Component
         'decimalSeparator' => null,
     ];
 
+
     /**
      * Initializes the component.
      */

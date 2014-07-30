@@ -27,6 +27,7 @@ class BaseFileHelper
     const PATTERN_MUSTBEDIR = 8;
     const PATTERN_NEGATIVE = 16;
 
+
     /**
      * Normalizes a file/directory path.
      * The normalization does the following work:

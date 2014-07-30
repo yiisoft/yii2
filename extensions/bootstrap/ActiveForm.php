@@ -69,7 +69,6 @@ class ActiveForm extends \yii\widgets\ActiveForm
      * @var array HTML attributes for the form tag. Default is `['role' => 'form']`.
      */
     public $options = ['role' => 'form'];
-
     /**
      * @var string the form layout. Either 'default', 'horizontal' or 'inline'.
      * By choosing a layout, an appropriate default field configuration is applied. This will
@@ -78,6 +77,7 @@ class ActiveForm extends \yii\widgets\ActiveForm
      * @see \yii\bootstrap\ActiveField for details on Bootstrap 3 field configuration
      */
     public $layout = 'default';
+
 
     /**
      * @inheritdoc

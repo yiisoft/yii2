@@ -38,6 +38,7 @@ class QueryBuilder extends Object
      */
     public $separator = " ";
 
+
     /**
      * Constructor.
      * @param Connection $connection the Sphinx connection.

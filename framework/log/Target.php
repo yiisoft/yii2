@@ -204,7 +204,7 @@ abstract class Target extends Component
 
             $matched = empty($categories);
             foreach ($categories as $category) {
-                if ($message[2] === $category || substr($category, -1) === '*' && strpos($message[2], rtrim($category, '*')) === 0) {
+                if ($message[2] === $category || !empty($category) && substr_compare($category, '*', -1) === 0 && strpos($message[2], rtrim($category, '*')) === 0) {
                     $matched = true;
                     break;
                 }

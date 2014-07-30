@@ -44,6 +44,12 @@ use yii\helpers\Html;
 class SliderInput extends InputWidget
 {
     /**
+     * @var array the HTML attributes for the container tag.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $containerOptions = [];
+
+    /**
      * @inheritDoc
      */
     protected $clientEventMap = [
@@ -53,11 +59,7 @@ class SliderInput extends InputWidget
         'start' => 'slidestart',
         'stop' => 'slidestop',
     ];
-    /**
-     * @var array the HTML attributes for the container tag.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
-     */
-    public $containerOptions = [];
+
 
     /**
      * @inheritdoc

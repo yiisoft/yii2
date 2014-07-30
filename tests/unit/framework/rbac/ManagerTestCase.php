@@ -279,9 +279,6 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->assign($reader, 42);
         $this->auth->assign($author, 1337);
         $this->auth->assign($reader, 1337);
-        if ($this->auth instanceof PhpManager) {
-            $this->auth->save();
-        }
 
         $this->auth = $this->createManager();
 

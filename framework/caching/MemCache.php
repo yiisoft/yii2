@@ -82,6 +82,7 @@ class MemCache extends Cache
      * @see http://ca2.php.net/manual/en/memcached.setoptions.php
      */
     public $options;
+
     /**
      * @var \Memcache|\Memcached the Memcache instance
      */

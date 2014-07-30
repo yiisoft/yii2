@@ -42,9 +42,9 @@ abstract class BaseRenderer extends Component
      * @var Controller the apidoc controller instance. Can be used to control output.
      */
     public $controller;
-
     public $guideUrl;
     public $guideReferences = [];
+
 
     public function init()
     {
@@ -72,7 +72,7 @@ abstract class BaseRenderer extends Component
         foreach ($types as $type) {
             $postfix = '';
             if (is_string($type)) {
-                if (substr_compare($type, '[]', -2, 2) === 0) {
+                if (!empty($type) && substr_compare($type, '[]', -2, 2) === 0) {
                     $postfix = '[]';
                     $type = substr($type, 0, -2);
                 }

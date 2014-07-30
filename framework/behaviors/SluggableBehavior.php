@@ -73,6 +73,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $value;
 
+
     /**
      * @inheritdoc
      */

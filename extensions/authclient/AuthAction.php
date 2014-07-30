@@ -93,6 +93,8 @@ class AuthAction extends Action
      * @var string the redirect url after unsuccessful authorization (e.g. user canceled).
      */
     private $_cancelUrl = '';
+
+
     /**
      * @var string name or alias of the view file, which should be rendered in order to perform redirection.
      * If not set default one will be used.

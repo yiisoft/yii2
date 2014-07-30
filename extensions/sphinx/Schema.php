@@ -60,6 +60,7 @@ class Schema extends Object
      */
     private $_builder;
 
+
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
