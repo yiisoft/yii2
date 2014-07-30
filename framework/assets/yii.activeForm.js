@@ -279,9 +279,7 @@
     var deferredArray = function () {
         var array = [];
         array.add = function(callback) {
-            var deferred = new $.Deferred();
-            callback.call(deferred);
-            this.push(deferred);
+            this.push(new $.Deferred(callback));
         };
         return array;
     };
