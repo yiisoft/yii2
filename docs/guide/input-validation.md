@@ -580,11 +580,12 @@ deferred.push($.get("/check", {value: value}).done(function(data) {
 
 The ```deferred``` array also has a shortcut method ```add```.
 ```
-deferred.add(function() {
+deferred.add(function(def) {
     //Asynchronous Validation here
-    //The context of this function is the Deferred object where resolve can be called.
+    //The context of this function and the first argument is the Deferred object where resolve can be called.
 });
 ```
+>   Note: `resolve` must be called on any deferred objects after the attribute has been validated or the main form validation will not complete.
 
 ### Ajax validation
 
