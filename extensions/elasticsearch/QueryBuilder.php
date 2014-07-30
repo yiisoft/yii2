@@ -24,6 +24,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public $db;
 
+
     /**
      * Constructor.
      * @param Connection $connection the database connection.

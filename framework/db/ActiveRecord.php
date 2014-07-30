@@ -96,6 +96,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     const OP_ALL = 0x07;
 
+
     /**
      * Loads default values from database table schema
      *

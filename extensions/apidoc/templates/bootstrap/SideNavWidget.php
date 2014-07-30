@@ -78,6 +78,7 @@ class SideNavWidget extends \yii\bootstrap\Widget
      */
     public $activeUrl;
 
+
     /**
      * Initializes the widget.
      */

@@ -72,6 +72,7 @@ class Collection extends Object
      */
     public $mongoCollection;
 
+
     /**
      * @return string name of this collection.
      */

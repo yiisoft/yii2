@@ -79,6 +79,7 @@ class Formatter extends \yii\base\Formatter
      */
     public $currencyCode;
 
+
     /**
      * Initializes the component.
      * This method will check if the "intl" PHP extension is installed and set the

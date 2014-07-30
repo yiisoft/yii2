@@ -49,6 +49,7 @@ class RequiredValidator extends Validator
      */
     public $message;
 
+
     /**
      * @inheritdoc
      */

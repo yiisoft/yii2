@@ -112,10 +112,12 @@ class Connection extends Component
      * @var \MongoClient Mongo client instance.
      */
     public $mongoClient;
+
     /**
      * @var Database[] list of Mongo databases
      */
     private $_databases = [];
+
 
     /**
      * Returns the Mongo collection with the given name.

@@ -34,13 +34,13 @@ class Widget extends Component implements ViewContextInterface
      * @see getId()
      */
     public static $autoIdPrefix = 'w';
-
     /**
      * @var Widget[] the widgets that are currently being rendered (not ended). This property
      * is maintained by [[begin()]] and [[end()]] methods.
      * @internal
      */
     public static $stack = [];
+
 
     /**
      * Begins a widget.

@@ -408,7 +408,7 @@ Client-side validation based on JavaScript is desirable when end users provide i
 it allows users to find out input errors faster and thus provides better user experience. You may use or implement
 a validator that supports client-side validation *in addition to* server-side validation.
 
-> Info: While client-side validation is desirable, it is not a must. It main purpose is to provider users better
+> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users better
   experience. Like input data coming from end users, you should never trust client-side validation. For this reason,
   you should always perform server-side validation by calling [[yii\base\Model::validate()]], like
   described in the previous subsections.
@@ -534,3 +534,28 @@ JS;
     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 ]
 ```
+
+### Ajax validation
+
+Some kind of validation can only be done on server side because only the server has the necessary information
+for example validating uniqueness of user names or email addresses.
+In this case you can use ajax based validation instead of client validation, which will trigger an ajax
+request in the background to validate the input while keeping the same user experience as with client validation.
+
+To enable ajax validation for the whole form, you have to set the
+[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true`. You may also turn it on/off
+for individual input fields by configuring their [[yii\widgets\ActiveField::enableAjaxValidation]]
+property.
+
+You also need to prepare the server so that it can handle the ajax request.
+This can be achived by a code snippet like the following, which has to be put into your action:
+
+```php
+if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+    Yii::$app->response->format = Response::FORMAT_JSON;
+    return ActiveForm::validate($model);
+}
+```
+
+The above code will check whether the current request is an ajax request and if yes, it will answer
+this request by running the validation and returning the errors in JSON format.

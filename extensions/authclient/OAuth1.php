@@ -62,6 +62,7 @@ class OAuth1 extends BaseOAuth
      */
     public $accessTokenMethod = 'GET';
 
+
     /**
      * Fetches the OAuth request token.
      * @param array $params additional request params.
@@ -349,7 +350,7 @@ class OAuth1 extends BaseOAuth
             $headerParams[] = 'realm="' . rawurlencode($realm) . '"';
         }
         foreach ($params as $key => $value) {
-            if (substr($key, 0, 5) != 'oauth') {
+            if (substr_compare($key, 'oauth', 0, 5)) {
                 continue;
             }
             $headerParams[] = rawurlencode($key) . '="' . rawurlencode($value) . '"';

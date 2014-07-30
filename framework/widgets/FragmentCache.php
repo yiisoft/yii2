@@ -73,6 +73,7 @@ class FragmentCache extends Widget
      */
     public $dynamicPlaceholders;
 
+
     /**
      * Initializes the FragmentCache object.
      */
@@ -150,6 +151,13 @@ class FragmentCache extends Widget
         return $this->_content;
     }
 
+    /**
+     * Replaces placeholders in content by results of evaluated dynamic statemens
+     *
+     * @param string $content
+     * @param array $placeholders
+     * @return string final content
+     */
     protected function updateDynamicContent($content, $placeholders)
     {
         foreach ($placeholders as $name => $statements) {

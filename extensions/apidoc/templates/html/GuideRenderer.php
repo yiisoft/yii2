@@ -34,6 +34,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
     private $_view;
     private $_targetDir;
 
+
     public function init()
     {
         parent::init();

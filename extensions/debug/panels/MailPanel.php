@@ -29,10 +29,12 @@ class MailPanel extends Panel
      * @var string path where all emails will be saved. should be an alias.
      */
     public $mailPath = '@runtime/debug/mail';
+
     /**
      * @var array current request sent messages
      */
     private $_messages = [];
+
 
     /**
      * @inheritdoc

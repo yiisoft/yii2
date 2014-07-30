@@ -686,6 +686,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @see update()
+     * @param array $attributes attributes to update
+     * @return integer number of rows updated
      * @throws StaleObjectException
      */
     protected function updateInternal($attributes = null)
@@ -1042,7 +1044,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
                 $record->_attributes[$name] = $value;
-            } else {
+            } elseif ($record->canSetProperty($name)) {
                 $record->$name = $value;
             }
         }

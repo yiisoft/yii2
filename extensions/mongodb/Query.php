@@ -54,6 +54,7 @@ class Query extends Component implements QueryInterface
      */
     public $from;
 
+
     /**
      * Returns the Mongo collection for this query.
      * @param Connection $db Mongo connection.

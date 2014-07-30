@@ -53,6 +53,7 @@ class YandexOAuth extends OAuth2
      */
     public $apiBaseUrl = 'https://login.yandex.ru';
 
+
     /**
      * @inheritdoc
      */

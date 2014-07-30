@@ -19,6 +19,7 @@ class FileLoader implements \Twig_LoaderInterface
      */
     private $_dir;
 
+
     /**
      * @param string $dir path to directory
      */

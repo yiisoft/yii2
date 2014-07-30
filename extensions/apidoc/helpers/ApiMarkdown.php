@@ -31,6 +31,7 @@ class ApiMarkdown extends GithubMarkdown
 
     protected $renderingContext;
 
+
     /**
      * Renders a code block
      */

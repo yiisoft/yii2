@@ -58,6 +58,7 @@ abstract class BaseClient extends Component implements ClientInterface
      */
     private $_viewOptions;
 
+
     /**
      * @param string $id service id.
      */

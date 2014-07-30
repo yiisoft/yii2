@@ -11,7 +11,7 @@ Oracle
 MSSQL: version 2012 或更高版本，如需使用 LIMIT/OFFSET。
 配置
 
-开始使用数据库首先需要配置数据库连接组件，通过添加 db 组件到应用配置实现（"基础的" web 应用是 config/web.php），如下所示：
+开始使用数据库首先需要配置数据库连接组件，通过添加 db 组件到应用配置实现（"基础的" Web 应用是 config/web.php），如下所示：
 
 return [
     // ...

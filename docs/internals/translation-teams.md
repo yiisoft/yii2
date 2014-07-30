@@ -34,4 +34,5 @@ Spanish
 Ukrainian
 ---------
 
-- Alexandr Bordun [@borales](https://github.com/Borales), admin@yiiframework.com.ua
+- **Alexandr Bordun [@borales](https://github.com/Borales), admin@yiiframework.com.ua**
+- RichWeber [@RichWeber](https://github.com/RichWeber), rbagatyi@gmail.com

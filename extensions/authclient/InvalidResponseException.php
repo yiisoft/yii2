@@ -26,6 +26,7 @@ class InvalidResponseException extends Exception
      */
     public $responseBody = '';
 
+
     /**
      * Constructor.
      * @param array $responseHeaders response headers

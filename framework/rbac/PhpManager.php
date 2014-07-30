@@ -47,7 +47,6 @@ class PhpManager extends BaseManager
      * @see saveToFile()
      */
     public $assignmentFile = '@app/rbac/assignments.php';
-
     /**
      * @var string the path of the PHP script that contains the authorization rules.
      * This can be either a file path or a path alias to the file.
@@ -56,6 +55,7 @@ class PhpManager extends BaseManager
      * @see saveToFile()
      */
     public $ruleFile = '@app/rbac/rules.php';
+
     /**
      * @var Item[]
      */
@@ -223,7 +223,7 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function assign($role, $userId, $ruleName = null)
+    public function assign($role, $userId)
     {
         if (!isset($this->items[$role->name])) {
             throw new InvalidParamException("Unknown role '{$role->name}'.");
@@ -644,12 +644,14 @@ class PhpManager extends BaseManager
             }
         }
 
-        foreach ($assignments as $userId => $role) {
-            $this->assignments[$userId][$role] = new Assignment([
-                'userId' => $userId,
-                'roleName' => $role,
-                'createdAt' => $assignmentsMtime,
-            ]);
+        foreach ($assignments as $userId => $roles) {
+            foreach ($roles as $role) {
+                $this->assignments[$userId][$role] = new Assignment([
+                    'userId' => $userId,
+                    'roleName' => $role,
+                    'createdAt' => $assignmentsMtime,
+                ]);
+            }
         }
 
         foreach ($rules as $name => $ruleData) {
@@ -730,7 +732,7 @@ class PhpManager extends BaseManager
         foreach ($this->assignments as $userId => $assignments) {
             foreach ($assignments as $name => $assignment) {
                 /* @var $assignment Assignment */
-                $assignmentData[$userId] = $assignment->roleName;
+                $assignmentData[$userId][] = $assignment->roleName;
             }
         }
         $this->saveToFile($assignmentData, $this->assignmentFile);

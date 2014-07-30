@@ -37,6 +37,7 @@ class MongoDbTarget extends Target
      */
     public $logCollection = 'log';
 
+
     /**
      * Initializes the MongoDbTarget component.
      * This method will initialize the [[db]] property to make sure it refers to a valid MongoDB connection.
