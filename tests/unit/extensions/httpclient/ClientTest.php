@@ -31,11 +31,13 @@ class ClientTest extends TestCase
         $response = $client->createResponse();
         $this->assertTrue($response instanceof Response);
 
+        $responseFormat = 'testFormat';
         $responseContent = 'test content';
         $client->responseConfig = [
-            'content' => $responseContent
+            'format' => $responseFormat
         ];
-        $response = $client->createResponse();
+        $response = $client->createResponse($responseContent);
+        $this->assertEquals($responseFormat, $response->getFormat());
         $this->assertEquals($responseContent, $response->getContent());
     }
 
@@ -56,5 +58,35 @@ class ClientTest extends TestCase
         $content = $response->getContent();
         $this->assertNotEmpty($content);
         $this->assertContains('<h1>Documentation</h1>', $content);
+    }
+
+    /**
+     * @depends testSend
+     */
+    public function testBatchSend()
+    {
+        $client = new Client();
+        $client->baseUrl = 'http://uk.php.net';
+
+        $requests = [];
+        $requests['docs'] = $client->createRequest()
+            ->setMethod('get')
+            ->setUrl('docs.php');
+        $requests['support'] = $client->createRequest()
+            ->setMethod('get')
+            ->setUrl('support.php');
+
+        $responses = $client->batchSend($requests);
+        $this->assertCount(count($requests), $responses);
+
+        foreach ($responses as $response) {
+            $this->assertTrue($response->isOk());
+        }
+
+        $this->assertTrue($responses['docs'] instanceof Response, $responses);
+        $this->assertTrue($responses['support'] instanceof Response, $responses);
+
+        $this->assertContains('<h1>Documentation</h1>', $responses['docs']->getContent());
+        $this->assertContains('Mailing Lists', $responses['support']->getContent());
     }
 } 

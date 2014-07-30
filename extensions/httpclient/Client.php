@@ -47,15 +47,21 @@ class Client extends Object
     }
 
     /**
+     * Creates a response instance.
+     * @param string $content raw content
+     * @param array $headers headers list.
      * @return Response request instance.
      */
-    public function createResponse()
+    public function createResponse($content = null, array $headers = [])
     {
         $config = $this->responseConfig;
         if (!isset($config['class'])) {
             $config['class'] = Response::className();
         }
-        return Yii::createObject($config);
+        $response = Yii::createObject($config);
+        $response->setContent($content);
+        $response->setHeaders($headers);
+        return $response;
     }
 
     /**
@@ -64,6 +70,75 @@ class Client extends Object
      * @throws Exception
      */
     public function send($request)
+    {
+        $curlResource = $this->prepare($request);
+
+        $responseContent = curl_exec($curlResource);
+        $responseHeaders = curl_getinfo($curlResource);
+
+        // check cURL error
+        $errorNumber = curl_errno($curlResource);
+        $errorMessage = curl_error($curlResource);
+
+        curl_close($curlResource);
+
+        if ($errorNumber > 0) {
+            throw new Exception('Curl error: #' . $errorNumber . ' - ' . $errorMessage);
+        }
+
+        return $this->createResponse($responseContent, $responseHeaders);
+    }
+
+    /**
+     * @param Request[] $requests
+     * @return Response[]
+     */
+    public function batchSend(array $requests)
+    {
+        $curlBatchResource = curl_multi_init();
+
+        $curlResources = [];
+        foreach ($requests as $key => $request) {
+            $curlResource = $this->prepare($request);
+            $curlResources[$key] = $curlResource;
+            curl_multi_add_handle($curlBatchResource, $curlResource);
+        }
+
+        $isRunning = null;
+
+        do {
+            // See https://bugs.php.net/bug.php?id=61141
+            if (curl_multi_select($curlBatchResource) == -1) {
+                usleep(100);
+            }
+            do {
+                $curlExecCode = curl_multi_exec($curlBatchResource, $isRunning);
+            } while ($curlExecCode == CURLM_CALL_MULTI_PERFORM);
+        } while ($isRunning > 0 && $curlExecCode == CURLM_OK);
+
+        $responseContents = [];
+        $responseHeaders = [];
+        foreach ($curlResources as $key => $curlResource) {
+            $responseHeaders[$key] = curl_getinfo($curlResource);
+            $responseContents[$key] = curl_multi_getcontent($curlResource);
+            curl_multi_remove_handle($curlBatchResource, $curlResource);
+        }
+
+        curl_multi_close($curlBatchResource);
+
+        $responses = [];
+        foreach ($requests as $key => $request) {
+            $responses[$key] = $this->createResponse($responseContents[$key], $responseHeaders[$key]);
+        }
+        return $responses;
+    }
+
+    /**
+     * Prepare request for execution, creating cURL resource for it.
+     * @param Request $request request instance.
+     * @return resource prepared cURL resource.
+     */
+    protected function prepare($request)
     {
         $curlOptions = ArrayHelper::merge(
             $request->getOptions(),
@@ -103,28 +178,8 @@ class Client extends Object
         foreach ($curlOptions as $option => $value) {
             curl_setopt($curlResource, $option, $value);
         }
-        $responseContent = curl_exec($curlResource);
-        $responseHeaders = curl_getinfo($curlResource);
 
-        // check cURL error
-        $errorNumber = curl_errno($curlResource);
-        $errorMessage = curl_error($curlResource);
-
-        curl_close($curlResource);
-
-        if ($errorNumber > 0) {
-            throw new Exception('Curl error requesting "' .  $url . '": #' . $errorNumber . ' - ' . $errorMessage);
-        }
-
-        $response = $this->createResponse();
-        $response->setContent($responseContent);
-        $response->setHeaders($responseHeaders);
-        return $response;
-    }
-
-    public function batchSend(array $requests)
-    {
-        // @todo
+        return $curlResource;
     }
 
     /**
