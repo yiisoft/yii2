@@ -36,6 +36,7 @@ class DebugAction extends Action
      */
     public $controller;
 
+
     public function run($logId, $tag)
     {
         $this->controller->loadData($tag);

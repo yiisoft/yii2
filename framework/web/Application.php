@@ -50,6 +50,7 @@ class Application extends \yii\base\Application
      */
     public $controller;
 
+
     /**
      * @inheritdoc
      */
@@ -123,7 +124,7 @@ class Application extends \yii\base\Application
 
     /**
      * Returns the session component.
-     * @return Session the session component
+     * @return Session the session component.
      */
     public function getSession()
     {
@@ -132,7 +133,7 @@ class Application extends \yii\base\Application
 
     /**
      * Returns the user component.
-     * @return User the user component
+     * @return User the user component.
      */
     public function getUser()
     {

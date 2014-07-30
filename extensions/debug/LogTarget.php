@@ -25,6 +25,7 @@ class LogTarget extends Target
     public $module;
     public $tag;
 
+
     /**
      * @param \yii\debug\Module $module
      * @param array $config

@@ -81,7 +81,6 @@ class Sort extends Object
      * Defaults to false, which means each time the data can only be sorted by one attribute.
      */
     public $enableMultiSort = false;
-
     /**
      * @var array list of attributes that are allowed to be sorted. Its syntax can be
      * described using the following example:

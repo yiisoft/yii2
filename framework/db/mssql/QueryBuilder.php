@@ -49,13 +49,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $hasLimit = $this->hasLimit($limit);
         if ($hasOffset || $hasLimit) {
             // http://technet.microsoft.com/en-us/library/gg699618.aspx
-            $sql .= ' OFFSET ' . ($hasOffset ? $offset : '0') . ' ROWS';
+            $sql = 'OFFSET ' . ($hasOffset ? $offset : '0') . ' ROWS';
             if ($hasLimit) {
                 $sql .= " FETCH NEXT $limit ROWS ONLY";
             }
-        }
 
-        return $sql;
+            return $sql;
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -131,13 +133,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
-        if (empty($query->orderBy) && ($this->hasLimit($query->limit) || $this->hasOffset($query->offset)) && $this->isOldMssql()) {
-            // hack so LIMIT will work because ROW_NUMBER requires an ORDER BY clause
-            $orderBy = 'ORDER BY (SELECT NULL)';
-        } else {
-            $orderBy = $this->buildOrderBy($query->orderBy);
-        }
-
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
             $this->buildFrom($query->from, $params),
@@ -145,7 +140,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
-            $orderBy,
+			$this->buildOrderBy($query->orderBy),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
@@ -195,8 +190,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $originalOrdering = $this->buildOrderBy($query->orderBy);
         if ($query->select) {
             $select = implode(', ', $query->select);
-        }
-        else {
+        } else {
             $select = $query->select = '*';
         }
         if ($select === '*') {
@@ -208,6 +202,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
         $sql = str_replace($originalOrdering, '', $sql);
+
+        if ($originalOrdering === '') {
+            // hack so LIMIT will work because ROW_NUMBER requires an ORDER BY clause
+            $originalOrdering = 'ORDER BY (SELECT NULL)';
+        }
+
         $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ({$originalOrdering}),", $sql);
         $sql = "SELECT TOP {$limit} {$select} FROM ($sql) sub WHERE rowNum > {$offset}";
         return $sql;
@@ -232,14 +232,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @return boolean if MSSQL used is old
+     * @var boolean whether MSSQL used is old.
+     */
+    private $_oldMssql;
+
+    /**
+     * @return boolean whether MSSQL used is old.
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
     protected function isOldMssql()
     {
-        $this->db->open();
-        $version = preg_split("/\./", $this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
-        return $version[0] < 11;
+        if ($this->_oldMssql === null) {
+            $pdo = $this->db->getSlavePdo();
+            $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+            $this->_oldMssql = $version[0] < 11;
+        }
+        return $this->_oldMssql;
     }
 }

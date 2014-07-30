@@ -134,11 +134,13 @@ class Pagination extends Object implements Linkable
      * the maximal page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
      */
     public $pageSizeLimit = [1, 50];
+
     /**
      * @var integer number of items on each page.
      * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
      */
     private $_pageSize;
+
 
     /**
      * @return integer number of pages

@@ -81,7 +81,6 @@ class Validator extends Component
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
     ];
-
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
      * please specify them as an array; for single attribute, you may use either a string or an array.
@@ -173,6 +172,7 @@ class Validator extends Component
      */
     public $whenClient;
 
+
     /**
      * Creates a validator object.
      * @param mixed $type the validator type. This can be a built-in validator name,
@@ -181,6 +181,7 @@ class Validator extends Component
      * @param array|string $attributes list of attributes to be validated. This can be either an array of
      * the attribute names or a string of comma-separated attribute names.
      * @param array $params initial values to be applied to the validator properties
+     * @throws \yii\base\InvalidConfigException if type can't be recognized
      * @return Validator the validator
      */
     public static function createValidator($type, $object, $attributes, $params = [])

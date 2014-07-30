@@ -39,6 +39,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @event MailEvent an event raised right after send.
      */
     const EVENT_AFTER_SEND = 'afterSend';
+
     /**
      * @var string|boolean HTML layout view name. This is the layout used to render HTML mail body.
      * The property can take the following values:
@@ -104,6 +105,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @var string the directory containing view files for composing mail messages.
      */
     private $_viewPath;
+
 
     /**
      * @param array|View $view view instance or its array configuration that will be used to

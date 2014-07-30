@@ -39,6 +39,7 @@ class ActiveFixture extends BaseActiveFixture
      */
     public $collectionName;
 
+
     /**
      * @inheritdoc
      */

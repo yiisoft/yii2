@@ -43,8 +43,8 @@ class Command extends Component
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
      */
     public $highlight;
-
     public $options = [];
+
 
     /**
      * @param array $options

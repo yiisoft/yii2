@@ -32,6 +32,9 @@ class PhpManagerTest extends ManagerTestCase
         @unlink($this->getRuleFile());
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function createManager()
     {
         return new ExposedPhpManager([
@@ -73,4 +76,4 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertEquals($assignments, $this->auth->assignments);
         $this->assertEquals($rules, $this->auth->rules);
     }
-} 
+}

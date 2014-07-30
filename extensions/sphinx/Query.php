@@ -125,10 +125,12 @@ class Query extends Component implements QueryInterface
      * @var array query options for the call snippet.
      */
     public $snippetOptions;
+
     /**
      * @var Connection the Sphinx connection used to generate the SQL statements.
      */
     private $_connection;
+
 
     /**
      * @param Connection $connection Sphinx connection instance

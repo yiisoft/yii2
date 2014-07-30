@@ -62,6 +62,7 @@ class OAuth1 extends BaseOAuth
      */
     public $accessTokenMethod = 'GET';
 
+
     /**
      * Fetches the OAuth request token.
      * @param array $params additional request params.
@@ -189,9 +190,7 @@ class OAuth1 extends BaseOAuth
                 }
                 break;
             }
-            case 'HEAD':
-            case 'PUT':
-            case 'DELETE': {
+            case 'HEAD': {
                 $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
                 if (!empty($params)) {
                     $curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
@@ -199,7 +198,10 @@ class OAuth1 extends BaseOAuth
                 break;
             }
             default: {
-                throw new Exception("Unknown request method '{$method}'.");
+                $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
+                if (!empty($params)) {
+                    $curlOptions[CURLOPT_POSTFIELDS] = $params;
+                }
             }
         }
 
@@ -348,7 +350,7 @@ class OAuth1 extends BaseOAuth
             $headerParams[] = 'realm="' . rawurlencode($realm) . '"';
         }
         foreach ($params as $key => $value) {
-            if (substr($key, 0, 5) != 'oauth') {
+            if (substr_compare($key, 'oauth', 0, 5)) {
                 continue;
             }
             $headerParams[] = rawurlencode($key) . '="' . rawurlencode($value) . '"';

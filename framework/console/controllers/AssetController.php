@@ -92,6 +92,7 @@ class AssetController extends Controller
      */
     private $_assetManager = [];
 
+
     /**
      * Returns the asset manager instance.
      * @throws \yii\console\Exception on invalid configuration.

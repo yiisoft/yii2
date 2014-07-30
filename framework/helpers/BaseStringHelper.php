@@ -40,7 +40,7 @@ class BaseStringHelper
      */
     public static function byteSubstr($string, $start, $length)
     {
-        return mb_substr($string, $start, $length, '8bit');
+        return mb_substr($string, $start, $length ?: mb_strlen($string), '8bit');
     }
 
     /**

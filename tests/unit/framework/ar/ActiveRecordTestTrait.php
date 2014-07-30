@@ -1064,4 +1064,29 @@ trait ActiveRecordTestTrait
         $customers = $customerClass::find()->where(['IN', 'id', []])->all();
         $this->assertEquals(0, count($customers));
     }
+
+    public function testFindEagerIndexBy()
+    {
+        /* @var $this TestCase|ActiveRecordTestTrait */
+
+        /* @var $orderClass \yii\db\ActiveRecordInterface */
+        $orderClass = $this->getOrderClass();
+
+        /* @var $order Order */
+        $order = $orderClass::find()->with('itemsIndexed')->where(['id' => 1])->one();
+        $this->assertTrue($order->isRelationPopulated('itemsIndexed'));
+        $items = $order->itemsIndexed;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        /* @var $order Order */
+        $order = $orderClass::find()->with('itemsIndexed')->where(['id' => 2])->one();
+        $this->assertTrue($order->isRelationPopulated('itemsIndexed'));
+        $items = $order->itemsIndexed;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[3]));
+        $this->assertTrue(isset($items[4]));
+        $this->assertTrue(isset($items[5]));
+    }
 }

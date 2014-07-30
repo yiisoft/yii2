@@ -143,7 +143,7 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirectoryPermissions()
     {
-        if (substr(PHP_OS, 0, 3) == 'WIN') {
+        if (DIRECTORY_SEPARATOR === '\\') {
             $this->markTestSkipped("Can't reliably test it on Windows because fileperms() always return 0777.");
         }
 

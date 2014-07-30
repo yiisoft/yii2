@@ -10,6 +10,7 @@ Yii Framework 2 bootstrap extension Change Log
 - Enh #4024: Added ability to `yii\bootstrap\Tabs` to encode each `Tabs::items['label']` separately (creocoder, umneeq)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 - Enh #4120: Added ability for each item to choose it's encoding option in `Dropdown` and `Nav` (Alex-Code)
+- Enh #4363: Added `showIndicators` property to make Carousel indicators optional (sdkiller)
 
 2.0.0-beta April 13, 2014
 -------------------------

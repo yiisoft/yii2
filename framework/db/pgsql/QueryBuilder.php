@@ -38,6 +38,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'numeric(19,4)',
     ];
+
     /**
      * @var array map of query condition to builder methods.
      * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
@@ -136,8 +137,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
         }
 
-        #enable to have ability to alter several tables
-        $this->db->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+        // enable to have ability to alter several tables
+        $this->db->getMasterPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
 
         return $command;
     }

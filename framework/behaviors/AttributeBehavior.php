@@ -26,7 +26,7 @@ use yii\base\Event;
  * public function behaviors()
  * {
  *     return [
- *         'attributeStamp' => [
+ *         [
  *             'class' => AttributeBehavior::className(),
  *             'attributes' => [
  *                 ActiveRecord::EVENT_BEFORE_INSERT => 'attribute1',
@@ -73,6 +73,7 @@ class AttributeBehavior extends Behavior
      * ```
      */
     public $value;
+
 
     /**
      * @inheritdoc

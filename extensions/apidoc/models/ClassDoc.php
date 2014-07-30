@@ -18,10 +18,8 @@ namespace yii\apidoc\models;
 class ClassDoc extends TypeDoc
 {
     public $parentClass;
-
     public $isAbstract;
     public $isFinal;
-
     /**
      * @var string[]
      */
@@ -29,7 +27,6 @@ class ClassDoc extends TypeDoc
     public $traits = [];
     // will be set by Context::updateReferences()
     public $subclasses = [];
-
     /**
      * @var EventDoc[]
      */
@@ -38,6 +35,7 @@ class ClassDoc extends TypeDoc
      * @var ConstDoc[]
      */
     public $constants = [];
+
 
     public function findSubject($subjectName)
     {

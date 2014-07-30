@@ -24,6 +24,7 @@ class DebugPanel extends Panel
 {
     public $db = 'elasticsearch';
 
+
     public function init()
     {
         $this->actions['elasticsearch-query'] = [

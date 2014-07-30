@@ -24,16 +24,15 @@ class Extension extends \Twig_Extension
      * @var array used namespaces
      */
     protected $namespaces = [];
-
     /**
      * @var array used class aliases
      */
     protected $aliases = [];
-
     /**
      * @var array used widgets
      */
     protected $widgets = [];
+
 
     /**
      * Creates new instance

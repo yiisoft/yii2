@@ -41,6 +41,7 @@ class QueryBuilder extends \yii\base\Object
      * Child classes should override this property to declare supported type mappings.
      */
     public $typeMap = [];
+
     /**
      * @var array map of query condition to builder methods.
      * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
@@ -689,6 +690,13 @@ class QueryBuilder extends \yii\base\Object
         return implode($this->separator, $joins);
     }
 
+    /**
+     * Quotes table names passed
+     *
+     * @param array $tables
+     * @param array $params
+     * @return array
+     */
     private function quoteTableNames($tables, &$params)
     {
         foreach ($tables as $i => $table) {
@@ -1077,6 +1085,15 @@ class QueryBuilder extends \yii\base\Object
         }
     }
 
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
     protected function buildCompositeInCondition($operator, $columns, $values, &$params)
     {
         $vss = [];

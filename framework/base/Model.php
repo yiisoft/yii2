@@ -83,6 +83,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     private $_scenario = self::SCENARIO_DEFAULT;
 
+
     /**
      * Returns the validation rules for attributes.
      *
@@ -441,7 +442,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function isAttributeRequired($attribute)
     {
         foreach ($this->getActiveValidators($attribute) as $validator) {
-            if ($validator instanceof RequiredValidator) {
+            if ($validator instanceof RequiredValidator && $validator->when === null) {
                 return true;
             }
         }

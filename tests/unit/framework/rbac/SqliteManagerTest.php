@@ -3,6 +3,8 @@ namespace yiiunit\framework\rbac;
 
 /**
  * SqliteManagerTest
+ * @group db
+ * @group rbac
  */
 class SqliteManagerTest extends DbManagerTestCase
 {

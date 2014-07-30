@@ -274,8 +274,8 @@ We wrap the execution of all queries in a try-catch-block to be able to handle e
 We call [[yii\db\Transaction::commit()|commit()]] on success to commit the transaction and
 [[yii\db\Transaction::rollBack()|rollBack()]] in case of an error. This will revert the effect of all queries
 that have been executed inside of the transaction.
-`throw $e` is used to re-throw the exception in case we can not handle the error ourselfs and deligate it
-to some other code or the yii errorhandler.
+`throw $e` is used to re-throw the exception in case we can not handle the error ourselves and delegate it
+to some other code or the yii error handler.
 
 It is also possible to nest multiple transactions, if needed:
 
@@ -331,11 +331,171 @@ At the time of this writing affected DBMS are MSSQL and SQLite.
 > Note: SQLite only supports two isolation levels, so you can only use `READ UNCOMMITTED` and `SERIALIZABLE`.
 Usage of other levels will result in an exception to be thrown.
 
-> Note: PostgreSQL does not allow settin the isolation level before the transaction starts so you can not
+> Note: PostgreSQL does not allow setting the isolation level before the transaction starts so you can not
 specify the isolation level directly when starting the transaction.
 You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after the transaction has started.
 
 [isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+
+
+Replication and Read-Write Splitting
+------------------------------------
+
+Many DBMS support [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
+to get better database availability and faster server response time. With database replication, data are replicated
+from the so-called *master servers* to *slave servers*. All writes and updates must take place on the master servers,
+while reads may take place on the slave servers.
+
+To take advantage of database replication and achieve read-write splitting, you can configure a [[yii\db\Connection]]
+component like the following:
+
+```php
+[
+    'class' => 'yii\db\Connection',
+
+    // configuration for the master
+    'dsn' => 'dsn for master server',
+    'username' => 'master',
+    'password' => '',
+
+    // common configuration for slaves
+    'slaveConfig' => [
+        'username' => 'slave',
+        'password' => '',
+        'attributes' => [
+            // use a smaller connection timeout
+            PDO::ATTR_TIMEOUT => 10,
+        ],
+    ],
+
+    // list of slave configurations
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
+    ],
+]
+```
+
+The above configuration specifies a setup with a single master and multiple slaves. One of the slaves will
+be connected and used to perform read queries, while the master will be used to perform write queries.
+Such read-write splitting is accomplished automatically with this configuration. For example,
+
+```php
+// create a Connection instance using the above configuration
+$db = Yii::createObject($config);
+
+// query against one of the slaves
+$rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+
+// query against the master
+$db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+```
+
+> Info: Queries performed by calling [[yii\db\Command::execute()]] are considered as write queries, while
+  all other queries done through one of the "query" method of [[yii\db\Command]] are read queries.
+  You can get the currently active slave connection via `$db->slave`.
+
+The `Connection` component supports load balancing and failover about slaves.
+When performing a read query for the first time, the `Connection` component will randomly pick a slave and
+try connecting to it. If the slave is found "dead", it will try another one. If none of the slaves is available,
+it will connect to the master. By configuring a [[yii\db\Connection::serverStatusCache|server status cache]],
+a "dead" server can be remembered so that it will not be tried again during a
+[[yii\db\Connection::serverRetryInterval|certain period of time]].
+
+> Info: In the above configuration, a connection timeout of 10 seconds is specified for every slave.
+  This means if a slave cannot be reached in 10 seconds, it is considered as "dead". You can adjust this parameter
+  based on your actual environment.
+
+
+You can also configure multiple masters with multiple slaves. For example,
+
+
+```php
+[
+    'class' => 'yii\db\Connection',
+
+    // common configuration for masters
+    'masterConfig' => [
+        'username' => 'master',
+        'password' => '',
+        'attributes' => [
+            // use a smaller connection timeout
+            PDO::ATTR_TIMEOUT => 10,
+        ],
+    ],
+
+    // list of master configurations
+    'masters' => [
+        ['dsn' => 'dsn for master server 1'],
+        ['dsn' => 'dsn for master server 2'],
+    ],
+
+    // common configuration for slaves
+    'slaveConfig' => [
+        'username' => 'slave',
+        'password' => '',
+        'attributes' => [
+            // use a smaller connection timeout
+            PDO::ATTR_TIMEOUT => 10,
+        ],
+    ],
+
+    // list of slave configurations
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
+    ],
+]
+```
+
+The above configuration specifies two masters and four slaves. The `Connection` component also supports
+load balancing and failover about masters, like that about slaves. A difference is that in case none of
+the masters is available, an exception will be thrown.
+
+> Note: When you use the [[yii\db\Connection::masters|masters]] property to configure one or multiple
+  masters, all other properties for specifying a database connection (e.g. `dsn`, `username`, `password`)
+  with the `Connection` object itself will be ignored.
+
+
+By default, transactions use the master connection. And within a transaction, all DB operations will use
+the master connection. For example,
+
+```php
+// the transaction is started on the master connection
+$transaction = $db->beginTransaction();
+
+try {
+    // both queries are performed against the master
+    $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+    $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+
+    $transaction->commit();
+} catch(\Exception $e) {
+    $transaction->rollBack();
+    throw $e;
+}
+```
+
+If you want to start a transaction with the slave connection, you should explicitly do so, like the following:
+
+```php
+$transaction = $db->slave->beginTransaction();
+```
+
+Sometimes, you may want to force using the master connection to perform a read query. This can be achieved
+with the `useMaster()` method:
+
+```php
+$rows = $db->useMaster(function ($db) {
+    return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+});
+```
+
+You may also directly set `$db->enableSlaves` to be false to direct all queries to the master connection.
 
 
 Working with database schema

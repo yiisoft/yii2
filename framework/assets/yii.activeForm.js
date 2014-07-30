@@ -44,6 +44,12 @@
         // a callback that is called after an attribute is validated. The signature of the callback should be:
         // function ($form, attribute, messages)
         afterValidate: undefined,
+        // a pre-request callback function on AJAX-based validation. The signature of the callback should be:
+        // function ($form, jqXHR, textStatus)
+        ajaxBeforeSend: undefined,
+        // a function to be called when the request finishes on AJAX-based validation. The signature of the callback should be:
+        // function ($form, jqXHR, textStatus)
+        ajaxComplete: undefined,
         // the GET parameter name indicating an AJAX-based validation
         ajaxParam: 'ajax',
         // the type of data that you're expecting back from the server
@@ -306,6 +312,16 @@
                 type: $form.prop('method'),
                 data: $form.serialize() + extData,
                 dataType: data.settings.ajaxDataType,
+                complete: function (jqXHR, textStatus) {
+                    if (data.settings.ajaxComplete) {
+                        data.settings.ajaxComplete($form, jqXHR, textStatus);
+                    }
+                },
+                beforeSend: function (jqXHR, textStatus) {
+                    if (data.settings.ajaxBeforeSend) {
+                        data.settings.ajaxBeforeSend($form, jqXHR, textStatus);
+                    }
+                },
                 success: function (msgs) {
                     if (msgs !== null && typeof msgs === 'object') {
                         $.each(data.attributes, function () {

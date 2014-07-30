@@ -1,161 +1,13 @@
-行为（Behavior）
+行为
 =========
 
-行为（Behavior）是 [[yii\base\Behmixinsavior]] 或其子类的实例。 Behavior 也被称为
-[Mixin（Mix In可以理解为包含若干个类的部分方法和属性的混合类，英文维基）](http://en.wikipedia.org/wiki/Mixin)，允许你增强已有
-[[yii\base\Component|组件]] 类的功能，而无需改变类的继承结构。当一个行为被配属到组件之上是，他会向组件“注入”他的属性与方法，就好像这些方法原本就定义在组件里一样。此外，行为能响应由组件所触发的[事件](basic-events.md)，从而自定义或调整组件内默认的代码执行。
-
-> 译者注：mixin直译为‘混入’，trait直译为‘特质’，为避免翻译上的问题，今后我们还是采用英文术语。
+行为是 [[yii\base\Behavior]] 或其子类的实例。行为，也称为 [mixins](http://en.wikipedia.org/wiki/Mixin)，可以无须改变类继承关系即可增强一个已有的 [[yii\base\Component|组件]] 类功能。当行为附加到组件后，它将“注入”它的方法和属性到组件，然后可以像访问组件内定义的方法和属性一样访问它们。此外，行为通过组件能响应被触发的[事件](basic-events.md)，从而自定义或调整组件正常执行的代码。
 
 
-使用行为 <a name="using-behaviors"></a>
----------------
+定义行为
+-----------
 
-要使用行为，你首先需要把它配属到某个[[yii\base\Component|组件]]上。我们会在接下来的章节内讲解如何配属一个行为。
-
-行为被配属到组件之后，它的用法是很直截了当的。
-
-可以通过行为所配属的组件，访问它的 *public* 成员变量或由 getter 和/或 setter 定义的[属性](concept-properties.md)，就像这样：
-
-```php
-// "prop1" 是一个定义在行为类中的属性
-echo $component->prop1;
-$component->prop1 = $value;
-```
-
-与之相似的，你也可以调用行为类的 *public* 方法，
-
-```php
-// foo() 是一个定义在行为类中的公共方法
-$component->foo();
-```
-
-如你所见，尽管 `$component` 并没有定义 `prop1` 和 `bar()`，它们依旧好像是组件自身定义的一部分一样。
-
-如果两个行为都定义了一样的属性或方法，并且它们都配属到同一个组件，那么先附加上的行为在属性或方法被访问时就有优先权。
-
-当行为配属到组件时可以关联一个行为名。此时就能使用这个名称来访问行为对象，如下所示：
-
-```php
-$behavior = $component->getBehavior('myBehavior');
-```
-
-也能获取组件所配属的所有行为：
-
-```php
-$behaviors = $component->getBehaviors();
-```
-
-
-配属行为 <a name="attaching-behaviors"></a>
--------------------
-
-可以选择静态或动态地配属行为到 [[yii\base\Component|组件]]。在具体实践中，前者更常见。
-
-要静态配属行为，重写目标组件类的 [[yii\base\Component::behaviors()|behaviors()]] 方法即可。如：
-
-```php
-namespace app\models;
-
-use yii\db\ActiveRecord;
-use app\components\MyBehavior;
-
-class User extends ActiveRecord
-{
-    public function behaviors()
-    {
-        return [
-            // 匿名行为 => 行为类名
-            MyBehavior::className(),
-
-            // 命名行为 => 行为类名
-            'myBehavior2' => MyBehavior::className(),
-
-            // 匿名行为 => 配置数组
-            [
-                'class' => MyBehavior::className(),
-                'prop1' => 'value1',
-                'prop2' => 'value2',
-            ],
-
-            // 命名行为 => 配置数组
-            'myBehavior4' => [
-                'class' => MyBehavior::className(),
-                'prop1' => 'value1',
-                'prop2' => 'value2',
-            ]
-        ];
-    }
-}
-```
-
-[[yii\base\Component::behaviors()|behaviors()]] 方法应该返回一个包含所有行为[配置信息](concept-configurations.md)的列表。每个行为的配置信息可以是行为的类名也可以是其配置数组。
-
-通过为行为配置信息指定相应的键名，可以给行为关联一个名称。这种行为称为**命名行为**。在上例中存在两个命名行为：`myBehavior2` 和 `myBehavior4` 。同理如果行为没有关联名称就是**匿名行为**。
-
-要动态地配属行为，只需调用目标组件的 [[yii\base\Component::attachBehavior()]] 方法即可，如：
-
-```php
-use app\components\MyBehavior;
-
-// 配属一个行为对象
-$component->attachBehavior('myBehavior1', new MyBehavior);
-
-// 配属行为类
-$component->attachBehavior('myBehavior2', MyBehavior::className());
-
-// 配属一个配置数组
-$component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
-    'prop1' => 'value1',
-    'prop2' => 'value2',
-]);
-```
-
-你也可以通过 [[yii\base\Component::attachBehaviors()]] 方法一次性配属多个行为。比如：
-
-```php
-$component->attachBehaviors([
-    'myBehavior1' => new MyBehavior,  // 一个命名行为
-    MyBehavior::className(),          // 一个匿名行为
-]);
-```
-
-如下所示，你也可以通过[配置数组](concept-configurations.md)配属行为。更多细节，请参考[配置（Configs）](concept-configurations.md#configuration-format)章节。
-
-```php
-[
-    'as myBehavior2' => MyBehavior::className(),
-
-    'as myBehavior3' => [
-        'class' => MyBehavior::className(),
-        'prop1' => 'value1',
-        'prop2' => 'value2',
-    ],
-]
-```
-
-
-拆卸行为 <a name="detaching-behaviors"></a>
--------------------
-
-要拆卸行为，可以用行为的键名调用 [[yii\base\Component::detachBehavior()]] 方法：
-
-```php
-$component->detachBehavior('myBehavior1');
-```
-
-也可以一次性拆卸掉**所有**的行为：
-
-```php
-$component->detachBehaviors();
-```
-
-
-定义行为 <a name="defining-behaviors"></a>
-------------------
-
-要定义一个行为，只需创建新类，继承 [[yii\base\Behavior]] 或其子类。比如，
+要定义行为，通过继承 [[yii\base\Behavior]] 或其子类来建立一个类。如：
 
 ```php
 namespace app\components;
@@ -186,11 +38,15 @@ class MyBehavior extends Behavior
 }
 ```
 
-以上代码定义了行为类 `app\components\MyBehavior` 并为要附加行为的组件提供了两个属性 `prop1` 、 `prop2` 和一个方法 `foo()`。注意，属性 `prop2` 是通过 getter `getProp2()` 和 setter `setProp2()` 定义的。能这样用是因为 [[yii\base\Behavior]] 的祖先类是 [[yii\base\Object]]，此祖先类支持用 getter 和 setter 方法定义[属性](concept-properties.md)。
+以上代码定义了行为类 `app\components\MyBehavior` 并为要附加行为的组件提供了两个属性 `prop1` 、 `prop2` 和一个方法 `foo()` 。注意属性 `prop2` 是通过 getter `getProp2()` 和 setter `setProp2()` 定义的。能这样用是因为 [[yii\base\Object]] 是 [[yii\base\Behavior]] 的祖先类，此祖先类支持用 getter 和 setter 方法定义[属性](basic-properties.md)
 
-在行为类之中，你可以通过 [[yii\base\Behavior::owner]] 属性访问行为的组件。
+> 提示：在行为内部可以通过 [[yii\base\Behavior::owner]] 属性访问行为已附加的组件。
 
-如果你的行为需要响应其所配属的组件中触发的事件，它需要重写 [[yii\base\Behavior::events()]] 方法。像这样，
+
+处理事件
+-------------
+
+如果要让行为响应对应组件的事件触发，就应覆写 [[yii\base\Behavior::events()]] 方法，如：
 
 ```php
 namespace app\components;
@@ -200,7 +56,7 @@ use yii\base\Behavior;
 
 class MyBehavior extends Behavior
 {
-    // ...
+    // 其它代码
 
     public function events()
     {
@@ -211,18 +67,18 @@ class MyBehavior extends Behavior
 
     public function beforeValidate($event)
     {
-        // ...
+        // 处理器方法逻辑
     }
 }
 ```
 
-[[yii\base\Behavior::events()|events()]] 方法需返回一个事件列表和它们相应的处理器。上例声明了 [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] 事件和它的处理器 `beforeValidate()` 。当指定一个事件处理器时，要使用以下格式之一：
+[[yii\base\Behavior::events()|events()]] 方法返回事件列表和相应的处理器。上例声明了 [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] 事件和它的处理器 `beforeValidate()` 。当指定一个事件处理器时，要使用以下格式之一：
 
-* 一条指向行为类的方法名的字符串，如上例所示；
-* 一个包含对象或类名，以及方法名的数组，如 `[$object, 'methodName']`；
-* 一个匿名函数
+* 指向行为类的方法名的字符串，如上例所示；
+* 对象或类名和方法名的数组，如 `[$object, 'methodName']`；
+* 匿名方法。
 
-事件处理器方法的特征格式如下，其中 `$event` 指向事件参数。关于事件的更多细节请参考[事件](concept-events.md)。
+处理器的格式如下，其中 `$event` 指向事件参数。关于事件的更多细节请参考[事件](basic-events.md)：
 
 ```php
 function ($event) {
@@ -230,12 +86,154 @@ function ($event) {
 ```
 
 
-使用 `TimestampBehavior` <a name="using-timestamp-behavior"></a>
--------------------------
+附加行为
+----------
 
-最后让我们来看看 [[yii\behaviors\TimestampBehavior]] 作为具体实践案例，这个行为支持在 [[yii\db\ActiveRecord|Active Record]] 保存时自动更新它的时间戳类型的 attribute（特性）。
+可以静态或动态地附加行为到[[yii\base\Component|组件]]。前者在实践中更常见。
 
-首先，配属这个行为到目标 [[yii\db\ActiveRecord|Active Record]] 类：
+要静态附加行为，覆写行为要附加的组件类的 [[yii\base\Component::behaviors()|behaviors()]] 方法即可。[[yii\base\Component::behaviors()|behaviors()]] 方法应该返回行为[配置](basic-configs.md)列表。每个行为配置可以是行为类名也可以是配置数组。如：
+
+```php
+namespace app\models;
+
+use yii\db\ActiveRecord;
+use app\components\MyBehavior;
+
+class User extends ActiveRecord
+{
+    public function behaviors()
+    {
+        return [
+            // 匿名行为，只有行为类名
+            MyBehavior::className(),
+
+            // 命名行为，只有行为类名
+            'myBehavior2' => MyBehavior::className(),
+
+            // 匿名行为，配置数组
+            [
+                'class' => MyBehavior::className(),
+                'prop1' => 'value1',
+                'prop2' => 'value2',
+            ],
+
+            // 命名行为，配置数组
+            'myBehavior4' => [
+                'class' => MyBehavior::className(),
+                'prop1' => 'value1',
+                'prop2' => 'value2',
+            ]
+        ];
+    }
+}
+```
+
+通过指定行为配置数组相应的键可以给行为关联一个名称。这种行为称为**命名行为**。上例中，有两个命名行为：`myBehavior2` 和 `myBehavior4` 。如果行为没有指定名称就是**匿名行为**。
+
+要动态附加行为，在对应组件里调用 [[yii\base\Component::attachBehavior()]] 方法即可，如：
+
+```php
+use app\components\MyBehavior;
+
+// 附加行为对象
+$component->attachBehavior('myBehavior1', new MyBehavior);
+
+// 附加行为类
+$component->attachBehavior('myBehavior2', MyBehavior::className());
+
+// 附加配置数组
+$component->attachBehavior('myBehavior3', [
+    'class' => MyBehavior::className(),
+    'prop1' => 'value1',
+    'prop2' => 'value2',
+]);
+```
+
+可以通过 [[yii\base\Component::attachBehaviors()]] 方法一次附加多个行为：
+
+```php
+$component->attachBehaviors([
+    'myBehavior1' => new MyBehavior,  // 命名行为
+    MyBehavior::className(),          // 匿名行为
+]);
+```
+
+还可以通过[配置](concept-configurations.md)去附加行为：
+
+```php
+[
+    'as myBehavior2' => MyBehavior::className(),
+
+    'as myBehavior3' => [
+        'class' => MyBehavior::className(),
+        'prop1' => 'value1',
+        'prop2' => 'value2',
+    ],
+]
+```
+
+详情请参考[配置](concept-configurations.md#configuration-format)章节。
+
+
+使用行为
+---------------
+
+使用行为，必须像前文描述的一样先把它附加到 [[yii\base\Component|component]] 类或其子类。一旦行为附加到组件，就可以直接使用它。
+
+行为附加到组件后，可以通过组件访问一个行为的**公共**成员变量或 getter 和 setter 方法定义的[属性](concept-properties.md)：
+
+```php
+// "prop1" 是定义在行为类的属性
+echo $component->prop1;
+$component->prop1 = $value;
+```
+
+类似地也可以调用行为的**公共*方法：
+
+```php
+// bar() 是定义在行为类的公共方法
+$component->bar();
+```
+
+如你所见，尽管 `$component` 未定义 `prop1` 和 `bar()` ，它们用起来也像组件自己定义的一样。
+
+如果两个行为都定义了一样的属性或方法，并且它们都附加到同一个组件，那么**首先**附加上的行为在属性或方法被访问时有优先权。
+
+附加行为到组件时的命名行为，可以使用这个名称来访问行为对象，如下所示：
+
+```php
+$behavior = $component->getBehavior('myBehavior');
+```
+
+也能获取附加到这个组件的所有行为：
+
+```php
+$behaviors = $component->getBehaviors();
+```
+
+
+移除行为
+------------
+
+要移除行为，可以调用 [[yii\base\Component::detachBehavior()]] 方法用行为相关联的名字实现：
+
+```php
+$component->detachBehavior('myBehavior1');
+```
+
+也可以移除**全部**行为：
+
+```php
+$component->detachBehaviors();
+```
+
+
+使用 `TimestampBehavior`
+----------------------------
+
+最后以 [[yii\behaviors\TimestampBehavior]] 的讲解来结尾，这个行为支持在 [[yii\db\ActiveRecord|Active Record]] 存储时自动更新它的时间戳属性。
+
+首先，附加这个行为到计划使用该行为的 [[yii\db\ActiveRecord|Active Record]] 类：
 
 ```php
 namespace app\models\User;
@@ -262,49 +260,51 @@ class User extends ActiveRecord
 }
 ```
 
-以上行为的配置指定了下面的两条规则：
+以上指定的行为数组：
 
-* 当记录插入时，行为应该要当前时间戳赋值给 `created_at` 和 `updated_at` 属性；
-* 当记录更新时，行为应该要当前时间戳赋值给 `updated_at` 属性。
+* 当记录插入时，行为将当前时间戳赋值给 `created_at` 和 `updated_at` 属性；
+* 当记录更新时，行为将当前时间戳赋值给 `updated_at` 属性。
 
-放置上述代码之后，如果有一个 `User` 对象且需要保存，你会发现它的 `created_at` 和 `updated_at` 属性已经自动填充了当前时间戳：
 
-```php
+保存 `User` 对象，将会发现它的 `created_at` 和 `updated_at` 属性自动填充了当前时间戳：
+
+``php
 $user = new User;
 $user->email = 'test@example.com';
 $user->save();
-echo $user->created_at;  // shows the current timestamp
+echo $user->created_at;  // 显示当前时间戳
 ```
 
-[[yii\behaviors\TimestampBehavior|TimestampBehavior]] 同时提供一个很好用的名为 [[yii\behaviors\TimestampBehavior::touch()|touch()]] 的方法，该方法会把当前时间戳赋值给指定 attribute 并将其存入数据库：
+[[yii\behaviors\TimestampBehavior|TimestampBehavior]] 行为还提供了一个有用的方法 [[yii\behaviors\TimestampBehavior::touch()|touch()]]，这个方法能将当前时间戳赋值给指定属性并保存到数据库：
 
 ```php
 $user->touch('login_time');
 ```
 
 
-与 Traits 的对比 <a name="comparison-with-traits"></a>
-----------------------
+与 PHP traits 的比较
+-------------------
 
 尽管行为在 "注入" 属性和方法到主类方面类似于 [traits](http://www.php.net/traits) ，它们在很多方面却不相同。如上所述，它们各有利弊。它们更像是互补的而不是相互替代。
 
 
-### Behavior 的优势 <a name="pros-for-behaviors"></a>
+### 行为的优势
 
-Behavior 类像普通类支持继承。另一方面，Traits 可以视之为一种 PHP 提供语言级支持的复制粘贴功能，它不支持继承。
+行为类像普通类支持继承。另一方面，traits 可以视为 PHP 语言支持的复制粘贴功能，它不支持继承。
 
-Behavior 无须修改组件类就可动态配属到组件或拆除。要使用 trait，就必须修改引用它的类本身。
+行为无须修改组件类就可动态附加到组件或移除。要使用 traits，必须修改使用它的类。
 
-Behavior 是可配置的而 traits 不行。
+行为是可配置的而 traits 不能。
 
-Behaviors 可以通过响应事件来自定义组件代码的执行。
+行为以响应事件来自定义组件的代码执行。
 
-当不同 Behavior 附加到同一组件产生命名冲突时，这个冲突会以“先附加行为的优先”的方式自动解决。而由不同 traits 引发的命名冲突需要通过手工重命名冲突属性或方法来解决。
+当不同行为附加到同一组件产生命名冲突时，这个冲突通过先附加行为的优先权自动解决。而由不同 traits 引发的命名冲突需要通过手工重命名冲突属性或方法来解决。
 
 
-### Traits 的优势 <a name="pros-for-traits"></a>
+### traits 的优势
 
-Trait 比 behaviors 性能好很多很多，因为行为本身就是对象，他需要占用双倍的时间和内存。
+traits 比起行为更高效，因为行为是对象，消耗时间和内存。
 
-作为语言架构的一部分，IDE 对 Trait 更加友好
+IDE 对 traits 更友好，因为它们是语言结构。
+
 
