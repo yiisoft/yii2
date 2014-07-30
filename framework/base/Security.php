@@ -395,6 +395,8 @@ class Security extends Component
      * @param string $data the data to be protected
      * @param string $key the secret key to be used for generating hash. Should be a secure
      * cryptographic key.
+     * @param boolean $rawHash whether the generated hash value is in raw binary format. If false, lowercase
+     * hex digits will be generated.
      * @throws InvalidConfigException
      * @return string the data prefixed with the keyed hash
      * @see validateData()
@@ -402,9 +404,9 @@ class Security extends Component
      * @see hkdf()
      * @see pbkdf2()
      */
-    public function hashData($data, $key)
+    public function hashData($data, $key, $rawHash = false)
     {
-        $hash = hash_hmac(self::MAC_HASH, $data, $key, true);
+        $hash = hash_hmac(self::MAC_HASH, $data, $key, $rawHash);
         if (!$hash) {
             throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . self::MAC_HASH);
         }
@@ -418,13 +420,17 @@ class Security extends Component
      * @param string $key the secret key that was previously used to generate the hash for the data in [[hashData()]].
      * function to see the supported hashing algorithms on your system. This must be the same
      * as the value passed to [[hashData()]] when generating the hash for the data.
+     * @param boolean $rawHash this should take the same value as when you generate the data using [[hashData()]].
+     * It indicates whether the hash value in the data is in binary format. If false, it means the hash value consists
+     * of lowercase hex digits only.
+     * hex digits will be generated.
      * @throws InvalidConfigException
      * @return string the real data with the hash stripped off. False if the data is tampered.
      * @see hashData()
      */
-    public function validateData($data, $key)
+    public function validateData($data, $key, $rawHash = false)
     {
-        $test = @hash_hmac(self::MAC_HASH, '', '', true);
+        $test = @hash_hmac(self::MAC_HASH, '', '', $rawHash);
         if (!$test) {
             throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . self::MAC_HASH);
         }
@@ -433,12 +439,11 @@ class Security extends Component
             $hash = StringHelper::byteSubstr($data, 0, $hashLength);
             $pureData = StringHelper::byteSubstr($data, $hashLength, null);
 
-            $calculatedHash = hash_hmac(self::MAC_HASH, $pureData, $key, true);
+            $calculatedHash = hash_hmac(self::MAC_HASH, $pureData, $key, $rawHash);
 
             if ($this->compareString($hash, $calculatedHash)) {
                 return $pureData;
             }
-            return false;
         }
         return false;
     }
