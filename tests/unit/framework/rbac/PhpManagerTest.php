@@ -1,5 +1,16 @@
 <?php
 
+namespace yii\rbac;
+
+/**
+ * Mock for the filemtime() function for rbac classes. Avoid random test fails.
+ * @return int
+ */
+function filemtime($file)
+{
+    return \yiiunit\framework\rbac\PhpManagerTest::$filemtime ?: \filemtime($file);
+}
+
 namespace yiiunit\framework\rbac;
 
 use Yii;
@@ -10,6 +21,8 @@ use Yii;
  */
 class PhpManagerTest extends ManagerTestCase
 {
+    public static $filemtime;
+
     protected function getItemFile()
     {
         return Yii::$app->getRuntimePath() . '/rbac-items.php';
@@ -46,6 +59,7 @@ class PhpManagerTest extends ManagerTestCase
 
     protected function setUp()
     {
+        static::$filemtime = null;
         parent::setUp();
         $this->mockApplication();
         $this->removeDataFiles();
@@ -55,11 +69,13 @@ class PhpManagerTest extends ManagerTestCase
     protected function tearDown()
     {
         $this->removeDataFiles();
+        static::$filemtime = null;
         parent::tearDown();
     }
 
     public function testSaveLoad()
     {
+        static::$filemtime = time();
         $this->prepareData();
 
         $items = $this->auth->items;
