@@ -140,6 +140,47 @@ You may specify various container HTML options passing arrays to:
 Data column is for displaying and sorting data. It is default column type so specifying class could be omitted when
 using it.
 
+Attribute `format` can be set as a string or an array:
+
+```php
+<?=
+GridView::widget(
+    [
+        'columns' => [
+            [
+                'format' => 'text',
+            ],
+            // or
+            [
+                'format' => ['text', []],
+            ],
+        ],
+    ]
+); ?>
+```
+By default format supports formats such as methods in a class [[\yii\base\Formatter]] that begins with "as ..".
+For type "xyz", the method "asXyz" will be used. For example, if the format is "html", then [[\yii\base\Formatter::asHtml()]] will be used. Format names are case insensitive.
+
+You may specify various format options passing arrays to:
+
+- [[\yii\base\Formatter::asRaw()|raw]] - Raw Formats the value as is without any formatting.
+- [[\yii\base\Formatter::asText()|text]] - Formats the value as an HTML-encoded plain text. Is used by default.
+- [[\yii\base\Formatter::asNtext()|ntext]] - Formats the value as an HTML-encoded plain text with newlines converted into breaks.
+- [[\yii\base\Formatter::asParagraphs()|paragraphs]] - Formats the value as HTML-encoded text paragraphs.
+- [[\yii\base\Formatter::asHtml()|html]] - The value will be purified using [[HtmlPurifier]] to avoid XSS attacks. You can use `['html', ['Attr.AllowedFrameTargets' => ['_blank']]]`
+- [[\yii\base\Formatter::asEmail()|email]] - Formats the value as a mailto link.
+- [[\yii\base\Formatter::asImage()|image]] - Formats the value as an image tag.
+- [[\yii\base\Formatter::asUrl()|url]] - Formats the value as a hyperlink.
+- [[\yii\base\Formatter::asBoolean()|boolean]] - Formats the value as a boolean. Use `Yii::$app->formatter->booleanFormat = ['Nooooo','It is true'];` before GridView for custom values.
+- [[\yii\base\Formatter::asDate()|date]] - Formats the value as a date.
+- [[\yii\base\Formatter::asTime()|time]] - Formats the value as a time.
+- [[\yii\base\Formatter::asDatetime()|datetime]] - Formats the value as a datetime.
+- [[\yii\base\Formatter::asInteger()|integer]] -  Formats the value as an integer.
+- [[\yii\base\Formatter::asDouble()|double]] - Formats the value as a double number.
+- [[\yii\base\Formatter::asNumber()|number]] - Formats the value as a number with decimal and thousand separators.
+- [[\yii\base\Formatter::asSize()|size]] - Formats the value in bytes as a size in human readable form.
+- [[\yii\base\Formatter::asRelativeTime()|relativeTime]] - Formats the value as the time interval between a date and now in human readable form.
+
 TBD
 
 #### Action column
