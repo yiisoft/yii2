@@ -75,6 +75,7 @@ Yii Framework 2 Change Log
 - Bug #4453: `yii message/extract` wasn't properly writing to po files in case of multiple categories (samdark)
 - Bug #4469: Make `Security::compareString()` timing depend only on length of `$actual` input and add unit test. (tom--)
 - Bug #4470: Avoid endless loop when exporting logs with low values of flushInterval and eportInterval (cebe)
+- Bug #4497: Fixed StringHelper::byteSubstr() returning empty string on null $length param (mbman)
 - Bug #4514: Fixed Request class crashing when empty CSRF token value is sent in cookie (cebe)
 - Bug #4519: `yii\base\Model::isAttributeRequired()` should check if the `when` option of the validator is set (thiagotalma)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
