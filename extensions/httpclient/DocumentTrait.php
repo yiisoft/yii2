@@ -158,7 +158,19 @@ trait DocumentTrait
      */
     public function getFormat()
     {
+        if ($this->_format === null) {
+            $this->_format = $this->defaultFormat();
+        }
         return $this->_format;
+    }
+
+    /**
+     * Returns default format name.
+     * @return string default format name.
+     */
+    protected function defaultFormat()
+    {
+        return DocumentInterface::FORMAT_URLENCODED;
     }
 
     /**
@@ -202,6 +214,14 @@ trait DocumentTrait
         if (array_key_exists($format, $this->formatters)) {
             return Yii::createObject($this->formatters[$format]);
         } else {
+            $defaultFormatters = [
+                DocumentInterface::FORMAT_URLENCODED => 'yii\httpclient\FormatterUrlEncoded',
+                DocumentInterface::FORMAT_JSON => 'yii\httpclient\FormatterJson',
+                //DocumentInterface::FORMAT_XML => 'yii\httpclient\FormatterXml',
+            ];
+            if (array_key_exists($format, $defaultFormatters)) {
+                return Yii::createObject($defaultFormatters[$format]);
+            }
             throw new InvalidConfigException("Unrecognized format '{$format}'");
         }
     }
@@ -216,6 +236,14 @@ trait DocumentTrait
         if (array_key_exists($format, $this->parsers)) {
             return Yii::createObject($this->parsers[$format]);
         } else {
+            $defaultParsers = [
+                DocumentInterface::FORMAT_URLENCODED => 'yii\httpclient\ParserUrlEncoded',
+                DocumentInterface::FORMAT_JSON => 'yii\httpclient\ParserJson',
+                DocumentInterface::FORMAT_XML => 'yii\httpclient\ParserXml',
+            ];
+            if (array_key_exists($format, $defaultParsers)) {
+                return Yii::createObject($defaultParsers[$format]);
+            }
             throw new InvalidConfigException("Unrecognized format '{$format}'");
         }
     }

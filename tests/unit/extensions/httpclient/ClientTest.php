@@ -63,6 +63,21 @@ class ClientTest extends TestCase
     /**
      * @depends testSend
      */
+    public function testSendPost()
+    {
+        $client = new Client();
+        $client->baseUrl = 'http://uk.php.net';
+        $response = $client->createRequest()
+            ->setMethod('post')
+            ->setUrl('search.php')
+            ->setData(['pattern' => 'curl'])
+            ->send();
+        $this->assertTrue($response->isOk());
+    }
+
+    /**
+     * @depends testSend
+     */
     public function testBatchSend()
     {
         $client = new Client();

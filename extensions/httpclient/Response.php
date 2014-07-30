@@ -22,17 +22,6 @@ class Response extends Object implements DocumentInterface
     use DocumentTrait;
 
     /**
-     * @inheritdoc
-     */
-    public function getFormat()
-    {
-        if ($this->_format === null) {
-            $this->_format = $this->detectFormat();
-        }
-        return $this->_format;
-    }
-
-    /**
      * Returns status code.
      * @throws Exception on failure.
      * @return string status code.
@@ -58,10 +47,10 @@ class Response extends Object implements DocumentInterface
     }
 
     /**
-     * Automatically detects response format
+     * Returns default format automatically detected from headers and content.
      * @return null|string format name, 'null' - if detection failed.
      */
-    protected function detectFormat()
+    protected function defaultFormat()
     {
         $format = $this->detectFormatByHeaders($this->getHeaders());
         if ($format === null) {
