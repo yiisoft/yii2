@@ -106,6 +106,7 @@ class Module extends ServiceLocator
      * [[Controller::defaultAction]].
      */
     public $defaultRoute = 'default';
+
     /**
      * @var string the root directory of the module.
      */
@@ -126,6 +127,7 @@ class Module extends ServiceLocator
      * @var array list of currently requested modules indexed by their class names
      */
     private static $_instances = [];
+
 
     /**
      * Constructor.

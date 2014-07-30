@@ -78,6 +78,7 @@ class TimestampBehavior extends AttributeBehavior
      */
     public $value;
 
+
     /**
      * @inheritdoc
      */

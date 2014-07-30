@@ -31,6 +31,7 @@ class Markdown extends \cebe\markdown\Parser
         '_', // underscore
     ];
 
+
     /**
      * @inheritDoc
      */

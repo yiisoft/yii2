@@ -54,7 +54,6 @@ use yii\web\Response;
  * }
  * ```
  *
- *
  * @author Philippe Gaultier <pgaultier@gmail.com>
  * @since 2.0
  */
@@ -82,6 +81,7 @@ class Cors extends ActionFilter
         'Access-Control-Allow-Credentials' => null,
         'Access-Control-Max-Age' => 86400,
     ];
+
 
     /**
      * @inheritdoc

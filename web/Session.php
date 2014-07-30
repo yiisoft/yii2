@@ -79,12 +79,14 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var \SessionHandlerInterface|array an object implementing the SessionHandlerInterface or a configuration array. If set, will be used to provide persistency instead of build-in methods.
      */
     public $handler;
+
     /**
      * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
      * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httponly'
      * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
      */
     private $_cookieParams = ['httponly' => true];
+
 
     /**
      * Initializes the application component.

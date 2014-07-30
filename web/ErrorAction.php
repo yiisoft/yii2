@@ -66,6 +66,7 @@ class ErrorAction extends Action
      */
     public $defaultMessage;
 
+
     /**
      * Runs the action
      *

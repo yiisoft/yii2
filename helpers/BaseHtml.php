@@ -80,6 +80,7 @@ class BaseHtml
         'media',
     ];
 
+
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
@@ -797,13 +798,13 @@ class BaseHtml
         if (!array_key_exists('size', $options)) {
             $options['size'] = 4;
         }
-        if (!empty($options['multiple']) && substr($name, -2) !== '[]') {
+        if (!empty($options['multiple']) && !empty($name) && substr_compare($name, '[]', -2)) {
             $name .= '[]';
         }
         $options['name'] = $name;
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
-            if (substr_compare($name, '[]', -2) === 0) {
+            if (!empty($name) && substr_compare($name, '[]', -2) === 0) {
                 $name = substr($name, 0, -2);
             }
             $hidden = static::hiddenInput($name, $options['unselect']);

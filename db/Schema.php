@@ -64,6 +64,14 @@ abstract class Schema extends Object
      */
     public $defaultSchema;
     /**
+     * @var array map of DB errors and corresponding exceptions
+     * If left part is found in DB error message exception class from the right part is used.
+     */
+    public $exceptionMap = [
+        'SQLSTATE[23' => 'yii\db\IntegrityException',
+    ];
+
+    /**
      * @var array list of ALL table names in the database
      */
     private $_tableNames = [];
@@ -76,13 +84,6 @@ abstract class Schema extends Object
      */
     private $_builder;
 
-    /**
-     * @var array map of DB errors and corresponding exceptions
-     * If left part is found in DB error message exception class from the right part is used.
-     */
-    public $exceptionMap = [
-        'SQLSTATE[23' => 'yii\db\IntegrityException',
-    ];
 
     /**
      * Loads the metadata for the specified table.
