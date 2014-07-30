@@ -442,7 +442,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function isAttributeRequired($attribute)
     {
         foreach ($this->getActiveValidators($attribute) as $validator) {
-            if ($validator instanceof RequiredValidator && !$validator->when) {
+            if ($validator instanceof RequiredValidator && $validator->when === null) {
                 return true;
             }
         }
