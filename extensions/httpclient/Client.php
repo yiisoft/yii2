@@ -8,28 +8,28 @@
 namespace yii\httpclient;
 
 use yii\base\Exception;
-use yii\base\Object;
+use yii\base\Component;
 use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
- * Class Client
+ * Client provide high level interface for HTTP requests execution.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class Client extends Object
+class Client extends Component
 {
     /**
-     * @var string
+     * @var string base request URL.
      */
     public $baseUrl;
     /**
-     * @var array
+     * @var array request object configuration.
      */
     public $requestConfig = [];
     /**
-     * @var array
+     * @var array response config configuration.
      */
     public $responseConfig = [];
 
@@ -65,9 +65,10 @@ class Client extends Object
     }
 
     /**
+     * Performs given request.
      * @param Request $request request to be sent.
      * @return Response response instance.
-     * @throws Exception
+     * @throws Exception on failure.
      */
     public function send($request)
     {
@@ -90,8 +91,9 @@ class Client extends Object
     }
 
     /**
-     * @param Request[] $requests
-     * @return Response[]
+     * Performs multiple HTTP requests in parallel.
+     * @param Request[] $requests requests to perform.
+     * @return Response[] responses list.
      */
     public function batchSend(array $requests)
     {

@@ -12,7 +12,7 @@ use yii\base\Object;
 use yii\web\HeaderCollection;
 
 /**
- * Class Response
+ * Response represents HTTP request response.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0

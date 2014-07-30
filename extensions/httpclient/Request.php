@@ -10,7 +10,7 @@ namespace yii\httpclient;
 use yii\base\Object;
 
 /**
- * Class Request
+ * Request represents HTTP request.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -20,7 +20,7 @@ class Request extends Object implements DocumentInterface
     use DocumentTrait;
 
     /**
-     * @var Client
+     * @var Client owner client instance.
      */
     public $client;
     /**

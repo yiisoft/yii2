@@ -35,19 +35,19 @@ trait DocumentTrait
      */
     public $parsers = [];
     /**
-     * @var HeaderCollection
+     * @var HeaderCollection headers.
      */
     private $_headers;
     /**
-     * @var string|null
+     * @var string|null raw content
      */
     private $_content;
     /**
-     * @var array
+     * @var array content data
      */
     private $_data;
     /**
-     * @var string
+     * @var string content format name
      */
     private $_format;
 
