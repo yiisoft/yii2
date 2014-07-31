@@ -82,14 +82,13 @@ class MemCache extends Cache
      * @see http://ca2.php.net/manual/en/memcached.setoptions.php
      */
     public $options;
-
     /**
-     * @var string memcached sasl username
+     * @var string memcached sasl username. This property is used only when [[useMemcached]] is true.
      * @see http://php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $username;
     /**
-     * @var string memcached sasl password
+     * @var string memcached sasl password. This property is used only when [[useMemcached]] is true.
      * @see http://php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $password;
