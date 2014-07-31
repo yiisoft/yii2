@@ -111,22 +111,46 @@ trait ActiveQueryTrait
     private function createModels($rows)
     {
         $models = [];
+
+        // If a join query is performed, force indexing to avoid duplicated rows.
+        if (!empty($this->join) && $this->indexBy === null) {
+            /* @var $class ActiveRecord */
+            $class = $this->modelClass;
+            $pks = $class::primaryKey();
+
+            if (count($pks) > 1) {
+                $indexBy = function ($row) use ($pks) {
+                    $key = [];
+                    foreach ($pks as $pk) {
+                        $key[] = $row[$pk];
+                    }
+                    return serialize($key);
+                };
+            } else {
+                $indexBy = reset($pks);
+            }
+        } else {
+            $indexBy = $this->indexBy;
+        }
+
         if ($this->asArray) {
-            if ($this->indexBy === null) {
+            if ($indexBy === null) {
                 return $rows;
             }
             foreach ($rows as $row) {
-                if (is_string($this->indexBy)) {
-                    $key = $row[$this->indexBy];
+                if (is_string($indexBy)) {
+                    $key = $row[$indexBy];
                 } else {
-                    $key = call_user_func($this->indexBy, $row);
+                    $key = call_user_func($indexBy, $row);
                 }
-                $models[$key] = $row;
+                if (!isset($models[$key])) {
+                    $models[$key] = $row;
+                }
             }
         } else {
             /* @var $class ActiveRecord */
             $class = $this->modelClass;
-            if ($this->indexBy === null) {
+            if ($indexBy === null) {
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
                     $class::populateRecord($model, $row);
@@ -136,17 +160,23 @@ trait ActiveQueryTrait
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
                     $class::populateRecord($model, $row);
-                    if (is_string($this->indexBy)) {
-                        $key = $model->{$this->indexBy};
+                    if (is_string($indexBy)) {
+                        $key = $model->{$indexBy};
                     } else {
-                        $key = call_user_func($this->indexBy, $model);
+                        $key = call_user_func($indexBy, $model);
                     }
-                    $models[$key] = $model;
+                    if (!isset($models[$key])) {
+                        $models[$key] = $model;
+                    }
                 }
             }
         }
 
-        return $models;
+        if ($this->indexBy === null) {
+            return array_values($models);
+        } else {
+            return $models;
+        }
     }
 
     /**

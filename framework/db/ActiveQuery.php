@@ -174,9 +174,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         $models = $this->createModels($rows);
-        if (!empty($this->join) && $this->indexBy === null) {
-            $models = $this->removeDuplicatedModels($models);
-        }
         if (!empty($this->with)) {
             $this->findWith($this->with, $models);
         }
@@ -187,47 +184,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         return $models;
-    }
-
-    /**
-     * Removes duplicated models by checking their primary key values.
-     * This method is mainly called when a join query is performed, which may cause duplicated rows being returned.
-     * @param array $models the models to be checked
-     * @return array the distinctive models
-     */
-    private function removeDuplicatedModels($models)
-    {
-        $hash = [];
-        /* @var $class ActiveRecord */
-        $class = $this->modelClass;
-        $pks = $class::primaryKey();
-
-        if (count($pks) > 1) {
-            foreach ($models as $i => $model) {
-                $key = [];
-                foreach ($pks as $pk) {
-                    $key[] = $model[$pk];
-                }
-                $key = serialize($key);
-                if (isset($hash[$key])) {
-                    unset($models[$i]);
-                } else {
-                    $hash[$key] = true;
-                }
-            }
-        } else {
-            $pk = reset($pks);
-            foreach ($models as $i => $model) {
-                $key = $model[$pk];
-                if (isset($hash[$key])) {
-                    unset($models[$i]);
-                } elseif ($key !== null) {
-                    $hash[$key] = true;
-                }
-            }
-        }
-
-        return array_values($models);
     }
 
     /**
