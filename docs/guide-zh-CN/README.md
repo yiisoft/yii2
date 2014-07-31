@@ -39,7 +39,7 @@ Yii 2.0 权威指南
 * **已定稿** [小部件（Widget）](structure-widgets.md)
 * **已定稿** [模块（Module）](structure-modules.md)
 * **编撰中** [前端资源（Asset）](structure-assets.md)
-* **待定中** [扩展（extensions）](structure-extensions.md)
+* **已定稿** [扩展（extensions）](structure-extensions.md)
 
 请求处理
 --------
@@ -144,16 +144,6 @@ RESTful Web 服务
 * **待定中** [验收测试](test-acceptance.md)
 * **编撰中** [测试夹具](test-fixtures.md)
 
-扩展 Yii
---------
-
-* **编撰中** [创建扩展](extend-creating-extensions.md)
-* **编撰中** [定制核心代码](extend-customizing-core.md)
-* **编撰中** [使用第三方库](extend-using-libs.md)
-* **待定中** [在第三方系统使用 Yii](extend-embedding-in-others.md)
-* **待定中** [Yii 1.1 和 2.0 共用](extend-using-v1-v2.md)
-* **编撰中** [使用依赖包管理器 Composer](extend-using-composer.md)
-
 
 高级专题
 --------
@@ -167,6 +157,7 @@ RESTful Web 服务
 * **编撰中** [性能优化](tutorial-performance-tuning.md)
 * **待定中** [共享主机环境](tutorial-shared-hosting.md)
 * **编撰中** [模板引擎](tutorial-template-engines.md)
+* **已定稿** [集成第三方代码](tutorial-yii-integration.md)
 
 小部件
 ------

@@ -38,10 +38,12 @@ abstract class Mutex extends Component
      * acquire in this process must be released in any case (regardless any kind of errors or exceptions).
      */
     public $autoRelease = true;
+
     /**
      * @var string[] names of the locks acquired in the current PHP process.
      */
     private $_locks = [];
+
 
     /**
      * Initializes the mutex component.

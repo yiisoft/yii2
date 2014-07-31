@@ -164,6 +164,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
      * More info in [Faker](https://github.com/fzaninotto/Faker.) library docs.
      */
     public $providers = [];
+
     /**
      * @var \Faker\Generator Faker generator instance
      */

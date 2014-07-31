@@ -68,6 +68,7 @@ class Alert extends Widget
      */
     public $closeButton = [];
 
+
     /**
      * Initializes the widget.
      */

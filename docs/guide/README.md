@@ -151,9 +151,9 @@ Testing
 -------
 
 * [Overview](test-overview.md)
-* **TBD** [Unit Tests](test-unit.md)
-* **TBD** [Functional Tests](test-functional.md)
-* **TBD** [Acceptance Tests](test-acceptance.md)
+* [Unit Tests](test-unit.md)
+* [Functional Tests](test-functional.md)
+* [Acceptance Tests](test-acceptance.md)
 * [Fixtures](test-fixtures.md)
 
 

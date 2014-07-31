@@ -422,7 +422,7 @@ use Yii;
 use yii\rbac\Rule;
 
 /**
- * Checks if authorID matches user passed via params
+ * Checks if user group matches
  */
 class UserGroupRule extends Rule
 {

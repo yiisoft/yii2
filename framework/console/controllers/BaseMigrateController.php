@@ -41,6 +41,7 @@ abstract class BaseMigrateController extends Controller
      */
     public $templateFile;
 
+
     /**
      * @inheritdoc
      */
@@ -363,6 +364,7 @@ abstract class BaseMigrateController extends Controller
      *
      * @param integer $limit the maximum number of migrations to be displayed.
      * If it is 0, the whole migration history will be displayed.
+     * @throws \yii\console\Exception if invalid limit value passed
      */
     public function actionHistory($limit = 10)
     {
@@ -371,7 +373,7 @@ abstract class BaseMigrateController extends Controller
         } else {
             $limit = (int) $limit;
             if ($limit < 1) {
-                throw new Exception("The step argument must be greater than 0.");
+                throw new Exception("The limit must be greater than 0.");
             }
         }
 
@@ -406,6 +408,7 @@ abstract class BaseMigrateController extends Controller
      *
      * @param integer $limit the maximum number of new migrations to be displayed.
      * If it is 0, all available new migrations will be displayed.
+     * @throws \yii\console\Exception if invalid limit value passed
      */
     public function actionNew($limit = 10)
     {
@@ -414,7 +417,7 @@ abstract class BaseMigrateController extends Controller
         } else {
             $limit = (int) $limit;
             if ($limit < 1) {
-                throw new Exception("The step argument must be greater than 0.");
+                throw new Exception("The limit must be greater than 0.");
             }
         }
 

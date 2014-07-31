@@ -342,6 +342,12 @@ trait QueryTrait
         return $this;
     }
 
+    /**
+     * Normalizes format of ORDER BY data
+     *
+     * @param array|string $columns
+     * @return array
+     */
     protected function normalizeOrderBy($columns)
     {
         if (is_array($columns)) {

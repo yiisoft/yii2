@@ -41,6 +41,7 @@ class BaseImage
      * gmagick driver definition.
      */
     const DRIVER_GMAGICK = 'gmagick';
+
     /**
      * @var array|string the driver to use. This can be either a single driver name or an array of driver names.
      * If the latter, the first available driver will be used.
@@ -51,6 +52,7 @@ class BaseImage
      * @var ImagineInterface instance.
      */
     private static $_imagine;
+
 
     /**
      * Returns the `Imagine` object that supports various image manipulations.

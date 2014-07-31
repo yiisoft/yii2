@@ -24,6 +24,7 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
     public $layout = '@yii/apidoc/templates/bootstrap/layouts/api.php';
     public $indexView = '@yii/apidoc/templates/bootstrap/views/index.php';
 
+
     /**
      * @inheritdoc
      */

@@ -24,23 +24,20 @@ class BaseDoc extends Object
      * @var \phpDocumentor\Reflection\DocBlock\Context
      */
     public $phpDocContext;
-
     public $name;
-
     public $sourceFile;
     public $startLine;
     public $endLine;
-
     public $shortDescription;
     public $description;
     public $since;
     public $deprecatedSince;
     public $deprecatedReason;
-
     /**
      * @var \phpDocumentor\Reflection\DocBlock\Tag[]
      */
     public $tags = [];
+
 
     public function hasTag($name)
     {

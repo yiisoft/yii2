@@ -70,8 +70,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->auth = new DbManager(['db' => $this->getConnection()]);
-
+        $this->auth = $this->createManager();
     }
 
     protected function tearDown()
@@ -104,5 +103,13 @@ abstract class DbManagerTestCase extends ManagerTestCase
             static::$db = $db;
         }
         return static::$db;
+    }
+
+    /**
+     * @return \yii\rbac\ManagerInterface
+     */
+    protected function createManager()
+    {
+        return new DbManager(['db' => $this->getConnection()]);
     }
 }

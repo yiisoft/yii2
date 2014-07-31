@@ -15,8 +15,6 @@ return [
     // with the existing ones. Defaults to false, which means the new (untranslated)
     // messages will be separated from the old (translated) ones.
     'sort' => false,
-    // boolean, whether the message file should be overwritten with the merged messages
-    'overwrite' => true,
     // boolean, whether to remove messages that no longer appear in the source code.
     // Defaults to false, which means each of these messages will be enclosed with a pair of '@@' marks.
     'removeUnused' => false,
@@ -47,6 +45,8 @@ return [
     'format' => 'php',
     // Root directory containing message translations.
     'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
+    // boolean, whether the message file should be overwritten with the merged messages
+    'overwrite' => true,
 
 
     /*
@@ -67,5 +67,7 @@ return [
     'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
     // Name of the file that will be used for translations.
     'catalog' => 'messages',
+    // boolean, whether the message file should be overwritten with the merged messages
+    'overwrite' => true,
     */
 ];

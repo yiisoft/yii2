@@ -23,11 +23,11 @@ class Profile extends Base
      * @var string method attribute input search value
      */
     public $category;
-
     /**
      * @var integer info attribute input search value
      */
     public $info;
+
 
     /**
      * @inheritdoc

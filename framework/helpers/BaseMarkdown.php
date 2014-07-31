@@ -45,6 +45,7 @@ class BaseMarkdown
      */
     public static $defaultFlavor = 'original';
 
+
     /**
      * Converts markdown into HTML.
      *

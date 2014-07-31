@@ -58,6 +58,7 @@ class Schema extends \yii\db\Schema
         'enum' => self::TYPE_STRING,
     ];
 
+
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.

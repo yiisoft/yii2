@@ -24,16 +24,15 @@ class Extension extends \Twig_Extension
      * @var array used namespaces
      */
     protected $namespaces = [];
-
     /**
      * @var array used class aliases
      */
     protected $aliases = [];
-
     /**
      * @var array used widgets
      */
     protected $widgets = [];
+
 
     /**
      * Creates new instance
@@ -72,6 +71,7 @@ class Extension extends \Twig_Extension
             new \Twig_SimpleFunction('path', [$this, 'path']),
             new \Twig_SimpleFunction('url', [$this, 'url']),
             new \Twig_SimpleFunction('void', function(){}),
+            new \Twig_SimpleFunction('set', [$this, 'setProperty']),
         ];
 
         $options = array_merge($options, [
@@ -186,6 +186,11 @@ class Extension extends \Twig_Extension
     public function url($path, $args = [])
     {
         return Url::to(array_merge([$path], $args), true);
+    }
+
+    public function setProperty($object, $property, $value)
+    {
+        $object->$property = $value;
     }
 
     /**

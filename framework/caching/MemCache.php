@@ -83,6 +83,17 @@ class MemCache extends Cache
      */
     public $options;
     /**
+     * @var string memcached sasl username. This property is used only when [[useMemcached]] is true.
+     * @see http://php.net/manual/en/memcached.setsaslauthdata.php
+     */
+    public $username;
+    /**
+     * @var string memcached sasl password. This property is used only when [[useMemcached]] is true.
+     * @see http://php.net/manual/en/memcached.setsaslauthdata.php
+     */
+    public $password;
+
+    /**
      * @var \Memcache|\Memcached the Memcache instance
      */
     private $_cache = null;
@@ -200,6 +211,10 @@ class MemCache extends Cache
 
             if ($this->useMemcached) {
                 $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached;
+                if ($this->username !== null || $this->password !== null) {
+                    $this->_cache->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
+                    $this->_cache->setSaslAuthData($this->username, $this->password);
+                }
                 if (!empty($this->options)) {
                     $this->_cache->setOptions($this->options);
                 }

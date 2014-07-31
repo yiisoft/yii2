@@ -30,6 +30,7 @@ abstract class BaseController extends Controller
      */
     public $exclude;
 
+
     protected function normalizeTargetDir($target)
     {
         $target = rtrim(Yii::getAlias($target), '\\/');

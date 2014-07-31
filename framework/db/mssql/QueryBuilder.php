@@ -17,8 +17,6 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
-    protected $_oldMssql;
-
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
@@ -233,7 +231,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @return boolean if MSSQL used is old
+     * @var boolean whether MSSQL used is old.
+     */
+    private $_oldMssql;
+
+    /**
+     * @return boolean whether MSSQL used is old.
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
