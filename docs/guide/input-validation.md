@@ -487,6 +487,7 @@ predefined variables:
 - `attribute`: the name of the attribute being validated.
 - `value`: the value being validated.
 - `messages`: an array used to hold the validation error messages for the attribute.
+- `deferred`: an array which deferred objects can be pushed into.
 
 In the following example, we create a `StatusValidator` which validates if an input is a valid status input
 against the existing status data. The validator supports both server side and client side validation.
@@ -534,6 +535,57 @@ JS;
     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 ]
 ```
+
+### Deferred validation
+
+If you need to perform any asynchronous validation you can use a [deferred object](http://api.jquery.com/category/deferred-object/).
+
+deferred objects must be pushed to the ```deferred``` array for validation to use them.
+Once any asynchronous validation has finished you must call ```resolve()``` on the Deferred object for it to complete.
+
+This example shows reading an image to check the dimensions client side (```file``` will be from an input of type=file).
+```php
+...
+public function clientValidateAttribute($model, $attribute, $view)
+{
+    return <<<JS
+    var def = $.Deferred();
+    var img = new Image();
+    img.onload = function() {
+        if (this.width > 150) {
+            messages.push('Image too wide!!');
+        }
+        def.resolve();
+    }
+    var reader = new FileReader();
+    reader.onloadend = function() {
+        img.src = reader.result;
+    }
+    reader.readAsDataURL(file);
+
+    deferred.push(def);
+JS;
+}
+...
+```
+
+Ajax can also be used and pushed straight into the deferred array.
+```
+deferred.push($.get("/check", {value: value}).done(function(data) {
+    if ('' !== data) {
+        messages.push(data);
+    }
+}));
+```
+
+The ```deferred``` array also has a shortcut method ```add```.
+```
+deferred.add(function(def) {
+    //Asynchronous Validation here
+    //The context of this function and the first argument is the Deferred object where resolve can be called.
+});
+```
+>   Note: `resolve` must be called on any deferred objects after the attribute has been validated or the main form validation will not complete.
 
 ### Ajax validation
 
