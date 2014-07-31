@@ -140,7 +140,11 @@ You may specify various container HTML options passing arrays to:
 Data column is for displaying and sorting data. It is default column type so specifying class could be omitted when
 using it.
 
-Attribute `format` can be set as a string or an array:
+
+**Attribute `format`.**
+Data column uses component [[\yii\base\Formatter|Formatter]] of application for own attribute `format` by default. `Formatter` is configured as an application component in [[\yii\base\Application]] by default. You can access that instance via `Yii::$app->formatter` also.
+
+It can be set as a string or an array for Data column:
 
 ```php
 <?=
