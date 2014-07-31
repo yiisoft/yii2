@@ -197,7 +197,7 @@ class Generator extends \yii\gii\Generator
                 $labels[$column->name] = 'ID';
             } else {
                 $label = Inflector::camel2words($column->name);
-                if (!empty($label) && substr_compare($label, ' id', -3, null, true)) {
+                if (!empty($label) && substr_compare($label, ' id', -3, 3, true)) {
                     $label = substr($label, 0, -3) . ' ID';
                 }
                 $labels[$column->name] = $label;
@@ -429,7 +429,7 @@ class Generator extends \yii\gii\Generator
      */
     protected function generateRelationName($relations, $className, $table, $key, $multiple)
     {
-        if (!empty($key) && substr_compare($key, 'id', -2, null, true) === 0 && strcasecmp($key, 'id')) {
+        if (!empty($key) && substr_compare($key, 'id', -2, 2, true) === 0 && strcasecmp($key, 'id')) {
             $key = rtrim(substr($key, 0, -2), '_');
         }
         if ($multiple) {
