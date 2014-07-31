@@ -487,7 +487,7 @@ predefined variables:
 - `attribute`: the name of the attribute being validated.
 - `value`: the value being validated.
 - `messages`: an array used to hold the validation error messages for the attribute.
-- `deferred`: an array which deferred objects can be pushed into.
+- `deferred`: an array which deferred objects can be pushed into (explained in the next subsection).
 
 In the following example, we create a `StatusValidator` which validates if an input is a valid status input
 against the existing status data. The validator supports both server side and client side validation.
@@ -536,71 +536,95 @@ JS;
 ]
 ```
 
-### Deferred validation
+### Deferred Validation <a name="deferred-validation"></a>
 
-If you need to perform any asynchronous validation you can use a [deferred object](http://api.jquery.com/category/deferred-object/).
+If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
+For example, to perform a custom AJAX validation, you can use the following code:
 
-deferred objects must be pushed to the ```deferred``` array for validation to use them.
-Once any asynchronous validation has finished you must call ```resolve()``` on the Deferred object for it to complete.
-
-This example shows reading an image to check the dimensions client side (```file``` will be from an input of type=file).
 ```php
-...
 public function clientValidateAttribute($model, $attribute, $view)
 {
     return <<<JS
-    var def = $.Deferred();
-    var img = new Image();
-    img.onload = function() {
-        if (this.width > 150) {
-            messages.push('Image too wide!!');
-        }
-        def.resolve();
-    }
-    var reader = new FileReader();
-    reader.onloadend = function() {
-        img.src = reader.result;
-    }
-    reader.readAsDataURL(file);
-
-    deferred.push(def);
+        deferred.push($.get("/check", {value: value}).done(function(data) {
+            if ('' !== data) {
+                messages.push(data);
+            }
+        }));
 JS;
 }
-...
 ```
 
-Ajax can also be used and pushed straight into the deferred array.
+In the above, the `deferred` variable is provided by Yii, which is an array of Deferred objects. The `$.get()`
+jQuery method creates a Deferred object which is pushed to the `deferred` array.
+
+You can also explicitly create a Deferred object and call its `resolve()` method when the asynchronous callback
+is hit. The following example shows how to validate the dimensions of an uploaded image file on the client side.
+
+```php
+public function clientValidateAttribute($model, $attribute, $view)
+{
+    return <<<JS
+        var def = $.Deferred();
+        var img = new Image();
+        img.onload = function() {
+            if (this.width > 150) {
+                messages.push('Image too wide!!');
+            }
+            def.resolve();
+        }
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            img.src = reader.result;
+        }
+        reader.readAsDataURL(file);
+
+        deferred.push(def);
+JS;
+}
 ```
-deferred.push($.get("/check", {value: value}).done(function(data) {
-    if ('' !== data) {
-        messages.push(data);
-    }
-}));
+
+> Note: The `resolve()` method must be called after the attribute has been validated. Otherwise the main form
+  validation will not complete.
+
+For simplicity, the `deferred` array is equipped with a shortcut method `add()` which automatically creates a Deferred
+object and add it to the `deferred` array. Using this method, you can simplify the above example as follows,
+
+```php
+public function clientValidateAttribute($model, $attribute, $view)
+{
+    return <<<JS
+        deferred.add(function(def) {
+            var img = new Image();
+            img.onload = function() {
+                if (this.width > 150) {
+                    messages.push('Image too wide!!');
+                }
+                def.resolve();
+            }
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                img.src = reader.result;
+            }
+            reader.readAsDataURL(file);
+        });
+JS;
+}
 ```
 
-The ```deferred``` array also has a shortcut method ```add```.
-```
-deferred.add(function(def) {
-    //Asynchronous Validation here
-    //The context of this function and the first argument is the Deferred object where resolve can be called.
-});
-```
->   Note: `resolve` must be called on any deferred objects after the attribute has been validated or the main form validation will not complete.
 
-### Ajax validation
+### AJAX Validation <a name="ajax-validation"></a>
 
-Some kind of validation can only be done on server side because only the server has the necessary information
-for example validating uniqueness of user names or email addresses.
-In this case you can use ajax based validation instead of client validation, which will trigger an ajax
-request in the background to validate the input while keeping the same user experience as with client validation.
+Some validations can only be done on the server side, because only the server has the necessary information.
+For example, to validate if a username is unique or not, it is necessary to check the user table on the server side.
+You can use AJAX-based validation in this case. It will trigger an AJAX request in the background to validate the
+input while keeping the same user experience as the regular client-side validation.
 
-To enable ajax validation for the whole form, you have to set the
-[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true`. You may also turn it on/off
-for individual input fields by configuring their [[yii\widgets\ActiveField::enableAjaxValidation]]
-property.
+To enable AJAX validation for the whole form, you have to set the
+[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true`. You may also turn it on or off
+for individual input fields by configuring their [[yii\widgets\ActiveField::enableAjaxValidation]] property.
 
-You also need to prepare the server so that it can handle the ajax request.
-This can be achived by a code snippet like the following, which has to be put into your action:
+You also need to prepare the server so that it can handle the AJAX validation requests.
+This can be achieved by a code snippet like the following in controller actions:
 
 ```php
 if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
@@ -609,5 +633,8 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 }
 ```
 
-The above code will check whether the current request is an ajax request and if yes, it will answer
+The above code will check whether the current request is an AJAX. If yes, it will respond to
 this request by running the validation and returning the errors in JSON format.
+
+> Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
+  However, the AJAX validation feature described here is more systematic and requires less coding effort.
