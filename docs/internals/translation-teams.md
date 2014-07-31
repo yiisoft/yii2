@@ -35,4 +35,4 @@ Ukrainian
 ---------
 
 - **Alexandr Bordun [@borales](https://github.com/Borales), admin@yiiframework.com.ua**
-- RichWeber [@RichWeber](https://github.com/RichWeber), rbagatyi@gmail.com
+- Roman Bahatyi [@RichWeber](https://github.com/RichWeber), rbagatyi@gmail.com
