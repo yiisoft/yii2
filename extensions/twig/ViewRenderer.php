@@ -143,7 +143,12 @@ class ViewRenderer extends BaseViewRenderer
     public function render($view, $file, $params)
     {
         $this->twig->addGlobal('this', $view);
-        $this->twig->setLoader(new FileLoader(dirname($file)));
+        $loader = new \Twig_Loader_Filesystem(dirname($file));
+
+        foreach (Yii::$aliases as $alias => $path) {
+            $loader->addPath($path, substr($alias, 1));
+        }
+        $this->twig->setLoader($loader);
 
         return $this->twig->render(pathinfo($file, PATHINFO_BASENAME), $params);
     }
