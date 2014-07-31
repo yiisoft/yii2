@@ -222,7 +222,11 @@ class Collection extends Object
         Yii::info($token, __METHOD__);
         try {
             Yii::beginProfile($token, __METHOD__);
-            $result = $this->mongoCollection->ensureIndex($keys, $options);
+            if (method_exists($this->mongoCollection, 'createIndex')) {
+                $result = $this->mongoCollection->createIndex($keys, $options);
+            } else {
+                $result = $this->mongoCollection->ensureIndex($keys, $options);
+            }
             $this->tryResultError($result);
             Yii::endProfile($token, __METHOD__);
 
