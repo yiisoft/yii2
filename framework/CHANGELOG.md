@@ -178,6 +178,7 @@ Yii Framework 2 Change Log
 - Enh: Added support for array attributes in `in` validator (creocoder)
 - Enh: Improved `yii\helpers\Inflector::slug` to support more cases for Russian, Hebrew and special characters (samdark)
 - Enh: ListView now uses the widget ID in the base tag, consistent to gridview (cebe)
+- Enh #4520: yii\caching/MemCache.php add sasl support (xjflyttp)
 - Chg #2287: Split `yii\db\ColumnSchema::typecast()` into two methods `phpTypecast()` and `dbTypecast()` to allow specifying PDO type explicitly (cebe)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
