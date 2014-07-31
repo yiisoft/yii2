@@ -146,7 +146,9 @@ class ViewRenderer extends BaseViewRenderer
         $loader = new \Twig_Loader_Filesystem(dirname($file));
 
         foreach (Yii::$aliases as $alias => $path) {
-            $loader->addPath($path, substr($alias, 1));
+            if (is_dir($path)) {
+                $loader->addPath($path, substr($alias, 1));
+            }
         }
         $this->twig->setLoader($loader);
 
