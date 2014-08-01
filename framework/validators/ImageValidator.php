@@ -158,4 +158,57 @@ class ImageValidator extends FileValidator
 
         return null;
     }
+    
+    /**
+     * @inheritdoc
+     */
+    public function clientValidateAttribute($object, $attribute, $view)
+    {
+        parent::clientValidateAttribute($object, $attribute, $view);
+        
+        $label = $object->getAttributeLabel($attribute);
+        
+        // Inherit options from FileValidator
+        $options = $this->_clientOptions;
+        
+        if ( $this->notImage !== null ) {
+            $options['notImage'] = Yii::$app->getI18n()->format($this->notImage, [
+                'attribute' => $label
+            ], Yii::$app->language);
+        }
+        
+        if ( $this->minWidth !== null ) {
+            $options['minWidth'] = $this->minWidth;
+            $options['underWidth'] = Yii::$app->getI18n()->format($this->underWidth, [
+                'attribute' => $label,
+                'limit' => $this->minWidth
+            ], Yii::$app->language);
+        }
+        
+        if ( $this->maxWidth !== null ) {
+            $options['maxWidth'] = $this->maxWidth;
+            $options['overWidth'] = Yii::$app->getI18n()->format($this->overWidth, [
+                'attribute' => $label,
+                'limit' => $this->maxWidth
+            ], Yii::$app->language);
+        }
+        
+        if ( $this->minHeight !== null ) {
+            $options['minHeight'] = $this->minHeight;
+            $options['underHeight'] = Yii::$app->getI18n()->format($this->underHeight, [
+                'attribute' => $label,
+                'limit' => $this->maxHeight
+            ], Yii::$app->language);
+        }
+        
+        if ( $this->maxHeight !== null ) {
+            $options['maxHeight'] = $this->maxHeight;
+            $options['overHeight'] = Yii::$app->getI18n()->format($this->overHeight, [
+                'attribute' => $label,
+                'limit' => $this->maxHeight
+            ], Yii::$app->language);
+        }
+        
+        return 'yii.validation.image(messages, ' . json_encode($options) . ', deferred, attribute);';
+    }
 }
