@@ -278,7 +278,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function isCoreFile($file)
     {
-        return $file === null || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
+        static $frameworkPath;
+        if ($frameworkPath === null) {
+            $frameworkPath = Yii::getAlias('@yii');
+        }
+        return $file === null || strpos(realpath($file), $frameworkPath . DIRECTORY_SEPARATOR) === 0;
     }
 
     /**

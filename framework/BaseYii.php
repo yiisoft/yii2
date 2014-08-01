@@ -18,10 +18,6 @@ use yii\di\Container;
  */
 defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
 /**
- * This constant defines the framework installation directory.
- */
-defined('YII_PATH') or define('YII_PATH', __DIR__);
-/**
  * This constant defines whether the application should be in debug mode or not. Defaults to false.
  */
 defined('YII_DEBUG') or define('YII_DEBUG', false);

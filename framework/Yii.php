@@ -23,5 +23,6 @@ class Yii extends \yii\BaseYii
 }
 
 spl_autoload_register(['Yii', 'autoload'], true, true);
+defined('YII2_PATH') or define('YII2_PATH', __DIR__);
 Yii::$classMap = include(__DIR__ . '/classes.php');
 Yii::$container = new yii\di\Container;
