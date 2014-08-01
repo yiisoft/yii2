@@ -1,6 +1,7 @@
 <?php
 namespace yiiunit\extensions\gii;
 
+use yii\gii\CodeFile;
 use yii\gii\generators\controller\Generator as ControllerGenerator;
 use yii\gii\generators\crud\Generator as CRUDGenerator;
 use yii\gii\generators\extension\Generator as ExtensionGenerator;
@@ -53,7 +54,11 @@ class GeneratorsTest extends GiiTestCase
         $generator->modelClass = 'Profile';
 
         if ($generator->validate()) {
-            $generator->generate();
+            $files = $generator->generate();
+            $modelCode = $files[0]->content;
+
+            $this->assertTrue(strpos($modelCode, "'id' => 'ID'") !== false, "ID label should be there:\n" . $modelCode);
+            $this->assertTrue(strpos($modelCode, "'description' => 'Description',") !== false, "Description label should be there:\n" . $modelCode);
         } else {
             print_r($generator->getErrors());
         }
