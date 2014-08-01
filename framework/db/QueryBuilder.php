@@ -1203,7 +1203,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function buildSimpleCondition($operator, $operands, &$params)
     {
-        if (!isset($operands[0], $operands[1])) {
+        if (empty($operands[0]) || !array_key_exists(1, $operands)) {
             throw new InvalidParamException("Operator '$operator' requires two operands.");
         }
 
@@ -1213,7 +1213,7 @@ class QueryBuilder extends \yii\base\Object
             $column = $this->db->quoteColumnName($column);
         }
 
-        $phName = self::PARAM_PREFIX . 0;
+        $phName = self::PARAM_PREFIX . count($params);
         $params[$phName] = $value === null ? 'NULL' : $value;
 
         return "$column $operator $phName";

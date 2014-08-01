@@ -259,7 +259,7 @@ $query->where(['>=', 'id', 10]);
 It will result in:
 
 ```sql
-SELECT id FROM user WHERE id > 10;
+SELECT id FROM user WHERE id >= 10;
 ```
 
 If you are building parts of condition dynamically it's very convenient to use `andWhere()` and `orWhere()`:

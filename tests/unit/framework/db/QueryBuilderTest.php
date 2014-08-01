@@ -198,12 +198,80 @@ class QueryBuilderTest extends DatabaseTestCase
         return $conditions;
     }
 
+    public function filterConditionProvider()
+    {
+        $conditions = [
+            // like
+            [ ['like', 'name', []], '', [] ],
+            [ ['not like', 'name', []], '', [] ],
+            [ ['or like', 'name', []], '', [] ],
+            [ ['or not like', 'name', []], '', [] ],
+
+            // not
+            [ ['not', ''], '', [] ],
+
+            // and
+            [ ['and', '', ''], '', [] ],
+            [ ['and', '', 'id=2'], '(id=2)', [] ],
+            [ ['and', 'id=1', ''], '(id=1)', [] ],
+            [ ['and', 'type=1', ['or', '', 'id=2']], '(type=1) AND ((id=2))', [] ],
+
+            // or
+            [ ['or', 'id=1', ''], '(id=1)', [] ],
+            [ ['or', 'type=1', ['or', '', 'id=2']], '(type=1) OR ((id=2))', [] ],
+
+
+            // between
+            [ ['between', 'id', 1, null], '', [] ],
+            [ ['not between', 'id', null, 10], '', [] ],
+
+            // in
+            [ ['in', 'id', []], '', [] ],
+            [ ['not in', 'id', []], '', [] ],
+
+            // TODO: exists and not exists
+
+            // simple conditions
+            [ ['=', 'a', ''], '', [] ],
+            [ ['>', 'a', ''], '', [] ],
+            [ ['>=', 'a', ''], '', [] ],
+            [ ['<', 'a', ''], '', [] ],
+            [ ['<=', 'a', ''], '', [] ],
+            [ ['<>', 'a', ''], '', [] ],
+            [ ['!=', 'a', ''], '', [] ],
+        ];
+
+        // adjust dbms specific escaping
+        foreach($conditions as $i => $condition) {
+            switch ($this->driverName) {
+                case 'mssql':
+                case 'mysql':
+                case 'sqlite':
+                    $conditions[$i][1] = str_replace('"', '`', $condition[1]);
+                    break;
+            }
+
+        }
+        return $conditions;
+    }
+
     /**
      * @dataProvider conditionProvider
      */
     public function testBuildCondition($condition, $expected, $expectedParams)
     {
         $query = (new Query())->where($condition);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedParams, $params);
+        $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $expected), $sql);
+    }
+
+    /**
+     * @dataProvider filterConditionProvider
+     */
+    public function testBuildFilterCondition($condition, $expected, $expectedParams)
+    {
+        $query = (new Query())->filterWhere($condition);
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedParams, $params);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $expected), $sql);
