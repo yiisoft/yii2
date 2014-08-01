@@ -44,6 +44,9 @@
         // a callback that is called after an attribute is validated. The signature of the callback should be:
         // function ($form, attribute, messages)
         afterValidate: undefined,
+        // a callback that is called after all validation has run. The signature of the callback should be:
+        // function ($form, data, messages)
+        validationComplete: undefined,
         // a pre-request callback function on AJAX-based validation. The signature of the callback should be:
         // function ($form, jqXHR, textStatus)
         ajaxBeforeSend: undefined,
@@ -159,6 +162,11 @@
                         errors.push(this.input);
                     }
                 });
+                
+                if (data.settings.validationComplete) {
+                    data.settings.validationComplete($form, data, messages);
+                }
+                
                 updateSummary($form, messages);
                 if (errors.length) {
                     var top = $form.find(errors.join(',')).first().offset().top;
