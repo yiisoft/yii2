@@ -96,6 +96,9 @@ class MessageController extends Controller
         if (!is_dir($config['sourcePath'])) {
             throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
         }
+        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
+            throw new Exception('Format should be either "php", "po" or "db".');
+        }
         if (in_array($config['format'], ['php', 'po'])) {
             if (!isset($config['messagePath'])) {
                 throw new Exception('The configuration file must specify "messagePath".');
@@ -105,9 +108,6 @@ class MessageController extends Controller
         }
         if (empty($config['languages'])) {
             throw new Exception("Languages cannot be empty.");
-        }
-        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
-            throw new Exception('Format should be either "php", "po" or "db".');
         }
 
         $files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
