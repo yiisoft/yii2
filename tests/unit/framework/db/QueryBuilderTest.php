@@ -152,10 +152,36 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['or like', 'name', ['heyho', 'abc']], '"name" LIKE :qp0 OR "name" LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
             [ ['or not like', 'name', ['heyho', 'abc']], '"name" NOT LIKE :qp0 OR "name" NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
 
-            // TODO add more conditions
-            // IN
-            // NOT
-            // ...
+            // not
+            [ ['not', 'name'], 'NOT (name)', [] ],
+
+            // and
+            [ ['and', 'id=1', 'id=2'], '(id=1) AND (id=2)', [] ],
+            [ ['and', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) AND ((id=1) OR (id=2))', [] ],
+
+            // or
+            [ ['or', 'id=1', 'id=2'], '(id=1) OR (id=2)', [] ],
+            [ ['or', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) OR ((id=1) OR (id=2))', [] ],
+
+
+            // between
+            [ ['between', 'id', 1, 10], '"id" BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
+            [ ['not between', 'id', 1, 10], '"id" NOT BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
+
+            // in
+            [ ['in', 'id', [1, 2, 3]], '"id" IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+            [ ['not in', 'id', [1, 2, 3]], '"id" NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+
+            // TODO: exists and not exists
+
+            // simple conditions
+            [ ['=', 'a', 'b'], '"a" = :qp0', [':qp0' => 'b'] ],
+            [ ['>', 'a', 1], '"a" > :qp0', [':qp0' => 1] ],
+            [ ['>=', 'a', 'b'], '"a" >= :qp0', [':qp0' => 'b'] ],
+            [ ['<', 'a', 2], '"a" < :qp0', [':qp0' => 2] ],
+            [ ['<=', 'a', 'b'], '"a" <= :qp0', [':qp0' => 'b'] ],
+            [ ['<>', 'a', 3], '"a" <> :qp0', [':qp0' => 3] ],
+            [ ['!=', 'a', 'b'], '"a" != :qp0', [':qp0' => 'b'] ],
         ];
 
         // adjust dbms specific escaping

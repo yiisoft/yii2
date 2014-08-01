@@ -90,6 +90,7 @@ Yii Framework 2 Change Log
 - Enh #1388: Added mapping from physical types to abstract types for OCI DB driver (qiangxue)
 - Enh #1452: Added `Module::getInstance()` to allow accessing the module instance from anywhere within the module (qiangxue)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
+- Enh #2315: Any operator now could be used with `yii\db\Query::->where()` operand format (samdark)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
 - Enh #2558: Enhanced support for memcached by adding `yii\caching\MemCache::persistentId` and `yii\caching\MemCache::options` (qiangxue)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
