@@ -168,7 +168,7 @@ class ImageValidator extends FileValidator
         
         $label = $object->getAttributeLabel($attribute);
         
-        // Inherit options from FileValidator
+        // Inherit client options from FileValidator
         $options = $this->_clientOptions;
         
         if ( $this->notImage !== null ) {
