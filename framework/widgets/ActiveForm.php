@@ -152,6 +152,16 @@ class ActiveForm extends Widget
      */
     public $afterValidate;
     /**
+     * @var string|JsExpression a JS callback that is called after all validation has run.
+     * The signature of the callback should be:
+     *
+     * ~~~
+     * function ($form, data, messages) {
+     * }
+     * ~~~
+     */
+    public $validationComplete;
+    /**
      * @var string|JsExpression a JS pre-request callback function on AJAX-based validation.
      * The signature of the callback should be:
      *
@@ -229,7 +239,7 @@ class ActiveForm extends Widget
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
         }
-        foreach (['beforeSubmit', 'beforeValidate', 'afterValidate', 'ajaxBeforeSend', 'ajaxComplete'] as $name) {
+        foreach (['beforeSubmit', 'beforeValidate', 'afterValidate', 'ajaxBeforeSend', 'ajaxComplete', 'validationComplete'] as $name) {
             if (($value = $this->$name) !== null) {
                 $options[$name] = $value instanceof JsExpression ? $value : new JsExpression($value);
             }
