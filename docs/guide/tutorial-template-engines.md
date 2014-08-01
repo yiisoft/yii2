@@ -56,7 +56,7 @@ return $this->render('renderer.twig', ['username' => 'Alex']);
 ### Template syntax
 
 The best resource to learn Twig basics is its official documentation you can find at
-[twig.sensiolabs.org](http://twig.sensiolabs.org/documentation). Additionally there are Yii-specific addtions
+[twig.sensiolabs.org](http://twig.sensiolabs.org/documentation). Additionally there are Yii-specific syntax extensions
 described below.
 
 #### Method and function calls
@@ -271,7 +271,13 @@ or `$this->renderPartial()` controller calls:
 return $this->render('renderer.tpl', ['username' => 'Alex']);
 ```
 
-### Additional functions
+### Template syntax
+
+The best resource to learn Smarty template syntax is its official documentation you can find at
+[www.smarty.net](http://www.smarty.net/docs/en/). Additionally there are Yii-specific syntax extensions
+described below.
+
+#### Additional functions
 
 Yii adds the following construct to the standard Smarty syntax:
 
@@ -281,7 +287,7 @@ Yii adds the following construct to the standard Smarty syntax:
 
 Internally, the `path()` function calls Yii's `Url::to()` method.
 
-### Additional variables
+#### Additional variables
 
 Within Smarty templates, you can also make use of these variables:
 
