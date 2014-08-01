@@ -272,20 +272,6 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Determines whether given name of the file belongs to the framework.
-     * @param string $file name to be checked.
-     * @return boolean whether given name of the file belongs to the framework.
-     */
-    public function isCoreFile($file)
-    {
-        static $frameworkPath;
-        if ($frameworkPath === null) {
-            $frameworkPath = Yii::getAlias('@yii');
-        }
-        return $file === null || strpos(realpath($file), $frameworkPath . DIRECTORY_SEPARATOR) === 0;
-    }
-
-    /**
      * Creates HTML containing link to the page with the information on given HTTP status code.
      * @param integer $statusCode to be used to generate information link.
      * @param string $statusDescription Description to display after the the status code.

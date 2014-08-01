@@ -137,16 +137,11 @@ class Logger extends Component
         $time = microtime(true);
         $traces = [];
         if ($this->traceLevel > 0) {
-            static $frameworkPath;
-            if ($frameworkPath === null) {
-                $frameworkPath = Yii::getAlias('@yii');
-            }
-
             $count = 0;
             $ts = debug_backtrace();
             array_pop($ts); // remove the last trace since it would be the entry script, not very useful
             foreach ($ts as $trace) {
-                if (isset($trace['file'], $trace['line']) && strpos($trace['file'], $frameworkPath) !== 0) {
+                if (isset($trace['file'], $trace['line']) && !\Yii::isCoreFile($trace['file'])) {
                     unset($trace['object'], $trace['args']);
                     $traces[] = $trace;
                     if (++$count >= $this->traceLevel) {

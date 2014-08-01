@@ -289,6 +289,16 @@ class BaseYii
     }
 
     /**
+     * Determines whether given name of the file belongs to the framework.
+     * @param string $file name to be checked.
+     * @return boolean whether given name of the file belongs to the framework.
+     */
+    public static function isCoreFile($file)
+    {
+        return !empty($file) && strpos(realpath($file), static::$aliases['@yii'] . DIRECTORY_SEPARATOR) === 0;
+    }
+
+    /**
      * Creates a new object using the given configuration.
      *
      * You may view this method as an enhanced version of the `new` operator.
