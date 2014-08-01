@@ -318,8 +318,6 @@ $query->orderBy([
 
 Here we are ordering by `id` ascending and then by `name` descending.
 
-```
-
 ### `GROUP BY` and `HAVING`
 
 In order to add `GROUP BY` to generated SQL you can use the following:
