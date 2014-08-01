@@ -995,7 +995,7 @@ class QueryBuilder extends Object
      */
     public function buildSimpleCondition($operator, $operands, &$params)
     {
-        if (empty($operands[0]) || !array_key_exists(1, $operands)) {
+        if (count($operands) !== 2) {
             throw new InvalidParamException("Operator '$operator' requires two operands.");
         }
 
