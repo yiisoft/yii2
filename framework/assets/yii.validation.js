@@ -122,8 +122,6 @@ yii.validation = (function ($) {
         file: function (messages, options, attribute) {
             var files = $(attribute.input).get(0).files,
                 self = this;
-        
-        
 
             if ( !self.globalFiles(files, messages, options) ) {
                 return;
