@@ -253,6 +253,14 @@ trait QueryTrait
                     return [];
                 }
                 break;
+            case 'BETWEEN':
+            case 'NOT BETWEEN':
+                if (array_key_exists(1, $condition) && array_key_exists(2, $condition)) {
+                    if ($this->isEmpty($condition[1]) || $this->isEmpty($condition[2])) {
+                        return [];
+                    }
+                }
+                break;
             case 'IN':
             case 'NOT IN':
             case 'LIKE':
@@ -263,20 +271,10 @@ trait QueryTrait
             case 'OR ILIKE':
             case 'NOT ILIKE':
             case 'OR NOT ILIKE':
+            default:
                 if (array_key_exists(1, $condition) && $this->isEmpty($condition[1])) {
                     return [];
                 }
-                break;
-            case 'BETWEEN':
-            case 'NOT BETWEEN':
-                if (array_key_exists(1, $condition) && array_key_exists(2, $condition)) {
-                    if ($this->isEmpty($condition[1]) || $this->isEmpty($condition[2])) {
-                        return [];
-                    }
-                }
-                break;
-            default:
-                throw new NotSupportedException("Operator not supported: $operator");
         }
 
         array_unshift($condition, $operator);
