@@ -216,7 +216,7 @@ class ModelTest extends TestCase
     public function testDefaultScenarios()
     {
         $singer = new Singer();
-        $this->assertEquals(['default' => ['lastName', 'underscore_style']], $singer->scenarios());
+        $this->assertEquals(['default' => ['lastName', 'underscore_style', 'test']], $singer->scenarios());
 
         $scenarios = [
             'default' => ['id', 'name', 'description'],
@@ -238,6 +238,13 @@ class ModelTest extends TestCase
         $singer = new Singer();
         $this->assertFalse($singer->isAttributeRequired('firstName'));
         $this->assertTrue($singer->isAttributeRequired('lastName'));
+
+        // attribute is not marked as required when a conditional validation is applied using `$when`.
+        // the condition should not be applied because this info may be retrieved before model is loaded with data
+        $singer->firstName = 'qiang';
+        $this->assertFalse($singer->isAttributeRequired('test'));
+        $singer->firstName = 'cebe';
+        $this->assertFalse($singer->isAttributeRequired('test'));
     }
 
     public function testCreateValidators()
