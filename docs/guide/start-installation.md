@@ -25,6 +25,10 @@ With Composer installed, you can install Yii by running the following command un
 
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
+Only develompment version
+
+    composer create-project --stability=dev --prefer-dist yiisoft/yii2-app-basic basic
+
 The above command installs Yii in a directory named `basic`.
 
 > Tip: If you want to install the latest development version of Yii, you may use the following command,
