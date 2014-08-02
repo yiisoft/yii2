@@ -73,13 +73,14 @@ yii.validation = (function ($) {
             if (options.message && !files) {
                 pub.addMessage(messages, options.message);
             }
-
-            if (!options.skipOnEmpty && files.length === 0) {
-                pub.addMessage(messages, options.uploadRequired);
-            } else if (files.length === 0) {
+            
+            if (files.length === 0) {
+                if (!options.skipOnEmpty) {
+                    pub.addMessage(messages, options.uploadRequired);
+                }
                 return false;
             }
-
+       
             if (options.maxFiles && options.maxFiles < files.length) {
                 pub.addMessage(messages, options.tooMany);
             }
