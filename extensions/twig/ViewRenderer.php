@@ -144,13 +144,27 @@ class ViewRenderer extends BaseViewRenderer
     {
         $this->twig->addGlobal('this', $view);
         $loader = new \Twig_Loader_Filesystem(dirname($file));
-
-        foreach (Yii::$aliases as $alias => $path) {
-            $loader->addPath($path, substr($alias, 1));
-        }
+        $this->addAliases($loader, Yii::$aliases);
         $this->twig->setLoader($loader);
 
         return $this->twig->render(pathinfo($file, PATHINFO_BASENAME), $params);
+    }
+
+    /**
+     * Adds aliases
+     *
+     * @param \Twig_Loader_Filesystem $loader
+     * @param array $aliases
+     */
+    protected function addAliases($loader, $aliases)
+    {
+        foreach ($aliases as $alias => $path) {
+            if (is_array($path)) {
+                $this->addAliases($loader, $path);
+            } elseif (is_string($path) && is_dir($path)) {
+                $loader->addPath($path, substr($alias, 1));
+            }
+        }
     }
 
     /**

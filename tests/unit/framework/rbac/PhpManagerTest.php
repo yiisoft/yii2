@@ -75,13 +75,13 @@ class PhpManagerTest extends ManagerTestCase
 
     public function testSaveLoad()
     {
-        static::$filemtime = time();
         $this->prepareData();
 
         $items = $this->auth->items;
         $children = $this->auth->children;
         $assignments = $this->auth->assignments;
         $rules = $this->auth->rules;
+        static::$filemtime = time();
         $this->auth->save();
 
         $this->auth = $this->createManager();

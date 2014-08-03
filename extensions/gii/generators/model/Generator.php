@@ -197,7 +197,7 @@ class Generator extends \yii\gii\Generator
                 $labels[$column->name] = 'ID';
             } else {
                 $label = Inflector::camel2words($column->name);
-                if (!empty($label) && substr_compare($label, ' id', -3, 3, true)) {
+                if (!empty($label) && substr_compare($label, ' id', -3, 3, true) === 0) {
                     $label = substr($label, 0, -3) . ' ID';
                 }
                 $labels[$column->name] = $label;
@@ -508,16 +508,16 @@ class Generator extends \yii\gii\Generator
         }
     }
 
-    private $_tableNames;
-    private $_classNames;
+    protected $tableNames;
+    protected $classNames;
 
     /**
      * @return array the table names that match the pattern specified by [[tableName]].
      */
     protected function getTableNames()
     {
-        if ($this->_tableNames !== null) {
-            return $this->_tableNames;
+        if ($this->tableNames !== null) {
+            return $this->tableNames;
         }
         $db = $this->getDbConnection();
         if ($db === null) {
@@ -540,10 +540,10 @@ class Generator extends \yii\gii\Generator
             }
         } elseif (($table = $db->getTableSchema($this->tableName, true)) !== null) {
             $tableNames[] = $this->tableName;
-            $this->_classNames[$this->tableName] = $this->modelClass;
+            $this->classNames[$this->tableName] = $this->modelClass;
         }
 
-        return $this->_tableNames = $tableNames;
+        return $this->tableNames = $tableNames;
     }
 
     /**
@@ -574,8 +574,8 @@ class Generator extends \yii\gii\Generator
      */
     protected function generateClassName($tableName)
     {
-        if (isset($this->_classNames[$tableName])) {
-            return $this->_classNames[$tableName];
+        if (isset($this->classNames[$tableName])) {
+            return $this->classNames[$tableName];
         }
 
         if (($pos = strrpos($tableName, '.')) !== false) {
@@ -601,7 +601,7 @@ class Generator extends \yii\gii\Generator
             }
         }
 
-        return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
+        return $this->classNames[$tableName] = Inflector::id2camel($className, '_');
     }
 
     /**

@@ -122,7 +122,7 @@ class FileValidator extends Validator
      * - {mimeTypes}: the value of [[mimeTypes]]
      */
     public $wrongMimeType;
-
+    
 
     /**
      * @inheritdoc
@@ -150,12 +150,16 @@ class FileValidator extends Validator
         }
         if (!is_array($this->extensions)) {
             $this->extensions = preg_split('/[\s,]+/', strtolower($this->extensions), -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            $this->extensions = array_map('strtolower', $this->extensions);
         }
         if ($this->wrongMimeType === null) {
             $this->wrongMimeType = Yii::t('yii', 'Only files with these MIME types are allowed: {mimeTypes}.');
         }
         if (!is_array($this->mimeTypes)) {
             $this->mimeTypes = preg_split('/[\s,]+/', strtolower($this->mimeTypes), -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
         }
     }
 
@@ -330,58 +334,77 @@ class FileValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view) {
+    public function clientValidateAttribute($object, $attribute, $view)
+    {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($object, $attribute);
+        return 'yii.validation.file(attribute, messages, ' . json_encode($options) . ');';
+    }
+
+    /**
+     * Returns the client side validation options.
+     * @param \yii\base\Model $object the model being validated
+     * @param string $attribute the attribute name being validated
+     * @return array the client side validation options
+     */
+    protected function getClientOptions($object, $attribute)
+    {
         $label = $object->getAttributeLabel($attribute);
-        
+
         if ( $this->message !== null ){
             $options['message'] = Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $label,
             ], Yii::$app->language);
         }
-        
+
         $options['skipOnEmpty'] = $this->skipOnEmpty;
-        
-        if ( !$this->skipOnEmpty ) {    
-            $options['uploadRequired'] = Yii::$app->getI18n()->format($this->uploadRequired, [], Yii::$app->language);
+
+        if ( !$this->skipOnEmpty ) {
+            $options['uploadRequired'] = Yii::$app->getI18n()->format($this->uploadRequired, [
+                'attribute' => $label,
+            ], Yii::$app->language);
         }
-        
+
         if ( $this->mimeTypes !== null ) {
             $options['mimeTypes'] = $this->mimeTypes;
             $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
+                'attribute' => $label,
                 'mimeTypes' => join(', ', $this->mimeTypes)
             ], Yii::$app->language);
         }
-        
+
         if ( $this->extensions !== null ) {
             $options['extensions'] = $this->extensions;
             $options['wrongExtension'] = Yii::$app->getI18n()->format($this->wrongExtension, [
+                'attribute' => $label,
                 'extensions' => join(', ', $this->extensions)
             ], Yii::$app->language);
         }
-        
+
         if ( $this->minSize !== null ) {
             $options['minSize'] = $this->minSize;
             $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
+                'attribute' => $label,
                 'limit' => $this->minSize
             ], Yii::$app->language);
         }
-        
+
         if ( $this->maxSize !== null ) {
             $options['maxSize'] = $this->maxSize;
             $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
+                'attribute' => $label,
                 'limit' => $this->maxSize
-            ], Yii::$app->language); 
-       }
-        
+            ], Yii::$app->language);
+        }
+
         if ( $this->maxFiles !== null ) {
             $options['maxFiles'] = $this->maxFiles;
             $options['tooMany'] = Yii::$app->getI18n()->format($this->tooMany, [
+                'attribute' => $label,
                 'limit' => $this->maxFiles
             ], Yii::$app->language);
         }
-        
-        ValidationAsset::register($view);
-        
-        return 'yii.validation.file(value, messages, ' . json_encode($options) . ', attribute);';
+
+        return $options;
     }
 }

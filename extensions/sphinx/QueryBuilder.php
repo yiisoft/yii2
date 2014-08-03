@@ -617,12 +617,11 @@ class QueryBuilder extends Object
             $operator = strtoupper($condition[0]);
             if (isset($builders[$operator])) {
                 $method = $builders[$operator];
-                array_shift($condition);
-
-                return $this->$method($indexes, $operator, $condition, $params);
             } else {
-                throw new Exception('Found unknown operator in query: ' . $operator);
+                $method = 'buildSimpleCondition';
             }
+            array_shift($condition);
+            return $this->$method($indexes, $operator, $condition, $params);
         } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
 
             return $this->buildHashCondition($indexes, $condition, $params);
@@ -985,5 +984,30 @@ class QueryBuilder extends Object
 
             return $phName;
         }
+    }
+
+    /**
+     * Creates an SQL expressions like `"column" operator value`.
+     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @param array $operands contains two column names.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     */
+    public function buildSimpleCondition($operator, $operands, &$params)
+    {
+        if (count($operands) !== 2) {
+            throw new InvalidParamException("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $value) = $operands;
+
+        if (strpos($column, '(') === false) {
+            $column = $this->db->quoteColumnName($column);
+        }
+
+        $phName = self::PARAM_PREFIX . count($params);
+        $params[$phName] = $value === null ? 'NULL' : $value;
+
+        return "$column $operator $phName";
     }
 }

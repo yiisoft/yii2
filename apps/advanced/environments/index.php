@@ -9,8 +9,14 @@
  * return [
  *     'environment name' => [
  *         'path' => 'directory storing the local files',
- *         'writable' => [
+ *         'setWritable' => [
  *             // list of directories that should be set writable
+ *         ],
+ *         'setExecutable' => [
+ *             // list of directories that should be set executable
+ *         ],
+ *         'setCookieValidationKey' => [
+ *             // list of config files that need to be inserted with automatically generated cookie validation keys
  *         ],
  *     ],
  * ];
@@ -19,26 +25,34 @@
 return [
     'Development' => [
         'path' => 'dev',
-        'writable' => [
+        'setWritable' => [
             'backend/runtime',
             'backend/web/assets',
             'frontend/runtime',
             'frontend/web/assets',
         ],
-        'executable' => [
+        'setExecutable' => [
             'yii',
+        ],
+        'setCookieValidationKey' => [
+            'backend/config/main-local.php',
+            'frontend/config/main-local.php',
         ],
     ],
     'Production' => [
         'path' => 'prod',
-        'writable' => [
+        'setWritable' => [
             'backend/runtime',
             'backend/web/assets',
             'frontend/runtime',
             'frontend/web/assets',
         ],
-        'executable' => [
+        'setExecutable' => [
             'yii',
+        ],
+        'setCookieValidationKey' => [
+            'backend/config/main-local.php',
+            'frontend/config/main-local.php',
         ],
     ],
 ];
