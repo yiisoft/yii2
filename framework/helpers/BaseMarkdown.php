@@ -33,7 +33,7 @@ class BaseMarkdown
             'html5' => true,
         ],
         'gfm-comment' => [
-            'class' => 'cebe\markdown\Markdown',
+            'class' => 'cebe\markdown\GithubMarkdown',
             'html5' => true,
             'enableNewlines' => true,
         ],
