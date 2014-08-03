@@ -1,0 +1,11 @@
+include:
+  - common
+  - console
+  - backend
+  - frontend
+
+paths:
+  log: tests/_log
+
+settings:
+  colors: true
