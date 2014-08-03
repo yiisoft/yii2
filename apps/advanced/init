@@ -184,7 +184,7 @@ function setExecutable($root, $paths)
 function setCookieValidationKey($root, $paths)
 {
     foreach ($paths as $file) {
-        echo "      generating cookie validation key $file\n";
+        echo "   generate cookie validation key in $file\n";
         $file = $root . '/' . $file;
         $length = 32;
         $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
