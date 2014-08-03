@@ -117,7 +117,7 @@ new ones save the following code as `convert.php` that should be placed in the s
       foreach ($oldData['items'] as $name => $data) {
           if (isset($data['assignments'])) {
               foreach ($data['assignments'] as $userId => $assignmentData) {
-                  $assignments[$userId] = $assignmentData['roleName'];
+                  $assignments[$userId][] = $assignmentData['roleName'];
               }
               unset($data['assignments']);
           }
@@ -161,3 +161,19 @@ new ones save the following code as `convert.php` that should be placed in the s
       // ...
   ];
   ```
+
+* If you are using query caching, you should modify your relevant code as follows, as `beginCache()` and `endCache()` are
+  replaced by `cache()`:
+
+  ```php
+  $db->cache(function ($db) {
+
+     // ... SQL queries that need to use query caching
+
+  }, $duration, $dependency);
+  ```
+  
+* Due to significant changes to security you need to upgrade your code to use `\yii\base\Security` component instead of
+  helper. If you have any data encrypted it should be re-encrypted. In order to do so you can use old security helper [as
+  explained by @docsolver at github](https://github.com/yiisoft/yii2/issues/4461#issuecomment-50237807).
+  

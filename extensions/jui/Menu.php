@@ -33,6 +33,7 @@ class Menu extends \yii\widgets\Menu
      */
     public $clientEvents = [];
 
+
     /**
      * Initializes the widget.
      * If you override this method, make sure you call the parent implementation first.

@@ -93,6 +93,7 @@ class Nav extends Widget
      */
     public $params;
 
+
     /**
      * Initializes the widget.
      */

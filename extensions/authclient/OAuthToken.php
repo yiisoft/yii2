@@ -43,6 +43,8 @@ class OAuthToken extends Object
      * @var array token parameters.
      */
     private $_params = [];
+
+
     /**
      * @var integer object creation timestamp.
      */

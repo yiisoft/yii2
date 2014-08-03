@@ -56,7 +56,7 @@ return $this->render('renderer.twig', ['username' => 'Alex']);
 ### Template syntax
 
 The best resource to learn Twig basics is its official documentation you can find at
-[twig.sensiolabs.org](http://twig.sensiolabs.org/documentation). Additionally there are Yii-specific addtions
+[twig.sensiolabs.org](http://twig.sensiolabs.org/documentation). Additionally there are Yii-specific syntax extensions
 described below.
 
 #### Method and function calls
@@ -82,6 +82,15 @@ In case you don't need result you shoud use `void` wrapper:
 {{ void(myObject.my_function({'a' : 'b'})) }}
 ```
 
+#### Setting object properties
+
+There's a special function called `set` that allows you to set property of an object. For example, the following
+in the template will change page title:
+
+```
+{{ set(this, 'title', 'New title') }}
+```
+
 #### Importing namespaces and classes
 
 You can import additional classes and namespaces right in the template:
@@ -96,6 +105,23 @@ Class import:
 Aliased class import:
 {{ use({'alias' => '/app/widgets/MyWidget'}) }}
 ```
+
+#### Referencing other views
+
+There are two ways of referencing views in `include` and `extends` statements:
+
+```
+{% include "comment.twig" %}
+{% extends "post.twig" %
+
+{% include "@app/views/snippets/avatar.twig" %}
+{% extends "@app/views/layouts/2columns.twig" %}
+```
+
+In the first case the view will be searched relatively to the path current view is in. For `comment.twig` and `post.twig`
+that means these will be searched in the same directory as the view that's rendered currently.
+
+In the second case we're using path aliases. All the Yii aliases such as `@app` are available by default.
 
 #### Widgets
 
@@ -245,7 +271,13 @@ or `$this->renderPartial()` controller calls:
 return $this->render('renderer.tpl', ['username' => 'Alex']);
 ```
 
-### Additional functions
+### Template syntax
+
+The best resource to learn Smarty template syntax is its official documentation you can find at
+[www.smarty.net](http://www.smarty.net/docs/en/). Additionally there are Yii-specific syntax extensions
+described below.
+
+#### Additional functions
 
 Yii adds the following construct to the standard Smarty syntax:
 
@@ -255,7 +287,7 @@ Yii adds the following construct to the standard Smarty syntax:
 
 Internally, the `path()` function calls Yii's `Url::to()` method.
 
-### Additional variables
+#### Additional variables
 
 Within Smarty templates, you can also make use of these variables:
 

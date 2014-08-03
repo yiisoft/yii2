@@ -23,8 +23,8 @@ class Installer extends LibraryInstaller
     const EXTRA_WRITABLE = 'writable';
     const EXTRA_EXECUTABLE = 'executable';
     const EXTRA_CONFIG = 'config';
-
     const EXTENSION_FILE = 'yiisoft/extensions.php';
+
 
     /**
      * @inheritdoc

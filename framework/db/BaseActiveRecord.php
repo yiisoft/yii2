@@ -686,6 +686,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @see update()
+     * @param array $attributes attributes to update
+     * @return integer number of rows updated
      * @throws StaleObjectException
      */
     protected function updateInternal($attributes = null)
@@ -1042,7 +1044,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
                 $record->_attributes[$name] = $value;
-            } else {
+            } elseif ($record->canSetProperty($name)) {
                 $record->$name = $value;
             }
         }
@@ -1282,8 +1284,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
                 $delete ? $model->delete() : $model->save(false);
             } elseif ($p1) {
-                foreach ($relation->link as $b) {
-                    $this->$b = null;
+                foreach ($relation->link as $a => $b) {
+                    if (is_array($this->$b)) { // relation via array valued attribute
+                        if (($key = array_search($model->$a, $this->$b, false)) !== false) {
+                            $values = $this->$b;
+                            unset($values[$key]);
+                            $this->$b = $values;
+                        }
+                    } else {
+                        $this->$b = null;
+                    }
                 }
                 $delete ? $this->delete() : $this->save(false);
             } else {
@@ -1354,16 +1364,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } else {
             /* @var $relatedModel ActiveRecordInterface */
             $relatedModel = $relation->modelClass;
-            $nulls = [];
-            $condition = [];
-            foreach ($relation->link as $a => $b) {
-                $nulls[$a] = null;
-                $condition[$a] = $this->$b;
-            }
-            if ($delete) {
-                $relatedModel::deleteAll($condition);
+            if (!$delete && count($relation->link) == 1 && is_array($this->{$b = reset($relation->link)})) {
+                // relation via array valued attribute
+                $this->$b = [];
+                $this->save(false);
             } else {
-                $relatedModel::updateAll($nulls, $condition);
+                $nulls = [];
+                $condition = [];
+                foreach ($relation->link as $a => $b) {
+                    $nulls[$a] = null;
+                    $condition[$a] = $this->$b;
+                }
+                if ($delete) {
+                    $relatedModel::deleteAll($condition);
+                } else {
+                    $relatedModel::updateAll($nulls, $condition);
+                }
             }
         }
 
@@ -1383,7 +1399,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if ($value === null) {
                 throw new InvalidCallException('Unable to link models: the primary key of ' . get_class($primaryModel) . ' is null.');
             }
-            $foreignModel->$fk = $value;
+            if (is_array($foreignModel->$fk)) { // relation via array valued attribute
+                $foreignModel->$fk = array_merge($foreignModel->$fk, [$value]);
+            } else {
+                $foreignModel->$fk = $value;
+            }
         }
         $foreignModel->save(false);
     }

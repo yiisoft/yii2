@@ -703,7 +703,7 @@ class ActiveField extends Component
                 }
             }
             if (!empty($validators)) {
-                $options['validate'] = new JsExpression("function (attribute, value, messages) {" . implode('', $validators) . '}');
+                $options['validate'] = new JsExpression("function (attribute, value, messages, deferred) {" . implode('', $validators) . '}');
             }
         }
 

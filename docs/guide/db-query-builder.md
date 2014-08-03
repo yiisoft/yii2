@@ -249,6 +249,19 @@ Operator can be one of the following:
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
+Additionally you can specify anything as operator:
+
+```php
+$userQuery = (new Query)->select('id')->from('user');
+$query->where(['>=', 'id', 10]);
+```
+
+It will result in:
+
+```sql
+SELECT id FROM user WHERE id >= 10;
+```
+
 If you are building parts of condition dynamically it's very convenient to use `andWhere()` and `orWhere()`:
 
 ```php
@@ -304,8 +317,6 @@ $query->orderBy([
 ```
 
 Here we are ordering by `id` ascending and then by `name` descending.
-
-```
 
 ### `GROUP BY` and `HAVING`
 

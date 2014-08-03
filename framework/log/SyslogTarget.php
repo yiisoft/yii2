@@ -22,7 +22,6 @@ class SyslogTarget extends Target
      * @var string syslog identity
      */
     public $identity;
-
     /**
      * @var integer syslog facility.
      */

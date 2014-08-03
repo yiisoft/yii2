@@ -209,6 +209,7 @@ class Connection extends Component
         'ZSCORE', // key member Get the score associated with the given member in a sorted set
         'ZUNIONSTORE', // destination numkeys key [key ...] [WEIGHTS weight [weight ...]] [AGGREGATE SUM|MIN|MAX] Add multiple sorted sets and store the resulting sorted set in a new key
     ];
+
     /**
      * @var resource redis socket connection
      */

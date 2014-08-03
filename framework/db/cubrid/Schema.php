@@ -64,7 +64,6 @@ class Schema extends \yii\db\Schema
         'sequence' => self::TYPE_STRING,
         'enum' => self::TYPE_STRING,
     ];
-
     /**
      * @var array map of DB errors and corresponding exceptions
      * If left part is found in DB error message exception class from the right part is used.
@@ -72,6 +71,7 @@ class Schema extends \yii\db\Schema
     public $exceptionMap = [
         'Operation would have caused one or more unique constraint violations' => 'yii\db\IntegrityException',
     ];
+
 
     /**
      * @inheritdoc

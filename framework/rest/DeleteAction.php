@@ -19,6 +19,7 @@ class DeleteAction extends Action
 {
     /**
      * Deletes a model.
+     * @param mixed $id id of the model to be deleted.
      */
     public function run($id)
     {

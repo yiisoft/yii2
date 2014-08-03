@@ -102,9 +102,10 @@ class Component extends Object
      */
     private $_events = [];
     /**
-     * @var Behavior[] the attached behaviors (behavior name => behavior)
+     * @var Behavior[]|null the attached behaviors (behavior name => behavior). This is `null` when not initialized.
      */
     private $_behaviors;
+
 
     /**
      * Returns the value of a component property.
@@ -223,7 +224,6 @@ class Component extends Object
                 }
             }
         }
-
         return false;
     }
 
@@ -244,7 +244,6 @@ class Component extends Object
         $setter = 'set' . $name;
         if (method_exists($this, $setter)) {
             $this->$setter(null);
-
             return;
         } else {
             // behavior property
@@ -252,7 +251,6 @@ class Component extends Object
             foreach ($this->_behaviors as $behavior) {
                 if ($behavior->canSetProperty($name)) {
                     $behavior->$name = null;
-
                     return;
                 }
             }
@@ -281,7 +279,6 @@ class Component extends Object
                 return call_user_func_array([$object, $name], $params);
             }
         }
-
         throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
     }
 
@@ -343,7 +340,6 @@ class Component extends Object
                 }
             }
         }
-
         return false;
     }
 
@@ -374,7 +370,6 @@ class Component extends Object
                 }
             }
         }
-
         return false;
     }
 
@@ -401,7 +396,6 @@ class Component extends Object
                 }
             }
         }
-
         return false;
     }
 
@@ -444,7 +438,6 @@ class Component extends Object
     public function hasEventHandlers($name)
     {
         $this->ensureBehaviors();
-
         return !empty($this->_events[$name]) || Event::hasHandlers($this, $name);
     }
 
@@ -517,7 +510,6 @@ class Component extends Object
             if ($removed) {
                 $this->_events[$name] = array_values($this->_events[$name]);
             }
-
             return $removed;
         }
     }
@@ -562,7 +554,6 @@ class Component extends Object
     public function getBehavior($name)
     {
         $this->ensureBehaviors();
-
         return isset($this->_behaviors[$name]) ? $this->_behaviors[$name] : null;
     }
 
@@ -573,7 +564,6 @@ class Component extends Object
     public function getBehaviors()
     {
         $this->ensureBehaviors();
-
         return $this->_behaviors;
     }
 
@@ -595,7 +585,6 @@ class Component extends Object
     public function attachBehavior($name, $behavior)
     {
         $this->ensureBehaviors();
-
         return $this->attachBehaviorInternal($name, $behavior);
     }
 
@@ -627,7 +616,6 @@ class Component extends Object
             $behavior = $this->_behaviors[$name];
             unset($this->_behaviors[$name]);
             $behavior->detach();
-
             return $behavior;
         } else {
             return null;
@@ -681,7 +669,6 @@ class Component extends Object
             $behavior->attach($this);
             $this->_behaviors[$name] = $behavior;
         }
-
         return $behavior;
     }
 }

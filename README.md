@@ -26,6 +26,7 @@ which is the latest stable release of Yii.
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Code Climate](https://codeclimate.com/github/yiisoft/yii2.png)](https://codeclimate.com/github/yiisoft/yii2)
+[![Reference Status](https://www.versioneye.com/php/yiisoft:yii2/reference_badge.svg)](https://www.versioneye.com/php/yiisoft:yii2/references)
 
 DIRECTORY STRUCTURE
 -------------------

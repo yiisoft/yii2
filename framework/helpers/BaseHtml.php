@@ -80,6 +80,7 @@ class BaseHtml
         'media',
     ];
 
+
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
@@ -618,7 +619,7 @@ class BaseHtml
      * - label: string, a label displayed next to the radio button.  It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   When this option is specified, the radio button will be enclosed by a label tag.
-     * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+     * - labelOptions: array, the HTML attributes for the label tag. Do not set this option unless you set the "label" option.
      * - container: array|boolean, the HTML attributes for the container tag. This is only used when the "label" option is specified.
      *   If it is false, no container will be rendered. If it is an array or not, a "div" container will be rendered
      *   around the the radio button.
@@ -668,7 +669,7 @@ class BaseHtml
      * - label: string, a label displayed next to the checkbox.  It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   When this option is specified, the checkbox will be enclosed by a label tag.
-     * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+     * - labelOptions: array, the HTML attributes for the label tag. Do not set this option unless you set the "label" option.
      * - container: array|boolean, the HTML attributes for the container tag. This is only used when the "label" option is specified.
      *   If it is false, no container will be rendered. If it is an array or not, a "div" container will be rendered
      *   around the the radio button.
@@ -797,13 +798,13 @@ class BaseHtml
         if (!array_key_exists('size', $options)) {
             $options['size'] = 4;
         }
-        if (!empty($options['multiple']) && substr($name, -2) !== '[]') {
+        if (!empty($options['multiple']) && !empty($name) && substr_compare($name, '[]', -2)) {
             $name .= '[]';
         }
         $options['name'] = $name;
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
-            if (substr($name, -2) === '[]') {
+            if (!empty($name) && substr_compare($name, '[]', -2) === 0) {
                 $name = substr($name, 0, -2);
             }
             $hidden = static::hiddenInput($name, $options['unselect']);

@@ -44,6 +44,12 @@
         // a callback that is called after an attribute is validated. The signature of the callback should be:
         // function ($form, attribute, messages)
         afterValidate: undefined,
+        // a pre-request callback function on AJAX-based validation. The signature of the callback should be:
+        // function ($form, jqXHR, textStatus)
+        ajaxBeforeSend: undefined,
+        // a function to be called when the request finishes on AJAX-based validation. The signature of the callback should be:
+        // function ($form, jqXHR, textStatus)
+        ajaxComplete: undefined,
         // the GET parameter name indicating an AJAX-based validation
         ajaxParam: 'ajax',
         // the type of data that you're expecting back from the server
@@ -264,7 +270,20 @@
             });
         }, data.settings.validationDelay);
     };
-
+    
+    /**
+     * Returns an array prototype with a shortcut method for adding a new deferred.
+     * The context of the callback will be the deferred object so it can be resolved like ```this.resolve()```
+     * @returns Array
+     */
+    var deferredArray = function () {
+        var array = [];
+        array.add = function(callback) {
+            this.push(new $.Deferred(callback));
+        };
+        return array;
+    };
+    
     /**
      * Performs validation.
      * @param $form jQuery the jquery representation of the form
@@ -274,60 +293,78 @@
     var validate = function ($form, successCallback, errorCallback) {
         var data = $form.data('yiiActiveForm'),
             needAjaxValidation = false,
-            messages = {};
+            messages = {},
+            deferreds = deferredArray();
 
         $.each(data.attributes, function () {
             if (data.submitting || this.status === 2 || this.status === 3) {
                 var msg = [];
+                messages[this.id] = msg;
                 if (!data.settings.beforeValidate || data.settings.beforeValidate($form, this, msg)) {
                     if (this.validate) {
-                        this.validate(this, getValue($form, this), msg);
+                        this.validate(this, getValue($form, this), msg, deferreds);
                     }
-                    if (msg.length) {
-                        messages[this.id] = msg;
-                    } else if (this.enableAjaxValidation) {
+                    if (this.enableAjaxValidation) {
                         needAjaxValidation = true;
                     }
                 }
             }
         });
 
-        if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
-            // Perform ajax validation when at least one input needs it.
-            // If the validation is triggered by form submission, ajax validation
-            // should be done only when all inputs pass client validation
-            var $button = data.submitObject,
-                extData = '&' + data.settings.ajaxParam + '=' + $form.prop('id');
-            if ($button && $button.length && $button.prop('name')) {
-                extData += '&' + $button.prop('name') + '=' + $button.prop('value');
+        $.when.apply(this, deferreds).always(function() {
+            //Remove empty message arrays
+            for (var i in messages) {
+                if (0 === messages[i].length) {
+                    delete messages[i];
+                }
             }
-            $.ajax({
-                url: data.settings.validationUrl,
-                type: $form.prop('method'),
-                data: $form.serialize() + extData,
-                dataType: data.settings.ajaxDataType,
-                success: function (msgs) {
-                    if (msgs !== null && typeof msgs === 'object') {
-                        $.each(data.attributes, function () {
-                            if (!this.enableAjaxValidation) {
-                                delete msgs[this.id];
-                            }
-                        });
-                        successCallback($.extend({}, messages, msgs));
-                    } else {
-                        successCallback(messages);
-                    }
-                },
-                error: errorCallback
-            });
-        } else if (data.submitting) {
-            // delay callback so that the form can be submitted without problem
-            setTimeout(function () {
+            if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
+                // Perform ajax validation when at least one input needs it.
+                // If the validation is triggered by form submission, ajax validation
+                // should be done only when all inputs pass client validation
+                var $button = data.submitObject,
+                    extData = '&' + data.settings.ajaxParam + '=' + $form.prop('id');
+                if ($button && $button.length && $button.prop('name')) {
+                    extData += '&' + $button.prop('name') + '=' + $button.prop('value');
+                }
+                $.ajax({
+                    url: data.settings.validationUrl,
+                    type: $form.prop('method'),
+                    data: $form.serialize() + extData,
+                    dataType: data.settings.ajaxDataType,
+                    complete: function (jqXHR, textStatus) {
+                        if (data.settings.ajaxComplete) {
+                            data.settings.ajaxComplete($form, jqXHR, textStatus);
+                        }
+                    },
+                    beforeSend: function (jqXHR, textStatus) {
+                        if (data.settings.ajaxBeforeSend) {
+                            data.settings.ajaxBeforeSend($form, jqXHR, textStatus);
+                        }
+                    },
+                    success: function (msgs) {
+                        if (msgs !== null && typeof msgs === 'object') {
+                            $.each(data.attributes, function () {
+                                if (!this.enableAjaxValidation) {
+                                    delete msgs[this.id];
+                                }
+                            });
+                            successCallback($.extend({}, messages, msgs));
+                        } else {
+                            successCallback(messages);
+                        }
+                    },
+                    error: errorCallback
+                });
+            } else if (data.submitting) {
+                // delay callback so that the form can be submitted without problem
+                setTimeout(function () {
+                    successCallback(messages);
+                }, 200);
+            } else {
                 successCallback(messages);
-            }, 200);
-        } else {
-            successCallback(messages);
-        }
+            }
+        });
     };
 
     /**

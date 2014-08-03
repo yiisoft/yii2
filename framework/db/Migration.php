@@ -44,6 +44,7 @@ class Migration extends Component implements MigrationInterface
      */
     public $db = 'db';
 
+
     /**
      * Initializes the migration.
      * This method will set [[db]] to be the 'db' application component, if it is null.
