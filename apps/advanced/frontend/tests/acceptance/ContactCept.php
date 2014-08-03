@@ -1,6 +1,7 @@
 <?php
 
 use frontend\tests\_pages\ContactPage;
+use frontend\WebGuy;
 
 $I = new WebGuy($scenario);
 $I->wantTo('ensure that contact works');
