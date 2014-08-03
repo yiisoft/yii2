@@ -70,14 +70,14 @@ yii.validation = (function ($) {
         },
         
         file: function (attribute, messages, options) {
-            var files = getFiles(attribute, messages, options);
+            var files = getUploadedFiles(attribute, messages, options);
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
             });
         },
         
         image: function (attribute, messages, options, deferred) {
-            var files = getFiles(attribute, messages, options);
+            var files = getUploadedFiles(attribute, messages, options);
             
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
@@ -301,7 +301,7 @@ yii.validation = (function ($) {
         }
     };
 
-    function getFiles(attribute, messages, options) {
+    function getUploadedFiles(attribute, messages, options) {
         var files = $(attribute.input).get(0).files;
         if (!files) {
             messages.push(options.message);
