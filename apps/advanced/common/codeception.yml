@@ -1,3 +1,4 @@
+namespace: common
 actor: Tester
 paths:
     tests: tests
