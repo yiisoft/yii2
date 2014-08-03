@@ -117,4 +117,19 @@ class Action extends Component
     protected function afterRun()
     {
     }
+
+    public function getActionSummaryReflectionClass()
+    {
+        return new \ReflectionClass($this);
+    }
+
+    public function getActionHelpReflectionMethod()
+    {
+        return new \ReflectionMethod($this, 'run');
+    }
+
+    public function getOptionHelpsReflectionClass()
+    {
+        return new \ReflectionClass($this->controller);
+    }
 }

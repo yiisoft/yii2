@@ -83,7 +83,7 @@ class CodeFile extends Object
             $dir = dirname($this->path);
             if (!is_dir($dir)) {
                 $mask = @umask(0);
-                $result = @mkdir($dir, $module->newDirMode, true);
+                $result = @mkdir($dir, Yii::$app->getModule('gii')->newDirMode, true);
                 @umask($mask);
                 if (!$result) {
                     return "Unable to create the directory '$dir'.";
@@ -94,7 +94,7 @@ class CodeFile extends Object
             return "Unable to write the file '{$this->path}'.";
         } else {
             $mask = @umask(0);
-            @chmod($this->path, $module->newFileMode);
+            @chmod($this->path, Yii::$app->getModule('gii')->newFileMode);
             @umask($mask);
         }
 
