@@ -46,7 +46,7 @@
         afterValidate: undefined,
         // a callback that is called after all validation has run. The signature of the callback should be:
         // function ($form, data, messages)
-        validationComplete: undefined,
+        afterValidateAll: undefined,
         // a pre-request callback function on AJAX-based validation. The signature of the callback should be:
         // function ($form, jqXHR, textStatus)
         ajaxBeforeSend: undefined,
@@ -163,8 +163,8 @@
                     }
                 });
                 
-                if (data.settings.validationComplete) {
-                    data.settings.validationComplete($form, data, messages);
+                if (data.settings.afterValidateAll) {
+                    data.settings.afterValidateAll($form, data, messages);
                 }
                 
                 updateSummary($form, messages);
