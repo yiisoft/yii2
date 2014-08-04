@@ -160,6 +160,7 @@
             data.submitting = true;
             
             if (data.settings.beforeValidateAll && !data.settings.beforeValidateAll($form, data)) {
+                data.submitting = false;
                 return false;
             }
             validate($form, function (messages) {
