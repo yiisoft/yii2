@@ -83,6 +83,10 @@ class UrlRule extends Object implements UrlRuleInterface
      * If it is [[CREATION_ONLY]], the rule is for URL creation only.
      */
     public $mode;
+    /**
+     * @var bool a value indicating if parameters should be url encoded.
+     */
+    public $encodeParams = true;
 
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
@@ -310,7 +314,7 @@ class UrlRule extends Object implements UrlRuleInterface
         // match params in the pattern
         foreach ($this->_paramRules as $name => $rule) {
             if (isset($params[$name]) && !is_array($params[$name]) && ($rule === '' || preg_match($rule, $params[$name]))) {
-                $tr["<$name>"] = urlencode($params[$name]);
+                $tr["<$name>"] = $this->encodeParams ? urlencode($params[$name]) : $params[$name];
                 unset($params[$name]);
             } elseif (!isset($this->defaults[$name]) || isset($params[$name])) {
                 return false;
