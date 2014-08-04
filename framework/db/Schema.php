@@ -472,9 +472,9 @@ abstract class Schema extends Object
 
     /**
      * Extracts the PHP type from abstract DB type.
-	 * Note that integers and bigints are converted to strings
-	 * if they potentially exceed PHP's max integer size.
-	 * 
+     * Note that integers and bigints are converted to strings
+     * if they potentially exceed PHP's max integer size.
+     * 
      * @param ColumnSchema $column the column schema information
      * @return string PHP type name
      */
