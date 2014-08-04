@@ -44,7 +44,7 @@
         // a callback that is called after an attribute is validated. The signature of the callback should be:
         // function ($form, attribute, messages)
         afterValidate: undefined,
-        // a callback that is called after all validation has run. The signature of the callback should be:
+        // a callback that is called after all validation has run (This callback is only called when the form is submitted). The signature of the callback should be:
         // function ($form, data, messages)
         afterValidateAll: undefined,
         // a pre-request callback function on AJAX-based validation. The signature of the callback should be:
