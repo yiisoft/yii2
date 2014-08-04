@@ -147,6 +147,7 @@ class ActiveForm extends Widget
      *
      * ~~~
      * function ($form, data) {
+     *     ...return false to cancel the validation...
      * }
      * ~~~
      */
