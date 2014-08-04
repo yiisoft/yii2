@@ -152,7 +152,7 @@ class ActiveForm extends Widget
      */
     public $afterValidate;
     /**
-     * @var string|JsExpression a JS callback that is called after all validation has run.
+     * @var string|JsExpression a JS callback that is called after all validation has run (Only called when the form is submitted).
      * The signature of the callback should be:
      *
      * ~~~
