@@ -41,6 +41,9 @@
         // a callback that is called before validating each attribute. The signature of the callback should be:
         // function ($form, attribute, messages) { ...return false to cancel the validation...}
         beforeValidate: undefined,
+        // a callback that is called before validation starts (This callback is only called when the form is submitted). This signature of the callback should be:
+        // function($form, data) { ...return false to cancel the validation...}
+        beforeValidateAll: undefined,
         // a callback that is called after an attribute is validated. The signature of the callback should be:
         // function ($form, attribute, messages)
         afterValidate: undefined,
@@ -155,6 +158,10 @@
                 clearTimeout(data.settings.timer);
             }
             data.submitting = true;
+            
+            if (data.settings.beforeValidateAll && !data.settings.beforeValidateAll($form, data)) {
+                return false;
+            }
             validate($form, function (messages) {
                 var errors = [];
                 $.each(data.attributes, function () {
