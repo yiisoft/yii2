@@ -493,9 +493,8 @@ abstract class Schema extends Object
             if ($column->type === 'integer') {
                 return ($column->unsigned && PHP_INT_MAX <= 2147483647) ? 'string' : 'integer';
             } else if ($column->type === 'bigint') {
-				return ($column->unsigned || PHP_INT_MAX <= 2147483647) ? 'string' : 'integer';
-			}
-			else {
+	        return ($column->unsigned || PHP_INT_MAX <= 2147483647) ? 'string' : 'integer';
+	    } else {
                 return $typeMap[$column->type];
             }
         } else {
