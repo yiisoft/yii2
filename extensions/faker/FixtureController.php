@@ -323,6 +323,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
             $content .= "\n\t[";
 
             foreach ($fixture as $name => $value) {
+                $value = str_replace("'", "\\'", $value);
                 $content .= "\n\t\t'{$name}' => '{$value}',";
             }
 
