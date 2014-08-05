@@ -17,8 +17,8 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     public function setUp()
     {
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
-        $_SERVER['SCRIPT_FILENAME'] = "index.php";
-        $_SERVER['SCRIPT_NAME'] = "index.php";
+        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
+        $_SERVER['SCRIPT_NAME'] = "/index.php";
         
         $this->mockWebApplication();
         $this->breadcrumbs = new Breadcrumbs();
@@ -29,7 +29,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->breadcrumbs->homeLink = null;
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
         
-        $expectedHtml = "<ul class=\"breadcrumb\"><li><a href=\"./index.php\">Home</a></li>\n" 
+        $expectedHtml = "<ul class=\"breadcrumb\"><li><a href=\"/index.php\">Home</a></li>\n"
             . "<li class=\"active\">My Home Page</li>\n"
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . "</ul>";
