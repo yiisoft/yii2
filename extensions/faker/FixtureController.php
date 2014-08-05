@@ -323,7 +323,14 @@ class FixtureController extends \yii\console\controllers\FixtureController
             $content .= "\n\t[";
 
             foreach ($fixture as $name => $value) {
-                $content .= "\n\t\t'{$name}' => '{$value}',";
+                if (is_bool($value)) {
+                    $value = $value ? 'true' : 'false';
+                } elseif ($value === null) {
+                    $value = 'null';
+                } elseif (!is_integer($value)) {
+                    $value = "'{$value}'";
+                }
+                $content .= "\n\t\t'{$name}' => {$value},";
             }
 
             $content .= "\n\t],";
@@ -345,8 +352,10 @@ class FixtureController extends \yii\console\controllers\FixtureController
         $fixture = [];
 
         foreach ($template as $attribute => $fakerProperty) {
-            if (!is_string($fakerProperty)) {
+            if ($fakerProperty instanceof \Closure) {
                 $fixture = call_user_func_array($fakerProperty, [$fixture, $this->generator, $index]);
+            } elseif (is_integer($fakerProperty) || is_bool($fakerProperty) || $fakerProperty === null) {
+                $fixture[$attribute] = $fakerProperty;
             } else {
                 $fixture[$attribute] = $this->generator->$fakerProperty;
             }
