@@ -141,7 +141,7 @@ class Logger extends Component
             $ts = debug_backtrace();
             array_pop($ts); // remove the last trace since it would be the entry script, not very useful
             foreach ($ts as $trace) {
-                if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII_PATH) !== 0) {
+                if (isset($trace['file'], $trace['line']) && !\Yii::isCoreFile($trace['file'])) {
                     unset($trace['object'], $trace['args']);
                     $traces[] = $trace;
                     if (++$count >= $this->traceLevel) {

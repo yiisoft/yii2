@@ -10,6 +10,7 @@ namespace yii\build\controllers;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
+use Yii;
 
 /**
  * Creates a class map for the core Yii classes.
@@ -23,17 +24,19 @@ class ClassmapController extends Controller
 
     /**
      * Creates a class map for the core Yii classes.
-     * @param string $root    the root path of Yii framework. Defaults to YII_PATH.
-     * @param string $mapFile the file to contain the class map. Defaults to YII_PATH . '/classes.php'.
+     * @param string $root the root path of Yii framework. Defaults to `@yii`.
+     * @param string $mapFile the file to contain the class map. Defaults to `@yii/classes.php`.
+     * @param string $basePath the base path to prepend to all classes. Defaults to the constant `YII2_PATH`
+     * @throws \yii\console\Exception
      */
-    public function actionCreate($root = null, $mapFile = null)
+    public function actionCreate($root = null, $mapFile = null, $basePath = null)
     {
         if ($root === null) {
-            $root = YII_PATH;
+            $root = Yii::getAlias('@yii');
         }
-        $root = FileHelper::normalizePath($root);
+        $root = FileHelper::normalizePath(Yii::getAlias($root));
         if ($mapFile === null) {
-            $mapFile = YII_PATH . '/classes.php';
+            $mapFile = Yii::getAlias('@yii/classes.php');
         }
         $options = [
             'filter' => function ($path) {
@@ -54,13 +57,16 @@ class ClassmapController extends Controller
             ],
         ];
         $files = FileHelper::findFiles($root, $options);
+        if ($basePath !== null) {
+            $basePath = rtrim($basePath, '\\/') . DIRECTORY_SEPARATOR;
+        }
         $map = [];
         foreach ($files as $file) {
             if (strpos($file, $root) !== 0) {
                 throw new Exception("Something wrong: $file\n");
             }
             $path = str_replace('\\', '/', substr($file, strlen($root)));
-            $map[$path] = "  'yii" . substr(str_replace('/', '\\', $path), 0, -4) . "' => YII_PATH . '$path',";
+            $map[$path] = "'yii" . substr(str_replace('/', '\\', $path), 0, -4) . "'=>" . ($basePath === null ? "YII2_PATH.'$path'," : "'$basePath$path',");
         }
         ksort($map);
         $map = implode("\n", $map);
@@ -76,7 +82,6 @@ class ClassmapController extends Controller
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-
 return [
 $map
 ];

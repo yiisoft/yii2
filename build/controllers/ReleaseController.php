@@ -79,7 +79,7 @@ class ReleaseController extends Controller
 
     protected function getChangelogs()
     {
-        return array_merge([YII_PATH . '/CHANGELOG.md'], glob(dirname(YII_PATH) . '/extensions/*/CHANGELOG.md'));
+        return array_merge([Yii::getAlias('@yii/CHANGELOG.md')], glob(dirname(Yii::getAlias('@yii')) . '/extensions/*/CHANGELOG.md'));
     }
 
     protected function composerSetStability($version)
@@ -95,13 +95,14 @@ class ReleaseController extends Controller
             $stability = 'dev';
         }
 
+        $root = dirname(Yii::getAlias('@yii'));
         $this->sed(
             '/"minimum-stability": "(.+?)",/',
             '"minimum-stability": "' . $stability . '",',
             [
-                dirname(YII_PATH) . '/apps/advanced/composer.json',
-                dirname(YII_PATH) . '/apps/basic/composer.json',
-                dirname(YII_PATH) . '/apps/benchmark/composer.json',
+                $root . '/apps/advanced/composer.json',
+                $root . '/apps/basic/composer.json',
+                $root . '/apps/benchmark/composer.json',
             ]
         );
     }
@@ -111,7 +112,7 @@ class ReleaseController extends Controller
         $this->sed(
             '/function getVersion\(\)\n    \{\n        return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
-            YII_PATH . '/BaseYii.php');
+            Yii::getAlias('@yii/BaseYii.php'));
     }
 
     protected function sed($pattern, $replace, $files)

@@ -37,7 +37,7 @@ class PhpDocController extends Controller
      *
      * See https://github.com/yiisoft/yii2/wiki/Core-framework-code-style#documentation for details.
      *
-     * @param string $root the directory to parse files from. Defaults to YII_PATH.
+     * @param string $root the directory to parse files from. Defaults to `@yii`.
      */
     public function actionProperty($root = null)
     {
@@ -68,7 +68,7 @@ class PhpDocController extends Controller
     /**
      * Fix some issues with PHPdoc in files
      *
-     * @param string $root the directory to parse files from. Defaults to YII_PATH.
+     * @param string $root the directory to parse files from. Defaults to `@yii`.
      */
     public function actionFix($root = null)
     {
@@ -112,7 +112,7 @@ class PhpDocController extends Controller
     {
         $except = [];
         if ($root === null) {
-            $root = dirname(YII_PATH);
+            $root = dirname(Yii::getAlias('@yii'));
             $extensionPath = "$root/extensions";
             foreach (scandir($extensionPath) as $extension) {
                 if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
@@ -141,7 +141,7 @@ class PhpDocController extends Controller
                 'vendor/',
             ];
         }
-        $root = FileHelper::normalizePath($root);
+        $root = FileHelper::normalizePath(Yii::getAlias($root));
         $options = [
             'filter' => function ($path) {
                     if (is_file($path)) {

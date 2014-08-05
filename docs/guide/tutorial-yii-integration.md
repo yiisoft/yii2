@@ -111,7 +111,7 @@ Now you can use most features provided by Yii. For example, you can create Activ
 to work with databases.
 
 
-## Using Yii 2 with Yii 1 <a name="using-both-yii2-yii1"></a>
+## Using Yii 2 and Yii 1 together <a name="using-both-yii2-yii1"></a>
 
 If you were using Yii 1 previously, it is likely you have a running Yii 1 application. Instead of rewriting
 the whole application in Yii 2, you may just want to enhance it using some of the features only available in Yii 2.
@@ -149,10 +149,13 @@ require($yii1path . '/YiiBase.php'); // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {
-    // copy-paste the code in YiiBase (1.x) here
+    // copy-paste the code from YiiBase (1.x) here
 }
 
-Yii::$classMap = include($yii2path . '/classes.php');
+// set up yii2 classmap and DI container
+define('YII2_PATH', $yii2path);
+Yii::$classMap = include(YII2_PATH . '/classes.php');
+Yii::$container = new yii\di\Container;
 
 // register Yii2 autoloader via Yii1
 Yii::registerAutoloader(['Yii', 'autoload']);

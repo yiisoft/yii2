@@ -18,10 +18,6 @@ use yii\di\Container;
  */
 defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
 /**
- * This constant defines the framework installation directory.
- */
-defined('YII_PATH') or define('YII_PATH', __DIR__);
-/**
  * This constant defines whether the application should be in debug mode or not. Defaults to false.
  */
 defined('YII_DEBUG') or define('YII_DEBUG', false);
@@ -290,6 +286,16 @@ class BaseYii
         if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
             throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");
         }
+    }
+
+    /**
+     * Determines whether given name of the file belongs to the framework.
+     * @param string $file name to be checked.
+     * @return boolean whether given name of the file belongs to the framework.
+     */
+    public static function isCoreFile($file)
+    {
+        return !empty($file) && strpos(realpath($file), static::$aliases['@yii'] . DIRECTORY_SEPARATOR) === 0;
     }
 
     /**
