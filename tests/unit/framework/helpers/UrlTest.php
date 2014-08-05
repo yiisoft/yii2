@@ -121,21 +121,22 @@ class UrlTest extends TestCase
         \Yii::setAlias('@web4', '/test');
         \Yii::setAlias('@web5', '#test');
 
-        $this->assertEquals('/base/test/me1', Url::to('test/me1'));
+        $this->assertEquals('test/me1', Url::to('test/me1'));
         $this->assertEquals('javascript:test/me1', Url::to('javascript:test/me1'));
-        $this->assertEquals('/base/java/script:test/me1', Url::to('java/script:test/me1'));
+        $this->assertEquals('java/script:test/me1', Url::to('java/script:test/me1'));
         $this->assertEquals('#test/me1', Url::to('#test/me1'));
         $this->assertEquals('.test/me1', Url::to('.test/me1'));
-        $this->assertEquals('http://example.com/base/test/me1', Url::to('test/me1', true));
-        $this->assertEquals('https://example.com/base/test/me1', Url::to('test/me1', 'https'));
+        $this->assertEquals('http://example.com/test/me1', Url::to('test/me1', true));
+        $this->assertEquals('https://example.com/test/me1', Url::to('test/me1', 'https'));
+        $this->assertEquals('https://example.com/test/test/me1', Url::to('@web4/test/me1', 'https'));
 
         $this->assertEquals('http://test.example.com/test/me1', Url::to('@web1'));
         $this->assertEquals('http://test.example.com/test/me1', Url::to('@web1', true));
         $this->assertEquals('https://test.example.com/test/me1', Url::to('@web1', 'https'));
 
-        $this->assertEquals('/base/test/me2', Url::to('@web2'));
-        $this->assertEquals('http://example.com/base/test/me2', Url::to('@web2', true));
-        $this->assertEquals('https://example.com/base/test/me2', Url::to('@web2', 'https'));
+        $this->assertEquals('test/me2', Url::to('@web2'));
+        $this->assertEquals('http://example.com/test/me2', Url::to('@web2', true));
+        $this->assertEquals('https://example.com/test/me2', Url::to('@web2', 'https'));
 
         $this->assertEquals('/base/index.php&r=site%2Fcurrent&id=42', Url::to('@web3'));
         $this->assertEquals('http://example.com/base/index.php&r=site%2Fcurrent&id=42', Url::to('@web3', true));
