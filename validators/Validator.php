@@ -308,6 +308,7 @@ class Validator extends Component
      * - `attribute`: the name of the attribute being validated.
      * - `value`: the value being validated.
      * - `messages`: an array used to hold the validation error messages for the attribute.
+     * - `deferred`: an array used to hold deferred objects for asynchronous validation
      *
      * @param \yii\base\Model $object the data object being validated
      * @param string $attribute the name of the attribute to be validated.
