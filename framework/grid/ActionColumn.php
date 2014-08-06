@@ -155,7 +155,7 @@ class ActionColumn extends Column
             if (isset($this->buttons[$name])) {
                 $url = $this->createUrl($name, $model, $key, $index);
 
-                return call_user_func($this->buttons[$name], $url, $model);
+                return call_user_func($this->buttons[$name], $url, $model, $key);
             } else {
                 return '';
             }
