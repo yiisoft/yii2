@@ -197,13 +197,8 @@ class Validator extends Component
                 $type = static::$builtInValidators[$type];
             }
             if (is_array($type)) {
-                foreach ($type as $name => $value) {
-                    $params[$name] = $value;
-                }
+                $params = array_merge($type, $params);
             } else {
-                if (!class_exists($type)) {
-                    throw new InvalidConfigException("Unknown validator: '$type'.");
-                }
                 $params['class'] = $type;
             }
         }
