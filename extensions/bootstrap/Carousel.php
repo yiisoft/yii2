@@ -66,6 +66,7 @@ class Carousel extends Widget
      */
     public $items = [];
 
+
     /**
      * Initializes the widget.
      */

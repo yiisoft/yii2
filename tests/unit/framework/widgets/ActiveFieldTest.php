@@ -266,7 +266,7 @@ EOD;
         $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
         $this->activeField->enableClientValidation = true;
         $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages) {return true;}";
+        $expectedJsExpression = "function (attribute, value, messages, deferred) {return true;}";
         $expectedValidateOnChange = true;
         $expectedValidateOnType = false;
         $expectedValidationDelay = 200;
@@ -286,7 +286,7 @@ EOD;
         $this->activeField->enableAjaxValidation = true;
         $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
         $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages) {return true;}";
+        $expectedJsExpression = "function (attribute, value, messages, deferred) {return true;}";
         $expectedValidateOnChange = true;
         $expectedValidateOnType = false;
         $expectedValidationDelay = 200;
@@ -313,7 +313,7 @@ EOD;
         }
         
         $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages) {if (function (attribute, value) "
+        $expectedJsExpression = "function (attribute, value, messages, deferred) {if (function (attribute, value) "
             . "{ return 'yii2' == 'yii2'; }(attribute, value)) { return true; }}";
        
         $expectedValidateOnChange = true;

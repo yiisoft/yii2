@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidValueException;
 
 /**
  * User is the class for the "user" application component that manages the user authentication status.
@@ -138,6 +139,7 @@ class User extends Component
 
     private $_access = [];
 
+
     /**
      * Initializes the application component.
      */
@@ -185,11 +187,18 @@ class User extends Component
      *
      * @param IdentityInterface|null $identity the identity object associated with the currently logged user.
      * If null, it means the current user will be a guest without any associated identity.
+     * @throws InvalidValueException if `$identity` object does not implement [[IdentityInterface]].
      */
     public function setIdentity($identity)
     {
-        $this->_identity = $identity;
-        $this->_access = [];
+        if ($identity instanceof IdentityInterface) {
+            $this->_identity = $identity;
+            $this->_access = [];
+        } elseif ($identity === null) {
+            $this->_identity = null;
+        } else {
+            throw new InvalidValueException('The identity object must implement IdentityInterface.');
+        }
     }
 
     /**
@@ -218,7 +227,7 @@ class User extends Component
      * Note that if [[enableSession]] is false, this parameter will be ignored.
      * @return boolean whether the user is logged in
      */
-    public function login($identity, $duration = 0)
+    public function login(IdentityInterface $identity, $duration = 0)
     {
         if ($this->beforeLogin($identity, false, $duration)) {
             $this->switchIdentity($identity, $duration);
@@ -273,21 +282,29 @@ class User extends Component
         }
 
         $data = json_decode($value, true);
-        if (count($data) === 3 && isset($data[0], $data[1], $data[2])) {
-            list ($id, $authKey, $duration) = $data;
-            /* @var $class IdentityInterface */
-            $class = $this->identityClass;
-            $identity = $class::findIdentity($id);
-            if ($identity !== null && $identity->validateAuthKey($authKey)) {
-                if ($this->beforeLogin($identity, true, $duration)) {
-                    $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
-                    $ip = Yii::$app->getRequest()->getUserIP();
-                    Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
-                    $this->afterLogin($identity, true, $duration);
-                }
-            } elseif ($identity !== null) {
-                Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
+        if (count($data) !== 3 || !isset($data[0], $data[1], $data[2])) {
+            return;
+        }
+
+        list ($id, $authKey, $duration) = $data;
+        /* @var $class IdentityInterface */
+        $class = $this->identityClass;
+        $identity = $class::findIdentity($id);
+        if ($identity === null) {
+            return;
+        } elseif (!$identity instanceof IdentityInterface) {
+            throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
+        }
+
+        if ($identity->validateAuthKey($authKey)) {
+            if ($this->beforeLogin($identity, true, $duration)) {
+                $this->switchIdentity($identity, $this->autoRenewCookie ? $duration : 0);
+                $ip = Yii::$app->getRequest()->getUserIP();
+                Yii::info("User '$id' logged in from $ip via cookie.", __METHOD__);
+                $this->afterLogin($identity, true, $duration);
             }
+        } else {
+            Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
         }
     }
 
@@ -551,7 +568,7 @@ class User extends Component
         $session->remove($this->idParam);
         $session->remove($this->authTimeoutParam);
 
-        if ($identity instanceof IdentityInterface) {
+        if ($identity) {
             $session->set($this->idParam, $identity->getId());
             if ($this->authTimeout !== null) {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);

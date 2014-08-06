@@ -42,6 +42,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     private $_sql;
 
+
     /**
      * @inheritdoc
      */

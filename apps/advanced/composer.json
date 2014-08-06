@@ -32,8 +32,7 @@
     },
     "scripts": {
         "post-create-project-cmd": [
-            "yii\\composer\\Installer::setPermission",
-            "yii\\composer\\Installer::generateCookieValidationKey"
+            "yii\\composer\\Installer::setPermission"
         ]
     },
     "config": {
@@ -46,10 +45,6 @@
 
             "frontend/runtime",
             "frontend/web/assets"
-        ],
-        "config": [
-            "frontend/config/main.php",
-            "backend/config/main.php"
         ]
     }
 }

@@ -62,6 +62,7 @@ class OAuth1 extends BaseOAuth
      */
     public $accessTokenMethod = 'GET';
 
+
     /**
      * Fetches the OAuth request token.
      * @param array $params additional request params.

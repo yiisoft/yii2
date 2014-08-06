@@ -100,7 +100,7 @@ en vez de llamadas al método [[Yii::setAlias()]].
 
 #### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
 
-Esta es una propiedad importante. Te permite definir un array de los componentes que deben ejecutarse 
+Esta es una propiedad importante. Te permite definir un array de los componentes que deben ejecutarse
 durante el [[yii\base\Application::bootstrap()|proceso de `bootstrapping`]] de la aplicación.
 Por ejemplo, si quieres personalizar las [reglas de URL](runtime-url-handling.md) de un [módulo](structure-modules.md),
 podrías listar su ID como un elemento de este array.
@@ -355,7 +355,7 @@ si tu no la usarás en tu código.
 
 ### Propiedades Útiles <a name="useful-properties"></a>
 
-Las propiedades especificadas en esta sub-sección are no son configuradas normalmente ya que sus valores por defecto
+Las propiedades especificadas en esta sub-sección no son configuradas normalmente ya que sus valores por defecto
 estipulan convenciones comunes. De cualquier modo, aún puedes configurarlas en caso de que quieras romper con la convención.
 
 
@@ -540,7 +540,7 @@ Por ejemplo:
 ```
 
 Ten en cuenta que el mismo evento `beforeAction` también es disparado por [módulos](structure-modules.md)
-y [controladores)(structure-controllers.md). Los objectos aplicación son los primeros en disparar este evento, 
+y [controladores)(structure-controllers.md). Los objectos aplicación son los primeros en disparar este evento,
 seguidos por módulos (si los hubiera), y finalmente controladores. Si un manejador de eventos define [[yii\base\ActionEvent::isValid]]
 como `false`, todos los eventos siguientes NO serán disparados.
 

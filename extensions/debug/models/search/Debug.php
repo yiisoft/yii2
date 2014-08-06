@@ -23,46 +23,39 @@ class Debug extends Base
      * @var string tag attribute input search value
      */
     public $tag;
-
     /**
      * @var string ip attribute input search value
      */
     public $ip;
-
     /**
      * @var string method attribute input search value
      */
     public $method;
-
     /**
      * @var integer ajax attribute input search value
      */
     public $ajax;
-
     /**
      * @var string url attribute input search value
      */
     public $url;
-
     /**
      * @var string status code attribute input search value
      */
     public $statusCode;
-
     /**
      * @var integer sql count attribute input search value
      */
     public $sqlCount;
-
     /**
      * @var integer total mail count attribute input search value
      */
     public $mailCount;
-
     /**
      * @var array critical codes, used to determine grid row options.
      */
     public $criticalCodes = [400, 404, 500];
+
 
     /**
      * @inheritdoc

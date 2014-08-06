@@ -55,6 +55,7 @@ class GoogleOAuth extends OAuth2
      */
     public $apiBaseUrl = 'https://www.googleapis.com/plus/v1';
 
+
     /**
      * @inheritdoc
      */

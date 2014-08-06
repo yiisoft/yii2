@@ -14,7 +14,6 @@ use yii\authclient\OAuth2;
  *
  * In order to use VKontakte OAuth you must register your application at <http://vk.com/editapp?act=create>.
  *
- *
  * Example application configuration:
  *
  * ~~~
@@ -53,6 +52,7 @@ class VKontakte extends OAuth2
      * @inheritdoc
      */
     public $apiBaseUrl = 'https://api.vk.com/method';
+
 
     /**
      * @inheritdoc

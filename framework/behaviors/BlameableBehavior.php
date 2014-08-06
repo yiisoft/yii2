@@ -54,10 +54,12 @@ class BlameableBehavior extends AttributeBehavior
 {
     /**
      * @var string the attribute that will receive current user ID value
+     * Set this property to be null if you do not want to record the creator ID.
      */
     public $createdByAttribute = 'created_by';
     /**
      * @var string the attribute that will receive current user ID value
+     * Set this property to be null if you do not want to record the updater ID.
      */
     public $updatedByAttribute = 'updated_by';
     /**
@@ -74,6 +76,7 @@ class BlameableBehavior extends AttributeBehavior
      * If this property is not set, the value of `Yii::$app->user->id` will be assigned to the attribute(s).
      */
     public $value;
+
 
     /**
      * @inheritdoc

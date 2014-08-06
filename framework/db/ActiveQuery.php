@@ -242,24 +242,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $row = parent::one($db);
         if ($row !== false) {
-            if ($this->asArray) {
-                $model = $row;
-            } else {
-                /* @var $class ActiveRecord */
-                $class = $this->modelClass;
-                $model = $class::instantiate($row);
-                $class::populateRecord($model, $row);
-            }
-            if (!empty($this->with)) {
-                $models = [$model];
-                $this->findWith($this->with, $models);
-                $model = $models[0];
-            }
-            if (!$this->asArray) {
-                $model->afterFind();
-            }
-
-            return $model;
+            $models = $this->prepareResult([$row]);
+            return reset($models) ?: null;
         } else {
             return null;
         }

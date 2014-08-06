@@ -75,7 +75,8 @@ use yii\helpers\StringHelper;
  * @property string $url The currently requested relative URL. Note that the URI returned is URL-encoded.
  * @property string $userAgent User agent, null if not present. This property is read-only.
  * @property string $userHost User host name, null if cannot be determined. This property is read-only.
- * @property string $userIP User IP address. This property is read-only.
+ * @property string $userIP User IP address. Null is returned if the user IP address cannot be detected. This
+ * property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -162,6 +163,7 @@ class Request extends \yii\base\Request
      * @var array the headers in this collection (indexed by the header names)
      */
     private $_headers;
+
 
     /**
      * Resolves the current request into a route and the associated parameters.
@@ -1228,12 +1230,11 @@ class Request extends \yii\base\Request
     {
         if ($this->_csrfCookie === null) {
             $this->_csrfCookie = $this->getCookies()->get($this->csrfParam);
-            if ($this->_csrfCookie === null) {
+            if ($this->_csrfCookie === null || empty($this->_csrfCookie->value)) {
                 $this->_csrfCookie = $this->createCsrfCookie();
                 Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
             }
         }
-
         return $this->_csrfCookie->value;
     }
 
@@ -1277,7 +1278,7 @@ class Request extends \yii\base\Request
         if ($n1 > $n2) {
             $token2 = str_pad($token2, $n1, $token2);
         } elseif ($n1 < $n2) {
-            $token1 = str_pad($token1, $n2, $token1);
+            $token1 = str_pad($token1, $n2, $n1 === 0 ? ' ' : $token1);
         }
 
         return $token1 ^ $token2;
@@ -1289,7 +1290,6 @@ class Request extends \yii\base\Request
     public function getCsrfTokenFromHeader()
     {
         $key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
-
         return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
     }
 
@@ -1304,7 +1304,6 @@ class Request extends \yii\base\Request
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
         $options['value'] = Yii::$app->getSecurity()->generateRandomString();
-
         return new Cookie($options);
     }
 

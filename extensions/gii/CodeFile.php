@@ -54,6 +54,7 @@ class CodeFile extends Object
      */
     public $operation;
 
+
     /**
      * Constructor.
      * @param string $path the file path that the new code should be saved to.

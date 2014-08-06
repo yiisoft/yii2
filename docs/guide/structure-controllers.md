@@ -316,7 +316,7 @@ to end users.
 
 * For [[yii\web\Application|Web applications]], the return value can also be some arbitrary data which will
   be assigned to [[yii\web\Response::data]] and be further converted into a string representing the response body.
-* For [[yii\console\Application|console applications], the return value can also be an integer representing
+* For [[yii\console\Application|console applications]], the return value can also be an integer representing
   the [[yii\console\Response::exitStatus|exit status]] of the command execution.
 
 In the examples shown above, the action results are all strings which will be treated as the response body

@@ -53,6 +53,7 @@ class CheckboxColumn extends Column
      */
     public $multiple = true;
 
+
     /**
      * @inheritdoc
      * @throws \yii\base\InvalidConfigException if [[name]] is not set.

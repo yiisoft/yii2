@@ -73,6 +73,7 @@ class FragmentCache extends Widget
      */
     public $dynamicPlaceholders;
 
+
     /**
      * Initializes the FragmentCache object.
      */

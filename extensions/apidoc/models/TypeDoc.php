@@ -34,8 +34,8 @@ class TypeDoc extends BaseDoc
      * @var PropertyDoc[]
      */
     public $properties = [];
-
     public $namespace;
+
 
     public function findSubject($subjectName)
     {
@@ -46,7 +46,7 @@ class TypeDoc extends BaseDoc
                 }
             }
         }
-        if (substr_compare($subjectName, '()', -2, 2) === 0) {
+        if (!empty($subjectName) && substr_compare($subjectName, '()', -2, 2) === 0) {
             return null;
         }
         if ($this->properties === null) {

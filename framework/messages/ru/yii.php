@@ -84,7 +84,7 @@ return [
     'the input value' => 'введённое значение',
     '{attribute} "{value}" has already been taken.' => '{attribute} «{value}» уже занят.',
     '{attribute} cannot be blank.' => 'Необходимо заполнить «{attribute}».',
-    '{attribute} is invalid.' => 'Значение «{attribute}» не верно.',
+    '{attribute} is invalid.' => 'Значение «{attribute}» неверно.',
     '{attribute} is not a valid URL.' => 'Значение «{attribute}» не является правильным URL.',
     '{attribute} is not a valid email address.' => 'Значение «{attribute}» не является правильным email адресом.',
     '{attribute} must be "{requiredValue}".' => 'Значение «{attribute}» должно быть равно «{requiredValue}».',

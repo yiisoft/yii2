@@ -47,6 +47,7 @@ class Collection extends Component
      */
     private $_clients = [];
 
+
     /**
      * @param array $clients list of auth clients
      */

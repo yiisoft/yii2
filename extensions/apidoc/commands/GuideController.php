@@ -28,6 +28,7 @@ class GuideController extends BaseController
      */
     public $apiDocs;
 
+
     /**
      * Renders API documentation files
      * @param array $sourceDirs

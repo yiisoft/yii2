@@ -97,7 +97,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-The base class [\yii\db\Migration] exposes a database connection via `db`
+The base class [[\yii\db\Migration]] exposes a database connection via `db`
 property. You can use it for manipulating data and schema of a database.
 
 The column types used in this example are abstract types that will be replaced

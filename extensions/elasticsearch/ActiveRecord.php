@@ -56,6 +56,7 @@ class ActiveRecord extends BaseActiveRecord
     private $_version;
     private $_highlight;
 
+
     /**
      * Returns the database connection used by this AR class.
      * By default, the "elasticsearch" application component is used as the database connection.

@@ -41,6 +41,7 @@ class MessageController extends Controller
      */
     public $defaultAction = 'extract';
 
+
     /**
      * Creates a configuration file for the "extract" command.
      *
@@ -95,6 +96,9 @@ class MessageController extends Controller
         if (!is_dir($config['sourcePath'])) {
             throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
         }
+        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
+            throw new Exception('Format should be either "php", "po" or "db".');
+        }
         if (in_array($config['format'], ['php', 'po'])) {
             if (!isset($config['messagePath'])) {
                 throw new Exception('The configuration file must specify "messagePath".');
@@ -104,9 +108,6 @@ class MessageController extends Controller
         }
         if (empty($config['languages'])) {
             throw new Exception("Languages cannot be empty.");
-        }
-        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
-            throw new Exception('Format should be either "php", "po" or "db".');
         }
 
         $files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
@@ -331,7 +332,7 @@ class MessageController extends Controller
             ksort($existingMessages);
             foreach ($existingMessages as $message => $translation) {
                 if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
-                    if (mb_strlen($translation, Yii::$app->charset) >= 2 && substr_compare($translation, '@@', 0, 2) === 0 && substr_compare($translation, '@@', -2) === 0) {
+                    if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2) === 0) {
                         $todo[$message] = $translation;
                     } else {
                         $todo[$message] = '@@' . $translation . '@@';
@@ -445,7 +446,7 @@ EOD;
                 // add obsolete unused messages
                 foreach ($existingMessages as $message => $translation) {
                     if (!isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message]) && !$removeUnused) {
-                        if (mb_strlen($translation, Yii::$app->charset) >= 2 && substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
+                        if (!empty($translation) && substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
                             $todos[$category . chr(4) . $message] = $translation;
                         } else {
                             $todos[$category . chr(4) . $message] = '@@' . $translation . '@@';

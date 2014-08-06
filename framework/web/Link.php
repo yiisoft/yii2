@@ -52,6 +52,7 @@ class Link extends Object
      */
     public $hreflang;
 
+
     /**
      * Serializes a list of links into proper array format.
      * @param array $links the links to be serialized
