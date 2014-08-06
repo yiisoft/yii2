@@ -95,6 +95,7 @@ class SiteController extends Controller
     }
 }
 ```
+> Note: Need to call `UploadedFile::getInstance($model, 'file')` after the `$model->load(Yii::$app->request->post());` method. Otherwise you will get an empty field `file`.
 
 Instead of `model->load(...)` we are using `UploadedFile::getInstance(...)`. [[\yii\web\UploadedFile|UploadedFile]] 
 does not run the model validation. It only provides information about the uploaded file. Therefore, you need to run
