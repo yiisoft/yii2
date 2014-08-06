@@ -130,6 +130,11 @@ class UrlTest extends TestCase
         $this->assertEquals('https://example.com/test/me1', Url::to('test/me1', 'https'));
         $this->assertEquals('https://example.com/test/test/me1', Url::to('@web4/test/me1', 'https'));
 
+        $this->assertEquals('/test/me1', Url::to('/test/me1'));
+        $this->assertEquals('http://example.com/test/me1', Url::to('/test/me1', true));
+        $this->assertEquals('https://example.com/test/me1', Url::to('/test/me1', 'https'));
+        $this->assertEquals('./test/me1', Url::to('./test/me1'));
+
         $this->assertEquals('http://test.example.com/test/me1', Url::to('@web1'));
         $this->assertEquals('http://test.example.com/test/me1', Url::to('@web1', true));
         $this->assertEquals('https://test.example.com/test/me1', Url::to('@web1', 'https'));
