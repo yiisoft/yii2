@@ -333,8 +333,6 @@ class FixtureController extends \yii\console\controllers\FixtureController
         foreach ($template as $attribute => $fakerProperty) {
             if ($fakerProperty instanceof \Closure) {
                 $fixture = call_user_func_array($fakerProperty, [$fixture, $this->generator, $index]);
-            } elseif (is_string($fakerProperty) && !empty($fakerProperty) && $fakerProperty[0] == ':') {
-                $fixture[$attribute] = $this->generator->$fakerProperty;
             } else {
                 $fixture[$attribute] = $fakerProperty;
             }
