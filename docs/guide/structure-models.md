@@ -93,7 +93,7 @@ You can get the label of an attribute by calling [[yii\base\Model::getAttributeL
 ```php
 $model = new \app\models\ContactForm;
 
-// displays "Label"
+// displays "Name"
 echo $model->getAttributeLabel('name');
 ```
 
