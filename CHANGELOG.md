@@ -171,6 +171,7 @@ Yii Framework 2 Change Log
 - Enh #4559: Added `beforeValidateAll` and `afterValidateAll` callbacks to `ActiveForm` (Alex-Code)
 - Enh #4566: Added client validation support for image validator (Skysplit, qiangxue)
 - Enh #4581: Added ability to disable url encoding in `UrlRule` (tadaszelvys)
+- Enh #4602: Added $key param in ActionColumn buttons Closure call (disem)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
