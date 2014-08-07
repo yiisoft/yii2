@@ -78,6 +78,7 @@ Yii Framework 2 Change Log
 - Bug #4497: Fixed StringHelper::byteSubstr() returning empty string on null $length param (mbman)
 - Bug #4514: Fixed Request class crashing when empty CSRF token value is sent in cookie (cebe)
 - Bug #4519: `yii\base\Model::isAttributeRequired()` should check if the `when` option of the validator is set (thiagotalma)
+- Bug #4592: Fixed `yii help` command was listing incorrect action names for methods like `actionSayNO` (samdark)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
