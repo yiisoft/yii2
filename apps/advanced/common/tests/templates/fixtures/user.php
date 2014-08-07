@@ -1,7 +1,11 @@
 <?php
 
 return [
-    'username' => 'userName',
+    'username' => function ($fixture, $faker, $index) {
+        $fixture['username'] = $faker->userName;
+
+        return $fixture;
+    },
     'auth_key' => function ($fixture, $faker, $index) {
         $fixture['auth_key'] = Yii::$app->getSecurity()->generateRandomString();
 
@@ -27,5 +31,10 @@ return [
 
         return $fixture;
     },
-    'email' => 'email',
+    'email' => function ($fixture, $faker, $index) {
+        $fixture['email'] = $faker->email;
+
+        return $fixture;
+    },
+    'status' => 10
 ];
