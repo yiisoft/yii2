@@ -1,8 +1,8 @@
 <?php
 
 // set correct script paths
-$_SERVER['SCRIPT_FILENAME'] = TEST_ENTRY_FILE;
-$_SERVER['SCRIPT_NAME'] = TEST_ENTRY_URL;
+$_SERVER['SCRIPT_FILENAME'] = $GLOBALS['TEST_ENTRY_FILE'];
+$_SERVER['SCRIPT_NAME'] = $GLOBALS['TEST_ENTRY_URL'];
 
 return yii\helpers\ArrayHelper::merge(
     require(__DIR__ . '/../../config/main.php'),

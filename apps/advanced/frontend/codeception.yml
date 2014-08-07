@@ -1,3 +1,4 @@
+namespace: frontend
 actor: Tester
 paths:
     tests: tests
