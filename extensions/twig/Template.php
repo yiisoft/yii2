@@ -19,7 +19,11 @@ abstract class Template extends \Twig_Template
         // Twig uses isset() to check if attribute exists which does not work when attribute exists but is null
 
         if ($object instanceof \yii\db\BaseActiveRecord) {
-            return $object->$item;
+            if ($type == \Twig_Template::METHOD_CALL) {
+                return $object->$item();
+            } else {
+                return $object->$item;
+            }
         }
 
         return parent::getAttribute($object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
