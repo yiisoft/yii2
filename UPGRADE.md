@@ -180,4 +180,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 * [[yii\helpers\Url::to()]] will no longer prefix base URL to relative URLs. For example, `Url::to('images/logo.png')`
   will return `images/logo.png` directly. If you want a relative URL to be prefix with base URL, you should make use
   of the alias `@web`. For example, `Url::to('@web/images/logo.png')` will return `/BaseUrl/images/logo.png`.
-  
+
+* `yii\bootstrap\NavBar`'s `brandLabel` and `brandUrl` are taking `false` instead of `null` for "don't use" case.
+
+* `yii\widgets\LinkPager`'s `nextPageLabel`, `prevPageLabel`, `firstPageLabel`, `lastPageLabel` are now taking `false` instead of `null` for "no label".
