@@ -65,7 +65,7 @@ webserver:
 
 ```
 cd apps/advanced/frontend/www
-php -S 127.0.0.1:8080 index-test.php
+php -S 127.0.0.1:8080
 ```
 
 Note that you should have Codeception and PHPUnit installed globally:
