@@ -93,7 +93,7 @@ You can get the label of an attribute by calling [[yii\base\Model::getAttributeL
 ```php
 $model = new \app\models\ContactForm;
 
-// displays "Label"
+// displays "Name"
 echo $model->getAttributeLabel('name');
 ```
 
@@ -500,7 +500,7 @@ you may take the following strategy:
   [modules](structure-modules.md). These model classes should contain minimal sets of rules and logic that
   are common among all their usages.
 * In each [application](structure-applications.md) or [module](structure-modules.md) that uses a model,
-  define a crete model class by extending from the corresponding base model class. The concrete model classes
+  define a concrete model class by extending from the corresponding base model class. The concrete model classes
   should contain rules and logic that are specific for that application or module.
 
 For example, in the [Advanced Application Template](tutorial-advanced-app.md), you may define a base model

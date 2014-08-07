@@ -121,7 +121,7 @@ class HelpController extends Controller
         foreach ($class->getMethods() as $method) {
             $name = $method->getName();
             if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
-                $actions[] = Inflector::camel2id(substr($name, 6));
+                $actions[] = Inflector::camel2id(substr($name, 6), '-', true);
             }
         }
         sort($actions);

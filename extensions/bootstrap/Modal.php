@@ -52,9 +52,9 @@ class Modal extends Widget
      */
     public $size;
     /**
-     * @var array the options for rendering the close button tag.
+     * @var array|false the options for rendering the close button tag.
      * The close button is displayed in the header of the modal window. Clicking
-     * on the button will hide the modal window. If this is null, no close button will be rendered.
+     * on the button will hide the modal window. If this is false, no close button will be rendered.
      *
      * The following special options are supported:
      *
@@ -69,7 +69,7 @@ class Modal extends Widget
     /**
      * @var array the options for rendering the toggle button tag.
      * The toggle button is used to toggle the visibility of the modal window.
-     * If this property is null, no toggle button will be rendered.
+     * If this property is false, no toggle button will be rendered.
      *
      * The following special options are supported:
      *
@@ -80,7 +80,7 @@ class Modal extends Widget
      * Please refer to the [Modal plugin help](http://getbootstrap.com/javascript/#modals)
      * for the supported HTML attributes.
      */
-    public $toggleButton;
+    public $toggleButton = false;
 
 
     /**
@@ -187,7 +187,7 @@ class Modal extends Widget
      */
     protected function renderCloseButton()
     {
-        if ($this->closeButton !== null) {
+        if ($this->closeButton !== false) {
             $tag = ArrayHelper::remove($this->closeButton, 'tag', 'button');
             $label = ArrayHelper::remove($this->closeButton, 'label', '&times;');
             if ($tag === 'button' && !isset($this->closeButton['type'])) {
@@ -217,7 +217,7 @@ class Modal extends Widget
             $this->clientOptions = array_merge(['show' => false], $this->clientOptions);
         }
 
-        if ($this->closeButton !== null) {
+        if ($this->closeButton !== false) {
             $this->closeButton = array_merge([
                 'data-dismiss' => 'modal',
                 'aria-hidden' => 'true',
@@ -225,7 +225,7 @@ class Modal extends Widget
             ], $this->closeButton);
         }
 
-        if ($this->toggleButton !== null) {
+        if ($this->toggleButton !== false) {
             $this->toggleButton = array_merge([
                 'data-toggle' => 'modal',
             ], $this->toggleButton);

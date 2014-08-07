@@ -4,8 +4,9 @@ namespace yiiunit\extensions\twig;
 use yii\web\AssetManager;
 use yii\web\View;
 use Yii;
+use yiiunit\data\ar\Order;
 use yiiunit\data\base\Singer;
-use yiiunit\TestCase;
+use yiiunit\framework\db\DatabaseTestCase;
 
 /**
  * Tests Twig view renderer
@@ -13,10 +14,13 @@ use yiiunit\TestCase;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
  */
-class ViewRendererTest extends TestCase
+class ViewRendererTest extends DatabaseTestCase
 {
+    protected $driverName = 'sqlite';
+
     protected function setUp()
     {
+        parent::setUp();
         $this->mockApplication();
     }
 
@@ -91,6 +95,14 @@ class ViewRendererTest extends TestCase
         $content = $view->renderFile('@yiiunit/extensions/twig/views/changeTitle.twig');
         $this->assertTrue(strpos($content, 'New title') !== false, 'New title should be there:' . $content);
         $this->assertFalse(strpos($content, 'Original title') !== false, 'Original title should not be there:' . $content);
+    }
+
+    public function testNullsInAr()
+    {
+        $view = $this->mockView();
+        $order = new Order();
+        $order::$db = $this->getConnection();
+        $view->renderFile('@yiiunit/extensions/twig/views/nulls.twig', ['order' => $order]);
     }
 
     /**

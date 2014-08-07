@@ -78,6 +78,7 @@ Yii Framework 2 Change Log
 - Bug #4497: Fixed StringHelper::byteSubstr() returning empty string on null $length param (mbman)
 - Bug #4514: Fixed Request class crashing when empty CSRF token value is sent in cookie (cebe)
 - Bug #4519: `yii\base\Model::isAttributeRequired()` should check if the `when` option of the validator is set (thiagotalma)
+- Bug #4592: Fixed `yii help` command was listing incorrect action names for methods like `actionSayNO` (samdark)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
@@ -168,7 +169,10 @@ Yii Framework 2 Change Log
 - Enh #4436: Added callback functions to AJAX-based form validation (thiagotalma)
 - Enh #4485: Added support for deferred validation in `ActiveForm` (Alex-Code)
 - Enh #4520: Added sasl support to `yii\caching\MemCache` (xjflyttp)
+- Enh #4559: Added `beforeValidateAll` and `afterValidateAll` callbacks to `ActiveForm` (Alex-Code)
 - Enh #4566: Added client validation support for image validator (Skysplit, qiangxue)
+- Enh #4581: Added ability to disable url encoding in `UrlRule` (tadaszelvys)
+- Enh #4602: Added $key param in ActionColumn buttons Closure call (disem)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
@@ -214,6 +218,8 @@ Yii Framework 2 Change Log
 - Chg #4310: Removed `$data` from signature of `yii\rbac\ManagerInterface` (samdark)
 - Chg #4318: `yii\helpers\Html::ul()` and `ol()` will return an empty list tag if an empty item array is given (qiangxue)
 - Chg #4331: `yii\helpers\Url` now uses `UrlManager` to determine base URL when generating URLs (qiangxue)
+- Chg #4591: `yii\helpers\Url::to()` will no longer prefix relative URLs with the base URL (qiangxue)
+- Chg #4595: `yii\widgets\LinkPager`'s `nextPageLabel`, `prevPageLabel`, `firstPageLabel`, `lastPageLabel` are now taking `false` instead of `null` for "no label" (samdark)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
@@ -225,6 +231,7 @@ Yii Framework 2 Change Log
 - Chg: `yii\web\Request::cookieValidationKey` must be explicitly specified for each application that wants to use cookie validation (qiangxue)
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
 - New #4193: Added `yii\filters\Cors` CORS filter to allow Cross Origin Resource Sharing (pgaultier)
+- New: Added `yii\base\InvalidValueException` (qiangxue)
 
 
 2.0.0-beta April 13, 2014

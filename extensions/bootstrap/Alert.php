@@ -55,7 +55,7 @@ class Alert extends Widget
     /**
      * @var array the options for rendering the close button tag.
      * The close button is displayed in the header of the modal window. Clicking
-     * on the button will hide the modal window. If this is null, no close button will be rendered.
+     * on the button will hide the modal window. If this is false, no close button will be rendered.
      *
      * The following special options are supported:
      *
@@ -117,7 +117,7 @@ class Alert extends Widget
      */
     protected function renderCloseButton()
     {
-        if ($this->closeButton !== null) {
+        if ($this->closeButton !== false) {
             $tag = ArrayHelper::remove($this->closeButton, 'tag', 'button');
             $label = ArrayHelper::remove($this->closeButton, 'label', '&times;');
             if ($tag === 'button' && !isset($this->closeButton['type'])) {
