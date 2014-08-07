@@ -181,6 +181,13 @@ new ones save the following code as `convert.php` that should be placed in the s
   will return `images/logo.png` directly. If you want a relative URL to be prefix with base URL, you should make use
   of the alias `@web`. For example, `Url::to('@web/images/logo.png')` will return `/BaseUrl/images/logo.png`.
 
-* `yii\bootstrap\NavBar`'s `brandLabel` and `brandUrl` are taking `false` instead of `null` for "don't use" case.
-
-* `yii\widgets\LinkPager`'s `nextPageLabel`, `prevPageLabel`, `firstPageLabel`, `lastPageLabel` are now taking `false` instead of `null` for "no label".
+- The following properties are now taking `false` instead of `null` for "don't use" case:
+  - `yii\bootstrap\NavBar::$brandLabel`.
+  - `yii\bootstrap\NavBar::$brandUrl`.
+  - `yii\bootstrap\Modal::$closeButton`.
+  - `yii\bootstrap\Modal::$toggleButton`.
+  - `yii\bootstrap\Alert::$closeButton`.
+  - `yii\widgets\LinkPager::$nextPageLabel`.
+  - `yii\widgets\LinkPager::$prevPageLabel`.
+  - `yii\widgets\LinkPager::$firstPageLabel`.
+  - `yii\widgets\LinkPager::$lastPageLabel`.
