@@ -111,7 +111,7 @@ yii.validation = (function ($) {
                 };
                 
                 img.onerror = function () {
-                    messages.push(options.notImage);
+                    messages.push(options.notImage.replace(/\{file\}/g, file.name));
                     def.resolve();
                 };
                 

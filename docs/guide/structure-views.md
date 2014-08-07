@@ -361,10 +361,10 @@ the places where these methods are called.
 - [[yii\web\View::head()|head()]]: This method should be called within the `<head>` section of an HTML page.
   It generates a placeholder which will be replaced with the registered head HTML code (e.g. link tags, meta tags)
   when a page finishes rendering.
-- [[yii\base\View::beginBody()|beginBody()]]: This method should be called at the beginning of the `<body>` section.
+- [[yii\web\View::beginBody()|beginBody()]]: This method should be called at the beginning of the `<body>` section.
   It triggers the [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] event and generates a placeholder which will
   be replaced by the registered HTML code (e.g. JavaScript) targeted at the body begin position.
-- [[yii\base\View::endBody()|endBody()]]: This method should be called at the end of the `<body>` section.
+- [[yii\web\View::endBody()|endBody()]]: This method should be called at the end of the `<body>` section.
   It triggers the [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]] event and generates a placeholder which will
   be replaced by the registered HTML code (e.g. JavaScript) targeted at the body end position.
 

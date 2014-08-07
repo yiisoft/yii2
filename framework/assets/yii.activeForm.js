@@ -41,9 +41,15 @@
         // a callback that is called before validating each attribute. The signature of the callback should be:
         // function ($form, attribute, messages) { ...return false to cancel the validation...}
         beforeValidate: undefined,
+        // a callback that is called before validation starts (This callback is only called when the form is submitted). This signature of the callback should be:
+        // function($form, data) { ...return false to cancel the validation...}
+        beforeValidateAll: undefined,
         // a callback that is called after an attribute is validated. The signature of the callback should be:
         // function ($form, attribute, messages)
         afterValidate: undefined,
+        // a callback that is called after all validation has run (This callback is only called when the form is submitted). The signature of the callback should be:
+        // function ($form, data, messages)
+        afterValidateAll: undefined,
         // a pre-request callback function on AJAX-based validation. The signature of the callback should be:
         // function ($form, jqXHR, textStatus)
         ajaxBeforeSend: undefined,
@@ -152,6 +158,11 @@
                 clearTimeout(data.settings.timer);
             }
             data.submitting = true;
+            
+            if (data.settings.beforeValidateAll && !data.settings.beforeValidateAll($form, data)) {
+                data.submitting = false;
+                return false;
+            }
             validate($form, function (messages) {
                 var errors = [];
                 $.each(data.attributes, function () {
@@ -159,6 +170,11 @@
                         errors.push(this.input);
                     }
                 });
+                
+                if (data.settings.afterValidateAll) {
+                    data.settings.afterValidateAll($form, data, messages);
+                }
+                
                 updateSummary($form, messages);
                 if (errors.length) {
                     var top = $form.find(errors.join(',')).first().offset().top;

@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\VarDumper;
 
 /**
  * This command manage fixtures creations based on given template.
@@ -316,22 +317,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
      */
     public function exportFixtures($fixtures)
     {
-        $content = "<?php\n\nreturn [";
-
-        foreach ($fixtures as $fixture) {
-
-            $content .= "\n\t[";
-
-            foreach ($fixture as $name => $value) {
-                $content .= "\n\t\t'{$name}' => '{$value}',";
-            }
-
-            $content .= "\n\t],";
-
-        }
-        $content .= "\n];\n";
-
-        return $content;
+        return "<?php\n\nreturn " . VarDumper::export($fixtures) . ";\n";
     }
 
     /**
