@@ -396,10 +396,10 @@ In Yii in order to build it you can first form two query objects and then use `u
 
 ```php
 $query = new Query();
-$query->select("id, 'post' as type, name")->from('post')->limit(10);
+$query->select("id, category_id as type, name")->from('post')->limit(10);
 
 $anotherQuery = new Query();
-$anotherQuery->select('id, 'user' as type, name')->from('user')->limit(10);
+$anotherQuery->select('id, type, name')->from('user')->limit(10);
 
 $query->union($anotherQuery);
 ```

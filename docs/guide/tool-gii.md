@@ -187,7 +187,7 @@ if (YII_ENV_DEV) {
             'crud' => [ //name generator
                 'class' => 'yii\gii\generators\crud\Generator', //class generator
                 'templates' => [ //setting for out templates
-                    'myCrud' => '@app\myTemplates\crud\default', //name template => path to template
+                    'myCrud' => '@app/myTemplates/crud/default', //name template => path to template
                 ]
             ]
         ],

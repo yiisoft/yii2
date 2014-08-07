@@ -174,6 +174,10 @@ new ones save the following code as `convert.php` that should be placed in the s
   ```
   
 * Due to significant changes to security you need to upgrade your code to use `\yii\base\Security` component instead of
-  helper. If you have any data encrypted it should be re-encrypted. In order to do so you can use old security helper [as
-  explained by @docsolver at github](https://github.com/yiisoft/yii2/issues/4461#issuecomment-50237807).
+  helper. If you have any data encrypted it should be re-encrypted. In order to do so you can use old security helper
+  [as explained by @docsolver at github](https://github.com/yiisoft/yii2/issues/4461#issuecomment-50237807).
+
+* [[yii\helpers\Url::to()]] will no longer prefix base URL to relative URLs. For example, `Url::to('images/logo.png')`
+  will return `images/logo.png` directly. If you want a relative URL to be prefix with base URL, you should make use
+  of the alias `@web`. For example, `Url::to('@web/images/logo.png')` will return `/BaseUrl/images/logo.png`.
   
