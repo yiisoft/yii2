@@ -33,8 +33,8 @@ class Context extends Component
      * @var TraitDoc[]
      */
     public $traits = [];
-
     public $errors = [];
+
 
     public function getType($type)
     {

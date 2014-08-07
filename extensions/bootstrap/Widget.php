@@ -39,6 +39,7 @@ class Widget extends \yii\base\Widget
      */
     public $clientEvents = [];
 
+
     /**
      * Initializes the widget.
      * This method will register the bootstrap asset bundle. If you override this method,

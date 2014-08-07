@@ -64,6 +64,14 @@ abstract class Schema extends Object
      */
     public $defaultSchema;
     /**
+     * @var array map of DB errors and corresponding exceptions
+     * If left part is found in DB error message exception class from the right part is used.
+     */
+    public $exceptionMap = [
+        'SQLSTATE[23' => 'yii\db\IntegrityException',
+    ];
+
+    /**
      * @var array list of ALL table names in the database
      */
     private $_tableNames = [];
@@ -76,13 +84,6 @@ abstract class Schema extends Object
      */
     private $_builder;
 
-    /**
-     * @var array map of DB errors and corresponding exceptions
-     * If left part is found in DB error message exception class from the right part is used.
-     */
-    public $exceptionMap = [
-        'SQLSTATE[23' => 'yii\db\IntegrityException',
-    ];
 
     /**
      * Loads the metadata for the specified table.
@@ -496,28 +497,27 @@ abstract class Schema extends Object
     }
 
     /**
-     * Handles database error
+     * Converts a DB exception to a more concrete one if possible.
      *
      * @param \Exception $e
      * @param string $rawSql SQL that produced exception
-     * @throws Exception
+     * @return Exception
      */
-    public function handleException(\Exception $e, $rawSql)
+    public function convertException(\Exception $e, $rawSql)
     {
         if ($e instanceof Exception) {
-            throw $e;
-        } else {
-            $exceptionClass = '\yii\db\Exception';
-            foreach ($this->exceptionMap as $error => $class) {
-                if (strpos($e->getMessage(), $error) !== false) {
-                    $exceptionClass = $class;
-                }
-            }
-
-            $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
-            $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-            throw new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
+            return $e;
         }
+
+        $exceptionClass = '\yii\db\Exception';
+        foreach ($this->exceptionMap as $error => $class) {
+            if (strpos($e->getMessage(), $error) !== false) {
+                $exceptionClass = $class;
+            }
+        }
+        $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+        $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+        return new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
     }
 
     /**

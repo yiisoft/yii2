@@ -28,8 +28,10 @@ use yii\widgets\ActiveForm;
 
     <?= "<?php " ?>$form = ActiveForm::begin(); ?>
 
-<?php foreach ($safeAttributes as $attribute) {
-    echo "    <?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
+<?php foreach ($generator->getColumnNames() as $attribute) {
+    if (in_array($attribute, $safeAttributes)) {
+        echo "    <?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
+    }
 } ?>
     <div class="form-group">
         <?= "<?= " ?>Html::submitButton($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Update') ?>, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

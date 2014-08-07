@@ -96,6 +96,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     const OP_ALL = 0x07;
 
+
     /**
      * Loads default values from database table schema
      *
@@ -258,7 +259,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**

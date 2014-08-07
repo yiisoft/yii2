@@ -95,17 +95,14 @@ class ActiveField extends \yii\widgets\ActiveField
      * @var bool whether to render [[checkboxList()]] and [[radioList()]] inline.
      */
     public $inline = false;
-
     /**
      * @var string|null optional template to render the `{input}` placeholder content
      */
     public $inputTemplate;
-
     /**
      * @var array options for the wrapper tag, used in the `{beginWrapper}` placeholder
      */
     public $wrapperOptions = [];
-
     /**
      * @var null|array CSS grid classes for horizontal layout. This must be an array with these keys:
      *  - 'offset' the offset grid class to append to the wrapper if no label is rendered
@@ -115,46 +112,39 @@ class ActiveField extends \yii\widgets\ActiveField
      *  - 'hint' the hint grid class
      */
     public $horizontalCssClasses;
-
     /**
      * @var string the template for checkboxes in default layout
      */
     public $checkboxTemplate = "<div class=\"checkbox\">\n{beginLabel}\n{input}\n{labelTitle}\n{endLabel}\n{error}\n{hint}\n</div>";
-
     /**
      * @var string the template for radios in default layout
      */
     public $radioTemplate = "<div class=\"radio\">\n{beginLabel}\n{input}\n{labelTitle}\n{endLabel}\n{error}\n{hint}\n</div>";
-
     /**
      * @var string the template for checkboxes in horizontal layout
      */
     public $horizontalCheckboxTemplate = "{beginWrapper}\n<div class=\"checkbox\">\n{beginLabel}\n{input}\n{labelTitle}\n{endLabel}\n</div>\n{error}\n{endWrapper}\n{hint}";
-
     /**
      * @var string the template for radio buttons in horizontal layout
      */
     public $horizontalRadioTemplate = "{beginWrapper}\n<div class=\"radio\">\n{beginLabel}\n{input}\n{labelTitle}\n{endLabel}\n</div>\n{error}\n{endWrapper}\n{hint}";
-
     /**
      * @var string the template for inline checkboxLists
      */
     public $inlineCheckboxListTemplate = "{label}\n{beginWrapper}\n{input}\n{error}\n{endWrapper}\n{hint}";
-
     /**
      * @var string the template for inline radioLists
      */
     public $inlineRadioListTemplate = "{label}\n{beginWrapper}\n{input}\n{error}\n{endWrapper}\n{hint}";
-
     /**
      * @var bool whether to render the error. Default is `true` except for layout `inline`.
      */
     public $enableError = true;
-
     /**
      * @var bool whether to render the label. Default is `true`.
      */
     public $enableLabel = true;
+
 
     /**
      * @inheritdoc

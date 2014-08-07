@@ -121,15 +121,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         $order = new Order();
         $order->id = 1;
-        $order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
+        $order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0, 'itemsArray' => [1, 2]], false);
         $order->save(false);
         $order = new Order();
         $order->id = 2;
-        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0, 'itemsArray' => [4, 5, 3]], false);
         $order->save(false);
         $order = new Order();
         $order->id = 3;
-        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0, 'itemsArray' => [2]], false);
         $order->save(false);
 
         $orderItem = new OrderItem();
@@ -694,6 +694,134 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         $orderItems = $orderItemClass::find()->where(['IN', '_id', [null]])->all();
         $this->assertEquals(0, count($orderItems));
+    }
+
+    public function testArrayAttributes()
+    {
+        $this->assertTrue(is_array(Order::findOne(1)->itemsArray));
+        $this->assertTrue(is_array(Order::findOne(2)->itemsArray));
+        $this->assertTrue(is_array(Order::findOne(3)->itemsArray));
+    }
+
+    public function testArrayAttributeRelationLazy()
+    {
+        $order = Order::findOne(1);
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue($items[1] instanceof Item);
+        $this->assertTrue($items[2] instanceof Item);
+
+        $order = Order::findOne(2);
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[3]));
+        $this->assertTrue(isset($items[4]));
+        $this->assertTrue(isset($items[5]));
+        $this->assertTrue($items[3] instanceof Item);
+        $this->assertTrue($items[4] instanceof Item);
+        $this->assertTrue($items[5] instanceof Item);
+    }
+
+    public function testArrayAttributeRelationEager()
+    {
+        /* @var $order Order */
+        $order = Order::find()->with('itemsByArrayValue')->where(['id' => 1])->one();
+        $this->assertTrue($order->isRelationPopulated('itemsByArrayValue'));
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue($items[1] instanceof Item);
+        $this->assertTrue($items[2] instanceof Item);
+
+        /* @var $order Order */
+        $order = Order::find()->with('itemsByArrayValue')->where(['id' => 2])->one();
+        $this->assertTrue($order->isRelationPopulated('itemsByArrayValue'));
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[3]));
+        $this->assertTrue(isset($items[4]));
+        $this->assertTrue(isset($items[5]));
+        $this->assertTrue($items[3] instanceof Item);
+        $this->assertTrue($items[4] instanceof Item);
+        $this->assertTrue($items[5] instanceof Item);
+    }
+
+    public function testArrayAttributeRelationLink()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $item = Item::get(5);
+        $order->link('itemsByArrayValue', $item);
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue(isset($items[5]));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue(isset($items[5]));
+    }
+
+    public function testArrayAttributeRelationUnLink()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $item = Item::get(2);
+        $order->unlink('itemsByArrayValue', $item);
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertFalse(isset($items[2]));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertFalse(isset($items[2]));
+    }
+
+    public function testArrayAttributeRelationUnLinkAll()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $order->unlinkAll('itemsByArrayValue');
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(0, count($items));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(0, count($items));
     }
 
 

@@ -18,7 +18,30 @@ use yii\db\Connection;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+    /**
+     * @var array mapping from abstract column types (keys) to physical column types (values).
+     */
+    public $typeMap = [
+        Schema::TYPE_PK => 'NUMBER(10) NOT NULL PRIMARY KEY',
+        Schema::TYPE_BIGPK => 'NUMBER(20) NOT NULL PRIMARY KEY',
+        Schema::TYPE_STRING => 'VARCHAR2(255)',
+        Schema::TYPE_TEXT => 'CLOB',
+        Schema::TYPE_SMALLINT => 'NUMBER(5)',
+        Schema::TYPE_INTEGER => 'NUMBER(10)',
+        Schema::TYPE_BIGINT => 'NUMBER(20)',
+        Schema::TYPE_FLOAT => 'NUMBER',
+        Schema::TYPE_DECIMAL => 'NUMBER',
+        Schema::TYPE_DATETIME => 'TIMESTAMP',
+        Schema::TYPE_TIMESTAMP => 'TIMESTAMP',
+        Schema::TYPE_TIME => 'TIMESTAMP',
+        Schema::TYPE_DATE => 'DATE',
+        Schema::TYPE_BINARY => 'BLOB',
+        Schema::TYPE_BOOLEAN => 'NUMBER(1)',
+        Schema::TYPE_MONEY => 'NUMBER(19,4)',
+    ];
+
     private $_sql;
+
 
     /**
      * @inheritdoc
@@ -50,6 +73,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return [$this->_sql, $params];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildLimit($limit, $offset)
     {
         $filters = [];

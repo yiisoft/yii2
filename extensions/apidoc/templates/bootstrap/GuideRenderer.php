@@ -23,6 +23,7 @@ class GuideRenderer extends \yii\apidoc\templates\html\GuideRenderer
 
     public $layout = '@yii/apidoc/templates/bootstrap/layouts/guide.php';
 
+
     /**
      * @inheritDoc
      */

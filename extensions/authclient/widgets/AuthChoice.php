@@ -96,6 +96,7 @@ class AuthChoice extends Widget
      */
     private $_clients;
 
+
     /**
      * @param ClientInterface[] $clients auth providers
      */

@@ -101,6 +101,7 @@ class Breadcrumbs extends Widget
      */
     public $activeItemTemplate = "<li class=\"active\">{link}</li>\n";
 
+
     /**
      * Renders the widget.
      */

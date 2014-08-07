@@ -88,6 +88,7 @@ class Sortable extends Widget
         'update' => 'sortupdate',
     ];
 
+
     /**
      * Renders the widget.
      */

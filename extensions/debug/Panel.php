@@ -49,6 +49,7 @@ class Panel extends Component
      */
     public $actions = [];
 
+
     /**
      * @return string name of the panel
      */

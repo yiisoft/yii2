@@ -38,7 +38,7 @@ jQuery(function($) {
                 }
 
                 var url = this.href;
-                var popupOptions = options.popup;
+                var popupOptions = $.extend({}, options.popup); // clone
 
                 var localPopupWidth = this.getAttribute('data-popup-width');
                 if (localPopupWidth) {

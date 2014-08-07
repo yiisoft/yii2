@@ -69,6 +69,30 @@ class ViewRendererTest extends TestCase
         $this->assertTrue(strpos($content, 'variable') !== false, 'variable should be there:' . $content);
     }
 
+    public function testInheritance()
+    {
+        $view = $this->mockView();
+        $content = $view->renderFile('@yiiunit/extensions/twig/views/extends2.twig');
+        $this->assertTrue(strpos($content, 'Hello, I\'m inheritance test!') !== false, 'Hello, I\'m inheritance test! should be there:' . $content);
+        $this->assertTrue(strpos($content, 'extends2 block') !== false, 'extends2 block should be there:' . $content);
+        $this->assertFalse(strpos($content, 'extends1 block') !== false, 'extends1 block should not be there:' . $content);
+
+        $content = $view->renderFile('@yiiunit/extensions/twig/views/extends3.twig');
+        $this->assertTrue(strpos($content, 'Hello, I\'m inheritance test!') !== false, 'Hello, I\'m inheritance test! should be there:' . $content);
+        $this->assertTrue(strpos($content, 'extends3 block') !== false, 'extends3 block should be there:' . $content);
+        $this->assertFalse(strpos($content, 'extends1 block') !== false, 'extends1 block should not be there:' . $content);
+    }
+
+    public function testChangeTitle()
+    {
+        $view = $this->mockView();
+        $view->title = 'Original title';
+
+        $content = $view->renderFile('@yiiunit/extensions/twig/views/changeTitle.twig');
+        $this->assertTrue(strpos($content, 'New title') !== false, 'New title should be there:' . $content);
+        $this->assertFalse(strpos($content, 'Original title') !== false, 'Original title should not be there:' . $content);
+    }
+
     /**
      * Mocks view instance
      * @return View

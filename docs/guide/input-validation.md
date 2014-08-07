@@ -408,7 +408,7 @@ Client-side validation based on JavaScript is desirable when end users provide i
 it allows users to find out input errors faster and thus provides better user experience. You may use or implement
 a validator that supports client-side validation *in addition to* server-side validation.
 
-> Info: While client-side validation is desirable, it is not a must. It main purpose is to provider users better
+> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users better
   experience. Like input data coming from end users, you should never trust client-side validation. For this reason,
   you should always perform server-side validation by calling [[yii\base\Model::validate()]], like
   described in the previous subsections.
@@ -487,6 +487,7 @@ predefined variables:
 - `attribute`: the name of the attribute being validated.
 - `value`: the value being validated.
 - `messages`: an array used to hold the validation error messages for the attribute.
+- `deferred`: an array which deferred objects can be pushed into (explained in the next subsection).
 
 In the following example, we create a `StatusValidator` which validates if an input is a valid status input
 against the existing status data. The validator supports both server side and client side validation.
@@ -534,3 +535,106 @@ JS;
     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 ]
 ```
+
+### Deferred Validation <a name="deferred-validation"></a>
+
+If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
+For example, to perform a custom AJAX validation, you can use the following code:
+
+```php
+public function clientValidateAttribute($model, $attribute, $view)
+{
+    return <<<JS
+        deferred.push($.get("/check", {value: value}).done(function(data) {
+            if ('' !== data) {
+                messages.push(data);
+            }
+        }));
+JS;
+}
+```
+
+In the above, the `deferred` variable is provided by Yii, which is an array of Deferred objects. The `$.get()`
+jQuery method creates a Deferred object which is pushed to the `deferred` array.
+
+You can also explicitly create a Deferred object and call its `resolve()` method when the asynchronous callback
+is hit. The following example shows how to validate the dimensions of an uploaded image file on the client side.
+
+```php
+public function clientValidateAttribute($model, $attribute, $view)
+{
+    return <<<JS
+        var def = $.Deferred();
+        var img = new Image();
+        img.onload = function() {
+            if (this.width > 150) {
+                messages.push('Image too wide!!');
+            }
+            def.resolve();
+        }
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            img.src = reader.result;
+        }
+        reader.readAsDataURL(file);
+
+        deferred.push(def);
+JS;
+}
+```
+
+> Note: The `resolve()` method must be called after the attribute has been validated. Otherwise the main form
+  validation will not complete.
+
+For simplicity, the `deferred` array is equipped with a shortcut method `add()` which automatically creates a Deferred
+object and add it to the `deferred` array. Using this method, you can simplify the above example as follows,
+
+```php
+public function clientValidateAttribute($model, $attribute, $view)
+{
+    return <<<JS
+        deferred.add(function(def) {
+            var img = new Image();
+            img.onload = function() {
+                if (this.width > 150) {
+                    messages.push('Image too wide!!');
+                }
+                def.resolve();
+            }
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                img.src = reader.result;
+            }
+            reader.readAsDataURL(file);
+        });
+JS;
+}
+```
+
+
+### AJAX Validation <a name="ajax-validation"></a>
+
+Some validations can only be done on the server side, because only the server has the necessary information.
+For example, to validate if a username is unique or not, it is necessary to check the user table on the server side.
+You can use AJAX-based validation in this case. It will trigger an AJAX request in the background to validate the
+input while keeping the same user experience as the regular client-side validation.
+
+To enable AJAX validation for the whole form, you have to set the
+[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true`. You may also turn it on or off
+for individual input fields by configuring their [[yii\widgets\ActiveField::enableAjaxValidation]] property.
+
+You also need to prepare the server so that it can handle the AJAX validation requests.
+This can be achieved by a code snippet like the following in controller actions:
+
+```php
+if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+    Yii::$app->response->format = Response::FORMAT_JSON;
+    return ActiveForm::validate($model);
+}
+```
+
+The above code will check whether the current request is an AJAX. If yes, it will respond to
+this request by running the validation and returning the errors in JSON format.
+
+> Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
+  However, the AJAX validation feature described here is more systematic and requires less coding effort.

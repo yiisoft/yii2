@@ -100,7 +100,7 @@ TESTING
 -------
 
 Install additional composer packages:
-* `php composer.phar require --dev "codeception/codeception: 2.0.*" "codeception/specify: *" "codeception/verify: *" "yiisoft/yii2-faker: *"`
+* `php composer.phar require --dev codeception/codeception:2.0.* codeception/specify:* codeception/verify:* yiisoft/yii2-faker:*`
 
 This application boilerplate use database in testing, so you should create three databases that are used in tests:
 * `yii2_advanced_unit` - database for unit tests;
@@ -112,7 +112,7 @@ if you are starting from `frontend` tests then you should run `yii migrate` in e
 it will upgrade your database to the last state according migrations.
 
 To be able to run acceptance tests you need a running webserver. For this you can use the php builtin server and run it in the directory where your main project folder is located. For example if your application is located in `/www/advanced` all you need to is:
-`cd /www` and then `php -S 127.0.0.1:8080` because the default configuration of acceptance tests expects the url of the application to be `/advanced/`.
+`cd /www` and then `php -S 127.0.0.1:8080 index-test.php` because the default configuration of acceptance tests expects the url of the application to be `/advanced/`.
 If you already have a server configured or your application is not located in a folder called `advanced`, you may need to adjust the `TEST_ENTRY_URL` in `frontend/tests/_bootstrap.php` and `backend/tests/_bootstrap.php`.
 
 After that is done you should be able to run your tests, for example to run `frontend` tests do:

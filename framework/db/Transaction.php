@@ -67,6 +67,7 @@ class Transaction extends \yii\base\Object
      * @var Connection the database connection that this transaction is associated with.
      */
     public $db;
+
     /**
      * @var integer the nesting level of the transaction. 0 means the outermost level.
      */

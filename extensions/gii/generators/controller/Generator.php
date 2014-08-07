@@ -46,6 +46,7 @@ class Generator extends \yii\gii\Generator
      */
     public $actions = 'index';
 
+
     /**
      * @inheritdoc
      */

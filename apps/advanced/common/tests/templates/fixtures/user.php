@@ -3,7 +3,7 @@
 return [
     'username' => 'userName',
     'auth_key' => function ($fixture, $faker, $index) {
-        $fixture['auth_key'] = Yii::$app->getSecurity()->generateRandomKey();
+        $fixture['auth_key'] = Yii::$app->getSecurity()->generateRandomString();
 
         return $fixture;
     },
@@ -13,7 +13,7 @@ return [
         return $fixture;
     },
     'password_reset_token' => function ($fixture, $faker, $index) {
-        $fixture['password_reset_token'] = Yii::$app->getSecurity()->generateRandomKey() . '_' . time();
+        $fixture['password_reset_token'] = Yii::$app->getSecurity()->generateRandomString() . '_' . time();
 
         return $fixture;
     },

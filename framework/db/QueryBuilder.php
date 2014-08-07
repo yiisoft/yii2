@@ -41,6 +41,7 @@ class QueryBuilder extends \yii\base\Object
      * Child classes should override this property to declare supported type mappings.
      */
     public $typeMap = [];
+
     /**
      * @var array map of query condition to builder methods.
      * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
@@ -689,6 +690,13 @@ class QueryBuilder extends \yii\base\Object
         return implode($this->separator, $joins);
     }
 
+    /**
+     * Quotes table names passed
+     *
+     * @param array $tables
+     * @param array $params
+     * @return array
+     */
     private function quoteTableNames($tables, &$params)
     {
         foreach ($tables as $i => $table) {
@@ -860,7 +868,6 @@ class QueryBuilder extends \yii\base\Object
      * on how to specify a condition.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
-     * @throws InvalidParamException if the condition is in bad format
      */
     public function buildCondition($condition, &$params)
     {
@@ -874,11 +881,11 @@ class QueryBuilder extends \yii\base\Object
             $operator = strtoupper($condition[0]);
             if (isset($this->conditionBuilders[$operator])) {
                 $method = $this->conditionBuilders[$operator];
-                array_shift($condition);
-                return $this->$method($operator, $condition, $params);
             } else {
-                throw new InvalidParamException('Found unknown operator in query: ' . $operator);
+                $method = 'buildSimpleCondition';
             }
+            array_shift($condition);
+            return $this->$method($operator, $condition, $params);
         } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
             return $this->buildHashCondition($condition, $params);
         }
@@ -1077,6 +1084,15 @@ class QueryBuilder extends \yii\base\Object
         }
     }
 
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
     protected function buildCompositeInCondition($operator, $columns, $values, &$params)
     {
         $vss = [];
@@ -1176,5 +1192,30 @@ class QueryBuilder extends \yii\base\Object
         } else {
             throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
         }
+    }
+
+    /**
+     * Creates an SQL expressions like `"column" operator value`.
+     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @param array $operands contains two column names.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     */
+    public function buildSimpleCondition($operator, $operands, &$params)
+    {
+        if (count($operands) !== 2) {
+            throw new InvalidParamException("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $value) = $operands;
+
+        if (strpos($column, '(') === false) {
+            $column = $this->db->quoteColumnName($column);
+        }
+
+        $phName = self::PARAM_PREFIX . count($params);
+        $params[$phName] = $value === null ? 'NULL' : $value;
+
+        return "$column $operator $phName";
     }
 }
