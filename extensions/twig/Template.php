@@ -14,12 +14,14 @@ namespace yii\twig;
  */
 abstract class Template extends \Twig_Template
 {
-    protected function getAttribute($object, $item, array $arguments = array(), $type = \Twig_Template::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
+    /**
+     * @inheritdoc
+     */
+    protected function getAttribute($object, $item, array $arguments = [], $type = \Twig_Template::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
     {
         // Twig uses isset() to check if attribute exists which does not work when attribute exists but is null
-
         if ($object instanceof \yii\db\BaseActiveRecord) {
-            if ($type == \Twig_Template::METHOD_CALL) {
+            if ($type === \Twig_Template::METHOD_CALL) {
                 return $object->$item();
             } else {
                 return $object->$item;

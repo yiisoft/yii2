@@ -98,6 +98,8 @@ class ViewRenderer extends BaseViewRenderer
             'charset' => Yii::$app->charset,
         ], $this->options));
 
+        $this->twig->setBaseTemplateClass('yii\twig\Template');
+
         // Adding custom globals (objects or static classes)
         if (!empty($this->globals)) {
             $this->addGlobals($this->globals);
