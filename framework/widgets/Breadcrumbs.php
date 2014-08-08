@@ -144,7 +144,7 @@ class Breadcrumbs extends Widget
         }
         $issetTemplate = isset($link['template']);
         if (isset($link['url'])) {
-            return strtr($issetTemplate ? $link['template'] : $template, ['{link}' => Html::a($label, $link['url'])]);
+            return strtr($issetTemplate ? $link['template'] : $template, ['{link}' => Html::a($label, $link['url'], isset($link['options'])?$link['options']:null)]);
         } else {
             return strtr($issetTemplate ? $link['template'] : $template, ['{link}' => $label]);
         }
