@@ -33,27 +33,22 @@ use yii\helpers\VarDumper;
  * To start using this command you need to be familiar (read guide) for the Faker library and
  * generate fixtures template files, according to the given format:
  *
- * ~~~
- * #users.php file under $templatePath
- *
+ * ```php
+ * // users.php file under template path (by default @tests/unit/templates/fixtures)
  * return [
- *    [
- *        'table_column0' => 'faker_formatter',
- *        ...
- *        'table_columnN' => 'other_faker_formatter
- *        'table_columnN+1' => function ($fixture, $faker, $index) {
- *            //set needed fixture fields based on different conditions
- *            return $fixture;
- *        }
- *    ],
+ *     'name' => $faker->firstName,
+ *     'phone' => $faker->phoneNumber,
+ *     'city' => $faker->city,
+ *     'password' => Yii::$app->getSecurity()->generatePasswordHash('password_' . $index),
+ *     'auth_key' => Yii::$app->getSecurity()->generateRandomString(),
+ *     'intro' => $faker->sentence(7, true),  // generate a sentence with 7 words
  * ];
- * ~~~
+ * ```
  *
  * If you use callback as a attribute value, then it will be called as shown with three parameters:
  *
- * - `$fixture` - current fixture array.
- * - `$faker` - faker generator instance
- * - `$index` - current fixture index. For example if user need to generate 3 fixtures for user table, it will be 0..2
+ * - `$faker`: the Faker generator instance
+ * - `$index`: the current fixture index. For example if user need to generate 3 fixtures for user table, it will be 0..2.
  *
  * After you set all needed fields in callback, you need to return $fixture array back from the callback.
  *
@@ -131,8 +126,6 @@ use yii\helpers\VarDumper;
  *        ],
  *    ],
  * ~~~
- *
- * @property \Faker\Generator $generator This property is read-only.
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0.0
@@ -250,13 +243,10 @@ class FixtureController extends \yii\console\controllers\FixtureController
      */
     public function getGenerator()
     {
-        if (is_null($this->_generator)) {
-            //replacing - on _ because Faker support only en_US format and not intl
-
-            $language = is_null($this->language) ? str_replace('-', '_', Yii::$app->language) : $this->language;
-            $this->_generator = \Faker\Factory::create($language);
+        if ($this->_generator === null) {
+            $language = $this->language === null ? Yii::$app->language : $this->language;
+            $this->_generator = \Faker\Factory::create(str_replace('-', '_', $language));
         }
-
         return $this->_generator;
     }
 
@@ -311,7 +301,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
     public function generateFixture($_template_, $index)
     {
         // $faker and $index are exposed to the template file
-        $faker = $this->generator;
+        $faker = $this->getGenerator();
         return require($_template_);
     }
 
