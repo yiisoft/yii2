@@ -1,7 +1,7 @@
 <?php
 
 return [
-	[
+    [
         'username' => 'bayer.hudson',
         'auth_key' => 'HP187Mvq7Mmm3CTU80dLkGmni_FUH_lR',
         //password_0
@@ -10,5 +10,5 @@ return [
         'created_at' => '1402312317',
         'updated_at' => '1402312317',
         'email' => 'nicole.paucek@schultz.info',
-	],
+    ],
 ];

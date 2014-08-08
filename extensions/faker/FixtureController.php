@@ -230,11 +230,10 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
         foreach ($files as $templateFile) {
             $fixtureFileName = basename($templateFile);
-            $template = $this->getTemplate($templateFile);
             $fixtures = [];
 
             for ($i = 0; $i < $times; $i++) {
-                $fixtures[$i] = $this->generateFixture($template, $i);
+                $fixtures[$i] = $this->generateFixture($templateFile, $i);
             }
 
             $content = $this->exportFixtures($fixtures);
@@ -294,23 +293,6 @@ class FixtureController extends \yii\console\controllers\FixtureController
     }
 
     /**
-     * Returns generator template for the given fixture name
-     * @param string $file template file
-     * @return array generator template
-     * @throws \yii\console\Exception if wrong file format
-     */
-    public function getTemplate($file)
-    {
-        $template = require($file);
-
-        if (!is_array($template)) {
-            throw new Exception("The template file \"$file\" has wrong format. It should return valid template array");
-        }
-
-        return $template;
-    }
-
-    /**
      * Returns exported to the string representation of given fixtures array.
      * @param array $fixtures
      * @return string exported fixtures format
@@ -322,23 +304,15 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
     /**
      * Generates fixture from given template
-     * @param array $template fixture template
-     * @param integer $index current fixture index
+     * @param string $_template_ the fixture template file
+     * @param integer $index the current fixture index
      * @return array fixture
      */
-    public function generateFixture($template, $index)
+    public function generateFixture($_template_, $index)
     {
-        $fixture = [];
-
-        foreach ($template as $attribute => $fakerProperty) {
-            if (!is_string($fakerProperty)) {
-                $fixture = call_user_func_array($fakerProperty, [$fixture, $this->generator, $index]);
-            } else {
-                $fixture[$attribute] = $this->generator->$fakerProperty;
-            }
-        }
-
-        return $fixture;
+        // $faker and $index are exposed to the template file
+        $faker = $this->generator;
+        return require($_template_);
     }
 
     /**

@@ -1,31 +1,17 @@
 <?php
+/**
+ * @var $faker \Faker\Generator
+ * @var $index integer
+ */
+
+$security = Yii::$app->getSecurity();
 
 return [
-    'username' => 'userName',
-    'auth_key' => function ($fixture, $faker, $index) {
-        $fixture['auth_key'] = Yii::$app->getSecurity()->generateRandomString();
-
-        return $fixture;
-    },
-    'password_hash' => function ($fixture, $faker, $index) {
-        $fixture['password_hash'] = Yii::$app->getSecurity()->generatePasswordHash('password_' . $index);
-
-        return $fixture;
-    },
-    'password_reset_token' => function ($fixture, $faker, $index) {
-        $fixture['password_reset_token'] = Yii::$app->getSecurity()->generateRandomString() . '_' . time();
-
-        return $fixture;
-    },
-    'created_at' => function ($fixture, $faker, $index) {
-        $fixture['created_at'] = time();
-
-        return $fixture;
-    },
-    'updated_at' => function ($fixture, $faker, $index) {
-        $fixture['updated_at'] = time();
-
-        return $fixture;
-    },
-    'email' => 'email',
+    'username' => $faker->userName,
+    'email' => $faker->email,
+    'auth_key' => $security->generateRandomString(),
+    'password_hash' => $security->generatePasswordHash('password_' . $index),
+    'password_reset_token' => $security->generateRandomString() . '_' . time(),
+    'created_at' => time(),
+    'updated_at' => time(),
 ];
