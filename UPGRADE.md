@@ -181,7 +181,7 @@ new ones save the following code as `convert.php` that should be placed in the s
   will return `images/logo.png` directly. If you want a relative URL to be prefix with base URL, you should make use
   of the alias `@web`. For example, `Url::to('@web/images/logo.png')` will return `/BaseUrl/images/logo.png`.
 
-- The following properties are now taking `false` instead of `null` for "don't use" case:
+* The following properties are now taking `false` instead of `null` for "don't use" case:
   - `yii\bootstrap\NavBar::$brandLabel`.
   - `yii\bootstrap\NavBar::$brandUrl`.
   - `yii\bootstrap\Modal::$closeButton`.
@@ -191,3 +191,6 @@ new ones save the following code as `convert.php` that should be placed in the s
   - `yii\widgets\LinkPager::$prevPageLabel`.
   - `yii\widgets\LinkPager::$firstPageLabel`.
   - `yii\widgets\LinkPager::$lastPageLabel`.
+
+* The format of the Faker fixture template is changed. For an example, please refer to the file
+  `apps/advanced/common/tests/templates/fixtures/user.php`.
