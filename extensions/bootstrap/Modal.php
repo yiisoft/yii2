@@ -168,7 +168,7 @@ class Modal extends Widget
      */
     protected function renderToggleButton()
     {
-        if ($this->toggleButton !== null) {
+        if ($this->toggleButton !== false) {
             $tag = ArrayHelper::remove($this->toggleButton, 'tag', 'button');
             $label = ArrayHelper::remove($this->toggleButton, 'label', 'Show');
             if ($tag === 'button' && !isset($this->toggleButton['type'])) {
