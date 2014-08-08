@@ -56,6 +56,13 @@ abstract class Schema extends Object
     const TYPE_MONEY = 'money';
 
     /**
+     * @var array options to create ColumnSchema for every column of table
+     */
+    public $columnSchemaOpts = [
+        'class'=>'yii\db\ColumnSchema',
+    ];
+
+    /**
      * @var Connection the database connection
      */
     public $db;
@@ -84,6 +91,14 @@ abstract class Schema extends Object
      */
     private $_builder;
 
+    /**
+     * @param array $options
+     * @return \yii\db\ColumnSchema
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function createColumnSchema(array $options = array()) {
+        return \Yii::createObject( (!empty($options) ? $options : $this->columnSchemaOpts) );
+    }
 
     /**
      * Loads the metadata for the specified table.

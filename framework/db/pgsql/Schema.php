@@ -434,7 +434,7 @@ SQL;
      */
     protected function loadColumnSchema($info)
     {
-        $column = new ColumnSchema();
+        $column = $this->createColumnSchema();
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];
         $column->comment = $info['column_comment'];

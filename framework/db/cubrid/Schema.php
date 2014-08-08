@@ -195,7 +195,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadColumnSchema($info)
     {
-        $column = new ColumnSchema();
+        $column = $this->createColumnSchema();
 
         $column->name = $info['Field'];
         $column->allowNull = $info['Null'] === 'YES';
