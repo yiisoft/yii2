@@ -20,7 +20,7 @@ use yii\web\Controller;
  * Generates CRUD
  *
  * @property array $columnNames Model column names. This property is read-only.
- * @property string $controllerID The controller ID (without the module ID prefix). This property is
+ * @property string $controllerClass The controller class to be generated. This property is
  * read-only.
  * @property array $searchAttributes Searchable attributes. This property is read-only.
  * @property boolean|\yii\db\TableSchema $tableSchema This property is read-only.
@@ -33,7 +33,7 @@ class Generator extends \yii\gii\Generator
 {
     public $modelClass;
     public $moduleID;
-    public $controllerClass;
+    public $controllerID;
     public $baseControllerClass = 'yii\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass = '';
@@ -62,15 +62,14 @@ class Generator extends \yii\gii\Generator
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['moduleID', 'controllerClass', 'modelClass', 'searchModelClass', 'baseControllerClass'], 'filter', 'filter' => 'trim'],
-            [['modelClass', 'controllerClass', 'baseControllerClass', 'indexWidgetType'], 'required'],
+            [['moduleID', 'controllerID', 'modelClass', 'searchModelClass', 'baseControllerClass'], 'filter', 'filter' => 'trim'],
+            [['modelClass', 'controllerID', 'baseControllerClass', 'indexWidgetType'], 'required'],
             [['searchModelClass'], 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
-            [['modelClass', 'controllerClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
+            [['modelClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
             [['modelClass'], 'validateClass', 'params' => ['extends' => BaseActiveRecord::className()]],
             [['baseControllerClass'], 'validateClass', 'params' => ['extends' => Controller::className()]],
-            [['controllerClass'], 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
-            [['controllerClass'], 'match', 'pattern' => '/(^|\\\\)[A-Z][^\\\\]+Controller$/', 'message' => 'Controller class name must start with an uppercase letter.'],
-            [['controllerClass', 'searchModelClass'], 'validateNewClass'],
+            [['controllerID'], 'match', 'pattern' => '/^[a-z][a-z0-9\\-\\/]*$/', 'message' => 'Only a-z, 0-9, dashes (-) and slashes (/) are allowed.'],
+            [['searchModelClass'], 'validateNewClass'],
             [['indexWidgetType'], 'in', 'range' => ['grid', 'list']],
             [['modelClass'], 'validateModelClass'],
             [['moduleID'], 'validateModuleID'],
@@ -87,7 +86,7 @@ class Generator extends \yii\gii\Generator
         return array_merge(parent::attributeLabels(), [
             'modelClass' => 'Model Class',
             'moduleID' => 'Module ID',
-            'controllerClass' => 'Controller Class',
+            'controllerID' => 'Controller ID',
             'baseControllerClass' => 'Base Controller Class',
             'indexWidgetType' => 'Widget Used in Index Page',
             'searchModelClass' => 'Search Model Class',
@@ -102,9 +101,12 @@ class Generator extends \yii\gii\Generator
         return array_merge(parent::hints(), [
             'modelClass' => 'This is the ActiveRecord class associated with the table that CRUD will be built upon.
                 You should provide a fully qualified class name, e.g., <code>app\models\Post</code>.',
-            'controllerClass' => 'This is the name of the controller class to be generated. You should
-                provide a fully qualified namespaced class, .e.g, <code>app\controllers\PostController</code>.
-                The controller class name should follow the CamelCase scheme with an uppercase first letter',
+            'controllerID' => 'Controller ID should be in lower case and may contain module ID(s) separated by slashes. For example:
+                <ul>
+                    <li><code>order</code> generates <code>OrderController.php</code></li>
+                    <li><code>order-item</code> generates <code>OrderItemController.php</code></li>
+                    <li><code>admin/user</code> generates <code>UserController.php</code> under <code>admin</code> directory.</li>
+                </ul>',
             'baseControllerClass' => 'This is the class that the new CRUD controller class will extend from.
                 You should provide a fully qualified class name, e.g., <code>yii\web\Controller</code>.',
             'moduleID' => 'This is the ID of the module that the generated controller will belong to.
@@ -189,14 +191,24 @@ class Generator extends \yii\gii\Generator
     }
 
     /**
-     * @return string the controller ID (without the module ID prefix)
+     * @return string the controller class
      */
-    public function getControllerID()
+    public function getControllerClass()
     {
-        $pos = strrpos($this->controllerClass, '\\');
-        $class = substr(substr($this->controllerClass, $pos + 1), 0, -10);
+        $module = empty($this->moduleID) ? Yii::$app : Yii::$app->getModule($this->moduleID);
+        $id = $this->controllerID;
+        $pos = strrpos($id, '/');
+        if ($pos === false) {
+            $prefix = '';
+            $className = $id;
+        } else {
+            $prefix = substr($id, 0, $pos + 1);
+            $className = substr($id, $pos + 1);
+        }
 
-        return Inflector::camel2id($class);
+        $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
+        $className = ltrim($module->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className, '\\');
+        return $className;
     }
 
     /**
@@ -206,7 +218,7 @@ class Generator extends \yii\gii\Generator
     {
         $module = empty($this->moduleID) ? Yii::$app : Yii::$app->getModule($this->moduleID);
 
-        return $module->getViewPath() . '/' . $this->getControllerID() ;
+        return $module->getViewPath() . '/' . $this->controllerID ;
     }
 
     public function getNameAttribute()
