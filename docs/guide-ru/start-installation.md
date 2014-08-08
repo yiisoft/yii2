@@ -148,7 +148,6 @@ server {
 
     server_name mysite.local;
     root        /path/to/basic/web;
-    index       index.php;
 
     access_log  /path/to/project/log/access.log main;
     error_log   /path/to/project/log/error.log;
@@ -162,13 +161,15 @@ server {
     #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
     #    try_files $uri =404;
     #}
-    #error_page 404 /404.html;
 
     location ~ \.php$ {
+        try_files $uri =403;
+
         include fastcgi.conf;
         fastcgi_pass   127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
     }
+    #error_page 403 404 /40x.html;
 
     location ~ /\.(ht|svn|git) {
         deny all;
