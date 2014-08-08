@@ -515,6 +515,11 @@ abstract class Schema extends Object
                 $exceptionClass = $class;
             }
         }
+
+        if (class_exists("\\NilPortugues\\SqlQueryFormatter\\Formatter")) {
+            $rawSql = "\n" . (new \NilPortugues\SqlQueryFormatter\Formatter())->format($rawSql);
+        }
+
         $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
         $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
         return new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
