@@ -31,7 +31,7 @@ class BaseHtmlPurifier
         $purifier=\HTMLPurifier::instance($configInstance);
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
                 
-        if (is_callable($config)) {
+        if ($config instanceof \Closure) {
             call_user_func($config, $configInstance);
         }
 
