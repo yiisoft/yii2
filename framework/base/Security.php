@@ -516,7 +516,7 @@ class Security extends Component
      * @throws Exception on bad password parameter or cost parameter
      * @throws InvalidConfigException
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
-     * the output is alwaus 60 ASCII characters, when set to 'password_hash' the output length
+     * the output is always 60 ASCII characters, when set to 'password_hash' the output length
      * might increase in future versions of PHP (http://php.net/manual/en/function.password-hash.php)
      * @see validatePassword()
      */
