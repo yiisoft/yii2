@@ -20,7 +20,7 @@ $customer->save();
 ```
 
 The above code is equivalent to using the following raw SQL statement, which is less
-intuitive, more error prone, and may have compatibility problem for different DBMS:
+intuitive, more error prone, and may have compatibility problems for different DBMS:
 
 ```php
 $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
