@@ -41,11 +41,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
 
     /**
-     * @param integer $limit
-     * @param integer $offset
-     * @return string the LIMIT and OFFSET clauses built from [[\yii\db\Query::$limit]].
+     * @inheritdoc
      */
-    public function buildLimit($limit, $offset = 0)
+    public function buildLimit($sql, $limit, $offset = 0)
     {
         $hasOffset = $this->hasOffset($offset);
         $hasLimit = $this->hasLimit($limit);
@@ -142,14 +140,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
-            $this->buildOrderBy($query->orderBy),
-            $this->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
+			$this->buildOrderBy($query->orderBy),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
+
         if ($this->isOldMssql()) {
             $sql = $this->applyLimitAndOffset($sql, $query);
+        }else{
+            $sql = $this->buildLimit($sql, $query->limit, $query->offset);
         }
+
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
             $sql = "($sql){$this->separator}$union";

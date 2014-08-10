@@ -125,7 +125,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     return $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
                 });
             } else {
-                $value = (int) $value - 1;
+                $value = (int)$value - 1;
             }
             try {
                 $db->createCommand("UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'")->execute();
@@ -149,7 +149,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'PRAGMA foreign_keys='.(int)$check;
+        return 'PRAGMA foreign_keys=' . (int)$check;
     }
 
     /**
@@ -274,18 +274,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function buildLimit($limit, $offset)
+    public function buildLimit($sql, $limit, $offset)
     {
-        $sql = '';
         if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
+            $sql .= ' LIMIT ' . $limit;
             if ($this->hasOffset($offset)) {
                 $sql .= ' OFFSET ' . $offset;
             }
         } elseif ($this->hasOffset($offset)) {
             // limit is not optional in SQLite
             // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
-            $sql = "LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
+            $sql .= " LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
         }
 
         return $sql;

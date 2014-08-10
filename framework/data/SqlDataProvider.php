@@ -118,7 +118,7 @@ class SqlDataProvider extends BaseDataProvider
 
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
-            $sql .= ' ' . $qb->buildLimit($pagination->getLimit(), $pagination->getOffset());
+            $sql = $qb->buildLimit($sql, $pagination->getLimit(), $pagination->getOffset());
         }
 
         return $this->db->createCommand($sql, $this->params)->queryAll();

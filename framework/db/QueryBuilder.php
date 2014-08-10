@@ -97,10 +97,10 @@ class QueryBuilder extends \yii\base\Object
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
             $this->buildOrderBy($query->orderBy),
-            $this->buildLimit($query->limit, $query->offset),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
+        $sql = $this->buildLimit($sql, $query->limit, $query->offset);
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
@@ -774,15 +774,15 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * @param string $sql
      * @param integer $limit
      * @param integer $offset
-     * @return string the LIMIT and OFFSET clauses
+     * @return string the final query with LIMIT and OFFSET clauses
      */
-    public function buildLimit($limit, $offset)
+    public function buildLimit($sql, $limit, $offset)
     {
-        $sql = '';
         if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
+            $sql .= ' LIMIT ' . $limit;
         }
         if ($this->hasOffset($offset)) {
             $sql .= ' OFFSET ' . $offset;

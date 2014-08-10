@@ -73,19 +73,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function buildLimit($limit, $offset)
+    public function buildLimit($sql, $limit, $offset)
     {
-        $sql = '';
         // limit is not optional in CUBRID
         // http://www.cubrid.org/manual/90/en/LIMIT%20Clause
         // "You can specify a very big integer for row_count to display to the last row, starting from a specific row."
         if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
+            $sql .= ' LIMIT ' . $limit;
             if ($this->hasOffset($offset)) {
                 $sql .= ' OFFSET ' . $offset;
             }
         } elseif ($this->hasOffset($offset)) {
-            $sql = "LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
+            $sql .= " LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
         }
 
         return $sql;
