@@ -84,11 +84,13 @@ abstract class Schema extends Object
      */
     private $_builder;
 
+
     /**
      * @return \yii\db\ColumnSchema
      * @throws \yii\base\InvalidConfigException
      */
-    protected function createColumnSchema() {
+    protected function createColumnSchema()
+    {
         return Yii::createObject('yii\db\ColumnSchema');
     }
 
