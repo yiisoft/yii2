@@ -19,9 +19,21 @@ class BaseHtmlPurifier
 {
     /**
      * Passes markup through HTMLPurifier making it safe to output to end user
+     * 
+     * Anonymous function config example,
+     * 
+     * ~~~
+     * // Allow the HTML5 data attribute `data-type` on `img` elements.
+     * HtmlPurifier::process($content, function($config) {
+     *  $def = $config->getHTMLDefinition(true);
+     *  $def->addAttribute('img', 'data-type', 'Text');
+     * })
+     * ~~~
      *
-     * @param string $content
-     * @param array|callable|null $config
+     * @param string $content The HTML content to purify
+     * @param array|\Closure|null $config if not specified or null the default config will be used.
+     * Use an array or an anonymous function to provide configuration options. The anonymous function signature should be:
+     * `function($config)` where `$config` will be an instance of HTMLPurifier_Config.
      * @return string
      */
     public static function process($content, $config = null)
@@ -30,9 +42,9 @@ class BaseHtmlPurifier
         $configInstance->autoFinalize = false;
         $purifier=\HTMLPurifier::instance($configInstance);
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
-                
+        
         if ($config instanceof \Closure) {
-            call_user_func($config, $configInstance);
+            $config($configInstance);
         }
 
         return $purifier->purify($content);
