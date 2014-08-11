@@ -1109,7 +1109,7 @@ class BaseHtml
      * using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
      *
      * The following options are specially handled:
-     *
+     * - encode: default true, if it's setup as false the message won't be encoded
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -1122,7 +1122,12 @@ class BaseHtml
         $error = $model->getFirstError($attribute);
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
         unset($options['tag']);
-        return Html::tag($tag, Html::encode($error), $options);
+        if(!isset($options['encode'])) {
+            return Html::tag($tag, Html::encode($error), $options);
+        } else if($options['encode'] === false) {
+            unset($options['encode']);
+            return  Html::tag($tag, $error, $options);
+        }
     }
 
     /**
