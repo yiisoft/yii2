@@ -1,41 +1,41 @@
-Controllers
+Контроллеры
 ===========
 
-After creating the resource classes and specifying how resource data should be formatted, the next thing
-to do is to create controller actions to expose the resources to end users through RESTful APIs.
+После создания классов ресурсов и настройки способа форматирования ресурсных данных следующим шагом 
+является создание действий контроллеров для предоставления ресурсов конечным пользователям через RESTful API.
 
-Yii provides two base controller classes to simplify your work of creating RESTful actions:
-[[yii\rest\Controller]] and [[yii\rest\ActiveController]]. The difference between these two controllers
-is that the latter provides a default set of actions that are specifically designed to deal with
-resources represented as [Active Record](db-active-record.md). So if you are using [Active Record](db-active-record.md)
-and are comfortable with the provided built-in actions, you may consider extending your controller classes
-from [[yii\rest\ActiveController]], which will allow you to create powerful RESTful APIs with minimal code.
+В Yii есть два базовых класса контроллеров для упрощения вашей работы по созданию RESTful-действий:
+[[yii\rest\Controller]] и [[yii\rest\ActiveController]]. Разница между этими двумя контроллерами в том,
+что у последнего есть набор действий по умолчанию, который специально создан для работы с ресурсами,
+представленными [Active Record](db-active-record.md). Так что если вы используете [Active Record](db-active-record.md)
+и вас устраивает предоставленный набор встроенных действий, вы можете унаследовать классы ваших контроллеров
+от [[yii\rest\ActiveController]], что позволит вам создать полноценные RESTful API, написав минимум кода.
 
-Both [[yii\rest\Controller]] and [[yii\rest\ActiveController]] provide the following features, some of which
-will be described in detail in the next few sections:
+[[yii\rest\Controller]] и [[yii\rest\ActiveController]] имеют следующие возможности, некоторые из которых
+будут подробно описаны в следующих нескольких разделах:
 
-* HTTP method validation;
-* [Content negotiation and Data formatting](rest-response-formatting.md);
-* [Authentication](rest-authentication.md);
-* [Rate limiting](rest-rate-limiting.md).
+* Проверка HTTP-метода;
+* [Согласование содержимого и форматирование данных](rest-response-formatting.md);
+* [Аутентификация](rest-authentication.md);
+* [Ограничение частоты запросов](rest-rate-limiting.md).
 
-[[yii\rest\ActiveController]] in addition provides the following features:
+[[yii\rest\ActiveController]], кроме того, предоставляет следующие возможности:
 
-* A set of commonly needed actions: `index`, `view`, `create`, `update`, `delete`, `options`;
-* User authorization in regarding to the requested action and resource.
+* Набор наиболее употребительных действий: `index`, `view`, `create`, `update`, `delete`, `options`;
+* Авторизация пользователя для запрашиваемых действия и ресурса.
 
 
-## Creating Controller Classes <a name="creating-controller"></a>
+## Создание классов контроллеров <a name="creating-controller"></a>
 
-When creating a new controller class, a convention in naming the controller class is to use
-the type name of the resource and use singular form. For example, to serve user information,
-the controller may be named as `UserController`.
+При создании нового класса контроллера в имени класса обычно используется
+название типа ресурса в единственном числе. Например, контроллер, отвечающий за предоставление информации о пользователях,
+можно назвать `UserController`.
 
-Creating a new action is similar to creating an action for a Web application. The only difference
-is that instead of rendering the result using a view by calling the `render()` method, for RESTful actions
-you directly return the data. The [[yii\rest\Controller::serializer|serializer]] and the
-[[yii\web\Response|response object]] will handle the conversion from the original data to the requested
-format. For example,
+Создание нового действия похоже на создание действия для Web-приложения. Единственное отличие в том,
+что в RESTful-действиях вместо рендера результата в представлении с помощью вызова метода `render()`
+вы просто возвращает данные. Выполнение преобразования исходных данных в запрошенный формат ложится на 
+[[yii\rest\Controller::serializer|сериализатор]] и [[yii\web\Response|объект ответа]].
+Например:
 
 ```php
 public function actionView($id)
@@ -45,22 +45,22 @@ public function actionView($id)
 ```
 
 
-## Filters <a name="filters"></a>
+## Фильтры <a name="filters"></a>
 
-Most RESTful API features provided by [[yii\rest\Controller]] are implemented in terms of [filters](structure-filters.md).
-In particular, the following filters will be executed in the order they are listed:
+Большинство возможностей RESTful API, предоставляемых [[yii\rest\Controller]], реализовано на основе [фильтров](structure-filters.md).
+В частности, следующие фильтры будут выполняться в том порядке, в котором они перечислены:
 
-* [[yii\filters\ContentNegotiator|contentNegotiator]]: supports content negotiation, to be explained in
-  the [Response Formatting](rest-response-formatting.md) section;
-* [[yii\filters\VerbFilter|verbFilter]]: supports HTTP method validation;
-* [[yii\filters\AuthMethod|authenticator]]: supports user authentication, to be explained in
-  the [Authentication](rest-authentication.md) section;
-* [[yii\filters\RateLimiter|rateLimiter]]: supports rate limiting, to be explained in
-  the [Rate Limiting](rest-rate-limiting.md) section.
+* [[yii\filters\ContentNegotiator|contentNegotiator]]: обеспечивает согласование содержимого, более подробно описан 
+  в разделе [Форматирование ответа](rest-response-formatting.md);
+* [[yii\filters\VerbFilter|verbFilter]]: обеспечивает проверку HTTP-метода;
+* [[yii\filters\AuthMethod|authenticator]]: обеспечивает аутентификацию пользователя, более подробно описан 
+  в разделе [Аутентификация](rest-authentication.md);
+* [[yii\filters\RateLimiter|rateLimiter]]: обеспечивает ограничение частоты запросов, более подробно описан 
+  в разделе [Ограничение частоты запросов](rest-rate-limiting.md).
 
-These named filters are declared in the [[yii\rest\Controller::behaviors()|behaviors()]] method.
-You may override this method to configure individual filters,  disable some of them, or add your own filters.
-For example, if you only want to use HTTP basic authentication, you may write the following code:
+Эти именованные фильтры объявлены в методе [[yii\rest\Controller::behaviors()|behaviors()]].
+Вы можете переопределить этот метод для настройки отдельных фильтров, отключения каких-то из них или для добавления ваших собственных фильтров.
+Например, если вы хотите использовать только базовую HTTP-аутентификацию, вы можете написать такой код:
 
 ```php
 use yii\filters\auth\HttpBasicAuth;
@@ -76,36 +76,36 @@ public function behaviors()
 ```
 
 
-## Extending `ActiveController` <a name="extending-active-controller"></a>
+## Наследование от `ActiveController` <a name="extending-active-controller"></a>
 
-If your controller class extends from [[yii\rest\ActiveController]], you should set
-its [[yii\rest\ActiveController::modelClass||modelClass]] property to be the name of the resource class
-that you plan to serve through this controller. The class must extend from [[yii\db\ActiveRecord]].
+Если ваш класс контроллера наследуется от [[yii\rest\ActiveController]], вам следует установить
+значение его свойства [[yii\rest\ActiveController::modelClass||modelClass]] равным имени класса ресурса,
+который вы планируете обслуживать с помощью этого контроллера. Класс ресурса должен быть унаследован от [[yii\db\ActiveRecord]].
 
 
-### Customizing Actions <a name="customizing-actions"></a>
+### Настройка действий <a name="customizing-actions"></a>
 
-By default, [[yii\rest\ActiveController]] provides the following actions:
+По умолчанию [[yii\rest\ActiveController]] предоставляет набор из следующих действий:
 
-* [[yii\rest\IndexAction|index]]: list resources page by page;
-* [[yii\rest\ViewAction|view]]: return the details of a specified resource;
-* [[yii\rest\CreateAction|create]]: create a new resource;
-* [[yii\rest\UpdateAction|update]]: update an existing resource;
-* [[yii\rest\DeleteAction|delete]]: delete the specified resource;
-* [[yii\rest\OptionsAction|options]]: return the supported HTTP methods.
+* [[yii\rest\IndexAction|index]]: постраничный список ресурсов;
+* [[yii\rest\ViewAction|view]]: возвращает подробную информацию об указанном ресурсе;
+* [[yii\rest\CreateAction|create]]: создание нового ресурса;
+* [[yii\rest\UpdateAction|update]]: обновление существующего ресурса;
+* [[yii\rest\DeleteAction|delete]]: удаление указанного ресурса;
+* [[yii\rest\OptionsAction|options]]: возвращает поддерживаемые HTTP-методы.
 
-All these actions are declared through the [[yii\rest\ActiveController::actions()|actions()]] method.
-You may configure these actions or disable some of them by overriding the `actions()` method, like shown the following,
+Все эти действия объявляются в методе [[yii\rest\ActiveController::actions()|actions()]].
+Вы можете настроить эти действия или отключить какие-то из них, переопределив метод `actions()`, как показано ниже:
 
 ```php
 public function actions()
 {
     $actions = parent::actions();
 
-    // disable the "delete" and "create" actions
+    // отключить действия "delete" и "create"
     unset($actions['delete'], $actions['create']);
 
-    // customize the data provider preparation with the "prepareDataProvider()" method
+    // настроить подготовку провайдера данных с помощью метода "prepareDataProvider()"
     $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
 
     return $actions;
@@ -113,40 +113,40 @@ public function actions()
 
 public function prepareDataProvider()
 {
-    // prepare and return a data provider for the "index" action
+    // подготовить и вернуть провайдер данных для действия "index"
 }
 ```
 
-Please refer to the class references for individual action classes to learn what configuration options are available.
+Чтобы узнать, какие опции доступны для настройки классов отдельных действий, обратитесь к соответствующим разделам справочника классов.
 
 
-### Performing Access Check <a name="performing-access-check"></a>
+### Выполнение контроля доступа <a name="performing-access-check"></a>
 
-When exposing resources through RESTful APIs, you often need to check if the current user has the permission
-to access and manipulate the requested resource(s). With [[yii\rest\ActiveController]], this can be done
-by overriding the [[yii\rest\ActiveController::checkAccess()|checkAccess()]] method like the following,
+При предоставлении ресурсов через RESTful API часто бывает нужно проверять, имеет ли текущий пользователь разрешение
+на доступ к запрошенному ресурсу (или ресурсам) и манипуляцию им (ими). Для [[yii\rest\ActiveController]] эта задача может быть решена
+переопределением метода [[yii\rest\ActiveController::checkAccess()|checkAccess()]] следующим образом:
 
 ```php
 /**
- * Checks the privilege of the current user.
+ * Проверяет права текущего пользователя.
  *
- * This method should be overridden to check whether the current user has the privilege
- * to run the specified action against the specified data model.
- * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
+ * Этот метод должен быть переопределен, чтобы проверить, имеет ли текущий пользователь
+ * право выполнения указанного действия над указанной моделью данных.
+ * Если у пользователя нет доступа, следует выбросить исключение [[ForbiddenHttpException]].
  *
- * @param string $action the ID of the action to be executed
- * @param \yii\base\Model $model the model to be accessed. If null, it means no specific model is being accessed.
- * @param array $params additional parameters
- * @throws ForbiddenHttpException if the user does not have access
+* @param string $action ID действия, которое надо выполнить
+ * @param \yii\base\Model $model модель, к которой нужно получить доступ. Если null, это означает, что модель, к которой нужно получить доступ, отсутствует.
+ * @param array $params дополнительные параметры
+ * @throws ForbiddenHttpException если у пользователя нет доступа
  */
 public function checkAccess($action, $model = null, $params = [])
 {
-    // check if the user can access $action and $model
-    // throw ForbiddenHttpException if access should be denied
+    // проверить, имеет ли пользователь доступ к $action и $model
+    // выбросить ForbiddenHttpException, если доступ следует запретить
 }
 ```
 
-The `checkAccess()` method will be called by the default actions of [[yii\rest\ActiveController]]. If you create
-new actions and also want to perform access check, you should call this method explicitly in the new actions.
+Метод `checkAccess()` будет вызван действиями по умолчанию контроллера [[yii\rest\ActiveController]]. Если вы создаете
+новые действия и хотите в них выполнять контроль доступа, вы должны вызвать этот метод явно в своих новых действиях.
 
-> Tip: You may implement `checkAccess()` by using the [Role-Based Access Control (RBAC) component](security-authorization.md).
+> Подсказка: вы можете реализовать метод `checkAccess()` с помощью ["Контроля доступа на основе ролей" (RBAC)](security-authorization.md).
