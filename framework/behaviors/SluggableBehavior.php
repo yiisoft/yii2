@@ -118,7 +118,11 @@ class SluggableBehavior extends AttributeBehavior
         parent::init();
 
         if (empty($this->attributes)) {
-            $this->attributes = [BaseActiveRecord::EVENT_BEFORE_VALIDATE => $this->slugAttribute];
+            if ($this->unique) {
+                $this->attributes = [BaseActiveRecord::EVENT_BEFORE_INSERT => $this->slugAttribute];
+            } else {
+                $this->attributes = [BaseActiveRecord::EVENT_BEFORE_VALIDATE => $this->slugAttribute];
+            }
         }
 
         if ($this->attribute === null && $this->value === null) {
@@ -135,9 +139,9 @@ class SluggableBehavior extends AttributeBehavior
             if (is_array($this->attribute)) {
                 $slugParts = [];
                 foreach ($this->attribute as $attribute) {
-                    $slugParts[] = Inflector::slug($this->owner->{$attribute});
+                    $slugParts[] = $this->owner->{$attribute};
                 }
-                $this->value = implode('-', $slugParts);
+                $this->value = Inflector::slug(implode('-', $slugParts));
             } else {
                 $this->value = Inflector::slug($this->owner->{$this->attribute});
             }

@@ -87,12 +87,12 @@ class SluggableBehaviorTest extends TestCase
     {
         $name = 'test name';
 
-        $model = new ActiveRecordSluggable();
+        $model = new ActiveRecordSluggableUnique();
         $model->name = $name;
         $model->save();
 
-        $model = new ActiveRecordSluggable();
-        $model->sluggable->unique = true;
+        $model = new ActiveRecordSluggableUnique();
+        $model->sluggable->uniqueSlugGenerator = 'increment';
         $model->name = $name;
         $model->save();
 
@@ -106,12 +106,11 @@ class SluggableBehaviorTest extends TestCase
     {
         $name = 'test name';
 
-        $model = new ActiveRecordSluggable();
+        $model = new ActiveRecordSluggableUnique();
         $model->name = $name;
         $model->save();
 
-        $model = new ActiveRecordSluggable();
-        $model->sluggable->unique = true;
+        $model = new ActiveRecordSluggableUnique();
         $model->sluggable->uniqueSlugGenerator = function($baseSlug, $iteration) {return $baseSlug . '-callback';};
         $model->name = $name;
         $model->save();
@@ -126,12 +125,11 @@ class SluggableBehaviorTest extends TestCase
     {
         $name = 'test name';
 
-        $model1 = new ActiveRecordSluggable();
+        $model1 = new ActiveRecordSluggableUnique();
         $model1->name = $name;
         $model1->save();
 
-        $model2 = new ActiveRecordSluggable();
-        $model2->sluggable->unique = true;
+        $model2 = new ActiveRecordSluggableUnique();
         $model2->sluggable->uniqueSlugGenerator = 'uniqueid';
         $model2->name = $name;
         $model2->save();
@@ -146,17 +144,33 @@ class SluggableBehaviorTest extends TestCase
     {
         $name = 'test name';
 
-        $model1 = new ActiveRecordSluggable();
+        $model1 = new ActiveRecordSluggableUnique();
         $model1->name = $name;
         $model1->save();
 
-        $model2 = new ActiveRecordSluggable();
-        $model2->sluggable->unique = true;
+        $model2 = new ActiveRecordSluggableUnique();
         $model2->sluggable->uniqueSlugGenerator = 'timestamp';
         $model2->name = $name;
         $model2->save();
 
         $this->assertNotEquals($model2->slug, $model1->slug);
+    }
+
+    /**
+     * @depends testSlug
+     */
+    public function testUpdateUnique()
+    {
+        $name = 'test name';
+
+        $model = new ActiveRecordSluggableUnique();
+        $model->name = $name;
+        $model->save();
+
+        $model = ActiveRecordSluggableUnique::find()->one();
+        $model->save();
+
+        $this->assertEquals('test-name', $model->slug);
     }
 }
 
@@ -193,5 +207,19 @@ class ActiveRecordSluggable extends ActiveRecord
     public function getSluggable()
     {
         return $this->getBehavior('sluggable');
+    }
+}
+
+class ActiveRecordSluggableUnique extends ActiveRecordSluggable
+{
+    public function behaviors()
+    {
+        return [
+            'sluggable' => [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'name',
+                'unique' => true,
+            ],
+        ];
     }
 }
