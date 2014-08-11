@@ -87,7 +87,7 @@ class Application extends \yii\base\Application
      * @param array $config the configuration provided in the constructor.
      * @return array the actual configuration to be used by the application.
      */
-    protected function loadConfig($config)
+    protected function loadConfig($config) // TODO should be available in HELP
     {
         if (!empty($_SERVER['argv'])) {
             $option = '--' . self::OPTION_APPCONFIG . '=';

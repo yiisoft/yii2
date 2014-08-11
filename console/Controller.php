@@ -16,13 +16,16 @@ use yii\helpers\Console;
 /**
  * Controller is the base class of console command classes.
  *
- * A controller consists of one or several actions known as sub-commands.
+ * A console controller consists of one or several actions known as sub-commands.
  * Users call a console command by specifying the corresponding route which identifies a controller action.
  * The `yii` program is used when calling a console command, like the following:
  *
  * ~~~
  * yii <route> [--param1=value1 --param2 ...]
  * ~~~
+ *
+ * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
+ * See [[options()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -82,7 +85,6 @@ class Controller extends \yii\base\Controller
                 }
             }
         }
-
         return parent::runAction($id, $params);
     }
 
@@ -148,7 +150,6 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
         return $string;
     }
 
@@ -174,7 +175,6 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
         return Console::stdout($string);
     }
 
@@ -200,7 +200,6 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
         return fwrite(\STDERR, $string);
     }
 
@@ -272,7 +271,46 @@ class Controller extends \yii\base\Controller
      */
     public function options($actionId)
     {
-        // $id might be used in subclass to provide options specific to action id
+        // $actionId might be used in subclasses to provide options specific to action id
         return ['color', 'interactive'];
+    }
+
+    /**
+     * Returns a short description (one line) of information about this controller or an action.
+     *
+     * You may override this method to return customized help information for this controller.
+     * The default implementation returns help information retrieved from the PHPDoc comments
+     * of the controller class.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        $class = new \ReflectionClass($this);
+        $docLines = preg_split('~(\n|\r|\r\n)~', $class->getDocComment());
+        if (isset($docLines[1])) {
+            return trim($docLines[1], ' *');
+        }
+        return '';
+    }
+
+    /**
+     * Returns help information for this controller.
+     *
+     * The default implementation returns help information retrieved from the PHPDoc comments
+     * of the controller class.
+     * @return string
+     */
+    public function getHelp()
+    {
+        $class = new \ReflectionClass($this);
+        $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($class->getDocComment(), '/'))), "\r", '');
+        if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
+            $comment = trim(substr($comment, 0, $matches[0][1]));
+        }
+        if ($comment !== '') {
+            return rtrim(Console::renderColoredString(Console::markdownToAnsi($comment)));
+        }
+        return '';
     }
 }

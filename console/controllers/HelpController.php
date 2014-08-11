@@ -9,9 +9,10 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Application;
-use yii\base\InlineAction;
+use yii\console\Action;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\InlineAction;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
 
@@ -66,7 +67,7 @@ class HelpController extends Controller
                 $this->getControllerHelp($controller);
             }
         } else {
-            $this->getHelp();
+            $this->getGlobalHelp();
         }
     }
 
@@ -78,7 +79,6 @@ class HelpController extends Controller
     {
         $commands = $this->getModuleCommands(Yii::$app);
         sort($commands);
-
         return array_unique($commands);
     }
 
@@ -95,12 +95,7 @@ class HelpController extends Controller
             $result = Yii::$app->createController($command);
             if ($result !== false) {
                 list($controller, $actionID) = $result;
-                $class = new \ReflectionClass($controller);
-
-                $docLines = preg_split('~(\n|\r|\r\n)~', $class->getDocComment());
-                if (isset($docLines[1])) {
-                    $description = trim($docLines[1], ' *');
-                }
+                $description = $controller->getDescription();
             }
 
             $descriptions[$command] = $description;
@@ -186,7 +181,7 @@ class HelpController extends Controller
     /**
      * Displays all available commands.
      */
-    protected function getHelp()
+    protected function getGlobalHelp()
     {
         $commands = $this->getCommandDescriptions();
         if (!empty($commands)) {
@@ -217,15 +212,12 @@ class HelpController extends Controller
      */
     protected function getControllerHelp($controller)
     {
-        $class = new \ReflectionClass($controller);
-        $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($class->getDocComment(), '/'))), "\r", '');
-        if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
-            $comment = trim(substr($comment, 0, $matches[0][1]));
-        }
+        // TODO set color option of controller to this controllers color option
 
+        $this->stdout("\nDESCRIPTION\n", Console::BOLD);
+        $comment = $controller->getHelp();
         if ($comment !== '') {
-            $this->stdout("\nDESCRIPTION\n", Console::BOLD);
-            echo "\n" . rtrim(Console::renderColoredString(Console::markdownToAnsi($comment))) . "\n\n";
+            $this->stdout("\n$comment\n\n");
         }
 
         $actions = $this->getActions($controller);
@@ -259,33 +251,10 @@ class HelpController extends Controller
     protected function getActionSummary($controller, $actionID)
     {
         $action = $controller->createAction($actionID);
-        if ($action === null) {
-            return '';
+        if ($action instanceof InlineAction || $action instanceof Action) {
+            return $action->getDescription();
         }
-        if ($action instanceof InlineAction) {
-            $reflection = new \ReflectionMethod($controller, $action->actionMethod);
-        } else {
-            $reflection = new \ReflectionClass($action);
-        }
-        $tags = $this->parseComment($reflection->getDocComment());
-        if ($tags['description'] !== '') {
-            $limit = 73 - strlen($action->getUniqueId());
-            if ($actionID === $controller->defaultAction) {
-                $limit -= 10;
-            }
-            if ($limit < 0) {
-                $limit = 50;
-            }
-            $description = $tags['description'];
-            if (($pos = strpos($tags['description'], "\n")) !== false) {
-                $description = substr($description, 0, $pos);
-            }
-            $text = substr($description, 0, $limit);
-
-            return strlen($description) > $limit ? $text . '...' : $text;
-        } else {
-            return '';
-        }
+        return '';
     }
 
     /**
@@ -311,9 +280,10 @@ class HelpController extends Controller
         $tags = $this->parseComment($method->getDocComment());
         $options = $this->getOptionHelps($controller, $actionID);
 
-        if ($tags['description'] !== '') {
+        $description = $action->getHelp();
+        if ($description !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
-            echo "\n" . rtrim(Console::renderColoredString(Console::markdownToAnsi($tags['description']))) . "\n\n";
+            $this->stdout("\n$description\n\n");
         }
 
         $this->stdout("\nUSAGE\n\n", Console::BOLD);
