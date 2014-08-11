@@ -1122,7 +1122,10 @@ class BaseHtml
         $error = $model->getFirstError($attribute);
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
         unset($options['tag']);
-        return Html::tag($tag, Html::encode($error), $options);
+        if (!isset($options['encode']) || $options['encode'] === true) {
+            $error = Html::encode($error);
+        }
+        return Html::tag($tag, $error, $options);
     }
 
     /**
