@@ -1,6 +1,7 @@
 <?php
 namespace yiiunit\extensions\twig;
 
+use yii\helpers\FileHelper;
 use yii\web\AssetManager;
 use yii\web\View;
 use Yii;
@@ -22,6 +23,12 @@ class ViewRendererTest extends DatabaseTestCase
     {
         parent::setUp();
         $this->mockApplication();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        FileHelper::removeDirectory(Yii::getAlias('@runtime/assets'));
     }
 
     /**
