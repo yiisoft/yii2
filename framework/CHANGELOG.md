@@ -176,6 +176,7 @@ Yii Framework 2 Change Log
 - Enh #4581: Added ability to disable url encoding in `UrlRule` (tadaszelvys)
 - Enh #4602: Added $key param in ActionColumn buttons Closure call (disem)
 - Enh #4644: Added `\yii\db\Schema::createColumnSchema()` to be able to customize column schema used (mcd-php)
+- Enh #4656: HtmlPufifier helper config can now be a closure to change the purifier config object after it was created (Alex-Code)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
