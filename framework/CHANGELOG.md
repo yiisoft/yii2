@@ -158,6 +158,7 @@ Yii Framework 2 Change Log
 - Enh #4080: Added proper handling and support of the symlinked directories in `FileHelper`, added $options parameter in `FileHelper::removeDirectory()` (resurtm)
 - Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
 - Enh #4114: Added `Security::generateRandomBytes()`, improved tests (samdark)
+- Enh #4122: `Html::error()` and `Html::errorSummary()` are now accepting `encode` option. If set to false it prevents encoding of error messages (samdark)
 - Enh #4131: Security adjustments (tom--)
      - Added HKDF to `yii\base\Security`.
      - Reverted auto fallback to PHP PBKDF2.
