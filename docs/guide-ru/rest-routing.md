@@ -1,13 +1,13 @@
-Routing
-=======
+Маршрутизация
+=============
 
-With resource and controller classes ready, you can access the resources using the URL like
-`http://localhost/index.php?r=user/create`, similar to what you can do with normal Web applications.
+Имея готовые классы ресурсов и контроллеров, можно получить доступ к ресурсам, используя URL вроде
+`http://localhost/index.php?r=user/create`, подобно тому, как вы это делаете с обычными Web-приложениями.
 
-In practice, you usually want to enable pretty URLs and take advantage of HTTP verbs.
-For example, a request `POST /users` would mean accessing the `user/create` action.
-This can be done easily by configuring the `urlManager` application component in the application
-configuration like the following:
+На деле вам обычно хочется включить «красивые» URL-адреса и использовать все преимущества HTTP-методов (HTTP-verbs).
+Например, чтобы запрос `POST /users` означал обращение к действию `user/create`.
+Это может быть легко сделано с помощью настройки компонента приложения `urlManager` в 
+конфигурации приложения следующим образом:
 
 ```php
 'urlManager' => [
@@ -20,10 +20,10 @@ configuration like the following:
 ]
 ```
 
-Compared to the URL management for Web applications, the main new thing above is the use of
-[[yii\rest\UrlRule]] for routing RESTful API requests. This special URL rule class will
-create a whole set of child URL rules to support routing and URL creation for the specified controller(s).
-For example, the above code is roughly equivalent to the following rules:
+Главная новинка в коде выше по сравнению с управлением URL-адресами в Web-приложениях состоит в использовании
+[[yii\rest\UrlRule]] для маршрутизации запросов к RESTful API. Этот особый класс URL-правил будет
+создавать целый набор дочерних URL-правил для поддержки маршрутизации и создания URL-адресов для указанного контроллера (или контроллеров).
+Например, приведенный выше код является приближенным аналогом следующего набора правил:
 
 ```php
 [
@@ -37,20 +37,20 @@ For example, the above code is roughly equivalent to the following rules:
 ]
 ```
 
-And the following API endpoints are supported by this rule:
+Этим правилом поддерживаются следующие точки входа в API:
 
-* `GET /users`: list all users page by page;
-* `HEAD /users`: show the overview information of user listing;
-* `POST /users`: create a new user;
-* `GET /users/123`: return the details of the user 123;
-* `HEAD /users/123`: show the overview information of user 123;
-* `PATCH /users/123` and `PUT /users/123`: update the user 123;
-* `DELETE /users/123`: delete the user 123;
-* `OPTIONS /users`: show the supported verbs regarding endpoint `/users`;
-* `OPTIONS /users/123`: show the supported verbs regarding endpoint `/users/123`.
+* `GET /users`: разбитый на страницы список всех пользователей;
+* `HEAD /users`: общая информация по списку пользователей;
+* `POST /users`: создание нового пользователя;
+* `GET /users/123`: подробная информация о пользователе 123;
+* `HEAD /users/123`: общая информация о пользователе 123;
+* `PATCH /users/123` и `PUT /users/123`: обновление пользователя 123;
+* `DELETE /users/123`: удаление пользователя 123;
+* `OPTIONS /users`: список HTTP-методов, поддерживаемые точкой входа `/users`;
+* `OPTIONS /users/123`: список HTTP-методов, поддерживаемые точкой входа `/users/123`.
 
-You may configure the `only` and `except` options to explicitly list which actions to support or which
-actions should be disabled, respectively. For example,
+Вы можете настроить опции `only` и `except`, явно указав для них список действий, которые поддерживаются или
+которые должны быть отключены, соответственно. Например:
 
 ```php
 [
@@ -60,8 +60,8 @@ actions should be disabled, respectively. For example,
 ],
 ```
 
-You may also configure `patterns` or `extraPatterns` to redefine existing patterns or add new patterns supported by this rule.
-For example, to support a new action `search` by the endpoint `GET /users/search`, configure the `extraPatterns` option as follows,
+Вы также можете настроить опции `patterns` или `extraPatterns` для переопределения существующих шаблонов или добавления новых шаблонов, поддерживаемых этим правилом.
+Например, для включения нового действия `search` в точке входа `GET /users/search` настройте опцию `extraPatterns` следующим образом:
 
 ```php
 [
@@ -72,7 +72,7 @@ For example, to support a new action `search` by the endpoint `GET /users/search
     ],
 ```
 
-You may have noticed that the controller ID `user` appears in plural form as `users` in the endpoints.
-This is because [[yii\rest\UrlRule]] automatically pluralizes controller IDs for them to use in endpoints.
-You may disable this behavior by setting [[yii\rest\UrlRule::pluralize]] to be false, or if you want
-to use some special names you may configure the [[yii\rest\UrlRule::controller]] property.
+Как вы могли заметить, ID контроллера `user` в этих точках входа используется в форме множественного числа (как `users`).
+Это происходит потому, что [[yii\rest\UrlRule]] автоматически приводит идентификаторы контроллеров к множественной форме для использования в точках входа.
+Вы можете отключить такое поведение, назначив свойству [[yii\rest\UrlRule::pluralize]] значение false, или, если вы хотите использовать 
+какие-то особые имена, вы можете настроить свойство [[yii\rest\UrlRule::controller]].
