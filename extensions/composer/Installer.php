@@ -238,11 +238,10 @@ EOF
         foreach ((array) $options[self::EXTRA_WRITABLE] as $path) {
             echo "Setting writable: $path ...";
             if (is_dir($path) || is_file($path)) {
-                chmod($path, 0777);
+                chmod($path, is_file($path) ? 0666 : 0777);
                 echo "done\n";
             } else {
                 echo "The directory or file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path;
-
                 return;
             }
         }
@@ -254,7 +253,6 @@ EOF
                 echo "done\n";
             } else {
                 echo "\n\tThe directory or file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
-
                 return;
             }
         }
