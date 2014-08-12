@@ -282,7 +282,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getTableSchema()
     {
-        $schema = static::getDb()->getTableSchema(static::tableName());
+        $schema = static::getDb()->getSchema()->getTableSchema(static::tableName());
         if ($schema !== null) {
             return $schema;
         } else {
