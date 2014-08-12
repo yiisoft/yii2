@@ -218,7 +218,7 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
             'sluggable' => [
                 'class' => SluggableBehavior::className(),
                 'attribute' => 'name',
-                'unique' => true,
+                'ensureUnique' => true,
             ],
         ];
     }
