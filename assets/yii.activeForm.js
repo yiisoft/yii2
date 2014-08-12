@@ -23,6 +23,8 @@
     };
 
     var defaults = {
+        // whether to encode the error summary
+        encodeErrorSummary: true,
         // the jQuery selector for the error summary
         errorSummary: undefined,
         // whether to perform validation before submitting the form.
@@ -73,6 +75,8 @@
         input: undefined,
         // the jQuery selector of the error tag
         error: undefined,
+        // whether to encode the error
+        encodeError: true,
         // whether to perform validation when a change is detected on the input
         validateOnChange: false,
         // whether to perform validation when the user is typing.
@@ -404,11 +408,15 @@
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
             if (hasError) {
-                $error.text(messages[attribute.id][0]);
+                if (attribute.encodeError) {
+                    $error.text(messages[attribute.id][0]);
+                } else {
+                    $error.html(messages[attribute.id][0]);
+                }
                 $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
                     .addClass(data.settings.errorCssClass);
             } else {
-                $error.text('');
+                $error.empty();
                 $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
                     .addClass(data.settings.successCssClass);
             }
@@ -425,12 +433,18 @@
     var updateSummary = function ($form, messages) {
         var data = $form.data('yiiActiveForm'),
             $summary = $form.find(data.settings.errorSummary),
-            $ul = $summary.find('ul').html('');
+            $ul = $summary.find('ul').empty();
 
         if ($summary.length && messages) {
             $.each(data.attributes, function () {
                 if ($.isArray(messages[this.id]) && messages[this.id].length) {
-                    $ul.append($('<li/>').text(messages[this.id][0]));
+                    var error = $('<li/>');
+                    if (data.settings.encodeErrorSummary) {
+                        error.text(messages[this.id][0]);
+                    } else {
+                        error.html(messages[this.id][0]);
+                    }
+                    $ul.append(error);
                 }
             });
             $summary.toggle($ul.find('li').length > 0);
