@@ -119,44 +119,6 @@ class SluggableBehaviorTest extends TestCase
     }
 
     /**
-     * @depends testUniqueByIncrement
-     */
-    public function testUniqueByUniqueId()
-    {
-        $name = 'test name';
-
-        $model1 = new ActiveRecordSluggableUnique();
-        $model1->name = $name;
-        $model1->save();
-
-        $model2 = new ActiveRecordSluggableUnique();
-        $model2->sluggable->uniqueSlugGenerator = 'uniqueid';
-        $model2->name = $name;
-        $model2->save();
-
-        $this->assertNotEquals($model2->slug, $model1->slug);
-    }
-
-    /**
-     * @depends testUniqueByIncrement
-     */
-    public function testUniqueByTimestamp()
-    {
-        $name = 'test name';
-
-        $model1 = new ActiveRecordSluggableUnique();
-        $model1->name = $name;
-        $model1->save();
-
-        $model2 = new ActiveRecordSluggableUnique();
-        $model2->sluggable->uniqueSlugGenerator = 'timestamp';
-        $model2->name = $name;
-        $model2->save();
-
-        $this->assertNotEquals($model2->slug, $model1->slug);
-    }
-
-    /**
      * @depends testSlug
      */
     public function testUpdateUnique()
