@@ -8,7 +8,6 @@
 namespace yii\behaviors;
 
 use yii\base\DynamicModel;
-use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
@@ -93,8 +92,8 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $uniqueValidatorConfig = [];
     /**
-     * @var string|callable slug unique value generator. It is used in case [[unique]] enabled and generated
-     * slug is not unique. This can be a PHP callable with following signature:
+     * @var callable slug unique value generator. It is used in case [[ensureUnique]] enabled and generated
+     * slug is not unique. This should be a PHP callable with following signature:
      *
      * ```php
      * function ($baseSlug, $iteration)
@@ -103,12 +102,9 @@ class SluggableBehavior extends AttributeBehavior
      * }
      * ```
      *
-     * Also one of the following predefined values can be used:
-     *  - 'increment' - adds incrementing suffix to the base slug
-     *  - 'uniqueid' - adds part of uniqueId hash string to the base slug
-     *  - 'timestamp' - adds current UNIX timestamp to the base slug
+     * If not set unique slug will be generated adding incrementing suffix to the base slug.
      */
-    public $uniqueSlugGenerator = 'increment';
+    public $uniqueSlugGenerator;
 
 
     /**
@@ -196,6 +192,7 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
+     * Generates slug using configured callback or increment of iteration.
      * @param string $baseSlug base slug value
      * @param integer $iteration iteration number
      * @return string slug suffix
@@ -203,62 +200,10 @@ class SluggableBehavior extends AttributeBehavior
      */
     private function generateUniqueSlug($baseSlug, $iteration)
     {
-        $generator = $this->uniqueSlugGenerator;
-        switch ($generator) {
-            case 'increment':
-                return $this->generateUniqueSlugIncrement($baseSlug, $iteration);
-            case 'uniqueid':
-                return $this->generateUniqueSlugUniqueId($baseSlug, $iteration);
-            case 'timestamp':
-                return $this->generateSuffixSlugTimestamp($baseSlug, $iteration);
-            default:
-                if (is_callable($generator)) {
-                    return call_user_func($generator, $baseSlug, $iteration);
-                }
-                throw new InvalidConfigException("Unrecognized slug unique suffix generator '{$generator}'.");
+        if (is_callable($this->uniqueSlugGenerator)) {
+            return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration);
+        } else {
+            return $baseSlug . '-' . ($iteration + 1);
         }
-    }
-
-    /**
-     * Generates slug using increment of iteration.
-     * @param string $baseSlug base slug value
-     * @param integer $iteration iteration number
-     * @return string generated suffix.
-     */
-    protected function generateUniqueSlugIncrement($baseSlug, $iteration)
-    {
-        return $baseSlug . '-' . ($iteration + 1);
-    }
-
-    /**
-     * Generates slug using unique id.
-     * @param string $baseSlug base slug value
-     * @param integer $iteration iteration number
-     * @throws \yii\base\Exception
-     * @return string generated suffix.
-     */
-    protected function generateUniqueSlugUniqueId($baseSlug, $iteration)
-    {
-        static $uniqueId;
-        if ($iteration < 2) {
-            $uniqueId = sha1(uniqid(get_class($this), true));
-        }
-        $subStringLength = 6 + $iteration;
-        if ($subStringLength > strlen($uniqueId)) {
-            throw new Exception('Unique id is exhausted.');
-        }
-        return $baseSlug . '-' . substr($uniqueId, 0, $subStringLength);
-    }
-
-    /**
-     * Generates slug using current timestamp.
-     * @param string $baseSlug base slug value
-     * @param integer $iteration iteration number
-     * @throws \yii\base\Exception
-     * @return string generated suffix.
-     */
-    protected function generateSuffixSlugTimestamp($baseSlug, $iteration)
-    {
-        return $baseSlug . '-' . (time() + $iteration - 1);
     }
 }
