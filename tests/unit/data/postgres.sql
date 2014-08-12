@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS "profile" CASCADE;
 DROP TABLE IF EXISTS "type" CASCADE;
 DROP TABLE IF EXISTS "null_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
+DROP TABLE IF EXISTS "bool_values" CASCADE;
 
 CREATE TABLE "constraints"
 (
@@ -111,6 +112,13 @@ CREATE TABLE "type" (
   bool_col2 smallint DEFAULT '1',
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   bit_col BIT(8) NOT NULL DEFAULT B'10000010'
+);
+
+CREATE TABLE "bool_values" (
+  id serial not null primary key,
+  bool_col bool,
+  default_true bool not null default true,
+  default_false boolean not null default false
 );
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');

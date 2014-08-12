@@ -237,24 +237,22 @@ EOF
 
         foreach ((array) $options[self::EXTRA_WRITABLE] as $path) {
             echo "Setting writable: $path ...";
-            if (is_dir($path)) {
-                chmod($path, 0777);
+            if (is_dir($path) || is_file($path)) {
+                chmod($path, is_file($path) ? 0666 : 0777);
                 echo "done\n";
             } else {
-                echo "The directory was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path;
-
+                echo "The directory or file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path;
                 return;
             }
         }
 
         foreach ((array) $options[self::EXTRA_EXECUTABLE] as $path) {
             echo "Setting executable: $path ...";
-            if (is_file($path)) {
+            if (is_dir($path) || is_file($path)) {
                 chmod($path, 0755);
                 echo "done\n";
             } else {
-                echo "\n\tThe file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
-
+                echo "\n\tThe directory or file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
                 return;
             }
         }
