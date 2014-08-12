@@ -15,7 +15,7 @@ DIRECTORY STRUCTURE
 HOW TO RUN THE TESTS
 --------------------
 
-Make sure you have PHPUnit installed.
+Make sure you have PHPUnit installed and that you installed all composer dependencies (run `composer update` in the repo base directory).
 
 Run PHPUnit in the yii repo base directory.
 
