@@ -21,6 +21,8 @@ services:
   - elasticsearch
   - mongodb
 
+sudo: false
+
 install:
   - composer self-update && composer --version
 # core framework:
