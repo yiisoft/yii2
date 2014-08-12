@@ -80,4 +80,14 @@ class PostgreSQLSchemaTest extends SchemaTest
         }
         fclose($fp);
     }
+
+    public function testBooleanDefaultValues()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $table = $schema->getTableSchema('bool_values');
+        $this->assertSame(true, $table->getColumn('default_true')->defaultValue);
+        $this->assertSame(false, $table->getColumn('default_false')->defaultValue);
+    }
 }

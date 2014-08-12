@@ -116,7 +116,9 @@ CREATE TABLE "type" (
 
 CREATE TABLE "bool_values" (
   id serial not null primary key,
-  bool_col bool
+  bool_col bool,
+  default_true bool not null default true,
+  default_false boolean not null default false
 );
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');

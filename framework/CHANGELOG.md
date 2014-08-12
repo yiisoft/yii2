@@ -57,6 +57,7 @@ Yii Framework 2 Change Log
 - Bug #3863: Fixed incorrect js selector for `\yii\widgets\ActiveForm::errorSummaryCssClass` when it contains multiple classes (creocoder, umneeq)
 - Bug #3893: Headers did not overwrite default setting by webserver (cebe)
 - Bug #3909: `Html::to()` should not prefix base URL to URLs that already contain scheme (qiangxue)
+- Bug #3920: Fixed issue with loading default values of PostgreSQL boolean columns (cebe)
 - Bug #3934: yii.handleAction() in yii.js does not correctly detect if a hyperlink contains useful URL or not (joni-jones, qiangxue)
 - Bug #3968: Messages logged in shutdown functions are not handled (qiangxue)
 - Bug #3989: Fixed yii\log\FileTarget::$rotateByCopy to avoid any rename (cebe)
