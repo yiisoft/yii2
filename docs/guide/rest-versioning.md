@@ -110,7 +110,7 @@ Take note that if you have different models per each version, you have to redecl
 
 Example:
 ```php
-class User 
+class User extends \common\models\User
 {
   public function getPosts()
   {
