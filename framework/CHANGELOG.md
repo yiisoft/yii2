@@ -240,6 +240,7 @@ Yii Framework 2 Change Log
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
 - New #4193: Added `yii\filters\Cors` CORS filter to allow Cross Origin Resource Sharing (pgaultier)
 - New: Added `yii\base\InvalidValueException` (qiangxue)
+- New: Added `yii\caching\ArrayCache` (cebe)
 
 
 2.0.0-beta April 13, 2014
