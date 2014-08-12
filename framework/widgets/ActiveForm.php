@@ -54,6 +54,10 @@ class ActiveForm extends Widget
      */
     public $fieldConfig;
     /**
+     * @var boolean whether to perform encoding on the error summary.
+     */
+    public $encodeErrorSummary = true;
+    /**
      * @var string the default CSS class for the error summary container.
      * @see errorSummary()
      */
@@ -239,6 +243,7 @@ class ActiveForm extends Widget
     protected function getClientOptions()
     {
         $options = [
+            'encodeErrorSummary' => $this->encodeErrorSummary,
             'errorSummary' => '.' . implode('.', preg_split('/\s+/', $this->errorSummaryCssClass, -1, PREG_SPLIT_NO_EMPTY)),
             'validateOnSubmit' => $this->validateOnSubmit,
             'errorCssClass' => $this->errorCssClass,
@@ -276,6 +281,7 @@ class ActiveForm extends Widget
     public function errorSummary($models, $options = [])
     {
         Html::addCssClass($options, $this->errorSummaryCssClass);
+        $options['encode'] = $this->encodeErrorSummary;
         return Html::errorSummary($models, $options);
     }
 
