@@ -1,42 +1,42 @@
-Authentication
+Аутентификация
 ==============
 
-Unlike Web applications, RESTful APIs are usually stateless, which means sessions or cookies should not
-be used. Therefore, each request should come with some sort of authentication credentials because
-the user authentication status may not be maintained by sessions or cookies. A common practice is
-to send a secret access token with each request to authenticate the user. Since an access token
-can be used to uniquely identify and authenticate a user, **API requests should always be sent
-via HTTPS to prevent from man-in-the-middle (MitM) attacks**.
+В отличие от Web-приложений, RESTful API обычно не сохраняют информацию о состоянии, а это означает, что сессии и куки
+использовать не следует. Следовательно, раз состояние аутентификации пользователя не может быть сохранено в сессиях или куках,
+каждый запрос должен приходить вместе с определенным видом параметров аутентификации. Общепринятая практика состоит в том,
+что для аутентификации пользователя с каждый запросом отправляется секретный токен доступа. Так как токен доступа
+может использоваться для уникальной идентификации и аутентификации пользователя, **запросы к API всегда должны отсылаться
+через протокол HTTPS, чтобы предотвратить атаки «человек посередине» (англ. "man-in-the-middle", MitM)**.
 
-There are different ways to send an access token:
+Есть различные способы отправки токена доступа:
 
-* [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication): the access token
-  is sent as the username. This is should only be used when an access token can be safely stored
-  on the API consumer side. For example, the API consumer is a program running on a server.
-* Query parameter: the access token is sent as a query parameter in the API URL, e.g.,
-  `https://example.com/users?access-token=xxxxxxxx`. Because most Web servers will keep query
-  parameters in server logs, this approach should be mainly used to serve `JSONP` requests which
-  cannot use HTTP headers to send access tokens.
-* [OAuth 2](http://oauth.net/2/): the access token is obtained by the consumer from an authorization
-  server and sent to the API server via [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
-  according to the OAuth2 protocol.
+* [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication): токен доступа
+  отправляется как имя пользователя. Такой подход следует использовать только в том случае, когда токен доступа может быть безопасно сохранен
+  на стороне абонента API. Например, если API используется программой, запущенной на сервере.
+* Параметр запроса: токен доступа отправляется как параметр запроса в URL-адресе API, т.е. примерно таким образом:
+  `https://example.com/users?access-token=xxxxxxxx`. Так как большинство Web-серверов сохраняют параметры запроса в своих логах,
+  такой подход следует применять только при работе с `JSONP`-запросами, которые не могут отправлять токены доступа
+ в HTTP-заголовках.
+* [OAuth 2](http://oauth.net/2/): токен доступа выдается абоненту API сервером авторизации
+  и отправляется API-серверу через [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
+  в соответствии с протоколом OAuth2.
 
-Yii supports all of the above authentication methods. You can also easily create new authentication methods.
+Yii поддерживает все выше перечисленные методы аутентификации. Вы также можете легко создавать новые методы аутентификации.
 
-To enable authentication for your APIs, do the following steps:
+Чтобы включить аутентификацию для ваших API, выполните следующие шаги:
 
-1. Configure the [[yii\web\User::enableSession|enableSession]] property of the `user` application component to be false.
-2. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
-   in your REST controller classes.
-3. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
+1. У компонента приложения `user` установите свойство [[yii\web\User::enableSession|enableSession]] равным false.
+2. Укажите, какие методы аутентификации вы планируете использовать, настроив поведение `authenticator`
+   в ваших классах REST-контроллеров.
+3. Реализуйте метод [[yii\web\IdentityInterface::findIdentityByAccessToken()]] *в вашем [[yii\web\User::identityClass|классе UserIdentity]]*.
 
-Step 1 is not required but is recommended for RESTful APIs which should be stateless. When [[yii\web\User::enableSession|enableSession]]
-is false, the user authentication status will NOT be persisted across requests using sessions. Instead, authentication
-will be performed for every request, which is accomplished by Step 2 and 3.
+Шаг 1 не обязателен, но рекомендуется его все-таки выполнить, так как RESTful API не должны сохранять информацию о состоянии клиента. Когда свойство [[yii\web\User::enableSession|enableSession]]
+ установлено в false, состояние аутентификации пользователя НЕ БУДЕТ постоянно 
+сохраняться между запросами с использованием сессий. Вместо этого аутентификация будет выполняться для каждого запроса, что достигается шагами 2 и 3.
 
-> Tip: You may configure [[yii\web\User::enableSession|enableSession]] of the `user` application component
-  in application configurations if you are developing RESTful APIs in terms of an application. If you develop
-  RESTful APIs as a module, you may put the following line in the module's `init()` method, like the following:
+> Подсказка: если вы разрабатываете RESTful API в пределах приложения, вы можете настроить свойство
+ [[yii\web\User::enableSession|enableSession]] компонента приложения `user` в конфигурации приложения. Если вы разрабатываете
+  RESTful API как модуль, можете добавить следующую строчку в метод `init()` модуля:
 > ```php
 public function init()
 {
@@ -45,7 +45,7 @@ public function init()
 }
 ```
 
-For example, to use HTTP Basic Auth, you may configure `authenticator` as follows,
+Например, для использования HTTP Basic Auth, вы можете настроить свойство `authenticator` следующим образом:
 
 ```php
 use yii\filters\auth\HttpBasicAuth;
@@ -60,7 +60,7 @@ public function behaviors()
 }
 ```
 
-If you want to support all three authentication methods explained above, you can use `CompositeAuth` like the following,
+Если вы хотите включить поддержку всех трех описанных выше методов аутентификации, можете использовать `CompositeAuth`:
 
 ```php
 use yii\filters\auth\CompositeAuth;
@@ -83,12 +83,12 @@ public function behaviors()
 }
 ```
 
-Each element in `authMethods` should be an auth method class name or a configuration array.
+Каждый элемент в массиве `authMethods` должен быть названием класса метода аутентификации или массивом настроек.
 
 
-Implementation of `findIdentityByAccessToken()` is application specific. For example, in simple scenarios
-when each user can only have one access token, you may store the access token in an `access_token` column
-in the user table. The method can then be readily implemented in the `User` class as follows,
+Реализация метода `findIdentityByAccessToken()` определяется особенностями приложения. Например, в простом варианте,
+когда у каждого пользователя есть только один токен доступа, вы можете хранить этот токен в поле `access_token`
+таблицы пользователей. В этом случае метод `findIdentityByAccessToken()` может быть легко реализован в классе `User` следующим образом:
 
 ```php
 use yii\db\ActiveRecord;
@@ -103,22 +103,22 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
-After authentication is enabled as described above, for every API request, the requested controller
-will try to authenticate the user in its `beforeAction()` step.
+После включения аутентификации описанным выше способом при каждом запросе к API запрашиваемый контроллер
+будет пытаться аутентифицировать пользователя в своем методе `beforeAction()`.
 
-If authentication succeeds, the controller will perform other checks (such as rate limiting, authorization)
-and then run the action. The authenticated user identity information can be retrieved via `Yii::$app->user->identity`.
+Если аутентификация прошла успешно, контроллер выполнит другие проверки (ограничение на количество запросов, авторизация)
+и затем выполнит действие. *Информация о подлинности аутентифицированного пользователя может быть получена из объекта `Yii::$app->user->identity`*.
 
-If authentication fails, a response with HTTP status 401 will be sent back together with other appropriate headers
-(such as a `WWW-Authenticate` header for HTTP Basic Auth).
+Если аутентификация прошла неудачно, будет возвращен ответ с HTTP-кодом состояния 401 вместе с другими необходимыми заголовками
+(такими, как заголовок `WWW-Authenticate` для HTTP Basic Auth).
 
 
-## Authorization <a name="authorization"></a>
+## Авторизация <a name="authorization"></a>
 
-After a user is authenticated, you probably want to check if he or she has the permission to perform the requested
-action for the requested resource. This process is called *authorization* which is covered in detail in
-the [Authorization section](security-authorization.md).
+После аутентификации пользователя вы, вероятно, захотите проверить, есть ли у него или у нее разрешение на выполнение запрошенного
+действия с запрошенным ресурсом. Этот процесс называется *авторизацией* и подробно описан
+в разделе [Авторизация](security-authorization.md).
 
-If your controllers extend from [[yii\rest\ActiveController]], you may override
-the [[yii\rest\Controller::checkAccess()|checkAccess()]] method to perform authorization check. The method
-will be called by the built-in actions provided by [[yii\rest\ActiveController]].
+Если ваши контроллеры унаследованы от [[yii\rest\ActiveController]], вы можете переопределить
+метод [[yii\rest\Controller::checkAccess()|checkAccess()]] для выполнения авторизации. Этот метод будет вызываться
+встроенными действиями, предоставляемыми контроллером [[yii\rest\ActiveController]].
