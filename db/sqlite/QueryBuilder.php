@@ -70,7 +70,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return parent::batchInsert($table, $columns, $rows);
         }
 
-        if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
         } else {
             $columnSchemas = [];
@@ -84,7 +85,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
-                    $value = $this->db->quoteValue($value);
+                    $value = $schema->quoteValue($value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
@@ -96,10 +97,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         foreach ($columns as $i => $name) {
-            $columns[$i] = $this->db->quoteColumnName($name);
+            $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        return 'INSERT INTO ' . $this->db->quoteTableName($table)
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
     }
 
