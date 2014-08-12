@@ -7,10 +7,11 @@
 
 namespace yii\behaviors;
 
-use yii\base\DynamicModel;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
+use yii\validators\UniqueValidator;
+use Yii;
 
 /**
  * SluggableBehavior automatically fills the specified attribute with a value that can be used a slug in a URL.
@@ -82,15 +83,19 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $ensureUnique = false;
     /**
-     * @var array configuration for slug uniqueness validator. This configuration should not contain validator name
-     * and validated attributes - only options in format 'name => value' are allowed.
+     * @var array configuration for slug uniqueness validator. Parameter 'class' may be omitted - by default
+     * [[UniqueValidator]] will be used.
      * For example:
+     *
+     * ```php
      * [
      *     'filter' => ['type' => 1, 'status' => 2]
      * ]
-     * @see yii\validators\UniqueValidator
+     * ```
+     *
+     * @see UniqueValidator
      */
-    public $uniqueValidatorConfig = [];
+    public $uniqueValidator = [];
     /**
      * @var callable slug unique value generator. It is used in case [[ensureUnique]] enabled and generated
      * slug is not unique. This should be a PHP callable with following signature:
@@ -179,15 +184,20 @@ class SluggableBehavior extends AttributeBehavior
      */
     private function validateSlug($slug)
     {
-        $validator = array_merge(
+        /* @var $validator UniqueValidator */
+        /* @var $model BaseActiveRecord */
+        $validator = Yii::createObject(array_merge(
             [
-                ['slug'],
-                'unique',
-                'targetClass' => get_class($this->owner)
+                'class' => UniqueValidator::className()
             ],
-            $this->uniqueValidatorConfig
-        );
-        $model = DynamicModel::validateData(compact('slug'), [$validator]);
+            $this->uniqueValidator
+        ));
+
+        $model = clone $this->owner;
+        $model->clearErrors();
+        $model->{$this->slugAttribute} = $slug;
+
+        $validator->validateAttribute($model, $this->slugAttribute);
         return !$model->hasErrors();
     }
 

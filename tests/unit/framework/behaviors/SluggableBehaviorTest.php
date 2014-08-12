@@ -129,9 +129,15 @@ class SluggableBehaviorTest extends TestCase
         $model->name = $name;
         $model->save();
 
+        $model->save();
+        $this->assertEquals('test-name', $model->slug);
+
         $model = ActiveRecordSluggableUnique::find()->one();
         $model->save();
+        $this->assertEquals('test-name', $model->slug);
 
+        $model->name = 'test-name';
+        $model->save();
         $this->assertEquals('test-name', $model->slug);
     }
 }
