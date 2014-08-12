@@ -10,6 +10,7 @@ namespace yii\smarty;
 use Smarty;
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\web\View;
 
@@ -133,7 +134,7 @@ class Extension
         }
 
         $class = $params['class'];
-        $alias = ArrayHelper::getValue($params, 'as', basename($params['class']));
+        $alias = ArrayHelper::getValue($params, 'as', StringHelper::basename($params['class']));
         $type = ArrayHelper::getValue($params, 'type', 'static');
 
         // Register the class during compile time

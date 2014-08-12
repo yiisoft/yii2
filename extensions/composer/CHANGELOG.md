@@ -5,6 +5,7 @@ Yii Framework 2 composer extension Change Log
 --------------------------
 
 - Bug #3438: Fixed support for non-lowercase package names (cebe)
+- Enh #4597: `yii\composer\Installer::setPermission()` supports setting permission for both directories and files now (qiangxue)
 
 2.0.0-beta April 13, 2014
 -------------------------

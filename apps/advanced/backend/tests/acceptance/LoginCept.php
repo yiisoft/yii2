@@ -1,6 +1,7 @@
 <?php
 
 use common\tests\_pages\LoginPage;
+use backend\WebGuy;
 
 $I = new WebGuy($scenario);
 $I->wantTo('ensure login page works');

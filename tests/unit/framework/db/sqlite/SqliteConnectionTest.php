@@ -122,7 +122,7 @@ class SqliteConnectionTest extends ConnectionTest
 
         $config = [
             'class' => 'yii\db\Connection',
-            'dsn' => 'sqlite:memory:',
+            'dsn' => "sqlite:$basePath/yii2test.sq3",
         ];
         $this->prepareDatabase($config, $fixture)->close();
 
