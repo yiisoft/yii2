@@ -86,6 +86,15 @@ abstract class Schema extends Object
 
 
     /**
+     * @return \yii\db\ColumnSchema
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function createColumnSchema()
+    {
+        return Yii::createObject('yii\db\ColumnSchema');
+    }
+
+    /**
      * Loads the metadata for the specified table.
      * @param string $name table name
      * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
@@ -481,13 +490,16 @@ abstract class Schema extends Object
             // abstract type => php type
             'smallint' => 'integer',
             'integer' => 'integer',
+            'bigint' => 'integer',
             'boolean' => 'boolean',
             'float' => 'double',
             'binary' => 'resource',
         ];
         if (isset($typeMap[$column->type])) {
-            if ($column->type === 'integer') {
-                return $column->unsigned ? 'string' : 'integer';
+            if ($column->type === 'bigint') {
+                return PHP_INT_SIZE == 8 && !$column->unsigned ? 'integer' : 'string';
+            } elseif ($column->type === 'integer') {
+                return PHP_INT_SIZE == 4 && $column->unsigned ? 'string' : 'integer';
             } else {
                 return $typeMap[$column->type];
             }

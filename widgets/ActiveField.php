@@ -195,7 +195,7 @@ class ActiveField extends Component
     {
         $clientOptions = $this->getClientOptions();
         if (!empty($clientOptions)) {
-            $this->form->attributes[$this->attribute] = $clientOptions;
+            $this->form->attributes[] = $clientOptions;
         }
 
         $inputID = Html::getInputId($this->model, $this->attribute);
