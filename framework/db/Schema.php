@@ -481,6 +481,9 @@ abstract class Schema extends Object
 
     /**
      * Extracts the PHP type from abstract DB type.
+     * Note that integers and bigints are converted to strings
+     * if they potentially exceed PHP's max integer size.
+     * 
      * @param ColumnSchema $column the column schema information
      * @return string PHP type name
      */
@@ -490,14 +493,17 @@ abstract class Schema extends Object
             // abstract type => php type
             'smallint' => 'integer',
             'integer' => 'integer',
+            'bigint' => 'integer',
             'boolean' => 'boolean',
             'float' => 'double',
             'binary' => 'resource',
         ];
         if (isset($typeMap[$column->type])) {
             if ($column->type === 'integer') {
-                return $column->unsigned ? 'string' : 'integer';
-            } else {
+                return ($column->unsigned && PHP_INT_MAX <= 2147483647) ? 'string' : 'integer';
+            } else if ($column->type === 'bigint') {
+	        return ($column->unsigned || PHP_INT_MAX <= 2147483647) ? 'string' : 'integer';
+	    } else {
                 return $typeMap[$column->type];
             }
         } else {
