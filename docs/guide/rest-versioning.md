@@ -105,3 +105,16 @@ such as actions, resource classes, serializers, etc.
 
 Since minor versions require maintaining backward compatibility, hopefully there are not much
 version checks in your code. Otherwise, chances are that you may need to create a new major version.
+
+Take note that if you have different models per each version, you have to redeclare the relations with the proper version, if you don't do this, the related models will not be able to take advantage of the functions that you have introduced for that version
+
+Example:
+```php
+class User 
+{
+  public function getPosts()
+  {
+    return $this->hasMany('api\modules\v2\models\Post', ['user_id' => 'id']);
+  }
+}
+```
