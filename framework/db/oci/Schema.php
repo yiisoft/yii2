@@ -200,7 +200,7 @@ EOD;
      */
     protected function createColumn($column)
     {
-        $c = new ColumnSchema();
+        $c = $this->createColumnSchema();
         $c->name = $column['COLUMN_NAME'];
         $c->allowNull = $column['NULLABLE'] === 'Y';
         $c->isPrimaryKey = strpos($column['KEY'], 'P') !== false;

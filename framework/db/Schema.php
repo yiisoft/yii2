@@ -86,6 +86,15 @@ abstract class Schema extends Object
 
 
     /**
+     * @return \yii\db\ColumnSchema
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function createColumnSchema()
+    {
+        return Yii::createObject('yii\db\ColumnSchema');
+    }
+
+    /**
      * Loads the metadata for the specified table.
      * @param string $name table name
      * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
