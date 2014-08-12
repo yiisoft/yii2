@@ -726,7 +726,7 @@ class ActiveField extends Component
             } else {
                 $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
             }
-            $options['encode'] = isset($this->errorOptions['encode']) ? $this->errorOptions['encode'] : true;
+            $options['encode'] = isset($this->errorOptions['encode']) && $this->errorOptions['encode'] !== false;
 
             return $options;
         } else {
