@@ -48,6 +48,7 @@ use yii\helpers\Inflector;
  *     ];
  * }
  * ```
+ *
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -63,7 +64,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $attribute;
     /**
-     * @var mixed the value that will be used as a slug. This can be an anonymous function
+     * @var string|callable the value that will be used as a slug. This can be an anonymous function
      * or an arbitrary value. If the former, the return value of the function will be used as a slug.
      * The signature of the function should be as follows,
      *
@@ -80,7 +81,7 @@ class SluggableBehavior extends AttributeBehavior
      * If enabled behavior will validate slug uniqueness automatically. If validation fails it will attempt
      * generating unique slug value from based one until success.
      */
-    public $unique = false;
+    public $ensureUnique = false;
     /**
      * @var array configuration for slug uniqueness validator. This configuration should not contain validator name
      * and validated attributes - only options in format 'name => value' are allowed.
@@ -118,11 +119,7 @@ class SluggableBehavior extends AttributeBehavior
         parent::init();
 
         if (empty($this->attributes)) {
-            if ($this->unique) {
-                $this->attributes = [BaseActiveRecord::EVENT_BEFORE_INSERT => $this->slugAttribute];
-            } else {
-                $this->attributes = [BaseActiveRecord::EVENT_BEFORE_VALIDATE => $this->slugAttribute];
-            }
+            $this->attributes = [BaseActiveRecord::EVENT_BEFORE_VALIDATE => $this->slugAttribute];
         }
 
         if ($this->attribute === null && $this->value === null) {
@@ -135,23 +132,43 @@ class SluggableBehavior extends AttributeBehavior
      */
     protected function getValue($event)
     {
+        $isNewSlug = true;
+
         if ($this->attribute !== null) {
             if (is_array($this->attribute)) {
-                $slugParts = [];
-                foreach ($this->attribute as $attribute) {
-                    $slugParts[] = $this->owner->{$attribute};
-                }
-                $this->value = Inflector::slug(implode('-', $slugParts));
+                $attributes = $this->attribute;
             } else {
-                $this->value = Inflector::slug($this->owner->{$this->attribute});
+                $attributes = [$this->attribute];
             }
-        }
-        $slug = parent::getValue($event);
+            /* @var $owner BaseActiveRecord */
+            $owner = $this->owner;
+            if (!$owner->getIsNewRecord() && !empty($owner->{$this->slugAttribute})) {
+                $isNewSlug = false;
+                foreach ($attributes as $attribute) {
+                    if ($owner->isAttributeChanged($attribute)) {
+                        $isNewSlug = true;
+                        break;
+                    }
+                }
+            }
 
-        if ($this->unique) {
+            if ($isNewSlug) {
+                $slugParts = [];
+                foreach ($attributes as $attribute) {
+                    $slugParts[] = $owner->{$attribute};
+                }
+                $slug = Inflector::slug(implode('-', $slugParts));
+            } else {
+                $slug = $owner->{$this->slugAttribute};
+            }
+        } else {
+            $slug = parent::getValue($event);
+        }
+
+        if ($this->ensureUnique && $isNewSlug) {
             $baseSlug = $slug;
             $iteration = 0;
-            while (!$this->validateSlugUnique($slug)) {
+            while (!$this->validateSlug($slug)) {
                 $iteration++;
                 $slug = $this->generateUniqueSlug($baseSlug, $iteration);
             }
@@ -164,7 +181,7 @@ class SluggableBehavior extends AttributeBehavior
      * @param string $slug slug value
      * @return boolean whether slug is unique.
      */
-    private function validateSlugUnique($slug)
+    private function validateSlug($slug)
     {
         $validator = array_merge(
             [
