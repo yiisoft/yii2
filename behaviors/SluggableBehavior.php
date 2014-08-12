@@ -136,11 +136,7 @@ class SluggableBehavior extends AttributeBehavior
         $isNewSlug = true;
 
         if ($this->attribute !== null) {
-            if (is_array($this->attribute)) {
-                $attributes = $this->attribute;
-            } else {
-                $attributes = [$this->attribute];
-            }
+            $attributes = (array)$this->attribute;
             /* @var $owner BaseActiveRecord */
             $owner = $this->owner;
             if (!$owner->getIsNewRecord() && !empty($owner->{$this->slugAttribute})) {
@@ -205,7 +201,7 @@ class SluggableBehavior extends AttributeBehavior
      * Generates slug using configured callback or increment of iteration.
      * @param string $baseSlug base slug value
      * @param integer $iteration iteration number
-     * @return string slug suffix
+     * @return string new slug value
      * @throws \yii\base\InvalidConfigException
      */
     private function generateUniqueSlug($baseSlug, $iteration)
