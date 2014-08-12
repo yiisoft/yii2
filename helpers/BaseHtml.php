@@ -1067,6 +1067,7 @@ class BaseHtml
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
      * - footer: string, the footer HTML for the error summary.
+     * - encode: boolean, if set to false then value won't be encoded.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1074,6 +1075,11 @@ class BaseHtml
      */
     public static function errorSummary($models, $options = [])
     {
+        $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
+        $footer = isset($options['footer']) ? $options['footer'] : '';
+        $encode = !isset($options['encode']) || $options['encode'] !== false;
+        unset($options['header'], $options['footer'], $options['encode']);
+
         $lines = [];
         if (!is_array($models)) {
             $models = [$models];
@@ -1081,13 +1087,9 @@ class BaseHtml
         foreach ($models as $model) {
             /* @var $model Model */
             foreach ($model->getFirstErrors() as $error) {
-                $lines[] = Html::encode($error);
+                $lines[] = $encode ? Html::encode($error) : $error;
             }
         }
-
-        $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
-        $footer = isset($options['footer']) ? $options['footer'] : '';
-        unset($options['header'], $options['footer']);
 
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
@@ -1111,6 +1113,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
+     * - encode: boolean, if set to false then value won't be encoded.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1121,8 +1124,9 @@ class BaseHtml
         $attribute = static::getAttributeName($attribute);
         $error = $model->getFirstError($attribute);
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag']);
-        return Html::tag($tag, Html::encode($error), $options);
+        $encode = !isset($options['encode']) || $options['encode'] !== false;
+        unset($options['tag'], $options['encode']);
+        return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
     }
 
     /**
