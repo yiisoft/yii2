@@ -181,6 +181,7 @@ Yii Framework 2 Change Log
 - Enh #4630: Added automatic generating of unique slug value to `yii\behaviors\Sluggable` (klimov-paul)
 - Enh #4644: Added `\yii\db\Schema::createColumnSchema()` to be able to customize column schema used (mcd-php)
 - Enh #4656: HtmlPurifier helper config can now be a closure to change the purifier config object after it was created (Alex-Code)
+- Enh #4691: Encoding on `ActiveForm` and `ActiveField` validation errors is now configurable (Alex-Code)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
