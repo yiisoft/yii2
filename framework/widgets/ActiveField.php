@@ -63,6 +63,7 @@ class ActiveField extends Component
      * The following special options are recognized:
      *
      * - tag: the tag name of the container element. Defaults to "div".
+     * - encode: whether to encode the error output. Defaults to true.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
