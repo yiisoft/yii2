@@ -45,7 +45,7 @@ class CubridSchemaTest extends SchemaTest
         $columns['int_col2']['dbType'] = 'integer';
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = null;
-        $columns['smallint_col']['dbType'] = 'integer';
+        $columns['smallint_col']['dbType'] = 'short';
         $columns['smallint_col']['size'] = null;
         $columns['smallint_col']['precision'] = null;
         $columns['char_col3']['type'] = 'string';
