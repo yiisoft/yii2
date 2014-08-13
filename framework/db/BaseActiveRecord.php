@@ -1008,10 +1008,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
      * is composite or `$asArray` is true. A string is returned otherwise (null will be returned if
      * the key value is null).
+     * @throws Exception if the AR model does not have a primary key
      */
     public function getOldPrimaryKey($asArray = false)
     {
         $keys = $this->primaryKey();
+        if (empty($keys)) {
+            throw new Exception(get_class($this) . ' does not have a primary key. You should either define a primary key for the corresponding table or override the primaryKey() method.');
+        }
         if (count($keys) === 1 && !$asArray) {
             return isset($this->_oldAttributes[$keys[0]]) ? $this->_oldAttributes[$keys[0]] : null;
         } else {

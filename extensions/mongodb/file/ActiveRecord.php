@@ -47,6 +47,7 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 {
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {

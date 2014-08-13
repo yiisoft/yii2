@@ -39,3 +39,5 @@ or add
 ```
 
 to the require section of your composer.json.
+
+Note that the smarty composer package is distributed using subversion so you may need to install subversion.

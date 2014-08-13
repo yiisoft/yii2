@@ -131,7 +131,8 @@ class QueryBuilder extends \yii\base\Object
      */
     public function insert($table, $columns, &$params)
     {
-        if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
         } else {
             $columnSchemas = [];
@@ -139,7 +140,7 @@ class QueryBuilder extends \yii\base\Object
         $names = [];
         $placeholders = [];
         foreach ($columns as $name => $value) {
-            $names[] = $this->db->quoteColumnName($name);
+            $names[] = $schema->quoteColumnName($name);
             if ($value instanceof Expression) {
                 $placeholders[] = $value->expression;
                 foreach ($value->params as $n => $v) {
@@ -152,7 +153,7 @@ class QueryBuilder extends \yii\base\Object
             }
         }
 
-        return 'INSERT INTO ' . $this->db->quoteTableName($table)
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
             . ' (' . implode(', ', $names) . ') VALUES ('
             . implode(', ', $placeholders) . ')';
     }
@@ -178,7 +179,8 @@ class QueryBuilder extends \yii\base\Object
      */
     public function batchInsert($table, $columns, $rows)
     {
-        if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
         } else {
             $columnSchemas = [];
@@ -192,7 +194,7 @@ class QueryBuilder extends \yii\base\Object
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
-                    $value = $this->db->quoteValue($value);
+                    $value = $schema->quoteValue($value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
@@ -204,10 +206,10 @@ class QueryBuilder extends \yii\base\Object
         }
 
         foreach ($columns as $i => $name) {
-            $columns[$i] = $this->db->quoteColumnName($name);
+            $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        return 'INSERT INTO ' . $this->db->quoteTableName($table)
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
 

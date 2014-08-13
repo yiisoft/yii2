@@ -26,6 +26,10 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = 32;
         $columns['int_col2']['scale'] = 0;
+        $columns['smallint_col']['dbType'] = 'int2';
+        $columns['smallint_col']['size'] = null;
+        $columns['smallint_col']['precision'] = 16;
+        $columns['smallint_col']['scale'] = 0;
         $columns['char_col']['dbType'] = 'bpchar';
         $columns['char_col']['precision'] = null;
         $columns['char_col2']['dbType'] = 'varchar';
@@ -79,5 +83,15 @@ class PostgreSQLSchemaTest extends SchemaTest
             $this->assertEquals($value[1], $schema->getPdoType($value[0]));
         }
         fclose($fp);
+    }
+
+    public function testBooleanDefaultValues()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $table = $schema->getTableSchema('bool_values');
+        $this->assertSame(true, $table->getColumn('default_true')->defaultValue);
+        $this->assertSame(false, $table->getColumn('default_false')->defaultValue);
     }
 }

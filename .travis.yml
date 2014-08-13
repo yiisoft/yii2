@@ -21,6 +21,10 @@ services:
   - elasticsearch
   - mongodb
 
+# try running against postgres 9.3
+addons:
+  postgresql: "9.3"
+
 install:
   - composer self-update && composer --version
 # core framework:

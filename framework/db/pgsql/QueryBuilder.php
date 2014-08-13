@@ -128,8 +128,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
         $enable = $check ? 'ENABLE' : 'DISABLE';
-        $schema = $schema ? $schema : $this->db->schema->defaultSchema;
-        $tableNames = $table ? [$table] : $this->db->schema->getTableNames($schema);
+        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
+        $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
         $command = '';
 
         foreach ($tableNames as $tableName) {
@@ -158,5 +158,46 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
             . $this->db->quoteColumnName($column) . ' TYPE '
             . $this->getColumnType($type);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function batchInsert($table, $columns, $rows)
+    {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+
+        $values = [];
+        foreach ($rows as $row) {
+            $vs = [];
+            foreach ($row as $i => $value) {
+                if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
+                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
+                }
+                if (is_string($value)) {
+                    $value = $schema->quoteValue($value);
+                } elseif ($value === true) {
+                    $value = 'TRUE';
+                } elseif ($value === false) {
+                    $value = 'FALSE';
+                } elseif ($value === null) {
+                    $value = 'NULL';
+                }
+                $vs[] = $value;
+            }
+            $values[] = '(' . implode(', ', $vs) . ')';
+        }
+
+        foreach ($columns as $i => $name) {
+            $columns[$i] = $schema->quoteColumnName($name);
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
+        . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
 }

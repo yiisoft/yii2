@@ -94,6 +94,7 @@ CREATE TABLE "null_values" (
 CREATE TABLE "type" (
   int_col INTEGER NOT NULL,
   int_col2 INTEGER DEFAULT '1',
+  smallint_col SMALLINT(1) DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
   char_col3 text,

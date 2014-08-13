@@ -70,6 +70,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
