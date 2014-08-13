@@ -1,28 +1,28 @@
-Rate Limiting
-=============
+Ограничение количества запросов
+===============================
 
-To prevent abuse, you should consider adding rate limiting to your APIs. For example, you may limit the API usage
-of each user to be at most 100 API calls within a period of 10 minutes. If too many requests are received from a user
-within the period of the time, a response with status code 429 (meaning Too Many Requests) should be returned.
+Чтобы избежать злоупотреблений, вам следует подумать о добавлении ограничений количества запросов к вашим API. Например, вы можете ограничить
+использование каждого метода API, поставив для каждого пользователя ограничение не более 100 вызовов API в течение 10 минут. Если от пользователя
+приходит большее количество запросов в течение этого периода времени, будет возвращаться ответ с кодом состояния 429 (означающий «слишком много запросов»).
 
-To enable rate limiting, the [[yii\web\User::identityClass|user identity class]] should implement [[yii\filters\RateLimitInterface]].
-This interface requires implementation of the following three methods:
+Чтобы включить ограничение количества запросов, *[[yii\web\User::identityClass|класс user identity]]* должен реализовывать интерфейс [[yii\filters\RateLimitInterface]].
+Этот интерфейс требует реализации следующих трех методов:
 
-* `getRateLimit()`: returns the maximum number of allowed requests and the time period, e.g., `[100, 600]` means
-  at most 100 API calls within 600 seconds.
-* `loadAllowance()`: returns the number of remaining requests allowed and the corresponding UNIX timestamp
-  when the rate limit is checked last time.
-* `saveAllowance()`: saves the number of remaining requests allowed and the current UNIX timestamp.
+* `getRateLimit()`: возвращает максимальное количество разрешенных запросов и период времени, т.е. `[100, 600]`, что означает
+  не более 100 вызовов API в течение 600 секунд.
+* `loadAllowance()`: возвращает оставшееся количество разрешенных запросов и соответствующий *UNIX-timestamp*,
+  когда ограничение проверялось в последний раз.
+* `saveAllowance()`: сохраняет оставшееся количество разрешенных запросов и текущий *UNIX-timestamp*.
 
-You may use two columns in the user table to record the allowance and timestamp information.
-And `loadAllowance()` and `saveAllowance()` can then be implementation by reading and saving the values
-of the two columns corresponding to the current authenticated user. To improve performance, you may also
-consider storing these information in cache or some NoSQL storage.
+Вы можете также использовать два столбца в таблице пользователей для записи количества разрешенных запросов и *отметки времени*.
+`loadAllowance()` и `saveAllowance()` могут быть реализованы как чтение и сохранение значений, относящихся к текущему аутентифицированному пользователю,
+в этих двух столбцах. Для улучшения производительности вы можете подумать о том, чтобы хранить эту информацию
+в кэше или каком-либо NoSQL-хранилище.
 
-Once the identity class implements the required interface, Yii will automatically use [[yii\filters\RateLimiter]]
-configured as an action filter for [[yii\rest\Controller]] to perform rate limiting check. The rate limiter
-will thrown a [[yii\web\TooManyRequestsHttpException]] if rate limit is exceeded. You may configure the rate limiter
-as follows in your REST controller classes,
+Так как *identity class* реализует требуемый интерфейс, Yii будет автоматически использовать [[yii\filters\RateLimiter]],
+настроенный как фильтр действий в [[yii\rest\Controller]], для выполнения проверки на количество разрешенных запросов. Если ограничение на количество
+запросов будет превышено, выбрасывается исключение [[yii\web\TooManyRequestsHttpException]]. Вы можете настроить ограничитель количества запросов
+в ваших классах REST-контроллеров следующим образом:
 
 ```php
 public function behaviors()
@@ -33,12 +33,12 @@ public function behaviors()
 }
 ```
 
-When rate limiting is enabled, by default every response will be sent with the following HTTP headers containing
-the current rate limiting information:
+Когда ограничение количества запросов включено, по умолчанию каждый ответ будет возващаться со следующими HTTP-заголовками, содержащими
+информацию о текущих ограничениях количества запросов:
 
-* `X-Rate-Limit-Limit`: The maximum number of requests allowed with a time period;
-* `X-Rate-Limit-Remaining`: The number of remaining requests in the current time period;
-* `X-Rate-Limit-Reset`: The number of seconds to wait in order to get the maximum number of allowed requests.
+* `X-Rate-Limit-Limit`: максимальное количество запросов, разрешенное в течение периода времени;
+* `X-Rate-Limit-Remaining`: оставшееся количество разрешенных запросов в текущем периоде времени;
+* `X-Rate-Limit-Reset`: количество секунд, которое нужно подождать до получения максимального количества разрешенных запросов.
 
-You may disable these headers by configuring [[yii\filters\RateLimiter::enableRateLimitHeaders]] to be false,
-like shown in the above code example.
+Вы можете отключить эти заголовки, установив свойство [[yii\filters\RateLimiter::enableRateLimitHeaders]] в значение false,
+как показано в примере кода выше.
