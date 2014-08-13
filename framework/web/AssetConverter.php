@@ -27,9 +27,9 @@ class AssetConverter extends Component implements AssetConverterInterface
      * target script types (either "css" or "js") and the commands used for the conversion.
      */
     public $commands = [
-        'less' => ['css', 'lessc {from} {to} --no-color'],
-        'scss' => ['css', 'sass {from} {to}'],
-        'sass' => ['css', 'sass {from} {to}'],
+        'less' => ['css', 'lessc {from} {to} --no-color --source-map'],
+        'scss' => ['css', 'sass {from} {to} --sourcemap'],
+        'sass' => ['css', 'sass {from} {to} --sourcemap'],
         'styl' => ['js', 'stylus < {from} > {to}'],
         'coffee' => ['js', 'coffee -p {from} > {to}'],
         'ts' => ['js', 'tsc --out {to} {from}'],
