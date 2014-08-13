@@ -45,6 +45,9 @@ class CubridSchemaTest extends SchemaTest
         $columns['int_col2']['dbType'] = 'integer';
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = null;
+        $columns['smallint_col']['dbType'] = 'integer';
+        $columns['smallint_col']['size'] = null;
+        $columns['smallint_col']['precision'] = null;
         $columns['char_col3']['type'] = 'string';
         $columns['char_col3']['dbType'] = 'varchar(1073741823)';
         $columns['char_col3']['size'] = 1073741823;
