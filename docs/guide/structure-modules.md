@@ -214,7 +214,7 @@ For example, the following application configuration makes sure the `debug` modu
 
 Modules can be nested in unlimited levels. That is, a module can contain another module which can contain yet
 another module. We call the former *parent module* while the latter *child module*. Child modules must be declared
-in the [[yii\bas\Module::modules|modules]] property of their parent modules. For example,
+in the [[yii\base\Module::modules|modules]] property of their parent modules. For example,
 
 ```php
 namespace app\modules\forum;
