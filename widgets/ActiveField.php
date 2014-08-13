@@ -63,6 +63,7 @@ class ActiveField extends Component
      * The following special options are recognized:
      *
      * - tag: the tag name of the container element. Defaults to "div".
+     * - encode: whether to encode the error output. Defaults to true.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -195,7 +196,7 @@ class ActiveField extends Component
     {
         $clientOptions = $this->getClientOptions();
         if (!empty($clientOptions)) {
-            $this->form->attributes[$this->attribute] = $clientOptions;
+            $this->form->attributes[] = $clientOptions;
         }
 
         $inputID = Html::getInputId($this->model, $this->attribute);
@@ -726,6 +727,7 @@ class ActiveField extends Component
             } else {
                 $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
             }
+            $options['encodeError'] = !isset($this->errorOptions['encode']) || $this->errorOptions['encode'] !== false;
 
             return $options;
         } else {
