@@ -133,7 +133,7 @@ All Rights Reserved.
 * [Роутинг](rest-routing.md)
 * [Форматирование ответа](rest-response-formatting.md)
 * [Аутентификация](rest-authentication.md)
-* [Ограничение количества запросов](rest-rate-limiting.md)
+* [Ограничение частоты запросов](rest-rate-limiting.md)
 * [Версионирование](rest-versioning.md)
 * [Обработка ошибок](rest-error-handling.md)
 
