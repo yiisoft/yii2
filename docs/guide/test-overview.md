@@ -34,4 +34,11 @@ composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```
 
-That's it. Now we're able to use `codecept` from command line.
+If you've never used Composer for global packages run `composer global status`. It should output:
+
+```
+Changed current directory to <directory>
+```
+
+Then add `<directory>/vendor/bin` to you `PATH` environment variable. Now we're able to use `codecept` from command
+line globally.

@@ -1,0 +1,13 @@
+namespace: codeception_common
+actor: Tester
+paths:
+    tests: .
+    log: _log
+    data: _data
+    helpers: _helpers
+settings:
+    bootstrap: _bootstrap.php
+    suite_class: \PHPUnit_Framework_TestSuite
+    colors: true
+    memory_limit: 1024M
+    log: true
