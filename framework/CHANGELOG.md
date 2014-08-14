@@ -180,6 +180,7 @@ Yii Framework 2 Change Log
 - Enh #4602: Added $key param in ActionColumn buttons Closure call (disem)
 - Enh #4607: AR model will throw an exception if it does not have a primary key to avoid updating/deleting data massively (qiangxue)
 - Enh #4630: Added automatic generating of unique slug value to `yii\behaviors\Sluggable` (klimov-paul)
+- Enh #4636: Added `yii\web\Response::setDownloadHeaders()` (pawzar)
 - Enh #4644: Added `\yii\db\Schema::createColumnSchema()` to be able to customize column schema used (mcd-php)
 - Enh #4656: HtmlPurifier helper config can now be a closure to change the purifier config object after it was created (Alex-Code)
 - Enh #4691: Encoding on `ActiveForm` and `ActiveField` validation errors is now configurable (Alex-Code)
