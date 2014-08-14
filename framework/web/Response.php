@@ -295,6 +295,10 @@ class Response extends \yii\base\Response
     {
         if ($this->_headers === null) {
             $this->_headers = new HeaderCollection;
+            foreach(headers_list() as $header) {
+                list($name, $value) = explode(':', $header, 2);
+                $this->_headers->add($name, trim($value));
+            }
         }
 
         return $this->_headers;
