@@ -21,7 +21,7 @@ use yii\base\Component;
  *
  * For example,
  *
- * ~~~
+ * ```php
  * $query = new Query;
  * // compose the query
  * $query->select('id, name')
@@ -33,7 +33,7 @@ use yii\base\Component;
  * $command = $query->createCommand();
  * // $command->sql returns the actual SQL
  * $rows = $command->queryAll();
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>

@@ -8,6 +8,7 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidParamException;
+use yii\db\Connection;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -17,7 +18,30 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+    /**
+     * @var array mapping from abstract column types (keys) to physical column types (values).
+     */
+    public $typeMap = [
+        Schema::TYPE_PK => 'NUMBER(10) NOT NULL PRIMARY KEY',
+        Schema::TYPE_BIGPK => 'NUMBER(20) NOT NULL PRIMARY KEY',
+        Schema::TYPE_STRING => 'VARCHAR2(255)',
+        Schema::TYPE_TEXT => 'CLOB',
+        Schema::TYPE_SMALLINT => 'NUMBER(5)',
+        Schema::TYPE_INTEGER => 'NUMBER(10)',
+        Schema::TYPE_BIGINT => 'NUMBER(20)',
+        Schema::TYPE_FLOAT => 'NUMBER',
+        Schema::TYPE_DECIMAL => 'NUMBER',
+        Schema::TYPE_DATETIME => 'TIMESTAMP',
+        Schema::TYPE_TIMESTAMP => 'TIMESTAMP',
+        Schema::TYPE_TIME => 'TIMESTAMP',
+        Schema::TYPE_DATE => 'DATE',
+        Schema::TYPE_BINARY => 'BLOB',
+        Schema::TYPE_BOOLEAN => 'NUMBER(1)',
+        Schema::TYPE_MONEY => 'NUMBER(19,4)',
+    ];
+
     private $_sql;
+
 
     /**
      * @inheritdoc
@@ -49,6 +73,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return [$this->_sql, $params];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildLimit($limit, $offset)
     {
         $filters = [];
@@ -92,7 +119,7 @@ EOD;
      *
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
      * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
      * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
@@ -132,8 +159,10 @@ EOD;
         if ($value !== null) {
             $value = (int) $value;
         } else {
-            $value = (int) $this->db->createCommand("SELECT MAX(\"{$tableSchema->primaryKey}\") FROM \"{$tableSchema->name}\"")->queryScalar();
-            $value++;
+            // use master connection to get the biggest PK value
+            $value = $this->db->useMaster(function (Connection $db) use ($tableSchema) {
+                return $db->createCommand("SELECT MAX(\"{$tableSchema->primaryKey}\") FROM \"{$tableSchema->name}\"")->queryScalar();
+            }) + 1;
         }
 
         return "DROP SEQUENCE \"{$tableSchema->name}_SEQ\";"

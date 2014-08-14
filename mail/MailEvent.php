@@ -5,10 +5,12 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\mail;
+
+use yii\base\Event;
 
 /**
- * ActionEvent represents the event parameter used for an action event.
+ * MailEvent represents the event parameter used for events triggered by [[BaseMailer]].
  *
  * By setting the [[isValid]] property, one may control whether to continue running the action.
  *
@@ -17,13 +19,12 @@ namespace yii\base;
  */
 class MailEvent extends Event
 {
-
     /**
-     * @var \yii\mail\MessageInterface mail message being send
+     * @var \yii\mail\MessageInterface the mail message being send.
      */
     public $message;
     /**
-     * @var boolean if message send was successful
+     * @var boolean if message was sent successfully.
      */
     public $isSuccessful;
     /**

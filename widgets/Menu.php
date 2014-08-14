@@ -53,6 +53,8 @@ class Menu extends Widget
      *
      * - label: string, optional, specifies the menu item label. When [[encodeLabels]] is true, the label
      *   will be HTML-encoded. If the label is not specified, an empty string will be used.
+     * - encode: boolean, optional, whether this item`s label should be HTML-encoded. This param will override
+     *   global [[encodeLabels]] param.
      * - url: string or array, optional, specifies the URL of the menu item. It will be processed by [[Url::to]].
      *   When this is set, the actual menu item content will be generated using [[linkTemplate]];
      *   otherwise, [[labelTemplate]] will be used.
@@ -166,9 +168,11 @@ class Menu extends Widget
             $this->params = Yii::$app->request->getQueryParams();
         }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
-        $options = $this->options;
-        $tag = ArrayHelper::remove($options, 'tag', 'ul');
-        echo Html::tag($tag, $this->renderItems($items), $options);
+        if (!empty($items)) {
+            $options = $this->options;
+            $tag = ArrayHelper::remove($options, 'tag', 'ul');
+            echo Html::tag($tag, $this->renderItems($items), $options);
+        }
     }
 
     /**
@@ -253,9 +257,8 @@ class Menu extends Widget
             if (!isset($item['label'])) {
                 $item['label'] = '';
             }
-            if ($this->encodeLabels) {
-                $items[$i]['label'] = Html::encode($item['label']);
-            }
+            $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
+            $items[$i]['label'] = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $hasActiveChild = false;
             if (isset($item['items'])) {
                 $items[$i]['items'] = $this->normalizeItems($item['items'], $hasActiveChild);

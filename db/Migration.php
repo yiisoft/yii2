@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use yii\di\Instance;
+use \yii\base\Component;
 
 /**
  * Migration is the base class for representing a database migration.
@@ -35,13 +36,14 @@ use yii\di\Instance;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Migration extends \yii\base\Component
+class Migration extends Component implements MigrationInterface
 {
     /**
      * @var Connection|string the DB connection object or the application component ID of the DB connection
      * that this migration should work with.
      */
     public $db = 'db';
+
 
     /**
      * Initializes the migration.

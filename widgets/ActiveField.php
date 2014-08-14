@@ -63,6 +63,7 @@ class ActiveField extends Component
      * The following special options are recognized:
      *
      * - tag: the tag name of the container element. Defaults to "div".
+     * - encode: whether to encode the error output. Defaults to true.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -195,7 +196,7 @@ class ActiveField extends Component
     {
         $clientOptions = $this->getClientOptions();
         if (!empty($clientOptions)) {
-            $this->form->attributes[$this->attribute] = $clientOptions;
+            $this->form->attributes[] = $clientOptions;
         }
 
         $inputID = Html::getInputId($this->model, $this->attribute);
@@ -605,7 +606,7 @@ class ActiveField extends Component
      * A radio button list is like a checkbox list, except that it only allows single selection.
      * The selection of the radio buttons is taken from the value of the model attribute.
      * @param array $items the data item used to generate the radio buttons.
-     * The array keys are the labels, while the array values are the corresponding radio button values.
+     * The array values are the labels, while the array keys are the corresponding radio values.
      * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the radio button list. The following options are specially handled:
      *
@@ -641,13 +642,22 @@ class ActiveField extends Component
      * If you want to use a widget that does not have `model` and `attribute` properties,
      * please use [[render()]] instead.
      *
+     * For example to use the [[MaskedInput]] widget to get some date input, you can use
+     * the following code, assuming that `$form` is your [[ActiveForm]] instance:
+     *
+     * ```php
+     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::className(), [
+     *     'mask' => '99/99/9999',
+     * ]);
+     * ```
+     *
      * @param string $class the widget class name
      * @param array $config name-value pairs that will be used to initialize the widget
      * @return static the field object itself
      */
     public function widget($class, $config = [])
     {
-        /** @var \yii\base\Widget $class */
+        /* @var $class \yii\base\Widget */
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
@@ -684,7 +694,7 @@ class ActiveField extends Component
         if ($enableClientValidation) {
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
-                /** @var \yii\validators\Validator $validator */
+                /* @var $validator \yii\validators\Validator */
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
                 if ($validator->enableClientValidation && $js != '') {
                     if ($validator->whenClient !== null) {
@@ -694,7 +704,7 @@ class ActiveField extends Component
                 }
             }
             if (!empty($validators)) {
-                $options['validate'] = new JsExpression("function (attribute, value, messages) {" . implode('', $validators) . '}');
+                $options['validate'] = new JsExpression("function (attribute, value, messages, deferred) {" . implode('', $validators) . '}');
             }
         }
 
@@ -717,6 +727,7 @@ class ActiveField extends Component
             } else {
                 $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
             }
+            $options['encodeError'] = !isset($this->errorOptions['encode']) || $this->errorOptions['encode'] !== false;
 
             return $options;
         } else {

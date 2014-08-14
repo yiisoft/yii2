@@ -30,7 +30,7 @@ use yii\di\ServiceLocator;
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
  * @property string $uniqueId The unique ID of the module. This property is read-only.
- * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/view".
+ * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -86,10 +86,16 @@ class Module extends ServiceLocator
      */
     public $controllerMap = [];
     /**
-     * @var string the namespace that controller classes are in. If not set,
-     * it will use the "controllers" sub-namespace under the namespace of this module.
+     * @var string the namespace that controller classes are in.
+     * This namespace will be used to load controller classes by prepending it to the controller
+     * class name.
+     *
+     * If not set, it will use the `controllers` sub-namespace under the namespace of this module.
      * For example, if the namespace of this module is "foo\bar", then the default
      * controller namespace would be "foo\bar\controllers".
+     *
+     * See also the [guide section on autoloading][guide-concept-autoloading] to learn more about
+     * defining namespaces and how classes are loaded.
      */
     public $controllerNamespace;
     /**
@@ -100,6 +106,7 @@ class Module extends ServiceLocator
      * [[Controller::defaultAction]].
      */
     public $defaultRoute = 'default';
+
     /**
      * @var string the root directory of the module.
      */
@@ -116,6 +123,10 @@ class Module extends ServiceLocator
      * @var array child modules of this module
      */
     private $_modules = [];
+    /**
+     * @var array list of currently requested modules indexed by their class names
+     */
+    private static $_instances = [];
 
 
     /**
@@ -129,6 +140,32 @@ class Module extends ServiceLocator
         $this->id = $id;
         $this->module = $parent;
         parent::__construct($config);
+    }
+
+    /**
+     * Returns the currently requested instance of this module class.
+     * If the module class is not currently requested, null will be returned.
+     * This method is provided so that you access the module instance from anywhere within the module.
+     * @return static|null the currently requested instance of this module class, or null if the module class is not requested.
+     */
+    public static function getInstance()
+    {
+        $class = get_called_class();
+        return isset(self::$_instances[$class]) ? self::$_instances[$class] : null;
+    }
+
+    /**
+     * Sets the currently requested instance of this module class.
+     * @param Module|null $instance the currently requested instance of this module class.
+     * If it is null, the instance of the calling class will be removed, if any.
+     */
+    public static function setInstance($instance)
+    {
+        if ($instance === null) {
+            unset(self::$_instances[get_called_class()]);
+        } else {
+            self::$_instances[get_class($instance)] = $instance;
+        }
     }
 
     /**
@@ -206,7 +243,7 @@ class Module extends ServiceLocator
 
     /**
      * Returns the directory that contains the view files for this module.
-     * @return string the root directory of view files. Defaults to "[[basePath]]/view".
+     * @return string the root directory of view files. Defaults to "[[basePath]]/views".
      */
     public function getViewPath()
     {
@@ -242,7 +279,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the layout files.
-     * @param string $path the root directory of layout files.
+     * @param string $path the root directory or path alias of layout files.
      * @throws InvalidParamException if the directory is invalid
      */
     public function setLayoutPath($path)
@@ -320,8 +357,10 @@ class Module extends ServiceLocator
                 if (is_array($this->_modules[$id]) && !isset($this->_modules[$id]['class'])) {
                     $this->_modules[$id]['class'] = 'yii\base\Module';
                 }
-
-                return $this->_modules[$id] = Yii::createObject($this->_modules[$id], [$id, $this]);
+                /* @var $module Module */
+                $module = Yii::createObject($this->_modules[$id], [$id, $this]);
+                $module->setInstance($module);
+                return $this->_modules[$id] = $module;
             }
         }
 
@@ -416,7 +455,7 @@ class Module extends ServiceLocator
     {
         $parts = $this->createController($route);
         if (is_array($parts)) {
-            /** @var Controller $controller */
+            /* @var $controller Controller */
             list($controller, $actionID) = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
@@ -511,10 +550,6 @@ class Module extends ServiceLocator
      */
     public function createControllerByID($id)
     {
-        if (!preg_match('%^[a-z0-9\\-_/]+$%', $id)) {
-            return null;
-        }
-
         $pos = strrpos($id, '/');
         if ($pos === false) {
             $prefix = '';
@@ -522,6 +557,13 @@ class Module extends ServiceLocator
         } else {
             $prefix = substr($id, 0, $pos + 1);
             $className = substr($id, $pos + 1);
+        }
+
+        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
+            return null;
+        }
+        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+            return null;
         }
 
         $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';

@@ -34,13 +34,13 @@ class Widget extends Component implements ViewContextInterface
      * @see getId()
      */
     public static $autoIdPrefix = 'w';
-
     /**
      * @var Widget[] the widgets that are currently being rendered (not ended). This property
      * is maintained by [[begin()]] and [[end()]] methods.
      * @internal
      */
     public static $stack = [];
+
 
     /**
      * Begins a widget.
@@ -52,7 +52,7 @@ class Widget extends Component implements ViewContextInterface
     public static function begin($config = [])
     {
         $config['class'] = get_called_class();
-        /** @var Widget $widget */
+        /* @var $widget Widget */
         $widget = Yii::createObject($config);
         static::$stack[] = $widget;
 
@@ -90,7 +90,7 @@ class Widget extends Component implements ViewContextInterface
     {
         ob_start();
         ob_implicit_flush(false);
-        /** @var Widget $widget */
+        /* @var $widget Widget */
         $config['class'] = get_called_class();
         $widget = Yii::createObject($config);
         $out = $widget->run();

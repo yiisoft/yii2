@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Security;
 use yii\helpers\StringHelper;
 
 /**
@@ -36,12 +35,11 @@ use yii\helpers\StringHelper;
  * @property array $bodyParams The request parameters given in the request body.
  * @property string $contentType Request content-type. Null is returned if this information is not available.
  * This property is read-only.
- * @property string $cookieValidationKey The secret key used for cookie validation. If it was not set
- * previously, a random key will be generated and used.
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $csrfToken The token used to perform CSRF validation. This property is read-only.
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
  * if no such header is sent. This property is read-only.
+ * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`).
@@ -77,7 +75,8 @@ use yii\helpers\StringHelper;
  * @property string $url The currently requested relative URL. Note that the URI returned is URL-encoded.
  * @property string $userAgent User agent, null if not present. This property is read-only.
  * @property string $userHost User host name, null if cannot be determined. This property is read-only.
- * @property string $userIP User IP address. This property is read-only.
+ * @property string $userIP User IP address. Null is returned if the user IP address cannot be detected. This
+ * property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -104,6 +103,7 @@ class Request extends \yii\base\Request
      *
      * In JavaScript, you may get the values of [[csrfParam]] and [[csrfToken]] via `yii.getCsrfParam()` and
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
+     * You also need to include CSRF meta tags in your pages by using [[\yii\helpers\Html::csrfMetaTags()]].
      *
      * @see Controller::enableCsrfValidation
      * @see http://en.wikipedia.org/wiki/Cross-site_request_forgery
@@ -123,6 +123,10 @@ class Request extends \yii\base\Request
      * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
      */
     public $enableCookieValidation = true;
+    /**
+     * @var string a secret key used for cookie validation. This property must be set if [[enableCookieValidation]] is true.
+     */
+    public $cookieValidationKey;
     /**
      * @var string the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
      * request tunneled through POST. Defaults to '_method'.
@@ -159,6 +163,7 @@ class Request extends \yii\base\Request
      * @var array the headers in this collection (indexed by the header names)
      */
     private $_headers;
+
 
     /**
      * Resolves the current request into a route and the associated parameters.
@@ -828,11 +833,11 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the user IP address.
-     * @return string user IP address
+     * @return string user IP address. Null is returned if the user IP address cannot be detected.
      */
     public function getUserIP()
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 
     /**
@@ -1136,6 +1141,20 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Gets the Etags.
+     *
+     * @return array The entity tags
+     */
+    public function getETags()
+    {
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+            return preg_split('/[\s,]+/', $_SERVER['HTTP_IF_NONE_MATCH'], -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * Returns the cookie collection.
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
@@ -1165,17 +1184,21 @@ class Request extends \yii\base\Request
     /**
      * Converts `$_COOKIE` into an array of [[Cookie]].
      * @return array the cookies obtained from request
+     * @throws InvalidConfigException if [[cookieValidationKey]] is not set when [[enableCookieValidation]] is true
      */
     protected function loadCookies()
     {
         $cookies = [];
         if ($this->enableCookieValidation) {
-            $key = $this->getCookieValidationKey();
+            if ($this->cookieValidationKey == '') {
+                throw new InvalidConfigException(get_class($this) . '::cookieValidationKey must be configured with a secret key.');
+            }
             foreach ($_COOKIE as $name => $value) {
-                if (is_string($value) && ($value = Security::validateData($value, $key)) !== false) {
+                if (is_string($value) && ($value = Yii::$app->getSecurity()->validateData($value, $this->cookieValidationKey)) !== false) {
                     $cookies[$name] = new Cookie([
                         'name' => $name,
                         'value' => @unserialize($value),
+                        'expire'=> null
                     ]);
                 }
             }
@@ -1184,35 +1207,12 @@ class Request extends \yii\base\Request
                 $cookies[$name] = new Cookie([
                     'name' => $name,
                     'value' => $value,
+                    'expire'=> null
                 ]);
             }
         }
 
         return $cookies;
-    }
-
-    private $_cookieValidationKey;
-
-    /**
-     * @return string the secret key used for cookie validation. If it was not set previously,
-     * a random key will be generated and used.
-     */
-    public function getCookieValidationKey()
-    {
-        if ($this->_cookieValidationKey === null) {
-            $this->_cookieValidationKey = Security::getSecretKey(__CLASS__ . '/' . Yii::$app->id);
-        }
-
-        return $this->_cookieValidationKey;
-    }
-
-    /**
-     * Sets the secret key used for cookie validation.
-     * @param string $value the secret key used for cookie validation.
-     */
-    public function setCookieValidationKey($value)
-    {
-        $this->_cookieValidationKey = $value;
     }
 
     /**
@@ -1230,12 +1230,11 @@ class Request extends \yii\base\Request
     {
         if ($this->_csrfCookie === null) {
             $this->_csrfCookie = $this->getCookies()->get($this->csrfParam);
-            if ($this->_csrfCookie === null) {
+            if ($this->_csrfCookie === null || empty($this->_csrfCookie->value)) {
                 $this->_csrfCookie = $this->createCsrfCookie();
                 Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
             }
         }
-
         return $this->_csrfCookie->value;
     }
 
@@ -1279,7 +1278,7 @@ class Request extends \yii\base\Request
         if ($n1 > $n2) {
             $token2 = str_pad($token2, $n1, $token2);
         } elseif ($n1 < $n2) {
-            $token1 = str_pad($token1, $n2, $token1);
+            $token1 = str_pad($token1, $n2, $n1 === 0 ? ' ' : $token1);
         }
 
         return $token1 ^ $token2;
@@ -1291,7 +1290,6 @@ class Request extends \yii\base\Request
     public function getCsrfTokenFromHeader()
     {
         $key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
-
         return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
     }
 
@@ -1305,8 +1303,7 @@ class Request extends \yii\base\Request
     {
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
-        $options['value'] = Security::generateRandomKey();
-
+        $options['value'] = Yii::$app->getSecurity()->generateRandomString();
         return new Cookie($options);
     }
 
@@ -1331,6 +1328,13 @@ class Request extends \yii\base\Request
             || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
     }
 
+    /**
+     * Validates CSRF token
+     *
+     * @param string $token
+     * @param string $trueToken
+     * @return boolean
+     */
     private function validateCsrfTokenInternal($token, $trueToken)
     {
         $token = base64_decode(str_replace('.', '+', $token));

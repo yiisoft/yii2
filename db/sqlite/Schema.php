@@ -7,11 +7,17 @@
 
 namespace yii\db\sqlite;
 
+use yii\base\NotSupportedException;
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
+use yii\db\Transaction;
 
 /**
  * Schema is the class for retrieving metadata from a SQLite (2/3) database.
+ *
+ * @property string $transactionIsolationLevel The transaction isolation level to use for this transaction.
+ * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -43,6 +49,7 @@ class Schema extends \yii\db\Schema
         'varchar' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
         'char' => self::TYPE_STRING,
+        'blob' => self::TYPE_BINARY,
         'datetime' => self::TYPE_DATETIME,
         'year' => self::TYPE_DATE,
         'date' => self::TYPE_DATE,
@@ -50,6 +57,7 @@ class Schema extends \yii\db\Schema
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
     ];
+
 
     /**
      * Quotes a table name for use in a query.
@@ -204,12 +212,12 @@ class Schema extends \yii\db\Schema
      */
     protected function loadColumnSchema($info)
     {
-        $column = new ColumnSchema;
+        $column = $this->createColumnSchema();
         $column->name = $info['name'];
         $column->allowNull = !$info['notnull'];
         $column->isPrimaryKey = $info['pk'] != 0;
 
-        $column->dbType = $info['type'];
+        $column->dbType = strtolower($info['type']);
         $column->unsigned = strpos($column->dbType, 'unsigned') !== false;
 
         $column->type = self::TYPE_STRING;
@@ -238,13 +246,40 @@ class Schema extends \yii\db\Schema
         }
         $column->phpType = $this->getColumnPhpType($column);
 
-        $value = trim($info['dflt_value'], "'\"");
-        if ($column->type === 'string') {
-            $column->defaultValue = $value;
-        } else {
-            $column->defaultValue = $column->typecast(strcasecmp($value, 'null') ? $value : null);
+        if (!$column->isPrimaryKey) {
+            if ($info['dflt_value'] === 'null' || $info['dflt_value'] === '' || $info['dflt_value'] === null) {
+                $column->defaultValue = null;
+            } elseif ($column->type === 'timestamp' && $info['dflt_value'] === 'CURRENT_TIMESTAMP') {
+                $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
+            } else {
+                $value = trim($info['dflt_value'], "'\"");
+                $column->defaultValue = $column->phpTypecast($value);
+            }
         }
 
         return $column;
+    }
+
+    /**
+     * Sets the isolation level of the current transaction.
+     * @param string $level The transaction isolation level to use for this transaction.
+     * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
+     * @throws \yii\base\NotSupportedException when unsupported isolation levels are used.
+     * SQLite only supports SERIALIZABLE and READ UNCOMMITTED.
+     * @see http://www.sqlite.org/pragma.html#pragma_read_uncommitted
+     */
+    public function setTransactionIsolationLevel($level)
+    {
+        switch($level)
+        {
+            case Transaction::SERIALIZABLE:
+                $this->db->createCommand("PRAGMA read_uncommitted = False;")->execute();
+            break;
+            case Transaction::READ_UNCOMMITTED:
+                $this->db->createCommand("PRAGMA read_uncommitted = True;")->execute();
+            break;
+            default:
+                throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');
+        }
     }
 }

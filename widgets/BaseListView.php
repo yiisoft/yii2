@@ -84,6 +84,7 @@ abstract class BaseListView extends Widget
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
+
     /**
      * Renders the data models.
      * @return string the rendering result.
@@ -100,6 +101,9 @@ abstract class BaseListView extends Widget
         }
         if ($this->emptyText === null) {
             $this->emptyText = Yii::t('yii', 'No results found.');
+        }
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
         }
     }
 
@@ -218,9 +222,9 @@ abstract class BaseListView extends Widget
         if ($pagination === false || $this->dataProvider->getCount() <= 0) {
             return '';
         }
-        /** @var LinkPager $class */
-        $class = ArrayHelper::remove($this->pager, 'class', LinkPager::className());
+        /* @var $class LinkPager */
         $pager = $this->pager;
+        $class = ArrayHelper::remove($pager, 'class', LinkPager::className());
         $pager['pagination'] = $pagination;
         $pager['view'] = $this->getView();
 
@@ -237,9 +241,9 @@ abstract class BaseListView extends Widget
         if ($sort === false || empty($sort->attributes) || $this->dataProvider->getCount() <= 0) {
             return '';
         }
-        /** @var LinkSorter $class */
-        $class = ArrayHelper::remove($this->sorter, 'class', LinkSorter::className());
+        /* @var $class LinkSorter */
         $sorter = $this->sorter;
+        $class = ArrayHelper::remove($sorter, 'class', LinkSorter::className());
         $sorter['sort'] = $sort;
         $sorter['view'] = $this->getView();
 

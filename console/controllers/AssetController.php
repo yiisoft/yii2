@@ -16,14 +16,18 @@ use yii\helpers\VarDumper;
  * Allows you to combine and compress your JavaScript and CSS files.
  *
  * Usage:
- * 1. Create a configuration file using 'template' action:
+ * 1. Create a configuration file using the `template` action:
+ *
  *    yii asset/template /path/to/myapp/config.php
+ *
  * 2. Edit the created config file, adjusting it for your web application needs.
  * 3. Run the 'compress' action, using created config:
+ *
  *    yii asset /path/to/myapp/config.php /path/to/myapp/config/assets_compressed.php
+ *
  * 4. Adjust your web application config to use compressed assets.
  *
- * Note: in the console environment some path aliases like '@webroot' and '@web' may not exist,
+ * Note: in the console environment some path aliases like `@webroot` and `@web` may not exist,
  * so corresponding paths inside the configuration should be specified directly.
  *
  * Note: by default this command relies on an external tools to perform actual files compression,
@@ -52,14 +56,13 @@ class AssetController extends Controller
      *
      * ~~~
      * 'app\config\AllAsset' => [
-     *     'js' => 'js/all-{ts}.js',
-     *     'css' => 'css/all-{ts}.css',
+     *     'js' => 'js/all-{hash}.js',
+     *     'css' => 'css/all-{hash}.css',
      *     'depends' => [ ... ],
      * ]
      * ~~~
      *
-     * File names can contain placeholder "{ts}", which will be filled by current timestamp, while
-     * file creation.
+     * File names can contain placeholder "{hash}", which will be filled by the hash of the resulting file.
      */
     public $targets = [];
     /**
@@ -88,6 +91,7 @@ class AssetController extends Controller
      * for assets processing.
      */
     private $_assetManager = [];
+
 
     /**
      * Returns the asset manager instance.
@@ -138,14 +142,13 @@ class AssetController extends Controller
         $this->loadConfiguration($configFile);
         $bundles = $this->loadBundles($this->bundles);
         $targets = $this->loadTargets($this->targets, $bundles);
-        $timestamp = time();
         foreach ($targets as $name => $target) {
             echo "Creating output bundle '{$name}':\n";
             if (!empty($target->js)) {
-                $this->buildTarget($target, 'js', $bundles, $timestamp);
+                $this->buildTarget($target, 'js', $bundles);
             }
             if (!empty($target->css)) {
-                $this->buildTarget($target, 'css', $bundles, $timestamp);
+                $this->buildTarget($target, 'css', $bundles);
             }
             echo "\n";
         }
@@ -282,14 +285,11 @@ class AssetController extends Controller
      * @param \yii\web\AssetBundle $target output asset bundle
      * @param string $type either 'js' or 'css'.
      * @param \yii\web\AssetBundle[] $bundles source asset bundles.
-     * @param integer $timestamp current timestamp.
      * @throws Exception on failure.
      */
-    protected function buildTarget($target, $type, $bundles, $timestamp)
+    protected function buildTarget($target, $type, $bundles)
     {
-        $outputFile = strtr($target->$type, [
-            '{ts}' => $timestamp,
-        ]);
+        $tempFile = $target->basePath . '/' . strtr($target->$type, ['{hash}' => 'temp']);
         $inputFiles = [];
 
         foreach ($target->depends as $name) {
@@ -302,11 +302,15 @@ class AssetController extends Controller
             }
         }
         if ($type === 'js') {
-            $this->compressJsFiles($inputFiles, $target->basePath . '/' . $outputFile);
+            $this->compressJsFiles($inputFiles, $tempFile);
         } else {
-            $this->compressCssFiles($inputFiles, $target->basePath . '/' . $outputFile);
+            $this->compressCssFiles($inputFiles, $tempFile);
         }
-        $target->$type = [$outputFile];
+
+        $targetFile = strtr($target->$type, ['{hash}' => md5_file($tempFile)]);
+        $outputFile = $target->basePath . '/' . $targetFile;
+        rename($tempFile, $outputFile);
+        $target->$type = [$targetFile];
     }
 
     /**
@@ -599,8 +603,8 @@ return [
         'app\assets\AllAsset' => [
             'basePath' => 'path/to/web',
             'baseUrl' => '',
-            'js' => 'js/all-{ts}.js',
-            'css' => 'css/all-{ts}.css',
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
         ],
     ],
     // Asset manager configuration:

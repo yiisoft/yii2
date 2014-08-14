@@ -8,7 +8,6 @@
 namespace yii\rest;
 
 use Yii;
-use yii\db\ActiveRecord;
 
 /**
  * DeleteAction implements the API endpoint for deleting a model.
@@ -20,6 +19,7 @@ class DeleteAction extends Action
 {
     /**
      * Deletes a model.
+     * @param mixed $id id of the model to be deleted.
      */
     public function run($id)
     {
