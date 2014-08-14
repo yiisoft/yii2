@@ -1,13 +1,13 @@
-Error Handling
-==============
+Обработка ошибок
+================
 
-When handling a RESTful API request, if there is an error in the user request or if something unexpected
-happens on the server, you may simply throw an exception to notify the user that something wrong has happened.
-If you can identify the cause of the error (e.g. the requested resource does not exist), you should
-consider throwing an exception with a proper HTTP status code (e.g. [[yii\web\NotFoundHttpException]]
-representing a 404 HTTP status code). Yii will send the response with the corresponding HTTP status
-code and text. It will also include in the response body the serialized representation of the
-exception. For example,
+Если при обработке запроса к RESTful API в запросе пользователя обнаруживается ошибка или происходит 
+что-то непредвиденное на сервере, вы можете просто выбрасывать исключение, чтобы уведомить пользователя о нештатной ситуации.
+Если же вы можете установить конкретную причину ошибки (например, запрошенный ресурс не существует), вам следует подумать
+о том, чтобы выбрасывать исключение с соответствующим кодом состояния HTTP (например, [[yii\web\NotFoundHttpException]],
+соответствующее коду состояния 404). Yii отправит ответ с соответствующим 
+HTTP-кодом и текстом. Он также включит в тело ответа сериализованное представление 
+исключения. Например:
 
 ```
 HTTP/1.1 404 Not Found
@@ -25,20 +25,20 @@ Content-Type: application/json; charset=UTF-8
 }
 ```
 
-The following list summarizes the HTTP status code that are used by the Yii REST framework:
+Сводный список кодов состояния HTTP, используемых REST-фреймворком Yii:
 
-* `200`: OK. Everything worked as expected.
-* `201`: A resource was successfully created in response to a `POST` request. The `Location` header
-   contains the URL pointing to the newly created resource.
-* `204`: The request is handled successfully and the response contains no body content (like a `DELETE` request).
-* `304`: Resource was not modified. You can use the cached version.
-* `400`: Bad request. This could be caused by various reasons from the user side, such as invalid JSON
-   data in the request body, invalid action parameters, etc.
-* `401`: Authentication failed.
-* `403`: The authenticated user is not allowed to access the specified API endpoint.
-* `404`: The requested resource does not exist.
-* `405`: Method not allowed. Please check the `Allow` header for allowed HTTP methods.
-* `415`: Unsupported media type. The requested content type or version number is invalid.
-* `422`: Data validation failed (in response to a `POST` request, for example). Please check the response body for detailed error messages.
-* `429`: Too many requests. The request is rejected due to rate limiting.
-* `500`: Internal server error. This could be caused by internal program errors.
+* `200`: OK. Все сработало именно так, как и ожидалось.
+* `201`: Ресурс был успешно создан в ответ на `POST`-запрос. Заголовок `Location`
+   содержит URL, указывающий на только что созданный ресурс.
+* `204`: Запрос обработан успешно, и в ответе нет содержимого (для запроса `DELETE`, например).
+* `304`: Ресурс не изменялся. Можно использовать закэшированную версию.
+* `400`: Неверный запрос. Может быть связано с разнообразными проблемами на стороне пользователя, такими как неверные JSON-данные
+   в теле запроса, неправильные параметры действия, и т.д.
+* `401`: Аутентификация завершилась неудачно.
+* `403`: Аутентифицированному пользователю не разрешен доступ к указанной точке входа API.
+* `404`: Запрошенный ресурс не существует.
+* `405`: Метод не поддерживается. Сверьтесь со списком поддерживаемых HTTP-методов в заголовке `Allow`.
+* `415`: Неподдерживаемый тип данных. Запрашивается неправильный тип данных или номер версии.
+* `422`: Проверка данных завершилась неудачно (в ответе на `POST`-запрос, например). Подробные сообщения об ошибках смотрите в теле ответа.
+* `429`: Слишком много запросов. Запрос отклонен из-за превышения ограничения частоты запросов.
+* `500`: Внутренняя ошибка сервера. Возможная причина — ошибки в самой программе.
