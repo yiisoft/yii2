@@ -455,24 +455,19 @@ class Response extends \yii\base\Response
     public function sendContentAsFile($content, $attachmentName, $mimeType = 'application/octet-stream')
     {
         $headers = $this->getHeaders();
+
         $contentLength = StringHelper::byteLength($content);
-        $range = $this->getHttpRange($contentLength);
+        $range         = $this->getHttpRange($contentLength);
+
         if ($range === false) {
             $headers->set('Content-Range', "bytes */$contentLength");
             throw new HttpException(416, 'Requested range not satisfiable');
         }
 
-        $headers->setDefault('Pragma', 'public')
-            ->setDefault('Accept-Ranges', 'bytes')
-            ->setDefault('Expires', '0')
-            ->setDefault('Content-Type', $mimeType)
-            ->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->setDefault('Content-Transfer-Encoding', 'binary')
-            ->setDefault('Content-Length', StringHelper::byteLength($content))
-            ->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
+        $this->setDownladHeaders($attachmentName, $mimeType, $contentLength);
 
         list($begin, $end) = $range;
-        if ($begin !=0 || $end != $contentLength - 1) {
+        if ($begin != 0 || $end != $contentLength - 1) {
             $this->setStatusCode(206);
             $headers->set('Content-Range', "bytes $begin-$end/$contentLength");
             $this->content = StringHelper::byteSubstr($content, $begin, $end - $begin + 1);
@@ -500,7 +495,7 @@ class Response extends \yii\base\Response
      */
     public function sendStreamAsFile($handle, $attachmentName, $mimeType = 'application/octet-stream')
     {
-        $headers = $this->getHeaders();
+        $headers  = $this->getHeaders();
         fseek($handle, 0, SEEK_END);
         $fileSize = ftell($handle);
 
@@ -511,25 +506,47 @@ class Response extends \yii\base\Response
         }
 
         list($begin, $end) = $range;
-        if ($begin !=0 || $end != $fileSize - 1) {
+        if ($begin != 0 || $end != $fileSize - 1) {
             $this->setStatusCode(206);
             $headers->set('Content-Range', "bytes $begin-$end/$fileSize");
         } else {
             $this->setStatusCode(200);
         }
 
-        $length = $end - $begin + 1;
+        $this->setDownladHeaders($attachmentName, $mimeType, $end - $begin + 1);
+
+        $this->format = self::FORMAT_RAW;
+        $this->stream = [$handle, $begin, $end];
+
+        return $this;
+    }
+
+    /**
+     * Sets all possible download headers
+     * @param type $attachmentName
+     * @param type $mimeType
+     * @param type $contentLength
+     * @return \yii\web\Response
+     */
+    public function setDownladHeaders($attachmentName, $mimeType = 'application/octet-stream', $contentLength = null)
+    {
+        $headers = $this->getHeaders();
 
         $headers->setDefault('Pragma', 'public')
             ->setDefault('Accept-Ranges', 'bytes')
             ->setDefault('Expires', '0')
-            ->setDefault('Content-Type', $mimeType)
             ->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->setDefault('Content-Transfer-Encoding', 'binary')
-            ->setDefault('Content-Length', $length)
-            ->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
-        $this->format = self::FORMAT_RAW;
-        $this->stream = [$handle, $begin, $end];
+            ->setDefault('Content-Transfer-Encoding', 'binary');
+
+        if ($mimeType !== null) {
+            $headers->setDefault('Content-Type', $mimeType);
+        }
+
+        if ($contentLength !== null) {
+            $headers->setDefault('Content-Length', $contentLength);
+        }
+
+        $headers->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
 
         return $this;
     }
