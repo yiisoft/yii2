@@ -9,15 +9,15 @@ To use this extension, you have to configure the Connection class in your applic
 
 ```php
 return [
-	//....
-	'components' => [
+    //....
+    'components' => [
         'redis' => [
             'class' => 'yii\redis\Connection',
             'hostname' => 'localhost',
             'port' => 6379,
             'database' => 0,
         ],
-	]
+    ]
 ];
 ```
 
@@ -54,13 +54,13 @@ you also have to configure the `cache` component to be `yii\redis\Cache`:
 
 ```php
 return [
-	//....
-	'components' => [
-		// ...
-		'cache' => [
-			'class' => 'yii\redis\Cache',
-		],
-	]
+    //....
+    'components' => [
+        // ...
+        'cache' => [
+            'class' => 'yii\redis\Cache',
+        ],
+    ]
 ];
 ```
 
@@ -69,18 +69,18 @@ cache component (no connection application component needs to be configured in t
 
 ```php
 return [
-	//....
-	'components' => [
-		// ...
-		'cache' => [
-			'class' => 'yii\redis\Cache',
-			'redis' => [
-				'hostname' => 'localhost',
-				'port' => 6379,
-				'database' => 0,
-			],
-		],
-	]
+    //....
+    'components' => [
+        // ...
+        'cache' => [
+            'class' => 'yii\redis\Cache',
+            'redis' => [
+                'hostname' => 'localhost',
+                'port' => 6379,
+                'database' => 0,
+            ],
+        ],
+    ]
 ];
 ```
 
@@ -92,13 +92,13 @@ you also have to configure the `session` component to be `yii\redis\Session`:
 
 ```php
 return [
-	//....
-	'components' => [
-		// ...
-		'session' => [
-			'class' => 'yii\redis\Session',
-		],
-	]
+    //....
+    'components' => [
+        // ...
+        'session' => [
+            'class' => 'yii\redis\Session',
+        ],
+    ]
 ];
 ```
 
@@ -107,18 +107,18 @@ cache component (no connection application component needs to be configured in t
 
 ```php
 return [
-	//....
-	'components' => [
-		// ...
-		'session' => [
-			'class' => 'yii\redis\Session',
-			'redis' => [
-				'hostname' => 'localhost',
-				'port' => 6379,
-				'database' => 0,
-			],
-		],
-	]
+    //....
+    'components' => [
+        // ...
+        'session' => [
+            'class' => 'yii\redis\Session',
+            'redis' => [
+                'hostname' => 'localhost',
+                'port' => 6379,
+                'database' => 0,
+            ],
+        ],
+    ]
 ];
 ```
 
@@ -139,29 +139,29 @@ The following is an example model called `Customer`:
 ```php
 class Customer extends \yii\redis\ActiveRecord
 {
-	/**
-	 * @return array the list of attributes for this record
-	 */
-	public function attributes()
-	{
-		return ['id', 'name', 'address', 'registration_date'];
-	}
+    /**
+     * @return array the list of attributes for this record
+     */
+    public function attributes()
+    {
+        return ['id', 'name', 'address', 'registration_date'];
+    }
 
-	/**
-	 * @return ActiveQuery defines a relation to the Order record (can be in other database, e.g. elasticsearch or sql)
-	 */
-	public function getOrders()
-	{
-		return $this->hasMany(Order::className(), ['customer_id' => 'id']);
-	}
+    /**
+     * @return ActiveQuery defines a relation to the Order record (can be in other database, e.g. elasticsearch or sql)
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
 
-	/**
-	 * Defines a scope that modifies the `$query` to return only active(status = 1) customers
-	 */
-	public static function active($query)
-	{
-		$query->andWhere(['status' => 1]);
-	}
+    /**
+     * Defines a scope that modifies the `$query` to return only active(status = 1) customers
+     */
+    public static function active($query)
+    {
+        $query->andWhere(['status' => 1]);
+    }
 }
 ```
 

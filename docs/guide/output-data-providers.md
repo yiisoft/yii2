@@ -12,7 +12,7 @@ In Yii there are three built-in data providers: [[yii\data\ActiveDataProvider]],
 Active data provider
 --------------------
 
-`ActiveDataProvider` provides data by performing DB queries using [[\yii\db\Query]] and [[\yii\db\ActiveQuery]].
+`ActiveDataProvider` provides data by performing DB queries using [[yii\db\Query]] and [[yii\db\ActiveQuery]].
 
 The following is an example of using it to provide ActiveRecord instances:
 
@@ -26,7 +26,7 @@ $provider = new ActiveDataProvider([
 
 // get the posts in the current page
 $posts = $provider->getModels();
-~~~
+```
 
 And the following example shows how to use ActiveDataProvider without ActiveRecord:
 

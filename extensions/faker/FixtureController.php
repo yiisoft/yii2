@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\VarDumper;
 
 /**
  * This command manage fixtures creations based on given template.
@@ -32,27 +33,22 @@ use yii\helpers\FileHelper;
  * To start using this command you need to be familiar (read guide) for the Faker library and
  * generate fixtures template files, according to the given format:
  *
- * ~~~
- * #users.php file under $templatePath
- *
+ * ```php
+ * // users.php file under template path (by default @tests/unit/templates/fixtures)
  * return [
- *    [
- *        'table_column0' => 'faker_formatter',
- *        ...
- *        'table_columnN' => 'other_faker_formatter
- *        'table_columnN+1' => function ($fixture, $faker, $index) {
- *            //set needed fixture fields based on different conditions
- *            return $fixture;
- *        }
- *    ],
+ *     'name' => $faker->firstName,
+ *     'phone' => $faker->phoneNumber,
+ *     'city' => $faker->city,
+ *     'password' => Yii::$app->getSecurity()->generatePasswordHash('password_' . $index),
+ *     'auth_key' => Yii::$app->getSecurity()->generateRandomString(),
+ *     'intro' => $faker->sentence(7, true),  // generate a sentence with 7 words
  * ];
- * ~~~
+ * ```
  *
  * If you use callback as a attribute value, then it will be called as shown with three parameters:
  *
- * - `$fixture` - current fixture array.
- * - `$faker` - faker generator instance
- * - `$index` - current fixture index. For example if user need to generate 3 fixtures for user table, it will be 0..2
+ * - `$faker`: the Faker generator instance
+ * - `$index`: the current fixture index. For example if user need to generate 3 fixtures for user table, it will be 0..2.
  *
  * After you set all needed fields in callback, you need to return $fixture array back from the callback.
  *
@@ -131,8 +127,6 @@ use yii\helpers\FileHelper;
  *    ],
  * ~~~
  *
- * @property \Faker\Generator $generator This property is read-only.
- *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0.0
  */
@@ -164,6 +158,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
      * More info in [Faker](https://github.com/fzaninotto/Faker.) library docs.
      */
     public $providers = [];
+
     /**
      * @var \Faker\Generator Faker generator instance
      */
@@ -228,11 +223,10 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
         foreach ($files as $templateFile) {
             $fixtureFileName = basename($templateFile);
-            $template = $this->getTemplate($templateFile);
             $fixtures = [];
 
             for ($i = 0; $i < $times; $i++) {
-                $fixtures[$i] = $this->generateFixture($template, $i);
+                $fixtures[$i] = $this->generateFixture($templateFile, $i);
             }
 
             $content = $this->exportFixtures($fixtures);
@@ -249,13 +243,10 @@ class FixtureController extends \yii\console\controllers\FixtureController
      */
     public function getGenerator()
     {
-        if (is_null($this->_generator)) {
-            //replacing - on _ because Faker support only en_US format and not intl
-
-            $language = is_null($this->language) ? str_replace('-', '_', Yii::$app->language) : $this->language;
-            $this->_generator = \Faker\Factory::create($language);
+        if ($this->_generator === null) {
+            $language = $this->language === null ? Yii::$app->language : $this->language;
+            $this->_generator = \Faker\Factory::create(str_replace('-', '_', $language));
         }
-
         return $this->_generator;
     }
 
@@ -292,66 +283,26 @@ class FixtureController extends \yii\console\controllers\FixtureController
     }
 
     /**
-     * Returns generator template for the given fixture name
-     * @param string $file template file
-     * @return array generator template
-     * @throws \yii\console\Exception if wrong file format
-     */
-    public function getTemplate($file)
-    {
-        $template = require($file);
-
-        if (!is_array($template)) {
-            throw new Exception("The template file \"$file\" has wrong format. It should return valid template array");
-        }
-
-        return $template;
-    }
-
-    /**
      * Returns exported to the string representation of given fixtures array.
      * @param array $fixtures
      * @return string exported fixtures format
      */
     public function exportFixtures($fixtures)
     {
-        $content = "<?php\n\nreturn [";
-
-        foreach ($fixtures as $fixture) {
-
-            $content .= "\n\t[";
-
-            foreach ($fixture as $name => $value) {
-                $content .= "\n\t\t'{$name}' => '{$value}',";
-            }
-
-            $content .= "\n\t],";
-
-        }
-        $content .= "\n];\n";
-
-        return $content;
+        return "<?php\n\nreturn " . VarDumper::export($fixtures) . ";\n";
     }
 
     /**
      * Generates fixture from given template
-     * @param array $template fixture template
-     * @param integer $index current fixture index
+     * @param string $_template_ the fixture template file
+     * @param integer $index the current fixture index
      * @return array fixture
      */
-    public function generateFixture($template, $index)
+    public function generateFixture($_template_, $index)
     {
-        $fixture = [];
-
-        foreach ($template as $attribute => $fakerProperty) {
-            if (!is_string($fakerProperty)) {
-                $fixture = call_user_func_array($fakerProperty, [$fixture, $this->generator, $index]);
-            } else {
-                $fixture[$attribute] = $this->generator->$fakerProperty;
-            }
-        }
-
-        return $fixture;
+        // $faker and $index are exposed to the template file
+        $faker = $this->getGenerator();
+        return require($_template_);
     }
 
     /**

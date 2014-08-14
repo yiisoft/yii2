@@ -39,15 +39,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
-//	public function update($table, $columns, $condition, &$params)
-//	{
-//		return '';
-//	}
-
-//	public function delete($table, $condition, &$params)
-//	{
-//		return '';
-//	}
 
     /**
      * @param integer $limit
@@ -70,11 +61,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return '';
         }
     }
-
-//	public function resetSequence($table, $value = null)
-//	{
-//		return '';
-//	}
 
     /**
      * Builds a SQL statement for renaming a DB table.
@@ -103,7 +89,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Builds a SQL statement for changing the definition of a column.
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
      * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
      * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
@@ -138,5 +124,135 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $enable = $check ? 'CHECK' : 'NOCHECK';
 
         return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function build($query, $params = [])
+    {
+        $query->prepareBuild($this);
+
+        $params = empty($params) ? $query->params : array_merge($params, $query->params);
+
+        $orderBy = $this->buildOrderBy($query->orderBy);
+        if ($orderBy === '' && ($this->hasOffset($query->offset) || $this->hasLimit($query->limit)) && !$this->isOldMssql()) {
+            // ORDER BY clause is required when FETCH and OFFSET are in the SQL
+            $orderBy = 'ORDER BY (SELECT NULL)';
+        }
+
+        $clauses = [
+            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
+            $this->buildFrom($query->from, $params),
+            $this->buildJoin($query->join, $params),
+            $this->buildWhere($query->where, $params),
+            $this->buildGroupBy($query->groupBy),
+            $this->buildHaving($query->having, $params),
+            $orderBy,
+            $this->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
+        ];
+
+        $sql = implode($this->separator, array_filter($clauses));
+        if ($this->isOldMssql()) {
+            $sql = $this->applyLimitAndOffset($sql, $query);
+        }
+        $union = $this->buildUnion($query->union, $params);
+        if ($union !== '') {
+            $sql = "($sql){$this->separator}$union";
+        }
+
+        return [$sql, $params];
+    }
+
+    /**
+     * Applies limit and offset to SQL query
+     *
+     * @param string $sql SQL query
+     * @param \yii\db\Query $query the [[Query]] object from which the SQL statement generated
+     * @return string resulting SQL
+     */
+    private function applyLimitAndOffset($sql, $query)
+    {
+        $limit = $query->limit !== null ? (int)$query->limit : -1;
+        $offset = $query->offset !== null ? (int)$query->offset : -1;
+        if ($limit > 0 || $offset >= 0) {
+            $sql = $this->rewriteLimitOffsetSql($sql, $limit, $offset, $query);
+        }
+        return $sql;
+    }
+
+    /**
+     * Rewrites limit and offset in SQL query
+     *
+     * @param string $sql SQL query
+     * @param integer $limit
+     * @param integer $offset
+     * @param \yii\db\Query $query the [[Query]] object from which the SQL statement generated
+     * @return string resulting SQL query
+     */
+    private function rewriteLimitOffsetSql($sql, $limit, $offset, $query)
+    {
+        $originalOrdering = $this->buildOrderBy($query->orderBy);
+        if ($query->select) {
+            $select = implode(', ', $query->select);
+        } else {
+            $select = $query->select = '*';
+        }
+        if ($select === '*') {
+            $columns = $this->getAllColumnNames($query->modelClass);
+            if ($columns && is_array($columns)) {
+                $select = implode(', ', $columns);
+            } else {
+                $select = $columns;
+            }
+        }
+        $sql = str_replace($originalOrdering, '', $sql);
+
+        if ($originalOrdering === '') {
+            // hack so LIMIT will work because ROW_NUMBER requires an ORDER BY clause
+            $originalOrdering = 'ORDER BY (SELECT NULL)';
+        }
+
+        $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ({$originalOrdering}),", $sql);
+        $sql = "SELECT TOP {$limit} {$select} FROM ($sql) sub WHERE rowNum > {$offset}";
+        return $sql;
+    }
+
+    /**
+     * Returns an array of column names given model name
+     *
+     * @param string $modelClass name of the model class
+     * @return array|null array of column names
+     */
+    protected function getAllColumnNames($modelClass = null)
+    {
+        if (!$modelClass) {
+            return null;
+        }
+        /* @var $model \yii\db\ActiveRecord */
+        $model = new $modelClass;
+        $schema = $model->getTableSchema();
+        $columns = array_keys($schema->columns);
+        return $columns;
+    }
+
+    /**
+     * @var boolean whether MSSQL used is old.
+     */
+    private $_oldMssql;
+
+    /**
+     * @return boolean whether MSSQL used is old.
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    protected function isOldMssql()
+    {
+        if ($this->_oldMssql === null) {
+            $pdo = $this->db->getSlavePdo();
+            $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+            $this->_oldMssql = $version[0] < 11;
+        }
+        return $this->_oldMssql;
     }
 }

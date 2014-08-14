@@ -7,19 +7,19 @@ To use this extension,  simply add the following code in your application config
 
 ```php
 return [
-	//....
-	'components' => [
-		'mail' => [
-			'class' => 'yii\swiftmailer\Mailer',
-		],
-	],
+    //....
+    'components' => [
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+        ],
+    ],
 ];
 ```
 
 You can then send an email as follows:
 
 ```php
-Yii::$app->mail->compose('contact/html')
+Yii::$app->mailer->compose('contact/html')
      ->setFrom('from@domain.com')
      ->setTo($form->email)
      ->setSubject($form->subject)

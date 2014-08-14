@@ -121,7 +121,7 @@ class HelpController extends Controller
         foreach ($class->getMethods() as $method) {
             $name = $method->getName();
             if ($method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions') {
-                $actions[] = Inflector::camel2id(substr($name, 6));
+                $actions[] = Inflector::camel2id(substr($name, 6), '-', true);
             }
         }
         sort($actions);
@@ -156,13 +156,31 @@ class HelpController extends Controller
         if (is_dir($controllerPath)) {
             $files = scandir($controllerPath);
             foreach ($files as $file) {
-                if (strcmp(substr($file, -14), 'Controller.php') === 0) {
-                    $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
+                if (!empty($file) && substr_compare($file, 'Controller.php', -14) === 0) {
+                    $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
+                    if ($this->validateControllerClass($controllerClass)) {
+                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
+                    }
                 }
             }
         }
 
         return $commands;
+    }
+
+    /**
+     * Validates if the given class is a valid console controller class.
+     * @param string $controllerClass
+     * @return bool
+     */
+    protected function validateControllerClass($controllerClass)
+    {
+        if (class_exists($controllerClass)) {
+            $class = new \ReflectionClass($controllerClass);
+            return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -207,7 +225,7 @@ class HelpController extends Controller
 
         if ($comment !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
-            echo "\n" . Console::renderColoredString($comment) . "\n\n";
+            echo "\n" . rtrim(Console::renderColoredString(Console::markdownToAnsi($comment))) . "\n\n";
         }
 
         $actions = $this->getActions($controller);
@@ -295,7 +313,7 @@ class HelpController extends Controller
 
         if ($tags['description'] !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
-            echo "\n" . Console::renderColoredString($tags['description']) . "\n\n";
+            echo "\n" . rtrim(Console::renderColoredString(Console::markdownToAnsi($tags['description']))) . "\n\n";
         }
 
         $this->stdout("\nUSAGE\n\n", Console::BOLD);

@@ -132,7 +132,11 @@ class Query extends Component implements QueryInterface
      * the elasticsearch [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html).
      */
     public $filter;
-
+    /**
+     * @var array The highlight part of this search query. This is an array that allows to highlight search results
+     * on one or more fields.
+     */
+    public $highlight;
     public $facets = [];
 
 
@@ -256,6 +260,7 @@ class Query extends Component implements QueryInterface
     public function delete($db = null)
     {
         // TODO implement http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
+        // http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_search_requests.html
         throw new NotSupportedException('Delete by query is not implemented yet.');
     }
 
@@ -317,6 +322,7 @@ class Query extends Component implements QueryInterface
         // TODO consider sending to _count api instead of _search for performance
         // only when no facety are registerted.
         // http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html
+        // http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_search_requests.html
 
         $options = [];
         $options['search_type'] = 'count';
@@ -522,6 +528,18 @@ class Query extends Component implements QueryInterface
         } else {
             $this->fields = func_get_args();
         }
+        return $this;
+    }
+
+    /**
+     * Sets a highlight parameters to retrieve from the documents.
+     * @param array $highlight array of parameters to highlight results.
+     * @return static the query object itself
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
+     */
+    public function highlight($highlight)
+    {
+        $this->highlight = $highlight;
         return $this;
     }
 

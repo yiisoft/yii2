@@ -71,7 +71,7 @@ defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 // register Composer autoloader
 require(__DIR__ . '/vendor/autoload.php');
 
-// load application configuration
+// include Yii class file
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
 
 // load application configuration

@@ -3,6 +3,7 @@
 namespace yiiunit\framework\helpers;
 
 use Yii;
+use yii\base\DynamicModel;
 use yii\helpers\Html;
 use yiiunit\TestCase;
 
@@ -157,6 +158,13 @@ class HtmlTest extends TestCase
         $this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', ['name' => 'test', 'value' => 'value', 'class' => 't']));
     }
 
+    public function testInputId()
+    {
+        $model = new DynamicModel(['test', 'relation.name']);
+        $this->assertEquals('<input type="text" id="dynamicmodel-test" name="DynamicModel[test]">', Html::activeTextInput($model, 'test'));
+        $this->assertEquals('<input type="text" id="dynamicmodel-relation-name" name="DynamicModel[relation.name]">', Html::activeTextInput($model, 'relation.name'));
+    }
+
     public function testInput()
     {
         $this->assertEquals('<input type="text">', Html::input('text'));
@@ -293,10 +301,17 @@ EOD;
         $expected = <<<EOD
 <select name="test" size="4">
 <option value="value1&lt;&gt;">text1&lt;&gt;</option>
-<option value="value  2">text&nbsp;&nbsp;2</option>
+<option value="value  2">text  2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2()));
+        $expected = <<<EOD
+<select name="test" size="4">
+<option value="value1&lt;&gt;">text1&lt;&gt;</option>
+<option value="value  2">text&nbsp;&nbsp;2</option>
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2(), ['encodeSpaces' => true]));
         $expected = <<<EOD
 <select name="test" size="4">
 <option value="value1">text1</option>
@@ -424,6 +439,8 @@ EOD;
                 return "<li class=\"item-$index\">$item</li>";
             }
         ]));
+
+        $this->assertEquals('<ul class="test"></ul>', Html::ul([], ['class' => 'test']));
     }
 
     public function testOl()
@@ -454,6 +471,8 @@ EOD;
                 return "<li class=\"item-$index\">$item</li>";
             }
         ]));
+
+        $this->assertEquals('<ol class="test"></ol>', Html::ol([], ['class' => 'test']));
     }
 
     public function testRenderOptions()
@@ -495,8 +514,20 @@ EOD;
             'groups' => [
                 'group12' => ['class' => 'group'],
             ],
+            'encodeSpaces' => true,
         ];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
+
+        $attributes = [
+            'prompt' => 'please select<>',
+            'options' => [
+                'value111' => ['class' => 'option'],
+            ],
+            'groups' => [
+                'group12' => ['class' => 'group'],
+            ],
+        ];
+        $this->assertEqualsWithoutLE(str_replace('&nbsp;', ' ', $expected), Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
     }
 
     public function testRenderAttributes()

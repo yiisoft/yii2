@@ -68,6 +68,68 @@ yii.validation = (function ($) {
                 pub.addMessage(messages, options.notEqual, value);
             }
         },
+        
+        file: function (attribute, messages, options) {
+            var files = getUploadedFiles(attribute, messages, options);
+            $.each(files, function (i, file) {
+                validateFile(file, messages, options);
+            });
+        },
+        
+        image: function (attribute, messages, options, deferred) {
+            var files = getUploadedFiles(attribute, messages, options);
+            
+            $.each(files, function (i, file) {
+                validateFile(file, messages, options);
+
+                // Skip image validation if FileReader API is not available
+                if (typeof FileReader === "undefined") {
+                    return;
+                }
+
+                var def = $.Deferred(),
+                    fr = new FileReader(),
+                    img = new Image();
+                    
+                img.onload = function () {
+                    if (options.minWidth && this.width < options.minWidth) {
+                        messages.push(options.underWidth.replace(/\{file\}/g, file.name));
+                    }
+                    
+                    if (options.maxWidth && this.width > options.maxWidth) {
+                        messages.push(options.overWidth.replace(/\{file\}/g, file.name));
+                    }
+                    
+                    if (options.minHeight && this.height < options.minHeight) {
+                        messages.push(options.underHeight.replace(/\{file\}/g, file.name));
+                    }
+                    
+                    if (options.maxHeight && this.height > options.maxHeight) {
+                        messages.push(options.overHeight.replace(/\{file\}/g, file.name));
+                    }
+                    def.resolve();
+                };
+                
+                img.onerror = function () {
+                    messages.push(options.notImage.replace(/\{file\}/g, file.name));
+                    def.resolve();
+                };
+                
+                fr.onload = function () {
+                    img.src = fr.result;
+                };
+                
+                // Resolve deferred if there was error while reading data
+                fr.onerror = function () {
+                    def.resolve();
+                };
+                
+                fr.readAsDataURL(file);
+                
+                deferred.push(def);
+            });
+        
+        },
 
         number: function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
@@ -91,10 +153,24 @@ yii.validation = (function ($) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
-            var valid = !options.not && $.inArray(value, options.range) > -1
-                || options.not && $.inArray(value, options.range) == -1;
 
-            if (!valid) {
+            if (!options.allowArray && $.isArray(value)) {
+                pub.addMessage(messages, options.message, value);
+                return;
+            }
+
+            var inArray = true;
+
+            $.each($.isArray(value) ? value : [value], function(i, v) {
+                if ($.inArray(v, options.range) == -1) {
+                    inArray = false;
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+
+            if (options.not === inArray) {
                 pub.addMessage(messages, options.message, value);
             }
         },
@@ -224,5 +300,60 @@ yii.validation = (function ($) {
             }
         }
     };
+
+    function getUploadedFiles(attribute, messages, options) {
+        var files = $(attribute.input).get(0).files;
+        if (!files) {
+            messages.push(options.message);
+            return [];
+        }
+
+        if (files.length === 0) {
+            if (!options.skipOnEmpty) {
+                messages.push(options.uploadRequired);
+            }
+            return [];
+        }
+
+        if (options.maxFiles && options.maxFiles < files.length) {
+            messages.push(options.tooMany);
+            return [];
+        }
+
+        return files;
+    }
+
+    function validateFile(file, messages, options) {
+        if (options.extensions && options.extensions.length > 0) {
+            var index, ext;
+
+            index = file.name.lastIndexOf('.');
+
+            if (!~index) {
+                ext = '';
+            } else {
+                ext = file.name.substr(index + 1, file.name.length).toLowerCase();
+            }
+
+            if (!~options.extensions.indexOf(ext)) {
+                messages.push(options.wrongExtension.replace(/\{file\}/g, file.name));
+            }
+        }
+
+        if (options.mimeTypes && options.mimeTypes.length > 0) {
+            if (!~options.mimeTypes.indexOf(file.type)) {
+                messages.push(options.wrongMimeType.replace(/\{file\}/g, file.name));
+            }
+        }
+
+        if (options.maxSize && options.maxSize < file.size) {
+            messages.push(options.tooBig.replace(/\{file\}/g, file.name));
+        }
+
+        if (options.minSize && options.minSize > file.size) {
+            messages.push(options.tooSmall.replace(/\{file\}/g, file.name));
+        }
+    }
+
     return pub;
 })(jQuery);

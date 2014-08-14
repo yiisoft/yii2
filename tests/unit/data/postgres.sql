@@ -4,15 +4,19 @@
  * and create an account 'postgres/postgres' which owns this test database.
  */
 
+DROP TABLE IF EXISTS "composite_fk" CASCADE;
 DROP TABLE IF EXISTS "order_item" CASCADE;
 DROP TABLE IF EXISTS "item" CASCADE;
+DROP TABLE IF EXISTS "order_item_with_null_fk" CASCADE;
 DROP TABLE IF EXISTS "order" CASCADE;
+DROP TABLE IF EXISTS "order_with_null_fk" CASCADE;
 DROP TABLE IF EXISTS "category" CASCADE;
 DROP TABLE IF EXISTS "customer" CASCADE;
 DROP TABLE IF EXISTS "profile" CASCADE;
 DROP TABLE IF EXISTS "type" CASCADE;
 DROP TABLE IF EXISTS "null_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
+DROP TABLE IF EXISTS "bool_values" CASCADE;
 
 CREATE TABLE "constraints"
 (
@@ -54,12 +58,34 @@ CREATE TABLE "order" (
   total decimal(10,0) NOT NULL
 );
 
+CREATE TABLE "order_with_null_fk" (
+  id serial not null primary key,
+  customer_id integer,
+  created_at integer NOT NULL,
+  total decimal(10,0) NOT NULL
+);
+
 CREATE TABLE "order_item" (
   order_id integer NOT NULL references "order"(id) on UPDATE CASCADE on DELETE CASCADE,
   item_id integer NOT NULL references "item"(id) on UPDATE CASCADE on DELETE CASCADE,
   quantity integer NOT NULL,
   subtotal decimal(10,0) NOT NULL,
   PRIMARY KEY (order_id,item_id)
+);
+
+CREATE TABLE "order_item_with_null_fk" (
+  order_id integer,
+  item_id integer,
+  quantity integer NOT NULL,
+  subtotal decimal(10,0) NOT NULL
+);
+
+CREATE TABLE "composite_fk" (
+  id integer NOT NULL,
+  order_id integer NOT NULL,
+  item_id integer NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_composite_fk_order_item FOREIGN KEY (order_id, item_id) REFERENCES "order_item" (order_id, item_id) ON DELETE CASCADE
 );
 
 CREATE TABLE "null_values" (
@@ -74,6 +100,7 @@ CREATE TABLE "null_values" (
 CREATE TABLE "type" (
   int_col integer NOT NULL,
   int_col2 integer DEFAULT '1',
+  smallint_col smallint DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
   char_col3 text,
@@ -83,7 +110,16 @@ CREATE TABLE "type" (
   numeric_col decimal(5,2) DEFAULT '33.22',
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   bool_col smallint NOT NULL,
-  bool_col2 smallint DEFAULT '1'
+  bool_col2 smallint DEFAULT '1',
+  ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  bit_col BIT(8) NOT NULL DEFAULT B'10000010'
+);
+
+CREATE TABLE "bool_values" (
+  id serial not null primary key,
+  bool_col bool,
+  default_true bool not null default true,
+  default_false boolean not null default false
 );
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
@@ -106,12 +142,23 @@ INSERT INTO "order" (customer_id, created_at, total) VALUES (1, 1325282384, 110.
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
+INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 /**
  * (Postgres-)Database Schema for validator tests

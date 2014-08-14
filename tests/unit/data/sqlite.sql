@@ -5,8 +5,10 @@
 
 DROP TABLE IF EXISTS "composite_fk";
 DROP TABLE IF EXISTS "order_item";
+DROP TABLE IF EXISTS "order_item_with_null_fk";
 DROP TABLE IF EXISTS "item";
 DROP TABLE IF EXISTS "order";
+DROP TABLE IF EXISTS "order_with_null_fk";
 DROP TABLE IF EXISTS "category";
 DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
@@ -50,12 +52,27 @@ CREATE TABLE "order" (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE "order_with_null_fk" (
+  id INTEGER NOT NULL,
+  customer_id INTEGER,
+  created_at INTEGER NOT NULL,
+  total decimal(10,0) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE "order_item" (
   order_id INTEGER NOT NULL,
   item_id INTEGER NOT NULL,
   quantity INTEGER NOT NULL,
   subtotal decimal(10,0) NOT NULL,
   PRIMARY KEY (order_id, item_id)
+);
+
+CREATE TABLE "order_item_with_null_fk" (
+  order_id INTEGER,
+  item_id INTEGER,
+  quantity INTEGER NOT NULL,
+  subtotal decimal(10,0) NOT NULL
 );
 
 CREATE TABLE "composite_fk" (
@@ -77,6 +94,7 @@ CREATE TABLE "null_values" (
 CREATE TABLE "type" (
   int_col INTEGER NOT NULL,
   int_col2 INTEGER DEFAULT '1',
+  smallint_col SMALLINT(1) DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
   char_col3 text,
@@ -86,7 +104,8 @@ CREATE TABLE "type" (
   numeric_col decimal(5,2) DEFAULT '33.22',
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   bool_col tinyint(1) NOT NULL,
-  bool_col2 tinyint(1) DEFAULT '1'
+  bool_col2 tinyint(1) DEFAULT '1',
+  ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
@@ -109,12 +128,23 @@ INSERT INTO "order" (customer_id, created_at, total) VALUES (1, 1325282384, 110.
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
+INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO "order_with_null_fk" (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO "order_item" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 /**
  * (SqLite-)Database Schema for validator tests

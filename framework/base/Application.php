@@ -12,8 +12,9 @@ use Yii;
 /**
  * Application is the base class for all application classes.
  *
- * @property \yii\web\AssetManager $assetManager The asset manager component. This property is read-only.
- * @property \yii\rbac\ManagerInterface $authManager The auth manager for this application. Null is returned
+ * @property \yii\web\AssetManager $assetManager The asset manager application component. This property is
+ * read-only.
+ * @property \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is returned
  * if auth manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
@@ -22,21 +23,22 @@ use Yii;
  * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
  * component. This property is read-only.
  * @property \yii\base\Formatter $formatter The formatter application component. This property is read-only.
- * @property \yii\i18n\I18N $i18n The internationalization component. This property is read-only.
- * @property \yii\log\Dispatcher $log The log dispatcher component. This property is read-only.
- * @property \yii\mail\MailerInterface $mail The mailer interface. This property is read-only.
+ * @property \yii\i18n\I18N $i18n The internationalization application component. This property is read-only.
+ * @property \yii\log\Dispatcher $log The log dispatcher application component. This property is read-only.
+ * @property \yii\mail\MailerInterface $mailer The mailer application component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
  * read-only.
  * @property string $runtimePath The directory that stores runtime files. Defaults to the "runtime"
  * subdirectory under [[basePath]].
+ * @property \yii\base\Security $security The security application component. This property is read-only.
  * @property string $timeZone The time zone used by this application.
  * @property string $uniqueId The unique ID of the module. This property is read-only.
  * @property \yii\web\UrlManager $urlManager The URL manager for this application. This property is read-only.
  * @property string $vendorPath The directory that stores vendor files. Defaults to "vendor" directory under
  * [[basePath]].
- * @property View|\yii\web\View $view The view object that is used to render various view files. This property
- * is read-only.
+ * @property View|\yii\web\View $view The view application component that is used to render various view
+ * files. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -81,8 +83,11 @@ abstract class Application extends Module
     const STATE_END = 6;
 
     /**
-     * @var string the namespace that controller classes are in. If not set,
-     * it will use the "app\controllers" namespace.
+     * @var string the namespace that controller classes are located in.
+     * This namespace will be used to load controller classes by prepending it to the controller class name.
+     * The default namespace is `app\controllers`.
+     *
+     * Please refer to the [guide about class autoloading][guide-concept-autoloading] for more details.
      */
     public $controllerNamespace = 'app\\controllers';
     /**
@@ -98,16 +103,18 @@ abstract class Application extends Module
      */
     public $charset = 'UTF-8';
     /**
-     * @var string the language that is meant to be used for end users.
+     * @var string the language that is meant to be used for end users. It is recommended that you
+     * use [IETF language tags](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands
+     * for English, while `en-US` stands for English (United States).
      * @see sourceLanguage
      */
-    public $language = 'en';
+    public $language = 'en-US';
     /**
      * @var string the language that the application is written in. This mainly refers to
      * the language that the messages and view files are written in.
      * @see language
      */
-    public $sourceLanguage = 'en';
+    public $sourceLanguage = 'en-US';
     /**
      * @var Controller the currently active controller instance
      */
@@ -148,8 +155,11 @@ abstract class Application extends Module
      * The "bootstrap" class listed above will be instantiated during the application
      * [[bootstrap()|bootstrapping process]]. If the class implements [[BootstrapInterface]],
      * its [[BootstrapInterface::bootstrap()|bootstrap()]] method will be also be called.
+     *
+     * If not set explicitly in the application config, this property will be populated with the contents of
+     * `@vendor/yiisoft/extensions.php`.
      */
-    public $extensions = [];
+    public $extensions;
     /**
      * @var array list of components that should be run during the application [[bootstrap()|bootstrapping process]].
      *
@@ -181,6 +191,7 @@ abstract class Application extends Module
     public function __construct($config = [])
     {
         Yii::$app = $this;
+        $this->setInstance($this);
 
         $this->state = self::STATE_BEGIN;
 
@@ -259,6 +270,10 @@ abstract class Application extends Module
      */
     protected function bootstrap()
     {
+        if ($this->extensions === null) {
+            $file = Yii::getAlias('@vendor/yiisoft/extensions.php');
+            $this->extensions = is_file($file) ? include($file) : [];
+        }
         foreach ($this->extensions as $extension) {
             if (!empty($extension['alias'])) {
                 foreach ($extension['alias'] as $name => $path) {
@@ -284,7 +299,7 @@ abstract class Application extends Module
                 } elseif ($this->hasModule($class)) {
                     $component = $this->getModule($class);
                 } elseif (strpos($class, '\\') === false) {
-                    throw new InvalidConfigException("Unknown bootstrap component ID: $class");
+                    throw new InvalidConfigException("Unknown bootstrapping component ID: $class");
                 }
             }
             if (!isset($component)) {
@@ -302,6 +317,7 @@ abstract class Application extends Module
 
     /**
      * Registers the errorHandler component as a PHP error handler.
+     * @param array $config application config
      */
     protected function registerErrorHandler(&$config)
     {
@@ -462,7 +478,7 @@ abstract class Application extends Module
 
     /**
      * Returns the database connection component.
-     * @return \yii\db\Connection the database connection
+     * @return \yii\db\Connection the database connection.
      */
     public function getDb()
     {
@@ -471,7 +487,7 @@ abstract class Application extends Module
 
     /**
      * Returns the log dispatcher component.
-     * @return \yii\log\Dispatcher the log dispatcher component
+     * @return \yii\log\Dispatcher the log dispatcher application component.
      */
     public function getLog()
     {
@@ -507,7 +523,7 @@ abstract class Application extends Module
 
     /**
      * Returns the request component.
-     * @return \yii\web\Request|\yii\console\Request the request component
+     * @return \yii\web\Request|\yii\console\Request the request component.
      */
     public function getRequest()
     {
@@ -516,7 +532,7 @@ abstract class Application extends Module
 
     /**
      * Returns the response component.
-     * @return \yii\web\Response|\yii\console\Response the response component
+     * @return \yii\web\Response|\yii\console\Response the response component.
      */
     public function getResponse()
     {
@@ -525,7 +541,7 @@ abstract class Application extends Module
 
     /**
      * Returns the view object.
-     * @return View|\yii\web\View the view object that is used to render various view files.
+     * @return View|\yii\web\View the view application component that is used to render various view files.
      */
     public function getView()
     {
@@ -543,7 +559,7 @@ abstract class Application extends Module
 
     /**
      * Returns the internationalization (i18n) component
-     * @return \yii\i18n\I18N the internationalization component
+     * @return \yii\i18n\I18N the internationalization application component.
      */
     public function getI18n()
     {
@@ -552,16 +568,16 @@ abstract class Application extends Module
 
     /**
      * Returns the mailer component.
-     * @return \yii\mail\MailerInterface the mailer interface
+     * @return \yii\mail\MailerInterface the mailer application component.
      */
-    public function getMail()
+    public function getMailer()
     {
-        return $this->get('mail');
+        return $this->get('mailer');
     }
 
     /**
      * Returns the auth manager for this application.
-     * @return \yii\rbac\ManagerInterface the auth manager for this application.
+     * @return \yii\rbac\ManagerInterface the auth manager application component.
      * Null is returned if auth manager is not configured.
      */
     public function getAuthManager()
@@ -571,7 +587,7 @@ abstract class Application extends Module
 
     /**
      * Returns the asset manager.
-     * @return \yii\web\AssetManager the asset manager component
+     * @return \yii\web\AssetManager the asset manager application component.
      */
     public function getAssetManager()
     {
@@ -579,8 +595,17 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the core application components.
-     * @see set
+     * Returns the security component.
+     * @return \yii\base\Security the security application component.
+     */
+    public function getSecurity()
+    {
+        return $this->get('security');
+    }
+
+    /**
+     * Returns the configuration of core application components.
+     * @see set()
      */
     public function coreComponents()
     {
@@ -589,9 +614,10 @@ abstract class Application extends Module
             'view' => ['class' => 'yii\web\View'],
             'formatter' => ['class' => 'yii\base\Formatter'],
             'i18n' => ['class' => 'yii\i18n\I18N'],
-            'mail' => ['class' => 'yii\swiftmailer\Mailer'],
+            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
+            'security' => ['class' => 'yii\base\Security'],
         ];
     }
 

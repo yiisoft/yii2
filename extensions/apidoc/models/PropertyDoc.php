@@ -20,17 +20,15 @@ class PropertyDoc extends BaseDoc
 {
     public $visibility;
     public $isStatic;
-
     public $type;
     public $types;
     public $defaultValue;
-
     // will be set by creating class
     public $getter;
     public $setter;
-
     // will be set by creating class
     public $definedBy;
+
 
     public function getIsReadOnly()
     {
@@ -72,11 +70,7 @@ class PropertyDoc extends BaseDoc
                 $this->type = $tag->getType();
                 $this->types = $tag->getTypes();
                 $this->description = ucfirst($tag->getDescription());
-                if (($pos = strpos($this->description, '.')) !== false) {
-                    $this->shortDescription = substr($this->description, 0, $pos + 1);
-                } else {
-                    $this->shortDescription = $this->description;
-                }
+                $this->shortDescription = BaseDoc::extractFirstSentence($this->description);
             }
         }
         if (empty($this->shortDescription) && $context !== null && !$hasInheritdoc) {

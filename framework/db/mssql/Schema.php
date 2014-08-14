@@ -35,11 +35,9 @@ class Schema extends \yii\db\Schema
         'int' => self::TYPE_INTEGER,
         'tinyint' => self::TYPE_SMALLINT,
         'money' => self::TYPE_MONEY,
-
         // approximate numbers
         'float' => self::TYPE_FLOAT,
         'real' => self::TYPE_FLOAT,
-
         // date and time
         'date' => self::TYPE_DATE,
         'datetimeoffset' => self::TYPE_DATETIME,
@@ -47,22 +45,18 @@ class Schema extends \yii\db\Schema
         'smalldatetime' => self::TYPE_DATETIME,
         'datetime' => self::TYPE_DATETIME,
         'time' => self::TYPE_TIME,
-
         // character strings
         'char' => self::TYPE_STRING,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
-
         // unicode character strings
         'nchar' => self::TYPE_STRING,
         'nvarchar' => self::TYPE_STRING,
         'ntext' => self::TYPE_TEXT,
-
         // binary strings
         'binary' => self::TYPE_BINARY,
         'varbinary' => self::TYPE_BINARY,
         'image' => self::TYPE_BINARY,
-
         // other data types
         // 'cursor' type cannot be used with tables
         'timestamp' => self::TYPE_TIMESTAMP,
@@ -72,6 +66,7 @@ class Schema extends \yii\db\Schema
         'xml' => self::TYPE_STRING,
         'table' => self::TYPE_STRING,
     ];
+
 
     /**
      * @inheritdoc
@@ -181,7 +176,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadColumnSchema($info)
     {
-        $column = new ColumnSchema();
+        $column = $this->createColumnSchema();
 
         $column->name = $info['column_name'];
         $column->allowNull = $info['is_nullable'] == 'YES';
@@ -221,8 +216,8 @@ class Schema extends \yii\db\Schema
         if ($info['column_default'] == '(NULL)') {
             $info['column_default'] = null;
         }
-        if ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP') {
-            $column->defaultValue = $column->typecast($info['column_default']);
+        if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP')) {
+            $column->defaultValue = $column->phpTypecast($info['column_default']);
         }
 
         return $column;
@@ -235,7 +230,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findColumns($table)
     {
-        $columnsTableName = 'information_schema.columns';
+        $columnsTableName = 'INFORMATION_SCHEMA.COLUMNS';
         $whereSql = "[t1].[table_name] = '{$table->name}'";
         if ($table->catalogName !== null) {
             $columnsTableName = "{$table->catalogName}.{$columnsTableName}";
@@ -292,8 +287,8 @@ SQL;
      */
     protected function findPrimaryKeys($table)
     {
-        $keyColumnUsageTableName = 'information_schema.key_column_usage';
-        $tableConstraintsTableName = 'information_schema.table_constraints';
+        $keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
+        $tableConstraintsTableName = 'INFORMATION_SCHEMA.TABLE_CONSTRAINTS';
         if ($table->catalogName !== null) {
             $keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
             $tableConstraintsTableName = $table->catalogName . '.' . $tableConstraintsTableName;
@@ -325,8 +320,8 @@ SQL;
      */
     protected function findForeignKeys($table)
     {
-        $referentialConstraintsTableName = 'information_schema.referential_constraints';
-        $keyColumnUsageTableName = 'information_schema.key_column_usage';
+        $referentialConstraintsTableName = 'INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS';
+        $keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
         if ($table->catalogName !== null) {
             $referentialConstraintsTableName = $table->catalogName . '.' . $referentialConstraintsTableName;
             $keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
@@ -374,7 +369,7 @@ SQL;
 
         $sql = <<<SQL
 SELECT [t].[table_name]
-FROM [information_schema].[tables] AS [t]
+FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
 SQL;
 

@@ -20,7 +20,7 @@ use yii\helpers\Json;
  * echo DatePicker::widget([
  *     'language' => 'ru',
  *     'model' => $model,
- *     'attribute' => 'country',
+ *     'attribute' => 'from_date',
  *     'clientOptions' => [
  *         'dateFormat' => 'yy-mm-dd',
  *     ],
@@ -32,7 +32,7 @@ use yii\helpers\Json;
  * ```php
  * echo DatePicker::widget([
  *     'language' => 'ru',
- *     'name'  => 'country',
+ *     'name'  => 'from_date',
  *     'clientOptions' => [
  *         'dateFormat' => 'yy-mm-dd',
  *     ],
@@ -60,6 +60,7 @@ class DatePicker extends InputWidget
      */
     public $containerOptions = [];
 
+
     /**
      * @inheritdoc
      */
@@ -79,7 +80,7 @@ class DatePicker extends InputWidget
         echo $this->renderWidget() . "\n";
         $containerID = $this->inline ? $this->containerOptions['id'] : $this->options['id'];
         $language = $this->language ? $this->language : Yii::$app->language;
-        if ($language != 'en') {
+        if ($language != 'en-US') {
             $view = $this->getView();
             DatePickerRegionalAsset::register($view);
 

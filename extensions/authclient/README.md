@@ -63,7 +63,7 @@ class SiteController extends Controller
                 'class' => 'yii\authclient\AuthAction',
                 'successCallback' => [$this, 'successCallback'],
             ],
-        ]
+        ];
     }
 
     public function successCallback($client)
@@ -156,7 +156,9 @@ Following predefined auth clients are available:
  - [[yii\authclient\clients\GoogleOpenId]] - [Google](https://www.google.com/) OpenID client
  - [[yii\authclient\clients\LinkedIn]] - [LinkedIn](http://www.linkedin.com/) OAuth2 client
  - [[yii\authclient\clients\LinkedIn]] - [LinkedIn](http://www.linkedin.com/) OAuth2 client
+ - [[yii\authclient\clients\Live]] - [Microsoft Live](http://live.com/) OAuth2 client
  - [[yii\authclient\clients\Twitter]] - [Twitter](https://twitter.com/) OAuth1 client
+ - [[yii\authclient\clients\VKontakte]] - [VKontakte](http://vk.com/) OAuth2 client
  - [[yii\authclient\clients\YandexOAuth]] - [Yandex](http://www.yandex.ru/) OAuth2 client
  - [[yii\authclient\clients\YandexOpenId]] - [Yandex](http://www.yandex.ru/) OpenID client
 
@@ -182,23 +184,23 @@ use yii\authclient\OAuth2;
 
 class MyAuthClient extends OAuth2
 {
-	protected function defaultName()
-	{
-		return 'my_auth_client';
-	}
+    protected function defaultName()
+    {
+        return 'my_auth_client';
+    }
 
-	protected function defaultTitle()
-	{
-		return 'My Auth Client';
-	}
+    protected function defaultTitle()
+    {
+        return 'My Auth Client';
+    }
 
-	protected function defaultViewOptions()
-	{
-		return [
-			'popupWidth' => 800,
-			'popupHeight' => 500,
-		];
-	}
+    protected function defaultViewOptions()
+    {
+        return [
+            'popupWidth' => 800,
+            'popupHeight' => 500,
+        ];
+    }
 }
 ```
 
@@ -215,16 +217,16 @@ use yii\authclient\OpenId;
 
 class MyAuthClient extends OpenId
 {
-	public $authUrl = 'https://www.my.com/openid/';
+    public $authUrl = 'https://www.my.com/openid/';
 
-	public $requiredAttributes = [
-		'contact/email',
-	];
+    public $requiredAttributes = [
+        'contact/email',
+    ];
 
-	public $optionalAttributes = [
-		'namePerson/first',
-		'namePerson/last',
-	];
+    public $optionalAttributes = [
+        'namePerson/first',
+        'namePerson/last',
+    ];
 }
 ```
 
@@ -243,16 +245,16 @@ use yii\authclient\OAuth2;
 
 class MyAuthClient extends OAuth2
 {
-	public $authUrl = 'https://www.my.com/oauth2/auth';
+    public $authUrl = 'https://www.my.com/oauth2/auth';
 
-	public $tokenUrl = 'https://www.my.com/oauth2/token';
+    public $tokenUrl = 'https://www.my.com/oauth2/token';
 
-	public $apiBaseUrl = 'https://www.my.com/apis/oauth2/v1';
+    public $apiBaseUrl = 'https://www.my.com/apis/oauth2/v1';
 
-	protected function initUserAttributes()
-	{
-		return $this->api('userinfo', 'GET');
-	}
+    protected function initUserAttributes()
+    {
+        return $this->api('userinfo', 'GET');
+    }
 }
 ```
 
@@ -277,18 +279,18 @@ use yii\authclient\OAuth1;
 
 class MyAuthClient extends OAuth1
 {
-	public $authUrl = 'https://www.my.com/oauth/auth';
+    public $authUrl = 'https://www.my.com/oauth/auth';
 
-	public $requestTokenUrl = 'https://www.my.com/oauth/request_token';
+    public $requestTokenUrl = 'https://www.my.com/oauth/request_token';
 
-	public $accessTokenUrl = 'https://www.my.com/oauth/access_token';
+    public $accessTokenUrl = 'https://www.my.com/oauth/access_token';
 
-	public $apiBaseUrl = 'https://www.my.com/apis/oauth/v1';
+    public $apiBaseUrl = 'https://www.my.com/apis/oauth/v1';
 
-	protected function initUserAttributes()
-	{
-		return $this->api('userinfo', 'GET');
-	}
+    protected function initUserAttributes()
+    {
+        return $this->api('userinfo', 'GET');
+    }
 }
 ```
 

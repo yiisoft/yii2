@@ -28,15 +28,16 @@ class DbPanel extends Panel
      * the execution is considered taking critical number of DB queries.
      */
     public $criticalQueryThreshold;
+
     /**
      * @var array db queries info extracted to array as models, to use with data provider.
      */
     private $_models;
-
     /**
      * @var array current database request timings
      */
     private $_timings;
+
 
     /**
      * @inheritdoc
@@ -141,7 +142,7 @@ class DbPanel extends Panel
             $timings = $this->calculateTimings();
 
             foreach ($timings as $seq => $dbTiming) {
-                $this->_models[] = 	[
+                $this->_models[] = [
                     'type' => $this->getQueryType($dbTiming['info']),
                     'query' => $dbTiming['info'],
                     'duration' => ($dbTiming['duration'] * 1000), // in milliseconds
@@ -156,7 +157,7 @@ class DbPanel extends Panel
     }
 
     /**
-     * Returns databse query type.
+     * Returns database query type.
      *
      * @param string $timing timing procedure string
      * @return string query type such as select, insert, delete, etc.

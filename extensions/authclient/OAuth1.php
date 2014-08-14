@@ -62,6 +62,7 @@ class OAuth1 extends BaseOAuth
      */
     public $accessTokenMethod = 'GET';
 
+
     /**
      * Fetches the OAuth request token.
      * @param array $params additional request params.
@@ -147,18 +148,19 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Sends HTTP request, signed by {@link signatureMethod}.
+     * Sends HTTP request, signed by [[signatureMethod]].
      * @param string $method request type.
      * @param string $url request URL.
      * @param array $params request params.
+     * @param array $headers additional request headers.
      * @return array response.
      */
-    protected function sendSignedRequest($method, $url, array $params = [])
+    protected function sendSignedRequest($method, $url, array $params = [], array $headers = [])
     {
         $params = array_merge($params, $this->generateCommonRequestParams());
         $params = $this->signRequest($method, $url, $params);
 
-        return $this->sendRequest($method, $url, $params);
+        return $this->sendRequest($method, $url, $params, $headers);
     }
 
     /**
@@ -188,9 +190,7 @@ class OAuth1 extends BaseOAuth
                 }
                 break;
             }
-            case 'HEAD':
-            case 'PUT':
-            case 'DELETE': {
+            case 'HEAD': {
                 $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
                 if (!empty($params)) {
                     $curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
@@ -198,7 +198,10 @@ class OAuth1 extends BaseOAuth
                 break;
             }
             default: {
-                throw new Exception("Unknown request method '{$method}'.");
+                $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
+                if (!empty($params)) {
+                    $curlOptions[CURLOPT_POSTFIELDS] = $params;
+                }
             }
         }
 
@@ -206,19 +209,13 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Performs request to the OAuth API.
-     * @param OAuthToken $accessToken actual access token.
-     * @param string $url absolute API URL.
-     * @param string $method request method.
-     * @param array $params request parameters.
-     * @return array API response.
-     * @throws Exception on failure.
+     * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params)
+    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
     {
         $params['oauth_consumer_key'] = $this->consumerKey;
         $params['oauth_token'] = $accessToken->getToken();
-        $response = $this->sendSignedRequest($method, $url, $params);
+        $response = $this->sendSignedRequest($method, $url, $params, $headers);
 
         return $response;
     }
@@ -235,7 +232,7 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Composes default {@link returnUrl} value.
+     * Composes default [[returnUrl]] value.
      * @return string return URL.
      */
     protected function defaultReturnUrl()
@@ -281,7 +278,7 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Sign request with {@link signatureMethod}.
+     * Sign request with [[signatureMethod]].
      * @param string $method request method.
      * @param string $url request URL.
      * @param array $params request params.
@@ -299,7 +296,7 @@ class OAuth1 extends BaseOAuth
     }
 
     /**
-     * Creates signature base string, which will be signed by {@link signatureMethod}.
+     * Creates signature base string, which will be signed by [[signatureMethod]].
      * @param string $method request method.
      * @param string $url request URL.
      * @param array $params request params.
@@ -353,7 +350,7 @@ class OAuth1 extends BaseOAuth
             $headerParams[] = 'realm="' . rawurlencode($realm) . '"';
         }
         foreach ($params as $key => $value) {
-            if (substr($key, 0, 5) != 'oauth') {
+            if (substr_compare($key, 'oauth', 0, 5)) {
                 continue;
             }
             $headerParams[] = rawurlencode($key) . '="' . rawurlencode($value) . '"';

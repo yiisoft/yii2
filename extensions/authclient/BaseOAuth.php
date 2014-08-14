@@ -39,12 +39,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      */
     public $version = '1.0';
     /**
-     * @var string URL, which user will be redirected after authentication at the OAuth provider web site.
-     * Note: this should be absolute URL (with http:// or https:// leading).
-     * By default current URL will be used.
-     */
-    private $_returnUrl;
-    /**
      * @var string API base URL.
      */
     public $apiBaseUrl;
@@ -56,9 +50,16 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @var string auth request scope.
      */
     public $scope;
+
+    /**
+     * @var string URL, which user will be redirected after authentication at the OAuth provider web site.
+     * Note: this should be absolute URL (with http:// or https:// leading).
+     * By default current URL will be used.
+     */
+    private $_returnUrl;
     /**
      * @var array cURL request options. Option values from this field will overwrite corresponding
-     * values from {@link defaultCurlOptions()}.
+     * values from [[defaultCurlOptions()]].
      */
     private $_curlOptions = [];
     /**
@@ -69,6 +70,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @var signature\BaseMethod|array signature method instance or its array configuration.
      */
     private $_signatureMethod = [];
+
 
     /**
      * @param string $returnUrl return URL
@@ -155,7 +157,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
-     * Composes default {@link returnUrl} value.
+     * Composes default [[returnUrl]] value.
      * @return string return URL.
      */
     protected function defaultReturnUrl()
@@ -168,15 +170,17 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $method request type.
      * @param string $url request URL.
      * @param array $params request params.
+     * @param array $headers additional request headers.
      * @return array response.
      * @throws Exception on failure.
      */
-    protected function sendRequest($method, $url, array $params = [])
+    protected function sendRequest($method, $url, array $params = [], array $headers = [])
     {
         $curlOptions = $this->mergeCurlOptions(
             $this->defaultCurlOptions(),
             $this->getCurlOptions(),
             [
+                CURLOPT_HTTPHEADER => $headers,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_URL => $url,
             ],
@@ -199,7 +203,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
             throw new Exception('Curl error requesting "' .  $url . '": #' . $errorNumber . ' - ' . $errorMessage);
         }
         if ($responseHeaders['http_code'] != 200) {
-            throw new Exception('Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
+            throw new InvalidResponseException($responseHeaders, $response, 'Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
         }
 
         return $this->processResponse($response, $this->determineContentTypeByHeaders($responseHeaders));
@@ -221,7 +225,11 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         while (!empty($args)) {
             $next = array_shift($args);
             foreach ($next as $k => $v) {
-                $res[$k] = $v;
+                if (is_array($v) && !empty($res[$k]) && is_array($res[$k])) {
+                    $res[$k] = array_merge($res[$k], $v);
+                } else {
+                    $res[$k] = $v;
+                }
             }
         }
 
@@ -479,10 +487,11 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $apiSubUrl API sub URL, which will be append to [[apiBaseUrl]], or absolute API URL.
      * @param string $method request method.
      * @param array $params request parameters.
+     * @param array $headers additional request headers.
      * @return array API response
      * @throws Exception on failure.
      */
-    public function api($apiSubUrl, $method = 'GET', array $params = [])
+    public function api($apiSubUrl, $method = 'GET', array $params = [], array $headers = [])
     {
         if (preg_match('/^https?:\\/\\//is', $apiSubUrl)) {
             $url = $apiSubUrl;
@@ -494,7 +503,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
             throw new Exception('Invalid access token.');
         }
 
-        return $this->apiInternal($accessToken, $url, $method, $params);
+        return $this->apiInternal($accessToken, $url, $method, $params, $headers);
     }
 
     /**
@@ -520,8 +529,9 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $url absolute API URL.
      * @param string $method request method.
      * @param array $params request parameters.
+     * @param array $headers additional request headers.
      * @return array API response.
      * @throws Exception on failure.
      */
-    abstract protected function apiInternal($accessToken, $url, $method, array $params);
+    abstract protected function apiInternal($accessToken, $url, $method, array $params, array $headers);
 }

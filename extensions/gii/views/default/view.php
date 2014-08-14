@@ -5,16 +5,14 @@ use yii\widgets\ActiveForm;
 use yii\gii\components\ActiveField;
 use yii\gii\CodeFile;
 
-/**
- * @var yii\web\View $this
- * @var yii\gii\Generator $generator
- * @var string $id panel ID
- * @var yii\widgets\ActiveForm $form
- * @var string $results
- * @var boolean $hasError
- * @var CodeFile[] $files
- * @var array $answers
- */
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\Generator */
+/* @var $id string panel ID */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $results string */
+/* @var $hasError boolean */
+/* @var $files CodeFile[] */
+/* @var $answers array */
 
 $this->title = $generator->getName();
 $templates = [];

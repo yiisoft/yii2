@@ -76,11 +76,11 @@ class Validator extends Component
         'trim' => [
             'class' => 'yii\validators\FilterValidator',
             'filter' => 'trim',
+            'skipOnArray' => true,
         ],
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
     ];
-
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
      * please specify them as an array; for single attribute, you may use either a string or an array.
@@ -92,6 +92,11 @@ class Validator extends Component
      *
      * - `{attribute}`: the label of the attribute being validated
      * - `{value}`: the value of the attribute being validated
+     *
+     * Note that some validators may introduce other properties for error messages used when specific
+     * validation conditions are not met. Please refer to individual class API documentation for details
+     * about these properties. By convention, this property represents the primary error message
+     * used when the most important validation condition is not met.
      */
     public $message;
     /**
@@ -167,6 +172,7 @@ class Validator extends Component
      */
     public $whenClient;
 
+
     /**
      * Creates a validator object.
      * @param mixed $type the validator type. This can be a built-in validator name,
@@ -175,6 +181,7 @@ class Validator extends Component
      * @param array|string $attributes list of attributes to be validated. This can be either an array of
      * the attribute names or a string of comma-separated attribute names.
      * @param array $params initial values to be applied to the validator properties
+     * @throws \yii\base\InvalidConfigException if type can't be recognized
      * @return Validator the validator
      */
     public static function createValidator($type, $object, $attributes, $params = [])
@@ -190,13 +197,8 @@ class Validator extends Component
                 $type = static::$builtInValidators[$type];
             }
             if (is_array($type)) {
-                foreach ($type as $name => $value) {
-                    $params[$name] = $value;
-                }
+                $params = array_merge($type, $params);
             } else {
-                if (!class_exists($type)) {
-                    throw new InvalidConfigException("Unknown validator: '$type'.");
-                }
                 $params['class'] = $type;
             }
         }
@@ -301,6 +303,7 @@ class Validator extends Component
      * - `attribute`: the name of the attribute being validated.
      * - `value`: the value being validated.
      * - `messages`: an array used to hold the validation error messages for the attribute.
+     * - `deferred`: an array used to hold deferred objects for asynchronous validation
      *
      * @param \yii\base\Model $object the data object being validated
      * @param string $attribute the name of the attribute to be validated.

@@ -3,13 +3,12 @@
 use yii\helpers\Html;
 use yii\gii\CodeFile;
 
-/**
- * @var \yii\web\View $this
- * @var \yii\gii\Generator $generator
- * @var CodeFile[] $files
- * @var array $answers
- * @var string $id panel ID
- */
+/* @var $this \yii\web\View */
+/* @var $generator \yii\gii\Generator */
+/* @var $files CodeFile[] */
+/* @var $answers array */
+/* @var $id string panel ID */
+
 ?>
 <div class="default-view-files">
     <div id="action-toggle" class="btn-group btn-group-xs pull-right">

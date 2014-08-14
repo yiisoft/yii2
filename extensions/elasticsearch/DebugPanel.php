@@ -24,6 +24,7 @@ class DebugPanel extends Panel
 {
     public $db = 'elasticsearch';
 
+
     public function init()
     {
         $this->actions['elasticsearch-query'] = [
@@ -33,11 +34,17 @@ class DebugPanel extends Panel
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getName()
     {
         return 'Elasticsearch';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSummary()
     {
         $timings = $this->calculateTimings();
@@ -59,6 +66,9 @@ EOD;
         return $queryCount > 0 ? $output : '';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDetail()
     {
         $timings = $this->calculateTimings();

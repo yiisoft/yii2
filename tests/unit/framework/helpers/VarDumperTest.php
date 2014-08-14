@@ -1,7 +1,6 @@
 <?php
 namespace yiiunit\framework\helpers;
 
-use yii\data\ArrayDataProvider;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
 

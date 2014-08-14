@@ -34,6 +34,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
     private $_view;
     private $_targetDir;
 
+
     public function init()
     {
         parent::init();
@@ -78,16 +79,11 @@ abstract class GuideRenderer extends BaseGuideRenderer
         }
         $done = 0;
         $fileData = [];
-        $headlines = [];
+        $chapters = $this->loadGuideStructure($files);
         foreach ($files as $file) {
             $fileData[$file] = file_get_contents($file);
-            if (basename($file) == 'index.md') {
+            if (basename($file) == 'README.md') {
                 continue; // to not add index file to nav
-            }
-            if (preg_match("/^(.*)\n=+/", $fileData[$file], $matches)) {
-                $headlines[$file] = $matches[1];
-            } else {
-                $headlines[$file] = basename($file);
             }
         }
 
@@ -96,7 +92,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
             $output = $this->fixMarkdownLinks($output);
             if ($this->layout !== false) {
                 $params = [
-                    'headlines' => $headlines,
+                    'chapters' => $chapters,
                     'currentFile' => $file,
                     'content' => $output,
                 ];

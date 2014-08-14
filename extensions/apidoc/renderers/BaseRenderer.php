@@ -9,6 +9,7 @@ namespace yii\apidoc\renderers;
 
 use Yii;
 use yii\apidoc\helpers\ApiMarkdown;
+use yii\apidoc\helpers\ApiMarkdownLaTeX;
 use yii\apidoc\models\BaseDoc;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\ConstDoc;
@@ -41,13 +42,14 @@ abstract class BaseRenderer extends Component
      * @var Controller the apidoc controller instance. Can be used to control output.
      */
     public $controller;
-
     public $guideUrl;
     public $guideReferences = [];
+
 
     public function init()
     {
         ApiMarkdown::$renderer = $this;
+        ApiMarkdownLaTeX::$renderer = $this;
     }
 
     /**
@@ -69,8 +71,8 @@ abstract class BaseRenderer extends Component
         $links = [];
         foreach ($types as $type) {
             $postfix = '';
-            if (!is_object($type)) {
-                if (substr($type, -2, 2) == '[]') {
+            if (is_string($type)) {
+                if (!empty($type) && substr_compare($type, '[]', -2, 2) === 0) {
                     $postfix = '[]';
                     $type = substr($type, 0, -2);
                 }
@@ -83,7 +85,7 @@ abstract class BaseRenderer extends Component
                     ltrim($type, '\\');
                 }
             }
-            if (!is_object($type)) {
+            if (is_string($type)) {
                 $linkText = ltrim($type, '\\');
                 if ($title !== null) {
                     $linkText = $title;
@@ -108,7 +110,7 @@ abstract class BaseRenderer extends Component
                 } else {
                     $links[] = $type;
                 }
-            } else {
+            } elseif ($type instanceof BaseDoc) {
                 $linkText = $type->name;
                 if ($title !== null) {
                     $linkText = $title;

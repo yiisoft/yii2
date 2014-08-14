@@ -7,17 +7,17 @@ To use this extension, simply add the following code in your application configu
 
 ```php
 return [
-	//....
-	'components' => [
-		'view' => [
-			'renderers' => [
-				'tpl' => [
-					'class' => 'yii\smarty\ViewRenderer',
-					//'cachePath' => '@runtime/Smarty/cache',
-				],
-			],
-		],
-	],
+    //....
+    'components' => [
+        'view' => [
+            'renderers' => [
+                'tpl' => [
+                    'class' => 'yii\smarty\ViewRenderer',
+                    //'cachePath' => '@runtime/Smarty/cache',
+                ],
+            ],
+        ],
+    ],
 ];
 ```
 
@@ -39,3 +39,5 @@ or add
 ```
 
 to the require section of your composer.json.
+
+Note that the smarty composer package is distributed using subversion so you may need to install subversion.

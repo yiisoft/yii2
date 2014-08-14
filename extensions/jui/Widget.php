@@ -58,6 +58,7 @@ class Widget extends \yii\base\Widget
      */
     protected $clientEventMap = [];
 
+
     /**
      * Initializes the widget.
      * If you override this method, make sure you call the parent implementation first.
@@ -76,9 +77,9 @@ class Widget extends \yii\base\Widget
      */
     protected function registerAssets($assetBundle)
     {
-        /** @var \yii\web\AssetBundle $assetBundle */
+        /* @var $assetBundle \yii\web\AssetBundle */
         $assetBundle::register($this->getView());
-        /** @var \yii\web\AssetBundle $themeAsset */
+        /* @var $themeAsset \yii\web\AssetBundle */
         $themeAsset = static::$theme;
         $themeAsset::register($this->getView());
     }

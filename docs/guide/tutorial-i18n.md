@@ -29,7 +29,9 @@ Target language is what's currently used. It's defined in application configurat
 return [
     'id' => 'applicationID',
     'basePath' => dirname(__DIR__),
-    'language' => 'ru-RU' // ← here!
+    'language' => 'ru-RU' // <- here!
+    // ...
+]
 ```
 
 Later you can easily change it in runtime:
@@ -45,7 +47,7 @@ Format is `ll-CC` where `ll` is  two- or three-letter lowercase code for a langu
 If there's no translation for `ru-RU` Yii will try `ru` as well before failing.
 
 > **Note**: you can further customize details specifying language
-> [as documented in ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+> [as documented in the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
 Message translation
 -------------------
@@ -70,7 +72,7 @@ Yii tries to load appropriate translation from one of the message sources define
             'app*' => [
                 'class' => 'yii\i18n\PhpMessageSource',
                 //'basePath' => '@app/messages',
-                //'sourceLanguage' => 'en',
+                //'sourceLanguage' => 'en-US',
                 'fileMap' => [
                     'app' => 'app.php',
                     'app/error' => 'error.php',
@@ -323,7 +325,7 @@ class Module extends \yii\base\Module
     {
         Yii::$app->i18n->translations['modules/users/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
-            'sourceLanguage' => 'en',
+            'sourceLanguage' => 'en-US',
             'basePath' => '@app/modules/users/messages',
             'fileMap' => [
                 'modules/users/validation' => 'validation.php',
@@ -370,7 +372,7 @@ class Menu extends Widget
         $i18n = Yii::$app->i18n;
         $i18n->translations['widgets/menu/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
-            'sourceLanguage' => 'en',
+            'sourceLanguage' => 'en-US',
             'basePath' => '@app/widgets/menu/messages',
             'fileMap' => [
                 'widgets/menu/messages' => 'messages.php',
@@ -407,7 +409,7 @@ Sometimes you want to correct default framework message translation for your app
         'translations' => [
             'yii' => [
                 'class' => 'yii\i18n\PhpMessageSource',
-                'sourceLanguage' => 'en',
+                'sourceLanguage' => 'en-US',
                 'basePath' => '/path/to/my/message/files'
             ],
         ],
@@ -416,6 +418,52 @@ Sometimes you want to correct default framework message translation for your app
 ```
 
 Now you can place your adjusted translations to `/path/to/my/message/files`.
+
+### Handling missing translations
+
+If the translation is missing at the source, Yii displays the requested message content. Such behavior very convenient
+in case your raw message is a valid verbose text. However, sometimes it is not enough.
+You may need to perform some custom processing of the situation, when requested translation is missing at the source.
+This can be achieved via 'missingTranslation' event of the [[yii\i18n\MessageSource]].
+
+For example: lets mark all missing translations with something notable, so they can be easily found at the page.
+First we need to setup event handler, this can be done via configuration:
+
+```php
+'components' => [
+    // ...
+    'i18n' => [
+        'translations' => [
+            'app*' => [
+                'class' => 'yii\i18n\PhpMessageSource',
+                'fileMap' => [
+                    'app' => 'app.php',
+                    'app/error' => 'error.php',
+                ],
+                'on missingTranslation' => ['TranslationEventHandler', 'handleMissingTranslation']
+            ],
+        ],
+    ],
+],
+```
+
+Now we need to implement own handler:
+
+```php
+use yii\i18n\MissingTranslationEvent;
+
+class TranslationEventHandler
+{
+    public static function(MissingTranslationEvent $event) {
+        $event->translatedMessage = "@MISSING: {$event->category}.{$event->message} FOR LANGUAGE {$event->language} @";
+    }
+}
+```
+
+If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by event handler it will be displayed as translation result.
+
+> Attention: each message source handles its missing translations separately. If you are using several message sources
+  and wish them treat missing translation in the same way, you should assign corresponding event handler to each of them.
 
 Views
 -----
@@ -444,7 +492,7 @@ return [
 ];
 ```
 
-After cofiguring the component can be accessed as `Yii::$app->formatter`.
+After configuring the component can be accessed as `Yii::$app->formatter`.
 
 Note that in order to use i18n formatter you need to install and enable
 [intl](http://www.php.net/manual/en/intro.intl.php) PHP extension.

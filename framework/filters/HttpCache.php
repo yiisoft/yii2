@@ -12,11 +12,11 @@ use yii\base\ActionFilter;
 use yii\base\Action;
 
 /**
- * The HttpCache provides functionality for caching via HTTP Last-Modified and Etag headers.
+ * HttpCache implements client-side caching by utilizing the `Last-Modified` and `Etag` HTTP headers.
  *
  * It is an action filter that can be added to a controller and handles the `beforeAction` event.
  *
- * To use AccessControl, declare it in the `behaviors()` method of your controller class.
+ * To use HttpCache, declare it in the `behaviors()` method of your controller class.
  * In the following example the filter will be applied to the `list`-action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
@@ -24,7 +24,7 @@ use yii\base\Action;
  * public function behaviors()
  * {
  *     return [
- *         'httpCache' => [
+ *         [
  *             'class' => 'yii\filters\HttpCache',
  *             'only' => ['index'],
  *             'lastModified' => function ($action, $params) {
@@ -75,9 +75,25 @@ class HttpCache extends ActionFilter
      */
     public $params;
     /**
-     * @var string HTTP cache control header. If null, the header will not be sent.
+     * @var string the value of the `Cache-Control` HTTP header. If null, the header will not be sent.
      */
-    public $cacheControlHeader = 'max-age=3600, public';
+    public $cacheControlHeader = 'public, max-age=3600';
+    /**
+     * @var string the name of the cache limiter to be set when [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * is called. The default value is an empty string, meaning turning off automatic sending of cache headers entirely.
+     * You may set this property to be `public`, `private`, `private_no_expire`, and `nocache`.
+     * Please refer to [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+     * for detailed explanation of these values.
+     *
+     * If this property is `null`, then `session_cache_limiter()` will not be called. As a result,
+     * PHP will send headers according to the `session.cache_limiter` PHP ini setting.
+     */
+    public $sessionCacheLimiter = '';
+    /**
+     * @var boolean a value indicating whether this filter should be enabled.
+     */
+    public $enabled = true;
+
 
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
@@ -87,6 +103,10 @@ class HttpCache extends ActionFilter
      */
     public function beforeAction($action)
     {
+        if (!$this->enabled) {
+            return true;
+        }
+
         $verb = Yii::$app->getRequest()->getMethod();
         if ($verb !== 'GET' && $verb !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
             return true;
@@ -102,6 +122,7 @@ class HttpCache extends ActionFilter
         }
 
         $this->sendCacheControlHeader();
+
         $response = Yii::$app->getResponse();
         if ($etag !== null) {
             $response->getHeaders()->set('Etag', $etag);
@@ -129,7 +150,7 @@ class HttpCache extends ActionFilter
      */
     protected function validateCache($lastModified, $etag)
     {
-        if($etag !== null && isset($_SERVER['HTTP_IF_NONE_MATCH']) && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag) {
+        if($etag !== null && isset($_SERVER['HTTP_IF_NONE_MATCH']) && in_array($etag, Yii::$app->request->getEtags(), true)) {
             return true;
         } else {
             return $lastModified !== null && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
@@ -142,9 +163,19 @@ class HttpCache extends ActionFilter
      */
     protected function sendCacheControlHeader()
     {
-        session_cache_limiter('public');
+        if ($this->sessionCacheLimiter !== null) {
+            if ($this->sessionCacheLimiter === '' && !headers_sent() && Yii::$app->getSession()->getIsActive()) {
+                header_remove('Expires');
+                header_remove('Cache-Control');
+                header_remove('Last-Modified');
+                header_remove('Pragma');
+            }
+            session_cache_limiter($this->sessionCacheLimiter);
+        }
+
         $headers = Yii::$app->getResponse()->getHeaders();
         $headers->set('Pragma');
+
         if ($this->cacheControlHeader !== null) {
             $headers->set('Cache-Control', $this->cacheControlHeader);
         }

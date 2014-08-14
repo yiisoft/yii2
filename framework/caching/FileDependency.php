@@ -27,6 +27,7 @@ class FileDependency extends Dependency
      */
     public $fileName;
 
+
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method returns the file's last modification time.

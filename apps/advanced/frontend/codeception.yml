@@ -1,3 +1,5 @@
+namespace: frontend
+actor: Tester
 paths:
     tests: tests
     log: tests/_log
@@ -16,3 +18,7 @@ modules:
             user: ''
             password: ''
             dump: tests/_data/dump.sql
+config:
+    # the entry script URL (without host info) for functional and acceptance tests
+    # PLEASE ADJUST IT TO THE ACTUAL ENTRY SCRIPT URL
+    test_entry_url: /advanced/frontend/web/index-test.php

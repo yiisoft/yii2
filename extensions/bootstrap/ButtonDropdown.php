@@ -59,12 +59,16 @@ class ButtonDropdown extends Widget
      */
     public $encodeLabel = true;
 
+
     /**
      * Renders the widget.
      */
     public function run()
     {
-        echo $this->renderButton() . "\n" . $this->renderDropdown();
+        echo Html::beginTag('div', ['class' => 'btn-group']);
+        echo "\n" . $this->renderButton();
+        echo "\n" . $this->renderDropdown();
+        echo "\n" . Html::endTag('div');
         $this->registerPlugin('button');
     }
 

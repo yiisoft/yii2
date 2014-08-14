@@ -26,6 +26,7 @@ class Database extends Object
      * @var \MongoDB Mongo database instance.
      */
     public $mongoDb;
+
     /**
      * @var Collection[] list of collections.
      */
@@ -34,6 +35,7 @@ class Database extends Object
      * @var file\Collection[] list of GridFS collections.
      */
     private $_fileCollections = [];
+
 
     /**
      * @return string name of this database.

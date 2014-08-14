@@ -25,6 +25,7 @@ class ProfilingPanel extends Panel
      */
     private $_models;
 
+
     /**
      * @inheritdoc
      */
@@ -69,7 +70,6 @@ class ProfilingPanel extends Panel
     {
         $target = $this->module->logTarget;
         $messages = $target->filterMessages($target->messages, Logger::LEVEL_PROFILE);
-
         return [
             'memory' => memory_get_peak_usage(),
             'time' => microtime(true) - YII_BEGIN_TIME,

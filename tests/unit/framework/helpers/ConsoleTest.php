@@ -79,4 +79,54 @@ class ConsoleTest extends TestCase
             sleep(1);
         }
     }*/
+
+    public function ansiFormats()
+    {
+        return [
+            ['test', 'test'],
+            [Console::ansiFormat('test', [Console::FG_RED]), '<span style="color: red;">test</span>'],
+            ['abc' . Console::ansiFormat('def', [Console::FG_RED]) . 'ghj', 'abc<span style="color: red;">def</span>ghj'],
+            ['abc' . Console::ansiFormat('def', [Console::FG_RED, Console::BG_GREEN]) . 'ghj', 'abc<span style="color: red;background-color: lime;">def</span>ghj'],
+            ['abc' . Console::ansiFormat('def', [Console::FG_GREEN, Console::FG_RED, Console::BG_GREEN]) . 'ghj', 'abc<span style="color: red;background-color: lime;">def</span>ghj'],
+            ['abc' . Console::ansiFormat('def', [Console::BOLD, Console::BG_GREEN]) . 'ghj', 'abc<span style="font-weight: bold;background-color: lime;">def</span>ghj'],
+
+            [
+                Console::ansiFormat('test', [Console::UNDERLINE, Console::OVERLINED, Console::CROSSED_OUT, Console::FG_GREEN]),
+                '<span style="text-decoration: underline overline line-through;color: lime;">test</span>'
+            ],
+
+            [Console::ansiFormatCode([Console::RESET]) . Console::ansiFormatCode([Console::RESET]), ''],
+            [Console::ansiFormatCode([Console::RESET]) . Console::ansiFormatCode([Console::RESET]) . 'test', 'test'],
+            [Console::ansiFormatCode([Console::RESET]) . 'test' . Console::ansiFormatCode([Console::RESET]), 'test'],
+
+            [
+                Console::ansiFormatCode([Console::BOLD]) . 'abc' . Console::ansiFormatCode([Console::RESET, Console::FG_GREEN]) . 'ghj' . Console::ansiFormatCode([Console::RESET]),
+                '<span style="font-weight: bold;">abc</span><span style="color: lime;">ghj</span>'
+            ],
+            [
+                Console::ansiFormatCode([Console::FG_GREEN]) . ' a ' . Console::ansiFormatCode([Console::BOLD]) . 'abc' . Console::ansiFormatCode([Console::RESET]) . 'ghj',
+                '<span style="color: lime;"> a <span style="font-weight: bold;">abc</span></span>ghj'
+            ],
+            [
+                Console::ansiFormat('test', [Console::FG_GREEN, Console::BG_BLUE, Console::NEGATIVE]),
+                '<span style="background-color: lime;color: blue;">test</span>'
+            ],
+            [
+                Console::ansiFormat('test', [Console::NEGATIVE]),
+                'test'
+            ],
+            [
+                Console::ansiFormat('test', [Console::CONCEALED]),
+                '<span style="visibility: hidden;">test</span>'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider ansiFormats
+     */
+    public function testAnsi2Html($ansi, $html)
+    {
+        $this->assertEquals($html, Console::ansiToHtml($ansi));
+    }
 }

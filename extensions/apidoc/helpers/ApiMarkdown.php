@@ -9,7 +9,6 @@ namespace yii\apidoc\helpers;
 
 use cebe\markdown\GithubMarkdown;
 use phpDocumentor\Reflection\DocBlock\Type\Collection;
-use yii\apidoc\models\MethodDoc;
 use yii\apidoc\models\TypeDoc;
 use yii\apidoc\renderers\BaseRenderer;
 use yii\helpers\Inflector;
@@ -23,64 +22,15 @@ use yii\helpers\Markdown;
  */
 class ApiMarkdown extends GithubMarkdown
 {
+    use ApiMarkdownTrait;
+
     /**
      * @var BaseRenderer
      */
     public static $renderer;
 
-    protected $context;
+    protected $renderingContext;
 
-    public function prepare()
-    {
-        parent::prepare();
-
-        // add references to guide pages
-        $this->references = array_merge($this->references, static::$renderer->guideReferences);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function identifyLine($lines, $current)
-    {
-        if (strncmp($lines[$current], '~~~', 3) === 0) {
-            return 'fencedCode';
-        }
-
-        return parent::identifyLine($lines, $current);
-    }
-
-    /**
-     * Consume lines for a fenced code block
-     */
-    protected function consumeFencedCode($lines, $current)
-    {
-        // consume until ```
-        $block = [
-            'type' => 'code',
-            'content' => [],
-        ];
-        $line = rtrim($lines[$current]);
-        if (strncmp($lines[$current], '~~~', 3) === 0) {
-            $fence = '~~~';
-            $language = 'php';
-        } else {
-            $fence = substr($line, 0, $pos = strrpos($line, '`') + 1);
-            $language = substr($line, $pos);
-        }
-        if (!empty($language)) {
-            $block['language'] = $language;
-        }
-        for ($i = $current + 1, $count = count($lines); $i < $count; $i++) {
-            if (rtrim($line = $lines[$i]) !== $fence) {
-                $block['content'][] = $line;
-            } else {
-                break;
-            }
-        }
-
-        return [$block, $i];
-    }
 
     /**
      * Renders a code block
@@ -125,96 +75,6 @@ class ApiMarkdown extends GithubMarkdown
         ]);
     }
 
-    protected function parseApiLinks($text)
-    {
-        $context = $this->context;
-
-        if (preg_match('/^\[\[([\w\d\\\\\(\):$]+)(\|[^\]]*)?\]\]/', $text, $matches)) {
-
-            $offset = strlen($matches[0]);
-
-            $object = $matches[1];
-            $title = (empty($matches[2]) || $matches[2] == '|') ? null : substr($matches[2], 1);
-
-            if (($pos = strpos($object, '::')) !== false) {
-                $typeName = substr($object, 0, $pos);
-                $subjectName = substr($object, $pos + 2);
-                if ($context !== null) {
-                    // Collection resolves relative types
-                    $typeName = (new Collection([$typeName], $context->phpDocContext))->__toString();
-                }
-                $type = static::$renderer->apiContext->getType($typeName);
-                if ($type === null) {
-                    static::$renderer->apiContext->errors[] = [
-                        'file' => ($context !== null) ? $context->sourceFile : null,
-                        'message' => 'broken link to ' . $typeName . '::' . $subjectName . (($context !== null) ? ' in ' . $context->name : ''),
-                    ];
-
-                    return [
-                        '<span style="background: #f00;">' . $typeName . '::' . $subjectName . '</span>',
-                        $offset
-                    ];
-                } else {
-                    if (($subject = $type->findSubject($subjectName)) !== null) {
-                        if ($title === null) {
-                            $title = $type->name . '::' . $subject->name;
-                            if ($subject instanceof MethodDoc) {
-                                $title .= '()';
-                            }
-                        }
-
-                        return [
-                            static::$renderer->createSubjectLink($subject, $title),
-                            $offset
-                        ];
-                    } else {
-                        static::$renderer->apiContext->errors[] = [
-                            'file' => ($context !== null) ? $context->sourceFile : null,
-                            'message' => 'broken link to ' . $type->name . '::' . $subjectName . (($context !== null) ? ' in ' . $context->name : ''),
-                        ];
-
-                        return [
-                            '<span style="background: #ff0;">' . $type->name . '</span><span style="background: #f00;">::' . $subjectName . '</span>',
-                            $offset
-                        ];
-                    }
-                }
-            } elseif ($context !== null && ($subject = $context->findSubject($object)) !== null) {
-                return [
-                    static::$renderer->createSubjectLink($subject, $title),
-                    $offset
-                ];
-            }
-
-            if ($context !== null) {
-                // Collection resolves relative types
-                $object = (new Collection([$object], $context->phpDocContext))->__toString();
-            }
-            if (($type = static::$renderer->apiContext->getType($object)) !== null) {
-                return [
-                    static::$renderer->createTypeLink($type, null, $title),
-                    $offset
-                ];
-            } elseif (strpos($typeLink = static::$renderer->createTypeLink($object, null, $title), '<a href') !== false) {
-                return [
-                    $typeLink,
-                    $offset
-                ];
-            }
-            static::$renderer->apiContext->errors[] = [
-                'file' => ($context !== null) ? $context->sourceFile : null,
-                'message' => 'broken link to ' . $object . (($context !== null) ? ' in ' . $context->name : ''),
-            ];
-
-            return [
-                '<span style="background: #f00;">' . $object . '</span>',
-                $offset
-            ];
-        }
-
-        return ['[[', 2];
-    }
-
     /**
      * @inheritDoc
      */
@@ -222,7 +82,7 @@ class ApiMarkdown extends GithubMarkdown
     {
         $content = $this->parseInline($block['content']);
         $hash = Inflector::slug(strip_tags($content));
-        $hashLink = "<a href=\"#$hash\" name=\"$hash\">&para;</a>";
+        $hashLink = "<a href=\"#$hash\" name=\"$hash\" class=\"hashlink\">&para;</a>";
         $tag = 'h' . $block['level'];
 
         return "<$tag>$content $hashLink</$tag>";
@@ -245,7 +105,7 @@ class ApiMarkdown extends GithubMarkdown
         if (is_string($context)) {
             $context = static::$renderer->apiContext->getType($context);
         }
-        Markdown::$flavors['api']->context = $context;
+        Markdown::$flavors['api']->renderingContext = $context;
 
         if ($paragraph) {
             return Markdown::processParagraph($content, 'api');

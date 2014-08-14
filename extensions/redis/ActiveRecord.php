@@ -7,6 +7,7 @@
 
 namespace yii\redis;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
@@ -50,10 +51,11 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -99,38 +101,36 @@ class ActiveRecord extends BaseActiveRecord
         if ($runValidation && !$this->validate($attributes)) {
             return false;
         }
-        if ($this->beforeSave(true)) {
-            $db = static::getDb();
-            $values = $this->getDirtyAttributes($attributes);
-            $pk = [];
-            //			if ($values === []) {
-            foreach ($this->primaryKey() as $key) {
-                $pk[$key] = $values[$key] = $this->getAttribute($key);
-                if ($pk[$key] === null) {
-                    $pk[$key] = $values[$key] = $db->executeCommand('INCR', [static::keyPrefix() . ':s:' . $key]);
-                    $this->setAttribute($key, $values[$key]);
-                }
-            }
-            //			}
-            // save pk in a findall pool
-            $db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
-
-            $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
-            // save attributes
-            $args = [$key];
-            foreach ($values as $attribute => $value) {
-                $args[] = $attribute;
-                $args[] = $value;
-            }
-            $db->executeCommand('HMSET', $args);
-
-            $this->afterSave(true);
-            $this->setOldAttributes($values);
-
-            return true;
+        if (!$this->beforeSave(true)) {
+            return false;
         }
+        $db = static::getDb();
+        $values = $this->getDirtyAttributes($attributes);
+        $pk = [];
+        foreach ($this->primaryKey() as $key) {
+            $pk[$key] = $values[$key] = $this->getAttribute($key);
+            if ($pk[$key] === null) {
+                $pk[$key] = $values[$key] = $db->executeCommand('INCR', [static::keyPrefix() . ':s:' . $key]);
+                $this->setAttribute($key, $values[$key]);
+            }
+        }
+        // save pk in a findall pool
+        $db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
 
-        return false;
+        $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
+        // save attributes
+        $args = [$key];
+        foreach ($values as $attribute => $value) {
+            $args[] = $attribute;
+            $args[] = $value;
+        }
+        $db->executeCommand('HMSET', $args);
+
+        $changedAttributes = array_fill_keys(array_keys($values), null);
+        $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
+
+        return true;
     }
 
     /**
@@ -233,19 +233,18 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function deleteAll($condition = null)
     {
+        $pks = self::fetchPks($condition);
+        if (empty($pks)) {
+            return 0;
+        }
+
         $db = static::getDb();
         $attributeKeys = [];
-        $pks = self::fetchPks($condition);
         $db->executeCommand('MULTI');
         foreach ($pks as $pk) {
             $pk = static::buildKey($pk);
             $db->executeCommand('LREM', [static::keyPrefix(), 0, $pk]);
             $attributeKeys[] = static::keyPrefix() . ':a:' . $pk;
-        }
-        if (empty($attributeKeys)) {
-            $db->executeCommand('EXEC');
-
-            return 0;
         }
         $db->executeCommand('DEL', $attributeKeys);
         $result = $db->executeCommand('EXEC');

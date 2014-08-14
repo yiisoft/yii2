@@ -50,6 +50,7 @@ class OAuth2 extends BaseOAuth
      */
     public $tokenUrl;
 
+
     /**
      * Composes user authorization URL.
      * @param array $params additional auth GET params.
@@ -114,9 +115,7 @@ class OAuth2 extends BaseOAuth
                 $curlOptions[CURLOPT_POSTFIELDS] = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
                 break;
             }
-            case 'HEAD':
-            case 'PUT':
-            case 'DELETE': {
+            case 'HEAD': {
                 $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
                 if (!empty($params)) {
                     $curlOptions[CURLOPT_URL] = $this->composeUrl($url, $params);
@@ -124,7 +123,10 @@ class OAuth2 extends BaseOAuth
                 break;
             }
             default: {
-                throw new Exception("Unknown request method '{$method}'.");
+                $curlOptions[CURLOPT_CUSTOMREQUEST] = $method;
+                if (!empty($params)) {
+                    $curlOptions[CURLOPT_POSTFIELDS] = $params;
+                }
             }
         }
 
@@ -132,19 +134,13 @@ class OAuth2 extends BaseOAuth
     }
 
     /**
-     * Performs request to the OAuth API.
-     * @param OAuthToken $accessToken actual access token.
-     * @param string $url absolute API URL.
-     * @param string $method request method.
-     * @param array $params request parameters.
-     * @return array API response.
-     * @throws Exception on failure.
+     * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params)
+    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
     {
         $params['access_token'] = $accessToken->getToken();
 
-        return $this->sendRequest($method, $url, $params);
+        return $this->sendRequest($method, $url, $params, $headers);
     }
 
     /**
@@ -166,7 +162,7 @@ class OAuth2 extends BaseOAuth
     }
 
     /**
-     * Composes default {@link returnUrl} value.
+     * Composes default [[returnUrl]] value.
      * @return string return URL.
      */
     protected function defaultReturnUrl()

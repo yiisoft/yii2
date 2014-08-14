@@ -4,7 +4,7 @@
  */
 return [
     'components' => [
-        'mail' => [
+        'mailer' => [
             'useFileTransport' => true,
         ],
         'urlManager' => [

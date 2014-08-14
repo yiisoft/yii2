@@ -58,6 +58,7 @@ abstract class BaseClient extends Component implements ClientInterface
      */
     private $_viewOptions;
 
+
     /**
      * @param string $id service id.
      */
@@ -226,7 +227,7 @@ abstract class BaseClient extends Component implements ClientInterface
     }
 
     /**
-     * Normalize given user attributes according to {@link normalizeUserAttributeMap}.
+     * Normalize given user attributes according to [[normalizeUserAttributeMap]].
      * @param array $attributes raw attributes.
      * @return array normalized attributes.
      */

@@ -80,6 +80,7 @@ class BaseHtml
         'media',
     ];
 
+
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
@@ -129,7 +130,6 @@ class BaseHtml
     public static function tag($name, $content = '', $options = [])
     {
         $html = "<$name" . static::renderTagAttributes($options) . '>';
-
         return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
     }
 
@@ -250,6 +250,22 @@ class BaseHtml
     }
 
     /**
+     * Generates the meta tags containing CSRF token information.
+     * @return string the generated meta tags
+     * @see Request::enableCsrfValidation
+     */
+    public static function csrfMetaTags()
+    {
+        $request = Yii::$app->getRequest();
+        if ($request instanceof Request && $request->enableCsrfValidation) {
+            return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]) . "\n    "
+                . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]) . "\n";
+        } else {
+            return '';
+        }
+    }
+
+    /**
      * Generates a form start tag.
      * @param array|string $action the form action URL. This parameter will be processed by [[Url::to()]].
      * @param string $method the form submission method, such as "post", "get", "put", "delete" (case-insensitive).
@@ -337,7 +353,6 @@ class BaseHtml
         if ($url !== null) {
             $options['href'] = Url::to($url);
         }
-
         return static::tag('a', $text, $options);
     }
 
@@ -357,7 +372,6 @@ class BaseHtml
     public static function mailto($text, $email = null, $options = [])
     {
         $options['href'] = 'mailto:' . ($email === null ? $text : $email);
-
         return static::tag('a', $text, $options);
     }
 
@@ -376,7 +390,6 @@ class BaseHtml
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
-
         return static::tag('img', '', $options);
     }
 
@@ -396,7 +409,6 @@ class BaseHtml
     public static function label($content, $for = null, $options = [])
     {
         $options['for'] = $for;
-
         return static::tag('label', $content, $options);
     }
 
@@ -430,7 +442,6 @@ class BaseHtml
     public static function submitButton($content = 'Submit', $options = [])
     {
         $options['type'] = 'submit';
-
         return static::button($content, $options);
     }
 
@@ -448,7 +459,6 @@ class BaseHtml
     public static function resetButton($content = 'Reset', $options = [])
     {
         $options['type'] = 'reset';
-
         return static::button($content, $options);
     }
 
@@ -468,7 +478,6 @@ class BaseHtml
         $options['type'] = $type;
         $options['name'] = $name;
         $options['value'] = $value === null ? null : (string) $value;
-
         return static::tag('input', '', $options);
     }
 
@@ -485,7 +494,6 @@ class BaseHtml
     {
         $options['type'] = 'button';
         $options['value'] = $label;
-
         return static::tag('input', '', $options);
     }
 
@@ -502,7 +510,6 @@ class BaseHtml
     {
         $options['type'] = 'submit';
         $options['value'] = $label;
-
         return static::tag('input', '', $options);
     }
 
@@ -518,7 +525,6 @@ class BaseHtml
     {
         $options['type'] = 'reset';
         $options['value'] = $label;
-
         return static::tag('input', '', $options);
     }
 
@@ -598,7 +604,6 @@ class BaseHtml
     public static function textarea($name, $value = '', $options = [])
     {
         $options['name'] = $name;
-
         return static::tag('textarea', static::encode($value), $options);
     }
 
@@ -614,7 +619,7 @@ class BaseHtml
      * - label: string, a label displayed next to the radio button.  It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   When this option is specified, the radio button will be enclosed by a label tag.
-     * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+     * - labelOptions: array, the HTML attributes for the label tag. Do not set this option unless you set the "label" option.
      * - container: array|boolean, the HTML attributes for the container tag. This is only used when the "label" option is specified.
      *   If it is false, no container will be rendered. If it is an array or not, a "div" container will be rendered
      *   around the the radio button.
@@ -664,7 +669,7 @@ class BaseHtml
      * - label: string, a label displayed next to the checkbox.  It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   When this option is specified, the checkbox will be enclosed by a label tag.
-     * - labelOptions: array, the HTML attributes for the label tag. This is only used when the "label" option is specified.
+     * - labelOptions: array, the HTML attributes for the label tag. Do not set this option unless you set the "label" option.
      * - container: array|boolean, the HTML attributes for the container tag. This is only used when the "label" option is specified.
      *   If it is false, no container will be rendered. If it is an array or not, a "div" container will be rendered
      *   around the the radio button.
@@ -729,6 +734,8 @@ class BaseHtml
      *
      * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
      *   except that the array keys represent the optgroup labels specified in $items.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `false`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -742,8 +749,8 @@ class BaseHtml
             return static::listBox($name, $selection, $items, $options);
         }
         $options['name'] = $name;
+        unset($options['unselect']);
         $selectOptions = static::renderSelectOptions($selection, $items, $options);
-
         return static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
 
@@ -777,6 +784,8 @@ class BaseHtml
      * - unselect: string, the value that will be submitted when no option is selected.
      *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
      *   mode, we can still obtain the posted unselect value.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `false`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -789,13 +798,13 @@ class BaseHtml
         if (!array_key_exists('size', $options)) {
             $options['size'] = 4;
         }
-        if (!empty($options['multiple']) && substr($name, -2) !== '[]') {
+        if (!empty($options['multiple']) && !empty($name) && substr_compare($name, '[]', -2)) {
             $name .= '[]';
         }
         $options['name'] = $name;
         if (isset($options['unselect'])) {
             // add a hidden field so that if the list box has no option being selected, it still submits a value
-            if (substr($name, -2) === '[]') {
+            if (!empty($name) && substr_compare($name, '[]', -2) === 0) {
                 $name = substr($name, 0, -2);
             }
             $hidden = static::hiddenInput($name, $options['unselect']);
@@ -804,7 +813,6 @@ class BaseHtml
             $hidden = '';
         }
         $selectOptions = static::renderSelectOptions($selection, $items, $options);
-
         return $hidden . static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
 
@@ -815,7 +823,7 @@ class BaseHtml
      * @param string $name the name attribute of each checkbox.
      * @param string|array $selection the selected value(s).
      * @param array $items the data item used to generate the checkboxes.
-     * The array values are the labels, while the array keys are the corresponding checkbox values.
+     * The array keys are the checkbox values, while the array values are the corresponding labels.
      * @param array $options options (name => config) for the checkbox list container tag.
      * The following options are specially handled:
      *
@@ -888,7 +896,7 @@ class BaseHtml
      * @param string $name the name attribute of each radio button.
      * @param string|array $selection the selected value(s).
      * @param array $items the data item used to generate the radio buttons.
-     * The array values are the labels, while the array keys are the corresponding radio button values.
+     * The array keys are the radio button values, while the array values are the corresponding labels.
      * @param array $options options (name => config) for the radio button list. The following options are supported:
      *
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
@@ -969,18 +977,20 @@ class BaseHtml
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
-     * @return string the generated unordered list. An empty string is returned if `$items` is empty.
+     * @return string the generated unordered list. An empty list tag will be returned if `$items` is empty.
      */
     public static function ul($items, $options = [])
     {
-        if (empty($items)) {
-            return '';
-        }
         $tag = isset($options['tag']) ? $options['tag'] : 'ul';
         $encode = !isset($options['encode']) || $options['encode'];
         $formatter = isset($options['item']) ? $options['item'] : null;
         $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
         unset($options['tag'], $options['encode'], $options['item'], $options['itemOptions']);
+
+        if (empty($items)) {
+            return static::tag($tag, '', $options);
+        }
+
         $results = [];
         foreach ($items as $index => $item) {
             if ($formatter !== null) {
@@ -989,7 +999,6 @@ class BaseHtml
                 $results[] = static::tag('li', $encode ? static::encode($item) : $item, $itemOptions);
             }
         }
-
         return static::tag($tag, "\n" . implode("\n", $results) . "\n", $options);
     }
 
@@ -1019,7 +1028,6 @@ class BaseHtml
     public static function ol($items, $options = [])
     {
         $options['tag'] = 'ol';
-
         return static::ul($items, $options);
     }
 
@@ -1048,7 +1056,6 @@ class BaseHtml
         $attribute = static::getAttributeName($attribute);
         $label = isset($options['label']) ? $options['label'] : static::encode($model->getAttributeLabel($attribute));
         unset($options['label'], $options['for']);
-
         return static::label($label, $for, $options);
     }
 
@@ -1060,6 +1067,7 @@ class BaseHtml
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
      * - footer: string, the footer HTML for the error summary.
+     * - encode: boolean, if set to false then value won't be encoded.
      *
      * The rest of the options will be rendered as the attributes of the container tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1067,20 +1075,21 @@ class BaseHtml
      */
     public static function errorSummary($models, $options = [])
     {
+        $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
+        $footer = isset($options['footer']) ? $options['footer'] : '';
+        $encode = !isset($options['encode']) || $options['encode'] !== false;
+        unset($options['header'], $options['footer'], $options['encode']);
+
         $lines = [];
         if (!is_array($models)) {
             $models = [$models];
         }
         foreach ($models as $model) {
-            /** @var Model $model */
+            /* @var $model Model */
             foreach ($model->getFirstErrors() as $error) {
-                $lines[] = Html::encode($error);
+                $lines[] = $encode ? Html::encode($error) : $error;
             }
         }
-
-        $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
-        $footer = isset($options['footer']) ? $options['footer'] : '';
-        unset($options['header'], $options['footer']);
 
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
@@ -1104,6 +1113,7 @@ class BaseHtml
      * The following options are specially handled:
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
+     * - encode: boolean, if set to false then value won't be encoded.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1114,9 +1124,9 @@ class BaseHtml
         $attribute = static::getAttributeName($attribute);
         $error = $model->getFirstError($attribute);
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag']);
-
-        return Html::tag($tag, Html::encode($error), $options);
+        $encode = !isset($options['encode']) || $options['encode'] !== false;
+        unset($options['tag'], $options['encode']);
+        return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
     }
 
     /**
@@ -1139,7 +1149,6 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
-
         return static::input($type, $name, $value, $options);
     }
 
@@ -1232,7 +1241,6 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
-
         return static::textarea($name, $value, $options);
     }
 
@@ -1354,6 +1362,8 @@ class BaseHtml
      *
      * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
      *   except that the array keys represent the optgroup labels specified in $items.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `false`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1363,16 +1373,11 @@ class BaseHtml
      */
     public static function activeDropDownList($model, $attribute, $items, $options = [])
     {
-        if (!empty($options['multiple'])) {
+        if (empty($options['multiple'])) {
+            return static::activeListInput('dropDownList', $model, $attribute, $items, $options);
+        } else {
             return static::activeListBox($model, $attribute, $items, $options);
         }
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = static::getAttributeValue($model, $attribute);
-        if (!array_key_exists('id', $options)) {
-            $options['id'] = static::getInputId($model, $attribute);
-        }
-
-        return static::dropDownList($name, $selection, $items, $options);
     }
 
     /**
@@ -1407,6 +1412,8 @@ class BaseHtml
      * - unselect: string, the value that will be submitted when no option is selected.
      *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
      *   mode, we can still obtain the posted unselect value.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to `false`.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1416,16 +1423,7 @@ class BaseHtml
      */
     public static function activeListBox($model, $attribute, $items, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = static::getAttributeValue($model, $attribute);
-        if (!array_key_exists('unselect', $options)) {
-            $options['unselect'] = '';
-        }
-        if (!array_key_exists('id', $options)) {
-            $options['id'] = static::getInputId($model, $attribute);
-        }
-
-        return static::listBox($name, $selection, $items, $options);
+        return static::activeListInput('listBox', $model, $attribute, $items, $options);
     }
 
     /**
@@ -1437,7 +1435,7 @@ class BaseHtml
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $items the data item used to generate the checkboxes.
-     * The array values are the labels, while the array keys are the corresponding checkbox values.
+     * The array keys are the checkbox values, and the array values are the corresponding labels.
      * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the checkbox list. The following options are specially handled:
      *
@@ -1462,16 +1460,7 @@ class BaseHtml
      */
     public static function activeCheckboxList($model, $attribute, $items, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = static::getAttributeValue($model, $attribute);
-        if (!array_key_exists('unselect', $options)) {
-            $options['unselect'] = '';
-        }
-        if (!array_key_exists('id', $options)) {
-            $options['id'] = static::getInputId($model, $attribute);
-        }
-
-        return static::checkboxList($name, $selection, $items, $options);
+        return static::activeListInput('checkboxList', $model, $attribute, $items, $options);
     }
 
     /**
@@ -1482,7 +1471,7 @@ class BaseHtml
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $items the data item used to generate the radio buttons.
-     * The array keys are the labels, while the array values are the corresponding radio button values.
+     * The array keys are the radio values, and the array values are the corresponding labels.
      * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the radio button list. The following options are specially handled:
      *
@@ -1507,6 +1496,25 @@ class BaseHtml
      */
     public static function activeRadioList($model, $attribute, $items, $options = [])
     {
+        return static::activeListInput('radioList', $model, $attribute, $items, $options);
+    }
+
+    /**
+     * Generates a list of input fields.
+     * This method is mainly called by [[activeListBox()]], [[activeRadioList()]] and [[activeCheckBoxList()]].
+     * @param string $type the input type. This can be 'listBox', 'radioList', or 'checkBoxList'.
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $items the data item used to generate the input fields.
+     * The array keys are the input values, and the array values are the corresponding labels.
+     * Note that the labels will NOT be HTML-encoded, while the values will.
+     * @param array $options options (name => config) for the input list. The supported special options
+     * depend on the input type specified by `$type`.
+     * @return string the generated input list
+     */
+    protected static function activeListInput($type, $model, $attribute, $items, $options = [])
+    {
         $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
         $selection = static::getAttributeValue($model, $attribute);
         if (!array_key_exists('unselect', $options)) {
@@ -1515,8 +1523,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
-
-        return static::radioList($name, $selection, $items, $options);
+        return static::$type($name, $selection, $items, $options);
     }
 
     /**
@@ -1540,20 +1547,22 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         $lines = [];
+        $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         if (isset($tagOptions['prompt'])) {
-            $prompt = str_replace(' ', '&nbsp;', static::encode($tagOptions['prompt']));
+            $prompt = $encodeSpaces ? str_replace(' ', '&nbsp;', static::encode($tagOptions['prompt'])) : static::encode($tagOptions['prompt']);
             $lines[] = static::tag('option', $prompt, ['value' => '']);
         }
 
         $options = isset($tagOptions['options']) ? $tagOptions['options'] : [];
         $groups = isset($tagOptions['groups']) ? $tagOptions['groups'] : [];
         unset($tagOptions['prompt'], $tagOptions['options'], $tagOptions['groups']);
-
+        $options['encodeSpaces'] = ArrayHelper::getValue($options, 'encodeSpaces', $encodeSpaces);
+        
         foreach ($items as $key => $value) {
             if (is_array($value)) {
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
                 $groupAttrs['label'] = $key;
-                $attrs = ['options' => $options, 'groups' => $groups];
+                $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces];
                 $content = static::renderSelectOptions($selection, $value, $attrs);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
             } else {
@@ -1562,7 +1571,7 @@ class BaseHtml
                 $attrs['selected'] = $selection !== null &&
                         (!is_array($selection) && !strcmp($key, $selection)
                         || is_array($selection) && in_array($key, $selection));
-                $lines[] = static::tag('option', str_replace(' ', '&nbsp;', static::encode($value)), $attrs);
+                $lines[] = static::tag('option', ($encodeSpaces ? str_replace(' ', '&nbsp;', static::encode($value)) : static::encode($value)), $attrs);
             }
         }
 
@@ -1583,6 +1592,8 @@ class BaseHtml
      * the array will be "expanded" and a list data attributes will be rendered. For example,
      * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
      * `data-id="1" data-name="yii"`.
+     * Additionally `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` will be rendered as:
+     * `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
      *
      * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
      * @return string the rendering result. If the attributes are not empty, they will be rendered
@@ -1609,7 +1620,11 @@ class BaseHtml
                 }
             } elseif (is_array($value) && $name === 'data') {
                 foreach ($value as $n => $v) {
-                    $html .= " $name-$n=\"" . static::encode($v) . '"';
+                    if (is_array($v)) {
+                        $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
+                    } else {
+                        $html .= " $name-$n=\"" . static::encode($v) . '"';
+                    }
                 }
             } elseif ($value !== null) {
                 $html .= " $name=\"" . static::encode($value) . '"';
@@ -1770,7 +1785,6 @@ class BaseHtml
                 $result[trim($property[0])] = trim($property[1]);
             }
         }
-
         return $result;
     }
 
@@ -1894,7 +1908,6 @@ class BaseHtml
     public static function getInputId($model, $attribute)
     {
         $name = strtolower(static::getInputName($model, $attribute));
-
-        return str_replace(['[]', '][', '[', ']', ' '], ['', '-', '-', '', '-'], $name);
+        return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
     }
 }

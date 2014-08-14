@@ -162,7 +162,8 @@ class BaseArrayHelper
      * @param string|\Closure $key key name of the array element, or property name of the object,
      * or an anonymous function returning the value. The anonymous function signature should be:
      * `function($array, $defaultValue)`.
-     * @param mixed $default the default value to be returned if the specified key does not exist
+     * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
+     * getting value from an object.
      * @return mixed the value of the element if found, default value otherwise
      * @throws InvalidParamException if $array is neither an array nor an object.
      */

@@ -22,8 +22,9 @@ class Installer extends LibraryInstaller
     const EXTRA_BOOTSTRAP = 'bootstrap';
     const EXTRA_WRITABLE = 'writable';
     const EXTRA_EXECUTABLE = 'executable';
-
+    const EXTRA_CONFIG = 'config';
     const EXTENSION_FILE = 'yiisoft/extensions.php';
+
 
     /**
      * @inheritdoc
@@ -236,26 +237,53 @@ EOF
 
         foreach ((array) $options[self::EXTRA_WRITABLE] as $path) {
             echo "Setting writable: $path ...";
-            if (is_dir($path)) {
-                chmod($path, 0777);
+            if (is_dir($path) || is_file($path)) {
+                chmod($path, is_file($path) ? 0666 : 0777);
                 echo "done\n";
             } else {
-                echo "The directory was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path;
-
+                echo "The directory or file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path;
                 return;
             }
         }
 
         foreach ((array) $options[self::EXTRA_EXECUTABLE] as $path) {
             echo "Setting executable: $path ...";
-            if (is_file($path)) {
+            if (is_dir($path) || is_file($path)) {
                 chmod($path, 0755);
                 echo "done\n";
             } else {
-                echo "\n\tThe file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
-
+                echo "\n\tThe directory or file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
                 return;
             }
         }
+    }
+
+    /**
+     * Generates a cookie validation key for every app config listed in "config" in extra section.
+     * @param CommandEvent $event
+     */
+    public static function generateCookieValidationKey($event)
+    {
+        $extra = $event->getComposer()->getPackage()->getExtra();
+        if (empty($extra[self::EXTRA_CONFIG])) {
+            return;
+        }
+        $key = self::generateRandomString();
+        foreach ((array) $extra[self::EXTRA_CONFIG] as $config) {
+            if (is_file($config)) {
+                $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/', "\\1'$key'", file_get_contents($config));
+                file_put_contents($config, $content);
+            }
+        }
+    }
+
+    public static function generateRandomString()
+    {
+        if (!extension_loaded('mcrypt')) {
+            throw new \Exception('The mcrypt PHP extension is required by Yii2.');
+        }
+        $length = 32;
+        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
     }
 }

@@ -202,6 +202,9 @@ return [
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
+> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in the file `@app/data/rbac.php`.
+  Sometime you need to create this file manually.
+
 
 ### Building Authorization Data
 
@@ -222,6 +225,7 @@ command that will initialize authorization data once via APIs offered by `authMa
 <?php
 namespace app\commands;
 
+use Yii;
 use yii\console\Controller;
 
 class RbacController extends Controller
@@ -244,7 +248,6 @@ class RbacController extends Controller
         $author = $auth->createRole('author');
         $auth->add($author);
         $auth->addChild($author, $createPost);
-        $auth->addChild($author, $reader);
 
         // add "admin" role and give this role the "updatePost" permission
         // as well as the permissions of the "author" role
@@ -306,8 +309,7 @@ For applications that require complex access control with dynamically updated au
 
 As aforementioned, rules add additional constraint to roles and permissions. A rule is a class extending
 from [[yii\rbac\Rule]]. It must implement the [[yii\rbac\Rule::execute()|execute()]] method. In the hierarchy we've
-created previously author cannot edit his own post. Let's fix it. First we need a rule to verify that the use is post
-author:
+created previously author cannot edit his own post. Let's fix it. First we need a rule to verify that the user is the post author:
 
 ```php
 namespace app\rbac;
@@ -420,7 +422,7 @@ use Yii;
 use yii\rbac\Rule;
 
 /**
- * Checks if authorID matches user passed via params
+ * Checks if user group matches
  */
 class UserGroupRule extends Rule
 {

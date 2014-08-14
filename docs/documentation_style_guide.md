@@ -16,6 +16,17 @@ Guidelines to go by when writing or editing any Yii documentation.
 
 ## Formatting
 
+* Use *italics* for emphasis, never capitalization, bold, or underlines.
+
+## Blocks
+
+Blocks use the Markdown `> Type: `. There are four block types:
+
+* `Warning`, for bad security things and other problems
+* `Note`, to emphasize key concepts, things to avoid
+* `Info`, general information (an aside); not as strong as a "Note"
+* `Tip`, pro tips, extras, can be useful but may not be needed by everyone all the time
+
 ## References
 
 * Yii 2.0 or Yii 2 (not Yii2 or Yii2.0)

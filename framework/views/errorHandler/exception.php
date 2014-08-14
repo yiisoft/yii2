@@ -1,8 +1,7 @@
 <?php
-/**
- * @var \Exception $exception
- * @var \yii\web\ErrorHandler $handler
- */
+/* @var $this \yii\web\View */
+/* @var $exception \Exception */
+/* @var $handler \yii\web\ErrorHandler */
 ?>
 <?php if (method_exists($this, 'beginPage')) $this->beginPage(); ?>
 <!doctype html>
@@ -88,7 +87,7 @@ html,body{
     line-height: 1.25;
 }
 .header pre{
-	margin: 10px 0;
+    margin: 10px 0;
 }
 
 /* previous exceptions */
@@ -134,8 +133,8 @@ html,body{
     color: #aaa;
 }
 .header .previous pre{
-	font-size: 14px;
-	margin: 10px 0;
+    font-size: 14px;
+    margin: 10px 0;
 }
 
 /* call stack */
@@ -355,9 +354,9 @@ html,body{
         <?php endif; ?>
         <h2><?= nl2br($handler->htmlEncode($exception->getMessage())) ?></h2>
 
-	    <?php if ($exception instanceof \yii\db\Exception && !empty($exception->errorInfo)) {
-		    echo '<pre>Error Info: ' . print_r($exception->errorInfo, true) . '</pre>';
-	    } ?>
+        <?php if ($exception instanceof \yii\db\Exception && !empty($exception->errorInfo)) {
+            echo '<pre>Error Info: ' . print_r($exception->errorInfo, true) . '</pre>';
+        } ?>
 
         <?= $handler->renderPreviousExceptions($exception) ?>
     </div>

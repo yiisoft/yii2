@@ -36,12 +36,12 @@ class Controller extends \yii\base\Controller
      * @var boolean whether to run the command interactively.
      */
     public $interactive = true;
-
     /**
      * @var boolean whether to enable ANSI color in the output.
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
+
 
     /**
      * Returns a value indicating whether ANSI color is enabled.

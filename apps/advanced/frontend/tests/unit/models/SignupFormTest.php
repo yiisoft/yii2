@@ -4,23 +4,26 @@ namespace frontend\tests\unit\models;
 
 use frontend\tests\unit\DbTestCase;
 use common\tests\fixtures\UserFixture;
+use Codeception\Specify;
+use frontend\models\SignupForm;
 
 class SignupFormTest extends DbTestCase
 {
 
-    use \Codeception\Specify;
+    use Specify;
 
     public function testCorrectSignup()
     {
-        $model = $this->getMock('frontend\models\SignupForm', ['validate']);
-        $model->expects($this->once())->method('validate')->will($this->returnValue(true));
-
-        $model->username = 'some_username';
-        $model->email = 'some_email@example.com';
-        $model->password = 'some_password';
+        $model = new SignupForm([
+            'username' => 'some_username',
+            'email' => 'some_email@example.com',
+            'password' => 'some_password',
+        ]);
 
         $user = $model->signup();
-        $this->assertInstanceOf('common\models\User', $user);
+
+        $this->assertInstanceOf('common\models\User', $user, 'user should be valid');
+
         expect('username should be correct', $user->username)->equals('some_username');
         expect('email should be correct', $user->email)->equals('some_email@example.com');
         expect('password should be correct', $user->validatePassword('some_password'))->true();
@@ -28,10 +31,13 @@ class SignupFormTest extends DbTestCase
 
     public function testNotCorrectSignup()
     {
-        $model = $this->getMock('frontend\models\SignupForm', ['validate']);
-        $model->expects($this->once())->method('validate')->will($this->returnValue(false));
+        $model = new SignupForm([
+            'username' => 'troy.becker',
+            'email' => 'nicolas.dianna@hotmail.com',
+            'password' => 'some_password',
+        ]);
 
-        expect('user should not be created', $model->signup())->null();
+        expect('username and email are in use, user should not be created', $model->signup())->null();
     }
 
     public function fixtures()
@@ -39,8 +45,9 @@ class SignupFormTest extends DbTestCase
         return [
             'user' => [
                 'class' => UserFixture::className(),
-                'dataFile' => false, //do not load test data, only table cleanup
+                'dataFile' => '@frontend/tests/unit/fixtures/data/models/user.php',
             ],
         ];
     }
+
 }

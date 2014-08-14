@@ -9,8 +9,8 @@ To use this extension, you have to configure the Connection class in your applic
 
 ```php
 return [
-	//....
-	'components' => [
+    //....
+    'components' => [
         'elasticsearch' => [
             'class' => 'yii\elasticsearch\Connection',
             'nodes' => [
@@ -18,7 +18,7 @@ return [
                 // configure more hosts if you have a cluster
             ],
         ],
-	]
+    ]
 ];
 ```
 
@@ -144,19 +144,19 @@ $customer->save();
 
 $customer = Customer::get(1); // get a record by pk
 $customers = Customer::mget([1,2,3]); // get multiple records by pk
-$customer = Customer::find()->where(['name' => 'test'])->one(); // find by query
+$customer = Customer::find()->where(['name' => 'test'])->one(); // find by query, note that you need to configure mapping for this field in order to find records properly
 $customers = Customer::find()->active()->all(); // find all by query (using the `active` scope)
 
-// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-field-query.html
-$result = Article::find()->query(["field" => ["title" => "yii"]])->all(); // articles whose title contains "yii"
+// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
+$result = Article::find()->query(["match" => ["title" => "yii"]])->all(); // articles whose title contains "yii"
 
 // http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-flt-query.html
 $query = Article::find()->query([
-	"fuzzy_like_this" => [
-		"fields" => ["title", "description"],
-		"like_text" => "This query will return articles that are similar to this text :-)",
-        "max_query_terms" : 12
-	]
+    "fuzzy_like_this" => [
+        "fields" => ["title", "description"],
+        "like_text" => "This query will return articles that are similar to this text :-)",
+        "max_query_terms" => 12
+    ]
 ]);
 
 $query->all(); // gives you all the documents
@@ -179,19 +179,19 @@ Add the following to you application config to enable it (if you already have th
 enabled, it is sufficient to just add the panels configuration):
 
 ```php
-	// ...
-	'bootstrap' => ['debug'],
-	'modules' => [
-		'debug' => [
-			'class' => 'yii\\debug\\Module',
-			'panels' => [
-				'elasticsearch' => [
-					'class' => 'yii\\elasticsearch\\DebugPanel',
-				],
-			],
-		],
-	],
-	// ...
+    // ...
+    'bootstrap' => ['debug'],
+    'modules' => [
+        'debug' => [
+            'class' => 'yii\\debug\\Module',
+            'panels' => [
+                'elasticsearch' => [
+                    'class' => 'yii\\elasticsearch\\DebugPanel',
+                ],
+            ],
+        ],
+    ],
+    // ...
 ```
 
 ![elasticsearch DebugPanel](images/README-debug.png)

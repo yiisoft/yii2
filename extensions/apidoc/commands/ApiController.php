@@ -28,8 +28,8 @@ class ApiController extends BaseController
      */
     public $guide;
 
-    // TODO add force update option
 
+    // TODO add force update option
     /**
      * Renders API documentation files
      * @param array $sourceDirs

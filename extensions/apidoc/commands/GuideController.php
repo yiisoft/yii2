@@ -28,6 +28,7 @@ class GuideController extends BaseController
      */
     public $apiDocs;
 
+
     /**
      * Renders API documentation files
      * @param array $sourceDirs
@@ -77,6 +78,7 @@ class GuideController extends BaseController
         }
         file_put_contents($targetDir . '/guide-references.txt', implode("\n", $references));
     }
+
 
     /**
      * @inheritdoc

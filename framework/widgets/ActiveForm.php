@@ -54,6 +54,10 @@ class ActiveForm extends Widget
      */
     public $fieldConfig;
     /**
+     * @var boolean whether to perform encoding on the error summary.
+     */
+    public $encodeErrorSummary = true;
+    /**
      * @var string the default CSS class for the error summary container.
      * @see errorSummary()
      */
@@ -142,6 +146,17 @@ class ActiveForm extends Widget
      */
     public $beforeValidate;
     /**
+     * @var string|JsExpression a JS callback that is called before any validation has run (Only called when the form is submitted).
+     * The signature of the callback should be:
+     *
+     * ~~~
+     * function ($form, data) {
+     *     ...return false to cancel the validation...
+     * }
+     * ~~~
+     */
+    public $beforeValidateAll;
+    /**
      * @var string|JsExpression a JS callback that is called after validating an attribute.
      * The signature of the callback should be:
      *
@@ -152,11 +167,42 @@ class ActiveForm extends Widget
      */
     public $afterValidate;
     /**
+     * @var string|JsExpression a JS callback that is called after all validation has run (Only called when the form is submitted).
+     * The signature of the callback should be:
+     *
+     * ~~~
+     * function ($form, data, messages) {
+     * }
+     * ~~~
+     */
+    public $afterValidateAll;
+    /**
+     * @var string|JsExpression a JS pre-request callback function on AJAX-based validation.
+     * The signature of the callback should be:
+     *
+     * ~~~
+     * function ($form, jqXHR, textStatus) {
+     * }
+     * ~~~
+     */
+    public $ajaxBeforeSend;
+    /**
+     * @var string|JsExpression a JS callback to be called when the request finishes on AJAX-based validation.
+     * The signature of the callback should be:
+     *
+     * ~~~
+     * function ($form, jqXHR, textStatus) {
+     * }
+     * ~~~
+     */
+    public $ajaxComplete;
+    /**
      * @var array the client validation options for individual attributes. Each element of the array
      * represents the validation options for a particular attribute.
      * @internal
      */
     public $attributes = [];
+
 
     /**
      * Initializes the widget.
@@ -197,7 +243,8 @@ class ActiveForm extends Widget
     protected function getClientOptions()
     {
         $options = [
-            'errorSummary' => '.' . $this->errorSummaryCssClass,
+            'encodeErrorSummary' => $this->encodeErrorSummary,
+            'errorSummary' => '.' . implode('.', preg_split('/\s+/', $this->errorSummaryCssClass, -1, PREG_SPLIT_NO_EMPTY)),
             'validateOnSubmit' => $this->validateOnSubmit,
             'errorCssClass' => $this->errorCssClass,
             'successCssClass' => $this->successCssClass,
@@ -208,7 +255,7 @@ class ActiveForm extends Widget
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
         }
-        foreach (['beforeSubmit', 'beforeValidate', 'afterValidate'] as $name) {
+        foreach (['beforeSubmit', 'beforeValidate', 'beforeValidateAll', 'afterValidate', 'afterValidateAll', 'ajaxBeforeSend', 'ajaxComplete'] as $name) {
             if (($value = $this->$name) !== null) {
                 $options[$name] = $value instanceof JsExpression ? $value : new JsExpression($value);
             }
@@ -234,6 +281,7 @@ class ActiveForm extends Widget
     public function errorSummary($models, $options = [])
     {
         Html::addCssClass($options, $this->errorSummaryCssClass);
+        $options['encode'] = $this->encodeErrorSummary;
         return Html::errorSummary($models, $options);
     }
 
@@ -301,7 +349,7 @@ class ActiveForm extends Widget
         } else {
             $models = [$model];
         }
-        /** @var Model $model */
+        /* @var $model Model */
         foreach ($models as $model) {
             $model->validate($attributes);
             foreach ($model->getErrors() as $attribute => $errors) {
@@ -337,7 +385,7 @@ class ActiveForm extends Widget
     public static function validateMultiple($models, $attributes = null)
     {
         $result = [];
-        /** @var Model $model */
+        /* @var $model Model */
         foreach ($models as $i => $model) {
             $model->validate($attributes);
             foreach ($model->getErrors() as $attribute => $errors) {

@@ -10,7 +10,7 @@ namespace yii\sphinx;
 use yii\base\Object;
 use yii\caching\Cache;
 use Yii;
-use yii\caching\GroupDependency;
+use yii\caching\TagDependency;
 use yii\db\Exception;
 
 /**
@@ -59,6 +59,7 @@ class Schema extends Object
      * @var QueryBuilder the query builder for this Sphinx connection
      */
     private $_builder;
+
 
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
@@ -132,15 +133,15 @@ class Schema extends Object
         $realName = $this->getRawIndexName($name);
 
         if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-            /** @var $cache Cache */
+            /* @var $cache Cache */
             $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache, false) : $db->schemaCache;
             if ($cache instanceof Cache) {
                 $key = $this->getCacheKey($name);
                 if ($refresh || ($index = $cache->get($key)) === false) {
                     $index = $this->loadIndexSchema($realName);
                     if ($index !== null) {
-                        $cache->set($key, $index, $db->schemaCacheDuration, new GroupDependency([
-                            'group' => $this->getCacheGroup(),
+                        $cache->set($key, $index, $db->schemaCacheDuration, new TagDependency([
+                            'tags' => $this->getCacheTag(),
                         ]));
                     }
                 }
@@ -168,11 +169,11 @@ class Schema extends Object
     }
 
     /**
-     * Returns the cache group name.
+     * Returns the cache tag name.
      * This allows [[refresh()]] to invalidate all cached index schemas.
-     * @return string the cache group name
+     * @return string the cache tag name
      */
-    protected function getCacheGroup()
+    protected function getCacheTag()
     {
         return md5(serialize([
             __CLASS__,
@@ -296,10 +297,10 @@ class Schema extends Object
      */
     public function refresh()
     {
-        /** @var $cache Cache */
+        /* @var $cache Cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
-            GroupDependency::invalidate($cache, $this->getCacheGroup());
+            TagDependency::invalidate($cache, $this->getCacheTag());
         }
         $this->_indexNames = [];
         $this->_indexes = [];
@@ -323,12 +324,11 @@ class Schema extends Object
      */
     public function quoteValue($str)
     {
-        if (!is_string($str)) {
+        if (is_string($str)) {
+            return $this->db->getSlavePdo()->quote($str);
+        } else {
             return $str;
         }
-        $this->db->open();
-
-        return $this->db->pdo->quote($str);
     }
 
     /**
@@ -453,18 +453,26 @@ class Schema extends Object
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
             $previous = $e->getPrevious();
-            if ($previous instanceof \PDOException && $previous->getCode() == '42S02') {
+            if ($previous instanceof \PDOException && strpos($previous->getMessage(), 'SQLSTATE[42S02') !== false) {
                 // index does not exist
+                // https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_bad_table_error
                 return false;
             }
             throw $e;
         }
-        foreach ($columns as $info) {
-            $column = $this->loadColumnSchema($info);
-            $index->columns[$column->name] = $column;
-            if ($column->isPrimaryKey) {
-                $index->primaryKey = $column->name;
+
+        if (empty($columns[0]['Agent'])) {
+            foreach ($columns as $info) {
+                $column = $this->loadColumnSchema($info);
+                $index->columns[$column->name] = $column;
+                if ($column->isPrimaryKey) {
+                    $index->primaryKey = $column->name;
+                }
             }
+        } else {
+            // Distributed index :
+            $agent = $this->getIndexSchema($columns[0]['Agent']);
+            $index->columns = $agent->columns;
         }
 
         return true;
@@ -502,20 +510,31 @@ class Schema extends Object
     }
 
     /**
-     * Handles database error
+     * Converts a DB exception to a more concrete one if possible.
      *
      * @param \Exception $e
      * @param string $rawSql SQL that produced exception
-     * @throws Exception
+     * @return Exception
      */
-    public function handleException(\Exception $e, $rawSql)
+    public function convertException(\Exception $e, $rawSql)
     {
         if ($e instanceof Exception) {
-            throw $e;
+            return $e;
         } else {
             $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+            return new Exception($message, $errorInfo, (int) $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Returns a value indicating whether a SQL statement is for read purpose.
+     * @param string $sql the SQL statement
+     * @return boolean whether a SQL statement is for read purpose.
+     */
+    public function isReadQuery($sql)
+    {
+        $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
+        return preg_match($pattern, $sql) > 0;
     }
 }

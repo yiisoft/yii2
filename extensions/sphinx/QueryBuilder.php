@@ -38,6 +38,7 @@ class QueryBuilder extends Object
      */
     public $separator = " ";
 
+
     /**
      * Constructor.
      * @param Connection $connection the Sphinx connection.
@@ -63,14 +64,19 @@ class QueryBuilder extends Object
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
         if ($query->match !== null) {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = (string) $query->match;
-            $query->andWhere('MATCH(' . $phName . ')');
+            if ($query->match instanceof Expression) {
+                $query->andWhere('MATCH(' . $query->match->expression . ')');
+                $params = array_merge($params, $query->match->params);
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = $this->db->escapeMatchValue($query->match);
+                $query->andWhere('MATCH(' . $phName . ')');
+            }
         }
 
         $from = $query->from;
         if ($from === null && $query instanceof ActiveQuery) {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $query->modelClass;
             $from = [$modelClass::indexName()];
         }
@@ -611,12 +617,11 @@ class QueryBuilder extends Object
             $operator = strtoupper($condition[0]);
             if (isset($builders[$operator])) {
                 $method = $builders[$operator];
-                array_shift($condition);
-
-                return $this->$method($indexes, $operator, $condition, $params);
             } else {
-                throw new Exception('Found unknown operator in query: ' . $operator);
+                $method = 'buildSimpleCondition';
             }
+            array_shift($condition);
+            return $this->$method($indexes, $operator, $condition, $params);
         } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
 
             return $this->buildHashCondition($indexes, $condition, $params);
@@ -968,16 +973,41 @@ class QueryBuilder extends Object
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
                     $lineParts[] = $phName;
-                    $params[$phName] = (isset($columnSchema)) ? $columnSchema->typecast($subValue) : $subValue;
+                    $params[$phName] = (isset($columnSchema)) ? $columnSchema->dbTypecast($subValue) : $subValue;
                 }
             }
 
             return '(' . implode(',', $lineParts) . ')';
         } else {
             $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = (isset($columnSchema)) ? $columnSchema->typecast($value) : $value;
+            $params[$phName] = (isset($columnSchema)) ? $columnSchema->dbTypecast($value) : $value;
 
             return $phName;
         }
+    }
+
+    /**
+     * Creates an SQL expressions like `"column" operator value`.
+     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @param array $operands contains two column names.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     */
+    public function buildSimpleCondition($operator, $operands, &$params)
+    {
+        if (count($operands) !== 2) {
+            throw new InvalidParamException("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $value) = $operands;
+
+        if (strpos($column, '(') === false) {
+            $column = $this->db->quoteColumnName($column);
+        }
+
+        $phName = self::PARAM_PREFIX . count($params);
+        $params[$phName] = $value === null ? 'NULL' : $value;
+
+        return "$column $operator $phName";
     }
 }

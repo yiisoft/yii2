@@ -2,6 +2,7 @@
 
 namespace yiiunit\extensions\sphinx;
 
+use yii\db\Expression;
 use yii\sphinx\Query;
 
 /**
@@ -252,5 +253,98 @@ class QueryTest extends SphinxTestCase
             ->match('about')
             ->count('*', $connection);
         $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @depends testRun
+     */
+    public function testWhereSpecialCharValue()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query;
+        $rows = $query->from('yii2_test_article_index')
+            ->andWhere(['author_id' => 'some"'])
+            ->all($connection);
+        $this->assertEmpty($rows);
+    }
+
+    /**
+     * Data provider for [[testMatchSpecialCharValue()]]
+     * @return array test data
+     */
+    public function dataProviderMatchSpecialCharValue()
+    {
+        return [
+            ["'"],
+            ['"'],
+            ['@'],
+            ['\\'],
+            ['()'],
+            ['<<<'],
+            ['>>>'],
+            ["\x00"],
+            ["\n"],
+            ["\r"],
+            ["\x1a"],
+            ['\\' . "'"],
+            ['\\' . '"'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderMatchSpecialCharValue
+     * @depends testRun
+     *
+     * @param string $char char to be tested
+     *
+     * @see https://github.com/yiisoft/yii2/issues/3668
+     */
+    public function testMatchSpecialCharValue($char)
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query;
+        $rows = $query->from('yii2_test_article_index')
+            ->match('about' . $char)
+            ->all($connection);
+        $this->assertTrue(is_array($rows)); // no query error
+    }
+
+    /**
+     * @depends testMatchSpecialCharValue
+     */
+    public function testMatchComplex()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query;
+        $rows = $query->from('yii2_test_article_index')
+            ->match(new Expression(':match', ['match' => '@(content) ' . $connection->escapeMatchValue('about\\"')]))
+            ->all($connection);
+        $this->assertNotEmpty($rows);
+    }
+
+    /**
+     * @depends testRun
+     *
+     * @see https://github.com/yiisoft/yii2/issues/4375
+     */
+    public function testRunOnDistributedIndex()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query;
+        $rows = $query->from('yii2_test_distributed')
+            ->match('about')
+            ->options([
+                'cutoff' => 50,
+                'field_weights' => [
+                    'title' => 10,
+                    'content' => 3,
+                ],
+            ])
+            ->all($connection);
+        $this->assertNotEmpty($rows);
     }
 }

@@ -33,13 +33,13 @@ To use this extension, simply add the following code in your application configu
 
 ```php
 return [
-	//....
-	'components' => [
-		'mongodb' => [
-			'class' => '\yii\mongodb\Connection',
-			'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
-		],
-	],
+    //....
+    'components' => [
+        'mongodb' => [
+            'class' => '\yii\mongodb\Connection',
+            'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
+        ],
+    ],
 ];
 ```
 
@@ -59,8 +59,8 @@ use yii\mongodb\Query;
 $query = new Query;
 // compose the query
 $query->select(['name', 'status'])
-	->from('customer')
-	->limit(10);
+    ->from('customer')
+    ->limit(10);
 // execute the query
 $rows = $query->all();
 ```
@@ -89,7 +89,7 @@ You may face them in URL composition or attempt of saving "_id" to other storage
 In these cases, ensure you have converted [[\MongoId]] into the string:
 
 ```php
-/** @var yii\web\View $this */
+/* @var $this yii\web\View */
 echo $this->createUrl(['item/update', 'id' => (string)$row['_id']]);
 ```
 
@@ -103,17 +103,17 @@ use yii\mongodb\Query;
 
 class ItemController extends Controller
 {
-	/**
-	 * @param string $id MongoId string (not object)
-	 */
-	public function actionUpdate($id)
-	{
-		$query = new Query;
-		$row = $query->from('item')
-			where(['_id' => $id]) // implicit typecast to [[\MongoId]]
-			->one();
-		...
-	}
+    /**
+     * @param string $id MongoId string (not object)
+     */
+    public function actionUpdate($id)
+    {
+        $query = new Query;
+        $row = $query->from('item')
+            where(['_id' => $id]) // implicit typecast to [[\MongoId]]
+            ->one();
+        ...
+    }
 }
 ```
 
@@ -133,21 +133,21 @@ use yii\mongodb\ActiveRecord;
 
 class Customer extends ActiveRecord
 {
-	/**
-	 * @return string the name of the index associated with this ActiveRecord class.
-	 */
-	public static function collectionName()
-	{
-		return 'customer';
-	}
+    /**
+     * @return string the name of the index associated with this ActiveRecord class.
+     */
+    public static function collectionName()
+    {
+        return 'customer';
+    }
 
-	/**
-	 * @return array list of attribute names.
-	 */
-	public function attributes()
-	{
-		return ['_id', 'name', 'email', 'address', 'status'];
-	}
+    /**
+     * @return array list of attribute names.
+     */
+    public function attributes()
+    {
+        return ['_id', 'name', 'email', 'address', 'status'];
+    }
 }
 ```
 
@@ -162,10 +162,10 @@ use yii\mongodb\Query;
 $query = new Query;
 $query->from('customer')->where(['status' => 2]);
 $provider = new ActiveDataProvider([
-	'query' => $query,
-	'pagination' => [
-		'pageSize' => 10,
-	]
+    'query' => $query,
+    'pagination' => [
+        'pageSize' => 10,
+    ]
 ]);
 $models = $provider->getModels();
 ```
@@ -175,10 +175,10 @@ use yii\data\ActiveDataProvider;
 use app\models\Customer;
 
 $provider = new ActiveDataProvider([
-	'query' => Customer::find(),
-	'pagination' => [
-		'pageSize' => 10,
-	]
+    'query' => Customer::find(),
+    'pagination' => [
+        'pageSize' => 10,
+    ]
 ]);
 $models = $provider->getModels();
 ```
@@ -193,11 +193,11 @@ For example: instead of:
 
 ```
 {
-	content: "some content",
-	author: {
-		name: author1,
-		email: author1@domain.com
-	}
+    content: "some content",
+    author: {
+        name: author1,
+        email: author1@domain.com
+    }
 }
 ```
 
@@ -205,9 +205,9 @@ use following:
 
 ```
 {
-	content: "some content",
-	author_name: author1,
-	author_email: author1@domain.com
+    content: "some content",
+    author_name: author1,
+    author_email: author1@domain.com
 }
 ```
 
@@ -231,13 +231,13 @@ you also have to configure the `cache` component to be `yii\mongodb\Cache`:
 
 ```php
 return [
-	//....
-	'components' => [
-		// ...
-		'cache' => [
-			'class' => 'yii\mongodb\Cache',
-		],
-	]
+    //....
+    'components' => [
+        // ...
+        'cache' => [
+            'class' => 'yii\mongodb\Cache',
+        ],
+    ]
 ];
 ```
 
@@ -250,12 +250,73 @@ you also have to configure the `session` component to be `yii\mongodb\Session`:
 
 ```php
 return [
-	//....
-	'components' => [
-		// ...
-		'session' => [
-			'class' => 'yii\mongodb\Session',
-		],
-	]
+    //....
+    'components' => [
+        // ...
+        'session' => [
+            'class' => 'yii\mongodb\Session',
+        ],
+    ]
 ];
+```
+
+
+Using Gii generator
+-------------------
+
+This extension provides a code generator, which can be integrated with yii 'gii' module. It allows generation of the
+Active Record code. In order to enable it, you should adjust your application configuration in following way:
+
+```php
+return [
+    //....
+    'modules' => [
+        // ...
+        'gii' => [
+            'class' => 'yii\gii\Module',
+            'generators' => [
+                'mongoDbModel' => [
+                    'class' => 'yii\mongodb\gii\model\Generator'
+                ]
+            ],
+        ],
+    ]
+];
+```
+
+> Note: since MongoDB is schemaless, there is not much information, which generated code may base on. So generated code
+  is very basic and definitely requires adjustments.
+
+
+Using Migrations
+----------------
+
+MongoDB is schemaless and will create any missing collection on the first demand. However there are many cases, when
+you may need applying persistent changes to the MongoDB database. For example: you may need to create a collection with
+some specific options or create indexes.
+MongoDB migrations are managed via [[yii\mongodb\console\controllers\MigrateController]], which is an analog of regular
+[[\yii\console\controllers\MigrateController]].
+
+In order to enable this command you should adjust the configuration of your console application:
+
+```php
+return [
+    // ...
+    'controllerMap' => [
+        'mongodb-migrate' => 'yii\mongodb\console\controllers\MigrateController'
+    ],
+];
+```
+
+Below are some common usages of this command:
+
+```
+# creates a new migration named 'create_user_collection'
+yii mongodb-migrate/create create_user_collection
+
+# applies ALL new migrations
+yii mongodb-migrate
+
+# reverts the last applied migration
+yii mongodb-migrate/down
 ```
