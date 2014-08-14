@@ -135,6 +135,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
+        $orderBy = $this->buildOrderBy($query->orderBy);
+        if ($orderBy === '' && ($this->hasOffset($query->offset) || $this->hasLimit($query->limit)) && !$this->isOldMssql()) {
+            // ORDER BY clause is required when FETCH and OFFSET are in the SQL
+            $orderBy = 'ORDER BY (SELECT NULL)';
+        }
+
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
             $this->buildFrom($query->from, $params),
@@ -142,7 +148,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
-            $this->buildOrderBy($query->orderBy),
+            $orderBy,
             $this->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
         ];
 
@@ -181,7 +187,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $sql SQL query
      * @param integer $limit
      * @param integer $offset
-     * @param \yii\db\ActiveQuery $query the [[Query]] object from which the SQL statement generated
+     * @param \yii\db\Query $query the [[Query]] object from which the SQL statement generated
      * @return string resulting SQL query
      */
     private function rewriteLimitOffsetSql($sql, $limit, $offset, $query)
