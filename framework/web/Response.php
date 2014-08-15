@@ -495,7 +495,7 @@ class Response extends \yii\base\Response
      */
     public function sendStreamAsFile($handle, $attachmentName, $mimeType = 'application/octet-stream')
     {
-        $headers  = $this->getHeaders();
+        $headers = $this->getHeaders();
         fseek($handle, 0, SEEK_END);
         $fileSize = ftell($handle);
 
