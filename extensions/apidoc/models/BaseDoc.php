@@ -121,7 +121,7 @@ class BaseDoc extends Object
 //
 //	public function getSourceCode()
 //	{
-//		$lines = file(YII_PATH . $this->sourcePath);
+//		$lines = file(YII2_PATH . $this->sourcePath);
 //		return implode("", array_slice($lines, $this->startLine - 1, $this->endLine - $this->startLine + 1));
 //	}
 
