@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if (php --version | grep -i HHVM > /dev/null); then
+if (php --version | grep -i HipHop > /dev/null); then
   echo "skipping application init on HHVM"
 else
 

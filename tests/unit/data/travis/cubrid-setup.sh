@@ -2,7 +2,7 @@
 #
 # install CUBRID DBMS
 
-if (php --version | grep -i HHVM > /dev/null); then
+if (php --version | grep -i HipHop > /dev/null); then
     echo "Skipping CUBRID on HHVM"
     exit 0
 fi
