@@ -265,7 +265,10 @@ class FormatterTest extends TestCase
         $this->assertSame('12 years ago', $this->formatter->asRelativeTime($interval_12_years));
 
         // Pass a DateInterval string
-        $this->assertSame('a year ago', $this->formatter->asRelativeTime('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z'));
+        if (!defined('HHVM_VERSION')) {
+            // TODO format not supported by HHVM currently https://github.com/facebook/hhvm/issues/2952
+            $this->assertSame('a year ago', $this->formatter->asRelativeTime('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z'));
+        }
         $this->assertSame('a year ago', $this->formatter->asRelativeTime('2007-03-01T13:00:00Z/P1Y2M10DT2H30M'));
         $this->assertSame('a year ago', $this->formatter->asRelativeTime('P1Y2M10DT2H30M/2008-05-11T15:30:00Z'));
         $this->assertSame('a year ago', $this->formatter->asRelativeTime('P1Y2M10DT2H30M'));
@@ -324,7 +327,10 @@ class FormatterTest extends TestCase
         $this->assertSame('in 12 years', $this->formatter->asRelativeTime($interval_12_years));
 
         // Pass a inverted DateInterval string
-        $this->assertSame('in a year', $this->formatter->asRelativeTime('2008-05-11T15:30:00Z/2007-03-01T13:00:00Z'));
+        if (!defined('HHVM_VERSION')) {
+            // TODO format not supported by HHVM currently https://github.com/facebook/hhvm/issues/2952
+            $this->assertSame('in a year', $this->formatter->asRelativeTime('2008-05-11T15:30:00Z/2007-03-01T13:00:00Z'));
+        }
 
         // Force the reference time and pass a future DateTime
         $dateNow = new DateTime('2014-03-13');

@@ -47,12 +47,19 @@ class FormatterTest extends TestCase
         $value = '123456';
         $this->assertSame("123,456", $this->formatter->asDecimal($value));
         $value = '-123456.123';
-        $this->assertSame("-123,456.123", $this->formatter->asDecimal($value));
+        if (defined('HHVM_VERSION')) { // the default format is different on HHVM
+            $this->assertSame("-123,456", $this->formatter->asDecimal($value));
+        } else {
+            $this->assertSame("-123,456.123", $this->formatter->asDecimal($value));
+        }
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
     }
 
     public function testAsPercent()
     {
+        if (defined('HHVM_VERSION')) { // the default format is different on HHVM
+            $this->markTestSkipped('HHVM behaves quite different in the default patterns used for formatting.');
+        }
         $value = '123';
         $this->assertSame('12,300%', $this->formatter->asPercent($value));
         $value = '0.1234';
@@ -64,6 +71,9 @@ class FormatterTest extends TestCase
 
     public function testAsScientific()
     {
+        if (defined('HHVM_VERSION')) { // the default format is different on HHVM
+            $this->markTestSkipped('HHVM behaves quite different in the default patterns used for formatting.');
+        }
         $value = '123';
         $this->assertSame('1.23E2', $this->formatter->asScientific($value));
         $value = '123456';
