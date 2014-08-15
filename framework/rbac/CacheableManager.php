@@ -75,11 +75,14 @@ abstract class CacheableManager extends BaseManager
             $this->getCacheKey('items'),
             $this->getCacheKey('parents'),
         ]);
-        if ($cacheData['items'] !== false) {
-            $this->_cacheItems = $cacheData['items'];
+        $items = array_shift($cacheData);
+        $parents = array_shift($cacheData);
+
+        if ($items !== false) {
+            $this->_cacheItems = $items;
         }
-        if ($cacheData['parents'] !== false) {
-            $this->_cacheItemParents = $cacheData['parents'];
+        if ($parents !== false) {
+            $this->_cacheItemParents = $parents;
         }
     }
 
@@ -175,10 +178,7 @@ abstract class CacheableManager extends BaseManager
      */
     protected function getCacheKey($name)
     {
-        return [
-            __CLASS__,
-            $name
-        ];
+        return __CLASS__ . '::' . $name;
     }
 
     /**
