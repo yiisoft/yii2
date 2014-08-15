@@ -23,6 +23,7 @@
     ],
     "ignore": [
         "**/.*",
+        "**/*",
         "!assets/"
     ],
     "dependencies": {
