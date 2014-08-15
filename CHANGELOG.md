@@ -229,6 +229,7 @@ Yii Framework 2 Change Log
 - Chg #4310: Removed `$data` from signature of `yii\rbac\ManagerInterface` (samdark)
 - Chg #4318: `yii\helpers\Html::ul()` and `ol()` will return an empty list tag if an empty item array is given (qiangxue)
 - Chg #4331: `yii\helpers\Url` now uses `UrlManager` to determine base URL when generating URLs (qiangxue)
+- Chg #4501: Renamed the constant `YII_PATH` to `YII2_PATH` (qiangxue)
 - Chg #4586: Signed bigint and unsigned int will be converted into integers when they are loaded from DB by AR (qiangxue)
 - Chg #4591: `yii\helpers\Url::to()` will no longer prefix relative URLs with the base URL (qiangxue)
 - Chg #4595: `yii\widgets\LinkPager`'s `nextPageLabel`, `prevPageLabel`, `firstPageLabel`, `lastPageLabel` are now taking `false` instead of `null` for "no label" (samdark)

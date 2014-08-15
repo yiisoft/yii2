@@ -78,6 +78,8 @@ Upgrade from Yii 2.0 Beta
   `new \yii\caching\TagDependency(['tags' => 'TagName'])`, where `TagName` is similar to the group name that you
   previously used.
 
+* If you are using the constant `YII_PATH` in your code, you should rename it to `YII2_PATH` now.
+
 * You must explicitly configure `yii\web\Request::cookieValidationKey` with a secret key. Previously this is done automatically.
   To do so, modify your application configuration like the following:
 
