@@ -24,7 +24,8 @@
     "ignore": [
         "**/.*",
         "**/*",
-        "!assets/"
+        "!assets/",
+        "!LICENSE.md"
     ],
     "dependencies": {
         "jquery.inputmask": ">=3.0.0",
