@@ -21,7 +21,7 @@ abstract class CacheableManager extends BaseManager
     /**
      * @var boolean whether to cache RBAC items.
      */
-    public $enableCache = true;
+    public $enableCache = false;
     /**
      * @var integer number of seconds that RBAC items can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
