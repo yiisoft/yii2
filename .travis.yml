@@ -47,10 +47,15 @@ before_script:
 
 script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
-  - cd apps/basic && php vendor/bin/codecept run
-  - cd ../advanced/backend && ../vendor/bin/codecept run
-  - cd ../common && ../vendor/bin/codecept run
-  - cd ../frontend && ../vendor/bin/codecept run
+  - |
+    if (php --version | grep -i HHVM > /dev/null); then
+      echo "skipping application tests on HHVM"
+    else
+      cd apps/basic && php vendor/bin/codecept run
+      cd ../advanced/backend && ../vendor/bin/codecept run
+      cd ../common && ../vendor/bin/codecept run
+      cd ../frontend && ../vendor/bin/codecept run
+    fi
 
 after_script:
   - cd ../../..
