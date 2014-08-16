@@ -1,7 +1,5 @@
 <?php
-
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-
 defined('YII_ENV') or define('YII_ENV', 'test');
 
 defined('ROOT_DIR') or define('ROOT_DIR', dirname(dirname(dirname(__DIR__))));

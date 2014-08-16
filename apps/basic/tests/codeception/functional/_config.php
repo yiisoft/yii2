@@ -1,6 +1,4 @@
 <?php
-
-// set correct script paths
 $_SERVER['SCRIPT_FILENAME'] = TEST_ENTRY_FILE;
 $_SERVER['SCRIPT_NAME'] = TEST_ENTRY_URL;
 

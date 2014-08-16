@@ -1,8 +1,6 @@
 <?php
-
-// set correct script paths
-$_SERVER['SCRIPT_FILENAME'] = ROOT_DIR. '/backend/web/index-test.php';
-$_SERVER['SCRIPT_NAME'] = \Codeception\Configuration::config()['config']['test_entry_url'];;
+$_SERVER['SCRIPT_FILENAME'] = BACKEND_ENTRY_FILE;
+$_SERVER['SCRIPT_NAME'] = BACKEND_ENTRY_URL;
 
 return yii\helpers\ArrayHelper::merge(
     require(ROOT_DIR . '/backend/config/main.php'),
