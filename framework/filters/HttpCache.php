@@ -150,10 +150,10 @@ class HttpCache extends ActionFilter
      */
     protected function validateCache($lastModified, $etag)
     {
-        if ($lastModified !== null && (!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) < $lastModified)) {
-            return false;
+        if($etag !== null && in_array($etag, Yii::$app->request->getEtags(), true)) {
+            return true;
         } else {
-            return $etag === null || in_array($etag, Yii::$app->request->getEtags(), true);
+            return $lastModified !== null && isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
         }
     }
 

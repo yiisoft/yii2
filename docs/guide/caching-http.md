@@ -108,9 +108,11 @@ since they need to be re-evaluated on every request. Try to find a simple expres
 the cache if the page content has been modified.
 
 
-> Note: In compliant to [RFC 2616, section 13.3.4](http://tools.ietf.org/html/rfc2616#section-13.3.4),
+> Note: In compliance to [RFC 7232, section 2.4](http://tools.ietf.org/html/rfc7232#section-2.4),
   `HttpCache` will send out both `ETag` and `Last-Modified` headers if they are both configured.
-  Consequently, both will be used for cache validation if sent by the client.
+  However, in order to satisfy [section 3.3](http://tools.ietf.org/html/rfc7232#section-3.3) the
+  `If-None-Match` client header will always take precedence over `If-Modified-Since` during validation; meaning
+  latter one is going to be ignored if a `If-None-Match` header is present in the request.
 
 
 ## `Cache-Control` Header <a name="cache-control"></a>
