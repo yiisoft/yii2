@@ -12,7 +12,7 @@ class_name: WebGuy
 modules:
     enabled:
         - PhpBrowser
-        - codeception\common\_helpers\FixtureHelper
+        - codeception\common\_support\FixtureHelper
 # you can use WebDriver instead of PhpBrowser to test javascript and ajax.
 # This will require you to install selenium. See http://codeception.com/docs/04-AcceptanceTests#Selenium
 # "restart" option is used by the WebDriver to start each time per test-file new session and cookies,

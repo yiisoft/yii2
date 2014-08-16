@@ -1,6 +1,6 @@
 <?php
 
-namespace codeception\common\_helpers;
+namespace codeception\common\_support;
 
 use codeception\common\fixtures\UserFixture;
 use Codeception\Module;

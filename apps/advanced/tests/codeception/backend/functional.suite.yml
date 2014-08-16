@@ -11,7 +11,7 @@ modules:
     enabled:
       - Filesystem
       - Yii2
-      - codeception\common\_helpers\FixtureHelper
+      - codeception\common\_support\FixtureHelper
     config:
         Yii2:
             configFile: 'functional/_config.php'
