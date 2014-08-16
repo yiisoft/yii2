@@ -29,7 +29,7 @@ class HttpCacheTest extends \yiiunit\TestCase
     }
 
     /**
-     * @covers HttpCache::validateCache
+     * @covers yii\filters\HttpCache::validateCache
      */
     public function testValidateCache()
     {
@@ -50,7 +50,7 @@ class HttpCacheTest extends \yiiunit\TestCase
     }
 
     /**
-     * @covers HttpCache::generateEtag
+     * @covers yii\filters\HttpCache::generateEtag
      */
     public function testGenerateEtag()
     {
