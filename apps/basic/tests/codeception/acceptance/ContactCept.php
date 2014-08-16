@@ -2,7 +2,7 @@
 
 use codeception\_pages\ContactPage;
 
-$I = new WebGuy($scenario);
+$I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that contact works');
 
 $contactPage = ContactPage::openBy($I);

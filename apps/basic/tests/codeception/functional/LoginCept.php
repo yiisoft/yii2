@@ -2,7 +2,7 @@
 
 use codeception\_pages\LoginPage;
 
-$I = new TestGuy($scenario);
+$I = new FunctionalTester($scenario);
 $I->wantTo('ensure that login works');
 
 $loginPage = LoginPage::openBy($I);

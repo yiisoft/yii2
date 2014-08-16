@@ -2,7 +2,7 @@
 
 use codeception\_pages\LoginPage;
 
-$I = new WebGuy($scenario);
+$I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that login works');
 
 $loginPage = LoginPage::openBy($I);

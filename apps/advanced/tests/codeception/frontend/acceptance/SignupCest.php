@@ -10,7 +10,7 @@ class SignupCest
 
     /**
      * This method is called before each cest class test method
-     * @param \Codeception\Event\Test $event
+     * @param \Codeception\Event\TestEvent $event
      */
     public function _before($event)
     {
@@ -18,7 +18,7 @@ class SignupCest
 
     /**
      * This method is called after each cest class test method, even if test failed.
-     * @param \Codeception\Event\Test $event
+     * @param \Codeception\Event\TestEvent $event
      */
     public function _after($event)
     {
@@ -30,14 +30,14 @@ class SignupCest
 
     /**
      * This method is called when test fails.
-     * @param \Codeception\Event\Fail $event
+     * @param \Codeception\Event\FailEvent $event
      */
     public function _fail($event)
     {
     }
 
     /**
-     * @param \WebGuy               $I
+     * @param \codeception_frontend\AcceptanceTester $I
      * @param \Codeception\Scenario $scenario
      */
     public function testUserSignup($I, $scenario)
@@ -59,9 +59,9 @@ class SignupCest
 
         $I->amGoingTo('submit signup form with not correct email');
         $signupPage->submit([
-            'username'		=>	'tester',
-            'email'			=>	'tester.email',
-            'password'		=>	'tester_password',
+            'username' => 'tester',
+            'email' => 'tester.email',
+            'password' => 'tester_password',
         ]);
 
         $I->expectTo('see that email address is wrong');
@@ -71,9 +71,9 @@ class SignupCest
 
         $I->amGoingTo('submit signup form with correct email');
         $signupPage->submit([
-            'username'		=>	'tester',
-            'email'			=>	'tester.email@example.com',
-            'password'		=>	'tester_password',
+            'username' => 'tester',
+            'email' => 'tester.email@example.com',
+            'password' => 'tester_password',
         ]);
 
         $I->expectTo('see that user logged in');

@@ -1,9 +1,9 @@
 <?php
 
-use codeception_backend\TestGuy;
+use codeception_backend\FunctionalTester;
 use codeception\common\_pages\LoginPage;
 
-$I = new TestGuy($scenario);
+$I = new FunctionalTester($scenario);
 $I->wantTo('ensure login page works');
 
 $loginPage = LoginPage::openBy($I);

@@ -16,7 +16,7 @@ class FixtureHelper extends Module
 
     /**
      * Redeclare visibility because codeception includes all public methods that not starts from "_"
-     * and not excluded by module settings, in guy class.
+     * and not excluded by module settings, in actor class.
      */
     use FixtureTrait {
         loadFixtures as protected;
@@ -52,7 +52,7 @@ class FixtureHelper extends Module
     {
         return [
             'user' => [
-                'class' =>  UserFixture::className(),
+                'class' => UserFixture::className(),
                 'dataFile' => '@codeception/common/fixtures/data/init_login.php',
             ],
         ];

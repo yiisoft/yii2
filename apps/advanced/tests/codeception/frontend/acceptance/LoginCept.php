@@ -1,8 +1,8 @@
 <?php
-use codeception_frontend\WebGuy;
+use codeception_frontend\AcceptanceTester;
 use codeception\common\_pages\LoginPage;
 
-$I = new WebGuy($scenario);
+$I = new AcceptanceTester($scenario);
 $I->wantTo('ensure login page works');
 
 $loginPage = LoginPage::openBy($I);

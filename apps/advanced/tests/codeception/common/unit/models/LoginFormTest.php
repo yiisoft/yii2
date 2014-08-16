@@ -8,6 +8,9 @@ use Codeception\Specify;
 use common\models\LoginForm;
 use codeception\common\fixtures\UserFixture;
 
+/**
+ * Login form test
+ */
 class LoginFormTest extends DbTestCase
 {
 
@@ -75,6 +78,9 @@ class LoginFormTest extends DbTestCase
         });
     }
 
+    /**
+     * @inheritdoc
+     */
     public function fixtures()
     {
         return [
