@@ -7,14 +7,14 @@ else
     # basic application:
 
     composer install --dev --prefer-dist -d apps/basic
-    sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" config/web.php
+    cd apps/basic && sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" config/web.php
     cd tests && codecept build && cd ../../..
 
 
     # advanced application:
 
     composer install --dev --prefer-dist -d apps/advanced
-    ./init --env=Development
+    cd apps/advanced && ./init --env=Development
     sed -i s/root/travis/ common/config/main-local.php
     sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" frontend/config/main.php
     sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" backend/config/main.php
