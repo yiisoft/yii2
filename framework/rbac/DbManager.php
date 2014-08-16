@@ -33,7 +33,7 @@ use yii\di\Instance;
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
-class DbManager extends BaseManager
+class DbManager extends CacheableManager
 {
     /**
      * @var Connection|string the DB connection object or the application component ID of the DB connection.
@@ -106,12 +106,7 @@ class DbManager extends BaseManager
             return true;
         }
 
-        $query = new Query;
-        $parents = $query->select(['parent'])
-            ->from($this->itemChildTable)
-            ->where(['child' => $itemName])
-            ->column($this->db);
-        foreach ($parents as $parent) {
+        foreach ($this->getItemParents($itemName) as $parent) {
             if ($this->checkAccessRecursive($user, $parent, $params, $assignments)) {
                 return true;
             }
@@ -123,7 +118,19 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
-    protected function getItem($name)
+    protected function getItemParentsInternal($itemName)
+    {
+        $query = new Query;
+        return $query->select(['parent'])
+            ->from($this->itemChildTable)
+            ->where(['child' => $itemName])
+            ->column($this->db);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getItemInternal($name)
     {
         $row = (new Query)->from($this->itemTable)
             ->where(['name' => $name])
@@ -508,7 +515,7 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function addChild($parent, $child)
+    public function addChildInternal($parent, $child)
     {
         if ($parent->name === $child->name) {
             throw new InvalidParamException("Cannot add '{$parent->name}' as a child of itself.");
@@ -532,7 +539,7 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function removeChild($parent, $child)
+    public function removeChildInternal($parent, $child)
     {
         return $this->db->createCommand()
             ->delete($this->itemChildTable, ['parent' => $parent->name, 'child' => $child->name])
@@ -637,6 +644,7 @@ class DbManager extends BaseManager
         $this->db->createCommand()->delete($this->itemChildTable)->execute();
         $this->db->createCommand()->delete($this->itemTable)->execute();
         $this->db->createCommand()->delete($this->ruleTable)->execute();
+        $this->clearCache();
     }
 
     /**
@@ -681,6 +689,7 @@ class DbManager extends BaseManager
         $this->db->createCommand()
             ->delete($this->itemTable, ['type' => $type])
             ->execute();
+        $this->clearCache();
     }
 
     /**
@@ -695,6 +704,8 @@ class DbManager extends BaseManager
         }
 
         $this->db->createCommand()->delete($this->ruleTable)->execute();
+
+        $this->clearCache();
     }
 
     /**
