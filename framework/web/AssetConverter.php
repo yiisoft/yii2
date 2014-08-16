@@ -30,7 +30,7 @@ class AssetConverter extends Component implements AssetConverterInterface
         'less' => ['css', 'lessc {from} {to} --no-color --source-map'],
         'scss' => ['css', 'sass {from} {to} --sourcemap'],
         'sass' => ['css', 'sass {from} {to} --sourcemap'],
-        'styl' => ['js', 'stylus < {from} > {to}'],
+        'styl' => ['css', 'stylus < {from} > {to}'],
         'coffee' => ['js', 'coffee -p {from} > {to}'],
         'ts' => ['js', 'tsc --out {to} {from}'],
     ];
