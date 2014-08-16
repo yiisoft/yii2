@@ -19,10 +19,12 @@ else
     sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" frontend/config/main.php
     sed -i "s/'cookieValidationKey' => ''/'cookieValidationKey' => 'testkey'/" backend/config/main.php
     cd tests/codeception/backend && codecept build
-    cd ../../../common && codecept build
-    cd ../../../frontend && codecept build && cd ../../../../../..
+    cd ../common && codecept build
+    cd ../console && codecept build
+    cd ../frontend && codecept build
+    && cd ../../../
 
     # boot server
-    cd apps && php -S localhost:8080 > /dev/null 2>&1 &
+    php -S localhost:8080 > /dev/null 2>&1 &
 
 fi
