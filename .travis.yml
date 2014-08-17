@@ -58,16 +58,19 @@ script:
     else
       cd apps/basic/web
       php -S localhost:8080 > /dev/null 2>&1 &
-      PHPPID=$!
+      PHP_PID=$!
       cd ../tests
       codecept run
-      kill -9 $PHPPID
+      BASIC_EXIT=$?
+      kill -9 $PHP_PID
       cd ../../advanced
       php -S localhost:8080 > /dev/null 2>&1 &
-      PHPPID=$!
+      PHP_PID=$!
       cd tests
       codecept run
-      kill -9 $PHPPID
+      ADVANCED_EXIT=$?
+      kill -9 $PHP_PID
+      exit $BASIC_EXIT && $ADVANCED_EXIT
     fi
 
 after_script:
