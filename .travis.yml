@@ -56,13 +56,17 @@ script:
     if (php --version | grep -i HipHop > /dev/null); then
       echo "skipping application tests on HHVM"
     else
-      cd apps/basic/web && php -S localhost:8080 > /dev/null 2>&1 &
+      cd apps/basic/web
+      php -S localhost:8080 > /dev/null 2>&1 &
       PHPPID=$!
-      cd ../tests && codecept run
+      cd ../tests
+      codecept run
       kill -9 $PHPPID
-      cd ../../advanced && php -S localhost:8080 > /dev/null 2>&1 &
+      cd ../../advanced
+      php -S localhost:8080 > /dev/null 2>&1 &
       PHPPID=$!
-      cd tests && codecept run
+      cd tests
+      codecept run
       kill -9 $PHPPID
     fi
 
