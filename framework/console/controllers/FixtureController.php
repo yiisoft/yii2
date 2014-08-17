@@ -24,10 +24,18 @@ use yii\test\FixtureTrait;
  * #also a short version of this command (generate action is default)
  * yii fixture User
  *
+ * #load all fixtures except User
+ * yii fixture all -User
+ * 
+ * #append fixtures to already loaded
+ * yii fixture User --append
+ * 
  * #load fixtures with different namespace.
  * yii fixture/load User --namespace=alias\my\custom\namespace\goes\here
  * ~~~
  *
+ * Same examples are true for unloading fixtures, except append option.
+ * 
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
@@ -74,16 +82,24 @@ class FixtureController extends Controller
 
     /**
      * Loads given fixture. You can load several fixtures specifying
-     * their names separated with commas, like: User,UserProfile,MyCustom. Be sure there is no
-     * whitespace between names. Note that if you are loading fixtures to storage, for example: database or nosql,
-     * storage will not be cleared, data will be appended to already existed.
+     * their names separated with space, like: User UserProfile MyCustom. 
+     * Note that if you are loading fixtures to storage, for example: database or nosql,
+     * storage will not be cleared, data will be appended to already existed. If you want to append
+     * fixtures data to already existed one use "--append" option of this command.
+     * If you dont want to unload particular fixture, then specify it with "-" prefix.
      * @param array $fixtures
      * @param array $except
      * @throws \yii\console\Exception
      */
-    public function actionLoad(array $fixtures, array $except = [])
-    {
-        if (!$this->needToApplyAll($fixtures[0])) {
+    public function actionLoad()
+    {        
+        $fixturesInput = func_get_args();
+        $filtered = $this->filterFixtures($fixturesInput);
+        $except = $filtered['except'];
+
+        if (!$this->needToApplyAll($fixturesInput[0])) {
+
+            $fixtures = $filtered['apply'];
 
             $foundFixtures = $this->findFixtures($fixtures);
             $notFoundFixtures = array_diff($fixtures, $foundFixtures);
@@ -96,19 +112,25 @@ class FixtureController extends Controller
             $foundFixtures = $this->findFixtures();
         }
 
+        $fixturesToLoad = array_diff($foundFixtures, $except);
+
         if (!$foundFixtures) {
             throw new Exception(
-                "No files were found by name: \"" . implode(', ', $fixtures) . "\".\n" .
+                "No files were found by name: \"" . implode(', ', $fixturesInput) . "\".\n" .
                 "Check that files with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
             );
         }
 
-        if (!$this->confirmLoad($foundFixtures, $except)) {
-            return self::EXIT_CODE_NORMAL;
+        if (!$fixturesToLoad) {
+            $this->notifyNothingToLoad($foundFixtures, $except);
+            return static::EXIT_CODE_NORMAL;
         }
 
-        $filtered = array_diff($foundFixtures, $except);
-        $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $filtered));
+        if (!$this->confirmLoad($fixturesToLoad, $except)) {
+            return static::EXIT_CODE_NORMAL;
+        }
+
+        $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $fixturesToLoad));
 
         if (!$fixtures) {
             throw new Exception('No fixtures were found in namespace: "' . $this->namespace . '"' . '');
@@ -125,39 +147,51 @@ class FixtureController extends Controller
     }
 
     /**
-     * Unloads given fixtures. You can clear environment and unload multiple fixtures by specifying
-     * their names separated with commas, like: User,UserProfile,MyCustom. Be sure there is no
-     * whitespace between names.
-     * @param array|string $fixtures
-     * @param array|string $except
+     * Unloads given fixtures. You can unload several fixtures specifying
+     * their names separated with space, like: User UserProfile MyCustom.
+     * If you dont want to unload particular fixture, then specify it with "-" prefix.
      * @throws \yii\console\Exception in case no fixtures are found.
      */
-    public function actionUnload(array $fixtures, array $except = [])
+    public function actionUnload()
     {
-        if (!$this->needToApplyAll($fixtures[0])) {
+        $fixturesInput = func_get_args();
+        $filtered = $this->filterFixtures($fixturesInput);
+        $except = $filtered['except'];
+
+        if (!$this->needToApplyAll($fixturesInput[0])) {
+
+            $fixtures = $filtered['apply'];
+
             $foundFixtures = $this->findFixtures($fixtures);
             $notFoundFixtures = array_diff($fixtures, $foundFixtures);
 
             if ($notFoundFixtures) {
                 $this->notifyNotFound($notFoundFixtures);
             }
+
         } else {
             $foundFixtures = $this->findFixtures();
         }
 
+        $fixturesToUnload = array_diff($foundFixtures, $except);
+
         if (!$foundFixtures) {
             throw new Exception(
-                "No files were found by name: \"" . implode(', ', $fixtures) . "\".\n" .
-                "Check that fixtures with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
+                "No files were found by name: \"" . implode(', ', $fixturesInput) . "\".\n" .
+                "Check that files with these name exists, under fixtures path: \n\"" . $this->getFixturePath() . "\"."
             );
         }
 
-        if (!$this->confirmUnload($foundFixtures, $except)) {
-            return self::EXIT_CODE_NORMAL;
+        if (!$fixturesToUnload) {
+            $this->notifyNothingToUnload($foundFixtures, $except);
+            return static::EXIT_CODE_NORMAL;
         }
 
-        $filtered = array_diff($foundFixtures, $except);
-        $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $filtered));
+        if (!$this->confirmUnload($fixturesToUnload, $except)) {
+            return static::EXIT_CODE_NORMAL;
+        }
+
+        $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $fixturesToUnload));
 
         if (!$fixtures) {
             throw new Exception('No fixtures were found in namespace: ' . $this->namespace . '".');
@@ -179,13 +213,53 @@ class FixtureController extends Controller
     }
 
     /**
+     * Notifies user that there are no fixtures to load according input conditions
+     */
+    public function notifyNothingToLoad($foundFixtures, $except)
+    {
+        $this->stdout("Fixtures to load could not be found according given conditions:\n\n", Console::FG_RED);
+        $this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
+        $this->stdout("\t" . $this->namespace . "\n", Console::FG_GREEN);
+
+        if (count($foundFixtures)) {
+            $this->stdout("\nFixtures founded under the namespace:\n\n", Console::FG_YELLOW);
+            $this->outputList($foundFixtures);
+        }
+
+        if (count($except)) {
+            $this->stdout("\nFixtures that will NOT be loaded: \n\n", Console::FG_YELLOW);
+            $this->outputList($except);
+        }
+    }
+
+    /**
+     * Notifies user that there are no fixtures to unload according input conditions
+     */
+    public function notifyNothingToUnload($foundFixtures, $except)
+    {
+        $this->stdout("Fixtures to unload could not be found according given conditions:\n\n", Console::FG_RED);
+        $this->stdout("Fixtures namespace is: \n", Console::FG_YELLOW);
+        $this->stdout("\t" . $this->namespace . "\n", Console::FG_GREEN);
+
+        if (count($foundFixtures)) {
+            $this->stdout("\nFixtures founded under the namespace:\n\n", Console::FG_YELLOW);
+            $this->outputList($foundFixtures);
+        }
+
+        if (count($except)) {
+            $this->stdout("\nFixtures that will NOT be unloaded: \n\n", Console::FG_YELLOW);
+            $this->outputList($except);
+        }
+    }
+
+    /**
      * Notifies user that fixtures were successfully unloaded.
      * @param array $fixtures
      */
     private function notifyUnloaded($fixtures)
     {
-        $this->stdout("Fixtures were successfully unloaded from namespace:\n", Console::FG_YELLOW);
-        $this->stdout("\t\"" . Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
+        $this->stdout("\nFixtures were successfully unloaded from namespace: ", Console::FG_YELLOW);
+        $this->stdout(Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
         $this->outputList($fixtures);
     }
 
@@ -214,12 +288,14 @@ class FixtureController extends Controller
         $this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
 
         if (count($this->globalFixtures)) {
-            $this->stdout("Global fixtures will be loaded:\n\n", Console::FG_YELLOW);
+            $this->stdout("Global fixtures will be used:\n\n", Console::FG_YELLOW);
             $this->outputList($this->globalFixtures);
         }
 
-        $this->stdout("\nFixtures below will be loaded:\n\n", Console::FG_YELLOW);
-        $this->outputList($fixtures);
+        if (count($fixtures)) {
+            $this->stdout("\nFixtures below will be loaded:\n\n", Console::FG_YELLOW);
+            $this->outputList($fixtures);
+        }
 
         if (count($except)) {
             $this->stdout("\nFixtures that will NOT be loaded: \n\n", Console::FG_YELLOW);
@@ -241,12 +317,14 @@ class FixtureController extends Controller
         $this->stdout("\t" . $this->namespace . "\n\n", Console::FG_GREEN);
 
         if (count($this->globalFixtures)) {
-            $this->stdout("Global fixtures will be unloaded:\n\n", Console::FG_YELLOW);
+            $this->stdout("Global fixtures will be used:\n\n", Console::FG_YELLOW);
             $this->outputList($this->globalFixtures);
         }
 
-        $this->stdout("\nFixtures below will be unloaded:\n\n", Console::FG_YELLOW);
-        $this->outputList($fixtures);
+        if (count($fixtures)) {
+            $this->stdout("\nFixtures below will be unloaded:\n\n", Console::FG_YELLOW);
+            $this->outputList($fixtures);
+        }
 
         if (count($except)) {
             $this->stdout("\nFixtures that will NOT be unloaded:\n\n", Console::FG_YELLOW);
@@ -332,6 +410,44 @@ class FixtureController extends Controller
     }
 
     /**
+     * Filteres fixtures by splitting them in two categories: one that should be applied and not.
+     * If fixture is prefixed with "-", for example "-User", that means that fixture should not be loaded,
+     * if it is not prefixed it is considered as one to be loaded. Returs array:
+     * 
+     * ~~~
+     * [
+     *     'apply' => [
+     *         User,
+     *         ...
+     *     ],
+     *     'except' => [
+     *         Custom,
+     *         ...
+     *     ],
+     * ]
+     * ~~~
+     * @param array $fixtures
+     * @return array fixtures array with 'apply' and 'except' elements.
+     */
+    private function filterFixtures($fixtures)
+    {
+        $filtered = [
+            'apply' => [],
+            'except' => [],
+        ];
+
+        foreach ($fixtures as $fixture) {
+            if (mb_strpos($fixture, '-') !== false) {
+                $filtered['except'][] = str_replace('-', '', $fixture);
+            } else {
+                $filtered['apply'][] = $fixture;                
+            }
+        }
+
+        return $filtered;
+    }
+
+    /**
      * Returns fixture path that determined on fixtures namespace.
      * @return string fixture path
      */
@@ -339,4 +455,5 @@ class FixtureController extends Controller
     {
         return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
     }
+
 }
