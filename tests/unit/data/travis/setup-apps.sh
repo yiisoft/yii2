@@ -23,8 +23,4 @@ else
     cd ../console && codecept build
     cd ../frontend && codecept build
     cd ../../../
-
-    # boot server
-    php -S localhost:8080 > /dev/null 2>&1 &
-
 fi
