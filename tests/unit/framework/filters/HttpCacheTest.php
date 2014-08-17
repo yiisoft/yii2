@@ -37,7 +37,10 @@ class HttpCacheTest extends \yiiunit\TestCase
         $method = new \ReflectionMethod($httpCache, 'validateCache');
         $method->setAccessible(true);
 
-        $this->assertFalse($method->invoke($httpCache, null, null));
+        unset($_SERVER['HTTP_IF_MODIFIED_SINCE'], $_SERVER['HTTP_IF_NONE_MATCH']);
+        $this->assertTrue($method->invoke($httpCache, null, null));
+        $this->assertFalse($method->invoke($httpCache, 0, null));
+        $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
 
         $_SERVER['HTTP_IF_MODIFIED_SINCE'] = 'Thu, 01 Jan 1970 00:00:00 GMT';
         $this->assertTrue($method->invoke($httpCache, 0, null));
@@ -45,8 +48,10 @@ class HttpCacheTest extends \yiiunit\TestCase
 
         $_SERVER['HTTP_IF_NONE_MATCH'] = '"foo"';
         $this->assertTrue($method->invoke($httpCache, 0, '"foo"'));
+        $this->assertFalse($method->invoke($httpCache, 0, '"foos"'));
         $this->assertTrue($method->invoke($httpCache, 1, '"foo"'));
-        $this->assertFalse($method->invoke($httpCache, null, null));
+        $this->assertFalse($method->invoke($httpCache, 1, '"foos"'));
+        $this->assertTrue($method->invoke($httpCache, null, null));
     }
 
     /**
