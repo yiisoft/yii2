@@ -1,3 +1,3 @@
 <?php
 
-new yii\web\Application(require(__DIR__ . '/_config.php'));
+new yii\web\Application(require(dirname(dirname(__DIR__)) . '/config/frontend/functional.php'));

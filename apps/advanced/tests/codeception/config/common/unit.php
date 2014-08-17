@@ -1,15 +1,13 @@
 <?php
-
+/**
+ * Application config for common unit tests
+ */
 return yii\helpers\ArrayHelper::merge(
     require(ROOT_DIR . '/common/config/main.php'),
     require(ROOT_DIR . '/common/config/main-local.php'),
-    require(__DIR__ . '/../_config.php'),
+    require(dirname(__DIR__) . '/config.php'),
+    require(dirname(__DIR__) . '/unit.php'),
     [
-        'components' => [
-            'db' => [
-                'dsn' => 'mysql:host=localhost;dbname=yii2_advanced_unit',
-            ],
-        ],
         'id' => 'app-common',
         'basePath' => dirname(__DIR__),
     ]

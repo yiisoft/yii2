@@ -14,4 +14,4 @@ modules:
       - codeception\common\_support\FixtureHelper
     config:
         Yii2:
-            configFile: 'functional/_config.php'
+            configFile: '../config/backend/functional.php'
