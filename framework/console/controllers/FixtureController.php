@@ -49,6 +49,11 @@ class FixtureController extends Controller
      */
     public $namespace = 'tests\unit\fixtures';
     /**
+     * @var bool whether to clean fixtures storage before apply or load them 
+     * in the end of already existed fixtures
+     */
+    public $append = false;
+    /**
      * @var array global fixtures that should be applied when loading and unloading. By default it is set to `InitDbFixture`
      * that disables and enables integrity check, so your data can be safely loaded.
      */
@@ -63,7 +68,7 @@ class FixtureController extends Controller
     public function options($actionId)
     {
         return array_merge(parent::options($actionId), [
-            'namespace', 'globalFixtures'
+            'namespace', 'globalFixtures', 'append'
         ]);
     }
 
@@ -78,14 +83,17 @@ class FixtureController extends Controller
      */
     public function actionLoad(array $fixtures, array $except = [])
     {
-        $foundFixtures = $this->findFixtures($fixtures);
-
         if (!$this->needToApplyAll($fixtures[0])) {
+
+            $foundFixtures = $this->findFixtures($fixtures);
             $notFoundFixtures = array_diff($fixtures, $foundFixtures);
 
             if ($notFoundFixtures) {
                 $this->notifyNotFound($notFoundFixtures);
             }
+
+        } else {
+            $foundFixtures = $this->findFixtures();
         }
 
         if (!$foundFixtures) {
@@ -107,7 +115,11 @@ class FixtureController extends Controller
         }
 
         $fixturesObjects = $this->createFixtures($fixtures);
-        $this->unloadFixtures($fixturesObjects);
+
+        if (!$this->append) {
+            $this->unloadFixtures($fixturesObjects);
+        }
+
         $this->loadFixtures($fixturesObjects);
         $this->notifyLoaded($fixtures);
     }
@@ -122,14 +134,15 @@ class FixtureController extends Controller
      */
     public function actionUnload(array $fixtures, array $except = [])
     {
-        $foundFixtures = $this->findFixtures($fixtures);
-
         if (!$this->needToApplyAll($fixtures[0])) {
+            $foundFixtures = $this->findFixtures($fixtures);
             $notFoundFixtures = array_diff($fixtures, $foundFixtures);
 
             if ($notFoundFixtures) {
                 $this->notifyNotFound($notFoundFixtures);
             }
+        } else {
+            $foundFixtures = $this->findFixtures();
         }
 
         if (!$foundFixtures) {
@@ -265,16 +278,22 @@ class FixtureController extends Controller
     }
 
     /**
-     * @param array $fixtures
+     * Finds fixtures to be loaded, for example "User", if no fixtures were specified then all of them 
+     * will be searching by suffix "Fixture.php".
+     * @param array $fixtures fixtures to be loaded
      * @return array Array of found fixtures. These may differ from input parameter as not all fixtures may exists.
      */
-    private function findFixtures(array $fixtures)
+    private function findFixtures(array $fixtures = [])
     {
         $fixturesPath = $this->getFixturePath();
 
         $filesToSearch = ['*Fixture.php'];
-        if (!$this->needToApplyAll($fixtures[0])) {
+        $findAll = ($fixtures == []);
+
+        if (!$findAll) {
+
             $filesToSearch = [];
+
             foreach ($fixtures as $fileName) {
                 $filesToSearch[] = $fileName . 'Fixture.php';
             }
