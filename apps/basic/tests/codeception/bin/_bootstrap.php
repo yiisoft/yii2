@@ -6,7 +6,7 @@ defined('YII_ENV') or define('YII_ENV', 'test');
 defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
 defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
 
-defined('ROOT_DIR') or define('ROOT_DIR', dirname(dirname(dirname(__DIR__))));
+defined('YII_ROOT_DIR') or define('YII_ROOT_DIR', dirname(dirname(dirname(__DIR__))));
 
-require(ROOT_DIR . '/vendor/autoload.php');
-require(ROOT_DIR . '/vendor/yiisoft/yii2/Yii.php');
+require(YII_ROOT_DIR . '/vendor/autoload.php');
+require(YII_ROOT_DIR . '/vendor/yiisoft/yii2/Yii.php');

@@ -11,7 +11,7 @@
 require_once __DIR__ . '/_bootstrap.php';
 
 $config = yii\helpers\ArrayHelper::merge(
-    require(ROOT_DIR . '/config/console.php'),
+    require(YII_ROOT_DIR . '/config/console.php'),
     require(__DIR__ . '/../config/config.php'),
     [
         'components' => [
