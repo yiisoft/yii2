@@ -65,8 +65,7 @@ script:
     if (php --version | grep -i HipHop > /dev/null); then
       echo "Skipping advanced application tests on HHVM"
     else
-      kill $(ps -ef | grep php | awk '{print $2}')
-      cd ../../advanced
+      cd apps/advanced
       php -S localhost:8080 > /dev/null 2>&1 &
       cd tests
       codecept run
