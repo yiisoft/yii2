@@ -1,38 +1,38 @@
-Versioning
-==========
+Версионирование
+===============
 
-Your APIs should be versioned. Unlike Web applications which you have full control on both client side and server side
-code, for APIs you usually do not have control of the client code that consumes the APIs. Therefore, backward
-compatibility (BC) of the APIs should be maintained whenever possible, and if some BC-breaking changes must be
-introduced to the APIs, you should bump up the version number. You may refer to [Semantic Versioning](http://semver.org/)
-for more information about designing the version numbers of your APIs.
+Свои API вам следует версионировать. В отличие от Web-приложений, где у вас есть полный контроль и над серверным, и над клиентским кодом,
+при работе с API у вас обычно нет контроля над клиентским кодом, работающим с вашими API. Поэтому всегда, когда это только возможно, 
+должна поддерживаться обратная совместимость API, и если в API должны быть внесены изменения, ломающие обратную совместимость,
+следует увеличить номер версии. Почитайте про [семантическое версионирование](http://semver.org/)
+для получения более подробной информации о возможных способах нумерации различных версий ваших API.
 
-Regarding how to implement API versioning, a common practice is to embed the version number in the API URLs.
-For example, `http://example.com/v1/users` stands for `/users` API of version 1. Another method of API versioning
-which gains momentum recently is to put version numbers in the HTTP request headers, typically through the `Accept` header,
-like the following:
+Общей практикой при реализации версионирования API является включение номера версии в URL-адрес вызова API-метода.
+Например, `http://example.com/v1/users` означает вызов API `/users` версии 1. Другой способ версионирования API,
+получивший недавно широкое распространение, состоит в добавлении номера версии в HTTP-заголовки запроса, 
+обычно в заголовок `Accept`:
 
 ```
-// via a parameter
+// как параметр
 Accept: application/json; version=v1
-// via a vendor content type
+// как тип содержимого, определенный поставщиком API
 Accept: application/vnd.company.myapp-v1+json
 ```
 
-Both methods have pros and cons, and there are a lot of debates about them. Below we describe a practical strategy
-of API versioning that is kind of a mix of these two methods:
+Оба способа имеют достоинства и недостатки, и вокруг них много споров. Ниже мы опишем реально работающую стратегию
+версионирования API, которая является некоторой смесью этих двух способов:
 
-* Put each major version of API implementation in a separate module whose ID is the major version number (e.g. `v1`, `v2`).
-  Naturally, the API URLs will contain major version numbers.
-* Within each major version (and thus within the corresponding module), use the `Accept` HTTP request header
-  to determine the minor version number and write conditional code to respond to the minor versions accordingly.
+* Помещать каждую мажорную версию реализации API в отдельный модуль, чей ID является номером мажорной версии (например, `v1`, `v2`).
+  Естественно, URL-адреса API будут содержать в себе номера мажорных версий.
+* В пределах каждой мажорной версии (т.е. внутри соответствующего модуля) использовать HTTP-заголовок `Accept`
+  для определения номера минорной версии и писать условный код для соответствующих минорных версий.
 
-For each module serving a major version, it should include the resource classes and the controller classes
-serving for that specific version. To better separate code responsibility, you may keep a common set of
-base resource and controller classes, and subclass them in each individual version module. Within the subclasses,
-implement the concrete code such as `Model::fields()`.
+В каждый модуль, обслуживающий мажорную версию, следует включать классы ресурсов и контроллеров,
+обслуживающих эту конкретную версию. Для лучшего разделения ответственности кода вы можете составить общий набор 
+базовых классов ресурсов и контроллеров, и субклассировать их в каждом отдельно взятом модуле версии. Внутри дочерних классов
+реализуйте конкретный код вроде метода `Model::fields()`.
 
-Your code may be organized like the following:
+Ваш код может быть организован примерно следующим образом:
 
 ```
 api/
@@ -60,7 +60,7 @@ api/
                 Post.php
 ```
 
-Your application configuration would look like:
+Конфигурация вашего приложения могла бы выглядеть так:
 
 ```php
 return [
@@ -86,22 +86,22 @@ return [
 ];
 ```
 
-As a result, `http://example.com/v1/users` will return the list of users in version 1, while
-`http://example.com/v2/users` will return version 2 users.
+В результате `http://example.com/v1/users` возвратит список пользователей API версии 1, в то время как
+`http://example.com/v2/users` вернет список пользователей версии 2.
 
-Using modules, code for different major versions can be well isolated. And it is still possible
-to reuse code across modules via common base classes and other shared classes.
+При использовании модулей код API различных мажорных версий может быть хорошо изолирован. И по-прежнему возможно
+повторное использование кода между модулями через общие базовые классы и другие разделяемые классы.
 
-To deal with minor version numbers, you may take advantage of the content negotiation
-feature provided by the [[yii\filters\ContentNegotiator|contentNegotiator]] behavior. The `contentNegotiator`
-behavior will set the [[yii\web\Response::acceptParams]] property when it determines which
-content type to support.
+Для работы с минорными номерами версий вы можете использовать преимущества согласования содержимого,
+предоставляемого поведением [[yii\filters\ContentNegotiator|contentNegotiator]].
+Определив тип поддерживаемого содержимого, поведение `contentNegotiator` установит значение 
+свойства [[yii\web\Response::acceptParams]].
 
-For example, if a request is sent with the HTTP header `Accept: application/json; version=v1`,
-after content negotiation, [[yii\web\Response::acceptParams]] will contain the value `['version' => 'v1']`.
+Например, если запрос посылается с HTTP-заголовком `Accept: application/json; version=v1`, то после согласования содержимого
+свойство [[yii\web\Response::acceptParams]] будет содержать значение `['version' => 'v1']`.
 
-Based on the version information in `acceptParams`, you may write conditional code in places
-such as actions, resource classes, serializers, etc.
+На основе информации о версии из `acceptParams` вы можете написать условный код в таких местах,
+как действия, классы ресурсов, сериализаторы и т.д.
 
-Since minor versions require maintaining backward compatibility, hopefully there are not much
-version checks in your code. Otherwise, chances are that you may need to create a new major version.
+Так как минорные версии требуют поддержания обратной совместимости, будем надеяться, что в вашем коде не так уж много
+проверок на номер версии. В противном случае велики шансы, что вам нужна новая мажорная версия.
