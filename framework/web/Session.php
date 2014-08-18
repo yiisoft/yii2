@@ -722,6 +722,34 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
+     * Appends new flash message to the specified key.
+     * @param string $key the key identifying the flash message.
+     * @param mixed $value flash message
+     * @param boolean $removeAfterAccess whether the flash message should be automatically removed only if
+     * it is accessed. If false, the flash message will be automatically removed after the next request,
+     * regardless if it is accessed or not. If true (default value), the flash message will remain until after
+     * it is accessed.
+     * @throws InvalidParamException if exising session variable is not array.
+     * @see getFlash()
+     * @see removeFlash()
+     */
+    public function addFlash($key, $value = true, $removeAfterAccess = true)
+    {
+        $counters = $this->get($this->flashParam, []);
+        $counters[$key] = $removeAfterAccess ? -1 : 0;
+        if (!empty($_SESSION[$key])) {
+            // If it's not an array, convert it to array 
+            if (!is_array($_SESSION[$key])) {
+                $_SESSION[$key] = [$_SESSION[$key]];
+            }
+            $_SESSION[$key][] = $value;
+        } else {
+            $_SESSION[$key] = [$value];
+        }
+        $_SESSION[$this->flashParam] = $counters;
+    }
+
+    /**
      * Removes a flash message.
      * @param string $key the key identifying the flash message. Note that flash messages
      * and normal session variables share the same name space.  If you have a normal
@@ -760,9 +788,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Returns a value indicating whether there is a flash message associated with the specified key.
-     * @param string $key key identifying the flash message
-     * @return boolean whether the specified flash message exists
+     * Returns a value indicating whether there are flash messages associated with the specified key.
+     * @param string $key key identifying the flash message type
+     * @return boolean whether any flash messages exist under specified key
      */
     public function hasFlash($key)
     {
