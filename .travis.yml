@@ -61,22 +61,17 @@ script:
       PHP_PID=$!
       cd ../tests
       codecept run
-      BASIC_EXIT=$?
-      kill -9 $PHP_PID
-      exit $BASIC_EXIT
     fi
   - |
     if (php --version | grep -i HipHop > /dev/null); then
       echo "Skipping advanced application tests on HHVM"
     else
+      kill -9 $PHP_PID
       cd ../../advanced
       php -S localhost:8080 > /dev/null 2>&1 &
       PHP_PID=$!
       cd tests
       codecept run
-      ADVANCED_EXIT=$?
-      kill -9 $PHP_PID
-      exit $ADVANCED_EXIT
     fi
 
 after_script:
