@@ -54,7 +54,7 @@ script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
   - |
     if (php --version | grep -i HipHop > /dev/null); then
-      echo "skipping application tests on HHVM"
+      echo "Skipping basic application tests on HHVM"
     else
       cd apps/basic/web
       php -S localhost:8080 > /dev/null 2>&1 &
@@ -63,6 +63,12 @@ script:
       codecept run
       BASIC_EXIT=$?
       kill -9 $PHP_PID
+      exit $BASIC_EXIT
+    fi
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      echo "Skipping advanced application tests on HHVM"
+    else
       cd ../../advanced
       php -S localhost:8080 > /dev/null 2>&1 &
       PHP_PID=$!
@@ -70,7 +76,7 @@ script:
       codecept run
       ADVANCED_EXIT=$?
       kill -9 $PHP_PID
-      exit $BASIC_EXIT && $ADVANCED_EXIT
+      exit $ADVANCED_EXIT
     fi
 
 after_script:
