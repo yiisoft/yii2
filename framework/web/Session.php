@@ -717,7 +717,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         $counters = $this->get($this->flashParam, []);
         $counters[$key] = $removeAfterAccess ? -1 : 0;
-        $_SESSION[$key] = $value;
+
+        if (!empty($_SESSION[$key])) {
+            $_SESSION[$key][] = $value;
+        } else {
+            $_SESSION[$key] = [$value];
+        }
+
         $_SESSION[$this->flashParam] = $counters;
     }
 
@@ -760,9 +766,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Returns a value indicating whether there is a flash message associated with the specified key.
-     * @param string $key key identifying the flash message
-     * @return boolean whether the specified flash message exists
+     * Returns a value indicating whether there are flash messages associated with the specified key.
+     * @param string $key key identifying the flash message type
+     * @return boolean whether any flash messages exist under specified key
      */
     public function hasFlash($key)
     {
