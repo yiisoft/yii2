@@ -7,8 +7,9 @@ else
     mysql -e 'CREATE DATABASE yii2_advanced_acceptance;';
     mysql -e 'CREATE DATABASE yii2_advanced_functional;';
     mysql -e 'CREATE DATABASE yii2_advanced_unit;';
-    cd apps/advanced/frontend/tests/acceptance && php yii migrate --interactive=0
-    cd ../functional && php yii migrate --interactive=0
-    cd ../unit && php yii migrate --interactive=0 && cd ../../../../..
-
+    cd apps/advanced/tests/codeception/bin
+    php yii_acceptance migrate --interactive=0
+    php yii_functional migrate --interactive=0
+    php yii_unit migrate --interactive=0
+    cd ../../../../..
 fi

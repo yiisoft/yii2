@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Yii console bootstrap file.
+ *
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
+require_once __DIR__ . '/_bootstrap.php';
+
+$config = yii\helpers\ArrayHelper::merge(
+    require(YII_ROOT_DIR . '/config/console.php'),
+    require(__DIR__ . '/../config/config.php'),
+    [
+        'components' => [
+            'db' => [
+                'dsn' => 'mysql:host=localhost;dbname=yii2_basic_functional',
+            ],
+        ],
+    ]
+);
+
+$application = new yii\console\Application($config);
+$exitCode = $application->run();
+exit($exitCode);

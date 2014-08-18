@@ -27,12 +27,17 @@ addons:
 
 install:
   - composer self-update && composer --version
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - composer install --prefer-dist
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
+# codeception
+  - composer global require "codeception/codeception=2.0.*"
+  - composer global require "codeception/specify=*"
+  - composer global require "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
 
@@ -51,10 +56,21 @@ script:
     if (php --version | grep -i HipHop > /dev/null); then
       echo "skipping application tests on HHVM"
     else
-      cd apps/basic && php vendor/bin/codecept run
-      cd ../advanced/backend && ../vendor/bin/codecept run
-      cd ../common && ../vendor/bin/codecept run
-      cd ../frontend && ../vendor/bin/codecept run
+      cd apps/basic/web
+      php -S localhost:8080 > /dev/null 2>&1 &
+      PHP_PID=$!
+      cd ../tests
+      codecept run
+      BASIC_EXIT=$?
+      kill -9 $PHP_PID
+      cd ../../advanced
+      php -S localhost:8080 > /dev/null 2>&1 &
+      PHP_PID=$!
+      cd tests
+      codecept run
+      ADVANCED_EXIT=$?
+      kill -9 $PHP_PID
+      exit $BASIC_EXIT && $ADVANCED_EXIT
     fi
 
 after_script:
