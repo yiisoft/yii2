@@ -8,6 +8,7 @@
 namespace yii\widgets;
 
 use Yii;
+use yii\base\InvalidCallException;
 use yii\base\Widget;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -202,6 +203,10 @@ class ActiveForm extends Widget
      * @internal
      */
     public $attributes = [];
+    /**
+     * @var ActiveField[] the ActiveField objects that are currently active
+     */
+    private $_fields = [];
 
 
     /**
@@ -222,9 +227,14 @@ class ActiveForm extends Widget
     /**
      * Runs the widget.
      * This registers the necessary javascript code and renders the form close tag.
+     * @throws InvalidCallException if `beginField()` and `endField()` calls are not matching
      */
     public function run()
     {
+        if (!empty($this->_fields)) {
+            throw new InvalidCallException('Each beginField() should have a matching endField() call.');
+        }
+
         if (!empty($this->attributes)) {
             $id = $this->options['id'];
             $options = Json::encode($this->getClientOptions());
@@ -303,6 +313,41 @@ class ActiveForm extends Widget
             'attribute' => $attribute,
             'form' => $this,
         ]));
+    }
+
+    /**
+     * Begins a form field.
+     * This method will create a new form field and returns its opening tag.
+     * You should call [[endField()]] afterwards.
+     * @param Model $model the data model
+     * @param string $attribute the attribute name or expression. See [[Html::getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options the additional configurations for the field object
+     * @return string the opening tag
+     * @see endField()
+     * @see field()
+     */
+    public function beginField($model, $attribute, $options = [])
+    {
+        $field = $this->field($model, $attribute, $options);
+        $this->_fields[] = $field;
+        return $field->begin();
+    }
+
+    /**
+     * Ends a form field.
+     * This method will return the closing tag of an active form field started by [[beginField()]].
+     * @return string the closing tag of the form field
+     * @throws InvalidCallException if this method is called without a prior [[beginField()]] call.
+     */
+    public function endField()
+    {
+        $field = array_pop($this->_fields);
+        if ($field instanceof ActiveField) {
+            return $field->end();
+        } else {
+            throw new InvalidCallException('Mismatching endField() call.');
+        }
     }
 
     /**
