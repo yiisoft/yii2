@@ -26,6 +26,7 @@ class BaseFileHelper
     const PATTERN_ENDSWITH = 4;
     const PATTERN_MUSTBEDIR = 8;
     const PATTERN_NEGATIVE = 16;
+    const PATTERN_CASELESS = 32;
 
 
     /**
@@ -227,6 +228,7 @@ class BaseFileHelper
      *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
      *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
      *   both '/' and '\' in the paths.
+     * - caseless: boolean, whether patterns specified at "only" or "except" should be case insensitive. Defaults to false.
      * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   If the callback returns false, the copy operation for the sub-directory or file will be cancelled.
@@ -248,7 +250,9 @@ class BaseFileHelper
             throw new InvalidParamException('Unable to open directory: ' . $src);
         }
         if (!isset($options['basePath'])) {
+            // this should be done only once
             $options['basePath'] = realpath($src);
+            $options = self::normalizeOptions($options);
         }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
@@ -342,6 +346,7 @@ class BaseFileHelper
      * - only: array, list of patterns that the file paths should match if they are to be returned. Directory paths are not checked against them.
      *   Same pattern matching rules as in the "except" option are used.
      *   If a file path matches a pattern in both "only" and "except", it will NOT be returned.
+     * - caseless: boolean, whether patterns specified at "only" or "except" should be case insensitive. Defaults to false.
      * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
      * @return array files found under the directory. The file list is sorted.
      * @throws InvalidParamException if the dir is invalid.
@@ -353,22 +358,9 @@ class BaseFileHelper
         }
         $dir = rtrim($dir, DIRECTORY_SEPARATOR);
         if (!isset($options['basePath'])) {
+            // this should be done only once
             $options['basePath'] = realpath($dir);
-            // this should also be done only once
-            if (isset($options['except'])) {
-                foreach ($options['except'] as $key => $value) {
-                    if (is_string($value)) {
-                        $options['except'][$key] = self::parseExcludePattern($value);
-                    }
-                }
-            }
-            if (isset($options['only'])) {
-                foreach ($options['only'] as $key => $value) {
-                    if (is_string($value)) {
-                        $options['only'][$key] = self::parseExcludePattern($value);
-                    }
-                }
-            }
+            $options = self::normalizeOptions($options);
         }
         $list = [];
         $handle = opendir($dir);
@@ -485,7 +477,12 @@ class BaseFileHelper
             }
         }
 
-        return fnmatch($pattern, $baseName, 0);
+        $fnmatchFlags = 0;
+        if ($flags & self::PATTERN_CASELESS) {
+            $fnmatchFlags |= FNM_CASEFOLD;
+        }
+
+        return fnmatch($pattern, $baseName, $fnmatchFlags);
     }
 
     /**
@@ -534,7 +531,12 @@ class BaseFileHelper
             }
         }
 
-        return fnmatch($pattern, $name, FNM_PATHNAME);
+        $fnmatchFlags = FNM_PATHNAME;
+        if ($flags & self::PATTERN_CASELESS) {
+            $fnmatchFlags |= FNM_CASEFOLD;
+        }
+
+        return fnmatch($pattern, $name, $fnmatchFlags);
     }
 
     /**
@@ -555,7 +557,7 @@ class BaseFileHelper
     {
         foreach (array_reverse($excludes) as $exclude) {
             if (is_string($exclude)) {
-                $exclude = self::parseExcludePattern($exclude);
+                $exclude = self::parseExcludePattern($exclude, false);
             }
             if (!isset($exclude['pattern']) || !isset($exclude['flags']) || !isset($exclude['firstWildcard'])) {
                 throw new InvalidParamException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
@@ -582,19 +584,26 @@ class BaseFileHelper
     /**
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
      * @param string $pattern
+     * @param boolean $caseLess
+     * @throws \yii\base\InvalidParamException
      * @return array with keys: (string) pattern, (int) flags, (int|boolean)firstWildcard
-     * @throws InvalidParamException if the pattern is not a string.
      */
-    private static function parseExcludePattern($pattern)
+    private static function parseExcludePattern($pattern, $caseLess)
     {
         if (!is_string($pattern)) {
             throw new InvalidParamException('Exclude/include pattern must be a string.');
         }
+
         $result = [
             'pattern' => $pattern,
             'flags' => 0,
             'firstWildcard' => false,
         ];
+
+        if ($caseLess) {
+            $result['flags'] |= self::PATTERN_CASELESS;
+        }
+
         if (!isset($pattern[0])) {
             return $result;
         }
@@ -634,5 +643,28 @@ class BaseFileHelper
         };
 
         return array_reduce($wildcards, $wildcardSearch, false);
+    }
+
+    /**
+     * @param array $options raw options
+     * @return array normalized options
+     */
+    private static function normalizeOptions(array $options)
+    {
+        if (isset($options['except'])) {
+            foreach ($options['except'] as $key => $value) {
+                if (is_string($value)) {
+                    $options['except'][$key] = self::parseExcludePattern($value, !empty($options['caseless']));
+                }
+            }
+        }
+        if (isset($options['only'])) {
+            foreach ($options['only'] as $key => $value) {
+                if (is_string($value)) {
+                    $options['only'][$key] = self::parseExcludePattern($value, !empty($options['caseless']));
+                }
+            }
+        }
+        return $options;
     }
 }
