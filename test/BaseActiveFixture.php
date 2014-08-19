@@ -105,11 +105,11 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
             throw new InvalidConfigException("Fixture data file does not exist: {$this->dataFile}");
         }
     }
-	
-	public function unload()
+
+    public function unload()
     {
         parent::unload();
-		$this->data = [];
+        $this->data = [];
         $this->_models = [];
     }
 }
