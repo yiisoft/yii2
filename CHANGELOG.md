@@ -172,6 +172,7 @@ Yii Framework 2 Change Log
 - Enh #4317: Added `absoluteAuthTimeout` to yii\web\User (ivokund, nkovacs)
 - Enh #4360: Added client validation support for file validator (Skysplit)
 - Enh #4372: `yii\filters\HttpCache` failed to comply to RFC 7232 (DaSourcerer)
+- Enh #4424: Added `forceDownload` parameter to `yii\web\Response::xSendFile()` (klimov-paul)
 - Enh #4436: Added callback functions to AJAX-based form validation (thiagotalma)
 - Enh #4485: Added support for deferred validation in `ActiveForm` (Alex-Code)
 - Enh #4520: Added sasl support to `yii\caching\MemCache` (xjflyttp)
