@@ -185,7 +185,7 @@ Yii Framework 2 Change Log
 - Enh #4636: Added `yii\web\Response::setDownloadHeaders()` (pawzar)
 - Enh #4644: Added `yii\db\Schema::createColumnSchema()` to be able to customize column schema used (mcd-php)
 - Enh #4656: HtmlPurifier helper config can now be a closure to change the purifier config object after it was created (Alex-Code)
-- Enh #4062: Added 'caseless' option to `yii\helpers\BaseFileHelper::findFiles()` (klimov-paul)
+- Enh #4062: Added 'caseSensitive' option to `yii\helpers\BaseFileHelper::findFiles()` (klimov-paul)
 - Enh #4691: Encoding on `ActiveForm` and `ActiveField` validation errors is now configurable (Alex-Code)
 - Enh #4740: Added `yii\web\Session::addFlash()` (restyler)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)

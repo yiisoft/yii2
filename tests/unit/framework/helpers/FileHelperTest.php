@@ -410,7 +410,7 @@ class FileHelperTest extends TestCase
     /**
      * @depends testFindFilesExclude
      */
-    public function testFindFilesCaseLess()
+    public function testFindFilesCaseSensitive()
     {
         $dirName = 'test_dir';
         $this->createFileStructure([
@@ -424,14 +424,14 @@ class FileHelperTest extends TestCase
 
         $options = [
             'except' => ['*.txt'],
-            'caseless' => true
+            'caseSensitive' => false
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertCount(0, $foundFiles);
 
         $options = [
             'only' => ['*.txt'],
-            'caseless' => true
+            'caseSensitive' => false
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertCount(2, $foundFiles);
