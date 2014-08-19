@@ -632,11 +632,12 @@ class Response extends \yii\base\Response
      * @param string $filePath file name with full path
      * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
      * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
-     * @param boolean $forceDownload whether the file will be downloaded or shown inline.
-     * @param string $xHeader the name of the x-sendfile header.
+     * @param array $options additional options. Valid options are:
+     * - forceDownload: boolean, whether the file will be downloaded or shown inline. Defaults to true.
+     * - xHeader: string, the name of the x-sendfile header. Defaults to "X-Sendfile".
      * @return static the response object itself
      */
-    public function xSendFile($filePath, $attachmentName = null, $mimeType = null, $forceDownload = true, $xHeader = 'X-Sendfile')
+    public function xSendFile($filePath, $attachmentName = null, $mimeType = null, $options = [])
     {
         if ($mimeType === null && ($mimeType = FileHelper::getMimeTypeByExtension($filePath)) === null) {
             $mimeType = 'application/octet-stream';
@@ -644,7 +645,16 @@ class Response extends \yii\base\Response
         if ($attachmentName === null) {
             $attachmentName = basename($filePath);
         }
-        $disposition = $forceDownload ? 'attachment' : 'inline';
+        if (isset($options['xHeader'])) {
+            $xHeader = $options['xHeader'];
+        } else {
+            $xHeader = 'X-Sendfile';
+        }
+        if (!isset($options['forceDownload']) || $options['forceDownload']) {
+            $disposition = 'attachment';
+        } else {
+            $disposition = 'inline';
+        }
 
         $this->getHeaders()
             ->setDefault($xHeader, $filePath)
