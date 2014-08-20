@@ -9,7 +9,7 @@ use yii\console\controllers\FixtureController;
 
 /**
  * Unit test for [[\yii\console\controllers\FixtureController]].
- * @see MigrateController
+ * @see FixtureController
  *
  * @group console
  */
@@ -157,6 +157,20 @@ class FixtureControllerTest extends TestCase
         $this->_fixtureController->actionUnload('First', '-First');
 
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should not be loaded');
+    }
+
+    public function testAppendFixtureData()
+    {
+        $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should be unloaded');
+
+        $this->_fixtureController->actionLoad('First');
+
+        $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
+
+        $this->_fixtureController->append = true;
+        $this->_fixtureController->actionLoad('First');
+
+        $this->assertCount(2, FixtureStorage::$firstFixtureData, 'first fixture data should be appended to already existed one');
     }
 
     /**
