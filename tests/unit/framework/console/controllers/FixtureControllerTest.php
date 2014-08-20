@@ -77,7 +77,7 @@ class FixtureControllerTest extends TestCase
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should be empty');
         $this->assertEmpty(FixtureStorage::$secondFixtureData, 'second fixture data should be empty');
 
-        $this->_fixtureController->actionLoad('all');
+        $this->_fixtureController->actionLoad('*');
 
         $this->assertCount(1, FixtureStorage::$globalFixturesData, 'global fixture data should be loaded');
         $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
@@ -94,7 +94,7 @@ class FixtureControllerTest extends TestCase
         $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
         $this->assertCount(1, FixtureStorage::$secondFixtureData, 'second fixture data should be loaded');
 
-        $this->_fixtureController->actionUnload('all');
+        $this->_fixtureController->actionUnload('*');
 
         $this->assertEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should be unloaded');
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should be unloaded');
@@ -125,7 +125,7 @@ class FixtureControllerTest extends TestCase
 
     public function testLoadAllExceptOnes()
     {
-        $this->_fixtureController->actionLoad('all', '-Second', '-Global');
+        $this->_fixtureController->actionLoad('*', '-Second', '-Global');
 
         $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
         $this->assertEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should not be loaded');
@@ -138,7 +138,7 @@ class FixtureControllerTest extends TestCase
         FixtureStorage::$firstFixtureData[] = 'some seeded first fixture data';
         FixtureStorage::$secondFixtureData[] = 'some seeded second fixture data';
 
-        $this->_fixtureController->actionUnload('all', '-Second', '-Global');
+        $this->_fixtureController->actionUnload('*', '-Second', '-Global');
 
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should be unloaded');
         $this->assertNotEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should not be unloaded');
