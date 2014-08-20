@@ -46,7 +46,7 @@ class FixtureController extends Controller
     /**
      * type of fixture apply to database
      */
-    const APPLY_ALL = 'all';
+    const APPLY_ALL = '*';
 
     /**
      * @var string controller default action ID.
