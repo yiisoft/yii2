@@ -1,7 +1,7 @@
 Application Components
 ======================
 
-Applications are [service locators](concept-service-locators.md). They host a set of the so-called
+Applications are [service locators](concept-service-locator.md). They host a set of the so-called
 *application components* that provide different services for processing requests. For example,
 the `urlManager` component is responsible for routing Web requests to appropriate controllers;
 the `db` component provides DB-related services; and so on.
