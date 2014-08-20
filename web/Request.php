@@ -336,6 +336,15 @@ class Request extends \yii\base\Request
         return $this->_rawBody;
     }
 
+    /**
+     * Sets the raw HTTP request body, this method is mainly used by test scripts to simulate raw HTTP requests.
+     * @param $rawBody
+     */
+    public function setRawBody($rawBody)
+    {
+        $this->_rawBody = $rawBody;
+    }
+
     private $_bodyParams;
 
     /**
