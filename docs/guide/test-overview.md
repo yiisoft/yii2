@@ -28,7 +28,7 @@ time to make steps bigger, but if you started to spend a lot of time on debug wh
 Mainly you should write code only before test to be able to understand what it does and to avoid leaks of code implementation into tests. This approach
 is called `Test First`. It is a vital part of testing to understand that code implementation should not leak to your tests, thus you will
 be able to concentrate more on abstractions of code and features, rather then particular implementation. Tests that have such leaks becoming
-hard to maintain and understand, and as a conclusion they are deleted.However depending on your understanding of TDD and your skills of writing good decoupled code you can write tests after
+hard to maintain and understand, and as a conclusion they are deleted. However depending on your understanding of TDD and your skills of writing good decoupled code you can write tests after
 the implementation is done, there is nothing wrong about it, while you are understanding what you are doing and why.
 
 There are a lot of reasons why you should use TDD, below are the common ones:
@@ -37,7 +37,7 @@ There are a lot of reasons why you should use TDD, below are the common ones:
 - it keeps you concentrated only on one thing - currently developing feature, and not in whole project. Thus you only write code that you really need;
 - it lets you know immediately if something will go wrong or functionality of some features will be broken;  
 - it lets you understand the use case of feature you are developing now and you are able to build systems with clear interfaces;
-- it lets you understand dependencies between code and how to solve them to make system decoupled, particular with IoC.
+- it lets you understand dependencies between code and how to solve them to make system decoupled, particular with [Inversion Of Control](http://en.wikipedia.org/wiki/Inversion_of_control) principle.
 
 TDD can help you to build good decoupled systems, but it will not replace some basic knowledges of refactoring and structuring code, so you
 should not consider it as a `silver bullet`. It is almost always that you will think about code, features and specifications before writing any test case.
