@@ -8,10 +8,11 @@ interacts with us as expected. The testing process could be automated so that ea
 we just need to call up the code that perform testing for us. This is known as automated testing, which is the main topic
 of testing chapters.
 
-TDD is an approach of developing software when you write your code in repeatable steps that verifies produced features
-with needed assertions. 
+[Test-Driven Development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) is an approach of developing software when you write your code in repeatable steps that verifies produced features
+with needed assertions.
 
-Test - block of program that verifies correct or not correct behavior of needed feature. All tests should be automated.
+Test - block of program that verifies correct or not correct behavior of needed feature. All tests should be automated to be able to make them
+run often and fast.
 
 Main life cycle of this approach contains following steps:
 
@@ -25,7 +26,9 @@ Repeat step 1 to 5 to push forward the functionality implementation. Depending o
 of code that you change between steps and tests run. If you feel that you are doing a lot of simple changes and loosing your time then it is
 time to make steps bigger, but if you started to spend a lot of time on debug when writing tests it is a good sign to make steps slower.
 Mainly you should write code only before test to be able to understand what it does and to avoid leaks of code implementation into tests. This approach
-is called `Test First`. However depending on your understanding of TDD and your skills of writing good decoupled code you can write tests after
+is called `Test First`. It is a vital part of testing to understand that code implementation should not leak to your tests, thus you will
+be able to concentrate more on abstractions of code and features, rather then particular implementation. Tests that have such leaks becoming
+hard to maintain and understand, and as a conclusion they are deleted.However depending on your understanding of TDD and your skills of writing good decoupled code you can write tests after
 the implementation is done, there is nothing wrong about it, while you are understanding what you are doing and why.
 
 There are a lot of reasons why you should use TDD, below are the common ones:
