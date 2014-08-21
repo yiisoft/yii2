@@ -301,17 +301,17 @@ yii fixture User
 // load several fixtures
 yii fixture User UserProfile
 
-//load fixture, but dont clean storage before load and just append to already existed data
+//load fixture, but don't clean storage before load and just append to already existed data
 yii fixture User --append
 
 // load all fixtures
-yii fixture/load all
+yii fixture/load *
 
 // same as above
-yii fixture all
+yii fixture *
 
 // load all fixtures except ones
-yii fixture all -DoNotLoadThisOne
+yii fixture * -DoNotLoadThisOne
 
 // load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
 yii fixture User --namespace='alias\my\custom\namespace'

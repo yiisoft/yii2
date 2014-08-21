@@ -15,7 +15,7 @@ use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
 
 /**
- * Manages loading and unloading fixtures.
+ * Manages fixture data loading and unloading.
  *
  * ~~~
  * #load fixtures from UsersFixture class with default namespace "tests\unit\fixtures"
@@ -24,9 +24,12 @@ use yii\test\FixtureTrait;
  * #also a short version of this command (generate action is default)
  * yii fixture User
  *
+ * #load all fixtures
+ * yii fixture *
+ *
  * #load all fixtures except User
- * yii fixture all -User
- * 
+ * yii fixture * -User
+ *
  * #append fixtures to already loaded
  * yii fixture User --append
  * 
@@ -34,7 +37,7 @@ use yii\test\FixtureTrait;
  * yii fixture/load User --namespace=alias\my\custom\namespace\goes\here
  * ~~~
  *
- * Same examples are true for unloading fixtures, except append option.
+ * The `unload` sub-command can be used similarly to unload fixtures.
  * 
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -42,11 +45,6 @@ use yii\test\FixtureTrait;
 class FixtureController extends Controller
 {
     use FixtureTrait;
-
-    /**
-     * type of fixture apply to database
-     */
-    const APPLY_ALL = '*';
 
     /**
      * @var string controller default action ID.
@@ -57,8 +55,8 @@ class FixtureController extends Controller
      */
     public $namespace = 'tests\unit\fixtures';
     /**
-     * @var bool whether to clean fixtures storage before apply or load them 
-     * in the end of already existed fixtures
+     * @var bool whether to append new fixture data to the existing ones.
+     * Defaults to false, meaning if there is any existing fixture data, it will be removed.
      */
     public $append = false;
     /**
@@ -81,15 +79,26 @@ class FixtureController extends Controller
     }
 
     /**
-     * Loads given fixture. You can load several fixtures specifying
-     * their names separated with space, like: User UserProfile MyCustom. 
-     * Note that if you are loading fixtures to storage, for example: database or nosql,
-     * storage will not be cleared, data will be appended to already existed. If you want to append
-     * fixtures data to already existed one use "--append" option of this command.
-     * If you dont want to unload particular fixture, then specify it with "-" prefix.
-     * @param array $fixtures
-     * @param array $except
-     * @throws \yii\console\Exception
+     * Loads the specified fixture data.
+     * For example,
+     *
+     * ~~~
+     * # load the fixture data specified by User and UserProfile.
+     * # any existing fixture data will be removed first
+     * yii fixture/load User UserProfile
+     *
+     * # load the fixture data specified by User and UserProfile.
+     * # the new fixture data will be appended to the existing one
+     * yii fixture/load --append User UserProfile
+     *
+     * # load all available fixtures found under 'tests\unit\fixtures'
+     * yii fixture/load *
+     *
+     * # load all fixtures except User and UserProfile
+     * yii fixture/load * -User -UserProfile
+     * ~~~
+     *
+     * @throws Exception if the specified fixture does not exist.
      */
     public function actionLoad()
     {        
@@ -147,10 +156,21 @@ class FixtureController extends Controller
     }
 
     /**
-     * Unloads given fixtures. You can unload several fixtures specifying
-     * their names separated with space, like: User UserProfile MyCustom.
-     * If you dont want to unload particular fixture, then specify it with "-" prefix.
-     * @throws \yii\console\Exception in case no fixtures are found.
+     * Unloads the specified fixtures.
+     * For example,
+     *
+     * ~~~
+     * # unload the fixture data specified by User and UserProfile.
+     * yii fixture/unload User UserProfile
+     *
+     * # unload all fixtures found under 'tests\unit\fixtures'
+     * yii fixture/unload *
+     *
+     * # unload all fixtures except User and UserProfile
+     * yii fixture/unload * -User -UserProfile
+     * ~~~
+     *
+     * @throws Exception if the specified fixture does not exist.
      */
     public function actionUnload()
     {
@@ -352,7 +372,7 @@ class FixtureController extends Controller
      */
     public function needToApplyAll($fixture)
     {
-        return $fixture == self::APPLY_ALL;
+        return $fixture == '*';
     }
 
     /**
@@ -410,7 +430,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Filteres fixtures by splitting them in two categories: one that should be applied and not.
+     * Filters fixtures by splitting them in two categories: one that should be applied and not.
      * If fixture is prefixed with "-", for example "-User", that means that fixture should not be loaded,
      * if it is not prefixed it is considered as one to be loaded. Returs array:
      * 
