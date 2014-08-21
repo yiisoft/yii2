@@ -49,9 +49,12 @@ However it is not always necessary to use TDD in your project, you should consid
 - you are working on long term project;
 - you have time for TDD, since tests should not be written once and forgotten, they should be also crafted as other code;
 - you have correct environment that allows you to use TDD. It can be testing frameworks, fixtures frameworks and so on;
-- your team understand the value of bringing good quality code to business;
+- you are working on project with legacy code that should be rewritten fully or partial;
+- your team understand the value of bringing good quality code to business.
 
 If you are working on simple CRUD or small projects usually you dont need TDD, since it can take a half of all time in developing with small projects.
+When working on legacy code it is very hard to apply TDD due to hard system coupling and wrong architectural design issues, however by isolating some code blocks 
+and working with them one by one in small parts you can rewrite it much faster with TDD than without it, since you will be sure everything is works correctly and you can move on.
 
 Below are listed books where you can find more answers for your TDD quesitons:
 
