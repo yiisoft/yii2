@@ -293,7 +293,7 @@ line:
   migration history information. It defaults to `migration`. The table
   structure is `version varchar(255) primary key, apply_time integer`.
 
-* `connectionID`: string, specifies the ID of the database application component.
+* `db`: string, specifies the ID of the database application component.
   Defaults to 'db'.
 
 * `templateFile`: string, specifies the path of the file to be served as the code
