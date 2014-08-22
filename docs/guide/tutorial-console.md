@@ -77,6 +77,9 @@ file via the `appconfig` option when executing the command:
 yii <route> --appconfig=path/to/config.php ...
 ```
 
+> Note: When specifying in console commands * as an input argument you should quote as "*", to avoid executing it as a shell command on
+some platforms.
+
 
 Creating your own console commands
 ----------------------------------
@@ -151,3 +154,8 @@ public function actionIndex()
     return 0;
 }
 ```
+
+There are some predefined console controller constants for this cases like the following:
+
+- Controller::EXIT_CODE_NORMAL;
+- Controller::EXIT_CODE_ERROR.
