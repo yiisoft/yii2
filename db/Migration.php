@@ -40,7 +40,10 @@ class Migration extends Component implements MigrationInterface
 {
     /**
      * @var Connection|string the DB connection object or the application component ID of the DB connection
-     * that this migration should work with.
+     * that this migration should work with. Note that when a Migration object is created by
+     * the `migrate` command, this property will be overwritten by the command. If you do not want to
+     * use the DB connection provided by the command, you may override the [[init()]] method
+     * and set this property after calling `parent::init()`.
      */
     public $db = 'db';
 
