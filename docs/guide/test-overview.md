@@ -3,61 +3,65 @@ Testing
 
 Testing is an important part of software development. Whether we are aware of it or not, we conduct testing continuously.
 For example, when we write a class in PHP, we may debug it step by step or simply use echo or die statements to verify
-that implementation is correct. In case of web application we're entering some test data in forms to ensure the page
-interacts with us as expected. The testing process could be automated so that each time when we need to test something,
-we just need to call up the code that perform testing for us. This is known as automated testing, which is the main topic
-of testing chapters.
+that implementation works according to our initial plan. In case of web application we're entering some test data in forms
+to ensure the page interacts with us as expected. The testing process could be automated so that each time when we need
+to verify something, we just need to call up the code that do it for us. The code that verifies that result matches what
+we've planned is called test and the process of its creation and further execution is known as automated testing, which
+is the main topic of testing chapters.
 
-[Test-Driven Development (TDD)](http://en.wikipedia.org/wiki/Test-driven_development) is an approach of developing software when you write your code in repeatable steps that verifies produced features
-with needed assertions.
 
-Test - block of program that verifies correct or not correct behavior of needed feature. All tests should be automated to be able to make them
-run often and fast.
+Developing with tests
+------------------
 
-Main life cycle of this approach contains following steps:
+Test-Driven Development (TDD) or, in another terms, Behavior-Driven Development (BDD) is an approach of developing
+software by describing behavior of a piece of code or the whole feature as a set of scenarios or tests before
+writing actual code and only then creating the implementation that allows these tests to pass verifying that intended
+behavior is achieved.
 
-- Create a new test that covers a feature to be implemented. The test is expected to fail at its first execution because the feature has yet to be implemented;
-- Run test and make sure the new test fails;
-- Write simple code to make the new test pass;
-- Run all tests and make sure they all pass;
-- Refactor the code in needed way and make sure the tests still pass.
+The process of developing a feature is the following:
 
-Repeat step 1 to 5 to push forward the functionality implementation. Depending on your skills you can increase or decrease size
-of code that you change between steps and tests run. If you feel that you are doing a lot of simple changes and loosing your time then it is
-time to make steps bigger, but if you started to spend a lot of time on debug when writing tests it is a good sign to make steps slower.
-Mainly you should write code only before test to be able to understand what it does and to avoid leaks of code implementation into tests. This approach
-is called `Test First`. It is a vital part of testing to understand that code implementation should not leak to your tests, thus you will
-be able to concentrate more on abstractions of code and features, rather then particular implementation. Tests that have such leaks becoming
-hard to maintain and understand, and as a conclusion they are deleted. However depending on your understanding of TDD and your skills of writing good decoupled code you can write tests after
-the implementation is done, there is nothing wrong about it, while you are understanding what you are doing and why.
+- Create a new test that describes a feature to be implemented.
+- Run new test and make sure it fails. It is expected since there's no implementation yet.
+- Write simple code to make the new test pass.
+- Run all tests and make sure they all pass.
+- Improve code and make sure tests are still OK.
 
-There are a lot of reasons why you should use TDD, below are the common ones:
+> **Tip**: If you feel that you are loosing time doing a lot of simple changes try covering more by your test scenario
+> so you do more changes before executing tests again. If you're debugging too much try doing the opposite.
 
-- it saves your time on debug in long term;
-- it keeps you concentrated only on one thing - currently developing feature, and not in whole project. Thus you only write code that you really need;
-- it lets you know immediately if something will go wrong or functionality of some features will be broken;  
-- it lets you understand the use case of feature you are developing now and you are able to build systems with clear interfaces;
-- it lets you understand dependencies between code and how to solve them to make system decoupled, particular with [Inversion Of Control](http://en.wikipedia.org/wiki/Inversion_of_control) principle.
+The reason to create tests before doing any implemenation is that it allows you to focus on what do we want to achieve
+and fully dive into "how to do it" afterwards. Usually it leads to better abstractions and easier test maintenance when
+it comes to feature adjustments.
 
-TDD can help you to build good decoupled systems, but it will not replace some basic knowledges of refactoring and structuring code, so you
-should not consider it as a `silver bullet`. It is almost always that you will think about code, features and specifications before writing any test case.
-There are other software approaches to help you with it, like : [Behavior Driven Development (BDD)](http://en.wikipedia.org/wiki/Behavior-driven_development) and [Domain Driven Development (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design).
+So to sum up pros of such approach are the following:
 
-However it is not always necessary to use TDD in your project, you should consider below cases of when you can or should use it:
+- Keeps you focused on one thing at a time so both planning and implementation are getting better.
+- Results in test-covering more features in greater detail i.e. if tests are OK most probably nothing's broken.
 
-- you are working on big project or project that gets bigger;
-- you are working on long term project;
-- you have time for TDD, since tests should not be written once and forgotten, they should be also crafted as other code;
-- you have correct environment that allows you to use TDD. It can be testing frameworks, fixtures frameworks and so on;
-- you are working on project with legacy code that should be rewritten fully or partial;
-- your team understand the value of bringing good quality code to business.
+In the long term it usually gives you a good time-saving effect.
 
-If you are working on simple CRUD or small projects usually you dont need TDD, since it can take a half of all time in developing with small projects.
-When working on legacy code it is very hard to apply TDD due to hard system coupling and wrong architectural design issues, however by isolating some code blocks 
-and working with them one by one in small parts you can rewrite it much faster with TDD than without it, since you will be sure everything is works correctly and you can move on.
+> **Tip**: If you want to know more about the principles for gathering software requirements and modeling the subject
+> matter it's good to learn [Domain Driven Development (DDD)](https://en.wikipedia.org/wiki/Domain-driven_design).
 
-Below are listed books where you can find more answers for your TDD quesitons:
+When and how to test
+------------------
 
-- "Test-driven Development by Example",  Kent Beck;
+While test first approach described above makes sense for long term and relatively complex projects it could be overkill
+for simpler ones. There are some indicators of when it's appropriate:
 
-To know what testing frameworks and environments is bundled or supported by Yii2 you can see [Test Environment Setup](test-environment-setup.md) guide.
+- Project is already large and complex.
+- Project requirements are starting to get complex. Project grows constantly.
+- Project is meant to be long term.
+- The cost of the failure is too high.
+
+There's nothing wrong in creating tests covering behavior of existing implementation.
+
+- Project is a legacy one to be gradually renewed.
+- You've got a project to work on and it has no tests.
+
+In some cases any form of automated testing could be overkill:
+
+- Project is simple and isn't getting any complex.
+- It's one-time project that's going to be expired.
+
+Still if you have time it's good to automate testing in these cases as well.
