@@ -22,6 +22,8 @@ Please refer to the [Composer Documentation](https://getcomposer.org/doc/) if yo
 problems or want to learn more about Composer usage.
 
 With Composer installed, you can install Yii by running the following command under a Web-accessible folder:
+When getting an error message like "Could not find package yiisoft/yii2-app-basic with stability stable" use
+the development edition as described in the tip underneath.
 
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
@@ -40,7 +42,7 @@ Installing from an Archive File <a name="installing-from-archive-file"></a>
 
 Installing Yii from an archive file involves two steps:
 
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
+1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download).
 2. Unpack the downloaded file to a Web-accessible folder.
 3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
    (this is done automatically if you are installing Yii using Composer):
