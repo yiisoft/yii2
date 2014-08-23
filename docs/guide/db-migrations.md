@@ -359,4 +359,5 @@ This way you have full control on which database corresponds to which migration 
     }
 
 ```
-where `dbConnectionId` is ID of the database application component. This approach is much faster to implement and use, you create and apply migrations running migrate command as usual, without providing extra parameters.  We recommend using [[yii\db\Migration::init()]] with caution though, as in this case the migration history is saved to the database configured in [[yii\console\controllers\MigrateController::db]] (database which MigrateController currently operates on).
+where `dbConnectionId` is ID of the database application component. This approach is much faster to implement and use, you create and apply migrations running migrate command as usual, without providing extra parameters.  We recommend using [[yii\db\Migration::init()]] with caution though, as in this case the migration history is saved to the database configured in [[yii\console\controllers\MigrateController::db]]  
+ - database which MigrateController currently operates on.
