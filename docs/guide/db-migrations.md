@@ -337,3 +337,26 @@ the console application's configuration file like the following,
 Now if we run the `migrate` command, the above configurations will take effect
 without requiring us to enter the command line options every time. Other command options
 can be also configured this way.
+
+### Managing migrations for multiple databases
+The preferred way to manage migrations for multiple databases is to create a directory for each database's migrations, and then run the migrate command for each database like this:
+
+```
+yii migrate --migrationPath=@app/migrations/db2 --db=db2
+```
+
+```
+yii migrate create <name> --migrationPath=@app/migrations/db2 --db=db2
+```
+This way you have full control on which database corresponds to which migration directory. Another benefit is that migration history is kept in the database migrations are applied to. So each database would keep it's migration history.
+
+ Alternative approach is set the database, which the migration should be performed on, in the migration class. To do so, we need to override the [[yii\db\Migration::init()]] method as follows:
+```php
+    public function init()
+    {
+        parent::init();
+        $this->db = Yii::$app->dbConnectionId;
+    }
+
+```
+where `dbConnectionId` is ID of the database application component. This approach is much faster to implement and use, you create and apply migrations running migrate command as usual, without providing extra parameters.  We recommend using [[yii\db\Migration::init()]] with caution though, as in this case the migration history is saved to the database configured in [[yii\console\controllers\MigrateController::db]] (database which MigrateController currently operates on).
