@@ -72,4 +72,4 @@ Still if you have time it's good to automate testing in these cases as well.
 Further reading
 -------------
 
-- [Test Driven Development: By Example / Kent Beck](http://www.amazon.com/Test-Driven-Development-Kent-Beck/dp/0321146530/).
+- Test Driven Development: By Example / Kent Beck. ISBN: 0321146530.
