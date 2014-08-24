@@ -1,85 +1,87 @@
-Extensions
+Расширения
 ==========
 
-Extensions are redistributable software packages specifically designed to be used in Yii applications and provide
-ready-to-use features. For example, the [yiisoft/yii2-debug](tool-debugger.md) extension adds a handy debug toolbar
-at the bottom of every page in your application to help you more easily grasp how the pages are generated. You can
-use extensions to accelerate your development process. You can also package your code as extensions to share with
-other people your great work.
+Расширения - это распространяемые программные пакеты, специально разработанные для использования в приложениях Yii и
+содержащие готовые функции. Например, расширение [yiisoft/yii2-debug](tool-debugger.md) добавляет удобную панель
+отладки в нижнюю часть каждой страницы вашего приложения, чтобы помочь вам разобраться в том, как генерируются
+страницы. Вы можете использовать расширения для ускорения процесса разработки. Вы также можете оформить ваш код как
+расширение, чтобы поделиться с другими людьми результатами вашей работы.
 
-> Info: We use the term "extension" to refer to Yii-specific software packages. For general purpose software packages
-  that can be used without Yii, we will refer to them using the term "package" or "library".
+> Информация: Мы используем термин "расширение" для специфичных для Yii программных пакетов. Программные пакеты
+  общего назначения, которые могут быть использованы с Yii, мы будем называть "пакет" или "библиотека".
 
 
-## Using Extensions <a name="using-extensions"></a>
-git
-To use an extension, you need to install it first. Most extensions are distributed as [Composer](https://getcomposer.org/)
-packages which can be installed by taking the following two simple steps:
+## Использование расширений <a name="using-extensions"></a>
 
-1. modify the `composer.json` file of your application and specify which extensions (Composer packages) you want to install.
-2. run `php composer.phar install` to install the specified extensions.
+Чтобы использовать расширение, вам необходимо установить его. Большинство расширений распространяются как
+[Composer](https://getcomposer.org/)-пакеты, которые могут быть установлены посредством следующих двух шагов:
 
-Note that you may need to install [Composer](https://getcomposer.org/) if you do not have it.
+1. Отредактируйте файл вашего приложения `composer.json`, указав, какие расширения (Composer-пакеты) вы хотите
+   установить.
+2. Выполните команду `php composer.phar install`, чтобы установить указанные расширения.
 
-By default, Composer installs packages registered on [Packagist](https://packagist.org/) - the biggest repository
-for open source Composer packages. You can look for extensions on Packagist. You may also
-[create your own repository](https://getcomposer.org/doc/05-repositories.md#repository) and configure Composer
-to use it. This is useful if you are developing closed open extensions and want to share within your projects.
+Обратите внимание, что вам может потребоваться установить [Composer](https://getcomposer.org/), если у вас его нет.
 
-Extensions installed by Composer are stored in the `BasePath/vendor` directory, where `BasePath` refers to the
-application's [base path](structure-applications.md#basePath).  Because Composer is a dependency manager, when
-it installs a package, it will also install all its dependent packages.
+По умолчанию, Composer устанавливает пакеты, зарегистрированные на [Packagist](https://packagist.org/) - крупнейшем
+репозитории для Composer-пакетов с открытым исходным кодом. Вы также можете
+[создать свой репозиторий](https://getcomposer.org/doc/05-repositories.md#repository) и настроить Composer для его
+использования. Это полезно, если вы разрабатываете закрытые расширения и хотите использовать их в нескольких своих
+проектах.
 
-For example, to install the `yiisoft/yii2-imagine` extension, modify your `composer.json` like the following:
+Расширения, установленные Composer'ом, хранятся в директории `BasePath/vendor`, где `BasePath` -
+[базовая директория](structure-applications.md#basePath) приложения. Composer - это менеджер зависимостей, и поэтому
+после установки пакета он также установит все зависимые пакеты.
+
+Например, для установки расширения `yiisoft/yii2-imagine` нужно отредактировать ваш `composer.json` как показано далее:
 
 ```json
 {
     // ...
 
     "require": {
-        // ... other dependencies
+        // ... другие зависимости
 
         "yiisoft/yii2-imagine": "*"
     }
 }
 ```
 
-After the installation, you should see the directory `yiisoft/yii2-imagine` under `BasePath/vendor`. You should
-also see another directory `imagine/imagine` which contains the installed dependent package.
+После установки вы можете увидеть директорию `yiisoft/yii2-imagine`, находящуюся по пути `BasePath/vendor`. Также вы
+можете увидеть директорию `imagine/imagine`, которая содержит зависимый пакет.
 
-> Info: The `yiisoft/yii2-imagine` is a core extension developed and maintained by the Yii developer team. All
-  core extensions are hosted on [Packagist](https://packagist.org/) and named like `yiisoft/yii2-xyz`, where `xyz`
-  varies for different extensions.
+> Информация: `yiisoft/yii2-imagine` является базовым расширением, которое разрабатывает и поддерживает команда
+  разработчиков Yii. Все базовые расширения размещены на [Packagist](https://packagist.org/) и называются
+  `yiisoft/yii2-xyz`, где `xyz` меняется для разных расширений.
 
-Now you can use the installed extensions like they are part of your application. The following example shows
-how you can use the `yii\imagine\Image` class provided by the `yiisoft/yii2-imagine` extension:
+Теперь вы можете использовать установленное расширение как часть вашего приложения. Следующий пример показывает, как вы
+можете использовать класс `yii\imagine\Image`, который содержится в расширении `yiisoft/yii2-imagine`.
 
 ```php
 use Yii;
 use yii\imagine\Image;
 
-// generate a thumbnail image
+// генерация миниатюры изображения
 Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     ->save(Yii::getAlias('@runtime/thumb-test-image.jpg'), ['quality' => 50]);
 ```
 
-> Info: Extension classes are autoloaded by the [Yii class autoloader](concept-autoloading.md).
+> Информация: Классы расширений автоматически загружаются [автозагрузчиком классов Yii](concept-autoloading.md).
 
 
-### Installing Extensions Manually <a name="installing-extensions-manually"></a>
+### Ручная установка расширений <a name="installing-extensions-manually"></a>
 
-In some rare occasions, you may want to install some or all extensions manually, rather than relying on Composer.
-To do so, you should
+В некоторых редких случаях вы можете захотеть установить некоторые расширения вручную, а не полагаться на Composer.
+Чтобы сделать это, вы должны
 
-1. download the extension archive files and unpack them in the `vendor` directory.
-2. install the class autoloaders provided by the extensions, if any.
-3. download and install all dependent extensions as instructed.
+1. загрузить архив с файлами расширения и распаковать его в директорию `vendor`.
+2. установить автозагрузчики классов, предоставляемые расширениями, если таковые имеются.
+3. загрузить и установить все зависимые расширения в соответствии с инструкциями.
 
-If an extension does not have a class autoloader but follows the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/),
-you may use the class autoloader provided by Yii to autoload the extension classes. All you need to do is just to
-declare a [root alias](concept-aliases.md#defining-aliases) for the extension root directory. For example,
-assuming you have installed an extension in the directory `vendor/mycompany/myext`, and the extension classes
-are under the `myext` namespace, then you can include the following code in your application configuration:
+Если расширение не имеет автозагрузчика классов, но следует [стандарту PSR-4](http://www.php-fig.org/psr/psr-4/), то вы
+можете использовать автозагрузчик классов, предоставленный Yii для загрузки классов расширений. Всё, что вам нужно
+сделать, это объявить [псевдоним](concept-aliases.md#defining-aliases) для корневого каталога расширения. Например,
+если вы установили расширение в директорию `vendor/mycompany/myext` и классы расширения находятся в пространстве имён
+`myext`, то вы можете включить следующий код в конфигурацию вашего приложения:
 
 ```php
 [
@@ -90,36 +92,37 @@ are under the `myext` namespace, then you can include the following code in your
 ```
 
 
-## Creating Extensions <a name="creating-extensions"></a>
+## Создание расширений <a name="creating-extensions"></a>
 
-You may consider creating an extension when you feel the need to share with other people your great code.
-An extension can contain any code you like, such as a helper class, a widget, a module, etc.
+Вы можете захотеть создать расширение, когда чувствуете необходимость поделиться своим хорошим кодом с другими людьми.
+Расширение может содержать любой код, который вам нравится, например, класс-помощник, виджет, модуль и т.д.
 
-It is recommended that you create an extension in terms of a [Composer package](https://getcomposer.org/) so that
-it can be more easily installed and used by other users, liked described in the last subsection.
+Рекомендуется создавать расширение как [пакет Composer](https://getcomposer.org/), для того, чтобы его можно было
+легко установить и использовать, как описано в предыдущей главе.
 
-Below are the basic steps you may follow to create an extension as a Composer package.
+Ниже приведены основные шаги, которым нужно следовать, чтобы создать пакет Composer.
 
-1. Create a project for your extension and host it on a VCS repository, such as [github.com](https://github.com).
-   The development and maintenance work about the extension should be done on this repository.
-2. Under the root directory of the project, create a file named `composer.json` as required by Composer. Please
-   refer to the next subsection for more details.
-3. Register your extension with a Composer repository, such as [Packagist](https://packagist.org/), so that
-   other users can find and install your extension using Composer.
+1. Создайте проект для вашего расширения и разместите его в VCS репозитории, таком как [github.com](https://github.com).
+   Разработка и поддержка расширения должна выполняться в этом репозитории.
+2. В корневой директории проекта создайте файл под названием `composer.json`, в соответствии с требованиями Composer.
+   Вы можете обратиться к следующему разделу за более подробной информацией.
+3. Зарегистрируйте ваше расширение в репозитории Composer, таком как [Packagist](https://packagist.org/), чтобы другие
+   пользователи могли найти и установить ваше расширение, используя Composer.
 
 
 ### `composer.json` <a name="composer-json"></a>
 
-Each Composer package must have a `composer.json` file in its root directory. The file contains the metadata about
-the package. You may find complete specification about this file in the [Composer Manual](https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup).
-The following example shows the `composer.json` file for the `yiisoft/yii2-imagine` extension:
+Каждый пакет Composer должен иметь файл `composer.json` в своей корневой директории. Этот файл содержит метаданные о
+пакете. Вы можете найти полную спецификацию по этому файлу в
+[Руководстве Composer](https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup). Следующий пример
+демонстрирует файл `composer.json` для расширения `yiisoft/yii2-imagine`:
 
 ```json
 {
-    // package name
+    // название пакета
     "name": "yiisoft/yii2-imagine",
 
-    // package type
+    // тип пакета
     "type": "yii2-extension",
 
     "description": "The Imagine integration for the Yii framework",
@@ -139,13 +142,13 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
         }
     ],
 
-    // package dependencies
+    // зависимости пакета
     "require": {
         "yiisoft/yii2": "*",
         "imagine/imagine": "v0.5.0"
     },
 
-    // class autoloading specs
+    // указание автозагрузчика классов
     "autoload": {
         "psr-4": {
             "yii\\imagine\\": ""
@@ -155,40 +158,41 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
 ```
 
 
-#### Package Name <a name="package-name"></a>
+#### Название пакета <a name="package-name"></a>
 
-Each Composer package should have a package name which uniquely identifies the package among all others.
-The format of package names is `vendorName/projectName`. For example, in the package name `yiisoft/yii2-imagine`,
-the vendor name and the project name are `yiisoft` and `yii2-imagine`, respectively.
+Каждый пакет Composer должен иметь название, которое однозначно идентифицирует пакет среди остальных. Название пакета
+имеет формат `имяРазработчика/названиеПроекта`. Например, в пакете `yiisoft/yii2-imagine`, `yiisoft` является именем
+разработчика, а `yii2-imagine` - названием пакета.
 
-Do NOT use `yiisoft` as vendor name as it is reserved for use by the Yii core code.
+НЕ используйте `yiisoft` в качестве имени разработчика, так как оно зарезервировано для использования в коде ядра Yii.
 
-We recommend you prefix `yii2-` to the project name for packages representing Yii 2 extensions, for example,
-`myname/yii2-mywidget`. This will allow users to more easily tell whether a package is a Yii 2 extension.
-
-
-#### Package Type <a name="package-type"></a>
-
-It is important that you specify the package type of your extension as `yii2-extension` so that the package can
-be recognized as a Yii extension when being installed.
-
-When a user runs `php composer.phar install` to install an extension, the file `vendor/yiisoft/extensions.php`
-will be automatically updated to include the information about the new extension. From this file, Yii applications
-can know which extensions are installed (the information can be accessed via [[yii\base\Application::extensions]].
+Мы рекомендуем использовать префикс `yii2-` в названии проекта для пакетов, являющихся расширениями Yii 2, например,
+`моёИмя/yii2-mywidget`. Это позволит пользователям легче определить, что пакет является расширением Yii2.
 
 
-#### Dependencies <a name="dependencies"></a>
+#### Тип пакета <a name="package-type"></a>
 
-Your extension depends on Yii (of course). So you should list it in the `require` entry in `composer.json`.
-If your extension also depends on other extensions or third-party libraries, you should list them as well.
-Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependency. Use stable
-dependencies when your extension is released in a stable version.
+Важно указать тип пакета вашего расширения как `yii2-extension`, чтобы пакет можно было распознать как расширение Yii во
+время установки.
+
+Когда пользователь запускает команду `php composer.phar install` для установки расширения, файл
+`vendor/yiisoft/extensions.php` будет автоматически обновлён, чтобы включить информацию о новом расширении. Из этого
+файла приложение Yii может узнать, какие расширения установлены (информацию можно получить с помощью
+[[yii\base\Application::extensions]]).
 
 
-#### Class Autoloading <a name="class-autoloading"></a>
+#### Зависимости <a name="dependencies"></a>
 
-In order for your classes to be autoloaded by the Yii class autoloader or the Composer class autoloader,
-you should specify the `autoload` entry in the `composer.json` file, like shown below:
+Ваше расширение зависит от Yii (естественно). Вы можете посмотреть список зависимостей в секции `require`, входящей в
+файл `composer.json`. Если ваше расширение зависит от других расширений или сторонних библиотек, то вы также должны их
+перечислить. Убедитесь, что в ограничениях вы указали соответствующую версию (например, `1.*`, `@stable`) для каждой
+зависимости. Используйте стабильные версии зависимостей, когда будет выпущена стабильная версия вашего расширения.
+
+
+#### Автозагрузка классов <a name="class-autoloading"></a>
+
+Для того, чтобы ваши классы были загружены автозагрузчиком классов Yii или автозагрузчиком классов Composer, вы должны
+внести секцию `autoload` в файл `composer.json`, как показано ниже:
 
 ```json
 {
@@ -202,41 +206,44 @@ you should specify the `autoload` entry in the `composer.json` file, like shown 
 }
 ```
 
-You may list one or multiple root namespaces and their corresponding file paths.
+Вы можете перечислить один или несколько корневых пространств имён и соответствующие им пути.
 
-When the extension is installed in an application, Yii will create for each listed root namespace
-an [alias](concept-aliases.md#extension-aliases) that refers to the directory corresponding to the namespace.
-For example, the above `autoload` declaration will correspond to an alias named `@yii/imagine`.
-
-
-### Recommended Practices <a name="recommended-practices"></a>
-
-Because extensions are meant to be used by other people, you often need to take extra development effort. Below
-we introduce some common and recommended practices in creating high quality extensions.
+Когда расширение установлено в приложение, Yii для каждого указанного корневого пространства имён создаст
+[псевдоним](concept-aliases.md#extension-aliases), который указывает на директорию, соответствующую пространству имён.
+Например, указанная в секции `autoload` запись будет соответствовать псевдониму `@yii/imagine`.
 
 
-#### Namespaces <a name="namespaces"></a>
+### Рекомендованные практики <a name="recommended-practices"></a>
 
-To avoid name collisions and make the classes in your extension autoloadable, you should use namespaces and
-name the classes in your extension by following the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) or
-[PSR-0 standard](http://www.php-fig.org/psr/psr-0/).
-
-You class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
-in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
-extension, we use `yii\imagine` as the namespace its classes.
-
-Do not use `yii`, `yii2` or `yiisoft` as vendor name. These names are reserved for use by the Yii core code.
+Поскольку расширения предназначены для использования другими людьми, вам придётся приложить дополнительные усилия в
+процессе разработки. Ниже приведены некоторые общие и рекомендованные практики для создания высококачественных
+расширений.
 
 
-#### Bootstrapping Classes <a name="bootstrapping-classes"></a>
+#### Пространства имён <a name="namespaces"></a>
 
-Sometimes, you may want your extension to execute some code during the [bootstrapping process](runtime-bootstrapping.md)
-stage of an application. For example, your extension may want to respond to the application's `beginRequest` event
-to adjust some environment settings. While you can instruct users of the extension to explicitly attach your event
-handler in the extension to the `beginRequest` event, a better way is to do this automatically.
+Во избежание конфликтов имён, а также для того, чтобы ваши классы были автозагружаемыми, вы должны следовать
+[стандарту PSR-4](http://www.php-fig.org/psr/psr-4/) или [стандарту PSR-0](http://www.php-fig.org/psr/psr-0/) в
+использовании пространств имён и названии классов вашего расширения.
 
-To achieve this goal, you can create a so-called *bootstrapping class* by implementing [[yii\base\BootstrapInterface]].
-For example,
+Пространства имён в ваших классах должны начинаться с `имяРазработчика\названиеРасширения`, где `названиеРасширения`
+совпадает с названием проекта в названии пакета, за исключением того, что оно не должно содержать префикса `yii2-`.
+Например, для расширения `yiisoft/yii2-imagine` мы используем `yii\imagine` в качестве пространства имён.
+
+Не используйте `yii`, `yii2` или `yiisoft` в качестве имени разработчика. Эти имена являются зарезервированными для
+использования в коде ядра Yii.
+
+
+#### Классы начальной загрузки <a name="bootstrapping-classes"></a>
+
+Иногда вы можете захотеть выполнить некоторый код своего расширения в стадии
+[начальной загрузки](runtime-bootstrapping.md) приложения. Например, ваше расширение может ответить на событие
+приложения `beginRequest`, чтобы установить некоторые настройки окружения. Вы можете в инструкции по установке вашего
+приложения написать, что необходимо назначить обработчик события `beginRequest`, но лучшим способом будет сделать это
+автоматически.
+
+Для достижения этой цели вы можете создать так называемый *класс начальной загрузки*, реализовав интерфейс
+[[yii\base\BootstrapInterface]]. Например,
 
 ```php
 namespace myname\mywidget;
@@ -249,13 +256,13 @@ class MyBootstrapClass implements BootstrapInterface
     public function bootstrap($app)
     {
         $app->on(Application::EVENT_BEFORE_REQUEST, function () {
-             // do something here
+             // полезный код
         });
     }
 }
 ```
 
-You then list this class in the `composer.json` file of your extension like follows,
+Затем нужно добавить этот класс в файл `composer.json` вашего расширения, как показано далее,
 
 ```json
 {
@@ -267,147 +274,150 @@ You then list this class in the `composer.json` file of your extension like foll
 }
 ```
 
-When the extension is installed in an application, Yii will automatically instantiate the bootstrapping class
-and call its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method during the bootstrapping process for
-every request.
+Когда расширение будет установлено в приложение, Yii автоматически инициирует экземпляр класса начальной загрузки и
+вызовет его метод [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]]  в процессе начальной загрузки каждого
+запроса.
 
 
-#### Working with Databases <a name="working-with-databases"></a>
+#### Работа с базами данных <a name="working-with-databases"></a>
 
-Your extension may need to access databases. Do not assume that the applications that use your extension will always
-use `Yii::$db` as the DB connection. Instead, you should declare a `db` property for the classes that require DB access.
-The property will allow users of your extension to customize which DB connection they would like your extension to use.
-As an example, you may refer to the [[yii\caching\DbCache]] class and see how it declares and uses the `db` property.
+Ваше расширение может иметь доступ к базам данных. Не думайте, что приложения, которые используют ваше расширение,
+всегда используют `Yii::$db` в качестве соединения с БД. Вместо этого вы должны объявить свойство `db` в классах,
+которым необходим доступ в БД. Это свойство позволит пользователям вашего расширения настроить соединение с БД,
+которое они будут использовать в вашем расширении. В качестве примера вы можете обратиться к классу
+[[yii\caching\DbCache]] и посмотреть, как он объявляет и использует свойство `db`.
 
-If your extension needs to create specific DB tables or make changes to DB schema, you should
+Если в вашем приложении необходимо создать определённые таблицы БД или сделать изменения в схеме БД, вы должны
 
-- provide [migrations](db-migrations.md) to manipulate DB schema, rather than using plain SQL files;
-- try to make the migrations applicable to different DBMS;
-- avoid using [Active Record](db-active-record.md) in the migrations.
-
-
-#### Using Assets <a name="using-assets"></a>
-
-If your extension is a widget or a module, chances are that it may require some [assets](structure-assets.md) to work.
-For example, a module may display some pages which contain images, JavaScript, and CSS. Because the files of an
-extension are all under the same directory which is not Web accessible when installed in an application, you have
-two choices to make the asset files directly accessible via Web:
-
-- ask users of the extension to manually copy the asset files to a specific Web-accessible folder;
-- declare an [asset bundle](structure-assets.md) and rely on the asset publishing mechanism to automatically
-  copy the files listed in the asset bundle to a Web-accessible folder.
-
-We recommend you use the second approach so that your extension can be more easily used by other people.
+- создать файлы [миграций](db-migrations.md) для изменения схемы БД вместо простых SQL-файлов;
+- попытаться сделать миграции, применимые к различным СУБД;
+- избегать использования [Active Record](db-active-record.md) в миграциях.
 
 
-### Internationalization and Localization <a name="i18n-l10n"></a>
+#### Использование ресурсов <a name="using-assets"></a>
 
-Your extension may be used by applications supporting different languages! Therefore, if your extension displays
-content to end users, you should try to [internationalize and localize](tutorial-i18n.md) it. In particular,
+Если ваше расширение является виджетом или модулем, то есть вероятность, что оно потребует некоторых
+[ресурсов](structure-assets.md) для работы. Например, модуль может отображать некоторые страницы, которые содержат
+изображения, JavaScript и CSS. Так как все файлы расширения находятся в одной директории, недоступной из интернета, у
+вас есть два варианта сделать директорию ресурсов непосредственно доступной из интернета:
 
-- If the extension displays messages intended for end users, the messages should be wrapped into `Yii::t()`
-  so that they can be translated. Messages meant for developers (such as internal exception messages) do not need
-  to be translated.
-- If the extension displays numbers, dates, etc., they should be formatted using [[yii\base\Formatter]] with
-  appropriate formatting rules.
+- попросить пользователей расширения вручную скопировать файлы ресурсов в определённую, доступную из интернета папку;
+- объявить [связку ресурсов](structure-assets.md) и полагаться на механизм публикации ресурсов, который автоматически
+  копирует файлы, описанные в связке ресурсов в папку, доступную из интернета.
 
-For more details, please refer to the [Internationalization](tutorial-i18n.md) section.
-
-
-#### Testing <a name="testing"></a>
-
-You want your extension to run flawlessly without bringing problems to other people. To reach this goal, you should
-test your extension before releasing it to public.
-
-It is recommended that you create various test cases to cover your extension code rather than relying on manual tests.
-Each time before you release a new version of your extension, you may simply run these test cases to make sure
-everything is in good shape. Yii provides testing support, which can help you to more easily write unit tests,
-acceptance tests and functionality tests. For more details, please refer to the [Testing](test-overview.md) section.
+Мы рекомендуем вам использовать второй подход, чтобы ваше расширение было более простым в использовании для других
+людей.
 
 
-#### Versioning <a name="versioning"></a>
+### Интернационализация и локализация <a name="i18n-l10n"></a>
 
-You should give each release of your extension a version number (e.g. `1.0.1`). We recommend you follow the
-[semantic versioning](http://semver.org) practice when determining what version numbers should be used.
+Ваше расширение может быть использовано в приложениях, поддерживающих разные языки! Поэтому, если ваше расширение
+отображает содержимое конечному пользователю, вы должны попробовать
+[интернационализировать и локализовать](tutorial-i18n.md) его. В частности,
 
+- Если расширение отображает сообщения, предназначенные для конечных пользователей, сообщения должны быть обёрнуты в
+  метод `Yii::t()` так, чтобы они могли быть переведены. Сообщения, предназначенные для разработчиков (например,
+  внутренние сообщения исключений), не нужно переводить.
+- Если расширение отображает числа, даты и т.п., они должны быть отформатированы, используя [[yii\base\Formatter]] с
+  соответствующими правилами форматирования.
 
-#### Releasing <a name="releasing"></a>
-
-To let other people know your extension, you need to release it to public.
-
-If it is the first time you release an extension, you should register it on a Composer repository, such as
-[Packagist](https://packagist.org/). After that, all you need to do is simply creating a release tag (e.g. `v1.0.1`)
-on the VCS repository of your extension and notify the Composer repository about the new release. People will
-then be able to find the new release, and install or update the extension through the Composer repository.
-
-In the releases of your extension, besides code files you should also consider including the followings to
-help other people learn about and use your extension:
-
-* A readme file in the package root directory: it describes what your extension does and how to install and use it.
-  We recommend you write it in [Markdown](http://daringfireball.net/projects/markdown/) format and name the file
-  as `readme.md`.
-* A changelog file in the package root directory: it lists what changes are made in each release. The file
-  may be written in Markdown format and named as `changelog.md`.
-  also write it in Markdown format and name the file as `changelog.md`.
-* An upgrade file in the package root directory: it gives the instructions on how to upgrade from older releases
-  of the extension. The file may be written in Markdown format and named as `upgrade.md`.
-* Tutorials, demos, screenshots, etc.: these are needed if your extension provides many features that cannot be
-  fully covered in the readme file.
-* API documentation: your code should be well documented to allow other people more easily read and understand it.
-  You may refer to the [Object class file](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
-  to learn how to document your code.
-
-> Info: Your code comments can be written in Markdown format. The `yiisoft/yii2-apidoc` extension provides a tool
-  for you to generate pretty API documentation based on your code comments.
-
-> Info: While not a requirement, we suggest your extension adhere to certain coding styles. You may refer to
-  the [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+Для более подробной информации вы можете обратиться к разделу [Интернационализация](tutorial-i18n.md)
 
 
-## Core Extensions <a name="core-extensions"></a>
+#### Тестирование <a name="testing"></a>
 
-Yii provides the following core extensions that are developed and maintained by the Yii developer team. They are all
-registered on [Packagist](https://packagist.org/) and can be easily installed as described in the
-[Using Extensions](#using-extensions) subsection.
+Вы хотите, чтобы ваше расширение было стабильным и не приносило проблем другим людям. Для достижения этой цели вы
+должны протестировать ваше расширение перед его публикацией.
+
+Рекомендуется создавать различные тесты для покрытия кода вашего расширения, а не вручную тестировать его. Каждый раз
+перед тем, как выпустить новую версию расширения, вы можете просто запустить эти тесты чтобы убедиться, что всё
+работает правильно. Yii имеет поддержку тестирования, которая может помочь вам легче писать модульные, приёмочные и
+функциональные тесты. Для более подробной информации вы можете обратиться в раздел [Тестирование](test-overview.md).
+
+
+#### Версионирование <a name="versioning"></a>
+
+Вы можете давать каждому выпуску вашего расширения номер версии (например, `1.0.1`). Мы рекомендуем вам придерживаться
+практик [семантического версионирования](http://semver.org) при определении, какой номер версии должен использоваться.
+
+#### Публикация <a name="releasing"></a>
+
+Чтобы позволить другим людям узнать о вашем расширении, необходимо опубликовать его.
+
+Если это первый выпуск вашего расширения, вы должны зарегистрировать его в репозитории Composer, таком, как
+[Packagist](https://packagist.org/). После этого вам остаётся только создать тег выпуска (например, `v1.0.1`) в VCS
+репозитории вашего расширения и уведомить репозиторий Composer о новом выпуске. Люди смогут найти новую версию и
+установить или обновить расширение через репозиторий Composer.
+
+В выпусках вашего расширения помимо файлов с кодом вы также должны рассмотреть вопрос о включении следующих файлов,
+которые помогут людям изучить и использовать ваше расширение:
+
+* Файл readme в корневой директории пакета: он описывает, что ваше расширение делает, а также как его установить и
+  использовать. Мы рекомендуем вам написать его в формате [Markdown](http://daringfireball.net/projects/markdown/) и
+  дать ему название `readme.md`.
+* Файл changelog в корневой директории пакета: он описывает, какие изменения произошли в каждом выпуске. Этот файл
+  может быть написан в формате Markdown и назван `changelog.md`.
+* Файл upgrade в корневой директории пакета: он даёт инструкции о том, как обновить старые версии расширения. Этот
+  файл может быть написан в формате Markdown и назван `upgrade.md`.
+* Руководства пользователя, демо-версии, скриншоты и т.д.: они необходимы, если ваше расширение предоставляет много
+  возможностей, которые нельзя полностью описать в файле readme.
+* Документация API: ваш код должен быть документирован, чтобы позволить другим людям легко читать и понимать его. Вы
+  можете обратиться к [файлу класса Object](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php),
+  чтобы узнать, как нужно документировать код.
+
+> Информация: Ваши комментарии к коду могут быть написаны в формате Markdown. Расширение `yiisoft/yii2-apidoc`
+  предоставляет инструмент для генерации документации API на основе ваших комментариев.
+
+> Информация: Пока это не обязательно, но мы всё-таки рекомендуем вам придерживаться определённого стиля кодирования.
+  Вы можете обратиться к [стилю кодирования фреймворка](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+
+
+## Базовые расширения <a name="core-extensions"></a>
+
+Yii предоставляет следующие базовые расширения, которые разрабатывает и поддерживает команда разработчиков Yii. Они все
+зарегистрированы на [Packagist](https://packagist.org/) и могут быть легко установлены, как описано в подразделе
+[Использование расширений](#using-extensions).
 
 - [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc):
-  provides an extensible and high-performance API documentation generator. It is also used to generate the core
-  framework API documentation.
+  обеспечивает расширяемый и высокопроизводительный генератор документации API. Оно также используется для генерации
+  документации API фреймворка.
 - [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient):
-  provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.
+  предоставляет набор наиболее часто используемых клиентов авторизации, таких, как Facebook OAuth2 клиент и GitHub
+  OAuth2 клиент.
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
-  provides a set of widgets that encapsulate the [Bootstrap](http://getbootstrap.com/) components and plugins.
+  предоставляет набор виджетов, которые являются компонентами и плагинами [Bootstrap](http://getbootstrap.com/).
 - [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
-  provides testing support based on [Codeception](http://codeception.com/).
+  предоставляет поддержку тестирования, основанного на [Codeception](http://codeception.com/).
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
-  provides debugging support for Yii applications. When this extension is used, a debugger toolbar will appear
-  at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
-  debug information.
+  предоставляет поддержку отладки в приложениях Yii. Когда это расширение используется, панель отладки появится в
+  нижней части каждой страницы. Это расширение также предоставляет набор отдельных страниц для отображения более
+  подробной отладочной информации.
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  provides the support for using [Elasticsearch](http://www.elasticsearch.org/). It includes basic querying/search
-  support and also implements the [Active Record](db-active-record.md) pattern that allows you to store active records
-  in Elasticsearch.
+  предоставляет поддержку использования [Elasticsearch](http://www.elasticsearch.org/). Оно включает в себя поддержку
+  основных поисковых запросов, а также реализует шаблон проектирования [Active Record](db-active-record.md), который
+  позволяет хранить записи Active Record в Elasticsearch.
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
-  provides the support for using [Faker](https://github.com/fzaninotto/Faker) to generate fake data for you.
+  предоставляет поддержку использования [Faker](https://github.com/fzaninotto/Faker) для генерации фиктивных данных.
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
-  provides a Web-based code generator that is highly extensible and can be used to quickly generate models,
-  forms, modules, CRUD, etc.
+  предоставляет веб-интерфейс для генерации кода, который является весьма расширяемым и может быть использован для
+  быстрой генерации моделей, форм, модулей, CRUD и т.д.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
-  provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
+  предоставляет часто используемые функции для работы с изображениями, основанные на библиотеке
+  [Imagine](http://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
-  provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
+  предоставляет набор виджетов, основанный на взаимодействиях и виджетах [JQuery UI](http://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
-  Active Record, migrations, caching, code generation, etc.
+  предоставляет поддержку использования [MongoDB](http://www.mongodb.org/). Оно включает такие возможности, как
+  базовые запросы, Active Record, миграции, кеширование, генерация кода и т.д.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
-  provides the support for using [redis](http://redis.io/). It includes features such as basic query,
-  Active Record, caching, etc.
+  предоставляет поддержку использования [redis](http://redis.io/). Оно включает такие возможности, как базовые запросы,
+  Active Record, кеширование и т.д.
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
-  provides a template engine based on [Smarty](http://www.smarty.net/).
+  предоставляет шаблонизатор, основанный на [Smarty](http://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
-  provides the support for using [Sphinx](http://sphinxsearch.com). It includes features such as basic query,
-  Active Record, code generation, etc.
+  предоставляет поддержку использования [Sphinx](http://sphinxsearch.com). Оно включает такие возможности, как базовые
+  запросы, Active Record, генерация кода и т.д.
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
-  provides email sending features based on [swiftmailer](http://swiftmailer.org/).
+  предоставляет возможности отправки email, основанные на [swiftmailer](http://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  provides a template engine based on [Twig](http://twig.sensiolabs.org/).
+  предоставляет шаблонизатор, основанный на [Twig](http://twig.sensiolabs.org/).
