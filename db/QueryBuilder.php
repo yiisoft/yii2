@@ -1202,6 +1202,7 @@ class QueryBuilder extends \yii\base\Object
      * @param array $operands contains two column names.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
+     * @throws InvalidParamException if wrong number of operands have been given.
      */
     public function buildSimpleCondition($operator, $operands, &$params)
     {
