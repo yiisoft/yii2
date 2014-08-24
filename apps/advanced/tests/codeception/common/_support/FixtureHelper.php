@@ -1,8 +1,8 @@
 <?php
 
-namespace codeception\common\_support;
+namespace tests\codeception\common\_support;
 
-use codeception\common\fixtures\UserFixture;
+use tests\codeception\common\fixtures\UserFixture;
 use Codeception\Module;
 use yii\test\FixtureTrait;
 
@@ -53,7 +53,7 @@ class FixtureHelper extends Module
         return [
             'user' => [
                 'class' => UserFixture::className(),
-                'dataFile' => '@codeception/common/fixtures/data/init_login.php',
+                'dataFile' => '@tests/codeception/common/fixtures/data/init_login.php',
             ],
         ];
     }

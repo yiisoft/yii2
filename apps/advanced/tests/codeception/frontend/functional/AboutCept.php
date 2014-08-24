@@ -1,6 +1,6 @@
 <?php
-use codeception_frontend\FunctionalTester;
-use codeception\frontend\_pages\AboutPage;
+use tests\codeception\frontend\FunctionalTester;
+use tests\codeception\frontend\_pages\AboutPage;
 
 $I = new FunctionalTester($scenario);
 $I->wantTo('ensure that about works');

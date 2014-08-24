@@ -1,4 +1,4 @@
-namespace: codeception_console
+namespace: tests\codeception\console
 actor: Tester
 paths:
     tests: .

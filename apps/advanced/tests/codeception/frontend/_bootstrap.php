@@ -18,4 +18,4 @@ $_SERVER['SCRIPT_FILENAME'] = FRONTEND_ENTRY_FILE;
 $_SERVER['SCRIPT_NAME'] = FRONTEND_ENTRY_URL;
 $_SERVER['SERVER_NAME'] = 'localhost';
 
-Yii::setAlias('@codeception', dirname(__DIR__));
+Yii::setAlias('@tests', dirname(dirname(__DIR__)));

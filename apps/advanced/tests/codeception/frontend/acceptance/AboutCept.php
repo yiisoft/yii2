@@ -1,6 +1,6 @@
 <?php
-use codeception_frontend\AcceptanceTester;
-use codeception\frontend\_pages\AboutPage;
+use tests\codeception\frontend\AcceptanceTester;
+use tests\codeception\frontend\_pages\AboutPage;
 
 $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that about works');

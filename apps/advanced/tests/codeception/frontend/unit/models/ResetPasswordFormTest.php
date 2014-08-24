@@ -1,9 +1,9 @@
 <?php
 
-namespace codeception\frontend\unit\models;
+namespace tests\codeception\frontend\unit\models;
 
-use codeception\frontend\unit\DbTestCase;
-use codeception\common\fixtures\UserFixture;
+use tests\codeception\frontend\unit\DbTestCase;
+use tests\codeception\common\fixtures\UserFixture;
 use frontend\models\ResetPasswordForm;
 
 class ResetPasswordFormTest extends DbTestCase
@@ -36,7 +36,7 @@ class ResetPasswordFormTest extends DbTestCase
         return [
             'user' => [
                 'class' => UserFixture::className(),
-                'dataFile' => '@codeception/frontend/unit/fixtures/data/models/user.php'
+                'dataFile' => '@tests/codeception/frontend/unit/fixtures/data/models/user.php'
             ],
         ];
     }

@@ -1,4 +1,4 @@
-namespace: codeception_common
+namespace: tests\codeception\common
 actor: Tester
 paths:
     tests: .

@@ -1,6 +1,6 @@
 <?php
 
-use codeception\_pages\LoginPage;
+use tests\codeception\_pages\LoginPage;
 
 $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that login works');

@@ -1,6 +1,6 @@
 <?php
-use codeception_frontend\AcceptanceTester;
-use codeception\frontend\_pages\ContactPage;
+use tests\codeception\frontend\AcceptanceTester;
+use tests\codeception\frontend\_pages\ContactPage;
 
 $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that contact works');
