@@ -13,7 +13,7 @@ is the main topic of testing chapters.
 Developing with tests
 ------------------
 
-Test-Driven Development (TDD) or, in another terms, Behavior-Driven Development (BDD) is an approach of developing
+Test-Driven Development (TDD) and Behavior-Driven Development (BDD) are approaches of developing
 software by describing behavior of a piece of code or the whole feature as a set of scenarios or tests before
 writing actual code and only then creating the implementation that allows these tests to pass verifying that intended
 behavior is achieved.
@@ -26,12 +26,15 @@ The process of developing a feature is the following:
 - Run all tests and make sure they all pass.
 - Improve code and make sure tests are still OK.
 
-> **Tip**: If you feel that you are loosing time doing a lot of simple changes try covering more by your test scenario
-> so you do more changes before executing tests again. If you're debugging too much try doing the opposite.
+After it's done the process is repeated again for another feature or improvement. If existing feature is to be changed,
+tests should be changed as well.
+
+> **Tip**: If you feel that you are loosing time doing a lot of small and simple iterations try covering more by your
+> test scenario so you do more before executing tests again. If you're debugging too much try doing the opposite.
 
 The reason to create tests before doing any implemenation is that it allows you to focus on what do we want to achieve
 and fully dive into "how to do it" afterwards. Usually it leads to better abstractions and easier test maintenance when
-it comes to feature adjustments.
+it comes to feature adjustments in for of less coupled components.
 
 So to sum up pros of such approach are the following:
 
@@ -65,3 +68,8 @@ In some cases any form of automated testing could be overkill:
 - It's one-time project that's going to be expired.
 
 Still if you have time it's good to automate testing in these cases as well.
+
+Further reading
+-------------
+
+- [Test Driven Development: By Example / Kent Beck](http://www.amazon.com/Test-Driven-Development-Kent-Beck/dp/0321146530/).
