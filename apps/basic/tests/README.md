@@ -27,18 +27,10 @@ line globally.
 composer require --dev yiisoft/yii2-faker:*
 ```
 
-3. Create three databases that are used in tests:
-
-* `yii2_basic_unit` - for unit tests;
-* `yii2_basic_functional` - for functional tests;
-* `yii2_basic_acceptance` - for acceptance tests.
-
-Then update databases by applying migrations:
+3. Create `yii2_basic_tests` database and update it by applying migrations:
 
 ```
-codeception/bin/yii_acceptance migrate
-codeception/bin/yii_functional migrate
-codeception/bin/yii_unit migrate
+codeception/bin/yii migrate
 ```
 
 4. Build the test suites:

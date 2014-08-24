@@ -22,7 +22,8 @@
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*"
+        "yiisoft/yii2-gii": "*",
+        "yiisoft/yii2-faker": "*"
     },
     "scripts": {
         "post-create-project-cmd": [
