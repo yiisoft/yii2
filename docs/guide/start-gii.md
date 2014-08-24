@@ -83,7 +83,7 @@ CRUD stands for Create, Read, Update, and Delete, representing the four common t
 
 Next, click on the "Preview" button. You will see a list of files to be generated, as shown below.
 
-[[NEED THE IMAGE HERE]]
+![CRUD Generator Preview](images/start-gii-crud-preview.png)
 
 If you previously created the `controllers/CountryController.php` and
 `views/country/index.php` files (in the databases section of the guide), check the "overwrite" box to replace them. (The previous versions did not have full CRUD support.)
