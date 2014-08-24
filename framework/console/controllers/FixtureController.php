@@ -25,10 +25,10 @@ use yii\test\FixtureTrait;
  * yii fixture User
  *
  * #load all fixtures
- * yii fixture *
+ * yii fixture "*"
  *
  * #load all fixtures except User
- * yii fixture * -User
+ * yii fixture "*" -User
  *
  * #append fixtures to already loaded
  * yii fixture User --append
@@ -92,10 +92,10 @@ class FixtureController extends Controller
      * yii fixture/load --append User UserProfile
      *
      * # load all available fixtures found under 'tests\unit\fixtures'
-     * yii fixture/load *
+     * yii fixture/load "*"
      *
      * # load all fixtures except User and UserProfile
-     * yii fixture/load * -User -UserProfile
+     * yii fixture/load "*" -User -UserProfile
      * ~~~
      *
      * @throws Exception if the specified fixture does not exist.
@@ -164,10 +164,10 @@ class FixtureController extends Controller
      * yii fixture/unload User UserProfile
      *
      * # unload all fixtures found under 'tests\unit\fixtures'
-     * yii fixture/unload *
+     * yii fixture/unload "*"
      *
      * # unload all fixtures except User and UserProfile
-     * yii fixture/unload * -User -UserProfile
+     * yii fixture/unload "*" -User -UserProfile
      * ~~~
      *
      * @throws Exception if the specified fixture does not exist.

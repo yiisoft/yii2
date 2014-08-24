@@ -151,6 +151,7 @@ Testing
 -------
 
 * [Overview](test-overview.md)
+* [Testing environment setup](test-endvironment-setup.md)
 * [Unit Tests](test-unit.md)
 * [Functional Tests](test-functional.md)
 * [Acceptance Tests](test-acceptance.md)

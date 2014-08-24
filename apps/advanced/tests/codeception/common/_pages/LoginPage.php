@@ -1,6 +1,6 @@
 <?php
 
-namespace codeception\common\_pages;
+namespace tests\codeception\common\_pages;
 
 use yii\codeception\BasePage;
 

@@ -14,6 +14,13 @@ $config = yii\helpers\ArrayHelper::merge(
     require(YII_APP_BASE_PATH . '/config/console.php'),
     require(__DIR__ . '/../config/config.php'),
     [
+        'controllerMap' => [
+            'fixture' => [
+                'class' => 'yii\faker\FixtureController',
+                'fixtureDataPath' => dirname(__DIR__) . 'fixtures',
+                'templatePath' => dirname(__DIR__) . 'templates'
+            ],
+        ],
         'components' => [
             'db' => [
                 'dsn' => 'mysql:host=localhost;dbname=yii2_basic_acceptance',

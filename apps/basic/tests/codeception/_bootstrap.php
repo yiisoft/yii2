@@ -12,4 +12,4 @@ $_SERVER['SCRIPT_FILENAME'] = YII_TEST_ENTRY_FILE;
 $_SERVER['SCRIPT_NAME'] = YII_TEST_ENTRY_URL;
 $_SERVER['SERVER_NAME'] = 'localhost';
 
-Yii::setAlias('@codeception', __DIR__);
+Yii::setAlias('@tests', dirname(__DIR__));

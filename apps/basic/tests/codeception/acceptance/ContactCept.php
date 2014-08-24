@@ -1,6 +1,6 @@
 <?php
 
-use codeception\_pages\ContactPage;
+use tests\codeception\_pages\ContactPage;
 
 $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that contact works');

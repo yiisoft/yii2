@@ -1,8 +1,8 @@
 <?php
 
-namespace codeception\frontend\acceptance;
+namespace tests\codeception\frontend\acceptance;
 
-use codeception\frontend\_pages\SignupPage;
+use tests\codeception\frontend\_pages\SignupPage;
 use common\models\User;
 
 class SignupCest
