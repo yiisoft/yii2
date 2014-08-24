@@ -10,7 +10,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
-use yii\base\InvalidConfigException;
 
 /**
  * Validator is the base class for all validators.
@@ -181,7 +180,6 @@ class Validator extends Component
      * @param array|string $attributes list of attributes to be validated. This can be either an array of
      * the attribute names or a string of comma-separated attribute names.
      * @param array $params initial values to be applied to the validator properties
-     * @throws \yii\base\InvalidConfigException if type can't be recognized
      * @return Validator the validator
      */
     public static function createValidator($type, $object, $attributes, $params = [])
