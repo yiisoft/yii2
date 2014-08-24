@@ -350,9 +350,10 @@ yii migrate --db=db2
 
 The above command will apply *all* migrations found in the default migration path to the `db2` database.
 
-If your application works with multiple databases, some migrations should be applied to one database while
-some others should be applied to another database. In this case, it is recommended that you create a base
-migration class for each different database and override the [[yii\db\Migration::init()]] method like the following,
+If your application works with multiple databases, it is possible that some migrations should be applied
+to one database while some others should be applied to another database. In this case, it is recommended that
+you create a base migration class for each different database and override the [[yii\db\Migration::init()]]
+method like the following,
 
 ```php
 public function init()
@@ -362,13 +363,13 @@ public function init()
 }
 ```
 
-If a migration needs to be applied to one database, you create a migration class by extending from the corresponding
-base migration class.
+To create a migration that should be applied to a particular database, simply extend from the corresponding
+base migration class. Now if you run the `yii migrate` command, each migration will be applied to its corresponding database.
 
-Now if you run the `yii migrate` command, each migration will be applied to the corresponding database.
-Because each migration has harcoded the DB connection, the `--db` option of the `migrate` command will have no effect.
+> Info: Because each migration uses hardcoded DB connection, the `--db` option of the `migrate` command will
+  have no effect. Also note that the migration history will be stored in the default `db` database.
 
-If you still want to support changing DB connection via the `--db` option, you may take the following alternative
+If you want to support changing DB connection via the `--db` option, you may take the following alternative
 approach to work with multiple databases.
 
 For each database, create a migration path and save all corresponding migration classes there. To apply migrations,
@@ -379,3 +380,5 @@ yii migrate --migrationPath=@app/migrations/db1 --db=db1
 yii migrate --migrationPath=@app/migrations/db2 --db=db2
 ...
 ```
+
+> Info: The above approach stores the migration history in different databases specified via the `--db` option.
