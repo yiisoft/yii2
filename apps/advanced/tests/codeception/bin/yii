@@ -20,8 +20,8 @@ $config = yii\helpers\ArrayHelper::merge(
         'controllerMap' => [
             'fixture' => [
                 'class' => 'yii\faker\FixtureController',
-                'fixtureDataPath' => dirname(__DIR__) . 'common/fixtures',
-                'templatePath' => dirname(__DIR__) . 'common/templates'
+                'fixtureDataPath' => '@tests/codeception/common/fixtures',
+                'templatePath' => '@tests/codeception/common/templates',
             ],
         ],
     ]

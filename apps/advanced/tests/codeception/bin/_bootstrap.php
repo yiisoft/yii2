@@ -19,3 +19,5 @@ require_once(YII_APP_BASE_PATH . '/common/config/aliases.php');
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'test');
+
+Yii::setAlias('@tests', dirname(dirname(__DIR__)));

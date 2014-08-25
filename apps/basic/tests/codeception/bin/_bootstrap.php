@@ -10,3 +10,5 @@ defined('YII_APP_BASE_PATH') or define('YII_APP_BASE_PATH', dirname(dirname(dirn
 
 require(YII_APP_BASE_PATH . '/vendor/autoload.php');
 require(YII_APP_BASE_PATH . '/vendor/yiisoft/yii2/Yii.php');
+
+Yii::setAlias('@tests', dirname(dirname(__DIR__)));
