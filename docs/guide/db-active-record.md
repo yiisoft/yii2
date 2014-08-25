@@ -960,146 +960,56 @@ to not override the default condition.
 
 
 Transactional operations
-------------------------
+---------------------
 
-When a few DB operations are related and are executed
-
-TODO: FIXME: WIP, TBD, https://github.com/yiisoft/yii2/issues/226
-
-,
-[[yii\db\ActiveRecord::afterSave()|afterSave()]], [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]] and/or [[yii\db\ActiveRecord::afterDelete()|afterDelete()]] life cycle methods. Developer may come
-to the solution of overriding ActiveRecord [[yii\db\ActiveRecord::save()|save()]] method with database transaction wrapping or
-even using transaction in controller action, which is strictly speaking doesn't seem to be a good
-practice (recall "skinny-controller / fat-model" fundamental rule).
-
-Here these ways are (**DO NOT** use them unless you're sure what you are actually doing). Models:
+There are two ways of dealing with transactions while working with Active Record. First way is doing everything manually
+as described in "transactions" section of "[Database basics](db-dao.md)". Another way is to do it by implementing
+`transactions` method where you can specify which operations are to be wrapped into transaction per model scenario:
 
 ```php
-class Feature extends \yii\db\ActiveRecord
+class Post extends \yii\db\ActiveRecord
 {
-    // ...
-
-    public function getProduct()
-    {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
-    }
-}
-
-class Product extends \yii\db\ActiveRecord
-{
-    // ...
-
-    public function getFeatures()
-    {
-        return $this->hasMany(Feature::className(), ['product_id' => 'id']);
-    }
-}
+    return [
+        'admin' => self::OP_INSERT,
+        'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
+        // the above is equivalent to the following:
+        // 'api' => self::OP_ALL,
+    ];
 ```
 
-Overriding [[yii\db\ActiveRecord::save()|save()]] method:
+In the above `admin` and `api` are model scenarios and constants starting with `OP_` are operations that should
+be wrapped in transaction for these sceanarios. Supported operations are `OP_INSERT`, `OP_UPDATE` and `OP_DELETE`.
+`OP_ALL` stands for all three.
 
-```php
-
-class ProductController extends \yii\web\Controller
-{
-    public function actionCreate()
-    {
-        // FIXME: TODO: WIP, TBD
-    }
-}
-```
-
-Using transactions within controller layer:
-
-```php
-class ProductController extends \yii\web\Controller
-{
-    public function actionCreate()
-    {
-        // FIXME: TODO: WIP, TBD
-    }
-}
-```
-
-Instead of using these fragile methods you should consider using atomic scenarios and operations feature.
-
-```php
-class Feature extends \yii\db\ActiveRecord
-{
-    // ...
-
-    public function getProduct()
-    {
-        return $this->hasOne(Product::className(), ['product_id' => 'id']);
-    }
-
-    public function scenarios()
-    {
-        return [
-            'userCreates' => [
-                'attributes' => ['name', 'value'],
-                'atomic' => [self::OP_INSERT],
-            ],
-        ];
-    }
-}
-
-class Product extends \yii\db\ActiveRecord
-{
-    // ...
-
-    public function getFeatures()
-    {
-        return $this->hasMany(Feature::className(), ['id' => 'product_id']);
-    }
-
-    public function scenarios()
-    {
-        return [
-            'userCreates' => [
-                'attributes' => ['title', 'price'],
-                'atomic' => [self::OP_INSERT],
-            ],
-        ];
-    }
-
-    public function afterValidate()
-    {
-        parent::afterValidate();
-        // FIXME: TODO: WIP, TBD
-    }
-
-    public function afterSave($insert)
-    {
-        parent::afterSave($insert);
-        if ($this->getScenario() === 'userCreates') {
-            // FIXME: TODO: WIP, TBD
-        }
-    }
-}
-```
-
-Controller is very thin and neat:
-
-```php
-class ProductController extends \yii\web\Controller
-{
-    public function actionCreate()
-    {
-        // FIXME: TODO: WIP, TBD
-    }
-}
-```
+Such automatic transactions are especially useful if you're doing additional database changes in `beforeSave`,
+`afterSave`, `beforeDelete`, `afterDelete` and want to be sure that both succeeded before they are saved.
 
 Optimistic Locks
-----------------
+--------------
 
-TODO
+Optimistic locking allows multiple users to access the same record for edits and avoids
+potential conflicts. In case when a user attempts to save the record upon some staled data
+(because another user has modified the data), a [[\yii\db\StaleObjectException]] exception will be thrown,
+and the update or deletion is skipped.
+
+Optimistic locking is only supported by `update()` and `delete()` methods and isn't used by default.
+
+To use Optimistic locking:
+
+1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
+   Override `optimisticLock()` method to return the name of this column.
+2. In the Web form that collects the user input, add a hidden field that stores
+   the lock version of the recording being updated.
+3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
+   and implement necessary business logic (e.g. merging the changes, prompting stated data)
+   to resolve the conflict.
 
 Dirty Attributes
-----------------
+--------------
 
-TODO
+An attribute is considered dirty if its value was modified since model was loaded from database or since most recent
+data save. When saving record data by calling `save()`, `update()`, `insert()` etc. only dirty attributes are saved
+into database. If there are no dirty attributes there's nothing to be saved so no query will be issued at all.
 
 See also
 --------
