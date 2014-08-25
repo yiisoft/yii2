@@ -585,9 +585,11 @@ EOD;
 <?php
 /**
  * Configuration file for the "yii asset" console command.
- * Note that in the console environment, some path aliases like '@webroot' and '@web' may not exist.
- * Please define these missing path aliases.
  */
+
+// In the console environment, some path aliases may not exist. Please define these:
+//Yii::setAlias('@webroot', realpath(__DIR__ . '/../web'));
+//Yii::setAlias('@web', '/');
 return [
     // Adjust command/callback for JavaScript files compressing:
     'jsCompressor' => {$jsCompressor},
