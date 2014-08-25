@@ -137,7 +137,7 @@ in the [Applications](structure-applications.md) section and the [Service Locato
 ### Widget Configurations <a name="widget-configurations"></a>
 
 When using [widgets](structure-widgets.md), you often need to use configurations to customize the widget properties.
-Both of the [[yii\base\Widget::widget()]] and [[yii\base\Widget::beginWidget()]] methods can be used to create
+Both of the [[yii\base\Widget::widget()]] and [[yii\base\Widget::begin()]] methods can be used to create
 a widget. They take a configuration array, like the following,
 
 ```php
