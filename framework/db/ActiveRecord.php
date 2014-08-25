@@ -196,6 +196,11 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function updateAll($attributes, $condition = '', $params = [])
     {
+        $attributes = array_intersect_key($attributes, static::getTableSchema()->columns);
+        if (empty($attributes)) {
+            return 0;
+        }
+
         $command = static::getDb()->createCommand();
         $command->update(static::tableName(), $attributes, $condition, $params);
 
@@ -448,11 +453,11 @@ class ActiveRecord extends BaseActiveRecord
             }
         }
         $db = static::getDb();
-        $command = $db->createCommand()->insert($this->tableName(), $values);
+        $table = static::getTableSchema();
+        $command = $db->createCommand()->insert($this->tableName(), array_intersect_key($values, $table->columns));
         if (!$command->execute()) {
             return false;
         }
-        $table = $this->getTableSchema();
         if ($table->sequenceName !== null) {
             foreach ($table->primaryKey as $name) {
                 if ($this->getAttribute($name) === null) {
