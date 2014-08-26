@@ -83,6 +83,7 @@ Yii Framework 2 Change Log
 - Bug #4592: Fixed `yii help` command was listing incorrect action names for methods like `actionSayNO` (samdark)
 - Bug #4654: Fixed issue with PostgreSQL and inserting boolean values with batch insert (cebe)
 - Bug #4727: Fixed wrong Stylus definition in `\yii\web\AssetConverter` (samdark)
+- Bug #4813: Fixed MSSQL schema that was getting incorrect info about constraints (samdark, SerjRamone, o-rey)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
