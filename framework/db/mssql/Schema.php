@@ -344,7 +344,7 @@ JOIN {$keyColumnUsageTableName} AS [kcu1] ON
 JOIN {$keyColumnUsageTableName} AS [kcu2] ON
     [kcu2].[constraint_catalog] = [rc].[constraint_catalog] AND
     [kcu2].[constraint_schema] = [rc].[constraint_schema] AND
-    [kcu2].[constraint_name] = [rc].[constraint_name] AND
+    [kcu2].[constraint_name] = [rc].[unique_constraint_name] AND
     [kcu2].[ordinal_position] = [kcu1].[ordinal_position]
 WHERE [kcu1].[table_name] = :tableName
 SQL;
