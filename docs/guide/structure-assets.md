@@ -12,7 +12,7 @@ under the webservers document root, resolving JavaScript dependencies or minifyi
 Declaring asset bundles
 -----------------------
 
-In order to define a set of assets the belong together and should be used on the website you declare a class called
+In order to define a set of assets that belong together and should be used on the website you declare a class called
 an "asset bundle". The bundle defines a set of asset files and their dependencies on other asset bundles.
 
 Asset files can be located under the webservers accessable directory but also hidden inside of application or vendor
