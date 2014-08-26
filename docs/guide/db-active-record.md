@@ -969,12 +969,16 @@ as described in "transactions" section of "[Database basics](db-dao.md)". Anothe
 ```php
 class Post extends \yii\db\ActiveRecord
 {
-    return [
-        'admin' => self::OP_INSERT,
-        'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
-        // the above is equivalent to the following:
-        // 'api' => self::OP_ALL,
-    ];
+    public function transactions()
+    {
+        return [
+            'admin' => self::OP_INSERT,
+            'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
+            // the above is equivalent to the following:
+            // 'api' => self::OP_ALL,
+        ];
+    }
+}
 ```
 
 In the above `admin` and `api` are model scenarios and constants starting with `OP_` are operations that should
