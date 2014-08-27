@@ -10,4 +10,11 @@ use yiiunit\framework\db\ActiveRecordTest;
 class SqliteActiveRecordTest extends ActiveRecordTest
 {
     protected $driverName = 'sqlite';
+
+    public function testJoinWithViaCallback()
+    {
+        $this->markTestSkipped(
+            'The MySQLi does not support ORDER BY FIELD.'
+        );
+    }
 }
