@@ -2,6 +2,8 @@
 
 namespace yiiunit\data\ar;
 
+use yii\db\Expression;
+
 /**
  * Class Order
  *
@@ -106,6 +108,17 @@ class Order extends ActiveRecord
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->onCondition(['category_id' => 1])
             ->viaTable('order_item', ['order_id' => 'id']);
+    }
+
+    public function getItemsOrderSortBySubtotal()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems', function ($q) {
+                $q->orderBy(['order_item.subtotal' => SORT_DESC]);
+            })
+            ->viaCallback(function($query, $attributes, $values){
+                $query->addOrderBy([new Expression(' FIELD (' . current($attributes) . ', ' . implode(', ', $values) . ')')]);
+            });
     }
 
     public function beforeSave($insert)
