@@ -215,7 +215,7 @@ $config = require('path/to/web.php');
 ## Default Configurations <a name="default-configurations"></a>
 
 The [[Yii::createObject()]] method is implemented based on a [dependency injection container](concept-di-container.md).
-It allows you specify a set of the so-called *default configurations* which will be applied to ANY instances of
+It allows you to specify a set of the so-called *default configurations* which will be applied to ANY instances of
 the specified classes when they are being created using [[Yii::createObject()]]. The default configurations
 can be specified by calling `Yii::$container->set()` in the [bootstrapping](runtime-bootstrapping.md) code.
 
