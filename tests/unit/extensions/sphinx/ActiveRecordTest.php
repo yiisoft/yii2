@@ -236,11 +236,17 @@ class ActiveRecordTest extends SphinxTestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/4830
+     *
      * @depends testFind
      */
     public function testFindQueryReuse()
     {
         $result = ArticleIndex::find()->andWhere(['author_id' => 1]);
+        $this->assertTrue($result->one() instanceof ArticleIndex);
+        $this->assertTrue($result->one() instanceof ArticleIndex);
+
+        $result = ArticleIndex::find()->match('dogs');
         $this->assertTrue($result->one() instanceof ArticleIndex);
         $this->assertTrue($result->one() instanceof ArticleIndex);
     }
