@@ -64,14 +64,7 @@ class QueryBuilder extends Object
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
         if ($query->match !== null) {
-            if ($query->match instanceof Expression) {
-                $query->andWhere('MATCH(' . $query->match->expression . ')');
-                $params = array_merge($params, $query->match->params);
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $params[$phName] = $this->db->escapeMatchValue($query->match);
-                $query->andWhere('MATCH(' . $phName . ')');
-            }
+            $this->buildMatch($query, $params);
         }
 
         $from = $query->from;
@@ -93,6 +86,35 @@ class QueryBuilder extends Object
         ];
 
         return [implode($this->separator, array_filter($clauses)), $params];
+    }
+
+    /**
+     * @param Query $query
+     * @param array $params
+     */
+    protected function buildMatch($query, &$params)
+    {
+        if ($query->match instanceof Expression) {
+            $match = "MATCH({$query->match->expression})";
+            if ($this->isMatch($match, $query->where)) {
+                return;
+            }
+            $query->andWhere($match);
+            $params = array_merge($params, $query->match->params);
+        } else {
+            $phName = self::PARAM_PREFIX . count($params);
+            $match = "MATCH({$phName})";
+            $params[$phName] = $this->db->escapeMatchValue($query->match);
+            if ($this->isMatch($match, $query->where)) {
+                return;
+            }
+            $query->andWhere($match);
+        }
+    }
+
+    protected function isMatch($match, $where)
+    {
+        return (is_string($where) && $where == $match) || (is_array($where) && in_array($match, $where, true));
     }
 
     /**

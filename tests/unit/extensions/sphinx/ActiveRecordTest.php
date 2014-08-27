@@ -2,6 +2,7 @@
 
 namespace yiiunit\extensions\sphinx;
 
+use yii\db\Expression;
 use yii\sphinx\ActiveQuery;
 use yiiunit\data\ar\sphinx\ActiveRecord;
 use yiiunit\data\ar\sphinx\ArticleIndex;
@@ -39,6 +40,16 @@ class ActiveRecordTest extends SphinxTestCase
         $this->assertEquals(2, count($articles));
         $this->assertTrue($articles[0] instanceof ArticleIndex);
         $this->assertTrue($articles[1] instanceof ArticleIndex);
+
+        // find match
+        $result = ArticleIndex::find()->match('dogs');
+        $this->assertTrue($result->one() instanceof ArticleIndex);
+        $this->assertTrue($result->one() instanceof ArticleIndex);
+
+        // find match + Expression
+        $result = ArticleIndex::find()->match(new Expression('\'dogs\''));
+        $this->assertNotEmpty($result->asArray()->one());
+        $this->assertNotEmpty($result->asArray()->one());
 
         // find fulltext
         $article = ArticleIndex::findOne(2);
