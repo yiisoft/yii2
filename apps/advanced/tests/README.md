@@ -7,9 +7,7 @@ After creating and setting up the advanced application, follow these steps to pr
 1. Install Codeception if it's not yet installed:
 
 ```
-composer global require "codeception/codeception=2.0.*"
-composer global require "codeception/specify=*"
-composer global require "codeception/verify=*"
+composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 ```
 
 If you've never used Composer for global packages run `composer global status`. It should output:
