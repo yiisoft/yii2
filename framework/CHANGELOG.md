@@ -118,6 +118,7 @@ Yii Framework 2 Change Log
 - Enh #3244: Allow logging complex data such as arrays and object via the log system (cebe)
 - Enh #3252: Added support for case insensitive matching using ILIKE to PostgreSQL QueryBuilder (cebe)
 - Enh #3280: Support dynamically attaching anonymous behaviors (qiangxue)
+- Enh #3283: Added `$checkAjax` to `yii\web\User::loginRequired()` (qiangxue)
 - Enh #3284: Added support for checking multiple ETags by `yii\filters\HttpCache` (qiangxue)
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
