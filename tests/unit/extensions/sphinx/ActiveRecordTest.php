@@ -234,4 +234,14 @@ class ActiveRecordTest extends SphinxTestCase
         $this->assertArrayHasKey('tokenized', $rows[0], 'No tokenized keyword!');
         $this->assertArrayHasKey('normalized', $rows[0], 'No normalized keyword!');
     }
+
+    /**
+     * @depends testFind
+     */
+    public function testFindQueryReuse()
+    {
+        $result = ArticleIndex::find()->andWhere(['author_id' => 1]);
+        $this->assertTrue($result->one() instanceof ArticleIndex);
+        $this->assertTrue($result->one() instanceof ArticleIndex);
+    }
 }
