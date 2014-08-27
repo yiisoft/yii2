@@ -29,6 +29,7 @@
     ],
     "dependencies": {
         "jquery.inputmask": ">=3.0.0",
-        "punycode": ">=1.3.0"
+        "punycode": ">=1.3.0",
+        "yii2-pjax": ">=2.0.0"
     }
 }
