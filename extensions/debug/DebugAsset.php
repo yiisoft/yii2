@@ -18,8 +18,8 @@ use yii\web\AssetBundle;
 class DebugAsset extends AssetBundle
 {
     public $css = [
-        'yii2-debug\assets\main.css',
-        'yii2-debug\assets\toolbar.css',
+        'yii2-debug/assets/main.css',
+        'yii2-debug/assets/toolbar.css',
     ];
     public $depends = [
         'yii\web\YiiAsset',
