@@ -29,8 +29,8 @@ class AssetBundle extends Object
      * @var string the directory that contains the asset files in this bundle.
      *
      * The value of this property can be prefixed to every relative asset file path listed in [[js]] and [[css]]
-     * to form an absolute file path. If this property is null (meaning not set), the value of
-     * [[AssetManager::basePath]] will be used instead.
+     * to form an absolute file path. If this property is null (meaning not set), it will be filled with the value of
+     * [[AssetManager::basePath]] when the bundle is being loaded by [[AssetManager::getBundle()]].
      *
      * You can use either a directory or an alias of the directory.
      */
@@ -40,7 +40,8 @@ class AssetBundle extends Object
      *
      * The value of this property will be prefixed to every relative asset file path listed in [[js]] and [[css]]
      * when they are being registered in a view so that they can be Web accessible.
-     * If this property is null (meaning not set), the value of [[AssetManager::baseUrl]] will be used instead.
+     *  If this property is null (meaning not set), it will be filled with the value of
+     * [[AssetManager::baseUrl]] when the bundle is being loaded by [[AssetManager::getBundle()]].
      *
      * You can use either a URL or an alias of the URL.
      */
@@ -59,17 +60,22 @@ class AssetBundle extends Object
      */
     public $depends = [];
     /**
-     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can
-     * be either a file path (without leading slash) relative to [[basePath]] and [[baseUrl]],
-     * or a URL representing an external JavaScript file.
+     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be
+     * specified in one of the following formats:
      *
-     * Note that only forward slash "/" can be used as directory separators.
+     * - an absolute URL representing an external asset. For example,
+     *   `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
+     *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
+     * - a path relative to [[basePath]] and [[baseUrl]]: for example, `js/main.js`. There should be no leading slash.
+     * - a path relative to [[AssetManager::basePath]] and [[AssetManager::baseUrl]]: for example,
+     *   `@/jquery/dist/jquery.js`. The path must begin with `@/`.
+     *
+     * Note that only forward slash "/" should be used as directory separators.
      */
     public $js = [];
     /**
-     * @var array list of CSS files that this bundle contains. Each CSS file can
-     * be either a file path (without leading slash) relative to [[basePath]] and [[baseUrl]],
-     * or a URL representing an external CSS file.
+     * @var array list of CSS files that this bundle contains. Each CSS file can be specified
+     * in one of the three formats as explained in [[js]].
      *
      * Note that only forward slash "/" can be used as directory separator.
      */

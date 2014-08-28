@@ -10,31 +10,24 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
-use yii\helpers\FileHelper;
 use yii\helpers\Url;
 
 /**
- * AssetManager manages asset bundles and asset publishing.
+ * AssetManager manages asset bundle configuration and loading.
  *
  * AssetManager is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->assetManager`.
  *
  * You can modify its configuration by adding an array to your application config under `components`
- * as it is shown in the following example:
+ * as shown in the following example:
  *
- * ~~~
+ * ```php
  * 'assetManager' => [
  *     'bundles' => [
  *         // you can override AssetBundle configs here
  *     ],
- *     //'linkAssets' => true,
- *     // ...
  * ]
- * ~~~
- *
- * @property AssetConverterInterface $converter The asset converter. Note that the type of this property
- * differs in getter and setter. See [[getConverter()]] and [[setConverter()]] for details.
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -42,10 +35,19 @@ use yii\helpers\Url;
 class AssetManager extends Component
 {
     /**
-     * @var array list of available asset bundles. The keys are the class names (**without leading backslash**)
-     * of the asset bundles, and the values are either the configuration arrays for creating the [[AssetBundle]]
-     * objects or the corresponding asset bundle instances. For example, the following code disables
-     * the bootstrap css file used by Bootstrap widgets (because you want to use your own styles):
+     * @var array|boolean list of asset bundle configurations. This property is provided to customize asset bundles.
+     * When a bundle is being loaded by [[getBundle()]], if it has a corresponding configuration specified here,
+     * the configuration will be applied to the bundle.
+     *
+     * The array keys are the asset bundle names, which typically are asset bundle class names without leading backslash.
+     * The array values are the corresponding configurations. If a value is false, it means the corresponding asset
+     * bundle is disabled and [[getBundle()]] should return null.
+     *
+     * If this this property is false, it means the whole asset bundle feature is disabled and [[getBundle()]]
+     * will always return null.
+     *
+     * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
+     * (because you want to use your own styles):
      *
      * ~~~
      * [
@@ -64,7 +66,24 @@ class AssetManager extends Component
      * @return string the base URL through which the published asset files can be accessed.
      */
     public $baseUrl = '@web/assets';
+    /**
+     * @var array mapping from source asset files (keys) to target asset files (values).
+     * When an asset bundle is being loaded by [[getBundle()]], each of its asset files (listed in either
+     * [[AssetBundle::css]] or [[AssetBundle::js]] will be examined to see if it matches any key
+     * in this map. If so, the corresponding value will be used to replace the asset file.
+     *
+     * Note that the target asset files should be either absolute URLs or paths relative to [[baseUrl]] and [[basePath]].
+     *
+     * In the following example, any occurrence of `jquery.min.js` will be replaced with `jquery/dist/jquery.js`.
+     *
+     * ```php
+     * [
+     *     'jquery.min.js' => 'jquery/dist/jquery.js',
+     * ]
+     * ```
+     */
     public $assetMap = [];
+
 
     /**
      * Initializes the component.
@@ -140,12 +159,33 @@ class AssetManager extends Component
 
     protected function getAssetUrl($bundle, $file)
     {
+        if (($mappedFile = $this->mapAsset($file)) !== false) {
+            return Url::isRelative($mappedFile) ? $this->baseUrl . '/' . $mappedFile : $mappedFile;
+        }
+
         if (strncmp($file, '@/', 2) === 0) {
             $file = $this->baseUrl . substr($file, 1);
         } elseif (Url::isRelative($file)) {
             $file = $bundle->baseUrl . '/' . $file;
         }
-        // todo: assetMap
+
         return $file;
+    }
+
+    protected function mapAsset($file)
+    {
+        if (isset($this->assetMap[$file])) {
+            return $this->assetMap[$file];
+        }
+
+        $n = strlen($file);
+        foreach ($this->assetMap as $from => $to) {
+            $n2 = strlen($from);
+            if ($n2 <= $n && substr_compare($file, $from, $n - $n2, $n2) === 0) {
+                return $to;
+            }
+        }
+
+        return false;
     }
 }
