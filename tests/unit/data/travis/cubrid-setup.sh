@@ -19,7 +19,7 @@ else
 fi
 
     cd $CUBRID_VERSION
-    tar xzvf ../../$CUBRID_VERSION-linux.x86_64.tar.gz
+    tar xzf ../../$CUBRID_VERSION-linux.x86_64.tar.gz
     cd ../..
 
 
@@ -64,7 +64,7 @@ install_pdo_cubrid() {
         wget "http://pecl.php.net/get/PDO_CUBRID-$CUBRID_PDO_VERSION.tgz"
     fi
     tar -zxf "PDO_CUBRID-$CUBRID_PDO_VERSION.tgz"
-    sh -c "cd PDO_CUBRID-$CUBRID_PDO_VERSION && phpize && ./configure && make && sudo make install"
+    sh -c "cd PDO_CUBRID-$CUBRID_PDO_VERSION && phpize && ./configure --prefix=$CWD/cubrid/PDO_CUBRID-$CUBRID_PDO_VERSION && make && sudo make install"
 
     echo "extension=pdo_cubrid.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 

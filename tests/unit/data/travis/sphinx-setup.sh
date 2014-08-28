@@ -5,6 +5,10 @@ CWD=$(dirname "$SCRIPT")
 # work around https://github.com/travis-ci/travis-ci/issues/2728
 PATH=$PATH:/usr/local/sphinx-2.1.9/bin
 
+mkdir -p sphinx
+
+sed -i s\~SPHINX_BASE_DIR~$PWD/sphinx~g $CWD/../sphinx/sphinx.conf
+
 # log files
 #sudo mkdir /var/log/sphinx
 #sudo touch /var/log/sphinx/searchd.log
