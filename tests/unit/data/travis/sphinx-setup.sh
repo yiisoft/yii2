@@ -2,6 +2,8 @@
 SCRIPT=$(readlink -f "$0")
 CWD=$(dirname "$SCRIPT")
 
+sudo dpkg -l |grep sphinx
+
 # log files
 sudo mkdir /var/log/sphinx
 sudo touch /var/log/sphinx/searchd.log
