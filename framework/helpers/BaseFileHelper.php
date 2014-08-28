@@ -439,6 +439,9 @@ class BaseFileHelper
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
     {
+        if(is_link($path)) {
+            $path = readlink($path);
+        }
         if (is_dir($path)) {
             return true;
         }
