@@ -19,9 +19,8 @@ use yii\web\AssetBundle;
  */
 class MaskedInputAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/assets';
     public $js = [
-        'jquery.inputmask.bundle.min.js'
+        'jquery.inputmask/dist/jquery.inputmask.bundle.js'
     ];
     public $depends = [
         'yii\web\YiiAsset'
