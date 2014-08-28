@@ -22,10 +22,9 @@
         "assets/yii.gridView.js"
     ],
     "ignore": [
-        "**/.*",
-        "**/*",
-        "!assets/",
-        "!LICENSE.md"
+        "/*",
+        "!/assets",
+        "!/LICENSE.md"
     ],
     "dependencies": {
         "jquery.inputmask": ">=3.0.0",
