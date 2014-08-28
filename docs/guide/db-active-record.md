@@ -165,11 +165,18 @@ $customers = Customer::find()->indexBy('id')->all();
 // to retrieve customers using a raw SQL statement:
 $sql = 'SELECT * FROM customer';
 $customers = Customer::findBySql($sql)->all();
+
+// if you do not want to select all columns from your table (which is default behavior),
+// you should use select() method to specify which columns you want to be selected:
+$customers = Customer::find()
+    ->select('id, username')
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->orderBy('id')
+    ->all();
 ```
 
 > Tip: In the code above `Customer::STATUS_ACTIVE` is a constant defined in `Customer`. It is a good practice to
   use meaningful constant names rather than hardcoded strings or numbers in your code.
-
 
 Two shortcut methods are provided to return Active Record instances matching a primary key value or a set of
 column values: `findOne()` and `findAll()`. The former returns the first matching instance while the latter
