@@ -6,8 +6,7 @@ mongod --version
 
 echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
-# version 2.6 has this enabled by default
-#sudo sh -c 'echo "setParameter = textSearchEnabled=true" >> /etc/mongodb.conf'
-cat /etc/mongodb.conf
+# enable text search
+mongo --eval 'db.adminCommand( { setParameter: true, textSearchEnabled : true})'
 
-#sudo service mongodb restart
+cat /etc/mongodb.conf
