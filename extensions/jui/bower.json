@@ -11,8 +11,7 @@
     ],
     "license": "BSD-3-Clause",
     "ignore": [
-        "**/.*",
-        "**/*"
+        "/*"
     ],
     "dependencies": {
         "jquery.ui": ">=1.10.0"

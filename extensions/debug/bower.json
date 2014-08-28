@@ -16,9 +16,8 @@
         "assets/toolbar.js"
     ],
     "ignore": [
-        "**/.*",
-        "**/*",
-        "!assets/"
+        "/*",
+        "!/assets"
     ],
     "dependencies": {
         "yii2": "master",
