@@ -7,6 +7,9 @@ php:
   - hhvm
   - hhvm-nightly
 
+env:
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.2.0.0001
+
 # run build against hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
@@ -20,6 +23,15 @@ services:
   - memcached
   - elasticsearch
   - mongodb
+
+# faster builds on new travis setup not using sudo
+sudo: false
+
+# cache vendor dirs
+cache:
+  directories:
+    - cubrid
+    - vendor
 
 # try running against postgres 9.3
 addons:
@@ -35,9 +47,7 @@ install:
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
 # codeception
-  - composer global require "codeception/codeception=2.0.*"
-  - composer global require "codeception/specify=*"
-  - composer global require "codeception/verify=*"
+  - composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
 
