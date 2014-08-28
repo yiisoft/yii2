@@ -60,8 +60,8 @@ echo ""
 
 # cubrid pdo
 install_pdo_cubrid() {
-    if (test "! -f PDO_CUBRID-$CUBRID_PDO_VERSION.tgz"); then
-        wget "http://pecl.php.net/get/PDO_CUBRID-$CUBRID_PDO_VERSION.tgz"
+    if (test "! (-f PDO_CUBRID-$CUBRID_PDO_VERSION.tgz)"); then
+        wget "http://pecl.php.net/get/PDO_CUBRID-$CUBRID_PDO_VERSION.tgz" -O PDO_CUBRID-$CUBRID_PDO_VERSION.tgz
     fi
     tar -zxf "PDO_CUBRID-$CUBRID_PDO_VERSION.tgz"
     sh -c "cd PDO_CUBRID-$CUBRID_PDO_VERSION && phpize && ./configure --prefix=$CWD/cubrid/PDO_CUBRID-$CUBRID_PDO_VERSION && make"
