@@ -21,7 +21,7 @@
         "!assets/"
     ],
     "dependencies": {
-        "yii2": ">=2.0.0 || master",
+        "yii2": "master",
         "bootstrap": ">=3.0.0"
     }
 }
