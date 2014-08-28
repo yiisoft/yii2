@@ -21,7 +21,7 @@
         "!assets/"
     ],
     "dependencies": {
-        "yii2": ">=2.0.0",
+        "yii2": ">=2.0.0 | master",
         "bootstrap": ">=3.0.0",
         "typeahead.js": ">=0.10.0"
     }
