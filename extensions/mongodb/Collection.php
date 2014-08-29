@@ -1040,7 +1040,7 @@ class Collection extends Object
         }
         list($column, $value) = $operands;
         if (!($value instanceof \MongoRegex)) {
-            $value = new \MongoRegex('/' . preg_quote($value) . '/');
+            $value = new \MongoRegex('/' . preg_quote($value) . '/i');
         }
 
         return [$column => $value];

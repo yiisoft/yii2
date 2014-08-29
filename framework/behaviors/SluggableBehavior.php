@@ -85,14 +85,6 @@ class SluggableBehavior extends AttributeBehavior
     /**
      * @var array configuration for slug uniqueness validator. Parameter 'class' may be omitted - by default
      * [[UniqueValidator]] will be used.
-     * For example:
-     *
-     * ```php
-     * [
-     *     'filter' => ['type' => 1, 'status' => 2]
-     * ]
-     * ```
-     *
      * @see UniqueValidator
      */
     public $uniqueValidator = [];
@@ -101,7 +93,7 @@ class SluggableBehavior extends AttributeBehavior
      * slug is not unique. This should be a PHP callable with following signature:
      *
      * ```php
-     * function ($baseSlug, $iteration)
+     * function ($baseSlug, $iteration, $model)
      * {
      *     // return uniqueSlug
      * }
@@ -207,7 +199,7 @@ class SluggableBehavior extends AttributeBehavior
     private function generateUniqueSlug($baseSlug, $iteration)
     {
         if (is_callable($this->uniqueSlugGenerator)) {
-            return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration);
+            return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration, $this->owner);
         } else {
             return $baseSlug . '-' . ($iteration + 1);
         }

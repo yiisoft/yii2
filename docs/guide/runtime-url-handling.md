@@ -317,6 +317,13 @@ class CarUrlRule extends UrlRule
 {
     public $connectionID = 'db';
 
+    public function init()
+    {
+        if ($this->name === null) {
+            $this->name = __CLASS__;
+        }
+    }
+
     public function createUrl($manager, $route, $params)
     {
         if ($route === 'car/index') {

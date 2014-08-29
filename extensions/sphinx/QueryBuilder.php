@@ -63,17 +63,6 @@ class QueryBuilder extends Object
     {
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
-        if ($query->match !== null) {
-            if ($query->match instanceof Expression) {
-                $query->andWhere('MATCH(' . $query->match->expression . ')');
-                $params = array_merge($params, $query->match->params);
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $params[$phName] = $this->db->escapeMatchValue($query->match);
-                $query->andWhere('MATCH(' . $phName . ')');
-            }
-        }
-
         $from = $query->from;
         if ($from === null && $query instanceof ActiveQuery) {
             /* @var $modelClass ActiveRecord */
@@ -84,7 +73,7 @@ class QueryBuilder extends Object
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
             $this->buildFrom($from, $params),
-            $this->buildWhere($query->from, $query->where, $params),
+            $this->buildWhere($query->from, $query->where, $params, $query->match),
             $this->buildGroupBy($query->groupBy),
             $this->buildWithin($query->within),
             $this->buildOrderBy($query->orderBy),
@@ -487,10 +476,28 @@ class QueryBuilder extends Object
      * @param string[] $indexes list of index names, which affected by query
      * @param string|array $condition
      * @param array $params the binding parameters to be populated
+     * @param string|Expression|null $match
      * @return string the WHERE clause built from [[query]].
      */
-    public function buildWhere($indexes, $condition, &$params)
+    public function buildWhere($indexes, $condition, &$params, $match = null)
     {
+        if ($match !== null) {
+            if ($match instanceof Expression) {
+                $matchWhere = 'MATCH(' . $match->expression . ')';
+                $params = array_merge($params, $match->params);
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = $this->db->escapeMatchValue($match);
+                $matchWhere = 'MATCH(' . $phName . ')';
+            }
+
+            if ($condition === null) {
+                $condition = $matchWhere;
+            } else {
+                $condition = ['and', $matchWhere, $condition];
+            }
+        }
+
         if (empty($condition)) {
             return '';
         }

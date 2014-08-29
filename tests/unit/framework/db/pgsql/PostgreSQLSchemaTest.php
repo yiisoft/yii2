@@ -26,6 +26,10 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = 32;
         $columns['int_col2']['scale'] = 0;
+        $columns['smallint_col']['dbType'] = 'int2';
+        $columns['smallint_col']['size'] = null;
+        $columns['smallint_col']['precision'] = 16;
+        $columns['smallint_col']['scale'] = 0;
         $columns['char_col']['dbType'] = 'bpchar';
         $columns['char_col']['precision'] = null;
         $columns['char_col2']['dbType'] = 'varchar';
@@ -43,14 +47,19 @@ class PostgreSQLSchemaTest extends SchemaTest
         $columns['blob_col']['type'] = 'binary';
         $columns['numeric_col']['dbType'] = 'numeric';
         $columns['numeric_col']['size'] = null;
-        $columns['bool_col']['dbType'] = 'int2';
+        $columns['bool_col']['type'] = 'boolean';
+        $columns['bool_col']['phpType'] = 'boolean';
+        $columns['bool_col']['dbType'] = 'bool';
         $columns['bool_col']['size'] = null;
-        $columns['bool_col']['precision'] = 16;
-        $columns['bool_col']['scale'] = 0;
-        $columns['bool_col2']['dbType'] = 'int2';
+        $columns['bool_col']['precision'] = null;
+        $columns['bool_col']['scale'] = null;
+        $columns['bool_col2']['type'] = 'boolean';
+        $columns['bool_col2']['phpType'] = 'boolean';
+        $columns['bool_col2']['dbType'] = 'bool';
         $columns['bool_col2']['size'] = null;
-        $columns['bool_col2']['precision'] = 16;
-        $columns['bool_col2']['scale'] = 0;
+        $columns['bool_col2']['precision'] = null;
+        $columns['bool_col2']['scale'] = null;
+        $columns['bool_col2']['defaultValue'] = true;
         $columns['ts_default']['defaultValue'] = new Expression('now()');
         $columns['bit_col']['dbType'] = 'bit';
         $columns['bit_col']['size'] = 8;
@@ -67,8 +76,8 @@ class PostgreSQLSchemaTest extends SchemaTest
             [0, \PDO::PARAM_INT],
             [1, \PDO::PARAM_INT],
             [1337, \PDO::PARAM_INT],
-            [true, \PDO::PARAM_INT],
-            [false, \PDO::PARAM_INT],
+            [true, \PDO::PARAM_BOOL],
+            [false, \PDO::PARAM_BOOL],
             [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
         ];
 

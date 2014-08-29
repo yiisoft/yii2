@@ -1,0 +1,34 @@
+{
+    "name": "yii2",
+    "version": "2.0.0",
+    "homepage": "http://www.yiiframework.com/",
+    "authors": [
+        "Qiang Xue <qiang.xue@gmail.com>",
+        "Alexander Makarov <sam@rmcreative.ru>",
+        "Carsten Brandt <mail@cebe.cc>",
+        "Paul Klimov <klimov.paul@gmail.com>"
+    ],
+    "description": "Yii PHP Framework Version 2",
+    "keywords": [
+        "yii2",
+        "framework"
+    ],
+    "license": "BSD-3-Clause",
+    "main": [
+        "assets/yii.js",
+        "assets/yii.validation.js",
+        "assets/yii.activeForm.js",
+        "assets/yii.captcha.js",
+        "assets/yii.gridView.js"
+    ],
+    "ignore": [
+        "/*",
+        "!/assets",
+        "!/LICENSE.md"
+    ],
+    "dependencies": {
+        "jquery.inputmask": ">=3.0.0",
+        "punycode": ">=1.3.0",
+        "yii2-pjax": ">=2.0.0"
+    }
+}

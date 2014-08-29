@@ -258,7 +258,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
         $path = Yii::getAlias($this->templatePath);
 
         if (!is_dir($path)) {
-            throw new Exception("The template path \"{$this->templatePath}\" not exist");
+            throw new Exception("The template path \"{$this->templatePath}\" does not exist");
         }
     }
 

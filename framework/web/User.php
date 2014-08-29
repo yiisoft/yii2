@@ -408,13 +408,15 @@ class User extends Component
      *
      * Note that when [[loginUrl]] is set, calling this method will NOT terminate the application execution.
      *
+     * @param boolean $checkAjax whether to check if the request is an AJAX request. When this is true and the request
+     * is an AJAX request, the current URL (for AJAX request) will NOT be set as the return URL.
      * @return Response the redirection response if [[loginUrl]] is set
      * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set
      */
-    public function loginRequired()
+    public function loginRequired($checkAjax = true)
     {
         $request = Yii::$app->getRequest();
-        if ($this->enableSession && !$request->getIsAjax()) {
+        if ($this->enableSession && (!$checkAjax || !$request->getIsAjax())) {
             $this->setReturnUrl($request->getUrl());
         }
         if ($this->loginUrl !== null) {

@@ -100,7 +100,7 @@ class Country extends ActiveRecord
 The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it! With just the above code, 
 Yii will guess the associated table name from the class name. 
 
-> Inof: If no direct match can be made from the class name to the table name, you can
+> Info: If no direct match can be made from the class name to the table name, you can
 override the [[yii\db\ActiveRecord::tableName()]] method to explicitly specify the associated table name.
 
 Using the `Country` class, you can easily manipulate data in the `country` table, as shown in these snippets:
@@ -185,7 +185,7 @@ information to it.
 Creating a View <a name="creating-view"></a>
 ---------------
 
-Under the `views` directory, first create a sub-directory named `country`. This folder will used to hold all the
+Under the `views` directory, first create a sub-directory named `country`. This folder will be used to hold all the
 views rendered by the `country` controller. Within the `views/country` directory, create a file named `index.php`
 containing the following:
 

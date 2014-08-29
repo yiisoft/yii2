@@ -8,7 +8,7 @@ like the following:
 
 ```php
 <?php
-use yii\bootstrap\DatePicker;
+use yii\jui\DatePicker;
 ?>
 <?= DatePicker::widget(['name' => 'date']) ?>
 ```
@@ -28,7 +28,7 @@ widget which is configured to use Russian language and keep the input in the `fr
 
 ```php
 <?php
-use yii\bootstrap\DatePicker;
+use yii\jui\DatePicker;
 ?>
 <?= DatePicker::widget([
     'model' => $model,

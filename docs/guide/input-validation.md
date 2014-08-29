@@ -620,8 +620,17 @@ You can use AJAX-based validation in this case. It will trigger an AJAX request 
 input while keeping the same user experience as the regular client-side validation.
 
 To enable AJAX validation for the whole form, you have to set the
-[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true`. You may also turn it on or off
-for individual input fields by configuring their [[yii\widgets\ActiveField::enableAjaxValidation]] property.
+[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be unique form identifier:
+
+```php
+<?php $form = yii\widgets\ActiveForm::begin([
+    'id' => 'contact-form',
+    'enableAjaxValidation' => true,
+]); ?>
+```
+
+You may also turn AJAX validation on or off for individual input fields by configuring their
+[[yii\widgets\ActiveField::enableAjaxValidation]] property.
 
 You also need to prepare the server so that it can handle the AJAX validation requests.
 This can be achieved by a code snippet like the following in controller actions:

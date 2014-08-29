@@ -699,9 +699,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Stores a flash message.
+     * Sets a flash message.
      * A flash message will be automatically deleted after it is accessed in a request and the deletion will happen
      * in the next request.
+     * If there is already an existing flash message with the same key, it will be overwritten by the new one.
      * @param string $key the key identifying the flash message. Note that flash messages
      * and normal session variables share the same name space. If you have a normal
      * session variable using the same name, its value will be overwritten by this method.
@@ -719,6 +720,34 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $counters[$key] = $removeAfterAccess ? -1 : 0;
         $_SESSION[$key] = $value;
         $_SESSION[$this->flashParam] = $counters;
+    }
+
+    /**
+     * Adds a flash message.
+     * If there are existing flash messages with the same key, the new one will be appended to the existing message array.
+     * @param string $key the key identifying the flash message.
+     * @param mixed $value flash message
+     * @param boolean $removeAfterAccess whether the flash message should be automatically removed only if
+     * it is accessed. If false, the flash message will be automatically removed after the next request,
+     * regardless if it is accessed or not. If true (default value), the flash message will remain until after
+     * it is accessed.
+     * @see getFlash()
+     * @see removeFlash()
+     */
+    public function addFlash($key, $value = true, $removeAfterAccess = true)
+    {
+        $counters = $this->get($this->flashParam, []);
+        $counters[$key] = $removeAfterAccess ? -1 : 0;
+        $_SESSION[$this->flashParam] = $counters;
+        if (empty($_SESSION[$key])) {
+            $_SESSION[$key] = [$value];
+        } else {
+            if (is_array($_SESSION[$key])) {
+                $_SESSION[$key][] = $value;
+            } else {
+                $_SESSION[$key] = [$_SESSION[$key], $value];
+            }
+        }
     }
 
     /**
@@ -760,9 +789,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Returns a value indicating whether there is a flash message associated with the specified key.
-     * @param string $key key identifying the flash message
-     * @return boolean whether the specified flash message exists
+     * Returns a value indicating whether there are flash messages associated with the specified key.
+     * @param string $key key identifying the flash message type
+     * @return boolean whether any flash messages exist under specified key
      */
     public function hasFlash($key)
     {

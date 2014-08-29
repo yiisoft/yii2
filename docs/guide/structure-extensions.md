@@ -348,7 +348,6 @@ help other people learn about and use your extension:
   as `readme.md`.
 * A changelog file in the package root directory: it lists what changes are made in each release. The file
   may be written in Markdown format and named as `changelog.md`.
-  also write it in Markdown format and name the file as `changelog.md`.
 * An upgrade file in the package root directory: it gives the instructions on how to upgrade from older releases
   of the extension. The file may be written in Markdown format and named as `upgrade.md`.
 * Tutorials, demos, screenshots, etc.: these are needed if your extension provides many features that cannot be

@@ -94,6 +94,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
@@ -145,12 +146,15 @@ abstract class ActiveRecord extends BaseActiveRecord
      * This method must be overridden by child classes to define available attributes.
      * Note: primary key attribute "_id" should be always present in returned array.
      * For example:
-     * ~~~
+     *
+     * ```php
      * public function attributes()
      * {
      *     return ['_id', 'name', 'address', 'status'];
      * }
-     * ~~~
+     * ```
+     *
+     * @throws \yii\base\InvalidConfigException if not implemented
      * @return array list of attribute names.
      */
     public function attributes()

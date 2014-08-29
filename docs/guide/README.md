@@ -74,10 +74,10 @@ Key Concepts
 Working with Databases
 ----------------------
 
-* [Data Access Objects](db-dao.md) - Connecting to a database, basic queries, transactions and schema manipulation
-* [Query Builder](db-query-builder.md) - Querying the database using a simple abstraction layer
-* [Active Record](db-active-record.md) - The active record ORM, retrieving and manipulating records and defining relations
-* [Migrations](db-migrations.md) - Version control your databases in a team development environment
+* [Data Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
+* [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
+* [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
+* [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
@@ -151,6 +151,7 @@ Testing
 -------
 
 * [Overview](test-overview.md)
+* [Testing environment setup](test-endvironment-setup.md)
 * [Unit Tests](test-unit.md)
 * [Functional Tests](test-functional.md)
 * [Acceptance Tests](test-acceptance.md)
