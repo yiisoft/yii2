@@ -53,8 +53,6 @@
 		"ext-mbstring": "*",
 		"lib-pcre": "*",
 		"yiisoft/yii2-composer": "*",
-		"yiisoft/jquery": "~2.0 | ~1.10",
-		"yiisoft/jquery-pjax": "*",
 		"ezyang/htmlpurifier": "4.6.*",
 		"cebe/markdown": "0.9.*"
 	},

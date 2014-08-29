@@ -19,12 +19,11 @@ class GiiAsset extends AssetBundle
 {
     public $css = [
         'yii2-gii/assets/main.css',
-//        'typeahead.js-bootstrap.css',
     ];
 
     public $js = [
         'yii2-gii/assets/gii.js',
-        'typeahead.js/dist/typeahead.jquery.js',
+        'typeahead.js/dist/typeahead.bundle.js',
     ];
 
     public $depends = [

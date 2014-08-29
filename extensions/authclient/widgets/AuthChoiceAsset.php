@@ -17,12 +17,11 @@ use yii\web\AssetBundle;
  */
 class AuthChoiceAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/authclient/assets';
     public $js = [
-        'authchoice.js',
+        'yii2-authclient/assets/authchoice.js',
     ];
     public $css = [
-        'authchoice.css',
+        'yii2-authclient/assets/authchoice.css',
     ];
     public $depends = [
         'yii\web\YiiAsset',
