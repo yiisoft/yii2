@@ -442,11 +442,7 @@ class BaseFileHelper
         if (is_dir($path)) {
             return true;
         }
-        $parentDir = dirname($path);
-        if ($recursive && !is_dir($parentDir)) {
-            static::createDirectory($parentDir, $mode, true);
-        }
-        $result = mkdir($path, $mode);
+        $result = mkdir($path, $mode, $recursive);
         chmod($path, $mode);
 
         return $result;
