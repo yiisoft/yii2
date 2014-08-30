@@ -261,7 +261,7 @@ class View extends \yii\base\View
             foreach ($bundle->depends as $dep) {
                 $this->registerAssetFiles($dep);
             }
-            $this->getAssetManager()->registerAssetFiles($this, $bundle);
+            $bundle->registerAssetFiles($this);
         }
         unset($this->assetBundles[$name]);
     }
@@ -380,7 +380,7 @@ class View extends \yii\base\View
         } else {
             $this->getAssetManager()->bundles[$key] = new AssetBundle([
                 'baseUrl' => '',
-                'css' => [$url],
+                'css' => [ltrim($url, '/')],
                 'cssOptions' => $options,
                 'depends' => (array) $depends,
             ]);
@@ -445,7 +445,7 @@ class View extends \yii\base\View
         } else {
             $this->getAssetManager()->bundles[$key] = new AssetBundle([
                 'baseUrl' => '',
-                'js' => [$url],
+                'js' => [ltrim($url, '/')],
                 'jsOptions' => $options,
                 'depends' => (array) $depends,
             ]);

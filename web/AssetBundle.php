@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Object;
+use yii\helpers\Url;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
@@ -113,6 +114,63 @@ class AssetBundle extends Object
         }
         if ($this->baseUrl !== null) {
             $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
+        }
+    }
+
+    /**
+     * @param View $view
+     */
+    public function registerAssetFiles($view)
+    {
+        $manager = $view->getAssetManager();
+        foreach ($this->js as $js) {
+            $view->registerJsFile($this->getAssetUrl($js, $manager), $this->jsOptions);
+        }
+        foreach ($this->css as $css) {
+            $view->registerCssFile($this->getAssetUrl($css, $manager), $this->cssOptions);
+        }
+    }
+
+    /**
+     * Returns the actual URL for the specified asset.
+     * The actual URL is obtained by prepending either [[baseUrl]] or [[AssetManager::baseUrl]] to the given asset path.
+     * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
+     * @param AssetManager $manager the asset manager
+     * @return string the actual URL for the specified asset.
+     */
+    protected function getAssetUrl($asset, $manager)
+    {
+        if (($actualAsset = $manager->resolveAsset($asset)) !== false) {
+            return Url::isRelative($actualAsset) ? $manager->baseUrl . '/' . $actualAsset : $actualAsset;
+        }
+
+        if (strncmp($asset, '@/', 2) === 0) {
+            return $manager->baseUrl . substr($asset, 1);
+        } elseif (Url::isRelative($asset)) {
+            return $this->baseUrl . '/' . $asset;
+        } else {
+            return $asset;
+        }
+    }
+
+    /**
+     * Returns the actual file path for the specified asset.
+     * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
+     * @param AssetManager $manager the asset manager
+     * @return string|boolean the actual file path, or false if the asset is specified as an absolute URL
+     */
+    public function getAssetPath($asset, $manager)
+    {
+        if (($actualAsset = $manager->resolveAsset($asset)) !== false) {
+            return Url::isRelative($actualAsset) ? $manager->basePath . '/' . $actualAsset : false;
+        }
+
+        if (strncmp($asset, '@/', 2) === 0) {
+            return $manager->basePath . substr($asset, 1);
+        } elseif (Url::isRelative($asset)) {
+            return $this->basePath . '/' . $asset;
+        } else {
+            return false;
         }
     }
 }
