@@ -13,13 +13,15 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class SelectableAsset extends AssetBundle
+class JuiAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
     public $js = [
-        'jquery.ui.selectable.js',
+        'jquery-ui/jquery-ui.js',
+    ];
+    public $css = [
+        'jquery-ui/themes/smoothness/jquery-ui.css',
     ];
     public $depends = [
-        'yii\jui\CoreAsset',
+        'yii\web\JqueryAsset',
     ];
 }

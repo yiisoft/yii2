@@ -93,6 +93,6 @@ class SliderInput extends InputWidget
             }';
         }
 
-        $this->registerWidget('slider', SliderAsset::className(), $this->containerOptions['id']);
+        $this->registerWidget('slider', $this->containerOptions['id']);
     }
 }

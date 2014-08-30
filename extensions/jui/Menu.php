@@ -54,10 +54,7 @@ class Menu extends \yii\widgets\Menu
         parent::run();
 
         $view = $this->getView();
-        MenuAsset::register($view);
-        /* @var $themeAsset \yii\web\AssetBundle */
-        $themeAsset = Widget::$theme;
-        $themeAsset::register($view);
+        JuiAsset::register($view);
 
         $id = $this->options['id'];
         if ($this->clientOptions !== false) {

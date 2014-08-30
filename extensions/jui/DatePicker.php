@@ -82,17 +82,17 @@ class DatePicker extends InputWidget
         $language = $this->language ? $this->language : Yii::$app->language;
         if ($language != 'en-US') {
             $view = $this->getView();
-            DatePickerRegionalAsset::register($view);
+            DatePickerLanguageAsset::register($view);
 
             $options = Json::encode($this->clientOptions);
             $view->registerJs("$('#{$containerID}').datepicker($.extend({}, $.datepicker.regional['{$language}'], $options));");
 
             $options = $this->clientOptions;
             $this->clientOptions = false; // the datepicker js widget is already registered
-            $this->registerWidget('datepicker', DatePickerAsset::className(), $containerID);
+            $this->registerWidget('datepicker', $containerID);
             $this->clientOptions = $options;
         } else {
-            $this->registerWidget('datepicker', DatePickerAsset::className(), $containerID);
+            $this->registerWidget('datepicker', $containerID);
         }
     }
 

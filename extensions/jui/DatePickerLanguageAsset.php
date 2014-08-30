@@ -13,14 +13,12 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class TabsAsset extends AssetBundle
+class DatePickerLanguageAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
     public $js = [
-        'jquery.ui.tabs.js',
+        'jquery.ui.datepicker-i18n.js',
     ];
     public $depends = [
-        'yii\jui\CoreAsset',
-        'yii\jui\EffectAsset',
+        'yii\jui\JuiAsset',
     ];
 }
