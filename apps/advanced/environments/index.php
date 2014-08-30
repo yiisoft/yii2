@@ -18,6 +18,9 @@
  *         'setCookieValidationKey' => [
  *             // list of config files that need to be inserted with automatically generated cookie validation keys
  *         ],
+ *         'createSymlink' => [
+ *             // list of symlinks to be created. Keys are symlinks, and values are the targets.
+ *         ],
  *     ],
  * ];
  * ```
@@ -38,6 +41,10 @@ return [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
         ],
+        'createSymlink' => [
+            'frontend/web/assets' => 'assets',
+            'backend/web/assets' => 'assets',
+        ],
     ],
     'Production' => [
         'path' => 'prod',
@@ -53,6 +60,10 @@ return [
         'setCookieValidationKey' => [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
+        ],
+        'createSymlink' => [
+            'frontend/web/assets' => 'assets',
+            'backend/web/assets' => 'assets',
         ],
     ],
 ];

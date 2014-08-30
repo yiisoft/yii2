@@ -193,3 +193,13 @@ function setCookieValidationKey($root, $paths)
         file_put_contents($file, $content);
     }
 }
+
+function createSymlink($links)
+{
+    foreach ($links as $link => $target) {
+        echo "    symlink $target as $link\n";
+        if (!is_link($link)) {
+            symlink($target, $link);
+        }
+    }
+}

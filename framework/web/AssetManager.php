@@ -10,7 +10,6 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\helpers\Url;
 
 /**
  * AssetManager manages asset bundle configuration and loading.
@@ -84,6 +83,8 @@ class AssetManager extends Component
      */
     public $assetMap = [];
 
+    private $_dummyBundles = [];
+
 
     /**
      * Initializes the component.
@@ -114,7 +115,7 @@ class AssetManager extends Component
     public function getBundle($name)
     {
         if ($this->bundles === false) {
-            return null;
+            return $this->loadDummyBundle($name);
         } elseif (!isset($this->bundles[$name])) {
             return $this->bundles[$name] = $this->loadBundle($name);
         } elseif ($this->bundles[$name] instanceof AssetBundle) {
@@ -122,7 +123,7 @@ class AssetManager extends Component
         } elseif (is_array($this->bundles[$name])) {
             return $this->bundles[$name] = $this->loadBundle($name, $this->bundles[$name]);
         } elseif ($this->bundles[$name] === false) {
-            return null;
+            return $this->loadDummyBundle($name);
         } else {
             throw new InvalidConfigException("Invalid asset bundle configuration: $name");
         }
@@ -143,49 +144,42 @@ class AssetManager extends Component
         return $bundle;
     }
 
-    /**
-     * @param View $view
-     * @param AssetBundle $bundle
-     */
-    public function registerAssetFiles($view, $bundle)
+    protected function loadDummyBundle($name)
     {
-        foreach ($bundle->js as $js) {
-            $view->registerJsFile($this->getAssetUrl($bundle, $js), $bundle->jsOptions);
+        if (!isset($this->_dummyBundles[$name])) {
+            $this->_dummyBundles[$name] = $this->loadBundle($name, [
+                'js' => [],
+                'css' => [],
+                'depends' => [],
+            ]);
         }
-        foreach ($bundle->css as $css) {
-            $view->registerCssFile($this->getAssetUrl($bundle, $css), $bundle->cssOptions);
-        }
+        return $this->_dummyBundles[$name];
     }
 
-    protected function getAssetUrl($bundle, $file)
+    public function resolveAsset($asset)
     {
-        if (($mappedFile = $this->mapAsset($file)) !== false) {
-            return Url::isRelative($mappedFile) ? $this->baseUrl . '/' . $mappedFile : $mappedFile;
+        if (isset($this->assetMap[$asset])) {
+            return $this->assetMap[$asset];
         }
 
-        if (strncmp($file, '@/', 2) === 0) {
-            $file = $this->baseUrl . substr($file, 1);
-        } elseif (Url::isRelative($file)) {
-            $file = $bundle->baseUrl . '/' . $file;
-        }
-
-        return $file;
-    }
-
-    protected function mapAsset($file)
-    {
-        if (isset($this->assetMap[$file])) {
-            return $this->assetMap[$file];
-        }
-
-        $n = strlen($file);
+        $n = strlen($asset);
         foreach ($this->assetMap as $from => $to) {
             $n2 = strlen($from);
-            if ($n2 <= $n && substr_compare($file, $from, $n - $n2, $n2) === 0) {
+            if ($n2 <= $n && substr_compare($asset, $from, $n - $n2, $n2) === 0) {
                 return $to;
             }
         }
 
         return false;
+    }
+
+    public function getAssetUrl($asset)
+    {
+        return $this->baseUrl . '/' . ltrim($asset, '/');
+    }
+
+    public function getAssetPath($asset)
+    {
+        return $this->basePath . '/' . ltrim($asset, '/');
     }
 }

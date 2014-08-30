@@ -15,9 +15,15 @@ use yii\web\AssetBundle;
  */
 class DatePickerLanguageAsset extends AssetBundle
 {
-    public $js = [
-        'jquery.ui.datepicker-i18n.js',
-    ];
+    /**
+     * @var boolean whether to automatically generate the needed language js files.
+     * If this is true, the language js files will be determined based on the actual usage of [[DatePicker]]
+     * and its language settings. If this is false, you should explicitly specify the language js files via [[js]].
+     */
+    public $autoGenerate = true;
+    /**
+     * @inheritdoc
+     */
     public $depends = [
         'yii\jui\JuiAsset',
     ];
