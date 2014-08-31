@@ -197,5 +197,8 @@ new ones save the following code as `convert.php` that should be placed in the s
 * The format of the Faker fixture template is changed. For an example, please refer to the file
   `apps/advanced/common/tests/templates/fixtures/user.php`.
 
-* Signature of the `yii\web\Response::xSendFile()` method has changed. If you're using or overriding this method you
-  must change your code to fit it.
+* The signature of all file downloading methods in `yii\web\Response` is changed, as summarized below:
+  - `sendFile($filePath, $attachmentName = null, $options = [])`
+  - `sendContentAsFile($content, $attachmentName, $options = [])`
+  - `sendStreamAsFile($handle, $attachmentName, $options = [])`
+  - `xSendFile($filePath, $attachmentName = null, $options = [])`

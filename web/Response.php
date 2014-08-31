@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
@@ -423,19 +424,24 @@ class Response extends \yii\base\Response
      *
      * @param string $filePath the path of the file to be sent.
      * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
-     * @param string $mimeType the MIME type of the content. If null, it will be guessed based on `$filePath`
+     * @param array $options additional options for sending the file. The following options are supported:
+     *
+     *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
+     *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
+     *     meaning a download dialog will pop up.
+     *
      * @return static the response object itself
      */
-    public function sendFile($filePath, $attachmentName = null, $mimeType = null)
+    public function sendFile($filePath, $attachmentName = null, $options = [])
     {
-        if ($mimeType === null && ($mimeType = FileHelper::getMimeTypeByExtension($filePath)) === null) {
-            $mimeType = 'application/octet-stream';
+        if (!isset($options['mimeType'])) {
+            $options['mimeType'] = FileHelper::getMimeTypeByExtension($filePath);
         }
         if ($attachmentName === null) {
             $attachmentName = basename($filePath);
         }
         $handle = fopen($filePath, 'rb');
-        $this->sendStreamAsFile($handle, $attachmentName, $mimeType);
+        $this->sendStreamAsFile($handle, $attachmentName, $options);
 
         return $this;
     }
@@ -448,11 +454,16 @@ class Response extends \yii\base\Response
      *
      * @param string $content the content to be sent. The existing [[content]] will be discarded.
      * @param string $attachmentName the file name shown to the user.
-     * @param string $mimeType the MIME type of the content.
+     * @param array $options additional options for sending the file. The following options are supported:
+     *
+     *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
+     *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
+     *     meaning a download dialog will pop up.
+     *
      * @return static the response object itself
      * @throws HttpException if the requested range is not satisfiable
      */
-    public function sendContentAsFile($content, $attachmentName, $mimeType = 'application/octet-stream')
+    public function sendContentAsFile($content, $attachmentName, $options = [])
     {
         $headers = $this->getHeaders();
 
@@ -464,7 +475,8 @@ class Response extends \yii\base\Response
             throw new HttpException(416, 'Requested range not satisfiable');
         }
 
-        $this->setDownloadHeaders($attachmentName, $mimeType, $contentLength);
+        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $contentLength);
 
         list($begin, $end) = $range;
         if ($begin != 0 || $end != $contentLength - 1) {
@@ -489,11 +501,16 @@ class Response extends \yii\base\Response
      *
      * @param resource $handle the handle of the stream to be sent.
      * @param string $attachmentName the file name shown to the user.
-     * @param string $mimeType the MIME type of the stream content.
+     * @param array $options additional options for sending the file. The following options are supported:
+     *
+     *  - `mimeType`: the MIME type of the content. Defaults to 'application/octet-stream'.
+     *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
+     *     meaning a download dialog will pop up.
+     *
      * @return static the response object itself
      * @throws HttpException if the requested range cannot be satisfied.
      */
-    public function sendStreamAsFile($handle, $attachmentName, $mimeType = 'application/octet-stream')
+    public function sendStreamAsFile($handle, $attachmentName, $options = [])
     {
         $headers = $this->getHeaders();
         fseek($handle, 0, SEEK_END);
@@ -513,7 +530,8 @@ class Response extends \yii\base\Response
             $this->setStatusCode(200);
         }
 
-        $this->setDownloadHeaders($attachmentName, $mimeType, $end - $begin + 1);
+        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;
         $this->stream = [$handle, $begin, $end];
@@ -525,19 +543,22 @@ class Response extends \yii\base\Response
      * Sets a default set of HTTP headers for file downloading purpose.
      * @param string $attachmentName the attachment file name
      * @param string $mimeType the MIME type for the response. If null, `Content-Type` header will NOT be set.
+     * @param boolean $inline whether the browser should open the file within the browser window. Defaults to false,
+     * meaning a download dialog will pop up.
      * @param integer $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
      * @return static the response object itself
      */
-    public function setDownloadHeaders($attachmentName, $mimeType = null, $contentLength = null)
+    public function setDownloadHeaders($attachmentName, $mimeType = null, $inline = false, $contentLength = null)
     {
         $headers = $this->getHeaders();
 
+        $disposition = $inline ? 'attachment' : 'inline';
         $headers->setDefault('Pragma', 'public')
             ->setDefault('Accept-Ranges', 'bytes')
             ->setDefault('Expires', '0')
             ->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
             ->setDefault('Content-Transfer-Encoding', 'binary')
-            ->setDefault('Content-Disposition', "attachment; filename=\"$attachmentName\"");
+            ->setDefault('Content-Disposition', "$disposition; filename=\"$attachmentName\"");
 
         if ($mimeType !== null) {
             $headers->setDefault('Content-Type', $mimeType);
@@ -631,31 +652,32 @@ class Response extends \yii\base\Response
      *
      * @param string $filePath file name with full path
      * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
-     * @param string $mimeType the MIME type of the file. If null, it will be determined based on `$filePath`.
-     * @param array $options additional options. Valid options are:
-     * - forceDownload: boolean, whether the file will be downloaded or shown inline. Defaults to true.
-     * - xHeader: string, the name of the x-sendfile header. Defaults to "X-Sendfile".
+     * @param array $options additional options for sending the file. The following options are supported:
+     *
+     *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
+     *  - `inline`: boolean, whether the browser should open the file within the browser window. Defaults to false,
+     *     meaning a download dialog will pop up.
+     *  - xHeader: string, the name of the x-sendfile header. Defaults to "X-Sendfile".
+     *
      * @return static the response object itself
      */
-    public function xSendFile($filePath, $attachmentName = null, $mimeType = null, $options = [])
+    public function xSendFile($filePath, $attachmentName = null, $options = [])
     {
-        if ($mimeType === null && ($mimeType = FileHelper::getMimeTypeByExtension($filePath)) === null) {
-            $mimeType = 'application/octet-stream';
-        }
         if ($attachmentName === null) {
             $attachmentName = basename($filePath);
+        }
+        if (isset($options['mimeType'])) {
+            $mimeType = $options['mimeType'];
+        } elseif (($mimeType = FileHelper::getMimeTypeByExtension($filePath)) === null) {
+            $mimeType = 'application/octet-stream';
         }
         if (isset($options['xHeader'])) {
             $xHeader = $options['xHeader'];
         } else {
             $xHeader = 'X-Sendfile';
         }
-        if (!isset($options['forceDownload']) || $options['forceDownload']) {
-            $disposition = 'attachment';
-        } else {
-            $disposition = 'inline';
-        }
 
+        $disposition = empty($options['inline']) ? 'attachment' : 'inline';
         $this->getHeaders()
             ->setDefault($xHeader, $filePath)
             ->setDefault('Content-Type', $mimeType)
