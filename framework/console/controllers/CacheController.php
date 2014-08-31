@@ -45,8 +45,6 @@ class CacheController extends Controller
         } else {
             $this->notifyNoCachesFound();
         }
-
-        return static::EXIT_CODE_NORMAL;
     }
 
     /**
@@ -118,8 +116,6 @@ class CacheController extends Controller
         }
 
         $this->notifyFlushed($cachesInfo);
-        
-        return static::EXIT_CODE_NORMAL;
     }
 
     /**
