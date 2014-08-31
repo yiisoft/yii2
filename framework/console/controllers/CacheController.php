@@ -95,8 +95,6 @@ class CacheController extends Controller
         }
 
         $this->notifyFlushed($cachesInfo);
-        
-        return static::EXIT_CODE_NORMAL;
     }
 
     /**
@@ -144,7 +142,7 @@ class CacheController extends Controller
      */
     private function notifyNoCachesFound()
     {
-        $this->stdout("No caches were found in the system.\n", Console::FG_RED);
+        $this->stdout("No cache components were found in the system.\n", Console::FG_RED);
     }
 
     /**
@@ -153,7 +151,7 @@ class CacheController extends Controller
      */
     private function notifyNotFoundCaches($cachesNames)
     {
-        $this->stdout("Following cache components were NOT found in the system:\n\n", Console::FG_RED);
+        $this->stdout("The following cache components were NOT found:\n\n", Console::FG_RED);
 
         foreach ($cachesNames as $name) {
             $this->stdout("\t * $name \n", Console::FG_GREEN);
@@ -168,7 +166,7 @@ class CacheController extends Controller
      */
     private function notifyFlushed($caches)
     {
-        $this->stdout("Following caches were found and flushed, or not flushed due any error: \n\n", Console::FG_YELLOW);
+        $this->stdout("The following cache components were processed:\n\n", Console::FG_YELLOW);
 
         foreach ($caches as $cache) {
             $this->stdout("\t* " . $cache['name'] ." (" . $cache['class'] . ")", Console::FG_GREEN);
@@ -189,7 +187,7 @@ class CacheController extends Controller
      */
     private function confirmFlush($cachesNames)
     {
-        $this->stdout("Following cache components will be flushed:\n\n", Console::FG_YELLOW);
+        $this->stdout("The following cache components will be flushed:\n\n", Console::FG_YELLOW);
 
         foreach ($cachesNames as $name) {
             $this->stdout("\t * $name \n", Console::FG_GREEN);
