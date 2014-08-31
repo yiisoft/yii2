@@ -57,6 +57,15 @@ class CacheControllerTest extends TestCase
         $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
     }
 
+    public function testNotFoundFlush()
+    {
+        Yii::$app->firstCache->set('firstKey', 'firstValue');
+
+        $this->_cacheController->actionFlush('notExistingCache');
+
+        $this->assertEquals('firstValue', Yii::$app->firstCache->get('firstKey'), 'first cache data should not be flushed');
+    }
+
     /**
      * @expectedException yii\console\Exception
      */
@@ -87,4 +96,3 @@ class CacheConsoledController extends CacheController
     }
 
 }
-
