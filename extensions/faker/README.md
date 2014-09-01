@@ -104,6 +104,16 @@ php yii fixture/generate-all --templatePath='@app/path/to/my/custom/templates'
 php yii fixture/generate-all --fixtureDataPath='@tests/acceptance/fixtures/data'
 ```
 
+You can see all available templates by running command:
+
+```
+# list all templates under default template path (i.e. '@tests/unit/templates/fixtures')
+php yii fixture/templates
+
+# list all templates under specified template path
+php yii fixture/templates --templatePath='@app/path/to/my/custom/templates'
+```
+
 You also can create your own data providers for custom tables fields, see [Faker](https://github.com/fzaninotto/Faker) library guide for more info;
 After you created custom provider, for example:
 

@@ -55,10 +55,10 @@ use yii\helpers\VarDumper;
  * After you prepared needed templates for tables you can simply generate your fixtures via command
  *
  * ~~~
- * yii fixture/generate users
+ * yii fixture/generate user
  *
  * //generate fixtures from several templates, for example:
- * yii fixture users profile
+ * yii fixture user profile team
  * ~~~
  *
  * In the code above "users" is template name, after this command run, new file named same as template
@@ -83,7 +83,7 @@ use yii\helpers\VarDumper;
  *
  * ~~~
  * //generate fixtures in russian language
- * yii fixture/generate users --count=5 --language=ru_RU
+ * yii fixture/generate user --count=5 --language=ru_RU
  *
  * //read templates from the other path
  * yii fixture/generate-all --templatePath=@app/path/to/my/custom/templates
@@ -92,6 +92,16 @@ use yii\helpers\VarDumper;
  * yii fixture/generate-all --fixtureDataPath=@tests/unit/fixtures/subfolder1/subfolder2/subfolder3
  * ~~~
  *
+ * You can see all available templates by running command:
+ *
+ * ~~~
+ * //list all templates under default template path (i.e. '@tests/unit/templates/fixtures')
+ * yii fixture/templates
+ *
+ * //list all templates under specified template path
+ * yii fixture/templates --templatePath='@app/path/to/my/custom/templates'
+ * ~~~
+ * 
  * You also can create your own data providers for custom tables fields, see Faker library guide for more info (https://github.com/fzaninotto/Faker);
  * After you created custom provider, for example:
  *
@@ -179,7 +189,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
     /**
      * Lists all available fixtures template files.
      */
-    public function actionAllTemplates()
+    public function actionTemplates()
     {
         $foundTemplates = $this->findTemplatesFiles();
 
@@ -195,15 +205,11 @@ class FixtureController extends \yii\console\controllers\FixtureController
      * For example,
      * 
      * ~~~
-     * ~~~
      * //generate fixtures in russian language
-     * yii fixture/generate users --count=5 --language=ru_RU
+     * yii fixture/generate user --count=5 --language=ru_RU
      *
-     * //read templates from the other path and generate all fixtures
-     * yii fixture/generate-all --templatePath=@app/path/to/my/custom/templates
-     *
-     * //generate all fixtures into other folders
-     * yii fixture/generate-all --fixtureDataPath=@tests/unit/fixtures/subfolder1/subfolder2/subfolder3
+     * //generate several fixtures
+     * yii fixture/generate user profile team
      * ~~~
      * 
      * @throws \yii\base\InvalidParamException
