@@ -94,6 +94,10 @@ Upgrade from Yii 2.0 Beta
   ];
   ```
 
+  > Note: If you are using the `Advanced Application Template` you should not add this configuration to `common/config`
+  or `console/config` because the console application doesn't have to deal with CSRF and uses its own request that
+  doesn't have `cookieValidationKey` property.
+
 * `yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
 new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in: 
 
