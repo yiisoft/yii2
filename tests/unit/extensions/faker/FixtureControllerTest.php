@@ -31,7 +31,7 @@ class FixtureControllerTest extends TestCase
             'interactive' => false,
             'fixtureDataPath' => '@runtime/faker',
             'templatePath' => '@yiiunit/data/extensions/faker/templates'
-        ],['fixture-faker', Yii::$app]); //id and module are null
+        ],['fixture-faker', Yii::$app]);
     }
 
     public function tearDown()
