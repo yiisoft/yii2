@@ -6,6 +6,12 @@ use Yii;
 use yiiunit\TestCase;
 use yii\console\controllers\CacheController;
 
+/**
+ * Unit test for [[\yii\console\controllers\CacheController]].
+ * @see CacheController
+ *
+ * @group console
+ */
 class CacheControllerTest extends TestCase
 {
 
@@ -83,7 +89,6 @@ class CacheControllerTest extends TestCase
 
         $this->assertFalse(Yii::$app->firstCache->get('firstKey'),'first cache data should be flushed');
         $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
-
     }
 
 }

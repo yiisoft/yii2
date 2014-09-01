@@ -55,21 +55,18 @@ use yii\helpers\VarDumper;
  * After you prepared needed templates for tables you can simply generate your fixtures via command
  *
  * ~~~
- * yii fixture/generate users
+ * yii fixture/generate user
  *
- * //also a short version of this command (generate action is default)
- * yii fixture users
- *
- * //to generate fixtures for several tables, use "," as a separator, for example:
- * yii fixture users,profile
+ * //generate fixtures from several templates, for example:
+ * yii fixture/generate user profile team
  * ~~~
  *
  * In the code above "users" is template name, after this command run, new file named same as template
  * will be created under the `$fixtureDataPath` folder.
- * You can generate fixtures for all templates by specifying keyword "all"
+ * You can generate fixtures for all templates, for example:
  *
  * ~~~
- * yii fixture/generate all
+ * yii fixture/generate-all
  * ~~~
  *
  * This command will generate fixtures for all template files that are stored under $templatePath and
@@ -79,38 +76,45 @@ use yii\helpers\VarDumper;
  * all fixtures and in each file there will be 3 rows (fixtures).
  *
  * ~~~
- * yii fixture/generate all 3
+ * yii fixture/generate-all --count=3
  * ~~~
  *
  * You can specify different options of this command:
  *
  * ~~~
  * //generate fixtures in russian language
- * yii fixture/generate users 5 --language=ru_RU
+ * yii fixture/generate user --count=5 --language=ru_RU
  *
  * //read templates from the other path
- * yii fixture/generate all --templatePath=@app/path/to/my/custom/templates
+ * yii fixture/generate-all --templatePath=@app/path/to/my/custom/templates
  *
  * //generate fixtures into other folders
- * yii fixture/generate all --fixtureDataPath=@tests/unit/fixtures/subfolder1/subfolder2/subfolder3
+ * yii fixture/generate-all --fixtureDataPath=@tests/unit/fixtures/subfolder1/subfolder2/subfolder3
  * ~~~
  *
+ * You can see all available templates by running command:
+ *
+ * ~~~
+ * //list all templates under default template path (i.e. '@tests/unit/templates/fixtures')
+ * yii fixture/templates
+ *
+ * //list all templates under specified template path
+ * yii fixture/templates --templatePath='@app/path/to/my/custom/templates'
+ * ~~~
+ * 
  * You also can create your own data providers for custom tables fields, see Faker library guide for more info (https://github.com/fzaninotto/Faker);
  * After you created custom provider, for example:
  *
  * ~~~
  * class Book extends \Faker\Provider\Base
  * {
+ * 
  *     public function title($nbWords = 5)
  *     {
  *         $sentence = $this->generator->sentence($nbWords);
  *         return mb_substr($sentence, 0, mb_strlen($sentence) - 1);
  *     }
- *
- *     public function ISBN()
- *     {
- *         return $this->generator->randomNumber(13);
- *     }
+ * 
  * }
  * ~~~
  *
@@ -132,15 +136,7 @@ use yii\helpers\VarDumper;
  */
 class FixtureController extends \yii\console\controllers\FixtureController
 {
-    /**
-     * type of fixture generating
-     */
-    const GENERATE_ALL = 'all';
 
-    /**
-     * @var string controller default action ID.
-     */
-    public $defaultAction = 'generate';
     /**
      * @var string Alias to the template path, where all tables templates are stored.
      */
@@ -153,6 +149,10 @@ class FixtureController extends \yii\console\controllers\FixtureController
      * @var string Language to use when generating fixtures data.
      */
     public $language;
+    /**
+     * @var integer total count of data per fixture. Defaults to 2.
+     */
+    public $count = 2;
     /**
      * @var array Additional data providers that can be created by user and will be added to the Faker generator.
      * More info in [Faker](https://github.com/fzaninotto/Faker.) library docs.
@@ -180,7 +180,6 @@ class FixtureController extends \yii\console\controllers\FixtureController
         if (parent::beforeAction($action)) {
             $this->checkPaths();
             $this->addProviders();
-
             return true;
         } else {
             return false;
@@ -188,53 +187,185 @@ class FixtureController extends \yii\console\controllers\FixtureController
     }
 
     /**
+     * Lists all available fixtures template files.
+     */
+    public function actionTemplates()
+    {
+        $foundTemplates = $this->findTemplatesFiles();
+
+        if (!$foundTemplates) {
+            $this->notifyNoTemplatesFound();
+        } else {
+            $this->notifyTemplatesCanBeGenerated($foundTemplates);
+        }
+    }
+
+    /**
      * Generates fixtures and fill them with Faker data.
+     * For example,
+     * 
+     * ~~~
+     * //generate fixtures in russian language
+     * yii fixture/generate user --count=5 --language=ru_RU
      *
-     * @param array|string $file filename for the table template.
-     * You can generate all fixtures for all tables by specifying keyword "all" as filename.
-     * @param integer $times how much fixtures do you want per table
+     * //generate several fixtures
+     * yii fixture/generate user profile team
+     * ~~~
+     * 
      * @throws \yii\base\InvalidParamException
      * @throws \yii\console\Exception
      */
-    public function actionGenerate(array $file, $times = 2)
+    public function actionGenerate()
     {
+        $templatesInput = func_get_args();
+
+        if (empty($templatesInput)) {
+            throw new Exception('You should specify input fixtures template files');
+        }
+
+        $foundTemplates = $this->findTemplatesFiles($templatesInput);
+
+        $notFoundTemplates = array_diff($templatesInput, $foundTemplates);
+
+        if ($notFoundTemplates) {
+            $this->notifyNotFoundTemplates($notFoundTemplates);
+        }
+
+        if (!$foundTemplates) {
+            $this->notifyNoTemplatesFound();
+            return static::EXIT_CODE_NORMAL;
+        }
+
+        if (!$this->confirmGeneration($foundTemplates)) {
+            return static::EXIT_CODE_NORMAL;
+        }
+
         $templatePath = Yii::getAlias($this->templatePath);
         $fixtureDataPath = Yii::getAlias($this->fixtureDataPath);
 
-        if ($this->needToGenerateAll($file[0])) {
-            $files = FileHelper::findFiles($templatePath, ['only' => ['*.php']]);
+        FileHelper::createDirectory($fixtureDataPath);
+
+        $generatedTemplates = [];
+
+        foreach ($foundTemplates as $templateName) {
+            $this->generateFixtureFile($templateName, $templatePath, $fixtureDataPath);
+            $generatedTemplates[] = $templateName;
+        }
+
+        $this->notifyTemplatesGenerated($generatedTemplates);
+    }
+
+    /**
+     * Generates all fixtures template path that can be found.
+     */
+    public function actionGenerateAll()
+    {
+        $foundTemplates = $this->findTemplatesFiles();
+
+        if (!$foundTemplates) {
+            $this->notifyNoTemplatesFound();
+            return static::EXIT_CODE_NORMAL;
+        }
+
+        if (!$this->confirmGeneration($foundTemplates)) {
+            return static::EXIT_CODE_NORMAL;
+        }
+
+        $templatePath = Yii::getAlias($this->templatePath);
+        $fixtureDataPath = Yii::getAlias($this->fixtureDataPath);
+
+        FileHelper::createDirectory($fixtureDataPath);
+
+        $generatedTemplates = [];
+
+        foreach ($foundTemplates as $templateName) {
+            $this->generateFixtureFile($templateName, $templatePath, $fixtureDataPath);            
+            $generatedTemplates[] = $templateName;
+        }
+
+        $this->notifyTemplatesGenerated($generatedTemplates);
+    }
+
+    /**
+     * Notifies user that given fixtures template files were not found.
+     * @param array $templatesNames
+     */
+    private function notifyNotFoundTemplates($templatesNames)
+    {
+        $this->stdout("The following fixtures templates were NOT found:\n\n", Console::FG_RED);
+
+        foreach ($templatesNames as $name) {
+            $this->stdout("\t * $name \n", Console::FG_GREEN);
+        }
+
+        $this->stdout("\n");
+    }
+
+    /**
+     * Notifies user that there was not found any files matching given input conditions.
+     */
+    private function notifyNoTemplatesFound()
+    {
+        $this->stdout("No fixtures template files matching input conditions were found under the path:\n\n", Console::FG_RED);
+        $this->stdout("\t " . Yii::getAlias($this->templatePath) . " \n\n", Console::FG_GREEN);
+    }
+
+    /**
+     * Notifies user that given fixtures template files were generated.
+     * @param array $templatesNames
+     */
+    private function notifyTemplatesGenerated($templatesNames)
+    {
+        $this->stdout("The following fixtures template files were generated:\n\n", Console::FG_YELLOW);
+
+        foreach ($templatesNames as $name) {
+            $this->stdout("\t* " . $name . "\n", Console::FG_GREEN);
+        }
+
+        $this->stdout("\n");
+    }
+
+    private function notifyTemplatesCanBeGenerated($templatesNames)
+    {
+        $this->stdout("Template files path: ", Console::FG_YELLOW);
+        $this->stdout(Yii::getAlias($this->templatePath) . "\n\n", Console::FG_GREEN);
+
+        foreach ($templatesNames as $name) {
+            $this->stdout("\t* " . $name . "\n", Console::FG_GREEN);
+        }
+
+        $this->stdout("\n");
+    }
+
+    /**
+     * Returns array containg fixtures templates file names. You can specify what files to find
+     * by the given parameter.
+     * @param array $templatesNames template file names to search. If empty then all files will be searched.
+     * @return array
+     */
+    private function findTemplatesFiles(array $templatesNames = [])
+    {
+        $findAll = ($templatesNames == []);
+
+        if ($findAll) {
+            $files = FileHelper::findFiles(Yii::getAlias($this->templatePath), ['only' => ['*.php']]);
         } else {
             $filesToSearch = [];
-            foreach ($file as $fileName) {
+
+            foreach ($templatesNames as $fileName) {
                 $filesToSearch[] = $fileName . '.php';
             }
-            $files = FileHelper::findFiles($templatePath, ['only' => $filesToSearch]);
+
+            $files = FileHelper::findFiles(Yii::getAlias($this->templatePath), ['only' => $filesToSearch]);
         }
 
-        if (empty($files)) {
-            throw new Exception("No files were found by name: \"" . implode(', ', $file) . "\".\n"
-                . "Check that template with these name exists, under template path: \n\"{$templatePath}\"."
-            );
+        $foundTemplates = [];
+
+        foreach ($files as $fileName) {
+            $foundTemplates[] = basename($fileName, '.php');
         }
 
-        if (!$this->confirmGeneration($files)) {
-            return;
-        }
-
-        foreach ($files as $templateFile) {
-            $fixtureFileName = basename($templateFile);
-            $fixtures = [];
-
-            for ($i = 0; $i < $times; $i++) {
-                $fixtures[$i] = $this->generateFixture($templateFile, $i);
-            }
-
-            $content = $this->exportFixtures($fixtures);
-            FileHelper::createDirectory($fixtureDataPath);
-            file_put_contents($fixtureDataPath . '/'. $fixtureFileName, $content);
-
-            $this->stdout("Fixture file was generated under: $fixtureDataPath\n", Console::FG_GREEN);
-        }
+        return $foundTemplates;
     }
 
     /**
@@ -255,9 +386,9 @@ class FixtureController extends \yii\console\controllers\FixtureController
      */
     public function checkPaths()
     {
-        $path = Yii::getAlias($this->templatePath);
+        $path = Yii::getAlias($this->templatePath, false);
 
-        if (!is_dir($path)) {
+        if (!$path || !is_dir($path)) {
             throw new Exception("The template path \"{$this->templatePath}\" does not exist");
         }
     }
@@ -270,16 +401,6 @@ class FixtureController extends \yii\console\controllers\FixtureController
         foreach ($this->providers as $provider) {
             $this->generator->addProvider(new $provider($this->generator));
         }
-    }
-
-    /**
-     * Checks if needed to generate all fixtures.
-     * @param string $file
-     * @return bool
-     */
-    public function needToGenerateAll($file)
-    {
-        return $file == self::GENERATE_ALL;
     }
 
     /**
@@ -306,6 +427,25 @@ class FixtureController extends \yii\console\controllers\FixtureController
     }
 
     /**
+     * Generates fixture file by the given fixture template file.
+     * @param type $templateName template file name
+     * @param type $templatePath path where templates are stored
+     * @param type $fixtureDataPath fixture data path where generated file should be written
+     */
+    public function generateFixtureFile($templateName, $templatePath, $fixtureDataPath)
+    {
+        $fixtures = [];
+
+        for ($i = 0; $i < $this->count; $i++) {
+            $fixtures[$i] = $this->generateFixture($templatePath . '/' . $templateName . '.php', $i);
+        }
+
+        $content = $this->exportFixtures($fixtures);
+
+        file_put_contents($fixtureDataPath . '/'. $templateName . '.php', $content);
+    }
+
+    /**
      * Prompts user with message if he confirm generation with given fixture templates files.
      * @param array $files
      * @return boolean
@@ -317,10 +457,11 @@ class FixtureController extends \yii\console\controllers\FixtureController
         $this->stdout("Templates will be taken from path: \n", Console::FG_YELLOW);
         $this->stdout("\t" . Yii::getAlias($this->templatePath) . "\n\n", Console::FG_GREEN);
 
-        foreach ($files as $index => $fileName) {
-            $this->stdout("    " . ($index + 1) . ". " . basename($fileName) . "\n", Console::FG_GREEN);
+        foreach ($files as $fileName) {
+            $this->stdout("\t* " . $fileName . "\n", Console::FG_GREEN);
         }
 
         return $this->confirm('Generate above fixtures?');
     }
+
 }

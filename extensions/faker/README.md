@@ -69,14 +69,11 @@ In this script, you can use the following two predefined variables:
 With such a template file, you can generate your fixtures using the commands like the following:
 
 ```
-# generate fixtures for the users table based on users fixture template
-php yii fixture/generate User
-
-# also a short version of this command ("generate" action is default)
-php yii fixture User
+# generate fixtures from user fixture template
+php yii fixture/generate user
 
 # to generate several fixture data files
-php yii fixture User Profile Team
+php yii fixture/generate user profile team
 ```
 
 In the code above `users` is template name. After running this command, a new file with the same template name
@@ -107,21 +104,27 @@ php yii fixture/generate-all --templatePath='@app/path/to/my/custom/templates'
 php yii fixture/generate-all --fixtureDataPath='@tests/acceptance/fixtures/data'
 ```
 
+You can see all available templates by running command:
+
+```
+# list all templates under default template path (i.e. '@tests/unit/templates/fixtures')
+php yii fixture/templates
+
+# list all templates under specified template path
+php yii fixture/templates --templatePath='@app/path/to/my/custom/templates'
+```
+
 You also can create your own data providers for custom tables fields, see [Faker](https://github.com/fzaninotto/Faker) library guide for more info;
 After you created custom provider, for example:
 
 ```php
 class Book extends \Faker\Provider\Base
 {
+
     public function title($nbWords = 5)
     {
         $sentence = $this->generator->sentence($nbWords);
         return mb_substr($sentence, 0, mb_strlen($sentence) - 1);
-    }
-
-    public function ISBN()
-    {
-        return $this->generator->randomNumber(13);
     }
 
  }
