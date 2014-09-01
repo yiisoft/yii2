@@ -20,7 +20,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Post;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;браузер
+use yii\web\NotFoundHttpException;
 
 class PostController extends Controller
 {
