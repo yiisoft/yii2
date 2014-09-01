@@ -73,7 +73,7 @@ With such a template file, you can generate your fixtures using the commands lik
 php yii fixture/generate user
 
 # to generate several fixture data files
-php yii fixture user profile team
+php yii fixture/generate user profile team
 ```
 
 In the code above `users` is template name. After running this command, a new file with the same template name
