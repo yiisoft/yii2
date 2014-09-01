@@ -58,7 +58,7 @@ use yii\helpers\VarDumper;
  * yii fixture/generate user
  *
  * //generate fixtures from several templates, for example:
- * yii fixture user profile team
+ * yii fixture/generate user profile team
  * ~~~
  *
  * In the code above "users" is template name, after this command run, new file named same as template
