@@ -15,11 +15,12 @@ use yii\web\AssetBundle;
  */
 class JuiAsset extends AssetBundle
 {
+    public $sourcePath = '@bower/jquery-ui';
     public $js = [
-        'jquery-ui/jquery-ui.js',
+        'jquery-ui.js',
     ];
     public $css = [
-        'jquery-ui/themes/smoothness/jquery-ui.css',
+        'themes/smoothness/jquery-ui.css',
     ];
     public $depends = [
         'yii\web\JqueryAsset',

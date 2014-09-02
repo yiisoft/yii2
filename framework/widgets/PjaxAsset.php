@@ -17,8 +17,9 @@ use yii\web\AssetBundle;
  */
 class PjaxAsset extends AssetBundle
 {
+    public $sourcePath = '@bower/yii2-pjax';
     public $js = [
-        'yii2-pjax/jquery.pjax.js',
+        'jquery.pjax.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

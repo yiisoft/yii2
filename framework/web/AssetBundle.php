@@ -7,9 +7,9 @@
 
 namespace yii\web;
 
-use Yii;
 use yii\base\Object;
 use yii\helpers\Url;
+use Yii;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
@@ -27,11 +27,23 @@ use yii\helpers\Url;
 class AssetBundle extends Object
 {
     /**
-     * @var string the directory that contains the asset files in this bundle.
+     * @var string the directory that contains the source asset files for this asset bundle.
+     * A source asset file is a file that is part of your source code repository of your Web application.
      *
-     * The value of this property can be prefixed to every relative asset file path listed in [[js]] and [[css]]
-     * to form an absolute file path. If this property is null (meaning not set), it will be filled with the value of
-     * [[AssetManager::basePath]] when the bundle is being loaded by [[AssetManager::getBundle()]].
+     * You must set this property if the directory containing the source asset files is not Web accessible.
+     * By setting this property, [[AssetManager]] will publish the source asset files
+     * to a Web-accessible directory automatically when the asset bundle is registered on a page.
+     *
+     * If you do not set this property, it means the source asset files are located under [[basePath]].
+     *
+     * You can use either a directory or an alias of the directory.
+     */
+    public $sourcePath;
+    /**
+     * @var string the Web-accessible directory that contains the asset files in this bundle.
+     *
+     * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
+     * when it publishes the asset files from [[sourcePath]].
      *
      * You can use either a directory or an alias of the directory.
      */
@@ -39,10 +51,8 @@ class AssetBundle extends Object
     /**
      * @var string the base URL for the relative asset files listed in [[js]] and [[css]].
      *
-     * The value of this property will be prefixed to every relative asset file path listed in [[js]] and [[css]]
-     * when they are being registered in a view so that they can be Web accessible.
-     *  If this property is null (meaning not set), it will be filled with the value of
-     * [[AssetManager::baseUrl]] when the bundle is being loaded by [[AssetManager::getBundle()]].
+     * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
+     * when it publishes the asset files from [[sourcePath]].
      *
      * You can use either a URL or an alias of the URL.
      */
@@ -65,11 +75,11 @@ class AssetBundle extends Object
      * specified in one of the following formats:
      *
      * - an absolute URL representing an external asset. For example,
-     *   `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
-     *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-     * - a path relative to [[basePath]] and [[baseUrl]]: for example, `js/main.js`. There should be no leading slash.
-     * - a path relative to [[AssetManager::basePath]] and [[AssetManager::baseUrl]]: for example,
-     *   `@/jquery/dist/jquery.js`. The path must begin with `@/`.
+     *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
+     *   `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
+     * - a relative path representing a local asset (e.g. `js/main.js`). The actual file path of a local
+     *   asset can be determined by prefixing [[basePath]] to the relative path, and the actual URL
+     *   of the asset can be determined by prefixing [[baseUrl]] to the relative path.
      *
      * Note that only forward slash "/" should be used as directory separators.
      */
@@ -91,6 +101,11 @@ class AssetBundle extends Object
      * when registering the CSS files in this bundle.
      */
     public $cssOptions = [];
+    /**
+     * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
+     * is being published. This property is used only when [[sourcePath]] is set.
+     */
+    public $publishOptions = [];
 
 
     /**
@@ -109,6 +124,9 @@ class AssetBundle extends Object
      */
     public function init()
     {
+        if ($this->sourcePath !== null) {
+            $this->sourcePath = rtrim(Yii::getAlias($this->sourcePath), '/\\');
+        }
         if ($this->basePath !== null) {
             $this->basePath = rtrim(Yii::getAlias($this->basePath), '/\\');
         }
@@ -118,59 +136,43 @@ class AssetBundle extends Object
     }
 
     /**
-     * @param View $view
+     * Registers the CSS and JS files with the given view.
+     * @param \yii\web\View $view the view that the asset files are to be registered with.
      */
     public function registerAssetFiles($view)
     {
         $manager = $view->getAssetManager();
         foreach ($this->js as $js) {
-            $view->registerJsFile($this->getAssetUrl($js, $manager), $this->jsOptions);
+            $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
         }
         foreach ($this->css as $css) {
-            $view->registerCssFile($this->getAssetUrl($css, $manager), $this->cssOptions);
+            $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
         }
     }
 
     /**
-     * Returns the actual URL for the specified asset.
-     * The actual URL is obtained by prepending either [[baseUrl]] or [[AssetManager::baseUrl]] to the given asset path.
-     * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
-     * @param AssetManager $manager the asset manager
-     * @return string the actual URL for the specified asset.
+     * Publishes the asset bundle if its source code is not under Web-accessible directory.
+     * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
+     * CSS or JS files using [[AssetManager::converter|asset converter]].
+     * @param AssetManager $am the asset manager to perform the asset publishing
      */
-    protected function getAssetUrl($asset, $manager)
+    public function publish($am)
     {
-        if (($actualAsset = $manager->resolveAsset($asset)) !== false) {
-            return Url::isRelative($actualAsset) ? $manager->baseUrl . '/' . $actualAsset : $actualAsset;
+        if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
+            list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
         }
 
-        if (strncmp($asset, '@/', 2) === 0) {
-            return $manager->baseUrl . substr($asset, 1);
-        } elseif (Url::isRelative($asset)) {
-            return $this->baseUrl . '/' . $asset;
-        } else {
-            return $asset;
-        }
-    }
-
-    /**
-     * Returns the actual file path for the specified asset.
-     * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
-     * @param AssetManager $manager the asset manager
-     * @return string|boolean the actual file path, or false if the asset is specified as an absolute URL
-     */
-    public function getAssetPath($asset, $manager)
-    {
-        if (($actualAsset = $manager->resolveAsset($asset)) !== false) {
-            return Url::isRelative($actualAsset) ? $manager->basePath . '/' . $actualAsset : false;
-        }
-
-        if (strncmp($asset, '@/', 2) === 0) {
-            return $manager->basePath . substr($asset, 1);
-        } elseif (Url::isRelative($asset)) {
-            return $this->basePath . '/' . $asset;
-        } else {
-            return false;
+        if (isset($this->basePath, $this->baseUrl) && ($converter = $am->getConverter()) !== null) {
+            foreach ($this->js as $i => $js) {
+                if (Url::isRelative($js)) {
+                    $this->js[$i] = $converter->convert($js, $this->basePath);
+                }
+            }
+            foreach ($this->css as $i => $css) {
+                if (Url::isRelative($css)) {
+                    $this->css[$i] = $converter->convert($css, $this->basePath);
+                }
+            }
         }
     }
 }

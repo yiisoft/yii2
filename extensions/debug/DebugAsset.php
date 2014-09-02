@@ -17,9 +17,10 @@ use yii\web\AssetBundle;
  */
 class DebugAsset extends AssetBundle
 {
+    public $sourcePath = '@yii/debug/assets';
     public $css = [
-        'yii2-debug/assets/main.css',
-        'yii2-debug/assets/toolbar.css',
+        'main.css',
+        'toolbar.css',
     ];
     public $depends = [
         'yii\web\YiiAsset',

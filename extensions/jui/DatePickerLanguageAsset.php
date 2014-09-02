@@ -15,6 +15,7 @@ use yii\web\AssetBundle;
  */
 class DatePickerLanguageAsset extends AssetBundle
 {
+    public $sourcePath = '@bower/jquery-ui';
     /**
      * @var boolean whether to automatically generate the needed language js files.
      * If this is true, the language js files will be determined based on the actual usage of [[DatePicker]]

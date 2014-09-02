@@ -41,10 +41,6 @@ return [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
         ],
-        'createSymlink' => [
-            'frontend/web/assets' => 'assets',
-            'backend/web/assets' => 'assets',
-        ],
     ],
     'Production' => [
         'path' => 'prod',
@@ -60,10 +56,6 @@ return [
         'setCookieValidationKey' => [
             'backend/config/main-local.php',
             'frontend/config/main-local.php',
-        ],
-        'createSymlink' => [
-            'frontend/web/assets' => 'assets',
-            'backend/web/assets' => 'assets',
         ],
     ],
 ];

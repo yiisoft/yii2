@@ -86,8 +86,7 @@ class DatePicker extends InputWidget
             $view = $this->getView();
             $bundle = DatePickerLanguageAsset::register($view);
             if ($bundle->autoGenerate) {
-                $am = $view->getAssetManager();
-                $view->registerJsFile($am->getAssetUrl("jquery-ui/ui/i18n/datepicker-$language.js"), [
+                $view->registerJsFile($bundle->baseUrl . "/ui/i18n/datepicker-$language.js", [
                     'depends' => [JuiAsset::className()],
                 ]);
             }

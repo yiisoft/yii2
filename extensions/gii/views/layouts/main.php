@@ -22,7 +22,7 @@ $asset = yii\gii\GiiAsset::register($this);
 <?php $this->beginBody() ?>
 <?php
 NavBar::begin([
-    'brandLabel' => Html::img('@web/assets/yii2-gii/assets/logo.png'),
+    'brandLabel' => Html::img($asset->baseUrl . '/logo.png'),
     'brandUrl' => ['default/index'],
     'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
 ]);
