@@ -17,8 +17,9 @@ use yii\web\AssetBundle;
  */
 class ValidationAsset extends AssetBundle
 {
+    public $sourcePath = '@yii/assets';
     public $js = [
-        'yii2/assets/yii.validation.js',
+        'yii.validation.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
