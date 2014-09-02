@@ -17,7 +17,12 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-swiftmailer": "*"
+        "yiisoft/yii2-swiftmailer": "*",
+        /* bower packages, added temporarily to test "composer-asset-plugin" */
+        "bower-asset/bootstrap": "3.2.* | 3.1.* | 3.0.*",
+        "bower-asset/jquery": "2.1.1",
+        "bower-asset/jquery-ui": "1.11.*",
+        "bower-asset/typeahead.js": "0.10.*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
@@ -44,6 +49,10 @@
         ],
         "config": [
             "config/web.php"
-        ]
+        ],
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
