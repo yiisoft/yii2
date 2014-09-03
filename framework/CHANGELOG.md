@@ -247,6 +247,7 @@ Yii Framework 2 Change Log
 - Chg #4586: Signed bigint and unsigned int will be converted into integers when they are loaded from DB by AR (qiangxue)
 - Chg #4591: `yii\helpers\Url::to()` will no longer prefix relative URLs with the base URL (qiangxue)
 - Chg #4595: `yii\widgets\LinkPager`'s `nextPageLabel`, `prevPageLabel`, `firstPageLabel`, `lastPageLabel` are now taking `false` instead of `null` for "no label" (samdark)
+- Chg #4911: Changed callback signature used in `yii\base\ArrayableTrait::fields()` from `function ($field, $model) {` to `function ($model, $field) {` (samdark)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)

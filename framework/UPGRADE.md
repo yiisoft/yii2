@@ -206,3 +206,6 @@ new ones save the following code as `convert.php` that should be placed in the s
   - `sendContentAsFile($content, $attachmentName, $options = [])`
   - `sendStreamAsFile($handle, $attachmentName, $options = [])`
   - `xSendFile($filePath, $attachmentName = null, $options = [])`
+
+* The signature of callbacks used in `yii\base\ArrayableTrait::fields()` is changed from `function ($field, $model) {`
+  to `function ($model, $field) {`.
