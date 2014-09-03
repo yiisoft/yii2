@@ -284,18 +284,30 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns a short description (one line) of information about this controller or an action.
+     * Returns a short description (one line) of information about this controller or it's action (if specified).
      *
-     * You may override this method to return customized help information for this controller.
+     * You may override this method to return customized description.
      * The default implementation returns help information retrieved from the PHPDoc comments
      * of the controller class.
      *
+     * @param string $actionID action to get description for. null means overall controller description.
      * @return string
      */
-    public function getDescription()
+    public function getDescription($actionID = null)
     {
-        $class = new \ReflectionClass($this);
-        $docLines = preg_split('~(\n|\r|\r\n)~', $class->getDocComment());
+        $action = null;
+        if ($actionID === null) {
+            $class = new \ReflectionClass($this);
+        } else {
+            $action = $this->createAction($actionID);
+            $class = new \ReflectionClass($action);
+        }
+
+        if ($action instanceof InlineAction) {
+            $class = new \ReflectionMethod($this, $action->actionMethod);
+        }
+
+        $docLines = preg_split('~\R~', $class->getDocComment());
         if (isset($docLines[1])) {
             return trim($docLines[1], ' *');
         }
@@ -303,15 +315,27 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns help information for this controller.
+     * Returns help information for this controller or it's action (if specified).
      *
+     * You may override this method to return customized help.
      * The default implementation returns help information retrieved from the PHPDoc comments
      * of the controller class.
+     * @param string $actionID action to get help for. null means overall controller help.
      * @return string
      */
-    public function getHelp()
+    public function getHelp($actionID = null)
     {
-        $class = new \ReflectionClass($this);
+        $action = null;
+        if ($actionID === null) {
+            $class = new \ReflectionClass($this);
+        } else {
+            $class = new \ReflectionClass($this->createAction($actionID));
+        }
+
+        if ($action instanceof InlineAction) {
+            $class = new \ReflectionMethod($this, $action->actionMethod);
+        }
+
         $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($class->getDocComment(), '/'))), "\r", '');
         if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
             $comment = trim(substr($comment, 0, $matches[0][1]));

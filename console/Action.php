@@ -14,32 +14,33 @@ use yii\helpers\Console;
  * Action is the base class for all controller action classes.
  *
  * @inheritdoc
+ * @property \yii\console\Controller $controller
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
 class Action extends \yii\base\Action
 {
+    /**
+     * Returns a short description (one line) of information about the action.
+     *
+     * The default implementation returns help information retrieved from the PHPDoc comments.
+     *
+     * @return string
+     */
     public function getDescription()
     {
-        $class = new \ReflectionClass($this);
-        $docLines = preg_split('~(\n|\r|\r\n)~', $class->getDocComment());
-        if (isset($docLines[1])) {
-            return trim($docLines[1], ' *');
-        }
-        return '';
+        return null;
     }
 
+    /**
+     * Returns help information for the action.
+     *
+     * The default implementation returns help information retrieved from the PHPDoc comments.
+     * @return string
+     */
     public function getHelp()
     {
-        $class = new \ReflectionClass($this);
-        $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($class->getDocComment(), '/'))), "\r", '');
-        if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
-            $comment = trim(substr($comment, 0, $matches[0][1]));
-        }
-        if ($comment !== '') {
-            return rtrim(Console::renderColoredString(Console::markdownToAnsi($comment)));
-        }
-        return '';
+        return null;
     }
 }
