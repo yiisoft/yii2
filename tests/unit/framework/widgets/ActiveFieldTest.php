@@ -268,12 +268,14 @@ EOD;
         $actualValue = $this->activeField->getClientOptions();
         $expectedJsExpression = "function (attribute, value, messages, deferred) {return true;}";
         $expectedValidateOnChange = true;
+        $expectedValidateOnBlur = true;
         $expectedValidateOnType = false;
         $expectedValidationDelay = 200;
         
         $actualJsExpression = $actualValue['validate'];
         $this->assertEquals($expectedJsExpression, $actualJsExpression->expression);
         $this->assertTrue($expectedValidateOnChange === $actualValue['validateOnChange']);
+        $this->assertTrue($expectedValidateOnBlur === $actualValue['validateOnBlur']);
         $this->assertTrue($expectedValidateOnType === $actualValue['validateOnType']);
         $this->assertTrue($expectedValidationDelay === $actualValue['validationDelay']);         
     }
@@ -288,6 +290,7 @@ EOD;
         $actualValue = $this->activeField->getClientOptions();
         $expectedJsExpression = "function (attribute, value, messages, deferred) {return true;}";
         $expectedValidateOnChange = true;
+        $expectedValidateOnBlur = true;
         $expectedValidateOnType = false;
         $expectedValidationDelay = 200;
         $expectedError = ".help-block";
@@ -295,6 +298,7 @@ EOD;
         $actualJsExpression = $actualValue['validate'];
         $this->assertEquals($expectedJsExpression, $actualJsExpression->expression);
         $this->assertTrue($expectedValidateOnChange === $actualValue['validateOnChange']);
+        $this->assertTrue($expectedValidateOnBlur === $actualValue['validateOnBlur']);
         $this->assertTrue($expectedValidateOnType === $actualValue['validateOnType']);
         $this->assertTrue($expectedValidationDelay === $actualValue['validationDelay']);
         $this->assertTrue(1 === $actualValue['enableAjaxValidation']);
@@ -317,6 +321,7 @@ EOD;
             . "{ return 'yii2' == 'yii2'; }(attribute, value)) { return true; }}";
        
         $expectedValidateOnChange = true;
+        $expectedValidateOnBlur = true;
         $expectedValidateOnType = false;
         $expectedValidationDelay = 200;
         $expectedError = ".help-block";
@@ -324,6 +329,7 @@ EOD;
         $actualJsExpression = $actualValue['validate'];
         $this->assertEquals($expectedJsExpression, $actualJsExpression->expression);
         $this->assertTrue($expectedValidateOnChange === $actualValue['validateOnChange']);
+        $this->assertTrue($expectedValidateOnBlur === $actualValue['validateOnBlur']);
         $this->assertTrue($expectedValidateOnType === $actualValue['validateOnType']);
         $this->assertTrue($expectedValidationDelay === $actualValue['validationDelay']);
         $this->assertTrue(1 === $actualValue['enableAjaxValidation']);
@@ -364,7 +370,7 @@ class ActiveFieldExtend extends ActiveField
     }
     
     /**
-     * Usefull to test other methods from ActiveField, that call ActiveField::getClientOptions()
+     * Useful to test other methods from ActiveField, that call ActiveField::getClientOptions()
      * but it's return value is not relevant for the test being run.
      */
     public function getClientOptions()

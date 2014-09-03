@@ -100,10 +100,15 @@ class ActiveForm extends Widget
      */
     public $validateOnSubmit = true;
     /**
-     * @var boolean whether to perform validation when an input field loses focus and its value is found changed.
+     * @var boolean whether to perform validation when the value of an input field is changed.
      * If [[ActiveField::validateOnChange]] is set, its value will take precedence for that input field.
      */
     public $validateOnChange = true;
+    /**
+     * @var boolean whether to perform validation when an input field loses focus.
+     * If [[ActiveField::$validateOnBlur]] is set, its value will take precedence for that input field.
+     */
+    public $validateOnBlur = true;
     /**
      * @var boolean whether to perform validation while the user is typing in an input field.
      * If [[ActiveField::validateOnType]] is set, its value will take precedence for that input field.
