@@ -68,6 +68,7 @@ Yii Framework 2 Change Log
 - Bug #4127: `CaptchaValidator` clientside error message wasn't formed properly (samdark)
 - Bug #4162: Fixed bug where schema name was not used in ’SHOW CREATE TABLE’ query in `yii\db\mysql\Schema` (stevekr)
 - Bug #4241: `yii\widgets\Pjax` was incorrectly setting container id (mitalcoi)
+- Bug #4254: `SqlDataProvider` does not work with Oracle and SQL Server (qiangxue, miramir)
 - Bug #4276: Added check for UPLOAD_ERR_NO_FILE in `yii\web\UploadedFile` and return null if no file was uploaded (OmgDef)
 - Bug #4342: mssql (dblib) driver does not support getting attributes (tof06)
 - Bug #4371: Active form client validation wasn't working in case of two models having same named fields (abrahamy)
