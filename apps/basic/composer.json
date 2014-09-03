@@ -25,25 +25,26 @@
         "yiisoft/yii2-gii": "*",
         "yiisoft/yii2-faker": "*"
     },
-    "scripts": {
-        "post-create-project-cmd": [
-            "yii\\composer\\Installer::setPermission",
-            "yii\\composer\\Installer::generateCookieValidationKey"
-        ]
-    },
     "config": {
         "process-timeout": 1800
     },
-    "extra": {
-        "writable": [
-            "runtime",
-            "web/assets"
-        ],
-        "executable": [
-            "yii"
-        ],
-        "config": [
-            "config/web.php"
+    "scripts": {
+        "post-create-project-cmd": [
+            "yii\\composer\\Installer::postCreateProject"
         ]
+    },
+    "extra": {
+        "yii\\composer\\Installer::postCreateProject": {
+            "setPermission": [
+                {
+                    "runtime": "0777",
+                    "web/assets": "0777",
+                    "yii": "0755"
+                }
+            ],
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        }
     }
 }

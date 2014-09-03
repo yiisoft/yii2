@@ -25,21 +25,7 @@
         "yiisoft/yii2-gii": "*",
         "yiisoft/yii2-faker": "*"
     },
-    "scripts": {
-        "post-create-project-cmd": [
-            "yii\\composer\\Installer::setPermission"
-        ]
-    },
     "config": {
         "process-timeout": 1800
-    },
-    "extra": {
-        "writable": [
-            "backend/runtime",
-            "backend/web/assets",
-
-            "frontend/runtime",
-            "frontend/web/assets"
-        ]
     }
 }
