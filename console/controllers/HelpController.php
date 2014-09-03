@@ -12,7 +12,6 @@ use yii\base\Application;
 use yii\console\Action;
 use yii\console\Controller;
 use yii\console\Exception;
-use yii\console\InlineAction;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
 
@@ -250,13 +249,14 @@ class HelpController extends Controller
      */
     protected function getActionSummary($controller, $actionID)
     {
-        $description = '';
+        $description = null;
         $action = $controller->createAction($actionID);
-        if ($action instanceof InlineAction || $action instanceof Action) {
+
+        if ($action instanceof Action) {
             $description = $action->getDescription();
-            if ($description === null) {
-                $description = $controller->getDescription($actionID);
-            }
+        }
+        if ($description === null) {
+            $description = $controller->getDescription($actionID);
         }
         return $description;
     }
@@ -275,16 +275,17 @@ class HelpController extends Controller
                 'command' => rtrim($controller->getUniqueId() . '/' . $actionID, '/'),
             ]));
         }
-        if ($action instanceof InlineAction) {
+        $description = null;
+        if ($action instanceof \yii\base\InlineAction) {
             $method = new \ReflectionMethod($controller, $action->actionMethod);
         } else {
+            $description = $action->getHelp();
             $method = new \ReflectionMethod($action, 'run');
         }
 
         $tags = $this->parseComment($method->getDocComment());
         $options = $this->getOptionHelps($controller, $actionID);
 
-        $description = $action->getHelp();
         if ($description === null) {
             $description = $controller->getHelp($actionID);
         }
