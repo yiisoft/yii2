@@ -96,11 +96,10 @@ class QueryBuilder extends \yii\base\Object
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
-            $this->buildOrderBy($query->orderBy),
-            $this->buildLimit($query->limit, $query->offset),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
+        $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
@@ -752,6 +751,27 @@ class QueryBuilder extends \yii\base\Object
         $having = $this->buildCondition($condition, $params);
 
         return $having === '' ? '' : 'HAVING ' . $having;
+    }
+
+    /**
+     * Builds the ORDER BY and LIMIT/OFFSET clauses and appends them to the given SQL.
+     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
+     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
+     * @param integer $limit the limit number. See [[Query::limit]] for more details.
+     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     */
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    {
+        $orderBy = $this->buildOrderBy($orderBy);
+        if ($orderBy !== '') {
+            $sql .= $this->separator . $orderBy;
+        }
+        $limit = $this->buildLimit($limit, $offset);
+        if ($limit !== '') {
+            $sql .= $this->separator . $limit;
+        }
+        return $sql;
     }
 
     /**

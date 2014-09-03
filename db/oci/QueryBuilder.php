@@ -40,66 +40,36 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'NUMBER(19,4)',
     ];
 
-    private $_sql;
-
 
     /**
      * @inheritdoc
      */
-    public function build($query, $params = [])
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
-        $query->prepareBuild($this);
-
-        $params = empty($params) ? $query->params : array_merge($params, $query->params);
-
-        $clauses = [
-            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($query->from, $params),
-            $this->buildJoin($query->join, $params),
-            $this->buildWhere($query->where, $params),
-            $this->buildGroupBy($query->groupBy),
-            $this->buildHaving($query->having, $params),
-            $this->buildOrderBy($query->orderBy),
-        ];
-        $this->_sql = implode($this->separator, array_filter($clauses));
-
-        $this->_sql = $this->buildLimit($query->limit, $query->offset);
-
-        $union = $this->buildUnion($query->union, $params);
-        if ($union !== '') {
-            $this->_sql = "{$this->_sql}{$this->separator}$union";
+        $orderBy = $this->buildOrderBy($orderBy);
+        if ($orderBy !== '') {
+            $sql .= $this->separator . $orderBy;
         }
 
-        return [$this->_sql, $params];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildLimit($limit, $offset)
-    {
         $filters = [];
-        if ($this->hasOffset($offset) > 0) {
+        if ($this->hasOffset($offset)) {
             $filters[] = 'rowNumId > ' . $offset;
         }
-
         if ($this->hasLimit($limit)) {
             $filters[] = 'rownum <= ' . $limit;
         }
+        if (empty($filters)) {
+            return $sql;
+        }
 
-        if (!empty($filters)) {
-            $filter = implode(' and ', $filters);
-
-            return <<<EOD
-WITH USER_SQL AS ({$this->_sql}),
+        $filter = implode(' AND ', $filters);
+        return <<<EOD
+WITH USER_SQL AS ($sql),
     PAGINATION AS (SELECT USER_SQL.*, rownum as rowNumId FROM USER_SQL)
 SELECT *
 FROM PAGINATION
 WHERE $filter
 EOD;
-        } else {
-            return $this->_sql;
-        }
     }
 
     /**
