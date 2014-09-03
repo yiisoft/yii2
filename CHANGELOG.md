@@ -421,7 +421,7 @@ Yii Framework 2 Change Log
 - Enh #2526: Allow for null values in batchInsert (skotos)
 - Enh #2646: Added support for specifying hostinfo in the pattern of a URL rule (qiangxue)
 - Enh #2661: Added boolean column type support for SQLite (qiangxue)
-- Enh #2670: Changed `console\Controller::globalOptions()` to `options($actionId)` to (make it possible to) differentiate options per action (hqx)
+- Enh #2670: Changed `console\Controller::globalOptions()` to `options($actionID)` to (make it possible to) differentiate options per action (hqx)
 - Enh #2714: Added support for formatting time intervals relative to the current time with `yii\base\Formatter` (drenty)
 - Enh #2726: Added `yii\db\ActiveRecord::loadDefaultValues()` that fills default values from DB schema (samdark)
 - Enh #2729: Added `FilterValidator::skipOnArray` so that filters like `trim` will not fail for array inputs (qiangxue)

@@ -72,10 +72,10 @@ class MigrateController extends BaseMigrateController
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
         return array_merge(
-            parent::options($actionId),
+            parent::options($actionID),
             ['migrationTable', 'db'] // global for all actions
         );
     }
