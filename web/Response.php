@@ -552,7 +552,7 @@ class Response extends \yii\base\Response
     {
         $headers = $this->getHeaders();
 
-        $disposition = $inline ? 'attachment' : 'inline';
+        $disposition = $inline ? 'inline' : 'attachment';
         $headers->setDefault('Pragma', 'public')
             ->setDefault('Accept-Ranges', 'bytes')
             ->setDefault('Expires', '0')
