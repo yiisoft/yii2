@@ -291,11 +291,11 @@ class Controller extends \yii\base\Controller
             $class = new \ReflectionClass($this);
         } else {
             $action = $this->createAction($actionID);
-            $class = new \ReflectionClass($action);
-        }
-
-        if ($action instanceof \yii\base\InlineAction) {
-            $class = new \ReflectionMethod($this, $action->actionMethod);
+            if ($action instanceof \yii\base\InlineAction) {
+                $class = new \ReflectionMethod($this, $action->actionMethod);
+            } else {
+                $class = new \ReflectionClass($action);
+            }
         }
 
         $docLines = preg_split('~\R~', $class->getDocComment());
@@ -320,11 +320,13 @@ class Controller extends \yii\base\Controller
         if ($actionID === null) {
             $class = new \ReflectionClass($this);
         } else {
-            $class = new \ReflectionClass($this->createAction($actionID));
-        }
+            $action = $this->createAction($actionID);
 
-        if ($action instanceof \yii\base\InlineAction) {
-            $class = new \ReflectionMethod($this, $action->actionMethod);
+            if ($action instanceof \yii\base\InlineAction) {
+                $class = new \ReflectionMethod($this, $action->actionMethod);
+            } else {
+                $class = new \ReflectionClass($action);
+            }
         }
 
         $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($class->getDocComment(), '/'))), "\r", '');
