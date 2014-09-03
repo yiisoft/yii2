@@ -79,6 +79,8 @@
         encodeError: true,
         // whether to perform validation when a change is detected on the input
         validateOnChange: false,
+        // whether to perform validation when the input loses focus
+        validateOnBlur: false,
         // whether to perform validation when the user is typing.
         validateOnType: false,
         // number of milliseconds that the validation should be delayed when a user is typing in the input field.
@@ -235,7 +237,10 @@
             if (attribute.validateOnChange) {
                 $input.on('change.yiiActiveForm',function () {
                     validateAttribute($form, attribute, false);
-                }).on('blur.yiiActiveForm', function () {
+                });
+            }
+            if (attribute.validateOnBlur) {
+                $input.on('blur.yiiActiveForm', function () {
                     if (attribute.status == 0 || attribute.status == 1) {
                         validateAttribute($form, attribute, !attribute.status);
                     }

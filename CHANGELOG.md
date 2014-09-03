@@ -175,6 +175,7 @@ Yii Framework 2 Change Log
      - Fixed PBKDF2 key truncation.
      - Adjusted API.
 - Enh #4209: Added `beforeCopy`, `afterCopy`, `forceCopy` properties to AssetManager (cebe)
+- Enh #4225: Added `ActiveForm::validateOnBlur` and `ActiveField::validateOnBlur` (qiangxue)
 - Enh #4297: Added check for DOM extension to requirements (samdark)
 - Enh #4317: Added `absoluteAuthTimeout` to yii\web\User (ivokund, nkovacs)
 - Enh #4360: Added client validation support for file validator (Skysplit)

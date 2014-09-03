@@ -95,10 +95,15 @@ class ActiveField extends Component
      */
     public $enableAjaxValidation;
     /**
-     * @var boolean whether to perform validation when the input field loses focus and its value is found changed.
+     * @var boolean whether to perform validation when the value of the input field is changed.
      * If not set, it will take the value of [[ActiveForm::validateOnChange]].
      */
     public $validateOnChange;
+    /**
+     * @var boolean whether to perform validation when the input field loses focus.
+     * If not set, it will take the value of [[ActiveForm::validateOnBlur]].
+     */
+    public $validateOnBlur;
     /**
      * @var boolean whether to perform validation while the user is typing in the input field.
      * If not set, it will take the value of [[ActiveForm::validateOnType]].
@@ -717,7 +722,7 @@ class ActiveField extends Component
             $inputID = Html::getInputId($this->model, $this->attribute);
             $options['id'] = $inputID;
             $options['name'] = $this->attribute;
-            foreach (['validateOnChange', 'validateOnType', 'validationDelay'] as $name) {
+            foreach (['validateOnChange', 'validateOnBlur', 'validateOnType', 'validationDelay'] as $name) {
                 $options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
             }
             $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";
