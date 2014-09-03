@@ -250,11 +250,15 @@ class HelpController extends Controller
      */
     protected function getActionSummary($controller, $actionID)
     {
+        $description = '';
         $action = $controller->createAction($actionID);
         if ($action instanceof InlineAction || $action instanceof Action) {
-            return $action->getDescription();
+            $description = $action->getDescription();
+            if ($description === null) {
+                $description = $controller->getDescription($actionID);
+            }
         }
-        return '';
+        return $description;
     }
 
     /**
@@ -281,6 +285,9 @@ class HelpController extends Controller
         $options = $this->getOptionHelps($controller, $actionID);
 
         $description = $action->getHelp();
+        if ($description === null) {
+            $description = $controller->getHelp($actionID);
+        }
         if ($description !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
             $this->stdout("\n$description\n\n");
