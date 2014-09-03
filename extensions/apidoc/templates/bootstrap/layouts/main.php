@@ -93,9 +93,6 @@ JS
 
 var searchBox = $('#searchbox');
 
-// focus the search field
-searchBox.focus();
-
 // search when typing in search field
 searchBox.on("keyup", function(event) {
     var query = $(this).val();
