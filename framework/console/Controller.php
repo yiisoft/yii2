@@ -9,7 +9,6 @@ namespace yii\console;
 
 use Yii;
 use yii\base\Action;
-use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
 use yii\helpers\Console;
 
@@ -58,6 +57,15 @@ class Controller extends \yii\base\Controller
     public function isColorEnabled($stream = \STDOUT)
     {
         return $this->color ===  null ? Console::streamSupportsAnsiColors($stream) : $this->color;
+    }
+
+    /**
+     * @inheritdoc
+     * @return \yii\console\InlineAction
+     */
+    protected function createActionObject($id, $methodName)
+    {
+        return new InlineAction($id, $this, $methodName);
     }
 
     /**

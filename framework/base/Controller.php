@@ -220,12 +220,24 @@ class Controller extends Component implements ViewContextInterface
             if (method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
                 if ($method->isPublic() && $method->getName() === $methodName) {
-                    return new InlineAction($id, $this, $methodName);
+                    return $this->createActionObject($id, $methodName);
                 }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Creates action object instance
+     *
+     * @param string $id the ID of this action
+     * @param string $methodName the controller method that action is associated with
+     * @return \yii\base\InlineAction
+     */
+    protected function createActionObject($id, $methodName)
+    {
+        return new InlineAction($id, $this, $methodName);
     }
 
     /**
