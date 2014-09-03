@@ -71,9 +71,9 @@ class FixtureController extends Controller
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        return array_merge(parent::options($actionId), [
+        return array_merge(parent::options($actionID), [
             'namespace', 'globalFixtures', 'append'
         ]);
     }

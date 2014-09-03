@@ -113,8 +113,8 @@ class GuideController extends BaseController
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        return array_merge(parent::options($actionId), ['apiDocs']);
+        return array_merge(parent::options($actionID), ['apiDocs']);
     }
 }

@@ -159,8 +159,8 @@ class ApiController extends BaseController
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        return array_merge(parent::options($actionId), ['template', 'guide']);
+        return array_merge(parent::options($actionID), ['template', 'guide']);
     }
 }
