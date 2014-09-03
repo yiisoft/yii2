@@ -60,15 +60,6 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * @inheritdoc
-     * @return \yii\console\InlineAction
-     */
-    protected function createActionObject($id, $methodName)
-    {
-        return new InlineAction($id, $this, $methodName);
-    }
-
-    /**
      * Runs an action with the specified action ID and parameters.
      * If the action ID is empty, the method will use [[defaultAction]].
      * @param string $id the ID of the action to be executed.
@@ -108,7 +99,7 @@ class Controller extends \yii\base\Controller
      */
     public function bindActionParams($action, $params)
     {
-        if ($action instanceof InlineAction) {
+        if ($action instanceof \yii\base\InlineAction) {
             $method = new \ReflectionMethod($this, $action->actionMethod);
         } else {
             $method = new \ReflectionMethod($action, 'run');
@@ -303,7 +294,7 @@ class Controller extends \yii\base\Controller
             $class = new \ReflectionClass($action);
         }
 
-        if ($action instanceof InlineAction) {
+        if ($action instanceof \yii\base\InlineAction) {
             $class = new \ReflectionMethod($this, $action->actionMethod);
         }
 
@@ -332,7 +323,7 @@ class Controller extends \yii\base\Controller
             $class = new \ReflectionClass($this->createAction($actionID));
         }
 
-        if ($action instanceof InlineAction) {
+        if ($action instanceof \yii\base\InlineAction) {
             $class = new \ReflectionMethod($this, $action->actionMethod);
         }
 
