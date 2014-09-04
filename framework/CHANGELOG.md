@@ -231,6 +231,7 @@ Yii Framework 2 Change Log
 - Chg #3866: The `FileValidator::types` property is renamed to `FileValidator::extensions` (Ragazzo)
 - Chg #3897: Raised visibility of `yii\web\View::registerAssetFiles()` to protected (samdark)
 - Chg #3899: Moved `MailEvent` class to `yii\mail` namespace (cebe)
+- Chg #3910: Removed the `container` option from `Html::checkbox()` and `Html::radio()` (creocoder)
 - Chg #3956: Flash messages set via `Yii::$app->session->setFlash()` will be removed only if they are accessed (qiangxue)
 - Chg #3989: The default value for `yii\log\FileTarget::$rotateByCopy` now defaults to true to work on windows by default (cebe)
 - Chg #4051: Renamed `yii\caching\GroupDependency` to `TagDependency` and added support for associating multiple tags to a single cached data item (qiangxue)
