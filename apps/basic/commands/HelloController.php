@@ -27,20 +27,4 @@ class HelloController extends Controller
     {
         echo $message . "\n";
     }
-
-    public function actionTest()
-    {
-        echo 'Test?';
-    }
-
-//    public function getDescription($actionID = null)
-//    {
-//        return "I'm custom description for $actionID!";
-//    }
-
-
-    public function getHelp($actionID = null)
-    {
-        return "I'm custom help for $actionID!";
-    }
 }
