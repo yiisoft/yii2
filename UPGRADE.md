@@ -209,3 +209,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
 * The signature of callbacks used in `yii\base\ArrayableTrait::fields()` is changed from `function ($field, $model) {`
   to `function ($model, $field) {`.
+
+* `Html::radio()`, `Html::checkbox()`, `Html::radioList()`, `Html::checkboxList()` no longer generate the container
+  tag around each radio/checkbox when you specify labels for them. You should manually render such container tags,
+  or set the `item` option for `Html::radioList()`, `Html::checkboxList()` to generate the container tags.
