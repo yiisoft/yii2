@@ -16,13 +16,16 @@ use yii\helpers\Console;
 /**
  * Controller is the base class of console command classes.
  *
- * A controller consists of one or several actions known as sub-commands.
+ * A console controller consists of one or several actions known as sub-commands.
  * Users call a console command by specifying the corresponding route which identifies a controller action.
  * The `yii` program is used when calling a console command, like the following:
  *
  * ~~~
  * yii <route> [--param1=value1 --param2 ...]
  * ~~~
+ *
+ * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
+ * See [[options()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -54,7 +57,7 @@ class Controller extends \yii\base\Controller
      */
     public function isColorEnabled($stream = \STDOUT)
     {
-        return $this->color ===  null ? Console::streamSupportsAnsiColors($stream) : $this->color;
+        return $this->color === null ? Console::streamSupportsAnsiColors($stream) : $this->color;
     }
 
     /**
@@ -82,7 +85,6 @@ class Controller extends \yii\base\Controller
                 }
             }
         }
-
         return parent::runAction($id, $params);
     }
 
@@ -148,7 +150,6 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
         return $string;
     }
 
@@ -174,7 +175,6 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
         return Console::stdout($string);
     }
 
@@ -200,7 +200,6 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
         return fwrite(\STDERR, $string);
     }
 
@@ -272,7 +271,74 @@ class Controller extends \yii\base\Controller
      */
     public function options($actionID)
     {
-        // $id might be used in subclass to provide options specific to action id
+        // $actionId might be used in subclasses to provide options specific to action id
         return ['color', 'interactive'];
+    }
+
+    /**
+     * Returns one-line short summary describing this controller.
+     *
+     * You may override this method to return customized summary.
+     * The default implementation returns first line from the PHPDoc comment.
+     *
+     * @return string
+     */
+    public function getHelpSummary()
+    {
+        return HelpParser::getSummary(new \ReflectionClass($this));
+    }
+
+    /**
+     * Returns one-line short summary describing this controller action.
+     *
+     * You may override this method to return customized summary.
+     * The default implementation returns first line from the PHPDoc comment.
+     *
+     * @param string $actionID action to get summary for
+     * @return string
+     */
+    public function getActionHelpSummary($actionID)
+    {
+        $action = $this->createAction($actionID);
+        if ($action instanceof InlineAction) {
+            $class = new \ReflectionMethod($this, $action->actionMethod);
+        } else {
+            $class = new \ReflectionClass($action);
+        }
+
+        return HelpParser::getSummary($class);
+    }
+
+    /**
+     * Returns help information for this controller.
+     *
+     * You may override this method to return customized help.
+     * The default implementation returns help information retrieved from the PHPDoc comment.
+     * @return string
+     */
+    public function getHelp()
+    {
+        return HelpParser::getFull(new \ReflectionClass($this));
+    }
+
+    /**
+     * Returns help information for this controller action.
+     *
+     * You may override this method to return customized help.
+     * The default implementation returns help information retrieved from the PHPDoc comment.
+     * @param string $actionID action to get help for
+     * @return string
+     */
+    public function getActionHelp($actionID)
+    {
+        $action = $this->createAction($actionID);
+
+        if ($action instanceof InlineAction) {
+            $class = new \ReflectionMethod($this, $action->actionMethod);
+        } else {
+            $class = new \ReflectionClass($action);
+        }
+
+        return HelpParser::getFull($class);
     }
 }
