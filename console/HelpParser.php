@@ -38,7 +38,7 @@ class HelpParser
      * @param \Reflector $reflector
      * @return string
      */
-    public static function getFull(\Reflector $reflector)
+    public static function getDetail(\Reflector $reflector)
     {
         $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($reflector->getDocComment(), '/'))), "\r", '');
         if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
