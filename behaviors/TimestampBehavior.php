@@ -64,12 +64,12 @@ class TimestampBehavior extends AttributeBehavior
 {
     /**
      * @var string the attribute that will receive timestamp value
-     * Set this property to be null if you do not want to record the creation time.
+     * Set this property to false if you do not want to record the creation time.
      */
     public $createdAtAttribute = 'created_at';
     /**
      * @var string the attribute that will receive timestamp value.
-     * Set this property to be null if you do not want to record the update time.
+     * Set this property to false if you do not want to record the update time.
      */
     public $updatedAtAttribute = 'updated_at';
     /**
