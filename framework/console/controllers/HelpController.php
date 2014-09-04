@@ -62,12 +62,12 @@ class HelpController extends Controller
 
             $actions = $this->getActions($controller);
             if ($actionID !== '' || count($actions) === 1 && $actions[0] === $controller->defaultAction) {
-                $this->getControllerActionHelp($controller, $actionID);
+                $this->getSubCommandHelp($controller, $actionID);
             } else {
-                $this->getControllerHelp($controller);
+                $this->getCommandHelp($controller);
             }
         } else {
-            $this->getGlobalHelp();
+            $this->getDefaultHelp();
         }
     }
 
@@ -182,7 +182,7 @@ class HelpController extends Controller
     /**
      * Displays all available commands.
      */
-    protected function getGlobalHelp()
+    protected function getDefaultHelp()
     {
         $commands = $this->getCommandDescriptions();
         if (!empty($commands)) {
@@ -211,7 +211,7 @@ class HelpController extends Controller
      * Displays the overall information of the command.
      * @param Controller $controller the controller instance
      */
-    protected function getControllerHelp($controller)
+    protected function getCommandHelp($controller)
     {
         $controller->color = $this->color;
 
@@ -230,7 +230,7 @@ class HelpController extends Controller
                 if ($action === $controller->defaultAction) {
                     $this->stdout(' (default)', Console::FG_GREEN);
                 }
-                $summary = $this->getActionSummary($controller, $action);
+                $summary = $controller->getActionHelpSummary($controller->createAction($action));
                 if ($summary !== '') {
                     echo ': ' . $summary;
                 }
@@ -244,32 +244,12 @@ class HelpController extends Controller
     }
 
     /**
-     * Returns the short summary of the action.
-     * @param Controller $controller the controller instance
-     * @param string $actionID action ID
-     * @return string the summary about the action
-     */
-    protected function getActionSummary($controller, $actionID)
-    {
-        $description = null;
-        $action = $controller->createAction($actionID);
-
-        if ($action instanceof Action) {
-            $description = $action->getHelpSummary();
-        }
-        if ($description === null) {
-            $description = $controller->getActionHelpSummary($actionID);
-        }
-        return $description;
-    }
-
-    /**
      * Displays the detailed information of a command action.
      * @param Controller $controller the controller instance
      * @param string $actionID action ID
      * @throws Exception if the action does not exist
      */
-    protected function getControllerActionHelp($controller, $actionID)
+    protected function getSubCommandHelp($controller, $actionID)
     {
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -277,22 +257,9 @@ class HelpController extends Controller
                 'command' => rtrim($controller->getUniqueId() . '/' . $actionID, '/'),
             ]));
         }
-        $description = null;
-        if ($action instanceof InlineAction) {
-            $method = new \ReflectionMethod($controller, $action->actionMethod);
-        } else {
-            /** @var Action $action */
-            $description = $action->getHelp();
-            $method = new \ReflectionMethod($action, 'run');
-        }
 
-        $tags = $this->parseComment($method->getDocComment());
-        $options = $this->getOptionHelps($controller, $actionID);
-
-        if ($description === null) {
-            $description = $controller->getActionHelp($actionID);
-        }
-        if ($description !== '') {
+        $description = $controller->getActionHelp($action);
+        if ($description != '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
             $this->stdout("\n$description\n\n");
         }
@@ -304,6 +271,15 @@ class HelpController extends Controller
         } else {
             echo $scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW);
         }
+
+        if ($action instanceof InlineAction) {
+            $method = new \ReflectionMethod($controller, $action->actionMethod);
+        } else {
+            $method = new \ReflectionMethod($action, 'run');
+        }
+        $tags = $this->parseComment($method->getDocComment());
+        $options = $this->getOptionHelps($controller, $actionID);
+
         list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : []);
         foreach ($required as $arg => $description) {
             $this->stdout(' <' . $arg . '>', Console::FG_CYAN);
