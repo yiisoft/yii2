@@ -318,7 +318,7 @@ class Controller extends \yii\base\Controller
      */
     public function getHelp()
     {
-        return HelpParser::getFull(new \ReflectionClass($this));
+        return HelpParser::getDetail(new \ReflectionClass($this));
     }
 
     /**
@@ -339,6 +339,6 @@ class Controller extends \yii\base\Controller
             $class = new \ReflectionClass($action);
         }
 
-        return HelpParser::getFull($class);
+        return HelpParser::getDetail($class);
     }
 }
