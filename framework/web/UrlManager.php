@@ -199,7 +199,9 @@ class UrlManager extends Component
                 $rule = ['route' => $rule];
                 if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
                     $rule['verb'] = explode(',', $matches[1]);
-                    $rule['mode'] = UrlRule::PARSING_ONLY;
+                    if (!in_array('GET', $rule['verb'])) {
+                        $rule['mode'] = UrlRule::PARSING_ONLY;
+                    }
                     $key = $matches[4];
                 }
                 $rule['pattern'] = $key;
