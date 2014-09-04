@@ -43,6 +43,6 @@ class Action extends \yii\base\Action
      */
     public function getHelp()
     {
-        return HelpParser::getDescriptionForConsole(new \ReflectionClass($this));
+        return HelpParser::getFull(new \ReflectionClass($this));
     }
 }
