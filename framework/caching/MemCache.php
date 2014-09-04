@@ -70,6 +70,30 @@ class MemCache extends Cache
      */
     public $useMemcached = false;
     /**
+     * @var string an ID that identifies a Memcached instance. This property is used only when [[useMemcached]] is true.
+     * By default the Memcached instances are destroyed at the end of the request. To create an instance that
+     * persists between requests, you may specify a unique ID for the instance. All instances created with the
+     * same ID will share the same connection.
+     * @see http://ca2.php.net/manual/en/memcached.construct.php
+     */
+    public $persistentId;
+    /**
+     * @var array options for Memcached. This property is used only when [[useMemcached]] is true.
+     * @see http://ca2.php.net/manual/en/memcached.setoptions.php
+     */
+    public $options;
+    /**
+     * @var string memcached sasl username. This property is used only when [[useMemcached]] is true.
+     * @see http://php.net/manual/en/memcached.setsaslauthdata.php
+     */
+    public $username;
+    /**
+     * @var string memcached sasl password. This property is used only when [[useMemcached]] is true.
+     * @see http://php.net/manual/en/memcached.setsaslauthdata.php
+     */
+    public $password;
+
+    /**
      * @var \Memcache|\Memcached the Memcache instance
      */
     private $_cache = null;
@@ -86,50 +110,88 @@ class MemCache extends Cache
     public function init()
     {
         parent::init();
-        $servers = $this->getServers();
-        $cache = $this->getMemCache();
+        $this->addServers($this->getMemcache(), $this->getServers());
+    }
+
+    /**
+     * @param \Memcache|\Memcached $cache
+     * @param array $servers
+     * @throws InvalidConfigException
+     */
+    protected function addServers($cache, $servers)
+    {
         if (empty($servers)) {
-            $cache->addServer('127.0.0.1', 11211);
+            $servers = [new MemCacheServer([
+                'host' => '127.0.0.1',
+                'port' => 11211,
+            ])];
         } else {
-            if (!$this->useMemcached) {
-                // different version of memcache may have different number of parameters for the addServer method.
-                $class = new \ReflectionClass($cache);
-                $paramCount = $class->getMethod('addServer')->getNumberOfParameters();
-            }
             foreach ($servers as $server) {
                 if ($server->host === null) {
                     throw new InvalidConfigException("The 'host' property must be specified for every memcache server.");
                 }
-                if ($this->useMemcached) {
-                    $cache->addServer($server->host, $server->port, $server->weight);
-                } else {
-                    // $timeout is used for memcache versions that do not have timeoutms parameter
-                    $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
-                    if ($paramCount === 9) {
-                        $cache->addServer(
-                            $server->host,
-                            $server->port,
-                            $server->persistent,
-                            $server->weight,
-                            $timeout,
-                            $server->retryInterval,
-                            $server->status,
-                            $server->failureCallback,
-                            $server->timeout
-                        );
-                    } else {
-                        $cache->addServer(
-                            $server->host,
-                            $server->port,
-                            $server->persistent,
-                            $server->weight,
-                            $timeout,
-                            $server->retryInterval,
-                            $server->status,
-                            $server->failureCallback
-                        );
-                    }
-                }
+            }
+        }
+        if ($this->useMemcached) {
+            $this->addMemcachedServers($cache, $servers);
+        } else {
+            $this->addMemcacheServers($cache, $servers);
+        }
+    }
+
+    /**
+     * @param \Memcached $cache
+     * @param array $servers
+     */
+    protected function addMemcachedServers($cache, $servers)
+    {
+        $existingServers = [];
+        if ($this->persistentId !== null) {
+            foreach ($cache->getServerList() as $s) {
+                $existingServers[$s['host'] . ':' . $s['port']] = true;
+            }
+        }
+        foreach ($servers as $server) {
+            if (empty($existingServers) || !isset($existingServers[$server->host . ':' . $server->port])) {
+                $cache->addServer($server->host, $server->port, $server->weight);
+            }
+        }
+    }
+
+    /**
+     * @param \Memcache $cache
+     * @param array $servers
+     */
+    protected function addMemcacheServers($cache, $servers)
+    {
+        $class = new \ReflectionClass($cache);
+        $paramCount = $class->getMethod('addServer')->getNumberOfParameters();
+        foreach ($servers as $server) {
+            // $timeout is used for memcache versions that do not have $timeoutms parameter
+            $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
+            if ($paramCount === 9) {
+                $cache->addServer(
+                    $server->host,
+                    $server->port,
+                    $server->persistent,
+                    $server->weight,
+                    $timeout,
+                    $server->retryInterval,
+                    $server->status,
+                    $server->failureCallback,
+                    $server->timeout
+                );
+            } else {
+                $cache->addServer(
+                    $server->host,
+                    $server->port,
+                    $server->persistent,
+                    $server->weight,
+                    $timeout,
+                    $server->retryInterval,
+                    $server->status,
+                    $server->failureCallback
+                );
             }
         }
     }
@@ -146,14 +208,26 @@ class MemCache extends Cache
             if (!extension_loaded($extension)) {
                 throw new InvalidConfigException("MemCache requires PHP $extension extension to be loaded.");
             }
-            $this->_cache = $this->useMemcached ? new \Memcached : new \Memcache;
+
+            if ($this->useMemcached) {
+                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached;
+                if ($this->username !== null || $this->password !== null) {
+                    $this->_cache->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
+                    $this->_cache->setSaslAuthData($this->username, $this->password);
+                }
+                if (!empty($this->options)) {
+                    $this->_cache->setOptions($this->options);
+                }
+            } else {
+                $this->_cache = new \Memcache;
+            }
         }
 
         return $this->_cache;
     }
 
     /**
-     * Returns the memcache server configurations.
+     * Returns the memcache or memcached server configurations.
      * @return MemCacheServer[] list of memcache server configurations.
      */
     public function getServers()
@@ -162,9 +236,10 @@ class MemCache extends Cache
     }
 
     /**
-     * @param array $config list of memcache server configurations. Each element must be an array
+     * @param array $config list of memcache or memcached server configurations. Each element must be an array
      * with the following keys: host, port, persistent, weight, timeout, retryInterval, status.
-     * @see http://www.php.net/manual/en/function.Memcache-addServer.php
+     * @see http://php.net/manual/en/memcache.addserver.php
+     * @see http://php.net/manual/en/memcached.addserver.php
      */
     public function setServers($config)
     {

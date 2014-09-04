@@ -36,12 +36,12 @@ class Controller extends \yii\base\Controller
      * @var boolean whether to run the command interactively.
      */
     public $interactive = true;
-
     /**
      * @var boolean whether to enable ANSI color in the output.
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
+
 
     /**
      * Returns a value indicating whether ANSI color is enabled.
@@ -267,10 +267,10 @@ class Controller extends \yii\base\Controller
      * Note that the values setting via options are not available
      * until [[beforeAction()]] is being called.
      *
-     * @param string $actionId the action id of the current request
+     * @param string $actionID the action id of the current request
      * @return array the names of the options valid for the action
      */
-    public function options($actionId)
+    public function options($actionID)
     {
         // $id might be used in subclass to provide options specific to action id
         return ['color', 'interactive'];

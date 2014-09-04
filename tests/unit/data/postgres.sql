@@ -4,6 +4,7 @@
  * and create an account 'postgres/postgres' which owns this test database.
  */
 
+DROP TABLE IF EXISTS "composite_fk" CASCADE;
 DROP TABLE IF EXISTS "order_item" CASCADE;
 DROP TABLE IF EXISTS "item" CASCADE;
 DROP TABLE IF EXISTS "order_item_with_null_fk" CASCADE;
@@ -15,6 +16,7 @@ DROP TABLE IF EXISTS "profile" CASCADE;
 DROP TABLE IF EXISTS "type" CASCADE;
 DROP TABLE IF EXISTS "null_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
+DROP TABLE IF EXISTS "bool_values" CASCADE;
 
 CREATE TABLE "constraints"
 (
@@ -33,6 +35,7 @@ CREATE TABLE "customer" (
   name varchar(128),
   address text,
   status integer DEFAULT 0,
+  bool_status boolean DEFAULT FALSE,
   profile_id integer
 );
 
@@ -78,6 +81,14 @@ CREATE TABLE "order_item_with_null_fk" (
   subtotal decimal(10,0) NOT NULL
 );
 
+CREATE TABLE "composite_fk" (
+  id integer NOT NULL,
+  order_id integer NOT NULL,
+  item_id integer NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT FK_composite_fk_order_item FOREIGN KEY (order_id, item_id) REFERENCES "order_item" (order_id, item_id) ON DELETE CASCADE
+);
+
 CREATE TABLE "null_values" (
   id INT NOT NULL,
   var1 INT NULL,
@@ -90,6 +101,7 @@ CREATE TABLE "null_values" (
 CREATE TABLE "type" (
   int_col integer NOT NULL,
   int_col2 integer DEFAULT '1',
+  smallint_col smallint DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
   char_col3 text,
@@ -98,16 +110,25 @@ CREATE TABLE "type" (
   blob_col bytea,
   numeric_col decimal(5,2) DEFAULT '33.22',
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
-  bool_col smallint NOT NULL,
-  bool_col2 smallint DEFAULT '1'
+  bool_col boolean NOT NULL,
+  bool_col2 boolean DEFAULT TRUE,
+  ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  bit_col BIT(8) NOT NULL DEFAULT B'10000010'
+);
+
+CREATE TABLE "bool_values" (
+  id serial not null primary key,
+  bool_col bool,
+  default_true bool not null default true,
+  default_false boolean not null default false
 );
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');
 
-INSERT INTO "customer" (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
-INSERT INTO "customer" (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO "customer" (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
+INSERT INTO "customer" (email, name, address, status, bool_status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, true, 1);
+INSERT INTO "customer" (email, name, address, status, bool_status) VALUES ('user2@example.com', 'user2', 'address2', 1, true);
+INSERT INTO "customer" (email, name, address, status, bool_status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, false, 2);
 
 INSERT INTO "category" (name) VALUES ('Books');
 INSERT INTO "category" (name) VALUES ('Movies');

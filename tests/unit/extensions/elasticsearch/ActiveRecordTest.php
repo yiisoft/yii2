@@ -63,7 +63,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     {
         parent::setUp();
 
-        /** @var Connection $db */
+        /* @var $db Connection */
         $db = ActiveRecord::$db = $this->getConnection();
 
         // delete index
@@ -77,6 +77,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
         Item::setUpMapping($command);
         Order::setUpMapping($command);
         OrderItem::setUpMapping($command);
+        OrderWithNullFK::setUpMapping($command);
+        OrderItemWithNullFK::setUpMapping($command);
 
         $db->createCommand()->flushIndex('yiitest');
 
@@ -119,15 +121,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         $order = new Order();
         $order->id = 1;
-        $order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
+        $order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0, 'itemsArray' => [1, 2]], false);
         $order->save(false);
         $order = new Order();
         $order->id = 2;
-        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0, 'itemsArray' => [4, 5, 3]], false);
         $order->save(false);
         $order = new Order();
         $order->id = 3;
-        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0, 'itemsArray' => [2]], false);
         $order->save(false);
 
         $orderItem = new OrderItem();
@@ -149,7 +151,49 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
         $orderItem->save(false);
 
+        $order = new OrderWithNullFK();
+        $order->id = 1;
+        $order->setAttributes(['customer_id' => 1, 'created_at' => 1325282384, 'total' => 110.0], false);
+        $order->save(false);
+        $order = new OrderWithNullFK();
+        $order->id = 2;
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325334482, 'total' => 33.0], false);
+        $order->save(false);
+        $order = new OrderWithNullFK();
+        $order->id = 3;
+        $order->setAttributes(['customer_id' => 2, 'created_at' => 1325502201, 'total' => 40.0], false);
+        $order->save(false);
+
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 2, 'quantity' => 2, 'subtotal' => 40.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 4, 'quantity' => 1, 'subtotal' => 10.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 5, 'quantity' => 1, 'subtotal' => 15.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 2, 'item_id' => 3, 'quantity' => 1, 'subtotal' => 8.0], false);
+        $orderItem->save(false);
+        $orderItem = new OrderItemWithNullFK();
+        $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
+        $orderItem->save(false);
+
         $db->createCommand()->flushIndex('yiitest');
+    }
+
+    public function testSaveNoChanges()
+    {
+        // this should not fail with exception
+        $customer = new Customer();
+        // insert
+        $customer->save(false);
+        // update
+        $customer->save(false);
     }
 
     public function testFindAsArray()
@@ -253,7 +297,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindLazy()
     {
-        /** @var $customer Customer */
+        /* @var $customer Customer */
         $customer = Customer::findOne(2);
         $orders = $customer->orders;
         $this->assertEquals(2, count($orders));
@@ -347,8 +391,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindLazyVia2()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
-        /** @var Order $order */
+        /* @var $this TestCase|ActiveRecordTestTrait */
+        /* @var $order Order */
         $orderClass = $this->getOrderClass();
         $pkName = 'id';
 
@@ -408,7 +452,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindAsArrayFields()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->asArray()->fields(['id', 'name'])->all();
         $this->assertEquals(3, count($customers));
@@ -431,7 +475,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindAsArraySourceFilter()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->asArray()->source(['id', 'name'])->all();
         $this->assertEquals(3, count($customers));
@@ -456,7 +500,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     public function testFindIndexBySource()
     {
         $customerClass = $this->getCustomerClass();
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->indexBy('name')->source('id', 'name')->all();
         $this->assertEquals(3, count($customers));
@@ -506,7 +550,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindIndexByAsArrayFields()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->indexBy('name')->asArray()->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
@@ -550,10 +594,10 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testFindIndexByAsArray()
     {
-        /** @var \yii\db\ActiveRecordInterface $customerClass */
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
 
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = $customerClass::find()->asArray()->indexBy('name')->all();
         $this->assertEquals(3, count($customers));
@@ -597,12 +641,12 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testAfterFindGet()
     {
-        /** @var BaseActiveRecord $customerClass */
+        /* @var $customerClass BaseActiveRecord */
         $customerClass = $this->getCustomerClass();
 
         $afterFindCalls = [];
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
-            /** @var BaseActiveRecord $ar */
+            /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
             $afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
@@ -622,6 +666,164 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
     }
+
+    public function testFindEmptyPkCondition()
+    {
+        /* @var $this TestCase|ActiveRecordTestTrait */
+        /* @var $orderItemClass \yii\db\ActiveRecordInterface */
+        $orderItemClass = $this->getOrderItemClass();
+        $orderItem = new $orderItemClass();
+        $orderItem->setAttributes(['order_id' => 1, 'item_id' => 1, 'quantity' => 1, 'subtotal' => 30.0], false);
+        $orderItem->save(false);
+        $this->afterSave();
+
+        $orderItems = $orderItemClass::find()->where(['_id' => [$orderItem->getPrimaryKey()]])->all();
+        $this->assertEquals(1, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['_id' => []])->all();
+        $this->assertEquals(0, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['_id' => null])->all();
+        $this->assertEquals(0, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['IN', '_id', [$orderItem->getPrimaryKey()]])->all();
+        $this->assertEquals(1, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['IN', '_id', []])->all();
+        $this->assertEquals(0, count($orderItems));
+
+        $orderItems = $orderItemClass::find()->where(['IN', '_id', [null]])->all();
+        $this->assertEquals(0, count($orderItems));
+    }
+
+    public function testArrayAttributes()
+    {
+        $this->assertTrue(is_array(Order::findOne(1)->itemsArray));
+        $this->assertTrue(is_array(Order::findOne(2)->itemsArray));
+        $this->assertTrue(is_array(Order::findOne(3)->itemsArray));
+    }
+
+    public function testArrayAttributeRelationLazy()
+    {
+        $order = Order::findOne(1);
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue($items[1] instanceof Item);
+        $this->assertTrue($items[2] instanceof Item);
+
+        $order = Order::findOne(2);
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[3]));
+        $this->assertTrue(isset($items[4]));
+        $this->assertTrue(isset($items[5]));
+        $this->assertTrue($items[3] instanceof Item);
+        $this->assertTrue($items[4] instanceof Item);
+        $this->assertTrue($items[5] instanceof Item);
+    }
+
+    public function testArrayAttributeRelationEager()
+    {
+        /* @var $order Order */
+        $order = Order::find()->with('itemsByArrayValue')->where(['id' => 1])->one();
+        $this->assertTrue($order->isRelationPopulated('itemsByArrayValue'));
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue($items[1] instanceof Item);
+        $this->assertTrue($items[2] instanceof Item);
+
+        /* @var $order Order */
+        $order = Order::find()->with('itemsByArrayValue')->where(['id' => 2])->one();
+        $this->assertTrue($order->isRelationPopulated('itemsByArrayValue'));
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[3]));
+        $this->assertTrue(isset($items[4]));
+        $this->assertTrue(isset($items[5]));
+        $this->assertTrue($items[3] instanceof Item);
+        $this->assertTrue($items[4] instanceof Item);
+        $this->assertTrue($items[5] instanceof Item);
+    }
+
+    public function testArrayAttributeRelationLink()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $item = Item::get(5);
+        $order->link('itemsByArrayValue', $item);
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue(isset($items[5]));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(3, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+        $this->assertTrue(isset($items[5]));
+    }
+
+    public function testArrayAttributeRelationUnLink()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $item = Item::get(2);
+        $order->unlink('itemsByArrayValue', $item);
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertFalse(isset($items[2]));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertFalse(isset($items[2]));
+    }
+
+    public function testArrayAttributeRelationUnLinkAll()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(2, count($items));
+        $this->assertTrue(isset($items[1]));
+        $this->assertTrue(isset($items[2]));
+
+        $order->unlinkAll('itemsByArrayValue');
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(0, count($items));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(0, count($items));
+    }
+
 
     // TODO test AR with not mapped PK
 }

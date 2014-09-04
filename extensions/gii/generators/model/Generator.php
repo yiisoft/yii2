@@ -32,6 +32,7 @@ class Generator extends \yii\gii\Generator
     public $generateLabelsFromComments = false;
     public $useTablePrefix = false;
 
+
     /**
      * @inheritdoc
      */
@@ -55,6 +56,8 @@ class Generator extends \yii\gii\Generator
     {
         return array_merge(parent::rules(), [
             [['db', 'ns', 'tableName', 'modelClass', 'baseClass'], 'filter', 'filter' => 'trim'],
+            [['ns'], 'filter', 'filter' => function($value) { return trim($value, '\\'); }],
+
             [['db', 'ns', 'tableName', 'baseClass'], 'required'],
             [['db', 'modelClass'], 'match', 'pattern' => '/^\w+$/', 'message' => 'Only word characters are allowed.'],
             [['ns', 'baseClass'], 'match', 'pattern' => '/^[\w\\\\]+$/', 'message' => 'Only word characters and backslashes are allowed.'],
@@ -194,7 +197,7 @@ class Generator extends \yii\gii\Generator
                 $labels[$column->name] = 'ID';
             } else {
                 $label = Inflector::camel2words($column->name);
-                if (strcasecmp(substr($label, -3), ' id') === 0) {
+                if (!empty($label) && substr_compare($label, ' id', -3, 3, true) === 0) {
                     $label = substr($label, 0, -3) . ' ID';
                 }
                 $labels[$column->name] = $label;
@@ -320,10 +323,14 @@ class Generator extends \yii\gii\Generator
 
                 // Add relation for the referenced table
                 $hasMany = false;
-                foreach ($fks as $key) {
-                    if (!in_array($key, $table->primaryKey, true)) {
-                        $hasMany = true;
-                        break;
+                if (count($table->primaryKey) > count($fks)) {
+                    $hasMany = true;
+                } else {
+                    foreach ($fks as $key) {
+                        if (!in_array($key, $table->primaryKey, true)) {
+                            $hasMany = true;
+                            break;
+                        }
                     }
                 }
                 $link = $this->generateRelationLink($refs);
@@ -422,7 +429,7 @@ class Generator extends \yii\gii\Generator
      */
     protected function generateRelationName($relations, $className, $table, $key, $multiple)
     {
-        if (strcasecmp(substr($key, -2), 'id') === 0 && strcasecmp($key, 'id')) {
+        if (!empty($key) && substr_compare($key, 'id', -2, 2, true) === 0 && strcasecmp($key, 'id')) {
             $key = rtrim(substr($key, 0, -2), '_');
         }
         if ($multiple) {
@@ -472,7 +479,7 @@ class Generator extends \yii\gii\Generator
         if ($this->isReservedKeyword($this->modelClass)) {
             $this->addError('modelClass', 'Class name cannot be a reserved PHP keyword.');
         }
-        if (substr($this->tableName, -1) !== '*' && $this->modelClass == '') {
+        if ((empty($this->tableName) || substr_compare($this->tableName, '*', -1)) && $this->modelClass == '') {
             $this->addError('modelClass', 'Model Class cannot be blank if table name does not end with asterisk.');
         }
     }
@@ -482,7 +489,7 @@ class Generator extends \yii\gii\Generator
      */
     public function validateTableName()
     {
-        if (strpos($this->tableName, '*') !== false && substr($this->tableName, -1) !== '*') {
+        if (strpos($this->tableName, '*') !== false && substr_compare($this->tableName, '*', -1)) {
             $this->addError('tableName', 'Asterisk is only allowed as the last character.');
 
             return;
@@ -501,16 +508,16 @@ class Generator extends \yii\gii\Generator
         }
     }
 
-    private $_tableNames;
-    private $_classNames;
+    protected $tableNames;
+    protected $classNames;
 
     /**
      * @return array the table names that match the pattern specified by [[tableName]].
      */
     protected function getTableNames()
     {
-        if ($this->_tableNames !== null) {
-            return $this->_tableNames;
+        if ($this->tableNames !== null) {
+            return $this->tableNames;
         }
         $db = $this->getDbConnection();
         if ($db === null) {
@@ -533,10 +540,10 @@ class Generator extends \yii\gii\Generator
             }
         } elseif (($table = $db->getTableSchema($this->tableName, true)) !== null) {
             $tableNames[] = $this->tableName;
-            $this->_classNames[$this->tableName] = $this->modelClass;
+            $this->classNames[$this->tableName] = $this->modelClass;
         }
 
-        return $this->_tableNames = $tableNames;
+        return $this->tableNames = $tableNames;
     }
 
     /**
@@ -567,8 +574,8 @@ class Generator extends \yii\gii\Generator
      */
     protected function generateClassName($tableName)
     {
-        if (isset($this->_classNames[$tableName])) {
-            return $this->_classNames[$tableName];
+        if (isset($this->classNames[$tableName])) {
+            return $this->classNames[$tableName];
         }
 
         if (($pos = strrpos($tableName, '.')) !== false) {
@@ -594,7 +601,7 @@ class Generator extends \yii\gii\Generator
             }
         }
 
-        return $this->_classNames[$tableName] = Inflector::id2camel($className, '_');
+        return $this->classNames[$tableName] = Inflector::id2camel($className, '_');
     }
 
     /**

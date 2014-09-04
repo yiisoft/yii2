@@ -5,6 +5,7 @@ Yii Framework 2 composer extension Change Log
 --------------------------
 
 - Bug #3438: Fixed support for non-lowercase package names (cebe)
+- Chg: Added `yii\composer\Installer::postCreateProject()` and modified the syntax of calling installer methods in composer.json (qiangxue)
 
 2.0.0-beta April 13, 2014
 -------------------------

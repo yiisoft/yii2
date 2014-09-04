@@ -24,6 +24,12 @@ class UrlTest extends TestCase
                     'hostInfo' => 'http://example.com/',
                     'url' => '/base/index.php&r=site%2Fcurrent&id=42'
                 ],
+                'urlManager' => [
+                    'class' => 'yii\web\UrlManager',
+                    'baseUrl' => '/base',
+                    'scriptUrl' => '/base/index.php',
+                    'hostInfo' => 'http://example.com/',
+                ]
             ],
         ], '\yii\web\Application');
     }
@@ -32,15 +38,15 @@ class UrlTest extends TestCase
      * Mocks controller action with parameters
      *
      * @param string $controllerId
-     * @param string $actionId
+     * @param string $actionID
      * @param string $moduleID
      * @param array  $params
      */
-    protected function mockAction($controllerId, $actionId, $moduleID = null, $params = [])
+    protected function mockAction($controllerId, $actionID, $moduleID = null, $params = [])
     {
         \Yii::$app->controller = $controller = new Controller($controllerId, \Yii::$app);
         $controller->actionParams = $params;
-        $controller->action = new Action($actionId, $controller);
+        $controller->action = new Action($actionID, $controller);
 
         if ($moduleID !== null) {
             $controller->module = new Module($moduleID);
@@ -115,13 +121,27 @@ class UrlTest extends TestCase
         \Yii::setAlias('@web4', '/test');
         \Yii::setAlias('@web5', '#test');
 
+        $this->assertEquals('test/me1', Url::to('test/me1'));
+        $this->assertEquals('javascript:test/me1', Url::to('javascript:test/me1'));
+        $this->assertEquals('java/script:test/me1', Url::to('java/script:test/me1'));
+        $this->assertEquals('#test/me1', Url::to('#test/me1'));
+        $this->assertEquals('.test/me1', Url::to('.test/me1'));
+        $this->assertEquals('http://example.com/test/me1', Url::to('test/me1', true));
+        $this->assertEquals('https://example.com/test/me1', Url::to('test/me1', 'https'));
+        $this->assertEquals('https://example.com/test/test/me1', Url::to('@web4/test/me1', 'https'));
+
+        $this->assertEquals('/test/me1', Url::to('/test/me1'));
+        $this->assertEquals('http://example.com/test/me1', Url::to('/test/me1', true));
+        $this->assertEquals('https://example.com/test/me1', Url::to('/test/me1', 'https'));
+        $this->assertEquals('./test/me1', Url::to('./test/me1'));
+
         $this->assertEquals('http://test.example.com/test/me1', Url::to('@web1'));
         $this->assertEquals('http://test.example.com/test/me1', Url::to('@web1', true));
         $this->assertEquals('https://test.example.com/test/me1', Url::to('@web1', 'https'));
 
-        $this->assertEquals('/base/test/me2', Url::to('@web2'));
-        $this->assertEquals('http://example.com/base/test/me2', Url::to('@web2', true));
-        $this->assertEquals('https://example.com/base/test/me2', Url::to('@web2', 'https'));
+        $this->assertEquals('test/me2', Url::to('@web2'));
+        $this->assertEquals('http://example.com/test/me2', Url::to('@web2', true));
+        $this->assertEquals('https://example.com/test/me2', Url::to('@web2', 'https'));
 
         $this->assertEquals('/base/index.php&r=site%2Fcurrent&id=42', Url::to('@web3'));
         $this->assertEquals('http://example.com/base/index.php&r=site%2Fcurrent&id=42', Url::to('@web3', true));

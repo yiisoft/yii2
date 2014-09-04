@@ -26,6 +26,7 @@ class Generator extends \yii\gii\Generator
     public $viewName;
     public $scenarioName;
 
+
     /**
      * @inheritdoc
      */
@@ -147,8 +148,8 @@ EOD;
      */
     public function getModelAttributes()
     {
-        /** @var Model $model */
-        $model = new $this->modelClass;
+        /* @var $model Model */
+        $model = new $this->modelClass();
         if (!empty($this->scenarioName)) {
             $model->setScenario($this->scenarioName);
         }

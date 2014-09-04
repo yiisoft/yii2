@@ -35,7 +35,7 @@ trait ArrayableTrait
      * returning the corresponding field value. The signature of the callable should be:
      *
      * ```php
-     * function ($field, $model) {
+     * function ($model, $field) {
      *     // return field value
      * }
      * ```
@@ -118,7 +118,7 @@ trait ArrayableTrait
     {
         $data = [];
         foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
-            $data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $field, $this);
+            $data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $this, $field);
         }
 
         if ($this instanceof Linkable) {

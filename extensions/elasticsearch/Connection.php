@@ -10,6 +10,7 @@ namespace yii\elasticsearch;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\helpers\Json;
 
 /**
@@ -45,7 +46,6 @@ class Connection extends Component
      * @var array the active node. key of [[nodes]]. Will be randomly selected on [[open()]].
      */
     public $activeNode;
-
     // TODO http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
     public $auth = [];
     /**
@@ -60,6 +60,7 @@ class Connection extends Component
      * If not set, no explicit timeout will be set for curl.
      */
     public $dataTimeout = null;
+
 
     public function init()
     {
@@ -381,7 +382,7 @@ class Connection extends Component
                 'requestUrl' => $url,
                 'requestBody' => $requestBody,
                 'responseHeaders' => $headers,
-                'responseBody' => $body,
+                'responseBody' => $this->decodeErrorBody($body),
             ]);
         }
 
@@ -403,7 +404,7 @@ class Connection extends Component
                         'requestBody' => $requestBody,
                         'responseCode' => $responseCode,
                         'responseHeaders' => $headers,
-                        'responseBody' => $body,
+                        'responseBody' => $this->decodeErrorBody($body),
                     ]);
                 }
                 if (isset($headers['content-type']) && !strncmp($headers['content-type'], 'application/json', 16)) {
@@ -415,7 +416,7 @@ class Connection extends Component
                     'requestBody' => $requestBody,
                     'responseCode' => $responseCode,
                     'responseHeaders' => $headers,
-                    'responseBody' => $body,
+                    'responseBody' => $this->decodeErrorBody($body),
                 ]);
             }
         } elseif ($responseCode == 404) {
@@ -427,8 +428,26 @@ class Connection extends Component
                 'requestBody' => $requestBody,
                 'responseCode' => $responseCode,
                 'responseHeaders' => $headers,
-                'responseBody' => $body,
+                'responseBody' => $this->decodeErrorBody($body),
             ]);
+        }
+    }
+
+    /**
+     * Try to decode error information if it is valid json, return it if not.
+     * @param $body
+     * @return mixed
+     */
+    protected function decodeErrorBody($body)
+    {
+        try {
+            $decoded = Json::decode($body);
+            if (isset($decoded['error'])) {
+                $decoded['error'] = preg_replace('/\b\w+?Exception\[/', "<span style=\"color: red;\">\\0</span>\n               ", $decoded['error']);
+            }
+            return $decoded;
+        } catch(InvalidParamException $e) {
+            return $body;
         }
     }
 

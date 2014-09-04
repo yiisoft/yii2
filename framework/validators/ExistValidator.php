@@ -61,11 +61,11 @@ class ExistValidator extends Validator
      * is the [[\yii\db\Query|Query]] object that you can modify in the function.
      */
     public $filter;
-
     /**
      * @var boolean whether to allow array type attribute.
      */
     public $allowArray = false;
+
 
     /**
      * @inheritdoc
@@ -151,7 +151,7 @@ class ExistValidator extends Validator
      */
     protected function createQuery($targetClass, $condition)
     {
-        /** @var \yii\db\ActiveRecordInterface $targetClass */
+        /* @var $targetClass \yii\db\ActiveRecordInterface */
         $query = $targetClass::find()->where($condition);
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);

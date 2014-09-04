@@ -146,7 +146,7 @@ interface ActiveRecordInterface
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
      *
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @return static|ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      */
     public static function find();
 
@@ -391,4 +391,10 @@ interface ActiveRecordInterface
      * If true, the model containing the foreign key will be deleted.
      */
     public function unlink($name, $model, $delete = false);
+
+    /**
+     * Returns the connection used by this AR class.
+     * @return mixed the database connection used by this AR class.
+     */
+    public static function getDb();
 }

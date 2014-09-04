@@ -110,6 +110,35 @@ table.summary-table .col-defined  { width: 15%; }
     text-decoration: none;
 }
 
+.hashlink {
+    display: none;
+}
+
+h1:hover .hashlink, h2:hover .hashlink, h3:hover .hashlink, h4:hover .hashlink, h5:hover .hashlink {
+    display: inline;
+}
+
+.toplink {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+
+    padding: 5px 8px 0 5px;
+
+    border: solid 1px #ddd;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.toplink a {
+    color: #bbb;
+    text-decoration: none;
+}
+
+.toplink a:hover {
+    color: #999;
+    text-decoration: none;
+}
 
 #search-resultbox {
     position: fixed;

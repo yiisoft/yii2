@@ -20,15 +20,16 @@ class SameAs extends Base
      */
     public $partial = false;
 
+
     /**
      * @inheritdoc
      */
     public function match($value)
     {
-        if (!$this->partial) {
-            return (mb_strtolower($this->baseValue, 'utf8') == mb_strtolower($value, 'utf8'));
+        if ($this->partial) {
+            return mb_stripos($value, $this->baseValue, 0, \Yii::$app->charset) !== false;
         } else {
-            return (mb_strpos(mb_strtolower($value, 'utf8'), mb_strtolower($this->baseValue, 'utf8')) !== false);
+            return strcmp(mb_strtoupper($this->baseValue, \Yii::$app->charset), mb_strtoupper($value, \Yii::$app->charset)) === 0;
         }
     }
 }

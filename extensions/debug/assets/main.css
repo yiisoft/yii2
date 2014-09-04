@@ -93,3 +93,7 @@ a.desc:after {
     width: 12%;
     font-weight: bold;
 }
+
+.nowrap {
+    white-space: nowrap;
+}

@@ -24,7 +24,7 @@ Getting Started
 * [Working with Forms](start-forms.md)
 * [Working with Databases](start-databases.md)
 * [Generating Code with Gii](start-gii.md)
-* [Looking Ahead](start-looking-head.md)
+* [Looking Ahead](start-looking-ahead.md)
 
 
 Application Structure
@@ -35,13 +35,13 @@ Application Structure
 * [Applications](structure-applications.md)
 * [Application Components](structure-application-components.md)
 * [Controllers](structure-controllers.md)
-* [Views](structure-views.md)
 * [Models](structure-models.md)
-* **TBD** [Filters](structure-filters.md)
-* **TBD** [Widgets](structure-widgets.md)
-* **TBD** [Modules](structure-modules.md)
-* [Assets](structure-assets.md)
-* **TBD** [Extensions](structure-extensions.md)
+* [Views](structure-views.md)
+* [Modules](structure-modules.md)
+* [Filters](structure-filters.md)
+* [Widgets](structure-widgets.md)
+* [Asset Bundles](structure-assets.md)
+* [Extensions](structure-extensions.md)
 
 
 Handling Requests
@@ -74,10 +74,10 @@ Key Concepts
 Working with Databases
 ----------------------
 
-* [Data Access Objects](db-dao.md) - Connecting to a database, basic queries, transactions and schema manipulation
-* [Query Builder](db-query-builder.md) - Querying the database using a simple abstraction layer
-* [Active Record](db-active-record.md) - The active record ORM, retrieving and manipulating records and defining relations
-* [Migrations](db-migrations.md) - Version control your databases in a team development environment
+* [Data Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
+* [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
+* [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
+* [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
@@ -88,9 +88,9 @@ Getting Data from Users
 -----------------------
 
 * [Creating Forms](input-forms.md)
-* [Input Validation](input-validation.md)
-* **TBD** [Uploading Files](input-file-uploading.md)
-* **TBD** [Inputs for Multiple Models](input-multiple-models.md)
+* [Validating Input](input-validation.md)
+* **TBD** [Uploading Files](input-file-upload.md)
+* **TBD** [Getting Data for Multiple Models](input-multiple-models.md)
 
 
 Displaying Data
@@ -101,6 +101,7 @@ Displaying Data
 * **TBD** [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
 * [Data Widgets](output-data-widgets.md)
+* [Working with Client Scripts](output-client-scripts.md)
 * [Theming](output-theming.md)
 
 
@@ -150,21 +151,11 @@ Testing
 -------
 
 * [Overview](test-overview.md)
-* **TBD** [Unit Tests](test-unit.md)
-* **TBD** [Functional Tests](test-functional.md)
-* **TBD** [Acceptance Tests](test-acceptance.md)
+* [Testing environment setup](test-endvironment-setup.md)
+* [Unit Tests](test-unit.md)
+* [Functional Tests](test-functional.md)
+* [Acceptance Tests](test-acceptance.md)
 * [Fixtures](test-fixtures.md)
-
-
-Extending Yii
--------------
-
-* [Creating Extensions](extend-creating-extensions.md)
-* [Customizing Core Code](extend-customizing-core.md)
-* [Using 3rd-Party Libraries](extend-using-libs.md)
-* **TBD** [Using Yii in 3rd-Party Systems](extend-embedding-in-others.md)
-* **TBD** [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md)
-* [Using Composer](extend-using-composer.md)
 
 
 Special Topics
@@ -173,11 +164,13 @@ Special Topics
 * [Advanced Application Template](tutorial-advanced-app.md)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
+* [Core Validators](tutorial-core-validators.md)
 * [Internationalization](tutorial-i18n.md)
 * [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
 * **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
+* [Working with Third-Party Code](tutorial-yii-integration.md)
 
 
 Widgets
@@ -191,8 +184,8 @@ Widgets
 * Menu: link to demo page
 * LinkPager: link to demo page
 * LinkSorter: link to demo page
-* [Bootstrap Widgets](bootstrap-widgets.md)
-* **TBD** [Jquery UI Widgets](jui-widgets.md)
+* [Bootstrap Widgets](widget-bootstrap.md)
+* [Jquery UI Widgets](widget-jui.md)
 
 
 Helpers

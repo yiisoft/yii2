@@ -108,18 +108,22 @@ CREATE TABLE null_values (
 );
 
 CREATE TABLE `type` (
-  `int_col` int(11) NOT NULL,
-  `int_col2` int(11) DEFAULT '1',
+  `int_col` integer NOT NULL,
+  `int_col2` integer DEFAULT '1',
+  `smallint_col` smallint(1) DEFAULT '1',
   `char_col` char(100) NOT NULL,
   `char_col2` varchar(100) DEFAULT 'something',
   `char_col3` text,
+  `enum_col` enum('a', 'B'),
   `float_col` double(4,3) NOT NULL,
   `float_col2` double DEFAULT '1.23',
   `blob_col` blob,
   `numeric_col` decimal(5,2) DEFAULT '33.22',
   `time` timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   `bool_col` tinyint(1) NOT NULL,
-  `bool_col2` tinyint(1) DEFAULT '1'
+  `bool_col2` tinyint(1) DEFAULT '1',
+  `ts_default` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `bit_col` BIT(8) NOT NULL DEFAULT b'10000010'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `profile` (description) VALUES ('profile customer 1');

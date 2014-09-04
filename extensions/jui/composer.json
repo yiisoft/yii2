@@ -1,26 +1,28 @@
 {
-	"name": "yiisoft/yii2-jui",
-	"description": "The Jquery UI extension for the Yii framework",
-	"keywords": ["yii2", "Jquery UI", "renderer"],
-	"type": "yii2-extension",
-	"license": "BSD-3-Clause",
-	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Ajui",
-		"forum": "http://www.yiiframework.com/forum/",
-		"wiki": "http://www.yiiframework.com/wiki/",
-		"irc": "irc://irc.freenode.net/yii",
-		"source": "https://github.com/yiisoft/yii2"
-	},
-	"authors": [
-		{
-			"name": "Qiang Xue",
-			"email": "qiang.xue@gmail.com"
-		}
-	],
-	"require": {
-		"yiisoft/yii2": "*"
-	},
-	"autoload": {
-		"psr-4": { "yii\\jui\\": "" }
-	}
+    "name": "yiisoft/yii2-jui",
+    "description": "The Jquery UI extension for the Yii framework",
+    "keywords": ["yii2", "Jquery UI"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Ajui",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "http://www.yiiframework.com/wiki/",
+        "irc": "irc://irc.freenode.net/yii",
+        "source": "https://github.com/yiisoft/yii2"
+    },
+    "authors": [
+        {
+            "name": "Qiang Xue",
+            "email": "qiang.xue@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "yii\\jui\\": ""
+        }
+    }
 }

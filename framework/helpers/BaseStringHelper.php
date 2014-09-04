@@ -34,13 +34,14 @@ class BaseStringHelper
      * This method ensures the string is treated as a byte array by using `mb_substr()`.
      * @param string $string the input string. Must be one character or longer.
      * @param integer $start the starting position
-     * @param integer $length the desired portion length
+     * @param integer $length the desired portion length. If not specified or `null`, there will be
+     * no limit on length i.e. the output will be until the end of the string.
      * @return string the extracted part of string, or FALSE on failure or an empty string.
      * @see http://www.php.net/manual/en/function.substr.php
      */
-    public static function byteSubstr($string, $start, $length)
+    public static function byteSubstr($string, $start, $length = null)
     {
-        return mb_substr($string, $start, $length, '8bit');
+        return mb_substr($string, $start, $length === null ? mb_strlen($string, '8bit') : $length, '8bit');
     }
 
     /**

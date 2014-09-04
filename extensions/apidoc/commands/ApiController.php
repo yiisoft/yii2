@@ -28,8 +28,8 @@ class ApiController extends BaseController
      */
     public $guide;
 
-    // TODO add force update option
 
+    // TODO add force update option
     /**
      * Renders API documentation files
      * @param array $sourceDirs
@@ -159,8 +159,8 @@ class ApiController extends BaseController
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        return array_merge(parent::options($actionId), ['template', 'guide']);
+        return array_merge(parent::options($actionID), ['template', 'guide']);
     }
 }

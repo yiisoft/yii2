@@ -40,7 +40,7 @@ use yii\helpers\Html;
                 <p><?php echo Html::encode($error)?></p>
             <?php endforeach ?>
             <?php if(!empty($result['diff'])):?>
-                <code class="diff"><pre><?php echo $this->highlightDiff($result['diff'])?></pre></code>
+                <code class="diff"><pre><?php echo $this->context->highlightDiff($result['diff'])?></pre></code>
             <?php endif?>
         <?php endforeach ?>
     </body>

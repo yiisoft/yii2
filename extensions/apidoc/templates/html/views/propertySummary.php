@@ -5,12 +5,10 @@ use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\TraitDoc;
 use yii\helpers\ArrayHelper;
 
-/**
- * @var ClassDoc|TraitDoc $type
- * @var boolean $protected
- * @var yii\web\View $this
- * @var \yii\apidoc\templates\html\ApiRenderer $renderer
- */
+/* @var $type ClassDoc|TraitDoc */
+/* @var $protected boolean */
+/* @var $this yii\web\View */
+/* @var $renderer \yii\apidoc\templates\html\ApiRenderer */
 
 $renderer = $this->context;
 

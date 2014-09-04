@@ -21,7 +21,7 @@ In general your application configuration should look like:
 return [
     //....
     'components' => [
-        'mail' => [
+        'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
         ],
     ],
@@ -32,10 +32,10 @@ return [
 Basic usage
 -----------
 
-Once 'mail' component is configured, you can use the following code to send an email message:
+Once 'mailer' component is configured, you can use the following code to send an email message:
 
 ```php
-Yii::$app->mail->compose()
+Yii::$app->mailer->compose()
     ->setFrom('from@domain.com')
     ->setTo('to@domain.com')
     ->setSubject('Message subject')
@@ -48,7 +48,7 @@ In above example method `compose()` creates an instance of the mail message, whi
 You may put more complex logic in this process if needed:
 
 ```php
-$message = Yii::$app->mail->compose();
+$message = Yii::$app->mailer->compose();
 if (Yii::$app->user->isGuest) {
     $message->setFrom('from@domain.com')
 } else {
@@ -60,7 +60,7 @@ $message->setTo(Yii::$app->params['adminEmail'])
     ->send();
 ```
 
-> Note: each 'mail' extension comes in 2 major classes: 'Mailer' and 'Message'. 'Mailer' always knows
+> Note: each 'mailer' extension comes in 2 major classes: 'Mailer' and 'Message'. 'Mailer' always knows
   the class name and specific of the 'Message'. Do not attempt ot instantiate 'Message' object directly -
   always use `compose()` method for it.
 
@@ -69,11 +69,11 @@ You may also send several messages at once:
 ```php
 $messages = [];
 foreach ($users as $user) {
-    $messages[] = Yii::$app->mail->compose()
+    $messages[] = Yii::$app->mailer->compose()
         // ...
         ->setTo($user->email);
 }
-Yii::$app->mail->sendMultiple($messages);
+Yii::$app->mailer->sendMultiple($messages);
 ```
 
 Some particular mail extensions may benefit from this approach, using single network message etc.
@@ -92,10 +92,10 @@ Example mail view file content:
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-/**
- * @var \yii\web\View $this view component instance
- * @var \yii\mail\BaseMessage $message instance of newly created mail message
- */
+
+/* @var $this \yii\web\View view component instance */
+/* @var $message \yii\mail\BaseMessage instance of newly created mail message */
+
 ?>
 <h2>This message allows you to visit out site home page by one click</h2>
 <?= Html::a('Go to home page', Url::home('http')) ?>
@@ -104,7 +104,7 @@ use yii\helpers\Url;
 In order to compose message content via view file simply pass view name to the `compose()` method:
 
 ```php
-Yii::$app->mail->compose('home-link') // message body becomes a view rendering result here
+Yii::$app->mailer->compose('home-link') // message body becomes a view rendering result here
     ->setFrom('from@domain.com')
     ->setTo('to@domain.com')
     ->setSubject('Message subject')
@@ -114,7 +114,7 @@ Yii::$app->mail->compose('home-link') // message body becomes a view rendering r
 You may pass additional view parameters to `compose()` method, which will be available inside the view files:
 
 ```php
-Yii::$app->mail->compose('greetings', [
+Yii::$app->mailer->compose('greetings', [
     'user' => Yii::$app->user->identity,
     'advertisement' => $adContent,
 ]);
@@ -123,7 +123,7 @@ Yii::$app->mail->compose('greetings', [
 You can specify different view files for HTML and plain text message contents:
 
 ```php
-Yii::$app->mail->compose([
+Yii::$app->mailer->compose([
     'html' => 'contact-html',
     'text' => 'contact-text',
 ]);
@@ -140,10 +140,9 @@ Layout can be used to setup mail CSS styles or other shared content:
 <?php
 use yii\helpers\Html;
 
-/**
- * @var \yii\web\View $this view component instance
- * @var string $content main view render result
- */
+/* @var $this \yii\web\View view component instance */
+/* @var $message \yii\mail\MessageInterface the message being composed */
+/* @var $content string main view render result */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -174,7 +173,7 @@ File attachment
 You can add attachments to message using methods `attach()` and `attachContent()`:
 
 ```php
-$message = Yii::$app->mail->compose();
+$message = Yii::$app->mailer->compose();
 
 // Attach file from local file system:
 $message->attach('/path/to/source/file.pdf');
@@ -192,7 +191,7 @@ which should be then used at 'img' tag.
 This method is easy to use when composing message content via view file:
 
 ```php
-Yii::$app->mail->compose('embed-email', ['imageFileName' => '/path/to/image.jpg'])
+Yii::$app->mailer->compose('embed-email', ['imageFileName' => '/path/to/image.jpg'])
     // ...
     ->send();
 ```
@@ -202,6 +201,23 @@ Then inside view file you can use following code:
 ```php
 <img src="<?= $message->embed($imageFileName); ?>">
 ```
+
+
+Testing and debugging
+---------------------
+
+Developer often a to check, what actual emails are sent by application, what was their content and so on.
+Such ability is granted by Yii via `yii\mail\BaseMailer::useFileTransport`. If enabled, this option enforces
+saving mail message data into the local files instead of regular sending. These files will be saved under
+`yii\mail\BaseMailer::fileTransportPath`, which is '@runtime/mail' by default.
+
+> Note: you can either save messages to the file or send them to actual recipients, but can not do both simultaneously.
+
+Mail message file can be opened by regular text file editor, so you can browse actual message headers, content and so on.
+This mechanism amy prove itself, while debugging application or running unit test.
+
+> Note: mail message file content is composed via `\yii\mail\MessageInterface::toString()`, so it depends on actual
+  mail extension you are using in your application.
 
 
 Creating your own mail solution

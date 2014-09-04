@@ -1,20 +1,19 @@
 <?php
+/**
+ * This is the template for generating an action view file.
+ */
 
 use yii\helpers\Inflector;
 
-/**
- * This is the template for generating an action view file.
- *
- * @var yii\web\View $this
- * @var yii\gii\generators\form\Generator $generator
- */
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\form\Generator */
 
 echo "<?php\n";
 ?>
 
 public function action<?= Inflector::id2camel(trim(basename($generator->viewName), '_')) ?>()
 {
-    $model = new <?= $generator->modelClass ?><?= empty($generator->scenarioName) ? "" : "(['scenario' => '{$generator->scenarioName}'])" ?>;
+    $model = new <?= $generator->modelClass ?><?= empty($generator->scenarioName) ? "()" : "(['scenario' => '{$generator->scenarioName}'])" ?>;
 
     if ($model->load(Yii::$app->request->post())) {
         if ($model->validate()) {

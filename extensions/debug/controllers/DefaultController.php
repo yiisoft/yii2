@@ -33,6 +33,7 @@ class DefaultController extends Controller
      */
     public $summary;
 
+
     /**
      * @inheritdoc
      */
@@ -60,6 +61,7 @@ class DefaultController extends Controller
             'panels' => $this->module->panels,
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
+            'manifest' => $this->getManifest(),
         ]);
     }
 

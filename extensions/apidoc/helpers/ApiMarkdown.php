@@ -29,7 +29,8 @@ class ApiMarkdown extends GithubMarkdown
      */
     public static $renderer;
 
-    protected $context;
+    protected $renderingContext;
+
 
     /**
      * Renders a code block
@@ -81,7 +82,7 @@ class ApiMarkdown extends GithubMarkdown
     {
         $content = $this->parseInline($block['content']);
         $hash = Inflector::slug(strip_tags($content));
-        $hashLink = "<a href=\"#$hash\" name=\"$hash\">&para;</a>";
+        $hashLink = "<a href=\"#$hash\" name=\"$hash\" class=\"hashlink\">&para;</a>";
         $tag = 'h' . $block['level'];
 
         return "<$tag>$content $hashLink</$tag>";
@@ -104,7 +105,7 @@ class ApiMarkdown extends GithubMarkdown
         if (is_string($context)) {
             $context = static::$renderer->apiContext->getType($context);
         }
-        Markdown::$flavors['api']->context = $context;
+        Markdown::$flavors['api']->renderingContext = $context;
 
         if ($paragraph) {
             return Markdown::processParagraph($content, 'api');

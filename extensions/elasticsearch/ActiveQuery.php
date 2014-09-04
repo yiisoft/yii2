@@ -77,6 +77,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     use ActiveQueryTrait;
     use ActiveRelationTrait;
 
+    /**
+     * @event Event an event that is triggered when the query is initialized via [[init()]].
+     */
+    const EVENT_INIT = 'init';
+
 
     /**
      * Constructor.
@@ -87,6 +92,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->modelClass = $modelClass;
         parent::__construct($config);
+    }
+
+    /**
+     * Initializes the object.
+     * This method is called at the end of the constructor. The default implementation will trigger
+     * an [[EVENT_INIT]] event. If you override this method, make sure you call the parent implementation at the end
+     * to ensure triggering of the event.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
     }
 
     /**
@@ -101,7 +118,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             // lazy loading
             if (is_array($this->via)) {
                 // via relation
-                /** @var ActiveQuery $viaQuery */
+                /* @var $viaQuery ActiveQuery */
                 list($viaName, $viaQuery) = $this->via;
                 if ($viaQuery->multiple) {
                     $viaModels = $viaQuery->all();
@@ -117,7 +134,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
 
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
@@ -178,7 +195,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
         if ($this->asArray) {
             // TODO implement with
-//            /** @var ActiveRecord $modelClass */
+//            /* @var $modelClass ActiveRecord */
 //            $modelClass = $this->modelClass;
 //            $model = $result['_source'];
 //            $pk = $modelClass::primaryKey()[0];
@@ -193,7 +210,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 //            }
             return $result;
         } else {
-            /** @var ActiveRecord $class */
+            /* @var $class ActiveRecord */
             $class = $this->modelClass;
             $model = $class::instantiate($result);
             $class::populateRecord($model, $result);

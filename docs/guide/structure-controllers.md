@@ -2,14 +2,64 @@ Controllers
 ===========
 
 Controllers are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
-They contain the actual logic about processing requests and generating responses. In particular, after
-taking over the control from [applications](structure-applications.md), controllers will analyze incoming request data,
-pass them to [models](structure-models.md), inject model results into [views](structure-views.md),
-and finally generate outgoing responses.
+They are objects of classes extending from [[yii\base\Controller]] and are responsible for processing requests and
+generating responses. In particular, after taking over the control from [applications](structure-applications.md),
+controllers will analyze incoming request data, pass them to [models](structure-models.md), inject model results
+into [views](structure-views.md), and finally generate outgoing responses.
+
+
+## Actions <a name="actions"></a>
 
 Controllers are composed by *actions* which are the most basic units that end users can address and request for
-execution. A controller can have one or multiple actions. For example, you can have a `post` controller which
-contains a `view` action. End users can request this `view` action which may display a requested post.
+execution. A controller can have one or multiple actions.
+
+The following example shows a `post` controller with two actions: `view` and `create`:
+
+```php
+namespace app\controllers;
+
+use Yii;
+use app\models\Post;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+
+class PostController extends Controller
+{
+    public function actionView($id)
+    {
+        $model = Post::findOne($id);
+        if ($model === null) {
+            throw new NotFoundHttpException;
+        }
+
+        return $this->render('view', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionCreate()
+    {
+        $model = new Post;
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
+    }
+}
+```
+
+In the `view` action (defined by the `actionView()` method), the code first loads the [model](structure-models.md)
+according to the requested model ID; If the model is loaded successfully, it will display it using
+a [view](structure-views.md) named `view`. Otherwise, it will throw an exception.
+
+In the `create` action (defined by the `actionCreate()` method), the code is similar. It first tries to populate
+the [model](structure-models.md) using the request data and save the model. If both succeed it will redirect
+the browser to the `view` action with the ID of the newly created model. Otherwise it will display
+the `create` view through which users can provide the needed input.
 
 
 ## Routes <a name="routes"></a>
@@ -19,7 +69,7 @@ End users address actions through the so-called *routes*. A route is a string th
 * a module ID: this exists only if the controller belongs to a non-application [module](structure-modules.md);
 * a controller ID: a string that uniquely identifies the controller among all controllers within the same application
   (or the same module if the controller belongs to a module);
-* an action ID: a string t hat uniquely identifies the action among all actions within the same controller.
+* an action ID: a string that uniquely identifies the action among all actions within the same controller.
 
 Routes take the following format:
 
@@ -62,11 +112,13 @@ For this reason, controller IDs are often nouns referring to the types of the re
 For example, you may use `article` as the ID of a controller that handles article data.
 
 By default, controller IDs should contain these characters only: English letters in lower case, digits,
-underscores, dashes and forward slashes. For example, `article`, `post-comment`, `admin/post2-comment` are
-all valid controller IDs, while `article?`, `PostComment`, `admin\post` are not.
+underscores, dashes and forward slashes. For example, `article` and `post-comment` are both valid controller IDs,
+while `article?`, `PostComment`, `admin\post` are not.
 
-The dashes in a controller ID are used to separate words, while the forward slashes to organize controllers in
-sub-directories.
+A controller ID may also contain a subdirectory prefix. For example, `admin/article` stands for an `article` controller
+in the `admin` subdirectory under the [[yii\base\Application::controllerNamespace|controller namespace]].
+Valid characters for subdirectory prefixes include: English letters in lower and upper cases, digits, underscores and
+forward slashes, where forward slashes are used as separators for multi-level subdirectories (e.g. `panels/admin`).
 
 
 ### Controller Class Naming <a name="controller-class-naming"></a>
@@ -84,7 +136,8 @@ takes the default value `app\controllers`:
 
 * `article` derives `app\controllers\ArticleController`;
 * `post-comment` derives `app\controllers\PostCommentController`;
-* `admin/post2-comment` derives `app\controllers\admin\Post2CommentController`.
+* `admin/post-comment` derives `app\controllers\admin\PostCommentController`;
+* `adminPanels/post-comment` derives `app\controllers\adminPanels\PostCommentController`.
 
 Controller classes must be [autoloadable](concept-autoloading.md). For this reason, in the above examples,
 the `article` controller class should be saved in the file whose [alias](concept-aliases.md)
@@ -141,7 +194,7 @@ You may change the default controller with the following [application configurat
 
 ## Creating Actions <a name="creating-actions"></a>
 
-Creating actions can be as simple as defining the so-called *action methods*. An action method is
+Creating actions can be as simple as defining the so-called *action methods* in a controller class. An action method is
 a *public* method whose name starts with the word `action`. The return value of an action method represents
 the response data to be sent to end users. The following code defines two actions `index` and `hello-world`:
 
@@ -263,7 +316,7 @@ to end users.
 
 * For [[yii\web\Application|Web applications]], the return value can also be some arbitrary data which will
   be assigned to [[yii\web\Response::data]] and be further converted into a string representing the response body.
-* For [[yii\console\Application|console applications], the return value can also be an integer representing
+* For [[yii\console\Application|console applications]], the return value can also be an integer representing
   the [[yii\console\Response::exitStatus|exit status]] of the command execution.
 
 In the examples shown above, the action results are all strings which will be treated as the response body
@@ -386,64 +439,13 @@ to fulfill the request:
 ## Best Practices <a name="best-practices"></a>
 
 In a well-designed application, controllers are often very thin with each action containing only a few lines of code.
-The main role of these code is to invoke appropriate [models](structure-models.md) with the request data
-and use [views](structure-views.md) to present the models.
-
-The following code is a typical example showing how the `view` and `create` actions should be implemented
-in a controller.
-
-```php
-namespace app\controllers;
-
-use Yii;
-use app\models\Post;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-
-class PostController extends Controller
-{
-    public function actionView($id)
-    {
-        $model = Post::findOne($id);
-
-        if ($model !== null) {
-            return $this->render('view', [
-                'model' => $model,
-            ]);
-        } else {
-            throw new NotFoundHttpException;
-        }
-    }
-
-    public function actionCreate()
-    {
-        $model = new Post;
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-}
-```
-
-In the `view` action, the code first loads the model according to the requested model ID; If the model
-is loaded successfully, it will display it using the view named `view`. Otherwise, it will throw an exception.
-
-In the `create` action, the code is similar. It first tries to populate the model using the request data
-and save the model. If both succeed it will redirect the browser to the `view` action with the ID of
-the newly created model. Otherwise it will display the `create` view through which users can provide the needed input.
-
-In summary, a controller
-
-* may access the [request](runtime-requests.md) data;
-* may send commands to [models](structure-models.md) and [views](structure-views.md);
-* should return the [response](runtime-responses.md) data;
-* should NOT process the request data;
-* should NOT build the response data.
-
 If your controller is rather complicated, it usually indicates that you should refactor it and move some code
 to other classes.
+
+In summary, controllers
+
+* may access the [request](runtime-requests.md) data;
+* may call methods of [models](structure-models.md) and other service components with request data;
+* may use [views](structure-views.md) to compose responses;
+* should NOT process the request data - this should be done in [models](structure-models.md);
+* should avoid embedding HTML or other presentational code - this is better done in [views](structure-views.md).

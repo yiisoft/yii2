@@ -190,6 +190,32 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asNumber(null));
     }
 
+    public function testAsSize() {
+        // tests for base 1000
+        $this->formatter->sizeFormat['base'] = 1000;
+        $this->assertSame("999 B", $this->formatter->asSize(999));
+        $this->assertSame("1.05 MB", $this->formatter->asSize(1024 * 1024));
+        $this->assertSame("1.05 MB", $this->formatter->asSize(1024 * 1024, false, false));
+        $this->assertSame("1 KB", $this->formatter->asSize(1000));
+        $this->assertSame("1.02 KB", $this->formatter->asSize(1023));
+        $this->assertSame("3 gigabytes", $this->formatter->asSize(3 * 1000 * 1000 * 1000, true));
+        $this->assertNotSame("3 PB", $this->formatter->asSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
+        
+        // tests for base 1024
+        $this->formatter->sizeFormat['base'] = 1024;
+        $this->assertSame("1 KiB", $this->formatter->asSize(1024));
+        $this->assertSame("1 MB", $this->formatter->asSize(1024 * 1024, false, false));
+        $this->assertSame("1023 B", $this->formatter->asSize(1023));
+        $this->assertSame("5 GiB", $this->formatter->asSize(5 * 1024 * 1024 * 1024));
+        $this->assertSame("5 gibibytes", $this->formatter->asSize(5 * 1024 * 1024 * 1024,true));
+        $this->assertNotSame("5 PiB", $this->formatter->asSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
+        //$this->assertSame("1 YiB", $this->formatter->asSize(pow(2, 80)));
+        $this->assertSame("2 GiB", $this->formatter->asSize(2147483647)); // round 1.999 up to 2
+        $this->formatter->sizeFormat['decimalSeparator'] = ',';
+        $this->formatter->sizeFormat['decimals'] = 3;
+        $this->assertSame("1,001 KiB", $this->formatter->asSize(1025));
+    }
+    
     public function testFormat()
     {
         $value = time();
@@ -239,7 +265,10 @@ class FormatterTest extends TestCase
         $this->assertSame('12 years ago', $this->formatter->asRelativeTime($interval_12_years));
 
         // Pass a DateInterval string
-        $this->assertSame('a year ago', $this->formatter->asRelativeTime('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z'));
+        if (!defined('HHVM_VERSION')) {
+            // TODO format not supported by HHVM currently https://github.com/facebook/hhvm/issues/2952
+            $this->assertSame('a year ago', $this->formatter->asRelativeTime('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z'));
+        }
         $this->assertSame('a year ago', $this->formatter->asRelativeTime('2007-03-01T13:00:00Z/P1Y2M10DT2H30M'));
         $this->assertSame('a year ago', $this->formatter->asRelativeTime('P1Y2M10DT2H30M/2008-05-11T15:30:00Z'));
         $this->assertSame('a year ago', $this->formatter->asRelativeTime('P1Y2M10DT2H30M'));
@@ -298,7 +327,10 @@ class FormatterTest extends TestCase
         $this->assertSame('in 12 years', $this->formatter->asRelativeTime($interval_12_years));
 
         // Pass a inverted DateInterval string
-        $this->assertSame('in a year', $this->formatter->asRelativeTime('2008-05-11T15:30:00Z/2007-03-01T13:00:00Z'));
+        if (!defined('HHVM_VERSION')) {
+            // TODO format not supported by HHVM currently https://github.com/facebook/hhvm/issues/2952
+            $this->assertSame('in a year', $this->formatter->asRelativeTime('2008-05-11T15:30:00Z/2007-03-01T13:00:00Z'));
+        }
 
         // Force the reference time and pass a future DateTime
         $dateNow = new DateTime('2014-03-13');

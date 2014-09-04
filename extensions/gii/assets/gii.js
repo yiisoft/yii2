@@ -45,7 +45,14 @@ yii.gii = (function ($) {
             $modal.find('.modal-title').text($link.data('title'));
             $modal.find('.modal-body').html('Loading ...');
             $modal.modal('show');
-            var checked = $('a.' + $modal.data('action') + '[href="' + $link.attr('href') + '"]').closest('tr').find('input').get(0).checked;
+            var checkbox = $('a.' + $modal.data('action') + '[href="' + $link.attr('href') + '"]').closest('tr').find('input').get(0);
+            var checked = false;
+            if (checkbox) {
+                checked = checkbox.checked;
+                $modal.find('.modal-checkbox').removeClass('disabled');
+            } else {
+                $modal.find('.modal-checkbox').addClass('disabled');
+            }
             $modal.find('.modal-checkbox span').toggleClass('glyphicon-check', checked).toggleClass('glyphicon-unchecked', !checked);
             $.ajax({
                 type: 'POST',
@@ -143,6 +150,19 @@ yii.gii = (function ($) {
             $('#model-generator #generator-tablename').change(function () {
                 $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
             }).change();
+
+            // model generator: translate table name to model class
+            $('#generator-tablename').on('blur', function () {
+                var tableName = $(this).val();
+                if ($('#generator-modelclass').val()=='' && tableName && tableName.indexOf('*') === -1){
+                    var modelClass='';
+                    $.each(tableName.split('_'), function() {
+                        if(this.length>0)
+                            modelClass+=this.substring(0,1).toUpperCase()+this.substring(1);
+                    });
+                    $('#generator-modelclass').val(modelClass);
+                }
+            });
 
             // hide message category when I18N is disabled
             $('form #generator-enablei18n').change(function () {

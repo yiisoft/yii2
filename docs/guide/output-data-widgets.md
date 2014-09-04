@@ -122,11 +122,11 @@ grid columns.
 - `visible` is the column should be visible.
 - `content` allows you to pass a valid PHP callback that will return data for a row. The format is the following:
 
-```php
-function ($model, $key, $index, $grid) {
-    return 'a string';
-}
-```
+  ```php
+  function ($model, $key, $index, $column) {
+      return 'a string';
+  }
+  ```
 
 You may specify various container HTML options passing arrays to:
 
@@ -140,7 +140,52 @@ You may specify various container HTML options passing arrays to:
 Data column is for displaying and sorting data. It is default column type so specifying class could be omitted when
 using it.
 
-TBD
+The main setting of the data column is its format. It could be specified via `format` attribute. Its values are
+corresponding to methods in `format` application component that is [[\yii\base\Formatter|Formatter]] by default:
+
+```php
+<?= GridView::widget([
+    'columns' => [
+        [
+            'attribute' => 'name',
+            'format' => 'text'
+        ],
+        [
+            'attribute' => 'birthday',
+            'format' => ['date', 'Y-m-d']
+        ],
+    ],
+]); ?>
+```
+
+In the above `text` corresponds to [[\yii\base\Formatter::asText()]]. The value of the column is passed as the first
+argument. In the second column definition `date` corresponds to [[\yii\base\Formatter::asDate()]]. The value of the
+column is, again, passed as the first argument while 'Y-m-d' is used as the second argument value.
+
+Here's the bundled formatters list:
+
+- [[\yii\base\Formatter::asRaw()|raw]] - the value is outputted as is.
+- [[\yii\base\Formatter::asText()|text]] - the value is HTML-encoded. This format is used by default.
+- [[\yii\base\Formatter::asNtext()|ntext]] - the value is formatted as an HTML-encoded plain text with newlines converted
+  into line breaks.
+- [[\yii\base\Formatter::asParagraphs()|paragraphs]] - the value is formatted as HTML-encoded text paragraphs wrapped
+  into `<p>` tags.
+- [[\yii\base\Formatter::asHtml()|html]] - the value is purified using [[HtmlPurifier]] to avoid XSS attacks. You can
+  pass additional options such as `['html', ['Attr.AllowedFrameTargets' => ['_blank']]]`.
+- [[\yii\base\Formatter::asEmail()|email]] - the value is formatted as a mailto link.
+- [[\yii\base\Formatter::asImage()|image]] - the value is formatted as an image tag.
+- [[\yii\base\Formatter::asUrl()|url]] - the value is formatted as a hyperlink.
+- [[\yii\base\Formatter::asBoolean()|boolean]] - the value is formatted as a boolean. You can set what's rendered for
+  true and false values by calling `Yii::$app->formatter->booleanFormat = ['No', 'Yes'];` before outputting GridView.
+- [[\yii\base\Formatter::asDate()|date]] - the value is formatted as date.
+- [[\yii\base\Formatter::asTime()|time]] - the value is formatted as time.
+- [[\yii\base\Formatter::asDatetime()|datetime]] - the value is formatted as datetime.
+- [[\yii\base\Formatter::asInteger()|integer]] -  the value is formatted as an integer.
+- [[\yii\base\Formatter::asDouble()|double]] - the value is formatted as a double number.
+- [[\yii\base\Formatter::asNumber()|number]] - the value is formatted as a number with decimal and thousand separators.
+- [[\yii\base\Formatter::asSize()|size]] - the value that is a number of bytes is formatted as a human readable size.
+- [[\yii\base\Formatter::asRelativeTime()|relativeTime]] - the value is formatted as the time interval between a date
+  and now in human readable form.
 
 #### Action column
 
@@ -231,8 +276,8 @@ echo GridView::widget([
 For filtering data the GridView needs a [model](model.md) that takes the input from the filtering
 form and adjusts the query of the dataProvider to respect the search criteria.
 A common practice when using [active records](active-record.md) is to create a search Model class
-that extends from the active record class. This class then defines the validation rules for the search
-and provides a `search()` method that will return the data provider.
+that provides needed functionality (it can be generated for you by Gii). This class defines the validation 
+rules for the search and provides a `search()` method that will return the data provider.
 
 To add search capability for the `Post` model we can create `PostSearch` like in the following example:
 
@@ -290,7 +335,7 @@ You can use this function in the controller to get the dataProvider for the Grid
 
 ```php
 $searchModel = new PostSearch();
-$dataProvider = $searchModel->search($_GET);
+$dataProvider = $searchModel->search(Yii::$app->request->get());
 
 return $this->render('myview', [
     'dataProvider' => $dataProvider,
@@ -356,10 +401,117 @@ public function rules()
 }
 ```
 
-In `search()` you then just add another filter condition with `$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);`.
+In `search()` you then just add another filter condition with:
+
+```php
+$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
+```
+
+> Info: In the above we use the same string for the relation name and the table alias, however when your alias and relation name
+> differ, you have to pay attention on where to use the alias and where to use the relation name.
+> A simple rule for this is to use the alias in every place that is used to build the database query and the
+> relation name in all other definitions like in `attributes()` and `rules()` etc.
+>
+> For example you use the alias `au` for the author relation table, the joinWith statement looks like the following:
+>
+> ```php
+> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> ```
+> It is also possible to just call `$query->joinWith(['author']);` when the alias is defined in the relation definition.
+>
+> The alias has to be used in the filter condition but the attribute name stays the same:
+>
+> ```php
+> $query->andFilterWhere(['LIKE', 'au.name', $this->getAttribute('author.name')]);
+> ```
+>
+> Same is true for the sorting definition:
+>
+> ```php
+> $dataProvider->sort->attributes['author.name'] = [
+>      'asc' => ['au.name' => SORT_ASC],
+>      'desc' => ['au.name' => SORT_DESC],
+> ];
+> ```
+>
+> Also when specifying the [[yii\data\Sort::defaultOrder|defaultOrder]] for sorting you need to use the relation name
+> instead of the alias:
+>
+> ```php
+> $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
+> ```
 
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
+
+#### Using sql views for filtering, sorting and displaying data
+
+There is also other approach that can be faster and more useful - sql views. So for example if we need to show gridview 
+with users and their profiles we can do it in this way:
+
+```php
+CREATE OR REPLACE VIEW vw_user_info AS
+    SELECT user.*, user_profile.lastname, user_profile.firstname
+    FROM user, user_profile
+    WHERE user.id = user_profile.user_id
+```
+
+Then you need to create ActiveRecord that will be representing this view:
+
+```php
+
+namespace app\models\views\grid;
+
+use yii\db\ActiveRecord;
+
+class UserView extends ActiveRecord
+{
+
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'vw_user_info';
+    }
+
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            // define here your rules
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function attributeLabels()
+    {
+        return [
+            // define here your attribute labels
+        ];
+    }
+
+
+}
+```
+
+After that you can youse this UserView active record with search models, without additional specifying of sorting and filtering attributes.
+All attributes will be working out of the box. Note that this approach has several pros and cons:
+
+- you dont need to specify different sorting and filtering conditions and other things. Everything works out of the box;
+- it can be much faster because of data size, count of sql queries performed (for each relation you will need additional query);
+- since this is a just simple mupping UI on sql view it lacks of some domain logic that is in your entities, so if you will have some methods like `isActive`,
+`isDeleted` or other that will influence on UI you will need to duplicate them in this class too.
+
 
 ### Multiple GridViews on one page
 

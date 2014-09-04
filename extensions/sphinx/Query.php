@@ -27,7 +27,7 @@ use yii\db\QueryTrait;
  *
  * ~~~
  * $query = new Query;
- * $query->select('id, groupd_id')
+ * $query->select('id, group_id')
  *     ->from('idx_item')
  *     ->limit(10);
  * // build and execute the query
@@ -72,8 +72,11 @@ class Query extends Component implements QueryInterface
      */
     public $from;
     /**
-     * @var string text, which should be searched in fulltext mode.
+     * @var string|Expression text, which should be searched in fulltext mode.
      * This value will be composed into MATCH operator inside the WHERE clause.
+     * Note: this value will be processed by [[Connection::escapeMatchValue()]],
+     * if you need to compose complex match condition use [[Expression]],
+     * see [[match()]] for details.
      */
     public $match;
     /**
@@ -122,10 +125,12 @@ class Query extends Component implements QueryInterface
      * @var array query options for the call snippet.
      */
     public $snippetOptions;
+
     /**
      * @var Connection the Sphinx connection used to generate the SQL statements.
      */
     private $_connection;
+
 
     /**
      * @param Connection $connection Sphinx connection instance
@@ -381,13 +386,21 @@ class Query extends Component implements QueryInterface
     /**
      * Sets the fulltext query text. This text will be composed into
      * MATCH operator inside the WHERE clause.
+     * Note: this value will be processed by [[Connection::escapeMatchValue()]],
+     * if you need to compose complex match condition use [[Expression]]:
+     * ~~~
+     * $query = new Query;
+     * $query->from('my_index')
+     *     ->match(new Expression(':match', ['match' => '@(content) ' . Yii::$app->sphinx->escapeMatchValue($matchValue)]))
+     *     ->all();
+     * ~~~
+     *
      * @param string $query fulltext query text.
      * @return static the query object itself
      */
     public function match($query)
     {
         $this->match = $query;
-
         return $this;
     }
 

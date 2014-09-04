@@ -1,6 +1,11 @@
 <?php
+/* @var $panel yii\debug\panels\LogPanel */
+/* @var $searchModel yii\debug\models\search\Log */
+/* @var $dataProvider yii\data\ArrayDataProvider */
+
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\VarDumper;
 use yii\log\Logger;
 
 ?>
@@ -51,8 +56,7 @@ echo GridView::widget([
         [
             'attribute' => 'message',
             'value' => function ($data) {
-                $message = nl2br(Html::encode($data['message']));
-
+                $message = Html::encode(is_string($data['message']) ? $data['message'] : VarDumper::export($data['message']));
                 if (!empty($data['trace'])) {
                     $message .= Html::ul($data['trace'], [
                         'class' => 'trace',
@@ -61,7 +65,6 @@ echo GridView::widget([
                         }
                     ]);
                 };
-
                 return $message;
             },
             'format' => 'html',

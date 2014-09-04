@@ -1,9 +1,7 @@
 <?php
 
-/**
- * @var yii\apidoc\models\BaseDoc $object
- * @var yii\web\View $this
- */
+/* @var $object yii\apidoc\models\BaseDoc */
+/* @var $this yii\web\View */
 
 $type = $object instanceof \yii\apidoc\models\TypeDoc ? $object : $object->definedBy;
 
@@ -25,10 +23,12 @@ if (empty($see)) {
 } else {
     echo '<p>See also:</p><ul>';
     foreach ($see as $ref) {
-        if (substr($ref, -1, 1) != '>') {
-            $ref .= '.';
+        if (!empty($ref)) {
+            if (substr_compare($ref, '>', -1, 1)) {
+                $ref .= '.';
+            }
+            echo "<li>$ref</li>";
         }
-        echo "<li>$ref</li>";
     }
     echo '</ul>';
 }

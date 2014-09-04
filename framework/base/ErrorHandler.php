@@ -125,6 +125,7 @@ abstract class ErrorHandler extends Component
      * @param string $message the error message.
      * @param string $file the filename that the error was raised in.
      * @param integer $line the line number the error was raised at.
+     * @return boolean whether the normal error handler continues.
      *
      * @throws ErrorException
      */
@@ -150,6 +151,7 @@ abstract class ErrorHandler extends Component
 
             throw $exception;
         }
+        return false;
     }
 
     /**
@@ -170,14 +172,17 @@ abstract class ErrorHandler extends Component
         if (ErrorException::isFatalError($error)) {
             $exception = new ErrorException($error['message'], $error['type'], $error['type'], $error['file'], $error['line']);
             $this->exception = $exception;
-            // use error_log because it's too late to use Yii log
-            // also do not log when on CLI SAPI because message will be sent to STDERR which has already been done by PHP
-            PHP_SAPI === 'cli' or error_log($exception);
+
+            $this->logException($exception);
 
             if ($this->discardExistingOutput) {
                 $this->clearOutput();
             }
             $this->renderException($exception);
+
+            // need to explicitly flush logs because exit() next will terminate the app immediately
+            Yii::getLogger()->flush(true);
+
             exit(1);
         }
     }

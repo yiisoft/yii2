@@ -176,7 +176,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'tag' => $this->logTarget->tag,
         ]);
         echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';
-        /** @var View $view */
+        /* @var $view View */
         $view = $event->sender;
         echo '<style>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.css') . '</style>';
         echo '<script>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.js') . '</script>';
@@ -194,8 +194,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 return true;
             }
         }
-        Yii::warning('Access to debugger is denied due to IP address restriction. The requested IP is ' . $ip, __METHOD__);
-
+        Yii::warning('Access to debugger is denied due to IP address restriction. The requesting IP address is ' . $ip, __METHOD__);
         return false;
     }
 

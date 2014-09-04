@@ -43,8 +43,8 @@ class Command extends Component
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
      */
     public $highlight;
-
     public $options = [];
+
 
     /**
      * @param array $options
@@ -80,7 +80,11 @@ class Command extends Component
      */
     public function insert($index, $type, $data, $id = null, $options = [])
     {
-        $body = is_array($data) ? Json::encode($data) : $data;
+        if (empty($data)) {
+            $body = '{}';
+        } else {
+            $body = is_array($data) ? Json::encode($data) : $data;
+        }
 
         if ($id !== null) {
             return $this->db->put([$index, $type, $id], $options, $body);

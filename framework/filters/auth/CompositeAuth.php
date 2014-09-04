@@ -75,7 +75,7 @@ class CompositeAuth extends AuthMethod
         }
 
         if (!empty($this->authMethods)) {
-            /** @var AuthInterface $auth */
+            /* @var $auth AuthInterface */
             $auth = reset($this->authMethods);
             $auth->handleFailure($response);
         }

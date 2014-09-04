@@ -64,15 +64,18 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
-Two of the outlined methods are simple: `findIdentity` is provided with an  ID value and returns a model instance associated with that ID. The `getId` method returns the ID itself.
-Two of the other methods--`getAuthKey` and `validateAuthKey`--are used to provide extra security to the "remember me" cookie. The `getAuthKey` method should return a string that is unique for each user. You can create reliably create a unique string using `Security::generateRandomKey()`. It's a good idea to also save this as part of the user's record:
+Two of the outlined methods are simple: `findIdentity` is provided with an  ID value and returns a model instance
+associated with that ID. The `getId` method returns the ID itself. Two of the other methods – `getAuthKey` and
+`validateAuthKey` – are used to provide extra security to the "remember me" cookie. The `getAuthKey` method should
+return a string that is unique for each user. You can reliably create a unique string using
+`Yii::$app->getSecurity()->generateRandomString()`. It's a good idea to also save this as part of the user's record:
 
 ```php
 public function beforeSave($insert)
 {
     if (parent::beforeSave($insert)) {
         if ($this->isNewRecord) {
-            $this->auth_key = Security::generateRandomKey();
+            $this->auth_key = Yii::$app->getSecurity()->generateRandomString();
         }
         return true;
     }

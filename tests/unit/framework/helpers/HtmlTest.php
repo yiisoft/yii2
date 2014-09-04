@@ -3,7 +3,6 @@
 namespace yiiunit\framework\helpers;
 
 use Yii;
-use yii\base\DynamicModel;
 use yii\helpers\Html;
 use yiiunit\TestCase;
 
@@ -156,13 +155,6 @@ class HtmlTest extends TestCase
     {
         $this->assertEquals('<button type="reset">Reset</button>', Html::resetButton());
         $this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', ['name' => 'test', 'value' => 'value', 'class' => 't']));
-    }
-
-    public function testInputId()
-    {
-        $model = new DynamicModel(['test', 'relation.name']);
-        $this->assertEquals('<input type="text" id="dynamicmodel-test" name="DynamicModel[test]">', Html::activeTextInput($model, 'test'));
-        $this->assertEquals('<input type="text" id="dynamicmodel-relation-name" name="DynamicModel[relation.name]">', Html::activeTextInput($model, 'relation.name'));
     }
 
     public function testInput()
@@ -439,6 +431,8 @@ EOD;
                 return "<li class=\"item-$index\">$item</li>";
             }
         ]));
+
+        $this->assertEquals('<ul class="test"></ul>', Html::ul([], ['class' => 'test']));
     }
 
     public function testOl()
@@ -469,6 +463,8 @@ EOD;
                 return "<li class=\"item-$index\">$item</li>";
             }
         ]));
+
+        $this->assertEquals('<ol class="test"></ol>', Html::ol([], ['class' => 'test']));
     }
 
     public function testRenderOptions()

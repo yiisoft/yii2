@@ -79,7 +79,7 @@ class ReleaseController extends Controller
 
     protected function getChangelogs()
     {
-        return array_merge([YII_PATH . '/CHANGELOG.md'], glob(dirname(YII_PATH) . '/extensions/*/CHANGELOG.md'));
+        return array_merge([YII2_PATH . '/CHANGELOG.md'], glob(dirname(YII2_PATH) . '/extensions/*/CHANGELOG.md'));
     }
 
     protected function composerSetStability($version)
@@ -99,9 +99,9 @@ class ReleaseController extends Controller
             '/"minimum-stability": "(.+?)",/',
             '"minimum-stability": "' . $stability . '",',
             [
-                dirname(YII_PATH) . '/apps/advanced/composer.json',
-                dirname(YII_PATH) . '/apps/basic/composer.json',
-                dirname(YII_PATH) . '/apps/benchmark/composer.json',
+                dirname(YII2_PATH) . '/apps/advanced/composer.json',
+                dirname(YII2_PATH) . '/apps/basic/composer.json',
+                dirname(YII2_PATH) . '/apps/benchmark/composer.json',
             ]
         );
     }
@@ -111,7 +111,7 @@ class ReleaseController extends Controller
         $this->sed(
             '/function getVersion\(\)\n    \{\n        return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
-            YII_PATH . '/BaseYii.php');
+            YII2_PATH . '/BaseYii.php');
     }
 
     protected function sed($pattern, $replace, $files)
