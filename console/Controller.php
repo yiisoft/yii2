@@ -9,6 +9,7 @@ namespace yii\console;
 
 use Yii;
 use yii\base\Action;
+use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
 use yii\helpers\Console;
 
@@ -56,7 +57,7 @@ class Controller extends \yii\base\Controller
      */
     public function isColorEnabled($stream = \STDOUT)
     {
-        return $this->color ===  null ? Console::streamSupportsAnsiColors($stream) : $this->color;
+        return $this->color === null ? Console::streamSupportsAnsiColors($stream) : $this->color;
     }
 
     /**
@@ -99,7 +100,7 @@ class Controller extends \yii\base\Controller
      */
     public function bindActionParams($action, $params)
     {
-        if ($action instanceof \yii\base\InlineAction) {
+        if ($action instanceof InlineAction) {
             $method = new \ReflectionMethod($this, $action->actionMethod);
         } else {
             $method = new \ReflectionMethod($action, 'run');
@@ -275,67 +276,69 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns a short description (one line) of information about this controller or it's action (if specified).
+     * Returns one-line short summary describing this controller.
      *
-     * You may override this method to return customized description.
-     * The default implementation returns help information retrieved from the PHPDoc comments
-     * of the controller class.
+     * You may override this method to return customized summary.
+     * The default implementation returns first line from the PHPDoc comment.
      *
-     * @param string $actionID action to get description for. null means overall controller description.
      * @return string
      */
-    public function getDescription($actionID = null)
+    public function getHelpSummary()
     {
-        $action = null;
-        if ($actionID === null) {
-            $class = new \ReflectionClass($this);
-        } else {
-            $action = $this->createAction($actionID);
-            if ($action instanceof \yii\base\InlineAction) {
-                $class = new \ReflectionMethod($this, $action->actionMethod);
-            } else {
-                $class = new \ReflectionClass($action);
-            }
-        }
-
-        $docLines = preg_split('~\R~', $class->getDocComment());
-        if (isset($docLines[1])) {
-            return trim($docLines[1], ' *');
-        }
-        return '';
+        return HelpParser::getSummary(new \ReflectionClass($this));
     }
 
     /**
-     * Returns help information for this controller or it's action (if specified).
+     * Returns one-line short summary describing this controller action.
      *
-     * You may override this method to return customized help.
-     * The default implementation returns help information retrieved from the PHPDoc comments
-     * of the controller class.
-     * @param string $actionID action to get help for. null means overall controller help.
+     * You may override this method to return customized summary.
+     * The default implementation returns first line from the PHPDoc comment.
+     *
+     * @param string $actionID action to get summary for
      * @return string
      */
-    public function getHelp($actionID = null)
+    public function getActionHelpSummary($actionID)
     {
-        $action = null;
-        if ($actionID === null) {
-            $class = new \ReflectionClass($this);
+        $action = $this->createAction($actionID);
+        if ($action instanceof InlineAction) {
+            $class = new \ReflectionMethod($this, $action->actionMethod);
         } else {
-            $action = $this->createAction($actionID);
-
-            if ($action instanceof \yii\base\InlineAction) {
-                $class = new \ReflectionMethod($this, $action->actionMethod);
-            } else {
-                $class = new \ReflectionClass($action);
-            }
+            $class = new \ReflectionClass($action);
         }
 
-        $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($class->getDocComment(), '/'))), "\r", '');
-        if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
-            $comment = trim(substr($comment, 0, $matches[0][1]));
+        return HelpParser::getSummary($class);
+    }
+
+    /**
+     * Returns help information for this controller.
+     *
+     * You may override this method to return customized help.
+     * The default implementation returns help information retrieved from the PHPDoc comment.
+     * @return string
+     */
+    public function getHelp()
+    {
+        return HelpParser::getFull(new \ReflectionClass($this));
+    }
+
+    /**
+     * Returns help information for this controller action.
+     *
+     * You may override this method to return customized help.
+     * The default implementation returns help information retrieved from the PHPDoc comment.
+     * @param string $actionID action to get help for
+     * @return string
+     */
+    public function getActionHelp($actionID)
+    {
+        $action = $this->createAction($actionID);
+
+        if ($action instanceof InlineAction) {
+            $class = new \ReflectionMethod($this, $action->actionMethod);
+        } else {
+            $class = new \ReflectionClass($action);
         }
-        if ($comment !== '') {
-            return rtrim(Console::renderColoredString(Console::markdownToAnsi($comment)));
-        }
-        return '';
+
+        return HelpParser::getFull($class);
     }
 }

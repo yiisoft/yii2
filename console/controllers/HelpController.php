@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Application;
+use yii\base\InlineAction;
 use yii\console\Action;
 use yii\console\Controller;
 use yii\console\Exception;
@@ -61,7 +62,7 @@ class HelpController extends Controller
 
             $actions = $this->getActions($controller);
             if ($actionID !== '' || count($actions) === 1 && $actions[0] === $controller->defaultAction) {
-                $this->getActionHelp($controller, $actionID);
+                $this->getControllerActionHelp($controller, $actionID);
             } else {
                 $this->getControllerHelp($controller);
             }
@@ -94,7 +95,8 @@ class HelpController extends Controller
             $result = Yii::$app->createController($command);
             if ($result !== false) {
                 list($controller, $actionID) = $result;
-                $description = $controller->getDescription();
+                /** @var Controller $controller */
+                $description = $controller->getHelpSummary();
             }
 
             $descriptions[$command] = $description;
@@ -253,10 +255,10 @@ class HelpController extends Controller
         $action = $controller->createAction($actionID);
 
         if ($action instanceof Action) {
-            $description = $action->getDescription();
+            $description = $action->getHelpSummary();
         }
         if ($description === null) {
-            $description = $controller->getDescription($actionID);
+            $description = $controller->getActionHelpSummary($actionID);
         }
         return $description;
     }
@@ -267,7 +269,7 @@ class HelpController extends Controller
      * @param string $actionID action ID
      * @throws Exception if the action does not exist
      */
-    protected function getActionHelp($controller, $actionID)
+    protected function getControllerActionHelp($controller, $actionID)
     {
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -276,9 +278,10 @@ class HelpController extends Controller
             ]));
         }
         $description = null;
-        if ($action instanceof \yii\base\InlineAction) {
+        if ($action instanceof InlineAction) {
             $method = new \ReflectionMethod($controller, $action->actionMethod);
         } else {
+            /** @var Action $action */
             $description = $action->getHelp();
             $method = new \ReflectionMethod($action, 'run');
         }
@@ -287,7 +290,7 @@ class HelpController extends Controller
         $options = $this->getOptionHelps($controller, $actionID);
 
         if ($description === null) {
-            $description = $controller->getHelp($actionID);
+            $description = $controller->getActionHelp($actionID);
         }
         if ($description !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
