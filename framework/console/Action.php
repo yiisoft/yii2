@@ -22,25 +22,27 @@ use yii\helpers\Console;
 class Action extends \yii\base\Action
 {
     /**
-     * Returns a short description (one line) of information about the action.
+     * Returns one-line short summary describing this action.
      *
-     * The default implementation returns help information retrieved from the PHPDoc comments.
+     * You may override this method to return customized summary.
+     * The default implementation returns first line from the PHPDoc comment.
      *
      * @return string
      */
-    public function getDescription()
+    public function getHelpSummary()
     {
-        return null;
+        return HelpParser::getSummary(new \ReflectionClass($this));
     }
 
     /**
-     * Returns help information for the action.
+     * Returns help information for this action.
      *
-     * The default implementation returns help information retrieved from the PHPDoc comments.
+     * You may override this method to return customized help.
+     * The default implementation returns help information retrieved from the PHPDoc comment.
      * @return string
      */
     public function getHelp()
     {
-        return null;
+        return HelpParser::getDescriptionForConsole(new \ReflectionClass($this));
     }
 }
