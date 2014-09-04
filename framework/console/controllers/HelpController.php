@@ -213,7 +213,7 @@ class HelpController extends Controller
      */
     protected function getControllerHelp($controller)
     {
-        // TODO set color option of controller to this controllers color option
+        $controller->color = $this->color;
 
         $this->stdout("\nDESCRIPTION\n", Console::BOLD);
         $comment = $controller->getHelp();
@@ -398,6 +398,15 @@ class HelpController extends Controller
                 $options[$name] = $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, null, $defaultValue, '');
             }
         }
+
+        $name = \yii\console\Application::OPTION_APPCONFIG;
+        $options[$name] = $this->formatOptionHelp(
+            $this->ansiFormat('--' . $name, Console::FG_RED),
+            false,
+            'string',
+            null,
+            "custom application configuration file path.\nIf not set, default application configuration is used."
+        );
         ksort($options);
 
         return $options;
