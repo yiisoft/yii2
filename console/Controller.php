@@ -289,27 +289,6 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns one-line short summary describing this controller action.
-     *
-     * You may override this method to return customized summary.
-     * The default implementation returns first line from the PHPDoc comment.
-     *
-     * @param string $actionID action to get summary for
-     * @return string
-     */
-    public function getActionHelpSummary($actionID)
-    {
-        $action = $this->createAction($actionID);
-        if ($action instanceof InlineAction) {
-            $class = new \ReflectionMethod($this, $action->actionMethod);
-        } else {
-            $class = new \ReflectionClass($action);
-        }
-
-        return HelpParser::getSummary($class);
-    }
-
-    /**
      * Returns help information for this controller.
      *
      * You may override this method to return customized help.
@@ -322,23 +301,30 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns help information for this controller action.
-     *
-     * You may override this method to return customized help.
-     * The default implementation returns help information retrieved from the PHPDoc comment.
-     * @param string $actionID action to get help for
-     * @return string
+     * Returns a one-line short summary describing the specified action.
+     * @param \yii\base\Action $action action to get summary for
+     * @return string a one-line short summary describing the specified action.
      */
-    public function getActionHelp($actionID)
+    public function getActionHelpSummary($action)
     {
-        $action = $this->createAction($actionID);
-
         if ($action instanceof InlineAction) {
-            $class = new \ReflectionMethod($this, $action->actionMethod);
+            return HelpParser::getSummary(new \ReflectionMethod($this, $action->actionMethod));
         } else {
-            $class = new \ReflectionClass($action);
+            return HelpParser::getSummary(new \ReflectionMethod($action, 'run'));
         }
+    }
 
-        return HelpParser::getDetail($class);
+    /**
+     * Returns the detailed help information for the specified action.
+     * @param \yii\base\Action $action action to get help for
+     * @return string the detailed help information for the specified action.
+     */
+    public function getActionHelp($action)
+    {
+        if ($action instanceof InlineAction) {
+            return HelpParser::getDetail(new \ReflectionMethod($this, $action->actionMethod));
+        } else {
+            return HelpParser::getDetail(new \ReflectionMethod($action, 'run'));
+        }
     }
 }

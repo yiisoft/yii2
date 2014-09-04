@@ -491,15 +491,15 @@ class BaseConsole
      * </pre>
      * First param is the string to convert, second is an optional flag if
      * colors should be used. It defaults to true, if set to false, the
-     * colorcodes will just be removed (And %% will be transformed into %)
+     * color codes will just be removed (And %% will be transformed into %)
      *
      * @param string $string String to convert
      * @param boolean $colored Should the string be colored?
      * @return string
      */
-    // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
     public static function renderColoredString($string, $colored = true)
     {
+        // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
         static $conversions = [
             '%y' => [self::FG_YELLOW],
             '%g' => [self::FG_GREEN],
@@ -562,9 +562,9 @@ class BaseConsole
      * @access public
      * @return string
      */
-    // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
     public static function escape($string)
     {
+        // TODO rework/refactor according to https://github.com/yiisoft/yii2/issues/746
         return str_replace('%', '%%', $string);
     }
 
