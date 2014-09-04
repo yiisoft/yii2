@@ -72,6 +72,28 @@ yii = (function ($) {
         },
 
         /**
+         * Sets the CSRF token in the meta elements.
+         * This method is provided so that you can update the CSRF token with the latest one you obtain from the server.
+         * @param name the CSRF token name
+         * @param value the CSRF token value
+         */
+        setCsrfToken: function (name, value) {
+            $('meta[name=csrf-param]').prop('content', name);
+            $('meta[name=csrf-token]').prop('content', value)
+        },
+
+        /**
+         * Updates all form CSRF input fields with the latest CSRF token.
+         * This method is provided to avoid cached forms containing outdated CSRF tokens.
+         */
+        refreshCsrfToken: function () {
+            var token = pub.getCsrfToken();
+            if (token) {
+                $('form input[name="' + pub.getCsrfParam() + '"]').val(token);
+            }
+        },
+
+        /**
          * Displays a confirmation dialog.
          * The default implementation simply displays a js confirmation dialog.
          * You may override this by setting `yii.confirm`.
@@ -211,6 +233,7 @@ yii = (function ($) {
                 xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
             }
         });
+        pub.refreshCsrfToken();
     }
 
     function initDataMethods() {
