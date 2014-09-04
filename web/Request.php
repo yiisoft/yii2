@@ -115,10 +115,16 @@ class Request extends \yii\base\Request
      */
     public $csrfParam = '_csrf';
     /**
-     * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
-     * @see Cookie
+     * @var array the configuration for creating the CSRF [[Cookie|cookie]]. This property is used only when
+     * both [[enableCsrfValidation]] and [[enableCsrfCookie]] are true.
      */
     public $csrfCookie = ['httpOnly' => true];
+    /**
+     * @var boolean whether to use cookie to persist CSRF token. If false, CSRF token will be stored
+     * in session under the name of [[csrfParam]]. Note that while storing CSRF tokens in session increases
+     * security, it requires starting a session for every page, which will degrade your site performance.
+     */
+    public $enableCsrfCookie = true;
     /**
      * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
      */
@@ -1227,29 +1233,6 @@ class Request extends \yii\base\Request
         return $cookies;
     }
 
-    /**
-     * @var Cookie
-     */
-    private $_csrfCookie;
-
-    /**
-     * Returns the unmasked random token used to perform CSRF validation.
-     * This token is typically sent via a cookie. If such a cookie does not exist, a new token will be generated.
-     * @return string the random token for CSRF validation.
-     * @see enableCsrfValidation
-     */
-    public function getRawCsrfToken()
-    {
-        if ($this->_csrfCookie === null) {
-            $this->_csrfCookie = $this->getCookies()->get($this->csrfParam);
-            if ($this->_csrfCookie === null || empty($this->_csrfCookie->value)) {
-                $this->_csrfCookie = $this->createCsrfCookie();
-                Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
-            }
-        }
-        return $this->_csrfCookie->value;
-    }
-
     private $_csrfToken;
 
     /**
@@ -1258,22 +1241,57 @@ class Request extends \yii\base\Request
      * This token is a masked version of [[rawCsrfToken]] to prevent [BREACH attacks](http://breachattack.com/).
      * This token may be passed along via a hidden field of an HTML form or an HTTP header value
      * to support CSRF validation.
-     *
+     * @param boolean $regenerate whether to regenerate CSRF token. When this parameter is true, each time
+     * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
      * @return string the token used to perform CSRF validation.
      */
-    public function getCsrfToken()
+    public function getCsrfToken($regenerate = false)
     {
-        if ($this->_csrfToken === null) {
+        if ($this->_csrfToken === null || $regenerate) {
+            if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
+                $token = $this->generateCsrfToken();
+            }
             // the mask doesn't need to be very random
             $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
             $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, self::CSRF_MASK_LENGTH);
-
-            $token = $this->getRawCsrfToken();
             // The + sign may be decoded as blank space later, which will fail the validation
             $this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
         }
 
         return $this->_csrfToken;
+    }
+
+    /**
+     * Loads the CSRF token from cookie or session.
+     * @return string the CSRF token loaded from cookie or session. Null is returned if the cookie or session
+     * does not have CSRF token.
+     */
+    protected function loadCsrfToken()
+    {
+        if ($this->enableCsrfCookie) {
+            return $this->getCookies()->getValue($this->csrfParam);
+        } else {
+            return Yii::$app->getSession()->get($this->csrfParam);
+        }
+    }
+
+    /**
+     * Generates  an unmasked random token used to perform CSRF validation.
+     * @return string the random token for CSRF validation.
+     */
+    protected function generateCsrfToken()
+    {
+        $token = Yii::$app->getSecurity()->generateRandomString();
+        if ($this->enableCsrfCookie) {
+            $config = $this->csrfCookie;
+            $config['name'] = $this->csrfParam;
+            $config['value'] = $token;
+            Yii::$app->getResponse()->getCookies()->add(new Cookie($config));
+        } else {
+            $token = Yii::$app->getSecurity()->generateRandomString();
+            Yii::$app->getSession()->set($this->csrfParam, $token);
+        }
+        return $token;
     }
 
     /**
@@ -1333,10 +1351,10 @@ class Request extends \yii\base\Request
         if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
             return true;
         }
-        $trueToken = $this->getCookies()->getValue($this->csrfParam);
-        $token = $this->getBodyParam($this->csrfParam);
 
-        return $this->validateCsrfTokenInternal($token, $trueToken)
+        $trueToken = $this->loadCsrfToken();
+
+        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
             || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
     }
 
