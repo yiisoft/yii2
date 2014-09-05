@@ -1,5 +1,6 @@
 Guia Definitivo para Yii 2.0
 ============================
+
 Esse tutorial está disponível sob os [termos da documentação do Yii](http://www.yiiframework.com/doc/terms/).
 
 
@@ -37,11 +38,11 @@ Estrutura de uma Aplicação
 * [Controllers (Controladores)](structure-controllers.md)
 * [Models (Modelos)](structure-models.md)
 * [Views (Visões)](structure-views.md)
-* **TBD** [Filtros](structure-filters.md)
-* **TBD** [Widgets](structure-widgets.md)
-* **TBD** [Módulos](structure-modules.md)
-* [Assets](structure-assets.md)
-* **TBD** [Extensões](structure-extensions.md)
+* [Módulos](structure-modules.md)
+* [Filtros](structure-filters.md)
+* [Widgets](structure-widgets.md)
+* [Asset Bundles](structure-assets.md)
+* [Extensões](structure-extensions.md)
 
 
 Tratamento de Requisições
@@ -51,14 +52,14 @@ Tratamento de Requisições
 * **TBD** [Rotas](runtime-routing.md)
 * **TBD** [Requisições](runtime-requests.md)
 * **TBD** [Respostas](runtime-responses.md)
-* **TBD** [Seções e Cookies](runtime-sessions-cookies.md)
+* **TBD** [Sessões e Cookies](runtime-sessions-cookies.md)
 * [Análise e Geração de URLs](runtime-url-handling.md)
 * [Tratamento de Erros](runtime-handling-errors.md)
 * [Gerenciamento de Logs](runtime-logging.md)
 
 
-Conceitos Chaves
-----------------
+Conceitos Chave
+---------------
 
 * [Componentes](concept-components.md)
 * [Propriedades](concept-properties.md)
@@ -68,7 +69,7 @@ Conceitos Chaves
 * [Aliases](concept-aliases.md)
 * [Autoloading de Classes](concept-autoloading.md)
 * [Service Locator](concept-service-locator.md)
-* [Injeção de Dependência](concept-di-container.md)
+* [Container de Injeção de Dependência](concept-di-container.md)
 
 
 Trabalhando com Banco de Dados
@@ -89,7 +90,7 @@ Coletando Dados de Usuários
 
 * [Criando um Formulário](input-forms.md)
 * [Validação de Dados](input-validation.md)
-* **TBD** [Uploading de Arquivos](input-file-upload.md)
+* **TBD** [Upload de Arquivos](input-file-upload.md)
 * **TBD** [Coletando Dados de Múltiplos Modelos](input-multiple-models.md)
 
 
@@ -101,6 +102,7 @@ Exibindo Dados
 * **TBD** [Ordenação](output-sorting.md)
 * [Data Providers (Provedores de Dados)](output-data-providers.md)
 * [Widgets de Dados](output-data-widgets.md)
+* [Trabalhando com Client Scripts](output-client-scripts.md)
 * [Temas](output-theming.md)
 
 
@@ -109,7 +111,7 @@ Segurança
 
 * [Autenticação](security-authentication.md)
 * [Autorização](security-authorization.md)
-* [Trabalhando Com Senhas](security-passwords.md)
+* [Trabalhando com Senhas](security-passwords.md)
 * **TBD** [Auth Clients](security-auth-clients.md)
 * **TBD** [Melhores Práticas](security-best-practices.md)
 
@@ -125,7 +127,7 @@ Cache
 
 
 Web Services com RESTful 
---------------------
+------------------------
 
 * [Visão Inicial](rest-quick-start.md)
 * [Recursos](rest-resources.md)
@@ -150,9 +152,10 @@ Testes
 ------
 
 * [Visão Geral](test-overview.md)
-* **TBD** [Testes Unitários](test-unit.md)
-* **TBD** [Testes Funcionais](test-functional.md)
-* **TBD** [Testes de Aceitação](test-acceptance.md)
+* [Configuração do ambiente de testes](test-endvironment-setup.md)
+* [Testes Unitários](test-unit.md)
+* [Testes Funcionais](test-functional.md)
+* [Testes de Aceitação](test-acceptance.md)
 * [Fixtures](test-fixtures.md)
 
 
@@ -172,13 +175,14 @@ Tópicos Especiais
 
 * [Modelo de Aplicação Avançada](tutorial-advanced-app.md)
 * [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md)
-* [Comandos de Console](tutorial-console.md)
-* [Ferramentas de Validação](tutorial-core-validators.md)
+* [Comandos do Console](tutorial-console.md)
+* [Ferramentas de Validação Embutidas](tutorial-core-validators.md)
 * [Internacionalização](tutorial-i18n.md)
 * [Enviando E-mails](tutorial-mailing.md)
 * [Ajustes no Desempenho](tutorial-performance-tuning.md)
 * **TBD** [Ambiente de Hospedagem Compartilhada](tutorial-shared-hosting.md)
-* [Ferramentas de Templates](tutorial-template-engines.md)
+* [Ferramentas de Template](tutorial-template-engines.md)
+* [Utilização com Códigos de Terceiros](tutorial-yii-integration.md)
 
 
 Widgets
@@ -192,8 +196,8 @@ Widgets
 * Menu
 * LinkPager
 * LinkSorter
-* [Bootstrap Widgets](bootstrap-widgets.md)
-* **TBD** [Jquery UI Widgets](jui-widgets.md)
+* [Widgets do Bootstrap](bootstrap-widgets.md)
+* [Widgets do Jquery UI](jui-widgets.md)
 
 
 Helpers
