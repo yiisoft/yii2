@@ -58,8 +58,8 @@ Tratamento de Requisições
 * [Gerenciamento de Logs](runtime-logging.md)
 
 
-Conceitos Chaves
-----------------
+Conceitos Chave
+---------------
 
 * [Componentes](concept-components.md)
 * [Propriedades](concept-properties.md)
