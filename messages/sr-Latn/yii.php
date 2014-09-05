@@ -50,7 +50,7 @@ return [
     'Error' => 'Greška',
     'File upload failed.' => 'Postavljanje fajla nije uspelo.',
     'Home' => 'Početna',
-    'Invalid data received for parameter "{param}".' => 'Neispravan podatak dobijen za parametar "{param}"',
+    'Invalid data received for parameter "{param}".' => 'Neispravan podatak dobijen za parametar "{param}".',
     'Login Required' => 'Prijava na sistem je obavezna',
     'Missing required arguments: {params}' => 'Nedostaju obavezni argumenti: {params}',
     'Missing required parameters: {params}' => 'Nedostaju obavezni parametri: {params}',

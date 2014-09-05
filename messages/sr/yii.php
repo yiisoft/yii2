@@ -50,7 +50,7 @@ return [
     'Error' => 'Грешка',
     'File upload failed.' => 'Постављање фајла није успело.',
     'Home' => 'Почетна',
-    'Invalid data received for parameter "{param}".' => 'Неисправан податак добијен за параметар "{param}"',
+    'Invalid data received for parameter "{param}".' => 'Неисправан податак добијен за параметар "{param}."',
     'Login Required' => 'Пријава на систем је обавезна',
     'Missing required arguments: {params}' => 'Недостају обавезни аргументи: {params}',
     'Missing required parameters: {params}' => 'Недостају обавезни параметри: {params}',
