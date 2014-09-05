@@ -9,8 +9,6 @@ namespace yii\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\web\Link;
-use yii\web\Linkable;
 
 /**
  * ArrayableTrait provides a common implementation of the [[Arrayable]] interface.
@@ -119,10 +117,6 @@ trait ArrayableTrait
         $data = [];
         foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
             $data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $this, $field);
-        }
-
-        if ($this instanceof Linkable) {
-            $data['_links'] = Link::serialize($this->getLinks());
         }
 
         return $recursive ? ArrayHelper::toArray($data) : $data;

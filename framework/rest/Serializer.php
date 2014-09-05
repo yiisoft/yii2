@@ -15,6 +15,7 @@ use yii\data\DataProviderInterface;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use yii\web\Link;
+use yii\web\Linkable;
 use yii\web\Request;
 use yii\web\Response;
 
@@ -230,7 +231,13 @@ class Serializer extends Component
             return null;
         } else {
             list ($fields, $expand) = $this->getRequestedFields();
-            return $model->toArray($fields, $expand);
+            $data = $model->toArray($fields, $expand);
+
+            if ($model instanceof Linkable) {
+                $data['_links'] = Link::serialize($model->getLinks());
+            }
+
+            return $data;
         }
     }
 
