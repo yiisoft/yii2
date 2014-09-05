@@ -268,6 +268,6 @@ class ViewRenderer extends BaseViewRenderer
     public function aliasHandler($type, $name, &$content, &$modified, Smarty $smarty)
     {
         $file = Yii::getAlias($name);
-        return is_file($file) ? $file : false;
+        return $file !== false && is_file($file) ? $file : false;
     }
 }
