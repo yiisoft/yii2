@@ -10,7 +10,6 @@ namespace yii\console\controllers;
 use Yii;
 use yii\base\Application;
 use yii\base\InlineAction;
-use yii\console\Action;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
@@ -272,146 +271,40 @@ class HelpController extends Controller
             echo $scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW);
         }
 
-        if ($action instanceof InlineAction) {
-            $method = new \ReflectionMethod($controller, $action->actionMethod);
-        } else {
-            $method = new \ReflectionMethod($action, 'run');
+        $args = $controller->getActionArgsHelp($action);
+        foreach ($args as $name => $arg) {
+            if ($arg['required']) {
+                $this->stdout(' <' . $name . '>', Console::FG_CYAN);
+            } else {
+                $this->stdout(' [' . $name . ']', Console::FG_CYAN);
+            }
         }
-        $tags = $this->parseComment($method->getDocComment());
-        $options = $this->getOptionHelps($controller, $actionID);
 
-        list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : []);
-        foreach ($required as $arg => $description) {
-            $this->stdout(' <' . $arg . '>', Console::FG_CYAN);
-        }
-        foreach ($optional as $arg => $description) {
-            $this->stdout(' [' . $arg . ']', Console::FG_CYAN);
-        }
+        $options = $controller->getActionOptionsHelp($action);
+        $options[\yii\console\Application::OPTION_APPCONFIG] = [
+            'type' => 'string',
+            'default' => null,
+            'comment' => "custom application configuration file path.\nIf not set, default application configuration is used.",
+        ];
+        ksort($options);
+
         if (!empty($options)) {
             $this->stdout(' [...options...]', Console::FG_RED);
         }
         echo "\n\n";
 
-        if (!empty($required) || !empty($optional)) {
-            echo implode("\n\n", array_merge($required, $optional)) . "\n\n";
+        if (!empty($args)) {
+            foreach ($args as $name => $arg) {
+                echo $this->formatOptionHelp('- ' . $this->ansiFormat($name, Console::FG_CYAN), $arg['required'], $arg['type'], $arg['default'], $arg['comment']) . "\n\n";
+            }
         }
 
         if (!empty($options)) {
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
-            echo implode("\n\n", $options) . "\n\n";
-        }
-    }
-
-    /**
-     * Returns the help information about arguments.
-     * @param \ReflectionMethod $method
-     * @param string $tags the parsed comment block related with arguments
-     * @return array the required and optional argument help information
-     */
-    protected function getArgHelps($method, $tags)
-    {
-        if (is_string($tags)) {
-            $tags = [$tags];
-        }
-        $params = $method->getParameters();
-        $optional = $required = [];
-        foreach ($params as $i => $param) {
-            $name = $param->getName();
-            $tag = isset($tags[$i]) ? $tags[$i] : '';
-            if (preg_match('/^([^\s]+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
-                $type = $matches[1];
-                $comment = $matches[3];
-            } else {
-                $type = null;
-                $comment = $tag;
-            }
-            if ($param->isDefaultValueAvailable()) {
-                $optional[$name] = $this->formatOptionHelp('- ' . $this->ansiFormat($name, Console::FG_CYAN), false, $type, $param->getDefaultValue(), $comment);
-            } else {
-                $required[$name] = $this->formatOptionHelp('- ' . $this->ansiFormat($name, Console::FG_CYAN), true, $type, null, $comment);
+            foreach ($options as $name => $option) {
+                echo $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, $option['type'], $option['default'], $option['comment']) . "\n\n";
             }
         }
-
-        return [$required, $optional];
-    }
-
-    /**
-     * Returns the help information about the options available for a console controller.
-     * @param Controller $controller the console controller
-     * @param string $actionID name of the action, if set include local options for that action
-     * @return array the help information about the options
-     */
-    protected function getOptionHelps($controller, $actionID)
-    {
-        $optionNames = $controller->options($actionID);
-        if (empty($optionNames)) {
-            return [];
-        }
-
-        $class = new \ReflectionClass($controller);
-        $options = [];
-        foreach ($class->getProperties() as $property) {
-            $name = $property->getName();
-            if (!in_array($name, $optionNames, true)) {
-                continue;
-            }
-            $defaultValue = $property->getValue($controller);
-            $tags = $this->parseComment($property->getDocComment());
-            if (isset($tags['var']) || isset($tags['property'])) {
-                $doc = isset($tags['var']) ? $tags['var'] : $tags['property'];
-                if (is_array($doc)) {
-                    $doc = reset($doc);
-                }
-                if (preg_match('/^([^\s]+)(.*)/s', $doc, $matches)) {
-                    $type = $matches[1];
-                    $comment = $matches[2];
-                } else {
-                    $type = null;
-                    $comment = $doc;
-                }
-                $options[$name] = $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, $type, $defaultValue, $comment);
-            } else {
-                $options[$name] = $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, null, $defaultValue, '');
-            }
-        }
-
-        $name = \yii\console\Application::OPTION_APPCONFIG;
-        $options[$name] = $this->formatOptionHelp(
-            $this->ansiFormat('--' . $name, Console::FG_RED),
-            false,
-            'string',
-            null,
-            "custom application configuration file path.\nIf not set, default application configuration is used."
-        );
-        ksort($options);
-
-        return $options;
-    }
-
-    /**
-     * Parses the comment block into tags.
-     * @param string $comment the comment block
-     * @return array the parsed tags
-     */
-    protected function parseComment($comment)
-    {
-        $tags = [];
-        $comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($comment, '/'))), "\r", '');
-        $parts = preg_split('/^\s*@/m', $comment, -1, PREG_SPLIT_NO_EMPTY);
-        foreach ($parts as $part) {
-            if (preg_match('/^(\w+)(.*)/ms', trim($part), $matches)) {
-                $name = $matches[1];
-                if (!isset($tags[$name])) {
-                    $tags[$name] = trim($matches[2]);
-                } elseif (is_array($tags[$name])) {
-                    $tags[$name][] = trim($matches[2]);
-                } else {
-                    $tags[$name] = [$tags[$name], trim($matches[2])];
-                }
-            }
-        }
-
-        return $tags;
     }
 
     /**
