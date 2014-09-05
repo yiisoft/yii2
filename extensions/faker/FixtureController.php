@@ -177,7 +177,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
     public function options($actionId)
     {
         return array_merge(parent::options($actionId), [
-            'templatePath', 'language', 'fixtureDataPath'
+            'templatePath', 'language', 'fixtureDataPath', 'count'
         ]);
     }
 
