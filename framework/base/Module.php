@@ -511,14 +511,13 @@ class Module extends ServiceLocator
         }
 
         // module and controller map take precedence
+        if (isset($this->controllerMap[$id])) {
+            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
+            return [$controller, $route];
+        }
         $module = $this->getModule($id);
         if ($module !== null) {
             return $module->createController($route);
-        }
-        if (isset($this->controllerMap[$id])) {
-            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
-
-            return [$controller, $route];
         }
 
         if (($pos = strrpos($route, '/')) !== false) {
