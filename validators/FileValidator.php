@@ -351,7 +351,8 @@ class FileValidator extends Validator
     {
         $label = $object->getAttributeLabel($attribute);
 
-        if ( $this->message !== null ){
+        $options = [];
+        if ($this->message !== null) {
             $options['message'] = Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $label,
             ], Yii::$app->language);
