@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Bug #3681: Fixed problem with AR::findOne() when a default scope joins another table so that PK name becomes ambigous (cebe)
 - Bug #3715: Fixed the bug that using a custom pager/sorter with `GridView` may generate two different pagers/sorters if the layout configures two pagers/sorters (qiangxue)
 - Bug #3716: `DynamicModel::validateData()` does not call `validate()` if the `$rules` parameter is empty (qiangxue)
+- Bug #3738: ActiveField custom error selector not functioning (qiangxue)
 - Bug #3751: Fixed postgreSQL schema data for enum values, do not add values if there are none (makroxyz)
 - Bug #3752: `QueryBuilder::batchInsert()` does not typecast input values (qiangxue)
 - Bug #3756: Fix number formatting error for `\yii\base\Formatter` by converting strings to float (kartik-v)

@@ -126,7 +126,7 @@ class ActiveField extends Component
      *
      * You normally do not need to set this property as the default selectors should work well for most cases.
      */
-    public $selectors;
+    public $selectors = [];
     /**
      * @var array different parts of the field (e.g. input, label). This will be used together with
      * [[template]] to generate the final field HTML code. The keys are the token names in [[template]],
@@ -725,13 +725,17 @@ class ActiveField extends Component
             foreach (['validateOnChange', 'validateOnBlur', 'validateOnType', 'validationDelay'] as $name) {
                 $options[$name] = $this->$name === null ? $this->form->$name : $this->$name;
             }
+
             $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";
             $options['input'] = isset($this->selectors['input']) ? $this->selectors['input'] : "#$inputID";
-            if (isset($this->errorOptions['class'])) {
+            if (isset($this->selectors['error'])) {
+                $options['error'] = $this->selectors['error'];
+            } elseif (isset($this->errorOptions['class'])) {
                 $options['error'] = '.' . implode('.', preg_split('/\s+/', $this->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY));
             } else {
                 $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
             }
+
             $options['encodeError'] = !isset($this->errorOptions['encode']) || $this->errorOptions['encode'] !== false;
 
             return $options;
