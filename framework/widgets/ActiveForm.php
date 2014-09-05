@@ -250,14 +250,13 @@ class ActiveForm extends Widget
             throw new InvalidCallException('Each beginField() should have a matching endField() call.');
         }
 
-        if (!empty($this->attributes)) {
-            $id = $this->options['id'];
-            $options = Json::encode($this->getClientOptions());
-            $attributes = Json::encode($this->attributes);
-            $view = $this->getView();
-            ActiveFormAsset::register($view);
-            $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
-        }
+        $id = $this->options['id'];
+        $options = Json::encode($this->getClientOptions());
+        $attributes = Json::encode($this->attributes);
+        $view = $this->getView();
+        ActiveFormAsset::register($view);
+        $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+
         echo Html::endForm();
     }
 
