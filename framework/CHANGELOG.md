@@ -121,6 +121,7 @@ Yii Framework 2 Change Log
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
 - Enh #3230: Added `yii\filters\AccessControl::user` to support access control with different actors (qiangxue)
 - Enh #3232: Added `export()` and `exportAsString()` methods to `yii\helpers\BaseVarDumper` (klimov-paul)
+- Enh #3240: Added support for assigning an anonymous function to `yii\widgets\ActiveForm::fieldConfig` (qiangxue)
 - Enh #3244: Allow logging complex data such as arrays and object via the log system (cebe)
 - Enh #3252: Added support for case insensitive matching using ILIKE to PostgreSQL QueryBuilder (cebe)
 - Enh #3280: Support dynamically attaching anonymous behaviors (qiangxue)

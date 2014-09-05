@@ -51,7 +51,20 @@ class ActiveForm extends Widget
      */
     public $options = [];
     /**
-     * @var array the default configuration used by [[field()]] when creating a new field object.
+     * @var string the default field class name when calling [[field()]] to create a new field.
+     * @see fieldConfig
+     */
+    public $fieldClass = 'yii\widgets\ActiveField';
+    /**
+     * @var array|\Closure the default configuration used by [[field()]] when creating a new field object.
+     * This can be either a configuration array or an anonymous function returning a configuration array.
+     * If the latter, the signature should be as follows,
+     *
+     * ```php
+     * function ($model, $attribute)
+     * ```
+     *
+     * @see fieldClass
      */
     public $fieldConfig;
     /**
@@ -223,9 +236,6 @@ class ActiveForm extends Widget
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
-        if (!isset($this->fieldConfig['class'])) {
-            $this->fieldConfig['class'] = ActiveField::className();
-        }
         echo Html::beginForm($this->action, $this->method, $this->options);
     }
 
@@ -313,7 +323,14 @@ class ActiveForm extends Widget
      */
     public function field($model, $attribute, $options = [])
     {
-        return Yii::createObject(array_merge($this->fieldConfig, $options, [
+        $config = $this->fieldConfig;
+        if ($config instanceof \Closure) {
+            $config = call_user_func($config, $model, $attribute);
+        }
+        if (!isset($config['class'])) {
+            $config['class'] = $this->fieldClass;
+        }
+        return Yii::createObject(array_merge($config, $options, [
             'model' => $model,
             'attribute' => $attribute,
             'form' => $this,

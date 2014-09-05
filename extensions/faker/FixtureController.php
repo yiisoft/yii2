@@ -338,7 +338,7 @@ class FixtureController extends \yii\console\controllers\FixtureController
     }
 
     /**
-     * Returns array containg fixtures templates file names. You can specify what files to find
+     * Returns array containing fixtures templates file names. You can specify what files to find
      * by the given parameter.
      * @param array $templatesNames template file names to search. If empty then all files will be searched.
      * @return array
@@ -428,9 +428,9 @@ class FixtureController extends \yii\console\controllers\FixtureController
 
     /**
      * Generates fixture file by the given fixture template file.
-     * @param type $templateName template file name
-     * @param type $templatePath path where templates are stored
-     * @param type $fixtureDataPath fixture data path where generated file should be written
+     * @param string $templateName template file name
+     * @param string $templatePath path where templates are stored
+     * @param string $fixtureDataPath fixture data path where generated file should be written
      */
     public function generateFixtureFile($templateName, $templatePath, $fixtureDataPath)
     {
