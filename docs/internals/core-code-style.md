@@ -420,6 +420,13 @@ To give one of the above mentioned links another label than the class or method 
 
 The part before the | is the method, property or class reference while the part after | is the link label.
 
+It is also possible to link to the Guide using the following syntax:
+
+```markdown
+[link to guide](guide:file-name.md)
+[link to guide](guide:file-name.md#subsection)
+```
+
 
 #### Comments
 
