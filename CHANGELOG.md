@@ -219,6 +219,7 @@ Yii Framework 2 Change Log
 - Chg #2380: `yii\widgets\ActiveForm` will register validation js even if there are not fields inside (qiangxue)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
+- Chg #2914: `ActiveForm::fieldConfig` will be merged recursively with the `$options` parameter in `ActiveForm::field()` (qiangxue)
 - Chg #3036: Upgraded Twitter Bootstrap to 3.1.x (qiangxue)
 - Chg #3175: InvalidCallException, InvalidParamException, UnknownMethodException are now extended from SPL BadMethodCallException (samdark)
 - Chg #3358: Removed automatic CSRF meta tag generation by `View`. Added `Html::csrfMetaTags()` and its call to main layout files (qiangxue)

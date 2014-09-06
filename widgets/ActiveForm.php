@@ -11,13 +11,14 @@ use Yii;
 use yii\base\InvalidCallException;
 use yii\base\Widget;
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 
 /**
- * ActiveForm ...
+ * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -64,9 +65,11 @@ class ActiveForm extends Widget
      * function ($model, $attribute)
      * ```
      *
+     * The value of this property will be merged recursively with the `$options` parameter passed to [[field()]].
+     *
      * @see fieldClass
      */
-    public $fieldConfig;
+    public $fieldConfig = [];
     /**
      * @var boolean whether to perform encoding on the error summary.
      */
@@ -329,7 +332,7 @@ class ActiveForm extends Widget
         if (!isset($config['class'])) {
             $config['class'] = $this->fieldClass;
         }
-        return Yii::createObject(array_merge($config, $options, [
+        return Yii::createObject(ArrayHelper::merge($config, $options, [
             'model' => $model,
             'attribute' => $attribute,
             'form' => $this,
