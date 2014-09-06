@@ -123,7 +123,7 @@ return [
 ];
 ```
 
-Обратите внимание, что конфигурация с `'showScriptName' => false` будет работать только, если веб сервер был должным образом сконфигурирован. Смотрите раздел [installation](/../guide/installation.md#recommended-apache-configuration) (пока только на англ).
+Обратите внимание, что конфигурация с `'showScriptName' => false` будет работать только, если веб сервер был должным образом сконфигурирован. Смотрите раздел [installation](installation.md#recommended-apache-configuration) (пока ссылка не работает).
 
 ###Именованные параметры
 
