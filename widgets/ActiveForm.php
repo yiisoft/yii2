@@ -288,7 +288,17 @@ class ActiveForm extends Widget
             }
         }
 
-        return $options;
+        // only get the options that are different from the default ones (set in yii.activeForm.js)
+        return array_diff_assoc($options, [
+            'encodeErrorSummary' => true,
+            'errorSummary' => '.error-summary',
+            'validateOnSubmit' => true,
+            'errorCssClass' => 'has-error',
+            'successCssClass' => 'has-success',
+            'validatingCssClass' => 'validating',
+            'ajaxParam' => 'ajax',
+            'ajaxDataType' => 'json',
+        ]);
     }
 
     /**

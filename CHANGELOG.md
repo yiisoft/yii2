@@ -133,6 +133,7 @@ Yii Framework 2 Change Log
 - Enh #3380: Allow `value` in `defaultValueValidator` to be a closure (Alex-Code)
 - Enh #3384: Added callback-style transactions (leandrogehlen, Ragazzo, samdark)
 - Enh #3399, #3241: Added support for MS SQL Server older than 2012 (fourteenmeister, samdark)
+- Enh #3410: yii.activeForm.js now supports adding/removing fields dynamically (qiangxue)
 - Enh #3459: Added logging of errors, which may occur at `yii\caching\FileCache::gc()` (klimov-paul)
 - Enh #3472: Added configurable option to encode spaces in dropDownLists and listBoxes (kartik-v)
 - Enh #3518: `yii\helpers\Html::encode()` now replaces invalid code sequences with "�" (DaSourcerer)

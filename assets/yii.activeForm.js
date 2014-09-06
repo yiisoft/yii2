@@ -22,19 +22,24 @@
         }
     };
 
+    // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveForm::getClientOptions() as well
     var defaults = {
         // whether to encode the error summary
         encodeErrorSummary: true,
         // the jQuery selector for the error summary
-        errorSummary: undefined,
+        errorSummary: '.error-summary',
         // whether to perform validation before submitting the form.
         validateOnSubmit: true,
         // the container CSS class representing the corresponding attribute has validation error
-        errorCssClass: 'error',
+        errorCssClass: 'has-error',
         // the container CSS class representing the corresponding attribute passes validation
-        successCssClass: 'success',
+        successCssClass: 'has-success',
         // the container CSS class representing the corresponding attribute is being validated
         validatingCssClass: 'validating',
+        // the GET parameter name indicating an AJAX-based validation
+        ajaxParam: 'ajax',
+        // the type of data that you're expecting back from the server
+        ajaxDataType: 'json',
         // the URL for performing AJAX-based validation. If not set, it will use the the form's action
         validationUrl: undefined,
         // a callback that is called before submitting the form. The signature of the callback should be:
@@ -57,13 +62,10 @@
         ajaxBeforeSend: undefined,
         // a function to be called when the request finishes on AJAX-based validation. The signature of the callback should be:
         // function ($form, jqXHR, textStatus)
-        ajaxComplete: undefined,
-        // the GET parameter name indicating an AJAX-based validation
-        ajaxParam: 'ajax',
-        // the type of data that you're expecting back from the server
-        ajaxDataType: 'json'
+        ajaxComplete: undefined
     };
 
+    // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
     var attributeDefaults = {
         // a unique ID identifying an attribute (e.g. "loginform-username") in a form
         id: undefined,
@@ -71,16 +73,16 @@
         name: undefined,
         // the jQuery selector of the container of the input field
         container: undefined,
-        // the jQuery selector of the input field
+        // the jQuery selector of the input field under the context of the container
         input: undefined,
-        // the jQuery selector of the error tag
-        error: undefined,
+        // the jQuery selector of the error tag under the context of the container
+        error: '.help-block',
         // whether to encode the error
         encodeError: true,
         // whether to perform validation when a change is detected on the input
-        validateOnChange: false,
+        validateOnChange: true,
         // whether to perform validation when the input loses focus
-        validateOnBlur: false,
+        validateOnBlur: true,
         // whether to perform validation when the user is typing.
         validateOnType: false,
         // number of milliseconds that the validation should be delayed when a user is typing in the input field.
@@ -107,17 +109,18 @@
                 if (settings.validationUrl === undefined) {
                     settings.validationUrl = $form.prop('action');
                 }
+
                 $.each(attributes, function (i) {
                     attributes[i] = $.extend({value: getValue($form, this)}, attributeDefaults, this);
+                    watchAttribute($form, attributes[i]);
                 });
+
                 $form.data('yiiActiveForm', {
                     settings: settings,
                     attributes: attributes,
                     submitting: false,
                     validated: false
                 });
-
-                watchAttributes($form, attributes);
 
                 /**
                  * Clean up error status when the form is reset.
@@ -132,6 +135,47 @@
                     $form.on('submit.yiiActiveForm', methods.submitForm);
                 }
             });
+        },
+
+        // add a new attribute to the form dynamically.
+        // please refer to attributeDefaults for the structure of attribute
+        add: function (attribute) {
+            var $form = $(this);
+            attribute = $.extend({value: getValue($form, attribute)}, attributeDefaults, attribute);
+            $form.data('yiiActiveForm').attributes.push(attribute);
+            watchAttribute($form, attribute);
+        },
+
+        // remove the attribute with the specified ID from the form
+        remove: function (id) {
+            var $form = $(this),
+                attributes = $form.data('yiiActiveForm').attributes,
+                index = -1,
+                attribute;
+            $.each(attributes, function (i) {
+                if (attributes[i]['id'] == id) {
+                    index = i;
+                    attribute = attributes[i];
+                    return false;
+                }
+            });
+            if (index >= 0) {
+                attributes.splice(index, 1);
+                unwatchAttribute($form, attribute);
+            }
+            return attribute;
+        },
+
+        // find an attribute config based on the specified attribute ID
+        find: function (id) {
+            var attributes = $(this).data('yiiActiveForm').attributes, result;
+            $.each(attributes, function (i) {
+                if (attributes[i]['id'] == id) {
+                    result = attributes[i];
+                    return false;
+                }
+            });
+            return result;
         },
 
         destroy: function () {
@@ -254,6 +298,33 @@
                 });
             }
         });
+    };
+
+    var watchAttribute = function ($form, attribute) {
+        var $input = findInput($form, attribute);
+        if (attribute.validateOnChange) {
+            $input.on('change.yiiActiveForm',function () {
+                validateAttribute($form, attribute, false);
+            });
+        }
+        if (attribute.validateOnBlur) {
+            $input.on('blur.yiiActiveForm', function () {
+                if (attribute.status == 0 || attribute.status == 1) {
+                    validateAttribute($form, attribute, !attribute.status);
+                }
+            });
+        }
+        if (attribute.validateOnType) {
+            $input.on('keyup.yiiActiveForm', function () {
+                if (attribute.value !== getValue($form, attribute)) {
+                    validateAttribute($form, attribute, false);
+                }
+            });
+        }
+    };
+
+    var unwatchAttribute = function ($form, attribute) {
+        findInput($form, attribute).off('.yiiActiveForm');
     };
 
     var validateAttribute = function ($form, attribute, forceValidate) {
