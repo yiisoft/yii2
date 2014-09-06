@@ -329,12 +329,12 @@ class HelpController extends Controller
                 // show as integer to avoid confusion
                 $defaultValue = (int) $defaultValue;
             }
-            if ($type === 'boolean') {
+            if (strncmp($type, 'bool', 4) === 0) {
                 $type = 'boolean, 0 or 1';
             }
             $doc = "$type (defaults to " . var_export($defaultValue, true) . ")";
         } elseif (trim($type) !== '') {
-            if ($type === 'boolean') {
+            if (strncmp($type, 'bool', 4) === 0) {
                 $type = 'boolean, 0 or 1';
             }
             $doc = $type;
