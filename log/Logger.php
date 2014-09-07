@@ -74,7 +74,6 @@ class Logger extends Component
      */
     const LEVEL_PROFILE_END = 0x60;
 
-
     /**
      * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
      * Each log message is of the following structure:
@@ -116,7 +115,10 @@ class Logger extends Component
     public function init()
     {
         parent::init();
-        register_shutdown_function([$this, 'flush'], true);
+        register_shutdown_function(function () {
+            // make sure "flush()" is called last when there are multiple shutdown functions
+            register_shutdown_function([$this, 'flush'], true);
+        });
     }
 
     /**
@@ -139,7 +141,7 @@ class Logger extends Component
             $ts = debug_backtrace();
             array_pop($ts); // remove the last trace since it would be the entry script, not very useful
             foreach ($ts as $trace) {
-                if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII_PATH) !== 0) {
+                if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII2_PATH) !== 0) {
                     unset($trace['object'], $trace['args']);
                     $traces[] = $trace;
                     if (++$count >= $this->traceLevel) {

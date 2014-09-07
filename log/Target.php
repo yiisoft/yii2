@@ -105,7 +105,12 @@ abstract class Target extends Component
             if (($context = $this->getContextMessage()) !== '') {
                 $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
             }
+            // set exportInterval to 0 to avoid triggering export again while exporting
+            $oldExportInterval = $this->exportInterval;
+            $this->exportInterval = 0;
             $this->export();
+            $this->exportInterval = $oldExportInterval;
+
             $this->messages = [];
         }
     }
@@ -199,7 +204,7 @@ abstract class Target extends Component
 
             $matched = empty($categories);
             foreach ($categories as $category) {
-                if ($message[2] === $category || substr($category, -1) === '*' && strpos($message[2], rtrim($category, '*')) === 0) {
+                if ($message[2] === $category || !empty($category) && substr_compare($category, '*', -1) === 0 && strpos($message[2], rtrim($category, '*')) === 0) {
                     $matched = true;
                     break;
                 }
@@ -235,9 +240,16 @@ abstract class Target extends Component
         if (!is_string($text)) {
             $text = VarDumper::export($text);
         }
+        $traces = [];
+        if (isset($message[4])) {
+            foreach($message[4] as $trace) {
+                $traces[] = "in {$trace['file']}:{$trace['line']}";
+            }
+        }
 
         $prefix = $this->getMessagePrefix($message);
-        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text";
+        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text"
+            . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
     }
 
     /**
@@ -257,11 +269,11 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /** @var \yii\web\User $user */
+        /* @var $user \yii\web\User */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         $userID = $user ? $user->getId(false) : '-';
 
-        /** @var \yii\web\Session $session */
+        /* @var $session \yii\web\Session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 

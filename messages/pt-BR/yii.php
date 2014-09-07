@@ -29,7 +29,7 @@ return [
     '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{há 1 minuto} other{há # minutos}}',
     '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{há 1 mês} other{há # meses}}',
     '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{há 1 segundo} other{há # segundos}}',
-    '{delta, plural, =1{a year} other{# years}} ago' => 'delta, plural, =1{há 1 ano} other{há # anos}}',
+    '{delta, plural, =1{a year} other{# years}} ago' => '{delta, plural, =1{há 1 ano} other{há # anos}}',
     '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{há 1 hora} other{há # horas}}',
     '{n, plural, =1{# byte} other{# bytes}}' => '{n, plural, =1{# byte} other{# bytes}}',
     '{n, plural, =1{# gigabyte} other{# gigabytes}}' => '{n, plural, =1{# gigabyte} other{# gigabytes}}',

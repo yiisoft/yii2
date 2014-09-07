@@ -24,6 +24,7 @@ class UpdateAction extends Action
      */
     public $scenario = Model::SCENARIO_DEFAULT;
 
+
     /**
      * Updates an existing model.
      * @param string $id the primary key of the model.
@@ -32,7 +33,7 @@ class UpdateAction extends Action
      */
     public function run($id)
     {
-        /** @var ActiveRecord $model */
+        /* @var $model ActiveRecord */
         $model = $this->findModel($id);
 
         if ($this->checkAccess) {

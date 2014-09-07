@@ -51,6 +51,7 @@ class PhpMessageSource extends MessageSource
      */
     public $fileMap;
 
+
     /**
      * Loads the message translation for the specified language and category.
      * If translation for specific locale code such as `en-US` isn't found it

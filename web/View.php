@@ -49,7 +49,6 @@ class View extends \yii\base\View
      * @event Event an event that is triggered by [[endBody()]].
      */
     const EVENT_END_BODY = 'endBody';
-
     /**
      * The location of registered JavaScript code block or files.
      * This means the location is in the head section.
@@ -130,6 +129,7 @@ class View extends \yii\base\View
     public $jsFiles;
 
     private $_assetManager;
+
 
     /**
      * Marks the position of an HTML head section.
@@ -251,7 +251,7 @@ class View extends \yii\base\View
      * Removes a bundle from [[assetBundles]] once files are registered.
      * @param string $name name of the bundle to register
      */
-    private function registerAssetFiles($name)
+    protected function registerAssetFiles($name)
     {
         if (!isset($this->assetBundles[$name])) {
             return;

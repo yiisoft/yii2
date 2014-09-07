@@ -27,9 +27,9 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * language negotiation based on the value of the GET parameter [[languageParam]] and the `Accept-Language` HTTP header.
  * If a match is found, the [[\yii\base\Application::language]] property will be set as the chosen language.
  *
- * You may use ContentNegotiator as a bootstrap component as well as an action filter.
+ * You may use ContentNegotiator as a bootstrapping component as well as an action filter.
  *
- * The following code shows how you can use ContentNegotiator as a bootstrap component. Note that in this case,
+ * The following code shows how you can use ContentNegotiator as a bootstrapping component. Note that in this case,
  * the content negotiation applies to the whole application.
  *
  * ```php

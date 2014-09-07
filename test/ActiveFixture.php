@@ -44,10 +44,12 @@ class ActiveFixture extends BaseActiveFixture
      * name of the table associated with this fixture. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
+
     /**
      * @var TableSchema the table schema for the table associated with this fixture
      */
     private $_table;
+
 
     /**
      * @inheritdoc
@@ -147,7 +149,7 @@ class ActiveFixture extends BaseActiveFixture
         $db = $this->db;
         $tableName = $this->tableName;
         if ($tableName === null) {
-            /** @var \yii\db\ActiveRecord $modelClass */
+            /* @var $modelClass \yii\db\ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
         }

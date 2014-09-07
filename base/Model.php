@@ -83,6 +83,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     private $_scenario = self::SCENARIO_DEFAULT;
 
+
     /**
      * Returns the validation rules for attributes.
      *
@@ -310,28 +311,30 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function validate($attributeNames = null, $clearErrors = true)
     {
+        if ($clearErrors) {
+            $this->clearErrors();
+        }
+
+        if (!$this->beforeValidate()) {
+            return false;
+        }
+
         $scenarios = $this->scenarios();
         $scenario = $this->getScenario();
         if (!isset($scenarios[$scenario])) {
             throw new InvalidParamException("Unknown scenario: $scenario");
         }
 
-        if ($clearErrors) {
-            $this->clearErrors();
-        }
         if ($attributeNames === null) {
             $attributeNames = $this->activeAttributes();
         }
-        if ($this->beforeValidate()) {
-            foreach ($this->getActiveValidators() as $validator) {
-                $validator->validateAttributes($this, $attributeNames);
-            }
-            $this->afterValidate();
 
-            return !$this->hasErrors();
+        foreach ($this->getActiveValidators() as $validator) {
+            $validator->validateAttributes($this, $attributeNames);
         }
+        $this->afterValidate();
 
-        return false;
+        return !$this->hasErrors();
     }
 
     /**
@@ -382,7 +385,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if ($this->_validators === null) {
             $this->_validators = $this->createValidators();
         }
-
         return $this->_validators;
     }
 
@@ -401,7 +403,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $validators[] = $validator;
             }
         }
-
         return $validators;
     }
 
@@ -424,7 +425,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
             }
         }
-
         return $validators;
     }
 
@@ -433,17 +433,22 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * This is determined by checking if the attribute is associated with a
      * [[\yii\validators\RequiredValidator|required]] validation rule in the
      * current [[scenario]].
+     *
+     * Note that when the validator has a conditional validation applied using
+     * [[\yii\validators\RequiredValidator::$when|$when]] this method will return
+     * `false` regardless of the `when` condition because it may be called be
+     * before the model is loaded with data.
+     *
      * @param string $attribute attribute name
      * @return boolean whether the attribute is required
      */
     public function isAttributeRequired($attribute)
     {
         foreach ($this->getActiveValidators($attribute) as $validator) {
-            if ($validator instanceof RequiredValidator) {
+            if ($validator instanceof RequiredValidator && $validator->when === null) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -479,7 +484,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function getAttributeLabel($attribute)
     {
         $labels = $this->attributeLabels();
-
         return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute);
     }
 
@@ -763,7 +767,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public static function loadMultiple($models, $data)
     {
-        /** @var Model $model */
+        /* @var $model Model */
         $model = reset($models);
         if ($model === false) {
             return false;
@@ -799,7 +803,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public static function validateMultiple($models, $attributeNames = null)
     {
         $valid = true;
-        /** @var Model $model */
+        /* @var $model Model */
         foreach ($models as $model) {
             $valid = $model->validate($attributeNames) && $valid;
         }
