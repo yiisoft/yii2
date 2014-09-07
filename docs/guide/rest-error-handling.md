@@ -17,7 +17,6 @@ Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 
 {
-    "type": "yii\\web\\NotFoundHttpException",
     "name": "Not Found Exception",
     "message": "The requested resource was not found.",
     "code": 0,
@@ -42,3 +41,55 @@ The following list summarizes the HTTP status code that are used by the Yii REST
 * `422`: Data validation failed (in response to a `POST` request, for example). Please check the response body for detailed error messages.
 * `429`: Too many requests. The request was rejected due to rate limiting.
 * `500`: Internal server error. This could be caused by internal program errors.
+
+
+## Customizing Error Response
+
+Sometimes you may want to customize the default error response format. For example, instead of relying on
+using different HTTP statuses to indicate different errors, you would like to always use 200 as HTTP status
+and enclose the actual HTTP status code as part of the JSON structure in the response, like shown in the following,
+
+
+```
+HTTP/1.1 200 OK
+Date: Sun, 02 Mar 2014 05:31:43 GMT
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+Transfer-Encoding: chunked
+Content-Type: application/json; charset=UTF-8
+
+{
+    "success": false,
+    "data": {
+        "name": "Not Found Exception",
+        "message": "The requested resource was not found.",
+        "code": 0,
+        "status": 404
+    }
+}
+```
+
+To achieve this goal, you can respond to the `beforeSend` event of the `response` component in the application configuration:
+
+```php
+return [
+    // ...
+    'components' => [
+        'response' => [
+            'class' => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                if ($response->data !== null && !empty(Yii::$app->request->get['suppress_response_code'])) {
+                    $response->data = [
+                        'success' => $response->isSuccessful,
+                        'data' => $response->data,
+                    ];
+                    $response->statusCode = 200;
+                }
+            },
+        ],
+    ],
+];
+```
+
+The above code will reformat the response (for both successful and failed responses) as explained when
+`suppress_response_code` is passed as a `GET` parameter.
