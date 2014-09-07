@@ -81,49 +81,33 @@ class Formatter extends Component
     /**
      * @var string the default format string to be used to format a date.
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
+     *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     *
+     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
+     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      */
     public $dateFormat = 'medium';
     /**
      * @var string the default format string to be used to format a time.
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
+     *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     *
+     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
+     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      */
     public $timeFormat = 'medium';
     /**
      * @var string the default format string to be used to format a date and time.
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
+     *
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     *
+     * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
+     * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      */
     public $datetimeFormat = 'medium';
-    /**
-     * @var array with the standard php definition for short, medium, long an full
-     * format as pattern for date, time and datetime.
-     * The number behind pattern is the array index of localized formatterIntl array
-     * for same combination like [short][date][1] = 2
-     */
-    private $_phpNameToPattern = [ // TODO make this configureable?
-        'short' => [
-            'date' => 'd.m.Y',
-            'time' => 'H:i',
-            'datetime' => 'y-m-d H:i',
-        ],
-        'medium' => [
-            'date' => 'M j, Y',
-            'time' => 'H:i:s',
-            'datetime' => 'Y-m-d H:i:s',
-        ],
-        'long' => [
-            'date' => 'F j, Y',
-            'time' => 'g:i:sA',
-            'datetime' => 'F j, Y g:i:sA',
-        ],
-        'full' => [
-            'date' => 'l, F j, Y',
-            'time' => 'g:i:sA T',
-            'datetime' => 'l, F j, Y g:i:sA T',
-        ],
-    ];
 
     // TODO refactor number formatters
     /**
@@ -224,10 +208,9 @@ class Formatter extends Component
      * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
      * parameters of the formatting method, you may use an array. The first element of the array
      * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
-     * method. For example, a format of `['date', 'Y-m-d', 'php']` will cause the invocation of `asDate($value, 'Y-m-d', 'php')`.
-     * For more details see asXXX functions.
-     * @return string the formatting result
-     * @throws InvalidParamException if the type is not supported by this class.
+     * method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
+     * @return string the formatting result.
+     * @throws InvalidParamException if the format type is not supported by this class.
      */
     public function format($value, $format)
     {
@@ -362,7 +345,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $url = $value;
-        if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) {
+        if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) { // TODO support other urls like IRC, XMPP etc.
             $url = 'http://' . $url;
         }
 
@@ -394,7 +377,7 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()` TODO
+     * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
      * @param string $format the format used to convert the value into a date string.
@@ -406,8 +389,8 @@ class Formatter extends Component
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      *
-     * @throws InvalidParamException
-     * @throws InvalidConfigException
+     * @throws InvalidParamException if the input value can not be evaluated as a date value.
+     * @throws InvalidConfigException if the date format is invalid.
      * @return string the formatted result
      * @see dateFormat
      */
@@ -425,7 +408,7 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()` TODO
+     * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
      * @param string $format the format used to convert the value into a date string.
@@ -437,8 +420,8 @@ class Formatter extends Component
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      *
-     * @throws InvalidParamException
-     * @throws InvalidConfigException
+     * @throws InvalidParamException if the input value can not be evaluated as a date value.
+     * @throws InvalidConfigException if the date format is invalid.
      * @return string the formatted result
      * @see timeFormat
      */
@@ -456,7 +439,7 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()` TODO
+     * - a string that can be parsed into a UNIX timestamp via `strtotime()`
      * - a PHP DateTime object
      *
      * @param string $format the format used to convert the value into a date string.
@@ -468,8 +451,8 @@ class Formatter extends Component
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      *
-     * @throws InvalidParamException
-     * @throws InvalidConfigException
+     * @throws InvalidParamException if the input value can not be evaluated as a date value.
+     * @throws InvalidConfigException if the date format is invalid.
      * @return string the formatted result
      * @see datetimeFormat
      */
@@ -481,6 +464,9 @@ class Formatter extends Component
         return $this->formatDateTimeValue($value, $format, 'datetime');
     }
 
+    /**
+     * @var array map of short format names to IntlDateFormatter constant values.
+     */
     private $_dateFormats = [
         'short'  => 3, // IntlDateFormatter::SHORT,
         'medium' => 2, // IntlDateFormatter::MEDIUM,
@@ -489,10 +475,38 @@ class Formatter extends Component
     ];
 
     /**
+     * @var array with the standard php definition for short, medium, long an full
+     * format as pattern for date, time and datetime.
+     * This is used as fallback when the intl extension is not installed.
+     */
+    private $_phpNameToPattern = [
+        'short' => [
+            'date' => 'd.m.Y',
+            'time' => 'H:i',
+            'datetime' => 'd.m.Y H:i',
+        ],
+        'medium' => [
+            'date' => 'M j, Y',
+            'time' => 'H:i:s',
+            'datetime' => 'M j, Y H:i:s',
+        ],
+        'long' => [
+            'date' => 'F j, Y',
+            'time' => 'g:i:sA',
+            'datetime' => 'F j, Y g:i:sA',
+        ],
+        'full' => [
+            'date' => 'l, F j, Y',
+            'time' => 'g:i:sA T',
+            'datetime' => 'l, F j, Y g:i:sA T',
+        ],
+    ];
+
+    /**
      * @param integer $value normalized datetime value
      * @param string $format the format used to convert the value into a date string.
-     * @param $type
-     * @throws InvalidConfigException
+     * @param string $type 'date', 'time', or 'datetime'.
+     * @throws InvalidConfigException if the date format is invalid.
      * @return string the formatted result
      */
     private function formatDateTimeValue($value, $format, $type)
@@ -528,110 +542,6 @@ class Formatter extends Component
             $date = new DateTime(null, new \DateTimeZone($this->timeZone));
             $date->setTimestamp($value);
             return $date->format($format);
-        }
-    }
-
-    /**
-     * Formats a date, time or datetime in a float number as timestamp (seconds since 01-01-1970).
-     * @param string $value
-     * @return float timestamp
-     */
-    public function asTimestamp($value)
-    {
-        if ($value === null) {
-            return $this->nullDisplay;
-        }
-        return number_format($this->normalizeDatetimeValue($value), 0, '.', '');
-    }
-
-    /**
-     * Formats the value as the time interval between a date and now in human readable form.
-     *
-     * @param integer|string|DateTime|\DateInterval $value the value to be formatted. The following
-     * types of value are supported:
-     *
-     * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
-     * - a PHP DateTime object
-     * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
-     *
-     * @param integer|string|DateTime|\DateInterval $referenceTime if specified the value is used instead of now
-     * @return string the formatted result
-     */
-    public function asRelativeTime($value, $referenceTime = null)
-    {
-        if ($value === null) {
-            return $this->nullDisplay;
-        }
-
-        if ($value instanceof \DateInterval) {
-            $interval = $value;
-        } else {
-            $timestamp = $this->normalizeDatetimeValue($value);
-
-            if ($timestamp === false) {
-                // $value is not a valid date/time value, so we try
-                // to create a DateInterval with it
-                try {
-                    $interval = new \DateInterval($value);
-                } catch (\Exception $e) {
-                    // invalid date/time and invalid interval
-                    return $this->nullDisplay;
-                }
-            } else {
-                $timezone = new \DateTimeZone($this->timeZone);
-
-                if ($referenceTime === null) {
-                    $dateNow = new DateTime('now', $timezone);
-                } else {
-                    $referenceTime = $this->normalizeDatetimeValue($referenceTime);
-                    $dateNow = new DateTime(null, $timezone);
-                    $dateNow->setTimestamp($referenceTime);
-                }
-
-                $dateThen = new DateTime(null, $timezone);
-                $dateThen->setTimestamp($timestamp);
-
-                $interval = $dateThen->diff($dateNow);
-            }
-        }
-
-        if ($interval->invert) {
-            if ($interval->y >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y]);
-            }
-            if ($interval->m >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m]);
-            }
-            if ($interval->d >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d]);
-            }
-            if ($interval->h >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h]);
-            }
-            if ($interval->i >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i]);
-            }
-
-            return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s]);
-        } else {
-            if ($interval->y >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y]);
-            }
-            if ($interval->m >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m]);
-            }
-            if ($interval->d >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d]);
-            }
-            if ($interval->h >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h]);
-            }
-            if ($interval->i >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i]);
-            }
-
-            return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s]);
         }
     }
 
@@ -837,6 +747,7 @@ class Formatter extends Component
             // Timzone full name, not supported by php
             'e' => 'VV',    // Timezone identifier eg. Europe/Berlin
             'w' => '',      // Numeric representation of the day of the week 0=Sun, 6=Sat, not sup. ICU
+            // TODO
             'T' => '',      // Number of days in the given month eg. 28 through 31, not sup. ICU
             'L' => '',      //Whether it's a leap year 1= leap, 0= normal year, not sup. ICU
             'O' => '',      // ISO-8601 year number. This has the same value as Y, except that if the ISO week number (W) belongs to the previous or next year, that year is used instead. not sup. ICU
@@ -849,6 +760,110 @@ class Formatter extends Component
             'U' => ''       // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT), not supported in ICU
 
         ]);
+    }
+
+    /**
+     * Formats a date, time or datetime in a float number as timestamp (seconds since 01-01-1970).
+     * @param string $value
+     * @return float timestamp TODO
+     */
+    public function asTimestamp($value)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        return number_format($this->normalizeDatetimeValue($value), 0, '.', '');
+    }
+
+    /**
+     * Formats the value as the time interval between a date and now in human readable form.
+     *
+     * @param integer|string|DateTime|\DateInterval $value the value to be formatted. The following
+     * types of value are supported:
+     *
+     * - an integer representing a UNIX timestamp
+     * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
+     * - a PHP DateTime object
+     * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
+     *
+     * @param integer|string|DateTime|\DateInterval $referenceTime if specified the value is used instead of now
+     * @return string the formatted result
+     */
+    public function asRelativeTime($value, $referenceTime = null)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        if ($value instanceof \DateInterval) {
+            $interval = $value;
+        } else {
+            $timestamp = $this->normalizeDatetimeValue($value);
+
+            if ($timestamp === false) {
+                // $value is not a valid date/time value, so we try
+                // to create a DateInterval with it
+                try {
+                    $interval = new \DateInterval($value);
+                } catch (\Exception $e) {
+                    // invalid date/time and invalid interval
+                    return $this->nullDisplay;
+                }
+            } else {
+                $timezone = new \DateTimeZone($this->timeZone);
+
+                if ($referenceTime === null) {
+                    $dateNow = new DateTime('now', $timezone);
+                } else {
+                    $referenceTime = $this->normalizeDatetimeValue($referenceTime);
+                    $dateNow = new DateTime(null, $timezone);
+                    $dateNow->setTimestamp($referenceTime);
+                }
+
+                $dateThen = new DateTime(null, $timezone);
+                $dateThen->setTimestamp($timestamp);
+
+                $interval = $dateThen->diff($dateNow);
+            }
+        }
+
+        if ($interval->invert) {
+            if ($interval->y >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y]);
+            }
+            if ($interval->m >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m]);
+            }
+            if ($interval->d >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d]);
+            }
+            if ($interval->h >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h]);
+            }
+            if ($interval->i >= 1) {
+                return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i]);
+            }
+
+            return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s]);
+        } else {
+            if ($interval->y >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y]);
+            }
+            if ($interval->m >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m]);
+            }
+            if ($interval->d >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d]);
+            }
+            if ($interval->h >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h]);
+            }
+            if ($interval->i >= 1) {
+                return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i]);
+            }
+
+            return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s]);
+        }
     }
 
 
