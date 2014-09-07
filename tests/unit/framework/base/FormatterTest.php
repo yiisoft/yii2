@@ -258,6 +258,8 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTimestamp(null));
     }
 
+    // TODO test format conversion ICU/PHP
+
 
     private function buildDateSubIntervals($referenceDate, $intervals)
     {
