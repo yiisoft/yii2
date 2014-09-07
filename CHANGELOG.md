@@ -271,6 +271,7 @@ Yii Framework 2 Change Log
 - Chg: When an ID is found to be in both `Application::controllerMap` and `Application::modules`, the former will take precedence (qiangxue)
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
 - New #4193: Added `yii\filters\Cors` CORS filter to allow Cross Origin Resource Sharing (pgaultier)
+- New #4945: Added `yii\test\ArrayFixture` (Ragazzo)
 - New: Added `yii\base\InvalidValueException` (qiangxue)
 - New: Added `yii\caching\ArrayCache` (cebe)
 

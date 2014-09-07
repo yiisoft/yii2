@@ -9,10 +9,10 @@ namespace yii\test;
 
 use Yii;
 use yii\base\ArrayAccessTrait;
-use yii\base\InvalidParamException;
+use yii\base\InvalidConfigException;
 
 /**
- * Base array fixture class, that supports loading data from data files.
+ * ArrayFixture represents arbitrary fixture that can be loaded from PHP files.
  * 
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
