@@ -308,7 +308,7 @@ For applications that require complex access control with dynamically updated au
 ### Using Rules
 
 As aforementioned, rules add additional constraint to roles and permissions. A rule is a class extending
-from [[yii\rbac\Rule]]. It must implement the [[yii\rbac\Rule::execute()|execute()]] method. In the hierarchy we've
+from [[yii\rbac\Rule]]. It must implement the [[yii\rbac\Rule::execute()]] method. In the hierarchy we've
 created previously author cannot edit his own post. Let's fix it. First we need a rule to verify that the user is the post author:
 
 ```php
