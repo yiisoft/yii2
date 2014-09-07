@@ -54,13 +54,15 @@ class Formatter extends Component
 {
     /**
      * @var string the text to be displayed when formatting a `null` value.
-     * Defaults to `'<span class="not-set">(not set)</span>'`.
+     * Defaults to `'<span class="not-set">(not set)</span>'`, where `(not set)`
+     * will be translated according to [[locale]].
      */
     public $nullDisplay;
     /**
      * @var array the text to be displayed when formatting a boolean value. The first element corresponds
      * to the text displayed for `false`, the second element for `true`.
-     * Defaults to `['No', 'Yes']`.
+     * Defaults to `['No', 'Yes']`, where `Yes` and `No`
+     * will be translated according to [[locale]]..
      */
     public $booleanFormat;
     /**
@@ -175,12 +177,10 @@ class Formatter extends Component
         'decimalSeparator' => null,
     ];
 
-
     /**
      * @var boolean whether the php `intl` extension is loaded.
      */
     private $_intlLoaded = false;
-
 
 
     /**
@@ -191,19 +191,15 @@ class Formatter extends Component
         if ($this->timeZone === null) {
             $this->timeZone = Yii::$app->timeZone;
         }
-
         if ($this->locale === null) {
             $this->locale = Yii::$app->language;
         }
-
         if ($this->booleanFormat === null) {
             $this->booleanFormat = [Yii::t('yii', 'No'), Yii::t('yii', 'Yes')];
         }
-
         if ($this->nullDisplay === null) {
             $this->nullDisplay = '<span class="not-set">' . Yii::t('yii', '(not set)') . '</span>';
         }
-
         $this->_intlLoaded = extension_loaded('intl');
 
         // TODO refactor number formatters
