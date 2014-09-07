@@ -123,6 +123,15 @@ class ActiveQuery extends Component implements ActiveQueryInterface
             for ($i = 0; $i < $c;) {
                 $row[$dataRow[$i++]] = $dataRow[$i++];
             }
+
+            $class = $this->modelClass;
+            $modelInstance = $class::instantiate($row);
+            foreach ($modelInstance->attributes() as $attribute) {
+                if (!isset($row[$attribute])) {
+                    $row[$attribute] = null;
+                }
+            }
+
             $rows[] = $row;
         }
         if (!empty($rows)) {
@@ -164,6 +173,14 @@ class ActiveQuery extends Component implements ActiveQueryInterface
         }
         if ($this->asArray) {
             $model = $row;
+
+            $class = $this->modelClass;
+            $modelInstance = $class::instantiate($row);
+            foreach($modelInstance->attributes() as $attribute) {
+                if (!isset($model[$attribute])) {
+                    $model[$attribute] = null;
+                }
+            }
         } else {
             /* @var $class ActiveRecord */
             $class = $this->modelClass;
