@@ -123,6 +123,9 @@ class ActiveRecord extends BaseActiveRecord
         $delArgs = [$key];
         foreach ($values as $attribute => $value) {
             if ($value !== null) {
+                if (is_bool($value)) {
+                    $value = (int)$value;
+                }
                 $setArgs[] = $attribute;
                 $setArgs[] = $value;
             } else {
@@ -177,6 +180,9 @@ class ActiveRecord extends BaseActiveRecord
                     $newPk[$attribute] = $value;
                 }
                 if ($value !== null) {
+                    if (is_bool($value)) {
+                        $value = (int)$value;
+                    }
                     $setArgs[] = $attribute;
                     $setArgs[] = $value;
                 } else {
