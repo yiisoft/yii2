@@ -47,7 +47,7 @@ abstract class Generator extends Model
      * @var string the name of the code template that the user has selected.
      * The value of this property is internally managed by this class.
      */
-    public $template;
+    public $template = 'default';
     /**
      * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
      */

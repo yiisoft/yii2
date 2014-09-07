@@ -5,7 +5,7 @@
  * @license   http://www.yiiframework.com/license/
  */
 
-namespace yii\gii\commands;
+namespace yii\gii\console;
 
 use Yii;
 use yii\console\Controller;
@@ -31,24 +31,69 @@ class GenerateController extends Controller
      * @var boolean whether to generate all files and overwrite existing files
      */
     public $generate = false;
+    public $generators = [];
 
     /**
-     * @var array stores generator attributes
+     * @var array generator option values
      */
-    private $_attributes = [];
+    private $_options = [];
 
-    public function __set($key, $value)
+
+    /**
+     * @inheritdoc
+     */
+    public function __get($name)
     {
-        // todo: check if $key is a valid option
-        $this->_attributes[$key] = $value;
+        return isset($this->_options[$name]) ? $this->_options[$name] : null;
+
+        if ($this->action) {
+            $options = $this->options($this->action->id);
+            if (in_array($name, $options)) {
+                return isset($this->_options[$name]) ? $this->_options[$name] : null;
+            } else {
+                return parent::__get($name);
+            }
+        } elseif (array_key_exists($name, $this->_options)) {
+            return $this->_options[$name];
+        } else {
+            return parent::__get($name);
+        }
     }
 
-    public function __get($key)
+    /**
+     * @inheritdoc
+     */
+    public function __set($name, $value)
     {
-        // todo: check if $key is a valid option
-        if (isset($this->_attributes[$key])) {
-            return $this->_attributes[$key];
+        $this->_options[$name] = $value;
+        return;
+        if ($this->action) {
+            $options = $this->options($this->action->id);
+            if (in_array($name, $options)) {
+                $this->_options[$name] = $value;
+            } else {
+                parent::__set($name, $value);
+            }
+        } else {
+            $this->_options[$name] = $value;
         }
+    }
+
+    public function init()
+    {
+        parent::init();
+        foreach ($this->generators as $id => $config) {
+            $this->generators[$id] = Yii::createObject($config);
+        }
+    }
+
+    public function createAction($id)
+    {
+        $action = parent::createAction($id);
+        foreach ($this->_options as $name => $value) {
+            $action->generator->$name = $value;
+        }
+        return $action;
     }
 
     /**
@@ -57,8 +102,7 @@ class GenerateController extends Controller
     public function actions()
     {
         $actions = [];
-        foreach ($this->module->generators as $name => $generator) {
-            // create a generate action for every generator
+        foreach ($this->generators as $name => $generator) {
             $actions[$name] = [
                 'class' => 'yii\gii\console\Action',
                 'generator' => $generator,
@@ -67,15 +111,70 @@ class GenerateController extends Controller
         return $actions;
     }
 
+    public function getUniqueID()
+    {
+        return $this->id;
+    }
+
     /**
      * @inheritdoc
      */
     public function options($id)
     {
-        $generator = $this->module->generators[$id];
-        return array_merge(
-            parent::options($id),
-            array_keys($generator->attributes) // global for all actions
-        );
+        if (isset($this->generators[$id])) {
+            return array_merge(
+                parent::options($id),
+                array_keys($this->generators[$id]->attributes)
+            );
+        } else {
+            return parent::options($id);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getActionHelpSummary($action)
+    {
+        /** @var $action Action */
+        return $action->generator->getName();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getActionHelp($action)
+    {
+        /** @var $action Action */
+        return $action->generator->getDescription();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getActionArgsHelp($action)
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getActionOptionsHelp($action)
+    {
+        /** @var $action Action */
+        $attributes = $action->generator->attributes;
+        $hints = $action->generator->hints();
+
+        $options = [];
+        foreach ($attributes as $name => $value) {
+            $options[$name] = [
+                'type' => 'string',
+                'default' => $value,
+                'comment' => isset($hints[$name]) ? $hints[$name] : '',
+            ];
+        }
+
+        return $options;
     }
 }

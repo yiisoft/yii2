@@ -13,20 +13,17 @@ namespace yii\gii\console;
  */
 class Action extends \yii\base\Action
 {
+    /**
+     * @var \yii\gii\Generator
+     */
     public $generator;
-
-    // TODO: is there are better way, needed for `./yii help gii`
-    public function getUniqueId()
-    {
-        return 'gii/' . $this->generatorName;
-    }
 
     /**
      * @inheritdoc
      */
     public function run()
     {
-        echo "Loading generator '$this->generatorName'...\n\n";
+        echo "Loading generator '$this->id'...\n\n";
         if ($this->generator->validate()) {
             $files = $this->generator->generate();
             $answers = [];
