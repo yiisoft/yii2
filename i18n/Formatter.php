@@ -5,12 +5,15 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\i18n;
 
 use Yii;
 use DateTime;
 use IntlDateFormatter;
 use NumberFormatter;
+use yii\base\Component;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 
