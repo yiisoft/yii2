@@ -10,7 +10,6 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
