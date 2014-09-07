@@ -43,8 +43,8 @@ Thanks to that line, your application is in development mode, and will have alre
 http://hostname/index.php?r=gii
 ```
 
-> Note: if you are accessing gii from an IP address other than localhost, access will be denied by default.
-> To circumvent that default, add the allowed IP addresses to the configuration:
+> Note: If you are accessing Gii from a machine other than localhost, the access will be denied by default
+> for security purpose. You can configure Gii to add the allowed IP addresses as follows,
 >
 ```php
 'gii' => [
