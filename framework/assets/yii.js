@@ -98,23 +98,15 @@ yii = (function ($) {
          * The default implementation simply displays a js confirmation dialog.
          * You may override this by setting `yii.confirm`.
          * @param message the confirmation message.
-         * @return boolean whether the user confirms with the message in the dialog
+         * @param ok a callback to be called when the user confirms the message
+         * @param cancel a callback to be called when the user cancels the confirmation
          */
-        confirm: function (message) {
-            return confirm(message);
-        },
-
-        /**
-         * Returns a value indicating whether to allow executing the action defined for the specified element.
-         * This method recognizes the `data-confirm` attribute of the element and uses it
-         * as the message in a confirmation dialog. The method will return true if this special attribute
-         * is not defined or if the user confirms the message.
-         * @param $e the jQuery representation of the element
-         * @return boolean whether to allow executing the action defined for the specified element.
-         */
-        allowAction: function ($e) {
-            var message = $e.data('confirm');
-            return message === undefined || pub.confirm(message);
+        confirm: function (message, ok, cancel) {
+            if (confirm(message)) {
+                !ok || ok();
+            } else {
+                !cancel || cancel();
+            }
         },
 
         /**
@@ -126,15 +118,14 @@ yii = (function ($) {
          * For other elements, either the containing form action or the current page URL will be used
          * as the form action URL.
          *
-         * If the `data-method` attribute is not defined, the default element action will be performed.
+         * If the `data-method` attribute is not defined, nothing will be done.
          *
          * @param $e the jQuery representation of the element
-         * @return boolean whether to execute the default action for the element.
          */
         handleAction: function ($e) {
             var method = $e.data('method');
             if (method === undefined) {
-                return true;
+                return;
             }
 
             var $form = $e.closest('form');
@@ -178,8 +169,6 @@ yii = (function ($) {
             if (newForm) {
                 $form.remove();
             }
-
-            return false;
         },
 
         getQueryParams: function (url) {
@@ -237,28 +226,27 @@ yii = (function ($) {
     }
 
     function initDataMethods() {
-        var $document = $(document);
-        // handle data-confirm and data-method for clickable elements
-        $document.on('click.yii', pub.clickableSelector, function (event) {
+        var handler = function (event) {
             var $this = $(this);
-            if (pub.allowAction($this)) {
-                return pub.handleAction($this);
-            } else {
-                event.stopImmediatePropagation();
-                return false;
+            // data-confirm requires data-method
+            if ($this.data('method') === undefined) {
+                return true;
             }
-        });
+            var message = $this.data('confirm');
+            if (message !== undefined) {
+                pub.confirm(message, function () {
+                    pub.handleAction($this);
+                });
+            } else {
+                pub.handleAction($this);
+            }
+            event.stopImmediatePropagation();
+            return false;
+        };
 
-        // handle data-confirm and data-method for changeable elements
-        $document.on('change.yii', pub.changeableSelector, function (event) {
-            var $this = $(this);
-            if (pub.allowAction($this)) {
-                return pub.handleAction($this);
-            } else {
-                event.stopImmediatePropagation();
-                return false;
-            }
-        });
+        // handle data-confirm and data-method for clickable and changeable elements
+        $(document).on('click.yii', pub.clickableSelector, handler)
+            .on('change.yii', pub.changeableSelector, handler);
     }
 
     function initScriptFilter() {
