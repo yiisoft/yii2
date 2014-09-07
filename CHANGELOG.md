@@ -225,6 +225,7 @@ Yii Framework 2 Change Log
 - Chg #3175: InvalidCallException, InvalidParamException, UnknownMethodException are now extended from SPL BadMethodCallException (samdark)
 - Chg #3358: Removed automatic CSRF meta tag generation by `View`. Added `Html::csrfMetaTags()` and its call to main layout files (qiangxue)
 - Chg #3383: Added `$type` parameter to `IdentityInterface::findIdentityByAccessToken()` (qiangxue)
+- Chg #3511: Dropped `yii.allowAction()` and modified `yii.confirm()` in `yii.js` to support callbacks (tanakahisateru)
 - Chg #3531: \yii\grid\GridView now allows any character (except ":") in the attribute part of the shorthand syntax for columns (rawtaz)
 - Chg #3544: Added `$key` as a parameter to the callable specified via `yii\grid\DataColumn::value` (mdmunir)
 - Chg #3611: Query caching is refactored. (qiangxue)
