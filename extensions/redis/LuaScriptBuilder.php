@@ -268,6 +268,9 @@ EOF;
             if (is_array($value)) { // IN condition
                 $parts[] = $this->buildInCondition('in', [$column, $value], $columns);
             } else {
+                if (is_bool($value)) {
+                    $value = (int)$value;
+                }
                 $column = $this->addColumn($column, $columns);
                 if ($value === null) {
                     $parts[] = "$column==nil";

@@ -161,12 +161,6 @@ class ActiveRecordTest extends RedisTestCase
         $this->markTestSkipped('Redis does not store/find null values correctly.');
     }
 
-    public function testBooleanAttribute()
-    {
-        // https://github.com/yiisoft/yii2/issues/1311
-        $this->markTestSkipped('Redis does not store/find boolean values correctly.');
-    }
-
     public function testFindEagerViaRelationPreserveOrder()
     {
         $this->markTestSkipped('Redis does not support orderBy.');
