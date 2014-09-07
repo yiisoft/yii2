@@ -104,36 +104,47 @@ class Formatter extends Component
      * If [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, the default value is ','.
      */
     public $thousandSeparator;
-
-    // TODO refactor number formatters
-//    /**
-//     * @var array the options to be set for the NumberFormatter objects (eg. grouping used). Please refer to
-//     * [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatattribute)
-//     * for the possible options. This property is used by [[createNumberFormatter]] when
-//     * creating a new number formatter to format decimals, currencies, etc.
-//     */
-//    public $numberFormatOptions = [];
-//    /**
-//     * @var array the text options to be set for the NumberFormatter objects (eg. Negative sign). Please refer to
-//     * [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatattribute)
-//     * for the possible options. This property is used by [[createNumberFormatter]] when
-//     * creating a new number formatter to format decimals, currencies, etc.
-//     *
-//     * Default value: GOUPING_USED = 1 / MAX_FRACTION_DIGITS = 3 / GROUPING_SIZE = 3 / ROUNDING_MODE = 4
-//     */
-//    public $numberTextFormartOptions = [];
+    /**
+     * @var array a list of name value pairs that are passed to the
+     * intl [Numberformatter::setAttribute()](http://php.net/manual/en/numberformatter.setattribute.php) method of all
+     * the number formatter objects created by [[createNumberFormatter()]].
+     * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
+     *
+     * Please refer to the [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatattribute)
+     * for the possible options.
+     *
+     * For example to change the grouping size you can configure this property like the following:
+     *
+     * ```php
+     * [
+     *     NumberFormatter::GROUPING_SIZE => 4,
+     * ]
+     * ```
+     */
+    public $numberFormatterOptions = [];
+    /**
+     * @var array a list of name value pairs that are passed to the
+     * intl [Numberformatter::setTextAttribute()](http://php.net/manual/en/numberformatter.settextattribute.php) method of all
+     * the number formatter objects created by [[createNumberFormatter()]].
+     * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
+     *
+     * Please refer to the [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformattextattribute)
+     * for the possible options.
+     *
+     * For example to change the minus sign for negative numbers you can configure this property like the following:
+     *
+     * ```php
+     * [
+     *     NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
+     * ]
+     * ```
+     */
+    public $numberFormatterTextOptions = [];
     /**
      * @var string the international currency code displayed when formatting a number.
      * If not set, the currency code corresponding to [[locale]] will be used. TODO default value?
      */
     public $currencyCode;
-//    /**
-//     * @var float "intl" numberformat library knows a rounding increment
-//     * This means that any value is rounded to this increment.
-//     * Example: increment of 0.05 rounds values <= 2.024 to 2.00 / values >= 2.025 to 2.05
-//     */
-//    public $roundingIncrement;
-//    public $roundingIncrCurrency;
     /**
      * @var array the format used to format size (bytes). Three elements may be specified: "base", "decimals" and "decimalSeparator".
      * They correspond to the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte, defaults to 1024),
@@ -173,17 +184,6 @@ class Formatter extends Component
             $this->decimalSeparator = '.';
             $this->thousandSeparator = ',';
         }
-
-//        if (extension_loaded('intl')) {
-//            $this->_intlLoaded = true;
-//            $this->numberFormatOptions = [NumberFormatter::ROUNDING_MODE => NumberFormatter::ROUND_HALFUP];
-//        }
-//
-//        if (preg_match('/\bde-CH\b|\bfr-CH\b|\bit-CH\b/', $this->locale)){
-//            // Swiss currency amounts must be rounded to 0.05 (5-Rappen) instead of
-//            // 0.01 as usual
-//            $this->roundingIncrCurrency = '0.05';
-//        }
     }
 
     /**
@@ -191,7 +191,7 @@ class Formatter extends Component
      * This method will call one of the "as" methods available in this class to do the formatting.
      * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
      * then [[asHtml()]] will be used. Format names are case insensitive.
-     * @param mixed $value the value to be formatted
+     * @param mixed $value the value to be formatted.
      * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
      * parameters of the formatting method, you may use an array. The first element of the array
      * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
@@ -227,8 +227,8 @@ class Formatter extends Component
     /**
      * Formats the value as is without any formatting.
      * This method simply returns back the parameter without any format.
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result
+     * @param mixed $value the value to be formatted.
+     * @return string the formatted result.
      */
     public function asRaw($value)
     {
@@ -240,8 +240,8 @@ class Formatter extends Component
 
     /**
      * Formats the value as an HTML-encoded plain text.
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result
+     * @param mixed $value the value to be formatted.
+     * @return string the formatted result.
      */
     public function asText($value)
     {
@@ -253,8 +253,8 @@ class Formatter extends Component
 
     /**
      * Formats the value as an HTML-encoded plain text with newlines converted into breaks.
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result
+     * @param mixed $value the value to be formatted.
+     * @return string the formatted result.
      */
     public function asNtext($value)
     {
@@ -268,8 +268,8 @@ class Formatter extends Component
      * Formats the value as HTML-encoded text paragraphs.
      * Each text paragraph is enclosed within a `<p>` tag.
      * One or multiple consecutive empty lines divide two paragraphs.
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result
+     * @param mixed $value the value to be formatted.
+     * @return string the formatted result.
      */
     public function asParagraphs($value)
     {
@@ -283,9 +283,9 @@ class Formatter extends Component
      * Formats the value as HTML text.
      * The value will be purified using [[HtmlPurifier]] to avoid XSS attacks.
      * Use [[asRaw()]] if you do not want any purification of the value.
-     * @param mixed $value the value to be formatted
+     * @param mixed $value the value to be formatted.
      * @param array|null $config the configuration for the HTMLPurifier class.
-     * @return string the formatted result
+     * @return string the formatted result.
      */
     public function asHtml($value, $config = null)
     {
@@ -297,8 +297,8 @@ class Formatter extends Component
 
     /**
      * Formats the value as a mailto link.
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result
+     * @param mixed $value the value to be formatted.
+     * @return string the formatted result.
      */
     public function asEmail($value)
     {
@@ -310,8 +310,8 @@ class Formatter extends Component
 
     /**
      * Formats the value as an image tag.
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result
+     * @param mixed $value the value to be formatted.
+     * @return string the formatted result.
      */
     public function asImage($value)
     {
@@ -323,8 +323,8 @@ class Formatter extends Component
 
     /**
      * Formats the value as a hyperlink.
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result
+     * @param mixed $value the value to be formatted.
+     * @return string the formatted result.
      */
     public function asUrl($value)
     {
@@ -341,8 +341,8 @@ class Formatter extends Component
 
     /**
      * Formats the value as a boolean.
-     * @param mixed $value the value to be formatted
-     * @return string the formatted result
+     * @param mixed $value the value to be formatted.
+     * @return string the formatted result.
      * @see booleanFormat
      */
     public function asBoolean($value)
@@ -378,7 +378,7 @@ class Formatter extends Component
      *
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      * @throws InvalidConfigException if the date format is invalid.
-     * @return string the formatted result
+     * @return string the formatted result.
      * @see dateFormat
      */
     public function asDate($value, $format = null)
@@ -409,7 +409,7 @@ class Formatter extends Component
      *
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      * @throws InvalidConfigException if the date format is invalid.
-     * @return string the formatted result
+     * @return string the formatted result.
      * @see timeFormat
      */
     public function asTime($value, $format = null)
@@ -440,7 +440,7 @@ class Formatter extends Component
      *
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      * @throws InvalidConfigException if the date format is invalid.
-     * @return string the formatted result
+     * @return string the formatted result.
      * @see datetimeFormat
      */
     public function asDatetime($value, $format = null)
@@ -494,7 +494,7 @@ class Formatter extends Component
      * @param string $format the format used to convert the value into a date string.
      * @param string $type 'date', 'time', or 'datetime'.
      * @throws InvalidConfigException if the date format is invalid.
-     * @return string the formatted result
+     * @return string the formatted result.
      */
     private function formatDateTimeValue($value, $format, $type)
     {
@@ -752,9 +752,16 @@ class Formatter extends Component
     }
 
     /**
-     * Formats a date, time or datetime in a float number as timestamp (seconds since 01-01-1970).
-     * @param string $value
-     * @return float timestamp TODO
+     * Formats a date, time or datetime in a float number as UNIX timestamp (seconds since 01-01-1970).
+     * @param integer|string|DateTime|\DateInterval $value the value to be formatted. The following
+     * types of value are supported:
+     *
+     * - an integer representing a UNIX timestamp
+     * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
+     * - a PHP DateTime object
+     * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
+     *
+     * @return string the formatted result.
      */
     public function asTimestamp($value)
     {
@@ -775,8 +782,8 @@ class Formatter extends Component
      * - a PHP DateTime object
      * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
      *
-     * @param integer|string|DateTime|\DateInterval $referenceTime if specified the value is used instead of now
-     * @return string the formatted result
+     * @param integer|string|DateTime|\DateInterval $referenceTime if specified the value is used instead of `now`.
+     * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      */
     public function asRelativeTime($value, $referenceTime = null)
@@ -861,19 +868,22 @@ class Formatter extends Component
 
 
     /**
-     * Formats the value as an integer number by removing any digits without rounding.
-     * @param mixed $value the value to be formatted
-     * @return string the formatting result.
+     * Formats the value as an integer number by removing any decimal digits without rounding.
+     *
+     * @param mixed $value the value to be formatted.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
      */
-    public function asInteger($value) // TODO customizing
+    public function asInteger($value, $options = [], $textOptions = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
         $value = $this->normalizeNumericValue($value);
         if ($this->_intlLoaded) {
-            $f = $this->createNumberFormatter(NumberFormatter::DECIMAL);
+            $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, null, $options, $textOptions);
             return $f->format($value, NumberFormatter::TYPE_INT64);
         } else {
             return number_format((int) $value, 0, $this->decimalSeparator, $this->thousandSeparator);
@@ -886,22 +896,16 @@ class Formatter extends Component
      * Property [[decimalSeparator]] will be used to represent the decimal point. The
      * value is rounded automatically to the defined decimal digits.
      *
-     * PHP and ICU has different behaviour about number of zeros in fraction digits.
-     * PHP fills up to defined decimals (eg. 2.500000 [6]) while ICU hide unnecessary digits.
-     * (eg. 2.5 [6]). Until 5 fractional digits in this function is defined to 5 up with zeros.
-     *
-     * @param mixed $value the value to be formatted
-     * @param integer|string $decimals the number of digits after the decimal point if the value is an integer
-     *          otherwise it's is a format pattern string (this works only with [PHP intl extension](http://php.net/manual/en/book.intl.php) [icu]).
-//     * @param float $roundIncr Amount to which smaller fractation are rounded. Ex. 0.05 -> <=2.024 to 2.00 / >=2.025 to 2.05
-//     *          works with [PHP intl extension](http://php.net/manual/en/book.intl.php) library only.
-//     * @param boolean $grouping Per standard numbers are grouped in thousands. False = no grouping
-     * @return string the formatting result.
+     * @param mixed $value the value to be formatted.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
      * @see decimalSeparator
      * @see thousandSeparator
      */
-    public function asDecimal($value, $decimals = 2)
+    public function asDecimal($value, $decimals = null, $options = [], $textOptions = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
@@ -909,51 +913,12 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded) {
-            $f = $this->createNumberFormatter(NumberFormatter::DECIMAL);
-//            if ($decimals !== null){
-//                $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
-//                if ($decimals <= 5){
-//                    $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
-//                }
-//            }
-//            if ($roundIncr == null and $this->roundingIncrement != null){
-//                $roundIncr = $this->roundingIncrement;
-//            }
-//            if ($roundIncr != null){
-//                $f->setAttribute(NumberFormatter::ROUNDING_INCREMENT, $roundIncr);
-//            }
-//            if ($grouping === false){
-//                $f->setAttribute(NumberFormatter::GROUPING_USED, false);
-//            }
+            $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, $decimals, $options, $textOptions);
             return $f->format($value);
         } else {
-
-//            if ($roundIncr !== null){
-//                $part = explode('.', (string)$roundIncr);
-//                if ((string)$roundIncr != '0.05'){  // exception for Swiss rounding.
-//                    $roundIncr = $decimals;
-//                    if (intval($part[0]) > 0){
-//                        if (substr($part[0], 0, 1) === '1'){
-//                            $roundIncr = (strlen($part[0]) -1) * -1 ;
-//                        } else {
-//                            throw new InvalidParamException('$roundIncr must have "1" only eg. 0.01 or 10 but not 0.02 or 20');
-//                        }
-//                    } elseif (isset($part[1]) and intval($part[1])>0) {
-//                        if (substr($part[1], -1) === '1'){
-//                            $roundIncr = strlen($part[1]);
-//                        } else {
-//                            throw new InvalidParamException('$roundIncr must have "1" only eg. 0.01 or 10 but not 0.02 or 20');
-//                        }
-//                    }
-//                    $value = round($value, $roundIncr);
-//                } else {
-//                    $value = round($value/5,2)*5;
-//                }
-//            }
-//            if ($decimals === null){
-//                $decimals = 0;
-//            }
-//            $grouping = $grouping === true ? $this->thousandSeparator : '';
+            if ($decimals === null){
+                $decimals = 2;
+            }
             return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
         }
     }
@@ -961,16 +926,15 @@ class Formatter extends Component
 
     /**
      * Formats the value as a percent number with "%" sign.
-     * @param mixed $value the value to be formatted. It must be a factor eg. 0.75 -> 75%
-//     * @param string $format Number of decimals (default = 2) or format pattern ICU
-//     * Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
-//     * for details on how to specify a format.
-     * @param int $decimals
-//     * @param bool $grouping
+     *
+     * @param mixed $value the value to be formatted. It must be a factor e.g. `0.75` will result in `75%`.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
      */
-    public function asPercent($value, $decimals = 0)
+    public function asPercent($value, $decimals = null, $options = [], $textOptions = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
@@ -978,18 +942,12 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded) {
-            $f = $this->createNumberFormatter(NumberFormatter::PERCENT);
-//            if ($decimals !== null){
-//                $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
-//                if ($decimals <= 5){
-//                    $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
-//                }
-//            }
-//            if ($grouping === false){
-//                $f->setAttribute(NumberFormatter::GROUPING_USED, false);
-//            }
+            $f = $this->createNumberFormatter(NumberFormatter::PERCENT, $decimals, $options, $textOptions);
             return $f->format($value);
         } else {
+            if ($decimals === null){
+                $decimals = 0;
+            }
             $value = $value * 100;
             return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator) . '%';
         }
@@ -997,14 +955,14 @@ class Formatter extends Component
 
     /**
      * Formats the value as a scientific number.
-     * @param mixed $value the value to be formatted
-//     * @param string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
-//     * for details on how to specify a format.
-     * @param int $decimals
+     * @param mixed $value the value to be formatted.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
      */
-    public function asScientific($value, $decimals = 0)
+    public function asScientific($value, $decimals = null, $options = [], $textOptions = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
@@ -1012,14 +970,11 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded){
-            $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC);
-//            if ($decimals !== null){
-//                $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
-//            }
+            $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $decimals, $options, $textOptions);
             return $f->format($value);
         } else {
             if ($decimals !== null) {
-                return sprintf("%.{$decimals}E", $value);
+                return sprintf("%.{$decimals}E", $value); // TODO
             } else {
                 return sprintf("%.E", $value);
             }
@@ -1028,17 +983,14 @@ class Formatter extends Component
 
     /**
      * Formats the value as a currency number.
-     * @param mixed $value the value to be formatted
+     * @param mixed $value the value to be formatted.
      * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
-     * @param string $format the format to be used. Please refer to [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
-     * for details on how to specify a format. TODO ignored when not [PHP intl extension](http://php.net/manual/en/book.intl.php)
-     * @param float $roundIncrement : Amount to which smaller fractation are rounded. Ex. 0.05 -> <=2.024 to 2.00 / >=2.025 to 2.05
-     *         works with "intl" library only.
-     * @param null $grouping
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
      */
-    public function asCurrency($value, $currency = null) //, $format = null, $roundIncrement = null,  $grouping = null)
+    public function asCurrency($value, $currency = null, $options = [], $textOptions = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
@@ -1048,31 +1000,23 @@ class Formatter extends Component
         if ($currency === null) {
             $currency = $this->currencyCode;
         }
-//        if ($roundIncrement === null and $this->roundingIncrCurrency != null){
-//            $roundIncrement = $this->roundingIncrCurrency;
-//        }
-
         if ($this->_intlLoaded) {
-            $formatter = $this->createNumberFormatter(NumberFormatter::CURRENCY);
-//            if ($grouping !== null){
-//                $formatter->setAttribute(NumberFormatter::GROUPING_USED, false);
-//            }
-//            if ($roundIncrement !== null){
-//                $formatter->setAttribute(NumberFormatter::ROUNDING_INCREMENT, $roundIncrement);
-//            }
+            $formatter = $this->createNumberFormatter(NumberFormatter::CURRENCY, null, $options, $textOptions);
             return $formatter->formatCurrency($value, $currency);
         } else {
-            return $currency . ' ' . $this->asDecimal($value, 2);
+            return $currency . ' ' . $this->asDecimal($value, null, $options, $textOptions); // TODO be compatible to intl
         }
     }
 
     /**
      * Formats the value as a number spellout.
-     * // TODO requires intl
+     *
+     * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
+     *
      * @param mixed $value the value to be formatted
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
-     * @throws NotSupportedException
+     * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
      */
     public function asSpellout($value)
     {
@@ -1084,17 +1028,19 @@ class Formatter extends Component
             $f = $this->createNumberFormatter(NumberFormatter::SPELLOUT);
             return $f->format($value);
         } else {
-            throw new NotSupportedException('Format as Spellout is only supported when PHP intl extension is installed.');
+            throw new InvalidConfigException('Format as Spellout is only supported when PHP intl extension is installed.');
         }
     }
 
     /**
      * Formats the value as a ordinal value of a number.
-     * // TODO requires intl
+     *
+     * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
+     *
      * @param mixed $value the value to be formatted
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
-     * @throws NotSupportedException
+     * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
      */
     public function asOrdinal($value)
     {
@@ -1106,7 +1052,7 @@ class Formatter extends Component
             $f = $this->createNumberFormatter(NumberFormatter::ORDINAL);
             return $f->format($value);
         } else {
-            throw new NotSupportedException('Format as Ordinal is only supported when PHP intl extension is installed.');
+            throw new InvalidConfigException('Format as Ordinal is only supported when PHP intl extension is installed.');
         }
     }
 
@@ -1115,12 +1061,18 @@ class Formatter extends Component
      * @param integer $value value in bytes to be formatted
      * @param boolean $verbose if full names should be used (e.g. bytes, kilobytes, ...).
      * Defaults to false meaning that short names will be used (e.g. B, KB, ...).
-     * @return string the formatted result
+     * @param boolean $binaryPrefix if binary prefixes should be used for base 1024
+     * Defaults to true meaning that binary prefixes are used (e.g. kibibyte/KiB, mebibyte/MiB, ...).
+     * See also <http://en.wikipedia.org/wiki/Binary_prefix>.
+     * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
      * @see sizeFormat
      */
-    public function asSize($value, $verbose = false)
+    public function asSize($value, $verbose = false, $binaryPrefix = true) // TODO format
     {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
         $position = 0;
         do {
             if ($value < $this->sizeFormat['base']) {
@@ -1128,11 +1080,28 @@ class Formatter extends Component
             }
             $value = $value / $this->sizeFormat['base'];
             $position++;
-        } while ($position < 6);
+        } while ($position < 5);
 
         $value = round($value, $this->sizeFormat['decimals']); // todo
         $formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
         $params = ['n' => $formattedValue];
+
+        if ($binaryPrefix && $this->sizeFormat['base'] === 1024) {
+            switch ($position) {
+                case 0:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
+                case 1:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# kibibyte} other{# kibibytes}}', $params) : Yii::t('yii', '{n} KiB', $params);
+                case 2:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# mebibyte} other{# mebibytes}}', $params) : Yii::t('yii', '{n} MiB', $params);
+                case 3:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# gibibyte} other{# gibibytes}}', $params) : Yii::t('yii', '{n} GiB', $params);
+                case 4:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# tebibyte} other{# tebibytes}}', $params) : Yii::t('yii', '{n} TiB', $params);
+                default:
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# pebibyte} other{# pebibytes}}', $params) : Yii::t('yii', '{n} PiB', $params);
+            }
+        }
 
         switch ($position) {
             case 0:
@@ -1150,6 +1119,13 @@ class Formatter extends Component
         }
     }
 
+    /**
+     * TODO
+     *
+     * @param $value
+     * @return float
+     * @throws InvalidParamException
+     */
     protected function normalizeNumericValue($value)
     {
         if (is_string($value) && is_numeric($value)) {
@@ -1161,9 +1137,11 @@ class Formatter extends Component
         return $value;
     }
 
-
     /**
      * Creates a number formatter based on the given type and format.
+     *
+     * You may overide this to support format pattern. TODO
+     *
      * @param integer $type the type of the number formatter
      * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
      *          ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
@@ -1171,7 +1149,7 @@ class Formatter extends Component
      * [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
      * @return NumberFormatter the created formatter instance
      */
-    protected function createNumberFormatter($style)
+    protected function createNumberFormatter($style, $decimals = null, $options = [], $textOptions = [])
     {
         $formatter = new NumberFormatter($this->locale, $style);
 
@@ -1182,24 +1160,17 @@ class Formatter extends Component
             $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
         }
 
-//        if ($format !== null) {
-//            $formatter->setPattern($format);
-//        } else {
-//            $formatter->setSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $this->decimalSeparator);
-//            $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
-//        }
+        if ($decimals !== null) {
+            $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
+            $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+        }
 
-//        if (!empty($this->numberFormatOptions)) {
-//            foreach ($this->numberFormatOptions as $name => $attribute) {
-//                $formatter->setAttribute($name, $attribute);
-//            }
-//        }
-//        if (!empty($this->numberTextFormatOptions)) {
-//            foreach ($this->numberTextFormatOptions as $name => $attribute) {
-//                $formatter->setTextAttribute($name, $attribute);
-//            }
-//        }
-
+        foreach (($this->numberFormatterOptions + $options) as $name => $value) {
+            $formatter->setAttribute($name, $value);
+        }
+        foreach (($this->numberFormatterTextOptions + $textOptions) as $name => $attribute) {
+            $formatter->setTextAttribute($name, $attribute);
+        }
         return $formatter;
     }
 
