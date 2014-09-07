@@ -76,16 +76,6 @@ class FormatterTest extends TestCase
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
     }
 
-//    public function testSetLocale(){
-//        $value = '12300';
-//        $this->formatter->setLocale('de-DE');
-//        $this->assertSame('12.300,00', $this->formatter->asDouble($value, 2));
-//        $value = time();
-//        $this->assertSame(date('d.m.Y', $value), $this->formatter->asDate($value));
-//        $this->formatter->setLocale('en-US');
-//
-//    }
-
 
     public function testAsRaw()
     {
@@ -199,6 +189,18 @@ class FormatterTest extends TestCase
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asBoolean(null));
     }
+
+
+
+//    public function testSetLocale(){
+//        $value = '12300';
+//        $this->formatter->setLocale('de-DE');
+//        $this->assertSame('12.300,00', $this->formatter->asDouble($value, 2));
+//        $value = time();
+//        $this->assertSame(date('d.m.Y', $value), $this->formatter->asDate($value));
+//        $this->formatter->setLocale('en-US');
+//
+//    }
 
 
     // date format
