@@ -40,7 +40,7 @@ $this->title = 'Login';
 Within a view, you can access `$this` which refers to the [[yii\web\View|view component]] managing
 and rendering this view template.
 
-Besides `$this`, there may be other predefined variables in a view, such as `$form` and `$model` in the above
+Besides `$this`, there may be other predefined variables in a view, such as `$model` in the above
 example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
 or other objects whose trigger the [view rendering](#rendering-views).
 
