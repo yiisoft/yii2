@@ -18,6 +18,11 @@ class ArticleIndex extends ActiveRecord
         return $this->hasOne(ArticleDb::className(), ['id' => 'id']);
     }
 
+    public function getSourceCompositeLink()
+    {
+        return $this->hasOne(ArticleDb::className(), ['id' => 'id', 'author_id' => 'author_id']);
+    }
+
     public function getTags()
     {
         return $this->hasMany(TagDb::className(), ['id' => 'tag']);

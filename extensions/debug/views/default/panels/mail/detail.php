@@ -1,9 +1,7 @@
 <?php
-/**
- * @var yii\debug\panels\MailPanel $panel
- * @var yii\debug\models\search\Mail $searchModel
- * @var yii\data\ArrayDataProvider $dataProvider
- */
+/* @var $panel yii\debug\panels\MailPanel */
+/* @var $searchModel yii\debug\models\search\Mail */
+/* @var $dataProvider yii\data\ArrayDataProvider */
 
 use \yii\widgets\ListView;
 use yii\widgets\ActiveForm;

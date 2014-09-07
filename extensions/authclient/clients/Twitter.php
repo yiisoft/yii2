@@ -65,6 +65,7 @@ class Twitter extends OAuth1
      */
     public $apiBaseUrl = 'https://api.twitter.com/1.1';
 
+
     /**
      * @inheritdoc
      */

@@ -93,6 +93,8 @@ class AuthAction extends Action
      * @var string the redirect url after unsuccessful authorization (e.g. user canceled).
      */
     private $_cancelUrl = '';
+
+
     /**
      * @var string name or alias of the view file, which should be rendered in order to perform redirection.
      * If not set default one will be used.
@@ -164,7 +166,7 @@ class AuthAction extends Action
     {
         if (!empty($_GET[$this->clientIdGetParamName])) {
             $clientId = $_GET[$this->clientIdGetParamName];
-            /** @var \yii\authclient\Collection $collection */
+            /* @var $collection \yii\authclient\Collection */
             $collection = Yii::$app->get($this->clientCollection);
             if (!$collection->hasClient($clientId)) {
                 throw new NotFoundHttpException("Unknown auth client '{$clientId}'");

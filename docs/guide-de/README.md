@@ -24,7 +24,7 @@ Einstieg
 * [Arbeiten mit Formularen](start-forms.md)
 * [Arbeiten mit Datenbanken](start-databases.md)
 * [Code generieren mit Gii](start-gii.md)
-* [Ausblick](start-looking-head.md)
+* [Ausblick](start-looking-ahead.md)
 
 
 Application Struktur

@@ -1,8 +1,6 @@
 <?php
-/**
- * @var yii\debug\panels\MailPanel $panel
- * @var integer $mailCount
- */
+/* @var $panel yii\debug\panels\MailPanel */
+/* @var $mailCount integer */
 if ($mailCount): ?>
 <div class="yii-debug-toolbar-block">
     <a href="<?= $panel->getUrl() ?>">Mail <span class="label"><?= $mailCount ?></span></a>

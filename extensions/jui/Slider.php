@@ -37,6 +37,7 @@ class Slider extends Widget
         'stop' => 'slidestop',
     ];
 
+
     /**
      * Executes the widget.
      */

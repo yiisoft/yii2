@@ -87,7 +87,7 @@ class ActiveRecordTest extends DatabaseTestCase
 
     public function testFindColumn()
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
+        /* @var $this TestCase|ActiveRecordTestTrait */
         $this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->select('name')->column());
         $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->select('name')->column());
     }
@@ -111,7 +111,7 @@ class ActiveRecordTest extends DatabaseTestCase
 
     public function testFindLazyViaTable()
     {
-        /** @var Order $order */
+        /* @var $order Order */
         $order = Order::findOne(1);
         $this->assertEquals(1, $order->id);
         $this->assertEquals(2, count($order->books));
@@ -121,6 +121,9 @@ class ActiveRecordTest extends DatabaseTestCase
         $order = Order::findOne(2);
         $this->assertEquals(2, $order->id);
         $this->assertEquals(0, count($order->books));
+
+        $order = Order::find()->where(['id' => 1])->asArray()->one();
+        $this->assertTrue(is_array($order));
     }
 
     public function testFindEagerViaTable()
@@ -146,6 +149,7 @@ class ActiveRecordTest extends DatabaseTestCase
         // https://github.com/yiisoft/yii2/issues/1402
         $orders = Order::find()->with('books')->orderBy('id')->asArray()->all();
         $this->assertEquals(3, count($orders));
+        $this->assertTrue(is_array($orders[0]['orderItems'][0]));
 
         $order = $orders[0];
         $this->assertTrue(is_array($order));
@@ -158,7 +162,7 @@ class ActiveRecordTest extends DatabaseTestCase
     // deeply nested table relation
     public function testDeeplyNestedTableRelation()
     {
-        /** @var Customer $customer */
+        /* @var $customer Customer */
         $customer = Customer::findOne(1);
         $this->assertNotNull($customer);
 
@@ -538,17 +542,17 @@ class ActiveRecordTest extends DatabaseTestCase
 
     public function testUnlinkAllViaTable()
     {
-        /** @var \yii\db\ActiveRecordInterface $orderClass */
+        /* @var $orderClass \yii\db\ActiveRecordInterface */
         $orderClass = $this->getOrderClass();
-        /** @var \yii\db\ActiveRecordInterface $orderItemClass */
+        /* @var $orderItemClass \yii\db\ActiveRecordInterface */
         $orderItemClass = $this->getOrderItemClass();
-        /** @var \yii\db\ActiveRecordInterface $itemClass */
+        /* @var $itemClass \yii\db\ActiveRecordInterface */
         $itemClass = $this->getItemClass();
-        /** @var \yii\db\ActiveRecordInterface $orderItemsWithNullFKClass */
+        /* @var $orderItemsWithNullFKClass \yii\db\ActiveRecordInterface */
         $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
         // via table with delete
-        /** @var Order $order */
+        /* @var $order  Order */
         $order = $orderClass::findOne(1);
         $this->assertEquals(2, count($order->booksViaTable));
         $orderItemCount = $orderItemClass::find()->count();
@@ -568,5 +572,34 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2,$orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
         $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
         $this->assertEquals(5, $itemClass::find()->count());
+    }
+
+    public function testCastValues()
+    {
+        $model = new Type();
+        $model->int_col = 123;
+        $model->int_col2 = 456;
+        $model->smallint_col = 42;
+        $model->char_col = '1337';
+        $model->char_col2 = 'test';
+        $model->char_col3 = 'test123';
+        $model->float_col = 1337.42;
+        $model->float_col2 = 42.1337;
+        $model->bool_col = true;
+        $model->bool_col2 = false;
+        $model->save(false);
+
+        /* @var $model Type */
+        $model = Type::find()->one();
+        $this->assertSame(123, $model->int_col);
+        $this->assertSame(456, $model->int_col2);
+        $this->assertSame(42, $model->smallint_col);
+        $this->assertSame('1337', trim($model->char_col));
+        $this->assertSame('test', $model->char_col2);
+        $this->assertSame('test123', $model->char_col3);
+//        $this->assertSame(1337.42, $model->float_col);
+//        $this->assertSame(42.1337, $model->float_col2);
+//        $this->assertSame(true, $model->bool_col);
+//        $this->assertSame(false, $model->bool_col2);
     }
 }

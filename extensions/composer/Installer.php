@@ -20,10 +20,8 @@ use Composer\Util\Filesystem;
 class Installer extends LibraryInstaller
 {
     const EXTRA_BOOTSTRAP = 'bootstrap';
-    const EXTRA_WRITABLE = 'writable';
-    const EXTRA_EXECUTABLE = 'executable';
-
     const EXTENSION_FILE = 'yiisoft/extensions.php';
+
 
     /**
      * @inheritdoc
@@ -222,40 +220,57 @@ EOF
             rmdir($yiiDir);
         }
     }
+    
+    public static function postCreateProject($event)
+    {
+        $params = $event->getComposer()->getPackage()->getExtra();
+        if (isset($params[__METHOD__]) && is_array($params[__METHOD__])) {
+            foreach ($params[__METHOD__] as $method => $args) {
+                call_user_func_array([__CLASS__, $method], (array) $args);
+            }
+        }
+    }
 
     /**
      * Sets the correct permission for the files and directories listed in the extra section.
-     * @param CommandEvent $event
+     * @param array $paths the paths (keys) and the corresponding permission octal strings (values)
      */
-    public static function setPermission($event)
+    public static function setPermission(array $paths)
     {
-        $options = array_merge([
-            self::EXTRA_WRITABLE => [],
-            self::EXTRA_EXECUTABLE => [],
-        ], $event->getComposer()->getPackage()->getExtra());
-
-        foreach ((array) $options[self::EXTRA_WRITABLE] as $path) {
-            echo "Setting writable: $path ...";
-            if (is_dir($path)) {
-                chmod($path, 0777);
-                echo "done\n";
+        foreach ($paths as $path => $permission) {
+            echo "chmod('$path', $permission)...";
+            if (is_dir($path) || is_file($path)) {
+                chmod($path, octdec($permission));
+                echo "done.\n";
             } else {
-                echo "The directory was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path;
-
-                return;
+                echo "file not found.\n";
             }
         }
+    }
 
-        foreach ((array) $options[self::EXTRA_EXECUTABLE] as $path) {
-            echo "Setting executable: $path ...";
-            if (is_file($path)) {
-                chmod($path, 0755);
-                echo "done\n";
-            } else {
-                echo "\n\tThe file was not found: " . getcwd() . DIRECTORY_SEPARATOR . $path . "\n";
-
-                return;
+    /**
+     * Generates a cookie validation key for every app config listed in "config" in extra section.
+     * You can provide one or multiple parameters as the configuration files which need to have validation key inserted.
+     */
+    public static function generateCookieValidationKey()
+    {
+        $configs = func_get_args();
+        $key = self::generateRandomString();
+        foreach ($configs as $config) {
+            if (is_file($config)) {
+                $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/', "\\1'$key'", file_get_contents($config));
+                file_put_contents($config, $content);
             }
         }
+    }
+
+    protected static function generateRandomString()
+    {
+        if (!extension_loaded('mcrypt')) {
+            throw new \Exception('The mcrypt PHP extension is required by Yii2.');
+        }
+        $length = 32;
+        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
     }
 }

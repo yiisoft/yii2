@@ -7,6 +7,13 @@ Brazilian Portuguese
 - **[@wbraganca](https://github.com/wbraganca)**
 - Alan Michel Willms Quinot, [@alanwillms](https://github.com/alanwillms), dyulax@gmail.com
 
+China
+-----
+
+- **Paris Qian Sen 东方孤思子,[@qiansen1386](https://github.com/qiansen1386),qiansen1386ATgmail.com**
+- [@Aliciamiao](https://github.com/aliciamiao)
+- [@riverlet ](https://github.com/riverlet)
+
 German
 ------
 
@@ -27,4 +34,5 @@ Spanish
 Ukrainian
 ---------
 
-- Alexandr Bordun [@borales](https://github.com/Borales), admin@yiiframework.com.ua
+- **Alexandr Bordun [@borales](https://github.com/Borales), admin@yiiframework.com.ua**
+- Roman Bahatyi [@RichWeber](https://github.com/RichWeber), rbagatyi@gmail.com

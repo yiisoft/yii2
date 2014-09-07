@@ -6,17 +6,16 @@ en su segunda versión.
 Como resultado, actualizar desde la versión 1.1 no es tan trivial como actualizar entre versiones menores. En esta
 guía encontrarás las diferencias más grandes entre estas dos versiones.
 
-Si no has utilizado Yii 1.1 antes, puedes saltear con seguridad esta sección e ir directamente a "[Comenzando con Yii](start-installation.md)".
+Si no has utilizado Yii 1.1 antes, puedes saltar con seguridad esta sección e ir directamente a "[Comenzando con Yii](start-installation.md)".
 
-Por favor nota que Yii 2.0 introduce más características de las que son cubiertas en este resumen. Es altamente recomendado
-que leas a través de toda la guía definitiva para aprender acerca de todas ellas. Hay posibilidades de que algunas
-características que ya has desarrollado por ti mismo ahora sean parte del núcleo de Yii.
+Es importante anotar que Yii 2.0 introduce más características de las que van a ser cubiertas en este resumen. Es altamente recomendado
+que leas a través de toda la guía definitiva para aprender acerca de todas ellas. Hay muchas posibilidades de que algo que hayas desarrollado anteriormente para extender Yii, sea ahora parte del núcleo de la librería.
 
 
 Instalación
 ------------
 
-Yii 2.0 adopta completamente [Composer](https://getcomposer.org/), el administrador de paquetes de facto de PHP.
+Yii 2.0 adopta íntegramente [Composer](https://getcomposer.org/), el administrador de paquetes de facto de PHP.
 Tanto la instalación del núcleo del framework como las extensiones se manejan a través de Composer. Por favor consulta
 la sección [Comenzando con la Aplicación Básica](start-basic.md) para aprender a instalar Yii 2.0. Si quieres crear extensiones
 o transformar extensiones de Yii 1.1 para que sean compatibles con Yii 2.0, consulta la sección [Creando Extensiones](extend-creating-extensions.md) de la guía.
@@ -27,7 +26,7 @@ Requerimientos de PHP
 
 Yii 2.0 requiere PHP 5.4 o mayor, lo que es un gran progreso ya que Yii 1.1 funcionaba con PHP 5.2.
 Como resultado, hay muchas diferencias a nivel del lenguaje a las que deberías prestar atención.
-Debajo hay un resumen de los mayores cambios en relación a PHP:
+Abajo hay un resumen de los mayores cambios en relación a PHP:
 
 - [Namespaces](http://php.net/manual/es/language.namespaces.php).
 - [Funciones anónimas](http://php.net/manual/es/functions.anonymous.php).
@@ -57,12 +56,12 @@ Component y Object
 ------------------
 
 Yii 2.0 parte la clase `CComponent` de 1.1 en dos clases: [[yii\base\Object]] y [[yii\base\Component]].
-La clase [[yii\base\Object|Object]] es una clase base liviana que permite definir [propiedades de objecto](concept-properties.md)
+La clase [[yii\base\Object|Object]] es una clase base que permite definir [propiedades de objecto](concept-properties.md)
 a través de getters y setters. La clase [[yii\base\Component|Component]] extiende de [[yii\base\Object|Object]] y soporta
 [eventos](concept-events.md) y [comportamientos (behaviors)](concept-behaviors.md).
 
-Si tu clase no necesita las utilizar características de eventos o comportamientos, puedes considerar usar
-[[yii\base\Object|Object]] como clase base. Esto es usualmente el caso de las clases que representan
+Si tu clase no necesita utilizar las características de eventos o comportamientos, puedes considerar usar
+[[yii\base\Object|Object]] como clase base. Esto es usualmente en el caso de que las clases que representan sean
 estructuras de datos básicas.
 
 
@@ -92,7 +91,7 @@ class MyClass extends \yii\base\Object
 }
 ```
 
-En el ejemplo de arriba, el último parámetro del constructor debe tomar un array de configuración
+En el ejemplo de arriba, el último parámetro del constructor debe tomar una matriz de configuración
 conteniendo pares clave-valor para la inicialización de las propiedades al final del mismo.
 Puedes sobrescribir el método [[yii\base\Object::init()|init()]] para realizar el trabajo de inicialización
 que debe ser hecho luego de que la configuración ha sido aplicada.
@@ -163,17 +162,17 @@ of the MVC pattern. Si quieres acceder al controlador o al widget correspondient
 puedes utilizar `$this->context`.
 
 Para renderizar una vista parcial (partial) dentro de otra vista, se utiliza `$this->render()`, no `$this->renderPartial()`.
-El llamado a `render` además tiene que ser mostrado explícitamente a través de `echo`, ya que el método `render()`
+La llamada a `render` además tiene que ser mostrada explícitamente a través de `echo`, ya que el método `render()`
 devuelve el resultado de la renderización en vez de mostrarlo directamente. Por ejemplo:
 
 ```php
 echo $this->render('_item', ['item' => $item]);
 ```
 
-Además de utilizar PHP como el lenguaje de templates principal, Yii 2.0 está también equipado con soporte
-oficial de otros dos populares lenguajes: Smarty y Twig. El motor de templates de Prado ya no está soportado.
+Además de utilizar PHP como el lenguaje principal de plantillas (templates), Yii 2.0 está también equipado con soporte
+oficial de otros dos motores de plantillas populares: Smarty y Twig. El motor de plantillas de Prado ya no está soportado.
 Para utilizar esos motores, necesitas configurar el componente `view` de la aplicación, definiendo la propiedad [[yii\base\View::$renderers|View::$renderers]].
-Por favor consulta la sección [Motores de Templates](tutorial-template-engines.md) para más detalles.
+Por favor consulta la sección [Motores de Plantillas](tutorial-template-engines.md) para más detalles.
 
 
 Modelos
@@ -190,7 +189,7 @@ public function scenarios()
 {
     return [
         'backend' => ['email', 'role'],
-        'frontend' => ['email', '!name'],
+        'frontend' => ['email', '!role'],
     ];
 }
 ```
@@ -229,7 +228,7 @@ public function actionView($id)
 }
 ```
 
-Por favor consulta la sección [Controllers](structure-controllers.md) para más detalles acerca de los controladores.
+Por favor, consulta la sección [Controllers](structure-controllers.md) para más detalles acerca de los controladores.
 
 
 Widgets
@@ -299,7 +298,7 @@ La traducción de mensajes ahora es ejecutada vía el componente `i18n` de la ap
 Este componente maneja un grupo de mensajes origen, lo que te permite utilizar diferentes mensajes
 basados en categorías.
 
-Por favor consulta la sección [Internacionalización](tutorial-i18n.md) para más información.
+Por favor, consulta la sección [Internacionalización](tutorial-i18n.md) para más información.
 
 
 Filtros de Acciones
@@ -324,7 +323,7 @@ public function behaviors()
 }
 ```
 
-Consulta la sección [Filtrando](runtime-filtering.md) para mayor detalle del tema.
+Consulta la sección [Filtrando](structure-filters.md) para una mayor información acerca del tema.
 
 
 Assets
@@ -333,32 +332,31 @@ Assets
 Yii 2.0 introduce un nuevo concepto llamado *asset bundle* que reemplaza el concepto de script package encontrado en Yii 1.1.
 
 Un asset bundle es una colección de assets (ej. archivos JavaScript, archivos CSS, imágenes, etc.) dentro de un directorio.
-Cada asset bundle por una clase que extiende de [[yii\web\AssetBundle]].
+Cada asset bundle está representada por una clase que extiende de [[yii\web\AssetBundle]].
 Al registrar un asset bundle a través de [[yii\web\AssetBundle::register()]], haces que los assets de dicho bundle sean accesibles
 vía Web. A diferencia de Yii 1, la página que registra el bundle contendrá automáticamente las referencias a los archivos
 JavaScript y CSS especificados en el bundle.
 
-Por favor consulta la sección [Manejando Assets](output-assets.md) para más detalles.
+Por favor, consulta la sección [Manejando Assets](output-assets.md) para más detalles.
 
 
 Helpers
 -------
 
-Yii 2.0 introduce muchos comúnmente utilizados helpers estáticos, incluyendo.
+Yii 2.0 introduce muchos helpers estáticos comúnmente utilizados, incluyendo:
 
 * [[yii\helpers\Html]]
 * [[yii\helpers\ArrayHelper]]
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
-Por favor consulta la sección [Información General de Helpers](helper-overview.md) para más detalles.
+Por favor, consulta la sección [Información General de Helpers](helper-overview.md) para más detalles.
 
 Formularios
 -----------
 
-Yii 2.0 introduce el concepto de *campo* para construir formularios utilizando [[yii\widgets\ActiveForm]]. Un campo
+Yii 2.0 introduce el concepto de *campo* (field) para construir formularios utilizando [[yii\widgets\ActiveForm]]. Un campo (field)
 es un contenedor que consiste en una etiqueta, un input, un mensaje de error y/o texto de ayuda.
 Un campo es representado como un objeto [[yii\widgets\ActiveField|ActiveField]].
 Utilizando estos campos, puedes crear formularios más claramente que antes:
@@ -373,7 +371,7 @@ Utilizando estos campos, puedes crear formularios más claramente que antes:
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-Por favor consulta la sección [Creando Formularios](input-forms.md) para más detalles.
+Por favor, consulta la sección [Creando Formularios](input-forms.md) para más detalles.
 
 
 Query Builder
@@ -433,7 +431,7 @@ class Customer extends \yii\db\ActiveRecord
 ```
 
 Ahora puedes utilizar `$customer->orders` para acceder a las órdenes de la tabla relacionada. También puedes utilizar el siguiente
-código para realizar al-vuelo una consulta relacionada con una condición personalizada:
+código para realizar una consulta 'al-vuelo' relacionada con una condición personalizada:
 
 ```php
 $orders = $customer->getOrders()->andWhere('status=1')->all();
@@ -445,8 +443,8 @@ sin utilizar un JOIN: la primera traer todos los modelos primarios, mientras que
 utilizando como condición la clave primaria de los primarios.
 
 En vez de devolver objetos [[yii\db\ActiveRecord|ActiveRecord]], puedes conectar el método [[yii\db\ActiveQuery::asArray()|asArray()]]
-mientras generas una query que devuelve un gran número de registros. Esto causará que el resultado de la consulta sea devuelto como
-arrays, lo que puede reducir significativamente la necesidad de tiempo de CPU y memoria si el número de registros es grande.
+mientras generas una consulta que devuelve un gran número de registros. Esto causará que el resultado de la consulta sea devuelto como
+matrices (arrays), lo que puede reducir significativamente la necesidad de tiempo de CPU y memoria si el número de registros es grande.
 Por ejemplo:
 
 ```php
@@ -454,7 +452,7 @@ $customers = Customer::find()->asArray()->all();
 ```
 
 Otro cambio es que ya no puedes definir valores por defecto a los atributos a través de propiedades publicas.
-Si lo necesitaras, debes definirlo en el método init de la clase del registro en cuestión.
+Si lo necesitaras, debes definirlo en el método `init` de la clase del registro en cuestión.
 
 ```php
 public function init()
@@ -464,17 +462,17 @@ public function init()
 }
 ```
 
-Solía haber algunos problemas al sobrescribir el constructor de una clase ActiveRecord en 1.1. Estos ya no están presentes en
+Anteriormente, solía haber algunos problemas al sobrescribir el constructor de una clase ActiveRecord en 1.1. Estos ya no están presentes en
 Yii 2.0. Ten en cuenta que al agregar parámetros al constructor podrías llegar a tener que sobrescribir [[yii\db\ActiveRecord::instantiate()]].
 
-Hay muchos otros cambios y mejoras con respecto a ActiveRecord. Por favor consulta
+Hay muchos otros cambios y mejoras con respecto a ActiveRecord. Por favor, consulta
 la sección [Active Record](db-active-record.md) para más detalles.
 
 
 User e IdentityInterface
 ------------------------
 
-La clase `CWebUser` de 1.1 es reemplazada por [[yii\web\User]], y la clase `CUserIdentity` ya no existe.
+La clase `CWebUser` de 1.1 es reemplazada por [[yii\web\User]], y la clase `CUserIdentity` ha dejado de existir.
 En cambio, ahora debes implementar [[yii\web\IdentityInterface]] lo que es mucho más directo para usar.
 El template de Aplicación Avanzada provee un ejemplo así.
 
@@ -496,7 +494,7 @@ En 1.1, tendrías que haber creado dos reglas diferentes para obtener el mismo r
 ]
 ```
 
-Por favor consulta la sección [Documentación del Manejo de URLs](url.md) para más detalles.
+Por favor, consulta la sección [Documentación del Manejo de URLs](url.md) para más detalles.
 
 Utilizando Yii 1.1 y 2.x juntos
 -------------------------------

@@ -38,6 +38,7 @@ class QueryBuilder extends Object
      */
     public $separator = " ";
 
+
     /**
      * Constructor.
      * @param Connection $connection the Sphinx connection.
@@ -62,20 +63,9 @@ class QueryBuilder extends Object
     {
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
-        if ($query->match !== null) {
-            if ($query->match instanceof Expression) {
-                $query->andWhere('MATCH(' . $query->match->expression . ')');
-                $params = array_merge($params, $query->match->params);
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $params[$phName] = $this->db->escapeMatchValue($query->match);
-                $query->andWhere('MATCH(' . $phName . ')');
-            }
-        }
-
         $from = $query->from;
         if ($from === null && $query instanceof ActiveQuery) {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $query->modelClass;
             $from = [$modelClass::indexName()];
         }
@@ -83,7 +73,7 @@ class QueryBuilder extends Object
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
             $this->buildFrom($from, $params),
-            $this->buildWhere($query->from, $query->where, $params),
+            $this->buildWhere($query->from, $query->where, $params, $query->match),
             $this->buildGroupBy($query->groupBy),
             $this->buildWithin($query->within),
             $this->buildOrderBy($query->orderBy),
@@ -486,10 +476,28 @@ class QueryBuilder extends Object
      * @param string[] $indexes list of index names, which affected by query
      * @param string|array $condition
      * @param array $params the binding parameters to be populated
+     * @param string|Expression|null $match
      * @return string the WHERE clause built from [[query]].
      */
-    public function buildWhere($indexes, $condition, &$params)
+    public function buildWhere($indexes, $condition, &$params, $match = null)
     {
+        if ($match !== null) {
+            if ($match instanceof Expression) {
+                $matchWhere = 'MATCH(' . $match->expression . ')';
+                $params = array_merge($params, $match->params);
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = $this->db->escapeMatchValue($match);
+                $matchWhere = 'MATCH(' . $phName . ')';
+            }
+
+            if ($condition === null) {
+                $condition = $matchWhere;
+            } else {
+                $condition = ['and', $matchWhere, $condition];
+            }
+        }
+
         if (empty($condition)) {
             return '';
         }
@@ -514,6 +522,27 @@ class QueryBuilder extends Object
     public function buildGroupBy($columns)
     {
         return empty($columns) ? '' : 'GROUP BY ' . $this->buildColumns($columns);
+    }
+
+    /**
+     * Builds the ORDER BY and LIMIT/OFFSET clauses and appends them to the given SQL.
+     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
+     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
+     * @param integer $limit the limit number. See [[Query::limit]] for more details.
+     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     */
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    {
+        $orderBy = $this->buildOrderBy($orderBy);
+        if ($orderBy !== '') {
+            $sql .= $this->separator . $orderBy;
+        }
+        $limit = $this->buildLimit($limit, $offset);
+        if ($limit !== '') {
+            $sql .= $this->separator . $limit;
+        }
+        return $sql;
     }
 
     /**
@@ -616,12 +645,11 @@ class QueryBuilder extends Object
             $operator = strtoupper($condition[0]);
             if (isset($builders[$operator])) {
                 $method = $builders[$operator];
-                array_shift($condition);
-
-                return $this->$method($indexes, $operator, $condition, $params);
             } else {
-                throw new Exception('Found unknown operator in query: ' . $operator);
+                $method = 'buildSimpleCondition';
             }
+            array_shift($condition);
+            return $this->$method($indexes, $operator, $condition, $params);
         } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
 
             return $this->buildHashCondition($indexes, $condition, $params);
@@ -973,16 +1001,42 @@ class QueryBuilder extends Object
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
                     $lineParts[] = $phName;
-                    $params[$phName] = (isset($columnSchema)) ? $columnSchema->typecast($subValue) : $subValue;
+                    $params[$phName] = (isset($columnSchema)) ? $columnSchema->dbTypecast($subValue) : $subValue;
                 }
             }
 
             return '(' . implode(',', $lineParts) . ')';
         } else {
             $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = (isset($columnSchema)) ? $columnSchema->typecast($value) : $value;
+            $params[$phName] = (isset($columnSchema)) ? $columnSchema->dbTypecast($value) : $value;
 
             return $phName;
         }
+    }
+
+    /**
+     * Creates an SQL expressions like `"column" operator value`.
+     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @param array $operands contains two column names.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     * @throws InvalidParamException if count($operands) is not 2
+     */
+    public function buildSimpleCondition($operator, $operands, &$params)
+    {
+        if (count($operands) !== 2) {
+            throw new InvalidParamException("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $value) = $operands;
+
+        if (strpos($column, '(') === false) {
+            $column = $this->db->quoteColumnName($column);
+        }
+
+        $phName = self::PARAM_PREFIX . count($params);
+        $params[$phName] = $value === null ? 'NULL' : $value;
+
+        return "$column $operator $phName";
     }
 }

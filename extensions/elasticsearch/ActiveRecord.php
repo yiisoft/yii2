@@ -7,6 +7,7 @@
 
 namespace yii\elasticsearch;
 
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
@@ -40,9 +41,9 @@ use yii\helpers\StringHelper;
  *
  * You may override [[index()]] and [[type()]] to define the index and type this record represents.
  *
- * @property float $score Returns the score of this record when it was retrieved via a [[find()]] query. This
+ * @property array|null $highlight A list of arrays with highlighted excerpts indexed by field names. This
  * property is read-only.
- * @property array $highlight Returns a list of arrays with highlighted excerpts indexed by field names. This
+ * @property float $score Returns the score of this record when it was retrieved via a [[find()]] query. This
  * property is read-only.
  *
  * @author Carsten Brandt <mail@cebe.cc>
@@ -54,6 +55,7 @@ class ActiveRecord extends BaseActiveRecord
     private $_score;
     private $_version;
     private $_highlight;
+
 
     /**
      * Returns the database connection used by this AR class.
@@ -68,10 +70,11 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -395,35 +398,32 @@ class ActiveRecord extends BaseActiveRecord
         if ($runValidation && !$this->validate($attributes)) {
             return false;
         }
-        if ($this->beforeSave(true)) {
-            $values = $this->getDirtyAttributes($attributes);
-
-            $response = static::getDb()->createCommand()->insert(
-                static::index(),
-                static::type(),
-                $values,
-                $this->getPrimaryKey(),
-                $options
-            );
-
-//            if (!isset($response['ok'])) {
-//                return false;
-//            }
-            $pk = static::primaryKey()[0];
-            $this->$pk = $response['_id'];
-            if ($pk != '_id') {
-                $values[$pk] = $response['_id'];
-            }
-            $this->_version = $response['_version'];
-            $this->_score = null;
-
-            $this->afterSave(true);
-            $this->setOldAttributes($values);
-
-            return true;
+        if (!$this->beforeSave(true)) {
+            return false;
         }
+        $values = $this->getDirtyAttributes($attributes);
 
-        return false;
+        $response = static::getDb()->createCommand()->insert(
+            static::index(),
+            static::type(),
+            $values,
+            $this->getPrimaryKey(),
+            $options
+        );
+
+        $pk = static::primaryKey()[0];
+        $this->$pk = $response['_id'];
+        if ($pk != '_id') {
+            $values[$pk] = $response['_id'];
+        }
+        $this->_version = $response['_version'];
+        $this->_score = null;
+
+        $changedAttributes = array_fill_keys(array_keys($values), null);
+        $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
+
+        return true;
     }
 
     /**

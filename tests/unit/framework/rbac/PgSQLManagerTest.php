@@ -3,6 +3,8 @@ namespace yiiunit\framework\rbac;
 
 /**
  * PgSQLManagerTest
+ * @group db
+ * @group rbac
  */
 class PgSQLManagerTest extends DbManagerTestCase
 {

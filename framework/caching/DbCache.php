@@ -72,6 +72,7 @@ class DbCache extends Cache
      */
     public $gcProbability = 100;
 
+
     /**
      * Initializes the DbCache component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.

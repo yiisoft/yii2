@@ -5,9 +5,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Html;
 
-/**
- * @var yii\web\View $this
- */
+/* @var $this yii\web\View */
 
 \yii\apidoc\templates\bootstrap\assets\AssetBundle::register($this);
 
@@ -94,9 +92,6 @@ JS
     $this->registerJs(<<<JS
 
 var searchBox = $('#searchbox');
-
-// focus the search field
-searchBox.focus();
 
 // search when typing in search field
 searchBox.on("keyup", function(event) {

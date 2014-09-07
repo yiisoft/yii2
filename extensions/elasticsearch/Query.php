@@ -137,7 +137,6 @@ class Query extends Component implements QueryInterface
      * on one or more fields.
      */
     public $highlight;
-
     public $facets = [];
 
 
@@ -261,6 +260,7 @@ class Query extends Component implements QueryInterface
     public function delete($db = null)
     {
         // TODO implement http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
+        // http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_search_requests.html
         throw new NotSupportedException('Delete by query is not implemented yet.');
     }
 
@@ -322,6 +322,7 @@ class Query extends Component implements QueryInterface
         // TODO consider sending to _count api instead of _search for performance
         // only when no facety are registerted.
         // http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html
+        // http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_search_requests.html
 
         $options = [];
         $options['search_type'] = 'count';

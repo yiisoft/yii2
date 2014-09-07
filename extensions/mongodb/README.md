@@ -89,7 +89,7 @@ You may face them in URL composition or attempt of saving "_id" to other storage
 In these cases, ensure you have converted [[\MongoId]] into the string:
 
 ```php
-/** @var yii\web\View $this */
+/* @var $this yii\web\View */
 echo $this->createUrl(['item/update', 'id' => (string)$row['_id']]);
 ```
 
@@ -286,3 +286,37 @@ return [
 
 > Note: since MongoDB is schemaless, there is not much information, which generated code may base on. So generated code
   is very basic and definitely requires adjustments.
+
+
+Using Migrations
+----------------
+
+MongoDB is schemaless and will create any missing collection on the first demand. However there are many cases, when
+you may need applying persistent changes to the MongoDB database. For example: you may need to create a collection with
+some specific options or create indexes.
+MongoDB migrations are managed via [[yii\mongodb\console\controllers\MigrateController]], which is an analog of regular
+[[\yii\console\controllers\MigrateController]].
+
+In order to enable this command you should adjust the configuration of your console application:
+
+```php
+return [
+    // ...
+    'controllerMap' => [
+        'mongodb-migrate' => 'yii\mongodb\console\controllers\MigrateController'
+    ],
+];
+```
+
+Below are some common usages of this command:
+
+```
+# creates a new migration named 'create_user_collection'
+yii mongodb-migrate/create create_user_collection
+
+# applies ALL new migrations
+yii mongodb-migrate
+
+# reverts the last applied migration
+yii mongodb-migrate/down
+```

@@ -48,6 +48,7 @@ class I18N extends Component
      */
     public $translations;
 
+
     /**
      * Initializes the component by configuring the default message categories.
      */
@@ -113,7 +114,7 @@ class I18N extends Component
             $result = $formatter->format($message, $params, $language);
             if ($result === false) {
                 $errorMessage = $formatter->getErrorMessage();
-                Yii::warning("Formatting message for language '$language' failed with error: $errorMessage. The message being formatted was: $message.");
+                Yii::warning("Formatting message for language '$language' failed with error: $errorMessage. The message being formatted was: $message.", __METHOD__);
 
                 return $message;
             } else {

@@ -324,4 +324,27 @@ class QueryTest extends SphinxTestCase
             ->all($connection);
         $this->assertNotEmpty($rows);
     }
+
+    /**
+     * @depends testRun
+     *
+     * @see https://github.com/yiisoft/yii2/issues/4375
+     */
+    public function testRunOnDistributedIndex()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query;
+        $rows = $query->from('yii2_test_distributed')
+            ->match('about')
+            ->options([
+                'cutoff' => 50,
+                'field_weights' => [
+                    'title' => 10,
+                    'content' => 3,
+                ],
+            ])
+            ->all($connection);
+        $this->assertNotEmpty($rows);
+    }
 }

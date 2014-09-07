@@ -50,7 +50,7 @@ class MaskedInput extends InputWidget
      * - `9`: represents a numeric character (0-9)
      * - `*`: represents an alphanumeric character (A-Z, a-z, 0-9)
      * - `[` and `]`: anything entered between the square brackets is considered optional user input. This is
-     *    based on the `optionalmarker` setting in [[clientOptions]].
+     *   based on the `optionalmarker` setting in [[clientOptions]].
      *
      * Additional definitions can be set through the [[definitions]] property.
      */

@@ -20,11 +20,11 @@ All Rights Reserved.
 
 * [Встановлення Yii](start-installation.md)
 * [Запуск додатка](start-workflow.md)
-* [Говоримо «привіт»](start-hello.md)
+* [Говоримо «Привіт»](start-hello.md)
 * [Робота з формами](start-forms.md)
 * [Робота з базами даних](start-databases.md)
 * [Генерація коду за допомогою Gii](start-gii.md)
-* [Що далі?](start-looking-head.md)
+* [Що далі?](start-looking-ahead.md)
 
 
 Структура додатка

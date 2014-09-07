@@ -1,207 +1,188 @@
 Yii 2.0 权威指南
 ===============================
 
-本指南依据 [Terms of Yii Documentation](http://www.yiiframework.com/doc/terms/) 发布。
+本教程的发布遵循 [Yii 文档使用许可](http://www.yiiframework.com/doc/terms/).
 
-保留所有权利。
+版权所有
 
 2014 (c) Yii Software LLC.
 
+介绍
+-----
 
-简介
-------------
-
-* [关于 Yii](intro-yii.md)
-* [从 1.1 版本升级](intro-upgrade-from-v1.md)
+* **已定稿** [关于 Yii](intro-yii.md)
+* **已定稿** [从 Yii 1.1 升级](intro-upgrade-from-v1.md)
 
 
 入门
----------------
+-----
 
-* [安装 Yii](start-installation.md)
-* [运行应用程序](start-workflow.md)
-* [说一声你好](start-hello.md)
-* [使用表单](start-forms.md)
-* [使用数据库](start-databases.md)
-* [用 Gii 生成代码](start-gii.md)
-* [一路向前](start-looking-head.md)
+* **已定稿** [安装 Yii](start-installation.md)
+* **已定稿** [运行应用](start-workflow.md)
+* **已定稿** [第一次问候](start-hello.md)
+* **已定稿** [使用 Forms](start-forms.md)
+* **已定稿** [玩转 Databases](start-databases.md)
+* **已定稿** [用 Gii 生成代码](start-gii.md)
+* **已定稿** [更上一层楼](start-looking-ahead.md)
 
-
-程序结构
----------------------
-
-* [概览](structure-overview.md)
-* [入口脚本](structure-entry-scripts.md)
-* [应用程序](structure-applications.md)
-* [应用程序组件](structure-application-components.md)
-* [控制器](structure-controllers.md)
-* [模型](structure-models.md)
-* [视图](structure-views.md)
-* **TBD** [过滤器](structure-filters.md)
-* **TBD** [挂件](structure-widgets.md)
-* **TBD** [模块](structure-modules.md)
-* [资源](structure-assets.md)
-* **TBD** [扩展](structure-extensions.md)
-
-
-处理请求
------------------
-
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Routing](runtime-routing.md)
-* **TBD** [Requests](runtime-requests.md)
-* **TBD** [Responses](runtime-responses.md)
-* **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
-* [URL 解析及生成](runtime-url-handling.md)
-* [处理错误](runtime-handling-errors.md)
-* [日志](runtime-logging.md)
-
-
-关键概念
-------------
-
-* [组件](concept-components.md)
-* [属性](concept-properties.md)
-* [事件](concept-events.md)
-* [行为](concept-behaviors.md)
-* [配置](concept-configurations.md)
-* [别名](concept-aliases.md)
-* [类的自动加载](concept-autoloading.md)
-* [服务定位器](concept-service-locator.md)
-* [依赖注入容器](concept-di-container.md)
-
-
-使用数据库
-----------------------
-
-* [Data Access Objects](db-dao.md) - Connecting to a database, basic queries, transactions and schema manipulation
-* [Query Builder](db-query-builder.md) - Querying the database using a simple abstraction layer
-* [Active Record](db-active-record.md) - The active record ORM, retrieving and manipulating records and defining relations
-* [Migrations](db-migrations.md) - Version control your databases in a team development environment
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
-
-
-获取来自用户的数据
------------------------
-
-* [创建表单](input-forms.md)
-* [验证输入](input-validation.md)
-* **TBD** [Uploading Files](input-file-upload.md)
-* **TBD** [Getting Data for Multiple Models](input-multiple-models.md)
-
-
-显示数据
----------------
-
-* **TBD** [Data Formatting](output-formatting.md)
-* **TBD** [Pagination](output-pagination.md)
-* **TBD** [Sorting](output-sorting.md)
-* [Data Providers](output-data-providers.md)
-* [Data Widgets](output-data-widgets.md)
-* [主题](output-theming.md)
-
-
-安全
+应用结构
 --------
 
-* [验证](security-authentication.md)
-* [授权](security-authorization.md)
-* [使用密码](security-passwords.md)
-* **TBD** [Auth Clients](security-auth-clients.md)
-* **TBD** [Best Practices](security-best-practices.md)
+* **已定稿** [结构总览](structure-overview.md)
+* **已定稿** [入口脚本](structure-entry-scripts.md)
+* **已定稿** [应用](structure-applications.md)
+* **已定稿** [应用组件](structure-application-components.md)
+* **已定稿** [控制器（Controller）](structure-controllers.md)
+* **已定稿** [视图（View）](structure-views.md)
+* **已定稿** [模型（Model）](structure-models.md)
+* **已定稿** [过滤器](structure-filters.md)
+* **已定稿** [小部件（Widget）](structure-widgets.md)
+* **已定稿** [模块（Module）](structure-modules.md)
+* **编撰中** [前端资源（Asset）](structure-assets.md)
+* **已定稿** [扩展（extensions）](structure-extensions.md)
 
+请求处理
+--------
+
+* **待定中** [引导（Bootstrapping）](runtime-bootstrapping.md)
+* **待定中** [路由（Routing）](runtime-routing.md)
+* **待定中** [请求（Request）](runtime-requests.md)
+* **待定中** [响应（Response）](runtime-responses.md)
+* **待定中** [Sessions（会话）和 Cookies](runtime-sessions-cookies.md)
+* **已定稿** [URL 解析和生成](runtime-url-handling.md)
+* **编撰中** [错误处理](runtime-handling-errors.md)
+* **编撰中** [日志](runtime-logging.md)
+
+关键概念
+--------
+
+* **已定稿** [组件（Component）](concept-components.md)
+* **已定稿** [属性（Property）](concept-properties.md)
+* **已定稿** [事件（Event）](concept-events.md)
+* **已定稿** [行为（Behavior）](concept-behaviors.md)
+* **已定稿** [配置（Configurations）](concept-configurations.md)
+* **已定稿** [类自动加载（Autoloading）](concept-autoloading.md)
+* **已定稿** [别名（Alias）](concept-alias.md)
+* **已定稿** [服务定位器（Service Locator）](concept-service-locator.md)
+* **已定稿** [依赖注入容器（DI Container）](concept-di-container.md)
+
+配合数据库工作
+-------------
+
+* **编撰中** [数据访问对象（DAO）](db-dao.md) - 数据库连接、基本查询、事务和模式操作
+* **编撰中** [查询生成器（Query Builder）](db-query-builder.md) - 使用简单抽象层查询数据库
+* **编撰中** [活动记录（Active Record）](db-active-record.md) - 活动记录对象关系映射（ORM），检索和操作记录、定义关联关系
+* **编撰中** [数据库迁移（Migration）](db-migrations.md) - 在团体开发中对你的数据库使用版本控制
+* **待定中** [Sphinx](db-sphinx.md)
+* **待定中** [Redis](db-redis.md)
+* **待定中** [MongoDB](db-mongodb.md)
+* **待定中** [ElasticSearch](db-elastic-search.md)
+
+接收用户数据
+-----------
+
+* **编撰中** [创建表单](input-forms.md)
+* **已定稿** [输入验证](input-validation.md)
+* **编撰中** [文件上传](input-file-uploading.md)
+* **待定中** [多模型同时输入](input-multiple-models.md)
+
+显示数据
+--------
+
+* **待定中** [格式化输出数据](output-formatting.md)
+* **待定中** [分页（Pagination）](output-pagination.md)
+* **待定中** [排序（Sorting）](output-sorting.md)
+* **编撰中** [数据提供器](output-data-providers.md)
+* **编撰中** [数据小部件](output-data-widgets.md)
+* **编撰中** [主题](output-theming.md)
+
+安全
+-----
+
+* **编撰中** [认证（Authentication）](security-authentication.md)
+* **编撰中** [授权（Authorization）](security-authorization.md)
+* **编撰中** [处理密码](security-passwords.md)
+* **待定中** [客户端认证](security-auth-clients.md)
+* **待定中** [安全领域的最佳实践](security-best-practices.md)
 
 缓存
--------
+-----
 
-* [概览](caching-overview.md)
-* [数据缓存](caching-data.md)
-* [片段缓存](caching-fragment.md)
-* [页面缓存](caching-page.md)
-* [HTTP 缓存](caching-http.md)
-
+* **已定稿** [概述](caching-overview.md)
+* **已定稿** [数据缓存](caching-data.md)
+* **已定稿** [片段缓存](caching-fragment.md)
+* **已定稿** [分页缓存](caching-page.md)
+* **已定稿** [HTTP 缓存](caching-http.md)
 
 RESTful Web 服务
---------------------
+----------------
 
-* [快速入门](rest-quick-start.md)
-* [Resources](rest-resources.md)
-* [Controllers](rest-controllers.md)
-* [Routing](rest-routing.md)
-* [Response Formatting](rest-response-formatting.md)
-* [Authentication](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
-* [Versioning](rest-versioning.md)
-* [Error Handling](rest-error-handling.md)
-
+* **已定稿** [快速入门](rest-quick-start.md)
+* **已定稿** [资源](rest-resources.md)
+* **已定稿** [路由](rest-routing.md)
+* **已定稿** [格式化响应](rest-response-formatting.md)
+* **已定稿** [授权验证](rest-authentication.md)
+* **已定稿** [速率限制](rest-rate-limiting.md)
+* **已定稿** [版本化](rest-versioning.md)
+* **已定稿** [错误处理](rest-error-handling.md)
+* **已定稿** [测试](rest-testing.md)
 
 开发工具
------------------
+--------
 
-* [Debug Toolbar and Debugger](tool-debugger.md)
-* [Generating Code using Gii](tool-gii.md)
-* **TBD** [Generating API Documentation](tool-api-doc.md)
+* **编撰中** [调试工具栏和调试器](tool-debugger.md)
+* **编撰中** [使用 Gii 生成代码](tool-gii.md)
+* **待定中** [生成 API 文档](tool-api-doc.md)
 
 
 测试
--------
+-----
 
-* [Overview](test-overview.md)
-* **TBD** [Unit Tests](test-unit.md)
-* **TBD** [Functional Tests](test-functional.md)
-* **TBD** [Acceptance Tests](test-acceptance.md)
-* [Fixtures](test-fixtures.md)
-
-
-扩展 Yii
--------------
-
-* [创建扩展](extend-creating-extensions.md)
-* [定制核心代码](extend-customizing-core.md)
-* [使用第三方库](extend-using-libs.md)
-* **TBD** [Using Yii in 3rd-Party Systems](extend-embedding-in-others.md)
-* **TBD** [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md)
-* [使用 Composer](extend-using-composer.md)
+* **编撰中** [概述](test-overview.md)
+* **待定中** [单元测试](test-unit.md)
+* **待定中** [功能测试](test-functional.md)
+* **待定中** [验收测试](test-acceptance.md)
+* **编撰中** [测试夹具](test-fixtures.md)
 
 
-专题
---------------
+高级专题
+--------
 
-* [高级应用程序模板](tutorial-advanced-app.md)
-* [从头开始构建应用程序](tutorial-start-from-scratch.md)
-* [控制台命令](tutorial-console.md)
-* [核心验证器](tutorial-core-validators.md)
-* [国际化](tutorial-i18n.md)
-* [发送邮件](tutorial-mailing.md)
-* [性能调节](tutorial-performance-tuning.md)
-* **TBD** [共享的主机环境](tutorial-shared-hosting.md)
-* [模板引擎](tutorial-template-engines.md)
+* **编撰中** [高级应用模版](tutorial-advanced-app.md)
+* **编撰中** [从头构建自定义模版](tutorial-start-from-scratch.md)
+* **编撰中** [控制台命令](tutorial-console.md)
+* **已定稿** [核心验证器](tutorial-core-validators.md)
+* **编撰中** [国际化](tutorial-i18n.md)
+* **编撰中** [收发邮件](tutorial-mailing.md)
+* **编撰中** [性能优化](tutorial-performance-tuning.md)
+* **待定中** [共享主机环境](tutorial-shared-hosting.md)
+* **编撰中** [模板引擎](tutorial-template-engines.md)
+* **已定稿** [集成第三方代码](tutorial-yii-integration.md)
 
+小部件
+------
 
-挂件（Widgets)
--------
+* 表格视图（GridView）：链接到 demo 页
+* 列表视图（ListView）：链接到 demo 页
+* 详情视图（DetailView）：链接到 demo 页
+* 活动表单（ActiveForm）：链接到 demo 页
+* Pjax：链接到 demo 页
+* 菜单（Menu）：链接到 demo 页
+* LinkPager：链接到 demo 页
+* LinkSorter：链接到 demo 页
+* **已完成** [Bootstrap 小部件](widget-bootstrap.md)
+* **已完成** [Jquery UI 小部件](widget-jui.md)
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
-* [Bootstrap Widgets](bootstrap-widgets.md)
-* **TBD** [Jquery UI Widgets](jui-widgets.md)
+助手类
+------
 
+* **编撰中** [助手一览](helper-overview.md)
+* **待定中** [ArrayHelper](helper-array.md)
+* **待定中** [Html](helper-html.md)
+* **待定中** [Url](helper-url.md)
+* **待定中** [security](helper-security.md)
 
-助手(Helpers)
--------
+不在目录内的文件
+----------------
 
-* [概览](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
-
+*  [glossary](glossary.md)

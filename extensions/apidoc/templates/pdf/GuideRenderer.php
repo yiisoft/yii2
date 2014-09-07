@@ -9,7 +9,6 @@ namespace yii\apidoc\templates\pdf;
 
 use Yii;
 use yii\apidoc\helpers\ApiMarkdownLaTeX;
-use yii\apidoc\helpers\IndexFileAnalyzer;
 use yii\helpers\Console;
 
 /**

@@ -34,47 +34,85 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_TIMESTAMP => 'timestamp',
         Schema::TYPE_TIME => 'time',
         Schema::TYPE_DATE => 'date',
-        Schema::TYPE_BINARY => 'binary',
+        Schema::TYPE_BINARY => 'binary(1)',
         Schema::TYPE_BOOLEAN => 'bit',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
-//	public function update($table, $columns, $condition, &$params)
-//	{
-//		return '';
-//	}
-
-//	public function delete($table, $condition, &$params)
-//	{
-//		return '';
-//	}
 
     /**
-     * @param integer $limit
-     * @param integer $offset
-     * @return string the LIMIT and OFFSET clauses built from [[\yii\db\Query::$limit]].
+     * @inheritdoc
      */
-    public function buildLimit($limit, $offset = 0)
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
-        $hasOffset = $this->hasOffset($offset);
-        $hasLimit = $this->hasLimit($limit);
-        if ($hasOffset || $hasLimit) {
-            // http://technet.microsoft.com/en-us/library/gg699618.aspx
-            $sql = 'OFFSET ' . ($hasOffset ? $offset : '0') . ' ROWS';
-            if ($hasLimit) {
-                $sql .= " FETCH NEXT $limit ROWS ONLY";
-            }
+        if (!$this->hasOffset($offset) && !$this->hasLimit($limit)) {
+            $orderBy = $this->buildOrderBy($orderBy);
+            return $orderBy === '' ? $sql : $sql . $this->separator . $orderBy;
+        }
 
-            return $sql;
+        if ($this->isOldMssql()) {
+            return $this->oldbuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         } else {
-            return '';
+            return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         }
     }
 
-//	public function resetSequence($table, $value = null)
-//	{
-//		return '';
-//	}
+    /**
+     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
+     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
+     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
+     * @param integer $limit the limit number. See [[Query::limit]] for more details.
+     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     */
+    protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    {
+        $orderBy = $this->buildOrderBy($orderBy);
+        if ($orderBy === '') {
+            // ORDER BY clause is required when FETCH and OFFSET are in the SQL
+            $orderBy = 'ORDER BY (SELECT NULL)';
+        }
+        $sql .= $this->separator . $orderBy;
+
+        // http://technet.microsoft.com/en-us/library/gg699618.aspx
+        $offset = $this->hasOffset($offset) ? $offset : '0';
+        $sql .= $this->separator . "OFFSET $offset ROWS";
+        if ($this->hasLimit($limit)) {
+            $sql .= $this->separator . "FETCH NEXT $limit ROWS ONLY";
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
+     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
+     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
+     * @param integer $limit the limit number. See [[Query::limit]] for more details.
+     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     */
+    protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    {
+        $orderBy = $this->buildOrderBy($orderBy);
+        if ($orderBy === '') {
+            // ROW_NUMBER() requires an ORDER BY clause
+            $orderBy = 'ORDER BY (SELECT NULL)';
+        }
+
+        $sql = preg_replace('/^([\s(])*SELECT(\s+DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ($orderBy),", $sql);
+
+        if ($this->hasLimit($limit)) {
+            $sql = "SELECT TOP $limit * FROM ($sql) sub";
+        } else {
+            $sql = "SELECT * FROM ($sql) sub";
+        }
+        if ($this->hasOffset($offset)) {
+            $sql .= $this->separator . "WHERE rowNum > $offset";
+        }
+
+        return $sql;
+    }
 
     /**
      * Builds a SQL statement for renaming a DB table.
@@ -141,100 +179,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
-     */
-    public function buildOrderBy($columns)
-    {
-        if (empty($columns)) {
-            // hack so LIMIT will work if no ORDER BY is specified
-            return 'ORDER BY (SELECT NULL)';
-        } else {
-            return parent::buildOrderBy($columns);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function build($query, $params = [])
-    {
-        $query->prepareBuild($this);
-
-        $params = empty($params) ? $query->params : array_merge($params, $query->params);
-
-        $clauses = [
-            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($query->from, $params),
-            $this->buildJoin($query->join, $params),
-            $this->buildWhere($query->where, $params),
-            $this->buildGroupBy($query->groupBy),
-            $this->buildHaving($query->having, $params),
-            $this->buildOrderBy($query->orderBy),
-            $this->isOldMssql() ? '' : $this->buildLimit($query->limit, $query->offset),
-        ];
-
-        $sql = implode($this->separator, array_filter($clauses));
-        if ($this->isOldMssql()) {
-            $sql = $this->applyLimitAndOffset($sql, $query);
-        }
-        $union = $this->buildUnion($query->union, $params);
-        if ($union !== '') {
-            $sql = "($sql){$this->separator}$union";
-        }
-
-        return [$sql, $params];
-    }
-
-    /**
-     * Applies limit and offset to SQL query
-     *
-     * @param string $sql SQL query
-     * @param \yii\db\ActiveQuery $query the [[Query]] object from which the SQL statement generated
-     * @return string resulting SQL
-     */
-    private function applyLimitAndOffset($sql, $query)
-    {
-        $limit = $query->limit !== null ? (int)$query->limit : -1;
-        $offset = $query->offset !== null ? (int)$query->offset : -1;
-        if ($limit > 0 || $offset >= 0) {
-            $sql = $this->rewriteLimitOffsetSql($sql, $limit, $offset, $query);
-        }
-        return $sql;
-    }
-
-    /**
-     * Rewrites limit and offset in SQL query
-     *
-     * @param string $sql SQL query
-     * @param integer $limit
-     * @param integer $offset
-     * @param \yii\db\ActiveQuery $query the [[Query]] object from which the SQL statement generated
-     * @return string resulting SQL query
-     */
-    private function rewriteLimitOffsetSql($sql, $limit, $offset, $query)
-    {
-        $originalOrdering = $this->buildOrderBy($query->orderBy);
-        if ($query->select) {
-            $select = implode(', ', $query->select);
-        }
-        else {
-            $select = $query->select = '*';
-        }
-        if ($select === '*') {
-            $columns = $this->getAllColumnNames($query->modelClass);
-            if ($columns && is_array($columns)) {
-                $select = implode(', ', $columns);
-            } else {
-                $select = $columns;
-            }
-        }
-        $sql = str_replace($originalOrdering, '', $sql);
-        $sql = preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ({$originalOrdering}),", $sql);
-        $sql = "SELECT TOP {$limit} {$select} FROM ($sql) sub WHERE rowNum > {$offset}";
-        return $sql;
-    }
-
-    /**
      * Returns an array of column names given model name
      *
      * @param string $modelClass name of the model class
@@ -245,7 +189,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /** @var \yii\db\ActiveRecord $model */
+        /* @var $model \yii\db\ActiveRecord */
         $model = new $modelClass;
         $schema = $model->getTableSchema();
         $columns = array_keys($schema->columns);
@@ -253,14 +197,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @return boolean if MSSQL used is old
+     * @var boolean whether MSSQL used is old.
+     */
+    private $_oldMssql;
+
+    /**
+     * @return boolean whether the version of the MSSQL being used is older than 2012.
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
     protected function isOldMssql()
     {
-        $this->db->open();
-        $version = preg_split("/\./", $this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
-        return $version[0] < 11;
+        if ($this->_oldMssql === null) {
+            $pdo = $this->db->getSlavePdo();
+            $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+            $this->_oldMssql = $version[0] < 11;
+        }
+        return $this->_oldMssql;
     }
 }

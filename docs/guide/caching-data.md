@@ -3,7 +3,7 @@ Data Caching
 
 Data caching is about storing some PHP variable in cache and retrieving it later from cache.
 It is also the foundation for more advanced caching features, such as [query caching](#query-caching)
-and [content caching](caching-content.md).
+and [page caching](caching-page.md).
 
 The following code is a typical usage pattern of data caching, where `$cache` refers to
 a [cache component](#cache-components):
@@ -130,7 +130,7 @@ which may reduce the overhead involved in retrieving cached data. The APIs [[yii
 and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage
 does not support this feature, it will be simulated.
 
-Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used liked an array. The followings
+Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The followings
 are some examples:
 
 ```php
@@ -232,8 +232,8 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
 - [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
 - [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
-- [[yii\caching\GroupDependency]]: marks a cached data item with a group name. You may invalidate the cached data items
-  with the same group name all at once by calling [[yii\caching\GroupDependency::invalidate()]].
+- [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
+  the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
 
 ## Query Caching <a name="query-caching"></a>
@@ -245,19 +245,14 @@ Query caching requires a [[yii\db\Connection|DB connection]] and a valid `cache`
 The basic usage of query caching is as follows, assuming `$db` is a [[yii\db\Connection]] instance:
 
 ```php
-$duration = 60;     // cache query results for 60 seconds.
-$dependency = ...;  // optional dependency
+$result = $db->cache(function ($db) {
 
-$db->beginCache($duration, $dependency);
+    // the result of the SQL query will be served from the cache
+    // if query caching is enabled and the query result is found in the cache
+    return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
 
-// ...performs DB queries here...
-
-$db->endCache();
+});
 ```
-
-As you can see, any SQL queries in between the `beginCache()` and `endCache()` calls will be cached.
-If the result of the same query is found valid in the cache, the query will be skipped and the result
-will be served from the cache instead.
 
 Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-active-record.md).
 
@@ -269,20 +264,92 @@ Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-acti
 
 ### Configurations <a name="query-caching-configs"></a>
 
-Query caching has two two configurable options through [[yii\db\Connection]]:
+Query caching has three global configurable options through [[yii\db\Connection]]:
 
+* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off query caching.
+  It defaults to true. Note that to effectively turn on query caching, you also need to have a valid
+  cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
-  that a query result can remain valid in the cache. The duration will be overwritten if you call
-  [[yii\db\Connection::beginCache()]] with an explicit duration parameter.
+  that a query result can remain valid in the cache. You can use 0 to indicate a query result should
+  remain in the cache forever. This property is the default value used when [[yii\db\Connection::cache()]]
+  is called without specifying a duration.
 * [[yii\db\Connection::queryCache|queryCache]]: this represents the ID of the cache application component.
-  It defaults to `'cache'`. Query caching is enabled only when there is a valid cache application component.
+  It defaults to `'cache'`. Query caching is enabled only if there is a valid cache application component.
+
+
+### Usages <a name="query-caching-usages"></a>
+
+You can use [[yii\db\Connection::cache()]] if you have multiple SQL queries that need to take advantage of
+query caching. The usage is as follows,
+
+```php
+$duration = 60;     // cache query results for 60 seconds.
+$dependency = ...;  // optional dependency
+
+$result = $db->cache(function ($db) {
+
+    // ... perform SQL queries here ...
+
+    return $result;
+
+}, $duration, $dependency);
+```
+
+Any SQL queries in the anonymous function will be cached for the specified duration with the specified dependency.
+If the result of a query is found valid in the cache, the query will be skipped and the result will be served
+from the cache instead. If you do not specify the `$duration` parameter, the value of
+[[yii\db\Connection::queryCacheDuration|queryCacheDuration]] will be used instead.
+
+Sometimes within `cache()`, you may want to disable query caching for some particular queries. You can use
+[[yii\db\Connection::noCache()]] in this case.
+
+```php
+$result = $db->cache(function ($db) {
+
+    // SQL queries that use query caching
+
+    $db->noCache(function ($db) {
+
+        // SQL queries that do not use query caching
+
+    });
+
+    // ...
+
+    return $result;
+});
+```
+
+If you just want to use query caching for a single query, you can call [[yii\db\Command::cache()]] when building
+the command. For example,
+
+```php
+// use query caching and set query cache duration to be 60 seconds
+$customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->cache(60)->queryOne();
+```
+
+You can also use [[yii\db\Command::noCache()]] to disable query caching for a single command. For example,
+
+```php
+$result = $db->cache(function ($db) {
+
+    // SQL queries that use query caching
+
+    // do not use query caching for this command
+    $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->noCache()->queryOne();
+
+    // ...
+
+    return $result;
+});
+```
 
 
 ### Limitations <a name="query-caching-limitations"></a>
 
-Query caching does not work with query results that contain resource handles. For example,
+Query caching does not work with query results that contain resource handlers. For example,
 when using the `BLOB` column type in some DBMS, the query result will return a resource
-handle for the column data.
+handler for the column data.
 
 Some caching storage has size limitation. For example, memcache limits the maximum size
 of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,

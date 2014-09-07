@@ -14,6 +14,8 @@ use yii\helpers\FileHelper;
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.
  *
+ * Note that you should enable `fileinfo` PHP extension.
+ *
  * @property integer $sizeLimit The size limit for uploaded files. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -71,6 +73,8 @@ class FileValidator extends Validator
     public $message;
     /**
      * @var string the error message used when no file is uploaded.
+     * Note that this is the text of the validation error message. To make uploading files required,
+     * you have to set [[skipOnEmpty]] to `false`.
      */
     public $uploadRequired;
     /**
@@ -118,7 +122,7 @@ class FileValidator extends Validator
      * - {mimeTypes}: the value of [[mimeTypes]]
      */
     public $wrongMimeType;
-
+    
 
     /**
      * @inheritdoc
@@ -146,12 +150,16 @@ class FileValidator extends Validator
         }
         if (!is_array($this->extensions)) {
             $this->extensions = preg_split('/[\s,]+/', strtolower($this->extensions), -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            $this->extensions = array_map('strtolower', $this->extensions);
         }
         if ($this->wrongMimeType === null) {
             $this->wrongMimeType = Yii::t('yii', 'Only files with these MIME types are allowed: {mimeTypes}.');
         }
         if (!is_array($this->mimeTypes)) {
             $this->mimeTypes = preg_split('/[\s,]+/', strtolower($this->mimeTypes), -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
         }
     }
 
@@ -211,7 +219,7 @@ class FileValidator extends Validator
                     return [$this->tooSmall, ['file' => $file->name, 'limit' => $this->minSize]];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
                     return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, true)) {
+                } elseif (!empty($this->mimeTypes) &&  !in_array(FileHelper::getMimeType($file->tempName), $this->mimeTypes, false)) {
                     return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 } else {
                     return null;
@@ -266,7 +274,7 @@ class FileValidator extends Validator
      */
     public function isEmpty($value, $trim = false)
     {
-        $value = is_array($value) && !empty($value) ? $value[0] : $value;
+        $value = is_array($value) ? reset($value) : $value;
         return !($value instanceof UploadedFile) || $value->error == UPLOAD_ERR_NO_FILE;
     }
 
@@ -304,7 +312,7 @@ class FileValidator extends Validator
 
         if ($this->checkExtensionByMimeType) {
 
-            $mimeType = FileHelper::getMimeType($file->tempName);
+            $mimeType = FileHelper::getMimeType($file->tempName, null, false);
             if ($mimeType === null) {
                 return false;
             }
@@ -323,4 +331,81 @@ class FileValidator extends Validator
         return true;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function clientValidateAttribute($object, $attribute, $view)
+    {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($object, $attribute);
+        return 'yii.validation.file(attribute, messages, ' . json_encode($options) . ');';
+    }
+
+    /**
+     * Returns the client side validation options.
+     * @param \yii\base\Model $object the model being validated
+     * @param string $attribute the attribute name being validated
+     * @return array the client side validation options
+     */
+    protected function getClientOptions($object, $attribute)
+    {
+        $label = $object->getAttributeLabel($attribute);
+
+        $options = [];
+        if ($this->message !== null) {
+            $options['message'] = Yii::$app->getI18n()->format($this->message, [
+                'attribute' => $label,
+            ], Yii::$app->language);
+        }
+
+        $options['skipOnEmpty'] = $this->skipOnEmpty;
+
+        if ( !$this->skipOnEmpty ) {
+            $options['uploadRequired'] = Yii::$app->getI18n()->format($this->uploadRequired, [
+                'attribute' => $label,
+            ], Yii::$app->language);
+        }
+
+        if ( $this->mimeTypes !== null ) {
+            $options['mimeTypes'] = $this->mimeTypes;
+            $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
+                'attribute' => $label,
+                'mimeTypes' => join(', ', $this->mimeTypes)
+            ], Yii::$app->language);
+        }
+
+        if ( $this->extensions !== null ) {
+            $options['extensions'] = $this->extensions;
+            $options['wrongExtension'] = Yii::$app->getI18n()->format($this->wrongExtension, [
+                'attribute' => $label,
+                'extensions' => join(', ', $this->extensions)
+            ], Yii::$app->language);
+        }
+
+        if ( $this->minSize !== null ) {
+            $options['minSize'] = $this->minSize;
+            $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
+                'attribute' => $label,
+                'limit' => $this->minSize
+            ], Yii::$app->language);
+        }
+
+        if ( $this->maxSize !== null ) {
+            $options['maxSize'] = $this->maxSize;
+            $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
+                'attribute' => $label,
+                'limit' => $this->maxSize
+            ], Yii::$app->language);
+        }
+
+        if ( $this->maxFiles !== null ) {
+            $options['maxFiles'] = $this->maxFiles;
+            $options['tooMany'] = Yii::$app->getI18n()->format($this->tooMany, [
+                'attribute' => $label,
+                'limit' => $this->maxFiles
+            ], Yii::$app->language);
+        }
+
+        return $options;
+    }
 }

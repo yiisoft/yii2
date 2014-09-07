@@ -38,11 +38,11 @@ class Customer extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function afterSave($insert)
+    public function afterSave($insert, $changedAttributes)
     {
         ActiveRecordTest::$afterSaveInsert = $insert;
         ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
-        parent::afterSave($insert);
+        parent::afterSave($insert, $changedAttributes);
     }
 
     /**

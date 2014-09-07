@@ -42,6 +42,13 @@ Installing Yii from an archive file involves two steps:
 
 1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
 2. Unpack the downloaded file to a Web-accessible folder.
+3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
+   (this is done automatically if you are installing Yii using Composer):
+
+   ```php
+   // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+   'cookieValidationKey' => 'enter your secret key here',
+   ```
 
 
 Other Installation Options <a name="other-installation-options"></a>
@@ -96,7 +103,9 @@ Configuring Web Servers <a name="configuring-web-servers"></a>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
- Windows, Mac OS X, or Linux.
+Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible the facebooks
+[HHVM](http://hhvm.com/) however there are some edge cases where HHVM behaves different than native
+PHP so you have to take some extra care when using HHVM.
 
 On a production server, you may want to configure your Web server so that the application can be accessed
 via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
@@ -172,6 +181,7 @@ server {
         include fastcgi.conf;
         fastcgi_pass   127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        try_files $uri =404;
     }
 
     location ~ /\.(ht|svn|git) {

@@ -13,8 +13,6 @@ use yii\base\Object;
 /**
  * Assignment represents an assignment of a role to a user.
  *
- * It includes additional assignment information including [[ruleName]] and [[data]].
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0

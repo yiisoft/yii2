@@ -20,7 +20,7 @@ defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
 /**
  * This constant defines the framework installation directory.
  */
-defined('YII_PATH') or define('YII_PATH', __DIR__);
+defined('YII2_PATH') or define('YII2_PATH', __DIR__);
 /**
  * This constant defines whether the application should be in debug mode or not. Defaults to false.
  */
@@ -264,7 +264,7 @@ class BaseYii
      * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
      * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
      *
-     * Also the [guide section on autoloading][guide-concept-autoloading].
+     * Also the [guide section on autoloading](guide:concept-autoloading).
      *
      * @param string $className the fully qualified class name without a leading backslash "\"
      * @throws UnknownClassException if the class does not exist in the class file

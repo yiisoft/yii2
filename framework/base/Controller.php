@@ -36,6 +36,7 @@ class Controller extends Component implements ViewContextInterface
      * @event ActionEvent an event raised right after executing a controller action.
      */
     const EVENT_AFTER_ACTION = 'afterAction';
+
     /**
      * @var string the ID of this controller.
      */
@@ -61,10 +62,12 @@ class Controller extends Component implements ViewContextInterface
      * by [[run()]] when it is called by [[Application]] to run an action.
      */
     public $action;
+
     /**
      * @var View the view object that can be used to render views or view files.
      */
     private $_view;
+
 
     /**
      * @param string $id the ID of this controller.
@@ -150,7 +153,7 @@ class Controller extends Component implements ViewContextInterface
         }
 
         foreach ($modules as $module) {
-            /** @var Module $module */
+            /* @var $module Module */
             $result = $module->afterAction($action, $result);
         }
 
@@ -435,7 +438,7 @@ class Controller extends Component implements ViewContextInterface
      * Please refer to [[render()]] on how to specify this parameter.
      * @throws InvalidParamException if an invalid path alias is used to specify the layout.
      */
-    protected function findLayoutFile($view)
+    public function findLayoutFile($view)
     {
         $module = $this->module;
         if (is_string($this->layout)) {

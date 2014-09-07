@@ -29,7 +29,8 @@ class ApiMarkdown extends GithubMarkdown
      */
     public static $renderer;
 
-    protected $context;
+    protected $renderingContext;
+
 
     /**
      * Renders a code block
@@ -88,6 +89,21 @@ class ApiMarkdown extends GithubMarkdown
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function parseLink($markdown)
+    {
+        list($result, $skip) = parent::parseLink($markdown);
+
+        // add special syntax for linking to the guide
+        $result = preg_replace_callback('/href="guide:([A-z0-9-.#]+)"/i', function($match) {
+            return 'href="' . static::$renderer->generateGuideUrl($match[1]) . '"';
+        }, $result, 1);
+
+        return [$result, $skip];
+    }
+
+    /**
      * Converts markdown into HTML
      *
      * @param string $content
@@ -104,7 +120,7 @@ class ApiMarkdown extends GithubMarkdown
         if (is_string($context)) {
             $context = static::$renderer->apiContext->getType($context);
         }
-        Markdown::$flavors['api']->context = $context;
+        Markdown::$flavors['api']->renderingContext = $context;
 
         if ($paragraph) {
             return Markdown::processParagraph($content, 'api');

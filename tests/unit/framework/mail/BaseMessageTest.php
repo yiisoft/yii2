@@ -16,7 +16,7 @@ class BaseMessageTest extends TestCase
     {
         $this->mockApplication([
             'components' => [
-                'mail' => $this->createTestEmailComponent()
+                'mailer' => $this->createTestEmailComponent()
             ]
         ]);
     }
@@ -36,7 +36,7 @@ class BaseMessageTest extends TestCase
      */
     protected function getMailer()
     {
-        return Yii::$app->get('mail');
+        return Yii::$app->get('mailer');
     }
 
     // Tests :

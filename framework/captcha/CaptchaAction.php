@@ -42,6 +42,7 @@ class CaptchaAction extends Action
      * The name of the GET parameter indicating whether the CAPTCHA image should be regenerated.
      */
     const REFRESH_GET_VAR = 'refresh';
+
     /**
      * @var integer how many times should the same CAPTCHA be displayed. Defaults to 3.
      * A value less than or equal to 0 means the test is unlimited (available since version 1.1.2).
@@ -97,6 +98,7 @@ class CaptchaAction extends Action
      * If not set, it means the verification code will be randomly generated.
      */
     public $fixedVerifyCode;
+
 
     /**
      * Initializes the action.
@@ -247,7 +249,7 @@ class CaptchaAction extends Action
     /**
      * Renders the CAPTCHA image based on the code using GD library.
      * @param string $code the verification code
-     * @return string image contents
+     * @return string image contents in PNG format.
      */
     protected function renderImageByGD($code)
     {
@@ -300,7 +302,7 @@ class CaptchaAction extends Action
     /**
      * Renders the CAPTCHA image based on the code using ImageMagick library.
      * @param string $code the verification code
-     * @return \Imagick image instance. Can be used as string. In this case it will contain image contents.
+     * @return string image contents in PNG format.
      */
     protected function renderImageByImagick($code)
     {
@@ -332,8 +334,7 @@ class CaptchaAction extends Action
         }
 
         $image->setImageFormat('png');
-
-        return $image;
+        return $image->getImageBlob();
     }
 
     /**

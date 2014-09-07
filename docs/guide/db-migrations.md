@@ -97,7 +97,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-The base class [\yii\db\Migration] exposes a database connection via `db`
+The base class [[\yii\db\Migration]] exposes a database connection via `db`
 property. You can use it for manipulating data and schema of a database.
 
 The column types used in this example are abstract types that will be replaced
@@ -293,7 +293,7 @@ line:
   migration history information. It defaults to `migration`. The table
   structure is `version varchar(255) primary key, apply_time integer`.
 
-* `connectionID`: string, specifies the ID of the database application component.
+* `db`: string, specifies the ID of the database application component.
   Defaults to 'db'.
 
 * `templateFile`: string, specifies the path of the file to be served as the code
@@ -337,3 +337,48 @@ the console application's configuration file like the following,
 Now if we run the `migrate` command, the above configurations will take effect
 without requiring us to enter the command line options every time. Other command options
 can be also configured this way.
+
+
+### Migrating with Multiple Databases
+
+By default, migrations will be applied to the database specified by the `db` application component.
+You may change it by specifying the `--db` option, for example,
+
+```
+yii migrate --db=db2
+```
+
+The above command will apply *all* migrations found in the default migration path to the `db2` database.
+
+If your application works with multiple databases, it is possible that some migrations should be applied
+to one database while some others should be applied to another database. In this case, it is recommended that
+you create a base migration class for each different database and override the [[yii\db\Migration::init()]]
+method like the following,
+
+```php
+public function init()
+{
+    $this->db = 'db2';
+    parent::init();
+}
+```
+
+To create a migration that should be applied to a particular database, simply extend from the corresponding
+base migration class. Now if you run the `yii migrate` command, each migration will be applied to its corresponding database.
+
+> Info: Because each migration uses hardcoded DB connection, the `--db` option of the `migrate` command will
+  have no effect. Also note that the migration history will be stored in the default `db` database.
+
+If you want to support changing DB connection via the `--db` option, you may take the following alternative
+approach to work with multiple databases.
+
+For each database, create a migration path and save all corresponding migration classes there. To apply migrations,
+run the command as follows,
+
+```
+yii migrate --migrationPath=@app/migrations/db1 --db=db1
+yii migrate --migrationPath=@app/migrations/db2 --db=db2
+...
+```
+
+> Info: The above approach stores the migration history in different databases specified via the `--db` option.

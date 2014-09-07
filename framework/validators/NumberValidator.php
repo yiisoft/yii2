@@ -53,6 +53,7 @@ class NumberValidator extends Validator
      */
     public $numberPattern = '/^\s*[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/';
 
+
     /**
      * @inheritdoc
      */

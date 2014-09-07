@@ -77,16 +77,16 @@ class AssetControllerTest extends TestCase
 
     /**
      * Emulates running of the asset controller action.
-     * @param  string $actionId id of action to be run.
+     * @param  string $actionID id of action to be run.
      * @param  array  $args     action arguments.
      * @return string command output.
      */
-    protected function runAssetControllerAction($actionId, array $args = [])
+    protected function runAssetControllerAction($actionID, array $args = [])
     {
         $controller = $this->createAssetController();
         ob_start();
         ob_implicit_flush(false);
-        $controller->run($actionId, $args);
+        $controller->run($actionID, $args);
 
         return ob_get_clean();
     }

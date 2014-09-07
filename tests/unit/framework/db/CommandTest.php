@@ -2,6 +2,8 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\FileCache;
+use yii\db\Connection;
 use yii\db\DataReader;
 
 /**
@@ -159,7 +161,7 @@ class CommandTest extends DatabaseTestCase
         $sql = 'INSERT INTO type (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)';
         $command = $db->createCommand($sql);
         $intCol = 123;
-        $charCol = 'abc';
+        $charCol = str_repeat('abc', 33) . 'x'; // a 100 char string
         $floatCol = 1.23;
         $blobCol = "\x10\x11\x12";
         $numericCol = '1.23';
@@ -172,13 +174,25 @@ class CommandTest extends DatabaseTestCase
         $command->bindParam(':bool_col', $boolCol);
         $this->assertEquals(1, $command->execute());
 
-        $sql = 'SELECT * FROM type';
-        $row = $db->createCommand($sql)->queryOne();
+        $command = $db->createCommand('SELECT int_col, char_col, float_col, blob_col, numeric_col, bool_col FROM type');
+//        $command->prepare();
+//        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
+        $row = $command->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, $row['char_col']);
         $this->assertEquals($floatCol, $row['float_col']);
-        $this->assertEquals($blobCol, $row['blob_col']);
+        if ($this->driverName === 'mysql' || $this->driverName === 'sqlite') {
+            $this->assertEquals($blobCol, $row['blob_col']);
+        } else {
+            $this->assertTrue(is_resource($row['blob_col']));
+            $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
+        }
         $this->assertEquals($numericCol, $row['numeric_col']);
+        if ($this->driverName === 'mysql' || defined('HHVM_VERSION') && $this->driverName === 'sqlite') {
+            $this->assertEquals($boolCol, (int)$row['bool_col']);
+        } else {
+            $this->assertEquals($boolCol, $row['bool_col']);
+        }
 
         // bindValue
         $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
@@ -228,6 +242,7 @@ class CommandTest extends DatabaseTestCase
         $this->assertEquals(2, $command->execute());
     }
 
+    /*
     public function testInsert()
     {
     }
@@ -287,6 +302,7 @@ class CommandTest extends DatabaseTestCase
     public function testDropIndex()
     {
     }
+    */
 
     public function testIntegrityViolation()
     {
@@ -298,5 +314,50 @@ class CommandTest extends DatabaseTestCase
         $command = $db->createCommand($sql);
         $command->execute();
         $command->execute();
+    }
+
+    public function testQueryCache()
+    {
+        $db = $this->getConnection();
+        $db->enableQueryCache = true;
+        $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+        $command = $db->createCommand('SELECT name FROM customer WHERE id=:id');
+
+        $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
+        $update = $db->createCommand('UPDATE customer SET name=:name WHERE id=:id');
+        $update->bindValues([':id' => 1, ':name' => 'user11'])->execute();
+        $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
+
+        $db->cache(function (Connection $db) use ($command, $update) {
+            $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
+            $update->bindValues([':id' => 2, ':name' => 'user22'])->execute();
+            $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
+
+            $db->noCache(function () use ($command) {
+                $this->assertEquals('user22', $command->bindValue(':id', 2)->queryScalar());
+            });
+
+            $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
+        }, 10);
+
+        $db->enableQueryCache = false;
+        $db->cache(function ($db) use ($command, $update) {
+            $this->assertEquals('user22', $command->bindValue(':id', 2)->queryScalar());
+            $update->bindValues([':id' => 2, ':name' => 'user2'])->execute();
+            $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
+        }, 10);
+
+        $db->enableQueryCache = true;
+        $command = $db->createCommand('SELECT name FROM customer WHERE id=:id')->cache();
+        $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
+        $update->bindValues([':id' => 1, ':name' => 'user1'])->execute();
+        $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
+        $this->assertEquals('user1', $command->noCache()->bindValue(':id', 1)->queryScalar());
+
+        $command = $db->createCommand('SELECT name FROM customer WHERE id=:id');
+        $db->cache(function (Connection $db) use ($command, $update) {
+            $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
+            $this->assertEquals('user1', $command->noCache()->bindValue(':id', 1)->queryScalar());
+        }, 10);
     }
 }

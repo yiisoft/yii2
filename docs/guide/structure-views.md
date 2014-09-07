@@ -20,11 +20,10 @@ page title and the form, while HTML code organizes them into a presentable HTML 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
- * @var app\models\LoginForm $model
- */
+/* @var $this yii\web\View */
+/* @var $form yii\widgets\ActiveForm */
+/* @var $model app\models\LoginForm */
+
 $this->title = 'Login';
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
@@ -89,7 +88,7 @@ use yii\helpers\HtmlPurifier;
 
 Like [controllers](structure-controllers.md) and [models](structure-models.md), there are conventions to organize views.
 
-* For views rendered in a controller, they should be put under the directory `@app/views/ControllerID` by default,
+* For views rendered by a controller, they should be put under the directory `@app/views/ControllerID` by default,
   where `ControllerID` refers to the [controller ID](structure-controllers.md#routes). For example, if
   the controller class is `PostController`, the directory would be `@app/views/post`; If it is `PostCommentController`,
   the directory would be `@app/views/post-comment`. In case the controller belongs to a module, the directory
@@ -276,7 +275,7 @@ The controller ID is: <?= $this->context->id ?>
 
 The push approach is usually the preferred way of accessing data in views, because it makes views less dependent
 on context objects. Its drawback is that you need to manually build the data array all the time, which could
-becomes tedious and error prone if a view is shared and rendered in different places.
+become tedious and error prone if a view is shared and rendered in different places.
 
 
 ### Sharing Data among Views <a name="sharing-data-among-views"></a>
@@ -323,10 +322,9 @@ the code in the layout. In practice, you may want to add more content to it, suc
 ```php
 <?php
 use yii\helpers\Html;
-/**
- * @var yii\web\View $this
- * @var string $content
- */
+
+/* @var $this yii\web\View */
+/* @var $content string */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -363,10 +361,10 @@ the places where these methods are called.
 - [[yii\web\View::head()|head()]]: This method should be called within the `<head>` section of an HTML page.
   It generates a placeholder which will be replaced with the registered head HTML code (e.g. link tags, meta tags)
   when a page finishes rendering.
-- [[yii\base\View::beginBody()|beginBody()]]: This method should be called at the beginning of the `<body>` section.
+- [[yii\web\View::beginBody()|beginBody()]]: This method should be called at the beginning of the `<body>` section.
   It triggers the [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] event and generates a placeholder which will
   be replaced by the registered HTML code (e.g. JavaScript) targeted at the body begin position.
-- [[yii\base\View::endBody()|endBody()]]: This method should be called at the end of the `<body>` section.
+- [[yii\web\View::endBody()|endBody()]]: This method should be called at the end of the `<body>` section.
   It triggers the [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]] event and generates a placeholder which will
   be replaced by the registered HTML code (e.g. JavaScript) targeted at the body end position.
 
@@ -441,7 +439,7 @@ If the layout value does not contain a file extension, it will use the default o
 
 Sometimes you may want to nest one layout in another. For example, in different sections of a Web site, you
 want to use different layouts, while all these layouts share the same basic layout that generates the overall
-HTML5 page structure. You can achieve this goal by calling with [[yii\base\View::beginContent()|beginContent()]],
+HTML5 page structure. You can achieve this goal by calling [[yii\base\View::beginContent()|beginContent()]] and
 [[yii\base\View::endContent()|endContent()]] in the child layouts like the following:
 
 ```php
@@ -452,11 +450,72 @@ HTML5 page structure. You can achieve this goal by calling with [[yii\base\View:
 <?php $this->endContent(); ?>
 ```
 
-As shown above, the child layout content should be enclosed within [[yii\base\View::beginContent()|beginContent()]],
+As shown above, the child layout content should be enclosed within [[yii\base\View::beginContent()|beginContent()]] and
 [[yii\base\View::endContent()|endContent()]]. The parameter passed to [[yii\base\View::beginContent()|beginContent()]]
 specifies what is the parent layout. It can be either a layout file or alias.
 
 Using the above approach, you can nest layouts in more than one levels.
+
+
+### Using Blocks <a name="using-blocks"></a>
+
+Blocks allow you to specify the view content in one place while displaying it in another. They are often used together
+with layouts. For example, you can define a block in a content view and display it in the layout.
+
+You call [[yii\base\View::beginBlock()|beginBlock()]] and [[yii\base\View::endBlock()|endBlock()]] to define a block.
+The block can then be accessed via `$view->blocks[$blockID]`, where `$blockID` stands for a unique ID that you assign
+to the block when defining it.
+
+The following example shows how you can use blocks to customize specific parts of a layout in a content view.
+
+First, in a content view, define one or multiple blocks:
+
+```php
+...
+
+<?php $this->beginBlock('block1'); ?>
+
+...content of block1...
+
+<?php $this->endBlock(); ?>
+
+...
+
+<?php $this->beginBlock('block3'); ?>
+
+...content of block3...
+
+<?php $this->endBlock(); ?>
+```
+
+Then, in the layout view, render the blocks if they are available, or display some default content if a block is
+not defined.
+
+```php
+...
+<?php if (isset($this->blocks['block1'])): ?>
+    <?= $this->blocks['block1'] ?>
+<?php else: ?>
+    ... default content for block1 ...
+<?php endif; ?>
+
+...
+
+<?php if (isset($this->blocks['block2'])): ?>
+    <?= $this->blocks['block2'] ?>
+<?php else: ?>
+    ... default content for block2 ...
+<?php endif; ?>
+
+...
+
+<?php if (isset($this->blocks['block3'])): ?>
+    <?= $this->blocks['block3'] ?>
+<?php else: ?>
+    ... default content for block3 ...
+<?php endif; ?>
+...
+```
 
 
 ## Using View Components <a name="using-view-components"></a>
@@ -526,7 +585,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ```
 
 The above code will register a "keywords" meta tag with the view component. The registered meta tag is
-not rendered until after the layout finishes rendering. By then, the following HTML code will be inserted
+rendered after the layout finishes rendering. By then, the following HTML code will be inserted
 at the place where you call [[yii\web\View::head()]] in the layout and generate the following HTML code:
 
 ```php

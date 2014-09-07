@@ -33,6 +33,7 @@ class Menu extends \yii\widgets\Menu
      */
     public $clientEvents = [];
 
+
     /**
      * Initializes the widget.
      * If you override this method, make sure you call the parent implementation first.
@@ -54,7 +55,7 @@ class Menu extends \yii\widgets\Menu
 
         $view = $this->getView();
         MenuAsset::register($view);
-        /** @var \yii\web\AssetBundle $themeAsset */
+        /* @var $themeAsset \yii\web\AssetBundle */
         $themeAsset = Widget::$theme;
         $themeAsset::register($view);
 
