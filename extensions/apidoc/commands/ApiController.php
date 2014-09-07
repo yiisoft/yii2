@@ -10,7 +10,6 @@ namespace yii\apidoc\commands;
 use yii\apidoc\components\BaseController;
 use yii\apidoc\models\Context;
 use yii\apidoc\renderers\ApiRenderer;
-use yii\apidoc\renderers\BaseRenderer;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
