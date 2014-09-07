@@ -345,7 +345,7 @@ class Response extends \yii\base\Response
             $headers = $this->getHeaders();
             foreach ($headers as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
-                // set replace for first occurance of header but false afterwards to allow multiple
+                // set replace for first occurrence of header but false afterwards to allow multiple
                 $replace = true;
                 foreach ($values as $value) {
                     header("$name: $value", $replace);
