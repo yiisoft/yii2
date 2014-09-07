@@ -43,6 +43,8 @@ Thanks to that line, your application is in development mode, and will have alre
 http://hostname/index.php?r=gii
 ```
 
+> Info: By default (for security reasons) yii will restrict the access to gii so that it is only accessible from localhost. Trying to access the URL as any other address will give a 403-error ("You are not allowed to access this page"). The address from which gii can be accessed can be modified by adding a proper ipFilter statement in the configuration as described in the [yii Wiki](http://www.yiiframework.com/wiki/115/why-do-i-get-a-403-error-when-trying-to-use-gii/) 
+
 ![Gii](images/start-gii.png)
 
 
