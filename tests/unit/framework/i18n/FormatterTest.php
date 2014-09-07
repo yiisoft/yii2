@@ -5,10 +5,10 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\base;
+namespace yii\i18n;
 
 // override information about intl
-use yiiunit\framework\base\FormatterTest;
+use yiiunit\framework\i18n\FormatterTest;
 
 function extension_loaded($name)
 {
@@ -18,15 +18,15 @@ function extension_loaded($name)
     return \extension_loaded($name);
 }
 
-namespace yiiunit\framework\base;
+namespace yiiunit\framework\i18n;
 
-use yii\base\Formatter;
+use yii\i18n\Formatter;
 use yiiunit\TestCase;
 use DateTime;
 use DateInterval;
 
 /**
- * @group base
+ * @group i18n
  */
 class FormatterTest extends TestCase
 {
