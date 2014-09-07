@@ -9,7 +9,6 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Application;
-use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
