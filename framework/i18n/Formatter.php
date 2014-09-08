@@ -145,6 +145,7 @@ class Formatter extends Component
     public $numberFormatterTextOptions = [];
     /**
      * @var string the 3-letter ISO 4217 currency code indicating the default currency to use for [[asCurrency]].
+     * If not set, the currency code corresponding to [[locale]] will be used.
      */
     public $currencyCode;
     /**
@@ -987,6 +988,7 @@ class Formatter extends Component
      *
      * @param mixed $value the value to be formatted.
      * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
+     * If null, [[currencyCode]] will be used.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1000,16 +1002,23 @@ class Formatter extends Component
         }
         $value = $this->normalizeNumericValue($value);
 
-        if ($currency === null) {
-            if ($this->currencyCode === null) {
-                throw new InvalidConfigException('The default currency code for the formatter is not defined.');
-            }
-            $currency = $this->currencyCode;
-        }
         if ($this->_intlLoaded) {
             $formatter = $this->createNumberFormatter(NumberFormatter::CURRENCY, null, $options, $textOptions);
+            if ($currency === null) {
+                if ($this->currencyCode === null) {
+                    $currency = $formatter->getSymbol(NumberFormatter::INTL_CURRENCY_SYMBOL);
+                } else {
+                    $currency = $this->currencyCode;
+                }
+            }
             return $formatter->formatCurrency($value, $currency);
         } else {
+            if ($currency === null) {
+                if ($this->currencyCode === null) {
+                    throw new InvalidConfigException('The default currency code for the formatter is not defined.');
+                }
+                $currency = $this->currencyCode;
+            }
             return $currency . ' ' . $this->asDecimal($value, 2, $options, $textOptions);
         }
     }

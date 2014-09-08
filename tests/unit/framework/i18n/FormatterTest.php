@@ -546,7 +546,12 @@ class FormatterTest extends TestCase
 
     public function testIntlAsCurrency()
     {
-        $this->formatter->locale = 'en_US';
+        $this->formatter->locale = 'en-US';
+        $this->assertSame('$123.00', $this->formatter->asCurrency('123'));
+        $this->assertSame('$123,456.00', $this->formatter->asCurrency('123456'));
+        $this->assertSame('$0.00', $this->formatter->asCurrency('0'));
+
+        $this->formatter->locale = 'en-US';
         $this->formatter->currencyCode = 'USD';
         $this->assertSame('$123.00', $this->formatter->asCurrency('123'));
         $this->assertSame('$123,456.00', $this->formatter->asCurrency('123456'));
@@ -556,7 +561,9 @@ class FormatterTest extends TestCase
 //		$value = '-123456.123';
 //		$this->assertSame("($123,456.12)", $this->formatter->asCurrency($value));
 
-        $this->formatter->locale = 'de_DE';
+        $this->formatter->locale = 'de-DE';
+        $this->formatter->currencyCode = null;
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123'));
         $this->formatter->currencyCode = 'USD';
         $this->assertSame('123,00 $', $this->formatter->asCurrency('123'));
         $this->formatter->currencyCode = 'EUR';
