@@ -364,7 +364,7 @@
                     }
                 });
                 if (hasError) {
-                    $form.trigger('onValidationError', [messages]);
+                    $form.trigger('onValidationError', [attribute, messages]);
                 }
             });
         }, data.settings.validationDelay);
