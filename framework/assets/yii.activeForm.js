@@ -364,7 +364,7 @@
                     }
                 });
                 if (hasError) {
-                    $form.trigger('onValidationError', ['messages'=>messages]);
+                    $form.trigger('onValidationError', {messages:messages});
                 }
             });
         }, data.settings.validationDelay);
@@ -502,7 +502,7 @@
             attribute.value = getValue($form, attribute);
         }
         if (hasError) {
-            $input.trigger('onValidationError', ['messages'=>messages]);
+            $input.trigger('onValidationError', {messages:messages});
         }
         return hasError;
     };
