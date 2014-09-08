@@ -90,6 +90,7 @@ class TestCase extends Test
     protected function tearDown()
     {
         $this->destroyApplication();
+        $this->unloadFixtures();
         parent::tearDown();
     }
 
