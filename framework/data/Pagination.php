@@ -251,7 +251,7 @@ class Pagination extends Object implements Linkable
      * @see params
      * @see forcePageParam
      */
-    public function createUrl($page, $absolute = false)
+    public function createUrl($page, $pageSize = 0, $absolute = false)
     {
         if (($params = $this->params) === null) {
             $request = Yii::$app->getRequest();
@@ -262,7 +262,7 @@ class Pagination extends Object implements Linkable
         } else {
             unset($params[$this->pageParam]);
         }
-        $pageSize = $this->getPageSize();
+        $pageSize = ($pageSize > 0) ? (int)$pageSize : $this->getPageSize();
         if ($pageSize != $this->defaultPageSize) {
             $params[$this->pageSizeParam] = $pageSize;
         } else {
