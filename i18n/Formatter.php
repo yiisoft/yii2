@@ -144,8 +144,7 @@ class Formatter extends Component
      */
     public $numberFormatterTextOptions = [];
     /**
-     * @var string the international currency code displayed when formatting a number.
-     * If not set, the currency code corresponding to [[locale]] will be used. TODO default value?
+     * @var string the 3-letter ISO 4217 currency code indicating the default currency to use for [[asCurrency]].
      */
     public $currencyCode;
     /**
@@ -958,6 +957,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a scientific number.
+     *
      * @param mixed $value the value to be formatted.
      * @param integer $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
@@ -986,28 +986,36 @@ class Formatter extends Component
 
     /**
      * Formats the value as a currency number.
+     *
+     * This function does not requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed
+     * to work but it is highly recommended to install it to get good formatting results.
+     *
      * @param mixed $value the value to be formatted.
      * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
+     * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.
      */
     public function asCurrency($value, $currency = null, $options = [], $textOptions = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-        $value = $this->normalizeNumericValue($value); // TODO maybe not a good idea to cast money values?
+        $value = $this->normalizeNumericValue($value);
 
         if ($currency === null) {
+            if ($this->currencyCode === null) {
+                throw new InvalidConfigException('The default currency code for the formatter is not defined.');
+            }
             $currency = $this->currencyCode;
         }
         if ($this->_intlLoaded) {
             $formatter = $this->createNumberFormatter(NumberFormatter::CURRENCY, null, $options, $textOptions);
             return $formatter->formatCurrency($value, $currency);
         } else {
-            return $currency . ' ' . $this->asDecimal($value, null, $options, $textOptions); // TODO be compatible to intl
+            return $currency . ' ' . $this->asDecimal($value, 2, $options, $textOptions);
         }
     }
 
