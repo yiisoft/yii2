@@ -51,7 +51,7 @@ class ArrayFixtureTest extends TestCase
      */
     public function testWrongDataFileException()
     {
-        $this->_fixture->dataFile = '@wrong/fixtures/data/path/alias';
+        $this->_fixture->dataFile = 'wrong/fixtures/data/path/alias';
         $this->_fixture->load();
     }
 
