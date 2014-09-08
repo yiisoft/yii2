@@ -116,11 +116,12 @@ class Formatter extends Component
      * Please refer to the [PHP manual](http://php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatattribute)
      * for the possible options.
      *
-     * For example to change the grouping size you can configure this property like the following:
+     * For example to adjust the maximum and minimum value of fraction digits you can configure this property like the following:
      *
      * ```php
      * [
-     *     NumberFormatter::GROUPING_SIZE => 4,
+     *     NumberFormatter::MIN_FRACTION_DIGITS => 0,
+     *     NumberFormatter::MAX_FRACTION_DIGITS => 2,
      * ]
      * ```
      */
@@ -146,18 +147,15 @@ class Formatter extends Component
     /**
      * @var string the 3-letter ISO 4217 currency code indicating the default currency to use for [[asCurrency]].
      * If not set, the currency code corresponding to [[locale]] will be used.
+     * Note that in this case the [[locale]] has to be specified with a country code, e.g. `en-US` otherwise it
+     * is not possible to determine the default currency.
      */
     public $currencyCode;
     /**
-     * @var array the format used to format size (bytes). Three elements may be specified: "base", "decimals" and "decimalSeparator".
-     * They correspond to the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte, defaults to 1024),
-     * the number of digits after the decimal point (defaults to 2) and the character displayed as the decimal point.
+     * @var array the base at which a kilobyte is calculated (1000 or 1024 bytes per kilobyte), used by [[asSize]] and [[asShortSize]].
+     * Defaults to 1024.
      */
-    public $sizeFormat = [
-        'base' => 1024,
-        'decimals' => 2,
-        'decimalSeparator' => null,
-    ];
+    public $sizeFormatBase = 1024;
 
     /**
      * @var boolean whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
@@ -1072,66 +1070,128 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in bytes as a size in human readable form.
-     * @param integer $value value in bytes to be formatted
-     * @param boolean $verbose if full names should be used (e.g. bytes, kilobytes, ...).
-     * Defaults to false meaning that short names will be used (e.g. B, KB, ...).
-     * @param boolean $binaryPrefix if binary prefixes should be used for base 1024
-     * Defaults to true meaning that binary prefixes are used (e.g. kibibyte/KiB, mebibyte/MiB, ...).
-     * See also <http://en.wikipedia.org/wiki/Binary_prefix>.
+     * Formats the value in bytes as a size in human readable form for example `12 KB`.
+     *
+     * This is the short form of [[asSize]].
+     *
+     * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
+     * are used in the formatting result.
+     *
+     * @param integer $value value in bytes to be formatted.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric.
      * @see sizeFormat
+     * @see asSize
      */
-    public function asSize($value, $verbose = false, $binaryPrefix = true) // TODO format
+    public function asShortSize($value, $decimals = null, $options = [], $textOptions = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
+
+        list($params, $position) = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
+
+        if ($this->sizeFormatBase == 1024) {
+            switch ($position) {
+                case 0:  return Yii::t('yii', '{n} B', $params, $this->locale);
+                case 1:  return Yii::t('yii', '{n} KiB', $params, $this->locale);
+                case 2:  return Yii::t('yii', '{n} MiB', $params, $this->locale);
+                case 3:  return Yii::t('yii', '{n} GiB', $params, $this->locale);
+                case 4:  return Yii::t('yii', '{n} TiB', $params, $this->locale);
+                default: return Yii::t('yii', '{n} PiB', $params, $this->locale);
+            }
+        } else {
+            switch ($position) {
+                case 0:  return Yii::t('yii', '{n} B', $params, $this->locale);
+                case 1:  return Yii::t('yii', '{n} KB', $params, $this->locale);
+                case 2:  return Yii::t('yii', '{n} MB', $params, $this->locale);
+                case 3:  return Yii::t('yii', '{n} GB', $params, $this->locale);
+                case 4:  return Yii::t('yii', '{n} TB', $params, $this->locale);
+                default: return Yii::t('yii', '{n} PB', $params, $this->locale);
+            }
+        }
+    }
+
+    /**
+     * Formats the value in bytes as a size in human readable form, for example `12 kilobytes`.
+     *
+     * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
+     * are used in the formatting result.
+     *
+     * @param integer $value value in bytes to be formatted.
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric.
+     * @see sizeFormat
+     * @see asShortSize
+     */
+    public function asSize($value, $decimals = null, $options = [], $textOptions = [])
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        list($params, $position) = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
+
+        if ($this->sizeFormatBase == 1024) {
+            switch ($position) {
+                case 0:  return Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params, $this->locale);
+                case 1:  return Yii::t('yii', '{n, plural, =1{# kibibyte} other{# kibibytes}}', $params, $this->locale);
+                case 2:  return Yii::t('yii', '{n, plural, =1{# mebibyte} other{# mebibytes}}', $params, $this->locale);
+                case 3:  return Yii::t('yii', '{n, plural, =1{# gibibyte} other{# gibibytes}}', $params, $this->locale);
+                case 4:  return Yii::t('yii', '{n, plural, =1{# tebibyte} other{# tebibytes}}', $params, $this->locale);
+                default: return Yii::t('yii', '{n, plural, =1{# pebibyte} other{# pebibytes}}', $params, $this->locale);
+            }
+        } else {
+            switch ($position) {
+                case 0:  return Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params, $this->locale);
+                case 1:  return Yii::t('yii', '{n, plural, =1{# kilobyte} other{# kilobytes}}', $params, $this->locale);
+                case 2:  return Yii::t('yii', '{n, plural, =1{# megabyte} other{# megabytes}}', $params, $this->locale);
+                case 3:  return Yii::t('yii', '{n, plural, =1{# gigabyte} other{# gigabytes}}', $params, $this->locale);
+                case 4:  return Yii::t('yii', '{n, plural, =1{# terabyte} other{# terabytes}}', $params, $this->locale);
+                default: return Yii::t('yii', '{n, plural, =1{# petabyte} other{# petabytes}}', $params, $this->locale);
+            }
+        }
+    }
+
+    private function formatSizeNumber($value, $decimals, $options, $textOptions)
+    {
+        if (is_string($value) && is_numeric($value)) {
+            $value = (int) $value;
+        }
+        if (!is_numeric($value)) {
+            throw new InvalidParamException("'$value' is not a numeric value.");
+        }
+
         $position = 0;
         do {
-            if ($value < $this->sizeFormat['base']) {
+            if ($value < $this->sizeFormatBase) {
                 break;
             }
-            $value = $value / $this->sizeFormat['base'];
+            $value = $value / $this->sizeFormatBase;
             $position++;
         } while ($position < 5);
 
-        $value = round($value, $this->sizeFormat['decimals']); // todo
-        $formattedValue = isset($this->sizeFormat['decimalSeparator']) ? str_replace('.', $this->sizeFormat['decimalSeparator'], $value) : $value;
-        $params = ['n' => $formattedValue];
-
-        if ($binaryPrefix && $this->sizeFormat['base'] === 1024) {
-            switch ($position) {
-                case 0:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params, $this->locale) : Yii::t('yii', '{n} B', $params, $this->locale);
-                case 1:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# kibibyte} other{# kibibytes}}', $params, $this->locale) : Yii::t('yii', '{n} KiB', $params, $this->locale);
-                case 2:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# mebibyte} other{# mebibytes}}', $params, $this->locale) : Yii::t('yii', '{n} MiB', $params, $this->locale);
-                case 3:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# gibibyte} other{# gibibytes}}', $params, $this->locale) : Yii::t('yii', '{n} GiB', $params, $this->locale);
-                case 4:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# tebibyte} other{# tebibytes}}', $params, $this->locale) : Yii::t('yii', '{n} TiB', $params, $this->locale);
-                default:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# pebibyte} other{# pebibytes}}', $params, $this->locale) : Yii::t('yii', '{n} PiB', $params, $this->locale);
-            }
+        // no decimals for bytes
+        if ($position === 0) {
+            $decimals = 0;
+        } elseif ($decimals !== null) {
+            $value = round($value, $decimals);
         }
+        // disable grouping for edge cases like 1023 to get 1023 B instead of 1,023 B
+        $oldThousandSeparator = $this->thousandSeparator;
+        $this->thousandSeparator = '';
+        $options[NumberFormatter::GROUPING_USED] = false;
+        // format the size value
+        $params = ['n' => $this->asDecimal($value, $decimals, $options, $textOptions)];
+        $this->thousandSeparator = $oldThousandSeparator;
 
-        switch ($position) {
-            case 0:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params, $this->locale) : Yii::t('yii', '{n} B', $params, $this->locale);
-            case 1:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# kilobyte} other{# kilobytes}}', $params, $this->locale) : Yii::t('yii', '{n} KB', $params, $this->locale);
-            case 2:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# megabyte} other{# megabytes}}', $params, $this->locale) : Yii::t('yii', '{n} MB', $params, $this->locale);
-            case 3:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# gigabyte} other{# gigabytes}}', $params, $this->locale) : Yii::t('yii', '{n} GB', $params, $this->locale);
-            case 4:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# terabyte} other{# terabytes}}', $params, $this->locale) : Yii::t('yii', '{n} TB', $params, $this->locale);
-            default:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# petabyte} other{# petabytes}}', $params, $this->locale) : Yii::t('yii', '{n} PB', $params, $this->locale);
-        }
+        return [$params, $position];
     }
 
     /**
@@ -1180,10 +1240,16 @@ class Formatter extends Component
             $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
         }
 
-        foreach (($this->numberFormatterOptions + $options) as $name => $value) {
+        foreach ($this->numberFormatterOptions as $name => $value) {
             $formatter->setAttribute($name, $value);
         }
-        foreach (($this->numberFormatterTextOptions + $textOptions) as $name => $attribute) {
+        foreach ($options as $name => $value) {
+            $formatter->setAttribute($name, $value);
+        }
+        foreach ($this->numberFormatterTextOptions as $name => $attribute) {
+            $formatter->setTextAttribute($name, $attribute);
+        }
+        foreach ($textOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
         }
         return $formatter;

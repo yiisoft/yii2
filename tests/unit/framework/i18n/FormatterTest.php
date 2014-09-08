@@ -647,34 +647,127 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asOrdinal(null));
     }
 
+    public function testIntlAsShortSize()
+    {
+        $this->formatter->numberFormatterOptions = [
+            \NumberFormatter::MIN_FRACTION_DIGITS => 0,
+            \NumberFormatter::MAX_FRACTION_DIGITS => 2,
+        ];
+
+        // tests for base 1000
+        $this->formatter->sizeFormatBase = 1000;
+        $this->assertSame("999 B", $this->formatter->asShortSize(999));
+        $this->assertSame("1.05 MB", $this->formatter->asShortSize(1024 * 1024));
+        $this->assertSame("1 KB", $this->formatter->asShortSize(1000));
+        $this->assertSame("1.02 KB", $this->formatter->asShortSize(1023));
+        $this->assertNotEquals("3 PB", $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
+        // tests for base 1024
+        $this->formatter->sizeFormatBase = 1024;
+        $this->assertSame("1 KiB", $this->formatter->asShortSize(1024));
+        $this->assertSame("1 MiB", $this->formatter->asShortSize(1024 * 1024));
+        // https://github.com/yiisoft/yii2/issues/4960
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
+        $this->assertSame("5 GiB", $this->formatter->asShortSize(5 * 1024 * 1024 * 1024));
+        $this->assertNotEquals("5 PiB", $this->formatter->asShortSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
+        //$this->assertSame("1 YiB", $this->formatter->asShortSize(pow(2, 80)));
+        $this->assertSame("2 GiB", $this->formatter->asShortSize(2147483647)); // round 1.999 up to 2
+        $this->formatter->decimalSeparator = ',';
+        $this->formatter->numberFormatterOptions = [];
+        $this->assertSame("1,001 KiB", $this->formatter->asShortSize(1025, 3));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
+    }
+
+    public function testAsShortSize()
+    {
+        // tests for base 1000
+        $this->formatter->sizeFormatBase = 1000;
+        $this->assertSame("999 B", $this->formatter->asShortSize(999));
+        $this->assertSame("1.05 MB", $this->formatter->asShortSize(1024 * 1024));
+        $this->assertSame("1.0486 MB", $this->formatter->asShortSize(1024 * 1024, 4));
+        $this->assertSame("1.00 KB", $this->formatter->asShortSize(1000));
+        $this->assertSame("1.02 KB", $this->formatter->asShortSize(1023));
+        $this->assertNotEquals("3 PB", $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
+        // tests for base 1024
+        $this->formatter->sizeFormatBase = 1024;
+        $this->assertSame("1.00 KiB", $this->formatter->asShortSize(1024));
+        $this->assertSame("1.00 MiB", $this->formatter->asShortSize(1024 * 1024));
+        // https://github.com/yiisoft/yii2/issues/4960
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
+        $this->assertSame("5.00 GiB", $this->formatter->asShortSize(5 * 1024 * 1024 * 1024));
+        $this->assertNotEquals("5.00 PiB", $this->formatter->asShortSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
+        //$this->assertSame("1 YiB", $this->formatter->asShortSize(pow(2, 80)));
+        $this->assertSame("2.00 GiB", $this->formatter->asShortSize(2147483647)); // round 1.999 up to 2
+        $this->formatter->decimalSeparator = ',';
+        $this->assertSame("1,001 KiB", $this->formatter->asShortSize(1025, 3));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
+    }
+
     public function testIntlAsSize()
     {
-        $this->testAsSize();
+        $this->formatter->numberFormatterOptions = [
+            \NumberFormatter::MIN_FRACTION_DIGITS => 0,
+            \NumberFormatter::MAX_FRACTION_DIGITS => 2,
+        ];
+
+        // tests for base 1000
+        $this->formatter->sizeFormatBase = 1000;
+        $this->assertSame("999 bytes", $this->formatter->asSize(999));
+        $this->assertSame("1.05 megabytes", $this->formatter->asSize(1024 * 1024));
+        $this->assertSame("1 kilobyte", $this->formatter->asSize(1000));
+        $this->assertSame("1.02 kilobytes", $this->formatter->asSize(1023));
+        $this->assertSame("3 gigabytes", $this->formatter->asSize(3 * 1000 * 1000 * 1000));
+        $this->assertNotEquals("3 PB", $this->formatter->asSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
+        // tests for base 1024
+        $this->formatter->sizeFormatBase = 1024;
+        $this->assertSame("1 kibibyte", $this->formatter->asSize(1024));
+        $this->assertSame("1 mebibyte", $this->formatter->asSize(1024 * 1024));
+        // https://github.com/yiisoft/yii2/issues/4960
+//        $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("5 gibibytes", $this->formatter->asSize(5 * 1024 * 1024 * 1024));
+        $this->assertNotEquals("5 pibibytes", $this->formatter->asSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
+        //$this->assertSame("1 YiB", $this->formatter->asSize(pow(2, 80)));
+        $this->assertSame("2 gibibytes", $this->formatter->asSize(2147483647)); // round 1.999 up to 2
+        $this->formatter->decimalSeparator = ',';
+        $this->formatter->numberFormatterOptions = [];
+        // https://github.com/yiisoft/yii2/issues/4960
+//        $this->assertSame("1,001 KiB", $this->formatter->asSize(1025, 3));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
     }
 
     public function testAsSize()
     {
         // tests for base 1000
-        $this->formatter->sizeFormat['base'] = 1000;
-        $this->assertSame("999 B", $this->formatter->asSize(999));
-        $this->assertSame("1.05 MB", $this->formatter->asSize(1024 * 1024));
-        $this->assertSame("1.05 MB", $this->formatter->asSize(1024 * 1024, false, false));
-        $this->assertSame("1 KB", $this->formatter->asSize(1000));
-        $this->assertSame("1.02 KB", $this->formatter->asSize(1023));
-        $this->assertSame("3 gigabytes", $this->formatter->asSize(3 * 1000 * 1000 * 1000, true));
+        $this->formatter->sizeFormatBase = 1000;
+        $this->assertSame("999 bytes", $this->formatter->asSize(999));
+        $this->assertSame("1.05 megabytes", $this->formatter->asSize(1024 * 1024));
+        // https://github.com/yiisoft/yii2/issues/4960
+//        $this->assertSame("1.0486 megabytes", $this->formatter->asSize(1024 * 1024, 4));
+        $this->assertSame("1 kilobyte", $this->formatter->asSize(1000));
+        $this->assertSame("1.02 kilobytes", $this->formatter->asSize(1023));
+        $this->assertSame("3 gigabytes", $this->formatter->asSize(3 * 1000 * 1000 * 1000));
         $this->assertNotEquals("3 PB", $this->formatter->asSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
         // tests for base 1024
-        $this->formatter->sizeFormat['base'] = 1024;
-        $this->assertSame("1 KiB", $this->formatter->asSize(1024));
-        $this->assertSame("1 MB", $this->formatter->asSize(1024 * 1024, false, false));
-        $this->assertSame("1023 B", $this->formatter->asSize(1023));
-        $this->assertSame("5 GiB", $this->formatter->asSize(5 * 1024 * 1024 * 1024));
-        $this->assertSame("5 gibibytes", $this->formatter->asSize(5 * 1024 * 1024 * 1024,true));
-        $this->assertNotEquals("5 PiB", $this->formatter->asSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
+        $this->formatter->sizeFormatBase = 1024;
+        $this->assertSame("1 kibibyte", $this->formatter->asSize(1024));
+        $this->assertSame("1 mebibyte", $this->formatter->asSize(1024 * 1024));
+        // https://github.com/yiisoft/yii2/issues/4960
+//        $this->assertSame("1023 B", $this->formatter->asSize(1023));
+        $this->assertSame("5 gibibytes", $this->formatter->asSize(5 * 1024 * 1024 * 1024));
+        $this->assertNotEquals("5 pibibytes", $this->formatter->asSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
         //$this->assertSame("1 YiB", $this->formatter->asSize(pow(2, 80)));
-        $this->assertSame("2 GiB", $this->formatter->asSize(2147483647)); // round 1.999 up to 2
-        $this->formatter->sizeFormat['decimalSeparator'] = ',';
-        $this->formatter->sizeFormat['decimals'] = 3;
-        $this->assertSame("1,001 KiB", $this->formatter->asSize(1025));
+        $this->assertSame("2 gibibytes", $this->formatter->asSize(2147483647)); // round 1.999 up to 2
+        $this->formatter->decimalSeparator = ',';
+        $this->formatter->numberFormatterOptions = [];
+        // https://github.com/yiisoft/yii2/issues/4960
+//        $this->assertSame("1,001 kibibytes", $this->formatter->asSize(1025));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
     }
 }
