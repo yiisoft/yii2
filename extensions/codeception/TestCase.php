@@ -80,6 +80,7 @@ class TestCase extends Test
     {
         parent::setUp();
         $this->mockApplication();
+        $this->unloadFixtures();
         $this->loadFixtures();
     }
 
