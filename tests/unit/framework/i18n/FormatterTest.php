@@ -204,18 +204,6 @@ class FormatterTest extends TestCase
     }
 
 
-
-//    public function testSetLocale(){
-//        $value = '12300';
-//        $this->formatter->setLocale('de-DE');
-//        $this->assertSame('12.300,00', $this->formatter->asDecimal($value, 2));
-//        $value = time();
-//        $this->assertSame(date('d.m.Y', $value), $this->formatter->asDate($value));
-//        $this->formatter->setLocale('en-US');
-//
-//    }
-
-
     // date format
 
 
@@ -281,6 +269,27 @@ class FormatterTest extends TestCase
 
     // TODO test format conversion ICU/PHP
 
+
+    /**
+     * Test for dates before 1970
+     * https://github.com/yiisoft/yii2/issues/3126
+     */
+    public function testDateRangeLow()
+    {
+        $this->assertSame('12-08-1922', $this->formatter->asDate('1922-08-12', 'dd-MM-yyyy'));
+    }
+
+    /**
+     * Test for dates after 2038
+     * https://github.com/yiisoft/yii2/issues/3126
+     */
+    public function testDateRangeHigh()
+    {
+        if (PHP_INT_SIZE < 8) {
+            $this->markTestSkipped('Dates > 2038 only work on PHP compiled with 64bit support.');
+        }
+        $this->assertSame('17-12-2048', $this->formatter->asDate('2048-12-17', 'dd-MM-yyyy'));
+    }
 
     private function buildDateSubIntervals($referenceDate, $intervals)
     {

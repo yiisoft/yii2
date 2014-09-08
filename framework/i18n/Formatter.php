@@ -7,10 +7,11 @@
 
 namespace yii\i18n;
 
-use Yii;
 use DateTime;
+use DateTimeInterface;
 use IntlDateFormatter;
 use NumberFormatter;
+use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -333,7 +334,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $url = $value;
-        if (strpos($url, 'http://') !== 0 && strpos($url, 'https://') !== 0) { // TODO support other urls like IRC, XMPP etc.
+        if (strpos($url, '://') === false) {
             $url = 'http://' . $url;
         }
 
@@ -548,31 +549,12 @@ class Formatter extends Component
             if (is_numeric($value) || $value === '') {
                 $value = (double)$value;
             } else {
-                try {
-                    $date = new DateTime($value);
-                    /** $date = new DateTime($value); ==> constructor crashes with
-                     * an invalid date in $value (eg. 2014-06-35) and can't be
-                     * catched by php because is fatal error.
-                     * Consequence was to find another solution which doesn't crash
-                     */
-                    // TODO docs state strtotime()
-//                    foreach($FormatPatterns as $format){
-//                        $date = DateTime::createFromFormat($format, $value);
-//                        if ( !($date === false)) break;
-//                    }
-
-                    // TODO throw InvalidParamException on invalid value
-                } catch (\Exception $e) {
-                    return null;
-                }
-                if ($date === false){
-                    return null;
-                }
+                $date = new DateTime($value);
                 $value = (double)$date->format('U');
             }
             return $value;
 
-        } elseif ($value instanceof DateTime || $value instanceof \DateTimeInterface) {
+        } elseif ($value instanceof DateTime || $value instanceof DateTimeInterface) {
             return (double)$value->format('U');
         } else {
             return (double)$value;
@@ -731,10 +713,7 @@ class Formatter extends Component
             // Timzone full name, not supported by php
             'e' => 'VV',    // Timezone identifier eg. Europe/Berlin
             'w' => '',      // Numeric representation of the day of the week 0=Sun, 6=Sat, not sup. ICU
-            // TODO
-            'T' => '',      // Number of days in the given month eg. 28 through 31, not sup. ICU
             'L' => '',      //Whether it's a leap year 1= leap, 0= normal year, not sup. ICU
-            'O' => '',      // ISO-8601 year number. This has the same value as Y, except that if the ISO week number (W) belongs to the previous or next year, that year is used instead. not sup. ICU
             'B' => '',      // Swatch Internet time, 000 to 999, not sup. ICU
             'u' => '',      // Microseconds Note that date() will always generate 000000 since it takes an integer parameter, not sup. ICU
             'P' => '',      // Difference to Greenwich time (GMT) with colon between hours and minutes, not sup. ICU
@@ -1195,8 +1174,6 @@ class Formatter extends Component
     }
 
     /**
-     * TODO
-     *
      * @param $value
      * @return float
      * @throws InvalidParamException
@@ -1215,13 +1192,14 @@ class Formatter extends Component
     /**
      * Creates a number formatter based on the given type and format.
      *
-     * You may overide this to support format pattern. TODO
+     * You may overide this method to create a number formatter based on patterns.
      *
-     * @param integer $type the type of the number formatter
+     * @param integer $style the type of the number formatter.
      * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
      *          ::DURATION, ::PATTERN_RULEBASED, ::DEFAULT_STYLE, ::IGNORE
-     * @param string $format the format to be used. Please refer to
-     * [ICU manual](http://www.icu-project.org/apiref/icu4c/classDecimalFormat.html#_details)
+     * @param integer $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return NumberFormatter the created formatter instance
      */
     protected function createNumberFormatter($style, $decimals = null, $options = [], $textOptions = [])
@@ -1254,5 +1232,4 @@ class Formatter extends Component
         }
         return $formatter;
     }
-
 }
