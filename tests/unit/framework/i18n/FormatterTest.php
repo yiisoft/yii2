@@ -483,19 +483,39 @@ class FormatterTest extends TestCase
 
     public function testIntlAsCurrency()
     {
-        $this->testAsCurrency();
-    }
-
-    public function testAsCurrency()
-    {
-        $value = '123';
-        $this->assertSame('$123.00', $this->formatter->asCurrency($value));
-        $value = '123.456';
-        $this->assertSame("$123.46", $this->formatter->asCurrency($value));
+        $this->formatter->locale = 'en_US';
+        $this->formatter->currencyCode = 'USD';
+        $this->assertSame('$123.00', $this->formatter->asCurrency('123'));
+        $this->assertSame('$123,456.00', $this->formatter->asCurrency('123456'));
+        $this->assertSame('$0.00', $this->formatter->asCurrency('0'));
         // Starting from ICU 52.1, negative currency value will be formatted as -$123,456.12
         // see: http://source.icu-project.org/repos/icu/icu/tags/release-52-1/source/data/locales/en.txt
 //		$value = '-123456.123';
 //		$this->assertSame("($123,456.12)", $this->formatter->asCurrency($value));
+
+        $this->formatter->locale = 'de_DE';
+        $this->formatter->currencyCode = 'USD';
+        $this->assertSame('123,00 $', $this->formatter->asCurrency('123'));
+        $this->formatter->currencyCode = 'EUR';
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123'));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
+    }
+
+    public function testAsCurrency()
+    {
+        $this->formatter->currencyCode = 'USD';
+        $this->assertSame('USD 123.00', $this->formatter->asCurrency('123'));
+        $this->assertSame('USD 0.00', $this->formatter->asCurrency('0'));
+        $this->assertSame('USD -123.45', $this->formatter->asCurrency('-123,45'));
+        $this->assertSame('USD -123.45', $this->formatter->asCurrency(-123.45));
+
+        $this->formatter->currencyCode = 'EUR';
+        $this->assertSame('EUR 123.00', $this->formatter->asCurrency('123'));
+        $this->assertSame('EUR 0.00', $this->formatter->asCurrency('0'));
+        $this->assertSame('EUR -123.45', $this->formatter->asCurrency('-123,45'));
+        $this->assertSame('EUR -123.45', $this->formatter->asCurrency(-123.45));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
