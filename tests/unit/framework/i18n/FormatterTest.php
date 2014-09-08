@@ -20,6 +20,7 @@ function extension_loaded($name)
 
 namespace yiiunit\framework\i18n;
 
+use yii\base\InvalidParamException;
 use yii\i18n\Formatter;
 use yiiunit\TestCase;
 use DateTime;
@@ -54,7 +55,8 @@ class FormatterTest extends TestCase
         }
 
         $this->mockApplication([
-            'timeZone' => 'UTC'
+            'timeZone' => 'UTC',
+            'language' => 'ru-RU',
         ]);
         $this->formatter = new Formatter(['locale' => 'en-US']);
     }
@@ -74,6 +76,17 @@ class FormatterTest extends TestCase
         $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'php:Y/m/d']));
         $this->setExpectedException('\yii\base\InvalidParamException');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
+    }
+
+    public function testLocale()
+    {
+        // locale is configured explicitly
+        $f = new Formatter(['locale' => 'en-US']);
+        $this->assertEquals('en-US', $f->locale);
+
+        // if not, take from application
+        $f = new Formatter();
+        $this->assertEquals('ru-RU', $f->locale);
     }
 
 
@@ -211,36 +224,37 @@ class FormatterTest extends TestCase
         $this->testAsDate();
     }
 
-    public function testIntlAsTime()
-    {
-        $this->testAsTime();
-    }
-
-    public function testIntlAsDatetime()
-    {
-        $this->testAsDatetime();
-    }
-
     public function testAsDate()
     {
         $value = time();
         $this->assertSame(date('M j, Y', $value), $this->formatter->asDate($value));
         $this->assertSame(date('Y/m/d', $value), $this->formatter->asDate($value, 'php:Y/m/d'));
-        $this->assertSame(date('d.m.Y', $value), $this->formatter->asDate($value, 'short'));
+        $this->assertSame(date('m/d/Y', $value), $this->formatter->asDate($value, 'MM/dd/yyyy'));
+        $this->assertSame(date('n/j/y', $value), $this->formatter->asDate($value, 'short'));
         $this->assertSame(date('F j, Y', $value), $this->formatter->asDate($value, 'long'));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
     }
 
+    public function testIntlAsTime()
+    {
+        $this->testAsTime();
+    }
+
     public function testAsTime()
     {
         $value = time();
         $this->assertSame(date('g:i:s A', $value), $this->formatter->asTime($value));
-        $this->assertSame(date('n:i:s A', $value), $this->formatter->asTime($value, 'php:n:i:s A'));
+        $this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value, 'php:h:i:s A'));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTime(null));
+    }
+
+    public function testIntlAsDatetime()
+    {
+        $this->testAsDatetime();
     }
 
     public function testAsDatetime()
@@ -410,10 +424,8 @@ class FormatterTest extends TestCase
         $this->assertSame("123", $this->formatter->asInteger(123.23));
         $this->assertSame("123", $this->formatter->asInteger(123.53));
         $this->assertSame("0", $this->formatter->asInteger(0));
-        $this->assertSame("0", $this->formatter->asInteger('a'));
         $this->assertSame("-123", $this->formatter->asInteger(-123.23));
         $this->assertSame("-123", $this->formatter->asInteger(-123.53));
-        $this->assertSame("-123", $this->formatter->asInteger("-123abc"));
 
         $this->assertSame("123,456", $this->formatter->asInteger(123456));
         $this->assertSame("123,456", $this->formatter->asInteger(123456.789));
@@ -422,9 +434,59 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asInteger(null));
     }
 
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     */
+    public function testAsIntegerException()
+    {
+        $this->assertSame("0", $this->formatter->asInteger('a'));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     */
+    public function testAsIntegerException2()
+    {
+        $this->assertSame("0", $this->formatter->asInteger('-123abc'));
+    }
+
     public function testIntlAsDecimal()
     {
-        $this->testAsDecimal();
+        $value = 123.12;
+        $this->assertSame("123.12", $this->formatter->asDecimal($value, 2));
+        $this->assertSame("123.1", $this->formatter->asDecimal($value, 1));
+        $this->assertSame("123", $this->formatter->asDecimal($value, 0));
+
+        $value = 123;
+        $this->assertSame("123", $this->formatter->asDecimal($value));
+        $this->assertSame("123.00", $this->formatter->asDecimal($value, 2));
+        $this->formatter->decimalSeparator = ',';
+        $this->formatter->thousandSeparator = '.';
+        $value = 123.12;
+        $this->assertSame("123,12", $this->formatter->asDecimal($value));
+        $this->assertSame("123,1", $this->formatter->asDecimal($value, 1));
+        $this->assertSame("123", $this->formatter->asDecimal($value, 0));
+        $value = 123123.123;
+        $this->assertSame("123.123", $this->formatter->asDecimal($value, 0));
+        $this->assertSame("123.123,12", $this->formatter->asDecimal($value, 2));
+        $this->formatter->thousandSeparator = '';
+        $this->assertSame("123123,1", $this->formatter->asDecimal($value, 1));
+        $this->formatter->thousandSeparator = ' ';
+        $this->assertSame("12 31 23,1", $this->formatter->asDecimal($value, 1, [\NumberFormatter::GROUPING_SIZE => 2]));
+
+        $value = 123123.123;
+        $this->formatter->decimalSeparator = ',';
+        $this->formatter->thousandSeparator = ' ';
+        $this->assertSame("123 123", $this->formatter->asDecimal($value, 0));
+        $this->assertSame("123 123,12", $this->formatter->asDecimal($value, 2));
+
+        $this->formatter->decimalSeparator = null;
+        $this->formatter->thousandSeparator = null;
+        $value = '-123456.123';
+        $this->assertSame("-123,456.123", $this->formatter->asDecimal($value));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
     }
 
     public function testAsDecimal()
@@ -443,21 +505,22 @@ class FormatterTest extends TestCase
         $this->assertSame("123", $this->formatter->asDecimal($value, 0));
         $value = 123123.123;
         $this->assertSame("123.123,12", $this->formatter->asDecimal($value));
-        $this->assertSame("123123,12", $this->formatter->asDecimal($value, 2, null, false));
 
         $value = 123123.123;
-        $this->assertSame("123,123", $this->formatter->asDecimal($value));
-        $this->assertSame("123,123.12", $this->formatter->asDecimal($value, 2));
+        $this->assertSame("123.123,12", $this->formatter->asDecimal($value));
+        $this->assertSame("123.123,12", $this->formatter->asDecimal($value, 2));
         $this->formatter->decimalSeparator = ',';
         $this->formatter->thousandSeparator = ' ';
-        $this->assertSame("123 123", $this->formatter->asDecimal($value));
+        $this->assertSame("123 123,12", $this->formatter->asDecimal($value));
         $this->assertSame("123 123,12", $this->formatter->asDecimal($value, 2));
         $this->formatter->thousandSeparator = '';
-        $this->assertSame("123123", $this->formatter->asDecimal($value));
+        $this->assertSame("123123,12", $this->formatter->asDecimal($value));
         $this->assertSame("123123,12", $this->formatter->asDecimal($value, 2));
 
+        $this->formatter->decimalSeparator = null;
+        $this->formatter->thousandSeparator = null;
         $value = '-123456.123';
-        $this->assertSame("-123,456.123", $this->formatter->asDecimal($value));
+        $this->assertSame("-123,456.123", $this->formatter->asDecimal($value, 3));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
@@ -470,12 +533,12 @@ class FormatterTest extends TestCase
 
     public function testAsPercent()
     {
-        $value = '123';
-        $this->assertSame('12,300%', $this->formatter->asPercent($value));
-        $value = '0.1234';
-        $this->assertSame("12%", $this->formatter->asPercent($value));
-        $value = '-0.009343';
-        $this->assertSame("-1%", $this->formatter->asPercent($value));
+        $this->assertSame('12,300%', $this->formatter->asPercent(123));
+        $this->assertSame('12,300%', $this->formatter->asPercent('123'));
+        $this->assertSame("12%", $this->formatter->asPercent(0.1234));
+        $this->assertSame("12%", $this->formatter->asPercent('0.1234'));
+        $this->assertSame("-1%", $this->formatter->asPercent(-0.009343));
+        $this->assertSame("-1%", $this->formatter->asPercent('-0.009343'));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asPercent(null));
@@ -508,13 +571,13 @@ class FormatterTest extends TestCase
         $this->formatter->currencyCode = 'USD';
         $this->assertSame('USD 123.00', $this->formatter->asCurrency('123'));
         $this->assertSame('USD 0.00', $this->formatter->asCurrency('0'));
-        $this->assertSame('USD -123.45', $this->formatter->asCurrency('-123,45'));
+        $this->assertSame('USD -123.45', $this->formatter->asCurrency('-123.45'));
         $this->assertSame('USD -123.45', $this->formatter->asCurrency(-123.45));
 
         $this->formatter->currencyCode = 'EUR';
         $this->assertSame('EUR 123.00', $this->formatter->asCurrency('123'));
         $this->assertSame('EUR 0.00', $this->formatter->asCurrency('0'));
-        $this->assertSame('EUR -123.45', $this->formatter->asCurrency('-123,45'));
+        $this->assertSame('EUR -123.45', $this->formatter->asCurrency('-123.45'));
         $this->assertSame('EUR -123.45', $this->formatter->asCurrency(-123.45));
 
         // null display
@@ -523,17 +586,25 @@ class FormatterTest extends TestCase
 
     public function testIntlAsScientific()
     {
-        $this->testAsScientific();
-    }
-
-    public function testAsScientific()
-    {
         $value = '123';
         $this->assertSame('1.23E2', $this->formatter->asScientific($value));
         $value = '123456';
         $this->assertSame("1.23456E5", $this->formatter->asScientific($value));
         $value = '-123456.123';
         $this->assertSame("-1.23456123E5", $this->formatter->asScientific($value));
+
+        // null display
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
+    }
+
+    public function testAsScientific()
+    {
+        $value = '123';
+        $this->assertSame('1.23E+2', $this->formatter->asScientific($value, 2));
+        $value = '123456';
+        $this->assertSame("1.234560E+5", $this->formatter->asScientific($value));
+        $value = '-123456.123';
+        $this->assertSame("-1.234561E+5", $this->formatter->asScientific($value));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));

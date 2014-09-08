@@ -176,10 +176,10 @@ class Formatter extends Component
             $this->locale = Yii::$app->language;
         }
         if ($this->booleanFormat === null) {
-            $this->booleanFormat = [Yii::t('yii', 'No'), Yii::t('yii', 'Yes')];
+            $this->booleanFormat = [Yii::t('yii', 'No', [], $this->locale), Yii::t('yii', 'Yes', [], $this->locale)];
         }
         if ($this->nullDisplay === null) {
-            $this->nullDisplay = '<span class="not-set">' . Yii::t('yii', '(not set)') . '</span>';
+            $this->nullDisplay = '<span class="not-set">' . Yii::t('yii', '(not set)', [], $this->locale) . '</span>';
         }
         $this->_intlLoaded = extension_loaded('intl');
         if (!$this->_intlLoaded) {
@@ -470,14 +470,14 @@ class Formatter extends Component
      */
     private $_phpNameToPattern = [
         'short' => [
-            'date' => 'd.m.Y',
+            'date' => 'n/j/y',
             'time' => 'H:i',
-            'datetime' => 'd.m.Y H:i',
+            'datetime' => 'n/j/y H:i',
         ],
         'medium' => [
             'date' => 'M j, Y',
-            'time' => 'H:i:s',
-            'datetime' => 'M j, Y H:i:s',
+            'time' => 'g:i:s A',
+            'datetime' => 'M j, Y g:i:s A',
         ],
         'long' => [
             'date' => 'F j, Y',
@@ -612,9 +612,6 @@ class Formatter extends Component
      */
     private function convertPatternIcuToPhp($pattern)
     {
-        if (isset($this->_dateFormats[$pattern])) {
-            return $pattern;
-        }
         return strtr($pattern, [
             'dd' => 'd',    // day with leading zeros
             'd' => 'j',     // day without leading zeros
@@ -688,9 +685,6 @@ class Formatter extends Component
      */
     private function convertPatternPhpToIcu($pattern)
     {
-        if (isset($this->_dateFormats[$pattern])) {
-            return $pattern;
-        }
         return strtr($pattern, [
             'd' => 'dd',    // day with leading zeros
             'j' => 'd',     // day without leading zeros
@@ -828,40 +822,40 @@ class Formatter extends Component
 
         if ($interval->invert) {
             if ($interval->y >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y]);
+                return Yii::t('yii', 'in {delta, plural, =1{a year} other{# years}}', ['delta' => $interval->y], $this->locale);
             }
             if ($interval->m >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m]);
+                return Yii::t('yii', 'in {delta, plural, =1{a month} other{# months}}', ['delta' => $interval->m], $this->locale);
             }
             if ($interval->d >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d]);
+                return Yii::t('yii', 'in {delta, plural, =1{a day} other{# days}}', ['delta' => $interval->d], $this->locale);
             }
             if ($interval->h >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h]);
+                return Yii::t('yii', 'in {delta, plural, =1{an hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
             }
             if ($interval->i >= 1) {
-                return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i]);
+                return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
             }
 
-            return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s]);
+            return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
         } else {
             if ($interval->y >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y]);
+                return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y], $this->locale);
             }
             if ($interval->m >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m]);
+                return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m], $this->locale);
             }
             if ($interval->d >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d]);
+                return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d], $this->locale);
             }
             if ($interval->h >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h]);
+                return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h], $this->locale);
             }
             if ($interval->i >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i]);
+                return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->locale);
             }
 
-            return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s]);
+            return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->locale);
         }
     }
 
@@ -899,7 +893,8 @@ class Formatter extends Component
      * value is rounded automatically to the defined decimal digits.
      *
      * @param mixed $value the value to be formatted.
-     * @param integer $decimals the number of digits after the decimal point.
+     * @param integer $decimals the number of digits after the decimal point. If not given the number of digits is determined from the
+     * [[locale]] and if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available defaults to `2`.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1100,33 +1095,33 @@ class Formatter extends Component
         if ($binaryPrefix && $this->sizeFormat['base'] === 1024) {
             switch ($position) {
                 case 0:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params, $this->locale) : Yii::t('yii', '{n} B', $params, $this->locale);
                 case 1:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# kibibyte} other{# kibibytes}}', $params) : Yii::t('yii', '{n} KiB', $params);
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# kibibyte} other{# kibibytes}}', $params, $this->locale) : Yii::t('yii', '{n} KiB', $params, $this->locale);
                 case 2:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# mebibyte} other{# mebibytes}}', $params) : Yii::t('yii', '{n} MiB', $params);
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# mebibyte} other{# mebibytes}}', $params, $this->locale) : Yii::t('yii', '{n} MiB', $params, $this->locale);
                 case 3:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# gibibyte} other{# gibibytes}}', $params) : Yii::t('yii', '{n} GiB', $params);
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# gibibyte} other{# gibibytes}}', $params, $this->locale) : Yii::t('yii', '{n} GiB', $params, $this->locale);
                 case 4:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# tebibyte} other{# tebibytes}}', $params) : Yii::t('yii', '{n} TiB', $params);
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# tebibyte} other{# tebibytes}}', $params, $this->locale) : Yii::t('yii', '{n} TiB', $params, $this->locale);
                 default:
-                    return $verbose ? Yii::t('yii', '{n, plural, =1{# pebibyte} other{# pebibytes}}', $params) : Yii::t('yii', '{n} PiB', $params);
+                    return $verbose ? Yii::t('yii', '{n, plural, =1{# pebibyte} other{# pebibytes}}', $params, $this->locale) : Yii::t('yii', '{n} PiB', $params, $this->locale);
             }
         }
 
         switch ($position) {
             case 0:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params) : Yii::t('yii', '{n} B', $params);
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# byte} other{# bytes}}', $params, $this->locale) : Yii::t('yii', '{n} B', $params, $this->locale);
             case 1:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# kilobyte} other{# kilobytes}}', $params) : Yii::t('yii', '{n} KB', $params);
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# kilobyte} other{# kilobytes}}', $params, $this->locale) : Yii::t('yii', '{n} KB', $params, $this->locale);
             case 2:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# megabyte} other{# megabytes}}', $params) : Yii::t('yii', '{n} MB', $params);
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# megabyte} other{# megabytes}}', $params, $this->locale) : Yii::t('yii', '{n} MB', $params, $this->locale);
             case 3:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# gigabyte} other{# gigabytes}}', $params) : Yii::t('yii', '{n} GB', $params);
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# gigabyte} other{# gigabytes}}', $params, $this->locale) : Yii::t('yii', '{n} GB', $params, $this->locale);
             case 4:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# terabyte} other{# terabytes}}', $params) : Yii::t('yii', '{n} TB', $params);
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# terabyte} other{# terabytes}}', $params, $this->locale) : Yii::t('yii', '{n} TB', $params, $this->locale);
             default:
-                return $verbose ? Yii::t('yii', '{n, plural, =1{# petabyte} other{# petabytes}}', $params) : Yii::t('yii', '{n} PB', $params);
+                return $verbose ? Yii::t('yii', '{n, plural, =1{# petabyte} other{# petabytes}}', $params, $this->locale) : Yii::t('yii', '{n} PB', $params, $this->locale);
         }
     }
 
