@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,13 +26,14 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Controller extends Component implements ViewContextInterface
-{
+class Controller extends Component implements ViewContextInterface {
+
     /**
      * @event ActionEvent an event raised right before executing a controller action.
      * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
      */
     const EVENT_BEFORE_ACTION = 'beforeAction';
+
     /**
      * @event ActionEvent an event raised right after executing a controller action.
      */
@@ -41,15 +43,18 @@ class Controller extends Component implements ViewContextInterface
      * @var string the ID of this controller.
      */
     public $id;
+
     /**
      * @var Module $module the module that this controller belongs to.
      */
     public $module;
+
     /**
      * @var string the ID of the action that is used when the action ID is not specified
      * in the request. Defaults to 'index'.
      */
     public $defaultAction = 'index';
+
     /**
      * @var string|boolean the name of the layout to be applied to this controller's views.
      * This property mainly affects the behavior of [[render()]].
@@ -57,6 +62,7 @@ class Controller extends Component implements ViewContextInterface
      * If false, no layout will be applied.
      */
     public $layout;
+
     /**
      * @var Action the action that is currently being executed. This property will be set
      * by [[run()]] when it is called by [[Application]] to run an action.
@@ -68,14 +74,18 @@ class Controller extends Component implements ViewContextInterface
      */
     private $_view;
 
+    /**
+     *
+     * @var Array, list of actions which do not want to handle in the beforeAction method
+     */
+    public $excludeFromBeforeAction = array();
 
     /**
      * @param string $id the ID of this controller.
      * @param Module $module the module that this controller belongs to.
      * @param array $config name-value pairs that will be used to initialize the object properties.
      */
-    public function __construct($id, $module, $config = [])
-    {
+    public function __construct($id, $module, $config = []) {
         $this->id = $id;
         $this->module = $module;
         parent::__construct($config);
@@ -101,8 +111,7 @@ class Controller extends Component implements ViewContextInterface
      * [[\Yii::createObject()]] will be used later to create the requested action
      * using the configuration provided here.
      */
-    public function actions()
-    {
+    public function actions() {
         return [];
     }
 
@@ -115,8 +124,7 @@ class Controller extends Component implements ViewContextInterface
      * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
      * @see createAction()
      */
-    public function runAction($id, $params = [])
-    {
+    public function runAction($id, $params = []) {
         $action = $this->createAction($id);
         if ($action === null) {
             throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
@@ -172,8 +180,7 @@ class Controller extends Component implements ViewContextInterface
      * @return mixed the result of the action.
      * @see runAction()
      */
-    public function run($route, $params = [])
-    {
+    public function run($route, $params = []) {
         $pos = strpos($route, '/');
         if ($pos === false) {
             return $this->runAction($route, $params);
@@ -191,8 +198,7 @@ class Controller extends Component implements ViewContextInterface
      * @param array $params the parameters to be bound to the action.
      * @return array the valid parameters that the action can run with.
      */
-    public function bindActionParams($action, $params)
-    {
+    public function bindActionParams($action, $params) {
         return [];
     }
 
@@ -206,8 +212,7 @@ class Controller extends Component implements ViewContextInterface
      * @param string $id the action ID.
      * @return Action the newly created action instance. Null if the ID doesn't resolve into any action.
      */
-    public function createAction($id)
-    {
+    public function createAction($id) {
         if ($id === '') {
             $id = $this->defaultAction;
         }
@@ -251,11 +256,12 @@ class Controller extends Component implements ViewContextInterface
      * @param Action $action the action to be executed.
      * @return boolean whether the action should continue to run.
      */
-    public function beforeAction($action)
-    {
-        $event = new ActionEvent($action);
-        $this->trigger(self::EVENT_BEFORE_ACTION, $event);
-        return $event->isValid;
+    public function beforeAction($action) {
+        if (!in_array(strtolower($action->id), $this->excludeFromBeforeAction)) {
+            $event = new ActionEvent($action);
+            $this->trigger(self::EVENT_BEFORE_ACTION, $event);
+            return $event->isValid;
+        }
     }
 
     /**
@@ -279,8 +285,7 @@ class Controller extends Component implements ViewContextInterface
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
      */
-    public function afterAction($action, $result)
-    {
+    public function afterAction($action, $result) {
         $event = new ActionEvent($action);
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
@@ -293,8 +298,7 @@ class Controller extends Component implements ViewContextInterface
      * while the last is the innermost one.
      * @return Module[] all ancestor modules that this controller is located within.
      */
-    public function getModules()
-    {
+    public function getModules() {
         $modules = [$this->module];
         $module = $this->module;
         while ($module->module !== null) {
@@ -307,8 +311,7 @@ class Controller extends Component implements ViewContextInterface
     /**
      * @return string the controller ID that is prefixed with the module ID (if any).
      */
-    public function getUniqueId()
-    {
+    public function getUniqueId() {
         return $this->module instanceof Application ? $this->id : $this->module->getUniqueId() . '/' . $this->id;
     }
 
@@ -316,8 +319,7 @@ class Controller extends Component implements ViewContextInterface
      * Returns the route of the current request.
      * @return string the route (module ID, controller ID and action ID) of the current request.
      */
-    public function getRoute()
-    {
+    public function getRoute() {
         return $this->action !== null ? $this->action->getUniqueId() : $this->getUniqueId();
     }
 
@@ -360,8 +362,7 @@ class Controller extends Component implements ViewContextInterface
      * @return string the rendering result.
      * @throws InvalidParamException if the view file or the layout file does not exist.
      */
-    public function render($view, $params = [])
-    {
+    public function render($view, $params = []) {
         $output = $this->getView()->render($view, $params, $this);
         $layoutFile = $this->findLayoutFile($this->getView());
         if ($layoutFile !== false) {
@@ -379,8 +380,7 @@ class Controller extends Component implements ViewContextInterface
      * @return string the rendering result.
      * @throws InvalidParamException if the view file does not exist.
      */
-    public function renderPartial($view, $params = [])
-    {
+    public function renderPartial($view, $params = []) {
         return $this->getView()->render($view, $params, $this);
     }
 
@@ -391,8 +391,7 @@ class Controller extends Component implements ViewContextInterface
      * @return string the rendering result.
      * @throws InvalidParamException if the view file does not exist.
      */
-    public function renderFile($file, $params = [])
-    {
+    public function renderFile($file, $params = []) {
         return $this->getView()->renderFile($file, $params, $this);
     }
 
@@ -403,8 +402,7 @@ class Controller extends Component implements ViewContextInterface
      * If not set, it will default to the "view" application component.
      * @return View|\yii\web\View the view object that can be used to render views or view files.
      */
-    public function getView()
-    {
+    public function getView() {
         if ($this->_view === null) {
             $this->_view = Yii::$app->getView();
         }
@@ -415,8 +413,7 @@ class Controller extends Component implements ViewContextInterface
      * Sets the view object to be used by this controller.
      * @param View|\yii\web\View $view the view object that can be used to render views or view files.
      */
-    public function setView($view)
-    {
+    public function setView($view) {
         $this->_view = $view;
     }
 
@@ -426,8 +423,7 @@ class Controller extends Component implements ViewContextInterface
      * [[viewPath]] directory.
      * @return string the directory containing the view files for this controller.
      */
-    public function getViewPath()
-    {
+    public function getViewPath() {
         return $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
     }
 
@@ -438,8 +434,7 @@ class Controller extends Component implements ViewContextInterface
      * Please refer to [[render()]] on how to specify this parameter.
      * @throws InvalidParamException if an invalid path alias is used to specify the layout.
      */
-    public function findLayoutFile($view)
-    {
+    public function findLayoutFile($view) {
         $module = $this->module;
         if (is_string($this->layout)) {
             $layout = $this->layout;
@@ -474,4 +469,5 @@ class Controller extends Component implements ViewContextInterface
 
         return $path;
     }
+
 }
