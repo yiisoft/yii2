@@ -363,6 +363,9 @@
                         hasError = updateInput($form, this, messages) || hasError;
                     }
                 });
+                if (hasError) {
+                    $form.trigger('onValidationError', [attribute, messages]);
+                }
             });
         }, data.settings.validationDelay);
     };
@@ -497,6 +500,9 @@
                     .addClass(data.settings.successCssClass);
             }
             attribute.value = getValue($form, attribute);
+        }
+        if (hasError) {
+            $input.trigger('onValidationError', [messages]);
         }
         return hasError;
     };
