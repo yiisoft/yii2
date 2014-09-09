@@ -425,6 +425,9 @@ class BaseHtml
      */
     public static function button($content = 'Button', $options = [])
     {
+        if (!isset($options['type'])) {
+            $options['type'] = 'button';
+        }
         return static::tag('button', $content, $options);
     }
 
@@ -1541,7 +1544,7 @@ class BaseHtml
         $groups = isset($tagOptions['groups']) ? $tagOptions['groups'] : [];
         unset($tagOptions['prompt'], $tagOptions['options'], $tagOptions['groups']);
         $options['encodeSpaces'] = ArrayHelper::getValue($options, 'encodeSpaces', $encodeSpaces);
-        
+
         foreach ($items as $key => $value) {
             if (is_array($value)) {
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
