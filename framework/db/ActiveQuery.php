@@ -94,6 +94,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @var array a list of relations that this query should be joined with
      */
     public $joinWith;
+    /**
+     * @var string Alias for the [[ActiveQueryTrait::$modelClass]] table name
+     */
+    public $alias;
 
 
     /**
@@ -144,7 +148,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
-            $this->from = [$tableName];
+            $this->from = empty($this->alias)?[$tableName]:[$this->alias => $tableName];
         }
 
         if (empty($this->select) && !empty($this->join)) {
@@ -482,6 +486,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $relations[$fullName] = $relation = $primaryModel->getRelation($name);
                 if ($callback !== null) {
                     call_user_func($callback, $relation);
+                    if(is_array($relation->joinWith)) {
+                        $relation->buildJoinWith();
+                    }
                 }
                 $this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
             }
