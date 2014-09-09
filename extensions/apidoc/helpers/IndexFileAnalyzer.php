@@ -17,6 +17,7 @@ class IndexFileAnalyzer extends Markdown
     private $_chapter = 0;
     private $_chapters = [];
 
+
     public function analyze($text)
     {
         $this->parse($text);

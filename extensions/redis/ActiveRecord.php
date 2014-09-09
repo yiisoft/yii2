@@ -7,6 +7,7 @@
 
 namespace yii\redis;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
@@ -50,10 +51,11 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**

@@ -92,6 +92,7 @@ CREATE TABLE [dbo].[null_values] (
 CREATE TABLE [dbo].[type] (
 	[int_col] [int] NOT NULL,
 	[int_col2] [int] DEFAULT '1',
+	[smallint_col] [smallint] DEFAULT '1',
 	[char_col] [char](100) NOT NULL,
 	[char_col2] [varchar](100) DEFAULT 'something',
 	[char_col3] [text],

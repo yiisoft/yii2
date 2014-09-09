@@ -60,6 +60,7 @@ class Schema extends Object
      */
     private $_builder;
 
+
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
@@ -459,12 +460,19 @@ class Schema extends Object
             }
             throw $e;
         }
-        foreach ($columns as $info) {
-            $column = $this->loadColumnSchema($info);
-            $index->columns[$column->name] = $column;
-            if ($column->isPrimaryKey) {
-                $index->primaryKey = $column->name;
+
+        if (empty($columns[0]['Agent'])) {
+            foreach ($columns as $info) {
+                $column = $this->loadColumnSchema($info);
+                $index->columns[$column->name] = $column;
+                if ($column->isPrimaryKey) {
+                    $index->primaryKey = $column->name;
+                }
             }
+        } else {
+            // Distributed index :
+            $agent = $this->getIndexSchema($columns[0]['Agent']);
+            $index->columns = $agent->columns;
         }
 
         return true;
@@ -502,20 +510,20 @@ class Schema extends Object
     }
 
     /**
-     * Handles database error
+     * Converts a DB exception to a more concrete one if possible.
      *
      * @param \Exception $e
      * @param string $rawSql SQL that produced exception
-     * @throws Exception
+     * @return Exception
      */
-    public function handleException(\Exception $e, $rawSql)
+    public function convertException(\Exception $e, $rawSql)
     {
         if ($e instanceof Exception) {
-            throw $e;
+            return $e;
         } else {
             $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+            return new Exception($message, $errorInfo, (int) $e->getCode(), $e);
         }
     }
 

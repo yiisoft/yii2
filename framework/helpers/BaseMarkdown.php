@@ -33,7 +33,7 @@ class BaseMarkdown
             'html5' => true,
         ],
         'gfm-comment' => [
-            'class' => 'cebe\markdown\Markdown',
+            'class' => 'cebe\markdown\GithubMarkdown',
             'html5' => true,
             'enableNewlines' => true,
         ],
@@ -44,6 +44,7 @@ class BaseMarkdown
      * @see $flavors
      */
     public static $defaultFlavor = 'original';
+
 
     /**
      * Converts markdown into HTML.

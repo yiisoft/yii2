@@ -1,0 +1,26 @@
+{
+    "name": "yii2-debug",
+    "version": "2.0.0",
+    "homepage": "http://www.yiiframework.com/",
+    "authors": [
+        "Qiang Xue <qiang.xue@gmail.com>"
+    ],
+    "description": "The debugger extension for the Yii framework",
+    "keywords": [
+        "yii2",
+        "debug",
+        "debugger"
+    ],
+    "license": "BSD-3-Clause",
+    "main": [
+        "assets/toolbar.js"
+    ],
+    "ignore": [
+        "/*",
+        "!/assets"
+    ],
+    "dependencies": {
+        "yii2": "master",
+        "bootstrap": ">=3.0.0"
+    }
+}

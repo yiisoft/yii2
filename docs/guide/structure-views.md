@@ -40,7 +40,7 @@ $this->title = 'Login';
 Within a view, you can access `$this` which refers to the [[yii\web\View|view component]] managing
 and rendering this view template.
 
-Besides `$this`, there may be other predefined variables in a view, such as `$form` and `$model` in the above
+Besides `$this`, there may be other predefined variables in a view, such as `$model` in the above
 example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
 or other objects whose trigger the [view rendering](#rendering-views).
 
@@ -275,7 +275,7 @@ The controller ID is: <?= $this->context->id ?>
 
 The push approach is usually the preferred way of accessing data in views, because it makes views less dependent
 on context objects. Its drawback is that you need to manually build the data array all the time, which could
-becomes tedious and error prone if a view is shared and rendered in different places.
+become tedious and error prone if a view is shared and rendered in different places.
 
 
 ### Sharing Data among Views <a name="sharing-data-among-views"></a>
@@ -361,10 +361,10 @@ the places where these methods are called.
 - [[yii\web\View::head()|head()]]: This method should be called within the `<head>` section of an HTML page.
   It generates a placeholder which will be replaced with the registered head HTML code (e.g. link tags, meta tags)
   when a page finishes rendering.
-- [[yii\base\View::beginBody()|beginBody()]]: This method should be called at the beginning of the `<body>` section.
+- [[yii\web\View::beginBody()|beginBody()]]: This method should be called at the beginning of the `<body>` section.
   It triggers the [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] event and generates a placeholder which will
   be replaced by the registered HTML code (e.g. JavaScript) targeted at the body begin position.
-- [[yii\base\View::endBody()|endBody()]]: This method should be called at the end of the `<body>` section.
+- [[yii\web\View::endBody()|endBody()]]: This method should be called at the end of the `<body>` section.
   It triggers the [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]] event and generates a placeholder which will
   be replaced by the registered HTML code (e.g. JavaScript) targeted at the body end position.
 
@@ -439,7 +439,7 @@ If the layout value does not contain a file extension, it will use the default o
 
 Sometimes you may want to nest one layout in another. For example, in different sections of a Web site, you
 want to use different layouts, while all these layouts share the same basic layout that generates the overall
-HTML5 page structure. You can achieve this goal by calling with [[yii\base\View::beginContent()|beginContent()]],
+HTML5 page structure. You can achieve this goal by calling [[yii\base\View::beginContent()|beginContent()]] and
 [[yii\base\View::endContent()|endContent()]] in the child layouts like the following:
 
 ```php
@@ -450,7 +450,7 @@ HTML5 page structure. You can achieve this goal by calling with [[yii\base\View:
 <?php $this->endContent(); ?>
 ```
 
-As shown above, the child layout content should be enclosed within [[yii\base\View::beginContent()|beginContent()]],
+As shown above, the child layout content should be enclosed within [[yii\base\View::beginContent()|beginContent()]] and
 [[yii\base\View::endContent()|endContent()]]. The parameter passed to [[yii\base\View::beginContent()|beginContent()]]
 specifies what is the parent layout. It can be either a layout file or alias.
 
@@ -585,7 +585,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ```
 
 The above code will register a "keywords" meta tag with the view component. The registered meta tag is
-not rendered until after the layout finishes rendering. By then, the following HTML code will be inserted
+rendered after the layout finishes rendering. By then, the following HTML code will be inserted
 at the place where you call [[yii\web\View::head()]] in the layout and generate the following HTML code:
 
 ```php

@@ -57,6 +57,7 @@ class Instance
      */
     public $id;
 
+
     /**
      * Constructor.
      * @param string $id the component ID

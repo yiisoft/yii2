@@ -2,7 +2,7 @@ Working with Databases
 ======================
 
 This section will describe how to create a new page that displays country data fetched from
-from a database table named `country`. To achieve this goal, you will configure a database connection,
+a database table named `country`. To achieve this goal, you will configure a database connection,
 create an [Active Record](db-active-record.md) class, and define an [action](structure-controllers.md),
 and create a [view](structure-views.md).
 
@@ -32,16 +32,16 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `Country` VALUES ('AU','Australia',18886000);
-INSERT INTO `Country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `Country` VALUES ('CA','Canada',1147000);
-INSERT INTO `Country` VALUES ('CN','China',1277558000);
-INSERT INTO `Country` VALUES ('DE','Germany',82164700);
-INSERT INTO `Country` VALUES ('FR','France',59225700);
-INSERT INTO `Country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `Country` VALUES ('IN','India',1013662000);
-INSERT INTO `Country` VALUES ('RU','Russia',146934000);
-INSERT INTO `Country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',18886000);
+INSERT INTO `country` VALUES ('BR','Brazil',170115000);
+INSERT INTO `country` VALUES ('CA','Canada',1147000);
+INSERT INTO `country` VALUES ('CN','China',1277558000);
+INSERT INTO `country` VALUES ('DE','Germany',82164700);
+INSERT INTO `country` VALUES ('FR','France',59225700);
+INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
+INSERT INTO `country` VALUES ('IN','India',1013662000);
+INSERT INTO `country` VALUES ('RU','Russia',146934000);
+INSERT INTO `country` VALUES ('US','United States',278357000);
 ```
 
 At this point, you have a database named `yii2basic`, and within it a `country` table with three columns, containing ten rows of data.
@@ -100,7 +100,7 @@ class Country extends ActiveRecord
 The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it! With just the above code, 
 Yii will guess the associated table name from the class name. 
 
-> Inof: If no direct match can be made from the class name to the table name, you can
+> Info: If no direct match can be made from the class name to the table name, you can
 override the [[yii\db\ActiveRecord::tableName()]] method to explicitly specify the associated table name.
 
 Using the `Country` class, you can easily manipulate data in the `country` table, as shown in these snippets:
@@ -185,7 +185,7 @@ information to it.
 Creating a View <a name="creating-view"></a>
 ---------------
 
-Under the `views` directory, first create a sub-directory named `country`. This folder will used to hold all the
+Under the `views` directory, first create a sub-directory named `country`. This folder will be used to hold all the
 views rendered by the `country` controller. Within the `views/country` directory, create a file named `index.php`
 containing the following:
 

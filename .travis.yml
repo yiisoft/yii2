@@ -7,12 +7,14 @@ php:
   - hhvm
   - hhvm-nightly
 
-# run build against PHP 5.6 and hhvm but allow them to fail
+env:
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.2.0.0001
+
+# run build against hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
   fast_finish: true
   allow_failures:
-    - php: 5.6
     - php: hhvm
     - php: hhvm-nightly
 
@@ -22,14 +24,30 @@ services:
   - elasticsearch
   - mongodb
 
+# faster builds on new travis setup not using sudo
+sudo: false
+
+# cache vendor dirs
+cache:
+  directories:
+    - cubrid
+    - vendor
+
+# try running against postgres 9.3
+addons:
+  postgresql: "9.3"
+
 install:
   - composer self-update && composer --version
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - composer install --prefer-dist
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
+# codeception
+  - composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
 
@@ -44,10 +62,24 @@ before_script:
 
 script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
-  - cd apps/basic && php vendor/bin/codecept run
-  - cd ../advanced/backend && ../vendor/bin/codecept run
-  - cd ../common && ../vendor/bin/codecept run
-  - cd ../frontend && ../vendor/bin/codecept run
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      echo "Skipping basic application tests on HHVM"
+    else
+      cd apps/basic/web
+      php -S localhost:8080 > /dev/null 2>&1 &
+      cd ../tests
+      codecept run
+    fi
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      echo "Skipping advanced application tests on HHVM"
+    else
+      cd apps/advanced
+      php -S localhost:8080 > /dev/null 2>&1 &
+      cd tests
+      codecept run
+    fi
 
 after_script:
   - cd ../../..

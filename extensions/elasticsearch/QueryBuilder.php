@@ -24,6 +24,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public $db;
 
+
     /**
      * Constructor.
      * @param Connection $connection the database connection.
@@ -226,7 +227,7 @@ class QueryBuilder extends \yii\base\Object
         return count($parts) === 1 ? $parts[0] : ['and' => $parts];
     }
 
-    private function buildNotCondition($operator, $operands, &$params)
+    private function buildNotCondition($operator, $operands)
     {
         if (count($operands) != 1) {
             throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
@@ -234,7 +235,7 @@ class QueryBuilder extends \yii\base\Object
 
         $operand = reset($operands);
         if (is_array($operand)) {
-            $operand = $this->buildCondition($operand, $params);
+            $operand = $this->buildCondition($operand);
         }
 
         return [$operator => $operand];

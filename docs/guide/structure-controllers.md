@@ -112,11 +112,13 @@ For this reason, controller IDs are often nouns referring to the types of the re
 For example, you may use `article` as the ID of a controller that handles article data.
 
 By default, controller IDs should contain these characters only: English letters in lower case, digits,
-underscores, dashes and forward slashes. For example, `article`, `post-comment`, `admin/post2-comment` are
-all valid controller IDs, while `article?`, `PostComment`, `admin\post` are not.
+underscores, dashes and forward slashes. For example, `article` and `post-comment` are both valid controller IDs,
+while `article?`, `PostComment`, `admin\post` are not.
 
-The dashes in a controller ID are used to separate words, while the forward slashes to organize controllers in
-sub-directories.
+A controller ID may also contain a subdirectory prefix. For example, `admin/article` stands for an `article` controller
+in the `admin` subdirectory under the [[yii\base\Application::controllerNamespace|controller namespace]].
+Valid characters for subdirectory prefixes include: English letters in lower and upper cases, digits, underscores and
+forward slashes, where forward slashes are used as separators for multi-level subdirectories (e.g. `panels/admin`).
 
 
 ### Controller Class Naming <a name="controller-class-naming"></a>
@@ -134,7 +136,8 @@ takes the default value `app\controllers`:
 
 * `article` derives `app\controllers\ArticleController`;
 * `post-comment` derives `app\controllers\PostCommentController`;
-* `admin/post2-comment` derives `app\controllers\admin\Post2CommentController`.
+* `admin/post-comment` derives `app\controllers\admin\PostCommentController`;
+* `adminPanels/post-comment` derives `app\controllers\adminPanels\PostCommentController`.
 
 Controller classes must be [autoloadable](concept-autoloading.md). For this reason, in the above examples,
 the `article` controller class should be saved in the file whose [alias](concept-aliases.md)
@@ -313,7 +316,7 @@ to end users.
 
 * For [[yii\web\Application|Web applications]], the return value can also be some arbitrary data which will
   be assigned to [[yii\web\Response::data]] and be further converted into a string representing the response body.
-* For [[yii\console\Application|console applications], the return value can also be an integer representing
+* For [[yii\console\Application|console applications]], the return value can also be an integer representing
   the [[yii\console\Response::exitStatus|exit status]] of the command execution.
 
 In the examples shown above, the action results are all strings which will be treated as the response body

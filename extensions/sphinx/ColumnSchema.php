@@ -54,6 +54,7 @@ class ColumnSchema extends Object
      */
     public $isMva;
 
+
     /**
      * Converts the input value according to [[phpType]] after retrieval from the database.
      * If the value is null or an [[Expression]], it will not be converted.

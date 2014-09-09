@@ -43,6 +43,16 @@ Thanks to that line, your application is in development mode, and will have alre
 http://hostname/index.php?r=gii
 ```
 
+> Note: If you are accessing Gii from a machine other than localhost, the access will be denied by default
+> for security purpose. You can configure Gii to add the allowed IP addresses as follows,
+>
+```php
+'gii' => [
+    'class' => 'yii\gii\Module',
+    'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
+],
+```
+
 ![Gii](images/start-gii.png)
 
 
@@ -83,7 +93,7 @@ CRUD stands for Create, Read, Update, and Delete, representing the four common t
 
 Next, click on the "Preview" button. You will see a list of files to be generated, as shown below.
 
-[[NEED THE IMAGE HERE]]
+![CRUD Generator Preview](images/start-gii-crud-preview.png)
 
 If you previously created the `controllers/CountryController.php` and
 `views/country/index.php` files (in the databases section of the guide), check the "overwrite" box to replace them. (The previous versions did not have full CRUD support.)

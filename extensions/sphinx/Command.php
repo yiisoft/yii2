@@ -49,6 +49,7 @@ class Command extends \yii\db\Command
      */
     public $db;
 
+
     /**
      * Creates a batch INSERT command.
      * For example,

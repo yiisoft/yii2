@@ -58,6 +58,7 @@ class ServiceLocator extends Component
      */
     private $_definitions = [];
 
+
     /**
      * Getter magic method.
      * This method is overridden to support accessing components like reading properties.

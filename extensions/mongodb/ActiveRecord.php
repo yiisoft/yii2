@@ -7,6 +7,7 @@
 
 namespace yii\mongodb;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\db\StaleObjectException;
@@ -93,10 +94,11 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -144,12 +146,15 @@ abstract class ActiveRecord extends BaseActiveRecord
      * This method must be overridden by child classes to define available attributes.
      * Note: primary key attribute "_id" should be always present in returned array.
      * For example:
-     * ~~~
+     *
+     * ```php
      * public function attributes()
      * {
      *     return ['_id', 'name', 'address', 'status'];
      * }
-     * ~~~
+     * ```
+     *
+     * @throws \yii\base\InvalidConfigException if not implemented
      * @return array list of attribute names.
      */
     public function attributes()

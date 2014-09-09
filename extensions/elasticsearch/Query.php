@@ -137,7 +137,6 @@ class Query extends Component implements QueryInterface
      * on one or more fields.
      */
     public $highlight;
-
     public $facets = [];
 
 

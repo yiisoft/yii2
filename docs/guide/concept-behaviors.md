@@ -17,7 +17,6 @@ To define a behavior, create a class that extends [[yii\base\Behavior]], or exte
 ```php
 namespace app\components;
 
-use yii\base\Model;
 use yii\base\Behavior;
 
 class MyBehavior extends Behavior

@@ -459,11 +459,43 @@ public function init()
 }
 ```
 
-There where some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
+There were some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
 version 2.0 anymore. Note that when adding parameters to the constructor you might have to override [[yii\db\ActiveRecord::instantiate()]].
 
 There are many other changes and enhancements to Active Record. Please refer to
 the [Active Record](db-active-record.md) section for more details.
+
+
+Active Record Behaviors
+-----------------------
+
+In 2.0, we have dropped the base behavior class `CActiveRecordBehavior`. If you want to create an Active Record Behavior,
+you will have to extend directly from `yii\base\Behavior`. If the behavior class needs to respond to some events
+of the owner, you have to override the `events()` method like the following,
+
+```php
+namespace app\components;
+
+use yii\db\ActiveRecord;
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
+{
+    // ...
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
+        ];
+    }
+
+    public function beforeValidate($event)
+    {
+        // ...
+    }
+}
+```
 
 
 User and IdentityInterface
@@ -498,5 +530,5 @@ Using Yii 1.1 and 2.x together
 ------------------------------
 
 If you have legacy Yii 1.1 code that you want to use together with Yii 2.0, please refer to
-the [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md) section.
+the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md) section.
 

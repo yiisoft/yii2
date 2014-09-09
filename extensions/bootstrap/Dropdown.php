@@ -40,6 +40,12 @@ class Dropdown extends Widget
      */
     public $encodeLabels = true;
 
+    /**
+     * @var array the HTML attributes for the widget container tag.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    protected $_containerOptions = [];
+
 
     /**
      * Initializes the widget.
@@ -49,6 +55,7 @@ class Dropdown extends Widget
     {
         parent::init();
         Html::addCssClass($this->options, 'dropdown-menu');
+        $this->_containerOptions = $this->options;
     }
 
     /**
@@ -87,12 +94,13 @@ class Dropdown extends Widget
             $linkOptions['tabindex'] = '-1';
             $content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
             if (!empty($item['items'])) {
-                $content .= $this->renderItems($item['items']);
+                unset($this->_containerOptions['id']);
+                $this->renderItems($item['items']);
                 Html::addCssClass($options, 'dropdown-submenu');
             }
             $lines[] = Html::tag('li', $content, $options);
         }
 
-        return Html::tag('ul', implode("\n", $lines), $this->options);
+        return Html::tag('ul', implode("\n", $lines), $this->_containerOptions);
     }
 }

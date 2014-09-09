@@ -18,7 +18,7 @@ use yii\validators\Validator;
  * public function actionSearch($name, $email)
  * {
  *     $model = DynamicModel::validateData(compact('name', 'email'), [
- *         [['name', 'email'], 'string', 'max' => 128]],
+ *         [['name', 'email'], 'string', 'max' => 128],
  *         ['email', 'email'],
  *     ]);
  *     if ($model->hasErrors()) {
@@ -56,6 +56,7 @@ use yii\validators\Validator;
 class DynamicModel extends Model
 {
     private $_attributes = [];
+
 
     /**
      * Constructors.

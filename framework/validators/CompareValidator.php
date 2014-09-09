@@ -68,6 +68,7 @@ class CompareValidator extends Validator
      */
     public $message;
 
+
     /**
      * @inheritdoc
      */

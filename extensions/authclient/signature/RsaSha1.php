@@ -33,6 +33,8 @@ class RsaSha1 extends BaseMethod
      * This value can be fetched from file specified by [[publicCertificateFile]].
      */
     protected $_publicCertificate;
+
+
     /**
      * @var string path to the file, which holds private key certificate.
      */

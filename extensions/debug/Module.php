@@ -194,8 +194,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 return true;
             }
         }
-        Yii::warning('Access to debugger is denied due to IP address restriction. The requested IP is ' . $ip, __METHOD__);
-
+        Yii::warning('Access to debugger is denied due to IP address restriction. The requesting IP address is ' . $ip, __METHOD__);
         return false;
     }
 

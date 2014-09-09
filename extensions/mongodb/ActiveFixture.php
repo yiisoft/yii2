@@ -39,6 +39,7 @@ class ActiveFixture extends BaseActiveFixture
      */
     public $collectionName;
 
+
     /**
      * @inheritdoc
      */
@@ -68,7 +69,7 @@ class ActiveFixture extends BaseActiveFixture
     /**
      * Unloads the fixture.
      *
-     * The default implementation will clean up the colection by calling [[resetCollection()]].
+     * The default implementation will clean up the collection by calling [[resetCollection()]].
      */
     public function unload()
     {

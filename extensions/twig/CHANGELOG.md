@@ -7,7 +7,12 @@ Yii Framework 2 twig extension Change Log
 - Bug #2925: Fixed throwing exception when accessing AR property with null value (samdark)
 - Bug #3767: Fixed repeated adding of extensions when using config. One may now pass extension instances as well (grachov)
 - Bug #3877: Fixed `lexerOptions` throwing exception (dapatrese)
+- Bug #4290: Fixed throwing exception when trying to access AR relation that is null (samdark, tenitski)
 - Enh #1799: Added `form_begin`, `form_end` to twig extension (samdark)
+- Enh #3674: Various enhancements (samdark)
+    - Removed `FileLoader` and used `\Twig_Loader_Filesystem` instead.
+    - Added support of Yii's aliases.
+    - Added `set()` that allows setting object properties.
 - Chg #3535: Syntax changes:
     - Removed `form_begin`, `form_end` (samdark)
     - Added `use()` and `ViewRenderer::uses` that are importing classes and namespaces (grachov, samdark)

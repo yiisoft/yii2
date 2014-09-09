@@ -58,6 +58,7 @@ abstract class Generator extends Model
      */
     public $messageCategory = 'app';
 
+
     /**
      * @return string name of the code generator
      */

@@ -36,6 +36,7 @@ abstract class Dependency extends \yii\base\Object
      */
     private static $_reusableData = [];
 
+
     /**
      * Evaluates the dependency by generating and saving the data related with dependency.
      * This method is invoked by cache before writing data into it.

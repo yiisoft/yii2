@@ -44,6 +44,7 @@ class Spinner extends InputWidget
         'spin' => 'spin',
     ];
 
+
     /**
      * Renders the widget.
      */

@@ -58,6 +58,7 @@ class Schema extends \yii\db\Schema
         'enum' => self::TYPE_STRING,
     ];
 
+
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
@@ -211,7 +212,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadColumnSchema($info)
     {
-        $column = new ColumnSchema;
+        $column = $this->createColumnSchema();
         $column->name = $info['name'];
         $column->allowNull = !$info['notnull'];
         $column->isPrimaryKey = $info['pk'] != 0;

@@ -1,5 +1,25 @@
 <?php
 
+namespace yii\rbac;
+
+/**
+ * Mock for the filemtime() function for rbac classes. Avoid random test fails.
+ * @return int
+ */
+function filemtime($file)
+{
+    return \yiiunit\framework\rbac\PhpManagerTest::$filemtime ?: \filemtime($file);
+}
+
+/**
+ * Mock for the time() function for rbac classes. Avoid random test fails.
+ * @return int
+ */
+function time()
+{
+    return \yiiunit\framework\rbac\PhpManagerTest::$time ?: \time();
+}
+
 namespace yiiunit\framework\rbac;
 
 use Yii;
@@ -10,6 +30,9 @@ use Yii;
  */
 class PhpManagerTest extends ManagerTestCase
 {
+    public static $filemtime;
+    public static $time;
+
     protected function getItemFile()
     {
         return Yii::$app->getRuntimePath() . '/rbac-items.php';
@@ -32,6 +55,9 @@ class PhpManagerTest extends ManagerTestCase
         @unlink($this->getRuleFile());
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function createManager()
     {
         return new ExposedPhpManager([
@@ -43,7 +69,14 @@ class PhpManagerTest extends ManagerTestCase
 
     protected function setUp()
     {
+        static::$filemtime = null;
+        static::$time = null;
         parent::setUp();
+
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('PhpManager is not compatible with HHVM.');
+        }
+
         $this->mockApplication();
         $this->removeDataFiles();
         $this->auth = $this->createManager();
@@ -52,13 +85,16 @@ class PhpManagerTest extends ManagerTestCase
     protected function tearDown()
     {
         $this->removeDataFiles();
+        static::$filemtime = null;
+        static::$time = null;
         parent::tearDown();
     }
 
     public function testSaveLoad()
     {
-        $this->prepareData();
+        static::$time = static::$filemtime = \time();
 
+        $this->prepareData();
         $items = $this->auth->items;
         $children = $this->auth->children;
         $assignments = $this->auth->assignments;
@@ -73,4 +109,4 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertEquals($assignments, $this->auth->assignments);
         $this->assertEquals($rules, $this->auth->rules);
     }
-} 
+}

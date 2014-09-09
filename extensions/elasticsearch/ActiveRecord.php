@@ -7,6 +7,7 @@
 
 namespace yii\elasticsearch;
 
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
@@ -55,6 +56,7 @@ class ActiveRecord extends BaseActiveRecord
     private $_version;
     private $_highlight;
 
+
     /**
      * Returns the database connection used by this AR class.
      * By default, the "elasticsearch" application component is used as the database connection.
@@ -68,10 +70,11 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**

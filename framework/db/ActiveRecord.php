@@ -45,7 +45,7 @@ use yii\helpers\StringHelper;
  *
  * The `tableName` method only has to return the name of the database table associated with the class.
  *
- * > Tip: You may also use the [Gii code generator][guide-gii] to generate ActiveRecord classes from your
+ * > Tip: You may also use the [Gii code generator](guide:start-gii) to generate ActiveRecord classes from your
  * > database tables.
  *
  * Class instances are obtained in one of two ways:
@@ -67,7 +67,7 @@ use yii\helpers\StringHelper;
  * $orders = $user->orders;
  * ```
  *
- * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord][guide-active-record].
+ * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
  *
  * @method ActiveQuery hasMany(string $class, array $link) see BaseActiveRecord::hasMany() for more info
  * @method ActiveQuery hasOne(string $class, array $link) see BaseActiveRecord::hasOne() for more info
@@ -95,6 +95,7 @@ class ActiveRecord extends BaseActiveRecord
      * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
      */
     const OP_ALL = 0x07;
+
 
     /**
      * Loads default values from database table schema
@@ -255,10 +256,11 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -281,7 +283,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getTableSchema()
     {
-        $schema = static::getDb()->getTableSchema(static::tableName());
+        $schema = static::getDb()->getSchema()->getTableSchema(static::tableName());
         if ($schema !== null) {
             return $schema;
         } else {

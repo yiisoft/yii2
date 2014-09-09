@@ -36,13 +36,13 @@ if (Yii::$app->getSecurity()->validatePassword($password, $hash)) {
 Generating Pseudorandom data
 -----------
 
-Pseudorandom data is useful in many situations. For example when resetting a password via email you need to generate a token, save it to the database, and send it via email to end user which in turn will allow them to prove ownership of that account. It is very important that this token be unique and hard to guess, else there is a possibility and attacker can predict the token's value and reset the user's password.
+Pseudorandom data is useful in many situations. For example when resetting a password via email you need to generate a token, save it to the database, and send it via email to end user which in turn will allow them to prove ownership of that account. It is very important that this token be unique and hard to guess, else there is a possibility that attacker can predict the token's value and reset the user's password.
 
 Yii security helper makes generating pseudorandom data simple:
 
 
 ```php
-$key = Yii::$app->getSecurity()->generateRandomKey();
+$key = Yii::$app->getSecurity()->generateRandomString();
 ```
 
 Note that you need to have the `openssl` extension installed in order to generate cryptographically secure random data.
@@ -50,7 +50,7 @@ Note that you need to have the `openssl` extension installed in order to generat
 Encryption and decryption
 -------------------------
 
-Yii provides convenient helper functions that allow you to encrypt/decrypt data using a secret key. The data is passed through and encryption function so that only the person which has the secret key will be able to decrypt it.
+Yii provides convenient helper functions that allow you to encrypt/decrypt data using a secret key. The data is passed through the encryption function so that only the person which has the secret key will be able to decrypt it.
 For example, we need to store some information in our database but we need to make sure only the user which has the secret key can view it (even if the application database is compromised):
 
 

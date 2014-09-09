@@ -1,0 +1,22 @@
+{
+    "name": "yii2-authclient",
+    "version": "2.0.0",
+    "homepage": "http://www.yiiframework.com/",
+    "authors": [
+        "Paul Klimov <klimov.paul@gmail.com>"
+    ],
+    "description": "External authentication via OAuth and OpenID for the Yii framework",
+    "keywords": ["yii2", "authclient", "OAuth", "OpenID", "auth"],
+    "license": "BSD-3-Clause",
+    "main": [
+        "assets/authchoice.js",
+        "assets/authchoice.css"
+    ],
+    "ignore": [
+        "/*",
+        "!/assets"
+    ],
+    "dependencies": {
+        "jquery": ">=1.8"
+    }
+}

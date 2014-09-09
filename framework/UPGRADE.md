@@ -78,6 +78,26 @@ Upgrade from Yii 2.0 Beta
   `new \yii\caching\TagDependency(['tags' => 'TagName'])`, where `TagName` is similar to the group name that you
   previously used.
 
+* If you are using the constant `YII_PATH` in your code, you should rename it to `YII2_PATH` now.
+
+* You must explicitly configure `yii\web\Request::cookieValidationKey` with a secret key. Previously this is done automatically.
+  To do so, modify your application configuration like the following:
+
+  ```php
+  return [
+      // ...
+      'components' => [
+          'request' => [
+              'cookieValidationKey' => 'your secret key here',
+          ],
+      ],
+  ];
+  ```
+
+  > Note: If you are using the `Advanced Application Template` you should not add this configuration to `common/config`
+  or `console/config` because the console application doesn't have to deal with CSRF and uses its own request that
+  doesn't have `cookieValidationKey` property.
+
 * `yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
 new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in: 
 
@@ -103,7 +123,7 @@ new ones save the following code as `convert.php` that should be placed in the s
       foreach ($oldData['items'] as $name => $data) {
           if (isset($data['assignments'])) {
               foreach ($data['assignments'] as $userId => $assignmentData) {
-                  $assignments[$userId] = $assignmentData['roleName'];
+                  $assignments[$userId][] = $assignmentData['roleName'];
               }
               unset($data['assignments']);
           }
@@ -130,7 +150,8 @@ new ones save the following code as `convert.php` that should be placed in the s
   its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
   Default encryption and hash parameters has been upgraded. If you need to decrypt/validate data that was encrypted/hashed
   before, use the following configuration of the 'security' component:
-  ```
+
+  ```php
   return [
       'components' => [
           'security' => [
@@ -146,3 +167,49 @@ new ones save the following code as `convert.php` that should be placed in the s
       // ...
   ];
   ```
+
+* If you are using query caching, you should modify your relevant code as follows, as `beginCache()` and `endCache()` are
+  replaced by `cache()`:
+
+  ```php
+  $db->cache(function ($db) {
+
+     // ... SQL queries that need to use query caching
+
+  }, $duration, $dependency);
+  ```
+  
+* Due to significant changes to security you need to upgrade your code to use `\yii\base\Security` component instead of
+  helper. If you have any data encrypted it should be re-encrypted. In order to do so you can use old security helper
+  [as explained by @docsolver at github](https://github.com/yiisoft/yii2/issues/4461#issuecomment-50237807).
+
+* [[yii\helpers\Url::to()]] will no longer prefix base URL to relative URLs. For example, `Url::to('images/logo.png')`
+  will return `images/logo.png` directly. If you want a relative URL to be prefix with base URL, you should make use
+  of the alias `@web`. For example, `Url::to('@web/images/logo.png')` will return `/BaseUrl/images/logo.png`.
+
+* The following properties are now taking `false` instead of `null` for "don't use" case:
+  - `yii\bootstrap\NavBar::$brandLabel`.
+  - `yii\bootstrap\NavBar::$brandUrl`.
+  - `yii\bootstrap\Modal::$closeButton`.
+  - `yii\bootstrap\Modal::$toggleButton`.
+  - `yii\bootstrap\Alert::$closeButton`.
+  - `yii\widgets\LinkPager::$nextPageLabel`.
+  - `yii\widgets\LinkPager::$prevPageLabel`.
+  - `yii\widgets\LinkPager::$firstPageLabel`.
+  - `yii\widgets\LinkPager::$lastPageLabel`.
+
+* The format of the Faker fixture template is changed. For an example, please refer to the file
+  `apps/advanced/common/tests/templates/fixtures/user.php`.
+
+* The signature of all file downloading methods in `yii\web\Response` is changed, as summarized below:
+  - `sendFile($filePath, $attachmentName = null, $options = [])`
+  - `sendContentAsFile($content, $attachmentName, $options = [])`
+  - `sendStreamAsFile($handle, $attachmentName, $options = [])`
+  - `xSendFile($filePath, $attachmentName = null, $options = [])`
+
+* The signature of callbacks used in `yii\base\ArrayableTrait::fields()` is changed from `function ($field, $model) {`
+  to `function ($model, $field) {`.
+
+* `Html::radio()`, `Html::checkbox()`, `Html::radioList()`, `Html::checkboxList()` no longer generate the container
+  tag around each radio/checkbox when you specify labels for them. You should manually render such container tags,
+  or set the `item` option for `Html::radioList()`, `Html::checkboxList()` to generate the container tags.

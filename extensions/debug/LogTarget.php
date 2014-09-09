@@ -25,6 +25,7 @@ class LogTarget extends Target
     public $module;
     public $tag;
 
+
     /**
      * @param \yii\debug\Module $module
      * @param array $config
@@ -138,7 +139,7 @@ class LogTarget extends Target
         $summary = [
             'tag' => $this->tag,
             'url' => $request->getAbsoluteUrl(),
-            'ajax' => $request->getIsAjax(),
+            'ajax' => (int)$request->getIsAjax(),
             'method' => $request->getMethod(),
             'ip' => $request->getUserIP(),
             'time' => time(),

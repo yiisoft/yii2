@@ -4,6 +4,7 @@ namespace yiiunit\framework\rbac;
 
 use yii\rbac\Item;
 use yii\rbac\Permission;
+use yii\rbac\PhpManager;
 use yii\rbac\Role;
 use yiiunit\TestCase;
 
@@ -16,6 +17,11 @@ abstract class ManagerTestCase extends TestCase
      * @var \yii\rbac\ManagerInterface
      */
     protected $auth;
+
+    /**
+     * @return \yii\rbac\ManagerInterface
+     */
+    abstract protected function createManager();
 
     public function testCreateRole()
     {
@@ -241,6 +247,43 @@ abstract class ManagerTestCase extends TestCase
         $roles = $this->auth->getRolesByUser('reader A');
         $this->assertTrue(reset($roles) instanceof Role);
         $this->assertEquals($roles['reader']->name, 'reader');
+    }
 
+    public function testAssignMultipleRoles()
+    {
+        $this->prepareData();
+
+        $reader = $this->auth->getRole('reader');
+        $author = $this->auth->getRole('author');
+        $this->auth->assign($reader, 'readingAuthor');
+        $this->auth->assign($author, 'readingAuthor');
+
+        $this->auth = $this->createManager();
+
+        $roles = $this->auth->getRolesByUser('readingAuthor');
+        $roleNames = [];
+        foreach ($roles as $role) {
+            $roleNames[] = $role->name;
+        }
+
+        $this->assertContains('reader', $roleNames, 'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames));
+        $this->assertContains('author', $roleNames, 'Roles should contain author. Currently it has: ' . implode(', ', $roleNames));
+    }
+
+    public function testAssignmentsToIntegerId()
+    {
+        $this->prepareData();
+
+        $reader = $this->auth->getRole('reader');
+        $author = $this->auth->getRole('author');
+        $this->auth->assign($reader, 42);
+        $this->auth->assign($author, 1337);
+        $this->auth->assign($reader, 1337);
+
+        $this->auth = $this->createManager();
+
+        $this->assertEquals(0, count($this->auth->getAssignments(0)));
+        $this->assertEquals(1, count($this->auth->getAssignments(42)));
+        $this->assertEquals(2, count($this->auth->getAssignments(1337)));
     }
 }
