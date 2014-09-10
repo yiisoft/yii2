@@ -49,8 +49,9 @@ use yii\helpers\Inflector;
 class DetailView extends Widget
 {
     /**
-     * @var array|object the data model whose details are to be displayed. This can be either a [[Model]] instance
-     * or an associative array.
+     * @var array|object the data model whose details are to be displayed. This can be a [[Model]] instance,
+     * an associative array, an object that implements [[Arrayable]] interface or simply an object with defined
+     * public accessible non-static properties.
      */
     public $model;
     /**
