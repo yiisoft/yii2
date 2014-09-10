@@ -350,8 +350,8 @@ class Generator extends \yii\gii\Generator
             $className0 = $this->generateClassName($table0);
             $className1 = $this->generateClassName($table1);
 
-            if (( $prefixlen = strlen( $db->tablePrefix ) ) > 0) {
-                $tableNameTpl = '{{%' . substr( $table->name, $prefixlen ) . '}}';
+            if (( $prefixlen = mb_strlen( $db->tablePrefix ) ) > 0) {
+                $tableNameTpl = '{{%' . mb_substr( $table->name, $prefixlen ) . '}}';
             } else {
                 $tableNameTpl = $table->name;
             }
