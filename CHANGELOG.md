@@ -91,6 +91,7 @@ Yii Framework 2 Change Log
 - Bug #4880: Return value of yii\web\Request::getPrefferedLanguage() was a normalized value instead of a valid language value from the input array (cebe)
 - Bug #4920: `yii\filters\auth\CompositeAuth` should not trigger error as long as one of the methods succeeds (qiangxue)
 - Bug #4954: MSSQL column comments are not retrieved correctly (SerjRamone)
+- Bug #4970: `joinWith()` called by a relation was ignored by `yii\db\ActiveQuery` (stepanselyuk)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
