@@ -162,30 +162,8 @@ In the above `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value 
 argument. In the second column definition `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
 column is, again, passed as the first argument while 'Y-m-d' is used as the second argument value.
 
-Here's the bundled formatters list:
+For a list of available formatters see the [section about Data Formatting](output-formatter.md).
 
-- [[\yii\base\Formatter::asRaw()|raw]] - the value is outputted as is.
-- [[\yii\base\Formatter::asText()|text]] - the value is HTML-encoded. This format is used by default.
-- [[\yii\base\Formatter::asNtext()|ntext]] - the value is formatted as an HTML-encoded plain text with newlines converted
-  into line breaks.
-- [[\yii\base\Formatter::asParagraphs()|paragraphs]] - the value is formatted as HTML-encoded text paragraphs wrapped
-  into `<p>` tags.
-- [[\yii\base\Formatter::asHtml()|html]] - the value is purified using [[HtmlPurifier]] to avoid XSS attacks. You can
-  pass additional options such as `['html', ['Attr.AllowedFrameTargets' => ['_blank']]]`.
-- [[\yii\base\Formatter::asEmail()|email]] - the value is formatted as a mailto link.
-- [[\yii\base\Formatter::asImage()|image]] - the value is formatted as an image tag.
-- [[\yii\base\Formatter::asUrl()|url]] - the value is formatted as a hyperlink.
-- [[\yii\base\Formatter::asBoolean()|boolean]] - the value is formatted as a boolean. You can set what's rendered for
-  true and false values by calling `Yii::$app->formatter->booleanFormat = ['No', 'Yes'];` before outputting GridView.
-- [[\yii\base\Formatter::asDate()|date]] - the value is formatted as date.
-- [[\yii\base\Formatter::asTime()|time]] - the value is formatted as time.
-- [[\yii\base\Formatter::asDatetime()|datetime]] - the value is formatted as datetime.
-- [[\yii\base\Formatter::asInteger()|integer]] -  the value is formatted as an integer.
-- [[\yii\base\Formatter::asDouble()|double]] - the value is formatted as a double number.
-- [[\yii\base\Formatter::asNumber()|number]] - the value is formatted as a number with decimal and thousand separators.
-- [[\yii\base\Formatter::asSize()|size]] - the value that is a number of bytes is formatted as a human readable size.
-- [[\yii\base\Formatter::asRelativeTime()|relativeTime]] - the value is formatted as the time interval between a date
-  and now in human readable form.
 
 #### Action column
 

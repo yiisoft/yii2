@@ -536,7 +536,7 @@ class Formatter extends Component
     }
 
     /**
-     * Normalizes the given datetime value as one that can be taken by various date/time formatting methods.
+     * Normalizes the given datetime value as a UNIX timestamp that can be taken by various date/time formatting methods.
      *
      * @param mixed $value the datetime value to be normalized.
      * @return float the normalized datetime value (int64)
