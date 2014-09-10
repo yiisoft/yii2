@@ -31,7 +31,7 @@ use yii\helpers\Html;
  * The Formatter class is designed to format values according to a [[locale]]. For this feature to work
  * the [PHP intl extension](http://php.net/manual/en/book.intl.php) has to be installed.
  * Most of the methods however work also if the PHP intl extension is not installed by providing
- * a fallback implementation. Without intl month and day names are in english only.
+ * a fallback implementation. Without intl month and day names are in English only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Enrica Ruedin <e.ruedin@guggach.com>
@@ -278,7 +278,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return str_replace('<p></p>', '', '<p>' . preg_replace('/[\r\n]{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>');
+        return str_replace('<p></p>', '', '<p>' . preg_replace('/\R{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>');
     }
 
     /**
