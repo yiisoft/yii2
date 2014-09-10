@@ -213,3 +213,34 @@ new ones save the following code as `convert.php` that should be placed in the s
 * `Html::radio()`, `Html::checkbox()`, `Html::radioList()`, `Html::checkboxList()` no longer generate the container
   tag around each radio/checkbox when you specify labels for them. You should manually render such container tags,
   or set the `item` option for `Html::radioList()`, `Html::checkboxList()` to generate the container tags.
+
+* The formatter class has been refactored to have only one class regardless whether PHP intl extension is installed or not.
+  Functionality of `yii\base\Formatter` has been merged into `yii\i18n\Formatter` and `yii\base\Formatter` has been
+  removed so you have to replace all usage of `yii\base\Formatter` with `yii\i18n\Formatter` in your code.
+  Also the API of the Formatter class has changed in many ways.
+  The signature of the following Methods has changed:
+
+  - `asDate`
+  - `asTime`
+  - `asDateTime`
+  - `asSize` has been split up into `asSize` and `asShortSize`
+  - `asCurrency`
+  - `asDecimal`
+  - `asPercent`
+  - `asScientific`
+
+  The following methods have been removed, this also means that the corresponding format which may be used by a
+  GridView or DetailView is not available anymore:
+
+  - `asNumber`
+  - `asDouble`
+
+  Also due to these changes some formatting defaults have changes so you have to check all your GridView and DetailView
+  configuration and make sure the formatting is displayed correctly.
+
+  The configuration for `asSize()` has changed. It now uses the configuration for the number formatting from intl
+  and only the base is configured using `$sizeFormatBase`.
+
+  The specification of the date and time formats is now using the ICU pattern format even if PHP intl extension is not installed.
+  You can prefix a date format with `php:` to use the old format of the PHP `date()`-function.
+
