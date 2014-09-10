@@ -601,7 +601,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $model->char_col = '1337';
         $model->char_col2 = 'test';
         $model->char_col3 = 'test123';
-        $model->float_col = 1337.42;
+        $model->float_col = 3.742;
         $model->float_col2 = 42.1337;
         $model->bool_col = true;
         $model->bool_col2 = false;
