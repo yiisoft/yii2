@@ -4,6 +4,7 @@ Yii Framework 2 gii extension Change Log
 2.0.0-rc under development
 --------------------------
 
+- Bug #4971: Fixed hardcoded table names in 'viaTable' expression in model generator. (stepanselyuk)
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)
 - Bug #3265: Fixed incorrect controller class name validation (suralc)
