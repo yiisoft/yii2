@@ -482,6 +482,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $relations[$fullName] = $relation = $primaryModel->getRelation($name);
                 if ($callback !== null) {
                     call_user_func($callback, $relation);
+                    if(is_array($relation->joinWith)) {
+                        $relation->buildJoinWith();
+                    }
                 }
                 if (!empty($relation->joinWith)) {
                     $relation->buildJoinWith();
