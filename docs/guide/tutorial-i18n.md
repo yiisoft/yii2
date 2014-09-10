@@ -475,7 +475,7 @@ put there file for russian language as follows `views/site/ru-RU/index.php`.
 > **Note**: If language is specified as `en-US` and there are no corresponding views, Yii will try views under `en`
 > before using original ones.
 
-i18n formatter
+i18n Formatter
 --------------
 
-See the [Date Formatter section](output-formatter.md) for details.
+See the [data formatter section](output-formatter.md) for details.
