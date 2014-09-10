@@ -161,15 +161,13 @@ You may configure [[yii\base\Application::controllerMap|controller map]] in the
 ```php
 [
     'controllerMap' => [
-        [
-            // declares "account" controller using a class name
-            'account' => 'app\controllers\UserController',
+        // declares "account" controller using a class name
+        'account' => 'app\controllers\UserController',
 
-            // declares "article" controller using a configuration array
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        // declares "article" controller using a configuration array
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]
