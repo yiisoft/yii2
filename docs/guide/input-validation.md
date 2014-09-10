@@ -97,6 +97,7 @@ When the `validate()` method is called, it does the following steps to perform v
 2. Determine which rules should be applied by checking the current [[yii\base\Model::scenario|scenario]]
    against the rules declared in [[yii\base\Model::rules()]]. These rules are the active rules.
 3. Use each active rule to validate each active attribute which is associated with the rule.
+   The validation rules are evaluated in the order they are listed.
 
 According to the above validation steps, an attribute will be validated if and only if it is
 an active attribute declared in `scenarios()` and is associated with one or multiple active rules

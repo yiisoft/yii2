@@ -244,3 +244,18 @@ new ones save the following code as `convert.php` that should be placed in the s
   The specification of the date and time formats is now using the ICU pattern format even if PHP intl extension is not installed.
   You can prefix a date format with `php:` to use the old format of the PHP `date()`-function.
 
+* `beforeValidate()`, `beforeValidateAll()`, `afterValidate()`, `afterValidateAll()`, `ajaxBeforeSend()` and `ajaxComplete()`
+  are removed from `ActiveForm`. The same functionality is now achieved via JavaScript event mechanism. For example,
+  if you want to do something before performing validation on the client side, you can write the following
+  JavaScript code:
+
+  ```js
+  $('#myform').on('beforeValidate', function (event, messages, deferreds, attribute) {
+      if (attribute === undefined) {
+          // the event is triggered when submitting the form
+      } elseif (attribute.id === 'something') {
+          // the event is triggered before validating "something"
+      }
+  });
+  ```
+

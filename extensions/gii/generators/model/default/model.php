@@ -20,7 +20,7 @@ namespace <?= $generator->ns ?>;
 use Yii;
 
 /**
- * This is the model class for table "<?= $tableName ?>".
+ * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
  *
 <?php foreach ($tableSchema->columns as $column): ?>
  * @property <?= "{$column->phpType} \${$column->name}\n" ?>
