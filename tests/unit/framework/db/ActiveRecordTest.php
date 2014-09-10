@@ -410,6 +410,24 @@ class ActiveRecordTest extends DatabaseTestCase
                     ->orderBy('items.id');
             },
         ])->orderBy('order.id')->one();
+
+        // join with sub-relation called inside Closure
+        $orders = Order::find()->joinWith([
+                'items' => function ($q) {
+                    $q->orderBy('item.id');
+                    $q->joinWith([
+                            'category'=> function ($q) {
+                                $q->where('category.id = 2');
+                            }
+                        ]);
+                },
+            ])->orderBy('order.id')->all();
+        $this->assertEquals(1, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, count($orders[0]->items));
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
     }
 
     public function testJoinWithAndScope()
