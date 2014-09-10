@@ -131,7 +131,7 @@ class User extends Component
      * @var string the session variable name used to store the value of absolute expiration timestamp of the authenticated state.
      * This is used when [[absoluteAuthTimeout]] is set.
      */
-    public $absoluteAuthTimeoutParam = '__absolute_expire';
+    public $absoluteAuthTimeoutParam = '__absoluteExpire';
     /**
      * @var string the session variable name used to store the value of [[returnUrl]].
      */
