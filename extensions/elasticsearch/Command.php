@@ -8,6 +8,7 @@
 namespace yii\elasticsearch;
 
 use yii\base\Component;
+use yii\base\InvalidParamException;
 use yii\helpers\Json;
 
 /**
@@ -66,6 +67,30 @@ class Command extends Component
         ];
 
         return $this->db->get($url, array_merge($this->options, $options), $query);
+    }
+
+    /**
+     * @param array $options
+     * @return mixed
+     */
+    public function deleteByQuery($options = [])
+    {
+        $query = $this->queryParts;
+        if (empty($query)) {
+            throw new InvalidParamException('Cannot delete by query without a query specified');
+        }
+        if (is_array($query)) {
+            unset($query['size']);
+            $query = Json::encode($query);
+        }
+
+        $url = [
+            $this->index !== null ? $this->index : '_all',
+            $this->type !== null ? $this->type : '_all',
+            '_query'
+        ];
+
+        return $this->db->delete($url, array_merge($this->options, $options), $query);
     }
 
     /**
