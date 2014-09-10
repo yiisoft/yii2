@@ -145,6 +145,18 @@ class FormatterTest extends TestCase
         $this->assertSame("<p>123</p>\n<p>456</p>", $this->formatter->asParagraphs($value));
         $value = "123\n\n\n456";
         $this->assertSame("<p>123</p>\n<p>456</p>", $this->formatter->asParagraphs($value));
+        $value = "123\r\n456";
+        $this->assertSame("<p>123\r\n456</p>", $this->formatter->asParagraphs($value));
+        $value = "123\r\n\r\n456";
+        $this->assertSame("<p>123</p>\n<p>456</p>", $this->formatter->asParagraphs($value));
+        $value = "123\r\n\r\n\r\n456";
+        $this->assertSame("<p>123</p>\n<p>456</p>", $this->formatter->asParagraphs($value));
+        $value = "123\r456";
+        $this->assertSame("<p>123\r456</p>", $this->formatter->asParagraphs($value));
+        $value = "123\r\r456";
+        $this->assertSame("<p>123</p>\n<p>456</p>", $this->formatter->asParagraphs($value));
+        $value = "123\r\r\r456";
+        $this->assertSame("<p>123</p>\n<p>456</p>", $this->formatter->asParagraphs($value));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asParagraphs(null));
