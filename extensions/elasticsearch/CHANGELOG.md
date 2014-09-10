@@ -10,6 +10,7 @@ Yii Framework 2 elasticsearch extension Change Log
 - Enh #3527: Added `highlight` property to Query and ActiveRecord. (Borales)
 - Enh #4048: Added `init` event to `ActiveQuery` classes (qiangxue)
 - Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
+- Enh #4451: Added `addAggs()`-method Query. (tadaszelvys)
 - Enh: Make error messages more readable in HTML output (cebe)
 - Chg: asArray in ActiveQuery is now equal to using the normal Query. This means, that the output structure has changed and `with` is supported anymore. (cebe)
 - Chg: Deletion of a record is now also considered successful if the record did not exist. (cebe)
