@@ -9,7 +9,7 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Arrayable;
-use yii\base\Formatter;
+use yii\i18n\Formatter;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;

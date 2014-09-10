@@ -9,7 +9,7 @@ namespace yii\grid;
 
 use Yii;
 use Closure;
-use yii\base\Formatter;
+use yii\i18n\Formatter;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use yii\helpers\Html;

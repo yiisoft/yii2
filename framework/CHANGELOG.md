@@ -217,6 +217,9 @@ Yii Framework 2 Change Log
 - Enh: ListView now uses the widget ID in the base tag, consistent to gridview (cebe)
 - Enh: Added `yii\web\Response::enableCsrfCookie` to support storing CSRF tokens in session (qiangxue)
 - Chg #2287: Split `yii\db\ColumnSchema::typecast()` into two methods `phpTypecast()` and `dbTypecast()` to allow specifying PDO type explicitly (cebe)
+- Chg #2359: Refactored formatter class. One class with or without intl extension and PHP format pattern as standard (Erik_r, cebe)
+   - `yii\base\Formatter` functionality has been merged into `yii\i18n\Formatter`
+   - removed the `yii\base\Formatter` class
 - Chg #2380: `yii\widgets\ActiveForm` will register validation js even if there are not fields inside (qiangxue)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
