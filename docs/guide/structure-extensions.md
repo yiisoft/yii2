@@ -308,7 +308,7 @@ content to end users, you should try to [internationalize and localize](tutorial
 - If the extension displays messages intended for end users, the messages should be wrapped into `Yii::t()`
   so that they can be translated. Messages meant for developers (such as internal exception messages) do not need
   to be translated.
-- If the extension displays numbers, dates, etc., they should be formatted using [[yii\base\Formatter]] with
+- If the extension displays numbers, dates, etc., they should be formatted using [[yii\i18n\Formatter]] with
   appropriate formatting rules.
 
 For more details, please refer to the [Internationalization](tutorial-i18n.md) section.

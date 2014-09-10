@@ -141,7 +141,7 @@ Data column is for displaying and sorting data. It is default column type so spe
 using it.
 
 The main setting of the data column is its format. It could be specified via `format` attribute. Its values are
-corresponding to methods in `format` application component that is [[\yii\base\Formatter|Formatter]] by default:
+corresponding to methods in `format` application component that is [[\yii\i18n\Formatter|Formatter]] by default:
 
 ```php
 <?= GridView::widget([
@@ -158,8 +158,8 @@ corresponding to methods in `format` application component that is [[\yii\base\F
 ]); ?>
 ```
 
-In the above `text` corresponds to [[\yii\base\Formatter::asText()]]. The value of the column is passed as the first
-argument. In the second column definition `date` corresponds to [[\yii\base\Formatter::asDate()]]. The value of the
+In the above `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
+argument. In the second column definition `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
 column is, again, passed as the first argument while 'Y-m-d' is used as the second argument value.
 
 Here's the bundled formatters list:

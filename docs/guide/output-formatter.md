@@ -1,16 +1,46 @@
-Formatter
-=========
+Data Formatter
+==============
+
+For formatting of outputs Yii provides a formatter class to make date more readable for users.
+[[yii\i18n\Formatter]] is a helper class that is registered as an [application component](concept-components.md) name `formatter` by default.
+
+It provides a set of methods for data formatting purpose such as date/time values, numbers and other commonly used formats in a localized way.
+The formatter can be used in two different ways.
+
+1. Using the formatting methods(all formatter methods prefixed with `as`) directly:
+
+   ```php
+   echo Yii::$app->formatter->asDate('2014-01-01', 'long'); // output: January 1, 2014
+   echo Yii::$app->formatter->asPercent(0.125, 2); // output: 12.50%
+   echo Yii::$app->formatter->asEmail('cebe@example.com'); // output: <a href="mailto:cebe@example.com">cebe@example.com</a>
+   echo Yii::$app->formatter->asBoolean(true); // output: Yes
+   ```
+
+2. Using the [[yii\i18n\Formatter::format()|format()]] method using the format name.
+   This method is used by classes like GridView and DetailView where you can specify the data format of a column in the
+   widget config.
+
+   ```php
+   echo Yii::$app->formatter->format('2014-01-01', 'date'); // output: January 1, 2014
+   // you can also use an array to specify parameters for the format method:
+   // `2` is the value for the $decimals parameter of the asPercent()-method.
+   echo Yii::$app->formatter->format(0.125, ['percent', 2]); // output: 12.50%
+   ```
+
+All output of the formatter is localized when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
+You can configure the [[yii\i18n\Formatter::locale|locale]] property of the formatter for this. If not configured, the
+application [[language]] is used as the locale. See the [Section on internationaization](tutorial-i18n.md) for more details.
+
+ * > Note that formatting may differ between different versions of the ICU library compiled with PHP.
+ * > You
+ *
+
 
 Formatter is a helper component to format machine readable data of type date, time, different number types 
 in user readable formats. Most of this types are in countries differently formatted (eg. date: US -> '10/31/2014,
 or DE -> '31.10.2014' or ISO -> '2014-10-31'). Same with decimals and currency values (eg. currency: US-> '$ 13,250.22' or
-de-DE -> '13.250,22 €' or de-CH ->'CHF 13'250.22')
+de-DE -> '13.250,22 ï¿½' or de-CH ->'CHF 13'250.22')
 
-Formatter supports unformatting also. A localized formatted date or number can be unformatted into a machine readable
-type (eg. '13.250,22 €' -> '13250.22')
-
-This formatter version is merged from old `yii\base\formatter` and `yii\i18n\formatter` which supports localized formatting
-and "english only" formatting.
 
 Formatter uses the php extension "intl" if the extension is loaded. "Intl" uses [ICU standard](http://site.icu-project.org/) driven
 by IBM. "intl" internally knows all formats of all countries and it translates month or day names into the corrcect language. 

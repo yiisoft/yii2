@@ -950,7 +950,7 @@ class Formatter extends Component
             return $f->format($value);
         } else {
             if ($decimals !== null) {
-                return sprintf("%.{$decimals}E", $value); // TODO
+                return sprintf("%.{$decimals}E", $value);
             } else {
                 return sprintf("%.E", $value);
             }
