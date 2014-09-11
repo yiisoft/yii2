@@ -14,7 +14,7 @@ Yii обеспечивает функционал контейнера внед�
 
 * Внедрение зависимости через конструктор.
 * Внедрение зависимости через сеттер и свойство.
-* Внедрение зависимости через callback.
+* Внедрение зависимости через PHP callback.
 
 
 ### Внедрение зависимости через конструктор <a name="constructor-injection"></a>
@@ -41,9 +41,9 @@ $foo = new Foo($bar);
 ### Внедрение зависимости через сеттер и свойство <a name="setter-and-property-injection"></a>
 
 Внедрение зависимости через сеттер и свойство поддерживается через [конфигурации](concept-configurations.md).
-When registering a dependency or when creating a new object, you can provide a configuration which
-will be used by the container to inject the dependencies through the corresponding setters or properties.
-For example,
+При регистрации зависимости или при создании нового объекта, вы можете предоставить конфигурацию, которая
+будет использована контейнером для внедрения зависимостей через соответствующие сеттеры или свойства.
+Например,
 
 ```php
 use yii\base\Object;
@@ -72,11 +72,10 @@ $container->get('Foo', [], [
 ```
 
 
-### PHP Callable Injection <a name="php-callable-injection"></a>
+### Внедрение зависимости через PHP callback <a name="php-callable-injection"></a>
 
-In this case, the container will use a registered PHP callable to build new instances of a class.
-The callable is responsible to resolve the dependencies and inject them appropriately to the newly
-created objects. For example,
+В данном случае, контейнер будет использовать зарегистрированный PHP callback для создания новых экземпляров класса.
+Callback отвечает за разрешения зависимостей и внедряет их в соответствии с вновь создаваемыми объектами. Например,
 
 ```php
 $container->set('Foo', function () {
@@ -87,30 +86,29 @@ $foo = $container->get('Foo');
 ```
 
 
-Registering Dependencies <a name="registering-dependencies"></a>
+Регистрация зависимостей <a name="registering-dependencies"></a>
 ------------------------
 
-You can use [[yii\di\Container::set()]] to register dependencies. The registration requires a dependency name
-as well as a dependency definition. A dependency name can be a class name, an interface name, or an alias name;
-and a dependency definition can be a class name, a configuration array, or a PHP callable.
+Вы можете использовать [[yii\di\Container::set()]] для регистрации зависимостей. При регистрации требуется имя зависимости, а так же определение зависимости. 
+Именем звисимости может быть имя класса, интерфейса или алиас, так же определением зависимости может быть имя класса, конфигурационным массивом, или PHP calback'ом.
 
 ```php
 $container = new \yii\di\Container;
 
-// register a class name as is. This can be skipped.
+// регистрация имени класса, как есть. это может быть пропущено.
 $container->set('yii\db\Connection');
 
-// register an interface
-// When a class depends on the interface, the corresponding class
-// will be instantiated as the dependent object
+// регистраци интерфейса
+// Когда класс зависит от интерфейса, соответствующий класс
+// будет использован в качестве зависимости объекта
 $container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
 
-// register an alias name. You can use $container->get('foo')
-// to create an instance of Connection
+// регистрация алиаса. Вы можете использовать $container->get('foo')
+// для создания экземпляра Connection
 $container->set('foo', 'yii\db\Connection');
 
-// register a class with configuration. The configuration
-// will be applied when the class is instantiated by get()
+// Регистрация класса с конфигурацией. Конфигурация
+// будет применена при создании экземпляра класса через get()
 $container->set('yii\db\Connection', [
     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
     'username' => 'root',
@@ -118,8 +116,8 @@ $container->set('yii\db\Connection', [
     'charset' => 'utf8',
 ]);
 
-// register an alias name with class configuration
-// In this case, a "class" element is required to specify the class
+// регистрация алиаса с конфигурацией класса
+// В данном случае, параметр "class" требуется для указания класса
 $container->set('db', [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
@@ -128,19 +126,18 @@ $container->set('db', [
     'charset' => 'utf8',
 ]);
 
-// register a PHP callable
-// The callable will be executed each time when $container->get('db') is called
+// регистрация PHP callback'a
+// Callback будет выполняться каждый раз при вызове $container->get('db')
 $container->set('db', function ($container, $params, $config) {
     return new \yii\db\Connection($config);
 });
 
-// register a component instance
-// $container->get('pageCache') will return the same instance each time it is called
+// регистрация экземпляра компонента
+// $container->get('pageCache') вернёт тот же экземпляр при каждом вызове
 $container->set('pageCache', new FileCache);
 ```
 
-> Tip: If a dependency name is the same as the corresponding dependency definition, you do not
-  need to register it with the DI container.
+> Подсказка: Если имя зависимости такое же, как и определение соответствующей зависимости, то вы не нуждаетесь в её повторной регистрации в контейнер внедрения зависимостей.
 
 A dependency registered via `set()` will generate an instance each time the dependency is needed.
 You can use [[yii\di\Container::setSingleton()]] to register a dependency that only generates
