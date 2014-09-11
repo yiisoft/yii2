@@ -256,6 +256,8 @@ new ones save the following code as `convert.php` that should be placed in the s
       } elseif (attribute.id === 'something') {
           // the event is triggered before validating "something"
       }
+      // if you want to cancel the validation, do the following:
+      // event.isValid = false;
   });
   ```
 
