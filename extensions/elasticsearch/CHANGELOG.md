@@ -13,6 +13,7 @@ Yii Framework 2 elasticsearch extension Change Log
 - Enh: Make error messages more readable in HTML output (cebe)
 - Enh: Added support for query stats (cebe)
 - Enh: Added support for query suggesters (cebe, tvdavid)
+- Enh: Added support for delete by query (cebe, tvdavid)
 - Chg #4451: Removed support for facets and replaced them with aggregations (cebe, tadaszelvys)
 - Chg: asArray in ActiveQuery is now equal to using the normal Query. This means, that the output structure has changed and `with` is supported anymore. (cebe)
 - Chg: Deletion of a record is now also considered successful if the record did not exist. (cebe)
