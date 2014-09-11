@@ -31,9 +31,9 @@ jQuery(function($) {
             $container.find('a').on('click', function(e) {
                 e.preventDefault();
 
-                var authChoicePopup = null;
+                var authChoicePopup = $container.data('authChoicePopup');
 
-                if (authChoicePopup = $container.data('authChoicePopup')) {
+                if (authChoicePopup) {
                     authChoicePopup.close();
                 }
 
@@ -49,12 +49,14 @@ jQuery(function($) {
                     popupOptions.height = localPopupHeight;
                 }
 
-                popupOptions.left = (window.screen.width - options.popup.width) / 2;
-                popupOptions.top = (window.screen.height - options.popup.height) / 2;
+                popupOptions.left = (window.screen.width - popupOptions.width) / 2;
+                popupOptions.top = (window.screen.height - popupOptions.height) / 2;
 
                 var popupFeatureParts = [];
                 for (var propName in popupOptions) {
-                    popupFeatureParts.push(propName + '=' + popupOptions[propName]);
+		    if (popupOptions.hasOwnProperty(propName)) {
+		        popupFeatureParts.push(propName + '=' + popupOptions[propName]);
+		    }
                 }
                 var popupFeature = popupFeatureParts.join(',');
 
