@@ -1,5 +1,5 @@
-Полное руководство по 2.0
-=========================
+Полное руководство по Yii 2.0
+=============================
 
 Данное руководство выпущено в соответствии с [положениями о документации Yii](http://www.yiiframework.com/doc/terms/).
 
@@ -24,7 +24,7 @@ All Rights Reserved.
 * [Работа с формами](start-forms.md)
 * [Работа с базами данных](start-databases.md)
 * [Генерация кода при помощи Gii](start-gii.md)
-* [Что дальше?](start-looking-head.md)
+* [Что дальше?](start-looking-ahead.md)
 
 
 Структура приложения
@@ -76,7 +76,7 @@ All Rights Reserved.
 
 * [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
 * [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
-* [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и опредение связей.
+* [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
 * [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
@@ -133,7 +133,7 @@ All Rights Reserved.
 * [Роутинг](rest-routing.md)
 * [Форматирование ответа](rest-response-formatting.md)
 * [Аутентификация](rest-authentication.md)
-* [Ограничение количества запросов](rest-rate-limiting.md)
+* [Ограничение частоты запросов](rest-rate-limiting.md)
 * [Версионирование](rest-versioning.md)
 * [Обработка ошибок](rest-error-handling.md)
 

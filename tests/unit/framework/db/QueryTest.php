@@ -24,7 +24,11 @@ class QueryTest extends DatabaseTestCase
         $this->assertEquals(['id', 'name'], $query->select);
         $this->assertTrue($query->distinct);
         $this->assertEquals('something', $query->selectOption);
-        
+
+        $query = new Query();
+        $query->addSelect('email');
+        $this->assertEquals(['email'], $query->select);
+
         $query = new Query();
         $query->select('id, name');
         $query->addSelect('email');

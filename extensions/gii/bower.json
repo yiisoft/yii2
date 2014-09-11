@@ -1,0 +1,27 @@
+{
+    "name": "yii2-gii",
+    "version": "2.0.0",
+    "homepage": "http://www.yiiframework.com/",
+    "authors": [
+        "Qiang Xue <qiang.xue@gmail.com>"
+    ],
+    "description": "The Gii extension for the Yii framework",
+    "keywords": [
+        "yii2",
+        "gii",
+        "code generator"
+    ],
+    "license": "BSD-3-Clause",
+    "main": [
+        "assets/gii.js"
+    ],
+    "ignore": [
+        "/*",
+        "!/assets"
+    ],
+    "dependencies": {
+        "yii2": "master",
+        "bootstrap": ">=3.0.0",
+        "typeahead.js": ">=0.10.0"
+    }
+}

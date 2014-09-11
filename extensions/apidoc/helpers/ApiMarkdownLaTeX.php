@@ -27,7 +27,8 @@ class ApiMarkdownLaTeX extends GithubMarkdown
      */
     public static $renderer;
 
-    protected $context;
+    protected $renderingContext;
+
 
     protected function inlineMarkers()
     {
@@ -62,7 +63,7 @@ class ApiMarkdownLaTeX extends GithubMarkdown
         if (is_string($context)) {
             $context = static::$renderer->apiContext->getType($context);
         }
-        Markdown::$flavors['api-latex']->context = $context;
+        Markdown::$flavors['api-latex']->renderingContext = $context;
 
         if ($paragraph) {
             return Markdown::processParagraph($content, 'api-latex');

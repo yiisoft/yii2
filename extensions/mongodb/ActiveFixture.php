@@ -39,6 +39,7 @@ class ActiveFixture extends BaseActiveFixture
      */
     public $collectionName;
 
+
     /**
      * @inheritdoc
      */
@@ -68,7 +69,7 @@ class ActiveFixture extends BaseActiveFixture
     /**
      * Unloads the fixture.
      *
-     * The default implementation will clean up the colection by calling [[resetCollection()]].
+     * The default implementation will clean up the collection by calling [[resetCollection()]].
      */
     public function unload()
     {
@@ -86,7 +87,7 @@ class ActiveFixture extends BaseActiveFixture
         if ($this->collectionName) {
             return $this->collectionName;
         } else {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
 
             return $modelClass::collectionName();

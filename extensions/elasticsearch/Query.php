@@ -135,12 +135,29 @@ class Query extends Component implements QueryInterface
     /**
      * @var array The highlight part of this search query. This is an array that allows to highlight search results
      * on one or more fields.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-request-highlighting.html
      */
     public $highlight;
+    /**
+     * @var array List of aggregations to add to this query.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-aggregations.html
+     */
+    public $aggregations = [];
+    /**
+     * @var array the 'stats' part of the query. An array of groups to maintain a statistics aggregation for.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#stats-groups
+     */
+    public $stats = [];
+    /**
+     * @var array list of suggesters to add to this query.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
+     */
+    public $suggest = [];
 
-    public $facets = [];
 
-
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -245,23 +262,21 @@ class Query extends Component implements QueryInterface
         return $result;
     }
 
-    // TODO add query stats http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#stats-groups
-
     // TODO add scroll/scan http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-search-type.html#scan
 
     /**
      * Executes the query and deletes all matching documents.
      *
-     * This will not run facet queries.
+     * Everything except query and filter will be ignored.
      *
      * @param Connection $db the database connection used to execute the query.
      * If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return array the query results. If the query results in nothing, an empty array will be returned.
+     * @param array $options The options given with this query.
+     * @return array the query results.
      */
-    public function delete($db = null)
+    public function delete($db = null, $options = [])
     {
-        // TODO implement http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
-        throw new NotSupportedException('Delete by query is not implemented yet.');
+        return $this->createCommand($db)->deleteByQuery($options);
     }
 
     /**
@@ -322,6 +337,7 @@ class Query extends Component implements QueryInterface
         // TODO consider sending to _count api instead of _search for performance
         // only when no facety are registerted.
         // http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html
+        // http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_search_requests.html
 
         $options = [];
         $options['search_type'] = 'count';
@@ -341,136 +357,71 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * Adds a facet search to this query.
-     * @param string $name the name of this facet
-     * @param string $type the facet type. e.g. `terms`, `range`, `histogram`...
-     * @param string|array $options the configuration options for this facet. Can be an array or a json string.
+     * Adds a 'stats' part to the query.
+     * @param array $groups an array of groups to maintain a statistics aggregation for.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#stats-groups
      */
-    public function addFacet($name, $type, $options)
+    public function stats($groups)
     {
-        $this->facets[$name] = [$type => $options];
+        $this->stats = $groups;
         return $this;
     }
 
     /**
-     * The `terms facet` allow to specify field facets that return the N most frequent terms.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+     * Sets a highlight parameters to retrieve from the documents.
+     * @param array $highlight array of parameters to highlight results.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
      */
-    public function addTermFacet($name, $options)
+    public function highlight($highlight)
     {
-        return $this->addFacet($name, 'terms', $options);
+        $this->highlight = $highlight;
+        return $this;
     }
 
     /**
-     * Range facet allows to specify a set of ranges and get both the number of docs (count) that fall
-     * within each range, and aggregated data either based on the field, or using another field.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+     * Adds an aggregation to this query.
+     * @param string $name the name of the aggregation
+     * @param string $type the aggregation type. e.g. `terms`, `range`, `histogram`...
+     * @param string|array $options the configuration options for this aggregation. Can be an array or a json string.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-range-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-aggregations.html
      */
-    public function addRangeFacet($name, $options)
+    public function addAggregation($name, $type, $options)
     {
-        return $this->addFacet($name, 'range', $options);
+        $this->aggregations[$name] = [$type => $options];
+        return $this;
     }
 
     /**
-     * The histogram facet works with numeric data by building a histogram across intervals of the field values.
-     * Each value is "rounded" into an interval (or placed in a bucket), and statistics are provided per
-     * interval/bucket (count and total).
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+     * Adds an aggregation to this query.
+     *
+     * This is an alias for [[addAggregation]].
+     *
+     * @param string $name the name of the aggregation
+     * @param string $type the aggregation type. e.g. `terms`, `range`, `histogram`...
+     * @param string|array $options the configuration options for this aggregation. Can be an array or a json string.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-histogram-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-aggregations.html
      */
-    public function addHistogramFacet($name, $options)
+    public function addAgg($name, $type, $options)
     {
-        return $this->addFacet($name, 'histogram', $options);
+        return $this->addAggregation($name, $type, $options);
     }
 
     /**
-     * A specific histogram facet that can work with date field types enhancing it over the regular histogram facet.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+     * Adds a suggester to this query.
+     * @param string $name the name of the suggester
+     * @param string|array $definition the configuration options for this suggester. Can be an array or a json string.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-date-histogram-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
      */
-    public function addDateHistogramFacet($name, $options)
+    public function addSuggester($name, $definition)
     {
-        return $this->addFacet($name, 'date_histogram', $options);
+        $this->suggest[$name] = $definition;
+        return $this;
     }
-
-    /**
-     * A filter facet (not to be confused with a facet filter) allows you to return a count of the hits matching the filter.
-     * The filter itself can be expressed using the Query DSL.
-     * @param string $name the name of this facet
-     * @param string $filter the query in Query DSL
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-filter-facet.html
-     */
-    public function addFilterFacet($name, $filter)
-    {
-        return $this->addFacet($name, 'filter', $filter);
-    }
-
-    /**
-     * A facet query allows to return a count of the hits matching the facet query.
-     * The query itself can be expressed using the Query DSL.
-     * @param string $name the name of this facet
-     * @param string $query the query in Query DSL
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
-     */
-    public function addQueryFacet($name, $query)
-    {
-        return $this->addFacet($name, 'query', $query);
-    }
-
-    /**
-     * Statistical facet allows to compute statistical data on a numeric fields. The statistical data include count,
-     * total, sum of squares, mean (average), minimum, maximum, variance, and standard deviation.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-statistical-facet.html
-     */
-    public function addStatisticalFacet($name, $options)
-    {
-        return $this->addFacet($name, 'statistical', $options);
-    }
-
-    /**
-     * The `terms_stats` facet combines both the terms and statistical allowing to compute stats computed on a field,
-     * per term value driven by another field.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-stats-facet.html
-     */
-    public function addTermsStatsFacet($name, $options)
-    {
-        return $this->addFacet($name, 'terms_stats', $options);
-    }
-
-    /**
-     * The `geo_distance` facet is a facet providing information for ranges of distances from a provided `geo_point`
-     * including count of the number of hits that fall within each range, and aggregation information (like `total`).
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-geo-distance-facet.html
-     */
-    public function addGeoDistanceFacet($name, $options)
-    {
-        return $this->addFacet($name, 'geo_distance', $options);
-    }
-
-    // TODO add suggesters http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
 
     // TODO add validate query http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html
 
@@ -527,18 +478,6 @@ class Query extends Component implements QueryInterface
         } else {
             $this->fields = func_get_args();
         }
-        return $this;
-    }
-
-    /**
-     * Sets a highlight parameters to retrieve from the documents.
-     * @param array $highlight array of parameters to highlight results.
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
-     */
-    public function highlight($highlight)
-    {
-        $this->highlight = $highlight;
         return $this;
     }
 

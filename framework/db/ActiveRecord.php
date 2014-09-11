@@ -9,6 +9,7 @@ namespace yii\db;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
@@ -44,7 +45,7 @@ use yii\helpers\StringHelper;
  *
  * The `tableName` method only has to return the name of the database table associated with the class.
  *
- * > Tip: You may also use the [Gii code generator][guide-gii] to generate ActiveRecord classes from your
+ * > Tip: You may also use the [Gii code generator](guide:start-gii) to generate ActiveRecord classes from your
  * > database tables.
  *
  * Class instances are obtained in one of two ways:
@@ -66,7 +67,7 @@ use yii\helpers\StringHelper;
  * $orders = $user->orders;
  * ```
  *
- * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord][guide-active-record].
+ * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
  *
  * @method ActiveQuery hasMany(string $class, array $link) see BaseActiveRecord::hasMany() for more info
  * @method ActiveQuery hasOne(string $class, array $link) see BaseActiveRecord::hasOne() for more info
@@ -94,6 +95,7 @@ class ActiveRecord extends BaseActiveRecord
      * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
      */
     const OP_ALL = 0x07;
+
 
     /**
      * Loads default values from database table schema
@@ -146,6 +148,36 @@ class ActiveRecord extends BaseActiveRecord
         $query->sql = $sql;
 
         return $query->params($params);
+    }
+
+    /**
+     * Finds ActiveRecord instance(s) by the given condition.
+     * This method is internally called by [[findOne()]] and [[findAll()]].
+     * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
+     * @param boolean $one whether this method is called by [[findOne()]] or [[findAll()]]
+     * @return static|static[]
+     * @throws InvalidConfigException if there is no primary key defined
+     * @internal
+     */
+    protected static function findByCondition($condition, $one)
+    {
+        $query = static::find();
+
+        if (!ArrayHelper::isAssociative($condition)) {
+            // query by primary key
+            $primaryKey = static::primaryKey();
+            if (isset($primaryKey[0])) {
+                $pk = $primaryKey[0];
+                if (!empty($query->join) || !empty($query->joinWith)) {
+                    $pk = static::tableName() . '.' . $pk;
+                }
+                $condition = [$pk => $condition];
+            } else {
+                throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+            }
+        }
+
+        return $one ? $query->andWhere($condition)->one() : $query->andWhere($condition)->all();
     }
 
     /**
@@ -224,10 +256,11 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -250,7 +283,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getTableSchema()
     {
-        $schema = static::getDb()->getTableSchema(static::tableName());
+        $schema = static::getDb()->getSchema()->getTableSchema(static::tableName());
         if ($schema !== null) {
             return $schema;
         } else {
@@ -326,7 +359,7 @@ class ActiveRecord extends BaseActiveRecord
         $columns = static::getTableSchema()->columns;
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
-                $row[$name] = $columns[$name]->typecast($value);
+                $row[$name] = $columns[$name]->phpTypecast($value);
             }
         }
         parent::populateRecord($record, $row);
@@ -423,7 +456,7 @@ class ActiveRecord extends BaseActiveRecord
         if ($table->sequenceName !== null) {
             foreach ($table->primaryKey as $name) {
                 if ($this->getAttribute($name) === null) {
-                    $id = $db->getLastInsertID($table->sequenceName);
+                    $id = $table->columns[$name]->phpTypecast($db->getLastInsertID($table->sequenceName));
                     $this->setAttribute($name, $id);
                     $values[$name] = $id;
                     break;
@@ -431,8 +464,9 @@ class ActiveRecord extends BaseActiveRecord
             }
         }
 
-        $this->afterSave(true);
+        $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
 
         return true;
     }

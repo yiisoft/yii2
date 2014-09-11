@@ -12,7 +12,6 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\ViewContextInterface;
 use yii\web\View;
-use yii\base\MailEvent;
 
 /**
  * BaseMailer serves as a base class that implements the basic functions required by [[MailerInterface]].
@@ -32,14 +31,15 @@ use yii\base\MailEvent;
 abstract class BaseMailer extends Component implements MailerInterface, ViewContextInterface
 {
     /**
-     * @event \yii\base\MailEvent an event raised right before send.
-     * You may set [[\yii\base\MailEvent::isValid]] to be false to cancel the send.
+     * @event MailEvent an event raised right before send.
+     * You may set [[MailEvent::isValid]] to be false to cancel the send.
      */
     const EVENT_BEFORE_SEND = 'beforeSend';
     /**
-     * @event \yii\base\MailEvent an event raised right after send.
+     * @event MailEvent an event raised right after send.
      */
     const EVENT_AFTER_SEND = 'afterSend';
+
     /**
      * @var string|boolean HTML layout view name. This is the layout used to render HTML mail body.
      * The property can take the following values:
@@ -106,6 +106,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     private $_viewPath;
 
+
     /**
      * @param array|View $view view instance or its array configuration that will be used to
      * render message bodies.
@@ -145,6 +146,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         return Yii::createObject($config);
     }
 
+    private $_message;
+
     /**
      * Creates a new message instance and optionally composes its body content via view rendering.
      *
@@ -168,30 +171,41 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     public function compose($view = null, array $params = [])
     {
         $message = $this->createMessage();
-        if ($view !== null) {
+        if ($view === null) {
+            return $message;
+        }
+
+        if (!array_key_exists('message', $params)) {
             $params['message'] = $message;
-            if (is_array($view)) {
-                if (isset($view['html'])) {
-                    $html = $this->render($view['html'], $params, $this->htmlLayout);
-                }
-                if (isset($view['text'])) {
-                    $text = $this->render($view['text'], $params, $this->textLayout);
-                }
-            } else {
-                $html = $this->render($view, $params, $this->htmlLayout);
+        }
+
+        $this->_message = $message;
+
+        if (is_array($view)) {
+            if (isset($view['html'])) {
+                $html = $this->render($view['html'], $params, $this->htmlLayout);
             }
-            if (isset($html)) {
-                $message->setHtmlBody($html);
+            if (isset($view['text'])) {
+                $text = $this->render($view['text'], $params, $this->textLayout);
             }
-            if (isset($text)) {
-                $message->setTextBody($text);
-            } elseif (isset($html)) {
-                if (preg_match('|<body[^>]*>(.*?)</body>|is', $html, $match)) {
-                    $html = $match[1];
-                }
-                $html = preg_replace('|<style[^>]*>(.*?)</style>|is', '', $html);
-                $message->setTextBody(strip_tags($html));
+        } else {
+            $html = $this->render($view, $params, $this->htmlLayout);
+        }
+
+
+        $this->_message = null;
+
+        if (isset($html)) {
+            $message->setHtmlBody($html);
+        }
+        if (isset($text)) {
+            $message->setTextBody($text);
+        } elseif (isset($html)) {
+            if (preg_match('|<body[^>]*>(.*?)</body>|is', $html, $match)) {
+                $html = $match[1];
             }
+            $html = preg_replace('|<style[^>]*>(.*?)</style>|is', '', $html);
+            $message->setTextBody(strip_tags($html));
         }
         return $message;
     }
@@ -278,7 +292,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     {
         $output = $this->getView()->render($view, $params, $this);
         if ($layout !== false) {
-            return $this->getView()->render($layout, ['content' => $output], $this);
+            return $this->getView()->render($layout, ['content' => $output, 'message' => $this->_message], $this);
         } else {
             return $output;
         }

@@ -16,14 +16,18 @@ use yii\helpers\VarDumper;
  * Allows you to combine and compress your JavaScript and CSS files.
  *
  * Usage:
- * 1. Create a configuration file using 'template' action:
+ * 1. Create a configuration file using the `template` action:
+ *
  *    yii asset/template /path/to/myapp/config.php
+ *
  * 2. Edit the created config file, adjusting it for your web application needs.
  * 3. Run the 'compress' action, using created config:
+ *
  *    yii asset /path/to/myapp/config.php /path/to/myapp/config/assets_compressed.php
+ *
  * 4. Adjust your web application config to use compressed assets.
  *
- * Note: in the console environment some path aliases like '@webroot' and '@web' may not exist,
+ * Note: in the console environment some path aliases like `@webroot` and `@web` may not exist,
  * so corresponding paths inside the configuration should be specified directly.
  *
  * Note: by default this command relies on an external tools to perform actual files compression,
@@ -87,6 +91,7 @@ class AssetController extends Controller
      * for assets processing.
      */
     private $_assetManager = [];
+
 
     /**
      * Returns the asset manager instance.
@@ -580,9 +585,11 @@ EOD;
 <?php
 /**
  * Configuration file for the "yii asset" console command.
- * Note that in the console environment, some path aliases like '@webroot' and '@web' may not exist.
- * Please define these missing path aliases.
  */
+
+// In the console environment, some path aliases may not exist. Please define these:
+//Yii::setAlias('@webroot', realpath(__DIR__ . '/../web'));
+//Yii::setAlias('@web', '/');
 return [
     // Adjust command/callback for JavaScript files compressing:
     'jsCompressor' => {$jsCompressor},

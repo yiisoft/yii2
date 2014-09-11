@@ -1,15 +1,15 @@
 <?php
 /**
  * This is the template for generating the model class of a specified table.
- *
- * @var yii\web\View $this
- * @var yii\mongodb\gii\model\Generator $generator
- * @var string $collectionName full table name
- * @var array $attributes list of attribute names
- * @var string $className class name
- * @var string[] $labels list of attribute labels (name => label)
- * @var string[] $rules list of validation rules
  */
+
+/* @var $this yii\web\View */
+/* @var $generator yii\mongodb\gii\model\Generator */
+/* @var $collectionName string full table name */
+/* @var $attributes array list of attribute names */
+/* @var $className string class name */
+/* @var $labels string[] list of attribute labels (name => label) */
+/* @var $rules string[] list of validation rules */
 
 echo "<?php\n";
 ?>

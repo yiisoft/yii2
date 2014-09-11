@@ -45,6 +45,12 @@ class Order extends ActiveRecord
             })->orderBy('item.id');
     }
 
+    public function getItemsIndexed()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems')->indexBy('id');
+    }
+
     public function getItemsWithNullFK()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])

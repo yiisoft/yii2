@@ -1,12 +1,10 @@
 <?php
-/**
- * @var \yii\web\View $this
- * @var array $summary
- * @var string $tag
- * @var array $manifest
- * @var \yii\debug\Panel[] $panels
- * @var \yii\debug\Panel $activePanel
- */
+/* @var $this \yii\web\View */
+/* @var $summary array */
+/* @var $tag string */
+/* @var $manifest array */
+/* @var $panels \yii\debug\Panel[] */
+/* @var $activePanel \yii\debug\Panel */
 
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\ButtonGroup;

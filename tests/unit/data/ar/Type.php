@@ -7,6 +7,7 @@ namespace yiiunit\data\ar;
  *
  * @property int $int_col
  * @property int $int_col2 DEFAULT 1
+ * @property int $smallint_col DEFAULT 1
  * @property string $char_col
  * @property string $char_col2 DEFAULT 'something'
  * @property string $char_col3

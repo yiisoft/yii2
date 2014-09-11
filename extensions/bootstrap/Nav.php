@@ -93,6 +93,7 @@ class Nav extends Widget
      */
     public $params;
 
+
     /**
      * Initializes the widget.
      */
@@ -148,7 +149,8 @@ class Nav extends Widget
         if (!isset($item['label'])) {
             throw new InvalidConfigException("The 'label' option is required.");
         }
-        $label = $this->encodeLabels ? Html::encode($item['label']) : $item['label'];
+        $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
+        $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
         $options = ArrayHelper::getValue($item, 'options', []);
         $items = ArrayHelper::getValue($item, 'items');
         $url = ArrayHelper::getValue($item, 'url', '#');

@@ -122,11 +122,11 @@ grid columns.
 - `visible` is the column should be visible.
 - `content` allows you to pass a valid PHP callback that will return data for a row. The format is the following:
 
-```php
-function ($model, $key, $index, $grid) {
-    return 'a string';
-}
-```
+  ```php
+  function ($model, $key, $index, $column) {
+      return 'a string';
+  }
+  ```
 
 You may specify various container HTML options passing arrays to:
 
@@ -140,7 +140,30 @@ You may specify various container HTML options passing arrays to:
 Data column is for displaying and sorting data. It is default column type so specifying class could be omitted when
 using it.
 
-TBD
+The main setting of the data column is its format. It could be specified via `format` attribute. Its values are
+corresponding to methods in `format` application component that is [[\yii\i18n\Formatter|Formatter]] by default:
+
+```php
+<?= GridView::widget([
+    'columns' => [
+        [
+            'attribute' => 'name',
+            'format' => 'text'
+        ],
+        [
+            'attribute' => 'birthday',
+            'format' => ['date', 'Y-m-d']
+        ],
+    ],
+]); ?>
+```
+
+In the above `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
+argument. In the second column definition `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
+column is, again, passed as the first argument while 'Y-m-d' is used as the second argument value.
+
+For a list of available formatters see the [section about Data Formatting](output-formatter.md).
+
 
 #### Action column
 
@@ -356,7 +379,45 @@ public function rules()
 }
 ```
 
-In `search()` you then just add another filter condition with `$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);`.
+In `search()` you then just add another filter condition with:
+
+```php
+$query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
+```
+
+> Info: In the above we use the same string for the relation name and the table alias, however when your alias and relation name
+> differ, you have to pay attention on where to use the alias and where to use the relation name.
+> A simple rule for this is to use the alias in every place that is used to build the database query and the
+> relation name in all other definitions like in `attributes()` and `rules()` etc.
+>
+> For example you use the alias `au` for the author relation table, the joinWith statement looks like the following:
+>
+> ```php
+> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> ```
+> It is also possible to just call `$query->joinWith(['author']);` when the alias is defined in the relation definition.
+>
+> The alias has to be used in the filter condition but the attribute name stays the same:
+>
+> ```php
+> $query->andFilterWhere(['LIKE', 'au.name', $this->getAttribute('author.name')]);
+> ```
+>
+> Same is true for the sorting definition:
+>
+> ```php
+> $dataProvider->sort->attributes['author.name'] = [
+>      'asc' => ['au.name' => SORT_ASC],
+>      'desc' => ['au.name' => SORT_DESC],
+> ];
+> ```
+>
+> Also when specifying the [[yii\data\Sort::defaultOrder|defaultOrder]] for sorting you need to use the relation name
+> instead of the alias:
+>
+> ```php
+> $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
+> ```
 
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).

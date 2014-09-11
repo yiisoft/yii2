@@ -54,7 +54,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testActiveRelation()
     {
-        /** @var Customer $customer */
+        /* @var $customer Customer */
         $customer = Customer::findOne(2);
         $provider = new ActiveDataProvider([
             'query' => $customer->getOrders(),
@@ -77,7 +77,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testActiveRelationVia()
     {
-        /** @var Order $order */
+        /* @var $order Order */
         $order = Order::findOne(2);
         $provider = new ActiveDataProvider([
             'query' => $order->getItems(),
@@ -101,7 +101,7 @@ class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testActiveRelationViaTable()
     {
-        /** @var Order $order */
+        /* @var $order Order */
         $order = Order::findOne(1);
         $provider = new ActiveDataProvider([
             'query' => $order->getBooks(),

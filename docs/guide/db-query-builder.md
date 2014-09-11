@@ -249,6 +249,19 @@ Operator can be one of the following:
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
+Additionally you can specify anything as operator:
+
+```php
+$userQuery = (new Query)->select('id')->from('user');
+$query->where(['>=', 'id', 10]);
+```
+
+It will result in:
+
+```sql
+SELECT id FROM user WHERE id >= 10;
+```
+
 If you are building parts of condition dynamically it's very convenient to use `andWhere()` and `orWhere()`:
 
 ```php
@@ -304,8 +317,6 @@ $query->orderBy([
 ```
 
 Here we are ordering by `id` ascending and then by `name` descending.
-
-```
 
 ### `GROUP BY` and `HAVING`
 
@@ -385,10 +396,10 @@ In Yii in order to build it you can first form two query objects and then use `u
 
 ```php
 $query = new Query();
-$query->select("id, 'post' as type, name")->from('post')->limit(10);
+$query->select("id, category_id as type, name")->from('post')->limit(10);
 
 $anotherQuery = new Query();
-$anotherQuery->select('id, 'user' as type, name')->from('user')->limit(10);
+$anotherQuery->select('id, type, name')->from('user')->limit(10);
 
 $query->union($anotherQuery);
 ```

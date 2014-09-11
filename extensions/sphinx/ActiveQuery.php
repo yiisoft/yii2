@@ -86,6 +86,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     use ActiveRelationTrait;
 
     /**
+     * @event Event an event that is triggered when the query is initialized via [[init()]].
+     */
+    const EVENT_INIT = 'init';
+
+    /**
      * @var string the SQL statement to be executed for retrieving AR records.
      * This is set by [[ActiveRecord::findBySql()]].
      */
@@ -101,6 +106,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->modelClass = $modelClass;
         parent::__construct($config);
+    }
+
+    /**
+     * Initializes the object.
+     * This method is called at the end of the constructor. The default implementation will trigger
+     * an [[EVENT_INIT]] event. If you override this method, make sure you call the parent implementation at the end
+     * to ensure triggering of the event.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
     }
 
     /**
@@ -175,7 +192,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             if ($this->asArray) {
                 $model = $row;
             } else {
-                /** @var $class ActiveRecord */
+                /* @var $class ActiveRecord */
                 $class = $this->modelClass;
                 $model = $class::instantiate($row);
                 $class::populateRecord($model, $row);
@@ -212,7 +229,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /** @var ActiveQuery $viaQuery */
+                /* @var $viaQuery ActiveQuery */
                 list($viaName, $viaQuery) = $this->via;
                 if ($viaQuery->multiple) {
                     $viaModels = $viaQuery->all();
@@ -231,12 +248,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $this->setConnection($db);
         $db = $this->getConnection();
 
-        $params = $this->params;
         if ($this->sql === null) {
-            list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
+            list ($sql, $params) = $db->getQueryBuilder()->build($this);
+        } else {
+            $sql = $this->sql;
+            $params = $this->params;
         }
 
-        return $db->createCommand($this->sql, $params);
+        return $db->createCommand($sql, $params);
     }
 
     /**
@@ -275,7 +294,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $from = $this->from;
         if ($from === null) {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::indexName();
             $from = [$tableName];

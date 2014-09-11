@@ -17,7 +17,7 @@ Installation
 
 Yii 2.0 fully embraces [Composer](https://getcomposer.org/), the de facto PHP package manager. Installation
 of the core framework, as well as extensions, are handled through Composer. Please refer to
-the [Starting from Basic App](start-basic.md) section to learn how to install Yii 2.0. If you want to
+the [Installing Yii](start-installation.md) section to learn how to install Yii 2.0. If you want to
 create new extensions, or turn your existing 1.1 extensions into 2.0-compatible extensions, please refer to
 the [Creating Extensions](extend-creating-extensions.md) section of the guide.
 
@@ -188,7 +188,7 @@ public function scenarios()
 {
     return [
         'backend' => ['email', 'role'],
-        'frontend' => ['email', '!name'],
+        'frontend' => ['email', '!role'],
     ];
 }
 ```
@@ -203,7 +203,7 @@ In most cases, you do not need to override [[yii\base\Model::scenarios()|scenari
 if the [[yii\base\Model::rules()|rules()]] method fully specifies the scenarios that will exist, and if there is no need to declare
 `unsafe` attributes.
 
-To learn more details about models, please refer to the [Models](basic-models.md) section.
+To learn more details about models, please refer to the [Models](structure-models.md) section.
 
 
 Controllers
@@ -270,7 +270,7 @@ be applied to any view file, even a view rendered outside of the context of a co
 Also, there is no more `CThemeManager` component. Instead, `theme` is a configurable property of the `view`
 application component.
 
-Please refer to the [Theming](tutorial-theming.md) section for more details.
+Please refer to the [Theming](output-theming.md) section for more details.
 
 
 Console Applications
@@ -322,7 +322,7 @@ public function behaviors()
 }
 ```
 
-Please refer to the [Filtering](runtime-filtering.md) section for more details.
+Please refer to the [Filtering](structure-filters.md) section for more details.
 
 
 Assets
@@ -336,7 +336,7 @@ By registering an asset bundle via [[yii\web\AssetBundle::register()]], you make
 the assets in that bundle accessible via the Web. Unlike in Yii 1, the page registering the bundle will automatically
 contain the references to the JavaScript and CSS files specified in that bundle.
 
-Please refer to the [Managing Assets](output-assets.md) section for more details.
+Please refer to the [Managing Assets](structure-assets.md) section for more details.
 
 
 Helpers
@@ -349,7 +349,6 @@ Yii 2.0 introduces many commonly used static helper classes, including.
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
 Please refer to the [Helper Overview](helper-overview.md) section for more details.
 
@@ -443,7 +442,7 @@ records by filtering with the primary keys of the primary records.
 
 Instead of returning [[yii\db\ActiveRecord|ActiveRecord]] objects, you may chain the [[yii\db\ActiveQuery::asArray()|asArray()]]
 method when building a query to return a large number of records. This will cause the query result to be returned
-as arrays, which can significantly reduce the needed CPU time and memory if large number of records . For example,
+as arrays, which can significantly reduce the needed CPU time and memory if large number of records . For example:
 
 ```php
 $customers = Customer::find()->asArray()->all();
@@ -460,11 +459,43 @@ public function init()
 }
 ```
 
-There where some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
+There were some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
 version 2.0 anymore. Note that when adding parameters to the constructor you might have to override [[yii\db\ActiveRecord::instantiate()]].
 
 There are many other changes and enhancements to Active Record. Please refer to
 the [Active Record](db-active-record.md) section for more details.
+
+
+Active Record Behaviors
+-----------------------
+
+In 2.0, we have dropped the base behavior class `CActiveRecordBehavior`. If you want to create an Active Record Behavior,
+you will have to extend directly from `yii\base\Behavior`. If the behavior class needs to respond to some events
+of the owner, you have to override the `events()` method like the following,
+
+```php
+namespace app\components;
+
+use yii\db\ActiveRecord;
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
+{
+    // ...
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
+        ];
+    }
+
+    public function beforeValidate($event)
+    {
+        // ...
+    }
+}
+```
 
 
 User and IdentityInterface
@@ -493,11 +524,11 @@ the same goal.
 ]
 ```
 
-Please refer to the [Url manager docs](url.md) section for more details.
+Please refer to the [Url manager docs](runtime-url-handling.md) section for more details.
 
 Using Yii 1.1 and 2.x together
 ------------------------------
 
 If you have legacy Yii 1.1 code that you want to use together with Yii 2.0, please refer to
-the [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md) section.
+the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md) section.
 

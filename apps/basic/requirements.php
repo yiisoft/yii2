@@ -69,14 +69,6 @@ $requirements = array(
         'condition' => extension_loaded('apc'),
         'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-caching-apccache.html">ApcCache</a>',
     ),
-    // Additional PHP extensions :
-    array(
-        'name' => 'Mcrypt extension',
-        'mandatory' => false,
-        'condition' => extension_loaded('mcrypt'),
-        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-helpers-security.html">Security Helper</a>',
-        'memo' => 'Required by encrypt and decrypt methods.'
-    ),
     // PHP ini :
     'phpSafeMode' => array(
         'name' => 'PHP safe mode',

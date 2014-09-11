@@ -29,6 +29,7 @@ class Message extends BaseMessage
      */
     private $_swiftMessage;
 
+
     /**
      * @return \Swift_Message Swift message instance.
      */
@@ -204,7 +205,7 @@ class Message extends BaseMessage
             $partFound = false;
             foreach ($parts as $key => $part) {
                 if (!($part instanceof \Swift_Mime_Attachment)) {
-                    /* @var \Swift_Mime_MimePart $part */
+                    /* @var $part \Swift_Mime_MimePart */
                     if ($part->getContentType() == $contentType) {
                         $charset = $part->getCharset();
                         unset($parts[$key]);

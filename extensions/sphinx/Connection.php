@@ -67,6 +67,7 @@ class Connection extends \yii\db\Connection
         'mysql' => 'yii\sphinx\Schema',    // MySQL
     ];
 
+
     /**
      * Obtains the schema information for the named index.
      * @param string $name index name.
@@ -109,7 +110,6 @@ class Connection extends \yii\db\Connection
      */
     public function createCommand($sql = null, $params = [])
     {
-        $this->open();
         $command = new Command([
             'db' => $this,
             'sql' => $sql,

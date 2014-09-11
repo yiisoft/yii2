@@ -8,7 +8,6 @@
 namespace yii\authclient;
 
 use yii\base\Exception;
-use yii\base\NotSupportedException;
 use Yii;
 
 /**
@@ -68,7 +67,6 @@ class OpenId extends BaseClient implements ClientInterface
      * ~~~
      */
     public $optionalAttributes = [];
-
     /**
      * @var boolean whether to verify the peer's certificate.
      */
@@ -83,7 +81,6 @@ class OpenId extends BaseClient implements ClientInterface
      * This value will take effect only if [[verifyPeer]] is set.
      */
     public $cainfo;
-
     /**
      * @var string authentication return URL.
      */
@@ -96,6 +93,8 @@ class OpenId extends BaseClient implements ClientInterface
      * @var string client trust root (realm), by default [[\yii\web\Request::hostInfo]] value will be used.
      */
     private $_trustRoot;
+
+
     /**
      * @var array data, which should be used to retrieve the OpenID response.
      * If not set combination of GET and POST will be used.
@@ -229,14 +228,14 @@ class OpenId extends BaseClient implements ClientInterface
     }
 
     /**
-     * Sends HTTP request.
+     * Sends request to the server
      * @param string $url request URL.
      * @param string $method request method.
-     * @param array $params request params.
+     * @param array $params request parameters.
      * @return array|string response.
      * @throws \yii\base\Exception on failure.
      */
-    protected function sendCurlRequest($url, $method = 'GET', $params = [])
+    protected function sendRequest($url, $method = 'GET', $params = [])
     {
         $params = http_build_query($params, '', '&');
         $curl = curl_init($url . ($method == 'GET' && $params ? '?' . $params : ''));
@@ -283,112 +282,6 @@ class OpenId extends BaseClient implements ClientInterface
         }
 
         return $response;
-    }
-
-    /**
-     * Sends HTTP request.
-     * @param string $url request URL.
-     * @param string $method request method.
-     * @param array $params request params.
-     * @return array|string response.
-     * @throws \yii\base\Exception on failure.
-     * @throws \yii\base\NotSupportedException if request method is not supported.
-     */
-    protected function sendStreamRequest($url, $method = 'GET', $params = [])
-    {
-        if (!$this->hostExists($url)) {
-            throw new Exception('Invalid request.');
-        }
-
-        $params = http_build_query($params, '', '&');
-        switch ($method) {
-            case 'GET':
-                $options = [
-                    'http' => [
-                        'method' => 'GET',
-                        'header' => 'Accept: application/xrds+xml, */*',
-                        'ignore_errors' => true,
-                    ]
-                ];
-                $url = $url . ($params ? '?' . $params : '');
-                break;
-            case 'POST':
-                $options = [
-                    'http' => [
-                        'method' => 'POST',
-                        'header'  => 'Content-type: application/x-www-form-urlencoded',
-                        'content' => $params,
-                        'ignore_errors' => true,
-                    ]
-                ];
-                break;
-            case 'HEAD':
-                /* We want to send a HEAD request,
-                but since get_headers doesn't accept $context parameter,
-                we have to change the defaults.*/
-                $default = stream_context_get_options(stream_context_get_default());
-                stream_context_get_default([
-                    'http' => [
-                        'method' => 'HEAD',
-                        'header' => 'Accept: application/xrds+xml, */*',
-                        'ignore_errors' => true,
-                    ]
-                ]);
-
-                $url = $url . ($params ? '?' . $params : '');
-                $headersTmp = get_headers($url);
-                if (empty($headersTmp)) {
-                    return [];
-                }
-
-                // Parsing headers.
-                $headers = [];
-                foreach ($headersTmp as $header) {
-                    $pos = strpos($header, ':');
-                    $name = strtolower(trim(substr($header, 0, $pos)));
-                    $headers[$name] = trim(substr($header, $pos + 1));
-                }
-
-                // and restore them
-                stream_context_get_default($default);
-
-                return $headers;
-            default:
-                throw new NotSupportedException("Method {$method} not supported");
-        }
-
-        if ($this->verifyPeer) {
-            $options = array_merge(
-                $options,
-                [
-                    'ssl' => [
-                        'verify_peer' => true,
-                        'capath' => $this->capath,
-                        'cafile' => $this->cainfo,
-                    ]
-                ]
-            );
-        }
-
-        $context = stream_context_create($options);
-
-        return file_get_contents($url, false, $context);
-    }
-
-    /**
-     * Sends request to the server
-     * @param string $url request URL.
-     * @param string $method request method.
-     * @param array $params request parameters.
-     * @return array|string response.
-     */
-    protected function sendRequest($url, $method = 'GET', $params = [])
-    {
-        if (function_exists('curl_init') && !ini_get('safe_mode')) {
-            return $this->sendCurlRequest($url, $method, $params);
-        }
-
-        return $this->sendStreamRequest($url, $method, $params);
     }
 
     /**
@@ -867,7 +760,7 @@ class OpenId extends BaseClient implements ClientInterface
         } else {
             // 'ax' prefix is either undefined, or points to another extension, so we search for another prefix
             foreach ($this->data as $key => $value) {
-                if (substr($key, 0, strlen('openid_ns_')) == 'openid_ns_' && $value == 'http://openid.net/srv/ax/1.0') {
+                if (strncmp($key, 'openid_ns_', 10) === 0  && $value == 'http://openid.net/srv/ax/1.0') {
                     $alias = substr($key, strlen('openid_ns_'));
                     break;
                 }
@@ -881,7 +774,7 @@ class OpenId extends BaseClient implements ClientInterface
         $attributes = [];
         foreach ($this->data as $key => $value) {
             $keyMatch = 'openid_' . $alias . '_value_';
-            if (substr($key, 0, strlen($keyMatch)) != $keyMatch) {
+            if (strncmp($key, $keyMatch, strlen($keyMatch))) {
                 continue;
             }
             $key = substr($key, strlen($keyMatch));
@@ -908,7 +801,7 @@ class OpenId extends BaseClient implements ClientInterface
         $sregToAx = array_flip($this->axToSregMap);
         foreach ($this->data as $key => $value) {
             $keyMatch = 'openid_sreg_';
-            if (substr($key, 0, strlen($keyMatch)) != $keyMatch) {
+            if (strncmp($key, $keyMatch, strlen($keyMatch))) {
                 continue;
             }
             $key = substr($key, strlen($keyMatch));

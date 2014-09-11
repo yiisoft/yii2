@@ -11,7 +11,7 @@ Pour quel usage Yii est il optimal?
 
 Yii est un framework Web générique, c'est à dire qu'il peut être utilisé pour développer tous types
 d'applications Web basées sur PHP. De par son architecture à base de composants et son système de cache sophistiqué,
-il est particulièrement adapté au développement d'applications a forte audience telles que des portails, des forums,
+il est particulièrement adapté au développement d'applications à forte audience telles que des portails, des forums,
 des systèmes de gestion de contenu (CMS), des sites e-commerce, services Web RESTFul, etc.
 
 

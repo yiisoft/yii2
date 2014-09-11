@@ -72,6 +72,12 @@ make pdf
 
 If all runs without errors the PDF will be `guide.pdf` in the `output` dir.
 
+Special Markdown Syntax
+-----------------------
+
+We have a special Syntax for linking to classes in the API documentation.
+See the [code style guide](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md#markdown) for details.
+
 Creating your own templates
 ---------------------------
 

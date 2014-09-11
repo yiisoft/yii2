@@ -24,7 +24,7 @@ Mise en Route
 * [Travailler avec les formulaires](start-forms.md)
 * [Travailler avec les bases de données](start-databases.md)
 * [Générer du code avec Gii](start-gii.md)
-* [En savoir plus](start-looking-head.md)
+* [En savoir plus](start-looking-ahead.md)
 
 
 Structure Application
@@ -34,7 +34,7 @@ Structure Application
 * [Script d'entrée](structure-entry-scripts.md)
 * [Applications](structure-applications.md)
 * [Composants application](structure-application-components.md)
-* [Controlleurs](structure-controllers.md)
+* [Contrôleurs](structure-controllers.md)
 * [Modèles](structure-models.md)
 * [Vues](structure-views.md)
 * **TBD** [Filtres](structure-filters.md)
@@ -129,7 +129,7 @@ Services Web RESTful
 
 * [Démarrage rapide](rest-quick-start.md)
 * [Ressources](rest-resources.md)
-* [Controlleurs](rest-controllers.md)
+* [Contrôleurs](rest-controllers.md)
 * [Gestion des routes](rest-routing.md)
 * [Formattage des réponses](rest-response-formatting.md)
 * [Authentification](rest-authentication.md)

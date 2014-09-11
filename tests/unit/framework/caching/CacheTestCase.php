@@ -11,8 +11,19 @@ function time()
     return \yiiunit\framework\caching\CacheTestCase::$time ?: \time();
 }
 
+/**
+ * Mock for the microtime() function for caching classes
+ * @param bool $float
+ * @return float
+ */
+function microtime($float = false)
+{
+    return \yiiunit\framework\caching\CacheTestCase::$microtime ?: \microtime($float);
+}
+
 namespace yiiunit\framework\caching;
 
+use yii\caching\Cache;
 use yiiunit\TestCase;
 
 /**
@@ -25,6 +36,12 @@ abstract class CacheTestCase extends TestCase
      * Null means normal time() behavior.
      */
     public static $time;
+    /**
+     * @var float virtual time to be returned by mocked microtime() function.
+     * Null means normal microtime() behavior.
+     */
+    public static $microtime;
+
 
     /**
      * @return Cache
@@ -40,6 +57,7 @@ abstract class CacheTestCase extends TestCase
     protected function tearDown()
     {
         static::$time = null;
+        static::$microtime = null;
     }
 
     /**

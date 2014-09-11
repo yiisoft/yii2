@@ -25,6 +25,7 @@ class JsExpression extends Object
      */
     public $expression;
 
+
     /**
      * Constructor.
      * @param string $expression the JavaScript expression represented by this object

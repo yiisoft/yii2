@@ -9,7 +9,6 @@ namespace yii\elasticsearch;
 
 use yii\base\Action;
 use yii\base\NotSupportedException;
-use yii\debug\Panel;
 use yii\helpers\ArrayHelper;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -36,6 +35,7 @@ class DebugAction extends Action
      */
     public $controller;
 
+
     public function run($logId, $tag)
     {
         $this->controller->loadData($tag);
@@ -58,7 +58,7 @@ class DebugAction extends Action
 
         $options = ['pretty' => true];
 
-        /** @var Connection $db */
+        /* @var $db Connection */
         $db = \Yii::$app->get($this->db);
         $time = microtime(true);
         switch ($method) {

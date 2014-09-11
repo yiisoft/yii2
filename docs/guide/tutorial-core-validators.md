@@ -143,7 +143,7 @@ function foo($model, $attribute) {
 ```
 
 > Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#empty-values) section.
+  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
 
 
 ## [[yii\validators\NumberValidator|double]] <a name="double"></a>
@@ -231,13 +231,13 @@ either a single column or multiple columns.
 [
     // checks if "primaryImage" is an uploaded image file in PNG, JPG or GIF format.
     // the file size must be less than 1MB
-    ['primaryImage', 'file', 'types' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
+    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
 ]
 ```
 
 This validator checks if the input is a valid uploaded file.
 
-- `types`: a list of file name extensions that are allowed to be uploaded. This can be either
+- `extensions`: a list of file name extensions that are allowed to be uploaded. This can be either
   an array or a string consisting of file extension names separated by space or comma (e.g. "gif, jpg").
   Extension names are case-insensitive. Defaults to null, meaning all file name
   extensions are allowed.
@@ -249,6 +249,9 @@ This validator checks if the input is a valid uploaded file.
 - `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
   the input must be a single uploaded file. If it is greater than 1, then the input must be an array
   consisting of at most `maxFiles` number of uploaded files.
+- `checkExtensionByMimeType`: whether to check the file extension by the file's MIME type. If the extension produced by
+  MIME type check differs from the uploaded file extension, the file will be considered as invalid. Defaults to true,
+  meaning perform such check.
 
 `FileValidator` is used together with [[yii\web\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
 section for complete coverage about uploading files and performing validation about the uploaded files.
@@ -286,7 +289,7 @@ back to the attribute being validated.
 ```php
 [
     // checks if "primaryImage" is a valid image with proper size
-    ['primaryImage', 'image', 'types' => 'png, jpg',
+    ['primaryImage', 'image', 'extensions' => 'png, jpg',
         'minWidth' => 100, 'maxWidth' => 1000,
         'minHeight' => 100, 'maxHeight' => 1000,
     ],
@@ -365,7 +368,7 @@ This validator checks if the input value matches the specified regular expressio
 ]
 ```
 
-This validator checks if the input value is a number. It is equivalent to the [double](#double] validator.
+This validator checks if the input value is a number. It is equivalent to the [double](#double) validator.
 
 - `max`: the upper limit (inclusive) of the value. If not set, it means the validator does not check the upper limit.
 - `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
@@ -390,7 +393,7 @@ This validator checks if the input value is provided and not empty.
   if this property is true.
 
 > Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#empty-values) section.
+  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
 
 
 ## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
@@ -415,15 +418,13 @@ a [safe attribute](structure-models.md#safe-attributes).
 ]
 ```
 
-This validator checks if the input value
-
-Validates that the attribute value is of certain length.
+This validator checks if the input value is a valid string with certain length.
 
 - `length`: specifies the length limit of the input string being validated. This can be specified
    in one of the following forms:
      * an integer: the exact length that the string should be of;
      * an array of one element: the minimum length of the input string (e.g. `[8]`). This will overwrite `min`.
-     * an array of two elements: the minimum and maximum lengths of the input string (e.g. `[8, 128]`)`.
+     * an array of two elements: the minimum and maximum lengths of the input string (e.g. `[8, 128]`).
      This will overwrite both `min` and `max`.
 - `min`: the minimum length of the input string. If not set, it means no minimum length limit.
 - `max`: the maximum length of the input string. If not set, it means no maximum length limit.

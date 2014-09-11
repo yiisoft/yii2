@@ -40,7 +40,7 @@ class TranslationController extends Controller
 
         $dir = new DirectoryIterator($sourcePath);
         foreach ($dir as $fileinfo) {
-            /** @var DirectoryIterator $fileinfo */
+            /* @var $fileinfo DirectoryIterator */
             if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
                 $sourceFilePath = $sourcePath . '/' . $fileinfo->getFilename();
@@ -63,7 +63,7 @@ class TranslationController extends Controller
         // checking if there are obsolete translation files
         $dir = new DirectoryIterator($translationPath);
         foreach ($dir as $fileinfo) {
-            /** @var \DirectoryIterator $fileinfo */
+            /* @var $fileinfo \DirectoryIterator */
             if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
 

@@ -2,7 +2,7 @@ Installing Yii
 ==============
 
 You can install Yii in two ways, using [Composer](http://getcomposer.org/) or by downloading an archive file.
-The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
+The former is the preferred way, as it allows you to install new [extensions](extend-creating-extensions.md) or update Yii by simply running a single command.
 
 > Note: Unlike with Yii 1, standard installations of Yii 2 results in both the framework and an application skeleton being downloaded and installed.
 
@@ -42,6 +42,13 @@ Installing Yii from an archive file involves two steps:
 
 1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
 2. Unpack the downloaded file to a Web-accessible folder.
+3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
+   (this is done automatically if you are installing Yii using Composer):
+
+   ```php
+   // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+   'cookieValidationKey' => 'enter your secret key here',
+   ```
 
 
 Other Installation Options <a name="other-installation-options"></a>
@@ -96,7 +103,9 @@ Configuring Web Servers <a name="configuring-web-servers"></a>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
- Windows, Mac OS X, or Linux.
+Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible the facebooks
+[HHVM](http://hhvm.com/) however there are some edge cases where HHVM behaves different than native
+PHP so you have to take some extra care when using HHVM.
 
 On a production server, you may want to configure your Web server so that the application can be accessed
 via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
@@ -106,7 +115,7 @@ In this subsection, you'll learn how to configure your Apache or Nginx server to
 
 > Info: By setting `basic/web` as the document root, you also prevent end users from accessing
 your private application code and sensitive data files that are stored in the sibling directories
-of `basic/web`. Denying access to those other folders is a producent security improvement.
+of `basic/web`. Denying access to those other folders is a security improvement.
 
 > Info: If your application will run in a shared hosting environment where you do not have permission
 to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
@@ -172,6 +181,7 @@ server {
         include fastcgi.conf;
         fastcgi_pass   127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        try_files $uri =404;
     }
 
     location ~ /\.(ht|svn|git) {

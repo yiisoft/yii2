@@ -1,7 +1,7 @@
 Application Components
 ======================
 
-Applications are [service locators](concept-service-locators.md). They host a set of the so-called
+Applications are [service locators](concept-service-locator.md). They host a set of the so-called
 *application components* that provide different services for processing requests. For example,
 the `urlManager` component is responsible for routing Web requests to appropriate controllers;
 the `db` component provides DB-related services; and so on.
@@ -10,11 +10,14 @@ Each application component has an ID that uniquely identifies itself among other
 in the same application. You can access an application component through the expression
 
 ```php
-\Yii::$app->ComponentID
+\Yii::$app->componentID
 ```
 
 For example, you can use `\Yii::$app->db` to get the [[yii\db\Connection|DB connection]],
 and `\Yii::$app->cache` to get the [[yii\caching\Cache|primary cache]] registered with the application.
+
+An application component is created the first time it is accessed through the above expression. Any
+further accesses will return the same component instance.
 
 Application components can be any objects. You can register them by configuring
 the [[yii\base\Application::components]] property in [application configurations](structure-applications.md#application-configurations).
@@ -48,6 +51,29 @@ For example,
   and use it when needed.
 
 
+## Bootstrapping Components <a name="bootstrapping-components"></a>
+
+As mentioned above, an application component will only be instantiated when it is being accessed the first time.
+If it is not accessed at all during a request, it will not be instantiated. Sometimes, however, you may want
+to instantiate an application component for every request, even if it is not explicitly accessed.
+To do so, you may list its ID in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
+
+For example, the following application configuration makes sure the `log` component is always loaded:
+
+```php
+[
+    'bootstrap' => [
+        'log',
+    ],
+    'components' => [
+        'log' => [
+            // configuration for "log" component
+        ],
+    ],
+]
+```
+
+
 ## Core Application Components <a name="core-application-components"></a>
 
 Yii defines a set of *core* application components with fixed IDs and default configurations. For example,
@@ -68,7 +94,7 @@ if you do not specify its class, the default one will be used.
   Please refer to the [Data Access Objects](db-dao.md) section for more details.
 * [[yii\base\Application::errorHandler|errorHandler]]: handles PHP errors and exceptions.
   Please refer to the [Handling Errors](tutorial-handling-errors.md) section for more details.
-* [[yii\base\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
+* [[yii\i18n\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
   may be displayed with thousand separator, a date may be formatted in long format.
   Please refer to the [Data Formatting](output-formatting.md) section for more details.
 * [[yii\i18n\I18N|i18n]]: supports message translation and formatting.

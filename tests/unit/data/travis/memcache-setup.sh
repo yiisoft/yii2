@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if (php --version | grep -i HHVM > /dev/null); then
+if (php --version | grep -i HipHop > /dev/null); then
   echo "skipping memcache on HHVM"
 else
   mkdir -p ~/.phpenv/versions/$(phpenv version-name)/etc

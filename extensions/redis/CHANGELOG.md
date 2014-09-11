@@ -5,6 +5,8 @@ Yii Framework 2 redis extension Change Log
 --------------------------
 
 - Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
+- Enh #4048: Added `init` event to `ActiveQuery` classes (qiangxue)
+- Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
 
 
 2.0.0-beta April 13, 2014

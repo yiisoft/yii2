@@ -12,11 +12,11 @@ use yii\base\ActionFilter;
 use yii\base\Action;
 
 /**
- * The HttpCache provides functionality for caching via HTTP Last-Modified and Etag headers.
+ * HttpCache implements client-side caching by utilizing the `Last-Modified` and `Etag` HTTP headers.
  *
  * It is an action filter that can be added to a controller and handles the `beforeAction` event.
  *
- * To use AccessControl, declare it in the `behaviors()` method of your controller class.
+ * To use HttpCache, declare it in the `behaviors()` method of your controller class.
  * In the following example the filter will be applied to the `list`-action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
@@ -24,7 +24,7 @@ use yii\base\Action;
  * public function behaviors()
  * {
  *     return [
- *         'httpCache' => [
+ *         [
  *             'class' => 'yii\filters\HttpCache',
  *             'only' => ['index'],
  *             'lastModified' => function ($action, $params) {
@@ -85,7 +85,7 @@ class HttpCache extends ActionFilter
      * Please refer to [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
      * for detailed explanation of these values.
      *
-     * If this is property is null, then `session_cache_limiter()` will not be called. As a result,
+     * If this property is `null`, then `session_cache_limiter()` will not be called. As a result,
      * PHP will send headers according to the `session.cache_limiter` PHP ini setting.
      */
     public $sessionCacheLimiter = '';
@@ -130,7 +130,6 @@ class HttpCache extends ActionFilter
 
         if ($this->validateCache($lastModified, $etag)) {
             $response->setStatusCode(304);
-
             return false;
         }
 
@@ -150,10 +149,14 @@ class HttpCache extends ActionFilter
      */
     protected function validateCache($lastModified, $etag)
     {
-        if ($lastModified !== null && (!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) < $lastModified)) {
-            return false;
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+            // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
+            // http://tools.ietf.org/html/rfc7232#section-3.3
+            return $etag !== null && in_array($etag, Yii::$app->request->getEtags(), true);
+        } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+            return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
         } else {
-            return $etag === null || in_array($etag, Yii::$app->request->getEtags(), true);
+            return $etag === null && $lastModified === null;
         }
     }
 
@@ -164,6 +167,12 @@ class HttpCache extends ActionFilter
     protected function sendCacheControlHeader()
     {
         if ($this->sessionCacheLimiter !== null) {
+            if ($this->sessionCacheLimiter === '' && !headers_sent() && Yii::$app->getSession()->getIsActive()) {
+                header_remove('Expires');
+                header_remove('Cache-Control');
+                header_remove('Last-Modified');
+                header_remove('Pragma');
+            }
             session_cache_limiter($this->sessionCacheLimiter);
         }
 

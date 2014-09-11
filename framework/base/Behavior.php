@@ -18,12 +18,13 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Behavior extends \yii\base\Object
+class Behavior extends Object
 {
     /**
      * @var Component the owner of this behavior
      */
     public $owner;
+
 
     /**
      * Declares event handlers for the [[owner]]'s events.

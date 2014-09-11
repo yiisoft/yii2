@@ -54,6 +54,7 @@ class Cache extends \yii\caching\Cache
      */
     public $gcProbability = 100;
 
+
     /**
      * Initializes the Cache component.
      * This method will initialize the [[db]] property to make sure it refers to a valid MongoDB connection.

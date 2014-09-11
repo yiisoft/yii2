@@ -28,15 +28,16 @@ class DbPanel extends Panel
      * the execution is considered taking critical number of DB queries.
      */
     public $criticalQueryThreshold;
+
     /**
      * @var array db queries info extracted to array as models, to use with data provider.
      */
     private $_models;
-
     /**
      * @var array current database request timings
      */
     private $_timings;
+
 
     /**
      * @inheritdoc

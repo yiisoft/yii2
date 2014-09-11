@@ -24,9 +24,10 @@ class CreateAction extends Action
      */
     public $scenario = Model::SCENARIO_DEFAULT;
     /**
-     * @var string the name of the view action. This property is need to create the URL when the mode is successfully created.
+     * @var string the name of the view action. This property is need to create the URL when the model is successfully created.
      */
     public $viewAction = 'view';
+
 
     /**
      * Creates a new model.
@@ -39,9 +40,7 @@ class CreateAction extends Action
             call_user_func($this->checkAccess, $this->id);
         }
 
-        /**
-         * @var \yii\db\ActiveRecord $model
-         */
+        /* @var $model \yii\db\ActiveRecord */
         $model = new $this->modelClass([
             'scenario' => $this->scenario,
         ]);

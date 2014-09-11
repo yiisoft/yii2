@@ -95,6 +95,12 @@ class InflectorTest extends TestCase
 
         $this->assertEquals('post-tag', Inflector::camel2id('postTag'));
         $this->assertEquals('post_tag', Inflector::camel2id('postTag', '_'));
+
+        $this->assertEquals('foo-ybar', Inflector::camel2id('FooYBar', '-', false));
+        $this->assertEquals('foo_ybar', Inflector::camel2id('fooYBar', '_', false));
+
+        $this->assertEquals('foo-y-bar', Inflector::camel2id('FooYBar', '-', true));
+        $this->assertEquals('foo_y_bar', Inflector::camel2id('fooYBar', '_', true));
     }
 
     public function testId2camel()
@@ -104,6 +110,9 @@ class InflectorTest extends TestCase
 
         $this->assertEquals('PostTag', Inflector::id2camel('post-tag'));
         $this->assertEquals('PostTag', Inflector::id2camel('post_tag', '_'));
+
+        $this->assertEquals('FooYBar', Inflector::id2camel('foo-y-bar'));
+        $this->assertEquals('FooYBar', Inflector::id2camel('foo_y_bar', '_'));
     }
 
     public function testHumanize()
@@ -122,23 +131,73 @@ class InflectorTest extends TestCase
         $this->assertEquals("customer_tables", Inflector::tableize('customerTable'));
     }
 
-    public function testSlug()
+    public function testSlugCommons()
     {
         $data = [
-            'Привет. Hello, Йии-- Framework !--- Как дела ? How it goes ?' => 'privet-hello-jii-framework-kak-dela-how-it-goes',
-            'this is a title' => 'this-is-a-title',
-            'недвижимость' => 'nedvizimost',
+            '' => '',
+            'hello world 123' => 'hello-world-123',
+            'remove.!?[]{}…symbols' => 'removesymbols',
+            'minus-sign' => 'minus-sign',
+            'mdash—sign' => 'mdash-sign',
+            'ndash–sign' => 'ndash-sign',
             'áàâéèêíìîóòôúùûã' => 'aaaeeeiiiooouuua',
-            'Ναδάλης ṃỹṛèşưḿĕ' => 'nadales-myresume',
-            'E=mc²' => 'e-mc2',
-            'è¼å¥' => 'e14a',
+            'älä lyö ääliö ööliä läikkyy' => 'ala-lyo-aalio-oolia-laikkyy',
+        ];
+
+        foreach ($data as $source => $expected) {
+            if (extension_loaded('intl')) {
+                $this->assertEquals($expected, FallbackInflector::slug($source));
+            }
+            $this->assertEquals($expected, Inflector::slug($source));
+        }
+    }
+
+    public function testSlugIntl()
+    {
+        if (!extension_loaded('intl')) {
+            $this->markTestSkipped('intl extension is required.');
+        }
+
+        // Some test strings are from https://github.com/bergie/midgardmvc_helper_urlize. Thank you, Henri Bergius!
+        $data = [
+            // Korean
+            '해동검도' => 'haedong-geomdo',
+
+            // Hiragana
+            'ひらがな' => 'hiragana',
+
+            // Georgian
+            'საქართველო' => 'sakartvelo',
+
+            // Arabic
+            'العربي' => 'alrby',
+            'عرب' => 'rb',
+
+            // Hebrew
+            'עִבְרִית' => 'iberiyt',
+
+            // Turkish
+            'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'sanrm-hepimiz-ayn-seyi-dusunuyoruz',
+
+            // Russian
+            'недвижимость' => 'nedvizimost',
+            'Контакты' => 'kontakty',
         ];
 
         foreach ($data as $source => $expected) {
             $this->assertEquals($expected, Inflector::slug($source));
         }
+    }
 
-        //$this->assertEquals('this-is-my-text-', Inflector::slug('! this is my / text $## '));
+    public function testSlugPhp()
+    {
+        $data = [
+            'we have недвижимость' => 'we-have',
+        ];
+
+        foreach ($data as $source => $expected) {
+            $this->assertEquals($expected, FallbackInflector::slug($source));
+        }
     }
 
     public function testClassify()
