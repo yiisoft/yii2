@@ -28,7 +28,7 @@
          * The signature of the event handler should be:
          *     function (event, messages, deferreds, attribute)
          * where
-         *  - event: an Event object. You can set event.isValid to be false to stop validating the form or attribute
+         *  - event: an Event object.
          *  - messages: error messages. When attribute is undefined, this parameter is an associative array
          *    with keys being attribute IDs and values being error messages for the corresponding attributes.
          *    When attribute is given, this parameter is an array of the error messages for that attribute.
@@ -36,6 +36,8 @@
          *  - attribute: an attribute object. Please refer to attributeDefaults for the structure.
          *    If this is undefined, it means the event is triggered before validating the whole form.
          *    Otherwise it means the event is triggered before validating the specified attribute.
+         *
+         * If the handler returns a boolean false, it will stop further validation after this event.
          */
         beforeValidate: 'beforeValidate',
         /**
@@ -58,6 +60,8 @@
          * The signature of the event handler should be:
          *     function (event)
          * where event is an Event object.
+         *
+         * If the handler returns a boolean false, it will stop further validation after this event.
          */
         beforeSubmit: 'beforeSubmit',
         /**
@@ -237,9 +241,9 @@
                 deferreds = deferredArray();
 
             if (data.submitting) {
-                var event = $.Event(events.beforeValidate, {'isValid': true});
+                var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
-                if (!event.isValid) {
+                if (event.result === false) {
                     data.submitting = false;
                     return;
                 }
@@ -254,9 +258,9 @@
                         msg = [];
                         messages[this.id] = msg;
                     }
-                    var event = $.Event(events.beforeValidate, {'isValid': true});
+                    var event = $.Event(events.beforeValidate);
                     $form.trigger(event, [msg, deferreds, this]);
-                    if (event.isValid) {
+                    if (event.result !== false) {
                         if (this.validate) {
                             this.validate(this, getValue($form, this), msg, deferreds);
                         }
@@ -327,9 +331,9 @@
                 data = $form.data('yiiActiveForm');
 
             if (data.validated) {
-                var event = $.Event(events.beforeSubmit, {'isValid': true});
+                var event = $.Event(events.beforeSubmit);
                 $form.trigger(event, [$form]);
-                if (!event.isValid) {
+                if (event.result === false) {
                     data.validated = false;
                     data.submitting = false;
                     return false;
