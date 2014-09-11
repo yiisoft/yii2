@@ -24,6 +24,7 @@ class UpdateAction extends Action
      */
     public $scenario = Model::SCENARIO_DEFAULT;
 
+
     /**
      * Updates an existing model.
      * @param string $id the primary key of the model.

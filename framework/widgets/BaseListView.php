@@ -84,6 +84,7 @@ abstract class BaseListView extends Widget
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
+
     /**
      * Renders the data models.
      * @return string the rendering result.

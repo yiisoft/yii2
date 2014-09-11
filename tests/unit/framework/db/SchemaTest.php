@@ -119,6 +119,18 @@ class SchemaTest extends DatabaseTestCase
                 'scale' => null,
                 'defaultValue' => 1,
             ],
+            'smallint_col' => [
+                'type' => 'smallint',
+                'dbType' => 'smallint(1)',
+                'phpType' => 'integer',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => 1,
+                'precision' => 1,
+                'scale' => null,
+                'defaultValue' => 1,
+            ],
             'char_col' => [
                 'type' => 'string',
                 'dbType' => 'char(100)',

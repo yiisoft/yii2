@@ -1,32 +1,62 @@
-This folder contains various tests for the basic application.
-These tests are developed with [Codeception PHP Testing Framework](http://codeception.com/).
+This directory contains various tests for the basic application.
+
+Tests in `codeception` directory are developed with [Codeception PHP Testing Framework](http://codeception.com/).
 
 After creating the basic application, follow these steps to prepare for the tests:
 
-1. Install additional composer packages:
+1. Install Codeception if it's not yet installed:
 
-   ```
-   php composer.phar require --dev "codeception/codeception: 2.0.*" "codeception/specify: *" "codeception/verify: *"
-   ```
-2. In the file `_bootstrap.php`, modify the definition of the constant `TEST_ENTRY_URL` so
-   that it points to the correct entry script URL.
-3. Go to the application base directory and build the test suites:
+```
+composer global require "codeception/codeception=2.0.*"
+composer global require "codeception/specify=*"
+composer global require "codeception/verify=*"
+```
 
-   ```
-   vendor/bin/codecept build
-   ```
+If you've never used Composer for global packages run `composer global status`. It should output:
 
-Now you can run the tests with the following commands:
+```
+Changed current directory to <directory>
+```
+
+Then add `<directory>/vendor/bin` to you `PATH` environment variable. Now we're able to use `codecept` from command
+line globally.
+
+2. Install faker extension by running the following from template root directory where `composer.json` is:
+
+```
+composer require --dev yiisoft/yii2-faker:*
+```
+
+3. Create `yii2_basic_tests` database and update it by applying migrations:
+
+```
+codeception/bin/yii migrate
+```
+
+4. Build the test suites:
+
+```
+codecept build
+```
+
+5. In order to be able to run acceptance tests you need to start a webserver. The simplest way is to use PHP built in
+webserver. In the `web` directory execute the following:
+
+```
+php -S localhost:8080
+```
+
+6. Now you can run the tests with the following commands:
 
 ```
 # run all available tests
-vendor/bin/codecept run
+codecept run
 # run acceptance tests
-vendor/bin/codecept run acceptance
+codecept run acceptance
 # run functional tests
-vendor/bin/codecept run functional
+codecept run functional
 # run unit tests
-vendor/bin/codecept run unit
+codecept run unit
 ```
 
 Please refer to [Codeception tutorial](http://codeception.com/docs/01-Introduction) for

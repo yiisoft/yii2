@@ -1,0 +1,20 @@
+{
+    "name": "yii2-bootstrap",
+    "version": "2.0.0",
+    "homepage": "http://www.yiiframework.com/",
+    "authors": [
+        "Qiang Xue <qiang.xue@gmail.com>"
+    ],
+    "description": "The Twitter Bootstrap extension for the Yii framework",
+    "keywords": [
+        "yii2",
+        "bootstrap"
+    ],
+    "license": "BSD-3-Clause",
+    "ignore": [
+        "/*"
+    ],
+    "dependencies": {
+        "bootstrap": ">=3.0.0"
+    }
+}

@@ -29,6 +29,7 @@ class ApiMarkdownLaTeX extends GithubMarkdown
 
     protected $renderingContext;
 
+
     protected function inlineMarkers()
     {
         return array_merge(parent::inlineMarkers(), [

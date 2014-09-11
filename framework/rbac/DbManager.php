@@ -41,22 +41,18 @@ class DbManager extends BaseManager
      * with a DB connection object.
      */
     public $db = 'db';
-
     /**
      * @var string the name of the table storing authorization items. Defaults to "auth_item".
      */
     public $itemTable = '{{%auth_item}}';
-
     /**
      * @var string the name of the table storing authorization item hierarchy. Defaults to "auth_item_child".
      */
     public $itemChildTable = '{{%auth_item_child}}';
-
     /**
      * @var string the name of the table storing authorization item assignments. Defaults to "auth_assignment".
      */
     public $assignmentTable = '{{%auth_assignment}}';
-
     /**
      * @var string the name of the table storing rules. Defaults to "auth_rule".
      */
@@ -70,7 +66,6 @@ class DbManager extends BaseManager
     public function init()
     {
         parent::init();
-
         $this->db = Instance::ensure($this->db, Connection::className());
     }
 
@@ -350,7 +345,7 @@ class DbManager extends BaseManager
         $query = (new Query)->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
             ->where('a.item_name=b.name')
-            ->andWhere(['a.user_id' => $userId]);
+            ->andWhere(['a.user_id' => (string)$userId]);
 
         $roles = [];
         foreach ($query->all($this->db) as $row) {
@@ -388,7 +383,7 @@ class DbManager extends BaseManager
     {
         $query = (new Query)->select('item_name')
             ->from($this->assignmentTable)
-            ->where(['user_id' => $userId]);
+            ->where(['user_id' => (string)$userId]);
 
         $childrenList = $this->getChildrenList();
         $result = [];
@@ -475,7 +470,7 @@ class DbManager extends BaseManager
     public function getAssignment($roleName, $userId)
     {
         $row = (new Query)->from($this->assignmentTable)
-            ->where(['user_id' => $userId, 'item_name' => $roleName])
+            ->where(['user_id' => (string)$userId, 'item_name' => $roleName])
             ->one($this->db);
 
         if ($row === false) {
@@ -496,7 +491,7 @@ class DbManager extends BaseManager
     {
         $query = (new Query)
             ->from($this->assignmentTable)
-            ->where(['user_id' => $userId]);
+            ->where(['user_id' => (string)$userId]);
 
         $assignments = [];
         foreach ($query->all($this->db) as $row) {
@@ -595,7 +590,7 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function assign($role, $userId, $rule = null, $data = null)
+    public function assign($role, $userId)
     {
         $assignment = new Assignment([
             'userId' => $userId,
@@ -619,7 +614,7 @@ class DbManager extends BaseManager
     public function revoke($role, $userId)
     {
         return $this->db->createCommand()
-            ->delete($this->assignmentTable, ['user_id' => $userId, 'item_name' => $role->name])
+            ->delete($this->assignmentTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
             ->execute() > 0;
     }
 
@@ -629,7 +624,7 @@ class DbManager extends BaseManager
     public function revokeAll($userId)
     {
         return $this->db->createCommand()
-            ->delete($this->assignmentTable, ['user_id' => $userId])
+            ->delete($this->assignmentTable, ['user_id' => (string)$userId])
             ->execute() > 0;
     }
 

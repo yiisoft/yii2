@@ -52,6 +52,7 @@ class ButtonGroup extends Widget
      */
     public $encodeLabels = true;
 
+
     /**
      * Initializes the widget.
      * If you override this method, make sure you call the parent implementation first.

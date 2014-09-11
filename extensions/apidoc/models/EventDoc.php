@@ -20,6 +20,7 @@ class EventDoc extends ConstDoc
     public $type;
     public $types;
 
+
     /**
      * @param \phpDocumentor\Reflection\ClassReflector\ConstantReflector $reflector
      * @param Context $context

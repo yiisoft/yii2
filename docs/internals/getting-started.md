@@ -18,17 +18,19 @@ git remote add upstream https://github.com/yiisoft/yii2.git
 
 Please refer to [Git workflow for Yii 2 contributors](git-workflow.md) for details about creating pull requests.
 
-### Unit tests
+Unit tests
+----------
 
 To run the unit tests you have to install composer packages for the dev-repo.
 Run `composer update` in the repo root directory to get the latest packages.
 
-You can now execute unit tests by running `./vendor/bin/phpunit`.
+You can now execute unit tests by running `phpunit`.
 
 You may limit the tests to a group of tests you are working on e.g. to run only tests for the validators and redis
-`./vendor/bin/phpunit --group=validators,redis`.
+`phpunit --group=validators,redis`.
 
-### Extensions
+Extensions
+----------
 
 To work on extensions you have to install them in the application you want to try them in.
 Just add them to the `composer.json` as you would normally do e.g. add `"yiisoft/yii2-redis": "*"` to the
@@ -36,3 +38,7 @@ Just add them to the `composer.json` as you would normally do e.g. add `"yiisoft
 Running `./build/build app/link basic` will install the extension and its dependecies and create
 a symlink to `extensions/redis` so you are not working the composer vendor dir but the yii2 repo directly.
 
+Functional and acceptance tests for applications
+------------------------------------------------
+
+See `apps/advanced/tests/README.md` and `apps/basic/tests/README.md` to learn about how to run Codeception tests.

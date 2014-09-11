@@ -59,6 +59,7 @@ class UniqueValidator extends Validator
      */
     public $filter;
 
+
     /**
      * @inheritdoc
      */

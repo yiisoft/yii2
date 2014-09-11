@@ -24,9 +24,10 @@ class CreateAction extends Action
      */
     public $scenario = Model::SCENARIO_DEFAULT;
     /**
-     * @var string the name of the view action. This property is need to create the URL when the mode is successfully created.
+     * @var string the name of the view action. This property is need to create the URL when the model is successfully created.
      */
     public $viewAction = 'view';
+
 
     /**
      * Creates a new model.

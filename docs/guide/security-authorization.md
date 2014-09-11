@@ -218,7 +218,7 @@ Building authorization data is all about the following tasks:
 
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 
-If your persmissions hierarchy doesn't change at all and you have a fixed number of users you can create a console
+If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a console
 command that will initialize authorization data once via APIs offered by `authManager`:
 
 ```php
@@ -422,7 +422,7 @@ use Yii;
 use yii\rbac\Rule;
 
 /**
- * Checks if authorID matches user passed via params
+ * Checks if user group matches
  */
 class UserGroupRule extends Rule
 {

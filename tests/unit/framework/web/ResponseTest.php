@@ -10,6 +10,11 @@ use yii\helpers\StringHelper;
  */
 class ResponseTest extends \yiiunit\TestCase
 {
+    /**
+     * @var \yii\web\Response
+     */
+    public $response;
+
     protected function setUp()
     {
         parent::setUp();

@@ -36,6 +36,7 @@ class Expression extends \yii\base\Object
      */
     public $params = [];
 
+
     /**
      * Constructor.
      * @param string $expression the DB expression

@@ -20,17 +20,15 @@ class PropertyDoc extends BaseDoc
 {
     public $visibility;
     public $isStatic;
-
     public $type;
     public $types;
     public $defaultValue;
-
     // will be set by creating class
     public $getter;
     public $setter;
-
     // will be set by creating class
     public $definedBy;
+
 
     public function getIsReadOnly()
     {

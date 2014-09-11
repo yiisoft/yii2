@@ -410,6 +410,24 @@ class ActiveRecordTest extends DatabaseTestCase
                     ->orderBy('items.id');
             },
         ])->orderBy('order.id')->one();
+
+        // join with sub-relation called inside Closure
+        $orders = Order::find()->joinWith([
+                'items' => function ($q) {
+                    $q->orderBy('item.id');
+                    $q->joinWith([
+                            'category'=> function ($q) {
+                                $q->where('category.id = 2');
+                            }
+                        ]);
+                },
+            ])->orderBy('order.id')->all();
+        $this->assertEquals(1, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, count($orders[0]->items));
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
     }
 
     public function testJoinWithAndScope()
@@ -572,5 +590,34 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2,$orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
         $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
         $this->assertEquals(5, $itemClass::find()->count());
+    }
+
+    public function testCastValues()
+    {
+        $model = new Type();
+        $model->int_col = 123;
+        $model->int_col2 = 456;
+        $model->smallint_col = 42;
+        $model->char_col = '1337';
+        $model->char_col2 = 'test';
+        $model->char_col3 = 'test123';
+        $model->float_col = 3.742;
+        $model->float_col2 = 42.1337;
+        $model->bool_col = true;
+        $model->bool_col2 = false;
+        $model->save(false);
+
+        /* @var $model Type */
+        $model = Type::find()->one();
+        $this->assertSame(123, $model->int_col);
+        $this->assertSame(456, $model->int_col2);
+        $this->assertSame(42, $model->smallint_col);
+        $this->assertSame('1337', trim($model->char_col));
+        $this->assertSame('test', $model->char_col2);
+        $this->assertSame('test123', $model->char_col3);
+//        $this->assertSame(1337.42, $model->float_col);
+//        $this->assertSame(42.1337, $model->float_col2);
+//        $this->assertSame(true, $model->bool_col);
+//        $this->assertSame(false, $model->bool_col2);
     }
 }

@@ -140,7 +140,30 @@ You may specify various container HTML options passing arrays to:
 Data column is for displaying and sorting data. It is default column type so specifying class could be omitted when
 using it.
 
-TBD
+The main setting of the data column is its format. It could be specified via `format` attribute. Its values are
+corresponding to methods in `format` application component that is [[\yii\i18n\Formatter|Formatter]] by default:
+
+```php
+<?= GridView::widget([
+    'columns' => [
+        [
+            'attribute' => 'name',
+            'format' => 'text'
+        ],
+        [
+            'attribute' => 'birthday',
+            'format' => ['date', 'Y-m-d']
+        ],
+    ],
+]); ?>
+```
+
+In the above `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
+argument. In the second column definition `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
+column is, again, passed as the first argument while 'Y-m-d' is used as the second argument value.
+
+For a list of available formatters see the [section about Data Formatting](output-formatter.md).
+
 
 #### Action column
 
@@ -381,6 +404,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > ```
 >
 > Same is true for the sorting definition:
+>
 > ```php
 > $dataProvider->sort->attributes['author.name'] = [
 >      'asc' => ['au.name' => SORT_ASC],

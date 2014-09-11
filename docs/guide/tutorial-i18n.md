@@ -475,26 +475,7 @@ put there file for russian language as follows `views/site/ru-RU/index.php`.
 > **Note**: If language is specified as `en-US` and there are no corresponding views, Yii will try views under `en`
 > before using original ones.
 
-i18n formatter
+i18n Formatter
 --------------
 
-i18n formatter component is the localized version of formatter that supports formatting of date, time and numbers based
-on current locale. In order to use it you need to configure formatter application component as follows:
-
-```php
-return [
-    // ...
-    'components' => [
-        'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-        ],
-    ],
-];
-```
-
-After configuring the component can be accessed as `Yii::$app->formatter`.
-
-Note that in order to use i18n formatter you need to install and enable
-[intl](http://www.php.net/manual/en/intro.intl.php) PHP extension.
-
-In order to learn about formatter methods refer to its API documentation: [[yii\i18n\Formatter]].
+See the [data formatter section](output-formatter.md) for details.

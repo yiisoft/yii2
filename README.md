@@ -26,6 +26,7 @@ which is the latest stable release of Yii.
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Code Climate](https://codeclimate.com/github/yiisoft/yii2.png)](https://codeclimate.com/github/yiisoft/yii2)
+[![Reference Status](https://www.versioneye.com/php/yiisoft:yii2/reference_badge.svg)](https://www.versioneye.com/php/yiisoft:yii2/references)
 
 DIRECTORY STRUCTURE
 -------------------
@@ -57,8 +58,8 @@ A draft of the [Definitive Guide](docs/guide/README.md) is available.
 API docs and a rendering of the definitive guide are currently
 available under the following urls:
 
-- http://stuff.cebe.cc/yii2docs/ API and Definitive Guide (updated every 15 minutes from the github source)
-- http://www.yiiframework.com/doc-2.0/guide-index.html API and Definitive Guide (last updated for the beta release)
+- http://www.yiiframework.com/doc-2.0/ API and Definitive Guide (updated daily)
+- http://stuff.cebe.cc/yii2docs/ API and Definitive Guide (updated every 15 minutes)
 - http://stuff.cebe.cc/yii2-guide.pdf The PDF version of the Guide
 
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)

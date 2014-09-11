@@ -54,6 +54,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      */
     private $_snippet;
 
+
     /**
      * Returns the Sphinx connection used by this AR class.
      * By default, the "sphinx" application component is used as the Sphinx connection.
@@ -137,10 +138,11 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -624,7 +626,7 @@ abstract class ActiveRecord extends BaseActiveRecord
             if (isset($columns[$name])) {
                 if ($columns[$name]->isMva) {
                     $mvaValue = explode(',', $value);
-                    $row[$name] = array_map(array($columns[$name], 'phpTypecast'), $mvaValue);
+                    $row[$name] = array_map([$columns[$name], 'phpTypecast'], $mvaValue);
                 } else {
                     $row[$name] = $columns[$name]->phpTypecast($value);
                 }

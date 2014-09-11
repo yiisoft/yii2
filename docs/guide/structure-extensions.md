@@ -308,7 +308,7 @@ content to end users, you should try to [internationalize and localize](tutorial
 - If the extension displays messages intended for end users, the messages should be wrapped into `Yii::t()`
   so that they can be translated. Messages meant for developers (such as internal exception messages) do not need
   to be translated.
-- If the extension displays numbers, dates, etc., they should be formatted using [[yii\base\Formatter]] with
+- If the extension displays numbers, dates, etc., they should be formatted using [[yii\i18n\Formatter]] with
   appropriate formatting rules.
 
 For more details, please refer to the [Internationalization](tutorial-i18n.md) section.
@@ -348,7 +348,6 @@ help other people learn about and use your extension:
   as `readme.md`.
 * A changelog file in the package root directory: it lists what changes are made in each release. The file
   may be written in Markdown format and named as `changelog.md`.
-  also write it in Markdown format and name the file as `changelog.md`.
 * An upgrade file in the package root directory: it gives the instructions on how to upgrade from older releases
   of the extension. The file may be written in Markdown format and named as `upgrade.md`.
 * Tutorials, demos, screenshots, etc.: these are needed if your extension provides many features that cannot be

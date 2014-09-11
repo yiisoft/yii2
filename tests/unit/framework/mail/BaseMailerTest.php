@@ -384,6 +384,10 @@ class Message extends BaseMessage
 
     public function toString()
     {
-        return var_export($this, true);
+        $mailer = $this->mailer;
+        $this->mailer = null;
+        $s = var_export($this, true);
+        $this->mailer = $mailer;
+        return $s;
     }
 }

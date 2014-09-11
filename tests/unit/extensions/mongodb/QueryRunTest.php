@@ -195,6 +195,7 @@ class QueryRunTest extends MongoDbTestCase
     public function testLike()
     {
         $connection = $this->getConnection();
+
         $query = new Query;
         $rows = $query->from('customer')
             ->where(['LIKE', 'name', 'me1'])
@@ -202,5 +203,11 @@ class QueryRunTest extends MongoDbTestCase
         $this->assertEquals(2, count($rows));
         $this->assertEquals('name1', $rows[0]['name']);
         $this->assertEquals('name10', $rows[1]['name']);
+
+        $query = new Query;
+        $rowsUppercase = $query->from('customer')
+            ->where(['LIKE', 'name', 'ME1'])
+            ->all($connection);
+        $this->assertEquals($rows, $rowsUppercase);
     }
 }

@@ -41,6 +41,7 @@ class MessageController extends Controller
      */
     public $defaultAction = 'extract';
 
+
     /**
      * Creates a configuration file for the "extract" command.
      *
@@ -95,6 +96,9 @@ class MessageController extends Controller
         if (!is_dir($config['sourcePath'])) {
             throw new Exception("The source path {$config['sourcePath']} is not a valid directory.");
         }
+        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
+            throw new Exception('Format should be either "php", "po" or "db".');
+        }
         if (in_array($config['format'], ['php', 'po'])) {
             if (!isset($config['messagePath'])) {
                 throw new Exception('The configuration file must specify "messagePath".');
@@ -104,9 +108,6 @@ class MessageController extends Controller
         }
         if (empty($config['languages'])) {
             throw new Exception("Languages cannot be empty.");
-        }
-        if (empty($config['format']) || !in_array($config['format'], ['php', 'po', 'db'])) {
-            throw new Exception('Format should be either "php", "po" or "db".');
         }
 
         $files = FileHelper::findFiles(realpath($config['sourcePath']), $config);
@@ -209,11 +210,11 @@ class MessageController extends Controller
             }
         }
 
-        echo $savedFlag ? "saved.\n" : "nothing new...skipped.\n";
+        echo $savedFlag ? "saved.\n" : "Nothing new...skipped.\n";
         echo $removeUnused ? "Deleting obsoleted messages..." : "Updating obsoleted messages...";
 
         if (empty($obsolete)) {
-            echo "nothing obsoleted...skipped.\n";
+            echo "Nothing obsoleted...skipped.\n";
         } else {
             if ($removeUnused) {
                 $db->createCommand()
@@ -286,12 +287,10 @@ class MessageController extends Controller
         foreach ($messages as $category => $msgs) {
             $file = str_replace("\\", '/', "$dirName/$category.php");
             $path = dirname($file);
-            if (!is_dir($path)) {
-                mkdir($path, 0755, true);
-            }
+            FileHelper::createDirectory($path);
             $msgs = array_values(array_unique($msgs));
             echo "Saving messages to $file...\n";
-            $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort);
+            $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort, $category);
         }
     }
 
@@ -303,23 +302,23 @@ class MessageController extends Controller
      * @param boolean $overwrite if existing file should be overwritten without backup
      * @param boolean $removeUnused if obsolete translations should be removed
      * @param boolean $sort if translations should be sorted
+     * @param string $category message category
      */
-    protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort)
+    protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category)
     {
         if (is_file($fileName)) {
-            $translated = require($fileName);
+            $existingMessages = require($fileName);
             sort($messages);
-            ksort($translated);
-            if (array_keys($translated) == $messages) {
-                echo "nothing new...skipped.\n";
-
-                return self::EXIT_CODE_NORMAL;
+            ksort($existingMessages);
+            if (array_keys($existingMessages) == $messages) {
+                echo "Nothing new in \"$category\" category... Nothing to save.\n";
+                return;
             }
             $merged = [];
             $untranslated = [];
             foreach ($messages as $message) {
-                if (array_key_exists($message, $translated) && strlen($translated[$message]) > 0) {
-                    $merged[$message] = $translated[$message];
+                if (array_key_exists($message, $existingMessages) && strlen($existingMessages[$message]) > 0) {
+                    $merged[$message] = $existingMessages[$message];
                 } else {
                     $untranslated[] = $message;
                 }
@@ -330,10 +329,10 @@ class MessageController extends Controller
             foreach ($untranslated as $message) {
                 $todo[$message] = '';
             }
-            ksort($translated);
-            foreach ($translated as $message => $translation) {
+            ksort($existingMessages);
+            foreach ($existingMessages as $message => $translation) {
                 if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
-                    if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
+                    if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2) === 0) {
                         $todo[$message] = $translation;
                     } else {
                         $todo[$message] = '@@' . $translation . '@@';
@@ -355,7 +354,6 @@ class MessageController extends Controller
             }
             ksort($merged);
         }
-        echo "Saved.\n";
 
 
         $array = VarDumper::export($merged);
@@ -383,6 +381,7 @@ return $array;
 EOD;
 
         file_put_contents($fileName, $content);
+        echo "Saved.\n";
     }
 
     /**
@@ -398,10 +397,7 @@ EOD;
     protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog)
     {
         $file = str_replace("\\", '/', "$dirName/$catalog.po");
-        $path = dirname($file);
-        if (!is_dir($path)) {
-            mkdir($path, 0755, true);
-        }
+        FileHelper::createDirectory(dirname($file));
         echo "Saving messages to $file...\n";
 
         $poFile = new GettextPoFile();
@@ -411,6 +407,7 @@ EOD;
         $notTranslatedYet = [];
         $todos = [];
 
+        $hasSomethingToWrite = false;
         foreach ($messages as $category => $msgs) {
             $msgs = array_values(array_unique($msgs));
 
@@ -420,8 +417,14 @@ EOD;
                 sort($msgs);
                 ksort($existingMessages);
                 if (array_keys($existingMessages) == $msgs) {
-                    echo "Nothing new... skipped.\n";
-                    return self::EXIT_CODE_NORMAL;
+                    echo "Nothing new in \"$category\" category...\n";
+
+                    sort($msgs);
+                    foreach ($msgs as $message) {
+                        $merged[$category . chr(4) . $message] = '';
+                    }
+                    ksort($merged);
+                    continue;
                 }
 
                 // merge existing message translations with new message translations
@@ -443,7 +446,7 @@ EOD;
                 // add obsolete unused messages
                 foreach ($existingMessages as $message => $translation) {
                     if (!isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message]) && !$removeUnused) {
-                        if (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
+                        if (!empty($translation) && substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
                             $todos[$category . chr(4) . $message] = $translation;
                         } else {
                             $todos[$category . chr(4) . $message] = '@@' . $translation . '@@';
@@ -459,8 +462,6 @@ EOD;
                 if ($overwrite === false) {
                     $file .= '.merged';
                 }
-
-                echo "Translation merged.\n";
             } else {
                 sort($msgs);
                 foreach ($msgs as $message) {
@@ -468,8 +469,14 @@ EOD;
                 }
                 ksort($merged);
             }
+            echo "Category \"$category\" merged.\n";
+            $hasSomethingToWrite = true;
         }
-        $poFile->save($file, $merged);
-        echo "Saved.\n";
+        if ($hasSomethingToWrite) {
+            $poFile->save($file, $merged);
+            echo "Saved.\n";
+        } else {
+            echo "Nothing to save.\n";
+        }
     }
 }

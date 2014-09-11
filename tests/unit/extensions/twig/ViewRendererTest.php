@@ -1,11 +1,13 @@
 <?php
 namespace yiiunit\extensions\twig;
 
+use yii\helpers\FileHelper;
 use yii\web\AssetManager;
 use yii\web\View;
 use Yii;
+use yiiunit\data\ar\Order;
 use yiiunit\data\base\Singer;
-use yiiunit\TestCase;
+use yiiunit\framework\db\DatabaseTestCase;
 
 /**
  * Tests Twig view renderer
@@ -13,11 +15,20 @@ use yiiunit\TestCase;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
  */
-class ViewRendererTest extends TestCase
+class ViewRendererTest extends DatabaseTestCase
 {
+    protected $driverName = 'sqlite';
+
     protected function setUp()
     {
-        $this->mockApplication();
+        parent::setUp();
+        $this->mockWebApplication();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        FileHelper::removeDirectory(Yii::getAlias('@runtime/assets'));
     }
 
     /**
@@ -67,6 +78,38 @@ class ViewRendererTest extends TestCase
         $this->assertFalse(strpos($content, 'silence'), 'silence should not be echoed when void() used: ' . $content);
         $this->assertTrue(strpos($content, 'echo') !== false, 'echo should be there:' . $content);
         $this->assertTrue(strpos($content, 'variable') !== false, 'variable should be there:' . $content);
+    }
+
+    public function testInheritance()
+    {
+        $view = $this->mockView();
+        $content = $view->renderFile('@yiiunit/extensions/twig/views/extends2.twig');
+        $this->assertTrue(strpos($content, 'Hello, I\'m inheritance test!') !== false, 'Hello, I\'m inheritance test! should be there:' . $content);
+        $this->assertTrue(strpos($content, 'extends2 block') !== false, 'extends2 block should be there:' . $content);
+        $this->assertFalse(strpos($content, 'extends1 block') !== false, 'extends1 block should not be there:' . $content);
+
+        $content = $view->renderFile('@yiiunit/extensions/twig/views/extends3.twig');
+        $this->assertTrue(strpos($content, 'Hello, I\'m inheritance test!') !== false, 'Hello, I\'m inheritance test! should be there:' . $content);
+        $this->assertTrue(strpos($content, 'extends3 block') !== false, 'extends3 block should be there:' . $content);
+        $this->assertFalse(strpos($content, 'extends1 block') !== false, 'extends1 block should not be there:' . $content);
+    }
+
+    public function testChangeTitle()
+    {
+        $view = $this->mockView();
+        $view->title = 'Original title';
+
+        $content = $view->renderFile('@yiiunit/extensions/twig/views/changeTitle.twig');
+        $this->assertTrue(strpos($content, 'New title') !== false, 'New title should be there:' . $content);
+        $this->assertFalse(strpos($content, 'Original title') !== false, 'Original title should not be there:' . $content);
+    }
+
+    public function testNullsInAr()
+    {
+        $view = $this->mockView();
+        $order = new Order();
+        $order::$db = $this->getConnection();
+        $view->renderFile('@yiiunit/extensions/twig/views/nulls.twig', ['order' => $order]);
     }
 
     /**

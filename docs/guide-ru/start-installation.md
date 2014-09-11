@@ -122,7 +122,7 @@ DocumentRoot "path/to/basic/web"
 <Directory "path/to/basic/web">
     RewriteEngine on
 
-    # Если запрашиваемая в URL директория или файл сущесвуют обращаемся к ним напрямую
+    # Если запрашиваемая в URL директория или файл существуют обращаемся к ним напрямую
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     # Если нет - перенаправляем запрос на index.php

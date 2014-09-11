@@ -143,7 +143,7 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirectoryPermissions()
     {
-        if (substr(PHP_OS, 0, 3) == 'WIN') {
+        if (DIRECTORY_SEPARATOR === '\\') {
             $this->markTestSkipped("Can't reliably test it on Windows because fileperms() always return 0777.");
         }
 
@@ -405,6 +405,36 @@ class FileHelperTest extends TestCase
             );
         }));
         $this->assertEquals($expect, $foundFiles);
+    }
+
+    /**
+     * @depends testFindFilesExclude
+     */
+    public function testFindFilesCaseSensitive()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+                'lower.txt' => 'lower case filename',
+                'upper.TXT' => 'upper case filename',
+            ],
+        ]);
+        $basePath = $this->testFilePath;
+        $dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
+
+        $options = [
+            'except' => ['*.txt'],
+            'caseSensitive' => false
+        ];
+        $foundFiles = FileHelper::findFiles($dirName, $options);
+        $this->assertCount(0, $foundFiles);
+
+        $options = [
+            'only' => ['*.txt'],
+            'caseSensitive' => false
+        ];
+        $foundFiles = FileHelper::findFiles($dirName, $options);
+        $this->assertCount(2, $foundFiles);
     }
 
     public function testCreateDirectory()

@@ -68,6 +68,7 @@ class DbSession extends Session
      */
     public $sessionTable = '{{%session}}';
 
+
     /**
      * Initializes the DbSession component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.

@@ -46,7 +46,6 @@ class Connection extends Component
      * @var array the active node. key of [[nodes]]. Will be randomly selected on [[open()]].
      */
     public $activeNode;
-
     // TODO http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
     public $auth = [];
     /**
@@ -61,6 +60,7 @@ class Connection extends Component
      * If not set, no explicit timeout will be set for curl.
      */
     public $dataTimeout = null;
+
 
     public function init()
     {

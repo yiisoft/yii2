@@ -1,7 +1,7 @@
 Application Components
 ======================
 
-Applications are [service locators](concept-service-locators.md). They host a set of the so-called
+Applications are [service locators](concept-service-locator.md). They host a set of the so-called
 *application components* that provide different services for processing requests. For example,
 the `urlManager` component is responsible for routing Web requests to appropriate controllers;
 the `db` component provides DB-related services; and so on.
@@ -94,7 +94,7 @@ if you do not specify its class, the default one will be used.
   Please refer to the [Data Access Objects](db-dao.md) section for more details.
 * [[yii\base\Application::errorHandler|errorHandler]]: handles PHP errors and exceptions.
   Please refer to the [Handling Errors](tutorial-handling-errors.md) section for more details.
-* [[yii\base\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
+* [[yii\i18n\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
   may be displayed with thousand separator, a date may be formatted in long format.
   Please refer to the [Data Formatting](output-formatting.md) section for more details.
 * [[yii\i18n\I18N|i18n]]: supports message translation and formatting.
