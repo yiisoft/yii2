@@ -27,6 +27,14 @@ class MongoDbPanel extends DbPanel
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getSummaryName()
+    {
+        return 'MongoDB';
+    }
+
+    /**
      * Returns all profile logs of the current request for this panel.
      * @return array
      */
