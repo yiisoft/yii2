@@ -224,6 +224,10 @@ use yii\web\Response;
 ];
 ```
 
+> Info: In case the preferred content type and language cannot be determined from a request, the first format and
+  language listed in [[formats]] and [[languages]] will be used.
+
+
 
 ### [[yii\filters\HttpCache|HttpCache]] <a name="http-cache"></a>
 
