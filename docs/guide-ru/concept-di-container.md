@@ -137,7 +137,7 @@ $container->set('db', function ($container, $params, $config) {
 $container->set('pageCache', new FileCache);
 ```
 
-> Подсказка: Если имя зависимости такое же, как и определение соответствующей зависимости, то вы не нуждаетесь в её повторной регистрации в контейнер внедрения зависимостей.
+> Подсказка: Если имя зависимости такое же, как и определение соответствующей зависимости, то её повторная регистрация в контейнере внедрения зависимостей не нужна.
 
 A dependency registered via `set()` will generate an instance each time the dependency is needed.
 You can use [[yii\di\Container::setSingleton()]] to register a dependency that only generates
