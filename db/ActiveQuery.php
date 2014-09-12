@@ -133,8 +133,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * @inheritdoc
      */
-    public function prepareBuild($builder)
+    public function prepare($builder)
     {
+        // NOTE: because the same ActiveQuery may be used to build different SQL statements
+        // (e.g. by ActiveDataProvider, one for count query, the other for row data query,
+        // it is important to make sure the same ActiveQuery can be used to build SQL statements
+        // multiple times.
         if (!empty($this->joinWith)) {
             $this->buildJoinWith();
             $this->joinWith = null;    // clean it up to avoid issue https://github.com/yiisoft/yii2/issues/2687
@@ -162,12 +166,50 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 break;
             }
         }
+
+        if ($this->primaryModel === null) {
+            // eager loading
+            $query = Query::create($this);
+        } else {
+            // lazy loading of a relation
+            $where = $this->where;
+
+            if ($this->via instanceof self) {
+                // via pivot table
+                $viaModels = $this->via->findPivotRows([$this->primaryModel]);
+                $this->filterByModels($viaModels);
+            } elseif (is_array($this->via)) {
+                // via relation
+                /* @var $viaQuery ActiveQuery */
+                list($viaName, $viaQuery) = $this->via;
+                if ($viaQuery->multiple) {
+                    $viaModels = $viaQuery->all();
+                    $this->primaryModel->populateRelation($viaName, $viaModels);
+                } else {
+                    $model = $viaQuery->one();
+                    $this->primaryModel->populateRelation($viaName, $model);
+                    $viaModels = $model === null ? [] : [$model];
+                }
+                $this->filterByModels($viaModels);
+            } else {
+                $this->filterByModels([$this->primaryModel]);
+            }
+
+            $query = Query::create($this);
+            $this->where = $where;
+        }
+
+        if (!empty($this->on)) {
+            $query->andWhere($this->on);
+        }
+
+        return $query;
     }
 
     /**
      * @inheritdoc
      */
-    public function prepareResult($rows)
+    public function populate($rows)
     {
         if (empty($rows)) {
             return [];
@@ -242,7 +284,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $row = parent::one($db);
         if ($row !== false) {
-            $models = $this->prepareResult([$row]);
+            $models = $this->populate([$row]);
             return reset($models) ?: null;
         } else {
             return null;
@@ -256,32 +298,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @return Command the created DB command instance.
      */
     public function createCommand($db = null)
-    {
-        if ($this->primaryModel === null) {
-            // not a relational context or eager loading
-            if (!empty($this->on)) {
-                $where = $this->where;
-                $this->andWhere($this->on);
-                $command = $this->createCommandInternal($db);
-                $this->where = $where;
-
-                return $command;
-            } else {
-                return $this->createCommandInternal($db);
-            }
-        } else {
-            // lazy loading of a relation
-            return $this->createRelationalCommand($db);
-        }
-    }
-
-    /**
-     * Creates a DB command that can be used to execute this query.
-     * @param Connection|null $db the DB connection used to create the DB command.
-     * If null, the DB connection returned by [[modelClass]] will be used.
-     * @return Command the created DB command instance.
-     */
-    protected function createCommandInternal($db)
     {
         /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
@@ -297,47 +313,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         return $db->createCommand($sql, $params);
-    }
-
-    /**
-     * Creates a command for lazy loading of a relation.
-     * @param Connection|null $db the DB connection used to create the DB command.
-     * @return Command the created DB command instance.
-     */
-    private function createRelationalCommand($db = null)
-    {
-        $where = $this->where;
-
-        if ($this->via instanceof self) {
-            // via pivot table
-            $viaModels = $this->via->findPivotRows([$this->primaryModel]);
-            $this->filterByModels($viaModels);
-        } elseif (is_array($this->via)) {
-            // via relation
-            /* @var $viaQuery ActiveQuery */
-            list($viaName, $viaQuery) = $this->via;
-            if ($viaQuery->multiple) {
-                $viaModels = $viaQuery->all();
-                $this->primaryModel->populateRelation($viaName, $viaModels);
-            } else {
-                $model = $viaQuery->one();
-                $this->primaryModel->populateRelation($viaName, $model);
-                $viaModels = $model === null ? [] : [$model];
-            }
-            $this->filterByModels($viaModels);
-        } else {
-            $this->filterByModels([$this->primaryModel]);
-        }
-
-        if (!empty($this->on)) {
-            $this->andWhere($this->on);
-        }
-
-        $command = $this->createCommandInternal($db);
-
-        $this->where = $where;
-
-        return $command;
     }
 
     /**
@@ -552,13 +527,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             // via table
             $this->joinWithRelation($parent, $via, $joinType);
             $this->joinWithRelation($via, $child, $joinType);
-
             return;
         } elseif (is_array($via)) {
             // via relation
             $this->joinWithRelation($parent, $via[1], $joinType);
             $this->joinWithRelation($via[1], $child, $joinType);
-
             return;
         }
 
