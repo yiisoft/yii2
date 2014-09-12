@@ -90,7 +90,7 @@ Predefined path aliases
 - `@webroot` - web root directory of currently running web application.
 
 The aliases specific to the directory structure of the advanced application
-(`@common`,  `@frontend`, `@backend`, and `@console`) are defined in `common/config/aliases.php`.
+(`@common`,  `@frontend`, `@backend`, and `@console`) are defined in `common/config/bootstrap.php`.
 
 
 Applications
