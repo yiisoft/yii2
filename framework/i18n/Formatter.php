@@ -544,11 +544,11 @@ class Formatter extends Component
      */ 
     protected function normalizeDatetimeValue($value) {
         if ($value === null || $value instanceof DateTime) {
-            // return as is
+            // skip any processing
             return $value;
         }
         if (is_numeric($value)) {
-            // if numeric assume its a unix timestamp
+            // process as unix timestamp
             return DateTime::createFromFormat('U', $value);
         }
         return new DateTime($value);
