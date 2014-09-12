@@ -504,9 +504,9 @@ class Formatter extends Component
         if ($timestamp === null) {
             return $this->nullDisplay;
         }
-        if (!$timestamp instanceof DateTime) {
-            // if no valid timestamp found return raw original value
-            return $value;
+        $errors = DateTime::getLastErrors();
+        if (is_array($errors) && !empty($errors['errors'])) {
+            throw new InvalidConfigException(implode("\n", $errors['errors']) . "\n(Value: {$value})");
         }
 
         if ($this->_intlLoaded) {
