@@ -2,6 +2,7 @@
 namespace yiiunit\framework\db;
 
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
@@ -619,5 +620,15 @@ class ActiveRecordTest extends DatabaseTestCase
 //        $this->assertSame(42.1337, $model->float_col2);
 //        $this->assertSame(true, $model->bool_col);
 //        $this->assertSame(false, $model->bool_col2);
+    }
+
+    public function testIssues()
+    {
+        // https://github.com/yiisoft/yii2/issues/4938
+        $category = Category::findOne(2);
+        $this->assertTrue($category instanceof Category);
+        $this->assertEquals(3, $category->getItems()->count());
+        $this->assertEquals(1, $category->getLimitedItems()->count());
+        $this->assertEquals(1, $category->getLimitedItems()->distinct(true)->count());
     }
 }

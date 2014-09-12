@@ -90,6 +90,7 @@ Yii Framework 2 Change Log
 - Bug #4813: Fixed MSSQL schema that was getting incorrect info about constraints (samdark, SerjRamone, o-rey)
 - Bug #4880: Return value of yii\web\Request::getPrefferedLanguage() was a normalized value instead of a valid language value from the input array (cebe)
 - Bug #4920: `yii\filters\auth\CompositeAuth` should not trigger error as long as one of the methods succeeds (qiangxue)
+- Bug #4938: When `yii\db\ActiveQuery` is used to build sub-queries, its WHERE clause is not correctly generated (qiangxue)
 - Bug #4954: MSSQL column comments are not retrieved correctly (SerjRamone)
 - Bug #4970: `joinWith()` called by a relation was ignored by `yii\db\ActiveQuery` (stepanselyuk)
 - Bug #5001: `yii\rest\CreateAction`, `yii\rest\UpdateAction` and `yii\rest\DeleteAction` should throw 500 error if the model operation returns false without validation errors (qiangxue)

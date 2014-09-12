@@ -144,7 +144,7 @@ class BatchQueryResult extends Object implements \Iterator
             $rows[] = $row;
         }
 
-        return $this->query->prepareResult($rows);
+        return $this->query->populate($rows);
     }
 
     /**
