@@ -492,7 +492,7 @@ class Formatter extends Component
     ];
 
     /**
-     * @param DateTime $value normalized datetime value
+     * @param string $value normalized datetime value
      * @param string $format the format used to convert the value into a date string.
      * @param string $type 'date', 'time', or 'datetime'.
      * @throws InvalidConfigException if the date format is invalid.
@@ -540,7 +540,7 @@ class Formatter extends Component
      * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
      *
      * @param mixed $value the datetime value to be normalized.
-     * @return DateTime object the normalized datetime value
+     * @return mixed the normalized datetime value
      */ 
     protected function normalizeDatetimeValue($value) {
         if ($value === null || $value instanceof DateTime) {
