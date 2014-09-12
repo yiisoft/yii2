@@ -529,9 +529,9 @@ class Formatter extends Component
             } else {
                 $format = $this->getPhpDatePattern($format);
             }
-			if ($this->timeZone != null) {
-				$value->setTimezone(new \DateTimeZone($this->timeZone));
-			}
+            if ($this->timeZone != null) {
+                $value->setTimezone(new \DateTimeZone($this->timeZone));
+            }
             return $value->format($format);
         }
     }
@@ -541,18 +541,17 @@ class Formatter extends Component
      *
      * @param mixed $value the datetime value to be normalized.
      * @return DateTime object the normalized datetime value
-     */
-	 
-	protected function normalizeDatetimeValue($value) {
-		if ($value === null) {
+     */ 
+    protected function normalizeDatetimeValue($value) {
+        if ($value === null) {
             return null;
         }
-		if ($value instanceof DateTime) {
+        if ($value instanceof DateTime) {
             return $value;
         }
-		return new DateTime($value);
-	}
-	
+        return new DateTime($value);
+    }
+    
     private function getIntlDatePattern($pattern)
     {
         if (strpos($pattern, 'php:') === 0) {
