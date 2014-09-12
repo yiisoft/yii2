@@ -8,6 +8,7 @@
 namespace yii\rest;
 
 use Yii;
+use yii\web\ServerErrorHttpException;
 
 /**
  * DeleteAction implements the API endpoint for deleting a model.
@@ -29,7 +30,9 @@ class DeleteAction extends Action
             call_user_func($this->checkAccess, $this->id, $model);
         }
 
-        $model->delete();
+        if ($model->delete() === false) {
+            throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
+        }
 
         Yii::$app->getResponse()->setStatusCode(204);
     }
