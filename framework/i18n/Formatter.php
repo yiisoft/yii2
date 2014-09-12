@@ -781,7 +781,7 @@ class Formatter extends Component
                     $dateNow->setTimezone($timezone);
                 }
 
-                $dateThen->setTimezone($timezone);
+                $dateThen = $timestamp->setTimezone($timezone);
 
                 $interval = $dateThen->diff($dateNow);
             }
