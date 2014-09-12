@@ -735,7 +735,8 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return number_format($this->normalizeDatetimeValue($value), 0, '.', '');
+        $timestamp = $this->normalizeDatetimeValue($value);
+        return number_format($timestamp->format('U'), 0, '.', '');
     }
 
     /**
