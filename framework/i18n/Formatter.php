@@ -500,9 +500,13 @@ class Formatter extends Component
      */
     private function formatDateTimeValue($value, $format, $type)
     {
-        $value = $this->normalizeDatetimeValue($value);
-        if ($value === null) {
+        $timestamp = $this->normalizeDatetimeValue($value);
+        if ($timestamp === null) {
             return $this->nullDisplay;
+        }
+        if (!$timestamp instanceof DateTime) {
+            // if no valid timestamp found return raw original value
+            return $value;
         }
 
         if ($this->_intlLoaded) {
@@ -521,7 +525,7 @@ class Formatter extends Component
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
             }
-            return $formatter->format($value);
+            return $formatter->format($timestamp);
         } else {
             // replace short, medium, long and full with real patterns in case intl is not loaded.
             if (isset($this->_phpNameToPattern[$format][$type])) {
@@ -530,9 +534,9 @@ class Formatter extends Component
                 $format = $this->getPhpDatePattern($format);
             }
             if ($this->timeZone != null) {
-                $value->setTimezone(new \DateTimeZone($this->timeZone));
+                $timestamp->setTimezone(new \DateTimeZone($this->timeZone));
             }
-            return $value->format($format);
+            return $timestamp->format($format);
         }
     }
 
