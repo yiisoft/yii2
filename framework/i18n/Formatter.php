@@ -777,7 +777,7 @@ class Formatter extends Component
                 if ($referenceTime === null) {
                     $dateNow = new DateTime('now', $timezone);
                 } else {
-                    $referenceTime = $this->normalizeDatetimeValue($referenceTime);
+                    $dateNow = $this->normalizeDatetimeValue($referenceTime);
                     $dateNow->setTimezone($timezone);
                 }
 
