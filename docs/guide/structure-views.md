@@ -264,7 +264,7 @@ echo $this->render('report', [
 ```
 
 The pull approach actively retrieves data from the [[yii\base\View|view component]] or other objects accessible
-in views (e.g. `Yii::$app`). Using the above code as an example, within the view you can get the controller object
+in views (e.g. `Yii::$app`). Using the code below as an example, within the view you can get the controller object
 by the expression `$this->context`. And as a result, it is possible for you to access any properties or methods
 of the controller in the `report` view, such as the controller ID shown in the following:
 
