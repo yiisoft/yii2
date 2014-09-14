@@ -139,9 +139,9 @@ RESTful Web 服务
 -----
 
 * **编撰中** [概述](test-overview.md)
-* **待定中** [单元测试](test-unit.md)
-* **待定中** [功能测试](test-functional.md)
-* **待定中** [验收测试](test-acceptance.md)
+* **编撰中** [单元测试](test-unit.md)
+* **编撰中** [功能测试](test-functional.md)
+* **编撰中** [验收测试](test-acceptance.md)
 * **编撰中** [测试夹具](test-fixtures.md)
 
 
