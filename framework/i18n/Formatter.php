@@ -1181,6 +1181,10 @@ class Formatter extends Component
      */
     protected function normalizeNumericValue($value)
     {
+        if ($value == null) {
+            // prevent exception when converting empty strings
+            return 0;
+        }
         if (is_string($value) && is_numeric($value)) {
             $value = (float) $value;
         }
