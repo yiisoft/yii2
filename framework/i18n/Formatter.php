@@ -15,6 +15,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\FormatConverter;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 
@@ -72,7 +73,7 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asDate()|date]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      */
@@ -81,7 +82,7 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asTime()|time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      */
@@ -90,7 +91,7 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asDateTime()|date and time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
@@ -464,34 +465,6 @@ class Formatter extends Component
     ];
 
     /**
-     * @var array with the standard php definition for short, medium, long an full
-     * format as pattern for date, time and datetime.
-     * This is used as fallback when the intl extension is not installed.
-     */
-    private $_phpNameToPattern = [
-        'short' => [
-            'date' => 'n/j/y',
-            'time' => 'H:i',
-            'datetime' => 'n/j/y H:i',
-        ],
-        'medium' => [
-            'date' => 'M j, Y',
-            'time' => 'g:i:s A',
-            'datetime' => 'M j, Y g:i:s A',
-        ],
-        'long' => [
-            'date' => 'F j, Y',
-            'time' => 'g:i:sA',
-            'datetime' => 'F j, Y g:i:sA',
-        ],
-        'full' => [
-            'date' => 'l, F j, Y',
-            'time' => 'g:i:sA T',
-            'datetime' => 'l, F j, Y g:i:sA T',
-        ],
-    ];
-
-    /**
      * @param integer $value normalized datetime value
      * @param string $format the format used to convert the value into a date string.
      * @param string $type 'date', 'time', or 'datetime'.
@@ -506,7 +479,9 @@ class Formatter extends Component
         }
 
         if ($this->_intlLoaded) {
-            $format = $this->getIntlDatePattern($format);
+            if (strpos($format, 'php:') === 0) {
+                $format = FormatConverter::convertDatePhpToIcu(substr($format, 4));
+            }
             if (isset($this->_dateFormats[$format])) {
                 if ($type === 'date') {
                     $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $this->timeZone);
@@ -523,11 +498,10 @@ class Formatter extends Component
             }
             return $formatter->format($value);
         } else {
-            // replace short, medium, long and full with real patterns in case intl is not loaded.
-            if (isset($this->_phpNameToPattern[$format][$type])) {
-                $format = $this->_phpNameToPattern[$format][$type];
+            if (strpos($format, 'php:') === 0) {
+                $format = substr($format, 4);
             } else {
-                $format = $this->getPhpDatePattern($format);
+                $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
             }
             $date = new DateTime(null, new \DateTimeZone($this->timeZone));
             $date->setTimestamp($value);
@@ -559,170 +533,6 @@ class Formatter extends Component
         } else {
             return (double)$value;
         }
-    }
-
-    private function getIntlDatePattern($pattern)
-    {
-        if (strpos($pattern, 'php:') === 0) {
-            return $this->convertPatternPhpToIcu(substr($pattern, 4));
-        } else {
-            return $pattern;
-        }
-    }
-
-    private function getPhpDatePattern($pattern)
-    {
-        if (strpos($pattern, 'php:') === 0) {
-            return substr($pattern, 4);
-        } else {
-            return $this->convertPatternIcuToPhp($pattern);
-        }
-    }
-
-    /**
-     * intlFormatter class (ICU based) and DateTime class don't have same format string.
-     * These format patterns are completely incompatible and must be converted.
-     *
-     * This method converts an ICU (php intl) formatted date, time or datetime string in
-     * a php compatible format string.
-     *
-     * @param string $pattern dateformat pattern like 'dd.mm.yyyy' or 'short'/'medium'/
-     *          'long'/'full' or 'db
-     * @return string with converted date format pattern.
-     * @throws InvalidConfigException
-     */
-    private function convertPatternIcuToPhp($pattern)
-    {
-        return strtr($pattern, [
-            'dd' => 'd',    // day with leading zeros
-            'd' => 'j',     // day without leading zeros
-            'E' => 'D',     // day written in short form eg. Sun
-            'EE' => 'D',
-            'EEE' => 'D',
-            'EEEE' => 'l',  // day fully written eg. Sunday
-            'e' => 'N',     // ISO-8601 numeric representation of the day of the week 1=Mon to 7=Sun
-            'ee' => 'N',    // php 'w' 0=Sun to 6=Sat isn't supported by ICU -> 'w' means week number of year
-            // engl. ordinal st, nd, rd; it's not support by ICU but we added
-            'D' => 'z',     // day of the year 0 to 365
-            'w' => 'W',     // ISO-8601 week number of year, weeks starting on Monday
-            'W' => '',      // week of the current month; isn't supported by php
-            'F' => '',      // Day of Week in Month. eg. 2nd Wednesday in July
-            'g' => '',      // Modified Julian day. This is different from the conventional Julian day number in two regards.
-            'M' => 'n',     // Numeric representation of a month, without leading zeros
-            'MM' => 'm',    // Numeric representation of a month, with leading zeros
-            'MMM' => 'M',   // A short textual representation of a month, three letters
-            'MMMM' => 'F',  // A full textual representation of a month, such as January or March
-            'Q' => '',      // number of quarter not supported in php
-            'QQ' => '',     // number of quarter '02' not supported in php
-            'QQQ' => '',    // quarter 'Q2' not supported in php
-            'QQQQ' => '',   // quarter '2nd quarter' not supported in php
-            'QQQQQ' => '',  // number of quarter '2' not supported in php
-            'Y' => 'Y',     // 4digit year number eg. 2014
-            'y' => 'Y',     // 4digit year also
-            'yyyy' => 'Y',  // 4digit year also
-            'yy' => 'y',    // 2digit year number eg. 14
-            'r' => '',      // related Gregorian year, not supported by php
-            'G' => '',      // ear designator like AD
-            'a' => 'a',     // Lowercase Ante meridiem and Post
-            'h' => 'g',     // 12-hour format of an hour without leading zeros 1 to 12h
-            'K' => 'g',     // 12-hour format of an hour without leading zeros 0 to 11h, not supported by php
-            'H' => 'G',     // 24-hour format of an hour without leading zeros 0 to 23h
-            'k' => 'G',     // 24-hour format of an hour without leading zeros 1 to 24h, not supported by php
-            'hh' => 'h',    // 12-hour format of an hour with leading zeros, 01 to 12 h
-            'KK' => 'h',    // 12-hour format of an hour with leading zeros, 00 to 11 h, not supported by php
-            'HH' => 'H',    // 24-hour format of an hour with leading zeros, 00 to 23 h
-            'kk' => 'H',    // 24-hour format of an hour with leading zeros, 01 to 24 h, not supported by php
-            'm' => 'i',     // Minutes without leading zeros, not supported by php
-            'mm' => 'i',    // Minutes with leading zeros
-            's' => 's',     // Seconds, without leading zeros, not supported by php
-            'ss' => 's',    // Seconds, with leading zeros
-            'SSS' => '',    // millisecond (maximum of 3 significant digits), not supported by php
-            'A' => '',      // milliseconds in day, not supported by php
-            'Z' => 'O',     // Difference to Greenwich time (GMT) in hours
-            'ZZ' => 'O',     // Difference to Greenwich time (GMT) in hours
-            'ZZZ' => 'O',     // Difference to Greenwich time (GMT) in hours
-            'z' => 'T',     // Timezone abbreviation
-            'zz' => 'T',     // Timezone abbreviation
-            'zzz' => 'T',     // Timezone abbreviation
-            'zzzz' => 'T',  // Timzone full name, not supported by php
-            'V' => 'e',      // Timezone identifier eg. Europe/Berlin
-            'VV' => 'e',
-            'VVV' => 'e',
-            'VVVV' => 'e'
-        ]);
-    }
-
-    /**
-     * intlFormatter class (ICU based) and DateTime class don't have same format string.
-     * These format patterns are completely incompatible and must be converted.
-     *
-     * This method converts PHP formatted date, time or datetime string in
-     * an ICU (php intl) compatible format string.
-     *
-     * @param string $pattern dateformat pattern like 'd.m.Y' or 'short'/'medium'/
-     *          'long'/'full' or 'db
-     * @return string with converted date format pattern.
-     * @throws InvalidConfigException
-     */
-    private function convertPatternPhpToIcu($pattern)
-    {
-        return strtr($pattern, [
-            'd' => 'dd',    // day with leading zeros
-            'j' => 'd',     // day without leading zeros
-            'D' => 'EEE',   // day written in short form eg. Sun
-            'l' => 'EEEE',  // day fully written eg. Sunday
-            'N' => 'e',     // ISO-8601 numeric representation of the day of the week 1=Mon to 7=Sun
-            // php 'w' 0=Sun to 6=Sat isn't supported by ICU -> 'w' means week number of year
-            'S' => '',      // engl. ordinal st, nd, rd; it's not support by ICU
-            'z' => 'D',     // day of the year 0 to 365
-            'W' => 'w',     // ISO-8601 week number of year, weeks starting on Monday
-            // week of the current month; isn't supported by php
-            // Day of Week in Month. eg. 2nd Wednesday in July not supported by php
-            // Modified Julian day. This is different from the conventional Julian day number in two regards.
-            'n'=> 'M',      // Numeric representation of a month, without leading zeros
-            'm' => 'MM',    // Numeric representation of a month, with leading zeros
-            'M' => 'MMM',   // A short textual representation of a month, three letters
-            'F' => 'MMMM',  // A full textual representation of a month, such as January or March
-            // number of quarter not supported in php
-            // number of quarter '02' not supported in php
-            // quarter 'Q2' not supported in php
-            // quarter '2nd quarter' not supported in php
-            // number of quarter '2' not supported in php
-            'Y' => 'yyyy',  // 4digit year eg. 2014
-            'y' => 'yy',    // 2digit year number eg. 14
-            // related Gregorian year, not supported by php
-            // ear designator like AD
-            'a' => 'a',     // Lowercase Ante meridiem and Post am. or pm.
-            'A' => 'a',     // Upercase Ante meridiem and Post AM or PM, not supported by ICU
-            'g' => 'h',     // 12-hour format of an hour without leading zeros 1 to 12h
-            // 12-hour format of an hour without leading zeros 0 to 11h, not supported by php
-            'G' => 'H',     // 24-hour format of an hour without leading zeros 0 to 23h
-            // 24-hour format of an hour without leading zeros 1 to 24h, not supported by php
-            'h' => 'hh',    // 12-hour format of an hour with leading zeros, 01 to 12 h
-            // 12-hour format of an hour with leading zeros, 00 to 11 h, not supported by php
-            'H' => 'HH',    // 24-hour format of an hour with leading zeros, 00 to 23 h
-            // 24-hour format of an hour with leading zeros, 01 to 24 h, not supported by php
-            // Minutes without leading zeros, not supported by php
-            'i' => 'mm',    // Minutes with leading zeros
-            // Seconds, without leading zeros, not supported by php
-            's' => 'ss',    // Seconds, with leading zeros
-            // millisecond (maximum of 3 significant digits), not supported by php
-            // milliseconds in day, not supported by php
-            'O' => 'Z',     // Difference to Greenwich time (GMT) in hours
-            'T' => 'z',     // Timezone abbreviation
-            // Timzone full name, not supported by php
-            'e' => 'VV',    // Timezone identifier eg. Europe/Berlin
-            'w' => '',      // Numeric representation of the day of the week 0=Sun, 6=Sat, not sup. ICU
-            'L' => '',      //Whether it's a leap year 1= leap, 0= normal year, not sup. ICU
-            'B' => '',      // Swatch Internet time, 000 to 999, not sup. ICU
-            'u' => '',      // Microseconds Note that date() will always generate 000000 since it takes an integer parameter, not sup. ICU
-            'P' => '',      // Difference to Greenwich time (GMT) with colon between hours and minutes, not sup. ICU
-            'Z' => '',      // Timezone offset in seconds. The offset for timezones west of UTC is always negative, and for those east of UTC is always positive, not sup. ICU
-            'c' => 'yyy-MM-dd\'T\'mm:HH:ssZ', //ISO 8601 date, it works only if nothing else than 'c' is in pattern.
-            'r' => 'eee, dd MMM yyyy mm:HH:ss Z', // » RFC 2822 formatted date, it works only if nothing else than 'r' is in pattern
-            'U' => ''       // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT), not supported in ICU
-
-        ]);
     }
 
     /**

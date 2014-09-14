@@ -1,24 +1,33 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
-namespace yii\i18n;
 
 // override information about intl
-use yiiunit\framework\i18n\FormatterTest;
-
-function extension_loaded($name)
-{
-    if ($name === 'intl' && FormatterTest::$enableIntl !== null) {
-        return FormatterTest::$enableIntl;
+namespace yii\helpers {
+    use yiiunit\framework\i18n\FormatterTest;
+    if (!function_exists('yii\helpers\extension_loaded')) {
+        function extension_loaded($name)
+        {
+            if ($name === 'intl' && FormatterTest::$enableIntl !== null) {
+                return FormatterTest::$enableIntl;
+            }
+            return \extension_loaded($name);
+        }
     }
-    return \extension_loaded($name);
 }
 
-namespace yiiunit\framework\i18n;
+// override information about intl
+namespace yii\i18n {
+    use yiiunit\framework\i18n\FormatterTest;
+
+    function extension_loaded($name)
+    {
+        if ($name === 'intl' && FormatterTest::$enableIntl !== null) {
+            return FormatterTest::$enableIntl;
+        }
+        return \extension_loaded($name);
+    }
+}
+
+namespace yiiunit\framework\i18n {
 
 use yii\base\InvalidParamException;
 use yii\i18n\Formatter;
@@ -64,6 +73,7 @@ class FormatterTest extends TestCase
     protected function tearDown()
     {
         parent::tearDown();
+        static::$enableIntl = null;
         $this->formatter = null;
     }
 
@@ -793,4 +803,5 @@ class FormatterTest extends TestCase
 //        $this->formatter->thousandSeparator = '';
         $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
     }
+}
 }
