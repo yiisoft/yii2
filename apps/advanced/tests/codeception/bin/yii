@@ -21,7 +21,7 @@ $config = yii\helpers\ArrayHelper::merge(
             'fixture' => [
                 'class' => 'yii\faker\FixtureController',
                 'fixtureDataPath' => '@tests/codeception/common/fixtures',
-                'templatePath' => '@tests/codeception/common/templates',
+                'templatePath' => '@tests/codeception/common/templates/fixtures',
             ],
         ],
     ]
