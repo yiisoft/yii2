@@ -232,7 +232,7 @@ Observe more carefully and you will find that the URL in the browser also change
 http://hostname/index.php?r=country/index&page=2
 ```
 
-Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the ncessary functionality to paginate a data set:
+Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:
 
 * Initially, [[yii\data\Pagination|Pagination]] represents the first page, which reflects the country SELECT query
   with the clause `LIMIT 5 OFFSET 0`. As a result, the first five countries will be fetched and displayed.
