@@ -88,7 +88,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if ($this->_returnUrl === null) {
             $this->_returnUrl = $this->defaultReturnUrl();
         }
-
         return $this->_returnUrl;
     }
 
@@ -202,7 +201,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if ($errorNumber > 0) {
             throw new Exception('Curl error requesting "' .  $url . '": #' . $errorNumber . ' - ' . $errorMessage);
         }
-        if ($responseHeaders['http_code'] != 200) {
+        if (strncmp($responseHeaders['http_code'], '20', 2) !== 0) {
             throw new InvalidResponseException($responseHeaders, $response, 'Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
         }
 
@@ -232,7 +231,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 }
             }
         }
-
         return $res;
     }
 
@@ -291,7 +289,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 throw new Exception('Unknown response type "' . $contentType . '".');
             }
         }
-
         return $response;
     }
 
@@ -311,7 +308,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 $result[$key] = $this->convertXmlToArray($value);
             }
         }
-
         return $result;
     }
 
@@ -333,7 +329,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 return self::CONTENT_TYPE_XML;
             }
         }
-
         return self::CONTENT_TYPE_AUTO;
     }
 
@@ -353,7 +348,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if (preg_match('/^<.*>$/is', $rawContent)) {
             return self::CONTENT_TYPE_XML;
         }
-
         return self::CONTENT_TYPE_AUTO;
     }
 
@@ -367,7 +361,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if (!array_key_exists('class', $signatureMethodConfig)) {
             $signatureMethodConfig['class'] = signature\HmacSha1::className();
         }
-
         return Yii::createObject($signatureMethodConfig);
     }
 
@@ -381,7 +374,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if (!array_key_exists('class', $tokenConfig)) {
             $tokenConfig['class'] = OAuthToken::className();
         }
-
         return Yii::createObject($tokenConfig);
     }
 
@@ -399,7 +391,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
             $url .= '&';
         }
         $url .= http_build_query($params, '', '&', PHP_QUERY_RFC3986);
-
         return $url;
     }
 
@@ -426,7 +417,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 $token = $this->refreshAccessToken($token);
             }
         }
-
         return $token;
     }
 
@@ -441,7 +431,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         $session = Yii::$app->getSession();
         $key = $this->getStateKeyPrefix() . $key;
         $session->set($key, $value);
-
         return $this;
     }
 
@@ -455,7 +444,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         $session = Yii::$app->getSession();
         $key = $this->getStateKeyPrefix() . $key;
         $value = $session->get($key);
-
         return $value;
     }
 
@@ -469,7 +457,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         $session = Yii::$app->getSession();
         $key = $this->getStateKeyPrefix() . $key;
         $session->remove($key);
-
         return true;
     }
 
@@ -502,7 +489,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if (!is_object($accessToken) || !$accessToken->getIsValid()) {
             throw new Exception('Invalid access token.');
         }
-
         return $this->apiInternal($accessToken, $url, $method, $params, $headers);
     }
 
