@@ -9,7 +9,6 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Application;
-use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
@@ -302,7 +301,7 @@ class HelpController extends Controller
         if (!empty($options)) {
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
             foreach ($options as $name => $option) {
-                echo $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, $option['type'], $option['default'], $option['comment']) . "\n\n";
+                echo $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), !empty($option['required']), $option['type'], $option['default'], $option['comment']) . "\n\n";
             }
         }
     }
@@ -329,7 +328,12 @@ class HelpController extends Controller
                 // show as integer to avoid confusion
                 $defaultValue = (int) $defaultValue;
             }
-            $doc = "$type (defaults to " . var_export($defaultValue, true) . ")";
+            if (is_string($defaultValue)) {
+                $defaultValue = "'" . $defaultValue . "'";
+            } else {
+                $defaultValue = var_export($defaultValue, true);
+            }
+            $doc = "$type (defaults to " . $defaultValue . ")";
         } elseif (trim($type) !== '') {
             $doc = $type;
         }
