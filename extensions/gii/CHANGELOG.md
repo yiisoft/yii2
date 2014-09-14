@@ -14,6 +14,7 @@ Yii Framework 2 gii extension Change Log
 - Enh #3088: The gii module will manage their own URL rules now (qiangxue)
 - Enh #3222: Added `useTablePrefix` option to the model generator for Gii (horizons2)
 - Enh #3811: Now Gii model generator makes autocomplete for model class field (mitalcoi)
+- New #1280: Gii can now be run from command line (schmunk42, cebe, qiangxue)
 
 
 2.0.0-beta April 13, 2014
