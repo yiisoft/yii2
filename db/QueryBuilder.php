@@ -85,7 +85,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function build($query, $params = [])
     {
-        $query->prepareBuild($this);
+        $query = $query->prepare($this);
 
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 

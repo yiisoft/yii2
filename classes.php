@@ -28,7 +28,6 @@ return [
   'yii\base\Event' => YII2_PATH . '/base/Event.php',
   'yii\base\Exception' => YII2_PATH . '/base/Exception.php',
   'yii\base\ExitException' => YII2_PATH . '/base/ExitException.php',
-  'yii\base\Formatter' => YII2_PATH . '/base/Formatter.php',
   'yii\base\InlineAction' => YII2_PATH . '/base/InlineAction.php',
   'yii\base\InvalidCallException' => YII2_PATH . '/base/InvalidCallException.php',
   'yii\base\InvalidConfigException' => YII2_PATH . '/base/InvalidConfigException.php',

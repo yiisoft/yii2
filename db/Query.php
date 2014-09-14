@@ -129,9 +129,11 @@ class Query extends Component implements QueryInterface
      * This method is called by [[QueryBuilder]] when it starts to build SQL from a query object.
      * You may override this method to do some final preparation work when converting a query into a SQL statement.
      * @param QueryBuilder $builder
+     * @return Query a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
      */
-    public function prepareBuild($builder)
+    public function prepare($builder)
     {
+        return $this;
     }
 
     /**
@@ -202,7 +204,7 @@ class Query extends Component implements QueryInterface
     public function all($db = null)
     {
         $rows = $this->createCommand($db)->queryAll();
-        return $this->prepareResult($rows);
+        return $this->populate($rows);
     }
 
     /**
@@ -212,7 +214,7 @@ class Query extends Component implements QueryInterface
      * @param array $rows the raw query result from database
      * @return array the converted query result
      */
-    public function prepareResult($rows)
+    public function populate($rows)
     {
         if ($this->indexBy === null) {
             return $rows;
@@ -372,7 +374,7 @@ class Query extends Component implements QueryInterface
         } else {
             return (new Query)->select([$selectExpression])
                 ->from(['c' => $this])
-                ->createCommand($db)
+                ->createCommand($command->db)
                 ->queryScalar();
         }
     }
@@ -832,5 +834,31 @@ class Query extends Component implements QueryInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * Creates a new Query object and copies its property values from an existing one.
+     * The properties being copies are the ones to be used by query builders.
+     * @param Query $from the source query object
+     * @return Query the new Query object
+     */
+    public static function create($from)
+    {
+        return new self([
+            'where' => $from->where,
+            'limit' => $from->limit,
+            'offset' => $from->offset,
+            'orderBy' => $from->orderBy,
+            'indexBy' => $from->indexBy,
+            'select' => $from->select,
+            'selectOption' => $from->selectOption,
+            'distinct' => $from->distinct,
+            'from' => $from->from,
+            'groupBy' => $from->groupBy,
+            'join' => $from->join,
+            'having' => $from->having,
+            'union' => $from->union,
+            'params' => $from->params,
+        ]);
     }
 }

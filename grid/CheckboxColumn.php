@@ -44,7 +44,8 @@ class CheckboxColumn extends Column
      */
     public $name = 'selection';
     /**
-     * @var array HTML attributes for the checkboxes.
+     * @var array|\Closure the HTML attributes for checkboxes. This can either be an array of
+     * attributes or an anonymous function ([[Closure]]) that returns such an array.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $checkboxOptions = [];

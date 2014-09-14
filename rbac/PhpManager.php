@@ -68,7 +68,7 @@ class PhpManager extends BaseManager
      */
     protected $children = []; // itemName, childName => child
     /**
-     * @var Assignment[]
+     * @var array
      */
     protected $assignments = []; // userId, itemName => assignment
     /**
