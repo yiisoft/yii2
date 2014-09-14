@@ -7,6 +7,7 @@
 
 namespace yii\filters;
 
+use yii\base\Application;
 use yii\base\Component;
 use yii\base\Action;
 use yii\web\User;
@@ -35,6 +36,11 @@ class AccessRule extends Component
      * If not set or empty, it means this rule applies to all controllers.
      */
     public $controllers;
+    /**
+     * @var array list of module IDs that this rule applies to. The comparison is case-sensitive.
+     * If not set or empty, it means this rule applies to all modules.
+     */
+    public $modules;
     /**
      * @var array list of roles that this rule applies to. Two special roles are recognized, and
      * they are checked via [[User::isGuest]]:
@@ -105,6 +111,7 @@ class AccessRule extends Component
             && $this->matchIP($request->getUserIP())
             && $this->matchVerb($request->getMethod())
             && $this->matchController($action->controller)
+            && $this->matchModule($action->controller->module)
             && $this->matchCustom($action)
         ) {
             return $this->allow ? true : false;
@@ -129,6 +136,15 @@ class AccessRule extends Component
     protected function matchController($controller)
     {
         return empty($this->controllers) || in_array($controller->uniqueId, $this->controllers, true);
+    }
+
+    /**
+     * @param \yii\base\Module $module the module
+     * @return boolean whether the rule applies to the module
+     */
+    protected function matchModule($module)
+    {
+        return empty($this->modules) || $module instanceof Application || in_array($module->uniqueId, $this->modules, true);
     }
 
     /**

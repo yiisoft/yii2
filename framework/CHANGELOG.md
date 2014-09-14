@@ -206,6 +206,7 @@ Yii Framework 2 Change Log
 - Enh #4691: Encoding on `ActiveForm` and `ActiveField` validation errors is now configurable (Alex-Code)
 - Enh #4740: Added `yii\web\Session::addFlash()` (restyler)
 - Enh #4897: Added `yii\helpers\FileHelper::mimeMagicFile` (qiangxue)
+- Enh #4999: Added `yii\filter\AccessRule::modules` (trntv)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
