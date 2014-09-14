@@ -7,7 +7,6 @@
 
 namespace yii\filters;
 
-use yii\base\Application;
 use yii\base\Component;
 use yii\base\Action;
 use yii\web\User;
