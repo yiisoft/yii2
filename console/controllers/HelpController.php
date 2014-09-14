@@ -294,14 +294,24 @@ class HelpController extends Controller
 
         if (!empty($args)) {
             foreach ($args as $name => $arg) {
-                echo $this->formatOptionHelp('- ' . $this->ansiFormat($name, Console::FG_CYAN), $arg['required'], $arg['type'], $arg['default'], $arg['comment']) . "\n\n";
+                echo $this->formatOptionHelp(
+                        '- ' . $this->ansiFormat($name, Console::FG_CYAN),
+                        $arg['required'],
+                        $arg['type'],
+                        $arg['default'],
+                        $arg['comment']) . "\n\n";
             }
         }
 
         if (!empty($options)) {
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
             foreach ($options as $name => $option) {
-                echo $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), !empty($option['required']), $option['type'], $option['default'], $option['comment']) . "\n\n";
+                echo $this->formatOptionHelp(
+                        $this->ansiFormat('--' . $name, Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
+                        !empty($option['required']),
+                        $option['type'],
+                        $option['default'],
+                        $option['comment']) . "\n\n";
             }
         }
     }
