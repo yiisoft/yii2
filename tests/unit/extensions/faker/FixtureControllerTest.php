@@ -24,6 +24,11 @@ class FixtureControllerTest extends TestCase
     {
         parent::setUp();
 
+        if (defined('HHVM_VERSION')) {
+            // https://github.com/facebook/hhvm/issues/1447
+            $this->markTestSkipped('Can not test on HHVM because require is cached.');
+        }
+
         $this->mockApplication();
 
         $this->_fixtureController = Yii::createObject([

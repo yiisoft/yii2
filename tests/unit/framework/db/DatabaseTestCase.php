@@ -51,7 +51,12 @@ abstract class DatabaseTestCase extends TestCase
         } else {
             $fixture = null;
         }
-        return $this->db = $this->prepareDatabase($config, $fixture, $open);
+        try {
+            $this->db = $this->prepareDatabase($config, $fixture, $open);
+        } catch (\Exception $e) {
+            $this->markTestSkipped("Something wrong when preparing database: " . $e->getMessage());
+        }
+        return $this->db;
     }
 
     public function prepareDatabase($config, $fixture, $open = true)

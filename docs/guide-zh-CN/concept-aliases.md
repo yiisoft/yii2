@@ -19,7 +19,7 @@ Yii::setAlias('@bar', 'http://www.example.com');
 
 > 注意：别名所指向的文件路径或 URL 不一定是真实存在的文件或资源。
 
-可以通过在一个别名后面加斜杠 `/` 和一至多个路径分段生成新别名（无需调用 [[Yii::setAlias()]]）。我们把通过 [[Yii::setAlias()]] 定义的别名称为**根别名**，而用他们衍生出去的别名成为**衍生别名**。例如，`@foo` 就是跟别名，而 `@foo/bar/file.php` 是一个衍生别名。
+可以通过在一个别名后面加斜杠 `/` 和一至多个路径分段生成新别名（无需调用 [[Yii::setAlias()]]）。我们把通过 [[Yii::setAlias()]] 定义的别名称为**根别名**，而用他们衍生出去的别名成为**衍生别名**。例如，`@foo` 就是根别名，而 `@foo/bar/file.php` 是一个衍生别名。
 
 你还可以用别名去定义新别名（根别名与衍生别名均可）：
 
@@ -86,7 +86,7 @@ $cache = new FileCache([
 预定义的别名 <a name="predefined-aliases"></a>
 ------------------
 
-Yii 预定义了一系列别名来简化常用路径和 URL的使用：
+Yii 预定义了一系列别名来简化常用路径和 URL 的使用：
 
 - `@yii` - `BaseYii.php` 文件所在的目录（也被称为框架安装目录）
 - `@app` - 当前运行的应用 [[yii\base\Application::basePath|根路径（base path）]] 

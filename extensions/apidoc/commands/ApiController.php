@@ -10,7 +10,6 @@ namespace yii\apidoc\commands;
 use yii\apidoc\components\BaseController;
 use yii\apidoc\models\Context;
 use yii\apidoc\renderers\ApiRenderer;
-use yii\apidoc\renderers\BaseRenderer;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -48,18 +47,15 @@ class ApiController extends BaseController
 
         // setup reference to guide
         if ($this->guide !== null) {
-            $guideUrl = $this->guide;
-            $referenceFile = $guideUrl . '/' . BaseRenderer::GUIDE_PREFIX . 'references.txt';
+            $renderer->guideUrl = $guideUrl = $this->guide;
         } else {
             $guideUrl = './';
-            $referenceFile = $targetDir . '/' . BaseRenderer::GUIDE_PREFIX . 'references.txt';
+            $renderer->guideUrl = $targetDir;
         }
-        if (file_exists($referenceFile)) {
+        if (file_exists($renderer->generateGuideUrl('README.md'))) {
             $renderer->guideUrl = $guideUrl;
-            $renderer->guideReferences = [];
-            foreach (explode("\n", file_get_contents($referenceFile)) as $reference) {
-                $renderer->guideReferences[BaseRenderer::GUIDE_PREFIX . $reference]['url'] = $renderer->generateGuideUrl($reference);
-            }
+        } else {
+            $renderer->guideUrl = null;
         }
 
         // search for files to process

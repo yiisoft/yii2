@@ -2,6 +2,7 @@
 namespace yiiunit\framework\db;
 
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
@@ -410,6 +411,24 @@ class ActiveRecordTest extends DatabaseTestCase
                     ->orderBy('items.id');
             },
         ])->orderBy('order.id')->one();
+
+        // join with sub-relation called inside Closure
+        $orders = Order::find()->joinWith([
+                'items' => function ($q) {
+                    $q->orderBy('item.id');
+                    $q->joinWith([
+                            'category'=> function ($q) {
+                                $q->where('category.id = 2');
+                            }
+                        ]);
+                },
+            ])->orderBy('order.id')->all();
+        $this->assertEquals(1, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, count($orders[0]->items));
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
     }
 
     public function testJoinWithAndScope()
@@ -583,7 +602,7 @@ class ActiveRecordTest extends DatabaseTestCase
         $model->char_col = '1337';
         $model->char_col2 = 'test';
         $model->char_col3 = 'test123';
-        $model->float_col = 1337.42;
+        $model->float_col = 3.742;
         $model->float_col2 = 42.1337;
         $model->bool_col = true;
         $model->bool_col2 = false;
@@ -601,5 +620,15 @@ class ActiveRecordTest extends DatabaseTestCase
 //        $this->assertSame(42.1337, $model->float_col2);
 //        $this->assertSame(true, $model->bool_col);
 //        $this->assertSame(false, $model->bool_col2);
+    }
+
+    public function testIssues()
+    {
+        // https://github.com/yiisoft/yii2/issues/4938
+        $category = Category::findOne(2);
+        $this->assertTrue($category instanceof Category);
+        $this->assertEquals(3, $category->getItems()->count());
+        $this->assertEquals(1, $category->getLimitedItems()->count());
+        $this->assertEquals(1, $category->getLimitedItems()->distinct(true)->count());
     }
 }

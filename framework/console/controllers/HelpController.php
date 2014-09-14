@@ -345,6 +345,9 @@ class HelpController extends Controller
             }
             $doc = "$type (defaults to " . $defaultValue . ")";
         } elseif (trim($type) !== '') {
+            if (strncmp($type, 'bool', 4) === 0) {
+                $type = 'boolean, 0 or 1';
+            }
             $doc = $type;
         }
 

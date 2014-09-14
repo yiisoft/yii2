@@ -40,7 +40,7 @@ $this->title = 'Login';
 Within a view, you can access `$this` which refers to the [[yii\web\View|view component]] managing
 and rendering this view template.
 
-Besides `$this`, there may be other predefined variables in a view, such as `$form` and `$model` in the above
+Besides `$this`, there may be other predefined variables in a view, such as `$model` in the above
 example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
 or other objects whose trigger the [view rendering](#rendering-views).
 
@@ -264,7 +264,7 @@ echo $this->render('report', [
 ```
 
 The pull approach actively retrieves data from the [[yii\base\View|view component]] or other objects accessible
-in views (e.g. `Yii::$app`). Using the above code as an example, within the view you can get the controller object
+in views (e.g. `Yii::$app`). Using the code below as an example, within the view you can get the controller object
 by the expression `$this->context`. And as a result, it is possible for you to access any properties or methods
 of the controller in the `report` view, such as the controller ID shown in the following:
 

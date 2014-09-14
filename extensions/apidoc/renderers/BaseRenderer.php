@@ -43,7 +43,6 @@ abstract class BaseRenderer extends Component
      */
     public $controller;
     public $guideUrl;
-    public $guideReferences = [];
 
 
     public function init()
@@ -198,6 +197,12 @@ abstract class BaseRenderer extends Component
      */
     public function generateGuideUrl($file)
     {
-        return rtrim($this->guideUrl, '/') . '/' . static::GUIDE_PREFIX . basename($file, '.md') . '.html';
+        $hash = '';
+        if (($pos = strpos($file, '#')) !== false) {
+            $hash = substr($file, $pos);
+            $file = substr($file, 0, $pos);
+        }
+
+        return rtrim($this->guideUrl, '/') . '/' . static::GUIDE_PREFIX . basename($file, '.md') . '.html' . $hash;
     }
 }

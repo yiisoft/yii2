@@ -98,17 +98,22 @@ class QueryBuilder extends \yii\base\Object
             $parts['filter'] = $whereFilter;
         }
 
-        if($query->highlight) {
+        if (!empty($query->highlight)) {
             $parts['highlight'] = $query->highlight;
+        }
+        if (!empty($query->aggregations)) {
+            $parts['aggregations'] = $query->aggregations;
+        }
+        if (!empty($query->stats)) {
+            $parts['stats'] = $query->stats;
+        }
+        if (!empty($query->suggest)) {
+            $parts['suggest'] = $query->suggest;
         }
 
         $sort = $this->buildOrderBy($query->orderBy);
         if (!empty($sort)) {
             $parts['sort'] = $sort;
-        }
-
-        if (!empty($query->facets)) {
-            $parts['facets'] = $query->facets;
         }
 
         $options = [];

@@ -8,7 +8,6 @@
 namespace yii\authclient;
 
 use yii\base\Exception;
-use yii\base\NotSupportedException;
 use Yii;
 
 /**

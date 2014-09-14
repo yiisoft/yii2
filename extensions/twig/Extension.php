@@ -148,7 +148,6 @@ class Extension extends \Twig_Extension
         if (isset($this->aliases[$className])) {
             return $this->aliases[$className];
         }
-        $resolvedClassName = null;
         foreach ($this->namespaces as $namespace) {
             $resolvedClassName = $namespace . '\\' . $className;
             if (class_exists($resolvedClassName)) {

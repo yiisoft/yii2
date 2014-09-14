@@ -63,7 +63,7 @@ trait ArrayableTrait
      * information. For example, depending on the privilege of the current application user,
      * you may return different sets of visible fields or filter out some fields.
      *
-     * The default implementation of this method returns the public object member variables.
+     * The default implementation of this method returns the public object member variables indexed by themselves.
      *
      * @return array the list of field names or field definitions.
      * @see toArray()
@@ -71,7 +71,6 @@ trait ArrayableTrait
     public function fields()
     {
         $fields = array_keys(Yii::getObjectVars($this));
-
         return array_combine($fields, $fields);
     }
 
