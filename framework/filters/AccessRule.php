@@ -144,7 +144,7 @@ class AccessRule extends Component
      */
     protected function matchModule($module)
     {
-        return empty($this->modules) || $module instanceof Application || in_array($module->uniqueId, $this->modules, true);
+        return empty($this->modules) || in_array($module->uniqueId, $this->modules, true);
     }
 
     /**
