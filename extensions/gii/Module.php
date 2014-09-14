@@ -82,13 +82,31 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @inheritdoc
      */
+    public function init()
+    {
+        parent::init();
+        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
+            $this->generators[$id] = Yii::createObject($config);
+        }
+        if (Yii::$app instanceof \yii\console\Application) {
+            $this->controllerNamespace = 'yii\gii\commands';
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function bootstrap($app)
     {
-        $app->getUrlManager()->addRules([
-            $this->id => $this->id . '/default/index',
-            $this->id . '/<id:\w+>' => $this->id . '/default/view',
-            $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
-        ], false);
+        if ($app instanceof \yii\console\Application) {
+            //$app->controllerMap[$this->id] = 'yii\gii\commands\Gii2Controller';
+        } else {
+            $app->getUrlManager()->addRules([
+                $this->id => $this->id . '/default/index',
+                $this->id . '/<id:\w+>' => $this->id . '/default/view',
+                $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
+            ], false);
+        }
     }
 
     /**
@@ -104,10 +122,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
             throw new ForbiddenHttpException('You are not allowed to access this page.');
         }
 
-        foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
-            $this->generators[$id] = Yii::createObject($config);
-        }
-
         $this->resetGlobalSettings();
 
         return true;
@@ -118,7 +132,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     protected function resetGlobalSettings()
     {
-        Yii::$app->assetManager->bundles = [];
+        if (!Yii::$app instanceof \yii\console\Application) {
+            Yii::$app->assetManager->bundles = [];
+        }
     }
 
     /**
@@ -126,6 +142,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     protected function checkAccess()
     {
+        if (Yii::$app instanceof \yii\console\Application) {
+            return true;
+        }
+
         $ip = Yii::$app->getRequest()->getUserIP();
         foreach ($this->allowedIPs as $filter) {
             if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
