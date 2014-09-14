@@ -204,7 +204,7 @@ class ImageValidator extends FileValidator
             $options['minHeight'] = $this->minHeight;
             $options['underHeight'] = Yii::$app->getI18n()->format($this->underHeight, [
                 'attribute' => $label,
-                'limit' => $this->maxHeight
+                'limit' => $this->minHeight
             ], Yii::$app->language);
         }
 
