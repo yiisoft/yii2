@@ -45,7 +45,7 @@ class GenerateController extends Controller
     public function __get($name)
     {
         return isset($this->_options[$name]) ? $this->_options[$name] : null;
-
+        // todo: should determine which options are valid
         if ($this->action) {
             $options = $this->options($this->action->id);
             if (in_array($name, $options)) {
@@ -67,6 +67,7 @@ class GenerateController extends Controller
     {
         $this->_options[$name] = $value;
         return;
+        // todo: should determine which options are valid
         if ($this->action) {
             $options = $this->options($this->action->id);
             if (in_array($name, $options)) {
@@ -122,9 +123,11 @@ class GenerateController extends Controller
     public function options($id)
     {
         if (isset($this->generators[$id])) {
+            $attributes = $this->generators[$id]->attributes;
+            unset($attributes['templates']);
             return array_merge(
                 parent::options($id),
-                array_keys($this->generators[$id]->attributes)
+                array_keys($attributes)
             );
         } else {
             return parent::options($id);
@@ -146,7 +149,8 @@ class GenerateController extends Controller
     public function getActionHelp($action)
     {
         /** @var $action Action */
-        return $action->generator->getDescription();
+        $description = $action->generator->getDescription();
+        return wordwrap(preg_replace('/\s+/', ' ', $description));
     }
 
     /**
@@ -164,17 +168,27 @@ class GenerateController extends Controller
     {
         /** @var $action Action */
         $attributes = $action->generator->attributes;
+        unset($attributes['templates']);
         $hints = $action->generator->hints();
 
         $options = [];
         foreach ($attributes as $name => $value) {
+            $type = gettype($value);
             $options[$name] = [
-                'type' => 'string',
+                'type' => $type === 'NULL' ? 'string' : $type,
+                'required' => $action->generator->isAttributeRequired($name),
                 'default' => $value,
-                'comment' => isset($hints[$name]) ? $hints[$name] : '',
+                'comment' => isset($hints[$name]) ? $this->formatHint($hints[$name]) : '',
             ];
         }
 
         return $options;
+    }
+
+    protected function formatHint($hint)
+    {
+        $hint = preg_replace('%<code>(.*?)</code>%', '\1', $hint);
+        $hint = preg_replace('/\s+/', ' ', $hint);
+        return wordwrap($hint);
     }
 }
