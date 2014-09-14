@@ -737,8 +737,8 @@ class BaseConsole
 
         top:
         $input = $options['default']
-            ? static::input("$text [" . $options['default'] . ']: ')
-            : static::input("$text: ");
+            ? static::input("$text [" . $options['default'] . '] ')
+            : static::input("$text ");
 
         if (!strlen($input)) {
             if (isset($options['default'])) {
@@ -767,7 +767,7 @@ class BaseConsole
      * @param boolean $default this value is returned if no selection is made.
      * @return boolean whether user confirmed
      */
-    public static function confirm($message, $default = true)
+    public static function confirm($message, $default = false)
     {
         echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
         $input = trim(static::stdin());

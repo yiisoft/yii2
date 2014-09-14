@@ -8,17 +8,21 @@
 namespace yii\gii\console;
 
 use Yii;
+use yii\base\InlineAction;
 use yii\console\Controller;
 
 /**
- * Allows you to run Gii from the command line.
- * Example command:
+ * This is the command line version of Gii - a code generator.
+ *
+ * You can use this command to generate models, controllers, etc. For example,
+ * to generate an ActiveRecord model based on a DB table, you can run:
  *
  * ```
- * $ ./yii gii/<generator> --property1=foo --property2=bar --generate=true
+ * $ ./yii gii/model --tableName=city --modelClass=City
  * ```
  *
  * @author Tobias Munk <schmunk@usrbin.de>
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @since  2.0
  */
 class GenerateController extends Controller
@@ -31,6 +35,9 @@ class GenerateController extends Controller
      * @var boolean whether to generate all files and overwrite existing files
      */
     public $generate = false;
+    /**
+     * @var array a list of the available code generators
+     */
     public $generators = [];
 
     /**
@@ -45,19 +52,6 @@ class GenerateController extends Controller
     public function __get($name)
     {
         return isset($this->_options[$name]) ? $this->_options[$name] : null;
-        // todo: should determine which options are valid
-        if ($this->action) {
-            $options = $this->options($this->action->id);
-            if (in_array($name, $options)) {
-                return isset($this->_options[$name]) ? $this->_options[$name] : null;
-            } else {
-                return parent::__get($name);
-            }
-        } elseif (array_key_exists($name, $this->_options)) {
-            return $this->_options[$name];
-        } else {
-            return parent::__get($name);
-        }
     }
 
     /**
@@ -66,20 +60,11 @@ class GenerateController extends Controller
     public function __set($name, $value)
     {
         $this->_options[$name] = $value;
-        return;
-        // todo: should determine which options are valid
-        if ($this->action) {
-            $options = $this->options($this->action->id);
-            if (in_array($name, $options)) {
-                $this->_options[$name] = $value;
-            } else {
-                parent::__set($name, $value);
-            }
-        } else {
-            $this->_options[$name] = $value;
-        }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -88,8 +73,12 @@ class GenerateController extends Controller
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function createAction($id)
     {
+        /** @var $action GenerateAction */
         $action = parent::createAction($id);
         foreach ($this->_options as $name => $value) {
             $action->generator->$name = $value;
@@ -105,13 +94,21 @@ class GenerateController extends Controller
         $actions = [];
         foreach ($this->generators as $name => $generator) {
             $actions[$name] = [
-                'class' => 'yii\gii\console\Action',
+                'class' => 'yii\gii\console\GenerateAction',
                 'generator' => $generator,
             ];
         }
         return $actions;
     }
 
+    public function actionIndex()
+    {
+        $this->run('/help', ['gii']);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getUniqueID()
     {
         return $this->id;
@@ -139,8 +136,12 @@ class GenerateController extends Controller
      */
     public function getActionHelpSummary($action)
     {
-        /** @var $action Action */
-        return $action->generator->getName();
+        if ($action instanceof InlineAction) {
+            return parent::getActionHelpSummary($action);
+        } else {
+            /** @var $action GenerateAction */
+            return $action->generator->getName();
+        }
     }
 
     /**
@@ -148,9 +149,13 @@ class GenerateController extends Controller
      */
     public function getActionHelp($action)
     {
-        /** @var $action Action */
-        $description = $action->generator->getDescription();
-        return wordwrap(preg_replace('/\s+/', ' ', $description));
+        if ($action instanceof InlineAction) {
+            return parent::getActionHelp($action);
+        } else {
+            /** @var $action GenerateAction */
+            $description = $action->generator->getDescription();
+            return wordwrap(preg_replace('/\s+/', ' ', $description));
+        }
     }
 
     /**
@@ -166,7 +171,10 @@ class GenerateController extends Controller
      */
     public function getActionOptionsHelp($action)
     {
-        /** @var $action Action */
+        if ($action instanceof InlineAction) {
+            return parent::getActionOptionsHelp($action);
+        }
+        /** @var $action GenerateAction */
         $attributes = $action->generator->attributes;
         unset($attributes['templates']);
         $hints = $action->generator->hints();
@@ -176,7 +184,7 @@ class GenerateController extends Controller
             $type = gettype($value);
             $options[$name] = [
                 'type' => $type === 'NULL' ? 'string' : $type,
-                'required' => $action->generator->isAttributeRequired($name),
+                'required' => $value === null && $action->generator->isAttributeRequired($name),
                 'default' => $value,
                 'comment' => isset($hints[$name]) ? $this->formatHint($hints[$name]) : '',
             ];
