@@ -124,6 +124,9 @@ class I18N extends Component
 
         $p = [];
         foreach ($params as $name => $value) {
+            if($value instanceof \Closure) {
+                $value = $value();
+            }
             $p['{' . $name . '}'] = $value;
         }
 
