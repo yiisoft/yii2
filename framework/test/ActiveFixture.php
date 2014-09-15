@@ -91,6 +91,20 @@ class ActiveFixture extends BaseActiveFixture
     }
 
     /**
+     * This method is called AFTER all fixture data have been loaded for the current test.
+     * Resets serial value to max inserted
+     */
+    public function afterLoad()
+    {
+        $table = $this->getTableSchema();
+        if($table->sequenceName !== null) {
+            $maxId = (int)$this->db->createCommand('SELECT MAX('.$table->primaryKey[0].') from "'.$table->fullName.'"')->queryScalar();
+            $this->db->createCommand()->resetSequence($table->fullName, ++$maxId)->execute();
+        }
+        parent::afterLoad();
+    }
+
+    /**
      * Unloads the fixture.
      *
      * The default implementation will clean up the table by calling [[resetTable()]].
