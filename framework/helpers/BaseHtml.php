@@ -1535,7 +1535,11 @@ class BaseHtml
     {
         $lines = [];
         $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
-        if (isset($tagOptions['prompt'])) {
+        
+        if(isset($tagOptions['prompt']) && is_array($tagOptions['prompt'])) {
+            $prompt = $encodeSpaces ? str_replace(' ', '&nbsp;', static::encode(reset($tagOptions['prompt']))) : static::encode(reset($tagOptions['prompt']));
+            $lines[] = static::tag('option', $prompt, ['value' => key($tagOptions['prompt'])]);
+        } elseif(isset($tagOptions['prompt'])) {
             $prompt = $encodeSpaces ? str_replace(' ', '&nbsp;', static::encode($tagOptions['prompt'])) : static::encode($tagOptions['prompt']);
             $lines[] = static::tag('option', $prompt, ['value' => '']);
         }
