@@ -145,7 +145,7 @@
         // whether to perform validation when the user is typing.
         validateOnType: false,
         // number of milliseconds that the validation should be delayed when a user is typing in the input field.
-        validationDelay: 200,
+        validationDelay: 500,
         // whether to enable AJAX-based validation.
         enableAjaxValidation: false,
         // function (attribute, value, messages), the client-side validation function.
@@ -411,7 +411,7 @@
         if (attribute.validateOnType) {
             $input.on('keyup.yiiActiveForm', function () {
                 if (attribute.value !== getValue($form, attribute)) {
-                    validateAttribute($form, attribute, false);
+                    validateAttribute($form, attribute, false, attribute.valdationDelay);
                 }
             });
         }
@@ -421,7 +421,7 @@
         findInput($form, attribute).off('.yiiActiveForm');
     };
 
-    var validateAttribute = function ($form, attribute, forceValidate) {
+    var validateAttribute = function ($form, attribute, forceValidate, validationDelay) {
         var data = $form.data('yiiActiveForm');
 
         if (forceValidate) {
@@ -451,7 +451,7 @@
                 }
             });
             methods.validate.call($form);
-        }, attribute.validationDelay);
+        }, validationDelay ? validationDelay : 200);
     };
     
     /**
