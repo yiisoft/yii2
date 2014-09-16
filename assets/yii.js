@@ -118,18 +118,23 @@ yii = (function ($) {
          * For other elements, either the containing form action or the current page URL will be used
          * as the form action URL.
          *
-         * If the `data-method` attribute is not defined, nothing will be done.
+         * If the `data-method` attribute is not defined, the `href` attribute (if any) of the element
+         * will be assigned to `window.location`.
          *
          * @param $e the jQuery representation of the element
          */
         handleAction: function ($e) {
-            var method = $e.data('method');
+            var method = $e.data('method'),
+                $form = $e.closest('form'),
+                action = $e.attr('href');
+
             if (method === undefined) {
+                if (action && action != '#') {
+                    window.location = action;
+                }
                 return;
             }
 
-            var $form = $e.closest('form');
-            var action = $e.attr('href');
             var newForm = !$form.length || action && action != '#';
             if (newForm) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
@@ -227,12 +232,14 @@ yii = (function ($) {
 
     function initDataMethods() {
         var handler = function (event) {
-            var $this = $(this);
-            // data-confirm requires data-method
-            if ($this.data('method') === undefined) {
+            var $this = $(this),
+                method = $this.data('method'),
+                message = $this.data('confirm');
+
+            if (method === undefined && message === undefined) {
                 return true;
             }
-            var message = $this.data('confirm');
+
             if (message !== undefined) {
                 pub.confirm(message, function () {
                     pub.handleAction($this);
