@@ -104,6 +104,11 @@ After creating the action and the view, you may access the new page by accessing
 ```
 http://hostname/index.php?r=site/say&message=Hello+World
 ```
+If you are using PrettyUrl URL should be:
+```
+http://hostname/site/say?message=Hello+World
+```
+
 
 ![Hello World](images/start-hello-world.png)
 
