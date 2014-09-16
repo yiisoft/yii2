@@ -98,7 +98,7 @@ class UniqueValidator extends Validator
         }
 
         $query = $targetClass::find();
-        $query->where($params);
+        $query->andWhere($params);
 
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);
