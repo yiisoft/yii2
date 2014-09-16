@@ -103,10 +103,10 @@ class BaseFormatConverter
     public static function convertDateIcuToPhp($pattern, $type = 'date', $locale = null)
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
-            if ($locale === null) {
-                $locale = Yii::$app->language;
-            }
             if (extension_loaded('intl')) {
+                if ($locale === null) {
+                    $locale = Yii::$app->language;
+                }
                 if ($type === 'date') {
                     $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
                 } elseif ($type === 'time') {
@@ -306,10 +306,10 @@ class BaseFormatConverter
     public static function convertDateIcuToJui($pattern, $type = 'date', $locale = null)
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
-            if ($locale === null) {
-                $locale = Yii::$app->language;
-            }
             if (extension_loaded('intl')) {
+                if ($locale === null) {
+                    $locale = Yii::$app->language;
+                }
                 if ($type === 'date') {
                     $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
                 } elseif ($type === 'time') {

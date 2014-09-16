@@ -76,6 +76,13 @@ class Formatter extends Component
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     *
+     * For example:
+     *
+     * ```php
+     * 'MM/dd/yyyy' // date in ICU format
+     * 'php:m/d/Y' // the same date in PHP format
+     * ```
      */
     public $dateFormat = 'medium';
     /**
@@ -85,6 +92,13 @@ class Formatter extends Component
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     *
+     * For example:
+     *
+     * ```php
+     * 'HH:mm:ss' // time in ICU format
+     * 'php:H:i:s' // the same time in PHP format
+     * ```
      */
     public $timeFormat = 'medium';
     /**
@@ -95,6 +109,13 @@ class Formatter extends Component
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     *
+     * For example:
+     *
+     * ```php
+     * 'MM/dd/yyyy HH:mm:ss' // date and time in ICU format
+     * 'php:m/d/Y H:i:s' // the same date and time in PHP format
+     * ```
      */
     public $datetimeFormat = 'medium';
     /**
@@ -479,7 +500,7 @@ class Formatter extends Component
         }
 
         if ($this->_intlLoaded) {
-            if (strpos($format, 'php:') === 0) {
+            if (strncmp($format, 'php:', 4) === 0) {
                 $format = FormatConverter::convertDatePhpToIcu(substr($format, 4));
             }
             if (isset($this->_dateFormats[$format])) {
@@ -498,7 +519,7 @@ class Formatter extends Component
             }
             return $formatter->format($value);
         } else {
-            if (strpos($format, 'php:') === 0) {
+            if (strncmp($format, 'php:', 4) === 0) {
                 $format = substr($format, 4);
             } else {
                 $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);

@@ -244,6 +244,14 @@ new ones save the following code as `convert.php` that should be placed in the s
   The specification of the date and time formats is now using the ICU pattern format even if PHP intl extension is not installed.
   You can prefix a date format with `php:` to use the old format of the PHP `date()`-function.
 
+* The DateValidator has been refactored to use the same format as the Formatter class now (see previous change).
+  When you use the DateValidator and did not specify a format it will now be what is configured in the formatter class instead of 'Y-m-d'.
+  To get the old behavior of the DateValidator you have to set the format explicitly in your validation rule:
+
+  ```php
+  ['attributeName', 'date', 'format' => 'php:Y-m-d'],
+  ```
+
 * `beforeValidate()`, `beforeValidateAll()`, `afterValidate()`, `afterValidateAll()`, `ajaxBeforeSend()` and `ajaxComplete()`
   are removed from `ActiveForm`. The same functionality is now achieved via JavaScript event mechanism like the following:
 
