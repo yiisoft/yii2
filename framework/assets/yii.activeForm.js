@@ -24,44 +24,60 @@
 
     var events = {
         /**
-         * beforeValidate event is triggered before validating the whole form and each attribute.
+         * beforeValidate event is triggered before validating the whole form.
          * The signature of the event handler should be:
-         *     function (event, messages, deferreds, attribute)
+         *     function (event, messages, deferreds)
          * where
          *  - event: an Event object.
-         *  - messages: error messages. When attribute is undefined, this parameter is an associative array
-         *    with keys being attribute IDs and values being error messages for the corresponding attributes.
-         *    When attribute is given, this parameter is an array of the error messages for that attribute.
+         *  - messages: an associative array with keys being attribute IDs and values being error message arrays
+         *    for the corresponding attributes.
          *  - deferreds: an array of Deferred objects. You can use deferreds.add(callback) to add a new deferred validation.
-         *  - attribute: an attribute object. Please refer to attributeDefaults for the structure.
-         *    If this is undefined, it means the event is triggered before validating the whole form.
-         *    Otherwise it means the event is triggered before validating the specified attribute.
          *
-         * If the handler returns a boolean false, it will stop further validation after this event.
+         * If the handler returns a boolean false, it will stop further form validation after this event. And as
+         * a result, afterValidate event will not be triggered.
          */
         beforeValidate: 'beforeValidate',
         /**
-         * afterValidate event is triggered after validating the whole form and each attribute.
+         * afterValidate event is triggered after validating the whole form.
          * The signature of the event handler should be:
-         *     function (event, messages, attribute)
+         *     function (event, messages)
          * where
          *  - event: an Event object.
-         *  - messages: error messages. When attribute is undefined, this parameter is an associative array
-         *    with keys being attribute IDs and values being error messages for the corresponding attributes.
-         *    When attribute is given, this parameter is an array of the error messages for that attribute.
-         *    If the array length is greater than 0, it means the attribute has validation errors.
-         *  - attribute: an attribute object. Please refer to attributeDefaults for the structure.
-         *    If this is undefined, it means the event is triggered before validating the whole form.
-         *    Otherwise it means the event is triggered before validating the specified attribute.
+         *  - messages: an associative array with keys being attribute IDs and values being error message arrays
+         *    for the corresponding attributes.
          */
         afterValidate: 'afterValidate',
         /**
-         * beforeSubmit event is triggered before submitting the form (after all validations pass).
+         * beforeValidateAttribute event is triggered before validating an attribute.
+         * The signature of the event handler should be:
+         *     function (event, attribute, messages, deferreds)
+         * where
+         *  - event: an Event object.
+         *  - attribute: the attribute to be validated. Please refer to attributeDefaults for the structure of this parameter.
+         *  - messages: an array to which you can add validation error messages for the specified attribute.
+         *  - deferreds: an array of Deferred objects. You can use deferreds.add(callback) to add a new deferred validation.
+         *
+         * If the handler returns a boolean false, it will stop further validation of the specified attribute.
+         * And as a result, afterValidateAttribute event will not be triggered.
+         */
+        beforeValidateAttribute: 'beforeValidateAttribute',
+        /**
+         * afterValidateAttribute event is triggered after validating the whole form and each attribute.
+         * The signature of the event handler should be:
+         *     function (event, attribute, messages)
+         * where
+         *  - event: an Event object.
+         *  - attribute: the attribute being validated. Please refer to attributeDefaults for the structure of this parameter.
+         *  - messages: an array to which you can add additional validation error messages for the specified attribute.
+         */
+        afterValidateAttribute: 'afterValidateAttribute',
+        /**
+         * beforeSubmit event is triggered before submitting the form after all validations have passed.
          * The signature of the event handler should be:
          *     function (event)
          * where event is an Event object.
          *
-         * If the handler returns a boolean false, it will stop further validation after this event.
+         * If the handler returns a boolean false, it will stop form submission.
          */
         beforeSubmit: 'beforeSubmit',
         /**
@@ -136,6 +152,8 @@
         validate: undefined,
         // status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
         status: 0,
+        // whether the validation is cancelled by beforeValidateAttribute event handler
+        cancelled: false,
         // the value of the input
         value: undefined
     };
@@ -251,6 +269,7 @@
 
             // client-side validation
             $.each(data.attributes, function () {
+                this.cancelled = false;
                 // perform validation only if the form is being submitted or if an attribute is pending validation
                 if (data.submitting || this.status === 2 || this.status === 3) {
                     var msg = messages[this.id];
@@ -258,8 +277,8 @@
                         msg = [];
                         messages[this.id] = msg;
                     }
-                    var event = $.Event(events.beforeValidate);
-                    $form.trigger(event, [msg, deferreds, this]);
+                    var event = $.Event(events.beforeValidateAttribute);
+                    $form.trigger(event, [this, msg, deferreds]);
                     if (event.result !== false) {
                         if (this.validate) {
                             this.validate(this, getValue($form, this), msg, deferreds);
@@ -267,6 +286,8 @@
                         if (this.enableAjaxValidation) {
                             needAjaxValidation = true;
                         }
+                    } else {
+                        this.cancelled = true;
                     }
                 }
             });
@@ -302,7 +323,7 @@
                         success: function (msgs) {
                             if (msgs !== null && typeof msgs === 'object') {
                                 $.each(data.attributes, function () {
-                                    if (!this.enableAjaxValidation) {
+                                    if (!this.enableAjaxValidation || this.cancelled) {
                                         delete msgs[this.id];
                                     }
                                 });
@@ -457,7 +478,7 @@
         if (data.submitting) {
             var errorInputs = [];
             $.each(data.attributes, function () {
-                if (updateInput($form, this, messages)) {
+                if (!this.cancelled && updateInput($form, this, messages)) {
                     errorInputs.push(this.input);
                 }
             });
@@ -486,7 +507,7 @@
             }
         } else {
             $.each(data.attributes, function () {
-                if (this.status === 2 || this.status === 3) {
+                if (!this.cancelled && (this.status === 2 || this.status === 3)) {
                     updateInput($form, this, messages);
                 }
             });
@@ -508,7 +529,7 @@
         if (!$.isArray(messages[attribute.id])) {
             messages[attribute.id] = [];
         }
-        $form.trigger(events.afterValidate, [messages[attribute.id], attribute]);
+        $form.trigger(events.afterValidateAttribute, [attribute, messages[attribute.id]]);
 
         attribute.status = 1;
         if ($input.length) {
