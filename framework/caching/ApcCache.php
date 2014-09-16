@@ -80,7 +80,7 @@ class ApcCache extends Cache
      */
     protected function setValues($data, $duration)
     {
-        return array_keys(apc_store($data, null, $duration));
+        return array_keys((array)apc_store($data, null, $duration));
     }
 
     /**
