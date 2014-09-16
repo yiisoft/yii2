@@ -451,7 +451,7 @@
                 }
             });
             methods.validate.call($form);
-        }, data.settings.validationDelay);
+        }, attribute.validationDelay);
     };
     
     /**
