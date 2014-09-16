@@ -21,11 +21,14 @@ On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org
 Please refer to the [Composer Documentation](https://getcomposer.org/doc/) if you encounter any
 problems or want to learn more about Composer usage.
 
-With Composer installed, you can install Yii by running the following command under a Web-accessible folder:
+With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
+    composer global require "fxp/composer-asset-plugin:~1.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-The above command installs Yii in a directory named `basic`.
+The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+which allows managing bower and npm package dependencies through composer. You only need to run this command
+once for all. The second command installs Yii in a directory named `basic`.
 
 > Tip: If you want to install the latest development version of Yii, you may use the following command,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
