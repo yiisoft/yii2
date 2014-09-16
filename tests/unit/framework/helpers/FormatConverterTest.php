@@ -18,8 +18,8 @@ namespace yiiunit\framework\helpers {
 
 use Yii;
 use yii\helpers\FormatConverter;
-    use yii\i18n\Formatter;
-    use yiiunit\framework\i18n\FormatterTest;
+use yii\i18n\Formatter;
+use yiiunit\framework\i18n\FormatterTest;
 use yiiunit\TestCase;
 
 /**
@@ -57,7 +57,7 @@ class FormatConverterTest extends TestCase
 
     public function testIntlIcuToPhpShortForm()
     {
-        $this->assertEquals('m/j/y', FormatConverter::convertDateIcuToPhp('short', 'date', 'en-US'));
+        $this->assertEquals('n/j/y', FormatConverter::convertDateIcuToPhp('short', 'date', 'en-US'));
         $this->assertEquals('d.m.y', FormatConverter::convertDateIcuToPhp('short', 'date', 'de-DE'));
     }
 
