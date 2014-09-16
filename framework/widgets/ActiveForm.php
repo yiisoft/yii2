@@ -131,11 +131,11 @@ class ActiveForm extends Widget
      */
     public $validateOnType = false;
     /**
-     * @var integer number of milliseconds that the validation should be delayed when an input field
-     * is changed or the user types in the field.
+     * @var integer number of milliseconds that the validation should be delayed when the user types in the field
+     * and [[validateOnType]] is set true.
      * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
      */
-    public $validationDelay = 200;
+    public $validationDelay = 500;
     /**
      * @var string the name of the GET parameter indicating the validation request is an AJAX request.
      */
