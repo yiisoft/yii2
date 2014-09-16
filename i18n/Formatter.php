@@ -624,7 +624,9 @@ class Formatter extends Component
             if ($interval->i >= 1) {
                 return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
             }
-
+            if ($interval->s == 0) {
+                return Yii::t('yii', 'just now', [], $this->locale);
+            }
             return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
         } else {
             if ($interval->y >= 1) {
@@ -642,7 +644,9 @@ class Formatter extends Component
             if ($interval->i >= 1) {
                 return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->locale);
             }
-
+            if ($interval->s == 0) {
+                return Yii::t('yii', 'just now', [], $this->locale);
+            }
             return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->locale);
         }
     }
