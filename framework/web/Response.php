@@ -314,6 +314,14 @@ class Response extends \yii\base\Response
         $this->sendContent();
         $this->trigger(self::EVENT_AFTER_SEND);
         $this->isSent = true;
+
+        if (function_exists('fastcgi_finish_request')) {
+            Yii::$app->getSession()->close();
+            fastcgi_finish_request();
+        } elseif (PHP_SAPI !== 'cli') {
+            $this->clearOutputBuffers();
+            flush();
+        }
     }
 
     /**
