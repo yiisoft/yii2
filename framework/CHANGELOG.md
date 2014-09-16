@@ -89,6 +89,7 @@ Yii Framework 2 Change Log
 - Bug #4755: `yii\test\BaseActiveFixture::unload()` does not clean up the internal cached data (qiangxue)
 - Bug #4813: Fixed MSSQL schema that was getting incorrect info about constraints (samdark, SerjRamone, o-rey)
 - Bug #4880: Return value of yii\web\Request::getPrefferedLanguage() was a normalized value instead of a valid language value from the input array (cebe)
+- Bug #4905: ActiveForm::$validationDelay doesn't delay after keyrelease when $validateOnType=true (qiangxue)
 - Bug #4920: `yii\filters\auth\CompositeAuth` should not trigger error as long as one of the methods succeeds (qiangxue)
 - Bug #4938: When `yii\db\ActiveQuery` is used to build sub-queries, its WHERE clause is not correctly generated (qiangxue)
 - Bug #4954: MSSQL column comments are not retrieved correctly (SerjRamone)
