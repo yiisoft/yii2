@@ -312,6 +312,8 @@ class Response extends \yii\base\Response
         $this->trigger(self::EVENT_AFTER_PREPARE);
         $this->sendHeaders();
         $this->sendContent();
+        $this->trigger(self::EVENT_AFTER_SEND);
+        $this->isSent = true;
 
         if (function_exists('fastcgi_finish_request')) {
             Yii::$app->getSession()->close();
@@ -320,9 +322,6 @@ class Response extends \yii\base\Response
             $this->clearOutputBuffers();
             flush();
         }
-
-        $this->trigger(self::EVENT_AFTER_SEND);
-        $this->isSent = true;
     }
 
     /**
