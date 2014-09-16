@@ -148,6 +148,7 @@ Yii Framework 2 Change Log
 - Enh #3542: Removed requirement to specify `extensions` in application config (samdark)
 - Enh #3562: Adding rotateByCopy to yii\log\FileTarget (pawzar)
 - Enh #3574: Add integrity check support for SQLite (zeeke)
+- Enh #3581: Added `yii\validators\CompareValidator::type` to support type conversion before comparing values (qiangxue)
 - Enh #3597: Nested array support for HTML5 custom "data-*" attributes (armab)
 - Enh #3607: Added support for limit in migrations actions: history, new, redo (Ragazzo)
 - Enh #3631: Added property `currencyCode` to `yii\i18n\Formatter` (leandrogehlen)
