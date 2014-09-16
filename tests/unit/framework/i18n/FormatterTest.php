@@ -1,35 +1,7 @@
 <?php
 
-// override information about intl
-namespace yii\helpers {
-    use yiiunit\framework\i18n\FormatterTest;
-    if (!function_exists('yii\helpers\extension_loaded')) {
-        function extension_loaded($name)
-        {
-            if ($name === 'intl' && FormatterTest::$enableIntl !== null) {
-                return FormatterTest::$enableIntl;
-            }
-            return \extension_loaded($name);
-        }
-    }
-}
+namespace yiiunit\framework\i18n;
 
-// override information about intl
-namespace yii\i18n {
-    use yiiunit\framework\i18n\FormatterTest;
-
-    function extension_loaded($name)
-    {
-        if ($name === 'intl' && FormatterTest::$enableIntl !== null) {
-            return FormatterTest::$enableIntl;
-        }
-        return \extension_loaded($name);
-    }
-}
-
-namespace yiiunit\framework\i18n {
-
-use yii\base\InvalidParamException;
 use yii\i18n\Formatter;
 use yiiunit\TestCase;
 use DateTime;
@@ -40,8 +12,6 @@ use DateInterval;
  */
 class FormatterTest extends TestCase
 {
-    public static $enableIntl;
-
     /**
      * @var Formatter
      */
@@ -51,17 +21,7 @@ class FormatterTest extends TestCase
     {
         parent::setUp();
 
-        // emulate disabled intl extension
-        // enable it only for tests prefixed with testIntl
-        static::$enableIntl = null;
-        if (strncmp($this->getName(false), 'testIntl', 8) === 0) {
-            if (!extension_loaded('intl')) {
-                $this->markTestSkipped('intl extension is not installed.');
-            }
-            static::$enableIntl = true;
-        } else {
-            static::$enableIntl = false;
-        }
+        IntlTestHelper::setIntlStatus($this);
 
         $this->mockApplication([
             'timeZone' => 'UTC',
@@ -73,7 +33,7 @@ class FormatterTest extends TestCase
     protected function tearDown()
     {
         parent::tearDown();
-        static::$enableIntl = null;
+        IntlTestHelper::resetIntlStatus();
         $this->formatter = null;
     }
 
@@ -856,5 +816,4 @@ class FormatterTest extends TestCase
 //        $this->formatter->thousandSeparator = '';
         $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
     }
-}
 }
