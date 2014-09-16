@@ -245,18 +245,23 @@ new ones save the following code as `convert.php` that should be placed in the s
   You can prefix a date format with `php:` to use the old format of the PHP `date()`-function.
 
 * `beforeValidate()`, `beforeValidateAll()`, `afterValidate()`, `afterValidateAll()`, `ajaxBeforeSend()` and `ajaxComplete()`
-  are removed from `ActiveForm`. The same functionality is now achieved via JavaScript event mechanism. For example,
-  if you want to do something before performing validation on the client side, you can write the following
-  JavaScript code:
+  are removed from `ActiveForm`. The same functionality is now achieved via JavaScript event mechanism like the following:
 
   ```js
-  $('#myform').on('beforeValidate', function (event, messages, deferreds, attribute) {
-      if (attribute === undefined) {
-          // the event is triggered when submitting the form
-      } elseif (attribute.id === 'something') {
-          // the event is triggered before validating "something"
-      }
-      // if you want to cancel the validation, return a boolean false.
+  $('#myform').on('beforeValidate', function (event, messages, deferreds) {
+      // called when the validation is triggered by submitting the form
+      // return false if you want to cancel the validation for the whole form
+  }).on('beforeValidateAttribute', function (event, attribute, messages, deferreds) {
+      // before validating an attribute
+      // return false if you want to cancel the validation for the attribute
+  }).on('afterValidateAttribute', function (event, attribute, messages) {
+      // ...
+  }).on('afterValidate', function (event, messages) {
+      // ...
+  }).on('beforeSubmit', function () {
+      // after all validations have passed
+      // you can do ajax form submission here
+      // return false if you want to stop form submission
   });
   ```
 
