@@ -212,14 +212,24 @@ class CacheController extends Controller
 
             if ($component instanceof Cache) {
                 $caches[$name] = get_class($component);
-            } elseif (is_array($component) && isset($component['class']) && strpos($component['class'], 'Cache') !== false) {
+            } elseif (is_array($component) && isset($component['class']) && $this->isCacheClass($component['class'])) {
                 $caches[$name] = $component['class'];
-            } elseif (is_string($component) && strpos($component, 'Cache') !== false) {
+            } elseif (is_string($component) && $this->isCacheClass($component)) {
                 $caches[$name] = $component;
             }
         }
 
         return $caches;
+    }
+
+    /**
+     * Checks if given class is a Cache class.
+     * @param string $className class name.
+     * @return boolean
+     */
+    private function isCacheClass($className)
+    {
+        return is_subclass_of($className, Cache::className());
     }
 
 }
