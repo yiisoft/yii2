@@ -76,7 +76,7 @@ class can be placed anywhere but the convention for it is to be under `assets` d
 
 Additionally you may specify `$jsOptions`, `$cssOptions` and `$publishOptions` that will be passed to
 [[yii\web\View::registerJsFile()]], [[yii\web\View::registerCssFile()]] and [[yii\web\AssetManager::publish()]]
-respectively during registering and publising an asset. For more details on this see [Setting special options](#setting-special-options).
+respectively during registering and publishing an asset. For more details on this see [Setting special options](#setting-special-options).
 
 [alias]: basics.md#path-aliases "Yii Path alias"
 
@@ -89,16 +89,16 @@ following way:
 ```php
 class LanguageAsset extends AssetBundle
 {
-    public $language;
+    public static $language;
     public $sourcePath = '@app/assets/language';
     public $js = [
     ];
 
-    public function registerAssetFiles($view)
+    public function init()
     {
-        $language = $this->language ? $this->language : Yii::$app->language;
+        parent::init();
+        $language = self::$language ? self::$language : Yii::$app->language;
         $this->js[] = 'language-' . $language . '.js';
-        parent::registerAssetFiles($view);
     }
 }
 ```
@@ -106,7 +106,8 @@ class LanguageAsset extends AssetBundle
 In order to set language use the following code when registering an asset bundle in a view:
 
 ```php
-LanguageAsset::register($this)->language = $language;
+LanguageAsset::$language = $language;
+LanguageAsset::register($this);
 ```
 
 

@@ -45,6 +45,6 @@ class Draggable extends Widget
     public function run()
     {
         echo Html::endTag('div') . "\n";
-        $this->registerWidget('draggable', DraggableAsset::className());
+        $this->registerWidget('draggable');
     }
 }

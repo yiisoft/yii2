@@ -44,6 +44,6 @@ class Slider extends Widget
     public function run()
     {
         echo Html::tag('div', '', $this->options);
-        $this->registerWidget('slider', SliderAsset::className());
+        $this->registerWidget('slider');
     }
 }
