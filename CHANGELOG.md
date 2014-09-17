@@ -264,6 +264,7 @@ Yii Framework 2 Change Log
 - Chg #4318: `yii\helpers\Html::ul()` and `ol()` will return an empty list tag if an empty item array is given (qiangxue)
 - Chg #4331: `yii\helpers\Url` now uses `UrlManager` to determine base URL when generating URLs (qiangxue)
 - Chg #4424: Added `inline` and `mimeType` options to all file downloading methods provided in `yii\web\Response` (qiangxue)
+- Chg #4454: Improved asset bundle managed and used composer-asset-plugin to manage the dependencies on 3rd-party JS libraries (qiangxue)
 - Chg #4501: Renamed the constant `YII_PATH` to `YII2_PATH` (qiangxue)
 - Chg #4586: Signed bigint and unsigned int will be converted into integers when they are loaded from DB by AR (qiangxue)
 - Chg #4591: `yii\helpers\Url::to()` will no longer prefix relative URLs with the base URL (qiangxue)
