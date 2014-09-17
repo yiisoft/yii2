@@ -246,13 +246,13 @@ class Pagination extends Object implements Linkable
      * Creates the URL suitable for pagination with the specified page number.
      * This method is mainly called by pagers when creating URLs used to perform pagination.
      * @param integer $page the zero-based page number that the URL should point to.
-     * @param integer $pageSize the number of items on each page. If 0, the value of [[pageSize]] will be used.
+     * @param integer $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
      * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
      * @return string the created URL
      * @see params
      * @see forcePageParam
      */
-    public function createUrl($page, $pageSize = 0, $absolute = false)
+    public function createUrl($page, $pageSize = null, $absolute = false)
     {
         $page = (int) $page;
         $pageSize = (int) $pageSize;
