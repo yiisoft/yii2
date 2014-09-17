@@ -658,7 +658,7 @@ For example, the following code injects the current date at the end of the page 
 Static pages refer to those Web pages whose main content are mostly static without the need of accessing
 dynamic data pushed from controllers.
 
-You can generate static pages using the code like the following in a controller:
+You can output static pages by putting their code in the view, and then using the code like the following in a controller:
 
 ```php
 public function actionAbout()
