@@ -76,8 +76,6 @@
         "ext-mbstring": "*",
         "lib-pcre": "*",
         "yiisoft/yii2-composer": "*",
-        "yiisoft/jquery": "~2.0 | ~1.10",
-        "yiisoft/jquery-pjax": "*",
         "ezyang/htmlpurifier": "4.6.*",
         "cebe/markdown": "0.9.*",
         "bower-asset/jquery": ">=1.8",
@@ -93,6 +91,7 @@
         "smarty/smarty": "*",
         "imagine/imagine": "v0.5.0",
         "swiftmailer/swiftmailer": "*",
+        "fzaninotto/faker": "*",
         "cebe/indent": "*"
     },
     "suggest": {
@@ -132,5 +131,11 @@
     },
     "bin": [
         "framework/yii"
-    ]
+    ],
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
 }
