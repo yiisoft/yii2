@@ -230,6 +230,7 @@ Yii Framework 2 Change Log
 - Chg #2359: Refactored formatter class. One class with or without intl extension and PHP format pattern as standard (Erik_r, cebe)
    - `yii\base\Formatter` functionality has been merged into `yii\i18n\Formatter`
    - removed the `yii\base\Formatter` class
+- Chg #1551: Refactored DateValidator to support ICU date format and uses the format defined in Formatter by default (cebe)
 - Chg #2380: `yii\widgets\ActiveForm` will register validation js even if there are not fields inside (qiangxue)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
