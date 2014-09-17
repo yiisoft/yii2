@@ -9,7 +9,7 @@ To add a new extension named `xyz` (must be in lower case), take the following s
    * `CHANGELOG.md`
    * `LICENSE.md`
 3. ask Qiang to create a subsplit for `xyz` and a composer package named `yii2-xyz`;
-4. modify `/composer.json` and add `xyz` to the `replace` section;
+4. modify `/composer.json` and add `yiisoft/yii2-xyz` to the `replace` section;
 5. If an extension contains js/css files or depends on external bower packages:
    * create `bower.json`
    * ask Qiang to register a bower package with the name `yii2-xyz`
