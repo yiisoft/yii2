@@ -51,16 +51,16 @@ abstract class BaseMessageControllerTest extends TestCase
 
     /**
      * Emulates running of the message controller action.
-     * @param  string $actionId id of action to be run.
+     * @param  string $actionID id of action to be run.
      * @param  array  $args     action arguments.
      * @return string command output.
      */
-    protected function runMessageControllerAction($actionId, array $args = [])
+    protected function runMessageControllerAction($actionID, array $args = [])
     {
         $controller = $this->createMessageController();
         ob_start();
         ob_implicit_flush(false);
-        $controller->run($actionId, $args);
+        $controller->run($actionID, $args);
 
         return ob_get_clean();
     }

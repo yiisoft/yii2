@@ -12,8 +12,7 @@ uniform API and solves some inconsistencies between different DBMS. By default Y
 - [PostgreSQL](http://www.postgresql.org/)
 - [CUBRID](http://www.cubrid.org/): version 9.1.0 or higher.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2012 or above is required if you
-  want to use LIMIT/OFFSET.
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2005 or higher.
 
 
 Configuration

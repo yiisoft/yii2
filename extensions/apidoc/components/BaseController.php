@@ -127,8 +127,8 @@ abstract class BaseController extends Controller
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        return array_merge(parent::options($actionId), ['template', 'exclude']);
+        return array_merge(parent::options($actionID), ['template', 'exclude']);
     }
 }

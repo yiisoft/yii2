@@ -9,7 +9,6 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Application;
-use yii\base\InlineAction;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
@@ -40,7 +39,7 @@ class HelpController extends Controller
 {
     /**
      * Displays available commands or the detailed information
-     * about a particular command. For example,
+     * about a particular command.
      *
      * @param string $command The name of the command to show help about.
      * If not provided, all available commands will be displayed.
@@ -61,12 +60,12 @@ class HelpController extends Controller
 
             $actions = $this->getActions($controller);
             if ($actionID !== '' || count($actions) === 1 && $actions[0] === $controller->defaultAction) {
-                $this->getActionHelp($controller, $actionID);
+                $this->getSubCommandHelp($controller, $actionID);
             } else {
-                $this->getControllerHelp($controller);
+                $this->getCommandHelp($controller);
             }
         } else {
-            $this->getHelp();
+            $this->getDefaultHelp();
         }
     }
 
@@ -78,7 +77,6 @@ class HelpController extends Controller
     {
         $commands = $this->getModuleCommands(Yii::$app);
         sort($commands);
-
         return array_unique($commands);
     }
 
@@ -95,12 +93,8 @@ class HelpController extends Controller
             $result = Yii::$app->createController($command);
             if ($result !== false) {
                 list($controller, $actionID) = $result;
-                $class = new \ReflectionClass($controller);
-
-                $docLines = preg_split('~(\n|\r|\r\n)~', $class->getDocComment());
-                if (isset($docLines[1])) {
-                    $description = trim($docLines[1], ' *');
-                }
+                /** @var Controller $controller */
+                $description = $controller->getHelpSummary();
             }
 
             $descriptions[$command] = $description;
@@ -186,7 +180,7 @@ class HelpController extends Controller
     /**
      * Displays all available commands.
      */
-    protected function getHelp()
+    protected function getDefaultHelp()
     {
         $commands = $this->getCommandDescriptions();
         if (!empty($commands)) {
@@ -215,17 +209,14 @@ class HelpController extends Controller
      * Displays the overall information of the command.
      * @param Controller $controller the controller instance
      */
-    protected function getControllerHelp($controller)
+    protected function getCommandHelp($controller)
     {
-        $class = new \ReflectionClass($controller);
-        $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($class->getDocComment(), '/'))), "\r", '');
-        if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
-            $comment = trim(substr($comment, 0, $matches[0][1]));
-        }
+        $controller->color = $this->color;
 
+        $this->stdout("\nDESCRIPTION\n", Console::BOLD);
+        $comment = $controller->getHelp();
         if ($comment !== '') {
-            $this->stdout("\nDESCRIPTION\n", Console::BOLD);
-            echo "\n" . rtrim(Console::renderColoredString(Console::markdownToAnsi($comment))) . "\n\n";
+            $this->stdout("\n$comment\n\n");
         }
 
         $actions = $this->getActions($controller);
@@ -237,7 +228,7 @@ class HelpController extends Controller
                 if ($action === $controller->defaultAction) {
                     $this->stdout(' (default)', Console::FG_GREEN);
                 }
-                $summary = $this->getActionSummary($controller, $action);
+                $summary = $controller->getActionHelpSummary($controller->createAction($action));
                 if ($summary !== '') {
                     echo ': ' . $summary;
                 }
@@ -251,50 +242,12 @@ class HelpController extends Controller
     }
 
     /**
-     * Returns the short summary of the action.
-     * @param Controller $controller the controller instance
-     * @param string $actionID action ID
-     * @return string the summary about the action
-     */
-    protected function getActionSummary($controller, $actionID)
-    {
-        $action = $controller->createAction($actionID);
-        if ($action === null) {
-            return '';
-        }
-        if ($action instanceof InlineAction) {
-            $reflection = new \ReflectionMethod($controller, $action->actionMethod);
-        } else {
-            $reflection = new \ReflectionClass($action);
-        }
-        $tags = $this->parseComment($reflection->getDocComment());
-        if ($tags['description'] !== '') {
-            $limit = 73 - strlen($action->getUniqueId());
-            if ($actionID === $controller->defaultAction) {
-                $limit -= 10;
-            }
-            if ($limit < 0) {
-                $limit = 50;
-            }
-            $description = $tags['description'];
-            if (($pos = strpos($tags['description'], "\n")) !== false) {
-                $description = substr($description, 0, $pos);
-            }
-            $text = substr($description, 0, $limit);
-
-            return strlen($description) > $limit ? $text . '...' : $text;
-        } else {
-            return '';
-        }
-    }
-
-    /**
      * Displays the detailed information of a command action.
      * @param Controller $controller the controller instance
      * @param string $actionID action ID
      * @throws Exception if the action does not exist
      */
-    protected function getActionHelp($controller, $actionID)
+    protected function getSubCommandHelp($controller, $actionID)
     {
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -302,18 +255,11 @@ class HelpController extends Controller
                 'command' => rtrim($controller->getUniqueId() . '/' . $actionID, '/'),
             ]));
         }
-        if ($action instanceof InlineAction) {
-            $method = new \ReflectionMethod($controller, $action->actionMethod);
-        } else {
-            $method = new \ReflectionMethod($action, 'run');
-        }
 
-        $tags = $this->parseComment($method->getDocComment());
-        $options = $this->getOptionHelps($controller, $actionID);
-
-        if ($tags['description'] !== '') {
+        $description = $controller->getActionHelp($action);
+        if ($description != '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
-            echo "\n" . rtrim(Console::renderColoredString(Console::markdownToAnsi($tags['description']))) . "\n\n";
+            $this->stdout("\n$description\n\n");
         }
 
         $this->stdout("\nUSAGE\n\n", Console::BOLD);
@@ -323,129 +269,51 @@ class HelpController extends Controller
         } else {
             echo $scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW);
         }
-        list ($required, $optional) = $this->getArgHelps($method, isset($tags['param']) ? $tags['param'] : []);
-        foreach ($required as $arg => $description) {
-            $this->stdout(' <' . $arg . '>', Console::FG_CYAN);
+
+        $args = $controller->getActionArgsHelp($action);
+        foreach ($args as $name => $arg) {
+            if ($arg['required']) {
+                $this->stdout(' <' . $name . '>', Console::FG_CYAN);
+            } else {
+                $this->stdout(' [' . $name . ']', Console::FG_CYAN);
+            }
         }
-        foreach ($optional as $arg => $description) {
-            $this->stdout(' [' . $arg . ']', Console::FG_CYAN);
-        }
+
+        $options = $controller->getActionOptionsHelp($action);
+        $options[\yii\console\Application::OPTION_APPCONFIG] = [
+            'type' => 'string',
+            'default' => null,
+            'comment' => "custom application configuration file path.\nIf not set, default application configuration is used.",
+        ];
+        ksort($options);
+
         if (!empty($options)) {
             $this->stdout(' [...options...]', Console::FG_RED);
         }
         echo "\n\n";
 
-        if (!empty($required) || !empty($optional)) {
-            echo implode("\n\n", array_merge($required, $optional)) . "\n\n";
+        if (!empty($args)) {
+            foreach ($args as $name => $arg) {
+                echo $this->formatOptionHelp(
+                        '- ' . $this->ansiFormat($name, Console::FG_CYAN),
+                        $arg['required'],
+                        $arg['type'],
+                        $arg['default'],
+                        $arg['comment']) . "\n\n";
+            }
         }
 
         if (!empty($options)) {
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
-            echo implode("\n\n", $options) . "\n\n";
-        }
-    }
-
-    /**
-     * Returns the help information about arguments.
-     * @param \ReflectionMethod $method
-     * @param string $tags the parsed comment block related with arguments
-     * @return array the required and optional argument help information
-     */
-    protected function getArgHelps($method, $tags)
-    {
-        if (is_string($tags)) {
-            $tags = [$tags];
-        }
-        $params = $method->getParameters();
-        $optional = $required = [];
-        foreach ($params as $i => $param) {
-            $name = $param->getName();
-            $tag = isset($tags[$i]) ? $tags[$i] : '';
-            if (preg_match('/^([^\s]+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
-                $type = $matches[1];
-                $comment = $matches[3];
-            } else {
-                $type = null;
-                $comment = $tag;
-            }
-            if ($param->isDefaultValueAvailable()) {
-                $optional[$name] = $this->formatOptionHelp('- ' . $this->ansiFormat($name, Console::FG_CYAN), false, $type, $param->getDefaultValue(), $comment);
-            } else {
-                $required[$name] = $this->formatOptionHelp('- ' . $this->ansiFormat($name, Console::FG_CYAN), true, $type, null, $comment);
+            foreach ($options as $name => $option) {
+                echo $this->formatOptionHelp(
+                        $this->ansiFormat('--' . $name, Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
+                        !empty($option['required']),
+                        $option['type'],
+                        $option['default'],
+                        $option['comment']) . "\n\n";
             }
         }
-
-        return [$required, $optional];
-    }
-
-    /**
-     * Returns the help information about the options available for a console controller.
-     * @param Controller $controller the console controller
-     * @param string $actionID name of the action, if set include local options for that action
-     * @return array the help information about the options
-     */
-    protected function getOptionHelps($controller, $actionID)
-    {
-        $optionNames = $controller->options($actionID);
-        if (empty($optionNames)) {
-            return [];
-        }
-
-        $class = new \ReflectionClass($controller);
-        $options = [];
-        foreach ($class->getProperties() as $property) {
-            $name = $property->getName();
-            if (!in_array($name, $optionNames, true)) {
-                continue;
-            }
-            $defaultValue = $property->getValue($controller);
-            $tags = $this->parseComment($property->getDocComment());
-            if (isset($tags['var']) || isset($tags['property'])) {
-                $doc = isset($tags['var']) ? $tags['var'] : $tags['property'];
-                if (is_array($doc)) {
-                    $doc = reset($doc);
-                }
-                if (preg_match('/^([^\s]+)(.*)/s', $doc, $matches)) {
-                    $type = $matches[1];
-                    $comment = $matches[2];
-                } else {
-                    $type = null;
-                    $comment = $doc;
-                }
-                $options[$name] = $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, $type, $defaultValue, $comment);
-            } else {
-                $options[$name] = $this->formatOptionHelp($this->ansiFormat('--' . $name, Console::FG_RED), false, null, $defaultValue, '');
-            }
-        }
-        ksort($options);
-
-        return $options;
-    }
-
-    /**
-     * Parses the comment block into tags.
-     * @param string $comment the comment block
-     * @return array the parsed tags
-     */
-    protected function parseComment($comment)
-    {
-        $tags = [];
-        $comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($comment, '/'))), "\r", '');
-        $parts = preg_split('/^\s*@/m', $comment, -1, PREG_SPLIT_NO_EMPTY);
-        foreach ($parts as $part) {
-            if (preg_match('/^(\w+)(.*)/ms', trim($part), $matches)) {
-                $name = $matches[1];
-                if (!isset($tags[$name])) {
-                    $tags[$name] = trim($matches[2]);
-                } elseif (is_array($tags[$name])) {
-                    $tags[$name][] = trim($matches[2]);
-                } else {
-                    $tags[$name] = [$tags[$name], trim($matches[2])];
-                }
-            }
-        }
-
-        return $tags;
     }
 
     /**
@@ -459,8 +327,11 @@ class HelpController extends Controller
      */
     protected function formatOptionHelp($name, $required, $type, $defaultValue, $comment)
     {
-        $doc = '';
         $comment = trim($comment);
+        $type = trim($type);
+        if (strncmp($type, 'bool', 4) === 0) {
+            $type = 'boolean, 0 or 1';
+        }
 
         if ($defaultValue !== null && !is_array($defaultValue)) {
             if ($type === null) {
@@ -470,8 +341,13 @@ class HelpController extends Controller
                 // show as integer to avoid confusion
                 $defaultValue = (int) $defaultValue;
             }
-            $doc = "$type (defaults to " . var_export($defaultValue, true) . ")";
-        } elseif (trim($type) !== '') {
+            if (is_string($defaultValue)) {
+                $defaultValue = "'" . $defaultValue . "'";
+            } else {
+                $defaultValue = var_export($defaultValue, true);
+            }
+            $doc = "$type (defaults to " . $defaultValue . ")";
+        } else {
             $doc = $type;
         }
 

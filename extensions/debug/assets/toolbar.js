@@ -4,6 +4,7 @@
         settings = settings || {};
         xhr.open(settings.method || 'GET', url, true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('Accept', 'text/html');
         xhr.onreadystatechange = function (state) {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200 && settings.success) {

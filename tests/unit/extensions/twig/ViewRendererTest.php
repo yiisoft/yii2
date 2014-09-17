@@ -22,7 +22,7 @@ class ViewRendererTest extends DatabaseTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+        $this->mockWebApplication();
     }
 
     protected function tearDown()

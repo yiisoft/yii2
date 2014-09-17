@@ -38,7 +38,7 @@ After creating and setting up the advanced application, follow these steps to pr
    php -S localhost:8080
    ```
 
-5. Now you can run the tests with the following commands:
+5. Now you can run the tests with the following commands, assuming you are in the `tests/codeception` directory:
 
    ```
    # frontend tests
@@ -55,5 +55,4 @@ After creating and setting up the advanced application, follow these steps to pr
    # etc.
    ```
 
-  If you already have run `codecept build` for each application, you can run all tests by a single `codecept run` in the
-  `tests` directory.
+  If you already have run `codecept build` for each application, you can skip that step and run all tests by a single `codecept run`.

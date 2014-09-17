@@ -6,6 +6,9 @@ The Gii code generation tool
 Yii includes a handy tool, named Gii, that provides rapid prototyping by generating commonly used code snippets
 as well as complete CRUD controllers.
 
+Gii provides a Web-based interface for you to interactively generate the code you want. It also provides a
+command line interface for people who prefer to work with their console windows most of the time.
+
 
 Installing and configuring
 --------------------------
@@ -50,7 +53,6 @@ If you have enabled pretty URLs, you may use the following URL:
 http://localhost/path/to/index.php/gii
 ```
 
-
 > Note: if you are accessing gii from an IP address other than localhost, access will be denied by default.
 > To circumvent that default, add the allowed IP addresses to the configuration:
 >
@@ -60,6 +62,24 @@ http://localhost/path/to/index.php/gii
     'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
 ],
 ```
+
+If you have configured Gii similarly in your console application configuration, you may also access Gii through
+command window like the following:
+
+```
+# change path to your application's base path
+cd path/to/AppBasePath
+
+# show help information about Gii
+yii help gii
+
+# show help information about the model generator in Gii
+yii help gii/model
+
+# generate City model from city table
+yii gii/model --tableName=city --modelClass=City
+```
+
 
 ### Basic application
 

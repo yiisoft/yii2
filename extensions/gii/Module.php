@@ -84,11 +84,19 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        $app->getUrlManager()->addRules([
-            $this->id => $this->id . '/default/index',
-            $this->id . '/<id:\w+>' => $this->id . '/default/view',
-            $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
-        ], false);
+        if ($app instanceof \yii\web\Application) {
+            $app->getUrlManager()->addRules([
+                $this->id => $this->id . '/default/index',
+                $this->id . '/<id:\w+>' => $this->id . '/default/view',
+                $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
+            ], false);
+        } elseif ($app instanceof \yii\console\Application) {
+            $app->controllerMap[$this->id] = [
+                'class' => 'yii\gii\console\GenerateController',
+                'generators' => array_merge($this->coreGenerators(), $this->generators),
+                'module' => $this,
+            ];
+        }
     }
 
     /**
@@ -100,7 +108,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             return false;
         }
 
-        if (!$this->checkAccess()) {
+        if (Yii::$app instanceof \yii\web\Application && !$this->checkAccess()) {
             throw new ForbiddenHttpException('You are not allowed to access this page.');
         }
 
@@ -118,7 +126,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     protected function resetGlobalSettings()
     {
-        Yii::$app->assetManager->bundles = [];
+        if (Yii::$app instanceof \yii\web\Application) {
+            Yii::$app->assetManager->bundles = [];
+        }
     }
 
     /**

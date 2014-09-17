@@ -248,10 +248,13 @@ class ActiveField extends \yii\widgets\ActiveField
             }
             if (!isset($options['itemOptions'])) {
                 $options['itemOptions'] = [
-                    'container' => false,
                     'labelOptions' => ['class' => 'checkbox-inline'],
                 ];
             }
+        }  elseif (!isset($options['item'])) {
+            $options['item'] = function ($index, $label, $name, $checked, $value) {
+                return '<div class="checkbox">' . Html::checkbox($name, $checked, ['label' => $label, 'value' => $value]) . '</div>';
+            };
         }
         parent::checkboxList($items, $options);
         return $this;
@@ -271,10 +274,13 @@ class ActiveField extends \yii\widgets\ActiveField
             }
             if (!isset($options['itemOptions'])) {
                 $options['itemOptions'] = [
-                    'container' => false,
                     'labelOptions' => ['class' => 'radio-inline'],
                 ];
             }
+        }  elseif (!isset($options['item'])) {
+            $options['item'] = function ($index, $label, $name, $checked, $value) {
+                return '<div class="radio">' . Html::radio($name, $checked, ['label' => $label, 'value' => $value]) . '</div>';
+            };
         }
         parent::radioList($items, $options);
         return $this;

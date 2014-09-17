@@ -89,6 +89,21 @@ class ApiMarkdown extends GithubMarkdown
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function parseLink($markdown)
+    {
+        list($result, $skip) = parent::parseLink($markdown);
+
+        // add special syntax for linking to the guide
+        $result = preg_replace_callback('/href="guide:([A-z0-9-.#]+)"/i', function($match) {
+            return 'href="' . static::$renderer->generateGuideUrl($match[1]) . '"';
+        }, $result, 1);
+
+        return [$result, $skip];
+    }
+
+    /**
      * Converts markdown into HTML
      *
      * @param string $content

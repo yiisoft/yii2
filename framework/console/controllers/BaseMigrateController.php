@@ -45,12 +45,12 @@ abstract class BaseMigrateController extends Controller
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
         return array_merge(
-            parent::options($actionId),
+            parent::options($actionID),
             ['migrationPath'], // global for all actions
-            ($actionId == 'create') ? ['templateFile'] : [] // action create
+            ($actionID == 'create') ? ['templateFile'] : [] // action create
         );
     }
 

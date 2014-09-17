@@ -121,7 +121,7 @@ public function rules()
 
 ```php
 function foo($model, $attribute) {
-    // ... compute $value ...
+    // ... 计算 $value ...
     return $value;
 }
 ```

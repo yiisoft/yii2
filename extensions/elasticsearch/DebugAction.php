@@ -9,7 +9,6 @@ namespace yii\elasticsearch;
 
 use yii\base\Action;
 use yii\base\NotSupportedException;
-use yii\debug\Panel;
 use yii\helpers\ArrayHelper;
 use yii\web\HttpException;
 use yii\web\Response;

@@ -72,27 +72,41 @@ yii = (function ($) {
         },
 
         /**
+         * Sets the CSRF token in the meta elements.
+         * This method is provided so that you can update the CSRF token with the latest one you obtain from the server.
+         * @param name the CSRF token name
+         * @param value the CSRF token value
+         */
+        setCsrfToken: function (name, value) {
+            $('meta[name=csrf-param]').prop('content', name);
+            $('meta[name=csrf-token]').prop('content', value)
+        },
+
+        /**
+         * Updates all form CSRF input fields with the latest CSRF token.
+         * This method is provided to avoid cached forms containing outdated CSRF tokens.
+         */
+        refreshCsrfToken: function () {
+            var token = pub.getCsrfToken();
+            if (token) {
+                $('form input[name="' + pub.getCsrfParam() + '"]').val(token);
+            }
+        },
+
+        /**
          * Displays a confirmation dialog.
          * The default implementation simply displays a js confirmation dialog.
          * You may override this by setting `yii.confirm`.
          * @param message the confirmation message.
-         * @return boolean whether the user confirms with the message in the dialog
+         * @param ok a callback to be called when the user confirms the message
+         * @param cancel a callback to be called when the user cancels the confirmation
          */
-        confirm: function (message) {
-            return confirm(message);
-        },
-
-        /**
-         * Returns a value indicating whether to allow executing the action defined for the specified element.
-         * This method recognizes the `data-confirm` attribute of the element and uses it
-         * as the message in a confirmation dialog. The method will return true if this special attribute
-         * is not defined or if the user confirms the message.
-         * @param $e the jQuery representation of the element
-         * @return boolean whether to allow executing the action defined for the specified element.
-         */
-        allowAction: function ($e) {
-            var message = $e.data('confirm');
-            return message === undefined || pub.confirm(message);
+        confirm: function (message, ok, cancel) {
+            if (confirm(message)) {
+                !ok || ok();
+            } else {
+                !cancel || cancel();
+            }
         },
 
         /**
@@ -104,19 +118,23 @@ yii = (function ($) {
          * For other elements, either the containing form action or the current page URL will be used
          * as the form action URL.
          *
-         * If the `data-method` attribute is not defined, the default element action will be performed.
+         * If the `data-method` attribute is not defined, the `href` attribute (if any) of the element
+         * will be assigned to `window.location`.
          *
          * @param $e the jQuery representation of the element
-         * @return boolean whether to execute the default action for the element.
          */
         handleAction: function ($e) {
-            var method = $e.data('method');
+            var method = $e.data('method'),
+                $form = $e.closest('form'),
+                action = $e.attr('href');
+
             if (method === undefined) {
-                return true;
+                if (action && action != '#') {
+                    window.location = action;
+                }
+                return;
             }
 
-            var $form = $e.closest('form');
-            var action = $e.attr('href');
             var newForm = !$form.length || action && action != '#';
             if (newForm) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
@@ -156,8 +174,6 @@ yii = (function ($) {
             if (newForm) {
                 $form.remove();
             }
-
-            return false;
         },
 
         getQueryParams: function (url) {
@@ -211,31 +227,33 @@ yii = (function ($) {
                 xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
             }
         });
+        pub.refreshCsrfToken();
     }
 
     function initDataMethods() {
-        var $document = $(document);
-        // handle data-confirm and data-method for clickable elements
-        $document.on('click.yii', pub.clickableSelector, function (event) {
-            var $this = $(this);
-            if (pub.allowAction($this)) {
-                return pub.handleAction($this);
-            } else {
-                event.stopImmediatePropagation();
-                return false;
-            }
-        });
+        var handler = function (event) {
+            var $this = $(this),
+                method = $this.data('method'),
+                message = $this.data('confirm');
 
-        // handle data-confirm and data-method for changeable elements
-        $document.on('change.yii', pub.changeableSelector, function (event) {
-            var $this = $(this);
-            if (pub.allowAction($this)) {
-                return pub.handleAction($this);
-            } else {
-                event.stopImmediatePropagation();
-                return false;
+            if (method === undefined && message === undefined) {
+                return true;
             }
-        });
+
+            if (message !== undefined) {
+                pub.confirm(message, function () {
+                    pub.handleAction($this);
+                });
+            } else {
+                pub.handleAction($this);
+            }
+            event.stopImmediatePropagation();
+            return false;
+        };
+
+        // handle data-confirm and data-method for clickable and changeable elements
+        $(document).on('click.yii', pub.clickableSelector, handler)
+            .on('change.yii', pub.changeableSelector, handler);
     }
 
     function initScriptFilter() {

@@ -117,7 +117,7 @@ class UrlManager extends Component
      *
      * After the UrlManager object is created, if you want to change this property,
      * you should only assign it with a cache object.
-     * Set this property to null if you do not want to cache the URL rules.
+     * Set this property to false if you do not want to cache the URL rules.
      */
     public $cache = 'cache';
     /**
@@ -199,7 +199,9 @@ class UrlManager extends Component
                 $rule = ['route' => $rule];
                 if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
                     $rule['verb'] = explode(',', $matches[1]);
-                    $rule['mode'] = UrlRule::PARSING_ONLY;
+                    if (!in_array('GET', $rule['verb'])) {
+                        $rule['mode'] = UrlRule::PARSING_ONLY;
+                    }
                     $key = $matches[4];
                 }
                 $rule['pattern'] = $key;
