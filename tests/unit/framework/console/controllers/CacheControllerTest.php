@@ -33,6 +33,7 @@ class CacheControllerTest extends TestCase
             'components' => [
                 'firstCache' => 'yii\caching\ArrayCache',
                 'secondCache' => 'yii\caching\ArrayCache',
+                'session' => 'yii\web\CacheSession', // should be ignored at `actionFlushAll()`
             ],
         ]);
     }

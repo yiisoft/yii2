@@ -98,6 +98,7 @@ Yii Framework 2 Change Log
 - Bug #5001: `yii\rest\CreateAction`, `yii\rest\UpdateAction` and `yii\rest\DeleteAction` should throw 500 error if the model operation returns false without validation errors (qiangxue)
 - Bug #5039: `UniqueValidator` and `ExistValidator` did not respect query conditions added by default scope (qiangxue)
 - Bug #5049: `ActiveForm::validationDelay` should be applied to user types only (qiangxue)
+- Bug #5055: Fixed `yii\console\controllers\CacheController` does not check if cache component instance of 'yii\caching\Cache' (klimov-paul)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
