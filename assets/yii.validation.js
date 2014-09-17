@@ -265,6 +265,11 @@ yii.validation = (function ($) {
             } else {
                 compareValue = $('#' + options.compareAttribute).val();
             }
+
+            if (options.type === 'number') {
+                value = parseFloat(value);
+                compareValue = parseFloat(compareValue);
+            }
             switch (options.operator) {
                 case '==':
                     valid = value == compareValue;

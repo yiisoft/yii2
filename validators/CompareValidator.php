@@ -45,6 +45,13 @@ class CompareValidator extends Validator
      */
     public $compareValue;
     /**
+     * @var string the type of the values being compared. The follow types are supported:
+     *
+     * - string: the values are being compared as strings. No conversion will be done before comparison.
+     * - number: the values are being compared as numbers. String values will be converted into numbers before comparison.
+     */
+    public $type = 'string';
+    /**
      * @var string the operator for comparison. The following operators are supported:
      *
      * - `==`: check if two values are equal. The comparison is done is non-strict mode.
@@ -126,7 +133,7 @@ class CompareValidator extends Validator
             $compareLabel = $object->getAttributeLabel($compareAttribute);
         }
 
-        if (!$this->compareValues($this->operator, $value, $compareValue)) {
+        if (!$this->compareValues($this->operator, $this->type, $value, $compareValue)) {
             $this->addError($object, $attribute, $this->message, [
                 'compareAttribute' => $compareLabel,
                 'compareValue' => $compareValue,
@@ -142,7 +149,7 @@ class CompareValidator extends Validator
         if ($this->compareValue === null) {
             throw new InvalidConfigException('CompareValidator::compareValue must be set.');
         }
-        if (!$this->compareValues($this->operator, $value, $this->compareValue)) {
+        if (!$this->compareValues($this->operator, $this->type, $value, $this->compareValue)) {
             return [$this->message, [
                 'compareAttribute' => $this->compareValue,
                 'compareValue' => $this->compareValue,
@@ -155,12 +162,20 @@ class CompareValidator extends Validator
     /**
      * Compares two values with the specified operator.
      * @param string $operator the comparison operator
+     * @param string $type the type of the values being compared
      * @param mixed $value the value being compared
      * @param mixed $compareValue another value being compared
      * @return boolean whether the comparison using the specified operator is true.
      */
-    protected function compareValues($operator, $value, $compareValue)
+    protected function compareValues($operator, $type, $value, $compareValue)
     {
+        if ($type === 'number') {
+            $value = floatval($value);
+            $compareValue = floatval($compareValue);
+        } else {
+            $value = (string) $value;
+            $compareValue = (string) $compareValue;
+        }
         switch ($operator) {
             case '==':
                 return $value == $compareValue;
@@ -188,7 +203,10 @@ class CompareValidator extends Validator
      */
     public function clientValidateAttribute($object, $attribute, $view)
     {
-        $options = ['operator' => $this->operator];
+        $options = [
+            'operator' => $this->operator,
+            'type' => $this->type,
+        ];
 
         if ($this->compareValue !== null) {
             $options['compareValue'] = $this->compareValue;

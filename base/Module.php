@@ -94,7 +94,7 @@ class Module extends ServiceLocator
      * For example, if the namespace of this module is "foo\bar", then the default
      * controller namespace would be "foo\bar\controllers".
      *
-     * See also the [guide section on autoloading][guide-concept-autoloading] to learn more about
+     * See also the [guide section on autoloading](guide:concept-autoloading) to learn more about
      * defining namespaces and how classes are loaded.
      */
     public $controllerNamespace;
@@ -511,14 +511,13 @@ class Module extends ServiceLocator
         }
 
         // module and controller map take precedence
+        if (isset($this->controllerMap[$id])) {
+            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
+            return [$controller, $route];
+        }
         $module = $this->getModule($id);
         if ($module !== null) {
             return $module->createController($route);
-        }
-        if (isset($this->controllerMap[$id])) {
-            $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
-
-            return [$controller, $route];
         }
 
         if (($pos = strrpos($route, '/')) !== false) {

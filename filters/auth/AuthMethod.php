@@ -41,18 +41,28 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      */
     public function beforeAction($action)
     {
+        $response = $this->response ? : Yii::$app->getResponse();
+
         $identity = $this->authenticate(
             $this->user ? : Yii::$app->getUser(),
             $this->request ? : Yii::$app->getRequest(),
-            $this->response ? : Yii::$app->getResponse()
+            $response
         );
 
         if ($identity !== null) {
             return true;
         } else {
-            $this->handleFailure($this->response ? : Yii::$app->getResponse());
+            $this->challenge($response);
+            $this->handleFailure($response);
             return false;
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function challenge($response)
+    {
     }
 
     /**

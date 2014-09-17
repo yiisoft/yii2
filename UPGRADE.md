@@ -94,6 +94,10 @@ Upgrade from Yii 2.0 Beta
   ];
   ```
 
+  > Note: If you are using the `Advanced Application Template` you should not add this configuration to `common/config`
+  or `console/config` because the console application doesn't have to deal with CSRF and uses its own request that
+  doesn't have `cookieValidationKey` property.
+
 * `yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
 new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in: 
 
@@ -197,5 +201,67 @@ new ones save the following code as `convert.php` that should be placed in the s
 * The format of the Faker fixture template is changed. For an example, please refer to the file
   `apps/advanced/common/tests/templates/fixtures/user.php`.
 
-* Signature of the `yii\web\Response::xSendFile()` method has changed. If you're using or overriding this method you
-  must change your code to fit it.
+* The signature of all file downloading methods in `yii\web\Response` is changed, as summarized below:
+  - `sendFile($filePath, $attachmentName = null, $options = [])`
+  - `sendContentAsFile($content, $attachmentName, $options = [])`
+  - `sendStreamAsFile($handle, $attachmentName, $options = [])`
+  - `xSendFile($filePath, $attachmentName = null, $options = [])`
+
+* The signature of callbacks used in `yii\base\ArrayableTrait::fields()` is changed from `function ($field, $model) {`
+  to `function ($model, $field) {`.
+
+* `Html::radio()`, `Html::checkbox()`, `Html::radioList()`, `Html::checkboxList()` no longer generate the container
+  tag around each radio/checkbox when you specify labels for them. You should manually render such container tags,
+  or set the `item` option for `Html::radioList()`, `Html::checkboxList()` to generate the container tags.
+
+* The formatter class has been refactored to have only one class regardless whether PHP intl extension is installed or not.
+  Functionality of `yii\base\Formatter` has been merged into `yii\i18n\Formatter` and `yii\base\Formatter` has been
+  removed so you have to replace all usage of `yii\base\Formatter` with `yii\i18n\Formatter` in your code.
+  Also the API of the Formatter class has changed in many ways.
+  The signature of the following Methods has changed:
+
+  - `asDate`
+  - `asTime`
+  - `asDateTime`
+  - `asSize` has been split up into `asSize` and `asShortSize`
+  - `asCurrency`
+  - `asDecimal`
+  - `asPercent`
+  - `asScientific`
+
+  The following methods have been removed, this also means that the corresponding format which may be used by a
+  GridView or DetailView is not available anymore:
+
+  - `asNumber`
+  - `asDouble`
+
+  Also due to these changes some formatting defaults have changes so you have to check all your GridView and DetailView
+  configuration and make sure the formatting is displayed correctly.
+
+  The configuration for `asSize()` has changed. It now uses the configuration for the number formatting from intl
+  and only the base is configured using `$sizeFormatBase`.
+
+  The specification of the date and time formats is now using the ICU pattern format even if PHP intl extension is not installed.
+  You can prefix a date format with `php:` to use the old format of the PHP `date()`-function.
+
+* `beforeValidate()`, `beforeValidateAll()`, `afterValidate()`, `afterValidateAll()`, `ajaxBeforeSend()` and `ajaxComplete()`
+  are removed from `ActiveForm`. The same functionality is now achieved via JavaScript event mechanism like the following:
+
+  ```js
+  $('#myform').on('beforeValidate', function (event, messages, deferreds) {
+      // called when the validation is triggered by submitting the form
+      // return false if you want to cancel the validation for the whole form
+  }).on('beforeValidateAttribute', function (event, attribute, messages, deferreds) {
+      // before validating an attribute
+      // return false if you want to cancel the validation for the attribute
+  }).on('afterValidateAttribute', function (event, attribute, messages) {
+      // ...
+  }).on('afterValidate', function (event, messages) {
+      // ...
+  }).on('beforeSubmit', function () {
+      // after all validations have passed
+      // you can do ajax form submission here
+      // return false if you want to stop form submission
+  });
+  ```
+
