@@ -186,6 +186,24 @@ EOF;
         $this->setExpectedException('yii\\base\\InvalidConfigException');
         TestAssetCircleA::register($this->getView());
     }
+
+    public function testDuplicateAssetFile()
+    {
+        $view = $this->getView();
+
+        $this->assertEmpty($view->assetBundles);
+        TestSimpleAsset::register($view);
+        $this->assertEquals(1, count($view->assetBundles));
+        $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
+        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset'] instanceof AssetBundle);
+        // register TestJqueryAsset which also has the jquery.js
+        TestJqueryAsset::register($view);
+
+        $expected = <<<EOF
+123<script src="/js/jquery.js"></script>4
+EOF;
+        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+    }
 }
 
 class TestSimpleAsset extends AssetBundle
