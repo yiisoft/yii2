@@ -492,7 +492,7 @@ class Formatter extends Component
     ];
 
     /**
-     * @param integer $value normalized datetime value
+     * @param string $value normalized datetime value
      * @param string $format the format used to convert the value into a date string.
      * @param string $type 'date', 'time', or 'datetime'.
      * @throws InvalidConfigException if the date format is invalid.
@@ -500,9 +500,13 @@ class Formatter extends Component
      */
     private function formatDateTimeValue($value, $format, $type)
     {
-        $value = $this->normalizeDatetimeValue($value);
-        if ($value === null) {
+        $timestamp = $this->normalizeDatetimeValue($value);
+        if ($timestamp === null) {
             return $this->nullDisplay;
+        }
+        $errors = DateTime::getLastErrors();
+        if (is_array($errors) && !empty($errors['errors'])) {
+            throw new InvalidConfigException(implode("\n", $errors['errors']) . "\n(Value: {$value})");
         }
 
         if ($this->_intlLoaded) {
@@ -521,7 +525,7 @@ class Formatter extends Component
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
             }
-            return $formatter->format($value);
+            return $formatter->format($timestamp);
         } else {
             // replace short, medium, long and full with real patterns in case intl is not loaded.
             if (isset($this->_phpNameToPattern[$format][$type])) {
@@ -529,38 +533,31 @@ class Formatter extends Component
             } else {
                 $format = $this->getPhpDatePattern($format);
             }
-            $date = new DateTime(null, new \DateTimeZone($this->timeZone));
-            $date->setTimestamp($value);
-            return $date->format($format);
+            if ($this->timeZone != null) {
+                $timestamp->setTimezone(new \DateTimeZone($this->timeZone));
+            }
+            return $timestamp->format($format);
         }
     }
 
     /**
-     * Normalizes the given datetime value as a UNIX timestamp that can be taken by various date/time formatting methods.
+     * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
      *
      * @param mixed $value the datetime value to be normalized.
-     * @return float the normalized datetime value (int64)
-     */
-    protected function normalizeDatetimeValue($value)
-    {
-        if ($value === null) {
-            return null;
-        } elseif (is_string($value)) {
-            if (is_numeric($value) || $value === '') {
-                $value = (double)$value;
-            } else {
-                $date = new DateTime($value);
-                $value = (double)$date->format('U');
-            }
+     * @return mixed the normalized datetime value
+     */ 
+    protected function normalizeDatetimeValue($value) {
+        if ($value === null || $value instanceof DateTime) {
+            // skip any processing
             return $value;
-
-        } elseif ($value instanceof DateTime || $value instanceof DateTimeInterface) {
-            return (double)$value->format('U');
-        } else {
-            return (double)$value;
         }
+        if (is_numeric($value)) {
+            // process as unix timestamp
+            return DateTime::createFromFormat('U', $value);
+        }
+        return new DateTime($value);
     }
-
+    
     private function getIntlDatePattern($pattern)
     {
         if (strpos($pattern, 'php:') === 0) {
@@ -742,7 +739,8 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return number_format($this->normalizeDatetimeValue($value), 0, '.', '');
+        $timestamp = $this->normalizeDatetimeValue($value);
+        return number_format($timestamp->format('U'), 0, '.', '');
     }
 
     /**
@@ -786,13 +784,11 @@ class Formatter extends Component
                 if ($referenceTime === null) {
                     $dateNow = new DateTime('now', $timezone);
                 } else {
-                    $referenceTime = $this->normalizeDatetimeValue($referenceTime);
-                    $dateNow = new DateTime(null, $timezone);
-                    $dateNow->setTimestamp($referenceTime);
+                    $dateNow = $this->normalizeDatetimeValue($referenceTime);
+                    $dateNow->setTimezone($timezone);
                 }
 
-                $dateThen = new DateTime(null, $timezone);
-                $dateThen->setTimestamp($timestamp);
+                $dateThen = $timestamp->setTimezone($timezone);
 
                 $interval = $dateThen->diff($dateNow);
             }
@@ -1185,6 +1181,10 @@ class Formatter extends Component
      */
     protected function normalizeNumericValue($value)
     {
+        if ($value == null) {
+            // prevent exception when converting empty strings
+            return 0;
+        }
         if (is_string($value) && is_numeric($value)) {
             $value = (float) $value;
         }
