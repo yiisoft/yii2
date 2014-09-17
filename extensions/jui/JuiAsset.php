@@ -17,7 +17,7 @@ class JuiAsset extends AssetBundle
 {
     public $sourcePath = '@bower/jquery-ui';
     public $js = [
-        'jquery-ui.js',
+        'ui/jquery-ui.js',
     ];
     public $css = [
         'themes/smoothness/jquery-ui.css',
