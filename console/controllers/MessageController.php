@@ -260,13 +260,9 @@ class MessageController extends Controller
                 PREG_SET_ORDER
             );
             for ($i = 0; $i < $n; ++$i) {
-                if (($pos = strpos($matches[$i][1], '.')) !== false) {
-                    $category = substr($matches[$i][1], $pos + 1, -1);
-                } else {
-                    $category = substr($matches[$i][1], 1, -1);
-                }
+                $category = substr($matches[$i][1], 1, -1);
                 $message = $matches[$i][2];
-                $messages[$category][] = eval("return $message;"); // use eval to eliminate quote escape
+                $messages[$category][] = eval("return {$message};"); // use eval to eliminate quote escape
             }
         }
 
