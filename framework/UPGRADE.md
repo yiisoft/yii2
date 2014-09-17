@@ -12,11 +12,22 @@ for both A and B.
 Upgrade from Yii 2.0 Beta
 -------------------------
 
-* If you are using Composer to install Yii, you should run the following command first (once for all) to install
+* If you are using Composer to upgrade Yii, you should run the following command first (once for all) to install
   the composer-asset-plugin:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:~1.0"
+  php composer.phar global require "fxp/composer-asset-plugin:1.0.*@dev"
+  ```
+
+  You also need to add the following code to your project's `composer.json` file:
+
+  ```json
+  "extra": {
+      "asset-installer-paths": {
+          "npm-asset-library": "vendor/npm",
+          "bower-asset-library": "vendor/bower"
+      }
+  }
   ```
 
 * If you used `clearAll()` or `clearAllAssignments()` of `yii\rbac\DbManager`, you should replace
