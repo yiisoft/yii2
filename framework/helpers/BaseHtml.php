@@ -1270,6 +1270,10 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
+        if (!array_key_exists('label', $options) && $label = $model->getAttributeLabel($attribute)) {
+            $options['label'] = $label;
+        }
+
         return static::radio($name, $checked, $options);
     }
 
@@ -1312,6 +1316,10 @@ class BaseHtml
 
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
+        }
+
+        if (!array_key_exists('label', $options) && $label = $model->getAttributeLabel($attribute)) {
+            $options['label'] = $label;
         }
 
         return static::checkbox($name, $checked, $options);
