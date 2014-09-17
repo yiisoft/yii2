@@ -139,7 +139,7 @@ abstract class BaseMessageControllerTest extends TestCase
 
     public function testCreateTranslation()
     {
-        $category = 'test_category1';
+        $category = 'test.category1';
         $message = 'test message';
         $sourceFileContent = "Yii::t('{$category}', '{$message}');";
         $this->createSourceFile($sourceFileContent);
@@ -200,7 +200,7 @@ abstract class BaseMessageControllerTest extends TestCase
     /**
      * @depends testMerge
      */
-    public function testMarkObosoleteMessages()
+    public function testMarkObsoleteMessages()
     {
         $category = 'category';
 
@@ -223,7 +223,7 @@ abstract class BaseMessageControllerTest extends TestCase
     /**
      * @depends testMerge
      */
-    public function removeObosoleteMessages()
+    public function removeObsoleteMessages()
     {
         $category = 'category';
 

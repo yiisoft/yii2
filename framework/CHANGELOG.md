@@ -91,6 +91,7 @@ Yii Framework 2 Change Log
 - Bug #4880: Return value of yii\web\Request::getPrefferedLanguage() was a normalized value instead of a valid language value from the input array (cebe)
 - Bug #4905: ActiveForm::$validationDelay doesn't delay after keyrelease when $validateOnType=true (qiangxue)
 - Bug #4920: `yii\filters\auth\CompositeAuth` should not trigger error as long as one of the methods succeeds (qiangxue)
+- Bug #4926: Fixed `yii\console\controllers\MessageController` handles category name containing dot incorrectly (klimov-paul)
 - Bug #4938: When `yii\db\ActiveQuery` is used to build sub-queries, its WHERE clause is not correctly generated (qiangxue)
 - Bug #4954: MSSQL column comments are not retrieved correctly (SerjRamone)
 - Bug #4970: `joinWith()` called by a relation was ignored by `yii\db\ActiveQuery` (stepanselyuk)
