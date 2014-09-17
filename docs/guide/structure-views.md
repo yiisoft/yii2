@@ -595,7 +595,7 @@ at the place where you call [[yii\web\View::head()]] in the layout and generate 
 Note that if you call [[yii\web\View::registerMetaTag()]] multiple times, it will register multiple meta tags,
 regardless whether the meta tags are the same or not.
 
-To make sure there is only a single instance of a meta tag type, you can specify a key when calling the method.
+To make sure there is only a single instance of a meta tag type, you can specify a key as a second parameter when calling the method.
 For example, the following code registers two "description" meta tags. However, only the second one will be rendered.
 
 ```html
