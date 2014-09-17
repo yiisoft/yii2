@@ -998,7 +998,7 @@ class Collection extends Object
             } else {
                 $inValues = $values[$column];
             }
-            $result[$column][$operator] = $inValues;
+            $result[$column][$operator] = array_values($inValues);
         }
 
         return $result;
