@@ -17,6 +17,6 @@ class JqueryAsset extends AssetBundle
 {
     public $sourcePath = '@vendor/yiisoft/jquery';
     public $js = [
-        'dist/jquery.js',
+        'jquery.js',
     ];
 }
