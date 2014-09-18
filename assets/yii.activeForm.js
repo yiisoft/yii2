@@ -408,7 +408,7 @@
         if (attribute.validateOnType) {
             $input.on('keyup.yiiActiveForm', function () {
                 if (attribute.value !== getValue($form, attribute)) {
-                    validateAttribute($form, attribute, false, attribute.valdationDelay);
+                    validateAttribute($form, attribute, false, attribute.validationDelay);
                 }
             });
         }
