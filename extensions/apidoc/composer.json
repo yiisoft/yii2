@@ -31,5 +31,11 @@
 	"autoload": {
 		"psr-4": { "yii\\apidoc\\": "" }
 	},
-	"bin": ["apidoc"]
+	"bin": ["apidoc"],
+	"extra": {
+		"asset-installer-paths": {
+			"npm-asset-library": "vendor/npm",
+			"bower-asset-library": "vendor/bower"
+		}
+	}
 }
