@@ -207,8 +207,7 @@ class ActiveField extends \yii\widgets\ActiveField
             $this->labelOptions['class'] = null;
         }
 
-        parent::checkbox($options, false);
-        return $this;
+        return parent::checkbox($options, false);
     }
 
     /**
@@ -230,8 +229,7 @@ class ActiveField extends \yii\widgets\ActiveField
             $this->labelOptions['class'] = null;
         }
 
-        parent::radio($options, false);
-        return $this;
+        return parent::radio($options, false);
     }
 
     /**
