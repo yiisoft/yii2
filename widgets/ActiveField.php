@@ -436,13 +436,16 @@ class ActiveField extends Component
     public function radio($options = [], $enclosedByLabel = true)
     {
         if ($enclosedByLabel) {
-            if (!isset($options['label'])) {
-                $attribute = Html::getAttributeName($this->attribute);
-                $options['label'] = Html::encode($this->model->getAttributeLabel($attribute));
-            }
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
         } else {
+            if (isset($options['label']) && !isset($this->parts['{label}'])) {
+                $this->parts['{label}'] = $options['label'];
+                if (!empty($options['labelOptions'])) {
+                    $this->labelOptions = $options['labelOptions'];
+                }
+            }
+            unset($options['label'], $options['labelOptions']);
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
         }
         $this->adjustLabelFor($options);
@@ -474,13 +477,16 @@ class ActiveField extends Component
     public function checkbox($options = [], $enclosedByLabel = true)
     {
         if ($enclosedByLabel) {
-            if (!isset($options['label'])) {
-                $attribute = Html::getAttributeName($this->attribute);
-                $options['label'] = Html::encode($this->model->getAttributeLabel($attribute));
-            }
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
         } else {
+            if (isset($options['label']) && !isset($this->parts['{label}'])) {
+                $this->parts['{label}'] = $options['label'];
+                if (!empty($options['labelOptions'])) {
+                    $this->labelOptions = $options['labelOptions'];
+                }
+            }
+            unset($options['label'], $options['labelOptions']);
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
         }
         $this->adjustLabelFor($options);

@@ -289,6 +289,7 @@ Yii Framework 2 Change Log
 - Chg: `yii\web\Request::cookieValidationKey` must be explicitly specified for each application that wants to use cookie validation (qiangxue)
 - Chg: Added `yii\composer\Installer::postCreateProject()` and modified the syntax of calling installer methods in composer.json (qiangxue)
 - Chg: When an ID is found to be in both `Application::controllerMap` and `Application::modules`, the former will take precedence (qiangxue)
+- Chg: `yii\helpers\Html::activeCheckbox()` and `activeRadio()` will generate labels by default using the corresponding attribute labels (qiangxue)
 - New #1280: Gii can now be run from command line (schmunk42, cebe, qiangxue)
 - New #3911: Added `yii\behaviors\SluggableBehavior` that fills the specified model attribute with the transliterated and adjusted version to use in URLs (creocoder)
 - New #4193: Added `yii\filters\Cors` CORS filter to allow Cross Origin Resource Sharing (pgaultier)
