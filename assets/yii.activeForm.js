@@ -300,10 +300,7 @@
                         delete messages[i];
                     }
                 }
-                if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
-                    // Perform ajax validation when at least one input needs it.
-                    // If the validation is triggered by form submission, ajax validation
-                    // should be done only when all inputs pass client validation
+                if (needAjaxValidation) {
                     var $button = data.submitObject,
                         extData = '&' + data.settings.ajaxParam + '=' + $form.prop('id');
                     if ($button && $button.length && $button.prop('name')) {
