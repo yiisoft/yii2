@@ -56,7 +56,7 @@ class ViewRendererTest extends TestCase
         $view = $this->mockView();
         $content = $view->renderFile('@yiiunit/extensions/smarty/views/layout.tpl');
 
-        $this->assertEquals(1, preg_match('#<script src="/assets/[0-9a-z]+/dist/jquery\\.js"></script>\s*</body>#', $content), 'Content does not contain the jquery js:' . $content);
+        $this->assertEquals(1, preg_match('#<script src="/assets/[0-9a-z]+/jquery\\.js"></script>\s*</body>#', $content), 'Content does not contain the jquery js:' . $content);
     }
 
 

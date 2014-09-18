@@ -39,7 +39,7 @@ class ViewRendererTest extends DatabaseTestCase
         $view = $this->mockView();
         $content = $view->renderFile('@yiiunit/extensions/twig/views/layout.twig');
 
-        $this->assertEquals(1, preg_match('#<script src="/assets/[0-9a-z]+/dist/jquery\\.js"></script>\s*</body>#', $content), 'Content does not contain the jquery js:' . $content);
+        $this->assertEquals(1, preg_match('#<script src="/assets/[0-9a-z]+/jquery\\.js"></script>\s*</body>#', $content), 'Content does not contain the jquery js:' . $content);
     }
 
     public function testAppGlobal()
