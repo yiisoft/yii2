@@ -13,6 +13,7 @@ Yii Framework 2 debug extension Change Log
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
 - Enh #3810: Added "Latest" button on panels page (thiagotalma)
 - Enh #4031: Http status codes were hardcoded in filter (sdkiller)
+- Enh #5089: Added asset debugger panel (arturf, qiangxue)
 
 2.0.0-beta April 13, 2014
 -------------------------

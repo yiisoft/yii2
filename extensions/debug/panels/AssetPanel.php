@@ -24,34 +24,11 @@ use yii\web\AssetManager;
 class AssetPanel extends Panel
 {
     /**
-     * @var integer
-     */
-    private $cssCount = 0;
-    /**
-     * @var integer
-     */
-    private $jsCount = 0;
-    /**
-     * @var AssetBundle[]
-     */
-    private $bundles = [];
-    
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-        Event::on(Application::className(), Application::EVENT_AFTER_ACTION, function () {
-            $this->bundles = $this->format(Yii::$app->view->assetManager->bundles);
-        });
-    }
-    /**
      * @inheritdoc
      */
     public function getName()
     {
-        return 'Asset bundles';
+        return 'Asset Bundles';
     }
 
     /**
@@ -75,6 +52,42 @@ class AssetPanel extends Panel
      */
     public function save()
     {
+        $bundles = Yii::$app->view->assetManager->bundles;
+        if (empty($bundles)) {
+            return [];
+        }
+        $data = [];
+        foreach ($bundles as $name => $bundle) {
+            if ($bundle instanceof AssetBundle) {
+                $data[$name] = (array) $bundle;
+            }
+        }
+        return $data;
+
+        $cssCount = 0;
+        $jsCount = 0;
+        foreach ($bundles as $bundle) {
+
+            $cssCount += count($bundle->css);
+            $jsCount += count($bundle->js);
+
+            array_walk($bundle->css, function(&$file, $key, $data) {
+                $file = Html::a($file, $data->baseUrl . '/' . $file, ['target' => '_blank']);
+            }, $bundle);
+
+            array_walk($bundle->js, function(&$file, $key, $data) {
+                $file = Html::a($file, $data->baseUrl . '/' . $file, ['target' => '_blank']);
+            }, $bundle);
+
+            array_walk($bundle->depends, function(&$depend) {
+                $depend = Html::a($depend, '#' . $depend);
+            });
+
+            $this->formatOptions($bundle->publishOptions);
+            $this->formatOptions($bundle->jsOptions);
+            $this->formatOptions($bundle->cssOptions);
+        }
+
         $data = [
             'totalBundles' => count($this->bundles),
             'totalCssFiles' => $this->cssCount,

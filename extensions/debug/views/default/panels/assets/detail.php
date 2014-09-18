@@ -1,62 +1,66 @@
 <?php
 /* @var $panel yii\debug\panels\AssetPanel */
-/* @var $bundles \yii\web\AssetBundle[] array */
 
 use yii\helpers\Html;
+use yii\helpers\Inflector;
 ?>
-<h1>Asset bundles</h1>
+<h1>Asset Bundles</h1>
 
-
+<?php if (empty($panel->data)) {
+    echo '<p>No asset bundle was used.</p>';
+    return;
+} ?>
 <table class="table table-striped table-bordered">
     <caption>
-        <p><b>Total bundles: <?= $panel->data['totalBundles'] ?></b>.</p>
-        <p>CSS files: <?= $panel->data['totalCssFiles'] ?>, JS files: <?= $panel->data['totalJsFiles'] ?></p>
+        <p>Total <b><?= count($panel->data) ?></b> asset bundles were loaded.</p>
     </caption>
 <?php
-foreach ($panel->data['bundles'] as $key => $bundle) {
+foreach ($panel->data as $name => $bundle) {
 ?>
     <thead>
         <tr>
-            <td colspan="2"><h3 id="<?= $key ?>"><?= $key ?></h3></td>
+            <td colspan="2"><h3 id="<?= Inflector::camel2id($name) ?>"><?= $name ?></h3></td>
         </tr>
     </thead>
     <tbody>
         <tr>
             <th>sourcePath</th>
-            <td><?= Html::ul([$bundle->sourcePath], ['class' => 'trace', 'encode' => false]) ?></td>
+            <td><?= Html::encode($bundle['sourcePath'] !== null ? $bundle['sourcePath'] : $bundle['basePath']) ?></td>
         </tr>
+        <?php if ($bundle['basePath'] !== null): ?>
+            <tr>
+                <th>basePath</th>
+                <td><?= Html::encode($bundle['basePath']) ?></td>
+            </tr>
+        <?php endif; ?>
+        <?php if ($bundle['baseUrl'] !== null): ?>
+            <tr>
+                <th>baseUrl</th>
+                <td><?= Html::encode($bundle['baseUrl']) ?></td>
+            </tr>
+        <?php endif; ?>
+        <?php if (!empty($bundle['css'])): ?>
         <tr>
             <th>css</th>
-            <td><?= Html::ul($bundle->css, ['class' => 'trace', 'encode' => false]) ?></td>
+            <td><?= Html::ul($bundle['css'], ['class' => 'assets']) ?></td>
         </tr>
+        <?php endif; ?>
+        <?php if (!empty($bundle['js'])): ?>
         <tr>
             <th>js</th>
-            <td><?= Html::ul($bundle->js, ['class' => 'trace', 'encode' => false]) ?></td>
+            <td><?= Html::ul($bundle['js'], ['class' => 'assets']) ?></td>
         </tr>
+        <?php endif; ?>
+        <?php if (!empty($bundle['depends'])): ?>
         <tr>
             <th>depends</th>
-            <td><?= Html::ul($bundle->depends, ['class' => 'trace', 'encode' => false]) ?></td>
+            <td><ul class="assets">
+                <?php foreach ($bundle['depends'] as $depend): ?>
+                    <li><?= Html::a($depend, '#' . Inflector::camel2id($depend)) ?></li>
+                <?php endforeach; ?>
+            </ul></td>
         </tr>
-        <tr>
-            <th>publishOptions</th>
-            <td><?= Html::ul($bundle->publishOptions, ['class' => 'trace', 'encode' => false]) ?></td>
-        </tr>
-        <tr>
-            <th>basePath</th>
-            <td><?= Html::ul([$bundle->basePath], ['class' => 'trace', 'encode' => false]) ?></td>
-        </tr>
-        <tr>
-            <th>baseUrl</th>
-            <td><?= Html::ul([$bundle->baseUrl], ['class' => 'trace', 'encode' => false]) ?></td>
-        </tr>
-        <tr>
-            <th>jsOptions</th>
-            <td><?= Html::ul($bundle->jsOptions, ['class' => 'trace']) ?></td>
-        </tr>
-        <tr>
-            <th>cssOptions</th>
-            <td><?= Html::ul($bundle->cssOptions, ['class' => 'trace']) ?></td>
-        </tr>
+        <?php endif; ?>
     </tbody>
 <?php
 }
