@@ -53,6 +53,12 @@ use yii\db\BaseActiveRecord;
 class BlameableBehavior extends AttributeBehavior
 {
     /**
+     * @var string component that will be used to receive current user ID value
+     * Note that component identity class must implement [[yii\web\IdentityInterface]]
+     * otherwise will throw an error
+     */
+    public $componentName = 'user';
+    /**
      * @var string the attribute that will receive current user ID value
      * Set this property to false if you do not want to record the creator ID.
      */
@@ -102,7 +108,7 @@ class BlameableBehavior extends AttributeBehavior
     protected function getValue($event)
     {
         if ($this->value === null) {
-            $user = Yii::$app->get('user', false);
+            $user = Yii::$app->get($this->componentName, false);
             return $user && !$user->isGuest ? $user->id : null;
         } else {
             return call_user_func($this->value, $event);
