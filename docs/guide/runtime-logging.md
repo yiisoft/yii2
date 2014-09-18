@@ -16,7 +16,7 @@ Basic logging is as simple as calling one method:
 ```
 
 You can log simple strings as well as more complex data structures such as arrays or objects.
-When logging data that is not a string the defaulf yii log targets will serialize the value using [[yii\helpers\Vardumper::export()]].
+When logging data that is not a string the default yii log targets will serialize the value using [[yii\helpers\Vardumper::export()]].
 
 ### Message category
 
