@@ -53,6 +53,37 @@ class I18NTest extends TestCase
         // fallback to just langauge code with present exact match
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
     }
+    
+    public function testDefaultSource()
+    {
+        $i18n = new I18N([
+            'translations' => [
+                '*' => new PhpMessageSource([
+                'basePath' => '@yiiunit/data/i18n/messages',
+                    'fileMap' => [
+                        'test' => 'test.php',
+                        'foo' => 'test.php',
+                    ],
+                ])
+            ]
+        ]);
+
+        $msg = 'The dog runs fast.';
+
+        // source = target. Should be returned as is.
+        $this->assertEquals($msg, $i18n->translate('test', $msg, [], 'en'));
+
+        // exact match
+        $this->assertEquals('Der Hund rennt schnell.', $i18n->translate('test', $msg, [], 'de-DE'));
+        $this->assertEquals('Der Hund rennt schnell.', $i18n->translate('foo', $msg, [], 'de-DE'));
+        $this->assertEquals($msg, $i18n->translate('bar', $msg, [], 'de-DE'));
+
+        // fallback to just language code with absent exact match
+        $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
+
+        // fallback to just langauge code with present exact match
+        $this->assertEquals('Hallo Welt!', $i18n->translate('test', 'Hello world!', [], 'de-DE'));
+    }
 
     public function testTranslateParams()
     {
