@@ -112,6 +112,7 @@ Yii Framework 2 Change Log
 - Enh #1452: Added `Module::getInstance()` to allow accessing the module instance from anywhere within the module (qiangxue)
 - Enh #2264: `CookieCollection::has()` will return false for expired or removed cookies (qiangxue)
 - Enh #2315: Any operator now could be used with `yii\db\Query::->where()` operand format (samdark)
+- Ehn #2380: Added `yii\widgets\ActiveForm::enableClientScript` to support turning on and off client side script generation (qiangxue)
 - Enh #2435: `yii\db\IntegrityException` is now thrown on database integrity errors instead of general `yii\db\Exception` (samdark)
 - Enh #2558: Enhanced support for memcached by adding `yii\caching\MemCache::persistentId` and `yii\caching\MemCache::options` (qiangxue)
 - Enh #2837: Error page now shows arguments in stack trace method calls (samdark)
@@ -233,7 +234,6 @@ Yii Framework 2 Change Log
    - `yii\base\Formatter` functionality has been merged into `yii\i18n\Formatter`
    - removed the `yii\base\Formatter` class
 - Chg #1551: Refactored DateValidator to support ICU date format and use the format defined in Formatter by default (cebe)
-- Chg #2380: `yii\widgets\ActiveForm` will register validation js even if there are not fields inside (qiangxue)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
 - Chg #2914: `ActiveForm::fieldConfig` will be merged recursively with the `$options` parameter in `ActiveForm::field()` (qiangxue)
