@@ -486,7 +486,8 @@ class ActiveField extends Component
                     $this->labelOptions = $options['labelOptions'];
                 }
             }
-            unset($options['label'], $options['labelOptions']);
+            unset($options['labelOptions']);
+            $options['label'] = null;
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
         }
         $this->adjustLabelFor($options);
