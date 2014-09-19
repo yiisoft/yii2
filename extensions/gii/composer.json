@@ -21,7 +21,7 @@
         "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
         "phpspec/php-diff": ">=1.0.2",
-        "bower-asset/typeahead.js": ">=0.10.0"
+        "bower-asset/typeahead.js": "0.10.*"
     },
     "autoload": {
         "psr-4": {

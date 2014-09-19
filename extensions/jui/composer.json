@@ -19,7 +19,7 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "bower-asset/jquery-ui": ">=1.10.0"
+        "bower-asset/jquery-ui": "1.11.*"
     },
     "autoload": {
         "psr-4": {
