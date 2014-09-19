@@ -39,7 +39,7 @@ addons:
 
 install:
   - composer self-update && composer --version
-  - composer global require "fxp/composer-asset-plugin:1.0.*@dev"
+  - composer global require "fxp/composer-asset-plugin:1.0.0-beta1"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - composer install --prefer-dist
