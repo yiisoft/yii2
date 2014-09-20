@@ -38,8 +38,8 @@
          *  - event: an Event object.
          *  - form: is the grid filter form that will be submitted
          *
-         * If the handler returns a boolean false, it will stop further form validation after this event. And as
-         * a result, beforeFilter event will not be triggered.
+         * If the handler returns a boolean false, it will stop filter form submission after this event. And as
+         * a result, afterFilter event will not be triggered.
          */
         beforeFilter: 'beforeFilter.yiiGridView',
         /**
