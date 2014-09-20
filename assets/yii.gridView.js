@@ -82,6 +82,9 @@
                 $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
             });
             $form.submit();
+            
+            // triggers a filter grid event with the filter form as a parameter
+            $grid.trigger('filter.yiiGridView', [$form]);
         },
 
         setSelectionColumn: function (options) {
