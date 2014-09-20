@@ -1,13 +1,105 @@
-Managing assets
-===============
+Assets
+======
 
-> Note: This section is under development.
+> Note: This section is under writing.
 
-An asset in Yii is a file that is included into the page. It could be CSS, JavaScript or
-any other file. The framework provides many ways to work with assets from basics such as adding `<script src="...">` tags
-for a file which is covered by the [View section](view.md), to advanced usage such as publishing files that are not
-under the webservers document root, resolving JavaScript dependencies or minifying CSS, which we will cover in the following.
+An asset in Yii is a file that may be referenced or linked on a Web page. It can be a CSS file, a JavaScript file,
+an image or video file, etc. For simple Web applications, assets may be managed manually - you place them in a Web folder
+and reference them using their URLs in your Web pages. However, if an application is complicated, or if it uses
+many third-party extensions, manual management of assets can soon become a headache. For example, how will you ensure
+one JavaScript file is always included before another and the same JavaScript file is not included twice?
+How will you handle asset files required by an extension which you do not want to dig into its internals?
+How will you combine and compress multiple CSS/JavaScript files into a single one when you deploy the application
+to production? In this section, we will describe the asset management capability offered by Yii to help you alleviate
+all these problems.
 
+
+## Asset Types <a name="asset-types"></a>
+
+Assets, based on their location, can be classified as:
+
+* source assets: the asset files are located together with PHP source code which cannot be directly accessed via Web.
+  In order for source assets to be Web accessible, they should be published and turned in *published assets*.
+* published assets: the asset files are located in a Web folder and can thus be directly accessed via Web.
+* external assets: the asset files are located on a Web server that is different from the one hosting your Web
+  application.
+
+As aforementioned, an asset can be a CSS file, a JavaScript file, an image file, and so on, as long as it can
+be referenced or linked on a Web page. However, in most cases you would mainly care about CSS files and JavaScript files.
+This is because they are the essential pieces in making your Web applications truly dynamic and interactive.
+
+
+## Asset Bundles <a name="asset-bundles"></a>
+
+Assets are organized in *bundles*. An asset bundle represents a collection of asset files located
+under a single directory. It lists which CSS and JavaScript files are in this collection and should be included
+in a page when the bundle is registered with it.
+
+You can register an asset bundle in a [view](structure-views.md), which will generate
+`<link>` and `<script>` HTML tags on the page to include the CSS and JavaScript files listed in the bundle.
+
+It is specified in terms of a PHP class extending from [[yii\web\AssetBundle]]. For example,
+the following code defines the asset bundle used by [the basic application template](start-installation.md):
+
+```php
+<?php
+
+namespace app\assets;
+
+use yii\web\AssetBundle;
+
+class AppAsset extends AssetBundle
+{
+    public $basePath = '@webroot';
+    public $baseUrl = '@web';
+    public $css = [
+        'css/site.css',
+    ];
+    public $js = [
+    ];
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
+    ];
+}
+```
+
+You should normally specify the values of the following properties in an asset bundle class:
+
+* [[yii\web\AssetBundle::sourcePath|sourcePath]]: specifies the root directory that contains the asset files in
+  this bundle. This property should be set if the root directory is not Web accessible. Otherwise, you should
+  set the [[yii\web\AssetBundle::basePath|basePath]] property, instead. [Path aliases](concept-aliases.md) can be
+  used here.
+* [[yii\web\AssetBundle::basePath|basePath]]: specifies a Web-accessible directory that contains the asset files in
+  this bundle. When you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property,
+  the [asset manager](#asset-manager) will publish the assets in this bundle to a Web-accessible directory
+  and overwrite this property accordingly. You should set this property if your asset files are already in
+  a Web-accessible directory and do not need asset publishing. [Path aliases](concept-aliases.md) can be used here.
+* [[yii\web\AssetBundle::baseUrl|baseUrl]]: specifies the base URL that can be prepended to the relative asset
+  paths listed in [[yii\web\AssetBundle::js|js]] and [[yii\web\AssetBundle::css|css]]. Like [[yii\web\AssetBundle::basePath|basePath]],
+  if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property, the [asset manager](#asset-manager)
+  will publish the assets and overwrite this property accordingly. [Path aliases](concept-aliases.md) can be used here.
+* [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. Note that only
+  forward slash "/" should be used as directory separators. Each JavaScript file can be specified in one of the
+  following two formats:
+  - a relative path representing a local JavaScript file (e.g. `js/main.js`). The actual path of the file
+    can be determined by prepending [[basePath]] to the relative path, and the actual URL
+    of the file can be determined by prepending [[baseUrl]] to the relative path.
+  - an absolute URL representing an external JavaScript file. For example,
+    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
+    `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
+* [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
+  is the same as that of [[yii\web\AssetBundle::js|js]].
+* [[yii\web\AssetBundle::depends|depends]]: an array listing the asset bundles that this bundle depends on.
+
+
+When you include multiple CSS or JavaScript files on a Web page, they have to follow certain orders to avoid
+unexpected overriding. In Yii, such ordering is expressed as *dependencies* among assets. For example, the jQuery UI
+JavaScript files depend on jQuery. As a result, the jQuery file should be included *before* the jQuery UI JavaScript files
+if they are included on a page.
+
+
+## Asset Manager <a name="asset-manager"></a>
 
 Declaring asset bundles
 -----------------------

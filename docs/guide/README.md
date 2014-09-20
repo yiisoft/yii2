@@ -40,7 +40,7 @@ Application Structure
 * [Modules](structure-modules.md)
 * [Filters](structure-filters.md)
 * [Widgets](structure-widgets.md)
-* [Asset Bundles](structure-assets.md)
+* [Assets](structure-assets.md)
 * [Extensions](structure-extensions.md)
 
 
