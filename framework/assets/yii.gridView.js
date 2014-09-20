@@ -28,6 +28,31 @@
 
     var gridData = {};
 
+
+    var gridEvents = {
+        /**
+         * beforeFilter event is triggered before filtering the grid.
+         * The signature of the event handler should be:
+         *     function (event, form)
+         * where
+         *  - event: an Event object.
+         *  - form: is the grid filter form that will be submitted
+         *
+         * If the handler returns a boolean false, it will stop further form validation after this event. And as
+         * a result, beforeFilter event will not be triggered.
+         */
+        beforeFilter: 'beforeFilter.yiiGridView',
+        /**
+         * afterFilter event is triggered after filtering the grid and filtered results are fetched.
+         * The signature of the event handler should be:
+         *     function (event, form)
+         * where
+         *  - event: an Event object.
+         *  - form: is the grid filter form that will be submitted
+         */
+        afterFilter: 'afterFilter.yiiGridView'
+    };
+    
     var methods = {
         init: function (options) {
             return this.each(function () {
@@ -60,7 +85,7 @@
         },
 
         applyFilter: function () {
-            var $grid = $(this);
+            var $grid = $(this), event;
             var settings = gridData[$grid.prop('id')].settings;
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
@@ -81,10 +106,19 @@
             $.each(data, function (name, value) {
                 $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
             });
+            
+            // triggers a beforeFilter grid event with the filter form as a parameter
+            event = $.Event(gridEvents.beforeFilter);
+            $form.trigger(event, [$form]);
+            if (event.result === false) {
+                return;
+            }
+
             $form.submit();
             
-            // triggers a filter grid event with the filter form as a parameter
-            $grid.trigger('filter.yiiGridView', [$form]);
+            // triggers a afterFilter grid event with the filter form as a parameter
+            event = $.Event(gridEvents.afterFilter);
+            $grid.trigger(event, [$form]);
         },
 
         setSelectionColumn: function (options) {
@@ -129,4 +163,3 @@
         }
     };
 })(window.jQuery);
-
