@@ -109,7 +109,7 @@
             
             // triggers `beforeFilter` grid event with the filter form as a parameter
             event = $.Event(gridEvents.beforeFilter);
-            $form.trigger(event, [$form]);
+            $grid.trigger(event, [$form]);
             if (event.result === false) {
                 return;
             }
