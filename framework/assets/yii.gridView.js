@@ -115,8 +115,7 @@
             $form.submit();
             
             // triggers `afterFilter` grid event with the filter form as a parameter
-            event = $.Event(gridEvents.afterFilter);
-            $grid.trigger(event);
+            $grid.trigger(gridEvents.afterFilter);
         },
 
         setSelectionColumn: function (options) {
