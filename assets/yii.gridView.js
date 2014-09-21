@@ -36,7 +36,7 @@
          * where
          *  - event: an Event object.
          *
-         * If the handler returns a boolean false, it will stop filter form submission after this event. And as
+         * If the handler returns a boolean false, it will stop filter form submission after this event. As
          * a result, afterFilter event will not be triggered.
          */
         beforeFilter: 'beforeFilter.yiiGridView',
