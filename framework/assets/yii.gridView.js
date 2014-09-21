@@ -104,7 +104,6 @@
                 $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
             });
             
-            // triggers `beforeFilter` grid event with the filter form as a parameter
             event = $.Event(gridEvents.beforeFilter);
             $grid.trigger(event);
             if (event.result === false) {
@@ -113,7 +112,6 @@
 
             $form.submit();
             
-            // triggers `afterFilter` grid event with the filter form as a parameter
             $grid.trigger(gridEvents.afterFilter);
         },
 
