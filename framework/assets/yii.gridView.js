@@ -28,7 +28,6 @@
 
     var gridData = {};
 
-
     var gridEvents = {
         /**
          * beforeFilter event is triggered before filtering the grid.
