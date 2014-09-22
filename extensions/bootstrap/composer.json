@@ -25,5 +25,10 @@
         "psr-4": {
             "yii\\bootstrap\\": ""
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
     }
 }

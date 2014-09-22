@@ -17,13 +17,16 @@
 			"email": "qiang.xue@gmail.com"
 		}
 	],
+    "require": {
+        "composer-plugin-api": "1.0.0"
+    },
 	"autoload": {
 		"psr-4": { "yii\\composer\\": "" }
 	},
-	"extra": {
-		"class": "yii\\composer\\Plugin"
-	},
-	"require": {
-		"composer-plugin-api": "1.0.0"
-	}
+    "extra": {
+        "class": "yii\\composer\\Plugin",
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
 }

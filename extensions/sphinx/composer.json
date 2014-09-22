@@ -24,5 +24,10 @@
 	},
 	"autoload": {
 		"psr-4": { "yii\\sphinx\\": "" }
-	}
+	},
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
 }

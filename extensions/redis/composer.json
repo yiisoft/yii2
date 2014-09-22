@@ -22,5 +22,10 @@
 	},
 	"autoload": {
 		"psr-4": { "yii\\redis\\": "" }
-	}
+	},
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
 }

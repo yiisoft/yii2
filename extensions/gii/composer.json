@@ -27,5 +27,10 @@
         "psr-4": {
             "yii\\gii\\": ""
         }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
     }
 }

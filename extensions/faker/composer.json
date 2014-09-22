@@ -22,5 +22,10 @@
 	},
 	"autoload": {
 		"psr-4": { "yii\\faker\\": "" }
-	}
+	},
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
 }

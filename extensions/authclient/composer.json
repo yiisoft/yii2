@@ -23,5 +23,10 @@
 	},
 	"autoload": {
 		"psr-4": { "yii\\authclient\\": "" }
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "2.0.x-dev"
+		}
 	}
 }
