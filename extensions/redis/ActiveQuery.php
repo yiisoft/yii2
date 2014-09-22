@@ -123,6 +123,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
             for ($i = 0; $i < $c;) {
                 $row[$dataRow[$i++]] = $dataRow[$i++];
             }
+
             $rows[] = $row;
         }
         if (!empty($rows)) {

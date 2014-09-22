@@ -119,12 +119,21 @@ class ActiveRecord extends BaseActiveRecord
 
         $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
         // save attributes
-        $args = [$key];
+        $setArgs = [$key];
         foreach ($values as $attribute => $value) {
-            $args[] = $attribute;
-            $args[] = $value;
+            // only insert attributes that are not null
+            if ($value !== null) {
+                if (is_bool($value)) {
+                    $value = (int)$value;
+                }
+                $setArgs[] = $attribute;
+                $setArgs[] = $value;
+            }
         }
-        $db->executeCommand('HMSET', $args);
+
+        if (count($setArgs) > 1) {
+            $db->executeCommand('HMSET', $setArgs);
+        }
 
         $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
@@ -158,26 +167,44 @@ class ActiveRecord extends BaseActiveRecord
             $pk = static::buildKey($pk);
             $key = static::keyPrefix() . ':a:' . $pk;
             // save attributes
-            $args = [$key];
+            $delArgs = [$key];
+            $setArgs = [$key];
             foreach ($attributes as $attribute => $value) {
                 if (isset($newPk[$attribute])) {
                     $newPk[$attribute] = $value;
                 }
-                $args[] = $attribute;
-                $args[] = $value;
+                if ($value !== null) {
+                    if (is_bool($value)) {
+                        $value = (int)$value;
+                    }
+                    $setArgs[] = $attribute;
+                    $setArgs[] = $value;
+                } else {
+                    $delArgs[] = $attribute;
+                }
             }
             $newPk = static::buildKey($newPk);
             $newKey = static::keyPrefix() . ':a:' . $newPk;
             // rename index if pk changed
             if ($newPk != $pk) {
                 $db->executeCommand('MULTI');
-                $db->executeCommand('HMSET', $args);
+                if (count($setArgs) > 1) {
+                    $db->executeCommand('HMSET', $setArgs);
+                }
+                if (count($delArgs) > 1) {
+                    $db->executeCommand('HDEL', $delArgs);
+                }
                 $db->executeCommand('LINSERT', [static::keyPrefix(), 'AFTER', $pk, $newPk]);
                 $db->executeCommand('LREM', [static::keyPrefix(), 0, $pk]);
                 $db->executeCommand('RENAME', [$key, $newKey]);
                 $db->executeCommand('EXEC');
             } else {
-                $db->executeCommand('HMSET', $args);
+                if (count($setArgs) > 1) {
+                    $db->executeCommand('HMSET', $setArgs);
+                }
+                if (count($delArgs) > 1) {
+                    $db->executeCommand('HDEL', $delArgs);
+                }
             }
             $n++;
         }
