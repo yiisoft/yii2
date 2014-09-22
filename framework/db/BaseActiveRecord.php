@@ -1232,6 +1232,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param string $name the case sensitive name of the relationship.
      * @param ActiveRecordInterface $model the model to be unlinked from the current one.
+     * You have to make sure that the model is really related with the current model as this method
+     * does not check this.
      * @param boolean $delete whether to delete the model that contains the foreign key.
      * If false, the model's foreign key will be set null and saved.
      * If true, the model containing the foreign key will be deleted.
@@ -1282,7 +1284,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } else {
             $p1 = $model->isPrimaryKey(array_keys($relation->link));
             $p2 = $this->isPrimaryKey(array_values($relation->link));
-            if ($p1 && $p2 || $p2) {
+            if ($p2) {
                 foreach ($relation->link as $a => $b) {
                     $model->$a = null;
                 }
@@ -1348,6 +1350,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $nulls[$a] = null;
                 $condition[$a] = $this->$b;
             }
+            if (!empty($viaRelation->where)) {
+                $condition = ['and', $condition, $viaRelation->where];
+            }
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 if ($delete) {
@@ -1378,6 +1383,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 foreach ($relation->link as $a => $b) {
                     $nulls[$a] = null;
                     $condition[$a] = $this->$b;
+                }
+                if (!empty($relation->where)) {
+                    $condition = ['and', $condition, $relation->where];
                 }
                 if ($delete) {
                     $relatedModel::deleteAll($condition);

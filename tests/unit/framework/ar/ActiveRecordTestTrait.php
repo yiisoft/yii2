@@ -728,54 +728,6 @@ trait ActiveRecordTestTrait
         $this->assertEquals(2, count($order->orderItems));
     }
 
-    public function testUnlinkAndConditionSetNull()
-    {
-        /* @var $this TestCase|ActiveRecordTestTrait */
-
-        /* @var $customerClass \yii\db\ActiveRecordInterface */
-        $customerClass = $this->getCustomerClass();
-        /* @var $orderClass \yii\db\ActiveRecordInterface */
-        $orderClass = $this->getOrderClass();
-
-        // in this test all orders are owned by customer 1
-        $orderClass::updateAll(['customer_id' => 1]);
-        $this->afterSave();
-
-        // removing a model that is not related should not work
-        $customer = $customerClass::findOne(1);
-        $this->assertEquals(3, count($customer->ordersWithNullFK));
-        $this->assertEquals(1, count($customer->expensiveOrdersWithNullFK));
-        $customer->unlink('expensiveOrdersWithNullFK', $customer->orders[2], false);
-        $this->afterSave();
-        $customer = $customerClass::findOne(1);
-        $this->assertEquals(3, count($customer->ordersWithNullFK));
-        $this->assertEquals(1, count($customer->expensiveOrdersWithNullFK));
-    }
-
-    public function testUnlinkAndConditionDelete()
-    {
-        /* @var $this TestCase|ActiveRecordTestTrait */
-
-        /* @var $customerClass \yii\db\ActiveRecordInterface */
-        $customerClass = $this->getCustomerClass();
-        /* @var $orderClass \yii\db\ActiveRecordInterface */
-        $orderClass = $this->getOrderClass();
-
-        // in this test all orders are owned by customer 1
-        $orderClass::updateAll(['customer_id' => 1]);
-        $this->afterSave();
-
-        // removing a model that is not related should not work
-        $customer = $customerClass::findOne(1);
-        $this->assertEquals(3, count($customer->orders));
-        $this->assertEquals(1, count($customer->expensiveOrders));
-        $customer->unlink('expensiveOrders', $customer->orders[2], true);
-        $this->afterSave();
-        $customer = $customerClass::findOne(1);
-        $this->assertEquals(3, count($customer->orders));
-        $this->assertEquals(1, count($customer->expensiveOrders));
-    }
-
     public function testUnlinkAll()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */
@@ -849,7 +801,7 @@ trait ActiveRecordTestTrait
         /* @var $customerClass \yii\db\BaseActiveRecord */
         $customerClass = $this->getCustomerClass();
         /* @var $orderClass \yii\db\BaseActiveRecord */
-        $orderClass = $this->getOrderClass();
+        $orderClass = $this->getOrderWithNullFKClass();
 
         // in this test all orders are owned by customer 1
         $orderClass::updateAll(['customer_id' => 1]);
@@ -860,9 +812,12 @@ trait ActiveRecordTestTrait
         $this->assertEquals(1, count($customer->expensiveOrdersWithNullFK));
         $this->assertEquals(3, $orderClass::find()->count());
         $customer->unlinkAll('expensiveOrdersWithNullFK');
-        $this->assertEquals(2, count($customer->ordersWithNullFK));
+        $this->assertEquals(3, count($customer->ordersWithNullFK));
         $this->assertEquals(0, count($customer->expensiveOrdersWithNullFK));
         $this->assertEquals(3, $orderClass::find()->count());
+        $customer = $customerClass::findOne(1);
+        $this->assertEquals(2, count($customer->ordersWithNullFK));
+        $this->assertEquals(0, count($customer->expensiveOrdersWithNullFK));
     }
 
     public function testUnlinkAllAndConditionDelete()
@@ -883,9 +838,12 @@ trait ActiveRecordTestTrait
         $this->assertEquals(1, count($customer->expensiveOrders));
         $this->assertEquals(3, $orderClass::find()->count());
         $customer->unlinkAll('expensiveOrders', true);
-        $this->assertEquals(2, count($customer->orders));
+        $this->assertEquals(3, count($customer->orders));
         $this->assertEquals(0, count($customer->expensiveOrders));
         $this->assertEquals(2, $orderClass::find()->count());
+        $customer = $customerClass::findOne(1);
+        $this->assertEquals(2, count($customer->orders));
+        $this->assertEquals(0, count($customer->expensiveOrders));
     }
 
     public static $afterSaveNewRecord;
