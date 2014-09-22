@@ -349,11 +349,15 @@
                 data = $form.data('yiiActiveForm');
 
             if (data.validated) {
+                if (!data.submitting) {
+                    // form is being submitted. Do nothing to avoid duplicated form submission
+                    return false;
+                }
+                data.submitting = false;
                 var event = $.Event(events.beforeSubmit);
-                $form.trigger(event, [$form]);
+                $form.trigger(event);
                 if (event.result === false) {
                     data.validated = false;
-                    data.submitting = false;
                     return false;
                 }
                 return true;   // continue submitting the form since validation passes

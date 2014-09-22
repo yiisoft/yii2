@@ -216,6 +216,7 @@ Yii Framework 2 Change Log
 - Enh #5058: Added `$pageSize` parameter to `Pagination::createUrl()` to allow creating URLs with arbitrary page sizes (cdcchen, qiangxue)
 - Enh #5089: Added asset debugger panel (arturf, qiangxue)
 - Enh #5117: Added `beforeFilter` and `afterFilter` JS events to `GridView` (kartik-v)
+- Enh #5124: Added support to prevent duplicated form submission when using `ActiveForm` (qiangxue)
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
