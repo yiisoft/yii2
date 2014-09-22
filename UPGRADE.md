@@ -291,3 +291,8 @@ new ones save the following code as `convert.php` that should be placed in the s
   });
   ```
 
+* The signature of `View::registerJsFile()` and `View::registerCssFile()` has changed. The `$depends` and `$position`
+  paramaters have been merged into `$options`. The new signatures are as follows:
+  
+  - `registerJsFile($url, $options = [], $key = null)`
+  - `registerCssFile($url, $options = [], $key = null)`
