@@ -39,7 +39,7 @@
          * If the handler returns a boolean false, it will stop filter form submission after this event. As
          * a result, afterFilter event will not be triggered.
          */
-        beforeFilter: 'beforeFilter.yiiGridView',
+        beforeFilter: 'beforeFilter',
         /**
          * afterFilter event is triggered after filtering the grid and filtered results are fetched.
          * The signature of the event handler should be:
@@ -47,7 +47,7 @@
          * where
          *  - event: an Event object.
          */
-        afterFilter: 'afterFilter.yiiGridView'
+        afterFilter: 'afterFilter'
     };
     
     var methods = {
