@@ -19,11 +19,16 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "bower-asset/jquery-ui": "~1.11"
+        "bower-asset/jquery-ui": "1.11.*@stable | ~1.11@stable"
     },
     "autoload": {
         "psr-4": {
             "yii\\jui\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
         }
     }
 }

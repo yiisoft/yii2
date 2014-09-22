@@ -19,11 +19,16 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "bower-asset/bootstrap": "~3.2"
+        "bower-asset/bootstrap": "3.2.* | ~3.1"
     },
     "autoload": {
         "psr-4": {
             "yii\\bootstrap\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
         }
     }
 }
