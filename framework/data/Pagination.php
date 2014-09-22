@@ -316,15 +316,15 @@ class Pagination extends Object implements Linkable
         $currentPage = $this->getPage();
         $pageCount = $this->getPageCount();
         $links = [
-            Link::REL_SELF => $this->createUrl($currentPage, $absolute),
+            Link::REL_SELF => $this->createUrl($currentPage, null, $absolute),
         ];
         if ($currentPage > 0) {
-            $links[self::LINK_FIRST] = $this->createUrl(0, $absolute);
-            $links[self::LINK_PREV] = $this->createUrl($currentPage - 1, $absolute);
+            $links[self::LINK_FIRST] = $this->createUrl(0, null, $absolute);
+            $links[self::LINK_PREV] = $this->createUrl($currentPage - 1, null, $absolute);
         }
         if ($currentPage < $pageCount - 1) {
-            $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, $absolute);
-            $links[self::LINK_LAST] = $this->createUrl($pageCount - 1, $absolute);
+            $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, null, $absolute);
+            $links[self::LINK_LAST] = $this->createUrl($pageCount - 1, null, $absolute);
         }
 
         return $links;
