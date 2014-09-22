@@ -120,25 +120,19 @@ class ActiveRecord extends BaseActiveRecord
         $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
         // save attributes
         $setArgs = [$key];
-        $delArgs = [$key];
         foreach ($values as $attribute => $value) {
+            // only insert attributes that are not null
             if ($value !== null) {
                 if (is_bool($value)) {
                     $value = (int)$value;
                 }
                 $setArgs[] = $attribute;
                 $setArgs[] = $value;
-            } else {
-                $delArgs[] = $attribute;
             }
         }
 
         if (count($setArgs) > 1) {
             $db->executeCommand('HMSET', $setArgs);
-        }
-
-        if (count($delArgs) > 1) {
-            $db->executeCommand('HDEL', $delArgs);
         }
 
         $changedAttributes = array_fill_keys(array_keys($values), null);
