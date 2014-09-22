@@ -62,7 +62,22 @@ class MailPanel extends Panel
                 /* @var $swiftMessage \Swift_Message */
                 $swiftMessage = $message->getSwiftMessage();
 
-                $messageData['body'] = $swiftMessage->getBody();
+                $body = $swiftMessage->getBody();
+                if (empty($body)) {
+                    $parts = $swiftMessage->getChildren();
+                    foreach ($parts as $part) {
+                        if (!($part instanceof \Swift_Mime_Attachment)) {
+                            /* @var $part \Swift_Mime_MimePart */
+                            if ($part->getContentType() == 'text/plain') {
+                                $messageData['charset'] = $part->getCharset();
+                                $body = $part->getBody();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                $messageData['body'] = $body;
                 $messageData['time'] = $swiftMessage->getDate();
                 $messageData['headers'] = $swiftMessage->getHeaders();
 
