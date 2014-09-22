@@ -161,15 +161,17 @@ class User extends Component
      * Returns the identity object associated with the currently logged-in user.
      * When [[enableSession]] is true, this method may attempt to read the user's authentication data
      * stored in session and reconstruct the corresponding identity object, if it has not done so before.
+     * @param boolean $autoRenew whether to automatically renew authentication status if it has not been done so before.
+     * This is only useful when [[enableSession]] is true.
      * @return IdentityInterface|null the identity object associated with the currently logged-in user.
      * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
      */
-    public function getIdentity()
+    public function getIdentity($autoRenew = true)
     {
         if ($this->_identity === false) {
-            if ($this->enableSession) {
+            if ($this->enableSession && $autoRenew) {
                 $this->renewAuthStatus();
             } else {
                 return null;
