@@ -158,6 +158,16 @@ class User extends Component
     private $_identity = false;
 
     /**
+     * Returns a value indicating whether a user identity object is defined.
+     *
+     * @return boolean whether the user identity object is defined
+     */
+    public function hasIdentity()
+    {
+        return $this->_identity !== false && $this->_identity !== null;
+    }
+
+    /**
      * Returns the identity object associated with the currently logged-in user.
      * When [[enableSession]] is true, this method may attempt to read the user's authentication data
      * stored in session and reconstruct the corresponding identity object, if it has not done so before.
