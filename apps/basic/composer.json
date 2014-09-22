@@ -17,7 +17,10 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
         "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-swiftmailer": "*"
+        "yiisoft/yii2-swiftmailer": "*",
+        "bower-asset/jquery": "@stable",
+        "bower-asset/jquery-ui": "@stable",
+        "bower-asset/jquery.inputmask": "@stable"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
