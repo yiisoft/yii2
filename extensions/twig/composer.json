@@ -1,29 +1,29 @@
 {
-	"name": "yiisoft/yii2-twig",
-	"description": "The Twig integration for the Yii framework",
-	"keywords": ["yii2", "twig", "renderer"],
-	"type": "yii2-extension",
-	"license": "BSD-3-Clause",
-	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Atwig",
-		"forum": "http://www.yiiframework.com/forum/",
-		"wiki": "http://www.yiiframework.com/wiki/",
-		"irc": "irc://irc.freenode.net/yii",
-		"source": "https://github.com/yiisoft/yii2"
-	},
-	"authors": [
-		{
-			"name": "Alexander Makarov",
-			"email": "sam@rmcreative.ru"
-		}
-	],
-	"require": {
-		"yiisoft/yii2": "*",
-		"twig/twig": "*"
-	},
-	"autoload": {
-		"psr-4": { "yii\\twig\\": "" }
-	},
+    "name": "yiisoft/yii2-twig",
+    "description": "The Twig integration for the Yii framework",
+    "keywords": ["yii2", "twig", "renderer"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Atwig",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "http://www.yiiframework.com/wiki/",
+        "irc": "irc://irc.freenode.net/yii",
+        "source": "https://github.com/yiisoft/yii2"
+    },
+    "authors": [
+        {
+            "name": "Alexander Makarov",
+            "email": "sam@rmcreative.ru"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "twig/twig": "*"
+    },
+    "autoload": {
+        "psr-4": { "yii\\twig\\": "" }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"

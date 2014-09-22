@@ -1,29 +1,29 @@
 {
-	"name": "yiisoft/yii2-smarty",
-	"description": "The Smarty integration for the Yii framework",
-	"keywords": ["yii2", "smarty", "renderer"],
-	"type": "yii2-extension",
-	"license": "BSD-3-Clause",
-	"support": {
-		"issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Asmarty",
-		"forum": "http://www.yiiframework.com/forum/",
-		"wiki": "http://www.yiiframework.com/wiki/",
-		"irc": "irc://irc.freenode.net/yii",
-		"source": "https://github.com/yiisoft/yii2"
-	},
-	"authors": [
-		{
-			"name": "Alexander Makarov",
-			"email": "sam@rmcreative.ru"
-		}
-	],
-	"require": {
-		"yiisoft/yii2": "*",
-		"smarty/smarty": "*"
-	},
-	"autoload": {
-		"psr-4": { "yii\\smarty\\": "" }
-	},
+    "name": "yiisoft/yii2-smarty",
+    "description": "The Smarty integration for the Yii framework",
+    "keywords": ["yii2", "smarty", "renderer"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Asmarty",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "http://www.yiiframework.com/wiki/",
+        "irc": "irc://irc.freenode.net/yii",
+        "source": "https://github.com/yiisoft/yii2"
+    },
+    "authors": [
+        {
+            "name": "Alexander Makarov",
+            "email": "sam@rmcreative.ru"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "smarty/smarty": "*"
+    },
+    "autoload": {
+        "psr-4": { "yii\\smarty\\": "" }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"
