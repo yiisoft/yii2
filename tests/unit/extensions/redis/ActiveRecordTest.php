@@ -143,24 +143,6 @@ class ActiveRecordTest extends RedisTestCase
 
     }
 
-    public function testFindNullValues()
-    {
-        // https://github.com/yiisoft/yii2/issues/1311
-        $this->markTestSkipped('Redis does not store/find null values correctly.');
-    }
-
-    public function testUnlinkAll()
-    {
-        // https://github.com/yiisoft/yii2/issues/1311
-        $this->markTestSkipped('Redis does not store/find null values correctly.');
-    }
-
-    public function testUnlink()
-    {
-        // https://github.com/yiisoft/yii2/issues/1311
-        $this->markTestSkipped('Redis does not store/find null values correctly.');
-    }
-
     public function testFindEagerViaRelationPreserveOrder()
     {
         $this->markTestSkipped('Redis does not support orderBy.');
@@ -267,6 +249,7 @@ class ActiveRecordTest extends RedisTestCase
 
     public function testFindColumn()
     {
+        // TODO this test is duplicated because of missing orderBy support in redis
         $this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->column('name'));
         // TODO $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->column('name'));
     }
