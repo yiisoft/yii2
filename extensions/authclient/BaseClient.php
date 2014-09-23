@@ -273,7 +273,7 @@ abstract class BaseClient extends Component implements ClientInterface
                         }
                     } else {
                         if (is_array($actualValue) && ArrayHelper::keyExists($actualKey, $actualValue)) {
-                            $actualValue = $attribute[$actualKey];
+                            $actualValue = $actualValue[$actualKey];
                         } else {
                             throw new InvalidConfigException("Invalid config normalizeUserAttributeMap {$actualName}");
                         }
