@@ -825,6 +825,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(0, count($items));
     }
 
+    public function testUnlinkAllAndConditionSetNull()
+    {
+        $this->markTestSkipped('https://github.com/yiisoft/yii2/issues/5136');
+    }
+
+    public function testUnlinkAllAndConditionDelete()
+    {
+        $this->markTestSkipped('https://github.com/yiisoft/yii2/issues/5136');
+    }
 
     // TODO test AR with not mapped PK
 }
