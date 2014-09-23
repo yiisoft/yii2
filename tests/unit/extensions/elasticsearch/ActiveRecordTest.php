@@ -804,6 +804,9 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertFalse(isset($items[2]));
     }
 
+    /**
+     * @expectedException \yii\base\NotSupportedException
+     */
     public function testArrayAttributeRelationUnLinkAll()
     {
         /* @var $order Order */
@@ -825,14 +828,51 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(0, count($items));
     }
 
-    public function testUnlinkAllAndConditionSetNull()
+    public function testUnlinkAll()
     {
-        $this->markTestSkipped('https://github.com/yiisoft/yii2/issues/5136');
+        // not supported by elasticsearch
     }
 
+    /**
+     * @expectedException \yii\base\NotSupportedException
+     */
+    public function testUnlinkAllAndConditionSetNull()
+    {
+        /* @var $customerClass \yii\db\BaseActiveRecord */
+        $customerClass = $this->getCustomerClass();
+        /* @var $orderClass \yii\db\BaseActiveRecord */
+        $orderClass = $this->getOrderWithNullFKClass();
+
+        // in this test all orders are owned by customer 1
+        $orderClass::updateAll(['customer_id' => 1]);
+        $this->afterSave();
+
+        $customer = $customerClass::findOne(1);
+        $this->assertEquals(3, count($customer->ordersWithNullFK));
+        $this->assertEquals(1, count($customer->expensiveOrdersWithNullFK));
+        $this->assertEquals(3, $orderClass::find()->count());
+        $customer->unlinkAll('expensiveOrdersWithNullFK');
+    }
+
+    /**
+     * @expectedException \yii\base\NotSupportedException
+     */
     public function testUnlinkAllAndConditionDelete()
     {
-        $this->markTestSkipped('https://github.com/yiisoft/yii2/issues/5136');
+        /* @var $customerClass \yii\db\BaseActiveRecord */
+        $customerClass = $this->getCustomerClass();
+        /* @var $orderClass \yii\db\BaseActiveRecord */
+        $orderClass = $this->getOrderWithNullFKClass();
+
+        // in this test all orders are owned by customer 1
+        $orderClass::updateAll(['customer_id' => 1]);
+        $this->afterSave();
+
+        $customer = $customerClass::findOne(1);
+        $this->assertEquals(3, count($customer->ordersWithNullFK));
+        $this->assertEquals(1, count($customer->expensiveOrdersWithNullFK));
+        $this->assertEquals(3, $orderClass::find()->count());
+        $customer->unlinkAll('expensiveOrdersWithNullFK', true);
     }
 
     // TODO test AR with not mapped PK

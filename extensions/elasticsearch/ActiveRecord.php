@@ -10,6 +10,7 @@ namespace yii\elasticsearch;
 use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -603,5 +604,15 @@ class ActiveRecord extends BaseActiveRecord
         }
 
         return $n;
+    }
+
+    /**
+     * Destroys the relationship in current model.
+     *
+     * This method is not supported by elasticsearch.
+     */
+    public function unlinkAll($name, $delete = false)
+    {
+        throw new NotSupportedException('unlinkAll() is not supported by elasticsearch, use unlink() instead.');
     }
 }

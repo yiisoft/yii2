@@ -6,7 +6,6 @@ Yii Framework 2 elasticsearch extension Change Log
 
 - Bug #3587: Fixed an issue with storing empty records (cebe)
 - Bug #4187: Elasticsearch dynamic scripting is disabled in 1.2.0, so do not use it in query builder (cebe)
-- Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
 - Enh #3527: Added `highlight` property to Query and ActiveRecord. (Borales)
 - Enh #4048: Added `init` event to `ActiveQuery` classes (qiangxue)
 - Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
