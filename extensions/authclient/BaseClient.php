@@ -10,8 +10,10 @@ namespace yii\authclient;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
+use yii\base\InvalidConfigException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\ArrayHelper;
 
 /**
  * BaseClient is a base Auth Client class.
@@ -25,6 +27,32 @@ use yii\helpers\StringHelper;
  * @property array $userAttributes List of user attributes.
  * @property array $viewOptions View options in format: optionName => optionValue.
  *
+ * 
+ * ```
+ *  'clients' => [
+ *      'facebook' => [
+ *          'class' => 'yii\authclient\clients\Facebook',
+ *          'apiBaseUrl' => 'https://graph.facebook.com/v2.1',
+ *          'clientId' => 'xxxxxxxxxxxxxxxxx',
+ *          'clientSecret' => 'yyyyyyyyyyyyyyyyyyyyyy',
+ *          'scope' => 'email,public_profile,read_stream,publish_actions',
+ *          'normalizeUserAttributeMap' => [
+ *              ['normalizedName'=>'about_me', 'actualName'=>'bio'],
+ *              ['normalizedName'=>'language', 'actualName'=>'languages/0/name'],
+ *              ['normalizedName' => 'birthday', 'actualName' => 'birthday', 'callable' => function($actualValue) {
+ *                  return \Yii::$app->formatter->asDate(strtotime($actualValue), 'Y-m-d');
+ *              }],
+ *              ['normalizedName' => 'picture', 'actualName' => 'id', 'callable' => function($actualValue) {
+ *                   return 'https://graph.facebook.com/v2.1/' . $actualValue . '/picture';
+ *              }],
+ *          ],
+ *          'curlOptions' => [
+ *              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0
+ *          ]
+ *       ]
+ *  ]
+ * ```
+ * 
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -233,12 +261,34 @@ abstract class BaseClient extends Component implements ClientInterface
      */
     protected function normalizeUserAttributes($attributes)
     {
-        foreach ($this->getNormalizeUserAttributeMap() as $normalizedName => $actualName) {
-            if (array_key_exists($actualName, $attributes)) {
-                $attributes[$normalizedName] = $attributes[$actualName];
+        foreach ($this->getNormalizeUserAttributeMap() as $normalizeUserAttribute) {
+            $callable = ArrayHelper::getValue($normalizeUserAttribute, 'callable');
+            $actualName = ArrayHelper::getValue($normalizeUserAttribute, 'actualName');
+            $normalizedName = ArrayHelper::getValue($normalizeUserAttribute, 'normalizedName');
+            if ($normalizedName && $actualName) {
+                foreach (preg_split("/\//", $actualName, -1, PREG_SPLIT_NO_EMPTY) as $actualKey) {
+                    if (!isset($actualValue)) {
+                        if (ArrayHelper::keyExists($actualKey, $attributes)) {
+                            $actualValue = $attributes[$actualKey];
+                        }
+                    } else {
+                        if (is_array($actualValue) && ArrayHelper::keyExists($actualKey, $actualValue)) {
+                            $actualValue = $attribute[$actualKey];
+                        } else {
+                            throw new InvalidConfigException("Invalid config normalizeUserAttributeMap {$actualName}");
+                        }
+                    }
+                }
+                if (isset($actualValue)) {
+                    if (is_callable($callable)) {
+                        $attributes[$normalizedName] = call_user_func($callable, $actualValue);
+                    } else {
+                        $attributes[$normalizedName] = $actualValue;
+                    }
+                }
+                unset($actualValue);
             }
         }
-
         return $attributes;
     }
 }
