@@ -454,7 +454,8 @@ class FormatterTest extends TestCase
     public function dateInputs()
     {
         return [
-            [false, '2014-13-01', 'yii\base\InvalidParamException'],
+//            ['2015-01-01 00:00:00', '2014-13-01'], // TODO evals to current time on that date
+            ['2015-01-01 00:00:00', '2014-13-01 00:00:00'],
             [false, 'asdfg', 'yii\base\InvalidParamException'],
 //            [(string)strtotime('now'), 'now'], // fails randomly
         ];
@@ -476,9 +477,9 @@ class FormatterTest extends TestCase
         if ($expectedException !== null) {
             $this->setExpectedException($expectedException);
         }
-        $this->assertSame($expected, $this->formatter->asDate($value, 'php:U'));
-        $this->assertSame($expected, $this->formatter->asTime($value, 'php:U'));
-        $this->assertSame($expected, $this->formatter->asDatetime($value, 'php:U'));
+        $this->assertSame($expected, $this->formatter->asDate($value, 'yyyy-MM-dd HH:mm:ss'));
+        $this->assertSame($expected, $this->formatter->asTime($value, 'yyyy-MM-dd HH:mm:ss'));
+        $this->assertSame($expected, $this->formatter->asDatetime($value, 'yyyy-MM-dd HH:mm:ss'));
     }
 
 
