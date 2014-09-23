@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #3153: Fixed the bug that using "between" operator to build a SQL query will cause a PHP notice (gonimar)
 - Bug #3184: Fixed the bug that client validation for string length comparison did not set error message correctly (Sergeygithub)
 - Bug #3194: Date formatter works only for timestamps in the year range 1970 to 2038 (kartik-v)
+- Bug #3197: Using `ActiveQuery::indexBy()` may cause relational AR queries to generate incorrect relational results (qiangxue)
 - Bug #3204: `yii\di\Container` did not handle the `$config` parameter well in case when it does not have a default value (qiangxue)
 - Bug #3216: Fixed the bug that `yii.activeForm.destroy()` did not remove `submit` event handlers (qiangxue)
 - Bug #3233: Ensure consistent behavior in ActiveRecord::afterSave() (cebe, qiangxue)

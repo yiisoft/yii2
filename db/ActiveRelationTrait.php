@@ -230,11 +230,21 @@ trait ActiveRelationTrait
 
             return [$model];
         } else {
+            // https://github.com/yiisoft/yii2/issues/3197
+            // delay indexing related models after buckets are built
+            $indexBy = $this->indexBy;
+            $this->indexBy = null;
             $models = $this->all();
+
             if (isset($viaModels, $viaQuery)) {
                 $buckets = $this->buildBuckets($models, $this->link, $viaModels, $viaQuery->link);
             } else {
                 $buckets = $this->buildBuckets($models, $this->link);
+            }
+
+            $this->indexBy = $indexBy;
+            if ($this->indexBy !== null && $this->multiple) {
+                $buckets = $this->indexBuckets($buckets, $this->indexBy);
             }
 
             $link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
@@ -358,22 +368,14 @@ trait ActiveRelationTrait
                 $key = $this->getModelKey($model, $linkKeys);
                 if (isset($map[$key])) {
                     foreach (array_keys($map[$key]) as $key2) {
-                        if ($this->indexBy !== null) {
-                            $buckets[$key2][$i] = $model;
-                        } else {
-                            $buckets[$key2][] = $model;
-                        }
+                        $buckets[$key2][] = $model;
                     }
                 }
             }
         } else {
             foreach ($models as $i => $model) {
                 $key = $this->getModelKey($model, $linkKeys);
-                if ($this->indexBy !== null) {
-                    $buckets[$key][$i] = $model;
-                } else {
-                    $buckets[$key][] = $model;
-                }
+                $buckets[$key][] = $model;
             }
         }
 
@@ -384,6 +386,19 @@ trait ActiveRelationTrait
         }
 
         return $buckets;
+    }
+
+    private function indexBuckets($buckets, $indexBy)
+    {
+        $result = [];
+        foreach ($buckets as $key => $models) {
+            $result[$key] = [];
+            foreach ($models as $model) {
+                $index = is_string($indexBy) ? $model[$indexBy] : call_user_func($indexBy, $model);
+                $result[$key][$index] = $model;
+            }
+        }
+        return $result;
     }
 
     /**
