@@ -28,31 +28,6 @@ use yii\helpers\ArrayHelper;
  * @property array $viewOptions View options in format: optionName => optionValue.
  *
  * 
- * ```
- *  'clients' => [
- *      'facebook' => [
- *          'class' => 'yii\authclient\clients\Facebook',
- *          'apiBaseUrl' => 'https://graph.facebook.com/v2.1',
- *          'clientId' => 'xxxxxxxxxxxxxxxxx',
- *          'clientSecret' => 'yyyyyyyyyyyyyyyyyyyyyy',
- *          'scope' => 'email,public_profile,read_stream,publish_actions',
- *          'normalizeUserAttributeMap' => [
- *              ['normalizedName'=>'about_me', 'actualName'=>'bio'],
- *              ['normalizedName'=>'language', 'actualName'=>'languages/0/name'],
- *              ['normalizedName' => 'birthday', 'actualName' => 'birthday', 'callable' => function($actualValue) {
- *                  return \Yii::$app->formatter->asDate(strtotime($actualValue), 'Y-m-d');
- *              }],
- *              ['normalizedName' => 'picture', 'actualName' => 'id', 'callable' => function($actualValue) {
- *                   return 'https://graph.facebook.com/v2.1/' . $actualValue . '/picture';
- *              }],
- *          ],
- *          'curlOptions' => [
- *              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0
- *          ]
- *       ]
- *  ]
- * ```
- * 
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
@@ -256,16 +231,36 @@ abstract class BaseClient extends Component implements ClientInterface
 
     /**
      * Normalize given user attributes according to [[normalizeUserAttributeMap]].
+     * 
+     * Example for normalizeUserAttributeMap
+     * 
+     * 
+     * Example for [[normalizeUserAttributeMap]]
+     * 
+     * ```
+     *  'normalizeUserAttributeMap' => [
+     *      'about_me'=>'bio',
+     *      'language'=>'languages/0/name',
+     *      'birthday' => function($attributes) {
+     *          return Yii::$app->formatter->asDate(strtotime($attributes['birthday']), 'Y-m-d');
+     *      },
+     *      'picture' => function($attributes) {
+     *          return 'https://graph.facebook.com/v2.1/' . $attributes['id'] . '/picture';
+     *      },
+     *  ],
+     * ```
+     * 
      * @param array $attributes raw attributes.
      * @return array normalized attributes.
      */
     protected function normalizeUserAttributes($attributes)
     {
-        foreach ($this->getNormalizeUserAttributeMap() as $normalizeUserAttribute) {
-            $callable = ArrayHelper::getValue($normalizeUserAttribute, 'callable');
-            $actualName = ArrayHelper::getValue($normalizeUserAttribute, 'actualName');
-            $normalizedName = ArrayHelper::getValue($normalizeUserAttribute, 'normalizedName');
-            if ($normalizedName && $actualName) {
+        foreach ($this->getNormalizeUserAttributeMap() as $normalizedName => $actualName) {
+            if (is_callable($actualName)) {
+                $attributes[$normalizedName] = call_user_func($actualName, $attributes);
+            } elseif (ArrayHelper::keyExists($actualName, $attributes)) {
+                $attributes[$normalizedName] = $attributes[$actualName];
+            } else {
                 foreach (preg_split("/\//", $actualName, -1, PREG_SPLIT_NO_EMPTY) as $actualKey) {
                     if (!isset($actualValue)) {
                         if (ArrayHelper::keyExists($actualKey, $attributes)) {
@@ -280,13 +275,9 @@ abstract class BaseClient extends Component implements ClientInterface
                     }
                 }
                 if (isset($actualValue)) {
-                    if (is_callable($callable)) {
-                        $attributes[$normalizedName] = call_user_func($callable, $actualValue);
-                    } else {
-                        $attributes[$normalizedName] = $actualValue;
-                    }
+                    $attributes[$normalizedName] = $actualValue;
+                    unset($actualValue);
                 }
-                unset($actualValue);
             }
         }
         return $attributes;
