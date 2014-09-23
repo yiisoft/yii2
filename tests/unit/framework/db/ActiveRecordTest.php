@@ -630,5 +630,17 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(3, $category->getItems()->count());
         $this->assertEquals(1, $category->getLimitedItems()->count());
         $this->assertEquals(1, $category->getLimitedItems()->distinct(true)->count());
+
+        // https://github.com/yiisoft/yii2/issues/3197
+        $orders = Order::find()->with('orderItems')->orderBy('id')->all();
+        $this->assertEquals(3, count($orders));
+        $this->assertEquals(2, count($orders[0]->orderItems));
+        $this->assertEquals(3, count($orders[1]->orderItems));
+        $this->assertEquals(1, count($orders[2]->orderItems));
+        $orders = Order::find()->with(['orderItems' => function ($q) { $q->indexBy('item_id'); }])->orderBy('id')->all();
+        $this->assertEquals(3, count($orders));
+        $this->assertEquals(2, count($orders[0]->orderItems));
+        $this->assertEquals(3, count($orders[1]->orderItems));
+        $this->assertEquals(1, count($orders[2]->orderItems));
     }
 }
