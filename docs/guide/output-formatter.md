@@ -1,13 +1,13 @@
 Data Formatter
 ==============
 
-For formatting of outputs Yii provides a formatter class to make date more readable for users.
-[[yii\i18n\Formatter]] is a helper class that is registered as an [application component](concept-components.md) name `formatter` by default.
+For formatting of outputs Yii provides a formatter class to make data more readable for users.
+[[yii\i18n\Formatter]] is a helper class that is registered as an [application component](concept-components.md) named `formatter` by default.
 
 It provides a set of methods for data formatting purpose such as date/time values, numbers and other commonly used formats in a localized way.
 The formatter can be used in two different ways.
 
-1. Using the formatting methods(all formatter methods prefixed with `as`) directly:
+1. Using the formatting methods (all formatter methods prefixed with `as`) directly:
 
    ```php
    echo Yii::$app->formatter->asDate('2014-01-01', 'long'); // output: January 1, 2014
@@ -18,9 +18,9 @@ The formatter can be used in two different ways.
    echo Yii::$app->formatter->asDate(null); // output: (Not set)
    ```
 
-2. Using the [[yii\i18n\Formatter::format()|format()]] method using the format name.
-   This method is used by classes like GridView and DetailView where you can specify the data format of a column in the
-   widget config.
+2. Using the [[yii\i18n\Formatter::format()|format()]] method and the format name.
+   This method is also used by widgets like [[yii\grid\GridView]] and [[yii\widgets\DetailView]] where you can specify
+   the data format of a column in the widget configuration.
 
    ```php
    echo Yii::$app->formatter->format('2014-01-01', 'date'); // output: January 1, 2014
@@ -32,9 +32,9 @@ The formatter can be used in two different ways.
 All output of the formatter is localized when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
 You can configure the [[yii\i18n\Formatter::locale|locale]] property of the formatter for this. If not configured, the
 application [[yii\base\Application::language|language]] is used as the locale. See the [Section on internationaization](tutorial-i18n.md) for more details.
-The Formatter will then choose the correct format for dates and number according to the locale including names of month and
+The Formatter will then choose the correct format for dates and numbers according to the locale including names of month and
 week days translated to the current language. Date formats are also affected by the [[yii\i18n\Formatter::timeZone|timeZone]]
-which will also be taken [[yii\base\Application::timeZone|from the application]] by default.
+which will also be taken [[yii\base\Application::timeZone|from the application]] if not configured explicitly.
 
 For example the date format call will output different results for different locales:
 
@@ -50,16 +50,16 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 
 > Note that formatting may differ between different versions of the ICU library compiled with PHP and also based on the fact whether the
 > [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed or not. So to ensure your website works with the same output
 > in all environments it is recommended to install the PHP intl extension in all environments and verify that the version of the ICU library
-> is the same.
+> is the same. See also: [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
 
 
 Configuring the format
 ----------------------
 
 The default format of the Formatter class can be adjusted using the properties of the formatter class.
-You can adjust these values application wide by configuring the `formatter` component in your [application config](concept-configurations.md#application-configurations)
-an example configuration is shown in the following.
-For more details about certain properties check out the [[yii\i18n\Formatter|API documentation of the Formatter class]].
+You can adjust these values application wide by configuring the `formatter` component in your [application config](concept-configurations.md#application-configurations).
+An example configuration is shown in the following.
+For more details about the available properties check out the [[yii\i18n\Formatter|API documentation of the Formatter class]].
 
 ```php
 'components' => [
@@ -73,6 +73,8 @@ For more details about certain properties check out the [[yii\i18n\Formatter|API
 
 Formatting Dates
 ----------------
+
+> Note: This section is under development.
 
 TDB
 
@@ -89,6 +91,8 @@ See http://site.icu-project.org/ for the format.
 Formatting Numbers
 ------------------
 
+> Note: This section is under development.
+
 TDB
 
 See http://site.icu-project.org/ for the format.
@@ -104,6 +108,8 @@ See http://site.icu-project.org/ for the format.
 
 Other formatters
 ----------------
+
+> Note: This section is under development.
 
 TDB
 
