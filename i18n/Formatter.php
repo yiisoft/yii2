@@ -548,13 +548,17 @@ class Formatter extends Component
             $value = 0;
         }
         try {
-            if (is_numeric($value)) {
-                // process as unix timestamp
+            if (is_numeric($value)) { // process as unix timestamp
                 if (($timestamp = DateTime::createFromFormat('U', $value)) === false) {
                     throw new InvalidParamException("Failed to parse '$value' as a UNIX timestamp.");
                 }
                 return $timestamp;
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value)) !== false) { // try Y-m-d format
+                return $timestamp;
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value)) !== false) { // try Y-m-d H:i:s format
+                return $timestamp;
             }
+            // finally try to create a DateTime object with the value
             $timestamp = new DateTime($value);
             return $timestamp;
         } catch(\Exception $e) {
