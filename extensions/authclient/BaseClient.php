@@ -232,9 +232,6 @@ abstract class BaseClient extends Component implements ClientInterface
     /**
      * Normalize given user attributes according to [[normalizeUserAttributeMap]].
      * 
-     * Example for normalizeUserAttributeMap
-     * 
-     * 
      * Example for [[normalizeUserAttributeMap]]
      * 
      * ```
