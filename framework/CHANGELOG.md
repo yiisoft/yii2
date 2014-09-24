@@ -268,7 +268,7 @@ Yii Framework 2 Change Log
 - Chg #4071: `mail` component renamed to `mailer`, `yii\log\EmailTarget::$mail` renamed to `yii\log\EmailTarget::$mailer` (samdark)
 - Chg #4147: `BaseMailer::compose()` will not overwrite the `message` parameter if it is explicitly provided (qiangxue)
 - Chg #4188: API exceptions are now exposing less data when YII_DEBUG is false (samdark)
-- Chg #4201: change default value of `SyslogTarget::facility` from LOG_SYSLOG to LOG_USER (dizews)
+- Chg #4201: change default value of `SyslogTarget::facility` from `LOG_SYSLOG` to `LOG_USER` (dizews)
 - Chg #4211: BaseActiveRecord::populateRecord now silently hide selected columns that are not defined in AR instead of failing with an error (miramir)
 - Chg #4227: `\yii\widgets\LinkPager::$hideOnSinglePage` is now `true` by default (samdark)
 - Chg #4310: Removed `$data` from signature of `yii\rbac\ManagerInterface` (samdark)
