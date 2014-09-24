@@ -8,7 +8,6 @@
 namespace yii\i18n;
 
 use DateTime;
-use DateTimeInterface;
 use IntlDateFormatter;
 use NumberFormatter;
 use Yii;
