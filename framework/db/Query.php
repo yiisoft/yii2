@@ -66,12 +66,6 @@ class Query extends Component implements QueryInterface
      */
     public $from;
     /**
-     * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
-     * For example, `age > 31 AND team = 1`.
-     * @see where()
-     */
-    public $where;
-    /**
      * @var array how to group the query results. For example, `['company', 'department']`.
      * This is used to construct the GROUP BY clause in a SQL statement.
      */
