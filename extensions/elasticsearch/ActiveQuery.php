@@ -194,7 +194,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return null;
         }
         if ($this->asArray) {
-            // TODO implement with
+            // TODO implement with()
 //            /* @var $modelClass ActiveRecord */
 //            $modelClass = $this->modelClass;
 //            $model = $result['_source'];
@@ -230,7 +230,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function search($db = null, $options = [])
     {
         $result = $this->createCommand($db)->search($options);
-        // TODO implement with for asArray
+        // TODO implement with() for asArray
         if (!empty($result['hits']['hits']) && !$this->asArray) {
             $models = $this->createModels($result['hits']['hits']);
             if (!empty($this->with)) {
