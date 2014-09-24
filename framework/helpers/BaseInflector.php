@@ -234,7 +234,7 @@ class BaseInflector
     /**
      * @var mixed In the procedural version, either a [[Transliterator]] or a string from which a [[Transliterator]] can be built for transliteration used by [[slug()]] when intl available.
      */
-    public static $transliterationIntl ='Any-Latin; NFKD';
+    public static $transliterator ='Any-Latin; NFKD';
 
     /**
      * Converts a word to its plural form.
@@ -440,7 +440,7 @@ class BaseInflector
     protected static function transliterate($string)
     {
         if (static::hasIntl()) {
-            return transliterator_transliterate(static::$transliterationIntl, $string);
+            return transliterator_transliterate(static::$transliterator, $string);
         } else {
             return str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
         }
