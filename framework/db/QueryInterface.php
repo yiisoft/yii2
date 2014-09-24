@@ -137,6 +137,9 @@ interface QueryInterface
      * - **or not like**: similar to the `not like` operator except that `OR` is used to concatenate
      *   the `NOT LIKE` predicates.
      *
+     * - Additionally you can specify arbitrary operators as follows: A condition of `['>=', 'id', 10]` will result in the
+     *   following SQL expression: `id >= 10`.
+     *
      * @param string|array $condition the conditions that should be put in the WHERE part.
      * @return static the query object itself
      * @see andWhere()
