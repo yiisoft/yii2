@@ -8,6 +8,7 @@
 namespace yii\jui;
 
 use Yii;
+use yii\base\InvalidParamException;
 use yii\helpers\FormatConverter;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -154,7 +155,12 @@ class DatePicker extends InputWidget
             $value = $this->value;
         }
         if ($value !== null) {
-            $value = Yii::$app->formatter->asDate($value, $this->dateFormat);
+            // format value according to dateFormat
+            try {
+                $value = Yii::$app->formatter->asDate($value, $this->dateFormat);
+            } catch(InvalidParamException $e) {
+                // ignore exception and keep original value if it is not a valid date
+            }
         }
         $options = $this->options;
         $options['value'] = $value;
