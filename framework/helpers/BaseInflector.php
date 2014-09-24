@@ -230,6 +230,12 @@ class BaseInflector
         'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ő' => 'o',
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
+        'Ắ'=>'A','Ằ'=>'A','Ằ'=>'A','Ẳ'=>'A','Ặ'=>'A','Ấ'=>'A','Ầ'=>'A','Ẩ'=>'A','Ẫ'=>'A','Ậ'=>'A','Ế'=>'E',
+        'Ề'=>'E','Ể'=>'E','Ễ'=>'E','Ệ'=>'E','Đ'=>'D','Ố'=>'O','Ồ'=>'O','Ổ'=>'O','Ộ'=>'O','Ớ'=>'O','Ờ'=>'O',
+        'Ở'=>'O','Ỡ'=>'O','Ợ'=>'O','ắ'=>'a','ằ'=>'a','ẳ'=>'a','ẵ'=>'a','ặ'=>'a','ấ'=>'a','ầ'=>'a',
+        'ẩ'=>'a','ẫ'=>'a','ậ'=>'a','ế'=>'e','ề'=>'e','ể'=>'e','ễ'=>'e','ệ'=>'e','ố'=>'o','ồ'=>'o',
+        'ổ'=>'o','ỗ'=>'o','ộ'=>'o','ớ'=>'o','ờ'=>'o','ở'=>'o','ỡ'=>'o','ợ'=>'o',
+
     ];
 
 
@@ -437,7 +443,7 @@ class BaseInflector
     protected static function transliterate($string)
     {
         if (static::hasIntl()) {
-            return transliterator_transliterate('Any-Latin; NFKD', $string);
+            return transliterator_transliterate('Any-Latin; Latin-ASCII; NFKD', $string);
         } else {
             return str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
         }
