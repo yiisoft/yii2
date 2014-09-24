@@ -17,8 +17,8 @@ use yii\base\InvalidParamException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  *
- * @method ActiveRelationTrait one()
- * @method ActiveRelationTrait[] all()
+ * @method ActiveRecordInterface one()
+ * @method ActiveRecordInterface[] all()
  * @property ActiveRecord $modelClass
  */
 trait ActiveRelationTrait
