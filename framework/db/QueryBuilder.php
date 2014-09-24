@@ -1236,9 +1236,12 @@ class QueryBuilder extends \yii\base\Object
             $column = $this->db->quoteColumnName($column);
         }
 
-        $phName = self::PARAM_PREFIX . count($params);
-        $params[$phName] = $value === null ? 'NULL' : $value;
-
-        return "$column $operator $phName";
+        if ($value === null) {
+            return "$column $operator NULL";
+        } else {
+            $phName = self::PARAM_PREFIX . count($params);
+            $params[$phName] = $value;
+            return "$column $operator $phName";
+        }
     }
 }
