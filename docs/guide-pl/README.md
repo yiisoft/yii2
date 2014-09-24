@@ -75,7 +75,7 @@ Praca z bazami danych
 ----------------------
 
 * [Obiekt dostępu bazy danych(DAO)](db-dao.md): Łączenie z bazą, podstawowe zapytania, transakcje i manipulacja schematem.
-* [Budowniczy zapytań](db-query-builder.md): Zapytania do bazy danych z użyciem warstwy abstrakcyjnej. Querying the database using a simple abstraction layer
+* [Budowniczy zapytań](db-query-builder.md): Zapytania do bazy danych z użyciem warstwy abstrakcyjnej.
 * [Rekord aktywny](db-active-record.md): ORM Rekordu aktywnego, otrzymywanie i manipulacja rekordami oraz definiowanie relacji.
 * [Migracje](db-migrations.md): Użycie systemu kontroli wersji na twoich bazach danych podczas tworzenia aplikacji w grupie.
 * **TBD** [Sphinx](db-sphinx.md)
