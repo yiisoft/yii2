@@ -778,27 +778,6 @@ class Command extends Component
     }
 
     /**
-     * Returns the effective query cache information.
-     * @return array the current query cache information, or null if query cache is not used.
-     */
-    private function getQueryCacheInfo()
-    {
-        $info = $this->db->getQueryCacheInfo();
-        if (is_array($info)) {
-            if ($this->queryCacheDuration !== null) {
-                $info[1] = $this->queryCacheDuration;
-            }
-            if ($this->queryCacheDependency !== null) {
-                $info[2] = $this->queryCacheDependency;
-            }
-            if ($info[1] !== null && $info[1] >= 0) {
-                return $info;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
      * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
@@ -813,7 +792,7 @@ class Command extends Component
         Yii::info($rawSql, 'yii\db\Command::query');
 
         if ($method !== '') {
-            $info = $this->getQueryCacheInfo();
+            $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
                 /* @var $cache \yii\caching\Cache */
                 $cache = $info[0];
