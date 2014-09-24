@@ -40,7 +40,7 @@ Struktura aplikacji
 * [Moduły](structure-modules.md)
 * [Filtry](structure-filters.md)
 * [Widżety](structure-widgets.md)
-* [Paczki zasobów(Assets)](structure-assets.md)
+* [Zasoby(Assets)](structure-assets.md)
 * [Rozszerzenia](structure-extensions.md)
 
 
@@ -49,9 +49,9 @@ Handling Requests
 
 * **TBD** [Bootstrapping](runtime-bootstrapping.md)
 * **TBD** [Routing](runtime-routing.md)
-* **TBD** [Żądania](runtime-requests.md)
-* **TBD** [Odpowiedzi](runtime-responses.md)
-* **TBD** [Sesje i ciastka](runtime-sessions-cookies.md)
+* **TBD** [Request](runtime-requests.md)
+* **TBD** [Response](runtime-responses.md)
+* **TBD** [Sesje i ciastka(cookies)](runtime-sessions-cookies.md)
 * [Parsowanie i generowanie adresów URL](runtime-url-handling.md)
 * [Obsługa błędów](runtime-handling-errors.md)
 * [Zapis logów](runtime-logging.md)
@@ -62,8 +62,8 @@ Kluczowe koncepcje
 
 * [Komponenty](concept-components.md)
 * [Właściwości](concept-properties.md)
-* [Zdarzenia](concept-events.md)
-* [Zachowania](concept-behaviors.md)
+* [Zdarzenia(Events)](concept-events.md)
+* [Zachowania(Behaviors)](concept-behaviors.md)
 * [Konfiguracje](concept-configurations.md)
 * [Aliasy](concept-aliases.md)
 * [Autoładowanie klas](concept-autoloading.md)
@@ -74,10 +74,10 @@ Kluczowe koncepcje
 Praca z bazami danych
 ----------------------
 
-* [Obiekt dostępu bazy danych(DAO)](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
-* [Budowniczy zapytań](db-query-builder.md): Querying the database using a simple abstraction layer
-* [Rekord aktywny](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
-* [Migracje](db-migrations.md): Apply version control to your databases in a team development environment
+* [Obiekt dostępu bazy danych(DAO)](db-dao.md): Łączenie z bazą, podstawowe zapytania, transakcje i manipulacja schematem.
+* [Budowniczy zapytań](db-query-builder.md): Zapytania do bazy danych z użyciem warstwy abstrakcyjnej.
+* [Rekord aktywny](db-active-record.md): ORM Rekordu aktywnego, otrzymywanie i manipulacja rekordami oraz definiowanie relacji.
+* [Migracje](db-migrations.md): Użycie systemu kontroli wersji na twoich bazach danych podczas tworzenia aplikacji w grupie.
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
