@@ -102,7 +102,7 @@ interface QueryInterface
      * - **or**: similar to the `and` operator except that the operands are concatenated using `OR`.
      *
      * - **not**: this will take only one operator and build the negation of it by prefixing the query string with `NOT`.
-     *   For example `['not' => ['attribute' => null]]` will result in the condition `NOT (attribute IS NULL)`.
+     *   For example `['not', ['attribute' => null]]` will result in the condition `NOT (attribute IS NULL)`.
      *
      * - **between**: operand 1 should be the column name, and operand 2 and 3 should be the
      *   starting and ending values of the range that the column is in.
