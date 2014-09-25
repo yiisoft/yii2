@@ -53,28 +53,18 @@ class ActiveFixture extends BaseActiveFixture
 
     /**
      * Loads the fixture data.
-     * Data will be batch inserted into the given collection.
+     * The default implementation will first reset the DB table and then populate it with the data
+     * returned by [[getData()]].
      */
     public function load()
     {
-        parent::load();
-
+        $this->resetCollection();
+        $this->data = [];
         $data = $this->getData();
         $this->getCollection()->batchInsert($data);
         foreach ($data as $alias => $row) {
             $this->data[$alias] = $row;
         }
-    }
-
-    /**
-     * Unloads the fixture.
-     *
-     * The default implementation will clean up the collection by calling [[resetCollection()]].
-     */
-    public function unload()
-    {
-        $this->resetCollection();
-        parent::unload();
     }
 
     protected function getCollection()

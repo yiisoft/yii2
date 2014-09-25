@@ -285,6 +285,7 @@ Yii Framework 2 Change Log
 - Chg #4955: Replaced callbacks with events for `ActiveForm` (qiangxue)
     - Removed `beforeValidate()`, `beforeValidateAll()`, `afterValidate()`, `afterValidateAll()`, `ajaxBeforeSend()` and `ajaxComplete()` from `ActiveForm`.
     - Added `beforeValidate`, `afterValidate`, `beforeValidateAttribute`, `afterValidateAttribute`, `beforeSubmit`, `ajaxBeforeSend` and `ajaxComplete` events to `yii.activeForm` jQuery plugin.
+- Chg #5176: `ActiveFixture` will reset table in its `load()` method instead of `unload()` (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
 - Chg: `yii\grid\DataColumn::getDataCellValue()` visibility is now `public` to allow accessing the value from a GridView directly (cebe)
