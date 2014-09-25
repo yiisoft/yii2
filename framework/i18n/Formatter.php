@@ -1069,6 +1069,9 @@ class Formatter extends Component
         if ($decimals !== null) {
             $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
             $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
+        } else {
+            ArrayHelper::remove($this->numberFormatterOptions, NumberFormatter::MAX_FRACTION_DIGITS);
+            ArrayHelper::remove($this->numberFormatterOptions, NumberFormatter::MIN_FRACTION_DIGITS);
         }
 
         foreach ($this->numberFormatterOptions as $name => $value) {
