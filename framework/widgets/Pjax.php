@@ -173,7 +173,12 @@ class Pjax extends Widget
         $container=isset($this->clientOptions['container']) ? $this->clientOptions['container'] : $id;
         PjaxAsset::register($view);
         $js = "jQuery(document).pjax($linkSelector, \"#$container\", $options);";
-        $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$container' , $options);});";
+        $js .="\njQuery(document).on('submit', $formSelector, function (event) {
+        if (jQuery(this).data('yiiActiveForm')){
+        var data=jQuery(this).data('yiiActiveForm');
+        data.submitting=true;
+        }
+        jQuery.pjax.submit(event, '#$container' , $options);});";
         $view->registerJs($js);
     }
 }
