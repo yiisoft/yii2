@@ -8,7 +8,6 @@
 namespace yii\i18n;
 
 use DateTime;
-use DateTimeInterface;
 use IntlDateFormatter;
 use NumberFormatter;
 use Yii;
@@ -703,6 +702,9 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
         if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, null, $options, $textOptions);
+            $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, NumberFormatter::IGNORE);
+            $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, NumberFormatter::IGNORE);
+
             return $f->format($value, NumberFormatter::TYPE_INT64);
         } else {
             return number_format((int) $value, 0, $this->decimalSeparator, $this->thousandSeparator);
@@ -1069,9 +1071,6 @@ class Formatter extends Component
         if ($decimals !== null) {
             $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
             $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
-        } else {
-            ArrayHelper::remove($this->numberFormatterOptions, NumberFormatter::MAX_FRACTION_DIGITS);
-            ArrayHelper::remove($this->numberFormatterOptions, NumberFormatter::MIN_FRACTION_DIGITS);
         }
 
         foreach ($this->numberFormatterOptions as $name => $value) {
