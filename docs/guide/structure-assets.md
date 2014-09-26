@@ -598,3 +598,6 @@ yii asset assets.php config/assets-prod.php
 The generated configuration file can be included in the application configuration, like described in
 the last subsection.
 
+
+> Info: Using the `asset` command is not the only option to automate the asset combining and compressing process.
+  You can use the excellent task runner tool [grunt](http://gruntjs.com/) to achieve the same goal.
