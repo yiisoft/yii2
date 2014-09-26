@@ -147,6 +147,35 @@ DocumentRoot "path/to/basic/web"
 </Directory>
 ```
 
+### Apache configuration for yii2 advanced
+```
+# Set document root to be "basic/web"
+DocumentRoot "path/to/frontend/web"
+Alias /backend "path/to/backend/web"
+
+<Directory "path/to/frontend/web">
+    RewriteEngine on
+
+    # If a directory or a file exists, use the request directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Otherwise forward the request to index.php
+    RewriteRule . index.php
+
+    # ...other settings...
+</Directory>
+<Directory "path/to/backend/web">
+    RewriteEngine on
+
+    # If a directory or a file exists, use the request directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Otherwise forward the request to index.php
+    RewriteRule . index.php
+
+    # ...other settings...
+</Directory>
+```
 
 ### Recommended Nginx Configuration <a name="recommended-nginx-configuration"></a>
 
