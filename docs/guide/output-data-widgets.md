@@ -89,7 +89,7 @@ echo GridView::widget([
         [
             'class' => 'yii\grid\DataColumn', // can be omitted, default
             'value' => function ($data) {
-                return $data->name;
+                return $data->name; //$data['name'] for array data, e.g. using SqlDataProvider.
             },
         ],
     ],
