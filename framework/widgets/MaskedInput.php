@@ -43,6 +43,11 @@ class MaskedInput extends InputWidget
     const PLUGIN_NAME = 'inputmask';
 
     /**
+     * @var string the type attribute for the input field. `text` is the default value
+     */
+    public $type = 'text';
+
+    /**
      * @var string|array|JsExpression the input mask (e.g. '99/99/9999' for date input). The following characters
      * can be used in the mask and are predefined:
      *
@@ -109,9 +114,9 @@ class MaskedInput extends InputWidget
     public function run()
     {
         if ($this->hasModel()) {
-            echo Html::activeTextInput($this->model, $this->attribute, $this->options);
+            echo Html::activeInput($this->type, $this->model, $this->attribute, $this->options);
         } else {
-            echo Html::textInput($this->name, $this->value, $this->options);
+            echo Html::input($this->type, $this->name, $this->value, $this->options);
         }
         $this->registerClientScript();
     }
