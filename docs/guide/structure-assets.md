@@ -72,8 +72,8 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   forward slash "/" should be used as directory separators. Each JavaScript file can be specified in one of the
   following two formats:
   - a relative path representing a local JavaScript file (e.g. `js/main.js`). The actual path of the file
-    can be determined by prepending [[basePath]] to the relative path, and the actual URL
-    of the file can be determined by prepending [[baseUrl]] to the relative path.
+    can be determined by prepending [[yii\web\AssetManager::basePath]] to the relative path, and the actual URL
+    of the file can be determined by prepending [[yii\web\AssetManager::baseUrl]] to the relative path.
   - an absolute URL representing an external JavaScript file. For example,
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
@@ -293,7 +293,7 @@ return [
 The keys of [[yii\web\AssetManager::assetMap|assetMap]] are the asset names that you want to fix, and the values
 are the desired asset paths. When you register an asset bundle with a view, each relative asset file in its
 [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] arrays will be examined against this map.
-If any of the keys is found to be the last part of an asset file (which is prefixed with [[AssetBundle::sourcePath]]
+If any of the keys is found to be the last part of an asset file (which is prefixed with [[yii\web\AssetBundle::sourcePath]]
 if available), the corresponding value will replace the asset and be registered with the view.
 For example, an asset file `my/path/to/jquery.js` matches a key `jquery.js`.
 
