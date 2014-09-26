@@ -38,6 +38,13 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 ```
 http://hostname/index.php?r=gii
 ```
+> 提示：如果不是通过localhost而是通过IP地址访问Gii，出于安全考虑系统默认禁止，按照如下在配置文件的gii部分添加允许IP地址访问。
+```php
+'gii' => [
+    'class' => 'yii\gii\Module',
+    'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // 根据你自己的需要调整
+],
+```
 
 ![Gii](images/start-gii.png)
 
@@ -76,7 +83,7 @@ CRUD 代表增，查，改，删操作，这是绝大多数 Web 站点常用的�
 
 然后点击 “Preview” 按钮。你会看到下述将要生成的文件列表。
 
-[[NEED THE IMAGE HERE / 等待官方补充图片]]
+![CRUD 生成器预览](images/start-gii-crud-preview.png)
 
 如果你之前创建过 `controllers/CountryController.php` 和 `views/country/index.php` 文件（在指南的使用数据库小节），选中 “overwrite” 下的复选框覆写它们（之前的文件没能全部支持 CRUD）。
 

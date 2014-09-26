@@ -49,7 +49,7 @@ Yii 2.0 权威指南
 * **待定中** [请求（Request）](runtime-requests.md)
 * **待定中** [响应（Response）](runtime-responses.md)
 * **待定中** [Sessions（会话）和 Cookies](runtime-sessions-cookies.md)
-* **已定稿** [URL 解析和生成](runtime-url-handling.md)
+* **编撰中** [URL 解析和生成](runtime-url-handling.md)
 * **编撰中** [错误处理](runtime-handling-errors.md)
 * **编撰中** [日志](runtime-logging.md)
 
@@ -139,6 +139,7 @@ RESTful Web 服务
 -----
 
 * **编撰中** [概述](test-overview.md)
+* **编撰中** [搭建测试环境](test-endvironment-setup.md)
 * **编撰中** [单元测试](test-unit.md)
 * **编撰中** [功能测试](test-functional.md)
 * **编撰中** [验收测试](test-acceptance.md)
