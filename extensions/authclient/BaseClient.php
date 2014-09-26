@@ -27,256 +27,253 @@ use yii\helpers\ArrayHelper;
  * @property array $userAttributes List of user attributes.
  * @property array $viewOptions View options in format: optionName => optionValue.
  *
- * 
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 abstract class BaseClient extends Component implements ClientInterface
 {
-    /**
-     * @var string auth service id.
-     * This value mainly used as HTTP request parameter.
-     */
-    private $_id;
-    /**
-     * @var string auth service name.
-     * This value may be used in database records, CSS files and so on.
-     */
-    private $_name;
-    /**
-     * @var string auth service title to display in views.
-     */
-    private $_title;
-    /**
-     * @var array authenticated user attributes.
-     */
-    private $_userAttributes;
-    /**
-     * @var array map used to normalize user attributes fetched from external auth service
-     * in format: rawAttributeName => normalizedAttributeName
-     */
-    private $_normalizeUserAttributeMap;
-    /**
-     * @var array view options in format: optionName => optionValue
-     */
-    private $_viewOptions;
+	/**
+	 * @var string auth service id.
+	 * This value mainly used as HTTP request parameter.
+	 */
+	private $_id;
+	/**
+	 * @var string auth service name.
+	 * This value may be used in database records, CSS files and so on.
+	 */
+	private $_name;
+	/**
+	 * @var string auth service title to display in views.
+	 */
+	private $_title;
+	/**
+	 * @var array authenticated user attributes.
+	 */
+	private $_userAttributes;
+	/**
+	 * @var array map used to normalize user attributes fetched from external auth service
+	 * in format: rawAttributeName => normalizedAttributeName
+	 */
+	private $_normalizeUserAttributeMap;
+	/**
+	 * @var array view options in format: optionName => optionValue
+	 */
+	private $_viewOptions;
 
+	/**
+	 * @param string $id service id.
+	 */
+	public function setId($id)
+	{
+		$this->_id = $id;
+	}
 
-    /**
-     * @param string $id service id.
-     */
-    public function setId($id)
-    {
-        $this->_id = $id;
-    }
+	/**
+	 * @return string service id
+	 */
+	public function getId()
+	{
+		if (empty($this->_id)) {
+			$this->_id = $this->getName();
+		}
 
-    /**
-     * @return string service id
-     */
-    public function getId()
-    {
-        if (empty($this->_id)) {
-            $this->_id = $this->getName();
-        }
+		return $this->_id;
+	}
 
-        return $this->_id;
-    }
+	/**
+	 * @param string $name service name.
+	 */
+	public function setName($name)
+	{
+		$this->_name = $name;
+	}
 
-    /**
-     * @param string $name service name.
-     */
-    public function setName($name)
-    {
-        $this->_name = $name;
-    }
+	/**
+	 * @return string service name.
+	 */
+	public function getName()
+	{
+		if ($this->_name === null) {
+			$this->_name = $this->defaultName();
+		}
 
-    /**
-     * @return string service name.
-     */
-    public function getName()
-    {
-        if ($this->_name === null) {
-            $this->_name = $this->defaultName();
-        }
+		return $this->_name;
+	}
 
-        return $this->_name;
-    }
+	/**
+	 * @param string $title service title.
+	 */
+	public function setTitle($title)
+	{
+		$this->_title = $title;
+	}
 
-    /**
-     * @param string $title service title.
-     */
-    public function setTitle($title)
-    {
-        $this->_title = $title;
-    }
+	/**
+	 * @return string service title.
+	 */
+	public function getTitle()
+	{
+		if ($this->_title === null) {
+			$this->_title = $this->defaultTitle();
+		}
 
-    /**
-     * @return string service title.
-     */
-    public function getTitle()
-    {
-        if ($this->_title === null) {
-            $this->_title = $this->defaultTitle();
-        }
+		return $this->_title;
+	}
 
-        return $this->_title;
-    }
+	/**
+	 * @param array $userAttributes list of user attributes
+	 */
+	public function setUserAttributes($userAttributes)
+	{
+		$this->_userAttributes = $this->normalizeUserAttributes($userAttributes);
+	}
 
-    /**
-     * @param array $userAttributes list of user attributes
-     */
-    public function setUserAttributes($userAttributes)
-    {
-        $this->_userAttributes = $this->normalizeUserAttributes($userAttributes);
-    }
+	/**
+	 * @return array list of user attributes
+	 */
+	public function getUserAttributes()
+	{
+		if ($this->_userAttributes === null) {
+			$this->_userAttributes = $this->normalizeUserAttributes($this->initUserAttributes());
+		}
 
-    /**
-     * @return array list of user attributes
-     */
-    public function getUserAttributes()
-    {
-        if ($this->_userAttributes === null) {
-            $this->_userAttributes = $this->normalizeUserAttributes($this->initUserAttributes());
-        }
+		return $this->_userAttributes;
+	}
 
-        return $this->_userAttributes;
-    }
+	/**
+	 * @param array $normalizeUserAttributeMap normalize user attribute map.
+	 */
+	public function setNormalizeUserAttributeMap($normalizeUserAttributeMap)
+	{
+		$this->_normalizeUserAttributeMap = $normalizeUserAttributeMap;
+	}
 
-    /**
-     * @param array $normalizeUserAttributeMap normalize user attribute map.
-     */
-    public function setNormalizeUserAttributeMap($normalizeUserAttributeMap)
-    {
-        $this->_normalizeUserAttributeMap = $normalizeUserAttributeMap;
-    }
+	/**
+	 * @return array normalize user attribute map.
+	 */
+	public function getNormalizeUserAttributeMap()
+	{
+		if ($this->_normalizeUserAttributeMap === null) {
+			$this->_normalizeUserAttributeMap = $this->defaultNormalizeUserAttributeMap();
+		}
 
-    /**
-     * @return array normalize user attribute map.
-     */
-    public function getNormalizeUserAttributeMap()
-    {
-        if ($this->_normalizeUserAttributeMap === null) {
-            $this->_normalizeUserAttributeMap = $this->defaultNormalizeUserAttributeMap();
-        }
+		return $this->_normalizeUserAttributeMap;
+	}
 
-        return $this->_normalizeUserAttributeMap;
-    }
+	/**
+	 * @param array $viewOptions view options in format: optionName => optionValue
+	 */
+	public function setViewOptions($viewOptions)
+	{
+		$this->_viewOptions = $viewOptions;
+	}
 
-    /**
-     * @param array $viewOptions view options in format: optionName => optionValue
-     */
-    public function setViewOptions($viewOptions)
-    {
-        $this->_viewOptions = $viewOptions;
-    }
+	/**
+	 * @return array view options in format: optionName => optionValue
+	 */
+	public function getViewOptions()
+	{
+		if ($this->_viewOptions === null) {
+			$this->_viewOptions = $this->defaultViewOptions();
+		}
 
-    /**
-     * @return array view options in format: optionName => optionValue
-     */
-    public function getViewOptions()
-    {
-        if ($this->_viewOptions === null) {
-            $this->_viewOptions = $this->defaultViewOptions();
-        }
+		return $this->_viewOptions;
+	}
 
-        return $this->_viewOptions;
-    }
+	/**
+	 * Generates service name.
+	 * @return string service name.
+	 */
+	protected function defaultName()
+	{
+		return Inflector::camel2id(StringHelper::basename(get_class($this)));
+	}
 
-    /**
-     * Generates service name.
-     * @return string service name.
-     */
-    protected function defaultName()
-    {
-        return Inflector::camel2id(StringHelper::basename(get_class($this)));
-    }
+	/**
+	 * Generates service title.
+	 * @return string service title.
+	 */
+	protected function defaultTitle()
+	{
+		return StringHelper::basename(get_class($this));
+	}
 
-    /**
-     * Generates service title.
-     * @return string service title.
-     */
-    protected function defaultTitle()
-    {
-        return StringHelper::basename(get_class($this));
-    }
+	/**
+	 * Initializes authenticated user attributes.
+	 * @return array auth user attributes.
+	 */
+	protected function initUserAttributes()
+	{
+		throw new NotSupportedException('Method "' . get_class($this) . '::' . __FUNCTION__ . '" not implemented.');
+	}
 
-    /**
-     * Initializes authenticated user attributes.
-     * @return array auth user attributes.
-     */
-    protected function initUserAttributes()
-    {
-        throw new NotSupportedException('Method "' . get_class($this) . '::' . __FUNCTION__ . '" not implemented.');
-    }
+	/**
+	 * Returns the default [[normalizeUserAttributeMap]] value.
+	 * Particular client may override this method in order to provide specific default map.
+	 * @return array normalize attribute map.
+	 */
+	protected function defaultNormalizeUserAttributeMap()
+	{
+		return [];
+	}
 
-    /**
-     * Returns the default [[normalizeUserAttributeMap]] value.
-     * Particular client may override this method in order to provide specific default map.
-     * @return array normalize attribute map.
-     */
-    protected function defaultNormalizeUserAttributeMap()
-    {
-        return [];
-    }
+	/**
+	 * Returns the default [[viewOptions]] value.
+	 * Particular client may override this method in order to provide specific default view options.
+	 * @return array list of default [[viewOptions]]
+	 */
+	protected function defaultViewOptions()
+	{
+		return [];
+	}
 
-    /**
-     * Returns the default [[viewOptions]] value.
-     * Particular client may override this method in order to provide specific default view options.
-     * @return array list of default [[viewOptions]]
-     */
-    protected function defaultViewOptions()
-    {
-        return [];
-    }
+	/**
+	 * Normalize given user attributes according to [[normalizeUserAttributeMap]].
+	 *
+	 * Example for [[normalizeUserAttributeMap]]
+	 * ```
+	 *	'normalizeUserAttributeMap' => [
+	 * 		'about_me'=>'bio',
+	 * 		'language'=>['languages', 0, 'name'],
+	 * 		'birthday' => function($attributes) {
+	 * 			return Yii::$app->formatter->asDate(strtotime($attributes['birthday']), 'yyyy-MM-dd');
+	 * 		},
+	 *      'picture' => function($attributes) {
+	 * 			return 'https://graph.facebook.com/v2.1/' . $attributes['id'] . '/picture';
+	 * 		},
+	 * 	],
+	 * ```
+	 *
+	 * @param array $attributes raw attributes.
+	 * @return array normalized attributes.
+	 */
+	protected function normalizeUserAttributes($attributes)
+	{
+		foreach ($this->getNormalizeUserAttributeMap() as $normalizedName => $actualName) {
+			if (is_callable($actualName)) {
+				$attributes[$normalizedName] = call_user_func($actualName, $attributes);
+			} else {
+				$actualPath = (array) $actualName;
+				foreach ($actualPath as $actualKey) {
+					if (!isset($actualValue)) {
+						if (ArrayHelper::keyExists($actualKey, $attributes)) {
+							$actualValue = $attributes[$actualKey];
+						}
+					} else {
+						if (is_array($actualValue) && ArrayHelper::keyExists($actualKey, $actualValue)) {
+							$actualValue = $actualValue[$actualKey];
+						} else {
+							throw new InvalidConfigException("Invalid config normalizeUserAttributeMap {$actualName}");
+						}
+					}
+				}
+				if (isset($actualValue)) {
+					$attributes[$normalizedName] = $actualValue;
+					unset($actualValue);
+				}
+			}
+		}
 
-    /**
-     * Normalize given user attributes according to [[normalizeUserAttributeMap]].
-     * 
-     * Example for [[normalizeUserAttributeMap]]
-     * 
-     * ```
-     *  'normalizeUserAttributeMap' => [
-     *      'about_me'=>'bio',
-     *      'language'=>'languages/0/name',
-     *      'birthday' => function($attributes) {
-     *          return Yii::$app->formatter->asDate(strtotime($attributes['birthday']), 'Y-m-d');
-     *      },
-     *      'picture' => function($attributes) {
-     *          return 'https://graph.facebook.com/v2.1/' . $attributes['id'] . '/picture';
-     *      },
-     *  ],
-     * ```
-     * 
-     * @param array $attributes raw attributes.
-     * @return array normalized attributes.
-     */
-    protected function normalizeUserAttributes($attributes)
-    {
-        foreach ($this->getNormalizeUserAttributeMap() as $normalizedName => $actualName) {
-            if (is_callable($actualName)) {
-                $attributes[$normalizedName] = call_user_func($actualName, $attributes);
-            } elseif (ArrayHelper::keyExists($actualName, $attributes)) {
-                $attributes[$normalizedName] = $attributes[$actualName];
-            } else {
-                foreach (preg_split("/\//", $actualName, -1, PREG_SPLIT_NO_EMPTY) as $actualKey) {
-                    if (!isset($actualValue)) {
-                        if (ArrayHelper::keyExists($actualKey, $attributes)) {
-                            $actualValue = $attributes[$actualKey];
-                        }
-                    } else {
-                        if (is_array($actualValue) && ArrayHelper::keyExists($actualKey, $actualValue)) {
-                            $actualValue = $actualValue[$actualKey];
-                        } else {
-                            throw new InvalidConfigException("Invalid config normalizeUserAttributeMap {$actualName}");
-                        }
-                    }
-                }
-                if (isset($actualValue)) {
-                    $attributes[$normalizedName] = $actualValue;
-                    unset($actualValue);
-                }
-            }
-        }
-        return $attributes;
-    }
+		return $attributes;
+	}
 }
