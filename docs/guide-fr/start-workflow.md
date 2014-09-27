@@ -78,7 +78,7 @@ Le diagramme suivant présente la manière dont une application traite une requ�
 
 1. Un utilisateur fait une requête au [script de démarrage](structure-entry-scripts.md) `web/index.php`.
 2. Le script de démarrage charge la [configuration](concept-configurations.md) de l'application et créé une instance d'[application](structure-applications.md) pour traiter la requête.
-3. L'application resoud le [chemin](runtime-routing.md) requis avec l'aide du composant d'application [requête](runtime-requests.md).
+3. L'application resoud la [route](runtime-routing.md) requise avec l'aide du composant d'application [requête](runtime-requests.md).
 4. L'application créé une instance de [contrôleur](structure-controllers.md) pour traiter la requête.
 5. Le contrôleur créé une instance d'[action](structure-controllers.md)  et effectue les filtres pour l'action.
 6. Si un filtre échoue, l'action est annuléee.
