@@ -42,7 +42,8 @@ class ButtonGroup extends Widget
      * @var array list of buttons. Each array element represents a single button
      * which can be specified as a string or an array of the following structure:
      *
-     * - label: string, required, the button label.
+     * - label: string, optional, the button label.
+     * - icon: string, optional, html for the button icon.
      * - options: array, optional, the HTML attributes of the button.
      */
     public $buttons = [];
