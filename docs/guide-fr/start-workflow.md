@@ -48,7 +48,7 @@ basic/                  chemin de base de l'application
     views/              contient les fichiers de vues
     web/                racine Web de l'application, contient les fichiers accessibles via le Web
         assets/         contient les fichiers assets (javascript et css) publiés par Yii
-        index.php       le script d'entrée (ou bootstrap) pour l'application
+        index.php       le script de démarrage (ou bootstrap) pour l'application
     yii                 le script d'exécution de Yii en commande console
 ```
 
@@ -62,8 +62,8 @@ Le schéma suivant présente la structure statique d'une application.
 
 ![Structure Statique d'Application](images/application-structure.png)
 
-Chaque application a un script d'entrée `web/index.php` qui est le seul script PHP de l'application accessible depuis le Web.
-Le script d'entrée reçoit une requête et créé une instance d'[application](structure-applications.md) pour la traiter.
+Chaque application a un script de démarrage `web/index.php` qui est le seul script PHP de l'application accessible depuis le Web.
+Le script de démarrage reçoit une requête et créé une instance d'[application](structure-applications.md) pour la traiter.
 L'[application](structure-applications.md) résoud la requête avec l'aide de ses [composants](concept-components.md),
 et distribue la requête aux éléments MVC. Les [Widgets](structure-widgets.md) sont utilisés dans les  [vues](structure-views.md)
 pour aider à créer des éléments d'interface complexes et dynamiques.
@@ -76,8 +76,8 @@ Le diagramme suivant présente la manière dont une application traite une requ�
 
 ![Cycle de Vie d'une Requête](images/application-lifecycle.png)
 
-1. Un utilisateur fait une requête au [script d'entrée](structure-entry-scripts.md) `web/index.php`.
-2. Le script d'entrée charge la [configuration](concept-configurations.md) de l'application et créé une instance d'[application](structure-applications.md) pour traiter la requête.
+1. Un utilisateur fait une requête au [script de démarrage](structure-entry-scripts.md) `web/index.php`.
+2. Le script de démarrage charge la [configuration](concept-configurations.md) de l'application et créé une instance d'[application](structure-applications.md) pour traiter la requête.
 3. L'application resoud le [chemin](runtime-routing.md) requis avec l'aide du composant d'application [requête](runtime-requests.md).
 4. L'application créé une instance de [contrôleur](structure-controllers.md) pour traiter la requête.
 5. Le contrôleur créé une instance d'[action](structure-controllers.md)  et effectue les filtres pour l'action.
@@ -85,5 +85,5 @@ Le diagramme suivant présente la manière dont une application traite une requ�
 7. Si tous les filtres sont validés, l'action est exécutée.
 8. L'action charge un modèle de donées, potentiellement depuis une base de données.
 9. L'action génère une vue, lui fournissant le modèle de données.
-10. Le résultat généré est retournée au composant d'application [réponse](runtime-responses.md).
+10. Le résultat généré est renvoyé au composant d'application [réponse](runtime-responses.md).
 11. Le composant réponse envoie le résultat généré au navigateur de l'utilisateur.
