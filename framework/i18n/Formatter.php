@@ -1010,7 +1010,9 @@ class Formatter extends Component
         // disable grouping for edge cases like 1023 to get 1023 B instead of 1,023 B
         $oldThousandSeparator = $this->thousandSeparator;
         $this->thousandSeparator = '';
-        $options[NumberFormatter::GROUPING_USED] = false;
+        if($this->_intlLoaded){
+	        $options[NumberFormatter::GROUPING_USED] = false;
+		}
         // format the size value
         $params = [
             // this is the unformatted number used for the plural rule
