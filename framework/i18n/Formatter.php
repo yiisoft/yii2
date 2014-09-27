@@ -1011,8 +1011,8 @@ class Formatter extends Component
         $oldThousandSeparator = $this->thousandSeparator;
         $this->thousandSeparator = '';
         if($this->_intlLoaded){
-	        $options[NumberFormatter::GROUPING_USED] = false;
-		}
+            $options[NumberFormatter::GROUPING_USED] = false;
+        }
         // format the size value
         $params = [
             // this is the unformatted number used for the plural rule
