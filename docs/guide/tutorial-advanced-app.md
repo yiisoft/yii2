@@ -22,7 +22,7 @@ curl -sS http://getcomposer.org/installer | php
 You can then install the application using the following command:
 
 ~~~
-php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta1"
+php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta2"
 php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-advanced /path/to/yii-application
 ~~~
 
