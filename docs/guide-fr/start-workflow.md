@@ -1,4 +1,4 @@
-Fonctionnement des applications
+wFonctionnement des applications
 ===============================
 
 Après avoir installé Yii, vous obtenez une application Yii fonctionnelle accessible via l'URL `http://hostname/basic/web/index.php` ou `http://hostname/index.php`, en fonction
@@ -52,13 +52,11 @@ basic/                  chemin de base de l'application
     yii                 le script d'exécution de Yii en commande console
 ```
 
-In general, the files in the application can be divided into two types: those under `basic/web` and those
-under other directories. The former can be directly accessed via HTTP (i.e., in a browser), while the latter can not and should not be.
+Dans l'ensemble, les fichiers de l'application peuvent être séparés en deux types : ceux situés dans `basic/web` et ceux situés dans d'autres répertoires. Les premiers peuvent être atteints directement en HTTP (c'est à dire dans un navigateur), tandis que les seconds doivent pas l'être.
 
-Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) design pattern,
-which is reflected in the above directory organization. The `models` directory contains all [model classes](structure-models.md),
-the `views` directory contains all [view scripts](structure-views.md), and the `controllers` directory contains
-all [controller classes](structure-controllers.md).
+Yii implémente le patron de conception [modèle-vue-contrôleur (MVC)](http://fr.wikipedia.org/wiki/Mod%C3%A8le-vue-contr%C3%B4leur),
+ce qui se reflète dans l'organisation des répertoires ci-dessus. Le répertoire `models` contient toutes les [classes modèles](structure-models.md),
+le répertoire `views` contient tous les  [scripts de vue](structure-views.md), et le répertoire `controllers` contient toutes les [classes contrôleurs](structure-controllers.md).
 
 The following diagram shows the static structure of an application.
 
