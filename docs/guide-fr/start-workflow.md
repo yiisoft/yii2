@@ -1,4 +1,4 @@
-wFonctionnement des applications
+Fonctionnement des applications
 ===============================
 
 Après avoir installé Yii, vous obtenez une application Yii fonctionnelle accessible via l'URL `http://hostname/basic/web/index.php` ou `http://hostname/index.php`, en fonction
