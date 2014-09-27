@@ -36,6 +36,7 @@ trait ApiMarkdownTrait
                     // Collection resolves relative types
                     $typeName = (new Collection([$typeName], $context->phpDocContext))->__toString();
                 }
+                /** @var $type TypeDoc */
                 $type = static::$renderer->apiContext->getType($typeName);
                 if ($type === null) {
                     static::$renderer->apiContext->errors[] = [
