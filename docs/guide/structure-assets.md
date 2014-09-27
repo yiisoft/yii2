@@ -2,7 +2,7 @@ Assets
 ======
 
 An asset in Yii is a file that may be referenced in a Web page. It can be a CSS file, a JavaScript file, an image
-or video file, etc. Assets are located in Web-accessible folders and are directly served by Web servers.
+or video file, etc. Assets are located in Web-accessible directories and are directly served by Web servers.
 
 It is often preferable to manage assets programmatically. For example, when you use the [[yii\jui\DatePicker]] widget
 in a page, it will automatically include the required CSS and JavaScript files, instead of asking you to manually
@@ -86,7 +86,7 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
 * [[yii\web\AssetBundle::cssOptions|cssOptions]]: specifies the options that will be passed to the
   [[yii\web\View::registerCssFile()]] method when it is called to register *every* CSS file in this bundle.
 * [[yii\web\AssetBundle::publishOptions|publishOptions]]: specifies the options that will be passed to the
-  [[yii\web\AssetManager::publish()]] method when it is called to publish source asset files to a Web folder.
+  [[yii\web\AssetManager::publish()]] method when it is called to publish source asset files to a Web directory.
   This is only used if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property.
 
 
@@ -95,9 +95,9 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
 Assets, based on their location, can be classified as:
 
 * source assets: the asset files are located together with PHP source code which cannot be directly accessed via Web.
-  In order to use source assets in a page, they should be copied to a Web folder and turned into the so-called
+  In order to use source assets in a page, they should be copied to a Web directory and turned into the so-called
   published assets. This process is called *asset publishing* which will be described in detail shortly.
-* published assets: the asset files are located in a Web folder and can thus be directly accessed via Web.
+* published assets: the asset files are located in a Web directory and can thus be directly accessed via Web.
 * external assets: the asset files are located on a Web server that is different from the one hosting your Web
   application.
 
@@ -106,17 +106,17 @@ it means any assets listed using relative paths will be considered as source ass
 it means those assets are published assets (you should therefore specify [[yii\web\AssetBundle::basePath|basePath]] and
 [[yii\web\AssetBundle::baseUrl|baseUrl]] to let Yii know where they are located.)
 
-It is recommended that you place assets belonging to an application in a Web folder to avoid the unnecessary asset
+It is recommended that you place assets belonging to an application in a Web directory to avoid the unnecessary asset
 publishing process. This is why `AppAsset` in the prior example specifies [[yii\web\AssetBundle::basePath|basePath]]
 instead of [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
 For [extensions](structure-extensions.md), because their assets are located together with their source code
-in folders that are not Web accessible, you have to specify the [[yii\web\AssetBundle::sourcePath|sourcePath]]
+in directories that are not Web accessible, you have to specify the [[yii\web\AssetBundle::sourcePath|sourcePath]]
 property when defining asset bundle classes for them.
 
 > Note: Do not use `@webroot/assets` as the [[yii\web\AssetBundle::sourcePath|source path]].
-  This folder is used by default by the [[yii\web\AssetManager|asset manager]] to save the asset files
-  published from their source location. Any content in this folder are considered temporarily and may be subject
+  This directory is used by default by the [[yii\web\AssetManager|asset manager]] to save the asset files
+  published from their source location. Any content in this directory are considered temporarily and may be subject
   to removal.
 
 
@@ -179,7 +179,7 @@ the assets in the library:
    to refer to the library.
 2. Create an asset bundle class and list the JavaScript/CSS files that you plan to use in your application or extension.
    You should specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property as `@bower/PackageName` or `@npm/PackageName`.
-   This is because Composer will install the Bower or NPM package in the folder corresponding to this alias.
+   This is because Composer will install the Bower or NPM package in the directory corresponding to this alias.
 
 > Note: Some packages may put all their distributed files in a subdirectory. If this is the case, you should specify
   the subdirectory as the value of [[yii\web\AssetBundle::sourcePath|sourcePath]]. For example, [[yii\web\JqueryAsset]]
@@ -200,7 +200,7 @@ If you are registering an asset bundle in other places, you should provide the n
 to register an asset bundle in a [widget](structure-widgets.md) class, you can get the view object by `$this->view`.
 
 When an asset bundle is registered with a view, behind the scene Yii will register all its dependent asset bundles.
-And if an asset bundle is located in a folder inaccessible through the Web, it will be published to a Web folder.
+And if an asset bundle is located in a directory inaccessible through the Web, it will be published to a Web directory.
 Later when the view renders a page, it will generate `<link>` and `<script>` tags for the CSS and JavaScript files
 listed in the registered bundles. The order of these tags is determined by the dependencies among
 the registered bundles and the order of the assets listed in the [[yii\web\AssetBundle::css]] and [[yii\web\AssetBundle::js]]
@@ -304,11 +304,11 @@ For example, an asset file `my/path/to/jquery.js` matches a key `jquery.js`.
 
 ### Asset Publishing <a name="asset-publishing"></a>
 
-As aforementioned, if an asset bundle is located in a folder that is not Web accessible, its assets will be copied
-to a Web folder when the bundle is being registered with a view. This process is called *asset publishing*, and is done
+As aforementioned, if an asset bundle is located in a directory that is not Web accessible, its assets will be copied
+to a Web directory when the bundle is being registered with a view. This process is called *asset publishing*, and is done
 automatically by the [[yii\web\AssetManager|asset manager]].
 
-By default, assets are published to the folder `@webroot/assets` which corresponds to the URL `@web/assets`.
+By default, assets are published to the directory `@webroot/assets` which corresponds to the URL `@web/assets`.
 You may customize this location by configuring the [[yii\web\AssetManager::basePath|basePath]] and
 [[yii\web\AssetManager::baseUrl|baseUrl]] properties.
 
@@ -558,17 +558,16 @@ return [
     ],
     // Asset bundle for compression output:
     'targets' => [
-        'app\config\AllAsset' => [
-            'basePath' => 'path/to/web',
-            'baseUrl' => '',
+        'all' => [
+            'class' => 'yii\web\AssetBundle',
+            'basePath' => '@webroot/assets',
+            'baseUrl' => '@web/assets',
             'js' => 'js/all-{hash}.js',
             'css' => 'css/all-{hash}.css',
         ],
     ],
     // Asset manager configuration:
     'assetManager' => [
-        'basePath' => __DIR__,
-        'baseUrl' => '',
     ],
 ];
 ```

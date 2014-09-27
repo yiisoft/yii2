@@ -273,7 +273,9 @@ class AssetController extends Controller
                     return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
                 }
             });
-            $target['class'] = $name;
+            if (!isset($target['class'])) {
+                $target['class'] = $name;
+            }
             $targets[$name] = Yii::createObject($target);
         }
 
@@ -349,7 +351,7 @@ class AssetController extends Controller
 
         foreach ($map as $bundle => $target) {
             $targets[$bundle] = Yii::createObject([
-                'class' => 'yii\\web\\AssetBundle',
+                'class' => strpos($bundle, '\\') !== false ? $bundle : 'yii\\web\\AssetBundle',
                 'depends' => [$target],
             ]);
         }
@@ -389,12 +391,21 @@ class AssetController extends Controller
     {
         $array = [];
         foreach ($targets as $name => $target) {
-            foreach (['basePath', 'baseUrl', 'js', 'css', 'depends'] as $prop) {
-                if (!empty($target->$prop)) {
-                    $array[$name][$prop] = $target->$prop;
-                } elseif (in_array($prop, ['js', 'css'])) {
-                    $array[$name][$prop] = [];
-                }
+            if (isset($this->targets[$name])) {
+                $array[$name] = [
+                    'class' => get_class($target),
+                    'basePath' => $this->targets[$name]['basePath'],
+                    'baseUrl' => $this->targets[$name]['baseUrl'],
+                    'js' => $target->js,
+                    'css' => $target->css,
+                ];
+            } else {
+                $array[$name] = [
+                    'sourcePath' => null,
+                    'js' => [],
+                    'css' => [],
+                    'depends' => $target->depends,
+                ];
             }
         }
         $array = VarDumper::export($array);
@@ -588,8 +599,9 @@ EOD;
  */
 
 // In the console environment, some path aliases may not exist. Please define these:
-//Yii::setAlias('@webroot', realpath(__DIR__ . '/../web'));
-//Yii::setAlias('@web', '/');
+// Yii::setAlias('@webroot', __DIR__ . '/../web');
+// Yii::setAlias('@web', '/');
+
 return [
     // Adjust command/callback for JavaScript files compressing:
     'jsCompressor' => {$jsCompressor},
@@ -597,22 +609,22 @@ return [
     'cssCompressor' => {$cssCompressor},
     // The list of asset bundles to compress:
     'bundles' => [
+        // 'app\assets\AppAsset',
         // 'yii\web\YiiAsset',
         // 'yii\web\JqueryAsset',
     ],
     // Asset bundle for compression output:
     'targets' => [
-        'app\assets\AllAsset' => [
-            'basePath' => 'path/to/web',
-            'baseUrl' => '',
+        'all' => [
+            'class' => 'yii\web\AssetBundle',
+            'basePath' => '@webroot/assets',
+            'baseUrl' => '@web/assets',
             'js' => 'js/all-{hash}.js',
             'css' => 'css/all-{hash}.css',
         ],
     ],
     // Asset manager configuration:
     'assetManager' => [
-        'basePath' => __DIR__,
-        'baseUrl' => '',
     ],
 ];
 EOD;
