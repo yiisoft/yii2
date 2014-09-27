@@ -168,8 +168,6 @@ class Tabs extends Widget
                 $linkOptions['data-toggle'] = 'tab';
                 $header = Html::a($label, '#' . $options['id'], $linkOptions);
                 $panes[] = Html::tag('div', $item['content'], $options);
-            } else {
-                throw new InvalidConfigException("Either the 'content' or 'items' option must be set.");
             }
 
             $headers[] = Html::tag('li', $header, $headerOptions);
