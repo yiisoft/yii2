@@ -19,8 +19,8 @@ use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 
 /**
- * Formatter provides a set of commonly used data formatting methods. 
- * 
+ * Formatter provides a set of commonly used data formatting methods.
+ *
  * The formatting methods provided by Formatter are all named in the form of `asXyz()`.
  * The behavior of some of them may be configured via the properties of Formatter. For example,
  * by configuring [[dateFormat]], one may control how [[asDate()]] formats the value into a date string.

@@ -19,14 +19,14 @@ use yii\console\Exception;
  * ~~~
  * #see list of available components to flush
  * yii cache
- * 
+ *
  * #flush particular components specified by their names
  * yii cache/flush first second third
- * 
+ *
  * #flush all cache components that can be found in the system
  * yii cache/flush-all
  * ~~~
- * 
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
