@@ -1,8 +1,8 @@
 Yii Framework 2 redis extension Change Log
 ==========================================
 
-2.0.0-rc under development
---------------------------
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #1311: Fixed storage and finding of `null` and boolean values (samdark, cebe)
 - Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)

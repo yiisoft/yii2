@@ -1,8 +1,8 @@
 Yii Framework 2 bootstrap extension Change Log
 ==============================================
 
-2.0.0-rc under development
---------------------------
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #3292: Fixed dropdown widgets rendering incorrect HTML (it3rmit)
 - Bug #3740: Fixed duplicate error message when client validation is enabled (tadaszelvys)

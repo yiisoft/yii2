@@ -118,8 +118,6 @@ use yii\caching\Cache;
  * read-only.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
  * read-only.
- * @property array $queryCacheInfo The current query cache information, or null if query cache is not enabled.
- * This property is read-only.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
  * @property Connection $slave The currently active slave connection. Null is returned if there is slave

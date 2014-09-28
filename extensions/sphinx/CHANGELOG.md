@@ -1,8 +1,8 @@
 Yii Framework 2 sphinx extension Change Log
 ===========================================
 
-2.0.0-rc under development
---------------------------
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #3668: Escaping of the special characters at 'MATCH' statement added (klimov-paul)
 - Bug #4018: AR relation eager loading does not work with db models (klimov-paul)

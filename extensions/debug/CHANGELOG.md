@@ -1,8 +1,8 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
-2.0.0-rc under development
---------------------------
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #3956: Debug toolbar was affecting flash message removal (samdark)

@@ -1,8 +1,8 @@
 Yii Framework 2 authclient extension Change Log
 ===============================================
 
-2.0.0-rc under development
---------------------------
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #3633: OpenId return URL comparison advanced to prevent url encode problem (klimov-paul)
 - Bug #4490: `yii\authclient\widgets\AuthChoice` does not preserve initial settings while opening popup (klimov-paul)

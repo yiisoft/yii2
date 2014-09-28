@@ -15,7 +15,7 @@
 	"config": {
 	  "vendor-dir": "protected/vendor"
 	},
-	"minimum-stability": "dev",
+	"minimum-stability": "RC",
 	"require": {
 		"php": ">=5.4.0",
 		"yiisoft/yii2": "*"

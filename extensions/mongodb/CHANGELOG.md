@@ -1,8 +1,8 @@
 Yii Framework 2 mongodb extension Change Log
 ============================================
 
-2.0.0-rc under development
---------------------------
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #2337: `yii\mongodb\Collection::buildLikeCondition()` fixed to escape regular expression (klimov-paul)
 - Bug #3385: Fixed "The 'connected' property is deprecated" (samdark)
