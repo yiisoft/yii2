@@ -1,7 +1,7 @@
 Hello World
 ============
 
-Cette section decrit la méthone pour créer une nouvelle page "Hello" dans votre application.
+Cette section decrit la méthode pour créer une nouvelle page "Hello" dans votre application.
 Pour ce faire, vous allez créer une [action](structure-controllers.md#creating-actions) et une [vue](structure-views.md):
 
 * L'application distribuera la requête à l'action
