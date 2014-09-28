@@ -17,16 +17,12 @@ A travers ce tutoriel, vous apprendrez trois choses :
 Créer une Action <a name="creating-action"></a>
 ------------------
 
-Pour la tâche "Hello", vous allez créer une [action](structure-controllers.md#creating-actions) `say` qui reçoit un paramètre
+Pour la tâche "Hello", vous allez créer une [action](structure-controllers.md#creating-actions) `dire` qui reçoit un paramètre
 `message` de la requête et affiche ce message à l'utilisateur. Si la requête ne fournit pas de paramètre `message`, l'action affichera le message par défaut "Hello".
 
-> Info: [Actions](structure-controllers.md#creating-actions) are the objects that end users can directly refer to for
-  execution. Actions are grouped by [controllers](structure-controllers.md). The execution result of
-  an action is the response that an end user will receive.
+> Info: Les [actions](structure-controllers.md#creating-actions) sont les objets auxquels les utilisateurs peuvent directement   se référer pour les exécuter. Les actions sont groupées par [contrôleurs](structure-controllers.md). Le résultat de l'exécution d'une action est la réponse que l'utilisateur recevra.
 
-Actions must be declared in [controllers](structure-controllers.md). For simplicity, you may
-declare the `say` action in the existing  `SiteController`. This controller is defined
-in the class file `controllers/SiteController.php`. Here is the start of the new action:
+Les actions doivent être déclarées dans des [contrôleurs](structure-controllers.md). Par simplicité, vous pouvez déclarer l'action `dire` dans le contrôleur existant `SiteController`. Ce contrôleur  est défini dans le fichier classe `controllers/SiteController.php`. Voici le début de la nouvelle action :
 
 ```php
 <?php
@@ -37,42 +33,32 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
-    // ...existing code...
+    // ...code existant...
 
-    public function actionSay($message = 'Hello')
+    public function actionDire($message = 'Hello')
     {
-        return $this->render('say', ['message' => $message]);
+        return $this->render('dire', ['message' => $message]);
     }
 }
 ```
 
-In the above code, the `say` action is defined as a method named `actionSay` in the `SiteController` class.
-Yii uses the prefix `action` to differentiate action methods from non-action methods in a controller class.
-The name after the `action` prefix maps to the action's ID.
+Dans le code ci-dessous, l'action `dire`est définie par une méthode nommée `actionDire` dans la classe `SiteController`.
+Yii utilise le préfixe `action` pour faire la différence entre des méthodes actions et des méthodes non-actions dans une classe contrôleur.
+Le nom suivant le préfixe `action` est associé à l'ID de l'action.
 
-When it comes to naming your actions, you should understand how Yii treats action IDs. Action IDs are always
-referenced in lower case. If an action ID requires multiple words, they will be concatenated by dashes
-(e.g., `create-comment`). Action method names are mapped to action IDs by removing any dashes from the IDs,
-capitalizing the first letter in each word, and prefixing the resulting with `action`. For example,
-the action ID `create-comment` corresponds to the action method name `actionCreateComment`.
+Quand vous choisissez le nom de vos actions, gardez à l'esprit comment Yii traite les IDs d'action. Les références aux IDs d'actions sont toujours effectuées en minuscules. Si un ID d'action nécessite plusieurs mots, ils seront concaténés à l'aide de tirets (par exemple `creer-commentaire`). Les noms de méthodes actions sont associés aux IDs d'actions en retirant tout tiret des IDs, en mettant la première lettre de chaque mot en majuscule, et en ajoutant un préfixe  `action` au résultat. Par exemple,
+l'ID d'action `creer-commentaire` correspond à l'action nommée `actionCreerCommentaire`.
 
-The action method in our example takes a parameter `$message`, whose value defaults to `"Hello"` (in exactly
-the same way you set a default value for any function or method argument in PHP). When the application
-receives a request and determines that the `say` action is responsible for handling said request, the application will
-populate this parameter with the same named parameter found in the request. In other words, if the request includes
-a `message` parameter with a value of `"Goodbye"`, the `$message` variable within the action will be assigned that value.
+La méthode action de notre exemple prend un paramètre `$message`, dont la valeur par défaut est `"Hello"` (de la même manière qu'on affecte une valeur par défaut à n'importe quel argument de fonction ou méthode en PHP). Quand l'application reçoit une requête et détermine que l'action `dire` est responsable de gérer ladite requête, l'application peuplera ce paramètre avec le paramètre du même nom trouvé dans la requête. En d'autres termes, si la requête contient un paramètre `message` ayant pour valeur `"Goodbye"`, la variable `$message` au sein de l'action recevra cette valeur.
 
-Within the action method, [[yii\web\Controller::render()|render()]] is called to render
-a [view](structure-views.md) file named `say`. The `message` parameter is also passed to the view
-so that it can be used there. The rendering result is returned by the action method. That result will be received
-by the application and displayed to the end user in the browser (as part of a complete HTML page). 
+Au sein de la méthode action, [[yii\web\Controller::render()|render()]] est appelé pour effectuer le rendu d'un fichier [vue](structure-views.md) appelé `dire`. Le paramètre `message` est également transmis à la vue afin qu'il puisse y être utilisé. Le résultat du rendu est renvoyé à l'utilisateur par la méthode action. Ce résultat sera reçu par l'application et présenté à l'utilisateur dans le navigateur (en tant qu'élément d'une page HTML complète). 
 
 
-Creating a View <a name="creating-view"></a>
+Créer une Vue <a name="creating-view"></a>
 ---------------
 
-[Views](structure-views.md) are scripts you write to generate a response's content.
-For the "Hello" task, you will create a `say` view that prints the `message` parameter received from the action method, and passed by the action to the view:
+Les [vues](structure-views.md) sont des scripts qu'on écrit pour générer le contenu d'une réponse.
+Pour la tâche "Hello", vous allez créer une vue `dire` qui affiche le paramètre `message` reçu de la méthode action, et passé par l'action à la vue :
 
 ```php
 <?php
@@ -81,61 +67,50 @@ use yii\helpers\Html;
 <?= Html::encode($message) ?>
 ```
 
-The `say` view should be saved in the file `views/site/say.php`. When the method [[yii\web\Controller::render()|render()]]
-is called in an action, it will look for a PHP file named as `views/ControllerID/ViewName.php`.
+La vue `dire` doit être enregistrée dans le fichier `views/site/dire.php`. Quand la méthode [[yii\web\Controller::render()|render()]]
+est appelée dans une action, elle cherchera un fichier PHP nommé `views/ControllerID/NomDeLaVue.php`.
 
-Note that in the above code, the `message` parameter is [[yii\helpers\Html::encode()|HTML-encoded]]
-before being printed. This is necessary as the parameter comes from an end user, making it vulnerable to
-[cross-site scripting (XSS) attacks](http://en.wikipedia.org/wiki/Cross-site_scripting) by embedding
-malicious JavaScript code in the parameter.
+Notez que dans le code ci-dessus, le paramètre `message` est [[yii\helpers\Html::encode()|Encodé-HTML]]
+avant d'être affiché. Cela est nécessaire car le paramètre vient de l'utilisateur, le rendant vulnérable aux [attaques cross-site scripting (XSS)](http://fr.wikipedia.org/wiki/Cross-site_scripting) en intégrant du code Javascript malicieux dans le paramètre.
 
-Naturally, you may put more content in the `say` view. The content can consist of HTML tags, plain text, and even PHP statements.
-In fact, the `say` view is just a PHP script that is executed by the [[yii\web\Controller::render()|render()]] method.
-The content printed by the view script will be returned to the application as the response's result. The application will in turn output this result to the end user.
+Bien entendu, vous pouvez insérer plus de contenu dans la vue `dire`. Le contenu peut être des tags HTMML, du texte brut, ou même des expressions PHP.
+En réalité, la vue `dire` est simplement un script PHP exécuté par la méthode [[yii\web\Controller::render()|render()]].
+Le contenu affiché par le script de vue sera renvoyé à l'application en tant que résultat de réponse. L'application renverra à son tour ce résultat à l'utilisateur.
 
 
-Trying it Out <a name="trying-it-out"></a>
+Essayer <a name="trying-it-out"></a>
 -------------
 
-After creating the action and the view, you may access the new page by accessing the following URL:
+Après avoir créé l'action et la vue, vous pouvez accéder à la nouvelle page en accédant à l'URL suivant :
 
 ```
-http://hostname/index.php?r=site/say&message=Hello+World
+http://hostname/index.php?r=site/dire&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)
 
-This URL will result in a page displaying "Hello World". The page shares the same header and footer as the other application pages. 
+Le résultat de cet URL sera une page affichant "Hello World". La page a les mêmes entête et pied de page que les autres pages de l'application. 
 
-If you omit the `message` parameter in the URL, you would see the page display just "Hello". This is because `message` is passed as a parameter to the `actionSay()` method, and when it is omitted,
-the default value of `"Hello"` will be used instead.
+Si vous omettez le paramètre `message` dans l'URL, La page devrait simplement afficher "Hello". C'est parce que `message` est passé en paramètre de la méthode `actionDire()`, et quand il est omis, la valeur par défaut `"Hello"` sera employée à la place.
 
-> Info: The new page shares the same header and footer as other pages because the [[yii\web\Controller::render()|render()]]
-  method will automatically embed the result of the `say` view in a so-called [layout](structure-views.md#layouts) which in this
-  case is located at `views/layouts/main.php`.
+> Info: L nouvelle page a les mêmes entête et pied de page que les autres pages parce que la méthode [[yii\web\Controller::render()|render()]] intègrera automatiquement le résultat de la vue `dire` dans une pseudo [mise en page](structure-views.md#layouts) qui dans notre cas est située dans `views/layouts/main.php`.
 
-The `r` parameter in the above URL requires more explanation. It stands for [route](runtime-routing.md), an application wide unique ID
-that refers to an action. The route's format is `ControllerID/ActionID`. When the application receives
-a request, it will check this parameter, using the `ControllerID` part to determine which controller
-class should be instantiated to handle the request. Then, the controller will use the `ActionID` part
-to determine which action should be instantiated to do the real work. In this example case, the route `site/say`
-will be resolved to the `SiteController` controller class and the `say` action. As a result,
-the `SiteController::actionSay()` method will be called to handle the request.
+Le paramètre `r` dans l'URL ci-dessus nécessite plus d'explications. Il signifie [route](runtime-routing.md), un ID unique commun toute l'application qui fait référence à une action. Le format de la route est `IDContrôleur/IDAction`. Quand l'application reçoit une requête, elle vérifie ce paramêtre, en utilisant la partie `IDContrôleur` pour déterminer quel classe contrôleur doit être instanciée pour traiter la requête. Ensuite, le contrôleur utilisera la partie `IDAction` pour déterminer quelle action doit être instanciée pour effectuer le vrait travail. Dans ce cas d'exemple, la route `site/dire`
+sera comprise comme la classe contrôleur `SiteController` et l'action `dire`. Il en resultera que la méthode `SiteController::actionDire()` sera appelée pour traiter la requête.
 
-> Info: Like actions, controllers also have IDs that uniquely identify them in an application.
-  Controller IDs use the same naming rules as action IDs. Controller class names are derived from
-  controller IDs by removing dashes from the IDs, capitalizing the first letter in each word,
-  and suffixing the resulting string with the word `Controller`. For example, the controller ID `post-comment` corresponds
-  to the controller class name `PostCommentController`.
+> Info: De même que les actions, les contrôleurs ont des IDs qui les identifient de manière unique dans une application.
+  Les IDs de contrôleurs emploie les mêmes règles de nommage que les IDs d'actions. Les noms de classes Contrôleurs dérivent
+  des IDs de contrôleurs en retirant les tirets des IDs, en mettant la première lettre de chaque mot en majuscule,
+  et en suffixant la chaîne résultante du mot `Controller`. Par exemple, l'ID de contrôlleur `poster-commentaire` correspond
+  au nom de classe contrôleur `PosterCommentaireController`.
 
 
-Summary <a name="summary"></a>
+Résumé <a name="summary"></a>
 -------
 
-In this section, you have touched the controller and view parts of the MVC design pattern.
-You created an action as part of a controller to handle a specific request. And you also created a view
-to compose the response's content. In this simple example, no model was involved as the only data used was the `message` parameter.
+Dans cette section, vous avez touché aux parties contrôleur et vue du patron de conception MVC.
+Vous avez créé une action au sein d'un contrôleur pour traiter une requête spécifique. Vous avez également créé une vue pour composer le contenu de la réponse. Dans ce simple exemple, aucun modèle n'a été impliqué car les seules données utilisées étaient le paramètre `message`.
 
-You have also learned about routes in Yii, which act as the bridge between user requests and controller actions.
+Vous avez également appris ce que sont les routes dans Yii, qu'elles font office de pont entre les requêtes utilisateur et les actions des contrôleurs.
 
-In the next section, you will learn how to create a model, and add a new page containing an HTML form.
+Dans la prochaine section, vous apprendrez comment créer un modèle, et ajouter une nouvelle page contenant un formulaire HTML.
