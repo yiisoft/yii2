@@ -238,35 +238,33 @@ $lister = new UserLister($finder);
 Практическое использование <a name="practical-usage"></a>
 ---------------
 
-Yii creates a DI container when you include the `Yii.php` file in the [entry script](structure-entry-scripts.md)
-of your application. The DI container is accessible via [[Yii::$container]]. When you call [[Yii::createObject()]],
-the method will actually call the container's [[yii\di\Container::get()|get()]] method to create a new object.
-As aforementioned, the DI container will automatically resolve the dependencies (if any) and inject them
-into the newly created object. Because Yii uses [[Yii::createObject()]] in most of its core code to create
-new objects, this means you can customize the objects globally by dealing with [[Yii::$container]].
+Yii создаёт контейнер внедрения зависимостей(DI) когда вы подключаете файл `Yii.php` во [входном скрипте](structure-entry-scripts.md)
+вашего приложения. Контейнер внедрения зависимостей(DI) доступен через [[Yii::$container]]. При вызове [[Yii::createObject()]],
+метод на самом деле вызовет метод контейнера [[yii\di\Container::get()|get()]], что бы создать новый объект.
+Как упомянуто выше, контейнер внедрения зависимостей(DI) автоматически разрешит зависимости (если таковые имеются) и внедрит их в только что созданный объект.
+Поскольку Yii использует [[Yii::createObject()]] в большей части кода своего ядра для создания новых объектов, это означает,
+что вы можете настроить глобальные объекты, имея дело с [[Yii::$container]].
 
-For example, you can customize globally the default number of pagination buttons of [[yii\widgets\LinkPager]]:
+Например, вы можете настроить по умолчанию глобальное количество кнопок в пейджере [[yii\widgets\LinkPager]]:
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-Now if you use the widget in a view with the following code, the `maxButtonCount` property will be initialized
-as 5 instead of the default value 10 as defined in the class.
+Теперь, если вы вызовете в представлении виджет, используя следующий код, то свойство `maxButtonCount` будет инициальзировано, как 5, вместо значения по умолчанию 10, как это определено в классе.
 
 ```php
 echo \yii\widgets\LinkPager::widget();
 ```
 
-You can still override the value set via DI container, though:
+Хотя, вы всё ещё можете переопределить установленное значение через контейнер внедрения зависимостей(DI):
 
 ```php
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
-
-Another example is to take advantage of the automatic constructor injection of the DI container.
-Assume your controller class depends on some other objects, such as a hotel booking service. You
-can declare the dependency through a constructor parameter and let the DI container to resolve it for you.
+Другим примером является использование автоматического внедрения зависимости через конструктор контейнера внедрения зависимостей(DI).
+Предположим, ваш класс контроллера зависит от ряда других объектов, таких как сервис бронирования гостиницы. Вы
+можете объявить зависимость через параметр конструктора и позволить контейнеру внедрения зависимостей(DI), разрешить её за вас.
 
 ```php
 namespace app\controllers;
@@ -286,38 +284,34 @@ class HotelController extends Controller
 }
 ```
 
-If you access this controller from browser, you will see an error complaining the `BookingInterface`
-cannot be instantiated. This is because you need to tell the DI container how to deal with this dependency:
+Если у вас есть доступ к этому контроллеру из браузера, вы увидите сообщение об ошибке, который жалуется на то, что `BookingInterface`
+не может быть создан. Это потому что вы должны указать контейнеру внедрения зависимостей(DI), как обращаться с этой зависимостью:
 
 ```php
 \Yii::$container->set('app\components\BookingInterface', 'app\components\BookingService');
 ```
 
-Now if you access the controller again, an instance of `app\components\BookingService` will be
-created and injected as the 3rd parameter to the controller's constructor.
+Теперь, если вы попытаетесь получить доступ к контроллеру снова, то экземпляр `app\components\BookingService` будет создан и введён в качестве 3-го параметра конструктора контроллера.
 
 
-When to Register Dependencies <a name="when-to-register-dependencies"></a>
+Когда следует регистрировать зависимости <a name="when-to-register-dependencies"></a>
 -----------------------------
 
-Because dependencies are needed when new objects are being created, their registration should be done
-as early as possible. The followings are the recommended practices:
+Поскольку зависимости необходимы тогда, когда создаются новые объекты, то их регистрация должна быть сделана
+как можно раньше. Ниже приведены рекомендуемые практики:
 
-* If you are the developer of an application, you can register dependencies in your
-  application's [entry script](structure-entry-scripts.md) or in a script that is included by the entry script.
-* If you are the developer of a redistributable [extension](structure-extensions.md), you can register dependencies
-  in the bootstrap class of the extension.
+* Если вы разработчик приложения, то вы можете зарегистрировать зависимости во [входном скрипте](structure-entry-scripts.md) вашего приложения или в скрипте, подключённого во входном скрипте.
+* Если вы разработчик распространяемого [расширения](structure-extensions.md), то вы можете зарегистрировать зависимости в загрузочном классе расширения.
 
 
-Summary <a name="summary"></a>
+Итог <a name="summary"></a>
 -------
+Как dependency injection, так и [service locator](concept-service-locator.md) являются популярными паттернами проектирования, которые позволяют 
+создавать программное обеспечение в слабосвязаной и более тестируемой манере.
+Мы настоятельно рекомендуем к прочтению
+[Статью Мартина Фаулера](http://martinfowler.com/articles/injection.html), для более глубокого понимания dependency injection и service locator. 
 
-Both dependency injection and [service locator](concept-service-locator.md) are popular design patterns
-that allow building software in a loosely-coupled and more testable fashion. We highly recommend you to read
-[Martin's article](http://martinfowler.com/articles/injection.html) to get a deeper understanding of
-dependency injection and service locator.
-
-Yii implements its [service locator](concept-service-locator.md) on top of the dependency injection (DI) container.
-When a service locator is trying to create a new object instance, it will forward the call to the DI container.
-The latter will resolve the dependencies automatically as described above.
+Yii реализует свой [service locator](concept-service-locator.md) поверх контейнера внедрения зависимостей(DI).
+Когда service locator пытается создать новый экземпляр объекта, он перенаправляет вызов на Контейнер внедрения зависимостей (DI).
+Последний будет разрешать зависимости автоматически, как описано выше.
 
