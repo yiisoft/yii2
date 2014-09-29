@@ -159,7 +159,7 @@ Resolving Dependencies <a name="resolving-dependencies"></a>
 если зависимость имеет другие зависимости, эти зависимости также будут автоматически разрешены.
 
 Вы можете использовать [[yii\di\Container::get()]] для создания новых объектов. Метод принимает имя зависимости, которым может быть имя класса, имя интерфейса или псевдоним.
-Имя зависимости может быть или не может быть зарегистрирована через `set()` или `setSingleton()`. 
+Имя зависимости может быть или не может быть зарегистрировано через `set()` или `setSingleton()`. 
 Вы можете опционально предоставить список параметров конструктора класса и [конфигурацию](concept-configurations.md) для настройки созданного объекта.
 Например,
 
@@ -171,15 +171,12 @@ $db = $container->get('db');
 $engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
 ```
 
-Behind the scene, the DI container does much more work than just creating a new object.
-The container will first inspect the class constructor to find out dependent class or interface names
-and then automatically resolve those dependencies recursively.
+За кулисами, контейнер внедрения зависимостей(DI) делает гораздо больше работы, чем просто создание нового объекта.
+Прежде всего, контейнер, осмотрит конструктор класса, что бы узнать имя зависимого класса или интерфейса, а затем автоматически разрешит эти зависимости рекурсивно.
 
-The following code shows a more sophisticated example. The `UserLister` class depends on an object implementing
-the `UserFinderInterface` interface; the `UserFinder` class implements this interface and depends on
-a `Connection` object. All these dependencies are declared through type hinting of the class constructor parameters.
-With property dependency registration, the DI container is able to resolve these dependencies automatically
-and creates a new `UserLister` instance with a simple call of `get('userLister')`.
+Следующий код демонстрирует более сложный пример. Класс `UserLister` зависит от объекта, реализующего интерфейс `UserFinderInterface`; класс `UserFinder` реализует этот интерфейс и зависит от
+ объекта `Connection`. Все эти зависимости были объявлены через тип подсказки параметров конструктора класса.
+При регистрации зависимости через свойство, контейнер внедрения зависимостей(DI) позволяет автоматически разрешить эти зависимости и создаёт новый экземпляр `UserLister` простым вызовом `get('userLister')`.
 
 ```php
 namespace app\models;
@@ -230,7 +227,7 @@ $container->set('userLister', 'app\models\UserLister');
 
 $lister = $container->get('userLister');
 
-// which is equivalent to:
+// что эквивалентно:
 
 $db = new \yii\db\Connection(['dsn' => '...']);
 $finder = new UserFinder($db);
