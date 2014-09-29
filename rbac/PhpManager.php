@@ -218,6 +218,20 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function removeChildren($parent)
+    {
+        if (isset($this->children[$parent->name])) {
+            unset($this->children[$parent->name]);
+            $this->saveItems();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function hasChild($parent, $child)
     {
         return isset($this->children[$parent->name][$child->name]);

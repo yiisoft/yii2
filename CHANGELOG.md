@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.0 under development
 -----------------------
 
-- no changes in this release.
+- Enh #4275: Added `removeChildren()` to `yii\rbac\ManagerInterface` and implementations (samdark)
 
 
 2.0.0-rc September 27, 2014
