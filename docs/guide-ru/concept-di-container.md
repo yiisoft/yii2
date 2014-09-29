@@ -139,9 +139,8 @@ $container->set('pageCache', new FileCache);
 
 > Подсказка: Если имя зависимости такое же, как и определение соответствующей зависимости, то её повторная регистрация в контейнере внедрения зависимостей не нужна.
 
-A dependency registered via `set()` will generate an instance each time the dependency is needed.
-You can use [[yii\di\Container::setSingleton()]] to register a dependency that only generates
-a single instance:
+Зависимость, зарегистрированная через `set()` создаёт экземпляр каждый раз, когда зависимость необходима.
+Вы можете использовать [[yii\di\Container::setSingleton()]] для регистрации зависимости, которая создаст только один экземпляр:
 
 ```php
 $container->setSingleton('yii\db\Connection', [
@@ -155,23 +154,20 @@ $container->setSingleton('yii\db\Connection', [
 
 Resolving Dependencies <a name="resolving-dependencies"></a>
 ----------------------
+После регистрации зависимостей, вы можете использовать контейнер внедрения зависимостей (DI) для создания новых объектов,
+и контейнер автоматически разрешит зависимости их экземпляра и их внедрений во вновь создаваемых объектах. Разрешение зависимостей рекурсивно, то есть
+если зависимость имеет другие зависимости, эти зависимости также будут автоматически разрешены.
 
-Once you have registered dependencies, you can use the DI container to create new objects,
-and the container will automatically resolve dependencies by instantiating them and injecting
-them into the newly created objects. The dependency resolution is recursive, meaning that
-if a dependency has other dependencies, those dependencies will also be resolved automatically.
-
-You can use [[yii\di\Container::get()]] to create new objects. The method takes a dependency name,
-which can be a class name, an interface name or an alias name. The dependency name may or may
-not be registered via `set()` or `setSingleton()`. You may optionally provide a list of class
-constructor parameters and a [configuration](concept-configurations.md) to configure the newly created object.
-For example,
+Вы можете использовать [[yii\di\Container::get()]] для создания новых объектов. Метод принимает имя зависимости, которым может быть имя класса, имя интерфейса или псевдоним.
+Имя зависимости может быть или не может быть зарегистрирована через `set()` или `setSingleton()`. 
+Вы можете опционально предоставить список параметров конструктора класса и [конфигурацию](concept-configurations.md) для настройки созданного объекта.
+Например,
 
 ```php
-// "db" is a previously registered alias name
+// "db" ранее зарегистрированный псевдоним
 $db = $container->get('db');
 
-// equivalent to: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
+// эквивалентно: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
 $engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
 ```
 
