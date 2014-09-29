@@ -18,6 +18,9 @@ Upgrade from Yii 2.0 RC
   This causes trouble because the formatter uses `Yii::$app->timeZone` as the default values for output so no timezone conversion
   was possible. If your timestamps are stored in the database without a timezone identifier you have to ensure they are in UTC or
   add a timezone identifier explicitly.
+  
+* `yii\bootstrap\Collapse` is now encoding labels by default. `encode` item option and global `encodeLabels` property were
+ introduced to disable it. Keys are no longer used as labels. You need to remove keys and use `label` item option instead.
 
 
 Upgrade from Yii 2.0 Beta
