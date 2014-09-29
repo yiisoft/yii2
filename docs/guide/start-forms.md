@@ -124,7 +124,7 @@ If the model is successfully populated (i.e., if the user has submitted the HTML
   In the above code, the `request` component of the application instance is used to access the `$_POST` data.
 
 If everything is fine, the action will render a view named `entry-confirm` to confirm the data entered 
-with the user that the data entered. If no data is submitted or the data contains errors, the `entry` view will
+with the user. If no data is submitted or the data contains errors, the `entry` view will
 be rendered, wherein the HTML form will be shown, along with any validation error messages.
 
 > Note: In this very simple example we just render the confirmation page upon valid data submission. In practice,
