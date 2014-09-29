@@ -4,7 +4,7 @@ Installing Yii
 You can install Yii in two ways, using [Composer](http://getcomposer.org/) or by downloading an archive file.
 The former is the preferred way, as it allows you to install new [extensions](extend-creating-extensions.md) or update Yii by simply running a single command.
 
-> Note: Unlike with Yii 1, standard installations of Yii 2 results in both the framework and an application skeleton being downloaded and installed.
+> Note: Unlike with Yii 1, standard installations of Yii 2 result in both, the framework and an application skeleton being downloaded and installed.
 
 
 Installing via Composer <a name="installing-via-composer"></a>
@@ -27,10 +27,10 @@ With Composer installed, you can install Yii by running the following commands u
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through composer. You only need to run this command
+which allows managing bower and npm package dependencies through Composer. You only need to run this command
 once for all. The second command installs Yii in a directory named `basic`.
 
-> Tip: If you want to install the latest development version of Yii, you may use the following command,
+> Tip: If you want to install the latest development version of Yii, you may use the following command instead,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
@@ -41,7 +41,7 @@ once for all. The second command installs Yii in a directory named `basic`.
 Installing from an Archive File <a name="installing-from-archive-file"></a>
 -------------------------------
 
-Installing Yii from an archive file involves two steps:
+Installing Yii from an archive file involves three steps:
 
 1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
 2. Unpack the downloaded file to a Web-accessible folder.
@@ -135,8 +135,8 @@ should replace `path/to/basic/web` with the actual path for `basic/web`.
 DocumentRoot "path/to/basic/web"
 
 <Directory "path/to/basic/web">
+    # use mod_rewrite for pretty URL support
     RewriteEngine on
-
     # If a directory or a file exists, use the request directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
