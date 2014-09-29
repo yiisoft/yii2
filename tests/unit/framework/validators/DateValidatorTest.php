@@ -80,6 +80,8 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($val->validate('2013-09-13'));
         $this->assertFalse($val->validate('31.7.2013'));
         $this->assertFalse($val->validate('31-7-2013'));
+        $this->assertFalse($val->validate('asdasdfasfd'));
+        $this->assertFalse($val->validate(''));
         $this->assertFalse($val->validate(time()));
         $val->format = 'php:U';
         $this->assertTrue($val->validate(time()));
@@ -94,6 +96,8 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($val->validate('2013-09-13'));
         $this->assertFalse($val->validate('31.7.2013'));
         $this->assertFalse($val->validate('31-7-2013'));
+        $this->assertFalse($val->validate('asdasdfasfd'));
+        $this->assertFalse($val->validate(''));
         $this->assertFalse($val->validate(time()));
         $val->format = 'dd.MM.yyyy';
         $this->assertTrue($val->validate('31.7.2013'));
@@ -101,7 +105,7 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($val->validate('2009-02-15 15:16:17'));
     }
 
-    public function testIntlValidateAttributePHP()
+    public function testIntlValidateAttributePHPFormat()
     {
         $this->testValidateAttributePHPFormat();
     }
@@ -138,7 +142,7 @@ class DateValidatorTest extends TestCase
 
     }
 
-    public function testIntlValidateAttributeICU()
+    public function testIntlValidateAttributeICUFormat()
     {
         $this->testValidateAttributeICUFormat();
     }
