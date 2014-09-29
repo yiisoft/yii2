@@ -702,6 +702,9 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
         if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, null, $options, $textOptions);
+            $f->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, NumberFormatter::IGNORE);
+            $f->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, NumberFormatter::IGNORE);
+
             return $f->format($value, NumberFormatter::TYPE_INT64);
         } else {
             return number_format((int) $value, 0, $this->decimalSeparator, $this->thousandSeparator);
