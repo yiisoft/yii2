@@ -177,7 +177,7 @@ function whose return value determines whether to apply the rule or not. For exa
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
-        return $('#country').value == 'USA';
+        return $('#country').val() == 'USA';
     }"],
 ]
 ```
