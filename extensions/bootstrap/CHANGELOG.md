@@ -4,7 +4,8 @@ Yii Framework 2 bootstrap extension Change Log
 2.0.0 under development
 -----------------------
 
-- no changes in this release.
+- Chg #5231: Collapse `items` property uses `label` element instead of array key for headers (nkovacs)
+- Chg #5232: Collapse encodes headers by default (nkovacs)
 
 
 2.0.0-rc September 27, 2014
