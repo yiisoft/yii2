@@ -1,7 +1,7 @@
 说声 Hello
 ============
 
-本章节描述了如何在你的应用中创建一个新的 “Hello” 页面。为了做到这点，将会创建一个[操作](structure-controllers.md#creating-actions)和一个[视图](structure-views.md)：
+本章描述了如何在你的应用中创建一个新的 “Hello” 页面。为了实现这一目标，将会创建一个[操作](structure-controllers.md#creating-actions)和一个[视图](structure-views.md)：
 
 * 应用将会分派页面请求给操作
 * 操作将会依次渲染视图呈现 “Hello” 给最终用户
@@ -16,7 +16,7 @@
 创建操作 <a name="creating-action"></a>
 ------------------
 
-为了说 “Hello”，需要创建一个 `say` [操作](structure-controllers.md#creating-actions)，从请求中接收 `message` 参数并显示给最终用户。如果请求没有提供 `message` 参数，操作将显示默认参数 “Hello”。
+为了 “Hello”，需要创建一个 `say` [操作](structure-controllers.md#creating-actions)，从请求中接收 `message` 参数并显示给最终用户。如果请求没有提供 `message` 参数，操作将显示默认参数 “Hello”。
 
 > 补充：[操作](structure-controllers.md#creating-actions)是最终用户可以直接访问并执行的对象。操作被组织在[控制器](structure-controllers.md)中。一个操作的执行结果就是最终用户收到的响应内容。
 
@@ -33,7 +33,7 @@ class SiteController extends Controller
 {
     // ...其它代码...
 
-    public function actionSay($message = '你好')
+    public function actionSay($message = 'Hello')
     {
         return $this->render('say', ['message' => $message]);
     }
@@ -68,7 +68,7 @@ use yii\helpers\Html;
 当然了，你大概会在 `say` 视图里放入更多内容。内容可以由 HTML 标签，纯文本，甚至 PHP 语句组成。实际上 `say` 视图就是一个由 [[yii\web\Controller::render()|render()]] 执行的 PHP 脚本。视图脚本输出的内容将会作为响应结果返回给应用。应用将依次输出结果给最终用户。
 
 
-尝试下 <a name="trying-it-out"></a>
+试运行 <a name="trying-it-out"></a>
 -------------
 
 创建完操作和视图后，你就可以通过下面的 URL 访问新页面了：
