@@ -113,6 +113,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
 - Bug: Fixed Object of class Imagick could not be converted to string in CaptchaAction (eXprojects, cebe)
 - Bug: Fixed wrong behavior of `StringHelper::byteSubstr()` in some edge cases (cebe)
+- Bug #5239: Fixed invalid JSON in Gii (pawzar)
 - Enh #87: Helper `yii\helpers\Security` converted into application component, cryptographic strength improved (klimov-paul)
 - Enh #422: Added Support for BIT(M) data type default values in Schema (cebe)
 - Enh #1160: Added $strict parameter to Inflector::camel2id() to handle consecutive uppercase chars (schmunk)
