@@ -8,6 +8,11 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+Upgrade from Yii 2.0 RC
+-----------------------
+
+* If you've implemented `yii\rbac\ManagerInterface` you need to add implementation for new method `removeChildren()`.
+
 
 Upgrade from Yii 2.0 Beta
 -------------------------
