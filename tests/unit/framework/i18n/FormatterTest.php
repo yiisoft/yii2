@@ -852,6 +852,7 @@ class FormatterTest extends TestCase
         // tests for base 1000
         $this->formatter->sizeFormatBase = 1000;
         $this->assertSame("999 B", $this->formatter->asShortSize(999));
+        $this->assertSame("999 B", $this->formatter->asShortSize('999'));
         $this->assertSame("1.05 MB", $this->formatter->asShortSize(1024 * 1024));
         $this->assertSame("1 KB", $this->formatter->asShortSize(1000));
         $this->assertSame("1.02 KB", $this->formatter->asShortSize(1023));
@@ -874,7 +875,7 @@ class FormatterTest extends TestCase
         $this->assertSame('0 B', $this->formatter->asShortSize(0));
 
         // null display
-        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asShortSize(null));
     }
 
     public function testAsShortSize()
@@ -882,6 +883,7 @@ class FormatterTest extends TestCase
         // tests for base 1000
         $this->formatter->sizeFormatBase = 1000;
         $this->assertSame("999 B", $this->formatter->asShortSize(999));
+        $this->assertSame("999 B", $this->formatter->asShortSize('999'));
         $this->assertSame("1.05 MB", $this->formatter->asShortSize(1024 * 1024));
         $this->assertSame("1.0486 MB", $this->formatter->asShortSize(1024 * 1024, 4));
         $this->assertSame("1.00 KB", $this->formatter->asShortSize(1000));
@@ -901,10 +903,10 @@ class FormatterTest extends TestCase
         $this->assertSame("1,001 KiB", $this->formatter->asShortSize(1025, 3));
 
         // empty values
-        $this->assertSame('0 bytes', $this->formatter->asSize(0));
+        $this->assertSame('0 B', $this->formatter->asShortSize(0));
 
         // null display
-        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asShortSize(null));
     }
 
     public function testIntlAsSize()
@@ -917,6 +919,7 @@ class FormatterTest extends TestCase
         // tests for base 1000
         $this->formatter->sizeFormatBase = 1000;
         $this->assertSame("999 bytes", $this->formatter->asSize(999));
+        $this->assertSame("999 bytes", $this->formatter->asSize('999'));
         $this->assertSame("1.05 megabytes", $this->formatter->asSize(1024 * 1024));
         $this->assertSame("1 kilobyte", $this->formatter->asSize(1000));
         $this->assertSame("1.02 kilobytes", $this->formatter->asSize(1023));
@@ -943,6 +946,7 @@ class FormatterTest extends TestCase
         // tests for base 1000
         $this->formatter->sizeFormatBase = 1000;
         $this->assertSame("999 bytes", $this->formatter->asSize(999));
+        $this->assertSame("999 bytes", $this->formatter->asSize('999'));
         $this->assertSame("1.05 megabytes", $this->formatter->asSize(1024 * 1024));
         $this->assertSame("1.0486 megabytes", $this->formatter->asSize(1024 * 1024, 4));
         $this->assertSame("1.00 kilobyte", $this->formatter->asSize(1000));
@@ -968,8 +972,10 @@ class FormatterTest extends TestCase
     public function testIntlAsSizeConfiguration()
     {
         $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
         $this->formatter->thousandSeparator = '.';
         $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
     }
 
     /**
@@ -978,7 +984,9 @@ class FormatterTest extends TestCase
     public function testAsSizeConfiguration()
     {
         $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
         $this->formatter->thousandSeparator = '.';
         $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
     }
 }
