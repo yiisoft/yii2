@@ -34,17 +34,17 @@ When the [error handler](runtime-handling-errors.md) catches an exception, it wi
 from the exception and assign it to the response. For the [[yii\web\NotFoundHttpException]] above, it is
 associated with the HTTP status 404. The following HTTP exceptions are predefined in Yii:
 
-* [[yi\web\BadRequestHttpException]]: status code 400.
-* [[yi\web\ConflictHttpException]]: status code 409.
-* [[yi\web\ForbiddenHttpException]]: status code 403.
-* [[yi\web\GoneHttpException]]: status code 410.
-* [[yi\web\MethodNotAllowedHttpException]]: status code 405.
-* [[yi\web\NotAcceptableHttpException]]: status code 406. 
-* [[yi\web\NotFoundHttpException]]: status code 404.
-* [[yi\web\ServerErrorHttpException]]: status code 500.
-* [[yi\web\TooManyRequestsHttpException]]: status code 429.
-* [[yi\web\UnauthorizedHttpException]]: status code 401.
-* [[yi\web\UnsupportedMediaTypeHttpException]]: status code 415.
+* [[yii\web\BadRequestHttpException]]: status code 400.
+* [[yii\web\ConflictHttpException]]: status code 409.
+* [[yii\web\ForbiddenHttpException]]: status code 403.
+* [[yii\web\GoneHttpException]]: status code 410.
+* [[yii\web\MethodNotAllowedHttpException]]: status code 405.
+* [[yii\web\NotAcceptableHttpException]]: status code 406. 
+* [[yii\web\NotFoundHttpException]]: status code 404.
+* [[yii\web\ServerErrorHttpException]]: status code 500.
+* [[yii\web\TooManyRequestsHttpException]]: status code 429.
+* [[yii\web\UnauthorizedHttpException]]: status code 401.
+* [[yii\web\UnsupportedMediaTypeHttpException]]: status code 415.
 
 If the exception that you want to throw is not among the above list, you may create one by extending
 from [[yii\web\HttpException]], or directly throw it with a status code, for example,
