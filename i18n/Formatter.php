@@ -1097,17 +1097,17 @@ class Formatter extends Component
             $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
         }
 
-        foreach ($this->numberFormatterOptions as $name => $value) {
-            $formatter->setAttribute($name, $value);
-        }
-        foreach ($options as $name => $value) {
-            $formatter->setAttribute($name, $value);
-        }
         foreach ($this->numberFormatterTextOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
         }
         foreach ($textOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
+        }
+        foreach ($this->numberFormatterOptions as $name => $value) {
+            $formatter->setAttribute($name, $value);
+        }
+        foreach ($options as $name => $value) {
+            $formatter->setAttribute($name, $value);
         }
         return $formatter;
     }
