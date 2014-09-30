@@ -28,8 +28,8 @@ structure-extensions.md             | Yes
 runtime-overview.md                 | Yes
 runtime-bootstrapping.md            | Yes
 runtime-routing.md                  | Yes
-runtime-requests.md                 |
-runtime-responses.md                |
+runtime-requests.md                 | Yes
+runtime-responses.md                | Yes
 runtime-sessions-cookies.md         |
 runtime-url-handling.md             |
 runtime-handling-errors.md          |

@@ -49,9 +49,9 @@ Handling Requests
 
 * [Overview](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Routing](runtime-routing.md)
-* **TBD** [Requests](runtime-requests.md)
-* **TBD** [Responses](runtime-responses.md)
+* [Routing](runtime-routing.md)
+* [Requests](runtime-requests.md)
+* [Responses](runtime-responses.md)
 * **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
 * [URL Parsing and Generation](runtime-url-handling.md)
 * [Handling Errors](runtime-handling-errors.md)
@@ -152,7 +152,7 @@ Testing
 -------
 
 * [Overview](test-overview.md)
-* [Testing environment setup](test-endvironment-setup.md)
+* [Testing environment setup](test-environment-setup.md)
 * [Unit Tests](test-unit.md)
 * [Functional Tests](test-functional.md)
 * [Acceptance Tests](test-acceptance.md)
