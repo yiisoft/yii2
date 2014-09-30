@@ -283,6 +283,9 @@ class FormatterTest extends TestCase
 
     public function testIntlDateRangeLow()
     {
+        if (PHP_INT_SIZE == 4) { // 32bit systems
+            $this->markTestSkipped('intl does not support high date ranges on 32bit systems.');
+        }
         $this->testDateRangeLow();
     }
 
@@ -298,6 +301,9 @@ class FormatterTest extends TestCase
 
     public function testIntlDateRangeHigh()
     {
+        if (PHP_INT_SIZE == 4) { // 32bit systems
+            $this->markTestSkipped('intl does not support high date ranges on 32bit systems.');
+        }
         $this->testDateRangeHigh();
     }
 
