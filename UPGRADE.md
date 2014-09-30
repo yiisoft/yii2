@@ -13,6 +13,12 @@ Upgrade from Yii 2.0 RC
 
 * If you've implemented `yii\rbac\ManagerInterface` you need to add implementation for new method `removeChildren()`.
 
+* The input dates for datetime formatting are now assumed to be in UTC unless a timezone is explicitly given.
+  Before, the timezone assumed for input dates was the default timezone set by PHP which is the same as `Yii::$app->timeZone`.
+  This causes trouble because the formatter uses `Yii::$app->timeZone` as the default values for output so no timezone conversion
+  was possible. If your timestamps are stored in the database without a timezone identifier you have to ensure they are in UTC or
+  add a timezone identifier explicitly.
+
 
 Upgrade from Yii 2.0 Beta
 -------------------------
