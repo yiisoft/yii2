@@ -128,9 +128,9 @@ accessible de manière globale. C'est aussi un [annuaire de services](concept-se
 composants tels que `request`, `response`, `db`, etc. pour assister des fonctionnalités spécifiques. Dans le code 
 ci-dessus, le composant `request` de l'instance d'application est utilisé pour accéder aux données `$_POST`.
 
-Si tout se passe bien, l'action effectuera une vue nommée `entry-confirm` pour vérifier les données entrées avec
-l'utilisateur. Si aucune donnée n'est soumise ou si les données contiennent des erreurs, la vue `entry` sera générée,
-dans laquelle le formulaire HTML sera affiché, ainsi que tout message d'erreur de validation.
+Si tout se passe bien, l'action effectuera le rendu d'une vue nommée `entry-confirm` pour confirmer le succès de la 
+soumission à l'utilisateur. Si aucune donnée n'est soumise ou si les données contiennent des erreurs, la vue `entry` 
+sera générée, dans laquelle le formulaire HTML sera affiché, ainsi que tout message d'erreur de validation.
 
 > Note: Dans cet exemple très simple, nous effectuons le rendu de la page de confirmation après soumission de données
 valides. En pratique, vous devriez envisager d'utiliser [[yii\web\Controller::refresh()|refresh()]] ou 
