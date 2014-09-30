@@ -208,8 +208,12 @@ class Formatter extends Component
         }
         $this->_intlLoaded = extension_loaded('intl');
         if (!$this->_intlLoaded) {
-            $this->decimalSeparator = '.';
-            $this->thousandSeparator = ',';
+            if ($this->decimalSeparator === null) {
+                $this->decimalSeparator = '.';
+            }
+            if ($this->thousandSeparator === null) {
+                $this->thousandSeparator = ',';
+            }
         }
     }
 
