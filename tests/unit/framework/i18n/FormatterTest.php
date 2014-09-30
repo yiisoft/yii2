@@ -756,6 +756,21 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/pull/5261
+     */
+    public function testIntlIssue5261()
+    {
+        $this->formatter->locale = 'en-US';
+        $this->formatter->numberFormatterOptions = [
+            \NumberFormatter::FRACTION_DIGITS => 0
+        ];
+        $this->formatter->numberFormatterTextOptions = [
+            \NumberFormatter::CURRENCY_CODE => 'EUR'
+        ];
+        $this->assertSame('€100', $this->formatter->asCurrency(100, 'EUR'));
+    }
+
     public function testAsCurrency()
     {
         $this->formatter->currencyCode = 'USD';
