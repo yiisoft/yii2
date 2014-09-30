@@ -1,40 +1,31 @@
-Ó¦ÓÃ×é¼ş
+åº”ç”¨ç»„ä»¶
 ======================
 
-Ó¦ÓÃÖ÷ÌåÊÇ [·şÎñ¶¨Î»Æ÷](concept-service-locator.md)£¬Ëü²¿ÊğÒ»×éÌá¹©¸÷ÖÖ²»Í¬¹¦ÄÜµÄ *Ó¦ÓÃ×é¼ş* À´´¦ÀíÇëÇó¡£
-ÀıÈç£¬`urlManager`×é¼ş¸ºÔğ´¦ÀíÍøÒ³ÇëÇóÂ·ÓÉµ½¶ÔÓ¦µÄ¿ØÖÆÆ÷¡£`db`×é¼şÌá¹©Êı¾İ¿âÏà¹Ø·şÎñµÈµÈ¡£
+åº”ç”¨ä¸»ä½“æ˜¯ [æœåŠ¡å®šä½å™¨](concept-service-locator.md)ï¼Œå®ƒéƒ¨ç½²ä¸€ç»„æä¾›å„ç§ä¸åŒåŠŸèƒ½çš„ *åº”ç”¨ç»„ä»¶* æ¥å¤„ç†è¯·æ±‚ã€‚
+ä¾‹å¦‚ï¼Œ`urlManager`ç»„ä»¶è´Ÿè´£å¤„ç†ç½‘é¡µè¯·æ±‚è·¯ç”±åˆ°å¯¹åº”çš„æ§åˆ¶å™¨ã€‚`db`ç»„ä»¶æä¾›æ•°æ®åº“ç›¸å…³æœåŠ¡ç­‰ç­‰ã€‚
 
-ÔÚÍ¬Ò»¸öÓ¦ÓÃÖĞ£¬Ã¿¸öÓ¦ÓÃ×é¼ş¶¼ÓĞÒ»¸ö¶ÀÒ»ÎŞ¶şµÄ ID ÓÃÀ´Çø·ÖÆäËûÓ¦ÓÃ×é¼ş£¬Äã¿ÉÒÔÍ¨¹ıÈçÏÂ±í´ïÊ½·ÃÎÊÓ¦ÓÃ×é¼ş¡£
-Each application component has an ID that uniquely identifies itself among other application components
-in the same application. You can access an application component through the expression
+åœ¨åŒä¸€ä¸ªåº”ç”¨ä¸­ï¼Œæ¯ä¸ªåº”ç”¨ç»„ä»¶éƒ½æœ‰ä¸€ä¸ªç‹¬ä¸€æ— äºŒçš„ ID ç”¨æ¥åŒºåˆ†å…¶ä»–åº”ç”¨ç»„ä»¶ï¼Œä½ å¯ä»¥é€šè¿‡å¦‚ä¸‹è¡¨è¾¾å¼è®¿é—®åº”ç”¨ç»„ä»¶ã€‚
 
 ```php
 \Yii::$app->componentID
 ```
 
-ÀıÈç£¬¿ÉÒÔÊ¹ÓÃ `\Yii::$app->db` À´»ñÈ¡µ½ÒÑ×¢²áµ½Ó¦ÓÃµÄ [[yii\db\Connection|DB connection]]£¬
-Ê¹ÓÃ `\Yii::$app->cache` À´»ñÈ¡µ½ÒÑ×¢²áµ½Ó¦ÓÃµÄ [[yii\caching\Cache|primary cache]]¡£ 
-and `\Yii::$app->cache` to get the [[yii\caching\Cache|primary cache]] registered with the application.
-For example, you can use `\Yii::$app->db` to get the [[yii\db\Connection|DB connection]],
-and `\Yii::$app->cache` to get the [[yii\caching\Cache|primary cache]] registered with the application.
+ä¾‹å¦‚ï¼Œå¯ä»¥ä½¿ç”¨ `\Yii::$app->db` æ¥è·å–åˆ°å·²æ³¨å†Œåˆ°åº”ç”¨çš„ [[yii\db\Connection|DB connection]]ï¼Œ
+ä½¿ç”¨ `\Yii::$app->cache` æ¥è·å–åˆ°å·²æ³¨å†Œåˆ°åº”ç”¨çš„ [[yii\caching\Cache|primary cache]]ã€‚ 
 
-µÚÒ»´ÎÊ¹ÓÃÒÔÉÏ±í´ïÊ½Ê±ºò»á´´½¨Ó¦ÓÃ×é¼şÊµÀı£¬ºóĞøÔÙ·ÃÎÊ»á·µ»Ø´ËÊµÀı£¬ÎŞĞèÔÙ´Î´´½¨¡£
-An application component is created the first time it is accessed through the above expression. Any
-further accesses will return the same component instance.
+ç¬¬ä¸€æ¬¡ä½¿ç”¨ä»¥ä¸Šè¡¨è¾¾å¼æ—¶å€™ä¼šåˆ›å»ºåº”ç”¨ç»„ä»¶å®ä¾‹ï¼Œåç»­å†è®¿é—®ä¼šè¿”å›æ­¤å®ä¾‹ï¼Œæ— éœ€å†æ¬¡åˆ›å»ºã€‚
 
-Ó¦ÓÃ×é¼ş¿ÉÒÔÊÇÈÎÒâ¶ÔÏó£¬¿ÉÒÔÔÚ [Ó¦ÓÃÖ÷ÌåÅäÖÃ](structure-applications.md#application-configurations) ÅäÖÃ [[yii\base\Application::components]] ÊôĞÔ .
-ÀıÈç£º
-Application components can be any objects. You can register them by configuring
-the [[yii\base\Application::components]] property in [application configurations](structure-applications.md#application-configurations).
-For example,
+åº”ç”¨ç»„ä»¶å¯ä»¥æ˜¯ä»»æ„å¯¹è±¡ï¼Œå¯ä»¥åœ¨ [åº”ç”¨ä¸»ä½“é…ç½®](structure-applications.md#application-configurations) 
+é…ç½® [[yii\base\Application::components]] å±æ€§ .
+ä¾‹å¦‚ï¼š
 
 ```php
 [
     'components' => [
-        // Ê¹ÓÃÀàÃû×¢²á "cache" ×é¼ş
+        // ä½¿ç”¨ç±»åæ³¨å†Œ "cache" ç»„ä»¶
         'cache' => 'yii\caching\ApcCache',
 
-        // Ê¹ÓÃÅäÖÃÊı×é×¢²á "db" ×é¼ş
+        // ä½¿ç”¨é…ç½®æ•°ç»„æ³¨å†Œ "db" ç»„ä»¶
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host=localhost;dbname=demo',
@@ -42,7 +33,7 @@ For example,
             'password' => '',
         ],
 
-        // Ê¹ÓÃº¯Êı×¢²á"search" ×é¼ş
+        // ä½¿ç”¨å‡½æ•°æ³¨å†Œ"search" ç»„ä»¶
         'search' => function () {
             return new app\components\SolrService;
         },
@@ -50,27 +41,17 @@ For example,
 ]
 ```
 
-> ²¹³ä£ºÇë½÷É÷×¢²áÌ«¶àÓ¦ÓÃ×é¼ş£¬Ó¦ÓÃ×é¼ş¾ÍÏñÈ«¾Ö±äÁ¿£¬Ê¹ÓÃÌ«¶à¿ÉÄÜ¼Ó´ó²âÊÔºÍÎ¬»¤µÄÄÑ¶È¡£
-  Ò»°ãÇé¿öÏÂ¿ÉÒÔÔÚĞèÒªÊ±ÔÙ´´½¨±¾µØ×é¼ş¡£
-> Info: While you can register as many application components as you want, you should do this judiciously.
-  Application components are like global variables. Using too many application components can potentially
-  make your code harder to test and maintain. In many cases, you can simply create a local component
-  and use it when needed.
+> è¡¥å……ï¼šè¯·è°¨æ…æ³¨å†Œå¤ªå¤šåº”ç”¨ç»„ä»¶ï¼Œåº”ç”¨ç»„ä»¶å°±åƒå…¨å±€å˜é‡ï¼Œä½¿ç”¨å¤ªå¤šå¯èƒ½åŠ å¤§æµ‹è¯•å’Œç»´æŠ¤çš„éš¾åº¦ã€‚
+  ä¸€èˆ¬æƒ…å†µä¸‹å¯ä»¥åœ¨éœ€è¦æ—¶å†åˆ›å»ºæœ¬åœ°ç»„ä»¶ã€‚
 
 
-## Òıµ¼Æô¶¯×é¼ş <a name="bootstrapping-components"></a>
-## Bootstrapping Components <a name="bootstrapping-components"></a>
+## å¼•å¯¼å¯åŠ¨ç»„ä»¶ <a name="bootstrapping-components"></a>
 
-ÉÏÃæÌáµ½Ò»¸öÓ¦ÓÃ×é¼şÖ»»áÔÚµÚÒ»´Î·ÃÎÊÊ±ÊµÀı»¯£¬Èç¹û´¦ÀíÇëÇó¹ı³ÌÃ»ÓĞ·ÃÎÊµÄ»°¾Í²»ÊµÀı»¯¡£
-ÓĞÊ±ÄãÏëÔÚÃ¿¸öÇëÇó´¦Àí¹ı³Ì¶¼ÊµÀı»¯Ä³¸ö×é¼ş¼´±ãËü²»»á±»·ÃÎÊ£¬
-¿ÉÒÔ½«¸Ã×é¼şID¼ÓÈëµ½Ó¦ÓÃÖ÷ÌåµÄ [[yii\base\Application::bootstrap|bootstrap]] ÊôĞÔÖĞ¡£
-As mentioned above, an application component will only be instantiated when it is being accessed the first time.
-If it is not accessed at all during a request, it will not be instantiated. Sometimes, however, you may want
-to instantiate an application component for every request, even if it is not explicitly accessed.
-To do so, you may list its ID in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
+ä¸Šé¢æåˆ°ä¸€ä¸ªåº”ç”¨ç»„ä»¶åªä¼šåœ¨ç¬¬ä¸€æ¬¡è®¿é—®æ—¶å®ä¾‹åŒ–ï¼Œå¦‚æœå¤„ç†è¯·æ±‚è¿‡ç¨‹æ²¡æœ‰è®¿é—®çš„è¯å°±ä¸å®ä¾‹åŒ–ã€‚
+æœ‰æ—¶ä½ æƒ³åœ¨æ¯ä¸ªè¯·æ±‚å¤„ç†è¿‡ç¨‹éƒ½å®ä¾‹åŒ–æŸä¸ªç»„ä»¶å³ä¾¿å®ƒä¸ä¼šè¢«è®¿é—®ï¼Œ
+å¯ä»¥å°†è¯¥ç»„ä»¶IDåŠ å…¥åˆ°åº”ç”¨ä¸»ä½“çš„ [[yii\base\Application::bootstrap|bootstrap]] å±æ€§ä¸­ã€‚
 
-ÀıÈç, ÈçÏÂµÄÓ¦ÓÃÖ÷ÌåÅäÖÃ±£Ö¤ÁË `log` ×é¼şÒ»Ö±±»¼ÓÔØ¡£
-For example, the following application configuration makes sure the `log` component is always loaded:
+ä¾‹å¦‚, å¦‚ä¸‹çš„åº”ç”¨ä¸»ä½“é…ç½®ä¿è¯äº† `log` ç»„ä»¶ä¸€ç›´è¢«åŠ è½½ã€‚
 
 ```php
 [
@@ -79,50 +60,42 @@ For example, the following application configuration makes sure the `log` compon
     ],
     'components' => [
         'log' => [
-            // "log" ×é¼şµÄÅäÖÃ
+            // "log" ç»„ä»¶çš„é…ç½®
         ],
     ],
 ]
 ```
 
 
-## ºËĞÄÓ¦ÓÃ×é¼ş <a name="core-application-components"></a>
-## Core Application Components <a name="core-application-components"></a>
+## æ ¸å¿ƒåº”ç”¨ç»„ä»¶ <a name="core-application-components"></a>
 
-Yii ¶¨ÒåÁËÒ»×é¹Ì¶¨IDºÍÄ¬ÈÏÅäÖÃµÄ *ºËĞÄ* ×é¼ş£¬ÀıÈç [[yii\web\Application::request|request]] ×é¼şÓÃÀ´ÊÕ¼¯ÓÃ»§ÇëÇó²¢½âÎö [Â·ÓÉ](runtime-routing.md)£»
-[[yii\base\Application::db|db]] ´ú±íÒ»¸ö¿ÉÒÔÖ´ĞĞÊı¾İ¿â²Ù×÷µÄÊı¾İ¿âÁ¬½Ó¡£
-Í¨¹ıÕâĞ©×é¼ş£¬YiiÓ¦ÓÃÖ÷ÌåÄÜ´¦ÀíÓÃ»§ÇëÇó¡£
-Yii defines a set of *core* application components with fixed IDs and default configurations. For example,
-the [[yii\web\Application::request|request]] component is used to collect information about
-a user request and resolve it into a [route](runtime-routing.md); the [[yii\base\Application::db|db]]
-component represents a database connection through which you can perform database queries.
-It is with help of these core application components that Yii applications are able to handle user requests.
+Yii å®šä¹‰äº†ä¸€ç»„å›ºå®šIDå’Œé»˜è®¤é…ç½®çš„ *æ ¸å¿ƒ* ç»„ä»¶ï¼Œä¾‹å¦‚ [[yii\web\Application::request|request]] ç»„ä»¶
+ç”¨æ¥æ”¶é›†ç”¨æˆ·è¯·æ±‚å¹¶è§£æ [è·¯ç”±](runtime-routing.md)ï¼›
+[[yii\base\Application::db|db]] ä»£è¡¨ä¸€ä¸ªå¯ä»¥æ‰§è¡Œæ•°æ®åº“æ“ä½œçš„æ•°æ®åº“è¿æ¥ã€‚
+é€šè¿‡è¿™äº›ç»„ä»¶ï¼ŒYiiåº”ç”¨ä¸»ä½“èƒ½å¤„ç†ç”¨æˆ·è¯·æ±‚ã€‚
 
-ÏÂÃæÊÇÔ¤¶¨ÒåµÄºËĞÄÓ¦ÓÃ×é¼şÁĞ±í£¬¿ÉÒÔºÍÆÕÍ¨Ó¦ÓÃ×é¼şÒ»ÑùÅäÖÃºÍ×Ô¶¨ÒåËüÃÇ¡£
-µ±ÄãÅäÖÃÒ»¸öºËĞÄ×é¼ş£¬²»Ö¸¶¨ËüµÄÀàÃûµÄ»°¾Í»áÊ¹ÓÃYiiÄ¬ÈÏÖ¸¶¨µÄÀà¡£
-Below is the list of the predefined core application components. You may configure and customize them
-like you do with normal application components. When you are configuring a core application component,
-if you do not specify its class, the default one will be used.
+ä¸‹é¢æ˜¯é¢„å®šä¹‰çš„æ ¸å¿ƒåº”ç”¨ç»„ä»¶åˆ—è¡¨ï¼Œå¯ä»¥å’Œæ™®é€šåº”ç”¨ç»„ä»¶ä¸€æ ·é…ç½®å’Œè‡ªå®šä¹‰å®ƒä»¬ã€‚
+å½“ä½ é…ç½®ä¸€ä¸ªæ ¸å¿ƒç»„ä»¶ï¼Œä¸æŒ‡å®šå®ƒçš„ç±»åçš„è¯å°±ä¼šä½¿ç”¨Yiié»˜è®¤æŒ‡å®šçš„ç±»ã€‚
 
-* [[yii\web\AssetManager|assetManager]]: ¹ÜÀí×ÊÔ´°üºÍ×ÊÔ´·¢²¼£¬ÏêÇéÇë²Î¿¼ [¹ÜÀí×ÊÔ´](output-assets.md) Ò»½Ú¡£
-* [[yii\db\Connection|db]]: ´ú±íÒ»¸ö¿ÉÒÔÖ´ĞĞÊı¾İ¿â²Ù×÷µÄÊı¾İ¿âÁ¬½Ó£¬
-  ×¢ÒâÅäÖÃ¸Ã×é¼şÊ±±ØĞëÖ¸¶¨×é¼şÀàÃûºÍÆäËûÏà¹Ø×é¼şÊôĞÔ£¬Èç[[yii\db\Connection::dsn]]¡£
-  ÏêÇéÇë²Î¿¼ [Êı¾İ·ÃÎÊ¶ÔÏó](db-dao.md) Ò»½Ú¡£
-* [[yii\base\Application::errorHandler|errorHandler]]: ´¦Àí PHP ´íÎóºÍÒì³££¬
-  ÏêÇéÇë²Î¿¼ [´íÎó´¦Àí](tutorial-handling-errors.md) Ò»½Ú¡£
-* [[yii\i18n\Formatter|formatter]]: ¸ñÊ½»¯Êä³öÏÔÊ¾¸øÖÕ¶ËÓÃ»§µÄÊı¾İ£¬ÀıÈçÊı×Ö¿ÉÄÜÒª´ø·Ö¸ô·û£¬
-  ÈÕÆÚÊ¹ÓÃ³¤¸ñÊ½¡£ÏêÇéÇë²Î¿¼ [¸ñÊ½»¯Êä³öÊı¾İ](output-formatting.md) Ò»½Ú¡£
-* [[yii\i18n\I18N|i18n]]: Ö§³ÖĞÅÏ¢·­ÒëºÍ¸ñÊ½»¯¡£ÏêÇéÇë²Î¿¼ [¹ú¼Ê»¯](tutorial-i18n.md) Ò»½Ú¡£
-* [[yii\log\Dispatcher|log]]: ¹ÜÀíÈÕÖ¾¶ÔÏó¡£ÏêÇéÇë²Î¿¼ [ÈÕÖ¾](tutorial-logging.md) Ò»½Ú¡£
-* [[yii\swiftmailer\Mailer|mail]]: Ö§³ÖÉú³ÉÓÊ¼ş½á¹¹²¢·¢ËÍ£¬ÏêÇéÇë²Î¿¼ [ÓÊ¼ş](tutorial-mailing.md) Ò»½Ú¡£
-* [[yii\base\Application::response|response]]: ´ú±í·¢ËÍ¸øÓÃ»§µÄÏìÓ¦£¬
-  ÏêÇéÇë²Î¿¼ [ÏìÓ¦](runtime-responses.md) Ò»½Ú¡£
-* [[yii\base\Application::request|request]]: ´ú±í´ÓÖÕ¶ËÓÃ»§´¦½ÓÊÕµ½µÄÇëÇó£¬
-  ÏêÇéÇë²Î¿¼ [ÇëÇó](runtime-requests.md) Ò»½Ú¡£
-* [[yii\web\Session|session]]: ´ú±í»á»°ĞÅÏ¢£¬½öÔÚ[[yii\web\Application|Web applications]] ÍøÒ³Ó¦ÓÃÖĞ¿ÉÓÃ£¬
-  ÏêÇéÇë²Î¿¼ [Sessions (»á»°) and Cookies](runtime-sessions-cookies.md) Ò»½Ú¡£
-* [[yii\web\UrlManager|urlManager]]: Ö§³ÖURLµØÖ·½âÎöºÍ´´½¨£¬
-  ÏêÇéÇë²Î¿¼ [URL ½âÎöºÍÉú³É](runtime-url-handling.md) Ò»½Ú¡£
-* [[yii\web\User|user]]: ´ú±íÈÏÖ¤µÇÂ¼ÓÃ»§ĞÅÏ¢£¬½öÔÚ[[yii\web\Application|Web applications]] ÍøÒ³Ó¦ÓÃÖĞ¿ÉÓÃ£¬
-  ÏêÇéÇë²Î¿¼ [ÈÏÖ¤](security-authentication.md) Ò»½Ú¡£
-* [[yii\web\View|view]]: Ö§³ÖäÖÈ¾ÊÓÍ¼£¬ÏêÇéÇë²Î¿¼ [Views](structure-views.md) Ò»½Ú¡£
+* [[yii\web\AssetManager|assetManager]]: ç®¡ç†èµ„æºåŒ…å’Œèµ„æºå‘å¸ƒï¼Œè¯¦æƒ…è¯·å‚è€ƒ [ç®¡ç†èµ„æº](output-assets.md) ä¸€èŠ‚ã€‚
+* [[yii\db\Connection|db]]: ä»£è¡¨ä¸€ä¸ªå¯ä»¥æ‰§è¡Œæ•°æ®åº“æ“ä½œçš„æ•°æ®åº“è¿æ¥ï¼Œ
+  æ³¨æ„é…ç½®è¯¥ç»„ä»¶æ—¶å¿…é¡»æŒ‡å®šç»„ä»¶ç±»åå’Œå…¶ä»–ç›¸å…³ç»„ä»¶å±æ€§ï¼Œå¦‚[[yii\db\Connection::dsn]]ã€‚
+  è¯¦æƒ…è¯·å‚è€ƒ [æ•°æ®è®¿é—®å¯¹è±¡](db-dao.md) ä¸€èŠ‚ã€‚
+* [[yii\base\Application::errorHandler|errorHandler]]: å¤„ç† PHP é”™è¯¯å’Œå¼‚å¸¸ï¼Œ
+  è¯¦æƒ…è¯·å‚è€ƒ [é”™è¯¯å¤„ç†](tutorial-handling-errors.md) ä¸€èŠ‚ã€‚
+* [[yii\i18n\Formatter|formatter]]: æ ¼å¼åŒ–è¾“å‡ºæ˜¾ç¤ºç»™ç»ˆç«¯ç”¨æˆ·çš„æ•°æ®ï¼Œä¾‹å¦‚æ•°å­—å¯èƒ½è¦å¸¦åˆ†éš”ç¬¦ï¼Œ
+  æ—¥æœŸä½¿ç”¨é•¿æ ¼å¼ã€‚è¯¦æƒ…è¯·å‚è€ƒ [æ ¼å¼åŒ–è¾“å‡ºæ•°æ®](output-formatting.md) ä¸€èŠ‚ã€‚
+* [[yii\i18n\I18N|i18n]]: æ”¯æŒä¿¡æ¯ç¿»è¯‘å’Œæ ¼å¼åŒ–ã€‚è¯¦æƒ…è¯·å‚è€ƒ [å›½é™…åŒ–](tutorial-i18n.md) ä¸€èŠ‚ã€‚
+* [[yii\log\Dispatcher|log]]: ç®¡ç†æ—¥å¿—å¯¹è±¡ã€‚è¯¦æƒ…è¯·å‚è€ƒ [æ—¥å¿—](tutorial-logging.md) ä¸€èŠ‚ã€‚
+* [[yii\swiftmailer\Mailer|mail]]: æ”¯æŒç”Ÿæˆé‚®ä»¶ç»“æ„å¹¶å‘é€ï¼Œè¯¦æƒ…è¯·å‚è€ƒ [é‚®ä»¶](tutorial-mailing.md) ä¸€èŠ‚ã€‚
+* [[yii\base\Application::response|response]]: ä»£è¡¨å‘é€ç»™ç”¨æˆ·çš„å“åº”ï¼Œ
+  è¯¦æƒ…è¯·å‚è€ƒ [å“åº”](runtime-responses.md) ä¸€èŠ‚ã€‚
+* [[yii\base\Application::request|request]]: ä»£è¡¨ä»ç»ˆç«¯ç”¨æˆ·å¤„æ¥æ”¶åˆ°çš„è¯·æ±‚ï¼Œ
+  è¯¦æƒ…è¯·å‚è€ƒ [è¯·æ±‚](runtime-requests.md) ä¸€èŠ‚ã€‚
+* [[yii\web\Session|session]]: ä»£è¡¨ä¼šè¯ä¿¡æ¯ï¼Œä»…åœ¨[[yii\web\Application|Web applications]] ç½‘é¡µåº”ç”¨ä¸­å¯ç”¨ï¼Œ
+  è¯¦æƒ…è¯·å‚è€ƒ [Sessions (ä¼šè¯) and Cookies](runtime-sessions-cookies.md) ä¸€èŠ‚ã€‚
+* [[yii\web\UrlManager|urlManager]]: æ”¯æŒURLåœ°å€è§£æå’Œåˆ›å»ºï¼Œ
+  è¯¦æƒ…è¯·å‚è€ƒ [URL è§£æå’Œç”Ÿæˆ](runtime-url-handling.md) ä¸€èŠ‚ã€‚
+* [[yii\web\User|user]]: ä»£è¡¨è®¤è¯ç™»å½•ç”¨æˆ·ä¿¡æ¯ï¼Œä»…åœ¨[[yii\web\Application|Web applications]] ç½‘é¡µåº”ç”¨ä¸­å¯ç”¨ï¼Œ
+  è¯¦æƒ…è¯·å‚è€ƒ [è®¤è¯](security-authentication.md) ä¸€èŠ‚ã€‚
+* [[yii\web\View|view]]: æ”¯æŒæ¸²æŸ“è§†å›¾ï¼Œè¯¦æƒ…è¯·å‚è€ƒ [Views](structure-views.md) ä¸€èŠ‚ã€‚

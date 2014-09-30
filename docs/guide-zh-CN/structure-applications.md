@@ -1,113 +1,71 @@
-Ó¦ÓÃÖ÷Ìå
+åº”ç”¨ä¸»ä½“
 ============
 
-Ó¦ÓÃÖ÷ÌåÊÇ¹ÜÀíYiiÓ¦ÓÃÏµÍ³ÕûÌå½á¹¹ºÍÉúÃüÖÜÆÚµÄ¶ÔÏó¡£
-Ã¿¸öYiiÓ¦ÓÃÏµÍ³Ö»ÄÜ°üº¬Ò»¸öÓ¦ÓÃÖ÷Ìå£¬Ó¦ÓÃÖ÷ÌåÔÚ [Èë¿Ú½Å±¾](structure-entry-scripts.md) ÖĞ´´½¨²¢ÄÜÍ¨¹ı±í´ïÊ½ `\Yii::$app` È«¾Ö·¶Î§ÄÚ·ÃÎÊ¡£
-Applications are objects that govern the overall structure and lifecycle of Yii application systems.
-Each Yii application system contains a single application object which is created in
-the [entry script](structure-entry-scripts.md) and is globally accessible through the expression `\Yii::$app`.
+åº”ç”¨ä¸»ä½“æ˜¯ç®¡ç†Yiiåº”ç”¨ç³»ç»Ÿæ•´ä½“ç»“æ„å’Œç”Ÿå‘½å‘¨æœŸçš„å¯¹è±¡ã€‚
+æ¯ä¸ªYiiåº”ç”¨ç³»ç»Ÿåªèƒ½åŒ…å«ä¸€ä¸ªåº”ç”¨ä¸»ä½“ï¼Œåº”ç”¨ä¸»ä½“åœ¨ [å…¥å£è„šæœ¬](structure-entry-scripts.md) ä¸­åˆ›å»ºå¹¶èƒ½é€šè¿‡è¡¨è¾¾å¼ `\Yii::$app` å…¨å±€èŒƒå›´å†…è®¿é—®ã€‚
 
-> ²¹³ä: µ±ÎÒÃÇËµ"Ò»¸öÓ¦ÓÃ"£¬Ëü¿ÉÄÜÊÇÒ»¸öÓ¦ÓÃ¶ÔÏó£¬Ò²¿ÉÄÜÊÇÒ»¸öÓ¦ÓÃÏµÍ³£¬ÊÇ¸ù¾İÉÏÏÂÎÄÀ´¾ö¶¨¡£
-> Info: Depending on the context, when we say "an application", it can mean either an application
-  object or an application system.
+> è¡¥å……: å½“æˆ‘ä»¬è¯´"ä¸€ä¸ªåº”ç”¨"ï¼Œå®ƒå¯èƒ½æ˜¯ä¸€ä¸ªåº”ç”¨å¯¹è±¡ï¼Œä¹Ÿå¯èƒ½æ˜¯ä¸€ä¸ªåº”ç”¨ç³»ç»Ÿï¼Œæ˜¯æ ¹æ®ä¸Šä¸‹æ–‡æ¥å†³å®šã€‚
 
-YiiÓĞÁ½ÖÖÓ¦ÓÃÖ÷Ìå: [[yii\web\Application|ÍøÒ³Ó¦ÓÃÖ÷Ìå]] and
-[[yii\console\Application|¿ØÖÆÌ¨Ó¦ÓÃÖ÷Ìå]]£¬ ÈçÃû³ÆËùÊ¾£¬Ç°ÕßÖ÷Òª´¦ÀíÍøÒ³ÇëÇó£¬ºóÕß´¦Àí¿ØÖÆÌ¨ÇëÇó¡£
-There are two types of applications: [[yii\web\Application|Web applications]] and
-[[yii\console\Application|console applications]]. As the names indicate, the former mainly handles
-Web requests while the latter console command requests.
+Yiiæœ‰ä¸¤ç§åº”ç”¨ä¸»ä½“: [[yii\web\Application|ç½‘é¡µåº”ç”¨ä¸»ä½“]] and
+[[yii\console\Application|æ§åˆ¶å°åº”ç”¨ä¸»ä½“]]ï¼Œ å¦‚åç§°æ‰€ç¤ºï¼Œå‰è€…ä¸»è¦å¤„ç†ç½‘é¡µè¯·æ±‚ï¼Œåè€…å¤„ç†æ§åˆ¶å°è¯·æ±‚ã€‚
 
 
-## Ó¦ÓÃÖ÷ÌåÅäÖÃ <a name="application-configurations"></a>
-## Application Configurations <a name="application-configurations"></a>
+## åº”ç”¨ä¸»ä½“é…ç½® <a name="application-configurations"></a>
 
-ÈçÏÂËùÊ¾£¬µ± [Èë¿Ú½Å±¾](structure-entry-scripts.md) ´´½¨ÁËÒ»¸öÓ¦ÓÃÖ÷Ìå£¬Ëü»á¼ÓÔØÒ»¸ö [ÅäÖÃ](concept-configurations.md) ÎÄ¼ş²¢´«¸øÓ¦ÓÃÖ÷Ìå¡£
-When an [entry script](structure-entry-scripts.md) creates an application, it will load
-a [configuration](concept-configurations.md) and apply it to the application, like the following:
+å¦‚ä¸‹æ‰€ç¤ºï¼Œå½“ [å…¥å£è„šæœ¬](structure-entry-scripts.md) åˆ›å»ºäº†ä¸€ä¸ªåº”ç”¨ä¸»ä½“ï¼Œå®ƒä¼šåŠ è½½ä¸€ä¸ª [é…ç½®](concept-configurations.md) æ–‡ä»¶å¹¶ä¼ ç»™åº”ç”¨ä¸»ä½“ã€‚
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-// ¼ÓÔØÓ¦ÓÃÖ÷ÌåÅäÖÃ
+// åŠ è½½åº”ç”¨ä¸»ä½“é…ç½®
 $config = require(__DIR__ . '/../config/web.php');
 
-// ÊµÀı»¯Ó¦ÓÃÖ÷Ìå¡¢ÅäÖÃÓ¦ÓÃÖ÷Ìå
+// å®ä¾‹åŒ–åº”ç”¨ä¸»ä½“ã€é…ç½®åº”ç”¨ä¸»ä½“
 (new yii\web\Application($config))->run();
 ```
 
-ÀàËÆÆäËû [ÅäÖÃ](concept-configurations.md) ÎÄ¼ş, Ó¦ÓÃÖ÷ÌåÅäÖÃÎÄ¼ş±êÃ÷ÈçºÎÉèÖÃÓ¦ÓÃ¶ÔÏó³õÊ¼ÊôĞÔ¡£
-ÓÉÓÚÓ¦ÓÃÖ÷ÌåÅäÖÃ±È½Ï¸´ÔÓ£¬Ò»°ã±£´æÔÚ¶à¸öÀàËÆÈçÉÏweb.phpµÄ [ÅäÖÃÎÄ¼ş](concept-configurations.md#configuration-files) µ±ÖĞ¡£
-Like normal [configurations](concept-configurations.md), application configurations specify how
-to initialize properties of application objects. Because application configurations are often
-very complex, they usually are kept in [configuration files](concept-configurations.md#configuration-files),
-like the `web.php` file in the above example.
+ç±»ä¼¼å…¶ä»– [é…ç½®](concept-configurations.md) æ–‡ä»¶, åº”ç”¨ä¸»ä½“é…ç½®æ–‡ä»¶æ ‡æ˜å¦‚ä½•è®¾ç½®åº”ç”¨å¯¹è±¡åˆå§‹å±æ€§ã€‚
+ç”±äºåº”ç”¨ä¸»ä½“é…ç½®æ¯”è¾ƒå¤æ‚ï¼Œä¸€èˆ¬ä¿å­˜åœ¨å¤šä¸ªç±»ä¼¼å¦‚ä¸Šweb.phpçš„ [é…ç½®æ–‡ä»¶](concept-configurations.md#configuration-files) å½“ä¸­ã€‚
 
-## Ó¦ÓÃÖ÷ÌåÊôĞÔ <a name="application-properties"></a>
-## Application Properties <a name="application-properties"></a>
+## åº”ç”¨ä¸»ä½“å±æ€§ <a name="application-properties"></a>
 
-Ó¦ÓÃÖ÷ÌåÅäÖÃÎÄ¼şÖĞÓĞĞí¶àÖØÒªµÄÊôĞÔÒªÅäÖÃ£¬ÕâĞ©ÊôĞÔÖ¸¶¨Ó¦ÓÃÖ÷ÌåµÄÔËĞĞ»·¾³¡£
-±ÈÈç£¬Ó¦ÓÃÖ÷ÌåĞèÒªÖªµÀÈçºÎ¼ÓÔØ [¿ØÖÆÆ÷](structure-controllers.md) £¬ÁÙÊ±ÎÄ¼ş±£´æµ½ÄÄ¶ùµÈµÈ¡£
-ÒÔÏÂÎÒÃÇ¼òÊöÕâĞ©ÊôĞÔ¡£
-There are many important application properties that you should configure in application configurations.
-These properties typically describe the environment that applications are running in.
-For example, applications need to know how to load [controllers](structure-controllers.md),
-where to store temporary files, etc. In the following, we will summarize these properties.
+åº”ç”¨ä¸»ä½“é…ç½®æ–‡ä»¶ä¸­æœ‰è®¸å¤šé‡è¦çš„å±æ€§è¦é…ç½®ï¼Œè¿™äº›å±æ€§æŒ‡å®šåº”ç”¨ä¸»ä½“çš„è¿è¡Œç¯å¢ƒã€‚
+æ¯”å¦‚ï¼Œåº”ç”¨ä¸»ä½“éœ€è¦çŸ¥é“å¦‚ä½•åŠ è½½ [æ§åˆ¶å™¨](structure-controllers.md) ï¼Œä¸´æ—¶æ–‡ä»¶ä¿å­˜åˆ°å“ªå„¿ç­‰ç­‰ã€‚
+ä»¥ä¸‹æˆ‘ä»¬ç®€è¿°è¿™äº›å±æ€§ã€‚
 
-### ±ØÒªÊôĞÔ <a name="required-properties"></a>
-### Required Properties <a name="required-properties"></a>
+### å¿…è¦å±æ€§ <a name="required-properties"></a>
 
-ÔÚÒ»¸öÓ¦ÓÃÖĞ£¬ÖÁÉÙÒªÅäÖÃ2¸öÊôĞÔ: [[yii\base\Application::id|id]] ºÍ [[yii\base\Application::basePath|basePath]]¡£
-In any application, you should at least configure two properties: [[yii\base\Application::id|id]]
-and [[yii\base\Application::basePath|basePath]].
+åœ¨ä¸€ä¸ªåº”ç”¨ä¸­ï¼Œè‡³å°‘è¦é…ç½®2ä¸ªå±æ€§: [[yii\base\Application::id|id]] å’Œ [[yii\base\Application::basePath|basePath]]ã€‚
 
 
 #### [[yii\base\Application::id|id]] <a name="id"></a>
 
-[[yii\base\Application::id|id]] ÊôĞÔÓÃÀ´Çø·ÖÆäËûÓ¦ÓÃµÄÎ¨Ò»±êÊ¶ID¡£Ö÷Òª¸ø³ÌĞòÊ¹ÓÃ¡£
-ÎªÁË·½±ãĞ­×÷£¬×îºÃÊ¹ÓÃÊı×Ö×÷ÎªÓ¦ÓÃÖ÷ÌåID£¬µ«²»Ç¿ÖÆÒªÇóÎªÊı×Ö¡£
-The [[yii\base\Application::id|id]] property specifies a unique ID that differentiates an application
-from others. It is mainly used programmatically. Although not a requirement, for best interoperability
-it is recommended that you use alphanumeric characters only when specifying an application ID.
+[[yii\base\Application::id|id]] å±æ€§ç”¨æ¥åŒºåˆ†å…¶ä»–åº”ç”¨çš„å”¯ä¸€æ ‡è¯†IDã€‚ä¸»è¦ç»™ç¨‹åºä½¿ç”¨ã€‚
+ä¸ºäº†æ–¹ä¾¿åä½œï¼Œæœ€å¥½ä½¿ç”¨æ•°å­—ä½œä¸ºåº”ç”¨ä¸»ä½“IDï¼Œä½†ä¸å¼ºåˆ¶è¦æ±‚ä¸ºæ•°å­—ã€‚
 
 
 #### [[yii\base\Application::basePath|basePath]] <a name="basePath"></a>
 
 
-[[yii\base\Application::basePath|basePath]] Ö¸¶¨¸ÃÓ¦ÓÃµÄ¸ùÄ¿Â¼¡£¸ùÄ¿Â¼°üº¬Ó¦ÓÃÏµÍ³ËùÓĞÊÜ±£»¤µÄÔ´´úÂë¡£
-ÔÚ¸ùÄ¿Â¼ÏÂ¿ÉÒÔ¿´µ½¶ÔÓ¦MVCÉè¼ÆÄ£Ê½µÄ`models`, `views`, `controllers`µÈ×ÓÄ¿Â¼¡£
-The [[yii\base\Application::basePath|basePath]] property specifies the root directory of an application.
-It is the directory that contains all protected source code of an application system. Under this directory,
-you normally will see sub-directories such as `models`, `views`, `controllers`, which contain source code
-corresponding to the MVC pattern.
+[[yii\base\Application::basePath|basePath]] æŒ‡å®šè¯¥åº”ç”¨çš„æ ¹ç›®å½•ã€‚æ ¹ç›®å½•åŒ…å«åº”ç”¨ç³»ç»Ÿæ‰€æœ‰å—ä¿æŠ¤çš„æºä»£ç ã€‚
+åœ¨æ ¹ç›®å½•ä¸‹å¯ä»¥çœ‹åˆ°å¯¹åº”MVCè®¾è®¡æ¨¡å¼çš„`models`, `views`, `controllers`ç­‰å­ç›®å½•ã€‚
 
-¿ÉÒÔÊ¹ÓÃÂ·¾¶»ò [Â·¾¶±ğÃû](concept-aliases.md) À´ÔÚÅäÖÃ [[yii\base\Application::basePath|basePath]] ÊôĞÔ¡£
-Á½ÖÖ¸ñÊ½Ëù¶ÔÓ¦µÄÄ¿Â¼¶¼±ØĞë´æÔÚ£¬·ñÔòÏµÍ³»áÅ×³öÒ»¸öÒì³£¡£ ÏµÍ³»áÊ¹ÓÃ `realpath()` º¯Êı¹æ·¶»¯ÅäÖÃµÄÂ·¾¶.
-You may configure the [[yii\base\Application::basePath|basePath]] property using a directory path
-or a [path alias](concept-aliases.md). In both forms, the corresponding directory must exist, or an exception
-will be thrown. The path will be normalized by calling the `realpath()` function.
+å¯ä»¥ä½¿ç”¨è·¯å¾„æˆ– [è·¯å¾„åˆ«å](concept-aliases.md) æ¥åœ¨é…ç½® [[yii\base\Application::basePath|basePath]] å±æ€§ã€‚
+ä¸¤ç§æ ¼å¼æ‰€å¯¹åº”çš„ç›®å½•éƒ½å¿…é¡»å­˜åœ¨ï¼Œå¦åˆ™ç³»ç»Ÿä¼šæŠ›å‡ºä¸€ä¸ªå¼‚å¸¸ã€‚ ç³»ç»Ÿä¼šä½¿ç”¨ `realpath()` å‡½æ•°è§„èŒƒåŒ–é…ç½®çš„è·¯å¾„.
 
-[[yii\base\Application::basePath|basePath]] ÊôĞÔ¾­³£ÓÃÓÚÅÉÉúÒ»Ğ©ÆäËûÖØÒªÂ·¾¶£¨ÈçruntimeÂ·¾¶£©£¬Òò´Ë£¬ÏµÍ³Ô¤¶¨Òå `@app` ´ú±íÕâ¸öÂ·¾¶¡£
-ÅÉÉúÂ·¾¶¿ÉÒÔÍ¨¹ıÕâ¸ö±ğÃû×é³É£¨Èç`@app/runtime`´ú±íruntimeµÄÂ·¾¶£©¡£
-The [[yii\base\Application::basePath|basePath]] property is often used to derive other important
-paths (e.g. the runtime path). For this reason, a path alias named `@app` is predefined to represent this
-path. Derived paths may then be formed using this alias (e.g. `@app/runtime` to refer to the runtime directory).
+[[yii\base\Application::basePath|basePath]] å±æ€§ç»å¸¸ç”¨äºæ´¾ç”Ÿä¸€äº›å…¶ä»–é‡è¦è·¯å¾„ï¼ˆå¦‚runtimeè·¯å¾„ï¼‰ï¼Œå› æ­¤ï¼Œç³»ç»Ÿé¢„å®šä¹‰ `@app` ä»£è¡¨è¿™ä¸ªè·¯å¾„ã€‚
+æ´¾ç”Ÿè·¯å¾„å¯ä»¥é€šè¿‡è¿™ä¸ªåˆ«åç»„æˆï¼ˆå¦‚`@app/runtime`ä»£è¡¨runtimeçš„è·¯å¾„ï¼‰ã€‚
 
 
-### ÖØÒªÊôĞÔ <a name="important-properties"></a>
-### Important Properties <a name="important-properties"></a>
+### é‡è¦å±æ€§ <a name="important-properties"></a>
 
-±¾Ğ¡½ÚËùÃèÊöµÄÊôĞÔÍ¨³£ĞèÒªÉèÖÃ£¬ÒòÎª²»ÓÃµÄÓ¦ÓÃÊôĞÔ²»Í¬¡£
-The properties described in this subsection often need to be configured because they differ across
-different applications.
+æœ¬å°èŠ‚æ‰€æè¿°çš„å±æ€§é€šå¸¸éœ€è¦è®¾ç½®ï¼Œå› ä¸ºä¸ç”¨çš„åº”ç”¨å±æ€§ä¸åŒã€‚
 
 
 #### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
 
-¸ÃÊôĞÔÔÊĞíÄãÓÃÒ»¸öÊı×é¶¨Òå¶à¸ö [±ğÃû](concept-aliases.md)¡£Êı×éµÄkeyÎª±ğÃûÃû³Æ£¬ÖµÎª¶ÔÓ¦µÄÂ·¾¶¡£ÀıÈç£º
-This property allows you to define a set of [aliases](concept-aliases.md) in terms of an array.
-The array keys are alias names, and the array values are the corresponding path definitions.
-For example,
+è¯¥å±æ€§å…è®¸ä½ ç”¨ä¸€ä¸ªæ•°ç»„å®šä¹‰å¤šä¸ª [åˆ«å](concept-aliases.md)ã€‚æ•°ç»„çš„keyä¸ºåˆ«ååç§°ï¼Œå€¼ä¸ºå¯¹åº”çš„è·¯å¾„ã€‚ä¾‹å¦‚ï¼š
 
 ```php
 [
@@ -118,53 +76,40 @@ For example,
 ]
 ```
 
-Ê¹ÓÃÕâ¸öÊôĞÔÀ´¶¨Òå±ğÃû£¬´úÌæ [[Yii::setAlias()]] ·½·¨À´ÉèÖÃ¡£
-This property is provided such that you can define aliases in terms of application configurations instead of
-the method calls [[Yii::setAlias()]].
+ä½¿ç”¨è¿™ä¸ªå±æ€§æ¥å®šä¹‰åˆ«åï¼Œä»£æ›¿ [[Yii::setAlias()]] æ–¹æ³•æ¥è®¾ç½®ã€‚
 
 
 #### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
 
-Õâ¸öÊôĞÔºÜÊµÓÃ£¬ËüÔÊĞíÄãÓÃÊı×éÖ¸¶¨Æô¶¯½×¶Î[[yii\base\Application::bootstrap()|bootstrapping process]]ĞèÒªÔËĞĞµÄ×é¼ş¡£
-±ÈÈç£¬Èç¹ûÄãÏ£ÍûÒ»¸ö [Ä£¿é](structure-modules.md) ×Ô¶¨Òå [URL ¹æÔò](runtime-url-handling.md)£¬Äã¿ÉÒÔ½«Ä£¿éID¼ÓÈëµ½bootstrapÊı×éÖĞ¡£
-This is a very useful property. It allows you to specify an array of components that should
-be run during the application [[yii\base\Application::bootstrap()|bootstrapping process]].
-For example, if you want a [module](structure-modules.md) to customize the [URL rules](runtime-url-handling.md),
-you may list its ID as an element in this property.
+è¿™ä¸ªå±æ€§å¾ˆå®ç”¨ï¼Œå®ƒå…è®¸ä½ ç”¨æ•°ç»„æŒ‡å®šå¯åŠ¨é˜¶æ®µ[[yii\base\Application::bootstrap()|bootstrapping process]]éœ€è¦è¿è¡Œçš„ç»„ä»¶ã€‚
+æ¯”å¦‚ï¼Œå¦‚æœä½ å¸Œæœ›ä¸€ä¸ª [æ¨¡å—](structure-modules.md) è‡ªå®šä¹‰ [URL è§„åˆ™](runtime-url-handling.md)ï¼Œä½ å¯ä»¥å°†æ¨¡å—IDåŠ å…¥åˆ°bootstrapæ•°ç»„ä¸­ã€‚
 
-ÊôĞÔÖĞµÄÃ¿¸ö×é¼şĞèÒªÖ¸¶¨ÒÔÏÂÒ»Ïî:
-Each component listed in this property may be specified in one of the following formats:
+å±æ€§ä¸­çš„æ¯ä¸ªç»„ä»¶éœ€è¦æŒ‡å®šä»¥ä¸‹ä¸€é¡¹:
 
-- Ó¦ÓÃ [×é¼ş](#components) ID.
-- [Ä£¿é](#modules) ID.
-- ÀàÃû.
-- ÅäÖÃÊı×é.
-- ´´½¨²¢·µ»ØÒ»¸ö×é¼şµÄÎŞÃû³Æº¯Êı.
-- an application component ID as specified via [components](#components).
-- a module ID as specified via [modules](#modules).
-- a class name.
-- a configuration array.
-- an anonymous function that creates and returns a component.
+- åº”ç”¨ [ç»„ä»¶](#components) ID.
+- [æ¨¡å—](#modules) ID.
+- ç±»å.
+- é…ç½®æ•°ç»„.
+- åˆ›å»ºå¹¶è¿”å›ä¸€ä¸ªç»„ä»¶çš„æ— åç§°å‡½æ•°.
 
-ÀıÈç£º
-For example,
+ä¾‹å¦‚ï¼š
 
 ```php
 [
     'bootstrap' => [
-        // Ó¦ÓÃ×é¼şID»òÄ£¿éID
+        // åº”ç”¨ç»„ä»¶IDæˆ–æ¨¡å—ID
         'demo',
 
-        // ÀàÃû
+        // ç±»å
         'app\components\Profiler',
 
-        // ÅäÖÃÊı×é
+        // é…ç½®æ•°ç»„
         [
             'class' => 'app\components\Profiler',
             'level' => 3,
         ],
 
-        // ÎŞÃû³Æº¯Êı
+        // æ— åç§°å‡½æ•°
         function () {
             return new app\components\Profiler();
         }
@@ -172,10 +117,7 @@ For example,
 ]
 ```
 
-> ²¹³ä: Èç¹ûÄ£¿éIDºÍÓ¦ÓÃ×é¼şIDÍ¬Ãû£¬ÓÅÏÈÊ¹ÓÃÓ¦ÓÃ×é¼şID£¬Èç¹ûÄãÏëÓÃÄ£¿éID£¬¿ÉÒÔÊ¹ÓÃÈçÏÂÎŞÃû³Æº¯Êı·µ»ØÄ£¿éID¡£
-> Info: If a module ID is the same as an application component ID, the application component will be used during
-  the bootstrapping process. If you want to use the module instead, you may specify it using an anonymous function
-  like the following:
+> è¡¥å……: å¦‚æœæ¨¡å—IDå’Œåº”ç”¨ç»„ä»¶IDåŒåï¼Œä¼˜å…ˆä½¿ç”¨åº”ç”¨ç»„ä»¶IDï¼Œå¦‚æœä½ æƒ³ç”¨æ¨¡å—IDï¼Œå¯ä»¥ä½¿ç”¨å¦‚ä¸‹æ— åç§°å‡½æ•°è¿”å›æ¨¡å—IDã€‚
 >```php
 [
     function () {
@@ -185,15 +127,11 @@ For example,
 ```
 
 
-ÔÚÆô¶¯½×¶Î£¬Ã¿¸ö×é¼ş¶¼»áÊµÀı»¯¡£Èç¹û×é¼şÀàÊµÏÖ½Ó¿Ú [[yii\base\BootstrapInterface]], Ò²»áµ÷ÓÃ [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] ·½·¨¡£
-During the bootstrapping process, each component will be instantiated. If the component class
-implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
-will also be called.
+åœ¨å¯åŠ¨é˜¶æ®µï¼Œæ¯ä¸ªç»„ä»¶éƒ½ä¼šå®ä¾‹åŒ–ã€‚å¦‚æœç»„ä»¶ç±»å®ç°æ¥å£ [[yii\base\BootstrapInterface]], 
+ä¹Ÿä¼šè°ƒç”¨ [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] æ–¹æ³•ã€‚
 
-¾ÙÒ»¸öÊµ¼ÊµÄÀı×Ó£¬[Basic Application Template](start-installation.md) Ó¦ÓÃÖ÷ÌåÅäÖÃÖĞ£¬¿ª·¢»·¾³ÏÂ»áÔÚÆô¶¯½×¶ÎÔËĞĞ `debug` ºÍ `gii` Ä£¿é¡£
-Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
-where the `debug` and `gii` modules are configured as bootstrapping components when the application is running
-in development environment,
+ä¸¾ä¸€ä¸ªå®é™…çš„ä¾‹å­ï¼Œ[Basic Application Template](start-installation.md) åº”ç”¨ä¸»ä½“é…ç½®ä¸­ï¼Œ
+å¼€å‘ç¯å¢ƒä¸‹ä¼šåœ¨å¯åŠ¨é˜¶æ®µè¿è¡Œ `debug` å’Œ `gii` æ¨¡å—ã€‚
 
 ```php
 if (YII_ENV_DEV) {
@@ -206,22 +144,15 @@ if (YII_ENV_DEV) {
 }
 ```
 
-> ×¢: Æô¶¯Ì«¶àµÄ×é¼ş»á½µµÍÏµÍ³ĞÔÄÜ£¬ÒòÎªÃ¿´ÎÇëÇó¶¼ĞèÒªÖØĞÂÔËĞĞÆô¶¯×é¼ş£¬Òò´Ë½÷É÷ÅäÖÃÆô¶¯×é¼ş¡£
-> Note: Putting too many components in `bootstrap` will degrade the performance of your application because
-  for each request, the same set of components need to be run. So use bootstrapping components judiciously.
+> æ³¨: å¯åŠ¨å¤ªå¤šçš„ç»„ä»¶ä¼šé™ä½ç³»ç»Ÿæ€§èƒ½ï¼Œå› ä¸ºæ¯æ¬¡è¯·æ±‚éƒ½éœ€è¦é‡æ–°è¿è¡Œå¯åŠ¨ç»„ä»¶ï¼Œå› æ­¤è°¨æ…é…ç½®å¯åŠ¨ç»„ä»¶ã€‚
 
 
 #### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
 
-¸ÃÊôĞÔ½ö [[yii\web\Application|Web applications]] ÍøÒ³Ó¦ÓÃÖ§³Ö¡£
-ËüÖ¸¶¨Ò»¸öÒª´¦ÀíËùÓĞÓÃ»§ÇëÇóµÄ [¿ØÖÆÆ÷·½·¨](structure-controllers.md)£¬Í¨³£ÔÚÎ¬»¤Ä£Ê½ÏÂÊ¹ÓÃ£¬Í¬Ò»¸ö·½·¨´¦ÀíËùÓĞÓÃ»§ÇëÇó¡£
-This property is supported by [[yii\web\Application|Web applications]] only. It specifies
-a [controller action](structure-controllers.md) which should handle all user requests. This is mainly
-used when the application is in maintenance mode and needs to handle all incoming requests via a single action.
+è¯¥å±æ€§ä»… [[yii\web\Application|Web applications]] ç½‘é¡µåº”ç”¨æ”¯æŒã€‚
+å®ƒæŒ‡å®šä¸€ä¸ªè¦å¤„ç†æ‰€æœ‰ç”¨æˆ·è¯·æ±‚çš„ [æ§åˆ¶å™¨æ–¹æ³•](structure-controllers.md)ï¼Œé€šå¸¸åœ¨ç»´æŠ¤æ¨¡å¼ä¸‹ä½¿ç”¨ï¼ŒåŒä¸€ä¸ªæ–¹æ³•å¤„ç†æ‰€æœ‰ç”¨æˆ·è¯·æ±‚ã€‚
 
-¸ÃÅäÖÃÎªÒ»¸öÊı×é£¬µÚÒ»ÏîÖ¸¶¨¶¯×÷µÄÂ·ÓÉ£¬Ê£ÏÂµÄÊı×éÏî(key-value ³É¶Ô)Ö¸¶¨´«µİ¸ø¶¯×÷µÄ²ÎÊı£¬ÀıÈç£º
-The configuration is an array whose first element specifies the route of the action.
-The rest of the array elements (key-value pairs) specify the parameters to be bound to the action. For example,
+è¯¥é…ç½®ä¸ºä¸€ä¸ªæ•°ç»„ï¼Œç¬¬ä¸€é¡¹æŒ‡å®šåŠ¨ä½œçš„è·¯ç”±ï¼Œå‰©ä¸‹çš„æ•°ç»„é¡¹(key-value æˆå¯¹)æŒ‡å®šä¼ é€’ç»™åŠ¨ä½œçš„å‚æ•°ï¼Œä¾‹å¦‚ï¼š
 
 ```php
 [
@@ -236,9 +167,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 
 #### [[yii\base\Application::components|components]] <a name="components"></a>
 
-ÕâÊÇ×îÖØÒªµÄÊôĞÔ£¬ËüÔÊĞíÄã×¢²á¶à¸öÔÚÆäËûµØ·½Ê¹ÓÃµÄ[Ó¦ÓÃ×é¼ş](#structure-application-components.md). ÀıÈç
-This is the single most important property. It allows you to register a list of named components
-called [application components](#structure-application-components.md) that you can use in other places. For example,
+è¿™æ˜¯æœ€é‡è¦çš„å±æ€§ï¼Œå®ƒå…è®¸ä½ æ³¨å†Œå¤šä¸ªåœ¨å…¶ä»–åœ°æ–¹ä½¿ç”¨çš„[åº”ç”¨ç»„ä»¶](#structure-application-components.md). ä¾‹å¦‚
 
 ```php
 [
@@ -254,27 +183,19 @@ called [application components](#structure-application-components.md) that you c
 ]
 ```
 
-Ã¿Ò»¸öÓ¦ÓÃ×é¼şÖ¸¶¨Ò»¸ökey-value¶ÔµÄÊı×é£¬key´ú±í×é¼şID£¬value´ú±í×é¼şÀàÃû»ò [ÅäÖÃ](concept-configurations.md)¡£
-Each application component is specified as a key-value pair in the array. The key represents the component ID,
-while the value represents the component class name or [configuration](concept-configurations.md).
+æ¯ä¸€ä¸ªåº”ç”¨ç»„ä»¶æŒ‡å®šä¸€ä¸ªkey-valueå¯¹çš„æ•°ç»„ï¼Œkeyä»£è¡¨ç»„ä»¶IDï¼Œvalueä»£è¡¨ç»„ä»¶ç±»åæˆ– [é…ç½®](concept-configurations.md)ã€‚
 
-ÔÚÓ¦ÓÃÖĞ¿ÉÒÔÈÎÒâ×¢²á×é¼ş£¬²¢¿ÉÒÔÍ¨¹ı±í´ïÊ½ `\Yii::$app->ComponentID` È«¾Ö·ÃÎÊ¡£
-You can register any component with an application, and the component can later be accessed globally
-using the expression `\Yii::$app->ComponentID`.
+åœ¨åº”ç”¨ä¸­å¯ä»¥ä»»æ„æ³¨å†Œç»„ä»¶ï¼Œå¹¶å¯ä»¥é€šè¿‡è¡¨è¾¾å¼ `\Yii::$app->ComponentID` å…¨å±€è®¿é—®ã€‚
 
-ÏêÇéÇëÔÄ¶Á [Ó¦ÓÃ×é¼ş](structure-application-components.md) Ò»½Ú.
+è¯¦æƒ…è¯·é˜…è¯» [åº”ç”¨ç»„ä»¶](structure-application-components.md) ä¸€èŠ‚.
 
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
 
-¸ÃÊôĞÔÔÊĞíÄãÖ¸¶¨Ò»¸ö¿ØÖÆÆ÷IDµ½ÈÎÒâ¿ØÖÆÆ÷Àà¡£Yii×ñÑ­Ò»¸öÄ¬ÈÏµÄ [¹æÔò](#controllerNamespace) Ö¸¶¨¿ØÖÆÆ÷IDµ½ÈÎÒâ¿ØÖÆÆ÷Àà£¨Èç`post`¶ÔÓ¦`app\controllers\PostController`£©¡£
-Í¨¹ıÅäÖÃÕâ¸öÊôĞÔ£¬¿ÉÒÔ´òÆÆÕâ¸öÄ¬ÈÏ¹æÔò£¬ÔÚÏÂÃæµÄÀı×ÓÖĞ£¬`account`¶ÔÓ¦µ½`app\controllers\UserController`£¬
-`article` ¶ÔÓ¦µ½ `app\controllers\PostController`¡£
-This property allows you to map a controller ID to an arbitrary controller class. By default, Yii maps
-controller IDs to controller classes based on a [convention](#controllerNamespace) (e.g. the ID `post` would be mapped
-to `app\controllers\PostController`). By configuring this property, you can break the convention for
-specific controllers. In the following example, `account` will be mapped to
-`app\controllers\UserController`, while `article` will be mapped to `app\controllers\PostController`.
+è¯¥å±æ€§å…è®¸ä½ æŒ‡å®šä¸€ä¸ªæ§åˆ¶å™¨IDåˆ°ä»»æ„æ§åˆ¶å™¨ç±»ã€‚Yiiéµå¾ªä¸€ä¸ªé»˜è®¤çš„ [è§„åˆ™](#controllerNamespace) 
+æŒ‡å®šæ§åˆ¶å™¨IDåˆ°ä»»æ„æ§åˆ¶å™¨ç±»ï¼ˆå¦‚`post`å¯¹åº”`app\controllers\PostController`ï¼‰ã€‚
+é€šè¿‡é…ç½®è¿™ä¸ªå±æ€§ï¼Œå¯ä»¥æ‰“ç ´è¿™ä¸ªé»˜è®¤è§„åˆ™ï¼Œåœ¨ä¸‹é¢çš„ä¾‹å­ä¸­ï¼Œ`account`å¯¹åº”åˆ°`app\controllers\UserController`ï¼Œ
+`article` å¯¹åº”åˆ° `app\controllers\PostController`ã€‚
 
 ```php
 [
@@ -290,72 +211,48 @@ specific controllers. In the following example, `account` will be mapped to
 ]
 ```
 
-Êı×éµÄ¼ü´ú±í¿ØÖÆÆ÷ID£¬Êı×éµÄÖµ´ú±í¶ÔÓ¦µÄÀàÃû¡£
-The array keys of this property represent the controller IDs, while the array values represent the corresponding
-controller class names or [configurations](concept-configurations.md).
+æ•°ç»„çš„é”®ä»£è¡¨æ§åˆ¶å™¨IDï¼Œæ•°ç»„çš„å€¼ä»£è¡¨å¯¹åº”çš„ç±»åã€‚
 
 
 #### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
 
-¸ÃÊôĞÔÖ¸¶¨¿ØÖÆÆ÷ÀàÄ¬ÈÏµÄÃüÃû¿Õ¼ä£¬Ä¬ÈÏÎª`app\controllers`¡£±ÈÈç¿ØÖÆÆ÷IDÎª `post` Ä¬ÈÏ¶ÔÓ¦ `PostController` £¨²»´øÃüÃû¿Õ¼ä£©£¬
-ÀàÈ«ÃûÎª `app\controllers\PostController`¡£
-This property specifies the default namespace under which controller classes should be located. It defaults to
-`app\controllers`. If a controller ID is `post`, by convention the corresponding controller class name (without
-namespace) would be `PostController`, and the fully qualified class name would be `app\controllers\PostController`.
+è¯¥å±æ€§æŒ‡å®šæ§åˆ¶å™¨ç±»é»˜è®¤çš„å‘½åç©ºé—´ï¼Œé»˜è®¤ä¸º`app\controllers`ã€‚æ¯”å¦‚æ§åˆ¶å™¨IDä¸º `post` é»˜è®¤å¯¹åº” `PostController` ï¼ˆä¸å¸¦å‘½åç©ºé—´ï¼‰ï¼Œ
+ç±»å…¨åä¸º `app\controllers\PostController`ã€‚
 
-¿ØÖÆÆ÷ÀàÎÄ¼ş¿ÉÄÜ·ÅÔÚÕâ¸öÃüÃû¿Õ¼ä¶ÔÓ¦Ä¿Â¼µÄ×ÓÄ¿Â¼ÏÂ£¬ÀıÈç£¬¿ØÖÆÆ÷ID `admin/post` ¶ÔÓ¦µÄ¿ØÖÆÆ÷ÀàÈ«ÃûÎª `app\controllers\admin\PostController`¡£
-Controller classes may also be located under sub-directories of the directory corresponding to this namespace.
-For example, given a controller ID `admin/post`, the corresponding fully qualified controller class would
-be `app\controllers\admin\PostController`.
+æ§åˆ¶å™¨ç±»æ–‡ä»¶å¯èƒ½æ”¾åœ¨è¿™ä¸ªå‘½åç©ºé—´å¯¹åº”ç›®å½•çš„å­ç›®å½•ä¸‹ï¼Œ
+ä¾‹å¦‚ï¼Œæ§åˆ¶å™¨ID `admin/post` å¯¹åº”çš„æ§åˆ¶å™¨ç±»å…¨åä¸º `app\controllers\admin\PostController`ã€‚
 
-¿ØÖÆÆ÷ÀàÈ«ÃæÄÜ±» [×Ô¶¯¼ÓÔØ](concept-autoloading.md)£¬ÕâµãÊÇ·Ç³£ÖØÒªµÄ£¬¿ØÖÆÆ÷ÀàµÄÊµ¼ÊÃüÃû¿Õ¼ä¶ÔÓ¦Õâ¸öÊôĞÔ£¬
-·ñÔò£¬·ÃÎÊÊ±Äã»áÊÕµ½"Page Not Found"[Òë£ºÒ³ÃæÕÒ²»µ½]¡£
-It is important that the fully qualified controller classes should be [autoloadable](concept-autoloading.md)
-and the actual namespace of your controller classes match the value of this property. Otherwise,
-you will receive "Page Not Found" error when accessing the application.
+æ§åˆ¶å™¨ç±»å…¨é¢èƒ½è¢« [è‡ªåŠ¨åŠ è½½](concept-autoloading.md)ï¼Œè¿™ç‚¹æ˜¯éå¸¸é‡è¦çš„ï¼Œæ§åˆ¶å™¨ç±»çš„å®é™…å‘½åç©ºé—´å¯¹åº”è¿™ä¸ªå±æ€§ï¼Œ
+å¦åˆ™ï¼Œè®¿é—®æ—¶ä½ ä¼šæ”¶åˆ°"Page Not Found"[è¯‘ï¼šé¡µé¢æ‰¾ä¸åˆ°]ã€‚
 
-Èç¹ûÄãÏë´òÆÆÉÏÊöµÄ¹æÔò£¬¿ÉÒÔÅäÖÃ [controllerMap](#controllerMap) ÊôĞÔ¡£
-In case you want to break the convention as described above, you may configure the [controllerMap](#controllerMap)
-property.
+å¦‚æœä½ æƒ³æ‰“ç ´ä¸Šè¿°çš„è§„åˆ™ï¼Œå¯ä»¥é…ç½® [controllerMap](#controllerMap) å±æ€§ã€‚
 
 
 #### [[yii\base\Application::language|language]] <a name="language"></a>
 
-¸ÃÊôĞÔÖ¸¶¨Ó¦ÓÃÕ¹Ê¾¸øÖÕ¶ËÓÃ»§µÄÓïÑÔ£¬Ä¬ÈÏÎª `en` ±êÊ¶Ó¢ÎÄ¡£Èç¹ûĞèÒªÖ®Ç°ÆäËûÓïÑÔ¿ÉÒÔÅäÖÃ¸ÃÊôĞÔ¡£
-This property specifies the language in which the application should display content to end users.
-The default value of this property is `en`, meaning English. You should configure this property
-if your application needs to support multiple languages.
+è¯¥å±æ€§æŒ‡å®šåº”ç”¨å±•ç¤ºç»™ç»ˆç«¯ç”¨æˆ·çš„è¯­è¨€ï¼Œé»˜è®¤ä¸º `en` æ ‡è¯†è‹±æ–‡ã€‚å¦‚æœéœ€è¦ä¹‹å‰å…¶ä»–è¯­è¨€å¯ä»¥é…ç½®è¯¥å±æ€§ã€‚
 
-¸ÃÊôĞÔÓ°Ïì¸÷ÖÖ [¹ú¼Ê»¯](tutorial-i18n.md) £¬°üÀ¨ĞÅÏ¢·­Òë¡¢ÈÕÆÚ¸ñÊ½¡¢Êı×Ö¸ñÊ½µÈ¡£
-ÀıÈç [[yii\jui\DatePicker]] Ğ¡²¿¼ş»á¸ù¾İ¸ÃÊôĞÔÕ¹Ê¾¶ÔÓ¦ÓïÑÔµÄÈÕÀúÒÔ¼°ÈÕÆÚ¸ñÊ½¡£
-The value of this property determines various [internationalization](tutorial-i18n.md) aspects,
-including message translation, date formatting, number formatting, etc. For example, the [[yii\jui\DatePicker]] widget
-will use this property value by default to determine in which language the calendar should be displayed and how
-should the date be formatted.
+è¯¥å±æ€§å½±å“å„ç§ [å›½é™…åŒ–](tutorial-i18n.md) ï¼ŒåŒ…æ‹¬ä¿¡æ¯ç¿»è¯‘ã€æ—¥æœŸæ ¼å¼ã€æ•°å­—æ ¼å¼ç­‰ã€‚
+ä¾‹å¦‚ [[yii\jui\DatePicker]] å°éƒ¨ä»¶ä¼šæ ¹æ®è¯¥å±æ€§å±•ç¤ºå¯¹åº”è¯­è¨€çš„æ—¥å†ä»¥åŠæ—¥æœŸæ ¼å¼ã€‚
 
-ÍÆ¼ö×ñÑ­ [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag) À´ÉèÖÃÓïÑÔ£¬ÀıÈç `en` ´ú±íÓ¢ÎÄ£¬ `en-US` ´ú±íÓ¢ÎÄ(ÃÀ¹ú).
-It is recommended that you specify a language in terms of an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
-For example, `en` stands for English, while `en-US` stands for English (United States).
+æ¨èéµå¾ª [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag) æ¥è®¾ç½®è¯­è¨€ï¼Œä¾‹å¦‚ `en` ä»£è¡¨è‹±æ–‡ï¼Œ `en-US` ä»£è¡¨è‹±æ–‡(ç¾å›½).
 
-¸ÃÊôĞÔµÄ¸ü¶àĞÅÏ¢¿É²Î¿¼ [¹ú¼Ê»¯](tutorial-i18n.md) Ò»½Ú.
+è¯¥å±æ€§çš„æ›´å¤šä¿¡æ¯å¯å‚è€ƒ [å›½é™…åŒ–](tutorial-i18n.md) ä¸€èŠ‚.
 
 
 #### [[yii\base\Application::modules|modules]] <a name="modules"></a>
 
-¸ÃÊôĞÔÖ¸¶¨Ó¦ÓÃËù°üº¬µÄ [Ä£¿é](structure-modules.md)¡£
-This property specifies the [modules](structure-modules.md) that the application contains.
+è¯¥å±æ€§æŒ‡å®šåº”ç”¨æ‰€åŒ…å«çš„ [æ¨¡å—](structure-modules.md)ã€‚
 
-¸ÃÊôĞÔÊ¹ÓÃÊı×é°üº¬¶à¸öÄ£¿éÀà [ÅäÖÃ](concept-configurations.md)£¬Êı×éµÄ¼üÎªÄ£¿éID£¬Àı£º
-The property takes an array of module classes or [configurations](concept-configurations.md) with the array keys
-being the module IDs. For example,
+è¯¥å±æ€§ä½¿ç”¨æ•°ç»„åŒ…å«å¤šä¸ªæ¨¡å—ç±» [é…ç½®](concept-configurations.md)ï¼Œæ•°ç»„çš„é”®ä¸ºæ¨¡å—IDï¼Œä¾‹ï¼š
 
 ```php
 [
     'modules' => [
-        // "booking" Ä£¿éÒÔ¼°¶ÔÓ¦µÄÀà
+        // "booking" æ¨¡å—ä»¥åŠå¯¹åº”çš„ç±»
         'booking' => 'app\modules\booking\BookingModule',
 
-        // "comment" Ä£¿éÒÔ¼°¶ÔÓ¦µÄÅäÖÃÊı×é
+        // "comment" æ¨¡å—ä»¥åŠå¯¹åº”çš„é…ç½®æ•°ç»„
         'comment' => [
             'class' => 'app\modules\comment\CommentModule',
             'db' => 'db',
@@ -364,29 +261,21 @@ being the module IDs. For example,
 ]
 ```
 
-¸ü¶àÏêÇéÇë²Î¿¼ [Ä£¿é](structure-modules.md) Ò»½Ú¡£
+æ›´å¤šè¯¦æƒ…è¯·å‚è€ƒ [æ¨¡å—](structure-modules.md) ä¸€èŠ‚ã€‚
 
 
 #### [[yii\base\Application::name|name]] <a name="name"></a>
 
-¸ÃÊôĞÔÖ¸¶¨Äã¿ÉÄÜÏëÕ¹Ê¾¸øÖÕ¶ËÓÃ»§µÄÓ¦ÓÃÃû³Æ£¬²»Í¬ÓÚĞèÒªÎ¨Ò»ĞÔµÄ [[yii\base\Application::id|id]] ÊôĞÔ£¬
-¸ÃÊôĞÔ¿ÉÒÔ²»Î¨Ò»£¬¸ÃÊôĞÔÓÃÓÚÏÔÊ¾Ó¦ÓÃµÄÓÃÍ¾¡£
-This property specifies the application name that may be displayed to end users. Unlike the
-[[yii\base\Application::id|id]] property which should take a unique value, the value of this property is mainly for
-display purpose and does not need to be unique.
+è¯¥å±æ€§æŒ‡å®šä½ å¯èƒ½æƒ³å±•ç¤ºç»™ç»ˆç«¯ç”¨æˆ·çš„åº”ç”¨åç§°ï¼Œä¸åŒäºéœ€è¦å”¯ä¸€æ€§çš„ [[yii\base\Application::id|id]] å±æ€§ï¼Œ
+è¯¥å±æ€§å¯ä»¥ä¸å”¯ä¸€ï¼Œè¯¥å±æ€§ç”¨äºæ˜¾ç¤ºåº”ç”¨çš„ç”¨é€”ã€‚
 
-Èç¹ûÆäËûµØ·½µÄ´úÂëÃ»ÓĞÓÃµ½£¬¿ÉÒÔ²»ÅäÖÃ¸ÃÊôĞÔ¡£
-You do not always need to configure this property if none of your code is using it.
+å¦‚æœå…¶ä»–åœ°æ–¹çš„ä»£ç æ²¡æœ‰ç”¨åˆ°ï¼Œå¯ä»¥ä¸é…ç½®è¯¥å±æ€§ã€‚
 
 
 #### [[yii\base\Application::params|params]] <a name="params"></a>
 
-¸ÃÊôĞÔÎªÒ»¸öÊı×é£¬Ö¸¶¨¿ÉÒÔÈ«¾Ö·ÃÎÊµÄ²ÎÊı£¬´úÌæ³ÌĞòÖĞÓ²±àÂëµÄÊı×ÖºÍ×Ö·û£¬Ó¦ÓÃÖĞµÄ²ÎÊı¶¨Òåµ½Ò»¸öµ¥¶ÀµÄÎÄ¼ş²¢ËæÊ±¿ÉÒÔ·ÃÎÊÊÇÒ»¸öºÃÏ°¹ß¡£
-ÀıÈçÓÃ²ÎÊı¶¨ÒåËõÂÔÍ¼µÄ³¤¿íÈçÏÂ£º
-This property specifies an array of globally accessible application parameters. Instead of using hardcoded
-numbers and strings everywhere in your code, it is a good practice to define them as application parameters
-in a single place and use the parameters in places where needed. For example, you may define the thumbnail
-image size as a parameter like the following:
+è¯¥å±æ€§ä¸ºä¸€ä¸ªæ•°ç»„ï¼ŒæŒ‡å®šå¯ä»¥å…¨å±€è®¿é—®çš„å‚æ•°ï¼Œä»£æ›¿ç¨‹åºä¸­ç¡¬ç¼–ç çš„æ•°å­—å’Œå­—ç¬¦ï¼Œåº”ç”¨ä¸­çš„å‚æ•°å®šä¹‰åˆ°ä¸€ä¸ªå•ç‹¬çš„æ–‡ä»¶å¹¶éšæ—¶å¯ä»¥è®¿é—®æ˜¯ä¸€ä¸ªå¥½ä¹ æƒ¯ã€‚
+ä¾‹å¦‚ç”¨å‚æ•°å®šä¹‰ç¼©ç•¥å›¾çš„é•¿å®½å¦‚ä¸‹ï¼š
 
 ```php
 [
@@ -396,41 +285,30 @@ image size as a parameter like the following:
 ]
 ```
 
-È»ºó¼òµ¥µÄÊ¹ÓÃÈçÏÂ´úÂë¼´¿É»ñÈ¡µ½ÄãĞèÒªµÄ³¤¿í²ÎÊı£º
-Then in your code where you need to use the size value, you can simply use the code like the following:
+ç„¶åç®€å•çš„ä½¿ç”¨å¦‚ä¸‹ä»£ç å³å¯è·å–åˆ°ä½ éœ€è¦çš„é•¿å®½å‚æ•°ï¼š
 
 ```php
 $size = \Yii::$app->params['thumbnail.size'];
 $width = \Yii::$app->params['thumbnail.size'][0];
 ```
 
-ÒÔºóÏëĞŞ¸ÄËõÂÔÍ¼³¤¿í£¬Ö»ĞèÒªĞŞ¸Ä¸Ã²ÎÊı¶ø²»ĞèÒªÏà¹ØµÄ´úÂë¡£
-Later if you decide to change the thumbnail size, you only need to modify it in the application configuration
-without touching any dependent code.
+ä»¥åæƒ³ä¿®æ”¹ç¼©ç•¥å›¾é•¿å®½ï¼Œåªéœ€è¦ä¿®æ”¹è¯¥å‚æ•°è€Œä¸éœ€è¦ç›¸å…³çš„ä»£ç ã€‚
 
 
 #### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
 
-¸ÃÊôĞÔÖ¸¶¨Ó¦ÓÃ´úÂëµÄÓïÑÔ£¬Ä¬ÈÏÎª `'en-US'` ±êÊ¶Ó¢ÎÄ£¨ÃÀ¹ú£©£¬Èç¹ûÓ¦ÓÃ²»ÊÇÓ¢ÎÄÇëĞŞ¸Ä¸ÃÊôĞÔ¡£
-This property specifies the language that the application code is written in. The default value is `'en-US'`,
-meaning English (United States). You should configure this property if the text content in your code is not in English.
+è¯¥å±æ€§æŒ‡å®šåº”ç”¨ä»£ç çš„è¯­è¨€ï¼Œé»˜è®¤ä¸º `'en-US'` æ ‡è¯†è‹±æ–‡ï¼ˆç¾å›½ï¼‰ï¼Œå¦‚æœåº”ç”¨ä¸æ˜¯è‹±æ–‡è¯·ä¿®æ”¹è¯¥å±æ€§ã€‚
 
-ºÍ [ÓïÑÔ](#language) ÊôĞÔÀàËÆ£¬ÅäÖÃ¸ÃÊôĞÔĞè×ñÑ­ [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). ÀıÈç `en` ´ú±íÓ¢ÎÄ£¬ `en-US` ´ú±íÓ¢ÎÄ(ÃÀ¹ú)¡£
-Like the [language](#language) property, you should configure this property in terms of
-an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
-while `en-US` stands for English (United States).
+å’Œ [è¯­è¨€](#language) å±æ€§ç±»ä¼¼ï¼Œé…ç½®è¯¥å±æ€§éœ€éµå¾ª [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). 
+ä¾‹å¦‚ `en` ä»£è¡¨è‹±æ–‡ï¼Œ `en-US` ä»£è¡¨è‹±æ–‡(ç¾å›½)ã€‚
 
-¸ÃÊôĞÔµÄ¸ü¶àĞÅÏ¢¿É²Î¿¼ [¹ú¼Ê»¯](tutorial-i18n.md) Ò»½Ú.
-More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+è¯¥å±æ€§çš„æ›´å¤šä¿¡æ¯å¯å‚è€ƒ [å›½é™…åŒ–](tutorial-i18n.md) ä¸€èŠ‚.
 
 
 #### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
 
-¸ÃÊôĞÔÌá¹©Ò»ÖÖ·½Ê½ĞŞ¸ÄPHPÔËĞĞ»·¾³ÖĞµÄÄ¬ÈÏÊ±Çø£¬ÅäÖÃ¸ÃÊôĞÔ±¾ÖÊÉÏ¾ÍÊÇµ÷ÓÃPHPº¯Êı
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)£¬ÀıÈç£º
-This property is provided as an alternative way of setting the default time zone of PHP runtime.
-By configuring this property, you are essentially calling the PHP function
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). For example,
+è¯¥å±æ€§æä¾›ä¸€ç§æ–¹å¼ä¿®æ”¹PHPè¿è¡Œç¯å¢ƒä¸­çš„é»˜è®¤æ—¶åŒºï¼Œé…ç½®è¯¥å±æ€§æœ¬è´¨ä¸Šå°±æ˜¯è°ƒç”¨PHPå‡½æ•°
+[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)ï¼Œä¾‹å¦‚ï¼š
 
 ```php
 [
@@ -441,59 +319,39 @@ By configuring this property, you are essentially calling the PHP function
 
 #### [[yii\base\Application::version|version]] <a name="version"></a>
 
-¸ÃÊôĞÔÖ¸¶¨Ó¦ÓÃµÄ°æ±¾£¬Ä¬ÈÏÎª`'1.0'`£¬ÆäËû´úÂë²»Ê¹ÓÃµÄ»°¿ÉÒÔ²»ÅäÖÃ¡£
-This property specifies the version of the application. It defaults to `'1.0'`. You do not always need to configure
-this property if none of your code is using it.
+è¯¥å±æ€§æŒ‡å®šåº”ç”¨çš„ç‰ˆæœ¬ï¼Œé»˜è®¤ä¸º`'1.0'`ï¼Œå…¶ä»–ä»£ç ä¸ä½¿ç”¨çš„è¯å¯ä»¥ä¸é…ç½®ã€‚
 
 
-### ÊµÓÃÊôĞÔ <a name="useful-properties"></a>
+### å®ç”¨å±æ€§ <a name="useful-properties"></a>
 
-±¾Ğ¡½ÚÃèÊöµÄÊôĞÔ²»¾­³£ÉèÖÃ£¬Í¨³£Ê¹ÓÃÏµÍ³Ä¬ÈÏÖµ¡£Èç¹ûÄãÏë¸Ä±äÄ¬ÈÏÖµ£¬¿ÉÒÔÅäÖÃÕâĞ©ÊôĞÔ¡£
-The properties described in this subsection are not commonly configured because their default values
-stipulate common conventions. However, you may still configure them in case you want to break the conventions.
+æœ¬å°èŠ‚æè¿°çš„å±æ€§ä¸ç»å¸¸è®¾ç½®ï¼Œé€šå¸¸ä½¿ç”¨ç³»ç»Ÿé»˜è®¤å€¼ã€‚å¦‚æœä½ æƒ³æ”¹å˜é»˜è®¤å€¼ï¼Œå¯ä»¥é…ç½®è¿™äº›å±æ€§ã€‚
 
 
 #### [[yii\base\Application::charset|charset]] <a name="charset"></a>
 
-¸ÃÊôĞÔÖ¸¶¨Ó¦ÓÃÊ¹ÓÃµÄ×Ö·û¼¯£¬Ä¬ÈÏÖµÎª `'UTF-8'`£¬¾ø´ó²¿·ÖÓ¦ÓÃ¶¼ÔÚÊ¹ÓÃ£¬³ı·ÇÒÑÓĞµÄÏµÍ³´óÁ¿Ê¹ÓÃ·ÇunicodeÊı¾İ²ÅĞèÒª¸ü¸Ä¸ÃÊôĞÔ¡£
-This property specifies the charset that the application uses. The default value is `'UTF-8'` which should
-be kept as is for most applications unless you are working with some legacy systems that use a lot of non-unicode data.
+è¯¥å±æ€§æŒ‡å®šåº”ç”¨ä½¿ç”¨çš„å­—ç¬¦é›†ï¼Œé»˜è®¤å€¼ä¸º `'UTF-8'`ï¼Œç»å¤§éƒ¨åˆ†åº”ç”¨éƒ½åœ¨ä½¿ç”¨ï¼Œé™¤éå·²æœ‰çš„ç³»ç»Ÿå¤§é‡ä½¿ç”¨éunicodeæ•°æ®æ‰éœ€è¦æ›´æ”¹è¯¥å±æ€§ã€‚
 
 
 #### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
 
-¸ÃÊôĞÔÖ¸¶¨Î´ÅäÖÃµÄÇëÇóµÄÏìÓ¦ [Â·ÓÉ](runtime-routing.md) ¹æÔò£¬Â·ÓÉ¹æÔò¿ÉÄÜ°üº¬Ä£¿éID£¬¿ØÖÆÆ÷ID£¬¶¯×÷ID¡£
-ÀıÈç`help`, `post/create`, `admin/post/create`£¬Èç¹û¶¯×÷IDÃ»ÓĞÖ¸¶¨£¬»áÊ¹ÓÃ[[yii\base\Controller::defaultAction]]ÖĞÖ¸¶¨µÄÄ¬ÈÏÖµ¡£
-This property specifies the [route](runtime-routing.md) that an application should use when a request
-does not specify one. The route may consist of child module ID, controller ID, and/or action ID.
-For example, `help`, `post/create`, `admin/post/create`. If action ID is not given, it will take the default
-value as specified in [[yii\base\Controller::defaultAction]].
+è¯¥å±æ€§æŒ‡å®šæœªé…ç½®çš„è¯·æ±‚çš„å“åº” [è·¯ç”±](runtime-routing.md) è§„åˆ™ï¼Œè·¯ç”±è§„åˆ™å¯èƒ½åŒ…å«æ¨¡å—IDï¼Œæ§åˆ¶å™¨IDï¼ŒåŠ¨ä½œIDã€‚
+ä¾‹å¦‚`help`, `post/create`, `admin/post/create`ï¼Œå¦‚æœåŠ¨ä½œIDæ²¡æœ‰æŒ‡å®šï¼Œä¼šä½¿ç”¨[[yii\base\Controller::defaultAction]]ä¸­æŒ‡å®šçš„é»˜è®¤å€¼ã€‚
 
-¶ÔÓÚ [[yii\web\Application|Web applications]] ÍøÒ³Ó¦ÓÃ£¬Ä¬ÈÏÖµÎª `'site'` ¶ÔÓ¦ `SiteController` ¿ØÖÆÆ÷£¬²¢Ê¹ÓÃÄ¬ÈÏµÄ¶¯×÷¡£
-Òò´ËÄã²»´øÂ·ÓÉµÄ·ÃÎÊÓ¦ÓÃ£¬Ä¬ÈÏ»áÏÔÊ¾ `app\controllers\SiteController::actionIndex()` µÄ½á¹û¡£
-For [[yii\web\Application|Web applications]], the default value of this property is `'site'`, which means
-the `SiteController` controller and its default action should be used. As a result, if you access
-the application without specifying a route, it will show the result of `app\controllers\SiteController::actionIndex()`.
+å¯¹äº [[yii\web\Application|Web applications]] ç½‘é¡µåº”ç”¨ï¼Œé»˜è®¤å€¼ä¸º `'site'` å¯¹åº” `SiteController` æ§åˆ¶å™¨ï¼Œå¹¶ä½¿ç”¨é»˜è®¤çš„åŠ¨ä½œã€‚
+å› æ­¤ä½ ä¸å¸¦è·¯ç”±çš„è®¿é—®åº”ç”¨ï¼Œé»˜è®¤ä¼šæ˜¾ç¤º `app\controllers\SiteController::actionIndex()` çš„ç»“æœã€‚
 
-¶ÔÓÚ [[yii\console\Application|console applications]] ¿ØÖÆÌ¨Ó¦ÓÃ£¬Ä¬ÈÏÖµÎª `'help'` ¶ÔÓ¦ [[yii\console\controllers\HelpController::actionIndex()]]¡£
-Òò´Ë£¬Èç¹ûÖ´ĞĞµÄÃüÁî²»´ø²ÎÊı£¬Ä¬ÈÏ»áÏÔÊ¾°ïÖúĞÅÏ¢¡£
-For [[yii\console\Application|console applications]], the default value is `'help'`, which means the core command
-[[yii\console\controllers\HelpController::actionIndex()]] should be used. As a result, if you run the command `yii`
-without providing any arguments, it will display the help information.
+å¯¹äº [[yii\console\Application|console applications]] æ§åˆ¶å°åº”ç”¨ï¼Œ
+é»˜è®¤å€¼ä¸º `'help'` å¯¹åº” [[yii\console\controllers\HelpController::actionIndex()]]ã€‚
+å› æ­¤ï¼Œå¦‚æœæ‰§è¡Œçš„å‘½ä»¤ä¸å¸¦å‚æ•°ï¼Œé»˜è®¤ä¼šæ˜¾ç¤ºå¸®åŠ©ä¿¡æ¯ã€‚
 
 
 #### [[yii\base\Application::extensions|extensions]] <a name="extensions"></a>
 
-¸ÃÊôĞÔÓÃÊı×éÁĞ±íÖ¸¶¨Ó¦ÓÃ°²×°ºÍÊ¹ÓÃµÄ [À©Õ¹](structure-extensions.md)£¬Ä¬ÈÏÊ¹ÓÃ`@vendor/yiisoft/extensions.php`ÎÄ¼ş·µ»ØµÄÊı×é¡£
-µ±ÄãÊ¹ÓÃ [Composer](http://getcomposer.org) °²×°À©Õ¹£¬`extensions.php` »á±»×Ô¶¯Éú³ÉºÍÎ¬»¤¸üĞÂ¡£
-ËùÒÔ´ó¶àÊıÇé¿öÏÂ£¬²»ĞèÒªÅäÖÃ¸ÃÊôĞÔ¡£
-This property specifies the list of [extensions](structure-extensions.md) that are installed and used by the application.
-By default, it will take the array returned by the file `@vendor/yiisoft/extensions.php`. The `extensions.php` file
-is generated and maintained automatically when you use [Composer](http://getcomposer.org) to install extensions.
-So in most cases, you do not need to configure this property.
+è¯¥å±æ€§ç”¨æ•°ç»„åˆ—è¡¨æŒ‡å®šåº”ç”¨å®‰è£…å’Œä½¿ç”¨çš„ [æ‰©å±•](structure-extensions.md)ï¼Œé»˜è®¤ä½¿ç”¨`@vendor/yiisoft/extensions.php`æ–‡ä»¶è¿”å›çš„æ•°ç»„ã€‚
+å½“ä½ ä½¿ç”¨ [Composer](http://getcomposer.org) å®‰è£…æ‰©å±•ï¼Œ`extensions.php` ä¼šè¢«è‡ªåŠ¨ç”Ÿæˆå’Œç»´æŠ¤æ›´æ–°ã€‚
+æ‰€ä»¥å¤§å¤šæ•°æƒ…å†µä¸‹ï¼Œä¸éœ€è¦é…ç½®è¯¥å±æ€§ã€‚
 
-ÌØÊâÇé¿öÏÂÄãÏë×Ô¼ºÊÖ¶¯Î¬»¤À©Õ¹£¬¿ÉÒÔ²ÎÕÕÈçÏÂÅäÖÃ¸ÃÊôĞÔ£º
-In the special case when you want to maintain extensions manually, you may configure this property like the following:
+ç‰¹æ®Šæƒ…å†µä¸‹ä½ æƒ³è‡ªå·±æ‰‹åŠ¨ç»´æŠ¤æ‰©å±•ï¼Œå¯ä»¥å‚ç…§å¦‚ä¸‹é…ç½®è¯¥å±æ€§ï¼š
 
 ```php
 [
@@ -501,104 +359,74 @@ In the special case when you want to maintain extensions manually, you may confi
         [
             'name' => 'extension name',
             'version' => 'version number',
-            'bootstrap' => 'BootstrapClassName',  // ¿ÉÑ¡Åä£¬¿ÉÎªÅäÖÃÊı×é
-            'alias' => [  // ¿ÉÑ¡Åä
+            'bootstrap' => 'BootstrapClassName',  // å¯é€‰é…ï¼Œå¯ä¸ºé…ç½®æ•°ç»„
+            'alias' => [  // å¯é€‰é…
                 '@alias1' => 'to/path1',
                 '@alias2' => 'to/path2',
             ],
         ],
 
-        // ... ¸ü¶àÏñÉÏÃæµÄÀ©Õ¹ ...
+        // ... æ›´å¤šåƒä¸Šé¢çš„æ‰©å±• ...
 
     ],
 ]
 ```
 
-ÈçÉÏËùÊ¾£¬¸ÃÊôĞÔ°üº¬Ò»¸öÀ©Õ¹¶¨ÒåÊı×é£¬Ã¿¸öÀ©Õ¹ÎªÒ»¸ö°üº¬ `name` ºÍ `version` ÏîµÄÊı×é¡£
-Èç¹ûÀ©Õ¹ÒªÔÚ [Òıµ¼Æô¶¯](runtime-bootstrapping.md) ½×¶ÎÔËĞĞ£¬ĞèÒªÅäÖÃ `bootstrap`ÒÔ¼°¶ÔÓ¦µÄÒıµ¼Æô¶¯ÀàÃû»ò [configuration](concept-configurations.md) Êı×é¡£
-À©Õ¹Ò²¿ÉÒÔ¶¨Òå [±ğÃû](concept-aliases.md)
-As you can see, the property takes an array of extension specifications. Each extension is specified with an array
-consisting of `name` and `version` elements. If an extension needs to run during the [bootstrap](runtime-bootstrapping.md)
-process, a `bootstrap` element may be specified with a bootstrapping class name or a [configuration](concept-configurations.md)
-array. An extension may also define a few [aliases](concept-aliases.md).
+å¦‚ä¸Šæ‰€ç¤ºï¼Œè¯¥å±æ€§åŒ…å«ä¸€ä¸ªæ‰©å±•å®šä¹‰æ•°ç»„ï¼Œæ¯ä¸ªæ‰©å±•ä¸ºä¸€ä¸ªåŒ…å« `name` å’Œ `version` é¡¹çš„æ•°ç»„ã€‚
+å¦‚æœæ‰©å±•è¦åœ¨ [å¼•å¯¼å¯åŠ¨](runtime-bootstrapping.md) é˜¶æ®µè¿è¡Œï¼Œéœ€è¦é…ç½® `bootstrap`ä»¥åŠå¯¹åº”çš„å¼•å¯¼å¯åŠ¨ç±»åæˆ– [configuration](concept-configurations.md) æ•°ç»„ã€‚
+æ‰©å±•ä¹Ÿå¯ä»¥å®šä¹‰ [åˆ«å](concept-aliases.md)
 
 
 #### [[yii\base\Application::layout|layout]] <a name="layout"></a>
 
-¸ÃÊôĞÔÖ¸¶¨äÖÈ¾ [ÊÓÍ¼](structure-views.md) Ä¬ÈÏÊ¹ÓÃµÄ²¼¾ÖÃû×Ö£¬Ä¬ÈÏÖµÎª `'main'` ¶ÔÓ¦[²¼¾ÖÂ·¾¶](#layoutPath)ÏÂµÄ `main.php` ÎÄ¼ş£¬
-Èç¹û [²¼¾ÖÂ·¾¶](#layoutPath) ºÍ [ÊÓÍ¼Â·¾¶](#viewPath) ¶¼ÊÇÄ¬ÈÏÖµ£¬Ä¬ÈÏ²¼¾ÖÎÄ¼ş¿ÉÒÔÊ¹ÓÃÂ·¾¶±ğÃû`@app/views/layouts/main.php`
-This property specifies the name of the default layout that should be used when rendering a [view](structure-views.md).
-The default value is `'main'`, meaning the layout file `main.php` under the [layout path](#layoutPath) should be used.
-If both of the [layout path](#layoutPath) and the [view path](#viewPath) are taking the default values,
-the default layout file can be represented as the path alias `@app/views/layouts/main.php`.
+è¯¥å±æ€§æŒ‡å®šæ¸²æŸ“ [è§†å›¾](structure-views.md) é»˜è®¤ä½¿ç”¨çš„å¸ƒå±€åå­—ï¼Œé»˜è®¤å€¼ä¸º `'main'` å¯¹åº”[å¸ƒå±€è·¯å¾„](#layoutPath)ä¸‹çš„ `main.php` æ–‡ä»¶ï¼Œ
+å¦‚æœ [å¸ƒå±€è·¯å¾„](#layoutPath) å’Œ [è§†å›¾è·¯å¾„](#viewPath) éƒ½æ˜¯é»˜è®¤å€¼ï¼Œé»˜è®¤å¸ƒå±€æ–‡ä»¶å¯ä»¥ä½¿ç”¨è·¯å¾„åˆ«å`@app/views/layouts/main.php`
 
-Èç¹û²»ÏëÉèÖÃÄ¬ÈÏ²¼¾ÖÎÄ¼ş£¬¿ÉÒÔÉèÖÃ¸ÃÊôĞÔÎª `false`£¬ÕâÖÖ×ö·¨±È½Ïº±¼û¡£
-You may configure this property to be `false` if you want to disable layout by default, although this is very rare.
+å¦‚æœä¸æƒ³è®¾ç½®é»˜è®¤å¸ƒå±€æ–‡ä»¶ï¼Œå¯ä»¥è®¾ç½®è¯¥å±æ€§ä¸º `false`ï¼Œè¿™ç§åšæ³•æ¯”è¾ƒç½•è§ã€‚
 
 
 #### [[yii\base\Application::layoutPath|layoutPath]] <a name="layoutPath"></a>
 
-¸ÃÊôĞÔÖ¸¶¨²éÕÒ²¼¾ÖÎÄ¼şµÄÂ·¾¶£¬Ä¬ÈÏÖµÎª [ÊÓÍ¼Â·¾¶](#viewPath) ÏÂµÄ `layouts` ×ÓÄ¿Â¼¡£
-Èç¹û [ÊÓÍ¼Â·¾¶](#viewPath) Ê¹ÓÃÄ¬ÈÏÖµ£¬Ä¬ÈÏµÄ²¼¾ÖÂ·¾¶±ğÃûÎª`@app/views/layouts`¡£
-This property specifies the path where layout files should be looked for. The default value is
-the `layouts` sub-directory under the [view path](#viewPath). If the [view path](#viewPath) is taking
-its default value, the default layout path can be represented as the path alias `@app/views/layouts`.
+è¯¥å±æ€§æŒ‡å®šæŸ¥æ‰¾å¸ƒå±€æ–‡ä»¶çš„è·¯å¾„ï¼Œé»˜è®¤å€¼ä¸º [è§†å›¾è·¯å¾„](#viewPath) ä¸‹çš„ `layouts` å­ç›®å½•ã€‚
+å¦‚æœ [è§†å›¾è·¯å¾„](#viewPath) ä½¿ç”¨é»˜è®¤å€¼ï¼Œé»˜è®¤çš„å¸ƒå±€è·¯å¾„åˆ«åä¸º`@app/views/layouts`ã€‚
 
-¸ÃÊôĞÔĞèÒªÅäÖÃ³ÉÒ»¸öÄ¿Â¼»ò Â·¾¶ [±ğÃû](concept-aliases.md)¡£
+è¯¥å±æ€§éœ€è¦é…ç½®æˆä¸€ä¸ªç›®å½•æˆ– è·¯å¾„ [åˆ«å](concept-aliases.md)ã€‚
 You may configure it as a directory or a path [alias](concept-aliases.md).
 
 
 #### [[yii\base\Application::runtimePath|runtimePath]] <a name="runtimePath"></a>
 
-¸ÃÊôĞÔÖ¸¶¨ÁÙÊ±ÎÄ¼şÈçÈÕÖ¾ÎÄ¼ş¡¢»º´æÎÄ¼şµÈ±£´æÂ·¾¶£¬Ä¬ÈÏÖµÎª´ø±ğÃûµÄ `@app/runtime`¡£
-This property specifies the path where temporary files, such as log files, cache files, can be generated.
-The default value is the directory represented by the alias `@app/runtime`.
+è¯¥å±æ€§æŒ‡å®šä¸´æ—¶æ–‡ä»¶å¦‚æ—¥å¿—æ–‡ä»¶ã€ç¼“å­˜æ–‡ä»¶ç­‰ä¿å­˜è·¯å¾„ï¼Œé»˜è®¤å€¼ä¸ºå¸¦åˆ«åçš„ `@app/runtime`ã€‚
 
-¿ÉÒÔÅäÖÃ¸ÃÊôĞÔÎªÒ»¸öÄ¿Â¼»òÕßÂ·¾¶ [±ğÃû](concept-aliases.md)£¬×¢ÒâÓ¦ÓÃÔËĞĞÊ±ÓĞ¶Ô¸ÃÂ·¾¶µÄĞ´ÈëÈ¨ÏŞ£¬
-ÒÔ¼°ÖÕ¶ËÓÃ»§²»ÄÜ·ÃÎÊ¸ÄÂ·¾¶ÒòÎªÁÙÊ±ÎÄ¼ş¿ÉÄÜ°üº¬Ò»Ğ©Ãô¸ĞĞÅÏ¢¡£
-You may configure it as a directory or a path [alias](concept-aliases.md). Note that the runtime path must
-be writable by the process running the application. And the path should be protected from being accessed
-by end users because the temporary files under it may contain sensitive information.
+å¯ä»¥é…ç½®è¯¥å±æ€§ä¸ºä¸€ä¸ªç›®å½•æˆ–è€…è·¯å¾„ [åˆ«å](concept-aliases.md)ï¼Œæ³¨æ„åº”ç”¨è¿è¡Œæ—¶æœ‰å¯¹è¯¥è·¯å¾„çš„å†™å…¥æƒé™ï¼Œ
+ä»¥åŠç»ˆç«¯ç”¨æˆ·ä¸èƒ½è®¿é—®æ”¹è·¯å¾„å› ä¸ºä¸´æ—¶æ–‡ä»¶å¯èƒ½åŒ…å«ä¸€äº›æ•æ„Ÿä¿¡æ¯ã€‚
 
-ÎªÁË¼ò»¯·ÃÎÊ¸ÃÂ·¾¶£¬YiiÔ¤¶¨Òå±ğÃû `@runtime` ´ú±í¸ÃÂ·¾¶¡£
-To simplify accessing to this path, Yii has predefined a path alias named `@runtime` for it.
+ä¸ºäº†ç®€åŒ–è®¿é—®è¯¥è·¯å¾„ï¼ŒYiié¢„å®šä¹‰åˆ«å `@runtime` ä»£è¡¨è¯¥è·¯å¾„ã€‚
 
 
 #### [[yii\base\Application::viewPath|viewPath]] <a name="viewPath"></a>
 
-¸ÃÂ·¾¶Ö¸¶¨ÊÓÍ¼ÎÄ¼şµÄ¸ùÄ¿Â¼£¬Ä¬ÈÏÖµÎª´ø±ğÃûµÄ `@app/views`£¬¿ÉÒÔÅäÖÃËüÎªÒ»¸öÄ¿Â¼»òÕßÂ·¾¶ [±ğÃû](concept-aliases.md).
-This property specifies the root directory where view files are located. The default value is the directory
-represented by the alias `@app/views`. You may configure it as a directory or a path [alias](concept-aliases.md).
+è¯¥è·¯å¾„æŒ‡å®šè§†å›¾æ–‡ä»¶çš„æ ¹ç›®å½•ï¼Œé»˜è®¤å€¼ä¸ºå¸¦åˆ«åçš„ `@app/views`ï¼Œå¯ä»¥é…ç½®å®ƒä¸ºä¸€ä¸ªç›®å½•æˆ–è€…è·¯å¾„ [åˆ«å](concept-aliases.md).
 
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <a name="vendorPath"></a>
 
-¸ÃÊôĞÔÖ¸¶¨ [Composer](http://getcomposer.org) ¹ÜÀíµÄ¹©Ó¦ÉÌÂ·¾¶£¬¸ÃÂ·¾¶°üº¬Ó¦ÓÃÊ¹ÓÃµÄ°üÀ¨Yii¿ò¼ÜÔÚÄÚµÄËùÓĞµÚÈı·½¿â¡£
-Ä¬ÈÏÖµÎª´ø±ğÃûµÄ `@app/vendor` ¡£
-This property specifies the vendor directory managed by [Composer](http://getcomposer.org). It contains
-all third party libraries used by your application, including the Yii framework. The default value is
-the directory represented by the alias `@app/vendor`.
+è¯¥å±æ€§æŒ‡å®š [Composer](http://getcomposer.org) ç®¡ç†çš„ä¾›åº”å•†è·¯å¾„ï¼Œè¯¥è·¯å¾„åŒ…å«åº”ç”¨ä½¿ç”¨çš„åŒ…æ‹¬Yiiæ¡†æ¶åœ¨å†…çš„æ‰€æœ‰ç¬¬ä¸‰æ–¹åº“ã€‚
+é»˜è®¤å€¼ä¸ºå¸¦åˆ«åçš„ `@app/vendor` ã€‚
 
-¿ÉÒÔÅäÖÃËüÎªÒ»¸öÄ¿Â¼»òÕßÂ·¾¶ [±ğÃû](concept-aliases.md)£¬µ±ÄãĞŞ¸ÄÊ±£¬Îñ±ØĞŞ¸Ä¶ÔÓ¦µÄ Composer ÅäÖÃ¡£
-You may configure this property as a directory or a path [alias](concept-aliases.md). When you modify
-this property, make sure you also adjust the Composer configuration accordingly.
+å¯ä»¥é…ç½®å®ƒä¸ºä¸€ä¸ªç›®å½•æˆ–è€…è·¯å¾„ [åˆ«å](concept-aliases.md)ï¼Œå½“ä½ ä¿®æ”¹æ—¶ï¼ŒåŠ¡å¿…ä¿®æ”¹å¯¹åº”çš„ Composer é…ç½®ã€‚
 
-ÎªÁË¼ò»¯·ÃÎÊ¸ÃÂ·¾¶£¬YiiÔ¤¶¨Òå±ğÃû `@vendor` ´ú±í¸ÃÂ·¾¶¡£
-To simplify accessing to this path, Yii has predefined a path alias named `@vendor` for it.
+ä¸ºäº†ç®€åŒ–è®¿é—®è¯¥è·¯å¾„ï¼ŒYiié¢„å®šä¹‰åˆ«å `@vendor` ä»£è¡¨è¯¥è·¯å¾„ã€‚
 
 
 #### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <a name="enableCoreCommands"></a>
 
-¸ÃÊôĞÔ½ö [[yii\console\Application|console applications]] ¿ØÖÆÌ¨Ó¦ÓÃÖ§³Ö£¬ ÓÃÀ´Ö¸¶¨ÊÇ·ñÆôÓÃYiiÖĞµÄºËĞÄÃüÁî£¬Ä¬ÈÏÖµÎª `true`¡£
-This property is supported by [[yii\console\Application|console applications]] only. It specifies
-whether the core commands included in the Yii release should be enabled. The default value is `true`.
+è¯¥å±æ€§ä»… [[yii\console\Application|console applications]] æ§åˆ¶å°åº”ç”¨æ”¯æŒï¼Œ ç”¨æ¥æŒ‡å®šæ˜¯å¦å¯ç”¨Yiiä¸­çš„æ ¸å¿ƒå‘½ä»¤ï¼Œé»˜è®¤å€¼ä¸º `true`ã€‚
 
 
-## Application Events <a name="application-events"></a>
+## åº”ç”¨äº‹ä»¶ <a name="application-events"></a>
 
-Ó¦ÓÃÔÚ´¦ÀíÇëÇó¹ı³ÌÖĞ»á´¥·¢ÊÂ¼ş£¬¿ÉÒÔÔÚÅäÖÃÎÄ¼şÅäÖÃÊÂ¼ş´¦Àí´úÂë£¬ÈçÏÂËùÊ¾£º
-An application triggers several events during the lifecycle of handling an request. You may attach event
-handlers to these events in application configurations like the following,
+åº”ç”¨åœ¨å¤„ç†è¯·æ±‚è¿‡ç¨‹ä¸­ä¼šè§¦å‘äº‹ä»¶ï¼Œå¯ä»¥åœ¨é…ç½®æ–‡ä»¶é…ç½®äº‹ä»¶å¤„ç†ä»£ç ï¼Œå¦‚ä¸‹æ‰€ç¤ºï¼š
 
 ```php
 [
@@ -608,13 +436,9 @@ handlers to these events in application configurations like the following,
 ]
 ```
 
-`on eventName` Óï·¨µÄÓÃ·¨ÔÚ [Configurations](concept-configurations.md#configuration-format) Ò»½ÚÓĞÏêÏ¸ÃèÊö.
-The use of the `on eventName` syntax is described in the [Configurations](concept-configurations.md#configuration-format)
-section.
+`on eventName` è¯­æ³•çš„ç”¨æ³•åœ¨ [Configurations](concept-configurations.md#configuration-format) ä¸€èŠ‚æœ‰è¯¦ç»†æè¿°.
 
-ÁíÍâ£¬ÔÚÓ¦ÓÃÖ÷ÌåÊµÀı»¯ºó£¬Äã¿ÉÒÔÔÚ[Òıµ¼Æô¶¯](runtime-bootstrapping.md) ½×¶Î¸½¼ÓÊÂ¼ş´¦Àí´úÂë£¬ÀıÈç£º
-Alternatively, you may attach event handlers during the [bootstrapping process](runtime-bootstrapping.md) process
-after the application instance is created. For example,
+å¦å¤–ï¼Œåœ¨åº”ç”¨ä¸»ä½“å®ä¾‹åŒ–åï¼Œä½ å¯ä»¥åœ¨[å¼•å¯¼å¯åŠ¨](runtime-bootstrapping.md) é˜¶æ®µé™„åŠ äº‹ä»¶å¤„ç†ä»£ç ï¼Œä¾‹å¦‚ï¼š
 
 ```php
 \Yii::$app->on(\yii\base\Application::EVENT_BEFORE_REQUEST, function ($event) {
@@ -624,40 +448,27 @@ after the application instance is created. For example,
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <a name="beforeRequest"></a>
 
-¸ÃÊÂ¼şÔÚÓ¦ÓÃ´¦ÀíÇëÇó*before*Ö®Ç°£¬Êµ¼ÊµÄÊÂ¼şÃûÎª `beforeRequest`¡£
-This event is triggered *before* an application handles a request. The actual event name is `beforeRequest`.
+è¯¥äº‹ä»¶åœ¨åº”ç”¨å¤„ç†è¯·æ±‚*before*ä¹‹å‰ï¼Œå®é™…çš„äº‹ä»¶åä¸º `beforeRequest`ã€‚
 
-ÔÚÊÂ¼ş´¥·¢Ç°£¬Ó¦ÓÃÖ÷ÌåÒÑ¾­ÊµÀı»¯²¢ÅäÖÃºÃÁË£¬ËùÒÔÍ¨¹ıÊÂ¼ş»úÖÆ½«ÄãµÄ´úÂëÇ¶Èëµ½ÇëÇó´¦Àí¹ı³ÌÖĞ·Ç³£²»´í¡£
-ÀıÈçÔÚÊÂ¼ş´¦ÀíÖĞ¸ù¾İÄ³Ğ©²ÎÊı¶¯Ì¬ÉèÖÃ[[yii\base\Application::language]]ÓïÑÔÊôĞÔ¡£ 
-When this event is triggered, the application instance has been configured and initialized. So it is a good place
-to insert your custom code via the event mechanism to intercept the request handling process. For example,
-in the event handler, you may dynamically set the [[yii\base\Application::language]] property based on some parameters.
+åœ¨äº‹ä»¶è§¦å‘å‰ï¼Œåº”ç”¨ä¸»ä½“å·²ç»å®ä¾‹åŒ–å¹¶é…ç½®å¥½äº†ï¼Œæ‰€ä»¥é€šè¿‡äº‹ä»¶æœºåˆ¶å°†ä½ çš„ä»£ç åµŒå…¥åˆ°è¯·æ±‚å¤„ç†è¿‡ç¨‹ä¸­éå¸¸ä¸é”™ã€‚
+ä¾‹å¦‚åœ¨äº‹ä»¶å¤„ç†ä¸­æ ¹æ®æŸäº›å‚æ•°åŠ¨æ€è®¾ç½®[[yii\base\Application::language]]è¯­è¨€å±æ€§ã€‚ 
 
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
-¸ÃÊÂ¼şÔÚÓ¦ÓÃ´¦ÀíÇëÇó*after*Ö®ºóµ«ÔÚ·µ»ØÏìÓ¦*before*Ö®Ç°´¥·¢£¬Êµ¼ÊµÄÊÂ¼şÃûÎª`afterRequest`¡£
-This event is triggered *after* an application finishes handling a request but *before* sending the response.
-The actual event name is `afterRequest`.
+è¯¥äº‹ä»¶åœ¨åº”ç”¨å¤„ç†è¯·æ±‚*after*ä¹‹åä½†åœ¨è¿”å›å“åº”*before*ä¹‹å‰è§¦å‘ï¼Œå®é™…çš„äº‹ä»¶åä¸º`afterRequest`ã€‚
 
-¸ÃÊÂ¼ş´¥·¢Ê±£¬ÇëÇóÒÑ¾­±»´¦ÀíÍê£¬¿ÉÒÔ×öÒ»Ğ©ÇëÇóºó´¦Àí»ò×Ô¶¨ÒåÏìÓ¦¡£ 
-When this event is triggered, the request handling is completed and you may take this chance to do some postprocessing
-of the request or customize the response.
+è¯¥äº‹ä»¶è§¦å‘æ—¶ï¼Œè¯·æ±‚å·²ç»è¢«å¤„ç†å®Œï¼Œå¯ä»¥åšä¸€äº›è¯·æ±‚åå¤„ç†æˆ–è‡ªå®šä¹‰å“åº”ã€‚ 
 
-×¢Òâ [[yii\web\Response|response]] ×é¼şÔÚ·¢ËÍÏìÓ¦¸øÖÕ¶ËÓÃ»§Ê±Ò²»á´¥·¢Ò»Ğ©ÊÂ¼ş£¬ÕâĞ©ÊÂ¼ş¶¼ÔÚ±¾ÊÂ¼ş*after*Ö®ºó´¥·¢¡£
-Note that the [[yii\web\Response|response]] component also triggers some events while it is sending out
-response content to end users. Those events are triggered *after* this event.
+æ³¨æ„ [[yii\web\Response|response]] ç»„ä»¶åœ¨å‘é€å“åº”ç»™ç»ˆç«¯ç”¨æˆ·æ—¶ä¹Ÿä¼šè§¦å‘ä¸€äº›äº‹ä»¶ï¼Œè¿™äº›äº‹ä»¶éƒ½åœ¨æœ¬äº‹ä»¶*after*ä¹‹åè§¦å‘ã€‚
 
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
-¸ÃÊÂ¼şÔÚÃ¿¸ö [¿ØÖÆÆ÷¶¯×÷](structure-controllers.md) ÔËĞĞ*before*Ö®Ç°»á±»´¥·¢£¬Êµ¼ÊµÄÊÂ¼şÃûÎª `beforeAction`.
+è¯¥äº‹ä»¶åœ¨æ¯ä¸ª [æ§åˆ¶å™¨åŠ¨ä½œ](structure-controllers.md) è¿è¡Œ*before*ä¹‹å‰ä¼šè¢«è§¦å‘ï¼Œå®é™…çš„äº‹ä»¶åä¸º `beforeAction`.
 
-ÊÂ¼şµÄ²ÎÊıÎªÒ»¸ö [[yii\base\ActionEvent]] ÊµÀı£¬
-ÊÂ¼ş´¦ÀíÖĞ¿ÉÒÔÉèÖÃ[[yii\base\ActionEvent::isValid]] Îª `false` Í£Ö¹ÔËĞĞºóĞø¶¯×÷£¬ÀıÈç£º
-The event parameter is an instance of [[yii\base\ActionEvent]]. An event handler may set
-the [[yii\base\ActionEvent::isValid]] property to be `false` to stop running the action.
-For example,
+äº‹ä»¶çš„å‚æ•°ä¸ºä¸€ä¸ª [[yii\base\ActionEvent]] å®ä¾‹ï¼Œ
+äº‹ä»¶å¤„ç†ä¸­å¯ä»¥è®¾ç½®[[yii\base\ActionEvent::isValid]] ä¸º `false` åœæ­¢è¿è¡Œåç»­åŠ¨ä½œï¼Œä¾‹å¦‚ï¼š
 
 ```php
 [
@@ -670,75 +481,46 @@ For example,
 ]
 ```
 
-×¢Òâ [Ä£¿é](structure-modules.md) ºÍ [¿ØÖÆÆ÷](structure-controllers.md) ¶¼»á´¥·¢ `beforeAction` ÊÂ¼ş¡£
-Ó¦ÓÃÖ÷Ìå¶ÔÏóÊ×ÏÈ´¥·¢¸ÃÊÂ¼ş£¬È»ºóÄ£¿é´¥·¢£¨Èç¹û´æÔÚÄ£¿é£©£¬×îºó¿ØÖÆÆ÷´¥·¢¡£
-ÈÎºÎÒ»¸öÊÂ¼ş´¦ÀíÖĞÉèÖÃ [[yii\base\ActionEvent::isValid]] ÉèÖÃÎª `false` »áÍ£Ö¹´¥·¢ºóÃæµÄÊÂ¼ş¡£
-Note that the same `beforeAction` event is also triggered by [modules](structure-modules.md)
-and [controllers](structure-controllers.md). Application objects are the first ones
-triggering this event, followed by modules (if any), and finally controllers. If an event handler
-sets [[yii\base\ActionEvent::isValid]] to be `false`, all the following events will NOT be triggered.
+æ³¨æ„ [æ¨¡å—](structure-modules.md) å’Œ [æ§åˆ¶å™¨](structure-controllers.md) éƒ½ä¼šè§¦å‘ `beforeAction` äº‹ä»¶ã€‚
+åº”ç”¨ä¸»ä½“å¯¹è±¡é¦–å…ˆè§¦å‘è¯¥äº‹ä»¶ï¼Œç„¶åæ¨¡å—è§¦å‘ï¼ˆå¦‚æœå­˜åœ¨æ¨¡å—ï¼‰ï¼Œæœ€åæ§åˆ¶å™¨è§¦å‘ã€‚
+ä»»ä½•ä¸€ä¸ªäº‹ä»¶å¤„ç†ä¸­è®¾ç½® [[yii\base\ActionEvent::isValid]] è®¾ç½®ä¸º `false` ä¼šåœæ­¢è§¦å‘åé¢çš„äº‹ä»¶ã€‚
 
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
-¸ÃÊÂ¼şÔÚÃ¿¸ö [¿ØÖÆÆ÷¶¯×÷](structure-controllers.md) ÔËĞĞ*after*Ö®ºó»á±»´¥·¢£¬Êµ¼ÊµÄÊÂ¼şÃûÎª `afterAction`.
-This event is triggered *after* running every [controller action](structure-controllers.md).
-The actual event name is `afterAction`.
+è¯¥äº‹ä»¶åœ¨æ¯ä¸ª [æ§åˆ¶å™¨åŠ¨ä½œ](structure-controllers.md) è¿è¡Œ*after*ä¹‹åä¼šè¢«è§¦å‘ï¼Œå®é™…çš„äº‹ä»¶åä¸º `afterAction`.
 
-¸ÃÊÂ¼şµÄ²ÎÊıÎª [[yii\base\ActionEvent]] ÊµÀı£¬Í¨¹ı[[yii\base\ActionEvent::result]]ÊôĞÔ£¬ÊÂ¼ş´¦Àí¿ÉÒÔ·ÃÎÊºÍĞŞ¸Ä¶¯×÷µÄ½á¹û¡£ÀıÈç£º
-The event parameter is an instance of [[yii\base\ActionEvent]]. Through
-the [[yii\base\ActionEvent::result]] property, an event handler may access or modify the action result.
-For example,
+è¯¥äº‹ä»¶çš„å‚æ•°ä¸º [[yii\base\ActionEvent]] å®ä¾‹ï¼Œé€šè¿‡[[yii\base\ActionEvent::result]]å±æ€§ï¼Œ
+äº‹ä»¶å¤„ç†å¯ä»¥è®¿é—®å’Œä¿®æ”¹åŠ¨ä½œçš„ç»“æœã€‚ä¾‹å¦‚ï¼š
 
 ```php
 [
     'on afterAction' => function ($event) {
         if (some condition) {
-            // ĞŞ¸Ä $event->result
+            // ä¿®æ”¹ $event->result
         } else {
         }
     },
 ]
 ```
 
-×¢Òâ [Ä£¿é](structure-modules.md) ºÍ [¿ØÖÆÆ÷](structure-controllers.md) ¶¼»á´¥·¢ `afterAction` ÊÂ¼ş¡£
-ÕâĞ©¶ÔÏóµÄ´¥·¢Ë³ĞòºÍ `beforeAction` Ïà·´£¬Ò²¾ÍÊÇËµ£¬¿ØÖÆÆ÷×îÏÈ´¥·¢£¬È»ºóÊÇÄ£¿é£¨Èç¹ûÓĞÄ£¿é£©£¬×îºóÎªÓ¦ÓÃÖ÷Ìå¡£Note that the same `afterAction` event is also triggered by [modules](structure-modules.md)
-and [controllers](structure-controllers.md). These objects trigger this event in the reverse order
-as for that of `beforeAction`. That is, controllers are the first objects triggering this event,
-followed by modules (if any), and finally applications.
+æ³¨æ„ [æ¨¡å—](structure-modules.md) å’Œ [æ§åˆ¶å™¨](structure-controllers.md) éƒ½ä¼šè§¦å‘ `afterAction` äº‹ä»¶ã€‚
+è¿™äº›å¯¹è±¡çš„è§¦å‘é¡ºåºå’Œ `beforeAction` ç›¸åï¼Œä¹Ÿå°±æ˜¯è¯´ï¼Œæ§åˆ¶å™¨æœ€å…ˆè§¦å‘ï¼Œç„¶åæ˜¯æ¨¡å—ï¼ˆå¦‚æœæœ‰æ¨¡å—ï¼‰ï¼Œæœ€åä¸ºåº”ç”¨ä¸»ä½“ã€‚
 
 
-## Ó¦ÓÃÖ÷ÌåÉúÃüÖÜÆÚ <a name="application-lifecycle"></a>
-## Application Lifecycle <a name="application-lifecycle"></a>
+## åº”ç”¨ä¸»ä½“ç”Ÿå‘½å‘¨æœŸ <a name="application-lifecycle"></a>
 
-µ±ÔËĞĞ [Èë¿Ú½Å±¾](structure-entry-scripts.md) ´¦ÀíÇëÇóÊ±£¬Ó¦ÓÃÖ÷Ìå»á¾­ÀúÒÔÏÂÉúÃüÖÜÆÚ:
-When an [entry script](structure-entry-scripts.md) is being executed to handle a request,
-an application will undergo the following lifecycle:
+å½“è¿è¡Œ [å…¥å£è„šæœ¬](structure-entry-scripts.md) å¤„ç†è¯·æ±‚æ—¶ï¼Œåº”ç”¨ä¸»ä½“ä¼šç»å†ä»¥ä¸‹ç”Ÿå‘½å‘¨æœŸ:
 
-1. Èë¿Ú½Å±¾¼ÓÔØÓ¦ÓÃÖ÷ÌåÅäÖÃÊı×é¡£
-2. Èë¿Ú½Å±¾´´½¨Ò»¸öÓ¦ÓÃÖ÷ÌåÊµÀı£º
-  * µ÷ÓÃ [[yii\base\Application::preInit()|preInit()]] ÅäÖÃ¼¸¸ö¸ß¼¶±ğÓ¦ÓÃÖ÷ÌåÊôĞÔ£¬±ÈÈç[[yii\base\Application::basePath|basePath]]¡£
-  * ×¢²á [[yii\base\Application::errorHandler|error handler]] ´íÎó´¦Àí·½·¨.
-  * ÅäÖÃÓ¦ÓÃÖ÷ÌåÊôĞÔ.
-  * µ÷ÓÃ [[yii\base\Application::init()|init()]] ³õÊ¼»¯£¬¸Ãº¯Êı»áµ÷ÓÃ [[yii\base\Application::bootstrap()|bootstrap()]] ÔËĞĞÒıµ¼Æô¶¯×é¼ş.
-3. Èë¿Ú½Å±¾µ÷ÓÃ [[yii\base\Application::run()]] ÔËĞĞÓ¦ÓÃÖ÷Ìå:
-  * ´¥·¢ [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] ÊÂ¼ş¡£
-  * ´¦ÀíÇëÇó£º½âÎöÇëÇó [Â·ÓÉ](runtime-routing.md) ºÍÏà¹Ø²ÎÊı£»´´½¨Â·ÓÉÖ¸¶¨µÄÄ£¿é¡¢¿ØÖÆÆ÷ºÍ¶¯×÷¶ÔÓ¦µÄÀà£¬²¢ÔËĞĞ¶¯×÷¡£
-  * ´¥·¢ [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] ÊÂ¼ş¡£
-  * ·¢ËÍÏìÓ¦µ½ÖÕ¶ËÓÃ»§.
-4. Èë¿Ú½Å±¾½ÓÊÕÓ¦ÓÃÖ÷Ìå´«À´µÄÍË³ö×´Ì¬²¢Íê³ÉÇëÇóµÄ´¦Àí¡£
-1. The entry script loads the application configuration as an array.
-2. The entry script creates a new instance of the application:
-  * [[yii\base\Application::preInit()|preInit()]] is called, which configures some high priority
-    application properties, such as [[yii\base\Application::basePath|basePath]].
-  * Register the [[yii\base\Application::errorHandler|error handler]].
-  * Configure application properties.
-  * [[yii\base\Application::init()|init()]] is called which further calls
-    [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrapping components.
-3. The entry script calls [[yii\base\Application::run()]] to run the application:
-  * Trigger the [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] event.
-  * Handle the request: resolve the request into a [route](runtime-routing.md) and the associated parameters;
-    create the module, controller and action objects as specified by the route; and run the action.
-  * Trigger the [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] event.
-  * Send response to the end user.
-4. The entry script receives the exit status from the application and completes the request processing.
+1. å…¥å£è„šæœ¬åŠ è½½åº”ç”¨ä¸»ä½“é…ç½®æ•°ç»„ã€‚
+2. å…¥å£è„šæœ¬åˆ›å»ºä¸€ä¸ªåº”ç”¨ä¸»ä½“å®ä¾‹ï¼š
+  * è°ƒç”¨ [[yii\base\Application::preInit()|preInit()]] é…ç½®å‡ ä¸ªé«˜çº§åˆ«åº”ç”¨ä¸»ä½“å±æ€§ï¼Œæ¯”å¦‚[[yii\base\Application::basePath|basePath]]ã€‚
+  * æ³¨å†Œ [[yii\base\Application::errorHandler|error handler]] é”™è¯¯å¤„ç†æ–¹æ³•.
+  * é…ç½®åº”ç”¨ä¸»ä½“å±æ€§.
+  * è°ƒç”¨ [[yii\base\Application::init()|init()]] åˆå§‹åŒ–ï¼Œè¯¥å‡½æ•°ä¼šè°ƒç”¨ [[yii\base\Application::bootstrap()|bootstrap()]] è¿è¡Œå¼•å¯¼å¯åŠ¨ç»„ä»¶.
+3. å…¥å£è„šæœ¬è°ƒç”¨ [[yii\base\Application::run()]] è¿è¡Œåº”ç”¨ä¸»ä½“:
+  * è§¦å‘ [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] äº‹ä»¶ã€‚
+  * å¤„ç†è¯·æ±‚ï¼šè§£æè¯·æ±‚ [è·¯ç”±](runtime-routing.md) å’Œç›¸å…³å‚æ•°ï¼›åˆ›å»ºè·¯ç”±æŒ‡å®šçš„æ¨¡å—ã€æ§åˆ¶å™¨å’ŒåŠ¨ä½œå¯¹åº”çš„ç±»ï¼Œå¹¶è¿è¡ŒåŠ¨ä½œã€‚
+  * è§¦å‘ [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] äº‹ä»¶ã€‚
+  * å‘é€å“åº”åˆ°ç»ˆç«¯ç”¨æˆ·.
+4. å…¥å£è„šæœ¬æ¥æ”¶åº”ç”¨ä¸»ä½“ä¼ æ¥çš„é€€å‡ºçŠ¶æ€å¹¶å®Œæˆè¯·æ±‚çš„å¤„ç†ã€‚
