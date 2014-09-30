@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0 under development
 -----------------------
 
+- Bug: Date and time formatting now assumes UTC as the timezone for input dates unless a timezone is explicitly given (cebe)
 - Enh #4275: Added `removeChildren()` to `yii\rbac\ManagerInterface` and implementations (samdark)
 
 
@@ -622,6 +623,7 @@ Yii Framework 2 Change Log
 - New: Added `yii\filters\RateLimiter` (qiangxue)
 - New: Added various authentication methods, including `HttpBasicAuth`, `HttpBearerAuth`, `QueryParamAuth`, and `CompositeAuth` (qiangxue)
 - New: Added `HtmlResponseFormatter` and `JsonResponseFormatter` (qiangxue)
+
 
 2.0.0-alpha, December 1, 2013
 -----------------------------

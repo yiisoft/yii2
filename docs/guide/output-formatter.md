@@ -88,6 +88,8 @@ See http://site.icu-project.org/ for the format.
   and now in human readable form.
 
 
+The input value for date and time formatting is assumed to be in UTC unless a timezone is explicitly given.
+
 Formatting Numbers
 ------------------
 

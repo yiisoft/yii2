@@ -483,6 +483,90 @@ class FormatterTest extends TestCase
     }
 
 
+    public function provideTimezones()
+    {
+        return [
+            ['UTC'],
+            ['Europe/Berlin'],
+            ['America/Jamaica'],
+        ];
+    }
+
+    /**
+     * provide default timezones times input date value
+     */
+    public function provideTimesAndTz()
+    {
+        $result = [];
+        foreach($this->provideTimezones() as $tz) {
+            $result[] = [$tz[0], 1407674460,                          1388580060];
+            $result[] = [$tz[0], '2014-08-10 12:41:00',               '2014-01-01 12:41:00'];
+            $result[] = [$tz[0], '2014-08-10 12:41:00 UTC',           '2014-01-01 12:41:00 UTC'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00 Europe/Berlin', '2014-01-01 13:41:00 Europe/Berlin'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00 CEST',          '2014-01-01 13:41:00 CET'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00+0200',          '2014-01-01 13:41:00+0100'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00+02:00',         '2014-01-01 13:41:00+01:00'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00 +0200',         '2014-01-01 13:41:00 +0100'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00 +02:00',        '2014-01-01 13:41:00 +01:00'];
+            $result[] = [$tz[0], '2014-08-10T14:41:00+02:00',         '2014-01-01T13:41:00+01:00']; // ISO 8601
+        }
+        return $result;
+    }
+
+    /**
+     * Test timezones with input date and time in other timezones
+     * @dataProvider provideTimesAndTz
+     */
+    public function testIntlTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
+    {
+        $this->testTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst);
+    }
+
+    /**
+     * Test timezones with input date and time in other timezones
+     * @dataProvider provideTimesAndTz
+     */
+    public function testTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
+    {
+        date_default_timezone_set($defaultTz); // formatting has to be independent of the default timezone set by PHP
+        $this->formatter->datetimeFormat = 'yyyy-MM-dd HH:mm:ss';
+        $this->formatter->dateFormat = 'yyyy-MM-dd';
+        $this->formatter->timeFormat = 'HH:mm:ss';
+
+        // daylight saving time
+        $this->formatter->timeZone = 'UTC';
+        $this->assertSame('2014-08-10 12:41:00', $this->formatter->asDatetime($inputTimeDst));
+        $this->assertSame('2014-08-10', $this->formatter->asDate($inputTimeDst));
+        $this->assertSame('12:41:00', $this->formatter->asTime($inputTimeDst));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp($inputTimeDst));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertSame('2014-08-10 14:41:00', $this->formatter->asDatetime($inputTimeDst));
+        $this->assertSame('2014-08-10', $this->formatter->asDate($inputTimeDst));
+        $this->assertSame('14:41:00', $this->formatter->asTime($inputTimeDst));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp($inputTimeDst));
+
+        // non daylight saving time
+        $this->formatter->timeZone = 'UTC';
+        $this->assertSame('2014-01-01 12:41:00', $this->formatter->asDatetime($inputTimeNonDst));
+        $this->assertSame('2014-01-01', $this->formatter->asDate($inputTimeNonDst));
+        $this->assertSame('12:41:00', $this->formatter->asTime($inputTimeNonDst));
+        $this->assertSame('1388580060', $this->formatter->asTimestamp($inputTimeNonDst));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertSame('2014-01-01 13:41:00', $this->formatter->asDatetime($inputTimeNonDst));
+        $this->assertSame('2014-01-01', $this->formatter->asDate($inputTimeNonDst));
+        $this->assertSame('13:41:00', $this->formatter->asTime($inputTimeNonDst));
+        $this->assertSame('1388580060', $this->formatter->asTimestamp($inputTimeNonDst));
+
+        // tests for relative time
+        if ($inputTimeDst !== 1407674460) {
+            $this->assertSame('3 hours ago', $this->formatter->asRelativeTime($inputTimeDst, $relativeTime = str_replace(['14:41', '12:41'], ['17:41', '15:41'], $inputTimeDst)));
+            $this->assertSame('in 3 hours', $this->formatter->asRelativeTime($relativeTime, $inputTimeDst));
+            $this->assertSame('3 hours ago', $this->formatter->asRelativeTime($inputTimeNonDst, $relativeTime = str_replace(['13:41', '12:41'], ['16:41', '15:41'], $inputTimeNonDst)));
+            $this->assertSame('in 3 hours', $this->formatter->asRelativeTime($relativeTime, $inputTimeNonDst));
+        }
+    }
+
+
     // number format
 
 
