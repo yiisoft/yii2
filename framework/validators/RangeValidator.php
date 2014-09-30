@@ -25,7 +25,7 @@ class RangeValidator extends Validator
     /**
      * @var array list of valid values that the attribute value should be among
      */
-    public $range;
+    public $range = [];
     /**
      * @var boolean whether the comparison is strict (both type and value must be the same)
      */
@@ -48,7 +48,7 @@ class RangeValidator extends Validator
     {
         parent::init();
         if (!is_array($this->range)) {
-            throw new InvalidConfigException('The "range" property must be set.');
+            throw new InvalidConfigException('The "range" property must be array.');
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is invalid.');
@@ -60,20 +60,17 @@ class RangeValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (!$this->allowArray && is_array($value)) {
+        if ((!$this->allowArray && is_array($value)) || (!$this->not && $this->isEmpty($value))) {
             return [$this->message, []];
         }
 
-        $in = true;
-
         foreach ((array)$value as $v) {
-            if (!in_array($v, $this->range, $this->strict)) {
-                $in = false;
-                break;
+            if (in_array($v, $this->range, $this->strict) == $this->not) {
+                return [$this->message, []];
             }
         }
 
-        return $this->not !== $in ? null : [$this->message, []];
+        return null;
     }
 
     /**
@@ -83,14 +80,16 @@ class RangeValidator extends Validator
     {
         $range = [];
         foreach ($this->range as $value) {
-            $range[] = (string) $value;
+            $range[] = (string)$value;
         }
         $options = [
             'range' => $range,
             'not' => $this->not,
-            'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $object->getAttributeLabel($attribute),
-            ], Yii::$app->language),
+            'message' => Yii::$app->getI18n()->format(
+                $this->message,
+                ['attribute' => $object->getAttributeLabel($attribute),],
+                Yii::$app->language
+            ),
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
