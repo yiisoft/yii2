@@ -82,7 +82,7 @@ Working with Databases
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* **TBD** [ElasticSearch](db-elasticsearch.md)
 
 
 Getting Data from Users
@@ -97,7 +97,7 @@ Getting Data from Users
 Displaying Data
 ---------------
 
-* **TBD** [Data Formatting](output-formatting.md)
+* **TBD** [Data Formatting](output-formatter.md)
 * **TBD** [Pagination](output-pagination.md)
 * **TBD** [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)

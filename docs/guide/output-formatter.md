@@ -68,7 +68,8 @@ For more details about the available properties check out the [[yii\i18n\Formatt
         'decimalSeparator' => ',',
         'thousandSeparator' => ' ',
         'currencyCode' => 'EUR',
-   ];
+   ],
+],
 ```
 
 Formatting Dates
