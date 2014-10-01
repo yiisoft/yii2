@@ -17,7 +17,7 @@ with response formatting:
 
 Yii supports content negotiation via the [[yii\filters\ContentNegotiator]] filter. The RESTful API base
 controller class [[yii\rest\Controller]] is equipped with this filter under the name of `contentNegotiator`.
-The filer provides response format negotiation as well as language negotiation. For example, if a RESTful
+The filter provides response format negotiation as well as language negotiation. For example, if a RESTful
 API request contains the following header,
 
 ```
