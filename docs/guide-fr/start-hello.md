@@ -42,7 +42,7 @@ class SiteController extends Controller
 }
 ```
 
-Dans le code ci-dessous, l'action `dire`est définie par une méthode nommée `actionDire` dans la classe `SiteController`.
+Dans le code ci-dessous, l'action `dire` est définie par une méthode nommée `actionDire` dans la classe `SiteController`.
 Yii utilise le préfixe `action` pour faire la différence entre des méthodes actions et des méthodes non-actions dans une classe contrôleur.
 Le nom suivant le préfixe `action` est associé à l'ID de l'action.
 
