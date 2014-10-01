@@ -1,8 +1,14 @@
 Yii Framework 2 elasticsearch extension Change Log
 ==================================================
 
-2.0.0-rc under development
---------------------------
+2.0.0 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #3587: Fixed an issue with storing empty records (cebe)
 - Bug #4187: Elasticsearch dynamic scripting is disabled in 1.2.0, so do not use it in query builder (cebe)

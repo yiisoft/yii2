@@ -32,13 +32,13 @@ use yii\test\FixtureTrait;
  *
  * #append fixtures to already loaded
  * yii fixture User --append
- * 
+ *
  * #load fixtures with different namespace.
  * yii fixture/load User --namespace=alias\my\custom\namespace\goes\here
  * ~~~
  *
  * The `unload` sub-command can be used similarly to unload fixtures.
- * 
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */

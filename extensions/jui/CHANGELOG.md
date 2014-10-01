@@ -1,8 +1,14 @@
 Yii Framework 2 jui extension Change Log
 ========================================
 
-2.0.0-rc under development
---------------------------
+2.0.0 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Chg #1551: Jui datepicker has a new property `$dateFormat` which is used to set the clientOption `dateFormat`.
    The new property does not use the datepicker formatting synax anymore but uses the same as the `yii\i18n\Formatter`

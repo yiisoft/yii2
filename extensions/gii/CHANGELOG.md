@@ -1,8 +1,14 @@
 Yii Framework 2 gii extension Change Log
 ========================================
 
-2.0.0-rc under development
---------------------------
+2.0.0 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #2314: Gii model generator does not generate correct relation type in some special case (qiangxue)

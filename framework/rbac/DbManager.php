@@ -542,6 +542,16 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function removeChildren($parent)
+    {
+        return $this->db->createCommand()
+            ->delete($this->itemChildTable, ['parent' => $parent->name])
+            ->execute() > 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function hasChild($parent, $child)
     {
         return (new Query)

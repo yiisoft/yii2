@@ -1,8 +1,14 @@
 Yii Framework 2 twig extension Change Log
 =========================================
 
-2.0.0-rc under development
---------------------------
+2.0.0 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #2925: Fixed throwing exception when accessing AR property with null value (samdark)
 - Bug #3767: Fixed repeated adding of extensions when using config. One may now pass extension instances as well (grachov)

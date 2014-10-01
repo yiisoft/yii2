@@ -240,15 +240,13 @@ be the corresponding [configuration arrays](concept-configurations.md).
 > Tip: You can conditionally choose which assets to use in an asset bundle. The following example shows how
 > to use `jquery.js` in the development environment and `jquery.min.js` otherwise:
 >
-
-```php
-'yii\web\JqueryAsset' => [
-    'js' => [
-        YII_ENV_DEV ? 'jquery.js' : 'jquery.min.js'
-    ]
-],
-```
-
+> ```php
+> 'yii\web\JqueryAsset' => [
+>     'js' => [
+>         YII_ENV_DEV ? 'jquery.js' : 'jquery.min.js'
+>     ]
+> ],
+> ```
 
 You can disable one or multiple asset bundles by associating `false` with the names of the asset bundles
 that you want to disable. When you register a disabled asset bundle with a view, none of its dependent bundles

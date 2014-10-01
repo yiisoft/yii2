@@ -20,13 +20,15 @@ use yii\helpers\Html;
  * echo Collapse::widget([
  *     'items' => [
  *         // equivalent to the above
- *         'Collapsible Group Item #1' => [
+ *         [
+ *             'label' => 'Collapsible Group Item #1',
  *             'content' => 'Anim pariatur cliche...',
  *             // open its content by default
  *             'contentOptions' => ['class' => 'in']
  *         ],
  *         // another group item
- *         'Collapsible Group Item #2' => [
+ *         [
+ *             'label' => 'Collapsible Group Item #1',
  *             'content' => 'Anim pariatur cliche...',
  *             'contentOptions' => [...],
  *             'options' => [...],
@@ -45,19 +47,21 @@ class Collapse extends Widget
      * @var array list of groups in the collapse widget. Each array element represents a single
      * group with the following structure:
      *
-     * ```php
-     * // item key is the actual group header
-     * 'Collapsible Group Item #1' => [
-     *     // required, the content (HTML) of the group
-     *     'content' => 'Anim pariatur cliche...',
-     *     // optional the HTML attributes of the content group
-     *     'contentOptions' => [],
-     *     // optional the HTML attributes of the group
-     *     'options' => [],
-     * ]
+     * - label: string, required, the group header label.
+     * - encode: boolean, optional, whether this label should be HTML-encoded. This param will override
+     *   global `$this->encodeLabels` param.
+     * - content: string, required, the content (HTML) of the group
+     * - options: array, optional, the HTML attributes of the group
+     * - contentOptions: optional, the HTML attributes of the group's content
+     *
      * ```
      */
     public $items = [];
+
+    /**
+     * @var boolean whether the labels for header items should be HTML-encoded.
+     */
+    public $encodeLabels = true;
 
 
     /**
@@ -88,7 +92,11 @@ class Collapse extends Widget
     {
         $items = [];
         $index = 0;
-        foreach ($this->items as $header => $item) {
+        foreach ($this->items as $item) {
+            if (!isset($item['label'])) {
+                throw new InvalidConfigException("The 'label' option is required.");
+            }
+            $header = $item['label'];
             $options = ArrayHelper::getValue($item, 'options', []);
             Html::addCssClass($options, 'panel panel-default');
             $items[] = Html::tag('div', $this->renderItem($header, $item, ++$index), $options);
@@ -112,6 +120,11 @@ class Collapse extends Widget
             $options = ArrayHelper::getValue($item, 'contentOptions', []);
             $options['id'] = $id;
             Html::addCssClass($options, 'panel-collapse collapse');
+
+            $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
+            if ($encodeLabel) {
+                $header = Html::encode($header);
+            }
 
             $headerToggle = Html::a($header, '#' . $id, [
                     'class' => 'collapse-toggle',

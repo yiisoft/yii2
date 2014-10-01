@@ -68,7 +68,8 @@ For more details about the available properties check out the [[yii\i18n\Formatt
         'decimalSeparator' => ',',
         'thousandSeparator' => ' ',
         'currencyCode' => 'EUR',
-   ];
+   ],
+],
 ```
 
 Formatting Dates
@@ -87,6 +88,8 @@ See http://site.icu-project.org/ for the format.
 - [[\yii\i18n\Formatter::asRelativeTime()|relativeTime]] - the value is formatted as the time interval between a date
   and now in human readable form.
 
+
+The input value for date and time formatting is assumed to be in UTC unless a timezone is explicitly given.
 
 Formatting Numbers
 ------------------

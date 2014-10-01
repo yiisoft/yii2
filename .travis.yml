@@ -15,7 +15,6 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-    - php: hhvm
     - php: hhvm-nightly
 
 services:
@@ -39,7 +38,7 @@ addons:
 
 install:
   - composer self-update && composer --version
-  - composer global require "fxp/composer-asset-plugin:1.0.0-beta1"
+  - composer global require "fxp/composer-asset-plugin:1.0.0-beta2"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - composer install --prefer-dist

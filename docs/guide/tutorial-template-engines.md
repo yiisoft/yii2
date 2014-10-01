@@ -112,7 +112,7 @@ There are two ways of referencing templates in `include` and `extends` statement
 
 ```
 {% include "comment.twig" %}
-{% extends "post.twig" %
+{% extends "post.twig" %}
 
 {% include "@app/views/snippets/avatar.twig" %}
 {% extends "@app/views/layouts/2columns.twig" %}

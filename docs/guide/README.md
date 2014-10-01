@@ -47,10 +47,11 @@ Application Structure
 Handling Requests
 -----------------
 
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Routing](runtime-routing.md)
-* **TBD** [Requests](runtime-requests.md)
-* **TBD** [Responses](runtime-responses.md)
+* [Overview](runtime-overview.md)
+* [Bootstrapping](runtime-bootstrapping.md)
+* [Routing](runtime-routing.md)
+* [Requests](runtime-requests.md)
+* [Responses](runtime-responses.md)
 * **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
 * [URL Parsing and Generation](runtime-url-handling.md)
 * [Handling Errors](runtime-handling-errors.md)
@@ -81,7 +82,7 @@ Working with Databases
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* **TBD** [ElasticSearch](db-elasticsearch.md)
 
 
 Getting Data from Users
@@ -96,7 +97,7 @@ Getting Data from Users
 Displaying Data
 ---------------
 
-* **TBD** [Data Formatting](output-formatting.md)
+* **TBD** [Data Formatting](output-formatter.md)
 * **TBD** [Pagination](output-pagination.md)
 * **TBD** [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
@@ -151,7 +152,7 @@ Testing
 -------
 
 * [Overview](test-overview.md)
-* [Testing environment setup](test-endvironment-setup.md)
+* [Testing environment setup](test-environment-setup.md)
 * [Unit Tests](test-unit.md)
 * [Functional Tests](test-functional.md)
 * [Acceptance Tests](test-acceptance.md)

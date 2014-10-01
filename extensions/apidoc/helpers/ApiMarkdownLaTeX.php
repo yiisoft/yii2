@@ -41,6 +41,7 @@ class ApiMarkdownLaTeX extends GithubMarkdown
     {
         list($html, $offset) = $this->parseApiLinks($text);
 
+        // TODO allow break also on camel case
         $latex = '\texttt{'.str_replace(['\\textbackslash', '::'], ['\allowbreak{}\\textbackslash', '\allowbreak{}::\allowbreak{}'], $this->escapeLatex(strip_tags($html))).'}';
 
         return [$latex, $offset];

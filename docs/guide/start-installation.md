@@ -4,7 +4,7 @@ Installing Yii
 You can install Yii in two ways, using [Composer](http://getcomposer.org/) or by downloading an archive file.
 The former is the preferred way, as it allows you to install new [extensions](extend-creating-extensions.md) or update Yii by simply running a single command.
 
-> Note: Unlike with Yii 1, standard installations of Yii 2 results in both the framework and an application skeleton being downloaded and installed.
+> Note: Unlike with Yii 1, standard installations of Yii 2 result in both, the framework and an application skeleton being downloaded and installed.
 
 
 Installing via Composer <a name="installing-via-composer"></a>
@@ -21,16 +21,24 @@ On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org
 Please refer to the [Composer Documentation](https://getcomposer.org/doc/) if you encounter any
 problems or want to learn more about Composer usage.
 
+If you had Composer already installed before, make sure you use an up to date version. You can update Composer
+by running `composer self-update`.
+
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta1"
+    composer global require "fxp/composer-asset-plugin:1.0.0-beta2"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through composer. You only need to run this command
-once for all. The second command installs Yii in a directory named `basic`.
+which allows managing bower and npm package dependencies through Composer. You only need to run this command
+once for all. The second command installs Yii in a directory named `basic`. You can choose a different directory name if you want.
 
-> Tip: If you want to install the latest development version of Yii, you may use the following command,
+> Note: During the installation it may happen that Composer asks for login credentials for your Github account because it hits the
+> Github API rate-limit. This is normal because Composer needs to retrieve a lot of information for all the packages from Github.
+> Logging in to Github increases the API rate-limit so Composer can go on with its work. For more details, please refer to the
+> [Composer documentation](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+
+> Tip: If you want to install the latest development version of Yii, you may use the following command instead,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
@@ -41,9 +49,9 @@ once for all. The second command installs Yii in a directory named `basic`.
 Installing from an Archive File <a name="installing-from-archive-file"></a>
 -------------------------------
 
-Installing Yii from an archive file involves two steps:
+Installing Yii from an archive file involves three steps:
 
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
+1. Download the archive file from [yiiframework.com](https://github.com/yiisoft/yii2/releases/download/2.0.0-rc/yii-basic-app-2.0.0-rc.tgz).
 2. Unpack the downloaded file to a Web-accessible folder.
 3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
    (this is done automatically if you are installing Yii using Composer):
@@ -135,8 +143,8 @@ should replace `path/to/basic/web` with the actual path for `basic/web`.
 DocumentRoot "path/to/basic/web"
 
 <Directory "path/to/basic/web">
+    # use mod_rewrite for pretty URL support
     RewriteEngine on
-
     # If a directory or a file exists, use the request directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

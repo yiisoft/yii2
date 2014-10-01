@@ -62,10 +62,10 @@ class Tabs extends Widget
      *   global `$this->encodeLabels` param.
      * - headerOptions: array, optional, the HTML attributes of the tab header.
      * - linkOptions: array, optional, the HTML attributes of the tab header link tags.
-     * - content: string, required if `items` is not set. The content (HTML) of the tab pane.
+     * - content: string, optional, the content (HTML) of the tab pane.
      * - options: array, optional, the HTML attributes of the tab pane container.
      * - active: boolean, optional, whether the item tab header and pane should be visible or not.
-     * - items: array, optional, if not set then `content` will be required. The `items` specify a dropdown items
+     * - items: array, optional, can be used instead of `content` to specify a dropdown items
      *   configuration array. Each item can hold three extra keys, besides the above ones:
      *     * active: boolean, optional, whether the item tab header and pane should be visible or not.
      *     * content: string, required if `items` is not set. The content (HTML) of the tab pane.
@@ -168,8 +168,6 @@ class Tabs extends Widget
                 $linkOptions['data-toggle'] = 'tab';
                 $header = Html::a($label, '#' . $options['id'], $linkOptions);
                 $panes[] = Html::tag('div', $item['content'], $options);
-            } else {
-                throw new InvalidConfigException("Either the 'content' or 'items' option must be set.");
             }
 
             $headers[] = Html::tag('li', $header, $headerOptions);
