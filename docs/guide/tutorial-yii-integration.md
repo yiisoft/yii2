@@ -17,7 +17,7 @@ Many third-party libraries are released in terms of [Composer](https://getcompos
 You can install such libraries by taking the following two simple steps:
 
 1. modify the `composer.json` file of your application and specify which Composer packages you want to install.
-2. run `php composer.phar install` to install the specified packages.
+2. run `composer install` to install the specified packages.
 
 The classes in the installed Composer packages can be autoloaded using the Composer autoloader. Make sure
 the [entry script](structure-entry-scripts.md) of your application contains the following lines to install
@@ -83,8 +83,8 @@ If the third-party system uses Composer to manage its dependencies, you can simp
 to install Yii:
 
 ```
-php composer.phar require yiisoft/yii2-framework:*
-php composer.phar install
+composer require "yiisoft/yii2:*"
+composer install
 ```
 
 Otherwise, you can [download](http://www.yiiframework.com/download/) the Yii release file and unpack it in

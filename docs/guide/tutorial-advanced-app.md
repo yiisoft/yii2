@@ -12,19 +12,18 @@ Installation
 
 ### Install via Composer
 
-If you do not have [Composer](http://getcomposer.org/), you may download it from
-[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
+If you do not have [Composer](http://getcomposer.org/), follow the instructions in the
+[Installing Yii](start-installation.md#installing-via-composer) section to install it.
 
-~~~
-curl -sS http://getcomposer.org/installer | php
-~~~
+With Composer installed, you can then install the application using the following commands:
 
-You can then install the application using the following command:
+    composer global require "fxp/composer-asset-plugin:1.0.0-beta2"
+    composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-advanced yii-application
 
-~~~
-php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta2"
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-advanced /path/to/yii-application
-~~~
+The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+which allows managing bower and npm package dependencies through Composer. You only need to run this command
+once for all. The second command installs the advanced application in a directory named `yii-application`.
+You can choose a different directory name if you want.
 
 Getting started
 ---------------
@@ -204,7 +203,7 @@ your project.
 Now the interesting part. You can add more packages your application needs to the `require` section.
 All these packages are coming from [packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
 
-After your `composer.json` is changed you can run `php composer.phar update --prefer-dist`, wait till packages are downloaded and
+After your `composer.json` is changed you can run `composer update --prefer-dist`, wait till packages are downloaded and
 installed and then just use them. Autoloading of classes will be handled automatically.
 
 Creating links from backend to frontend

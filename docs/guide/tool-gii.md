@@ -19,7 +19,7 @@ Gii is an official Yii extension. The preferred way to install this extension is
 You can either run this command:
 
 ```
-php composer.phar require --prefer-dist yiisoft/yii2-gii "*"
+composer require "yiisoft/yii2-gii:*"
 ```
 
 Or you can add this code to the require section of your `composer.json` file:

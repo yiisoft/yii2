@@ -17,7 +17,7 @@ To use an extension, you need to install it first. Most extensions are distribut
 packages which can be installed by taking the following two simple steps:
 
 1. modify the `composer.json` file of your application and specify which extensions (Composer packages) you want to install.
-2. run `php composer.phar install` to install the specified extensions.
+2. run `composer install` to install the specified extensions.
 
 Note that you may need to install [Composer](https://getcomposer.org/) if you do not have it.
 
@@ -172,7 +172,7 @@ We recommend you prefix `yii2-` to the project name for packages representing Yi
 It is important that you specify the package type of your extension as `yii2-extension` so that the package can
 be recognized as a Yii extension when being installed.
 
-When a user runs `php composer.phar install` to install an extension, the file `vendor/yiisoft/extensions.php`
+When a user runs `composer install` to install an extension, the file `vendor/yiisoft/extensions.php`
 will be automatically updated to include the information about the new extension. From this file, Yii applications
 can know which extensions are installed (the information can be accessed via [[yii\base\Application::extensions]].
 

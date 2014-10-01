@@ -31,7 +31,7 @@ With Composer installed, you can install Yii by running the following commands u
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
 which allows managing bower and npm package dependencies through Composer. You only need to run this command
-once for all. The second command installs Yii in a directory named `basic`.
+once for all. The second command installs Yii in a directory named `basic`. You can choose a different directory name if you want.
 
 > Note: During the installation it may happen that Composer asks for login credentials for your Github account because it hits the
 > Github API rate-limit. This is normal because Composer needs to retrieve a lot of information for all the packages from Github.
