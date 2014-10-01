@@ -55,9 +55,9 @@ Hay que tener en cuenta que a diferencia de [[yii\base\Widget::widget()]] que de
 
 ## Creación Widgets <a name="creating-widgets"></a>
 
-Para crear un widget, se debe extender a [[yii\base\Widget]] y sobrescribir los métodos [[yii\base\Widget::init()]] y/o [[yii\base\Widget::run()]]. Normalmente el método 'init()' debería contener el código que estandariza las propiedades del widget, mientras que el método 'run()' debería contener el código que genere la representación resultante del widget. La representación resultante pude ser "pitada" directamente o devuelta como una cadena por el método 'run()'.
+Para crear un widget, se debe extender a [[yii\base\Widget]] y sobrescribir los métodos [[yii\base\Widget::init()]] y/o [[yii\base\Widget::run()]]. Normalmente el método 'init()' debería contener el código que estandariza las propiedades del widget, mientras que el método 'run()' debería contener el código que genere la representación resultante del widget. La representación resultante puede ser "pintada" directamente o devuelta como una cadena por el método 'run()'.
 
-En el siguiente ejemplo, 'HelloWidget' codifica en HTML y muestra el contenido asignado a su propiedad 'message'. Si la propiedad no esta establecida, mostrara "Hello World" por defecto.
+En el siguiente ejemplo, 'HelloWidget' codifica en HTML y muestra el contenido asignado a su propiedad 'message'. Si la propiedad no está establecida, mostrará "Hello World" por defecto.
 
 ```php
 namespace app\components;
@@ -93,7 +93,7 @@ use app\components\HelloWidget;
 <?= HelloWidget::widget(['message' => 'Good morning']) ?>
 ```
 
-A se muestra una variante de 'HelloWidget' obtiene el contenido contenido entre las llamadas 'begin()' y 'end()', lo codifica en HTML y posteriormente lo muestra.
+Abajo se muestra una variante de 'HelloWidget' obtiene el contenido entre las llamadas 'begin()' y 'end()', lo codifica en HTML y posteriormente lo muestra.
 
 ```php
 namespace app\components;
@@ -119,7 +119,7 @@ class HelloWidget extends Widget
 
 Como se puede observar, el búfer de salida PHP es iniciado en 'init()' por tanto cualquier salida entre las llamadas de 'init()' y 'run()' puede ser capturada, procesada y devuelta en 'run()'.
 
->Info: Cuando se llama a [[yii\base\Widget::begin()]], se creara una nueva instancia del widget y el método 'init()' sera llamado al final del constructor del widget. Cuando se llama [[yii\base\Widget::end()]], el método 'run()' será llamado el resultado que devuelva sera escrito por 'end()'.
+>Info: Cuando se llama a [[yii\base\Widget::begin()]], se creará una nueva instancia del widget y el método 'init()' será llamado al final del constructor del widget. Cuando se llama [[yii\base\Widget::end()]], el método 'run()' será llamado el resultado que devuelva será escrito por 'end()'.
 
 El siguiente código muestra como usar esta nueva variante de 'HelloWidget':
 
@@ -143,15 +143,15 @@ public function run()
 }
 ```
 
-Por defecto, las vistas para un widget deberían encontrarse en ficheros dentro del directorio 'WidgetPath/views', donde 'WidgetPath' representa el directorio que contiene el fichero de clase del widget. Por lo tanto, el anterior ejemplo representara el fichero de vista `@app/components/views/hello.php`, asumiendo que la clase del widget se encuentre en `@app/components`. Se puede sobrescribir el método [[yii\base\Widget::getViewPath()]] para personalizar el directorio que contenga los ficheros de vista del widget.
+Por defecto, las vistas para un widget deberían encontrarse en ficheros dentro del directorio 'WidgetPath/views', donde 'WidgetPath' representa el directorio que contiene el fichero de clase del widget. Por lo tanto, el anterior ejemplo representará el fichero de la vista `@app/components/views/hello.php`, asumiendo que la clase del widget se encuentre en `@app/components`. Se puede sobrescribir el método [[yii\base\Widget::getViewPath()]] para personalizar el directorio que contenga los ficheros de la vista del widget.
 
-## Mejores Practicas <a name="best-practices"></a>
+## Mejores Prácticas <a name="best-practices"></a>
 
-Los widgets son una manera orientada a objetos de reutilizar código de vistas.
+Los widgets son una manera orientada a objetos de reutilizar código de las vistas.
 
 Cuando se crean widgets, se debería continuar manteniendo el patrón MVC. En general, se debería mantener la lógica en las clases del widget y mantener la presentación en las [vistas](structure-views.md).
 
 Los widgets deberían ser diseñados para ser autónomos. Es decir, cuando se usa un widget, se debería poder poner en una vista sin hacer nada más. Esto puede resultar complicado si un widget requiere recursos externos, tales como CSS, JavaScript, imágenes, etc. Afortunadamente Yii proporciona soporte para [paquetes asset](structure-asset-bundles.md) que pueden ser utilizados para resolver el problema.
 
-Cuando un widget solo contiene código de vista, este es muy similar a una [vista](structure-views.md). De hecho, en este caso, su única diferencia es que un widget es una clase redistribuible, mientras que una vista es solo un script PHP llano que prefiere mantener dentro de su aplicación.
+Cuando un widget sólo contiene código de vista, este es muy similar a una [vista](structure-views.md). De hecho, en este caso, su única diferencia es que un widget es una clase redistribuible, mientras que una vista es sólo un script PHP llano que prefiere mantenerse dentro de su aplicación.
 
