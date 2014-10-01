@@ -21,6 +21,9 @@ On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org
 Please refer to the [Composer Documentation](https://getcomposer.org/doc/) if you encounter any
 problems or want to learn more about Composer usage.
 
+If you had Composer already installed before, make sure you use an up to date version. You can update Composer
+by running `composer self-update`.
+
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
     composer global require "fxp/composer-asset-plugin:1.0.0-beta2"
@@ -29,6 +32,11 @@ With Composer installed, you can install Yii by running the following commands u
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
 which allows managing bower and npm package dependencies through Composer. You only need to run this command
 once for all. The second command installs Yii in a directory named `basic`.
+
+> Note: During the installation it may happen that Composer asks for login credentials for your Github account because it hits the
+> Github API rate-limit. This is normal because Composer needs to retrieve a lot of information for all the packages from Github.
+> Logging in to Github increases the API rate-limit so Composer can go on with its work. For more details, please refer to the
+> [Composer documentation](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
 
 > Tip: If you want to install the latest development version of Yii, you may use the following command instead,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
