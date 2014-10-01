@@ -309,7 +309,7 @@ class HotelController extends Controller
 Как dependency injection, так и [service locator](concept-service-locator.md) являются популярными паттернами проектирования, которые позволяют 
 создавать программное обеспечение в слабосвязаной и более тестируемой манере.
 Мы настоятельно рекомендуем к прочтению
-[Статью Мартина Фаулера](http://martinfowler.com/articles/injection.html), для более глубокого понимания dependency injection и service locator. 
+[статью Мартина Фаулера](http://martinfowler.com/articles/injection.html), для более глубокого понимания dependency injection и service locator. 
 
 Yii реализует свой [service locator](concept-service-locator.md) поверх контейнера внедрения зависимостей.
 Когда service locator пытается создать новый экземпляр объекта, он перенаправляет вызов на Контейнер внедрения зависимостей.
