@@ -1,88 +1,64 @@
-Applications
+应用
 ============
 
-Applications are objects that govern the overall structure and lifecycle of Yii application systems.
-Each Yii application system contains a single application object which is created in
-the [entry script](structure-entry-scripts.md) and is globally accessible through the expression `\Yii::$app`.
+应用是管理整个 Yii 应用系统总体结构和生命周期的对象。每个 Yii 应用系统都包含一个由[入口脚本](structure-entry-scripts.md)创建的单例对象，可以在全局范围通过表达式 `\Yii:$app` 访问。
 
-> Info: Depending on the context, when we say "an application", it can mean either an application
-  object or an application system.
+> 补充：取决于上下文环境不同，当讲到“一个应用”时，它可能是一个应用对象的意思，也可能指整个应用系统。
 
-There are two types of applications: [[yii\web\Application|Web applications]] and
-[[yii\console\Application|console applications]]. As the names indicate, the former mainly handles
-Web requests while the latter console command requests.
+应用有两种类型：[[yii\web\Application|Web 应用]] 和 [[yii\console\Application|控制台应用]]。顾名思义，前者主要处理 Web 请求而后者则处理控制台命令请求。
 
 
-## Application Configurations <a name="application-configurations"></a>
+## 应用配置 <a name="application-configurations"></a>
 
-When an [entry script](structure-entry-scripts.md) creates an application, it will load
-a [configuration](concept-configurations.md) and apply it to the application, like the following:
+当[入口脚本](structure-entry-scripts.md)创建一个应用，它将载入[配置](concept-configurations.md)并将其应用在应用中，如下：
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-// load application configuration
+// 载入应用配置
 $config = require(__DIR__ . '/../config/web.php');
 
-// instantiate and configure the application
+// 实例化并配置应用
 (new yii\web\Application($config))->run();
 ```
 
-Like normal [configurations](concept-configurations.md), application configurations specify how
-to initialize properties of application objects. Because application configurations are often
-very complex, they usually are kept in [configuration files](concept-configurations.md#configuration-files),
-like the `web.php` file in the above example.
+正如[配置](concept-configurations.md)所述，应用配置指定了如何初始化应用对象的属性。应用配置往往比较复杂，所以它们被保存在[配置文件](concept-configurations.md#configuration-files)中，例如上述代码中的 `web.php`。
 
 
-## Application Properties <a name="application-properties"></a>
+## 应用属性 <a name="application-properties"></a>
 
-There are many important application properties that you should configure in application configurations.
-These properties typically describe the environment that applications are running in.
-For example, applications need to know how to load [controllers](structure-controllers.md),
-where to store temporary files, etc. In the following, we will summarize these properties.
+在应用中有相当多的重要属性需要配置。这些属性通常描述了应用运行的环境。例如，应用需要知道如何载入[控制器](structure-controllers.md)，哪里储存临时文件，等等。下面我们将总结这些属性。
 
 
-### Required Properties <a name="required-properties"></a>
+### 必需属性 <a name="required-properties"></a>
 
-In any application, you should at least configure two properties: [[yii\base\Application::id|id]]
-and [[yii\base\Application::basePath|basePath]].
+在任何应用中，你应该至少配置两个属性：[[yii\base\Application::id|id]] 和 [[yii\base\Application::basePath|basePath]]。
 
 
 #### [[yii\base\Application::id|id]] <a name="id"></a>
 
-The [[yii\base\Application::id|id]] property specifies a unique ID that differentiates an application
-from others. It is mainly used programmatically. Although not a requirement, for best interoperability
-it is recommended that you use alphanumeric characters only when specifying an application ID.
+[[yii\base\Application::id|id]] 属性指定了一个应用区别于其它应用的唯一 ID。主要以编程方式使用它。尽管不是必要条件，但为了最佳互通性，还是建议你仅使用字母和数字去指定应用 ID。
 
 
-#### [[yii\base\Application::basePath|basePath]] <a name="basePath"></a>
+#### [[yii\base\Application::basePath|基本路径（basePath）]] <a name="basePath"></a>
 
-The [[yii\base\Application::basePath|basePath]] property specifies the root directory of an application.
-It is the directory that contains all protected source code of an application system. Under this directory,
-you normally will see sub-directories such as `models`, `views`, `controllers`, which contain source code
-corresponding to the MVC pattern.
+[[yii\base\Application::basePath|basePath]] 属性指定了一个应用的根目录。这个目录包含了应用系统的所有受保护源码。在此目录下，你通常会看到诸如 `models`，`views`，`controllers` 之类的子目录，这些子目录包含了与 MVC 模式对应的源码。
 
-You may configure the [[yii\base\Application::basePath|basePath]] property using a directory path
-or a [path alias](concept-aliases.md). In both forms, the corresponding directory must exist, or an exception
-will be thrown. The path will be normalized by calling the `realpath()` function.
+你可以使用目录路径或[路径别名](concept-aliases.md)去配置 [[yii\base\Application::basePath|basePath]]。这两种形式配置时，对应的目录都必须存在，否则会抛出异常。路径将会通过 
+调用 `realpath()` 函数实现标准化。
 
-The [[yii\base\Application::basePath|basePath]] property is often used to derive other important
-paths (e.g. the runtime path). For this reason, a path alias named `@app` is predefined to represent this
-path. Derived paths may then be formed using this alias (e.g. `@app/runtime` to refer to the runtime directory).
+[[yii\base\Application::basePath|basePath]] 通常用来派生出其它重要路径（例如 runtime 路径）。鉴于此，路径别名 `@app` 被预定义指向这个路径。这样前面所说的派生出的路径就可以使用这个别名来访问（例如 `@app/runtime` 指向 bashPath 下的 runtime 目录）。
 
 
-### Important Properties <a name="important-properties"></a>
+### 重要属性 <a name="important-properties"></a>
 
-The properties described in this subsection often need to be configured because they differ across
-different applications.
+这部分涉及到的属性往往需要被配置，因为它们在不同应用中通常是不同的。
 
 
-#### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
+#### [[yii\base\Application::aliases|别名（aliases）]] <a name="aliases"></a>
 
-This property allows you to define a set of [aliases](concept-aliases.md) in terms of an array.
-The array keys are alias names, and the array values are the corresponding path definitions.
-For example,
+这个属性让你通过一个数组的形式定义一组[别名](concept-aliases.md)。数组的键是别名的名称，数组的值是对应的路径定义。例如：
 
 ```php
 [
@@ -93,43 +69,39 @@ For example,
 ]
 ```
 
-This property is provided such that you can define aliases in terms of application configurations instead of
-the method calls [[Yii::setAlias()]].
+这个属性提供了一种通过调用 [[Yii::setAlias()]] 方法之外的，通过应用配置定义别名的方式。
 
 
-#### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
+#### [[yii\base\Application::bootstrap|引导（bootstrap）]] <a name="bootstrap"></a>
 
-This is a very useful property. It allows you to specify an array of components that should
-be run during the application [[yii\base\Application::bootstrap()|bootstrapping process]].
-For example, if you want a [module](structure-modules.md) to customize the [URL rules](runtime-url-handling.md),
-you may list its ID as an element in this property.
+这是相当有用的属性。它允许你以数组形式指定一些组件在应用 [[yii\base\Application::bootstrap()|引导过程]]就执行。例如：如果想让一个[模型](structure-modules.md)自定义[ URL 规则](runtime-url-handling.md) 你可以以数组元素的形式列出它的 ID。
 
-Each component listed in this property may be specified in one of the following formats:
+每个属性中都可以用下述任意格式列出组件：
 
-- an application component ID as specified via [components](#components).
-- a module ID as specified via [modules](#modules).
-- a class name.
-- a configuration array.
-- an anonymous function that creates and returns a component.
+- 按照[组件](#components)指定的一个应用组件 ID。
+- 按照[模块](#modules)指定的一个模块 ID。
+- 一个类名。
+- 一个配置数组。
+- 一个创建并返回组件的匿名函数。
 
-For example,
+例如：
 
 ```php
 [
     'bootstrap' => [
-        // an application component ID or module ID
+        // 一个应用组件 ID 或模块 ID
         'demo',
 
-        // a class name
+        // 一个类名
         'app\components\Profiler',
 
-        // a configuration array
+        // 一个配置数组
         [
             'class' => 'app\components\Profiler',
             'level' => 3,
         ],
 
-        // an anonymous function
+        // 一个匿名函数
         function () {
             return new app\components\Profiler();
         }
@@ -137,9 +109,8 @@ For example,
 ]
 ```
 
-> Info: If a module ID is the same as an application component ID, the application component will be used during
-  the bootstrapping process. If you want to use the module instead, you may specify it using an anonymous function
-  like the following:
+> 补充：如果一个模块 ID 和应用组件 ID 重复，应用组件 ID 将被用于应用引导过程中执行。如果你想使用模块 ID，可以使用匿名函数返回它：
+  
 >```php
 [
     function () {
@@ -149,17 +120,13 @@ For example,
 ```
 
 
-During the bootstrapping process, each component will be instantiated. If the component class
-implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
-will also be called.
+在应用引导过程期间，每个组件都会被实例化。如果组件类实现了 [[yii\base\BootstrapInterface]]，它的 [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] 也将被调用。
 
-Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
-where the `debug` and `gii` modules are configured as bootstrapping components when the application is running
-in development environment,
+另一个例子是[基础应用模版](start-installation.md)中的应用配置，当应用运行在开发环境中时 `debug` 和 `gii` 两个模块将被配制成引导组件：
 
 ```php
 if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
+    // 针对 `dev` 环境所做的配置调整
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
 
@@ -168,18 +135,14 @@ if (YII_ENV_DEV) {
 }
 ```
 
-> Note: Putting too many components in `bootstrap` will degrade the performance of your application because
-  for each request, the same set of components need to be run. So use bootstrapping components judiciously.
+> 注意：放置太多组件在 `bootstrap` 过程中将会降低应用性能，因为每个请求都要运行相同的一系列组件。所以，请明智地使用引导组件。
 
 
-#### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
+#### [[yii\web\Application::catchAll|捕获所有请求（catchAll）]] <a name="catchAll"></a>
 
-This property is supported by [[yii\web\Application|Web applications]] only. It specifies
-a [controller action](structure-controllers.md) which should handle all user requests. This is mainly
-used when the application is in maintenance mode and needs to handle all incoming requests via a single action.
+这个属性仅支持 [[yii\web\Application|Web 应用]]。它指定了一个处理所有用户请求的[控制器操作](structure-controllers.md)。这主要在应用处于维护模式，或使用单独一个操作响应所有用户请求时使用。
 
-The configuration is an array whose first element specifies the route of the action.
-The rest of the array elements (key-value pairs) specify the parameters to be bound to the action. For example,
+配置项是一个数组，第一个元素指定操作的路由。剩下的数组元素（键值对）指定绑定到操作上的参数。例如：
 
 ```php
 [
@@ -192,10 +155,9 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 ```
 
 
-#### [[yii\base\Application::components|components]] <a name="components"></a>
+#### [[yii\base\Application::components|组件（components）]] <a name="components"></a>
 
-This is the single most important property. It allows you to register a list of named components
-called [application components](#structure-application-components.md) that you can use in other places. For example,
+这是最重要的属性。它可以让你注册一组命名的被称为[应用组件](#structure-application-components.md)的组件列表，以便你在应用中使用。例如：
 
 ```php
 [
@@ -211,22 +173,16 @@ called [application components](#structure-application-components.md) that you c
 ]
 ```
 
-Each application component is specified as a key-value pair in the array. The key represents the component ID,
-while the value represents the component class name or [configuration](concept-configurations.md).
+每个应用组件都由一个键值对组成的数组指定。键代表组件 ID，值则表示组件类名或[配置](concept-configuration.md)。
 
-You can register any component with an application, and the component can later be accessed globally
-using the expression `\Yii::$app->ComponentID`.
+你可以随着一个应用注册任何组件，组件可以在随后使用表达式 `\Yii->$app->ComponentID` 全局访问。
 
-Please read the [Application Components](structure-application-components.md) section for details.
+请参考[应用组件](structure-application-components.md)章节了解更多信息。
 
 
-#### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
+#### [[yii\base\Application::controllerMap|控制器映射（controllerMap）]] <a name="controllerMap"></a>
 
-This property allows you to map a controller ID to an arbitrary controller class. By default, Yii maps
-controller IDs to controller classes based on a [convention](#controllerNamespace) (e.g. the ID `post` would be mapped
-to `app\controllers\PostController`). By configuring this property, you can break the convention for
-specific controllers. In the following example, `account` will be mapped to
-`app\controllers\UserController`, while `article` will be mapped to `app\controllers\PostController`.
+这个属性允许你映射控制器 ID 至任意控制器类。默认情况下，Yii 将控制器 ID 基于[控制器命名约定](#controllerNamespace)进行映射（例如，ID `post` 将被映射到 `app\controllers\PostController`）。通过配置这个属性，你可以针对特定控制器打破这种约定。下述例子中，`account` 将被映射到 `app\controllers\UserController`，而 `article` 将被映射到 `app\controllers\PostController`。
 
 ```php
 [
@@ -242,59 +198,43 @@ specific controllers. In the following example, `account` will be mapped to
 ]
 ```
 
-The array keys of this property represent the controller IDs, while the array values represent the corresponding
-controller class names or [configurations](concept-configurations.md).
+这个属性的数组键名代表控制器 ID，而数组值代表对应的控制器名或[配置](concept-configurations.md)。
 
 
-#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
+#### [[yii\base\Application::controllerNamespace|控制器命名空间（controllerNamespace）]] <a name="controllerNamespace"></a>
 
-This property specifies the default namespace under which controller classes should be located. It defaults to
-`app\controllers`. If a controller ID is `post`, by convention the corresponding controller class name (without
-namespace) would be `PostController`, and the fully qualified class name would be `app\controllers\PostController`.
+这个属性指定了从哪个命名空间下寻找控制器类。默认值为 `app\controllers`。如果一个控制器的 ID 是 `post`，按惯例对应的控制器类名（没有命名空间）将是 `PostController`，完全限定类名将是 `app\controllers\PostController`。
 
-Controller classes may also be located under sub-directories of the directory corresponding to this namespace.
-For example, given a controller ID `admin/post`, the corresponding fully qualified controller class would
-be `app\controllers\admin\PostController`.
+控制器类也许会被定位到此命名空间对应目录下的子目录。例如，给定一个控制器类 `admin/post`，对应的控制器完全限定类名将会是 `app\controllers\admin\PostController`。
 
-It is important that the fully qualified controller classes should be [autoloadable](concept-autoloading.md)
-and the actual namespace of your controller classes match the value of this property. Otherwise,
-you will receive "Page Not Found" error when accessing the application.
+控制器的完全限定名能被[自动加载](concept-autoloading.md)并且控制器类实际的命名空间与此属性匹配非常重要。否则你在访问控制器时将会收到 “Page Not Found”错误。
 
-In case you want to break the convention as described above, you may configure the [controllerMap](#controllerMap)
-property.
+如果你想要打破上述约定，可以配置[控制器映射](#controllerMap)属性。
 
 
-#### [[yii\base\Application::language|language]] <a name="language"></a>
+#### [[yii\base\Application::language|语言（language）]] <a name="language"></a>
 
-This property specifies the language in which the application should display content to end users.
-The default value of this property is `en`, meaning English. You should configure this property
-if your application needs to support multiple languages.
+这个属性指定了应用应该以何种语言显示给最终用户。默认值是 `en`，即英语。如果你的应用需要支持多种语言，应该配置这个属性。
 
-The value of this property determines various [internationalization](tutorial-i18n.md) aspects,
-including message translation, date formatting, number formatting, etc. For example, the [[yii\jui\DatePicker]] widget
-will use this property value by default to determine in which language the calendar should be displayed and how
-should the date be formatted.
+这个属性的值确定了[国际化](tutorial-i18n.md)方面的多个内容，包括消息翻译，日期格式，数字格式，等等。例如，小部件 [[yii\jui\DatePicker]] 将使用这个属性的值来确定日历应该显示哪种语言以及日期使用哪种格式。
 
-It is recommended that you specify a language in terms of an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
-For example, `en` stands for English, while `en-US` stands for English (United States).
+建议你根据 [IETF 语言标签](http://en.wikipedia.org/wiki/IETF_language_tag)去指定语言。例如，`en` 代表英语，而 `en-US` 代表英语（美国）。
 
-More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+更多关于该属性的细节请查看[国际化](tutorial-i18n.md)章节。
 
+#### [[yii\base\Application::modules|模块（modules)]] <a name="modules"></a>
 
-#### [[yii\base\Application::modules|modules]] <a name="modules"></a>
+这个属性指定了应用中包含的[模块](structure-modules.md)。
 
-This property specifies the [modules](structure-modules.md) that the application contains.
-
-The property takes an array of module classes or [configurations](concept-configurations.md) with the array keys
-being the module IDs. For example,
+这个属性接受一个模块类或[配置](concept-configurations.md)的数组，数组键名作为模块 ID。例如：
 
 ```php
 [
     'modules' => [
-        // a "booking" module specified with the module class
+        // 通过模块类指定一个 “booking” 模块
         'booking' => 'app\modules\booking\BookingModule',
 
-        // a "comment" module specified with a configuration array
+        // 通过配置数组指定一个 “comment” 模块
         'comment' => [
             'class' => 'app\modules\comment\CommentModule',
             'db' => 'db',
@@ -303,24 +243,19 @@ being the module IDs. For example,
 ]
 ```
 
-Please refer to the [Modules](structure-modules.md) section for more details.
+请参考[模块](structure-modules.md)章节了解详情。
 
 
-#### [[yii\base\Application::name|name]] <a name="name"></a>
+#### [[yii\base\Application::name|名称（name）]] <a name="name"></a>
 
-This property specifies the application name that may be displayed to end users. Unlike the
-[[yii\base\Application::id|id]] property which should take a unique value, the value of this property is mainly for
-display purpose and does not need to be unique.
+这个属性指定了可能显示给最终用户的应用名称。和 [[yii\base\Application::id|id]] 只能接受唯一值不同，这个属性主要用作显示目的，所以不必唯一。
 
-You do not always need to configure this property if none of your code is using it.
+如果你的代码没有使用它就不必配置。
 
 
-#### [[yii\base\Application::params|params]] <a name="params"></a>
+#### [[yii\base\Application::params|参数（params）]] <a name="params"></a>
 
-This property specifies an array of globally accessible application parameters. Instead of using hardcoded
-numbers and strings everywhere in your code, it is a good practice to define them as application parameters
-in a single place and use the parameters in places where needed. For example, you may define the thumbnail
-image size as a parameter like the following:
+这个属性指定了一个全局可访问的应用参数。可以代替在应用中四处硬编码数字和字符，在一处定义参数，并在其它地方按需使用是良好的实践。例如，你可能会以参数形式定义缩略图尺寸：
 
 ```php
 [
@@ -330,34 +265,28 @@ image size as a parameter like the following:
 ]
 ```
 
-Then in your code where you need to use the size value, you can simply use the code like the following:
+然后在你的代码中需要用到这些值的地方，可以简单的使用它们：
 
 ```php
 $size = \Yii::$app->params['thumbnail.size'];
 $width = \Yii::$app->params['thumbnail.size'][0];
 ```
 
-Later if you decide to change the thumbnail size, you only need to modify it in the application configuration
-without touching any dependent code.
+今后如果你决定更改缩略图尺寸，只需在应用配置中修改它即可，无需改动任何依赖的代码。
 
 
-#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
+#### [[yii\base\Application::sourceLanguage|源码语言（sourceLanguage）]] <a name="sourceLanguage"></a>
 
-This property specifies the language that the application code is written in. The default value is `'en-US'`,
-meaning English (United States). You should configure this property if the text content in your code is not in English.
+这个属性指定了应用代码以何种语言写就。默认值是 `en-US`，即英语（美国）。如果代码中的文字内容不是英语你就该配置它。
 
-Like the [language](#language) property, you should configure this property in terms of
-an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
-while `en-US` stands for English (United States).
+正如[语言（language）](#language)属性一样，你应该根据 [IETF 语言标签](http://en.wikipedia.org/wiki/IETF_language_tag)去指定语言。例如，`en` 代表英语，而 `en-US` 代表英语（美国）。
 
-More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+更多关于此属性的细节请查看[国际化](tutorial-i18n.md)章节。
 
 
-#### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
+#### [[yii\base\Application::timeZone|时区（timeZone）]] <a name="timeZone"></a>
 
-This property is provided as an alternative way of setting the default time zone of PHP runtime.
-By configuring this property, you are essentially calling the PHP function
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). For example,
+这个属性提供了一个设置 PHP 运行时默认时区的可选方法。配置这个属性，本质上就是调用 PHP 函数 [date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)。例如：
 
 ```php
 [
@@ -366,48 +295,35 @@ By configuring this property, you are essentially calling the PHP function
 ```
 
 
-#### [[yii\base\Application::version|version]] <a name="version"></a>
+#### [[yii\base\Application::version|版本（version）]] <a name="version"></a>
 
-This property specifies the version of the application. It defaults to `'1.0'`. You do not always need to configure
-this property if none of your code is using it.
-
-
-### Useful Properties <a name="useful-properties"></a>
-
-The properties described in this subsection are not commonly configured because their default values
-stipulate common conventions. However, you may still configure them in case you want to break the conventions.
+这个属性指定了应用的版本。默认为 `'1.0'`。如果代码中没有用到它就不需要配置。
 
 
-#### [[yii\base\Application::charset|charset]] <a name="charset"></a>
+### 有用属性 <a name="useful-properties"></a>
 
-This property specifies the charset that the application uses. The default value is `'UTF-8'` which should
-be kept as is for most applications unless you are working with some legacy systems that use a lot of non-unicode data.
-
-
-#### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
-
-This property specifies the [route](runtime-routing.md) that an application should use when a request
-does not specify one. The route may consist of child module ID, controller ID, and/or action ID.
-For example, `help`, `post/create`, `admin/post/create`. If action ID is not given, it will take the default
-value as specified in [[yii\base\Controller::defaultAction]].
-
-For [[yii\web\Application|Web applications]], the default value of this property is `'site'`, which means
-the `SiteController` controller and its default action should be used. As a result, if you access
-the application without specifying a route, it will show the result of `app\controllers\SiteController::actionIndex()`.
-
-For [[yii\console\Application|console applications]], the default value is `'help'`, which means the core command
-[[yii\console\controllers\HelpController::actionIndex()]] should be used. As a result, if you run the command `yii`
-without providing any arguments, it will display the help information.
+这部分提到的属性并不常用，因为它们的默认配置比较符合通用约定。如果想打破这种约定，仍然可以配置它们。
 
 
-#### [[yii\base\Application::extensions|extensions]] <a name="extensions"></a>
+#### [[yii\base\Application::charset|编码（charset）]] <a name="charset"></a>
 
-This property specifies the list of [extensions](structure-extensions.md) that are installed and used by the application.
-By default, it will take the array returned by the file `@vendor/yiisoft/extensions.php`. The `extensions.php` file
-is generated and maintained automatically when you use [Composer](http://getcomposer.org) to install extensions.
-So in most cases, you do not need to configure this property.
+这个属性定义了应用使用的编码。默认值是 `utf-8`，除非你要整合遗留系统的非 Unicode 数据，否则应该保留默认值。
 
-In the special case when you want to maintain extensions manually, you may configure this property like the following:
+
+#### [[yii\base\Application::defaultRoute|默认路由（defaultRoute）]] <a name="defaultRoute"></a>
+
+这个属性指定了当一个请求没有指定路由时应用默认使用的[路由](runtime-routing.md)。 路由可能由模块 ID，控制器 ID，操作 ID组成。例如，`help`，`post/create`，`admin/post/create`。如果没有给定操作 ID，它将使用 [[yii\base\Controller::defaultAction]] 指定的值作为默认值。
+
+对于 [[yii\web\Application|Web 应用]]，这个属性的默认值是 `'site'`，即 `SiteController` 控制器和它默认操作将被使用。因此，当你访问应用而不指定任何路由时，它将显示 `app\controllers\SiteController::actionIndex()` 的执行结果。
+
+对于 [[yii\console\Application|控制台应用]]，这个属性的默认值是 `'help'`，即核心命令 [[yii\console\controllers\HelpController::actionIndex()]]  将被使用。因此，当你执行 `yii` 命令而不提供任何参数时，它将显示帮助信息。
+
+
+#### [[yii\base\Application::extensions|扩展（extension）]] <a name="extensions"></a>
+
+这个属性指定了已被应用安装和使用的[扩展](structure-extensions.md)列表。默认情况下，它接受的是从文件 `@vendor/yiisoft/extension.php` 返回的数组。 `extension.php` 文件是当你使用 [Composer](http://getcomposer.org) 安装扩展时自动生成和维护的。所以多数情况下，无需配置这个属性。
+
+特殊情况下你也许想要手动维护扩展，可以配置这个属性：
 
 ```php
 [
@@ -415,84 +331,67 @@ In the special case when you want to maintain extensions manually, you may confi
         [
             'name' => 'extension name',
             'version' => 'version number',
-            'bootstrap' => 'BootstrapClassName',  // optional, may also be a configuration array
+            'bootstrap' => 'BootstrapClassName',  // 可选项，也可以是一个配置数组
             'alias' => [  // optional
                 '@alias1' => 'to/path1',
                 '@alias2' => 'to/path2',
             ],
         ],
 
-        // ... more extensions like the above ...
+        // ... 和上面格式一样的更多扩展 ...
 
     ],
 ]
 ```
 
-As you can see, the property takes an array of extension specifications. Each extension is specified with an array
-consisting of `name` and `version` elements. If an extension needs to run during the [bootstrap](runtime-bootstrapping.md)
-process, a `bootstrap` element may be specified with a bootstrapping class name or a [configuration](concept-configurations.md)
-array. An extension may also define a few [aliases](concept-aliases.md).
+如你所见，该属性接受一个包含扩展说明的数组。每个扩展由包含 `name` 和 `version` 元素的数组指定。如果一个扩展需要在[引导](runtime-bootstrapping.md)过程中执行，还可以指定一个 `bootstrap` 元素，其值可以是引导类名或[配置](concept-configurations.md)数组。一个扩展同样可以定义[别名](concept-aliases.md)。
 
 
-#### [[yii\base\Application::layout|layout]] <a name="layout"></a>
+#### [[yii\base\Application::layout|布局（layout）]] <a name="layout"></a>
 
-This property specifies the name of the default layout that should be used when rendering a [view](structure-views.md).
-The default value is `'main'`, meaning the layout file `main.php` under the [layout path](#layoutPath) should be used.
-If both of the [layout path](#layoutPath) and the [view path](#viewPath) are taking the default values,
-the default layout file can be represented as the path alias `@app/views/layouts/main.php`.
+这个属性指定了渲染[视图](structure-views.md)时的默认布局文件名。默认值为 `'main'`，意思是[布局路径](#layoutPath)下的 `main.php` 文件会被使用。如果[布局路径](#layoutPath)和[视图路径](#viewPath)都使用默认值，则默认布局文件可以用别名`@app/views/layouts/main.php`表示。
 
-You may configure this property to be `false` if you want to disable layout by default, although this is very rare.
+尽管这很不常用，但你可以通过配置此属性为 `false` 去禁用默认布局。
 
 
-#### [[yii\base\Application::layoutPath|layoutPath]] <a name="layoutPath"></a>
+#### [[yii\base\Application::layoutPath|布局路径（layoutPath)]] <a name="layoutPath"></a>
 
-This property specifies the path where layout files should be looked for. The default value is
-the `layouts` sub-directory under the [view path](#viewPath). If the [view path](#viewPath) is taking
-its default value, the default layout path can be represented as the path alias `@app/views/layouts`.
+这个属性指定了布局文件的寻找路径。默认值为[视图路径](#viewPath)下的 `layouts` 子目录。如果[视图路径](#viewPath)使用的是默认值，则默认布局路径可以用别名 `@app/views/layouts` 表示。
 
-You may configure it as a directory or a path [alias](concept-aliases.md).
+你可以使用目录地址或路径[别名](concept-aliases.md)配置本属性。
 
 
-#### [[yii\base\Application::runtimePath|runtimePath]] <a name="runtimePath"></a>
+#### [[yii\base\Application::runtimePath|运行时路径（runtimePath）]] <a name="runtimePath"></a>
 
-This property specifies the path where temporary files, such as log files, cache files, can be generated.
-The default value is the directory represented by the alias `@app/runtime`.
+这个属性指定了临时文件生成的路径，如日志文件，缓存文件。属性默认值被表示为 `@app/runtime`。
 
-You may configure it as a directory or a path [alias](concept-aliases.md). Note that the runtime path must
-be writable by the process running the application. And the path should be protected from being accessed
-by end users because the temporary files under it may contain sensitive information.
+你可以使用目录地址或路径[别名](concept-aliases.md)配置它。请注意，运行时路径必须有执行应用进程的写入权限。并且应该保证终端用户没有访问权限，因为路径中的临时文件可能包含敏感信息。
 
-To simplify accessing to this path, Yii has predefined a path alias named `@runtime` for it.
+为了简化此路径访问，Yii 为此路径预定义了一个别名 `@runtime`。
 
 
-#### [[yii\base\Application::viewPath|viewPath]] <a name="viewPath"></a>
+#### [[yii\base\Application::viewPath|视图路径（viewPath）]] <a name="viewPath"></a>
 
-This property specifies the root directory where view files are located. The default value is the directory
-represented by the alias `@app/views`. You may configure it as a directory or a path [alias](concept-aliases.md).
+这个属性指定了视图文件存储的根目录。默认值是别名 `@app/views` 代表的目录。你可以用目录地址或路径[别名](concept-aliases.md)配置它。
 
 
-#### [[yii\base\Application::vendorPath|vendorPath]] <a name="vendorPath"></a>
+#### [[yii\base\Application::vendorPath|供应商目录（vendorPath）]] <a name="vendorPath"></a>
 
-This property specifies the vendor directory managed by [Composer](http://getcomposer.org). It contains
-all third party libraries used by your application, including the Yii framework. The default value is
-the directory represented by the alias `@app/vendor`.
+这个属性指定了 [Composer](http://getcomposer.org) 负责维护的供应商目录。它包含了应用运行需要的所有第三方库，包括 Yii 框架核心。默认值是别名 `@app/vendor` 代表的目录。
 
-You may configure this property as a directory or a path [alias](concept-aliases.md). When you modify
-this property, make sure you also adjust the Composer configuration accordingly.
+你可以用目录地址或路径[别名](concept-aliases.md)配置它。如果你修改了此属性默认值，请确保你同样相应调整了 Composer 配置。
 
-To simplify accessing to this path, Yii has predefined a path alias named `@vendor` for it.
+为了简化此路径访问，Yii 为此路径预定义了一个别名 `@vendor`。
 
 
 #### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <a name="enableCoreCommands"></a>
 
-This property is supported by [[yii\console\Application|console applications]] only. It specifies
-whether the core commands included in the Yii release should be enabled. The default value is `true`.
+这个属性只被[[yii\console\Application|控制台应用]]所支持。它定义了 Yii 发行包中所包含的核心命令是否可以使用。默认值为 `true`。
 
 
-## Application Events <a name="application-events"></a>
+## 应用事件 <a name="application-events"></a>
 
-An application triggers several events during the lifecycle of handling an request. You may attach event
-handlers to these events in application configurations like the following,
+一个应用在处理请求的生命周期中会触发几个事件。你可以在应用配置中附加对应的事件处理器给这些事件：
 
 ```php
 [
@@ -502,11 +401,9 @@ handlers to these events in application configurations like the following,
 ]
 ```
 
-The use of the `on eventName` syntax is described in the [Configurations](concept-configurations.md#configuration-format)
-section.
+`on eventName` 的使用语法在[配置](concept-configuration.md#configuration-format)章节有所描述。
 
-Alternatively, you may attach event handlers during the [bootstrapping process](runtime-bootstrapping.md) process
-after the application instance is created. For example,
+另一种方式，你可以在应用实例化后的[引导过程](runtime-bootstrapping.md)附加事件处理器。例如：
 
 ```php
 \Yii::$app->on(\yii\base\Application::EVENT_BEFORE_REQUEST, function ($event) {
@@ -516,38 +413,30 @@ after the application instance is created. For example,
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <a name="beforeRequest"></a>
 
-This event is triggered *before* an application handles a request. The actual event name is `beforeRequest`.
+这个事件将在应用处理一个请求**之前**被触发。真实的事件名是 `beforeRequest`。
 
-When this event is triggered, the application instance has been configured and initialized. So it is a good place
-to insert your custom code via the event mechanism to intercept the request handling process. For example,
-in the event handler, you may dynamically set the [[yii\base\Application::language]] property based on some parameters.
+当此事件被触发时，应用实例已经被配置并初始化。所以这是个绝佳位置去通过事件机制插入自定义代码截获请求处理过程。例如，在事件处理器中，你可以基于某些参数动态设置应用的[[yii\base\Application::（语言）language]]。
 
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
-This event is triggered *after* an application finishes handling a request but *before* sending the response.
-The actual event name is `afterRequest`.
+这个事件将在应用处理完成一个请求**之后**并且在发送响应内容**之前**被触发。真实的事件名是 `afterRequest`。
 
-When this event is triggered, the request handling is completed and you may take this chance to do some postprocessing
-of the request or customize the response.
+当此事件被触发时，请求处理过程已经完成，并且你可能借此机会对请求做一些后期加工或自定义响应内容。
 
-Note that the [[yii\web\Response|response]] component also triggers some events while it is sending out
-response content to end users. Those events are triggered *after* this event.
+请注意[[yii\web\Response|响应（response）]]组件同样可以在向用户发送响应内容时触发事件。那些事件将在此事件**之后**被触发。
 
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
-This event is triggered *before* running every [controller action](structure-controllers.md).
-The actual event name is `beforeAction`.
+这个事件将在每个[控制器操作](structure-controllers.md)运行**之前**被触发。真实的事件名是 `beforeAction`。
 
-The event parameter is an instance of [[yii\base\ActionEvent]]. An event handler may set
-the [[yii\base\ActionEvent::isValid]] property to be `false` to stop running the action.
-For example,
+事件参数是一个 [[yii\base\ActionEvent]] 类的实例。一个事件处理器可以设置 [[yii\base\ActionEvent::isValid]] 属性为 `false` 去阻止操作执行。例如：
 
 ```php
 [
     'on beforeAction' => function ($event) {
-        if (some condition) {
+        if (一些条件) {
             $event->isValid = false;
         } else {
         }
@@ -555,55 +444,42 @@ For example,
 ]
 ```
 
-Note that the same `beforeAction` event is also triggered by [modules](structure-modules.md)
-and [controllers](structure-controllers.md). Application objects are the first ones
-triggering this event, followed by modules (if any), and finally controllers. If an event handler
-sets [[yii\base\ActionEvent::isValid]] to be `false`, all the following events will NOT be triggered.
+请注意 `beforeAction` 事件同样能被[模块](structure-modules.md)和[控制器](structure-controllers.md)触发。应用对象第一个触发此事件，紧接着是模块（如果有），最后是控制器。如果一个事件处理器设置了 [[yii\base\ActionEvent::isVaild]] 为 `false`，所有其后的事件都将**不被**触发。
 
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
-This event is triggered *after* running every [controller action](structure-controllers.md).
-The actual event name is `afterAction`.
+这个事件将在每个[控制器操作](structure-controllers.md)运行**之后**被触发。真实的事件名是 `afterAction`。
 
-The event parameter is an instance of [[yii\base\ActionEvent]]. Through
-the [[yii\base\ActionEvent::result]] property, an event handler may access or modify the action result.
-For example,
+事件参数是一个 [[yii\base\ActionEvent]] 类的实例。通过 [[yii\base\ActionEvent::result]] 属性，一个事件处理器可以访问或修改操作返回的结果。例如：
 
 ```php
 [
     'on afterAction' => function ($event) {
-        if (some condition) {
-            // modify $event->result
+        if (一些条件) {
+            // 修改 $event->result
         } else {
         }
     },
 ]
 ```
 
-Note that the same `afterAction` event is also triggered by [modules](structure-modules.md)
-and [controllers](structure-controllers.md). These objects trigger this event in the reverse order
-as for that of `beforeAction`. That is, controllers are the first objects triggering this event,
-followed by modules (if any), and finally applications.
+请注意 `afterAction` 事件同样能被[模块](structure-modules.md)和[控制器](structure-controllers.md)触发。那些对象以与 `beforeAction` 相反的顺序触发这个事件。也就是控制器第一个触发此事件，紧接着是模块（如果有），最后是应用对象。
 
 
-## Application Lifecycle <a name="application-lifecycle"></a>
+## 应用生命周期 <a name="application-lifecycle"></a>
 
-When an [entry script](structure-entry-scripts.md) is being executed to handle a request,
-an application will undergo the following lifecycle:
+当[入口脚本](structure-entry-scripts.md)被执行来处理一个请求，应用对象将历经以下生命周期：
 
-1. The entry script loads the application configuration as an array.
-2. The entry script creates a new instance of the application:
-  * [[yii\base\Application::preInit()|preInit()]] is called, which configures some high priority
-    application properties, such as [[yii\base\Application::basePath|basePath]].
-  * Register the [[yii\base\Application::errorHandler|error handler]].
-  * Configure application properties.
-  * [[yii\base\Application::init()|init()]] is called which further calls
-    [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrapping components.
-3. The entry script calls [[yii\base\Application::run()]] to run the application:
-  * Trigger the [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] event.
-  * Handle the request: resolve the request into a [route](runtime-routing.md) and the associated parameters;
-    create the module, controller and action objects as specified by the route; and run the action.
-  * Trigger the [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] event.
-  * Send response to the end user.
-4. The entry script receives the exit status from the application and completes the request processing.
+1. 入口脚本以数组形式加载应用配置。
+2. 入口脚本创建一个新的应用实例：
+  * [[yii\base\Application::preInit()|preInit()]] 被调用，用来配置一些高优先级的应用属性，例如[[yii\base\Application::basePath|（基本路径）]]。
+  * 注册[[yii\base\Application::errorHandler|错误处理器]]。
+  * 配置应用属性。
+  * [[yii\base\Application::init()|init()]] 被调用后进而调用 [[yii\base\Application::bootstrap()|bootstrap()]] 执行组件引导。
+3. 入口脚本调用 [[yii\base\Application::run()]] 执行应用：
+  * 触发 [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] 事件。
+  * 处理请求：解析请求至[路由](runtime-routing.md)和相关参数；依照路由指定创建模型，控制器和操作对象；执行操作。
+  * 触发 [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] 事件。
+  * 发送响应内容给用户。
+4. 入口脚本从应用接受退出状态并且完成请求过程。
