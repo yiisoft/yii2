@@ -180,6 +180,10 @@ abstract class Application extends Module
      * This property is managed by the application. Do not modify this property.
      */
     public $state;
+    /**
+     * @var array list of loaded modules indexed by their class names.
+     */
+    public $loadedModules = [];
 
 
     /**
