@@ -312,6 +312,6 @@ class HotelController extends Controller
 [статью Мартина Фаулера](http://martinfowler.com/articles/injection.html), для более глубокого понимания dependency injection и service locator. 
 
 Yii реализует свой [service locator](concept-service-locator.md) поверх контейнера внедрения зависимостей.
-Когда service locator пытается создать новый экземпляр объекта, он перенаправляет вызов на Контейнер внедрения зависимостей.
+Когда service locator пытается создать новый экземпляр объекта, он перенаправляет вызов на контейнер внедрения зависимостей.
 Последний будет разрешать зависимости автоматически, как описано выше.
 
