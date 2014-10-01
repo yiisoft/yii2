@@ -75,4 +75,4 @@ For example, to support a new action `search` by the endpoint `GET /users/search
 You may have noticed that the controller ID `user` appears in plural form as `users` in the endpoints.
 This is because [[yii\rest\UrlRule]] automatically pluralizes controller IDs for them to use in endpoints.
 You may disable this behavior by setting [[yii\rest\UrlRule::pluralize]] to be false, or if you want
-to use some special names you may configure the [[yii\rest\UrlRule::controller]] property.
+to use some special names you may configure the [[yii\rest\UrlRule::controller]] property. Note that the pluralization of RESTful endpoints does not always simply add an "s" to the end of the controller id.  A controller whose ID ends in "x", for example "BoxController" (with ID `box`), has RESTful endpoints pluralized to `boxes` by [[yii\rest\UrlRule]].
