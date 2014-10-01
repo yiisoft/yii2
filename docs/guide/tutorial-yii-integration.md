@@ -101,7 +101,8 @@ new yii\web\Application($yiiConfig); // Do NOT call run() here
 
 As you can see, the code above is very similar to that in the [entry script](structure-entry-scripts.md) of
 a typical Yii application. The only difference is that after the application instance is created, the `run()` method
-is not called. This is because by calling `run()`, Yii will take over the control of the request handling workflow.
+is not called. This is because by calling `run()`, Yii will take over the control of the request handling workflow
+which is not needed in this case and already handled by the existing application.
 
 Like in a Yii application, you should configure the application instance based on the environment running
 the third-party system. For example, to use the [Active Record](db-active-record.md) feature, you need to configure
@@ -118,9 +119,9 @@ the whole application in Yii 2, you may just want to enhance it using some of th
 This can be achieved as described below.
 
 > Note: Yii 2 requires PHP 5.4 or above. You should make sure that both your server and the existing application
-  support this.
+> support this.
 
-First, install Yii 2 in your existing application by following the instructions given in the last subsection.
+First, install Yii 2 in your existing application by following the instructions given in the [last subsection](#using-yii-in-others).
 
 Second, modify the entry script of the application as follows,
 
@@ -149,13 +150,14 @@ require($yii1path . '/YiiBase.php'); // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {
-    // copy-paste the code in YiiBase (1.x) here
+    // copy-paste the code from YiiBase (1.x) here
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-
 // register Yii2 autoloader via Yii1
 Yii::registerAutoloader(['Yii', 'autoload']);
+// create the dependency injection container
+Yii::$container = new yii\di\Container;
 ```
 
 That's all! Now in any part of your code, you can use `Yii::$app` to access the Yii 2 application instance, while
