@@ -138,7 +138,7 @@ fonctionnalités sont implémentées, ou les personnaliser :
 * Vues: `views/country/*.php`
 
 > Info: Gii est conçu pour être un outil de génération de code hautement personnalisable et extensible. L’utiliser avec
-  sagesse peut grandement accélérer le développement de vos applications. Pour plois de détails, merci de vous référer 
+  sagesse peut grandement accélérer le développement de vos applications. Pour plus de détails, merci de vous référer 
   à la section [Gii](tool-gii.md).
 
 
