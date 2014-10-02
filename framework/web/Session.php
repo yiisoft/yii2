@@ -206,7 +206,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             $request = Yii::$app->getRequest();
             if (ini_get('session.use_cookies') && !empty($_COOKIE[$name])) {
                 $this->_hasSessionId = true;
-            } elseif (!ini_get('use_only_cookies') && ini_get('use_trans_sid')) {
+            } elseif (!ini_get('session.use_only_cookies') && ini_get('session.use_trans_sid')) {
                 $this->_hasSessionId = $request->get($name) !== null;
             } else {
                 $this->_hasSessionId = false;
