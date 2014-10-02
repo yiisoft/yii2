@@ -3,7 +3,6 @@ Yii 2.0 bo`yicha to`liq qo`llanma
 
 Ushbu qo`llanma [Yii qo`llanmalarining holati bilan](http://www.yiiframework.com/doc/terms/) bilan mos holda yo`lga qo`yildi.
 
-<<<<<<< HEAD
 All Rights Reserved.
 
 2014 © Yii Software LLC.
@@ -203,8 +202,3 @@ Xelperlar
 * **TBD** [Html](helper-html.md)
 * **TBD** [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
-=======
-Barcha huquqlar ximoyalangan.
-
-2014 © Yii Software LLC.
->>>>>>> 6a3cce2e267f590c38f910d571adea6a38028329
