@@ -85,20 +85,20 @@ If you already have a formatted body string, you may assign it to the [[yii\web\
 of the response. For example,
 
 ```php
-Yii::$app->request->content = 'hello world!';
+Yii::$app->response->content = 'hello world!';
 ```
 
-If you data needs to be formatted before sending to end users, you should set both of the
+If your data needs to be formatted before sending it to end users, you should set both of the
 [[yii\web\Response::format|format]] and [[yii\web\Response::data|data]] properties. The [[yii\web\Response::format|format]]
-property specifies in which format should the [[yii\web\Response::data|data]] be formatted as. For example,
+property specifies in which format the [[yii\web\Response::data|data]] should be formatted. For example,
 
 ```php
-$response = Yii::$app->request;
+$response = Yii::$app->response;
 $response->format = \yii\web\Response::FORMAT_JSON;
 $response->data = ['message' => 'hello world'];
 ```
 
-Yii supports the following formats out of box, each implemented by a [[yii\web\ResponseFormatterInterface|formatter]] class.
+Yii supports the following formats out of the box, each implemented by a [[yii\web\ResponseFormatterInterface|formatter]] class.
 You can customize these formatters or add new ones by configuring the [[yii\web\Response::formatters]] property.
 
 * [[yii\web\Response::FORMAT_HTML|HTML]]: implemented by [[yii\web\HtmlResponseFormatter]].
@@ -135,7 +135,7 @@ public function actionInfo()
 ```
 
 As aforementioned, besides using the default `response` application component, you can also create your own
-response objects and send them to end users. You can do so by returning such an object in an action method, like the following,
+response objects and send them to end users. You can do so by returning such object in an action method, like the following,
 
 ```php
 public function actionInfo()
