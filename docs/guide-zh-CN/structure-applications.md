@@ -127,8 +127,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-在启动阶段，每个组件都会实例化。如果组件类实现接口 [[yii\base\BootstrapInterface]], 
-也会调用 [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] 方法。
+在启动阶段，每个组件都会实例化。如果组件类实现接口 [[yii\base\BootstrapInterface]],也会调用 [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] 方法。
 
 举一个实际的例子，[Basic Application Template](start-installation.md) 应用主体配置中，
 开发环境下会在启动阶段运行 `debug` 和 `gii` 模块。
@@ -192,8 +191,7 @@ if (YII_ENV_DEV) {
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
 
-该属性允许你指定一个控制器ID到任意控制器类。Yii遵循一个默认的 [规则](#controllerNamespace) 
-指定控制器ID到任意控制器类（如`post`对应`app\controllers\PostController`）。
+该属性允许你指定一个控制器ID到任意控制器类。Yii遵循一个默认的 [规则](#controllerNamespace)指定控制器ID到任意控制器类（如`post`对应`app\controllers\PostController`）。
 通过配置这个属性，可以打破这个默认规则，在下面的例子中，`account`对应到`app\controllers\UserController`，
 `article` 对应到 `app\controllers\PostController`。
 
@@ -299,7 +297,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 该属性指定应用代码的语言，默认为 `'en-US'` 标识英文（美国），如果应用不是英文请修改该属性。
 
-和 [语言](#language) 属性类似，配置该属性需遵循 [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). 
+和 [语言](#language) 属性类似，配置该属性需遵循 [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
 例如 `en` 代表英文， `en-US` 代表英文(美国)。
 
 该属性的更多信息可参考 [国际化](tutorial-i18n.md) 一节.
@@ -451,14 +449,14 @@ You may configure it as a directory or a path [alias](concept-aliases.md).
 该事件在应用处理请求*before*之前，实际的事件名为 `beforeRequest`。
 
 在事件触发前，应用主体已经实例化并配置好了，所以通过事件机制将你的代码嵌入到请求处理过程中非常不错。
-例如在事件处理中根据某些参数动态设置[[yii\base\Application::language]]语言属性。 
+例如在事件处理中根据某些参数动态设置[[yii\base\Application::language]]语言属性。
 
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
 该事件在应用处理请求*after*之后但在返回响应*before*之前触发，实际的事件名为`afterRequest`。
 
-该事件触发时，请求已经被处理完，可以做一些请求后处理或自定义响应。 
+该事件触发时，请求已经被处理完，可以做一些请求后处理或自定义响应。
 
 注意 [[yii\web\Response|response]] 组件在发送响应给终端用户时也会触发一些事件，这些事件都在本事件*after*之后触发。
 
