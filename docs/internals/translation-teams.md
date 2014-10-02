@@ -19,6 +19,11 @@ German
 
 - Carsten Brandt, [@cebe](https://github.com/cebe), mail@cebe.cc
 
+Italian
+-------
+
+- Lorenzo Milesi, [@maxxer](https://github.com/maxxer), maxxer@yetopen.it
+
 Russian
 -------
 
