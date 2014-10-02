@@ -14,6 +14,11 @@ China
 - [@Aliciamiao](https://github.com/aliciamiao)
 - [@riverlet ](https://github.com/riverlet)
 
+Finnish
+------
+
+- Jani Mikkonen, [@janisto](https://github.com/janisto), janisto@php.net
+
 German
 ------
 
