@@ -29,7 +29,7 @@ forum/
 
 ### Module Classes <a name="module-classes"></a>
 
-Each module should have a module class which extends from [[yii\base\Module]]. The class should be located
+Each module should have a unique module class which extends from [[yii\base\Module]]. The class should be located
 directly under the module's [[yii\base\Module::basePath|base path]] and should be [autoloadable](concept-autoloading.md).
 When a module is being accessed, a single instance of the corresponding module class will be created.
 Like [application instances](structure-applications.md), module instances are used to share data and components
@@ -173,7 +173,7 @@ different from the one created by Yii in response to a request.
 You may also access the instance of a module using the following approaches:
 
 ```php
-// get the module whose ID is "forum"
+// get the child module whose ID is "forum"
 $module = \Yii::$app->getModule('forum');
 
 // get the module to which the currently requested controller belongs
@@ -238,6 +238,10 @@ class Module extends \yii\base\Module
 For a controller within a nested module, its route should include the IDs of all its ancestor module.
 For example, the route `forum/admin/dashboard/index` represents the `index` action of the `dashboard` controller
 in the `admin` module which is a child module of the `forum` module.
+
+> Info: The [[yii\base\Module::getModule()|getModule()]] method only returns the child module directly belonging
+to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
+direct children and nested ones, indexed by their class names.
 
 
 ## Best Practices <a name="best-practices"></a>

@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug: Date and time formatting now assumes UTC as the timezone for input dates unless a timezone is explicitly given (cebe)
 - Enh #4275: Added `removeChildren()` to `yii\rbac\ManagerInterface` and implementations (samdark)
 - Enh: Added `yii\base\Application::loadedModules` (qiangxue)
+- Chg #2037: Dropped the support for using `yii\base\Module` as concrete module classes (qiangxue)
 
 
 2.0.0-rc September 27, 2014
