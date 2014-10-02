@@ -5,8 +5,9 @@ When an application finishes handling a [request](runtime-requests.md), it gener
 and sends it to the end user. The response object contains information such as the HTTP status code, HTTP headers and body.
 The ultimate goal of Web application development is essentially to build such response objects upon various requests.
 
-In most cases you should mainly deal with the `response` [application component](structure-application-components.md).
-However, Yii also allows you to create your own response objects and send them to end users.
+In most cases you should mainly deal with the `response` [application component](structure-application-components.md)
+which is an instance of [[yii\web\Response]], by default. However, Yii also allows you to create your own response
+objects and send them to end users as we will explain in the following.
 
 In this section, we will describe how to compose and send responses to end users. 
 

@@ -52,7 +52,7 @@ Handling Requests
 * [Routing](runtime-routing.md)
 * [Requests](runtime-requests.md)
 * [Responses](runtime-responses.md)
-* **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
+* [Sessions and Cookies](runtime-sessions-cookies.md)
 * [URL Parsing and Generation](runtime-url-handling.md)
 * [Handling Errors](runtime-handling-errors.md)
 * [Logging](runtime-logging.md)
