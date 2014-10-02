@@ -28,7 +28,7 @@ Yii 2.0 权威指南
 应用结构
 --------
 
-* **已定稿** [结构总览](structure-overview.md)
+* **已定稿** [结构概述](structure-overview.md)
 * **已定稿** [入口脚本](structure-entry-scripts.md)
 * **已定稿** [应用](structure-applications.md)
 * **已定稿** [应用组件](structure-application-components.md)
@@ -44,11 +44,12 @@ Yii 2.0 权威指南
 请求处理
 --------
 
-* **待定中** [引导（Bootstrapping）](runtime-bootstrapping.md)
-* **待定中** [路由（Routing）](runtime-routing.md)
-* **待定中** [请求（Request）](runtime-requests.md)
-* **待定中** [响应（Response）](runtime-responses.md)
-* **待定中** [Sessions（会话）和 Cookies](runtime-sessions-cookies.md)
+* **已定稿** [运行概述](runtime-overview.md)
+* **已定稿** [引导（Bootstrapping）](runtime-bootstrapping.md)
+* **已定稿** [路由（Routing）](runtime-routing.md)
+* **已定稿** [请求（Request）](runtime-requests.md)
+* **已定稿** [响应（Response）](runtime-responses.md)
+* **已定稿** [Sessions（会话）和 Cookies](runtime-sessions-cookies.md)
 * **编撰中** [URL 解析和生成](runtime-url-handling.md)
 * **编撰中** [错误处理](runtime-handling-errors.md)
 * **编撰中** [日志](runtime-logging.md)
@@ -89,7 +90,7 @@ Yii 2.0 权威指南
 显示数据
 --------
 
-* **待定中** [格式化输出数据](output-formatting.md)
+* **待定中** [格式化输出数据](output-formatter.md)
 * **待定中** [分页（Pagination）](output-pagination.md)
 * **待定中** [排序（Sorting）](output-sorting.md)
 * **编撰中** [数据提供器](output-data-providers.md)
