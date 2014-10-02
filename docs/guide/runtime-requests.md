@@ -3,8 +3,8 @@ Requests
 
 Requests made to an application are represented in terms of [[yii\web\Request]] objects which provide information
 such as request parameters, HTTP headers, cookies, etc. For a given request, you can get access to the corresponding
-request object via the `request` [application component](structure-application-components.md). In this section, 
-we will describe how you can make use of this component in your applications.
+request object via the `request` [application component](structure-application-components.md) which is an instance
+of [[yii\web\Request]], by default. In this section, we will describe how you can make use of this component in your applications.
 
 
 ## Request Parameters <a name="request-parameters"></a>

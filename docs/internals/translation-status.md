@@ -30,7 +30,7 @@ runtime-bootstrapping.md            | Yes
 runtime-routing.md                  | Yes
 runtime-requests.md                 | Yes
 runtime-responses.md                | Yes
-runtime-sessions-cookies.md         |
+runtime-sessions-cookies.md         | Yes
 runtime-url-handling.md             |
 runtime-handling-errors.md          |
 runtime-logging.md                  |
