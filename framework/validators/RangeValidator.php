@@ -25,7 +25,7 @@ class RangeValidator extends Validator
     /**
      * @var array list of valid values that the attribute value should be among
      */
-    public $range = [];
+    public $range;
     /**
      * @var boolean whether the comparison is strict (both type and value must be the same)
      */
