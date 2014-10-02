@@ -193,12 +193,7 @@ new ones save the following code as `convert.php` that should be placed in the s
   return [
       'components' => [
           'security' => [
-              'cryptBlockSize' => 16,
-              'cryptKeySize' => 24,
               'derivationIterations' => 1000,
-              'deriveKeyStrategy' => 'hmac', // for PHP version < 5.5.0
-              //'deriveKeyStrategy' => 'pbkdf2', // for PHP version >= 5.5.0
-              'useDeriveKeyUniqueSalt' => false,
           ],
           // ...
       ],
