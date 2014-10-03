@@ -523,7 +523,7 @@ to insert your custom code via the event mechanism to intercept the request hand
 in the event handler, you may dynamically set the [[yii\base\Application::language]] property based on some parameters.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
 This event is triggered *after* an application finishes handling a request but *before* sending the response.
 The actual event name is `afterRequest`.
@@ -535,7 +535,7 @@ Note that the [[yii\web\Response|response]] component also triggers some events 
 response content to end users. Those events are triggered *after* this event.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
 This event is triggered *before* running every [controller action](structure-controllers.md).
 The actual event name is `beforeAction`.
@@ -561,7 +561,7 @@ triggering this event, followed by modules (if any), and finally controllers. If
 sets [[yii\base\ActionEvent::isValid]] to be `false`, all the following events will NOT be triggered.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
+### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
 This event is triggered *after* running every [controller action](structure-controllers.md).
 The actual event name is `afterAction`.
