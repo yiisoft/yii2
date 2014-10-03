@@ -51,7 +51,7 @@ basic/                  корневой каталог приложения
 
 Диаграмма ниже демонстрирует внутреннее устройство приложения.
 
-![внутреннее устройство приложения](../guide/images/application-structure.png)
+![внутреннее устройство приложения](images/application-structure.png)
 
 В каждом приложении Yii есть точка входа в приложение, `web/index.php` это единственный PHP-скрипт доступный для выполнения из Web. Он принимает входящий запрос и создает экземпляр [приложения](structure-applications.md).
 [Приложение](structure-applications.md) обрабатывает входящие запросы при помощи [компонентов](concept-components.md) и отправляет запрос контроллеру. [Виджеты](structure-widgets.md) используются в [Видах](structure-views.md) для построения динамических интерфейсов сайта.
@@ -62,7 +62,7 @@ basic/                  корневой каталог приложения
 
 На диаграмме показано как приложение обрабатывает запрос.
 
-![Жизненный цикл запроса](../guide/images/application-lifecycle.png)
+![Жизненный цикл запроса](images/application-lifecycle.png)
 
 1. Пользователь обращается к [точке входа](structure-entry-scripts.md) `web/index.php`.
 2. Скрипт загружает конфигурацию [configuration](concept-configurations.md) и создает экземпляр [приложения](structure-applications.md) для дальнейшей обработки запроса.
