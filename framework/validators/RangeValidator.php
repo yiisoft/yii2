@@ -66,7 +66,7 @@ class RangeValidator extends Validator
 
         $in = true;
 
-        foreach ((array)$value as $v) {
+        foreach ((is_array($value) ? $value : [$value]) as $v) {
             if (!in_array($v, $this->range, $this->strict)) {
                 $in = false;
                 break;
