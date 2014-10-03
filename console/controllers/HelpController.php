@@ -51,7 +51,7 @@ class HelpController extends Controller
         if ($command !== null) {
             $result = Yii::$app->createController($command);
             if ($result === false) {
-                $name = $this->ansiFormat($command, Console::FG_RED);
+                $name = $this->ansiFormat($command, Console::FG_YELLOW);
                 throw new Exception("No help for unknown command \"$name\".");
             }
 
@@ -250,7 +250,7 @@ class HelpController extends Controller
     {
         $action = $controller->createAction($actionID);
         if ($action === null) {
-            $name = $this->ansiFormat(rtrim($controller->getUniqueId() . '/' . $actionID, '/'), Console::FG_RED);
+            $name = $this->ansiFormat(rtrim($controller->getUniqueId() . '/' . $actionID, '/'), Console::FG_YELLOW);
             throw new Exception("No help for unknown sub-command \"$name\".");
         }
 
