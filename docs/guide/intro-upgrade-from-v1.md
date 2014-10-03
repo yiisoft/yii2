@@ -209,7 +209,7 @@ To learn more details about models, please refer to the [Models](structure-model
 Controllers
 -----------
 
-Yii 2.0 uses [[yii\web\Controller]] as the base controller class, similar to `CWebController` in Yii 1.1.
+Yii 2.0 uses [[yii\web\Controller]] as the base controller class, which is similar to `CController` in Yii 1.1.
 [[yii\base\Action]] is the base class for action classes.
 
 The most obvious impact of these changes on your code is that a controller action should return the content
