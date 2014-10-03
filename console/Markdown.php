@@ -81,7 +81,7 @@ class Markdown extends \cebe\markdown\Parser
      */
     protected function renderCode($block)
     {
-        return Console::ansiFormat(implode("\n", $block['content']), [Console::BG_GREY]) . "\n";
+        return Console::ansiFormat(implode("\n", $block['content']), [Console::NEGATIVE]) . "\n";
     }
 
     /**
