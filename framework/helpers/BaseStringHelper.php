@@ -138,7 +138,7 @@ class BaseStringHelper
      */
     public static function startsWith($string, $with, $caseSensitive = true)
     {
-        if (!$bytes = self::byteLength($with)) {
+        if (!$bytes = static::byteLength($with)) {
             return true;
         }
         if ($caseSensitive) {
@@ -159,11 +159,18 @@ class BaseStringHelper
      */
     public static function endsWith($string, $with, $caseSensitive = true)
     {
-        if (!$bytes = self::byteLength($with)) {
+        if (!$bytes = static::byteLength($with)) {
             return true;
         }
         if ($caseSensitive) {
-            return mb_substr($string, -$bytes, null, '8bit') === $with;
+            /**
+             * Warning check, see:
+             * @link http://php.net/manual/en/function.substr-compare.php#refsect1-function.substr-compare-returnvalues
+             */
+            if (static::byteLength($string) < $bytes) {
+                return false;
+            }
+            return substr_compare($string, $with, -$bytes, $bytes) === 0;
         } else {
             return mb_strtolower(mb_substr($string, -$bytes, null, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
