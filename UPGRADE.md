@@ -21,6 +21,9 @@ Upgrade from Yii 2.0 RC
   
 * `yii\bootstrap\Collapse` is now encoding labels by default. `encode` item option and global `encodeLabels` property were
  introduced to disable it. Keys are no longer used as labels. You need to remove keys and use `label` item option instead.
+ 
+* The `yii\base\View::beforeRender()` and `yii\base\View::afterRender()` methods have two extra parameters `$viewFile`
+  and `$params`. If you are overriding these methods, you should adjust the method signature accordingly.
 
 
 Upgrade from Yii 2.0 Beta
