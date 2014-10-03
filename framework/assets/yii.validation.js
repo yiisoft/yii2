@@ -192,7 +192,7 @@ yii.validation = (function ($) {
 
             var valid = true;
 
-            if (options.enableIDN) {
+            if (options.enableIdn) {
                 var regexp = /^(.*<?)(.*)@(.*)(>?)$/,
                     matches = regexp.exec(value);
                 if (matches === null) {
@@ -218,7 +218,7 @@ yii.validation = (function ($) {
 
             var valid = true;
 
-            if (options.enableIDN) {
+            if (options.enableIdn) {
                 var regexp = /^([^:]+):\/\/([^\/]+)(.*)$/,
                     matches = regexp.exec(value);
                 if (matches === null) {

@@ -48,7 +48,7 @@ class EmailValidator extends Validator
      * Note that in order to use IDN validation you have to install and enable `intl` PHP extension,
      * otherwise an exception would be thrown.
      */
-    public $enableIDN = false;
+    public $enableIdn = false;
 
 
     /**
@@ -57,7 +57,7 @@ class EmailValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->enableIDN && !function_exists('idn_to_ascii')) {
+        if ($this->enableIdn && !function_exists('idn_to_ascii')) {
             throw new InvalidConfigException('In order to use IDN validation intl extension must be installed and enabled.');
         }
         if ($this->message === null) {
@@ -77,7 +77,7 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             $domain = $matches[3];
-            if ($this->enableIDN) {
+            if ($this->enableIdn) {
                 $value = $matches[1] . idn_to_ascii($matches[2]) . '@' . idn_to_ascii($domain) . $matches[4];
             }
             $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
@@ -101,14 +101,14 @@ class EmailValidator extends Validator
             'message' => Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $object->getAttributeLabel($attribute),
             ], Yii::$app->language),
-            'enableIDN' => (boolean) $this->enableIDN,
+            'enableIdn' => (boolean) $this->enableIdn,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }
 
         ValidationAsset::register($view);
-        if ($this->enableIDN) {
+        if ($this->enableIdn) {
             PunycodeAsset::register($view);
         }
 

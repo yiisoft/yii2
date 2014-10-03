@@ -157,7 +157,7 @@ function foo($model, $attribute) {
 
 - `allowName`：检查是否允许带名称的电子邮件地址 (e.g. `张三 <John.san@example.com>`)。 默认为 false。
 - `checkDNS`：检查邮箱域名是否存在，且有没有对应的 A 或 MX 记录。不过要知道，有的时候该项检查可能会因为临时性 DNS 故障而失败，哪怕它其实是有效的。默认为 false。
-- `enableIDN`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
+- `enableIdn`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
 
 
 ## [[yii\validators\ExistValidator|exist（存在性）]] <a name="exist"></a>
@@ -442,4 +442,4 @@ function foo($model, $attribute) {
 
 - `validSchemes`：用于指定那些 URI 方案会被视为有效的数组。默认为 `['http', 'https']`，代表 `http` 和 `https` URLs 会被认为有效。
 - `defaultScheme`：若输入值没有对应的方案前缀，会使用的默认 URI 方案前缀。默认为 null，代表不修改输入值本身。
-- `enableIDN`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
+- `enableIdn`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。

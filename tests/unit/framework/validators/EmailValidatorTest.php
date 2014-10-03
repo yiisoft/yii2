@@ -53,7 +53,7 @@ class EmailValidatorTest extends TestCase
             return;
         }
         $validator = new EmailValidator();
-        $validator->enableIDN = true;
+        $validator->enableIdn = true;
 
         $this->assertTrue($validator->validate('5011@example.com'));
         $this->assertTrue($validator->validate('example@äüößìà.de'));

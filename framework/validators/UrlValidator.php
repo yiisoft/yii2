@@ -46,7 +46,7 @@ class UrlValidator extends Validator
      * fail. Note that in order to use IDN validation you have to install and enable `intl` PHP
      * extension, otherwise an exception would be thrown.
      */
-    public $enableIDN = false;
+    public $enableIdn = false;
 
 
     /**
@@ -55,7 +55,7 @@ class UrlValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->enableIDN && !function_exists('idn_to_ascii')) {
+        if ($this->enableIdn && !function_exists('idn_to_ascii')) {
             throw new InvalidConfigException('In order to use IDN validation intl extension must be installed and enabled.');
         }
         if ($this->message === null) {
@@ -94,7 +94,7 @@ class UrlValidator extends Validator
                 $pattern = $this->pattern;
             }
 
-            if ($this->enableIDN) {
+            if ($this->enableIdn) {
                 $value = preg_replace_callback('/:\/\/([^\/]+)/', function ($matches) {
                     return '://' . idn_to_ascii($matches[1]);
                 }, $value);
@@ -124,7 +124,7 @@ class UrlValidator extends Validator
             'message' => Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $object->getAttributeLabel($attribute),
             ], Yii::$app->language),
-            'enableIDN' => (boolean) $this->enableIDN,
+            'enableIdn' => (boolean) $this->enableIdn,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
@@ -134,7 +134,7 @@ class UrlValidator extends Validator
         }
 
         ValidationAsset::register($view);
-        if ($this->enableIDN) {
+        if ($this->enableIdn) {
             PunycodeAsset::register($view);
         }
 
