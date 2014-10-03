@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0 under development
 -----------------------
 
+- Bug #5252: Null values are not properly handled by `RangeValidator` (githubjeka, qiangxue)
 - Bug #5260: `yii\i18n\Formatter::decimalSeparator` and `yii\i18n\Formatter::thousandSeparator` where not configurable when intl is not installed (execut, cebe)
 - Bug #5314: Fixed typo in the implementation of `yii\web\Session::getHasSessionId()` (qiangxue)
 - Bug: Date and time formatting now assumes UTC as the timezone for input dates unless a timezone is explicitly given (cebe)
