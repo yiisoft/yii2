@@ -178,7 +178,7 @@ This validator checks if the input value is a valid email address.
 - `checkDNS`, whether to check whether the email's domain exists and has either an A or MX record.
   Be aware that this check may fail due to temporary DNS problems, even if the email address is actually valid.
   Defaults to false.
-- `enableIDN`, whether the validation process should take into account IDN (internationalized domain names).
+- `enableIdn`, whether the validation process should take into account IDN (internationalized domain names).
   Defaults to false. Note that in order to use IDN validation you have to install and enable the `intl` PHP extension,
   or an exception would be thrown.
 
@@ -501,7 +501,7 @@ This validator checks if the input value is a valid URL.
   meaning both `http` and `https` URLs are considered to be valid.
 - `defaultScheme`: the default URI scheme to be prepended to the input if it does not have the scheme part.
   Defaults to null, meaning do not modify the input value.
-- `enableIDN`: whether the validator should take into account IDN (internationalized domain names).
+- `enableIdn`: whether the validator should take into account IDN (internationalized domain names).
   Defaults to false. Note that in order to use IDN validation you have to install and enable the `intl` PHP
   extension, otherwise an exception would be thrown.
 

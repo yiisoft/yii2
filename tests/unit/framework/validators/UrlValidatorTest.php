@@ -67,7 +67,7 @@ class UrlValidatorTest extends TestCase
             return;
         }
         $val = new UrlValidator([
-            'enableIDN' => true,
+            'enableIdn' => true,
         ]);
         $this->assertTrue($val->validate('http://äüößìà.de'));
         // converted via http://mct.verisign-grs.com/convertServlet
