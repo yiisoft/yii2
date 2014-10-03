@@ -103,8 +103,9 @@ class Generator extends \yii\gii\Generator
             'modelClass' => 'This is the ActiveRecord class associated with the table that CRUD will be built upon.
                 You should provide a fully qualified class name, e.g., <code>app\models\Post</code>.',
             'controllerClass' => 'This is the name of the controller class to be generated. You should
-                provide a fully qualified namespaced class, .e.g, <code>app\controllers\PostController</code>.
-                The controller class name should follow the CamelCase scheme with an uppercase first letter',
+                provide a fully qualified namespaced class (e.g. <code>app\controllers\PostController</code>),
+                and class name should be in CamelCase with an uppercase first letter. Make sure the class
+                is using the same namespace as specified by your application\'s controllerNamespace property.',
             'baseControllerClass' => 'This is the class that the new CRUD controller class will extend from.
                 You should provide a fully qualified class name, e.g., <code>yii\web\Controller</code>.',
             'moduleID' => 'This is the ID of the module that the generated controller will belong to.

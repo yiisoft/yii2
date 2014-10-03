@@ -2,7 +2,9 @@
 
 namespace yiiunit\framework\i18n;
 
+use NumberFormatter;
 use yii\i18n\Formatter;
+use Yii;
 use yiiunit\TestCase;
 use DateTime;
 use DateInterval;
@@ -575,9 +577,49 @@ class FormatterTest extends TestCase
 
     // number format
 
-
-    public function testIntlAsInteger()
+    /**
+     * Provides some configuration that should not affect Integer formatter
+     */
+    public function differentConfigProvider()
     {
+        // make this test not break when intl is not installed
+        if (!extension_loaded('intl')) {
+            return [];
+        }
+
+        return [
+            [[
+                'numberFormatterOptions' => [
+                    NumberFormatter::MIN_FRACTION_DIGITS => 2,
+                ],
+            ]],
+            [[
+                'numberFormatterOptions' => [
+                    NumberFormatter::MAX_FRACTION_DIGITS => 2,
+                ],
+            ]],
+            [[
+                'numberFormatterOptions' => [
+                    NumberFormatter::FRACTION_DIGITS => 2,
+                ],
+            ]],
+            [[
+                'numberFormatterOptions' => [
+                    NumberFormatter::MIN_FRACTION_DIGITS => 2,
+                    NumberFormatter::MAX_FRACTION_DIGITS => 4,
+                ],
+            ]],
+        ];
+    }
+
+
+    /**
+     * @dataProvider differentConfigProvider
+     */
+    public function testIntlAsInteger($config)
+    {
+        // configure formatter with different configs that should not affect integer format
+        Yii::configure($this->formatter, $config);
         $this->testAsInteger();
     }
 

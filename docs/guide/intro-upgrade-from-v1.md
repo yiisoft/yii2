@@ -19,7 +19,7 @@ Yii 2.0 fully embraces [Composer](https://getcomposer.org/), the de facto PHP pa
 of the core framework, as well as extensions, are handled through Composer. Please refer to
 the [Installing Yii](start-installation.md) section to learn how to install Yii 2.0. If you want to
 create new extensions, or turn your existing 1.1 extensions into 2.0-compatible extensions, please refer to
-the [Creating Extensions](extend-creating-extensions.md) section of the guide.
+the [Creating Extensions](structure-extensions.md#creating-extensions) section of the guide.
 
 
 PHP Requirements
@@ -209,7 +209,7 @@ To learn more details about models, please refer to the [Models](structure-model
 Controllers
 -----------
 
-Yii 2.0 uses [[yii\web\Controller]] as the base controller class, similar to `CWebController` in Yii 1.1.
+Yii 2.0 uses [[yii\web\Controller]] as the base controller class, which is similar to `CController` in Yii 1.1.
 [[yii\base\Action]] is the base class for action classes.
 
 The most obvious impact of these changes on your code is that a controller action should return the content

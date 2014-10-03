@@ -319,7 +319,7 @@ class Connection extends Component
         $body = '';
 
         $options = [
-            CURLOPT_USERAGENT      => 'Yii Framework 2 ' . __CLASS__,
+            CURLOPT_USERAGENT      => 'Yii Framework ' . Yii::getVersion() . __CLASS__,
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_HEADER         => false,
             // http://www.php.net/manual/en/function.curl-setopt.php#82418

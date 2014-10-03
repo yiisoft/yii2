@@ -125,6 +125,10 @@ All cache components have the same base class [[yii\caching\Cache]] and thus sup
 * [[yii\caching\Cache::delete()|delete()]]: removes a data item identified by a key from the cache.
 * [[yii\caching\Cache::flush()|flush()]]: removes all data items from the cache.
 
+> Note: Do not cache a `false` boolean value directly because the [[yii\caching\Cache::get()|get()]] method uses
+`false` return value to indicate the data item is not found in the cache. You may put `false` in an array and cache
+this array instead to avoid this problem.
+
 Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
 which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::mget()|mget()]]
 and [[yii\caching\Cache::madd()|madd()]] are provided to exploit this feature. In case the underlying cache storage

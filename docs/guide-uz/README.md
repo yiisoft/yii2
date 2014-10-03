@@ -1,9 +1,8 @@
-Yii 2.0 bo`yicha to`liq qo`llanma
+Yii 2.0 bo'yicha to'liq qo'llanma
 =============================
 
-Ushbu qo`llanma [Yii qo`llanmalarining holati bilan](http://www.yiiframework.com/doc/terms/) bilan mos holda yo`lga qo`yildi.
+Ushbu qo'llanma [Yii qo'llanmalarining holati bilan](http://www.yiiframework.com/doc/terms/) bilan mos holda yo'lga qo'yildi.
 
-<<<<<<< HEAD
 All Rights Reserved.
 
 2014 © Yii Software LLC.
@@ -18,11 +17,11 @@ Kirish
 Birinchi tanishuv
 -----------------
 
-* [Yii ni o`rnatish](start-installation.md)
+* [Yii ni o'rnatish](start-installation.md)
 * [Ilovani ishga tushirish](start-workflow.md)
 * [«Salom» deymiz](start-hello.md)
 * [Formalar bilan ishlash](start-forms.md)
-* [Ma`lumotlar ombori bilan ishlash](start-databases.md)
+* [Ma'lumotlar ombori bilan ishlash](start-databases.md)
 * [Gii yordamida kodlarni generatsiya qilish](start-gii.md)
 * [Keyin nima?](start-looking-ahead.md)
 
@@ -34,26 +33,26 @@ Ilova strukturasi
 * [Kirish skriptlari](structure-entry-scripts.md)
 * [Ilova](structure-applications.md)
 * [Ilova komponentlari](structure-application-components.md)
-* [Kontrollerlar](structure-controllers.md)
+* [Kontrollyorlar](structure-controllers.md)
 * [Namoyish](structure-views.md)
 * [Modellar](structure-models.md)
 * **TBD** [Filtrlar](structure-filters.md)
 * **TBD** [Vidjetlar](structure-widgets.md)
 * **TBD** [Modullar](structure-modules.md)
-* [Ресурсы](structure-assets.md)
+* [Resurslar](structure-assets.md)
 * **TBD** [Kengaytmalar](structure-extensions.md)
 
 
-So`rovlarni qayta ishlash
+So'rovlarni qayta ishlash
 -------------------------
 
 * **TBD** [Bootstrapping](runtime-bootstrapping.md)
 * **TBD** [Routing](runtime-routing.md)
-* **TBD** [So`rovlar](runtime-requests.md)
+* **TBD** [So'rovlar](runtime-requests.md)
 * **TBD** [Javoblar](runtime-responses.md)
 * **TBD** [Sessiyalar va kuklar](runtime-sessions-cookies.md)
 * [URL ni tahlil va generatsiya qilish](runtime-url-handling.md)
-* [Xatolilarni qayta ishlash](runtime-handling-errors.md)
+* [Xatoliklarni qayta ishlash](runtime-handling-errors.md)
 * [Jurnallarga yozish](runtime-logging.md)
 
 
@@ -63,28 +62,28 @@ Asosiy tushunchalar
 * [Komponentlar](concept-components.md)
 * [Xususiyat](concept-properties.md)
 * [Xodisa](concept-events.md)
-* [O`zini tutish](concept-behaviors.md)
-* [Muxim sozlashlar](concept-configurations.md)
+* [O'zini tutish](concept-behaviors.md)
+* [Muhim sozlashlar](concept-configurations.md)
 * [Taxalluslar](concept-aliases.md)
 * [Sinflarni avtoyuklash](concept-autoloading.md)
 * [Service Locator](concept-service-locator.md)
 * [Dependency Injection Container](concept-di-container.md)
 
 
-Ma`lumotlar ombori bilan ishlash
+Ma'lumotlar ombori bilan ishlash
 --------------------------------
 
-* [Ma`lumotlarga imkon beruvchi obektlar(DAO)](db-dao.md) - Ma`lumotlar ombori bilan bog`lanish, oddiy so`rovlar, tranzaksiya va sxema bilan ishlash.
-* [So`rovlarni yaratuvchi](db-query-builder.md) - Ma`lumotlar omboriga abstraksiyaning oddiy qatlamidan so`rovlar.
-* [Active Record](db-active-record.md) - AR obektlarini  olish, ular bilan ishlash va bog`lanishlarni aniqlash.
-* [Migratsiyalar](db-migrations.md) - Komandada ishlaganda ma`lumotlar sxemasini talqinlarini boshqarish.
+* [Ma'lumotlar bilan ishlashga imkon beruvchi obektlar(DAO)](db-dao.md) - Ma'lumotlar ombori bilan bog'lanish, oddiy so'rovlar, tranzaksiya va sxema bilan ishlash.
+* [So'rovlarni yaratuvchi](db-query-builder.md) - Ma'lumotlar omboriga abstraksiyaning oddiy qatlamidan so'rovlar.
+* [Active Record](db-active-record.md) - AR obektlarini  olish, ular bilan ishlash va bog'lanishlarni aniqlash.
+* [Migratsiyalar](db-migrations.md) - Komandada (jamoada) ishlaganda ma'lumotlar sxemasini talqinlarini boshqarish.
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
 * **TBD** [ElasticSearch](db-elastic-search.md)
 
 
-Foydalanuvchidan ma`lumotlarni qabul qilish
+Foydalanuvchidan ma'lumotlarni qabul qilish
 -------------------------------------------
 
 * [Formani yaratish](input-forms.md)
@@ -93,14 +92,14 @@ Foydalanuvchidan ma`lumotlarni qabul qilish
 * **TBD** [Bir nechta modellar bilan ishlash](input-multiple-models.md)
 
 
-Ma`lumotlarni namoyish etish
+Ma'lumotlarni namoyish etish
 ----------------------------
 
-* **TBD** [Ma`lumotlarni formatlash](output-formatting.md)
-* **TBD** [Sahifalar bo`yicha bo`ajratish](output-pagination.md)
+* **TBD** [Ma'lumotlarni formatlash](output-formatting.md)
+* **TBD** [Sahifalar bo'yicha ajratish](output-pagination.md)
 * **TBD** [Saralash](output-sorting.md)
-* [Ma`lumotlar provayderlari](output-data-providers.md)
-* [Ma`lumotlar uchun vidjetlar](output-data-widgets.md)
+* [Ma'lumotlar provayderlari](output-data-providers.md)
+* [Ma'lumotlar uchun vidjetlar](output-data-widgets.md)
 * [Mavzulashtirish](output-theming.md)
 
 
@@ -108,9 +107,9 @@ Xavfsizlik
 ----------
 
 * [Autentifikatsiya](security-authentication.md)
-* [Mualliflikka tekshiruvi](security-authorization.md)
+* [Avtorizatsiya](security-authorization.md)
 * [Parollar bilan ishlash](security-passwords.md)
-* **TBD** [Mualliflikka tekshiruvlar mijozlari](security-auth-clients.md)
+* **TBD** [Avtorizatsiya mijozlari](security-auth-clients.md)
 * **TBD** [Eng yaxshi amaliyotlar](security-best-practices.md)
 
 
@@ -118,35 +117,35 @@ Keshlash
 --------
 
 * [Sharh](caching-overview.md)
-* [Ma`lumotlarni keshlash](caching-data.md)
-* [Fragmentlasrni keshlash](caching-fragment.md)
+* [Ma'lumotlarni keshlash](caching-data.md)
+* [Fragmentlarni keshlash](caching-fragment.md)
 * [Sahifalarni keshlash](caching-page.md)
 * [HTTP ni keshlash](caching-http.md)
 
 
-REST veb-xizmatlari
+REST web-xizmatlari
 -------------------
 
 * [Tezkor boshlash](rest-quick-start.md)
 * [Resurslar](rest-resources.md)
-* [Kontrollerlar](rest-controllers.md)
+* [Kontrollyorlar](rest-controllers.md)
 * [Routing](rest-routing.md)
 * [Javoblarni formatlash](rest-response-formatting.md)
 * [Autentifikatsiya](rest-authentication.md)
-* [So`rovlarni chastotasini chegaralash](rest-rate-limiting.md)
+* [So'rovlarni chastotasini chegaralash](rest-rate-limiting.md)
 * [Talqin yaratish](rest-versioning.md)
 * [Xatoliklarni qayta ishlash](rest-error-handling.md)
 
 
-Ishlab chiquvchi uskunalari
+Ishlab chiquvchining uskunalari
 ---------------------------
 
-* [Sozlashlar paneli va sozlovchi](tool-debugger.md)
+* [Qayta ishlash paneli va qayta ishlovchi](tool-debugger.md)
 * [Gii bilan kodni generatsiya qilish](tool-gii.md)
-* **TBD** [API qo`llanmani generatori](tool-api-doc.md)
+* **TBD** [API qo'llanmani generatori](tool-api-doc.md)
 
 
-Test o`tkazish
+Test o'tkazish
 --------------
 
 * [Sharh](test-overview.md)
@@ -161,7 +160,7 @@ Yii kengaytmalari
 
 * [Kengaytmani yaratish](extend-creating-extensions.md)
 * [Freymvork kodini kengaytirish](extend-customizing-core.md)
-* [Tashqi kutubxonalarni qo`llash](extend-using-libs.md)
+* [Tashqi kutubxonalarni qo'llash](extend-using-libs.md)
 * **TBD** [Tashqi tizimlarda Yii integratsiyasi](extend-embedding-in-others.md)
 * **TBD** [Yii 1.1 va 2.0 larni bir vaqtda ishlatish](extend-using-v1-v2.md)
 * [Composer ni ishlatish](extend-using-composer.md)
@@ -203,8 +202,3 @@ Xelperlar
 * **TBD** [Html](helper-html.md)
 * **TBD** [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
-=======
-Barcha huquqlar ximoyalangan.
-
-2014 © Yii Software LLC.
->>>>>>> 6a3cce2e267f590c38f910d571adea6a38028329

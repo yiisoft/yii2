@@ -47,7 +47,7 @@ if ($this->beginCache($id, ['duration' => 3600])) {
 }
 ```
 
-If the option is not set, it will take the default value 0, which means the cached content will never expire.
+If the option is not set, it will take the default value 60, which means the cached content will expire in 60 seconds.
 
 
 ### Dependencies <a name="dependencies"></a>

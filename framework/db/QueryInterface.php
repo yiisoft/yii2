@@ -116,6 +116,12 @@ interface QueryInterface
      *   `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`.
      *   The method will properly quote the column name and escape values in the range.
      *
+     *   To create a composite `IN` condition you can use and array for the column name and value, where the values are indexed by the column name:
+     *   `['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']] ]`.
+     *
+     *   You may also specify a sub-query that is used to get the values for the `IN`-condition:
+     *   `['in', 'user_id', (new Query())->select('id')->from('users')->where(['active' => 1])]`
+     *
      * - **not in**: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
      *
      * - **like**: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
@@ -136,6 +142,12 @@ interface QueryInterface
      *
      * - **or not like**: similar to the `not like` operator except that `OR` is used to concatenate
      *   the `NOT LIKE` predicates.
+     *
+     * - **exists**: operand 1 is a query object that used to build an `EXISTS` condition. For example
+     *   `['exists', (new Query())->select('id')->from('users')->where(['active' => 1])]` will result in the following SQL expression:
+     *   `EXISTS (SELECT "id" FROM "users" WHERE "active"=1)`.
+     *
+     * - **not exists**: similar to the `exists` operator except that `EXISTS` is replaced with `NOT EXISTS` in the generated condition.
      *
      * - Additionally you can specify arbitrary operators as follows: A condition of `['>=', 'id', 10]` will result in the
      *   following SQL expression: `id >= 10`.

@@ -1,5 +1,5 @@
-URL Management
-==============
+URL Parsing and Generation
+==========================
 
 > Note: This section is under development.
 
