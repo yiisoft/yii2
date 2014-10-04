@@ -229,7 +229,7 @@ In order to securely pass query parameters you can use prepared statements:
 ```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
 $command->bindValue(':id', $_GET['id']);
-$post = $command->query();
+$post = $command->queryOne();
 ```
 
 Another usage is performing a query multiple times while preparing it only once:
