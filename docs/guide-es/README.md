@@ -40,7 +40,7 @@ Estructura de una aplicación
 * [Filtros](structure-filters.md)
 * [Widgets](structure-widgets.md)
 * **TBD** [Módulos](structure-modules.md)
-* **TBD**[Recursos](structure-assets.md)
+* **TBD** [Recursos](structure-assets.md)
 * **TBD** [Extensiones](structure-extensions.md)
 
 
@@ -156,17 +156,6 @@ Pruebas
 * **TBD** [Pruebas funcionales](test-functional.md)
 * **TBD** [Pruebas de aceptación](test-acceptance.md)
 * **TBD** [Fixtures](test-fixtures.md)
-
-
-Extender Yii
-------------
-
-* **TBD** [Crear extensiones](extend-creating-extensions.md)
-* **TBD** [Personalizar el código de base](extend-customizing-core.md)
-* **TBD** [Utilizar librerías de terceros](extend-using-libs.md)
-* **TBD** [Utilizar Yii en sistemas de terceros](extend-embedding-in-others.md)
-* **TBD** [Utilizar las versiones 1.1 y 2.0 de Yii juntas](extend-using-v1-v2.md)
-* **TBD** [Utilizar Composer](extend-using-composer.md)
 
 
 Temas especiales
