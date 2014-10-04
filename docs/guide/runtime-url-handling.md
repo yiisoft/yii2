@@ -144,7 +144,7 @@ return [
 ```
 
 Note that this configuration will only work if the web server has been properly configured for Yii, see
-[installation](installation.md#recommended-apache-configuration).
+[installation](start-installation.md#recommended-apache-configuration).
 
 ### Named parameters
 
