@@ -48,7 +48,7 @@ class Modal extends Widget
      */
     public $footer;
     /**
-     * @var string the modal size. Can be MODAL_LG or MODAL_SM, or empty for default.
+     * @var string the modal size. Can be [[SIZE_LARGE]] or [[SIZE_SMALL]], or empty for default.
      */
     public $size;
     /**
