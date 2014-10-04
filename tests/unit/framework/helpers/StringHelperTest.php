@@ -154,20 +154,12 @@ class StringHelperTest extends TestCase
         ];
     }
 
-    /**
-     * Specific case sensitivity verification
-     * @covers StringHelper::startsWith
-     */
     public function testStartsWithCaseSensitive()
     {
         $this->assertFalse(StringHelper::startsWith('Abc', 'a'));
         $this->assertFalse(StringHelper::startsWith('üЯ multibyte', 'Üя multibyte'));
     }
 
-    /**
-     * Verification that case sensitivity doesn't matters
-     * @covers StringHelper::startsWith
-     */
     public function testStartsWithCaseInsensitive()
     {
         $this->assertTrue(StringHelper::startsWith('sTrInG', 'StRiNg', false));
@@ -215,18 +207,12 @@ class StringHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @covers StringHelper::endsWith
-     */
     public function testEndsWithCaseSensitive()
     {
         $this->assertFalse(StringHelper::endsWith('string', 'G'));
         $this->assertFalse(StringHelper::endsWith('multibyte строка', 'А'));
     }
 
-    /**
-     * @covers StringHelper::endsWith
-     */
     public function testEndsWithCaseInsensitive()
     {
         $this->assertTrue(StringHelper::endsWith('sTrInG', 'StRiNg', false));
