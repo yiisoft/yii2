@@ -114,7 +114,7 @@ Configuring Web Servers <a name="configuring-web-servers"></a>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible the facebooks
+Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebooks
 [HHVM](http://hhvm.com/) however there are some edge cases where HHVM behaves different than native
 PHP so you have to take some extra care when using HHVM.
 
