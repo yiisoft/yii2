@@ -76,7 +76,7 @@ abstract class ErrorHandler extends Component
      *
      * @param \Exception $exception the exception that is not caught
      */
-    public function handleException($exception)
+    public function handleException(\Exception $exception)
     {
         if ($exception instanceof ExitException) {
             return;
@@ -191,13 +191,13 @@ abstract class ErrorHandler extends Component
      * Renders the exception.
      * @param \Exception $exception the exception to be rendered.
      */
-    abstract protected function renderException($exception);
+    abstract protected function renderException(\Exception $exception);
 
     /**
      * Logs the given exception
      * @param \Exception $exception the exception to be logged
      */
-    protected function logException($exception)
+    protected function logException(\Exception $exception)
     {
         $category = get_class($exception);
         if ($exception instanceof HttpException) {
@@ -228,7 +228,7 @@ abstract class ErrorHandler extends Component
      * to PHP errors because exceptions cannot be thrown inside of them.
      * @param \Exception $exception the exception to convert to a PHP error.
      */
-    public static function convertExceptionToError($exception)
+    public static function convertExceptionToError(\Exception $exception)
     {
         trigger_error(static::convertExceptionToString($exception), E_USER_ERROR);
     }
@@ -238,7 +238,7 @@ abstract class ErrorHandler extends Component
      * @param \Exception $exception the exception being converted
      * @return string the string representation of the exception.
      */
-    public static function convertExceptionToString($exception)
+    public static function convertExceptionToString(\Exception $exception)
     {
         if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
             $message = "{$exception->getName()}: {$exception->getMessage()}";

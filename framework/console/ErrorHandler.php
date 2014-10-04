@@ -27,7 +27,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * Renders an exception using ansi format for console output.
      * @param \Exception $exception the exception to be rendered.
      */
-    protected function renderException($exception)
+    protected function renderException(\Exception $exception)
     {
         if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
             $message = $this->formatMessage($exception->getName() . ': ') . $exception->getMessage();

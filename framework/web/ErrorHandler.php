@@ -65,7 +65,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * Renders the exception.
      * @param \Exception $exception the exception to be rendered.
      */
-    protected function renderException($exception)
+    protected function renderException(\Exception $exception)
     {
         if (Yii::$app->has('response')) {
             $response = Yii::$app->getResponse();
