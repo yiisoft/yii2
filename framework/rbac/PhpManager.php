@@ -16,8 +16,8 @@ use yii\helpers\VarDumper;
  * PhpManager represents an authorization manager that stores authorization
  * information in terms of a PHP script file.
  *
- * The authorization data will be saved to and loaded from a file
- * specified by [[authFile]], which defaults to 'protected/data/rbac.php'.
+ * The authorization data will be saved to and loaded from three files
+ * specified by [[itemFile]], [[assignmentFile]] and [[ruleFile]].
  *
  * PhpManager is mainly suitable for authorization data that is not too big
  * (for example, the authorization data for a personal blog system).

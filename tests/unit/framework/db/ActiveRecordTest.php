@@ -176,6 +176,34 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, $items[1]->id);
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/5341
+     *
+     * Issue:     Plan     1 -- * Account * -- * User
+     * Our Tests: Category 1 -- * Item    * -- * Order
+     */
+    public function testDeeplyNestedTableRelation2()
+    {
+        /* @var $category Category */
+        $category = Category::findOne(1);
+        $this->assertNotNull($category);
+        $orders = $category->orders;
+        $this->assertEquals(2, count($orders));
+        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertInstanceOf(Order::className(), $orders[1]);
+        $ids = [$orders[0]->id, $orders[1]->id];
+        sort($ids);
+        $this->assertEquals([1, 3], $ids);
+
+        $category = Category::findOne(2);
+        $this->assertNotNull($category);
+        $orders = $category->orders;
+        $this->assertEquals(1, count($orders));
+        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertEquals(2, $orders[0]->id);
+
+    }
+
     public function testStoreNull()
     {
         $record = new NullValues();

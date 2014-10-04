@@ -2,7 +2,7 @@ Installing Yii
 ==============
 
 You can install Yii in two ways, using [Composer](http://getcomposer.org/) or by downloading an archive file.
-The former is the preferred way, as it allows you to install new [extensions](extend-creating-extensions.md) or update Yii by simply running a single command.
+The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
 
 > Note: Unlike with Yii 1, standard installations of Yii 2 result in both, the framework and an application skeleton being downloaded and installed.
 
@@ -114,7 +114,7 @@ Configuring Web Servers <a name="configuring-web-servers"></a>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible the facebooks
+Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebooks
 [HHVM](http://hhvm.com/) however there are some edge cases where HHVM behaves different than native
 PHP so you have to take some extra care when using HHVM.
 
