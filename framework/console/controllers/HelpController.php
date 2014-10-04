@@ -182,6 +182,7 @@ class HelpController extends Controller
     protected function getDefaultHelp()
     {
         $commands = $this->getCommandDescriptions();
+        $this->stdout("\nThis is Yii version " . \Yii::getVersion() . ".\n");
         if (!empty($commands)) {
             $this->stdout("\nThe following commands are available:\n\n", Console::BOLD);
             $len = 0;
