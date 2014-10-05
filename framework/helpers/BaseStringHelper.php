@@ -7,6 +7,8 @@
 
 namespace yii\helpers;
 
+use Yii;
+
 /**
  * BaseStringHelper provides concrete implementation for [[StringHelper]].
  *
@@ -100,8 +102,8 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null)
     {
-        if (mb_strlen($string, $encoding ?: \Yii::$app->charset) > $length) {
-            return trim(mb_substr($string, 0, $length, $encoding ?: \Yii::$app->charset)) . $suffix;
+        if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
+            return trim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
@@ -122,6 +124,52 @@ class BaseStringHelper
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
         } else {
             return $string;
+        }
+    }
+
+    /**
+     * Check if given string starts with specified substring.
+     * Binary and multibyte safe.
+     *
+     * @param string $string Input string
+     * @param string $with Part to search
+     * @param boolean $caseSensitive Case sensitive search. Default is true.
+     * @return boolean Returns true if first input starts with second input, false otherwise
+     */
+    public static function startsWith($string, $with, $caseSensitive = true)
+    {
+        if (!$bytes = static::byteLength($with)) {
+            return true;
+        }
+        if ($caseSensitive) {
+            return strncmp($string, $with, $bytes) === 0;
+        } else {
+            return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
+        }
+    }
+
+    /**
+     * Check if given string ends with specified substring.
+     * Binary and multibyte safe.
+     *
+     * @param string $string
+     * @param string $with
+     * @param boolean $caseSensitive Case sensitive search. Default is true.
+     * @return boolean Returns true if first input ends with second input, false otherwise
+     */
+    public static function endsWith($string, $with, $caseSensitive = true)
+    {
+        if (!$bytes = static::byteLength($with)) {
+            return true;
+        }
+        if ($caseSensitive) {
+            // Warning check, see http://php.net/manual/en/function.substr-compare.php#refsect1-function.substr-compare-returnvalues
+            if (static::byteLength($string) < $bytes) {
+                return false;
+            }
+            return substr_compare($string, $with, -$bytes, $bytes) === 0;
+        } else {
+            return mb_strtolower(mb_substr($string, -$bytes, null, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
     }
 }

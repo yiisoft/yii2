@@ -286,7 +286,7 @@ class Query extends Component implements QueryInterface
      * Make sure you properly quote column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return integer the sum of the specified column values
+     * @return mixed the sum of the specified column values
      */
     public function sum($q, $db = null)
     {
@@ -299,7 +299,7 @@ class Query extends Component implements QueryInterface
      * Make sure you properly quote column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return integer the average of the specified column values.
+     * @return mixed the average of the specified column values.
      */
     public function average($q, $db = null)
     {
@@ -312,7 +312,7 @@ class Query extends Component implements QueryInterface
      * Make sure you properly quote column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return integer the minimum of the specified column values.
+     * @return mixed the minimum of the specified column values.
      */
     public function min($q, $db = null)
     {
@@ -325,7 +325,7 @@ class Query extends Component implements QueryInterface
      * Make sure you properly quote column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return integer the maximum of the specified column values.
+     * @return mixed the maximum of the specified column values.
      */
     public function max($q, $db = null)
     {

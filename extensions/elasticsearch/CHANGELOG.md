@@ -4,7 +4,7 @@ Yii Framework 2 elasticsearch extension Change Log
 2.0.0 under development
 -----------------------
 
-- no changes in this release.
+- Enh #3381: Added ActiveRecord::arrayAttributes() to define attributes that should be treated as array when retrieved via `fields` (cebe)
 
 
 2.0.0-rc September 27, 2014
