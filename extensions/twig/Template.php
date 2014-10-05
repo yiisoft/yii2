@@ -25,7 +25,7 @@ abstract class Template extends \Twig_Template
                 if ($this->env->hasExtension('sandbox')) {
                     $this->env->getExtension('sandbox')->checkMethodAllowed($object, $item);
                 }
-                return $object->$item($arguments);
+                return call_user_func_array([$object, $item], $arguments);
             } else {
                 if ($this->env->hasExtension('sandbox')) {
                     $this->env->getExtension('sandbox')->checkPropertyAllowed($object, $item);

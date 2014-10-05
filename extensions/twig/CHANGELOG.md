@@ -4,7 +4,7 @@ Yii Framework 2 twig extension Change Log
 2.0.0 under development
 -----------------------
 
-- no changes in this release.
+- Bug #5308: object function calls in templates were passing arguments in a wrong way (genichyar, samdark)
 
 
 2.0.0-rc September 27, 2014
