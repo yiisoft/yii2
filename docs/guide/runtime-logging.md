@@ -126,8 +126,8 @@ The [[yii\log\Target::levels|levels]] property takes an array consisting of one 
 * `warning`: corresponding to messages logged by [[Yii::warning()]].
 * `info`: corresponding to messages logged by [[Yii::info()]].
 * `trace`: corresponding to messages logged by [[Yii::trace()]].
-* `profile`: corresponding to messages logged by [[Yii::beginProfile()]], which will be explained in more details
-in the [Profiling](#profiling) subsection.
+* `profile`: corresponding to messages logged by [[Yii::beginProfile()]] and [[Yii::endProfile()]], which will
+be explained in more details in the [Profiling](#performance-profiling) subsection.
 
 If you do not specify the [[yii\log\Target::levels|levels]] property, it means the target will process messages
 of *any* severity level.
