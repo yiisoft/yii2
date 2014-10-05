@@ -162,6 +162,10 @@ under the categories whose names match either `yii\db\*` or `yii\web\HttpExcepti
 ]
 ```
 
+> Info: When an HTTP exception is caught by the [error handler](runtime-handling-errors.md), an error message
+  will be logged with the category name in the format of `yii\web\HttpException:ErrorCode`. For example,
+  the [[yii\web\NotFoundHttpException]] will cause an error message of category `yii\web\HttpException:404`.
+
 
 ### Message Formatting <a name="message-formatting"></a>
 
