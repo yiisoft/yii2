@@ -276,7 +276,7 @@ There are several ways to customize the migration command.
 
 ### Use Command Line Options
 
-The migration command comes with four options that can be specified in command
+The migration command comes with few options that can be specified in command
 line:
 
 * `interactive`: boolean, specifies whether to perform migrations in an
