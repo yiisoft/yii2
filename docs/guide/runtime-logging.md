@@ -39,7 +39,7 @@ it will be exported as a string by calling [[yii\helpers\VarDumper::export()]].
 To better organize and filter log messages, it is recommended that you specify an appropriate category for each
 log message. You may choose a hierarchical naming scheme for categories, which will make it easier for 
 [log targets](#log-targets) to filter messages based on their categories. A simple yet effective naming scheme
-is to use the PHP magic constant `__METHOD__` as category names. This is also the approached used in the core 
+is to use the PHP magic constant `__METHOD__` as category names. This is also the approach used in the core 
 Yii framework code. For example,
 
 ```php
@@ -59,8 +59,8 @@ enough messages are logged or when the application ends, the logger object will 
 ## Log Targets <a name="log-targets"></a>
 
 A log target is an instance of [[yii\log\Target]] class or its child class. It filters the log messages by their
-severity levels and categories, and then export them to some medium. For example, a  [[yii\log\DbTarget|database target]]
-exports the filtered log messages in a database table, while a [[yii\log\EmailTarget|email target]] exports
+severity levels and categories and then exports them to some medium. For example, a  [[yii\log\DbTarget|database target]]
+exports the filtered log messages to a database table, while a [[yii\log\EmailTarget|email target]] exports
 the log messages to specified email addresses.
 
 You can register multiple log targets in an application by configuring them through the `log` application component 
@@ -117,8 +117,7 @@ In the following, we will describe the features common to all log targets.
 ### Message Filtering <a name="message-filtering"></a>
 
 For each log target, you can configure its [[yii\log\Target::levels|levels]] and 
-[[yii\log\Target::categories|categories]] properties to specify which severity levels and categories of the messages
-that the target should process.
+[[yii\log\Target::categories|categories]] properties to specify which severity levels and categories of the messages the target should process.
 
 The [[yii\log\Target::levels|levels]] property takes an array consisting of one or several of the following values:
 
@@ -143,7 +142,7 @@ If you do not specify the [[yii\log\Target::categories|categories]] property, it
 messages of *any* category.
 
 Besides whitelisting the categories by the [[yii\log\Target::categories|categories]] property, you may also
-blacklisting certain categories by the [[yii\log\Target::except|except]] property. If the category of a message
+blacklist certain categories by the [[yii\log\Target::except|except]] property. If the category of a message
 is found or matches one of the patterns in this property, it will NOT be processed by the target.
  
 The following target configuration specifies that the target should only process error and warning messages
@@ -239,7 +238,7 @@ or when debugging an application.
 
 As aforementioned, log messages are maintained in an array by the [[yii\log\Logger|logger object]]. To limit the
 memory consumption by this array, the logger will flush the recorded messages to the [log targets](#log-targets)
-each time when the array accumulates certain number of log messages. You can customize this number by configuring
+each time the array accumulates certain number of log messages. You can customize this number by configuring
 the [[yii\log\Dispatcher::flushInterval|flushInterval]] property of the `log` component:
 
 
@@ -271,7 +270,7 @@ property of individual [log targets](#log-targets), like the following,
 
 Because of the flushing and exporting level setting, by default when you call `Yii::trace()` or any other logging
 method, you will NOT see the log message immediately in the log targets. This could be a problem for some long-running
-console applications. To make each log message appearing immediately in the log targets, you should set both
+console applications. To make each log message appear immediately in the log targets, you should set both
 [[yii\log\Dispatcher::flushInterval|flushInterval]] and [[yii\log\Target::exportInterval|exportInterval]] to be 1,
 like shown below:
 
@@ -340,7 +339,7 @@ Performance profiling is a special type of message logging that is used to measu
 code blocks and find out what are the performance bottlenecks. For example, the [[yii\db\Command]] class uses
 performance profiling to find out the time taken by each DB query.
 
-To use performance profiling, first identity the code blacks that need to be profiled. Then enclose each
+To use performance profiling, first identify the code blocks that need to be profiled. Then enclose each
 code block like the following:
 
 ```php
@@ -372,6 +371,6 @@ For example,
 If you miss `\Yii::endProfile('block1')` or switch the order of `\Yii::endProfile('block1')` and
 `\Yii::endProfile('block2')`, the performance profiling will not work.
 
-For each code block being profiled, a log message at the severity level `profile` is recorded. You can configure
+For each code block being profiled, a log message with the severity level `profile` is recorded. You can configure
 a [log target](#log-targets) to collect such messages and export them. The [Yii debugger](tool-debugger.md) has
 a built-in performance profiling panel showing the profiling results.
