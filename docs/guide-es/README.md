@@ -40,7 +40,7 @@ Estructura de una aplicación
 * [Filtros](structure-filters.md)
 * [Widgets](structure-widgets.md)
 * **TBD** [Módulos](structure-modules.md)
-* **TBD**[Recursos](structure-assets.md)
+* **TBD** [Recursos](structure-assets.md)
 * **TBD** [Extensiones](structure-extensions.md)
 
 
@@ -64,7 +64,7 @@ Conceptos clave
 * **TBD** [Propiedades](concept-properties.md)
 * **TBD** [Eventos](concept-events.md)
 * [Comportamientos (Behaviors)](concept-behaviors.md)
-* **TBD** [Configuraciones](concept-configurations.md)
+* [Configuraciones](concept-configurations.md)
 * [Alias](concept-aliases.md)
 * [Autocarga de clases](concept-autoloading.md)
 * **TBD** [Localizador de servicios (Service Locator)](concept-service-locator.md)
@@ -101,6 +101,7 @@ Visualizar datos
 * **TBD** [Ordenación](output-sorting.md)
 * **TBD** [Proveedores de datos](output-data-providers.md)
 * **TBD** [Widgets de datos](output-data-widgets.md)
+* **TBD** [Trabajar con scripts de cliente](output-client-scripts.md)
 * **TBD** [Utilización de temas](output-theming.md)
 
 
@@ -110,7 +111,7 @@ Seguridad
 * **TBD** [Autenticación](security-authentication.md)
 * **TBD** [Autorización](security-authorization.md)
 * **TBD** [Trabajar con contraseñas](security-passwords.md)
-* **TBD** [Auth Clients](security-auth-clients.md)
+* **TBD** [Autenticar Clientes](security-auth-clients.md)
 * **TBD** [Buenas prácticas](security-best-practices.md)
 
 
@@ -150,21 +151,11 @@ Pruebas
 ------
 
 * **TBD** [Información general](test-overview.md)
+* **TBD** [Configuración del entorno de pruebas](test-environment-setup.md)
 * **TBD** [Pruebas unitarias](test-unit.md)
 * **TBD** [Pruebas funcionales](test-functional.md)
 * **TBD** [Pruebas de aceptación](test-acceptance.md)
 * **TBD** [Fixtures](test-fixtures.md)
-
-
-Extender Yii
-------------
-
-* **TBD** [Crear extensiones](extend-creating-extensions.md)
-* **TBD** [Personalizar el código de base](extend-customizing-core.md)
-* **TBD** [Utilizar librerías de terceros](extend-using-libs.md)
-* **TBD** [Utilizar Yii en sistemas de terceros](extend-embedding-in-others.md)
-* **TBD** [Utilizar las versiones 1.1 y 2.0 de Yii juntas](extend-using-v1-v2.md)
-* **TBD** [Utilizar Composer](extend-using-composer.md)
 
 
 Temas especiales
@@ -179,6 +170,7 @@ Temas especiales
 * **TBD** [Mejora del rendimiento](tutorial-performance-tuning.md)
 * **TBD** [Entorno de alojamiento compartido](tutorial-shared-hosting.md)
 * **TBD** [Motores de plantillas](tutorial-template-engines.md)
+* **TBD** [Trabajar con Código de Terceros](tutorial-yii-integration.md)
 
 
 Widgets
