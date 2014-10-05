@@ -35,11 +35,11 @@ Estructura de una aplicación
 * [Aplicaciones](structure-applications.md)
 * [Componentes de una aplicación](structure-application-components.md)
 * [Controladores](structure-controllers.md)
-* **TBD** [Modelos](structure-models.md)
+* [Modelos](structure-models.md)
 * [Vistas](structure-views.md)
 * [Filtros](structure-filters.md)
 * [Widgets](structure-widgets.md)
-* **TBD** [Módulos](structure-modules.md)
+* [Módulos](structure-modules.md)
 * **TBD** [Recursos](structure-assets.md)
 * **TBD** [Extensiones](structure-extensions.md)
 
@@ -47,6 +47,7 @@ Estructura de una aplicación
 Gestión de las peticiones
 -------------------------
 
+* [Información general](runtime-overview.md)
 * **TBD** [Bootstrapping](runtime-bootstrapping.md)
 * **TBD** [Rutas](runtime-routing.md)
 * **TBD** [Peticiones](runtime-requests.md)
