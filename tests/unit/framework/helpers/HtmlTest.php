@@ -278,6 +278,12 @@ EOD;
     public function testListBox()
     {
         $expected = <<<EOD
+<select name="test[]" multiple size="4">
+
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, [], ['multiple' => true]));
+        $expected = <<<EOD
 <select name="test" size="4">
 
 </select>
