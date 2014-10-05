@@ -50,4 +50,21 @@ EOF
             , (string) $form->field($model, 'name', $o)->input('email', ['required' => 'test']));
 
     }
+
+    public function testIssue5356()
+    {
+        $model = new DynamicModel(['categories']);
+        $model->categories = 1;
+        ob_start();
+        $form = new ActiveForm(['action' => '/something']);
+        ob_end_clean();
+
+        // https://github.com/yiisoft/yii2/issues/5356
+        $this->assertEquals(<<<EOF
+<div class="form-group field-dynamicmodel-name">
+<input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required>
+</div>
+EOF
+             , (string) $form->field($model, 'categories')->listBox(['apple', 'banana', 'avocado'], ['multiple' => true]));
+    }
 }
