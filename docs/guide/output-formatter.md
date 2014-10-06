@@ -87,7 +87,7 @@ The formatter class provides different methods for formatting date and time valu
 The date and time format for the [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]], and
 [[yii\i18n\Formatter::asDatetime()|datetime]] method can be specified globally by configuring the formatters
 properties [[yii\i18n\Formatter::$dateFormat|$dateFormat]], [[yii\i18n\Formatter::$timeFormat|$timeFormat]], and
-[[yii\i18n\Formatter::$datetimeFormat()|$datetimeFormat]].
+[[yii\i18n\Formatter::$datetimeFormat|$datetimeFormat]].
 
 By default the formatter uses a shortcut format that is interpreted differently according to the currently active locale
 so that dates and times are formatted in a way that is common for the users country and language.
