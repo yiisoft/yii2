@@ -2,7 +2,7 @@ Générer du code avec Gii
 ========================
 
 Cette section décrit comment utiliser [Gii](tool-gii.md) pour générer du code qui implémente des fonctionnalités
-courrantes de sites Web automatiquement. Utiliser Gii pour auto-générer du code consiste simplement à saisir les
+courantes de sites Web automatiquement. Utiliser Gii pour auto-générer du code consiste simplement à saisir les
 bonnes informations en suivant les instructions affichées sur les pages Web Gii.
 
 Au long de ce tutoriel, vous apprendrez comment :
@@ -47,7 +47,7 @@ ci-dessus. Vous pouvez maintenant accéder à Gii via l’URL suivante :
 http://hostname/index.php?r=gii
 ```
 
-> Note : Si vous accede à Gii depuis une machine autre que localhost, l’accès sera refuse par défaut pour des raisons 
+> Note : Si vous accède à Gii depuis une machine autre que localhost, l’accès sera refuse par défaut pour des raisons 
 > de sécurité. Vous pouvez configurer Gii pour ajouter les adresses IP autorisées comme suit,
 >
 ```php
@@ -81,7 +81,7 @@ Quand vous utilisez Gii, si vous aviez déjà créé le même fichier et que vou
 Quand vous écrasez un fichier existant, cochez la case située à côté de "overwrite" et ensuite, cliquez sur le bouton
 "Generate". Si vous créez un nouveau fichier, il suffit de cliquer sur "Generate". 
 
-Ensuite, vous verrez une page de confirmation indiquand que le code a été généré avec succès. Si vous aviez un fichier 
+Ensuite, vous verrez une page de confirmation indiquant que le code a été généré avec succès. Si vous aviez un fichier 
 existant, vous verrez également un message indiquant qu’il a été écrasé par le code nouvellement généré.
 
 
