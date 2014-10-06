@@ -1,7 +1,7 @@
-Flujo de Trabajo de Traducción
+﻿Flujo de Trabajo de Traducción
 ==============================
 
-Yii se traduce en muchos idiomas con el fin de ser útil para desarrolladores de aplicaciones y internacionales. Dos áreas principales donde la contribución es muy bienvenida son la documentación y los mensajes del framework.
+Yii se traduce en muchos idiomas con el fin de ser útil para desarrolladores de aplicaciones e internacionales. Dos áreas principales donde la contribución es muy bienvenida son la documentación y los mensajes del framework.
 
 Framework Mensajes 
 ------------------
@@ -31,7 +31,7 @@ Después del trabajo inicial se lleva a cabo usted puede conseguir lo que ha cam
 php build translation "../docs/guide" "../docs/guide-es" "Reporte de traducción guia en Español" > report_guide_es.html
 ```
 
-Si se quejan de composer, realizar `composer install` en el fuente del directorio principal.
+Si se quejan de composer, ejecutar `composer install` en el directorio raíz.
 
 Convenios para la traducción
 ----------------------------
@@ -55,5 +55,6 @@ Convenios para la traducción
 - themes — temas o plantillas
 - behaviors — comportamientos
 - handlers — manipuladores
-- instantiating — intanciando
+- instantiating — instanciando
 - link — enlace
+- render – sin traducción

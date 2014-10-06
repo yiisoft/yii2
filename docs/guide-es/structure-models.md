@@ -1,4 +1,4 @@
-Modelos
+﻿Modelos
 ======
 
 Los modelos forman parte de la arquitectura [MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador). Son objetos que representan datos de negocio, reglas y lógica.
@@ -11,7 +11,7 @@ Se pueden crear clases modelo extendiendo a [[yii\base\Model]] o a sus clases hi
 * [validación](#validation-rules): asegura la validez de los datos de entrada basándose en reglas declaradas;
 * [Exportación de datos](#data-exporting): permite que los datos del modelo sean exportados en términos de arrays con formatos personalizables.
 
-La clase 'modelo' también es una base base para modelos más avanzados, tales como [Registros Activos](db-active-record.md).
+La clase 'modelo' también es una base para modelos más avanzados, tales como [Registros Activos](db-active-record.md).
 
 >Info: No es obligatorio basar las clases modelo en [[yii\base\Model]]. Sin embargo, debido a que hay muchos componentes de Yii construidos para dar soporte a [[yii\base\Model]], por lo general es la clase base preferible para un modelo.
 
@@ -370,13 +370,13 @@ En resumen, los modelos:
 * pueden contener atributos para representar los datos de negocio;
 * pueden contener reglas de validación para asegurar la validez e integridad de los datos;
 * pueden contener métodos que para implementar la lógica de negocio;
-* NO deben acceder directamente a peticiones, sesiones, o otro tipo de datos de entorno. Estos datos deben ser inyectados por los [controladores](structure-controllers.md) en los modelos.
-* deben evitar embeber HTML o otro código de presentación – esto es mejor hacerlo en las [vistas](structure-views.md);
+* NO deben acceder directamente a peticiones, sesiones, u otro tipo de datos de entorno. Estos datos deben ser inyectados por los [controladores](structure-controllers.md) en los modelos.
+* deben evitar embeber HTML u otro código de presentación – esto es mejor hacerlo en las [vistas](structure-views.md);
 * evitar tener demasiados [escenarios](#scenarios) en un mismo modelo.
 
 Generalmente se puede considerar la última recomendación cuando se estén desarrollando grandes sistemas complejos. En estos sistemas, los modelos podrían ser muy grandes debido a que podrían ser usados en muchos lugares y por tanto contener muchos conjuntos de reglas y lógicas de negocio. A menudo esto desemboca en un código muy difícil de mantener ya que una simple modificación en el código puede afectar a muchos sitios diferentes. Para mantener el código más fácil de mantener, se puede seguir la siguiente estrategia:
 
-* Definir un conjunto de clases modelo base que sean compartidas por diferentes [aplicaciones](structure-applications.md) o [módulos](structure-modules.md). Estas clases modelo deben contener el conjuntos mínimos de reglas y lógica que sean comunes para todos sus usos.
+* Definir un conjunto de clases modelo base que sean compartidas por diferentes [aplicaciones](structure-applications.md) o [módulos](structure-modules.md). Estas clases modelo deben contener el conjunto mínimo de reglas y lógica que sean comunes para todos sus usos.
 * En cada [aplicación](structure-applications.md) o [módulo](structure-modules.md) que use un modelo, definir una clase modelo concreta que extienda a la correspondiente clase modelo base. La clase modelo concreta debe contener reglas y lógica que sean específicas para esa aplicación o módulo.
 
 Por ejemplo, en la [Plantilla de Aplicación Avanzada](tutorial-advanced-app.md), definiendo una clase modelo base 'common\models\Post'. Después en la aplicación front end, definiendo y usando una clase modelo concreta 'frontend\models\Post' que extienda a 'common\models\Post'. Y de forma similar en la aplicación back end, definiendo 'backend\models\Post'. Con esta estrategia, nos aseguramos que el código de 'frontend\models\Post' es específico para la aplicación front end, y si se efectúa algún cambio en el, no nos tenemos que preocupar de si el cambio afectará a la aplicación back end.

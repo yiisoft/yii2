@@ -1,4 +1,4 @@
-Configuración
+﻿Configuración
 ==============
 
 Las configuraciones se utilizan ampliamente en Yii al crear nuevos objetos o inicializar los objetos existentes. Las configuraciones por lo general incluyen el nombre de la clase del objeto que se está creando, y una lista de los valores iniciales que deberían ser asignadas a las del [propiedades](concept-properties.md) objeto. Las configuraciones también pueden incluir una lista de manipuladores que deban imponerse a del objeto [eventos](concept-events.md) y/o una lista de [comportamientos](concept-behaviors.md) que también ha de atribuirse al objeto.
@@ -42,7 +42,7 @@ El formato de una configuración se puede describir formalmente como:
 donde
 
 * El elemento `class` especifica un nombre de clase completo para el objeto que se está creando.
-* Los elementos `propertyName` especifica los valores iniciales de la propiedad con nombre. Las claves son los nombres de las propiedades y los valores son los valores iniciales correspondientes. Sólo los miebros de variables públicas y [propiedades](concept-properties.md) definidas por getters/setters se pueden configurar.
+* Los elementos `propertyName` especifica los valores iniciales de la propiedad con nombre. Las claves son los nombres de las propiedades y los valores son los valores iniciales correspondientes. Sólo los miembros de variables públicas y [propiedades](concept-properties.md) definidas por getters/setters se pueden configurar.
 * Los elementos `on eventName` especifican qué manipuladores deberán adjuntarse al del objeto [eventos](concept-events.md). Observe que las claves de matriz se forman prefijando nombres de eventos con `on`. Por favor, consulte la sección [Eventos](concept-events.md) para los formatos de controlador de eventos compatibles.
 * Los elementos `as behaviorName` especifican qué [comportamientos](concept-behaviors.md) deben adjuntarse al objeto. Observe que las claves de matriz se forman prefijando nombres de comportamiento con `as`; el valor, `$behaviorConfig`, representa la configuración para la creación de un comportamiento, como una configuración normal descrita aquí.
 
@@ -130,7 +130,7 @@ echo Menu::widget([
 ]);
 ```
 
-El código anterior crea un widget `Menu` e inicializa su propiedad `activeItems` en falsa. La propiedad `items` también se configura con elementos de menu que se muestran.
+El código anterior crea un widget `Menu` e inicializa su propiedad `activeItems` en falsa. La propiedad `items` también se configura con elementos de menú que se muestran.
 
 Tenga en cuenta que debido a que el nombre de la clase ya está dado, la matriz de configuración no deben tener la clave `class`.
 
@@ -187,7 +187,7 @@ $config = require('path/to/web.php');
 
 ## Configuraciones por Defecto <a name="default-configurations"></a>
 
-El método [[Yii::createObject()]] es implementado en base a [contenedor de inyección de dependencia](concept-di-container.md). Le permite especificar un conjunto de los llamados *configuraciones predeterminadas* que se aplicarán a todos los casos de las clases especificadas cuando se crean utilizando [[Yii::createObject()]]. Las configuraciones por defecto se puede especificar llamando `Yii::$container->set()` en el codigo [bootstrapping](runtime-bootstrapping.md).
+El método [[Yii::createObject()]] es implementado en base a [contenedor de inyección de dependencia](concept-di-container.md). Le permite especificar un conjunto de los llamados *configuraciones predeterminadas* que se aplicarán a todos los casos de las clases especificadas cuando se crean utilizando [[Yii::createObject()]]. Las configuraciones por defecto se puede especificar llamando `Yii::$container->set()` en el código [bootstrapping](runtime-bootstrapping.md).
 
 Por ejemplo, si desea personalizar [[yii\widgets\LinkPager]] para que TODO enlace de búsqueda muestre como máximo 5 botones de página (el valor por defecto es 10), puede utilizar el siguiente código para lograr este objetivo,
 
@@ -213,9 +213,7 @@ Usted puede definir `YII_ENV` como uno de los valores siguientes:
 - `dev`: entorno de desarrollo. La constante `YII_ENV_DEV` evaluará como verdadero.
 - `test`: entorno de pruebas. La constante `YII_ENV_TEST` evaluará como verdadero.
 
-Con estas constantes de entorno, puede especificar sus configuraciones condicionales basado en 
-el entorno actual. Por ejemplo, la configuración de la aplicación puede contener el siguiente 
-código para permitir que el [depurador y barra de herramientas de depuración](tool-debugger.md) en el entorno de desarrollo.
+Con estas constantes de entorno, puede especificar sus configuraciones condicionales basado en el entorno actual. Por ejemplo, la configuración de la aplicación puede contener el siguiente código para permitir que el [depurador y barra de herramientas de depuración](tool-debugger.md) en el entorno de desarrollo.
 
 ```php
 $config = [...];
