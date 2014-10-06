@@ -16,7 +16,7 @@ Os passos para iniciar a tradução de mensagens são:
 
 Para manter as traduções sempre atualizadas, certifique-se que seu fork do Yii esteja com a última versão. Em seguida, basta executar o comando `yii message/extract messages/config.php` novamente e o mesmo irá adicionar automaticamente as novas mensagens a serem traduzidas.
 
-No arquivo de tradução cada elemento do array representa a tradução de uma mensagem. Sendo que a "chave" representa o texto a ser traduzido e o "valor" a sua tradução. Se o "valor" estiver vazio, a mensagem é considerada como não traduzida. As mensagens que não precisam de tradução terão seus valores cercadas por um par de '@@'. Atentar para algumas mensagens que estão no formato de plural, para isso verifique a [seção i18n do guia](../guide/i18n.md) para mais detalhes.
+No arquivo de tradução cada elemento do array representa a tradução de uma mensagem. Sendo que a "chave" representa o texto a ser traduzido e o "valor" a sua tradução. Se o "valor" estiver vazio, a mensagem é considerada como não traduzida. As mensagens que não precisam de tradução terão seus valores cercadas por um par de '@@'. Atentar para algumas mensagens que estão no formato de plural, para isso verifique a [seção i18n do guia](../guide-pt-BR/tutorial-i18n.md) para mais detalhes.
 
 
 Documentação

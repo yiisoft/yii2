@@ -14,7 +14,7 @@ Tarjimani yangilash uchun:
 3. Habarlarni `framework/messages/uz/yii.php` ga ko`chiramiz. Muhimi fayllar UTF-8 kodlashda bo'lishi kerak.
 4. `uz` dagi tarjimalar bilan [pull request qilamiz](https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md), qolgan tillarga tegmaymiz.
 
-Tarjima fayllarda massiv joylashgan. Uning kalitlari - boshlang'ich kodlar, qiymatlari - tarjima. Agar qiymat bo'sh bo'lsa habar tarjima qilinmagan hisoblanadi. Kodda boshqa uchramaydigan habarlar tarjimasi '@@' ga o'ralgan. Ayrim habarlar uchun [sonlar bilan qo'llanilishini qo'llab-quvvatlash uchun maxsus format](../guide/i18n.md) ni ishlatish zarur.
+Tarjima fayllarda massiv joylashgan. Uning kalitlari - boshlang'ich kodlar, qiymatlari - tarjima. Agar qiymat bo'sh bo'lsa habar tarjima qilinmagan hisoblanadi. Kodda boshqa uchramaydigan habarlar tarjimasi '@@' ga o'ralgan. Ayrim habarlar uchun [sonlar bilan qo'llanilishini qo'llab-quvvatlash uchun maxsus format](../guide-uz/tutorial-i18n.md) ni ishlatish zarur.
 
 Qo'llanma
 ---------
