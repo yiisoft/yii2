@@ -1,17 +1,14 @@
-Vistas
+﻿Vistas
 ======
 
 Las Vistas (views) son una parte de la arquitectura [MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
-Estas son el código responsable de presentar los datos al usuario final. En una aplicación Web, las vistas son usualmente creadas
-en términos de *templates* que son archivos PHP que contienen principalmente HTML y PHP.
-Son manejadas por el componente de la aplicación [[yii\web\View|view]], el cual provee métodos comúnmente utilizados
-para facilitar la composición y el renderizado de las mismas. Por simplicidad, a menudo las llamamos *templates* o *archivos de templates*.
+Estas son el código responsable de presentar los datos al usuario final. En una aplicación Web, las vistas son usualmente creadas en términos de *templates* que son archivos PHP que contienen principalmente HTML y PHP.
+Son manejadas por el componente de la aplicación [[yii\web\View|view]], el cual provee métodos comúnmente utilizados para facilitar la composición y el renderizado de las mismas. Por simplicidad, a menudo las llamamos *templates* o *archivos de templates*.
 
 
 ## Creando Vistas <a name="creating-views"></a>
 
-Como fue mencionado, una vista es simplemente un archivo PHP que mezcla código PHP y HTML. La siguiente es una vista
-que muestra un formulario de login. Como puedes ver, el código PHP utilizado es para generar contenido dinámico, como el
+Como fue mencionado, una vista es simplemente un archivo PHP que mezcla código PHP y HTML. La siguiente es una vista que muestra un formulario de login. Como puedes ver, el código PHP utilizado es para generar contenido dinámico, como el
 título de la página y el formulario mismo, mientras que el código HTML organiza estos elementos en una página HTML mostrable.
 
 ```php
@@ -36,25 +33,19 @@ $this->title = 'Login';
 <?php ActiveForm::end(); ?>
 ```
 
-Dentro de una vista, puedes acceder a la variable `$this` referida al [[yii\web\View|componente view]] que maneja
-y renderiza la vista actual.
+Dentro de una vista, puedes acceder a la variable `$this` referida al [[yii\web\View|componente view]] que maneja y renderiza la vista actual.
 
-Además de `$this`, puede haber otras variables predefinidas en una vista, como `$form` y `$model` en el ejemplo
-anterior. Estas variables representan los datos que son *inyectados* a la vista desde el [controlador](structure-controllers.md)
+Además de `$this`, puede haber otras variables predefinidas en una vista, como `$form` y `$model` en el ejemplo anterior. Estas variables representan los datos que son *inyectados* a la vista desde el [controlador](structure-controllers.md)
 o algún otro objeto que dispara la [renderización de la vista](#rendering-views).
 
-> Tip: La lista de variables predefinidas están listadas en un bloque de comentario al principio de la vista así pueden ser
-  reconocidas por las IDEs. Esto es también una buena manera de documentar tus propias vistas.
+> Tip: La lista de variables predefinidas están listadas en un bloque de comentario al principio de la vista así pueden ser reconocidas por las IDEs. Esto es también una buena manera de documentar tus propias vistas.
 
 
 ### Seguridad <a name="security"></a>
 
-Al crear vistas que generan páginas HTML, es importante que codifiques (encode) y/o filtres los datos provenientes
-de los usuarios antes de mostrarlos. De otro modo, tu aplicación puede estar expuesta a
-ataques tipo [cross-site scripting](http://es.wikipedia.org/wiki/Cross-site_scripting).
+Al crear vistas que generan páginas HTML, es importante que codifiques (encode) y/o filtres los datos provenientes de los usuarios antes de mostrarlos. De otro modo, tu aplicación puede estar expuesta a ataques tipo [cross-site scripting](http://es.wikipedia.org/wiki/Cross-site_scripting).
 
-Para mostrar un texto plano, codifícalos previamente utilizando [[yii\helpers\Html::encode()]]. Por ejemplo, el siguiente código
-aplica una codificación del nombre de usuario antes de mostrarlo:
+Para mostrar un texto plano, codifícalos previamente utilizando [[yii\helpers\Html::encode()]]. Por ejemplo, el siguiente código aplica una codificación del nombre de usuario antes de mostrarlo:
 
 ```php
 <?php
@@ -79,8 +70,7 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-> Tip: Aunque HTMLPurifier hace un excelente trabajo al hacer la salida más segura, no es rápido. Deberías considerar
-  utilizar [caching](caching-overview.md) al resultado de aplicar el filtro si tu aplicación requiere un gran desempeño (performance).
+> Tip: Aunque HTMLPurifier hace un excelente trabajo al hacer la salida más segura, no es rápido. Deberías considerar utilizar [caching](caching-overview.md) al resultado de aplicar el filtro si tu aplicación requiere un gran desempeño (performance).
 
 
 ### Organizando Vistas <a name="organizing-views"></a>
@@ -119,13 +109,10 @@ methodName($view, $params = [])
 
 Dentro de los [controladores](structure-controllers.md), puedes llamar al siguiente método del controlador para renderizar una vista:
 
-* [[yii\base\Controller::render()|render()]]: renderiza la [vista nombrada](#named-views) y aplica un [layout](#layouts)
-  al resultado de la renderización.
+* [[yii\base\Controller::render()|render()]]: renderiza la [vista nombrada](#named-views) y aplica un [layout](#layouts) al resultado de la renderización.
 * [[yii\base\Controller::renderPartial()|renderPartial()]]: renderiza la [vista nombrada](#named-views) sin ningún layout aplicado.
-* [[yii\web\Controller::renderAjax()|renderAjax()]]: renderiza la [vista nombrada](#named-views) sin layout,
-  e inyecta todos los scripts y archivos JS/CSS registrados. Esto sucede usualmente en respuestas a llamadas a AJAX `requests`.
-* [[yii\base\Controller::renderFile()|renderFile()]]: renderiza la vista especificada en términos de la ruta al archivo o
-  [alias](concept-aliases.md).
+* [[yii\web\Controller::renderAjax()|renderAjax()]]: renderiza la [vista nombrada](#named-views) sin layout, e inyecta todos los scripts y archivos JS/CSS registrados. Esto sucede usualmente en respuestas a llamadas a AJAX `requests`.
+* [[yii\base\Controller::renderFile()|renderFile()]]: renderiza la vista especificada en términos de la ruta al archivo o [alias](concept-aliases.md).
 
 Por ejemplo:
 
@@ -160,8 +147,7 @@ class PostController extends Controller
 Dentro de [widgets](structure-widgets.md), puedes llamar a cualquier de los siguientes métodos de widget para renderizar una vista.
 
 * [[yii\base\Widget::render()|render()]]: renderiza la [vista nombrada](#named-views).
-* [[yii\base\Widget::renderFile()|renderFile()]]: renderiza la vista especificada en términos de ruta al archivo o
-  [alias](concept-aliases.md).
+* [[yii\base\Widget::renderFile()|renderFile()]]: renderiza la vista especificada en términos de ruta al archivo o [alias](concept-aliases.md).
 
 Por ejemplo:
 
@@ -191,13 +177,10 @@ class ListWidget extends Widget
 Puedes renderizar una vista dentro de otra vista llamando a algunos de los siguientes métodos provistos por el [[yii\base\View|componente view]]:
 
 * [[yii\base\View::render()|render()]]: renderiza la [vista nombrada](#named-views).
-* [[yii\web\View::renderAjax()|renderAjax()]]: renderiza la [vista nombrada](#named-views) e inyecta todos los
-  archivos y scripts JS/CSS. Esto sucede usualmente en respuestas a llamadas a AJAX `requests`.
-* [[yii\base\View::renderFile()|renderFile()]]: renderiza la vista especificada en términos de ruta al archivo o
-  [alias](concept-aliases.md).
+* [[yii\web\View::renderAjax()|renderAjax()]]: renderiza la [vista nombrada](#named-views) e inyecta todos los archivos y scripts JS/CSS. Esto sucede usualmente en respuestas a llamadas a AJAX `requests`.
+* [[yii\base\View::renderFile()|renderFile()]]: renderiza la vista especificada en términos de ruta al archivo o [alias](concept-aliases.md).
 
-Por ejemplo, el siguiente código en una vista renderiza el template `_overview.php` encontrado en el mismo directorio
-de la vista renderizada actualmente. Recuerda que la variable `$this` en una vista se refiere al componente [[yii\base\View|view]]:
+Por ejemplo, el siguiente código en una vista renderiza el template `_overview.php` encontrado en el mismo directorio de la vista renderizada actualmente. Recuerda que la variable `$this` en una vista se refiere al componente [[yii\base\View|view]]:
 
 ```php
 <?= $this->render('_overview') ?>
@@ -222,36 +205,25 @@ utilizarías la primera porque es más concisa y flexible. *Vistas nombradas* so
 
 Un nombre de vista es resuelto a su correspondiente ruta de archivo siguiendo las siguientes reglas:
 
-* Un nombre de vista puede omitir la extensión del archivo. En estos casos se utilizará `.php` como extensión del archivo. Por ejemplo,
-  el nombre de vista `about` corresponde al archivo `about.php`.
+* Un nombre de vista puede omitir la extensión del archivo. En estos casos se utilizará `.php` como extensión del archivo. Por ejemplo, el nombre de vista `about` corresponde al archivo `about.php`.
 * Si el nombre de la vista comienza con doble barra (`//`), la ruta al archivo correspondiente será `@app/views/ViewName`.
-  Esto quiere decir que la vista es buscada bajo el [[yii\base\Application::viewPath|view path de la aplicación]].
-  Por ejemplo, `//site/about` será resuelto como `@app/views/site/about.php`.
-* Si el nombre de la vista comienza con una barra simple `/`, la ruta al archivo de la vista utilizará como prefijo el nombre de la vista
-  con el [[yii\base\Module::viewPath|view path]] del [módulo](structure-modules.md) utilizado actualmente.
-  Si no hubiera módulo activo se utilizará `@app/views/ViewName`. Por ejemplo, `/user/create` será resuelto a
-  `@app/modules/user/views/user/create.php` si el módulo activo es `user`. Si no hubiera módulo activo,
-  la ruta al archivo será `@app/views/user/create.php`.
-* Si la vista es renderizada con un [[yii\base\View::context|context]] y dicho contexto implementa [[yii\base\ViewContextInterface]],
-  la ruta al archivo se forma utilizando como prefijo el [[yii\base\ViewContextInterface::getViewPath()|view path]]
-  del contexto de la vista. Esto principalmente aplica a vistas renderizadas en controladores y widgets. Por ejemplo,
-  `site/about` será resuelto a `@app/views/site/about.php` si el contexto es el controlador `SiteController`.
-* Si la vista es renderizada dentro de otra vista, el directorio que contiene la otra vista será prefijado
-  al nuevo nombre de la vista para formar la ruta a la vista. Por ejemplo, `item` sera resuelto a `@app/views/post/item`
-  si está siendo renderizado desde la vista `@app/views/post/index.php`.
+Esto quiere decir que la vista es buscada bajo el [[yii\base\Application::viewPath|view path de la aplicación]].
+Por ejemplo, `//site/about` será resuelto como `@app/views/site/about.php`.
+* Si el nombre de la vista comienza con una barra simple `/`, la ruta al archivo de la vista utilizará como prefijo el nombre de la vista con el [[yii\base\Module::viewPath|view path]] del [módulo](structure-modules.md) utilizado actualmente.
+Si no hubiera módulo activo se utilizará `@app/views/ViewName`. Por ejemplo, `/user/create` será resuelto a `@app/modules/user/views/user/create.php` si el módulo activo es `user`. Si no hubiera módulo activo, la ruta al archivo será `@app/views/user/create.php`.
+* Si la vista es renderizada con un [[yii\base\View::context|context]] y dicho contexto implementa [[yii\base\ViewContextInterface]], la ruta al archivo se forma utilizando como prefijo el [[yii\base\ViewContextInterface::getViewPath()|view path]] del contexto de la vista. Esto principalmente aplica a vistas renderizadas en controladores y widgets. Por ejemplo, `site/about` será resuelto a `@app/views/site/about.php` si el contexto es el controlador `SiteController`.
+* Si la vista es renderizada dentro de otra vista, el directorio que contiene la otra vista será prefijado al nuevo nombre de la vista para formar la ruta a la vista. Por ejemplo, `item` sera resuelto a `@app/views/post/item` si está siendo renderizado desde la vista `@app/views/post/index.php`.
 
 De acuerdo a las reglas mencionadas, al llamar a `$this->render('view')` en el controlador `app\controllers\PostController`
 se renderizará el template `@app/views/post/view.php`, mientras que llamando a `$this->render('_overview')` en la vista
 renderizará el template `@app/views/post/_overview.php`.
-
 
 ### Accediendo a Datos en la Vista <a name="accessing-data-in-views"></a>
 
 Hay dos modos posibles de acceder a los datos en la vista: push (inyectar) y pull (traer).
 
 Al pasar los datos como segundo parámetro en algún método de renderización, estás utilizando el modo push.
-Los datos deberían ser representados como un array de pares clave-valor. Cuando la vista está siendo renderizada, la función PHP
-`extract()` será llamada sobre este array así se extraen las variables que contiene a la vista actual .
+Los datos deberían ser representados como un array de pares clave-valor. Cuando la vista está siendo renderizada, la función PHP `extract()` será llamada sobre este array así se extraen las variables que contiene a la vista actual .
 Por ejemplo, el siguiente código de renderización en un controlador inyectará dos variables a la vista `report`:
 `$foo = 1` and `$bar = 2`.
 
@@ -262,35 +234,26 @@ echo $this->render('report', [
 ]);
 ```
 
-El modo pull obtiene los datos del [[yii\base\View|componente view]] u otros objetos accesibles
-en las vistas (ej. `Yii::$app`). Utilizando el código anterior como ejemplo, dentro de una vista puedes acceder al objeto del controlador
-a través de la expresión `$this->context`. Como resultado, te es posible acceder a cualquier propiedad o método
-del controlador en la vista `report`, tal como el ID del controlador como se muestra a continuación:
+El modo pull obtiene los datos del [[yii\base\View|componente view]] u otros objetos accesibles en las vistas (ej. `Yii::$app`). Utilizando el código anterior como ejemplo, dentro de una vista puedes acceder al objeto del controlador a través de la expresión `$this->context`. Como resultado, te es posible acceder a cualquier propiedad o método del controlador en la vista `report`, tal como el ID del controlador como se muestra a continuación:
 
 ```php
 El ID del controlador es: <?= $this->context->id ?>
 ?>
 ```
 
-Para acceder a datos en la vista, normalmente se prefiere el modo push, ya que hace a la vista menos dependiente
-de los objetos del contexto. La contra es que tienes que construir el array manualmente cada vez, lo que podría
-volverse tedioso y propenso al error si la misma vista es compartida y renderizada desde diferentes lugares.
-
+Para acceder a datos en la vista, normalmente se prefiere el modo push, ya que hace a la vista menos dependiente de los objetos del contexto. La contra es que tienes que construir el array manualmente cada vez, lo que podría volverse tedioso y propenso al error si la misma vista es compartida y renderizada desde diferentes lugares.
 
 ### Compartiendo Datos Entre las Vistas <a name="sharing-data-among-views"></a>
 
-El [[yii\base\View|componente view]] provee la propiedad [[yii\base\View::params|params]] para que puedas compartir
-datos entre diferentes vistas.
+El [[yii\base\View|componente view]] provee la propiedad [[yii\base\View::params|params]] para que puedas compartir datos entre diferentes vistas.
 
-Por ejemplo, en una vista `about`, podrías tener el siguiente código que especifica el segmento actual
-del breadcrumbs (migas de pan).
+Por ejemplo, en una vista `about`, podrías tener el siguiente código que especifica el segmento actual del breadcrumbs (migas de pan).
 
 ```php
 $this->params['breadcrumbs'][] = 'Acerca de Nosotros';
 ```
 
-Entonces, en el archivo del [layout](#layouts), que es también una vista, puedes mostrar el breadcrumbs utilizando los datos
-pasados a través de [[yii\base\View::params|params]]:
+Entonces, en el archivo del [layout](#layouts), que es también una vista, puedes mostrar el breadcrumbs utilizando los datos pasados a través de [[yii\base\View::params|params]]:
 
 ```php
 <?= yii\widgets\Breadcrumbs::widget([
@@ -298,25 +261,16 @@ pasados a través de [[yii\base\View::params|params]]:
 ]) ?>
 ```
 
-
 ## Layouts <a name="layouts"></a>
 
-Los layouts son un tipo especial de vista que representan partes comunes de otras múltiples vistas. Por ejemplo, las páginas
-de la mayoría de las aplicaciones Web comparten el mismo encabezado y pie de página. Aunque puedes repetirlos en todas y cada una
-de las vistas, una mejor forma es hacerlo sólo en el layout e incrustar el resultado de la renderización de la vista en
-un lugar apropiado del mismo.
-
+Los layouts son un tipo especial de vista que representan partes comunes de otras múltiples vistas. Por ejemplo, las páginas de la mayoría de las aplicaciones Web comparten el mismo encabezado y pie de página. Aunque puedes repetirlos en todas y cada una de las vistas, una mejor forma es hacerlo sólo en el layout e incrustar el resultado de la renderización de la vista en un lugar apropiado del mismo.
 
 ### Creando Layouts <a name="creating-layouts"></a>
 
-Dado que los layouts son también vistas, pueden ser creados de manera similar a las vistas comunes. Por defecto, los layouts
-son guardados en el directorio `@app/views/layouts`. Para layouts utilizados dentro de un [módulo](structure-modules.md),
-deberían ser guardados en el directorio `views/layouts` bajo el [[yii\base\Module::basePath|directorio del módulo]].
-Puedes personalizar el directorio de layouts por defecto configurando la propiedad [[yii\base\Module::layoutPath]] de
-la aplicación o módulos.
+Dado que los layouts son también vistas, pueden ser creados de manera similar a las vistas comunes. Por defecto, los layouts son guardados en el directorio `@app/views/layouts`. Para layouts utilizados dentro de un [módulo](structure-modules.md), deberían ser guardados en el directorio `views/layouts` bajo el [[yii\base\Module::basePath|directorio del módulo]].
+Puedes personalizar el directorio de layouts por defecto configurando la propiedad [[yii\base\Module::layoutPath]] de la aplicación o módulos.
 
-El siguiente ejemplo muestra cómo debe verse un layout. Ten en cuenta que por motivos ilustrativos, hemos simplificado bastante
-el código del layout. En la práctica, probablemente le agregues más contenido, como tags en el `head`, un menú principal, etc.
+El siguiente ejemplo muestra cómo debe verse un layout. Ten en cuenta que por motivos ilustrativos, hemos simplificado bastante el código del layout. En la práctica, probablemente le agregues más contenido, como tags en el `head`, un menú principal, etc.
 
 ```php
 <?php
@@ -346,37 +300,29 @@ use yii\helpers\Html;
 ```
 
 Como puedes ver, el layout genera los tags HTML comunes a todas las páginas. Dentro de la sección `<body>`,
-el layout imprime la variable `$content`, que representa el resultado de la renderización del contenido de cada vista y es incrustado
-dentro del layout cuando se llama al método [[yii\base\Controller::render()]].
+el layout imprime la variable `$content`, que representa el resultado de la renderización del contenido de cada vista y es incrustado dentro del layout cuando se llama al método [[yii\base\Controller::render()]].
 
-La mayoría de layouts deberían llamar a los siguientes métodos (como fue mostrado recién). Estos métodos principalmente disparan eventos
-acerca del proceso de renderizado así los scripts y tags registrados en otros lugares pueden ser propiamente inyectados en
-los lugares donde los métodos son llamados.
+La mayoría de layouts deberían llamar a los siguientes métodos (como fue mostrado recién). Estos métodos principalmente disparan eventos acerca del proceso de renderizado así los scripts y tags registrados en otros lugares pueden ser propiamente inyectados en los lugares donde los métodos son llamados.
 
 - [[yii\base\View::beginPage()|beginPage()]]: Este método debería ser llamado bien al principio del layout.
-  Esto dispara el evento [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]], el cual indica el comienzo de la página.
+Esto dispara el evento [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]], el cual indica el comienzo de la página.
 - [[yii\base\View::endPage()|endPage()]]: Este método debería ser llamado al final del layout.
-  Esto dispara el evento [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]], indicando el final de la página.
+Esto dispara el evento [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]], indicando el final de la página.
 - [[yii\web\View::head()|head()]]: Este método debería llamarse dentro de la sección `<head>` de una página HTML.
-  Esto genera un espacio vacío que será reemplazado con el código del head HTML registrado (ej. link tags, meta tags)
-  cuando una página finaliza el renderizado.
+Esto genera un espacio vacío que será reemplazado con el código del head HTML registrado (ej. link tags, meta tags) cuando una página finaliza el renderizado.
 - [[yii\base\View::beginBody()|beginBody()]]: Este método debería llamarse al principio de la sección `<body>`.
-  Esto dispara el evento [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] y genera un espacio vacío que será
-  reemplazado con el código HTML registrado (ej. JavaScript) que apunta al principio del body.
+Esto dispara el evento [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] y genera un espacio vacío que será reemplazado con el código HTML registrado (ej. JavaScript) que apunta al principio del body.
 - [[yii\base\View::endBody()|endBody()]]: Este método debería llamarse al final de la sección `<body>`.
-  Esto dispara el evento [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]], que genera un espacio vacío a ser reemplazado
-  por el código HTML registrado (ej. JavaScript) que apunta al final del body.
+Esto dispara el evento [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]], que genera un espacio vacío a ser reemplazado por el código HTML registrado (ej. JavaScript) que apunta al final del body.
 
 
 ### Accediendo a Datos en Layouts <a name="accessing-data-in-layouts"></a>
 
 Dentro de un layout, tienes acceso a dos variables predefinidas: `$this` y `$content`. La primera se refiere
-al componente [[yii\base\View|view]], como en cualquier vista, mientras que la última contiene el resultado de la renderización del contenido
-de la vista que está siendo renderizada all llamar al método [[yii\base\Controller::render()|render()]] en los controladores.
+al componente [[yii\base\View|view]], como en cualquier vista, mientras que la última contiene el resultado de la renderización del contenido de la vista que está siendo renderizada all llamar al método [[yii\base\Controller::render()|render()]] en los controladores.
 
-Si quieres acceder a otros datos en los layouts, debes utilizar el modo pull que fue descrito en la sub-sección
-[Accediendo a Datos en la Vista](#accessing-data-in-views). Si quieres pasar datos desde al contenido de la vista
-a un layout, puedes utilizar el método descrito en la sub-sección [Compartiendo Datos Entre las Vistas](#sharing-data-among-views).
+Si quieres acceder a otros datos en los layouts, debes utilizar el modo pull que fue descrito en la sub-sección 
+[Accediendo a Datos en la Vista](#accessing-data-in-views). Si quieres pasar datos desde al contenido de la vista a un layout, puedes utilizar el método descrito en la sub-sección [Compartiendo Datos Entre las Vistas](#sharing-data-among-views).
 
 
 ### Utilizando Layouts <a name="using-layouts"></a>
@@ -569,14 +515,11 @@ Al igual que con [[yii\web\View::registerMetaTag()|registerMetaTags()]], puedes 
 
 ## Eventos de Vistas <a name="view-events"></a>
 
-Los [[yii\base\View|componentes de vistas]] disparan varios eventos durante el proceso de renderizado de la vista. Puedes responder
-a estos eventos para inyectar contenido a la vista o procesar el resultado de la renderización antes de que sea enviada al usuario final.
+Los [[yii\base\View|componentes de vistas]] disparan varios eventos durante el proceso de renderizado de la vista. Puedes responder a estos eventos para inyectar contenido a la vista o procesar el resultado de la renderización antes de que sea enviada al usuario final.
 
-- [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: disparado al principio del renderizado de un archivo
-  en un controlador. Los manejadores de este evento pueden definir [[yii\base\ViewEvent::isValid]] como `false` para cancelar el proceso de renderizado.
+- [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: disparado al principio del renderizado de un archivo en un controlador. Los manejadores de este evento pueden definir [[yii\base\ViewEvent::isValid]] como `false` para cancelar el proceso de renderizado.
 - [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: disparado por la llamada a [[yii\base\View::beginPage()]] en layouts.
-  Los manejadores de este evento pueden obtener el resultado de la renderización a través de [[yii\base\ViewEvent::output]] y entonces modificar
-  esta propiedad para así cambiar el mismo.
+Los manejadores de este evento pueden obtener el resultado de la renderización a través de [[yii\base\ViewEvent::output]] y entonces modificar esta propiedad para así cambiar el mismo.
 - [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: disparado por la llamada a [[yii\base\View::beginPage()]] en layouts.
 - [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]]: disparado por la llamada a [[yii\base\View::endPage()]] en layouts.
 - [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]]: disparado por la llamada a [[yii\web\View::beginBody()]] en layouts.
@@ -591,10 +534,9 @@ Por ejemplo, el siguiente código inyecta la fecha actual al final del body de l
 ```
 
 
-## Renderizando Página Estáticas <a name="rendering-static-pages"></a>
+## Renderizando Páginas Estáticas <a name="rendering-static-pages"></a>
 
-Con páginas estáticas nos referimos a esas páginas cuyo contenido es mayormente estático y sin necesidad de acceso
-a datos dinámicos enviados desde los controladores.
+Con páginas estáticas nos referimos a esas páginas cuyo contenido es mayormente estático y sin necesidad de acceso a datos dinámicos enviados desde los controladores.
 
 Puedes generar páginas estáticas utilizando un código como el que sigue dentro de un controlador:
 
@@ -606,8 +548,7 @@ public function actionAbout()
 ```
 
 Si un sitio Web contiene muchas páginas estáticas, resultaría tedioso repetir el mismo código en muchos lados.
-Para resolver este problema, puedes introducir una [acción independiente](structure-controllers.md#standalone-actions)
-llamada [[yii\web\ViewAction]] en el controlador. Por ejemplo,
+Para resolver este problema, puedes introducir una [acción independiente](structure-controllers.md#standalone-actions) llamada [[yii\web\ViewAction]] en el controlador. Por ejemplo,
 
 ```php
 namespace app\controllers;
@@ -627,16 +568,13 @@ class SiteController extends Controller
 }
 ```
 
-Ahora, si creamos una vista llamada `about` bajo el directorio `@app/views/site/pages`, serás capáz
-de mostrarla en la siguiente URL:
+Ahora, si creamos una vista llamada `about` bajo el directorio `@app/views/site/pages`, serás capáz de mostrarla en la siguiente URL:
 
 ```
 http://localhost/index.php?r=site/page&view=about
 ```
 
-El parámetro `GET` `view` le comunica a [[yii\web\ViewAction]] cuál es la vista solicitada. La acción entonces buscará
-esta vista dentro de `@app/views/site/pages`. Puedes configurar la propiedad [[yii\web\ViewAction::viewPrefix]]
-para cambiar el directorio en el que se buscarán dichas páginas.
+El parámetro `GET` `view` le comunica a [[yii\web\ViewAction]] cuál es la vista solicitada. La acción entonces buscará esta vista dentro de `@app/views/site/pages`. Puedes configurar la propiedad [[yii\web\ViewAction::viewPrefix]] para cambiar el directorio en el que se buscarán dichas páginas.
 
 
 ## Buenas Prácticas <a name="best-practices"></a>
@@ -646,15 +584,14 @@ Las vistas son responsables de la presentación de modelos en el formato que el 
 * deberían contener principalmente sólo código de presentación, como HTML, y PHP simple para recorrer, dar formato y renderizar datos.
 * no deberían contener código que realiza consultas a la base de datos. Ese tipo de código debe ir en los modelos.
 * deberían evitar el acceso directo a datos del `request`, como `$_GET` y/o `$_POST`. Esto es una responsabilidad de los controladores.
-  Si se necesitan datos del `request`, deben ser inyectados a la vista desde el controlador.
+Si se necesitan datos del `request`, deben ser inyectados a la vista desde el controlador.
 * pueden leer propiedades del modelo, pero no debería modificarlas.
 
 Para hacer las vistas más manejables, evita crear vistas que son demasiado complejas o que contengan código redundante.
 Puedes utilizar estas técnicas para alcanzar dicha meta:
 
 * utiliza [layouts](#layouts) para representar secciones comunes (ej. encabezado y footer de la página).
-* divide una vista compleja en varias más simples. Las vistas pequeñas pueden ser renderizadas y unidas una mayor
-  utilizando los métodos de renderización antes descritos.
+* divide una vista compleja en varias más simples. Las vistas pequeñas pueden ser renderizadas y unidas una mayor utilizando los métodos de renderización antes descritos.
 * crea y utiliza [widgets](structure-widgets.md) como bloques de construcción de la vista.
 * crea y utilizar helpers para transformar y dar formato a los datos en la vista.
 

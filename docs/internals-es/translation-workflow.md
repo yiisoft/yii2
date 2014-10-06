@@ -57,4 +57,5 @@ Convenios para la traducción
 - handlers — manipuladores
 - instantiating — instanciando
 - link — enlace
-- render – sin traducción
+- render — sin traducción
+- DatePicker — sin traducción
