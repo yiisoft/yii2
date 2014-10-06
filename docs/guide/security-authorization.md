@@ -154,7 +154,7 @@ the [Wiki article](http://en.wikipedia.org/wiki/Role-based_access_control) for d
 with other more traditional access control schemes.
 
 Yii implements a General Hierarchical RBAC, following the [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
-It provides the RBAC functionality through the [[yii\rbac\ManagerInterface|authManager]] application component.
+It provides the RBAC functionality through the [[yii\rbac\ManagerInterface|authManager]] [application component](structure-application-components.md).
 
 Using RBAC involves two parts of work. The first part is to build up the RBAC authorization data, and the second
 part is to use the authorization data to perform access check in places where it is needed.

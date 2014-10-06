@@ -71,7 +71,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 ```
 
 Yii tries to load an appropriate translation according to the current [[yii\base\Application::$language|application language]]
-from one of the message sources defined in the `i18n` [application component](concept-components.md).
+from one of the message sources defined in the `i18n` [application component](structure-application-components.md).
 A message source is a set of files or a database that provides translation messages.
 The following configuration example defines a messages source that takes the messages from PHP files:
 
@@ -408,7 +408,7 @@ Instead of using `fileMap` you can simply use convention of category mapping to 
 
 Yii comes with default translation messages for validation errors and some other strings. These messages are all
 in the category `yii`. Sometimes you want to correct default framework message translation for your application.
-In order to do so configure the `i18n` [application component](concept-components.md) like the following:
+In order to do so configure the `i18n` [application component](structure-application-components.md) like the following:
 
 ```php
 'i18n' => [

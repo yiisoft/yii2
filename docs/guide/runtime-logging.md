@@ -63,7 +63,7 @@ severity levels and categories and then exports them to some medium. For example
 exports the filtered log messages to a database table, while a [[yii\log\EmailTarget|email target]] exports
 the log messages to specified email addresses.
 
-You can register multiple log targets in an application by configuring them through the `log` application component 
+You can register multiple log targets in an application by configuring them through the `log` [application component](structure-application-components.md)
 in the application configuration, like the following:
 
 ```php

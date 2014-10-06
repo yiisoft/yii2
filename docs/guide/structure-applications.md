@@ -195,7 +195,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 #### [[yii\base\Application::components|components]] <a name="components"></a>
 
 This is the single most important property. It allows you to register a list of named components
-called [application components](#structure-application-components.md) that you can use in other places. For example,
+called [application components](structure-application-components.md) that you can use in other places. For example,
 
 ```php
 [

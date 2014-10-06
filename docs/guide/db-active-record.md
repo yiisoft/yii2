@@ -97,7 +97,7 @@ Connecting to Database
 ----------------------
 
 Active Record uses a [[yii\db\Connection|DB connection]] to exchange data with database. By default,
-it uses the `db` application component as the connection. As explained in [Database basics](db-dao.md),
+it uses the `db` [application component](structure-application-components.md) as the connection. As explained in [Database basics](db-dao.md),
 you may configure the `db` component in the application configuration file like follows,
 
 ```php

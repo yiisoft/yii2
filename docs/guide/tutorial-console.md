@@ -63,7 +63,7 @@ Configuration
 -------------
 
 As can be seen in the code above, the console application uses its own configuration file, named `console.php`. In this file
-you should configure various application components and properties for the console application in particular.
+you should configure various [application components](structure-application-components.md) and properties for the console application in particular.
 
 If your web application and the console application share a lot of configuration parameters and values, you may consider moving the common
 parts into a separate file, and including this file in both of the application configurations (web and console). You can see an example of this in the "advanced" application template.
