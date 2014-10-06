@@ -388,12 +388,12 @@ class Generator extends \yii\gii\Generator
     }
 
     /**
-     * Checks if the given table is a pivot table.
+     * Checks if the given table is a junction table.
      * For simplicity, this method only deals with the case where the pivot contains two PK columns,
      * each referencing a column in a different table.
      * @param \yii\db\TableSchema the table being checked
-     * @return array|boolean the relevant foreign key constraint information if the table is a pivot table,
-     * or false if the table is not a pivot table.
+     * @return array|boolean the relevant foreign key constraint information if the table is a junction table,
+     * or false if the table is not a junction table.
      */
     protected function checkPivotTable($table)
     {
