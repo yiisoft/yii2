@@ -523,3 +523,8 @@ We recommend an ICU version greater or equal to version ICU 49 to be able to use
 One major feature that is missing in Versions below 49 is the `#` placeholder in plural rules.
 See <http://site.icu-project.org/download> for a list of available ICU versions. Note that the version numbering has changed after the
 4.8 release so that the first digits are now merged: the sequence is ICU 4.8, ICU 49, ICU 50.
+
+Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
+to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
+on updating the time zone database. While for output formatting the ICU timezone database is used, the time zone database
+used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](http://pecl.php.net/package/timezonedb).
