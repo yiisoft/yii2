@@ -31,8 +31,8 @@ Por defecto, los filtros declarados en una clase controlador, serán aplicados e
 Además de en los controladores, se pueden declarar filtros en [modulos](structure-modules.md) o [aplicaciones](structure-applications.md).
 Una vez hecho, los filtros serán aplicados a *todas* las acciones de controlador que pertenezcan a ese modulo o aplicación, a menos que las propiedades [[yii\base\ActionFilter::only|only]] y [[yii\base\ActionFilter::except|except]] sean configuradas como se ha descrito anteriormente.
 
->Nota: Cuando se declaran filtros en módulos o aplicaciones, deben usarse [rutas](structure-controllers.md#routes) en lugar de identificadores de acciones en las propiedades [[yii\base\ActionFilter::only|only]] y [[yii\base\ActionFilter::except|except]].
-Esto es debido a que los identificadores de acciones no pueden especificar acciones dentro del ámbito de un modulo o una aplicación por si mismos.
+>Nota: Cuando se declaran filtros en módulos o aplicaciones, deben usarse [rutas](structure-controllers.md#routes) en lugar de IDs de acciones en las propiedades [[yii\base\ActionFilter::only|only]] y [[yii\base\ActionFilter::except|except]].
+Esto es debido a que los IDs de acciones no pueden especificar acciones dentro del ámbito de un modulo o una aplicación por si mismos.
 
 Cuando se configuran múltiples filtros para una misma acción, se aplican de acuerdo a las siguientes reglas:
 

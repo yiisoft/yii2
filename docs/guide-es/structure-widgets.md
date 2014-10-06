@@ -151,7 +151,7 @@ Los widgets son una manera orientada a objetos de reutilizar código de las vist
 
 Cuando se crean widgets, se debería continuar manteniendo el patrón MVC. En general, se debería mantener la lógica en las clases del widget y mantener la presentación en las [vistas](structure-views.md).
 
-Los widgets deberían ser diseñados para ser autónomos. Es decir, cuando se usa un widget, se debería poder poner en una vista sin hacer nada más. Esto puede resultar complicado si un widget requiere recursos externos, tales como CSS, JavaScript, imágenes, etc. Afortunadamente Yii proporciona soporte para [paquetes asset](structure-asset-bundles.md) que pueden ser utilizados para resolver el problema.
+Los widgets deberían ser diseñados para ser autónomos. Es decir, cuando se usa un widget, se debería poder poner en una vista sin hacer nada más. Esto puede resultar complicado si un widget requiere recursos externos, tales como CSS, JavaScript, imágenes, etc. Afortunadamente Yii proporciona soporte para [paquetes de recursos](structure-asset-bundles.md) que pueden ser utilizados para resolver el problema.
 
 Cuando un widget sólo contiene código de vista, este es muy similar a una [vista](structure-views.md). De hecho, en este caso, su única diferencia es que un widget es una clase redistribuible, mientras que una vista es sólo un script PHP llano que prefiere mantenerse dentro de su aplicación.
 
