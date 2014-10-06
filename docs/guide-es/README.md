@@ -1,4 +1,4 @@
-Guía Definitiva de Yii 2.0
+﻿Guía Definitiva de Yii 2.0
 ==========================
 
 Este tutorial se publica con arreglo a los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
@@ -48,8 +48,8 @@ Gestión de las peticiones
 -------------------------
 
 * [Información general](runtime-overview.md)
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Rutas](runtime-routing.md)
+* [Bootstrapping](runtime-bootstrapping.md)
+* [Routing](runtime-routing.md)
 * **TBD** [Peticiones](runtime-requests.md)
 * **TBD** [Respuestas](runtime-responses.md)
 * **TBD** [Sesiones y Cookies](runtime-sessions-cookies.md)
