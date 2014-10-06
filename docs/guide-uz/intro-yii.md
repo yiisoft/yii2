@@ -26,7 +26,7 @@ Yii — bir odamning loyihasi emas. U unga yordam berayotgan ishlab chiquvchilar
 Yii talqinlari
 --------------
 
-Ayni vaqtda Yii ning ikkita yo'nalishi mavjud: 1.1 va 2.0. 1.1 yo'nalishi avvalgi avlod hisoblanadi va qo'llab quvvatlash holatida. 2.0 talqini - bu Composer, PSR, nomlar sohasi, treytlar(traits) va boshqa shular kabi ko'pgina oxirgi texnologiyalarni va *qaydnoma*larni qo'llovchi Yii ning to'liq boshqatdan yozilgani talqini. Mana shu talqinda navbatdagi yillarda uni yanada kuchaytirish nazarda tutilgan. Ushbu qo'llanma aynan 2.0 talqin haqida.
+Ayni vaqtda Yii ning ikkita yo'nalishi mavjud: 1.1 va 2.0. 1.1 yo'nalishi avvalgi avlod hisoblanadi va qo'llab quvvatlash holatida. 2.0 talqini - bu Composer, PSR, nomlar sohasi, treytlar(traits) va boshqa shular kabi ko'pgina oxirgi texnologiyalarni va *qaydnoma*larni qo'llovchi Yii ning to'liq boshqatdan yozilgan talqini. Mana shu talqinda navbatdagi yillarda uni yanada kuchaytirish nazarda tutilgan. Ushbu qo'llanma aynan 2.0 talqin haqida.
 
 
 DT va bilimlarga talablar
@@ -34,4 +34,4 @@ DT va bilimlarga talablar
 
 Yii 2.0 PHP 5.4.0 va undan yuqorisini talab qiladi. Boshqa imkoniyatlar uchun talablarni bilish uchun har bir alohida yo'lga qo'yilgan freymvork bilan birga mos o'rnatilgan talablar tekshiruv skriptini ishga tushirishingiz mumkin.
 
-Freymvork to'liq obektga mo'ljallangan dasturlashga (OMD) asoslanganligi uchun Yii da ishlash uchun OMD ni umumiy tushunish talab etiladi. Shuningdek, PHP ning zamonaviy imkoniyatlari bo'lmish [nomlar soxasi](http://www.php.net/manual/ru/language.namespaces.php) va [treytlar](http://www.php.net/manual/ru/language.oop5.traits.php) ni o'rganish talab etiladi.
+Freymvork to'liq obektga mo'ljallangan dasturlashga (OMD) asoslanganligi bois Yii da ishlash uchun OMD ni umumiy tushunish talab etiladi. Shuningdek, PHP ning zamonaviy imkoniyatlari bo'lmish [nomlar soxasi](http://www.php.net/manual/ru/language.namespaces.php) va [treytlar](http://www.php.net/manual/ru/language.oop5.traits.php) ni o'rganish talab etiladi.
