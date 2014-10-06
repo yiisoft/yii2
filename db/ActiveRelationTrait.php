@@ -44,7 +44,7 @@ trait ActiveRelationTrait
      */
     public $link;
     /**
-     * @var array|object the query associated with the pivot table. Please call [[via()]]
+     * @var array|object the query associated with the junction table. Please call [[via()]]
      * to set this property instead of directly setting it.
      * This property is only used in relational context.
      * @see via()
@@ -78,7 +78,7 @@ trait ActiveRelationTrait
     }
 
     /**
-     * Specifies the relation associated with the pivot table.
+     * Specifies the relation associated with the junction table.
      *
      * Use this method to specify a pivot record/table when declaring a relation in the [[ActiveRecord]] class:
      *
@@ -96,7 +96,7 @@ trait ActiveRelationTrait
      * ```
      *
      * @param string $relationName the relation name. This refers to a relation declared in [[primaryModel]].
-     * @param callable $callable a PHP callback for customizing the relation associated with the pivot table.
+     * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return static the relation object itself.
      */
@@ -195,10 +195,10 @@ trait ActiveRelationTrait
         }
 
         if ($this->via instanceof self) {
-            // via pivot table
+            // via junction table
             /* @var $viaQuery ActiveRelationTrait */
             $viaQuery = $this->via;
-            $viaModels = $viaQuery->findPivotRows($primaryModels);
+            $viaModels = $viaQuery->findJunctionRows($primaryModels);
             $this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
@@ -490,7 +490,7 @@ trait ActiveRelationTrait
      * @param array $primaryModels either array of AR instances or arrays
      * @return array
      */
-    private function findPivotRows($primaryModels)
+    private function findJunctionRows($primaryModels)
     {
         if (empty($primaryModels)) {
             return [];
