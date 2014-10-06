@@ -11,7 +11,7 @@ Se pueden crear clases modelo extendiendo a [[yii\base\Model]] o a sus clases hi
 * [validación](#validation-rules): asegura la validez de los datos de entrada basándose en reglas declaradas;
 * [Exportación de datos](#data-exporting): permite que los datos del modelo sean exportados en términos de arrays con formatos personalizables.
 
-La clase 'modelo' también es una base para modelos más avanzados, tales como [Registros Activos](db-active-record.md).
+La clase 'modelo' también es una base para modelos más avanzados, tales como [Active Records](db-active-record.md).
 
 >Info: No es obligatorio basar las clases modelo en [[yii\base\Model]]. Sin embargo, debido a que hay muchos componentes de Yii construidos para dar soporte a [[yii\base\Model]], por lo general es la clase base preferible para un modelo.
 
@@ -156,7 +156,7 @@ class User extends ActiveRecord
 }
 ```
 
-> Info: En el anterior y en los siguientes ejemplos, las clases modelo extienden a [[yii\db\ActiveRecord]] porque el uso de múltiples escenarios normalmente sucede con clases de [Registros Activos](db-active-record.md).
+> Info: En el anterior y en los siguientes ejemplos, las clases modelo extienden a [[yii\db\ActiveRecord]] porque el uso de múltiples escenarios normalmente sucede con clases de [Active Records](db-active-record.md).
 
 El método 'scenarios()' devuelve un array cuyas claves son el nombre de escenario y los valores correspondientes a los *atributos activos*. Un atributo activo puede ser [asignado masivamente](#massive-assignment) y esta sujeto a [validación](#validation-rules). En el anterior ejemplo, los atributos 'username' y 'password' están activados en el escenario 'login'; mientras que en el escenario 'register', el atributo 'email' esta activado junto con 'username' y 'password'.
 
