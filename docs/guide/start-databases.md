@@ -150,7 +150,7 @@ class CountryController extends Controller
         $query = Country::find();
 
         $pagination = new Pagination([
-            'defaultPageSize' => 5,
+            'pageSize' => 5,
             'totalCount' => $query->count(),
         ]);
 
