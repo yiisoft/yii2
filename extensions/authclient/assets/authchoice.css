@@ -46,6 +46,9 @@
 .auth-icon.live {
     background-position: 0 -372px;
 }
+.auth-icon.mailru {
+    background-position: 0 -404px;
+}
 
 .auth-link:hover .auth-icon i,
 .auth-link:focus .auth-icon i {
