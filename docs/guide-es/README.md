@@ -50,7 +50,7 @@ Gestión de las peticiones
 * [Información general](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
 * [Routing](runtime-routing.md)
-* **TBD** [Peticiones](runtime-requests.md)
+* [Requests](runtime-requests.md)
 * **TBD** [Respuestas](runtime-responses.md)
 * **TBD** [Sesiones y Cookies](runtime-sessions-cookies.md)
 * **TBD** [Procesamiento y generación de las URL](runtime-url-handling.md)
