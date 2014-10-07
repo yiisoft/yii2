@@ -68,7 +68,7 @@ Conceptos clave
 * [Configuraciones](concept-configurations.md)
 * [Alias](concept-aliases.md)
 * [Autocarga de clases](concept-autoloading.md)
-* **TBD** [Localizador de servicios (Service Locator)](concept-service-locator.md)
+* [Localizador de servicios (Service Locator)](concept-service-locator.md)
 * **TBD** [Contenedor de inyección de dependencia](concept-di-container.md)
 
 

@@ -59,3 +59,4 @@ Convenios para la traducción
 - link — enlace
 - render — sin traducción
 - DatePicker — sin traducción
+- rendering — renderizando
