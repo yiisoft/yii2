@@ -27,8 +27,7 @@ Las propiedades del widget son fácilmente modificables porque la clase se extie
 Mientras que los componentes son muy potentes, son un poco más pesados que los objetos normales, debido al hecho de que necesitan más memoria y tiempo de CPU para poder soportar [eventos](concept-events.md) y [comportamientos](concept-behaviors.md) en particular.
 Si tus componentes no necesitan estas dos características, deberías considerar extender tu componente directamente de [[yii\base\Object]] en vez de [[yii\base\Component]]. De esta manera harás que tus componentes sean mucho más eficientes que objetos PHP normales, pero con el añadido soporte para [propiedades](concept-properties.md).
 
-Cuando extiendes tu clase de [[yii\base\Component]] o [[yii\base\Object]], se recomienda que sigas las siguientes
-convenciones:
+Cuando extiendes tu clase de [[yii\base\Component]] o [[yii\base\Object]], se recomienda que sigas las siguientes convenciones:
 
 - Si sobrescribes el constructor, especifica un parámetro `$config` como el *último* parámetro del constructor, y después pasa este parámetro al constructor de la clase "padre".
 - Siempre llama al constructor del "padre" al *final* de su propio constructor.
