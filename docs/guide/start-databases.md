@@ -168,6 +168,7 @@ class CountryController extends Controller
 ```
 
 Save the above code in the file `controllers/CountryController.php`.
+> If the application throw an exception called UnknownClassException.Just modify the  'namespace app\controllers' like the second line of SiteController.php.It works.
 
 The `index` action calls `Country::find()`. This Active Record method builds a DB query and retrieves all of the data from the `country` table.
 To limit the number of countries returned in each request, the query is paginated with the help of a
