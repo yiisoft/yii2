@@ -113,5 +113,5 @@ if (!defined('YII_DEBUG')) {
 
 Clairement, le premier est plus succinct et plus aisé à comprendre.
 
-Les définitions de constantes doit être fait au tout début d'un script de démarrage pour qu'elles puissent prendre 
+Les définitions de constantes doit être faite au tout début d'un script de démarrage pour qu'elles puissent prendre 
 effet quand d'autres fichiers PHP sont inclus.
