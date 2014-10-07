@@ -174,7 +174,7 @@ where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB 
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
-
+Note that length of id column should be adjusted if `session.hash_function` is changed in `php.ini`.
 
 ### Flash Data <a name="flash-data"></a>
 

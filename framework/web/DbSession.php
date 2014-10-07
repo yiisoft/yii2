@@ -65,6 +65,8 @@ class DbSession extends Session
      *
      * When using DbSession in a production server, we recommend you create a DB index for the 'expire'
      * column in the session table to improve the performance.
+     *
+     * Note that length of id column should be adjusted if `session.hash_function` is changed in `php.ini`.
      */
     public $sessionTable = '{{%session}}';
 
