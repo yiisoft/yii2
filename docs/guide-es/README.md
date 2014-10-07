@@ -40,7 +40,7 @@ Estructura de una aplicación
 * [Filtros](structure-filters.md)
 * [Widgets](structure-widgets.md)
 * [Módulos](structure-modules.md)
-* **TBD** [Recursos](structure-assets.md)
+* **TBD** [Assets](structure-assets.md)
 * **TBD** [Extensiones](structure-extensions.md)
 
 
