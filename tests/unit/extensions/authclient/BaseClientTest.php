@@ -55,25 +55,88 @@ class BaseClientTest extends TestCase
     }
 
     /**
-     * @depends testSetGet
+     * Data provider for [[testNormalizeUserAttributes()]]
+     * @return array test data
      */
-    public function testNormalizeUserAttributes()
+    public function dataProviderNormalizeUserAttributes()
+    {
+        return [
+            [
+                [
+                    'name' => 'raw/name',
+                    'email' => 'raw/email',
+                ],
+                [
+                    'raw/name' => 'name value',
+                    'raw/email' => 'email value',
+                ],
+                [
+                    'name' => 'name value',
+                    'email' => 'email value',
+                ],
+            ],
+            [
+                [
+                    'name' => function ($attributes) {
+                            return $attributes['firstName'] . ' ' . $attributes['lastName'];
+                        },
+                ],
+                [
+                    'firstName' => 'John',
+                    'lastName' => 'Smith',
+                ],
+                [
+                    'name' => 'John Smith',
+                ],
+            ],
+            [
+                [
+                    'email' => ['emails', 'prime'],
+                ],
+                [
+                    'emails' => [
+                        'prime' => 'some@email.com'
+                    ],
+                ],
+                [
+                    'email' => 'some@email.com',
+                ],
+            ],
+            [
+                [
+                    'email' => ['emails', 0],
+                    'secondaryEmail' => ['emails', 1],
+                ],
+                [
+                    'emails' => [
+                        'some@email.com',
+                    ],
+                ],
+                [
+                    'email' => 'some@email.com',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderNormalizeUserAttributes
+     *
+     * @depends testSetGet
+     *
+     * @param array $normalizeUserAttributeMap
+     * @param array $rawUserAttributes
+     * @param array $expectedNormalizedUserAttributes
+     */
+    public function testNormalizeUserAttributes($normalizeUserAttributeMap, $rawUserAttributes, $expectedNormalizedUserAttributes)
     {
         $client = new Client();
-
-        $normalizeUserAttributeMap = [
-            'raw/name' => 'name',
-            'raw/email' => 'email',
-        ];
         $client->setNormalizeUserAttributeMap($normalizeUserAttributeMap);
-        $rawUserAttributes = [
-            'raw/name' => 'name value',
-            'raw/email' => 'email value',
-        ];
+
         $client->setUserAttributes($rawUserAttributes);
         $normalizedUserAttributes = $client->getUserAttributes();
-        $expectedNormalizedUserAttributes = array_combine(array_keys($normalizeUserAttributeMap), array_values($rawUserAttributes));
-        $this->assertEquals($expectedNormalizedUserAttributes, $normalizedUserAttributes);
+
+        $this->assertEquals(array_merge($rawUserAttributes, $expectedNormalizedUserAttributes), $normalizedUserAttributes);
     }
 }
 
