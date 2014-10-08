@@ -277,7 +277,7 @@ class Query extends Component implements QueryInterface
      */
     public function count($q = '*', $db = null)
     {
-        return $this->queryScalar("COUNT($q)", $db);
+        return (int)$this->queryScalar("COUNT($q)", $db);
     }
 
     /**
