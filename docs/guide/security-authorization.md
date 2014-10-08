@@ -219,8 +219,8 @@ Building authorization data is all about the following tasks:
 
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 
-If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a console
-command that will initialize authorization data once via APIs offered by `authManager`:
+If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a [console
+command](tutorial-console.md) that will initialize authorization data once via APIs offered by `authManager`:
 
 ```php
 <?php
@@ -347,7 +347,7 @@ $rule = new \app\rbac\AuthorRule;
 $auth->add($rule);
 
 // add the "updateOwnPost" permission and associate the rule with it.
-$updateOwnPost = $this->auth->createPermission('updateOwnPost');
+$updateOwnPost = $auth->createPermission('updateOwnPost');
 $updateOwnPost->description = 'Update own post';
 $updateOwnPost->ruleName = $rule->name;
 $auth->add($updateOwnPost);
