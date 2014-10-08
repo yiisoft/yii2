@@ -217,10 +217,10 @@ class SiteController extends Controller
 
                 $_model = new UploadForm();
 
-                $_model->file = $file;
+                $_model->file = [$file];
 
                 if ($_model->validate()) {
-                    $_model->file->saveAs('uploads/' . $_model->file->baseName . '.' . $_model->file->extension);
+                    $_model->file[0]->saveAs('uploads/' . $_model->file[0]->baseName . '.' . $_model->file[0]->extension);
                 } else {
                     foreach ($_model->getErrors('file') as $error) {
                         $model->addError('file', $error);
