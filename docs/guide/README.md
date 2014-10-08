@@ -90,14 +90,14 @@ Getting Data from Users
 
 * [Creating Forms](input-forms.md)
 * [Validating Input](input-validation.md)
-* **TBD** [Uploading Files](input-file-upload.md)
+* [Uploading Files](input-file-upload.md)
 * **TBD** [Getting Data for Multiple Models](input-multiple-models.md)
 
 
 Displaying Data
 ---------------
 
-* **TBD** [Data Formatting](output-formatter.md)
+* [Data Formatting](output-formatter.md)
 * **TBD** [Pagination](output-pagination.md)
 * **TBD** [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
