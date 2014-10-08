@@ -1705,7 +1705,7 @@ class BaseHtml
             }
             $style = static::cssStyleFromArray(array_merge($oldStyle, $newStyle));
         }
-        $options['style'] = $style;
+        $options['style'] = is_array($style) ? static::cssStyleFromArray($style) : $style;
     }
 
     /**
