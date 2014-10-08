@@ -10,8 +10,10 @@ namespace yii\authclient;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
+use yii\base\InvalidConfigException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\ArrayHelper;
 
 /**
  * BaseClient is a base Auth Client class.
@@ -57,7 +59,6 @@ abstract class BaseClient extends Component implements ClientInterface
      * @var array view options in format: optionName => optionValue
      */
     private $_viewOptions;
-
 
     /**
      * @param string $id service id.
@@ -228,14 +229,48 @@ abstract class BaseClient extends Component implements ClientInterface
 
     /**
      * Normalize given user attributes according to [[normalizeUserAttributeMap]].
+     *
+     * Example for [[normalizeUserAttributeMap]]
+     * ```
+     *  'normalizeUserAttributeMap' => [
+     *      'about_me'=>'bio',
+     *      'language'=>['languages', 0, 'name'],
+     *      'birthday' => function($attributes) {
+     *          return Yii::$app->formatter->asDate(strtotime($attributes['birthday']), 'yyyy-MM-dd');
+     *      },
+     *      'picture' => function($attributes) {
+     *          return 'https://graph.facebook.com/v2.1/' . $attributes['id'] . '/picture';
+     *      },
+     *  ],
+     * ```
+     *
      * @param array $attributes raw attributes.
      * @return array normalized attributes.
      */
     protected function normalizeUserAttributes($attributes)
     {
         foreach ($this->getNormalizeUserAttributeMap() as $normalizedName => $actualName) {
-            if (array_key_exists($actualName, $attributes)) {
-                $attributes[$normalizedName] = $attributes[$actualName];
+            if (is_callable($actualName)) {
+                $attributes[$normalizedName] = call_user_func($actualName, $attributes);
+            } else {
+                $actualPath = (array)$actualName;
+                foreach ($actualPath as $actualKey) {
+                    if (!isset($actualValue)) {
+                        if (ArrayHelper::keyExists($actualKey, $attributes)) {
+                            $actualValue = $attributes[$actualKey];
+                        }
+                    } else {
+                        if (is_array($actualValue) && ArrayHelper::keyExists($actualKey, $actualValue)) {
+                            $actualValue = $actualValue[$actualKey];
+                        } else {
+                            throw new InvalidConfigException("Invalid config normalizeUserAttributeMap {$actualName}");
+                        }
+                    }
+                }
+                if (isset($actualValue)) {
+                    $attributes[$normalizedName] = $actualValue;
+                    unset($actualValue);
+                }
             }
         }
 

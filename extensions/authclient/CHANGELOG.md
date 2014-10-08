@@ -17,6 +17,7 @@ Yii Framework 2 authclient extension Change Log
 - Enh #4076: Request HTTP headers argument added to `yii\authclient\BaseOAuth::api()` method (klimov-paul)
 - Enh #4134: `yii\authclient\InvalidResponseException` added for tracking invalid remote server response (klimov-paul)
 - Enh #4139: User attributes requesting at GoogleOAuth switched to Google+ API (klimov-paul)
+- Enh #5135  Enhancing the ability to customize for user attribute map (zinzinday)
 
 
 2.0.0-beta April 13, 2014
