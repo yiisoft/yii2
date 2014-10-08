@@ -50,7 +50,12 @@ use yii\web\Response;
  *                 // Allow OPTIONS caching
  *                 'Access-Control-Max-Age' => 3600,
  *             ],
- *
+ *             //specific headers for some action
+ *             'actions' => [
+ *                 'index' => [
+ *                     'Access-Control-Max-Age' => 86400,
+ *                 ],
+ *             ],
  *         ],
  *     ];
  * }
@@ -160,13 +165,13 @@ class Cors extends ActionFilter
             $responseHeaders['Access-Control-Allow-Methods'] = implode(', ', $this->cors['Access-Control-Request-Method']);
         }
 
-        if ($this->cors['Access-Control-Allow-Credentials'] === true) {
+        if (isset($this->cors['Access-Control-Allow-Credentials']) && $this->cors['Access-Control-Allow-Credentials'] === true) {
             $responseHeaders['Access-Control-Allow-Credentials'] = 'true';
-        } elseif ($this->cors['Access-Control-Allow-Credentials'] === false) {
+        } elseif (isset($this->cors['Access-Control-Allow-Credentials']) && $this->cors['Access-Control-Allow-Credentials'] === false) {
             $responseHeaders['Access-Control-Allow-Credentials'] = 'false';
         }
 
-        if (($_SERVER['REQUEST_METHOD'] === 'OPTIONS') && ($this->cors['Access-Control-Max-Age'] !== null)) {
+        if (($_SERVER['REQUEST_METHOD'] === 'OPTIONS') && isset($this->cors['Access-Control-Max-Age']) && ($this->cors['Access-Control-Max-Age'] !== null)) {
             $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
         }
 
