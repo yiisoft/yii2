@@ -116,6 +116,17 @@ class BaseClientTest extends TestCase
                     'email' => 'some@email.com',
                 ],
             ],
+            [
+                [
+                    'name' => 'file_get_contents',
+                ],
+                [
+                    'file_get_contents' => 'value',
+                ],
+                [
+                    'name' => 'value',
+                ],
+            ],
         ];
     }
 
