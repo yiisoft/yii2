@@ -120,7 +120,7 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Extract CORS headers fron the request
+     * Extract CORS headers from the request
      * @return array CORS headers to handle
      */
     public function extractHeaders()
@@ -176,7 +176,7 @@ class Cors extends ActionFilter
      * Handle classic CORS request to avoid duplicate code
      * @param string $type the kind of headers we would handle
      * @param array $requestHeaders CORS headers request by client
-     * @param array $responseHeaders CORS response headers sent to the clinet
+     * @param array $responseHeaders CORS response headers sent to the client
      */
     protected function prepareAllowHeaders($type, $requestHeaders, &$responseHeaders)
     {
@@ -204,7 +204,7 @@ class Cors extends ActionFilter
     /**
      * Adds the CORS headers to the response
      * @param Response $response
-     * @param array CORS headers which have been compouted
+     * @param array CORS headers which have been computed
      */
     public function addCorsHeaders($response, $headers)
     {

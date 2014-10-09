@@ -15,11 +15,11 @@ use yii\base\NotSupportedException;
 use yii\caching\Cache;
 
 /**
- * Connection represents a connection to a database via [PDO](http://www.php.net/manual/en/ref.pdo.php).
+ * Connection represents a connection to a database via [PDO](php.net/manual/en/book.pdo.php).
  *
  * Connection works together with [[Command]], [[DataReader]] and [[Transaction]]
  * to provide data access to various DBMS in a common set of APIs. They are a thin wrapper
- * of the [[PDO PHP extension]](http://www.php.net/manual/en/ref.pdo.php).
+ * of the [[PDO PHP extension]](php.net/manual/en/book.pdo.php).
  *
  * Connection supports database replication and read-write splitting. In particular, a Connection component
  * can be configured with multiple [[masters]] and [[slaves]]. It will do load balancing and failover by choosing
