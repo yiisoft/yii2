@@ -6,7 +6,7 @@ Console applications
 Yii has full featured support for console applications, whose structure is very similar to a Yii web application. A console application
 consists of one or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment. Each controller can also have one or more actions, just like web controllers.
 
-Usage
+Usage <a name="usage"></a>
 -----
 
 You execute a console controller action using the following syntax:
@@ -25,7 +25,7 @@ yii migrate/create --migrationTable=my_migration
 
 In the above `yii` is the console application entry script described below.
 
-Entry script
+Entry script <a name="entry-script"></a>
 ------------
 
 The console application entry script is equivalent to the `index.php` bootstrap file used for the web application. The console entry script is typically called `yii`, and located in your application's root directory. The contents of the console application entry script contains
@@ -59,11 +59,11 @@ This script will be created as part of your application; you're free to edit it 
 not want to see a stack trace on error, and/or if you want to improve the overall performance. In both basic and advanced application
 templates, the console application entry script has debugging enabled to provide a more developer-friendly environment.
 
-Configuration
+Configuration <a name="configuration"></a>
 -------------
 
 As can be seen in the code above, the console application uses its own configuration file, named `console.php`. In this file
-you should configure various application components and properties for the console application in particular.
+you should configure various [application components](structure-application-components.md) and properties for the console application in particular.
 
 If your web application and the console application share a lot of configuration parameters and values, you may consider moving the common
 parts into a separate file, and including this file in both of the application configurations (web and console). You can see an example of this in the "advanced" application template.
@@ -81,7 +81,7 @@ yii <route> --appconfig=path/to/config.php ...
 > command.
 
 
-Creating your own console commands
+Creating your own console commands <a name="create-command"></a>
 ----------------------------------
 
 ### Console Controller and Action

@@ -29,7 +29,8 @@ if ($data === false) {
 Data caching relies on the so-called *cache components* which represent various cache storage,
 such as memory, files, databases.
 
-Cache components are usually registered as application components so that they can be globally configurable
+Cache components are usually registered as [application components](structure-application-components.md) so
+that they can be globally configurable
 and accessible. The following code shows how to configure the `cache` application component to use
 [memcached](http://memcached.org/) with two cache servers:
 

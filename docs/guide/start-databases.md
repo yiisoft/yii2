@@ -18,7 +18,7 @@ In particular, you should know how to create a database, and how to execute SQL 
 
 
 Preparing the Database <a name="preparing-database"></a>
---------------------
+----------------------
 
 To begin, create a database named `yii2basic`, from which you will fetch data in your application.
 You may create an SQLite, MySQL, PostgreSQL, MSSQL or Oracle database, as Yii has built-in support for many database applications. For simplicity, MySQL will be assumed in the following description.

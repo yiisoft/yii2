@@ -106,7 +106,7 @@ which is not needed in this case and already handled by the existing application
 
 Like in a Yii application, you should configure the application instance based on the environment running
 the third-party system. For example, to use the [Active Record](db-active-record.md) feature, you need to configure
-the `db` application component with the DB connection setting used by the third-party system.
+the `db` [application component](structure-application-components.md) with the DB connection setting used by the third-party system.
 
 Now you can use most features provided by Yii. For example, you can create Active Record classes and use them
 to work with databases.

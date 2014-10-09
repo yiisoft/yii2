@@ -135,13 +135,13 @@ You may specify various container HTML options passing arrays to:
 - `footerOptions`
 - `filterOptions`
 
-#### Data column
+#### Data column <a name="data-column"></a>
 
 Data column is for displaying and sorting data. It is default column type so specifying class could be omitted when
 using it.
 
 The main setting of the data column is its format. It could be specified via `format` attribute. Its values are
-corresponding to methods in `format` application component that is [[\yii\i18n\Formatter|Formatter]] by default:
+corresponding to methods in `formatter` [application component](structure-application-components.md) that is [[\yii\i18n\Formatter|Formatter]] by default:
 
 ```php
 <?= GridView::widget([

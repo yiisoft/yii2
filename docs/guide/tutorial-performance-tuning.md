@@ -78,7 +78,7 @@ return [
 ];
 ```
 
-Note that `cache` application component should be configured.
+Note that the `cache` [application component](structure-application-components.md) should be configured.
 
 ### Combining and Minimizing Assets
 

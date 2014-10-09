@@ -4,7 +4,7 @@ Yii Framework 2 sphinx extension Change Log
 2.0.0 under development
 -----------------------
 
-- no changes in this release.
+- Enh #5211: `yii\sphinx\Query` now supports 'HAVING' (klimov-paul)
 
 
 2.0.0-rc September 27, 2014

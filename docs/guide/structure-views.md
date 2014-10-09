@@ -4,7 +4,7 @@ Views
 Views are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are code responsible for presenting data to end users. In a Web application, views are usually created
 in terms of *view templates* which are PHP script files containing mainly HTML code and presentational PHP code.
-They are managed by the [[yii\web\View|view]] application component which provides commonly used methods
+They are managed by the [[yii\web\View|view]] [application component](structure-application-components.md) which provides commonly used methods
 to facilitate view composition and rendering. For simplicity, we often call view templates or view template files
 as views.
 

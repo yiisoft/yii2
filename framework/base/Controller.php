@@ -134,6 +134,7 @@ class Controller extends Component implements ViewContextInterface
         $modules = [];
         $runAction = true;
 
+        // call beforeAction on modules
         foreach ($this->getModules() as $module) {
             if ($module->beforeAction($action)) {
                 array_unshift($modules, $module);
@@ -145,16 +146,17 @@ class Controller extends Component implements ViewContextInterface
 
         $result = null;
 
-        if ($runAction) {
-            if ($this->beforeAction($action)) {
-                $result = $action->runWithParams($params);
-                $result = $this->afterAction($action, $result);
-            }
-        }
+        if ($runAction && $this->beforeAction($action)) {
+            // run the action
+            $result = $action->runWithParams($params);
 
-        foreach ($modules as $module) {
-            /* @var $module Module */
-            $result = $module->afterAction($action, $result);
+            $result = $this->afterAction($action, $result);
+
+            // call afterAction on modules
+            foreach ($modules as $module) {
+                /* @var $module Module */
+                $result = $module->afterAction($action, $result);
+            }
         }
 
         $this->action = $oldAction;

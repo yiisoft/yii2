@@ -4,7 +4,7 @@ Yii Framework 2 mongodb extension Change Log
 2.0.0 under development
 -----------------------
 
-- no changes in this release.
+- Bug #5303: Fixed `yii\mongodb\Collection` unable to fetch default database name from DSN with parameters (klimov-paul)
 
 
 2.0.0-rc September 27, 2014

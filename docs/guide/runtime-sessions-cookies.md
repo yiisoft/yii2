@@ -174,7 +174,10 @@ where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB 
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
-
+> Note: According to the php.ini setting of `session.hash_function`, you may need to adjust
+  the length of the `id` column. For example, if `session.hash_function=sha256`, you should use
+  length 64 instead of 40.
+  
 
 ### Flash Data <a name="flash-data"></a>
 

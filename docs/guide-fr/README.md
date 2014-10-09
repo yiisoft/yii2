@@ -31,7 +31,7 @@ Structure Application
 ---------------------
 
 * [Vue d'ensemble](structure-overview.md)
-* [Script d'entrée](structure-entry-scripts.md)
+* [Scripts d'entrée](structure-entry-scripts.md)
 * [Applications](structure-applications.md)
 * [Composants application](structure-application-components.md)
 * [Contrôleurs](structure-controllers.md)

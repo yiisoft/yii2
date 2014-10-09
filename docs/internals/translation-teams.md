@@ -40,6 +40,7 @@ Spanish
 -------
 
 - Luciano Baraglia, [@lucianobaraglia](https://github.com/lucianobaraglia)
+- Marco Da Silva, [@markmarco16](https://github.com/markmarco16), markmarco16@gmail.com
 
 Ukrainian
 ---------

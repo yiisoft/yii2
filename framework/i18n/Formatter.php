@@ -258,6 +258,7 @@ class Formatter extends Component
     /**
      * Formats the value as is without any formatting.
      * This method simply returns back the parameter without any format.
+     * The only exception is a `null` value which will be formatted using [[nullDisplay]].
      * @param mixed $value the value to be formatted.
      * @return string the formatted result.
      */
@@ -342,14 +343,15 @@ class Formatter extends Component
     /**
      * Formats the value as an image tag.
      * @param mixed $value the value to be formatted.
+     * @param string $altText an optional `alt`-tag to be added to the image.
      * @return string the formatted result.
      */
-    public function asImage($value)
+    public function asImage($value, $altText = '')
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return Html::img($value);
+        return Html::img($value, ['alt' => $altText]);
     }
 
     /**

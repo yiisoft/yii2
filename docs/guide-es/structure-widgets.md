@@ -1,7 +1,7 @@
 ﻿Widgets
 =======
 
-Los Widgets son bloques de código reutilizables utilizados en las [vistas](structure-views.md) para crear elementos de interfaz de usuario complejos y configurables de forma orientada a objetos. Por ejemplo, widget selector de fechas puede generar un selector de fechas de lujo que permita a los usuarios seleccionar una fecha. Todo lo que se tiene que hacer es insertar el siguiente código en una vista.
+Los Widgets son bloques de código reutilizables utilizados en las [vistas](structure-views.md) para crear elementos de interfaz de usuario complejos y configurables de forma orientada a objetos. Por ejemplo, widget DatePicker puede generar un DatePicker de lujo que permita a los usuarios seleccionar una fecha. Todo lo que se tiene que hacer es insertar el siguiente código en una vista.
 
 ```php
 <?php
@@ -14,7 +14,7 @@ Hay un buen número de widgets incluidos en Yii, tales como [[yii\widgets\Active
 
 ## Uso de los Widgets <a name="using-widgets"></a>
 
-Los Widgets son usados principalmente en las [vistas](structure-views.md). Se puede llamar al método [[yii\base\Widget::widget()]] para usar un widget en una vista. El método obtiene un array de [configuración](concept-configurations.md) para inicializar el widget y retorna la representación resultante del widget. Por ejemplo, el siguiente código inserta un widget selector de fechas que esta configurado para usar el idioma Ruso y mantener la entrada en atributo 'form_date' del '$model'.
+Los Widgets son usados principalmente en las [vistas](structure-views.md). Se puede llamar al método [[yii\base\Widget::widget()]] para usar un widget en una vista. El método obtiene un array de [configuración](concept-configurations.md) para inicializar el widget y retorna la representación resultante del widget. Por ejemplo, el siguiente código inserta un widget DatePicker que esta configurado para usar el idioma Ruso y mantener la entrada en atributo 'form_date' del '$model'.
 
 ```php
 <?php
@@ -151,7 +151,6 @@ Los widgets son una manera orientada a objetos de reutilizar código de las vist
 
 Cuando se crean widgets, se debería continuar manteniendo el patrón MVC. En general, se debería mantener la lógica en las clases del widget y mantener la presentación en las [vistas](structure-views.md).
 
-Los widgets deberían ser diseñados para ser autónomos. Es decir, cuando se usa un widget, se debería poder poner en una vista sin hacer nada más. Esto puede resultar complicado si un widget requiere recursos externos, tales como CSS, JavaScript, imágenes, etc. Afortunadamente Yii proporciona soporte para [paquetes asset](structure-asset-bundles.md) que pueden ser utilizados para resolver el problema.
+Los widgets deberían ser diseñados para ser autónomos. Es decir, cuando se usa un widget, se debería poder poner en una vista sin hacer nada más. Esto puede resultar complicado si un widget requiere recursos externos, tales como CSS, JavaScript, imágenes, etc. Afortunadamente Yii proporciona soporte para [paquetes de recursos](structure-asset-bundles.md) que pueden ser utilizados para resolver el problema.
 
 Cuando un widget sólo contiene código de vista, este es muy similar a una [vista](structure-views.md). De hecho, en este caso, su única diferencia es que un widget es una clase redistribuible, mientras que una vista es sólo un script PHP llano que prefiere mantenerse dentro de su aplicación.
-

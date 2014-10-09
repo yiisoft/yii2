@@ -71,7 +71,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 ```
 
 Yii tries to load an appropriate translation according to the current [[yii\base\Application::$language|application language]]
-from one of the message sources defined in the `i18n` [application component](concept-components.md).
+from one of the message sources defined in the `i18n` [application component](structure-application-components.md).
 A message source is a set of files or a database that provides translation messages.
 The following configuration example defines a messages source that takes the messages from PHP files:
 
@@ -408,7 +408,7 @@ Instead of using `fileMap` you can simply use convention of category mapping to 
 
 Yii comes with default translation messages for validation errors and some other strings. These messages are all
 in the category `yii`. Sometimes you want to correct default framework message translation for your application.
-In order to do so configure the `i18n` [application component](concept-components.md) like the following:
+In order to do so configure the `i18n` [application component](structure-application-components.md) like the following:
 
 ```php
 'i18n' => [
@@ -523,3 +523,8 @@ We recommend an ICU version greater or equal to version ICU 49 to be able to use
 One major feature that is missing in Versions below 49 is the `#` placeholder in plural rules.
 See <http://site.icu-project.org/download> for a list of available ICU versions. Note that the version numbering has changed after the
 4.8 release so that the first digits are now merged: the sequence is ICU 4.8, ICU 49, ICU 50.
+
+Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
+to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
+on updating the time zone database. While for output formatting the ICU timezone database is used, the time zone database
+used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](http://pecl.php.net/package/timezonedb).

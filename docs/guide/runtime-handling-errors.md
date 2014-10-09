@@ -16,7 +16,7 @@ The [[yii\web\ErrorHandler|error handler]] is enabled by default. You may disabl
 
 ## Using Error Handler <a name="using-error-handler"></a>
 
-The [[yii\web\ErrorHandler|error handler]] is registered as an application component named `errorHandler`.
+The [[yii\web\ErrorHandler|error handler]] is registered as an [application component](structure-application-components.md) named `errorHandler`.
 You may configure it in the application configuration like the following:
 
 ```php

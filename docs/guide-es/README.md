@@ -1,4 +1,4 @@
-Guía Definitiva de Yii 2.0
+﻿Guía Definitiva de Yii 2.0
 ==========================
 
 Este tutorial se publica con arreglo a los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
@@ -40,7 +40,7 @@ Estructura de una aplicación
 * [Filtros](structure-filters.md)
 * [Widgets](structure-widgets.md)
 * [Módulos](structure-modules.md)
-* **TBD** [Recursos](structure-assets.md)
+* **TBD** [Assets](structure-assets.md)
 * **TBD** [Extensiones](structure-extensions.md)
 
 
@@ -48,9 +48,9 @@ Gestión de las peticiones
 -------------------------
 
 * [Información general](runtime-overview.md)
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Rutas](runtime-routing.md)
-* **TBD** [Peticiones](runtime-requests.md)
+* [Bootstrapping](runtime-bootstrapping.md)
+* [Routing](runtime-routing.md)
+* [Requests](runtime-requests.md)
 * **TBD** [Respuestas](runtime-responses.md)
 * **TBD** [Sesiones y Cookies](runtime-sessions-cookies.md)
 * **TBD** [Procesamiento y generación de las URL](runtime-url-handling.md)
@@ -68,7 +68,7 @@ Conceptos clave
 * [Configuraciones](concept-configurations.md)
 * [Alias](concept-aliases.md)
 * [Autocarga de clases](concept-autoloading.md)
-* **TBD** [Localizador de servicios (Service Locator)](concept-service-locator.md)
+* [Localizador de servicios (Service Locator)](concept-service-locator.md)
 * **TBD** [Contenedor de inyección de dependencia](concept-di-container.md)
 
 

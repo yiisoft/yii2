@@ -132,6 +132,22 @@ class QueryTest extends SphinxTestCase
         $this->assertEquals(['team', 'company', 'age'], $query->groupBy);
     }
 
+    public function testHaving()
+    {
+        $query = new Query;
+        $query->having('id = :id', [':id' => 1]);
+        $this->assertEquals('id = :id', $query->having);
+        $this->assertEquals([':id' => 1], $query->params);
+
+        $query->andHaving('name = :name', [':name' => 'something']);
+        $this->assertEquals(['and', 'id = :id', 'name = :name'], $query->having);
+        $this->assertEquals([':id' => 1, ':name' => 'something'], $query->params);
+
+        $query->orHaving('age = :age', [':age' => '30']);
+        $this->assertEquals(['or', ['and', 'id = :id', 'name = :name'], 'age = :age'], $query->having);
+        $this->assertEquals([':id' => 1, ':name' => 'something', ':age' => '30'], $query->params);
+    }
+
     public function testOrder()
     {
         $query = new Query;

@@ -1,4 +1,4 @@
-Módulos
+﻿Módulos
 =======
 Los módulos son unidades de software independientes que consisten en [modelos](structure-models.md), [vistas](structure-views.md), [controladores](structure-controllers.md), y otros componentes de apoyo. Los usuarios finales pueden acceder a los controladores de un módulo cuando éste está instalado en la [aplicación](structure-applications.md). Por éstas razones, los módulos a menudo se considerados como mini-aplicaciones. Los módulos difieren de las [aplicaciones](structure-applications.md) en que los módulos no pueden ser desplegados solos y tienen que residir dentro de aplicaciones.
 
@@ -50,7 +50,7 @@ public function init()
 }
 ```
 
-donde el archivo de configuracion ‘config.php’ puede contaner el siguiente contenido, similar al de [configuraciones de aplicacion](structure-applications.md#application-configurations).
+donde el archivo de configuración ‘config.php’ puede contener el siguiente contenido, similar al de [configuraciones de aplicación](structure-applications.md#application-configurations).
 
 ```php
 <?php
@@ -66,7 +66,7 @@ return [
 
 ### Controladores en Módulos <a name="controllers-in-modules"></a>
 
-Cuando se crean controladores en un modelo, una convención es poner las clases controlador debajo del sub espacio de nombres de ‘controllers’ del espacio de nombres de la clase módulo. Esto también significa que los archivos de la clase controlador deben ponerse en el directorio ‘controllers’ dentro del [[yii\base\Module::basePath|base path]] del módulo. Por ejemplo, para crear un controlador ‘post’ en el módulo ‘forum’ mostrado en la última subdivisión, se debe declarar la clase controlador de la siguiente manera:
+Cuando se crean controladores en un modelo, una convención es poner las clases controlador debajo del sub-espacio de nombres de ‘controllers’ del espacio de nombres de la clase módulo. Esto también significa que los archivos de la clase controlador deben ponerse en el directorio ‘controllers’ dentro del [[yii\base\Module::basePath|base path]] del módulo. Por ejemplo, para crear un controlador ‘post’ en el módulo ‘forum’ mostrado en la última subdivisión, se debe declarar la clase controlador de la siguiente manera:
 
 ```php
 namespace app\modules\forum\controllers;
@@ -79,13 +79,13 @@ class PostController extends Controller
 }
 ```
 
-Se puede personalizar el espacio de nombres de las clases controlador configurando la propiedad [[yii\base\Module::controllerNamespace]]. En el caso que alguno de los controladores esté fuera del espacio de nombres, se puede hacer acesible configurando la propiedad [[yii\base\Module::controllerMap]], similar a [como se hace en una aplicación](structure-applications.md#controller-map).
+Se puede personalizar el espacio de nombres de las clases controlador configurando la propiedad [[yii\base\Module::controllerNamespace]]. En el caso que alguno de los controladores esté fuera del espacio de nombres, se puede hacer accesible configurando la propiedad [[yii\base\Module::controllerMap]], similar a [como se hace en una aplicación](structure-applications.md#controller-map).
 
 ### Vistas en Módulos <a name="views-in-modules"></a>
 
-Las vistas en un módulo deben deben alojarse en el directorio ‘views’ dentro del módulo del [[yii\base\Module::basePath|base path]]. Las vistas interpretadas por un controlador en el módulo, deben alojarse en el directorio ‘views/ControllerID’, donde el ‘ControllerID’ hace referencia al [identificador del controlador](structure-controllers.md#routes). Por ejemplo, si la clase controlador es ‘PostController’, el directorio sería ‘views/post’ dentro del [[yii\base\Module::basePath|base path]] del módulo.
+Las vistas en un módulo deben alojarse en el directorio ‘views’ dentro del módulo del [[yii\base\Module::basePath|base path]]. Las vistas renderizadas por un controlador en el módulo, deben alojarse en el directorio ‘views/ControllerID’, donde el ‘ControllerID’ hace referencia al [ID del controlador](structure-controllers.md#routes). Por ejemplo, si la clase controlador es ‘PostController’, el directorio sería ‘views/post’ dentro del [[yii\base\Module::basePath|base path]] del módulo.
 
-Un modulo puede especificar un [layout](structure-views.md#layouts) que se aplica a las vistas interpretadas por los controladores del módulo. El layout debe alojarse en el directorio ‘views/layouts’ por defecto, y se puede configurar la propiedad [[yii\base\Module::layout]] para apuntar al nombre del layout. Si no se configura la propiedad ‘layout’, se usar el layout de la aplicación.
+Un modulo puede especificar un [layout](structure-views.md#layouts) que se aplica a las vistas renderizadas por los controladores del módulo. El layout debe alojarse en el directorio ‘views/layouts’ por defecto, y se puede configurar la propiedad [[yii\base\Module::layout]] para apuntar al nombre del layout. Si no se configura la propiedad ‘layout’, se usar el layout de la aplicación.
 
 ## Uso de los Módulos <a name="using-modules"></a>
 
@@ -102,35 +102,35 @@ Para usar un módulo en una aplicación, simplemente se tiene que configurar la 
 ]
 ```
 
-La propiedad [[yii\base\Application::modules|modules]] contiene un array de configuraciones de módulo.  Cada clave del array representa un *identificador de módulo* que identifica de forma única el módulo de entre todos los módulos de la aplicación, y el correspondiente valor del array es la [configuración](concept-configurations.md) para crear el módulo.
+La propiedad [[yii\base\Application::modules|modules]] contiene un array de configuraciones de módulo.  Cada clave del array representa un *ID de módulo* que identifica de forma única el módulo de entre todos los módulos de la aplicación, y el correspondiente valor del array es la [configuración](concept-configurations.md) para crear el módulo.
 
 ### Rutas <a name="routes"></a>
 
-De Igual manera que el acceso a los controladores en una aplicacion, las [rutas](structure-controllers.md#routes) se utiliza para dirigirse a los controladores en un módulo. Una ruta para un controlador dentro de un módulo debe empezar con el identificador del módulo seguido por el identificador del controlador y el identificador de la acción. Por ejemplo, si una aplicación usa un módulo llamado ‘forum’, la ruta ‘forum/post/index’ representaría la acción ‘index’ del controlador ‘post’ en el módulo. Si la ruta sólo contiene el identificador del módulo, entonces la propiedad [[yii\base\Module::defaultRoute]] que por defecto es ‘default’, determinara que controlador/acción debe usarse. Esto significa que la ruta ‘forum’ representaría el controlador ‘default’ en el módulo ‘forum’.
+De Igual manera que el acceso a los controladores en una aplicación, las [rutas](structure-controllers.md#routes) se utiliza para dirigirse a los controladores en un módulo. Una ruta para un controlador dentro de un módulo debe empezar con el ID del módulo seguido por el ID del controlador y el ID de la acción. Por ejemplo, si una aplicación usa un módulo llamado ‘forum’, la ruta ‘forum/post/index’ representaría la acción ‘index’ del controlador ‘post’ en el módulo. Si la ruta sólo contiene el ID del módulo, entonces la propiedad [[yii\base\Module::defaultRoute]] que por defecto es ‘default’, determinara que controlador/acción debe usarse. Esto significa que la ruta ‘forum’ representaría el controlador ‘default’ en el módulo ‘forum’.
 
 ### Acceder a los Módulos <a name="accessing-modules"></a>
 
-Dentro de un módulo, se puede necesitar obtener la instancia de la [clase módulo](#module-classes) para poder acceder al identificador del módulo, componentes del módulo, etc. Se puede hacer usando la siguiente declaración:
+Dentro de un módulo, se puede necesitar obtener la instancia de la [clase módulo](#module-classes) para poder acceder al ID del módulo, componentes del módulo, etc. Se puede hacer usando la siguiente declaración:
 
 ```php
 $module = MyModuleClass::getInstance();
 ```
 
-donde ‘MyModuleClass’ hace referencia al nombre de la clase módulo en la que estemos interesados. El método ‘getInstance()’ devolverá la instancia actualmente solicitada de la clase módulo. Si no se solicita el módulo, el método devolverá nulo. Hay que tener en cuenta que si se crea una nueva instancia del módulo, esta será diferente a la creada por Yii en respuesta a la solicitud.
+Dónde ‘MyModuleClass’ hace referencia al nombre de la clase módulo en la que estemos interesados. El método ‘getInstance()’ devolverá la instancia actualmente solicitada de la clase módulo. Si no se solicita el módulo, el método devolverá nulo. Hay que tener en cuenta que si se crea una nueva instancia del módulo, esta será diferente a la creada por Yii en respuesta a la solicitud.
 
->Info: Cuando se desarrolla un módulo, no se debe dar por sentado que el módulo usará un identificador fijo. Esto se debe a que un módulo puede asociarse a un identificador arbitrario cuando se usa en una aplicación o dentro de otro módulo. Para obtener el identificador del módulo, primero se debe usar el código del anterior ejemplo para obtener la instancia y luego el identificador mediante ‘$modeule->id’.
+>Info: Cuando se desarrolla un módulo, no se debe dar por sentado que el módulo usará un ID fijo. Esto se debe a que un módulo puede asociarse a un ID arbitrario cuando se usa en una aplicación o dentro de otro módulo. Para obtener el ID del módulo, primero se debe usar el código del anterior ejemplo para obtener la instancia y luego el ID mediante ‘$modeule->id’.
 
 También se puede acceder a la instancia de un módulo usando las siguientes declaraciones:
 
 ```php
-// obtiene el modulo hijo cuyo identificador es “forum”
+// obtiene el modulo hijo cuyo ID es “forum”
 $module = \Yii::$app->getModule('forum');
 
 // obtiene el módulo al que pertenece la petición actual
 $module = \Yii::$app->controller->module;
 ```
 
-El primer ejemplo sólo es útil cuando conocemos el identificador del módulo, mientras que el segundo es mejor usarlo cuando conocemos los controladores que se están solicitando.
+El primer ejemplo sólo es útil cuando conocemos el ID del módulo, mientras que el segundo es mejor usarlo cuando conocemos los controladores que se están solicitando.
 
 Una vez obtenida la instancia del módulo, se puede acceder a parámetros o componentes registrados con el módulo. Por ejemplo:
 
@@ -140,7 +140,7 @@ $maxPostCount = $module->params['maxPostCount'];
 
 ### Bootstrapping Módulos <a name="bootstrapping-modules"></a>
 
-Puede darse el caso en que necesitemos que un módulo se ejecute en cada petición. El módulo [[yii\debug\Module|debug]] es un ejemplo. Para hacerlo, tenemos que listar los identificadores de los módulos en la propiedad [[yii\base\Application::bootstrap|bootstrap]] de la aplicación.
+Puede darse el caso en que necesitemos que un módulo se ejecute en cada petición. El módulo [[yii\debug\Module|debug]] es un ejemplo. Para hacerlo, tenemos que listar los IDs de los módulos en la propiedad [[yii\base\Application::bootstrap|bootstrap]] de la aplicación.
 
 Por ejemplo, la siguiente configuración de aplicación se asegura de que el módulo ‘debug’ siempre se cargue:
 
@@ -179,7 +179,7 @@ class Module extends \yii\base\Module
 }
 ```
 
-En un controlador dentro de un módulo anidado, la ruta debe incluir el identificador de todos los módulos antecesores. Por ejemplo, la ruta ‘forum/admin/dashboard/index’ representa la acción ‘index’ del controlador ‘dashboard’ en el módulo ‘admin’ que es el módulo hijo del módulo ‘forum’. 
+En un controlador dentro de un módulo anidado, la ruta debe incluir el ID de todos los módulos antecesores. Por ejemplo, la ruta ‘forum/admin/dashboard/index’ representa la acción ‘index’ del controlador ‘dashboard’ en el módulo ‘admin’ que es el módulo hijo del módulo ‘forum’. 
 
 >Info: El método [[yii\base\Module::getModule()|getModule()]] sólo devuelve el módulo hijo que pertenece directamente a su padre. La propiedad [[yii\base\Application::loadedModules]] contiene una lista de los módulos cargados, incluyendo los hijos directos y los anidados, indexados por sus nombres de clase.
 
@@ -188,4 +188,3 @@ En un controlador dentro de un módulo anidado, la ruta debe incluir el identifi
 Es mejor usar los módulos en grandes aplicaciones en las que sus funcionalidades puedan ser divididas en diferentes grupos, cada uno compuesto por funcionalidades directamente relacionadas. Cada grupo de funcionalidades se puede desarrollar como un módulo que puede ser desarrollado y mantenido por un programador o equipo específico.
 
 Los módulos también son una buena manera de reutilizar código a nivel de grupo de funcionalidades. Algunas funcionalidades de uso común, tales como la gestión de usuarios o la gestión de comentarios, pueden ser desarrollados como módulos para que puedan ser fácilmente reutilizados en futuros proyectos.
-

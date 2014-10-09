@@ -17,7 +17,7 @@
             <span class="text"><?php if ($file !== null) echo 'in ' . $handler->htmlEncode($file); ?></span>
             <?php if ($method !== null): ?>
                 <span class="call">
-                    <?php if ($file !== null) echo '&ndash;' ?>
+                    <?php if ($file !== null) echo '&ndash;'; ?>
                     <?= ($class !== null ? $handler->addTypeLinks("$class::$method") : $handler->htmlEncode($method)) . '(' . $handler->argumentsToString($args) . ')' ?>
                 </span>
             <?php endif; ?>

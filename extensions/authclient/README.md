@@ -155,7 +155,6 @@ Following predefined auth clients are available:
  - [[yii\authclient\clients\GoogleOAuth]] - [Google](https://www.google.com/) OAuth2 client
  - [[yii\authclient\clients\GoogleOpenId]] - [Google](https://www.google.com/) OpenID client
  - [[yii\authclient\clients\LinkedIn]] - [LinkedIn](http://www.linkedin.com/) OAuth2 client
- - [[yii\authclient\clients\LinkedIn]] - [LinkedIn](http://www.linkedin.com/) OAuth2 client
  - [[yii\authclient\clients\Live]] - [Microsoft Live](http://live.com/) OAuth2 client
  - [[yii\authclient\clients\Twitter]] - [Twitter](https://twitter.com/) OAuth1 client
  - [[yii\authclient\clients\VKontakte]] - [VKontakte](http://vk.com/) OAuth2 client
