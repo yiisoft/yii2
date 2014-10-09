@@ -330,6 +330,16 @@ $customer->loadDefaultValues();
 // ... render HTML form for $customer ...
 ```
 
+If you want to set some initial values for the attributes yourself you can override the `init()` method
+of the active record class and set the values there. For example to set the default value for the `status` attribute:
+
+```php
+public function init()
+{
+    parent::init();
+    $this->status = 'active';
+}
+```
 
 Active Record Life Cycles
 -------------------------
