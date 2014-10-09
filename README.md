@@ -29,6 +29,7 @@ which is the latest stable release of Yii.
 [![Reference Status](https://www.versioneye.com/php/yiisoft:yii2/reference_badge.svg)](https://www.versioneye.com/php/yiisoft:yii2/references)
 [![Issue Stats Issues](http://issuestats.com/github/yiisoft/yii2/badge/issue)](http://issuestats.com/github/yiisoft/yii2)
 [![Issue Stats Pull request](http://issuestats.com/github/yiisoft/yii2/badge/pr)](http://issuestats.com/github/yiisoft/yii2)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/yiisoft/yii2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 DIRECTORY STRUCTURE
 -------------------
