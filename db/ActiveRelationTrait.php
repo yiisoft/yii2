@@ -252,6 +252,9 @@ trait ActiveRelationTrait
                 if ($this->multiple && count($link) == 1 && is_array($keys = $primaryModel[reset($link)])) {
                     $value = [];
                     foreach ($keys as $key) {
+                        if (!is_scalar($key)) {
+                            $key = serialize($key);
+                        }
                         if (isset($buckets[$key])) {
                             if ($this->indexBy !== null) {
                                 // if indexBy is set, array_merge will cause renumbering of numeric array
