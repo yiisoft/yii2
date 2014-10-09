@@ -1287,7 +1287,6 @@ class Request extends \yii\base\Request
             $config['value'] = $token;
             Yii::$app->getResponse()->getCookies()->add(new Cookie($config));
         } else {
-            $token = Yii::$app->getSecurity()->generateRandomString();
             Yii::$app->getSession()->set($this->csrfParam, $token);
         }
         return $token;
