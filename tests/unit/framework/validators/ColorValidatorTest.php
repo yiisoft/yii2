@@ -90,4 +90,13 @@ class ColorValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_color'));
     }
 
+    public function testNotSupportedMethods()
+    {
+        $this->setExpectedException('yii\base\InvalidConfigException');
+
+        $validator = new ColorValidator();
+        $validator->methods = ['test', 'rgb'];
+        $validator->init();
+    }
+
 }
