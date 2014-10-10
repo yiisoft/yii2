@@ -4,7 +4,7 @@ Yii Framework 2 gii extension Change Log
 2.0.0 under development
 -----------------------
 
-- no changes in this release.
+- Bug: Fixed table name regression caused by changed introduced in #4971 (samdark)
 
 
 2.0.0-rc September 27, 2014
