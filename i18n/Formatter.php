@@ -359,9 +359,10 @@ class Formatter extends Component
     /**
      * Formats the value as a hyperlink.
      * @param mixed $value the value to be formatted.
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::a()]].
      * @return string the formatted result.
      */
-    public function asUrl($value)
+    public function asUrl($value, $options = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
@@ -371,7 +372,7 @@ class Formatter extends Component
             $url = 'http://' . $url;
         }
 
-        return Html::a(Html::encode($value), $url);
+        return Html::a(Html::encode($value), $url, $options);
     }
 
     /**
