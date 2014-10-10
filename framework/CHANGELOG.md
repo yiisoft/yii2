@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #4881: Fixed `yii\console\controllers\AssetController` breaks CSS URLs on Windows (klimov-paul)
 - Bug #5171: Fixed the bug that ActiveForm + Pjax submit event is only triggered once (qiangxue)
+- Bug #5242: Fixed `yii\console\controllers\AssetController` breaks CSS URLs in case target file localed at `yii\web\AssetManager::basePath` root (klimov-paul)
 - Bug #5252: Null values are not properly handled by `RangeValidator` (githubjeka, qiangxue)
 - Bug #5260: `yii\i18n\Formatter::decimalSeparator` and `yii\i18n\Formatter::thousandSeparator` where not configurable when intl is not installed (execut, cebe)
 - Bug #5314: Fixed typo in the implementation of `yii\web\Session::getHasSessionId()` (qiangxue)
