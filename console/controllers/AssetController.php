@@ -640,6 +640,8 @@ return [
     ],
     // Asset manager configuration:
     'assetManager' => [
+        //'basePath' => '@webroot/assets',
+        //'baseUrl' => '@web/assets',
     ],
 ];
 EOD;
