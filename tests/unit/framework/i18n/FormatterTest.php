@@ -158,6 +158,8 @@ class FormatterTest extends TestCase
         $this->assertSame("<a href=\"http://$value\">$value</a>", $this->formatter->asUrl($value));
         $value = 'https://www.yiiframework.com/?name=test&value=5"';
         $this->assertSame("<a href=\"https://www.yiiframework.com/?name=test&amp;value=5&quot;\">https://www.yiiframework.com/?name=test&amp;value=5&quot;</a>", $this->formatter->asUrl($value));
+        $value = 'http://www.yiiframework.com/';
+        $this->assertSame("<a href=\"$value\" target=\"_blank\">$value</a>", $this->formatter->asUrl($value, ['target' => '_blank']));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asUrl(null));
