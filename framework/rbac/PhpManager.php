@@ -105,6 +105,10 @@ class PhpManager extends BaseManager
      */
     public function getAssignments($userId)
     {
+        if (isset($this->tempAssignments[$userId])) {
+            return $this->tempAssignments[$userId];
+        }
+
         return isset($this->assignments[$userId]) ? $this->assignments[$userId] : [];
     }
 
