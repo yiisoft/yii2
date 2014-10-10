@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.0 under development
 -----------------------
 
+- Bug #5171: Fixed the bug that ActiveForm + Pjax submit event is only triggered once (qiangxue)
 - Bug #5252: Null values are not properly handled by `RangeValidator` (githubjeka, qiangxue)
 - Bug #5260: `yii\i18n\Formatter::decimalSeparator` and `yii\i18n\Formatter::thousandSeparator` where not configurable when intl is not installed (execut, cebe)
 - Bug #5314: Fixed typo in the implementation of `yii\web\Session::getHasSessionId()` (qiangxue)
@@ -11,7 +12,7 @@ Yii Framework 2 Change Log
 - Bug #5336: `yii\bootstrap\DropDown` should register bootstrap plugin asset (zelenin)
 - Bug #5379: `Module::afterAction()` was called even when `beforeAction()` returned false (cebe)
 - Bug #5423: `yii\behaviors\Cors` causes "undefined index" error when its `cors` is configured (qiangxue) 
-- Bug #5424: `Html::addCssStyle()` wasn't correctly setting style passed in array (kartik-v, samdark) 
+- Bug #5424: `Html::addCssStyle()` wasn't correctly setting style passed in array (kartik-v, samdark)
 - Bug: Date and time formatting now assumes UTC as the timezone for input dates unless a timezone is explicitly given (cebe)
 - Enh #4040: Added `$viewFile` and `$params` to the `EVENT_BEFORE_RENDER` and `EVENT_AFTER_RENDER` events for `View` (qiangxue) 
 - Enh #4275: Added `removeChildren()` to `yii\rbac\ManagerInterface` and implementations (samdark)
