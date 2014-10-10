@@ -16,6 +16,7 @@ use yii\helpers\VarDumper;
  * Allows you to combine and compress your JavaScript and CSS files.
  *
  * Usage:
+ *
  * 1. Create a configuration file using the `template` action:
  *
  *    yii asset/template /path/to/myapp/config.php
