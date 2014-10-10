@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Enh #5316: Added `startsWith()` and `endsWith()` to `yii\helpers\StringHelper`. Methods are binary-safe, multibyte-safe and optionally case-insensitive (armab)
 - Enh #5467: Added ability to pass HTML tag options to `asEmail()`, `asImage()` and `asUrl()` methods of `yii\i18n\Formatter` (alxkolm, samdark) 
 - Chg #2037: Dropped the support for using `yii\base\Module` as concrete module classes (qiangxue)
+- Chg: Updated cebe/markdown to 1.0.0 which includes breaking changes in its internal API (cebe)
 
 
 2.0.0-rc September 27, 2014

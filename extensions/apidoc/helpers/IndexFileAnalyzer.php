@@ -28,7 +28,7 @@ class IndexFileAnalyzer extends Markdown
     protected function renderHeadline($block)
     {
         if ($this->_chapter === 0) {
-            $this->title = $block['content'];
+            $this->title = $block['content']; // TODO adjust implementation
             $this->introduction = '';
             $this->_chapter++;
         } else {

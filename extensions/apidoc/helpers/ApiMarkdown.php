@@ -40,7 +40,7 @@ class ApiMarkdown extends GithubMarkdown
         if (isset($block['language'])) {
             $class = isset($block['language']) ? ' class="language-' . $block['language'] . '"' : '';
 
-            return "<pre><code$class>" . $this->highlight(implode("\n", $block['content']) . "\n", $block['language']) . '</code></pre>';
+            return "<pre><code$class>" . $this->highlight($block['content'] . "\n", $block['language']) . '</code></pre>';
         } else {
             return parent::renderCode($block);
         }
