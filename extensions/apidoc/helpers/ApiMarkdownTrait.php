@@ -20,7 +20,6 @@ trait ApiMarkdownTrait
 {
     /**
      * @marker [[
-     * TODO adjust implementation
      */
     protected function parseApiLinks($text)
     {
@@ -49,7 +48,7 @@ trait ApiMarkdownTrait
                     ];
 
                     return [
-                        '<span style="background: #f00;">' . $typeName . '::' . $subjectName . '</span>',
+                        ['text', '<span style="background: #f00;">' . $typeName . '::' . $subjectName . '</span>'],
                         $offset
                     ];
                 } else {
@@ -62,7 +61,7 @@ trait ApiMarkdownTrait
                         }
 
                         return [
-                            static::$renderer->createSubjectLink($subject, $title),
+                            ['apiLink', static::$renderer->createSubjectLink($subject, $title)],
                             $offset
                         ];
                     } else {
@@ -72,14 +71,14 @@ trait ApiMarkdownTrait
                         ];
 
                         return [
-                            '<span style="background: #ff0;">' . $type->name . '</span><span style="background: #f00;">::' . $subjectName . '</span>',
+                            ['text', '<span style="background: #ff0;">' . $type->name . '</span><span style="background: #f00;">::' . $subjectName . '</span>'],
                             $offset
                         ];
                     }
                 }
             } elseif ($context !== null && ($subject = $context->findSubject($object)) !== null) {
                 return [
-                    static::$renderer->createSubjectLink($subject, $title),
+                    ['apiLink', static::$renderer->createSubjectLink($subject, $title)],
                     $offset
                 ];
             }
@@ -90,12 +89,12 @@ trait ApiMarkdownTrait
             }
             if (($type = static::$renderer->apiContext->getType($object)) !== null) {
                 return [
-                    static::$renderer->createTypeLink($type, null, $title),
+                    ['apiLink', static::$renderer->createTypeLink($type, null, $title)],
                     $offset
                 ];
             } elseif (strpos($typeLink = static::$renderer->createTypeLink($object, null, $title), '<a href') !== false) {
                 return [
-                    $typeLink,
+                    ['apiLink', $typeLink],
                     $offset
                 ];
             }
@@ -105,11 +104,16 @@ trait ApiMarkdownTrait
             ];
 
             return [
-                '<span style="background: #f00;">' . $object . '</span>',
+                ['text', '<span style="background: #f00;">' . $object . '</span>'],
                 $offset
             ];
         }
 
-        return ['[[', 2];
+        return [['text', '[['], 2];
+    }
+
+    protected function renderApiLink($block)
+    {
+        return $block[1];
     }
 }

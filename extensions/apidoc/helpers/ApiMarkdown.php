@@ -40,7 +40,7 @@ class ApiMarkdown extends GithubMarkdown
         if (isset($block['language'])) {
             $class = isset($block['language']) ? ' class="language-' . $block['language'] . '"' : '';
 
-            return "<pre><code$class>" . $this->highlight($block['content'] . "\n", $block['language']) . '</code></pre>';
+            return "<pre><code$class>" . $this->highlight($block['content'] . "\n", $block['language']) . "</code></pre>\n";
         } else {
             return parent::renderCode($block);
         }
@@ -49,7 +49,7 @@ class ApiMarkdown extends GithubMarkdown
     public static function highlight($code, $language)
     {
         if ($language !== 'php') {
-            return htmlspecialchars($code, ENT_NOQUOTES, 'UTF-8');
+            return htmlspecialchars($code, ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8');
         }
 
         // TODO improve code highlighting
@@ -68,39 +68,32 @@ class ApiMarkdown extends GithubMarkdown
         return $text;
     }
 
-    protected function inlineMarkers()
-    {
-        return array_merge(parent::inlineMarkers(), [
-            '[[' => 'parseApiLinks',
-        ]);
-    }
-
     /**
      * @inheritDoc
      */
     protected function renderHeadline($block)
     {
-        $content = $this->parseInline($block['content']);
+        $content = $this->renderAbsy($block['content']);
         $hash = Inflector::slug(strip_tags($content));
         $hashLink = "<a href=\"#$hash\" name=\"$hash\" class=\"hashlink\">&para;</a>";
-        $tag = 'h' . $block['level'];
 
+        $tag = 'h' . $block['level'];
         return "<$tag>$content $hashLink</$tag>";
     }
 
     /**
      * @inheritdoc
      */
-    protected function parseLink($markdown)
+    protected function renderLink($block)
     {
-        list($result, $skip) = parent::parseLink($markdown);
+        $result = parent::renderLink($block);
 
         // add special syntax for linking to the guide
         $result = preg_replace_callback('/href="guide:([A-z0-9-.#]+)"/i', function($match) {
             return 'href="' . static::$renderer->generateGuideUrl($match[1]) . '"';
         }, $result, 1);
 
-        return [$result, $skip];
+        return $result;
     }
 
     /**
