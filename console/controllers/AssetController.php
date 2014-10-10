@@ -513,7 +513,7 @@ EOD;
         $content = '';
         foreach ($inputFiles as $file) {
             $content .= "/*** BEGIN FILE: $file ***/\n"
-                . $this->adjustCssUrl(file_get_contents($file), dirname($file), dirname($outputFile))
+                . $this->adjustCssUrl(file_get_contents($file), dirname(realpath($file)), dirname(realpath($outputFile)))
                 . "/*** END FILE: $file ***/\n";
         }
         if (!file_put_contents($outputFile, $content)) {
@@ -530,6 +530,9 @@ EOD;
      */
     protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
     {
+        $inputFilePath = str_replace('\\', '/', $inputFilePath);
+        $outputFilePath = str_replace('\\', '/', $outputFilePath);
+
         $sharedPathParts = [];
         $inputFilePathParts = explode('/', $inputFilePath);
         $inputFilePathPartsCount = count($inputFilePathParts);
