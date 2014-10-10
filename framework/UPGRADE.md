@@ -24,6 +24,9 @@ Upgrade from Yii 2.0 RC
  
 * The `yii\base\View::beforeRender()` and `yii\base\View::afterRender()` methods have two extra parameters `$viewFile`
   and `$params`. If you are overriding these methods, you should adjust the method signature accordingly.
+  
+* If you've used `asImage` formatter i.e. `Yii::$app->formatter->asImage($value, $alt);` you should change it
+  to `Yii::$app->formatter->asImage($value, ['alt' => $alt]);`.
 
 
 Upgrade from Yii 2.0 Beta

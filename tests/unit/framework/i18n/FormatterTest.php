@@ -143,6 +143,8 @@ class FormatterTest extends TestCase
     {
         $value = 'test@sample.com';
         $this->assertSame("<a href=\"mailto:$value\">$value</a>", $this->formatter->asEmail($value));
+        $value = 'test@sample.com';
+        $this->assertSame("<a href=\"mailto:$value\" target=\"_blank\">$value</a>", $this->formatter->asEmail($value, ['target' => '_blank']));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asEmail(null));
@@ -169,6 +171,9 @@ class FormatterTest extends TestCase
     {
         $value = 'http://sample.com/img.jpg';
         $this->assertSame("<img src=\"$value\" alt=\"\">", $this->formatter->asImage($value));
+        $value = 'http://sample.com/img.jpg';
+        $alt = "Hello!";
+        $this->assertSame("<img src=\"$value\" alt=\"$alt\">", $this->formatter->asImage($value, ['alt' => $alt]));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asImage(null));
