@@ -332,28 +332,29 @@ class Formatter extends Component
     /**
      * Formats the value as a mailto link.
      * @param mixed $value the value to be formatted.
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::mailto()]].
      * @return string the formatted result.
      */
-    public function asEmail($value)
+    public function asEmail($value, $options = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return Html::mailto(Html::encode($value), $value);
+        return Html::mailto(Html::encode($value), $value, $options);
     }
 
     /**
      * Formats the value as an image tag.
      * @param mixed $value the value to be formatted.
-     * @param string $altText an optional `alt`-tag to be added to the image.
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::img()]].
      * @return string the formatted result.
      */
-    public function asImage($value, $altText = '')
+    public function asImage($value, $options = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return Html::img($value, ['alt' => $altText]);
+        return Html::img($value, $options);
     }
 
     /**
