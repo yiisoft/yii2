@@ -40,10 +40,10 @@ use yii\helpers\Html;
             <h2 class="<?= empty($result['errors']) ? 'ok' : 'errors' ?>"><?= $name ?></h2>
             <?php foreach($result['errors'] as $error): ?>
                 <p><?= Html::encode($error) ?></p>
-            <?php endforeach ?>
+            <?php endforeach; ?>
             <?php if (!empty($result['diff'])): ?>
                 <code class="diff"><pre><?= $this->context->highlightDiff($result['diff']) ?></pre></code>
-            <?php endif ?>
-        <?php endforeach ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
     </body>
 </html>
