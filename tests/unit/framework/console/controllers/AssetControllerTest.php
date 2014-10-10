@@ -368,6 +368,12 @@ EOL;
                 src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwT==) format('truetype');
                 }",
             ],
+            [
+                '.published-same-dir-class {background-image: url(published_same_dir.png);}',
+                'C:\test\base\path\assets\input',
+                'C:\test\base\path\assets\output',
+                '.published-same-dir-class {background-image: url(../input/published_same_dir.png);}',
+            ],
         ];
     }
 
