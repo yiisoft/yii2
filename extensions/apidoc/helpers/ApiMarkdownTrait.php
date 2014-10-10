@@ -18,6 +18,10 @@ use yii\apidoc\models\TypeDoc;
  */
 trait ApiMarkdownTrait
 {
+    /**
+     * @marker [[
+     * TODO adjust implementation
+     */
     protected function parseApiLinks($text)
     {
         $context = $this->renderingContext;

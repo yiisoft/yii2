@@ -28,6 +28,9 @@ Upgrade from Yii 2.0 RC
 * If you've used `asImage` formatter i.e. `Yii::$app->formatter->asImage($value, $alt);` you should change it
   to `Yii::$app->formatter->asImage($value, ['alt' => $alt]);`.
 
+* Yii now requires `cebe/markdown` 1.0.0 or higher, which includes breaking changes in its internal API. If you extend the markdown class
+  you need to update your implementation. See <https://github.com/cebe/markdown/releases/tag/1.0.0-rc> for details.
+  If you just used the markdown helper class there is no need to change anything.
 
 Upgrade from Yii 2.0 Beta
 -------------------------
