@@ -24,6 +24,7 @@ use yii\base\NotSupportedException;
  * - `boolean`: [[BooleanValidator]]
  * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
+ * - `color`: [[ColorValidator]]
  * - `date`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
  * - `double`: [[NumberValidator]]
@@ -53,6 +54,7 @@ class Validator extends Component
     public static $builtInValidators = [
         'boolean' => 'yii\validators\BooleanValidator',
         'captcha' => 'yii\captcha\CaptchaValidator',
+        'color' => 'yii\validators\ColorValidator',
         'compare' => 'yii\validators\CompareValidator',
         'date' => 'yii\validators\DateValidator',
         'default' => 'yii\validators\DefaultValueValidator',
