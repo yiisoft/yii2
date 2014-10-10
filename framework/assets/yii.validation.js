@@ -48,6 +48,29 @@ yii.validation = (function ($) {
             }
         },
 
+        color: function (value, messages, options) {
+            if (options.skipOnEmpty && pub.isEmpty(value)) {
+                return;
+            }
+
+            if (typeof value !== 'string' || value.length > 40) {
+                pub.addMessage(messages, options.message, value);
+                return;
+            }
+
+            var valid = false, method;
+            for (method in options.methods) {
+                if (options.methods.hasOwnProperty(method) && options.patterns.hasOwnProperty(method) && options.patterns[method].test(value)) {
+                    valid = true;
+                    break;
+                }
+            }
+
+            if (!valid) {
+                pub.addMessage(messages, options.message, value);
+            }
+        },
+
         string: function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
