@@ -52,13 +52,14 @@ class IndexFileAnalyzer extends Markdown
     protected function renderList($block)
     {
         if ($this->_chapter > 0) {
-            foreach ($block['items'] as $item => $itemLines) {
-                if (preg_match('~\[([^\]]+)\]\(([^\)]+)\)(.*)~', $this->renderAbsy($itemLines), $matches)) {
-                    $this->_chapters[$this->_chapter]['content'][] = [
-                        'headline' => $matches[1],
-                        'file' => $matches[2],
-                        'teaser' => $matches[3],
-                    ];
+            foreach ($block['items'] as $item => $absyElements) {
+                foreach($absyElements as $element) {
+                    if ($element[0] === 'link') {
+                        $this->_chapters[$this->_chapter]['content'][] = [
+                            'headline' => $this->renderAbsy($element['text']),
+                            'file' => $element['url'],
+                        ];
+                    }
                 }
             }
         }
