@@ -549,8 +549,16 @@ EOD;
 
         $inputFileRelativePath = trim(str_replace($sharedPath, '', $inputFilePath), '/');
         $outputFileRelativePath = trim(str_replace($sharedPath, '', $outputFilePath), '/');
-        $inputFileRelativePathParts = explode('/', $inputFileRelativePath);
-        $outputFileRelativePathParts = explode('/', $outputFileRelativePath);
+        if (empty($inputFileRelativePath)) {
+            $inputFileRelativePathParts = [];
+        } else {
+            $inputFileRelativePathParts = explode('/', $inputFileRelativePath);
+        }
+        if (empty($outputFileRelativePath)) {
+            $outputFileRelativePathParts = [];
+        } else {
+            $outputFileRelativePathParts = explode('/', $outputFileRelativePath);
+        }
 
         $callback = function ($matches) use ($inputFileRelativePathParts, $outputFileRelativePathParts) {
             $fullMatch = $matches[0];
@@ -560,7 +568,11 @@ EOD;
                 return $fullMatch;
             }
 
-            $outputUrlParts = array_fill(0, count($outputFileRelativePathParts), '..');
+            if (empty($outputFileRelativePathParts)) {
+                $outputUrlParts = [];
+            } else {
+                $outputUrlParts = array_fill(0, count($outputFileRelativePathParts), '..');
+            }
             $outputUrlParts = array_merge($outputUrlParts, $inputFileRelativePathParts);
 
             if (strpos($inputUrl, '/') !== false) {
