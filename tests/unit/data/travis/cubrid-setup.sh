@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 #
 # install CUBRID DBMS
 
@@ -71,7 +71,7 @@ install_pdo_cubrid() {
     return $?
 }
 
-install_pdo_cubrid > ~/pdo_cubrid.log || ( echo "=== PDO CUBRID BUILD FAILED ==="; cat ~/pdo_cubrid.log )
+install_pdo_cubrid > ~/pdo_cubrid.log || ( echo "=== PDO CUBRID BUILD FAILED ==="; cat ~/pdo_cubrid.log ) && exit 1
 
 echo ""
 echo "Installed CUBRID PDO $CUBRID_PDO_VERSION"
