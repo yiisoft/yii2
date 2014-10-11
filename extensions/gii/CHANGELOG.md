@@ -4,6 +4,7 @@ Yii Framework 2 gii extension Change Log
 2.0.0 under development
 -----------------------
 
+- Bug #5408: Gii console command incorrectly reports errors when there is actually no error (qiangxue)
 - Bug: Fixed table name regression caused by changed introduced in #4971 (samdark)
 
 

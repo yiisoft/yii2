@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #5323: Nested dropdown does not work for `yii\bootstrap\DropDown` (aryraditya)
 - Bug #5336: `yii\bootstrap\DropDown` should register bootstrap plugin asset (zelenin)
 - Bug #5379: `Module::afterAction()` was called even when `beforeAction()` returned false (cebe)
+- Bug #5408: Gii console command incorrectly reports errors when there is actually no error (qiangxue)
 - Bug #5423: `yii\behaviors\Cors` causes "undefined index" error when its `cors` is configured (qiangxue) 
 - Bug #5424: `Html::addCssStyle()` wasn't correctly setting style passed in array (kartik-v, samdark)
 - Bug #5435: Added extra checks to `yii\rbac\DbManager` to prevent database exceptions when `$userId` is empty (samdark) 

@@ -262,7 +262,7 @@ abstract class Generator extends Model
      * @param array $answers
      * @param string $results this parameter receives a value from this method indicating the log messages
      * generated while saving the code files.
-     * @return boolean whether there is any error while saving the code files.
+     * @return boolean whether files are successfully saved without any error.
      */
     public function save($files, $answers, &$results)
     {
