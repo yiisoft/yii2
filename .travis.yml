@@ -8,7 +8,7 @@ php:
   - hhvm-nightly
 
 env:
-  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.2.0.0001
 
 # run build against hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
