@@ -286,9 +286,19 @@ class ActiveField extends \yii\widgets\ActiveField
                 ];
             }
         }  elseif (!isset($options['item'])) {
-            $options['item'] = function ($index, $label, $name, $checked, $value) {
-                return '<div class="radio">' . Html::radio($name, $checked, ['label' => $label, 'value' => $value]) . '</div>';
-            };
+            if(isset($options['itemOptions'])){
+                $options['item'] = function ($index, $label, $name, $checked, $value) use($options) {
+                    $containerOptions = isset($options['itemOptions']['containerOptions'])?$options['itemOptions']['containerOptions']:[];
+                    unset($options['itemOptions']['containerOptions']);
+                    return html::tag(
+                        'div', Html::radio($name, $checked, ['label' => $label, 'value' => $value]+$options['itemOptions']),
+                        $containerOptions);
+                };
+            } else{
+                $options['item'] = function ($index, $label, $name, $checked, $value) {
+                    return '<div class="radio">'    . Html::radio($name, $checked, ['label' => $label, 'value' => $value]) . '</div>';
+                };
+            }
         }
         parent::radioList($items, $options);
         return $this;
