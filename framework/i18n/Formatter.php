@@ -909,6 +909,30 @@ class Formatter extends Component
     }
 
     /**
+     * Formats the value as a duration.
+     *
+     * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
+     *
+     * @param mixed $value the value to be formatted
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric.
+     * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
+     */
+    public function asDuration($value)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        $value = $this->normalizeNumericValue($value);
+        if ($this->_intlLoaded){
+            $f = $this->createNumberFormatter(NumberFormatter::DURATION);
+            return $f->format($value);
+        } else {
+            throw new InvalidConfigException('Format as Duration is only supported when PHP intl extension is installed.');
+        }
+    }
+
+    /**
      * Formats the value as a ordinal value of a number.
      *
      * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
