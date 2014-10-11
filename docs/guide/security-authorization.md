@@ -347,7 +347,7 @@ $rule = new \app\rbac\AuthorRule;
 $auth->add($rule);
 
 // add the "updateOwnPost" permission and associate the rule with it.
-$updateOwnPost = $this->auth->createPermission('updateOwnPost');
+$updateOwnPost = $auth->createPermission('updateOwnPost');
 $updateOwnPost->description = 'Update own post';
 $updateOwnPost->ruleName = $rule->name;
 $auth->add($updateOwnPost);
