@@ -149,7 +149,7 @@ class HelpController extends Controller
         if (is_dir($controllerPath)) {
             $files = scandir($controllerPath);
             foreach ($files as $file) {
-                if (!empty($file) && substr_compare($file, 'Controller.php', -14) === 0) {
+                if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
                     $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
                     if ($this->validateControllerClass($controllerClass)) {
                         $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));

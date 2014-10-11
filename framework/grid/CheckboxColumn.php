@@ -65,7 +65,7 @@ class CheckboxColumn extends Column
         if (empty($this->name)) {
             throw new InvalidConfigException('The "name" property must be set.');
         }
-        if (substr_compare($this->name, '[]', -2)) {
+        if (substr_compare($this->name, '[]', -2, 2)) {
             $this->name .= '[]';
         }
     }
