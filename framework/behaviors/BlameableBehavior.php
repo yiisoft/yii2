@@ -87,7 +87,7 @@ class BlameableBehavior extends AttributeBehavior
 
         if (empty($this->attributes)) {
             $this->attributes = [
-                BaseActiveRecord::EVENT_BEFORE_INSERT => [$this->createdByAttribute, $this->updatedByAttribute],
+                BaseActiveRecord::EVENT_BEFORE_INSERT => [$this->createdByAttribute],
                 BaseActiveRecord::EVENT_BEFORE_UPDATE => $this->updatedByAttribute,
             ];
         }
