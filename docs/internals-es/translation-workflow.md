@@ -42,16 +42,16 @@ Si recibes un error de composer, ejecuta `composer install` en el directorio ra�
 Convenios para la traducción
 ----------------------------
 
-Las palabras en inglés que son propias del framework o de PHP se pueden dejar en el idioma original. Ejemplos: ``namespace``, ``assets``, ``helper``, ``widget``, etc.
+Las palabras en inglés que son propias del framework o de PHP se pueden dejar en el idioma original. Ejemplos: `namespace`, `assets`, `helper`, `widget`, etc.
 
-Para las palabras que están muy ligadas a conceptos extendidos se deben traducir y poner entre paréntesis su equivalente en el idioma original. Ejemplos : ``petición`` (request), ``respuesta``, (response), ``comportamiento`` (behavior), etc.
+Para las palabras que están muy ligadas a conceptos extendidos se deben traducir y poner entre paréntesis su equivalente en el idioma original. Ejemplos : `petición` (request), `respuesta`, (response), `comportamiento` (behavior), etc.
 
 Los bloques han de ser traducidos, las traducciones se muestran a continuación :
 
-* ``Warning`` : ``Aviso``
-* ``Note`` : ``Nota``
-* ``Info`` : ``Información``
-* ``Tip`` : ``Consejo``
+* `Warning` : `Aviso`
+* `Note` : `Nota`
+* `Info` : `Información`
+* `Tip` : `Consejo`
 
 > Aclaraciones :
 * Sólo mencionar una vez entre paréntesis la palabra original en su primera aparición en el texto o en el fichero README.md .
