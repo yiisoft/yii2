@@ -8,16 +8,6 @@ Yii 2 inherits the main spirit behind Yii for being simple, fast and highly exte
 Yii 2 requires PHP 5.4 and embraces the best practices and protocols found in modern Web application development.
 
 
-**Yii 2 is not ready for production use yet.** We may make significant changes without prior notices.
-We expect to make the first stable release of Yii 2 in the middle of 2014.
-
-If you mainly want to learn Yii with no real project development requirement, we highly recommend
-you start with Yii 2 as it will be our main focus for the next few years.
-
-If you have a real project with tight schedule, you should stick to [Yii 1.1](https://github.com/yiisoft/yii)
-which is the latest stable release of Yii.
-
-
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2)
 [![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
@@ -55,14 +45,11 @@ The minimum requirement by Yii is that your Web server supports PHP 5.4.
 DOCUMENTATION
 -------------
 
-A draft of the [Definitive Guide](docs/guide/README.md) is available.
+Yii 2.0 has a [Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-index.html) and 
+a [Class Reference](http://www.yiiframework.com/doc-2.0/index.html) which cover every detail of Yii.
 
-API docs and a rendering of the definitive guide are currently
-available under the following urls:
-
-- http://www.yiiframework.com/doc-2.0/ API and Definitive Guide (updated daily)
-- http://stuff.cebe.cc/yii2docs/ API and Definitive Guide (updated every 15 minutes)
-- http://stuff.cebe.cc/yii2-guide.pdf The PDF version of the Guide
+There is also a [PDF version](http://stuff.cebe.cc/yii2-guide.pdf) of the Definitive Guide
+and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which update every 15 minutes.
 
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.
