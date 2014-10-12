@@ -274,8 +274,8 @@ Notice that you bind the placeholder to the variable before the execution, and t
 Performing Transactions
 -----------------------
 
-When running multiple related queries in a sequence you may need to wrap them in a transaction to
-ensure you data is consistent. Yii provides a simple interface to work with transactions in simple
+When running multiple, related queries in a sequence, you may need to wrap them in a transaction to
+protect your data's integrity. Transactions allow you to write a series of queries such that they'll all succeed or have no effect whatsoever. Yii provides a simple interface to work with transactions in simple
 cases but also for advanced usage when you need to define isolation levels.
 
 The following code shows a simple pattern that all code that uses transactional queries should follow:
