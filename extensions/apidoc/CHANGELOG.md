@@ -1,8 +1,8 @@
 Yii Framework 2 apidoc extension Change Log
 ===========================================
 
-2.0.0 under development
------------------------
+2.0.0 October 12, 2014
+----------------------
 
 - Chg: Updated cebe/markdown to 1.0.0 which includes breaking changes in its internal API (cebe)
 
