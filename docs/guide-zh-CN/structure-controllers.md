@@ -13,14 +13,14 @@ controllers will analyze incoming request data, pass them to [models](structure-
 into [views](structure-views.md), and finally generate outgoing responses.
 
 
-## 动作 <a name="actions"></a>
+## 操作 <a name="actions"></a>
 ## Actions <a name="actions"></a>
 
-控制器由 *动作* 组成，它是执行终端用户请求的最基础的单元，一个控制器可有一个或多个动作。
+控制器由 *操作* 组成，它是执行终端用户请求的最基础的单元，一个控制器可有一个或多个操作。
 Controllers are composed by *actions* which are the most basic units that end users can address and request for
 execution. A controller can have one or multiple actions.
 
-如下示例显示包含两个动作`view` and `create` 的控制器`post`：
+如下示例显示包含两个操作`view` and `create` 的控制器`post`：
 The following example shows a `post` controller with two actions: `view` and `create`:
 
 ```php
@@ -60,14 +60,14 @@ class PostController extends Controller
 }
 ```
 
-在动作 `view` (定义为 `actionView()` 方法)中， 代码首先根据请求模型ID加载 [模型](structure-models.md)，
+在操作 `view` (定义为 `actionView()` 方法)中， 代码首先根据请求模型ID加载 [模型](structure-models.md)，
 如果加载成功，会渲染名称为`view`的[视图](structure-views.md)并显示，否则会抛出一个异常。
  the `view` action (defined by the `actionView()` method), the code first loads the [model](structure-models.md)
 according to the requested model ID; If the model is loaded successfully, it will display it using
 a [view](structure-views.md) named `view`. Otherwise, it will throw an exception.
 
-在动作 `create` (定义为 `actionCreate()` 方法)中, 代码相似. 先将请求数据填入[模型](structure-models.md)，
-然后保存模型，如果两者都成功，会跳转到ID为新创建的模型的`view`动作，否则显示提供用户输入的`create`视图。
+在操作 `create` (定义为 `actionCreate()` 方法)中, 代码相似. 先将请求数据填入[模型](structure-models.md)，
+然后保存模型，如果两者都成功，会跳转到ID为新创建的模型的`view`操作，否则显示提供用户输入的`create`视图。
 In the `create` action (defined by the `actionCreate()` method), the code is similar. It first tries to populate
 the [model](structure-models.md) using the request data and save the model. If both succeed it will redirect
 the browser to the `view` action with the ID of the newly created model. Otherwise it will display
@@ -77,12 +77,12 @@ the `create` view through which users can provide the needed input.
 ## 路由 <a name="routes"></a>
 ## Routes <a name="routes"></a>
 
-终端用户通过所谓的*路由*寻找到动作，路由是包含以下部分的字符串：End users address actions through the so-called *routes*. A route is a string that consists of the following parts:
+终端用户通过所谓的*路由*寻找到操作，路由是包含以下部分的字符串：End users address actions through the so-called *routes*. A route is a string that consists of the following parts:
 End users address actions through the so-called *routes*. A route is a string that consists of the following parts:
 
 * 模型ID: 仅存在于控制器属于非应用的[模块](structure-modules.md);
 * 控制器ID: 同应用（或同模块如果为模块下的控制器）下唯一标识控制器的字符串;
-* 动作ID: 同控制器下唯一标识动作的字符串。
+* 操作ID: 同控制器下唯一标识操作的字符串。
 * a module ID: this exists only if the controller belongs to a non-application [module](structure-modules.md);
 * a controller ID: a string that uniquely identifies the controller among all controllers within the same application
   (or the same module if the controller belongs to a module);
@@ -102,7 +102,7 @@ or the following format if the controller belongs to a module:
 ModuleID/ControllerID/ActionID
 ```
 
-如果用户的请求地址为 `http://hostname/index.php?r=site/index`, 会执行`site` 控制器的`index` 动作。
+如果用户的请求地址为 `http://hostname/index.php?r=site/index`, 会执行`site` 控制器的`index` 操作。
 更多关于处理路由的详情请参阅 [路由](runtime-routing.md) 一节。
 So if a user requests with the URL `http://hostname/index.php?r=site/index`, the `index` action in the `site` controller
 will be executed. For more details how routes are resolved into actions, please refer to
@@ -254,11 +254,11 @@ You may change the default controller with the following [application configurat
 ```
 
 
-## 创建动作 <a name="creating-actions"></a>
+## 创建操作 <a name="creating-actions"></a>
 ## Creating Actions <a name="creating-actions"></a>
 
-创建动作可简单地在控制器类中定义所谓的 *动作方法* 来完成，动作方法必须是以`action`开头的公有方法。
-动作方法的返回值会作为响应数据发送给终端用户，如下代码定义了两个动作 `index` 和 `hello-world`:
+创建操作可简单地在控制器类中定义所谓的 *操作方法* 来完成，操作方法必须是以`action`开头的公有方法。
+操作方法的返回值会作为响应数据发送给终端用户，如下代码定义了两个操作 `index` 和 `hello-world`:
 Creating actions can be as simple as defining the so-called *action methods* in a controller class. An action method is
 a *public* method whose name starts with the word `action`. The return value of an action method represents
 the response data to be sent to end users. The following code defines two actions `index` and `hello-world`:
@@ -283,23 +283,23 @@ class SiteController extends Controller
 ```
 
 
-### 动作ID <a name="action-ids"></a>
+### 操作ID <a name="action-ids"></a>
 ### Action IDs <a name="action-ids"></a>
 
-动作通常是用来执行资源的特定操作，因此，动作ID通常为动词，如`view`, `update`等等。
+操作通常是用来执行资源的特定操作，因此，操作ID通常为动词，如`view`, `update`等等。
 An action is often designed to perform a particular manipulation about a resource. For this reason,
 action IDs are usually verbs, such as `view`, `update`, etc.
 
-动作ID应仅包含英文小写字母、数字、下划线和中横杠，动作ID中的中横杠用来分隔单词。
-例如`view`, `update2`, `comment-post`是真实的动作ID，`view?`, `Update`不是动作ID.
+操作ID应仅包含英文小写字母、数字、下划线和中横杠，操作ID中的中横杠用来分隔单词。
+例如`view`, `update2`, `comment-post`是真实的操作ID，`view?`, `Update`不是操作ID.
 By default, action IDs should contain these characters only: English letters in lower case, digits,
 underscores and dashes. The dashes in an actionID are used to separate words. For example,
 `view`, `update2`, `comment-post` are all valid action IDs, while `view?`, `Update` are not.
 
-可通过两种方式创建动作ID，内联动作和独立动作. An inline action is
-内联动作在控制器类中定义为方法；独立动作是继承[[yii\base\Action]]或它的子类的类。
-内联动作容易创建，在无需重用的情况下优先使用；
-独立动作相反，主要用于多个控制器重用，或重构为[扩展](structure-extensions.md)。
+可通过两种方式创建操作ID，内联操作和独立操作. An inline action is
+内联操作在控制器类中定义为方法；独立操作是继承[[yii\base\Action]]或它的子类的类。
+内联操作容易创建，在无需重用的情况下优先使用；
+独立操作相反，主要用于多个控制器重用，或重构为[扩展](structure-extensions.md)。
 You can create actions in two ways: inline actions and standalone actions. An inline action is
 defined as a method in the controller class, while a standalone action is a class extending
 [[yii\base\Action]] or its child class. Inline actions take less effort to create and are often preferred
@@ -307,13 +307,13 @@ if you have no intention to reuse these actions. Standalone actions, on the othe
 created to be used in different controllers or be redistributed as [extensions](structure-extensions.md).
 
 
-### 内联动作 <a name="inline-actions"></a>
+### 内联操作 <a name="inline-actions"></a>
 ### Inline Actions <a name="inline-actions"></a>
 
-内联动作指的是根据我们刚描述的动作方法。
+内联操作指的是根据我们刚描述的操作方法。
 Inline actions refer to the actions that are defined in terms of action methods as we just described.
 
-动作方法的名字是根据动作ID遵循如下规则衍生：
+操作方法的名字是根据操作ID遵循如下规则衍生：
 The names of the action methods are derived from action IDs according to the following criteria:
 
 * 将每个单词的第一个字母转为大写;
@@ -326,31 +326,31 @@ The names of the action methods are derived from action IDs according to the fol
 例如`index` 转成 `actionIndex`, `hello-world` 转成 `actionHelloWorld`。
 For example, `index` becomes `actionIndex`, and `hello-world` becomes `actionHelloWorld`.
 
-> 注意: 动作方法的名字*大小写敏感*，如果方法名称为`ActionIndex`不会认为是动作方法，
-  所以请求`index`动作会返回一个异常，也要注意动作方法必须是公有的，私有或者受保护的方法不能定义成内联动作。
+> 注意: 操作方法的名字*大小写敏感*，如果方法名称为`ActionIndex`不会认为是操作方法，
+  所以请求`index`操作会返回一个异常，也要注意操作方法必须是公有的，私有或者受保护的方法不能定义成内联操作。
 > Note: The names of the action methods are *case-sensitive*. If you have a method named `ActionIndex`,
   it will not be considered as an action method, and as a result, the request for the `index` action
   will result in an exception. Also note that action methods must be public. A private or protected
   method does NOT define an inline action.
 
 
-因为容易创建，内联动作是最常用的动作，但是如果你计划在不同地方重用相同的动作，
-或者你想重新分配一个动作，需要考虑定义它为*独立动作*。
+因为容易创建，内联操作是最常用的操作，但是如果你计划在不同地方重用相同的操作，
+或者你想重新分配一个操作，需要考虑定义它为*独立操作*。
 Inline actions are the most commonly defined actions because they take little effort to create. However,
 if you plan to reuse the same action in different places, or if you want to redistribute an action,
 you should consider defining it as a *standalone action*.
 
 
-### 独立动作 <a name="standalone-actions"></a>
+### 独立操作 <a name="standalone-actions"></a>
 ### Standalone Actions <a name="standalone-actions"></a>
 
-独立动作通过继承[[yii\base\Action]]或它的子类来定义。
-例如Yii发布的[[yii\web\ViewAction]]和[[yii\web\ErrorAction]]都是独立动作。
+独立操作通过继承[[yii\base\Action]]或它的子类来定义。
+例如Yii发布的[[yii\web\ViewAction]]和[[yii\web\ErrorAction]]都是独立操作。
 Standalone actions are defined in terms of action classes extending [[yii\base\Action]] or its child classes.
 For example, in the Yii releases, there are [[yii\web\ViewAction]] and [[yii\web\ErrorAction]], both of which
 are standalone actions.
 
-要使用独立动作，需要通过控制器中覆盖[[yii\base\Controller::actions()]]方法在*action map*中申明，如下例所示：
+要使用独立操作，需要通过控制器中覆盖[[yii\base\Controller::actions()]]方法在*action map*中申明，如下例所示：
 To use a standalone action, you should declare it in the *action map* by overriding the
 [[yii\base\Controller::actions()]] method in your controller classes like the following:
 
@@ -358,10 +358,10 @@ To use a standalone action, you should declare it in the *action map* by overrid
 public function actions()
 {
     return [
-        // 用类来申明"error" 动作
+        // 用类来申明"error" 操作
         'error' => 'yii\web\ErrorAction',
 
-        // 用配置数组申明 "view" 动作
+        // 用配置数组申明 "view" 操作
         'view' => [
             'class' => 'yii\web\ViewAction',
             'viewPrefix' => '',
@@ -370,15 +370,15 @@ public function actions()
 }
 ```
 
-如上所示， `actions()` 方法返回键为动作ID、值为对应动作类名或数组[configurations](concept-configurations.md) 的数组。
-和内联动作不同，独立动作ID可包含任意字符，只要在`actions()` 方法中申明.
+如上所示， `actions()` 方法返回键为操作ID、值为对应操作类名或数组[configurations](concept-configurations.md) 的数组。
+和内联操作不同，独立操作ID可包含任意字符，只要在`actions()` 方法中申明.
 As you can see, the `actions()` method should return an array whose keys are action IDs and values the corresponding
 action class names or [configurations](concept-configurations.md). Unlike inline actions, action IDs for standalone
 actions can contain arbitrary characters, as long as they are declared in the `actions()` method.
 
 
-为创建一个独立动作类，需要继承[[yii\base\Action]] 或它的子类，并实现公有的名称为`run()`的方法,
-`run()` 方法的角色和动作方法类似，例如：
+为创建一个独立操作类，需要继承[[yii\base\Action]] 或它的子类，并实现公有的名称为`run()`的方法,
+`run()` 方法的角色和操作方法类似，例如：
 To create a standalone action class, you should extend [[yii\base\Action]] or its child class, and implement
 a public method named `run()`. The role of the `run()` method is similar to that of an action method. For example,
 
@@ -398,10 +398,10 @@ class HelloWorldAction extends Action
 ```
 
 
-### 动作结果 <a name="action-results"></a>
+### 操作结果 <a name="action-results"></a>
 ### Action Results <a name="action-results"></a>
 
-动作方法或独立动作的`run()`方法的返回值非常中药，它表示对应动作结果。
+操作方法或独立操作的`run()`方法的返回值非常中药，它表示对应操作结果。
 The return value of an action method or the `run()` method of a standalone action is significant. It stands
 for the result of the corresponding action.
 
@@ -418,7 +418,7 @@ to end users.
 * For [[yii\console\Application|console applications]], the return value can also be an integer representing
   the [[yii\console\Response::exitStatus|exit status]] of the command execution.
 
-在上面的例子中，动作结果都为字符串，作为响应数据发送给终端用户，下例显示一个动作通过
+在上面的例子中，操作结果都为字符串，作为响应数据发送给终端用户，下例显示一个操作通过
 返回响应对象（因为[[yii\web\Controller::redirect()|redirect()]]方法返回一个响应对象）可将用户浏览器跳转到新的URL。
 In the examples shown above, the action results are all strings which will be treated as the response body
 to be sent to end users. The following example shows how an action can redirect the user browser to a new URL
@@ -434,19 +434,19 @@ public function actionForward()
 ```
 
 
-### 动作参数 <a name="action-parameters"></a>
+### 操作参数 <a name="action-parameters"></a>
 ### Action Parameters <a name="action-parameters"></a>
 
-内联动作的动作方法和独立动作的 `run()` 方法可以带参数，称为*动作参数*。
+内联操作的操作方法和独立操作的 `run()` 方法可以带参数，称为*操作参数*。
 参数值从请求中获取，对于[[yii\web\Application|Web applications]]网页应用，
-每个动作参数的值从`$_GET`中获得，参数名作为键；
-对于[[yii\console\Application|console applications]]控制台应用, 动作参数对应命令行参数。
+每个操作参数的值从`$_GET`中获得，参数名作为键；
+对于[[yii\console\Application|console applications]]控制台应用, 操作参数对应命令行参数。
 The action methods for inline actions and the `run()` methods for standalone actions can take parameters,
 called *action parameters*. Their values are obtained from requests. For [[yii\web\Application|Web applications]],
 the value of each action parameter is retrieved from `$_GET` using the parameter name as the key;
 for [[yii\console\Application|console applications]], they correspond to the command line arguments.
 
-如下例，动作`view` (内联动作) 申明了两个参数 `$id` 和 `$version`。
+如下例，操作`view` (内联操作) 申明了两个参数 `$id` 和 `$version`。
 In the following example, the `view` action (an inline action) has declared two parameters: `$id` and `$version`.
 
 ```php
@@ -463,7 +463,7 @@ class PostController extends Controller
 }
 ```
 
-动作参数会被不同的参数填入，如下所示：
+操作参数会被不同的参数填入，如下所示：
 The action parameters will be populated as follows for different requests:
 
 * `http://hostname/index.php?r=post/view&id=123`: `$id` 会填入`'123'`，`$version` 仍为 null 空因为没有`version`请求参数;
@@ -481,7 +481,7 @@ The action parameters will be populated as follows for different requests:
 * `http://hostname/index.php?r=post/view&id[]=123`: a [[yii\web\BadRequestHttpException]] exception will be thrown
   because `$id` parameter is receiving an unexpected array value `['123']`.
 
-如果想让动作参数接收数组值，需要指定$id为`array`，如下所示：
+如果想让操作参数接收数组值，需要指定$id为`array`，如下所示：
 If you want an action parameter to accept array values, you should type-hint it with `array`, like the following:
 
 ```php
@@ -495,21 +495,21 @@ public function actionView(array $id, $version = null)
 如果请求为 `http://hostname/index.php?r=post/view&id=123`，
 参数 `$id` 会获取相同数组值，因为无类型的`'123'`会自动转成数组。
 
-上述例子主要描述网页应用的动作参数，对于控制台应用，更多详情请参阅[控制台命令](tutorial-console.md)。
+上述例子主要描述网页应用的操作参数，对于控制台应用，更多详情请参阅[控制台命令](tutorial-console.md)。
 The above examples mainly show how action parameters work for Web applications. For console applications,
 please refer to the [Console Commands](tutorial-console.md) section for more details.
 
 
-### 默认动作 <a name="default-action"></a>
+### 默认操作 <a name="default-action"></a>
 ### Default Action <a name="default-action"></a>
 
-每个控制器都有一个由 [[yii\base\Controller::defaultAction]] 属性指定的默认动作，
-当[路由](#ids-routes) 只包含控制器ID，会使用所请求的控制器的默认动作。
+每个控制器都有一个由 [[yii\base\Controller::defaultAction]] 属性指定的默认操作，
+当[路由](#ids-routes) 只包含控制器ID，会使用所请求的控制器的默认操作。
 Each controller has a default action specified via the [[yii\base\Controller::defaultAction]] property.
 When a [route](#ids-routes) contains the controller ID only, it implies that the default action of
 the specified controller is requested.
 
-默认动作默认为 `index`，如果想修改默认动作，只需简单地在控制器类中覆盖这个属性，如下所示：
+默认操作默认为 `index`，如果想修改默认操作，只需简单地在控制器类中覆盖这个属性，如下所示：
 By default, the default action is set as `index`. If you want to change the default value, simply override
 this property in the controller class, like the following:
 
@@ -541,10 +541,10 @@ to fulfill the request:
 
 1. 在控制器创建和配置后，[[yii\base\Controller::init()]] 方法会被调用。
 1. The [[yii\base\Controller::init()]] method is called after the controller is created and configured.
-2. 控制器根据请求动作ID创建一个动作对象:
-   * 如果动作ID没有指定，会使用[[yii\base\Controller::defaultAction|default action ID]]默认动作ID；
-   * 如果在[[yii\base\Controller::actions()|action map]]找到动作ID，会创建一个独立动作；
-   * 如果动作ID对应动作方法，会创建一个内联动作；
+2. 控制器根据请求操作ID创建一个操作对象:
+   * 如果操作ID没有指定，会使用[[yii\base\Controller::defaultAction|default action ID]]默认操作ID；
+   * 如果在[[yii\base\Controller::actions()|action map]]找到操作ID，会创建一个独立操作；
+   * 如果操作ID对应操作方法，会创建一个内联操作；
    * 否则会抛出[[yii\base\InvalidRouteException]]异常。
 2. The controller creates an action object based on the requested action ID:
    * If the action ID is not specified, the [[yii\base\Controller::defaultAction|default action ID]] will be used.
@@ -553,31 +553,31 @@ to fulfill the request:
    * If the action ID is found to match an action method, an inline action will be created;
    * Otherwise an [[yii\base\InvalidRouteException]] exception will be thrown.
 3. 控制器按顺序调用应用主体、模块（如果控制器属于模块）、控制器的 `beforeAction()` 方法；
-   * 如果任意一个调用返回false，后面未调用的`beforeAction()`会跳过并且动作执行会被取消；
+   * 如果任意一个调用返回false，后面未调用的`beforeAction()`会跳过并且操作执行会被取消；
      action execution will be cancelled.
-   * 默认情况下每个 `beforeAction()` 方法会触发一个 `beforeAction` 事件，在事件中你可以追加事件处理动作；
+   * 默认情况下每个 `beforeAction()` 方法会触发一个 `beforeAction` 事件，在事件中你可以追加事件处理操作；
 3. The controller sequentially calls the `beforeAction()` method of the application, the module (if the controller
    belongs to a module) and the controller.
    * If one of the calls returns false, the rest of the uncalled `beforeAction()` will be skipped and the
      action execution will be cancelled.
    * By default, each `beforeAction()` method call will trigger a `beforeAction` event to which you can attach a handler.
-4. 控制器执行动作:
-   * 请求数据解析和填入到动作参数；
+4. 控制器执行操作:
+   * 请求数据解析和填入到操作参数；
 4. The controller runs the action:
    * The action parameters will be analyzed and populated from the request data;
 5. 控制器按顺序调用控制器、模块（如果控制器属于模块）、应用主体的 `afterAction()` 方法；
-   * 默认情况下每个 `afterAction()` 方法会触发一个 `afterAction` 事件，在事件中你可以追加事件处理动作；
+   * 默认情况下每个 `afterAction()` 方法会触发一个 `afterAction` 事件，在事件中你可以追加事件处理操作；
 5. The controller sequentially calls the `afterAction()` method of the controller, the module (if the controller
    belongs to a module) and the application.
    * By default, each `afterAction()` method call will trigger an `afterAction` event to which you can attach a handler.
-6. 应用主体获取动作结果并赋值给[响应](runtime-responses.md).
+6. 应用主体获取操作结果并赋值给[响应](runtime-responses.md).
 6. The application will take the action result and assign it to the [response](runtime-responses.md).
 
 
 ## 最佳实践 <a name="best-practices"></a>
 ## Best Practices <a name="best-practices"></a>
 
-在设计良好的应用中，控制器很精练，包含的动作代码简短；
+在设计良好的应用中，控制器很精练，包含的操作代码简短；
 如果你的控制器很复杂，通常意味着需要重构，转移一些代码到其他类中。
 In a well-designed application, controllers are often very thin with each action containing only a few lines of code.
 If your controller is rather complicated, it usually indicates that you should refactor it and move some code
