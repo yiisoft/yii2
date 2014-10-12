@@ -274,7 +274,7 @@ class Pagination extends Object implements Linkable
             unset($params[$this->pageSizeParam]);
         }
         $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
-        $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
+        $urlManager = $this->getUrlManager();
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
         } else {
@@ -345,5 +345,13 @@ class Pagination extends Object implements Linkable
         }
 
         return isset($params[$name]) && is_scalar($params[$name]) ? $params[$name] : $defaultValue;
+    }
+    
+    protected function getUrlManager() 
+    {
+        if ($this->urlManager === null) {
+            $this->urlManager = Yii::$app->getUrlManager();
+        }
+        return $this->urlManager;
     }
 }
