@@ -173,6 +173,14 @@ class Sort extends Object
      * the "urlManager" application component will be used.
      */
     public $urlManager;
+    /**
+     * @var string request method ('get', 'post') for [[sortParam]]. Defaults to 'get'.
+     */
+    public $dataMethod;
+    /**
+     * @var string name of the form containing [[sortParam]] (used only with 'post' method)
+     */
+    public $formName;
 
 
     /**
@@ -238,7 +246,14 @@ class Sort extends Object
             $this->_attributeOrders = [];
             if (($params = $this->params) === null) {
                 $request = Yii::$app->getRequest();
-                $params = $request instanceof Request ? $request->getQueryParams() : [];
+                $params = [];
+                if ($request instanceof Request) {
+                    if ($this->dataMethod == 'post') {
+                        $params = empty($this->formName) ? $request->post(null, []) : $request->post($this->formName, []);
+                    } else {
+                        $params = $request->getQueryParams();
+                    }
+                }
             }
             if (isset($params[$this->sortParam]) && is_scalar($params[$this->sortParam])) {
                 $attributes = explode($this->separator, $params[$this->sortParam]);
@@ -303,7 +318,7 @@ class Sort extends Object
             }
         }
 
-        $url = $this->createUrl($attribute);
+        $url = isset($options['href']) ? $options['href'] : $this->createUrl($attribute);
         $options['data-sort'] = $this->createSortParam($attribute);
 
         if (isset($options['label'])) {
@@ -338,7 +353,9 @@ class Sort extends Object
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
-        $params[$this->sortParam] = $this->createSortParam($attribute);
+        if ($this->dataMethod != 'post') {
+            $params[$this->sortParam] = $this->createSortParam($attribute);
+        }
         $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
         if ($absolute) {
