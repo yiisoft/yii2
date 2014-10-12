@@ -204,25 +204,23 @@ $connection->createCommand()->delete('user', 'status = 0')->execute();
 Quoting Table and Column Names
 ------------------------------
 
-Most of the time you would use the following syntax for quoting table and column names:
+To make column and table names safe to use in queries, you can have Yii properly quote them for you:
 
 ```php
 $sql = "SELECT COUNT([[$column]]) FROM {{table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-In the code above `[[X]]` will be converted to properly quoted column name while `{{Y}}` will be converted to properly
-quoted table name.
+In the code above, `[[$column]]` will be converted to properly quoted column name, while `{{table}}` will be converted to a properly-quoted table name.
 
-For table names there's a special variant `{{%Y}}` that allows you to automatically appending table prefix if it is set:
+There's a special variant on this syntax specific to tablenames: `{{%Y}}` automatically appends the application's table prefix to the provided value, if a table prefix has been set:
 
 ```php
 $sql = "SELECT COUNT([[$column]]) FROM {{%table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-The code above will result in selecting from `tbl_table` if you have table prefix configured like the following in your
-config file:
+The code above will result in selecting from `tbl_table`, if you have table prefix configured like so:
 
 ```php
 return [
@@ -247,7 +245,7 @@ $sql = "SELECT COUNT($column) FROM $table";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-Prepared statements
+Using Prepared Statements
 -------------------
 
 In order to securely pass query parameters you can use prepared statements:
