@@ -347,6 +347,9 @@ class Pagination extends Object implements Linkable
         return isset($params[$name]) && is_scalar($params[$name]) ? $params[$name] : $defaultValue;
     }
     
+    /**
+     * @return \yii\web\UrlManager
+     */    
     protected function getUrlManager() 
     {
         if ($this->urlManager === null) {
