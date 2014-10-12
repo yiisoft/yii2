@@ -397,7 +397,7 @@ class Sort extends Object
     /**
      * @return \yii\web\UrlManager
      */
-    protected function getUrlManager()
+    public function getUrlManager()
     {
         if ($this->urlManager === null) {
             $this->urlManager = Yii::$app->getUrlManager();
