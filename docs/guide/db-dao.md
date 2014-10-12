@@ -248,7 +248,7 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 Using Prepared Statements
 -------------------
 
-In order to securely pass query parameters you can use prepared statements:
+To securely pass query parameters to your queries, you should make use of prepared statements. First, create a named placeholder in your query (using the syntax `:placeholder`). Then bind the placeholder to a variable and execute the query:
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
@@ -256,7 +256,7 @@ $command->bindValue(':id', $_GET['id']);
 $post = $command->queryOne();
 ```
 
-Another usage is performing a query multiple times while preparing it only once:
+Another purpose for prepared statements (aside from improved security) is the ability to execute a query multiple times while preparing it only once:
 
 ```php
 $command = $connection->createCommand('DELETE FROM post WHERE id=:id');
@@ -269,8 +269,10 @@ $id = 2;
 $command->execute();
 ```
 
-Transactions
-------------
+Notice that you bind the placeholder to the variable before the execution, and then change the value of that variable before each subsequent execution (this is often done with loops). Executing queries in this manner can be vastly more efficient than running each query one at a time. 
+
+Performing Transactions
+-----------------------
 
 When running multiple related queries in a sequence you may need to wrap them in a transaction to
 ensure you data is consistent. Yii provides a simple interface to work with transactions in simple
