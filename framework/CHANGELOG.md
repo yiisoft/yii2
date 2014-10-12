@@ -1,8 +1,14 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.0 under development
+2.0.1 under development
 -----------------------
+
+- no changes in this release.
+
+
+2.0.0 October 12, 2014
+----------------------
 
 - Bug #4881: Fixed `yii\console\controllers\AssetController` breaks CSS URLs on Windows (klimov-paul)
 - Bug #5171: Fixed the bug that ActiveForm + Pjax submit event is only triggered once (qiangxue)
@@ -26,6 +32,7 @@ Yii Framework 2 Change Log
 - Enh #5467: Added ability to pass HTML tag options to `asEmail()`, `asImage()` and `asUrl()` methods of `yii\i18n\Formatter` (alxkolm, samdark) 
 - Chg #2037: Dropped the support for using `yii\base\Module` as concrete module classes (qiangxue)
 - Chg: Updated cebe/markdown to 1.0.0 which includes breaking changes in its internal API (cebe)
+- Chg: If you are using CUBRID DBMS, make sure to use at least version 9.3.0 because quoting is broken in prior versions and Yii has no reliable way to work around this issue (cebe)
 
 
 2.0.0-rc September 27, 2014

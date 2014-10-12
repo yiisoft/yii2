@@ -1,8 +1,14 @@
 Yii Framework 2 bootstrap extension Change Log
 ==============================================
 
-2.0.0 under development
+2.0.1 under development
 -----------------------
+
+- no changes in this release.
+
+
+2.0.0 October 12, 2014
+----------------------
 
 - Bug #5323: Nested dropdown does not work for `yii\bootstrap\DropDown` (aryraditya)
 - Bug #5336: `yii\bootstrap\DropDown` should register bootstrap plugin asset (zelenin) 

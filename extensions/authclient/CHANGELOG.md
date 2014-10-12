@@ -1,8 +1,14 @@
 Yii Framework 2 authclient extension Change Log
 ===============================================
 
-2.0.0 under development
+2.0.1 under development
 -----------------------
+
+- no changes in this release.
+
+
+2.0.0 October 12, 2014
+----------------------
 
 - Enh #5135: Added ability to operate nested and complex attributes via `yii\authclient\BaseClient::normalizeUserAttributeMap` (zinzinday, klimov-paul)
 

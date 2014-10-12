@@ -12,7 +12,7 @@ The preferred way to install the Yii framework is through [composer](http://getc
 Either run
 
 ```
-composer global require "fxp/composer-asset-plugin:1.0.0-beta2"
+composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
 composer require --prefer-dist "yiisoft/yii2 *"
 ```
 
