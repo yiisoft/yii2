@@ -350,7 +350,7 @@ class Pagination extends Object implements Linkable
     /**
      * @return \yii\web\UrlManager
      */    
-    protected function getUrlManager() 
+    public function getUrlManager() 
     {
         if ($this->urlManager === null) {
             $this->urlManager = Yii::$app->getUrlManager();
