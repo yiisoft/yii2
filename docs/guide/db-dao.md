@@ -1,10 +1,12 @@
-Database basics
+Database Access Objects
 ===============
 
 > Note: This section is under development.
 
-Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). It provides
-uniform API and solves some inconsistencies between different DBMS. By default Yii supports the following DBMS:
+Yii includes a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). The database access objects (DAO) interface provides a
+uniform API, and solves some inconsistencies that exist between different database applications. Whereas Active Record provides database interactions through models, and the Query Builder assists in composing dynamic queries, DAO is a simple and efficient way to execute straight SQL on your database. You'll want to use DAO when the query to be run is expensive and/or no application models--and their corresponding business logic--are required.
+
+By default, Yii supports the following DBMS:
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
@@ -18,8 +20,7 @@ uniform API and solves some inconsistencies between different DBMS. By default Y
 Configuration
 -------------
 
-In order to start using database you need to configure database connection component first by adding `db` component
-to application configuration (for "basic" web application it's `config/web.php`) like the following:
+To start interacting with a database (using DAO or otherwise), you need to configure the application's database connection component. The Data Source Name (DSN) configures to which database application and specific database the application should connect:
 
 ```php
 return [
@@ -45,8 +46,11 @@ return [
 ];
 ```
 
-There is a peculiarity when you want to work with the database through the `ODBC` layer. When using `ODBC`,
-connection `DSN` doesn't indicate uniquely what database type is being used. That's why you have to override
+Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
+on the format of the DSN string. Refer to [[yii\db\Connection]] for the full list of properties you can configure in the class.
+
+A peculiarity exists when you want to work with the database through the `ODBC` layer. When using `ODBC`, the
+connection `DSN` doesn't uniquely indicate what database type is being used. For that reason, you have to override the
 `driverName` property of [[yii\db\Connection]] class to disambiguate that:
 
 ```php
@@ -59,37 +63,57 @@ connection `DSN` doesn't indicate uniquely what database type is being used. Tha
 ],
 ```
 
-Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
-on the format of the DSN string.
+Overriding `driverName` is not necessary when not going through ODBC. 
 
-After the connection component is configured you can access it using the following syntax:
+Given the "db" component's configuration in the application, you can access the database connection using:
 
 ```php
 $connection = \Yii::$app->db;
 ```
 
-You can refer to [[yii\db\Connection]] for a list of properties you can configure. Also note that you can define more
-than one connection component and use both at the same time if needed:
+You can define more
+than one connection component:
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=mydatabase', 
+            'username' => 'root',
+            'password' => '',
+            'charset' => 'utf8',
+        ],
+        'secondDb' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'sqlite:/path/to/database/file', 
+        ],
+    ],
+    // ...
+];
+```
+
+Now you can use both database connections at the same time as needed:
 
 ```php
 $primaryConnection = \Yii::$app->db;
 $secondaryConnection = \Yii::$app->secondDb;
 ```
 
-If you don't want to define the connection as an [application component](structure-application-components.md) you can instantiate it directly:
+If you don't want to define the connection as an [application component](structure-application-components.md), you can instantiate it directly:
 
 ```php
 $connection = new \yii\db\Connection([
     'dsn' => $dsn,
-     'username' => $username,
-     'password' => $password,
+    'username' => $username,
+    'password' => $password,
 ]);
 $connection->open();
 ```
 
-
-> **Tip**: if you need to execute additional SQL queries right after establishing a connection you can add the
-> following to your application configuration file:
+> Tip: If you need to execute an SQL query immediately after establishing a connection (e.g., to set the timezone or character set), you can add the following to your application configuration file:
 >
 ```php
 return [
@@ -111,7 +135,7 @@ return [
 Basic SQL queries
 -----------------
 
-Once you have a connection instance you can execute SQL queries using [[yii\db\Command]].
+Once you have a database connection instance, you can execute SQL queries using [[yii\db\Command]].
 
 ### SELECT
 
