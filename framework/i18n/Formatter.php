@@ -557,7 +557,7 @@ class Formatter extends Component
     /**
      * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
      *
-     * @param integer|string|DateTime $value the datetime value to be normalized. The following
+     * @param integer|string|DateTimeInterface $value the datetime value to be normalized. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -570,7 +570,7 @@ class Formatter extends Component
      */
     protected function normalizeDatetimeValue($value)
     {
-        if ($value === null || $value instanceof DateTime || $value instanceof DateTimeInterface) {
+        if ($value === null || $value instanceof DateTimeInterface) {
             // skip any processing
             return $value;
         }
