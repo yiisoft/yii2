@@ -1,7 +1,7 @@
 Database Access Objects
 ===============
 
-> Note: This section is under development.
+[[Note: This section is under development.]]
 
 Yii includes a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). The database access objects (DAO) interface provides a
 uniform API, and solves some inconsistencies that exist between different database applications. Whereas Active Record provides database interactions through models, and the Query Builder assists in composing dynamic queries, DAO is a simple and efficient way to execute straight SQL on your database. You'll want to use DAO when the query to be run is expensive and/or no application models--and their corresponding business logic--are required.
@@ -132,51 +132,53 @@ return [
 ];
 ```
 
-Basic SQL queries
------------------
+Executing Basic SQL Queries
+---------------------------
 
 Once you have a database connection instance, you can execute SQL queries using [[yii\db\Command]].
 
-### SELECT
+### Running SELECT Queries
 
-When query returns a set of rows:
+When the query to be executed returns a set of rows, you'll use `queryAll`:
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post');
 $posts = $command->queryAll();
 ```
 
-When only a single row is returned:
+When the query to be executed only returns a single row, you'll use `queryOne`:
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=1');
 $post = $command->queryOne();
 ```
 
-When there are multiple values from the same column:
+When the query returns multiple rows but only one column, you'll use `queryColumn`:
 
 ```php
 $command = $connection->createCommand('SELECT title FROM post');
 $titles = $command->queryColumn();
 ```
 
-When there's a scalar value:
+When the query only returns a scalar value, you'll use `queryScalar`:
 
 ```php
 $command = $connection->createCommand('SELECT COUNT(*) FROM post');
 $postCount = $command->queryScalar();
 ```
 
-### UPDATE, INSERT, DELETE etc.
+### Running Queries That Don't Return Values
 
-If SQL executed doesn't return any data you can use command's `execute` method:
+If SQL executed doesn't return any data--for example, INSERT, UPDATE, and DELETE, you can use command's `execute` method:
 
 ```php
 $command = $connection->createCommand('UPDATE post SET status=1 WHERE id=1');
 $command->execute();
 ```
 
-Alternatively the following syntax that takes care of proper table and column names quoting is possible:
+Alternatively, you can use dedicated `insert`, `update`, and `delete` method. These methods will properly quote table and column names used in your query, and you only need to provide the necessary values:
+
+[[Ought to put a link to the reference docs here.]]
 
 ```php
 // INSERT
@@ -199,7 +201,7 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 $connection->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
-Quoting table and column names
+Quoting Table and Column Names
 ------------------------------
 
 Most of the time you would use the following syntax for quoting table and column names:
