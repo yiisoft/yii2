@@ -1,8 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.0 under development
------------------------
+2.0.0 October 12, 2014
+----------------------
 
 - Bug #4881: Fixed `yii\console\controllers\AssetController` breaks CSS URLs on Windows (klimov-paul)
 - Bug #5171: Fixed the bug that ActiveForm + Pjax submit event is only triggered once (qiangxue)
