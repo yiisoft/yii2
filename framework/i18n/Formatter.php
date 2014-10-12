@@ -9,6 +9,7 @@ namespace yii\i18n;
 
 use DateInterval;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use IntlDateFormatter;
@@ -539,6 +540,10 @@ class Formatter extends Component
             }
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
+            }
+            // make IntlDateFormatter work with DateTimeImmutable
+            if ($timestamp instanceof DateTimeImmutable) {
+                $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
             }
             return $formatter->format($timestamp);
         } else {

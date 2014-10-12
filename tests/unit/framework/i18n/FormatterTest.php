@@ -8,6 +8,7 @@ use Yii;
 use yiiunit\TestCase;
 use DateTime;
 use DateInterval;
+use DateTimeImmutable;
 
 /**
  * @group i18n
@@ -216,6 +217,10 @@ class FormatterTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
+
+        // DateTimeImmutable input
+        $date = new DateTimeImmutable('now');
+        $this->assertSame($date->format('Y/m/d'), $this->formatter->asDatetime($date, 'php:Y/m/d'));
     }
 
     public function testIntlAsTime()
@@ -241,6 +246,9 @@ class FormatterTest extends TestCase
         $this->assertSame('12:00:00 AM', $this->formatter->asTime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTime(null));
+        // DateTimeImmutable input
+        $date = new DateTimeImmutable('now');
+        $this->assertSame($date->format('h:i:s A'), $this->formatter->asDatetime($date, 'php:h:i:s A'));
     }
 
     public function testIntlAsDatetime()
@@ -266,6 +274,9 @@ class FormatterTest extends TestCase
         $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
+        // DateTimeImmutable input
+        $date = new DateTimeImmutable('now');
+        $this->assertSame($date->format('Y/m/d h:i:s A'), $this->formatter->asDatetime($date, 'php:Y/m/d h:i:s A'));
     }
 
     public function testIntlAsTimestamp()
