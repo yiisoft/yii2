@@ -3,36 +3,39 @@ URL Parsing and Generation
 
 > Note: This section is under development.
 
-The concept of URL management in Yii is fairly simple. URL management is based on the premise that the application uses
-internal routes and parameters everywhere. The framework itself will then translate routes into URLs, and vice versa, according to the URL manager's configuration. This approach allows you to change site-wide URLs merely by
-editing a single configuration file, without ever touching the application code.
+The concept of *URL management* in Yii is fairly simple: the application simply uses internal routes and parameters everywhere. The framework itself will then translate routes into URLs, and vice versa, according to the URL manager's configuration. This approach allows you to make site-wide changes to URLs merely by
+editing a single configuration file, without ever touching any application code.
 
-Internal routes
+Internal Routes
 ---------------
 
-When implementing an application using Yii, you'll deal with internal routes, often referred to as routes and parameters.
-Each controller and controller action has a corresponding internal route such as `site/index` or `user/create`.
-In the first example, `site` is referred to as the *controller ID* while `index` is referred to as the *action ID*. In the
-second example, `user` is the controller ID and `create` is the action ID. If the controller belongs to a *module*, the
-internal route is prefixed with the module ID. For example `blog/post/index` for a blog module (with `post` being the
-controller ID and `index` being the action ID).
+When implementing an application using Yii, you'll deal with *internal* routes, often referred to as "routes and parameters".
+Each controller and controller action has a corresponding internal route, such as `site/index` or `user/create`.
+
+In the first example, `site` is the *controller ID*, while `index` is the *action ID*. In the
+second example, `user` is the controller ID and `create` is the action ID. 
+
+If the controller belongs to a *module*, the
+internal route is prefixed with the module ID: for example, `blog/post/index` represents a blog module, the module's `post` 
+controller, and the `index` action.
 
 Creating URLs
 -------------
 
-The most important rule for creating URLs in your site is to always do so using the URL manager. The URL manager is a built-in application component named `urlManager`. This component is accessible from both web and console applications via
-`\Yii::$app->urlManager`. The component makes available the two following URL creation methods:
+The most important rule for creating URLs in your site is to always do so through the URL manager. The URL manager is a built-in application component fittingly named `urlManager`. This component is accessible from both web and console applications via
+`\Yii::$app->urlManager`. The component makes available two methods for creating URLs:
 
 - `createUrl($params)`
 - `createAbsoluteUrl($params, $schema = null)`
 
 The `createUrl` method creates an URL relative to the application root, such as `/index.php/site/index/`.
-The `createAbsoluteUrl` method creates an URL prefixed with the proper protocol and hostname:
-`http://www.example.com/index.php/site/index`. The former is suitable for internal application URLs, while the latter
-is used when you need to create URLs for external resources, such as connecting to third party services, sending email,
-generating RSS feeds etc.
+The `createAbsoluteUrl` method creates an URL that beings with with the proper protocol and hostname:
+`http://www.example.com/index.php/site/index`. Relative URLs, and the `createUrl` method are suitable for internal application URLs, while absolute URLs, and the `createAbsoluteUrl` method, are appropriate when you need to create URLs for external resources, such as connecting to third party services, sending email,
+generating RSS feeds, etc.
 
-Some examples:
+Both methods can be passed parameters used to further customize the URL, such as appending values to pass along as part of the request.
+
+Some examples of these two methods:
 
 ```php
 echo \Yii::$app->urlManager->createUrl(['site/page', 'id' => 'about']);
@@ -43,8 +46,8 @@ echo \Yii::$app->urlManager->createAbsoluteUrl('blog/post/index');
 // http://www.example.com/index.php/blog/post/index/
 ```
 
-The exact format of the URL depends on how the URL manager is configured. The above
-examples may also output:
+The exact format of the resuting URL depends on how the URL manager is configured. The above
+examples could also output:
 
 * `/site/page/id/about/`
 * `/index.php?r=site/page&id=about`
@@ -53,8 +56,8 @@ examples may also output:
 * `http://www.example.com/blog/post/index/`
 * `http://www.example.com/index.php?r=blog/post/index`
 
-In order to simplify URL creation there is [[yii\helpers\Url]] helper. Assuming we're at `/index.php?r=management/default/users&id=10` the following
-is how `Url` helper works:
+In order to simplify URL creation, Yii has the [[yii\helpers\Url]] helper. Assuming the current URL is `/index.php?r=management/default/users&id=10`, the following
+shows how the `Url` helper works:
 
 ```php
 use yii\helpers\Url;
@@ -66,7 +69,6 @@ echo Url::to('');
 // same controller, different action
 // /index.php?r=management/default/page&id=contact
 echo Url::toRoute(['page', 'id' => 'contact']);
-
 
 // same module, different controller and action
 // /index.php?r=management/post/index
@@ -97,12 +99,12 @@ Url::remember(); // save URL to be used later
 Url::previous(); // get previously saved URL
 ```
 
-> **Tip**: In order to generate URL with a hashtag, for example `/index.php?r=site/page&id=100#title`, you need to
+> **Tip**: In order to generate a URL containing a hashtag, for example `/index.php?r=site/page&id=100#title`, you need to
   specify the parameter named `#` using `Url::to(['post/read', 'id' => 100, '#' => 'title'])`.
 
-There's also `Url::canonical()` method that allows you to generate
-[canonical URL](https://en.wikipedia.org/wiki/Canonical_link_element) for the currently executing action.
-The method ignores all action parameters except ones passed via action arguments:
+There's also the `Url::canonical()` method that allows you to generate
+[canonical URLs](https://en.wikipedia.org/wiki/Canonical_link_element) for the current action.
+This method ignores all action parameters except for ones specifically passed via action arguments:
 
 ```php
 namespace app\controllers;
@@ -119,15 +121,17 @@ class CanonicalController extends Controller
 }
 ```
 
-When accessed as `/index.php?r=canonical/test&page=hello&number=42` canonical URL will be `/index.php?r=canonical/test&page=hello`.
+When accessed as `/index.php?r=canonical/test&page=hello&number=42`, the canonical URL will be `/index.php?r=canonical/test&page=hello`.
 
 Customizing URLs
 ----------------
 
 By default, Yii uses a query string format for URLs, such as `/index.php?r=news/view&id=100`. In order to make URLs
-human-friendly i.e., more readable, you need to configure the `urlManager` component in the application's configuration
+human-friendly (i.e., more legible), you need to configure the `urlManager` component in the application's configuration
 file. Enabling "pretty" URLs will convert the query string format to a directory-based format: `/index.php/news/view?id=100`.
-Disabling the `showScriptName` parameter means that `index.php` will not be part of the URLs. Here's the relevant part of
+
+
+Disabling the `showScriptName` parameter further customizes the URL such that `index.php` will be omitted. Here's the relevant part of
 the application's configuration file:
 
 ```php
@@ -143,10 +147,10 @@ return [
 ];
 ```
 
-Note that this configuration will only work if the web server has been properly configured for Yii, see
+Note that this configuration will only work if the web server has also been properly configured for Yii, see
 [installation](start-installation.md#recommended-apache-configuration).
 
-### Named parameters
+### Named Parameters
 
 A rule can be associated with a few `GET` parameters. These `GET` parameters appear in the rule's pattern as special tokens in the following format:
 
@@ -155,11 +159,11 @@ A rule can be associated with a few `GET` parameters. These `GET` parameters app
 ```
 
 `ParameterName` is a name of a `GET` parameter, and the optional `ParameterPattern` is the regular expression that should
-be used to match the value of the `GET` parameter. In case `ParameterPattern` is omitted, it means the parameter
+be used to match the value of the `GET` parameter. When `ParameterPattern` is omitted, it means the parameter
 should match any characters except `/`. When creating a URL, these parameter tokens will be replaced with the
 corresponding parameter values; when parsing a URL, the corresponding GET parameters will be populated with the parsed results.
 
-Let's use some examples to explain how URL rules work. We assume that our rule set consists of three rules:
+Let's use some examples to explain how URL rules work. Asusuming that the rule set consists of three rules:
 
 ```php
 [
@@ -173,29 +177,27 @@ Let's use some examples to explain how URL rules work. We assume that our rule s
 - Calling `Url::toRoute(['post/read', 'id' => 100])` generates `/index.php/post/100`. The second rule is applied.
 - Calling `Url::toRoute(['post/read', 'year' => 2008, 'title' => 'a sample post'])` generates
   `/index.php/post/2008/a%20sample%20post`. The third rule is applied.
-- Calling `Url::toRoute('post/read')` generates `/index.php/post/read`. None of the rules is applied, convention is used
-  instead.
+- Calling `Url::toRoute('post/read')` generates `/index.php/post/read`. None of the rules is applied; convention is used instead.
 
 In summary, when using `createUrl` to generate a URL, the route and the `GET` parameters passed to the method are used to
-decide which URL rule to be applied. If every parameter associated with a rule can be found in the `GET` parameters passed
+decide which URL rule will be applied. If every parameter associated with a rule can be found in the `GET` parameters passed
 to `createUrl`, and if the route of the rule also matches the route parameter, the rule will be used to generate the URL.
 
 If the `GET` parameters passed to `Url::toRoute` are more than those required by a rule, the additional parameters will
-appear in the query string. For example, if we call `Url::toRoute(['post/read', 'id' => 100, 'year' => 2008])`, we will
-obtain `/index.php/post/100?year=2008`.
+appear in the query string. For example, the call `Url::toRoute(['post/read', 'id' => 100, 'year' => 2008])`, will
+generate `/index.php/post/100?year=2008`.
 
-As we mentioned earlier, the other purpose of URL rules is to parse the requesting URLs. Naturally, this is an inverse
-process of URL creation. For example, when a user requests for `/index.php/post/100`, the second rule in the above example
-will apply, which resolves in the route `post/read` and the `GET` parameter `['id' => 100]` (accessible via
+As mentioned earlier, the other purpose of URL rules is to parse the requesting URLs. Naturally, this is the inverse of URL creation. For example, when a user requests for `/index.php/post/100`, the second rule in the above example
+will apply, which resolves to the route `post/read` with the `GET` parameter `['id' => 100]` (accessible via
 `Yii::$app->request->get('id')`).
 
 ### Parameterizing Routes
 
-We may reference named parameters in the route part of a rule. This allows a rule to be applied to multiple routes based
-on matching criteria. It may also help reduce the number of rules needed for an application, and thus improve the overall
+Rules may also make use of named parameters as part of a route. Named parameters allow a rule to be applied to multiple routes based
+on matching criteria. Named parameters may also help reduce the number of rules needed for an application, and thus improve the overall
 performance.
 
-We use the following example rules to illustrate how to parameterize routes with named parameters:
+The following example rules illustrate how to parameterize routes with named parameters:
 
 ```php
 [
@@ -205,19 +207,19 @@ We use the following example rules to illustrate how to parameterize routes with
 ]
 ```
 
-In the above example, we use two named parameters in the route part of the rules: `controller` and `action`. The former matches a controller ID to be either post or comment, while the latter matches an action ID to be create, update or delete. You may name the parameters differently as long as they do not conflict with GET parameters that may appear in URLs.
+In the above example, two named parameters are found in the route part of the rules: `controller` and `action`. The former matches a controller ID that's either "post" or "comment", while the latter matches an action ID that could be "create", "update", or "delete". You may name the parameters differently as long as they do not conflict with any GET parameters that may appear in your URLs.
 
 Using the above rules, the URL `/index.php/post/123/create` will be parsed as the route `post/create` with `GET` parameter
-`id=123`. Given the route `comment/list` and `GET` parameter `page=2`, we can create a URL `/index.php/comments?page=2`.
+`id=123`. Given the route `comment/list` and `GET` parameter `page=2`, Yii can create a URL `/index.php/comments?page=2`.
 
-### Parameterizing  hostnames
+### Parameterizing Hostnames
 
 It is also possible to include hostnames in the rules for parsing and creating URLs. One may extract part of the hostname
 to be a `GET` parameter. This is especially useful for handling subdomains. For example, the URL
 `http://admin.example.com/en/profile` may be parsed into GET parameters `user=admin` and `lang=en`. On the other hand,
-rules with hostname may also be used to create URLs with parameterized hostnames.
+rules with hostnames may also be used to create URLs with parameterized hostnames.
 
-In order to use parameterized hostnames, simply declare URL rules with host info, e.g.:
+In order to use parameterized hostnames, simply declare the URL rules while including the host info:
 
 ```php
 [
@@ -225,13 +227,13 @@ In order to use parameterized hostnames, simply declare URL rules with host info
 ]
 ```
 
-In the above example the first segment of the hostname is treated as the user parameter while the first segment
-of the path info is treated as the lang parameter. The rule corresponds to the `user/profile` route.
+In the above example, the first segment of the hostname is treated as the "user" parameter while the first segment
+of the pat is treated as the "lang" parameter. The rule corresponds to the `user/profile` route.
 
 Note that [[yii\web\UrlManager::showScriptName]] will not take effect when a URL is being created using a rule with a parameterized hostname.
 
 Also note that any rule with a parameterized hostname should NOT contain the subfolder if the application is under
-a subfolder of the Web root. For example, if the application is under `http://www.example.com/sandbox/blog`, then we
+a subfolder of the web root. For example, if the application is under `http://www.example.com/sandbox/blog`, then you
 should still use the same URL rule as described above without the subfolder `sandbox/blog`.
 
 ### Faking URL Suffix
