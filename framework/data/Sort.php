@@ -394,6 +394,9 @@ class Sort extends Object
         return isset($this->attributes[$name]);
     }
     
+    /**
+     * @return \yii\web\UrlManager
+     */
     protected function getUrlManager()
     {
         if ($this->urlManager === null) {
