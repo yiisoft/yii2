@@ -10,7 +10,8 @@ uniform API and solves some inconsistencies between different DBMS. By default Y
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/)
-- [CUBRID](http://www.cubrid.org/): version 9.1.0 or higher.
+- [CUBRID](http://www.cubrid.org/): version 9.3 or higher. (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
+  the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2005 or higher.
 
