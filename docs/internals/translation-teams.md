@@ -46,6 +46,7 @@ Spanish
 
 - Luciano Baraglia, [@lucianobaraglia](https://github.com/lucianobaraglia)
 - Marco Da Silva, [@markmarco16](https://github.com/markmarco16), markmarco16@gmail.com
+- Daniel Gómez Pan [@pana1990](https://github.com/pana1990), pana_1990@hotmail.com
 
 Ukrainian
 ---------
