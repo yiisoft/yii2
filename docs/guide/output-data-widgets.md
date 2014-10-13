@@ -351,7 +351,7 @@ $dataProvider = new ActiveDataProvider([
 
 // join with relation `author` that is a relation to the table `users`
 // and set the table alias to be `author`
-$query->joinWith(['author' => function($query) { $query->from(['author' , 'users']); }]);
+$query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
 // enable sorting for the related column
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
