@@ -113,6 +113,12 @@ class DateValidator extends Validator
         return $this->parseDateValue($value) === false ? [$this->message, []] : null;
     }
 
+    /**
+     * Parses date string into UNIX timestamp
+     *
+     * @param string $value string representing date
+     * @return boolean|integer UNIX timestamp or false on failure
+     */
     protected function parseDateValue($value)
     {
         if (is_array($value)) {

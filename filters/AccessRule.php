@@ -123,7 +123,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param Controller $controller the controller
+     * @param \yii\base\Controller $controller the controller
      * @return boolean whether the rule applies to the controller
      */
     protected function matchController($controller)
