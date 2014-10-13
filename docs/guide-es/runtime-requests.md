@@ -1,10 +1,10 @@
 ﻿Peticiones
-========
-Las peticiones(requests) hechas a una aplicación son representadas como objetos [[yii\web\Request]] que proporcionan información como parámetros de la petición, cabeceras HTTP, cookies, etc. Dada una petición, se puede acceder al objeto request correspondiente a través del [componente de aplicación](structure-application-components.md) 'request' que, por defecto, es una instancia de [[yii\web\Request]]. En esta sección se describirá como hacer uso de este componente en las aplicaciones.
+==========
+Las peticiones(requests) hechas a una aplicación son representadas como objetos [[yii\web\Request]] que proporcionan información como parámetros de la petición, cabeceras HTTP, cookies, etc. Dada una petición, se puede acceder al objeto request correspondiente a través del [componente de aplicación](structure-application-components.md) `request` que, por defecto, es una instancia de [[yii\web\Request]]. En esta sección se describirá como hacer uso de este componente en las aplicaciones.
 
 ## Parámetros de Request <a name="request-parameters"></a>
 
-Para obtener los parámetros de la petición, se puede llamar a los métodos [[yii\web\Request::get()|get()]] y [[yii\web\Request::post()|post()]] del componente 'request'. Estos devuelven los valores de '$_GET' y '$_POST', respectivamente. Por ejemplo:
+Para obtener los parámetros de la petición, se puede llamar a los métodos [[yii\web\Request::get()|get()]] y [[yii\web\Request::post()|post()]] del componente `request`. Estos devuelven los valores de `$_GET` y `$_POST`, respectivamente. Por ejemplo:
 
 ```php
 $request = Yii::$app->request;
@@ -28,7 +28,7 @@ $name = $request->post('name', '');
 // equivalente a: $name = isset($_POST['name']) ? $_POST['name'] : '';
 ```
 
->Info: En lugar de acceder directamente a '$_GET' y '$_POST' para obtener los parámetros de la petición, es recomendable que se obtengan mediante el componente 'request' como en el ejemplo anterior. Esto facilitará la creación de tests ya que se puede simular una componente de request con datos de peticiones personalizados.
+>Info: En lugar de acceder directamente a `$_GET` y `$_POST` para obtener los parámetros de la petición, es recomendable que se obtengan mediante el componente `request` como en el ejemplo anterior. Esto facilitará la creación de tests ya que se puede simular una componente de request con datos de peticiones personalizados.
 
 Cuando se implementan [APIs RESTful](rest-quick-start.md), a menudo se necesita obtener parámetros enviados desde el formulario a través de PUT, PATCH u otros [métodos de request](runtime-requests.md#request-methods). Se pueden obtener estos parámetros llamando a los métodos [[yii\web\Request::getBodyParam()]]. Por ejemplo:
 
@@ -42,16 +42,16 @@ $params = $request->bodyParams;
 $param = $request->getBodyParam('id');
 ```
 
->Info: A diferencia de los parámetros 'GET', los parámetros enviados desde el formulario a través de 'POST', 'PUT', 'PATCH', etc. se envían en el cuerpo de la petición. El componente 'request' convierte los parámetros cuando se acceda a él a través de los métodos descritos anteriormente. Se puede personalizar la manera en como los parámetros se convierten configurando la propiedad [[yii\web\Request::parsers]].
+>Info: A diferencia de los parámetros `GET`, los parámetros enviados desde el formulario a través de `POST`, `PUT`, `PATCH`, etc. se envían en el cuerpo de la petición. El componente `request` convierte los parámetros cuando se acceda a él a través de los métodos descritos anteriormente. Se puede personalizar la manera en como los parámetros se convierten configurando la propiedad [[yii\web\Request::parsers]].
 
 ## Métodos de Request <a name="request-methods"></a>
 
-Se puede obtener el método HTTP usado por la petición actual a través de la expresión 'Yii::$app->request->method'. Se proporcionan un conjunto de propiedades booleanas para comprobar si el método actual es de un cierto tipo. Por ejemplo:
+Se puede obtener el método HTTP usado por la petición actual a través de la expresión `Yii::$app->request->method`. Se proporcionan un conjunto de propiedades booleanas para comprobar si el método actual es de un cierto tipo. Por ejemplo:
 
 ```php
 $request = Yii::$app->request;
 
-if ($request->isAjax) { // la request una request AJAX }
+if ($request->isAjax) { // la request es una request AJAX }
 if ($request->isGet)  { // el método de la request es GET }
 if ($request->isPost) { // el método de la request es POST }
 if ($request->isPut)  { // el método de la request es PUT }
@@ -59,9 +59,9 @@ if ($request->isPut)  { // el método de la request es PUT }
 
 ## URLs de Request <a name="request-urls"></a>
 
-El componente 'request' proporciona muchas maneras de inspeccionar la URL solicitada actualmente.
+El componente `request` proporciona muchas maneras de inspeccionar la URL solicitada actualmente.
 
-Asumiendo que la URL que se está solicitando es 'http://example.com/admin/index.php/product?id=100', se pueden obtener varias partes de la URL explicadas en los siguientes puntos:
+Asumiendo que la URL que se está solicitando es `http://example.com/admin/index.php/product?id=100`, se pueden obtener varias partes de la URL explicadas en los siguientes puntos:
 
 * [[yii\web\Request::url|url]]: devuelve `/admin/index.php/product?id=100`, que es la URL sin la parte de información del host.
 * [[yii\web\Request::absoluteUrl|absoluteUrl]]: devuelve `http://example.com/admin/index.php/product?id=100`, que es la URL entera, incluyendo la parte de información del host.
@@ -87,9 +87,9 @@ $accept = $headers->get('Accept');
 if ($headers->has('User-Agent')) { // la cabecera contiene un User-Agent }
 ```
 
-El componente 'request' también proporciona soporte para acceder rápidamente a las cabeceras usadas más comúnmente, incluyendo:
+El componente `request` también proporciona soporte para acceder rápidamente a las cabeceras usadas más comúnmente, incluyendo:
 
-* [[yii\web\Request::userAgent|userAgent]]: devuelve el valor de la cabecera 'User-Agen'.
+* [[yii\web\Request::userAgent|userAgent]]: devuelve el valor de la cabecera `User-Agen`.
 * [[yii\web\Request::contentType|contentType]]: devuelve el valor de la cabecera `Content-Type` que indica el tipo MIME de los datos del cuerpo de la petición.
 * [[yii\web\Request::acceptableContentTypes|acceptableContentTypes]]: devuelve los tipos de contenido MIME aceptado por los usuarios, ordenados por puntuación de calidad. Los que tienen mejor puntuación, se devolverán primero.
 * [[yii\web\Request::acceptableLanguages|acceptableLanguages]]: devuelve los idiomas aceptados por el usuario. Los idiomas devueltos son ordenados según su orden de preferencia. El primer elemento representa el idioma preferido.
