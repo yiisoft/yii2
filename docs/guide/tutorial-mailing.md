@@ -61,7 +61,7 @@ $message->setTo(Yii::$app->params['adminEmail'])
 ```
 
 > Note: each 'mailer' extension comes in 2 major classes: 'Mailer' and 'Message'. 'Mailer' always knows
-  the class name and specific of the 'Message'. Do not attempt ot instantiate 'Message' object directly -
+  the class name and specific of the 'Message'. Do not attempt to instantiate 'Message' object directly -
   always use `compose()` method for it.
 
 You may also send several messages at once:
