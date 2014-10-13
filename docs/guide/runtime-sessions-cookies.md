@@ -3,14 +3,14 @@ Sessions and Cookies
 
 Sessions and cookies allow data to be persisted across multiple user requests. In plain PHP, you may access them
 through the global variables `$_SESSION` and `$_COOKIE`, respectively. Yii encapsulates sessions and cookies as objects
-and thus allows you to access them in an object-oriented fashion with additional nice enhancements. 
+and thus allows you to access them in an object-oriented fashion with additional nice enhancements.
 
 
 ## Sessions <a name="sessions"></a>
 
 Like [requests](runtime-requests.md) and [responses](runtime-responses.md), you can get access to sessions via
 the `session` [application component](structure-application-components.md) which is an instance of [[yii\web\Session]],
-by default. 
+by default.
 
 
 ### Opening and Closing Sessions <a name="opening-closing-sessions"></a>
@@ -74,7 +74,7 @@ if it has not been done so before. This is different from accessing session data
 an explicit call of `session_start()`.
 
 When working with session data that are arrays, the `session` component has a limitation which prevents you from
-directly modifying an array element. For example, 
+directly modifying an array element. For example,
 
 ```php
 $session = Yii::$app->session;
@@ -122,7 +122,7 @@ $session['captcha.lifetime'] = 3600;
 For better performance and code readability, we recommend the last workaround. That is, instead of storing
 an array as a single session variable, you store each array element as a session variable which shares the same
 key prefix with other array elements.
- 
+
 
 ### Custom Session Storage <a name="custom-session-storage"></a>
 
@@ -177,7 +177,7 @@ where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB 
 > Note: According to the php.ini setting of `session.hash_function`, you may need to adjust
   the length of the `id` column. For example, if `session.hash_function=sha256`, you should use
   length 64 instead of 40.
-  
+
 
 ### Flash Data <a name="flash-data"></a>
 
@@ -194,7 +194,7 @@ $session = Yii::$app->session;
 // Request #1
 // set a flash message named as "postDeleted"
 $session->setFlash('postDeleted', 'You have successfully deleted your post.');
- 
+
 // Request #2
 // display the flash message named "postDeleted"
 echo $session->getFlash('postDeleted');
@@ -204,8 +204,8 @@ echo $session->getFlash('postDeleted');
 $result = $session->hasFlash('postDeleted');
 ```
 
-Like regular session data, you can store arbitrary data as flash data. 
- 
+Like regular session data, you can store arbitrary data as flash data.
+
 When you call [[yii\web\Session::setFlash()]], it will overwrite any existing flash data that has the same name.
 To append new flash data to the existing one(s) of the same name, you may call [[yii\web\Session::addFlash()]] instead.
 For example,
@@ -225,8 +225,8 @@ $alerts = $session->getFlash('alerts');
 ```
 
 > Note: Try not to use [[yii\web\Session::setFlash()]] together with [[yii\web\Session::addFlash()]] for flash data
-  of the same name. This is because the latter method will automatically turn the flash data into an array so that it 
-  can append new flash data of the same name. As a result, when you call [[yii\web\Session::getFlash()]], you may 
+  of the same name. This is because the latter method will automatically turn the flash data into an array so that it
+  can append new flash data of the same name. As a result, when you call [[yii\web\Session::getFlash()]], you may
   find sometimes you are getting an array while sometimes you are getting a string, depending on the order of
   the invocation of these two methods.
 
@@ -234,8 +234,8 @@ $alerts = $session->getFlash('alerts');
 ## Cookies <a name="cookies"></a>
 
 Yii represents each cookie as an object of [[yii\web\Cookie]]. Both [[yii\web\Request]] and [[yii\web\Response]]
-maintain a collection of cookies via the property named `cookies`. The cookie collection in the former represents 
-the cookies submitted in a request, while the cookie collection in the latter represents the cookies that are to 
+maintain a collection of cookies via the property named `cookies`. The cookie collection in the former represents
+the cookies submitted in a request, while the cookie collection in the latter represents the cookies that are to
 be sent to the user.
 
 
@@ -278,10 +278,10 @@ $cookies = Yii::$app->response->cookies;
 $cookies->add(new \yii\web\Cookie([
     'name' => 'language',
     'value' => 'zh-CN',
-]);
+]));
 
 // remove a cookie
-$cookies->remove('language');   
+$cookies->remove('language');
 // equivalent to the following
 unset($cookies['language']);
 ```
@@ -291,9 +291,9 @@ examples, the [[yii\web\Cookie]] class also defines other properties to fully re
 of cookies, such as [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. You may configure these
 properties as needed to prepare a cookie and then add it to the response's cookie collection.
 
-> Note: For better security, the default value of [[yii\web\Cookie::httpOnly]] is set true. This helps mitigate 
+> Note: For better security, the default value of [[yii\web\Cookie::httpOnly]] is set true. This helps mitigate
 the risk of client side script accessing the protected cookie (if the browser supports it). You may read
-the [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details. 
+the [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
 
 
 ### Cookie Validation <a name="cookie-validation"></a>
@@ -302,15 +302,15 @@ When you are reading and sending cookies through the `request` and `response` co
 two subsections, you enjoy the added security of cookie validation which protects cookies from being modified
 on the client side. This is achieved by signing each cookie with a hash string, which allows the application to
 tell if a cookie is modified on the client side or not. If so, the cookie will NOT be accessible through the
-[[yii\web\Request::cookies|cookie collection]] of the `request` component. 
+[[yii\web\Request::cookies|cookie collection]] of the `request` component.
 
 > Info: If a cookie fails the validation, you may still access it through `$_COOKIE`. This is because third-party
-libraries may manipulate cookies in their own way, which does not involve cookie validation. 
+libraries may manipulate cookies in their own way, which does not involve cookie validation.
 
-Cookie validation is enabled by default. You can disable it by setting the [[yii\web\Request::enableCookieValidation]] 
+Cookie validation is enabled by default. You can disable it by setting the [[yii\web\Request::enableCookieValidation]]
 property to be false, although we strongly recommend you do not do so.
 
-> Note: Cookies that are directly read/sent via `$_COOKIE` and `setcookie()` will NOT be validated. 
+> Note: Cookies that are directly read/sent via `$_COOKIE` and `setcookie()` will NOT be validated.
 
 When using cookie validation, you must specify a [[yii\web\Request::cookieValidationKey]] that will be used to generate
 the aforementioned hash strings. You can do so by configuring the `request` component in the application configuration:
