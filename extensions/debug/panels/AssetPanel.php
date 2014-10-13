@@ -61,39 +61,6 @@ class AssetPanel extends Panel
             }
         }
         return $data;
-
-        $cssCount = 0;
-        $jsCount = 0;
-        foreach ($bundles as $bundle) {
-
-            $cssCount += count($bundle->css);
-            $jsCount += count($bundle->js);
-
-            array_walk($bundle->css, function(&$file, $key, $data) {
-                $file = Html::a($file, $data->baseUrl . '/' . $file, ['target' => '_blank']);
-            }, $bundle);
-
-            array_walk($bundle->js, function(&$file, $key, $data) {
-                $file = Html::a($file, $data->baseUrl . '/' . $file, ['target' => '_blank']);
-            }, $bundle);
-
-            array_walk($bundle->depends, function(&$depend) {
-                $depend = Html::a($depend, '#' . $depend);
-            });
-
-            $this->formatOptions($bundle->publishOptions);
-            $this->formatOptions($bundle->jsOptions);
-            $this->formatOptions($bundle->cssOptions);
-        }
-
-        $data = [
-            'totalBundles' => count($this->bundles),
-            'totalCssFiles' => $this->cssCount,
-            'totalJsFiles' => $this->jsCount,
-            'bundles' => $this->bundles,
-        ];
-        
-        return $data;
     }
 
     /**
