@@ -12,6 +12,7 @@ Yii Framework 2 gii extension Change Log
 
 - Bug #5408: Gii console command incorrectly reports errors when there is actually no error (qiangxue)
 - Bug: Fixed table name regression caused by changed introduced in #4971 (samdark)
+- Bug: `hasError` should not be negated (mdmunir)
 
 
 2.0.0-rc September 27, 2014
