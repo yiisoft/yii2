@@ -234,6 +234,8 @@ class FixtureController extends Controller
 
     /**
      * Notifies user that there are no fixtures to load according input conditions
+     * @param array $foundFixtures array of found fixtures
+     * @param array $except array of names of fixtures that should not be loaded
      */
     public function notifyNothingToLoad($foundFixtures, $except)
     {
@@ -254,6 +256,8 @@ class FixtureController extends Controller
 
     /**
      * Notifies user that there are no fixtures to unload according input conditions
+     * @param array $foundFixtures array of found fixtures
+     * @param array $except array of names of fixtures that should not be loaded
      */
     public function notifyNothingToUnload($foundFixtures, $except)
     {
@@ -437,11 +441,11 @@ class FixtureController extends Controller
      * ~~~
      * [
      *     'apply' => [
-     *         User,
+     *         'User',
      *         ...
      *     ],
      *     'except' => [
-     *         Custom,
+     *         'Custom',
      *         ...
      *     ],
      * ]

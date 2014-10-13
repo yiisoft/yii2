@@ -1022,6 +1022,16 @@ class Formatter extends Component
         }
     }
 
+
+    /**
+     * Given the value in bytes formats number part of the human readable form.
+     *
+     * @param string|integer|float $value value in bytes to be formatted.
+     * @param integer $decimals the number of digits after the decimal point
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
+     */
     private function formatSizeNumber($value, $decimals, $options, $textOptions)
     {
         if (is_string($value) && is_numeric($value)) {

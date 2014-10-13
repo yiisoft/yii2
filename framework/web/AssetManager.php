@@ -201,6 +201,15 @@ class AssetManager extends Component
         }
     }
 
+    /**
+     * Loads asset bundle class by name
+     *
+     * @param string $name bundle name
+     * @param array $config bundle object configuration
+     * @param boolean $publish if bundle should be published
+     * @return AssetBundle
+     * @throws InvalidConfigException if configuration isn't valid
+     */
     protected function loadBundle($name, $config = [], $publish = true)
     {
         if (!isset($config['class'])) {
@@ -214,6 +223,12 @@ class AssetManager extends Component
         return $bundle;
     }
 
+    /**
+     * Loads dummy bundle by name
+     *
+     * @param string $name
+     * @return AssetBundle
+     */
     protected function loadDummyBundle($name)
     {
         if (!isset($this->_dummyBundles[$name])) {
