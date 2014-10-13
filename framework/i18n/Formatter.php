@@ -923,8 +923,8 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        $value = $this->normalizeNumericValue($value);
-        if ($this->_intlLoaded){
+        $value = abs($this->normalizeNumericValue($value));
+        if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::DURATION);
             return $f->format($value);
         } else {
