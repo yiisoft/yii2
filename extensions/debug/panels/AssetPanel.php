@@ -8,9 +8,7 @@
 namespace yii\debug\panels;
 
 use Yii;
-use yii\base\Event;
 use yii\helpers\Html;
-use yii\web\Application;
 use yii\debug\Panel;
 use yii\web\AssetBundle;
 use yii\web\AssetManager;

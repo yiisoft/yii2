@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidCallException;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
-use yii\db\QueryTrait;
 
 /**
  * Query represents a SELECT SQL statement.

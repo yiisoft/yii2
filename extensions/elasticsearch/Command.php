@@ -9,7 +9,6 @@ namespace yii\elasticsearch;
 
 use yii\base\Component;
 use yii\base\InvalidCallException;
-use yii\base\InvalidParamException;
 use yii\helpers\Json;
 
 /**
