@@ -29,6 +29,11 @@ Italian
 
 - Lorenzo Milesi, [@maxxer](https://github.com/maxxer), maxxer@yetopen.it
 
+Japanese
+-------
+
+- Nobuo Kihara 木原伸夫, [@softark](https://github.com/softark), softark@gmail.com
+
 Russian
 -------
 
