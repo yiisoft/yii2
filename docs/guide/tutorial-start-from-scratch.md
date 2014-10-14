@@ -37,10 +37,10 @@ Next, actually modify the structure and contents of the application as you would
 Make a Package
 --------------
 
-With the template defined, create a Git repository from it, and push your files there. If you're going to open source your template, [Github](http://githumb.com) is the best place to host it. If you intend to keep your template non-collaborative, any Git repository site will do.
+With the template defined, create a Git repository from it, and push your files there. If you're going to open source your template, [Github](http://github.com) is the best place to host it. If you intend to keep your template non-collaborative, any Git repository site will do.
 
 Next, you need to register your package for Composer's sake. For public templates, the package should be registered at [Packagist](https://packagist.org/).
-For private templates, it is a bit more tricky to register the packge. For instructions, see the [Composer documentation](https://getcomposer.org/doc/05-repositories.md#hosting-your-own).
+For private templates, it is a bit more tricky to register the package. For instructions, see the [Composer documentation](https://getcomposer.org/doc/05-repositories.md#hosting-your-own).
 
 Use the Template
 ------
