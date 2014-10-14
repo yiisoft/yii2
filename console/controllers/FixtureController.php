@@ -100,8 +100,8 @@ class FixtureController extends Controller
      *
      * @throws Exception if the specified fixture does not exist.
      */
-    public function actionLoad()
-    {        
+    public function actionLoad($fixturesInput)
+    {
         $fixturesInput = func_get_args();
         $filtered = $this->filterFixtures($fixturesInput);
         $except = $filtered['except'];
