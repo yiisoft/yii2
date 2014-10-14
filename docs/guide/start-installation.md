@@ -130,7 +130,7 @@ of `basic/web`. Denying access to those other folders is a security improvement.
 
 > Info: If your application will run in a shared hosting environment where you do not have permission
 to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
-the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
+the [Shared Hosting Environment - page absent](tutorial-shared-hosting.md) section for more details.
 
 
 ### Recommended Apache Configuration <a name="recommended-apache-configuration"></a>
