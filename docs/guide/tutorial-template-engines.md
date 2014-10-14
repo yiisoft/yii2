@@ -21,8 +21,11 @@ component's behavior:
                 ],
                 'twig' => [
                     'class' => 'yii\twig\ViewRenderer',
-                    //'cachePath' => '@runtime/Twig/cache',
-                    //'options' => [], /*  Array of twig options */
+                    'cachePath' => '@runtime/Twig/cache',
+                    // Array of twig options:
+                    'options' => [
+                        'auto_reload' => true,
+                    ],
                     'globals' => ['html' => '\yii\helpers\Html'],
                     'uses' => ['yii\bootstrap'],
                 ],
