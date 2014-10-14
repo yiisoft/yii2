@@ -3,13 +3,15 @@ Creating your own Application structure
 
 > Note: This section is under development.
 
-While the [basic](apps-basic.md) and [advanced](apps-advanced.md) application templates are great for most of your needs,
-you may want to create your own application template with which to start your projects.
+While the [basic](https://github.com/yiisoft/yii2/tree/master/apps/basic) and [advanced](https://github.com/yiisoft/yii2/tree/master/apps/advanced)
+application templates are great for most of your needs, you may want to create your own application template with which
+to start your projects.
 
-Application templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package. Any repository can be identified as a Composer package, making it installable via `create-project` Composer command.
+Application templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package.
+Any repository can be identified as a Composer package, making it installable via `create-project` Composer command.
 
-Since it's a bit too much to start building your entire template from scratch, it is better to use one of the built-in templates
-as a base. Let's use the basic template here.
+Since it's a bit too much to start building your entire template from scratch, it is better to use one of the built-in
+templates as a base. Let's use the basic template here.
 
 Clone the Basic Template
 ----------------------------------------
