@@ -577,19 +577,24 @@ class Formatter extends Component
         if (empty($value)) {
             $value = 0;
         }
+        
+        // Parse all timestamp in the configured timezone if possible
+        $timeZone = empty($this->timeZone) ? 'UTC' : $this->timeZone;
+        $tz = new DateTimeZone($timeZone);
+        
         try {
             if (is_numeric($value)) { // process as unix timestamp
-                if (($timestamp = DateTime::createFromFormat('U', $value, new DateTimeZone('UTC'))) === false) {
+                if (($timestamp = DateTime::createFromFormat('U', $value, $tz)) === false) {
                     throw new InvalidParamException("Failed to parse '$value' as a UNIX timestamp.");
                 }
                 return $timestamp;
-            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone('UTC'))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, $tz)) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $timestamp;
-            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone('UTC'))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, $tz)) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $timestamp;
             }
             // finally try to create a DateTime object with the value
-            $timestamp = new DateTime($value, new DateTimeZone('UTC'));
+            $timestamp = new DateTime($value, $tz);
             return $timestamp;
         } catch(\Exception $e) {
             throw new InvalidParamException("'$value' is not a valid date time value: " . $e->getMessage()
