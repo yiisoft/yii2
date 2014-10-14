@@ -562,7 +562,7 @@ $this->registerLinkTag([
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: вызывается в начале рендеринга файла в контроллере. 
 Обработчики этого события могут придать атрибуту [[yii\base\ViewEvent::isValid]] значение `false`, чтобы отменить процесс рендеринга.
-- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: событие инициируется вызовом [[yii\base\View::beginPage()]] в шаблонах.
+- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: событие инициируется после рендеринга файла вызовом [[yii\base\View::afterRender()]].
   Обработчики события могут получать результат рендеринга через [[yii\base\ViewEvent::output]] и могут изменять это свойство для изменения 
 результата рендеринга.
 - [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: инициируется вызовом [[yii\base\View::beginPage()]] в шаблонах.

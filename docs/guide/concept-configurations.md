@@ -130,7 +130,7 @@ an [entry script](structure-entry-scripts.md), where the class name is already g
 (new yii\web\Application($config))->run();
 ```
 
-For more details about configuring the `components` property of an application can be found
+More details about configuring the `components` property of an application can be found
 in the [Applications](structure-applications.md) section and the [Service Locator](concept-service-locator.md) section.
 
 
@@ -153,7 +153,7 @@ echo Menu::widget([
 ]);
 ```
 
-The above code creates a `Menu` widget and initializes its `activeItems` property to be false.
+The above code creates a `Menu` widget and initializes its `activateItems` property to be false.
 The `items` property is also configured with menu items to be displayed.
 
 Note that because the class name is already given, the configuration array should NOT have the `class` key.
@@ -215,7 +215,7 @@ $config = require('path/to/web.php');
 ## Default Configurations <a name="default-configurations"></a>
 
 The [[Yii::createObject()]] method is implemented based on a [dependency injection container](concept-di-container.md).
-It allows you to specify a set of the so-called *default configurations* which will be applied to ANY instances of
+It allows you to specify a set of the so-called *default configurations* which will be applied to ALL instances of
 the specified classes when they are being created using [[Yii::createObject()]]. The default configurations
 can be specified by calling `Yii::$container->set()` in the [bootstrapping](runtime-bootstrapping.md) code.
 
