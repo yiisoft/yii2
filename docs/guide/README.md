@@ -169,7 +169,7 @@ Special Topics
 * [Internationalization](tutorial-i18n.md)
 * [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
-* **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
+* [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
 * [Working with Third-Party Code](tutorial-yii-integration.md)
 
