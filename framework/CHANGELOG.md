@@ -249,6 +249,7 @@ Yii Framework 2 Change Log
 - Enh #4691: Encoding on `ActiveForm` and `ActiveField` validation errors is now configurable (Alex-Code)
 - Enh #4740: Added `yii\web\Session::addFlash()` (restyler)
 - Enh #4897: Added `yii\helpers\FileHelper::mimeMagicFile` (qiangxue)
+- Enh #4999: Added `yii\filter\AccessRule::modules` (trntv)
 - Enh #5058: Added `$pageSize` parameter to `Pagination::createUrl()` to allow creating URLs with arbitrary page sizes (cdcchen, qiangxue)
 - Enh #5089: Added asset debugger panel (arturf, qiangxue)
 - Enh #5117: Added `beforeFilter` and `afterFilter` JS events to `GridView` (kartik-v)
