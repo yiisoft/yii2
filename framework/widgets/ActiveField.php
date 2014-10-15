@@ -111,8 +111,8 @@ class ActiveField extends Component
      */
     public $validateOnType;
     /**
-     * @var integer number of milliseconds that the validation should be delayed when the input field
-     * is changed or the user types in the field.
+     * @var integer number of milliseconds that the validation should be delayed when the user types in the field
+     * and [[validateOnType]] is set true.
      * If not set, it will take the value of [[ActiveForm::validationDelay]].
      */
     public $validationDelay;
@@ -747,7 +747,7 @@ class ActiveField extends Component
             'validateOnChange' => true,
             'validateOnBlur' => true,
             'validateOnType' => false,
-            'validationDelay' => 200,
+            'validationDelay' => 500,
             'encodeError' => true,
             'error' => '.help-block',
         ]);

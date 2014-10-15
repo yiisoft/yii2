@@ -415,7 +415,7 @@ In the first step, it determines the layout value and the context module:
 
 - If the [[yii\base\Controller::layout]] property of the controller is not null, use it as the layout value and
   the [[yii\base\Controller::module|module]] of the controller as the context module.
-- If [[yii\base\Controller::layout|layout]] is null, search through all ancestor modules of the controller and 
+- If [[yii\base\Controller::layout|layout]] is null, search through all ancestor modules (including the application itself) of the controller and 
   find the first module whose [[yii\base\Module::layout|layout]] property is not null. Use that module and
   its [[yii\base\Module::layout|layout]] value as the context module and the chosen layout value.
   If such a module cannot be found, it means no layout will be applied.
@@ -551,7 +551,7 @@ You may also frequently use the following minor yet useful features when you are
 
 ### Setting Page Titles <a name="setting-page-titles"></a>
 
-Every Web page should have a title. Normally the title tag is generated in a [layout](#layouts). However, in practice
+Every Web page should have a title. Normally the title tag is being displayed in a [layout](#layouts). However, in practice
 the title is often determined in content views rather than layouts. To solve this problem, [[yii\web\View]] provides
 the [[yii\web\View::title|title]] property for you to pass the title information from content views to layouts.
 

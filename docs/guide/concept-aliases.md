@@ -106,10 +106,13 @@ Yii predefines a set of aliases to easily reference commonly used file paths and
 
 - `@yii`, the directory where the `BaseYii.php` file is located (also called the framework directory)
 - `@app`, the [[yii\base\Application::basePath|base path]] of the currently running application
-- `@runtime`, the [[yii\base\Application::runtimePath|runtime path]] of the currently running application
-- `@vendor`, the [[yii\base\Application::vendorPath|Composer vendor directory]]
-- `@webroot`, the Web root directory of the currently running Web application
-- `@web`, the base URL of the currently running Web application
+- `@runtime`, the [[yii\base\Application::runtimePath|runtime path]] of the currently running application. Defaults to `@app/runtime`.
+- `@webroot`, the Web root directory of the currently running Web application. It is determined based on the directory
+  containing the entry script.
+- `@web`, the base URL of the currently running Web application. It has the same value as [[yii\web\Request::baseUrl]].
+- `@vendor`, the [[yii\base\Application::vendorPath|Composer vendor directory]]. Defaults to `@app/vendor`.
+- `@bower`, the root directory that contains [bower packages](http://bower.io/). Defaults to `@vendor/bower`.
+- `@npm`, the root directory that contains [npm packages](https://www.npmjs.org/). Defaults to `@vendor/npm`.
 
 The `@yii` alias is defined when you include the `Yii.php` file in your [entry script](structure-entry-scripts.md). The rest of the aliases are defined in the application constructor when applying the application
 [configuration](concept-configurations.md).

@@ -17,9 +17,9 @@ use yii\web\AssetBundle;
  */
 class BootstrapPluginAsset extends AssetBundle
 {
-    public $sourcePath = '@vendor/twbs/bootstrap/dist';
+    public $sourcePath = '@bower/bootstrap';
     public $js = [
-        'js/bootstrap.js',
+        'dist/js/bootstrap.js',
     ];
     public $depends = [
         'yii\web\JqueryAsset',

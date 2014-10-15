@@ -51,7 +51,7 @@ class Spinner extends InputWidget
     public function run()
     {
         echo $this->renderWidget();
-        $this->registerWidget('spinner', SpinnerAsset::className());
+        $this->registerWidget('spinner');
     }
 
     /**

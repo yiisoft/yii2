@@ -17,9 +17,9 @@ use yii\web\AssetBundle;
  */
 class BootstrapThemeAsset extends AssetBundle
 {
-    public $sourcePath = '@vendor/twbs/bootstrap/dist';
+    public $sourcePath = '@bower/bootstrap';
     public $css = [
-        'css/bootstrap-theme.css',
+        'dist/css/bootstrap-theme.css',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset',

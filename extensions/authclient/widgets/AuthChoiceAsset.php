@@ -17,7 +17,7 @@ use yii\web\AssetBundle;
  */
 class AuthChoiceAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/authclient/assets';
+    public $sourcePath = '@vendor/yii2-authclient/assets';
     public $js = [
         'authchoice.js',
     ];

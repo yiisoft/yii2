@@ -5,22 +5,23 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\jui;
+namespace yii\gii;
 
 use yii\web\AssetBundle;
 
 /**
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class TabsAsset extends AssetBundle
+class TypeAheadAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/jui/assets';
+    public $sourcePath = '@bower/typeahead.js';
     public $js = [
-        'jquery.ui.tabs.js',
+        'dist/typeahead.bundle.js',
     ];
     public $depends = [
-        'yii\jui\CoreAsset',
-        'yii\jui\EffectAsset',
+        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
     ];
 }

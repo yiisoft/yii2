@@ -45,6 +45,6 @@ class Droppable extends Widget
     public function run()
     {
         echo Html::endTag('div') . "\n";
-        $this->registerWidget('droppable', DroppableAsset::className());
+        $this->registerWidget('droppable');
     }
 }
