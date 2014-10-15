@@ -27,7 +27,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"
-        },
-        "bootstrap": "yii\\mongodb\\debug\\MongoDbPanel"
+        }
     }
 }
