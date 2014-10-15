@@ -156,7 +156,7 @@ class Tabs extends Widget
                 $linkOptions['data-toggle'] = 'dropdown';
                 $header = Html::a($label, "#", $linkOptions) . "\n"
                     . Dropdown::widget(['items' => $item['items'], 'clientOptions' => false, 'view' => $this->getView()]);
-            } elseif (isset($item['content'])) {
+            } else {
                 $options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
                 $options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $n);
 
@@ -167,14 +167,16 @@ class Tabs extends Widget
                 }
                 $linkOptions['data-toggle'] = 'tab';
                 $header = Html::a($label, '#' . $options['id'], $linkOptions);
-                $panes[] = Html::tag('div', $item['content'], $options);
+                if (isset($item['content'])) {
+                    $panes[] = Html::tag('div', $item['content'], $options);
+                }
             }
 
             $headers[] = Html::tag('li', $header, $headerOptions);
         }
 
-        return Html::tag('ul', implode("\n", $headers), $this->options) . "\n"
-        . Html::tag('div', implode("\n", $panes), ['class' => 'tab-content']);
+        return Html::tag('ul', implode("\n", $headers), $this->options) . (empty($panes) ? '' : "\n"
+        . Html::tag('div', implode("\n", $panes), ['class' => 'tab-content']));
     }
 
     /**
