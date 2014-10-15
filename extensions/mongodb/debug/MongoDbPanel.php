@@ -14,7 +14,7 @@ use yii\log\Logger;
  * MongoDbPanel panel that collects and displays MongoDB queries performed.
  *
  * @author Klimov Paul <klimov@zfort.com>
- * @since 2.0
+ * @since 2.0.1
  */
 class MongoDbPanel extends DbPanel
 {
