@@ -12,7 +12,7 @@ Since there's typically only one webroot it is recommended to use basic applicat
 
 ### Add extras for webserver
 
-If webserver used is Apache you'll need to add `.htacces` file with the following content to `web`
+If webserver used is Apache you'll need to add `.htaccess` file with the following content to `web`
 (where `index.php` is):
 
 ```
