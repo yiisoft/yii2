@@ -105,6 +105,13 @@ class ActiveForm extends Widget
      */
     public $enableAjaxValidation = false;
     /**
+     * @var boolean whether to hook up yii.activeForm JavaScript plugin.
+     * This property must be set true if you want to support client validation and/or AJAX validation, or if you
+     * want to take advantage of the yii.activeForm plugin. When this is false, the form will not generate
+     * any JavaScript.
+     */
+    public $enableClientScript = true;
+    /**
      * @var array|string the URL for performing AJAX-based validation. This property will be processed by
      * [[Url::to()]]. Please refer to [[Url::to()]] for more details on how to configure this property.
      * If this property is not set, it will take the value of the form's action attribute.
@@ -179,12 +186,14 @@ class ActiveForm extends Widget
             throw new InvalidCallException('Each beginField() should have a matching endField() call.');
         }
 
-        $id = $this->options['id'];
-        $options = Json::encode($this->getClientOptions());
-        $attributes = Json::encode($this->attributes);
-        $view = $this->getView();
-        ActiveFormAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+        if ($this->enableClientScript) {
+            $id = $this->options['id'];
+            $options = Json::encode($this->getClientOptions());
+            $attributes = Json::encode($this->attributes);
+            $view = $this->getView();
+            ActiveFormAsset::register($view);
+            $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+        }
 
         echo Html::endForm();
     }

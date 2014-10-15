@@ -380,7 +380,7 @@ class View extends \yii\base\View
         } else {
             $this->getAssetManager()->bundles[$key] = new AssetBundle([
                 'baseUrl' => '',
-                'css' => [ltrim($url, '/')],
+                'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
                 'depends' => (array) $depends,
             ]);
@@ -445,7 +445,7 @@ class View extends \yii\base\View
         } else {
             $this->getAssetManager()->bundles[$key] = new AssetBundle([
                 'baseUrl' => '',
-                'js' => [ltrim($url, '/')],
+                'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
                 'depends' => (array) $depends,
             ]);

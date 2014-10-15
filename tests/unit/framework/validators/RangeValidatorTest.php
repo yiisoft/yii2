@@ -41,6 +41,17 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate("5"));
     }
 
+    public function testValidateValueEmpty()
+    {
+        $val = new RangeValidator(['range' => range(10, 20, 1), 'skipOnEmpty' => false]);
+        $this->assertFalse($val->validate(null)); //row RangeValidatorTest.php:101
+        $this->assertFalse($val->validate('0'));
+        $this->assertFalse($val->validate(0));
+        $this->assertFalse($val->validate(''));
+        $val->allowArray = true;
+        $this->assertTrue($val->validate([]));
+    }
+
     public function testValidateArrayValue()
     {
         $val = new RangeValidator(['range' => range(1, 10, 1)]);

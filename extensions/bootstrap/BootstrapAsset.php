@@ -17,8 +17,8 @@ use yii\web\AssetBundle;
  */
 class BootstrapAsset extends AssetBundle
 {
-    public $sourcePath = '@bower/bootstrap';
+    public $sourcePath = '@bower/bootstrap/dist';
     public $css = [
-        'dist/css/bootstrap.css',
+        'css/bootstrap.css',
     ];
 }

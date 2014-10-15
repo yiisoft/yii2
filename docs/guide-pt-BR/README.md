@@ -23,9 +23,9 @@ Primeiros Passos
 * [Executando Aplicações](start-workflow.md)
 * [Como Fazer um "Hello World"](start-hello.md)
 * [Trabalhando com Formulários](start-forms.md)
-* [Trabalhando com Banco de Dados](start-databases.md)
+* [Trabalhando com Bancos de Dados](start-databases.md)
 * [Gerando Código com Gii](start-gii.md)
-* [Visão Geral](start-looking-ahead.md)
+* [Seguindo em Frente](start-looking-ahead.md)
 
 
 Estrutura de uma Aplicação

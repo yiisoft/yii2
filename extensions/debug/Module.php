@@ -209,6 +209,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'log' => ['class' => 'yii\debug\panels\LogPanel'],
             'profiling' => ['class' => 'yii\debug\panels\ProfilingPanel'],
             'db' => ['class' => 'yii\debug\panels\DbPanel'],
+            'assets' => ['class' => 'yii\debug\panels\AssetPanel'],
             'mail' => ['class' => 'yii\debug\panels\MailPanel'],
         ];
     }

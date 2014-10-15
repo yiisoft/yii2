@@ -154,7 +154,7 @@ the [Wiki article](http://en.wikipedia.org/wiki/Role-based_access_control) for d
 with other more traditional access control schemes.
 
 Yii implements a General Hierarchical RBAC, following the [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
-It provides the RBAC functionality through the [[yii\rbac\ManagerInterface|authManager]] application component.
+It provides the RBAC functionality through the [[yii\rbac\ManagerInterface|authManager]] [application component](structure-application-components.md).
 
 Using RBAC involves two parts of work. The first part is to build up the RBAC authorization data, and the second
 part is to use the authorization data to perform access check in places where it is needed.
@@ -202,8 +202,9 @@ return [
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
-> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in the file `@app/data/rbac.php`.
-  Sometime you need to create this file manually.
+> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in three files: `@app/rbac/items.php`, `@app/rbac/assignments.php` and `@app/rbac/rules.php`.
+  Make sure these files are writable by the Web server process if the authorization needs to be changed online.
+  Sometimes you will need to create these files manually.
 
 
 ### Building Authorization Data
@@ -218,8 +219,8 @@ Building authorization data is all about the following tasks:
 
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 
-If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a console
-command that will initialize authorization data once via APIs offered by `authManager`:
+If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a
+[console command](tutorial-console.md#create-command) command that will initialize authorization data once via APIs offered by `authManager`:
 
 ```php
 <?php
@@ -301,8 +302,9 @@ For applications that require complex access control with dynamically updated au
 (i.e. admin panel) may need to be developed using APIs offered by `authManager`.
 
 
-> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in the file `@app/data/rbac.php`.
-  Sometimes when you want to make some minor changes to the RBAC data, you may directly edit this file.
+> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in three files: `@app/rbac/items.php`, `@app/rbac/assignments.php` and `@app/rbac/rules.php`.
+  Make sure these files are writable by the Web server process if the authorization needs to be changed online.
+  Sometimes you will need to create these files manually.
 
 
 ### Using Rules
@@ -345,7 +347,7 @@ $rule = new \app\rbac\AuthorRule;
 $auth->add($rule);
 
 // add the "updateOwnPost" permission and associate the rule with it.
-$updateOwnPost = $this->auth->createPermission('updateOwnPost');
+$updateOwnPost = $auth->createPermission('updateOwnPost');
 $updateOwnPost->description = 'Update own post';
 $updateOwnPost->ruleName = $rule->name;
 $auth->add($updateOwnPost);

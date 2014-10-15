@@ -173,6 +173,7 @@ local pks={}
 local n=0
 local v=nil
 local i=0
+local key=$key
 for k,pk in ipairs(allpks) do
     $loadColumnValues
     if $condition then
@@ -268,12 +269,16 @@ EOF;
             if (is_array($value)) { // IN condition
                 $parts[] = $this->buildInCondition('in', [$column, $value], $columns);
             } else {
-                $column = $this->addColumn($column, $columns);
+                if (is_bool($value)) {
+                    $value = (int)$value;
+                }
                 if ($value === null) {
-                    $parts[] = "$column==nil";
+                    $parts[] = "redis.call('HEXISTS',key .. ':a:' .. pk, ".$this->quoteValue($column).")==0";
                 } elseif ($value instanceof Expression) {
+                    $column = $this->addColumn($column, $columns);
                     $parts[] = "$column==" . $value->expression;
                 } else {
+                    $column = $this->addColumn($column, $columns);
                     $value = $this->quoteValue($value);
                     $parts[] = "$column==$value";
                 }
@@ -356,7 +361,7 @@ EOF;
                 $value = isset($value[$column]) ? $value[$column] : null;
             }
             if ($value === null) {
-                $parts[] = "$columnAlias==nil";
+                $parts[] = "redis.call('HEXISTS',key .. ':a:' .. pk, ".$this->quoteValue($column).")==0";
             } elseif ($value instanceof Expression) {
                 $parts[] = "$columnAlias==" . $value->expression;
             } else {
@@ -375,11 +380,11 @@ EOF;
         foreach ($values as $value) {
             $vs = [];
             foreach ($inColumns as $column) {
-                $column = $this->addColumn($column, $columns);
                 if (isset($value[$column])) {
-                    $vs[] = "$column==" . $this->quoteValue($value[$column]);
+                    $columnAlias = $this->addColumn($column, $columns);
+                    $vs[] = "$columnAlias==" . $this->quoteValue($value[$column]);
                 } else {
-                    $vs[] = "$column==nil";
+                    $vs[] = "redis.call('HEXISTS',key .. ':a:' .. pk, ".$this->quoteValue($column).")==0";
                 }
             }
             $vss[] = '(' . implode(' and ', $vs) . ')';

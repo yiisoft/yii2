@@ -15,8 +15,8 @@ namespace yii\web;
  */
 class JqueryAsset extends AssetBundle
 {
-    public $sourcePath = '@bower/jquery';
+    public $sourcePath = '@bower/jquery/dist';
     public $js = [
-        'dist/jquery.js',
+        'jquery.js',
     ];
 }

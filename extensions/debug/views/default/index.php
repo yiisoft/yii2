@@ -32,7 +32,6 @@ $this->title = 'Yii Debugger';
 if (isset($this->context->module->panels['db']) && isset($this->context->module->panels['request'])) {
 
     echo "			<h1>Available Debug Data</h1>";
-    $timeFormatter = extension_loaded('intl') ? Yii::createObject(['class' => 'yii\i18n\Formatter']) : Yii::$app->formatter;
 
     $codes = [];
     foreach ($manifest as $tag => $vals) {
@@ -66,8 +65,8 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
             ],
             [
                 'attribute' => 'time',
-                'value' => function ($data) use ($timeFormatter) {
-                    return '<span class="nowrap">' . $timeFormatter->asDateTime($data['time'], 'short') . '</span>';
+                'value' => function ($data) {
+                    return '<span class="nowrap">' . Yii::$app->formatter->asDateTime($data['time'], 'short') . '</span>';
                 },
                 'format' => 'html',
             ],

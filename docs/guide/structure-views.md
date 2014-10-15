@@ -4,7 +4,7 @@ Views
 Views are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are code responsible for presenting data to end users. In a Web application, views are usually created
 in terms of *view templates* which are PHP script files containing mainly HTML code and presentational PHP code.
-They are managed by the [[yii\web\View|view]] application component which provides commonly used methods
+They are managed by the [[yii\web\View|view]] [application component](structure-application-components.md) which provides commonly used methods
 to facilitate view composition and rendering. For simplicity, we often call view templates or view template files
 as views.
 
@@ -595,7 +595,7 @@ at the place where you call [[yii\web\View::head()]] in the layout and generate 
 Note that if you call [[yii\web\View::registerMetaTag()]] multiple times, it will register multiple meta tags,
 regardless whether the meta tags are the same or not.
 
-To make sure there is only a single instance of a meta tag type, you can specify a key when calling the method.
+To make sure there is only a single instance of a meta tag type, you can specify a key as a second parameter when calling the method.
 For example, the following code registers two "description" meta tags. However, only the second one will be rendered.
 
 ```html
@@ -636,7 +636,7 @@ to these events to inject content into views or process the rendering results be
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: triggered at the beginning of rendering a file
   in a controller. Handlers of this event may set [[yii\base\ViewEvent::isValid]] to be false to cancel the rendering process.
-- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: triggered by the call of [[yii\base\View::beginPage()]] in layouts.
+- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: triggered after rendering a file by the call of [[yii\base\View::afterRender()]].
   Handlers of this event may obtain the rendering result through [[yii\base\ViewEvent::output]] and may modify
   this property to change the rendering result.
 - [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: triggered by the call of [[yii\base\View::beginPage()]] in layouts.
@@ -658,7 +658,7 @@ For example, the following code injects the current date at the end of the page 
 Static pages refer to those Web pages whose main content are mostly static without the need of accessing
 dynamic data pushed from controllers.
 
-You can generate static pages using the code like the following in a controller:
+You can output static pages by putting their code in the view, and then using the code like the following in a controller:
 
 ```php
 public function actionAbout()

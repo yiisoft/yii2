@@ -35,6 +35,7 @@ use yii\helpers\StringHelper;
  * ~~~
  *
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
+ * @property string $downloadHeaders The attachment file name. This property is write-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property boolean $isClientError Whether this response indicates a client error. This property is
  * read-only.

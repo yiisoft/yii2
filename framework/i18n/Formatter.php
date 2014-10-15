@@ -7,20 +7,23 @@
 
 namespace yii\i18n;
 
+use DateInterval;
 use DateTime;
 use DateTimeInterface;
+use DateTimeZone;
 use IntlDateFormatter;
 use NumberFormatter;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\FormatConverter;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
 
 /**
- * Formatter provides a set of commonly used data formatting methods. 
- * 
+ * Formatter provides a set of commonly used data formatting methods.
+ *
  * The formatting methods provided by Formatter are all named in the form of `asXyz()`.
  * The behavior of some of them may be configured via the properties of Formatter. For example,
  * by configuring [[dateFormat]], one may control how [[asDate()]] formats the value into a date string.
@@ -66,34 +69,58 @@ class Formatter extends Component
      * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
      * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
      * If this property is not set, [[\yii\base\Application::timeZone]] will be used.
+     *
+     * Note that the input timezone is assumed to be UTC always if no timezone is included in the input date value.
+     * Make sure to store datetime values in UTC in your database.
      */
     public $timeZone;
     /**
      * @var string the default format string to be used to format a [[asDate()|date]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     *
+     * For example:
+     *
+     * ```php
+     * 'MM/dd/yyyy' // date in ICU format
+     * 'php:m/d/Y' // the same date in PHP format
+     * ```
      */
     public $dateFormat = 'medium';
     /**
      * @var string the default format string to be used to format a [[asTime()|time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     *
+     * For example:
+     *
+     * ```php
+     * 'HH:mm:ss' // time in ICU format
+     * 'php:H:i:s' // the same time in PHP format
+     * ```
      */
     public $timeFormat = 'medium';
     /**
      * @var string the default format string to be used to format a [[asDateTime()|date and time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
+     *
+     * For example:
+     *
+     * ```php
+     * 'MM/dd/yyyy HH:mm:ss' // date and time in ICU format
+     * 'php:m/d/Y H:i:s' // the same date and time in PHP format
+     * ```
      */
     public $datetimeFormat = 'medium';
     /**
@@ -183,8 +210,12 @@ class Formatter extends Component
         }
         $this->_intlLoaded = extension_loaded('intl');
         if (!$this->_intlLoaded) {
-            $this->decimalSeparator = '.';
-            $this->thousandSeparator = ',';
+            if ($this->decimalSeparator === null) {
+                $this->decimalSeparator = '.';
+            }
+            if ($this->thousandSeparator === null) {
+                $this->thousandSeparator = ',';
+            }
         }
     }
 
@@ -229,6 +260,7 @@ class Formatter extends Component
     /**
      * Formats the value as is without any formatting.
      * This method simply returns back the parameter without any format.
+     * The only exception is a `null` value which will be formatted using [[nullDisplay]].
      * @param mixed $value the value to be formatted.
      * @return string the formatted result.
      */
@@ -300,35 +332,38 @@ class Formatter extends Component
     /**
      * Formats the value as a mailto link.
      * @param mixed $value the value to be formatted.
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::mailto()]].
      * @return string the formatted result.
      */
-    public function asEmail($value)
+    public function asEmail($value, $options = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return Html::mailto(Html::encode($value), $value);
+        return Html::mailto(Html::encode($value), $value, $options);
     }
 
     /**
      * Formats the value as an image tag.
      * @param mixed $value the value to be formatted.
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::img()]].
      * @return string the formatted result.
      */
-    public function asImage($value)
+    public function asImage($value, $options = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return Html::img($value);
+        return Html::img($value, $options);
     }
 
     /**
      * Formats the value as a hyperlink.
      * @param mixed $value the value to be formatted.
+     * @param array $options the tag options in terms of name-value pairs. See [[Html::a()]].
      * @return string the formatted result.
      */
-    public function asUrl($value)
+    public function asUrl($value, $options = [])
     {
         if ($value === null) {
             return $this->nullDisplay;
@@ -338,7 +373,7 @@ class Formatter extends Component
             $url = 'http://' . $url;
         }
 
-        return Html::a(Html::encode($value), $url);
+        return Html::a(Html::encode($value), $url, $options);
     }
 
     /**
@@ -366,8 +401,9 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()`
-     * - a PHP DateTime object
+     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
+     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[dateFormat]] will be used.
@@ -378,9 +414,9 @@ class Formatter extends Component
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      *
+     * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      * @throws InvalidConfigException if the date format is invalid.
-     * @return string the formatted result.
      * @see dateFormat
      */
     public function asDate($value, $format = null)
@@ -397,8 +433,9 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()`
-     * - a PHP DateTime object
+     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
+     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[timeFormat]] will be used.
@@ -409,9 +446,9 @@ class Formatter extends Component
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      *
+     * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      * @throws InvalidConfigException if the date format is invalid.
-     * @return string the formatted result.
      * @see timeFormat
      */
     public function asTime($value, $format = null)
@@ -428,8 +465,9 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()`
-     * - a PHP DateTime object
+     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
+     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[dateFormat]] will be used.
@@ -440,9 +478,9 @@ class Formatter extends Component
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](http://php.net/manual/de/function.date.php)-function.
      *
+     * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      * @throws InvalidConfigException if the date format is invalid.
-     * @return string the formatted result.
      * @see datetimeFormat
      */
     public function asDatetime($value, $format = null)
@@ -464,35 +502,14 @@ class Formatter extends Component
     ];
 
     /**
-     * @var array with the standard php definition for short, medium, long an full
-     * format as pattern for date, time and datetime.
-     * This is used as fallback when the intl extension is not installed.
-     */
-    private $_phpNameToPattern = [
-        'short' => [
-            'date' => 'n/j/y',
-            'time' => 'H:i',
-            'datetime' => 'n/j/y H:i',
-        ],
-        'medium' => [
-            'date' => 'M j, Y',
-            'time' => 'g:i:s A',
-            'datetime' => 'M j, Y g:i:s A',
-        ],
-        'long' => [
-            'date' => 'F j, Y',
-            'time' => 'g:i:sA',
-            'datetime' => 'F j, Y g:i:sA',
-        ],
-        'full' => [
-            'date' => 'l, F j, Y',
-            'time' => 'g:i:sA T',
-            'datetime' => 'l, F j, Y g:i:sA T',
-        ],
-    ];
-
-    /**
-     * @param integer $value normalized datetime value
+     * @param integer|string|DateTime $value the value to be formatted. The following
+     * types of value are supported:
+     *
+     * - an integer representing a UNIX timestamp
+     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
+     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     *
      * @param string $format the format used to convert the value into a date string.
      * @param string $type 'date', 'time', or 'datetime'.
      * @throws InvalidConfigException if the date format is invalid.
@@ -500,13 +517,15 @@ class Formatter extends Component
      */
     private function formatDateTimeValue($value, $format, $type)
     {
-        $value = $this->normalizeDatetimeValue($value);
-        if ($value === null) {
+        $timestamp = $this->normalizeDatetimeValue($value);
+        if ($timestamp === null) {
             return $this->nullDisplay;
         }
 
         if ($this->_intlLoaded) {
-            $format = $this->getIntlDatePattern($format);
+            if (strncmp($format, 'php:', 4) === 0) {
+                $format = FormatConverter::convertDatePhpToIcu(substr($format, 4));
+            }
             if (isset($this->_dateFormats[$format])) {
                 if ($type === 'date') {
                     $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $this->timeZone);
@@ -521,219 +540,72 @@ class Formatter extends Component
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
             }
-            return $formatter->format($value);
+            return $formatter->format($timestamp);
         } else {
-            // replace short, medium, long and full with real patterns in case intl is not loaded.
-            if (isset($this->_phpNameToPattern[$format][$type])) {
-                $format = $this->_phpNameToPattern[$format][$type];
+            if (strncmp($format, 'php:', 4) === 0) {
+                $format = substr($format, 4);
             } else {
-                $format = $this->getPhpDatePattern($format);
+                $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
             }
-            $date = new DateTime(null, new \DateTimeZone($this->timeZone));
-            $date->setTimestamp($value);
-            return $date->format($format);
+            if ($this->timeZone != null) {
+                $timestamp->setTimezone(new DateTimeZone($this->timeZone));
+            }
+            return $timestamp->format($format);
         }
     }
 
     /**
-     * Normalizes the given datetime value as a UNIX timestamp that can be taken by various date/time formatting methods.
+     * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
      *
-     * @param mixed $value the datetime value to be normalized.
-     * @return float the normalized datetime value (int64)
+     * @param integer|string|DateTime $value the datetime value to be normalized. The following
+     * types of value are supported:
+     *
+     * - an integer representing a UNIX timestamp
+     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
+     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     *
+     * @return DateTime the normalized datetime value
+     * @throws InvalidParamException if the input value can not be evaluated as a date value.
      */
     protected function normalizeDatetimeValue($value)
     {
-        if ($value === null) {
-            return null;
-        } elseif (is_string($value)) {
-            if (is_numeric($value) || $value === '') {
-                $value = (double)$value;
-            } else {
-                $date = new DateTime($value);
-                $value = (double)$date->format('U');
-            }
+        if ($value === null || $value instanceof DateTime || $value instanceof DateTimeInterface) {
+            // skip any processing
             return $value;
-
-        } elseif ($value instanceof DateTime || $value instanceof DateTimeInterface) {
-            return (double)$value->format('U');
-        } else {
-            return (double)$value;
         }
-    }
-
-    private function getIntlDatePattern($pattern)
-    {
-        if (strpos($pattern, 'php:') === 0) {
-            return $this->convertPatternPhpToIcu(substr($pattern, 4));
-        } else {
-            return $pattern;
+        if (empty($value)) {
+            $value = 0;
         }
-    }
-
-    private function getPhpDatePattern($pattern)
-    {
-        if (strpos($pattern, 'php:') === 0) {
-            return substr($pattern, 4);
-        } else {
-            return $this->convertPatternIcuToPhp($pattern);
+        try {
+            if (is_numeric($value)) { // process as unix timestamp
+                if (($timestamp = DateTime::createFromFormat('U', $value, new DateTimeZone('UTC'))) === false) {
+                    throw new InvalidParamException("Failed to parse '$value' as a UNIX timestamp.");
+                }
+                return $timestamp;
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone('UTC'))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
+                return $timestamp;
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone('UTC'))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
+                return $timestamp;
+            }
+            // finally try to create a DateTime object with the value
+            $timestamp = new DateTime($value, new DateTimeZone('UTC'));
+            return $timestamp;
+        } catch(\Exception $e) {
+            throw new InvalidParamException("'$value' is not a valid date time value: " . $e->getMessage()
+                . "\n" . print_r(DateTime::getLastErrors(), true), $e->getCode(), $e);
         }
-    }
-
-    /**
-     * intlFormatter class (ICU based) and DateTime class don't have same format string.
-     * These format patterns are completely incompatible and must be converted.
-     *
-     * This method converts an ICU (php intl) formatted date, time or datetime string in
-     * a php compatible format string.
-     *
-     * @param string $pattern dateformat pattern like 'dd.mm.yyyy' or 'short'/'medium'/
-     *          'long'/'full' or 'db
-     * @return string with converted date format pattern.
-     * @throws InvalidConfigException
-     */
-    private function convertPatternIcuToPhp($pattern)
-    {
-        return strtr($pattern, [
-            'dd' => 'd',    // day with leading zeros
-            'd' => 'j',     // day without leading zeros
-            'E' => 'D',     // day written in short form eg. Sun
-            'EE' => 'D',
-            'EEE' => 'D',
-            'EEEE' => 'l',  // day fully written eg. Sunday
-            'e' => 'N',     // ISO-8601 numeric representation of the day of the week 1=Mon to 7=Sun
-            'ee' => 'N',    // php 'w' 0=Sun to 6=Sat isn't supported by ICU -> 'w' means week number of year
-            // engl. ordinal st, nd, rd; it's not support by ICU but we added
-            'D' => 'z',     // day of the year 0 to 365
-            'w' => 'W',     // ISO-8601 week number of year, weeks starting on Monday
-            'W' => '',      // week of the current month; isn't supported by php
-            'F' => '',      // Day of Week in Month. eg. 2nd Wednesday in July
-            'g' => '',      // Modified Julian day. This is different from the conventional Julian day number in two regards.
-            'M' => 'n',     // Numeric representation of a month, without leading zeros
-            'MM' => 'm',    // Numeric representation of a month, with leading zeros
-            'MMM' => 'M',   // A short textual representation of a month, three letters
-            'MMMM' => 'F',  // A full textual representation of a month, such as January or March
-            'Q' => '',      // number of quarter not supported in php
-            'QQ' => '',     // number of quarter '02' not supported in php
-            'QQQ' => '',    // quarter 'Q2' not supported in php
-            'QQQQ' => '',   // quarter '2nd quarter' not supported in php
-            'QQQQQ' => '',  // number of quarter '2' not supported in php
-            'Y' => 'Y',     // 4digit year number eg. 2014
-            'y' => 'Y',     // 4digit year also
-            'yyyy' => 'Y',  // 4digit year also
-            'yy' => 'y',    // 2digit year number eg. 14
-            'r' => '',      // related Gregorian year, not supported by php
-            'G' => '',      // ear designator like AD
-            'a' => 'a',     // Lowercase Ante meridiem and Post
-            'h' => 'g',     // 12-hour format of an hour without leading zeros 1 to 12h
-            'K' => 'g',     // 12-hour format of an hour without leading zeros 0 to 11h, not supported by php
-            'H' => 'G',     // 24-hour format of an hour without leading zeros 0 to 23h
-            'k' => 'G',     // 24-hour format of an hour without leading zeros 1 to 24h, not supported by php
-            'hh' => 'h',    // 12-hour format of an hour with leading zeros, 01 to 12 h
-            'KK' => 'h',    // 12-hour format of an hour with leading zeros, 00 to 11 h, not supported by php
-            'HH' => 'H',    // 24-hour format of an hour with leading zeros, 00 to 23 h
-            'kk' => 'H',    // 24-hour format of an hour with leading zeros, 01 to 24 h, not supported by php
-            'm' => 'i',     // Minutes without leading zeros, not supported by php
-            'mm' => 'i',    // Minutes with leading zeros
-            's' => 's',     // Seconds, without leading zeros, not supported by php
-            'ss' => 's',    // Seconds, with leading zeros
-            'SSS' => '',    // millisecond (maximum of 3 significant digits), not supported by php
-            'A' => '',      // milliseconds in day, not supported by php
-            'Z' => 'O',     // Difference to Greenwich time (GMT) in hours
-            'ZZ' => 'O',     // Difference to Greenwich time (GMT) in hours
-            'ZZZ' => 'O',     // Difference to Greenwich time (GMT) in hours
-            'z' => 'T',     // Timezone abbreviation
-            'zz' => 'T',     // Timezone abbreviation
-            'zzz' => 'T',     // Timezone abbreviation
-            'zzzz' => 'T',  // Timzone full name, not supported by php
-            'V' => 'e',      // Timezone identifier eg. Europe/Berlin
-            'VV' => 'e',
-            'VVV' => 'e',
-            'VVVV' => 'e'
-        ]);
-    }
-
-    /**
-     * intlFormatter class (ICU based) and DateTime class don't have same format string.
-     * These format patterns are completely incompatible and must be converted.
-     *
-     * This method converts PHP formatted date, time or datetime string in
-     * an ICU (php intl) compatible format string.
-     *
-     * @param string $pattern dateformat pattern like 'd.m.Y' or 'short'/'medium'/
-     *          'long'/'full' or 'db
-     * @return string with converted date format pattern.
-     * @throws InvalidConfigException
-     */
-    private function convertPatternPhpToIcu($pattern)
-    {
-        return strtr($pattern, [
-            'd' => 'dd',    // day with leading zeros
-            'j' => 'd',     // day without leading zeros
-            'D' => 'EEE',   // day written in short form eg. Sun
-            'l' => 'EEEE',  // day fully written eg. Sunday
-            'N' => 'e',     // ISO-8601 numeric representation of the day of the week 1=Mon to 7=Sun
-            // php 'w' 0=Sun to 6=Sat isn't supported by ICU -> 'w' means week number of year
-            'S' => '',      // engl. ordinal st, nd, rd; it's not support by ICU
-            'z' => 'D',     // day of the year 0 to 365
-            'W' => 'w',     // ISO-8601 week number of year, weeks starting on Monday
-            // week of the current month; isn't supported by php
-            // Day of Week in Month. eg. 2nd Wednesday in July not supported by php
-            // Modified Julian day. This is different from the conventional Julian day number in two regards.
-            'n'=> 'M',      // Numeric representation of a month, without leading zeros
-            'm' => 'MM',    // Numeric representation of a month, with leading zeros
-            'M' => 'MMM',   // A short textual representation of a month, three letters
-            'F' => 'MMMM',  // A full textual representation of a month, such as January or March
-            // number of quarter not supported in php
-            // number of quarter '02' not supported in php
-            // quarter 'Q2' not supported in php
-            // quarter '2nd quarter' not supported in php
-            // number of quarter '2' not supported in php
-            'Y' => 'yyyy',  // 4digit year eg. 2014
-            'y' => 'yy',    // 2digit year number eg. 14
-            // related Gregorian year, not supported by php
-            // ear designator like AD
-            'a' => 'a',     // Lowercase Ante meridiem and Post am. or pm.
-            'A' => 'a',     // Upercase Ante meridiem and Post AM or PM, not supported by ICU
-            'g' => 'h',     // 12-hour format of an hour without leading zeros 1 to 12h
-            // 12-hour format of an hour without leading zeros 0 to 11h, not supported by php
-            'G' => 'H',     // 24-hour format of an hour without leading zeros 0 to 23h
-            // 24-hour format of an hour without leading zeros 1 to 24h, not supported by php
-            'h' => 'hh',    // 12-hour format of an hour with leading zeros, 01 to 12 h
-            // 12-hour format of an hour with leading zeros, 00 to 11 h, not supported by php
-            'H' => 'HH',    // 24-hour format of an hour with leading zeros, 00 to 23 h
-            // 24-hour format of an hour with leading zeros, 01 to 24 h, not supported by php
-            // Minutes without leading zeros, not supported by php
-            'i' => 'mm',    // Minutes with leading zeros
-            // Seconds, without leading zeros, not supported by php
-            's' => 'ss',    // Seconds, with leading zeros
-            // millisecond (maximum of 3 significant digits), not supported by php
-            // milliseconds in day, not supported by php
-            'O' => 'Z',     // Difference to Greenwich time (GMT) in hours
-            'T' => 'z',     // Timezone abbreviation
-            // Timzone full name, not supported by php
-            'e' => 'VV',    // Timezone identifier eg. Europe/Berlin
-            'w' => '',      // Numeric representation of the day of the week 0=Sun, 6=Sat, not sup. ICU
-            'L' => '',      //Whether it's a leap year 1= leap, 0= normal year, not sup. ICU
-            'B' => '',      // Swatch Internet time, 000 to 999, not sup. ICU
-            'u' => '',      // Microseconds Note that date() will always generate 000000 since it takes an integer parameter, not sup. ICU
-            'P' => '',      // Difference to Greenwich time (GMT) with colon between hours and minutes, not sup. ICU
-            'Z' => '',      // Timezone offset in seconds. The offset for timezones west of UTC is always negative, and for those east of UTC is always positive, not sup. ICU
-            'c' => 'yyy-MM-dd\'T\'mm:HH:ssZ', //ISO 8601 date, it works only if nothing else than 'c' is in pattern.
-            'r' => 'eee, dd MMM yyyy mm:HH:ss Z', // » RFC 2822 formatted date, it works only if nothing else than 'r' is in pattern
-            'U' => ''       // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT), not supported in ICU
-
-        ]);
     }
 
     /**
      * Formats a date, time or datetime in a float number as UNIX timestamp (seconds since 01-01-1970).
-     * @param integer|string|DateTime|\DateInterval $value the value to be formatted. The following
+     * @param integer|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
-     * - a PHP DateTime object
-     * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
+     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
+     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @return string the formatted result.
      */
@@ -742,21 +614,30 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return number_format($this->normalizeDatetimeValue($value), 0, '.', '');
+        $timestamp = $this->normalizeDatetimeValue($value);
+        return number_format($timestamp->format('U'), 0, '.', '');
     }
 
     /**
      * Formats the value as the time interval between a date and now in human readable form.
      *
-     * @param integer|string|DateTime|\DateInterval $value the value to be formatted. The following
+     * This method can be used in three different ways:
+     *
+     * 1. Using a timestamp that is relative to `now`.
+     * 2. Using a timestamp that is relative to the `$referenceTime`.
+     * 3. Using a `DateInterval` object.
+     *
+     * @param integer|string|DateTime|DateInterval $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be parsed into a UNIX timestamp via `strtotime()` or that can be passed to a DateInterval constructor.
-     * - a PHP DateTime object
+     * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
+     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
      *
-     * @param integer|string|DateTime|\DateInterval $referenceTime if specified the value is used instead of `now`.
+     * @param integer|string|DateTime $referenceTime if specified the value is used as a reference time instead of `now`
+     * when `$value` is not a `DateInterval` object.
      * @return string the formatted result.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      */
@@ -766,7 +647,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        if ($value instanceof \DateInterval) {
+        if ($value instanceof DateInterval) {
             $interval = $value;
         } else {
             $timestamp = $this->normalizeDatetimeValue($value);
@@ -775,24 +656,22 @@ class Formatter extends Component
                 // $value is not a valid date/time value, so we try
                 // to create a DateInterval with it
                 try {
-                    $interval = new \DateInterval($value);
+                    $interval = new DateInterval($value);
                 } catch (\Exception $e) {
                     // invalid date/time and invalid interval
                     return $this->nullDisplay;
                 }
             } else {
-                $timezone = new \DateTimeZone($this->timeZone);
+                $timezone = new DateTimeZone($this->timeZone);
 
                 if ($referenceTime === null) {
                     $dateNow = new DateTime('now', $timezone);
                 } else {
-                    $referenceTime = $this->normalizeDatetimeValue($referenceTime);
-                    $dateNow = new DateTime(null, $timezone);
-                    $dateNow->setTimestamp($referenceTime);
+                    $dateNow = $this->normalizeDatetimeValue($referenceTime);
+                    $dateNow->setTimezone($timezone);
                 }
 
-                $dateThen = new DateTime(null, $timezone);
-                $dateThen->setTimestamp($timestamp);
+                $dateThen = $timestamp->setTimezone($timezone);
 
                 $interval = $dateThen->diff($dateNow);
             }
@@ -814,7 +693,9 @@ class Formatter extends Component
             if ($interval->i >= 1) {
                 return Yii::t('yii', 'in {delta, plural, =1{a minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
             }
-
+            if ($interval->s == 0) {
+                return Yii::t('yii', 'just now', [], $this->locale);
+            }
             return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
         } else {
             if ($interval->y >= 1) {
@@ -832,7 +713,9 @@ class Formatter extends Component
             if ($interval->i >= 1) {
                 return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->locale);
             }
-
+            if ($interval->s == 0) {
+                return Yii::t('yii', 'just now', [], $this->locale);
+            }
             return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->locale);
         }
     }
@@ -858,6 +741,7 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
         if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, null, $options, $textOptions);
+            $f->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
             return $f->format($value, NumberFormatter::TYPE_INT64);
         } else {
             return number_format((int) $value, 0, $this->decimalSeparator, $this->thousandSeparator);
@@ -1138,6 +1022,16 @@ class Formatter extends Component
         }
     }
 
+
+    /**
+     * Given the value in bytes formats number part of the human readable form.
+     *
+     * @param string|integer|float $value value in bytes to be formatted.
+     * @param integer $decimals the number of digits after the decimal point
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
+     */
     private function formatSizeNumber($value, $decimals, $options, $textOptions)
     {
         if (is_string($value) && is_numeric($value)) {
@@ -1165,7 +1059,9 @@ class Formatter extends Component
         // disable grouping for edge cases like 1023 to get 1023 B instead of 1,023 B
         $oldThousandSeparator = $this->thousandSeparator;
         $this->thousandSeparator = '';
-        $options[NumberFormatter::GROUPING_USED] = false;
+        if ($this->_intlLoaded) {
+            $options[NumberFormatter::GROUPING_USED] = false;
+        }
         // format the size value
         $params = [
             // this is the unformatted number used for the plural rule
@@ -1185,6 +1081,9 @@ class Formatter extends Component
      */
     protected function normalizeNumericValue($value)
     {
+        if (empty($value)) {
+            return 0;
+        }
         if (is_string($value) && is_numeric($value)) {
             $value = (float) $value;
         }
@@ -1223,17 +1122,17 @@ class Formatter extends Component
             $formatter->setAttribute(NumberFormatter::MIN_FRACTION_DIGITS, $decimals);
         }
 
-        foreach ($this->numberFormatterOptions as $name => $value) {
-            $formatter->setAttribute($name, $value);
-        }
-        foreach ($options as $name => $value) {
-            $formatter->setAttribute($name, $value);
-        }
         foreach ($this->numberFormatterTextOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
         }
         foreach ($textOptions as $name => $attribute) {
             $formatter->setTextAttribute($name, $attribute);
+        }
+        foreach ($this->numberFormatterOptions as $name => $value) {
+            $formatter->setAttribute($name, $value);
+        }
+        foreach ($options as $name => $value) {
+            $formatter->setAttribute($name, $value);
         }
         return $formatter;
     }

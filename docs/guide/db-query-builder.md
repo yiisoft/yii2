@@ -191,7 +191,7 @@ WHERE `id` IN (SELECT `id` FROM `user`)
 
 Another way to use the method is the operand format which is `[operator, operand1, operand2, ...]`.
 
-Operator can be one of the following:
+Operator can be one of the following (see also [[yii\db\QueryInterface::where()]]):
 
 - `and`: the operands should be concatenated together using `AND`. For example,
   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,

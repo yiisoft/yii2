@@ -114,4 +114,109 @@ class StringHelperTest extends TestCase
         $this->assertEquals('это тестовая multibyte!!!', StringHelper::truncateWords('это тестовая multibyte строка', 3, '!!!'));
         $this->assertEquals('это строка с          неожиданными...', StringHelper::truncateWords('это строка с          неожиданными пробелами', 4));
     }
+
+    /**
+     * @dataProvider providerStartsWith
+     */
+    public function testStartsWith($result, $string, $with)
+    {
+        // case sensitive version check
+        $this->assertSame($result, StringHelper::startsWith($string, $with));
+        // case insensitive version check
+        $this->assertSame($result, StringHelper::startsWith($string, $with, false));
+    }
+
+    /**
+     * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`
+     */
+    public function providerStartsWith()
+    {
+        return [
+            // positive check
+            [true, '', ''],
+            [true, '', null],
+            [true, 'string', ''],
+            [true, ' string', ' '],
+            [true, 'abc', 'abc'],
+            [true, 'Bürger', 'Bürger'],
+            [true, '我Я multibyte', '我Я'],
+            [true, 'Qנטשופ צרכנות', 'Qנ'],
+            [true, 'ไทย.idn.icann.org', 'ไ'],
+            [true, '!?+', "\x21\x3F"],
+            [true, "\x21?+", '!?'],
+            // false-positive check
+            [false, '', ' '],
+            [false, ' ', '  '],
+            [false, 'Abc', 'Abcde'],
+            [false, 'abc', 'abe'],
+            [false, 'abc', 'b'],
+            [false, 'abc', 'c'],
+        ];
+    }
+
+    public function testStartsWithCaseSensitive()
+    {
+        $this->assertFalse(StringHelper::startsWith('Abc', 'a'));
+        $this->assertFalse(StringHelper::startsWith('üЯ multibyte', 'Üя multibyte'));
+    }
+
+    public function testStartsWithCaseInsensitive()
+    {
+        $this->assertTrue(StringHelper::startsWith('sTrInG', 'StRiNg', false));
+        $this->assertTrue(StringHelper::startsWith('CaSe', 'cAs', false));
+        $this->assertTrue(StringHelper::startsWith('HTTP://BÜrger.DE/', 'http://bürger.de', false));
+        $this->assertTrue(StringHelper::startsWith('üЯйΨB', 'ÜяЙΨ', false));
+    }
+
+    /**
+     * @dataProvider providerEndsWith
+     */
+    public function testEndsWith($result, $string, $with)
+    {
+        // case sensitive version check
+        $this->assertSame($result, StringHelper::endsWith($string, $with));
+        // case insensitive version check
+        $this->assertSame($result, StringHelper::endsWith($string, $with, false));
+    }
+
+    /**
+     * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`
+     */
+    public function providerEndsWith()
+    {
+        return [
+            // positive check
+            [true, '', ''],
+            [true, '', null],
+            [true, 'string', ''],
+            [true, 'string ', ' '],
+            [true, 'string', 'g'],
+            [true, 'abc', 'abc'],
+            [true, 'Bürger', 'Bürger'],
+            [true, 'Я multibyte строка我!', ' строка我!'],
+            [true, '+!?', "\x21\x3F"],
+            [true, "+\x21?", "!\x3F"],
+            [true, 'נטשופ צרכנות', 'ת'],
+            // false-positive check
+            [false, '', ' '],
+            [false, ' ', '  '],
+            [false, 'aaa', 'aaaa'],
+            [false, 'abc', 'abe'],
+            [false, 'abc', 'a'],
+            [false, 'abc', 'b'],
+        ];
+    }
+
+    public function testEndsWithCaseSensitive()
+    {
+        $this->assertFalse(StringHelper::endsWith('string', 'G'));
+        $this->assertFalse(StringHelper::endsWith('multibyte строка', 'А'));
+    }
+
+    public function testEndsWithCaseInsensitive()
+    {
+        $this->assertTrue(StringHelper::endsWith('sTrInG', 'StRiNg', false));
+        $this->assertTrue(StringHelper::endsWith('string', 'nG', false));
+        $this->assertTrue(StringHelper::endsWith('BüЯйΨ', 'ÜяЙΨ', false));
+    }
 }

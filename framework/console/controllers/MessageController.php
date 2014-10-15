@@ -50,6 +50,7 @@ class MessageController extends Controller
      * you may use this configuration file with the "extract" command.
      *
      * @param string $filePath output file name or alias.
+     * @return int CLI exit code
      * @throws Exception on failure.
      */
     public function actionConfig($filePath)
@@ -260,13 +261,9 @@ class MessageController extends Controller
                 PREG_SET_ORDER
             );
             for ($i = 0; $i < $n; ++$i) {
-                if (($pos = strpos($matches[$i][1], '.')) !== false) {
-                    $category = substr($matches[$i][1], $pos + 1, -1);
-                } else {
-                    $category = substr($matches[$i][1], 1, -1);
-                }
+                $category = substr($matches[$i][1], 1, -1);
                 $message = $matches[$i][2];
-                $messages[$category][] = eval("return $message;"); // use eval to eliminate quote escape
+                $messages[$category][] = eval("return {$message};"); // use eval to eliminate quote escape
             }
         }
 
@@ -332,7 +329,7 @@ class MessageController extends Controller
             ksort($existingMessages);
             foreach ($existingMessages as $message => $translation) {
                 if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
-                    if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2) === 0) {
+                    if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0) {
                         $todo[$message] = $translation;
                     } else {
                         $todo[$message] = '@@' . $translation . '@@';

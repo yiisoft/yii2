@@ -1,8 +1,21 @@
 Yii Framework 2 mongodb extension Change Log
 ============================================
 
-2.0.0-rc under development
---------------------------
+2.0.1 under development
+-----------------------
+
+- Enh #3855: Added debug toolbar panel for MongoDB (klimov-paul)
+
+
+2.0.0 October 12, 2014
+----------------------
+
+- Bug #5303: Fixed `yii\mongodb\Collection` unable to fetch default database name from DSN with parameters (klimov-paul)
+- Bug #5411: Fixed `yii\mongodb\ActiveRecord` unable to fetch 'hasMany' referred by array of `\MongoId` (klimov-paul)
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #2337: `yii\mongodb\Collection::buildLikeCondition()` fixed to escape regular expression (klimov-paul)
 - Bug #3385: Fixed "The 'connected' property is deprecated" (samdark)

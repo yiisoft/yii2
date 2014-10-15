@@ -20,9 +20,11 @@
 
 Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
 
+    composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-如上命令会将 Yii 安装在名为 `basic` 的目录中。
+第一条命令安装 [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)，它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局应用，只需执行一次即可。
+第二条命令会将 Yii 安装在名为 `basic` 的目录中。
 
 > 技巧：如果你想安装 Yii 的最新开发版本，可以使用如下命令，它添加了一个 [stability 选项](https://getcomposer.org/doc/04-schema.md#minimum-stability)（[中文版](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/04-schema.md#minimum-stability)）:
 >
@@ -88,9 +90,9 @@ http://localhost/basic/web/index.php
 
 >补充：如果你现在只是要试用 Yii 而不是将其部署到生产环境中，本小节可以跳过。
 
-通过上述方法安装的应用程序在 Windows，Max OS X，Linux 中的 [Apache HTTP 服务器](http://httpd.apache.org/)或 [Nginx HTTP 服务器](http://nginx.org/) 上都可以直接运行。
+通过上述方法安装的应用程序在 Windows，Max OS X，Linux 中的 [Apache HTTP 服务器](http://httpd.apache.org/)或 [Nginx HTTP 服务器](http://nginx.org/)且PHP版本为5.4或更高都可以直接运行。Yii 2.0 也兼容 Facebook 公司的 [HHVM](http://hhvm.com/)，由于 HHVM 和标准 PHP 在边界案例上有些地方略有不同，在使用 HHVM 时需稍作处理。
 
-在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过 URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/basic/web/index.php`。这种配置需要将 Web 服务器的文档根目录指向 `basic/web` 目录。可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md) 一章中有介绍，你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
+在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过 URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/basic/web/index.php`。这种配置需要将 Web 服务器的文档根目录指向 `basic/web` 目录。可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md)一章中有介绍，你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 
 >补充：将 `basic/web` 设置为文档根目录，可以防止终端用户访问 `basic/web` 相邻目录中的私有应用代码和敏感数据文件。禁止对其他目录的访问是一个不错的安全改进。
 
@@ -139,7 +141,7 @@ server {
     error_log   /path/to/basic/log/error.log;
 
     location / {
-        # 如果找不到真实存在的文件，把请求重定向给 index.php
+        # 如果找不到真实存在的文件，把请求分发至 index.php
         try_files $uri $uri/ /index.php?$args;
     }
 
@@ -153,6 +155,7 @@ server {
         include fastcgi.conf;
         fastcgi_pass   127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        try_files $uri =404;
     }
 
     location ~ /\.(ht|svn|git) {

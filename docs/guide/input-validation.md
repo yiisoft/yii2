@@ -177,7 +177,7 @@ function whose return value determines whether to apply the rule or not. For exa
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
-        return $('#country').value == 'USA';
+        return $('#country').val() == 'USA';
     }"],
 ]
 ```
@@ -391,7 +391,7 @@ class CountryValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'The country must be either "USA" or "Web".');
+            $this->addError($model, $attribute, 'The country must be either "USA" or "Web".');
         }
     }
 }

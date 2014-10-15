@@ -16,17 +16,18 @@ use yii\console\Exception;
 /**
  * Allows you to flush cache.
  *
- * ~~~
- * #see list of available components to flush
- * yii cache
- * 
- * #flush particular components specified by their names
- * yii cache/flush first second third
- * 
- * #flush all cache components that can be found in the system
- * yii cache/flush-all
- * ~~~
- * 
+ * see list of available components to flush:
+ *
+ *     yii cache
+ *
+ * flush particular components specified by their names:
+ *
+ *     yii cache/flush first second third
+ *
+ * flush all cache components that can be found in the system
+ *
+ *     yii cache/flush-all
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -212,14 +213,24 @@ class CacheController extends Controller
 
             if ($component instanceof Cache) {
                 $caches[$name] = get_class($component);
-            } elseif (is_array($component) && isset($component['class']) && strpos($component['class'], 'Cache') !== false) {
+            } elseif (is_array($component) && isset($component['class']) && $this->isCacheClass($component['class'])) {
                 $caches[$name] = $component['class'];
-            } elseif (is_string($component) && strpos($component, 'Cache') !== false) {
+            } elseif (is_string($component) && $this->isCacheClass($component)) {
                 $caches[$name] = $component;
             }
         }
 
         return $caches;
+    }
+
+    /**
+     * Checks if given class is a Cache class.
+     * @param string $className class name.
+     * @return boolean
+     */
+    private function isCacheClass($className)
+    {
+        return is_subclass_of($className, Cache::className());
     }
 
 }

@@ -48,6 +48,14 @@ class DbPanel extends Panel
     }
 
     /**
+     * @return string short name of the panel, which will be use in summary.
+     */
+    public function getSummaryName()
+    {
+        return 'DB';
+    }
+
+    /**
      * @inheritdoc
      */
     public function getSummary()

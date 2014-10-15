@@ -360,6 +360,18 @@ EOL;
             ],
             [
                 "@font-face {
+                src: url('../fonts/glyphicons-halflings-regular.eot');
+                src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype');
+                }",
+                '/test/base/path/assets/input/css',
+                '/test/base/path/assets',
+                "@font-face {
+                src: url('input/fonts/glyphicons-halflings-regular.eot');
+                src: url('input/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype');
+                }",
+            ],
+            [
+                "@font-face {
                 src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwT==) format('truetype');
                 }",
                 '/test/base/path/assets/input/css',
@@ -367,6 +379,12 @@ EOL;
                 "@font-face {
                 src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwT==) format('truetype');
                 }",
+            ],
+            [
+                '.published-same-dir-class {background-image: url(published_same_dir.png);}',
+                'C:\test\base\path\assets\input',
+                'C:\test\base\path\assets\output',
+                '.published-same-dir-class {background-image: url(../input/published_same_dir.png);}',
             ],
         ];
     }

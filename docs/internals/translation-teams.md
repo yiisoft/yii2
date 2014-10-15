@@ -14,10 +14,25 @@ China
 - [@Aliciamiao](https://github.com/aliciamiao)
 - [@riverlet ](https://github.com/riverlet)
 
+Finnish
+------
+
+- Jani Mikkonen, [@janisto](https://github.com/janisto), janisto@php.net
+
 German
 ------
 
 - Carsten Brandt, [@cebe](https://github.com/cebe), mail@cebe.cc
+
+Italian
+-------
+
+- Lorenzo Milesi, [@maxxer](https://github.com/maxxer), maxxer@yetopen.it
+
+Japanese
+-------
+
+- Nobuo Kihara 木原伸夫, [@softark](https://github.com/softark), softark@gmail.com
 
 Russian
 -------
@@ -30,6 +45,8 @@ Spanish
 -------
 
 - Luciano Baraglia, [@lucianobaraglia](https://github.com/lucianobaraglia)
+- Marco Da Silva, [@markmarco16](https://github.com/markmarco16), markmarco16@gmail.com
+- Daniel Gómez Pan [@pana1990](https://github.com/pana1990), pana_1990@hotmail.com
 
 Ukrainian
 ---------

@@ -17,7 +17,7 @@ To use an extension, you need to install it first. Most extensions are distribut
 packages which can be installed by taking the following two simple steps:
 
 1. modify the `composer.json` file of your application and specify which extensions (Composer packages) you want to install.
-2. run `php composer.phar install` to install the specified extensions.
+2. run `composer install` to install the specified extensions.
 
 Note that you may need to install [Composer](https://getcomposer.org/) if you do not have it.
 
@@ -172,17 +172,39 @@ We recommend you prefix `yii2-` to the project name for packages representing Yi
 It is important that you specify the package type of your extension as `yii2-extension` so that the package can
 be recognized as a Yii extension when being installed.
 
-When a user runs `php composer.phar install` to install an extension, the file `vendor/yiisoft/extensions.php`
+When a user runs `composer install` to install an extension, the file `vendor/yiisoft/extensions.php`
 will be automatically updated to include the information about the new extension. From this file, Yii applications
 can know which extensions are installed (the information can be accessed via [[yii\base\Application::extensions]].
 
 
 #### Dependencies <a name="dependencies"></a>
 
-Your extension depends on Yii (of course). So you should list it in the `require` entry in `composer.json`.
+Your extension depends on Yii (of course). So you should list it (`yiisoft/yii2`) in the `require` entry in `composer.json`.
 If your extension also depends on other extensions or third-party libraries, you should list them as well.
-Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependency. Use stable
+Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependent package. Use stable
 dependencies when your extension is released in a stable version.
+
+Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/),
+instead of Composer. Yii uses the [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
+to enable managing these kinds of packages through Composer. If your extension depends on a Bower package, you can
+simply list the dependency in `composer.json` like the following:
+
+```json
+{
+    // package dependencies
+    "require": {
+        "bower-asset/jquery": ">=1.11.*"
+    }
+}
+```
+
+The above code states that the extension depends on the `jquery` Bower package. In general, you can use
+`bower-asset/PackageName` to refer to a Bower package in `composer.json`, and use `npm-asset/PackageName`
+to refer to a NPM package. When Composer installs a Bower or NPM package, by default the package content will be
+installed under the `@vendor/bower/PackageName` and `@vendor/npm/Packages` directories, respectively.
+These two directories can also be referred to using the shorter aliases `@bower/PackageName` and `@npm/PackageName`.
+
+For more details about asset management, please refer to the [Assets](structure-assets.md#bower-npm-assets) section.
 
 
 #### Class Autoloading <a name="class-autoloading"></a>
@@ -298,9 +320,10 @@ two choices to make the asset files directly accessible via Web:
   copy the files listed in the asset bundle to a Web-accessible folder.
 
 We recommend you use the second approach so that your extension can be more easily used by other people.
+Please refer to the [Assets] section for more details about how to work with assets in general.
 
 
-### Internationalization and Localization <a name="i18n-l10n"></a>
+#### Internationalization and Localization <a name="i18n-l10n"></a>
 
 Your extension may be used by applications supporting different languages! Therefore, if your extension displays
 content to end users, you should try to [internationalize and localize](tutorial-i18n.md) it. In particular,

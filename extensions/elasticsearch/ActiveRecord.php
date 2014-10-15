@@ -10,6 +10,7 @@ namespace yii\elasticsearch;
 use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -269,10 +270,24 @@ class ActiveRecord extends BaseActiveRecord
      * for the `_id` field so that it is part of the `_source` fields and thus becomes part of the attributes.
      *
      * @return string[] list of attribute names.
+     * @throws \yii\base\InvalidConfigException if not overridden in a child class.
      */
     public function attributes()
     {
         throw new InvalidConfigException('The attributes() method of elasticsearch ActiveRecord has to be implemented by child classes.');
+    }
+
+    /**
+     * A list of attributes that should be treated as array valued when retrieved through [[ActiveQuery::fields]].
+     *
+     * If not listed by this method, attributes retrieved through [[ActiveQuery::fields]] will converted to a scalar value
+     * when the result array contains only one value.
+     *
+     * @return string[] list of attribute names. Must be a subset of [[attributes()]].
+     */
+    public function arrayAttributes()
+    {
+        return [];
     }
 
     /**
@@ -293,6 +308,10 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     *
+     * @param ActiveRecord $record the record to be populated. In most cases this will be an instance
+     * created by [[instantiate()]] beforehand.
+     * @param array $row attribute values (name => value)
      */
     public static function populateRecord($record, $row)
     {
@@ -301,9 +320,10 @@ class ActiveRecord extends BaseActiveRecord
             $attributes = $row['_source'];
         }
         if (isset($row['fields'])) {
-            // reset fields in case it is scalar value TODO use field metadata for this
+            // reset fields in case it is scalar value
+            $arrayAttributes = $record->arrayAttributes();
             foreach($row['fields'] as $key => $value) {
-                if (count($value) == 1) {
+                if (!isset($arrayAttributes[$key]) && count($value) == 1) {
                     $row['fields'][$key] = reset($value);
                 }
             }
@@ -438,6 +458,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
+     * @throws Exception on error.
      */
     public static function updateAll($attributes, $condition = [])
     {
@@ -497,6 +518,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
+     * @throws Exception on error.
      */
     public static function updateAllCounters($counters, $condition = [])
     {
@@ -561,6 +583,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
      * Please refer to [[ActiveQuery::where()]] on how to specify this parameter.
      * @return integer the number of rows deleted
+     * @throws Exception on error.
      */
     public static function deleteAll($condition = [])
     {
@@ -603,5 +626,15 @@ class ActiveRecord extends BaseActiveRecord
         }
 
         return $n;
+    }
+
+    /**
+     * Destroys the relationship in current model.
+     *
+     * This method is not supported by elasticsearch.
+     */
+    public function unlinkAll($name, $delete = false)
+    {
+        throw new NotSupportedException('unlinkAll() is not supported by elasticsearch, use unlink() instead.');
     }
 }

@@ -342,6 +342,10 @@ class DbManager extends BaseManager
      */
     public function getRolesByUser($userId)
     {
+        if (empty($userId)) {
+            return [];
+        }
+
         $query = (new Query)->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
             ->where('a.item_name=b.name')
@@ -381,6 +385,10 @@ class DbManager extends BaseManager
      */
     public function getPermissionsByUser($userId)
     {
+        if (empty($userId)) {
+            return [];
+        }
+
         $query = (new Query)->select('item_name')
             ->from($this->assignmentTable)
             ->where(['user_id' => (string)$userId]);
@@ -469,6 +477,10 @@ class DbManager extends BaseManager
      */
     public function getAssignment($roleName, $userId)
     {
+        if (empty($userId)) {
+            return null;
+        }
+
         $row = (new Query)->from($this->assignmentTable)
             ->where(['user_id' => (string)$userId, 'item_name' => $roleName])
             ->one($this->db);
@@ -489,6 +501,10 @@ class DbManager extends BaseManager
      */
     public function getAssignments($userId)
     {
+        if (empty($userId)) {
+            return [];
+        }
+
         $query = (new Query)
             ->from($this->assignmentTable)
             ->where(['user_id' => (string)$userId]);
@@ -536,6 +552,16 @@ class DbManager extends BaseManager
     {
         return $this->db->createCommand()
             ->delete($this->itemChildTable, ['parent' => $parent->name, 'child' => $child->name])
+            ->execute() > 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeChildren($parent)
+    {
+        return $this->db->createCommand()
+            ->delete($this->itemChildTable, ['parent' => $parent->name])
             ->execute() > 0;
     }
 
@@ -613,6 +639,10 @@ class DbManager extends BaseManager
      */
     public function revoke($role, $userId)
     {
+        if (empty($userId)) {
+            return false;
+        }
+
         return $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
             ->execute() > 0;
@@ -623,6 +653,10 @@ class DbManager extends BaseManager
      */
     public function revokeAll($userId)
     {
+        if (empty($userId)) {
+            return false;
+        }
+
         return $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string)$userId])
             ->execute() > 0;

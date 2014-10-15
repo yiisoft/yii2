@@ -171,8 +171,19 @@ class QueryBuilderTest extends DatabaseTestCase
             // in
             [ ['in', 'id', [1, 2, 3]], '"id" IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
             [ ['not in', 'id', [1, 2, 3]], '"id" NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+            [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '("id") IN (SELECT "id" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
+            [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '("id") NOT IN (SELECT "id" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
 
-            // TODO: exists and not exists
+            // composite in
+            [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '("id", "name") IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+            [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '("id", "name") NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+            [ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '("id", "name") IN (SELECT "id", "name" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
+            [ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '("id", "name") NOT IN (SELECT "id", "name" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
+
+
+            // exists
+            [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT "id" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
+            [ ['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT "id" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
 
             // simple conditions
             [ ['=', 'a', 'b'], '"a" = :qp0', [':qp0' => 'b'] ],
@@ -229,8 +240,6 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['in', 'id', []], '', [] ],
             [ ['not in', 'id', []], '', [] ],
 
-            // TODO: exists and not exists
-
             // simple conditions
             [ ['=', 'a', ''], '', [] ],
             [ ['>', 'a', ''], '', [] ],
@@ -262,8 +271,8 @@ class QueryBuilderTest extends DatabaseTestCase
     {
         $query = (new Query())->where($condition);
         list($sql, $params) = $this->getQueryBuilder()->build($query);
-        $this->assertEquals($expectedParams, $params);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $expected), $sql);
+        $this->assertEquals($expectedParams, $params);
     }
 
     /**
@@ -273,8 +282,8 @@ class QueryBuilderTest extends DatabaseTestCase
     {
         $query = (new Query())->filterWhere($condition);
         list($sql, $params) = $this->getQueryBuilder()->build($query);
-        $this->assertEquals($expectedParams, $params);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $expected), $sql);
+        $this->assertEquals($expectedParams, $params);
     }
 
     public function testAddDropPrimaryKey()
@@ -295,11 +304,28 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals(0, count($tableSchema->primaryKey));
     }
 
-    /* qiangxue: the following tests are commented because they vary by different DB drivers. need a better test scheme.
-    public function testBuildWhereExists()
+    public function existsParamsProvider()
     {
-        $expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE EXISTS (SELECT `1` FROM `Website` `w`)";
-        $expectedQueryParams = null;
+        $conditions = [
+            ['exists', "SELECT `id` FROM `TotalExample` `t` WHERE EXISTS (SELECT `1` FROM `Website` `w`)"],
+            ['not exists', "SELECT `id` FROM `TotalExample` `t` WHERE NOT EXISTS (SELECT `1` FROM `Website` `w`)"]
+        ];
+
+        // adjust dbms specific escaping
+        foreach($conditions as $i => $condition) {
+            if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
+                $conditions[$i][1] = str_replace('`', '"', $condition[1]);
+            }
+        }
+        return $conditions;
+    }
+
+    /**
+     * @dataProvider existsParamsProvider
+     */
+    public function testBuildWhereExists($cond, $expectedQuerySql)
+    {
+        $expectedQueryParams = [];
 
         $subQuery = new Query();
         $subQuery->select('1')
@@ -308,35 +334,20 @@ class QueryBuilderTest extends DatabaseTestCase
         $query = new Query();
         $query->select('id')
             ->from('TotalExample t')
-            ->where(['exists', $subQuery]);
+            ->where([$cond, $subQuery]);
 
         list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $actualQueryParams);
     }
 
-    public function testBuildWhereNotExists()
-    {
-        $expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE NOT EXISTS (SELECT `1` FROM `Website` `w`)";
-        $expectedQueryParams = null;
-
-        $subQuery = new Query();
-        $subQuery->select('1')
-            ->from('Website w');
-
-        $query = new Query();
-        $query->select('id')
-            ->from('TotalExample t')
-            ->where(['not exists', $subQuery]);
-
-        list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
-        $this->assertEquals($expectedQuerySql, $actualQuerySql);
-        $this->assertEquals($expectedQueryParams, $actualQueryParams);
-    }
 
     public function testBuildWhereExistsWithParameters()
     {
         $expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)";
+        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
+            $expectedQuerySql = str_replace('`', '"', $expectedQuerySql);
+        }
         $expectedQueryParams = [':some_value' => "asd", ':merchant_id' => 6];
 
         $subQuery = new Query();
@@ -359,6 +370,9 @@ class QueryBuilderTest extends DatabaseTestCase
     public function testBuildWhereExistsWithArrayParameters()
     {
         $expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND ((`w`.`merchant_id`=:qp0) AND (`w`.`user_id`=:qp1)))) AND (`t`.`some_column`=:qp2)";
+        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
+            $expectedQuerySql = str_replace('`', '"', $expectedQuerySql);
+        }
         $expectedQueryParams = [':qp0' => 6, ':qp1' => 210, ':qp2' => 'asd'];
 
         $subQuery = new Query();
@@ -377,30 +391,32 @@ class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $queryParams);
     }
-    */
 
-    /*
-    This test contains three select queries connected with UNION and UNION ALL constructions.
-    It could be useful to use "phpunit --group=db --filter testBuildUnion" command for run it.
-
-     public function testBuildUnion()
-     {
-        $expectedQuerySql = "SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION ( SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 ) UNION ALL ( SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3 )";
-            $query = new Query();
-            $secondQuery = new Query();
-            $secondQuery->select('id')
-                  ->from('TotalTotalExample t2')
-                  ->where('w > 5');
-            $thirdQuery = new Query();
-            $thirdQuery->select('id')
-                  ->from('TotalTotalExample t3')
-                  ->where('w = 3');
-            $query->select('id')
-                  ->from('TotalExample t1')
-                  ->where(['and', 'w > 0', 'x < 2'])
-                  ->union($secondQuery)
-                  ->union($thirdQuery, TRUE);
-            list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
-            $this->assertEquals($expectedQuerySql, $actualQuerySql);
-     }*/
+    /**
+     * This test contains three select queries connected with UNION and UNION ALL constructions.
+     * It could be useful to use "phpunit --group=db --filter testBuildUnion" command for run it.
+     */
+    public function testBuildUnion()
+    {
+        $expectedQuerySql = "(SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2)) UNION ( SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 ) UNION ALL ( SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3 )";
+        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
+            $expectedQuerySql = str_replace('`', '"', $expectedQuerySql);
+        }
+        $query = new Query();
+        $secondQuery = new Query();
+        $secondQuery->select('id')
+              ->from('TotalTotalExample t2')
+              ->where('w > 5');
+        $thirdQuery = new Query();
+        $thirdQuery->select('id')
+              ->from('TotalTotalExample t3')
+              ->where('w = 3');
+        $query->select('id')
+              ->from('TotalExample t1')
+              ->where(['and', 'w > 0', 'x < 2'])
+              ->union($secondQuery)
+              ->union($thirdQuery, TRUE);
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+    }
 }

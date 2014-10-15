@@ -247,7 +247,7 @@ class Connection extends Component
             return;
         }
         $connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
-        \Yii::trace('Opening redis DB connection: ' . $connection, __CLASS__);
+        \Yii::trace('Opening redis DB connection: ' . $connection, __METHOD__);
         $this->_socket = @stream_socket_client(
             'tcp://' . $this->hostname . ':' . $this->port,
             $errorNumber,
@@ -278,7 +278,7 @@ class Connection extends Component
     {
         if ($this->_socket !== null) {
             $connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
-            \Yii::trace('Closing DB connection: ' . $connection, __CLASS__);
+            \Yii::trace('Closing DB connection: ' . $connection, __METHOD__);
             $this->executeCommand('QUIT');
             stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
             $this->_socket = null;
@@ -334,7 +334,7 @@ class Connection extends Component
      *
      * @param string $name the name of the command
      * @param array $params list of parameters for the command
-     * @return array|bool|null|string Dependend on the executed command this method
+     * @return array|bool|null|string Dependent on the executed command this method
      * will return different data types:
      *
      * - `true` for commands that return "status reply".
@@ -357,7 +357,7 @@ class Connection extends Component
             $command .= '$' . mb_strlen($arg, '8bit') . "\r\n" . $arg . "\r\n";
         }
 
-        \Yii::trace("Executing Redis Command: {$name}", __CLASS__);
+        \Yii::trace("Executing Redis Command: {$name}", __METHOD__);
         fwrite($this->_socket, $command);
 
         return $this->parseResponse(implode(' ', $params));

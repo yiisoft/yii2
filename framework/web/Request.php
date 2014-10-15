@@ -65,7 +65,6 @@ use yii\helpers\StringHelper;
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
  * @property string $rawBody The request body. This property is read-only.
- * @property string $rawCsrfToken The random token for CSRF validation. This property is read-only.
  * @property string $referrer URL referrer, null if not present. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
@@ -1288,7 +1287,6 @@ class Request extends \yii\base\Request
             $config['value'] = $token;
             Yii::$app->getResponse()->getCookies()->add(new Cookie($config));
         } else {
-            $token = Yii::$app->getSecurity()->generateRandomString();
             Yii::$app->getSession()->set($this->csrfParam, $token);
         }
         return $token;

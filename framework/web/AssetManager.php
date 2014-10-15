@@ -31,6 +31,9 @@ use yii\helpers\Url;
  * ]
  * ```
  *
+ * @property AssetConverterInterface $converter The asset converter. Note that the type of this property
+ * differs in getter and setter. See [[getConverter()]] and [[setConverter()]] for details.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -198,6 +201,15 @@ class AssetManager extends Component
         }
     }
 
+    /**
+     * Loads asset bundle class by name
+     *
+     * @param string $name bundle name
+     * @param array $config bundle object configuration
+     * @param boolean $publish if bundle should be published
+     * @return AssetBundle
+     * @throws InvalidConfigException if configuration isn't valid
+     */
     protected function loadBundle($name, $config = [], $publish = true)
     {
         if (!isset($config['class'])) {
@@ -211,6 +223,12 @@ class AssetManager extends Component
         return $bundle;
     }
 
+    /**
+     * Loads dummy bundle by name
+     *
+     * @param string $name
+     * @return AssetBundle
+     */
     protected function loadDummyBundle($name)
     {
         if (!isset($this->_dummyBundles[$name])) {
@@ -268,9 +286,9 @@ class AssetManager extends Component
             $asset = $bundle->sourcePath . '/' . $asset;
         }
 
-        $n = strlen($asset);
+        $n = mb_strlen($asset);
         foreach ($this->assetMap as $from => $to) {
-            $n2 = strlen($from);
+            $n2 = mb_strlen($from);
             if ($n2 <= $n && substr_compare($asset, $from, $n - $n2, $n2) === 0) {
                 return $to;
             }

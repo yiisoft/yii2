@@ -231,7 +231,12 @@ class BaseInflector
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
     ];
-
+    /**
+     * @var mixed Either a [[Transliterator]] or a string from which a [[Transliterator]]
+     * can be built for transliteration used by [[slug()]] when intl is available.
+     * @see http://php.net/manual/en/transliterator.transliterate.php
+     */
+    public static $transliterator = 'Any-Latin; NFKD';
 
     /**
      * Converts a word to its plural form.
@@ -437,7 +442,7 @@ class BaseInflector
     protected static function transliterate($string)
     {
         if (static::hasIntl()) {
-            return transliterator_transliterate('Any-Latin; NFKD', $string);
+            return transliterator_transliterate(static::$transliterator, $string);
         } else {
             return str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
         }

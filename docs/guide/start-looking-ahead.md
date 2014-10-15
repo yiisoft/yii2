@@ -25,9 +25,9 @@ This section will summarize the Yii resources available to help you be more prod
 * [Extensions](http://www.yiiframework.com/extensions/):
   Yii boasts a library of thousands of user-contributed extensions that can be easily plugged into your applications, thereby making your application development even faster and easier.
 * Community
-    - [Forum](http://www.yiiframework.com/forum/)
-    - [GitHub](https://github.com/yiisoft/yii2)
-    - [Facebook](https://www.facebook.com/groups/yiitalk/)
-    - [Twitter](https://twitter.com/yiiframework)
-    - [LinkedIn](https://www.linkedin.com/groups/yii-framework-1483367)
-
+    - Forum: <http://www.yiiframework.com/forum/>
+    - IRC chat: The #yii channel on the freenode network (<irc://irc.freenode.net/yii>)
+    - GitHub: <https://github.com/yiisoft/yii2>
+    - Facebook: <https://www.facebook.com/groups/yiitalk/>
+    - Twitter: <https://twitter.com/yiiframework>
+    - LinkedIn: <https://www.linkedin.com/groups/yii-framework-1483367>

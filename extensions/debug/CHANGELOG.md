@@ -1,18 +1,32 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
-2.0.0-rc under development
---------------------------
+2.0.1 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.0 October 12, 2014
+----------------------
+
+- no changes in this release.
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #1263: Fixed the issue that Gii and Debug modules might be affected by incompatible asset manager configuration (qiangxue)
 - Bug #3956: Debug toolbar was affecting flash message removal (samdark)
 - Bug #4812: Fixed search filter (samdark)
+- Bug #5126: Fixed text body and charset not being set for multipart mail (nkovacs)
 - Enh #2299: Date and time in request list is now never wrapped (samdark)
 - Enh #3088: The debug module will manage their own URL rules now (qiangxue)
 - Enh #3103: debugger panel is now not displayed when printing a page (githubjeka)
 - Enh #3108: Added `yii\debug\Module::enableDebugLogs` to disable logging debug logs by default (qiangxue)
 - Enh #3810: Added "Latest" button on panels page (thiagotalma)
 - Enh #4031: Http status codes were hardcoded in filter (sdkiller)
+- Enh #5089: Added asset debugger panel (arturf, qiangxue)
 
 2.0.0-beta April 13, 2014
 -------------------------

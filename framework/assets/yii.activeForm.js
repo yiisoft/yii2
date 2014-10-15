@@ -256,9 +256,10 @@
                 data = $form.data('yiiActiveForm'),
                 needAjaxValidation = false,
                 messages = {},
-                deferreds = deferredArray();
+                deferreds = deferredArray(),
+                submitting = data.submitting;
 
-            if (data.submitting) {
+            if (submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
                 if (event.result === false) {
@@ -300,10 +301,7 @@
                         delete messages[i];
                     }
                 }
-                if (needAjaxValidation && (!data.submitting || $.isEmptyObject(messages))) {
-                    // Perform ajax validation when at least one input needs it.
-                    // If the validation is triggered by form submission, ajax validation
-                    // should be done only when all inputs pass client validation
+                if (needAjaxValidation) {
                     var $button = data.submitObject,
                         extData = '&' + data.settings.ajaxParam + '=' + $form.prop('id');
                     if ($button && $button.length && $button.prop('name')) {
@@ -327,9 +325,9 @@
                                         delete msgs[this.id];
                                     }
                                 });
-                                updateInputs($form, $.extend(messages, msgs));
+                                updateInputs($form, $.extend(messages, msgs), submitting);
                             } else {
-                                updateInputs($form, messages);
+                                updateInputs($form, messages, submitting);
                             }
                         },
                         error: function () {
@@ -339,10 +337,10 @@
                 } else if (data.submitting) {
                     // delay callback so that the form can be submitted without problem
                     setTimeout(function () {
-                        updateInputs($form, messages);
+                        updateInputs($form, messages, submitting);
                     }, 200);
                 } else {
-                    updateInputs($form, messages);
+                    updateInputs($form, messages, submitting);
                 }
             });
         },
@@ -352,11 +350,11 @@
                 data = $form.data('yiiActiveForm');
 
             if (data.validated) {
+                data.submitting = false;
                 var event = $.Event(events.beforeSubmit);
-                $form.trigger(event, [$form]);
+                $form.trigger(event);
                 if (event.result === false) {
                     data.validated = false;
-                    data.submitting = false;
                     return false;
                 }
                 return true;   // continue submitting the form since validation passes
@@ -411,7 +409,7 @@
         if (attribute.validateOnType) {
             $input.on('keyup.yiiActiveForm', function () {
                 if (attribute.value !== getValue($form, attribute)) {
-                    validateAttribute($form, attribute, false, attribute.valdationDelay);
+                    validateAttribute($form, attribute, false, attribute.validationDelay);
                 }
             });
         }
@@ -471,11 +469,12 @@
      * Updates the error messages and the input containers for all applicable attributes
      * @param $form the form jQuery object
      * @param messages array the validation error messages
+     * @param submitting whether this method is called after validation triggered by form submission
      */
-    var updateInputs = function ($form, messages) {
+    var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
 
-        if (data.submitting) {
+        if (submitting) {
             var errorInputs = [];
             $.each(data.attributes, function () {
                 if (!this.cancelled && updateInput($form, this, messages)) {

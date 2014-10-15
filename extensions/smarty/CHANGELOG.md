@@ -1,8 +1,20 @@
 Yii Framework 2 smarty extension Change Log
 ===========================================
 
-2.0.0-rc under development
---------------------------
+2.0.1 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.0 October 12, 2014
+----------------------
+
+- no changes in this release.
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Enh #4619 (samdark, hwmaier)
     - New functions:

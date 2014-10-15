@@ -1,8 +1,24 @@
 Yii Framework 2 bootstrap extension Change Log
 ==============================================
 
-2.0.0-rc under development
---------------------------
+2.0.1 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.0 October 12, 2014
+----------------------
+
+- Bug #5323: Nested dropdown does not work for `yii\bootstrap\DropDown` (aryraditya)
+- Bug #5336: `yii\bootstrap\DropDown` should register bootstrap plugin asset (zelenin) 
+- Chg #5231: Collapse `items` property uses `label` element instead of array key for headers (nkovacs)
+- Chg #5232: Collapse encodes headers by default (nkovacs)
+- Chg #5217: Tabs no longer requires content since empty tab could be used dynamically (damiandennis)
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #3292: Fixed dropdown widgets rendering incorrect HTML (it3rmit)
 - Bug #3740: Fixed duplicate error message when client validation is enabled (tadaszelvys)

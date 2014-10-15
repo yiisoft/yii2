@@ -69,9 +69,11 @@ return [
     'modules' => [
         'v1' => [
             'basePath' => '@app/modules/v1',
+            'controllerNamespace' => 'app\modules\v1\controllers',
         ],
         'v2' => [
             'basePath' => '@app/modules/v2',
+            'controllerNamespace' => 'app\modules\v2\controllers',
         ],
     ],
     'components' => [

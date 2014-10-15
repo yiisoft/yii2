@@ -11,7 +11,7 @@ use yii\base\Component;
 use yii\base\Action;
 use yii\web\User;
 use yii\web\Request;
-use yii\web\Controller;
+use yii\base\Controller;
 
 /**
  * This class represents an access rule defined by the [[AccessControl]] action filter

@@ -86,7 +86,8 @@ ETag 相比 `Last-Modified` 能实现更复杂和更精确的缓存策略。例�
 复杂的 Etag 生成种子可能会违背使用 `HttpCache` 的初衷而引起不必要的性能开销，因为响应每一次请求都需要重新计算 Etag。请试着找出一个最简单的表达式去触发 Etag 失效。
 
 
-> 注意：为了遵循 [RFC 2616, section 13.3.4（HTTP 协议）](http://tools.ietf.org/html/rfc2616#section-13.3.4)，如果同时配置了 `ETag` 和 `Last-Modified` 头，`HttpCache` 将会同时发送它们，因此它们将被同时用于客户端的缓存失效校验。
+> 注意：为了遵循 [RFC 7232（HTTP 1.1 协议）](http://tools.ietf.org/html/rfc7232#section-2.4)，如果同时配置了 `ETag` 和 `Last-Modified` 头，`HttpCache` 将会同时发送它们。并且如果客户端同时发送 `If-None-Match` 头和 `If-Modified-Since` 头，则只有前者会被接受。
+
 
 
 ## `Cache-Control` 头 <a name="cache-control"></a>

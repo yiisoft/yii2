@@ -175,8 +175,11 @@ class Context extends Component
                     continue;
                 }
                 foreach (['shortDescription', 'description', 'return', 'returnType', 'returnTypes', 'exceptions'] as $property) {
+                    // set all properties that are empty. descriptions will be concatenated.
                     if (empty($m->$property) || is_string($m->$property) && trim($m->$property) === '') {
                         $m->$property = $inheritedMethod->$property;
+                    } elseif ($property == 'description') {
+                        $m->$property = rtrim($m->$property) . "\n\n" . ltrim($inheritedMethod->$property);
                     }
                 }
                 foreach ($m->params as $i => $param) {
@@ -194,7 +197,7 @@ class Context extends Component
                     if (empty($param->type) || trim($param->type) === '') {
                         $param->type = $inheritedMethod->params[$i]->type;
                     }
-                    if (empty($param->types) || trim($param->types) === '') {
+                    if (empty($param->types)) {
                         $param->types = $inheritedMethod->params[$i]->types;
                     }
                 }

@@ -9,7 +9,6 @@ namespace yii\elasticsearch;
 
 use Yii;
 use yii\base\Component;
-use yii\base\NotSupportedException;
 use yii\db\QueryInterface;
 use yii\db\QueryTrait;
 
@@ -320,7 +319,13 @@ class Query extends Component implements QueryInterface
         }
         $column = [];
         foreach ($result['hits']['hits'] as $row) {
-            $column[] = isset($row['_source'][$field]) ? $row['_source'][$field] : null;
+            if (isset($row['fields'][$field])) {
+                $column[] = $row['fields'][$field];
+            } elseif (isset($row['_source'][$field])) {
+                $column[] = $row['_source'][$field];
+            } else {
+                $column[] = null;
+            }
         }
         return $column;
     }

@@ -207,8 +207,7 @@ class ActiveField extends \yii\widgets\ActiveField
             $this->labelOptions['class'] = null;
         }
 
-        parent::checkbox($options, false);
-        return $this;
+        return parent::checkbox($options, false);
     }
 
     /**
@@ -230,8 +229,7 @@ class ActiveField extends \yii\widgets\ActiveField
             $this->labelOptions['class'] = null;
         }
 
-        parent::radio($options, false);
-        return $this;
+        return parent::radio($options, false);
     }
 
     /**
@@ -375,11 +373,11 @@ class ActiveField extends \yii\widgets\ActiveField
                 unset($options['label']);
             } else {
                 $attribute = Html::getAttributeName($this->attribute);
-                $label = $this->model->getAttributeLabel($attribute);
+                $label = Html::encode($this->model->getAttributeLabel($attribute));
             }
         }
         $this->parts['{beginLabel}'] = Html::beginTag('label', $options);
         $this->parts['{endLabel}'] = Html::endTag('label');
-        $this->parts['{labelTitle}'] = Html::encode($label);
+        $this->parts['{labelTitle}'] = $label;
     }
 }

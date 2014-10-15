@@ -35,7 +35,8 @@ Below is the list of databases that are currently supported by Yii Active Record
 * SQLite 2 and 3: via [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2010 or later: via [[yii\db\ActiveRecord]]
 * Oracle: via [[yii\db\ActiveRecord]]
-* CUBRID 9.1 or later: via [[yii\db\ActiveRecord]]
+* CUBRID 9.3 or later: via [[yii\db\ActiveRecord]] (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
+  the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
 * Sphnix: via [[yii\sphinx\ActiveRecord]], requires `yii2-sphinx` extension
 * ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requires `yii2-elasticsearch` extension
 * Redis 2.6.12 or later: via [[yii\redis\ActiveRecord]], requires `yii2-redis` extension
@@ -97,7 +98,7 @@ Connecting to Database
 ----------------------
 
 Active Record uses a [[yii\db\Connection|DB connection]] to exchange data with database. By default,
-it uses the `db` application component as the connection. As explained in [Database basics](db-dao.md),
+it uses the `db` [application component](structure-application-components.md) as the connection. As explained in [Database basics](db-dao.md),
 you may configure the `db` component in the application configuration file like follows,
 
 ```php
@@ -330,6 +331,16 @@ $customer->loadDefaultValues();
 // ... render HTML form for $customer ...
 ```
 
+If you want to set some initial values for the attributes yourself you can override the `init()` method
+of the active record class and set the values there. For example to set the default value for the `status` attribute:
+
+```php
+public function init()
+{
+    parent::init();
+    $this->status = 'active';
+}
+```
 
 Active Record Life Cycles
 -------------------------
@@ -465,14 +476,14 @@ an `ActiveQuery` instance, while `$customer->orders` returns an array of `Order`
 the query results in nothing).
 
 
-Relations with Pivot Table
---------------------------
+Relations with Junction Table
+-----------------------------
 
-Sometimes, two tables are related together via an intermediary table called [pivot table][]. To declare such relations,
+Sometimes, two tables are related together via an intermediary table called [junction table][]. To declare such relations,
 we can customize the [[yii\db\ActiveQuery]] object by calling its [[yii\db\ActiveQuery::via()|via()]] or
 [[yii\db\ActiveQuery::viaTable()|viaTable()]] method.
 
-For example, if table `order` and table `item` are related via pivot table `order_item`,
+For example, if table `order` and table `item` are related via junction table `order_item`,
 we can declare the `items` relation in the `Order` class like the following:
 
 ```php
@@ -488,7 +499,7 @@ class Order extends \yii\db\ActiveRecord
 
 The [[yii\db\ActiveQuery::via()|via()]] method is similar to [[yii\db\ActiveQuery::viaTable()|viaTable()]] except that
 the first parameter of [[yii\db\ActiveQuery::via()|via()]] takes a relation name declared in the ActiveRecord class
-instead of the pivot table name. For example, the above `items` relation can be equivalently declared as follows:
+instead of the junction table name. For example, the above `items` relation can be equivalently declared as follows:
 
 ```php
 class Order extends \yii\db\ActiveRecord
@@ -506,7 +517,7 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[pivot table]: http://en.wikipedia.org/wiki/Pivot_table "Pivot table on Wikipedia"
+[junction table]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
 
 
 Lazy and Eager Loading
@@ -561,7 +572,7 @@ As you can see, only two SQL queries are needed for the same task!
 
 > Info: In general, if you are eager loading `N` relations among which `M` relations are defined with `via()` or `viaTable()`,
 > a total number of `1+M+N` SQL queries will be performed: one query to bring back the rows for the primary table, one for
-> each of the `M` pivot tables corresponding to the `via()` or `viaTable()` calls, and one for each of the `N` related tables.
+> each of the `M` junction tables corresponding to the `via()` or `viaTable()` calls, and one for each of the `N` related tables.
 
 > Note: When you are customizing `select()` with eager loading, make sure you include the columns that link
 > the related models. Otherwise, the related models will not be loaded. For example,

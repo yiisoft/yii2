@@ -43,7 +43,8 @@ use yii\base\InvalidParamException;
  * useful for displaying confirmation messages. To use flash messages, simply
  * call methods such as [[setFlash()]], [[getFlash()]].
  *
- * @property array $allFlashes Flash messages (key => message). This property is read-only.
+ * @property array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
+ * is read-only.
  * @property array $cookieParams The session cookie parameters. This property is read-only.
  * @property integer $count The number of session variables. This property is read-only.
  * @property string $flash The key identifying the flash message. Note that flash messages and normal session
@@ -206,7 +207,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             $request = Yii::$app->getRequest();
             if (ini_get('session.use_cookies') && !empty($_COOKIE[$name])) {
                 $this->_hasSessionId = true;
-            } elseif (!ini_get('use_only_cookies') && ini_get('use_trans_sid')) {
+            } elseif (!ini_get('session.use_only_cookies') && ini_get('session.use_trans_sid')) {
                 $this->_hasSessionId = $request->get($name) !== null;
             } else {
                 $this->_hasSessionId = false;
@@ -625,8 +626,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @param mixed $defaultValue value to be returned if the flash message does not exist.
      * @param boolean $delete whether to delete this flash message right after this method is called.
      * If false, the flash message will be automatically deleted in the next request.
-     * @return mixed the flash message
+     * @return mixed the flash message or an array of messages if addFlash was used
      * @see setFlash()
+     * @see addFlash()
      * @see hasFlash()
      * @see getAllFlashes()
      * @see removeFlash()
@@ -664,13 +666,16 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      *
      * With the above code you can use the [bootstrap alert][] classes such as `success`, `info`, `danger`
      * as the flash message key to influence the color of the div.
+     * 
+     * Note that if you use [[addFlash()]], `$message` will be an array, and you will have to adjust the above code.
      *
      * [bootstrap alert]: http://getbootstrap.com/components/#alerts
      *
      * @param boolean $delete whether to delete the flash messages right after this method is called.
      * If false, the flash messages will be automatically deleted in the next request.
-     * @return array flash messages (key => message).
+     * @return array flash messages (key => message or key => [message1, message2]).
      * @see setFlash()
+     * @see addFlash()
      * @see getFlash()
      * @see hasFlash()
      * @see removeFlash()
@@ -712,6 +717,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * regardless if it is accessed or not. If true (default value), the flash message will remain until after
      * it is accessed.
      * @see getFlash()
+     * @see addFlash()
      * @see removeFlash()
      */
     public function setFlash($key, $value = true, $removeAfterAccess = true)
@@ -732,6 +738,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * regardless if it is accessed or not. If true (default value), the flash message will remain until after
      * it is accessed.
      * @see getFlash()
+     * @see setFlash()
      * @see removeFlash()
      */
     public function addFlash($key, $value = true, $removeAfterAccess = true)
@@ -758,6 +765,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @return mixed the removed flash message. Null if the flash message does not exist.
      * @see getFlash()
      * @see setFlash()
+     * @see addFlash()
      * @see removeAllFlashes()
      */
     public function removeFlash($key)
@@ -777,6 +785,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * by this method.
      * @see getFlash()
      * @see setFlash()
+     * @see addFlash()
      * @see removeFlash()
      */
     public function removeAllFlashes()

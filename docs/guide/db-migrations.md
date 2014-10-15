@@ -178,7 +178,7 @@ After applying a migration, the migration tool will keep a record in a database
 table named `migration`. This allows the tool to identify which migrations
 have been applied and which are not. If the `migration` table does not exist,
 the tool will automatically create it in the database specified by the `db`
-application component.
+[application component](structure-application-components.md).
 
 Sometimes, we may only want to apply one or a few new migrations. We can use the
 following command:
@@ -276,7 +276,7 @@ There are several ways to customize the migration command.
 
 ### Use Command Line Options
 
-The migration command comes with four options that can be specified in command
+The migration command comes with few options that can be specified in command
 line:
 
 * `interactive`: boolean, specifies whether to perform migrations in an
@@ -293,7 +293,7 @@ line:
   migration history information. It defaults to `migration`. The table
   structure is `version varchar(255) primary key, apply_time integer`.
 
-* `db`: string, specifies the ID of the database application component.
+* `db`: string, specifies the ID of the database [application component](structure-application-components.md).
   Defaults to 'db'.
 
 * `templateFile`: string, specifies the path of the file to be served as the code
@@ -341,7 +341,7 @@ can be also configured this way.
 
 ### Migrating with Multiple Databases
 
-By default, migrations will be applied to the database specified by the `db` application component.
+By default, migrations will be applied to the database specified by the `db` [application component](structure-application-components.md).
 You may change it by specifying the `--db` option, for example,
 
 ```

@@ -1,27 +1,10 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
-namespace yii\i18n;
-
-// override information about intl
-use yiiunit\framework\i18n\FormatterTest;
-
-function extension_loaded($name)
-{
-    if ($name === 'intl' && FormatterTest::$enableIntl !== null) {
-        return FormatterTest::$enableIntl;
-    }
-    return \extension_loaded($name);
-}
 
 namespace yiiunit\framework\i18n;
 
-use yii\base\InvalidParamException;
+use NumberFormatter;
 use yii\i18n\Formatter;
+use Yii;
 use yiiunit\TestCase;
 use DateTime;
 use DateInterval;
@@ -31,8 +14,6 @@ use DateInterval;
  */
 class FormatterTest extends TestCase
 {
-    public static $enableIntl;
-
     /**
      * @var Formatter
      */
@@ -42,17 +23,7 @@ class FormatterTest extends TestCase
     {
         parent::setUp();
 
-        // emulate disabled intl extension
-        // enable it only for tests prefixed with testIntl
-        static::$enableIntl = null;
-        if (strncmp($this->getName(false), 'testIntl', 8) === 0) {
-            if (!extension_loaded('intl')) {
-                $this->markTestSkipped('intl extension is not installed.');
-            }
-            static::$enableIntl = true;
-        } else {
-            static::$enableIntl = false;
-        }
+        IntlTestHelper::setIntlStatus($this);
 
         $this->mockApplication([
             'timeZone' => 'UTC',
@@ -64,6 +35,7 @@ class FormatterTest extends TestCase
     protected function tearDown()
     {
         parent::tearDown();
+        IntlTestHelper::resetIntlStatus();
         $this->formatter = null;
     }
 
@@ -171,6 +143,8 @@ class FormatterTest extends TestCase
     {
         $value = 'test@sample.com';
         $this->assertSame("<a href=\"mailto:$value\">$value</a>", $this->formatter->asEmail($value));
+        $value = 'test@sample.com';
+        $this->assertSame("<a href=\"mailto:$value\" target=\"_blank\">$value</a>", $this->formatter->asEmail($value, ['target' => '_blank']));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asEmail(null));
@@ -186,6 +160,8 @@ class FormatterTest extends TestCase
         $this->assertSame("<a href=\"http://$value\">$value</a>", $this->formatter->asUrl($value));
         $value = 'https://www.yiiframework.com/?name=test&value=5"';
         $this->assertSame("<a href=\"https://www.yiiframework.com/?name=test&amp;value=5&quot;\">https://www.yiiframework.com/?name=test&amp;value=5&quot;</a>", $this->formatter->asUrl($value));
+        $value = 'http://www.yiiframework.com/';
+        $this->assertSame("<a href=\"$value\" target=\"_blank\">$value</a>", $this->formatter->asUrl($value, ['target' => '_blank']));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asUrl(null));
@@ -195,6 +171,9 @@ class FormatterTest extends TestCase
     {
         $value = 'http://sample.com/img.jpg';
         $this->assertSame("<img src=\"$value\" alt=\"\">", $this->formatter->asImage($value));
+        $value = 'http://sample.com/img.jpg';
+        $alt = "Hello!";
+        $this->assertSame("<img src=\"$value\" alt=\"$alt\">", $this->formatter->asImage($value, ['alt' => $alt]));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asImage(null));
@@ -202,14 +181,11 @@ class FormatterTest extends TestCase
 
     public function testAsBoolean()
     {
-        $value = true;
-        $this->assertSame('Yes', $this->formatter->asBoolean($value));
-        $value = false;
-        $this->assertSame('No', $this->formatter->asBoolean($value));
-        $value = "111";
-        $this->assertSame('Yes', $this->formatter->asBoolean($value));
-        $value = "";
-        $this->assertSame('No', $this->formatter->asBoolean($value));
+        $this->assertSame('Yes', $this->formatter->asBoolean(true));
+        $this->assertSame('No', $this->formatter->asBoolean(false));
+        $this->assertSame('Yes', $this->formatter->asBoolean("111"));
+        $this->assertSame('No', $this->formatter->asBoolean(""));
+        $this->assertSame('No', $this->formatter->asBoolean(0));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asBoolean(null));
@@ -233,6 +209,11 @@ class FormatterTest extends TestCase
         $this->assertSame(date('n/j/y', $value), $this->formatter->asDate($value, 'short'));
         $this->assertSame(date('F j, Y', $value), $this->formatter->asDate($value, 'long'));
 
+        // empty input
+        $this->assertSame('Jan 1, 1970', $this->formatter->asDate(''));
+        $this->assertSame('Jan 1, 1970', $this->formatter->asDate(0));
+        $this->assertSame('Jan 1, 1970', $this->formatter->asDate(false));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDate(null));
     }
@@ -240,6 +221,12 @@ class FormatterTest extends TestCase
     public function testIntlAsTime()
     {
         $this->testAsTime();
+
+        // empty input
+        $this->formatter->locale = 'de-DE';
+        $this->assertSame('00:00:00', $this->formatter->asTime(''));
+        $this->assertSame('00:00:00', $this->formatter->asTime(0));
+        $this->assertSame('00:00:00', $this->formatter->asTime(false));
     }
 
     public function testAsTime()
@@ -248,6 +235,10 @@ class FormatterTest extends TestCase
         $this->assertSame(date('g:i:s A', $value), $this->formatter->asTime($value));
         $this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value, 'php:h:i:s A'));
 
+        // empty input
+        $this->assertSame('12:00:00 AM', $this->formatter->asTime(''));
+        $this->assertSame('12:00:00 AM', $this->formatter->asTime(0));
+        $this->assertSame('12:00:00 AM', $this->formatter->asTime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTime(null));
     }
@@ -255,6 +246,12 @@ class FormatterTest extends TestCase
     public function testIntlAsDatetime()
     {
         $this->testAsDatetime();
+
+        // empty input
+        $this->formatter->locale = 'de-DE';
+        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(''));
+        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(0));
+        $this->assertSame('01.01.1970 00:00:00', $this->formatter->asDatetime(false));
     }
 
     public function testAsDatetime()
@@ -263,8 +260,17 @@ class FormatterTest extends TestCase
         $this->assertSame(date('M j, Y g:i:s A', $value), $this->formatter->asDatetime($value));
         $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
+        // empty input
+        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(''));
+        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(0));
+        $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
+    }
+
+    public function testIntlAsTimestamp()
+    {
+        $this->testAsTimestamp();
     }
 
     public function testAsTimestamp()
@@ -275,12 +281,22 @@ class FormatterTest extends TestCase
 
         $this->assertSame("$value", $this->formatter->asTimestamp(date('Y-m-d H:i:s', $value)));
 
+        // empty input
+        $this->assertSame("0", $this->formatter->asTimestamp(0));
+        $this->assertSame("0", $this->formatter->asTimestamp(false));
+        $this->assertSame("0", $this->formatter->asTimestamp(""));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTimestamp(null));
     }
 
-    // TODO test format conversion ICU/PHP
-
+    public function testIntlDateRangeLow()
+    {
+        if (PHP_INT_SIZE == 4) { // 32bit systems
+            $this->markTestSkipped('intl does not support high date ranges on 32bit systems.');
+        }
+        $this->testDateRangeLow();
+    }
 
     /**
      * Test for dates before 1970
@@ -289,18 +305,25 @@ class FormatterTest extends TestCase
     public function testDateRangeLow()
     {
         $this->assertSame('12-08-1922', $this->formatter->asDate('1922-08-12', 'dd-MM-yyyy'));
+        $this->assertSame('14-01-1732', $this->formatter->asDate('1732-01-14', 'dd-MM-yyyy'));
     }
 
-    /**
+    public function testIntlDateRangeHigh()
+    {
+        if (PHP_INT_SIZE == 4) { // 32bit systems
+            $this->markTestSkipped('intl does not support high date ranges on 32bit systems.');
+        }
+        $this->testDateRangeHigh();
+    }
+
+        /**
      * Test for dates after 2038
      * https://github.com/yiisoft/yii2/issues/3126
      */
     public function testDateRangeHigh()
     {
-        if (PHP_INT_SIZE < 8) {
-            $this->markTestSkipped('Dates > 2038 only work on PHP compiled with 64bit support.');
-        }
         $this->assertSame('17-12-2048', $this->formatter->asDate('2048-12-17', 'dd-MM-yyyy'));
+        $this->assertSame('17-12-3048', $this->formatter->asDate('3048-12-17', 'dd-MM-yyyy'));
     }
 
     private function buildDateSubIntervals($referenceDate, $intervals)
@@ -310,6 +333,11 @@ class FormatterTest extends TestCase
             $date->sub($interval);
         }
         return $date;
+    }
+
+    public function testIntlAsRelativeTime()
+    {
+        $this->testAsRelativeTime();
     }
 
     public function testAsRelativeTime()
@@ -425,17 +453,180 @@ class FormatterTest extends TestCase
         $this->assertSame('in a month', $this->formatter->asRelativeTime($this->buildDateSubIntervals('2014-03-03', [$interval_1_month]), $dateNow));
         $this->assertSame('in 28 days', $this->formatter->asRelativeTime($dateThen, $dateNow));
 
+        // just now
+        $this->assertSame("just now", $this->formatter->asRelativeTime($t = time(), $t));
+        $this->assertSame("just now", $this->formatter->asRelativeTime(0, 0));
+
+        // empty input
+        $this->assertSame("just now", $this->formatter->asRelativeTime(false, 0));
+        $this->assertSame("just now", $this->formatter->asRelativeTime("", 0));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null));
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null, time()));
     }
 
+    public function dateInputs()
+    {
+        return [
+//            ['2015-01-01 00:00:00', '2014-13-01'], // TODO evals to current time on that date
+            ['2015-01-01 00:00:00', '2014-13-01 00:00:00'],
+            [false, 'asdfg', 'yii\base\InvalidParamException'],
+//            [(string)strtotime('now'), 'now'], // fails randomly
+        ];
+    }
+
+    /**
+     * @dataProvider dateInputs
+     */
+    public function testIntlDateInput($expected, $value, $expectedException = null)
+    {
+        $this->testDateInput($expected, $value, $expectedException);
+    }
+
+    /**
+     * @dataProvider dateInputs
+     */
+    public function testDateInput($expected, $value, $expectedException = null)
+    {
+        if ($expectedException !== null) {
+            $this->setExpectedException($expectedException);
+        }
+        $this->assertSame($expected, $this->formatter->asDate($value, 'yyyy-MM-dd HH:mm:ss'));
+        $this->assertSame($expected, $this->formatter->asTime($value, 'yyyy-MM-dd HH:mm:ss'));
+        $this->assertSame($expected, $this->formatter->asDatetime($value, 'yyyy-MM-dd HH:mm:ss'));
+    }
+
+
+    public function provideTimezones()
+    {
+        return [
+            ['UTC'],
+            ['Europe/Berlin'],
+            ['America/Jamaica'],
+        ];
+    }
+
+    /**
+     * provide default timezones times input date value
+     */
+    public function provideTimesAndTz()
+    {
+        $result = [];
+        foreach($this->provideTimezones() as $tz) {
+            $result[] = [$tz[0], 1407674460,                          1388580060];
+            $result[] = [$tz[0], '2014-08-10 12:41:00',               '2014-01-01 12:41:00'];
+            $result[] = [$tz[0], '2014-08-10 12:41:00 UTC',           '2014-01-01 12:41:00 UTC'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00 Europe/Berlin', '2014-01-01 13:41:00 Europe/Berlin'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00 CEST',          '2014-01-01 13:41:00 CET'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00+0200',          '2014-01-01 13:41:00+0100'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00+02:00',         '2014-01-01 13:41:00+01:00'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00 +0200',         '2014-01-01 13:41:00 +0100'];
+            $result[] = [$tz[0], '2014-08-10 14:41:00 +02:00',        '2014-01-01 13:41:00 +01:00'];
+            $result[] = [$tz[0], '2014-08-10T14:41:00+02:00',         '2014-01-01T13:41:00+01:00']; // ISO 8601
+        }
+        return $result;
+    }
+
+    /**
+     * Test timezones with input date and time in other timezones
+     * @dataProvider provideTimesAndTz
+     */
+    public function testIntlTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
+    {
+        $this->testTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst);
+    }
+
+    /**
+     * Test timezones with input date and time in other timezones
+     * @dataProvider provideTimesAndTz
+     */
+    public function testTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
+    {
+        date_default_timezone_set($defaultTz); // formatting has to be independent of the default timezone set by PHP
+        $this->formatter->datetimeFormat = 'yyyy-MM-dd HH:mm:ss';
+        $this->formatter->dateFormat = 'yyyy-MM-dd';
+        $this->formatter->timeFormat = 'HH:mm:ss';
+
+        // daylight saving time
+        $this->formatter->timeZone = 'UTC';
+        $this->assertSame('2014-08-10 12:41:00', $this->formatter->asDatetime($inputTimeDst));
+        $this->assertSame('2014-08-10', $this->formatter->asDate($inputTimeDst));
+        $this->assertSame('12:41:00', $this->formatter->asTime($inputTimeDst));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp($inputTimeDst));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertSame('2014-08-10 14:41:00', $this->formatter->asDatetime($inputTimeDst));
+        $this->assertSame('2014-08-10', $this->formatter->asDate($inputTimeDst));
+        $this->assertSame('14:41:00', $this->formatter->asTime($inputTimeDst));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp($inputTimeDst));
+
+        // non daylight saving time
+        $this->formatter->timeZone = 'UTC';
+        $this->assertSame('2014-01-01 12:41:00', $this->formatter->asDatetime($inputTimeNonDst));
+        $this->assertSame('2014-01-01', $this->formatter->asDate($inputTimeNonDst));
+        $this->assertSame('12:41:00', $this->formatter->asTime($inputTimeNonDst));
+        $this->assertSame('1388580060', $this->formatter->asTimestamp($inputTimeNonDst));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertSame('2014-01-01 13:41:00', $this->formatter->asDatetime($inputTimeNonDst));
+        $this->assertSame('2014-01-01', $this->formatter->asDate($inputTimeNonDst));
+        $this->assertSame('13:41:00', $this->formatter->asTime($inputTimeNonDst));
+        $this->assertSame('1388580060', $this->formatter->asTimestamp($inputTimeNonDst));
+
+        // tests for relative time
+        if ($inputTimeDst !== 1407674460) {
+            $this->assertSame('3 hours ago', $this->formatter->asRelativeTime($inputTimeDst, $relativeTime = str_replace(['14:41', '12:41'], ['17:41', '15:41'], $inputTimeDst)));
+            $this->assertSame('in 3 hours', $this->formatter->asRelativeTime($relativeTime, $inputTimeDst));
+            $this->assertSame('3 hours ago', $this->formatter->asRelativeTime($inputTimeNonDst, $relativeTime = str_replace(['13:41', '12:41'], ['16:41', '15:41'], $inputTimeNonDst)));
+            $this->assertSame('in 3 hours', $this->formatter->asRelativeTime($relativeTime, $inputTimeNonDst));
+        }
+    }
+
 
     // number format
 
-
-    public function testIntlAsInteger()
+    /**
+     * Provides some configuration that should not affect Integer formatter
+     */
+    public function differentConfigProvider()
     {
+        // make this test not break when intl is not installed
+        if (!extension_loaded('intl')) {
+            return [];
+        }
+
+        return [
+            [[
+                'numberFormatterOptions' => [
+                    NumberFormatter::MIN_FRACTION_DIGITS => 2,
+                ],
+            ]],
+            [[
+                'numberFormatterOptions' => [
+                    NumberFormatter::MAX_FRACTION_DIGITS => 2,
+                ],
+            ]],
+            [[
+                'numberFormatterOptions' => [
+                    NumberFormatter::FRACTION_DIGITS => 2,
+                ],
+            ]],
+            [[
+                'numberFormatterOptions' => [
+                    NumberFormatter::MIN_FRACTION_DIGITS => 2,
+                    NumberFormatter::MAX_FRACTION_DIGITS => 4,
+                ],
+            ]],
+        ];
+    }
+
+
+    /**
+     * @dataProvider differentConfigProvider
+     */
+    public function testIntlAsInteger($config)
+    {
+        // configure formatter with different configs that should not affect integer format
+        Yii::configure($this->formatter, $config);
         $this->testAsInteger();
     }
 
@@ -451,6 +642,10 @@ class FormatterTest extends TestCase
         $this->assertSame("123,456", $this->formatter->asInteger(123456));
         $this->assertSame("123,456", $this->formatter->asInteger(123456.789));
 
+        // empty input
+        $this->assertSame("0", $this->formatter->asInteger(false));
+        $this->assertSame("0", $this->formatter->asInteger(""));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asInteger(null));
     }
@@ -460,7 +655,7 @@ class FormatterTest extends TestCase
      */
     public function testAsIntegerException()
     {
-        $this->assertSame("0", $this->formatter->asInteger('a'));
+        $this->formatter->asInteger('a');
     }
 
     /**
@@ -468,7 +663,7 @@ class FormatterTest extends TestCase
      */
     public function testAsIntegerException2()
     {
-        $this->assertSame("0", $this->formatter->asInteger('-123abc'));
+        $this->formatter->asInteger('-123abc');
     }
 
     public function testIntlAsDecimal()
@@ -505,6 +700,10 @@ class FormatterTest extends TestCase
         $this->formatter->thousandSeparator = null;
         $value = '-123456.123';
         $this->assertSame("-123,456.123", $this->formatter->asDecimal($value));
+
+        // empty input
+        $this->assertSame("0", $this->formatter->asInteger(false));
+        $this->assertSame("0", $this->formatter->asInteger(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
@@ -543,6 +742,10 @@ class FormatterTest extends TestCase
         $value = '-123456.123';
         $this->assertSame("-123,456.123", $this->formatter->asDecimal($value, 3));
 
+        // empty input
+        $this->assertSame("0", $this->formatter->asInteger(false));
+        $this->assertSame("0", $this->formatter->asInteger(""));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
     }
@@ -560,6 +763,10 @@ class FormatterTest extends TestCase
         $this->assertSame("12%", $this->formatter->asPercent('0.1234'));
         $this->assertSame("-1%", $this->formatter->asPercent(-0.009343));
         $this->assertSame("-1%", $this->formatter->asPercent('-0.009343'));
+
+        // empty input
+        $this->assertSame("0", $this->formatter->asInteger(false));
+        $this->assertSame("0", $this->formatter->asInteger(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asPercent(null));
@@ -590,8 +797,27 @@ class FormatterTest extends TestCase
         $this->formatter->currencyCode = 'EUR';
         $this->assertSame('123,00 €', $this->formatter->asCurrency('123'));
 
+        // empty input
+        $this->assertSame("0", $this->formatter->asInteger(false));
+        $this->assertSame("0", $this->formatter->asInteger(""));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/pull/5261
+     */
+    public function testIntlIssue5261()
+    {
+        $this->formatter->locale = 'en-US';
+        $this->formatter->numberFormatterOptions = [
+            \NumberFormatter::FRACTION_DIGITS => 0
+        ];
+        $this->formatter->numberFormatterTextOptions = [
+            \NumberFormatter::CURRENCY_CODE => 'EUR'
+        ];
+        $this->assertSame('€100', $this->formatter->asCurrency(100, 'EUR'));
     }
 
     public function testAsCurrency()
@@ -608,6 +834,10 @@ class FormatterTest extends TestCase
         $this->assertSame('EUR -123.45', $this->formatter->asCurrency('-123.45'));
         $this->assertSame('EUR -123.45', $this->formatter->asCurrency(-123.45));
 
+        // empty input
+        $this->assertSame("0", $this->formatter->asInteger(false));
+        $this->assertSame("0", $this->formatter->asInteger(""));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
     }
@@ -621,6 +851,10 @@ class FormatterTest extends TestCase
         $value = '-123456.123';
         $this->assertSame("-1.23456123E5", $this->formatter->asScientific($value));
 
+        // empty input
+        $this->assertSame("0", $this->formatter->asInteger(false));
+        $this->assertSame("0", $this->formatter->asInteger(""));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
     }
@@ -633,6 +867,10 @@ class FormatterTest extends TestCase
         $this->assertSame("1.234560E+5", $this->formatter->asScientific($value));
         $value = '-123456.123';
         $this->assertSame("-1.234561E+5", $this->formatter->asScientific($value));
+
+        // empty input
+        $this->assertSame("0", $this->formatter->asInteger(false));
+        $this->assertSame("0", $this->formatter->asInteger(""));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
@@ -678,6 +916,7 @@ class FormatterTest extends TestCase
         // tests for base 1000
         $this->formatter->sizeFormatBase = 1000;
         $this->assertSame("999 B", $this->formatter->asShortSize(999));
+        $this->assertSame("999 B", $this->formatter->asShortSize('999'));
         $this->assertSame("1.05 MB", $this->formatter->asShortSize(1024 * 1024));
         $this->assertSame("1 KB", $this->formatter->asShortSize(1000));
         $this->assertSame("1.02 KB", $this->formatter->asShortSize(1023));
@@ -696,8 +935,11 @@ class FormatterTest extends TestCase
         $this->formatter->numberFormatterOptions = [];
         $this->assertSame("1,001 KiB", $this->formatter->asShortSize(1025, 3));
 
+        // empty values
+        $this->assertSame('0 B', $this->formatter->asShortSize(0));
+
         // null display
-        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asShortSize(null));
     }
 
     public function testAsShortSize()
@@ -705,6 +947,7 @@ class FormatterTest extends TestCase
         // tests for base 1000
         $this->formatter->sizeFormatBase = 1000;
         $this->assertSame("999 B", $this->formatter->asShortSize(999));
+        $this->assertSame("999 B", $this->formatter->asShortSize('999'));
         $this->assertSame("1.05 MB", $this->formatter->asShortSize(1024 * 1024));
         $this->assertSame("1.0486 MB", $this->formatter->asShortSize(1024 * 1024, 4));
         $this->assertSame("1.00 KB", $this->formatter->asShortSize(1000));
@@ -723,8 +966,11 @@ class FormatterTest extends TestCase
         $this->formatter->decimalSeparator = ',';
         $this->assertSame("1,001 KiB", $this->formatter->asShortSize(1025, 3));
 
+        // empty values
+        $this->assertSame('0 B', $this->formatter->asShortSize(0));
+
         // null display
-        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
+        $this->assertSame($this->formatter->nullDisplay, $this->formatter->asShortSize(null));
     }
 
     public function testIntlAsSize()
@@ -737,6 +983,7 @@ class FormatterTest extends TestCase
         // tests for base 1000
         $this->formatter->sizeFormatBase = 1000;
         $this->assertSame("999 bytes", $this->formatter->asSize(999));
+        $this->assertSame("999 bytes", $this->formatter->asSize('999'));
         $this->assertSame("1.05 megabytes", $this->formatter->asSize(1024 * 1024));
         $this->assertSame("1 kilobyte", $this->formatter->asSize(1000));
         $this->assertSame("1.02 kilobytes", $this->formatter->asSize(1023));
@@ -763,6 +1010,7 @@ class FormatterTest extends TestCase
         // tests for base 1000
         $this->formatter->sizeFormatBase = 1000;
         $this->assertSame("999 bytes", $this->formatter->asSize(999));
+        $this->assertSame("999 bytes", $this->formatter->asSize('999'));
         $this->assertSame("1.05 megabytes", $this->formatter->asSize(1024 * 1024));
         $this->assertSame("1.0486 megabytes", $this->formatter->asSize(1024 * 1024, 4));
         $this->assertSame("1.00 kilobyte", $this->formatter->asSize(1000));
@@ -785,12 +1033,24 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asSize(null));
     }
 
+    public function testIntlAsSizeConfiguration()
+    {
+        $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
+        $this->formatter->thousandSeparator = '.';
+        $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
+    }
+
     /**
      * https://github.com/yiisoft/yii2/issues/4960
      */
     public function testAsSizeConfiguration()
     {
-//        $this->formatter->thousandSeparator = '';
         $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
+        $this->formatter->thousandSeparator = '.';
+        $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
+        $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
     }
 }

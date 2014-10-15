@@ -49,7 +49,6 @@ Sometimes you may want to customize the default error response format. For examp
 using different HTTP statuses to indicate different errors, you would like to always use 200 as HTTP status
 and enclose the actual HTTP status code as part of the JSON structure in the response, like shown in the following,
 
-
 ```
 HTTP/1.1 200 OK
 Date: Sun, 02 Mar 2014 05:31:43 GMT

@@ -78,14 +78,14 @@ return [
 ];
 ```
 
-Note that `cache` application component should be configured.
+Note that the `cache` [application component](structure-application-components.md) should be configured.
 
 ### Combining and Minimizing Assets
 
 It is possible to combine and minimize assets, typically JavaScript and CSS, in order to slightly improve page load
 time and therefore deliver better experience for end user of your application.
 
-In order to learn how it can be achieved, refer to [assets](assets.md) guide section.
+In order to learn how it can be achieved, refer to [assets](structure-assets.md) guide section.
 
 ### Using better storage for sessions
 
