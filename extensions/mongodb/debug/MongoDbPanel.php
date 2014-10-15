@@ -7,8 +7,6 @@
 
 namespace yii\mongodb\debug;
 
-use yii\base\Application;
-use yii\base\BootstrapInterface;
 use yii\debug\panels\DbPanel;
 use yii\log\Logger;
 
@@ -18,21 +16,8 @@ use yii\log\Logger;
  * @author Klimov Paul <klimov@zfort.com>
  * @since 2.0.1
  */
-class MongoDbPanel extends DbPanel implements BootstrapInterface
+class MongoDbPanel extends DbPanel
 {
-    /**
-     * Bootstrap method to be called during application bootstrap stage.
-     * @param Application $app the application currently running
-     */
-    public function bootstrap($app)
-    {
-        $modules = $app->getModules();
-        if(isset($modules['debug'])){
-            $modules['debug']['panels']['mongodb'] = ['class'=>self::className()];
-        }
-        $app->setModules($modules);
-    }
-
     /**
      * @inheritdoc
      */
@@ -63,5 +48,4 @@ class MongoDbPanel extends DbPanel implements BootstrapInterface
             'yii\mongodb\Database::*',
         ]);
     }
-
-}
+} 
