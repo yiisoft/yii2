@@ -4,7 +4,7 @@ Yii Framework 2 debug extension Change Log
 2.0.1 under development
 -----------------------
 
-- no changes in this release.
+- Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
 
 
 2.0.0 October 12, 2014

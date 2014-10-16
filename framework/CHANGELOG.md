@@ -4,7 +4,8 @@ Yii Framework 2 Change Log
 2.0.1 under development
 -----------------------
 
-- no changes in this release.
+- Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
+- Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)
 
 
 2.0.0 October 12, 2014

@@ -38,6 +38,14 @@ use yii\helpers\Json;
  * ]);
  * ```
  *
+ * Note that empty values like empty strings and 0 will result in a date displayed as `1970-01-01`.
+ * So to make sure empty values result in an empty text field in the datepicker you need to add a
+ * validation filter in your model that sets the value to `null` in case when no date has been entered:
+ *
+ * ```php
+ * [['from_date'], 'default', 'value' => null],
+ * ```
+ *
  * @see http://api.jqueryui.com/datepicker/
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
