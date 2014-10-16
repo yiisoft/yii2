@@ -119,16 +119,21 @@ class GenerateController extends Controller
      */
     public function options($id)
     {
+        $options = [];
         if (isset($this->generators[$id])) {
             $attributes = $this->generators[$id]->attributes;
             unset($attributes['templates']);
-            return array_merge(
+            $options = array_merge(
                 parent::options($id),
                 array_keys($attributes)
             );
         } else {
-            return parent::options($id);
+            $options = parent::options($id);
         }
+        return array_merge(
+            $options,
+            ['generate']
+        );
     }
 
     /**
