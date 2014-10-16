@@ -99,7 +99,9 @@
                     if (data[this.name] === undefined) {
                         data[this.name] = [];
                     }
-                    data[this.name].push(this.value);
+                    if ($.inArray(this.value, data[this.name])===-1) {
+                        data[this.name].push(this.value);
+                    }                
                 } else {
                     data[this.name] = this.value;
                 }
