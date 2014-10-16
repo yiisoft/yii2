@@ -24,7 +24,7 @@
     var defaults = {
         filterUrl: undefined,
         filterSelector: undefined,
-        delayForMultiple: 300
+        delayForMultiple: 600
     };
 
     var gridData = {};
