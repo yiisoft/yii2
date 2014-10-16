@@ -143,7 +143,7 @@ supported in most places in the Yii core code. For example, [[yii\caching\FileCa
 both a path alias and a normal directory path.
 
 A path alias is also closely related to a class namespace. It is recommended that a path
-alias be defined for each root namespace, thereby allowing you to use Yii the class autoloader without
+alias be defined for each root namespace, thereby allowing you to use Yii class autoloader without
 any further configuration. For example, because `@yii` refers to the Yii installation directory,
 a class like `yii\web\Request` can be autoloaded. If you use a third party library,
 such as the Zend Framework, you may define a path alias `@Zend` that refers to that framework's installation
