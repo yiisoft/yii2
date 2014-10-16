@@ -97,7 +97,7 @@ is as specified by the `operator` property.
 
 ```php
 [
-    [['from', 'to'], 'date'],
+    [['from_date', 'to_date'], 'date'],
 ]
 ```
 
@@ -113,6 +113,13 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
 - `timestampAttribute`: the name of the attribute to which this validator may assign the UNIX timestamp
   converted from the input date/time.
 
+In case the input is optional you may also want to add a default value filter in addition to the date validator
+to ensure empty input is stored as `NULL`. Other wise you may end up with dates like `0000-00-00` in your database
+or `1970-01-01` in the input field of a date picker.
+
+```php
+[['from_date', 'to_date'], 'default', 'value' => null],
+```
 
 ## [[yii\validators\DefaultValueValidator|default]] <a name="default"></a>
 
