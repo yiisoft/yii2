@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - no changes in this release.
+- Bug #5584: Use 'ON DELETE SET NULL' instead of 'ON DELETE CASCADE' at `yii\rbac\DbManager` (mdmunir)
 
 
 2.0.0 October 12, 2014
