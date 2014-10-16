@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.1 under development
 -----------------------
 
-- no changes in this release.
+- Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)
 
 
 2.0.0 October 12, 2014
@@ -24,7 +24,6 @@ Yii Framework 2 Change Log
 - Bug #5424: `Html::addCssStyle()` wasn't correctly setting style passed in array (kartik-v, samdark)
 - Bug #5435: Added extra checks to `yii\rbac\DbManager` to prevent database exceptions when `$userId` is empty (samdark)
 - Bug #5484: Fixed potential string suffix detection failure on 5.5.11 (qiangxue)
-- Bug #5584: Fixed `yii\rbac\DbRbacManager` delete items on deleting rule in case database does not support foreigh keys (mdmunir)
 - Bug: Date and time formatting now assumes UTC as the timezone for input dates unless a timezone is explicitly given (cebe)
 - Enh #4040: Added `$viewFile` and `$params` to the `EVENT_BEFORE_RENDER` and `EVENT_AFTER_RENDER` events for `View` (qiangxue) 
 - Enh #4275: Added `removeChildren()` to `yii\rbac\ManagerInterface` and implementations (samdark)

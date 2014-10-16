@@ -285,7 +285,7 @@ class DbManager extends BaseManager
     {
         if (!$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
-                ->update($this->itemTable, ['rule_name' => null], ['rule_name' => $name])
+                ->update($this->itemTable, ['rule_name' => null], ['rule_name' => $rule->name])
                 ->execute();
         }
 
