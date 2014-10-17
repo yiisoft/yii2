@@ -278,8 +278,8 @@ class Object
      *
      * The default implementation is a call to php function `method_exists()`.
      * You may override this method when you implemented the php magic method `__call()`.
-     * @param string $name the property name
-     * @return boolean whether the property is defined
+     * @param string $name the method name
+     * @return boolean whether the method is defined
      */
     public function hasMethod($name)
     {
