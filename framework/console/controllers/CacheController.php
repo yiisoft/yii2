@@ -121,6 +121,45 @@ class CacheController extends Controller
     }
 
     /**
+     * Clears cache schemes for given components connection to database
+     * For example,
+     *
+     * ~~~
+     * # clears cache schemes specified by two id: "mysql", "pgsql"
+     * yii cache/clear-schema mysql pgsql
+     * ~~~
+     *
+     */
+    public function actionClearSchema()
+    {
+        $connections = func_get_args();
+        if (empty($connections)) {
+            throw new Exception("You should specify database connection components names");
+        }
+
+        $this->stdout("The following components were processed:\n\n", Console::FG_YELLOW);
+        foreach ($connections as $name) {
+            if ($connection = Yii::$app->get($name, false)) {
+                if ($connection instanceof \yii\db\Connection) {
+                    $this->stdout("\t* " . $name . " (" . $connection->getDriverName() . ")", Console::FG_GREEN);
+                    try {
+                        $schema = $connection->getSchema();
+                        $schema->refresh();
+                        $this->stdout(" - was cleared\n", Console::FG_GREEN);
+                    } catch (\Exception $e) {
+                        $this->stdout(" - " . $e->getMessage() . "\n", Console::FG_RED);
+                    }
+                } else {
+                    $this->stdout("\t* " . $name . " - This component doesn't inherit \\yii\\db\\Connection\n", Console::FG_RED);
+                }
+            } else {
+                $this->stdout("\t* " . $name . " - Unknown component\n", Console::FG_RED);
+            }
+        }
+        $this->stdout("\n");
+    }
+
+    /**
      * Notifies user that given caches are found and can be flushed.
      * @param array $caches array of cache component classes
      */
