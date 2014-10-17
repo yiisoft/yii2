@@ -174,7 +174,7 @@ $foo->off(Foo::EVENT_HELLO);
 
 以上部分，我们叙述了在**实例级别**如何附加处理器到事件。有时想要一个类的所有实例而不是一个指定的实例都响应一个被触发的事件，并不是一个个附加事件处理器到每个实例，而是通过调用静态方法 [[yii\base\Event::on()]] 在**类级别**附加处理器。
 
-例如，[活动记录](db-active-record.md)对象要在每次往数据库新增一条新记录时触发一个 [[yii\base\ActiveRecord::EVENT_AFTER_INSERT]] 事件。要追踪每个[活动记录](db-active-record.md)对象的新增记录完成情况，应如下写代码：
+例如，[活动记录](db-active-record.md)对象要在每次往数据库新增一条新记录时触发一个 [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 事件。要追踪每个[活动记录](db-active-record.md)对象的新增记录完成情况，应如下写代码：
 
 ```php
 use Yii;
@@ -186,7 +186,7 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 });
 ```
 
-每当 [[yii\base\ActiveRecord|ActiveRecord]] 或其子类的实例触发 [[yii\base\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 事件时，这个事件处理器都会执行。在这个处理器中，可以通过 `$event->sender` 获取触发事件的对象。
+每当 [[yii\db\BaseActiveRecord|ActiveRecord]] 或其子类的实例触发 [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 事件时，这个事件处理器都会执行。在这个处理器中，可以通过 `$event->sender` 获取触发事件的对象。
 
 当对象触发事件时，它首先调用实例级别的处理器，然后才会调用类级别处理器。
 
