@@ -30,21 +30,11 @@ class ApiMarkdownLaTeX extends GithubMarkdown
     protected $renderingContext;
 
 
-    protected function inlineMarkers()
+    protected function renderApiLink($block)
     {
-        return array_merge(parent::inlineMarkers(), [
-            '[[' => 'parseApiLinksLatex',
-        ]);
-    }
-
-    protected function parseApiLinksLatex($text)
-    {
-        list($html, $offset) = $this->parseApiLinks($text);
-
         // TODO allow break also on camel case
-        $latex = '\texttt{'.str_replace(['\\textbackslash', '::'], ['\allowbreak{}\\textbackslash', '\allowbreak{}::\allowbreak{}'], $this->escapeLatex(strip_tags($html))).'}';
-
-        return [$latex, $offset];
+        $latex = '\texttt{'.str_replace(['\\textbackslash', '::'], ['\allowbreak{}\\textbackslash', '\allowbreak{}::\allowbreak{}'], $this->escapeLatex(strip_tags($block[1]))).'}';
+        return $latex;
     }
 
     /**

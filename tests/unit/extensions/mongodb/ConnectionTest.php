@@ -61,7 +61,45 @@ class ConnectionTest extends MongoDbTestCase
     }
 
     /**
+     * Data provider for [[testFetchDefaultDatabaseName()]]
+     * @return array test data
+     */
+    public function dataProviderFetchDefaultDatabaseName()
+    {
+        return [
+            [
+                'mongodb://travis:test@localhost:27017/dbname',
+                'dbname',
+            ],
+            [
+                'mongodb://travis:test@localhost:27017/dbname?replicaSet=test&connectTimeoutMS=300000',
+                'dbname',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderFetchDefaultDatabaseName
+     *
+     * @param string $dsn
+     * @param string $databaseName
+     */
+    public function testFetchDefaultDatabaseName($dsn, $databaseName)
+    {
+        $connection = new Connection();
+        $connection->dsn = $dsn;
+
+        $reflection = new \ReflectionObject($connection);
+        $method = $reflection->getMethod('fetchDefaultDatabaseName');
+        $method->setAccessible(true);
+        $method->invoke($connection);
+
+        $this->assertEquals($databaseName, $connection->defaultDatabaseName);
+    }
+
+    /**
      * @depends testGetDatabase
+     * @depends testFetchDefaultDatabaseName
      */
     public function testGetDefaultDatabase()
     {

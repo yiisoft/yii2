@@ -24,6 +24,17 @@ Upgrade from Yii 2.0 RC
  
 * The `yii\base\View::beforeRender()` and `yii\base\View::afterRender()` methods have two extra parameters `$viewFile`
   and `$params`. If you are overriding these methods, you should adjust the method signature accordingly.
+  
+* If you've used `asImage` formatter i.e. `Yii::$app->formatter->asImage($value, $alt);` you should change it
+  to `Yii::$app->formatter->asImage($value, ['alt' => $alt]);`.
+
+* Yii now requires `cebe/markdown` 1.0.0 or higher, which includes breaking changes in its internal API. If you extend the markdown class
+  you need to update your implementation. See <https://github.com/cebe/markdown/releases/tag/1.0.0-rc> for details.
+  If you just used the markdown helper class there is no need to change anything.
+
+* If you are using CUBRID DBMS, make sure to use at least version 9.3.0 as the server and also as the PDO extension.
+  Quoting of values is broken in prior versions and Yii has no reliable way to work around this issue.
+  A workaround that may have worked before has been removed in this release because it was not reliable.
 
 
 Upgrade from Yii 2.0 Beta
@@ -33,7 +44,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta2"
+  php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta3"
   ```
 
   You also need to add the following code to your project's `composer.json` file:

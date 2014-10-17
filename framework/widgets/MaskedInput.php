@@ -59,7 +59,7 @@ class MaskedInput extends InputWidget
      * @var array custom mask definitions to use. Should be configured as `maskSymbol => settings`, where
      *
      * - `maskSymbol` is a string, containing a character to identify your mask definition and
-     * - `settings` is an array, consisiting of the following entries:
+     * - `settings` is an array, consisting of the following entries:
      *   - `validator`: string, a JS regular expression or a JS function.
      *   - `cardinality`: int, specifies how many characters are represented and validated for the definition.
      *   - `prevalidator`: array, validate the characters before the definition cardinality is reached.

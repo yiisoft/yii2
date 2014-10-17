@@ -16,16 +16,17 @@ use yii\console\Exception;
 /**
  * Allows you to flush cache.
  *
- * ~~~
- * #see list of available components to flush
- * yii cache
+ * see list of available components to flush:
  *
- * #flush particular components specified by their names
- * yii cache/flush first second third
+ *     yii cache
  *
- * #flush all cache components that can be found in the system
- * yii cache/flush-all
- * ~~~
+ * flush particular components specified by their names:
+ *
+ *     yii cache/flush first second third
+ *
+ * flush all cache components that can be found in the system
+ *
+ *     yii cache/flush-all
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>

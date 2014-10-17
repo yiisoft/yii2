@@ -1,16 +1,19 @@
-Database basics
+Database Access Objects
 ===============
 
 > Note: This section is under development.
 
-Yii has a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). It provides
-uniform API and solves some inconsistencies between different DBMS. By default Yii supports the following DBMS:
+Yii includes a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). The database access objects (DAO) interface provides a
+uniform API, and solves some inconsistencies that exist between different database applications. Whereas Active Record provides database interactions through models, and the Query Builder assists in composing dynamic queries, DAO is a simple and efficient way to execute straight SQL on your database. You'll want to use DAO when the query to be run is expensive and/or no application models--and their corresponding business logic--are required.
+
+By default, Yii supports the following DBMS:
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/)
-- [CUBRID](http://www.cubrid.org/): version 9.1.0 or higher.
+- [CUBRID](http://www.cubrid.org/): version 9.3 or higher. (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
+  the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2005 or higher.
 
@@ -18,8 +21,7 @@ uniform API and solves some inconsistencies between different DBMS. By default Y
 Configuration
 -------------
 
-In order to start using database you need to configure database connection component first by adding `db` component
-to application configuration (for "basic" web application it's `config/web.php`) like the following:
+To start interacting with a database (using DAO or otherwise), you need to configure the application's database connection component. The Data Source Name (DSN) configures to which database application and specific database the application should connect:
 
 ```php
 return [
@@ -45,8 +47,11 @@ return [
 ];
 ```
 
-There is a peculiarity when you want to work with the database through the `ODBC` layer. When using `ODBC`,
-connection `DSN` doesn't indicate uniquely what database type is being used. That's why you have to override
+Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
+on the format of the DSN string. Refer to [[yii\db\Connection]] for the full list of properties you can configure in the class.
+
+A peculiarity exists when you want to work with the database through the `ODBC` layer. When using `ODBC`, the
+connection `DSN` doesn't uniquely indicate what database type is being used. For that reason, you have to override the
 `driverName` property of [[yii\db\Connection]] class to disambiguate that:
 
 ```php
@@ -59,37 +64,57 @@ connection `DSN` doesn't indicate uniquely what database type is being used. Tha
 ],
 ```
 
-Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
-on the format of the DSN string.
+Overriding `driverName` is not necessary when not going through ODBC. 
 
-After the connection component is configured you can access it using the following syntax:
+Given the "db" component's configuration in the application, you can access the database connection using:
 
 ```php
 $connection = \Yii::$app->db;
 ```
 
-You can refer to [[yii\db\Connection]] for a list of properties you can configure. Also note that you can define more
-than one connection component and use both at the same time if needed:
+You can define more
+than one connection component:
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=mydatabase', 
+            'username' => 'root',
+            'password' => '',
+            'charset' => 'utf8',
+        ],
+        'secondDb' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'sqlite:/path/to/database/file', 
+        ],
+    ],
+    // ...
+];
+```
+
+Now you can use both database connections at the same time as needed:
 
 ```php
 $primaryConnection = \Yii::$app->db;
 $secondaryConnection = \Yii::$app->secondDb;
 ```
 
-If you don't want to define the connection as an [application component](structure-application-components.md) you can instantiate it directly:
+If you don't want to define the connection as an [application component](structure-application-components.md), you can instantiate it directly:
 
 ```php
 $connection = new \yii\db\Connection([
     'dsn' => $dsn,
-     'username' => $username,
-     'password' => $password,
+    'username' => $username,
+    'password' => $password,
 ]);
 $connection->open();
 ```
 
-
-> **Tip**: if you need to execute additional SQL queries right after establishing a connection you can add the
-> following to your application configuration file:
+> Tip: If you need to execute an SQL query immediately after establishing a connection (e.g., to set the timezone or character set), you can add the following to your application configuration file:
 >
 ```php
 return [
@@ -108,51 +133,53 @@ return [
 ];
 ```
 
-Basic SQL queries
------------------
+Executing Basic SQL Queries
+---------------------------
 
-Once you have a connection instance you can execute SQL queries using [[yii\db\Command]].
+Once you have a database connection instance, you can execute SQL queries using [[yii\db\Command]].
 
-### SELECT
+### Running SELECT Queries
 
-When query returns a set of rows:
+When the query to be executed returns a set of rows, you'll use `queryAll`:
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post');
 $posts = $command->queryAll();
 ```
 
-When only a single row is returned:
+When the query to be executed only returns a single row, you'll use `queryOne`:
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=1');
 $post = $command->queryOne();
 ```
 
-When there are multiple values from the same column:
+When the query returns multiple rows but only one column, you'll use `queryColumn`:
 
 ```php
 $command = $connection->createCommand('SELECT title FROM post');
 $titles = $command->queryColumn();
 ```
 
-When there's a scalar value:
+When the query only returns a scalar value, you'll use `queryScalar`:
 
 ```php
 $command = $connection->createCommand('SELECT COUNT(*) FROM post');
 $postCount = $command->queryScalar();
 ```
 
-### UPDATE, INSERT, DELETE etc.
+### Running Queries That Don't Return Values
 
-If SQL executed doesn't return any data you can use command's `execute` method:
+If SQL executed doesn't return any data--for example, INSERT, UPDATE, and DELETE, you can use command's `execute` method:
 
 ```php
 $command = $connection->createCommand('UPDATE post SET status=1 WHERE id=1');
 $command->execute();
 ```
 
-Alternatively the following syntax that takes care of proper table and column names quoting is possible:
+Alternatively, you can use dedicated `insert`, `update`, and `delete` method. These methods will properly quote table and column names used in your query, and you only need to provide the necessary values:
+
+[[Ought to put a link to the reference docs here.]]
 
 ```php
 // INSERT
@@ -175,28 +202,26 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 $connection->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
-Quoting table and column names
+Quoting Table and Column Names
 ------------------------------
 
-Most of the time you would use the following syntax for quoting table and column names:
+To make column and table names safe to use in queries, you can have Yii properly quote them for you:
 
 ```php
 $sql = "SELECT COUNT([[$column]]) FROM {{table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-In the code above `[[X]]` will be converted to properly quoted column name while `{{Y}}` will be converted to properly
-quoted table name.
+In the code above, `[[$column]]` will be converted to properly quoted column name, while `{{table}}` will be converted to a properly-quoted table name.
 
-For table names there's a special variant `{{%Y}}` that allows you to automatically appending table prefix if it is set:
+There's a special variant on this syntax specific to tablenames: `{{%Y}}` automatically appends the application's table prefix to the provided value, if a table prefix has been set:
 
 ```php
 $sql = "SELECT COUNT([[$column]]) FROM {{%table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-The code above will result in selecting from `tbl_table` if you have table prefix configured like the following in your
-config file:
+The code above will result in selecting from `tbl_table`, if you have table prefix configured like so:
 
 ```php
 return [
@@ -221,10 +246,10 @@ $sql = "SELECT COUNT($column) FROM $table";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-Prepared statements
+Using Prepared Statements
 -------------------
 
-In order to securely pass query parameters you can use prepared statements:
+To securely pass query parameters to your queries, you should make use of prepared statements. First, create a named placeholder in your query (using the syntax `:placeholder`). Then bind the placeholder to a variable and execute the query:
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
@@ -232,7 +257,7 @@ $command->bindValue(':id', $_GET['id']);
 $post = $command->queryOne();
 ```
 
-Another usage is performing a query multiple times while preparing it only once:
+Another purpose for prepared statements (aside from improved security) is the ability to execute a query multiple times while preparing it only once:
 
 ```php
 $command = $connection->createCommand('DELETE FROM post WHERE id=:id');
@@ -245,11 +270,13 @@ $id = 2;
 $command->execute();
 ```
 
-Transactions
-------------
+Notice that you bind the placeholder to the variable before the execution, and then change the value of that variable before each subsequent execution (this is often done with loops). Executing queries in this manner can be vastly more efficient than running each query one at a time. 
 
-When running multiple related queries in a sequence you may need to wrap them in a transaction to
-ensure you data is consistent. Yii provides a simple interface to work with transactions in simple
+Performing Transactions
+-----------------------
+
+When running multiple, related queries in a sequence, you may need to wrap them in a transaction to
+protect your data's integrity. Transactions allow you to write a series of queries such that they'll all succeed or have no effect whatsoever. Yii provides a simple interface to work with transactions in simple
 cases but also for advanced usage when you need to define isolation levels.
 
 The following code shows a simple pattern that all code that uses transactional queries should follow:

@@ -354,7 +354,7 @@ class Generator extends \yii\gii\Generator
             $viaLink = $this->generateRelationLink([$table->primaryKey[0] => $fks[$table->primaryKey[0]][1]]);
             $relationName = $this->generateRelationName($relations, $className0, $db->getTableSchema($table0), $table->primaryKey[1], true);
             $relations[$className0][$relationName] = [
-                "return \$this->hasMany($className1::className(), $link)->viaTable('{" . $this->generateTableName($table->name) . "}', $viaLink);",
+                "return \$this->hasMany($className1::className(), $link)->viaTable('" . $this->generateTableName($table->name) . "', $viaLink);",
                 $className1,
                 true,
             ];
@@ -363,7 +363,7 @@ class Generator extends \yii\gii\Generator
             $viaLink = $this->generateRelationLink([$table->primaryKey[1] => $fks[$table->primaryKey[1]][1]]);
             $relationName = $this->generateRelationName($relations, $className1, $db->getTableSchema($table1), $table->primaryKey[0], true);
             $relations[$className1][$relationName] = [
-                "return \$this->hasMany($className0::className(), $link)->viaTable('{" . $this->generateTableName($table->name) . "}', $viaLink);",
+                "return \$this->hasMany($className0::className(), $link)->viaTable('" . $this->generateTableName($table->name) . "', $viaLink);",
                 $className0,
                 true,
             ];
@@ -479,7 +479,7 @@ class Generator extends \yii\gii\Generator
         if ($this->isReservedKeyword($this->modelClass)) {
             $this->addError('modelClass', 'Class name cannot be a reserved PHP keyword.');
         }
-        if ((empty($this->tableName) || substr_compare($this->tableName, '*', -1)) && $this->modelClass == '') {
+        if ((empty($this->tableName) || substr_compare($this->tableName, '*', -1, 1)) && $this->modelClass == '') {
             $this->addError('modelClass', 'Model Class cannot be blank if table name does not end with asterisk.');
         }
     }
@@ -489,7 +489,7 @@ class Generator extends \yii\gii\Generator
      */
     public function validateTableName()
     {
-        if (strpos($this->tableName, '*') !== false && substr_compare($this->tableName, '*', -1)) {
+        if (strpos($this->tableName, '*') !== false && substr_compare($this->tableName, '*', -1, 1)) {
             $this->addError('tableName', 'Asterisk is only allowed as the last character.');
 
             return;

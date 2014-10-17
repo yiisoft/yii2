@@ -388,7 +388,7 @@ the following syntax and file name extensions:
 - [CoffeeScript](http://coffeescript.org/): `.coffee`
 - [TypeScript](http://www.typescriptlang.org/): `.ts`
 
-Yii relies on the installed pre-processor tools to convert assets. For example, o use [LESS](http://lesscss.org/)
+Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](http://lesscss.org/)
 you should install the `lessc` pre-processor command.
 
 You can customize the pre-processor commands and the supported extended syntax by configuring

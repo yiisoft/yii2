@@ -50,6 +50,7 @@ class MessageController extends Controller
      * you may use this configuration file with the "extract" command.
      *
      * @param string $filePath output file name or alias.
+     * @return int CLI exit code
      * @throws Exception on failure.
      */
     public function actionConfig($filePath)
@@ -328,7 +329,7 @@ class MessageController extends Controller
             ksort($existingMessages);
             foreach ($existingMessages as $message => $translation) {
                 if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
-                    if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2) === 0) {
+                    if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0) {
                         $todo[$message] = $translation;
                     } else {
                         $todo[$message] = '@@' . $translation . '@@';

@@ -56,7 +56,7 @@ class GenerateAction extends \yii\base\Action
             return;
         }
         echo "The following files will be generated:\n";
-        $skipAll = $this->controller->interactive ? null : true;
+        $skipAll = $this->controller->interactive ? null : !$this->controller->overwrite;
         $answers = [];
         foreach ($files as $file) {
             $path = $file->getRelativePath();

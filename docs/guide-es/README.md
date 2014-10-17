@@ -1,7 +1,7 @@
 ﻿Guía Definitiva de Yii 2.0
 ==========================
 
-Este tutorial se publica con arreglo a los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
+Este tutorial se publica bajo los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
 
 Todos los derechos reservados.
 
@@ -40,7 +40,7 @@ Estructura de una aplicación
 * [Filtros](structure-filters.md)
 * [Widgets](structure-widgets.md)
 * [Módulos](structure-modules.md)
-* **TBD** [Recursos](structure-assets.md)
+* **TBD** [Assets](structure-assets.md)
 * **TBD** [Extensiones](structure-extensions.md)
 
 
@@ -50,9 +50,9 @@ Gestión de las peticiones
 * [Información general](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
 * [Routing](runtime-routing.md)
-* **TBD** [Peticiones](runtime-requests.md)
-* **TBD** [Respuestas](runtime-responses.md)
-* **TBD** [Sesiones y Cookies](runtime-sessions-cookies.md)
+* [Peticiones (Requests)](runtime-requests.md)
+* [Respuestas (Responses)](runtime-responses.md)
+* [Sesiones (Sessions) y Cookies](runtime-sessions-cookies.md)
 * **TBD** [Procesamiento y generación de las URL](runtime-url-handling.md)
 * **TBD** [Gestión de errores](runtime-handling-errors.md)
 * **TBD** [Registro de anotaciones](runtime-logging.md)

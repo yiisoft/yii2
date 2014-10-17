@@ -16,6 +16,7 @@ use yii\helpers\VarDumper;
  * Allows you to combine and compress your JavaScript and CSS files.
  *
  * Usage:
+ *
  * 1. Create a configuration file using the `template` action:
  *
  *    yii asset/template /path/to/myapp/config.php
@@ -513,7 +514,7 @@ EOD;
         $content = '';
         foreach ($inputFiles as $file) {
             $content .= "/*** BEGIN FILE: $file ***/\n"
-                . $this->adjustCssUrl(file_get_contents($file), dirname($file), dirname($outputFile))
+                . $this->adjustCssUrl(file_get_contents($file), dirname(realpath($file)), dirname($outputFile))
                 . "/*** END FILE: $file ***/\n";
         }
         if (!file_put_contents($outputFile, $content)) {
@@ -530,6 +531,9 @@ EOD;
      */
     protected function adjustCssUrl($cssContent, $inputFilePath, $outputFilePath)
     {
+        $inputFilePath = str_replace('\\', '/', $inputFilePath);
+        $outputFilePath = str_replace('\\', '/', $outputFilePath);
+
         $sharedPathParts = [];
         $inputFilePathParts = explode('/', $inputFilePath);
         $inputFilePathPartsCount = count($inputFilePathParts);
@@ -546,8 +550,16 @@ EOD;
 
         $inputFileRelativePath = trim(str_replace($sharedPath, '', $inputFilePath), '/');
         $outputFileRelativePath = trim(str_replace($sharedPath, '', $outputFilePath), '/');
-        $inputFileRelativePathParts = explode('/', $inputFileRelativePath);
-        $outputFileRelativePathParts = explode('/', $outputFileRelativePath);
+        if (empty($inputFileRelativePath)) {
+            $inputFileRelativePathParts = [];
+        } else {
+            $inputFileRelativePathParts = explode('/', $inputFileRelativePath);
+        }
+        if (empty($outputFileRelativePath)) {
+            $outputFileRelativePathParts = [];
+        } else {
+            $outputFileRelativePathParts = explode('/', $outputFileRelativePath);
+        }
 
         $callback = function ($matches) use ($inputFileRelativePathParts, $outputFileRelativePathParts) {
             $fullMatch = $matches[0];
@@ -557,7 +569,11 @@ EOD;
                 return $fullMatch;
             }
 
-            $outputUrlParts = array_fill(0, count($outputFileRelativePathParts), '..');
+            if (empty($outputFileRelativePathParts)) {
+                $outputUrlParts = [];
+            } else {
+                $outputUrlParts = array_fill(0, count($outputFileRelativePathParts), '..');
+            }
             $outputUrlParts = array_merge($outputUrlParts, $inputFileRelativePathParts);
 
             if (strpos($inputUrl, '/') !== false) {
@@ -585,6 +601,7 @@ EOD;
     /**
      * Creates template of configuration file for [[actionCompress]].
      * @param string $configFile output file name.
+     * @return int CLI exit code
      * @throws \yii\console\Exception on failure.
      */
     public function actionTemplate($configFile)
@@ -625,6 +642,8 @@ return [
     ],
     // Asset manager configuration:
     'assetManager' => [
+        //'basePath' => '@webroot/assets',
+        //'baseUrl' => '@web/assets',
     ],
 ];
 EOD;

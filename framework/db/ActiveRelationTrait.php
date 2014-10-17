@@ -252,6 +252,9 @@ trait ActiveRelationTrait
                 if ($this->multiple && count($link) == 1 && is_array($keys = $primaryModel[reset($link)])) {
                     $value = [];
                     foreach ($keys as $key) {
+                        if (!is_scalar($key)) {
+                            $key = serialize($key);
+                        }
                         if (isset($buckets[$key])) {
                             if ($this->indexBy !== null) {
                                 // if indexBy is set, array_merge will cause renumbering of numeric array
@@ -388,6 +391,15 @@ trait ActiveRelationTrait
         return $buckets;
     }
 
+
+    /**
+     * Indexes buckets by column name.
+     *
+     * @param array $buckets
+     * @var string|callable $column the name of the column by which the query results should be indexed by.
+     * This can also be a callable (e.g. anonymous function) that returns the index value based on the given row data.
+     * @return array
+     */
     private function indexBuckets($buckets, $indexBy)
     {
         $result = [];

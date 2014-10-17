@@ -1,20 +1,41 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.0 under development
+2.0.1 under development
 -----------------------
 
+- Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
+- Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
+- Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)
+- Bug: Gii console command help information does not contain global options (qiangxue)
+
+
+2.0.0 October 12, 2014
+----------------------
+
+- Bug #4881: Fixed `yii\console\controllers\AssetController` breaks CSS URLs on Windows (klimov-paul)
+- Bug #5171: Fixed the bug that ActiveForm + Pjax submit event is only triggered once (qiangxue)
+- Bug #5242: Fixed `yii\console\controllers\AssetController` breaks CSS URLs in case target file localed at `yii\web\AssetManager::basePath` root (klimov-paul)
 - Bug #5252: Null values are not properly handled by `RangeValidator` (githubjeka, qiangxue)
 - Bug #5260: `yii\i18n\Formatter::decimalSeparator` and `yii\i18n\Formatter::thousandSeparator` where not configurable when intl is not installed (execut, cebe)
 - Bug #5314: Fixed typo in the implementation of `yii\web\Session::getHasSessionId()` (qiangxue)
 - Bug #5323: Nested dropdown does not work for `yii\bootstrap\DropDown` (aryraditya)
-- Bug #5336: `yii\bootstrap\DropDown` should register bootstrap plugin asset (zelenin) 
+- Bug #5336: `yii\bootstrap\DropDown` should register bootstrap plugin asset (zelenin)
+- Bug #5379: `Module::afterAction()` was called even when `beforeAction()` returned false (cebe)
+- Bug #5408: Gii console command incorrectly reports errors when there is actually no error (qiangxue)
+- Bug #5423: `yii\behaviors\Cors` causes "undefined index" error when its `cors` is configured (qiangxue) 
+- Bug #5424: `Html::addCssStyle()` wasn't correctly setting style passed in array (kartik-v, samdark)
+- Bug #5435: Added extra checks to `yii\rbac\DbManager` to prevent database exceptions when `$userId` is empty (samdark)
+- Bug #5484: Fixed potential string suffix detection failure on 5.5.11 (qiangxue)
 - Bug: Date and time formatting now assumes UTC as the timezone for input dates unless a timezone is explicitly given (cebe)
 - Enh #4040: Added `$viewFile` and `$params` to the `EVENT_BEFORE_RENDER` and `EVENT_AFTER_RENDER` events for `View` (qiangxue) 
 - Enh #4275: Added `removeChildren()` to `yii\rbac\ManagerInterface` and implementations (samdark)
 - Enh: Added `yii\base\Application::loadedModules` (qiangxue)
 - Enh #5316: Added `startsWith()` and `endsWith()` to `yii\helpers\StringHelper`. Methods are binary-safe, multibyte-safe and optionally case-insensitive (armab)
+- Enh #5467: Added ability to pass HTML tag options to `asEmail()`, `asImage()` and `asUrl()` methods of `yii\i18n\Formatter` (alxkolm, samdark) 
 - Chg #2037: Dropped the support for using `yii\base\Module` as concrete module classes (qiangxue)
+- Chg: Updated cebe/markdown to 1.0.0 which includes breaking changes in its internal API (cebe)
+- Chg: If you are using CUBRID DBMS, make sure to use at least version 9.3.0 because quoting is broken in prior versions and Yii has no reliable way to work around this issue (cebe)
 
 
 2.0.0-rc September 27, 2014

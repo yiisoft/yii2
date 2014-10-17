@@ -28,13 +28,13 @@ class IndexFileAnalyzer extends Markdown
     protected function renderHeadline($block)
     {
         if ($this->_chapter === 0) {
-            $this->title = $block['content'];
+            $this->title = $this->renderAbsy($block['content']);
             $this->introduction = '';
             $this->_chapter++;
         } else {
             $this->_chapter++;
             $this->_chapters[$this->_chapter] = [
-                'headline' => $block['content'],
+                'headline' => $this->renderAbsy($block['content']),
                 'content' => [],
             ];
         }
@@ -44,7 +44,7 @@ class IndexFileAnalyzer extends Markdown
     protected function renderParagraph($block)
     {
         if ($this->_chapter < 1) {
-            $this->introduction .= implode("\n", $block['content']);
+            $this->introduction .= $this->renderAbsy($block['content']);
         }
         return parent::renderParagraph($block);
     }
@@ -52,13 +52,14 @@ class IndexFileAnalyzer extends Markdown
     protected function renderList($block)
     {
         if ($this->_chapter > 0) {
-            foreach ($block['items'] as $item => $itemLines) {
-                if (preg_match('~\[([^\]]+)\]\(([^\)]+)\)(.*)~', implode("\n", $itemLines), $matches)) {
-                    $this->_chapters[$this->_chapter]['content'][] = [
-                        'headline' => $matches[1],
-                        'file' => $matches[2],
-                        'teaser' => $matches[3],
-                    ];
+            foreach ($block['items'] as $item => $absyElements) {
+                foreach($absyElements as $element) {
+                    if ($element[0] === 'link') {
+                        $this->_chapters[$this->_chapter]['content'][] = [
+                            'headline' => $this->renderAbsy($element['text']),
+                            'file' => $element['url'],
+                        ];
+                    }
                 }
             }
         }

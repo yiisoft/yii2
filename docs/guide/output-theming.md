@@ -8,7 +8,7 @@ when rendered. A single application may use multiple themes and each may provide
 time only one theme can be active.
 
 > Note: Themes usually do not meant to be redistributed since views are too application specific. If you want to
-  redistribute customized look and feel consider CSS and JavaScript files in form of [asset bundles](assets.md) instead.
+  redistribute customized look and feel consider CSS and JavaScript files in form of [asset bundles](structure-assets.md) instead.
 
 Configuring a theme
 -------------------

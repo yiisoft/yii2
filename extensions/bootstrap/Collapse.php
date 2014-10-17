@@ -86,6 +86,7 @@ class Collapse extends Widget
 
     /**
      * Renders collapsible items as specified on [[items]].
+     * @throws InvalidConfigException if label isn't specified
      * @return string the rendering result
      */
     public function renderItems()

@@ -101,6 +101,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         foreach ($this->panels as $id => $config) {
+            if (is_string($config)) {
+                $config = ['class' => $config];
+            }
             $config['module'] = $this;
             $config['id'] = $id;
             $this->panels[$id] = Yii::createObject($config);
