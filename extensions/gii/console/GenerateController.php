@@ -32,10 +32,6 @@ class GenerateController extends Controller
      */
     public $module;
     /**
-     * @var boolean whether to generate all files and overwrite existing files
-     */
-    public $generate = false;
-    /**
      * @var array a list of the available code generators
      */
     public $generators = [];
