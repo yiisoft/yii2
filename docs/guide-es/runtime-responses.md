@@ -52,7 +52,7 @@ $headers = Yii::$app->response->headers;
 $headers->add('Pragma', 'no-cache');
 
 // asigna una cabecera Pragma. Cualquier cabecera Pragma existente será descartada.
-$headers->add('Pragma', 'no-cache');
+$headers->set('Pragma', 'no-cache');
 
 // Elimina las cabeceras Pragma y devuelve los valores de las eliminadas en un array
 $values = $headers->remove('Pragma');
