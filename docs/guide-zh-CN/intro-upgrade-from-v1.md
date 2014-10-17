@@ -11,7 +11,7 @@
 安装
 ------------
 
-Yii 2.0 完全拥抱 [Composer](https://getcomposer.org/)，它是事实上的 PHP 依赖管理工具。核心框架以及扩展的安装都通过 Composer 来处理。想要了解更多如何安装 Yii 2.0 请参阅本指南的 [安装 Yii](start-installation.md) 章节。如果你想创建新扩展，或者把你已有的 Yii 1.1 的扩展改写成兼容 2.0 的版本，你可以参考 [创建扩展](extend-creating-extensions.md) 章节。
+Yii 2.0 完全拥抱 [Composer](https://getcomposer.org/)，它是事实上的 PHP 依赖管理工具。核心框架以及扩展的安装都通过 Composer 来处理。想要了解更多如何安装 Yii 2.0 请参阅本指南的 [安装 Yii](start-installation.md) 章节。如果你想创建新扩展，或者把你已有的 Yii 1.1 的扩展改写成兼容 2.0 的版本，你可以参考 [创建扩展](structure-extensions.md#creating-extensions) 章节。
 
 
 PHP 需求
@@ -158,7 +158,7 @@ public function scenarios()
 控制器（Controller）
 -----------
 
-Yii 2.0 使用 [[yii\web\Controller]] 作为控制器的基类，类似于 1.1 的 `CWebController`。使用 [[yii\base\Action]] 作为操作类的基类。
+Yii 2.0 使用 [[yii\web\Controller]] 作为控制器的基类，它类似于 1.1 的 `CController`。使用 [[yii\base\Action]] 作为操作类的基类。
 
 这些变化最明显的影响是，当你在写控制器操作的代码时，应该返回（return）要渲染的内容而不是输出（echo）它：
 

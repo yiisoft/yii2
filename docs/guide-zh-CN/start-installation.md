@@ -1,7 +1,7 @@
 安装 Yii
 ==============
 
-你可以通过两种方式安装 Yii：使用 [Composer](http://getcomposer.org/) 或下载一个归档文件。推荐使用前者，这样只需执行一条简单的命令就可以安装新的[扩展](extend-creating-extensions.md)或更新 Yii 了。
+你可以通过两种方式安装 Yii：使用 [Composer](http://getcomposer.org/) 或下载一个归档文件。推荐使用前者，这样只需执行一条简单的命令就可以安装新的[扩展](structure-extensions.md)或更新 Yii 了。
 
 > 注意：和 Yii 1 不同，以标准方式安装 Yii 2 时会同时下载并安装框架本身和一个应用程序的基本骨架。
 
@@ -18,15 +18,24 @@
 
 如果遇到任何问题或者想更深入地学习 Composer，请参考 [Composer 文档（英文）](https://getcomposer.org/doc/)，[Composer 中文](https://github.com/5-say/composer-doc-cn)。
 
+如果你已经安装有 Composer 请确保使用的是最新版本，你可以用 `composer self-update` 命令更新 Composer 为最新版本。
+
 Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
 
     composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-第一条命令安装 [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)，它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局应用，只需执行一次即可。
-第二条命令会将 Yii 安装在名为 `basic` 的目录中。
+第一条命令安装 [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)，它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
+第二条命令会将 Yii 安装在名为 `basic` 的目录中，你也可以随便选择其他名称。
 
-> 技巧：如果你想安装 Yii 的最新开发版本，可以使用如下命令，它添加了一个 [stability 选项](https://getcomposer.org/doc/04-schema.md#minimum-stability)（[中文版](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/04-schema.md#minimum-stability)）:
+> 注意：在安装过程中 Composer 可能会询问你 GitHub 账户的登录信息，因为可能在使用中超过了 GitHub API 
+（对匿名用户的）使用限制。因为 Composer 需要为所有扩展包从 GitHub 
+中获取大量信息，所以超限非常正常。（译者注：也意味着作为程序猿没有 GitHub 账号，就真不能愉快地玩耍了）登陆 GitHub 
+之后可以得到更高的 API 限额，这样 Composer 才能正常运行。更多细节请参考 [Composer 
+文档](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)（该段 Composer 
+中文文档[期待您的参与](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)）。
+
+> 技巧：如果你想安装 Yii 的最新开发版本，可以使用以下命令代替，它添加了一个 [stability 选项](https://getcomposer.org/doc/04-schema.md#minimum-stability)（[中文版](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/04-schema.md#minimum-stability)）:
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 >
@@ -36,9 +45,9 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 通过归档文件安装 <a name="installing-from-archive-file"></a>
 -------------------------------
 
-通过归档文件安装 Yii 包括两个步骤：
+通过归档文件安装 Yii 包括三个步骤：
 
-1. 从 [yiiframework.com](http://www.yiiframework.com/download/yii2-basic) 下载归档文件。
+1. 从 [yiiframework.com](http://www.yiiframework.com/download/) 下载归档文件。
 2. 将下载的文件解压缩到 Web 目录中。
 3. 修改 `config/web.php` 文件，给 `cookieValidationKey` 配置项添加一个密钥（若你通过 Composer 安装，则此步骤会自动完成）：
 
@@ -108,8 +117,8 @@ http://localhost/basic/web/index.php
 DocumentRoot "path/to/basic/web"
 
 <Directory "path/to/basic/web">
+    # 开启 mod_rewrite 用于美化 URL 功能的支持（译者注：对应 pretty URL 选项）
     RewriteEngine on
-
     # 如果请求的是真实存在的文件或目录，直接访问
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
