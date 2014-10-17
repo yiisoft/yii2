@@ -5,7 +5,9 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
+- Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
 - Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)
+- Bug: Gii console command help information does not contain global options (qiangxue)
 
 
 2.0.0 October 12, 2014
