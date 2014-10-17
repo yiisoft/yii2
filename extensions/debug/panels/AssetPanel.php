@@ -51,6 +51,9 @@ class AssetPanel extends Panel
     public function save()
     {
         $bundles = Yii::$app->view->assetManager->bundles;
+        if (empty($bundles)) { // bundles can be false
+            return [];
+        }
         $data = [];
         foreach ($bundles as $name => $bundle) {
             if ($bundle instanceof AssetBundle) {
