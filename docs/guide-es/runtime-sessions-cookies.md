@@ -187,7 +187,7 @@ Al igual que los datos de sesión regulares, puede almacenar datos arbitrarios c
 
 Cuando llamas a [yii\web\Session::setFlash()]], sobrescribirá cualquier Flash data que tenga el mismo nombre.
 Para añadir un nuevo flash data a el/los existes con el mismo nombre, puedes llamar a [[yii\web\Session::addFlash()]].
-Por ejemplo,
+Por ejemplo:
 
 ```php
 $session = Yii::$app->session;
