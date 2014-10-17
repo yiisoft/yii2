@@ -67,7 +67,7 @@ $headers = Yii::$app->response->headers;
 $headers->add('Pragma', 'no-cache');
 
 // set a Pragma header. Any existing Pragma headers will be discarded.
-$headers->add('Pragma', 'no-cache');
+$headers->set('Pragma', 'no-cache');
 
 // remove Pragma header(s) and return the removed Pragma header values in array
 $values = $headers->remove('Pragma');
