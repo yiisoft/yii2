@@ -1238,6 +1238,11 @@ class QueryBuilder extends \yii\base\Object
 
         if ($value === null) {
             return "$column $operator NULL";
+        } elseif ($value instanceof Expression) {
+            foreach ($value->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            return "$column $operator {$value->expression}";
         } else {
             $phName = self::PARAM_PREFIX . count($params);
             $params[$phName] = $value;

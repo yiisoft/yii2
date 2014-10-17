@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\Expression;
 use yii\db\Query;
 use yii\db\QueryBuilder;
 use yii\db\Schema;
@@ -193,6 +194,8 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['<=', 'a', 'b'], '"a" <= :qp0', [':qp0' => 'b'] ],
             [ ['<>', 'a', 3], '"a" <> :qp0', [':qp0' => 3] ],
             [ ['!=', 'a', 'b'], '"a" != :qp0', [':qp0' => 'b'] ],
+            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '"date" >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', [] ],
+            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '"date" >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2] ],
         ];
 
         // adjust dbms specific escaping

@@ -4,7 +4,7 @@ Yii Framework 2 sphinx extension Change Log
 2.0.1 under development
 -----------------------
 
-- no changes in this release.
+- Bug #5601: Simple conditions in Query::where() and ActiveQuery::where() did not allow `yii\db\Expression` to be used as the value (cebe, stevekr)
 
 
 2.0.0 October 12, 2014
@@ -40,6 +40,7 @@ Yii Framework 2 sphinx extension Change Log
 - Chg #2146: Removed `ActiveRelation` class and moved the functionality to `ActiveQuery`.
              All relational queries are now directly served by `ActiveQuery` allowing to use
              custom scopes in relations (cebe)
+
 
 2.0.0-alpha, December 1, 2013
 -----------------------------
