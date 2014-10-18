@@ -104,7 +104,7 @@ class SiteController extends Controller
 
 > 补充：表达式 `Yii::$app` 代表[应用](structure-applications.md)实例，它是一个全局可访问的单例。同时它也是一个[服务定位器](concept-service-locator.md)，能提供 `request`，`response`，`db` 等等特定功能的组件。在上面的代码里就是使用 `request` 组件来访问应用实例收到的 `$_POST` 数据。
 
-用户提交表单后，操作将会渲染一个名为 `entry-confirm` 的视图去确认用户输入的数据。如果没填表单就提交，或数据包含错误，`entry` 视图将会渲染输出，连同表单一起输出的还有验证错误的详细信息。
+用户成功提交表单后，操作将会渲染一个名为 `entry-confirm` 的视图去确认用户输入的数据。如果没填表单就提交，或数据包含错误，`entry` 视图将会渲染输出，连同表单一起输出的还有验证错误的详细信息。
 
 > 注意：在这个简单例子里我们只是呈现了有效数据的确认页面。实践中你应该考虑使用 [[yii\web\Controller::refresh()|refresh()]] 或 [[yii\web\Controller::redirect()|redirect()]] 去避免[表单重复提交问题](http://en.wikipedia.org/wiki/Post/Redirect/Get)。
 

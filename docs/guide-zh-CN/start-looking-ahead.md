@@ -12,9 +12,11 @@
     - 书籍
 * [扩展](http://www.yiiframework.com/extensions/):Yii 拥有数以千计用户提供的扩展，这些扩展能非常方便的插入到应用中，使你的应用开发过程更加方便快捷。
 * 社区
-    - [官方论坛](http://www.yiiframework.com/forum/)
-    - [GitHub](https://github.com/yiisoft/yii2)
-    - [Facebook](https://www.facebook.com/groups/yiitalk/)
-    - [Twitter](https://twitter.com/yiiframework)
-    - [LinkedIn](https://www.linkedin.com/groups/yii-framework-1483367)
+    - 官方论坛：<http://www.yiiframework.com/forum/>
+    - IRC 聊天室：Freenode 网络上的 #yii 频道 (<irc://irc.freenode.net/yii>)（使用英文哦，无需反馈上游的问题可以加 
+QQ-Yii2中国交流群）
+    - GitHub：<https://github.com/yiisoft/yii2>
+    - Facebook：<https://www.facebook.com/groups/yiitalk/>
+    - Twitter：<https://twitter.com/yiiframework>
+    - LinkedIn：<https://www.linkedin.com/groups/yii-framework-1483367>
 
