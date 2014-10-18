@@ -342,6 +342,8 @@ The rule above checks if the `post` is created by `$user`. We'll create a specia
 command we've used previously:
 
 ```php
+$auth = Yii::$app->authManager;
+
 // add the rule
 $rule = new \app\rbac\AuthorRule;
 $auth->add($rule);
@@ -443,6 +445,8 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+
+$auth = Yii::$app->authManager;
 
 $rule = new \app\rbac\UserGroupRule;
 $auth->add($rule);
