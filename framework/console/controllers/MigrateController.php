@@ -183,12 +183,9 @@ class MigrateController extends BaseMigrateController
     /**
      * @inheritdoc
      */
-    protected function refreshSchema()
+    protected function refreshSchema($db = 'db')
     {
-        $driver = $this->db->getDriverName();
-        if (isset($this->db->schemaMap[$driver])) {
-            $this->db->schema->refresh();
-            $this->stdout("Database cache scheme was cleared\n", Console::FG_GREEN);
-        }
+        $this->db->schema->refresh();
+        $this->stdout("Database cache scheme was cleared\n", Console::FG_GREEN);
     }
 }

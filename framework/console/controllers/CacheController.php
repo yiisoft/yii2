@@ -121,42 +121,40 @@ class CacheController extends Controller
     }
 
     /**
-     * Clears cache schemes for given components connection to database
+     * Clears cache scheme for given component connection to database
      * For example,
      *
      * ~~~
-     * # clears cache schemes specified by two id: "mysql", "pgsql"
-     * yii cache/clear-schema mysql pgsql
+     * # clears cache scheme specified by component id: "db"
+     * yii cache/clear-schema db
      * ~~~
      *
+     * @param string $db id connection component
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
      */
-    public function actionClearSchema()
+    public function actionClearSchema($db = 'db')
     {
-        $connections = func_get_args();
-        if (empty($connections)) {
-            throw new Exception("You should specify database connection components names");
+        $connection = $connection = Yii::$app->get($db, false);
+        if (is_null($connection)) {
+            $this->stdout("$db - unknown component\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
         }
 
-        $this->stdout("The following components were processed:\n\n", Console::FG_YELLOW);
-        foreach ($connections as $name) {
-            if ($connection = Yii::$app->get($name, false)) {
-                if ($connection instanceof \yii\db\Connection) {
-                    $this->stdout("\t* " . $name . " (" . $connection->getDriverName() . ")", Console::FG_GREEN);
-                    try {
-                        $schema = $connection->getSchema();
-                        $schema->refresh();
-                        $this->stdout(" - was cleared\n", Console::FG_GREEN);
-                    } catch (\Exception $e) {
-                        $this->stdout(" - " . $e->getMessage() . "\n", Console::FG_RED);
-                    }
-                } else {
-                    $this->stdout("\t* " . $name . " - This component doesn't inherit \\yii\\db\\Connection\n", Console::FG_RED);
-                }
-            } else {
-                $this->stdout("\t* " . $name . " - Unknown component\n", Console::FG_RED);
-            }
+        if (!$connection instanceof \yii\db\Connection) {
+            $this->stdout("$db - This component doesn't inherit \\yii\\db\\Connection\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        } else if (!$this->confirm("\nClear cache schema for '$db' connection?")) {
+            return static::EXIT_CODE_NORMAL;
         }
-        $this->stdout("\n");
+
+        try {
+            $schema = $connection->getSchema();
+            $schema->refresh();
+            $this->stdout("Schema cache for component $db, was cleared\n\n", Console::FG_GREEN);
+        } catch (\Exception $e) {
+            $this->stdout($e->getMessage() . "\n\n", Console::FG_RED);
+        }
     }
 
     /**

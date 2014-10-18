@@ -630,8 +630,9 @@ abstract class BaseMigrateController extends Controller
     /**
      * Clears the cache scheme.
      * This method should be implemented if the driver connection support reading schema.
+     * @param string $name id connection component
      */
-    protected function refreshSchema()
+    protected function refreshSchema($name = 'db')
     {
     }
 
