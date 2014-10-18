@@ -183,7 +183,7 @@ class MigrateController extends BaseMigrateController
     /**
      * @inheritdoc
      */
-    protected function refreshSchema($db = 'db')
+    protected function refreshSchema($name = 'db')
     {
         $this->db->schema->refresh();
         $this->stdout("Database cache scheme was cleared\n", Console::FG_GREEN);
