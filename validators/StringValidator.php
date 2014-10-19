@@ -183,6 +183,6 @@ class StringValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.string(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 }

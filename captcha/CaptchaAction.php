@@ -127,7 +127,7 @@ class CaptchaAction extends Action
                 // we add a random 'v' parameter so that FireFox can refresh the image
                 // when src attribute of image tag is changed
                 'url' => Url::to([$this->id, 'v' => uniqid()]),
-            ]);
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         } else {
             $this->setHttpHeaders();
             Yii::$app->response->format = Response::FORMAT_RAW;

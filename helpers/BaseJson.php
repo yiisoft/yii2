@@ -28,10 +28,10 @@ class BaseJson
      * represented in terms of a [[JsExpression]] object.
      * @param mixed $value the data to be encoded
      * @param integer $options the encoding options. For more details please refer to
-     * <http://www.php.net/manual/en/function.json-encode.php>.
+     * <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      * @return string the encoding result
      */
-    public static function encode($value, $options = 0)
+    public static function encode($value, $options = 320)
     {
         $expressions = [];
         $value = static::processData($value, $expressions, uniqid());
