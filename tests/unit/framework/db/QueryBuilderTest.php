@@ -40,6 +40,19 @@ class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
+     * adjust dbms specific escaping
+     * @param $sql
+     * @return mixed
+     */
+    protected function replaceQuotes($sql)
+    {
+        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
+            return str_replace('`', '"', $sql);
+        }
+        return $sql;
+    }
+
+    /**
      * this is not used as a dataprovider for testGetColumnType to speed up the test
      * when used as dataprovider every single line will cause a reconnect with the database which is not needed here
      */
@@ -142,16 +155,16 @@ class QueryBuilderTest extends DatabaseTestCase
             [ ['or not like', 'name', []], '', [] ],
 
             // simple like
-            [ ['like', 'name', 'heyho'], '"name" LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['not like', 'name', 'heyho'], '"name" NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['or like', 'name', 'heyho'], '"name" LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['or not like', 'name', 'heyho'], '"name" NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['like', 'name', 'heyho'], '`name` LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['not like', 'name', 'heyho'], '`name` NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['or like', 'name', 'heyho'], '`name` LIKE :qp0', [':qp0' => '%heyho%'] ],
+            [ ['or not like', 'name', 'heyho'], '`name` NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
 
             // like for many values
-            [ ['like', 'name', ['heyho', 'abc']], '"name" LIKE :qp0 AND "name" LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['not like', 'name', ['heyho', 'abc']], '"name" NOT LIKE :qp0 AND "name" NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['or like', 'name', ['heyho', 'abc']], '"name" LIKE :qp0 OR "name" LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['or not like', 'name', ['heyho', 'abc']], '"name" NOT LIKE :qp0 OR "name" NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['like', 'name', ['heyho', 'abc']], '`name` LIKE :qp0 AND `name` LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['not like', 'name', ['heyho', 'abc']], '`name` NOT LIKE :qp0 AND `name` NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['or like', 'name', ['heyho', 'abc']], '`name` LIKE :qp0 OR `name` LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [ ['or not like', 'name', ['heyho', 'abc']], '`name` NOT LIKE :qp0 OR `name` NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
 
             // not
             [ ['not', 'name'], 'NOT (name)', [] ],
@@ -166,48 +179,41 @@ class QueryBuilderTest extends DatabaseTestCase
 
 
             // between
-            [ ['between', 'id', 1, 10], '"id" BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
-            [ ['not between', 'id', 1, 10], '"id" NOT BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
+            [ ['between', 'id', 1, 10], '`id` BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
+            [ ['not between', 'id', 1, 10], '`id` NOT BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10] ],
 
             // in
-            [ ['in', 'id', [1, 2, 3]], '"id" IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
-            [ ['not in', 'id', [1, 2, 3]], '"id" NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
-            [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '("id") IN (SELECT "id" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
-            [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '("id") NOT IN (SELECT "id" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
+            [ ['in', 'id', [1, 2, 3]], '`id` IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+            [ ['not in', 'id', [1, 2, 3]], '`id` NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
+            [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '(`id`) IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
+            [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '(`id`) NOT IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
 
             // composite in
-            [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '("id", "name") IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
-            [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '("id", "name") NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
-            [ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '("id", "name") IN (SELECT "id", "name" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
-            [ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '("id", "name") NOT IN (SELECT "id", "name" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
+            [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(`id`, `name`) IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+            [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(`id`, `name`) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+            [ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '(`id`, `name`) IN (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
+            [ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '(`id`, `name`) NOT IN (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
 
 
             // exists
-            [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT "id" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
-            [ ['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT "id" FROM "users" WHERE "active"=:qp0)', [':qp0' => 1] ],
+            [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
+            [ ['not exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
 
             // simple conditions
-            [ ['=', 'a', 'b'], '"a" = :qp0', [':qp0' => 'b'] ],
-            [ ['>', 'a', 1], '"a" > :qp0', [':qp0' => 1] ],
-            [ ['>=', 'a', 'b'], '"a" >= :qp0', [':qp0' => 'b'] ],
-            [ ['<', 'a', 2], '"a" < :qp0', [':qp0' => 2] ],
-            [ ['<=', 'a', 'b'], '"a" <= :qp0', [':qp0' => 'b'] ],
-            [ ['<>', 'a', 3], '"a" <> :qp0', [':qp0' => 3] ],
-            [ ['!=', 'a', 'b'], '"a" != :qp0', [':qp0' => 'b'] ],
-            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '"date" >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', [] ],
-            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '"date" >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2] ],
+            [ ['=', 'a', 'b'], '`a` = :qp0', [':qp0' => 'b'] ],
+            [ ['>', 'a', 1], '`a` > :qp0', [':qp0' => 1] ],
+            [ ['>=', 'a', 'b'], '`a` >= :qp0', [':qp0' => 'b'] ],
+            [ ['<', 'a', 2], '`a` < :qp0', [':qp0' => 2] ],
+            [ ['<=', 'a', 'b'], '`a` <= :qp0', [':qp0' => 'b'] ],
+            [ ['<>', 'a', 3], '`a` <> :qp0', [':qp0' => 3] ],
+            [ ['!=', 'a', 'b'], '`a` != :qp0', [':qp0' => 'b'] ],
+            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL 1 MONTH)')], '`date` >= DATE_SUB(NOW(), INTERVAL 1 MONTH)', [] ],
+            [ ['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '`date` >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2] ],
         ];
 
         // adjust dbms specific escaping
         foreach($conditions as $i => $condition) {
-            switch ($this->driverName) {
-                case 'mssql':
-                case 'mysql':
-                case 'sqlite':
-                    $conditions[$i][1] = str_replace('"', '`', $condition[1]);
-                    break;
-            }
-
+            $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
     }
@@ -255,14 +261,7 @@ class QueryBuilderTest extends DatabaseTestCase
 
         // adjust dbms specific escaping
         foreach($conditions as $i => $condition) {
-            switch ($this->driverName) {
-                case 'mssql':
-                case 'mysql':
-                case 'sqlite':
-                    $conditions[$i][1] = str_replace('"', '`', $condition[1]);
-                    break;
-            }
-
+            $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
     }
@@ -309,18 +308,10 @@ class QueryBuilderTest extends DatabaseTestCase
 
     public function existsParamsProvider()
     {
-        $conditions = [
-            ['exists', "SELECT `id` FROM `TotalExample` `t` WHERE EXISTS (SELECT `1` FROM `Website` `w`)"],
-            ['not exists', "SELECT `id` FROM `TotalExample` `t` WHERE NOT EXISTS (SELECT `1` FROM `Website` `w`)"]
+        return [
+            ['exists', $this->replaceQuotes("SELECT `id` FROM `TotalExample` `t` WHERE EXISTS (SELECT `1` FROM `Website` `w`)")],
+            ['not exists', $this->replaceQuotes("SELECT `id` FROM `TotalExample` `t` WHERE NOT EXISTS (SELECT `1` FROM `Website` `w`)")]
         ];
-
-        // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
-            if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
-                $conditions[$i][1] = str_replace('`', '"', $condition[1]);
-            }
-        }
-        return $conditions;
     }
 
     /**
@@ -347,10 +338,9 @@ class QueryBuilderTest extends DatabaseTestCase
 
     public function testBuildWhereExistsWithParameters()
     {
-        $expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)";
-        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
-            $expectedQuerySql = str_replace('`', '"', $expectedQuerySql);
-        }
+        $expectedQuerySql = $this->replaceQuotes(
+            "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)"
+        );
         $expectedQueryParams = [':some_value' => "asd", ':merchant_id' => 6];
 
         $subQuery = new Query();
@@ -372,10 +362,9 @@ class QueryBuilderTest extends DatabaseTestCase
 
     public function testBuildWhereExistsWithArrayParameters()
     {
-        $expectedQuerySql = "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND ((`w`.`merchant_id`=:qp0) AND (`w`.`user_id`=:qp1)))) AND (`t`.`some_column`=:qp2)";
-        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
-            $expectedQuerySql = str_replace('`', '"', $expectedQuerySql);
-        }
+        $expectedQuerySql = $this->replaceQuotes(
+            "SELECT `id` FROM `TotalExample` `t` WHERE (EXISTS (SELECT `1` FROM `Website` `w` WHERE (w.id = t.website_id) AND ((`w`.`merchant_id`=:qp0) AND (`w`.`user_id`=:qp1)))) AND (`t`.`some_column`=:qp2)"
+        );
         $expectedQueryParams = [':qp0' => 6, ':qp1' => 210, ':qp2' => 'asd'];
 
         $subQuery = new Query();
@@ -401,10 +390,9 @@ class QueryBuilderTest extends DatabaseTestCase
      */
     public function testBuildUnion()
     {
-        $expectedQuerySql = "(SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2)) UNION ( SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 ) UNION ALL ( SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3 )";
-        if (!in_array($this->driverName, ['mssql', 'mysql', 'sqlite'])) {
-            $expectedQuerySql = str_replace('`', '"', $expectedQuerySql);
-        }
+        $expectedQuerySql = $this->replaceQuotes(
+            "(SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2)) UNION ( SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 ) UNION ALL ( SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3 )"
+        );
         $query = new Query();
         $secondQuery = new Query();
         $secondQuery->select('id')
@@ -421,6 +409,7 @@ class QueryBuilderTest extends DatabaseTestCase
               ->union($thirdQuery, TRUE);
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        $this->assertEquals([], $queryParams);
     }
 
     public function testSelectSubquery()
@@ -434,7 +423,7 @@ class QueryBuilderTest extends DatabaseTestCase
             ->from('accounts')
             ->addSelect(['operations_count' => $subquery]);
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = 'SELECT *, (SELECT COUNT(*) FROM `operations` WHERE account_id = accounts.id) AS `operations_count` FROM `accounts`';
+        $expected = $this->replaceQuotes('SELECT *, (SELECT COUNT(*) FROM `operations` WHERE account_id = accounts.id) AS `operations_count` FROM `accounts`');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
