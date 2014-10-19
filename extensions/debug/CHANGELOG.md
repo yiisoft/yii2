@@ -4,7 +4,7 @@ Yii Framework 2 debug extension Change Log
 2.0.1 under development
 -----------------------
 
-- Bug #5402: Debugger was not loading when there were closures, resources or PDO instances in the logged data (samdark)
+- Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
 
 

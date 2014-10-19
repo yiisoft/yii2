@@ -57,7 +57,14 @@ class AssetPanel extends Panel
         $data = [];
         foreach ($bundles as $name => $bundle) {
             if ($bundle instanceof AssetBundle) {
-                $data[$name] = (array) $bundle;
+                $bundleData = (array) $bundle;
+                if (isset($bundleData['publishOptions']['beforeCopy']) && $bundleData['publishOptions']['beforeCopy'] instanceof \Closure) {
+                    $bundleData['publishOptions']['beforeCopy'] = '\Closure';
+                }
+                if (isset($bundleData['publishOptions']['afterCopy']) && $bundleData['publishOptions']['afterCopy'] instanceof \Closure) {
+                    $bundleData['publishOptions']['afterCopy'] = '\Closure';
+                }
+                $data[$name] = $bundleData;
             }
         }
         return $data;
