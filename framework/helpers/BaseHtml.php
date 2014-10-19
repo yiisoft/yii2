@@ -197,8 +197,9 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
      * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
-     *   the generated `script` tag will be enclosed within the conditional comments. This is mainly useful
+     *   the generated `link` tag will be enclosed within the conditional comments. This is mainly useful
      *   for supporting old versions of IE browsers.
+     * - noscript: if set to true, `link` tag will be wrapped into `<noscript>` tags.
      *
      * The rest of the options will be rendered as the attributes of the resulting link tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -217,6 +218,9 @@ class BaseHtml
             $condition = $options['condition'];
             unset($options['condition']);
             return "<!--[if $condition]>\n" . static::tag('link', '', $options) . "\n<![endif]-->";
+        } elseif (isset($options['noscript']) && $options['noscript'] === true) {
+            unset($options['noscript']);
+            return "<noscript>" . static::tag('link', '', $options) . "</noscript>";
         } else {
             return static::tag('link', '', $options);
         }

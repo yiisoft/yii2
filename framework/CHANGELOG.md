@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 - Enh #5587: `json_encode` is now used with `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` where it makes sense, also
   it is now default for `Json::encode()` (samdark)
+- Enh #4457: Added support for using noscript for css files registered through asset bundles and Html helper (samdark)
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
 - Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
 - Enh #5646: Call `yii\base\ErrorHandler::unregister()` instead of `restore_*_handlers` directly (aivus)
