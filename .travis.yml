@@ -31,6 +31,7 @@ cache:
   directories:
 #    - cubrid # caching cubrid breaks the build on a regular basis and has nearly no speedup
     - vendor
+    - $HOME/.composer/cache
 
 # try running against postgres 9.3
 addons:
