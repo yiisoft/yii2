@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.1 under development
 -----------------------
 
-- Bug #5402: Debugger was not loading when there were closures, resources or PDO instances in the logged data (samdark)
+- Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
 - Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)
 - Bug #5601: Simple conditions in Query::where() and ActiveQuery::where() did not allow `yii\db\Expression` to be used as the value (cebe, stevekr)
 - Bug: Gii console command help information does not contain global options (qiangxue)
