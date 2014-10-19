@@ -55,10 +55,51 @@ class LogTarget extends Target
             $data[$id] = $panel->save();
         }
         $data['summary'] = $summary;
-        file_put_contents($dataFile, serialize($data));
+        file_put_contents($dataFile, serialize($this->replaceUnserializable($data)));
 
         $indexFile = "$path/index.data";
         $this->updateIndexFile($indexFile, $summary);
+    }
+
+    /**
+     * Replacing everything that is not serializable with its text representation
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    private function replaceUnserializable($value)
+    {
+        if (is_scalar($value) || $value === null) {
+            return $value;
+        }
+
+        if (is_array($value)) {
+            foreach ($value as &$row) {
+                $row = $this->replaceUnserializable($row);
+            }
+            return $value;
+        }
+
+        if ($value instanceof \Closure) {
+            return '\Closure';
+        }
+
+        if (is_resource($value)) {
+            return 'resource';
+        }
+
+        if ($value instanceof \PDO) {
+            return '\PDO';
+        }
+
+        $properties = (new \ReflectionObject($value))->getProperties();
+        foreach ($properties as &$property) {
+            $property->setAccessible(true);
+            $propertyValue = $property->getValue($value);
+            $property->setValue($value, $this->replaceUnserializable($propertyValue));
+        }
+
+        return $value;
     }
 
     /**
