@@ -21,7 +21,7 @@ $this->title = $model-><?= $generator->getNameAttribute() ?>;
 $this->params['breadcrumbs'][] = ['label' => <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>, 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-view">
+<div class="<?= empty($generator->moduleID)?'':(Inflector::camel2id(Inflector::camel2id($generator->moduleID))).'-' ?><?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-view">
 
     <h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
 
