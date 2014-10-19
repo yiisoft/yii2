@@ -1,3 +1,7 @@
+before_commands:
+    - composer self-update && composer --version
+    - composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+
 imports:
     - php
 
