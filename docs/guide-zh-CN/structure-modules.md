@@ -132,7 +132,6 @@ class PostController extends Controller
 
 
 ### 路由 <a name="routes"></a>
-### Routes <a name="routes"></a>
 
 和访问应用的控制器类似，[路由](structure-controllers.md#routes) 也用在模块中控制器的寻址，
 模块中控制器的路由必须以模块ID开始，接下来为控制器ID和操作ID。
