@@ -87,9 +87,11 @@ Regras e Observações
 - alias
 - cache
 - CamelCase
+- core
 - framework
 - hash
 - helper
 - id
+- runtime
 - widget
 
