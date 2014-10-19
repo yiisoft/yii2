@@ -422,4 +422,20 @@ class QueryBuilderTest extends DatabaseTestCase
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
     }
+
+    public function testSelectSubquery()
+    {
+        $subquery = (new Query())
+            ->select('COUNT(*)')
+            ->from('operations')
+            ->where('account_id = accounts.id');
+        $query = (new Query())
+            ->select('*')
+            ->from('accounts')
+            ->addSelect(['operations_count' => $subquery]);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = 'SELECT *, (SELECT COUNT(*) FROM `operations` WHERE account_id = accounts.id) AS `operations_count` FROM `accounts`';
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+    }
 }

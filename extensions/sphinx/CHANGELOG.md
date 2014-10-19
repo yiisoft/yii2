@@ -5,6 +5,7 @@ Yii Framework 2 sphinx extension Change Log
 -----------------------
 
 - Bug #5601: Simple conditions in Query::where() and ActiveQuery::where() did not allow `yii\db\Expression` to be used as the value (cebe, stevekr)
+- Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 
 
 2.0.0 October 12, 2014

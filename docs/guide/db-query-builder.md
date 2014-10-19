@@ -85,6 +85,15 @@ When specifying columns, you may include the table prefixes or column aliases, e
 If you are using array to specify the columns, you may also use the array keys to specify the column aliases,
 e.g., `['user_id' => 'user.id', 'user_name' => 'user.name']`.
 
+Starting from version 2.0.1, you may also select sub-queries as columns. For example,
+ 
+```php
+$subQuery = (new Query)->select('COUNT(*)')->from('user');
+$query = (new Query)->select(['id', 'count' => $subQuery])->from('post');
+// $query represents the following SQL:
+// SELECT `id`, (SELECT COUNT(*) FROM `user`) AS `count` FROM `post`
+```
+
 To select distinct rows, you may call `distinct()`, like the following:
 
 ```php
