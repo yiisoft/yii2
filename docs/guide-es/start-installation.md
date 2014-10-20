@@ -21,8 +21,7 @@ En Windows, tendrás que descargar y ejecutar [Composer-Setup.exe](https://getco
 Por favor, consulta la [Documentación de Composer](https://getcomposer.org/doc/) si encuentras algún problema
 o deseas obtener un conocimiento más profundo sobre su utilización.
 
-Si ya tienes composer inatalado asegurate que esté actualizado ejecutando `composer self-update`
-
+Si ya tienes composer instalado asegurate que esté actualizado ejecutando `composer self-update`
 
 Teniendo Composer instalado, puedes instalar Yii ejecutando los siguientes comandos en un directorio accesible vía Web:
 Nota: es posible que en al ejecutar el primer comando te pida tu username 
