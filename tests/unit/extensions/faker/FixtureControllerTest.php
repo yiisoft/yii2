@@ -137,7 +137,7 @@ class FixtureControllerTest extends TestCase
         $this->assertFileExists($filename, 'fixture template file should be generated');
 
         $generatedData = require Yii::getAlias('@runtime/faker/profile.php');
-        $this->assertEquals(1, preg_match('/^[а-я]*$/iu', $generatedData[0]['first_name']), 'generated value should be in ru-RU language');
+        $this->assertEquals(1, preg_match('/^[а-яё]*$/iu', $generatedData[0]['first_name']), 'generated value should be in ru-RU language');
     }
 
     public function testGenerateAll()
