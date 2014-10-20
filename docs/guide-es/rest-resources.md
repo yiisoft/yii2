@@ -1,11 +1,11 @@
 Controladores
 =============
 
-Después de crear las clases de recursos y especificar cómo deben ser el formato de datos de recursos, el siguiente paso es crear acciones del controlador para exponer los recursos a los usuarios a través de las APIs RESTful finales.
+Después de crear las clases de recursos y especificar cómo debe ser el formato de datos de recursos, el siguiente paso es crear acciones del controlador para exponer los recursos a los usuarios a través de las APIs RESTful finales.
 
-Yii ofrece dos clases de controlador de base para simplificar su trabajo de crear acciones REST: [[yii\rest\Controller]] y [[yii\rest\ActiveController]]. La diferencia entre estos dos controladores es que este último proporciona un conjunto predeterminado de acciones que están específicamente diseñadas para hacer frente a los recursos representados a [Active Record](db-active-record.md). Así que si usted está utilizando [Active Record](db-active-record.md) y se siente cómodo con las acciones integradas que proporciona, es posible considerar la prolongación de sus clases de controlador de [[yii\rest\ActiveController]], que le permitirá crear potentes APIs RESTful con código mínimo.
+Yii ofrece dos clases de controlador base para simplificar su trabajo de crear acciones REST: [[yii\rest\Controller]] y [[yii\rest\ActiveController]]. La diferencia entre estos dos controladores es que este último proporciona un conjunto predeterminado de acciones que están específicamente diseñadas para hacer frente a los recursos representados con [Active Record](db-active-record.md). Así que si usted está utilizando [Active Record](db-active-record.md) y se siente cómodo con las acciones integradas que proporciona, es posible considerar la prolongación de sus clases de controlador de [[yii\rest\ActiveController]], que le permitirá crear potentes APIs RESTful con un mínimo de código.
 
-Ambos [[yii\rest\Controller]] y [[yii\rest\ActiveController]] proporcionar las siguientes características, algunas de las cuales se describen en detalle en las siguientes secciones:
+Ambos [[yii\rest\Controller]] y [[yii\rest\ActiveController]] proporcionan las siguientes características, algunas de las cuales se describen en detalle en las siguientes secciones:
 
 * Métodos de Validación HTTP;
 * [Negociación de contenido y formato de datos](rest-response-formatting.md);
@@ -15,14 +15,14 @@ Ambos [[yii\rest\Controller]] y [[yii\rest\ActiveController]] proporcionar las s
 [[yii\rest\ActiveController]] además provee de las siguientes características:
 
 * Un conjunto de acciones comunes necesarias: `index`, `view`, `create`, `update`, `delete`, `options`;
-* La autorización del usuario en cuanto a que la acción solicitada y recursos.
+* La autorización del usuario en cuanto a la acción solicitada y recursos.
 
 
 ## Creando Clases Controladoras <a name="creating-controller"></a>
 
-Al crear una nueva clase de controlador, una convención para nombrar la clase del controlador es utilizar el nombre del tipo de recurso y el uso en singular. Por ejemplo, para servir información del usuario, el controlador puede ser nombrado como `UserController`.
+Al crear una nueva clase de controlador, una convención para nombrar la clase del controlador es utilizar el nombre del tipo de recurso y el uso en singular. Por ejemplo, para servir información de usuario, el controlador puede ser nombrado como `UserController`.
 
-Creación de una nueva acción es similar a crear una acción para una aplicación Web. La única diferencia es que en lugar de hacer que el resultado utilicé una vista llamando al método `render()`, para las acciones REST regresá directamente los datos. El [[yii\rest\Controller::serializer|serializer]] y el [[yii\web\Response|response object]] se encargará de la conversión de los datos originales, al formato solicitado. Por ejemplo,
+Creación de una nueva acción es similar a crear una acción para una aplicación Web. La única diferencia es que en lugar de hacer que el resultado utilicé una vista llamando al método `render()`, para las acciones REST regresá directamente los datos. El [[yii\rest\Controller::serializer|serializer]] y el [[yii\web\Response|response object]] se encargará de la conversión de los datos originales al formato solicitado. Por ejemplo,
 
 ```php
 public function actionView($id)
@@ -34,7 +34,7 @@ public function actionView($id)
 
 ## Filtros <a name="filters"></a>
 
-La mayoria de las características API REST son proporcionadas por [[yii\rest\Controller]] que son implementadas por los terminos de los [filtros](structure-filters.md).
+La mayoría de las características API REST son proporcionadas por [[yii\rest\Controller]] que son implementadas por los terminos de los [filtros](structure-filters.md).
 En particular, los siguientes filtros se ejecutarán en el orden en que aparecen:
 
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: apoya la negociación de contenido, que se explica en la sección el [Formateo de respuestas](rest-response-formatting.md);
@@ -42,7 +42,7 @@ En particular, los siguientes filtros se ejecutarán en el orden en que aparecen
 * [[yii\filters\AuthMethod|authenticator]]: apoya autenticación de usuarios, que se explica en la sección [Autenticación](rest-authentication.md);
 * [[yii\filters\RateLimiter|rateLimiter]]: apoya la limitación de rango, que se explica en la sección [Límite de Rango](rest-rate-limiting.md).
 
-Estos filtros se declaran nombrándolos en el metodo [[yii\rest\Controller::behaviors()|behaviors()]]. Puede reemplazar este método para configurar los filtros individuales, desactivar algunos de ellos, o añadir sus propios filtros. Por ejemplo, si sólo desea utilizar la autenticación básica HTTP, puede escribir el siguiente código:
+Estos filtros se declaran nombrándolos en el método [[yii\rest\Controller::behaviors()|behaviors()]]. Puede reemplazar este método para configurar los filtros individuales, desactivar algunos de ellos o añadir sus propios filtros. Por ejemplo, si sólo desea utilizar la autenticación básica HTTP, puede escribir el siguiente código:
 
 ```php
 use yii\filters\auth\HttpBasicAuth;
@@ -60,7 +60,7 @@ public function behaviors()
 
 ## Extendiendo `ActiveController` <a name="extending-active-controller"></a>
 
-Si su clase controlador extiende de [[yii\rest\ActiveController]], debe establecer su propiedad [[yii\rest\ActiveController::modelClass||modelClass]] a ser el nombre del recurso la clase que va a servir a través de este controlador. La clase debe extender de [[yii\db\ActiveRecord]].
+Si su clase controlador extiende de [[yii\rest\ActiveController]], debe establecer su propiedad [[yii\rest\ActiveController::modelClass||modelClass]] a ser el nombre del recurso de la clase que va a servir a través de este controlador. La clase debe extender de [[yii\db\ActiveRecord]].
 
 
 ### Personalizando Acciones <a name="customizing-actions"></a>
@@ -96,7 +96,7 @@ public function prepareDataProvider()
 }
 ```
 
-Por favor, consulte las referencias de clase para las clases de acción individuales para aprender las opciones de configuración que se dispone.
+Por favor, consulte las referencias de clases para la clase de acción individuales para aprender las opciones de configuración que se dispone.
 
 
 ### Realizando Comprobación de Acceso <a name="performing-access-check"></a>
