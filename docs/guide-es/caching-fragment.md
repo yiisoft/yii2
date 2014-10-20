@@ -61,7 +61,7 @@ modifica o no.
 
 Para especificar una dependencia, activa la opción [[yii\widgets\FragmentCache::dependency|dependencia]] (dependency),
 que puede ser un objecto [[yii\caching\Dependency]] o un array de configuración para crear un objecto `Dependency`. El
-siguidaente código especifica que la caché de fragmento depende del cambio del valor de la columna `updated_at`:
+siguiente código especifica que la caché de fragmento depende del cambio del valor de la columna `updated_at`:
 
 ```php
 $dependency = [
@@ -85,9 +85,9 @@ soporte multiples idiomas, la misma pieza del código de la vista puede generar 
 en diferentes idiomas. Por lo tanto, es posible que desees hacer variaciones del mismo contenido almacenado en caché de
 acuerdo con la actual selección del idioma en la aplicación.
 
-Para especificar variacioens en la memoria caché, configura la opción [[yii\widgets\FragmentCache::variations|variaciones]]
+Para especificar variaciones en la memoria caché, configurá la opción [[yii\widgets\FragmentCache::variations|variaciones]]
 (variations), la cual deberá ser un array de valores escalares, cada uno de ellos representando un factor de variación.
-Por ejemplo, para hacer que el contenido almacenado en la caché varie por lenguaje, podrías usar el siguiente código:
+Por ejemplo, para hacer que el contenido almacenado en la caché varíe por lenguaje, podrías usar el siguiente código:
 
 ```php
 if ($this->beginCache($id, ['variations' => [Yii::$app->language]])) {
