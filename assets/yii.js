@@ -126,7 +126,8 @@ yii = (function ($) {
         handleAction: function ($e) {
             var method = $e.data('method'),
                 $form = $e.closest('form'),
-                action = $e.attr('href');
+                action = $e.attr('href'),
+                params = $e.data('params');
 
             if (method === undefined) {
                 if (action && action != '#') {
@@ -156,6 +157,11 @@ yii = (function ($) {
                     var csrfParam = pub.getCsrfParam();
                     if (csrfParam) {
                         $form.append('<input name="' + csrfParam + '" value="' + pub.getCsrfToken() + '" type="hidden">');
+                    }
+                    if (params && $.isPlainObject(params)) {
+                        $.each(params, function (idx, obj) {
+                            $form.append('<input name="' + idx + '" value="' + obj + '" type="hidden">');
+                        });
                     }
                 }
                 $form.hide().appendTo('body');
