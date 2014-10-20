@@ -55,7 +55,11 @@ class ApcCache extends Cache
      */
     protected function getValues($keys)
     {
-        return apc_fetch($keys);
+        $values = apc_fetch($keys);
+        if ($values === false) {
+            $values = [];
+        }
+        return $values;
     }
 
     /**
