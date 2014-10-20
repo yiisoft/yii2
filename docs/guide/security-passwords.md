@@ -70,20 +70,20 @@ $data = Yii::$app->getSecurity()->decrypt($encryptedData, $secretKey);
 Confirming data integrity
 --------------------------------
 
-There are situations in which you need to verify that your data hasn't been tampered with by a third party or even corrupted in some way. Yii provides an easy way to confirm data integrity in the form of two helper functions.  
+There are situations in which you need to verify that your data hasn't been tampered with by a third party or even corrupted in some way. Yii provides an easy way to confirm data integrity in the form of two helper functions.
 
 Prefix the data with a hash generated from the secret key and data
 
 
 ```php
-// $secretKey our application or user secret, $genuineData obtained from a reliable source 
+// $secretKey our application or user secret, $genuineData obtained from a reliable source
 $data = Yii::$app->getSecurity()->hashData($genuineData, $secretKey);
 ```
 
 Checks if the data integrity has been compromised
 
 ```php
-// $secretKey our application or user secret, $data obtained from an unreliable source 
+// $secretKey our application or user secret, $data obtained from an unreliable source
 $data = Yii::$app->getSecurity()->validateData($data, $secretKey);
 ```
 
@@ -136,5 +136,5 @@ Securing Cookies
 See also
 --------
 
-- [Views security](view.md#security)
+- [Views security](structure-views.md#security)
 

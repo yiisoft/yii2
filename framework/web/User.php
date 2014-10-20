@@ -538,7 +538,7 @@ class User extends Component
             $identity->getId(),
             $identity->getAuthKey(),
             $duration,
-        ]);
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $cookie->expire = time() + $duration;
         Yii::$app->getResponse()->getCookies()->add($cookie);
     }

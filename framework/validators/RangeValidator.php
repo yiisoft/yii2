@@ -101,6 +101,6 @@ class RangeValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.range(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 }

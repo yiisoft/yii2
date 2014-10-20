@@ -5,11 +5,11 @@ From time to time, you may need to use some third-party code in your Yii applica
 use Yii as a library in some third-party systems. In this section, we will show how to achieve these goals.
 
 
-## Using Third-Party Libraries in Yii <a name="using-libs-in-yii"></a>
+Using Third-Party Libraries in Yii <a name="using-libs-in-yii"></a>
+----------------------------------
 
 To use a third-party library in a Yii application, you mainly need to make sure the classes in the library
 are properly included or can be autoloaded.
-
 
 ### Using Composer Packages <a name="using-composer-packages"></a>
 
@@ -30,7 +30,6 @@ require(__DIR__ . '/../vendor/autoload.php');
 // include Yii class file
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
-
 
 ### Using Downloaded Libraries <a name="using-downloaded-libs"></a>
 
@@ -71,7 +70,8 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-## Using Yii in Third-Party Systems <a name="using-yii-in-others"></a>
+Using Yii in Third-Party Systems <a name="using-yii-in-others"></a>
+--------------------------------
 
 Because Yii provides many excellent features, sometimes you may want to use some of its features to support
 developing or enhancing 3rd-party systems, such as WordPress, Joomla, or applications developed using other PHP
@@ -82,10 +82,15 @@ take two steps: install Yii, and bootstrap Yii.
 If the third-party system uses Composer to manage its dependencies, you can simply run the following commands
 to install Yii:
 
-```
-composer require "yiisoft/yii2:*"
-composer install
-```
+    composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+    composer require "yiisoft/yii2:*"
+    composer install
+
+The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+which allows managing bower and npm package dependencies through Composer. Even if you only want to use the database
+layer or other non-asset related features of Yii, this is required to install the Yii composer package.
+See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
+on Composer and solution to possible issues popping up during the installation.
 
 Otherwise, you can [download](http://www.yiiframework.com/download/) the Yii release file and unpack it in
 the `BasePath/vendor` directory.
@@ -112,7 +117,8 @@ Now you can use most features provided by Yii. For example, you can create Activ
 to work with databases.
 
 
-## Using Yii 2 with Yii 1 <a name="using-both-yii2-yii1"></a>
+Using Yii 2 with Yii 1 <a name="using-both-yii2-yii1"></a>
+----------------------
 
 If you were using Yii 1 previously, it is likely you have a running Yii 1 application. Instead of rewriting
 the whole application in Yii 2, you may just want to enhance it using some of the features only available in Yii 2.
