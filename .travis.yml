@@ -20,7 +20,6 @@ matrix:
 services:
   - redis-server
   - memcached
-  - elasticsearch
   - mongodb
 
 # faster builds on new travis setup not using sudo
@@ -35,6 +34,10 @@ cache:
 # try running against postgres 9.3
 addons:
   postgresql: "9.3"
+
+before_install:
+  - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.4.deb && sudo dpkg -i --force-confnew elasticsearch-1.3.4.deb
+  - sudo service elasticsearch start
 
 install:
   - composer self-update && composer --version
