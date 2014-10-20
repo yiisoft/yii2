@@ -85,7 +85,7 @@ soporte multiples idiomas, la misma pieza del código de la vista puede generar 
 en diferentes idiomas. Por lo tanto, es posible que desees hacer variaciones del mismo contenido almacenado en caché de
 acuerdo con la actual selección del idioma en la aplicación.
 
-Para especificar variaciones en la memoria caché, configurá la opción [[yii\widgets\FragmentCache::variations|variaciones]]
+Para especificar variaciones en la memoria caché, configura la opción [[yii\widgets\FragmentCache::variations|variaciones]]
 (variations), la cual deberá ser un array de valores escalares, cada uno de ellos representando un factor de variación.
 Por ejemplo, para hacer que el contenido almacenado en la caché varíe por lenguaje, podrías usar el siguiente código:
 
