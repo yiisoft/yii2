@@ -37,6 +37,11 @@ class ApiMarkdownLaTeX extends GithubMarkdown
         return $latex;
     }
 
+    protected function renderBrokenApiLink($block)
+    {
+        return $this->renderApiLink($block);
+    }
+
     /**
      * Converts markdown into HTML
      *
