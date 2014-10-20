@@ -23,7 +23,8 @@ services:
   - mongodb
 
 # faster builds on new travis setup not using sudo
-sudo: false
+# Disabled for install and use latest elasticsearch version
+# sudo: false
 
 # cache vendor dirs
 cache:
