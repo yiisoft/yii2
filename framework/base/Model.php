@@ -489,12 +489,22 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns a value indicating whether there is any validation error.
-     * @param string|null $attribute attribute name. Use null to check all attributes.
+     * @param string|array|null $attributes attribute name. Use null to check all attributes.
      * @return boolean whether there is any error.
      */
-    public function hasErrors($attribute = null)
+    public function hasErrors($attributes = null)
     {
-        return $attribute === null ? !empty($this->_errors) : isset($this->_errors[$attribute]);
+        if ($attributes === null) {
+            return !empty($this->_errors);
+        } else if(is_array($attributes)) {
+            foreach ($attributes as $attribute) {
+                if (isset($this->_errors[$attribute])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return isset($this->_errors[$attributes]);
     }
 
     /**
