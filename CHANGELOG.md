@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #5601: Simple conditions in Query::where() and ActiveQuery::where() did not allow `yii\db\Expression` to be used as the value (cebe, stevekr)
 - Bug #5657: `yii\caching\ApcCache::mset()` and `madd()` may cause warning in some APC setup (LAV45)
 - Bug #5665: The `currentPage` meta data in the RESTful result should be 1-based, similar to that in HTTP headers (qiangxue)
+- Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 - Enh #5587: `json_encode` is now used with `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` where it makes sense, also
