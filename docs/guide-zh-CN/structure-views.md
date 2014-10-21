@@ -400,7 +400,6 @@ class PostController extends Controller
 
 
 ### 嵌套布局 <a name="nested-layouts"></a>
-### Nested Layouts <a name="nested-layouts"></a>
 
 有时候你想嵌套一个布局到另一个，例如，在Web站点不同地方，想使用不同的布局，
 同时这些布局共享相同的生成全局HTML5页面结构的基本布局，可以在子布局中调用
