@@ -33,7 +33,6 @@ class ApcCache extends Cache
     public function exists($key)
     {
         $key = $this->buildKey($key);
-
         return apc_exists($key);
     }
 
