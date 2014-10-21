@@ -304,8 +304,9 @@ on the client side. This is achieved by signing each cookie with a hash string, 
 tell if a cookie is modified on the client side or not. If so, the cookie will NOT be accessible through the
 [[yii\web\Request::cookies|cookie collection]] of the `request` component.
 
-> Info: If a cookie fails the validation, you may still access it through `$_COOKIE`. This is because third-party
-libraries may manipulate cookies in their own way, which does not involve cookie validation.
+> Note: Cookie validation only protects cookie values from being modified. If a cookie fails the validation, 
+you may still access it through `$_COOKIE`. This is because third-party libraries may manipulate cookies 
+in their own way, which does not involve cookie validation.
 
 Cookie validation is enabled by default. You can disable it by setting the [[yii\web\Request::enableCookieValidation]]
 property to be false, although we strongly recommend you do not do so.
