@@ -415,6 +415,16 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Sets the request body parameter.
+     * @param string $name the parameter name
+     * @param mixed $value the request query parameter value
+     */
+    public function setBodyParam($name, $value)
+    {
+        $this->_bodyParams[$name] = $value;
+    }
+    
+    /**
      * Returns the named request body parameter value.
      * @param string $name the parameter name
      * @param mixed $defaultValue the default parameter value if the parameter does not exist.
@@ -474,6 +484,16 @@ class Request extends \yii\base\Request
         $this->_queryParams = $values;
     }
 
+    /**
+     * Sets the request [[queryString]] parameter.
+     * @param string $name the parameter name
+     * @param mixed $value the request query parameter value
+     */
+    public function setQueryParam($name, $value)
+    {
+        $this->_queryParams[$name] = $value;
+    }
+    
     /**
      * Returns GET parameter with a given name. If name isn't specified, returns an array of all GET parameters.
      *
