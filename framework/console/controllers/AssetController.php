@@ -514,7 +514,7 @@ EOD;
         $content = '';
         foreach ($inputFiles as $file) {
             $content .= "/*** BEGIN FILE: $file ***/\n"
-                . $this->adjustCssUrl(file_get_contents($file), dirname(realpath($file)), dirname($outputFile))
+                . $this->adjustCssUrl(file_get_contents($file), dirname($file), dirname($outputFile))
                 . "/*** END FILE: $file ***/\n";
         }
         if (!file_put_contents($outputFile, $content)) {
