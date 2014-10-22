@@ -4,6 +4,7 @@ Yii Framework 2 gii extension Change Log
 2.0.1 under development
 -----------------------
 
+- Enh #3760: Gii model generator now imports classes when necessary instead of using fully qualified class names (umneeq, samdark)
 - Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 

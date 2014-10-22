@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #5665: The `currentPage` meta data in the RESTful result should be 1-based, similar to that in HTTP headers (qiangxue)
 - Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
 - Bug: Gii console command help information does not contain global options (qiangxue)
+- Enh #3760: Gii model generator now imports classes when necessary instead of using fully qualified class names (umneeq, samdark)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 - Enh #5587: `json_encode` is now used with `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` where it makes sense, also
   it is now default for `Json::encode()` (samdark)
