@@ -156,7 +156,7 @@ class Tabs extends Widget
                 $linkOptions['data-toggle'] = 'dropdown';
                 $header = Html::a($label, "#", $linkOptions) . "\n"
                     . Dropdown::widget(['items' => $item['items'], 'clientOptions' => false, 'view' => $this->getView()]);
-            } elseif (isset($item['content'])) {
+            } else {
                 $options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
                 $options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $n);
 
@@ -167,7 +167,7 @@ class Tabs extends Widget
                 }
                 $linkOptions['data-toggle'] = 'tab';
                 $header = Html::a($label, '#' . $options['id'], $linkOptions);
-                $panes[] = Html::tag('div', $item['content'], $options);
+                $panes[] = Html::tag('div', isset($item['content']) ? $item['content'] : '', $options);
             }
 
             $headers[] = Html::tag('li', $header, $headerOptions);
@@ -183,7 +183,7 @@ class Tabs extends Widget
     protected function hasActiveTab()
     {
         foreach ($this->items as $item) {
-            if (isset($item['active']) && $item['active']===true) {
+            if (isset($item['active']) && $item['active'] === true) {
                 return true;
             }
         }
