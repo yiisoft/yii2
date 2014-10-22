@@ -20,6 +20,8 @@ class CacheControllerTest extends TestCase
      */
     private $_cacheController;
 
+    private $driverName = 'mysql';
+
     protected function setUp()
     {
         parent::setUp();
@@ -29,13 +31,39 @@ class CacheControllerTest extends TestCase
             'interactive' => false,
         ],[null, null]); //id and module are null
 
+        $databases = self::getParam('databases');
+        $config = $databases[$this->driverName];
+        $pdo_database = 'pdo_'.$this->driverName;
+
+        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
+            $this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
+        }
+
         $this->mockApplication([
             'components' => [
                 'firstCache' => 'yii\caching\ArrayCache',
                 'secondCache' => 'yii\caching\ArrayCache',
                 'session' => 'yii\web\CacheSession', // should be ignored at `actionFlushAll()`
+                'db' => [
+                    'class' => isset($config['class']) ? $config['class'] : 'yii\db\Connection',
+                    'dsn' => $config['dsn'],
+                    'username' => isset($config['username']) ? $config['username'] : null,
+                    'password' => isset($config['password']) ? $config['password'] : null,
+                    'enableSchemaCache' => true,
+                    'schemaCache' => 'firstCache',
+                ],
             ],
         ]);
+
+        if(isset($config['fixture'])) {
+            Yii::$app->db->open();
+            $lines = explode(';', file_get_contents($config['fixture']));
+            foreach ($lines as $line) {
+                if (trim($line) !== '') {
+                    Yii::$app->db->pdo->exec($line);
+                }
+            }
+        }
     }
 
     public function testFlushOne()
@@ -90,6 +118,25 @@ class CacheControllerTest extends TestCase
 
         $this->assertFalse(Yii::$app->firstCache->get('firstKey'),'first cache data should be flushed');
         $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
+    }
+
+    public function testClearSchema()
+    {
+        $schema = Yii::$app->db->schema;
+        Yii::$app->db->createCommand()->createTable('test_schema_cache', ['id' => 'pk'])->execute();
+        $noCacheSchemas = $schema->getTableSchemas('', true);
+        $cacheSchema = $schema->getTableSchemas('', false);
+
+        $this->assertEquals($noCacheSchemas, $cacheSchema, 'Scheme should not be modified');
+
+        Yii::$app->db->createCommand()->dropTable('test_schema_cache')->execute();
+        $noCacheSchemas = $schema->getTableSchemas('', true);
+        $this->assertNotEquals($noCacheSchemas, $cacheSchema, 'Schemes should be different');
+
+        $this->_cacheController->actionClearSchema('db');
+        $cacheSchema = $schema->getTableSchemas('', false);
+        $this->assertEquals($noCacheSchemas, $cacheSchema, 'Scheme cache should be cleared');
+
     }
 
 }
