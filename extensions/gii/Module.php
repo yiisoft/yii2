@@ -112,7 +112,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             throw new ForbiddenHttpException('You are not allowed to access this page.');
         }
 
-        if (is_array(current($this->generators))) {
+        if (is_array(current($this->generators)) || $this->generators == []) {
             foreach (array_merge($this->coreGenerators(), $this->generators) as $id => $config) {
                 $this->generators[$id] = Yii::createObject($config);
             }
