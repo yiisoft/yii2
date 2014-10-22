@@ -320,7 +320,7 @@ two choices to make the asset files directly accessible via Web:
   copy the files listed in the asset bundle to a Web-accessible folder.
 
 We recommend you use the second approach so that your extension can be more easily used by other people.
-Please refer to the [Assets] section for more details about how to work with assets in general.
+Please refer to the [Assets](structure-assets.md) section for more details about how to work with assets in general.
 
 
 #### Internationalization and Localization <a name="i18n-l10n"></a>
