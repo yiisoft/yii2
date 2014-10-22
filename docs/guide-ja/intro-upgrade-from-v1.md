@@ -3,9 +3,9 @@
 
 Yii フレームワークは 2.0 のために完全に書き直されたため、バージョン 1.1 と 2.0 の間には数多くの違いがあります。
 結果として、バージョン 1.1 からのアップグレードは、マイナーバージョン間でのアップグレードのような些細な問題ではなくなりました。
-この章では、二つのバージョン間の主要な違いを説明します。
+この節では、二つのバージョン間の主要な違いを説明します。
 
-もし以前に Yii 1.1 を使ったことがなければ、あなたはこの章を飛ばして直接に "[始めよう](start-installation.md)" に進んでも大丈夫です。
+もし以前に Yii 1.1 を使ったことがなければ、あなたはこの節を飛ばして直接に "[始めよう](start-installation.md)" に進んでも大丈夫です。
 
 Yii 2.0 は、この要約でカバーされているよりも多くの新機能を導入していることに注意してください。
 公式ガイド全体を通読して全ての新機能について学習することを強く推奨します。
@@ -17,9 +17,9 @@ Yii 2.0 は、この要約でカバーされているよりも多くの新機能
 
 Yii 2.0 は、事実上の標準的 PHP パッケージ管理ソフトである [Composer](https://getcomposer.org/) を全面的に採用しています。
 コアフレームワークも、エクステンションも、インストールは Composer を通じて処理されます。
-[Yii をインストールする](start-installation.md) の章を参照して、Yii 2.0 をインストールする方法を学習してください。
+[Yii をインストールする](start-installation.md) の節を参照して、Yii 2.0 をインストールする方法を学習してください。
 新しいエクステンションを作成したい場合、または既存の 1.1 エクステンションを 2.0 互換のエクステンションに変換したい場合は、
-ガイドの [エクステンションを作成する](structure-extensions.md#creating-extensions) の章を参照してください。
+ガイドの [エクステンションを作成する](structure-extensions.md#creating-extensions) の節を参照してください。
 
 
 PHP の必要条件
@@ -102,7 +102,7 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-設定に関する更なる詳細は、[オブジェクトの設定](concept-configurations.md) の章で見ることが出来ます。
+設定に関する更なる詳細は、[オブジェクトの設定](concept-configurations.md) の節で見ることが出来ます。
 
 
 イベント
@@ -125,7 +125,7 @@ $component->on($eventName, $handler);
 // $component->off($eventName, $handler);
 ```
 
-イベント関連の機能には数多くの改良がなされました。更なる詳細は [イベント](concept-events.md) の章を参照してください。
+イベント関連の機能には数多くの改良がなされました。更なる詳細は [イベント](concept-events.md) の節を参照してください。
 
 
 パスエイリアス
@@ -143,7 +143,7 @@ Yii 2.0 は、パスエイリアスの使用を、ファイル/ディレクト�
 サードパーティのライブラリ、例えば Zend フレームワークなどを使う場合には、そのフレームワークのインストールディレクトリを指す `@Zend` というパスエイリアスを定義することが出来ます。
 一旦そうしてしまえば、その Zend フレームワークのライブラリ中のどんなクラスでも、同じようにオートロードすることが出来るようになります。
 
-パスエイリアスに関する詳細は [パスエイリアス](concept-aliases.md) の章を参照してください。
+パスエイリアスに関する詳細は [パスエイリアス](concept-aliases.md) の節を参照してください。
 
 
 ビュー
@@ -165,7 +165,7 @@ echo $this->render('_item', ['item' => $item]);
 PHP を主たるテンプレート言語として使うのに加えて、Yii 2.0 は人気のある二つのテンプレートエンジン、Smarty と Twig に対する正式なサポートを備えています。
 Prado テンプレートエンジンはもうサポートされません。
 これらのテンプレートエンジンを使うためには、[[yii\base\View::$renderers|View::$renderers]] プロパティをセットして、`view` アプリケーションコンポーネントを設定する必要があります。
-詳細は [テンプレートエンジン](tutorial-template-engines.md) の章を参照してください。
+詳細は [テンプレートエンジン](tutorial-template-engines.md) の節を参照してください。
 
 
 モデル
@@ -199,7 +199,7 @@ public function scenarios()
 
 ほとんどの場合、[[yii\base\Model::rules()|rules()]] メソッドが存在し得るシナリオを十全に記述することが出来るなら、そして `unsafe` な属性を宣言する必要が無いなら、[[yii\base\Model::scenarios()|scenarios()]] をオーバーライドする必要はありません。
 
-モデルについてさらに詳細を学習するために、[モデル](structure-models.md) の章を参照してください。
+モデルについてさらに詳細を学習するために、[モデル](structure-models.md) の節を参照してください。
 
 
 コントローラ
@@ -223,7 +223,7 @@ public function actionView($id)
 }
 ```
 
-コントローラに関する更なる詳細については [コントローラ](structure-controllers.md) の章を参照してください。
+コントローラに関する更なる詳細については [コントローラ](structure-controllers.md) の節を参照してください。
 
 
 ウィジェット
@@ -250,7 +250,7 @@ $form = ActiveForm::begin([
 ActiveForm::end();
 ```
 
-更なる詳細については [ウィジェット](structure-widgets.md) の章を参照してください。
+更なる詳細については [ウィジェット](structure-widgets.md) の節を参照してください。
 
 
 テーマ
@@ -266,7 +266,7 @@ ActiveForm::end();
 また、`CThemeManager` コンポーネントはもうありません。
 その代りに、`theme` は `view` アプリケーションコンポーネントの設定可能なプロパティになりました。
 
-更なる詳細については [テーマ](output-theming.md) の章を参照してください。
+更なる詳細については [テーマ](output-theming.md) の節を参照してください。
 
 
 コンソールアプリケーション
@@ -282,7 +282,7 @@ ActiveForm::end();
 
 Yii 2.0 はコメントブロックからコマンドのヘルプ情報を自動的に生成する機能をサポートしています。
 
-更なる詳細については [コンソールコマンド](tutorial-console.md) の章を参照してください。
+更なる詳細については [コンソールコマンド](tutorial-console.md) の節を参照してください。
 
 
 国際化
@@ -293,7 +293,7 @@ Yii 2.0 は [PECL intl PHP モジュール](http://pecl.php.net/package/intl) �
 メッセージは `i18n` アプリケーションコンポーネント経由で翻訳されるようになりました。
 このコンポーネントはメッセージソースのセットを管理するもので、メッセージのカテゴリに基づいて異なるメッセージソースを使うことを許容します。
 
-更なる詳細については [国際化](tutorial-i18n.md) の章を参照してください。
+更なる詳細については [国際化](tutorial-i18n.md) の節を参照してください。
 
 
 アクションフィルター
@@ -318,7 +318,7 @@ public function behaviors()
 }
 ```
 
-更なる詳細については [フィルター](structure-filters.md) の章を参照してください。
+更なる詳細については [フィルター](structure-filters.md) の節を参照してください。
 
 
 アセット
@@ -331,7 +331,7 @@ Yii 2.0 は、*アセットバンドル* と呼ばれる新しい概念を導入
 アセットバンドルを [[yii\web\AssetBundle::register()]] を通じて登録することによって、そのバンドルに含まれるアセットにウェブでアクセスできるようになります。
 Yii 1 とは異なり、バンドルを登録したページは、そのバンドルで規定された JavaScript と CSS ファイルを自動的に参照するようになります。
 
-更なる詳細については [アセットを管理する](structure-assets.md) の章を参照してください。
+更なる詳細については [アセットを管理する](structure-assets.md) の節を参照してください。
 
 
 ヘルパー
@@ -345,7 +345,7 @@ Yii 2.0 はよく使われるスタティックなヘルパークラスを数多
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
 
-更なる詳細については [ヘルパー概要](helper-overview.md) の章を参照してください。
+更なる詳細については [ヘルパー概要](helper-overview.md) の節を参照してください。
 
 
 フォーム
@@ -366,7 +366,7 @@ Yii 2.0 は [[yii\widgets\ActiveForm]] を使ってフォームを作成する�
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-更なる詳細については [フォームを作成する](input-forms.md) の章を参照してください。
+更なる詳細については [フォームを作成する](input-forms.md) の節を参照してください。
 
 
 クエリビルダ
@@ -390,7 +390,7 @@ $rows = $command->queryAll();
 
 何より良いのは、このようなクエリ構築メソッドが [Active Record](db-active-record.md) を扱う時にも使える、ということです。
 
-更なる詳細については [クエリビルダ](db-query-builder.md) の章を参照してください。
+更なる詳細については [クエリビルダ](db-query-builder.md) の節を参照してください。
 
 
 アクティブレコード
@@ -462,7 +462,7 @@ public function init()
 コンストラクタにパラメータを追加する場合は、[[yii\db\ActiveRecord::instantiate()]] をオーバーライドする必要があるかもしれないことに注意してください。
 
 アクティブレコードについては、他にも多くの変更と機能強化がなされています。
-詳細については [アクティブレコード](db-active-record.md) の章を参照してください。
+詳細については [アクティブレコード](db-active-record.md) の節を参照してください。
 
 
 アクティブレコードのビヘイビア
@@ -504,7 +504,7 @@ User と IdentityInterface
 そして `CUserIdentity` クラスはもうありません。代りに、使い方がもっと単純な [[yii\web\IdentityInterface]] を実装すべきです。
 アドバンストアプリケーションテンプレートがそういう例を提供しています。
 
-更なる詳細は [認証](security-authentication.md)、[権限](security-authorization.md)、そして [高度なアプリケーションのテクニック](tutorial-advanced-app.md) の章を参照してください。
+更なる詳細は [認証](security-authentication.md)、[権限](security-authorization.md)、そして [高度なアプリケーションのテクニック](tutorial-advanced-app.md) の節を参照してください。
 
 
 URL 管理
@@ -523,12 +523,12 @@ Yii 2 の URL 管理は 1.1 のそれと似たようなものです。
 ]
 ```
 
-更なる詳細については [URL 管理](runtime-url-handling.md) の章を参照してください。
+更なる詳細については [URL 管理](runtime-url-handling.md) の節を参照してください。
 
 
 Yii 1.1 と 2.x を一緒に使う
 ---------------------------
 
 Yii 2.0 と一緒に使いたい Yii 1.1 のレガシーコードを持っている場合は、
-[Yii 1.1 と 2.x を一緒に使う](tutorial-yii-integration.md) の章を参照してください。
+[Yii 1.1 と 2.x を一緒に使う](tutorial-yii-integration.md) の節を参照してください。
 
