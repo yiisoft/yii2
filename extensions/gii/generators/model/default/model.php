@@ -13,11 +13,18 @@
 /* @var $relations array list of relations (name => relation declaration) */
 
 echo "<?php\n";
+$baseClass = new \ReflectionClass($generator->baseClass);
+$classNs = '\\' . ltrim($generator->ns, '\\');
+$baseClassNs = '\\' . ltrim($baseClass->getNamespaceName(), '\\');
+$baseClassShortName = $baseClass->getShortName();
 ?>
 
 namespace <?= $generator->ns ?>;
 
 use Yii;
+<?php if ($className !== $baseClassShortName && $classNs !== $baseClassNs && !class_exists($classNs . '\\' . $baseClassShortName)): ?>
+use <?= ltrim($generator->baseClass, '\\') ?>;
+<?php endif; ?>
 
 /**
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
@@ -32,7 +39,7 @@ use Yii;
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
+class <?= $className ?> extends <?= $className === $baseClassShortName || class_exists($classNs . '\\' . $baseClassShortName) ? $baseClass : $baseClassShortName . "\n" ?>
 {
     /**
      * @inheritdoc
