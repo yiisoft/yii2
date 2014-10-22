@@ -763,13 +763,13 @@ class BaseConsole
     /**
      * Asks user to confirm by typing y or n.
      *
-     * @param string $message to echo out before waiting for user input
+     * @param string $message to print out before waiting for user input
      * @param boolean $default this value is returned if no selection is made.
      * @return boolean whether user confirmed
      */
     public static function confirm($message, $default = false)
     {
-        echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
+        static::stdout($message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:');
         $input = trim(static::stdin());
 
         return empty($input) ? $default : !strncasecmp($input, 'y', 1);
