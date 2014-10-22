@@ -21,7 +21,7 @@ All Rights Reserved.
 
 * [Yii をインストールする](start-installation.md)
 * [アプリケーションを走らせる](start-workflow.md)
-* [ハローと言う](start-hello.md)
+* [「こんにちは」と言う](start-hello.md)
 * [フォームを扱う](start-forms.md)
 * [データベースを扱う](start-databases.md)
 * [Gii でコードを生成する](start-gii.md)
