@@ -1,4 +1,4 @@
-manejo de errores
+Manejo de errores
 ==============
 
 Cuando se maneja una petición del API RESTful, si ocurre un error en la petición del usuario o si algo inesperado ocurre en el servidor, simplemente puedes lanzar una excepción para notificar al usuario que algo erróneo ocurrió.
@@ -25,7 +25,7 @@ La siguiente lista sumariza los códigos de estado HTTP que son usados por el fr
 * `201`: El recurso ha creado con éxito en respuesta a la petición `POST`. La cabecera de situación `Location`  contiene la URL apuntando al nuevo recurso creado.
 * `204`: La petición ha sido manejada con éxito y el cuerpo de la respuesta no tiene contenido (como una petición `DELETE`).
 * `304`: El recurso no ha sido modificado. Puede usar la versión en caché.
-* `400`: Petición errónea. Esto puede estar causado por varias acciones por el usuario, como proveer un JSON no válido en el cuerpo de la petición, proveyendo parámetros de acción no válidos, etc.
+* `400`: Petición errónea. Esto puede estar causado por varias acciones de el usuario, como proveer un JSON no válido en el cuerpo de la petición, proveyendo parámetros de acción no válidos, etc.
 * `401`: Autenticación fallida.
 * `403`: El usuario autenticado no tiene permitido acceder a la API final.
 * `404`: El recurso pedido no existe.
@@ -36,7 +36,7 @@ La siguiente lista sumariza los códigos de estado HTTP que son usados por el fr
 * `500`: Error interno del servidor. Esto puede estar causado por errores internos  del programa.
 
 
-## Customizing Error Response <a name="customizing-error-response"></a>
+## Personalizando la Respuesta al Error <a name="customizing-error-response"></a>
 
 A veces puedes querer personalizar el formato de la respuesta del error por defecto . Por ejemplo, en lugar de depender del uso de diferentes estados HTTP para indicar los diferentes errores, puedes querer usar siempre el estado HTTP 200 y encajonar el código de estado HTTP en la respuesta, tal y como se ve en lo que sigue,
 
@@ -82,4 +82,4 @@ return [
 ```
 
 El anterior código puede reformatear la respuesta (para ambas respuestas, exitosa o fallida) de forma aclaratoria cuando
-`suppress_response_code` es pasado cvomo un parámetro `GET`.
+`suppress_response_code` es pasado como un parámetro `GET`.
