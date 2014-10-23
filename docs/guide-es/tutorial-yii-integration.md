@@ -17,7 +17,7 @@ Puedes instalar este tipo de librerias siguiendo dos sencillos pasos:
 1. modificar el fichero `composer.json` de tu aplicación y especificar que paquetes Composer quieres instalar.
 2. ejecuta `composer install` para instalar los paquetes específicados.
 
-Las clases en los paquetes Composer instalados pueden ser autocargados usando el cargador automatizado de Composer autoloader. Asegúrate que el fichero [script de entrada](structure-entry-scripts.md) de tu aplicación continen las siguientes líneas para instalar el cargador automático de Composer:
+Las clases en los paquetes Composer instalados pueden ser autocargados usando el cargador automatizado de Composer autoloader. Asegúrate que el fichero [script de entrada](structure-entry-scripts.md) de tu aplicación contiene las siguientes líneas para instalar el cargador automático de Composer:
 
 ```php
 // instalar el cargador automático de  Composer
@@ -33,10 +33,9 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 Si la librería no es liberada como un paquete de Composer, debes de seguir sus instrucciones de instalación para instalarla.
 En muchos casos, puedes necesitar descargar manualmente el fichero de la versión y desempaquetarlo en el directorio `BasePath/vendor` , donde `BasePath` representa el [camino base (base path)](structure-applications.md#basePath) de tu aplicación.
 
-Si la librería lleva su propio cargador automático (autoloader), puedes instalarlo en [script de entrada](structure-entry-scripts.md)
-de tu aplicación. Es recomendable que la instalación se  termine antes de incluir el fichero `Yii.php` de forma que el cargador automático de tenga precedencia al cargar de forma automática las clases.
+Si la librería lleva su propio cargador automático (autoloader), puedes instalarlo en [script de entrada](structure-entry-scripts.md) de tu aplicación. Es recomendable que la instalación se  termine antes de incluir el fichero `Yii.php` de forma que el cargador automático tenga precedencia al cargar de forma automática las clases.
 
-Si la librería no provee un cargador automático de clases, pero la denominación de sus clases sigue el [PSR-4](http://www.php-fig.org/psr/psr-4/), puedes usar el cargador automático de Yii para cargar de forma automática las clases. Todo lo que necesitas es declarar un [alias raiz](concept-aliases.md#defining-aliases) para cada espacio de nombres (namespace) raiz usado en sus clases. Por ejemplo, asume que has instalado una librería en el directorio `vendor/foo/bar`, y que las clases de la librería están bajo el espacio de nombresraiz `xyz`. Puedes incluir el siguiente código en la configuración de tu aplicación:
+Si la librería no provee un cargador automático de clases, pero la denominación de sus clases sigue el [PSR-4](http://www.php-fig.org/psr/psr-4/), puedes usar el cargador automático de Yii para cargar de forma automática las clases. Todo lo que necesitas es declarar un [alias raiz](concept-aliases.md#defining-aliases) para cada espacio de nombres (namespace) raiz usado en sus clases. Por ejemplo, asume que has instalado una librería en el directorio `vendor/foo/bar`, y que las clases de la librería están bajo el espacio de nombres raiz `xyz`. Puedes incluir el siguiente código en la configuración de tu aplicación:
 
 ```php
 [
@@ -46,13 +45,12 @@ Si la librería no provee un cargador automático de clases, pero la denominaci�
 ]
 ```
 
-Si ninguno de lo anterior es el caso, estaría bien que la linbrería dependa del camino de inclusión (include path) de configuración de PHP para localizar correctamente e incluir los ficheros  de las clases. Simplemente siguiendo estas instrucciones de cómo configurar el camino de inclusión de PHP.
+Si ninguno de lo anterior es el caso, estaría bien que la librería dependa del camino de inclusión (include path) de configuración de PHP para localizar correctamente e incluir los ficheros  de las clases. Simplemente siguiendo estas instrucciones de cómo configurar el camino de inclusión de PHP.
 
 En el caso más grave en el que la librería necesite incluir cada uno de sus ficheros de clases, puedes usar el siguiente método para incluir las clases según se pidan:
 
 * Identificar que clases contiene la librería.
-* Listar las clases y el camino a los ficheros correspondientes en `Yii::$classMap`  en el script de entrada [script de entrada](structure-entry-scripts.md)
-  de la aplicación. Por ejemplo,
+* Listar las clases y el camino a los ficheros correspondientes en `Yii::$classMap`  en el script de entrada [script de entrada](structure-entry-scripts.md) de la aplicación. Por ejemplo,
 ```php
 Yii::$classMap['Class1'] = 'path/to/Class1.php';
 Yii::$classMap['Class2'] = 'path/to/Class2.php';
@@ -61,7 +59,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 
 ## Usando Yii en Sistemas de Terceros <a name="using-yii-in-others"></a>
 
-Debido a que Yii provee muchas posibilidades excelentes, a veces puedes querer usar alguna de sus características para permitir el desarrollo o mejora de sistemas de terceros, como es WordPress, Joomla, o aplicaciones desarrolladas usando otros frameworks de PHP. Por ejemplo, puedes queres usarla clase [[yii\helpers\ArrayHelper]]  o usar la característica [Active Record](db-active-record.md) en un sistema de terceros. Para lograr este objetivo, principalmente necesitas realizar dos pasos: instalar Yii , e iniciar  Yii.
+Debido a que Yii provee muchas posibilidades excelentes, a veces puedes querer usar alguna de sus características para permitir el desarrollo o mejora de sistemas de terceros, como es WordPress, Joomla, o aplicaciones desarrolladas usando otros frameworks de PHP. Por ejemplo, puedes queres usar la clase [[yii\helpers\ArrayHelper]]  o usar la característica [Active Record](db-active-record.md) en un sistema de terceros. Para lograr este objetivo, principalmente necesitas realizar dos pasos: instalar Yii , e iniciar  Yii.
 
 Si el sistema de terceros usa Composer para manejar sus dependencias, simplemente ejecuta estos comandos para instalar Yii:
 
@@ -72,7 +70,7 @@ composer install
 
 En otro caso, puedes [descargar](http://www.yiiframework.com/download/) el fichero de la edición de Yii y desempaquetarla en el directorio `BasePath/vendor`.
 
-Después, debes de modificar el el script de entrada de sistema de terceros para incluir el siguiente código al principio:
+Después, debes de modificar el script de entrada de sistema de terceros para incluir el siguiente código al principio:
 
 ```php
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
@@ -81,7 +79,7 @@ $yiiConfig = require(__DIR__ . '/../config/yii/web.php');
 new yii\web\Application($yiiConfig); // No ejecutes run() aquí
 ```
 
-Como puedes ver, el código anterior es muy similar al que puedes ver en [script de entrada](structure-entry-scripts.md) de una aplicación típica. La única diferencia es que después de que se crea la instancia de la aplicación, el método `run()` no es llamado. Esto es así porque llamando a `run()`, Yii se haría cargo del control del flujo de trabajo del manejo de las peticiones, lo cual no es necesario en este caso ya que ya es manejado por la aplicación existente.
+Como puedes ver, el código anterior es muy similar al que puedes ver en [script de entrada](structure-entry-scripts.md) de una aplicación típica. La única diferencia es que después de que se crea la instancia de la aplicación, el método `run()` no es llamado. Esto es así porque llamando a `run()`, Yii se haría cargo del control del flujo de trabajo del manejo de las peticiones, lo cual no es necesario en este caso por estar ya es manejado por la aplicación existente.
 
 Como en una aplicación Yii, debes configurar la instancia de la aplicación basándose en el entorno que se está ejecutando del sistema de terceros. Por ejemplo, para usar la característica [Active Record](db-active-record.md) , necesitas configurar `db` [componente de la aplicación](structure-application-components.md) con los parámetros de la conexión de base de datos usados por el sistema de terceros.
 
@@ -136,7 +134,7 @@ Yii::registerAutoloader(['Yii', 'autoload']);
 Yii::$container = new yii\di\Container;
 ```
 
-¿Esto es todo!. Ahora, en cualquier parte de tu código, puedes usar `Yii::$app` para acceder a la instancia de la aplicación de Yii 2, mientras `Yii::app()` proporciona la instancia de la aplicación de  Yii 1 :
+¡Esto es todo!. Ahora, en cualquier parte de tu código, puedes usar `Yii::$app` para acceder a la instancia de la aplicación de Yii 2, mientras `Yii::app()` proporciona la instancia de la aplicación de  Yii 1 :
 
 ```php
 echo get_class(Yii::app()); // genera 'CWebApplication'
