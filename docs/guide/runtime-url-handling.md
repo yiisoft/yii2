@@ -228,7 +228,7 @@ In order to use parameterized hostnames, simply declare the URL rules while incl
 ```
 
 In the above example, the first segment of the hostname is treated as the "user" parameter while the first segment
-of the pat is treated as the "lang" parameter. The rule corresponds to the `user/profile` route.
+of the path is treated as the "lang" parameter. The rule corresponds to the `user/profile` route.
 
 Note that [[yii\web\UrlManager::showScriptName]] will not take effect when a URL is being created using a rule with a parameterized hostname.
 
