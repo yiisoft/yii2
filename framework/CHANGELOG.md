@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #5657: `yii\caching\ApcCache::mset()` and `madd()` may cause warning in some APC setup (LAV45)
 - Bug #5665: The `currentPage` meta data in the RESTful result should be 1-based, similar to that in HTTP headers (qiangxue)
 - Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
+- Bug #5702: Parenthesis should be automatically added to `Validator::whenClient` to avoid js error (mdmunir, qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Enh #3760: Gii model generator now imports classes when necessary instead of using fully qualified class names (umneeq, samdark)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
@@ -21,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
 - Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
 - Enh #5646: Call `yii\base\ErrorHandler::unregister()` instead of `restore_*_handlers` directly (aivus)
+- Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
 
 2.0.0 October 12, 2014
 ----------------------
