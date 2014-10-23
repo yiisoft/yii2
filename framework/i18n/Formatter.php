@@ -885,6 +885,51 @@ class Formatter extends Component
     }
 
     /**
+     * Formats the value as a duration.
+     *
+     * @param mixed $value the value (seconds) to be formatted.
+     * @param string $format the format for the duration output.
+     *
+     * The format defaults to "{hours}:{minutes}:{seconds}", which for the value 12345 would output "3:25:45".
+     * The format can include the following time unit placeholders: {years}, {weeks}, {days}, {hours}, {minutes}, and {seconds}.
+     *
+     * @param boolean $zeroFill whether to display at least two digits for all but the first requested unit. Defaults to true.
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric.
+     */
+    public function asDuration($value, $format = '{hours}:{minutes}:{seconds}', $zeroFill = true)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+
+        $timeUnits = [
+            'years'   => 31536000, // 365 days
+            'weeks'   => 604800,
+            'days'    => 86400,
+            'hours'   => 3600,
+            'minutes' => 60,
+            'seconds' => 1,
+        ];
+
+        $value = (int) abs($this->normalizeNumericValue($value));
+        preg_match_all('/\{([a-z]+?)\}/', $format, $requestedUnits); // get units from the specified output format
+        $unitReplacements = [];
+
+        $first = true;
+        foreach ($timeUnits as $unit => $seconds) {
+            if (in_array($unit, $requestedUnits[1])) {
+                $replaceValue = floor($value/$seconds);
+                $unitReplacements['{'.$unit.'}'] = ($zeroFill && !$first && $replaceValue < 10) ? '0' . $replaceValue : $replaceValue;
+                $value = $value % $seconds;
+                $first = false;
+            }
+        }
+
+        return strtr($format, $unitReplacements);
+    }
+
+    /**
      * Formats the value as a number spellout.
      *
      * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
