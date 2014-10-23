@@ -24,7 +24,7 @@ Change to the directory where you cloned Yii, normally, "yii2". Then enter the f
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. Make sure there is an issue created for the thing you are working on if it requires signifcant effort to fix
+### 3. Make sure there is an issue created for the thing you are working on if it requires significant effort to fix
 
 All new features and bug fixes should have an associated issue to provide a single point of reference for discussion
 and documentation. Take a few minutes to look through the existing issue list for one that matches the contribution you
