@@ -62,24 +62,24 @@ el código que utiliza la caché. Por ejemplo, podrías modificar la configuraci
 ],
 ```
 
-> Nota: Puedes registrar múltiples componentes de aplicación de caché. El componente llamado `cache` es usado por defecto por muchas clases caché-dependiente (e.g. [[yii\web\UrlManager]]).
+> Nota: Puedes registrar múltiples componentes de aplicación de caché. El componente llamado `cache` es usado por defecto por muchas clases caché-dependiente (ej. [[yii\web\UrlManager]]).
 
 ### Almacenamientos de Caché Soportados <a name="supported-cache-storage"></a>
 
 Yii proporciona varios componentes de caché que pueden almacenar datos en diferentes medios. A continuación
 se muestra un listado con los componentes de caché disponibles:
 
-* [[yii\caching\ApcCache]]: utiliza la extensión de PHP [APC](http://php.net/manual/es/book.apc.php). Esta opción puede ser considerada como la más rápida de entre todas las disponibles para una aplicación centralizada. (p. ej. un servidor, no dedicado al balance de carga, etc).
+* [[yii\caching\ApcCache]]: utiliza la extensión de PHP [APC](http://php.net/manual/es/book.apc.php). Esta opción puede ser considerada como la más rápida de entre todas las disponibles para una aplicación centralizada. (ej. un servidor, no dedicado al balance de carga, etc).
 * [[yii\caching\DbCache]]: utiliza una tabla de base de datos para almacenar los datos. Por defecto, se creará y usará como base de datos [SQLite3](http://sqlite.org/) en el directorio runtime. Se puede especificar explícitamente que base de datos va a ser utilizada configurando la propiedad `db`.
 * [[yii\caching\DummyCache]]: dummy cache (caché tonta) que no almacena en caché nada. El propósito de este componente es simplificar el código necesario para chequear la disponibilidad de caché. Por ejemplo, durante el desarrollo o si el servidor no tiene soporte de caché actualmente, puede utilizarse este componente de caché. Cuando este disponible un soporte en caché, puede cambiarse el componente correspondiente. En ambos casos, puede utilizarse el mismo código `Yii::$app->cache->get($key)` para recuperar un dato sin la preocupación de que `Yii::$app->cache` pueda ser `null`.
 * [[yii\caching\FileCache]]: utiliza un fichero estándar para almacenar los datos. Esto es adecuado para almacenar grandes bloques de datos (como páginas).
-* [[yii\caching\MemCache]]: utiliza las extensiones de PHP [memcache](http://php.net/manual/es/book.memcache.php) y [memcached](http://php.net/manual/es/book.memcached.php). Esta opción puede ser considerada como la más rápida cuando la caché es manejada en una aplicación distribuida (p. ej. con varios servidores, con balance de carga, etc..)
+* [[yii\caching\MemCache]]: utiliza las extensiones de PHP [memcache](http://php.net/manual/es/book.memcache.php) y [memcached](http://php.net/manual/es/book.memcached.php). Esta opción puede ser considerada como la más rápida cuando la caché es manejada en una aplicación distribuida (ej. con varios servidores, con balance de carga, etc..)
 * [[yii\redis\Cache]]: implementa un componente de caché basado en [Redis](http://redis.io/) que almacenan pares clave-valor (requiere la versión 2.6.12 de redis).
 * [[yii\caching\WinCache]]: utiliza la extensión de PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([ver también](http://php.net/manual/es/book.wincache.php)).
 * [[yii\caching\XCache]]: utiliza la extensión de PHP [XCache](http://xcache.lighttpd.net/).
 * [[yii\caching\ZendDataCache]]: utiliza [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
 
-> Nota: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (por ejemplo, datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (p. ej. contenido de página).
+> Nota: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
 
 ## API de Caché <a name="cache-apis"></a>
 
@@ -91,12 +91,12 @@ Todos los componentes de almacenamiento de caché provienen de la misma clase "p
 * [[yii\caching\Cache::add()|add()]]: almacena un elemento de datos identificado por una clave en la memoria caché si la clave no se encuentra en la memoria caché.
 * [[yii\caching\Cache::mget()|mget()]]: recupera varios elementos de datos de la memoria caché con las claves especificadas.
 * [[yii\caching\Cache::mset()|mset()]]: almacena múltiples elementos de datos en la memoria caché. Cada elemento se identifica por una clave.
-* [[yii\caching\Cache::madd()|madd()]]: almacena múltiples elementos de datos en la memoria cache. Cada elemento se identifica pon una clave. Si una clave ya existe en la caché, el elemento será omitido.
+* [[yii\caching\Cache::madd()|madd()]]: almacena múltiples elementos de datos en la memoria caché. Cada elemento se identifica con una clave. Si una clave ya existe en la caché, el elemento será omitido.
 * [[yii\caching\Cache::exists()|exists()]]: devuelve un valor que indica si la clave especificada se encuentra en la memoria caché.
 * [[yii\caching\Cache::delete()|delete()]]: elimina un elemento de datos identificado por una clave de la caché.
 * [[yii\caching\Cache::flush()|flush()]]: elimina todos los elementos de datos de la cache.
 
-Algunos sistemas de almacenamiento de caché, como por ejemplo MemCache, APC, pueden recuperar múltiples valores almacenados en modo de lote (batch), lo que puede reducir considerablemente la sobrecarga que implica la recuperación de datos almacenados en el caché. Las API [[yii\caching\Cache::mget()|mget()]] y  [[yii\caching\Cache::madd()|madd()]]
+Algunos sistemas de almacenamiento de caché, como por ejemplo MemCache, APC, pueden recuperar múltiples valores almacenados en modo de lote (batch), lo que puede reducir considerablemente la sobrecarga que implica la recuperación de datos almacenados en la caché. Las API [[yii\caching\Cache::mget()|mget()]] y  [[yii\caching\Cache::madd()|madd()]]
 se proporcionan para utilizar esta característica. En el caso de que el sistema de memoria caché no lo soportara, ésta sería simulada.
 
 Puesto que [[yii\caching\Cache]] implementa `ArrayAccess`, un componente de caché puede ser usado como un array.
@@ -141,7 +141,7 @@ Para garantizar la interoperabilidad, deberían utilizarse sólo caracteres alfa
 
 ### Caducidad de Caché <a name="cache-expiration"></a>
 
-Un elemento de datos almacenado en la memoria caché permanecerá en ella para siempre, a menos que sea removida de alguna manera debido a alguna directiva de caché (por ejemplo, el espacio de almacenamiento en caché está lleno y los datos más antiguos se eliminan). Para cambiar este comportamiento, podrías proporcionar un parámetro de caducidad al llamar [[yii\caching\Cache::set()|set()]] para guardar el elemento de datos. El parámetro nos indica por cuántos segundos el elemento se mantendrá válido en memoria caché. Cuando llames [[yii\caching\Cache::get()|get()]] para recuperar el elemento, si el tiempo de caducidad ha pasado, el método devolverá `false`, indicando que el elemento de datos no ha sido encontrado en la memoria caché. Por ejemplo,
+Un elemento de datos almacenado en la memoria caché permanecerá en ella para siempre, a menos que sea removida de alguna manera debido a alguna directiva de caché (ej. el espacio de almacenamiento en caché está lleno y los datos más antiguos se eliminan). Para cambiar este comportamiento, podrías proporcionar un parámetro de caducidad al llamar [[yii\caching\Cache::set()|set()]] para guardar el elemento de datos. El parámetro nos indica por cuántos segundos el elemento se mantendrá válido en memoria caché. Cuando llames [[yii\caching\Cache::get()|get()]] para recuperar el elemento, si el tiempo de caducidad ha pasado, el método devolverá `false`, indicando que el elemento de datos no ha sido encontrado en la memoria caché. Por ejemplo,
 
 ```php
 // guardar los datos en memoria caché al menos 45 segundos
@@ -157,9 +157,9 @@ if ($data === false) {
 
 ### Dependencias de Caché <a name="cache-dependencies"></a>
 
-Además de configurar el tiempo de expiración, los datos almacenados en caché pueden también ser invalidados conforme a algunos cambios en la caché de dependencias. Por ejemplo, [[yii\caching\FileDependency]] representa la dependencia del tiempo de modificación del archivo. Cuando esta dependencia cambia, significa que el archivo correspondiente ha cambiado. Como resultado, cualquier contenido anticuado que sea encontrado en el caché debería ser invalidado y la llamada a [[yii\caching\Cache::get()|get()]] debería devolver `null`.
+Además de configurar el tiempo de expiración, los datos almacenados en caché pueden también ser invalidados conforme a algunos cambios en la caché de dependencias. Por ejemplo, [[yii\caching\FileDependency]] representa la dependencia del tiempo de modificación del archivo. Cuando esta dependencia cambia, significa que el archivo correspondiente ha cambiado. Como resultado, cualquier contenido anticuado que sea encontrado en la caché debería ser invalidado y la llamada a [[yii\caching\Cache::get()|get()]] debería devolver `null`.
 
-Una dependencia es representada como una instancia de [[yii\caching\Dependency]] o su clase hija. Cuando llamas [[yii\caching\Cache::set()|set()]] para almacenar un elemento de datos en el caché, puedes pasar el objeto de dependencia asociado. Por ejemplo,
+Una dependencia es representada como una instancia de [[yii\caching\Dependency]] o su clase hija. Cuando llamas [[yii\caching\Cache::set()|set()]] para almacenar un elemento de datos en la caché, puedes pasar el objeto de dependencia asociado. Por ejemplo,
 
 ```php
 // Crear una dependencia sobre el tiempo de modificación del archivo example.txt.
@@ -204,7 +204,7 @@ $result = $db->cache(function ($db) {
 
 El almacenamiento en caché de consultas se puede usar para [DAO](db-dao.md), así como para [ActiveRecord](db-active-record.md).
 
-> Nota: Algunos DBMS (por ejemplo, [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
+> Nota: Algunos DBMS (ej. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
 
 ### Configuraciones <a name="query-caching-configs"></a>
 
