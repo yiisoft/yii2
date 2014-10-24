@@ -102,7 +102,9 @@ class Tabs extends Widget
      */
     public $navType = 'nav-tabs';
     /**
-     * @var boolean whether the tab-content container should be rendered.
+     * @var boolean whether to render the `tab-content` container and its content. You may set this property
+     * to be false so that you can manually render `tab-content` yourself in case your tab contents are complex.
+     * @since 2.0.1
      */
     public $renderTabContent = true;
 
