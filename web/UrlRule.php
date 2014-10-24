@@ -185,7 +185,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (isset($this->_routeParams[$name])) {
                     $tr2["<$name>"] = "(?P<$name>$pattern)";
                 } else {
-                    $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#";
+                    $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#u";
                 }
             }
         }
