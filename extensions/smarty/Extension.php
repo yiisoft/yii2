@@ -78,7 +78,7 @@ class Extension
         array_unshift($params, $params['route']) ;
         unset($params['route']);
 
-        return Url::to($params, true);
+        return Url::to($params, false);
     }
 
     /**
