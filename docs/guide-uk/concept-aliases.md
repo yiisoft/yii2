@@ -94,18 +94,18 @@ $cache = new FileCache([
 
 В Yii заздалегідь определнного псевдоніми для часто використовуваних шляхів до файлів і URL:
 
-- `@yii`: директория, в которой находится файл `BaseYii.php` (директория фреймворка).
-- `@app`: [[yii\base\Application::basePath|базовый путь]] текущего приложения.
-- `@runtime`: [[yii\base\Application::runtimePath|директория runtime]] текущего приложения.
-- `@vendor`: [[yii\base\Application::vendorPath|директория vendor Composer].
-- `@webroot`: вебрут текущего веб приложения (там где `index.php`).
-- `@web`: базовый URL текущего приложения.
+- `@yii`: директорія, в якій знаходиться файл `BaseYii.php` (директорія фреймворка).
+- `@app`: [[yii\base\Application::basePath|базовий шлях]] поточного додатку.
+- `@runtime`: [[yii\base\Application::runtimePath|директорія runtime]] поточного додатку.
+- `@vendor`: [[yii\base\Application::vendorPath|директорія vendor Composer].
+- `@webroot`: вебрут поточного веб додатки (там де `index.php`).
+- `@web`: базовий URL поточного додатка.
 
-Псевдоним `@yii` задаётся в момент подключения файла `Yii.php` во [входном скрипте](structure-entry-scripts.md).
-Остальные псевдонимы задаются в конструкторе приложения в момент применения [конфигурации](concept-configurations.md).
+Псевдонім `@yii` задається в момент підключення файлу `Yii.php` у [вхідному скрипті](structure-entry-scripts.md).
+Решта псевдоніми задаються в конструкторі додатки в момент застосування [конфигурації](concept-configurations.md).
 
 
-Псевдонимы расширений <a name="extension-aliases"></a>
+Псевдоніми розширень <a name="extension-aliases"></a>
 ------------------------------------------------
 
 Для каждого [расширения](structure-extensions.md), устанавливаемого через Composer, автоматически задаётся псевдоним.
