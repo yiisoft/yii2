@@ -101,6 +101,10 @@ class Tabs extends Widget
      * @var string specifies the Bootstrap tab styling.
      */
     public $navType = 'nav-tabs';
+    /**
+     * @var boolean whether the tab-content container should be rendered.
+     */
+    public $renderTabContent = true;
 
 
     /**
@@ -167,14 +171,16 @@ class Tabs extends Widget
                 }
                 $linkOptions['data-toggle'] = 'tab';
                 $header = Html::a($label, '#' . $options['id'], $linkOptions);
-                $panes[] = Html::tag('div', isset($item['content']) ? $item['content'] : '', $options);
+                if ($this->renderTabContent) {
+                    $panes[] = Html::tag('div', isset($item['content']) ? $item['content'] : '', $options);
+                }
             }
 
             $headers[] = Html::tag('li', $header, $headerOptions);
         }
 
-        return Html::tag('ul', implode("\n", $headers), $this->options) . "\n"
-        . Html::tag('div', implode("\n", $panes), ['class' => 'tab-content']);
+        return Html::tag('ul', implode("\n", $headers), $this->options)
+        . ($this->renderTabContent ? "\n" . Html::tag('div', implode("\n", $panes), ['class' => 'tab-content']) : '');
     }
 
     /**
