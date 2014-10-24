@@ -31,10 +31,10 @@ Yii::setAlias('@bar', 'http://www.example.com');
 Yii::setAlias('@foobar', '@foo/bar');
 ```
 
-Корневые псевдонимы, как правило, создаются на этапе [предварительной загрузки (bootstrapping)](runtime-bootstrapping.md).
-Например, вы можете вызвать [[Yii::setAlias()]] в [входном скрипте](structure-entry-scripts.md). Для удобства, в
-[приложении (Application)](structure-applications.md) предусмотрено свойство `aliases`, которое можно задать через
-[конфигурацию приложения](concept-configurations.md):
+Кореневі псевдоніми, як правило, створюються на етапі [попереднього завантаження (bootstrapping)](runtime-bootstrapping.md).
+Наприклад, ви можете викликати [[Yii::setAlias()]] у [вхідному скрипті](structure-entry-scripts.md). Для зручності, в
+[додатку (Application)](structure-applications.md) передбачено властивість `aliases`, яке можна задати через
+[конфігурацію додатку](concept-configurations.md):
 
 ```php
 return [
