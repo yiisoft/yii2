@@ -72,6 +72,13 @@ class Security extends Component
      * - 'crypt' - use PHP `crypt()` function.
      */
     public $passwordHashStrategy = 'crypt';
+    
+    /**
+    * @var integer Data source for initialization vector. Usually you should pass one of MCRYPT constants :
+    * MCRYPT_RAND (system random number generator), MCRYPT_DEV_RANDOM (read data from /dev/random) and MCRYPT_DEV_URANDOM (read data from /dev/urandom)
+    * or their corresponding integers. Default value is MCRYPT_DEV_URANDOM.
+    */
+    public $ivSource = MCRYPT_DEV_URANDOM;
 
     private $_cryptModule;
 
@@ -197,7 +204,7 @@ class Security extends Component
 
         $data = $this->addPadding($data);
         $ivSize = mcrypt_enc_get_iv_size($module);
-        $iv = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
+        $iv = mcrypt_create_iv($ivSize, $this->ivSource);
         mcrypt_generic_init($module, $key, $iv);
         $encrypted = mcrypt_generic($module, $data);
         mcrypt_generic_deinit($module);
@@ -463,7 +470,7 @@ class Security extends Component
         if (!extension_loaded('mcrypt')) {
             throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
         }
-        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        $bytes = mcrypt_create_iv($length, $this->ivSource);
         if ($bytes === false) {
             throw new Exception('Unable to generate random bytes.');
         }
