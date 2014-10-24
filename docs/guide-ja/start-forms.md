@@ -8,11 +8,11 @@
 この目的を達するために、一つの [アクション](structure-controllers.md) と 二つの [ビュー](structure-views.md) を作成する以外に、
 一つの [モデル](structure-models.md) をも作成します。
 
-このチュートリアルを通じて、次のことを学びます:
+このチュートリアルを通じて、次のことをする方法を学びます:
 
-* フォームを通じてユーザが入力したデータを表す [モデル](structure-models.md) を作成する方法
-* 入力されたデータを検証する規則を宣言する方法
-* [ビュー](structure-views.md) の中で HTML フォームを構築する方法
+* フォームを通じてユーザが入力したデータを表す [モデル](structure-models.md) を作成する
+* 入力されたデータを検証する規則を宣言する
+* [ビュー](structure-views.md) の中で HTML フォームを構築する
 
 
 モデルを作成する<a name="creating-model"></a>
