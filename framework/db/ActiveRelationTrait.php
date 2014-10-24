@@ -137,6 +137,32 @@ trait ActiveRelationTrait
     }
 
     /**
+     * Sets if this query represents a relation to one or more records.
+     *
+     * Use this method to specify a pivot record/table when declaring a relation in the [[ActiveRecord]] class:
+     *
+     * ```php
+     * public function getOrders()
+     * {
+     *     return $this->hasOne(Order::className(), ['id' => 'order_id']);
+     * }
+     *
+     * public function getLastOrder()
+     * {
+     *     return $this->getOrders()->multiple(false)->orderBy('created_at DESC');
+     * }
+     * ```
+     *
+     * @param bool $multiple
+     * @return static the relation object itself.
+     */
+    public function multiple($multiple)
+    {
+        $this->multiple = $multiple;
+        return $this;
+    }
+
+    /**
      * Finds the related records for the specified primary record.
      * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
      * @param string $name the relation name
