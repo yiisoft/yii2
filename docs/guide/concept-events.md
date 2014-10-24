@@ -258,7 +258,7 @@ Global Events <a name="global-events"></a>
 Yii supports a so-called *global event*, which is actually a trick based on the event mechanism described above.
 The global event requires a globally accessible Singleton, such as the [application](structure-applications.md) instance itself.
 
-To create the global evant, an event sender calls the Singleton's `trigger()` method
+To create the global event, an event sender calls the Singleton's `trigger()` method
 to trigger the event, instead of calling the sender's own `trigger()` method. Similarly, the event handlers are attached to the event on the Singleton. For example:
 
 ```php
