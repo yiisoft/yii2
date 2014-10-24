@@ -71,7 +71,7 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
   і підключіть його в [вхідному скрипті](structure-entry-scripts.md).
 
 
-Автозагрузка класів розширень <a name="autoloading-extension-classes"></a>
+Автозавантаження класів розширень <a name="autoloading-extension-classes"></a>
 -------------------------------------------------------------------
 
 Автозавантажувач Yii може автоматично завантажувати класи [розширень](structure-extensions.md) в тому випадку, якщо дотримується єдине правило. Розширення повинно правильно описати розділ 'autoload' у файлі 'composer.json'. Більш докладно про це можна дізнатися з [офіційній документації Composer](https://getcomposer.org/doc/04-schema.md#autoload).
