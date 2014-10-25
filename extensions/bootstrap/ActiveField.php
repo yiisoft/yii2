@@ -309,7 +309,7 @@ class ActiveField extends \yii\widgets\ActiveField
      */
     public function inline($value = true)
     {
-        $this->inline = (bool)$value;
+        $this->inline = (bool) $value;
         return $this;
     }
 
