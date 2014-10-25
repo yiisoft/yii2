@@ -1031,6 +1031,7 @@ class Formatter extends Component
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
+     * @throws InvalidParamException if the input value is not numeric.
      */
     private function formatSizeNumber($value, $decimals, $options, $textOptions)
     {

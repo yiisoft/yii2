@@ -34,7 +34,7 @@
             'password' => '',
         ],
 
-        // регистрация "search" компонента с помошью анонимной функции
+        // регистрация "search" компонента с помощью анонимной функции
         'search' => function () {
             return new app\components\SolrService;
         },

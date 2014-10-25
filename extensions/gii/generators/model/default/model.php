@@ -7,9 +7,6 @@
 /* @var $generator yii\gii\generators\model\Generator */
 /* @var $tableName string full table name */
 /* @var $className string class name */
-/* @var $classNamespace string class fully qualified namespace */
-/* @var $baseClassName string base class name */
-/* @var $baseClassNamespace string base class fully qualified namespace */
 /* @var $tableSchema yii\db\TableSchema */
 /* @var $labels string[] list of attribute labels (name => label) */
 /* @var $rules string[] list of validation rules */
@@ -21,9 +18,6 @@ echo "<?php\n";
 namespace <?= $generator->ns ?>;
 
 use Yii;
-<?php if ($classNamespace !== $baseClassNamespace): ?>
-use <?= ltrim($generator->baseClass, '\\') ?><?= $className === $baseClassName ? ' as ' . $baseClassName . 'Base' : ''  ?>;
-<?php endif; ?>
 
 /**
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
@@ -38,7 +32,7 @@ use <?= ltrim($generator->baseClass, '\\') ?><?= $className === $baseClassName ?
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?= $className ?> extends <?= ($className === $baseClassName ? $baseClassName . 'Base' : $baseClassName) . "\n" ?>
+class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>
 {
     /**
      * @inheritdoc

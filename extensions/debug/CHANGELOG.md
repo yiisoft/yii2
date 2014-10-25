@@ -5,6 +5,7 @@ Yii Framework 2 debug extension Change Log
 -----------------------
 
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
+- Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
 
 

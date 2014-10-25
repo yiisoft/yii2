@@ -150,7 +150,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'PRAGMA foreign_keys='.(int)$check;
+        return 'PRAGMA foreign_keys='.(int) $check;
     }
 
     /**

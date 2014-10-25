@@ -84,7 +84,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $mode;
     /**
-     * @var bool a value indicating if parameters should be url encoded.
+     * @var boolean a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
 
@@ -185,7 +185,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (isset($this->_routeParams[$name])) {
                     $tr2["<$name>"] = "(?P<$name>$pattern)";
                 } else {
-                    $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#";
+                    $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#u";
                 }
             }
         }

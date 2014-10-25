@@ -215,8 +215,8 @@ class SecurityTest extends TestCase
      * @param string $hash
      * @param string $password
      * @param string $salt
-     * @param int $iterations
-     * @param int $length
+     * @param integer $iterations
+     * @param integer $length
      * @param string $okm
      */
     public function testPbkdf2($hash, $password, $salt, $iterations, $length, $okm)
@@ -303,7 +303,7 @@ class SecurityTest extends TestCase
      * @param string $ikm
      * @param string $salt
      * @param string $info
-     * @param int $l
+     * @param integer $l
      * @param string $prk
      * @param string $okm
      */

@@ -82,7 +82,7 @@ public function behaviors()
 
 ## Сериализация данных <a name="data-serializing"></a>
 
-Как уже описывалось выше, [[yii\rest\Serializer]] - это центральное место, отвечащее за конвертацию объектов ресурсов
+Как уже описывалось выше, [[yii\rest\Serializer]] - это центральное место, отвечающее за конвертацию объектов ресурсов
 или коллекций в массивы. Он реализует интерфейсы [[yii\base\ArrayableInterface]] и [[yii\data\DataProviderInterface]].
 Для объектов ресурсов как правило реализуется интерфейс [[yii\base\ArrayableInterface]], а для коллекций -
 [[yii\data\DataProviderInterface]].

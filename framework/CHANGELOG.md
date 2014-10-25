@@ -12,8 +12,10 @@ Yii Framework 2 Change Log
 - Bug #5657: `yii\caching\ApcCache::mset()` and `madd()` may cause warning in some APC setup (LAV45)
 - Bug #5665: The `currentPage` meta data in the RESTful result should be 1-based, similar to that in HTTP headers (qiangxue)
 - Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
+- Bug #5702: Parenthesis should be automatically added to `Validator::whenClient` to avoid js error (mdmunir, qiangxue)
+- Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
-- Enh #3760: Gii model generator now imports classes when necessary instead of using fully qualified class names (umneeq, samdark)
+- Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 - Enh #5587: `json_encode` is now used with `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` where it makes sense, also
   it is now default for `Json::encode()` (samdark)
@@ -21,7 +23,9 @@ Yii Framework 2 Change Log
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
 - Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
 - Enh #5646: Call `yii\base\ErrorHandler::unregister()` instead of `restore_*_handlers` directly (aivus)
+- Enh #5735: Added `yii\bootstrap\Tabs::renderTabContent` to support manually rendering tab contents (RomeroMsk)
 - Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
+- Chg #3630: `yii\db\Command::queryInternal()` is now protected (samdark) 
 
 2.0.0 October 12, 2014
 ----------------------

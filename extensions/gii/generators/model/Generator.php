@@ -165,17 +165,9 @@ class Generator extends \yii\gii\Generator
         foreach ($this->getTableNames() as $tableName) {
             $className = $this->generateClassName($tableName);
             $tableSchema = $db->getTableSchema($tableName);
-
-            $baseClassReflection = new \ReflectionClass($this->baseClass);
-            $baseClassName = $baseClassReflection->getShortName();
-            $baseClassNamespace = '\\' . ltrim($baseClassReflection->getNamespaceName(), '\\');
-
             $params = [
                 'tableName' => $tableName,
                 'className' => $className,
-                'classNamespace' => '\\' . ltrim($this->ns, '\\'),
-                'baseClassName' => $baseClassName,
-                'baseClassNamespace' => $baseClassNamespace,
                 'tableSchema' => $tableSchema,
                 'labels' => $this->generateLabels($tableSchema),
                 'rules' => $this->generateRules($tableSchema),

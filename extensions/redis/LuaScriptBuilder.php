@@ -270,7 +270,7 @@ EOF;
                 $parts[] = $this->buildInCondition('in', [$column, $value], $columns);
             } else {
                 if (is_bool($value)) {
-                    $value = (int)$value;
+                    $value = (int) $value;
                 }
                 if ($value === null) {
                     $parts[] = "redis.call('HEXISTS',key .. ':a:' .. pk, ".$this->quoteValue($column).")==0";

@@ -40,7 +40,7 @@ Composer がインストールされたら、ウェブからアクセスでき�
 > Github にログインすると API の帯域制限が緩和され、Composer が仕事を続けることが出来るようになります。
 > 更なる詳細については、[Composer documentation](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens) を参照してください。
 
-> Tip: Yii の最新の開発バージョンをインストールしたい場合は、[stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability) を追加した次のコマンドを代りに使うことが出来ます:
+> Tip|ヒント: Yii の最新の開発バージョンをインストールしたい場合は、[stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability) を追加した次のコマンドを代りに使うことが出来ます:
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 >
@@ -112,7 +112,7 @@ Yii の最低必要条件を満たすように PHP のインストールを構�
 ウェブサーバを設定する<a name="configuring-web-servers"></a>
 ----------------------
 
-> Info|情報: もし Yii の試運転をしているだけで、実運用のサーバに配置する意図がないのであれば、当面、この節は飛ばしても構いません。
+> Info|情報: もし Yii の試運転をしているだけで、実運用のサーバに配置する意図がないのであれば、当面、この項は飛ばしても構いません。
 
 上記の説明に従ってインストールされたアプリケーションは、[Apache HTTP サーバ](http://httpd.apache.org/) と [Nginx HTTP サーバ](http://nginx.org/) のどちらでも、また、Windows、Mac OS X、Linux のどれでも、PHP 5.4 以上を走らせている環境であれば、そのままの状態で動作するはずです。
 Yii 2.0 は、また、facebook の [HHVM](http://hhvm.com/) とも互換性があります。
@@ -128,7 +128,7 @@ Yii 2.0 は、また、facebook の [HHVM](http://hhvm.com/) とも互換性が�
 
 > Info|情報: ウェブサーバの設定を修正する権限のない共用ホスティング環境でアプリケーションが走る場合でも、
 セキュリティ強化のためにアプリケーションの構造を調整することが出来ます。
-更なる詳細については、[共有ホスティング環境](tutorial-shared-hosting.md) の章を参照してください。
+更なる詳細については、[共有ホスティング環境](tutorial-shared-hosting.md) の節を参照してください。
 
 
 ### 推奨される Apache の設定<a name="recommended-apache-configuration"></a>
