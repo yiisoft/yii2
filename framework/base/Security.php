@@ -455,6 +455,7 @@ class Security extends Component
      * @see generateRandomString() if you need a string.
      *
      * @param integer $length the number of bytes to generate
+     * @throws InvalidConfigException if mcrypt extension is not installed
      * @throws Exception on failure.
      * @return string the generated random bytes
      */
