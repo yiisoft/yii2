@@ -84,7 +84,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $mode;
     /**
-     * @var bool a value indicating if parameters should be url encoded.
+     * @var boolean a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
 

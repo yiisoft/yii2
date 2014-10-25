@@ -159,7 +159,7 @@ class Extension extends \Twig_Extension
 
     public function addUses($args)
     {
-        foreach ((array)$args as $key => $value) {
+        foreach ((array) $args as $key => $value) {
             $value = str_replace('/', '\\', $value);
             if (is_int($key)) {
                 // namespace or class import

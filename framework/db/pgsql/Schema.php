@@ -425,7 +425,7 @@ SQL;
         $column->name = $info['column_name'];
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
-        $column->size = $info['size'] === null ? null : (int)$info['size'];
+        $column->size = $info['size'] === null ? null : (int) $info['size'];
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {

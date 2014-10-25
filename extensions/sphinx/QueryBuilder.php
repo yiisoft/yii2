@@ -822,7 +822,7 @@ class QueryBuilder extends Object
         if ($values instanceof Query) {
             // sub-query
             list($sql, $params) = $this->build($values, $params);
-            $column = (array)$column;
+            $column = (array) $column;
             if (is_array($column)) {
                 foreach ($column as $i => $col) {
                     if (strpos($col, '(') === false) {

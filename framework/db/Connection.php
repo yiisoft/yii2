@@ -531,7 +531,7 @@ class Connection extends Component
             Yii::endProfile($token, __METHOD__);
         } catch (\PDOException $e) {
             Yii::endProfile($token, __METHOD__);
-            throw new Exception($e->getMessage(), $e->errorInfo, (int)$e->getCode(), $e);
+            throw new Exception($e->getMessage(), $e->errorInfo, (int) $e->getCode(), $e);
         }
     }
 

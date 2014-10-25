@@ -24,6 +24,15 @@ use yii\base\NotSupportedException;
 class RsaSha1 extends BaseMethod
 {
     /**
+     * @var string path to the file, which holds private key certificate.
+     */
+    public $privateCertificateFile = '';
+    /**
+     * @var string path to the file, which holds public key certificate.
+     */
+    public $publicCertificateFile = '';
+
+    /**
      * @var string OpenSSL private key certificate content.
      * This value can be fetched from file specified by [[privateCertificateFile]].
      */
@@ -34,15 +43,6 @@ class RsaSha1 extends BaseMethod
      */
     protected $_publicCertificate;
 
-
-    /**
-     * @var string path to the file, which holds private key certificate.
-     */
-    public $privateCertificateFile = '';
-    /**
-     * @var string path to the file, which holds public key certificate.
-     */
-    public $publicCertificateFile = '';
 
     /**
      * @inheritdoc
