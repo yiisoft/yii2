@@ -25,7 +25,7 @@ All Rights Reserved.
 * [フォームを扱う](start-forms.md)
 * [データベースを扱う](start-databases.md)
 * [Gii でコードを生成する](start-gii.md)
-* [この先を見る](start-looking-ahead.md)
+* [この先を見通す](start-looking-ahead.md)
 
 
 アプリケーションの構造
