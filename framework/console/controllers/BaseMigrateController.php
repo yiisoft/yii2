@@ -302,7 +302,7 @@ abstract class BaseMigrateController extends Controller
      *
      * @param string $version the version at which the migration history should be marked.
      * This can be either the timestamp or the full name of the migration.
-     * @return int CLI exit code
+     * @return integer CLI exit code
      * @throws Exception if the version argument is invalid or the version cannot be found.
      */
     public function actionMark($version)
@@ -562,7 +562,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * Migrates to the certain version.
      * @param string $version name in the full format.
-     * @return int CLI exit code
+     * @return integer CLI exit code
      * @throws Exception if the provided version cannot be found.
      */
     protected function migrateToVersion($version)

@@ -92,7 +92,7 @@ use yii\helpers\ArrayHelper;
 class ActiveField extends \yii\widgets\ActiveField
 {
     /**
-     * @var bool whether to render [[checkboxList()]] and [[radioList()]] inline.
+     * @var boolean whether to render [[checkboxList()]] and [[radioList()]] inline.
      */
     public $inline = false;
     /**
@@ -137,11 +137,11 @@ class ActiveField extends \yii\widgets\ActiveField
      */
     public $inlineRadioListTemplate = "{label}\n{beginWrapper}\n{input}\n{error}\n{endWrapper}\n{hint}";
     /**
-     * @var bool whether to render the error. Default is `true` except for layout `inline`.
+     * @var boolean whether to render the error. Default is `true` except for layout `inline`.
      */
     public $enableError = true;
     /**
-     * @var bool whether to render the label. Default is `true`.
+     * @var boolean whether to render the label. Default is `true`.
      */
     public $enableLabel = true;
 
@@ -303,7 +303,7 @@ class ActiveField extends \yii\widgets\ActiveField
     }
 
     /**
-     * @param bool $value whether to render a inline list
+     * @param boolean $value whether to render a inline list
      * @return static the field object itself
      * Make sure you call this method before [[checkboxList()]] or [[radioList()]] to have any effect.
      */
