@@ -1023,6 +1023,42 @@ class BaseHtml
     }
 
     /**
+     * Generates a <video> tag. http://www.w3schools.com/html/html5_video.asp
+     * Example: 
+     *   echo Html::video([
+     *          'video/mp4'=>'/uploads/movie.mp4', 
+     *          'video/ogg'=>'/uploads/movie.ogg'
+     *       ],
+     *       'Your browser does not support the video tag.',
+     *       ['width'=>320, 'height'=>240, 'autoplay'=>'autoplay', 'controls'=>'controls']
+     *   );
+     * Output: 
+     * <video width="320" height="240" controls="controls" autoplay="autoplay"><source src="http://localhost/uploads/movie.mp4" type="video/mp4"></source>
+     *      <source src="http://localhost/uploads/movie.ogg" type="video/ogg"></source>
+     *      Your browser does not support the video tag.</video>
+     *
+     * @param array $items array of video sources. Array keys are mime-type of the video, values are URLs to video files and will be processed by [[Url::to()]].
+     * @param string error message shown if browser does not support video tag. Defaults to empty string.
+     * @param array $options HTML attributes of video tag 
+     *
+     * @return string the generated video tag with sources.
+     * @see Url::to()
+     */
+    public static function video($items,$text='',$options=[]){
+        if(!is_array($items) || count($items)==0) {
+            throw new InvalidParamException('At least one video source must be specified.');
+        }
+
+        $results = [];
+        foreach($items as $mime=>$src) {
+            $results[] = static::tag('source', '', ['src'=>Url::to($src), 'type'=>$mime]);
+        }
+        $results[] = $text;
+
+        return static::tag('video',implode("\n", $results), $options);
+    }
+
+    /**
      * Generates a label tag for the given model attribute.
      * The label text is the label associated with the attribute, obtained via [[Model::getAttributeLabel()]].
      * @param Model $model the model object
