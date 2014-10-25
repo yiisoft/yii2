@@ -593,7 +593,7 @@ class Security extends Component
      */
     protected function generateSalt($cost = 13)
     {
-        $cost = (int)$cost;
+        $cost = (int) $cost;
         if ($cost < 4 || $cost > 31) {
             throw new InvalidParamException('Cost must be between 4 and 31.');
         }
