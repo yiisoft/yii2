@@ -113,7 +113,7 @@ $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->e
 
 If you're using "basic" application template then folder `uploads` should be created under `web`.
 
-That's it. Load the page and try uploading. Uplaods should end up in `basic/web/uploads`.
+That's it. Load the page and try uploading. Uploads should end up in `basic/web/uploads`.
 
 Additional information
 ----------------------
