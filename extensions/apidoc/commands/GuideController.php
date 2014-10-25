@@ -67,7 +67,10 @@ class GuideController extends BaseController
 
         $this->stdout('Publishing images...');
         foreach ($sourceDirs as $source) {
-            FileHelper::copyDirectory(rtrim($source, '/\\') . '/images', $targetDir . '/images');
+            $imageDir = rtrim($source, '/\\') . '/images';
+            if (file_exists($imageDir)) {
+                FileHelper::copyDirectory($imageDir, $targetDir . '/images');
+            }
         }
         $this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
     }
