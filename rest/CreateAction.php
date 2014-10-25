@@ -33,7 +33,7 @@ class CreateAction extends Action
     /**
      * Creates a new model.
      * @return \yii\db\ActiveRecordInterface the model newly created
-     * @throws \Exception if there is any error when creating the model
+     * @throws ServerErrorHttpException if there is any error when creating the model
      */
     public function run()
     {
