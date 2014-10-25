@@ -601,7 +601,7 @@ EOD;
     /**
      * Creates template of configuration file for [[actionCompress]].
      * @param string $configFile output file name.
-     * @return int CLI exit code
+     * @return integer CLI exit code
      * @throws \yii\console\Exception on failure.
      */
     public function actionTemplate($configFile)

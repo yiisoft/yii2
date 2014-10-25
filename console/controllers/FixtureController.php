@@ -55,7 +55,7 @@ class FixtureController extends Controller
      */
     public $namespace = 'tests\unit\fixtures';
     /**
-     * @var bool whether to append new fixture data to the existing ones.
+     * @var boolean whether to append new fixture data to the existing ones.
      * Defaults to false, meaning if there is any existing fixture data, it will be removed.
      */
     public $append = false;

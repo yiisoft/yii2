@@ -176,7 +176,7 @@ class Security extends Component
     /**
      * Encrypts data.
      * @param string $data data to be encrypted
-     * @param bool $passwordBased set true to use password-based key derivation
+     * @param boolean $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
      * @param string $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
@@ -217,7 +217,7 @@ class Security extends Component
     /**
      * Decrypts data.
      * @param string $data encrypted data to be decrypted.
-     * @param bool $passwordBased set true to use password-based key derivation
+     * @param boolean $passwordBased set true to use password-based key derivation
      * @param string $secret the decryption password or key
      * @param string $info context/application specific information, @see encrypt()
      * @return bool|string the decrypted data or false on authentication failure
@@ -290,7 +290,7 @@ class Security extends Component
      * @param string $info optional info to bind the derived key material to application-
      * and context-specific information, e.g. a user ID or API version, see
      * [RFC 5869](https://tools.ietf.org/html/rfc5869)
-     * @param int $length length of the output key in bytes. If 0, the output key is
+     * @param integer $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
      * @throws InvalidParamException when HMAC generation fails.
      * @return string the derived key
@@ -335,9 +335,9 @@ class Security extends Component
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $password the source password
      * @param string $salt the random salt
-     * @param int $iterations the number of iterations of the hash algorithm. Set as high as
+     * @param integer $iterations the number of iterations of the hash algorithm. Set as high as
      * possible to hinder dictionary password attacks.
-     * @param int $length length of the output key in bytes. If 0, the output key is
+     * @param integer $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
      * @return string the derived key
      * @throws InvalidParamException when hash generation fails due to invalid params given.
@@ -595,7 +595,7 @@ class Security extends Component
      */
     protected function generateSalt($cost = 13)
     {
-        $cost = (int)$cost;
+        $cost = (int) $cost;
         if ($cost < 4 || $cost > 31) {
             throw new InvalidParamException('Cost must be between 4 and 31.');
         }

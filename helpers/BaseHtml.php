@@ -636,7 +636,7 @@ class BaseHtml
      */
     public static function radio($name, $checked = false, $options = [])
     {
-        $options['checked'] = (boolean) $checked;
+        $options['checked'] = (bool) $checked;
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the radio button is not selected, it still submits a value
@@ -678,7 +678,7 @@ class BaseHtml
      */
     public static function checkbox($name, $checked = false, $options = [])
     {
-        $options['checked'] = (boolean) $checked;
+        $options['checked'] = (bool) $checked;
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the checkbox is not selected, it still submits a value
