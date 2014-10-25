@@ -157,6 +157,7 @@ class ActiveForm extends Widget
      * @internal
      */
     public $attributes = [];
+
     /**
      * @var ActiveField[] the ActiveField objects that are currently active
      */

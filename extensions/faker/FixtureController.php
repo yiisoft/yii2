@@ -138,7 +138,6 @@ use yii\helpers\VarDumper;
  */
 class FixtureController extends \yii\console\controllers\FixtureController
 {
-
     /**
      * @var string Alias to the template path, where all tables templates are stored.
      */

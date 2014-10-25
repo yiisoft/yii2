@@ -82,20 +82,6 @@ class OpenId extends BaseClient implements ClientInterface
      */
     public $cainfo;
     /**
-     * @var string authentication return URL.
-     */
-    private $_returnUrl;
-    /**
-     * @var string claimed identifier (identity)
-     */
-    private $_claimedId;
-    /**
-     * @var string client trust root (realm), by default [[\yii\web\Request::hostInfo]] value will be used.
-     */
-    private $_trustRoot;
-
-
-    /**
      * @var array data, which should be used to retrieve the OpenID response.
      * If not set combination of GET and POST will be used.
      */
@@ -114,6 +100,20 @@ class OpenId extends BaseClient implements ClientInterface
         'pref/language' => 'language',
         'pref/timezone' => 'timezone',
     ];
+
+    /**
+     * @var string authentication return URL.
+     */
+    private $_returnUrl;
+    /**
+     * @var string claimed identifier (identity)
+     */
+    private $_claimedId;
+    /**
+     * @var string client trust root (realm), by default [[\yii\web\Request::hostInfo]] value will be used.
+     */
+    private $_trustRoot;
+
 
     /**
      * @inheritdoc
