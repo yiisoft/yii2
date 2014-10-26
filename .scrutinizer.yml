@@ -1,3 +1,6 @@
+before_commands:
+    - composer global require "fxp/composer-asset-plugin:1.0.0-beta3" --no-interaction
+
 imports:
     - php
 

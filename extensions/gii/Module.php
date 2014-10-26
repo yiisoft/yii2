@@ -88,7 +88,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             $app->getUrlManager()->addRules([
                 $this->id => $this->id . '/default/index',
                 $this->id . '/<id:\w+>' => $this->id . '/default/view',
-                $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
+                $this->id . '/<controller:[\w\-]+>/<action:[\w\-]+>' => $this->id . '/<controller>/<action>',
             ], false);
         } elseif ($app instanceof \yii\console\Application) {
             $app->controllerMap[$this->id] = [

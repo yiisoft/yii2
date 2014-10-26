@@ -446,6 +446,9 @@ class QueryBuilder extends Object
             if ($column instanceof Expression) {
                 $columns[$i] = $column->expression;
                 $params = array_merge($params, $column->params);
+            } elseif ($column instanceof Query) {
+                list($sql, $params) = $this->build($column, $params);
+                $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
                     $column = $this->db->quoteColumnName($column);
@@ -1085,6 +1088,11 @@ class QueryBuilder extends Object
 
         if ($value === null) {
             return "$column $operator NULL";
+        } elseif ($value instanceof Expression) {
+            foreach ($value->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            return "$column $operator {$value->expression}";
         } else {
             $phName = self::PARAM_PREFIX . count($params);
             $params[$phName] = $value;

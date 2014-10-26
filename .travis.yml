@@ -20,21 +20,26 @@ matrix:
 services:
   - redis-server
   - memcached
-  - elasticsearch
   - mongodb
 
 # faster builds on new travis setup not using sudo
-sudo: false
+# Disabled for install and use latest elasticsearch version
+# sudo: false
 
 # cache vendor dirs
 cache:
   directories:
 #    - cubrid # caching cubrid breaks the build on a regular basis and has nearly no speedup
     - vendor
+    - $HOME/.composer/cache
 
 # try running against postgres 9.3
 addons:
   postgresql: "9.3"
+
+before_install:
+  - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.4.deb && sudo dpkg -i --force-confnew elasticsearch-1.3.4.deb
+  - sudo service elasticsearch start
 
 install:
   - composer self-update && composer --version

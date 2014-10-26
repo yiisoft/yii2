@@ -131,7 +131,7 @@ Servicios Web RESTful
 
 * **TBD** [Guía breve](rest-quick-start.md)
 * **TBD** [Recursos (Resources)](rest-resources.md)
-* **TBD** [Controladores](rest-controllers.md)
+[Controladores](rest-controllers.md)
 * **TBD** [Gestión de rutas](rest-routing.md)
 * **TBD** [Formateo de respuestas](rest-response-formatting.md)
 * **TBD** [Autenticación](rest-authentication.md)

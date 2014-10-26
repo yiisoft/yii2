@@ -85,8 +85,8 @@ abstract class ErrorHandler extends Component
         $this->exception = $exception;
 
         // disable error capturing to avoid recursive errors while handling exceptions
-        restore_error_handler();
-        restore_exception_handler();
+        $this->unregister();
+
         try {
             $this->logException($exception);
             if ($this->discardExistingOutput) {

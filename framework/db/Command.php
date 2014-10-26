@@ -785,7 +785,7 @@ class Command extends Component
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
      */
-    private function queryInternal($method, $fetchMode = null)
+    protected function queryInternal($method, $fetchMode = null)
     {
         $rawSql = $this->getRawSql();
 

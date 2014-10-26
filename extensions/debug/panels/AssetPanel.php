@@ -51,13 +51,20 @@ class AssetPanel extends Panel
     public function save()
     {
         $bundles = Yii::$app->view->assetManager->bundles;
-        if (empty($bundles)) {
+        if (empty($bundles)) { // bundles can be false
             return [];
         }
         $data = [];
         foreach ($bundles as $name => $bundle) {
             if ($bundle instanceof AssetBundle) {
-                $data[$name] = (array) $bundle;
+                $bundleData = (array) $bundle;
+                if (isset($bundleData['publishOptions']['beforeCopy']) && $bundleData['publishOptions']['beforeCopy'] instanceof \Closure) {
+                    $bundleData['publishOptions']['beforeCopy'] = '\Closure';
+                }
+                if (isset($bundleData['publishOptions']['afterCopy']) && $bundleData['publishOptions']['afterCopy'] instanceof \Closure) {
+                    $bundleData['publishOptions']['afterCopy'] = '\Closure';
+                }
+                $data[$name] = $bundleData;
             }
         }
         return $data;
@@ -65,9 +72,9 @@ class AssetPanel extends Panel
 
     /**
      * Additional formatting for view.
-     * 
+     *
      * @param AssetBundle[] $bundles Array of bundles to formatting.
-     * 
+     *
      * @return AssetManager
      */
     protected function format(array $bundles)
@@ -76,7 +83,7 @@ class AssetPanel extends Panel
 
             $this->cssCount += count($bundle->css);
             $this->jsCount += count($bundle->js);
-            
+
             array_walk($bundle->css, function(&$file, $key, $userdata) {
                 $file = Html::a($file, $userdata->baseUrl . '/' . $file, ['target' => '_blank']);
             }, $bundle);
@@ -88,18 +95,18 @@ class AssetPanel extends Panel
             array_walk($bundle->depends, function(&$depend) {
                 $depend = Html::a($depend, '#' . $depend);
             });
-            
+
             $this->formatOptions($bundle->publishOptions);
             $this->formatOptions($bundle->jsOptions);
             $this->formatOptions($bundle->cssOptions);
         }
-        
+
         return $bundles;
     }
 
     /**
      * Format associative array of params to simple value.
-     * 
+     *
      * @param array $params
      *
      * @return array
@@ -109,11 +116,11 @@ class AssetPanel extends Panel
         if (!is_array($params)) {
             return $params;
         }
-        
+
         foreach ($params as $param => $value) {
             $params[$param] = Html::tag('strong', '\'' . $param . '\' => ') . (string) $value;
         }
-        
+
         return $params;
     }
 }

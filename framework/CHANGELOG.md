@@ -4,11 +4,28 @@ Yii Framework 2 Change Log
 2.0.1 under development
 -----------------------
 
+- Bug #4471: `yii\caching\ApcCache::getValues()` now returns array in case of APC is installed but not enabled in CLI mode (samdark, cebe)
+- Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
+- Bug #5570: `yii\bootstrap\Tabs` would throw an exception if `content` is not set for one of its `items` (RomeroMsk)
+- Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)
+- Bug #5601: Simple conditions in Query::where() and ActiveQuery::where() did not allow `yii\db\Expression` to be used as the value (cebe, stevekr)
+- Bug #5657: `yii\caching\ApcCache::mset()` and `madd()` may cause warning in some APC setup (LAV45)
+- Bug #5665: The `currentPage` meta data in the RESTful result should be 1-based, similar to that in HTTP headers (qiangxue)
+- Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
+- Bug #5702: Parenthesis should be automatically added to `Validator::whenClient` to avoid js error (mdmunir, qiangxue)
+- Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
+- Bug: Gii console command help information does not contain global options (qiangxue)
+- Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
+- Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
+- Enh #5587: `json_encode` is now used with `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` where it makes sense, also
+  it is now default for `Json::encode()` (samdark)
+- Enh #4457: Added support for using noscript for css files registered through asset bundles and Html helper (samdark)
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
 - Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
-- Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)
-- Bug: Gii console command help information does not contain global options (qiangxue)
-
+- Enh #5646: Call `yii\base\ErrorHandler::unregister()` instead of `restore_*_handlers` directly (aivus)
+- Enh #5735: Added `yii\bootstrap\Tabs::renderTabContent` to support manually rendering tab contents (RomeroMsk)
+- Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
+- Chg #3630: `yii\db\Command::queryInternal()` is now protected (samdark) 
 
 2.0.0 October 12, 2014
 ----------------------

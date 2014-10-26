@@ -4,7 +4,8 @@ Yii Framework 2 bootstrap extension Change Log
 2.0.1 under development
 -----------------------
 
-- no changes in this release.
+- Bug #5570: `yii\bootstrap\Tabs` would throw an exception if `content` is not set for one of its `items` (RomeroMsk)
+- Enh #5735: Added `yii\bootstrap\Tabs::renderTabContent` to support manually rendering tab contents (RomeroMsk)
 
 
 2.0.0 October 12, 2014

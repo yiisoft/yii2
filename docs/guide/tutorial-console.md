@@ -163,3 +163,23 @@ There are some predefined constants you can use:
 
 - `Controller::EXIT_CODE_NORMAL` with value of `0`;
 - `Controller::EXIT_CODE_ERROR` with value of `1`.
+
+It's a good practice to define meaningful constants for your controller in case you have more error code types.
+
+### Formatting and colors
+
+Yii console supports formatted output that is automatically degraded to non-formatted one if it's not supported
+by terminal running the command.
+
+Outputting formatted strings is simple. Here's how to output some bold text:
+
+```php
+$this->stdout("Hello?\n", Console::BOLD);
+```
+
+If you need to build string dynamically combining multiple styles it's better to use `ansiFormat`:
+
+```php
+$name = $this->ansiFormat('Alex', Console::FG_YELLOW);
+echo "Hello, my name is $name.";
+```

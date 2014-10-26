@@ -271,7 +271,7 @@ class Context extends Component
             if ($method->isStatic) {
                 continue;
             }
-            if (!strncmp($name, 'get', 3) && strlen($name) > 3 && $this->paramsOptional($method)) {
+            if (!strncmp($name, 'get', 3) && strlen($name) > 3 && $this->hasNonOptionalParams($method)) {
                 $propertyName = '$' . lcfirst(substr($method->name, 3));
                 if (isset($class->properties[$propertyName])) {
                     $property = $class->properties[$propertyName];
@@ -299,7 +299,7 @@ class Context extends Component
                     ]);
                 }
             }
-            if (!strncmp($name, 'set', 3) && strlen($name) > 3 && $this->paramsOptional($method, 1)) {
+            if (!strncmp($name, 'set', 3) && strlen($name) > 3 && $this->hasNonOptionalParams($method, 1)) {
                 $propertyName = '$' . lcfirst(substr($method->name, 3));
                 if (isset($class->properties[$propertyName])) {
                     $property = $class->properties[$propertyName];
@@ -331,18 +331,20 @@ class Context extends Component
     }
 
     /**
+     * Check whether a method has `$number` non-optional parameters.
      * @param MethodDoc $method
      * @param integer $number number of not optional parameters
      * @return bool
      */
-    private function paramsOptional($method, $number = 0)
+    private function hasNonOptionalParams($method, $number = 0)
     {
+        $count = 0;
         foreach ($method->params as $param) {
-            if (!$param->isOptional && $number-- <= 0) {
-                return false;
+            if (!$param->isOptional) {
+                $count++;
             }
         }
-        return true;
+        return $count == $number;
     }
 
     /**

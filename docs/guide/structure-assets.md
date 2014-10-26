@@ -160,6 +160,12 @@ This will cause a CSS file in the bundle to be included using the following HTML
 <![endif]-->
 ```
 
+To wrap link tag with `<noscript>` the following can be used:
+
+```php
+public $cssOptions = ['noscript' => true];
+```
+
 To include a JavaScript file in the head section of a page (by default, JavaScript files are included at the end
 of the body section), use the following option:
 

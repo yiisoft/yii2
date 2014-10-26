@@ -274,7 +274,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as an HTML-encoded plain text.
-     * @param mixed $value the value to be formatted.
+     * @param string $value the value to be formatted.
      * @return string the formatted result.
      */
     public function asText($value)
@@ -287,7 +287,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as an HTML-encoded plain text with newlines converted into breaks.
-     * @param mixed $value the value to be formatted.
+     * @param string $value the value to be formatted.
      * @return string the formatted result.
      */
     public function asNtext($value)
@@ -302,7 +302,7 @@ class Formatter extends Component
      * Formats the value as HTML-encoded text paragraphs.
      * Each text paragraph is enclosed within a `<p>` tag.
      * One or multiple consecutive empty lines divide two paragraphs.
-     * @param mixed $value the value to be formatted.
+     * @param string $value the value to be formatted.
      * @return string the formatted result.
      */
     public function asParagraphs($value)
@@ -317,7 +317,7 @@ class Formatter extends Component
      * Formats the value as HTML text.
      * The value will be purified using [[HtmlPurifier]] to avoid XSS attacks.
      * Use [[asRaw()]] if you do not want any purification of the value.
-     * @param mixed $value the value to be formatted.
+     * @param string $value the value to be formatted.
      * @param array|null $config the configuration for the HTMLPurifier class.
      * @return string the formatted result.
      */
@@ -331,7 +331,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a mailto link.
-     * @param mixed $value the value to be formatted.
+     * @param string $value the value to be formatted.
      * @param array $options the tag options in terms of name-value pairs. See [[Html::mailto()]].
      * @return string the formatted result.
      */

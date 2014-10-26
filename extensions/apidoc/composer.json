@@ -26,7 +26,7 @@
         "nikic/php-parser": "0.9.*",
         "cebe/js-search": "*",
         "cebe/markdown": "~1.0.0",
-        "cebe/markdown-latex": "*"
+        "cebe/markdown-latex": "~1.0.0"
     },
     "autoload": {
         "psr-4": { "yii\\apidoc\\": "" }
