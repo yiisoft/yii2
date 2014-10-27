@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Enh #5735: Added `yii\bootstrap\Tabs::renderTabContent` to support manually rendering tab contents (RomeroMsk)
 - Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
 - Chg #3630: `yii\db\Command::queryInternal()` is now protected (samdark) 
+- Chg #5508: Dropped the support for the `--append` option for the `fixture` command (qiangxue) 
 
 2.0.0 October 12, 2014
 ----------------------
