@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
 - Bug #5702: Parenthesis should be automatically added to `Validator::whenClient` to avoid js error (mdmunir, qiangxue)
 - Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
+- Bug #5780: `QueryBuilder::batchInsert()` may cause "undefined index" error (qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)

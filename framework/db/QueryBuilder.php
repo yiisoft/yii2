@@ -189,7 +189,7 @@ class QueryBuilder extends \yii\base\Object
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
+                if (!is_array($value) && isset($columns[$i]) && isset($columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
