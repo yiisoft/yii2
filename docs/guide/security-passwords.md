@@ -56,7 +56,7 @@ For example, we need to store some information in our database but we need to ma
 
 ```php
 // $data and $secretKey are obtained from the form
-$encryptedData = Yii::$app->getSecurity()->encrypt($data, $secretKey);
+$encryptedData = Yii::$app->getSecurity()->encryptByPassword($data, $secretKey);
 // store $encryptedData to database
 ```
 
@@ -64,7 +64,7 @@ Subsequently when user wants to read the data:
 
 ```php
 // $secretKey is obtained from user input, $encryptedData is from the database
-$data = Yii::$app->getSecurity()->decrypt($encryptedData, $secretKey);
+$data = Yii::$app->getSecurity()->decryptByPassword($encryptedData, $secretKey);
 ```
 
 Confirming data integrity
