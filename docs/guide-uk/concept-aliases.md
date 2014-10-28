@@ -71,7 +71,7 @@ Yii::getAlias('@foo/test/file.php');  // виведе: /path/to/foo/test/file.ph
 Yii::getAlias('@foo/bar/file.php');   // виведе: /path2/bar/file.php
 ```
 
-Якби `@foo/bar` не був оголошений кореневим псевдонімом, остання рядок вивела б `/path/to/foo/bar/file.php`.
+Якби `@foo/bar` не був оголошений кореневим псевдонімом, остання строка вивела б `/path/to/foo/bar/file.php`.
 
 Використання псевдонімів. <a name="using-aliases"></a>
 ------------------------------------------------
