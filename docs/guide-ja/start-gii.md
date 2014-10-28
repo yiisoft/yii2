@@ -17,8 +17,8 @@ Gii を開始する<a name="starting-gii"></a>
 --------------
 
 [Gii](tool-gii.md) は Yii の [モジュール](structure-modules.md) として提供されます。
-Gii は、アプリケーションの [[yii\base\Application::modules|modules]] プロパティの中で設定することで有効にすることが出来ます。
-アプリケーションを生成した仕方にもよりますが、`config/web.php` の設定ファイルの中に、多分、下記のコードが既に提供されているでしょう:
+Gii は、アプリケーションの [[yii\base\Application::modules|modules]] プロパティの中で構成することで有効にすることが出来ます。
+アプリケーションを生成した仕方にもよりますが、`config/web.php` のコンフィギュレーションファイルの中に、多分、下記のコードが既に提供されているでしょう:
 
 ```php
 $config = [ ... ];
@@ -29,7 +29,7 @@ if (YII_ENV_DEV) {
 }
 ```
 
-上記の設定は、[開発環境](concept-configurations.md#environment-constants) において、アプリケーションは
+上記のコンフィギュレーションは、[開発環境](concept-configurations.md#environment-constants) において、アプリケーションは
 `gii` という名前のモジュールをインクルードすべきこと、そして `gii` は [[yii\gii\Module]] というクラスのものであることを記述しています。
 
 アプリケーションの [エントリスクリプト](structure-entry-scripts.md) である `web/index.php` をチェックすると、次の行があることに気付くでしょう。
@@ -39,7 +39,7 @@ if (YII_ENV_DEV) {
 defined('YII_ENV') or define('YII_ENV', 'dev');
 ```
 
-この行のおかげで、アプリケーションは開発モードになり、上記の設定によって、Gii が有効になります。
+この行のおかげで、アプリケーションは開発モードになり、上記のコンフィギュレーションによって、Gii が有効になります。
 これで、下記の URL によって Gii にアクセスすることが出来ます:
 
 ```
@@ -47,7 +47,7 @@ http://hostname/index.php?r=gii
 ```
 
 > Note|注意: ローカルホスト以外のマシンから GII にアクセスしようとすると、既定ではセキュリティ上の
-> 目的からアクセスが拒否されます。下記のように Gii を設定して、許可される IP アドレスを追加することが出来ます。
+> 目的からアクセスが拒否されます。下記のように Gii を構成して、許可される IP アドレスを追加することが出来ます。
 >
 ```php
 'gii' => [

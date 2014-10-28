@@ -11,29 +11,29 @@
 名前が示すように、前者は主にウェブのリクエストを処理し、後者はコンソールコマンドのリクエストを処理します。
 
 
-## アプリケーションの設定<a name="application-configurations"></a>
+## アプリケーションのコンフィギュレーション<a name="application-configurations"></a>
 
 [エントリスクリプト](structure-entry-scripts.md) は、アプリケーションを作成するときに、
-下記のように、[設定](concept-configurations.md) を読み込んで、それをアプリケーションに適用します:
+下記のように、[コンフィギュレーション](concept-configurations.md) を読み込んで、それをアプリケーションに適用します:
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-// アプリケーションの設定を読み込む
+// アプリケーションのコンフィギュレーションを読み込む
 $config = require(__DIR__ . '/../config/web.php');
 
-// アプリケーションのインスタンスを作成し、設定を適用する
+// アプリケーションのインスタンスを作成し、コンフィギュレーションを適用する
 (new yii\web\Application($config))->run();
 ```
 
-通常の [設定](concept-configurations.md) と同じように、アプリケーションの設定は、アプリケーションオブジェクトのプロパティをどのように初期化するかを規定するものです。
-アプリケーションの設定は、たいていは非常に複雑なものですから、通常は、上記の例の `web.php` ファイルのように、[設定ファイル](concept-configurations.md#configuration-files) に保管されます。
+通常の [コンフィギュレーション](concept-configurations.md) と同じように、アプリケーションのコンフィギュレーションは、アプリケーションオブジェクトのプロパティをどのように初期化するかを規定するものです。
+アプリケーションのコンフィギュレーションは、たいていは非常に複雑なものですから、通常は、上記の例の `web.php` ファイルのように、[コンフィギュレーションファイル](concept-configurations.md#configuration-files) に保管されます。
 
 
 ## アプリケーションのプロパティ<a name="application-properties"></a>
 
-アプリケーションの設定で構成すべき重要なアプリケーションのプロパティは数多くあります。
+アプリケーションのコンフィギュレーションで構成すべき重要なアプリケーションのプロパティは数多くあります。
 それらのプロパティの典型的なものは、アプリケーションが走る環境を記述するものです。
 例えば、アプリケーションは、どのようにして [コントローラ](structure-controllers.md) をロードするか、また、どこにテンポラリファイルを保存するかなどを知らなければなりません。
 以下において、それらのプロパティを要約します。
@@ -89,7 +89,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ]
 ```
 
-このプロパティが提供されているのは、[[Yii::setAlias()]] メソッドを呼び出す代りに、アプリケーション設定を使ってエイリアスを定義することが出来るようにするためです。
+このプロパティが提供されているのは、[[Yii::setAlias()]] メソッドを呼び出す代りに、アプリケーションのコンフィギュレーションを使ってエイリアスを定義することが出来るようにするためです。
 
 
 #### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
@@ -103,7 +103,7 @@ $config = require(__DIR__ . '/../config/web.php');
 - [components](#components) によって規定されるアプリケーションコンポーネントの ID。
 - [modules](#modules) によって規定されるモジュールの ID。
 - クラス名。
-- 設定配列。
+- コンフィギュレーション配列。
 - コンポーネントを作成して返す無名関数。
 
 例えば、
@@ -117,7 +117,7 @@ $config = require(__DIR__ . '/../config/web.php');
         // クラス名
         'app\components\Profiler',
 
-        // 設定配列
+        // コンフィギュレーション配列
         [
             'class' => 'app\components\Profiler',
             'level' => 3,
@@ -144,12 +144,12 @@ $config = require(__DIR__ . '/../config/web.php');
 ブートストラップの過程で、各コンポーネントのインスタンスが作成されます。
 そして、コンポーネントクラスが [[yii\base\BootstrapInterface]] を実装している場合は、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドも呼び出されます。
 
-もう一つの実用的な例が [ベーシックアプリケーションテンプレート](start-installation.md) のアプリケーション設定の中にあります。
+もう一つの実用的な例が [ベーシックアプリケーションテンプレート](start-installation.md) のアプリケーションのコンフィギュレーションの中にあります。
 そこでは、アプリケーションが開発環境で走るときには `debug` モジュールと `gii` モジュールがブートストラップコンポーネントとして構成されています。
 
 ```php
 if (YII_ENV_DEV) {
-    // 'dev' 環境のための設定の調整
+    // 'dev' 環境のためのコンフィギュレーションの調整
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
 
@@ -169,7 +169,7 @@ if (YII_ENV_DEV) {
 これは、全てのユーザリクエストを処理すべき [コントローラアクション](structure-controllers.md) を規定します。
 これは主としてアプリケーションがメンテナンスモードにあって、入ってくる全てのリクエストを単一のアクションで処理する必要があるときに使われます。
 
-構成は配列の形を取り、最初の要素はアクションのルートを指定します。
+コンフィギュレーションは配列の形を取り、最初の要素はアクションのルートを指定します。
 そして、配列の残りの要素 (キー・値のペア) は、アクションに渡されるパラメータを指定します。
 例えば、
 

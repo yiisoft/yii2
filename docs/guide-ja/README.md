@@ -32,14 +32,14 @@ All Rights Reserved.
 ----------------------
 
 * [概要](structure-overview.md)
-* [エントリースクリプト](structure-entry-scripts.md)
+* [エントリスクリプト](structure-entry-scripts.md)
 * [アプリケーション](structure-applications.md)
 * [アプリケーションコンポーネント](structure-application-components.md)
 * [コントローラ](structure-controllers.md)
 * [モデル](structure-models.md)
 * [ビュー](structure-views.md)
 * [モジュール](structure-modules.md)
-* [フィルター](structure-filters.md)
+* [フィルタ](structure-filters.md)
 * [ウィジェット](structure-widgets.md)
 * [アセット](structure-assets.md)
 * [エクステンション](structure-extensions.md)
@@ -49,7 +49,7 @@ All Rights Reserved.
 ----------------
 
 * [概要](runtime-overview.md)
-* [ブートストラッピング](runtime-bootstrapping.md)
+* [ブートストラップ](runtime-bootstrapping.md)
 * [ルーティング](runtime-routing.md)
 * [リクエスト](runtime-requests.md)
 * [レスポンス](runtime-responses.md)
@@ -66,7 +66,7 @@ All Rights Reserved.
 * [プロパティ](concept-properties.md)
 * [イベント](concept-events.md)
 * [ビヘイビア](concept-behaviors.md)
-* [設定](concept-configurations.md)
+* [コンフィギュレーション](concept-configurations.md)
 * [エイリアス](concept-aliases.md)
 * [クラスのオートロード](concept-autoloading.md)
 * [サービスロケータ](concept-service-locator.md)
