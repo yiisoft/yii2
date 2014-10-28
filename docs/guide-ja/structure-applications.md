@@ -273,18 +273,18 @@ if (YII_ENV_DEV) {
 
 #### [[yii\base\Application::modules|modules]] <a name="modules"></a>
 
-This property specifies the [modules](structure-modules.md) that the application contains.
+このプロパティはアプリケーションが含む [モジュール](structure-modules.md) を規定します。
 
-The property takes an array of module classes or [configurations](concept-configurations.md) with the array keys
-being the module IDs. For example,
+このプロパティは、モジュールのクラスまたは [コンフィギュレーション](concept-configurations.md) の配列であり、
+その配列のキーはモジュールの ID です。例えば、
 
 ```php
 [
     'modules' => [
-        // a "booking" module specified with the module class
+        // モジュールクラスで規定された "booking" モジュール
         'booking' => 'app\modules\booking\BookingModule',
 
-        // a "comment" module specified with a configuration array
+        // コンフィギュレーション配列で規定された "comment" モジュール
         'comment' => [
             'class' => 'app\modules\comment\CommentModule',
             'db' => 'db',
@@ -293,24 +293,24 @@ being the module IDs. For example,
 ]
 ```
 
-Please refer to the [Modules](structure-modules.md) section for more details.
+詳細は [モジュール](structure-modules.md) の節を参照してください。
 
 
 #### [[yii\base\Application::name|name]] <a name="name"></a>
 
-This property specifies the application name that may be displayed to end users. Unlike the
-[[yii\base\Application::id|id]] property which should take a unique value, the value of this property is mainly for
-display purpose and does not need to be unique.
+このプロパティはアプリケーション名を規定します。これは、エンドユーザに対して表示されるかも知れません。
+[[yii\base\Application::id|id]] プロパティがユニークな値でなければならないのとは違って、このプロパティの値は
+主として表示目的であり、ユニークである必要はありません。
 
-You do not always need to configure this property if none of your code is using it.
+コードで使わないのであれば、このプロパティを構成する必要はありません。
 
 
 #### [[yii\base\Application::params|params]] <a name="params"></a>
 
-This property specifies an array of globally accessible application parameters. Instead of using hardcoded
-numbers and strings everywhere in your code, it is a good practice to define them as application parameters
-in a single place and use the parameters in places where needed. For example, you may define the thumbnail
-image size as a parameter like the following:
+このプロパティは、グローバルにアクセス可能なアプリケーションパラメータの配列を規定します。
+コードの中のいたる処でハードコードされた数値や文字列を使う代りに、それらをアプリケーションパラメータとして
+一ヶ所で定義し、必要な場所ではそのパラメータを使うというのが良い慣行です。
+例えば、次のように、サムネール画像のサイズをパラメータとして定義することが出来ます:
 
 ```php
 [
@@ -320,58 +320,58 @@ image size as a parameter like the following:
 ]
 ```
 
-Then in your code where you need to use the size value, you can simply use the code like the following:
+そして、このサイズの値を使う必要があるコードにおいては、ただ単に下記のようなコードを使うことが出来ます:
 
 ```php
 $size = \Yii::$app->params['thumbnail.size'];
 $width = \Yii::$app->params['thumbnail.size'][0];
 ```
 
-Later if you decide to change the thumbnail size, you only need to modify it in the application configuration
-without touching any dependent code.
+後でサムネールのサイズを変更すると決めたときは、アプリケーションのコンフィギュレーションにおいてのみサイズを修正すればよく、
+これに依存するコードには少しも触れる必要がありません。
 
 
 #### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
 
-This property specifies the language that the application code is written in. The default value is `'en-US'`,
-meaning English (United States). You should configure this property if the text content in your code is not in English.
+このプロパティはアプリケーションコードが書かれている言語を規定します。デフォルト値は`'en-US'`、アメリカ合衆国の英語です。
+あなたのコードのテキスト内容が英語以外で書かれているときは、このプロパティを構成すべきです。
 
-Like the [language](#language) property, you should configure this property in terms of
-an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
-while `en-US` stands for English (United States).
+[language](#language) プロパティと同様に、このプロパティは [IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従って構成すべきです。
+例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
 
-More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+このプロパティに関する更なる詳細は [国際化](tutorial-i18n.md) の節で読むことが出来ます。
 
 
 #### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
 
-This property is provided as an alternative way of setting the default time zone of PHP runtime.
-By configuring this property, you are essentially calling the PHP function
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). For example,
+このプロパティは、PHP ランタイムのデフォルトタイムゾーンを設定する代替手段として提供されています。
+このプロパティを構成すると、本質的には PHP 関数 [date_default_timezone_set()](http://php.net/manual/ja/function.date-default-timezone-set.php) を呼ぶことになります。
+例えば、
 
 ```php
 [
-    'timeZone' => 'America/Los_Angeles',
+    'timeZone' => 'Asia/Tokyo',
 ]
 ```
 
 
 #### [[yii\base\Application::version|version]] <a name="version"></a>
 
-This property specifies the version of the application. It defaults to `'1.0'`. You do not always need to configure
-this property if none of your code is using it.
+このプロパティはアプリケーションのバージョンを規定します。デフォルト値は `'1.0'` です。
+コードの中で使わないのであれば、必ずしも構成する必要はありません。
 
 
-### Useful Properties <a name="useful-properties"></a>
+### 有用なプロパティ <a name="useful-properties"></a>
 
-The properties described in this subsection are not commonly configured because their default values
-stipulate common conventions. However, you may still configure them in case you want to break the conventions.
+この項で説明されるプロパティは通常は構成されません。というのは、そのデフォルト値が通常の規約を規定するものだからです。
+しかしながら、規約を破る必要がある場合には、これらのプロパティを構成することが出来ます。
 
 
 #### [[yii\base\Application::charset|charset]] <a name="charset"></a>
 
-This property specifies the charset that the application uses. The default value is `'UTF-8'` which should
-be kept as is for most applications unless you are working with some legacy systems that use a lot of non-unicode data.
+このプロパティはアプリケーションが使う文字セットを規定します。デフォルト値は `'UTF-8'` であり、
+あなたのアプリケーションが多数の非ユニコードデータを使うレガシーシステムと連携するのでなければ、
+そのままにしておくべきです。
 
 
 #### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
