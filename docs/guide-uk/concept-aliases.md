@@ -99,7 +99,7 @@ $cache = new FileCache([
 - `@runtime`: [[yii\base\Application::runtimePath|директорія runtime]] поточного додатку.
 - `@vendor`: [[yii\base\Application::vendorPath|директорія vendor Composer].
 - `@webroot`: вебрут поточного веб додатки (там де `index.php`).
-- `@web`: базовий URL поточного додатка.
+- `@web`: базовий URL поточного додатку.
 
 Псевдонім `@yii` задається в момент підключення файлу `Yii.php` у [вхідному скрипті](structure-entry-scripts.md).
 Решта псевдоніми задаються в конструкторі додатки в момент застосування [конфигурації](concept-configurations.md).
