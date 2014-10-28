@@ -186,8 +186,8 @@ if (YII_ENV_DEV) {
 
 #### [[yii\base\Application::components|components]] <a name="components"></a>
 
-This is the single most important property. It allows you to register a list of named components
-called [application components](structure-application-components.md) that you can use in other places. For example,
+これが唯一最重要なプロパティです。これによって、[アプリケーションコンポーネント](structure-application-components.md) と呼ばれる一連の名前付きのコンポーネントを登録して、それらを他の場所で使うことが出来るようになります。
+例えば、
 
 ```php
 [
@@ -203,22 +203,23 @@ called [application components](structure-application-components.md) that you ca
 ]
 ```
 
-Each application component is specified as a key-value pair in the array. The key represents the component ID,
-while the value represents the component class name or [configuration](concept-configurations.md).
+全てのアプリケーションコンポーネントは、それぞれ、配列の中で「キー・値」のペアとして規定されます。
+キーはコンポーネントの ID を示し、値はコンポーネントのクラス名または [コンフィギュレーション](concept-configurations.md) を示します。
 
-You can register any component with an application, and the component can later be accessed globally
-using the expression `\Yii::$app->ComponentID`.
+どのようなコンポーネントでもアプリケーションとともに登録することが出来ます。
+そして登録されたコンポーネントは、後で、`\Yii::$app->ComponentID` という式を使ってグローバルにアクセスすることが出来ます。
 
-Please read the [Application Components](structure-application-components.md) section for details.
+詳細は [アプリケーションコンポーネント](structure-application-components.md) の節を呼んでください。
 
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
 
-This property allows you to map a controller ID to an arbitrary controller class. By default, Yii maps
-controller IDs to controller classes based on a [convention](#controllerNamespace) (e.g. the ID `post` would be mapped
-to `app\controllers\PostController`). By configuring this property, you can break the convention for
-specific controllers. In the following example, `account` will be mapped to
-`app\controllers\UserController`, while `article` will be mapped to `app\controllers\PostController`.
+このプロパティは、コントローラ ID を任意のコントローラクラスに割り付けることを可能にするものです。
+既定では、Yii は [規約](#controllerNamespace) に基いてコントローラ ID をコントローラクラスに割り付けます
+(例えば、`post` という ID は `app\controllers\PostController` に割り付けられます)。
+このプロパティを構成することによって、特定のコントローラに対する規約を破ることが出来ます。
+下記の例では、`account` は `app\controllers\UserController` に割り付けられ、
+`article` は `app\controllers\PostController` に割り付けられることになります。
 
 ```php
 [
@@ -234,43 +235,40 @@ specific controllers. In the following example, `account` will be mapped to
 ]
 ```
 
-The array keys of this property represent the controller IDs, while the array values represent the corresponding
-controller class names or [configurations](concept-configurations.md).
+このプロパティの配列のキーはコントローラ ID を表し、配列の値は対応するコントローラクラスの名前または [コンフィギュレーション](concept-configurations.md) を表します。
 
 
 #### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
 
-This property specifies the default namespace under which controller classes should be located. It defaults to
-`app\controllers`. If a controller ID is `post`, by convention the corresponding controller class name (without
-namespace) would be `PostController`, and the fully qualified class name would be `app\controllers\PostController`.
+このプロパティは、コントローラクラスが配置されるべき既定の名前空間を指定するものです。
+デフォルト値は `app\controllers` です。
+コントローラ ID が `post` である場合、規約によって対応するコントローラの (名前空間を略した) クラス名は `PostController` となり、
+完全修飾クラス名は `app\controllers\PostController` となります。
 
-Controller classes may also be located under sub-directories of the directory corresponding to this namespace.
-For example, given a controller ID `admin/post`, the corresponding fully qualified controller class would
-be `app\controllers\admin\PostController`.
+コントローラクラスは、この名前空間に対応するディレクトリのサブディレクトリに配置されても構いません。
+例えば、コントローラ ID として `admin/post` を仮定すると、対応するコントローラの完全修飾クラス名は `app\controllers\admin\PostController` となります。
 
-It is important that the fully qualified controller classes should be [autoloadable](concept-autoloading.md)
-and the actual namespace of your controller classes match the value of this property. Otherwise,
-you will receive "Page Not Found" error when accessing the application.
+完全修飾のコントローラクラスが [オートロード可能](concept-autoloading.md) でなければならず、
+コントローラクラスの実際の名前空間がこのプロパティと合致していなければならない、
+ということは非常に重要なことです。
+そうでないと、アプリケーションにアクセスしたときに "ページがみつかりません" というエラーを受け取ることになります。
 
-In case you want to break the convention as described above, you may configure the [controllerMap](#controllerMap)
-property.
+上述の規約を破りたい場合は、[controllerMap](#controllerMap) プロパティを構成することが出来ます。
 
 
 #### [[yii\base\Application::language|language]] <a name="language"></a>
 
-This property specifies the language in which the application should display content to end users.
-The default value of this property is `en`, meaning English. You should configure this property
-if your application needs to support multiple languages.
+このプロパティは、アプリケーションがコンテンツをエンドユーザに表示するときに使うべき言語を規定します。
+このプロパティのデフォルト値は `en` であり、英語を意味します。
+アプリケーションが多言語をサポートする必要があるときは、このプロパティを構成すべきです。
 
-The value of this property determines various [internationalization](tutorial-i18n.md) aspects,
-including message translation, date formatting, number formatting, etc. For example, the [[yii\jui\DatePicker]] widget
-will use this property value by default to determine in which language the calendar should be displayed and how
-should the date be formatted.
+このプロパティの値が、メッセージの翻訳、日付の書式、数字の書式などを含めて、[国際化](tutorial-i18n.md) のさまざまな側面を決定します。
+例えば、[[yii\jui\DatePicker]] ウィジェットは、どの言語でカレンダーを表示すべきか、そして日付をどのように書式設定すべきかを、既定では、このプロパティを使用して決定します。
 
-It is recommended that you specify a language in terms of an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
-For example, `en` stands for English, while `en-US` stands for English (United States).
+言語を指定するのには、[IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従うことが推奨されます。
+例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
 
-More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
+このプロパティに関する更なる詳細は [国際化](tutorial-i18n.md) の節で読むことが出来ます。
 
 
 #### [[yii\base\Application::modules|modules]] <a name="modules"></a>
