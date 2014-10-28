@@ -38,21 +38,21 @@ addons:
   postgresql: "9.3"
 
 before_install:
-  - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.4.deb && sudo dpkg -i --force-confnew elasticsearch-1.3.4.deb
+  - travis_retry wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.4.deb && sudo dpkg -i --force-confnew elasticsearch-1.3.4.deb
   - sudo service elasticsearch start
 
 install:
-  - composer self-update && composer --version
-  - composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+  - travis_retry composer self-update && composer --version
+  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - composer install --prefer-dist
+  - travis_retry composer install --prefer-dist
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
 # codeception
-  - composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
+  - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
 
@@ -88,5 +88,5 @@ script:
 
 after_script:
   - cd ../../..
-  - wget https://scrutinizer-ci.com/ocular.phar
+  - travis_retry wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
