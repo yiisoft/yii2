@@ -46,7 +46,7 @@ echo \Yii::$app->urlManager->createAbsoluteUrl('blog/post/index');
 // http://www.example.com/index.php/blog/post/index/
 ```
 
-The exact format of the resuting URL depends on how the URL manager is configured. The above
+The exact format of the resulting URL depends on how the URL manager is configured. The above
 examples could also output:
 
 * `/site/page/id/about/`
