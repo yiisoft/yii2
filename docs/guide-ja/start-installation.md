@@ -54,7 +54,7 @@ Composer がインストールされたら、ウェブからアクセスでき�
 
 1. [yiiframework.com](http://www.yiiframework.com/download/) からアーカイブファイルをダウンロードする。
 2. ダウンロードしたファイルをウェブからアクセスできるフォルダーに展開する。
-3. `config/web.php` ファイルを編集して、`cookieValidationKey` 設定アイテムに秘密キーを入力する
+3. `config/web.php` ファイルを編集して、`cookieValidationKey` というコンフィギュレーション項目に秘密キーを入力する
    (Composer を使って Yii をインストールするときは、これは自動的に実行されます):
 
    ```php
@@ -109,7 +109,7 @@ Yii の最低必要条件を満たすように PHP のインストールを構�
 また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](http://www.php.net/manual/ja/pdo.installation.php) および対応するデータベースドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
 
 
-ウェブサーバを設定する<a name="configuring-web-servers"></a>
+ウェブサーバを構成する<a name="configuring-web-servers"></a>
 ----------------------
 
 > Info|情報: もし Yii の試運転をしているだけで、実運用のサーバに配置する意図がないのであれば、当面、この項は飛ばしても構いません。
@@ -131,7 +131,7 @@ Yii 2.0 は、また、facebook の [HHVM](http://hhvm.com/) とも互換性が�
 更なる詳細については、[共有ホスティング環境](tutorial-shared-hosting.md) の節を参照してください。
 
 
-### 推奨される Apache の設定<a name="recommended-apache-configuration"></a>
+### 推奨される Apache の構成<a name="recommended-apache-configuration"></a>
 
 下記の設定を Apache の `httpd.conf` ファイルまたはバーチャルホスト設定の中で使います。
 `path/to/basic/web` の部分を `basic/web` の実際のパスに置き換えなければならないことに注意してください。
@@ -154,7 +154,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### 推奨される Nginx の設定<a name="recommended-nginx-configuration"></a>
+### 推奨される Nginx の構成<a name="recommended-nginx-configuration"></a>
 
 [Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](http://jp1.php.net/install.fpm) としてインストールしていなければなりません。
 下記の設定を使い、`path/to/basic/web` の部分を `basic/web` の実際のパスに置き換え、`mysite.local` を実際のサーバのホスト名に置き換えてください。
@@ -199,7 +199,7 @@ server {
 }
 ```
 
-この設定を使う場合は、同時に `php.ini` ファイルで `cgi.fix_pathinfo=0` も設定して、
+この構成を使う場合は、同時に `php.ini` ファイルで `cgi.fix_pathinfo=0` も設定して、
 多数の不要な `stat()` の呼び出しを避けるべきです。
 
 また、HTTPS サーバを走らせている場合には、安全な接続であることを Yii が正しく検知できるように、

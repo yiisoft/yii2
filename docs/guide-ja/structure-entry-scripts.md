@@ -19,7 +19,7 @@
 * グローバルな定数を定義する;
 * [Composer のオートローダ](http://getcomposer.org/doc/01-basic-usage.md#autoloading) を登録する;
 * [[Yii]] クラスファイルをインクルードする;
-* アプリケーション設定を読み出す;
+* アプリケーションのコンフィギュレーションを読み出す;
 * [アプリケーション](structure-applications.md) のインスタンスを生成して構成する;
 * [[yii\base\Application::run()]] を呼んで、受け取ったリクエストを処理する。
 
@@ -40,7 +40,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 // Yii クラスファイルをインクルード
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-// アプリケーション設定を読み出す
+// アプリケーションのコンフィギュレーションを読み出す
 $config = require(__DIR__ . '/../config/web.php');
 
 // アプリケーションを作成し、構成して、走らせる
@@ -75,7 +75,7 @@ require(__DIR__ . '/vendor/autoload.php');
 // Yii クラスファイルをインクルード
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
 
-// アプリケーション設定を読み出す
+// アプリケーションのコンフィギュレーションを読み出す
 $config = require(__DIR__ . '/config/console.php');
 
 $application = new yii\console\Application($config);
@@ -95,7 +95,7 @@ Yii は下記の三つの定数をサポートしています:
   この理由により、デバッグモードは主として開発時に使用されるべきものとなります。
   `YII_DEBUG` の既定値は false です。
 * `YII_ENV`: どういう環境でアプリケーションが走るかを規定します。
-  詳細については、[設定](concept-configurations.md#environment-constants) の節で説明されます。
+  詳細については、[コンフィギュレーション](concept-configurations.md#environment-constants) の節で説明されます。
   `YII_ENV` の既定値は `'prod'` です。これはアプリケーションが実運用環境で走ることを意味します。
 * `YII_ENABLE_ERROR_HANDLER`: Yii によって提供されるエラーハンドラを有効にするかどうかを規定します。
   この定数の既定値は true です。

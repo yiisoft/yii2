@@ -2,12 +2,12 @@
 ==================
 
 この節では、`country` という名前のデータベーステーブルから読み出した国データを表示する新しいページの作り方を説明します。
-この目的を達するために、データベース接続を設定し、[アクティブレコード](db-active-record.md) クラスを作成し、
+この目的を達するために、データベース接続を構成し、[アクティブレコード](db-active-record.md) クラスを作成し、
 [アクション](structure-controllers.md) を定義し、そして [ビュー](structure-views.md) を作成します。
 
 このチュートリアルを通じて、次のことをする方法を学びます:
 
-* DB 接続を設定する
+* DB 接続を構成する
 * アクティブレコードのクラスを定義する
 * アクティブレコードのクラスを使ってデータを検索する
 * 改ページを伴う方法でビューにデータを表示する
@@ -51,7 +51,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 そして、`country` テーブルは、10 行のデータを持っています。
 
 
-DB 接続を設定する<a name="configuring-db-connection"></a>
+DB 接続を構成する<a name="configuring-db-connection"></a>
 -----------------
 
 先に進む前に、[PDO](http://www.php.net/manual/en/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ
@@ -73,15 +73,15 @@ return [
 ];
 ```
 
-この `config/db.php` というファイルは典型的なファイルベースの [設定](concept-configurations.md) ツールです。
-この設定ファイルが [[yii\db\Connection]] インスタンスの作成と初期化に必要なパラメータを規定します。そして、
+この `config/db.php` というファイルは典型的なファイルベースの [コンフィギュレーション](concept-configurations.md) ツールです。
+このコンフィギュレーションファイルが [[yii\db\Connection]] インスタンスの作成と初期化に必要なパラメータを規定します。そして、
 [[yii\db\Connection]] インスタンスを通じて、背後のデータベースに対して SQL クエリを実行することが出来るようになります。
 
-上記のようにして設定された DB 接続は、アプリケーションコードの中で `Yii::$app->db` という式でアクセスすることが出来ます。
+上記のようにして構成された DB 接続は、アプリケーションコードの中で `Yii::$app->db` という式でアクセスすることが出来ます。
 
-> Info|情報: `config/db.php` は、メインのアプリケーション設定ファイルである `config/web.php` にインクルードされます。
+> Info|情報: `config/db.php` は、メインのアプリケーションコンフィギュレーションファイルである `config/web.php` にインクルードされます。
   この `config/web.php` が [アプリケーション](structure-applications.md) インスタンスが初期化される仕方を規定します。
-  更なる情報については、[設定](concept-configurations.md) の節を参照してください。
+  更なる情報については、[コンフィギュレーション](concept-configurations.md) の節を参照してください。
 
 
 アクティブレコードを作成する<a name="creating-active-record"></a>
