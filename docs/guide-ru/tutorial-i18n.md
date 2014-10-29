@@ -277,7 +277,7 @@ for an argument: U_ARGUMENT_TYPE_MISMATCH":
 демонстрирует возможность подстановки корректного рода в зависимости от параметра:
 
 ```php
-echo \Yii::t('app', '{name} - {gender} и {gender, select, женщина{ей} мужчина{ему} other{ему} нравится Yii!', [
+echo \Yii::t('app', '{name} - {gender} и {gender, select, женщина{ей} мужчина{ему} other{ему}} нравится Yii!', [
     'name'   => 'Василий',
     'gender' => 'мужчина',
 ]);
