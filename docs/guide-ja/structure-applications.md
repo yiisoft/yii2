@@ -376,28 +376,27 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 #### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
 
-This property specifies the [route](runtime-routing.md) that an application should use when a request
-does not specify one. The route may consist of child module ID, controller ID, and/or action ID.
-For example, `help`, `post/create`, `admin/post/create`. If action ID is not given, it will take the default
-value as specified in [[yii\base\Controller::defaultAction]].
+このプロパティは、リクエストがルートを指定していないときにアプリケーションが使用すべき [route](runtime-routing.md) を規定します。
+ルートは、チャイルドモジュール ID、コントローラ ID、および/または アクション ID を構成要素とすることが出来ます。
+例えば、`help`、`post/create`、`admin/post/create` などです。
+アクション ID が与えられていない場合は、[[yii\base\Controller::defaultAction]] で規定されるデフォルト値を取ります。
 
-For [[yii\web\Application|Web applications]], the default value of this property is `'site'`, which means
-the `SiteController` controller and its default action should be used. As a result, if you access
-the application without specifying a route, it will show the result of `app\controllers\SiteController::actionIndex()`.
+[[yii\web\Application|ウェブアプリケーション]] では、このプロパティのデフォルト値は `'site'` であり、
+その意味するところは、`SiteController` コントローラとそのデフォルトアクションが使用されるべきである、ということです。
+結果として、ルートを指定せずにアプリケーションにアクセスすると、`app\controllers\SiteController::actionIndex()` の結果が表示されます。
 
-For [[yii\console\Application|console applications]], the default value is `'help'`, which means the core command
-[[yii\console\controllers\HelpController::actionIndex()]] should be used. As a result, if you run the command `yii`
-without providing any arguments, it will display the help information.
+[[yii\console\Application|コンソールアプリケーション]] では、デフォルト値は `'help'` であり、コアコマンドの [[yii\console\controllers\HelpController::actionIndex()]] が使用されるべきであるという意味です。
+結果として、引数を与えずに `yii` というコマンドを走らせると、ヘルプ情報が表示されることになります。
 
 
 #### [[yii\base\Application::extensions|extensions]] <a name="extensions"></a>
 
-This property specifies the list of [extensions](structure-extensions.md) that are installed and used by the application.
-By default, it will take the array returned by the file `@vendor/yiisoft/extensions.php`. The `extensions.php` file
-is generated and maintained automatically when you use [Composer](http://getcomposer.org) to install extensions.
-So in most cases, you do not need to configure this property.
+このプロパティは、アプリケーションにインストールされて使われる [エクステンション](structure-extensions.md) を規定するリストです。
+デフォルトでは、`@vendor/yiisoft/extensions.php` というファイルによって返される配列を取ります。
+`extensions.php` は、[Composer](http://getcomposer.org) を使ってエクステンションをインストールすると、自動的に生成され保守されます。
+ですから、たいていの場合、このプロパティをあなたが構成する必要はありません。
 
-In the special case when you want to maintain extensions manually, you may configure this property like the following:
+エクステンションを手作業で保守したいという特殊なケースにおいては、次のようにしてこのプロパティを構成することが出来ます:
 
 ```php
 [
@@ -405,82 +404,88 @@ In the special case when you want to maintain extensions manually, you may confi
         [
             'name' => 'extension name',
             'version' => 'version number',
-            'bootstrap' => 'BootstrapClassName',  // optional, may also be a configuration array
+            'bootstrap' => 'BootstrapClassName',  // オプション、コンフィギュレーション配列でもよい
             'alias' => [  // optional
                 '@alias1' => 'to/path1',
                 '@alias2' => 'to/path2',
             ],
         ],
 
-        // ... more extensions like the above ...
+        // ... 上記と同じように、更にエクステンションを構成 ...
 
     ],
 ]
 ```
 
-As you can see, the property takes an array of extension specifications. Each extension is specified with an array
-consisting of `name` and `version` elements. If an extension needs to run during the [bootstrap](runtime-bootstrapping.md)
-process, a `bootstrap` element may be specified with a bootstrapping class name or a [configuration](concept-configurations.md)
-array. An extension may also define a few [aliases](concept-aliases.md).
+見て分かるように、このプロパティはエクステンションの仕様を示す配列を取ります。
+それぞれのエクステンションは、`name` と `version` の要素を含む配列によって規定されます。
+エクステンションが [ブートストラップ](runtime-bootstrapping.md) の過程で走る必要がある場合には、
+`bootstrap` 要素をブートストラップのクラス名または [コンフィギュレーション](concept-configurations.md) 配列によって規定することが出来ます。
+また、エクステンションはいくつかの [エイリアス](concept-aliases.md) を定義することも出来ます。
 
 
 #### [[yii\base\Application::layout|layout]] <a name="layout"></a>
 
-This property specifies the name of the default layout that should be used when rendering a [view](structure-views.md).
-The default value is `'main'`, meaning the layout file `main.php` under the [layout path](#layoutPath) should be used.
-If both of the [layout path](#layoutPath) and the [view path](#viewPath) are taking the default values,
-the default layout file can be represented as the path alias `@app/views/layouts/main.php`.
+このプロパティは、[ビュー](structure-views.md) を描画するときに使われるべきデフォルトのレイアウトを規定します。
+デフォルト値は `'main'` であり、[レイアウトパス](#layoutPath) の下にある `main.php` というファイルが使われるべき事を意味します。
+[レイアウトパス](#layoutPath) と [ビューパス](#viewPath) の両方がデフォルト値を取る場合、
+デフォルトのレイアウトファイルは `@app/views/layouts/main.php` というパスエイリアスとして表すことが出来ます。
 
-You may configure this property to be `false` if you want to disable layout by default, although this is very rare.
+滅多には無いことですが、レイアウトをデフォルトで無効にしたい場合は、このプロパティを `false` として構成することが出来ます。
 
 
 #### [[yii\base\Application::layoutPath|layoutPath]] <a name="layoutPath"></a>
 
-This property specifies the path where layout files should be looked for. The default value is
-the `layouts` sub-directory under the [view path](#viewPath). If the [view path](#viewPath) is taking
-its default value, the default layout path can be represented as the path alias `@app/views/layouts`.
+このプロパティは、レイアウトファイルが捜されるべきパスを規定します。
+デフォルト値は、[ビューパス](#viewPath) の下の `layouts` サブディレクトリです。
+[ビューパス](#viewPath) がデフォルト値を取る場合、デフォルトのレイアウトパスは `@app/views/layouts` というパスエイリアスとして表すことが出来ます。
 
-You may configure it as a directory or a path [alias](concept-aliases.md).
+このプロパティはディレクトリまたはパス [エイリアス](concept-aliases.md) として構成することが出来ます。
 
 
 #### [[yii\base\Application::runtimePath|runtimePath]] <a name="runtimePath"></a>
 
-This property specifies the path where temporary files, such as log files, cache files, can be generated.
-The default value is the directory represented by the alias `@app/runtime`.
+このプロパティは、ログファイルやキャッシュファイルなどの一時的ファイルを生成することが出来るパスを規定します。
+デフォルト値は、`@app/runtime` というエイリアスで表現されるディレクトリです。
 
-You may configure it as a directory or a path [alias](concept-aliases.md). Note that the runtime path must
-be writable by the process running the application. And the path should be protected from being accessed
-by end users because the temporary files under it may contain sensitive information.
+このプロパティはディレクトリまたはパス [エイリアス](concept-aliases.md) として構成することが出来ます。
+ランタイムパスは、アプリケーションを走らせているプロセスによって書き込みが可能なものでなければならないことに注意してください。
+そして、この下にある一時的ファイルは秘匿を要する情報を含みうるものですので、ランタイムパスはエンドユーザによるアクセスから保護されるべきです。
 
-To simplify accessing to this path, Yii has predefined a path alias named `@runtime` for it.
+このパスに簡単にアクセスできるように、Yii は `@runtime` というパスエイリアスを事前に定義しています。
 
 
 #### [[yii\base\Application::viewPath|viewPath]] <a name="viewPath"></a>
 
-This property specifies the root directory where view files are located. The default value is the directory
-represented by the alias `@app/views`. You may configure it as a directory or a path [alias](concept-aliases.md).
+このプロパティはビューファイルが配置されるルートディレクトリを規定します。
+デフォルト値は、`@app/views` というエイリアスで表現されるディレクトリです。
+このプロパティはディレクトリまたはパス [エイリアス](concept-aliases.md) として構成することが出来ます。
 
 
 #### [[yii\base\Application::vendorPath|vendorPath]] <a name="vendorPath"></a>
 
-This property specifies the vendor directory managed by [Composer](http://getcomposer.org). It contains
-all third party libraries used by your application, including the Yii framework. The default value is
-the directory represented by the alias `@app/vendor`.
+このプロパティは、[Composer](http://getcomposer.org) によって管理される vendor ディレクトリを規定します。
+Yii フレームワークを含めて、あなたのアプリケーションによって使われる全てのサードパーティライブラリを格納するディレクトリです。
+デフォルト値は、`@app/vendor` というエイリアスで表現されるディレクトリです。
 
+このプロパティはディレクトリまたはパス [エイリアス](concept-aliases.md) として構成することが出来ます。
+このプロパティを修正するときは、必ず、Composer の構成もそれに合せて調整してください。
 You may configure this property as a directory or a path [alias](concept-aliases.md). When you modify
 this property, make sure you also adjust the Composer configuration accordingly.
 
-To simplify accessing to this path, Yii has predefined a path alias named `@vendor` for it.
+このパスに簡単にアクセスできるように、Yii は `@vendor` というパスエイリアスを事前に定義しています。
 
 
 #### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <a name="enableCoreCommands"></a>
 
-This property is supported by [[yii\console\Application|console applications]] only. It specifies
-whether the core commands included in the Yii release should be enabled. The default value is `true`.
+このプロパティは [[yii\console\Application|コンソールアプリケーション]] においてのみサポートされています。
+Yii リリースに含まれているコアコマンドを有効にすべきか否かを規定します。デフォルト値は `true` です。
 
 
-## Application Events <a name="application-events"></a>
+## アプリケーションのイベント<a name="application-events"></a>
 
+アプリケーションはリクエストを処理するライフサイクルの中でいくつかのイベントを発生させます。
+これらのイベントに対して、下記のようにして、アプリケーションのコンフィギュレーションの中でイベントハンドラを付けることが出来ます。
 An application triggers several events during the lifecycle of handling an request. You may attach event
 handlers to these events in application configurations like the following,
 
@@ -492,11 +497,10 @@ handlers to these events in application configurations like the following,
 ]
 ```
 
-The use of the `on eventName` syntax is described in the [Configurations](concept-configurations.md#configuration-format)
-section.
+`on eventName` という構文の使い方については、[コンフィギュレーション](concept-configurations.md#configuration-format) の節で説明されています。
 
-Alternatively, you may attach event handlers during the [bootstrapping process](runtime-bootstrapping.md) process
-after the application instance is created. For example,
+別の方法として、アプリケーションのインスタンスが生成された後、[ブートストラップの過程](runtime-bootstrapping.md) の中でイベントハンドラを付けることも出来ます。
+例えば、
 
 ```php
 \Yii::$app->on(\yii\base\Application::EVENT_BEFORE_REQUEST, function ($event) {
@@ -506,33 +510,33 @@ after the application instance is created. For example,
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <a name="beforeRequest"></a>
 
-This event is triggered *before* an application handles a request. The actual event name is `beforeRequest`.
+このイベントは、アプリケーションがリクエストを処理する *前* に発生します。
+実際のイベント名は `beforeRequest` です。
 
-When this event is triggered, the application instance has been configured and initialized. So it is a good place
-to insert your custom code via the event mechanism to intercept the request handling process. For example,
-in the event handler, you may dynamically set the [[yii\base\Application::language]] property based on some parameters.
+このイベントが発生するときには、アプリケーションのインスタンスは既に構成されて初期化されています。
+ですから、イベントメカニズムを使って、リクエスト処理のプロセスに横槍を入れるカスタムコードを挿入するのには、ちょうど良い場所です。
+例えば、このイベントハンドラの中で、何らかのパラメータに基いて [[yii\base\Application::language]] プロパティを動的にセットすることが出来ます。
 
 
 ### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
-This event is triggered *after* an application finishes handling a request but *before* sending the response.
-The actual event name is `afterRequest`.
+このイベントは、アプリケーションがリクエストの処理を完了した *後*、レスポンスを送信する *前* に発生します。
+実際のイベント名は `afterRequest` です。
 
-When this event is triggered, the request handling is completed and you may take this chance to do some postprocessing
-of the request or customize the response.
+このイベントが発生するときにはリクエストの処理は完了していますので、この機をとらえて、リクエストに対する何らかの後処理をしたり、レスポンスをカスタマイズしたりすることが出来ます。
 
-Note that the [[yii\web\Response|response]] component also triggers some events while it is sending out
-response content to end users. Those events are triggered *after* this event.
+[[yii\web\Response|response]] コンポーネントも、エンドユーザにレスポンスのコンテンツを送出する間にいくつかのイベントを発生させることに注意してください。
+それらのイベントは、このイベントの *後* に発生します。
 
 
 ### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
-This event is triggered *before* running every [controller action](structure-controllers.md).
-The actual event name is `beforeAction`.
+このイベントは、[コントローラアクション](structure-controllers.md) を走らせる *前* に毎回発生します。
+実際のイベント名は `beforeAction` です。
 
-The event parameter is an instance of [[yii\base\ActionEvent]]. An event handler may set
-the [[yii\base\ActionEvent::isValid]] property to be `false` to stop running the action.
-For example,
+イベントのパラメータは [[yii\base\ActionEvent]] のインスタンスです。
+イベントハンドラは、[[yii\base\ActionEvent::isValid]] プロパティを `false` にセットして、アクションが走るのを止めることが出来ます。
+例えば、
 
 ```php
 [
@@ -545,55 +549,55 @@ For example,
 ]
 ```
 
-Note that the same `beforeAction` event is also triggered by [modules](structure-modules.md)
-and [controllers](structure-controllers.md). Application objects are the first ones
-triggering this event, followed by modules (if any), and finally controllers. If an event handler
-sets [[yii\base\ActionEvent::isValid]] to be `false`, all the following events will NOT be triggered.
+同じ `beforeAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md)
+からも発生することに注意してください。
+アプリケーションオブジェクトが最初にこのイベントを発生させ、次に (もし有れば) モジュールが、そして最後にコントローラがこのイベントを発生させます。
+イベントハンドラが [[yii\base\ActionEvent::isValid]] を `false` にセットすると、後続のイベントは発生しません。
 
 
 ### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
-This event is triggered *after* running every [controller action](structure-controllers.md).
-The actual event name is `afterAction`.
+このイベントは、[コントローラアクション](structure-controllers.md) が走った *後* に毎回発生します。
+実際のイベント名は `afterAction` です。
 
-The event parameter is an instance of [[yii\base\ActionEvent]]. Through
-the [[yii\base\ActionEvent::result]] property, an event handler may access or modify the action result.
-For example,
+イベントのパラメータは [[yii\base\ActionEvent]] のインスタンスです。
+[[yii\base\ActionEvent::result]] プロパティを通じて、イベントハンドラはアクションの結果にアクセスしたり、またはアクションの結果を修正したり出来ます。
+例えば、
 
 ```php
 [
     'on afterAction' => function ($event) {
         if (some condition) {
-            // modify $event->result
+            // $event->result を修正する
         } else {
         }
     },
 ]
 ```
 
-Note that the same `afterAction` event is also triggered by [modules](structure-modules.md)
-and [controllers](structure-controllers.md). These objects trigger this event in the reverse order
-as for that of `beforeAction`. That is, controllers are the first objects triggering this event,
-followed by modules (if any), and finally applications.
+同じ `afterAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md)
+からも発生することに注意してください。
+これらのオブジェクトは、`beforeAction` の場合とは逆の順でイベントを発生させます。
+すなわち、コントローラオブジェクトが最初にこのイベントを発生させ、次に (もし有れば) モジュールが、そして最後にアプリケーションがこのイベントを発生させます。
 
 
-## Application Lifecycle <a name="application-lifecycle"></a>
+## アプリケーションのライフサイクル<a name="application-lifecycle"></a>
 
-When an [entry script](structure-entry-scripts.md) is being executed to handle a request,
-an application will undergo the following lifecycle:
+[エントリスクリプト](structure-entry-scripts.md) が実行されて、リクエストが処理されるとき、
+アプリケーションは次のようなライフサイクルを経ます:
 
-1. The entry script loads the application configuration as an array.
-2. The entry script creates a new instance of the application:
-  * [[yii\base\Application::preInit()|preInit()]] is called, which configures some high priority
-    application properties, such as [[yii\base\Application::basePath|basePath]].
-  * Register the [[yii\base\Application::errorHandler|error handler]].
-  * Configure application properties.
-  * [[yii\base\Application::init()|init()]] is called which further calls
-    [[yii\base\Application::bootstrap()|bootstrap()]] to run bootstrapping components.
-3. The entry script calls [[yii\base\Application::run()]] to run the application:
-  * Trigger the [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] event.
-  * Handle the request: resolve the request into a [route](runtime-routing.md) and the associated parameters;
-    create the module, controller and action objects as specified by the route; and run the action.
-  * Trigger the [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] event.
-  * Send response to the end user.
-4. The entry script receives the exit status from the application and completes the request processing.
+1. エントリスクリプトがアプリケーションのコンフィギュレーションを配列として読み出す。
+2. エントリスクリプトがアプリケーションの新しいインスタンスを作成する:
+  * [[yii\base\Application::preInit()|preInit()]] が呼び出されて、[[yii\base\Application::basePath|basePath]]
+    のような、優先度の高いアプリケーションプロパティを構成する。
+  * [[yii\base\Application::errorHandler|エラーハンドラ]] を登録する。
+  * アプリケーションのプロパティを構成する。
+  * [[yii\base\Application::init()|init()]] が呼ばれ、そこから更に、ブートストラップコンポーネントを
+    走らせるために、[[yii\base\Application::bootstrap()|bootstrap()]] が呼ばれる。
+3. エントリスクリプトが [[yii\base\Application::run()]] を呼んで、アプリケーションを走らせる:
+  * [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] イベントを発生させる。
+  * リクエストを処理する: リクエストを [ルート](runtime-routing.md) とそれに結び付くパラメータとして解決する;
+    ルートによって指定されたモジュール、コントローラ、および、アクションを作成する; そしてアクションを走らせる。
+  * [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] イベントを発生させる。
+  * エンドユーザにレスポンスを送信する。
+4. エントリスクリプトがアプリケーションから終了ステータスを受け取り、リクエストの処理を完了する。
