@@ -60,7 +60,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 ### 重要属性 <a name="important-properties"></a>
 
-本小节所描述的属性通常需要设置，因为不用的应用属性不同。
+本小节所描述的属性通常需要设置，因为不同的应用属性不同。
 
 
 #### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
