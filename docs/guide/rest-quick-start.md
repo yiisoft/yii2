@@ -59,12 +59,10 @@ Then, modify the configuration about the `urlManager` component in your applicat
 The above configuration mainly adds a URL rule for the `user` controller so that the user data
 can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
 
-## Enabling JSON input
 
-By default the `Content-Type` of incoming requests such as `POST` or `PUT` is only recognized as `application/x-www-form-urlencoded`
-or `multipart/form-data` which is the content type used by HTML forms.
+## Enabling JSON Input <a name="enabling-json-input"></a>
 
-To enable sending content in JSON format to the API, you have to configure the [[yii\web\Request::$parsers|parsers]] property of
+To let the API accepting input data in JSON format, configure the [[yii\web\Request::$parsers|parsers]] property of
 the `request` application component to use the [[yii\web\JsonParser]] for JSON input:
 
 ```php
@@ -74,6 +72,10 @@ the `request` application component to use the [[yii\web\JsonParser]] for JSON i
     ]
 ]
 ```
+
+> Info: The above configuration is optional. Without the above configuration, the API would only recognize 
+  `application/x-www-form-urlencoded` and `multipart/form-data` input formats.
+
 
 ## Trying it Out <a name="trying-it-out"></a>
 
