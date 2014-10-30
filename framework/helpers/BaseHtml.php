@@ -1246,7 +1246,7 @@ class BaseHtml
      * - uncheck: string, the value associated with the uncheck state of the radio button. If not set,
      *   it will take the default value '0'. This method will render a hidden input so that if the radio button
      *   is not checked and is submitted, the value of this attribute will still be submitted to the server
-     *   via the hidden input.
+     *   via the hidden input. If you do not want any hidden input, you should explicitly set this option as null.
      * - label: string, a label displayed next to the radio button.  It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   The radio button will be enclosed by the label tag. Note that if you do not specify this option, a default label
@@ -1296,7 +1296,7 @@ class BaseHtml
      * - uncheck: string, the value associated with the uncheck state of the radio button. If not set,
      *   it will take the default value '0'. This method will render a hidden input so that if the radio button
      *   is not checked and is submitted, the value of this attribute will still be submitted to the server
-     *   via the hidden input.
+     *   via the hidden input. If you do not want any hidden input, you should explicitly set this option as null.
      * - label: string, a label displayed next to the checkbox.  It will NOT be HTML-encoded. Therefore you can pass
      *   in HTML code such as an image tag. If this is is coming from end users, you should [[encode()]] it to prevent XSS attacks.
      *   The checkbox will be enclosed by the label tag. Note that if you do not specify this option, a default label
