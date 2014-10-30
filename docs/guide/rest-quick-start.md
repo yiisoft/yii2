@@ -62,7 +62,7 @@ can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
 
 ## Enabling JSON Input <a name="enabling-json-input"></a>
 
-To let the API accepting input data in JSON format, configure the [[yii\web\Request::$parsers|parsers]] property of
+To let the API accept input data in JSON format, configure the [[yii\web\Request::$parsers|parsers]] property of
 the `request` application component to use the [[yii\web\JsonParser]] for JSON input:
 
 ```php
