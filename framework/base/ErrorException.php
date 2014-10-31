@@ -75,18 +75,20 @@ class ErrorException extends \ErrorException
     {
         $names = [
             E_ERROR => 'PHP Fatal Error',
-            E_PARSE => 'PHP Parse Error',
-            E_CORE_ERROR => 'PHP Core Error',
-            E_COMPILE_ERROR => 'PHP Compile Error',
-            E_USER_ERROR => 'PHP User Error',
             E_WARNING => 'PHP Warning',
-            E_CORE_WARNING => 'PHP Core Warning',
-            E_COMPILE_WARNING => 'PHP Compile Warning',
-            E_USER_WARNING => 'PHP User Warning',
-            E_STRICT => 'PHP Strict Warning',
+            E_PARSE => 'PHP Parse Error',
             E_NOTICE => 'PHP Notice',
+            E_CORE_ERROR => 'PHP Core Error',
+            E_CORE_WARNING => 'PHP Core Warning',
+            E_COMPILE_ERROR => 'PHP Compile Error',
+            E_COMPILE_WARNING => 'PHP Compile Warning',
+            E_USER_ERROR => 'PHP User Error',
+            E_USER_WARNING => 'PHP User Warning',
+            E_USER_NOTICE => 'PHP User Notice',
+            E_STRICT => 'PHP Strict Warning',
             E_RECOVERABLE_ERROR => 'PHP Recoverable Error',
             E_DEPRECATED => 'PHP Deprecated Warning',
+            E_USER_DEPRECATED => 'PHP User Deprecated Warning',
         ];
 
         return isset($names[$this->getCode()]) ? $names[$this->getCode()] : 'Error';
