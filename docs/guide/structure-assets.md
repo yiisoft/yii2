@@ -212,6 +212,8 @@ listed in the registered bundles. The order of these tags is determined by the d
 the registered bundles and the order of the assets listed in the [[yii\web\AssetBundle::css]] and [[yii\web\AssetBundle::js]]
 properties.
 
+> Tip: The [[yii\web\AssetBundle::register()]] method returns the registered asset bundle object, so you can use it to retrieve
+> information like for example the [[yii\web\AssetBundle::basePath|basePath]] from it.
 
 ### Customizing Asset Bundles <a name="customizing-asset-bundles"></a>
 
