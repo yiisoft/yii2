@@ -203,10 +203,10 @@ class MessageController extends Controller
 
                 $db->createCommand()
                    ->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
-                $lastId = $db->getLastInsertID();
+                $lastID = $db->getLastInsertID();
                 foreach ($languages as $language) {
                     $db->createCommand()
-                       ->insert($messageTable, ['id' => $lastId, 'language' => $language])->execute();
+                       ->insert($messageTable, ['id' => $lastID, 'language' => $language])->execute();
                 }
             }
         }
@@ -222,17 +222,12 @@ class MessageController extends Controller
                    ->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
                 echo "deleted.\n";
             } else {
-                $last_id = $db->getLastInsertID();
                 $db->createCommand()
                    ->update(
                        $sourceMessageTable,
                        ['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
                        ['in', 'id', $obsolete]
                    )->execute();
-                foreach ($languages as $language) {
-                    $db->createCommand()
-                       ->insert($messageTable, ['id' => $last_id, 'language' => $language])->execute();
-                }
                 echo "updated.\n";
             }
         }
