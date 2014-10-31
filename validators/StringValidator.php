@@ -96,12 +96,12 @@ class StringValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
-        $value = $object->$attribute;
+        $value = $model->$attribute;
 
         if (!is_string($value)) {
-            $this->addError($object, $attribute, $this->message);
+            $this->addError($model, $attribute, $this->message);
 
             return;
         }
@@ -109,13 +109,13 @@ class StringValidator extends Validator
         $length = mb_strlen($value, $this->encoding);
 
         if ($this->min !== null && $length < $this->min) {
-            $this->addError($object, $attribute, $this->tooShort, ['min' => $this->min]);
+            $this->addError($model, $attribute, $this->tooShort, ['min' => $this->min]);
         }
         if ($this->max !== null && $length > $this->max) {
-            $this->addError($object, $attribute, $this->tooLong, ['max' => $this->max]);
+            $this->addError($model, $attribute, $this->tooLong, ['max' => $this->max]);
         }
         if ($this->length !== null && $length !== $this->length) {
-            $this->addError($object, $attribute, $this->notEqual, ['length' => $this->length]);
+            $this->addError($model, $attribute, $this->notEqual, ['length' => $this->length]);
         }
     }
 
@@ -146,9 +146,9 @@ class StringValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
-        $label = $object->getAttributeLabel($attribute);
+        $label = $model->getAttributeLabel($attribute);
 
         $options = [
             'message' => Yii::$app->getI18n()->format($this->message, [

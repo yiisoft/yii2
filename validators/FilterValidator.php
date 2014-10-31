@@ -65,11 +65,11 @@ class FilterValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
-        $value = $object->$attribute;
+        $value = $model->$attribute;
         if (!$this->skipOnArray || !is_array($value)) {
-            $object->$attribute = call_user_func($this->filter, $value);
+            $model->$attribute = call_user_func($this->filter, $value);
         }
     }
 }

@@ -41,13 +41,13 @@ class DefaultValueValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
-        if ($this->isEmpty($object->$attribute)) {
+        if ($this->isEmpty($model->$attribute)) {
             if ($this->value instanceof \Closure) {
-                $object->$attribute = call_user_func($this->value, $object, $attribute);
+                $model->$attribute = call_user_func($this->value, $model, $attribute);
             } else {
-                $object->$attribute = $this->value;
+                $model->$attribute = $this->value;
             }
         }
     }

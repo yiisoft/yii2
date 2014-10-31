@@ -58,11 +58,11 @@ class InlineValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
         $method = $this->method;
         if (is_string($method)) {
-            $method = [$object, $method];
+            $method = [$model, $method];
         }
         call_user_func($method, $attribute, $this->params);
     }
@@ -70,12 +70,12 @@ class InlineValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         if ($this->clientValidate !== null) {
             $method = $this->clientValidate;
             if (is_string($method)) {
-                $method = [$object, $method];
+                $method = [$model, $method];
             }
 
             return call_user_func($method, $attribute, $this->params);
