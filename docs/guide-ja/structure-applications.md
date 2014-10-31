@@ -470,8 +470,6 @@ Yii フレームワークを含めて、あなたのアプリケーションに�
 
 このプロパティはディレクトリまたはパス [エイリアス](concept-aliases.md) として構成することが出来ます。
 このプロパティを修正するときは、必ず、Composer の構成もそれに合せて調整してください。
-You may configure this property as a directory or a path [alias](concept-aliases.md). When you modify
-this property, make sure you also adjust the Composer configuration accordingly.
 
 このパスに簡単にアクセスできるように、Yii は `@vendor` というパスエイリアスを事前に定義しています。
 
@@ -484,10 +482,8 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 
 ## アプリケーションのイベント<a name="application-events"></a>
 
-アプリケーションはリクエストを処理するライフサイクルの中でいくつかのイベントを発生させます。
-これらのイベントに対して、下記のようにして、アプリケーションのコンフィギュレーションの中でイベントハンドラを付けることが出来ます。
-An application triggers several events during the lifecycle of handling an request. You may attach event
-handlers to these events in application configurations like the following,
+アプリケーションはリクエストを処理するライフサイクルの中でいくつかのイベントをトリガします。
+これらのイベントに対して、下記のようにして、アプリケーションのコンフィギュレーションの中でイベントハンドラを取り付けることが出来ます。
 
 ```php
 [
@@ -499,7 +495,7 @@ handlers to these events in application configurations like the following,
 
 `on eventName` という構文の使い方については、[コンフィギュレーション](concept-configurations.md#configuration-format) の節で説明されています。
 
-別の方法として、アプリケーションのインスタンスが生成された後、[ブートストラップの過程](runtime-bootstrapping.md) の中でイベントハンドラを付けることも出来ます。
+別の方法として、アプリケーションのインスタンスが生成された後、[ブートストラップの過程](runtime-bootstrapping.md) の中でイベントハンドラを取り付けることも出来ます。
 例えば、
 
 ```php
@@ -510,28 +506,28 @@ handlers to these events in application configurations like the following,
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <a name="beforeRequest"></a>
 
-このイベントは、アプリケーションがリクエストを処理する *前* に発生します。
+このイベントは、アプリケーションがリクエストを処理する *前* にトリガされます。
 実際のイベント名は `beforeRequest` です。
 
-このイベントが発生するときには、アプリケーションのインスタンスは既に構成されて初期化されています。
-ですから、イベントメカニズムを使って、リクエスト処理のプロセスに横槍を入れるカスタムコードを挿入するのには、ちょうど良い場所です。
+このイベントがトリガされるときには、アプリケーションのインスタンスは既に構成されて初期化されています。
+ですから、イベントメカニズムを使って、リクエスト処理のプロセスに干渉するカスタムコードを挿入するのには、ちょうど良い場所です。
 例えば、このイベントハンドラの中で、何らかのパラメータに基いて [[yii\base\Application::language]] プロパティを動的にセットすることが出来ます。
 
 
 ### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
-このイベントは、アプリケーションがリクエストの処理を完了した *後*、レスポンスを送信する *前* に発生します。
+このイベントは、アプリケーションがリクエストの処理を完了した *後*、レスポンスを送信する *前* にトリガされます。
 実際のイベント名は `afterRequest` です。
 
-このイベントが発生するときにはリクエストの処理は完了していますので、この機をとらえて、リクエストに対する何らかの後処理をしたり、レスポンスをカスタマイズしたりすることが出来ます。
+このイベントがトリガされるときにはリクエストの処理は完了していますので、この機をとらえて、リクエストに対する何らかの後処理をしたり、レスポンスをカスタマイズしたりすることが出来ます。
 
-[[yii\web\Response|response]] コンポーネントも、エンドユーザにレスポンスのコンテンツを送出する間にいくつかのイベントを発生させることに注意してください。
-それらのイベントは、このイベントの *後* に発生します。
+[[yii\web\Response|response]] コンポーネントも、エンドユーザにレスポンスのコンテンツを送出する間にいくつかのイベントをトリガすることに注意してください。
+それらのイベントは、このイベントの *後* にトリガされます。
 
 
 ### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
-このイベントは、[コントローラアクション](structure-controllers.md) を走らせる *前* に毎回発生します。
+このイベントは、[コントローラアクション](structure-controllers.md) を走らせる *前* に毎回トリガされます。
 実際のイベント名は `beforeAction` です。
 
 イベントのパラメータは [[yii\base\ActionEvent]] のインスタンスです。
@@ -550,14 +546,14 @@ handlers to these events in application configurations like the following,
 ```
 
 同じ `beforeAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md)
-からも発生することに注意してください。
-アプリケーションオブジェクトが最初にこのイベントを発生させ、次に (もし有れば) モジュールが、そして最後にコントローラがこのイベントを発生させます。
-イベントハンドラが [[yii\base\ActionEvent::isValid]] を `false` にセットすると、後続のイベントは発生しません。
+からもトリガされることに注意してください。
+アプリケーションオブジェクトが最初にこのイベントをトリガし、次に (もし有れば) モジュールが、そして最後にコントローラがこのイベントをトリガします。
+イベントハンドラが [[yii\base\ActionEvent::isValid]] を `false` にセットすると、後続のイベントはトリガされません。
 
 
 ### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
-このイベントは、[コントローラアクション](structure-controllers.md) が走った *後* に毎回発生します。
+このイベントは、[コントローラアクション](structure-controllers.md) が走った *後* に毎回トリガされます。
 実際のイベント名は `afterAction` です。
 
 イベントのパラメータは [[yii\base\ActionEvent]] のインスタンスです。
@@ -576,9 +572,9 @@ handlers to these events in application configurations like the following,
 ```
 
 同じ `afterAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md)
-からも発生することに注意してください。
-これらのオブジェクトは、`beforeAction` の場合とは逆の順でイベントを発生させます。
-すなわち、コントローラオブジェクトが最初にこのイベントを発生させ、次に (もし有れば) モジュールが、そして最後にアプリケーションがこのイベントを発生させます。
+からもトリガされることに注意してください。
+これらのオブジェクトは、`beforeAction` の場合とは逆の順でイベントをトリガします。
+すなわち、コントローラオブジェクトが最初にこのイベントをトリガし、次に (もし有れば) モジュールが、そして最後にアプリケーションがこのイベントをトリガします。
 
 
 ## アプリケーションのライフサイクル<a name="application-lifecycle"></a>
@@ -595,9 +591,9 @@ handlers to these events in application configurations like the following,
   * [[yii\base\Application::init()|init()]] が呼ばれ、そこから更に、ブートストラップコンポーネントを
     走らせるために、[[yii\base\Application::bootstrap()|bootstrap()]] が呼ばれる。
 3. エントリスクリプトが [[yii\base\Application::run()]] を呼んで、アプリケーションを走らせる:
-  * [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] イベントを発生させる。
+  * [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] イベントをトリガする。
   * リクエストを処理する: リクエストを [ルート](runtime-routing.md) とそれに結び付くパラメータとして解決する;
     ルートによって指定されたモジュール、コントローラ、および、アクションを作成する; そしてアクションを走らせる。
-  * [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] イベントを発生させる。
+  * [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] イベントをトリガする。
   * エンドユーザにレスポンスを送信する。
 4. エントリスクリプトがアプリケーションから終了ステータスを受け取り、リクエストの処理を完了する。
