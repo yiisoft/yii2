@@ -89,7 +89,7 @@
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
         "twig/twig": "*",
-        "smarty/smarty": "*",
+        "smarty/smarty": "~3.0.0",
         "imagine/imagine": "v0.5.0",
         "swiftmailer/swiftmailer": "*",
         "fzaninotto/faker": "*",
