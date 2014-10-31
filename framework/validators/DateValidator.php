@@ -94,14 +94,14 @@ class DateValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
-        $value = $object->$attribute;
+        $value = $model->$attribute;
         $timestamp = $this->parseDateValue($value);
         if ($timestamp === false) {
-            $this->addError($object, $attribute, $this->message, []);
+            $this->addError($model, $attribute, $this->message, []);
         } elseif ($this->timestampAttribute !== null) {
-            $object->{$this->timestampAttribute} = $timestamp;
+            $model->{$this->timestampAttribute} = $timestamp;
         }
     }
 
