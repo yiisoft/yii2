@@ -81,7 +81,7 @@ ControllerID/ActionID
 ModuleID/ControllerID/ActionID
 ```
 
-Таким образом, если пользователь запрашивает URL `http://hostname/index.php?r=site/index`, то `index` действие в `site` контроллере будет вызвано.
+Таким образом, если пользователь запрашивает URL `http://hostname/index.php?r=site/index`, то будет вызвано действие `index`  в контроллере `site`.
 Секция [Маршрутизация](runtime-routing.md) содержит более подробную информацию о том как маршруты сопоставляются с действиями.
 
 
