@@ -67,13 +67,13 @@ class BooleanValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         $options = [
             'trueValue' => $this->trueValue,
             'falseValue' => $this->falseValue,
             'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $object->getAttributeLabel($attribute),
+                'attribute' => $model->getAttributeLabel($attribute),
                 'true' => $this->trueValue,
                 'false' => $this->falseValue,
             ], Yii::$app->language),

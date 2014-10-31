@@ -117,11 +117,11 @@ class CompareValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
-        $value = $object->$attribute;
+        $value = $model->$attribute;
         if (is_array($value)) {
-            $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+            $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
 
             return;
         }
@@ -129,12 +129,12 @@ class CompareValidator extends Validator
             $compareLabel = $compareValue = $this->compareValue;
         } else {
             $compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
-            $compareValue = $object->$compareAttribute;
-            $compareLabel = $object->getAttributeLabel($compareAttribute);
+            $compareValue = $model->$compareAttribute;
+            $compareLabel = $model->getAttributeLabel($compareAttribute);
         }
 
         if (!$this->compareValues($this->operator, $this->type, $value, $compareValue)) {
-            $this->addError($object, $attribute, $this->message, [
+            $this->addError($model, $attribute, $this->message, [
                 'compareAttribute' => $compareLabel,
                 'compareValue' => $compareValue,
             ]);
@@ -201,7 +201,7 @@ class CompareValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         $options = [
             'operator' => $this->operator,
@@ -213,8 +213,8 @@ class CompareValidator extends Validator
             $compareValue = $this->compareValue;
         } else {
             $compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
-            $compareValue = $object->getAttributeLabel($compareAttribute);
-            $options['compareAttribute'] = Html::getInputId($object, $compareAttribute);
+            $compareValue = $model->getAttributeLabel($compareAttribute);
+            $options['compareAttribute'] = Html::getInputId($model, $compareAttribute);
         }
 
         if ($this->skipOnEmpty) {
@@ -222,7 +222,7 @@ class CompareValidator extends Validator
         }
 
         $options['message'] = Yii::$app->getI18n()->format($this->message, [
-            'attribute' => $object->getAttributeLabel($attribute),
+            'attribute' => $model->getAttributeLabel($attribute),
             'compareAttribute' => $compareValue,
             'compareValue' => $compareValue,
         ], Yii::$app->language);

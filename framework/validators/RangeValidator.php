@@ -79,7 +79,7 @@ class RangeValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         $range = [];
         foreach ($this->range as $value) {
@@ -89,7 +89,7 @@ class RangeValidator extends Validator
             'range' => $range,
             'not' => $this->not,
             'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $object->getAttributeLabel($attribute),
+                'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language),
         ];
         if ($this->skipOnEmpty) {
