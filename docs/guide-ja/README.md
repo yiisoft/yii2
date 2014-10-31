@@ -122,9 +122,9 @@ All Rights Reserved.
 
 * [概要](caching-overview.md)
 * [データキャッシュ](caching-data.md)
-* [断片キャッシュ](caching-fragment.md)
+* [フラグメントキャッシュ](caching-fragment.md)
 * [ページキャッシュ](caching-page.md)
-* [HTTP Caching](caching-http.md)
+* [HTTP キャッシュ](caching-http.md)
 
 
 RESTful ウェブサービス
