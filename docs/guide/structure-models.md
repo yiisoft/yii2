@@ -493,7 +493,7 @@ In summary, models
 You may usually consider the last recommendation above when you are developing large complex systems.
 In these systems, models could be very fat because they are used in many places and may thus contain many sets
 of rules and business logic. This often ends up in a nightmare in maintaining the model code
-because a single touch of the code could affect several different places. To make the mode code more maintainable,
+because a single touch of the code could affect several different places. To make the model code more maintainable,
 you may take the following strategy:
 
 * Define a set of base model classes that are shared by different [applications](structure-applications.md) or
