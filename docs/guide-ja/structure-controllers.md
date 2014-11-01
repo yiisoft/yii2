@@ -450,4 +450,4 @@ class SiteController extends Controller
 * リクエストデータを使って [モデル](structure-models.md) や他のサービスコンポーネントのメソッドを呼ぶことが出来る;
 * [ビュー](structure-views.md) を使ってレスポンスを構成することが出来る;
 * リクエストデータを処理するべきではない - それは [モデル](structure-models.md) において処理されるべきである;
-* HTML を埋め込むなどの表示に関わるコードは避けるべきである - それは [views](structure-views.md) で行う方が良い。
+* HTML を埋め込むなどの表示に関わるコードは避けるべきである - それは [ビュー](structure-views.md) で行う方が良い。
