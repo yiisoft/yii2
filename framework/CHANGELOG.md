@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Enh #5770: Added more PHP error names for `ErrorException` (mongosoft)
 - Enh #5806: Allow `Html::encode()` to be used when the application is not started (qiangxue)
 - Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
+- Enh: `yii\filters\VerbFilter` is now able to respond to OPTIONS requests (cebe)
 - Chg #3630: `yii\db\Command::queryInternal()` is now protected (samdark) 
 - Chg #5508: Dropped the support for the `--append` option for the `fixture` command (qiangxue) 
 

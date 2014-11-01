@@ -69,6 +69,12 @@ class VerbFilter extends Behavior
      * ~~~
      */
     public $actions = [];
+    /**
+     * @var boolean whether VerbFilter should respond to an HTTP OPTIONS request.
+     * If set to `true`, and the request is an OPTIONS request, it will be answered directly without invoking the action.
+     * Defaults to `false`.
+     */
+    public $respondToOptionsRequest = false;
 
 
     /**
@@ -98,6 +104,13 @@ class VerbFilter extends Behavior
 
         $verb = Yii::$app->getRequest()->getMethod();
         $allowed = array_map('strtoupper', $verbs);
+
+        // if the current request is an OPTIONS request, answer it with the available information
+        if ($this->respondToOptionsRequest && $verb === 'OPTIONS') {
+            Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $allowed));
+            return $event->isValid = false;
+        }
+
         if (!in_array($verb, $allowed)) {
             $event->isValid = false;
             // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7
