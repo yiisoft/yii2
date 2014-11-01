@@ -841,8 +841,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *     'email',
      *     'firstName' => 'first_name',
      *     'lastName' => 'last_name',
-     *     'fullName' => function () {
-     *         return $this->first_name . ' ' . $this->last_name;
+     *     'fullName' => function ($model) {
+     *         return $model->first_name . ' ' . $model->last_name;
      *     },
      * ];
      * ```
