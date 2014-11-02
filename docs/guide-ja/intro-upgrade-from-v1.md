@@ -176,8 +176,8 @@ Yii 2.0 は [[yii\base\Model]] を 1.1 における `CModel` と同様な基底�
 `CFormModel` というクラスは完全に廃止されました。
 Yii 2 では、それの代りに、[yii\base\Model]] を拡張してフォームモデルクラスを作成すべきです。
 
-Yii 2.0 は シナリオを宣言するための [[yii\base\Model::scenarios()|scenarios()]] というメソッドを導入しました。
-このメソッドを使って、どのようなシナリオがサポートされるか、また、どのシナリオの下である属性が検証される必要があるか、安全とみなされるか否か、などを宣言します。
+Yii 2.0 は サポートされるシナリオを宣言するための [[yii\base\Model::scenarios()|scenarios()]] というメソッドを導入しました。
+このメソッドを使って、あるシナリオの下で、どの属性が検証される必要があるか、また、どの属性が安全とみなされるか否か、などを宣言することが出来ます。
 例えば:
 
 ```php
@@ -193,12 +193,12 @@ public function scenarios()
 上記では二つのシナリオが宣言されています: `backend` と `frontend` です。
 `backend` シナリオでは、`email` と `role` の属性が両方とも安全であり、一括代入が可能です。
 `frontend` シナリオでは、`email` は一括代入が可能ですが、`role` は不可能です。
-`email` と `role` は、両方とも、ルールを使って検証されなければなりません。
+`email` と `role` は、両方とも、規則を使って検証されなければなりません。
 
-[[yii\base\Model::rules()|rules()]] メソッドが Yii 1.1 同様に検証ルールを宣言するために使われます。
+[[yii\base\Model::rules()|rules()]] メソッドが Yii 1.1 同様に検証規則を宣言するために使われます。
 [[yii\base\Model::scenarios()|scenarios()]] が導入されたことにより、`unsafe` バリデータが無くなったことに注意してください。
 
-ほとんどの場合、[[yii\base\Model::rules()|rules()]] メソッドが存在し得るシナリオを十全に記述することが出来るなら、そして `unsafe` な属性を宣言する必要が無いなら、[[yii\base\Model::scenarios()|scenarios()]] をオーバーライドする必要はありません。
+ほとんどの場合、[[yii\base\Model::rules()|rules()]] メソッドが在り得るシナリオを十分に既定しているなら、そして `unsafe` な属性を宣言する必要が無いなら、[[yii\base\Model::scenarios()|scenarios()]] をオーバーライドする必要はありません。
 
 モデルについてさらに詳細を学習するために、[モデル](structure-models.md) の節を参照してください。
 
@@ -389,7 +389,7 @@ $sql = $command->sql;
 $rows = $command->queryAll();
 ```
 
-何より良いのは、このようなクエリ構築メソッドが [Active Record](db-active-record.md) を扱う時にも使える、ということです。
+何より良いのは、このようなクエリ構築メソッドが [アクティブレコード](db-active-record.md) を扱う時にも使える、ということです。
 
 更なる詳細については [クエリビルダ](db-query-builder.md) の節を参照してください。
 
@@ -397,7 +397,7 @@ $rows = $command->queryAll();
 アクティブレコード
 ------------------
 
-Yii 2.0 は [Active Record](db-active-record.md) に数多くの変更を導入しました。
+Yii 2.0 は [アクティブレコード](db-active-record.md) に数多くの変更を導入しました。
 最も顕著な違いは、クエリの構築方法とリレーショナルクエリの処理の二つです。
 
 1.1 の `CDbCriteria` クラスは Yii 2 では [[yii\db\ActiveQuery]] に置き換えられました。
