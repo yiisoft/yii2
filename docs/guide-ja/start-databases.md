@@ -184,7 +184,7 @@ class CountryController extends Controller
 * クエリによって表現される SQL 文に `offset` 句と `limit` 句をセットして、一度に一ページ分のデータだけ (1ページ最大5行)を返すようにします。
 * 次の項で説明されるように、一連のページボタンからなるページャをビューに表示するために使われます。
 
-コードの最後で、`index` アクションは `index` と言う名前のビューを表示していますが、このとき、国データはもちろん、そのページ付け情報もビューに渡されます。
+コードの最後で、`index` アクションは `index` と言う名前のビューをレンダリングしていますが、このとき、国データはもちろん、そのページ付け情報もビューに渡されます。
 
 
 ビューを作成する<a name="creating-view"></a>
@@ -213,8 +213,9 @@ use yii\widgets\LinkPager;
 ```
 
 ビューは国データの表示に関連して二つの部分に分けられます。
-最初の部分では、提供された国データが HTML の順序無しリストとして表示されます。
-第二の部分では、アクションから渡されたページ付け情報を使って、[[yii\widgets\LinkPager]] ウィジェットが表示されます。
+最初の部分では、提供された国データがたどられて、HTML の順序無しリストとしてレンダリングされます。
+第二の部分では、アクションから渡されたページ付け情報を使って、[[yii\widgets\LinkPager]]
+ウィジェットがレンダリングされます。
 `LinkPager` ウィジェットはページボタンのリストを表示します。ボタンのどれかをクリックすると、対応するページの国データが更新表示されます。
 
 
@@ -243,7 +244,7 @@ http://hostname/index.php?r=country/index&page=2
 * 最初、[[yii\data\Pagination|Pagination]] は、1ページ目を表しています。
   これは、国の SELECT クエリが `LIMIT 5 OFFSET 0` という句を伴うことを示しています。
   その結果、最初の5つの国が取得されて表示されます。
-* [[yii\widgets\LinkPager|LinkPager]] ウィジェットは、[[yii\data\Pagination::createUrl()|Pagination]] によって作成された URL を使ってページボタンを表示します。
+* [[yii\widgets\LinkPager|LinkPager]] ウィジェットは、[[yii\data\Pagination::createUrl()|Pagination]] によって作成された URL を使ってページボタンをレンダリングします。
   URL は、別々のページ番号を表現する `page` というクエリパラメータを含んだものになります。
 * ページボタン "2" をクリックすると、`country/index` のルートに対する新しいリクエストが発行され、処理されます。
   [[yii\data\Pagination|Pagination]] が URL から `page` クエリパラメータを読み取って、カレントページ番号を 2 にセットします。

@@ -115,5 +115,5 @@ Yii のアプリケーションがユーザリクエストを処理すること�
 * [[yii\web\User|user]]: ユーザの認証情報を表現します。
   このコンポーネントは、[[yii\web\Application|ウェブアプリケーション]] においてのみ利用できます。.
   更なる詳細は [認証](security-authentication.md) の節を参照してください。
-* [[yii\web\View|view]]: ビューの描画をサポートします。
+* [[yii\web\View|view]]: ビューのレンダリングをサポートします。
   更なる詳細は [ビュー](structure-views.md) の節を参照してください。
