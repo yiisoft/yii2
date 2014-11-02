@@ -563,7 +563,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 
 ### 注册链接标签 <a name="registering-link-tags"></a>
 
-和 [Meta标签](#adding-meta-tags) 类似，链接标签有时很使用，如自定义网站图标，指定Rss订阅，或授权OpenID到其他服务器。
+和 [Meta标签](#adding-meta-tags) 类似，链接标签有时很实用，如自定义网站图标，指定Rss订阅，或授权OpenID到其他服务器。
 可以和元标签相似的方式调用[[yii\web\View::registerLinkTag()]]，例如，在内容视图中注册链接标签如下所示：
 
 ```php
