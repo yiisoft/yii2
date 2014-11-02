@@ -1,19 +1,20 @@
-Views
-=====
+ビュー
+======
 
-Views are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
-They are code responsible for presenting data to end users. In a Web application, views are usually created
-in terms of *view templates* which are PHP script files containing mainly HTML code and presentational PHP code.
-They are managed by the [[yii\web\View|view]] [application component](structure-application-components.md) which provides commonly used methods
-to facilitate view composition and rendering. For simplicity, we often call view templates or view template files
-as views.
+ビューは [MVC](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
+ビューはエンドユーザにデータを表示することに責任を持つコードです。
+ウェブアプリケーションにおいては、ビューは、通常、主として HTML コードと表示目的の PHP コードを含む PHP スクリプトファイルである、
+*ビューテンプレート* の形式で作成されます。
+そして、ビューテンプレートを管理する [[yii\web\View|ビュー]] [アプリケーションコンポーネント](structure-application-components.md) は、
+ビューの構築とレンダリングを助けるためによく使われるメソッドを提供します。
+なお、簡潔さを重視して、ビューテンプレートまたはビューテンプレートファイルを単にビューと呼ぶことがよくあります。
 
 
-## Creating Views <a name="creating-views"></a>
+## ビューを作成する <a name="creating-views"></a>
 
-As aforementioned, a view is simply a PHP script mixed with HTML and PHP code. The following is the view
-that presents a login form. As you can see, PHP code is used to generate the dynamic content, such as the
-page title and the form, while HTML code organizes them into a presentable HTML page.
+前述のように、ビューは HTML と PHP コードが混ざった単なる PHP スクリプトです。
+次に示すのは、ログインフォームを表示するビューです。
+見ると分るように、PHP コードがタイトルやフォームなど動的なコンテンツを生成するのに使われ、HTML コードがそれらを編成して表示可能な HTML ページを作っています。
 
 ```php
 <?php
@@ -24,38 +25,37 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $model app\models\LoginForm */
 
-$this->title = 'Login';
+$this->title = 'ログイン';
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 
-<p>Please fill out the following fields to login:</p>
+<p>次の項目を入力してログインしてください:</p>
 
 <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($model, 'username') ?>
     <?= $form->field($model, 'password')->passwordInput() ?>
-    <?= Html::submitButton('Login') ?>
+    <?= Html::submitButton('ログイン') ?>
 <?php ActiveForm::end(); ?>
 ```
 
-Within a view, you can access `$this` which refers to the [[yii\web\View|view component]] managing
-and rendering this view template.
+ビューの中でアクセスできる `$this` は、このビューテンプレートを管理し表示している [[yii\web\View|ビューコンポーネント]] を参照します。
 
-Besides `$this`, there may be other predefined variables in a view, such as `$model` in the above
-example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
-or other objects whose trigger the [view rendering](#rendering-views).
+`$this` 以外に、上記の例の `$model` のように、前もって定義された変数がビューの中にあることがあります。
+このような変数は、[コントローラ](structure-controllers.md) または [ビューのレンダリング](#rendering-views) をトリガするオブジェクトによってビューに *プッシュ* されたデータを表します。
 
-> Tip: The predefined variables are listed in a comment block at beginning of a view so that they can
-  be recognized by IDEs. It is also a good way of documenting your views.
+> Tip|ヒント: 上の例では、事前に定義された変数は、IDE に認識されるように、
+  ビューの先頭のコメントブロックの中にリストされています。これは、ビューに
+  ドキュメントを加えるためにも良い方法です。
 
 
-### Security <a name="security"></a>
+### セキュリティ <a name="security"></a>
 
-When creating views that generate HTML pages, it is important that you encode and/or filter the data coming
-from end users before presenting them. Otherwise, your application may be subject to
-[cross-site scripting](http://en.wikipedia.org/wiki/Cross-site_scripting) attacks.
+HTML ページを生成するビューを作成するときは、エンドユーザから受け取るデータを
+表示する前に エンコード および/または フィルター することが重要です。
+そうしなければ、あなたのアプリケーションは [クロスサイトスクリプティング](http://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%AD%E3%82%B9%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) 攻撃をこうむるおそれがあります。
 
-To display a plain text, encode it first by calling [[yii\helpers\Html::encode()]]. For example, the following code
-encodes the user name before displaying it:
+平文テキストを表示するためには、まず [[yii\helpers\Html::encode()]] を呼んでエンコードします。
+例えば、次のコードはユーザの名前を表示する前にエンコードしています:
 
 ```php
 <?php
@@ -67,8 +67,8 @@ use yii\helpers\Html;
 </div>
 ```
 
-To display HTML content, use [[yii\helpers\HtmlPurifier]] to filter the content first. For example, the following
-code filters the post content before displaying it:
+HTML コンテンツを表示するためには、[[yii\helpers\HtmlPurifier]] を使って、最初にコンテンツをフィルターします。
+例えば、次のコードは、投稿のコンテンツを表示する前にフィルターしています:
 
 ```php
 <?php
@@ -80,55 +80,66 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-> Tip: While HTMLPurifier does excellent job in making output safe, it is not fast. You should consider
-  [caching](caching-overview.md) the filtering result if your application requires high performance.
+> Tip|ヒント: HTMLPurifier は、出力を安全なものにすることにおいては素晴らしい仕事をしますが、
+  速くはありません。アプリケーションが高いパフォーマンスを要求する場合は、
+  フィルター結果を [キャッシュ](caching-overview.md) することを考慮すべきです。
 
 
-### Organizing Views <a name="organizing-views"></a>
+### ビューを整理する <a name="organizing-views"></a>
 
-Like [controllers](structure-controllers.md) and [models](structure-models.md), there are conventions to organize views.
+[コントローラ](structure-controllers.md) や [モデル](structure-models.md) と同じように、
+ビューを整理するための規約があります。.
 
-* For views rendered by a controller, they should be put under the directory `@app/views/ControllerID` by default,
-  where `ControllerID` refers to the [controller ID](structure-controllers.md#routes). For example, if
-  the controller class is `PostController`, the directory would be `@app/views/post`; If it is `PostCommentController`,
-  the directory would be `@app/views/post-comment`. In case the controller belongs to a module, the directory
-  would be `views/ControllerID` under the [[yii\base\Module::basePath|module directory]].
-* For views rendered in a [widget](structure-widgets.md), they should be put under the `WidgetPath/views` directory by
-  default, where `WidgetPath` stands for the directory containing the widget class file.
-* For views rendered by other objects, it is recommended that you follow the similar convention as that for widgets.
+* コントローラによって表示されるビューは、既定では、ディレクトリ
+  `@app/views/ControllerID` の下に置かれるべきものです。
+  ここで、`ControllerID` は [コントローラ ID](structure-controllers.md#routes) を指します。
+  例えば、コントローラクラスが `PostController` である場合、ディレクトリは `@app/views/post`
+  となります。`PostCommentController` の場合は、ディレクトリは `@app/views/post-comment` です。
+  また、コントローラがモジュールに属する場合は、ディレクトリは [[yii\base\Module::basePath|モジュールディレクトリ]]
+  の下の `views/ControllerID` です。
+* [ウィジェット](structure-widgets.md) で表示されるビューは、既定では、`WidgetPath/views`
+  ディレクトリの下に置かれるべきものです。ここで、`WidgetPath` は、ウィジェットのクラスファイル
+  を含んでいるディレクトリを指します。
+* 他のオブジェクトによって表示されるビューについても、ウィジェットの場合と規約に従うことが
+  推奨されます。
 
-You may customize these default view directories by overriding the [[yii\base\ViewContextInterface::getViewPath()]]
-method of controllers or widgets.
+これらの既定のビューディレクトリは、コントローラやウィジェットの [[yii\base\ViewContextInterface::getViewPath()]]
+メソッドをオーバーライドすることでカスタマイズすることが可能です。
 
 
-## Rendering Views <a name="rendering-views"></a>
+## ビューをレンダリングする <a name="rendering-views"></a>
 
-You can render views in [controllers](structure-controllers.md), [widgets](structure-widgets.md), or any
-other places by calling view rendering methods. These methods share a similar signature shown as follows,
+[コントローラ](structure-controllers.md) の中でも、[ウィジェット](structure-widgets.md) の中でも、
+または、その他のどんな場所でも、ビューのレンダリングメソッドを呼ぶことによって
+ビューをレンダリングすることが出来ます。
+これらのメソッドは、下記に示されるような類似のシグニチャを共有します。
 
 ```
 /**
- * @param string $view view name or file path, depending on the actual rendering method
- * @param array $params the data to be passed to the view
- * @return string rendering result
+ * @param string $view ビュー名またはファイルパス、実際のレンダリングメソッドに依存する
+ * @param array $params ビューに引き渡されるデータ
+ * @return string レンダリングの結果
  */
 methodName($view, $params = [])
 ```
 
 
-### Rendering in Controllers <a name="rendering-in-controllers"></a>
+### コントローラでのレンダリング <a name="rendering-in-controllers"></a>
 
-Within [controllers](structure-controllers.md), you may call the following controller methods to render views:
+[コントローラ](structure-controllers.md) の中では、ビューをレンダリングするために
+次のコントローラメソッドを呼ぶことが出来ます:
 
-* [[yii\base\Controller::render()|render()]]: renders a [named view](#named-views) and applies a [layout](#layouts)
-  to the rendering result.
-* [[yii\base\Controller::renderPartial()|renderPartial()]]: renders a [named view](#named-views) without any layout.
-* [[yii\web\Controller::renderAjax()|renderAjax()]]: renders a [named view](#named-views) without any layout,
-  and injects all registered JS/CSS scripts and files. It is usually used in response to AJAX Web requests.
-* [[yii\base\Controller::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
-  [alias](concept-aliases.md).
+* [[yii\base\Controller::render()|render()]]: [名前付きビュー](#named-views) をレンダリングし、
+  その結果に [レイアウト](#layouts) を適用する。
+* [[yii\base\Controller::renderPartial()|renderPartial()]]: [名前付きビュー](#named-views) を
+  レイアウトなしでレンダリングする。
+* [[yii\web\Controller::renderAjax()|renderAjax()]]: [名前付きビュー](#named-views) を
+  レイアウトなしでレンダリングし、登録されている全ての JS/CSS スクリプトおよびファイルを注入する。
+  通常、AJAX ウェブリクエストに対するレスポンスにおいて使用される。
+* [[yii\base\Controller::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md)
+  の形式で指定されたビューをレンダリングする。
 
-For example,
+例えば、
 
 ```php
 namespace app\controllers;
@@ -147,7 +158,7 @@ class PostController extends Controller
             throw new NotFoundHttpException;
         }
 
-        // renders a view named "view" and applies a layout to it
+        // "view" という名前のビューをレンダリングし、レイアウトを適用する
         return $this->render('view', [
             'model' => $model,
         ]);
@@ -156,15 +167,16 @@ class PostController extends Controller
 ```
 
 
-### Rendering in Widgets <a name="rendering-in-widgets"></a>
+### ウィジェットでのレンダリング <a name="rendering-in-widgets"></a>
 
-Within [widgets](structure-widgets.md), you may call the following widget methods to render views.
+[ウィジェット](structure-widgets.md) の中では、ビューをレンダリングするために、
+次のウィジェットメソッドを使用することが出来ます。
 
-* [[yii\base\Widget::render()|render()]]: renders a [named view](#named-views).
-* [[yii\base\Widget::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
-  [alias](concept-aliases.md).
+* [[yii\base\Widget::render()|render()]]: [名前付きのビュー](#named-views) をレンダリングする。
+* [[yii\base\Widget::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md)
+  の形式で指定されたビューをレンダリングする。
 
-For example,
+例えば、
 
 ```php
 namespace app\components;
@@ -178,7 +190,7 @@ class ListWidget extends Widget
 
     public function run()
     {
-        // renders a view named "list"
+        // "list" という名前のビューをレンダリングする
         return $this->render('list', [
             'items' => $this->items,
         ]);
@@ -187,68 +199,79 @@ class ListWidget extends Widget
 ```
 
 
-### Rendering in Views <a name="rendering-in-views"></a>
+### ビューでのレンダリング <a name="rendering-in-views"></a>
 
-You can render a view within another view by calling one of the following methods provided by the [[yii\base\View|view component]]:
+[[yii\base\View|ビューコンポーネント]] によって提供される下記のメソッドのどれかを使うと、
+ビューの中で、別のビューをレンダリングすることが出来ます:
 
-* [[yii\base\View::render()|render()]]: renders a [named view](#named-views).
-* [[yii\web\View::renderAjax()|renderAjax()]]: renders a [named view](#named-views) and injects all registered
-  JS/CSS scripts and files. It is usually used in response to AJAX Web requests.
-* [[yii\base\View::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
-  [alias](concept-aliases.md).
+* [[yii\base\View::render()|render()]]: [名前付きのビュー](#named-views) をレンダリングする。
+* [[yii\web\View::renderAjax()|renderAjax()]]: [名前付きビュー](#named-views) をレンダリングし、
+  登録されている全ての JS/CSS スクリプトおよびファイルを注入する。
+  通常、AJAX ウェブリクエストに対するレスポンスにおいて使用される。
+* [[yii\base\View::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md)
+  の形式で指定されたビューをレンダリングする。
 
-For example, the following code in a view renders the `_overview.php` view file which is in the same directory
-as the view being currently rendered. Remember that `$this` in a view refers to the [[yii\base\View|view]] component:
+例えば、ビューの中の次のコードは、現在レンダリングされているビューと同じディレクトリにある
+`_overview.php` というビューファイルをレンダリングします。
+ビューでは `$this` が [[yii\base\View|ビュー]] コンポーネントを参照することを思い出してください:
 
 ```php
 <?= $this->render('_overview') ?>
 ```
 
 
-### Rendering in Other Places <a name="rendering-in-other-places"></a>
+### 他の場所でのレンダリング <a name="rendering-in-other-places"></a>
 
-In any place, you can get access to the [[yii\base\View|view]] application component by the expression
-`Yii::$app->view` and then call its aforementioned methods to render a view. For example,
+場所がどこであれ、`Yii::$app->view` という式によって [[yii\base\View|ビュー]] アプリケーションコンポーネントにアクセスすることが出来ますから、
+前述の [[yii\base\View|ビュー]] コンポーネントメソッドを使ってビューをレンダリングすることが出来ます。
+例えば、
 
 ```php
-// displays the view file "@app/views/site/license.php"
+// ビューファイル "@app/views/site/license.php" を表示
 echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ```
 
 
-### Named Views <a name="named-views"></a>
+### 名前付きビュー <a name="named-views"></a>
 
-When you render a view, you can specify the view using either a view name or a view file path/alias. In most cases,
-you would use the former because it is more concise and flexible. We call views specified using names as *named views*.
+ビューをレンダリングするとき、ビューを指定するのには、ビューの名前か、
+ビューファイルのパス/エイリアスか、どちらかを使うことが出来ます。
+たいていの場合は、より簡潔で柔軟な前者を使います。
+名前を使って指定されるビューを *名前付きビュー* と呼びます。
 
-A view name is resolved into the corresponding view file path according to the following rules:
+ビューの名前は、以下の規則に従って、対応するビューファイルのパスに解決されます。
 
-* A view name may omit the file extension name. In this case, `.php` will be used as the extension. For example,
-  the view name `about` corresponds to the file name `about.php`.
-* If the view name starts with double slashes `//`, the corresponding view file path would be `@app/views/ViewName`.
-  That is, the view is looked for under the [[yii\base\Application::viewPath|application's view path]].
-  For example, `//site/about` will be resolved into `@app/views/site/about.php`.
-* If the view name starts with a single slash `/`, the view file path is formed by prefixing the view name
-  with the [[yii\base\Module::viewPath|view path]] of the currently active [module](structure-modules.md).
-  If there is no active module, `@app/views/ViewName` will be used. For example, `/user/create` will be resolved into
-  `@app/modules/user/views/user/create.php`, if the currently active module is `user`. If there is no active module,
-  the view file path would be `@app/views/user/create.php`.
-* If the view is rendered with a [[yii\base\View::context|context]] and the context implements [[yii\base\ViewContextInterface]],
-  the view file path is formed by prefixing the [[yii\base\ViewContextInterface::getViewPath()|view path]] of the
-  context to the view name. This mainly applies to the views rendered within controllers and widgets. For example,
-  `site/about` will be resolved into `@app/views/site/about.php` if the context is the controller `SiteController`.
-* If a view is rendered within another view, the directory containing the other view file will be prefixed to
-  the new view name to form the actual view file path. For example, `item` will be resolved into `@app/views/post/item`
-  if it is being rendered in the view `@app/views/post/index.php`.
+* ビュー名はファイル拡張子を省略することが出来ます。その場合、`.php` が拡張子として使われます。
+  例えば、`about` というビュー名は `about.php` というファイル名に対応します。
+* ビュー名が二つのスラッシュ (`//`) で始まる場合は、対応するビューファイルのパスは `@app/views/ViewName`
+  となります。つまり、ビューファイルは [[yii\base\Application::viewPath|アプリケーションのビューパス]]
+  の下で探されます。例えば、`//site/about` は `@app/views/site/about.php` へと解決されます。
+* ビュー名が一つのスラッシュ (`/`) で始まる場合は、ビューファイルのパスは、ビュー名の前に、現在
+  アクティブな [モジュール](structure-modules.md) の [[yii\base\Module::viewPath|ビューパス]]
+  を置くことによって形成されます。アクティブなモジュールが無い場合は、`@app/views/ViewName`
+  が使用されます。例えば、`/user/create` は、現在アクティブなモジュールが `user` である場合は、
+  `@app/modules/user/views/user/create.php` へと解決されます。アクティブなモジュールが無い場合は、
+  ビューファイルのパスは `@app/views/user/create.php` となります。
+* ビューが [[yii\base\View::context|コンテキスト]] を伴ってレンダリングされ、そのコンテキストが
+  [[yii\base\ViewContextInterface]] を実装している場合は、ビューファイルのパスは、コンテキストの
+  [[yii\base\ViewContextInterface::getViewPath()|ビューパス]] をビュー名の前に置くことによって
+  形成されます。これは、主として、コントローラとウィジェットの中でレンダリングされるビューに当てはまります。
+  例えば、コンテキストが `SiteController` コントローラである場合、`site/about` は `@app/views/site/about.php`
+  へと解決されます。
+* あるビューが別のビューの中でレンダリングされる場合は、後者のビューファイルを含んでいるディレクトリが
+  前者のビュー名の前に置かれて、実際のビューファイルのパスが形成されます。例えば、`item` は、
+  `@app/views/post/index.php` というビューの中でレンダリングされる場合、`@app/views/post/item`
+  へと解決されます。
 
-According to the above rules, calling `$this->render('view')` in a controller `app\controllers\PostController` will
-actually render the view file `@app/views/post/view.php`, while calling `$this->render('_overview')` in that view
-will render the view file `@app/views/post/_overview.php`.
+上記の規則によると、コントローラ `app\controllers\PostController` の中で `$this->render('view')` を呼ぶと、
+実際には、ビューファイル `@app/views/post/view.php` がレンダリングされ、一方、そのビューの中で
+`$this->render('_overview')` を呼ぶと、ビューファイル `@app/views/post/_overview.php`
+がレンダリングされることになります。
 
 
-### Accessing Data in Views <a name="accessing-data-in-views"></a>
+### ビューの中でデータにアクセスする <a name="accessing-data-in-views"></a>
 
-There are two approaches to access data within a view: push and pull.
+ビューの中でデータにアクセスするためのアプローチが二つあります: プッシュとプルです。
 
 By passing the data as the second parameter to the view rendering methods, you are using the push approach.
 The data should be represented as an array of name-value pairs. When the view is being rendered, the PHP
