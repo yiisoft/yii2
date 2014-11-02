@@ -647,7 +647,7 @@ class SiteController extends Controller
 可通过如下rul显示该视图：
 
 ```
-http://localhost/index.php?r=site/page&view=about
+http://localhost/index.php?r=site/pages&view=about
 ```
 
 `GET` 中 `view` 参数告知 [[yii\web\ViewAction]] 操作请求哪个视图，然后操作在
