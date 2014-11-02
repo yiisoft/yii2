@@ -389,7 +389,6 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 如果 [视图路径](#viewPath) 使用默认值，默认的布局路径别名为`@app/views/layouts`。
 
 该属性需要配置成一个目录或 路径 [别名](concept-aliases.md)。
-You may configure it as a directory or a path [alias](concept-aliases.md).
 
 
 #### [[yii\base\Application::runtimePath|runtimePath]] <a name="runtimePath"></a>
