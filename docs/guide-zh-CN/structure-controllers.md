@@ -378,8 +378,7 @@ class SiteController extends Controller
 
 ## 控制器生命周期 <a name="controller-lifecycle"></a>
 
-处理一个请求时，[应用主体](structure-applications.md) 会根据请求[路由](#routes)创建一个控制器，will create a controller
-控制器经过以下生命周期来完成请求：
+处理一个请求时，[应用主体](structure-applications.md) 会根据请求[路由](#routes)创建一个控制器，控制器经过以下生命周期来完成请求：
 
 1. 在控制器创建和配置后，[[yii\base\Controller::init()]] 方法会被调用。
 2. 控制器根据请求操作ID创建一个操作对象:
