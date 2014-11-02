@@ -42,7 +42,7 @@ and rendering this view template.
 
 Besides `$this`, there may be other predefined variables in a view, such as `$model` in the above
 example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
-or other objects whose trigger the [view rendering](#rendering-views).
+or other objects which trigger the [view rendering](#rendering-views).
 
 > Tip: The predefined variables are listed in a comment block at beginning of a view so that they can
   be recognized by IDEs. It is also a good way of documenting your views.
