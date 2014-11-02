@@ -172,7 +172,7 @@ use yii\widgets\ActiveForm;
 ```
 
 このビューは HTML フォームを構築するのに、[[yii\widgets\ActiveForm|ActiveForm]] と呼ばれる強力な [ウィジェット](structure-widgets.md) を使います。
-ウィジェットの `begin()` メソッドと `end()` メソッドが、それぞれ、フォームの開始タグと終了タグを表示します。
+ウィジェットの `begin()` メソッドと `end()` メソッドが、それぞれ、フォームの開始タグと終了タグをレンダリングします。
 この二つのメソッドの呼び出しの間に、[[yii\widgets\ActiveForm::field()|field()]] メソッドによって入力フィールドが作成されます。
 最初の入力フィールドは "name" のデータ、第二の入力フィールドは "email" のデータのためのものです。
 入力フィールドの後に、[[yii\helpers\Html::submitButton()]] メソッドが呼ばれて、送信ボタンを生成しています。
