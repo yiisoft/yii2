@@ -283,7 +283,7 @@ class HelloWorldAction extends Action
 
 ### 操作结果 <a name="action-results"></a>
 
-操作方法或独立操作的`run()`方法的返回值非常中药，它表示对应操作结果。
+操作方法或独立操作的`run()`方法的返回值非常重要，它表示对应操作结果。
 
 返回值可为 [响应](runtime-responses.md) 对象，作为响应发送给终端用户。
 
