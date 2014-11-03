@@ -105,11 +105,13 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 - attribute of the model — атрибут модели. 
 - camel case — без перевода. 
 - customization — (тонкая) настройка //Ранее встречался перевод "кастомизация", желательно этот вариант по возможности не использовать. 
-- column — столбец (если речь про БД). 
+- column — столбец (если речь про БД).
+- configuration — конфигурация.  
 - content — содержимое. 
 - controller — контроллер. 
 - debug (mode) — отладочный (режим) (см. production mode). 
-- eager loading — метод жадной загрузки/жадная загрузка (см. lazy loading). 
+- eager loading — метод жадной загрузки/жадная загрузка (см. lazy loading).
+- environment — окружение.
 - PHP extension — расширение PHP. 
 - field (of the table) — поле (или атрибут) таблицы. 
 - framework — фреймворк. 
