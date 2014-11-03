@@ -11,8 +11,9 @@ for both A and B.
 Upgrade from Yii 2.0.0
 ----------------------
 
-* Upgraded Twitter Bootstrap to version 3.3.x. If you need to use an older version (i.e. stick with 3.2.x) you can
-  specify that in your `composer.json` by adding the following line in the `require` section:
+* Upgraded Twitter Bootstrap to [version 3.3.x](http://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
+  If you need to use an older version (i.e. stick with 3.2.x) you can specify that in your `composer.json` by
+  adding the following line in the `require` section:
   
   ```json
   "bower-asset/bootstrap": "3.2.*",
