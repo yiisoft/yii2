@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.1 under development
 -----------------------
 
+- Bug #5893: `yii\helpers\ArrayHelper::toArray()` now applies `$properties` parameter for converting descending objects in recursive calls (otsec)
 - Bug #4471: `yii\caching\ApcCache::getValues()` now returns array in case of APC is installed but not enabled in CLI mode (samdark, cebe)
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
 - Bug #5570: `yii\bootstrap\Tabs` would throw an exception if `content` is not set for one of its `items` (RomeroMsk)
