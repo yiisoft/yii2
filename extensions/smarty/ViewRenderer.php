@@ -32,7 +32,6 @@ class ViewRenderer extends BaseViewRenderer
      * @var string the directory or path alias pointing to where Smarty compiled templates will be stored.
      */
     public $compilePath = '@runtime/Smarty/compile';
-
     /**
      * @var array Add additional directories to Smarty's search path for plugins.
      */
@@ -46,20 +45,19 @@ class ViewRenderer extends BaseViewRenderer
      */
     public $widgets = ['functions' => [], 'blocks' => []];
     /**
-     * @var Smarty The Smarty object used for rendering
-     */
-    protected $smarty;
-
-    /**
      * @var array additional Smarty options
      * @see http://www.smarty.net/docs/en/api.variables.tpl
      */
     public $options = [];
-
     /**
      * @var string extension class name
      */
     public $extensionClass = '\yii\smarty\Extension';
+
+    /**
+     * @var Smarty The Smarty object used for rendering
+     */
+    protected $smarty;
 
 
     /**

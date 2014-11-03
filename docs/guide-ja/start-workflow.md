@@ -2,7 +2,7 @@
 ==========================
 
 Yii のインストールが終ると、実際に動く Yii のアプリケーションにアクセスすることが出来るようになります。
-その URL は、`http://hostname/basic/web/index.php` あるいは `http://hostname/index.php` など、設定によつて異なります。
+その URL は、`http://hostname/basic/web/index.php` あるいは `http://hostname/index.php` など、設定によって異なります。
 この節では、アプリケーションに組み込み済みの機能を紹介し、コードがどのように組織されているか、
 そして、一般にアプリケーションがリクエストをどのように処理するかを説明します。
 
@@ -41,9 +41,9 @@ Yii のインストールが終ると、実際に動く Yii のアプリケー�
 ```
 basic/                  アプリケーションのベースパス
     composer.json       Composer によって使用される。パッケージ情報を記述
-    config/             アプリケーションその他の設定を格納
-        console.php     コンソールアプリケーションの設定
-        web.php         ウェブアプリケーションの設定
+    config/             アプリケーションその他のコンフィギュレーションを格納
+        console.php     コンソールアプリケーションのコンフィギュレーション
+        web.php         ウェブアプリケーションのコンフィギュレーション
     commands/           コンソールコマンドのクラスを格納
     controllers/        コントローラのクラスを格納
     models/             モデルのクラスを格納
@@ -81,7 +81,7 @@ Yii は [モデル・ビュー・コントローラ (MVC)](http://wikipedia.org/
 ![リクエストのライフサイクル](images/application-lifecycle.png)
 
 1. ユーザが [エントリスクリプト](structure-entry-scripts.md) `web/index.php` に対してリクエストを出します。
-2. エントリスクリプトはアプリケーションの [設定](concept-configurations.md) を読み出して、
+2. エントリスクリプトはアプリケーションの [コンフィギュレーション](concept-configurations.md) を読み出して、
    リクエストを処理する [アプリケーション](structure-applications.md) のインスタンスを作成します。
 3. アプリケーションは、[リクエスト](runtime-requests.md) アプリケーションコンポーネントの助力を得て、
    リクエストされた [ルート](runtime-routing.md) を解決します。

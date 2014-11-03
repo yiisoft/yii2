@@ -50,7 +50,7 @@ class MessageController extends Controller
      * you may use this configuration file with the "extract" command.
      *
      * @param string $filePath output file name or alias.
-     * @return int CLI exit code
+     * @return integer CLI exit code
      * @throws Exception on failure.
      */
     public function actionConfig($filePath)

@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
 - Bug #5702: Parenthesis should be automatically added to `Validator::whenClient` to avoid js error (mdmunir, qiangxue)
 - Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
+- Bug #5780: `QueryBuilder::batchInsert()` may cause "undefined index" error (qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
@@ -24,8 +25,10 @@ Yii Framework 2 Change Log
 - Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
 - Enh #5646: Call `yii\base\ErrorHandler::unregister()` instead of `restore_*_handlers` directly (aivus)
 - Enh #5735: Added `yii\bootstrap\Tabs::renderTabContent` to support manually rendering tab contents (RomeroMsk)
+- Enh #5806: Allow `Html::encode()` to be used when the application is not started (qiangxue)
 - Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
 - Chg #3630: `yii\db\Command::queryInternal()` is now protected (samdark) 
+- Chg #5508: Dropped the support for the `--append` option for the `fixture` command (qiangxue) 
 
 2.0.0 October 12, 2014
 ----------------------

@@ -332,7 +332,7 @@ class BaseConsole
     /**
      * Returns the length of the string without ANSI color codes.
      * @param string $string the string to measure
-     * @return int the length of the string not counting ANSI format characters
+     * @return integer the length of the string not counting ANSI format characters
      */
     public static function ansiStrlen($string) {
         return mb_strlen(static::stripAnsiFormat($string));

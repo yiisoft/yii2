@@ -21,7 +21,8 @@ By default, Yii supports the following DBMS:
 Configuration
 -------------
 
-To start interacting with a database (using DAO or otherwise), you need to configure the application's database connection component. The Data Source Name (DSN) configures to which database application and specific database the application should connect:
+To start interacting with a database (using DAO or otherwise), you need to configure the application's database 
+connection component. The Data Source Name (DSN) configures to which database application and specific database the application should connect:
 
 ```php
 return [
@@ -50,9 +51,8 @@ return [
 Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
 on the format of the DSN string. Refer to [[yii\db\Connection]] for the full list of properties you can configure in the class.
 
-A peculiarity exists when you want to work with the database through the `ODBC` layer. When using `ODBC`, the
-connection `DSN` doesn't uniquely indicate what database type is being used. For that reason, you have to override the
-`driverName` property of [[yii\db\Connection]] class to disambiguate that:
+Note that if you are connecting with a database via ODBC, you should configure the [[yii\db\Connection::driverName]]
+property so that Yii knows the actual database type. For example,
 
 ```php
 'db' => [
@@ -64,16 +64,8 @@ connection `DSN` doesn't uniquely indicate what database type is being used. For
 ],
 ```
 
-Overriding `driverName` is not necessary when not going through ODBC. 
-
-Given the "db" component's configuration in the application, you can access the database connection using:
-
-```php
-$connection = \Yii::$app->db;
-```
-
-You can define more
-than one connection component:
+You may access the primary `db` connection via the expression `\Yii::$app->db`. You may also configure multiple
+DB connections in a single application. Simply assign different IDs to them in the application configuration:
 
 ```php
 return [
