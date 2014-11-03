@@ -71,8 +71,8 @@ public function fields()
         // field name is "email", the corresponding attribute name is "email_address"
         'email' => 'email_address',
         // field name is "name", its value is defined by a PHP callback
-        'name' => function () {
-            return $this->first_name . ' ' . $this->last_name;
+        'name' => function ($model) {
+            return $model->first_name . ' ' . $model->last_name;
         },
     ];
 }

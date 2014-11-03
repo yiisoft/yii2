@@ -408,7 +408,7 @@ abstract class BaseMigrateController extends Controller
      * ~~~
      *
      * @param integer $limit the maximum number of new migrations to be displayed.
-     * If it is 0, all available new migrations will be displayed.
+     * If it is `all`, all available new migrations will be displayed.
      * @throws \yii\console\Exception if invalid limit value passed
      */
     public function actionNew($limit = 10)

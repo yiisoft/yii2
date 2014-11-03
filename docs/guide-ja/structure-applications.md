@@ -215,7 +215,7 @@ if (YII_ENV_DEV) {
 #### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
 
 このプロパティは、コントローラ ID を任意のコントローラクラスに割り付けることを可能にするものです。
-既定では、Yii は [規約](#controllerNamespace) に基いてコントローラ ID をコントローラクラスに割り付けます
+既定では、Yii は [規約](#controllerNamespace) に基づいてコントローラ ID をコントローラクラスに割り付けます
 (例えば、`post` という ID は `app\controllers\PostController` に割り付けられます)。
 このプロパティを構成することによって、特定のコントローラに対する規約を破ることが出来ます。
 下記の例では、`account` は `app\controllers\UserController` に割り付けられ、
@@ -511,7 +511,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 
 このイベントがトリガされるときには、アプリケーションのインスタンスは既に構成されて初期化されています。
 ですから、イベントメカニズムを使って、リクエスト処理のプロセスに干渉するカスタムコードを挿入するのには、ちょうど良い場所です。
-例えば、このイベントハンドラの中で、何らかのパラメータに基いて [[yii\base\Application::language]] プロパティを動的にセットすることが出来ます。
+例えば、このイベントハンドラの中で、何らかのパラメータに基づいて [[yii\base\Application::language]] プロパティを動的にセットすることが出来ます。
 
 
 ### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
