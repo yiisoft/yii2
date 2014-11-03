@@ -81,7 +81,7 @@ class BaseArrayHelper
                         }
                     }
 
-                    return $recursive ? static::toArray($result) : $result;
+                    return $recursive ? static::toArray($result, $properties) : $result;
                 }
             }
             if ($object instanceof Arrayable) {
