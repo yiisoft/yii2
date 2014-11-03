@@ -200,6 +200,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
 * Static helper `yii\helpers\Security` has been converted into an application component. You should change all usage of
   its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
+  The `generateRandomString()` method now produces not ASCII compatible ouput. Use `generateRandomString()` instead.
   Default encryption and hash parameters has been upgraded. If you need to decrypt/validate data that was encrypted/hashed
   before, use the following configuration of the 'security' component:
 
