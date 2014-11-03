@@ -27,7 +27,7 @@ structure-assets.md                 | Yes
 structure-extensions.md             | Yes
 runtime-overview.md                 | Yes
 runtime-bootstrapping.md            | Yes
-runtime-routing.md                  |
+runtime-routing.md                  | Yes
 runtime-requests.md                 | Yes
 runtime-responses.md                | Yes
 runtime-sessions-cookies.md         | Yes
