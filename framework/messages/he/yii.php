@@ -35,7 +35,7 @@ return [
     'Page not found.' => 'דף לא נמצא',
     'Please fix the following errors:' => 'בבקשה, תקן את השגיאות הבאות: ',
     'Please upload a file.' => 'נא העלה קובץ.',
-    'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.لات}}.',
+    'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'מציג <b>{begin, number}-{end, number}</b> מתוך <b>{totalCount, number}</b> {totalCount, plural, one{רשומה} other{רשומות}}.',
     'The file "{file}" is not an image.' => 'הקובץ "{file}" אינו קובץ תמונה.',
     'The file "{file}" is too big. Its size cannot exceed {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'הקובץ "{file}" גדול מדי. גודל זה אינו מצליח {limit, number} {limit, plural, one{byte} other{bytes}}.',
     'The file "{file}" is too small. Its size cannot be smaller than {limit, number} {limit, plural, one{byte} other{bytes}}.' => 'הקובץ "{file}" קטן מדי. הקובץ אינו יכול להיות קטן מ {limit, number} {limit, plural, one{byte} other{bytes}}.',
