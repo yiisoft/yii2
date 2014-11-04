@@ -94,7 +94,7 @@ failure of the routing process.
 ### Default Route <a name="default-route"></a>
 
 When a request is parsed into an empty route, the so-called *default route* will be used, instead. By default,
-the default route is `site/index`,  which refers to the `index` action of the `site` controller. You may customize
+the default route is `site/index`,  which refers to the `index` action of the `site` controller. You may 
 customize it by configuring the [[yii\web\Application::defaultRoute|defaultRoute]] property of the application
 in the application configuration like the following:
 
