@@ -500,7 +500,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 от некоторых параметров.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
 Данное событие возникает *после* того как приложение заканчивает обработку запроса, но *до* того как произойдет 
 отправка ответа. Настоящее имя события - `afterRequest`.
@@ -512,7 +512,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 конечному пользователю. Эти события возникают *после* текущего события.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
 Событие возникает *до* того как будет выполнено [действие контроллера](structure-controllers.md).
 Настоящее имя события - `beforeAction`.
@@ -539,7 +539,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 свойство [[yii\base\ActionEvent::isValid]] равным `false`, все последующие события не возникнут.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
+### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
 Событие возникает *после* выполнения [действия контроллера](structure-controllers.md).
 Настоящее имя события - `afterAction`.
