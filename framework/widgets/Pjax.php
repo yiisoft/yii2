@@ -84,7 +84,10 @@ class Pjax extends Widget
      * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
      */
     public $clientOptions;
-
+    /**
+     * @var boolean whether to register the pjax events against the form and link selectors
+     */
+    public $registerEvents = true;
 
     /**
      * @inheritdoc
@@ -107,7 +110,9 @@ class Pjax extends Widget
                 echo Html::tag('title', Html::encode($view->title));
             }
         } else {
-            echo Html::beginTag('div', $this->options);
+            $options = $this->options;
+            $tag = ArrayHelper::remove($options, 'tag', 'div');
+            echo Html::beginTag($tag, $options);
         }
     }
 
@@ -117,7 +122,8 @@ class Pjax extends Widget
     public function run()
     {
         if (!$this->requiresPjax()) {
-            echo Html::endTag('div');
+            $tag = ArrayHelper::remove($this->options, 'tag', 'div');
+            echo Html::endTag($tag);
             $this->registerClientScript();
 
             return;
@@ -161,18 +167,21 @@ class Pjax extends Widget
      */
     public function registerClientScript()
     {
-        $id = $this->options['id'];
-        $this->clientOptions['push'] = $this->enablePushState;
-        $this->clientOptions['replace'] = $this->enableReplaceState;
-        $this->clientOptions['timeout'] = $this->timeout;
-        $this->clientOptions['scrollTo'] = $this->scrollTo;
-        $options = Json::encode($this->clientOptions);
-        $linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
-        $formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
         $view = $this->getView();
         PjaxAsset::register($view);
-        $js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
-        $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
-        $view->registerJs($js);
+        
+        if ($this->registerEvents) {
+            $id = $this->options['id'];
+            $this->clientOptions['push'] = $this->enablePushState;
+            $this->clientOptions['replace'] = $this->enableReplaceState;
+            $this->clientOptions['timeout'] = $this->timeout;
+            $this->clientOptions['scrollTo'] = $this->scrollTo;
+            $options = Json::encode($this->clientOptions);
+            $linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
+            $formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
+            $js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
+            $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
+            $view->registerJs($js);
+        }
     }
 }
