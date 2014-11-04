@@ -38,14 +38,15 @@ $this->title = 'ログイン';
 <?php ActiveForm::end(); ?>
 ```
 
-ビューの中でアクセスできる `$this` は、このビューテンプレートを管理し表示している [[yii\web\View|ビューコンポーネント]] を参照します。
+ビューの中でアクセスできる `$this` は、このビューテンプレートを管理しレンダリングしている
+[[yii\web\View|ビューコンポーネント]] を参照します。
 
 `$this` 以外に、上記の例の `$model` のように、前もって定義された変数がビューの中にあることがあります。
 このような変数は、[コントローラ](structure-controllers.md) または [ビューのレンダリング](#rendering-views) をトリガするオブジェクトによってビューに *プッシュ* されたデータを表します。
 
 > Tip|ヒント: 上の例では、事前に定義された変数は、IDE に認識されるように、
   ビューの先頭のコメントブロックの中にリストされています。これは、ビューに
-  ドキュメントを加えるためにも良い方法です。
+  ドキュメントを付けるのにも良い方法です。
 
 
 ### セキュリティ <a name="security"></a>
@@ -100,7 +101,7 @@ use yii\helpers\HtmlPurifier;
 * [ウィジェット](structure-widgets.md) で表示されるビューは、既定では、`WidgetPath/views`
   ディレクトリの下に置かれるべきものです。ここで、`WidgetPath` は、ウィジェットのクラスファイル
   を含んでいるディレクトリを指します。
-* 他のオブジェクトによって表示されるビューについても、ウィジェットの場合と規約に従うことが
+* 他のオブジェクトによって表示されるビューについても、ウィジェットの場合と同じ規約に従うことが
   推奨されます。
 
 これらの既定のビューディレクトリは、コントローラやウィジェットの [[yii\base\ViewContextInterface::getViewPath()]]
@@ -110,7 +111,7 @@ use yii\helpers\HtmlPurifier;
 ## ビューをレンダリングする <a name="rendering-views"></a>
 
 [コントローラ](structure-controllers.md) の中でも、[ウィジェット](structure-widgets.md) の中でも、
-または、その他のどんな場所でも、ビューのレンダリングメソッドを呼ぶことによって
+または、その他のどんな場所でも、ビューをレンダリングするメソッドを呼ぶことによって
 ビューをレンダリングすることが出来ます。
 これらのメソッドは、下記に示されるような類似のシグニチャを共有します。
 
@@ -271,13 +272,14 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 
 ### ビューの中でデータにアクセスする <a name="accessing-data-in-views"></a>
 
-ビューの中でデータにアクセスするためのアプローチが二つあります: プッシュとプルです。
+ビューの中でデータにアクセスするためのアプローチが二つあります: 「プッシュ」と「プル」です。
 
-By passing the data as the second parameter to the view rendering methods, you are using the push approach.
-The data should be represented as an array of name-value pairs. When the view is being rendered, the PHP
-`extract()` function will be called on this array so that the array is extracted into variables in the view.
-For example, the following view rendering code in a controller will push two variables to the `report` view:
-`$foo = 1` and `$bar = 2`.
+ビューをレンダリングするメソッドに二番目のパラメータとしてデータを渡すのが「プッシュ」のアプローチです。
+データは、「名前-値」のペアの配列として表されなければなりません。
+ビューがレンダリングされるときに、PHP の `extract()` 関数がこの配列に対して呼び出され、
+ビューの中でこの配列から変数が抽出されます。
+例えば、次のコードはコントローラの中でビューをレンダリングしていますが、`report` ビューに
+二つの変数、すなわち、`$foo = 1` と `$bar = 2` をプッシュしています。
 
 ```php
 echo $this->render('report', [
@@ -286,35 +288,38 @@ echo $this->render('report', [
 ]);
 ```
 
-The pull approach actively retrieves data from the [[yii\base\View|view component]] or other objects accessible
-in views (e.g. `Yii::$app`). Using the code below as an example, within the view you can get the controller object
-by the expression `$this->context`. And as a result, it is possible for you to access any properties or methods
-of the controller in the `report` view, such as the controller ID shown in the following:
+「プル」のアプローチは、[[yii\base\View|ビューコンポーネント]] またはビューからアクセス出来るその他のオブジェクト (例えば `Yii::$app`) から
+積極的にデータを読み出すものです。
+下記のコードを例として使って、ビューの中で `$this->context` という式でコントローラオブジェクト
+を取得することが出来ます。その結果、`report` ビューの中でコントローラの全てのプロパティや
+メソッドにアクセスすることが出来ます。次の例ではコントローラ ID にアクセスしています:
 
 ```php
 The controller ID is: <?= $this->context->id ?>
 ?>
 ```
 
-The push approach is usually the preferred way of accessing data in views, because it makes views less dependent
-on context objects. Its drawback is that you need to manually build the data array all the time, which could
-become tedious and error prone if a view is shared and rendered in different places.
+通常は「プッシュ」アプローチが、ビューでデータにアクセスする方法として推奨されます。
+なぜなら、ビューのコンテキストオブジェクトに対する依存がより少ないからです。
+その短所は、常にデータ配列を手作業で作成する必要がある、ということです。
+ビューが共有されてさまざまな場所でレンダリングされる場合、その作業が面倒くさくなり、また、
+間違いも生じやすくなります。
 
 
-### Sharing Data among Views <a name="sharing-data-among-views"></a>
+### ビューの間でデータを共有する <a name="sharing-data-among-views"></a>
 
-The [[yii\base\View|view component]] provides the [[yii\base\View::params|params]] property that you can use
-to share data among views.
+[[yii\base\View|ビューコンポーネント]] が提供する [[yii\base\View::params|params]] プロパティを使うと
+ビューの間でデータを共有することが出来ます。
 
-For example, in an `about` view, you can have the following code which specifies the current segment of the
-breadcrumbs.
+例えば、`about` というビューで、次のようなコードを使って、
+パン屑リストの現在の区分を指定することが出来ます。
 
 ```php
 $this->params['breadcrumbs'][] = 'About Us';
 ```
 
-Then, in the [layout](#layouts) file, which is also a view, you can display the breadcrumbs using the data
-passed along [[yii\base\View::params|params]]:
+そして、[レイアウト](#layouts) ファイル (これも一つのビューです) の中で、[[yii\base\View::params|params]]
+によって渡されたデータを使って、パン屑リストを表示することが出来ます:
 
 ```php
 <?= yii\widgets\Breadcrumbs::widget([
@@ -323,24 +328,27 @@ passed along [[yii\base\View::params|params]]:
 ```
 
 
-## Layouts <a name="layouts"></a>
+## レイアウト <a name="layouts"></a>
 
-Layouts are a special type of views that represent the common parts of multiple views. For example, the pages
-for most Web applications share the same page header and footer. While you can repeat the same page header and footer
-in every view, a better way is to do this once in a layout and embed the rendering result of a content view at
-an appropriate place in the layout.
+レイアウトは、複数のビューの共通部分をあらわす特殊なタイプのビューです。
+例えば、たいていのウェブアプリケーションでは、ページは共通のヘッダとフッタを持っています。
+すべてのビューで同じヘッダとフッタを繰り返すことも出来ますが、もっと良い方法は、
+そういうことはレイアウトの中で一度だけして、コンテンツビューのレンダリング結果を
+レイアウトの中の適切な場所に埋め込むことです。
 
 
-### Creating Layouts <a name="creating-layouts"></a>
+### レイアウトを作成する <a name="creating-layouts"></a>
 
-Because layouts are also views, they can be created in the similar way as normal views. By default, layouts
-are stored in the directory `@app/views/layouts`. For layouts used within a [module](structure-modules.md),
-they should be stored in the `views/layouts` directory under the [[yii\base\Module::basePath|module directory]].
-You may customize the default layout directory by configuring the [[yii\base\Module::layoutPath]] property of
-the application or modules.
+レイアウトもまたビューですので、通常のビューと同様な方法で作成することが出来ます。既定では、
+レイアウトは `@app/views/layouts` ディレクトリに保存されます。[モジュール](structure-modules.md)
+の中で使用されるレイアウトについては、[[yii\base\Module::basePath|モジュールディレクトリ]] の下の
+`views/layouts` ディレクトリに保存されるべきものとなります。既定のレイアウトディレクトリは、
+アプリケーションまたはモジュールの [[yii\base\Module::layoutPath]] プロパティを構成することで
+カスタマイズすることが出来ます。
 
-The following example shows how a layout looks like. Note that for illustrative purpose, we have greatly simplified
-the code in the layout. In practice, you may want to add more content to it, such as head tags, main menu, etc.
+次の例は、レイアウトがどのようなものであるかを示すものです。説明のために、レイアウトの中のコードを
+大幅に単純化していることに注意してください。実際には、ヘッドのタグやメインメニューなど、もっと
+多くのコンテンツを追加する必要があるでしょう。
 
 ```php
 <?php
@@ -369,51 +377,53 @@ use yii\helpers\Html;
 <?php $this->endPage() ?>
 ```
 
-As you can see, the layout generates the HTML tags that are common to all pages. Within the `<body>` section,
-the layout echoes the `$content` variable which represents the rendering result of content views and is pushed
-into the layout when [[yii\base\Controller::render()]] is called.
+見ると分かるように、レイアウトはすべてのページに共通な HTML タグを生成しています。`<body>`
+セクションの中でレイアウトが `$content` という変数をエコーしていますが、これは、
+コンテンツビューのレンダリング結果を表すものであり、[[yii\base\Controller::render()]] が呼ばれるときに、レイアウトにプッシュされるものです。
 
-Most layouts should call the following methods like shown in the above code. These methods mainly trigger events
-about the rendering process so that scripts and tags registered in other places can be properly injected into
-the places where these methods are called.
+上記のコードに示されているように、たいていのレイアウトは次に挙げるメソッドを呼び出すべきです。
+これらのメソッドは主としてレンダリングの過程に関するイベントをトリガして、他の場所で登録された
+スクリプトやタグが、メソッドが呼ばれた場所に正しく注入されるようにするためのものです。
 
-- [[yii\base\View::beginPage()|beginPage()]]: This method should be called at the very beginning of the layout.
-  It triggers the [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]] event which indicates the beginning of a page.
-- [[yii\base\View::endPage()|endPage()]]: This method should be called at the end of the layout.
-  It triggers the [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]] event which indicates the end of a page.
-- [[yii\web\View::head()|head()]]: This method should be called within the `<head>` section of an HTML page.
-  It generates a placeholder which will be replaced with the registered head HTML code (e.g. link tags, meta tags)
-  when a page finishes rendering.
-- [[yii\web\View::beginBody()|beginBody()]]: This method should be called at the beginning of the `<body>` section.
-  It triggers the [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] event and generates a placeholder which will
-  be replaced by the registered HTML code (e.g. JavaScript) targeted at the body begin position.
-- [[yii\web\View::endBody()|endBody()]]: This method should be called at the end of the `<body>` section.
-  It triggers the [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]] event and generates a placeholder which will
-  be replaced by the registered HTML code (e.g. JavaScript) targeted at the body end position.
-
-
-### Accessing Data in Layouts <a name="accessing-data-in-layouts"></a>
-
-Within a layout, you have access to two predefined variables: `$this` and `$content`. The former refers to
-the [[yii\base\View|view]] component, like in normal views, while the latter contains the rendering result of a content
-view which is rendered by calling the [[yii\base\Controller::render()|render()]] method in controllers.
-
-If you want to access other data in layouts, you have to use the pull method as described in
-the [Accessing Data in Views](#accessing-data-in-views) subsection. If you want to pass data from a content view
-to a layout, you may use the method described in the [Sharing Data among Views](#sharing-data-among-views) subsection.
+- [[yii\base\View::beginPage()|beginPage()]]: このメソッドがレイアウトの一番初めに呼ばれるべきです。
+  これは、ページの開始を示す [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]] イベントをトリガします。
+- [[yii\base\View::endPage()|endPage()]]: このメソッドがレイアウトの最後で呼ばれるべきです。
+  これは、ページの終了を示す [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]] イベントをトリガします。
+- [[yii\web\View::head()|head()]]: このメソッドが HTML ページの `<head>` セクションの中で呼ばれるべきです。
+  このメソッドは、ページのレンダリングが完了したときに、登録された head の HTML コード (リンクタグ、メタタグなど) に置き換えられるプレースホルダを生成します。
+- [[yii\web\View::beginBody()|beginBody()]]: このメソッドが `<body>` セクションの最初で呼ばれるべきです。
+  このメソッドは [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] イベントをトリガし、
+  body の開始位置を目的とする登録された HTML コード (JavaScript など) によって置き換えられる
+  プレースホルダを生成します。
+- [[yii\web\View::endBody()|endBody()]]: このメソッドが `<body`> セクションの最後で呼ばれるべきです。
+  このメソッドは  [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]] イベントをトリガし、
+  body の終了位置を目的とする登録された HTML コード (JavaScript など) によって置き換えられる
+  プレースホルダを生成します。
 
 
-### Using Layouts <a name="using-layouts"></a>
+### レイアウトでデータにアクセスする <a name="accessing-data-in-layouts"></a>
 
-As described in the [Rendering in Controllers](#rendering-in-controllers) subsection, when you render a view
-by calling the [[yii\base\Controller::render()|render()]] method in a controller, a layout will be applied
-to the rendering result. By default, the layout `@app/views/layouts/main.php` will be used. 
+レイアウトの中では、事前定義された二つの変数にアクセス出来ます: `$this` と `$content` です。前者は、
+通常のビューにおいてと同じく、[[yii\base\View|ビュー]] コンポーネントを参照します。一方、後者は、
+コントローラの中で [[yii\base\Controller::render()|render()]] メソッドを呼ぶことによってレンダリングされる、
+コンテンツビューのレンダリング結果を含むものです。
 
-You may use a different layout by configuring either [[yii\base\Application::layout]] or [[yii\base\Controller::layout]].
-The former governs the layout used by all controllers, while the latter overrides the former for individual controllers.
-For example, the following code makes the `post` controller to use `@app/views/layouts/post.php` as the layout
-when rendering its views. Other controllers, assuming their `layout` property is untouched, will still use the default
-`@app/views/layouts/main.php` as the layout.
+レイアウトの中で他のデータにアクセスする必要があるときは、[ビューの中でデータにアクセスする](#accessing-data-in-views)
+の項で説明されている「プル」の方法を使う必要があります。コンテンツビューからレイアウトにデータを渡す必要があるときは、
+[ビューの間でデータを共有する](#sharing-data-among-views) の項で説明されている方法を使うことが出来ます。
+
+
+### レイアウトを使う <a name="using-layouts"></a>
+
+[コントローラでのレンダリング](#rendering-in-controllers) の項で説明されているように、コントローラの中で
+[[yii\base\Controller::render()|render()]] メソッドを呼んでビューをレンダリングすると、レンダリング結果に
+レイアウトが適用されます。既定では、`@app/views/layouts/main.php` というレイアウトが使用されます。
+
+[[yii\base\Application::layout]] または [[yii\base\Controller::layout]] のどちらかを構成することによって、異なるレイアウトを
+使うことが出来ます。前者は全てのコントローラによって使用されるレイアウトを決定するものですが、後者は個々のコントローラについて
+前者をオーバーライドするものです。例えば、次のコードは、`post` コントローラがビューをレンダリングするときに
+`@app/views/layouts/post.php` をレイアウトとして使うようにするものです。その他のコントローラは、`layout` プロパティに
+触れられていないと仮定すると、引き続き既定の `@app/views/layouts/main.php` をレイアウトとして使います。
  
 ```php
 namespace app\controllers;
@@ -428,77 +438,82 @@ class PostController extends Controller
 }
 ```
 
-For controllers belonging to a module, you may also configure the module's [[yii\base\Module::layout|layout]] property to
-use a particular layout for these controllers. 
+モジュールに属するコントローラについては、モジュールの [[yii\base\Module::layout|layout]] プロパティを構成して、モジュール内の
+コントローラに特定のレイアウトを使用することも出来ます。
 
-Because the `layout` property may be configured at different levels (controllers, modules, application),
-behind the scene Yii takes two steps to determine what is the actual layout file being used for a particular controller.
+`layout` プロパティは異なるレベル (コントローラ、モジュール、アプリケーション) で構成されうるものですので、
+Yii は舞台裏で二つのステップを践んで、特定のコントローラで実際に使われるレイアウトファイルが何であるかを決定します。
 
-In the first step, it determines the layout value and the context module:
+最初のステップで、Yii はレイアウトの値とコンテキストモジュールを決定します:
 
-- If the [[yii\base\Controller::layout]] property of the controller is not null, use it as the layout value and
-  the [[yii\base\Controller::module|module]] of the controller as the context module.
-- If [[yii\base\Controller::layout|layout]] is null, search through all ancestor modules (including the application itself) of the controller and 
-  find the first module whose [[yii\base\Module::layout|layout]] property is not null. Use that module and
-  its [[yii\base\Module::layout|layout]] value as the context module and the chosen layout value.
-  If such a module cannot be found, it means no layout will be applied.
-  
-In the second step, it determines the actual layout file according to the layout value and the context module
-determined in the first step. The layout value can be:
+- コントローラの [[yii\base\Controller::layout]] プロパティが null でないときは、それをレイアウトの値として使い、
+  コントローラの [[yii\base\Controller::module|モジュール]] をコンテキストモジュールとして使う。
+- [[yii\base\Controller::layout|layout]] が null のときは、コントローラの祖先となっている全てのモジュール
+  (アプリケーション自体も含む) を探して、[[yii\base\Module::layout|layout]] プロパティが null でない最初のモジュールを見つける。
+  見つかったモジュールとその [[yii\base\Module::layout|layout]] の値をコンテキストモジュールと選ばれたレイアウトの値とする。
+  そのようなモジュールが見つからなかったときは、レイアウトは適用されないということを意味する。
 
-- a path alias (e.g. `@app/views/layouts/main`).
-- an absolute path (e.g. `/main`): the layout value starts with a slash. The actual layout file will be
-  looked for under the application's [[yii\base\Application::layoutPath|layout path]] which defaults to
-  `@app/views/layouts`.
-- a relative path (e.g. `main`): the actual layout file will be looked for under the context module's
-  [[yii\base\Module::layoutPath|layout path]] which defaults to the `views/layouts` directory under the
-  [[yii\base\Module::basePath|module directory]].
-- the boolean value `false`: no layout will be applied.
+第二のステップでは、最初のステップで決定されたレイアウトの値とコンテキストモジュールに従って、実際のレイアウトファイルを決定します。
+レイアウトの値は下記のいずれかであり得ます:
 
-If the layout value does not contain a file extension, it will use the default one `.php`.
+- パスエイリアス (例えば、`@app/views/layouts/main`)。
+- 絶対パス (例えば、`/main`): すなわち、スラッシュで始まるレイアウトの値の場合。
+  実際のレイアウトファイルはアプリケーションの [[yii\base\Application::layoutPath|レイアウトパス]]
+  (デフォルトでは `@app/views/layouts`) の下で探される。
+- 相対パス (例えば、`main`): 実際のレイアウトファイルはコンテキストモジュールの [[yii\base\Module::layoutPath|レイアウトパス]]
+  (デフォルトでは [[yii\base\Module::basePath|モジュールディレクトリ]] の下の `views/layouts` ディレクトリ) の下で探される。
+- 真偽値 `false`: レイアウトは適用されない。
+
+レイアウトの値がファイル拡張子を含んでいない場合は、デフォルト値である `.php` を使います。
 
 
-### Nested Layouts <a name="nested-layouts"></a>
+### 入れ子のレイアウト <a name="nested-layouts"></a>
 
-Sometimes you may want to nest one layout in another. For example, in different sections of a Web site, you
-want to use different layouts, while all these layouts share the same basic layout that generates the overall
-HTML5 page structure. You can achieve this goal by calling [[yii\base\View::beginContent()|beginContent()]] and
-[[yii\base\View::endContent()|endContent()]] in the child layouts like the following:
+ときとして、あるレイアウトの中に別のレイアウトを入れたい場合があるでしょう。例えば、
+ウェブサイトの別々のセクションにおいて、違うレイアウトを使いたいけれども、
+それらのレイアウトは全て、全体としての HTML5 ページ構造を生成する同一の基本レイアウトを
+共有している、という場合です。この目的を達することは、次のように、子レイアウトの中で
+[[yii\base\View::beginContent()|beginContent()]] と [[yii\base\View::endContent()|endContent()]]
+を呼ぶことで可能になります:
 
 ```php
 <?php $this->beginContent('@app/views/layouts/base.php'); ?>
 
-...child layout content here...
+... 子レイアウトのコンテンツをここに ...
 
 <?php $this->endContent(); ?>
 ```
 
-As shown above, the child layout content should be enclosed within [[yii\base\View::beginContent()|beginContent()]] and
-[[yii\base\View::endContent()|endContent()]]. The parameter passed to [[yii\base\View::beginContent()|beginContent()]]
-specifies what is the parent layout. It can be either a layout file or alias.
+上のコードが示すように、子レイアウトのコンテンツは [[yii\base\View::beginContent()|beginContent()]] と
+[[yii\base\View::endContent()|endContent()]] によって囲まれなければなりません。
+[[yii\base\View::beginContent()|beginContent()]] に渡されるパラメータは、
+親レイアウトで何であるかを指定するものです。レイアウトのファイルまたはエイリアスのどちらかを使うことが出来ます。
 
-Using the above approach, you can nest layouts in more than one levels.
+上記のアプローチを使って、2レベル以上のレイアウトを入れ子にすることも出来ます。
 
 
-### Using Blocks <a name="using-blocks"></a>
+### ブロックを使う <a name="using-blocks"></a>
 
-Blocks allow you to specify the view content in one place while displaying it in another. They are often used together
-with layouts. For example, you can define a block in a content view and display it in the layout.
+ブロックを使うと、ある場所でビューコンテンツを規定して、別の場所でそれを表示することが可能になります。
+ブロックはたいていはレイアウトと一緒に使われます。例えば、ブロックをコンテンツビューで定義して、
+それをレイアウトで表示する、ということが出来ます。
 
-You call [[yii\base\View::beginBlock()|beginBlock()]] and [[yii\base\View::endBlock()|endBlock()]] to define a block.
-The block can then be accessed via `$view->blocks[$blockID]`, where `$blockID` stands for a unique ID that you assign
-to the block when defining it.
+[[yii\base\View::beginBlock()|beginBlock()]] と [[yii\base\View::endBlock()|endBlock()]]
+を呼んでブロックを定義します。
+すると、そのブロックを `$view->blocks[$blockID]` によってアクセス出来るようになります。
+ここで `$blockID` は、定義したときにブロックに割り当てたユニークな ID を指します。
 
-The following example shows how you can use blocks to customize specific parts of a layout in a content view.
+次の例は、どのようにブロックを使えば、レイアウトの特定の部分をコンテンツビューで
+カスタマイズすることが出来るかを示すものです。
 
-First, in a content view, define one or multiple blocks:
+最初に、コンテンツビューで、一つまたは複数のブロックを定義します。
 
 ```php
 ...
 
 <?php $this->beginBlock('block1'); ?>
 
-...content of block1...
+... block1 のコンテンツ ...
 
 <?php $this->endBlock(); ?>
 
@@ -506,20 +521,20 @@ First, in a content view, define one or multiple blocks:
 
 <?php $this->beginBlock('block3'); ?>
 
-...content of block3...
+... block3 のコンテンツ ...
 
 <?php $this->endBlock(); ?>
 ```
 
-Then, in the layout view, render the blocks if they are available, or display some default content if a block is
-not defined.
+次に、レイアウトビューで、得ることが出来ればブロックをレンダリングし、ブロックが定義されていないときは
+何らかの既定のコンテンツを表示します。
 
 ```php
 ...
 <?php if (isset($this->blocks['block1'])): ?>
     <?= $this->blocks['block1'] ?>
 <?php else: ?>
-    ... default content for block1 ...
+    ... block1 の既定のコンテンツ ...
 <?php endif; ?>
 
 ...
@@ -527,7 +542,7 @@ not defined.
 <?php if (isset($this->blocks['block2'])): ?>
     <?= $this->blocks['block2'] ?>
 <?php else: ?>
-    ... default content for block2 ...
+    ... block2 の既定のコンテンツ ...
 <?php endif; ?>
 
 ...
@@ -535,18 +550,18 @@ not defined.
 <?php if (isset($this->blocks['block3'])): ?>
     <?= $this->blocks['block3'] ?>
 <?php else: ?>
-    ... default content for block3 ...
+    ... block3 の既定のコンテンツ ...
 <?php endif; ?>
 ...
 ```
 
 
-## Using View Components <a name="using-view-components"></a>
+## ビューコンポーネントを使う <a name="using-view-components"></a>
 
-[[yii\base\View|View components]] provides many view-related features. While you can get view components
-by creating individual instances of [[yii\base\View]] or its child class, in most cases you will mainly use
-the `view` application component. You can configure this component in [application configurations](structure-applications.md#application-configurations)
-like the following:
+[[yii\base\View|ビューコンポーネント]] はビューに関連する多くの機能を提供します。
+ビューコンポーネントは、[[yii\base\View]] またはその子クラスの個別のインスタンスを作成することによっても取得できますが、
+たいていの場合は、`view` アプリケーションコンポーネントを主として使うことになるでしょう。
+このコンポーネントは [アプリケーションのコンフィギュレーション](structure-applications.md#application-configurations) の中で、次のようにして構成することが出来ます:
 
 ```php
 [
@@ -560,12 +575,13 @@ like the following:
 ]
 ```
 
-View components provide the following useful view-related features, each described in more details in a separate section:
+ビューコンポーネントは、次に挙げるビュー関連の有用な機能を提供します。それぞれについては、
+独立の節で更に詳細に説明されます。
 
-* [theming](output-theming.md): allows you to develop and change the theme for your Web site.
-* [fragment caching](caching-fragment.md): allows you to cache a fragment within a Web page.
-* [client script handling](output-client-scripts.md): supports CSS and JavaScript registration and rendering.
-* [asset bundle handling](structure-assets.md): supports registering and rendering of [asset bundles](structure-assets.md).
+* [テーマ](output-theming.md): ウェブサイトのテーマを開発し変更することを可能にします。
+* [フラグメントキャッシュ](caching-fragment.md): ウェブページの中の断片をキャッシュすることを可能にします。
+* [クライアントスクリプトの取り扱い](output-client-scripts.md): CSS と JavaScript の登録とレンダリングをサポートします。
+* [アセットバンドルの取り扱い](structure-assets.md): [アセットバンドル](structure-assets.md) の登録とレンダリングをサポート.
 * [alternative template engines](tutorial-template-engines.md): allows you to use other template engines, such as
   [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
 
