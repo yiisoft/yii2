@@ -1,32 +1,21 @@
-Assets
 Ресурсы
 ======
 
-An asset in Yii is a file that may be referenced in a Web page. It can be a CSS file, a JavaScript file, an image
-or video file, etc. Assets are located in Web-accessible directories and are directly served by Web servers.
+Ресурс в Yii это файл на который можно ссылаться на вебстранице. Это может быть CSS файл, JS файл, файл с изображением или видео и т.д. Ресурсы располагаются в директории доступной для вебзапросов и находятся прямо на вебсереве.
 
-It is often preferable to manage assets programmatically. For example, when you use the [[yii\jui\DatePicker]] widget
-in a page, it will automatically include the required CSS and JavaScript files, instead of asking you to manually
-find these files and include them. And when you upgrade the widget to a new version, it will automatically use
-the new version of the asset files. In this tutorial, we will describe the powerful asset management capability
-provided in Yii.
+Управлять ресурсами чаще предпочтительно программно. Например, если вы используете на странице виджет [[yii\jui\DatePicker]], то он автоматически подключит требуемые CSS и JS файлы, и не будет необходимости искать их и указывать вручную. А если Вы обновите виджет на новую версию, то он автоматически будет использвоать новые версии файлов-ресурсов. В этом руководстве опишем мощные возможности Yii по управлению ресурсами.
 
 
-## Asset Bundles <a name="asset-bundles"></a>
+## Коллекции ресурсов <a name="asset-bundles"></a>
 
-Yii manages assets in the unit of *asset bundle*. An asset bundle is simply a collection of assets located
-in a directory. When you register an asset bundle in a [view](structure-views.md), it will include the CSS and
-JavaScript files in the bundle in the rendered Web page.
+Yii управляет ресурсами в связке с *коллекцией рессурсов*. Коллекция ресурсов это простой набор ресурсов расположенных в директории. Если Вы регистрируете коллекцию ресурсов в [представлении](structure-views.md), то оно будет использовать CSS и JS файлы из коллекции на созданной вебстранице.
 
 
-## Defining Asset Bundles <a name="defining-asset-bundles"></a>
+## Defining Asset Bundles Создание коллекции ресурсов<a name="defining-asset-bundles"></a>
 
-Asset bundles are specified as PHP classes extending from [[yii\web\AssetBundle]]. The name of a bundle is simply
-its corresponding PHP class name which should be [autoloadable](concept-autoloading.md). In an asset bundle class,
-you would typically specify where the assets are located, what CSS and JavaScript files the bundle contains, and
-how the bundle depends on other bundles.
+Коллекции ресурсов являются PHP классами наследуемыми от [[yii\web\AssetBundle]]. Имя коллекции ресурсов такое же как имя соответствующего PHP класса, который должен быть [автоматически загружаемым](concept-autoloading.md). В классе коллекции ресурсов, как правило указываются: расположения ресурсов, CSS и JS файлы составляющие коллекцию, и зависимости от других коллекций.
 
-The following code defines the main asset bundle used by [the basic application template](start-installation.md):
+Следующий код создает главную коллекцию рессурсов используемую в  [шаблоне базового приложения](start-installation.md):
 
 ```php
 <?php
@@ -51,10 +40,7 @@ class AppAsset extends AssetBundle
 }
 ```
 
-The above `AppAsset` class specifies that the asset files are located under the `@webroot` directory which
-is corresponding to the URL `@web`; the bundle contains a single CSS file `css/site.css` and no JavaScript file;
-the bundle depends on two other bundles: [[yii\web\YiiAsset]] and [[yii\bootstrap\BootstrapAsset]]. More detailed
-explanation about the properties of [[yii\web\AssetBundle]] can be found in the following:
+Здесь класс `AppAsset` указывает, что ресурсы располагаеются в директории `@webroot`, которая соответствует URL в превдониме `@web`; коллекция содержит один CSS файл `css/site.css` и не содержит JS файлов; коллекция зависит от двух других коллекций: [[yii\web\YiiAsset]] и [[yii\bootstrap\BootstrapAsset]]. Более подробные описания свойств указаны ниже:
 
 * [[yii\web\AssetBundle::sourcePath|sourcePath]]: specifies the root directory that contains the asset files in
   this bundle. This property should be set if the root directory is not Web accessible. Otherwise, you should
