@@ -19,7 +19,7 @@ Yii Framework 2 smarty extension Change Log
 - Enh #4619 (samdark, hwmaier)
     - New functions:
         - `url` generates absolute URL.
-        - `set` allows setting commonly used view paramters: `title`, `theme` and `layout`.
+        - `set` allows setting commonly used view parameters: `title`, `theme` and `layout`.
         - `meta` registers meta tag.
         - `registerJsFile` registers JavaScript file.
         - `registerCssFile` registers CSS file.
