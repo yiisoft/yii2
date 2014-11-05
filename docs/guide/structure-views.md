@@ -606,7 +606,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 
 ### Registering Link Tags <a name="registering-link-tags"></a>
 
-Like [meta tags](#adding-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
+Like [meta tags](#registering-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
 RSS feed or delegating OpenID to another server. You can work with link tags in the similar way as meta tags
 by using [[yii\web\View::registerLinkTag()]]. For example, in a content view, you can register a link tag like follows,
 
