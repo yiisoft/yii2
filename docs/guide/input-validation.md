@@ -1,8 +1,8 @@
 Validating Input
 ================
 
-As a rule of thumb, you should never trust the data received from end users and should always validate them
-before putting them to good use.
+As a rule of thumb, you should never trust the data received from end users and should always validate it
+before putting it to good use.
 
 Given a [model](structure-models.md) populated with user inputs, you can validate the inputs by calling the
 [[yii\base\Model::validate()]] method. The method will return a boolean value indicating whether the validation
