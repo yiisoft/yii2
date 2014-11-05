@@ -581,20 +581,20 @@ Yii は舞台裏で二つのステップを践んで、特定のコントロー�
 * [テーマ](output-theming.md): ウェブサイトのテーマを開発し変更することを可能にします。
 * [フラグメントキャッシュ](caching-fragment.md): ウェブページの中の断片をキャッシュすることを可能にします。
 * [クライアントスクリプトの取り扱い](output-client-scripts.md): CSS と JavaScript の登録とレンダリングをサポートします。
-* [アセットバンドルの取り扱い](structure-assets.md): [アセットバンドル](structure-assets.md) の登録とレンダリングをサポート.
-* [alternative template engines](tutorial-template-engines.md): allows you to use other template engines, such as
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
+* [アセットバンドルの取り扱い](structure-assets.md): [アセットバンドル](structure-assets.md) の登録とレンダリングをサポートします。
+* [代替のテンプレートエンジン](tutorial-template-engines.md): [Twig](http://twig.sensiolabs.org/)、[Smarty](http://www.smarty.net/) など、他のテンプレートエンジンを使用することを可能にします。
 
-You may also frequently use the following minor yet useful features when you are developing Web pages.
+次に挙げるマイナーではあっても有用な諸機能は、ウェブページを開発するときに頻繁に使用するでしょう:
 
 
-### Setting Page Titles <a name="setting-page-titles"></a>
+### ページタイトルを設定する <a name="setting-page-titles"></a>
 
-Every Web page should have a title. Normally the title tag is being displayed in a [layout](#layouts). However, in practice
-the title is often determined in content views rather than layouts. To solve this problem, [[yii\web\View]] provides
-the [[yii\web\View::title|title]] property for you to pass the title information from content views to layouts.
+どんなウェブページにもタイトルが無ければなりません。通常、タイトルタグは [layout](#layouts) の中で表示されます。しかし、
+実際においては、多くの場合、タイトルはレイアウトではなくコンテンツビューで決められます。この問題を解決するために、
+[[yii\web\View]] は、タイトル情報をコンテンツビューからレイアウトに渡すための [[yii\web\View::title|title]] プロパティを
+提供しています。
 
-To make use of this feature, in each content view, you can set the page title like the following:
+この機能を利用するためには、全てのコンテンツビューにおいて、次のようにタイトルを設定します:
 
 ```php
 <?php
@@ -602,20 +602,20 @@ $this->title = 'My page title';
 ?>
 ```
 
-Then in the layout, make sure you have the following code in the `<head>` section:
+そして、レイアウトビューで、`<head>` セクションに次のコードを忘れずに書くようにします:
 
 ```php
 <title><?= Html::encode($this->title) ?></title>
 ```
 
 
-### Registering Meta Tags <a name="registering-meta-tags"></a>
+### メタタグを登録する <a name="registering-meta-tags"></a>
 
-Web pages usually need to generate various meta tags needed by different parties. Like page titles, meta tags
-appear in the `<head>` section and are usually generated in layouts.
+ウェブページは、通常、いろいろな関係者によって必要とされるさまざまなメタタグを生成する必要があります。ページタイトルと同じように、
+メタタグは `<head>` セクションに出現して、通常はレイアウトの中で生成されます。
 
-If you want to specify what meta tags to generate in content views, you can call [[yii\web\View::registerMetaTag()]]
-in a content view, like the following:
+どのようなメタタグを生成するかをコンテンツビューの中で指定したい場合は、下記のように、
+[[yii\web\View::registerMetaTag()]] をコンテンツビューの呼ぶことが出来ます:
 
 ```php
 <?php
@@ -623,67 +623,69 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ?>
 ```
 
-The above code will register a "keywords" meta tag with the view component. The registered meta tag is
-rendered after the layout finishes rendering. By then, the following HTML code will be inserted
-at the place where you call [[yii\web\View::head()]] in the layout and generate the following HTML code:
+上記のコードは、ビューコンポーネントによって "keywords" メタタグを登録するものです。登録されたメタタグは、
+レイアウトがレンダリングを完了した後でレンダリングされます。すなわち、レイアウトの中で [[yii\web\View::head()]]
+を呼び出した場所に、次の HTML コードが生成されて挿入されます:
 
 ```php
 <meta name="keywords" content="yii, framework, php">
 ```
 
-Note that if you call [[yii\web\View::registerMetaTag()]] multiple times, it will register multiple meta tags,
-regardless whether the meta tags are the same or not.
+[[yii\web\View::registerMetaTag()]] を複数回呼び出した場合は、メタタグが同じものか否かに関係なく、
+複数のメタタグが登録されることに注意してください。
 
-To make sure there is only a single instance of a meta tag type, you can specify a key as a second parameter when calling the method.
-For example, the following code registers two "description" meta tags. However, only the second one will be rendered.
+ある型のメタタグのインスタンスが一つだけになることを保証したい場合は、このメソッドを呼ぶときに第二のパラメータとして
+キーを指定することが出来ます。例えば、次のコードでは、二つの "description" メタタグを登録していますが、
+二番目のものだけがレンダリングされることになります。
 
 ```html
-$this->registerMetaTag(['name' => 'description', 'content' => 'This is my cool website made with Yii!'], 'description');
-$this->registerMetaTag(['name' => 'description', 'content' => 'This website is about funny raccoons.'], 'description');
+$this->registerMetaTag(['name' => 'description', 'content' => '俺が Yii で作ったクールなウェブサイトだぜぃ!!'], 'description');
+$this->registerMetaTag(['name' => 'description', 'content' => '面白いアライグマに関するウェブサイトです。'], 'description');
 ```
 
 
-### Registering Link Tags <a name="registering-link-tags"></a>
+### リンクタグを登録する <a name="registering-link-tags"></a>
 
-Like [meta tags](#adding-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
-RSS feed or delegating OpenID to another server. You can work with link tags in the similar way as meta tags
-by using [[yii\web\View::registerLinkTag()]]. For example, in a content view, you can register a link tag like follows,
+[メタタグ](#registering-meta-tags) と同じように、リンクタグも多くの場合において有用なものです。例えば、favicon をカスタマイズしたり、
+RSS フィードを指し示したり、OpenID を別のサーバに委任したり、等々。リンクタグも、[[yii\web\View::registerLinkTag()]] を使って、
+メタタグと同じような方法で取り扱うことが出来ます。例えば、コンテンツビューにおいて、次のようにしてリンクタグを登録することが出来ます。
 
 ```php
 $this->registerLinkTag([
-    'title' => 'Live News for Yii',
+    'title' => 'Yii ライブニューズ',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
     'href' => 'http://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
-The code above will result in
+上記のコードは、次の結果になります。
 
 ```html
-<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Yii ライブニューズ" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
 ```
 
-Similar as [[yii\web\View::registerMetaTag()|registerMetaTags()]], you can specify a key when calling
-[[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generated repeated link tags.
+[[yii\web\View::registerMetaTag()|registerMetaTags()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]]
+を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
 
 
-## View Events <a name="view-events"></a>
+## ビューのイベント <a name="view-events"></a>
 
-[[yii\base\View|View components]] trigger several events during the view rendering process. You may respond
-to these events to inject content into views or process the rendering results before they are sent to end users.
+[[yii\base\View|ビューコンポーネント]] はビューをレンダリングする過程においていくつかのイベントをトリガします。
+これらのイベントに反応することによって、ビューにコンテンツを注入したり、
+エンドユーザに送信される前にレンダリング結果を加工したりすることが出来ます。
 
-- [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: triggered at the beginning of rendering a file
-  in a controller. Handlers of this event may set [[yii\base\ViewEvent::isValid]] to be false to cancel the rendering process.
-- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: triggered after rendering a file by the call of [[yii\base\View::afterRender()]].
-  Handlers of this event may obtain the rendering result through [[yii\base\ViewEvent::output]] and may modify
-  this property to change the rendering result.
-- [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: triggered by the call of [[yii\base\View::beginPage()]] in layouts.
-- [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]]: triggered by the call of [[yii\base\View::endPage()]] in layouts.
-- [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]]: triggered by the call of [[yii\web\View::beginBody()]] in layouts.
-- [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]]: triggered by the call of [[yii\web\View::endBody()]] in layouts.
+- [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: コントローラでファイルをレンダリングする前にトリガされます。
+  このイベントのハンドラは、[[yii\base\ViewEvent::isValid]] を false にセットして、レンダリングのプロセスをキャンセルすることが出来ます。
+- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: ファイルのレンダリングの後、[[yii\base\View::afterRender()]] を呼ぶことによってトリガされます。
+  このイベントのハンドラは、レンダリング結果を [[yii\base\ViewEvent::output]] によって取得することが出来、
+  このプロパティを修正してレンダリング結果を変更することが出来ます。
+- [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: レイアウトの中で [[yii\base\View::beginPage()]] を呼ぶことによってトリガされます。
+- [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]]: レイアウトの中で [[yii\base\View::endPage()]] を呼ぶことによってトリガされます。
+- [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]]: レイアウトの中で [[yii\web\View::beginBody()]] を呼ぶことによってトリガされます。
+- [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]]: レイアウトの中で [[yii\web\View::endBody()]] を呼ぶことによってトリガされます。
 
-For example, the following code injects the current date at the end of the page body:
+例えば、次のコードはページの body の最後に現在の日付を注入するものです:
 
 ```php
 \Yii::$app->view->on(View::EVENT_END_BODY, function () {
@@ -692,12 +694,12 @@ For example, the following code injects the current date at the end of the page 
 ```
 
 
-## Rendering Static Pages <a name="rendering-static-pages"></a>
+## 静的なページをレンダリングする <a name="rendering-static-pages"></a>
 
-Static pages refer to those Web pages whose main content are mostly static without the need of accessing
-dynamic data pushed from controllers.
+静的なページというのは、主たるコンテンツのほとんどが静的なもので、コントローラからプッシュされる動的なデータに
+アクセスする必要がないページを指します。
 
-You can output static pages by putting their code in the view, and then using the code like the following in a controller:
+静的なページは、そのコードをビューに置き、そして、コントローラで次のようなコードを使うと表示することが出来ます:
 
 ```php
 public function actionAbout()
@@ -706,9 +708,9 @@ public function actionAbout()
 }
 ```
 
-If a Web site contains many static pages, it would be very tedious repeating the similar code many times.
-To solve this problem, you may introduce a [standalone action](structure-controllers.md#standalone-actions)
-called [[yii\web\ViewAction]] in a controller. For example,
+ウェブサイトが多くの静的なページを含んでいる場合、同じようなコードを何度も繰り返すのは非常に面倒くさいでしょう。
+この問題を解決するために、[[yii\web\ViewAction]] という [スタンドアロンアクション](structure-controllers.md#standalone-actions)
+をコントローラに導入することが出来ます。例えば、
 
 ```php
 namespace app\controllers;
@@ -728,34 +730,34 @@ class SiteController extends Controller
 }
 ```
 
-Now if you create a view named `about` under the directory `@app/views/site/pages`, you will be able to
-display this view by the following URL:
+このようにすると、ディレクトリ `@app/views/site/pages` の下に `about` という名前のビューを作成したときに、
+次の URL によってこのビューを表示することが出来るようになります:
 
 ```
 http://localhost/index.php?r=site/page&view=about
 ```
 
-The `GET` parameter `view` tells [[yii\web\ViewAction]] which view is requested. The action will then look
-for this view under the directory `@app/views/site/pages`. You may configure [[yii\web\ViewAction::viewPrefix]]
-to change the directory for searching these views.
+`view` という `GET` パラメータが、どのビューがリクエストされているかを [[yii\web\ViewAction]] に教えます。
+そこで、アクションはこのビューをディレクトリ `@app/views/site/pages` の下で探します。
+[[yii\web\ViewAction::viewPrefix]] を構成して、ビューを探すディレクトリを変更することが出来ます。
 
 
-## Best Practices <a name="best-practices"></a>
+## 最善の慣行 <a name="best-practices"></a>
 
-Views are responsible for presenting models in the format that end users desire. In general, views
+ビューはエンドユーザが望む形式でモデルを表現することに対して責任を持ちます。一般的に、ビューは
 
-* should mainly contain presentational code, such as HTML, and simple PHP code to traverse, format and render data.
-* should not contain code that performs DB queries. Such code should be done in models.
-* should avoid direct access to request data, such as `$_GET`, `$_POST`. This belongs to controllers.
-  If request data is needed, they should be pushed into views by controllers.
-* may read model properties, but should not modify them.
+* 主として表示目的のコードを含むべきです。例えば、HTML、そしてデータをたどり、書式化してレンダリングする簡単な PHP コードなど。
+* DB クエリを実行するコードは含むべきではありません。そのようなコードはモデルの中で実行されるべきです。
+* `$_GET` や `$_POST` のようなリクエストデータに直接アクセスするべきではありません。それはコントローラの仕事です。
+  リクエストデータが必要な場合は、コントローラからビューにプッシュされるべきです。
+* モデルのプロパティを読み出すことが出来ます。しかし、それを修正するべきではありません。
 
-To make views more manageable, avoid creating views that are too complex or contain too much redundant code.
-You may use the following techniques to achieve this goal:
+ビューを管理しやすいものにするために、複雑すぎるビューや、冗長なコードをあまりに多く含むビューを作ることは避けましょう。
+この目的を達するために、次のテクニックを使うことが出来ます:
 
-* use [layouts](#layouts) to represent common presentational sections (e.g. page header, footer).
-* divide a complicated view into several smaller ones. The smaller views can be rendered and assembled into a bigger
-  one using the rendering methods that we have described.
-* create and use [widgets](structure-widgets.md) as building blocks of views.
-* create and use helper classes to transform and format data in views.
+* 共通の表示セクション (ページのヘッダやフッタなど) を表すために [レイアウト](#layouts) を使う。
+* 複雑なビューはいくつかの小さなビューに分割する。既に説明したレンダリングのメソッドを使えば、
+  小さなビューをレンダリングして大きなビューを組み上げることが出来る。
+* ビューの構成要素として [ウィジェット](structure-widgets.md) を使う。
+* ビューでデータを変換し書式化するためのヘルパークラスを作成して使う。
 
