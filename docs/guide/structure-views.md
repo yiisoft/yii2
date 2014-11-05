@@ -585,8 +585,8 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ```
 
 The above code will register a "keywords" meta tag with the view component. The registered meta tag is
-rendered after the layout finishes rendering. By then, the following HTML code will be inserted
-at the place where you call [[yii\web\View::head()]] in the layout and generate the following HTML code:
+rendered after the layout finishes rendering. The following HTML code will be generated and inserted
+at the place where you call [[yii\web\View::head()]] in the layout:
 
 ```php
 <meta name="keywords" content="yii, framework, php">
