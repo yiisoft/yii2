@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
 - Bug #5780: `QueryBuilder::batchInsert()` may cause "undefined index" error (qiangxue)
 - Bug #5833: The `message` command fails with a FK constraint error when trying to update messages (qiangxue)
+- Bug #5925: `ArrayHelper::htmlEncode()` does not work properly when the value being encoded is a nested array (tebazil)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
