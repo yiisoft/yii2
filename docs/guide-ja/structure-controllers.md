@@ -446,8 +446,8 @@ class SiteController extends Controller
 
 要約すると、コントローラは、
 
-* [リクエスト](runtime-requests.md) データにアクセスすることが出来る;
-* リクエストデータを使って [モデル](structure-models.md) や他のサービスコンポーネントのメソッドを呼ぶことが出来る;
-* [ビュー](structure-views.md) を使ってレスポンスを構成することが出来る;
-* リクエストデータを処理するべきではない - それは [モデル](structure-models.md) において処理されるべきである;
-* HTML を埋め込むなどの表示に関わるコードは避けるべきである - それは [ビュー](structure-views.md) で行う方が良い。
+* [リクエスト](runtime-requests.md) データにアクセスすることが出来ます;
+* リクエストデータを使って [モデル](structure-models.md) や他のサービスコンポーネントのメソッドを呼ぶことが出来ます;
+* [ビュー](structure-views.md) を使ってレスポンスを構成することが出来ます;
+* リクエストされたデータの処理をするべきではありません - データは [モデル](structure-models.md) において処理されるべきです;
+* HTML を埋め込むなどの表示に関わるコードは避けるべきです - 表示は [ビュー](structure-views.md) で行う方が良いです。
