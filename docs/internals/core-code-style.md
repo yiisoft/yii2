@@ -269,14 +269,14 @@ Use the following formatting for switch:
 ```php
 switch ($this->phpType) {
     case 'string':
-        $a = (string)$value;
+        $a = (string) $value;
         break;
     case 'integer':
     case 'int':
-        $a = (integer)$value;
+        $a = (int) $value;
         break;
     case 'boolean':
-        $a = (boolean)$value;
+        $a = (bool) $value;
         break;
     default:
         $a = null;

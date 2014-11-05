@@ -88,6 +88,7 @@ html,body{
 }
 .header pre{
     margin: 10px 0;
+    overflow-y: scroll;
 }
 
 /* previous exceptions */

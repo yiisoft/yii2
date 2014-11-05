@@ -7,7 +7,7 @@ This extension provides the [MongoDB](http://www.mongodb.org/) integration for t
 Installation
 ------------
 
-This extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.3.0 or higher.
+This extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.4.0 or higher.
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
@@ -81,7 +81,7 @@ To get actual Mongo ID string your should typecast [[\MongoId]] instance to stri
 $query = new Query;
 $row = $query->from('customer')->one();
 var_dump($row['_id']); // outputs: "object(MongoId)"
-var_dump((string)$row['_id']); // outputs "string 'acdfgdacdhcbdafa'"
+var_dump((string) $row['_id']); // outputs "string 'acdfgdacdhcbdafa'"
 ```
 
 Although this fact is very useful sometimes, it often produces some problems.
@@ -90,7 +90,7 @@ In these cases, ensure you have converted [[\MongoId]] into the string:
 
 ```php
 /* @var $this yii\web\View */
-echo $this->createUrl(['item/update', 'id' => (string)$row['_id']]);
+echo $this->createUrl(['item/update', 'id' => (string) $row['_id']]);
 ```
 
 While building condition, values for the key '_id' will be automatically cast to [[\MongoId]] instance,

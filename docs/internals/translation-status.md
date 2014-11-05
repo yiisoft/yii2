@@ -31,7 +31,6 @@ runtime-routing.md                  | Yes
 runtime-requests.md                 | Yes
 runtime-responses.md                | Yes
 runtime-sessions-cookies.md         | Yes
-runtime-url-handling.md             |
 runtime-handling-errors.md          | Yes
 runtime-logging.md                  | Yes
 concept-components.md               | Yes

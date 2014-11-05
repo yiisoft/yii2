@@ -4,8 +4,9 @@ Yii Framework 2 gii extension Change Log
 2.0.1 under development
 -----------------------
 
-- Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
+- Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
+- Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
 
 
 2.0.0 October 12, 2014

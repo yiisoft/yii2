@@ -238,6 +238,7 @@ class BaseInflector
      */
     public static $transliterator = 'Any-Latin; NFKD';
 
+
     /**
      * Converts a word to its plural form.
      * Note that this is for English only!

@@ -42,7 +42,7 @@ and rendering this view template.
 
 Besides `$this`, there may be other predefined variables in a view, such as `$model` in the above
 example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
-or other objects whose trigger the [view rendering](#rendering-views).
+or other objects which trigger the [view rendering](#rendering-views).
 
 > Tip: The predefined variables are listed in a comment block at beginning of a view so that they can
   be recognized by IDEs. It is also a good way of documenting your views.
@@ -238,7 +238,7 @@ A view name is resolved into the corresponding view file path according to the f
   context to the view name. This mainly applies to the views rendered within controllers and widgets. For example,
   `site/about` will be resolved into `@app/views/site/about.php` if the context is the controller `SiteController`.
 * If a view is rendered within another view, the directory containing the other view file will be prefixed to
-  the new view name to form the actual view file path. For example, `item` will be resolved into `@app/views/post/item`
+  the new view name to form the actual view file path. For example, `item` will be resolved into `@app/views/post/item.php`
   if it is being rendered in the view `@app/views/post/index.php`.
 
 According to the above rules, calling `$this->render('view')` in a controller `app\controllers\PostController` will

@@ -6,7 +6,7 @@ be used. Therefore, each request should come with some sort of authentication cr
 the user authentication status may not be maintained by sessions or cookies. A common practice is
 to send a secret access token with each request to authenticate the user. Since an access token
 can be used to uniquely identify and authenticate a user, **API requests should always be sent
-via HTTPS to prevent from man-in-the-middle (MitM) attacks**.
+via HTTPS to prevent man-in-the-middle (MitM) attacks**.
 
 There are different ways to send an access token:
 
@@ -25,7 +25,9 @@ Yii supports all of the above authentication methods. You can also easily create
 
 To enable authentication for your APIs, do the following steps:
 
-1. Configure the [[yii\web\User::enableSession|enableSession]] property of the `user` application component to be false.
+1. Configure the `user` application component:
+   - Set the [[yii\web\User::enableSession|enableSession]] property to be `false`.
+   - Set the [[yii\web\User::loginUrl|loginUrl]] property to be `null` to show a HTTP 403 error instead of redirecting to the login page. 
 2. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
    in your REST controller classes.
 3. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
@@ -45,7 +47,7 @@ public function init()
 }
 ```
 
-For example, to use HTTP Basic Auth, you may configure `authenticator` as follows,
+For example, to use HTTP Basic Auth, you may configure the `authenticator` behavior as follows,
 
 ```php
 use yii\filters\auth\HttpBasicAuth;

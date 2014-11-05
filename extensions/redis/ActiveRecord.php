@@ -124,7 +124,7 @@ class ActiveRecord extends BaseActiveRecord
             // only insert attributes that are not null
             if ($value !== null) {
                 if (is_bool($value)) {
-                    $value = (int)$value;
+                    $value = (int) $value;
                 }
                 $setArgs[] = $attribute;
                 $setArgs[] = $value;
@@ -175,7 +175,7 @@ class ActiveRecord extends BaseActiveRecord
                 }
                 if ($value !== null) {
                     if (is_bool($value)) {
-                        $value = (int)$value;
+                        $value = (int) $value;
                     }
                     $setArgs[] = $attribute;
                     $setArgs[] = $value;

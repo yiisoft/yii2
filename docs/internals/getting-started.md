@@ -1,7 +1,7 @@
 Getting started with Yii2 development
 =====================================
 
-1. Clone your fork of yii2 `git clone git@github.com:<yourname>/yii2`.
+1. Clone your fork of yii2 `git clone git@github.com:<yourname>/yii2.git`.
 2. Change into the repo folder `cd yii2`.
 3. run `./build/build app/link basic` to install composer dependecies for the basic app.
    This command will install foreign composer packages as normal but will link the yii2 repo to

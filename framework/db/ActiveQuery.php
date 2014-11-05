@@ -152,7 +152,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->select) && !empty($this->join)) {
-            foreach ((array)$this->from as $alias => $table) {
+            foreach ((array) $this->from as $alias => $table) {
                 if (is_string($alias)) {
                     $this->select = ["$alias.*"];
                 } elseif (is_string($table)) {

@@ -81,7 +81,7 @@ class BaseUrl
      */
     public static function toRoute($route, $scheme = false)
     {
-        $route = (array)$route;
+        $route = (array) $route;
         $route[0] = static::normalizeRoute($route[0]);
 
         if ($scheme) {

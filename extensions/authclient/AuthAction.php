@@ -86,6 +86,12 @@ class AuthAction extends Action
      */
     public $successCallback;
     /**
+     * @var string name or alias of the view file, which should be rendered in order to perform redirection.
+     * If not set default one will be used.
+     */
+    public $redirectView;
+
+    /**
      * @var string the redirect url after successful authorization.
      */
     private $_successUrl = '';
@@ -94,12 +100,6 @@ class AuthAction extends Action
      */
     private $_cancelUrl = '';
 
-
-    /**
-     * @var string name or alias of the view file, which should be rendered in order to perform redirection.
-     * If not set default one will be used.
-     */
-    public $redirectView;
 
     /**
      * @param string $url successful URL.

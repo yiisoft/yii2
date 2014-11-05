@@ -102,7 +102,7 @@ class GenerateAction extends \yii\base\Action
             return;
         }
 
-        if ($this->generator->save($files, (array)$answers, $results)) {
+        if ($this->generator->save($files, (array) $answers, $results)) {
             $this->controller->stdout("\nFiles were generated successfully!\n", Console::FG_GREEN);
         } else {
             $this->controller->stdout("\nSome errors occurred while generating the files.", Console::FG_RED);

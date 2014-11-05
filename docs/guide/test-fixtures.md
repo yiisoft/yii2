@@ -279,8 +279,7 @@ Loading fixtures
 ----------------
 
 Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
-change this behavior with config or command options. Note that you can also append fixtures data to already existing ones with command
-option `--append`. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
+change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
 
 To load fixture, run the following command:
 
@@ -300,9 +299,6 @@ yii fixture User
 
 // load several fixtures
 yii fixture User UserProfile
-
-//load fixture, but don't clean storage before load and just append to already existed data
-yii fixture User --append
 
 // load all fixtures
 yii fixture/load "*"

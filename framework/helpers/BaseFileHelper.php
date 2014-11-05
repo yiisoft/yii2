@@ -33,6 +33,7 @@ class BaseFileHelper
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
 
+
     /**
      * Normalizes a file/directory path.
      * The normalization does the following work:

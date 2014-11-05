@@ -202,6 +202,9 @@ use app\assets\AppAsset;
 AppAsset::register($this);  // $this represents the view object
 ```
 
+> Info: The [[yii\web\AssetBundle::register()]] method returns an asset bundle object containing the information
+  about the published assets, such as [[yii\web\AssetBundle::basePath|basePath]] or [[yii\web\AssetBundle::baseUrl|baseUrl]].
+
 If you are registering an asset bundle in other places, you should provide the needed view object. For example,
 to register an asset bundle in a [widget](structure-widgets.md) class, you can get the view object by `$this->view`.
 

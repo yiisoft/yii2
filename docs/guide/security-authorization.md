@@ -265,7 +265,7 @@ class RbacController extends Controller
 }
 ```
 
-After executing the command we'll get the following hierarchy:
+After executing the command with `yii rbac/init` we'll get the following hierarchy:
 
 ![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
 
