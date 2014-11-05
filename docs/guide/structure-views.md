@@ -585,8 +585,8 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ```
 
 The above code will register a "keywords" meta tag with the view component. The registered meta tag is
-rendered after the layout finishes rendering. By then, the following HTML code will be inserted
-at the place where you call [[yii\web\View::head()]] in the layout and generate the following HTML code:
+rendered after the layout finishes rendering. The following HTML code will be generated and inserted
+at the place where you call [[yii\web\View::head()]] in the layout:
 
 ```php
 <meta name="keywords" content="yii, framework, php">
@@ -606,7 +606,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 
 ### Registering Link Tags <a name="registering-link-tags"></a>
 
-Like [meta tags](#adding-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
+Like [meta tags](#registering-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
 RSS feed or delegating OpenID to another server. You can work with link tags in the similar way as meta tags
 by using [[yii\web\View::registerLinkTag()]]. For example, in a content view, you can register a link tag like follows,
 
@@ -626,7 +626,7 @@ The code above will result in
 ```
 
 Similar as [[yii\web\View::registerMetaTag()|registerMetaTags()]], you can specify a key when calling
-[[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generated repeated link tags.
+[[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generating repeated link tags.
 
 
 ## View Events <a name="view-events"></a>
