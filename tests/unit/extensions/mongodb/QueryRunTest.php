@@ -211,6 +211,27 @@ class QueryRunTest extends MongoDbTestCase
         $this->assertEquals($rows, $rowsUppercase);
     }
 
+    public function testOneWithUpdate()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query();
+
+        $searchName = 'name5';
+        $newName = 'new name';
+        $row = $query->from('customer')
+            ->where(['name' => $searchName])
+            ->oneWithUpdate(['$set' => ['name' => $newName]], ['new' => false], $connection);
+        $this->assertEquals($searchName, $row['name']);
+
+        $searchName = 'name7';
+        $newName = 'new name';
+        $row = $query->from('customer')
+            ->where(['name' => $searchName])
+            ->oneWithUpdate(['$set' => ['name' => $newName]], ['new' => true], $connection);
+        $this->assertEquals($newName, $row['name']);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/4879
      *
