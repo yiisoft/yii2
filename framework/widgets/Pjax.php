@@ -44,7 +44,10 @@ use yii\web\Response;
 class Pjax extends Widget
 {
     /**
-     * @var array the HTML attributes for the widget container tag.
+     * @var array the HTML attributes for the widget container tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "div", the tag name of the item container tags.
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
@@ -84,8 +87,7 @@ class Pjax extends Widget
      * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
      */
     public $clientOptions;
-
-
+    
     /**
      * @inheritdoc
      */
@@ -107,7 +109,9 @@ class Pjax extends Widget
                 echo Html::tag('title', Html::encode($view->title));
             }
         } else {
-            echo Html::beginTag('div', $this->options);
+            $options = $this->options;
+            $tag = ArrayHelper::remove($options, 'tag', 'div');
+            echo Html::beginTag($tag, $options);
         }
     }
 
@@ -117,7 +121,8 @@ class Pjax extends Widget
     public function run()
     {
         if (!$this->requiresPjax()) {
-            echo Html::endTag('div');
+            $tag = ArrayHelper::remove($this->options, 'tag', 'div');
+            echo Html::endTag($tag);
             $this->registerClientScript();
 
             return;
@@ -169,10 +174,10 @@ class Pjax extends Widget
         $options = Json::encode($this->clientOptions);
         $linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
         $formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
-        $view = $this->getView();
-        PjaxAsset::register($view);
         $js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
         $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
+        $view = $this->getView();
+        PjaxAsset::register($view);
         $view->registerJs($js);
     }
 }
