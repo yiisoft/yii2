@@ -1,41 +1,44 @@
-Modules
-=======
+モジュール
+==========
 
-Modules are self-contained software units that consist of [models](structure-models.md), [views](structure-views.md),
-[controllers](structure-controllers.md), and other supporting components. End users can access the controllers
-of a module when it is installed in [application](structure-applications.md). For these reasons, modules are
-often viewed as mini-applications. Modules differ from [applications](structure-applications.md) in that
-modules cannot be deployed alone and must reside within applications.
+モジュールは、[モデル](structure-models.md)、[ビュー](structure-views.md)、[コントローラ](structure-controllers.md)、
+およびその他の支援コンポーネントから構成される自己充足的なソフトウェアのユニットです。
+モジュールが [アプリケーション](structure-applications.md) にインストールされている場合、
+エンドユーザはモジュールのコントローラにアクセスする事が出来ます。これらのことを理由として、
+モジュールは小さなアプリケーションと見なされることがよくあります。しかし、モジュールは単独では配置できず、
+アプリケーションの中に存在しなければならないという点で [アプリケーション](structure-applications.md) とは異なります。
 
 
-## Creating Modules <a name="creating-modules"></a>
+## モジュールを作成する <a name="creating-modules"></a>
 
-A module is organized as a directory which is called the [[yii\base\Module::basePath|base path]] of the module.
-Within the directory, there are sub-directories, such as `controllers`, `models`, `views`, which hold controllers,
-models, views, and other code, just like in an application. The following example shows the content within a module:
+モジュールは、モジュールの [[yii\base\Module::basePath|ベースパス]] と呼ばれるディレクトリとして組織されます。
+このディレクトリの中に、ちょうどアプリケーションの場合と同じように、`controllers`、`models`、`views`
+のようなサブディレクトリが存在して、コントローラ、モデル、ビュー、その他のコードを収納しています。
+次の例は、モジュール内の中身を示すものです:
 
 ```
 forum/
-    Module.php                   the module class file
-    controllers/                 containing controller class files
-        DefaultController.php    the default controller class file
-    models/                      containing model class files
-    views/                       containing controller view and layout files
-        layouts/                 containing layout view files
-        default/                 containing view files for DefaultController
-            index.php            the index view file
+    Module.php                   モジュールクラスファイル
+    controllers/                 コントローラクラスファイルを含む
+        DefaultController.php    デフォルトのコントローラクラスファイル
+    models/                      モデルクラスファイルを含む
+    views/                       コントローラのビューとレイアウトのファイルを含む
+        layouts/                 レイアウトのビューファイルを含む
+        default/                 DefaultController のためのビューファイルを含む
+            index.php            index ビューファイル
 ```
 
 
-### Module Classes <a name="module-classes"></a>
+### モジュールクラス <a name="module-classes"></a>
 
-Each module should have a unique module class which extends from [[yii\base\Module]]. The class should be located
-directly under the module's [[yii\base\Module::basePath|base path]] and should be [autoloadable](concept-autoloading.md).
-When a module is being accessed, a single instance of the corresponding module class will be created.
-Like [application instances](structure-applications.md), module instances are used to share data and components
-for code within modules.
+全てのモジュールは [[yii\base\Module]] から拡張したユニークなモジュールクラスを持たなければなりません。
+モジュールクラスは、モジュールの [[yii\base\Module::basePath|ベースパス]] 直下に配置されて
+[オートロード可能](concept-autoloading.md) になっていなければなりません。
+モジュールがアクセスされたとk、対応するモジュールクラスの単一のインスタンスが作成されます。
+[アプリケーションのインスタンス](structure-applications.md) と同じように、モジュールのインスタンスは
+モジュール内のコードがデータとコンポーネントを共有するために使用されます。
 
-The following is an example how a module class may look like:
+次のコードは、モジュールクラスがどのように見えるかを示す例です:
 
 ```php
 namespace app\modules\forum;
@@ -47,46 +50,48 @@ class Module extends \yii\base\Module
         parent::init();
 
         $this->params['foo'] = 'bar';
-        // ...  other initialization code ...
+        // ... 他の初期化コード ...
     }
 }
 ```
 
-If the `init()` method contains a lot of code initializing the module's properties, you may also save them in terms
-of a [configuration](concept-configurations.md) and load it with the following code in `init()`:
+`init` メソッドがモジュールのプロパティを初期化するためのコードをたくさん含む場合は、それを
+[コンフィギュレーション](concept-configurations.md) の形で保存し、`init()` の中で次のコードを使って
+読み出すことも可能です:
 
 ```php
 public function init()
 {
     parent::init();
-    // initialize the module with the configuration loaded from config.php
+    // config.php からロードしたコンフィギュレーションでモジュールを初期化する
     \Yii::configure($this, require(__DIR__ . '/config.php'));
 }
 ```
 
-where the configuration file `config.php` may contain the following content, similar to that in an
-[application configuration](structure-applications.md#application-configurations).
+ここで、コンフィギュレーションファイル `config.php` は、
+[アプリケーションのコンフィギュレーション](structure-applications.md#application-configurations) の場合と同じように、
+次のような内容を含むことが出来ます。
 
 ```php
 <?php
 return [
     'components' => [
-        // list of component configurations
+        // コンポーネントのコンフィギュレーションのリスト
     ],
     'params' => [
-        // list of parameters
+        // パラメータのリスト
     ],
 ];
 ```
 
 
-### Controllers in Modules <a name="controllers-in-modules"></a>
+### モジュール内のコントローラ <a name="controllers-in-modules"></a>
 
-When creating controllers in a module, a convention is to put the controller classes under the `controllers`
-sub-namespace of the namespace of the module class. This also means the controller class files should be
-put in the `controllers` directory within the module's [[yii\base\Module::basePath|base path]].
-For example, to create a `post` controller in the `forum` module shown in the last subsection, you should
-declare the controller class like the following:
+モジュールの中でコントローラを作成するときは、コントローラクラスをモジュールクラスの名前空間の `controllers`
+サブ名前空間に置くことが規約です。このことは、同時に、コントローラのクラスファイルをモジュールの
+[[yii\base\Module::basePath|ベースパス]] 内の `controllers` ディレクトリに置くべきことをも意味します。
+例えば、前の項で示された `forum` モジュールの中で `post` コントローラを作成するためには、次のようにして
+コントローラを宣言しなければなりません:
 
 ```php
 namespace app\modules\forum\controllers;
@@ -99,103 +104,105 @@ class PostController extends Controller
 }
 ```
 
-You may customize the namespace of controller classes by configuring the [[yii\base\Module::controllerNamespace]]
-property. In case when some of the controllers are out of this namespace, you may make them accessible
-by configuring the [[yii\base\Module::controllerMap]] property, similar to [what you do in an application](structure-applications.md#controller-map).
+コントローラクラスの名前空間は、[[yii\base\Module::controllerNamespace]] プロパティを構成してカスタマイズすることが出来ます。
+いくつかのコントローラがこの名前空間の外にある場合でも、[[yii\base\Module::controllerMap]] プロパティを構成することによって、
+それらをアクセス可能にすることが出来ます。これは、[アプリケーションでのコントローラマップ](structure-applications.md#controller-map)
+の場合と同様です。
 
 
-### Views in Modules <a name="views-in-modules"></a>
+### モジュール内のビュー <a name="views-in-modules"></a>
 
-Views in a module should be put in the `views` directory within the module's [[yii\base\Module::basePath|base path]].
-For views rendered by a controller in the module, they should be put under the directory `views/ControllerID`,
-where `ControllerID` refers to the [controller ID](structure-controllers.md#routes). For example, if
-the controller class is `PostController`, the directory would be `views/post` within the module's
-[[yii\base\Module::basePath|base path]].
+モジュール内のビューは、モジュールの [[yii\base\Module::basePath|ベースパス]] 内の `views` ディレクトリに置かれなくてはなりません。
+モジュール内のコントローラによってレンダリングされるビューは、ディレクトリ `views/ControllerID` の下に置きます。ここで、
+`ControllerID` は [コントローラ ID](structure-controllers.md#routes) を指します。例えば、コントローラクラスが `PostController`
+である場合、ディレクトリはモジュールの [[yii\base\Module::basePath|ベースパス]] の中の `views/post` となります。
 
-A module can specify a [layout](structure-views.md#layouts) that is applied to the views rendered by the module's
-controllers. The layout should be put in the `views/layouts` directory by default, and you should configure
-the [[yii\base\Module::layout]] property to point to the layout name. If you do not configure the `layout` property,
-the application's layout will be used instead.
+モジュールは、そのモジュールのコントローラによってレンダリングされるビューに適用される [レイアウト](structure-views.md#layouts)
+を指定することが出来ます。レイアウトは、既定では `views/layouts` ディレクトリに置かれなければならず、また、
+[[yii\base\Module::layout]] プロパティがレイアウトの名前を指すように構成しなければなりません。
+`layout` プロパティを構成しない場合は、アプリケーションのレイアウトが代りに使用されます。
 
 
-## Using Modules <a name="using-modules"></a>
+## モジュールを使う <a name="using-modules"></a>
 
-To use a module in an application, simply configure the application by listing the module in
-the [[yii\base\Application::modules|modules]] property of the application. The following code in the
-[application configuration](structure-applications.md#application-configurations) uses the `forum` module:
+アプリケーションの中でモジュールを使うためには、アプリケーションの [[yii\base\Application::modules|modules]] プロパティのリストに
+そのモジュールを載せてアプリケーションを構成するだけで大丈夫です。次のコードは、
+[アプリケーションのコンフィギュレーション](structure-applications.md#application-configurations) の中で
+`forum` モジュールを使うようにするものです:
 
 ```php
 [
     'modules' => [
         'forum' => [
             'class' => 'app\modules\forum\Module',
-            // ... other configurations for the module ...
+            // ... モジュールのその他のコンフィギュレーション ...
         ],
     ],
 ]
 ```
 
-The [[yii\base\Application::modules|modules]] property takes an array of module configurations. Each array key
-represents a *module ID* which uniquely identifies the module among all modules in the application, and the corresponding
-array value is a [configuration](concept-configurations.md) for creating the module.
+[[yii\base\Application::modules|modules]] プロパティは、モジュールのコンフィギュレーションの配列を取ります。各配列のキーは、
+アプリケーションの全てのモジュールの中でそのモジュールを特定するためのユニークな *モジュール ID* を表します。そして、
+対応する配列の値は、そのモジュールを作成するための [コンフィギュレーション](concept-configurations.md) です。
 
 
-### Routes <a name="routes"></a>
+### ルート <a name="routes"></a>
 
-Like accessing controllers in an application, [routes](structure-controllers.md#routes) are used to address
-controllers in a module. A route for a controller within a module must begin with the module ID followed by
-the controller ID and action ID. For example, if an application uses a module named `forum`, then the route
-`forum/post/index` would represent the `index` action of the `post` controller in the module. If the route
-only contains the module ID, then the [[yii\base\Module::defaultRoute]] property, which defaults to `default`,
-will determine which controller/action should be used. This means a route `forum` would represent the `default`
-controller in the `forum` module.
+アプリケーションの中のコントローラをアクセスするのと同じように、[ルート](structure-controllers.md#routes)
+がモジュールの中のコントローラを指し示すために使われます。モジュール内のコントローラのルートは、モジュール ID で始まり、
+コントローラ ID、アクション ID と続くものでなければなりません。例えば、アプリケーションが `forum` という名前のモジュールを
+使用している場合、`forum/post/index` というルートは、`forum` モジュール内の `post` コントローラの `index` アクションを表します。
+ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (その既定値は `default` です) が、
+どのコントローラ/アクションが使用されるべきかを決定します。これは、`forum` というルートは `forum` モジュール内の
+`default` コントローラを表すという意味です。
 
 
-### Accessing Modules <a name="accessing-modules"></a>
+### モジュールにアクセスする <a name="accessing-modules"></a>
 
-Within a module, you may often need to get the instance of the [module class](#module-classes) so that you can
-access the module ID, module parameters, module components, etc. You can do so by using the following statement:
+モジュール内において、モジュール ID や、モジュールのパラメータ、モジュールのコンポーネントなどにアクセスするために、
+[モジュールクラス](#module-classes) のインスタンスを取得する必要があることがよくあります。次の文を使ってそうすることが出来ます:
 
 ```php
 $module = MyModuleClass::getInstance();
 ```
 
-where `MyModuleClass` refers to the name of the module class that you are interested in. The `getInstance()` method
-will return the currently requested instance of the module class. If the module is not requested, the method will
-return null. Note that You do not want to manually create a new instance of the module class because it will be
-different from the one created by Yii in response to a request.
+ここで `MyModuleClass` は、関心を持っているモジュールクラスの名前を指します。`getInstance()` メソッドは、
+現在リクエストされているモジュールクラスのインスタンスを返します。モジュールがリクエストされていない場合は、
+このメソッドは null を返します。モジュールクラスの新しいインスタンスを手動で作成しようとしてはいけないことに注意してください。
+そのインスタンスは、リクエストに対するレスポンスとして Yii によって作成されたインスタンスとは別のものになります。
 
-> Info: When developing a module, you should not assume the module will use a fixed ID. This is because a module
-  can be associated with an arbitrary ID when used in an application or within another module. In order to get
-  the module ID, you should use the above approach to get the module instance first, and then get the ID via
-  `$module->id`.
+> Info|情報: モジュールを開発するとき、モジュールが固定の ID を使うと仮定してはいけません。なぜなら、モジュールは、
+  アプリケーションや他のモジュールの中で使うときに、任意の ID と結び付けることが出来るからです。
+  モジュール ID を取得するためには、上記の方法を使って最初にモジュールのインスタンスを取得し、そして `$module->id`
+  によって ID を取得しなければなりません。
 
-You may also access the instance of a module using the following approaches:
+モジュールのインスタンスにアクセスするためには、次の二つの方法を使うことも出来ます:
 
 ```php
-// get the child module whose ID is "forum"
+// ID が "forum" である子モジュールを取得する
 $module = \Yii::$app->getModule('forum');
 
-// get the module to which the currently requested controller belongs
+// 現在リクエストされているコントローラが属するモジュールを取得する
 $module = \Yii::$app->controller->module;
 ```
 
-The first approach is only useful when you know the module ID, while the second approach is best used when you
-know about the controllers being requested.
+最初の方法は、モジュール ID を知っている時しか役に立ちません。一方、第二の方法は、
+リクエストされているコントローラについて知っている場合に使うのに最適な方法です。
 
-Once getting hold of a module instance, you can access parameters or components registered with the module. For example,
+いったんモジュールのインスタンスをとらえれば、モジュールに登録されたパラメータやコンポーネントにアクセスすることが可能になります。
+例えば、
 
 ```php
 $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-### Bootstrapping Modules <a name="bootstrapping-modules"></a>
+### モジュールをブートストラップする <a name="bootstrapping-modules"></a>
 
-Some modules may need to be run for every request. The [[yii\debug\Module|debug]] module is such an example.
-To do so, list the IDs of such modules in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
+いくつかのモジュールは、全てのリクエストで毎回走らせる必要があります。[[yii\debug\Module|デバッグ]] モジュールがその一例です。
+そうするためには、そのようなモジュールをアプリケーションの [[yii\base\Application::bootstrap|bootstrap]] プロパティのリストに挙げます。
 
-For example, the following application configuration makes sure the `debug` module is always load:
+例えば、次のアプリケーションのコンフィギュレーションは、`debug` モジュールが常にロードされることを保証するものです:
 
 ```php
 [
@@ -210,11 +217,12 @@ For example, the following application configuration makes sure the `debug` modu
 ```
 
 
-## Nested Modules <a name="nested-modules"></a>
+## 入れ子のモジュール <a name="nested-modules"></a>
 
-Modules can be nested in unlimited levels. That is, a module can contain another module which can contain yet
-another module. We call the former *parent module* while the latter *child module*. Child modules must be declared
-in the [[yii\base\Module::modules|modules]] property of their parent modules. For example,
+モジュールはレベルの制限無く入れ子にすることが出来ます。つまり、モジュールは別のモジュールを含むことが出来、
+その含まれたモジュールもさらに別のモジュールを含むことが出来ます。含む側を *親モジュール*、含まれる側を *子モジュール*
+と呼びます。子モジュールは、親モジュールの [[yii\base\Module::modules|modules]] プロパティの中で宣言されなければなりません。
+例えば、
 
 ```php
 namespace app\modules\forum;
@@ -227,7 +235,7 @@ class Module extends \yii\base\Module
 
         $this->modules = [
             'admin' => [
-                // you should consider using a shorter namespace here!
+                // ここはもっと短い名前空間の使用を考慮すべきだ!
                 'class' => 'app\modules\forum\modules\admin\Module',
             ],
         ];
@@ -235,21 +243,20 @@ class Module extends \yii\base\Module
 }
 ```
 
-For a controller within a nested module, its route should include the IDs of all its ancestor module.
-For example, the route `forum/admin/dashboard/index` represents the `index` action of the `dashboard` controller
-in the `admin` module which is a child module of the `forum` module.
+入れ子にされたモジュールの中にあるコントローラのルートは、全ての祖先のモジュールの ID を含まなければなりません。
+例えば、`forum/admin/dashboard/index` というルートは、`forum` モジュールの子モジュールである `admin` モジュールの
+`dashboard` コントローラの `index` アクションを表します。
 
-> Info: The [[yii\base\Module::getModule()|getModule()]] method only returns the child module directly belonging
-to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
-direct children and nested ones, indexed by their class names.
+> Info|情報: [[yii\base\Module::getModule()|getModule()]] メソッドは、親モジュールに直接属する子モジュールだけを返します。
+[[yii\base\Application::loadedModules]] プロパティがロードされた全てのモジュールのリストを保持しています。
+このリストには、直接の子と孫以下の両方のモジュールが含まれ、クラス名によってインデックスされています。
 
 
-## Best Practices <a name="best-practices"></a>
+## 最善の慣行 <a name="best-practices"></a>
 
-Modules are best used in large applications whose features can be divided into several groups, each consisting of
-a set of closely related features. Each such feature group can be developed as a module which is developed and
-maintained by a specific developer or team.
+モジュールは、それぞれ密接に関係する一連の機能を含む数個のグループに分割できるような、規模の大きなアプリケーションに
+最も適しています。そのような機能グループをそれぞれモジュールとして、特定の個人やチームによって開発することが出来ます。
 
-Modules are also a good way of reusing code at the feature group level. Some commonly used features, such as
-user management, comment management, can all be developed in terms of modules so that they can be reused easily
-in future projects.
+モジュールは、また、機能グループレベルでコードを再利用するための良い方法でもあります。ある種のよく使われる機能、
+例えばユーザ管理やコメント管理などは、全て、将来のプロジェクトで容易に再利用できるように、モジュールの形式で
+開発することが出来ます。
