@@ -10,7 +10,7 @@ Deploying basic application
 Since there's typically only one webroot it is recommended to use basic application template. Refer to
 [Installing Yii chapter](start-installation.md) and install application template locally.
 
-### Add extras for webserver
+### Add extras for webserver <a name="add-extras-for-webserver"></a>
 
 If webserver used is Apache you'll need to add `.htaccess` file with the following content to `web`
 (where `index.php` is):
@@ -31,15 +31,15 @@ RewriteRule . index.php
 
 In case of nginx you should not need any extra config files.
 
-### Renaming webroot
+### Renaming webroot <a name="renaming-webroot"></a>
 
 If after connecting to your shared hosting via FTP or by other means you're seeing something like the following, you're
 most probably lucky.
  
 ```
-config/
-logs/
-www/
+config
+logs
+www
 ```
 
 In the above `www` is webserver directory root (i.e. webroot). It could be named differently. Common names are: `www`,
@@ -62,4 +62,54 @@ Deploying advanced application
 ------------------------------
 
 Deploying advanced application to shared hosting is a bit trickier than doing it with basic application because it has
-two webroots.
+two webroots which shared hosting typically donesn't have. Because of that structure could be adjusted a bit.
+
+### Move entry scripts into single webroot
+
+First of all we need a webroot directory. Name it the way it matches your hosting webroot as described in
+[Renaming webroot](#renaming-webroot) above. Then create the following structure:
+
+```
+www
+    admin
+backend
+common
+console
+environments
+frontend
+...
+```
+
+`www` will be our frontend directory so move contents of `frontend/web` into it. Do the same with `backend/web` moving
+its contents into `www/admin`. In each case you need to adjust paths in `index.php` and `index-test.php`.
+
+### Separate sessions and cookies
+
+Originally backend and frontend are intended to run at different domains. When we're moving it all to the same domain it
+is starting to share the same cookies creating a clash. It order to fix it adjust backend application config
+`backend/config/main.php` like the following:
+
+```php
+'components' => [
+    'request' => [
+        'csrfParam' => '_backendCSRF',
+        'csrfCookie' => [
+            'httpOnly' => true,
+            'path' => '/admin',
+        ],
+    ],
+    'user' => [
+        'identityCookie' => [
+            'name' => '_backendIdentity',
+            'path' => '/admin',
+            'httpOnly' => true,
+        ],
+    ],
+    'session' => [
+        'name' => 'BACKENDSESSID',
+        'cookieParams' => [
+            'path' => '/admin',
+        ],
+    ],
+],
+```
