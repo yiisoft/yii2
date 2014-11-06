@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.1 under development
 -----------------------
 
-- Bug #5893: `yii\helpers\ArrayHelper::toArray()` now applies `$properties` parameter for converting descending objects in recursive calls (otsec)
 - Bug #4471: `yii\caching\ApcCache::getValues()` now returns array in case of APC is installed but not enabled in CLI mode (samdark, cebe)
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
 - Bug #5570: `yii\bootstrap\Tabs` would throw an exception if `content` is not set for one of its `items` (RomeroMsk)
@@ -17,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
 - Bug #5780: `QueryBuilder::batchInsert()` may cause "undefined index" error (qiangxue)
 - Bug #5833: The `message` command fails with a FK constraint error when trying to update messages (qiangxue)
+- Bug #5893: `yii\helpers\ArrayHelper::toArray()` now applies `$properties` parameter for converting descending objects in recursive calls (otsec)
 - Bug #5925: `ArrayHelper::htmlEncode()` does not work properly when the value being encoded is a nested array (tebazil)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
