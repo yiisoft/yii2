@@ -8,8 +8,10 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yii\i18n\GettextPoFile;
@@ -258,7 +260,17 @@ class MessageController extends Controller
             for ($i = 0; $i < $n; ++$i) {
                 $category = substr($matches[$i][1], 1, -1);
                 $message = $matches[$i][2];
-                $messages[$category][] = eval("return {$message};"); // use eval to eliminate quote escape
+                try {
+                    $messages[$category][] = eval("return {$message};"); // use eval to eliminate quote escape
+                } catch (ErrorException $e) {
+                    $category = Console::ansiFormat($category, [Console::FG_CYAN]);
+                    $message = Console::ansiFormat($message, [Console::FG_CYAN]);
+                    $fileName = Console::ansiFormat($fileName, [Console::FG_CYAN]);
+                    $error = Console::ansiFormat($e->getMessage(), [Console::FG_RED]);
+
+                    $this->stdout("Failed parsing $fileName, $message in $category category:\n" . $error . "\n");
+                    Yii::$app->end(self::EXIT_CODE_ERROR);
+                }
             }
         }
 
