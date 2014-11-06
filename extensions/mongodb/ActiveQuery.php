@@ -135,21 +135,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $cursor = $this->buildCursor($db);
         $rows = $this->fetchRows($cursor);
-        if (!empty($rows)) {
-            $models = $this->createModels($rows);
-            if (!empty($this->with)) {
-                $this->findWith($this->with, $models);
-            }
-            if (!$this->asArray) {
-                foreach ($models as $model) {
-                    $model->afterFind();
-                }
-            }
 
-            return $models;
-        } else {
-            return [];
-        }
+        return $this->populate($rows);
     }
 
     /**
@@ -164,24 +151,30 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $row = parent::one($db);
         if ($row !== false) {
-            if ($this->asArray) {
-                $model = $row;
-            } else {
-                /* @var $class ActiveRecord */
-                $class = $this->modelClass;
-                $model = $class::instantiate($row);
-                $class::populateRecord($model, $row);
-            }
-            if (!empty($this->with)) {
-                $models = [$model];
-                $this->findWith($this->with, $models);
-                $model = $models[0];
-            }
-            if (!$this->asArray) {
-                $model->afterFind();
-            }
+            $models = $this->populate([$row]);
+            return reset($models) ?: null;
+        } else {
+            return null;
+        }
+    }
 
-            return $model;
+    /**
+     * Performs 'findAndModify' query and returns a single row of result.
+     * Warning: in case 'new' option is set to 'false' (which is by default) usage of this method may lead
+     * to unexpected behavior at some Active Record features, because object will be populated by outdated data.
+     * @param array $update update criteria
+     * @param array $options list of options in format: optionName => optionValue.
+     * @param Connection $db the Mongo connection used to execute the query.
+     * @return ActiveRecord|array|null the original document, or the modified document when $options['new'] is set.
+     * Depending on the setting of [[asArray]], the query result may be either an array or an ActiveRecord object.
+     * Null will be returned if the query results in nothing.
+     */
+    public function oneWithUpdate($update, $options = [], $db = null)
+    {
+        $row = parent::oneWithUpdate($update, $options, $db);
+        if ($row !== null) {
+            $models = $this->populate([$row]);
+            return reset($models) ?: null;
         } else {
             return null;
         }
@@ -204,5 +197,31 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         return $db->getCollection($this->from);
+    }
+
+    /**
+     * Converts the raw query results into the format as specified by this query.
+     * This method is internally used to convert the data fetched from MongoDB
+     * into the format as required by this query.
+     * @param array $rows the raw query result from MongoDB
+     * @return array the converted query result
+     */
+    public function populate($rows)
+    {
+        if (empty($rows)) {
+            return [];
+        }
+
+        $models = $this->createModels($rows);
+        if (!empty($this->with)) {
+            $this->findWith($this->with, $models);
+        }
+        if (!$this->asArray) {
+            foreach ($models as $model) {
+                $model->afterFind();
+            }
+        }
+
+        return $models;
     }
 }

@@ -102,24 +102,9 @@ class Query extends Component implements QueryInterface
      */
     protected function buildCursor($db = null)
     {
-        if ($this->where === null) {
-            $where = [];
-        } else {
-            $where = $this->where;
-        }
-        $selectFields = [];
-        if (!empty($this->select)) {
-            foreach ($this->select as $fieldName) {
-                $selectFields[$fieldName] = true;
-            }
-        }
-        $cursor = $this->getCollection($db)->find($where, $selectFields);
+        $cursor = $this->getCollection($db)->find($this->composeCondition(), $this->composeSelectFields());
         if (!empty($this->orderBy)) {
-            $sort = [];
-            foreach ($this->orderBy as $fieldName => $sortOrder) {
-                $sort[$fieldName] = $sortOrder === SORT_DESC ? \MongoCollection::DESCENDING : \MongoCollection::ASCENDING;
-            }
-            $cursor->sort($sort);
+            $cursor->sort($this->composeSort());
         }
         $cursor->limit($this->limit);
         $cursor->skip($this->offset);
@@ -211,6 +196,23 @@ class Query extends Component implements QueryInterface
         $cursor = $this->buildCursor($db);
 
         return $this->fetchRows($cursor, false);
+    }
+
+    /**
+     * Performs 'findAndModify' query and returns a single row of result.
+     * @param array $update update criteria
+     * @param array $options list of options in format: optionName => optionValue.
+     * @param Connection $db the Mongo connection used to execute the query.
+     * @return array|null the original document, or the modified document when $options['new'] is set.
+     */
+    public function oneWithUpdate($update, $options = [], $db = null)
+    {
+        $collection = $this->getCollection($db);
+        if (!empty($this->orderBy)) {
+            $options['sort'] = $this->composeSort();
+        }
+
+        return $collection->findAndModify($this->composeCondition(), $update, $this->composeSelectFields(), $options);
     }
 
     /**
@@ -352,5 +354,46 @@ class Query extends Component implements QueryInterface
         } else {
             return $result;
         }
+    }
+
+    /**
+     * Composes condition from raw [[where]] value.
+     * @return array conditions.
+     */
+    private function composeCondition()
+    {
+        if ($this->where === null) {
+            return [];
+        } else {
+            return $this->where;
+        }
+    }
+
+    /**
+     * Composes select fields from raw [[select]] value.
+     * @return array select fields.
+     */
+    private function composeSelectFields()
+    {
+        $selectFields = [];
+        if (!empty($this->select)) {
+            foreach ($this->select as $fieldName) {
+                $selectFields[$fieldName] = true;
+            }
+        }
+        return $selectFields;
+    }
+
+    /**
+     * Composes sort specification from raw [[orderBy]] value.
+     * @return array sort specification.
+     */
+    private function composeSort()
+    {
+        $sort = [];
+        foreach ($this->orderBy as $fieldName => $sortOrder) {
+            $sort[$fieldName] = $sortOrder === SORT_DESC ? \MongoCollection::DESCENDING : \MongoCollection::ASCENDING;
+        }
+        return $sort;
     }
 }

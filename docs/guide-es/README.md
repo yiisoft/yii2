@@ -49,11 +49,10 @@ Gestión de las peticiones
 
 * [Información general](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
-* [Routing](runtime-routing.md)
+* [Routing y Creación de las URL](runtime-routing.md)
 * [Peticiones (Requests)](runtime-requests.md)
 * [Respuestas (Responses)](runtime-responses.md)
 * [Sesiones (Sessions) y Cookies](runtime-sessions-cookies.md)
-* **TBD** [Procesamiento y generación de las URL](runtime-url-handling.md)
 * **TBD** [Gestión de errores](runtime-handling-errors.md)
 * **TBD** [Registro de anotaciones](runtime-logging.md)
 
@@ -126,7 +125,7 @@ Caché
 * [Caché HTTP](caching-http.md)
 
 
-Servicios Web RESTful 
+Servicios Web RESTful
 ---------------------
 
 * **TBD** [Guía breve](rest-quick-start.md)
