@@ -60,7 +60,7 @@ $exitCode = $application->run();
 exit($exitCode);
 ```
 
-This script will be created as part of your application; you're free to edit it to suit your needs. The `YII_DEBUG` constant can be set `false` if you do
+This script will be created as part of your application; you're free to edit it to suit your needs. The `YII_DEBUG` constant can be set to `false` if you do
 not want to see a stack trace on error, and/or if you want to improve the overall performance. In both basic and advanced application
 templates, the console application entry script has debugging enabled by default to provide a more developer-friendly environment.
 
@@ -71,12 +71,12 @@ Configuration <a name="configuration"></a>
 As can be seen in the code above, the console application uses its own configuration file, named `console.php`. In this file
 you should configure various [application components](structure-application-components.md) and properties for the console application in particular.
 
-If your web application and the console application share a lot of configuration parameters and values, you may consider moving the common
+If your web application and console application share a lot of configuration parameters and values, you may consider moving the common
 parts into a separate file, and including this file in both of the application configurations (web and console). You can see an example of this in the "advanced" application template.
 
-> Tipp: Sometimes, you may want to run a console command using an application configuration that is different
+> Tip: Sometimes, you may want to run a console command using an application configuration that is different
 > from the one specified in the entry script. For example, you may want to use the `yii migrate` command to
-> upgrade your test databases, which are configured in each individual test suite. To do change the configuration
+> upgrade your test databases, which are configured in each individual test suite. To change the configuration
 > dynamically, simply specify a custom application configuration
 > file via the `appconfig` option when executing the command:
 > 
@@ -118,7 +118,7 @@ will take the declared default values, if defined. If no default value is set, a
 You may use the `array` type hint to indicate that an argument should be treated as an array. The array will be generated
 by splitting the input string on commas.
 
-The follow examples show how to declare arguments:
+The following example shows how to declare arguments:
 
 ```php
 class ExampleController extends \yii\console\Controller
