@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.1 under development
 -----------------------
-
+- Eng #4181: Bootstrap modal widget added custom footer and header classes (tuxoff)
 - Bug #5893: `yii\helpers\ArrayHelper::toArray()` now applies `$properties` parameter for converting descending objects in recursive calls (otsec)
 - Bug #4471: `yii\caching\ApcCache::getValues()` now returns array in case of APC is installed but not enabled in CLI mode (samdark, cebe)
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
