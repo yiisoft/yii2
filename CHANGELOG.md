@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #5925: `ArrayHelper::htmlEncode()` does not work properly when the value being encoded is a nested array (tebazil)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
+- Enh #4181: Added `yii\bootstrap\Modal::$headerOptions` and `yii\bootstrap\Modal::$footerOptions` (tuxoff, samdark)
 - Enh #4263: Added migration and SQL schema files for `yii\log\DbTarget` (samdark)
 - Enh #4457: Added support for using noscript for css files registered through asset bundles and Html helper (samdark)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
