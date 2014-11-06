@@ -243,7 +243,7 @@ To avoid name collisions and make the classes in your extension autoloadable, yo
 name the classes in your extension by following the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) or
 [PSR-0 standard](http://www.php-fig.org/psr/psr-0/).
 
-You class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
+Your class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
 in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
 extension, we use `yii\imagine` as the namespace its classes.
 
