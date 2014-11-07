@@ -205,7 +205,7 @@ class Query extends Component implements QueryInterface
      * @param Connection $db the Mongo connection used to execute the query.
      * @return array|null the original document, or the modified document when $options['new'] is set.
      */
-    public function oneWithUpdate($update, $options = [], $db = null)
+    public function oneWithModify($update, $options = [], $db = null)
     {
         $collection = $this->getCollection($db);
         if (!empty($this->orderBy)) {

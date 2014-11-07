@@ -264,14 +264,14 @@ class ActiveRecordTest extends MongoDbTestCase
         $this->assertEquals(7, $rowRefreshed->status);
     }
 
-    public function testFindOneWithUpdate()
+    public function testFindOneWithModify()
     {
         $searchName = 'name7';
         $newName = 'new name';
 
         $customer = Customer::find()
             ->where(['name' => $searchName])
-            ->oneWithUpdate(['$set' => ['name' => $newName]], ['new' => true]);
+            ->oneWithModify(['$set' => ['name' => $newName]], ['new' => true]);
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals($newName, $customer->name);
     }
