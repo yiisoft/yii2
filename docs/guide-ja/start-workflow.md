@@ -78,7 +78,7 @@ Yii は [モデル・ビュー・コントローラ (MVC)](http://wikipedia.org/
 
 次の図は、アプリケーションがどのようにリクエストを処理するかを示すものです。
 
-![リクエストのライフサイクル](images/application-lifecycle.png)
+![リクエストのライフサイクル](images/request-lifecycle.png)
 
 1. ユーザが [エントリスクリプト](structure-entry-scripts.md) `web/index.php` に対してリクエストを出します。
 2. エントリスクリプトはアプリケーションの [コンフィギュレーション](concept-configurations.md) を読み出して、

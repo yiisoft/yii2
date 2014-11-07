@@ -62,7 +62,7 @@ basic/                  корневой каталог приложения
 
 На диаграмме показано как приложение обрабатывает запрос.
 
-![Жизненный цикл запроса](images/application-lifecycle.png)
+![Жизненный цикл запроса](images/request-lifecycle.png)
 
 1. Пользователь обращается к [точке входа](structure-entry-scripts.md) `web/index.php`.
 2. Скрипт загружает конфигурацию [configuration](concept-configurations.md) и создает экземпляр [приложения](structure-applications.md) для дальнейшей обработки запроса.

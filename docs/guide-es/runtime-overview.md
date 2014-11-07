@@ -17,6 +17,6 @@ Cada vez que una aplicación Yii gestiona una petición, se somete a un flujo de
 
 El siguiente diagrama muestra como una aplicación gestiona una petición.
 
-![Request Lifecycle](images/application-lifecycle.png)
+![Request Lifecycle](images/request-lifecycle.png)
 
 En esta sección, se describirá en detalle cómo funcionan algunos de estos pasos.

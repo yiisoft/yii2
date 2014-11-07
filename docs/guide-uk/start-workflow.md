@@ -62,7 +62,7 @@ basic/                  кореневий каталог додатка
 
 На діаграмі показано як додаток опрацьовує запит.
 
-![Життєвий цикл запиту](../guide/images/application-lifecycle.png)
+![Життєвий цикл запиту](../guide/images/request-lifecycle.png)
 
 1. Користувач звертається до [місця входження](structure-entry-scripts.md) `web/index.php`.
 2. Скрипт завантажує конфігурацію [configuration](concept-configurations.md) і створює екземпляр [додатку](structure-applications.md) для наступного опрацювання запиту.

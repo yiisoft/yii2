@@ -74,7 +74,7 @@ Cycle de vie d'une requête <a name="request-lifecycle"></a>
 
 Le diagramme suivant présente la manière dont une application traite une requête.
 
-![Cycle de Vie d'une Requête](images/application-lifecycle.png)
+![Cycle de Vie d'une Requête](images/request-lifecycle.png)
 
 1. Un utilisateur fait une requête au [script de démarrage](structure-entry-scripts.md) `web/index.php`.
 2. Le script de démarrage charge la [configuration](concept-configurations.md) de l'application et créé une instance d'[application](structure-applications.md) pour traiter la requête.

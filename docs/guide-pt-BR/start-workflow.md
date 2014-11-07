@@ -89,7 +89,7 @@ Ciclo de Vida da Requisição <a name="request-lifecycle"></a>
 
 O diagrama a seguir demonstra como uma aplicação gerencia uma requisição.
 
-![Ciclo de Vida da Requisição](images/application-lifecycle.png)
+![Ciclo de Vida da Requisição](images/request-lifecycle.png)
 
 1. Um usuário faz uma requisiçao ao [script de entrada](structure-entry-scripts.md) `web/index.php`.
 2. O script de entrada carrega a [configuração](concept-configurations.md) da
