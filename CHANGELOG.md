@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #4471: `yii\caching\ApcCache::getValues()` now returns array in case of APC is installed but not enabled in CLI mode (samdark, cebe)
+- Bug #4889: Application was getting into redirect loop when user wasn't allowed accessing login page. Now shows 403 (samdark)
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
 - Bug #5570: `yii\bootstrap\Tabs` would throw an exception if `content` is not set for one of its `items` (RomeroMsk)
 - Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)

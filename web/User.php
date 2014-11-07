@@ -422,10 +422,12 @@ class User extends Component
             $this->setReturnUrl($request->getUrl());
         }
         if ($this->loginUrl !== null) {
-            return Yii::$app->getResponse()->redirect($this->loginUrl);
-        } else {
-            throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
+            $loginUrl = (array)$this->loginUrl;
+            if ($loginUrl[0] !== Yii::$app->requestedRoute) {
+                return Yii::$app->getResponse()->redirect($this->loginUrl);
+            }
         }
+        throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
     }
 
     /**
