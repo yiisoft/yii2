@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
 - Bug #5702: Parenthesis should be automatically added to `Validator::whenClient` to avoid js error (mdmunir, qiangxue)
 - Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
+- Bug #5768: When setting `data-confirm` attribute to a submit button, clicking on the button would not trigger form submission (qiangxue)
 - Bug #5780: `QueryBuilder::batchInsert()` may cause "undefined index" error (qiangxue)
 - Bug #5833: The `message` command fails with a FK constraint error when trying to update messages (qiangxue)
 - Bug #5893: `yii\helpers\ArrayHelper::toArray()` now applies `$properties` parameter for converting descending objects in recursive calls (otsec)

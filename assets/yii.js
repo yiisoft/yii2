@@ -131,6 +131,8 @@ yii = (function ($) {
             if (method === undefined) {
                 if (action && action != '#') {
                     window.location = action;
+                } else if ($e.filter(':submit') && $form.length) {
+                    $form.trigger('submit');
                 }
                 return;
             }

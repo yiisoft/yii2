@@ -270,7 +270,6 @@ abstract class Target extends Component
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
         /* @var $user \yii\web\User */
-
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         if ($user && ($identity = $user->getIdentity(false))) {
             $userID = $identity->getId();
