@@ -69,6 +69,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         if (Yii::$app->has('response')) {
             $response = Yii::$app->getResponse();
+            $response->isSent = false;
         } else {
             $response = new Response();
         }
