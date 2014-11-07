@@ -84,7 +84,7 @@ return [
     '{attribute} must be repeated exactly.' => 'Wartość {attribute} musi być dokładnie powtórzona.',
     '{attribute} must not be equal to "{compareValue}".' => '{attribute} musi mieć wartość różną od "{compareValue}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} powinien zawierać co najmniej {min, number} {min, plural, one{znak} few{znaki} many{znaków} other{znaku}}.',
-    '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} powinien zawierać nie więcej niż {max, number} {min, plural, one{znak} few{znaki} many{znaków} other{znaku}}.',
+    '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} powinien zawierać nie więcej niż {max, number} {max, plural, one{znak} few{znaki} many{znaków} other{znaku}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} powinien zawierać dokładnie {length, number} {length, plural, one{znak} few{znaki} many{znaków} other{znaku}}.',
     '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{jeden dzień} other{# dni} other{# dnia}} temu',
     '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{minutę} few{# minuty} many{# minut} other{# minuty}} temu',
