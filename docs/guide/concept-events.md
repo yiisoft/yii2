@@ -17,7 +17,7 @@ An event handler is a [PHP callback](http://www.php.net/manual/en/language.types
 when the event it is attached to is triggered. You can use any of the following callbacks:
 
 - a global PHP function specified as a string (without parentheses), e.g., `'trim'`;
-- an object method specified as an array of an object and a method name as a string (without parenthess), e.g., `[$object, 'methodName']`;
+- an object method specified as an array of an object and a method name as a string (without parentheses), e.g., `[$object, 'methodName']`;
 - a static class method specified as an array of a class name and a method name as a string (without parentheses), e.g., `[$class, 'methodName']`;
 - an anonymous function, e.g., `function ($event) { ... }`.
 
