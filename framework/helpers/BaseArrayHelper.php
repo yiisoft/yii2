@@ -299,13 +299,12 @@ class BaseArrayHelper
     public static function getColumn($array, $name, $keepKeys = true)
     {
         $result = [];
-        if ($keepKeys) {
-            foreach ($array as $k => $element) {
-                $result[$k] = static::getValue($element, $name);
-            }
-        } else {
-            foreach ($array as $element) {
-                $result[] = static::getValue($element, $name);
+        foreach ($array as $k => $element) {
+            $value = static::getValue($element, $name);
+            if ($keepKeys) {
+                $result[$k] = $value;
+            } else {
+                $result[] = $value;
             }
         }
 
