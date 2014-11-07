@@ -141,7 +141,7 @@ For more details about access control in general, please refer to the [Authoriza
 
 ### Authentication Method Filters <a name="auth-method-filters"></a>
 
-Authentication method filters are used to authenticate a user based using various methods, such as
+Authentication method filters are used to authenticate a user using various methods, such as
 [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/).
 These filter classes are all under the `yii\filters\auth` namespace.
 
