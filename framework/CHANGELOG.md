@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #5570: `yii\bootstrap\Tabs` would throw an exception if `content` is not set for one of its `items` (RomeroMsk)
 - Bug #5584: `yii\rbac\DbRbacManager` should not delete items when deleting a rule on a database not supporting cascade update (mdmunir)
 - Bug #5601: Simple conditions in Query::where() and ActiveQuery::where() did not allow `yii\db\Expression` to be used as the value (cebe, stevekr)
+- Bug #5619: `yii\log\Target` should not attempt to start session when there is none (klimov-paul, qiangxue)  
 - Bug #5657: `yii\caching\ApcCache::mset()` and `madd()` may cause warning in some APC setup (LAV45)
 - Bug #5665: The `currentPage` meta data in the RESTful result should be 1-based, similar to that in HTTP headers (qiangxue)
 - Bug #5682: The `asset` command would incorrectly combine CSS files when `UrlManager::linkAssets` is true (dmvslv)
