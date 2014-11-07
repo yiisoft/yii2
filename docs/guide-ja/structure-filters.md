@@ -1,19 +1,20 @@
-Filters
-=======
+フィルタ
+========
 
-Filters are objects that run before and/or after [controller actions](structure-controllers.md#actions). For example,
-an access control filter may run before actions to ensure that they are allowed to be accessed by particular end users;
-a content compression filter may run after actions to compress the response content before sending them out to end users.
+フィルタは、[コントローラアクション](structure-controllers.md#actions) の前 および/または 後に走るオブジェクトです。
+例えば、アクセスコントロールフィルタはアクションの前に走って、アクションが特定のエンドユーザだけにアクセスを許可するものであることを保証します。
+また、コンテンツ圧縮フィルタはアクションの後に走って、レスポンスのコンテンツをエンドユーザに送出する前に圧縮します。
 
-A filter may consist of a pre-filter (filtering logic applied *before* actions) and/or a post-filter (logic applied
-*after* actions).
+フィルタは、前フィルタ (アクションの *前* に適用されるフィルタのロジック) および/または 後フィルタ (アクションの *後*
+に適用されるフィルタ) から構成されます。
 
 
-## Using Filters <a name="using-filters"></a>
+## フィルタを使用する <a name="using-filters"></a>
 
-Filters are essentially a special kind of [behaviors](concept-behaviors.md). Therefore, using filters is the same
-as [using behaviors](concept-behaviors.md#attaching-behaviors). You can declare filters in a controller class
-by overriding its [[yii\base\Controller::behaviors()|behaviors()]] method like the following:
+フィルタは、本質的には特別な種類の [ビヘイビア](concept-behaviors.md) です。したがって、フィルタを使うことは
+[ビヘイビアを使う](concept-behaviors.md#attaching-behaviors) ことと同じです。下記のように、
+[[yii\base\Controller::behaviors()|behaviors()]] メソッドをオーバーライドすることによって、コントローラの中で
+フィルタを宣言することが出来ます:
 
 ```php
 public function behaviors()
@@ -31,45 +32,44 @@ public function behaviors()
 }
 ```
 
-By default, filters declared in a controller class will be applied to *all* actions in that controller. You can,
-however, explicitly specify which actions the filter should be applied to by configuring the
-[[yii\base\ActionFilter::only|only]] property. In the above example, the `HttpCache` filter only applies to the
-`index` and `view` actions. You can also configure the [[yii\base\ActionFilter::except|except]] property to blacklist
-some actions from being filtered.
+既定では、コントローラクラスの中で宣言されたフィルタは、そのコントローラの *全て* のアクションに適用されます。
+しかし、[[yii\base\ActionFilter::only|only]] プロパティを構成することによって、フィルタがどのアクションに適用されるべきかを
+明示的に指定することも出来ます。上記の例では、 `HttpCache` フィルタは、`index` と `view` のアクションに対してのみ適用されています。
+また、[[yii\base\ActionFilter::except|except]] プロパティを構成して、いくつかのアクションをフィルタされないように除外することも可能です。
 
-Besides controllers, you can also declare filters in a [module](structure-modules.md) or [application](structure-applications.md).
-When you do so, the filters will be applied to *all* controller actions belonging to that module or application,
-unless you configure the filters' [[yii\base\ActionFilter::only|only]] and [[yii\base\ActionFilter::except|except]]
-properties like described above.
+コントローラのほかに、[モジュール](structure-modules.md) または [アプリケーション](structure-applications.md)
+でもフィルタを宣言することが出来ます。
+そのようにした場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティを
+上で説明したように構成しない限り、そのフィルタは、モジュールまたはアプリケーションに属する *全て* のコントローラアクションに適用されます。
 
-> Note: When declaring filters in modules or applications, you should use [routes](structure-controllers.md#routes)
-  instead of action IDs in the [[yii\base\ActionFilter::only|only]] and [[yii\base\ActionFilter::except|except]] properties.
-  This is because action IDs alone cannot fully specify actions within the scope of a module or application.
+> Note|注意: モジュールやアプリケーションでフィルタを宣言する場合、[[yii\base\ActionFilter::only|only]] と
+  [[yii\base\ActionFilter::except|except]] のプロパティでは、アクション ID ではなく、[ルート](structure-controllers.md#routes)
+  を使うべきです。なぜなら、モジュールやアプリケーションのスコープでは、アクション ID だけでは完全にアクションを指定することが
+  出来ないからです。
 
-When multiple filters are configured for a single action, they are applied according to the rules described below,
+一つのアクションに複数のフィルタが構成されている場合、フィルタは下記で説明されている規則に従って適用されます。
 
-* Pre-filtering
-    - Apply filters declared in the application in the order they are listed in `behaviors()`.
-    - Apply filters declared in the module in the order they are listed in `behaviors()`.
-    - Apply filters declared in the controller in the order they are listed in `behaviors()`.
-    - If any of the filters cancel the action execution, the filters (both pre-filters and post-filters) after it will
-      not be applied.
-* Running the action if it passes the pre-filtering.
-* Post-filtering
-    - Apply filters declared in the controller in the reverse order they are listed in `behaviors()`.
-    - Apply filters declared in the module in the reverse order they are listed in `behaviors()`.
-    - Apply filters declared in the application in the reverse order they are listed in `behaviors()`.
+* 前フィルタ
+    - アプリケーションで宣言されたフィルタを `behaviors()` にリストされた順に適用する。
+    - モジュールで宣言されたフィルタを `behaviors()` にリストされた順に適用する。
+    - コントローラで宣言されたフィルタを `behaviors()` にリストされた順に適用する。
+    - フィルタのどれかがアクションをキャンセルすると、そのフィルタの後のフィルタ (前フィルタと後フィルタの両方) は適用されない。
+* 前フィルタを通過したら、アクションを走らせる。
+* 後フィルタ
+    - コントローラで宣言されたフィルタを `behaviors()` にリストされた逆順で適用する。
+    - モジュールで宣言されたフィルタを `behaviors()` にリストされた逆順で適用する。
+    - アプリケーションで宣言されたフィルタを `behaviors()` にリストされた逆順で適用する。
 
 
-## Creating Filters <a name="creating-filters"></a>
+## フィルタを作成する <a name="creating-filters"></a>
 
-To create a new action filter, extend from [[yii\base\ActionFilter]] and override the
-[[yii\base\ActionFilter::beforeAction()|beforeAction()]] and/or [[yii\base\ActionFilter::afterAction()|afterAction()]]
-methods. The former will be executed before an action runs while the latter after an action runs.
-The return value of [[yii\base\ActionFilter::beforeAction()|beforeAction()]] determines whether an action should
-be executed or not. If it is false, the filters after this one will be skipped and the action will not be executed.
+新しいアクションフィルタを作成するためには、[[yii\base\ActionFilter]] を拡張して、
+[[yii\base\ActionFilter::beforeAction()|beforeAction()]] および/または [[yii\base\ActionFilter::afterAction()|afterAction()]]
+メソッドをオーバーライドします。前者はアクションが走る前に実行され、後者は走った後に実行されます。
+[[yii\base\ActionFilter::beforeAction()|beforeAction()]] の返り値が、アクションが実行されるべきか否かを決定します。
+返り値が false である場合、このフィルタの後に続くフィルタはスキップされ、アクションは実行を中止されます。
 
-The following example shows a filter that logs the action execution time:
+次の例は、アクションの実行時間をログに記録するフィルタを示すものです:
 
 ```php
 namespace app\components;
@@ -90,17 +90,17 @@ class ActionTimeFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         $time = microtime(true) - $this->_startTime;
-        Yii::trace("Action '{$action->uniqueId}' spent $time second.");
+        Yii::trace("アクション '{$action->uniqueId}' は $time 秒を消費。");
         return parent::afterAction($action, $result);
     }
 }
 ```
 
 
-## Core Filters <a name="core-filters"></a>
+## コアのフィルタ <a name="core-filters"></a>
 
-Yii provides a set of commonly used filters, found primarily under the `yii\filters` namespace. In the following,
-we will briefly introduce these filters.
+Yii はよく使われる一連のフィルタを提供しており、それらは、主として `yii\filters` 名前空間の下にあります。以下では、
+それらのフィルタを簡単に紹介します。
 
 
 ### [[yii\filters\AccessControl|AccessControl]] <a name="access-control"></a>
