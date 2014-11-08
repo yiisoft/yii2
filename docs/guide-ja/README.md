@@ -54,7 +54,6 @@ All Rights Reserved.
 * [リクエスト](runtime-requests.md)
 * [レスポンス](runtime-responses.md)
 * [セッションとクッキー](runtime-sessions-cookies.md)
-* [URL の解析と生成](runtime-url-handling.md)
 * [エラー処理](runtime-handling-errors.md)
 * [ログ](runtime-logging.md)
 
