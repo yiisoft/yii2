@@ -211,7 +211,7 @@ class QueryRunTest extends MongoDbTestCase
         $this->assertEquals($rows, $rowsUppercase);
     }
 
-    public function testOneWithModify()
+    public function testModify()
     {
         $connection = $this->getConnection();
 
@@ -221,14 +221,14 @@ class QueryRunTest extends MongoDbTestCase
         $newName = 'new name';
         $row = $query->from('customer')
             ->where(['name' => $searchName])
-            ->oneWithModify(['$set' => ['name' => $newName]], ['new' => false], $connection);
+            ->modify(['$set' => ['name' => $newName]], ['new' => false], $connection);
         $this->assertEquals($searchName, $row['name']);
 
         $searchName = 'name7';
         $newName = 'new name';
         $row = $query->from('customer')
             ->where(['name' => $searchName])
-            ->oneWithModify(['$set' => ['name' => $newName]], ['new' => true], $connection);
+            ->modify(['$set' => ['name' => $newName]], ['new' => true], $connection);
         $this->assertEquals($newName, $row['name']);
     }
 
