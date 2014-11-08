@@ -50,7 +50,7 @@ All Rights Reserved.
 
 * [概要](runtime-overview.md)
 * [ブートストラップ](runtime-bootstrapping.md)
-* [ルーティング](runtime-routing.md)
+* [ルーティングと URL 生成](runtime-routing.md)
 * [リクエスト](runtime-requests.md)
 * [レスポンス](runtime-responses.md)
 * [セッションとクッキー](runtime-sessions-cookies.md)

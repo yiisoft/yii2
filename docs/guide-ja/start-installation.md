@@ -157,7 +157,8 @@ DocumentRoot "path/to/basic/web"
 ### 推奨される Nginx の構成<a name="recommended-nginx-configuration"></a>
 
 [Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](http://jp1.php.net/install.fpm) としてインストールしていなければなりません。
-下記の設定を使い、`path/to/basic/web` の部分を `basic/web` の実際のパスに置き換え、`mysite.local` を実際のサーバのホスト名に置き換えてください。
+下記の設定を使うことができます (`path/to/basic/web` の部分を `basic/web` の実際のパスに置き換え、
+`mysite.local` を実際のサーバのホスト名に置き換えてください)。
 
 ```
 server {
