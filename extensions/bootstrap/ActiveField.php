@@ -153,7 +153,7 @@ class ActiveField extends \yii\widgets\ActiveField
     {
         $layoutConfig = $this->createLayoutConfig($config);
         $config = ArrayHelper::merge($layoutConfig, $config);
-        return parent::__construct($config);
+        parent::__construct($config);
     }
 
     /**
