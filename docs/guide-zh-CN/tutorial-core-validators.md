@@ -194,7 +194,7 @@ function foo($model, $attribute) {
 - `filter`：用于检查输入值存在性必然会进行数据库查询，而该属性为用于进一步筛选该查询的过滤条件。可以为代表额外查询条件的字符串或数组（关于查询条件的格式，请参考 [[yii\db\Query::where()]]）；或者样式为 `function ($query)` 的匿名函数，`$query` 参数为你希望在该函数内进行修改的 [[yii\db\Query|Query]] 对象。
 - `allowArray`：是否允许输入值为数组。默认为 false。若该属性为 true 且输入值为数组，则数组的每个元素都必须在目标字段中存在。值得注意的是，若用吧 `targetAttribute` 设为多元素数组来验证被测值在多字段中的存在性时，该属性不能设置为 true。
 
-> 译者注：[exist](#exist) 和 [unique](#unique) 验证器的机理和参数都相似，有点像一体两面的阴和阳。
+> 译注：[exist](#exist) 和 [unique](#unique) 验证器的机理和参数都相似，有点像一体两面的阴和阳。
 - 他们的区别是 exist 要求 `targetAttribute` 键所代表的的属性在其值所代表字段中找得到；而 unique 正相反，要求键所代表的的属性不能在其值所代表字段中被找到。
 - 从另一个角度来理解：他们都会在验证的过程中执行数据库查询，查询的条件即为where $v=$k (假设 `targetAttribute` 的其中一对键值对为 `$k => $v`)。unique 要求查询的结果数 `$count==0`，而 exist 则要求查询的结果数 `$count>0`
 - 最后别忘了，unique 验证器不存在 `allowArray` 属性哦。
@@ -423,7 +423,7 @@ function foo($model, $attribute) {
     - 若键和值相同，你可以只指定值。（如:`['a2']` 就代表 `['a2'=>'a2']`）
 - `filter`：用于检查输入值唯一性必然会进行数据库查询，而该属性为用于进一步筛选该查询的过滤条件。可以为代表额外查询条件的字符串或数组（关于查询条件的格式，请参考 [[yii\db\Query::where()]]）；或者样式为 `function ($query)` 的匿名函数，`$query` 参数为你希望在该函数内进行修改的 [[yii\db\Query|Query]] 对象。
 
-> 译者注：[exist](#exist) 和 [unique](#unique) 验证器的机理和参数都相似，有点像一体两面的阴和阳。
+> 译注：[exist](#exist) 和 [unique](#unique) 验证器的机理和参数都相似，有点像一体两面的阴和阳。
 - 他们的区别是 exist 要求 `targetAttribute` 键所代表的的属性在其值所代表字段中找得到；而 unique 正相反，要求键所代表的的属性不能在其值所代表字段中被找到。
 - 从另一个角度来理解：他们都会在验证的过程中执行数据库查询，查询的条件即为where $v=$k (假设 `targetAttribute` 的其中一对键值对为 `$k => $v`)。unique 要求查询的结果数 `$count==0`，而 exist 则要求查询的结果数 `$count>0`
 - 最后别忘了，unique 验证器不存在 `allowArray` 属性哦。

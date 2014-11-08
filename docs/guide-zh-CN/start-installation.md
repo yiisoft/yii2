@@ -30,7 +30,7 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 
 > 注意：在安装过程中 Composer 可能会询问你 GitHub 账户的登录信息，因为可能在使用中超过了 GitHub API 
 （对匿名用户的）使用限制。因为 Composer 需要为所有扩展包从 GitHub 
-中获取大量信息，所以超限非常正常。（译者注：也意味着作为程序猿没有 GitHub 账号，就真不能愉快地玩耍了）登陆 GitHub 
+中获取大量信息，所以超限非常正常。（译注：也意味着作为程序猿没有 GitHub 账号，就真不能愉快地玩耍了）登陆 GitHub 
 之后可以得到更高的 API 限额，这样 Composer 才能正常运行。更多细节请参考 [Composer 
 文档](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)（该段 Composer 
 中文文档[期待您的参与](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)）。
@@ -117,7 +117,7 @@ http://localhost/basic/web/index.php
 DocumentRoot "path/to/basic/web"
 
 <Directory "path/to/basic/web">
-    # 开启 mod_rewrite 用于美化 URL 功能的支持（译者注：对应 pretty URL 选项）
+    # 开启 mod_rewrite 用于美化 URL 功能的支持（译注：对应 pretty URL 选项）
     RewriteEngine on
     # 如果请求的是真实存在的文件或目录，直接访问
     RewriteCond %{REQUEST_FILENAME} !-f

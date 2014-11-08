@@ -41,7 +41,7 @@ class EntryForm extends Model
 
 该类继承自Yii 提供的一个基类 [[yii\base\Model]]，该基类通常用来表示数据。
 
-> 补充：[[yii\base\Model]] 被用于普通模型类的父类并与数据表**无关**。[[yii\db\ActiveRecord]] 通常是普通模型类的父类但与数据表有关联（译者注：[[yii\db\ActiveRecord]] 类其实也是继承自 [[yii\base\Model]]，增加了数据库处理）。
+> 补充：[[yii\base\Model]] 被用于普通模型类的父类并与数据表**无关**。[[yii\db\ActiveRecord]] 通常是普通模型类的父类但与数据表有关联（译注：[[yii\db\ActiveRecord]] 类其实也是继承自 [[yii\base\Model]]，增加了数据库处理）。
 
 `EntryForm` 类包含 `name` 和 `email` 两个公共成员，用来储存用户输入的数据。它还包含一个名为 `rules()` 的方法，用来返回数据验证规则的集合。上面声明的验证规则表示：
 

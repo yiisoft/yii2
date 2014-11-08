@@ -84,7 +84,7 @@ $yiiConfig = require(__DIR__ . '/../config/yii/web.php');
 new yii\web\Application($yiiConfig); // 千万别在这调用 run() 方法。（笑）
 ```
 
-如你所见，这段代码与典型的 Yii 应用的[入口脚本](structure-entry-scripts.md)非常相似。唯一的不同之处在于在 Yii 应用创建成功之后，并不会紧接着调用 `run()` 方法。因为，`run()` 方法的调用会接管 HTTP 请求的处理流程。（译者注：换言之，这就不是第三方系统而是 Yii 系统了，URL 规则也会跟着换成 Yii 的规则了）
+如你所见，这段代码与典型的 Yii 应用的[入口脚本](structure-entry-scripts.md)非常相似。唯一的不同之处在于在 Yii 应用创建成功之后，并不会紧接着调用 `run()` 方法。因为，`run()` 方法的调用会接管 HTTP 请求的处理流程。（译注：换言之，这就不是第三方系统而是 Yii 系统了，URL 规则也会跟着换成 Yii 的规则了）
 
 与 Yii 应用中一样，你可以依据运行该第三方系统的环境，针对性地配置 Yii 应用实例。比如，为了使用[活动记录](db-active-record.md)功能，你需要先用该第三方系统的 DB 连接信息，配置 Yii 的 `db` 应用组件。
 
