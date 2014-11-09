@@ -62,7 +62,7 @@ Yii 2.0 权威指南
 * **已定稿** [行为（Behavior）](concept-behaviors.md)
 * **已定稿** [配置（Configurations）](concept-configurations.md)
 * **已定稿** [类自动加载（Autoloading）](concept-autoloading.md)
-* **已定稿** [别名（Alias）](concept-alias.md)
+* **已定稿** [别名（Alias）](concept-aliases.md)
 * **已定稿** [服务定位器（Service Locator）](concept-service-locator.md)
 * **已定稿** [依赖注入容器（DI Container）](concept-di-container.md)
 
