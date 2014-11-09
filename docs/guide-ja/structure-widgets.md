@@ -41,11 +41,11 @@ use yii\jui\DatePicker;
 ]) ?>
 ```
 
-Some widgets can take a block of content which should be enclosed between the invocation of
-[[yii\base\Widget::begin()]] and [[yii\base\Widget::end()]]. For example, the following code uses the
-[[yii\widgets\ActiveForm]] widget to generate a login form. The widget will generate the opening and closing
-`<form>` tags at the place where `begin()` and `end()` are called, respectively. Anything in between will be
-rendered as is.
+ウィジェットの中には、コンテントのブロックを受け取ることが出来るものもあります。その場合、コンテントのブロックは
+[[yii\base\Widget::begin()]] と [[yii\base\Widget::end()]] の呼び出しの間に包むようにしなければなりません。
+例えば、次のコードは [[yii\widgets\ActiveForm]] ウィジェットを使ってログインフォームを生成するものです。
+このウィジェットは、`begin()` と `end()` が呼ばれる場所で、それぞれ、開始と終了の `<form>` タグを生成します。
+その間に置かれたものは全てそのままレンダリングされます。
 
 ```php
 <?php
@@ -60,25 +60,26 @@ use yii\helpers\Html;
     <?= $form->field($model, 'password')->passwordInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Login') ?>
+        <?= Html::submitButton('ログイン') ?>
     </div>
 
 <?php ActiveForm::end(); ?>
 ```
 
-Note that unlike [[yii\base\Widget::widget()]] which returns the rendering result of a widget, the method
-[[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
+[[yii\base\Widget::widget()]] がウィジェットのレンダリング結果を返すのとは違って、[[yii\base\Widget::begin()]] メソッドが
+ウィジェットのインスタンスを返すことに注意してください。返されたウィジェットのインスタンスを使って、ウィジェットのコンテントを
+構築することが出来ます。
 
 
-## Creating Widgets <a name="creating-widgets"></a>
+## ウィジェットを作成する <a name="creating-widgets"></a>
 
-To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
-[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that normalizes the widget
-properties, while the `run()` method should contain the code that generates the rendering result of the widget.
-The rendering result may be directly "echoed" or returned as a string by `run()`.
+ウィジェットを作成するためには、[[yii\base\Widget]] を拡張して、[[yii\base\Widget::init()]] および/または [[yii\base\Widget::run()]]
+メソッドをオーバーライドします。通常、`init()` メソッドはウィジェットのプロパティを正規化するコードを含むべきものであり、
+`run()` メソッドはウィジェットのレンダリング結果を生成するコードを含むべきものです。レンダリング結果は、直接に "echo"
+しても、`run()` の返り値として文字列として返しても構いません。
 
-In the following example, `HelloWidget` HTML-encodes and displays the content assigned to its `message` property.
-If the property is not set, it will display "Hello World" by default.
+次の例では、`HelloWidget` が `message` プロパティとして割り当てられたコンテントを HTML エンコードして表示します。
+プロパティがセットされていない場合は、デフォルトとして "Hello World" を表示します。
 
 ```php
 namespace app\components;
@@ -105,17 +106,17 @@ class HelloWidget extends Widget
 }
 ```
 
-To use this widget, simply insert the following code in a view:
+このウィジェットを使うために必要なことは、次のコードをビューに挿入するだけのことです。
 
 ```php
 <?php
 use app\components\HelloWidget;
 ?>
-<?= HelloWidget::widget(['message' => 'Good morning']) ?>
+<?= HelloWidget::widget(['message' => 'おはよう']) ?>
 ```
 
-Below is a variant of `HelloWidget` which takes the content enclosed within the `begin()` and `end()` calls,
-HTML-encodes it and then displays it.
+下記は `HelloWidget` の変種で、`begin()` と `end()` の間に包まれたコンテントを受け取り、それを
+HTML エンコードして表示するものです。
 
 ```php
 namespace app\components;
@@ -139,14 +140,14 @@ class HelloWidget extends Widget
 }
 ```
 
-As you can see, PHP output buffer is started in `init()` so that any output between the calls of `init()` and `run()`
-can be captured, processed and returned in `run()`.
+ご覧のように、`init()` の中で PHP の出力バッファが開始され、`init()` と `run()` の呼び出しの間の全ての出力がキャプチャされ、
+`run()` の中で処理されて返されます。
 
-> Info: When you call [[yii\base\Widget::begin()]], a new instance of the widget will be created and the `init()` method
-  will be called at the end of the widget constructor. When you call [[yii\base\Widget::end()]], the `run()` method
-  will be called whose return result will be echoed by `end()`.
+> Info|情報: [[yii\base\Widget::begin()]] を呼ぶと、ウィジェットの新しいインスタンスが作成され、ウィジェットのコンストラクタの
+  最後で `init()` メソッドが呼ばれます。[[yii\base\Widget::end()]] を呼ぶと、`run()` メソッドが呼ばれて、その返り値が `end()`
+  によって echo されます。
 
-The following code shows how to use this new variant of `HelloWidget`:
+次のコードは、この `HelloWidget` の新しい変種をどのように使うかを示すものです:
 
 ```php
 <?php
@@ -154,14 +155,14 @@ use app\components\HelloWidget;
 ?>
 <?php HelloWidget::begin(); ?>
 
-    content that may contain <tag>'s
+    ... タグを含みうるコンテント ...
 
 <?php HelloWidget::end(); ?>
 ```
 
-Sometimes, a widget may need to render a big chunk of content. While you can embed the content within the `run()`
-method, a better approach is to put it in a [view](structure-views.md) and call [[yii\base\Widget::render()]] to
-render it. For example,
+場合によっては、ウィジェットが大きな固まりのコンテントを表示する必要があるかもしれません。コンテントを `run()`
+メソッドの中に埋め込むことも出来ますが、より良い方法は、コンテントを [ビュー](structure-views.md) の中に置いて、
+[[yii\base\Widget::render()]] を呼んでレンダリングすることです。例えば、
 
 ```php
 public function run()
@@ -170,15 +171,16 @@ public function run()
 }
 ```
 
-By default, views for a widget should be stored in files in the `WidgetPath/views` directory, where `WidgetPath`
-stands for the directory containing the widget class file. Therefore, the above example will render the view file
-`@app/components/views/hello.php`, assuming the widget class is located under `@app/components`. You may override
-the [[yii\base\Widget::getViewPath()]] method to customize the directory containing the widget view files.
+既定では、ウィジェット用のビューは `WidgetPath/views` ディレクトリの中のファイルに保存すべきものです。ここで
+`WidgetPath` はウィジェットのクラスファイルを含むディレクトリを指します。したがって、上記の例では、ウィジェットクラスが
+`@app/components` に配置されていると仮定すると、`@app/components/views/hello.php` というビューファイルがレンダリングされる
+ことになります。[[yii\base\Widget::getViewPath()]] メソッドをオーバーライドして、ウィジェットのビューファイルを含むディレクトリを
+カスタマイズすることが出来ます。
 
 
-## Best Practices <a name="best-practices"></a>
+## 最善の慣行 <a name="best-practices"></a>
 
-Widgets are an object-oriented way of reusing view code.
+ウィジェットはビューのコードを再利用するためのオブジェクト指向の方法です。
 
 When creating widgets, you should still follow the MVC pattern. In general, you should keep logic in widget
 classes and keep presentation in [views](structure-views.md).
