@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #5768: When setting `data-confirm` attribute to a submit button, clicking on the button would not trigger form submission (qiangxue)
 - Bug #5780: `QueryBuilder::batchInsert()` may cause "undefined index" error (qiangxue)
 - Bug #5833: The `message` command fails with a FK constraint error when trying to update messages (qiangxue)
+- Bug #5863: Selecting all individual `yii\grid\CheckboxColumn` checkboxes in grid view wasn't resulting in "all" checkbox selected (samdark)
 - Bug #5893: `yii\helpers\ArrayHelper::toArray()` now applies `$properties` parameter for converting descending objects in recursive calls (otsec)
 - Bug #5925: `ArrayHelper::htmlEncode()` does not work properly when the value being encoded is a nested array (tebazil)
 - Bug: Gii console command help information does not contain global options (qiangxue)

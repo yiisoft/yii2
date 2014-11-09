@@ -122,8 +122,9 @@
             if (!options.multiple) {
                 return;
             }
-            var inputs = "#" + id + " input[name='" + options.checkAll + "']";
-            $(document).off('click.yiiGridView', inputs).on('click.yiiGridView', inputs, function () {
+            var checkAll = "#" + id + " input[name='" + options.checkAll + "']";
+            var inputs = "#" + id + " input[name='" + options.name + "']";
+            $(document).off('click.yiiGridView', checkAll).on('click.yiiGridView', checkAll, function () {
                 $grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
             });
             $(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
