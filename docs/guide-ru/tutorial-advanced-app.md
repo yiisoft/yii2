@@ -89,8 +89,8 @@
 
 <!-----del---- `.gitignore` contains a list of directories ignored by git version system. If you need something never get to your source-->
 <!-----del---  code repository, add it there.-->
-<!-----del---- `composer.json` - Composer config described in detail below.-->
-<!-----del---- `init` - initialization script described in "Composer config described in detail below".-->
+<!-----del---- `composer.json` - Composer config described in "Configuring Composer" below.-->
+<!-----del---- `init` - initialization script described in "Configuration and environments" below.-->
 <!-----del---- `init.bat` - same for Windows.-->
 <!-----del---- `LICENSE.md` - license info. Put your project license there. Especially when opensourcing.-->
 <!-----del---- `README.md` - basic info about installing template. Consider replacing it with information about your project and its-->
@@ -100,7 +100,7 @@
 <!-----del---- `yii.bat` - same for Windows.-->
 - `.gitignore` содержит список директорий игнорируемых системой контроля версий git. Если Вам необходимо, чтобы git не добавлял в репозиторий какие-то файлы или папки, то добавьте инструкцию в этот файл.
 - `composer.json` - Конфигурация Composer'a - подробно описана ниже в главе `Настройка Composer'a`.
-- `init` - скрипт инициализации (подробно в главе `Настройка Composer'a` ниже) для Linux.
+- `init` - скрипт инициализации  для Linux (подробно в главе `Конфигурация и окружение` ниже).
 - `init.bat` - скрипт инициализации - такой же командный файл для Windows.
 - `LICENSE.md` - информация о лицензии. Разместите лицензию вашего проекта в нем. Особенно когда код доступен всем ( opensourcing).
 - `README.md` - основная информация об установки шаблона. Можете разместить в нем информацию о вашем проекте и его настройке.
