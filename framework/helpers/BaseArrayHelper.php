@@ -580,7 +580,7 @@ class BaseArrayHelper
      * // output : Spain, France, and Italy
      *
      * // working with options for change behavior
-     * \yii\helpers\ArrayHelper::sentence($array, ['last_word_connector' => ' or ']);
+     * \yii\helpers\ArrayHelper::sentence($array, ['lastWordConnector' => ' or ']);
      * // output : Spain, France or Italy
      * ~~~
      *
@@ -588,13 +588,13 @@ class BaseArrayHelper
      * @param array $options the options in terms of name-value pairs. The following options
      * are specially handled:
      *
-     * - words_connector: The sign or word used to join the elements in arrays with two or
+     * - wordsConnector: The sign or word used to join the elements in arrays with two or
      * more elements. By default ', ''.
      *
-     * - two_words_connector: The sign or word used to join the elements in arrays with two
+     * - twoWordsConnector: The sign or word used to join the elements in arrays with two
      * elements. By default ' and '.
      *
-     * - last_word_connector:  The sign or word used to join the last element in arrays with
+     * - lastWordConnector:  The sign or word used to join the last element in arrays with
      * three or more elements. By default ', and '.
      *
      * - locale: If i18n is available, you can set a locale and use the traslation file defined
@@ -605,9 +605,9 @@ class BaseArrayHelper
     public static function sentence($array, $options = [])
     {
         $default_options = [
-            'words_connector'     => ', ',
-            'two_words_connector' => ' and ',
-            'last_word_connector' => ', and ',
+            'wordsConnector'     => ', ',
+            'twoWordsConnector' => ' and ',
+            'lastWordConnector' => ', and ',
             'locale' => Yii::$app->language
         ];
 
@@ -621,9 +621,9 @@ class BaseArrayHelper
             case 1:
                 return $array[0];
             case 2:
-                return $array[0] . \Yii::t('yii', $options['two_words_connector'], [], $options['locale']) . $array[1];
+                return $array[0] . \Yii::t('yii', $options['twoWordsConnector'], [], $options['locale']) . $array[1];
             default:
-                return implode($options['words_connector'], array_slice($array, 0, -1)) . \Yii::t('yii', $options['last_word_connector'], [], $options['locale']) . $array[$count - 1];
+                return implode($options['wordsConnector'], array_slice($array, 0, -1)) . \Yii::t('yii', $options['lastWordConnector'], [], $options['locale']) . $array[$count - 1];
         }
     }
 }
