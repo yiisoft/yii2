@@ -81,6 +81,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($val->validate('31.7.2013'));
         $this->assertFalse($val->validate('31-7-2013'));
         $this->assertFalse($val->validate('asdasdfasfd'));
+        $this->assertFalse($val->validate('20121212'));
         $this->assertFalse($val->validate(''));
         $this->assertFalse($val->validate(time()));
         $val->format = 'php:U';
@@ -96,6 +97,7 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($val->validate('2013-09-13'));
         $this->assertFalse($val->validate('31.7.2013'));
         $this->assertFalse($val->validate('31-7-2013'));
+        $this->assertFalse($val->validate('20121212'));
         $this->assertFalse($val->validate('asdasdfasfd'));
         $this->assertFalse($val->validate(''));
         $this->assertFalse($val->validate(time()));
