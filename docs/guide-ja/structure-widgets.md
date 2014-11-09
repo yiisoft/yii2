@@ -1,10 +1,10 @@
-Widgets
-=======
+ウィジェット
+============
 
-Widgets are reusable building blocks used in [views](structure-views.md) to create complex and configurable user
-interface elements in an object-oriented fashion. For example, a date picker widget may generate a fancy date picker
-that allows users to pick a date as their input. All you need to do is just to insert the code in a view
-like the following:
+ウィジェットは、[ビュー](structure-views.md) で使用される再利用可能な構成ブロックで、
+複雑かつコンフィギュレーション可能なユーザインタフェイス要素をオブジェクト指向のやり方で作成するためのものです。
+例えば、日付選択ウィジェットを使うと、入力として日付を選択することを可能にする素敵なデイトピッカーを生成することが出来ます。
+このとき、あなたがしなければならないことは、次のようなコードをビューに挿入することだけです:
 
 ```php
 <?php
@@ -13,18 +13,19 @@ use yii\jui\DatePicker;
 <?= DatePicker::widget(['name' => 'date']) ?>
 ```
 
-There are a good number of widgets bundled with Yii, such as [[yii\widgets\ActiveForm|active form]],
-[[yii\widgets\Menu|menu]], [jQuery UI widgets](widget-jui.md), [Twitter Bootstrap widgets](widget-bootstrap.md).
-In the following, we will introduce the basic knowledge about widgets. Please refer to the class API documentation
-if you want to learn about the usage of a particular widget.
+数多くのウィジェットが Yii にバンドルされています。例えば、[[yii\widgets\ActiveForm|アクティブフォーム]] や、
+[[yii\widgets\Menu|メニュー]]、[jQuery UI ウィジェット](widget-jui.md)、[Twitter Bootstrap ウィジェット](widget-bootstrap.md) などです。
+下記では、ウィジェットに関する基本的な知識の手引きをします。
+特定のウィジェットの使い方について学ぶ必要がある場合は、クラス API ドキュメントを参照してください。
 
 
-## Using Widgets <a name="using-widgets"></a>
+## ウィジェットを使う <a name="using-widgets"></a>
 
-Widgets are primarily used in [views](structure-views.md). You can call the [[yii\base\Widget::widget()]] method
-to use a widget in a view. The method takes a [configuration](concept-configurations.md) array for initializing
-the widget and returns the rendering result of the widget. For example, the following code inserts a date picker
-widget which is configured to use Russian language and keep the input in the `from_date` attribute of `$model`.
+ウィジェットは主として [ビュー](structure-views.md) で使われます。
+ビューでウィジェットを使うためには、[[yii\base\Widget::widget()]] メソッドを使うことが出来ます。
+このメソッドは、ウィジェットを初期化するための [コンフィギュレーション](concept-configurations.md) 配列を受け取り、ウィジェットのレンダリング結果を返します。
+例えば、下記のコードは、日本語を使い、入力を `$model` の `from_date`
+属性に保存するように構成された日付選択ウィジェットを挿入するものです。
 
 ```php
 <?php
@@ -33,7 +34,7 @@ use yii\jui\DatePicker;
 <?= DatePicker::widget([
     'model' => $model,
     'attribute' => 'from_date',
-    'language' => 'ru',
+    'language' => 'ja',
     'clientOptions' => [
         'dateFormat' => 'yy-mm-dd',
     ],
