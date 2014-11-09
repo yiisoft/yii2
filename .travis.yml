@@ -48,6 +48,8 @@ install:
 #  - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
+# print elasticsearch version
+  - curl http://localhost:9200
 # codeception
   - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
