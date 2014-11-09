@@ -8,6 +8,9 @@ namespace yiiunit\framework\web;
 use yiiunit\TestCase;
 use yii\web\JsExpression;
 
+/**
+ * @group web
+ */
 class JsExpressionTest extends TestCase
 {    
     public function test__toString()
