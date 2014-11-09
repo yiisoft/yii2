@@ -12,7 +12,7 @@ class JsExpressionTest extends TestCase
 {    
     public function test__toString()
     {
-        $connObj = new JsExpression('Test11');
+        $connObj = new JsExpression('Test1');
         $this->assertEquals('Test1',$connObj->__toString());
     }
 }
