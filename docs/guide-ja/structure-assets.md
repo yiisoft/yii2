@@ -1,17 +1,18 @@
-Assets
-======
+アセット
+========
 
-An asset in Yii is a file that may be referenced in a Web page. It can be a CSS file, a JavaScript file, an image
-or video file, etc. Assets are located in Web-accessible directories and are directly served by Web servers.
+Yii では、アセットは、ウェブページで参照できるファイルを意味します。CSS ファイルであったり、JavaScript ファイルであったり、
+画像やビデオのファイルであったりします。アセットはウェブでアクセス可能なディレクトリに配置され、
+ウェブサーバによって直接に提供されます。
 
-It is often preferable to manage assets programmatically. For example, when you use the [[yii\jui\DatePicker]] widget
-in a page, it will automatically include the required CSS and JavaScript files, instead of asking you to manually
-find these files and include them. And when you upgrade the widget to a new version, it will automatically use
-the new version of the asset files. In this tutorial, we will describe the powerful asset management capability
-provided in Yii.
+たいていの場合、アセットはプログラム的に管理する方が望ましいものです。例えば、ページの中で [[yii\jui\DatePicker]]
+ウィジェットを使うとき、ウィジェットが必要な CSS と JavaScript のファイルを自動的にインクルードします。あなたに対して、
+手作業で必要なファイルを探してインクルードするように要求したりはしません。そして、ウィジェットを新しいバージョンに
+アップグレードしたときは、ウィジェットが自動的に新しいバージョンのアセットファイルを使用するようになります。
+このチュートリアルでは、Yii によって提供される強力なアセット管理機能について説明します。
 
 
-## Asset Bundles <a name="asset-bundles"></a>
+## アセットバンドル <a name="asset-bundles"></a>
 
 Yii manages assets in the unit of *asset bundle*. An asset bundle is simply a collection of assets located
 in a directory. When you register an asset bundle in a [view](structure-views.md), it will include the CSS and
