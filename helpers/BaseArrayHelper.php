@@ -579,7 +579,7 @@ class BaseArrayHelper
      * \yii\helpers\ArrayHelper::sentence($array);
      * // output : Spain, France, and Italy
      *
-     * // working with options for change behavior
+     * // working with options to change the default behavior
      * \yii\helpers\ArrayHelper::sentence($array, ['lastWordConnector' => ' or ']);
      * // output : Spain, France or Italy
      * ~~~
@@ -589,7 +589,7 @@ class BaseArrayHelper
      * are specially handled:
      *
      * - wordsConnector: The sign or word used to join the elements in arrays with two or
-     * more elements. By default ', ''.
+     * more elements. By default ', '.
      *
      * - twoWordsConnector: The sign or word used to join the elements in arrays with two
      * elements. By default ' and '.
