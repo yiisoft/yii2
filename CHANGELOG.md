@@ -40,6 +40,7 @@ Yii Framework 2 Change Log
 - Enh #5770: Added more PHP error names for `ErrorException` (mongosoft)
 - Enh #5806: Allow `Html::encode()` to be used when the application is not started (qiangxue)
 - Enh #5954: `yii message` command now shows user friendly error if it's not able to parse source file (samdark)
+- Enh #5983: Added `Inflector::sentence()` (pana1990, qiangxue)
 - Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
 - Enh: `yii\rbac\DbManager` migration now uses database component specified in component settings instead of always using default `db` (samdark)
 - Chg #3630: `yii\db\Command::queryInternal()` is now protected (samdark) 
