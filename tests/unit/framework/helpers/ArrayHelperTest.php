@@ -396,4 +396,30 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::isIndexed([2 => 'a', 3 => 'b']));
         $this->assertFalse(ArrayHelper::isIndexed([2 => 'a', 3 => 'b'], true));
     }
+
+    public function testSentence()
+    {
+        $array = [];
+        $this->assertEquals('', ArrayHelper::sentence($array));
+
+        $array = ['Spain'];
+        $this->assertEquals('Spain', ArrayHelper::sentence($array));
+
+        $array = ['Spain', 'France'];
+        $this->assertEquals('Spain and France', ArrayHelper::sentence($array));
+
+        $array = ['Spain', 'France'];
+        $this->assertEquals('Spain or France', ArrayHelper::sentence($array, [
+            'twoWordsConnector' => ' or ',
+        ]));
+
+        $array = ['Spain', 'France', 'Italy'];
+        $this->assertEquals('Spain, France, and Italy', ArrayHelper::sentence($array));
+
+        $array = ['Spain', 'France', 'Italy'];
+        $this->assertEquals('Spain - France - Italy', ArrayHelper::sentence($array, [
+            'wordsConnector' => ' - ',
+            'lastWordConnector' => ' - '
+        ]));
+    }
 }
