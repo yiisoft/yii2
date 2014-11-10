@@ -182,14 +182,14 @@ public function run()
 
 ウィジェットはビューのコードを再利用するためのオブジェクト指向の方法です。
 
-When creating widgets, you should still follow the MVC pattern. In general, you should keep logic in widget
-classes and keep presentation in [views](structure-views.md).
+ウィジェットを作成するときでも、MVC パターンに従うべきです。一般的に言うと、ロジックはウィジェットクラスに保持し、
+表現は [ビュー](structure-views.md) に保持すべきです。
 
-Widgets should be designed to be self-contained. That is, when using a widget, you should be able to just drop
-it in a view without doing anything else. This could be tricky if a widget requires external resources, such as
-CSS, JavaScript, images, etc. Fortunately, Yii provides the support for [asset bundles](structure-asset-bundles.md),
-which can be utilized to solve the problem.
+ウィジェットは自己完結的に設計されるべきです。言い換えると、ウィジェットを使うときに、他に何もしないでも
+ビューに挿入することが出来るようにすべきです。この要求は、ウィジェットが CSS、JavaScript、画像などの外部リソースを必要とする場合は、
+扱いにくい問題になり得ます。幸いなことに、Yii はこの問題を解決するのに利用することが出来る [アセットバンドル](structure-asset-bundles.md)
+のサポートを提供しています。
 
-When a widget contains view code only, it is very similar to a [view](structure-views.md). In fact, in this case,
-their only difference is that a widget is a redistributable class, while a view is just a plain PHP script
-that you would prefer to keep it within your application.
+ウィジェットがビューコードだけを含む場合は、[ビュー](structure-views.md) と非常に似たものになります。実際のところ、この場合、
+両者の唯一の違いは、ウィジェットが再配布可能なクラスである一方で、ビューはアプリケーション内に保持することが望ましい
+素の PHP スクリプトである、というぐらいの事です。
