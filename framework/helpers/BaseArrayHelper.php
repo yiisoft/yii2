@@ -597,18 +597,14 @@ class BaseArrayHelper
      * - lastWordConnector:  The sign or word used to join the last element in arrays with
      * three or more elements. By default ', and '.
      *
-     * - locale: If i18n is available, you can set a locale and use the traslation file defined
-     * on the path 'messages/yii.php'.By default language defined in configuration file.
-     *
      * @return string
      */
     public static function sentence($array, $options = [])
     {
         $default_options = [
-            'wordsConnector'     => ', ',
+            'wordsConnector' => ', ',
             'twoWordsConnector' => ' and ',
             'lastWordConnector' => ', and ',
-            'locale' => Yii::$app->language
         ];
 
         $options = array_merge($default_options, $options);
@@ -621,9 +617,9 @@ class BaseArrayHelper
             case 1:
                 return $array[0];
             case 2:
-                return $array[0] . \Yii::t('yii', $options['twoWordsConnector'], [], $options['locale']) . $array[1];
+                return $array[0] . $options['twoWordsConnector'] . $array[1];
             default:
-                return implode($options['wordsConnector'], array_slice($array, 0, -1)) . \Yii::t('yii', $options['lastWordConnector'], [], $options['locale']) . $array[$count - 1];
+                return implode($options['wordsConnector'], array_slice($array, 0, -1)) . $options['lastWordConnector'] . $array[$count - 1];
         }
     }
 }
