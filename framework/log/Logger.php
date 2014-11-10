@@ -163,7 +163,9 @@ class Logger extends Component
     public function flush($final = false)
     {
         $messages = $this->messages;
-        $this->messages = []; // prevent processing same message twice in case flush is invoked during dispatching
+        // https://github.com/yiisoft/yii2/issues/5619
+        // new messages could be logged while the existing ones are being handled by targets
+        $this->messages = [];
         if ($this->dispatcher instanceof Dispatcher) {
             $this->dispatcher->dispatch($messages, $final);
         }
