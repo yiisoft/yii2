@@ -79,7 +79,7 @@ Ciclo de Vida de una Petición (Request) <a name="request-lifecycle"></a>
 
 El siguiente diagrama muestra cómo una aplicación maneja una petición.
 
-![Ciclo de Vida de un Request](images/application-lifecycle.png)
+![Ciclo de Vida de un Request](images/request-lifecycle.png)
 
 1. Un usuario realiza una petición al [script de entrada](structure-entry-scripts.md) `web/index.php`.
 2. El script de entrada carga la [configuración](concept-configurations.md) de la aplicación y crea

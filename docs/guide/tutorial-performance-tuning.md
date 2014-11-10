@@ -51,7 +51,7 @@ scripts for every incoming request.
 If the application is using Active Record, we should turn on the schema caching
 to save the time of parsing database schema. This can be done by setting the
 `Connection::enableSchemaCache` property to be `true` via application configuration
-`protected/config/main.php`:
+`config/web.php`:
 
 ```php
 return [
@@ -92,7 +92,7 @@ In order to learn how it can be achieved, refer to [assets](structure-assets.md)
 By default PHP uses files to handle sessions. It is OK for development and
 small projects but when it comes to handling concurrent requests it's better to
 switch to another storage such as database. You can do so by configuring your
-application via `protected/config/main.php`:
+application via `config/web.php`:
 
 ```php
 return [

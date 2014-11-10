@@ -65,7 +65,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 ```
 
 
-时间处理器顺序
+事件处理器顺序
 -----------------
 
 可以附加一个或多个处理器到一个事件。当事件被触发，已附加的处理器将按附加次序依次调用。如果某个处理器需要停止其后的处理器调用，可以设置 `$event` 参数的 [yii\base\Event::handled]] 属性为真，如下：
@@ -78,7 +78,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 
 默认新附加的事件处理器排在已存在处理器队列的最后。因此，这个处理器将在事件被触发时最后一个调用。在处理器队列最前面插入新处理器将使该处理器最先调用，可以传递第四个参数 `$append` 为假并调用 [[yii\base\Component::on()]] 方法实现：
 
-``php
+```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
     // 这个处理器将被插入到处理器队列的第一位...
 }, $data, false);

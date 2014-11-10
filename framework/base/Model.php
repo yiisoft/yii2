@@ -763,25 +763,31 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @param array $models the models to be populated. Note that all models should have the same class.
      * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
      * supplied by end user.
-     * @return boolean whether the model is successfully populated with some data.
+     * @param string $formName the form name to be used for loading the data into the models.
+     * If not set, it will use the [[formName()]] value of the first model in `$models`.
+     * @return boolean whether at least one of the models is successfully populated.
      */
-    public static function loadMultiple($models, $data)
+    public static function loadMultiple($models, $data, $formName = null)
     {
-        /* @var $model Model */
-        $model = reset($models);
-        if ($model === false) {
-            return false;
+        if ($formName === null) {
+            /* @var $first Model */
+            $first = reset($models);
+            if ($first === false) {
+                return false;
+            }
+            $formName = $first->formName();
         }
+
         $success = false;
-        $scope = $model->formName();
         foreach ($models as $i => $model) {
-            if ($scope == '') {
-                if (isset($data[$i])) {
-                    $model->setAttributes($data[$i]);
+            /* @var $model Model */
+            if ($formName == '') {
+                if (!empty($data[$i])) {
+                    $model->load($data[$i], '');
                     $success = true;
                 }
-            } elseif (isset($data[$scope][$i])) {
-                $model->setAttributes($data[$scope][$i]);
+            } elseif (!empty($data[$formName][$i])) {
+                $model->load($data[$formName][$i], '');
                 $success = true;
             }
         }

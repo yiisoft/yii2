@@ -40,7 +40,7 @@ GridView
 --------
 
 Data grid or GridView is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build admin
-section of the system. It takes data from [data provider](data-providers.md) and renders each row using a set of columns
+section of the system. It takes data from [data provider](output-data-providers.md) and renders each row using a set of columns
 presenting data in a form of a table.
 
 Each row of the table represents the data of a single data item, and a column usually represents an attribute of
@@ -251,9 +251,9 @@ echo GridView::widget([
 
 ### Filtering data
 
-For filtering data the GridView needs a [model](model.md) that takes the input from the filtering
+For filtering data the GridView needs a [model](structure-models.md) that takes the input from the filtering
 form and adjusts the query of the dataProvider to respect the search criteria.
-A common practice when using [active records](active-record.md) is to create a search Model class
+A common practice when using [active records](db-active-record.md) is to create a search Model class
 that provides needed functionality (it can be generated for you by Gii). This class defines the validation 
 rules for the search and provides a `search()` method that will return the data provider.
 
@@ -420,7 +420,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > ```
 
 > Info: For more information on `joinWith` and the queries performed in the background, check the
-> [active record docs on eager and lazy loading](active-record.md#lazy-and-eager-loading).
+> [active record docs on eager and lazy loading](db-active-record.md#lazy-and-eager-loading).
 
 #### Using sql views for filtering, sorting and displaying data
 

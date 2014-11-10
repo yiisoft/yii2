@@ -87,7 +87,7 @@ ModuleID/ControllerID/ActionID
 ```
 
 ですから、ユーザが `http://hostname/index.php?r=site/index` という URL でリクエストをした場合は、`site` コントローラの中の `index` アクションが実行されます。
-どのようにしてルートがアクションとして解決されるかについて、更なる詳細は [ルーティング](runtime-routing.md) の節を参照してください。
+どのようにしてルートがアクションとして解決されるかについて、更なる詳細は [ルーティングと URL 生成](runtime-routing.md) の節を参照してください。
 
 
 ## コントローラを作成する<a name="creating-controllers"></a>

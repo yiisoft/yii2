@@ -50,11 +50,10 @@ All Rights Reserved.
 
 * [概要](runtime-overview.md)
 * [ブートストラップ](runtime-bootstrapping.md)
-* [ルーティング](runtime-routing.md)
+* [ルーティングと URL 生成](runtime-routing.md)
 * [リクエスト](runtime-requests.md)
 * [レスポンス](runtime-responses.md)
 * [セッションとクッキー](runtime-sessions-cookies.md)
-* [URL の解析と生成](runtime-url-handling.md)
 * [エラー処理](runtime-handling-errors.md)
 * [ログ](runtime-logging.md)
 
@@ -136,7 +135,7 @@ RESTful ウェブサービス
 * [ルーティング](rest-routing.md)
 * [レスポンスの書式設定](rest-response-formatting.md)
 * [認証](rest-authentication.md)
-* [速度制限](rest-rate-limiting.md)
+* [転送レート制限](rest-rate-limiting.md)
 * [バージョン管理](rest-versioning.md)
 * [エラー処理](rest-error-handling.md)
 

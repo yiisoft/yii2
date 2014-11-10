@@ -267,7 +267,7 @@ class User extends ActiveRecord
 
 保存 `User` 对象，将会发现它的 `created_at` 和 `updated_at` 属性自动填充了当前时间戳：
 
-``php
+```php
 $user = new User;
 $user->email = 'test@example.com';
 $user->save();

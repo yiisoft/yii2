@@ -36,7 +36,7 @@ http://localhost/users
 // вернёт только поля id и email, если они объявлены в методе fields()
 http://localhost/users?fields=id,email
 
-// вернёт все поля обявленные в fields() и поле profile если оно указано в extraFields()
+// вернёт все поля объявленные в fields() и поле profile если оно указано в extraFields()
 http://localhost/users?expand=profile
 
 // вернёт только id, email и profile, если они объявлены в fields() и extraFields()

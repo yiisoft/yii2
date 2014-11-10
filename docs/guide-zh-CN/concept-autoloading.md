@@ -15,7 +15,7 @@ Yii 依靠[类自动加载机制](http://www.php.net/manual/en/language.oop5.aut
 * 每个类都必须保存为单独文件，且其完整路径能用以下算法取得：
 
 ```php
-// $className 是一个开头包含反斜杠的完整类名（译者注：请自行谷歌：fully qualified class name）
+// $className 是一个开头包含反斜杠的完整类名（译注：请自行谷歌：fully qualified class name）
 $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 ```
 
