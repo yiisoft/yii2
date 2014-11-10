@@ -1,7 +1,7 @@
 Yii 2.0 公式ガイド
 ==================
 
-このチュートリアルは [Yii ドキュメンテーション規約](http://www.yiiframework.com/doc/terms/) の下に
+このチュートリアルは [Yii ドキュメント規約](http://www.yiiframework.com/doc/terms/) の下に
 リリースされています。
 
 All Rights Reserved.
@@ -145,7 +145,7 @@ RESTful ウェブサービス
 
 * [デバッグツールバーとデバッガ](tool-debugger.md)
 * [Gii を使ってコードを生成する](tool-gii.md)
-* **TBD** [API ドキュメンテーションを生成する](tool-api-doc.md)
+* **TBD** [API ドキュメントを生成する](tool-api-doc.md)
 
 
 テスト
