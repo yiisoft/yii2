@@ -21,9 +21,9 @@ JavaScript files in the bundle in the rendered Web page.
 ## Defining Asset Bundles <a name="defining-asset-bundles"></a>
 
 Asset bundles are specified as PHP classes extending from [[yii\web\AssetBundle]]. The name of a bundle is simply
-its corresponding PHP class name which should be [autoloadable](concept-autoloading.md). In an asset bundle class,
-you would typically specify where the assets are located, what CSS and JavaScript files the bundle contains, and
-how the bundle depends on other bundles.
+its corresponding fully qualified PHP class name (without the leading backslash). An asset bundle class should
+should be [autoloadable](concept-autoloading.md). It usually specifies where the assets are located, what CSS and 
+JavaScript files the bundle contains, and how the bundle depends on other bundles.
 
 The following code defines the main asset bundle used by [the basic application template](start-installation.md):
 
