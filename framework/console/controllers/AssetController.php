@@ -512,9 +512,10 @@ EOD;
     public function combineCssFiles($inputFiles, $outputFile)
     {
         $content = '';
+        $outputFilePath = dirname($this->findRealPath($outputFile));
         foreach ($inputFiles as $file) {
             $content .= "/*** BEGIN FILE: $file ***/\n"
-                . $this->adjustCssUrl(file_get_contents($file), dirname($file), dirname($outputFile))
+                . $this->adjustCssUrl(file_get_contents($file), dirname($this->findRealPath($file)), $outputFilePath)
                 . "/*** END FILE: $file ***/\n";
         }
         if (!file_put_contents($outputFile, $content)) {
@@ -657,5 +658,27 @@ EOD;
         } else {
             echo "Configuration file template created at '{$configFile}'.\n\n";
         }
+    }
+
+    /**
+     * Returns canonicalized absolute pathname.
+     * Unlike regular `realpath()` this method does not expand symlinks and does not check path existence.
+     * @param string $path raw path
+     * @return string canonicalized absolute pathname
+     */
+    private function findRealPath($path)
+    {
+        $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+        $pathParts = explode(DIRECTORY_SEPARATOR, $path);
+
+        $realPathParts = [];
+        foreach ($pathParts as $pathPart) {
+            if ($pathPart === '..') {
+                array_pop($realPathParts);
+            } else {
+                array_push($realPathParts, $pathPart);
+            }
+        }
+        return implode(DIRECTORY_SEPARATOR, $realPathParts);
     }
 }

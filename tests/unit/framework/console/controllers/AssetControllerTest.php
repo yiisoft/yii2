@@ -409,4 +409,51 @@ EOL;
 
         $this->assertEquals($expectedCssContent, $adjustedCssContent, 'Unable to adjust CSS correctly!');
     }
+
+    /**
+     * Data provider for [[testFindRealPath()]]
+     * @return array test data
+     */
+    public function findRealPathDataProvider()
+    {
+        return [
+            [
+                '/linux/absolute/path',
+                '/linux/absolute/path',
+            ],
+            [
+                '/linux/up/../path',
+                '/linux/path',
+            ],
+            [
+                '/linux/twice/up/../../path',
+                '/linux/path',
+            ],
+            [
+                '/linux/../mix/up/../path',
+                '/mix/path',
+            ],
+            [
+                'C:\\windows\\absolute\\path',
+                'C:\\windows\\absolute\\path',
+            ],
+            [
+                'C:\\windows\\up\\..\\path',
+                'C:\\windows\\path',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider findRealPathDataProvider
+     *
+     * @param string $sourcePath
+     * @param string $expectedRealPath
+     */
+    public function testFindRealPath($sourcePath, $expectedRealPath)
+    {
+        $expectedRealPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $expectedRealPath);
+        $realPath = $this->invokeAssetControllerMethod('findRealPath', [$sourcePath]);
+        $this->assertEquals($expectedRealPath, $realPath);
+    }
 }
