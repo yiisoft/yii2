@@ -14,19 +14,19 @@ Yii では、アセットは、ウェブページで参照できるファイル�
 
 ## アセットバンドル <a name="asset-bundles"></a>
 
-Yii manages assets in the unit of *asset bundle*. An asset bundle is simply a collection of assets located
-in a directory. When you register an asset bundle in a [view](structure-views.md), it will include the CSS and
-JavaScript files in the bundle in the rendered Web page.
+Yii はアセットを *アセットバンドル* を単位として管理します。アセットバンドルは、単にあるディレクトリの下に集められた
+一群のアセットに過ぎません。[ビュー](structure-views.md) の中でアセットバンドルを登録すると、バンドルの中の CSS や
+JavaScript のファイルがレンダリングされるウェブページに挿入されます。
 
 
-## Defining Asset Bundles <a name="defining-asset-bundles"></a>
+## アセットバンドルを定義する <a name="defining-asset-bundles"></a>
 
-Asset bundles are specified as PHP classes extending from [[yii\web\AssetBundle]]. The name of a bundle is simply
-its corresponding PHP class name which should be [autoloadable](concept-autoloading.md). In an asset bundle class,
-you would typically specify where the assets are located, what CSS and JavaScript files the bundle contains, and
-how the bundle depends on other bundles.
+アセットバンドルは [[yii\web\AssetBundle]] から拡張された PHP クラスとして定義されます。バンドルの名前は単に対応する PHP
+クラスの名前であり、そのクラスは [オートロード可能](concept-autoloading.md) でなければなりません。アセットバンドルのクラスでは、
+典型的な場合、アセットがどこに置かれているか、バンドルがどういう CSS や JavaScript のファイルを含んでいるか、そして、
+バンドルが他のバンドルにどのように依存しているかを定義することになります。
 
-The following code defines the main asset bundle used by [the basic application template](start-installation.md):
+以下のコードは [ベーシックアプリケーションテンプレート](start-installation.md) によって使用されているメインのアセットバンドルを定義するものです:
 
 ```php
 <?php
@@ -51,37 +51,36 @@ class AppAsset extends AssetBundle
 }
 ```
 
-The above `AppAsset` class specifies that the asset files are located under the `@webroot` directory which
-is corresponding to the URL `@web`; the bundle contains a single CSS file `css/site.css` and no JavaScript file;
-the bundle depends on two other bundles: [[yii\web\YiiAsset]] and [[yii\bootstrap\BootstrapAsset]]. More detailed
-explanation about the properties of [[yii\web\AssetBundle]] can be found in the following:
+上の `AppAsset` クラスは、アセットファイルが `@webroot` ディレクトリの下に配置されており、それが URL `@web` に対応することを
+定義しています。バンドルは一つだけ CSS ファイル `css/site.css` を含み、JavaScript ファイルは含みません。バンドルは、
+他の二つのバンドル、すなわち [[yii\web\YiiAsset]] と [[yii\bootstrap\BootstrapAsset]] に依存しています。
+以下、[[yii\web\AssetBundle]] のプロパティに関して、更に詳細に説明します。
 
-* [[yii\web\AssetBundle::sourcePath|sourcePath]]: specifies the root directory that contains the asset files in
-  this bundle. This property should be set if the root directory is not Web accessible. Otherwise, you should
-  set the [[yii\web\AssetBundle::basePath|basePath]] property and [[yii\web\AssetBundle::baseUrl|baseUrl]], instead.
-  [Path aliases](concept-aliases.md) can be used here.
-* [[yii\web\AssetBundle::basePath|basePath]]: specifies a Web-accessible directory that contains the asset files in
-  this bundle. When you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property,
-  the [asset manager](#asset-manager) will publish the assets in this bundle to a Web-accessible directory
-  and overwrite this property accordingly. You should set this property if your asset files are already in
-  a Web-accessible directory and do not need asset publishing. [Path aliases](concept-aliases.md) can be used here.
-* [[yii\web\AssetBundle::baseUrl|baseUrl]]: specifies the URL corresponding to the directory
-  [[yii\web\AssetBundle::basePath|basePath]]. Like [[yii\web\AssetBundle::basePath|basePath]],
-  if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property, the [asset manager](#asset-manager)
-  will publish the assets and overwrite this property accordingly. [Path aliases](concept-aliases.md) can be used here.
-* [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. Note that only
-  forward slash "/" should be used as directory separators. Each JavaScript file can be specified in one of the
-  following two formats:
-  - a relative path representing a local JavaScript file (e.g. `js/main.js`). The actual path of the file
-    can be determined by prepending [[yii\web\AssetManager::basePath]] to the relative path, and the actual URL
-    of the file can be determined by prepending [[yii\web\AssetManager::baseUrl]] to the relative path.
-  - an absolute URL representing an external JavaScript file. For example,
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
-    `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
-  is the same as that of [[yii\web\AssetBundle::js|js]].
-* [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
-  (to be explained shortly).
+* [[yii\web\AssetBundle::sourcePath|sourcePath]]: このバンドルのアセットファイルを含むルートディレクトリを指定します。
+  ルートディレクトリがウェブからアクセス可能でない場合はこのプロパティをセットしなければなりません。ウェブからアクセス可能な場合は、
+  かわりに [[yii\web\AssetBundle::basePath|basePath]] と [[yii\web\AssetBundle::baseUrl|baseUrl]] のプロパティをセットすべきです。
+  [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
+* [[yii\web\AssetBundle::basePath|basePath]]: このバンドルのアセットファイルを含むウェブからアクセス可能なディレクトリを指定します。
+  [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティをセットした場合は、[アセットマネージャ](#asset-manager) がバンドルに
+  含まれるファイルをウェブからアクセス可能なディレクトリに発行して、その結果に応じてこのプロパティを上書きします。
+  アセットファイルが既にウェブからアクセス可能なディレクトリにあり、アセットの発行が必要でない場合に、このプロパティをセットすべきです。
+  [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
+* [[yii\web\AssetBundle::baseUrl|baseUrl]]: [[yii\web\AssetBundle::basePath|basePath]] ディレクトリに対応する URL を指定します。
+  [[yii\web\AssetBundle::basePath|basePath]] と同じように、[[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティをセットした場合は、
+  [アセットマネージャ](#asset-manager) がアセットを発行して、その結果に応じてこのプロパティを上書きします。
+  [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
+* [[yii\web\AssetBundle::js|js]]: このバンドルに含まれる JavaScript ファイルをリストする配列です。ディレクトリの区切りとして
+  フォワードスラッシュ "/" だけを使うべきことに注意してください。それぞれの JavaScript ファイルは、以下の二つの形式のどちらかによって
+  指定することが出来ます。
+  - ローカルの JavaScript ファイルを表す相対パス (例えば `js/main.js`)。実際のファイルのパスは、この相対パスの前に
+    [[yii\web\AssetManager::basePath]] を付けることによって決定されます。また、実際の URL は、この相対パスの前に
+    [[yii\web\AssetManager::baseUrl]] を付けることによって決定されます。
+  - 外部の JavaScript ファイルを表す絶対 URL。例えば、
+    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` や
+    `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` など。
+* [[yii\web\AssetBundle::css|css]]: このバンドルに含まれる CSS ファイルをリストする配列です。この配列の形式は、
+  [[yii\web\AssetBundle::js|js]] の形式と同じです。
+* [[yii\web\AssetBundle::depends|depends]]: このバンドルが依存しているアセットバンドルの名前をリストする配列です (すぐ後で説明します)。
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: specifies the options that will be passed to the
   [[yii\web\View::registerJsFile()]] method when it is called to register *every* JavaScript file in this bundle.
 * [[yii\web\AssetBundle::cssOptions|cssOptions]]: specifies the options that will be passed to the
