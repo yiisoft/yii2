@@ -271,7 +271,11 @@ abstract class Target extends Component
 
         /* @var $user \yii\web\User */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
-        $userID = $user ? $user->getId(false) : '-';
+        if ($user && ($identity = $user->getIdentity(false))) {
+            $userID = $identity->getId();
+        } else {
+            $userID = '-';
+        }
 
         /* @var $session \yii\web\Session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;

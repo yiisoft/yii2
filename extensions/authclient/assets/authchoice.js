@@ -54,9 +54,9 @@ jQuery(function($) {
 
                 var popupFeatureParts = [];
                 for (var propName in popupOptions) {
-		    if (popupOptions.hasOwnProperty(propName)) {
-		        popupFeatureParts.push(propName + '=' + popupOptions[propName]);
-		    }
+                    if (popupOptions.hasOwnProperty(propName)) {
+                        popupFeatureParts.push(propName + '=' + popupOptions[propName]);
+                    }
                 }
                 var popupFeature = popupFeatureParts.join(',');
 

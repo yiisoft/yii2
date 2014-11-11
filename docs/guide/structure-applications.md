@@ -589,6 +589,8 @@ followed by modules (if any), and finally applications.
 
 ## Application Lifecycle <a name="application-lifecycle"></a>
 
+![Application Lifecycle](images/application-lifecycle.png)
+
 When an [entry script](structure-entry-scripts.md) is being executed to handle a request,
 an application will undergo the following lifecycle:
 

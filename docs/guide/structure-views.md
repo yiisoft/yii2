@@ -42,7 +42,7 @@ and rendering this view template.
 
 Besides `$this`, there may be other predefined variables in a view, such as `$model` in the above
 example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
-or other objects whose trigger the [view rendering](#rendering-views).
+or other objects which trigger the [view rendering](#rendering-views).
 
 > Tip: The predefined variables are listed in a comment block at beginning of a view so that they can
   be recognized by IDEs. It is also a good way of documenting your views.
@@ -238,7 +238,7 @@ A view name is resolved into the corresponding view file path according to the f
   context to the view name. This mainly applies to the views rendered within controllers and widgets. For example,
   `site/about` will be resolved into `@app/views/site/about.php` if the context is the controller `SiteController`.
 * If a view is rendered within another view, the directory containing the other view file will be prefixed to
-  the new view name to form the actual view file path. For example, `item` will be resolved into `@app/views/post/item`
+  the new view name to form the actual view file path. For example, `item` will be resolved into `@app/views/post/item.php`
   if it is being rendered in the view `@app/views/post/index.php`.
 
 According to the above rules, calling `$this->render('view')` in a controller `app\controllers\PostController` will
@@ -585,8 +585,8 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ```
 
 The above code will register a "keywords" meta tag with the view component. The registered meta tag is
-rendered after the layout finishes rendering. By then, the following HTML code will be inserted
-at the place where you call [[yii\web\View::head()]] in the layout and generate the following HTML code:
+rendered after the layout finishes rendering. The following HTML code will be generated and inserted
+at the place where you call [[yii\web\View::head()]] in the layout:
 
 ```php
 <meta name="keywords" content="yii, framework, php">
@@ -606,7 +606,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 
 ### Registering Link Tags <a name="registering-link-tags"></a>
 
-Like [meta tags](#adding-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
+Like [meta tags](#registering-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
 RSS feed or delegating OpenID to another server. You can work with link tags in the similar way as meta tags
 by using [[yii\web\View::registerLinkTag()]]. For example, in a content view, you can register a link tag like follows,
 
@@ -626,7 +626,7 @@ The code above will result in
 ```
 
 Similar as [[yii\web\View::registerMetaTag()|registerMetaTags()]], you can specify a key when calling
-[[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generated repeated link tags.
+[[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generating repeated link tags.
 
 
 ## View Events <a name="view-events"></a>

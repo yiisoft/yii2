@@ -18,6 +18,6 @@
 
 下面的示意图展示了应用是如何处理一个请求的。
 
-![Request Lifecycle](images/application-lifecycle.png)
+![Request Lifecycle](images/request-lifecycle.png)
 
 在这个版块中，我们会更加详细地描述某些步骤的具体运作。

@@ -211,6 +211,10 @@ log target configuration specifies that only the value of the `$_SERVER` variabl
 ]
 ```
 
+You may configure `logVars` to be an empty array to totally disable the inclusion of context information.
+Or if you want to implement your own way of providing context information, you may override the
+[[yii\log\Target::getContextMessage()]] method.
+
 
 ### Message Trace Level <a name="trace-level"></a>
 

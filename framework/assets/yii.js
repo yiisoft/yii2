@@ -131,6 +131,8 @@ yii = (function ($) {
             if (method === undefined) {
                 if (action && action != '#') {
                     window.location = action;
+                } else if ($e.is(':submit') && $form.length) {
+                    $form.trigger('submit');
                 }
                 return;
             }
@@ -140,7 +142,8 @@ yii = (function ($) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
                     action = window.location.href;
                 }
-                $form = $('<form method="' + method + '" action="' + action + '"></form>');
+                $form = $('<form method="' + method + '"></form>');
+                $form.prop('action', action);
                 var target = $e.prop('target');
                 if (target) {
                     $form.attr('target', target);

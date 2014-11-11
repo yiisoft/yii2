@@ -81,7 +81,7 @@ class BaseArrayHelper
                         }
                     }
 
-                    return $recursive ? static::toArray($result) : $result;
+                    return $recursive ? static::toArray($result, $properties) : $result;
                 }
             }
             if ($object instanceof Arrayable) {
@@ -462,7 +462,7 @@ class BaseArrayHelper
             if (is_string($value)) {
                 $d[$key] = htmlspecialchars($value, ENT_QUOTES, $charset);
             } elseif (is_array($value)) {
-                $d[$key] = static::htmlEncode($value, $charset);
+                $d[$key] = static::htmlEncode($value, $valuesOnly, $charset);
             }
         }
 

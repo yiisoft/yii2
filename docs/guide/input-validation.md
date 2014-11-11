@@ -1,8 +1,8 @@
 Validating Input
 ================
 
-As a rule of thumb, you should never trust the data received from end users and should always validate them
-before putting them to good use.
+As a rule of thumb, you should never trust the data received from end users and should always validate it
+before putting it to good use.
 
 Given a [model](structure-models.md) populated with user inputs, you can validate the inputs by calling the
 [[yii\base\Model::validate()]] method. The method will return a boolean value indicating whether the validation
@@ -83,7 +83,7 @@ You can specify the rule type in one of the following forms:
   the [Core Validators](tutorial-core-validators.md) for the complete list of core validators.
 * the name of a validation method in the model class, or an anonymous function. Please refer to the
   [Inline Validators](#inline-validators) subsection for more details.
-* the name of a validator class. Please refer to the [Standalone Validators](#standalone-validators)
+* a fully qualified validator class name. Please refer to the [Standalone Validators](#standalone-validators)
   subsection for more details.
 
 A rule can be used to validate one or multiple attributes, and an attribute may be validated by one or multiple rules.
@@ -367,11 +367,12 @@ class MyForm extends Model
   or if they have already failed some validation rules. If you want to make sure a rule is always applied,
   you may configure the [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] and/or [[yii\validators\Validator::skipOnError|skipOnError]]
   properties to be false in the rule declarations. For example:
+>
 > ```php
-[
-    ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
-]
-```
+> [
+>     ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
+> ]
+> ```
 
 
 ### Standalone Validators <a name="standalone-validators"></a>
@@ -529,13 +530,14 @@ JS;
 ```
 
 > Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
-  you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
-  write the validation rule like the following:
+> you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
+> write the validation rule like the following:
+>
 > ```php
-[
-    ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
-]
-```
+> [
+>     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
+> ]
+> ```
 
 ### Deferred Validation <a name="deferred-validation"></a>
 

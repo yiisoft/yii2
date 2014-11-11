@@ -118,8 +118,8 @@ class DefaultController extends Controller
                 clearstatcache();
             }
             $indexFile = $this->module->dataPath . '/index.data';
-            if (is_file($indexFile) && is_readable($indexFile)) {
-                $this->_manifest = array_reverse(unserialize(file_get_contents($indexFile)), true);
+            if (is_file($indexFile) && is_readable($indexFile) && ($content = file_get_contents($indexFile)) !== false) {
+                $this->_manifest = array_reverse(unserialize($content), true);
             } else {
                 $this->_manifest = [];
             }

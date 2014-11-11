@@ -58,6 +58,11 @@ class ActiveRecordTest extends SphinxTestCase
         $this->assertTrue($article instanceof ArticleIndex);
         $this->assertEquals(2, $article->id);
 
+        // find by comparison
+        $article = ArticleIndex::find()->where(['>', 'author_id', 1])->one();
+        $this->assertTrue($article instanceof ArticleIndex);
+        $this->assertEquals(2, $article->id);
+
         // find custom column
         $article = ArticleIndex::find()->select(['*', '(5*2) AS custom_column'])
             ->where(['author_id' => 1])->one();

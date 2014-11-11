@@ -77,7 +77,7 @@ Request Lifecycle <a name="request-lifecycle"></a>
 
 The following diagram shows how an application handles a request.
 
-![Request Lifecycle](images/application-lifecycle.png)
+![Request Lifecycle](images/request-lifecycle.png)
 
 1. A user makes a request to the [entry script](structure-entry-scripts.md) `web/index.php`.
 2. The entry script loads the application [configuration](concept-configurations.md) and creates

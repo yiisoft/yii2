@@ -7,7 +7,7 @@ This extension provides the [MongoDB](http://www.mongodb.org/) integration for t
 Installation
 ------------
 
-This extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.3.0 or higher.
+This extension requires [MongoDB PHP Extension](http://us1.php.net/manual/en/book.mongo.php) version 1.4.0 or higher.
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 

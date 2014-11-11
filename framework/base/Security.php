@@ -85,7 +85,7 @@ class Security extends Component
      * The encrypted data includes a keyed message authentication code (MAC) so there is no need
      * to hash input or output data.
      * > Note: Avoid encrypting with passwords wherever possible. Nothing can protect against
-     * poor-quality or compromosed passwords.
+     * poor-quality or compromised passwords.
      * @param string $data the data to encrypt
      * @param string $password the password to use for encryption
      * @return string the encrypted data

@@ -59,7 +59,7 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 
 以下图表展示了一个应用如何处理请求：
 
-![请求生命周期](images/application-lifecycle.png)
+![请求生命周期](images/request-lifecycle.png)
 
 1. 用户向[入口脚本](structure-entry-scripts.md) `web/index.php` 发起请求。
 2. 入口脚本加载应用[配置](concept-configurations.md)并创建一个[应用](structure-applications.md)实例去处理请求。

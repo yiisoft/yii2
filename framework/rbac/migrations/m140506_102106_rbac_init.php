@@ -33,6 +33,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
     public function up()
     {
         $authManager = $this->getAuthManager();
+        $this->db = $authManager->db;
 
         $tableOptions = null;
         if ($this->db->driverName === 'mysql') {
@@ -81,6 +82,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
     public function down()
     {
         $authManager = $this->getAuthManager();
+        $this->db = $authManager->db;
 
         $this->dropTable($authManager->assignmentTable);
         $this->dropTable($authManager->itemChildTable);

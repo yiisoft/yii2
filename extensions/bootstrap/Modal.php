@@ -44,9 +44,21 @@ class Modal extends Widget
      */
     public $header;
     /**
+     * @var string additional header options
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @since 2.0.1
+     */
+    public $headerOptions;
+    /**
      * @var string the footer content in the modal window.
      */
     public $footer;
+    /**
+     * @var string additional footer options
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @since 2.0.1
+     */
+    public $footerOptions;
     /**
      * @var string the modal size. Can be [[SIZE_LARGE]] or [[SIZE_SMALL]], or empty for default.
      */
@@ -125,7 +137,8 @@ class Modal extends Widget
             $this->header = $button . "\n" . $this->header;
         }
         if ($this->header !== null) {
-            return Html::tag('div', "\n" . $this->header . "\n", ['class' => 'modal-header']);
+            Html::addCssClass($this->headerOptions, 'modal-header');
+            return Html::tag('div', "\n" . $this->header . "\n", $this->headerOptions);
         } else {
             return null;
         }
@@ -156,7 +169,8 @@ class Modal extends Widget
     protected function renderFooter()
     {
         if ($this->footer !== null) {
-            return Html::tag('div', "\n" . $this->footer . "\n", ['class' => 'modal-footer']);
+            Html::addCssClass($this->footerOptions, 'modal-footer');
+            return Html::tag('div', "\n" . $this->footer . "\n", $this->footerOptions);
         } else {
             return null;
         }

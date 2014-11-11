@@ -956,6 +956,41 @@ class QueryBuilder extends Object
     }
 
     /**
+     * Creates an SQL expressions like `"column" operator value`.
+     * @param IndexSchema[] $indexes list of indexes, which affected by query
+     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @param array $operands contains two column names.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     * @throws InvalidParamException if count($operands) is not 2
+     */
+    public function buildSimpleCondition($indexes, $operator, $operands, &$params)
+    {
+        if (count($operands) !== 2) {
+            throw new InvalidParamException("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $value) = $operands;
+
+        if (strpos($column, '(') === false) {
+            $column = $this->db->quoteColumnName($column);
+        }
+
+        if ($value === null) {
+            return "$column $operator NULL";
+        } elseif ($value instanceof Expression) {
+            foreach ($value->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            return "$column $operator {$value->expression}";
+        } else {
+            $phName = self::PARAM_PREFIX . count($params);
+            $params[$phName] = $value;
+            return "$column $operator $phName";
+        }
+    }
+
+    /**
      * @param array $columns
      * @return string the ORDER BY clause built from [[query]].
      */
@@ -1063,40 +1098,6 @@ class QueryBuilder extends Object
             $params[$phName] = (isset($columnSchema)) ? $columnSchema->dbTypecast($value) : $value;
 
             return $phName;
-        }
-    }
-
-    /**
-     * Creates an SQL expressions like `"column" operator value`.
-     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
-     * @param array $operands contains two column names.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if count($operands) is not 2
-     */
-    public function buildSimpleCondition($operator, $operands, &$params)
-    {
-        if (count($operands) !== 2) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
-        }
-
-        list($column, $value) = $operands;
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        if ($value === null) {
-            return "$column $operator NULL";
-        } elseif ($value instanceof Expression) {
-            foreach ($value->params as $n => $v) {
-                $params[$n] = $v;
-            }
-            return "$column $operator {$value->expression}";
-        } else {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = $value;
-            return "$column $operator $phName";
         }
     }
 

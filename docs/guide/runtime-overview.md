@@ -19,6 +19,6 @@ Each time when a Yii application handles a request, it undergoes a similar workf
 
 The following diagram shows how an application handles a request.
 
-![Request Lifecycle](images/application-lifecycle.png)
+![Request Lifecycle](images/request-lifecycle.png)
 
 In this section, we will describe in detail how some of these steps work.

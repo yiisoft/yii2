@@ -106,7 +106,7 @@ Class import:
 {{ use('/yii/widgets/ActiveForm') }}
 
 Aliased class import:
-{{ use({'alias' => '/app/widgets/MyWidget'}) }}
+{{ use({'alias' : '/app/widgets/MyWidget'}) }}
 ```
 
 #### Referencing other templates

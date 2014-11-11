@@ -113,7 +113,7 @@ echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ### Time zones <a name="time-zones"></a>
 
 When formatting date and time values, Yii will convert them to the [[yii\i18n\Formatter::timeZone|configured time zone]].
-Therefor the input value is assumed to be in UTC unless a time zone is explicitly given. For this reason
+Therefore the input value is assumed to be in UTC unless a time zone is explicitly given. For this reason
 it is recommended to store all date and time values in UTC preferably as a UNIX timestamp, which is always UTC by definition.
 If the input value is in a time zone different from UTC, the time zone has to be stated explicitly like in the following example:
 
