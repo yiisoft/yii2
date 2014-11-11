@@ -993,7 +993,7 @@ class Post extends \yii\db\ActiveRecord
 ```
 
 In the above `admin` and `api` are model scenarios and constants starting with `OP_` are operations that should
-be wrapped in transaction for these sceanarios. Supported operations are `OP_INSERT`, `OP_UPDATE` and `OP_DELETE`.
+be wrapped in transaction for these scenarios. Supported operations are `OP_INSERT`, `OP_UPDATE` and `OP_DELETE`.
 `OP_ALL` stands for all three.
 
 Such automatic transactions are especially useful if you're doing additional database changes in `beforeSave`,
