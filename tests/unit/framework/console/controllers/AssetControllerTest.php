@@ -386,6 +386,12 @@ EOL;
                 'C:\test\base\path\assets\output',
                 '.published-same-dir-class {background-image: url(../input/published_same_dir.png);}',
             ],
+            [
+                '.static-root-relative-class {background-image: url(\'/images/static_root_relative.png\');}',
+                '/test/base/path/css',
+                '/test/base/path/assets/output',
+                '.static-root-relative-class {background-image: url(\'/images/static_root_relative.png\');}',
+            ],
         ];
     }
 
