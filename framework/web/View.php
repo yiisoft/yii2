@@ -279,6 +279,7 @@ class View extends \yii\base\View
      */
     public function registerAssetBundle($name, $position = null)
     {
+        $name = ltrim($name, '\\');
         if (!isset($this->assetBundles[$name])) {
             $am = $this->getAssetManager();
             $bundle = $am->getBundle($name);
