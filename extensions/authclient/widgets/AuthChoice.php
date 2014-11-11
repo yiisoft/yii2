@@ -225,10 +225,12 @@ class AuthChoice extends Widget
      */
     public function init()
     {
+        $view = Yii::$app->getView();
         if ($this->popupMode) {
-            $view = Yii::$app->getView();
             AuthChoiceAsset::register($view);
             $view->registerJs("\$('#" . $this->getId() . "').authchoice();");
+        } else {
+            AuthChoiceStyleAsset::register($view);
         }
         $this->options['id'] = $this->getId();
         echo Html::beginTag('div', $this->options);
