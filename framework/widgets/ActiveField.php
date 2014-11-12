@@ -737,7 +737,7 @@ class ActiveField extends Component
             $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
         }
 
-        $options['encodeError'] = !isset($this->errorOptions['encode']) || !$this->errorOptions['encode'];
+        $options['encodeError'] = !isset($this->errorOptions['encode']) || $this->errorOptions['encode'];
         if ($enableAjaxValidation) {
             $options['enableAjaxValidation'] = true;
         }
