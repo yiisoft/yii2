@@ -81,8 +81,9 @@ class ButtonGroup extends Widget
         foreach ($this->buttons as $button) {
             if (is_array($button)) {
                 $button['view'] = $this->getView();
-                if (!isset($button['encodeLabel']))
+                if (!isset($button['encodeLabel'])) {
                     $button['encodeLabel'] = $this->encodeLabels;
+                }
                 $buttons[] = Button::widget($button);
             } else {
                 $buttons[] = $button;
