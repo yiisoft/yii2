@@ -59,7 +59,7 @@ Composer установит Yii (шаблонное приложение basic) 
 
 1. Скачайте архив с [yiiframework.com](http://www.yiiframework.com/download/);
 2. Распакуйте скачанный архив в папку, доступную из Web.
-3. В файле `config/web.php` добавьте сектетный ключ в значение `cookieValidationKey` (при установке через Composer
+3. В файле `config/web.php` добавьте секретный ключ в значение `cookieValidationKey` (при установке через Composer
    это происходит автоматически):
 
    ```php
