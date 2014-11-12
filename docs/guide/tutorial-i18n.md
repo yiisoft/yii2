@@ -57,13 +57,13 @@ The format for the language/locale is `ll-CC` where `ll` is a two- or three-lett
 Message translation
 -------------------
 
-Message translation is used to translate messages that are ouput by an applicaiton to different languages
+Message translation is used to translate messages that are output by an application to different languages
 so that users from different countries can use the application in their native language.
 
 The message translation feature in Yii works simply as finding a
 translation of the message from a source language into a target language.
 To use the message translation feature you wrap your original message strings with a call to the [[Yii::t()]] method.
-The first parameter of this method takes a category which helps to distingish the source of messages in differnet parts
+The first parameter of this method takes a category which helps to distinguish the source of messages in different parts
 of the application and the second parameter is the message itself.
 
 ```php
@@ -501,7 +501,7 @@ Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to pro
 such as the number and date formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
 Both classes provides a fallback implementation that provides basic functionality in case intl is not installed.
 This fallback implementation however only works well for sites in english language and even there can not provide the
-rich set of features that is avialable with the PHP intl extension, so its installation is highly recommended.
+rich set of features that is available with the PHP intl extension, so its installation is highly recommended.
 
 The [PHP intl extension](http://php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
 provides the knowledge and formatting rules for all the different locales. According to this fact the formatting of dates and numbers
