@@ -191,37 +191,38 @@ public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
   `@bower/jquery` ではなく `@bower/jquery/dist` を使います。
 
 
-## Using Asset Bundles <a name="using-asset-bundles"></a>
+## アセットバンドルを使う <a name="using-asset-bundles"></a>
 
-To use an asset bundle, register it with a [view](structure-views.md) by calling the [[yii\web\AssetBundle::register()]]
-method. For example, in a view template you can register an asset bundle like the following:
+アセットバンドルを使うためには、[[yii\web\AssetBundle::register()]] メソッドを呼んでアセットバンドルを [ビュー](structure-views.md)
+に登録します。例えば、次のようにしてビューテンプレートの中でアセットバンドルを登録することが出来ます:
 
 ```php
 use app\assets\AppAsset;
-AppAsset::register($this);  // $this represents the view object
+AppAsset::register($this);  // $this はビューオブジェクトを表す
 ```
 
-> Info: The [[yii\web\AssetBundle::register()]] method returns an asset bundle object containing the information
-  about the published assets, such as [[yii\web\AssetBundle::basePath|basePath]] or [[yii\web\AssetBundle::baseUrl|baseUrl]].
+> Info|情報: [[yii\web\AssetBundle::register()]] メソッドは、[[yii\web\AssetBundle::basePath|basePath]] や
+  [[yii\web\AssetBundle::baseUrl|baseUrl]] など、発行されたアセットに関する情報を含むアセットバンドルオブジェクトを返します。
 
-If you are registering an asset bundle in other places, you should provide the needed view object. For example,
-to register an asset bundle in a [widget](structure-widgets.md) class, you can get the view object by `$this->view`.
+他の場所でアセットバンドルを登録しようとするときは、必要とされるビューオブジェクトを提供しなければなりません。例えば、
+[ウィジェット](structure-widgets.md) クラスの中でアセットバンドルを登録するためには、`$this->view` によってビューオブジェクトを
+取得することが出来ます。
 
-When an asset bundle is registered with a view, behind the scene Yii will register all its dependent asset bundles.
-And if an asset bundle is located in a directory inaccessible through the Web, it will be published to a Web directory.
-Later when the view renders a page, it will generate `<link>` and `<script>` tags for the CSS and JavaScript files
-listed in the registered bundles. The order of these tags is determined by the dependencies among
-the registered bundles and the order of the assets listed in the [[yii\web\AssetBundle::css]] and [[yii\web\AssetBundle::js]]
-properties.
+アセットバンドルがビューに登録されるとき、舞台裏では、Yii が依存している全てのアセットバンドルを登録します。
+そして、アセットバンドルがウェブからはアクセス出来ないディレクトリに配置されている場合は、アセットバンドルはウェブディレクトリに発行されます。
+その後、ビューがページをレンダリングするときに、登録されたバンドルのリストに挙げられている CSS と JavaScript ファイルのための
+`<link>` タグと `<script>` タグが生成されます。これらのタグの順序は、登録されたバンドル間の依存関係、および、
+[[yii\web\AssetBundle::css]] と [[yii\web\AssetBundle::js] のプロパティのリストに挙げられたアセットの順序によって決定されます。
 
 
-### Customizing Asset Bundles <a name="customizing-asset-bundles"></a>
+### アセットバンドルをカスタマイズする <a name="customizing-asset-bundles"></a>
 
-Yii manages asset bundles through an application component named `assetManager` which is implemented by [[yii\web\AssetManager]].
-By configuring the [[yii\web\AssetManager::bundles]] property, it is possible to customize the behavior of an asset bundle.
-For example, the default [[yii\web\JqueryAsset]] asset bundle uses the `jquery.js` file from the installed
-jquery Bower package. To improve the availability and performance, you may want to use a version hosted by Google.
-This can be achieved by configuring `assetManager` in the application configuration like the following:
+Yii は、[[yii\web\AssetManager]] によって実装されている `assetManager` という名前のアプリケーションコンポーネントを通じて
+アセットバンドルを管理します。[[yii\web\AssetManager::bundles]] プロパティを構成することによって、アセットバンドルの振る舞いを
+カスタマイズすることが出来ます。例えば、デフォルトの [[yii\web\JqueryAsset]] アセットバンドルはインストールされた jQuery の
+Bower パッケージにある `jquery.js` ファイルを使用します。あなたは、可用性とパフォーマンスを向上させるために、
+Google によってホストされたバージョンを使いたいと思うかも知れません。次のように、アプリケーションのコンフィギュレーションで
+`assetManager` を構成することによって、それが達成できます。
 
 ```php
 return [
@@ -230,7 +231,7 @@ return [
         'assetManager' => [
             'bundles' => [
                 'yii\web\JqueryAsset' => [
-                    'sourcePath' => null,   // do not publish the bundle
+                    'sourcePath' => null,   // バンドルを発行しない
                     'js' => [
                         '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
                     ]
@@ -241,12 +242,12 @@ return [
 ];
 ```
 
-You can configure multiple asset bundles similarly through [[yii\web\AssetManager::bundles]]. The array keys
-should be the class names (without the leading backslash) of the asset bundles, and the array values should
-be the corresponding [configuration arrays](concept-configurations.md).
+複数のアセットバンドルも同様に [[yii\web\AssetManager::bundles]] によって構成することが出来ます。配列のキーは、
+アセットバンドルのクラス名 (最初のバックスラッシュを除く) とし、配列の値は、
+対応する [コンフィギュレーション配列](concept-configurations.md) とします。
 
-> Tip: You can conditionally choose which assets to use in an asset bundle. The following example shows how
-> to use `jquery.js` in the development environment and `jquery.min.js` otherwise:
+> Tip|ヒント: アセットバンドルの中で使うアセットを条件的に選択することが出来ます。次の例は、開発環境では
+> `jquery.js` を使い、そうでなければ `jquery.min.js` を使う方法を示すものです:
 >
 > ```php
 > 'yii\web\JqueryAsset' => [
@@ -256,10 +257,10 @@ be the corresponding [configuration arrays](concept-configurations.md).
 > ],
 > ```
 
-You can disable one or multiple asset bundles by associating `false` with the names of the asset bundles
-that you want to disable. When you register a disabled asset bundle with a view, none of its dependent bundles
-will be registered, and the view will also not include any of the assets in the bundle in the page it renders.
-For example, to disable [[yii\web\JqueryAsset]], you can use the following configuration:
+無効にしたいアセットバンドルの名前に `false` を結びつけることによって、一つまたは複数のアセットバンドルを無効にすることが出来ます。
+無効にされたアセットバンドルをビューに登録した場合は、依存するバンドルは一つも登録されません。また、ビューがページを
+レンダリングするときも、バンドルの中のアセットは一つもインクルードされません。例えば、[[yii\web\JqueryAsset]] を無効化するためには、
+次のコンフィギュレーションを使用することが出来ます:
 
 ```php
 return [
@@ -273,16 +274,16 @@ return [
     ],
 ];
 ```
+[[yii\web\AssetManager::bundles]] を `false` にセットすることによって、*全て* のバンドルを無効にすることも出来ます。
 
-You can also disable *all* asset bundles by setting [[yii\web\AssetManager::bundles]] as `false`.
 
+### アセットマッピング <a name="asset-mapping"></a>
 
-### Asset Mapping <a name="asset-mapping"></a>
-
-Sometimes you want to "fix" incorrect/incompatible asset file paths used in multiple asset bundles. For example,
-bundle A uses `jquery.min.js` of version 1.11.1, and bundle B uses `jquery.js` of version 2.1.1. While you can
-fix the problem by customizing each bundle, an easier way is to use the *asset map* feature to map incorrect assets
-to the desired ones. To do so, configure the [[yii\web\AssetManager::assetMap]] property like the following:
+時として、複数のアセットバンドルで使われている 正しくない/互換でない アセットファイルパスを「修正」したい場合があります。
+例えば、バンドル A がバージョン 1.11.1 の `jquery.min.js` を使い、バンドル B がバージョン 2.1.1 の `jquery.js` を使っている
+ような場合です。それぞれのバンドルをカスタマイズすることで問題を修正することも出来ますが、それよりも簡単な方法は、
+*アセットマップ* 機能を使って、正しくないアセットを望ましいアセットに割り付けることです。そうするためには、以下のように
+[[yii\web\AssetManager::assetMap]] プロパティを構成します:
 
 ```php
 return [
@@ -297,29 +298,28 @@ return [
 ];
 ```
 
-The keys of [[yii\web\AssetManager::assetMap|assetMap]] are the asset names that you want to fix, and the values
-are the desired asset paths. When you register an asset bundle with a view, each relative asset file in its
-[[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] arrays will be examined against this map.
-If any of the keys is found to be the last part of an asset file (which is prefixed with [[yii\web\AssetBundle::sourcePath]]
-if available), the corresponding value will replace the asset and be registered with the view.
-For example, an asset file `my/path/to/jquery.js` matches a key `jquery.js`.
+[[yii\web\AssetManager::assetMap|assetMap]] のキーは修正したいアセットの名前であり、値は望ましいアセットのパスです。
+アセットバンドルをビューに登録するとき、[[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]] の配列に含まれる
+すべてのアセットファイルの相対パスがこのマップと突き合わせて調べられます。キーのどれかがアセットファイルのパス (利用できる場合は、
+[[yii\web\AssetBundle::sourcePath]] が前置されます) の最後の部分と一致した場合は、対応する値によってアセットが置き換えられ、
+ビューに登録されます。例えば、`my/path/to/jquery.js` というアセットファイルは `jquery.js` というキーにマッチします。
 
-> Note: Only assets specified using relative paths are subject to asset mapping. And the target asset paths
-  should be either absolute URLs or paths relative to [[yii\web\AssetManager::basePath]].
+> Note|注意: 相対パスを使って指定されたアセットだけがアセットマッピングの対象になります。そして、置き換える側のアセットのパスは
+  絶対 URL であるか、[[yii\web\AssetManager::basePath]] からの相対パスであるかの、どちらかでなければなりません。
 
 
-### Asset Publishing <a name="asset-publishing"></a>
+### アセット発行 <a name="asset-publishing"></a>
 
-As aforementioned, if an asset bundle is located in a directory that is not Web accessible, its assets will be copied
-to a Web directory when the bundle is being registered with a view. This process is called *asset publishing*, and is done
-automatically by the [[yii\web\AssetManager|asset manager]].
+既に述べたように、アセットバンドルがウェブからアクセス出来ないディレクトリに配置されている場合は、バンドルがビューに登録されるときに、
+アセットがウェブディレクトリにコピーされます。このプロセスは *アセット発行* と呼ばれ、[[yii\web\AssetManager|アセットマネージャ]]
+によって自動的に実行されます。
 
-By default, assets are published to the directory `@webroot/assets` which corresponds to the URL `@web/assets`.
-You may customize this location by configuring the [[yii\web\AssetManager::basePath|basePath]] and
-[[yii\web\AssetManager::baseUrl|baseUrl]] properties.
+既定では、アセットが発行されるディレクトリは `@webroot/assets` であり、`@web/assets` という URL に対応するものです。
+この場所は、[[yii\web\AssetManager::basePath|basePath]] と [[yii\web\AssetManager::baseUrl|baseUrl]] のプロパティを構成して
+カスタマイズすることが出来ます。
 
-Instead of publishing assets by file copying, you may consider using symbolic links, if your OS and Web server allow.
-This feature can be enabled by setting [[yii\web\AssetManager::linkAssets|linkAssets]] to be true.
+ファイルをコピーすることでアセットを発行する替りに、OS とウェブサーバが許容するなら、シンボリックリンクを使うことを考慮しても良いでしょう。
+この機能は [[yii\web\AssetManager::linkAssets|linkAssets]] を true にセットすることで有効にすることが出来ます:
 
 ```php
 return [
@@ -332,37 +332,38 @@ return [
 ];
 ```
 
-With the above configuration, the asset manager will create a symbolic link to the source path of an asset bundle
-when it is being published. This is faster than file copying and can also ensure that the published assets are
-always up-to-date.
+上記のコンフィギュレーションによって、アセットマネージャはアセットバンドルを発行するときにソースパスへのシンボリックリンクを
+作成するようになります。この方がファイルのコピーより速く、また、発行されたアセットが常に最新であることを保証することも出来ます。
 
 
-## Commonly Used Asset Bundles <a name="common-asset-bundles"></a>
+## よく使われるアセットバンドル <a name="common-asset-bundles"></a>
 
-The core Yii code has defined many asset bundles. Among them, the following bundles are commonly used and may
-be referenced in your application or extension code.
+コアの Yii コードは多くのアセットバンドルを定義しています。その中で、下記のバンドルはよく使われるものであり、あなたの
+アプリケーションやエクステンションのコードでも参照することが出来るものです。
 
-- [[yii\web\YiiAsset]]: It mainly includes the `yii.js` file which implements a mechanism of organizing JavaScript code
-  in modules. It also provides special support for `data-method` and `data-confirm` attributes and other useful features.
-- [[yii\web\JqueryAsset]]: It includes the `jquery.js` file from the jQuery bower package.
-- [[yii\bootstrap\BootstrapAsset]]: It includes the CSS file from the Twitter Bootstrap framework.
-- [[yii\bootstrap\BootstrapPluginAsset]]: It includes the JavaScript file from the Twitter Bootstrap framework for
-  supporting Bootstrap JavaScript plugins.
-- [[yii\jui\JuiAsset]]: It includes the CSS and JavaScript files from the jQuery UI library.
+- [[yii\web\YiiAsset]]: 主として `yii.js` ファイルをインクルードするためのバンドルです。このファイルはモジュール化された
+  JavaScript のコードを組織化するメカニズムを実装しています。また、`data-method` と `data-confirm` の属性に対する特別な
+  サポートや、その他の有用な機能を提供します。
+- [[yii\web\JqueryAsset]]: jQuery の bower パッケージから `jquery.js` ファイルをインクルードします。
+- [[yii\bootstrap\BootstrapAsset]]: Twitter Bootstrap フレームワークから CSS ファイルをインクルードします。
+- [[yii\bootstrap\BootstrapPluginAsset]]: Bootstrap JavaScript プラグインをサポートするために、Twitter Bootstrap
+  フレームワークから JavaScript ファイルをインクルードします。
+- [[yii\jui\JuiAsset]]: jQuery UI ライブラリから CSS と JavaScript のファイルをインクルードします。
 
-If your code depends on jQuery, jQuery UI or Bootstrap, you should use these predefined asset bundles rather than
-creating your own versions. If the default setting of these bundles do not satisfy your needs, you may customize them 
-as described in the [Customizing Asset Bundle](#customizing-asset-bundles) subsection. 
+あなたのコードが、jQuery や jQuery UI または Bootstrap に依存する場合は、自分自身のバージョンを作るのではなく、これらの
+定義済みのアセットバンドルを使用すべきです。これらのバンドルのデフォルトの設定があなたの必要を満たさない時は、
+[アセットバンドルをカスタマイズする](#customizing-asset-bundles) の項で説明したように、それをカスタマイズすることが出来ます。
 
 
-## Asset Conversion <a name="asset-conversion"></a>
+## アセット変換 <a name="asset-conversion"></a>
 
-Instead of directly writing CSS and/or JavaScript code, developers often write them in some extended syntax and
-use special tools to convert it into CSS/JavaScript. For example, for CSS code you may use [LESS](http://lesscss.org/)
-or [SCSS](http://sass-lang.com/); and for JavaScript you may use [TypeScript](http://www.typescriptlang.org/).
+直接に CSS および/または JavaScript のコードを書く替りに、何らかの拡張構文を使って書いたものを特別なツールを使って
+CSS/JavaScript に変換する、ということを開発者はしばしば行います。例えば、CSS コードのためには、[LESS](http://lesscss.org/) や
+[SCSS](http://sass-lang.com/) を使うことが出来ます。また、JavaScript のためには、[TypeScript](http://www.typescriptlang.org/)
+を使うことが出来ます。
 
-You can list the asset files in extended syntax in [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]]
-in an asset bundle. For example,
+拡張構文を使ったアセットファイルをアセットバンドルの中の [[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]]
+のリストに挙げることが出来ます。例えば、
 
 ```php
 class AppAsset extends AssetBundle
@@ -382,13 +383,11 @@ class AppAsset extends AssetBundle
 }
 ```
 
-When you register such an asset bundle with a view, the [[yii\web\AssetManager|asset manager]] will automatically
-run the pre-processor tools to convert assets in recognized extended syntax into CSS/JavaScript. When the view
-finally renders a page, it will include the CSS/JavaScript files in the page, instead of the original assets
-in extended syntax.
+このようなアセットバンドルをビューに登録すると、[[yii\web\AssetManager|アセットマネージャ]] が自動的にプリプロセッサツールを
+走らせて、認識できた拡張構文のアセットを CSS/JavaScript に変換します。最終的にビューがページをレンダリングするときには、
+ビューは元の拡張構文のアセットではなく、変換後の CSS/JavaScript ファイルをページにインクルードします。
 
-Yii uses the file name extensions to identify which extended syntax an asset is in. By default it recognizes
-the following syntax and file name extensions:
+Yii はファイル名の拡張子を使って、アセットが使っている拡張構文を識別します。デフォルトでは、下記の構文とファイル名拡張子を認識します。
 
 - [LESS](http://lesscss.org/): `.less`
 - [SCSS](http://sass-lang.com/): `.scss`
@@ -396,11 +395,11 @@ the following syntax and file name extensions:
 - [CoffeeScript](http://coffeescript.org/): `.coffee`
 - [TypeScript](http://www.typescriptlang.org/): `.ts`
 
-Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](http://lesscss.org/)
-you should install the `lessc` pre-processor command.
+Yii はインストールされたプリプロセッサツールに頼ってアセットを変換します。例えば、[LESS](http://lesscss.org/) を使うためには、
+`lessc` プリプロセッサコマンドをインストールしなければなりません。
 
-You can customize the pre-processor commands and the supported extended syntax by configuring
-[[yii\web\AssetManager::converter]] like the following:
+下記のように [[yii\web\AssetManager::converter]] を構成することで、プリプロセッサコマンドとサポートされる拡張構文を
+カスタマイズすることが出来ます:
 
 ```php
 return [
