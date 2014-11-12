@@ -40,6 +40,7 @@ Yii Framework 2 Change Log
 - Enh #5688: Added optional `$formName` to `Model::loadMultiple()` to support customizing form name directly (qiangxue)
 - Enh #5735: Added `yii\bootstrap\Tabs::renderTabContent` to support manually rendering tab contents (RomeroMsk)
 - Enh #5770: Added more PHP error names for `ErrorException` (mongosoft)
+- Enh #5799: `yii\bootstrap\ButtonGroup::buttons` can take all options that are supported by `yii\bootstrap\Button` (aleksanderd)
 - Enh #5806: Allow `Html::encode()` to be used when the application is not started (qiangxue)
 - Enh #5954: `yii message` command now shows user friendly error if it's not able to parse source file (samdark)
 - Enh #5983: Added `Inflector::sentence()` (pana1990, qiangxue)
