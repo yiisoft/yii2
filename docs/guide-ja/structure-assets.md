@@ -21,10 +21,10 @@ JavaScript のファイルがレンダリングされるウェブページに挿
 
 ## アセットバンドルを定義する <a name="defining-asset-bundles"></a>
 
-アセットバンドルは [[yii\web\AssetBundle]] から拡張された PHP クラスとして定義されます。バンドルの名前は単に対応する PHP
-クラスの名前であり、そのクラスは [オートロード可能](concept-autoloading.md) でなければなりません。アセットバンドルのクラスでは、
-典型的な場合、アセットがどこに置かれているか、バンドルがどういう CSS や JavaScript のファイルを含んでいるか、そして、
-バンドルが他のバンドルにどのように依存しているかを定義することになります。
+アセットバンドルは [[yii\web\AssetBundle]] から拡張された PHP クラスとして定義されます。バンドルの名前は、対応する PHP
+クラスの完全修飾名 (先頭のバックスラッシュを除く) です。アセットバンドルクラスは [オートロード可能](concept-autoloading.md)
+でなければなりません。アセットバンドルクラスは、通常、アセットがどこに置かれているか、バンドルがどういう CSS や JavaScript
+のファイルを含んでいるか、そして、バンドルが他のバンドルにどのように依存しているかを定義します。
 
 以下のコードは [ベーシックアプリケーションテンプレート](start-installation.md) によって使用されているメインのアセットバンドルを定義するものです:
 
@@ -80,79 +80,78 @@ class AppAsset extends AssetBundle
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` など。
 * [[yii\web\AssetBundle::css|css]]: このバンドルに含まれる CSS ファイルをリストする配列です。この配列の形式は、
   [[yii\web\AssetBundle::js|js]] の形式と同じです。
-* [[yii\web\AssetBundle::depends|depends]]: このバンドルが依存しているアセットバンドルの名前をリストする配列です (すぐ後で説明します)。
-* [[yii\web\AssetBundle::jsOptions|jsOptions]]: specifies the options that will be passed to the
-  [[yii\web\View::registerJsFile()]] method when it is called to register *every* JavaScript file in this bundle.
-* [[yii\web\AssetBundle::cssOptions|cssOptions]]: specifies the options that will be passed to the
-  [[yii\web\View::registerCssFile()]] method when it is called to register *every* CSS file in this bundle.
-* [[yii\web\AssetBundle::publishOptions|publishOptions]]: specifies the options that will be passed to the
-  [[yii\web\AssetManager::publish()]] method when it is called to publish source asset files to a Web directory.
-  This is only used if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property.
+* [[yii\web\AssetBundle::depends|depends]]: このバンドルが依存しているアセットバンドルの名前をリストする配列です
+   (バンドルの依存関係については、すぐ後で説明します)。
+* [[yii\web\AssetBundle::jsOptions|jsOptions]]: [[yii\web\View::registerJsFile()]] メソッドに渡されるオプションを指定します。
+  このバンドルにある *全て* の JavaScript ファイルについて、それを登録するときに、このメソッドが指定されたオプションとともに呼ばれます。
+* [[yii\web\AssetBundle::cssOptions|cssOptions]]: [[yii\web\View::registerCssFile()]] メソッドに渡されるオプションを指定します。
+  このバンドルにある *全て* の CSS ファイルについて、それを登録するときに、このメソッドが指定されたオプションとともに呼ばれます。
+* [[yii\web\AssetBundle::publishOptions|publishOptions]]: [[yii\web\AssetManager::publish()]] メソッドに渡されるオプションを指定します。
+  ソースのアセットファイルをウェブディレクトリに発行するときに、このメソッドが指定されたオプションとともに呼ばれます。
+  これは [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティを指定した場合にだけ使用されます。
 
 
-### Asset Locations <a name="asset-locations"></a>
+### アセットの配置場所 <a name="asset-locations"></a>
 
-Assets, based on their location, can be classified as:
+アセットは、配置場所を基準にして、次のように分類することが出来ます:
 
-* source assets: the asset files are located together with PHP source code which cannot be directly accessed via Web.
-  In order to use source assets in a page, they should be copied to a Web directory and turned into the so-called
-  published assets. This process is called *asset publishing* which will be described in detail shortly.
-* published assets: the asset files are located in a Web directory and can thus be directly accessed via Web.
-* external assets: the asset files are located on a Web server that is different from the one hosting your Web
-  application.
+* ソースアセット: アセットファイルは、ウェブ経由で直接にアクセスすることが出来ない PHP ソースコードと一緒に配置されています。
+  ページの中でソースアセットを使用するためには、ウェブディレクトリにコピーして、いわゆる発行されたアセットに変換されなければなりません。
+  このプロセスは、すぐ後で詳しく説明しますが、*アセット発行* と呼ばれます。
+* 発行されたアセット: アセットファイルはウェブディレクトリに配置されており、したがつてウェブ経由で直接にアクセスすることが出来ます。
+* 外部アセット: アセットファイルは、あなたのウェブアプリケーションをホストしているのとは別のウェブサーバ上に配置されています。
 
-When defining an asset bundle class, if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property,
-it means any assets listed using relative paths will be considered as source assets. If you do not specify this property,
-it means those assets are published assets (you should therefore specify [[yii\web\AssetBundle::basePath|basePath]] and
-[[yii\web\AssetBundle::baseUrl|baseUrl]] to let Yii know where they are located.)
+アセットバンドルクラスを定義するときに、[[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティを指定した場合は、
+相対パスを使ってリストに挙げられたアセットは全てソースアセットであると見なされます。このプロパティを指定しなかった場合は、
+アセットは発行されたアセットであることになります (したがって、[[yii\web\AssetBundle::basePath|basePath]] と
+[[yii\web\AssetBundle::baseUrl|baseUrl]] を指定して、アセットがどこに配置されているかを Yii に知らせなければなりません)。
 
-It is recommended that you place assets belonging to an application in a Web directory to avoid the unnecessary asset
-publishing process. This is why `AppAsset` in the prior example specifies [[yii\web\AssetBundle::basePath|basePath]]
-instead of [[yii\web\AssetBundle::sourcePath|sourcePath]].
+アプリケーションに属するアセットは、不要なアセット発行プロセスを避けるために、ウェブディレクトリに置くことが推奨されます。
+前述の例において `AppAsset` が [[yii\web\AssetBundle::sourcePath|sourcePath]] ではなく [[yii\web\AssetBundle::basePath|basePath]]
+を指定しているのは、これが理由です。
 
-For [extensions](structure-extensions.md), because their assets are located together with their source code
-in directories that are not Web accessible, you have to specify the [[yii\web\AssetBundle::sourcePath|sourcePath]]
-property when defining asset bundle classes for them.
+[エクステンション](structure-extensions.md) の場合は、アセットがソースコードと一緒にウェブからアクセス出来ないディレクトリに
+配置されているため、アセットバンドルクラスを定義するときには [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティを
+指定しなければなりません。
 
-> Note: Do not use `@webroot/assets` as the [[yii\web\AssetBundle::sourcePath|source path]].
-  This directory is used by default by the [[yii\web\AssetManager|asset manager]] to save the asset files
-  published from their source location. Any content in this directory are considered temporarily and may be subject
-  to removal.
+> Note|注意: `@webroot/assets` を [[yii\web\AssetBundle::sourcePath|ソースパス]] として使ってはいけません。
+  このディレクトリは、既定では、[[yii\web\AssetManager|アセットマネージャ]] がソースの配置場所から発行されたアセットファイルを
+  保存する場所として使われます。このディレクトリの中のファイルはすべて一時的なものと見なされており、削除されることがあります。
 
 
-### Asset Dependencies <a name="asset-dependencies"></a>
+### アセットの依存関係 <a name="asset-dependencies"></a>
 
-When you include multiple CSS or JavaScript files in a Web page, they have to follow certain orders to avoid
-overriding issues. For example, if you are using a jQuery UI widget in a Web page, you have to make sure
-the jQuery JavaScript file is included before the jQuery UI JavaScript file. We call such ordering the dependencies
-among assets.
+ウェブページに複数の CSS や JavaScript ファイルをインクルードするときは、オーバーライドの問題を避けるために、
+一定の順序に従わなければなりません。例えば、ウェブページで jQuery UI ウィジェットを使おうとするときは、jQuery JavaScript
+ファイルが jQuery UI JavaScript ファイルより前にインクルードされることを保証しなければなりません。
+このような順序付けをアセット間の依存関係と呼びます。
 
-Asset dependencies are mainly specified through the [[yii\web\AssetBundle::depends]] property.
-In the `AppAsset` example, the asset bundle depends on two other asset bundles: [[yii\web\YiiAsset]] and
-[[yii\bootstrap\BootstrapAsset]], which means the CSS and JavaScript files in `AppAsset` will be included *after*
-those files in the two dependent bundles.
+アセットの依存関係は、主として、[[yii\web\AssetBundle::depends]] プロパティによって指定されます。`AppAsset` の例では、
+このアセットバンドルは他の二つのアセットバンドル、すなわち、[[yii\web\YiiAsset]] と [[yii\bootstrap\BootstrapAsset]] に依存しています。
+このことは、`AppAsset` の CSS と JavaScript ファイルが、依存している二つのアセットバンドルにあるファイルの *後に*
+インクルードされることを意味します。
 
-Asset dependencies are transitive. This means if bundle A depends on B which depends on C, A will depend on C, too.
+アセットの依存関係は中継されます。つまり、バンドル A が B に依存し、B が C に依存していると、A は C にも依存していることになります。
 
 
-### Asset Options <a name="asset-options"></a>
+### アセットのオプション <a name="asset-options"></a>
 
-You can specify the [[yii\web\AssetBundle::cssOptions|cssOptions]] and [[yii\web\AssetBundle::jsOptions|jsOptions]]
-properties to customize the way that CSS and JavaScript files are included in a page. The values of these properties
-will be passed to the [[yii\web\View::registerCssFile()]] and [[yii\web\View::registerJsFile()]] methods, respectively, when
-they are called by the [view](structure-views.md) to include CSS and JavaScript files.
+[[yii\web\AssetBundle::cssOptions|cssOptions]] および [[yii\web\AssetBundle::jsOptions|jsOptions]] のプロパティを指定して、
+CSS と JavaScript ファイルがページにインクルードされる方法をカスタマイズすることが出来ます。これらのプロパティの値は、
+[ビュー](structure-views.md) が CSS と JavaScript ファイルをインクルードするために、[[yii\web\View::registerCssFile()]] および
+[[yii\web\View::registerJsFile()]] メソッドを呼ぶときに、それぞれ、オプションとして引き渡されます。
 
-> Note: The options you set in a bundle class apply to *every* CSS/JavaScript file in the bundle. If you want to
-  use different options for different files, you should create separate asset bundles, and use one set of options
-  in each bundle.
+> Note|注意: バンドルクラスでセットしたオプションは、バンドルの中の *全て* の CSS/JavaScript ファイルに適用されます。
+  いろいろなファイルに別々のオプションを使用したい場合は、別々のアセットバンドルを作成して、個々のバンドルの中では、
+  一組のオプションを使うようにしなければなりません。
 
-For example, to conditionally include a CSS file for browsers that are IE9 or above, you can use the following option:
+例えば、IE9 以上のブラウザに対して CSS ファイルを条件的にインクルードするために、次のオプションを使うことが出来ます:
 
 ```php
 public $cssOptions = ['condition' => 'lte IE9'];
 ```
 
-This will cause a CSS file in the bundle to be included using the following HTML tags:
+こうすると、バンドルの中の CSS ファイルは下記の HTML タグを使ってインクルードされるようになります:
 
 ```html
 <!--[if lte IE9]>
@@ -160,36 +159,36 @@ This will cause a CSS file in the bundle to be included using the following HTML
 <![endif]-->
 ```
 
-To wrap link tag with `<noscript>` the following can be used:
+リンクタグを `<noscript>` で包むためには、次のコードが使用できます:
 
 ```php
 public $cssOptions = ['noscript' => true];
 ```
 
-To include a JavaScript file in the head section of a page (by default, JavaScript files are included at the end
-of the body section), use the following option:
+JavaScript ファイルをページの head セクションにインクルードするためには、次のオプションを使います
+(既定では、JavaScript ファイルは body セクションの最後にインクルードされます)。
 
 ```php
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
 
-### Bower and NPM Assets <a name="bower-npm-assets"></a>
+### Bower と NPM のアセット <a name="bower-npm-assets"></a>
 
-Most JavaScript/CSS package are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/).
-If your application or extension is using such a package, it is recommended that you follow these steps to manage
-the assets in the library:
+ほとんどの JavaScript/CSS パッケージは、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/) によって管理されています。
+あなたのアプリケーションやエクステンションがそのようなパッケージを使っている場合は、以下のステップに従って
+ライブラリの中のアセットを管理することが推奨されます。
 
-1. Modify the `composer.json` file of your application or extension and list the package in the `require` entry.
-   You should use `bower-asset/PackageName` (for Bower packages) or `npm-asset/PackageName` (for NPM packages)
-   to refer to the library.
-2. Create an asset bundle class and list the JavaScript/CSS files that you plan to use in your application or extension.
-   You should specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property as `@bower/PackageName` or `@npm/PackageName`.
-   This is because Composer will install the Bower or NPM package in the directory corresponding to this alias.
+1. アプリケーションまたはエクステンションの `composer.json` ファイルを修正して、パッケージを `require` のエントリに入れます。
+   ライブラリを参照するのに、`bower-asset/PackageName` (Bower パッケージ) または `npm-asset/PackageName` (NPM パッケージ)
+   を使わなければなりません。
+2. アセットバンドルクラスを作成して、アプリケーションまたはエクステンションで使う予定の JavaScript/CSS ファイルをリストに挙げます。
+   [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティは、`@bower/PackageName` または `@npm/PackageName` としなければなりません。
+   これは、Composer が Bower または NPM パッケージを、このエイリアスに対応するディレクトリにインストールするためです。
 
-> Note: Some packages may put all their distributed files in a subdirectory. If this is the case, you should specify
-  the subdirectory as the value of [[yii\web\AssetBundle::sourcePath|sourcePath]]. For example, [[yii\web\JqueryAsset]]
-  uses `@bower/jquery/dist` instead of `@bower/jquery`.
+> Note|注意: パッケージの中には、全ての配布ファイルをサブディレクトリに置くものがあります。その場合には、そのサブディレクトリを
+  [[yii\web\AssetBundle::sourcePath|sourcePath]] の値として指定しなければなりません。例えば、[[yii\web\JqueryAsset]] は
+  `@bower/jquery` ではなく `@bower/jquery/dist` を使います。
 
 
 ## Using Asset Bundles <a name="using-asset-bundles"></a>
