@@ -160,7 +160,7 @@ This will cause a CSS file in the bundle to be included using the following HTML
 <![endif]-->
 ```
 
-To wrap link tag with `<noscript>` the following can be used:
+To wrap the generated CSS link tags within `<noscript>`, you can configure `cssOptions` as follows,
 
 ```php
 public $cssOptions = ['noscript' => true];
@@ -172,6 +172,38 @@ of the body section), use the following option:
 ```php
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
+
+By default, when an asset bundle is being published, all contents in the directory specified by [[yii\web\AssetBundle::sourcePath]]
+will be published. You can customize this behavior by configuring the [[yii\web\AssetBundle::publishOptions|publishOptions]] 
+property. For example, to publish only one or a few subdirectories of [[yii\web\AssetBundle::sourcePath]], 
+you can do the following in the asset bundle class:
+
+```php
+<?php
+namespace app\assets;
+
+use yii\web\AssetBundle;
+
+class FontAwesomeAsset extends AssetBundle 
+{
+    public $sourcePath = '@bower/font-awesome'; 
+    public $css = [ 
+        'css/font-awesome.min.css', 
+    ]; 
+    
+    public function init()
+    {
+        parent::init();
+        $this->publishOptions['beforeCopy'] = function ($from, $to) {
+            $dirname = basename(dirname($from));
+            return $dirname === 'fonts' || $dirname === 'css';
+        };
+    }
+}  
+```
+
+The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
+the `beforeCopy` publishing option, only the `fonts` and `css` subdirectories will be published.
 
 
 ### Bower and NPM Assets <a name="bower-npm-assets"></a>
