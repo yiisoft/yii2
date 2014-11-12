@@ -19,7 +19,7 @@ create table "log"
    "id"          bigserial NOT NULL PRIMARY KEY,
    "level"       integer,
    "category"    varchar(255),
-   "log_time"    integer,
+   "log_time"    real,
    "prefix"      text,
    "message"     text
 );
