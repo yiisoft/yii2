@@ -96,9 +96,9 @@ class AppAsset extends AssetBundle
 アセットは、配置場所を基準にして、次のように分類することが出来ます:
 
 * ソースアセット: アセットファイルは、ウェブ経由で直接にアクセスすることが出来ない PHP ソースコードと一緒に配置されています。
-  ページの中でソースアセットを使用するためには、ウェブディレクトリにコピーして、いわゆる発行されたアセットに変換されなければなりません。
+  ページの中でソースアセットを使用するためには、ウェブディレクトリにコピーして、いわゆる発行されたアセットに変換しなければなりません。
   このプロセスは、すぐ後で詳しく説明しますが、*アセット発行* と呼ばれます。
-* 発行されたアセット: アセットファイルはウェブディレクトリに配置されており、したがつてウェブ経由で直接にアクセスすることが出来ます。
+* 発行されたアセット: アセットファイルはウェブディレクトリに配置されており、したがってウェブ経由で直接にアクセスすることが出来ます。
 * 外部アセット: アセットファイルは、あなたのウェブアプリケーションをホストしているのとは別のウェブサーバ上に配置されています。
 
 アセットバンドルクラスを定義するときに、[[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティを指定した場合は、
@@ -318,7 +318,7 @@ return [
 この場所は、[[yii\web\AssetManager::basePath|basePath]] と [[yii\web\AssetManager::baseUrl|baseUrl]] のプロパティを構成して
 カスタマイズすることが出来ます。
 
-ファイルをコピーすることでアセットを発行する替りに、OS とウェブサーバが許容するなら、シンボリックリンクを使うことを考慮しても良いでしょう。
+ファイルをコピーすることでアセットを発行する代りに、OS とウェブサーバが許容するなら、シンボリックリンクを使うことを考慮しても良いでしょう。
 この機能は [[yii\web\AssetManager::linkAssets|linkAssets]] を true にセットすることで有効にすることが出来ます:
 
 ```php
@@ -357,7 +357,7 @@ return [
 
 ## アセット変換 <a name="asset-conversion"></a>
 
-直接に CSS および/または JavaScript のコードを書く替りに、何らかの拡張構文を使って書いたものを特別なツールを使って
+直接に CSS および/または JavaScript のコードを書く代りに、何らかの拡張構文を使って書いたものを特別なツールを使って
 CSS/JavaScript に変換する、ということを開発者はしばしば行います。例えば、CSS コードのためには、[LESS](http://lesscss.org/) や
 [SCSS](http://sass-lang.com/) を使うことが出来ます。また、JavaScript のためには、[TypeScript](http://www.typescriptlang.org/)
 を使うことが出来ます。
@@ -417,25 +417,25 @@ return [
 ];
 ```
 
-In the above we specify the supported extended syntax via the [[yii\web\AssetConverter::commands]] property.
-The array keys are the file extension names (without leading dot), and the array values are the resulting
-asset file extension names and the commands for performing the asset conversion. The tokens `{from}` and `{to}`
-in the commands will be replaced with the source asset file paths and the target asset file paths.
+上記においては、サポートされる拡張構文が [[yii\web\AssetConverter::commands]] プロパティによって定義されています。
+配列のキーはファイルの拡張子 (先頭のドットは省く) であり、配列の値は結果として作られるアセットファイルの拡張子と
+アセット変換を実行するためのコマンドです。コマンドの中の `{from}` と `{to}` のトークンは、ソースのアセットファイルのパスと
+ターゲットのアセットファイルのパスに置き換えられます。
 
-> Info: There are other ways of working with assets in extended syntax, besides the one described above.
-  For example, you can use build tools such as [grunt](http://gruntjs.com/) to monitor and automatically
-  convert assets in extended syntax. In this case, you should list the resulting CSS/JavaScript files in
-  asset bundles rather than the original files.
+> Info|情報: 上記で説明した方法の他にも、拡張構文のアセットを扱う方法はあります。例えば、[grunt](http://gruntjs.com/)
+  のようなビルドツールを使って、拡張構文のアセットをモニターし、自動的に変換することが出来ます。この場合は、元のファイルではなく、
+  結果として作られる CSS/JavaScript ファイルをアセットバンドルのリストに挙げなければなりません。
 
 
-## Combining and Compressing Assets <a name="combining-compressing-assets"></a>
+## アセットを結合して圧縮する <a name="combining-compressing-assets"></a>
 
-A Web page can include many CSS and/or JavaScript files. To reduce the number of HTTP requests and the overall
-download size of these files, a common practice is to combine and compress multiple CSS/JavaScript files into 
-one or very few files, and then include these compressed files instead of the original ones in the Web pages.  
+ウェブページは数多くの CSS および/または JavaScript ファイルをインクルードすることがあり得ます。HTTP リクエストの数と
+これらのファイルの全体としてのダウンロードサイズを削減するためによく用いられる方法は、複数の CSS/JavaScript ファイルを
+結合して圧縮し、一つまたはごく少数のファイルにまとめることです。そして、ウェブページでは元のファイルをインクルードする
+代りに、圧縮されたファイルをインクルードする訳です。
  
-> Info: Combining and compressing assets is usually needed when an application is in production mode. 
-  In development mode, using the original CSS/JavaScript files is often more convenient for debugging purpose.
+> Info|情報: アセットの結合と圧縮は、通常はアプリケーションが実運用モードにある場合に必要になります。開発モードにおいては、
+  たいていは元の CSS/JavaScript ファイルを使う方がデバッグのために好都合です。
 
 In the following, we introduce an approach to combine and compress asset files without the need of modifying
 your existing application code.
