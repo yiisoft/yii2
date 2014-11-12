@@ -543,7 +543,7 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @return string the generated button tag
+     * @return string the generated text input tag
      */
     public static function textInput($name, $value = null, $options = [])
     {
@@ -558,7 +558,7 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @return string the generated button tag
+     * @return string the generated hidden input tag
      */
     public static function hiddenInput($name, $value = null, $options = [])
     {
@@ -573,7 +573,7 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @return string the generated button tag
+     * @return string the generated password input tag
      */
     public static function passwordInput($name, $value = null, $options = [])
     {
@@ -591,7 +591,7 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @return string the generated button tag
+     * @return string the generated file input tag
      */
     public static function fileInput($name, $value = null, $options = [])
     {
