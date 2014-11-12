@@ -178,7 +178,7 @@ class AssetManager extends Component
      * This method will first look for the bundle in [[bundles]]. If not found,
      * it will treat `$name` as the class of the asset bundle and create a new instance of it.
      *
-     * @param string $name the class name of the asset bundle
+     * @param string $name the class name of the asset bundle (without the leading backslash)
      * @param boolean $publish whether to publish the asset files in the asset bundle before it is returned.
      * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
      * @return AssetBundle the asset bundle instance

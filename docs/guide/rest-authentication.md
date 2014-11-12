@@ -11,7 +11,7 @@ via HTTPS to prevent man-in-the-middle (MitM) attacks**.
 There are different ways to send an access token:
 
 * [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication): the access token
-  is sent as the username. This is should only be used when an access token can be safely stored
+  is sent as the username. This should only be used when an access token can be safely stored
   on the API consumer side. For example, the API consumer is a program running on a server.
 * Query parameter: the access token is sent as a query parameter in the API URL, e.g.,
   `https://example.com/users?access-token=xxxxxxxx`. Because most Web servers will keep query

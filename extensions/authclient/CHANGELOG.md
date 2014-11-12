@@ -4,7 +4,7 @@ Yii Framework 2 authclient extension Change Log
 2.0.1 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6000: Fixed CCS for `yii\authclient\widgets\AuthChoice` does not loaded if `popupMode` disabled (klimov-paul)
 
 
 2.0.0 October 12, 2014

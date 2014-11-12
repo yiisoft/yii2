@@ -162,10 +162,13 @@ class Logger extends Component
      */
     public function flush($final = false)
     {
-        if ($this->dispatcher instanceof Dispatcher) {
-            $this->dispatcher->dispatch($this->messages, $final);
-        }
+        $messages = $this->messages;
+        // https://github.com/yiisoft/yii2/issues/5619
+        // new messages could be logged while the existing ones are being handled by targets
         $this->messages = [];
+        if ($this->dispatcher instanceof Dispatcher) {
+            $this->dispatcher->dispatch($messages, $final);
+        }
     }
 
     /**
