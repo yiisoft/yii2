@@ -3,7 +3,8 @@ Assets
 
 Un asset en Yii es un archivo al que se puede hacer referencia en una página Web. Puede ser un archivo CSS, un archivo JavaScript, una imagen o un archivo de video, etc. Los assets se encuentran en los directorios públicos de la web y se sirven directamente por los servidores Web.
 
-A menudo es preferible gestionar los assets mediante programación. Por ejemplo, cuando se usa el widget [[yii\jui\DatePicker]] en una página, éste incluirá automáticamente los archivos CSS y JavaScript requeridos, en vez de tener que buscar los archivos e incluirlos manualmente. Y cuando se actualice el widge a una nueva versión, ésta usar de forma automática la nueva versión de los archivos asset. En este tutorial, se describirá la poderosa capacidad que proporciona la gestión de assets en Yii.
+A menudo es preferible gestionar los assets mediante programación. Por ejemplo, cuando se usa el widget [[yii\jui\DatePicker]] en una página, éste incluirá automáticamente los archivos CSS y JavaScript requeridos, en vez de tener que buscar los archivos e incluirlos manualmente. Y cuando se actualice el widget a una nueva versión, ésta usará de forma automática la nueva versión de los archivos asset.
+En este tutorial, se describirá la poderosa capacidad que proporciona la gestión de assets en Yii.
 
 ## Asset Bundles <a name="asset-bundles"></a>
 
@@ -11,7 +12,7 @@ Yii gestiona los assets en unidades de *asset bundle*. Un asset bundle es simple
 
 ## Definición de Asset Bundles <a name="defining-asset-bundles"></a>
 
-Los asset bundles son descritos como clases PHP que extienden a [[yii\web\AssetBundle]]. El nombre del bundle es simplemente su correspondiente nombre de la classe PHP que debe ser [autocargable](concept-autoloading.md). En una clase assed bundle, lo más habitual es especificar donde se encuentran los archivos asset, que archivos CSS y JavaScript contiene el bundle, y como depende éste bundle de otros bundles.
+Los asset bundles son descritos como clases PHP que extienden a [[yii\web\AssetBundle]]. El nombre del bundle es simplemente su correspondiente nombre de la classe PHP que debe ser [autocargable](concept-autoloading.md). En una clase asset bundle, lo más habitual es especificar donde se encuentran los archivos asset, que archivos CSS y JavaScript contiene el bundle, y como depende éste bundle de otros bundles.
 
 El siguiente código define el asset bundle principal que se usa en [la plantilla de aplicación básica](start-installation.md):
 
@@ -132,7 +133,7 @@ AppAsset::register($this);  // $this representa el objeto vista
 
 Si se registra un asset bundle en otro lugar, se debe proporcionar la vista necesaria al objeto. Por ejemplo, para registrar un asset bundle en una clase [widget](structure-widget.md), se puede obtener el objeto vista mediante `$this->view`.
 
-Cuando se registra un asset bundle con una vista, por detras, Yii registrará todos sus asset bundles dependientes. Y si un assed bundle se encuentra en un directorio inaccesible por la Web, éste sera publicado a un directorio Web publico. Después cuando la vista renderice una página, se generarán las etiquetas(tags) `<link>` y `<script>`  para los archivos CSS y JavaScript listados en los bundles registrados. El orden de estas etiquetas sera determinado por las dependencias entre los bundles registrados y los otros assets listados en las propiedades [[yii\web\AssetBundle::css]] y [[yii\web\AssetBundle::js]].
+Cuando se registra un asset bundle con una vista, por detras, Yii registrará todos sus asset bundles dependientes. Y si un asset bundle se encuentra en un directorio inaccesible por la Web, éste sera publicado a un directorio Web publico. Después cuando la vista renderice una página, se generarán las etiquetas(tags) `<link>` y `<script>`  para los archivos CSS y JavaScript listados en los bundles registrados. El orden de estas etiquetas sera determinado por las dependencias entre los bundles registrados y los otros assets listados en las propiedades [[yii\web\AssetBundle::css]] y [[yii\web\AssetBundle::js]].
 
 ### Personalización de Asset Bundles <a name="customizing-asset-bundles"></a>
 
