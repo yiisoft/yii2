@@ -101,6 +101,7 @@ $response->data = ['message' => 'hello world'];
 Yii supports the following formats out of the box, each implemented by a [[yii\web\ResponseFormatterInterface|formatter]] class.
 You can customize these formatters or add new ones by configuring the [[yii\web\Response::formatters]] property.
 
+* [[yii\web\Response::FORMAT_RAW|RAW]]
 * [[yii\web\Response::FORMAT_HTML|HTML]]: implemented by [[yii\web\HtmlResponseFormatter]].
 * [[yii\web\Response::FORMAT_XML|XML]]: implemented by [[yii\web\XmlResponseFormatter]].
 * [[yii\web\Response::FORMAT_JSON|JSON]]: implemented by [[yii\web\JsonResponseFormatter]].
