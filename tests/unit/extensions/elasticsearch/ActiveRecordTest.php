@@ -445,7 +445,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testScriptFields()
     {
-        $orderItems = OrderItem::find()->fields(['quantity', 'subtotal', 'total' => ['script' => "doc['quantity'].value * doc['subtotal'].value"]])->all();
+        $orderItems = OrderItem::find()->fields([
+            'quantity',
+            'subtotal',
+            'total' => [
+                'script' => "doc['quantity'].value * doc['subtotal'].value",
+                'lang' => 'groovy',
+            ]
+        ])->all();
+        $this->assertNotEmpty($orderItems);
         foreach($orderItems as $item) {
             $this->assertEquals($item->subtotal * $item->quantity, $item->total);
         }
