@@ -470,7 +470,7 @@ $orders = $customer->getBigOrders(200)->all();
 ```
 
 > Note: A relation method returns an instance of [[yii\db\ActiveQuery]]. If you access the relation like
-an attribute (i.e. a class property), the return value will be the query result of the relation, which could be an instance of [[yii\db\ActiveRecord]],
+an attribute (i.e., a class property), the return value will be the query result of the relation, which could be an instance of [[yii\db\ActiveRecord]],
 an array of that, or null, depending the multiplicity of the relation. For example, `$customer->getOrders()` returns
 an `ActiveQuery` instance, while `$customer->orders` returns an array of `Order` objects (or an empty array if
 the query results in nothing).
@@ -1016,7 +1016,7 @@ To use Optimistic locking:
 2. In the Web form that collects the user input, add a hidden field that stores
    the lock version of the recording being updated.
 3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
-   and implement necessary business logic (e.g. merging the changes, prompting stated data)
+   and implement necessary business logic (e.g., merging the changes, prompting stated data)
    to resolve the conflict.
 
 Dirty Attributes
