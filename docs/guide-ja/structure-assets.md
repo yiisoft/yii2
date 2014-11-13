@@ -159,7 +159,7 @@ public $cssOptions = ['condition' => 'lte IE9'];
 <![endif]-->
 ```
 
-リンクタグを `<noscript>` で包むためには、次のコードが使用できます:
+生成された CSS のリンクタグを `<noscript>` の中に包むためには、次のように `cssOptions` を構成することが出来ます:
 
 ```php
 public $cssOptions = ['noscript' => true];
@@ -171,6 +171,38 @@ JavaScript ファイルをページの head セクションにインクルード
 ```php
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
+
+既定では、アセットバンドルが発行されるときは、[[yii\web\AssetBundle::sourcePath]] で指定されたディレクトリの中にある
+全てのコンテンツが発行されます。[[yii\web\AssetBundle::publishOptions|publishOptions]] プロパティを構成することによって
+この振る舞いをカスタマイズすることが出来ます。例えば、[[yii\web\AssetBundle::sourcePath]] の一個または数個のサブディレクトリ
+だけを発行するために、アセットバンドルクラスの中で下記のようにすることが出来ます:
+
+```php
+<?php
+namespace app\assets;
+
+use yii\web\AssetBundle;
+
+class FontAwesomeAsset extends AssetBundle 
+{
+    public $sourcePath = '@bower/font-awesome'; 
+    public $css = [ 
+        'css/font-awesome.min.css', 
+    ]; 
+    
+    public function init()
+    {
+        parent::init();
+        $this->publishOptions['beforeCopy'] = function ($from, $to) {
+            $dirname = basename(dirname($from));
+            return $dirname === 'fonts' || $dirname === 'css';
+        };
+    }
+}  
+```
+
+上記の例は、["fontawesome" パッケージ](http://fontawesome.io/) のためのアセットバンドルを定義するものです。`beforeCopy`
+という発行オプションを指定して、`fonts` と `css` サブディレクトリだけが発行されるようにしています。
 
 
 ### Bower と NPM のアセット <a name="bower-npm-assets"></a>
@@ -437,52 +469,51 @@ return [
 > Info|情報: アセットの結合と圧縮は、通常はアプリケーションが実運用モードにある場合に必要になります。開発モードにおいては、
   たいていは元の CSS/JavaScript ファイルを使う方がデバッグのために好都合です。
 
-In the following, we introduce an approach to combine and compress asset files without the need of modifying
-your existing application code.
+次に、既存のアプリケーションコードを修正する必要なしに、アセットファイルを結合して圧縮する方法を紹介します。
 
-1. Find out all asset bundles in your application that you plan to combine and compress.
-2. Divide these bundles into one or a few groups. Note that each bundle can only belong to a single group.
-3. Combine/compress the CSS files in each group into a single file. Do this similarly for the JavaScript files.
-4. Define a new asset bundle for each group:
-   * Set the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties to be
-     the combined CSS and JavaScript files, respectively.
-   * Customize the asset bundles in each group by setting their [[yii\web\AssetBundle::css|css]] and 
-     [[yii\web\AssetBundle::js|js]] properties to be empty, and setting their [[yii\web\AssetBundle::depends|depends]]
-     property to be the new asset bundle created for the group.
+1. アプリケーションの中で、結合して圧縮する予定のアセットバンドルを全て探し出す。
+2. これらのバンドルを一個か数個のグループにまとめる。どのバンドルも一つのグループにしか属することが出来ないことに注意。
+3. 各グループの CSS ファイルを一つのファイルに結合/圧縮する。JavaScript ファイルに対しても同様にこれを行う。
+4. 各グループに対して新しいアセットバンドルを定義する:
+   * [[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]] のプロパティを、それぞれ、結合された CSS ファイルと
+     JavaScript ファイルにセットする。
+   * 各グループに属する元のアセットバンドルをカスタマイズして、[[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]]
+     のプロパティを空っぽにし、[[yii\web\AssetBundle::depends|depends]] プロパティにグループのために作られた新しいバンドルを指定する。
 
-Using this approach, when you register an asset bundle in a view, it causes the automatic registration of
-the new asset bundle for the group that the original bundle belongs to. And as a result, the combined/compressed 
-asset files are included in the page, instead of the original ones.
+この方法を使うと、ビューでアセットバンドルを登録したときに、元のバンドルが属するグループのための新しいアセットバンドルが自動的に
+登録されるようになります。そして、結果として、結合/圧縮されたアセットファイルが、元のファイルの代りに、ページにインクルードされます。
 
 
-### An Example <a name="example"></a>
+### 一例 <a name="example"></a>
 
-Let's use an example to further explain the above approach. 
+上記の方法をさらに説明するために一つの例を挙げましょう。
 
-Assume your application has two pages X and Y. Page X uses asset bundle A, B and C, while Page Y uses asset bundle B, C and D. 
+あなたのアプリケーションが二つのページ、X と Y を持つと仮定します。ページ X はアセットバンドル A、B、C を使用し、
+ページ Y はアセットバンドル B、C、D を使用します。
 
-You have two ways to divide these asset bundles. One is to use a single group to include all asset bundles, the
-other is to put (A, B, C) in Group X, and (B, C, D) in Group Y. Which one is better? It depends. The first way
-has the advantage that both pages share the same combined CSS and JavaScript files, which makes HTTP caching
-more effective. On the other hand, because the single group contains all bundles, the size of the combined CSS and 
-JavaScript files will be bigger and thus increase the initial file transmission time. In this example, we will use 
-the first way, i.e., use a single group to contain all bundles.
+これらのアセットバンドルを分割する方法は二つあります。一つは単一のグループを使用して全てのアセットバンドルを含める方法です。
+もう一つは、A をグループ X に入れ、D をグループ Y に入れ、そして、B と C をグループ S に入れる方法です。どちらが良いでしょう?
+場合によります。最初の方法の利点は、二つのページが同一の結合された CSS と JavaScript のファイルを共有するため、HTTP キャッシュの
+効果が高くなることです。その一方で、単一のグループが全てのバンドルを含むために、結合された CSS と JavaScript のファイルは
+より大きくなり、従って最初のファイル転送時間はより長くなります。この例では話を簡単にするために、最初の方法、すなわち、
+全てのバンドルを含む単一のグループを使用することにします。
 
-> Info: Dividing asset bundles into groups is not trivial task. It usually requires analysis about the real world
-  traffic data of various assets on different pages. At the beginning, you may start with a single group for simplicity. 
+> Info|情報: アセットバンドルをグループに分けることは些細な仕事ではありません。通常、そのためには、いろいろなページの
+  さまざまなアセットの現実世界での転送量を分析することが必要になります。とりあえず、最初は、簡単にするために、
+  単一のグループから始めて良いでしょう。
 
-Use existing tools (e.g. [Closure Compiler](https://developers.google.com/closure/compiler/), 
-[YUI Compressor](https://github.com/yui/yuicompressor/)) to combine and compress CSS and JavaScript files in 
-all the bundles. Note that the files should be combined in the order that satisfies the dependencies among the bundles. 
-For example, if Bundle A depends on B which depends on both C and D, then you should list the asset files starting 
-from C and D, followed by B and finally A. 
+既存のツール (例えば [Closure Compiler](https://developers.google.com/closure/compiler/) や
+[YUI Compressor](https://github.com/yui/yuicompressor/)) を使って、全てのバンドルにある CSS と JavaScript のファイルを
+結合して圧縮します。ファイルは、バンドル間の依存関係を満たす順序に従って結合しなければならないことに注意してください。
+例えば、バンドル A が B に依存し、B が C と D の両方に依存している場合は、アセットファイルの結合順は、最初に C と D、
+次に B、そして最後に A としなければなりません。
 
-After combining and compressing, we get one CSS file and one JavaScript file. Assume they are named as 
-`all-xyz.css` and `all-xyz.js`, where `xyz` stands for a timestamp or a hash that is used to make the file name unique
-to avoid HTTP caching problem.
- 
-We are at the last step now. Configure the [[yii\web\AssetManager|asset manager]] as follows in the application
-configuration:
+結合と圧縮が完了すると、一つの CSS ファイルと一つの JavaScript ファイルが得られます。それらは、`all-xyz.css` および
+`all-xyz.js` と命名されたとしましょう。ここで `xyz` は、ファイル名をユニークにして HTTP キャッシュの問題を避ける
+ために使用されるタイムスタンプまたはハッシュを表します。
+
+いよいよ最終ステップです。アプリケーションのコンフィギュレーションの中で、[[yii\web\AssetManager|アセットマネージャ]]
+を次のように構成します:
 
 ```php
 return [
@@ -506,15 +537,15 @@ return [
 ];
 ```
 
-As explained in the [Customizing Asset Bundles](#customizing-asset-bundles) subsection, the above configuration
-changes the default behavior of each bundle. In particular, Bundle A, B, C and D no longer have any asset files.
-They now all depend on the `all` bundle which contains the combined `all-xyz.css` and `all-xyz.js` files.
-Consequently, for Page X, instead of including the original source files from Bundle A, B and C, only these
-two combined files will be included; the same thing happens to Page Y.
+[アセットバンドルをカスタマイズする](#customizing-asset-bundles) の項で説明したように、上記のコンフィギュレーションによって
+元のバンドルは全てデフォルトの振る舞いを変更されます。具体的にいえば、バンドル A、B、C、D は、もはやアセットファイルを
+一つも持っていません。この4つは、それぞれ、結合された `all-xyz.css` と `all-xyz.js` ファイルを持つ `all` バンドルに依存するように
+なりました。結果として、ページ X では、バンドル A、B、C から元のソースファイルをインクルードする代りに、これら二つの結合された
+ファイルがインクルードされます。同じことはページ Y でも起ります。
 
-There is one final trick to make the above approach work more smoothly. Instead of directly modifying the
-application configuration file, you may put the bundle customization array in a separate file and conditionally
-include this file in the application configuration. For example,
+最後にもう一つ、上記の方法をさらにスムーズに運用するためのトリックがあります。アプリケーションのコンフィギュレーションファイルを
+直接修正する代りに、バンドルのカスタマイズ用の配列を独立したファイルに置いて、条件によってそのファイルをアプリケーションの
+コンフィギュレーションにインクルードすることが出来ます。例えば、
 
 ```php
 return [
@@ -526,42 +557,42 @@ return [
 ];
 ```
 
-That is, the asset bundle configuration array is saved in `assets-prod.php` for production mode, and
-`assets-dev.php` for non-production mode.
+つまり、アセットバンドルのコンフィギュレーション配列は、実運用モードのためのものは `assets-prod.php` に保存し、
+開発モードのためのものは `assets-dev.php` に保存するという訳です。
 
 
-### Using the `asset` Command <a name="using-asset-command"></a>
+### `asset` コマンドを使う <a name="using-asset-command"></a>
 
-Yii provides a console command named `asset` to automate the approach that we just described.
+Yii は、たった今説明した方法を自動化するための `asset` という名前のコンソールコマンドを提供しています。
 
-To use this command, you should first create a configuration file to describe what asset bundles should
-be combined and how they should be grouped. You can use the `asset/template` sub-command to generate
-a template first and then modify it to fit for your needs.
+このコマンドを使うためには、最初にコンフィギュレーションファイルを作成して、どのアセットバンドルが結合されるか、そして、
+それらがどのようにグループ化されるかを記述しなければなりません。`asset/template` サブコマンドを使って最初にテンプレートを生成し、
+それをあなたの要求に合うように修正することが出来ます。
 
 ```
 yii asset/template assets.php
 ```
 
-The command generates a file named `assets.php` in the current directory. The content of this file looks like the following:
+上記のコマンドは、カレントディレクトリに `assets.php` というファイルを生成します。このファイルの内容は以下のようなものです:
 
 ```php
 <?php
 /**
- * Configuration file for the "yii asset" console command.
- * Note that in the console environment, some path aliases like '@webroot' and '@web' may not exist.
- * Please define these missing path aliases.
+ * "yii asset" コンソールコマンドのためのコンフィギュレーションファイル
+ * コンソール環境では、'@webroot' や '@web' のように、パスエイリアスが存在しない場合があることに注意してください。
+ * これらの欠落したパスエイリアスは手作業で定義してください。
  */
 return [
-    // Adjust command/callback for JavaScript files compressing:
+    // JavaScript ファイルの圧縮のためのコマンド/コールバックを調整:
     'jsCompressor' => 'java -jar compiler.jar --js {from} --js_output_file {to}',
-    // Adjust command/callback for CSS files compressing:
+    // CSS ファイルの圧縮のためのコマンド/コールバックを調整:
     'cssCompressor' => 'java -jar yuicompressor.jar --type css {from} -o {to}',
-    // The list of asset bundles to compress:
+    // 圧縮するアセットバンドルのリスト:
     'bundles' => [
         // 'yii\web\YiiAsset',
         // 'yii\web\JqueryAsset',
     ],
-    // Asset bundle for compression output:
+    // 圧縮出力用のアセットバンドル:
     'targets' => [
         'all' => [
             'class' => 'yii\web\AssetBundle',
@@ -571,38 +602,37 @@ return [
             'css' => 'css/all-{hash}.css',
         ],
     ],
-    // Asset manager configuration:
+    // アセットマネージャのコンフィギュレーション:
     'assetManager' => [
     ],
 ];
 ```
 
-You should modify this file and specify which bundles you plan to combine in the `bundles` option. In the `targets` 
-option you should specify how the bundles should be divided into groups. You can specify one or multiple groups, 
-as aforementioned.
+このファイルを修正して、どのバンドルを結合するつもりであるかを `bundles` オプションで指定しなければなりません。
+`targets` オプションでは、バンドルがどのようにグループに分割されるかを指定しなければなりません。既に述べたように、
+一つまたは複数のグループを定義することが出来ます。
 
-> Note: Because the alias `@webroot` and `@web` are not available in the console application, you should
-  explicitly define them in the configuration.
+> Note|注意: パスエイリアス `@webroot` および `@web` はコンソールアプリケーションでは利用できませんので、これらは
+  コンフィギュレーションの中で明示的に定義しなければなりません。
 
-JavaScript files are combined, compressed and written to `js/all-{hash}.js` where {hash} is replaced with the hash of
-the resulting file.
+JavaScript ファイルは結合され、圧縮されて `js/all-{hash}.js` に保存されます。ここで {hash} は、結果として作られたファイルの
+ハッシュで置き換えられるものです。
 
-The `jsCompressor` and `cssCompressor` options specify the console commands or PHP callbacks for performing
-JavaScript and CSS combining/compressing. By default Yii uses [Closure Compiler](https://developers.google.com/closure/compiler/) 
-for combining JavaScript files and [YUI Compressor](https://github.com/yui/yuicompressor/) for combining CSS files. 
-You should install tools manually or adjust these options to use your favorite tools.
+`jsCompressor` と `cssCompressor` のオプションは、JavaScript と CSS の結合/圧縮を実行するコンソールコマンドまたは PHP
+コールバックを指定するものです。既定では、Yii は JavaScript ファイルの結合に [Closure Compiler](https://developers.google.com/closure/compiler/) 
+を使い、CSS ファイルの結合に [YUI Compressor](https://github.com/yui/yuicompressor/) を使用します。
+あなたの好みのツールを使うためには、手作業でツールをインストールしたり、オプションを調整したりしなければなりません。
 
-
-With the configuration file, you can run the `asset` command to combine and compress the asset files
-and then generate a new asset bundle configuration file `assets-prod.php`:
+このコンフィギュレーションファイルを使うと、`asset` コマンドを走らせて、アセットファイルを結合して圧縮し、同時に
+新しいアセットバンドルのコンフィギュレーションファイル `assets-prod.php` を生成することが出来ます:
  
 ```
 yii asset assets.php config/assets-prod.php
 ```
 
-The generated configuration file can be included in the application configuration, like described in
-the last subsection.
+直前の項で説明したように、この生成されたコンフィギュレーションファイルをアプリケーションのコンフィギュレーションに
+インクルードすることが出来ます。
 
 
-> Info: Using the `asset` command is not the only option to automate the asset combining and compressing process.
-  You can use the excellent task runner tool [grunt](http://gruntjs.com/) to achieve the same goal.
+> Info|情報: `asset` コマンドを使うことは、アセットの結合・圧縮のプロセスを自動化する唯一の選択肢ではありません。
+  優秀なタスク自動化ツールである [grunt](http://gruntjs.com/) を使っても、同じ目的を達することが出来ます。
