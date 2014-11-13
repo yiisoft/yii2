@@ -1,85 +1,86 @@
-Extensions
-==========
+エクステンション
+================
 
-Extensions are redistributable software packages specifically designed to be used in Yii applications and provide
-ready-to-use features. For example, the [yiisoft/yii2-debug](tool-debugger.md) extension adds a handy debug toolbar
-at the bottom of every page in your application to help you more easily grasp how the pages are generated. You can
-use extensions to accelerate your development process. You can also package your code as extensions to share with
-other people your great work.
+エクステンションは、Yii のアプリケーションで使われることに限定して設計され、そのまますぐに使える機能を提供する
+再配布可能なソフトウェアパッケージです。例えば、[yiisoft/yii2-debug](tool-debugger.md) エクステンションは、
+あなたのアプリケーションにおいて、全てのページの末尾に便利なデバッグツールバーを追加して、ページが生成される過程を
+より容易に把握できるように手助けしてくれます。エクステンションを使うと、あなたの開発プロセスを加速することが出来ます。
+また、あなたのコードをエクステンションとしてパッケージ化すると、あなたの優れた仕事を他の人たちと共有することが出来ます。
 
-> Info: We use the term "extension" to refer to Yii-specific software packages. For general purpose software packages
-  that can be used without Yii, we will refer to them using the term "package" or "library".
+> Info|情報: 「エクステンション」という用語は Yii に限定されたソフトウェアパッケージを指すものとして使用します。
+  Yii がなくても使用できる汎用のソフトウェアパッケージを指すためには、「パッケージ」または「ライブラリ」という用語を使うことにします。
 
+## エクステンションを使う <a name="using-extensions"></a>
 
-## Using Extensions <a name="using-extensions"></a>
+エクステンションを使うためには、先ずはそれをインストールする必要があります。ほとんどのエクステンションは [Composer](https://getcomposer.org/)
+のパッケージとして配布されていて、次の二つの簡単なステップをふめばインストールすることが出来ます:
 
-To use an extension, you need to install it first. Most extensions are distributed as [Composer](https://getcomposer.org/)
-packages which can be installed by taking the following two simple steps:
+1. アプリケーションの `composer.json` ファイルを修正して、どのエクステンション (Composer パッケージ) をインストールしたいかを指定する。
+2. `composer install` コマンドを走らせて指定したエクステンションをインストールする。
 
-1. modify the `composer.json` file of your application and specify which extensions (Composer packages) you want to install.
-2. run `composer install` to install the specified extensions.
+[Composer](https://getcomposer.org/) を持っていない場合は、それをインストールする必要があることに注意してください。
 
-Note that you may need to install [Composer](https://getcomposer.org/) if you do not have it.
+既定では、Composer は [Packagist](https://packagist.org/) に登録されたパッケージをインストールします。Packagist は
+オープンソース Composer パッケージの最大のレポジトリであり、そこでエクステンションを探すことが出来ます。
+また、[自分自身のレポジトリを作成](https://getcomposer.org/doc/05-repositories.md#repository) して、それを使うように
+Composer を構成することも出来ます。これは、あなたがプライベートなエクステンションを開発していて、
+それを自分のプロジェクト間でのみ共有したい場合に役に立つ方法です。
 
-By default, Composer installs packages registered on [Packagist](https://packagist.org/) - the biggest repository
-for open source Composer packages. You can look for extensions on Packagist. You may also
-[create your own repository](https://getcomposer.org/doc/05-repositories.md#repository) and configure Composer
-to use it. This is useful if you are developing closed open extensions and want to share within your projects.
+Composer によってインストールされるエクステンションは `BasePath/vendor` ディレクトリに保存されます。ここで `BasePath`
+は、アプリケーションの [ベースパス](structure-applications.md#basePath) を指します。Composer は依存関係を管理するものですから、
+パッケージをインストールするときには、それが依存している全てのパッケージをも同時にインストールします。
 
-Extensions installed by Composer are stored in the `BasePath/vendor` directory, where `BasePath` refers to the
-application's [base path](structure-applications.md#basePath).  Because Composer is a dependency manager, when
-it installs a package, it will also install all its dependent packages.
-
-For example, to install the `yiisoft/yii2-imagine` extension, modify your `composer.json` like the following:
+例えば、`yiisoft/yii2-imagine` エクステンションをインストールするためには、あなたの `composer.json` を次のように修正します:
 
 ```json
 {
     // ...
 
     "require": {
-        // ... other dependencies
+        // ... 他の依存パッケージ
 
         "yiisoft/yii2-imagine": "*"
     }
 }
 ```
 
-After the installation, you should see the directory `yiisoft/yii2-imagine` under `BasePath/vendor`. You should
-also see another directory `imagine/imagine` which contains the installed dependent package.
+インストール完了後には、`BasePath/vendor` の下に `yiisoft/yii2-imagine` ディレクトリが作られている筈です。それと同時に、
+`imagine/imagine` という別のディレクトリも作られて、依存するパッケージがそこにインストールされている筈です。
 
-> Info: The `yiisoft/yii2-imagine` is a core extension developed and maintained by the Yii developer team. All
-  core extensions are hosted on [Packagist](https://packagist.org/) and named like `yiisoft/yii2-xyz`, where `xyz`
-  varies for different extensions.
+> Info|情報: `yiisoft/yii2-imagine` は Yii 開発チームによって開発され保守されるコアエクステンションの一つです。
+  全てのコアエクステンションは [Packagist](https://packagist.org/) でホストされ、`yiisoft/yii2-xyz` のように名付けられます。
+  ここで `xyz` はエクステンションによってさまざまに変ります。
 
-Now you can use the installed extensions like they are part of your application. The following example shows
-how you can use the `yii\imagine\Image` class provided by the `yiisoft/yii2-imagine` extension:
+これであなたはインストールされたエクステンションをあなたのアプリケーションの一部であるかのように使うことが出来ます。
+次の例は、`yiisoft/yii2-imagine` エクステンションによって提供される `yii\imagine\Image` クラスをどのようにして使うことが
+出来るかを示すものです:
 
 ```php
 use Yii;
 use yii\imagine\Image;
 
-// generate a thumbnail image
+// サムネール画像を生成する
 Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     ->save(Yii::getAlias('@runtime/thumb-test-image.jpg'), ['quality' => 50]);
 ```
 
-> Info: Extension classes are autoloaded by the [Yii class autoloader](concept-autoloading.md).
+> Info|情報: エクステンションのクラスは [Yii クラスオートローダ](concept-autoloading.md) によってオートロードされます。
 
 
-### Installing Extensions Manually <a name="installing-extensions-manually"></a>
+### エクステンションを手作業でインストールする <a name="installing-extensions-manually"></a>
 
-In some rare occasions, you may want to install some or all extensions manually, rather than relying on Composer.
-To do so, you should
+あまり無いことですが、いくつかまたは全てのエクステンションを Composer に頼らずに手作業でインストールしたい場合があるかもしれません。
+そうするためには、次のようにしなければなりません:
 
-1. download the extension archive files and unpack them in the `vendor` directory.
-2. install the class autoloaders provided by the extensions, if any.
-3. download and install all dependent extensions as instructed.
+1. エクステンションのアーカイブファイルをダウンロードして、`vendor` ディレクトリに解凍する。
+2. もし有れば、エクステンションによって提供されているクラスオートローダをインストールする。
+3. 指示に従って、依存するエクステンションを全てダウンロードしインストールする。
 
-If an extension does not have a class autoloader but follows the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/),
-you may use the class autoloader provided by Yii to autoload the extension classes. All you need to do is just to
-declare a [root alias](concept-aliases.md#defining-aliases) for the extension root directory. For example,
-assuming you have installed an extension in the directory `vendor/mycompany/myext`, and the extension classes
-are under the `myext` namespace, then you can include the following code in your application configuration:
+エクステンションがクラスオートローダを持っていなくても、[PSR-4 標準](http://www.php-fig.org/psr/psr-4/) に従っている場合は、
+Yii によって提供されているクラスオートローダを使ってエクステンションのクラスをオートロードすることが出来ます。必要なことは、
+エクステンションのルートディレクトリのための [ルートエイリアス](concept-aliases.md#defining-aliases) を宣言することだけです。
+例えば、エクステンションを `vendor/mycompany/myext` というディレクトリにインストールしたと仮定します。そして、エクステンションの
+クラスは `myext` 名前空間の下にあるとします。その場合、アプリケーションのコンフィギュレーションに下記のコードを含めれば良いのです:
 
 ```php
 [
@@ -90,15 +91,15 @@ are under the `myext` namespace, then you can include the following code in your
 ```
 
 
-## Creating Extensions <a name="creating-extensions"></a>
+## エクステンションを作成する <a name="creating-extensions"></a>
 
-You may consider creating an extension when you feel the need to share with other people your great code.
-An extension can contain any code you like, such as a helper class, a widget, a module, etc.
+あなたの優れたコードを他の人々と共有する必要があると感じたときは、エクステンションを作成することを考慮するのが良いでしょう。
+エクステンションは、ヘルパークラス、ウィジェット、モジュールなど、どのようなコードでも含むことが出来ます。
 
-It is recommended that you create an extension in terms of a [Composer package](https://getcomposer.org/) so that
-it can be more easily installed and used by other users, liked described in the last subsection.
+エクステンションは、[Composer パッケージ](https://getcomposer.org/) の形式で作成することが推奨されます。そうすれば、
+直前の項で説明したように、いっそう容易に他のユーザによってインストールされ、使用されることが出来ます。
 
-Below are the basic steps you may follow to create an extension as a Composer package.
+以下は、エクステンションを Composer のパッケージとして作成するために従う基本的なステップです。
 
 1. Create a project for your extension and host it on a VCS repository, such as [github.com](https://github.com).
    The development and maintenance work about the extension should be done on this repository.
