@@ -24,7 +24,7 @@ Note that you may need to install [Composer](https://getcomposer.org/) if you do
 By default, Composer installs packages registered on [Packagist](https://packagist.org/) - the biggest repository
 for open source Composer packages. You can look for extensions on Packagist. You may also
 [create your own repository](https://getcomposer.org/doc/05-repositories.md#repository) and configure Composer
-to use it. This is useful if you are developing closed open extensions and want to share within your projects.
+to use it. This is useful if you are developing private extensions that you want to share within your projects only.
 
 Extensions installed by Composer are stored in the `BasePath/vendor` directory, where `BasePath` refers to the
 application's [base path](structure-applications.md#basePath).  Because Composer is a dependency manager, when
