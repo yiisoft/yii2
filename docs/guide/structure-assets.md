@@ -464,11 +464,11 @@ Let's use an example to further explain the above approach.
 Assume your application has two pages X and Y. Page X uses asset bundle A, B and C, while Page Y uses asset bundle B, C and D. 
 
 You have two ways to divide these asset bundles. One is to use a single group to include all asset bundles, the
-other is to put (A, B, C) in Group X, and (B, C, D) in Group Y. Which one is better? It depends. The first way
+other is to put A in Group X, D in Group Y, and (B, C) in Group S. Which one is better? It depends. The first way
 has the advantage that both pages share the same combined CSS and JavaScript files, which makes HTTP caching
 more effective. On the other hand, because the single group contains all bundles, the size of the combined CSS and 
-JavaScript files will be bigger and thus increase the initial file transmission time. In this example, we will use 
-the first way, i.e., use a single group to contain all bundles.
+JavaScript files will be bigger and thus increase the initial file transmission time. For simplicity in this example, 
+we will use the first way, i.e., use a single group to contain all bundles.
 
 > Info: Dividing asset bundles into groups is not trivial task. It usually requires analysis about the real world
   traffic data of various assets on different pages. At the beginning, you may start with a single group for simplicity. 
