@@ -289,13 +289,11 @@ class PostSearch extends Post
     {
         $query = Post::find();
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-
         // load the seach form data and validate
         if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
+            return new ActiveDataProvider([
+               'query' => $query,
+            ]);
         }
 
         // adjust the query by adding the filters
@@ -303,7 +301,9 @@ class PostSearch extends Post
         $query->andFilterWhere(['like', 'title', $this->name])
               ->andFilterWhere(['like', 'creation_date', $this->creation_date]);
 
-        return $dataProvider;
+        return new ActiveDataProvider([
+            'query' => $query,
+        ]);
     }
 }
 
