@@ -141,6 +141,10 @@ EOD;
             return false;
         }
 
+        if (empty($columns)) {
+            return false;
+        }
+
         foreach ($columns as $column) {
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
