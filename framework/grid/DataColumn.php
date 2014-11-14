@@ -50,7 +50,9 @@ class DataColumn extends Column
      */
     public $label;
     /**
-     * @var boolean whether the label should be HTML-encoded.
+     * @var boolean whether the header label should be HTML-encoded.
+     * @see label
+     * @since 2.0.1
      */
     public $encodeLabel = true;
     /**
