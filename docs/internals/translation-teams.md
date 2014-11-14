@@ -12,7 +12,6 @@ China
 
 - **Paris Qian Sen 东方孤思子,[@qiansen1386](https://github.com/qiansen1386),qiansen1386@gmail.com**
 - [@AbrahamGreyson 刘阳](https://github.com/AbrahamGreyson)
-- [@Aliciamiao](https://github.com/aliciamiao)
 - [@fmalee](https://github.com/fmalee)
 - [@funson86 花生](https://github.com/funson86)
 - [@ivantree 长兴苗木](https://github.com/ivantree)
