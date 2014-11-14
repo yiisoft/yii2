@@ -174,7 +174,7 @@ be recognized as a Yii extension when being installed.
 
 When a user runs `composer install` to install an extension, the file `vendor/yiisoft/extensions.php`
 will be automatically updated to include the information about the new extension. From this file, Yii applications
-can know which extensions are installed (the information can be accessed via [[yii\base\Application::extensions]].
+can know which extensions are installed (the information can be accessed via [[yii\base\Application::extensions]]).
 
 
 #### Dependencies <a name="dependencies"></a>
@@ -245,7 +245,7 @@ name the classes in your extension by following the [PSR-4 standard](http://www.
 
 Your class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
 in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
-extension, we use `yii\imagine` as the namespace its classes.
+extension, we use `yii\imagine` as the namespace for its classes.
 
 Do not use `yii`, `yii2` or `yiisoft` as vendor name. These names are reserved for use by the Yii core code.
 
