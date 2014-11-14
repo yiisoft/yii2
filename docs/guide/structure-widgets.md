@@ -184,7 +184,7 @@ classes and keep presentation in [views](structure-views.md).
 
 Widgets should be designed to be self-contained. That is, when using a widget, you should be able to just drop
 it in a view without doing anything else. This could be tricky if a widget requires external resources, such as
-CSS, JavaScript, images, etc. Fortunately, Yii provides the support for [asset bundles](structure-asset-bundles.md),
+CSS, JavaScript, images, etc. Fortunately, Yii provides the support for [asset bundles](structure-assets.md),
 which can be utilized to solve the problem.
 
 When a widget contains view code only, it is very similar to a [view](structure-views.md). In fact, in this case,
