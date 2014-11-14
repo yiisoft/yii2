@@ -50,6 +50,12 @@ class DataColumn extends Column
      */
     public $label;
     /**
+     * @var boolean whether the header label should be HTML-encoded.
+     * @see label
+     * @since 2.0.1
+     */
+    public $encodeLabel = true;
+    /**
      * @var string|\Closure an anonymous function that returns the value to be displayed for every data model.
      * The signature of this function is `function ($model, $key, $index, $column)`.
      * If this is not set, `$model[$attribute]` will be used to obtain the value.
@@ -128,9 +134,9 @@ class DataColumn extends Column
 
         if ($this->attribute !== null && $this->enableSorting &&
             ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => Html::encode($label)]));
+            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => ($this->encodeLabel ? Html::encode($label) : $label)]));
         } else {
-            return Html::encode($label);
+            return $this->encodeLabel ? Html::encode($label) : $label;
         }
     }
 
