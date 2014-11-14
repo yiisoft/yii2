@@ -99,28 +99,28 @@ Yii によって提供されているクラスオートローダを使ってエ�
 エクステンションは、[Composer パッケージ](https://getcomposer.org/) の形式で作成することが推奨されます。そうすれば、
 直前の項で説明したように、いっそう容易に他のユーザによってインストールされ、使用されることが出来ます。
 
-以下は、エクステンションを Composer のパッケージとして作成するために従う基本的なステップです。
+以下は、エクステンションを Composer のパッケージとして作成するために踏む基本的なステップです。
 
-1. Create a project for your extension and host it on a VCS repository, such as [github.com](https://github.com).
-   The development and maintenance work about the extension should be done on this repository.
-2. Under the root directory of the project, create a file named `composer.json` as required by Composer. Please
-   refer to the next subsection for more details.
-3. Register your extension with a Composer repository, such as [Packagist](https://packagist.org/), so that
-   other users can find and install your extension using Composer.
+1. エクステンションのためのプロジェクトを作成して、[github.com](https://github.com) などの VCS レポジトリ上でホストする。
+   エクステンションに関する開発と保守の作業はこのレポジトリ上でなされなければならない。
+2. プロジェクトのルートディレクトリに、Composer によって要求される `composer.json` という名前のファイルを作成する。
+   更なる詳細については、次の項を参照。
+3. エクステンションを [Packagist](https://packagist.org/) などの Composer レポジトリに登録する。そうすると、他のユーザが
+   エクステンションを見つけて Composer を使ってインストールすることが出来るようになる。
 
 
 ### `composer.json` <a name="composer-json"></a>
 
-Each Composer package must have a `composer.json` file in its root directory. The file contains the metadata about
-the package. You may find complete specification about this file in the [Composer Manual](https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup).
-The following example shows the `composer.json` file for the `yiisoft/yii2-imagine` extension:
+全ての Composer パッケージは、ルートディレクトリに `composer.json` というファイルを持たなければなりません。このファイルは
+パッケージに関するメタデータを含むものです。このファイルに関する完全な仕様は [Composer Manual](https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup)
+に記載されています。次の例は、`yiisoft/yii2-imagine` エクステンションのための `composer.json` ファイルを示すものです:
 
 ```json
 {
-    // package name
+    // パッケージ名
     "name": "yiisoft/yii2-imagine",
 
-    // package type
+    // パッケージタイプ
     "type": "yii2-extension",
 
     "description": "The Imagine integration for the Yii framework",
@@ -140,13 +140,13 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
         }
     ],
 
-    // package dependencies
+    // 依存パッケージ
     "require": {
         "yiisoft/yii2": "*",
         "imagine/imagine": "v0.5.0"
     },
 
-    // class autoloading specs
+    // クラスのオートロードの仕様
     "autoload": {
         "psr-4": {
             "yii\\imagine\\": ""
@@ -156,62 +156,64 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
 ```
 
 
-#### Package Name <a name="package-name"></a>
+#### パッケージ名 <a name="package-name"></a>
 
-Each Composer package should have a package name which uniquely identifies the package among all others.
-The format of package names is `vendorName/projectName`. For example, in the package name `yiisoft/yii2-imagine`,
-the vendor name and the project name are `yiisoft` and `yii2-imagine`, respectively.
+全ての Composer パッケージは、他の全てパッケージに対して唯一のものとして特定できるような名前を持たなければなりません。
+パッケージ名の形式は `vendorName/projectName` です。例えば、`yiisoft/yii2-imagine` というパッケージ名の中では、
+ベンダー名とプロジェクト名は、それぞれ、`yiisoft` と `yii2-imagine` です。
 
-Do NOT use `yiisoft` as vendor name as it is reserved for use by the Yii core code.
+ベンダー名として `yiisoft` を使ってはいけません。これは Yii のコアコードに使うために予約されています。
 
-We recommend you prefix `yii2-` to the project name for packages representing Yii 2 extensions, for example,
-`myname/yii2-mywidget`. This will allow users to more easily tell whether a package is a Yii 2 extension.
-
-
-#### Package Type <a name="package-type"></a>
-
-It is important that you specify the package type of your extension as `yii2-extension` so that the package can
-be recognized as a Yii extension when being installed.
-
-When a user runs `composer install` to install an extension, the file `vendor/yiisoft/extensions.php`
-will be automatically updated to include the information about the new extension. From this file, Yii applications
-can know which extensions are installed (the information can be accessed via [[yii\base\Application::extensions]].
+プロジェクト名には、Yii 2 エクステンションを表す `yii2-` を前置することを推奨します。例えば、`myname/yii2-mywidget` です。
+このようにすると、ユーザはパッケージが Yii 2 エクステンションであることをより容易に知ることが出来ます。
 
 
-#### Dependencies <a name="dependencies"></a>
+#### パッケージタイプ <a name="package-type"></a>
 
-Your extension depends on Yii (of course). So you should list it (`yiisoft/yii2`) in the `require` entry in `composer.json`.
-If your extension also depends on other extensions or third-party libraries, you should list them as well.
-Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependent package. Use stable
-dependencies when your extension is released in a stable version.
+パッケージがインストールされたときに Yii のエクステンションとして認識されるように、エクステンションのパッケージタイプを
+`yii2-extension` と指定することは重要なことです。
 
-Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/),
-instead of Composer. Yii uses the [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
-to enable managing these kinds of packages through Composer. If your extension depends on a Bower package, you can
-simply list the dependency in `composer.json` like the following:
+ユーザが `composer install` を走らせてエクステンションをインストールすると、`vendor/yiisoft/extensions.php` というファイルが
+自動的に更新されて、新しいエクステンションに関する情報を含むようになります。このファイルから、Yii のアプリケーションは
+どんなエクステンションがインストールされているかを知ることが出来ます (その情報には、[[yii\base\Application::extensions]]
+を通じてアクセス出来ます)。
+
+
+#### 依存パッケージ <a name="dependencies"></a>
+
+あなたのエクステンションは Yii に依存します (当然ですね)。ですから、`composer.json` の `require` エントリのリストに
+それ (`yiisoft/yii2`) を挙げなければなりません。あなたのエクステンションがその他のエクステンションやサードパーティの
+ライブラリに依存する場合は、それらもリストに挙げなければなりません。それぞれの依存パッケージについて、適切なバージョン制約
+(例えば `1.*` や `@stable`) を指定することも忘れてはなりません。あなたのエクステンションを安定バージョンとしてリリースする場合は
+安定した依存パッケージを使ってください。
+
+たいていの JavaScript/CSS パッケージは、Composer ではなく、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/)
+を使って管理されています。Yii は [Composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin)
+を使って、この種のパッケージを Composer によって管理することを可能にしています。あなたのエクステンションが Bower パッケージに
+依存している場合でも、次のように、`composer.json` に依存パッケージをリストアップすることが簡単に出来ます:
 
 ```json
 {
-    // package dependencies
+    // 依存パッケージ
     "require": {
         "bower-asset/jquery": ">=1.11.*"
     }
 }
 ```
 
-The above code states that the extension depends on the `jquery` Bower package. In general, you can use
-`bower-asset/PackageName` to refer to a Bower package in `composer.json`, and use `npm-asset/PackageName`
-to refer to a NPM package. When Composer installs a Bower or NPM package, by default the package content will be
-installed under the `@vendor/bower/PackageName` and `@vendor/npm/Packages` directories, respectively.
-These two directories can also be referred to using the shorter aliases `@bower/PackageName` and `@npm/PackageName`.
+上記のコードは、エクステンションが `jquery` Bower パッケージに依存することを述べています。一般に、`composer.json` の中で
+Bower パッケージを指すためには `bower-asset/PackageName` を使うことが出来ます。そして、NPM パッケージを指すためには
+`npm-asset/PackageName` を使うことが出来ます。Composer が Bower または NPM のパッケージをインストールする場合は、既定では、
+それぞれ、`@vendor/bower/PackageName` および `@vendor/npm/Packages` というディレクトリの下にパッケージの内容がインストールされます。
+この二つのディレクトリは、`@bower/PackageName` および `@npm/PackageName` という短いエイリアスを使って参照することも可能です。
 
-For more details about asset management, please refer to the [Assets](structure-assets.md#bower-npm-assets) section.
+アセット管理に関する更なる詳細については、[アセット](structure-assets.md#bower-npm-assets) の節を参照してください。
 
 
-#### Class Autoloading <a name="class-autoloading"></a>
+#### クラスのオートロード <a name="class-autoloading"></a>
 
-In order for your classes to be autoloaded by the Yii class autoloader or the Composer class autoloader,
-you should specify the `autoload` entry in the `composer.json` file, like shown below:
+エクステンションのクラスが Yii のクラスオートローダまたは Composer のクラスオートローダによってオートロードされるように、
+下記に示すように、`composer.json` ファイルの `autoload` エントリを指定しなければなりません:
 
 ```json
 {
@@ -225,41 +227,41 @@ you should specify the `autoload` entry in the `composer.json` file, like shown 
 }
 ```
 
-You may list one or multiple root namespaces and their corresponding file paths.
+一つまたは複数のルート名前空間と、それに対応するファイルパスをリストに挙げることが出来ます。
 
-When the extension is installed in an application, Yii will create for each listed root namespace
-an [alias](concept-aliases.md#extension-aliases) that refers to the directory corresponding to the namespace.
-For example, the above `autoload` declaration will correspond to an alias named `@yii/imagine`.
-
-
-### Recommended Practices <a name="recommended-practices"></a>
-
-Because extensions are meant to be used by other people, you often need to take extra development effort. Below
-we introduce some common and recommended practices in creating high quality extensions.
+エクステンションがアプリケーションにインストールされると、Yii は列挙されたルート名前空間の一つ一つに対して、
+名前空間に対応するディレクトリを指す [エイリアス](concept-aliases.md#extension-aliases) を作成します。
+例えば、上記の `autoload` の宣言は、`@yii/imagine` という名前のエイリアスに対応することになります。
 
 
-#### Namespaces <a name="namespaces"></a>
+### 推奨される慣行 <a name="recommended-practices"></a>
 
-To avoid name collisions and make the classes in your extension autoloadable, you should use namespaces and
-name the classes in your extension by following the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) or
-[PSR-0 standard](http://www.php-fig.org/psr/psr-0/).
-
-Your class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
-in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
-extension, we use `yii\imagine` as the namespace its classes.
-
-Do not use `yii`, `yii2` or `yiisoft` as vendor name. These names are reserved for use by the Yii core code.
+エクステンションは他の人々によって使われることを意図したものですから、多くの場合、追加の開発努力が必要になります。
+以下に、高品質のエクステンションを作成するときによく用いられ、また推奨される慣行のいくつかを紹介します。
 
 
-#### Bootstrapping Classes <a name="bootstrapping-classes"></a>
+#### 名前空間 <a name="namespaces"></a>
 
-Sometimes, you may want your extension to execute some code during the [bootstrapping process](runtime-bootstrapping.md)
-stage of an application. For example, your extension may want to respond to the application's `beginRequest` event
-to adjust some environment settings. While you can instruct users of the extension to explicitly attach your event
-handler in the extension to the `beginRequest` event, a better way is to do this automatically.
+名前の衝突を避けて、エクステンションの中のクラスをオートロード可能にするために、名前空間を使うべきであり、
+エクステンションの中のクラスに [PSR-4 標準](http://www.php-fig.org/psr/psr-4/) または
+[PSR-0 標準](http://www.php-fig.org/psr/psr-0/) に従った名前を付けるべきです。
 
-To achieve this goal, you can create a so-called *bootstrapping class* by implementing [[yii\base\BootstrapInterface]].
-For example,
+あなたのクラスの名前空間は `vendorName\extensionName` で始まるべきです。ここで `extensionName` は、`yii2-`
+という前置辞を含むべきでないことを除けば、パッケージ名におけるプロジェクト名と同じものです。例えば、`yiisoft/yii2-imagine`
+エクステンションでは、`yii\imagine` をエクステンションのクラスの名前空間として使っています。
+
+`yii`、`yii2` または `yiisoft` をベンダー名として使ってはいけません。これらの名前は、Yii のコアコードに使うために予約されています。
+
+
+#### ブートストラップクラス <a name="bootstrapping-classes"></a>
+
+場合によっては、アプリケーションが [ブートストラップ](runtime-bootstrapping.md) の段階にある間に、エクステンションに何らかの
+コードを実行させたい場合があるでしょう。例えば、エクステンションをアプリケーションの `beginRequest` イベントに反応させて、
+何らかの環境設定を調整したいことがあります。エクステンションのユーザに対して、エクステンションの中にあるイベントハンドラを
+`beginRequest` イベントに明示的にアタッチするように指示することも出来ますが、より良い方法は、それを自動的に行うことです。
+
+この目的を達するためには、[[yii\base\BootstrapInterface]] を実装する、いわゆる *ブートストラップクラス* を作成します。
+例えば、
 
 ```php
 namespace myname\mywidget;
@@ -272,13 +274,13 @@ class MyBootstrapClass implements BootstrapInterface
     public function bootstrap($app)
     {
         $app->on(Application::EVENT_BEFORE_REQUEST, function () {
-             // do something here
+             // ここで何かをする
         });
     }
 }
 ```
 
-You then list this class in the `composer.json` file of your extension like follows,
+そして、次のように、このクラスを `composer.json` ファイルのリストに挙げます。
 
 ```json
 {
@@ -290,147 +292,145 @@ You then list this class in the `composer.json` file of your extension like foll
 }
 ```
 
-When the extension is installed in an application, Yii will automatically instantiate the bootstrapping class
-and call its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method during the bootstrapping process for
-every request.
+このエクステンションがアプリケーションにインストールされると、すべてのリクエストのブートストラップの過程において、毎回、
+Yii が自動的にブートストラップクラスのインスタンスを作成し、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]]
+メソッドを呼びます。
 
 
-#### Working with Databases <a name="working-with-databases"></a>
+#### データベースを扱う <a name="working-with-databases"></a>
 
-Your extension may need to access databases. Do not assume that the applications that use your extension will always
-use `Yii::$db` as the DB connection. Instead, you should declare a `db` property for the classes that require DB access.
-The property will allow users of your extension to customize which DB connection they would like your extension to use.
-As an example, you may refer to the [[yii\caching\DbCache]] class and see how it declares and uses the `db` property.
+あなたのエクステンションはデータベースにアクセスする必要があるかも知れません。エクステンションを使うアプリケーションが
+常に `Yii::$db` を DB 接続として使用すると仮定してはいけません。その代りに、DB アクセスを必要とするクラスのために `db`
+プロパティを宣言すべきです。このプロパティによって、エクステンションのユーザは、エクステンションにどの DB 接続を使わせるかを
+カスタマイズすることが出来るようになります。その一例として、[[yii\caching\DbCache]] クラスを参照して、それがどのように
+`db` プロパティを宣言して使っているかを見ることが出来ます。
 
-If your extension needs to create specific DB tables or make changes to DB schema, you should
+あなたのエクステンションが特定の DB テーブルを作成したり、DB スキーマを変更したりする必要がある場合は、次のようにするべきです。
 
-- provide [migrations](db-migrations.md) to manipulate DB schema, rather than using plain SQL files;
-- try to make the migrations applicable to different DBMS;
-- avoid using [Active Record](db-active-record.md) in the migrations.
-
-
-#### Using Assets <a name="using-assets"></a>
-
-If your extension is a widget or a module, chances are that it may require some [assets](structure-assets.md) to work.
-For example, a module may display some pages which contain images, JavaScript, and CSS. Because the files of an
-extension are all under the same directory which is not Web accessible when installed in an application, you have
-two choices to make the asset files directly accessible via Web:
-
-- ask users of the extension to manually copy the asset files to a specific Web-accessible folder;
-- declare an [asset bundle](structure-assets.md) and rely on the asset publishing mechanism to automatically
-  copy the files listed in the asset bundle to a Web-accessible folder.
-
-We recommend you use the second approach so that your extension can be more easily used by other people.
-Please refer to the [Assets](structure-assets.md) section for more details about how to work with assets in general.
+- DB スキーマを操作するために、平文の SQL ファイルを使うのではなく、[マイグレーション](db-migrations.md) を提供する。
+- マイグレーションをさまざまな DBMS に適用可能なものするように努める。
+- マイグレーションの中では [アクティブレコード](db-active-record.md) の使用を避ける。
 
 
-#### Internationalization and Localization <a name="i18n-l10n"></a>
+#### アセットを使う <a name="using-assets"></a>
 
-Your extension may be used by applications supporting different languages! Therefore, if your extension displays
-content to end users, you should try to [internationalize and localize](tutorial-i18n.md) it. In particular,
+あなたのエクステンションがウィジェットかモジュールである場合は、動作するために何らかの [assets](structure-assets.md)
+が必要である可能性が高いでしょう。例えば、モジュールは、画像、JavaScript、そして CSS を含むページをいくつか表示するでしょう。
+エクステンションのファイルは、全て、アプリケーションにインストールされるときに、ウェブからアクセス出来ない同じディレクトリ
+の下に配置されます。そのため、次のどちらかの方法を使って、アセットファイルをウェブから直接アクセス出来るようにしなければなりません。
 
-- If the extension displays messages intended for end users, the messages should be wrapped into `Yii::t()`
-  so that they can be translated. Messages meant for developers (such as internal exception messages) do not need
-  to be translated.
-- If the extension displays numbers, dates, etc., they should be formatted using [[yii\i18n\Formatter]] with
-  appropriate formatting rules.
+- アセットファイルをウェブからアクセス出来る特定のフォルダに手作業でコピーするように、エクステンションのユーザにお願いする。
+- [アセットバンドル](structure-assets.md) を宣言し、アセット発行メカニズムに頼って、アセットバンドルにリスとされているファイルを
+  ウェブからアクセス出来るフォルダに自動的にコピーする。
 
-For more details, please refer to the [Internationalization](tutorial-i18n.md) section.
-
-
-#### Testing <a name="testing"></a>
-
-You want your extension to run flawlessly without bringing problems to other people. To reach this goal, you should
-test your extension before releasing it to public.
-
-It is recommended that you create various test cases to cover your extension code rather than relying on manual tests.
-Each time before you release a new version of your extension, you may simply run these test cases to make sure
-everything is in good shape. Yii provides testing support, which can help you to more easily write unit tests,
-acceptance tests and functionality tests. For more details, please refer to the [Testing](test-overview.md) section.
+あなたのエクステンションが他の人々にとってより一層使いやすいものになるように、第二の方法をとることを推奨します。
+アセットの取り扱い一般に関する更なる詳細は [アセット](structure-assets.md) の節を参照してください。
 
 
-#### Versioning <a name="versioning"></a>
+#### 国際化と地域化 <a name="i18n-l10n"></a>
 
-You should give each release of your extension a version number (e.g. `1.0.1`). We recommend you follow the
-[semantic versioning](http://semver.org) practice when determining what version numbers should be used.
+あなたのエクステンションは、さまざまな言語をサポートするアプリケーションによって使われるかもしれません。従って、
+あなたのエクステンションがエンドユーザにコンテンツを表示するものである場合は、それを [国際化](tutorial-i18n.md)
+するように努めるべきです。具体的には、
 
+- エクステンションがエンドユーザに向けたメッセージを表示する場合は、翻訳することが出来るようにメッセージを `Yii::t()`
+  で包むべきです。開発者に向けられたメッセージ (内部的な例外のメッセージなど) は翻訳される必要はありません。
+- エクステンションが数値や日付などを表示する場合は、[[yii\i18n\Formatter]] を適切な書式化の規則とともに使って書式設定すべきです。
 
-#### Releasing <a name="releasing"></a>
-
-To let other people know your extension, you need to release it to public.
-
-If it is the first time you release an extension, you should register it on a Composer repository, such as
-[Packagist](https://packagist.org/). After that, all you need to do is simply creating a release tag (e.g. `v1.0.1`)
-on the VCS repository of your extension and notify the Composer repository about the new release. People will
-then be able to find the new release, and install or update the extension through the Composer repository.
-
-In the releases of your extension, besides code files you should also consider including the followings to
-help other people learn about and use your extension:
-
-* A readme file in the package root directory: it describes what your extension does and how to install and use it.
-  We recommend you write it in [Markdown](http://daringfireball.net/projects/markdown/) format and name the file
-  as `readme.md`.
-* A changelog file in the package root directory: it lists what changes are made in each release. The file
-  may be written in Markdown format and named as `changelog.md`.
-* An upgrade file in the package root directory: it gives the instructions on how to upgrade from older releases
-  of the extension. The file may be written in Markdown format and named as `upgrade.md`.
-* Tutorials, demos, screenshots, etc.: these are needed if your extension provides many features that cannot be
-  fully covered in the readme file.
-* API documentation: your code should be well documented to allow other people more easily read and understand it.
-  You may refer to the [Object class file](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
-  to learn how to document your code.
-
-> Info: Your code comments can be written in Markdown format. The `yiisoft/yii2-apidoc` extension provides a tool
-  for you to generate pretty API documentation based on your code comments.
-
-> Info: While not a requirement, we suggest your extension adhere to certain coding styles. You may refer to
-  the [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+更なる詳細については、[国際化](tutorial-i18n.md) の節を参照してください。
 
 
-## Core Extensions <a name="core-extensions"></a>
+#### テスト <a name="testing"></a>
 
-Yii provides the following core extensions that are developed and maintained by the Yii developer team. They are all
-registered on [Packagist](https://packagist.org/) and can be easily installed as described in the
-[Using Extensions](#using-extensions) subsection.
+あなたは、あなたのエクステンションが他の人々に問題をもたらすことなく完璧に動作することを望むでしょう。この目的を達するためには、
+あなたのエクステンションを公開する前にテストすべきです。
+
+手作業のテストに頼るのではなく、あなたのエクステンションのコードをカバーするさまざまなテストケースを作成することが推奨されます。
+あなたのエクステンションの新しいバージョンを公開する前には、毎回、単にそれらのテストケースを走らせれば、全てが良い状態にあることを
+確認することが出来ます。Yii はテストのサポートを提供しており、それよって、ユニットテスト、機能テスト、承認テストを書くことが
+一層簡単に出来るようになっています。更なる詳細については、[テスト](test-overview.md) の節を参照してください。
+
+
+#### バージョン管理 <a name="versioning"></a>
+
+エクステンションのリリースごとにバージョン番号 (例えば `1.0.1`) を付けるべきです。
+どのようなバージョン番号を付けるべきかを決定するときは、[セマンティックバージョニング](http://semver.org) 
+の慣行に従うことを推奨します。
+
+
+#### リリース(公開) <a name="releasing"></a>
+
+他の人々にあなたのエクステンションを知ってもらうためには、それをリリース(公開)する必要があります。
+
+エクステンションをリリースするのが初めての場合は、[Packagist](https://packagist.org/) などの Composer レポジトリに
+エクステンションを登録するべきです。その後は、あなたがしなければならない仕事は、エクステンションの VCS レポジトリでリリースタグ
+(例えば `v1.0.1`) を作成して Composer レポジトリに新しいリリースについて通知するだけのことになります。そして、
+人々が新しいリリースを見出すことが出来るようになり、Composer レポジトリを通じてエクステンションをインストールしたり
+アップデートしたりするようになります。
+
+エクステンションのリリースには、人々があなたのエクステンションについて知ったり、エクステンションを使ったりするのを助けるために、
+コードファイル以外に下記のものを含めることを考慮すべきです。
+
+* パッケージのルートディレクトリに readme ファイル: あなたのエクステンションが何をするものか、そして、
+  どのようにインストールして使うものかを説明するものです。[Markdown](http://daringfireball.net/projects/markdown/)
+  形式で書いて、`readme.md` という名前にすることを推奨します。
+* パッケージのルートディレクトリに changelog ファイル: それぞれのリリースで何が変ったかを一覧表示するものです。
+  このファイルは Markdown 形式で書いて `changelog.md` と名付けることが出来ます。
+* パッケージのルートディレクトリに upgrade ファイル: エクステンションの古いリリースからのアップグレード方法について説明するものです。
+  このファイルは Markdown 形式で書いて `upgrade.md` と名付けることが出来ます。
+* チュートリアル、デモ、スクリーンショットなど: あなたのエクステンションが readme ファイルでは十分にカバーできないほど
+  多くの機能を提供するものである場合は、これらが必要になります。
+* API ドキュメント: あなたのコードは、他の人々が読んで理解することがより一層容易に出来るように、十分な解説を含むべきです。
+  [Object のクラスファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) を参照すると、
+  コードに解説を加える方法を学ぶことが出来ます。
+
+> Info|情報: コードのコメントを Markdown 形式で書くことが出来ます。`yiisoft/yii2-apidoc` エクステンションは、
+  コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。
+
+> Info|情報: これは要求ではありませんが、あなたのエクステンションも一定のコーディングスタイルを守るのが良いと思います。
+  [コアフレームワークコードスタイル](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) を参照してください。
+
+
+## コアエクステンション <a name="core-extensions"></a>
+
+Yii は下記のコアエクステンションを提供しています。これらは Yii 開発チームによって開発され保守されているものです。
+全て [Packagist](https://packagist.org/) に登録され、[エクステンションを使う](#using-extensions) の項で説明したように、
+簡単にインストールすることが出来ます。
 
 - [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc):
-  provides an extensible and high-performance API documentation generator. It is also used to generate the core
-  framework API documentation.
+  拡張可能で高性能な API ドキュメント生成機能を提供します。コアフレームワークの API ドキュメントを生成するためにも使われています。
 - [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient):
-  provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.
+  Facebook OAuth2 クライアント、GitHub OAuth2 クライアントなど、よく使われる一連の auth クライアントを提供します。
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
-  provides a set of widgets that encapsulate the [Bootstrap](http://getbootstrap.com/) components and plugins.
+  [Bootstrap](http://getbootstrap.com/) のコンポーネントとプラグインをカプセル化した一連のウィジェットを提供します。
 - [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
-  provides testing support based on [Codeception](http://codeception.com/).
+  [Codeception](http://codeception.com/) に基づくテストのサポートを提供します。
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
-  provides debugging support for Yii applications. When this extension is used, a debugger toolbar will appear
-  at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
-  debug information.
+  Yii アプリケーションのデバッグのサポートを提供します。このエクステンションが使われると、全てのページの末尾にデバッガツールバーが
+  表示されます。このエクステンションは、より詳細なデバッグ情報を表示する一連のスタンドアロンページも提供します。
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  provides the support for using [Elasticsearch](http://www.elasticsearch.org/). It includes basic querying/search
-  support and also implements the [Active Record](db-active-record.md) pattern that allows you to store active records
-  in Elasticsearch.
+  [Elasticsearch](http://www.elasticsearch.org/) の使用に対するサポートを提供します。基本的なクエリ/サーチのサポートを
+  含むだけでなく、Elasticsearch にアクティブレコードを保存することを可能にする [アクティブレコード](db-active-record.md)
+  パターンをも実装しています。
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
-  provides the support for using [Faker](https://github.com/fzaninotto/Faker) to generate fake data for you.
+  ダミーデータを作る [Faker](https://github.com/fzaninotto/Faker) を使うためのサポートを提供します。
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
-  provides a Web-based code generator that is highly extensible and can be used to quickly generate models,
-  forms, modules, CRUD, etc.
+  拡張性が非常に高いウェブベースのコードジェネレータを提供します。これを使って、モデル、フォーム、モジュール、CRUD
+  などを迅速に生成することが出来ます。
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
-  provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
+  [Imagine](http://imagine.readthedocs.org/) に基づいて、使われることの多い画像操作機能を提供します。
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
-  provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
+  [JQuery UI](http://jqueryui.com/) のインタラクションとウィジェットをカプセル化した一連のウィジェットを提供します。
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
-  Active Record, migrations, caching, code generation, etc.
+  [MongoDB](http://www.mongodb.org/) の使用に対するサポートを提供します。基本的なクエリ、アクティブレコード、マイグレーション、
+  キャッシュ、コード生成などの機能を含みます。
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
-  provides the support for using [redis](http://redis.io/). It includes features such as basic query,
-  Active Record, caching, etc.
+  [redis](http://redis.io/) の使用に対するサポートを提供します。基本的なクエリ、アクティブレコード、キャッシュなどの機能を含みます。
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
-  provides a template engine based on [Smarty](http://www.smarty.net/).
+  [Smarty](http://www.smarty.net/) に基づいたテンプレートエンジンを提供します。
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
-  provides the support for using [Sphinx](http://sphinxsearch.com). It includes features such as basic query,
-  Active Record, code generation, etc.
+  [Sphinx](http://sphinxsearch.com) の使用に対するサポートを提供します。基本的なクエリ、アクティブレコード、コード生成などの機能を含みます。
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
-  provides email sending features based on [swiftmailer](http://swiftmailer.org/).
+  [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  provides a template engine based on [Twig](http://twig.sensiolabs.org/).
+  [Twig](http://twig.sensiolabs.org/) に基づいたテンプレートエンジンを提供します。
