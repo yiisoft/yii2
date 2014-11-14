@@ -246,7 +246,7 @@ return [
 ### 资源部署 <a name="asset-mapping"></a>
 
 有时你想"修复" 多个资源包中资源文件的错误/不兼容，例如包A使用1.11.1版本的`jquery.min.js`，
-包B使用2.1.1版本的`jquery.js`，可自定义每个包来解决这个问题，更好的方式是使用*资源部署*特性来不熟不正确的资源为想要的，
+包B使用2.1.1版本的`jquery.js`，可自定义每个包来解决这个问题，更好的方式是使用*资源部署*特性来部署不正确的资源为想要的，
 为此，配置[[yii\web\AssetManager::assetMap]]属性，如下所示：
 
 ```php
@@ -347,7 +347,7 @@ Yii使用文件扩展名来表示资源使用哪种扩展语法，默认可以�
 - [CoffeeScript](http://coffeescript.org/): `.coffee`
 - [TypeScript](http://www.typescriptlang.org/): `.ts`
 
-Yii依靠安装的预处理公斤来转换资源，例如，为使用[LESS](http://lesscss.org/)，应安装`lessc` 预处理命令。
+Yii依靠安装的预处理工具来转换资源，例如，为使用[LESS](http://lesscss.org/)，应安装`lessc` 预处理命令。
 
 可配置[[yii\web\AssetManager::converter]]自定义预处理命令和支持的扩展语法，如下所示：
 
