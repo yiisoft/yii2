@@ -138,4 +138,60 @@ EOD;
         return "DROP SEQUENCE \"{$tableSchema->name}_SEQ\";"
             . "CREATE SEQUENCE \"{$tableSchema->name}_SEQ\" START WITH {$value} INCREMENT BY 1 NOMAXVALUE NOCACHE";
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
+    {
+        $sql = 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' ADD CONSTRAINT ' . $this->db->quoteColumnName($name)
+            . ' FOREIGN KEY (' . $this->buildColumns($columns) . ')'
+            . ' REFERENCES ' . $this->db->quoteTableName($refTable)
+            . ' (' . $this->buildColumns($refColumns) . ')';
+        if ($delete !== null) {
+            $sql .= ' ON DELETE ' . $delete;
+        }
+
+        return $sql;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function batchInsert($table, $columns, $rows)
+    {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+
+        $values = [];
+        foreach ($rows as $row) {
+            $vs = [];
+            foreach ($row as $i => $value) {
+                if (!is_array($value) && isset($columns[$i]) && isset($columnSchemas[$columns[$i]])) {
+                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
+                }
+                if (is_string($value)) {
+                    $value = $schema->quoteValue($value);
+                } elseif ($value === false) {
+                    $value = 0;
+                } elseif ($value === null) {
+                    $value = 'NULL';
+                }
+                $vs[] = $value;
+            }
+            $values[] = 'SELECT ' . implode(', ', $vs) . ' FROM DUAL';
+        }
+
+        foreach ($columns as $i => $name) {
+            $columns[$i] = $schema->quoteColumnName($name);
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
+        . ' (' . implode(', ', $columns) . ') ' . implode(' UNION ', $values);
+    }
 }
