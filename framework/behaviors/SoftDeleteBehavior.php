@@ -6,19 +6,51 @@ use yii\db\BaseActiveRecord;
 use yii\base\ModelEvent;
 use yii\db\Exception;
 
+/**
+ * SoftDeleteBehavior automatically aborts row hard deletion
+ * in order to perform soft deletion (attribute change)
+ * 
+ * If you want to hard delete row you ought to call
+ * ```php
+ * $model = Model::find()->one();
+ * 
+ * Model::deleteAll($model->getPrimaryKey(true));
+ * ```
+ * 
+ * @author Tomasz Romik <manetamajster@gmail.com>
+ */
 class SoftDeleteBehavior extends \yii\base\Behavior
 {
 
     /**
      * @var string|array
      */
-    public $attributes = ['deleted'];
+    public $attributes = [];
 
     /**
-     *
+     * @var string
+     */
+    public $deletedAttribute = 'deleted';
+
+    /**
+     * @var string
+     */
+    public $deletedAtAttribute = 'deleted_at';
+
+    /**
      * @var mixed
      */
-    public $value = true;
+    public $value = 1;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        if (empty($this->attributes)) {
+            $this->attributes = [$this->deletedAttribute, $this->deletedAtAttribute => time()];
+        }
+    }
 
     /**
      * @inheritdoc
@@ -44,11 +76,11 @@ class SoftDeleteBehavior extends \yii\base\Behavior
 
         $updatedValues = [];
         foreach ($this->attributes as $key => $attribute) {
-            if (!is_int($key)) {
+            if (is_int($key)) {
+                $value = $this->value;
+            } else {
                 $value = $attribute;
                 $attribute = $key;
-            } else {
-                $value = $this->value;
             }
 
             $value = $this->getValue($value, $event);
@@ -57,7 +89,8 @@ class SoftDeleteBehavior extends \yii\base\Behavior
                 continue;
             }
 
-            $updatedValues[$attribute] = $this->value;
+            $updatedValues[$attribute] = $model->$attribute = $value;
+            $model->setOldAttribute($attribute, $model->$attribute);
         }
 
         $event->isValid = false;
@@ -67,12 +100,7 @@ class SoftDeleteBehavior extends \yii\base\Behavior
         }
 
         $class = $model->className();
-        $updatedRows = $class::updateAll($updatedValues, $model->getPrimaryKey(true));
-        if ($updatedRows === 0) {
-            throw new Exception('Could not update attributes');
-        } else if ($updatedRows !== count($updatedValues)) {
-            throw new Exception('Not all rows has been updated');
-        }
+        $class::updateAll($updatedValues, $model->getPrimaryKey(true));
 
         return $event->isValid;
     }
