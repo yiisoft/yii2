@@ -813,6 +813,31 @@ class ActiveRecordTest extends ElasticSearchTestCase
     }
 
     /**
+     * https://github.com/yiisoft/yii2/issues/6065
+     */
+    public function testArrayAttributeRelationUnLinkBrokenArray()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+
+        $itemIds = $order->itemsArray;
+        $removeId = reset($itemIds);
+        $item = Item::get($removeId);
+        $order->unlink('itemsByArrayValue', $item);
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertFalse(isset($items[$removeId]));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertFalse(isset($items[$removeId]));
+    }
+
+    /**
      * @expectedException \yii\base\NotSupportedException
      */
     public function testArrayAttributeRelationUnLinkAll()
