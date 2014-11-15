@@ -1295,7 +1295,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                         if (($key = array_search($model->$a, $this->$b, false)) !== false) {
                             $values = $this->$b;
                             unset($values[$key]);
-                            $this->$b = $values;
+                            $this->$b = array_values($values);
                         }
                     } else {
                         $this->$b = null;
