@@ -138,4 +138,21 @@ EOD;
         return "DROP SEQUENCE \"{$tableSchema->name}_SEQ\";"
             . "CREATE SEQUENCE \"{$tableSchema->name}_SEQ\" START WITH {$value} INCREMENT BY 1 NOMAXVALUE NOCACHE";
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
+    {
+        $sql = 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' ADD CONSTRAINT ' . $this->db->quoteColumnName($name)
+            . ' FOREIGN KEY (' . $this->buildColumns($columns) . ')'
+            . ' REFERENCES ' . $this->db->quoteTableName($refTable)
+            . ' (' . $this->buildColumns($refColumns) . ')';
+        if ($delete !== null) {
+            $sql .= ' ON DELETE ' . $delete;
+        }
+
+        return $sql;
+    }
 }
