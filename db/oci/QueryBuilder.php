@@ -9,6 +9,7 @@ namespace yii\db\oci;
 
 use yii\base\InvalidParamException;
 use yii\db\Connection;
+use yii\db\Exception;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -152,46 +153,10 @@ EOD;
         if ($delete !== null) {
             $sql .= ' ON DELETE ' . $delete;
         }
+        if ($update !== null) {
+            throw new Exception('Oracle does not support ON UPDATE clause.');
+        }
 
         return $sql;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function batchInsert($table, $columns, $rows)
-    {
-        $schema = $this->db->getSchema();
-        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
-        }
-
-        $values = [];
-        foreach ($rows as $row) {
-            $vs = [];
-            foreach ($row as $i => $value) {
-                if (!is_array($value) && isset($columns[$i]) && isset($columnSchemas[$columns[$i]])) {
-                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
-                }
-                if (is_string($value)) {
-                    $value = $schema->quoteValue($value);
-                } elseif ($value === false) {
-                    $value = 0;
-                } elseif ($value === null) {
-                    $value = 'NULL';
-                }
-                $vs[] = $value;
-            }
-            $values[] = 'SELECT ' . implode(', ', $vs) . ' FROM DUAL';
-        }
-
-        foreach ($columns as $i => $name) {
-            $columns[$i] = $schema->quoteColumnName($name);
-        }
-
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') ' . implode(' UNION ', $values);
     }
 }
