@@ -69,6 +69,16 @@ class SoftDeleteBehaviorTest extends TestCase
         $this->assertEquals($model->deleted, 1);
         $this->assertTrue($model->deleted_at >= time());
     }
+    
+    public function testHardDelete()
+    {
+        $model = ActiveRecordSoftDelete::find()->one();
+        
+        $deleted = $model->deleteHard();
+        
+        $this->assertEquals($deleted, 1);
+        $this->assertNull($model->id);
+    }
 
 }
 

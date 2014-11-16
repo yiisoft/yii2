@@ -4,7 +4,6 @@ namespace yii\behaviors;
 
 use yii\db\BaseActiveRecord;
 use yii\base\ModelEvent;
-use yii\db\Exception;
 
 /**
  * SoftDeleteBehavior automatically aborts row hard deletion
@@ -14,7 +13,7 @@ use yii\db\Exception;
  * ```php
  * $model = Model::find()->one();
  * 
- * Model::deleteAll($model->getPrimaryKey(true));
+ * $model->deleteHard();
  * ```
  * 
  * @author Tomasz Romik <manetamajster@gmail.com>
@@ -43,6 +42,11 @@ class SoftDeleteBehavior extends \yii\base\Behavior
     public $value = 1;
 
     /**
+     * @var boolean
+     */
+    protected $hard = false;
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -68,6 +72,12 @@ class SoftDeleteBehavior extends \yii\base\Behavior
      */
     public function beforeDelete($event)
     {
+        if ($this->hard === true) {
+            $this->hard = false;
+            $event->isValid = true;
+            return $event->isValid;
+        }
+
         $model = $this->owner;
 
         if (!is_array($this->attributes)) {
@@ -113,6 +123,17 @@ class SoftDeleteBehavior extends \yii\base\Behavior
     protected function getValue($value, $event)
     {
         return $value instanceof \Closure ? call_user_func($value, $event) : $value;
+    }
+
+    /**
+     * Performs hard delete on the row
+     * 
+     * @see \yii\db\BaseActiveRecord::delete()
+     */
+    public function deleteHard()
+    {
+        $this->hard = true;
+        return $this->owner->delete();
     }
 
 }
