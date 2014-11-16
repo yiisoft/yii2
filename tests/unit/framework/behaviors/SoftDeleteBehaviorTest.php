@@ -77,7 +77,6 @@ class SoftDeleteBehaviorTest extends TestCase
         $deleted = $model->deleteHard();
         
         $this->assertEquals($deleted, 1);
-        $this->assertNull($model->id);
     }
 
 }
