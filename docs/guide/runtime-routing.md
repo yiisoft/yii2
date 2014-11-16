@@ -16,7 +16,7 @@ a route and the associated query parameters and the [[yii\web\UrlManager::create
 create a URL from a given route and its associated query parameters.
  
 By configuring the `urlManager` component in the application configuration, you can let your application 
-to recognize arbitrary URL formats without modifying your existing application code. For example, you can 
+recognize arbitrary URL formats without modifying your existing application code. For example, you can 
 use the following code to create a URL for the `post/view` action:
 
 ```php
