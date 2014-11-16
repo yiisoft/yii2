@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Enh #4181: Added `yii\bootstrap\Modal::$headerOptions` and `yii\bootstrap\Modal::$footerOptions` (tuxoff, samdark)
 - Enh #4263: Added migration and SQL schema files for `yii\log\DbTarget` (samdark)
 - Enh #4457: Added support for using noscript for css files registered through asset bundles and Html helper (samdark)
+- Enh #4739: Better display of exceptions when the response format is set as "raw" format (qiangxue)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 - Enh #5367: Added `yii\grid\DataColumn::encodeLabel` (SDKiller)
 - Enh #5587: `json_encode` is now used with `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` where it makes sense, also
