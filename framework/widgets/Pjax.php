@@ -159,7 +159,7 @@ class Pjax extends Widget
     /**
      * Registers the needed JavaScript.
      */
-    public function registerClientScript()
+     public function registerClientScript()
     {
         $id = $this->options['id'];
         $this->clientOptions['push'] = $this->enablePushState;
@@ -170,9 +170,15 @@ class Pjax extends Widget
         $linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
         $formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
         $view = $this->getView();
+        $container=isset($this->clientOptions['container']) ? $this->clientOptions['container'] : $id;
         PjaxAsset::register($view);
-        $js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
-        $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
+        $js = "jQuery(document).pjax($linkSelector, \"#$container\", $options);";
+        $js .="\njQuery(document).on('submit', $formSelector, function (event) {
+        if (jQuery(this).data('yiiActiveForm')){
+        var data=jQuery(this).data('yiiActiveForm');
+        data.submitting=true;
+        }
+        jQuery.pjax.submit(event, '#$container' , $options);});";
         $view->registerJs($js);
     }
 }
