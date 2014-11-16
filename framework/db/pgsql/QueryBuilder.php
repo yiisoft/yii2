@@ -157,7 +157,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         // https://github.com/yiisoft/yii2/issues/4492
         // http://www.postgresql.org/docs/9.1/static/sql-altertable.html
-        if (!preg_match('/^(DROP\s+DEFAULT|SET|RESET)\s+/i', $type)) {
+        if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
             $type = 'TYPE ' . $this->getColumnType($type);
         }
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
