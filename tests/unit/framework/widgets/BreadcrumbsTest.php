@@ -133,6 +133,18 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $unencodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);         
         $this->assertEquals("<td><a href=\"http://localhost/yii2\">My-<br>Test-Label</a></td>\n", $unencodedValue);        
     }
+
+    public function testExtraOptions()
+    {
+        $link = [
+            'label' => 'demo',
+            'url' => 'http://example.com',
+            'class' => 'external',
+        ];
+        $method = $this->reflectMethod();
+        $result = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
+        $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
+    }
     
     /**
      * Helper methods
