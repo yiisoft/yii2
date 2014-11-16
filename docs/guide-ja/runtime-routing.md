@@ -1,33 +1,34 @@
-Routing and URL Creation
-========================
+ルーティングと URL 生成
+=======================
 
-When a Yii application starts processing a requested URL, the first step it does is to parse the URL
-into a [route](structure-controllers.md#routes). The route is then used to instantiate the corresponding 
-[controller action](structure-controllers.md) to handle the request. This whole process is called *routing*.
- 
-The reverse process of routing is called *URL creation*, which creates a URL from a given route
-and the associated query parameters. When the created URL is later requested, the routing process can resolve it 
-back into the original route and query parameters.
-  
-The central piece responsible for routing and URL creation is the [[yii\web\UrlManager|URL manager]],
-which is registered as the `urlManager` application component. The [[yii\web\UrlManager|URL manager]]
-provides the [[yii\web\UrlManager::parseRequest()|parseRequest()]] method to parse an incoming request into
-a route and the associated query parameters and the [[yii\web\UrlManager::createUrl()|createUrl()]] method to
-create a URL from a given route and its associated query parameters.
- 
-By configuring the `urlManager` component in the application configuration, you can let your application 
-to recognize arbitrary URL formats without modifying your existing application code. For example, you can 
-use the following code to create a URL for the `post/view` action:
+Yii のアプリケーションがリクエストされた URL の処理を開始するときに、最初に実行するステップは URL を解析して
+[ルート](structure-controllers.md#routes) にすることです。次に、リクエストを処理するために、このルートを使って、
+対応する [コントローラアクション](structure-controllers.md) のインスタンスが作成されます。
+このプロセスの全体が *ルーティング* と呼ばれます。
+
+ルーティングの逆のプロセスが *URL 生成* と呼ばれます。これは、与えられたルートとそれに結び付いたクエリパラメータから
+URL を生成するものです。生成された URL が後でリクエストされたとき、ルーティングのプロセスは、その URL を解決して、
+元のルートとクエリパラメータに戻すことが出来ます。
+
+ルーティングと URL 生成について責任を持つ主要コンポーネントが [[yii\web\UrlManager|URL マネージャ]] であり、`urlManager`
+アプリケーションコンポーネントとして登録されているものです。[[yii\web\UrlManager|URL マネージャ]] は、入ってくるリクエストを
+ルートとそれに結び付いたクエリパラメータとして解析するための [[yii\web\UrlManager::parseRequest()|parseRequest()]] メソッドと、
+与えられたルートとそれに結び付いたクエリパラメータから URL を生成するための [[yii\web\UrlManager::createUrl()|createUrl()]]
+メソッドを提供するものです。
+
+アプリケーションコンフィギュレーションの `urlManager` コンポーネントを構成することによって、既存のアプリケーションコードを
+修正することなく、任意の URL 形式をアプリケーションに認識させることが出来ます。例えば、`post/view` アクションのための URL
+を生成するために、次のコードを使うことが出来ます:
 
 ```php
 use yii\helpers\Url;
 
-// Url::to() calls UrlManager::createUrl() to create a URL
+// Url::to() は UrlManager::createUrl() を呼び出して URL を生成します
 $url = Url::to(['post/view', 'id' => 100]);
 ```
 
-Depending on the `urlManager` configuration, the created URL may look like one of the followings (or other format). 
-And if the created URL is requested later, it will still be parsed back into the original route and query parameter value.
+このコードによって生成される URL は、`urlManager` のコンフィギュレーションに応じて、下記の形式のうちの一つ (またはその他の形式)
+になります。そしてまた、生成された URL が後でリクエストされたときには、解析されて元のルートとクエリパラメータに戻されます。
 
 ```
 /index.php?r=post/view&id=100
@@ -36,26 +37,26 @@ And if the created URL is requested later, it will still be parsed back into the
 ```
 
 
-## URL Formats <a name="url-formats"></a>
+## URL 形式 <a name="url-formats"></a>
 
-The [[yii\web\UrlManager|URL manager]] supports two URL formats: the default URL format and the pretty URL format.
+[[yii\web\UrlManager|URL マネージャ]] は二つの URL 形式をサポートします: デフォルトの URL 形式と、綺麗な URL 形式です。
 
-The default URL format uses a query parameter named `r` to represent the route and normal query parameters 
-to represent the query parameters associated with the route. For example, the URL `/index.php?r=post/view&id=100` represents 
-the route `post/view` and the `id` query parameter 100. The default URL format does not require any configuration about 
-the [[yii\web\UrlManager|URL manager]] and works in any Web server setup.
+既定の URL 形式は、`r` というクエリパラメータを使用してルートを表し、通常のクエリパラメータを使用してルートに結び付いたクエリパラメータを表します。
+例えば、`/index.php?r=post/view&id=100` という URL は、`post/view` というルートと、`id` というクエリパラメータが 100 であることを表します。
+既定の URL 形式は、[[yii\web\UrlManager|URL マネージャ]] についてのコンフィギュレーションを何も必要とせず、
+ウェブサーバの設定がどのようなものでも動作します。
 
-The pretty URL format uses the extra path following the entry script name to represent the route and the associated 
-query parameters. For example, the extra path in the URL `/index.php/post/100` is `/post/100` which may represent
-the route `post/view` and the `id` query parameter 100 with a proper [[yii\web\UrlManager::rules|URL rule]]. To use
-the pretty URL format, you will need to design a set of [[yii\web\UrlManager::rules|URL rules]] according to the actual
-requirement about how the URLs should look like.
- 
-You may switch between the two URL formats by toggling the [[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] 
-property of the [[yii\web\UrlManager|URL manager]] without changing any other application code.
+綺麗な URL 形式は、エントリスクリプトの名前に続く追加のパスを使用してルートとそれに結び付いたクエリパラメータを表します。
+例えば、`/index.php/post/100` という URL の追加のパスは `/post/100` ですが、適切な [[yii\web\UrlManager::rules|URL 規則]]
+があれば、この URL が `post/view` というルートと `id` というクエリパラメータが 100 であることを表すことが出来ます。
+綺麗な URL 形式を使用するためには、URL をどのように表現すべきかという実際の要求に従って、一連の [[yii\web\UrlManager::rules|URL 規則]]
+を設計する必要があります。
+
+この二つの URL 形式は、[[yii\web\UrlManager|URL マネージャ]] の [[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]]
+プロパティを ON/OFF することによって、他のアプリケーションコードを少しも変えることなく、切り替えることが出来ます。
 
 
-## Routing <a name="routing"></a>
+## ルーティング <a name="routing"></a>
 
 Routing involves two steps. In the first step, the incoming request is parsed into a route and the associated 
 query parameters. In the second step, a [controller action](structure-controllers.md) corresponding to the parsed route
