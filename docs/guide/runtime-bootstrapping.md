@@ -34,8 +34,11 @@ needs to register additional URL parsing rules, it should be listed in the
 [bootstrap property](structure-applications.md#bootstrap) so that the new URL rules can take effect
 before they are used to resolve requests.
 
-In production mode, enable bytecode cache, such as APC, to minimize the time needed for including
+In production mode, enable bytecode cache, such as [PHP OPcache] or [APC], to minimize the time needed for including
 and parsing PHP files.
+
+[PHP OPcache]: http://php.net/manual/en/intro.opcache.php
+[APC]: http://php.net/manual/en/book.apc.php
 
 Some large applications have very complex application [configurations](concept-configurations.md)
 which are divided into many smaller configuration files. If this is the case, consider caching

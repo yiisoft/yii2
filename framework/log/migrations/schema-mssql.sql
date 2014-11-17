@@ -19,7 +19,7 @@ create table [log]
    [id]          bigint IDENTITY PRIMARY KEY,
    [level]       integer,
    [category]    varchar(255),
-   [log_time]    integer,
+   [log_time]    float,
    [prefix]      text,
    [message]     text
 );

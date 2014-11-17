@@ -105,6 +105,7 @@ You can customize these formatters or add new ones by configuring the [[yii\web\
 * [[yii\web\Response::FORMAT_XML|XML]]: implemented by [[yii\web\XmlResponseFormatter]].
 * [[yii\web\Response::FORMAT_JSON|JSON]]: implemented by [[yii\web\JsonResponseFormatter]].
 * [[yii\web\Response::FORMAT_JSONP|JSONP]]: implemented by [[yii\web\JsonResponseFormatter]].
+* [[yii\web\Response::FORMAT_RAW|RAW]]: use this format if you want to send the response directly without applying any formatting.
 
 While response body can be set explicitly as shown above, in most cases you may set it implicitly by the return value
 of [action](structure-controllers.md) methods. A common use case is like the following:

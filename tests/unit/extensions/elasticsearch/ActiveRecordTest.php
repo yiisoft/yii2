@@ -445,7 +445,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
     public function testScriptFields()
     {
-        $orderItems = OrderItem::find()->fields(['quantity', 'subtotal', 'total' => ['script' => "doc['quantity'].value * doc['subtotal'].value"]])->all();
+        $orderItems = OrderItem::find()->fields([
+            'quantity',
+            'subtotal',
+            'total' => [
+                'script' => "doc['quantity'].value * doc['subtotal'].value",
+                'lang' => 'groovy',
+            ]
+        ])->all();
+        $this->assertNotEmpty($orderItems);
         foreach($orderItems as $item) {
             $this->assertEquals($item->subtotal * $item->quantity, $item->total);
         }
@@ -802,6 +810,31 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(1, count($items));
         $this->assertTrue(isset($items[1]));
         $this->assertFalse(isset($items[2]));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/6065
+     */
+    public function testArrayAttributeRelationUnLinkBrokenArray()
+    {
+        /* @var $order Order */
+        $order = Order::find()->where(['id' => 1])->one();
+
+        $itemIds = $order->itemsArray;
+        $removeId = reset($itemIds);
+        $item = Item::get($removeId);
+        $order->unlink('itemsByArrayValue', $item);
+        $this->afterSave();
+
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertFalse(isset($items[$removeId]));
+
+        // check also after refresh
+        $this->assertTrue($order->refresh());
+        $items = $order->itemsByArrayValue;
+        $this->assertEquals(1, count($items));
+        $this->assertFalse(isset($items[$removeId]));
     }
 
     /**
