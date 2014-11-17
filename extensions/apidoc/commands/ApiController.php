@@ -51,11 +51,11 @@ class ApiController extends BaseController
         } else {
             $guideUrl = './';
             $renderer->guideUrl = $targetDir;
-        }
-        if (file_exists($renderer->generateGuideUrl('README.md'))) {
-            $renderer->guideUrl = $guideUrl;
-        } else {
-            $renderer->guideUrl = null;
+            if (file_exists($renderer->generateGuideUrl('README.md'))) {
+                $renderer->guideUrl = $guideUrl;
+            } else {
+                $renderer->guideUrl = null;
+            }
         }
 
         // search for files to process

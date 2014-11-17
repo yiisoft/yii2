@@ -47,8 +47,14 @@ class GuideController extends BaseController
 
         // setup reference to apidoc
         if ($this->apiDocs !== null) {
-            $renderer->apiUrl = $this->apiDocs;
-            $renderer->apiContext = $this->loadContext($this->apiDocs);
+            $path = $this->apiDocs;
+            $renderer->apiUrl = $path;
+            // use relative paths relative to targetDir
+            if (strncmp($path, '.', 1) === 0) {
+                $renderer->apiContext = $this->loadContext("$targetDir/$path");
+            } else {
+                $renderer->apiContext = $this->loadContext($path);
+            }
         } elseif (file_exists($targetDir . '/cache/apidoc.data')) {
             $renderer->apiUrl = './';
             $renderer->apiContext = $this->loadContext($targetDir);
