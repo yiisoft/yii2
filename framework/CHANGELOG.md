@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.2 under development
 -----------------------
 
+- Bug #6080: Oracle DB schema did not load column types correctly (wenbin1989)
 - Bug #6404: advanced application template `Alert` widget was generating duplicate IDs in case of multiple flashes (SDKiller)
 - Enh #6247: Logger and error handler are now using slightly less memory (stepanselyuk, samdark)
 - Enh #6434: Added `yii\behaviors\SluggableBehavior::immutable` to support keeping the generated slug unchanged (trntv)
