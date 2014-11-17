@@ -186,6 +186,7 @@ class Schema extends \yii\db\Schema
         $column->autoIncrement = $info['is_identity'] == 1;
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
         $column->comment = $info['comment'] === null ? '' : $info['comment'];
+        $column->collation = $info['collation'];
 
         $column->type = self::TYPE_STRING;
         if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
@@ -245,7 +246,7 @@ class Schema extends \yii\db\Schema
 SELECT
     [t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
     COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
-    CONVERT(VARCHAR, [t2].[value]) AS comment
+    CONVERT(VARCHAR, [t2].[value]) AS comment, [t1].COLLATION_NAME AS collation
 FROM {$columnsTableName} AS [t1]
 LEFT OUTER JOIN [sys].[extended_properties] AS [t2] ON
     [t2].[minor_id] = COLUMNPROPERTY(OBJECT_ID([t1].[TABLE_SCHEMA] + '.' + [t1].[TABLE_NAME]), [t1].[COLUMN_NAME], 'ColumnID') AND

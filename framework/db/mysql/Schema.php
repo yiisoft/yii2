@@ -134,6 +134,9 @@ class Schema extends \yii\db\Schema
         $column->isPrimaryKey = strpos($info['Key'], 'PRI') !== false;
         $column->autoIncrement = stripos($info['Extra'], 'auto_increment') !== false;
         $column->comment = $info['Comment'];
+        if(array_key_exists("Collation", $info)) {
+            $column->collation = $info['Collation'];
+        }
 
         $column->dbType = $info['Type'];
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
