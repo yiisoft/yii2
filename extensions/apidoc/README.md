@@ -59,10 +59,29 @@ Currently there is only the `bootstrap` template available.
 You may also add the `yii\apidoc\commands\RenderController` to your console application class map and
 run it inside of your applications console app.
 
-Creating a PDF from the guide
------------------------------
+### Advanced usage
 
-You need `pdflatex` and `make` for this.
+The following script can be used to generate API documentation and guide in different directories and also multiple guides
+in different languages (like it is done on yiiframework.com):
+
+```sh
+#!/bin/sh
+
+# set these paths to match your environment
+YII_PATH=~/dev/yiisoft/yii2
+APIDOC_PATH=~/dev/yiisoft/yii2/extensions/apidoc
+OUTPUT=yii2docs
+
+cd $APIDOC_PATH
+./apidoc api $YII_PATH/framework/,$YII_PATH/extensions $OUTPUT/api --guide=../guide-en --guidePrefix= --interactive=0
+./apidoc guide $YII_PATH/docs/guide    $OUTPUT/guide-en --apiDocs=../api --guidePrefix= --interactive=0
+./apidoc guide $YII_PATH/docs/guide-ru $OUTPUT/guide-ru --apiDocs=../api --guidePrefix= --interactive=0
+# repeat the last line for more languages
+```
+
+### Creating a PDF of the guide
+
+You need `pdflatex` and GNU `make` for this.
 
 ```
 vendor/bin/apidoc guide source/docs ./output --template=pdf

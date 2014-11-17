@@ -114,7 +114,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
 
     protected function generateGuideFileName($file)
     {
-        return static::GUIDE_PREFIX . basename($file, '.md') . '.html';
+        return $this->guidePrefix . basename($file, '.md') . '.html';
     }
 
     public function getGuideReferences()
@@ -130,7 +130,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
 
     protected function fixMarkdownLinks($content)
     {
-        $content = preg_replace('/href\s*=\s*"([^"\/]+)\.md(#.*)?"/i', 'href="' . static::GUIDE_PREFIX . '\1.html\2"', $content);
+        $content = preg_replace('/href\s*=\s*"([^"\/]+)\.md(#.*)?"/i', 'href="' . $this->guidePrefix . '\1.html\2"', $content);
 
         return $content;
     }

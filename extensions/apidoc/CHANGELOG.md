@@ -5,7 +5,9 @@ Yii Framework 2 apidoc extension Change Log
 -----------------------
 
 - Bug #5623: Fixed crash when a class contains a setter that has no arguments e.g. `setXyz()` (cebe)
+- Bug: Guide and API renderer now work with relative paths/URLs (cebe)
 - Enh: Guide generator now skips `images` directory if it does not exist instead of throwing an error (cebe)
+- Enh: Made `--guidePrefix` option available as a command line option (cebe)
 
 
 2.0.0 October 12, 2014

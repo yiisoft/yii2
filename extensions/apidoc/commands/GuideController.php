@@ -27,6 +27,10 @@ class GuideController extends BaseController
      * @var string path or URL to the api docs to allow links to classes and properties/methods.
      */
     public $apiDocs;
+    /**
+     * @var string prefix to prepend to all output file names generated for the guide.
+     */
+    public $guidePrefix = 'guide-';
 
 
     /**
@@ -44,6 +48,7 @@ class GuideController extends BaseController
         }
 
         $renderer->guideUrl = './';
+        $renderer->guidePrefix = $this->guidePrefix;
 
         // setup reference to apidoc
         if ($this->apiDocs !== null) {
@@ -117,6 +122,6 @@ class GuideController extends BaseController
      */
     public function options($actionID)
     {
-        return array_merge(parent::options($actionID), ['apiDocs']);
+        return array_merge(parent::options($actionID), ['apiDocs', 'guidePrefix']);
     }
 }

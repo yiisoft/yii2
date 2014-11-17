@@ -63,7 +63,7 @@ $this->beginPage();
     }
 
     if ($this->context->guideUrl !== null) {
-        $nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . BaseRenderer::GUIDE_PREFIX . 'README.html'];
+        $nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . $this->context->guidePrefix . 'README.html'];
     }
 
     echo Nav::widget([
