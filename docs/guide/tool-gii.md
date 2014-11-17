@@ -176,7 +176,7 @@ If you open a folder `@app\vendor\yiisoft\yii2-gii\generators`, you'll see six f
 + model
 + module
 ```
-This is name generator. If you open any of these folders, you can see the folder `default`. This folder is name of the template.
+This is generator name. If you open any of these folders, you can see the folder `default`. This folder is name of the template.
 
 Copy folder `@app\vendor\yiisoft\yii2-gii\generators\crud\default` to another location, for example `@app\myTemplates\crud\`.
 Now open this folder and modify any template to fit your desires, for example, add `errorSummary` in `views\_form.php`:
@@ -194,7 +194,7 @@ Now open this folder and modify any template to fit your desires, for example, a
 //...
 ```
 
-Now you need to tell GII about our template.The setting is made in the config file:
+Now you need to tell GII about our template. The setting is made in the config file:
 
 ```php
 // config/web.php for basic app
@@ -204,10 +204,10 @@ if (YII_ENV_DEV) {
         'class' => 'yii\gii\Module',      
         'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'],  
         'generators' => [ //here
-            'crud' => [ //name generator
-                'class' => 'yii\gii\generators\crud\Generator', //class generator
+            'crud' => [ // generator name
+                'class' => 'yii\gii\generators\crud\Generator', // generator class
                 'templates' => [ //setting for out templates
-                    'myCrud' => '@app/myTemplates/crud/default', //name template => path to template
+                    'myCrud' => '@app/myTemplates/crud/default', // template name => path to template
                 ]
             ]
         ],
@@ -220,7 +220,7 @@ Creating your own generators
 ----------------------------
 
 Open the folder of any generator and you will see two files `form.php` and `Generator.php`.
-One is the form, the second is the class generator. For create your own generator, you need to create or
+One is the form, the second is the generator class. For create your own generator, you need to create or
 override these classes in any folder. Again as in the previous paragraph customize configuration:
 
 ```php
