@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #5997: The same message may be exported twice to log targets (klimov-paul)
 - Bug #6018: When setting the `encode` option via `yii\widgets\ActiveRecord::errorOptions`, it works the other way around (stanishevsky, qiangxue)
 - Bug #6049: `yii\db\Connection::getSchema()` for Oracle should return false when the table does not exist. Oracle does not support `ON UPDATE` clause. (wenbin1989)
+- Bug #6081: `yii\rbac\DbManager::getChildren()` was not quoting column name properly (wenbin1989)
 - Bug #6107: `yii message` was emptying existing translations in .po in case of multiple categories (samdark)
 - Bug #6112: `yii message` was incorrectly writing not yet translated strings in .po in case of multiple categories (samdark)
 - Bug #6172: `yii\rbac\DbManager` should properly quote table and column names (qiangxue)
