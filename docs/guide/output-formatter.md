@@ -33,8 +33,8 @@ All output of the formatter is localized when the [PHP intl extension](http://ph
 You can configure the [[yii\i18n\Formatter::locale|locale]] property of the formatter for this. If not configured, the
 application [[yii\base\Application::language|language]] is used as the locale. See the [section on internationalization](tutorial-i18n.md) for more details.
 The Formatter will then choose the correct format for dates and numbers according to the locale including names of month and
-week days translated to the current language. Date formats are also affected by the [[yii\i18n\Formatter::timeZone|timeZone]]
-which will also be taken [[yii\base\Application::timeZone|from the application]] if not configured explicitly.
+weekdays translated to the current language. Date formats are also affected by the [[yii\i18n\Formatter::timeZone|timeZone]]
+which will also be taken from the application [[yii\base\Application::timeZone|timeZone]] if not configured explicitly.
 
 For example the date format call will output different results for different locales:
 
@@ -77,15 +77,15 @@ Formatting Date and Time values <a name="date-and-time"></a>
 
 The formatter class provides different methods for formatting date and time values. These are:
 
-- [[yii\i18n\Formatter::asDate()|date]] - the value is formatted as a date e.g. `January, 01 2014`.
+- [[yii\i18n\Formatter::asDate()|date]] - the value is formatted as a date e.g. `January 01, 2014`.
 - [[yii\i18n\Formatter::asTime()|time]] - the value is formatted as a time e.g. `14:23`.
-- [[yii\i18n\Formatter::asDatetime()|datetime]] - the value is formatted as date and time e.g. `January, 01 2014 14:23`.
+- [[yii\i18n\Formatter::asDatetime()|datetime]] - the value is formatted as date and time e.g. `January 01, 2014 14:23`.
 - [[yii\i18n\Formatter::asTimestamp()|timestamp]] - the value is formatted as a [unix timestamp](http://en.wikipedia.org/wiki/Unix_time) e.g. `1412609982`.
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]] - the value is formatted as the time interval between a date
   and now in human readable form e.g. `1 hour ago`.
 
 The date and time format for the [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]], and
-[[yii\i18n\Formatter::asDatetime()|datetime]] method can be specified globally by configuring the formatters
+[[yii\i18n\Formatter::asDatetime()|datetime]] methods can be specified globally by configuring the formatters
 properties [[yii\i18n\Formatter::$dateFormat|$dateFormat]], [[yii\i18n\Formatter::$timeFormat|$timeFormat]], and
 [[yii\i18n\Formatter::$datetimeFormat|$datetimeFormat]].
 
@@ -101,7 +101,7 @@ There are four different shortcut formats available:
 Additionally you can specify custom formats using the syntax defined by the
 [ICU Project](http://site.icu-project.org/) which is described in the ICU manual under the following URL:
 <http://userguide.icu-project.org/formatparse/datetime>. Alternatively you can use the syntax that can be recognized by the
-PHP [date()](http://php.net/manual/de/function.date.php)-function using a string that is prefixed with `php:`.
+PHP [date()](http://php.net/manual/en/function.date.php) function using a string that is prefixed with `php:`.
 
 ```php
 // ICU format
@@ -114,7 +114,7 @@ echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 
 When formatting date and time values, Yii will convert them to the [[yii\i18n\Formatter::timeZone|configured time zone]].
 Therefore the input value is assumed to be in UTC unless a time zone is explicitly given. For this reason
-it is recommended to store all date and time values in UTC preferably as a UNIX timestamp, which is always UTC by definition.
+it is recommended to store all date and time values in UTC, preferably as a UNIX timestamp, which is always UTC by definition.
 If the input value is in a time zone different from UTC, the time zone has to be stated explicitly like in the following example:
 
 ```php
@@ -148,7 +148,7 @@ The format for number formatting can be adjusted using the [[yii\i18n\Formatter:
 [[yii\i18n\Formatter::thousandSeparator|thousandSeparator]] which are set by default according to the locale.
 
 For more advanced configuration, [[yii\i18n\Formatter::numberFormatterOptions]] and [[yii\i18n\Formatter::numberFormatterTextOptions]]
-can be used to configure the interally used [Numberformatter class](http://php.net/manual/en/class.numberformatter.php)
+can be used to configure the internally used [NumberFormatter class](http://php.net/manual/en/class.numberformatter.php)
 
 For example to adjust the maximum and minimum value of fraction digits you can configure this property like the following:
 
@@ -178,13 +178,13 @@ Additional to date, time and number formatting, Yii provides a set of other usef
 - [[yii\i18n\Formatter::asImage()|image]] - the value is formatted as an image tag.
 - [[yii\i18n\Formatter::asUrl()|url]] - the value is formatted as a hyperlink.
 - [[yii\i18n\Formatter::asBoolean()|boolean]] - the value is formatted as a boolean. By default `true` is rendered
-  as `Yes` and `false` as `No`, translated to the application language. You adjust this by configuring
-  the [[yii\i18n\Formatter::booleanFormat]]-property.
+  as `Yes` and `false` as `No`, translated to the application language. You can adjust this by configuring
+  the [[yii\i18n\Formatter::booleanFormat]] property.
 
 `null`-values <a name="null-values"></a>
 -------------
 
-For values that are `null` in PHP, the formatter class will print a placeholder instead of and empty string which
+For values that are `null` in PHP, the formatter class will print a placeholder instead of empty string which
 defaults to `(not set)` translated to the current application language. You can configure the
-[[yii\i18n\Formatter::nullDisplay|nullDisplay]]-property to set a custom placeholder.
+[[yii\i18n\Formatter::nullDisplay|nullDisplay]] property to set a custom placeholder.
 If you want no special handling for `null` values, you can set [[yii\i18n\Formatter::nullDisplay|nullDisplay]] to `null`.
