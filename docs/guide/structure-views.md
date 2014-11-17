@@ -127,6 +127,8 @@ Within [controllers](structure-controllers.md), you may call the following contr
   and injects all registered JS/CSS scripts and files. It is usually used in response to AJAX Web requests.
 * [[yii\base\Controller::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
   [alias](concept-aliases.md).
+* [[yii\base\Controller::renderContent()|renderContent()]]: renders a static string by embedding it into
+  the currently applicable [layout](#layouts). This method is available since version 2.0.1.
 
 For example,
 
