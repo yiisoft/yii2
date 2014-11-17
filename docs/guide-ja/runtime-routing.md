@@ -58,46 +58,43 @@ $url = Url::to(['post/view', 'id' => 100]);
 
 ## ルーティング <a name="routing"></a>
 
-Routing involves two steps. In the first step, the incoming request is parsed into a route and the associated 
-query parameters. In the second step, a [controller action](structure-controllers.md) corresponding to the parsed route
-is created to handle the request.
+ルーティングは二つのステップを含みます。最初のステップでは、入ってくるリクエストが解析されて、ルートとそれに結び付いたクエリパラメータに分解されます。そして、第二のステップでは、解析されたルートに対応する [コントローラアクション](structure-controllers.md)
+がリクエストを処理するために生成されます。
 
-When using the default URL format, parsing a request into a route is as simple as getting the value of a `GET`
-query parameter named `r`. 
+既定の URL 形式を使っている場合は、リクエストからルートを解析することは、`r` という名前の `GET` クエリパラメータを取得するだけの
+簡単なことです。
 
-When using the pretty URL format, the [[yii\web\UrlManager|URL manager]] will examine the registered
-[[yii\web\UrlManager::rules|URL rules]] to find matching one that can resolve the request into a route. 
-If such a rule cannot be found, a [[yii\web\NotFoundHttpException]] exception will be thrown. 
+綺麗な URL 形式を使っている場合は、[[yii\web\UrlManager|URL マネージャ]] が登録されている [[yii\web\UrlManager::rules|URL 規則]]
+を調べます。合致する規則が見つかれば、リクエストをルートに解決することが出来ます。そういう規則が見つからなかったら、
+[[yii\web\NotFoundHttpException]] 例外が投げられます。
 
-Once the request is parsed into a route, it is time to create the controller action identified by the route.
-The route is broken down into multiple parts by the slashes in it. For example, `site/index` will be
-broken into `site` and `index`. Each part is an ID which may refer to a module, a controller or an action.
-Starting from the first part in the route, the application takes the following steps to create modules (if any),
-controller and action:
+いったんリクエストからルートが解析されたら、今度はルートによって特定されるコントローラアクションを生成する番です。
+ルートはその中にあるスラッシュによって複数の部分に分けられます。例えば、`site/index` は `site` と `index` に分割されます。
+その各部分がモジュール、コントローラ、アクションを参照する ID となります。アプリケーションは、ルートの中の最初の部分から始めて、
+下記のステップを踏んで、モジュール (もし有れば)、コントローラ、アクションを生成します。
 
-1. Set the application as the current module.
-2. Check if the [[yii\base\Module::controllerMap|controller map]] of the current module contains the current ID.
-   If so, a controller object will be created according to the controller configuration found in the map,
-   and Step 5 will be taken to handle the rest part of the route.
-3. Check if the ID refers to a module listed in the [[yii\base\Module::modules|modules]] property of
-   the current module. If so, a module is created according to the configuration found in the module list,
-   and Step 2 will be taken to handle the next part of the route under the context of the newly created module.
-4. Treat the ID as a controller ID and create a controller object. Do the next step with the rest part of
-   the route.
-5. The controller looks for the current ID in its [[yii\base\Controller::actions()|action map]]. If found,
-   it creates an action according to the configuration found in the map. Otherwise, the controller will
-   attempt to create an inline action which is defined by an action method corresponding to the current ID.
+1. アプリケーションをカレントモジュールとして設定します。
+2. カレントモジュールの [[yii\base\Module::controllerMap|コントローラマップ]] がカレント ID を含むかどうかを調べます。
+   もしそうであれば、マップの中で見つかったコントローラコンフィギュレーションに従ってコントローラオブジェクトが生成され、
+   ルートの残りの部分を処理するために、ステップ 5 に飛びます。
+3. ID がカレントモジュールの [[yii\base\Module::modules|modules]] プロパティのリストに挙げられたモジュールを指すかどうかを調べます。
+   もしそうであれば、モジュールのリストで見つかったコンフィギュレーションに従ってモジュールが生成されます。そして、ステップ 2
+   に戻って、新しく生成されたモジュールのコンテキストのもとで、ルートの次の部分を処理します。
+4. ID をコントローラ ID として扱ってコントローラオブジェクトを生成します。そしてルートの残りの部分を持って次のステップに進みます。
+5. コントローラは、[[yii\base\Controller::actions()|アクションマップ]] の中にカレント ID があるかどうかを調べます。もし有れば、
+   マップの中で見つかったコンフィギュレーションに従ってアクションを生成します。もし無ければ、カレント ID
+   に対応するアクションメソッドによって定義されるインラインアクションを生成しようと試みます。
 
-Among the above steps, if any error occurs, a [[yii\web\NotFoundHttpException]] will be thrown, indicating
-failure of the routing process.
+上記のステップの中で、何かエラーが発生すると、[[yii\web\NotFoundHttpException]] が投げられて、
+ルーティングのプロセスが失敗したことが示されます。
 
 
-### Default Route <a name="default-route"></a>
+### デフォルトルート <a name="default-route"></a>
 
-When a request is parsed into an empty route, the so-called *default route* will be used, instead. By default,
-the default route is `site/index`,  which refers to the `index` action of the `site` controller. You may 
-customize it by configuring the [[yii\web\Application::defaultRoute|defaultRoute]] property of the application
-in the application configuration like the following:
+リクエストから解析されたルートが空っぽになった場合は、いわゆる *デフォルトルート* が代りに使用されることになります。既定では、
+デフォルトルートは `site/index` であり、`site` コントローラの `index` アクションを指します。デフォルトルートは、次のように、
+アプリケーションコンフィギュレーションの中でアプリケーションの [[yii\web\Application::defaultRoute|defaultRoute]]
+プロパティを構成することによって、カスタマイズすることが出来ます。
 
 ```php
 [
@@ -107,11 +104,11 @@ in the application configuration like the following:
 ```
 
 
-### `catchAll` Route <a name="catchall-route"></a>
+### `catchAll` ルート <a name="catchall-route"></a>
 
-Sometimes, you may want to put your Web application in maintenance mode temporarily and display the same
-informational page for all requests. There are many ways to accomplish this goal. But one of the simplest
-ways is to configure the [[yii\web\Application::catchAll]] property like the following in the application configuration:
+たまには、ウェブアプリケーションを一時的にメンテナンスモードにして、全てのリクエストに対して同じ「お知らせ」のページを表示したいことがあるでしょう。
+この目的を達する方法はたくさんありますが、最も簡単な方法の一つは、次のように、
+アプリケーションのコンフィギュレーションの中で [[yii\web\Application::catchAll]] プロパティを構成することです。
 
 ```php
 [
@@ -120,113 +117,116 @@ ways is to configure the [[yii\web\Application::catchAll]] property like the fol
 ];
 ```
 
-With the above configuration, the `site/offline` action will be used to handle all incoming requests.
+上記のコンフィギュレーションによって、入ってくる全てのリクエストを処理するために
+`site/offline` アクションが使われるようになります。
 
-The `catchAll` property should take an array whose first element specifies a route, and
-the rest of the elements (name-value pairs) specify the parameters to be [bound to the action](structure-controllers.md#action-parameters).
+`catchAll` プロパティは配列を取り、最初の要素はルートを指定し、残りの要素 (「名前-値」のペア) は
+[アクションのパラメータ](structure-controllers.md#action-parameters) を指定するものでなければなりません。
 
 
-## Creating URLs <a name="creating-urls"></a>
+## URL を生成する <a name="creating-urls"></a>
 
-Yii provides a helper method [[yii\helpers\Url::to()]] to create various kinds of URLs from given routes and 
-their associated query parameters. For example,
+Yii は、与えられたルートとそれに結び付けられるクエリパラメータからさまざまな URL を生成する
+[[yii\helpers\Url::to()]] というヘルパーメソッドを提供しています。例えば、
 
 ```php
 use yii\helpers\Url;
 
-// creates a URL to a route: /index.php?r=post/index
+// ルートへの URL を生成する: /index.php?r=post/index
 echo Url::to(['post/index']);
 
-// creates a URL to a route with parameters: /index.php?r=post/view&id=100
+// パラメータを持つルートへの URL を生成する: /index.php?r=post/view&id=100
 echo Url::to(['post/view', 'id' => 100]);
 
-// creates an anchored URL: /index.php?r=post/view&id=100#content
+// アンカー付きの URL を生成する: /index.php?r=post/view&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// creates an absolute URL: http://www.example.com/index.php?r=post/index
+// 絶対 URL を生成する: http://www.example.com/index.php?r=post/index
 echo Url::to(['post/index'], true);
 
-// creates an absolute URL using https scheme: https://www.example.com/index.php?r=post/index
+// https スキームを使って絶対 URL を生成する: https://www.example.com/index.php?r=post/index
 echo Url::to(['post/index'], 'https');
 ```
 
-Note that in the above example, we assume the default URL format is being used. If the pretty URL format is enabled,
-the created URLs will be different, according to the [[yii\web\UrlManager::rules|URL rules]] in use. 
+上記の例では、既定の URL 形式が使われていると仮定していることに注意してください。綺麗な URL
+形式が有効になっている場合は、生成される URL は、使われている [[yii\web\UrlManager::rules|URL 規則]]
+に従って、違うものになります。
 
-The route passed to the [[yii\helpers\Url::to()]] method is context sensitive. It can be either a *relative* route
-or an *absolute* route which will be normalized according to the following rules:
+[[yii\helpers\Url::to()]] メソッドに渡されるルートの意味は、コンテキストに依存します。ルートは
+*相対* ルートか *絶対* ルートかのどちらかであり、下記の規則によって正規化されます。
 
-- If the route is an empty string, the currently requested [[yii\web\Controller::route|route]] will be used;
-- If the route contains no slashes at all, it is considered to be an action ID of the current controller 
-  and will be prepended with the [[\yii\web\Controller::uniqueId|uniqueId]] value of the current controller;
-- If the route has no leading slash, it is considered to be a route relative to the current module and 
-  will be prepended with the [[\yii\base\Module::uniqueId|uniqueId]] value of the current module.
+- ルートが空文字列である場合は、現在リクエストされている [[yii\web\Controller::route|ルート]] が使用されます。
+- ルートがスラッシュを全く含まない場合は、カレントコントローラのアクション ID であると見なされて、
+  カレントコントローラの [[\yii\web\Controller::uniqueId|uniqueId]] の値が前置されます。
+- ルートが先頭にスラッシュを含まない場合は、カレントモジュールに対する相対ルートと見なされて、
+  カレントモジュールの [[\yii\base\Module::uniqueId|uniqueId]] の値が前置されます。
 
-For example, assume the current module is `admin` and the current controller is `post`,
+例えば、カレントモジュールが `admin` であり、カレントコントローラが `post` であると仮定すると、
 
 ```php
 use yii\helpers\Url;
 
-// currently requested route: /index.php?r=admin/post/index
+// 現在リクエストされているルート: /index.php?r=admin/post/index
 echo Url::to(['']);
 
-// a relative route with action ID only: /index.php?r=admin/post/index
+// アクション ID だけの相対ルート: /index.php?r=admin/post/index
 echo Url::to(['index']);
 
-// a relative route: /index.php?r=admin/post/index
+// 相対ルート: /index.php?r=admin/post/index
 echo Url::to(['post/index']);
 
-// an absolute route: /index.php?r=post/index
+// 絶対ルート: /index.php?r=post/index
 echo Url::to(['/post/index']);
 ```
 
-The [[yii\helpers\Url::to()]] method is implemented by calling the [[yii\web\UrlManager::createUrl()|createUrl()]] 
-and [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] methods of the [[yii\web\UrlManager|URL manager]].
-In the next few subsections, we will explain how to configure the [[yii\web\UrlManager|URL manager]] to customize
-the format of the created URLs.
+[[yii\helpers\Url::to()]] メソッドは、[[yii\web\UrlManager|URL マネージャ]] の
+[[yii\web\UrlManager::createUrl()|createUrl()]] メソッド、および、[[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]]
+を呼び出すことによって実装されています。
+次に続くいくつかの項では、[[yii\web\UrlManager|URL マネージャ]] を構成して、生成される URL
+の形式をカスタマイズする方法を説明します。
 
-The [[yii\helpers\Url::to()]] method also supports creating URLs that are NOT related with particular routes.
-Instead of passing an array as its first parameter, you should pass a string in this case. For example,
+[[yii\helpers\Url::to()]] メソッドは、特定のルートとの関係を持たない URL の生成もサポートしています。
+その場合、最初のパラメータとして配列を渡す代りに文字列を渡さなければなりません。例えば、
  
 ```php
 use yii\helpers\Url;
 
-// currently requested URL: /index.php?r=admin/post/index
+// 現在リクエストされている URL: /index.php?r=admin/post/index
 echo Url::to();
 
-// an aliased URL: http://example.com
+// エイリアス化された URL: http://example.com
 Yii::setAlias('@example', 'http://example.com/');
 echo Url::to('@example');
 
-// an absolute URL: http://example.com/images/logo.gif
+// 絶対 URL: http://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
-Besides the `to()` method, the [[yii\helpers\Url]]` helper class also provides several other convenient URL creation 
-methods. For example,
+`to()` メソッドの他にも、[[yii\helpers\Url]]` ヘルパークラスは、便利な URL 生成メソッドをいくつか提供しています。
+例えば、
 
 ```php
 use yii\helpers\Url;
 
-// home page URL: /index.php?r=site/index
+// ホームページの URL: /index.php?r=site/index
 echo Url::home();
 
-// the base URL, useful if the application is deployed in a sub-folder of the Web root
+// ベース URL。アプリケーションがウェブルートのサブディレクトリに配置されているときに便利
 echo Url::base();
 
-// the canonical URL of the currently requested URL
-// see https://en.wikipedia.org/wiki/Canonical_link_element
+// 現在リクエストされている URL の canonical URL。
+// https://en.wikipedia.org/wiki/Canonical_link_element を参照
 echo Url::canonical();
 
-// remember the currently requested URL and retrieve it back in later requests
+// 現在リクエストされている URL を記憶し、それを後のリクエストの中で呼び戻す。
 Url::remember();
 echo Url::previous();
 ```
 
 
-## Using Pretty URLs <a name="using-pretty-urls"></a>
+## 綺麗な URL を使う <a name="using-pretty-urls"></a>
 
-To use pretty URLs, configure the `urlManager` component in the application configuration like the following:
+綺麗な URL を使うためには、アプリケーションコンフィギュレーションの中で `urlManager` コンポーネントを次のように構成します。
 
 ```php
 [
@@ -243,20 +243,20 @@ To use pretty URLs, configure the `urlManager` component in the application conf
 ]
 ```
 
-The [[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] property is mandatory as it toggles the pretty URL format.
-The rest of the properties are optional. However, their configuration shown above is most commonly used.
+[[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] プロパティは、綺麗な URL 形式の有効/無効を切り替えますので、必須です。
+その他のプロパティはオプションですが、上記で示されているコンフィギュレーションが最もよく用いられているものです。
 
-* [[yii\web\UrlManager::showScriptName|showScriptName]]: this property determines whether the entry script
-  should be included in the created URLs. For example, in stead of creating a URL `/index.php/post/100`,
-  by setting this property to be true, a URL `/post/100` may be generated. 
-* [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: this property determines whether to enable
-  strict request parsing. If strict parsing is enabled, the incoming requested URL must match at least one of 
-  the [[yii\web\UrlManager::rules|rules]] in order to be treated as a valid request, or a [[yii\web\NotFoundHttpException]] 
-  will be thrown. If strict parsing is disabled, when none of the [[yii\web\UrlManager::rules|rules]] matches
-  the requested URL, the path info part of the URL will be treated as the requested route. 
-* [[yii\web\UrlManager::rules|rules]]: this property contains a list of rules specifying how to parse and create
-  URLs. It is the main property that you should work with in order to create URLs whose format satisfies your
-  particular application requirement.
+* [[yii\web\UrlManager::showScriptName|showScriptName]]: このプロパティは、エントリスクリプトを生成される URL に含めるべきかどうかを
+  決定します。例えば、このプロパティを true にすると、`/index.php/post/100` という URL を生成する代りに、`/post/100` という URL
+  を生成することが出来ます。
+* [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: このプロパティは、厳密なリクエスト解析を有効にするかどうかを決定します。
+  厳密な解析が有効にされた場合、リクエストされた URL が有効なリクエストとして扱われるためには、それが [[yii\web\UrlManager::rules|rules]]
+  の少なくとも一つに合致しなければなりません。そうでなければ、[[yii\web\NotFoundHttpException]] が投げられます。
+  厳密な解析が無効にされると、リクエストされた URL が [[yii\web\UrlManager::rules|rules]] のどれにも合致しない場合は、
+  URL のパス情報の部分がリクエストされたルートとして扱われます。
+* [[yii\web\UrlManager::rules|rules]]: このプロパティが URL を解析および生成するための一連の規則を含みます。
+  あなたが主として作業しなければならないプロパティがこれです。このプロパティを設定することによって、
+  あなたの特定のアプリケーションの要求を満たす形式の URL を生成します。
 
 > Note: In order to hide the entry script name in the created URLs, besides setting
   [[yii\web\UrlManager::showScriptName|showScriptName]] to be true, you may also need to configure your Web server
