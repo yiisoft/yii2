@@ -42,22 +42,20 @@ Simple usage for stand alone guide documentation:
 vendor/bin/apidoc guide source/docs ./output
 ```
 
-You can combine them to generate class API and guide doc in one place:
+You can combine them to generate class API and guide documentation in one place:
 
 ```
-# first generate guide docs to allow links from code to guide you may skip this if you do not need these.
-vendor/bin/apidoc guide source/docs ./output
-# second generate API docs
+# generate API docs
 vendor/bin/apidoc api source/directory ./output
-# third run guide docs again to have class links enabled
+# generate the guide (order is important to allow the guide to link to the apidoc)
 vendor/bin/apidoc guide source/docs ./output
 ```
 
-By default the `bootstrap` template will be used. You can choose a different templates with the `--template=name` parameter.
+By default the `bootstrap` template will be used. You can choose a different template with the `--template=name` parameter.
 Currently there is only the `bootstrap` template available.
 
-You may also add the `yii\apidoc\commands\RenderController` to your console application class map and
-run it inside of your applications console app.
+You may also add the `yii\apidoc\commands\ApiController` and `GuideController` to your console application command map
+and run them inside of your applications console app.
 
 ### Advanced usage
 
