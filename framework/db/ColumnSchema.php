@@ -95,8 +95,9 @@ class ColumnSchema extends Object
         }
         switch ($this->phpType) {
             case 'resource':
-            case 'string':
                 return is_resource($value) ? $value : (string) $value;
+            case 'string':
+                return is_resource($value) ? stream_get_contents($value) : (string) $value;
             case 'integer':
                 return (int) $value;
             case 'boolean':
