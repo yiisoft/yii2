@@ -131,32 +131,11 @@ class Controller extends Component implements ViewContextInterface
         $oldAction = $this->action;
         $this->action = $action;
 
-        $modules = [];
-        $runAction = true;
-
-        // call beforeAction on modules
-        foreach ($this->getModules() as $module) {
-            if ($module->beforeAction($action)) {
-                array_unshift($modules, $module);
-            } else {
-                $runAction = false;
-                break;
-            }
-        }
-
         $result = null;
 
-        if ($runAction && $this->beforeAction($action)) {
-            // run the action
+        if ($this->beforeAction($action)) {
             $result = $action->runWithParams($params);
-
             $result = $this->afterAction($action, $result);
-
-            // call afterAction on modules
-            foreach ($modules as $module) {
-                /* @var $module Module */
-                $result = $module->afterAction($action, $result);
-            }
         }
 
         $this->action = $oldAction;
@@ -255,6 +234,13 @@ class Controller extends Component implements ViewContextInterface
      */
     public function beforeAction($action)
     {
+        foreach ($this->getModules() as $module) {
+            /* @var $module Module */
+            if (!$module->beforeAction($action)) {
+                return false;
+            }
+        }
+        
         $event = new ActionEvent($action);
         $this->trigger(self::EVENT_BEFORE_ACTION, $event);
         return $event->isValid;
@@ -286,8 +272,22 @@ class Controller extends Component implements ViewContextInterface
         $event = new ActionEvent($action);
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
-        return $event->result;
+        $result = $event->result;
+        
+        // call afterAction on modules
+        foreach (array_reverse($this->getModules()) as $module) {
+                /* @var $module Module */
+                $result = $module->afterAction($action, $result);
+        }
+        
+        return $result;
     }
+    
+    /**
+     * @var array all ancestor modules that this controller is located within.
+     * @see Controller::getModuleS()
+     */
+    private $_modules;
 
     /**
      * Returns all ancestor modules of this controller.
@@ -297,13 +297,15 @@ class Controller extends Component implements ViewContextInterface
      */
     public function getModules()
     {
-        $modules = [$this->module];
-        $module = $this->module;
-        while ($module->module !== null) {
-            array_unshift($modules, $module->module);
-            $module = $module->module;
+        if ($this->_modules === null) {
+            $this->_modules = [$this->module];
+            $module = $this->module;
+            while ($module->module !== null) {
+                array_unshift($this->_modules, $module->module);
+                $module = $module->module;
+            }
         }
-        return $modules;
+        return $this->_modules;
     }
 
     /**
