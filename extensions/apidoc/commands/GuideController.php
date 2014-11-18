@@ -47,7 +47,9 @@ class GuideController extends BaseController
             return 1;
         }
 
-        $renderer->guideUrl = './';
+        if ($renderer->guideUrl === null) {
+            $renderer->guideUrl = './';
+        }
         $renderer->guidePrefix = $this->guidePrefix;
 
         // setup reference to apidoc
