@@ -121,7 +121,7 @@ PHP so you have to take some extra care when using HHVM.
 On a production server, you may want to configure your Web server so that the application can be accessed
 via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
 requires pointing the document root of your Web server to the `basic/web` folder. You may also
-want to hide `index.php` from the URL, as described in the [URL Parsing and Generation](runtime-url-handling.md) section.
+want to hide `index.php` from the URL, as described in the [Routing and URL Creation](runtime-routing.md) section.
 In this subsection, you'll learn how to configure your Apache or Nginx server to achieve these goals.
 
 > Info: By setting `basic/web` as the document root, you also prevent end users from accessing
