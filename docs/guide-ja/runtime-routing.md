@@ -255,35 +255,33 @@ echo Url::previous();
   厳密な解析が無効にされると、リクエストされた URL が [[yii\web\UrlManager::rules|rules]] のどれにも合致しない場合は、
   URL のパス情報の部分がリクエストされたルートとして扱われます。
 * [[yii\web\UrlManager::rules|rules]]: このプロパティが URL を解析および生成するための一連の規則を含みます。
-  あなたが主として作業しなければならないプロパティがこれです。このプロパティを設定することによって、
-  あなたの特定のアプリケーションの要求を満たす形式の URL を生成します。
+  このプロパティが、アプリケーションの固有の要求を満たす形式を持つ URL を生成するために、あなたが主として使うプロパティです。
 
-> Note: In order to hide the entry script name in the created URLs, besides setting
-  [[yii\web\UrlManager::showScriptName|showScriptName]] to be true, you may also need to configure your Web server
-  so that it can correctly identify which PHP script should be executed when a requested URL does not explicitly 
-  specify one. If you are using Apache Web server, you may refer to the recommended configuration as described in the
-  [Installation](start-installation.md#recommended-apache-configuration) section.
+> Note|注意: 生成された URL からエントリスクリプト名を隠すためには、[[yii\web\UrlManager::showScriptName|showScriptName]]
+  を true に設定するだけでなく、ウェブサーバを構成して、リクエストされた URL が PHP スクリプトを明示的に指定していない場合でも、
+  正しい PHP スクリプトを特定出来るようにする必要があります。もしあなたが Apache ウェブサーバを使うつもりなら、
+  [インストール](start-installation.md#recommended-apache-configuration) の節で説明されている推奨設定を参照することが出来ます。
 
 
-### URL Rules <a name="url-rules"></a>
+### URL 規則 <a name="url-rules"></a>
 
-A URL rule is an instance of [[yii\web\UrlRule]] or its child class. Each URL rule consists of a pattern used 
-for matching the path info part of URLs, a route, and a few query parameters. A URL rule can be used to parse a request
-if its pattern matches the requested URL; and a URL rule can be used to create a URL if its route and query parameter 
-names match those that are given. 
+URL 規則は [[yii\web\UrlRule]] またはその子クラスのインスタンスです。すべての URL 規則は、URL のパス情報の部分との照合に使われるパターン、
+ルート、そして、いくつかのクエリパラメータから構成されます。URL 規則は、パターンがリクエストされた URL と合致する場合に、
+リクエストの解析に使用することが出来ます。また、URL 規則は、ルートとクエリパラメータ名が与えられたものと合致する場合に、
+URL の生成に使用することが出来ます。
 
-When the pretty URL format is enabled, the [[yii\web\UrlManager|URL manager]] uses the URL rules declared in its
-[[yii\web\UrlManager::rules|rules]] property to parse incoming requests and create URLs. In particular,
-to parse an incoming request, the [[yii\web\UrlManager|URL manager]] examines the rules in the order they are
-declared and looks for the *first* rule that matches the requested URL. The matching rule is then used to
-parse the URL into a route and its associated parameters. Similarly, to create a URL, the [[yii\web\UrlManager|URL manager]] 
-looks for the first rule that matches the given route and parameters and uses that to create a URL.
+綺麗な URL 形式が有効にされている場合、[[yii\web\UrlManager|URL マネージャ]] は、その [[yii\web\UrlManager::rules|rules]]
+プロパティに宣言されている URL 規則を使って、入ってくるリクエストを解析と URL の生成を行います。具体的に言えば、
+入ってくるリクエストを解析するためには、[[yii\web\UrlManager|URL マネージャ]] は宣言されている順に規則を調べて、リクエストされた
+URL に合致する *最初の* 規則を探します。そして、その合致する規則を使って URL を解析して、ルートとそれと結合されたパラメータを得ます。
+同じように、URL を生成するためには、[[yii\web\UrlManager|URL マネージャ]] は、与えられたルートとパラメータに合致する最初の規則を探して、
+それを使って URL を生成します。
 
-You can configure [[yii\web\UrlManager::rules]] as an array with keys being the patterns and values the corresponding
-routes. Each pattern-route pair constructs a URL rule. For example, the following [[yii\web\UrlManager::rules|rules]]
-configuration declares two URL rules. The first rule matches a URL `posts` and maps it into the route `post/index`.
-The second rule matches a URL matching the regular expression `post/(\d+)` and maps it into the route `post/view` and 
-a parameter named `id`.
+[[yii\web\UrlManager::rules]] は、パターンをキーとし、それに対応するルートを値とする配列として構成することが出来ます。
+「パターン - ルート」のペアが、それぞれ、URL 規則を構成します。例えば、次の [[yii\web\UrlManager::rules|rules]]
+のコンフィギュレーションは、二つの URL 規則を宣言するものです。最初の規則は `posts` という URL に合致し、それを `post/index`
+というルートにマップします。第二の規則は `post/(\d+)` という正規表現にマッチする URL に合致し、それを `post/view`
+というルートと `id` という名前のパラメータにマップします。
 
 ```php
 [
@@ -292,17 +290,16 @@ a parameter named `id`.
 ]
 ```
 
-> Info: The pattern in a rule is used to match the path info part of a URL. For example, the path info of 
-  `/index.php/post/100?source=ad` is `post/100` (the leading and ending slashes are ignored) which matches
-  the pattern `post/(\d+)`.
+> Info|情報: 規則のパターンは URL のパス情報の部分との照合に使用されます。例えば、`/index.php/post/100?source=ad`
+  のパス情報は `post/100` であり (先頭と末尾のスラッシュは無視します)、これは `post/(\d+)` というパターンに合致します。
 
-Besides declaring URL rules as pattern-route pairs, you may also declare them as configuration arrays. Each configuration
-array is used to configure a single URL rule object. This is often needed when you want to configure other
-properties of a URL rule. For example,
+URL 規則は、「パターン - ルート」のペアとして宣言する以外に、コンフィギュレーション配列として宣言することも出来ます。
+すべてのコンフィギュレーション配列が、それぞれ、一つの URL 規則のオブジェクトを構成するために使われます。この形式は、
+URL 規則の他のプロパティを構成したい場合に、よく必要になります。例えば、
 
 ```php
 [
-    // ...other url rules...
+    // ... 他の URL 規則 ...
     
     [
         'pattern' => 'posts',
@@ -312,25 +309,22 @@ properties of a URL rule. For example,
 ]
 ```
 
-By default if you do not specify the `class` option for a rule configuration, it will take the default
-class [[yii\web\UrlRule]].
+規則のコンフィギュレーションで `class` を指定しない場合は、既定として、[[yii\web\UrlRule]] が使われます。
 
 
-### Named Parameters <a name="named-parameters"></a>
+### 名前付きパラメータ <a name="named-parameters"></a>
 
-A URL rule can be associated with a few named query parameters which are specified in the pattern in the format
-of `<ParamName:RegExp>`, where `ParamName` specifies the parameter name and `RegExp` is an optional regular 
-expression used to match parameter values. If `RegExp` is not specified, it means the parameter value should be
-a string without any slash.
+URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定される、いくつかの名前付きクエリパラメータと結び付けることが出来ます。
+ここで、`ParamName` はパラメータ名を指定し、`RegExp` はパラメータの値との照合に使われるオプションの正規表現を指定するものです。
+`RegExp` が指定されていない場合は、パラメータの値がスラッシュを含まない文字列であるべきことを意味します。
 
-> Note: You can only specify regular expressions for parameters. The rest part of a pattern is considered as plain text.
+> Note|注意: 正規表現はパラメータに対してのみ指定できます。パターンの残りの部分は平文テキストであると見なされます。
 
-When a rule is used to parse a URL, it will fill the associated parameters with values matching the corresponding
-parts of the URL, and these parameters will be made available in `$_GET` later by the `request` application component.
-When the rule is used to create a URL, it will take the values of the provided parameters and insert them at the 
-places where the parameters are declared.
+規則が URL の解析に使われるときには、結び付けられたパラメータに、URL の対応する部分に合致する値が入れられます。
+そして、これらのパラメータは、後に `request` アプリケーションコンポーネントによって、`$_GET` に入れられて利用できるようになります。
+規則が URL の生成に使われるときは、提供されたパラメータの値を受けて、パラメータが宣言されている所にその値が挿入されます。
 
-Let's use some examples to illustrate named parameters work. Assume we have declared the following three URL rules:
+名前付きパラメータの動作を説明するためにいくつかの例を挙げましょう。次の三つの URL 規則を宣言したと仮定してください。
 
 ```php
 [
@@ -340,32 +334,30 @@ Let's use some examples to illustrate named parameters work. Assume we have decl
 ]
 ```
 
-When the rules are used to parse URLs:
+規則が URL 解析に使われる場合は:
 
-- `/index.php/posts` is parsed into the route `post/index` using the first rule;
-- `/index.php/posts/2014/php` is parsed into the route `post/index`, the `year` parameter whose value is 2014
-  and the `category` parameter whose value is `php` using the third rule;
-- `/index.php/post/100` is parsed into the route `post/view` and the `id` parameter whose value is 100 using
-  the second rule;
-- `/index.php/posts/php` will cause a [[yii\web\NotFoundHttpException]] when [[yii\web\UrlManager::enableStrictParsing]]
-  is true, because it matches none of the patterns. If [[yii\web\UrlManager::enableStrictParsing]] is false (the
-  default value), the path info part `posts/php` will be returned as the route.
+- `/index.php/posts` は、最初の規則を使って解析され、ルート `post/index` になります。
+- `/index.php/posts/2014/php` は、三番目の規則を使って解析され、ルートは `post/index`、`year` パラメータの値は 2014、
+  そして、`category` パラメータの値は `php` となります。
+- `/index.php/post/100` は、二番目の規則を使って解析され、ルートが `post/view`、`id` パラメータの値が 100 となります。
+- `/index.php/posts/php` は、どのパターンにも合致しないため、[[yii\web\UrlManager::enableStrictParsing]] が true の場合は、
+  [[yii\web\NotFoundHttpException]] を引き起こします。[[yii\web\UrlManager::enableStrictParsing]] が false (これが既定値です)
+  の場合は、パス情報の部分である `posts/php` がルートとして返されることになります。
  
-And when the rules are used to create URLs:
+規則が URL 生成に使われる場合は:
 
-- `Url::to(['post/index'])` creates `/index.php/posts` using the first rule;
-- `Url::to(['post/index', 'year' => 2014, 'category' => 'php'])` creates `/index.php/posts/2014/php` using the
-  third rule;
-- `Url::to(['post/view', 'id' => 100])` creates `/index.php/post/100` using the second rule;
-- `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` creates `/index.php/post/100?source=ad` using the second rule.
-  Because the `source` parameter is not specified in the rule, it is appended as a query parameter in the created URL.
-- `Url::to(['post/index', 'category' => 'php'])` creates `/index.php/post/index?category=php` using none of rules.
-  Note that since none of the rules applies, the URL is created by simply appending the route as the path info
-  and all parameters as the query string part.
-   
+- `Url::to(['post/index'])` は、最初の規則を使って、`/index.php/posts` を生成します。
+- `Url::to(['post/index', 'year' => 2014, 'category' => 'php'])` は、三番目の規則を使って、`/index.php/posts/2014/php` を生成します。
+- `Url::to(['post/view', 'id' => 100])` は、二番目の規則を使って、`/index.php/post/100` を生成します。
+- `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` も、二番目の規則を使って、`/index.php/post/100?source=ad` を生成します。
+  `source` パラメータは規則の中で指定されていないので、クエリパラメータとして生成された URL に追加されます。
+- `Url::to(['post/index', 'category' => 'php'])` は、どの規則も使わずに、`/index.php/post/index?category=php` を生成します。
+  どの規則も当てはまらないため、URL は、単純に、ルートをパス情報とし、すべてのパラメータをクエリ文字列として追加して生成されます。
 
-### Parameterizing Routes <a name="parameterizing-routes"></a>
 
+### ルートをパラメータ化する <a name="parameterizing-routes"></a>
+
+URL 規則のルートにはパラメータ名を埋め込むことが可能です。
 You can embed parameter names in the route of a URL rule. This allows a URL rule to be used for matching multiple 
 routes. For example, the following rules embed `controller` and `action` parameters in the routes.
 
