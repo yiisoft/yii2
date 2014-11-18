@@ -20,8 +20,9 @@ modules:
 #        - WebDriver
     config:
         PhpBrowser:
-            url: 'http://localhost:8080'
+# PLEASE ADJUST IT TO THE ACTUAL ENTRY POINT
+            url: http://localhost:8080/web/frontend/index-test.php
 #        WebDriver:
-#            url: 'http://localhost'
+#            url: http://localhost:8080/web/frontend/index-test.php
 #            browser: firefox
 #            restart: true
