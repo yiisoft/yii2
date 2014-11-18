@@ -451,7 +451,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 例如在事件处理中根据某些参数动态设置[[yii\base\Application::language]]语言属性。
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
 该事件在应用处理请求*after*之后但在返回响应*before*之前触发，实际的事件名为`afterRequest`。
 
@@ -460,7 +460,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 注意 [[yii\web\Response|response]] 组件在发送响应给终端用户时也会触发一些事件，这些事件都在本事件*after*之后触发。
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
 该事件在每个 [控制器动作](structure-controllers.md) 运行*before*之前会被触发，实际的事件名为 `beforeAction`.
 
