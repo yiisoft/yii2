@@ -56,6 +56,7 @@ class ConfigPanel extends Panel
         foreach ($this->data['extensions'] as $extension) {
             $data[$extension['name']] = $extension['version'];
         }
+        ksort($data);
 
         return $data;
     }
