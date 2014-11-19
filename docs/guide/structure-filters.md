@@ -46,7 +46,7 @@ properties like described above.
   instead of action IDs in the [[yii\base\ActionFilter::only|only]] and [[yii\base\ActionFilter::except|except]] properties.
   This is because action IDs alone cannot fully specify actions within the scope of a module or application.
 
-When multiple filters are configured for a single action, they are applied according to the rules described below,
+When multiple filters are configured for a single action, they are applied according to the rules described below:
 
 * Pre-filtering
     - Apply filters declared in the application in the order they are listed in `behaviors()`.
@@ -200,7 +200,7 @@ public function behaviors()
 Response formats and languages often need to be determined much earlier during
 the [application lifecycle](structure-applications.md#application-lifecycle). For this reason, ContentNegotiator
 is designed in a way such that it can also be used as a [bootstrapping component](structure-applications.md#bootstrap)
-besides filter. For example, you may configure it in the [application configuration](structure-applications.md#application-configurations)
+besides being used as a filter. For example, you may configure it in the [application configuration](structure-applications.md#application-configurations)
 like the following:
 
 ```php
