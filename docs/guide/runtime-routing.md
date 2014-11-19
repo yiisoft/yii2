@@ -444,8 +444,8 @@ will parse the URL `http://en.example.com/posts` into the route `post/index` and
 ### URL Suffixes <a name="url-suffixes"></a>
 
 You may want to add suffixes to the URLs for various purposes. For example, you may add `.html` to the URLs so that they
-look like URLs for static HTML pages; you may also add `.json` to the URLs to indicate that the expected content type
-of the response to the URLs. You can achieve this goal by configuring the [[yii\web\UrlManager::suffix]] property like
+look like URLs for static HTML pages; you may also add `.json` to the URLs to indicate the expected content type
+of the response. You can achieve this goal by configuring the [[yii\web\UrlManager::suffix]] property like
 the following in the application configuration:
 
 ```php
