@@ -139,6 +139,8 @@ methodName($view, $params = [])
   通常、AJAX ウェブリクエストに対するレスポンスにおいて使用される。
 * [[yii\base\Controller::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md)
   の形式で指定されたビューをレンダリングする。
+* [[yii\base\Controller::renderContent()|renderContent()]]: 現在適用可能な [レイアウト](#layouts) に埋め込むことによって、
+  静的な文字列をレンダリングする。このメソッドは バージョン 2.0.1 以降で使用可能。
 
 例えば、
 
