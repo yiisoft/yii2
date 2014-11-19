@@ -357,9 +357,8 @@ URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定さ�
 
 ### ルートをパラメータ化する <a name="parameterizing-routes"></a>
 
-URL 規則のルートにはパラメータ名を埋め込むことが可能です。
-You can embed parameter names in the route of a URL rule. This allows a URL rule to be used for matching multiple 
-routes. For example, the following rules embed `controller` and `action` parameters in the routes.
+URL 規則のルートにはパラメータ名を埋め込むことが出来ます。このことによって、URL 規則を複数のルートに合致させることが可能になっています。
+例えば、以下の規則は `controller` と `action` というパラメータをルートに埋め込んでいます。
 
 ```php
 [
@@ -369,25 +368,26 @@ routes. For example, the following rules embed `controller` and `action` paramet
 ]
 ```
 
-To parse a URL `/index.php/comment/100/create`, the first rule will apply, which sets the `controller` parameter to
-be `comment` and `action` parameter to be `create`. The route `<controller>/<action>` is thus resolved as `comment/create`.
- 
-Similarly, to create a URL for the route `comment/index`, the third rule will apply, which creates a URL `/index.php/comments`.
+`/index.php/comment/100/create` という URL の解析には、最初の規則が適用され、`controller` パラメータには `comment`、
+`action` パラメータには `create` がセットされます。こうして、`<controller>/<action>` というルートは、`comment/create`
+として解決されます。
 
-> Info: By parameterizing routes, it is possible to greatly reduce the number of URL rules, which can significantly
-  improve the performance of [[yii\web\UrlManager|URL manager]]. 
+同じように、`comment/index` というルートの URL を生成するためには、三番目の規則が適用されて、`index.php/comments` という URL が生成されます。
+
+> Info|情報: ルートをパラメータ化することによって、URL 規則の数を大幅に減らすことが可能になり、
+  [[yii\web\UrlManager|URL マネージャ]] のパフォーマンスを目に見えて改善することが出来ます。
   
-By default, all parameters declared in a rule are required. If a requested URL does not contain a particular parameter, 
-or if a URL is being created without a particular parameter, the rule will not apply. To make some of the parameters
-optional, you can configure the [[yii\web\UrlRule::defaults|defaults]] property of a rule. Parameters listed in this 
-property are optional and will take the specified values when they are not provided. 
+既定では、規則の中で宣言されたパラメータは必須となります。リクエストされた URL が特定のパラメータを含まない場合や、
+URL が特定のパラメータなしで生成される場合には、規則は適用されません。パラメータのどれかをオプション扱いにしたい場合は、規則の
+[[yii\web\UrlRule::defaults|defaults]] プロパティを構成することが出来ます。このプロパティのリストに挙げられたパラメータは
+オプション扱いとなり、規定されなかった場合は指定された値を取るようになります。
 
-In the following rule declaration, the `page` and `tag` parameters are both optional and will take the value of 1 and 
-empty string, respectively, when they are not provided. 
+次の規則の宣言においては、`page` と `tag` のパラメータは両方ともオプション扱いで、規定されなかった場合は、それぞれ、1
+と空文字列を取ります。
 
 ```php
 [
-    // ...other rules...
+    // ... 他の規則 ...
     [
         'pattern' => 'posts/<page:\d+>/<tag>',
         'route' => 'post/index',
@@ -396,21 +396,21 @@ empty string, respectively, when they are not provided.
 ]
 ```
 
-The above rule can be used to parse or create any of the following URLs:
+上記の規則を以下の URL を解析または生成するために使用することが出来ます。
 
-* `/index.php/posts`: `page` is 1, `tag` is ''.
-* `/index.php/posts/2`: `page` is 2, `tag` is ''.
-* `/index.php/posts/2/news`: `page` is 2, `tag` is `'news'`.
-* `/index.php/posts/news`: `page` is 1, `tag` is `'news'`.
+* `/index.php/posts`: `page` は 1, `tag` は ''.
+* `/index.php/posts/2`: `page` は 2, `tag` は ''.
+* `/index.php/posts/2/news`: `page` は 2, `tag` は `'news'`.
+* `/index.php/posts/news`: `page` は 1, `tag` は `'news'`.
 
-Without using optional parameters, you would have to create 4 rules to achieve the same result.
+オプション扱いのパラメータを使わなければ、同じ結果を得るために 4 個の規則を作らなければならなかったところです。
 
 
-### Rules with Server Names <a name="rules-with-server-names"></a>
+### サーバ名を持つ規則 <a name="rules-with-server-names"></a>
 
-It is possible to include Web server names in the patterns of URL rules. This is mainly useful when your application 
-should behave differently for different Web server names. For example, the following rules will parse the URL 
-`http://admin.example.com/login` into the route `admin/user/login` and `http://www.example.com/login` into `site/login`.
+URL 規則のパターンには、ウェブサーバ名を含むことが出来ます。このことが役に立つのは、主として、あなたのアプリケーションが
+ウェブサーバ名によって異なる動作をしなければならない場合です。例えば、次の規則は、`http://admin.example.com/login`
+という URL を `admin/user/login` のルートとして解析し、`http://www.example.com/login` を `site/login` として解析するものです。
 
 ```php
 [
@@ -419,8 +419,8 @@ should behave differently for different Web server names. For example, the follo
 ]
 ```
 
-You can also embed parameters in the server names to extract dynamic information from them. For example, the following rule
-will parse the URL `http://en.example.com/posts` into the route `post/index` and the parameter `language=en`.
+サーバ名にパラメータを埋め込んで、そこから動的な情報を抽出することも出来ます。例えば、次の規則は `http://en.example.com/posts`
+という URL を解析して、`post/index` というルートと `language=en` というパラメータを取得するものです。
 
 ```php
 [
@@ -428,18 +428,18 @@ will parse the URL `http://en.example.com/posts` into the route `post/index` and
 ]
 ```
 
-> Note: Rules with server names should NOT include subfolder of the entry script in their patterns. For example, if 
-  the application is under `http://www.example.com/sandbox/blog`, then you should use the pattern
-  `http://www.example.com/posts` instead of `http://www.example.com/sandbox/blog/posts`. This will allow your application
-  to be deployed under any directory without the need to change your application code.
+> Note|注意: サーバ名を持つ規則は、エントリスクリプトのサブフォルダをパターンに含むべきではありません。例えば、アプリケーションが
+  `http://www.example.com/sandbox/blog` の下にある場合は、`http://www.example.com/sandbox/blog/posts` ではなく、
+  `http://www.example.com/posts` というパターンを使うべきです。こうすれば、アプリケーションをどのようなディレクトリに配置しても、
+  アプリケーションのコードを変更する必要がなくなります。
 
 
-### URL Suffixes <a name="url-suffixes"></a>
+### URL 接尾辞 <a name="url-suffixes"></a>
 
-You may want to add suffixes to the URLs for various purposes. For example, you may add `.html` to the URLs so that they
-look like URLs for static HTML pages; you may also add `.json` to the URLs to indicate that the expected content type
-of the response to the URLs. You can achieve this goal by configuring the [[yii\web\UrlManager::suffix]] property like
-the following in the application configuration:
+さまざまな目的から URL に接尾辞を追加したいことがあるでしょう。例えば、静的な HTML ページに見えるように、`.html` を URL
+に追加したいかも知れません。また、レスポンスとして期待されているコンテントタイプを示すために、`.json` を URL
+に追加したい場合もあるでしょう。アプリケーションのコンフィギュレーションで、次のように、[[yii\web\UrlManager::suffix]]
+プロパティを構成することによって、この目的を達することが出来ます。
 
 ```php
 [
@@ -457,18 +457,18 @@ the following in the application configuration:
 ]
 ```
 
-The above configuration will let the [[yii\web\UrlManager|URL manager]] to recognize requested URLs and also create
-URLs with `.html` as their suffix.
+上記のコンフィギュレーションによって、[[yii\web\UrlManager|URL マネージャ]] は、接尾辞として `.html` の付いた URL
+を認識し、また、生成するようになります。
 
-> Tip: You may set `/` as URL suffix so that the URLs are all ended with a slash.
+> Tip|ヒント: URL が全てスラッシュで終るようにするためには、URL 接尾辞として `/` を設定することが出来ます。
 
-> Note: When you configure a URL suffix, if a requested URL does not have the suffix, it will be considered as
-  an unrecognized URL. This is a recommended practice for SEO purpose.
-  
-Sometimes you may want to use different suffixes for different URLs. This can be achieved by configuring the
-[[yii\web\UrlRule::suffix|suffix]] property of individual URL rules. When a URL rule has this property set, it will
-override the suffix setting at the [[yii\web\UrlManager|URL manager]] level. For example, the following configuration
-contains a customized URL rule which uses `.json` as its suffix instead of the global one `.html`.
+> Note|注意: URL 接尾辞を構成すると、リクエストされた URL が接尾辞を持たない場合は、認識できない URL であると見なされるようになります。
+  SEO の目的からも、これが推奨される慣行です。
+
+場合によっては、URL によって異なる接尾辞を使いたいことがあるでしょう。その目的は、個々の URL 規則の [[yii\web\UrlRule::suffix|suffix]]
+プロパティを構成することによって達成できます。URL 規則にこのプロパティが設定されている場合は、それが [[yii\web\UrlManager|URL マネージャ]]
+レベルの接尾辞の設定をオーバーライドします。例えば、次のコンフィギュレーションには、グローバルな接尾辞 `.html` の代りに
+`.json` を使用するカスタマイズされた URL 規則が含まれています。
 
 ```php
 [
@@ -492,13 +492,14 @@ contains a customized URL rule which uses `.json` as its suffix instead of the g
 ```
 
 
-### HTTP Methods <a name="http-methods"></a>
+### HTTP メソッド <a name="http-methods"></a>
 
-When implementing RESTful APIs, it is commonly needed that the same URL be parsed into different routes according to
-the HTTP methods being used. This can be easily achieved by prefixing the supported HTTP methods to the patterns of
-the rules. If a rule supports multiple HTTP methods, separate the method names with commas. For example, the following
-rules have the same pattern `post/<id:\d+>` with different HTTP method support. A request for `PUT post/100` will
-be parsed into `post/create`, while a request for `GET post/100` will be parsed into `post/view`.
+RESTful API を実装するときは、使用されている HTTP メソッドに応じて、同一の URL を異なるルートとして解析することが
+必要になル場合がよくあります。これは、規則のパターンにサポートされている HTTP メソッドを前置することによって、
+簡単に達成することが出来ます。一つの規則が複数の HTTP メソッドをサポートする場合は、メソッド名をカンマで区切ります。
+例えば、次の三つの規則は、`post/<id:\d+>` という同一のパターンを持って、異なる HTTP メソッドをサポートするものです。
+`PUT post/100` に対するリクエストは `post/create` と解析され、`GET post/100` に対するリクエストは `post/view`
+と解析されることになります。
 
 ```php
 [
@@ -508,24 +509,24 @@ be parsed into `post/create`, while a request for `GET post/100` will be parsed 
 ]
 ```
 
-> Note: If a URL rule contains HTTP method(s) in its pattern, the rule will only be used for parsing purpose.
-  It will be skipped when the [[yii\web\UrlManager|URL manager]] is called to create URLs.
+> Note|注意: URL 規則が HTTP メソッドをパターンに含む場合、その規則は解析目的にだけ使用されます。[[yii\web\UrlManager|URL マネージャ]]
+  が URL 生成のために呼ばれたときは、その規則はスキップされます。
 
-> Tip: To simplify the routing of RESTful APIs, Yii provides a special URL rule class [[yii\rest\UrlRule]]
-  which is very efficient and supports some fancy features such as automatic pluralization of controller IDs.
-  For more details, please refer to the [Routing](rest-routing.md) section about developing RESTful APIs.
+> Tip|ヒント: RESTful API のルーティングを簡単にするために、Yii は特別な URL 規則クラス [[yii\rest\UrlRule]] を提供しています。
+  これは非常に効率的なもので、コントローラ ID の自動的な複数形化など、いくつかの素敵な機能をサポートするものです。
+  詳細については、RESTful API 開発についての [ルーティング](rest-routing.md) の節を参照してください。
 
 
-### Customizing Rules <a name="customizing-rules"></a>
+### 規則をカスタマイズする <a name="customizing-rules"></a>
 
-In the previous examples, URL rules are mainly declared in terms of pattern-route pairs. This is a commonly used
-shortcut format. In certain scenarios, you may want to customize a URL rule by configuring its other properties, such
-as [[yii\web\UrlRule::suffix]]. This can be done by using a full configuration array to specify a rule. The following
-example is extracted from the [URL Suffixes](#url-suffixes) subsection,
+これまでの例では、URL 規則は主として「パターン - ルート」のペアの形で宣言されています。これが通常使用される短縮形式です。
+特定のシナリオの下では、[[yii\web\UrlRule::suffix]] などのような、他のプロパティを構成して URL 規則をカスタマイズしたいことも
+あるでしょう。完全なコンフィギュレーション配列を使って規則を指定すれば、そうすることが出来ます。次の例は、[URL 接尾辞](#url-suffixes)
+の項から抜き出したものです。
 
 ```php
 [
-    // ...other url rules...
+    // ... 他の URL 規則 ...
     
     [
         'pattern' => 'posts',
@@ -535,39 +536,39 @@ example is extracted from the [URL Suffixes](#url-suffixes) subsection,
 ]
 ```
 
-> Info: By default if you do not specify the `class` option for a rule configuration, it will take the default
-  class [[yii\web\UrlRule]].
+> Info|情報: 規則のコンフィギュレーションで `class` を指定しない場合は、既定として、[[yii\web\UrlRule]] クラスが使われます。
   
 
-### Adding Rules Dynamically <a name="adding-rules"></a>
+### 規則を動的に追加する <a name="adding-rules"></a>
 
-URL rules can be dynamically added to the [[yii\web\UrlManager|URL manager]]. This is often needed by redistributable 
-[modules](structure-modules.md) which want to manage their own URL rules. In order for the dynamically added rules
-to take effect during the routing process, you should add them during the [bootstrapping](runtime-bootstrapping.md)
-stage. For modules, this means they should implement [[yii\base\BootstrapInterface]] and add the rules in the
-[[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method like the following:
+URL 規則は [[yii\web\UrlManager|URL マネージャ]] に動的に追加することが出来ます。このことは、再配布可能な [モジュール](structure-modules.md)
+が自分自身の URL 規則を管理する必要がある場合に、しばしば必要になります。動的に追加された規則がルーティングのプロセスで効果を発揮するためには、
+その規則を [ブートストラップ](runtime-bootstrapping.md) の段階で追加しなければなりません。これは、モジュールにとっては、次のように、
+[[yii\base\BootstrapInterface]] を実装して、[[yii\base\BootstrapInterface::bootstrap()|bootstrap()]]
+メソッドの中で規則を追加しなければならないことを意味します。
 
 ```php
 public function bootstrap($app)
 {
     $app->getUrlManager()->addRules([
-        // rule declarations here
+        // ここに規則の宣言
     ], false);
 }
 ```
 
-Note that you should also list these modules in [[yii\web\Application::bootstrap]] so that they can participate the
-[bootstrapping](runtime-bootstrapping.md) process.
+さらに、モジュールが [ブートストラップ](runtime-bootstrapping.md) の過程に関与できるように、それを [[yii\web\Application::bootstrap]]
+のリストに挙げなければならないことに注意してください。
 
 
-### Creating Rule Classes <a name="creating-rules"></a>
+### 規則クラスを作成する <a name="creating-rules"></a>
 
-Despite the fact that the default [[yii\web\UrlRule]] class is flexible enough for the majority of projects, there 
-are situations when you have to create your own rule classes. For example, in a car dealer Web site, you may want 
-to support the URL format like `/Manufacturer/Model`, where both `Manufacturer` and `Model` must match some data
-stored in a database table. The default rule class will not work here because it relies on statically declared patterns.
+デフォルトの [[yii\web\UrlRule]] クラスはほとんどのプロジェクトに対して十分に柔軟なものであるというのは事実ですが、
+それでも、自分自身で規則クラスを作る必要があるような状況はあります。例えば、自動車ディーラーのウェブサイトにおいて、
+`/Manufacturer/Model` のような URL 形式をサポートしたいけれども、`Manufacturer` と `Model` は、両方とも、
+データベーステーブルに保存されている何らかのデータに合致するものでなければならない、というような場合です。
+デフォルトの規則クラスは、静的に宣言されるパターンに依拠しているため、ここでは役に立ちません。
 
-We can create the following URL rule class to solve this problem.
+この問題を解決するために、次のような URL 規則クラスを作成することが出来ます。
 
 ```php
 namespace app\components;
@@ -595,48 +596,48 @@ class CarUrlRule extends UrlRule
                 return $params['manufacturer'];
             }
         }
-        return false;  // this rule does not apply
+        return false;  // この規則は適用されない
     }
 
     public function parseRequest($manager, $request)
     {
         $pathInfo = $request->getPathInfo();
         if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
-            // check $matches[1] and $matches[3] to see
-            // if they match a manufacturer and a model in the database
-            // If so, set $params['manufacturer'] and/or $params['model']
-            // and return ['car/index', $params]
+            // $matches[1] と $matches[3] をチェックして、
+            // データベースの中の製造者とモデルに合致するかどうか調べる
+            // 合致すれば、$params['manufacturer'] および/または $params['model'] をセットし、
+            // ['car/index', $params] を返す
         }
-        return false;  // this rule does not apply
+        return false;  // この規則は適用されない
     }
 }
 ```
 
-And use the new rule class in the [[yii\web\UrlManager::rules]] configuration:
+そして、[[yii\web\UrlManager::rules]] のコンフィギュレーションで、新しい規則クラスを使います。
 
 ```php
 [
-    // ...other rules...
+    // ... 他の規則 ...
     
     [
         'class' => 'app\components\CarUrlRule', 
-        // ...configure other properties...
+        // ... 他のプロパティを構成する ...
     ],
 ]
 ```
 
 
-## Performance Consideration <a name="performance-consideration"></a>
+## パフォーマンスに対する考慮 <a name="performance-consideration"></a>
 
-When developing a complex Web application, it is important to optimize URL rules so that it takes less time to parse
-requests and create URLs.
+複雑なウェブアプリケーションを開発するときは、リクエストの解析と URL 生成に要する時間を削減するために
+URL 規則を最適化することが重要になります。
 
-By using parameterized routes, you may reduce the number of URL rules, which can significantly improve the performance.
+パラメータ化したルートを使うことによって、URL 規則の数を減らして、パフォーマンスを著しく向上させることが出来ます。
 
-When parsing or creating URLs, [[yii\web\UrlManager|URL manager]] examines URL rules in the order they are declared.
-Therefore, you may consider adjusting the order of the URL rules so that more commonly used rules are placed before
-less used ones.
+URL を解析または生成するときに、[[yii\web\UrlManager|URL マネージャ]] は、宣言された順序で URL 規則を調べます。
+従って、より多く使われる規則がより少なく使われる規則より前に来るように順序を調整することを検討してください。
 
-If some URL rules share the same prefix in their patterns or routes, you may consider using [[yii\web\GroupUrlRule]]
-so that they can be more efficiently examined by [[yii\web\UrlManager|URL manager]] as a group. This is often the case
-when your application is composed by modules, each having its own set of URL rules with module ID as their common prefixes.
+パターンまたはルートに共通の先頭部分を持つ URL 規則がある場合は、[[yii\web\UrlManager|URL マネージャ]]
+がそれらをグループ化して効率的に調べることが出来るように、[[yii\web\GroupUrlRule]] を使うことを検討してください。
+あなたのアプリケーションがモジュールによって構成されており、モジュールごとに、モジュール ID を共通の先頭部分とする
+一群の URL 規則を持っている場合は、通常、このことが当てはまります。
