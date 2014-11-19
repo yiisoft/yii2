@@ -122,7 +122,7 @@ property when defining asset bundle classes for them.
 
 ### Asset Dependencies <a name="asset-dependencies"></a>
 
-When you include multiple CSS or JavaScript files in a Web page, they may have to follow a certain order to avoid
+When you include multiple CSS or JavaScript files in a Web page, they have to follow a certain order to avoid
 overriding issues. For example, if you are using a jQuery UI widget in a Web page, you have to make sure
 the jQuery JavaScript file is included before the jQuery UI JavaScript file. We call such ordering the dependencies
 among assets.
@@ -337,7 +337,7 @@ If any of the keys are found to be the last part of an asset file (which is pref
 if available), the corresponding value will replace the asset and be registered with the view.
 For example, the asset file `my/path/to/jquery.js` matches the key `jquery.js`.
 
-> Note: Only assets specified using relative paths are subject to asset mapping. Also, the target asset paths
+> Note: Only assets specified using relative paths are subject to asset mapping. The target asset paths
   should be either absolute URLs or paths relative to [[yii\web\AssetManager::basePath]].
 
 
