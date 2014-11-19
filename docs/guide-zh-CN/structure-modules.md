@@ -30,7 +30,7 @@ forum/
 ### 模块类 <a name="module-classes"></a>
 
 每个模块都有一个继承[[yii\base\Module]]的模块类，该类文件直接放在模块的[[yii\base\Module::basePath|base path]]目录下，
-并且能被 [自动加载](concept-autoloading.md)。当一个模块被访问，和 [application instances](structure-applications.md)
+并且能被 [自动加载](concept-autoloading.md)。当一个模块被访问，和 [应用主体实例](structure-applications.md)
 类似会创建该模块类唯一实例，模块实例用来帮模块内代码共享数据和组件。
 
 以下示例一个模块类大致定义：
