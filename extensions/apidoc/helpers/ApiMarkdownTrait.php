@@ -48,7 +48,7 @@ trait ApiMarkdownTrait
                     ];
 
                     return [
-                        ['brokenApiLink', '<span style="background: #f00;">' . $typeName . '::' . $subjectName . '</span>'],
+                        ['brokenApiLink', '<span class="broken-link">' . $typeName . '::' . $subjectName . '</span>'],
                         $offset
                     ];
                 } else {
@@ -71,7 +71,7 @@ trait ApiMarkdownTrait
                         ];
 
                         return [
-                            ['brokenApiLink', '<span style="background: #ff0;">' . $type->name . '</span><span style="background: #f00;">::' . $subjectName . '</span>'],
+                            ['brokenApiLink', '<span class="broken-link">' . $type->name . '::' . $subjectName . '</span>'],
                             $offset
                         ];
                     }
@@ -104,7 +104,7 @@ trait ApiMarkdownTrait
             ];
 
             return [
-                ['brokenApiLink', '<span style="background: #f00;">' . $object . '</span>'],
+                ['brokenApiLink', '<span class="broken-link">' . $object . '</span>'],
                 $offset
             ];
         }
