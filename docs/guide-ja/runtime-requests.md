@@ -1,75 +1,75 @@
-Requests
-========
+リクエスト
+==========
 
-Requests made to an application are represented in terms of [[yii\web\Request]] objects which provide information
-such as request parameters, HTTP headers, cookies, etc. For a given request, you can get access to the corresponding
-request object via the `request` [application component](structure-application-components.md) which is an instance
-of [[yii\web\Request]], by default. In this section, we will describe how you can make use of this component in your applications.
+アプリケーションに対するリクエストは、リクエストのパラメータ、HTTP ヘッダ、クッキーなどの情報を提供する [[yii\web\Request]]
+オブジェクトの形で表されます。与えられたリクエストに対応するリクエストオブジェクトには、
+既定では [[yii\web\Request]] のインスタンスである `request` [アプリケーションコンポーネント](structure-application-components.md)
+を通じてアクセスすることが出来ます。この節では、アプリケーションの中でこのコンポーネントをどのように利用できるかを説明します。
 
 
-## Request Parameters <a name="request-parameters"></a>
+## リクエストのパラメータ <a name="request-parameters"></a>
 
-To get request parameters, you can call [[yii\web\Request::get()|get()]] and [[yii\web\Request::post()|post()]] methods
-of the `request` component. They return the values of `$_GET` and `$_POST`, respectively. For example,
+リクエストのパラメータを取得するためには、`request` コンポーネントの [[yii\web\Request::get()|get()]] および
+[[yii\web\Request::post()|post()]] メソッドを呼ぶことが出来ます。これらは、ぞれぞれ、`$_GET` と `$_POST` の値を返します。例えば、
 
 ```php
 $request = Yii::$app->request;
 
 $get = $request->get(); 
-// equivalent to: $get = $_GET;
+// $get = $_GET; と同等
 
 $id = $request->get('id');   
-// equivalent to: $id = isset($_GET['id']) ? $_GET['id'] : null;
+// $id = isset($_GET['id']) ? $_GET['id'] : null; と同等
 
 $id = $request->get('id', 1);   
-// equivalent to: $id = isset($_GET['id']) ? $_GET['id'] : 1;
+// $id = isset($_GET['id']) ? $_GET['id'] : 1; と同等
 
 $post = $request->post(); 
-// equivalent to: $post = $_POST;
+// $post = $_POST; と同等
 
 $name = $request->post('name');   
-// equivalent to: $name = isset($_POST['name']) ? $_POST['name'] : null;
+// $name = isset($_POST['name']) ? $_POST['name'] : null; と同等
 
 $name = $request->post('name', '');   
-// equivalent to: $name = isset($_POST['name']) ? $_POST['name'] : '';
+// $name = isset($_POST['name']) ? $_POST['name'] : ''; と同等
 ```
 
-> Info: Instead of directly accessing `$_GET` and `$_POST` to retrieve the request parameters, it is recommended
-  that you get them via the `request` component like shown above. This will make writing tests easier because
-  you can create a mock request component with faked request data.
+> Info|情報: 直接に `$_GET` と `$_POST` にアクセスしてリクエストのパラメータを読み出す代りに、上記に示されているように
+  `request` コンポーネントを通じてそれらを取得することが推奨されます。このようにすると、ダミーのリクエストデータを持った
+  模擬リクエストコンポーネントを作ることが出来るため、テストを書くことがより容易になります。
 
-When implementing [RESTful APIs](rest-quick-start.md), you often need to retrieve parameters that are submitted
-via PUT, PATCH or other [request methods](#request-methods). You can get these parameters by calling
-the [[yii\web\Request::getBodyParam()]] methods. For example,
+[RESTful API](rest-quick-start.md) を実装するときは、PUT、PATCH またはその他の [リクエストメソッド](#request-methods)
+によって送信されたパラメータを読み出さなければならないことがよくあります。そういうパラメータは [[yii\web\Request::getBodyParam()]]
+メソッドを呼ぶことで取得することが出来ます。例えば、
 
 ```php
 $request = Yii::$app->request;
 
-// returns all parameters
+// 全てのパラメータを返す
 $params = $request->bodyParams;
 
-// returns the parameter "id"
+// パラメータ "id" を返す
 $param = $request->getBodyParam('id');
 ```
 
-> Info: Unlike `GET` parameters, parameters submitted via `POST`, `PUT`, `PATCH` etc. are sent in the request body.
-  The `request` component will parse these parameters when you access them through the methods described above.
-  You can customize the way how these parameters are parsed by configuring the [[yii\web\Request::parsers]] property.
-  
+> Info|情報: `GET` パラメータとは異なって、`POST`、`PUT`、`PATCH` などで送信されたパラメータは、リクエストのボディの中で送られます。
+  上述のメソッドによってこういうパラメータにアクセスすると、`request` コンポーネントがパラメータを解析します。
+  [[yii\web\Request::parsers]] プロパティを構成することによって、これらのパラメータが解析される方法をカスタマイズすることが出来ます。
 
-## Request Methods <a name="request-methods"></a>
 
-You can get the HTTP method used by the current request via the expression `Yii::$app->request->method`.
-A whole set of boolean properties are also provided for you to check if the current method is of certain type.
-For example,
+## リクエストメソッド <a name="request-methods"></a>
+
+現在のリクエストに使用された HTTP メソッドは、`Yii::$app->request->method` という式によって取得することが出来ます。
+現在のメソッドが特定のタイプであるかどうかをチェックするための、一連の真偽値のプロパティも提供されています。
+例えば、
 
 ```php
 $request = Yii::$app->request;
 
-if ($request->isAjax) { // the request is an AJAX request }
-if ($request->isGet)  { // the request method is GET }
-if ($request->isPost) { // the request method is POST }
-if ($request->isPut)  { // the request method is PUT }
+if ($request->isAjax) { // リクエストは AJAX リクエスト }
+if ($request->isGet)  { // リクエストメソッドは GET }
+if ($request->isPost) { // リクエストメソッドは POST }
+if ($request->isPut)  { // リクエストメソッドは PUT }
 ```
 
 ## Request URLs <a name="request-urls"></a>
