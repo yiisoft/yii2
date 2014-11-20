@@ -53,7 +53,7 @@ $param = $request->getBodyParam('id');
 ```
 
 > Info|情報: `GET` パラメータとは異なって、`POST`、`PUT`、`PATCH` などで送信されたパラメータは、リクエストのボディの中で送られます。
-  上述のメソッドによってこういうパラメータにアクセスすると、`request` コンポーネントがパラメータを解析します。
+  上述のメソッドによってこれらのパラメータにアクセスすると、`request` コンポーネントがパラメータを解析します。
   [[yii\web\Request::parsers]] プロパティを構成することによって、これらのパラメータが解析される方法をカスタマイズすることが出来ます。
 
 
@@ -115,20 +115,20 @@ if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
 * [[yii\web\Request::acceptableLanguages|acceptableLanguages]]: ユーザが受け入れ可能な言語を返します。
 返される言語は優先レベルによって順序付けられます。最初の要素が最も優先度の高い言語を表します。
 
-If your application supports multiple languages and you want to display pages in the language that is the most preferred
-by the end user, you may use the language negotiation method [[yii\web\Request::getPreferredLanguage()]].
-This method takes a list of languages supported by your application, compares them with [[yii\web\Request::acceptableLanguages|acceptableLanguages]],
-and returns the most appropriate language.
+あなたのアプリケーションが複数の言語をサポートしており、エンドユーザが最も優先する言語でページを表示したいと思う場合は、
+言語ネゴシエーションメソッド [[yii\web\Request::getPreferredLanguage()]] を使うことが出来ます。
+このメソッドはアプリケーションによってサポートされている言語のリストを引数として取り、 [[yii\web\Request::acceptableLanguages|acceptableLanguages]]
+と比較して、最も適切な言語を返します。
 
-> Tip: You may also use the [[yii\filters\ContentNegotiator|ContentNegotiator]] filter to dynamically determine 
-  what content type and language should be used in the response. The filter implements the content negotiation
-  on top the properties and methods described above.
+> Tip|ヒント: [[yii\filters\ContentNegotiator|ContentNegotiator]] フィルタを使用して、レスポンスにおいて
+  どのコンテントタイプと言語を使うべきかを動的に決定することも出来ます。このフィルタは、上記で説明したプロパティとメソッドの上に、
+  コンテントネゴシエーションを実装しています。
 
 
-## Client Information <a name="client-information"></a>
+## クライアント情報 <a name="client-information"></a>
 
-You can get the host name and IP address of the client machine through [[yii\web\Request::userHost|userHost]]
-and [[yii\web\Request::userIP|userIP]], respectively. For example,
+クライアントマシンのホスト名と IP アドレスを、それぞれ、[[yii\web\Request::userHost|userHost]] と
+[[yii\web\Request::userIP|userIP]] によって取得することが出来ます。例えば、
 
 ```php
 $userHost = Yii::$app->request->userHost;
