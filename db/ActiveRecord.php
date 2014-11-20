@@ -100,8 +100,19 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Loads default values from database table schema
      *
-     * @param boolean $skipIfSet if existing value should be preserved
-     * @return static model instance
+     * To enable loading defaults for every newly created record, you can add a call to this method to [[init()]]:
+     *
+     * ```php
+     * public function init()
+     * {
+     *     parent::init();
+     *     $this->loadDefaultValues();
+     * }
+     * ```
+     *
+     * @param boolean $skipIfSet whether existing value should be preserved.
+     * This will only set defaults for attributes that are `null`.
+     * @return static the model instance itself.
      */
     public function loadDefaultValues($skipIfSet = true)
     {
