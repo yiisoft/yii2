@@ -7,8 +7,8 @@ experience than before. In particular, the Yii error handler does the followings
 * All non-fatal PHP errors (e.g. warnings, notices) are converted into catchable exceptions.
 * Exceptions and fatal PHP errors are displayed with detailed call stack information and source code lines
   in debug mode.
-* Support using a dedicated [controller action](structure-actions.md) to display errors.
-* Support different error response formats.
+* Supports using a dedicated [controller action](structure-actions.md) to display errors.
+* Supports different error response formats.
 
 The [[yii\web\ErrorHandler|error handler]] is enabled by default. You may disable it by defining the constant
 `YII_ENABLE_ERROR_HANDLER` to be false in the [entry script](structure-entry-scripts.md) of your application.
@@ -61,10 +61,10 @@ throw new NotFoundHttpException();
 
 ## Customizing Error Display <a name="customizing-error-display"></a>
 
-The [[yii\web\ErrorHandler|error handler]] adjusts error display according to the value of the constant `YII_DEBUG`.
+The [[yii\web\ErrorHandler|error handler]] adjusts the error display according to the value of the constant `YII_DEBUG`.
 When `YII_DEBUG` is true (meaning in debug mode), the error handler will display exceptions with detailed call
 stack information and source code lines to help easier debugging. And when `YII_DEBUG` is false, only the error
-message will be displayed to prevent from revealing sensitive information of the application.
+message will be displayed to prevent revealing sensitive information about the application.
 
 > Info: If an exception is a descendant of [[yii\base\UserException]], no call stack will be displayed regardless
 the value of `YII_DEBUG`. This is because such exceptions are considered to be caused by user mistakes and the
