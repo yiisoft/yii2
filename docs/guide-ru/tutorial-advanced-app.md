@@ -50,7 +50,7 @@
 4. Настройте на вебсервере URL и корневые директории:
 
 - для приложения frontend директория `/path/to/yii-application/frontend/web/` и URL `http://yourdomain/frontend/`
-- для приложения backend директория `/path/to/yii-application/frontend/web/` и URL `http://yourdomain/backend/`
+- для приложения backend директория `/path/to/yii-application/backend/web/` и URL `http://yourdomain/backend/`
 
 Структура директорий
 -------------------

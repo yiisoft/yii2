@@ -149,7 +149,7 @@ a class like `yii\web\Request` can be autoloaded. If you use a third party libra
 such as the Zend Framework, you may define a path alias `@Zend` that refers to that framework's installation
 directory. Once you've done that, Yii will be able to autoload any class in that Zend Framework library, too.
 
-More on path aliases can be found in the [Path Aliases](concept-aliases.md) section.
+More on path aliases can be found in the [Aliases](concept-aliases.md) section.
 
 
 Views

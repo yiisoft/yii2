@@ -337,7 +337,8 @@ class Connection extends Component
      * @return array|bool|null|string Dependent on the executed command this method
      * will return different data types:
      *
-     * - `true` for commands that return "status reply".
+     * - `true` for commands that return "status reply" with the message `'OK'` or `'PONG'`.
+     * - `string` for commands that return "status reply" that does not have the message `OK` (since version 2.0.1).
      * - `string` for commands that return "integer reply"
      *   as the value is in the range of a signed 64 bit integer.
      * - `string` or `null` for commands that return "bulk reply".
@@ -363,6 +364,11 @@ class Connection extends Component
         return $this->parseResponse(implode(' ', $params));
     }
 
+    /**
+     * @param string $command
+     * @return mixed
+     * @throws Exception on error
+     */
     private function parseResponse($command)
     {
         if (($line = fgets($this->_socket)) === false) {
@@ -372,8 +378,11 @@ class Connection extends Component
         $line = mb_substr($line, 1, -2, '8bit');
         switch ($type) {
             case '+': // Status reply
-
-                return true;
+                if ($line === 'OK' || $line === 'PONG') {
+                    return true;
+                } else {
+                    return $line;
+                }
             case '-': // Error reply
                 throw new Exception("Redis error: " . $line . "\nRedis command was: " . $command);
             case ':': // Integer reply

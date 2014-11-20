@@ -19,7 +19,7 @@ create table "log"
    "id"          number(20) NOT NULL PRIMARY KEY,
    "level"       integer,
    "category"    varchar(255),
-   "log_time"    integer,
+   "log_time"    float,
    "prefix"      text,
    "message"     text,
    key "idx_log_level" ("level"),

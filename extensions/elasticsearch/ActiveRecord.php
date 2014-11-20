@@ -546,7 +546,8 @@ class ActiveRecord extends BaseActiveRecord
             }
             $data = Json::encode([
                 "script" => $script,
-                "params" => $counters
+                "params" => $counters,
+                "lang" => "groovy",
             ]);
             $bulk .= $action . "\n" . $data . "\n";
         }

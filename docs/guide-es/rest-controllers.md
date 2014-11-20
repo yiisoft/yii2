@@ -1,13 +1,20 @@
 Controladores
 =============
 
-Después de crear las clases de recursos y especificar cómo debe ser el formato de datos de recursos, el siguiente paso es crear acciones del controlador para exponer los recursos a los usuarios a través de las APIs RESTful finales.
+Después de crear las clases de recursos y especificar cómo debe ser el formato de datos de recursos, el siguiente paso
+es crear acciones del controlador para exponer los recursos a los usuarios finales a través de las APIs RESTful.
 
-Yii ofrece dos clases de controlador base para simplificar su trabajo de crear acciones REST: [[yii\rest\Controller]] y [[yii\rest\ActiveController]]. La diferencia entre estos dos controladores es que este último proporciona un conjunto predeterminado de acciones que están específicamente diseñadas para hacer frente a los recursos representados con [Active Record](db-active-record.md). Así que si usted está utilizando [Active Record](db-active-record.md) y se siente cómodo con las acciones integradas que proporciona, es posible considerar la prolongación de sus clases de controlador de [[yii\rest\ActiveController]], que le permitirá crear potentes APIs RESTful con un mínimo de código.
+Yii ofrece dos clases controlador base para simplificar tu trabajo de crear acciones REST:
+[[yii\rest\Controller]] y [[yii\rest\ActiveController]]. La diferencia entre estos dos controladores
+es que este último proporciona un conjunto predeterminado de acciones que están específicamente diseñado para trabajar con
+los recursos representados como [Active Record](db-active-record.md). Así que si estás utilizando [Active Record](db-active-record.md)
+y te sientes cómodo con las acciones integradas provistas, podrías considerar extender tus controladores
+de [[yii\rest\ActiveController]], lo que te permitirá crear potentes APIs RESTful con un mínimo de código.
 
-Ambos [[yii\rest\Controller]] y [[yii\rest\ActiveController]] proporcionan las siguientes características, algunas de las cuales se describen en detalle en las siguientes secciones:
+Ambos [[yii\rest\Controller]] y [[yii\rest\ActiveController]] proporcionan las siguientes características,
+algunas de las cuales se describen en detalle en las siguientes secciones:
 
-* Métodos de Validación HTTP;
+* Método de Validación HTTP;
 * [Negociación de contenido y formato de datos](rest-response-formatting.md);
 * [Autenticación](rest-authentication.md);
 * [Límite de Rango](rest-rate-limiting.md).
@@ -15,14 +22,20 @@ Ambos [[yii\rest\Controller]] y [[yii\rest\ActiveController]] proporcionan las s
 [[yii\rest\ActiveController]] además provee de las siguientes características:
 
 * Un conjunto de acciones comunes necesarias: `index`, `view`, `create`, `update`, `delete`, `options`;
-* La autorización del usuario en cuanto a la acción solicitada y recursos.
+* La autorización del usuario de acuerdo a la acción y recurso solicitado.
 
 
-## Creando Clases Controladoras <a name="creating-controller"></a>
+## Creando Clases de Controlador <a name="creating-controller"></a>
 
-Al crear una nueva clase de controlador, una convención para nombrar la clase del controlador es utilizar el nombre del tipo de recurso y el uso en singular. Por ejemplo, para servir información de usuario, el controlador puede ser nombrado como `UserController`.
+Al crear una nueva clase de controlador, una convención para nombrar la clase del controlador es utilizar
+el nombre del tipo de recurso en singular. Por ejemplo, para servir información de usuario,
+el controlador puede ser nombrado como `UserController`.
 
-Creación de una nueva acción es similar a crear una acción para una aplicación Web. La única diferencia es que en lugar de hacer que el resultado utilicé una vista llamando al método `render()`, para las acciones REST regresá directamente los datos. El [[yii\rest\Controller::serializer|serializer]] y el [[yii\web\Response|response object]] se encargará de la conversión de los datos originales al formato solicitado. Por ejemplo,
+Crear una nueva acción es similar a crear una acción para una aplicación Web. La única diferencia
+es que en lugar de renderizar el resultado utilizando una vista llamando al método `render()`, para las acciones REST
+regresas directamente los datos. El [[yii\rest\Controller::serializer|serializer]] y el
+[[yii\web\Response|response object]] se encargarán de la conversión de los datos originales
+al formato solicitado. Por ejemplo,
 
 ```php
 public function actionView($id)
@@ -34,15 +47,20 @@ public function actionView($id)
 
 ## Filtros <a name="filters"></a>
 
-La mayoría de las características API REST son proporcionadas por [[yii\rest\Controller]] que son implementadas por los terminos de los [filtros](structure-filters.md).
+La mayoría de las características API REST son proporcionadas por [[yii\rest\Controller]] son implementadas en los términos de [filtros](structure-filters.md).
 En particular, los siguientes filtros se ejecutarán en el orden en que aparecen:
 
-* [[yii\filters\ContentNegotiator|contentNegotiator]]: apoya la negociación de contenido, que se explica en la sección el [Formateo de respuestas](rest-response-formatting.md);
-* [[yii\filters\VerbFilter|verbFilter]]: apoya métodos de validación HTTP;
-* [[yii\filters\AuthMethod|authenticator]]: apoya autenticación de usuarios, que se explica en la sección [Autenticación](rest-authentication.md);
-* [[yii\filters\RateLimiter|rateLimiter]]: apoya la limitación de rango, que se explica en la sección [Límite de Rango](rest-rate-limiting.md).
+* [[yii\filters\ContentNegotiator|contentNegotiator]]: soporta la negociación de contenido, que se explica en
+  la sección [Formateo de respuestas](rest-response-formatting.md);
+* [[yii\filters\VerbFilter|verbFilter]]: soporta métodos de validación HTTP;
+* [[yii\filters\AuthMethod|authenticator]]: soporta la autenticación de usuarios, que se explica en
+  la sección [Autenticación](rest-authentication.md);
+* [[yii\filters\RateLimiter|rateLimiter]]: soporta la limitación de rango, que se explica en
+  la sección [Límite de Rango](rest-rate-limiting.md).
 
-Estos filtros se declaran nombrándolos en el método [[yii\rest\Controller::behaviors()|behaviors()]]. Puede reemplazar este método para configurar los filtros individuales, desactivar algunos de ellos o añadir sus propios filtros. Por ejemplo, si sólo desea utilizar la autenticación básica HTTP, puede escribir el siguiente código:
+Estos filtros se declaran nombrándolos en el método [[yii\rest\Controller::behaviors()|behaviors()]].
+Puede sobrescribir este método para configurar filtros individuales, desactivar algunos de ellos, o añadir los tuyos.
+Por ejemplo, si sólo deseas utilizar la autenticación básica HTTP, puede escribir el siguiente código:
 
 ```php
 use yii\filters\auth\HttpBasicAuth;
@@ -60,21 +78,24 @@ public function behaviors()
 
 ## Extendiendo `ActiveController` <a name="extending-active-controller"></a>
 
-Si su clase controlador extiende de [[yii\rest\ActiveController]], debe establecer su propiedad [[yii\rest\ActiveController::modelClass||modelClass]] a ser el nombre del recurso de la clase que va a servir a través de este controlador. La clase debe extender de [[yii\db\ActiveRecord]].
+Si tu clase controlador extiende de [[yii\rest\ActiveController]], debe establecer
+su propiedad [[yii\rest\ActiveController::modelClass||modelClass]] con el nombre de la clase del recurso
+que planeas servir a través de este controlador. La clase debe extender de [[yii\db\ActiveRecord]].
 
 
 ### Personalizando Acciones <a name="customizing-actions"></a>
 
 Por defecto, [[yii\rest\ActiveController]] provee de las siguientes acciones:
 
-* [[yii\rest\IndexAction|index]]: lista de recursos pagina por pagina;
-* [[yii\rest\ViewAction|view]]: retorna el detalle de un recurso específico;
+* [[yii\rest\IndexAction|index]]: listar recursos página por página;
+* [[yii\rest\ViewAction|view]]: devolver el detalle de un recurso específico;
 * [[yii\rest\CreateAction|create]]: crear un nuevo recurso;
 * [[yii\rest\UpdateAction|update]]: actualizar un recurso existente;
 * [[yii\rest\DeleteAction|delete]]: eliminar un recurso específico;
-* [[yii\rest\OptionsAction|options]]: retorna los métodos HTTP soportados.
+* [[yii\rest\OptionsAction|options]]: devolver los métodos HTTP soportados.
 
-Todas esta acciones se declaran a través del métodos [[yii\rest\ActiveController::actions()|actions()]]. Usted puede configurar todas estas acciones o desactivar alguna de ellas reescribiendo el método `actions()`, como se muestra a continuación,
+Todas esta acciones se declaran a través de método [[yii\rest\ActiveController::actions()|actions()]].
+Puedes configurar estas acciones o desactivar alguna de ellas sobrescribiendo el método `actions()`, como se muestra a continuación,
 
 ```php
 public function actions()
@@ -96,12 +117,14 @@ public function prepareDataProvider()
 }
 ```
 
-Por favor, consulte las referencias de clases para la clase de acción individuales para aprender las opciones de configuración que se dispone.
+Por favor, consulta las referencias de clases de acciones individuales para aprender las opciones de configuración disponibles para cada una.
 
 
 ### Realizando Comprobación de Acceso <a name="performing-access-check"></a>
 
-Al exponer los recursos a través de RESTful APIs, a menudo es necesario comprobar si el usuario actual tiene permiso para acceder y manipular el recurso solicitado. Con [[yii\rest\ActiveController]], puede hacerse reemplazando el método [[yii\rest\ActiveController::checkAccess()|checkAccess()]] con lo siguiente, 
+Al exponer los recursos a través de RESTful APIs, a menudo es necesario comprobar si el usuario actual tiene permiso
+para acceder y manipular el/los recurso solicitado/s. Con [[yii\rest\ActiveController]], esto puede lograrse
+sobrescribiendo el método [[yii\rest\ActiveController::checkAccess()|checkAccess()]] como a continuación, 
 
 ```php
 /**
@@ -123,6 +146,7 @@ public function checkAccess($action, $model = null, $params = [])
 }
 ```
 
-El método `checkAccess()` será llamado por defecto en las acciones predeterminadas de [[yii\rest\ActiveController]]. Si crea nuevas acciones y también desea llevar a cabo la comprobación de acceso, debe llamar a este método de forma explícita en las nuevas acciones.
+El método `checkAccess()` será llamado por defecto en las acciones predeterminadas de [[yii\rest\ActiveController]]. Si creas
+nuevas acciones y también deseas llevar a cabo la comprobación de acceso, debe llamar a este método de forma explícita en las nuevas acciones.
 
-> Consejo: Usted puede implementar `checkAccess()` mediante el uso del [Componente Role-Based Access Control (RBAC)](security-authorization.md).
+> Consejo: Puedes implementar `checkAccess()` mediante el uso del [Componente Role-Based Access Control (RBAC)](security-authorization.md).
