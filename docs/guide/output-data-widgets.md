@@ -16,7 +16,7 @@ DetailView displays the detail of a single data [[yii\widgets\DetailView::$model
 It is best used for displaying a model in a regular format (e.g. each model attribute is displayed as a row in a table).
 The model can be either an instance of [[\yii\base\Model]] or an associative array.
  
-DetailView uses the [[yii\widgets\DetailView::$attributes]] property to determines which model attributes should be displayed and how they
+DetailView uses the [[yii\widgets\DetailView::$attributes]] property to determine which model attributes should be displayed and how they
 should be formatted.
  
 A typical usage of DetailView is as follows:
@@ -44,7 +44,7 @@ section of the system. It takes data from [data provider](output-data-providers.
 presenting data in a form of a table.
 
 Each row of the table represents the data of a single data item, and a column usually represents an attribute of
-the item (some columns may correspond to complex expression of attributes or static text).
+the item (some columns may correspond to complex expressions of attributes or static text).
 
 Grid view supports both sorting and pagination of the data items. The sorting and pagination can be done in AJAX mode
 or normal page request. A benefit of using GridView is that when the user disables JavaScript, the sorting and pagination
@@ -68,7 +68,7 @@ echo GridView::widget([
 ```
 
 The above code first creates a data provider and then uses GridView to display every attribute in every row taken from
-data provider. The displayed table is equipped with sorting and pagination functionality.
+the data provider. The displayed table is equipped with sorting and pagination functionality.
 
 ### Grid columns
 
@@ -114,12 +114,12 @@ echo GridView::widget([
 
 Additionally to column classes provided by Yii that we'll review below you can create your own column classes.
 
-Each column class extends from [[\yii\grid\Column]] so there some common options you can set while configuring
+Each column class extends from [[\yii\grid\Column]] so there are some common options you can set while configuring
 grid columns.
 
 - `header` allows to set content for header row.
 - `footer` allows to set content for footer row.
-- `visible` is the column should be visible.
+- `visible` defines if the column should be visible.
 - `content` allows you to pass a valid PHP callback that will return data for a row. The format is the following:
 
   ```php
@@ -128,7 +128,7 @@ grid columns.
   }
   ```
 
-You may specify various container HTML options passing arrays to:
+You may specify various container HTML options by passing arrays to:
 
 - `headerOptions`
 - `contentOptions`
@@ -137,14 +137,14 @@ You may specify various container HTML options passing arrays to:
 
 #### Data column <a name="data-column"></a>
 
-Data column is for displaying and sorting data. It is default column type so specifying class could be omitted when
+Data column is used for displaying and sorting data. It is default column type so specifying class could be omitted when
 using it.
 
 The main setting of the data column is its format. It could be specified via `format` attribute. Its values are
 corresponding to methods in `formatter` [application component](structure-application-components.md) that is [[\yii\i18n\Formatter|Formatter]] by default:
 
 ```php
-<?= GridView::widget([
+echo GridView::widget([
     'columns' => [
         [
             'attribute' => 'name',
@@ -155,7 +155,7 @@ corresponding to methods in `formatter` [application component](structure-applic
             'format' => ['date', 'Y-m-d']
         ],
     ],
-]); ?>
+]); 
 ```
 
 In the above `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
@@ -183,7 +183,7 @@ Available properties you can configure are:
 
 - `controller` is the ID of the controller that should handle the actions. If not set, it will use the currently active
   controller.
-- `template` the template used for composing each cell in the action column. Tokens enclosed within curly brackets are
+- `template` defines the template used for composing each cell in the action column. Tokens enclosed within curly brackets are
   treated as controller action IDs (also called *button names* in the context of action column). They will be replaced
   by the corresponding button rendering callbacks specified in [[yii\grid\ActionColumn::$buttons|buttons]]. For example, the token `{view}` will be
   replaced by the result of the callback `buttons['view']`. If a callback cannot be found, the token will be replaced
@@ -192,13 +192,13 @@ Available properties you can configure are:
   and the values are the corresponding button rendering callbacks. The callbacks should use the following signature:
 
 ```php
-function ($url, $model) {
+function ($url, $model, $key) {
     // return the button HTML code
 }
 ```
 
-In the code above `$url` is the URL that the column creates for the button, and `$model` is the model object being
-rendered for the current row.
+In the code above `$url` is the URL that the column creates for the button, `$model` is the model object being
+rendered for the current row, and `$key` is the key of the model in the data provider array.
 
 - `urlCreator` is a callback that creates a button URL using the specified model information. The signature of
   the callback should be the same as that of [[yii\grid\ActionColumn::createUrl()]]. If this property is not set,
@@ -300,7 +300,7 @@ class PostSearch extends Post
 
         // adjust the query by adding the filters
         $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['like', 'title', $this->name])
+        $query->andFilterWhere(['like', 'title', $this->title])
               ->andFilterWhere(['like', 'creation_date', $this->creation_date]);
 
         return $dataProvider;
@@ -334,7 +334,7 @@ echo GridView::widget([
 ### Working with model relations
 
 When displaying active records in a GridView you might encounter the case where you display values of related
-columns such as the post's author's name instead of just his `id`.
+columns such as the post author's name instead of just his `id`.
 You do this by defining the attribute name in columns as `author.name` when the `Post` model
 has a relation named `author` and the author model has an attribute `name`.
 The GridView will then display the name of the author but sorting and filtering are not enabled by default.
@@ -482,13 +482,13 @@ class UserView extends ActiveRecord
 }
 ```
 
-After that you can youse this UserView active record with search models, without additional specifying of sorting and filtering attributes.
+After that you can use this UserView active record with search models, without additional specifying of sorting and filtering attributes.
 All attributes will be working out of the box. Note that this approach has several pros and cons:
 
-- you dont need to specify different sorting and filtering conditions and other things. Everything works out of the box;
-- it can be much faster because of data size, count of sql queries performed (for each relation you will need additional query);
-- since this is a just simple mupping UI on sql view it lacks of some domain logic that is in your entities, so if you will have some methods like `isActive`,
-`isDeleted` or other that will influence on UI you will need to duplicate them in this class too.
+- you don't need to specify different sorting and filtering conditions and other things. Everything works out of the box;
+- it can be much faster because of the data size, count of sql queries performed (for each relation you will need additional query);
+- since this is just a simple mapping UI on sql view it lacks some domain logic that is in your entities, so if you have some methods like `isActive`,
+`isDeleted` or other that will influence on UI, you will need to duplicate them in this class too.
 
 
 ### Multiple GridViews on one page
@@ -498,8 +498,8 @@ they do not interfere.
 When using multiple instances of GridView you have to configure different parameter names for
 the generated sort and pagination links so that each GridView has its individual sorting and pagination.
 You do so by setting the [[yii\data\Sort::sortParam|sortParam]] and [[yii\data\Pagination::pageParam|pageParam]]
-of the dataProviders [[yii\data\BaseDataProvider::$sort|sort]] and [[yii\data\BaseDataProvider::$pagination|pagination]]
-instance.
+of the dataProvider's [[yii\data\BaseDataProvider::$sort|sort]] and [[yii\data\BaseDataProvider::$pagination|pagination]]
+instances.
 
 Assume we want to list `Post` and `User` models for which we have already prepared two data providers
 in `$userProvider` and `$postProvider`:
