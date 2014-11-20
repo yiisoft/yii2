@@ -322,8 +322,8 @@ if ($model->load(Yii::$app->request->post()) && $model->save()) {
 ### Loading Default Values
 
 Your table columns may be defined with default values. Sometimes, you may want to pre-populate your
-Web form for an Active Record with these values. To do so, call the `loadDefaultValues()` method before
-rendering the form:
+Web form for an Active Record with these values. To do so, call the
+[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] method before rendering the form:
 
 ```php
 $customer = new Customer();
