@@ -125,7 +125,7 @@ and returns the most appropriate language.
 
 > Tip: You may also use the [[yii\filters\ContentNegotiator|ContentNegotiator]] filter to dynamically determine 
   what content type and language should be used in the response. The filter implements the content negotiation
-  on top the properties and methods described above.
+  on top of the properties and methods described above.
 
 
 ## Client Information <a name="client-information"></a>
