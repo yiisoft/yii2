@@ -77,6 +77,10 @@ class ColumnSchema extends Object
      * @var string comment of this column. Not all DBMS support this.
      */
     public $comment;
+    /**
+     * @var string column collation property. Applies to character data types only.
+     */
+    public $collation;
 
 
     /**
