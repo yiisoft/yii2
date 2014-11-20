@@ -133,7 +133,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 > Info|情報: モジュール ID と同じ ID のアプリケーションコンポーネントがある場合は、ブートストラップの過程ではアプリケーションコンポーネントが使われます。
   代りにモジュールを使いたいときは、次のように、無名関数を使って指定することが出来ます:
->```php
+> ```php
 [
     function () {
         return Yii::$app->getModule('user');

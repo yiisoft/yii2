@@ -118,7 +118,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 > 补充: 如果模块ID和应用组件ID同名，优先使用应用组件ID，如果你想用模块ID，可以使用如下无名称函数返回模块ID。
->```php
+> ```php
 [
     function () {
         return Yii::$app->getModule('user');
