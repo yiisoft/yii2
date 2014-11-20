@@ -72,51 +72,48 @@ if ($request->isPost) { // リクエストメソッドは POST }
 if ($request->isPut)  { // リクエストメソッドは PUT }
 ```
 
-## Request URLs <a name="request-urls"></a>
+## リクエストの URL <a name="request-urls"></a>
 
-The `request` component provides many ways of inspecting the currently requested URL. 
+`request` コンポーネントは現在リクエストされている URL を調べるための方法を数多く提供しています。
 
-Assuming the URL being requested is `http://example.com/admin/index.php/product?id=100`, you can get various
-parts of this URL as summarized in the following:
+リクエストされた URL が `http://example.com/admin/index.php/product?id=100` であると仮定したとき、
+次にまとめたように、この URL のさまざまな部分を取得することが出来ます。
 
-* [[yii\web\Request::url|url]]: returns `/admin/index.php/product?id=100`, which is the URL without the host info part. 
-* [[yii\web\Request::absoluteUrl|absoluteUrl]]: returns `http://example.com/admin/index.php/product?id=100`,
-  which is the whole URL including the host info part.
-* [[yii\web\Request::hostInfo|hostInfo]]: returns `http://example.com`, which is the host info part of the URL.
-* [[yii\web\Request::pathInfo|pathInfo]]: returns `/product`, which is the part after the entry script and 
-  before the question mark (query string).
-* [[yii\web\Request::queryString|queryString]]: returns `id=100`, which is the part after the question mark. 
-* [[yii\web\Request::baseUrl|baseUrl]]: returns `/admin`, which is the part after the host info and before
-  the entry script name.
-* [[yii\web\Request::scriptUrl|scriptUrl]]: returns `/admin/index.php`, which is the URL without path info and query string.
-* [[yii\web\Request::serverName|serverName]]: returns `example.com`, which is the host name in the URL.
-* [[yii\web\Request::serverPort|serverPort]]: returns 80, which is the port used by the Web server.
+* [[yii\web\Request::url|url]]: `/admin/index.php/product?id=100` を返します。ホスト情報の部分を省略した URL です。
+* [[yii\web\Request::absoluteUrl|absoluteUrl]]: `http://example.com/admin/index.php/product?id=100` を返します。
+  ホスト情報の部分を含んだ URL です。
+* [[yii\web\Request::hostInfo|hostInfo]]: `http://example.com` を返します。URL のホスト情報の部分です。
+* [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。エントリスクリプトの後、かつ、クエスチョンマーク (クエリ文字列) の前の部分です。
+* [[yii\web\Request::queryString|queryString]]: `id=100` を返します。クエスチョンマークの後の部分です。
+* [[yii\web\Request::baseUrl|baseUrl]]: `/admin` を返します。ホスト情報の後、かつ、エントリスクリプトの前の部分です。
+* [[yii\web\Request::scriptUrl|scriptUrl]]: `/admin/index.php` を返します。パス情報とクエリ文字列を省略した URL です。
+* [[yii\web\Request::serverName|serverName]]: `example.com` を返します。URL の中のホスト名です。
+* [[yii\web\Request::serverPort|serverPort]]: 80 を返します。ウェブサーバによって使用されているポートです。
 
 
-## HTTP Headers <a name="http-headers"></a> 
+## HTTP ヘッダ <a name="http-headers"></a> 
 
-You can get the HTTP header information through the [[yii\web\HeaderCollection|header collection]] returned 
-by the [[yii\web\Request::headers]] property. For example,
+ [[yii\web\Request::headers]] プロパティによって返される [[yii\web\HeaderCollection|header コレクション]]
+を通じて、HTTP ヘッダ情報を取得することが出来ます。例えば、
 
 ```php
-// $headers is an object of yii\web\HeaderCollection 
+// $headers は yii\web\HeaderCollection のオブジェクト
 $headers = Yii::$app->request->headers;
 
-// returns the Accept header value
+// Accept ヘッダの値を返す
 $accept = $headers->get('Accept');
 
-if ($headers->has('User-Agent')) { // there is User-Agent header }
+if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
 ```
 
-The `request` component also provides support for quickly accessing some commonly used headers, including
+`request` コンポーネントは、よく使用されるいくつかのヘッダにすばやくアクセスする方法を提供しています。その中には下記のものが含まれます。
 
-* [[yii\web\Request::userAgent|userAgent]]: returns the value of the `User-Agent` header.
-* [[yii\web\Request::contentType|contentType]]: returns the value of the `Content-Type` header which indicates
-  the MIME type of the data in the request body.
-* [[yii\web\Request::acceptableContentTypes|acceptableContentTypes]]: returns the content MIME types acceptable by users.
-  The returned types ordered by the quality score. Types with the highest scores will be returned first.
-* [[yii\web\Request::acceptableLanguages|acceptableLanguages]]: returns the languages acceptable by users.
-  The returned languages are ordered by their preference level. The first element represents the most preferred language.
+* [[yii\web\Request::userAgent|userAgent]]: `User-Agent` ヘッダの値を返します。
+* [[yii\web\Request::contentType|contentType]]: リクエストボディのデータの MIME タイプを示す `Content-Type` ヘッダの値を返します。
+* [[yii\web\Request::acceptableContentTypes|acceptableContentTypes]]: ユーザが受け入れ可能なコンテントの MIME タイプを返します。
+返されるタイプは品質スコアによって順序付けられます。最もスコアの高いタイプが最初に返されます。
+* [[yii\web\Request::acceptableLanguages|acceptableLanguages]]: ユーザが受け入れ可能な言語を返します。
+返される言語は優先レベルによって順序付けられます。最初の要素が最も優先度の高い言語を表します。
 
 If your application supports multiple languages and you want to display pages in the language that is the most preferred
 by the end user, you may use the language negotiation method [[yii\web\Request::getPreferredLanguage()]].
