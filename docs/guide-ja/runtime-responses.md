@@ -1,61 +1,60 @@
-Responses
-=========
+レスポンス
+==========
 
-When an application finishes handling a [request](runtime-requests.md), it generates a [[yii\web\Response|response]] object
-and sends it to the end user. The response object contains information such as the HTTP status code, HTTP headers and body.
-The ultimate goal of Web application development is essentially to build such response objects upon various requests.
+アプリケーションは [リクエスト](runtime-requests.md) の処理を完了すると、[[yii\web\Response|レスポンス]] オブジェクトを生成して、
+エンドユーザに送信します。レスポンスオブジェクトは、HTTP ステータスコード、HTTP ヘッダ、HTTP ボディなどの情報を含みます。
+ウェブアプリケーション開発の最終的な目的は、本質的には、さまざまなリクエストに対してそのようなレスポンスオブジェクトを
+作成することにあります。
 
-In most cases you should mainly deal with the `response` [application component](structure-application-components.md)
-which is an instance of [[yii\web\Response]], by default. However, Yii also allows you to create your own response
-objects and send them to end users as we will explain in the following.
+ほとんどの場合は、主として `response` [アプリケーションコンポーネント](structure-application-components.md) を使用すべきです。
+このコンポーネントは、既定では、[[yii\web\Response]] のインスタンスです。しかしながら、Yii は、以下で説明するように、
+あなた自身のレスポンスオブジェクトを作成してエンドユーザに送信することも許容しています。
 
-In this section, we will describe how to compose and send responses to end users. 
+この節では、レスポンスを構成してエンドユーザに送信する方法を説明します。
 
 
-## Status Code <a name="status-code"></a>
+## ステータスコード <a name="status-code"></a>
 
-One of the first things you would do when building a response is to state whether the request is successfully handled.
-This is done by setting the [[yii\web\Response::statusCode]] property which can take one of the valid
-[HTTP status codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html). For example, to indicate the request
-is successfully handled, you may set the status code to be 200, like the following:
+レスポンスを作成するときに最初にすることの一つは、リクエストが成功裏に処理されたかどうかを記述することです。そのためには、
+[[yii\web\Response::statusCode]] プロパティに有効な [HTTP ステータスコード](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html)
+の一つを設定します。例えば、下記のように、リクエストの処理が成功したことを示すために、ステータスコードを 200 に設定します。
 
 ```php
 Yii::$app->response->statusCode = 200;
 ```
 
-However, in most cases you do not need to explicitly set the status code. This is because the default value
-of [[yii\web\Response::statusCode]] is 200. And if you want to indicate the request is unsuccessful, you may
-throw an appropriate HTTP exception like the following:
+しかしながら、たいていの場合、ステータスコードを明示的に設定する必要はありません。これは、[[yii\web\Response::statusCode]]
+の既定値が 200 であるからです。そして、リクエストが失敗したことを示したいときは、下記のように、適切な HTTP 例外を投げることが出来ます。
 
 ```php
 throw new \yii\web\NotFoundHttpException;
 ```
 
-When the [error handler](runtime-handling-errors.md) catches an exception, it will extract the status code 
-from the exception and assign it to the response. For the [[yii\web\NotFoundHttpException]] above, it is
-associated with the HTTP status 404. The following HTTP exceptions are predefined in Yii:
+[エラーハンドラ](runtime-handling-errors.md) は、例外をキャッチすると、例外からステータスコードを抽出してレスポンスに割り当てます。
+上記の [[yii\web\NotFoundHttpException]] の場合は、HTTP ステータス 404 と関連付けられています。
+次の HTTP 例外が Yii によって事前定義されています。
 
-* [[yii\web\BadRequestHttpException]]: status code 400.
-* [[yii\web\ConflictHttpException]]: status code 409.
-* [[yii\web\ForbiddenHttpException]]: status code 403.
-* [[yii\web\GoneHttpException]]: status code 410.
-* [[yii\web\MethodNotAllowedHttpException]]: status code 405.
-* [[yii\web\NotAcceptableHttpException]]: status code 406. 
-* [[yii\web\NotFoundHttpException]]: status code 404.
-* [[yii\web\ServerErrorHttpException]]: status code 500.
-* [[yii\web\TooManyRequestsHttpException]]: status code 429.
-* [[yii\web\UnauthorizedHttpException]]: status code 401.
-* [[yii\web\UnsupportedMediaTypeHttpException]]: status code 415.
+* [[yii\web\BadRequestHttpException]]: ステータスコード 400
+* [[yii\web\ConflictHttpException]]: ステータスコード 409
+* [[yii\web\ForbiddenHttpException]]: ステータスコード 403
+* [[yii\web\GoneHttpException]]: ステータスコード 410
+* [[yii\web\MethodNotAllowedHttpException]]: ステータスコード 405
+* [[yii\web\NotAcceptableHttpException]]: ステータスコード 406 
+* [[yii\web\NotFoundHttpException]]: ステータスコード 404
+* [[yii\web\ServerErrorHttpException]]: ステータスコード 500
+* [[yii\web\TooManyRequestsHttpException]]: ステータスコード 429
+* [[yii\web\UnauthorizedHttpException]]: ステータスコード 401
+* [[yii\web\UnsupportedMediaTypeHttpException]]: ステータスコード 415
 
-If the exception that you want to throw is not among the above list, you may create one by extending
-from [[yii\web\HttpException]], or directly throw it with a status code, for example,
+投げたい例外が上記のリストに無い場合は、[[yii\web\HttpException]] から拡張したものを作成することが出来ます。
+あるいは、ステータスコードを指定して [[yii\web\HttpException]] を直接に投げることも出来ます。例えば、
  
 ```php
 throw new \yii\web\HttpException(402);
 ```
 
 
-## HTTP Headers <a name="http-headers"></a> 
+## HTTP ヘッダ <a name="http-headers"></a> 
 
 You can send HTTP headers by manipulating the [[yii\web\Response::headers|header collection]] in the `response` component.
 For example,
