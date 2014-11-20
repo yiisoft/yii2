@@ -124,6 +124,9 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
+Since version 2.0.1 it is also possible to configure the time zone that is assumed for timestamps that do not include a time zone
+identifier like the second example in the code above. You can set [[yii\i18n\Formatter::defaultTimeZone]] to the time zone you use for data storage.
+
 > Note: As time zones are subject to rules made by the governments around the world and may change frequently, it is
 > likely that you do not have the latest information in the time zone database installed on your system.
 > You may refer to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
