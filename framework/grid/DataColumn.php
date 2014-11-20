@@ -66,6 +66,11 @@ class DataColumn extends Column
      */
     public $value;
     /**
+     * @var array the option data items.
+     * The array keys are option values, and the array values are the corresponding option labels.
+     */
+    public $items = [];
+    /**
      * @var string|array in which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
      * `['date', 'php:Y-m-d']`). Supported formats are determined by the [[GridView::formatter|formatter]] used by
      * the [[GridView]]. Default format is "text" which will format the value as an HTML-encoded plain text when
@@ -185,7 +190,12 @@ class DataColumn extends Column
                 return call_user_func($this->value, $model, $key, $index, $this);
             }
         } elseif ($this->attribute !== null) {
-            return ArrayHelper::getValue($model, $this->attribute);
+            $value = ArrayHelper::getValue($model, $this->attribute);
+            if (ArrayHelper::keyExists($value, $this->items)) {
+                return $this->items[$value];
+            } else {
+                return $value;
+            }
         }
         return null;
     }

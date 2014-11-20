@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
 - Enh: `yii\rbac\DbManager` migration now uses database component specified in component settings instead of always using default `db` (samdark)
 - Enh: Added `yii\base\Controller::renderContent()` (qiangxue)
+- Enh: Added `yii\grid\DataColumn::items` to support rendering label of values (leandrogehlen)
 - Chg #3630: `yii\db\Command::queryInternal()` is now protected (samdark) 
 - Chg #5508: Dropped the support for the `--append` option for the `fixture` command (qiangxue)
 - Chg #5874: Upgraded Twitter Bootstrap to 3.3.x (samdark)
