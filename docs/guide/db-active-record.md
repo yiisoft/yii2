@@ -195,6 +195,9 @@ $customer = Customer::findAll([
 ]);
 ```
 
+> Note: Neither `findOne()` nor `one()` adds `LIMIT 1` to the query so if you need "any active customer"
+  you should add limit manually i.e. `Customer::find()->where(['status' => Customer::STATUS_ACTIVE])->limit(1)->one();`.
+
 
 ### Retrieving Data in Arrays
 
