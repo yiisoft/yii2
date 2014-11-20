@@ -35,7 +35,7 @@ $name = $request->post('name', '');
 ```
 
 > Info: Instead of directly accessing `$_GET` and `$_POST` to retrieve the request parameters, it is recommended
-  that you get them via the `request` component like shown above. This will make writing tests easier because
+  that you get them via the `request` component as shown above. This will make writing tests easier because
   you can create a mock request component with faked request data.
 
 When implementing [RESTful APIs](rest-quick-start.md), you often need to retrieve parameters that are submitted
@@ -108,13 +108,13 @@ $accept = $headers->get('Accept');
 if ($headers->has('User-Agent')) { // there is User-Agent header }
 ```
 
-The `request` component also provides support for quickly accessing some commonly used headers, including
+The `request` component also provides support for quickly accessing some commonly used headers, including:
 
 * [[yii\web\Request::userAgent|userAgent]]: returns the value of the `User-Agent` header.
 * [[yii\web\Request::contentType|contentType]]: returns the value of the `Content-Type` header which indicates
   the MIME type of the data in the request body.
 * [[yii\web\Request::acceptableContentTypes|acceptableContentTypes]]: returns the content MIME types acceptable by users.
-  The returned types ordered by the quality score. Types with the highest scores will be returned first.
+  The returned types are ordered by their quality score. Types with the highest scores will be returned first.
 * [[yii\web\Request::acceptableLanguages|acceptableLanguages]]: returns the languages acceptable by users.
   The returned languages are ordered by their preference level. The first element represents the most preferred language.
 
