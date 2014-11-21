@@ -6,7 +6,7 @@ or an extended class. The three main features that components provide to other c
 
 * [Properties](concept-properties.md)
 * [Events](concept-events.md)
-* [Behaviors](concept-behaviors.md),
+* [Behaviors](concept-behaviors.md)
  
 Separately and combined, these features make Yii classes much more customizable and easier to use. For example, the included [[yii\jui\DatePicker|date picker widget]], a user interface component, can be used in a [view](structure-view.md)
 to generate an interactive date picker:
