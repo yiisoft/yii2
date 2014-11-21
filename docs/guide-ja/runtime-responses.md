@@ -184,32 +184,33 @@ public function actionOld()
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
 ```
 
-> Info: By default, the [[yii\web\Response::redirect()]] method sets the response status code to be 302 which instructs
-  the browser that the resource being requested is *temporarily* located in a different URI. You can pass in a status
-  code 301 to tell the browser that the resource has been *permanently* relocated.
+> Info|情報: 既定では、[[yii\web\Response::redirect()]] メソッドはレスポンスのステータスコードを 302 にセットします。
+これはブラウザに対して、リクエストされているリソースが *一時的に* 異なる URI に配置されていることを示すものです。
+ブラウザに対してリソースが *恒久的に* 配置替えされたことを教えるためには、ステータスコード 301 を渡すことが出来ます。
 
-When the current request is an AJAX request, sending a `Location` header will not automatically cause the browser
-to redirect. To solve this problem, the [[yii\web\Response::redirect()]] method sets an `X-Redirect` header with 
-the redirection URL as its value. On the client side, you may write JavaScript code to read this header value and
-redirect the browser accordingly.
+現在のリクエストが AJAX リクエストである場合は、`Location` ヘッダを送っても自動的にブラウザをリダイレクトすることにはなりません。
+この問題を解決するために、[[yii\web\Response::redirect()]] メソッドは `X-Redirect` ヘッダにリダイレクト先 URL を値としてセットします。
+そして、クライアントサイドで、このヘッダの値を読み、それに応じてブラウザをリダイレクトする JavaScript を書くことが出来ます。
 
-> Info: Yii comes with a `yii.js` JavaScript file which provides a set of commonly used JavaScript utilities,
-  including browser redirection based on the `X-Redirect` header. Therefore, if you are using this JavaScript file
-  (by registering the [[yii\web\YiiAsset]] asset bundle), you do not need to write anything to support AJAX redirection.
+> Info|情報: Yii には `yii.js` という JavaScript ファイルが付いています。これは、よく使われる一連の JavaScript 機能を提供するもので、
+その中には `X-Redirect` ヘッダに基づくブラウザのリダイレクトも含まれています。従って、あなたが
+([[yii\web\YiiAsset]] アセットバンドルを登録して) この JavaScript ファイルを使うつもりなら、
+AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
 
 
-## Sending Files <a name="sending-files"></a>
+## ファイルを送信する <a name="sending-files"></a>
 
-Like browser redirection, file sending is another feature that relies on specific HTTP headers. Yii provides
-a set of methods to support various file sending needs. They all have built-in support for the HTTP range header.
+ブラウザのリダイレクトと同じように、ファイルの送信という機能も特定の HTTP ヘッダに依存しています。
+Yii はさまざまなファイル送信の必要をサポートするための一連のメソッドを提供しています。それらはすべて、
+HTTP range ヘッダに対するサポートを内蔵しています。
 
-* [[yii\web\Response::sendFile()]]: sends an existing file to a client.
-* [[yii\web\Response::sendContentAsFile()]]: sends a text string as a file to a client.
-* [[yii\web\Response::sendStreamAsFile()]]: sends an existing file stream as a file to a client. 
+* [[yii\web\Response::sendFile()]]: 既存のファイルをクライアントに送信する
+* [[yii\web\Response::sendContentAsFile()]]: テキストの文字列をファイルとしてクライアントに送信する
+* [[yii\web\Response::sendStreamAsFile()]]: 既存のファイルストリームをファイルとしてクライアントに送信する
 
-These methods have the same method signature with the response object as the return value. If the file
-to be sent is very big, you should consider using [[yii\web\Response::sendStreamAsFile()]] because it is more
-memory efficient. The following example shows how to send a file in a controller action:
+これらのメソッドは同じメソッドシグニチャを持ち、返り値としてレスポンスオブジェクトを返します。
+送信しようとしているファイルが非常に大きなものである場合は、メモリ効率の良い [[yii\web\Response::sendStreamAsFile()]] の使用を検討すべきです。
+次の例は、コントローラアクションでファイルを送信する方法を示すものです。
 
 ```php
 public function actionDownload()
@@ -218,18 +219,18 @@ public function actionDownload()
 }
 ```
 
-If you are calling the file sending method in places other than an action method, you should also call
-the [[yii\web\Response::send()]] method afterwards to ensure no extra content will be appended to the response.
+ファイル送信メソッドをアクションメソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、
+レスポンスに余計なコンテンツが追加されないことを保証すべきです。
 
 ```php
 \Yii::$app->response->sendFile('path/to/file.txt')->send();
 ```
 
-Some Web servers have a special file sending support called *X-Sendfile*. The idea is to redirect the
-request for a file to the Web server which will directly serve the file. As a result, the Web application
-can terminate earlier while the Web server is sending the file. To use this feature, you may call
-the [[yii\web\Response::xSendFile()]]. The following list summarizes how to enable the `X-Sendfile` feature
-for some popular Web servers:
+ウェブサーバには、*X-Sendfile* と呼ばれる特別なファイル送信をサポートするものがあります。アイデアとしては、
+ファイルに対するリクエストをウェブサーバにリダイレクトして、ウェブサーバに直接にファイルを送信させる、というものです。
+その結果として、ウェブサーバがファイルを送信している間でも、ウェブアプリケーションは早期に終了することが出来るようになります。
+この機能を使うために、[[yii\web\Response::xSendFile()]] を呼ぶことが出来ます。次のリストは、
+よく使われるいくつかのウェブサーバにおいて `X-Sendfile` 機能を有効にする方法を要約するものです。
 
 - Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
 - Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
@@ -238,24 +239,24 @@ for some popular Web servers:
 - Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
-## Sending Response <a name="sending-response"></a>
+## レスポンスを送信する <a name="sending-response"></a>
 
-The content in a response is not sent to the user until the [[yii\web\Response::send()]] method is called.
-By default, this method will be called automatically at the end of [[yii\base\Application::run()]]. You can, however,
-explicitly call this method to force sending out the response immediately.
+レスポンスの中のコンテントは、[[yii\web\Response::send()]] メソッドが呼ばれるまでは、エンドユーザに向けて送信されません。
+既定では、このメソッドは [[yii\base\Application::run()]] の最後で自動的に呼ばれます。しかし、
+このメソッドを明示的に呼んで、強制的にレスポンスを即座に送信することも可能です。
 
-The [[yii\web\Response::send()]] method takes the following steps to send out a response:
+[[yii\web\Response::send()]] メソッドは次のステップを踏んでレスポンスを送出します。
 
-1. Trigger the [[yii\web\Response::EVENT_BEFORE_SEND]] event.
-2. Call [[yii\web\Response::prepare()]] to format [[yii\web\Response::data|response data]] into 
-   [[yii\web\Response::content|response content]].
-3. Trigger the [[yii\web\Response::EVENT_AFTER_PREPARE]] event.
-4. Call [[yii\web\Response::sendHeaders()]] to send out the registered HTTP headers.
-5. Call [[yii\web\Response::sendContent()]] to send out the response body content.
-6. Trigger the [[yii\web\Response::EVENT_AFTER_SEND]] event.
+1. [[yii\web\Response::EVENT_BEFORE_SEND]] イベントをトリガする。
+2. [[yii\web\Response::prepare()]] を呼んで [[yii\web\Response::data|レスポンスデータ]] を
+   [[yii\web\Response::content|レスポンスコンテント]] としてフォーマットする。
+3. [[yii\web\Response::EVENT_AFTER_PREPARE]] イベントをトリガする。
+4. [[yii\web\Response::sendHeaders()]] を呼んで、登録された HTTP ヘッダを送出する。
+5. [[yii\web\Response::sendContent()]] を呼んで、レスポンスのボディコンテントを送出する。
+6. [[yii\web\Response::EVENT_AFTER_SEND]] イベントをトリガする。
 
-After the [[yii\web\Response::send()]] method is called once, any further call to this method will be ignored.
-This means once the response is sent out, you will not be able to append more content to it.
+[[yii\web\Response::send()]] メソッドが一度呼び出された後では、このメソッドに対する更なる呼び出しは無視されます。
+このことは、いったんレスポンスが送出された後では、それにコンテントを追加することは出来なくなる、ということを意味します。
 
-As you can see, the [[yii\web\Response::send()]] method triggers several useful events. By responding to
-these events, it is possible to adjust or decorate the response.
+ごらんのように、the [[yii\web\Response::send()]] メソッドはいくつかの有用なイベントをトリガします。これらのイベントに反応することによって、
+レスポンスを調整したり修飾したりすることが出来ます。
