@@ -44,7 +44,7 @@ class MyBehavior extends Behavior
 
 The above code defines the behavior class `app\components\MyBehavior`, with two properties--
 `prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]], and therefore supports defining [properties](concept-properties.md) via getters and setters.
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
 Because this class is a behavior, when it is attached to a component, that component will then also have the the `prop1` and `prop2` properties and the `foo()` method.
 
@@ -324,7 +324,7 @@ Behaviors can customize the code execution of a component by responding to its e
 
 When there can be name conflicts among different behaviors attached to the same component, the conflicts are
 automatically resolved by prioritizing the behavior attached to the component first.
-Name conflicts caused by different traits requires manually resolution by renaming the affected
+Name conflicts caused by different traits requires manual resolution by renaming the affected
 properties or methods.
 
 
@@ -332,5 +332,5 @@ properties or methods.
 
 Traits are much more efficient than behaviors as behaviors are objects that take both time and memory.
 
-IDEs are more friendly to traits as they are language construct.
+IDEs are more friendly to traits as they are a native language construct.
 
