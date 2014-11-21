@@ -2,7 +2,7 @@ Class Autoloading
 =================
 
 Yii relies on the [class autoloading mechanism](http://www.php.net/manual/en/language.oop5.autoload.php)
-to locate and include all required class files. It provides a high-performance class autoloader that is compliant to the
+to locate and include all required class files. It provides a high-performance class autoloader that is compliant with the
 [PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md).
 The autoloader is installed when you include the `Yii.php` file.
 
@@ -33,8 +33,7 @@ namespace `app` so that they can be autoloaded by Yii without the need of defini
 can be resolved into the class file `AppBasePath/components/MyClass.php`, according to the algorithm just described.
 
 In the [Advanced Application Template](tutorial-advanced-app.md), each tier has its own root alias. For example,
-the front-end tier has a root alias `@frontend`, while the back-end tier `@backend`. As a result, you may
-put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
+the front-end tier has a root alias `@frontend`, while the back-end tier root alias is `@backend`. As a result, you may put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
 allow these classes to be autoloaded by the Yii autoloader.
 
 
@@ -43,7 +42,7 @@ Class Map <a name="class-map"></a>
 
 The Yii class autoloader supports the *class map* feature, which maps class names to the corresponding class file paths.
 When the autoloader is loading a class, it will first check if the class is found in the map. If so, the corresponding
-file path will be included directly without further check. This makes class autoloading super fast. In fact,
+file path will be included directly without further checks. This makes class autoloading super fast. In fact,
 all core Yii classes are autoloaded this way.
 
 You may add a class to the class map, stored in `Yii::$classMap`, using:
