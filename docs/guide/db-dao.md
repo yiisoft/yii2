@@ -169,7 +169,7 @@ $command = $connection->createCommand('UPDATE post SET status=1 WHERE id=1');
 $command->execute();
 ```
 
-Alternatively, you can use dedicated `insert`, `update`, and `delete` method. These methods will properly quote table and column names used in your query, and you only need to provide the necessary values:
+Alternatively, you can use the dedicated `insert`, `update`, and `delete` methods. These methods will properly quote table and column names used in your query, and you only need to provide the necessary values:
 
 [[Ought to put a link to the reference docs here.]]
 
@@ -204,7 +204,7 @@ $sql = "SELECT COUNT([[$column]]) FROM {{table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-In the code above, `[[$column]]` will be converted to properly quoted column name, while `{{table}}` will be converted to a properly-quoted table name.
+In the code above, `[[$column]]` will be converted to a properly quoted column name, while `{{table}}` will be converted to a properly quoted table name.
 
 There's a special variant on this syntax specific to tablenames: `{{%Y}}` automatically appends the application's table prefix to the provided value, if a table prefix has been set:
 
@@ -286,14 +286,14 @@ try {
 }
 ```
 
-The first line starts a new transaction using the [[yii\db\Connection::beginTransaction()|beginTransaction()]]-method of the database connection
+The first line starts a new transaction using the [[yii\db\Connection::beginTransaction()|beginTransaction()]] method of the database connection
 object. The transaction itself is represented by a [[yii\db\Transaction]] object stored in `$transaction`.
-We wrap the execution of all queries in a try-catch-block to be able to handle errors.
+We wrap the execution of all queries in a try-catch block to be able to handle errors.
 We call [[yii\db\Transaction::commit()|commit()]] on success to commit the transaction and
 [[yii\db\Transaction::rollBack()|rollBack()]] in case of an error. This will revert the effect of all queries
 that have been executed inside of the transaction.
 `throw $e` is used to re-throw the exception in case we can not handle the error ourselves and delegate it
-to some other code or the yii error handler.
+to some other code or the Yii error handler.
 
 It is also possible to nest multiple transactions, if needed:
 
@@ -323,7 +323,7 @@ The above code will work for any DBMS but transactional safety is only guarantee
 the underlying DBMS supports it.
 
 Yii also supports setting [isolation levels] for your transactions.
-When beginning a transaction it will run in the default isolation level set by you database system.
+When beginning a transaction it will run in the default isolation level set by your database system.
 You can specifying an isolation level explicitly when starting a transaction:
 
 ```php
@@ -347,7 +347,7 @@ you may need to set the isolation level for all transactions explicitly to avoid
 At the time of this writing affected DBMS are MSSQL and SQLite.
 
 > Note: SQLite only supports two isolation levels, so you can only use `READ UNCOMMITTED` and `SERIALIZABLE`.
-Usage of other levels will result in an exception to be thrown.
+Usage of other levels will result in an exception being thrown.
 
 > Note: PostgreSQL does not allow setting the isolation level before the transaction starts so you can not
 specify the isolation level directly when starting the transaction.
@@ -412,10 +412,10 @@ $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
 > Info: Queries performed by calling [[yii\db\Command::execute()]] are considered as write queries, while
-  all other queries done through one of the "query" method of [[yii\db\Command]] are read queries.
+  all other queries done through one of the "query" methods of [[yii\db\Command]] are read queries.
   You can get the currently active slave connection via `$db->slave`.
 
-The `Connection` component supports load balancing and failover about slaves.
+The `Connection` component supports load balancing and failover between slaves.
 When performing a read query for the first time, the `Connection` component will randomly pick a slave and
 try connecting to it. If the slave is found "dead", it will try another one. If none of the slaves is available,
 it will connect to the master. By configuring a [[yii\db\Connection::serverStatusCache|server status cache]],
@@ -471,8 +471,8 @@ You can also configure multiple masters with multiple slaves. For example,
 ```
 
 The above configuration specifies two masters and four slaves. The `Connection` component also supports
-load balancing and failover about masters, like that about slaves. A difference is that in case none of
-the masters is available, an exception will be thrown.
+load balancing and failover between masters just as it does between slaves. A difference is that when none 
+of the masters are available an exception will be thrown.
 
 > Note: When you use the [[yii\db\Connection::masters|masters]] property to configure one or multiple
   masters, all other properties for specifying a database connection (e.g. `dsn`, `username`, `password`)
@@ -533,11 +533,11 @@ It contains a set of methods allowing you to retrieve various information about 
 $tables = $schema->getTableNames();
 ```
 
-For the full reference check [[yii\db\Schema]].
+For the full reference, check [[yii\db\Schema]].
 
 ### Modifying schema
 
-Aside from basic SQL queries [[yii\db\Command]] contains a set of methods allowing to modify database schema:
+Aside from basic SQL queries, [[yii\db\Command]] contains a set of methods allowing the modification of the database schema:
 
 - createTable, renameTable, dropTable, truncateTable
 - addColumn, renameColumn, dropColumn, alterColumn
@@ -556,4 +556,4 @@ $connection->createCommand()->createTable('post', [
 ]);
 ```
 
-For the full reference check [[yii\db\Command]].
+For the full reference, check [[yii\db\Command]].
