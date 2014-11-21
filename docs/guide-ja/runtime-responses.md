@@ -56,40 +56,41 @@ throw new \yii\web\HttpException(402);
 
 ## HTTP ヘッダ <a name="http-headers"></a> 
 
-You can send HTTP headers by manipulating the [[yii\web\Response::headers|header collection]] in the `response` component.
-For example,
+`response` コンポーネントの [[yii\web\Response::headers|ヘッダコレクション]] を操作することによって、
+HTTP ヘッダを送信することが出来ます。例えば、
 
 ```php
 $headers = Yii::$app->response->headers;
 
-// add a Pragma header. Existing Pragma headers will NOT be overwritten.
+// Pragma ヘッダを追加する。既存の Pragma ヘッダは上書きされない。
 $headers->add('Pragma', 'no-cache');
 
-// set a Pragma header. Any existing Pragma headers will be discarded.
+// Pragma ヘッダを設定する。既存の Pragma ヘッダは全て破棄される。
 $headers->set('Pragma', 'no-cache');
 
-// remove Pragma header(s) and return the removed Pragma header values in an array
+// Pragma ヘッダを削除して、削除された Pragma ヘッダの値を配列に返す。
 $values = $headers->remove('Pragma');
 ```
 
-> Info: Header names are case insensitive. And the newly registered headers are not sent to the user until
-  the [[yii\web\Response::send()]] method is called.
+> Info|情報: ヘッダ名は大文字小文字を区別しません。そして、新しく登録されたヘッダは、
+  [[yii\web\Response::send()]] メソッドが呼ばれるまで送信されません。
 
 
-## Response Body <a name="response-body"></a>
+## レスポンスボディ <a name="response-body"></a>
 
-Most responses should have a body which gives the content that you want to show to end users.
+ほとんどのレスポンスは、エンドユーザに対して表示したい内容を示すボディを持っていなければなりません。
 
-If you already have a formatted body string, you may assign it to the [[yii\web\Response::content]] property
-of the response. For example,
+既にフォーマットされたボディの文字列を持っている場合は、それをレスポンスの [[yii\web\Response::content]]
+プロパティに割り付けることが出来ます。例えば、
 
 ```php
 Yii::$app->response->content = 'hello world!';
 ```
 
-If your data needs to be formatted before sending it to end users, you should set both of the
-[[yii\web\Response::format|format]] and [[yii\web\Response::data|data]] properties. The [[yii\web\Response::format|format]]
-property specifies in which format the [[yii\web\Response::data|data]] should be formatted. For example,
+データをエンドユーザに送信する前にフォーマットする必要がある場合は、[[yii\web\Response::format|format]] と [[yii\web\Response::data|data]]
+の両方のプロパティをセットしなければなりません。[[yii\web\Response::format|format]]
+プロパティは [[yii\web\Response::data|data]] がどの形式でフォーマットされるべきかを指定するものです。
+例えば、
 
 ```php
 $response = Yii::$app->response;
@@ -97,18 +98,19 @@ $response->format = \yii\web\Response::FORMAT_JSON;
 $response->data = ['message' => 'hello world'];
 ```
 
-Yii supports the following formats out of the box, each implemented by a [[yii\web\ResponseFormatterInterface|formatter]] class.
-You can customize these formatters or add new ones by configuring the [[yii\web\Response::formatters]] property.
+Yii は下記の形式を初めからサポートしています。それぞれ、[[yii\web\ResponseFormatterInterface|フォーマッタ]] クラスとして実装されています。
+[[yii\web\Response::formatters]] プロパティを構成することで、これらのフォーマッタをカスタマイズしたり、
+または、新しいフォーマッタを追加することが出来ます。
 
-* [[yii\web\Response::FORMAT_HTML|HTML]]: implemented by [[yii\web\HtmlResponseFormatter]].
-* [[yii\web\Response::FORMAT_XML|XML]]: implemented by [[yii\web\XmlResponseFormatter]].
-* [[yii\web\Response::FORMAT_JSON|JSON]]: implemented by [[yii\web\JsonResponseFormatter]].
-* [[yii\web\Response::FORMAT_JSONP|JSONP]]: implemented by [[yii\web\JsonResponseFormatter]].
-* [[yii\web\Response::FORMAT_RAW|RAW]]: use this format if you want to send the response directly without applying any formatting.
+* [[yii\web\Response::FORMAT_HTML|HTML]]: [[yii\web\HtmlResponseFormatter]] によって実装
+* [[yii\web\Response::FORMAT_XML|XML]]: [[yii\web\XmlResponseFormatter]] によって実装
+* [[yii\web\Response::FORMAT_JSON|JSON]]: [[yii\web\JsonResponseFormatter]] によって実装
+* [[yii\web\Response::FORMAT_JSONP|JSONP]]: [[yii\web\JsonResponseFormatter]] によって実装
+* [[yii\web\Response::FORMAT_RAW|RAW]]: 書式を何も適用せずにレスポンスを送信したいときは、このフォーマットを使用
 
-While the response body can be set explicitly as shown above, in most cases you may set it implicitly by the return value
-of [action](structure-controllers.md) methods. A common use case is like the following:
- 
+レスポンスボディは、上記のように、明示的に設定することも出来ますが、たいていの場合は、[アクション](structure-controllers.md)
+メソッドの返り値によって暗黙のうちに設定することが出来ます。よくあるユースケースは下記のようなものになります。
+
 ```php
 public function actionIndex()
 {
@@ -116,12 +118,11 @@ public function actionIndex()
 }
 ```
 
-The `index` action above returns the rendering result of the `index` view. The return value will be taken
-by the `response` component, formatted and then sent to end users.
+上記の `index` アクションは、`index` ビューのレンダリング結果を返しています。返された値は `response`
+コンポーネントによって受け取られ、フォーマットされてエンドユーザに送信されます。
 
-Because by default the response format is [[yii\web\Response::FORMAT_HTML|HTML]], you should only return a string
-in an action method. If you want to use a different response format, you should set it first before returning the data.
-For example,
+デフォルトのレスポンス形式が [[yii\web\Response::FORMAT_HTML|HTML]] であるため、アクションメソッドの中では文字列を返すだけにすべきです。
+別のレスポンス形式を使いたい場合は、データを返す前にレスポンス形式を設定しなければなりません。例えば、
 
 ```php
 public function actionInfo()
@@ -134,8 +135,9 @@ public function actionInfo()
 }
 ```
 
-As aforementioned, besides using the default `response` application component, you can also create your own
-response objects and send them to end users. You can do so by returning such object in an action method, like the following,
+既に述べたように、デフォルトの `response` アプリケーションコンポーネントを使う代りに、
+自分自身のレスポンスオブジェクトを作成してエンドユーザに送信することも出来ます。そうするためには、次のように、
+アクションメソッドの中でそのようなオブジェクトを返します。
 
 ```php
 public function actionInfo()
@@ -151,9 +153,9 @@ public function actionInfo()
 }
 ```
 
-> Note: If you are creating your own response objects, you will not be able to take advantage of the configurations
-  that you set for the `response` component in the application configuration. You can, however, use 
-  [dependency injection](concept-di-container.md) to apply a common configuration to your new response objects.
+> Note|注意: 自分自身のレスポンスオブジェクトを作成しようとする場合は、アプリケーションのコンフィギュレーションで `response`
+  コンポーネントのために設定したコンフィギュレーションを利用することは出来ません。しかしながら、 [依存の注入](concept-di-container.md) を使って、
+  共通のコンフィギュレーションをあなたの新しいレスポンスオブジェクトに適用することは出来ます。
 
 
 ## Browser Redirection <a name="browser-redirection"></a>
