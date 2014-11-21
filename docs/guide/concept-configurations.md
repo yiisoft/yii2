@@ -85,7 +85,7 @@ describe application configurations and widget configurations - two major usages
 
 ### Application Configurations <a name="application-configurations"></a>
 
-Configuration for an [application](structure-applications.md) is probably one of the most complex configurations.
+The configuration for an [application](structure-applications.md) is probably one of the most complex arrays in Yii.
 This is because the [[yii\web\Application|application]] class has a lot of configurable properties and events.
 More importantly, its [[yii\web\Application::components|components]] property can receive an array of configurations
 for creating components that are registered through the application. The following is an abstract from the application
