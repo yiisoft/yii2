@@ -245,7 +245,7 @@ class MessageController extends Controller
     protected function extractMessages($fileName, $translator)
     {
         $coloredFileName = Console::ansiFormat($fileName, [Console::FG_CYAN]);
-        $this->stdout("Extracting messages from $coloredFileName...\n");
+        echo "Extracting messages from $coloredFileName...\n";
         $subject = file_get_contents($fileName);
         $messages = [];
         if (!is_array($translator)) {
@@ -288,7 +288,7 @@ class MessageController extends Controller
 
                             $line = Console::ansiFormat($this->getLine($buffer), [Console::FG_CYAN]);
                             $skipping = Console::ansiFormat('Skipping line', [Console::FG_YELLOW]);
-                            $this->stdout("$skipping $line. Make sure both category and message are static strings.\n");
+                            echo "$skipping $line. Make sure both category and message are static strings.\n";
                         }
 
                         // prepare for the next match
@@ -302,7 +302,7 @@ class MessageController extends Controller
             }
         }
 
-        $this->stdout("\n");
+        echo "\n";
 
         return $messages;
     }
