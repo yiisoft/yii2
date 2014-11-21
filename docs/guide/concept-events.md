@@ -131,8 +131,8 @@ With the above code, any calls to `bar()` will trigger an event named `hello`.
 Sometimes when triggering an event you may want to pass along additional information to the event handlers.
 For example, a mailer may want pass the message information to the handlers of the `messageSent` event so that the handlers
 can know the particulars of the sent messages. To do so, you can provide an event object as the second parameter to
-the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class,
-or of a child class. For example:
+the [[yii\base\Component::trigger()]] method. The event object must be an instance of the [[yii\base\Event]] class
+or a child class. For example:
 
 ```php
 namespace app\components;
