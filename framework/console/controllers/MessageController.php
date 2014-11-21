@@ -408,11 +408,11 @@ EOD;
 
 
         $merged = [];
-        $notTranslatedYet = [];
         $todos = [];
 
         $hasSomethingToWrite = false;
         foreach ($messages as $category => $msgs) {
+            $notTranslatedYet = [];
             $msgs = array_values(array_unique($msgs));
 
             if (is_file($file)) {
@@ -425,7 +425,7 @@ EOD;
 
                     sort($msgs);
                     foreach ($msgs as $message) {
-                        $merged[$category . chr(4) . $message] = '';
+                        $merged[$category . chr(4) . $message] = $existingMessages[$message];
                     }
                     ksort($merged);
                     continue;
