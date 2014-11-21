@@ -15,7 +15,7 @@
 
 ## ステータスコード <a name="status-code"></a>
 
-レスポンスを作成するときに最初にすることの一つは、リクエストが成功裏に処理されたかどうかを記述することです。そのためには、
+レスポンスを作成するときに最初にすることの一つは、リクエストが成功裡に処理されたかどうかを記述することです。そのためには、
 [[yii\web\Response::statusCode]] プロパティに有効な [HTTP ステータスコード](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html)
 の一つを設定します。例えば、下記のように、リクエストの処理が成功したことを示すために、ステータスコードを 200 に設定します。
 
@@ -23,7 +23,7 @@
 Yii::$app->response->statusCode = 200;
 ```
 
-しかしながら、たいていの場合、ステータスコードを明示的に設定する必要はありません。これは、[[yii\web\Response::statusCode]]
+けれども、たいていの場合、ステータスコードを明示的に設定する必要はありません。これは、[[yii\web\Response::statusCode]]
 の既定値が 200 であるからです。そして、リクエストが失敗したことを示したいときは、下記のように、適切な HTTP 例外を投げることが出来ます。
 
 ```php
@@ -154,18 +154,18 @@ public function actionInfo()
 ```
 
 > Note|注意: 自分自身のレスポンスオブジェクトを作成しようとする場合は、アプリケーションのコンフィギュレーションで `response`
-  コンポーネントのために設定したコンフィギュレーションを利用することは出来ません。しかしながら、 [依存の注入](concept-di-container.md) を使って、
-  共通のコンフィギュレーションをあなたの新しいレスポンスオブジェクトに適用することは出来ます。
+  コンポーネントのために設定したコンフィギュレーションを利用することは出来ません。しかし、 [依存の注入](concept-di-container.md) を使えば、
+  共通のコンフィギュレーションをあなたの新しいレスポンスオブジェクトに適用することが出来ます。
 
 
-## Browser Redirection <a name="browser-redirection"></a>
+## ブラウザのリダイレクト <a name="browser-redirection"></a>
 
-Browser redirection relies on sending a `Location` HTTP header. Because this feature is commonly used, Yii provides
-some special support for it.
+ブラウザのリダイレクトは `Location` HTTP ヘッダの送信に依存しています。この機能は通常よく使われるものであるため、
+Yii はこれについて特別のサポートを提供しています。
 
-You can redirect the user browser to a URL by calling the [[yii\web\Response::redirect()]] method. The method
-sets the appropriate `Location` header with the given URL and returns the response object itself. In an action method,
-you can call its shortcut version [[yii\web\Controller::redirect()]]. For example,
+[[yii\web\Response::redirect()]] メソッドを呼ぶことによって、ユーザのブラウザをある URL にリダイレクトすることが出来ます。
+このメソッドは与えられた URL を持つ適切な `Location` ヘッダを設定して、レスポンスオブジェクトそのものを返します。
+アクションメソッドの中では、そのショートカット版である [[yii\web\Controller::redirect()]] を呼ぶことが出来ます。例えば、
 
 ```php
 public function actionOld()
@@ -174,11 +174,11 @@ public function actionOld()
 }
 ```
 
-In the above code, the action method returns the result of the `redirect()` method. As explained before, the response
-object returned by an action method will be used as the response sending to end users.
+上記のコードでは、アクションメソッドが `redirect()` メソッドの結果を返しています。前に説明したように、
+アクションメソッドによって返されるレスポンスオブジェクトは、エンドユーザに送信されるレスポンスとして使用されることになります。
 
-In places other than an action method, you should call [[yii\web\Response::redirect()]] directly followed by 
-a chained call to the [[yii\web\Response::send()]] method to ensure no extra content will be appended to the response.
+アクションメソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、メソッドチェーンで
+[[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテンツが追加されないことを保証すべきです。
 
 ```php
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
