@@ -152,7 +152,7 @@ class FragmentCache extends Widget
     }
 
     /**
-     * Replaces placeholders in content by results of evaluated dynamic statemens
+     * Replaces placeholders in content by results of evaluated dynamic statements.
      *
      * @param string $content
      * @param array $placeholders
