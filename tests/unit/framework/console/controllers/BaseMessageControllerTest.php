@@ -86,7 +86,7 @@ abstract class BaseMessageControllerTest extends TestCase
     protected function createSourceFile($content)
     {
         $fileName = $this->sourcePath . DIRECTORY_SEPARATOR . md5(uniqid()) . '.php';
-        file_put_contents($fileName, $content);
+        file_put_contents($fileName, "<?php\n" . $content);
         return $fileName;
     }
 
