@@ -462,26 +462,26 @@ class View extends \yii\base\View
     {
         $lines = [];
         if (!empty($this->metaTags)) {
-            $lines[] = implode("\n", $this->metaTags);
+            $lines[] = implode("\n\t", $this->metaTags);
         }
 
         if (!empty($this->linkTags)) {
-            $lines[] = implode("\n", $this->linkTags);
+            $lines[] = implode("\n\t", $this->linkTags);
         }
         if (!empty($this->cssFiles)) {
-            $lines[] = implode("\n", $this->cssFiles);
+            $lines[] = implode("\n\t", $this->cssFiles);
         }
         if (!empty($this->css)) {
-            $lines[] = implode("\n", $this->css);
+            $lines[] = implode("\n\t", $this->css);
         }
         if (!empty($this->jsFiles[self::POS_HEAD])) {
-            $lines[] = implode("\n", $this->jsFiles[self::POS_HEAD]);
+            $lines[] = implode("\n\t", $this->jsFiles[self::POS_HEAD]);
         }
         if (!empty($this->js[self::POS_HEAD])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), ['type' => 'text/javascript']);
+            $lines[] = Html::script(implode("\n\t", $this->js[self::POS_HEAD]), ['type' => 'text/javascript']);
         }
 
-        return empty($lines) ? '' : implode("\n", $lines);
+        return empty($lines) ? '' : "\t" . implode("\n", $lines);
     }
 
     /**
