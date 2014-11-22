@@ -1107,7 +1107,7 @@ class Formatter extends Component
     /**
      * Creates a number formatter based on the given type and format.
      *
-     * You may overide this method to create a number formatter based on patterns.
+     * You may override this method to create a number formatter based on patterns.
      *
      * @param integer $style the type of the number formatter.
      * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL
