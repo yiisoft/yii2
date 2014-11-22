@@ -1,163 +1,160 @@
-Sessions and Cookies
+セッションとクッキー
 ====================
 
-Sessions and cookies allow data to be persisted across multiple user requests. In plain PHP you may access them
-through the global variables `$_SESSION` and `$_COOKIE`, respectively. Yii encapsulates sessions and cookies as objects
-and thus allows you to access them in an object-oriented fashion with additional useful enhancements.
+セッションとクッキーは、データが複数のユーザリクエストを超えて持続することを可能にします。素の PHP では、それぞれ、
+グローバル変数 `$_SESSION` と `$_COOKIE` によってアクセスすることが出来ます。
+Yii はセッションとクッキーをオブジェクトとしてカプセル化し、オブジェクト指向の流儀でアクセスできるようにするとともに、
+有用な機能強化を追加しています。
 
 
-## Sessions <a name="sessions"></a>
+## セッション <a name="sessions"></a>
 
-Like [requests](runtime-requests.md) and [responses](runtime-responses.md), you can get access to sessions via
-the `session` [application component](structure-application-components.md) which is an instance of [[yii\web\Session]],
-by default.
+[リクエスト](runtime-requests.md) や [レスポンス](runtime-responses.md) と同じように、セッションに対しては、
+既定では [[yii\web\Session]] のインスタンスである `session` [アプリケーションコンポーネント] によってアクセスすることが出来ます。
 
 
-### Opening and Closing Sessions <a name="opening-closing-sessions"></a>
+### セッションのオープンとクローズ <a name="opening-closing-sessions"></a>
 
-To open and close a session, you can do the following:
+セッションのオープンとクローズは、次のようにして出来ます。
 
 ```php
 $session = Yii::$app->session;
 
-// check if a session is already open
+// セッションが既に開かれているかチェックする
 if ($session->isActive) ...
 
-// open a session
+// セッションを開く
 $session->open();
 
-// close a session
+// セッションを閉じる
 $session->close();
 
-// destroys all data registered to a session.
+// セッションに登録されている全てのデータを破壊する
 $session->destroy();
 ```
 
-You can call [[yii\web\Session::open()|open()]] and [[yii\web\Session::close()|close()]] multiple times
-without causing errors; internally the methods will first check if the session is already open.
+エラーを発生させずに [[yii\web\Session::open()|open()]] と [[yii\web\Session::close()|close()]] を複数回呼び出すことが出来ます。
+内部的には、これらのメソッドは、セッションが既に開かれているかどうかを最初にチェックします。
 
 
-### Accessing Session Data <a name="access-session-data"></a>
+### セッションデータにアクセスする <a name="access-session-data"></a>
 
-To access the data stored in session, you can do the following:
+セッションに保存されているデータにアクセスするためには、次のようにすることが出来ます。
 
 ```php
 $session = Yii::$app->session;
 
-// get a session variable. The following usages are equivalent:
+// セッション変数を取得する。次の三つの用法は同義。
 $language = $session->get('language');
 $language = $session['language'];
 $language = isset($_SESSION['language']) ? $_SESSION['language'] : null;
 
-// set a session variable. The following usages are equivalent:
+// セッション変数を設定する。次の三つの用法は同義。
 $session->set('language', 'en-US');
 $session['language'] = 'en-US';
 $_SESSION['language'] = 'en-US';
 
-// remove a session variable. The following usages are equivalent:
+// セッション変数を削除する。次の三つの用法は同義。
 $session->remove('language');
 unset($session['language']);
 unset($_SESSION['language']);
 
-// check if a session variable exists. The following usages are equivalent:
+// セッション変数が存在するかどうかをチェックする。次の三つの用法は同義。
 if ($session->has('language')) ...
 if (isset($session['language'])) ...
 if (isset($_SESSION['language'])) ...
 
-// traverse all session variables. The following usages are equivalent:
+// 全てのセッション変数をたどる。次の二つの用法は同義。
 foreach ($session as $name => $value) ...
 foreach ($_SESSION as $name => $value) ...
 ```
 
-> Info: When you access session data through the `session` component, a session will be automatically opened
-if it has not been done so before. This is different from accessing session data through `$_SESSION`, which requires
-an explicit call of `session_start()`.
+> Info|情報: セッションデータに `session` コンポーネントによってアクセスする場合は、まだ開かれていないときは、
+自動的にセッションが開かれます。これに対して `$_SESSION` によってセッションデータにアクセスする場合は、
+`session_start()` を明示的に呼び出すことが必要になります。
 
-When working with session data that are arrays, the `session` component has a limitation which prevents you from
-directly modifying an array element. For example,
+配列であるセッションデータを扱う場合、`session` コンポーネントには、配列の要素を直接修正することができない、という制約があります。例えば、
 
 ```php
 $session = Yii::$app->session;
 
-// the following code will NOT work
+// 次のコードは動かない
 $session['captcha']['number'] = 5;
 $session['captcha']['lifetime'] = 3600;
 
-// the following code works:
+// 次のコードは動く
 $session['captcha'] = [
     'number' => 5,
     'lifetime' => 3600,
 ];
 
-// the following code also works:
+// 次のコードも動く
 echo $session['captcha']['lifetime'];
 ```
 
-You can use one of the following workarounds to solve this problem:
+次の回避策のどれかを使ってこの問題を解決することが出来ます。
 
 ```php
 $session = Yii::$app->session;
 
-// directly use $_SESSION (make sure Yii::$app->session->open() has been called)
+// $_SESSION を直接使う (既に Yii::$app->session->open() が呼び出されていることを確認)
 $_SESSION['captcha']['number'] = 5;
 $_SESSION['captcha']['lifetime'] = 3600;
 
-// get the whole array first, modify it and then save it back
+// 配列全体を取得し、修正して、保存しなおす
 $captcha = $session['captcha'];
 $captcha['number'] = 5;
 $captcha['lifetime'] = 3600;
 $session['captcha'] = $captcha;
 
-// use ArrayObject instead of array
+// 配列の代わりに ArrayObject を使う
 $session['captcha'] = new \ArrayObject;
 ...
 $session['captcha']['number'] = 5;
 $session['captcha']['lifetime'] = 3600;
 
-// store array data by keys with a common prefix
+// 共通の接頭辞を持つキーを使って配列データを保存する
 $session['captcha.number'] = 5;
 $session['captcha.lifetime'] = 3600;
 ```
 
-For better performance and code readability, we recommend the last workaround. That is, instead of storing
-an array as a single session variable, you store each array element as a session variable which shares the same
-key prefix with other array elements.
+パフォーマンスとコードの可読性を高めるためには、最後の回避策を推奨します。すなわち、
+配列を一つのセッション変数として保存する代りに、配列の個々の要素を他の要素と同じキー接頭辞を共有する一つのセッション変数として保存することです。
 
 
-### Custom Session Storage <a name="custom-session-storage"></a>
+### カスタムセッションストレージ <a name="custom-session-storage"></a>
 
-The default [[yii\web\Session]] class stores session data as files on the server. Yii also provides the following
-session classes implementing different session storage:
+既定の [[yii\web\Session]] クラスはセッションデータをサーバ上のファイルとして保存します。Yii は、また、さまざまなセッションストレージを実装する下記のクラスをも提供しています。
 
-* [[yii\web\DbSession]]: stores session data in a database table.
-* [[yii\web\CacheSession]]: stores session data in a cache with the help of a configured [cache component](caching-data.md#cache-components).
-* [[yii\redis\Session]]: stores session data using [redis](http://redis.io/) as the storage medium.
-* [[yii\mongodb\Session]]: stores session data in a [MongoDB](http://www.mongodb.org/).
+* [[yii\web\DbSession]]: セッションデータをデータベーステーブルを使って保存する。
+* [[yii\web\CacheSession]]: セッションデータを、構成された [キャッシュコンポーネント](caching-data.md#cache-components) の力を借りて、キャッシュを使って保存する。
+* [[yii\redis\Session]]: セッションデータを [redis](http://redis.io/) をストレージ媒体として使って保存する。
+* [[yii\mongodb\Session]]: セッションデータを [MongoDB](http://www.mongodb.org/) に保存する。
 
-All these session classes support the same set of API methods. As a result, you can switch to a different
-session storage class without the need to modify your application code that uses sessions.
+これらのセッションクラスは全て一連の同じ API メソッドをサポートします。その結果として、
+セッションを使用するアプリケーションコードを修正することなしに、セッションストレージクラスを切り替えることが出来ます。
 
-> Note: If you want to access session data via `$_SESSION` while using custom session storage, you must make
-  sure that the session has already been started by [[yii\web\Session::open()]]. This is because custom session storage
-  handlers are registered within this method.
+> Note|注意: カスタムセッションストレージを使っているときに `$_SESSION` を通じてセッションデータにアクセスしたい場合は、
+  セッションが [[yii\web\Session::open()]] によって既に開始されていることを確認しなければなりません。
+  これは、カスタムセッションストレージのハンドラが、このメソッドの中で登録されるからです。
 
-To learn how to configure and use these component classes, please refer to their API documentation. Below is
-an example showing how to configure [[yii\web\DbSession]] in the application configuration to use a database table
-for session storage:
+これらのコンポーネントクラスの構成方法と使用方法については、それらの API ドキュメントを参照してください。
+下記の例は、アプリケーションのコンフィギュレーションにおいて、データベーステーブルをセッションストレージとして使うために
+[[yii\web\DbSession]] を構成する方法を示すものです。
 
 ```php
 return [
     'components' => [
         'session' => [
             'class' => 'yii\web\DbSession',
-            // 'db' => 'mydb',  // the application component ID of the DB connection. Defaults to 'db'.
-            // 'sessionTable' => 'my_session', // session table name. Defaults to 'session'.
+            // 'db' => 'mydb',  // DB 接続のアプリケーションコンポーネント ID。デフォルトは 'db'。
+            // 'sessionTable' => 'my_session', // セッションテーブル名。デフォルトは 'session'。
         ],
     ],
 ];
 ```
 
-You also need to create the following database table to store session data:
+セッションデータを保存するために、次のようなデータベーステーブルを作成することも必要です。
 
 ```sql
 CREATE TABLE session
@@ -168,163 +165,158 @@ CREATE TABLE session
 )
 ```
 
-where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB types that can be used for some popular DBMS:
+ここで 'BLOB' はあなたが選んだ DBMS の BLOB 型を指します。下記は人気のあるいくつかの DBMS で使用できる BLOB 型です。
 
 - MySQL: LONGBLOB
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
-> Note: According to the php.ini setting of `session.hash_function`, you may need to adjust
-  the length of the `id` column. For example, if `session.hash_function=sha256`, you should use a
-  length 64 instead of 40.
+> Note|注意: php.ini の `session.hash_function` の設定によっては、`id` カラムの長さを修正する必要があるかも知れません。
+  例えば、`session.hash_function=sha256` である場合は、40 の代りに 64 の長さを使わなければなりません。
 
 
-### Flash Data <a name="flash-data"></a>
+### フラッシュデータ <a name="flash-data"></a>
 
-Flash data is a special kind of session data which, once set in one request, will only be available during
-the next request and will be automatically deleted afterwards. Flash data is most commonly used to implement
-messages that should only be displayed to end users once, such as a confirmation message displayed after
-a user successfully submits a form.
+フラッシュデータは特殊な種類のセッションデータで、あるリクエストの中で設定されると、次のリクエストの間においてのみ読み出すことが出来て、
+その後は自動的に削除されるものです。フラッシュデータが最もよく使われるのは、エンドユーザに一度だけ表示されるべきメッセージ、
+例えば、ユーザのフォーム送信が成功した後に表示される確認メッセージなどを実装するときです。
 
-You can set and access flash data through the `session` application component. For example,
+`session` アプリケーションコンポーネントによって、フラッシュデータを設定し、アクセスすることが出来ます。例えば、
 
 ```php
 $session = Yii::$app->session;
 
-// Request #1
-// set a flash message named as "postDeleted"
-$session->setFlash('postDeleted', 'You have successfully deleted your post.');
+// リクエスト #1
+// "postDeleted" という名前のフラッシュメッセージを設定する
+$session->setFlash('postDeleted', '投稿の削除に成功しました。');
 
-// Request #2
-// display the flash message named "postDeleted"
+// リクエスト #2
+// "postDeleted" という名前のフラッシュメッセージを表示する
 echo $session->getFlash('postDeleted');
 
-// Request #3
-// $result will be false since the flash message was automatically deleted
+// リクエスト #3
+// フラッシュメッセージは自動的に削除されるので、$result は false になる
 $result = $session->hasFlash('postDeleted');
 ```
 
-Like regular session data, you can store arbitrary data as flash data.
+通常のセッションデータと同様に、任意のデータをフラッシュデータとして保存することが出来ます。
 
-When you call [[yii\web\Session::setFlash()]], it will overwrite any existing flash data that has the same name.
-To append new flash data to an existing message of the same name, you may call [[yii\web\Session::addFlash()]] instead.
-For example:
+[[yii\web\Session::setFlash()]] を呼び出すと、同じ名前の既存のフラッシュデータは上書きされます。
+同じ名前の既存のメッセージに新しいフラッシュデータを追加するためには、代りに [[yii\web\Session::addFlash()]] を使うことが出来ます。
+例えば、
 
 ```php
 $session = Yii::$app->session;
 
-// Request #1
-// add a few flash messages under the name of "alerts"
-$session->addFlash('alerts', 'You have successfully deleted your post.');
-$session->addFlash('alerts', 'You have successfully added a new friend.');
-$session->addFlash('alerts', 'You are promoted.');
+// リクエスト #1
+// "alerts" という名前の下にフラッシュメッセージを追加する
+$session->addFlash('alerts', '投稿の削除に成功しました。');
+$session->addFlash('alerts', '友達の追加に成功しました。');
+$session->addFlash('alerts', 'あなたのレベルが上りました。');
 
-// Request #2
-// $alerts is an array of the flash messages under the name of "alerts"
+// リクエスト #2
+// $alerts は "alerts" という名前の下にあるフラッシュメッセージの配列となる
 $alerts = $session->getFlash('alerts');
 ```
 
-> Note: Try not to use [[yii\web\Session::setFlash()]] together with [[yii\web\Session::addFlash()]] for flash data
-  of the same name. This is because the latter method will automatically turn the flash data into an array so that it
-  can append new flash data of the same name. As a result, when you call [[yii\web\Session::getFlash()]], you may
-  find sometimes you are getting an array while sometimes you are getting a string, depending on the order of
-  the invocation of these two methods.
+> Note|注意: 同じ名前のフラッシュデータに対して、[[yii\web\Session::setFlash()]] と [[yii\web\Session::addFlash()]] を一緒に使わないようにしてください。
+  これは、後者のメソッドが、同じ名前のフラッシュデータを追加できるように、フラッシュデータを自動的に配列に変換するからです。
+  その結果、[[yii\web\Session::getFlash()]] を呼び出したとき、この二つのメソッドの呼び出し順によって、
+  あるときは配列を受け取り、あるときは文字列を受け取るということになってしまいます。
 
 
-## Cookies <a name="cookies"></a>
+## クッキー <a name="cookies"></a>
 
-Yii represents each cookie as an object of [[yii\web\Cookie]]. Both [[yii\web\Request]] and [[yii\web\Response]]
-maintain a collection of cookies via the property named `cookies`. The cookie collection in the former represents
-the cookies submitted in a request, while the cookie collection in the latter represents the cookies that are to
-be sent to the user.
+Yii は個々のクッキーを [[yii\web\Cookie]] のオブジェクトとして表します。[[yii\web\Request]] と [[yii\web\Response]] は、
+ともに、`cookies` という名前のプロパティによって、クッキーのコレクションを保持します。
+後者のクッキーコレクションはリクエストの中で送信されたクッキーを表し、一方、後者のクッキーコレクションは、
+ユーザに送信されることになるクッキーを表します。
 
 
-### Reading Cookies <a name="reading-cookies"></a>
+### クッキーを読み出す <a name="reading-cookies"></a>
 
-You can get the cookies in the current request using the following code:
+現在のリクエストに含まれるクッキーは、下記のコードを使って取得することが出来ます。
 
 ```php
-// get the cookie collection (yii\web\CookieCollection) from the "request" component
+// "request" コンポーネントからクッキーコレクション (yii\web\CookieCollection) を取得する。
 $cookies = Yii::$app->request->cookies;
 
-// get the "language" cookie value. If the cookie does not exist, return "en" as the default value.
+// "language" というクッキーの値を取得する。クッキーが存在しない場合は、デフォルト値として "en" を返す。
 $language = $cookies->getValue('language', 'en');
 
-// an alternative way of getting the "language" cookie value
+// "language" というクッキーの値を取得する別の方法。
 if (($cookie = $cookies->get('language')) !== null) {
     $language = $cookie->value;
 }
 
-// you may also use $cookies like an array
+// $cookies を配列のように使うことも出来る。
 if (isset($cookies['language'])) {
     $language = $cookies['language']->value;
 }
 
-// check if there is a "language" cookie
+// "language" というクッキーが在るかどうかチェックする。
 if ($cookies->has('language')) ...
 if (isset($cookies['language'])) ...
 ```
 
 
-### Sending Cookies <a name="sending-cookies"></a>
+### クッキーを送信する <a name="sending-cookies"></a>
 
-You can send cookies to end users using the following code:
+下記のコードを使って、クッキーをエンドユーザに送信することが出来ます。
 
 ```php
-// get the cookie collection (yii\web\CookieCollection) from the "response" component
+// "response" コンポーネントからクッキーコレクション (yii\web\CookieCollection) を取得する。
 $cookies = Yii::$app->response->cookies;
 
-// add a new cookie to the response to be sent
+// 送信されるレスポンスに新しいクッキーを追加する。
 $cookies->add(new \yii\web\Cookie([
     'name' => 'language',
     'value' => 'zh-CN',
 ]));
 
-// remove a cookie
+// クッキーを削除する。
 $cookies->remove('language');
-// equivalent to the following
+// 次のようにしても同じ。
 unset($cookies['language']);
 ```
 
-Besides the [[yii\web\Cookie::name|name]], [[yii\web\Cookie::value|value]] properties shown in the above
-examples, the [[yii\web\Cookie]] class also defines other properties to fully represent all available cookie 
-information, such as [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. You may configure these
-properties as needed to prepare a cookie and then add it to the response's cookie collection.
+[[yii\web\Cookie]] クラスは、上記の例で示されている [[yii\web\Cookie::name|name]] と [[yii\web\Cookie::value|value]] のプロパティ以外にも、
+[[yii\web\Cookie::domain|domain]] や [[yii\web\Cookie::expire|expire]] など、他のプロパティを定義して、
+利用可能なクッキー情報の全てを完全に表しています。
+クッキーを準備するときに必要に応じてこれらのプロパティを構成してから、レスポンスのクッキーコレクションに追加することが出来ます。
 
-> Note: For better security, the default value of [[yii\web\Cookie::httpOnly]] is set to true. This helps mitigate
-the risk of a client side script accessing the protected cookie (if the browser supports it). You may read
-the [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
+> Note|注意: セキュリティを向上させるために、[[yii\web\Cookie::httpOnly]] のデフォルト値は true に設定されています。
+これは、クライアントサイドスクリプトが保護されたクッキーにアクセスする危険を軽減するものです (ブラウザがサポートしていれば)。
+詳細については、[httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) を読んでください。
 
+### クッキー検証 <a name="cookie-validation"></a>
 
-### Cookie Validation <a name="cookie-validation"></a>
+最後の二つの項で示されているように、`request` と `response` のコンポーネントを通じてクッキーを読んだり送信したりする場合には、
+クッキーがクライアントサイドで修正されるのを防止するクッキー検証という追加のセキュリティを享受することが出来ます。
+これは、個々のクッキーにハッシュ文字列をサインとして追加することによって達成されます。アプリケーションは、
+サインを見て、クッキーがクライアントサイドで修正されたかどうかを知ることが出来ます。もし、修正されていれば、
+そのクッキーは `request` コンポーネントの [[yii\web\Request::cookies|クッキーコレクション]] からはアクセスすることが出来なくなります。
 
-When you are reading and sending cookies through the `request` and `response` components as shown in the last
-two subsections, you enjoy the added security of cookie validation which protects cookies from being modified
-on the client side. This is achieved by signing each cookie with a hash string, which allows the application to
-tell if a cookie has been modified on the client side. If so, the cookie will NOT be accessible through the
-[[yii\web\Request::cookies|cookie collection]] of the `request` component.
+> Note|注意: クッキー検証はクッキーの値が修正されるのを防止するだけです。クッキーが検証に失敗した場合でも、
+  `$_COOKIE` を通じてそれにアクセスすることは引き続いて可能です。これは、サードパーティのライブラリが、クッキー検証を含まない、ライブラリ自体の方法でクッキーを操作し得るためです。
 
-> Note: Cookie validation only protects cookie values from being modified. If a cookie fails the validation, 
-you may still access it through `$_COOKIE`. This is because third-party libraries may manipulate cookies 
-in their own way, which does not involve cookie validation.
+クッキー検証はデフォルトで有効になっています。[[yii\web\Request::enableCookieValidation]] プロパティを false に設定することによって無効にすることが出来ますが、
+無効にしないことを強く推奨します。
 
-Cookie validation is enabled by default. You can disable it by setting the [[yii\web\Request::enableCookieValidation]]
-property to be false, although we strongly recommend you do not do so.
+> Note|注意: `$_COOKIE` と `setcookie()` によって直接に 読み出し/送信 されるクッキーは検証されません。
 
-> Note: Cookies that are directly read/sent via `$_COOKIE` and `setcookie()` will NOT be validated.
-
-When using cookie validation, you must specify a [[yii\web\Request::cookieValidationKey]] that will be used to generate
-the aforementioned hash strings. You can do so by configuring the `request` component in the application configuration:
+クッキー検証を使用する場合は、前述のハッシュ文字列を生成するために使用される [[yii\web\Request::cookieValidationKey]] を指定しなければなりません。
+アプリケーションのコンフィギュレーションで `request` コンポーネントを構成することによって、そうすることが出来ます。
 
 ```php
 return [
     'components' => [
         'request' => [
-            'cookieValidationKey' => 'fill in a secret key here',
+            'cookieValidationKey' => 'ここに秘密のキーを書く',
         ],
     ],
 ];
 ```
 
-> Info: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] is critical to your application's security.
-  It should only be known to people you trust. Do not store it in the version control system.
+> Info|情報: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] は、あなたのアプリケーションにとって、決定的に重要なものです。
+  これは信頼する人にだけ教えるべきものです。バージョンコントロールシステムに保存してはいけません。
