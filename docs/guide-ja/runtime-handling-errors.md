@@ -1,23 +1,22 @@
-Handling Errors
-===============
+エラー処理
+==========
 
-Yii includes a built-in [[yii\web\ErrorHandler|error handler]] which makes error handling a much more pleasant
-experience than before. In particular, the Yii error handler does the followings to improve error handling:
+Yii は、エラー処理を従来よりはるかに快適な経験にしてくれる、内臓の [[yii\web\ErrorHandler|エラーハンドラ]]
+を持っています。具体的には、Yii のエラーハンドラはエラー処理を向上させるために、次のことを行います。
 
-* All non-fatal PHP errors (e.g. warnings, notices) are converted into catchable exceptions.
-* Exceptions and fatal PHP errors are displayed with detailed call stack information and source code lines
-  in debug mode.
-* Supports using a dedicated [controller action](structure-actions.md) to display errors.
-* Supports different error response formats.
+* 致命的でない全ての PHP エラー (警告や通知) は捕捉可能な例外に変換されます。
+* 例外と致命的な PHP エラーは、デバッグモードでは、詳細なコールスタック情報とソースコード行とともに表示されます。
+* エラーを表示するために専用の [コントローラアクション](structure-actions.md) を使うことがサポートされています。
+* さまざまなエラーレスポンス形式をサポートしています。
 
-The [[yii\web\ErrorHandler|error handler]] is enabled by default. You may disable it by defining the constant
-`YII_ENABLE_ERROR_HANDLER` to be false in the [entry script](structure-entry-scripts.md) of your application.
+[[yii\web\ErrorHandler|エラーハンドラ]] は既定で有効になっています。アプリケーションの [エントリスクリプト](structure-entry-scripts.md)
+において、定数 `YII_ENABLE_ERROR_HANDLER` を false と定義することによって、これを無効にすることが出来ます。
 
 
-## Using Error Handler <a name="using-error-handler"></a>
+## エラーハンドラを使用する <a name="using-error-handler"></a>
 
-The [[yii\web\ErrorHandler|error handler]] is registered as an [application component](structure-application-components.md) named `errorHandler`.
-You may configure it in the application configuration like the following:
+[[yii\web\ErrorHandler|エラーハンドラ]] は `errorHandler` という名前の [アプリケーションコンポーネント](structure-application-components.md) です。
+次のように、アプリケーションのコンフィギュレーションでこれをカスタマイズすることが出来ます。
 
 ```php
 return [
@@ -29,10 +28,10 @@ return [
 ];
 ```
 
-With the above configuration, the number of source code lines to be displayed in exception pages will be up to 20.
+上記のコンフィギュレーションによって、例外ページで表示されるソースコードの行数は最大で 20 までとなります。
 
-As aforementioned, the error handler turns all non-fatal PHP errors into catchable exceptions. This means you can
-use the following code to deal with PHP errors:
+既に述べたように、エラーハンドラは致命的でない全ての PHP エラーを捕捉可能な例外に変換します。
+これは、次のようなコードを使って PHP エラーを処理することが出来るということを意味します。
 
 ```php
 use Yii;
@@ -41,16 +40,15 @@ use yii\base\ErrorException;
 try {
     10/0;
 } catch (ErrorException $e) {
-    Yii::warning("Division by zero.");
+    Yii::warning("0 による除算。");
 }
 
-// execution continues...
+// 実行を継続 ...
 ```
 
-If you want to show an error page telling the user that his request is invalid or unexpected, you may simply
-throw an [[yii\web\HttpException|HTTP exception]], such as [[yii\web\NotFoundHttpException]]. The error handler
-will correctly set the HTTP status code of the response and use an appropriate error view to display the error
-message.
+ユーザに対して、リクエストが無効であったり予期しないものであったりすることを知らせるエラーページを表示したい場合は、
+単に [[yii\web\NotFoundHttpException]] のような [[yii\web\HttpException|HTTP 例外]] を投げるだけで済ませることが出来ます。
+エラーハンドラがレスポンスの HTTP ステータスコードを正しく設定し、適切なエラービューを使ってエラーメッセージを表示してくれます。
 
 ```php
 use yii\web\NotFoundHttpException;
@@ -59,32 +57,31 @@ throw new NotFoundHttpException();
 ```
 
 
-## Customizing Error Display <a name="customizing-error-display"></a>
+## エラー表示をカスタマイズする <a name="customizing-error-display"></a>
 
-The [[yii\web\ErrorHandler|error handler]] adjusts the error display according to the value of the constant `YII_DEBUG`.
-When `YII_DEBUG` is true (meaning in debug mode), the error handler will display exceptions with detailed call
-stack information and source code lines to help easier debugging. And when `YII_DEBUG` is false, only the error
-message will be displayed to prevent revealing sensitive information about the application.
+[[yii\web\ErrorHandler|エラーハンドラ]] は、定数 `YII_DEBUG` の値に従って、エラー表示を調整します。
+`YII_DEBUG` が true である (デバッグモードである) 場合は、エラーハンドラは、デバッグがより容易になるように、
+詳細なコールスタック情報とソースコード行とともに例外を表示します。そして、`YII_DEBUG` が false のときは、
+アプリケーションに関する公開できない情報を開示することを防ぐために、エラーメッセージだけが表示されます。
 
-> Info: If an exception is a descendant of [[yii\base\UserException]], no call stack will be displayed regardless
-the value of `YII_DEBUG`. This is because such exceptions are considered to be caused by user mistakes and the
-developers do not need to fix anything.
+> Info|情報: 例外が [[yii\base\UserException]] の子孫である場合は、`YII_DEBUG` の値の如何にかかわらず、コールスタックは表示されません。
+これは、この種の例外はユーザの誤操作によって引き起こされるものであり、開発者は何も修正する必要がないと考えられるからです。
 
-By default, the [[yii\web\ErrorHandler|error handler]] displays errors using two [views](structure-views.md):
+既定では、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [views](structure-views.md) を使ってエラーを表示します。
 
-* `@yii/views/errorHandler/error.php`: used when errors should be displayed WITHOUT call stack information.
-  When `YII_DEBUG` is false, this is the only error view to be displayed.
-* `@yii/views/errorHandler/exception.php`: used when errors should be displayed WITH call stack information.
+* `@yii/views/errorHandler/error.php`: エラーがコールスタック情報なしで表示されるべき場合に使用されます。
+  `YII_DEBUG` が false の場合、これが表示される唯一のビューとなります。
+* `@yii/views/errorHandler/exception.php`: エラーがコールスタック情報と共に表示されるべき場合に使用されます。
 
-You can configure the [[yii\web\ErrorHandler::errorView|errorView]] and [[yii\web\ErrorHandler::exceptionView|exceptionView]]
-properties of the error handler to use your own views to customize the error display.
+エラー表示をカスタマイズするために、エラーハンドラの [[yii\web\ErrorHandler::errorView|errorView]] および
+[[yii\web\ErrorHandler::exceptionView|exceptionView]] プロパティを構成して、自分自身のビューを使用することが出来ます。
 
 
-### Using Error Actions <a name="using-error-actions"></a>
+### エラーアクションを使う <a name="using-error-actions"></a>
 
-A better way of customizing the error display is to use dedicated error [actions](structure-controllers.md).
-To do so, first configure the [[yii\web\ErrorHandler::errorAction|errorAction]] property of the `errorHandler`
-component like the following:
+エラー表示をカスタマイズするためのもっと良い方法は、専用のエラー [アクション](structure-controllers.md) を使うことです。
+そうするためには、まず、`errorHandler` コンポーネントの [[yii\web\ErrorHandler::errorAction|errorAction]]
+プロパティを次のように構成します。
 
 ```php
 return [
@@ -96,11 +93,11 @@ return [
 ];
 ```
 
-The [[yii\web\ErrorHandler::errorAction|errorAction]] property takes a [route](structure-controllers.md#routes)
-to an action. The above configuration states that when an error needs to be displayed without call stack information,
-the `site/error` action should be executed.
+[[yii\web\ErrorHandler::errorAction|errorAction]] プロパティは、アクションへの [ルート](structure-controllers.md#routes) を値として取ります。
+上記のコンフィギュレーションは、エラーをコールスタック情報なしで表示する必要がある場合は、`site/error`
+アクションが実行されるべきであることを記述しています。
 
-You can create the `site/error` action as follows,
+`site/error` アクションは次のようにして作成することが出来ます。
 
 ```php
 namespace app\controllers;
