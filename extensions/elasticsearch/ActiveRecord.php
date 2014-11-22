@@ -244,7 +244,7 @@ class ActiveRecord extends BaseActiveRecord
      * The primaryKey for elasticsearch documents is the `_id` field by default. This field is not part of the
      * ActiveRecord attributes so you should never add `_id` to the list of [[attributes()|attributes]].
      *
-     * You may overide this method to define the primary key name when you have defined
+     * You may override this method to define the primary key name when you have defined
      * [path mapping](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-id-field.html)
      * for the `_id` field so that it is part of the `_source` and thus part of the [[attributes()|attributes]].
      *
