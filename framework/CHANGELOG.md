@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #6049: `yii\db\Connection::getSchema()` for Oracle should return false when the table does not exist. Oracle does not support `ON UPDATE` clause. (wenbin1989)
 - Bug #6107: `yii message` was emptying existing translations in .po in case of multiple categories (samdark)
 - Bug #6112: `yii message` was incorrectly writing not yet translated strings in .po in case of multiple categories (samdark)
+- Bug #6172: `yii\rbac\DbManager` should properly quote table and column names (qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Enh #4181: Added `yii\bootstrap\Modal::$headerOptions` and `yii\bootstrap\Modal::$footerOptions` (tuxoff, samdark)
