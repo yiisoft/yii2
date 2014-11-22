@@ -10,8 +10,8 @@ instance represents the value of a column in that row. Instead of writing raw SQ
 you can work with Active Record in an object-oriented fashion to manipulate the data in database tables.
 
 For example, assume `Customer` is an Active Record class is associated with the `customer` table
-and `name` is a column of `customer` table. You can write the following code to insert a new
-row into `customer` table:
+and `name` is a column of the `customer` table. You can write the following code to insert a new
+row into the `customer` table:
 
 ```php
 $customer = new Customer();
@@ -37,10 +37,10 @@ Below is the list of databases that are currently supported by Yii Active Record
 * Oracle: via [[yii\db\ActiveRecord]]
 * CUBRID 9.3 or later: via [[yii\db\ActiveRecord]] (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
   the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
-* Sphnix: via [[yii\sphinx\ActiveRecord]], requires `yii2-sphinx` extension
-* ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requires `yii2-elasticsearch` extension
-* Redis 2.6.12 or later: via [[yii\redis\ActiveRecord]], requires `yii2-redis` extension
-* MongoDB 1.3.0 or later: via [[yii\mongodb\ActiveRecord]], requires `yii2-mongodb` extension
+* Sphnix: via [[yii\sphinx\ActiveRecord]], requires the `yii2-sphinx` extension
+* ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requires the `yii2-elasticsearch` extension
+* Redis 2.6.12 or later: via [[yii\redis\ActiveRecord]], requires the `yii2-redis` extension
+* MongoDB 1.3.0 or later: via [[yii\mongodb\ActiveRecord]], requires the `yii2-mongodb` extension
 
 As you can see, Yii provides Active Record support for relational databases as well as NoSQL databases.
 In this tutorial, we will mainly describe the usage of Active Record for relational databases.
@@ -60,6 +60,9 @@ use yii\db\ActiveRecord;
 
 class Customer extends ActiveRecord
 {
+    const STATUS_ACTIVE = 'active';
+    const STATUS_DELETED = 'deleted';
+    
     /**
      * @return string the name of the table associated with this ActiveRecord class.
      */
@@ -81,7 +84,7 @@ as the corresponding column name and is case-sensitive.
 To read the value of a column, you can use the following syntax:
 
 ```php
-// "id" and "email" are the names of columns in the table associated with $customer ActiveRecord object
+// "id" and "email" are the names of columns in the table associated with the $customer ActiveRecord object
 $id = $customer->id;
 $email = $customer->email;
 ```
@@ -97,9 +100,9 @@ $customer->save();
 Connecting to Database
 ----------------------
 
-Active Record uses a [[yii\db\Connection|DB connection]] to exchange data with database. By default,
+Active Record uses a [[yii\db\Connection|DB connection]] to exchange data with the database. By default,
 it uses the `db` [application component](structure-application-components.md) as the connection. As explained in [Database basics](db-dao.md),
-you may configure the `db` component in the application configuration file like follows,
+you may configure the `db` component in the application configuration file as follows,
 
 ```php
 return [
@@ -124,7 +127,7 @@ class Customer extends ActiveRecord
 
     public static function getDb()
     {
-        return \Yii::$app->db2;  // use "db2" application component
+        return \Yii::$app->db2;  // use the "db2" application component
     }
 }
 ```
@@ -215,13 +218,13 @@ $customers = Customer::find()
 Note that while this method saves memory and improves performance it is a step to a lower abstraction
 layer and you will loose some features that the active record layer has.
 Fetching data using asArray is nearly equal to running a normal query using the [query builder](db-dao.md).
-When using asArray the result will be returned just as such a query and no typecasting is performed anymore
+When using asArray the result will be returned as a simple array with no typecasting performed 
 so the result may contain string values for fields that are integer when accessed on the active record object.
 
 ### Retrieving Data in Batches
 
-In [Query Builder](db-query-builder.md), we have explained that you may use *batch query* to keep your memory
-usage under a limit when querying a large amount of data from database. You may use the same technique
+In [Query Builder](db-query-builder.md), we have explained that you may use *batch query* to minimize your memory
+usage when querying a large amount of data from the database. You may use the same technique
 in Active Record. For example,
 
 ```php
@@ -288,7 +291,7 @@ Customer::updateAllCounters(['age' => 1]);
 > Info: The `save()` method will call either `insert()` or `update()`, depending on whether
   the Active Record instance is new or not (internally it will check the value of [[yii\db\ActiveRecord::isNewRecord]]).
   If an Active Record is instantiated via the `new` operator, calling `save()` will
-  insert a row in the table; calling `save()` on active record fetched from database will update the corresponding
+  insert a row in the table; calling `save()` on an active record fetched from the database will update the corresponding
   row in the table.
 
 
@@ -302,7 +305,7 @@ and you may call [[yii\base\Model::validate()|validate()]] to trigger data valid
 When you call `save()`, `insert()` or `update()`, these methods will automatically call [[yii\base\Model::validate()|validate()]].
 If the validation fails, the corresponding data saving operation will be cancelled.
 
-The following example shows how to use an Active Record to collect/validate user input and save them into database:
+The following example shows how to use an Active Record to collect/validate user input and save them into the database:
 
 ```php
 // creating a new record
@@ -373,7 +376,7 @@ the following life cycles:
 4. perform the actual data insertion or updating
 5. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event
 
-And Finally when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an ActiveRecord, we will have
+And finally, when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an ActiveRecord, we will have
 the following life cycles:
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event
@@ -434,7 +437,7 @@ $customer = Customer::findOne(1);
 $orders = $customer->orders;  // $orders is an array of Order objects
 ```
 
-Behind the scene, the above code executes the following two SQL queries, one for each line of code:
+Behind the scenes, the above code executes the following two SQL queries, one for each line of code:
 
 ```sql
 SELECT * FROM customer WHERE id=1;
@@ -444,7 +447,7 @@ SELECT * FROM order WHERE customer_id=1;
 > Tip: If you access the expression `$customer->orders` again, it will not perform the second SQL query again.
 The SQL query is only performed the first time when this expression is accessed. Any further
 accesses will only return the previously fetched results that are cached internally. If you want to re-query
-the relational data, simply unset the existing one first: `unset($customer->orders);`.
+the relational data, simply unset the existing expression first: `unset($customer->orders);`.
 
 Sometimes, you may want to pass parameters to a relational query. For example, instead of returning
 all orders of a customer, you may want to return only big orders whose subtotal exceeds a specified amount.
@@ -474,7 +477,7 @@ $orders = $customer->getBigOrders(200)->all();
 
 > Note: A relation method returns an instance of [[yii\db\ActiveQuery]]. If you access the relation like
 an attribute (i.e. a class property), the return value will be the query result of the relation, which could be an instance of [[yii\db\ActiveRecord]],
-an array of that, or null, depending the multiplicity of the relation. For example, `$customer->getOrders()` returns
+an array of that, or null, depending on the multiplicity of the relation. For example, `$customer->getOrders()` returns
 an `ActiveQuery` instance, while `$customer->orders` returns an array of `Order` objects (or an empty array if
 the query results in nothing).
 
@@ -482,7 +485,7 @@ the query results in nothing).
 Relations with Junction Table
 -----------------------------
 
-Sometimes, two tables are related together via an intermediary table called [junction table][]. To declare such relations,
+Sometimes, two tables are related together via an intermediary table called a [junction table][]. To declare such relations,
 we can customize the [[yii\db\ActiveQuery]] object by calling its [[yii\db\ActiveQuery::via()|via()]] or
 [[yii\db\ActiveQuery::viaTable()|viaTable()]] method.
 
