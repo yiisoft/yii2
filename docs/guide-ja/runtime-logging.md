@@ -1,27 +1,26 @@
-Logging
-=======
+ロギング
+========
 
-Yii provides a powerful logging framework that is highly customizable and extensible. Using this framework, you
-can easily log various types of messages, filter them, and gather them at different targets, such as files, databases,
-emails. 
+Yii は高度なカスタマイズ性と拡張性を持った強力なロギングフレームワークを提供しています。このフレームワークを使用すると、
+さまざまな種類のメッセージを記録し、フィルターして、ファイル、データベース、メールなど、さまざまなターゲットに収集することが簡単に出来ます。
 
-Using the Yii logging framework involves the following steps:
+Yii のロギングフレームワークを使うためには、下記のステップを踏みます。
  
-* Record [log messages](#log-messages) at various places in your code;
-* Configure [log targets](#log-targets) in the application configuration to filter and export log messages;
-* Examine the filtered logged messages exported by different targets (e.g. the [Yii debugger](tool-debugger.md)).
+* コードのさまざまな場所で [ログメッセージ](#log-messages) を記録する。
+* アプリケーションのコンフィギュレーションで [ログターゲット](#log-targets) を構成して、ログメッセージをフィルターしてエクスポートする。
+* さまざまなターゲット (例えば [Yii デバッガ](tool-debugger.md)) によって、フィルターされエクスポートされたログメッセージを調査する。
 
-In this section, we will mainly describe the first two steps.
+この節では、主として最初の二つのステップについて説明します。
 
 
-## Log Messages <a name="log-messages"></a>
+## メッセージを記録する <a name="log-messages"></a>
 
-Recording log messages is as simple as calling one of the following logging methods:
+ログメッセージを記録することは、次のログ記録メソッドのどれかを呼び出すだけの簡単なことです。
 
-* [[Yii::trace()]]: record a message to trace how a piece of code runs. This is mainly for development use.
-* [[Yii::info()]]: record a message that conveys some useful information.
-* [[Yii::warning()]]: record a warning message that indicates something unexpected has happened.
-* [[Yii::error()]]: record a fatal error that should be investigated as soon as possible.
+* [[Yii::trace()]]: コードの断片がどのように走るかをトレースするメッセージを記録します。主として開発のために使用します。
+* [[Yii::info()]]: 何らかの有用な情報を伝えるメッセージを記録します。
+* [[Yii::warning()]]: 何か予期しないことが発生したことを示す警告メッセージを記録します。
+* [[Yii::error()]]: 出来るだけ早急に調査すべき致命的なエラーを記録します。
 
 These logging methods record log messages at various *severity levels* and *categories*. They share
 the same function signature `function ($message, $category = 'application')`, where `$message` stands for
