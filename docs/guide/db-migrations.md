@@ -57,7 +57,7 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 ```
 
 Notice that the class name is the same as the file name, and follows the pattern
-`<timestamp>_<name>`, where:
+`m<timestamp>_<name>`, where:
 
 * `<timestamp>` refers to the UTC timestamp (in the
 format of `yymmdd_hhmmss`) when the migration is created,
