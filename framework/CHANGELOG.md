@@ -31,7 +31,7 @@ Yii Framework 2 Change Log
 - Bug #6107: `yii message` was emptying existing translations in .po in case of multiple categories (samdark)
 - Bug #6112: `yii message` was incorrectly writing not yet translated strings in .po in case of multiple categories (samdark)
 - Bug #6172: `yii\rbac\DbManager` should properly quote table and column names (qiangxue)
-- Bug #6164: Added missing support for `yii\db\Exression` QueryBuilder `BETWEEN` and `LIKE` conditions (cebe)
+- Bug #6164: Added missing support for `yii\db\Exression` to QueryBuilder `BETWEEN` and `LIKE` conditions (cebe)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Enh #4181: Added `yii\bootstrap\Modal::$headerOptions` and `yii\bootstrap\Modal::$footerOptions` (tuxoff, samdark)
