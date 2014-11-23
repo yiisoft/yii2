@@ -198,8 +198,10 @@ $customer = Customer::findAll([
 ]);
 ```
 
-> Note: Neither `findOne()` nor `one()` adds `LIMIT 1` to the query so if you need "any active customer"
-  you should add limit manually i.e. `Customer::find()->where(['status' => Customer::STATUS_ACTIVE])->limit(1)->one();`.
+> Note: By default neither `findOne()` nor `one()` will add `LIMIT 1` to the query. This is fine and preferred
+  if you know the query will return only one or a few rows of data (e.g. if you are querying with some primary keys).
+  However, if the query may potentially return many rows of data, you should call `limit(1)` to improve the performance.
+  For example, `Customer::find()->where(['status' => Customer::STATUS_ACTIVE])->limit(1)->one()`.
 
 
 ### Retrieving Data in Arrays
