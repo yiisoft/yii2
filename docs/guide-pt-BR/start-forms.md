@@ -258,9 +258,7 @@ Você pode personalizar um *label* em uma visão utilizando o seguinte código:
 Resumo <a name="summary"></a>
 -------
 
-Nesta seção, você 
-
-In this section of the guide, você tocou em cada parte do padrão de arquitetura MVC. 
+Nesta seção, você tocou em cada parte do padrão de arquitetura MVC. 
 Aprendeu como criar uma classe modelo (model) para representar os dados do usuário 
 e validá-los.
 
