@@ -46,7 +46,24 @@ class Connection extends Component
      * @var array the active node. key of [[nodes]]. Will be randomly selected on [[open()]].
      */
     public $activeNode;
-    // TODO http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
+    /**
+     * @var array Authorization data to use for connecting to an elasticsearch node.
+     * Supported auth types are "Basic", "Digest", "NTLM" and "Any". Default auth type is "Basic".
+     * Example:
+     * ~~~
+     * 'components' => [
+     *      'elasticsearch' => [
+     *          'class' => '\yii\elasticsearch\Connection',
+     *          'auth' => [
+     *              'username',
+     *              'password',
+     *              'Basic'
+     *          ]
+     *      ],
+     * ],
+     * ~~~
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
+     */
     public $auth = [];
     /**
      * @var float timeout to use for connecting to an elasticsearch node.
@@ -341,6 +358,28 @@ class Connection extends Component
             },
             CURLOPT_CUSTOMREQUEST  => $method,
         ];
+        if ($this->auth && count($this->auth) >= 2) {
+            list($authUser, $authPassword) = $this->auth;
+            $authType = isset($this->auth[2]) ? $this->auth[2] : 'Basic';
+            switch ($authType) {
+                case 'Basic':
+                    $options[CURLOPT_HTTPAUTH] = CURLAUTH_BASIC;
+                    $headers['authorization'] = 'Basic ' . base64_encode("$authUser:$authPassword");
+                    break;
+                case 'Digest':
+                    $options[CURLOPT_HTTPAUTH] = CURLAUTH_DIGEST;
+                    break;
+                case 'NTLM':
+                    $options[CURLOPT_HTTPAUTH] = CURLAUTH_NTLM;
+                    break;
+                case 'Any':
+                    $options[CURLOPT_HTTPAUTH] = CURLAUTH_ANY;
+                    break;
+            }
+            if ($authType != 'Basic') {
+                $options[CURLOPT_USERPWD] = "$authUser:$authPassword";
+            }
+        }
         if ($this->connectionTimeout !== null) {
             $options[CURLOPT_CONNECTTIMEOUT] = $this->connectionTimeout;
         }
