@@ -2,13 +2,13 @@
 ========
 
 Yii は高度なカスタマイズ性と拡張性を持った強力なロギングフレームワークを提供しています。このフレームワークを使用すると、
-さまざまな種類のメッセージを記録し、フィルターして、ファイル、データベース、メールなど、さまざまなターゲットに収集することが簡単に出来ます。
+さまざまな種類のメッセージを記録し、フィルタして、ファイル、データベース、メールなど、さまざまなターゲットに収集することが簡単に出来ます。
 
 Yii のロギングフレームワークを使うためには、下記のステップを踏みます。
  
 * コードのさまざまな場所で [ログメッセージ](#log-messages) を記録する。
-* アプリケーションのコンフィギュレーションで [ログターゲット](#log-targets) を構成して、ログメッセージをフィルターしてエクスポートする。
-* さまざまなターゲット (例えば [Yii デバッガ](tool-debugger.md)) によって、フィルターされエクスポートされたログメッセージを調査する。
+* アプリケーションのコンフィギュレーションで [ログターゲット](#log-targets) を構成して、ログメッセージをフィルタしてエクスポートする。
+* さまざまなターゲット (例えば [Yii デバッガ](tool-debugger.md)) によって、フィルタされエクスポートされたログメッセージを調査する。
 
 この節では、主として最初の二つのステップについて説明します。
 
@@ -22,52 +22,51 @@ Yii のロギングフレームワークを使うためには、下記のステ�
 * [[Yii::warning()]]: 何か予期しないことが発生したことを示す警告メッセージを記録します。
 * [[Yii::error()]]: 出来るだけ早急に調査すべき致命的なエラーを記録します。
 
-These logging methods record log messages at various *severity levels* and *categories*. They share
-the same function signature `function ($message, $category = 'application')`, where `$message` stands for
-the log message to be recorded, while `$category` is the category of the log message. The code in the following
-example records a trace message under the default category `application`:
+これらのログ記録メソッドは、ログメッセージをさまざまな *重大性レベル* と *カテゴリ* で記録するものです。
+これらのメソッドは `function ($message, $category = 'application')` という関数シグニチャを共有しており、`$message`
+は記録されるログメッセージを示し、`$category` はログメッセージのカテゴリを示します。
+次のコードサンプルは、トレースメッセージをデフォルトのカテゴリである `application` の下に記録するものです。
 
 ```php
-Yii::trace('start calculating average revenue');
+Yii::trace('平均収益の計算を開始');
 ```
 
-> Info: Log messages can be strings as well as complex data, such as arrays or objects. It is the responsibility
-of [log targets](#log-targets) to properly deal with log messages. By default, if a log message is not a string,
-it will be exported as a string by calling [[yii\helpers\VarDumper::export()]].
+> Info|情報: ログメッセージは文字列でも、配列やオブジェクトのような複雑なデータでも構いません。
+ログメッセージを適切に取り扱うのは [ログターゲット](#log-targets) の責任です。
+既定では、ログメッセージが文字列でない場合は、[[yii\helpers\VarDumper::export()]] が呼ばれて文字列に変換されることになります。
 
-To better organize and filter log messages, it is recommended that you specify an appropriate category for each
-log message. You may choose a hierarchical naming scheme for categories, which will make it easier for 
-[log targets](#log-targets) to filter messages based on their categories. A simple yet effective naming scheme
-is to use the PHP magic constant `__METHOD__` for the category names. This is also the approach used in the core 
-Yii framework code. For example,
+ログメッセージを上手に整理しフィルタするために、すべてのログメッセージにそれぞれ適切なカテゴリを指定することが推奨されます。
+カテゴリに階層的な命名方法を採用すると、[ログターゲット](#log-targets) がカテゴリに基づいてメッセージをフィルタすることが容易になります。
+簡単でしかも効果的な命名方法は、カテゴリ名に PHP のマジック定数 `__METHOD__` を使用することです。
+これは、Yii フレームワークのコアコードでも使われている方法です。例えば、
 
 ```php
-Yii::trace('start calculating average revenue', __METHOD__);
+Yii::trace('平均収益の計算を開始', __METHOD__);
 ```
 
-The `__METHOD__` constant evaluates as the name of the method (prefixed with the fully qualified class name) where 
-the constant appears. For example, it is equal to the string `'app\controllers\RevenueController::calculate'` if 
-the above line of code is called within this method.
+`__METHOD__` という定数は、それが出現する場所のメソッド名 (完全修飾のクラス名が前置されます) として評価されます。
+例えば、上記のコードが `app\controllers\RevenueController::calculate` というメソッドの中で呼ばれている場合は、
+`__METHOD__` は `'app\controllers\RevenueController::calculate'` という文字列と同じになります。
 
-> Info: The logging methods described above are actually shortcuts to the [[yii\log\Logger::log()|log()]] method 
-of the [[yii\log\Logger|logger object]] which is a singleton accessible through the expression `Yii::getLogger()`. When
-enough messages are logged or when the application ends, the logger object will call a  
-[[yii\log\Dispatcher|message dispatcher]] to send recorded log messages to the registered [log targets](#log-targets).
+> Info|情報: 上記で説明したメソッドは、実際には、[[yii\log\Logger|ロガーオブジェクト]] の [[yii\log\Logger::log()|log()]] メソッドへのショートカットです。
+[[yii\log\Logger|ロガーオブジェクト]] は `Yii::getLogger()` という式でアクセス可能なシングルトンです。
+ロガーオブジェクトは、十分な量のメッセージが記録されたとき、または、アプリケーションが終了するときに、[[yii\log\Dispatcher|メッセージディスパッチャ]]
+を呼んで、登録された [ログターゲット](#log-targets) に記録されたログメッセージを送信します。
 
 
-## Log Targets <a name="log-targets"></a>
+## ログターゲット <a name="log-targets"></a>
 
-A log target is an instance of the [[yii\log\Target]] class or its child class. It filters the log messages by their
-severity levels and categories and then exports them to some medium. For example, a  [[yii\log\DbTarget|database target]]
-exports the filtered log messages to a database table, while an [[yii\log\EmailTarget|email target]] exports
-the log messages to specified email addresses.
+ログターゲットは [[yii\log\Target]] クラスまたはその子クラスのインスタンスです。ログターゲットは、
+ログメッセージを重大性レベルとカテゴリによってフィルタして、何らかの媒体にエクスポートします。
+例えば、[[yii\log\DbTarget|データベースターゲット]] は、フィルタされたログメッセージをデータベーステーブルにエクスポートし、
+[[yii\log\EmailTarget|メールターゲット]] は、ログメッセージを指定されたメールアドレスにエクスポートします。
 
-You can register multiple log targets in an application by configuring them through the `log` [application component](structure-application-components.md)
-in the application configuration, like the following:
+一つのアプリケーションの中で複数のログターゲットを登録することが出来ます。そのためには、次のように、
+アプリケーションのコンフィギュレーションの中で、`log` [アプリケーションコンポーネント](structure-application-components.md) によってログターゲットを構成します。
 
 ```php
 return [
-    // the "log" component must be loaded during bootstrapping time
+    // "log" コンポーネントはブートストラップ時にロードされなければならない
     'bootstrap' => ['log'],
     
     'components' => [
@@ -93,59 +92,58 @@ return [
 ];
 ```
 
-> Note: The `log` component must be loaded during [bootstrapping](runtime-bootstrapping.md) time so that
-it can dispatch log messages to targets promptly. That is why it is listed in the `bootstrap` array as shown above.
+> Note|注意: `log` コンポーネントは、ログメッセージをターゲットに即座に送付することが出来るように、
+[ブートストラップ](runtime-bootstrapping.md) 時にロードされなければなりません。
+この理由により、上記の例で示されているように、`bootstrap` の配列に `log` をリストアップしています。
 
-In the above code, two log targets are registered in the [[yii\log\Dispatcher::targets]] property: 
+上記のコードでは、二つのログターゲットが [[yii\log\Dispatcher::targets]] プロパティに登録されています。
 
-* the first target selects error and warning messages and saves them in a database table;
-* the second target selects error messages under the categories whose names start with `yii\db\`, and sends
-  them in an email to both `admin@example.com` and `developer@example.com`.
+* 最初のターゲットは、エラーと警告のメッセージを選択して、データベーステーブルに保存します。
+* 第二のターゲットは、名前が `yii\db\` で始まるカテゴリの下のエラーメッセージを選んで、
+  `admin@example.com` と `developer@example.com` の両方にメールで送信します。
 
-Yii comes with the following built-in log targets. Please refer to the API documentation about these classes to 
-learn how to configure and use them. 
+Yii は下記のログターゲットをあらかじめ内蔵しています。その構成方法と使用方法を学ぶためには、
+これらのクラスの API ドキュメントを参照してください。
 
-* [[yii\log\DbTarget]]: stores log messages in a database table.
-* [[yii\log\EmailTarget]]: sends log messages to pre-specified email addresses.
-* [[yii\log\FileTarget]]: saves log messages in files.
-* [[yii\log\SyslogTarget]]: saves log messages to syslog by calling the PHP function `syslog()`.
+* [[yii\log\DbTarget]]: ログメッセージをデータベーステーブルに保存する。
+* [[yii\log\EmailTarget]]: ログメッセージを事前に指定されたメールアドレスに送信する。
+* [[yii\log\FileTarget]]: ログメッセージをファイルに保存する。
+* [[yii\log\SyslogTarget]]: ログメッセージを PHP 関数 `syslog()` を呼んでシステムログに保存する。
 
-In the following, we will describe the features common to all log targets.
+以下では、全てのターゲットに共通する機能について説明します。
 
   
-### Message Filtering <a name="message-filtering"></a>
+### メッセージのフィルタリング <a name="message-filtering"></a>
 
-For each log target, you can configure its [[yii\log\Target::levels|levels]] and 
-[[yii\log\Target::categories|categories]] properties to specify which severity levels and categories of the messages the target should process.
+全てのログターゲットについて、それぞれ、[[yii\log\Target::levels|levels]] と [[yii\log\Target::categories|categories]]
+のプロパティを構成して、ターゲットが処理すべきメッセージの重要性レベルとカテゴリを指定することが出来ます。
 
-The [[yii\log\Target::levels|levels]] property takes an array consisting of one or several of the following values:
+[[yii\log\Target::levels|levels]] プロパティは、次のレベルの一つまたは複数からなる配列を値として取ります。
 
-* `error`: corresponding to messages logged by [[Yii::error()]].
-* `warning`: corresponding to messages logged by [[Yii::warning()]].
-* `info`: corresponding to messages logged by [[Yii::info()]].
-* `trace`: corresponding to messages logged by [[Yii::trace()]].
-* `profile`: corresponding to messages logged by [[Yii::beginProfile()]] and [[Yii::endProfile()]], which will
-be explained in more details in the [Profiling](#performance-profiling) subsection.
+* `error`: [[Yii::error()]] によって記録されたメッセージに対応。
+* `warning`: [[Yii::warning()]] によって記録されたメッセージに対応。
+* `info`: [[Yii::info()]] によって記録されたメッセージに対応。
+* `trace`: [[Yii::trace()]] によって記録されたメッセージに対応。
+* `profile`: [[Yii::beginProfile()]] と [[Yii::endProfile()]] によって記録されたメッセージに対応。
+  これについては、[プロファイリング](#performance-profiling) の項で詳細に説明します。
 
-If you do not specify the [[yii\log\Target::levels|levels]] property, it means the target will process messages
-of *any* severity level.
+[[yii\log\Target::levels|levels]] プロパティを指定しない場合は、ターゲットが *全ての* 重大性レベルのメッセージを処理することを意味します。
 
-The [[yii\log\Target::categories|categories]] property takes an array consisting of message category names or patterns.
-A target will only process messages whose category can be found or match one of the patterns in this array.
-A category pattern is a category name prefix with an asterisk `*` at its end. A category name matches a category pattern
-if it starts with the same prefix of the pattern. For example, `yii\db\Command::execute` and `yii\db\Command::query`
-are used as category names for the log messages recorded in the [[yii\db\Command]] class. They both match
-the pattern `yii\db\*`.
+[[yii\log\Target::categories|categories]] プロパティは、メッセージカテゴリの名前またはパターンからなる配列を値として取ります。
+ターゲットは、カテゴリの名前がこの配列にあるか、または配列にあるパターンに合致する場合にだけ、メッセージを処理します。
+カテゴリパターンというのは、最後にアスタリスク `*` を持つカテゴリ名接頭辞です。カテゴリ名は、パターンと同じ接頭辞で始まる場合に、カテゴリパターンに合致します。
+例えば、`yii\db\Command::execute` と `yii\db\Command::query` は、[[yii\db\Command]] クラスで記録されるログメッセージのためのカテゴリ名です。
+そして、両者は共に `yii\db\*` というパターンに合致します。
 
-If you do not specify the [[yii\log\Target::categories|categories]] property, it means the target will process
-messages of *any* category.
+[[yii\log\Target::categories|categories]] プロパティを指定しない場合は、ターゲットが *全ての* カテゴリのメッセージを処理することを意味します。
 
-Besides whitelisting the categories by the [[yii\log\Target::categories|categories]] property, you may also
-blacklist certain categories by the [[yii\log\Target::except|except]] property. If the category of a message
-is found or matches one of the patterns in this property, it will NOT be processed by the target.
- 
-The following target configuration specifies that the target should only process error and warning messages
-under the categories whose names match either `yii\db\*` or `yii\web\HttpException:*`, but not `yii\web\HttpException:404`.
+カテゴリを [[yii\log\Target::categories|categories]] プロパティでホワイトリストとして登録する以外に、一定のカテゴリを [[yii\log\Target::except|except]]
+プロパティによってブラックリストとして登録することも可能です。
+カテゴリの名前がこの配列にあるか、または配列にあるパターンに合致する場合は、メッセージはターゲットによって処理されません。
+
+次のターゲットのコンフィギュレーションは、ターゲットが、`yii\db\*` または `yii\web\HttpException:*`
+に合致するカテゴリ名を持つエラーおよび警告のメッセージだけを処理すべきこと、ただし、`yii\web\HttpException:404`
+は除外すべきことを指定するものです。
 
 ```php
 [
@@ -161,9 +159,9 @@ under the categories whose names match either `yii\db\*` or `yii\web\HttpExcepti
 ]
 ```
 
-> Info: When an HTTP exception is caught by the [error handler](runtime-handling-errors.md), an error message
-  will be logged with the category name in the format of `yii\web\HttpException:ErrorCode`. For example,
-  the [[yii\web\NotFoundHttpException]] will cause an error message of category `yii\web\HttpException:404`.
+> Info|情報: HTTP 例外が [エラーハンドラ](runtime-handling-errors.md) によって捕捉されたときは、
+  `yii\web\HttpException:ErrorCode` という書式のカテゴリ名でエラーメッセージがログに記録されます。
+  例えば、[[yii\web\NotFoundHttpException]] は、`yii\web\HttpException:404` というカテゴリのエラーメッセージを発生させます。
 
 
 ### Message Formatting <a name="message-formatting"></a>
