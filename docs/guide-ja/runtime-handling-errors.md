@@ -118,10 +118,9 @@ class SiteController extends Controller
 }
 ```
 
-The above code defines the `error` action using the [[yii\web\ErrorAction]] class which renders an error
-using a view named `error`.
+上記のコードは [[yii\web\ErrorAction]] クラスを使って `error` アクションを定義しています。[[yii\web\ErrorAction]] クラスは `error` という名前のビューを使ってエラーをレンダリングします。
 
-Besides using [[yii\web\ErrorAction]], you may also define the `error` action using an action method like the following,
+[[yii\web\ErrorAction]] を使う以外に、次のようにアクションメソッドを使って `error` アクションを定義することも出来ます。
 
 ```php
 public function actionError()
@@ -133,26 +132,26 @@ public function actionError()
 }
 ```
 
-You should now create a view file located at `views/site/error.php`. In this view file, you can access
-the following variables if the error action is defined as [[yii\web\ErrorAction]]:
+次に `views/site/error.php` に配置されるビューファイルを作成しなければなりません。エラーアクションが [[yii\web\ErrorAction]]
+として定義されている場合は、このビューファイルの中で次の変数にアクセスすることが出来ます。
 
-* `name`: the name of the error;
-* `message`: the error message;
-* `exception`: the exception object through which you can more useful information, such as HTTP status code,
-  error code, error call stack, etc.
+* `name`: エラーの名前。
+* `message`: エラーメッセージ。
+* `exception`: 例外オブジェクト。これを通じて、更に有用な情報、例えば、HTTP ステータスコード、
+エラーコード、エラーコールスタックなどにアクセス出来ます。
 
-> Info: If you are using the [basic application template](start-installation.md) or the [advanced application template](tutorial-advanced-app.md),
-the error action and the error view are already defined for you.
+> Info|情報: あなたが [ベーシックアプリケーションテンプレート](start-installation.md) または
+[アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) を使っている場合は、
+エラーアクションとエラービューは、既にあなたのために定義されています。
 
 
-### Customizing Error Response Format <a name="error-format"></a>
+### エラーのレスポンス形式をカスタマイズする <a name="error-format"></a>
 
-The error handler displays errors according to the format setting of the [response](runtime-responses.md).
-If the the [[yii\web\Response::format|response format]] is `html`, it will use the error or exception view
-to display errors, as described in the last subsection. For other response formats, the error handler will
-assign the array representation of the exception to the [[yii\web\Response::data]] property which will then
-be converted to different formats accordingly. For example, if the response format is `json`, you may see
-the following response:
+エラーハンドラは、[レスポンス](runtime-responses.md) の形式の設定に従ってエラーを表示します。
+[[yii\web\Response::format|レスポンス形式]] が `html` である場合は、直前の項で説明したように、
+エラービューまたは例外ビューを使ってエラーを表示します。その他のレスポンス形式の場合は、
+エラーハンドラは例外の配列表現を [[yii\web\Response::data]] プロパティに代入し、次に `data` プロパティがレスポンス形式に応じて様々な形式に変換されます。
+例えば、レスポンス形式が `json` である場合は、次のようなレスポンスになります。
 
 ```
 HTTP/1.1 404 Not Found
@@ -163,14 +162,14 @@ Content-Type: application/json; charset=UTF-8
 
 {
     "name": "Not Found Exception",
-    "message": "The requested resource was not found.",
+    "message": "リクエストされたリソースは見つかりませんでした。",
     "code": 0,
     "status": 404
 }
 ```
 
-You may customize the error response format by responding to the `beforeSend` event of the `response` component
-in the application configuration:
+エラーのレスポンス形式をカスタマイズするために、アプリケーションのコンフィギュレーションの中で、
+`response` コンポーネントの `beforeSend` イベントに反応するハンドラを構成することが出来ます。
 
 ```php
 return [
@@ -193,7 +192,7 @@ return [
 ];
 ```
 
-The above code will reformat the error response like the following:
+上記のコードは、エラーのレスポンスを以下のようにフォーマットし直すものです。
 
 ```
 HTTP/1.1 200 OK
@@ -206,7 +205,7 @@ Content-Type: application/json; charset=UTF-8
     "success": false,
     "data": {
         "name": "Not Found Exception",
-        "message": "The requested resource was not found.",
+        "message": "リクエストされたリソースは見つかりませんでした。",
         "code": 0,
         "status": 404
     }
