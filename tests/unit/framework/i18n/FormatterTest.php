@@ -582,6 +582,53 @@ class FormatterTest extends TestCase
     }
 
 
+    /**
+     * Test timezones with input date and time in other timezones
+     */
+    public function testTimezoneInputNonDefault()
+    {
+        $this->formatter->datetimeFormat = 'yyyy-MM-dd HH:mm:ss';
+        $this->formatter->dateFormat = 'yyyy-MM-dd';
+        $this->formatter->timeFormat = 'HH:mm:ss';
+
+        $this->formatter->timeZone = 'UTC';
+        $this->formatter->defaultTimeZone = 'UTC';
+        $this->assertSame('2014-08-10 12:41:00', $this->formatter->asDatetime('2014-08-10 12:41:00'));
+        $this->assertSame('2014-08-10', $this->formatter->asDate('2014-08-10 12:41:00'));
+        $this->assertSame('12:41:00', $this->formatter->asTime('2014-08-10 12:41:00'));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp('2014-08-10 12:41:00'));
+
+        $this->assertSame('2014-08-10 10:41:00', $this->formatter->asDatetime('2014-08-10 12:41:00 Europe/Berlin'));
+        $this->assertSame('2014-08-10', $this->formatter->asDate('2014-08-10 12:41:00 Europe/Berlin'));
+        $this->assertSame('10:41:00', $this->formatter->asTime('2014-08-10 12:41:00 Europe/Berlin'));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp('2014-08-10 14:41:00 Europe/Berlin'));
+
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->formatter->defaultTimeZone = 'Europe/Berlin';
+        $this->assertSame('2014-08-10 12:41:00', $this->formatter->asDatetime('2014-08-10 12:41:00'));
+        $this->assertSame('2014-08-10', $this->formatter->asDate('2014-08-10 12:41:00'));
+        $this->assertSame('12:41:00', $this->formatter->asTime('2014-08-10 12:41:00'));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp('2014-08-10 14:41:00'));
+
+        $this->assertSame('2014-08-10 12:41:00', $this->formatter->asDatetime('2014-08-10 12:41:00 Europe/Berlin'));
+        $this->assertSame('2014-08-10', $this->formatter->asDate('2014-08-10 12:41:00 Europe/Berlin'));
+        $this->assertSame('12:41:00', $this->formatter->asTime('2014-08-10 12:41:00 Europe/Berlin'));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp('2014-08-10 14:41:00 Europe/Berlin'));
+
+        $this->formatter->timeZone = 'UTC';
+        $this->formatter->defaultTimeZone = 'Europe/Berlin';
+        $this->assertSame('2014-08-10 10:41:00', $this->formatter->asDatetime('2014-08-10 12:41:00'));
+        $this->assertSame('2014-08-10', $this->formatter->asDate('2014-08-10 12:41:00'));
+        $this->assertSame('10:41:00', $this->formatter->asTime('2014-08-10 12:41:00'));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp('2014-08-10 14:41:00'));
+
+        $this->assertSame('2014-08-10 12:41:00', $this->formatter->asDatetime('2014-08-10 12:41:00 UTC'));
+        $this->assertSame('2014-08-10', $this->formatter->asDate('2014-08-10 12:41:00 UTC'));
+        $this->assertSame('12:41:00', $this->formatter->asTime('2014-08-10 12:41:00 UTC'));
+        $this->assertSame('1407674460', $this->formatter->asTimestamp('2014-08-10 12:41:00 UTC'));
+    }
+
+
     // number format
 
     /**

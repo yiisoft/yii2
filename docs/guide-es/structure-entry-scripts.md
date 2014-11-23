@@ -1,11 +1,18 @@
-﻿Script de Entrada
-=============
+﻿Scripts de Entrada
+==================
 
-El script de entrada es el primer eslabón en el proceso de arranque de la aplicación. Una aplicación (ya sea una aplicación Web o una aplicación de consola) tiene un único script de entrada. Los usuarios finales hacen peticiones al script de entrada que instancia instancias de aplicación y remite la petición a estos.
+Los scripts de entrada son el primer eslabón en el proceso de arranque de la aplicación. Una aplicación (ya sea una 
+aplicación Web o una aplicación de consola) tiene un único script de entrada. Los usuarios finales hacen peticiones al 
+script de entrada que instancia instancias de aplicación y remite la petición a estos.
 
-El script de entrada para aplicaciones Web tiene que estar alojado bajo niveles de directorios accesibles para la Web de manera que puedan ser accesibles para los usuarios. Normalmente se nombra como 'index.php', pero también pueden usar cualquier otro nombre, los servidores Web proporcionados pueden localizarlo.
+Los scripts de entrada para aplicaciones Web tiene que estar alojado bajo niveles de directorios accesibles para la Web 
+de manera que puedan ser accesibles para los usuarios finales. Normalmente se nombra como `index.php`, pero también se 
+pueden usar cualquier otro nombre, los servidores Web proporcionados pueden localizarlo.
 
-El script de entrada para aplicaciones de consola normalmente está alojado bajo la [ruta base](structure-applications.md#yiibaseapplicationbasepathbasepath-) de las aplicaciones y es nombrado como 'yii' (con el sufijo '.php'). Estos deberían ser ejecutables para que los usuarios puedan ejecutar las aplicaciones de consola a través del comando './yii <ruta> [argumentos] [opciones]'.
+El script de entrada para aplicaciones de consola normalmente está alojado bajo la 
+[ruta base](structure-applications.md) de las aplicaciones y es nombrado como `yii` (con el sufijo `.php`). Estos 
+deberían ser ejecutables para que los usuarios puedan ejecutar las aplicaciones de consola a través del comando 
+`./yii <ruta> [argumentos] [opciones]`.
 
 El script de entrada principalmente hace los siguientes trabajos:
 
@@ -78,10 +85,16 @@ exit($exitCode);
 
 El script de entrada es el mejor lugar para definir constantes globales. Yii soporta las siguientes tres constantes:
 
-* `YII_DEBUG`: especifica si la aplicación se está ejecutando en modo depuración. Cuando esta en modo depuración, una aplicación mantendrá más información de registro, y revelará detalladas pilas de errores si se lanza una excepción. Por esta razón, el modo depuración debería ser usado principalmente durante el desarrollo. El valor por defecto de 'YII_DEBUG' es falso.
-* `YII_ENV`: especifica en que entorno se esta ejecutando la aplicación. Se puede encontrar una descripción más detallada en la sección [Configuraciones](concept-configurations.md#environment-constants).
-El Valor por defecto de 'YII_ENV' es ''prod'', que significa que la aplicación se esta ejecutando en el entorno de producción.
-* `YII_ENABLE_ERROR_HANDLER`: especifica si se habilita el gestor de errores proporcionado por Yii. El valor por defecto de esta constante es verdadero.
+* `YII_DEBUG`: especifica si la aplicación se está ejecutando en modo depuración. Cuando esta en modo depuración, una 
+aplicación mantendrá más información de registro, y revelará detalladas pilas de errores si se lanza una excepción. Por 
+esta razón, el modo depuración debería ser usado principalmente durante el desarrollo. El valor por defecto de 
+'YII_DEBUG' es falso.
+* `YII_ENV`: especifica en que entorno se esta ejecutando la aplicación. Se puede encontrar una descripción más 
+detallada en la sección [Configuraciones](concept-configurations.md#environment-constants).
+El Valor por defecto de `YII_ENV` es `'prod'`, que significa que la aplicación se esta ejecutando en el entorno de 
+producción.
+* `YII_ENABLE_ERROR_HANDLER`: especifica si se habilita el gestor de errores proporcionado por Yii. El valor 
+predeterminado de esta constante es verdadero.
 
 Cuando se define una constante, a menudo se usa código como el siguiente:
 
@@ -99,4 +112,5 @@ if (!defined('YII_DEBUG')) {
 
 Claramente el primero es más breve y fácil de entender.
 
-La definición de constantes debería hacerse al principio del script de entrada para que pueda tener efecto cuando se incluyan otros archivos PHP.
+La definición de constantes debería hacerse al principio del script de entrada para que pueda tener efecto cuando se 
+incluyan otros archivos PHP.

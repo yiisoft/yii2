@@ -4,6 +4,7 @@ Yii Framework 2 mongodb extension Change Log
 2.0.1 under development
 -----------------------
 
+- Bug #6026: Fixed `yii\mongodb\ActiveRecord` saves `null` as `_id`, if attributes are empty (klimov-paul)
 - Enh #3855: Added debug toolbar panel for MongoDB (klimov-paul)
 - Enh #5592: Added support for 'findAndModify' operation at `yii\mongodb\Query` and `yii\mongodb\ActiveQuery` (klimov-paul)
 

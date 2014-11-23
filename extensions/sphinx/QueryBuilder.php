@@ -928,7 +928,9 @@ class QueryBuilder extends Object
 
         list($column, $values) = $operands;
 
-        $values = (array) $values;
+        if (!is_array($values)) {
+            $values = [$values];
+        }
 
         if (empty($values)) {
             return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
@@ -947,8 +949,15 @@ class QueryBuilder extends Object
 
         $parts = [];
         foreach ($values as $value) {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
+            if ($value instanceof Expression) {
+                foreach ($value->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $phName = $value->expression;
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
+            }
             $parts[] = "$column $operator $phName";
         }
 

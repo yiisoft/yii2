@@ -118,7 +118,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 > 补充: 如果模块ID和应用组件ID同名，优先使用应用组件ID，如果你想用模块ID，可以使用如下无名称函数返回模块ID。
->```php
+> ```php
 [
     function () {
         return Yii::$app->getModule('user');
@@ -396,7 +396,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 该属性指定临时文件如日志文件、缓存文件等保存路径，默认值为带别名的 `@app/runtime`。
 
 可以配置该属性为一个目录或者路径 [别名](concept-aliases.md)，注意应用运行时有对该路径的写入权限，
-以及终端用户不能访问改路径因为临时文件可能包含一些敏感信息。
+以及终端用户不能访问该路径因为临时文件可能包含一些敏感信息。
 
 为了简化访问该路径，Yii预定义别名 `@runtime` 代表该路径。
 
@@ -451,7 +451,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 例如在事件处理中根据某些参数动态设置[[yii\base\Application::language]]语言属性。
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
 该事件在应用处理请求*after*之后但在返回响应*before*之前触发，实际的事件名为`afterRequest`。
 
@@ -460,7 +460,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 注意 [[yii\web\Response|response]] 组件在发送响应给终端用户时也会触发一些事件，这些事件都在本事件*after*之后触发。
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
 该事件在每个 [控制器动作](structure-controllers.md) 运行*before*之前会被触发，实际的事件名为 `beforeAction`.
 
@@ -483,7 +483,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 任何一个事件处理中设置 [[yii\base\ActionEvent::isValid]] 设置为 `false` 会停止触发后面的事件。
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
+### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
 该事件在每个 [控制器动作](structure-controllers.md) 运行*after*之后会被触发，实际的事件名为 `afterAction`.
 

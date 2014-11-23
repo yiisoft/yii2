@@ -208,3 +208,6 @@ h1:hover .hashlink, h2:hover .hashlink, h3:hover .hashlink, h4:hover .hashlink, 
     width: 100%;
 }
 
+.broken-link {
+    background: lightpink;
+}

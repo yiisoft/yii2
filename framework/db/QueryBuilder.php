@@ -1020,10 +1020,24 @@ class QueryBuilder extends \yii\base\Object
         if (strpos($column, '(') === false) {
             $column = $this->db->quoteColumnName($column);
         }
-        $phName1 = self::PARAM_PREFIX . count($params);
-        $params[$phName1] = $value1;
-        $phName2 = self::PARAM_PREFIX . count($params);
-        $params[$phName2] = $value2;
+        if ($value1 instanceof Expression) {
+            foreach ($value1->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            $phName1 = $value1->expression;
+        } else {
+            $phName1 = self::PARAM_PREFIX . count($params);
+            $params[$phName1] = $value1;
+        }
+        if ($value2 instanceof Expression) {
+            foreach ($value2->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            $phName2 = $value2->expression;
+        } else {
+            $phName2 = self::PARAM_PREFIX . count($params);
+            $params[$phName2] = $value2;
+        }
 
         return "$column $operator $phName1 AND $phName2";
     }
@@ -1181,7 +1195,9 @@ class QueryBuilder extends \yii\base\Object
 
         list($column, $values) = $operands;
 
-        $values = (array) $values;
+        if (!is_array($values)) {
+            $values = [$values];
+        }
 
         if (empty($values)) {
             return $not ? '' : '0=1';
@@ -1193,8 +1209,15 @@ class QueryBuilder extends \yii\base\Object
 
         $parts = [];
         foreach ($values as $value) {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
+            if ($value instanceof Expression) {
+                foreach ($value->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $phName = $value->expression;
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
+            }
             $parts[] = "$column $operator $phName";
         }
 

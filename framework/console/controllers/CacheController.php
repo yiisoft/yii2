@@ -28,6 +28,10 @@ use yii\console\Exception;
  *
  *     yii cache/flush-all
  *
+ * Note that the command uses cache components defined in your console application configuration file. If components
+ * configured are different from web application, web application cache won't be cleared. In order to fix it please
+ * duplicate web application cache components in console config. You can use any component names.
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0

@@ -100,7 +100,7 @@ class PostController extends Controller
 ```
 
 You may customize the namespace of controller classes by configuring the [[yii\base\Module::controllerNamespace]]
-property. In case when some of the controllers are out of this namespace, you may make them accessible
+property. In case some of the controllers are outside of this namespace, you may make them accessible
 by configuring the [[yii\base\Module::controllerMap]] property, similar to [what you do in an application](structure-applications.md#controller-map).
 
 
@@ -162,7 +162,7 @@ $module = MyModuleClass::getInstance();
 
 where `MyModuleClass` refers to the name of the module class that you are interested in. The `getInstance()` method
 will return the currently requested instance of the module class. If the module is not requested, the method will
-return null. Note that You do not want to manually create a new instance of the module class because it will be
+return null. Note that you do not want to manually create a new instance of the module class because it will be
 different from the one created by Yii in response to a request.
 
 > Info: When developing a module, you should not assume the module will use a fixed ID. This is because a module
@@ -183,7 +183,7 @@ $module = \Yii::$app->controller->module;
 The first approach is only useful when you know the module ID, while the second approach is best used when you
 know about the controllers being requested.
 
-Once getting hold of a module instance, you can access parameters or components registered with the module. For example,
+Once you have the module instance, you can access parameters and components registered with the module. For example,
 
 ```php
 $maxPostCount = $module->params['maxPostCount'];
@@ -195,7 +195,7 @@ $maxPostCount = $module->params['maxPostCount'];
 Some modules may need to be run for every request. The [[yii\debug\Module|debug]] module is such an example.
 To do so, list the IDs of such modules in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
 
-For example, the following application configuration makes sure the `debug` module is always load:
+For example, the following application configuration makes sure the `debug` module is always loaded:
 
 ```php
 [
@@ -235,7 +235,7 @@ class Module extends \yii\base\Module
 }
 ```
 
-For a controller within a nested module, its route should include the IDs of all its ancestor module.
+For a controller within a nested module, its route should include the IDs of all its ancestor modules.
 For example, the route `forum/admin/dashboard/index` represents the `index` action of the `dashboard` controller
 in the `admin` module which is a child module of the `forum` module.
 

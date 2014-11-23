@@ -42,7 +42,7 @@ install:
   - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - travis_retry composer install --prefer-dist
+  - travis_retry composer install --prefer-dist --no-interaction
   - tests/unit/data/travis/mongodb-setup.sh
 # TODO: APC currently fails composer. https://github.com/composer/composer/issues/3405
 #  - tests/unit/data/travis/apc-setup.sh

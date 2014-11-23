@@ -286,7 +286,7 @@ class Context extends Component
                 } else {
                     $class->properties[$propertyName] = new PropertyDoc(null, $this, [
                         'name' => $propertyName,
-                        'definedBy' => $class->name,
+                        'definedBy' => $method->definedBy,
                         'sourceFile' => $class->sourceFile,
                         'visibility' => 'public',
                         'isStatic' => false,
@@ -315,7 +315,7 @@ class Context extends Component
                     $param = $this->getFirstNotOptionalParameter($method);
                     $class->properties[$propertyName] = new PropertyDoc(null, $this, [
                         'name' => $propertyName,
-                        'definedBy' => $class->name,
+                        'definedBy' => $method->definedBy,
                         'sourceFile' => $class->sourceFile,
                         'visibility' => 'public',
                         'isStatic' => false,

@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'just now' => 'управо сада',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Само следећи MIME типови су дозвољени: {mimeTypes}.',
     'The requested view "{name}" was not found.' => 'Тражени приказ "{name}" није пронађен.',
     'in {delta, plural, =1{a day} other{# days}}' => 'за {delta, plural, =1{дан} one{# дан} few{# дана} many{# дана} other{# дана}}',

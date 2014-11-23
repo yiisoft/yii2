@@ -275,4 +275,18 @@ class ActiveRecordTest extends MongoDbTestCase
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals($newName, $customer->name);
     }
+
+    /**
+     * @depends testInsert
+     *
+     * @see https://github.com/yiisoft/yii2/issues/6026
+     */
+    public function testInsertEmptyAttributes()
+    {
+        $record = new Customer();
+        $record->save(false);
+
+        $this->assertTrue($record->_id instanceof \MongoId);
+        $this->assertFalse($record->isNewRecord);
+    }
 }

@@ -153,7 +153,7 @@ Por exemplo,
   o componente será usado durante o processo de inicialização. Se você quiser
   usar o módulo ao invés dele, você pode especificá-lo usando uma função anônima
   conforme a seguir:
->```php
+> ```php
 [
     function () {
         return Yii::$app->getModule('user');

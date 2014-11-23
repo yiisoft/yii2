@@ -26,6 +26,10 @@ class ApiController extends BaseController
      * @var string url to where the guide files are located
      */
     public $guide;
+    /**
+     * @var string prefix to prepend to all guide file names.
+     */
+    public $guidePrefix = 'guide-';
 
 
     // TODO add force update option
@@ -44,6 +48,7 @@ class ApiController extends BaseController
         }
 
         $renderer->apiUrl = './';
+        $renderer->guidePrefix = $this->guidePrefix;
 
         // setup reference to guide
         if ($this->guide !== null) {
@@ -51,11 +56,11 @@ class ApiController extends BaseController
         } else {
             $guideUrl = './';
             $renderer->guideUrl = $targetDir;
-        }
-        if (file_exists($renderer->generateGuideUrl('README.md'))) {
-            $renderer->guideUrl = $guideUrl;
-        } else {
-            $renderer->guideUrl = null;
+            if (file_exists($renderer->generateGuideUrl('README.md'))) {
+                $renderer->guideUrl = $guideUrl;
+            } else {
+                $renderer->guideUrl = null;
+            }
         }
 
         // search for files to process
@@ -157,6 +162,6 @@ class ApiController extends BaseController
      */
     public function options($actionID)
     {
-        return array_merge(parent::options($actionID), ['template', 'guide']);
+        return array_merge(parent::options($actionID), ['guide', 'guidePrefix']);
     }
 }
