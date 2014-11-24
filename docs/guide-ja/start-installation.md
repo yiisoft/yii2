@@ -25,7 +25,7 @@ Composer は `composer self-update` コマンドを走らせてアップデー�
 
 Composer がインストールされたら、ウェブからアクセスできるフォルダーで下記のコマンドを実行することによって Yii をインストールすることが出来ます:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 最初のコマンドは [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
