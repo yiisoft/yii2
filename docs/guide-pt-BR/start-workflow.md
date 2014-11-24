@@ -7,7 +7,7 @@ dependendo da sua configuração. Esta seção introduzirá a funcionalidade emb
 da aplicação, como o código é organizado, e como a aplicação manuseia as requisições
 em geral.
 
-> Info: Por questões de simpicidade, por todo este tutorial de "Primeiros Passos"
+> Info: Por questões de simplicidade, por todo este tutorial de "Primeiros Passos"
   assume-se que você definiu `basic/web` como a raiz de documentos do seu
   servidor Web, e configurou a URL de acesso de sua aplicação como `http://hostname/index.php`
   ou algo semelhantes. Por favor ajuste as URLs em nossas descrições às suas
@@ -91,7 +91,7 @@ O diagrama a seguir demonstra como uma aplicação gerencia uma requisição.
 
 ![Ciclo de Vida da Requisição](images/request-lifecycle.png)
 
-1. Um usuário faz uma requisiçao ao [script de entrada](structure-entry-scripts.md) `web/index.php`.
+1. Um usuário faz uma requisição ao [script de entrada](structure-entry-scripts.md) `web/index.php`.
 2. O script de entrada carrega a [configuração](concept-configurations.md) da
    aplicação e cria uma instância da [aplicação](structure-applications.md) para
    gerenciar a requisição.
