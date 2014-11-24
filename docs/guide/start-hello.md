@@ -134,7 +134,7 @@ the `SiteController::actionSay()` method will be called to handle the request.
 Summary <a name="summary"></a>
 -------
 
-In this section, you have touched the controller and view parts of the MVC design pattern.
+In this section, you have touched the controller and view parts of the MVC architecture pattern.
 You created an action as part of a controller to handle a specific request. And you also created a view
 to compose the response's content. In this simple example, no model was involved as the only data used was the `message` parameter.
 

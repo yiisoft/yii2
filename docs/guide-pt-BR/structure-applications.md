@@ -229,7 +229,7 @@ que você pode usar em outros lugares. Por exemplo,
 ]
 ```
 
-Cada componente da aplicação é especiifcado como um par de chave-valor em um array.
+Cada componente da aplicação é especificado como um par de chave-valor em um array.
 A chave representa o ID do componente, enquanto o valor representa o nome ou a
 [configuração](concept-configurations.md) da classe do componente.
 
@@ -398,7 +398,7 @@ Mais detalhes sobre essa propriedade podem ser encontrados na seção
 #### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
 
 Essa propriedade é disponibilizada como uma maneira alternativa de definir a
-timezone do PHP em tempo de execução. Ao confiugrar essa propriedade, você está
+timezone do PHP em tempo de execução. Ao configurar essa propriedade, você está
 essencialmente chamando a função
 [date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)
 do PHP. Por exemplo,
@@ -419,7 +419,7 @@ a está usando.
 
 ### Propriedades Úteis <a name="useful-properties"></a>
 
-As propriedades descritas nesta sub-seção não são comumente configuradas porque
+As propriedades descritas nesta subseção não são comumente configuradas porque
 seus valores padrão estipulam convenções comuns. No entanto, você pode ainda
 configurá-las no caso de querer quebrar as convenções.
 
