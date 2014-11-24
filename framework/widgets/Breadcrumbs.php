@@ -162,7 +162,7 @@ class Breadcrumbs extends Widget
         }
         if (isset($link['url'])) {
             $options = $link;
-            unset($options['template'], $options['label'], $options['url']);
+            unset($options['template'], $options['label'], $options['url'], $options['encode']);
             $link = Html::a($label, $link['url'], $options);
         } else {
             $link = $label;
