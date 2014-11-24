@@ -35,9 +35,9 @@ em um diretório acessível pela Web:
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 O primeiro comando instaka o [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-o que permite gerenciar dependencias via bower e npm package por meio do Composer.
+o que permite gerenciar dependências via bower e npm package por meio do Composer.
 Você apenas precisa rodar este comando uma vez. O segundo comando instala o Yii
-em um diretório chamado `basic`. Você pode escolher um diretório diferente se quizer.
+em um diretório chamado `basic`. Você pode escolher um diretório diferente se quiser.
 
 > Nota: Durante a instalação do Yii pode acontecer que o Composer peça suas 
 > credenciais de login do Github por ultrapassar taxa limite (rate-limit) da API do Github.
@@ -130,7 +130,7 @@ dados MySQL), se a sua aplicação precisar de um banco de dados.
 Configurando os Servidores Web <a name="configuring-web-servers"></a>
 ------------------------------
 
-> Informação: Você pode pular essa sub-seção se só estiver fazendo um test drive do Yii
+> Informação: Você pode pular essa subseção se só estiver fazendo um test drive do Yii
   sem a intenção de publicá-lo em um servidor de produção.
 
 A aplicação instalada de acordo com as instruções acima deve funcionar imediatamente 
