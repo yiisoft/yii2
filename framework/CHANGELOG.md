@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.1 under development
 -----------------------
 
+- Enh #6106: `yii\widgets\Breadcrumbs` added support for `encode` item's config option (aleksanderd)
 - Bug #4471: `yii\caching\ApcCache::getValues()` now returns array in case of APC is installed but not enabled in CLI mode (samdark, cebe)
 - Bug #4823: `yii message` accuracy and error handling were improved (samdark)
 - Bug #4889: Application was getting into redirect loop when user wasn't allowed accessing login page. Now shows 403 (samdark)
