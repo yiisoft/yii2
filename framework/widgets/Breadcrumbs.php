@@ -82,6 +82,8 @@ class Breadcrumbs extends Widget
      * ```php
      * [
      *     'label' => 'label of the link',  // required
+     *     'encode' => true, // optional, whether this item`s label should be HTML-encoded. This param will
+     *                       // override global [[encodeLabels]] param.
      *     'url' => 'url of the link',      // optional, will be processed by Url::to()
      *     'template' => 'own template of the item', // optional, if not set $this->itemTemplate will be used
      * ]
