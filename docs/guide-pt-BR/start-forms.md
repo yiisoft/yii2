@@ -3,7 +3,7 @@ Trabalhando com Formulários
 
 Nesta seção descreve como se cria uma nova página com um formulário para obter
 dados a partir dos usuários. A página exibirá uma formulário com um campo para 
-o nome e uma para o email. Depois de obter essas duas informações a partir do 
+o nome e uma para o e-mail. Depois de obter essas duas informações a partir do 
 usuário, a página exibirá os valores inseridos de volta para a confirmação.
 
 Para atingir este objetivo, além de criar uma [ação](structure-controllers.md) (action) e 
@@ -46,7 +46,7 @@ class EntryForm extends Model
 }
 ```
 
-A classe extende de [[yii\base\Model]], uma classe base fornecida pelo Yii, 
+A classe estende de [[yii\base\Model]], uma classe base fornecida pelo Yii, 
 comumente usados para representar dados do formulário.
 
 > Informação: O [[yii\base\Model]] é usado como pai das classes modelos que *não* 
@@ -60,7 +60,7 @@ chamado `rules()`, que retorna um conjunto de regras para validação dos dados.
 As regras de validação declaradas no código acima permitem que:
 
 * tanto os valores do `name` quanto do `email` sejam obrigatórios
-* os dados do `email` devem ser um email válido sintaticamente
+* os dados do `email` devem ser um e-mail válido sintaticamente
 
 Se você tiver um objeto `EntryForm` populado com dados fornecidos pelo usuário,
 você pode chamar o [[yii\base\Model::validate()|validate()]] para iniciar as 
@@ -206,12 +206,12 @@ http://hostname/index.php?r=site/entry
 
 Você verá uma página exibindo um formulário com dois campos de entrada. Na frente 
 de cada campo, um *label* indicando quais dados devem ser inseridos. Se você clicar
-no botão de enviar sem niformar nenhum dado, ou se você não fornecer um email 
+no botão de enviar sem informar nenhum dado, ou se você não fornecer um e-mail 
 válido, você verá uma mensagem de erro após cada campo de entrada.
 
 ![Form with Validation Errors](images/start-form-validation.png)
 
-Após informar um nome e email válidos e clicar no botão de enviar, você verá uma 
+Após informar um nome e e-mail válidos e clicar no botão de enviar, você verá uma 
 nova página exibindo os dados informados por você.
 
 ![Confirmation of Data Entry](images/start-entry-confirmation.png)
@@ -220,7 +220,7 @@ nova página exibindo os dados informados por você.
 
 ### Explicação da Mágica <a name="magic-explained"></a>
 
-Você pode querer saber como o fomulário HTML trabalha por baixo dos panos, porque 
+Você pode querer saber como o formulário HTML trabalha por baixo dos panos, porque 
 parece quase mágica exibir um *label* para cada campo de entrada e mostrar mensagens
 de erro quando você não informa dados corretos sem recarregar a página.
 
@@ -262,7 +262,7 @@ Nesta seção, você tocou em cada parte do padrão de arquitetura MVC.
 Aprendeu como criar uma classe modelo (model) para representar os dados do usuário 
 e validá-los.
 
-Também aprendeu como obter os dados enviados pelos usuários e como exibí-los de
+Também aprendeu como obter os dados enviados pelos usuários e como exibi-los de
 volta no navegador. Esta é uma tarefa que poderia levar muito tempo ao desenvolver
 uma aplicação, mas o Yii fornece widgets inteligentes para gerar estas tarefas de 
 forma simples.
