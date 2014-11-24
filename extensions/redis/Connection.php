@@ -248,8 +248,13 @@ class Connection extends Component
         }
         $connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
         \Yii::trace('Opening redis DB connection: ' . $connection, __METHOD__);
+        if($this->hostname[0] === '/') {
+            $remoteSocket = 'unix://' . $this->hostname;
+        } else {
+            $remoteSocket = 'tcp://' . $this->hostname . ':' . $this->port;
+        }
         $this->_socket = @stream_socket_client(
-            'tcp://' . $this->hostname . ':' . $this->port,
+            $remoteSocket,
             $errorNumber,
             $errorDescription,
             $this->connectionTimeout ? $this->connectionTimeout : ini_get("default_socket_timeout")
