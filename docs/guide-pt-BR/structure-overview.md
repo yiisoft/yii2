@@ -15,7 +15,7 @@ Além do MVC, as aplicações do Yii também possuem as seguintes entidades:
   ciclo de tratamento de uma requisição.
 * [aplicações](structure-applications.md): são objetos globalmente acessíveis que
   gerenciam os componentes da aplicação e os coordenam para atender às requisições.
-* [componentes de aplicação](structure-application-components.md): são objetos
+* [componentes da aplicação](structure-application-components.md): são objetos
   registrados com as aplicações e fornecem vários serviços para atender às
   requisições.
 * [módulos](structure-modules.md): são pacotes auto-contidos que contém um MVC
