@@ -12,11 +12,11 @@ Através deste tutorial, você aprenderá como:
 * Configurar uma conexão de BD
 * Definir uma classe de Active Record
 * Consultar dados usando a classe de Active Record
-* Exibir dados em uma view de modo paginado
+* Exibir dados em uma view de forma paginada
 
 Perceba que para terminar essa seção, você deve ter conhecimento e experiência
 básica usando bancos de dados. Em particular, você deveria saber como criar um
-banco de dados, e como executar declarações SQL usando uma ferramente de cliente
+banco de dados, e como executar instruções SQL usando uma ferramenta de cliente
 de BD.
 
 
@@ -86,7 +86,7 @@ através da qual você pode fazer consultas de SQL ao banco de dados subjacente.
 A conexão de BD configurada acima pode ser acessada no código da aplicação
 através da expressão `Yii::$app->db`.
 
-> Info: O arquivo `config/db.php` será incluso pela configuração principal da
+> Informação: O arquivo `config/db.php` será incluso pela configuração principal da
   aplicação `config/web.php`, que especifica como a instância da [aplicação](structure-applications.md)
   deverá ser inicializada. Para mais informações, por favor consulte a seção sobre [Configurações](concept-configurations.md).
 
@@ -114,7 +114,7 @@ A classe `Country` estende de [[yii\db\ActiveRecord]]. Você não precisa escrev
 nenhum código nela! Só com o código acima, o Yii adivinhará o nome da tabela
 associada a partir do nome da classe.
 
-> Info: Se não houver nenhuma correspondência direta do nome da classe com o nome
+> Informação: Se não houver nenhuma correspondência direta do nome da classe com o nome
   da tabela, você pode sobrescrever o método [[yii\db\ActiveRecord::tableName()]] 
   para especificar explicitamente o nome da tabela associada.
 
@@ -138,8 +138,8 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info: O Active Record é uma maneira poderosa de acessar e manipular os dados
-  do banco de dados de um modo orientado a objeto. Você pode encontrar informações
+> Informação: O Active Record é uma maneira poderosa de acessar e manipular os dados
+  do banco de dados de uma forma orientada a objeto. Você pode encontrar informações
   mais detalhadas na seção [Active Record](db-active-record.md). Alternativamente,
   você também pode interagir com o banco de dados usando um método de acesso aos
   dados de baixo nível chamado [Data Access Objects](db-dao.md).
@@ -242,7 +242,7 @@ os dados dos países com a página correspondente.
 Testando <a name="trying-it-out"></a>
 --------
 
-Para verificar se todo o código acima funciona, use o seu navegador para
+Para verificar se todo os códigos acima funcionam, use o seu navegador para
 acessar a seguinte URL:
 
 ```
