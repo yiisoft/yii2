@@ -14,7 +14,7 @@ Através desse tutorial, você irá aprender a:
 Começando a usar o Gii <a name="starting-gii"></a>
 ------------
 
-[Gii](tool-gii.md) é fornecido com o Yii como um [módulo](structure-modules.md). Você pode habilitar o Gii ao configurá-lo na propriedade [[yii\base\Application::modules|modules]] da aplicação. Dependendo de como você criou sua aplicação, você pode já encontrar o seguinte código no arquivo de configuração `config/web.php`:
+O [Gii](tool-gii.md) é fornecido com o Yii como um [módulo](structure-modules.md). Você pode habilitar o Gii ao configurá-lo na propriedade [[yii\base\Application::modules|modules]] da aplicação. Dependendo de como você criou sua aplicação, você pode já encontrar o seguinte código no arquivo de configuração `config/web.php`:
 
 ```php
 $config = [ ... ];
@@ -68,7 +68,7 @@ Ao usar o Gii, se você já havia criado o mesmo arquivo e pretende sobrescrevê
 
 ![Pré-visualização do Gerador de Modelo](images/start-gii-model-preview.png)
 
-Quando estiver sobrescrevendo um arquivo, marque a caixa próxima a "sobrescrever" e clique no botão "Gerar". Se estiver criando um arquivo novo, apenas clique em "Gerar".
+Quando estiver sobrescrevendo um arquivo, marque a caixa próxima a "overwrite" (sobrescrever) e clique no botão "Generate". Se estiver criando um arquivo novo, apenas clique em "Generate".
 
 Em seguida, você verá uma página de confirmação indicando que o código foi gerado com sucesso. Se você já tinha um arquivo, também verá uma mensagem indicando que ele foi sobrescrito com o novo código.
 
@@ -76,7 +76,7 @@ Em seguida, você verá uma página de confirmação indicando que o código foi
 Gerando código CRUD <a name="generating-crud"></a>
 --------------------
 
-CRUD corresponde a Create, Read, Update, and Delete (criar, ler, atualizar e apagar), representando as quatro tarefas comuns feitas com os dados na maioria dos sites. Para criar funcionalidades CRUD usando o Gii, selecione "Gerador CRUD" clicando no link na página inicial do Gii. Seguindo o exemplo "country", preencha o formulário com as seguintes informações:
+CRUD corresponde a Create, Read, Update, and Delete (criar, ler, atualizar e apagar), representando as quatro tarefas comuns feitas com os dados na maioria dos sites. Para criar funcionalidades CRUD usando o Gii, selecione "CRUD Generator" clicando no link na página inicial do Gii. Seguindo o exemplo "country", preencha o formulário com as seguintes informações:
 
 * Classe do Modelo: `app\models\Country`
 * Classe da Busca: `app\models\CountrySearch`
@@ -116,7 +116,7 @@ Essa é uma lista de arquivos gerados pelo Gii, caso você queira investigar com
 * Modelo: `models/Country.php` e `models/CountrySearch.php`
 * Views: `views/country/*.php`
 
-> Info: o Gii é projetado para ser uma ferramenta altamente adaptável e extensível. Usando-o sabiamente, você irá acelerar o desenvolvimento da sua aplicação. Para mais detalhes, por favor siga para a seção [Gii](tool-gii.md).
+> Informação: o Gii é projetado para ser uma ferramenta altamente adaptável e extensível. Usando-o sabiamente, você irá acelerar o desenvolvimento da sua aplicação. Para mais detalhes, por favor siga para a seção [Gii](tool-gii.md).
 
 
 Resumo <a name="summary"></a>
