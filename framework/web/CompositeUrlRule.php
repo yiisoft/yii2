@@ -60,7 +60,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     /**
      * @inheritdoc
      */
-    public function createUrl($manager, $route, $params)
+    public function createUrl($manager, $route, &$params)
     {
         foreach ($this->rules as $rule) {
             /* @var $rule \yii\web\UrlRule */
