@@ -54,7 +54,7 @@ All Rights Reserved.
 * [レスポンス](runtime-responses.md)
 * [セッションとクッキー](runtime-sessions-cookies.md)
 * [エラー処理](runtime-handling-errors.md)
-* [ログ](runtime-logging.md)
+* [ロギング](runtime-logging.md)
 
 
 鍵となる概念
