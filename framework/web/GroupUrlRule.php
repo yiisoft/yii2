@@ -127,7 +127,7 @@ class GroupUrlRule extends CompositeUrlRule
     /**
      * @inheritdoc
      */
-    public function createUrl($manager, $route, $params)
+    public function createUrl($manager, $route, &$params)
     {
         if ($this->routePrefix === '' || strpos($route, $this->routePrefix . '/') === 0) {
             return parent::createUrl($manager, $route, $params);
