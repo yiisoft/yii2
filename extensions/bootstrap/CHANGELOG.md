@@ -4,6 +4,7 @@ Yii Framework 2 bootstrap extension Change Log
 2.0.1 under development
 -----------------------
 
+- Bug #6150: Fixed unique id generating for dropdown's items in Tabs widget (aleksanderd)
 - Bug #5570: `yii\bootstrap\Tabs` would throw an exception if `content` is not set for one of its `items` (RomeroMsk)
 - Enh #4181: Added `yii\bootstrap\Modal::$headerOptions` and `yii\bootstrap\Modal::$footerOptions` (tuxoff, samdark)
 - Enh #4450: Added `yii\bootstrap\Nav::renderDropdown()` (qiangxue)
