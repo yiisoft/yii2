@@ -16,7 +16,7 @@ Através deste tutorial, você aprenderá como:
 
 Perceba que para terminar essa seção, você deve ter conhecimento e experiência
 básica usando bancos de dados. Em particular, você deveria saber como criar um
-banco de dados, e como executar instruções SQL usando uma ferramente de cliente
+banco de dados, e como executar instruções SQL usando uma ferramenta de cliente
 de BD.
 
 
