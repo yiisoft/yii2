@@ -233,6 +233,7 @@ class AssetManager extends Component
     {
         if (!isset($this->_dummyBundles[$name])) {
             $this->_dummyBundles[$name] = $this->loadBundle($name, [
+                'sourcePath' => null,
                 'js' => [],
                 'css' => [],
                 'depends' => [],
