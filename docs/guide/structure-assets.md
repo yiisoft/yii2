@@ -146,7 +146,7 @@ they are called by the [view](structure-views.md) to include CSS and JavaScript 
   use different options for different files, you should create separate asset bundles, and use one set of options
   in each bundle.
 
-For example, to conditionally include a CSS file for browsers that are IE9 or above, you can use the following option:
+For example, to conditionally include a CSS file for browsers that are IE9 or below, you can use the following option:
 
 ```php
 public $cssOptions = ['condition' => 'lte IE9'];
