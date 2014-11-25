@@ -21,6 +21,12 @@ class Schema extends \yii\db\Schema
      * @var string the default schema used for the current session.
      */
     public $defaultSchema = 'dbo';
+
+    /**
+     * @var boolean used to reference if the database has access to sys.extended_properties
+     */
+    private $_isAzure = false;
+
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
@@ -185,7 +191,11 @@ class Schema extends \yii\db\Schema
         $column->isPrimaryKey = null; // primary key will be determined in findColumns() method
         $column->autoIncrement = $info['is_identity'] == 1;
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
-        $column->comment = $info['comment'] === null ? '' : $info['comment'];
+        if ($this->_isAzure === true) {
+            $column->comment = '';
+        } else {
+            $column->comment = $info['comment'] === null ? '' : $info['comment'];
+        }
 
         $column->type = self::TYPE_STRING;
         if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
@@ -240,7 +250,13 @@ class Schema extends \yii\db\Schema
             $whereSql .= " AND [t1].[table_schema] = '{$table->schemaName}'";
         }
         $columnsTableName = $this->quoteTableName($columnsTableName);
-
+        $sql = "SELECT TOP 1 * FROM [sys].[extended_properties]";
+        try {
+            $testAzure = $this->db->createCommand($sql)->queryAll();
+        } catch (\Exception $e) {
+            $this->_isAzure = true;
+        }
+        if ($this->_isAzure === false) {
         $sql = <<<SQL
 SELECT
     [t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
@@ -255,7 +271,15 @@ LEFT OUTER JOIN [sys].[extended_properties] AS [t2] ON
     [t2].[name] = 'MS_Description'
 WHERE {$whereSql}
 SQL;
-
+        } else {
+$sql = <<<SQL
+SELECT
+    [t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
+    COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity
+FROM {$columnsTableName} AS [t1]
+WHERE {$whereSql}
+SQL;
+        }
         try {
             $columns = $this->db->createCommand($sql)->queryAll();
             if (empty($columns)) {
