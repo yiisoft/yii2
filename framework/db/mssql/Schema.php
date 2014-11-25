@@ -257,7 +257,7 @@ class Schema extends \yii\db\Schema
             $this->_isAzure = true;
         }
         if ($this->_isAzure === false) {
-        $sql = <<<SQL
+            $sql = <<<SQL
 SELECT
     [t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
     COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
@@ -272,7 +272,7 @@ LEFT OUTER JOIN [sys].[extended_properties] AS [t2] ON
 WHERE {$whereSql}
 SQL;
         } else {
-$sql = <<<SQL
+            $sql = <<<SQL
 SELECT
     [t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
     COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity
