@@ -98,7 +98,7 @@ class BaseStringHelper
      * @param integer $length How many characters from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.
      * @param string $encoding The charset to use, defaults to charset currently used by application.
-     * @param boolean $asHtml If the string contains HTML set this to true to preserve it.
+     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags
      * @return string the truncated string.
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
@@ -120,7 +120,7 @@ class BaseStringHelper
      * @param string $string The string to truncate.
      * @param integer $count How many words from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.
-     * @param boolean $asHtml If the string contains HTML set this to true to preserve it.
+     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags
      * @return string the truncated string.
      */
     public static function truncateWords($string, $count, $suffix = '...', $asHtml = false)
@@ -143,10 +143,10 @@ class BaseStringHelper
      * @param string $string The string to truncate
      * @param integer $count
      * @param string $suffix String to append to the end of the truncated string.
-     * @param string $encoding
+     * @param string|boolean $encoding
      * @return string
      */
-    private static function truncateHtml($string, $count, $suffix, $encoding = false)
+    protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
         $config = \HTMLPurifier_Config::create(null);
         $lexer = \HTMLPurifier_Lexer::create($config);

@@ -58,6 +58,7 @@ Yii Framework 2 Change Log
 - Enh #5954: `yii message` command now shows user friendly error if it's not able to parse source file (samdark)
 - Enh #5983: Added `Inflector::sentence()` (pana1990, qiangxue)
 - Enh #6113: Improved debugger configuration and request UI (schmunk42)
+- Enh #6207: Added support for truncating HTML strings using `StringHelper::truncate()` and `StringHelper::truncateWords()` (Alex-Code)
 - Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
 - Enh: `yii\rbac\DbManager` migration now uses database component specified in component settings instead of always using default `db` (samdark)
 - Enh: Added `yii\base\Controller::renderContent()` (qiangxue)
