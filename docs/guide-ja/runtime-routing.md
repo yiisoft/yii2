@@ -573,19 +573,11 @@ public function bootstrap($app)
 ```php
 namespace app\components;
 
-use yii\web\UrlRule;
+use yii\web\UrlRuleInterface;
+use yii\base\Object;
 
-class CarUrlRule extends UrlRule
+class CarUrlRule extends Object implements UrlRuleInterface
 {
-    public $db = 'db';
-
-    public function init()
-    {
-        parent::init();
-        if ($this->name === null) {
-            $this->name = __CLASS__;
-        }
-    }
 
     public function createUrl($manager, $route, $params)
     {
