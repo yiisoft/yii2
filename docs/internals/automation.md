@@ -10,6 +10,6 @@ There are some tasks that are done automatically when working on Yii:
   Run `./build/build php-doc/property` to update them.
 
 - Fixing of code style and other minor issues in phpdoc comments.
-  Run `./build/build php-doc/fix` to run the command.
+  Run `./build/build php-doc/fix` to fix them.
   Check the changes before you commit them as there may be unwanted changes because the command is not perfect.
   You may use `git add -p` to review the changes.
