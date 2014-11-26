@@ -54,7 +54,6 @@ interface MessageInterface
     /**
      * Sets the message sender.
      * @param string|array $from sender email address.
-     * You may pass an array of addresses if this message is from multiple people.
      * You may also specify sender name in addition to email address using format:
      * `[email => name]`.
      * @return static self reference.
