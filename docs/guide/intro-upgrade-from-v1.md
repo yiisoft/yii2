@@ -524,7 +524,7 @@ the same goal.
 ]
 ```
 
-Please refer to the [Routing and URL Creation](runtime-url-handling.md) section for more details.
+Please refer to the [Routing and URL Creation](runtime-routing.md) section for more details.
 
 Using Yii 1.1 and 2.x together
 ------------------------------
