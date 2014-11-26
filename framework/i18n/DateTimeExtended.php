@@ -13,8 +13,8 @@ namespace yii\i18n;
  * It provides more accurate handling of date-only values which can not be converted between timezone as
  * they do not include any time information.
  *
- * **Important Note:** This implementation was created to be used internally of [[Formatter]], it may not behave
- * as expected when used directly in your code. You should normally not need to use this class in your application code.
+ * **Important Note:** This implementation was created to be used by [[Formatter]] internally, it may not behave
+ * as expected when used directly in your code. Normally you should not need to use this class in your application code.
  * Use the original PHP [DateTime](http://php.net/manual/en/class.datetime.php) class instead.
  *
  * @author Carsten Brandt <mail@cebe.cc>
