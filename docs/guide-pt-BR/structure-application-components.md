@@ -51,7 +51,7 @@ Por exemplo,
 ]
 ```
 
-> Info: Embora você possa registrar quantos componentes de aplicação você quiser,
+> Informação: Embora você possa registrar quantos componentes de aplicação você quiser,
   você deveria fazer isso com juízo. Componentes de aplicação são como variáveis
   globais. Usar componentes de aplicação demais pode tornar seu código
   potencialmente mais difícil de testar e manter. Em muitos casos, você pode
