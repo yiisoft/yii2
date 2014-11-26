@@ -10,6 +10,7 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Widget;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -81,6 +82,8 @@ class Breadcrumbs extends Widget
      * ```php
      * [
      *     'label' => 'label of the link',  // required
+     *     'encode' => true, // optional, whether this item`s label should be HTML-encoded. This param will
+     *                       // override global [[encodeLabels]] param.
      *     'url' => 'url of the link',      // optional, will be processed by Url::to()
      *     'template' => 'own template of the item', // optional, if not set $this->itemTemplate will be used
      * ]
@@ -151,7 +154,8 @@ class Breadcrumbs extends Widget
     protected function renderItem($link, $template)
     {
         if (isset($link['label'])) {
-            $label = $this->encodeLabels ? Html::encode($link['label']) : $link['label'];
+            $encode = ArrayHelper::remove($link, 'encode', $this->encodeLabels);
+            $label = $encode ? Html::encode($link['label']) : $link['label'];
         } else {
             throw new InvalidConfigException('The "label" element is required for each link.');
         }
