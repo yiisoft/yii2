@@ -7,33 +7,33 @@
 > Info|情報: ガイドの中で「アプリケーション」という言葉は、文脈に応じて、
 アプリケーションオブジェクトを意味したり、アプリケーションシステムを意味したりします。
 
-二種類のアプリケーションがあります: すなわち、[[yii\web\Application|ウェブアプリケーション]] と [[yii\console\Application|コンソールアプリケーション]] です。
+二種類のアプリケーション、すなわち、[[yii\web\Application|ウェブアプリケーション]] と [[yii\console\Application|コンソールアプリケーション]] があります。
 名前が示すように、前者は主にウェブのリクエストを処理し、後者はコンソールコマンドのリクエストを処理します。
 
 
-## アプリケーションのコンフィギュレーション<a name="application-configurations"></a>
+## アプリケーションの設定情報<a name="application-configurations"></a>
 
 [エントリスクリプト](structure-entry-scripts.md) は、アプリケーションを作成するときに、
-下記のように、[コンフィギュレーション](concept-configurations.md) を読み込んで、それをアプリケーションに適用します:
+下記のように、[設定情報](concept-configurations.md) を読み込んで、それをアプリケーションに適用します:
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-// アプリケーションのコンフィギュレーションを読み込む
+// アプリケーションの設定情報を読み込む
 $config = require(__DIR__ . '/../config/web.php');
 
-// アプリケーションのインスタンスを作成し、コンフィギュレーションを適用する
+// アプリケーションのインスタンスを作成し、設定情報を適用する
 (new yii\web\Application($config))->run();
 ```
 
-通常の [コンフィギュレーション](concept-configurations.md) と同じように、アプリケーションのコンフィギュレーションは、アプリケーションオブジェクトのプロパティをどのように初期化するかを規定するものです。
-アプリケーションのコンフィギュレーションは、たいていは非常に複雑なものですから、通常は、上記の例の `web.php` ファイルのように、[コンフィギュレーションファイル](concept-configurations.md#configuration-files) に保管されます。
+通常の [設定情報](concept-configurations.md) と同じように、アプリケーションの設定情報は、アプリケーションオブジェクトのプロパティをどのように初期化するかを規定するものです。
+アプリケーションの設定情報は、たいていは非常に複雑なものですから、通常は、上記の例の `web.php` ファイルのように、[設定情報ファイル](concept-configurations.md#configuration-files) に保管されます。
 
 
 ## アプリケーションのプロパティ<a name="application-properties"></a>
 
-アプリケーションのコンフィギュレーションで構成すべき重要なアプリケーションのプロパティは数多くあります。
+アプリケーションの設定情報で構成すべき重要なアプリケーションのプロパティは数多くあります。
 それらのプロパティの典型的なものは、アプリケーションが走る環境を記述するものです。
 例えば、アプリケーションは、どのようにして [コントローラ](structure-controllers.md) をロードするか、また、どこにテンポラリファイルを保存するかなどを知らなければなりません。
 以下において、それらのプロパティを要約します。
@@ -41,7 +41,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 ### 必須のプロパティ<a name="required-properties"></a>
 
-どのアプリケーションでも、最低二つのプロパティは構成しなければなりません:
+どのアプリケーションでも、最低二つのプロパティは構成しなければなりません。
 すなわち、[[yii\base\Application::id|id]] と [[yii\base\Application::basePath|basePath]] です。
 
 
@@ -89,7 +89,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ]
 ```
 
-このプロパティが提供されているのは、[[Yii::setAlias()]] メソッドを呼び出す代りに、アプリケーションのコンフィギュレーションを使ってエイリアスを定義することが出来るようにするためです。
+このプロパティが提供されているのは、[[Yii::setAlias()]] メソッドを呼び出す代りに、アプリケーションの設定情報を使ってエイリアスを定義することが出来るようにするためです。
 
 
 #### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
@@ -103,7 +103,7 @@ $config = require(__DIR__ . '/../config/web.php');
 - [components](#components) によって規定されるアプリケーションコンポーネントの ID。
 - [modules](#modules) によって規定されるモジュールの ID。
 - クラス名。
-- コンフィギュレーション配列。
+- 設定情報の配列。
 - コンポーネントを作成して返す無名関数。
 
 例えば、
@@ -117,7 +117,7 @@ $config = require(__DIR__ . '/../config/web.php');
         // クラス名
         'app\components\Profiler',
 
-        // コンフィギュレーション配列
+        // 設定情報の配列
         [
             'class' => 'app\components\Profiler',
             'level' => 3,
@@ -144,12 +144,12 @@ $config = require(__DIR__ . '/../config/web.php');
 ブートストラップの過程で、各コンポーネントのインスタンスが作成されます。
 そして、コンポーネントクラスが [[yii\base\BootstrapInterface]] を実装している場合は、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドも呼び出されます。
 
-もう一つの実用的な例が [ベーシックアプリケーションテンプレート](start-installation.md) のアプリケーションのコンフィギュレーションの中にあります。
+もう一つの実用的な例が [ベーシックアプリケーションテンプレート](start-installation.md) のアプリケーションの構成情報の中にあります。
 そこでは、アプリケーションが開発環境で走るときには `debug` モジュールと `gii` モジュールがブートストラップコンポーネントとして構成されています。
 
 ```php
 if (YII_ENV_DEV) {
-    // 'dev' 環境のためのコンフィギュレーションの調整
+    // 'dev' 環境のための設定情報の調整
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
 
@@ -169,7 +169,7 @@ if (YII_ENV_DEV) {
 これは、全てのユーザリクエストを処理すべき [コントローラアクション](structure-controllers.md) を規定します。
 これは主としてアプリケーションがメンテナンスモードにあって、入ってくる全てのリクエストを単一のアクションで処理する必要があるときに使われます。
 
-コンフィギュレーションは配列の形を取り、最初の要素はアクションのルートを指定します。
+設定情報は配列の形を取り、最初の要素はアクションのルートを指定します。
 そして、配列の残りの要素 (キー・値のペア) は、アクションに渡されるパラメータを指定します。
 例えば、
 
@@ -204,12 +204,12 @@ if (YII_ENV_DEV) {
 ```
 
 全てのアプリケーションコンポーネントは、それぞれ、配列の中で「キー・値」のペアとして規定されます。
-キーはコンポーネントの ID を示し、値はコンポーネントのクラス名または [コンフィギュレーション](concept-configurations.md) を示します。
+キーはコンポーネントの ID を示し、値はコンポーネントのクラス名または [設定情報](concept-configurations.md) を示します。
 
 どのようなコンポーネントでもアプリケーションとともに登録することが出来ます。
 そして登録されたコンポーネントは、後で、`\Yii::$app->ComponentID` という式を使ってグローバルにアクセスすることが出来ます。
 
-詳細は [アプリケーションコンポーネント](structure-application-components.md) の節を呼んでください。
+詳細は [アプリケーションコンポーネント](structure-application-components.md) の節を読んでください。
 
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
@@ -235,7 +235,7 @@ if (YII_ENV_DEV) {
 ]
 ```
 
-このプロパティの配列のキーはコントローラ ID を表し、配列の値は対応するコントローラクラスの名前または [コンフィギュレーション](concept-configurations.md) を表します。
+このプロパティの配列のキーはコントローラ ID を表し、配列の値は対応するコントローラクラスの名前または [設定情報](concept-configurations.md) を表します。
 
 
 #### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
@@ -268,14 +268,14 @@ if (YII_ENV_DEV) {
 言語を指定するのには、[IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従うことが推奨されます。
 例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
 
-このプロパティに関する更なる詳細は [国際化](tutorial-i18n.md) の節で読むことが出来ます。
+このプロパティに関する詳細は [国際化](tutorial-i18n.md) の節で読むことが出来ます。
 
 
 #### [[yii\base\Application::modules|modules]] <a name="modules"></a>
 
 このプロパティはアプリケーションが含む [モジュール](structure-modules.md) を規定します。
 
-このプロパティは、モジュールのクラスまたは [コンフィギュレーション](concept-configurations.md) の配列であり、
+このプロパティは、モジュールのクラスまたは [設定情報](concept-configurations.md) の配列であり、
 その配列のキーはモジュールの ID です。例えば、
 
 ```php
@@ -284,7 +284,7 @@ if (YII_ENV_DEV) {
         // モジュールクラスで規定された "booking" モジュール
         'booking' => 'app\modules\booking\BookingModule',
 
-        // コンフィギュレーション配列で規定された "comment" モジュール
+        // 設定情報の配列で規定された "comment" モジュール
         'comment' => [
             'class' => 'app\modules\comment\CommentModule',
             'db' => 'db',
@@ -310,7 +310,7 @@ if (YII_ENV_DEV) {
 このプロパティは、グローバルにアクセス可能なアプリケーションパラメータの配列を規定します。
 コードの中のいたる処でハードコードされた数値や文字列を使う代りに、それらをアプリケーションパラメータとして
 一ヶ所で定義し、必要な場所ではそのパラメータを使うというのが良い慣行です。
-例えば、次のように、サムネール画像のサイズをパラメータとして定義することが出来ます:
+例えば、次のように、サムネール画像のサイズをパラメータとして定義することが出来ます。
 
 ```php
 [
@@ -320,14 +320,14 @@ if (YII_ENV_DEV) {
 ]
 ```
 
-そして、このサイズの値を使う必要があるコードにおいては、ただ単に下記のようなコードを使うことが出来ます:
+そして、このサイズの値を使う必要があるコードにおいては、ただ単に下記のようなコードを使うことが出来ます。
 
 ```php
 $size = \Yii::$app->params['thumbnail.size'];
 $width = \Yii::$app->params['thumbnail.size'][0];
 ```
 
-後でサムネールのサイズを変更すると決めたときは、アプリケーションのコンフィギュレーションにおいてのみサイズを修正すればよく、
+後でサムネールのサイズを変更すると決めたときは、アプリケーションの設定情報においてのみサイズを修正すればよく、
 これに依存するコードには少しも触れる必要がありません。
 
 
@@ -339,7 +339,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 [language](#language) プロパティと同様に、このプロパティは [IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従って構成すべきです。
 例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
 
-このプロパティに関する更なる詳細は [国際化](tutorial-i18n.md) の節で読むことが出来ます。
+このプロパティに関する詳細は [国際化](tutorial-i18n.md) の節で読むことが出来ます。
 
 
 #### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
@@ -376,7 +376,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 #### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
 
-このプロパティは、リクエストがルートを指定していないときにアプリケーションが使用すべき [route](runtime-routing.md) を規定します。
+このプロパティは、リクエストがルートを指定していないときにアプリケーションが使用すべき [ルート](runtime-routing.md) を規定します。
 ルートは、チャイルドモジュール ID、コントローラ ID、および/または アクション ID を構成要素とすることが出来ます。
 例えば、`help`、`post/create`、`admin/post/create` などです。
 アクション ID が与えられていない場合は、[[yii\base\Controller::defaultAction]] で規定されるデフォルト値を取ります。
@@ -404,7 +404,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
         [
             'name' => 'extension name',
             'version' => 'version number',
-            'bootstrap' => 'BootstrapClassName',  // オプション、コンフィギュレーション配列でもよい
+            'bootstrap' => 'BootstrapClassName',  // オプション、設定情報の配列でもよい
             'alias' => [  // optional
                 '@alias1' => 'to/path1',
                 '@alias2' => 'to/path2',
@@ -420,7 +420,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 見て分かるように、このプロパティはエクステンションの仕様を示す配列を取ります。
 それぞれのエクステンションは、`name` と `version` の要素を含む配列によって規定されます。
 エクステンションが [ブートストラップ](runtime-bootstrapping.md) の過程で走る必要がある場合には、
-`bootstrap` 要素をブートストラップのクラス名または [コンフィギュレーション](concept-configurations.md) 配列によって規定することが出来ます。
+`bootstrap` 要素をブートストラップのクラス名または [設定情報](concept-configurations.md) の配列によって規定することが出来ます。
 また、エクステンションはいくつかの [エイリアス](concept-aliases.md) を定義することも出来ます。
 
 
@@ -483,7 +483,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 ## アプリケーションのイベント<a name="application-events"></a>
 
 アプリケーションはリクエストを処理するライフサイクルの中でいくつかのイベントをトリガします。
-これらのイベントに対して、下記のようにして、アプリケーションのコンフィギュレーションの中でイベントハンドラを取り付けることが出来ます。
+これらのイベントに対して、下記のようにして、アプリケーションの構成情報の中でイベントハンドラをアタッチすることが出来ます。
 
 ```php
 [
@@ -493,9 +493,9 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 ]
 ```
 
-`on eventName` という構文の使い方については、[コンフィギュレーション](concept-configurations.md#configuration-format) の節で説明されています。
+`on eventName` という構文の使い方については、[設定情報](concept-configurations.md#configuration-format) の節で説明されています。
 
-別の方法として、アプリケーションのインスタンスが生成された後、[ブートストラップの過程](runtime-bootstrapping.md) の中でイベントハンドラを取り付けることも出来ます。
+別の方法として、アプリケーションのインスタンスが生成された後、[ブートストラップの過程](runtime-bootstrapping.md) の中でイベントハンドラをアタッチすることも出来ます。
 例えば、
 
 ```php
@@ -584,7 +584,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 [エントリスクリプト](structure-entry-scripts.md) が実行されて、リクエストが処理されるとき、
 アプリケーションは次のようなライフサイクルを経ます:
 
-1. エントリスクリプトがアプリケーションのコンフィギュレーションを配列として読み出す。
+1. エントリスクリプトがアプリケーションの設定情報を配列として読み出す。
 2. エントリスクリプトがアプリケーションの新しいインスタンスを作成する:
   * [[yii\base\Application::preInit()|preInit()]] が呼び出されて、[[yii\base\Application::basePath|basePath]]
     のような、優先度の高いアプリケーションプロパティを構成する。
