@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #6172: `yii\rbac\DbManager` should properly quote table and column names (qiangxue)
 - Bug #6164: Added missing support for `yii\db\Expression` to QueryBuilder `BETWEEN` and `LIKE` conditions (cebe)
 - Bug #6236: No JS scripts should be registered when `yii\widgets\ActiveForm::enableClientScript` is false (qiangxue)
+- Bug #6150: `yii\bootstrap\Tabs` dropdown IDs were generated incorrectly (samdark)
 - Bug #6266: Clicking on reset button does not hide error summary when using `ActiveForm` (InteLigent, qiangxue)
 - Bug #6271: Query caching returns the same data when running the same SQL with different fetch modes (grachov)
 - Bug: Gii console command help information does not contain global options (qiangxue)
