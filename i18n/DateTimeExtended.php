@@ -34,9 +34,14 @@ class DateTimeExtended extends \DateTime
      */
     public function __construct ($time = 'now', \DateTimeZone $timezone = null)
     {
-        // TODO get date info
-        $this->_isDateOnly = false;
         parent::__construct($time, $timezone);
+
+        $info = date_parse($time);
+        if ($info['hour'] === false && $info['minute'] === false && $info['second'] === false) {
+            $this->_isDateOnly = true;
+        } else {
+            $this->_isDateOnly = false;
+        }
     }
 
     /**
@@ -47,17 +52,46 @@ class DateTimeExtended extends \DateTime
      * @return DateTimeExtended
      * @link http://php.net/manual/en/datetime.createfromformat.php
      */
-    public static function createFromFormat ($format, $time, \DateTimeZone $timezone=null)
+    public static function createFromFormat ($format, $time, $timezone = null)
     {
-        $dateTime = parent::createFromFormat($format, $time, $timezone);
-        // TODO turn object into instance of $this
-        // TODO get date info
-//        $dateTime->_isDateOnly = false;
+        if (($originalDateTime = parent::createFromFormat($format, $time, $timezone)) === false) {
+            return false;
+        }
+        $info = date_parse_from_format($format, $time);
+
+        /** @var $dateTime \DateTime */
+        $dateTime = new static;
+        if ($info['hour'] === false && $info['minute'] === false && $info['second'] === false) {
+            $dateTime->_isDateOnly = true;
+        } else {
+            $dateTime->_isDateOnly = false;
+        }
+        $dateTime->setTimezone($originalDateTime->getTimezone());
+        $dateTime->setTimestamp($originalDateTime->getTimestamp());
+
         return $dateTime;
     }
 
     public function isDateOnly()
     {
         return $this->_isDateOnly;
+    }
+
+    public function getTimezone()
+    {
+        if ($this->_isDateOnly) {
+            return false;
+        } else {
+            return parent::getTimezone();
+        }
+    }
+
+    public function getOffset()
+    {
+        if ($this->_isDateOnly) {
+            return false;
+        } else {
+            return parent::getOffset();
+        }
     }
 }

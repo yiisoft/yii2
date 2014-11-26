@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #4823: `yii message` accuracy and error handling were improved (samdark)
 - Bug #4889: Application was getting into redirect loop when user wasn't allowed accessing login page. Now shows 403 (samdark)
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
+- Bug #5448: Date formatter was doing timezone conversion on date only values resulting in different date displayed than provided (cebe)
 - Bug #5452: Errors occurring after the response is sent are not displayed (qiangxue) 
 - Bug #5521: Fixed `yii\console\controllers\AssetController` breaks CSS URLs, which start from '/' (klimov-paul)
 - Bug #5570: `yii\bootstrap\Tabs` would throw an exception if `content` is not set for one of its `items` (RomeroMsk)

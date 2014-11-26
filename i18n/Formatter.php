@@ -534,7 +534,7 @@ class Formatter extends Component
 
         // avoid time zone conversion for date-only values
         if ($type === 'date' && $timestamp->isDateOnly()) {
-            $timeZone = $this->defaultTimeZone; // TODO maybe just NULL?
+            $timeZone = $this->defaultTimeZone;
         } else {
             $timeZone = $this->timeZone;
         }
