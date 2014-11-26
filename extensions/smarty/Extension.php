@@ -77,7 +77,7 @@ class Extension
         array_unshift($params, $params['route']) ;
         unset($params['route']);
 
-        return Url::to($params, true);
+        return Url::to($params, false);
     }
 
     /**
@@ -160,7 +160,7 @@ PHP;
         } elseif ($type === 'function') {
             // Register widget tag during compile time
             $this->viewRenderer->widgets['functions'][$alias] = $class;
-            $this->smarty->registerPlugin('function', $alias, [$this->viewRenderer, '_widget_function__' . $alias]);
+            $this->smarty->registerPlugin('function', $alias, [$this->viewRenderer, '_widget_func__' . $alias]);
 
             // Inject code to re-register widget tag during run-time
             return <<<PHP
@@ -168,7 +168,7 @@ PHP;
     \$viewRenderer=\$_smarty_tpl->default_template_handler_func[0];
     \$viewRenderer->widgets['functions']['$alias'] = '$class';
     try {
-        \$_smarty_tpl->registerPlugin('function', '$alias', [\$viewRenderer, '_widget_function__$alias']);
+        \$_smarty_tpl->registerPlugin('function', '$alias', [\$viewRenderer, '_widget_func__$alias']);
     }
     catch (SmartyException \$e) {
         /* Ignore already registered exception during first execution after compilation */
