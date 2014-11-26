@@ -799,6 +799,7 @@ class Command extends Component
                 $cacheKey = [
                     __CLASS__,
                     $method,
+                    $fetchMode,
                     $this->db->dsn,
                     $this->db->username,
                     $rawSql,
