@@ -217,10 +217,10 @@ class SiteController extends Controller
 
                 $_model = new UploadForm();
 
-                $_model->file = $file;
+                $_model->file = [$file];
 
                 if ($_model->validate()) {
-                    $_model->file->saveAs('uploads/' . $_model->file->baseName . '.' . $_model->file->extension);
+                    $_model->file[0]->saveAs('uploads/' . $_model->file[0]->baseName . '.' . $_model->file[0]->extension);
                 } else {
                     foreach ($_model->getErrors('file') as $error) {
                         $model->addError('file', $error);
@@ -244,3 +244,41 @@ class SiteController extends Controller
 
 The difference is `UploadedFile::getInstances($model, 'file');` instead of `UploadedFile::getInstance($model, 'file');`.
 Former returns instances for **all** uploaded files while the latter gives you only a single instance.
+
+Form Model:
+
+```php
+namespace app\models;
+
+use yii\base\Model;
+use yii\web\UploadedFile;
+
+/**
+ * UploadForm is the model behind the upload form.
+ */
+class UploadForm extends Model
+{
+    /**
+     * @var UploadedFile|Null file attribute
+     */
+    public $file;
+
+    /**
+     * @return array the validation rules.
+     */
+    public function rules()
+    {
+        return [
+            [['file'], 'file', 'maxFiles' => 5],
+        ];
+    }
+}
+```
+
+The difference is the following line:
+
+```php
+[['file'], 'file', 'maxFiles' => 5],
+```
+
+You need to specify `maxFiles` property of `FileValidator`. It defaults to 1, meaning single file upload. By defining a higher number, multiple uploads become possible.
