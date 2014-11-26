@@ -532,20 +532,27 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
+        // avoid time zone conversion for date-only values
+        if ($type === 'date' && $timestamp->isDateOnly()) {
+            $timeZone = $this->defaultTimeZone;
+        } else {
+            $timeZone = $this->timeZone;
+        }
+
         if ($this->_intlLoaded) {
             if (strncmp($format, 'php:', 4) === 0) {
                 $format = FormatConverter::convertDatePhpToIcu(substr($format, 4));
             }
             if (isset($this->_dateFormats[$format])) {
                 if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $this->timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $timeZone);
                 } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $this->timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $timeZone);
                 } else {
-                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $this->timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $timeZone);
                 }
             } else {
-                $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone, null, $format);
+                $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $timeZone, null, $format);
             }
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
@@ -557,8 +564,8 @@ class Formatter extends Component
             } else {
                 $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
             }
-            if ($this->timeZone != null) {
-                $timestamp->setTimezone(new DateTimeZone($this->timeZone));
+            if ($timeZone != null) {
+                $timestamp->setTimezone(new DateTimeZone($timeZone));
             }
             return $timestamp->format($format);
         }
@@ -575,7 +582,7 @@ class Formatter extends Component
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
-     * @return DateTime the normalized datetime value
+     * @return DateTimeExtended the normalized datetime value
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      */
     protected function normalizeDatetimeValue($value)
@@ -589,17 +596,17 @@ class Formatter extends Component
         }
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
-                if (($timestamp = DateTime::createFromFormat('U', $value, new DateTimeZone('UTC'))) === false) {
+                if (($timestamp = DateTimeExtended::createFromFormat('U', $value, new DateTimeZone('UTC'))) === false) {
                     throw new InvalidParamException("Failed to parse '$value' as a UNIX timestamp.");
                 }
                 return $timestamp;
-            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
+            } elseif (($timestamp = DateTimeExtended::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $timestamp;
-            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
+            } elseif (($timestamp = DateTimeExtended::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $timestamp;
             }
             // finally try to create a DateTime object with the value
-            $timestamp = new DateTime($value, new DateTimeZone($this->defaultTimeZone));
+            $timestamp = new DateTimeExtended($value, new DateTimeZone($this->defaultTimeZone));
             return $timestamp;
         } catch(\Exception $e) {
             throw new InvalidParamException("'$value' is not a valid date time value: " . $e->getMessage()
