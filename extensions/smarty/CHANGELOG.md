@@ -4,7 +4,7 @@ Yii Framework 2 smarty extension Change Log
 2.0.1 under development
 -----------------------
 
-- no changes in this release.
+- Bug #5748: `{path` was generating absolute URLs instead of relative ones (samdark, motzel)
 
 
 2.0.0 October 12, 2014

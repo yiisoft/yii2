@@ -77,7 +77,7 @@ class Extension
         array_unshift($params, $params['route']) ;
         unset($params['route']);
 
-        return Url::to($params, true);
+        return Url::to($params);
     }
 
     /**
@@ -85,7 +85,7 @@ class Extension
      *
      * Usage is the following:
      *
-     * {path route='blog/view' alias=$post.alias user=$user.id}
+     * {url route='blog/view' alias=$post.alias user=$user.id}
      *
      * where route is Yii route and the rest of parameters are passed as is.
      *
