@@ -2,15 +2,15 @@ Aplicações
 ==========
 
 Aplicações são objetos que regem a estrutura e ciclo de vida gerais de
-sistemas do Yii. Cada sistema contém um único objeto Application que é criado no
+aplicações em Yii. Cada aplicação contém um único objeto Application que é criado no
 [script de entrada](structure-entry-scripts.md) e que pode ser acessado
 globalmente pela expressão `\Yii::$app`.
 
-> Info: Dependendo do contexto, quando dizemos "uma aplicação", pode significar
+> Informação: Dependendo do contexto, quando dizemos "uma aplicação", pode significar
   tanto um objeto Application quanto um sistema.
 
 Existem dois tipos de aplicações: [[yii\web\Application|aplicações Web]] e
-[[yii\console\Application|aplicações do console]]. Como o próprio nome indica,
+[[yii\console\Application|aplicações console]]. Como o próprio nome indica,
 o primeiro manipula requisições Web enquanto o segundo trata requisições de
 comandos do console.
 
@@ -66,7 +66,7 @@ caracteres alfanuméricos ao especificar um ID de aplicação.
 
 A propriedade [[yii\base\Application::basePath|basePath]] especifica o diretório
 raiz de um sistema. É o diretório que contém todo o código fonte protegido de um
-sistema. Sob este diretório, você normalmente verá sub-diretórios tais como
+sistema. Sob este diretório, você normalmente verá subdiretórios tais como
 `models`, `views`, `controllers`, que contém o código fonte correspondente ao
 padrão MVC.
 
@@ -84,8 +84,8 @@ esse alias (por exemplo, `@app/runtime` para referenciar o diretório runtime).
 
 ### Propriedades Importantes <a name="important-properties"></a>
 
-As propriedades descritas nesta sub-seção frequentemente precisam ser
-configurados porque elas variam em diferentes aplicações.
+As propriedades descritas nesta subseção frequentemente precisam ser
+configuradas porque elas variam em diferentes aplicações.
 
 
 #### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
@@ -112,7 +112,7 @@ de configurações da aplicação ao invés de chamadas ao método [[Yii::setAli
 Esta é uma propriedade muito útil. Ela permite que você especifique um array de
 componentes que devem ser executados durante o [[yii\base\Application::bootstrap()|processo de inicialização]]
 da aplicação. Por exemplo, se você quer que um [módulo](structure-modules.md)
-personalize as [regras de URL](runtime-url-handling.md), você pode listar seu
+personalize as [regras de URL](runtime-routing.md), você pode listar seu
 ID como um elemento nesta propriedade.
 
 Cada componente listado nesta propriedade deve ser especificado em um dos
@@ -149,7 +149,7 @@ Por exemplo,
 ]
 ```
 
-> Info: Se o ID de um módulo é o mesmo que o ID de um componente da aplicação,
+> Informação: Se o ID de um módulo é o mesmo que o ID de um componente da aplicação,
   o componente será usado durante o processo de inicialização. Se você quiser
   usar o módulo ao invés dele, você pode especificá-lo usando uma função anônima
   conforme a seguir:
@@ -181,7 +181,7 @@ if (YII_ENV_DEV) {
 }
 ```
 
-> Note: Colocar componentes demais em `bootstrap` degradará o desempenho de sua
+> Observação: Colocar componentes demais em `bootstrap` degradará o desempenho de sua
   aplicação, porque para cada requisição o mesmo conjunto de componentes precisará
   ser carregado. Desta forma, use os componentes de inicialização com juízo.
 
@@ -277,7 +277,7 @@ ID de um controller for `post`, por convenção o nome da classe de controller
 correspondente (sem namespace) seria `PostController`, e o nome da classe
 completo e qualificado seria `app\controllers\PostController`.
 
-As classes de controllers também podem estar localizadas em sub-diretórios do
+As classes de controllers também podem estar localizadas em subdiretórios do
 diretório correspondente ao namespace. Por exemplo, dado um ID de controller
 `admin/post`, a classe completa e qualificada correspondente seria
 `app\controllers\admin\PostController`.
@@ -419,7 +419,7 @@ a está usando.
 
 ### Propriedades Úteis <a name="useful-properties"></a>
 
-As propriedades descritas nesta sub-seção não são comumente configuradas porque
+As propriedades descritas nesta subseção não são comumente configuradas porque
 seus valores padrão estipulam convenções comuns. No entanto, você pode ainda
 configurá-las no caso de querer quebrar as convenções.
 
@@ -508,7 +508,7 @@ layout por padrão, embora isso seja muito raro.
 #### [[yii\base\Application::layoutPath|layoutPath]] <a name="layoutPath"></a>
 
 Essa propriedade especifica o caminho onde os arquivos de layout devem ser
-procurados. O valor padrão é o sub-diretório `layouts` dentro do diretório do
+procurados. O valor padrão é o subdiretório `layouts` dentro do diretório do
 [caminho das views](#viewPath). Se o [caminho das views](#viewPath) estiver
 recebendo seu valor padrão, o caminho padrão dos layouts pode ser representado
 como o alias de caminho `@app/views/layouts`.
@@ -545,7 +545,7 @@ caminho.
 
 Essa propriedade especifica o diretório vendor gerenciado pelo [Composer](http://getcomposer.org).
 Ele contém todas as bibliotecas de terceiros usadas pela sua aplicação, incluindo
-o Yii framework. O valor padrão é o diretório representado pelo alias `@app/vendor`.
+o framework do Yii. O valor padrão é o diretório representado pelo alias `@app/vendor`.
 
 Você pode configurar essa propriedade como um diretório ou [alias](concept-aliases.md)
 de caminho. Quando você modificar essa propriedade, assegure-se de ajustar a
