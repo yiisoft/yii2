@@ -505,7 +505,7 @@ The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
 is much more straightforward to use. The advanced application template provides such an example.
 
-Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Technique](tutorial-advanced-app.md) sections for more details.
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Template](tutorial-advanced-app.md) sections for more details.
 
 
 URL Management
@@ -524,11 +524,12 @@ the same goal.
 ]
 ```
 
-Please refer to the [Url manager docs](runtime-url-handling.md) section for more details.
+Please refer to the [Routing and URL Creation](runtime-url-handling.md) section for more details.
 
 Using Yii 1.1 and 2.x together
 ------------------------------
 
 If you have legacy Yii 1.1 code that you want to use together with Yii 2.0, please refer to
-the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md) section.
+the [Using Yii 2 with Yii 1] (tutorial-yii-integration.md#using-both-yii2-yii1) subsection
+of the [Working with Third-Party Code](tutorial-yii-integration.md) section.
 
