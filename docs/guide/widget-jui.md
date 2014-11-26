@@ -6,6 +6,8 @@ Jquery UI Widgets
 Out of the box, Yii includes support for the [jQuery UI](http://api.jqueryui.com/) library. jQuery UI is a curated set
 of user interface interactions, effects, widgets, and themes built on top of the jQuery JavaScript Library.
 
+For use widgets you need [install](https://github.com/yiisoft/yii2-jui#installation) them.
+
 Yii widgets
 -----------
 
