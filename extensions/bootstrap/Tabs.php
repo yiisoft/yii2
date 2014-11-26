@@ -154,7 +154,7 @@ class Tabs extends Widget
                 $label .= ' <b class="caret"></b>';
                 Html::addCssClass($headerOptions, 'dropdown');
 
-                if ($this->renderDropdown($item['items'], $panes)) {
+                if ($this->renderDropdown($item['items'], $panes, $n)) {
                     Html::addCssClass($headerOptions, 'active');
                 }
 
@@ -204,10 +204,11 @@ class Tabs extends Widget
      * configure `panes` accordingly.
      * @param array $items the dropdown items configuration.
      * @param array $panes the panes reference array.
+     * @param string|boolean $pid index of parent item
      * @return boolean whether any of the dropdown items is `active` or not.
      * @throws InvalidConfigException
      */
-    protected function renderDropdown(&$items, &$panes)
+    protected function renderDropdown(&$items, &$panes, $pid = false)
     {
         $itemActive = false;
 
@@ -228,7 +229,10 @@ class Tabs extends Widget
                 $itemActive = true;
             }
 
-            $options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-dd-tab' . $n);
+            if ($pid !== false) {
+                $n = $pid .'-'. $n;
+            }
+            $options['id'] = ArrayHelper::getValue($options, 'id', $this->options['id'] . '-tab' . $n);
             $item['url'] = '#' . $options['id'];
             $item['linkOptions']['data-toggle'] = 'tab';
 
