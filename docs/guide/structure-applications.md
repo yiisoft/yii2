@@ -101,7 +101,7 @@ the method calls [[Yii::setAlias()]].
 
 This is a very useful property. It allows you to specify an array of components that should
 be run during the application [[yii\base\Application::bootstrap()|bootstrapping process]].
-For example, if you want a [module](structure-modules.md) to customize the [URL rules](runtime-url-handling.md),
+For example, if you want a [module](structure-modules.md) to customize the [URL rules](runtime-routing.md),
 you may list its ID as an element in this property.
 
 Each component listed in this property may be specified in one of the following formats:
