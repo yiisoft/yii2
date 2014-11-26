@@ -387,7 +387,7 @@
                     );
                     $container.find(this.error).html('');
                 });
-                $form.find(data.settings.summary).hide().find('ul').html('');
+                $form.find(data.settings.errorSummary).hide().find('ul').html('');
             }, 1);
         }
     };
