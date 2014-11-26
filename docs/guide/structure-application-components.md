@@ -111,7 +111,7 @@ if you do not specify its class, the default one will be used.
   in [[yii\web\Application|Web applications]].
   Please refer to the [Sessions and Cookies](runtime-sessions-cookies.md) section for more details.
 * [[yii\web\UrlManager|urlManager]]: supports URL parsing and creation.
-  Please refer to the [URL Parsing and Generation](runtime-url-handling.md) section for more details.
+  Please refer to the [URL Parsing and Generation](runtime-routing.md) section for more details.
 * [[yii\web\User|user]]: represents the user authentication information. This component is only available
   in [[yii\web\Application|Web applications]]
   Please refer to the [Authentication](security-authentication.md) section for more details.
