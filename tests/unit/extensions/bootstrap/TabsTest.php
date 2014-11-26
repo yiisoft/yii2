@@ -15,6 +15,7 @@ class TabsTest extends BootstrapTestCase
      */
     public function testIds()
     {
+        Tabs::$counter = 0;
         $out = Tabs::widget([
             'items' => [
                 [
