@@ -490,6 +490,7 @@ abstract class BaseMigrateController extends Controller
             $this->addMigrationHistory($class);
             $time = microtime(true) - $start;
             echo "*** applied $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
+            $this->refreshSchema();
 
             return true;
         } else {
@@ -518,6 +519,7 @@ abstract class BaseMigrateController extends Controller
             $this->removeMigrationHistory($class);
             $time = microtime(true) - $start;
             echo "*** reverted $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
+
 
             return true;
         } else {
@@ -622,6 +624,16 @@ abstract class BaseMigrateController extends Controller
         sort($migrations);
 
         return $migrations;
+    }
+    
+    /**
+     * Flushes DB schema cache.
+     * This method should be implemented if connection has DB schema support.
+     * @param string $name connection component name
+     * @since 2.0.1
+     */
+    protected function refreshSchema($name = 'db')
+    {
     }
 
     /**
