@@ -532,6 +532,5 @@ Yii 1.1 と 2.x を一緒に使う
 ---------------------------
 
 Yii 2.0 と一緒に使いたい Yii 1.1 のレガシーコードを持っている場合は、
-[サードパーティのコードを扱う](tutorial-yii-integration.md) の節の
-[Yii 2 を Yii 1 と一緒に使う](tutorial-yii-integration.md#using-both-yii2-yii1) の項を参照してください。
+[サードパーティのコードを扱う](tutorial-yii-integration.md) の節を参照してください。
 
