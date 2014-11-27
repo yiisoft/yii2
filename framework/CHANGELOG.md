@@ -72,7 +72,7 @@ Yii Framework 2 Change Log
 - Enh: `yii\rbac\DbManager` migration now uses database component specified in component settings instead of always using default `db` (samdark)
 - Enh: Added `yii\base\Controller::renderContent()` (qiangxue)
 - Chg #3630: `yii\db\Command::queryInternal()` is now protected (samdark)
-- Chg #4277: `yii\grid\GridView` is no longer throwing an exception in non-debug mode when results are empty and `columns` aren't defined (samdark) 
+- Chg #4277: `yii\grid\GridView` is no longer throwing an exception when results are empty and `columns` aren't defined (samdark) 
 - Chg #5508: Dropped the support for the `--append` option for the `fixture` command (qiangxue)
 - Chg #5874: Upgraded Twitter Bootstrap to 3.3.x (samdark)
 
