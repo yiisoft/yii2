@@ -18,6 +18,10 @@ use PHPParser_Node_Expr_Array;
  */
 class PrettyPrinter extends \phpDocumentor\Reflection\PrettyPrinter
 {
+    /**
+     * @param PHPParser_Node_Expr_Array $node
+     * @return string
+     */
     public function pExpr_Array(PHPParser_Node_Expr_Array $node)
     {
         return '[' . $this->pCommaSeparated($node->items) . ']';

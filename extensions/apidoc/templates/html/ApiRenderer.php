@@ -127,6 +127,12 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
         }
     }
 
+    /**
+     * Renders file applying layout
+     * @param string $viewFile the view name
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @return string
+     */
     protected function renderWithLayout($viewFile, $params)
     {
         $output = $this->getView()->render($viewFile, $params, $this);
@@ -259,11 +265,19 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
             . ApiMarkdown::highlight(str_replace('  ', ' ', '( ' . implode(', ', $params) . ' )'), 'php');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function generateApiUrl($typeName)
     {
         return $this->generateFileName($typeName);
     }
 
+    /**
+     * Generates file name for API page for a given type
+     * @param string $typeName
+     * @return string
+     */
     protected function generateFileName($typeName)
     {
         return strtolower(str_replace('\\', '-', $typeName)) . '.html';
@@ -287,7 +301,10 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
         return Html::a($text, null, $options);
     }
 
-    public function getSourceUrl($type)
+    /**
+     * @inheritdoc
+     */
+    public function getSourceUrl($type, $line = null)
     {
         return null;
     }

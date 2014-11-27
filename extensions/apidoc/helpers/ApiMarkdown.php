@@ -33,7 +33,7 @@ class ApiMarkdown extends GithubMarkdown
 
 
     /**
-     * Renders a code block
+     * @inheritdoc
      */
     protected function renderCode($block)
     {
@@ -46,6 +46,13 @@ class ApiMarkdown extends GithubMarkdown
         }
     }
 
+    /**
+     * Highlights code
+     *
+     * @param string $code code to highlight
+     * @param string $language language of the code to highlight
+     * @return string HTML of highlighted code
+     */
     public static function highlight($code, $language)
     {
         if ($language !== 'php') {

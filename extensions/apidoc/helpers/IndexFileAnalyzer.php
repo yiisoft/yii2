@@ -9,6 +9,9 @@ namespace yii\apidoc\helpers;
 
 use cebe\markdown\Markdown;
 
+/**
+ * IndexFileAnalyzer analyzes index file with TOC. Typically README.md.
+ */
 class IndexFileAnalyzer extends Markdown
 {
     public $title;
@@ -18,6 +21,11 @@ class IndexFileAnalyzer extends Markdown
     private $_chapters = [];
 
 
+    /**
+     * Parses text and returns list of chapters got from it
+     * @param string $text
+     * @return array
+     */
     public function analyze($text)
     {
         $this->parse($text);
@@ -25,6 +33,9 @@ class IndexFileAnalyzer extends Markdown
         return $this->_chapters;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function renderHeadline($block)
     {
         if ($this->_chapter === 0) {
@@ -41,6 +52,9 @@ class IndexFileAnalyzer extends Markdown
         return parent::renderHeadline($block);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function renderParagraph($block)
     {
         if ($this->_chapter < 1) {
@@ -49,6 +63,9 @@ class IndexFileAnalyzer extends Markdown
         return parent::renderParagraph($block);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function renderList($block)
     {
         if ($this->_chapter > 0) {

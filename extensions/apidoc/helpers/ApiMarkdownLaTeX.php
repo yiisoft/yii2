@@ -30,6 +30,9 @@ class ApiMarkdownLaTeX extends GithubMarkdown
     protected $renderingContext;
 
 
+    /**
+     * @inheritdoc
+     */
     protected function renderApiLink($block)
     {
         // TODO allow break also on camel case
@@ -37,6 +40,9 @@ class ApiMarkdownLaTeX extends GithubMarkdown
         return $latex;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function renderBrokenApiLink($block)
     {
         return $this->renderApiLink($block);

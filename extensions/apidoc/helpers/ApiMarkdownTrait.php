@@ -112,11 +112,21 @@ trait ApiMarkdownTrait
         return [['text', '[['], 2];
     }
 
+    /**
+     * Renders API link
+     * @param array $block
+     * @return string
+     */
     protected function renderApiLink($block)
     {
         return $block[1];
     }
 
+    /**
+     * Renders API link that is broken i.e. points nowhere
+     * @param array $block
+     * @return string
+     */
     protected function renderBrokenApiLink($block)
     {
         return $block[1];

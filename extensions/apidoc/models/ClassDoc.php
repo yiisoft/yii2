@@ -37,6 +37,9 @@ class ClassDoc extends TypeDoc
     public $constants = [];
 
 
+    /**
+     * @inheritdoc
+     */
     public function findSubject($subjectName)
     {
         if (($subject = parent::findSubject($subjectName)) !== null) {
@@ -73,9 +76,7 @@ class ClassDoc extends TypeDoc
     }
 
     /**
-     * @param \phpDocumentor\Reflection\ClassReflector $reflector
-     * @param Context $context
-     * @param array $config
+     * @inheritdoc
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

@@ -1,6 +1,5 @@
 <?php
 
-use yii\apidoc\renderers\BaseRenderer;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Html;

@@ -11,8 +11,18 @@ use cebe\jssearch\Indexer;
 use cebe\jssearch\tokenizer\StandardTokenizer;
 use cebe\jssearch\TokenizerInterface;
 
+/**
+ * ApiIndexer indexes framework API
+ */
 class ApiIndexer extends Indexer
 {
+    /**
+     * @param string $file
+     * @param string $contents
+     * @param string $basePath
+     * @param string $baseUrl
+     * @return array
+     */
     protected function generateFileInfo($file, $contents, $basePath, $baseUrl)
     {
         // create file entry
