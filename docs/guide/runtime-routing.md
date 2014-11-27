@@ -258,7 +258,7 @@ The rest of the properties are optional. However, their configuration shown abov
   particular application requirement.
 
 > Note: In order to hide the entry script name in the created URLs, besides setting
-  [[yii\web\UrlManager::showScriptName|showScriptName]] to be true, you may also need to configure your Web server
+  [[yii\web\UrlManager::showScriptName|showScriptName]] to be false, you may also need to configure your Web server
   so that it can correctly identify which PHP script should be executed when a requested URL does not explicitly 
   specify one. If you are using Apache Web server, you may refer to the recommended configuration as described in the
   [Installation](start-installation.md#recommended-apache-configuration) section.
