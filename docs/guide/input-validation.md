@@ -6,7 +6,7 @@ before putting it to good use.
 
 Given a [model](structure-models.md) populated with user inputs, you can validate the inputs by calling the
 [[yii\base\Model::validate()]] method. The method will return a boolean value indicating whether the validation
-succeeds or not. If not, you may get the error messages from the [[yii\base\Model::errors]] property. For example,
+succeeded or not. If not, you may get the error messages from the [[yii\base\Model::errors]] property. For example,
 
 ```php
 $model = new \app\models\ContactForm;
@@ -22,7 +22,7 @@ if ($model->validate()) {
 }
 ```
 
-Behind the scene, the `validate()` method does the following steps to perform validation:
+Behind the scenes, the `validate()` method does the following steps to perform validation:
 
 1. Determine which attributes should be validated by getting the attribute list from [[yii\base\Model::scenarios()]]
    using the current [[yii\base\Model::scenario|scenario]]. These attributes are called *active attributes*.
@@ -256,7 +256,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note: Not all validators support such kind of validation. An example is the [unique](tutorial-core-validators.md#unique)
+> Note: Not all validators support this type of validation. An example is the [unique](tutorial-core-validators.md#unique)
   core validator which is designed to work with a model only.
 
 If you need to perform multiple validations against several values, you can use [[yii\base\DynamicModel]]
@@ -300,7 +300,7 @@ public function actionSearch($name, $email)
 }
 ```
 
-After validation, you can check if the validation succeeds or not by calling the
+After validation, you can check if the validation succeeded or not by calling the
 [[yii\base\DynamicModel::hasErrors()|hasErrors()]] method, and then get the validation errors from the
 [[yii\base\DynamicModel::errors|errors]] property, like you do with a normal model.
 You may also access the dynamic attributes defined through the model instance, e.g.,
@@ -407,19 +407,19 @@ by calling `validateValue()`.
 ## Client-Side Validation <a name="client-side-validation"></a>
 
 Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
-it allows users to find out input errors faster and thus provides better user experience. You may use or implement
+it allows users to find out input errors faster and thus provides a better user experience. You may use or implement
 a validator that supports client-side validation *in addition to* server-side validation.
 
-> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users better
-  experience. Like input data coming from end users, you should never trust client-side validation. For this reason,
-  you should always perform server-side validation by calling [[yii\base\Model::validate()]], like
+> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users with a better
+  experience. Similar to input data coming from end users, you should never trust client-side validation. For this reason,
+  you should always perform server-side validation by calling [[yii\base\Model::validate()]], as
   described in the previous subsections.
 
 
 ### Using Client-Side Validation <a name="using-client-side-validation"></a>
 
-Many [core validators](tutorial-core-validators.md) support client-side validation out-of-box. All you need to do
-is just to use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
+Many [core validators](tutorial-core-validators.md) support client-side validation out-of-the-box. All you need to do
+is just use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
 rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
 client and server sides; the other uses the `validatePassword` inline validator which is only supported on the server
 side.
@@ -590,7 +590,7 @@ JS;
   validation will not complete.
 
 For simplicity, the `deferred` array is equipped with a shortcut method `add()` which automatically creates a Deferred
-object and add it to the `deferred` array. Using this method, you can simplify the above example as follows,
+object and adds it to the `deferred` array. Using this method, you can simplify the above example as follows,
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -623,7 +623,7 @@ You can use AJAX-based validation in this case. It will trigger an AJAX request 
 input while keeping the same user experience as the regular client-side validation.
 
 To enable AJAX validation for the whole form, you have to set the
-[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be unique form identifier:
+[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be a unique form identifier:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin([
@@ -636,7 +636,7 @@ You may also turn AJAX validation on or off for individual input fields by confi
 [[yii\widgets\ActiveField::enableAjaxValidation]] property.
 
 You also need to prepare the server so that it can handle the AJAX validation requests.
-This can be achieved by a code snippet like the following in controller actions:
+This can be achieved by a code snippet like the following in the controller actions:
 
 ```php
 if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
