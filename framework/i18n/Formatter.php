@@ -9,6 +9,7 @@ namespace yii\i18n;
 
 use DateInterval;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use IntlDateFormatter;
@@ -557,6 +558,10 @@ class Formatter extends Component
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
             }
+            // make IntlDateFormatter work with DateTimeImmutable
+            if ($timestamp instanceof DateTimeImmutable) {
+                $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
+            }
             return $formatter->format($timestamp);
         } else {
             if (strncmp($format, 'php:', 4) === 0) {
@@ -574,7 +579,7 @@ class Formatter extends Component
     /**
      * Normalizes the given datetime value as a DateTime object that can be taken by various date/time formatting methods.
      *
-     * @param integer|string|DateTime $value the datetime value to be normalized. The following
+     * @param integer|string|DateTimeInterface $value the datetime value to be normalized. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
@@ -587,7 +592,7 @@ class Formatter extends Component
      */
     protected function normalizeDatetimeValue($value)
     {
-        if ($value === null || $value instanceof DateTime || $value instanceof DateTimeInterface) {
+        if ($value === null || $value instanceof DateTimeInterface) {
             // skip any processing
             return $value;
         }
