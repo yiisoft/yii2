@@ -4,36 +4,35 @@
 アプリケーションは Yii アプリケーションシステム全体の構造とライフサイクルを統制するオブジェクトです。
 全ての Yii アプリケーションシステムは、それぞれ、[エントリスクリプト](structure-entry-scripts.md) において作成され、`\Yii::$app` という式でグローバルにアクセス可能な、単一のアプリケーションオブジェクトを持ちます。
 
-> Info|情報: ガイドの中で「アプリケーション」という言葉は、文脈に応じて、
-アプリケーションオブジェクトを意味したり、アプリケーションシステムを意味したりします。
+> Info|情報: ガイドの中で「アプリケーション」という言葉は、文脈に応じて、アプリケーションオブジェクトを意味したり、アプリケーションシステムを意味したりします。
 
 二種類のアプリケーション、すなわち、[[yii\web\Application|ウェブアプリケーション]] と [[yii\console\Application|コンソールアプリケーション]] があります。
 名前が示すように、前者は主にウェブのリクエストを処理し、後者はコンソールコマンドのリクエストを処理します。
 
 
-## アプリケーションの設定情報<a name="application-configurations"></a>
+## アプリケーションの構成情報<a name="application-configurations"></a>
 
-[エントリスクリプト](structure-entry-scripts.md) は、アプリケーションを作成するときに、
-下記のように、[設定情報](concept-configurations.md) を読み込んで、それをアプリケーションに適用します:
+[エントリスクリプト](structure-entry-scripts.md) は、アプリケーションを作成するときに、下記のように、[構成情報](concept-configurations.md)
+を読み込んで、それをアプリケーションに適用します。
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-// アプリケーションの設定情報を読み込む
+// アプリケーションの構成情報を読み込む
 $config = require(__DIR__ . '/../config/web.php');
 
-// アプリケーションのインスタンスを作成し、設定情報を適用する
+// アプリケーションのインスタンスを作成し、構成情報を適用する
 (new yii\web\Application($config))->run();
 ```
 
-通常の [設定情報](concept-configurations.md) と同じように、アプリケーションの設定情報は、アプリケーションオブジェクトのプロパティをどのように初期化するかを規定するものです。
-アプリケーションの設定情報は、たいていは非常に複雑なものですから、通常は、上記の例の `web.php` ファイルのように、[設定情報ファイル](concept-configurations.md#configuration-files) に保管されます。
+通常の [構成情報](concept-configurations.md) と同じように、アプリケーションの構成情報は、アプリケーションオブジェクトのプロパティをどのように初期化するかを指定するものです。
+アプリケーションの構成情報は、たいていは非常に複雑なものですから、通常は、上記の例の `web.php` ファイルのように、[構成情報ファイル](concept-configurations.md#configuration-files) に保管されます。
 
 
 ## アプリケーションのプロパティ<a name="application-properties"></a>
 
-アプリケーションの設定情報で構成すべき重要なアプリケーションのプロパティは数多くあります。
+アプリケーションの構成情報で構成すべき重要なアプリケーションのプロパティは数多くあります。
 それらのプロパティの典型的なものは、アプリケーションが走る環境を記述するものです。
 例えば、アプリケーションは、どのようにして [コントローラ](structure-controllers.md) をロードするか、また、どこにテンポラリファイルを保存するかなどを知らなければなりません。
 以下において、それらのプロパティを要約します。
@@ -49,7 +48,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 [[yii\base\Application::id|id]] プロパティは、アプリケーションを他のアプリケーションから区別するユニークな ID を規定します。
 このプロパティは主としてプログラム的に使われます。
-必須ではありませんが、最良の相互運用性を確保するために、アプリケーション ID を規定するときに英数字だけを使うことが推奨されます。
+必須ではありませんが、最良の相互運用性を確保するために、アプリケーション ID を指定するときに英数字だけを使うことが推奨されます。
 
 
 #### [[yii\base\Application::basePath|basePath]] <a name="basePath"></a>
@@ -71,7 +70,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 ### 重要なプロパティ<a name="important-properties"></a>
 
-この項で説明するプロパティは、アプリケーションが異なるごとに異なってくるものであるため、たいてい、構成する必要が生じます。
+この項で説明するプロパティは、アプリケーションごとに異なってくるものであるため、たいてい、構成する必要が生じます。
 
 
 #### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
@@ -89,21 +88,21 @@ $config = require(__DIR__ . '/../config/web.php');
 ]
 ```
 
-このプロパティが提供されているのは、[[Yii::setAlias()]] メソッドを呼び出す代りに、アプリケーションの設定情報を使ってエイリアスを定義することが出来るようにするためです。
+このプロパティが提供されているのは、[[Yii::setAlias()]] メソッドを呼び出す代りに、アプリケーションの構成情報を使ってエイリアスを定義することが出来るようにするためです。
 
 
 #### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
 
 これは非常に有用なプロパティです。
-これによって、アプリケーションの [[yii\base\Application::bootstrap()|ブートストラップの過程]] において走らせるべきコンポーネントを配列として規定することが出来ます。
+これによって、アプリケーションの [[yii\base\Application::bootstrap()|ブートストラップの過程]] において走らせるべきコンポーネントを配列として指定することが出来ます。
 例えば、ある [モジュール](structure-modules.md) に [URL 規則](runtime-url-handling.md) をカスタマイズさせたいときに、モジュールの ID をこのプロパティの要素として挙げることが出来ます。
 
-このプロパティに挙げるコンポーネントは、それぞれ、以下の形式のいずれかによって規定することが出来ます:
+このプロパティに挙げるコンポーネントは、それぞれ、以下の形式のいずれかによって指定することが出来ます。
 
-- [components](#components) によって規定されるアプリケーションコンポーネントの ID。
-- [modules](#modules) によって規定されるモジュールの ID。
+- [components](#components) によって指定されているアプリケーションコンポーネントの ID。
+- [modules](#modules) によって指定されているモジュールの ID。
 - クラス名。
-- 設定情報の配列。
+- 構成情報の配列。
 - コンポーネントを作成して返す無名関数。
 
 例えば、
@@ -117,7 +116,7 @@ $config = require(__DIR__ . '/../config/web.php');
         // クラス名
         'app\components\Profiler',
 
-        // 設定情報の配列
+        // 構成情報の配列
         [
             'class' => 'app\components\Profiler',
             'level' => 3,
@@ -132,7 +131,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 > Info|情報: モジュール ID と同じ ID のアプリケーションコンポーネントがある場合は、ブートストラップの過程ではアプリケーションコンポーネントが使われます。
-  代りにモジュールを使いたいときは、次のように、無名関数を使って指定することが出来ます:
+  代りにモジュールを使いたいときは、次のように、無名関数を使って指定することが出来ます。
 > ```php
 [
     function () {
@@ -149,7 +148,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 ```php
 if (YII_ENV_DEV) {
-    // 'dev' 環境のための設定情報の調整
+    // 'dev' 環境のための構成情報の調整
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
 
@@ -166,10 +165,10 @@ if (YII_ENV_DEV) {
 #### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
 
 このプロパティは [[yii\web\Application|ウェブアプリケーション]] においてのみサポートされます。
-これは、全てのユーザリクエストを処理すべき [コントローラアクション](structure-controllers.md) を規定します。
+これは、全てのユーザリクエストを処理すべき [コントローラアクション](structure-controllers.md) を指定するものです。
 これは主としてアプリケーションがメンテナンスモードにあって、入ってくる全てのリクエストを単一のアクションで処理する必要があるときに使われます。
 
-設定情報は配列の形を取り、最初の要素はアクションのルートを指定します。
+構成情報は配列の形を取り、最初の要素はアクションのルートを指定します。
 そして、配列の残りの要素 (キー・値のペア) は、アクションに渡されるパラメータを指定します。
 例えば、
 
@@ -186,7 +185,8 @@ if (YII_ENV_DEV) {
 
 #### [[yii\base\Application::components|components]] <a name="components"></a>
 
-これが唯一最重要なプロパティです。これによって、[アプリケーションコンポーネント](structure-application-components.md) と呼ばれる一連の名前付きのコンポーネントを登録して、それらを他の場所で使うことが出来るようになります。
+これこそが、唯一最重要なプロパティです。
+これによって、[アプリケーションコンポーネント](structure-application-components.md) と呼ばれる一連の名前付きのコンポーネントを登録して、それらを他の場所で使うことが出来るようになります。
 例えば、
 
 ```php
@@ -204,7 +204,7 @@ if (YII_ENV_DEV) {
 ```
 
 全てのアプリケーションコンポーネントは、それぞれ、配列の中で「キー・値」のペアとして規定されます。
-キーはコンポーネントの ID を示し、値はコンポーネントのクラス名または [設定情報](concept-configurations.md) を示します。
+キーはコンポーネントの ID を示し、値はコンポーネントのクラス名または [構成情報](concept-configurations.md) を示します。
 
 どのようなコンポーネントでもアプリケーションとともに登録することが出来ます。
 そして登録されたコンポーネントは、後で、`\Yii::$app->ComponentID` という式を使ってグローバルにアクセスすることが出来ます。
@@ -218,8 +218,7 @@ if (YII_ENV_DEV) {
 既定では、Yii は [規約](#controllerNamespace) に基づいてコントローラ ID をコントローラクラスに割り付けます
 (例えば、`post` という ID は `app\controllers\PostController` に割り付けられます)。
 このプロパティを構成することによって、特定のコントローラに対する規約を破ることが出来ます。
-下記の例では、`account` は `app\controllers\UserController` に割り付けられ、
-`article` は `app\controllers\PostController` に割り付けられることになります。
+下記の例では、`account` は `app\controllers\UserController` に割り付けられ、`article` は `app\controllers\PostController` に割り付けられることになります。
 
 ```php
 [
@@ -235,22 +234,21 @@ if (YII_ENV_DEV) {
 ]
 ```
 
-このプロパティの配列のキーはコントローラ ID を表し、配列の値は対応するコントローラクラスの名前または [設定情報](concept-configurations.md) を表します。
+このプロパティの配列のキーはコントローラ ID を表し、配列の値は対応するコントローラクラスの名前または [構成情報](concept-configurations.md) を表します。
 
 
 #### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
 
 このプロパティは、コントローラクラスが配置されるべき既定の名前空間を指定するものです。
 デフォルト値は `app\controllers` です。
-コントローラ ID が `post` である場合、規約によって対応するコントローラの (名前空間を略した) クラス名は `PostController` となり、
-完全修飾クラス名は `app\controllers\PostController` となります。
+コントローラ ID が `post` である場合、規約によって対応するコントローラの (名前空間を略した) クラス名は `PostController`
+となり、完全修飾クラス名は `app\controllers\PostController` となります。
 
 コントローラクラスは、この名前空間に対応するディレクトリのサブディレクトリに配置されても構いません。
 例えば、コントローラ ID として `admin/post` を仮定すると、対応するコントローラの完全修飾クラス名は `app\controllers\admin\PostController` となります。
 
-完全修飾のコントローラクラスが [オートロード可能](concept-autoloading.md) でなければならず、
-コントローラクラスの実際の名前空間がこのプロパティと合致していなければならない、
-ということは非常に重要なことです。
+重要なことは、完全修飾されたコントローラクラスが [オートロード可能](concept-autoloading.md) でなければならず、
+コントローラクラスの実際の名前空間がこのプロパティと合致していなければならない、ということです。
 そうでないと、アプリケーションにアクセスしたときに "ページがみつかりません" というエラーを受け取ることになります。
 
 上述の規約を破りたい場合は、[controllerMap](#controllerMap) プロパティを構成することが出来ます。
@@ -275,8 +273,8 @@ if (YII_ENV_DEV) {
 
 このプロパティはアプリケーションが含む [モジュール](structure-modules.md) を規定します。
 
-このプロパティは、モジュールのクラスまたは [設定情報](concept-configurations.md) の配列であり、
-その配列のキーはモジュールの ID です。例えば、
+このプロパティは、モジュールの ID をキーとする、モジュールのクラスまたは [構成情報](concept-configurations.md) の配列です。
+例えば、
 
 ```php
 [
@@ -284,7 +282,7 @@ if (YII_ENV_DEV) {
         // モジュールクラスで規定された "booking" モジュール
         'booking' => 'app\modules\booking\BookingModule',
 
-        // 設定情報の配列で規定された "comment" モジュール
+        // 構成情報の配列で規定された "comment" モジュール
         'comment' => [
             'class' => 'app\modules\comment\CommentModule',
             'db' => 'db',
@@ -298,9 +296,8 @@ if (YII_ENV_DEV) {
 
 #### [[yii\base\Application::name|name]] <a name="name"></a>
 
-このプロパティはアプリケーション名を規定します。これは、エンドユーザに対して表示されるかも知れません。
-[[yii\base\Application::id|id]] プロパティがユニークな値でなければならないのとは違って、このプロパティの値は
-主として表示目的であり、ユニークである必要はありません。
+このプロパティはアプリケーション名を規定します。これは、エンドユーザに対して表示されるかも知れません。[[yii\base\Application::id|id]]
+プロパティがユニークな値でなければならないのとは違って、このプロパティの値は主として表示目的であり、ユニークである必要はありません。
 
 コードで使わないのであれば、このプロパティを構成する必要はありません。
 
@@ -308,8 +305,7 @@ if (YII_ENV_DEV) {
 #### [[yii\base\Application::params|params]] <a name="params"></a>
 
 このプロパティは、グローバルにアクセス可能なアプリケーションパラメータの配列を規定します。
-コードの中のいたる処でハードコードされた数値や文字列を使う代りに、それらをアプリケーションパラメータとして
-一ヶ所で定義し、必要な場所ではそのパラメータを使うというのが良い慣行です。
+コードの中のいたる処でハードコードされた数値や文字列を使う代りに、それらをアプリケーションパラメータとして一ヶ所で定義し、必要な場所ではそのパラメータを使うというのが良い慣行です。
 例えば、次のように、サムネール画像のサイズをパラメータとして定義することが出来ます。
 
 ```php
@@ -320,15 +316,14 @@ if (YII_ENV_DEV) {
 ]
 ```
 
-そして、このサイズの値を使う必要があるコードにおいては、ただ単に下記のようなコードを使うことが出来ます。
+そして、このサイズの値を使う必要があるコードにおいては、下記のようなコードを使うだけで済ませることが出来ます。
 
 ```php
 $size = \Yii::$app->params['thumbnail.size'];
 $width = \Yii::$app->params['thumbnail.size'][0];
 ```
 
-後でサムネールのサイズを変更すると決めたときは、アプリケーションの設定情報においてのみサイズを修正すればよく、
-これに依存するコードには少しも触れる必要がありません。
+後でサムネールのサイズを変更すると決めたときは、アプリケーションの構成情報においてのみサイズを修正すればよく、これに依存するコードには少しも触れる必要がありません。
 
 
 #### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
@@ -363,15 +358,14 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 ### 有用なプロパティ <a name="useful-properties"></a>
 
-この項で説明されるプロパティは通常は構成されません。というのは、そのデフォルト値が通常の規約を規定するものだからです。
+この項で説明されるプロパティは通常は構成されません。というのは、そのデフォルト値が通常の規約を指定しているからです。
 しかしながら、規約を破る必要がある場合には、これらのプロパティを構成することが出来ます。
 
 
 #### [[yii\base\Application::charset|charset]] <a name="charset"></a>
 
-このプロパティはアプリケーションが使う文字セットを規定します。デフォルト値は `'UTF-8'` であり、
-あなたのアプリケーションが多数の非ユニコードデータを使うレガシーシステムと連携するのでなければ、
-そのままにしておくべきです。
+このプロパティはアプリケーションが使う文字セットを規定します。
+デフォルト値は `'UTF-8'` であり、あなたのアプリケーションが多数の非ユニコードデータを使うレガシーシステムと連携するのでなければ、そのままにしておくべきです。
 
 
 #### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
@@ -381,9 +375,9 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 例えば、`help`、`post/create`、`admin/post/create` などです。
 アクション ID が与えられていない場合は、[[yii\base\Controller::defaultAction]] で規定されるデフォルト値を取ります。
 
-[[yii\web\Application|ウェブアプリケーション]] では、このプロパティのデフォルト値は `'site'` であり、
-その意味するところは、`SiteController` コントローラとそのデフォルトアクションが使用されるべきである、ということです。
-結果として、ルートを指定せずにアプリケーションにアクセスすると、`app\controllers\SiteController::actionIndex()` の結果が表示されます。
+[[yii\web\Application|ウェブアプリケーション]] では、このプロパティのデフォルト値は `'site'` であり、その意味するところは、`SiteController`
+コントローラとそのデフォルトアクションが使用されるべきである、ということです。結果として、ルートを指定せずにアプリケーションにアクセスすると、`app\controllers\SiteController::actionIndex()`
+の結果が表示されます。
 
 [[yii\console\Application|コンソールアプリケーション]] では、デフォルト値は `'help'` であり、コアコマンドの [[yii\console\controllers\HelpController::actionIndex()]] が使用されるべきであるという意味です。
 結果として、引数を与えずに `yii` というコマンドを走らせると、ヘルプ情報が表示されることになります。
@@ -396,7 +390,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 `extensions.php` は、[Composer](http://getcomposer.org) を使ってエクステンションをインストールすると、自動的に生成され保守されます。
 ですから、たいていの場合、このプロパティをあなたが構成する必要はありません。
 
-エクステンションを手作業で保守したいという特殊なケースにおいては、次のようにしてこのプロパティを構成することが出来ます:
+エクステンションを手作業で保守したいという特殊なケースにおいては、次のようにしてこのプロパティを構成することが出来ます。
 
 ```php
 [
@@ -404,7 +398,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
         [
             'name' => 'extension name',
             'version' => 'version number',
-            'bootstrap' => 'BootstrapClassName',  // オプション、設定情報の配列でもよい
+            'bootstrap' => 'BootstrapClassName',  // オプション、構成情報の配列でもよい
             'alias' => [  // optional
                 '@alias1' => 'to/path1',
                 '@alias2' => 'to/path2',
@@ -419,17 +413,16 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 見て分かるように、このプロパティはエクステンションの仕様を示す配列を取ります。
 それぞれのエクステンションは、`name` と `version` の要素を含む配列によって規定されます。
-エクステンションが [ブートストラップ](runtime-bootstrapping.md) の過程で走る必要がある場合には、
-`bootstrap` 要素をブートストラップのクラス名または [設定情報](concept-configurations.md) の配列によって規定することが出来ます。
-また、エクステンションはいくつかの [エイリアス](concept-aliases.md) を定義することも出来ます。
+エクステンションが [ブートストラップ](runtime-bootstrapping.md) の過程で走る必要がある場合には、`bootstrap` 要素をブートストラップのクラス名または [構成情報](concept-configurations.md)
+の配列によって規定することが出来ます。また、エクステンションはいくつかの [エイリアス](concept-aliases.md) を定義することも出来ます。
 
 
 #### [[yii\base\Application::layout|layout]] <a name="layout"></a>
 
 このプロパティは、[ビュー](structure-views.md) をレンダリングするときに使われるべきデフォルトのレイアウトを規定します。
 デフォルト値は `'main'` であり、[レイアウトパス](#layoutPath) の下にある `main.php` というファイルが使われるべき事を意味します。
-[レイアウトパス](#layoutPath) と [ビューパス](#viewPath) の両方がデフォルト値を取る場合、
-デフォルトのレイアウトファイルは `@app/views/layouts/main.php` というパスエイリアスとして表すことが出来ます。
+[レイアウトパス](#layoutPath) と [ビューパス](#viewPath) の両方がデフォルト値を取る場合、デフォルトのレイアウトファイルは
+`@app/views/layouts/main.php` というパスエイリアスとして表すことが出来ます。
 
 滅多には無いことですが、レイアウトをデフォルトで無効にしたい場合は、このプロパティを `false` として構成することが出来ます。
 
@@ -493,7 +486,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 ]
 ```
 
-`on eventName` という構文の使い方については、[設定情報](concept-configurations.md#configuration-format) の節で説明されています。
+`on eventName` という構文の使い方については、[構成情報](concept-configurations.md#configuration-format) の節で説明されています。
 
 別の方法として、アプリケーションのインスタンスが生成された後、[ブートストラップの過程](runtime-bootstrapping.md) の中でイベントハンドラをアタッチすることも出来ます。
 例えば、
@@ -545,8 +538,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 ]
 ```
 
-同じ `beforeAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md)
-からもトリガされることに注意してください。
+同じ `beforeAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md) からもトリガされることに注意してください。
 アプリケーションオブジェクトが最初にこのイベントをトリガし、次に (もし有れば) モジュールが、そして最後にコントローラがこのイベントをトリガします。
 イベントハンドラが [[yii\base\ActionEvent::isValid]] を `false` にセットすると、後続のイベントはトリガされません。
 
@@ -571,8 +563,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 ]
 ```
 
-同じ `afterAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md)
-からもトリガされることに注意してください。
+同じ `afterAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md) からもトリガされることに注意してください。
 これらのオブジェクトは、`beforeAction` の場合とは逆の順でイベントをトリガします。
 すなわち、コントローラオブジェクトが最初にこのイベントをトリガし、次に (もし有れば) モジュールが、そして最後にアプリケーションがこのイベントをトリガします。
 
@@ -581,18 +572,17 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 
 ![アプリケーションのライフサイクル](images/application-lifecycle.png)
 
-[エントリスクリプト](structure-entry-scripts.md) が実行されて、リクエストが処理されるとき、
-アプリケーションは次のようなライフサイクルを経ます:
+[エントリスクリプト](structure-entry-scripts.md) が実行されて、リクエストが処理されるとき、アプリケーションは次のようなライフサイクルを経ます。
 
-1. エントリスクリプトがアプリケーションの設定情報を配列として読み出す。
-2. エントリスクリプトがアプリケーションの新しいインスタンスを作成する:
+1. エントリスクリプトがアプリケーションの構成情報を配列として読み出す。
+2. エントリスクリプトがアプリケーションの新しいインスタンスを作成する。
   * [[yii\base\Application::preInit()|preInit()]] が呼び出されて、[[yii\base\Application::basePath|basePath]]
     のような、優先度の高いアプリケーションプロパティを構成する。
   * [[yii\base\Application::errorHandler|エラーハンドラ]] を登録する。
   * アプリケーションのプロパティを構成する。
   * [[yii\base\Application::init()|init()]] が呼ばれ、そこから更に、ブートストラップコンポーネントを
     走らせるために、[[yii\base\Application::bootstrap()|bootstrap()]] が呼ばれる。
-3. エントリスクリプトが [[yii\base\Application::run()]] を呼んで、アプリケーションを走らせる:
+3. エントリスクリプトが [[yii\base\Application::run()]] を呼んで、アプリケーションを走らせる。
   * [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] イベントをトリガする。
   * リクエストを処理する: リクエストを [ルート](runtime-routing.md) とそれに結び付くパラメータとして解決する;
     ルートによって指定されたモジュール、コントローラ、および、アクションを作成する; そしてアクションを走らせる。
