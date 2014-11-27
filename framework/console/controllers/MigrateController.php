@@ -182,6 +182,7 @@ class MigrateController extends BaseMigrateController
 
     /**
      * @inheritdoc
+     * @since 2.0.1
      */
     protected function refreshSchema()
     {

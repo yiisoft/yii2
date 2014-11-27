@@ -313,6 +313,7 @@ class MessageController extends Controller
      * @param array|string $a
      * @param array|string $b
      * @return boolean
+     * @since 2.0.1
      */
     protected function tokensEqual($a, $b)
     {
@@ -329,6 +330,7 @@ class MessageController extends Controller
      *
      * @param array $tokens
      * @return int|string
+     * @since 2.0.1
      */
     protected function getLine($tokens)
     {

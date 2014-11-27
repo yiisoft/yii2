@@ -784,6 +784,7 @@ class Command extends Component
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
+     * @since 2.0.1 this method is protected (was private before).
      */
     protected function queryInternal($method, $fetchMode = null)
     {

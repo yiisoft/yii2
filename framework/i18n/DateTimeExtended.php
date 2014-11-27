@@ -18,7 +18,7 @@ namespace yii\i18n;
  * Use the original PHP [DateTime](http://php.net/manual/en/class.datetime.php) class instead.
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @since 2.0
+ * @since 2.0.1
  */
 class DateTimeExtended extends \DateTime
 {
