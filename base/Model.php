@@ -765,6 +765,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * supplied by end user.
      * @param string $formName the form name to be used for loading the data into the models.
      * If not set, it will use the [[formName()]] value of the first model in `$models`.
+     * This parameter is available since version 2.0.1.
      * @return boolean whether at least one of the models is successfully populated.
      */
     public static function loadMultiple($models, $data, $formName = null)

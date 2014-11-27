@@ -82,6 +82,8 @@ class Formatter extends Component
      * Please refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available time zones.
      *
      * It defaults to `UTC` so you only have to adjust this value if you store datetime values in another time zone in your database.
+     *
+     * @since 2.0.1
      */
     public $defaultTimeZone = 'UTC';
     /**

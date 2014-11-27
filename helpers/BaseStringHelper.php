@@ -98,7 +98,8 @@ class BaseStringHelper
      * @param integer $length How many characters from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.
      * @param string $encoding The charset to use, defaults to charset currently used by application.
-     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags
+     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
+     * This parameter is available since version 2.0.1.
      * @return string the truncated string.
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
@@ -120,7 +121,8 @@ class BaseStringHelper
      * @param string $string The string to truncate.
      * @param integer $count How many words from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.
-     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags
+     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
+     * This parameter is available since version 2.0.1.
      * @return string the truncated string.
      */
     public static function truncateWords($string, $count, $suffix = '...', $asHtml = false)
@@ -145,6 +147,7 @@ class BaseStringHelper
      * @param string $suffix String to append to the end of the truncated string.
      * @param string|boolean $encoding
      * @return string
+     * @since 2.0.1
      */
     protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
