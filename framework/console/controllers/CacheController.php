@@ -125,6 +125,45 @@ class CacheController extends Controller
     }
 
     /**
+     * Clears DB schema cache for a given connection component.
+     *
+     * ~~~
+     * # clears cache schema specified by component id: "db"
+     * yii cache/flush-schema db
+     * ~~~
+     *
+     * @param string $db id connection component
+     * @return int exit code
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
+     *
+     * @since 2.0.1
+     */
+    public function actionFlushSchema($db = 'db')
+    {
+        $connection = Yii::$app->get($db, false);
+        if ($connection === null) {
+            $this->stdout("Unknown component \"$db\".\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        }
+
+        if (!$connection instanceof \yii\db\Connection) {
+            $this->stdout("\"$db\" component doesn't inherit \\yii\\db\\Connection.\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        } else if (!$this->confirm("Flush cache schema for \"$db\" connection?")) {
+            return static::EXIT_CODE_NORMAL;
+        }
+
+        try {
+            $schema = $connection->getSchema();
+            $schema->refresh();
+            $this->stdout("Schema cache for component \"$db\", was flushed.\n\n", Console::FG_GREEN);
+        } catch (\Exception $e) {
+            $this->stdout($e->getMessage() . "\n\n", Console::FG_RED);
+        }
+    }
+
+    /**
      * Notifies user that given caches are found and can be flushed.
      * @param array $caches array of cache component classes
      */

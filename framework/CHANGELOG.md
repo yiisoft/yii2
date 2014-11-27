@@ -322,6 +322,7 @@ Yii Framework 2 Change Log
 - Enh #5124: Added support to prevent duplicated form submission when using `ActiveForm` (qiangxue)
 - Enh #5131: Added `$autoRenew` parameter to `yii\web\User::getIdentity()` (qiangxue)
 - Enh #5164: Added `Inlfector::$transliterator` that can be used to customize intl transliteration (zinzinday)
+- Enh #5627: Added `yii cache/flush-schema` console command to flush DB schema cache of a given database connection (6pblcb, samdark) 
 - Enh: Added support for using sub-queries when building a DB query with `IN` condition (qiangxue)
 - Enh: Supported adding a new response formatter without the need to reconfigure existing formatters (qiangxue)
 - Enh: Added `yii\web\UrlManager::addRules()` to simplify adding new URL rules (qiangxue)
