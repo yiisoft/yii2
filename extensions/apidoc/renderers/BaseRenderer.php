@@ -157,7 +157,7 @@ abstract class BaseRenderer extends Component
     }
 
     /**
-     * @param BaseDoc $context
+     * @param BaseDoc|string $context
      * @return string
      */
     private function resolveNamespace($context)
