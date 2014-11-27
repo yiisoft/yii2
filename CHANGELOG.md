@@ -243,7 +243,7 @@ Yii Framework 2 Change Log
 - Enh #3283: Added `$checkAjax` to `yii\web\User::loginRequired()` (qiangxue)
 - Enh #3284: Added support for checking multiple ETags by `yii\filters\HttpCache` (qiangxue)
 - Enh #3298: Supported configuring `View::theme` using a class name (netyum, qiangxue)
-- Enh #3305: `yii migrate` now automatically flushes DB schema cache after successful migration (6pblcb, samdark)
+- Enh #3305: Added `refreshSchema()` method to `yii\console\controllers\BaseMigrateController` to allow flushing DB schema cache (6pblcb, samdark)
 - Enh #3328: `BaseMailer` generates better text body from html body (armab)
 - Enh #3380: Allow `value` in `defaultValueValidator` to be a closure (Alex-Code)
 - Enh #3384: Added callback-style transactions (leandrogehlen, Ragazzo, samdark)
