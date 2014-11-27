@@ -316,6 +316,7 @@ Yii Framework 2 Change Log
 - Enh #4062: Added 'caseSensitive' option to `yii\helpers\BaseFileHelper::findFiles()` (klimov-paul)
 - Enh #4691: Encoding on `ActiveForm` and `ActiveField` validation errors is now configurable (Alex-Code)
 - Enh #4740: Added `yii\web\Session::addFlash()` (restyler)
+- Enh #4791: Added more colors to `yii migrate` command (6pblcb, samdark)
 - Enh #4897: Added `yii\helpers\FileHelper::mimeMagicFile` (qiangxue)
 - Enh #5058: Added `$pageSize` parameter to `Pagination::createUrl()` to allow creating URLs with arbitrary page sizes (cdcchen, qiangxue)
 - Enh #5089: Added asset debugger panel (arturf, qiangxue)
