@@ -2,12 +2,9 @@
 
 namespace yiiunit\framework\i18n;
 
-use NumberFormatter;
 use yii\i18n\Formatter;
 use Yii;
 use yiiunit\TestCase;
-use DateTime;
-use DateInterval;
 
 /**
  * Test for basic formatter functions

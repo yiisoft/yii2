@@ -6,8 +6,6 @@ use NumberFormatter;
 use yii\i18n\Formatter;
 use Yii;
 use yiiunit\TestCase;
-use DateTime;
-use DateInterval;
 
 /**
  * @group i18n

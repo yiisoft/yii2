@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\i18n;
 
-use NumberFormatter;
 use yii\i18n\Formatter;
 use Yii;
 use yiiunit\TestCase;
@@ -499,6 +498,30 @@ class FormatterDateTest extends TestCase
         $this->formatter->defaultTimeZone = 'Pacific/Honolulu'; // always UTC-10
         $this->formatter->timeZone = 'Pacific/Kiritimati'; // always UTC+14
         $this->assertSame('2014-08-01', $this->formatter->asDate('2014-08-01', 'yyyy-MM-dd'));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/6263
+     *
+     * it is a PHP bug: https://bugs.php.net/bug.php?id=45543
+     * Fixed in this commit: https://github.com/php/php-src/commit/22dba2f5f3211efe6c3b9bb24734c811ca64c68c#diff-7b738accc3d60f74c259da18588ddc5dL2996
+     * Fixed in PHP >5.4.26 and >5.5.10. http://3v4l.org/mlZX7
+     *
+     * @dataProvider provideTimezones
+     */
+    public function testIssue6263($dtz)
+    {
+        $this->formatter->defaultTimeZone = $dtz;
+
+        $this->formatter->timeZone = 'UTC';
+        $this->assertEquals('24.11.2014 11:48:53', $this->formatter->format(1416829733, ['date', 'php:d.m.Y H:i:s']));
+        $this->formatter->timeZone = 'Europe/Berlin';
+        $this->assertEquals('24.11.2014 12:48:53', $this->formatter->format(1416829733, ['date', 'php:d.m.Y H:i:s']));
+
+        $this->assertFalse(DateTime::createFromFormat('Y-m-d', 1416829733));
+        $this->assertFalse(DateTime::createFromFormat('Y-m-d', '2014-05-08 12:48:53'));
+        $this->assertFalse(DateTime::createFromFormat('Y-m-d H:i:s', 1416829733));
+        $this->assertFalse(DateTime::createFromFormat('Y-m-d H:i:s', '2014-05-08'));
     }
 
 }
