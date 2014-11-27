@@ -178,4 +178,13 @@ class MigrateController extends BaseMigrateController
             'version' => $version,
         ])->execute();
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function refreshSchema($name = 'db')
+    {
+        $this->db->schema->refresh();
+        echo "DB schema cache was flushed.\n";
+    }
 }
