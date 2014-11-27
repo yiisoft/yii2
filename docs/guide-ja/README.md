@@ -64,7 +64,7 @@ All Rights Reserved.
 * [プロパティ](concept-properties.md)
 * [イベント](concept-events.md)
 * [ビヘイビア](concept-behaviors.md)
-* [設定情報](concept-configurations.md)
+* [構成情報](concept-configurations.md)
 * [エイリアス](concept-aliases.md)
 * [クラスのオートロード](concept-autoloading.md)
 * [サービスロケータ](concept-service-locator.md)
