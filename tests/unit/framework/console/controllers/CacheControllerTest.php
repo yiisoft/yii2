@@ -16,7 +16,7 @@ class CacheControllerTest extends TestCase
 {
 
     /**
-     * @var \yiiunit\framework\console\controllers\CacheConsoledController
+     * @var SilencedCacheController
      */
     private $_cacheController;
 
@@ -27,7 +27,7 @@ class CacheControllerTest extends TestCase
         parent::setUp();
 
         $this->_cacheController = Yii::createObject([
-            'class' => 'yiiunit\framework\console\controllers\CacheConsoledController',
+            'class' => 'yiiunit\framework\console\controllers\SilencedCacheController',
             'interactive' => false,
         ],[null, null]); //id and module are null
         
@@ -122,7 +122,7 @@ class CacheControllerTest extends TestCase
     }
 
     /**
-     * @expectedException yii\console\Exception
+     * @expectedException \yii\console\Exception
      */
     public function testNothingToFlushException()
     {
@@ -138,15 +138,6 @@ class CacheControllerTest extends TestCase
 
         $this->assertFalse(Yii::$app->firstCache->get('firstKey'),'first cache data should be flushed');
         $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
-    }
-
-}
-
-class CacheConsoledController extends CacheController
-{
-
-    public function stdout($string)
-    {
     }
 
 }

@@ -8,7 +8,6 @@ use yii\mongodb\Query;
 use Yii;
 use yiiunit\extensions\mongodb\MongoDbTestCase;
 use yiiunit\framework\console\controllers\MigrateControllerTestTrait;
-use yii\mongodb\console\controllers\MigrateController;
 
 /**
  * Unit test for [[\yii\mongodb\console\controllers\MigrateController]].
@@ -23,7 +22,7 @@ class MigrateControllerTest extends MongoDbTestCase
 
     public function setUp()
     {
-        $this->migrateControllerClass = MigrateController::className();
+        $this->migrateControllerClass = EchoMigrateController::className();
         $this->migrationBaseClass = Migration::className();
 
         parent::setUp();
