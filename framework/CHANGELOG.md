@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Bug #6150: `yii\bootstrap\Tabs` dropdown IDs were generated incorrectly (samdark)
 - Bug #6266: Clicking on reset button does not hide error summary when using `ActiveForm` (InteLigent, qiangxue)
 - Bug #6271: Query caching returns the same data when running the same SQL with different fetch modes (grachov)
+- Bug #6279: `yii\db\Schema::getLastInsertID()` was passing wrong default schema name to PDO (samdark)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Bug: `yii\web\AssetManager` should not publish disabled asset bundles (qiangxue)
