@@ -167,8 +167,8 @@ class SettingsController extends Controller
 }
 ```
 
-In the code above we're using `indexBy` when retrieving models from database to make array indexed by model ids. These
-will be later used to identify form fields. `loadMultiple` fills multiple models with the form data coming from POST
+In the code above we're using `indexBy` when retrieving models from the database to populate an array indexed by model ids.
+These will be later used to identify form fields. `loadMultiple` fills multiple models with the form data coming from POST
 and `validateMultiple` validates all models at once. In order to skip validation when saving we're passing `false` as
 a parameter to `save`.
 
