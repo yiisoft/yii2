@@ -183,7 +183,7 @@ class MigrateController extends BaseMigrateController
     /**
      * @inheritdoc
      */
-    protected function refreshSchema($name = 'db')
+    protected function refreshSchema()
     {
         $this->db->schema->refresh();
         $this->stdout("DB schema cache was flushed.\n", Console::FG_GREEN);
