@@ -601,7 +601,7 @@ class Formatter extends Component
         // checking for DateTime and DateTimeInterface is not redundant, DateTimeInterface is only in PHP>5.5
         if ($value === null || $value instanceof DateTime || $value instanceof DateTimeInterface) {
             // skip any processing
-            return $value;
+            return $checkTimeInfo ? [$value, true] : $value;
         }
         if (empty($value)) {
             $value = 0;
