@@ -4,8 +4,8 @@ Data Formatter
 For formatting of outputs Yii provides a formatter class to make data more readable for users.
 [[yii\i18n\Formatter]] is a helper class that is registered as an [application component](structure-application-components.md) named `formatter` by default.
 
-It provides a set of methods for data formatting purpose such as date/time values, numbers and other commonly used formats in a localized way.
-The formatter can be used in two different ways.
+It provides a set of methods for data formatting purposes such as date/time values, numbers and other commonly used formats in a localized way.
+The formatter can be used in two different ways:
 
 1. Using the formatting methods (all formatter methods prefixed with `as`) directly:
 
@@ -32,11 +32,11 @@ The formatter can be used in two different ways.
 All output of the formatter is localized when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
 You can configure the [[yii\i18n\Formatter::locale|locale]] property of the formatter for this. If not configured, the
 application [[yii\base\Application::language|language]] is used as the locale. See the [section on internationalization](tutorial-i18n.md) for more details.
-The Formatter will then choose the correct format for dates and numbers according to the locale including names of month and
+The Formatter will then choose the correct format for dates and numbers according to the locale including names of months and
 weekdays translated to the current language. Date formats are also affected by the [[yii\i18n\Formatter::timeZone|timeZone]]
 which will also be taken from the application [[yii\base\Application::timeZone|timeZone]] if not configured explicitly.
 
-For example the date format call will output different results for different locales:
+For example, the date format call will output different results for different locales:
 
 ```php
 Yii::$app->formatter->locale = 'en-US';
@@ -47,9 +47,9 @@ Yii::$app->formatter->locale = 'ru-RU';
 echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 г.
 ```
 
-> Note that formatting may differ between different versions of the ICU library compiled with PHP and also based on the fact whether the
-> [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed or not. So to ensure your website works with the same output
-> in all environments it is recommended to install the PHP intl extension in all environments and verify that the version of the ICU library
+> Note that formatting may differ between different versions of the ICU library compiled with PHP and also based on whether the
+> [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed or not. To ensure your website works with the same output
+> in all environments, it is recommended you install the PHP intl extension in all environments and verify that the version of the ICU library
 > is the same. See also: [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
 
 
@@ -85,12 +85,12 @@ The formatter class provides different methods for formatting date and time valu
   and now in human readable form e.g. `1 hour ago`.
 
 The date and time format for the [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]], and
-[[yii\i18n\Formatter::asDatetime()|datetime]] methods can be specified globally by configuring the formatters
+[[yii\i18n\Formatter::asDatetime()|datetime]] methods can be specified globally by configuring the formatter
 properties [[yii\i18n\Formatter::$dateFormat|$dateFormat]], [[yii\i18n\Formatter::$timeFormat|$timeFormat]], and
 [[yii\i18n\Formatter::$datetimeFormat|$datetimeFormat]].
 
 By default the formatter uses a shortcut format that is interpreted differently according to the currently active locale
-so that dates and times are formatted in a way that is common for the users country and language.
+so that dates and times are formatted in a way that is consistent for the users' country and language.
 There are four different shortcut formats available:
 
 - `short` in `en_GB` locale will print for example `06/10/2014` for date and `15:58` for time, while
@@ -113,7 +113,7 @@ echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ### Time zones <a name="time-zones"></a>
 
 When formatting date and time values, Yii will convert them to the [[yii\i18n\Formatter::timeZone|configured time zone]].
-Therefore the input value is assumed to be in UTC unless a time zone is explicitly given. For this reason
+Therefore, the input value is assumed to be in UTC unless a time zone is explicitly given. For this reason
 it is recommended to store all date and time values in UTC, preferably as a UNIX timestamp, which is always UTC by definition.
 If the input value is in a time zone different from UTC, the time zone has to be stated explicitly like in the following example:
 
@@ -140,7 +140,7 @@ Formatting Numbers <a name="numbers"></a>
 For formatting numeric values the formatter class provides the following methods:
 
 - [[yii\i18n\Formatter::asInteger()|integer]] - the value is formatted as an integer e.g. `42`.
-- [[yii\i18n\Formatter::asDecimal()|decimal]] - the value is formatted as a decimal number considering decimal and thousand separators e.g. `42.123`.
+- [[yii\i18n\Formatter::asDecimal()|decimal]] - the value is formatted as a decimal number considering decimal and thousand separators e.g. `2,542.123` or `2.542,123`.
 - [[yii\i18n\Formatter::asPercent()|percent]] - the value is formatted as a percent number e.g. `42%`.
 - [[yii\i18n\Formatter::asScientific()|scientific]] - the value is formatted as a number in scientific format e.g. `4.2E4`.
 - [[yii\i18n\Formatter::asCurrency()|currency]] - the value is formatted as a currency value e.g. `£420.00`.
@@ -153,7 +153,7 @@ The format for number formatting can be adjusted using the [[yii\i18n\Formatter:
 For more advanced configuration, [[yii\i18n\Formatter::numberFormatterOptions]] and [[yii\i18n\Formatter::numberFormatterTextOptions]]
 can be used to configure the internally used [NumberFormatter class](http://php.net/manual/en/class.numberformatter.php)
 
-For example to adjust the maximum and minimum value of fraction digits you can configure this property like the following:
+For example, to adjust the maximum and minimum value of fraction digits you can configure this property like the following:
 
 ```php
 [
