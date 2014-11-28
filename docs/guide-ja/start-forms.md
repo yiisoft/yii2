@@ -182,7 +182,7 @@ use yii\widgets\ActiveForm;
 試してみる<a name="trying-it-out"></a>
 ----------
 
-どのように動作するかを見るために、ブラウザで下記の URL をアクセスしてください:
+どのように動作するかを見るために、ブラウザで下記の URL をアクセスしてください。
 
 ```
 http://hostname/index.php?r=site/entry
