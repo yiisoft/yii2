@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Enh #4739: Better display of exceptions when the response format is set as "raw" format (qiangxue)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 - Enh #5367: Added `yii\grid\DataColumn::encodeLabel` (SDKiller)
+- Enh #5480: Added defensive code to `yii\web\User::getIdentity()` to avoid potential infinite recursion (qiangxue)
 - Enh #5587: `json_encode` is now used with `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` where it makes sense, also
   it is now default for `Json::encode()` (samdark)
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
