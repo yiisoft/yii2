@@ -1,8 +1,7 @@
-Yii 2.0 公式ガイド
-==================
+決定版 Yii 2.0 ガイド
+=====================
 
-このチュートリアルは [Yii ドキュメント規約](http://www.yiiframework.com/doc/terms/) の下に
-リリースされています。
+このチュートリアルは [Yii ドキュメント規約](http://www.yiiframework.com/doc/terms/) の下にリリースされています。
 
 All Rights Reserved.
 
@@ -65,11 +64,11 @@ All Rights Reserved.
 * [プロパティ](concept-properties.md)
 * [イベント](concept-events.md)
 * [ビヘイビア](concept-behaviors.md)
-* [コンフィギュレーション](concept-configurations.md)
+* [構成情報](concept-configurations.md)
 * [エイリアス](concept-aliases.md)
 * [クラスのオートロード](concept-autoloading.md)
 * [サービスロケータ](concept-service-locator.md)
-* [依存性注入コンテナ](concept-di-container.md)
+* [依存注入コンテナ](concept-di-container.md)
 
 
 データベースの取り扱い
@@ -102,8 +101,8 @@ All Rights Reserved.
 * **TBD** [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)
 * [データウィジェット](output-data-widgets.md)
-* [クライアントスクリプトを使う](output-client-scripts.md)
-* [テーマを使う](output-theming.md)
+* [クライアントスクリプトを扱う](output-client-scripts.md)
+* [テーマ](output-theming.md)
 
 
 セキュリティ
@@ -169,7 +168,7 @@ RESTful ウェブサービス
 * [国際化](tutorial-i18n.md)
 * [メール](tutorial-mailing.md)
 * [パフォーマンスチューニング](tutorial-performance-tuning.md)
-* **TBD** [共有ホスト環境](tutorial-shared-hosting.md)
+* [共有ホスト環境](tutorial-shared-hosting.md)
 * [テンプレートエンジン](tutorial-template-engines.md)
 * [サードパーティのコードを扱う](tutorial-yii-integration.md)
 
@@ -177,14 +176,14 @@ RESTful ウェブサービス
 ウィジェット
 ------------
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
+* GridView: **TBD** link to demo page
+* ListView: **TBD** link to demo page
+* DetailView: **TBD** link to demo page
+* ActiveForm: **TBD** link to demo page
+* Pjax: **TBD** link to demo page
+* Menu: **TBD** link to demo page
+* LinkPager: **TBD** link to demo page
+* LinkSorter: **TBD** link to demo page
 * [Bootstrap ウィジェット](widget-bootstrap.md)
 * [Jquery UI ウィジェット](widget-jui.md)
 
