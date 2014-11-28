@@ -3,13 +3,13 @@ Uploading Files
 
 > Note: This section is under development.
 
-Uploading files in Yii is done via form model, its validation rules and some controller code. Let's review what's needed
+Uploading files in Yii is done via the form model, its validation rules and some controller code. Let's review what's needed
 to handle uploads properly.
 
 Form model
 ----------
 
-First of all, you need to create a model that will handle file upload. Create `models/UploadForm.php` with the following
+First of all, you need to create a model that will handle file uploads. Create `models/UploadForm.php` with the following
 content:
 
 ```php
@@ -67,7 +67,7 @@ input field.
 Controller
 ----------
 
-Now create the controller that connects form and model together:
+Now create the controller that connects the form and model together:
 
 ```php
 namespace app\controllers;
@@ -102,7 +102,7 @@ validation manually via `$model->validate()`. This triggers the [[yii\validators
 expects a file:
 
 ```php
-$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE //in code framework
+$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE //in the code framework
 ```
 
 If validation is successful, then we're saving the file: 
@@ -111,7 +111,7 @@ If validation is successful, then we're saving the file:
 $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
 ```
 
-If you're using "basic" application template then folder `uploads` should be created under `web`.
+If you're using the "basic" application template, then folder `uploads` should be created under `web`.
 
 That's it. Load the page and try uploading. Uploads should end up in `basic/web/uploads`.
 
@@ -120,7 +120,7 @@ Additional information
 
 ### Required rule
 
-If you need to make file upload mandatory use `skipOnEmpty` like the following:
+If you need to make the file upload mandatory, use `skipOnEmpty` like the following:
 
 ```php
 public function rules()
@@ -133,7 +133,7 @@ public function rules()
 
 ### MIME type
 
-It is wise to validate type of the file uploaded. FileValidator has property `$extensions` for the purpose:
+It is wise to validate the type of file uploaded. FileValidator has the property `$extensions` for this purpose:
 
 ```php
 public function rules()
@@ -144,8 +144,7 @@ public function rules()
 }
 ```
 
-The thing is that it validates only file extension and not the file content. In order to validate content as well use
-`mimeTypes` property of `FileValidator`:
+Keep in mind that only the file extension will be validated, but not the actual file content. In order to validate content as well use the `mimeTypes` property of `FileValidator`:
 
 ```php
 public function rules()
@@ -161,11 +160,11 @@ public function rules()
 ### Validating uploaded image
 
 If you upload an image, [[yii\validators\ImageValidator|ImageValidator]] may come in handy. It verifies if an attribute
-received a valid image that can be then either saved or processed using [Imagine Extension](https://github.com/yiisoft/yii2/tree/master/extensions/imagine).
+received a valid image that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2/tree/master/extensions/imagine).
 
 ### Uploading multiple files
 
-If you need download multiple files at once some adjustments are required. View:
+If you need to download multiple files at once some adjustments are required. View:
 
 ```php
 <?php
@@ -243,4 +242,4 @@ class SiteController extends Controller
 ```
 
 The difference is `UploadedFile::getInstances($model, 'file');` instead of `UploadedFile::getInstance($model, 'file');`.
-Former returns instances for **all** uploaded files while the latter gives you only a single instance.
+The former returns instances for **all** uploaded files while the latter gives you only a single instance.
