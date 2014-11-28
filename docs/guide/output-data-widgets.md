@@ -39,16 +39,15 @@ echo DetailView::widget([
 GridView
 --------
 
-Data grid or GridView is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build admin
+Data grid or GridView is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
 section of the system. It takes data from [data provider](output-data-providers.md) and renders each row using a set of columns
-presenting data in a form of a table.
+presenting data in the form of a table.
 
 Each row of the table represents the data of a single data item, and a column usually represents an attribute of
 the item (some columns may correspond to complex expressions of attributes or static text).
 
 Grid view supports both sorting and pagination of the data items. The sorting and pagination can be done in AJAX mode
-or normal page request. A benefit of using GridView is that when the user disables JavaScript, the sorting and pagination
-automatically degrade to normal page requests and are still functioning as expected.
+or as a normal page request. A benefit of using GridView is that when the user disables JavaScript, the sorting and pagination automatically degrade to normal page requests and still function as expected.
 
 The minimal code needed to use GridView is as follows:
 
@@ -74,7 +73,7 @@ the data provider. The displayed table is equipped with sorting and pagination f
 
 Yii grid consists of a number of columns. Depending on column type and settings these are able to present data differently.
 
-These are defined in the columns part of GridView config like the following:
+These are defined in the columns part of GridView configuration like the following:
 
 ```php
 echo GridView::widget([
@@ -82,7 +81,7 @@ echo GridView::widget([
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
         // A simple column defined by the data contained in $dataProvider.
-        // Data from model's column1 will be used.
+        // Data from the model's column1 will be used.
         'id',
         'username',
         // More complex one.
@@ -96,7 +95,7 @@ echo GridView::widget([
 ]);
 ```
 
-Note that if columns part of config isn't specified, Yii tries to show all possible data provider model columns.
+Note that if the columns part of the configuration isn't specified, Yii tries to show all possible data provider model columns.
 
 ### Column classes
 
@@ -112,7 +111,7 @@ echo GridView::widget([
         ],
 ```
 
-Additionally to column classes provided by Yii that we'll review below you can create your own column classes.
+In addition to column classes provided by Yii that we'll review below you can create your own column classes.
 
 Each column class extends from [[\yii\grid\Column]] so there are some common options you can set while configuring
 grid columns.
@@ -131,17 +130,17 @@ grid columns.
 You may specify various container HTML options by passing arrays to:
 
 - `headerOptions`
-- `contentOptions`
 - `footerOptions`
 - `filterOptions`
+- `contentOptions`
 
 #### Data column <a name="data-column"></a>
 
-Data column is used for displaying and sorting data. It is default column type so specifying class could be omitted when
+Data column is used for displaying and sorting data. It is the default column type so the specifying class could be omitted when
 using it.
 
-The main setting of the data column is its format. It could be specified via `format` attribute. Its values are
-corresponding to methods in `formatter` [application component](structure-application-components.md) that is [[\yii\i18n\Formatter|Formatter]] by default:
+The main setting of the data column is its format. It could be specified via `format` attribute. Its values
+correspond to methods in the `formatter` [application component](structure-application-components.md) that is [[\yii\i18n\Formatter|Formatter]] by default:
 
 ```php
 echo GridView::widget([
@@ -158,8 +157,8 @@ echo GridView::widget([
 ]); 
 ```
 
-In the above `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
-argument. In the second column definition `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
+In the above, `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
+argument. In the second column definition, `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
 column is, again, passed as the first argument while 'Y-m-d' is used as the second argument value.
 
 For a list of available formatters see the [section about Data Formatting](output-formatter.md).
@@ -187,7 +186,7 @@ Available properties you can configure are:
   treated as controller action IDs (also called *button names* in the context of action column). They will be replaced
   by the corresponding button rendering callbacks specified in [[yii\grid\ActionColumn::$buttons|buttons]]. For example, the token `{view}` will be
   replaced by the result of the callback `buttons['view']`. If a callback cannot be found, the token will be replaced
-  with an empty string. Default is `{view} {update} {delete}`.
+  with an empty string. The default tokens are `{view} {update} {delete}`.
 - `buttons` is an array of button rendering callbacks. The array keys are the button names (without curly brackets),
   and the values are the corresponding button rendering callbacks. The callbacks should use the following signature:
 
@@ -197,7 +196,7 @@ function ($url, $model, $key) {
 }
 ```
 
-In the code above `$url` is the URL that the column creates for the button, `$model` is the model object being
+In the code above, `$url` is the URL that the column creates for the button, `$model` is the model object being
 rendered for the current row, and `$key` is the key of the model in the data provider array.
 
 - `urlCreator` is a callback that creates a button URL using the specified model information. The signature of
@@ -257,7 +256,7 @@ A common practice when using [active records](db-active-record.md) is to create 
 that provides needed functionality (it can be generated for you by Gii). This class defines the validation 
 rules for the search and provides a `search()` method that will return the data provider.
 
-To add search capability for the `Post` model we can create `PostSearch` like in the following example:
+To add the search capability for the `Post` model, we can create `PostSearch` like in the following example:
 
 ```php
 <?php
@@ -385,12 +384,12 @@ In `search()` you then just add another filter condition with:
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Info: In the above we use the same string for the relation name and the table alias, however when your alias and relation name
-> differ, you have to pay attention on where to use the alias and where to use the relation name.
+> Info: In the above we use the same string for the relation name and the table alias; however, when your alias and relation name
+> differ, you have to pay attention to where you use the alias and where you use the relation name.
 > A simple rule for this is to use the alias in every place that is used to build the database query and the
-> relation name in all other definitions like in `attributes()` and `rules()` etc.
+> relation name in all other definitions such as `attributes()` and `rules()` etc.
 >
-> For example you use the alias `au` for the author relation table, the joinWith statement looks like the following:
+> For example, if you use the alias `au` for the author relation table, the joinWith statement looks like the following:
 >
 > ```php
 > $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
@@ -403,7 +402,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $query->andFilterWhere(['LIKE', 'au.name', $this->getAttribute('author.name')]);
 > ```
 >
-> Same is true for the sorting definition:
+> The same is true for the sorting definition:
 >
 > ```php
 > $dataProvider->sort->attributes['author.name'] = [
@@ -412,7 +411,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > ];
 > ```
 >
-> Also when specifying the [[yii\data\Sort::defaultOrder|defaultOrder]] for sorting you need to use the relation name
+> Also, when specifying the [[yii\data\Sort::defaultOrder|defaultOrder]] for sorting, you need to use the relation name
 > instead of the alias:
 >
 > ```php
@@ -424,8 +423,8 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 
 #### Using sql views for filtering, sorting and displaying data
 
-There is also other approach that can be faster and more useful - sql views. So for example if we need to show gridview 
-with users and their profiles we can do it in this way:
+There is also another approach that can be faster and more useful - sql views. For example, if we need to show the gridview 
+with users and their profiles, we can do so in this way:
 
 ```php
 CREATE OR REPLACE VIEW vw_user_info AS
@@ -434,7 +433,7 @@ CREATE OR REPLACE VIEW vw_user_info AS
     WHERE user.id = user_profile.user_id
 ```
 
-Then you need to create ActiveRecord that will be representing this view:
+Then you need to create the ActiveRecord that will be representing this view:
 
 ```php
 
@@ -482,26 +481,26 @@ class UserView extends ActiveRecord
 }
 ```
 
-After that you can use this UserView active record with search models, without additional specifying of sorting and filtering attributes.
+After that you can use this UserView active record with search models, without additional specification of sorting and filtering attributes.
 All attributes will be working out of the box. Note that this approach has several pros and cons:
 
-- you don't need to specify different sorting and filtering conditions and other things. Everything works out of the box;
-- it can be much faster because of the data size, count of sql queries performed (for each relation you will need additional query);
-- since this is just a simple mapping UI on sql view it lacks some domain logic that is in your entities, so if you have some methods like `isActive`,
-`isDeleted` or other that will influence on UI, you will need to duplicate them in this class too.
+- you don't need to specify different sorting and filtering conditions. Everything works out of the box;
+- it can be much faster because of the data size, count of sql queries performed (for each relation you will need an additional query);
+- since this is just a simple mapping UI on the sql view it lacks some domain logic that is in your entities, so if you have some methods like `isActive`,
+`isDeleted` or others that will influence the UI, you will need to duplicate them in this class too.
 
 
 ### Multiple GridViews on one page
 
 You can use more than one GridView on a single page but some additional configuration is needed so that
-they do not interfere.
+they do not interfere with each other.
 When using multiple instances of GridView you have to configure different parameter names for
-the generated sort and pagination links so that each GridView has its individual sorting and pagination.
+the generated sort and pagination links so that each GridView has its own individual sorting and pagination.
 You do so by setting the [[yii\data\Sort::sortParam|sortParam]] and [[yii\data\Pagination::pageParam|pageParam]]
 of the dataProvider's [[yii\data\BaseDataProvider::$sort|sort]] and [[yii\data\BaseDataProvider::$pagination|pagination]]
 instances.
 
-Assume we want to list `Post` and `User` models for which we have already prepared two data providers
+Assume we want to list the `Post` and `User` models for which we have already prepared two data providers
 in `$userProvider` and `$postProvider`:
 
 ```php
