@@ -472,30 +472,41 @@ class GridView extends BaseListView
         if (empty($this->columns)) {
             $this->guessColumns();
         }
-        foreach ($this->columns as $i => $column) {
-            if (is_string($column)) {
-                $column = $this->createDataColumn($column);
+        foreach ($this->columns as $key => $column) {
+            if (is_string($key)) {
+                $columnDefinition = $key;
+                $columnValue = $column;
+            } else {
+                $columnDefinition = $column;
+                $columnValue = null;
+            }
+
+            if (is_string($columnDefinition)) {
+                $column = $this->createDataColumn($columnDefinition, $columnValue);
             } else {
                 $column = Yii::createObject(array_merge([
                     'class' => $this->dataColumnClass ? : DataColumn::className(),
                     'grid' => $this,
-                ], $column));
+                ], $columnDefinition));
             }
+
             if (!$column->visible) {
-                unset($this->columns[$i]);
+                unset($this->columns[$key]);
                 continue;
             }
-            $this->columns[$i] = $column;
+            $this->columns[$key] = $column;
         }
     }
 
     /**
-     * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:label".
+     * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:label"
+     * and optionally value.
      * @param string $text the column specification string
+     * @param string|callable $value
+     * @throws InvalidConfigException
      * @return DataColumn the column instance
-     * @throws InvalidConfigException if the column specification is invalid
      */
-    protected function createDataColumn($text)
+    protected function createDataColumn($text, $value = null)
     {
         if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $text, $matches)) {
             throw new InvalidConfigException('The column must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
@@ -507,6 +518,7 @@ class GridView extends BaseListView
             'attribute' => $matches[1],
             'format' => isset($matches[3]) ? $matches[3] : 'text',
             'label' => isset($matches[5]) ? $matches[5] : null,
+            'value' => $value,
         ]);
     }
 
