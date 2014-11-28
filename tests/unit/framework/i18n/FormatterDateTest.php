@@ -63,6 +63,13 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('n/j/y', $value), $this->formatter->asDate($value, 'short'));
         $this->assertSame(date('F j, Y', $value), $this->formatter->asDate($value, 'long'));
 
+        $value = new DateTime();
+        $this->assertSame(date('M j, Y', $value->getTimestamp()), $this->formatter->asDate($value));
+        $this->assertSame(date('Y/m/d', $value->getTimestamp()), $this->formatter->asDate($value, 'php:Y/m/d'));
+        $this->assertSame(date('m/d/Y', $value->getTimestamp()), $this->formatter->asDate($value, 'MM/dd/yyyy'));
+        $this->assertSame(date('n/j/y', $value->getTimestamp()), $this->formatter->asDate($value, 'short'));
+        $this->assertSame(date('F j, Y', $value->getTimestamp()), $this->formatter->asDate($value, 'long'));
+
         // empty input
         $this->assertSame('Jan 1, 1970', $this->formatter->asDate(''));
         $this->assertSame('Jan 1, 1970', $this->formatter->asDate(0));
@@ -89,6 +96,10 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('g:i:s A', $value), $this->formatter->asTime($value));
         $this->assertSame(date('h:i:s A', $value), $this->formatter->asTime($value, 'php:h:i:s A'));
 
+        $value = new DateTime();
+        $this->assertSame(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
+        $this->assertSame(date('h:i:s A', $value->getTimestamp()), $this->formatter->asTime($value, 'php:h:i:s A'));
+
         // empty input
         $this->assertSame('12:00:00 AM', $this->formatter->asTime(''));
         $this->assertSame('12:00:00 AM', $this->formatter->asTime(0));
@@ -113,6 +124,10 @@ class FormatterDateTest extends TestCase
         $value = time();
         $this->assertSame(date('M j, Y g:i:s A', $value), $this->formatter->asDatetime($value));
         $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
+
+        $value = new DateTime();
+        $this->assertSame(date('M j, Y g:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value));
+        $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         // empty input
         $this->assertSame('Jan 1, 1970 12:00:00 AM', $this->formatter->asDatetime(''));
