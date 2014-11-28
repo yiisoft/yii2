@@ -207,6 +207,7 @@ Yii Framework 2 Change Log
 - Bug #5049: `ActiveForm::validationDelay` should be applied to user types only (qiangxue)
 - Bug #5055: Fixed `yii\console\controllers\CacheController` does not check if cache component instance of 'yii\caching\Cache' (klimov-paul)
 - Bug #5126: Fixed text body and charset not being set for multipart mail (nkovacs)
+- Bug #6305: `yii\i18n\Formatter::asParagraphs()` was not unicode-aware (samdark)
 - Bug: Fixed inconsistent return of `\yii\console\Application::runAction()` (samdark)
 - Bug: URL encoding for the route parameter added to `\yii\web\UrlManager` (klimov-paul)
 - Bug: Fixed the bug that requesting protected or private action methods would cause 500 error instead of 404 (qiangxue)
