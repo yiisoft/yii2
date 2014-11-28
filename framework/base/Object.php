@@ -252,7 +252,7 @@ class Object
      */
     public function canGetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name);
+        return method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name) ? new ReflectionProperty(get_class($this),$name)->isPublic(): FALSE;
     }
 
     /**
@@ -270,7 +270,7 @@ class Object
      */
     public function canSetProperty($name, $checkVars = true)
     {
-        return method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name);
+        return method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name)? new ReflectionProperty(get_class($this),$name)->isPublic(): FALSE;
     }
 
     /**
