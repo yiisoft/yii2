@@ -499,12 +499,27 @@ class GridView extends BaseListView
     }
 
     /**
+     * This function tries to guess the columns to show from the given data
+     * if [[columns]] are not explicitly specified.
+     */
+    protected function guessColumns()
+    {
+        $models = $this->dataProvider->getModels();
+        $model = reset($models);
+        if (is_array($model) || is_object($model)) {
+            foreach ($model as $name => $value) {
+                $this->columns[] = $name;
+            }
+        }
+    }
+
+    /**
      * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:label"
      * and optionally value.
      * @param string $text the column specification string
      * @param string|callable $value
-     * @throws InvalidConfigException
      * @return DataColumn the column instance
+     * @throws InvalidConfigException if the column specification is invalid
      */
     protected function createDataColumn($text, $value = null)
     {
@@ -520,20 +535,5 @@ class GridView extends BaseListView
             'label' => isset($matches[5]) ? $matches[5] : null,
             'value' => $value,
         ]);
-    }
-
-    /**
-     * This function tries to guess the columns to show from the given data
-     * if [[columns]] are not explicitly specified.
-     */
-    protected function guessColumns()
-    {
-        $models = $this->dataProvider->getModels();
-        $model = reset($models);
-        if (is_array($model) || is_object($model)) {
-            foreach ($model as $name => $value) {
-                $this->columns[] = $name;
-            }
-        }
     }
 }
