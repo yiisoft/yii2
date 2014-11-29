@@ -25,7 +25,7 @@ Core Helper Classes
 
 The following core helper classes are provided in the Yii releases:
 
-- ArrayHelper
+- [ArrayHelper](helper-array.md)
 - Console
 - FileHelper
 - Html
