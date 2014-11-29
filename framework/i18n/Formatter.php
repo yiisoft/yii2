@@ -322,7 +322,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return str_replace('<p></p>', '', '<p>' . preg_replace('/\R{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>');
+        return str_replace('<p></p>', '', '<p>' . preg_replace('/\R{2,}/u', "</p>\n<p>", Html::encode($value)) . '</p>');
     }
 
     /**

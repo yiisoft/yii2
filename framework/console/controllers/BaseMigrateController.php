@@ -624,15 +624,6 @@ abstract class BaseMigrateController extends Controller
 
         return $migrations;
     }
-    
-    /**
-     * Flushes DB schema cache.
-     * This method should be implemented if connection has DB schema support.
-     * @since 2.0.1
-     */
-    protected function refreshSchema()
-    {
-    }
 
     /**
      * Returns the migration history.

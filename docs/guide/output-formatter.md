@@ -140,7 +140,8 @@ Formatting Numbers <a name="numbers"></a>
 For formatting numeric values the formatter class provides the following methods:
 
 - [[yii\i18n\Formatter::asInteger()|integer]] - the value is formatted as an integer e.g. `42`.
-- [[yii\i18n\Formatter::asDecimal()|decimal]] - the value is formatted as a decimal number considering decimal and thousand separators e.g. `42.123`.
+- [[yii\i18n\Formatter::asDecimal()|decimal]] - the value is formatted as a decimal number considering decimal and thousand
+  separators e.g. `2,542.123` or `2.542,123`.
 - [[yii\i18n\Formatter::asPercent()|percent]] - the value is formatted as a percent number e.g. `42%`.
 - [[yii\i18n\Formatter::asScientific()|scientific]] - the value is formatted as a number in scientific format e.g. `4.2E4`.
 - [[yii\i18n\Formatter::asCurrency()|currency]] - the value is formatted as a currency value e.g. `£420.00`.
@@ -165,7 +166,7 @@ For example to adjust the maximum and minimum value of fraction digits you can c
 Other formatters  <a name="other"></a>
 ----------------
 
-Additional to date, time and number formatting, Yii provides a set of other useful formatters for different purposes:
+In addition to date, time and number formatting, Yii provides a set of other useful formatters for different situations:
 
 - [[yii\i18n\Formatter::asRaw()|raw]] - the value is outputted as is, this is a pseudo-formatter that has no effect except that
   `null` values will be formatted using [[nullDisplay]].
@@ -181,13 +182,13 @@ Additional to date, time and number formatting, Yii provides a set of other usef
 - [[yii\i18n\Formatter::asImage()|image]] - the value is formatted as an image tag.
 - [[yii\i18n\Formatter::asUrl()|url]] - the value is formatted as a hyperlink.
 - [[yii\i18n\Formatter::asBoolean()|boolean]] - the value is formatted as a boolean. By default `true` is rendered
-  as `Yes` and `false` as `No`, translated to the application language. You can adjust this by configuring
+  as `Yes` and `false` as `No`, translated to the current application language. You can adjust this by configuring
   the [[yii\i18n\Formatter::booleanFormat]] property.
 
 `null`-values <a name="null-values"></a>
 -------------
 
-For values that are `null` in PHP, the formatter class will print a placeholder instead of empty string which
+For values that are `null` in PHP, the formatter class will print a placeholder instead of an empty string which
 defaults to `(not set)` translated to the current application language. You can configure the
 [[yii\i18n\Formatter::nullDisplay|nullDisplay]] property to set a custom placeholder.
-If you want no special handling for `null` values, you can set [[yii\i18n\Formatter::nullDisplay|nullDisplay]] to `null`.
+If you do not you want special handling for `null` values, you can set [[yii\i18n\Formatter::nullDisplay|nullDisplay]] to `null`.

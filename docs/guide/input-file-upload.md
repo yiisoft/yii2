@@ -3,7 +3,7 @@ Uploading Files
 
 > Note: This section is under development.
 
-Uploading files in Yii is done via the form model, its validation rules and some controller code. Let's review what's needed
+Uploading files in Yii is done via the a form model, its validation rules and some controller code. Let's review what's needed
 to handle uploads properly.
 
 Form model
@@ -46,7 +46,7 @@ the HTML form. The attribute has the validation rule named `file` that uses [[yi
 Form view
 ---------
 
-Next create a view that will render the form.
+Next, create a view that will render the form:
 
 ```php
 <?php
@@ -61,7 +61,7 @@ $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); 
 <?php ActiveForm::end(); ?>
 ```
 
-The `'enctype' => 'multipart/form-data'` is important since it allows file uploads. `fileInput()` represents a form
+The `'enctype' => 'multipart/form-data'` is necessary because it allows file uploads. `fileInput()` represents a form
 input field.
 
 Controller
@@ -96,10 +96,8 @@ class SiteController extends Controller
 }
 ```
 
-Instead of `model->load(...)` we are using `UploadedFile::getInstance(...)`. [[\yii\web\UploadedFile|UploadedFile]] 
-does not run the model validation. It only provides information about the uploaded file. Therefore, you need to run
-validation manually via `$model->validate()`. This triggers the [[yii\validators\FileValidator|FileValidator]] that
-expects a file:
+Instead of `model->load(...)`, we are using `UploadedFile::getInstance(...)`. [[\yii\web\UploadedFile|UploadedFile]] 
+does not run the model validation, rather it only provides information about the uploaded file. Therefore, you need to run the validation manually via `$model->validate()` to trigger the [[yii\validators\FileValidator|FileValidator]] that expects a file:
 
 ```php
 $file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE //in the code framework
@@ -144,7 +142,7 @@ public function rules()
 }
 ```
 
-Keep in mind that only the file extension will be validated, but not the actual file content. In order to validate content as well use the `mimeTypes` property of `FileValidator`:
+Keep in mind that only the file extension will be validated, but not the actual file content. In order to validate the content as well, use the `mimeTypes` property of `FileValidator`:
 
 ```php
 public function rules()
@@ -164,7 +162,9 @@ received a valid image that can be then either saved or processed using the [Ima
 
 ### Uploading multiple files
 
-If you need to download multiple files at once some adjustments are required. View:
+If you need to download multiple files at once, some adjustments are required. 
+
+View:
 
 ```php
 <?php
@@ -241,5 +241,5 @@ class SiteController extends Controller
 }
 ```
 
-The difference is `UploadedFile::getInstances($model, 'file');` instead of `UploadedFile::getInstance($model, 'file');`.
+The difference is using `UploadedFile::getInstances($model, 'file');` instead of `UploadedFile::getInstance($model, 'file');`.
 The former returns instances for **all** uploaded files while the latter gives you only a single instance.
