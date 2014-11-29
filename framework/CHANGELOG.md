@@ -72,6 +72,7 @@ Yii Framework 2 Change Log
 - Enh #5983: Added `Inflector::sentence()` (pana1990, qiangxue)
 - Enh #6113: Improved debugger configuration and request UI (schmunk42)
 - Enh #6207: Added support for truncating HTML strings using `StringHelper::truncate()` and `StringHelper::truncateWords()` (Alex-Code)
+- Enh #6293: Added support for defining value of the `GridView` columns as values, while column definitions as keys of `columns` property (omnilight)
 - Enh: `Console::confirm()` now uses `Console::stdout()` instead of `echo` to be consistent with all other functions (cebe)
 - Enh: `yii\rbac\DbManager` migration now uses database component specified in component settings instead of always using default `db` (samdark)
 - Enh: Added `yii\base\Controller::renderContent()` (qiangxue)
