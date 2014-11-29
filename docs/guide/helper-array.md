@@ -185,7 +185,7 @@ $data = [
     ['age' => 30, 'name' => 'Brian'],
     ['age' => 19, 'name' => 'Barney'],
 ];
-ArrayHelper::multisort($data, ['age', 'name'], [ArrayHelper::SORT_ASC, ArrayHelper::SORT_DESC]);
+ArrayHelper::multisort($data, ['age', 'name'], [SORT_ASC, SORT_DESC]);
 ```
 
 After sorting we'll get the following in `$data`:
@@ -207,8 +207,8 @@ ArrayHelper::multisort($data, function($item) {
 });
 ```
          
-Third argument is direction. In case of sorting by a single key it could be either `ArrayHelper::SORT_ASC` or
-`ArrayHelper::SORT_DESC`. If sorting by multiple values you can sort each value differently by providing an array of
+Third argument is direction. In case of sorting by a single key it could be either `SORT_ASC` or
+`SORT_DESC`. If sorting by multiple values you can sort each value differently by providing an array of
 sort direction.
 
 Last argument is PHP sort flag that could take the same values as the ones passed to
