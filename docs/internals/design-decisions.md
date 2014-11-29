@@ -9,6 +9,6 @@ the core developers.
    we should support path alias for properties that are configurable because using path aliases in configurations 
    are very convenient. In other cases, we should restrict the support for path aliases.
 2. **When to translate messages**
-   messages should be tralated when these are displayed to non-tech end user and make sense to him. HTTP status messages,
+   messages should be translated when these are displayed to non-tech end user and make sense to him. HTTP status messages,
    exceptions about the code etc. should not be translated. Console messages are always in English because of encoding
    and codepage handling difficulties.
