@@ -7,7 +7,7 @@ experience than before. In particular, the Yii error handler does the followings
 * All non-fatal PHP errors (e.g. warnings, notices) are converted into catchable exceptions.
 * Exceptions and fatal PHP errors are displayed with detailed call stack information and source code lines
   in debug mode.
-* Supports using a dedicated [controller action](structure-actions.md) to display errors.
+* Supports using a dedicated [controller action](structure-controllers.md#actions) to display errors.
 * Supports different error response formats.
 
 The [[yii\web\ErrorHandler|error handler]] is enabled by default. You may disable it by defining the constant

@@ -6,7 +6,7 @@ Yii错误处理器做以下工作来提升错误处理效果：
 
 * 所有非致命PHP错误（如，警告，提示）会转换成可获取异常；
 * 异常和致命的PHP错误会被显示，在调试模式会显示详细的函数调用栈和源代码行数。
-* 支持使用专用的 [控制器操作](structure-actions.md) 来显示错误；
+* 支持使用专用的 [控制器操作](structure-controllers.md#actions) 来显示错误；
 * 支持不同的错误响应格式；
 
 [[yii\web\ErrorHandler|error handler]] 错误处理器默认启用，
