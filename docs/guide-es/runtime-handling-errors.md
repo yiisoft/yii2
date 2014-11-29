@@ -7,7 +7,7 @@ anteriormente. En particular, el gestor de errores de Yii hace lo siguiente para
 * Todos los errores no fatales (p. ej. advertencias (warning), avisos (notices)) se convierten en excepciones 
   capturables.
 * Las excepciones y los errores fatales de PHP se muestran con una pila de llamadas (call stack) de información 
-  detallada  y lineas de código fuente.
+  detallada y lineas de código fuente.
 * Soporta el uso de [acciones de controlador](structure-controllers.md#actions) dedicadas para mostrar errores.
 * Soporta diferentes formatos de respuesta (response) de errores.
 
