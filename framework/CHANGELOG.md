@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #5863: Selecting all individual `yii\grid\CheckboxColumn` checkboxes in grid view wasn't resulting in "all" checkbox selected (samdark)
 - Bug #5893: `yii\helpers\ArrayHelper::toArray()` now applies `$properties` parameter for converting descending objects in recursive calls (otsec)
 - Bug #5925: `ArrayHelper::htmlEncode()` does not work properly when the value being encoded is a nested array (tebazil)
+- Bug #5962: DateValidator was throwing a warning on invalid dates using the ICU format on Windows, Yii now works around this [PHP Bug](https://bugs.php.net/bug.php?id=68528) (cebe)
 - Bug #5997: The same message may be exported twice to log targets (klimov-paul)
 - Bug #6018: When setting the `encode` option via `yii\widgets\ActiveRecord::errorOptions`, it works the other way around (stanishevsky, qiangxue)
 - Bug #6049: `yii\db\Connection::getSchema()` for Oracle should return false when the table does not exist. Oracle does not support `ON UPDATE` clause. (wenbin1989)
