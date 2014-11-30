@@ -121,7 +121,7 @@ A continuación, se describirá las características más comunes de todos los d
 
 ### Filtrado de Mensajes <a name="message-filtering"></a>
 
-Se puede configurar las propiedades [[yii\log\Target::levels|levels]] y [[yii\log\Target::categories|categories]] para 
+Se pueden configurar las propiedades [[yii\log\Target::levels|levels]] y [[yii\log\Target::categories|categories]] para 
 cada destino de registros, con estas se especifican los niveles de severidad y las categorías de mensajes que 
 deberán procesar sus destinos.
 
@@ -210,7 +210,7 @@ privacidad).
 
 Además de prefijos de mensaje, destinos de registros también añaden alguna información de contexto en cada lote 
 de mensajes de registro. De forma predeterminada, se incluyen los valores de las siguientes variables globales de 
-PHP:  `$_GET`, `$_POST`, `$_FILES`, `$_COOKIE`, `$_SESSION` y `$_SERVER`. Se puede ajustar el comportamiento 
+PHP: `$_GET`, `$_POST`, `$_FILES`, `$_COOKIE`, `$_SESSION` y `$_SERVER`. Se puede ajustar el comportamiento 
 configurando la propiedad [[yii\log\Target::logVars]] con los nombres de las variables globales que se quieran incluir 
 con el destino del registro. Por ejemplo, la siguiente configuración de destino de registros especifica que 
 sólo se añadirá al mensaje de registro el valor de la variable `$_SERVER`.
