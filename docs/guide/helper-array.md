@@ -5,10 +5,7 @@ Additionally to [rich set of PHP array functions](http://php.net/manual/en/book.
 extra static methods allowing you to deal with arrays more efficiently.
   
 
-Getting values
---------------
-
-### Getting a single value
+## Getting Values <a name="getting-values"></a>
 
 Retrieving values from an array, an object or a complex structure consisting of both using standard PHP is quite
 repetitive. You have to check if key exists with `isset` first, then if it does you're getting it, if not, 
@@ -67,10 +64,10 @@ After executing the code `$array` will contain `['options' => [1, 2]]` and `$typ
 `getValue` method, `remove` supports simple key names only.
 
 
-### Checking if key exists
+## Checking Existence of Keys <a name="checking-existence-of-keys"></a>
 
 `ArrayHelper::keyExists` works the same way as [array_key_exists](http://php.net/manual/en/function.array-key-exists.php)
-except when trird argument is `false`. In this case it checks for a key in case insensitive manner:
+except that it also supports case-insensitive key comparison. For example,
 
 ```php
 $data1 = [
@@ -86,7 +83,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 }
 ```
 
-### Getting a column
+## Retrieving Columns <a name="retrieving-columns"></a>
 
 Often you need to get a column of values from array of data rows or objects. Common keys is getting a list of IDs.
 
@@ -108,9 +105,9 @@ $result = ArrayHelper::getColumn($array, function ($element) {
     return $element['id'];
 });
 ```
+
     
-Index array by key specified
-----------------------------
+## Re-indexing Arrays <a name="reindexing-arrays"></a>
 
 In order to indexes an array according to a specified key `index` method could be used. The input array should be
 multidimensional or an array of objects. The key can be a key name of the sub-array, a property name of object, or
@@ -137,9 +134,7 @@ $result = ArrayHelper::index($array, function ($element) {
 ```
 
     
-    
-Map array
----------
+## Building Maps <a name="building-maps"></a>    
 
 In order to build a map (key-value pairs) from a multidimensional array or an array of objects you can use `map` method.
 The `$from` and `$to` parameters specify the key names or property names to set up the map. Optionally, one can further
@@ -174,8 +169,7 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 ```
     
     
-Sort array
-----------
+## Multidimensional Sorting <a name="multidimensional-sorting"></a>    
 
 `sort` method helps to sort an array of objects or nested arrays by one or several keys. For example,
 
@@ -214,10 +208,8 @@ sort direction.
 Last argument is PHP sort flag that could take the same values as the ones passed to
 PHP [sort()](http://php.net/manual/en/function.sort.php).
         
-        
-Finding out the type of array
------------------------------
-        
+
+## Detecting Array Types <a name="detecting-array-types"></a>
         
 It is handy to know whether array is indexed or an associative. Here's an example:
           
@@ -231,9 +223,8 @@ $associative = ['framework' => 'Yii', 'version' => '2.0'];
 echo ArrayHelper::isAssociative($associative);
 ```
         
-        
-HTML-encoding and HTML-decoding values
---------------------------------------
+
+## HTML Encoding and Decoding Values <a name="html-encoding-values"></a>
 
 In order to encode or decode special characters in an array of strings into HTML entities you can use the following:
 
@@ -245,8 +236,8 @@ $decoded = ArrayHelper::htmlDecode($data);
 Only values will be encoded by default. By passing second argument as `false` you can encode arrays keys as well.
 Encoding will use application charset and could be changed via third argument.
         
-Merging arrays
---------------
+        
+## Merging Arrays <a name="merging-arrays"></a>
 
   /**
      * Merges two or more arrays into one recursively.
@@ -264,8 +255,7 @@ Merging arrays
     public static function merge($a, $b)
     
     
-Getting array from object
--------------------------
+## Converting Objects to Arrays <a name="converting-objects-to-arrays"></a>
 
 Often you need to convert an object or an array of objects into array. The most common case is converting active record
 models in order to serve data arrays via REST API or use it otherwise. The following code could be used to do it:
