@@ -210,9 +210,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
      *    Override this method to return the name of this column.
-     * 2. In the Web form that collects the user input, add a hidden field that stores
+     * 2. Add a `required` validation rule for the version column to ensure the version value is submitted.
+     * 3. In the Web form that collects the user input, add a hidden field that stores
      *    the lock version of the recording being updated.
-     * 3. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
+     * 4. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
      *    and implement necessary business logic (e.g. merging the changes, prompting stated data)
      *    to resolve the conflict.
      *
@@ -703,9 +704,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $condition = $this->getOldPrimaryKey(true);
         $lock = $this->optimisticLock();
         if ($lock !== null) {
-            if (!isset($values[$lock])) {
-                $values[$lock] = $this->$lock + 1;
-            }
+            $values[$lock] = $this->$lock + 1;
             $condition[$lock] = $this->$lock;
         }
         // We do not check the return value of updateAll() because it's possible

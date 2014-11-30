@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug #6271: Query caching returns the same data when running the same SQL with different fetch modes (grachov)
 - Bug #6279: `yii\db\Schema::getLastInsertID()` was passing wrong default schema name to PDO (samdark)
 - Bug #6305: `yii\i18n\Formatter::asParagraphs()` was not unicode-aware (samdark)
+- Bug #6311: Optimistic lock for ActiveRecord does not work as expected (qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Bug: `yii\web\AssetManager` should not publish disabled asset bundles (qiangxue)
