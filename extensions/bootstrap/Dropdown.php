@@ -84,7 +84,7 @@ class Dropdown extends Widget
                 $lines[] = $item;
                 continue;
             }
-            if (!isset($item['label'])) {
+            if (!array_key_exists('label', $item)) {
                 throw new InvalidConfigException("The 'label' option is required.");
             }
             $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;

@@ -108,10 +108,10 @@ class Accordion extends Widget
     {
         $items = [];
         foreach ($this->items as $item) {
-            if (!isset($item['header'])) {
+            if (!array_key_exists('header', $item)) {
                 throw new InvalidConfigException("The 'header' option is required.");
             }
-            if (!isset($item['content'])) {
+            if (!array_key_exists('content', $item)) {
                 throw new InvalidConfigException("The 'content' option is required.");
             }
             $headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', []));

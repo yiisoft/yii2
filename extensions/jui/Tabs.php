@@ -128,8 +128,8 @@ class Tabs extends Widget
             if (isset($item['url'])) {
                 $url = Url::to($item['url']);
             } else {
-                if (!isset($item['content'])) {
-                    throw new InvalidConfigException("The 'content' or 'url' option is required.");
+                if (!array_key_exists('content', $item)) {
+                    throw new InvalidConfigException("Either the 'content' or 'url' option is required.");
                 }
                 $options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
                 $tag = ArrayHelper::remove($options, 'tag', 'div');

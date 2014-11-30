@@ -142,7 +142,7 @@ class Tabs extends Widget
         }
 
         foreach ($this->items as $n => $item) {
-            if (!isset($item['label'])) {
+            if (!array_key_exists('label', $item)) {
                 throw new InvalidConfigException("The 'label' option is required.");
             }
             $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
@@ -216,7 +216,7 @@ class Tabs extends Widget
             if (is_string($item)) {
                 continue;
             }
-            if (!isset($item['content'])) {
+            if (!array_key_exists('content', $item)) {
                 throw new InvalidConfigException("The 'content' option is required.");
             }
 
