@@ -8,9 +8,10 @@ Standard installations of Yii result in both the framework and an application te
 An application template is a working Yii application implementing some basic features, such as login, contact form, etc. 
 Its code is organized is a recommended way. Therefore, it can serve as a good starting point for your projects.
     
-In this and next few sections, we will describe how to install Yii with the so-called *Basic Application Template* and
-how to implement new features on top of this application template. Yii also provides another template called
-the [Advanced Application Template](tutorial-advanced-app.md) which is more oriented towards team development environment.
+In this and the next few sections, we will describe how to install Yii with the so-called *Basic Application Template* and
+how to implement new features on top of this template. Yii also provides another template called
+the [Advanced Application Template](tutorial-advanced-app.md) which is better used in a team development environment
+to develop applications with multiple tiers.
 
 > Info: The Basic Application Template is suitable for developing 90 percent of Web applications. It differs
   from the Advanced Application Template mainly in how their code is organized. If you are new to Yii, we strongly
