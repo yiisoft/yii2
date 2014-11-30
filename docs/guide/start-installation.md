@@ -6,7 +6,7 @@ The former is the preferred way, as it allows you to install new [extensions](st
 
 Standard installations of Yii result in both the framework and an application template being downloaded and installed.
 An application template is a working Yii application implementing some basic features, such as login, contact form, etc. 
-Its code is organized is a recommended way. Therefore, it can serve as a good starting point for your projects.
+Its code is organized in a recommended way. Therefore, it can serve as a good starting point for your projects.
     
 In this and the next few sections, we will describe how to install Yii with the so-called *Basic Application Template* and
 how to implement new features on top of this template. Yii also provides another template called
