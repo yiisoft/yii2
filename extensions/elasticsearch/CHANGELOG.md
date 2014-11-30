@@ -6,6 +6,7 @@ Yii Framework 2 elasticsearch extension Change Log
 
 - Bug #5662: Elasticsearch AR updateCounters() now uses explicitly `groovy` script for updating making it compatible with ES >1.3.0 (cebe)
 - Bug #6065: `ActiveRecord::unlink()` was failing in some situations when working with relations via array valued attributes (cebe)
+- Enh #5767: Added auth support (Borales)
 
 
 2.0.0 October 12, 2014
