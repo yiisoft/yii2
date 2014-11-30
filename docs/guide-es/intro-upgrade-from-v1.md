@@ -17,7 +17,7 @@ Instalación
 
 Yii 2.0 adopta íntegramente [Composer](https://getcomposer.org/), el administrador de paquetes de facto de PHP.
 Tanto la instalación del núcleo del framework como las extensiones se manejan a través de Composer. Por favor consulta
-la sección [Comenzando con la Aplicación Básica](start-basic.md) para aprender a instalar Yii 2.0. Si quieres crear extensiones
+la sección [Comenzando con la Aplicación Básica](start-installation.md) para aprender a instalar Yii 2.0. Si quieres crear extensiones
 o transformar extensiones de Yii 1.1 para que sean compatibles con Yii 2.0, consulta la sección [Creando Extensiones](extend-creating-extensions.md) de la guía.
 
 

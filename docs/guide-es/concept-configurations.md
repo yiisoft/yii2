@@ -70,7 +70,7 @@ Las configuraciones se utilizan en muchos lugares en Yii. Al comienzo de esta se
 
 ### Configuraciones de aplicación <a name="application-configurations"></a>
 
-Configuración para una [aplicación](structure-applications.md) es probablemente una de las configuraciones más complejas. Esto se debe a que la clase [[yii\web\Application|application]] tiene un montón de propiedades y eventos configurables. Más importante aún, su propiedad [[yii\web\Application::components|components]] que puede recibir una gran variedad de configuraciones para crear componentes que se registran a través de la aplicación. Lo siguiente es un resumen del archivo de configuración de la aplicación para la [plantilla básica de la aplicación](start-basic.md).
+Configuración para una [aplicación](structure-applications.md) es probablemente una de las configuraciones más complejas. Esto se debe a que la clase [[yii\web\Application|application]] tiene un montón de propiedades y eventos configurables. Más importante aún, su propiedad [[yii\web\Application::components|components]] que puede recibir una gran variedad de configuraciones para crear componentes que se registran a través de la aplicación. Lo siguiente es un resumen del archivo de configuración de la aplicación para la [plantilla básica de la aplicación](start-installation.md).
 
 ```php
 $config = [

@@ -73,7 +73,7 @@ Yii 中的配置可以用在很多场景。本章开头我们展示了如何使�
 
 ### 应用的配置 <a name="application-configurations"></a>
 
-[应用](structure-applications.md)的配置可能是最复杂的配置之一。因为 [[yii\web\Application|application]] 类拥有很多可配置的属性和事件。更重要的是它的 [[yii\web\Application::components|components]] 属性可以接收配置数组并通过应用注册为组件。以下是一个针对[基础应用模板](start-basic.md)的应用配置概要：
+[应用](structure-applications.md)的配置可能是最复杂的配置之一。因为 [[yii\web\Application|application]] 类拥有很多可配置的属性和事件。更重要的是它的 [[yii\web\Application::components|components]] 属性可以接收配置数组并通过应用注册为组件。以下是一个针对[基础应用模板](start-installation.md)的应用配置概要：
 
 ```php
 $config = [
