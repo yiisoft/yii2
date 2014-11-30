@@ -1,12 +1,6 @@
 Запуск додатка
 ==============
 
-> Info: For simplicity, throughout this "Getting Started" tutorial, it's assumed that you have set `basic/web`
-  as the document root of your Web server, and configured, the URL for accessing
-  your application to be `http://hostname/index.php` or something similar.
-  For your needs, please adjust the URLs in our descriptions accordingly.
-
-
 Після встановлення Yii, базовий додаток буде доступний або по URL `http://hostname/basic/web/index.php`, 
 або по `http://hostname/index.php`, в залежності від налаштування Web сервера. Даний розділ - загальне введення в 
 організацію коду, вбудований функціонал і опрацювання запитів додатком Yii.
@@ -57,9 +51,6 @@ basic/                  кореневий каталог додатка
         index.php       місце входження в додаток Yii. З нього розпочинається виконання додатку
     yii                 скрипт виконання консольного додатку Yii
 ```
-
-The following diagram shows the static structure of an application.
-
 
 В цілому, додаток Yii можна розділити на дві категорії файлів: розміщенні в `basic/web` і розміщенні в інших директоріях. 
 Перша категорія доступна через HTTP (наприклад, браузером), друга недоступна зовні, та і не повинна бути, так як містить службову інформацію.

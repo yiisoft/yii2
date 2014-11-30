@@ -118,11 +118,6 @@ $cache = new FileCache([
 Псевдоніми розширень <a name="extension-aliases"></a>
 --------------------
 
-Each alias is named after the root namespace of the extension as declared in its `composer.json` file, and each alias
-represents the root directory of the package. For example, if you install the `yiisoft/yii2-jui` extension,
-you will automatically have the alias `@yii/jui` defined during the [bootstrapping](runtime-bootstrapping.md) stage, equivalent to:
-
-
 Для кожного [розширення](structure-extensions.md), що встановлюється через Composer, автоматично задається псевдонім. 
 Його імʼя відповідає кореневому простору імен розширення відповідно до його `composer.json`, і кожен псевдонім представляє 
 шлях до кореневої директорії пакета. Наприклад, якщо ви встановите розширення `yiisoft/yii2-jui`, 
