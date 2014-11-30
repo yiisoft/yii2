@@ -53,8 +53,8 @@ Gestión de las peticiones
 * [Peticiones (Requests)](runtime-requests.md)
 * [Respuestas (Responses)](runtime-responses.md)
 * [Sesiones (Sessions) y Cookies](runtime-sessions-cookies.md)
-* **TBD** [Gestión de errores](runtime-handling-errors.md)
-* **TBD** [Registro de anotaciones](runtime-logging.md)
+* [Gestión de errores](runtime-handling-errors.md)
+* [Registro de anotaciones](runtime-logging.md)
 
 
 Conceptos clave
