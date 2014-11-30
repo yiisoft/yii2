@@ -150,7 +150,7 @@ class Breadcrumbs extends Widget
      */
     protected function renderItem($link, $template)
     {
-        if (isset($link['label'])) {
+        if (array_key_exists('label', $link)) {
             $label = $this->encodeLabels ? Html::encode($link['label']) : $link['label'];
         } else {
             throw new InvalidConfigException('The "label" element is required for each link.');
