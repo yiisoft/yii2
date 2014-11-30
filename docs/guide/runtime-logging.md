@@ -52,14 +52,14 @@ the above line of code is called within this method.
 
 > Info: The logging methods described above are actually shortcuts to the [[yii\log\Logger::log()|log()]] method 
 of the [[yii\log\Logger|logger object]] which is a singleton accessible through the expression `Yii::getLogger()`. When
-enough messages are logged or when the application ends, the logger object will call a  
+enough messages are logged or when the application ends, the logger object will call a 
 [[yii\log\Dispatcher|message dispatcher]] to send recorded log messages to the registered [log targets](#log-targets).
 
 
 ## Log Targets <a name="log-targets"></a>
 
 A log target is an instance of the [[yii\log\Target]] class or its child class. It filters the log messages by their
-severity levels and categories and then exports them to some medium. For example, a  [[yii\log\DbTarget|database target]]
+severity levels and categories and then exports them to some medium. For example, a [[yii\log\DbTarget|database target]]
 exports the filtered log messages to a database table, while an [[yii\log\EmailTarget|email target]] exports
 the log messages to specified email addresses.
 
