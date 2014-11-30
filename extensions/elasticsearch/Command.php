@@ -220,11 +220,18 @@ class Command extends Component
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html
      */
-//	public function update($index, $type, $id, $data, $options = [])
-//	{
-//		// TODO implement
-////		return $this->db->delete([$index, $type, $id], $options);
-//	}
+    public function update($index, $type, $id, $data, $options = [])
+    {
+        $body = [
+            'doc' => empty($data) ? new \stdClass() : $data,
+        ];
+        if (isset($options["detect_noop"])) {
+            $body["detect_noop"] = $options["detect_noop"];
+            unset($options["detect_noop"]);
+        }
+
+        return $this->db->post([$index, $type, $id, '_update'], $options, Json::encode($body));
+    }
 
     // TODO bulk http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-bulk.html
 
