@@ -514,7 +514,7 @@ in all environments and verify that the version of the ICU library compiled with
 
 To find out which version of ICU is used by PHP you can run the following script, which will give you the PHP and ICU version used.
 
-```
+```php
 <?php
 echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
