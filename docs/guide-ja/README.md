@@ -188,12 +188,12 @@ RESTful ウェブサービス
 * [Jquery UI ウィジェット](widget-jui.md)
 
 
-ヘルパー
---------
+ヘルパ
+------
 
 * [概要](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
+* [ArrayHelper](helper-array.md)
 * **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
+* [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
 
