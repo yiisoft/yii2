@@ -247,7 +247,7 @@ The rest of the properties are optional. However, their configuration shown abov
 
 * [[yii\web\UrlManager::showScriptName|showScriptName]]: this property determines whether the entry script
   should be included in the created URLs. For example, instead of creating a URL `/index.php/post/100`,
-  by setting this property to be true, a URL `/post/100` will be generated. 
+  by setting this property to be false, a URL `/post/100` will be generated. 
 * [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: this property determines whether to enable
   strict request parsing. If strict parsing is enabled, the incoming requested URL must match at least one of 
   the [[yii\web\UrlManager::rules|rules]] in order to be treated as a valid request, or a [[yii\web\NotFoundHttpException]] 
