@@ -439,7 +439,7 @@ class BaseArrayHelper
 
     /**
      * Encodes special characters in an array of strings into HTML entities.
-     * Both the array keys and values will be encoded.
+     * Only array values will be encoded by default.
      * If a value is an array, this method will also encode it recursively.
      * @param array $data data to be encoded
      * @param boolean $valuesOnly whether to encode array values only. If false,
@@ -471,7 +471,7 @@ class BaseArrayHelper
 
     /**
      * Decodes HTML entities into the corresponding characters in an array of strings.
-     * Both the array keys and values will be decoded.
+     * Only array values will be decoded by default.
      * If a value is an array, this method will also decode it recursively.
      * @param array $data data to be decoded
      * @param boolean $valuesOnly whether to decode array values only. If false,
