@@ -1,5 +1,5 @@
-決定版 Yii 2.0 ガイド
-=====================
+Yii 2.0 決定版ガイド
+====================
 
 このチュートリアルは [Yii ドキュメント規約](http://www.yiiframework.com/doc/terms/) の下にリリースされています。
 
@@ -54,7 +54,7 @@ All Rights Reserved.
 * [レスポンス](runtime-responses.md)
 * [セッションとクッキー](runtime-sessions-cookies.md)
 * [エラー処理](runtime-handling-errors.md)
-* [ログ](runtime-logging.md)
+* [ロギング](runtime-logging.md)
 
 
 鍵となる概念
