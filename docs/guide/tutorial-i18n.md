@@ -258,9 +258,9 @@ for Russian:
 In the above it's worth mentioning that `=1` matches exactly `n = 1` while `one` matches `21` or `101`.
 
 Note, that you can not use the Russian example in `Yii::t()` directly if your
-[[yii\base\Application::$sourceLanguage|source language]] isn't set to `ru_RU` which is not recommended. Instead, such
-strings should end up in message files or message database (in case DB source is used). Yii uses plural rules of the
-language strings are translated to and is falling back to plural rules of source language if translation isn't available.
+[[yii\base\Application::$sourceLanguage|source language]] isn't set to `ru_RU`. This however is not recommended, instead such
+strings should go into message files or message database (in case DB source is used). Yii uses plural rules of the
+translated language strings and is falling back to plural rules of source language if translation isn't available.
 
 To learn which inflection forms you should specify for your language you can referrer to the
 [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
