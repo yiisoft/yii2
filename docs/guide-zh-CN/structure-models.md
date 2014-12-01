@@ -276,7 +276,6 @@ public function rules()
 
 
 ## 块赋值 <a name="massive-assignment"></a>
-## Massive Assignment <a name="massive-assignment"></a>
 
 块赋值只用一行代码将用户所有输入填充到一个模型，非常方便，
 它直接将输入数据对应填充到 [[yii\base\Model::attributes]] 属性。
