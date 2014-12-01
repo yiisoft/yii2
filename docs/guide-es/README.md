@@ -41,7 +41,7 @@ Estructura de una aplicación
 * [Widgets](structure-widgets.md)
 * [Módulos](structure-modules.md)
 * [Assets](structure-assets.md)
-* **TBD** [Extensiones](structure-extensions.md)
+* [Extensiones](structure-extensions.md)
 
 
 Gestión de las peticiones
