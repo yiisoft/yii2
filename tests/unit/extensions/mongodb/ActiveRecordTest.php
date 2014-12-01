@@ -274,6 +274,11 @@ class ActiveRecordTest extends MongoDbTestCase
             ->modify(['$set' => ['name' => $newName]], ['new' => true]);
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals($newName, $customer->name);
+
+        $customer = Customer::find()
+            ->where(['name' => 'not existing name'])
+            ->modify(['$set' => ['name' => $newName]], ['new' => false]);
+        $this->assertNull($customer);
     }
 
     /**

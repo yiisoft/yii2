@@ -230,6 +230,11 @@ class QueryRunTest extends MongoDbTestCase
             ->where(['name' => $searchName])
             ->modify(['$set' => ['name' => $newName]], ['new' => true], $connection);
         $this->assertEquals($newName, $row['name']);
+
+        $row = $query->from('customer')
+            ->where(['name' => 'not existing name'])
+            ->modify(['$set' => ['name' => 'new name']], ['new' => false], $connection);
+        $this->assertNull($row);
     }
 
     /**
