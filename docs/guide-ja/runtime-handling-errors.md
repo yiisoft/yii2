@@ -1,22 +1,22 @@
 エラー処理
 ==========
 
-Yii は、エラー処理を従来よりはるかに快適な経験にしてくれる、内臓の [[yii\web\ErrorHandler|エラーハンドラ]]
-を持っています。具体的には、Yii のエラーハンドラはエラー処理を向上させるために、次のことを行います。
+Yii は、エラー処理を従来よりはるかに快適な経験にしてくれる、内臓の [[yii\web\ErrorHandler|エラーハンドラ]] を持っています。
+具体的には、Yii のエラーハンドラはエラー処理を向上させるために、次のことを行います。
 
 * 致命的でない全ての PHP エラー (警告や通知) は捕捉可能な例外に変換されます。
 * 例外と致命的な PHP エラーは、デバッグモードでは、詳細なコールスタック情報とソースコード行とともに表示されます。
 * エラーを表示するために専用の [コントローラアクション](structure-controllers.md#actions) を使うことがサポートされています。
 * さまざまなエラーレスポンス形式をサポートしています。
 
-[[yii\web\ErrorHandler|エラーハンドラ]] は既定で有効になっています。アプリケーションの [エントリスクリプト](structure-entry-scripts.md)
-において、定数 `YII_ENABLE_ERROR_HANDLER` を false と定義することによって、これを無効にすることが出来ます。
+[[yii\web\ErrorHandler|エラーハンドラ]] は既定で有効になっています。
+アプリケーションの [エントリスクリプト](structure-entry-scripts.md) において、定数 `YII_ENABLE_ERROR_HANDLER` を false と定義することによって、これを無効にすることが出来ます。
 
 
 ## エラーハンドラを使用する <a name="using-error-handler"></a>
 
 [[yii\web\ErrorHandler|エラーハンドラ]] は `errorHandler` という名前の [アプリケーションコンポーネント](structure-application-components.md) です。
-次のように、アプリケーションのコンフィギュレーションでこれをカスタマイズすることが出来ます。
+次のように、アプリケーションの構成情報でこれをカスタマイズすることが出来ます。
 
 ```php
 return [
@@ -28,7 +28,7 @@ return [
 ];
 ```
 
-上記のコンフィギュレーションによって、例外ページで表示されるソースコードの行数は最大で 20 までとなります。
+上記の構成によって、例外ページで表示されるソースコードの行数は最大で 20 までとなります。
 
 既に述べたように、エラーハンドラは致命的でない全ての PHP エラーを捕捉可能な例外に変換します。
 これは、次のようなコードを使って PHP エラーを処理することが出来るということを意味します。
@@ -46,8 +46,7 @@ try {
 // 実行を継続 ...
 ```
 
-ユーザに対して、リクエストが無効であったり予期しないものであったりすることを知らせるエラーページを表示したい場合は、
-単に [[yii\web\NotFoundHttpException]] のような [[yii\web\HttpException|HTTP 例外]] を投げるだけで済ませることが出来ます。
+ユーザに対して、リクエストが無効であったり予期しないものであったりすることを知らせるエラーページを表示したい場合は、単に [[yii\web\NotFoundHttpException]] のような [[yii\web\HttpException|HTTP 例外]] を投げるだけで済ませることが出来ます。
 エラーハンドラがレスポンスの HTTP ステータスコードを正しく設定し、適切なエラービューを使ってエラーメッセージを表示してくれます。
 
 ```php
@@ -60,28 +59,25 @@ throw new NotFoundHttpException();
 ## エラー表示をカスタマイズする <a name="customizing-error-display"></a>
 
 [[yii\web\ErrorHandler|エラーハンドラ]] は、定数 `YII_DEBUG` の値に従って、エラー表示を調整します。
-`YII_DEBUG` が true である (デバッグモードである) 場合は、エラーハンドラは、デバッグがより容易になるように、
-詳細なコールスタック情報とソースコード行とともに例外を表示します。そして、`YII_DEBUG` が false のときは、
-アプリケーションに関する公開できない情報を開示することを防ぐために、エラーメッセージだけが表示されます。
+`YII_DEBUG` が true である (デバッグモードである) 場合は、エラーハンドラは、デバッグがより容易になるように、詳細なコールスタック情報とソースコード行とともに例外を表示します。
+そして、`YII_DEBUG` が false のときは、アプリケーションに関する公開できない情報を開示することを防ぐために、エラーメッセージだけが表示されます。
 
 > Info|情報: 例外が [[yii\base\UserException]] の子孫である場合は、`YII_DEBUG` の値の如何にかかわらず、コールスタックは表示されません。
 これは、この種の例外はユーザの誤操作によって引き起こされるものであり、開発者は何も修正する必要がないと考えられるからです。
 
-既定では、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [views](structure-views.md) を使ってエラーを表示します。
+既定では、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [ビュー](structure-views.md) を使ってエラーを表示します。
 
 * `@yii/views/errorHandler/error.php`: エラーがコールスタック情報なしで表示されるべき場合に使用されます。
   `YII_DEBUG` が false の場合、これが表示される唯一のビューとなります。
 * `@yii/views/errorHandler/exception.php`: エラーがコールスタック情報と共に表示されるべき場合に使用されます。
 
-エラー表示をカスタマイズするために、エラーハンドラの [[yii\web\ErrorHandler::errorView|errorView]] および
-[[yii\web\ErrorHandler::exceptionView|exceptionView]] プロパティを構成して、自分自身のビューを使用することが出来ます。
+エラー表示をカスタマイズするために、エラーハンドラの [[yii\web\ErrorHandler::errorView|errorView]] および [[yii\web\ErrorHandler::exceptionView|exceptionView]] プロパティを構成して、自分自身のビューを使用することが出来ます。
 
 
 ### エラーアクションを使う <a name="using-error-actions"></a>
 
 エラー表示をカスタマイズするためのもっと良い方法は、専用のエラー [アクション](structure-controllers.md) を使うことです。
-そうするためには、まず、`errorHandler` コンポーネントの [[yii\web\ErrorHandler::errorAction|errorAction]]
-プロパティを次のように構成します。
+そうするためには、まず、`errorHandler` コンポーネントの [[yii\web\ErrorHandler::errorAction|errorAction]] プロパティを次のように構成します。
 
 ```php
 return [
@@ -94,8 +90,7 @@ return [
 ```
 
 [[yii\web\ErrorHandler::errorAction|errorAction]] プロパティは、アクションへの [ルート](structure-controllers.md#routes) を値として取ります。
-上記のコンフィギュレーションは、エラーをコールスタック情報なしで表示する必要がある場合は、`site/error`
-アクションが実行されるべきであることを記述しています。
+上記の構成は、エラーをコールスタック情報なしで表示する必要がある場合は、`site/error` アクションが実行されるべきであることを記述しています。
 
 `site/error` アクションは次のようにして作成することが出来ます。
 
@@ -118,7 +113,8 @@ class SiteController extends Controller
 }
 ```
 
-上記のコードは [[yii\web\ErrorAction]] クラスを使って `error` アクションを定義しています。[[yii\web\ErrorAction]] クラスは `error` という名前のビューを使ってエラーをレンダリングします。
+上記のコードは [[yii\web\ErrorAction]] クラスを使って `error` アクションを定義しています。
+[[yii\web\ErrorAction]] クラスは `error` という名前のビューを使ってエラーをレンダリングします。
 
 [[yii\web\ErrorAction]] を使う以外に、次のようにアクションメソッドを使って `error` アクションを定義することも出来ます。
 
@@ -132,25 +128,22 @@ public function actionError()
 }
 ```
 
-次に `views/site/error.php` に配置されるビューファイルを作成しなければなりません。エラーアクションが [[yii\web\ErrorAction]]
-として定義されている場合は、このビューファイルの中で次の変数にアクセスすることが出来ます。
+次に `views/site/error.php` に配置されるビューファイルを作成しなければなりません。
+エラーアクションが [[yii\web\ErrorAction]] として定義されている場合は、このビューファイルの中で次の変数にアクセスすることが出来ます。
 
 * `name`: エラーの名前。
 * `message`: エラーメッセージ。
 * `exception`: 例外オブジェクト。これを通じて、更に有用な情報、例えば、HTTP ステータスコード、
 エラーコード、エラーコールスタックなどにアクセス出来ます。
 
-> Info|情報: あなたが [ベーシックアプリケーションテンプレート](start-installation.md) または
-[アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) を使っている場合は、
-エラーアクションとエラービューは、既にあなたのために定義されています。
+> Info|情報: あなたが [ベーシックアプリケーションテンプレート](start-installation.md) または [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
 
 
 ### エラーのレスポンス形式をカスタマイズする <a name="error-format"></a>
 
 エラーハンドラは、[レスポンス](runtime-responses.md) の形式の設定に従ってエラーを表示します。
-[[yii\web\Response::format|レスポンス形式]] が `html` である場合は、直前の項で説明したように、
-エラービューまたは例外ビューを使ってエラーを表示します。その他のレスポンス形式の場合は、
-エラーハンドラは例外の配列表現を [[yii\web\Response::data]] プロパティに代入し、次に `data` プロパティがレスポンス形式に応じて様々な形式に変換されます。
+[[yii\web\Response::format|レスポンス形式]] が `html` である場合は、直前の項で説明したように、エラービューまたは例外ビューを使ってエラーを表示します。
+その他のレスポンス形式の場合は、エラーハンドラは例外の配列表現を [[yii\web\Response::data]] プロパティに代入し、次に `data` プロパティがレスポンス形式に応じて様々な形式に変換されます。
 例えば、レスポンス形式が `json` である場合は、次のようなレスポンスになります。
 
 ```
@@ -168,8 +161,7 @@ Content-Type: application/json; charset=UTF-8
 }
 ```
 
-エラーのレスポンス形式をカスタマイズするために、アプリケーションのコンフィギュレーションの中で、
-`response` コンポーネントの `beforeSend` イベントに反応するハンドラを構成することが出来ます。
+エラーのレスポンス形式をカスタマイズするために、アプリケーションの構成情報の中で、`response` コンポーネントの `beforeSend` イベントに反応するハンドラを構成することが出来ます。
 
 ```php
 return [
