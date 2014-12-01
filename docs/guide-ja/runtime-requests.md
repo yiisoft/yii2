@@ -1,16 +1,15 @@
 リクエスト
 ==========
 
-アプリケーションに対するリクエストは、リクエストのパラメータ、HTTP ヘッダ、クッキーなどの情報を提供する [[yii\web\Request]]
-オブジェクトの形で表されます。与えられたリクエストに対応するリクエストオブジェクトには、
-既定では [[yii\web\Request]] のインスタンスである `request` [アプリケーションコンポーネント](structure-application-components.md)
-を通じてアクセスすることが出来ます。この節では、アプリケーションの中でこのコンポーネントをどのように利用できるかを説明します。
+アプリケーションに対するリクエストは、リクエストのパラメータ、HTTP ヘッダ、クッキーなどの情報を提供する [[yii\web\Request]] オブジェクトの形で表されます。
+与えられたリクエストに対応するリクエストオブジェクトには、既定では [[yii\web\Request]] のインスタンスである `request` [アプリケーションコンポーネント](structure-application-components.md) を通じてアクセスすることが出来ます。
+この節では、アプリケーションの中でこのコンポーネントをどのように利用できるかを説明します。
 
 
 ## リクエストのパラメータ <a name="request-parameters"></a>
 
-リクエストのパラメータを取得するためには、`request` コンポーネントの [[yii\web\Request::get()|get()]] および
-[[yii\web\Request::post()|post()]] メソッドを呼ぶことが出来ます。これらは、ぞれぞれ、`$_GET` と `$_POST` の値を返します。例えば、
+リクエストのパラメータを取得するためには、`request` コンポーネントの [[yii\web\Request::get()|get()]] および [[yii\web\Request::post()|post()]] メソッドを呼ぶことが出来ます。
+これらは、ぞれぞれ、`$_GET` と `$_POST` の値を返します。例えば、
 
 ```php
 $request = Yii::$app->request;
@@ -34,13 +33,12 @@ $name = $request->post('name', '');
 // $name = isset($_POST['name']) ? $_POST['name'] : ''; と同等
 ```
 
-> Info|情報: 直接に `$_GET` と `$_POST` にアクセスしてリクエストのパラメータを読み出す代りに、上記に示されているように
-  `request` コンポーネントを通じてそれらを取得することが推奨されます。このようにすると、ダミーのリクエストデータを持った
-  模擬リクエストコンポーネントを作ることが出来るため、テストを書くことがより容易になります。
+> Info|情報: 直接に `$_GET` と `$_POST` にアクセスしてリクエストのパラメータを読み出す代りに、上記に示されているように、`request` コンポーネントを通じてそれらを取得することが推奨されます。
+  このようにすると、ダミーのリクエストデータを持った模擬リクエストコンポーネントを作ることが出来るため、テストを書くことがより容易になります。
 
-[RESTful API](rest-quick-start.md) を実装するときは、PUT、PATCH またはその他の [リクエストメソッド](#request-methods)
-によって送信されたパラメータを読み出さなければならないことがよくあります。そういうパラメータは [[yii\web\Request::getBodyParam()]]
-メソッドを呼ぶことで取得することが出来ます。例えば、
+[RESTful API](rest-quick-start.md) を実装するときは、PUT、PATCH またはその他の [リクエストメソッド](#request-methods) によって送信されたパラメータを読み出さなければならないことがよくあります。
+そういうパラメータは [[yii\web\Request::getBodyParam()]] メソッドを呼ぶことで取得することが出来ます。
+例えば、
 
 ```php
 $request = Yii::$app->request;
@@ -76,8 +74,7 @@ if ($request->isPut)  { // リクエストメソッドは PUT }
 
 `request` コンポーネントは現在リクエストされている URL を調べるための方法を数多く提供しています。
 
-リクエストされた URL が `http://example.com/admin/index.php/product?id=100` であると仮定したとき、
-次にまとめたように、この URL のさまざまな部分を取得することが出来ます。
+リクエストされた URL が `http://example.com/admin/index.php/product?id=100` であると仮定したとき、次にまとめたように、この URL のさまざまな部分を取得することが出来ます。
 
 * [[yii\web\Request::url|url]]: `/admin/index.php/product?id=100` を返します。ホスト情報の部分を省略した URL です。
 * [[yii\web\Request::absoluteUrl|absoluteUrl]]: `http://example.com/admin/index.php/product?id=100` を返します。
@@ -93,8 +90,7 @@ if ($request->isPut)  { // リクエストメソッドは PUT }
 
 ## HTTP ヘッダ <a name="http-headers"></a> 
 
- [[yii\web\Request::headers]] プロパティによって返される [[yii\web\HeaderCollection|header コレクション]]
-を通じて、HTTP ヘッダ情報を取得することが出来ます。例えば、
+ [[yii\web\Request::headers]] プロパティによって返される [[yii\web\HeaderCollection|header コレクション]] を通じて、HTTP ヘッダ情報を取得することが出来ます。例えば、
 
 ```php
 // $headers は yii\web\HeaderCollection のオブジェクト
@@ -106,7 +102,8 @@ $accept = $headers->get('Accept');
 if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
 ```
 
-`request` コンポーネントは、よく使用されるいくつかのヘッダにすばやくアクセスする方法を提供しています。その中には下記のものが含まれます。
+`request` コンポーネントは、よく使用されるいくつかのヘッダにすばやくアクセスする方法を提供しています。
+その中には下記のものが含まれます。
 
 * [[yii\web\Request::userAgent|userAgent]]: `User-Agent` ヘッダの値を返します。
 * [[yii\web\Request::contentType|contentType]]: リクエストボディのデータの MIME タイプを示す `Content-Type` ヘッダの値を返します。
@@ -115,20 +112,16 @@ if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
 * [[yii\web\Request::acceptableLanguages|acceptableLanguages]]: ユーザが受け入れ可能な言語を返します。
 返される言語は優先レベルによって順序付けられます。最初の要素が最も優先度の高い言語を表します。
 
-あなたのアプリケーションが複数の言語をサポートしており、エンドユーザが最も優先する言語でページを表示したいと思う場合は、
-言語ネゴシエーションメソッド [[yii\web\Request::getPreferredLanguage()]] を使うことが出来ます。
-このメソッドはアプリケーションによってサポートされている言語のリストを引数として取り、 [[yii\web\Request::acceptableLanguages|acceptableLanguages]]
-と比較して、最も適切な言語を返します。
+あなたのアプリケーションが複数の言語をサポートしており、エンドユーザが最も優先する言語でページを表示したいと思う場合は、言語ネゴシエーションメソッド [[yii\web\Request::getPreferredLanguage()]] を使うことが出来ます。
+このメソッドはアプリケーションによってサポートされている言語のリストを引数として取り、 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] と比較して、最も適切な言語を返します。
 
-> Tip|ヒント: [[yii\filters\ContentNegotiator|ContentNegotiator]] フィルタを使用して、レスポンスにおいて
-  どのコンテントタイプと言語を使うべきかを動的に決定することも出来ます。このフィルタは、上記で説明したプロパティとメソッドの上に、
-  コンテントネゴシエーションを実装しています。
+> Tip|ヒント: [[yii\filters\ContentNegotiator|ContentNegotiator]] フィルタを使用して、レスポンスにおいてどのコンテントタイプと言語を使うべきかを動的に決定することも出来ます。
+このフィルタは、上記で説明したプロパティとメソッドの上に、コンテントネゴシエーションを実装しています。
 
 
 ## クライアント情報 <a name="client-information"></a>
 
-クライアントマシンのホスト名と IP アドレスを、それぞれ、[[yii\web\Request::userHost|userHost]] と
-[[yii\web\Request::userIP|userIP]] によって取得することが出来ます。例えば、
+クライアントマシンのホスト名と IP アドレスを、それぞれ、[[yii\web\Request::userHost|userHost]] と [[yii\web\Request::userIP|userIP]] によって取得することが出来ます。例えば、
 
 ```php
 $userHost = Yii::$app->request->userHost;
