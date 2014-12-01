@@ -8,7 +8,7 @@
 * Настраивать подключение к БД
 * Определять класс Active Record
 * Запрашивать данные, используя класс Active Record
-* Отображать данные в виде с использованием пагинации
+* Отображать данные во view с использованием пагинации
 
 Обратите внимание, чтобы усвоить этот раздел, вы должны иметь базовые знания и навыки использования баз данных. 
 В частности, вы должны знать, как создать базу данных, и как выполнять SQL запросы, используя клиентские инструменты для работы с БД.
@@ -20,6 +20,7 @@
 Вы можете создать базу данных SQLite, MySQL, PostgreSQL, MSSQL или Oracle, так как Yii имеет встроенную поддержку для многих баз данных. Для простоты, в дальнейшем описании будет подразумеваться MySQL.
 
 После этого создайте в базе данных таблицу `country`, и добавьте в неё немного демонстрационных данных. Вы можете запустить следующую SQL инструкцию, чтобы сделать это:
+
 ```sql
 CREATE TABLE `country` (
   `code` CHAR(2) NOT NULL PRIMARY KEY,
@@ -44,12 +45,8 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 Настраиваем подключение к БД <a name="configuring-db-connection"></a>
 ---------------------------
 
-Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
-the PDO driver for the database you are using (e.g. `pdo_mysql` for MySQL). This is a basic requirement
-if your application uses a relational database.
-
-With those installed, open the file `config/db.php` and change the parameters to be correct for your database. By default,
-the file contains the following:
+Перед продолжением убедитесь, что у вас установлены PHP-расширение [PDO](http://www.php.net/manual/en/book.pdo.php) и драйвер PDO для используемой вами базы данных (н-р `pdo_mysql` для MySQL). Это базовое требование в случае использования вашим приложением реляционной базы данных.
+После того, как они установлены, откройте файл `config/db.php` и измените параметры на верные для вашей базы данных. По умолчанию этот файл содержит следующее:
 
 ```php
 <?php
@@ -63,22 +60,18 @@ return [
 ];
 ```
 
-The `config/db.php` file is a typical file-based [configuration](concept-configurations.md) tool. This particular configuration file specifies the parameters
-needed to create and initialize a [[yii\db\Connection]] instance through which you can make SQL queries
-against the underlying database.
+Файл `config/db.php` - типичный [конфигурационный](concept-configurations.md) инструмент, базирующийся на файлах. Данный конфигурационный файл определяет параметры, необходимые для создания и инициализации экземпляра [[yii\db\Connection]], через который вы можете делать SQL запросы к подразумеваемой базе данных.
 
-The DB connection configured above can be accessed in the application code via the expression `Yii::$app->db`.
+Подключение к БД, настроенное выше, доступно в коде приложения через выражение `Yii::$app->db`.
 
-> Info: The `config/db.php` file will be included by the main application configuration `config/web.php`, 
-  which specifies how the [application](structure-applications.md) instance should be initialized.
-  For more information, please refer to the [Configurations](concept-configurations.md) section.
+> Информация: файл `config/db.php` будет подключен главной конфигурацией приложения `config/web.php`,
+  описывающей то, как экземпляр [приложения](structure-applications.md) должен быть инициализирован.
+  Для детальной информации, пожалуйста, обратитесь к разделу [Конфигурации](concept-configurations.md).
 
-
-Creating an Active Record <a name="creating-active-record"></a>
+Создаём потомка Active Record <a name="creating-active-record"></a>
 -------------------------
 
-To represent and fetch the data in the `country` table, create an [Active Record](db-active-record.md)-derived
-class named `Country`, and save it in the file `models/Country.php`.
+Чтобы представлять и получать данные из таблицы `country`, создайте класс - потомок [Active Record](db-active-record.md), под названием `Country`, и сохраните его в файле `models/Country.php`.
 
 ```php
 <?php
@@ -92,42 +85,38 @@ class Country extends ActiveRecord
 }
 ```
 
-The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it! With just the above code, 
-Yii will guess the associated table name from the class name. 
+Класс `Country` наследуется от [[yii\db\ActiveRecord]]. Вам не нужно писать ни строчки кода внутри него! С кодом, приведённым выше, Yii свяжет имя таблицы с именем класса.
 
-> Info: If no direct match can be made from the class name to the table name, you can
-override the [[yii\db\ActiveRecord::tableName()]] method to explicitly specify the associated table name.
+> Информация: Если нет возможности задать прямой зависимости между именем таблицы и именем класса, вы можете переопределить
+  метод [[yii\db\ActiveRecord::tableName()]], чтобы явно задать имя связанной таблицы.
 
-Using the `Country` class, you can easily manipulate data in the `country` table, as shown in these snippets:
+Используя класс `Country`, вы можете легко манипулировать данными в таблице `country`, как показано в этих фрагментах:
 
 ```php
 use app\models\Country;
 
-// get all rows from the country table and order them by "name"
+// получаем все строки из таблицы "country" и сортируем их по "name"
 $countries = Country::find()->orderBy('name')->all();
 
-// get the row whose primary key is "US"
+// получаем строку с первичным ключом "US"
 $country = Country::findOne('US');
 
-// displays "United States"
+// отобразит "United States"
 echo $country->name;
 
-// modifies the country name to be "U.S.A." and save it to database
+// меняем имя страны на "U.S.A." и сохраняем в базу данных
 $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info: Active Record is a powerful way to access and manipulate database data in an object-oriented fashion.
-You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Data Access Objects](db-dao.md).
+> Информация: Active Record - мощный способ доступа и манипулирования данными БД в объектно-ориентированном стиле.
+  Вы можете найти подробную информацию в разделе [Active Record](db-active-record.md). В качестве альтернативы, вы также можете взаимодействовать с базой данных, используя более низкоуровневый способ доступа, называемый [Data Access Objects](db-dao.md).
 
 
-Creating an Action <a name="creating-action"></a>
+Создаём Action <a name="creating-action"></a>
 ------------------
 
-To expose the country data to end users, you need to create a new action. Instead of placing the new action in the `site`
-controller, like you did in the previous sections, it makes more sense to create a new controller specifically
-for all actions related to the country data. Name this new controller  `CountryController`, and create
-an `index` action in it, as shown in the following.
+Для того, чтобы показать данные по странам конечным пользователям, вам надо создать новый action. Вместо размещения нового action'a в контроллере `site`, как вы делали в предыдущих разделах, будет иметь больше смысла создать новый контроллер специально для всех действий, относящихся к данным по странам. Назовите новый контроллер `CountryController`, и создайте action `index` внутри него, как показано ниже.
 
 ```php
 <?php
@@ -162,27 +151,19 @@ class CountryController extends Controller
 }
 ```
 
-Save the above code in the file `controllers/CountryController.php`.
+Сохраните код выше в файле `controllers/CountryController.php`.
 
-The `index` action calls `Country::find()`. This Active Record method builds a DB query and retrieves all of the data from the `country` table.
-To limit the number of countries returned in each request, the query is paginated with the help of a
-[[yii\data\Pagination]] object. The `Pagination` object serves two purposes:
+Action `index` вызывает `Country::find()`. Данный метод Active Record строит запрос к БД и извлекает все данные из таблицы `country`.
+Чтобы ограничить количество стран, возвращаемых каждым запросом, запрос разбивается на страницы с помощью объекта [[yii\data\Pagination]]. Объект `Pagination` служит двум целям:
+* Устанавливает пункты `offset` и `limit` для SQL инструкции, представленной запросом, чтобы она возвращала только одну страницу данных за раз (в нашем случае максимум 5 строк на страницу).
+* Он используется во view для отображения пагинатора, состоящего из набора кнопок с номерами страниц, это будет разъяснено в следующем подразделе.
 
-* Sets the `offset` and `limit` clauses for the SQL statement represented by the query so that it only
-  returns a single page of data at a time (at most 5 rows in a page).
-* It's used in the view to display a pager consisting of a list of page buttons, as will be explained in
-  the next subsection.
+В конце кода action `index` выводит view с именем `index`, и передаёт в него данные по странам вместе c информацией о пагинации.
 
-At the end of the code, the `index` action renders a view named `index`, and passes the country data as well as the pagination
-information to it.
-
-
-Creating a View <a name="creating-view"></a>
+Создаём View <a name="creating-view"></a>
 ---------------
 
-Under the `views` directory, first create a sub-directory named `country`. This folder will be used to hold all the
-views rendered by the `country` controller. Within the `views/country` directory, create a file named `index.php`
-containing the following:
+Первым делом создайте поддиректорию с именем `country` внутри директории `views`. Эта папка будет использоваться для хранения всех view, выводимых контроллером `country`. Внутри директории `views/country` создайте файл с именем `index.php`, содержащий следующий код:
 
 ```php
 <?php
@@ -202,51 +183,36 @@ use yii\widgets\LinkPager;
 <?= LinkPager::widget(['pagination' => $pagination]) ?>
 ```
 
-The view has two sections relative to displaying the country data. In the first part, the provided country data is traversed and rendered as an unordered HTML list.
-In the second part, a [[yii\widgets\LinkPager]] widget is rendered using the pagination information passed from the action.
-The `LinkPager` widget displays a list of page buttons. Clicking on any of them will refresh the country data
-in the corresponding page.
+View имеет 2 части относительно отображения данных по странам. В первой части предоставленные данные по странам выводятся как неупорядоченный HTML-список.
+Во второй части выводится виджет [[yii\widgets\LinkPager]], используя информацию о пагинации, переданную из action во view. Виджет `LinkPager` отображает набор постраничных кнопок. Клик по любой из них обновит данные по странам в соответствующей странице.
 
 
-Trying it Out <a name="trying-it-out"></a>
+Испытываем в действии <a name="trying-it-out"></a>
 -------------
 
-To see how all of the above code works, use your browser to access the following URL:
+Чтобы увидеть, как работает весь вышеприведённый код, перейдите по следующей ссылке в своём браузере:
 
 ```
 http://hostname/index.php?r=country/index
 ```
 
-![Country List](images/start-country-list.png)
+![Список Стран](images/start-country-list.png)
 
-At first, you will see a page showing five countries. Below the countries, you will see a pager with four buttons.
-If you click on the button "2", you will see the page display another five countries in the database: the second page of records.
-Observe more carefully and you will find that the URL in the browser also changes to
+В начале вы увидите страницу, показывающую пять стран. Под странами вы увидите пагинатор с четырьмя кнопками. Если вы кликните по кнопке "2", то увидите страницу, отображающую другие пять стран из базы данных: вторая страница записей.
+Посмотрев внимательней, вы увидите, что URL в браузере тоже сменилось на
 
 ```
 http://hostname/index.php?r=country/index&page=2
 ```
 
-Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:
+За кадром, [[yii\data\Pagination|Pagination]] предоставляет всю необходимую функциональность для постраничной разбивки набора данных:
+* В начале [[yii\data\Pagination|Pagination]] показывает первую страницу, которая отражает SELECT запрос стран с параметрами `LIMIT 5 OFFSET 0`. Как результат, первые пять стран будут получены и отображены.
+* Виджет [[yii\widgets\LinkPager|LinkPager]] выводит кнопки страниц используя URL'ы, созданные [[yii\data\Pagination::createUrl()|Pagination]]. Эти URL'ы будут содержать параметр запроса `page`, который представляет различные номера страниц.
+* Если вы кликните по кнопке "2", сработает и обработается новый запрос для маршрута `country/index`. Таким образом новый запрос стран будет иметь параметры `LIMIT 5 OFFSET 5` и вернет следующие пять стран для отображения.
 
-* Initially, [[yii\data\Pagination|Pagination]] represents the first page, which reflects the country SELECT query
-  with the clause `LIMIT 5 OFFSET 0`. As a result, the first five countries will be fetched and displayed.
-* The [[yii\widgets\LinkPager|LinkPager]] widget renders the page buttons using the URLs
-  created by [[yii\data\Pagination::createUrl()|Pagination]]. The URLs will contain the query parameter `page`, which 
-  represents the different page numbers.
-* If you click the page button "2", a new request for the route `country/index` will be triggered and handled.
-  [[yii\data\Pagination|Pagination]] reads the `page` query parameter from the URL and sets the current page number to 2.
-  The new country query will thus have the clause `LIMIT 5 OFFSET 5` and return  the next five countries
-  for display.
-
-
-Summary <a name="summary"></a>
+Резюме <a name="summary"></a>
 -------
 
-In this section, you learned how to work with a database. You also learned how to fetch and display
-data in pages with the help of [[yii\data\Pagination]] and [[yii\widgets\LinkPager]].
+В этом разделе вы научились работать с базой данных. Также вы научились получать и отображать данные с постраничной разбивкой с помощью [[yii\data\Pagination]] и [[yii\widgets\LinkPager]].
 
-In the next section, you will learn how to use the powerful code generation tool, called [Gii](tool-gii.md),
-to help you rapidly implement some commonly required features, such as the Create-Read-Update-Delete (CRUD)
-operations for working with the data in a database table. As a matter of fact, the code you have just written can all
-be automatically generated in Yii using the Gii tool.
+В следующем разделе вы научитесь использовать мощный инструмент генерации кода, называемый [Gii](tool-gii.md), чтобы с его помощью быстро осуществлять некоторые частоиспользуемые функции, такие, как операции Create-Read-Update-Delete (CRUD) для работы с данными в таблице базы данных. На самом деле код, который вы только что написали, в Yii может быть полностью сгенерирован автоматически с использованием Gii.
