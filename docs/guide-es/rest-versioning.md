@@ -9,7 +9,7 @@ de las APIs ha de ser mantenida siempre que sea posible. Si es necesario un camb
 para más información en el diseño del número de versión del API.
 
 Una manera común de implementar el versionado de la API es embeber el número de versión en las URLs de la  API.
-For example, `http://example.com/v1/users` se refiere al punto final `/users` de la versión 1 de la API. 
+Por ejemplo, `http://example.com/v1/users` se refiere al punto final `/users` de la versión 1 de la API. 
 
 Otro método de versionado de la API,
 la cual está ganando predominancia recientemente, es poner el número de versión en las cabeceras de la petición HTTP. Esto se suele hacer típicamente a través la cabecera `Accept`:
