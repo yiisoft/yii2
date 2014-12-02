@@ -61,7 +61,7 @@ Conceptos clave
 ---------------
 
 * [Componentes](concept-components.md)
-* **TBD** [Propiedades](concept-properties.md)
+* [Propiedades](concept-properties.md)
 * **TBD** [Eventos](concept-events.md)
 * [Comportamientos (Behaviors)](concept-behaviors.md)
 * [Configuraciones](concept-configurations.md)
