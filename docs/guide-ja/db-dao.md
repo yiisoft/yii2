@@ -1,28 +1,31 @@
-Database Access Objects
-===============
+データベースアクセスオブジェクト
+================================
 
-> Note: This section is under development.
+> Note|注意: この節はまだ執筆中です。
 
-Yii includes a database access layer built on top of PHP's [PDO](http://www.php.net/manual/en/book.pdo.php). The database access objects (DAO) interface provides a
-uniform API, and solves some inconsistencies that exist between different database applications. Whereas Active Record provides database interactions through models, and the Query Builder assists in composing dynamic queries, DAO is a simple and efficient way to execute straight SQL on your database. You'll want to use DAO when the query to be run is expensive and/or no application models--and their corresponding business logic--are required.
+Yii は、PHP の [PDO](http://www.php.net/manual/ja/book.pdo.php) の上に構築されたデータベースアクセスレイヤを含んでいます。
+データベースアクセスオブジェクト (DAO) のインタフェイスは、統一された API を提供し、さまざまなデータベース製品間に存在する不統一をいくらか解決します。
+アクティブレコードがモデルを通じてのデータベースとの相互作用を提供し、クエリビルダが動的なクエリの構成を支援する一方で、DAO
+はデータベースに対して直接に SQL を実行する単純で効率的な方法を提供するものです。
+実行すべきクエリが高価なものである場合、かつ/または、アプリケーションモデル (および対応するビジネスロジック) が必要でない場合に、あなたは DAO を使いたいと思うでしょう。
 
-By default, Yii supports the following DBMS:
+Yii はデフォルトで下記の DBMS をサポートしています。
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/)
-- [CUBRID](http://www.cubrid.org/): version 9.3 or higher. (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
-  the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
+- [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。(cubrid PDO 拡張の [バグ](http://jira.cubrid.org/browse/APIS-658)
+  のために、値を引用符で囲む機能が動作しません。そのため、サーバだけでなくクライアントも CUBRID 9.3 が必要になります)
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2005 or higher.
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2005 以上。
 
 
-Configuration
--------------
+構成
+----
 
-To start interacting with a database (using DAO or otherwise), you need to configure the application's database 
-connection component. The Data Source Name (DSN) configures to which database application and specific database the application should connect:
+データベースとの相互作用を開始するためには (DAO を使うにしろ使わないにしろ)、アプリケーションのデータベース接続コンポーネントを構成する必要があります。
+データソース名 (DSN) が、どのデータベース製品のどの特定のデータベースにアプリケーションが接続すべきかを構成します。
 
 ```php
 return [
@@ -35,9 +38,9 @@ return [
             //'dsn' => 'sqlite:/path/to/database/file', // SQLite
             //'dsn' => 'pgsql:host=localhost;port=5432;dbname=mydatabase', // PostgreSQL
             //'dsn' => 'cubrid:dbname=demodb;host=localhost;port=33000', // CUBRID
-            //'dsn' => 'sqlsrv:Server=localhost;Database=mydatabase', // MS SQL Server, sqlsrv driver
-            //'dsn' => 'dblib:host=localhost;dbname=mydatabase', // MS SQL Server, dblib driver
-            //'dsn' => 'mssql:host=localhost;dbname=mydatabase', // MS SQL Server, mssql driver
+            //'dsn' => 'sqlsrv:Server=localhost;Database=mydatabase', // MS SQL Server, sqlsrv ドライバ
+            //'dsn' => 'dblib:host=localhost;dbname=mydatabase', // MS SQL Server, dblib ドライバ
+            //'dsn' => 'mssql:host=localhost;dbname=mydatabase', // MS SQL Server, mssql ドライバ
             //'dsn' => 'oci:dbname=//localhost:1521/mydatabase', // Oracle
             'username' => 'root',
             'password' => '',
@@ -48,11 +51,11 @@ return [
 ];
 ```
 
-Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) for more details
-on the format of the DSN string. Refer to [[yii\db\Connection]] for the full list of properties you can configure in the class.
+DSN 文字列のフォーマットに関する詳細は、[PHP マニュアル](http://www.php.net/manual/ja/function.PDO-construct.php) を参照してください。
+このクラスで構成可能なプロパティの全てのリストについては、[[yii\db\Connection]] を参照してください。
 
-Note that if you are connecting with a database via ODBC, you should configure the [[yii\db\Connection::driverName]]
-property so that Yii knows the actual database type. For example,
+ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\Connection::driverName]] プロパティを構成して、Yii に実際のデータベースのタイプを知らせなければならないことに注意してください。
+例えば、
 
 ```php
 'db' => [
@@ -64,8 +67,9 @@ property so that Yii knows the actual database type. For example,
 ],
 ```
 
-You may access the primary `db` connection via the expression `\Yii::$app->db`. You may also configure multiple
-DB connections in a single application. Simply assign different IDs to them in the application configuration:
+主たる `db` 接続には、`\Yii::$app->db` という式によってアクセスすることが出来ます。
+一つのアプリケーションで複数の DB 接続を構成することも出来ます。
+アプリケーションの構成情報において、それらに別々の ID を割り当てるだけのことです。
 
 ```php
 return [
@@ -88,14 +92,14 @@ return [
 ];
 ```
 
-Now you can use both database connections at the same time as needed:
+これで、必要に応じて両方のデータベース接続を同時に使用することが出来ます。
 
 ```php
 $primaryConnection = \Yii::$app->db;
 $secondaryConnection = \Yii::$app->secondDb;
 ```
 
-If you don't want to define the connection as an [application component](structure-application-components.md), you can instantiate it directly:
+DB 接続を [アプリケーションコンポーネント](structure-application-components.md) として定義したくない場合は、インスタンスを直接に作成することも出来ます。
 
 ```php
 $connection = new \yii\db\Connection([
@@ -106,7 +110,7 @@ $connection = new \yii\db\Connection([
 $connection->open();
 ```
 
-> Tip: If you need to execute an SQL query immediately after establishing a connection (e.g., to set the timezone or character set), you can add the following to your application configuration file:
+> Tip|ヒント: 接続を確立した直後に SQL クエリを実行する必要がある場合 (例えば、タイムゾーンや文字セットを設定するなどの場合) は、アプリケーションの構成情報ファイルに次のように追記することが出来ます。
 >
 ```php
 return [
@@ -125,51 +129,52 @@ return [
 ];
 ```
 
-Executing Basic SQL Queries
----------------------------
+基本的な SQL クエリを実行する
+-----------------------------
 
-Once you have a database connection instance, you can execute SQL queries using [[yii\db\Command]].
+いったんデータベース接続のインスタンスを得てしまえば、[[yii\db\Command]] を使って SQL クエリを実行することが出来るようになります。
 
-### Running SELECT Queries
+### SELECT クエリを実行する
 
-When the query to be executed returns a set of rows, you'll use `queryAll`:
+実行されるクエリが行のセットを返す場合は、`queryAll` を使います。
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post');
 $posts = $command->queryAll();
 ```
 
-When the query to be executed only returns a single row, you'll use `queryOne`:
+実行されるクエリが一つの行だけを返す場合は、`queryOne` を使います。
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=1');
 $post = $command->queryOne();
 ```
 
-When the query returns multiple rows but only one column, you'll use `queryColumn`:
+クエリが複数行ではあっても一つのカラムだけを返す場合は、`queryColumn` を使います。
 
 ```php
 $command = $connection->createCommand('SELECT title FROM post');
 $titles = $command->queryColumn();
 ```
 
-When the query only returns a scalar value, you'll use `queryScalar`:
+クエリがスカラ値だけを返す場合は、`queryScalar` を使います。
 
 ```php
 $command = $connection->createCommand('SELECT COUNT(*) FROM post');
 $postCount = $command->queryScalar();
 ```
 
-### Running Queries That Don't Return Values
+### 値を返さないクエリを実行する
 
-If SQL executed doesn't return any data--for example, INSERT, UPDATE, and DELETE, you can use command's `execute` method:
+実行されるクエリがデータを一つも返さない場合、例えば、INSERT、UPDATE、DELETE などの場合は、コマンドの `execute` メソッドを使うことが出来ます。
 
 ```php
 $command = $connection->createCommand('UPDATE post SET status=1 WHERE id=1');
 $command->execute();
 ```
 
-Alternatively, you can use the dedicated `insert`, `update`, and `delete` methods. These methods will properly quote table and column names used in your query, and you only need to provide the necessary values:
+あるいはまた、専用の `insert`、`update`、`delete` のメソッドを使うことも出来ます。
+これらのメソッドは、クエリの中で使用されるテーブルとカラムの名前を引用符で適切に囲んでくれますので、あなたは単に必要な値を提供するだけで済みます。
 
 [[Ought to put a link to the reference docs here.]]
 
@@ -180,7 +185,7 @@ $connection->createCommand()->insert('user', [
     'age' => 30,
 ])->execute();
 
-// INSERT multiple rows at once
+// INSERT 複数行を一度に
 $connection->createCommand()->batchInsert('user', ['name', 'age'], [
     ['Tom', 30],
     ['Jane', 20],
@@ -194,26 +199,27 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 $connection->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
-Quoting Table and Column Names
-------------------------------
+テーブルとカラムの名前を引用符で囲む
+------------------------------------
 
-To make column and table names safe to use in queries, you can have Yii properly quote them for you:
+テーブルとカラムの名前をクエリの中で安全に使えるようにするために、Yii にそれらの名前を引用符で適切に囲ませることが出来ます。
 
 ```php
 $sql = "SELECT COUNT([[$column]]) FROM {{table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-In the code above, `[[$column]]` will be converted to a properly quoted column name, while `{{table}}` will be converted to a properly quoted table name.
+上記のコードにおいて、`[[$column]]` は引用符で適切に囲まれたカラム名に変換され、`{{table}}` は引用符で適切に囲まれたテーブル名に変換されます。
 
-There's a special variant on this syntax specific to tablenames: `{{%Y}}` automatically appends the application's table prefix to the provided value, if a table prefix has been set:
+この構文には、テーブル名に限定された特別な変種があります。
+それは、`{{%Y}}` が、提供された値にアプリケーションのテーブル接頭辞を (テーブル接頭辞がセットされている場合は) 自動的に追加する、というものです。
 
 ```php
 $sql = "SELECT COUNT([[$column]]) FROM {{%table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-The code above will result in selecting from `tbl_table`, if you have table prefix configured like so:
+上記のコードは、テーブル接頭辞をそのように構成している場合は、`tbl_table` からセレクトする結果になります。
 
 ```php
 return [
@@ -228,8 +234,7 @@ return [
 ];
 ```
 
-The alternative is to quote table and column names manually using [[yii\db\Connection::quoteTableName()]] and
-[[yii\db\Connection::quoteColumnName()]]:
+もう一つの選択肢は、[[yii\db\Connection::quoteTableName()]] と [[yii\db\Connection::quoteColumnName()]] を使って、手作業でテーブル名とカラム名を引用符で囲むことです。
 
 ```php
 $column = $connection->quoteColumnName($column);
@@ -238,10 +243,12 @@ $sql = "SELECT COUNT($column) FROM $table";
 $rowCount = $connection->createCommand($sql)->queryScalar();
 ```
 
-Using Prepared Statements
--------------------
+プリペアドステートメントを使用する
+----------------------------------
 
-To securely pass query parameters to your queries, you should make use of prepared statements. First, create a named placeholder in your query (using the syntax `:placeholder`). Then bind the placeholder to a variable and execute the query:
+クエリのパラメータを安全にクエリに渡すために、プリペアドステートメントを利用すべきです。
+最初に、クエリの中に (`:placeholder` という構文を使って) 名前付きのプレースホルダを作ります。
+次に、プレースホルダに値をバインドしてクエリを実行します。
 
 ```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
@@ -249,7 +256,7 @@ $command->bindValue(':id', $_GET['id']);
 $post = $command->queryOne();
 ```
 
-Another purpose for prepared statements (aside from improved security) is the ability to execute a query multiple times while preparing it only once:
+プリペアドステートメントを使うもう一つの目的は (セキュリティの向上のほかに)、一度だけプリペアしたクエリを複数回実行することが出来るという点にあります。
 
 ```php
 $command = $connection->createCommand('DELETE FROM post WHERE id=:id');
@@ -262,23 +269,24 @@ $id = 2;
 $command->execute();
 ```
 
-Notice that you bind the placeholder to the variable before the execution, and then change the value of that variable before each subsequent execution (this is often done with loops). Executing queries in this manner can be vastly more efficient than running each query one at a time. 
+クエリの実行の前にプレースホルダを変数にバインドすること、そして、後に続く各回の実行の前に変数の値を変更すること (たいていはループで行います) に着目してください。
+このやり方でクエリを実行すると、各クエリを一つずつ実行するのに比べて、はるかに効率が良くなることがあります。
 
-Performing Transactions
------------------------
+トランザクションを実行する
+--------------------------
 
-When running multiple, related queries in a sequence, you may need to wrap them in a transaction to
-protect your data's integrity. Transactions allow you to write a series of queries such that they'll all succeed or have no effect whatsoever. Yii provides a simple interface to work with transactions in simple
-cases but also for advanced usage when you need to define isolation levels.
+一続きになった複数の関連するクエリを実行するときは、データの整合性を保護するために、一連のクエリをトランザクションで囲む必要がある場合があります。
+トランザクションを使うと、全て成功するか、さもなくば、いかなる結果ももたらさない、という動作をする一連のクエリを書くことが出来ます。
+Yii はトランザクションを扱うシンプルなインタフェイスを提供して、単純な場合だけでなく、分離レベルを定義する必要があるような高度な用法にも対応しています。
 
-The following code shows a simple pattern that all code that uses transactional queries should follow:
+次のコードが示しているシンプルなパターンは、クエリにトランザクションを使用する全てのコードが従うべきものです。
 
 ```php
 $transaction = $connection->beginTransaction();
 try {
     $connection->createCommand($sql1)->execute();
     $connection->createCommand($sql2)->execute();
-    // ... executing other SQL statements ...
+    // ... その他の SQL 文を実行 ...
     $transaction->commit();
 } catch(\Exception $e) {
     $transaction->rollBack();
@@ -286,24 +294,23 @@ try {
 }
 ```
 
-The first line starts a new transaction using the [[yii\db\Connection::beginTransaction()|beginTransaction()]] method of the database connection
-object. The transaction itself is represented by a [[yii\db\Transaction]] object stored in `$transaction`.
-We wrap the execution of all queries in a try-catch block to be able to handle errors.
-We call [[yii\db\Transaction::commit()|commit()]] on success to commit the transaction and
-[[yii\db\Transaction::rollBack()|rollBack()]] in case of an error. This will revert the effect of all queries
-that have been executed inside of the transaction.
-`throw $e` is used to re-throw the exception in case we can not handle the error ourselves and delegate it
-to some other code or the Yii error handler.
+最初の行で、データベース接続オブジェクトの [[yii\db\Connection::beginTransaction()|beginTransaction()]] メソッドを使って、新しいトランザクションを開始しています。
+トランザクション自体は、`$transaction` に保存された [[yii\db\Transaction]] オブジェクトとして表現されています。
+エラー処理を可能にするために、全てのクエリを try-catch ブロックで囲みます。
+成功した場合には [[yii\db\Transaction::commit()|commit()]] を呼んでトランザクションをコミットし、エラーが発生した場合には [[yii\db\Transaction::rollBack()|rollBack()]] を呼びます。
+`rollBack` は、トランザクションの内側で実行された全てのクエリの結果を取り消します。
+`throw $e` は、私たち自身ではエラーを処理することが出来ない場合に、例外を再スローするために用いられます。
+これによって、他のコード、または Yii のエラーハンドラにエラー処理を委譲しています。
 
-It is also possible to nest multiple transactions, if needed:
+必要であれば、複数のトランザクションを入れ子にすることも可能です。
 
 ```php
-// outer transaction
+// 外側のトランザクション
 $transaction1 = $connection->beginTransaction();
 try {
     $connection->createCommand($sql1)->execute();
 
-    // inner transaction
+    // 内側のトランザクション
     $transaction2 = $connection->beginTransaction();
     try {
         $connection->createCommand($sql2)->execute();
@@ -318,176 +325,166 @@ try {
 }
 ```
 
-Note that your DBMS should have support for Savepoints for this to work as expected.
-The above code will work for any DBMS but transactional safety is only guaranteed if
-the underlying DBMS supports it.
+これが期待通りの動作をするためには、あなたの DBMS が SAVEPOINT をサポートしていなければならないことに注意してください。
+上記のコードはどのような DBMS でも動きますが、トランザクションの安全性が保証されるのは、背後の DBMS がそれをサポートしている場合だけです。
 
-Yii also supports setting [isolation levels] for your transactions.
-When beginning a transaction it will run in the default isolation level set by your database system.
-You can specifying an isolation level explicitly when starting a transaction:
+Yii は、また、トランザクションの [分離レベル] の設定もサポートしています。
+トランザクションを開始したとき、トランザクションはデータベースによって設定されたデフォルトの分離レベルで実行されます。
+トランザクションを開始するときに、分離レベルを明示的に指定することが出来ます。
 
 ```php
 $transaction = $connection->beginTransaction(\yii\db\Transaction::REPEATABLE_READ);
 ```
 
-Yii provides four constants for the most common isolation levels:
+Yii は、最もよく使われる分離レベルのために、四つの定数を提供しています。
 
-- [[\yii\db\Transaction::READ_UNCOMMITTED]] - the weakest level, Dirty reads, Non-repeatable reads and Phantoms may occur.
-- [[\yii\db\Transaction::READ_COMMITTED]] - avoid Dirty reads.
-- [[\yii\db\Transaction::REPEATABLE_READ]] - avoid Dirty reads and Non-repeatable reads.
-- [[\yii\db\Transaction::SERIALIZABLE]] - the strongest level, avoids all of the above named problems.
+- [[\yii\db\Transaction::READ_UNCOMMITTED]] - 最も弱いレベル。ダーティーリード、非再現リード、ファントムが発生しうる。
+- [[\yii\db\Transaction::READ_COMMITTED]] - ダーティーリードを回避。
+- [[\yii\db\Transaction::REPEATABLE_READ]] - ダーティーリードと非再現リードを回避。
+- [[\yii\db\Transaction::SERIALIZABLE]] - 最も強いレベル。上記の問題を全て回避。
 
-You may use the constants named above but you can also use a string that represents a valid syntax that can be
-used in your DBMS following `SET TRANSACTION ISOLATION LEVEL`. For postgres this could be for example
-`SERIALIZABLE READ ONLY DEFERRABLE`.
+上記の定数を使うことも出来ますが、あなたの DBMS で `SET TRANSACTION ISOLATION LEVEL` に続けて書くことが出来る、文法として有効な文字列を使うことも出来ます。
+たとえば、postgres であれば、`SERIALIZABLE READ ONLY DEFERRABLE` を使っても構いません。
 
-Note that some DBMS allow setting of the isolation level only for the whole connection so subsequent transactions
-may get the same isolation level even if you did not specify any. When using this feature
-you may need to set the isolation level for all transactions explicitly to avoid conflicting settings.
-At the time of this writing affected DBMS are MSSQL and SQLite.
+DBMS によっては、接続全体に対してのみ分離レベルの設定を許容しているものがあることに注意してください。
+そのような DBMS の場合、いったん分離レベルを指定すると、後続のトランザクションは、指定しなくても、同じ分離レベルで実行されることになります。
+従って、この機能を使用するときは、相反する設定を避けるために、全てのトランザクションについて分離レベルを明示的に指定しなければなりません。
+このチュートリアルを書いている時点では、これに該当する DBMS は MSSQL と SQLite です。
 
-> Note: SQLite only supports two isolation levels, so you can only use `READ UNCOMMITTED` and `SERIALIZABLE`.
-Usage of other levels will result in an exception being thrown.
+> Note|注意: SQLite は、二つの分離レベルしかサポートしていません。すなわち、`READ UNCOMMITTED` と `SERIALIZABLE` しか使えません。
+他のレベルを使おうとすると、例外が投げられます。
 
-> Note: PostgreSQL does not allow setting the isolation level before the transaction starts so you can not
-specify the isolation level directly when starting the transaction.
-You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after the transaction has started.
+> Note|注意: PostgreSQL は、トランザクションを開始する前に分離レベルを指定することを許容していません。
+すなわち、トランザクションを開始するときに、分離レベルを直接に指定することは出来ません。
+この場合、トランザクションを開始した後に [[yii\db\Transaction::setIsolationLevel()]] を呼び出す必要があります。
 
-[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[分離レベル]: http://ja.wikipedia.org/wiki/%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB
 
 
-Replication and Read-Write Splitting
-------------------------------------
+レプリケーションと読み書きの分離
+--------------------------------
 
-Many DBMS support [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
-to get better database availability and faster server response time. With database replication, data are replicated
-from the so-called *master servers* to *slave servers*. All writes and updates must take place on the master servers,
-while reads may take place on the slave servers.
+多くの DBMS は、データベースの可用性とサーバのレスポンスタイムを向上させるために、[データベースレプリケーション](http://ja.wikipedia.org/wiki/%E3%83%AC%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3#.E3.83.87.E3.83.BC.E3.82.BF.E3.83.99.E3.83.BC.E3.82.B9) をサポートしています。
+データベースレプリケーションによって、データはいわゆる *マスタサーバ* から *スレーブサーバ* に複製されます。
+データの書き込みと更新はすべてマスタサーバ上で実行されなければなりませんが、データの読み出しはスレーブサーバ上でも可能です。
 
-To take advantage of database replication and achieve read-write splitting, you can configure a [[yii\db\Connection]]
-component like the following:
+データベースレプリケーションを活用して読み書きの分離を達成するために、[[yii\db\Connection]] コンポーネントを下記のように構成することが出来ます。
 
 ```php
 [
     'class' => 'yii\db\Connection',
 
-    // configuration for the master
+    // マスタの構成
     'dsn' => 'dsn for master server',
     'username' => 'master',
     'password' => '',
 
-    // common configuration for slaves
+    // スレーブの共通の構成
     'slaveConfig' => [
         'username' => 'slave',
         'password' => '',
         'attributes' => [
-            // use a smaller connection timeout
+            // 短めの接続タイムアウトを使う
             PDO::ATTR_TIMEOUT => 10,
         ],
     ],
 
-    // list of slave configurations
+    // スレーブの構成のリスト
     'slaves' => [
-        ['dsn' => 'dsn for slave server 1'],
-        ['dsn' => 'dsn for slave server 2'],
-        ['dsn' => 'dsn for slave server 3'],
-        ['dsn' => 'dsn for slave server 4'],
+        ['dsn' => 'スレーブサーバ 1 の DSN'],
+        ['dsn' => 'スレーブサーバ 2 の DSN'],
+        ['dsn' => 'スレーブサーバ 3 の DSN'],
+        ['dsn' => 'スレーブサーバ 4 の DSN'],
     ],
 ]
 ```
 
-The above configuration specifies a setup with a single master and multiple slaves. One of the slaves will
-be connected and used to perform read queries, while the master will be used to perform write queries.
-Such read-write splitting is accomplished automatically with this configuration. For example,
+上記の構成は、一つのマスタと複数のスレーブを指定するものです。
+読み出しのクエリを実行するためには、スレーブの一つが接続されて使用され、書き込みのクエリを実行するためには、マスタが使われます。
+そのような読み書きの分離が、この構成によって、自動的に達成されます。例えば、
 
 ```php
-// create a Connection instance using the above configuration
+// 上記の構成を使って Connection のインスタンスを作成する
 $db = Yii::createObject($config);
 
-// query against one of the slaves
+// スレーブの一つに対してクエリを実行する
 $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 
-// query against the master
+// マスタに対してクエリを実行する
 $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
-> Info: Queries performed by calling [[yii\db\Command::execute()]] are considered as write queries, while
-  all other queries done through one of the "query" methods of [[yii\db\Command]] are read queries.
-  You can get the currently active slave connection via `$db->slave`.
+> Info|情報: [[yii\db\Command::execute()]] を呼ぶことで実行されるクエリは、書き込みのクエリと見なされ、[[yii\db\Command]] の "query" メソッドのうちの一つによって実行されるその他すべてのクエリは、読み出しクエリと見なされます。
+  現在アクティブなスレーブ接続は `$db->slave` によって取得することが出来ます。
 
-The `Connection` component supports load balancing and failover between slaves.
-When performing a read query for the first time, the `Connection` component will randomly pick a slave and
-try connecting to it. If the slave is found "dead", it will try another one. If none of the slaves is available,
-it will connect to the master. By configuring a [[yii\db\Connection::serverStatusCache|server status cache]],
-a "dead" server can be remembered so that it will not be tried again during a
-[[yii\db\Connection::serverRetryInterval|certain period of time]].
+`Connection` コンポーネントは、スレーブ間のロードバランス調整とフェイルオーバーをサポートしています。
+読み出しクエリを最初に実行するときに、`Connection` コンポーネントはランダムにスレーブを選んで接続を試みます。
+そのスレーブが「死んでいる」ことが分かったときは、他のスレーブを試します。
+スレーブが一つも使用できないときは、マスタに接続します。
+[[yii\db\Connection::serverStatusCache|サーバステータスキャッシュ]] を構成することによって、「死んでいる」サーバを記憶し、[[yii\db\Connection::serverRetryInterval|一定期間]] はそのサーバへの接続を再試行しないようにすることが出来ます。
 
-> Info: In the above configuration, a connection timeout of 10 seconds is specified for every slave.
-  This means if a slave cannot be reached in 10 seconds, it is considered as "dead". You can adjust this parameter
-  based on your actual environment.
+> Info|情報: 上記の構成では、すべてのスレーブに対して 10 秒の接続タイムアウトが指定されています。
+  これは、10 秒以内に接続できなければ、そのスレーブは「死んでいる」と見なされることを意味します。
+  このパラメータは、実際の環境に基づいて調整することが出来ます。
 
 
-You can also configure multiple masters with multiple slaves. For example,
-
+複数のマスタと複数のスレーブという構成にすることも可能です。例えば、
 
 ```php
 [
     'class' => 'yii\db\Connection',
 
-    // common configuration for masters
+    // マスタの共通の構成
     'masterConfig' => [
         'username' => 'master',
         'password' => '',
         'attributes' => [
-            // use a smaller connection timeout
+            // 短めの接続タイムアウトを使う
             PDO::ATTR_TIMEOUT => 10,
         ],
     ],
 
-    // list of master configurations
+    // マスタの構成のリスト
     'masters' => [
-        ['dsn' => 'dsn for master server 1'],
-        ['dsn' => 'dsn for master server 2'],
+        ['dsn' => 'マスタサーバ 1 の DSN'],
+        ['dsn' => 'マスタサーバ 2 の DSN'],
     ],
 
-    // common configuration for slaves
+    // スレーブの共通の構成
     'slaveConfig' => [
         'username' => 'slave',
         'password' => '',
         'attributes' => [
-            // use a smaller connection timeout
+            // 短めの接続タイムアウトを使う
             PDO::ATTR_TIMEOUT => 10,
         ],
     ],
 
-    // list of slave configurations
+    // スレーブの構成のリスト
     'slaves' => [
-        ['dsn' => 'dsn for slave server 1'],
-        ['dsn' => 'dsn for slave server 2'],
-        ['dsn' => 'dsn for slave server 3'],
-        ['dsn' => 'dsn for slave server 4'],
+        ['dsn' => 'スレーブサーバ 1 の DSN'],
+        ['dsn' => 'スレーブサーバ 2 の DSN'],
+        ['dsn' => 'スレーブサーバ 3 の DSN'],
+        ['dsn' => 'スレーブサーバ 4 の DSN'],
     ],
 ]
 ```
 
-The above configuration specifies two masters and four slaves. The `Connection` component also supports
-load balancing and failover between masters just as it does between slaves. A difference is that when none 
-of the masters are available an exception will be thrown.
+上記の構成は、二つのマスタと四つのスレーブを指定しています。
+`Connection` コンポーネントは、スレーブ間での場合と同じように、マスタ間でのロードバランス調整とフェイルオーバーをサポートしています。
+一つ違うのは、マスタが一つも利用できないときは例外が投げられる、という点です。
 
-> Note: When you use the [[yii\db\Connection::masters|masters]] property to configure one or multiple
-  masters, all other properties for specifying a database connection (e.g. `dsn`, `username`, `password`)
-  with the `Connection` object itself will be ignored.
+> Note|注意: [[yii\db\Connection::masters|masters]] プロパティを使って一つまたは複数のマスタを構成する場合は、データベース接続を定義する `Connection` オブジェクト自体のその他のプロパティ (例えば、`dsn`、`username`、`password`) は全て無視されます。
 
-
-By default, transactions use the master connection. And within a transaction, all DB operations will use
-the master connection. For example,
+既定では、トランザクションはマスタ接続を使用します。そして、トランザクション内では、全ての DB 操作はマスタ接続を使用します。
+例えば、
 
 ```php
-// the transaction is started on the master connection
+// トランザクションはマスタ接続で開始される
 $transaction = $db->beginTransaction();
 
 try {
-    // both queries are performed against the master
+    // クエリは両方ともマスタに対して実行される
     $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
     $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
@@ -498,14 +495,14 @@ try {
 }
 ```
 
-If you want to start a transaction with the slave connection, you should explicitly do so, like the following:
+スレーブ接続を使ってトランザクションを開始したいときは、次のように、明示的にそうする必要があります。
 
 ```php
 $transaction = $db->slave->beginTransaction();
 ```
 
-Sometimes, you may want to force using the master connection to perform a read query. This can be achieved
-with the `useMaster()` method:
+時として、読み出しクエリの実行にマスタ接続を使うことを強制したい場合があります。
+これは、`useMaster()` メソッドを使うによって達成できます。
 
 ```php
 $rows = $db->useMaster(function ($db) {
@@ -513,31 +510,31 @@ $rows = $db->useMaster(function ($db) {
 });
 ```
 
-You may also directly set `$db->enableSlaves` to be false to direct all queries to the master connection.
+直接に `$db->enableSlaves` を false に設定して、全てのクエリをマスタ接続に向けることも出来ます。
 
 
-Working with database schema
-----------------------------
+データベーススキーマを扱う
+--------------------------
 
-### Getting schema information
+### スキーマ情報を取得する
 
-You can get a [[yii\db\Schema]] instance like the following:
+[[yii\db\Schema]] のインスタンスを次のようにして取得することが出来ます。
 
 ```php
 $schema = $connection->getSchema();
 ```
 
-It contains a set of methods allowing you to retrieve various information about the database:
+このオブジェクトが、データベースについてのいろいろなスキーマ情報を読み取ることを可能にする一連のメソッドを持っています。
 
 ```php
 $tables = $schema->getTableNames();
 ```
 
-For the full reference, check [[yii\db\Schema]].
+完全なリファレンスとしては、[[yii\db\Schema]] を参照してください。
 
-### Modifying schema
+### スキーマを修正する
 
-Aside from basic SQL queries, [[yii\db\Command]] contains a set of methods allowing the modification of the database schema:
+基本的な SQL クエリに加えて、[[yii\db\Command]] はデータベーススキーマの修正を可能にする一連のメソッドを持っています。
 
 - createTable, renameTable, dropTable, truncateTable
 - addColumn, renameColumn, dropColumn, alterColumn
@@ -545,10 +542,10 @@ Aside from basic SQL queries, [[yii\db\Command]] contains a set of methods allow
 - addForeignKey, dropForeignKey
 - createIndex, dropIndex
 
-These can be used as follows:
+これらは、次のようにして使用することが出来ます。
 
 ```php
-// CREATE TABLE
+// TABLE を作成する
 $connection->createCommand()->createTable('post', [
     'id' => 'pk',
     'title' => 'string',
@@ -556,4 +553,4 @@ $connection->createCommand()->createTable('post', [
 ]);
 ```
 
-For the full reference, check [[yii\db\Command]].
+完全なリファレンスとしては、[[yii\db\Command]] を参照してください。
