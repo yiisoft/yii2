@@ -2,7 +2,7 @@
 ======
 
 Un asset en Yii es un archivo al que se puede hacer referencia en una página Web. Puede ser un archivo CSS, un archivo 
-JavaScript, una imagen o un archivo de video, etc. Los assets se encuentran en los directorios públicos de la web y se 
+JavaScript, una imagen o un archivo de vídeo, etc. Los assets se encuentran en los directorios públicos de la web y se 
 sirven directamente por los servidores Web.
 
 A menudo es preferible gestionar los assets mediante programación. Por ejemplo, cuando se usa el widget 
@@ -207,7 +207,7 @@ AppAsset::register($this);  // $this representa el objeto vista
   [[yii\web\AssetBundle::baseUrl|baseUrl]].
 
 Si se registra un asset bundle en otro lugar, se debe proporcionar la vista necesaria al objeto. Por ejemplo, para 
-registrar un asset bundle en una clase [widget](structure-widget.md), se puede obtener el objeto vista mediante 
+registrar un asset bundle en una clase [widget](structure-widgets.md), se puede obtener el objeto vista mediante 
 `$this->view`.
 
 Cuando se registra un asset bundle con una vista, por detrás, Yii registrará todos sus asset bundles dependientes. 
@@ -246,7 +246,7 @@ return [
 
 Del mismo modo, se pueden configurar múltiples asset bundles a través de [[yii\web\AssetManager::bundles]]. Las claves 
 del array deben ser los nombres de clase (sin la primera barra invertida) de los asset bundles, y los valores del array
- deben ser las correspondientes [configuraciones de arrays](structure-configurations.md).
+ deben ser las correspondientes [configuraciones de arrays](concept-configurations.md).
 
 > Consejo: Se puede de elegir condicionalmente que assets se van a usar en un asset bundle. El siguiente ejemplo 
 muestra como usar `jquery.js` en el entorno de desarrollo y `jquery.min.js` en los otros casos:
