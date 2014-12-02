@@ -35,8 +35,8 @@ $value = ArrayHelper::getValue($array, 'foo.bar.name');
 First method argument is where we're getting value from. Second argument specifies how to get the data. It could be one
 of the following:
  
-- Name of array key or object property to retieve value from.
-- Set of dot separated array key or object property names. The one we've used in the example above. 
+- Name of array key or object property to retrieve value from.
+- Set of dot separated array keys or object property names. The one we've used in the example above. 
 - A callback returning a value.
 
 The callback should be the following:
@@ -85,7 +85,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 
 ## Retrieving Columns <a name="retrieving-columns"></a>
 
-Often you need to get a column of values from array of data rows or objects. Common keys is getting a list of IDs.
+Often you need to get a column of values from array of data rows or objects. Common example is getting a list of IDs.
 
 ```php
 $data = [
@@ -109,7 +109,7 @@ $result = ArrayHelper::getColumn($array, function ($element) {
     
 ## Re-indexing Arrays <a name="reindexing-arrays"></a>
 
-In order to indexes an array according to a specified key `index` method could be used. The input array should be
+In order to index an array according to a specified key, the `index` method can be used. The input array should be
 multidimensional or an array of objects. The key can be a key name of the sub-array, a property name of object, or
 an anonymous function which returns the key value given an array element.
 
@@ -171,7 +171,7 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
     
 ## Multidimensional Sorting <a name="multidimensional-sorting"></a>    
 
-`sort` method helps to sort an array of objects or nested arrays by one or several keys. For example,
+`multisort` method helps to sort an array of objects or nested arrays by one or several keys. For example,
 
 ```php
 $data = [
@@ -192,7 +192,7 @@ After sorting we'll get the following in `$data`:
 ];
 ```
 
-Second argument that specifies keys to sort by could be a string if it's a single key, an array in case of multiple keys
+Second argument that specifies keys to sort by can be a string if it's a single key, an array in case of multiple keys
 or an anonymous function like the following one:
 
 ```php
@@ -211,7 +211,7 @@ PHP [sort()](http://php.net/manual/en/function.sort.php).
 
 ## Detecting Array Types <a name="detecting-array-types"></a>
         
-It is handy to know whether array is indexed or an associative. Here's an example:
+It is handy to know whether an array is indexed or an associative. Here's an example:
           
 ```php
 // no keys specified
@@ -233,7 +233,7 @@ $encoded = ArrayHelper::htmlEncode($data);
 $decoded = ArrayHelper::htmlDecode($data);
 ```
 
-Only values will be encoded by default. By passing second argument as `false` you can encode arrays keys as well.
+Only values will be encoded by default. By passing second argument as `false` you can encode array's keys as well.
 Encoding will use application charset and could be changed via third argument.
         
         
@@ -257,7 +257,7 @@ Encoding will use application charset and could be changed via third argument.
     
 ## Converting Objects to Arrays <a name="converting-objects-to-arrays"></a>
 
-Often you need to convert an object or an array of objects into array. The most common case is converting active record
+Often you need to convert an object or an array of objects into an array. The most common case is converting active record
 models in order to serve data arrays via REST API or use it otherwise. The following code could be used to do it:
 
 ```php
@@ -282,8 +282,8 @@ The second argument is conversion mapping per class. We're setting a mapping for
 Each mapping array contains a set of mappings. Each mapping could be:
  
 - A field name to include as is.
-- A key-value pair of desired array key name and model colum name to take value from.
-- A key-value pair of desired array key name and a callback which return value will be used.
+- A key-value pair of desired array key name and model column name to take value from.
+- A key-value pair of desired array key name and a callback which returns value.
 
 The result of conversion above will be:
      
