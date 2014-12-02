@@ -40,7 +40,7 @@ use yii\authclient\ClientInterface;
  * ]); ?>
  * <ul>
  * <?php foreach ($authAuthChoice->getClients() as $client): ?>
- *     <li><?= $authAuthChoice->clientLink($client) ?></li>
+ *     <li><?php $authAuthChoice->clientLink($client) ?></li>
  * <?php endforeach; ?>
  * </ul>
  * <?php AuthChoice::end(); ?>
