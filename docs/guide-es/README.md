@@ -68,7 +68,7 @@ Conceptos clave
 * [Alias](concept-aliases.md)
 * [Autocarga de clases](concept-autoloading.md)
 * [Localizador de servicios (Service Locator)](concept-service-locator.md)
-* **TBD** [Contenedor de inyección de dependencia](concept-di-container.md)
+* [Contenedor de inyección de dependencia](concept-di-container.md)
 
 
 Trabajar con bases de datos
