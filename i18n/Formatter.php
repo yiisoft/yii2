@@ -561,6 +561,10 @@ class Formatter extends Component
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
             }
+            // make IntlDateFormatter work with DateTimeImmutable
+            if ($timestamp instanceof \DateTimeImmutable) {
+                $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
+            }
             return $formatter->format($timestamp);
         } else {
             if (strncmp($format, 'php:', 4) === 0) {
@@ -569,7 +573,11 @@ class Formatter extends Component
                 $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
             }
             if ($timeZone != null) {
-                $timestamp->setTimezone(new DateTimeZone($timeZone));
+                if ($timestamp instanceof \DateTimeImmutable) {
+                    $timestamp = $timestamp->setTimezone(new DateTimeZone($timeZone));
+                } else {
+                    $timestamp->setTimezone(new DateTimeZone($timeZone));
+                }
             }
             return $timestamp->format($format);
         }
