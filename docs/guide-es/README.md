@@ -74,7 +74,7 @@ Conceptos clave
 Trabajar con bases de datos
 -----------------------------
 
-* **TBD** [Objeto de acceso a datos](db-dao.md) - Conexión a una base de datos, consultas básicas, transacciones y manipulación de esquemas
+* [Objeto de acceso a datos](db-dao.md) - Conexión a una base de datos, consultas básicas, transacciones y manipulación de esquemas
 * **TBD** [Constructor de consultas](db-query-builder.md) - Consulta de la base de datos utilizando una simple capa de abstracción
 * **TBD** [Active Record](db-active-record.md) - ORM Active Record, recuperación y manipulación de registros y definición de relaciones
 * **TBD** [Migraciones](db-migrations.md) - Control de versiones de bases de datos en el entorno de desarrollo en equipo
