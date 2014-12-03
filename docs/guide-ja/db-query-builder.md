@@ -61,7 +61,7 @@ $rows = $command->queryAll();
 
 ### `SELECT`
 
-基本的な `SELECT` クエリを形作るためには、どのテーブルからどのカラムをセレクトするかを指定する必要があります。
+基本的な `SELECT` クエリを組み立てるためには、どのテーブルからどのカラムをセレクトするかを指定する必要があります。
 
 ```php
 $query->select('id, name')
@@ -69,7 +69,7 @@ $query->select('id, name')
 ```
 
 セレクトのオプションは、上記のように、カンマで区切られた文字列で指定することも出来ますが、配列によって指定することも出来ます。
-配列を使う構文は、セレクトを動的に形作る場合に、特に有用です。
+配列を使う構文は、セレクトを動的に組み立てる場合に、特に有用です。
 
 ```php
 $query->select(['id', 'name'])
@@ -93,7 +93,7 @@ $query = (new Query)->select(['id', 'count' => $subQuery])->from('post');
 // SELECT `id`, (SELECT COUNT(*) FROM `user`) AS `count` FROM `post`
 ```
 
-To select distinct rows, you may call `distinct()`, like the following:
+重複行を除外して取得したい場合は、次のように、`distinct()` を呼ぶことが出来ます。
 
 ```php
 $query->select('user_id')->distinct()->from('post');
@@ -101,30 +101,31 @@ $query->select('user_id')->distinct()->from('post');
 
 ### `FROM`
 
-To specify which table(s) to select data from, call `from()`:
+どのテーブルからデータを取得するかを指定するために `from()` を呼びます。
 
 ```php
 $query->select('*')->from('user');
 ```
 
-You may specify multiple tables using a comma-separated string or an array.
-Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
-The method will automatically quote the table names unless it contains some parenthesis
-(which means the table is given as a sub-query or DB expression). For example,
+カンマ区切りの文字列または配列を使って、複数のテーブルを指定することが出来ます。
+テーブル名は、スキーマ接頭辞 (例えば `'public.user'`)、 および/または、テーブルエイリアス (例えば、`'user u'`) を含んでも構いません。
+テーブル名が何らかの括弧を含んでいる場合 (すなわち、テーブルがサブクエリまたは DB 式で与えられていることを意味します) を除いて、メソッドが自動的にテーブル名を引用符で囲みます。
+例えば、
 
 ```php
 $query->select('u.*, p.*')->from(['user u', 'post p']);
 ```
 
-When the tables are specified as an array, you may also use the array keys as the table aliases
-(if a table does not need alias, do not use a string key). For example,
+テーブルが配列として指定されている場合は、配列のキーをテーブルエイリアスとして使うことも出来ます。
+(テーブルにエイリアスが必要でない場合は、文字列のキーを使わないでください。)
+例えば、
 
 ```php
 $query->select('u.*, p.*')->from(['u' => 'user', 'p' => 'post']);
 ```
 
-You may specify a sub-query using a `Query` object. In this case, the corresponding array key will be used
-as the alias for the sub-query.
+`Query` オブジェクトを使ってサブクエリを指定することが出来ます。
+この場合、対応する配列のキーがサブクエリのエイリアスとして使われます。
 
 ```php
 $subQuery = (new Query())->select('id')->from('user')->where('status=1');
@@ -134,28 +135,31 @@ $query->select('*')->from(['u' => $subQuery]);
 
 ### `WHERE`
 
-Usually data is selected based upon certain criteria. Query Builder has some useful methods to specify these, the most powerful of which being `where`. It can be used in multiple ways.
+通常、データは何らかの基準に基づいて選択されます。
+クエリビルダはその基準を指定するための有用なメソッドをいくつか持っていますが、その中で最も強力なものが `where` です。
+これは多様な方法で使うことが出来ます。
 
-The simplest way to apply a condition is to use a string:
+条件を適用するもっとも簡単な方法は文字列を使うことです。
 
 ```php
 $query->where('status=:status', [':status' => $status]);
 ```
 
-When using strings, make sure you're binding the query parameters, not creating a query by string concatenation. The above approach is safe to use, the following is not:
+文字列を使うときは、文字列の結合によってクエリを作るのではなく、必ずクエリパラメータをバインドするようにしてください。
+上記の手法は使っても安全ですが、下記の手法は安全ではありません。
 
 ```php
-$query->where("status=$status"); // Dangerous!
+$query->where("status=$status"); // 危険!
 ```
 
-Instead of binding the status value immediately, you can do so using `params` or `addParams`:
+`status` の値をただちにバインドするのでなく、`params` または `addParams` を使ってそうすることも出来ます。
 
 ```php
 $query->where('status=:status');
 $query->addParams([':status' => $status]);
 ```
 
-Multiple conditions can simultaneously be set in `where` using the *hash format*:
+*ハッシュ形式* を使って、複数の条件を同時に `where` にセットすることが出来ます。
 
 ```php
 $query->where([
@@ -165,38 +169,38 @@ $query->where([
 ]);
 ```
 
-That code will generate the following SQL:
+上記のコードは次の SQL を生成します。
 
 ```sql
 WHERE (`status` = 10) AND (`type` = 2) AND (`id` IN (4, 8, 15, 16, 23, 42))
 ```
 
-NULL is a special value in databases, and is handled smartly by the Query Builder. This code:
+NULL はデータベースでは特別な値です。クエリビルダはこれを賢く処理します。例えば、
 
 ```php
 $query->where(['status' => null]);
 ```
 
-results in this WHERE clause:
+これは次の WHERE 句になります。
 
 ```sql
 WHERE (`status` IS NULL)
 ```
 
-You can also create sub-queries with `Query` objects like the following,
+次のように `Query` オブジェクトを使ってサブクエリを作ることも出来ます。
 
 ```php
 $userQuery = (new Query)->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
-which will generate the following SQL:
+これは次の SQL を生成します。
 
 ```sql
 WHERE `id` IN (SELECT `id` FROM `user`)
 ```
 
-
+このメソッドを使うもう一つの方法は、`[演算子, オペランド1, オペランド2, ...]` という演算形式です。
 Another way to use the method is the operand format which is `[operator, operand1, operand2, ...]`.
 
 Operator can be one of the following (see also [[yii\db\QueryInterface::where()]]):
