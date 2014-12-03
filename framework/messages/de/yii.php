@@ -17,7 +17,6 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'just now' => 'gerade jetzt',
     '(not set)' => '(nicht gesetzt)',
     'An internal server error occurred.' => 'Es ist ein interner Serverfehler aufgetreten.',
     'Are you sure you want to delete this item?' => 'Wollen Sie diesen Eintrag wirklich löschen?',
@@ -30,8 +29,6 @@ return [
     'Missing required arguments: {params}' => 'Pflichtargumente fehlen: {params}',
     'Missing required parameters: {params}' => 'Pflichtparameter fehlen: {params}',
     'No' => 'Nein',
-    'No help for unknown command "{command}".' => 'Es gibt keine Hilfe für den unbekannten Befehl "{command}".',
-    'No help for unknown sub-command "{command}".' => 'Es gibt keine Hilfe für den unbekannten Unterbefehl "{command}".',
     'No results found.' => 'Keine Ergebnisse gefunden',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Es sind nur Dateien mit folgenden MIME-Typen erlaubt: {mimeTypes}.',
     'Only files with these extensions are allowed: {extensions}.' => 'Es sind nur Dateien mit folgenden Dateierweiterungen erlaubt: {extensions}.',
@@ -51,7 +48,6 @@ return [
     'The verification code is incorrect.' => 'Der Prüfcode ist falsch.',
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Insgesamt <b>{count, number}</b> {count, plural, one{Eintrag} other{Einträge}}.',
     'Unable to verify your data submission.' => 'Es ist nicht möglich, Ihre Dateneingabe zu prüfen.',
-    'Unknown command "{command}".' => 'Unbekannter Befehl "{command}".',
     'Unknown option: --{name}' => 'Unbekannte Option: --{name}',
     'Update' => 'Bearbeiten',
     'View' => 'Anzeigen',
@@ -64,6 +60,7 @@ return [
     'in {delta, plural, =1{a second} other{# seconds}}' => 'in {delta, plural, =1{einer Sekunde} other{# Sekunden}}',
     'in {delta, plural, =1{a year} other{# years}}' => 'in {delta, plural, =1{einem Jahr} other{# Jahren}}',
     'in {delta, plural, =1{an hour} other{# hours}}' => 'in {delta, plural, =1{einer Stunde} other{# Stunden}}',
+    'just now' => 'gerade jetzt',
     'the input value' => 'der eingegebene Wert',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" wird bereits verwendet.',
     '{attribute} cannot be blank.' => '{attribute} darf nicht leer sein.',
