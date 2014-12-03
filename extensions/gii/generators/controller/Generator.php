@@ -235,7 +235,13 @@ class Generator extends \yii\gii\Generator
     {
         $module = $this->getModule();
 
-        return $module->getControllerPath() . '/' . $this->getControllerClass() . '.php';
+        if( $module instanceof \yii\base\Application ) {
+            $controllerPath = Yii::getAlias('@' . str_replace('\\', '/', $this->ns));
+        } else {
+            $controllerPath = $module->getControllerPath();
+        }
+
+        return $controllerPath . '/' . $this->getControllerClass() . '.php';
     }
 
     /**
