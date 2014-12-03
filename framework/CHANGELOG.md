@@ -50,6 +50,7 @@ Yii Framework 2 Change Log
 - Enh #4146: Added `yii\bootstrap\ButtonDropdown::$containerOptions` (samdark)
 - Enh #4181: Added `yii\bootstrap\Modal::$headerOptions` and `yii\bootstrap\Modal::$footerOptions` (tuxoff, samdark)
 - Enh #4263: Added migration and SQL schema files for `yii\log\DbTarget` (samdark)
+- Enh #4395: Added `$checkAjax` parameter to `yii\web\Response::redirect()` to support default redirection behavior for AJAX/PJAX requests (qiangxue)
 - Enh #4450: Added `yii\bootstrap\Nav::renderDropdown()` (qiangxue)
 - Enh #4457: Added support for using noscript for css files registered through asset bundles and Html helper (samdark)
 - Enh #4492: Support PostgreSQL-specific syntax for `QueryBuilder::alterColumn()` (qiangxue)
