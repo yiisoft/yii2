@@ -735,9 +735,13 @@ class Response extends \yii\base\Response
      * @param integer $statusCode the HTTP status code. Defaults to 302.
      * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
      * for details about HTTP status code
+     * @param boolean $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
+     * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
+     * to redirect to the given URL. If this is false, a `Location` header will be sent, which when received as
+     * an AJAX/PJAX response, may NOT cause browser redirection.
      * @return static the response object itself
      */
-    public function redirect($url, $statusCode = 302)
+    public function redirect($url, $statusCode = 302, $checkAjax = true)
     {
         if (is_array($url) && isset($url[0])) {
             // ensure the route is absolute
@@ -748,13 +752,18 @@ class Response extends \yii\base\Response
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }
 
-        if (Yii::$app->getRequest()->getIsPjax()) {
-            $this->getHeaders()->set('X-Pjax-Url', $url);
-        } elseif (Yii::$app->getRequest()->getIsAjax()) {
-            $this->getHeaders()->set('X-Redirect', $url);
+        if ($checkAjax) {
+            if (Yii::$app->getRequest()->getIsPjax()) {
+                $this->getHeaders()->set('X-Pjax-Url', $url);
+            } elseif (Yii::$app->getRequest()->getIsAjax()) {
+                $this->getHeaders()->set('X-Redirect', $url);
+            } else {
+                $this->getHeaders()->set('Location', $url);
+            }
         } else {
             $this->getHeaders()->set('Location', $url);
         }
+
         $this->setStatusCode($statusCode);
 
         return $this;
