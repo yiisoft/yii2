@@ -55,14 +55,14 @@ public function behaviors()
 
 ```php
 /**
- * @param Action $action объект действия, которое в настоящее время обрабатывается
- * @param array $params значение свойства "params"
- * @return string строка используемая как seed для генерации ETag хэша
+ * @param Action $action об'єкт дії, яка в даний час обробляється
+ * @param array $params значення властивості "params"
+ * @return string рядок, що використовується як seed для генерації ETag хеша
  */
 function ($action, $params)
 ```
 
-Ниже приведён пример использования заголовка `ETag`:
+Нижче наведено приклад використання заголовка `ETag`:
 
 ```php
 public function behaviors()
