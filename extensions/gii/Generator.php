@@ -78,9 +78,9 @@ abstract class Generator extends Model
     public function init()
     {
         parent::init();
-        if (!isset($this->templates['default'])) {
-            $this->templates['default'] = $this->defaultTemplate();
-        }
+		
+		$this->templates = $this->findTemplateGenerators();
+		
         foreach ($this->templates as $i => $template) {
             $this->templates[$i] = Yii::getAlias($template);
         }
@@ -181,7 +181,30 @@ abstract class Generator extends Model
 
         return dirname($class->getFileName()) . '/default';
     }
+	
+	 /**
+     * Returns the array of string directory paths to the all code template files.
+     * @return array the name and path of all code template files.
+     */
+	public function findTemplateGenerators(){
 
+		$class = new ReflectionClass($this);		
+		
+		$path = dirname($class->getFileName());
+		$folders = scandir($path);
+		
+		$templates = Array();
+		foreach ($folders as $folder) {
+			if ($folder === '.' or $folder === '..') continue;
+			if (is_dir($path . '/' . $folder)) {
+				 $templates[$folder] = $path . '/' . $folder;
+			}
+		}
+		
+		return  $templates;
+	}
+	
+	
     /**
      * @return string the detailed description of the generator.
      */
