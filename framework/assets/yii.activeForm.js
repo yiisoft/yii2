@@ -395,7 +395,7 @@
     var watchAttribute = function ($form, attribute) {
         var $input = findInput($form, attribute);
         if (attribute.validateOnChange) {
-            $input.on('change.yiiActiveForm',function () {
+            $input.on('change.yiiActiveForm', function () {
                 validateAttribute($form, attribute, false);
             });
         }
@@ -413,6 +413,9 @@
                 }
             });
         }
+        $input.on('forceValidate.yiiActiveForm', function() {
+            validateAttribute($form, attribute, true);
+        });
     };
 
     var unwatchAttribute = function ($form, attribute) {
