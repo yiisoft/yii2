@@ -193,7 +193,7 @@ Helpers
 
 * [Overview](helper-overview.md)
 * [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
+* [Html](helper-html.md)
 * [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
 
