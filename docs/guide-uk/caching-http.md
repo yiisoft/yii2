@@ -25,7 +25,7 @@ HTTP кешування
 function ($action, $params)
 ```
 
-Ниже приведён пример использования заголовка `Last-Modified`:
+Нижче наведено приклад використання заголовка `Last-Modified`:
 
 ```php
 public function behaviors()
