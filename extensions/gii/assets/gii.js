@@ -146,24 +146,6 @@ yii.gii = (function ($) {
             initConfirmationCheckboxes();
             initToggleActions();
 
-            // model generator: hide class name input when table name input contains *
-            $('#model-generator #generator-tablename').change(function () {
-                $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
-            }).change();
-
-            // model generator: translate table name to model class
-            $('#generator-tablename').on('blur', function () {
-                var tableName = $(this).val();
-                if ($('#generator-modelclass').val()=='' && tableName && tableName.indexOf('*') === -1){
-                    var modelClass='';
-                    $.each(tableName.split('_'), function() {
-                        if(this.length>0)
-                            modelClass+=this.substring(0,1).toUpperCase()+this.substring(1);
-                    });
-                    $('#generator-modelclass').val(modelClass);
-                }
-            });
-
             // hide message category when I18N is disabled
             $('form #generator-enablei18n').change(function () {
                 $('form .field-generator-messagecategory').toggle($(this).is(':checked'));
@@ -173,6 +155,24 @@ yii.gii = (function ($) {
             $('.default-view .form-group input,select,textarea').change(function () {
                 $('.default-view-results,.default-view-files').hide();
                 $('.default-view button[name="generate"]').hide();
+            });
+
+            // model generator: hide class name input when table name input contains *
+            $('#model-generator #generator-tablename').change(function () {
+                $('.field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
+            }).change();
+
+            // model generator: translate table name to model class
+            $('#model-generator #generator-tablename').on('blur', function () {
+                var tableName = $(this).val();
+                if ($('#generator-modelclass').val()=='' && tableName && tableName.indexOf('*') === -1){
+                    var modelClass='';
+                    $.each(tableName.split('_'), function() {
+                        if(this.length>0)
+                            modelClass+=this.substring(0,1).toUpperCase()+this.substring(1);
+                    });
+                    $('#generator-modelclass').val(modelClass);
+                }
             });
 
             $('.module-form #generator-moduleclass').change(function () {
