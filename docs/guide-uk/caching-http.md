@@ -18,9 +18,9 @@ HTTP кешування
 
 ```php
 /**
- * @param Action $action объект действия, которое в настоящее время обрабатывается
- * @param array $params значение свойства "params"
- * @return integer временная метка UNIX timestamp, возвращающая время последнего изменения страницы
+ * @param Action $action об'єкт дії, яка в даний час обробляється
+ * @param array $params значення властивості "params"
+ * @return integer часова мітка UNIX timestamp, що повертає час останньої зміни сторінки
  */
 function ($action, $params)
 ```
