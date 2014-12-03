@@ -55,42 +55,41 @@ $rows = $command->queryAll();
 クエリを構築する
 ----------------
 
-In the following, we will explain how to build various clauses in a SQL statement. For simplicity,
-we use `$query` to represent a [[yii\db\Query]] object.
+以下に、SQL 文の中のさまざまな句を組み立てる方法を説明します。
+話を単純にするために、`$query` という変数を使って [[yii\db\Query]] オブジェクトを表すものとします。
 
 
 ### `SELECT`
 
-In order to form a basic `SELECT` query, you need to specify what columns to select and from what table:
+基本的な `SELECT` クエリを形作るためには、どのテーブルからどのカラムをセレクトするかを指定する必要があります。
 
 ```php
 $query->select('id, name')
     ->from('user');
 ```
 
-Select options can be specified as a comma-separated string, as in the above, or as an array.
-The array syntax is especially useful when forming the selection dynamically:
+セレクトのオプションは、上記のように、カンマで区切られた文字列で指定することも出来ますが、配列によって指定することも出来ます。
+配列を使う構文は、セレクトを動的に形作る場合に、特に有用です。
 
 ```php
 $query->select(['id', 'name'])
     ->from('user');
 ```
 
-> Info: You should always use the array format if your `SELECT` clause contains SQL expressions.
-> This is because a SQL expression like `CONCAT(first_name, last_name) AS full_name` may contain commas.
-> If you list it together with other columns in a string, the expression may be split into several parts
-> by commas, which is not what you want to see.
+> Info|情報: `SELECT` 句が SQL 式を含む場合は、常に配列形式を使うべきです。
+> これは、`CONCAT(first_name, last_name) AS full_name` のように、SQL 式がカンマを含みうるからです。
+> そういう式を他のカラムと一緒に文字列の中に含めると、式がカンマによっていくつかの部分に分離されるおそれがあります。
+> それはあなたの意図するところではないでしょう。
 
-When specifying columns, you may include the table prefixes or column aliases, e.g., `user.id`, `user.id AS user_id`.
-If you are using array to specify the columns, you may also use the array keys to specify the column aliases,
-e.g., `['user_id' => 'user.id', 'user_name' => 'user.name']`.
+カラムを指定するときは、例えば `user.id` や `user.id AS user_id` などのように、テーブル接頭辞やカラムエイリアスを含めることが出来ます。
+カラムを指定するのに配列を使っている場合は、例えば `['user_id' => 'user.id', 'user_name' => 'user.name']` のように、配列のキーを使ってカラムエイリアスを指定することも出来ます。
 
-Starting from version 2.0.1, you may also select sub-queries as columns. For example,
+バージョン 2.0.1 以降では、サブクエリをカラムとしてセレクトすることも出来ます。例えば、
  
 ```php
 $subQuery = (new Query)->select('COUNT(*)')->from('user');
 $query = (new Query)->select(['id', 'count' => $subQuery])->from('post');
-// $query represents the following SQL:
+// $query は次の SQL を表現する
 // SELECT `id`, (SELECT COUNT(*) FROM `user`) AS `count` FROM `post`
 ```
 
