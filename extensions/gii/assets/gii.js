@@ -146,17 +146,6 @@ yii.gii = (function ($) {
             initConfirmationCheckboxes();
             initToggleActions();
 
-            // hide message category when I18N is disabled
-            $('form #generator-enablei18n').change(function () {
-                $('form .field-generator-messagecategory').toggle($(this).is(':checked'));
-            }).change();
-
-            // hide Generate button if any input is changed
-            $('.default-view .form-group input,select,textarea').change(function () {
-                $('.default-view-results,.default-view-files').hide();
-                $('.default-view button[name="generate"]').hide();
-            });
-
             // model generator: hide class name input when table name input contains *
             $('#model-generator #generator-tablename').change(function () {
                 $('.field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
@@ -173,6 +162,17 @@ yii.gii = (function ($) {
                     });
                     $('#generator-modelclass').val(modelClass);
                 }
+            });
+
+            // hide message category when I18N is disabled
+            $('form #generator-enablei18n').change(function () {
+                $('form .field-generator-messagecategory').toggle($(this).is(':checked'));
+            }).change();
+
+            // hide Generate button if any input is changed
+            $('.default-view .form-group input,select,textarea').change(function () {
+                $('.default-view-results,.default-view-files').hide();
+                $('.default-view button[name="generate"]').hide();
             });
 
             $('.module-form #generator-moduleclass').change(function () {
