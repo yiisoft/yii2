@@ -47,6 +47,7 @@ Yii Framework 2 Change Log
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Bug: `yii\web\AssetManager` should not publish disabled asset bundles (qiangxue)
+- Enh #608: Added `yii\web\AssetConverter::$forceConvert` (klimov-paul)
 - Enh #4146: Added `yii\bootstrap\ButtonDropdown::$containerOptions` (samdark)
 - Enh #4181: Added `yii\bootstrap\Modal::$headerOptions` and `yii\bootstrap\Modal::$footerOptions` (tuxoff, samdark)
 - Enh #4263: Added migration and SQL schema files for `yii\log\DbTarget` (samdark)
