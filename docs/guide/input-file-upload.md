@@ -51,14 +51,15 @@ Next, create a view that will render the form:
 ```php
 <?php
 use yii\widgets\ActiveForm;
+?>
 
-$form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
 
 <?= $form->field($model, 'file')->fileInput() ?>
 
 <button>Submit</button>
 
-<?php ActiveForm::end(); ?>
+<?php ActiveForm::end() ?>
 ```
 
 The `'enctype' => 'multipart/form-data'` is necessary because it allows file uploads. `fileInput()` represents a form
@@ -86,7 +87,7 @@ class SiteController extends Controller
         if (Yii::$app->request->isPost) {
             $model->file = UploadedFile::getInstance($model, 'file');
 
-            if ($model->validate()) {                
+            if ($model->file && $model->validate()) {                
                 $model->file->saveAs('uploads/' . $model->file->baseName . '.' . $model->file->extension);
             }
         }
@@ -162,7 +163,29 @@ received a valid image that can be then either saved or processed using the [Ima
 
 ### Uploading multiple files
 
-If you need to download multiple files at once, some adjustments are required. 
+If you need to download multiple files at once, some adjustments are required.
+ 
+Model:
+
+```php
+class UploadForm extends Model
+{
+    /**
+     * @var UploadedFile|Null file attribute
+     */
+    public $file;
+
+    /**
+     * @return array the validation rules.
+     */
+    public function rules()
+    {
+        return [
+            [['file'], 'file', 'maxFiles' => 10], // <--- here!
+        ];
+    }
+}
+```
 
 View:
 
