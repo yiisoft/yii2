@@ -261,8 +261,9 @@ Operator can be one of the following (see also [[yii\db\QueryInterface::where()]
 Additionally you can specify anything as operator:
 
 ```php
-$userQuery = (new Query)->select('id')->from('user');
-$query->where(['>=', 'id', 10]);
+$query->select('id')
+    ->from('user')
+    ->where(['>=', 'id', 10]);
 ```
 
 It will result in:
@@ -294,7 +295,7 @@ WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 When building filter conditions based on user inputs, you usually want to specially handle "empty inputs"
 by ignoring them in the filters. For example, you have an HTML form that takes username and email inputs.
 If the user only enters something in the username input, you may want to build a query that only tries to
-match the entered username. You may use the `filterWhere()` method achieve this goal:
+match the entered username. You may use the `filterWhere()` method to achieve this goal:
 
 ```php
 // $username and $email are from user inputs
