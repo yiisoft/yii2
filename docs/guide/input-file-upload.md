@@ -164,7 +164,7 @@ received a valid image that can be then either saved or processed using the [Ima
 Uploading multiple files
 ------------------------
 
-If you need to download multiple files at once, some adjustments are required.
+If you need to upload multiple files at once, some adjustments are required.
  
 Model:
 
