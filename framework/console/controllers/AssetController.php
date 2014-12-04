@@ -10,6 +10,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Exception;
 use yii\console\Controller;
+use yii\helpers\Console;
 use yii\helpers\VarDumper;
 
 /**
@@ -423,7 +424,7 @@ EOD;
         if (!file_put_contents($bundleFile, $bundleFileContent)) {
             throw new Exception("Unable to write output bundle configuration at '{$bundleFile}'.");
         }
-        $this->stdout("Output bundle configuration created at '{$bundleFile}'.\n");
+        $this->stdout("Output bundle configuration created at '{$bundleFile}'.\n", Console::FG_GREEN);
     }
 
     /**
@@ -656,7 +657,7 @@ EOD;
         if (!file_put_contents($configFile, $template)) {
             throw new Exception("Unable to write template file '{$configFile}'.");
         } else {
-            $this->stdout("Configuration file template created at '{$configFile}'.\n\n");
+            $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
             return self::EXIT_CODE_NORMAL;
         }
     }
