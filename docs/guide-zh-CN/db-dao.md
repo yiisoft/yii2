@@ -1,19 +1,22 @@
 数据库访问 (DAO)
 ========
 
-Yii 基于 PHP's PDO建立了一个成熟的数据库访问层。它提供统一的 API 并解决了一些不同 DBMS 产生的使用不利。 Yii 默认支持以下 DBMS ：
+Yii 包含了一个建立在 PHP PDO 之上的数据访问层 (DAO). DAO为不同的数据库提供了一套统一的API. 其中```ActiveRecord``` 提供了数据库与模型(MVC 中的 M,Model) 的交互,```QueryBuilder``` 用于创建动态的查询语句. DAO提供了简单高效的SQL查询,可以用在与数据库交互的各个地方.
 
-MySQL
-MariaDB
-SQLite
-PostgreSQL
-CUBRID: version 9.1.0 or higher.
-Oracle
-MSSQL: version 2012 或更高版本，如需使用 LIMIT/OFFSET。
-配置
+Yii 默认支持以下数据库 (DBMS):
+- [MySQL](http://www.mysql.com/)
+- [MariaDB](https://mariadb.com/)
+- [SQLite](http://sqlite.org/)
+- [PostgreSQL](http://www.postgresql.org/)
+- [CUBRID](http://www.cubrid.org/): 版本 >= 9.3 . (由于PHP PDO 扩展的一个[bug](http://jira.cubrid.org/browse/APIS-658)  引用值会无效,所以你需要在 CUBRID的客户端和服务端都使用 9.3 )
+- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本>=2005.
 
-开始使用数据库首先需要配置数据库连接组件，通过添加 db 组件到应用配置实现（"基础的" Web 应用是 config/web.php），如下所示：
+##配置
 
+开始使用数据库首先需要配置数据库连接组件，通过添加 db 组件到应用配置实现（"基础的" Web 应用是 config/web.php），DSN( Data Source Name )是数据源名称，用于指定数据库信息.如下所示：
+
+```php
 return [
     // ...
     'components' => [
@@ -35,12 +38,14 @@ return [
     ],
     // ...
 ];
-请参考PHP manual获取更多有关 DSN 格式信息。
+```
 
+请参考PHP manual获取更多有关 DSN 格式信息。
 配置连接组件后可以使用以下语法访问：
 
-$connection = \Yii::$app->db;
-请参考[[yii\db\Connection]]获取可配置的属性列表。也请注意如果需要同时使用多个数据库可以定义 多个 连接组件：
+```$connection = \Yii::$app->db;```
+
+请参考```[[yii\db\Connection]]```获取可配置的属性列表。也请注意如果需要同时使用多个数据库可以定义 多个 连接组件：
 
 $primaryConnection = \Yii::$app->db;
 $secondaryConnection = \Yii::$app->secondDb;
