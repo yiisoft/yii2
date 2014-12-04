@@ -1,4 +1,4 @@
-Registro de anotaciones
+﻿Registro de anotaciones
 =======================
 
 Yii proporciona un poderoso framework dedicado al registro de anotaciones (logging) que es altamente personalizable y 
@@ -35,7 +35,7 @@ ejemplo registra la huella del mensaje para la categoría `application`:
 Yii::trace('start calculating average revenue');
 ```
 
-> Información: Los mensajes de registro pueden ser tanto cadenas de texto como datos complejos, como arrays o objetos. 
+> Información: Los mensajes de registro pueden ser tanto cadenas de texto como datos complejos, como arrays u objetos. 
   Es responsabilidad de los [destinos de registros](#log-targets) tratar los mensajes de registro de manera apropiada. 
   De forma predeterminada, si un mensaje de registro no es una cadena de texto, se exporta como si fuera un string 
   llamando a [[yii\helpers\VarDumper::export()]].
@@ -65,10 +65,11 @@ linea anterior de código se llamara dentro de este método.
 Un destino de registro es una instancia de la clase [[yii\log\Target]] o de una clase hija. Este filtra los 
 mensajes de registro por sus niveles de severidad y sus categorías y después los exporta a algún medio. Por ejemplo, 
 un [[yii\log\DbTarget|database target]] exporta los mensajes de registro filtrados a una tabla de base de datos, 
-mientras que un [[yii\log\EmailTarget|email target]] exporta los mensajes de registro a una dirección de correo electrónico específica.
+mientras que un [[yii\log\EmailTarget|email target]] exporta los mensajes de registro a una dirección de correo 
+electrónico específica.
 
 Se pueden registrar múltiples destinos de registros en una aplicación configurándolos en la 
-[aplicación de componente ](structure-application-components.md) `log` dentro de la configuración de aplicación, como 
+[aplicación de componente](structure-application-components.md) `log` dentro de la configuración de aplicación, como 
 en el siguiente ejemplo:
 
 ```php
@@ -121,8 +122,8 @@ A continuación, se describirá las características más comunes de todos los d
 
 ### Filtrado de Mensajes <a name="message-filtering"></a>
 
-Se pueden configurar las propiedades [[yii\log\Target::levels|levels]] y [[yii\log\Target::categories|categories]] para 
-cada destino de registros, con estas se especifican los niveles de severidad y las categorías de mensajes que 
+Se pueden configurar las propiedades [[yii\log\Target::levels|levels]] y [[yii\log\Target::categories|categories]] 
+para cada destino de registros, con estas se especifican los niveles de severidad y las categorías de mensajes que 
 deberán procesar sus destinos.
 
 La propiedad [[yii\log\Target::levels|levels]] es un array que consta de uno o varios de los siguientes valores:
@@ -132,7 +133,7 @@ La propiedad [[yii\log\Target::levels|levels]] es un array que consta de uno o v
 * `info`: correspondiente a los mensajes registrados por [[Yii::info()]].
 * `trace`: correspondiente a los mensajes registrados por [[Yii::trace()]].
 * `profile`: correspondiente a los mensajes registrados por [[Yii::beginProfile()]] y [[Yii::endProfile()]], que se 
-  explicara más detalladamente en la subsección [Perfiles](#performance-profiling). 
+  explicará más detalladamente en la subsección [Perfiles](#performance-profiling). 
 
 Si no se especifica la propiedad [[yii\log\Target::levels|levels]], significa que el destino procesará los 
 mensajes de *cualquier* nivel de severidad.
@@ -149,7 +150,7 @@ los mensajes de *todas* las categorías.
 
 Además añadiendo las categorías en listas blancas (whitelisting) mediante la propiedad 
 [[yii\log\Target::categories|categories]], también se pueden añadir ciertas categorías en listas negras (blacklist) 
-configurando la propiedad [[yii\log\Target::except|except]]. Si se encuentra la categoría de un mensajes o coincide 
+configurando la propiedad [[yii\log\Target::except|except]]. Si se encuentra la categoría de un mensaje o coincide 
 algún patrón con esta propiedad, NO será procesada por el destino.
 
 La siguiente configuración de destinos especifica que el destino solo debe procesar los mensajes de error y 
@@ -250,7 +251,7 @@ mensaje de registro se le añadirán como mucho 3 niveles de la pila de llamadas
 si `YII_DEBUG` está deshabilitado, no se incluirá información de la pila de llamadas.
 
 > Información: Obtener información de la pila de llamadas no es trivial. Por lo tanto, sólo se debe usar esta 
-  características durante el desarrollo o cuando se depura la aplicación.
+  característica durante el desarrollo o cuando se depura la aplicación.
 
 ### Liberación (Flushing) y Exportación de Mensajes <a name="flushing-exporting"></a>
 
@@ -352,7 +353,7 @@ La creación de nuevas clases de destinos de registro es muy simple. Se necesita
 llamar al método [[yii\log\Target::formatMessage()]] para formatear los mensajes. Se pueden encontrar más detalles de 
 destinos de registros en las clases incluidas en la distribución de Yii.
 
-##  Perfilado de Rendimiento <a name="performance-profiling"></a>
+## Perfilado de Rendimiento <a name="performance-profiling"></a>
 
 El Perfilado de rendimiento es un tipo especial de registro de mensajes que se usa para medir el tiempo que tardan en 
 ejecutarse ciertos bloques de código y encontrar donde están los cuellos de botella de rendimiento. Por ejemplo, la 

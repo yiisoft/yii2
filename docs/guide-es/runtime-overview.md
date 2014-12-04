@@ -4,8 +4,10 @@
 Cada vez que una aplicación Yii gestiona una petición, se somete a un flujo de trabajo similar.
 
 1. Un usuario hace una petición al [script de entrada](structure-entry-scripts.md) ‘web/index.php’.
-2. El script de entrada carga la [configuración](concept-configurations.md) y crea una instancia de la [aplicación](structure-applications.md) para gestionar la petición.
-3. La aplicación resuelve la [ruta](runtime-routing.md) solicitada con la ayuda del componente [petición](runtime-requests.md) de la aplicación.
+2. El script de entrada carga la [configuración](concept-configurations.md) y crea una instancia de la 
+   [aplicación](structure-applications.md) para gestionar la petición.
+3. La aplicación resuelve la [ruta](runtime-routing.md) solicitada con la ayuda del componente 
+   [petición](runtime-requests.md) de la aplicación.
 4. La aplicación crea una instancia del [controlador](structure-controllers.md) para gestionar la petición. 
 5. El controlador crea una instancia de la [acción](structure-controllers.md) y ejecuta los filtros para la acción.
 6. Si algún filtro falla, se cancela la acción.

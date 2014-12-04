@@ -40,8 +40,8 @@ $foo = new Foo($bar);
 ### Inyección de Setters y Propiedades <a name="setter-and-property-injection"></a>
 
 La inyección de setters y propiedades se admite a través de [configuraciones](concept-configurations.md). Cuando se 
-registra una dependencia o se crea un nuevo objeto,se puede proporcionar una configuración que usará el contenedor 
-para inyectar las dependencia a través de sus correspondientes setters y propiedades. Por ejemplo,
+registra una dependencia o se crea un nuevo objeto, se puede proporcionar una configuración que usará el contenedor 
+para inyectar las dependencias a través de sus correspondientes setters y propiedades. Por ejemplo,
 
 ```php
 use yii\base\Object;

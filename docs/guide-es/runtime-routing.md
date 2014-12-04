@@ -1,9 +1,9 @@
-Enrutamiento y Creación de URLS
+﻿Enrutamiento y Creación de URLS
 ===============================
 
 Cuando una aplicación Yii empieza a procesar una URL solicitada, lo primero que hace es convertir la URL en una 
 [ruta](structure-controllers.md#routes). Luego se usa la ruta para instanciar la 
-[acción de controlador](structure-controllers.md) correspondiente para gestionar al petición. A este proceso se 
+[acción de controlador](structure-controllers.md) correspondiente para gestionar la petición. A este proceso se 
 le llama *enrutamiento*.
 
 El proceso inverso se llama *creación de URLs*, y crea una URL a partir de una ruta dada y unos parámetros de consulta 
@@ -55,14 +55,14 @@ diseñar una serie de [[yii\web\UrlManager::rules|URL rules]] de acuerdo con el 
 deben mostrarse las URLs.
 
 Se puede cambiar entre los dos formatos de URL conmutando la propiedad 
-[[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] del  [[yii\web\UrlManager|URL manager]] sin cambiar ningún 
+[[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] del [[yii\web\UrlManager|URL manager]] sin cambiar ningún 
 otro código de aplicación.
 
 ## Enrutamiento <a name="routing"></a>
 
-El Enrutamiento involucra dos pasos. El primero, la petición (request) entrante se convierte en una ruta y sus parámetros 
-de consulta asociados. En el segundo paso, se crea la correspondiente [acción de controlador](structure-controllers.md)
- para la ruta convertida para que gestione la petición.
+El Enrutamiento involucra dos pasos. El primero, la petición (request) entrante se convierte en una ruta y sus 
+parámetros de consulta asociados. En el segundo paso, se crea la correspondiente 
+[acción de controlador](structure-controllers.md) para la ruta convertida para que gestione la petición.
 
 Cuando se usa el formato predefinido de URL, convertir una petición en una ruta es tan simple como obtener los valores 
 del parámetro de consulta `GET` llamado `r`.
@@ -71,7 +71,7 @@ Cuando se usa el formato de URL amigable, el [[yii\web\UrlManager|URL manager]] 
 [[yii\web\UrlManager::rules|URL rules]] registradas para encontrar alguna que pueda convertir la petición en una ruta. 
 Si no se encuentra tal regla, se lanzará una excepción de tipo [[yii\web\NotFoundHttpException]].
 
-Una vez que la la petición se a convertido en una ruta, es el momento de crear la acción de controlador identificada 
+Una vez que la petición se ha convertido en una ruta, es el momento de crear la acción de controlador identificada 
 por la ruta. La ruta se desglosa en múltiples partes a partir de las barras que contenga. Por ejemplo, `site/index` 
 será desglosado en `site` e `index`. Cada parte is un ID que puede hacer referencia a un modulo, un controlador o una 
 acción. Empezando por la primera parte de la ruta, la aplicación, sigue los siguientes pasos para generar 
@@ -79,7 +79,7 @@ acción. Empezando por la primera parte de la ruta, la aplicación, sigue los si
 
 1. Establece la aplicación como el modulo actual.
 2. Comprueba si el [[yii\base\Module::controllerMap|controller map]] del modulo actual contiene un ID actual. Si lo 
-   tiene, se creará un objeto controlador de de acuerdo con la configuración del controlador encontrado en el mapa, y 
+   tiene, se creará un objeto controlador de acuerdo con la configuración del controlador encontrado en el mapa, y 
    se seguirá el Paso 5 para gestionar la parte restante de la ruta. 
 3. Comprueba si el ID hace referencia a un modulo listado en la propiedad [[yii\base\Module::modules|modules]] del 
    módulo actual. Si está listado, se crea un modulo de acuerdo con la configuración encontrada en el listado de 
@@ -293,7 +293,7 @@ configuración de [[yii\web\UrlManager::rules|rules]] declara dos reglas de URL.
 
 > Información; El patrón en una regla se usa para encontrar coincidencias en la parte de información de la URL. 
   Por ejemplo, la parte de información de la ruta `/index.php/post/100?source=ad` es `post/100` 
-  (la primera barra y la ultima son son ignoradas) que coincide con el patrón `post/(\d+)`.
+  (la primera barra y la ultima son ignoradas) que coincide con el patrón `post/(\d+)`.
 
 Entre la declaración de reglas de URL como pares de patrón-ruta, también se pueden declarar como arrays de 
 configuración. Cada array de configuración se usa para configurar un único objeto de tipo regla de URL. Este proceso 
@@ -343,9 +343,9 @@ declarado las siguientes tres URLs:
 Cuando se usen las reglas para convertir URLs:
 
 - `/index.php/posts` se convierte en la ruta `post/index` usando la primera regla;
-- `/index.php/posts/2014/php` se convierte en la ruta `post/index`, el parámetro `year` cuyo valor es  2014 y el 
+- `/index.php/posts/2014/php` se convierte en la ruta `post/index`, el parámetro `year` cuyo valor es 2014 y el 
   parámetro `category` cuyo valor es `php` usando la tercera regla;
-- `/index.php/post/100` se convierte en al ruta `post/view` y el parámetro `id` cuyo valor es 100 usando la segunda 
+- `/index.php/post/100` se convierte en la ruta `post/view` y el parámetro `id` cuyo valor es 100 usando la segunda 
   regla;
 - `/index.php/posts/php` provocara una [[yii\web\NotFoundHttpException]] cuando 
   [[yii\web\UrlManager::enableStrictParsing]] sea true, ya que no coincide ninguno de los parámetros . Si 

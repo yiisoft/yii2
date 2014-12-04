@@ -1,4 +1,4 @@
-Gestión de Errores
+﻿Gestión de Errores
 ==================
 
 Yii incluye un [[yii\web\ErrorHandler|error handler]] que permite una gestión de errores mucho más práctica que 
@@ -87,7 +87,7 @@ personalizar la visualización de los errores.
 
 ### Uso de Acciones de Error <a name="using-error-actions"></a>
 
-Una mejor manera de personalizar la visualizacion de errores es usar un [acción](structure-controllers.md) de error 
+Una mejor manera de personalizar la visualización de errores es usar un [acción](structure-controllers.md) de error 
 dedicada. Para hacerlo, primero se debe configurar la propiedad [[yii\web\ErrorHandler::errorAction|errorAction]] del 
 componente `errorHandler` como en el siguiente ejemplo:
 
@@ -127,7 +127,7 @@ class SiteController extends Controller
 ```
 
 El código anterior define la acción `error` usando la clase [[yii\web\ErrorAction]] que renderiza un error usando la 
-la vista llamada `error`.
+vista llamada `error`.
 
 Además, usando [[yii\web\ErrorAction]], también se puede definir la acción `error` usando un método de acción como en 
 el siguiente ejemplo,
@@ -156,7 +156,11 @@ a las siguientes variables si se define el error como un [[yii\web\ErrorAction]]
 ### Personalizar el Formato de Respuesta de Error <a name="error-format"></a>
 
 El gestor de errores muestra los errores de siguiente la configuración del formato de las 
-[respuestas](runtime-responses.md). Si el [[yii\web\Response::format response format]] es `html`, se usará la vista de error o excepción para mostrar los errores tal y como se ha descrito en la anterior subsección. Para otros tipos de formatos de respuesta, el gestor de errores asignara la representación del array de la excepción a la propiedad [[yii\web\Response::data]] que posteriormente podrá convertirse al formato deseado. Por ejemplo, si el formato de respuesta es `json`, obtendremos la siguiente respuesta:
+[respuestas](runtime-responses.md). Si el [[yii\web\Response::format response format]] es `html`, se usará la vista de 
+error o excepción para mostrar los errores tal y como se ha descrito en la anterior subsección. Para otros tipos de 
+formatos de respuesta, el gestor de errores asignara la representación del array de la excepción a la propiedad 
+[[yii\web\Response::data]] que posteriormente podrá convertirse al formato deseado. Por ejemplo, si el formato de 
+respuesta es `json`, obtendremos la siguiente respuesta:
 
 ```
 HTTP/1.1 404 Not Found
@@ -173,7 +177,8 @@ Content-Type: application/json; charset=UTF-8
 }
 ```
 
-Se puede personalizar el formato de respuestas de error respondiendo al evento `beforeSend` del componente `response` en la configuración de la aplicación:
+Se puede personalizar el formato de respuestas de error respondiendo al evento `beforeSend` del componente `response` 
+en la configuración de la aplicación:
 
 ```php
 return [
