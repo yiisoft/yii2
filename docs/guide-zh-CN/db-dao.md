@@ -45,20 +45,62 @@ return [
 
 ```$connection = \Yii::$app->db;```
 
-请参考```[[yii\db\Connection]]```获取可配置的属性列表。也请注意如果需要同时使用多个数据库可以定义 多个 连接组件：
+请参考```[[yii\db\Connection]]```获取可配置的属性列表。
+如果你想通过ODBC连接数据库，则需要配置[[yii\db\Connection::driverName]] 属性，例如:
 
+```
+'db' => [
+    'class' => 'yii\db\Connection',
+    'driverName' => 'mysql',
+    'dsn' => 'odbc:Driver={MySQL};Server=localhost;Database=test',
+    'username' => 'root',
+    'password' => '',
+],
+```
+
+注意:如果需要同时使用多个数据库可以定义 多个 连接组件：
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=mydatabase', 
+            'username' => 'root',
+            'password' => '',
+            'charset' => 'utf8',
+        ],
+        'secondDb' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'sqlite:/path/to/database/file', 
+        ],
+    ],
+    // ...
+];
+```
+在代码中通过以下方式使用:
+
+```
 $primaryConnection = \Yii::$app->db;
 $secondaryConnection = \Yii::$app->secondDb;
-如果不想定义数据库连接为应用组件，可以直接初始化使用：
+```
 
+如果不想定义数据库连接为全局[应用](structure-application-components.md)组件，可以在代码中直接初始化使用：
+
+```
 $connection = new \yii\db\Connection([
     'dsn' => $dsn,
      'username' => $username,
      'password' => $password,
 ]);
 $connection->open();
+```
+
 小提示：如果在创建了连接后需要执行额外的 SQL 查询，可以添加以下代码到应用配置文件：
 
+```
 return [
     // ...
     'components' => [
@@ -73,6 +115,8 @@ return [
     ],
     // ...
 ];
+```
+
 SQL 基础查询
 
 一旦有了连接实例就可以通过[[yii\db\Command]]执行 SQL 查询。
