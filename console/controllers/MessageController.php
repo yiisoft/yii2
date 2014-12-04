@@ -64,7 +64,8 @@ class MessageController extends Controller
             }
         }
         copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath);
-        echo "Configuration file template created at '{$filePath}'.\n\n";
+        $this->stdout("Configuration file template created at '{$filePath}'.\n\n");
+        return self::EXIT_CODE_NORMAL;
     }
 
     /**
@@ -196,7 +197,7 @@ class MessageController extends Controller
         }
 
         $obsolete = array_keys($obsolete);
-        echo "Inserting new messages...";
+        $this->stdout("Inserting new messages...");
         $savedFlag = false;
 
         foreach ($new as $category => $msgs) {
@@ -213,16 +214,16 @@ class MessageController extends Controller
             }
         }
 
-        echo $savedFlag ? "saved.\n" : "Nothing new...skipped.\n";
-        echo $removeUnused ? "Deleting obsoleted messages..." : "Updating obsoleted messages...";
+        $this->stdout($savedFlag ? "saved.\n" : "Nothing new...skipped.\n");
+        $this->stdout($removeUnused ? "Deleting obsoleted messages..." : "Updating obsoleted messages...");
 
         if (empty($obsolete)) {
-            echo "Nothing obsoleted...skipped.\n";
+            $this->stdout("Nothing obsoleted...skipped.\n");
         } else {
             if ($removeUnused) {
                 $db->createCommand()
                    ->delete($sourceMessageTable, ['in', 'id', $obsolete])->execute();
-                echo "deleted.\n";
+                $this->stdout("deleted.\n");
             } else {
                 $db->createCommand()
                    ->update(
@@ -230,7 +231,7 @@ class MessageController extends Controller
                        ['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
                        ['in', 'id', $obsolete]
                    )->execute();
-                echo "updated.\n";
+                $this->stdout("updated.\n");
             }
         }
     }
@@ -245,7 +246,7 @@ class MessageController extends Controller
     protected function extractMessages($fileName, $translator)
     {
         $coloredFileName = Console::ansiFormat($fileName, [Console::FG_CYAN]);
-        echo "Extracting messages from $coloredFileName...\n";
+        $this->stdout("Extracting messages from $coloredFileName...\n");
         $subject = file_get_contents($fileName);
         $messages = [];
         if (!is_array($translator)) {
@@ -288,7 +289,7 @@ class MessageController extends Controller
 
                             $line = Console::ansiFormat($this->getLine($buffer), [Console::FG_CYAN]);
                             $skipping = Console::ansiFormat('Skipping line', [Console::FG_YELLOW]);
-                            echo "$skipping $line. Make sure both category and message are static strings.\n";
+                            $this->stdout("$skipping $line. Make sure both category and message are static strings.\n");
                         }
 
                         // prepare for the next match
@@ -302,7 +303,7 @@ class MessageController extends Controller
             }
         }
 
-        echo "\n";
+        $this->stdout("\n");
 
         return $messages;
     }
@@ -359,7 +360,7 @@ class MessageController extends Controller
             FileHelper::createDirectory($path);
             $msgs = array_values(array_unique($msgs));
             $coloredFileName = Console::ansiFormat($file, [Console::FG_CYAN]);
-            echo "Saving messages to $coloredFileName...\n";
+            $this->stdout("Saving messages to $coloredFileName...\n");
             $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort, $category);
         }
     }
@@ -381,7 +382,7 @@ class MessageController extends Controller
             sort($messages);
             ksort($existingMessages);
             if (array_keys($existingMessages) == $messages) {
-                echo "Nothing new in \"$category\" category... Nothing to save.\n\n";
+                $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n");
                 return;
             }
             $merged = [];
@@ -416,7 +417,7 @@ class MessageController extends Controller
             if (false === $overwrite) {
                 $fileName .= '.merged';
             }
-            echo "Translation merged.\n";
+            $this->stdout("Translation merged.\n");
         } else {
             $merged = [];
             foreach ($messages as $message) {
@@ -451,7 +452,7 @@ return $array;
 EOD;
 
         file_put_contents($fileName, $content);
-        echo "Saved.\n\n";
+        $this->stdout("Saved.\n\n");
     }
 
     /**
@@ -468,7 +469,7 @@ EOD;
     {
         $file = str_replace("\\", '/', "$dirName/$catalog.po");
         FileHelper::createDirectory(dirname($file));
-        echo "Saving messages to $file...\n";
+        $this->stdout("Saving messages to $file...\n");
 
         $poFile = new GettextPoFile();
 
@@ -487,7 +488,7 @@ EOD;
                 sort($msgs);
                 ksort($existingMessages);
                 if (array_keys($existingMessages) == $msgs) {
-                    echo "Nothing new in \"$category\" category...\n";
+                    $this->stdout("Nothing new in \"$category\" category...\n");
 
                     sort($msgs);
                     foreach ($msgs as $message) {
@@ -539,14 +540,14 @@ EOD;
                 }
                 ksort($merged);
             }
-            echo "Category \"$category\" merged.\n";
+            $this->stdout("Category \"$category\" merged.\n");
             $hasSomethingToWrite = true;
         }
         if ($hasSomethingToWrite) {
             $poFile->save($file, $merged);
-            echo "Saved.\n";
+            $this->stdout("Saved.\n");
         } else {
-            echo "Nothing to save.\n";
+            $this->stdout("Nothing to save.\n");
         }
     }
 }
