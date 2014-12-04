@@ -192,14 +192,14 @@ class HelpController extends Controller
                 }
             }
             foreach ($commands as $command => $description) {
-                echo "- " . $this->ansiFormat($command, Console::FG_YELLOW);
-                echo str_repeat(' ', $len + 3 - strlen($command)) . $description;
-                echo "\n";
+                $this->stdout("- " . $this->ansiFormat($command, Console::FG_YELLOW));
+                $this->stdout(str_repeat(' ', $len + 3 - strlen($command)) . $description);
+                $this->stdout("\n");
             }
             $scriptName = $this->getScriptName();
             $this->stdout("\nTo see the help of each command, enter:\n", Console::BOLD);
-            echo "\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
-                            . $this->ansiFormat('<command-name>', Console::FG_CYAN) . "\n\n";
+            $this->stdout("\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
+                            . $this->ansiFormat('<command-name>', Console::FG_CYAN) . "\n\n");
         } else {
             $this->stdout("\nNo commands are found.\n\n", Console::BOLD);
         }
@@ -224,20 +224,20 @@ class HelpController extends Controller
             $this->stdout("\nSUB-COMMANDS\n\n", Console::BOLD);
             $prefix = $controller->getUniqueId();
             foreach ($actions as $action) {
-                echo '- ' . $this->ansiFormat($prefix.'/'.$action, Console::FG_YELLOW);
+                $this->stdout('- ' . $this->ansiFormat($prefix.'/'.$action, Console::FG_YELLOW));
                 if ($action === $controller->defaultAction) {
                     $this->stdout(' (default)', Console::FG_GREEN);
                 }
                 $summary = $controller->getActionHelpSummary($controller->createAction($action));
                 if ($summary !== '') {
-                    echo ': ' . $summary;
+                    $this->stdout(': ' . $summary);
                 }
-                echo "\n";
+                $this->stdout("\n");
             }
             $scriptName = $this->getScriptName();
-            echo "\nTo see the detailed information about individual sub-commands, enter:\n";
-            echo "\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
-                            . $this->ansiFormat('<sub-command>', Console::FG_CYAN) . "\n\n";
+            $this->stdout("\nTo see the detailed information about individual sub-commands, enter:\n");
+            $this->stdout("\n  $scriptName " . $this->ansiFormat('help', Console::FG_YELLOW) . ' '
+                            . $this->ansiFormat('<sub-command>', Console::FG_CYAN) . "\n\n");
         }
     }
 
@@ -264,9 +264,9 @@ class HelpController extends Controller
         $this->stdout("\nUSAGE\n\n", Console::BOLD);
         $scriptName = $this->getScriptName();
         if ($action->id === $controller->defaultAction) {
-            echo $scriptName . ' ' . $this->ansiFormat($controller->getUniqueId(), Console::FG_YELLOW);
+            $this->stdout($scriptName . ' ' . $this->ansiFormat($controller->getUniqueId(), Console::FG_YELLOW));
         } else {
-            echo $scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW);
+            $this->stdout($scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW));
         }
 
         $args = $controller->getActionArgsHelp($action);
@@ -289,28 +289,28 @@ class HelpController extends Controller
         if (!empty($options)) {
             $this->stdout(' [...options...]', Console::FG_RED);
         }
-        echo "\n\n";
+        $this->stdout("\n\n");
 
         if (!empty($args)) {
             foreach ($args as $name => $arg) {
-                echo $this->formatOptionHelp(
+                $this->stdout($this->formatOptionHelp(
                         '- ' . $this->ansiFormat($name, Console::FG_CYAN),
                         $arg['required'],
                         $arg['type'],
                         $arg['default'],
-                        $arg['comment']) . "\n\n";
+                        $arg['comment']) . "\n\n");
             }
         }
 
         if (!empty($options)) {
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
             foreach ($options as $name => $option) {
-                echo $this->formatOptionHelp(
+                $this->stdout($this->formatOptionHelp(
                         $this->ansiFormat('--' . $name, Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
                         !empty($option['required']),
                         $option['type'],
                         $option['default'],
-                        $option['comment']) . "\n\n";
+                        $option['comment']) . "\n\n");
             }
         }
     }
