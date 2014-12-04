@@ -200,81 +200,71 @@ $query->where(['id' => $userQuery]);
 WHERE `id` IN (SELECT `id` FROM `user`)
 ```
 
-このメソッドを使うもう一つの方法は、`[演算子, オペランド1, オペランド2, ...]` という演算形式です。
-Another way to use the method is the operand format which is `[operator, operand1, operand2, ...]`.
+このメソッドを使うもう一つの方法は、`[演算子, オペランド1, オペランド2, ...]` という形式の引数を使う方法です。
 
-Operator can be one of the following (see also [[yii\db\QueryInterface::where()]]):
+演算子には、次のどれか一つを使うことが出来ます ([[yii\db\QueryInterface::where()]] も参照してください)。
 
-- `and`: the operands should be concatenated together using `AND`. For example,
-  `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
-  it will be converted into a string using the rules described here. For example,
-  `['and', 'type=1', ['or', 'id=1', 'id=2']]` will generate `type=1 AND (id=1 OR id=2)`.
-  The method will NOT do any quoting or escaping.
+- `and`: 二つのオペランドが `AND` を使って結合されます。例えば、`['and', 'id=1', 'id=2']` は `id=1 AND id=2` を生成します。
+  オペランドが配列である場合は、ここで説明されている規則に従って文字列に変換されます。
+  例えば、`['and', 'type=1', ['or', 'id=1', 'id=2']]` は `type=1 AND (id=1 OR id=2)` を生成します。
+  このメソッドは、文字列を引用符で囲ったりエスケープしたりしません。
 
-- `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
+- `or`: 二つのオペランドが `OR` を使って結合されること以外は `and` 演算子と同じです。
 
-- `between`: operand 1 should be the column name, and operand 2 and 3 should be the
-   starting and ending values of the range that the column is in.
-   For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
+- `between`: オペランド 1 はカラム名、オペランド 2 と 3 はカラムの値が属すべき範囲の開始値と終了値としなければなりません。
+  例えば、`['between', 'id', 1, 10]` は `id BETWEEN 1 AND 10` を生成します。
 
-- `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
-  in the generated condition.
+- `not between`: 生成される条件において `BETWEEN` が `NOT BETWEEN` に置き換えられる以外は、`between` と同じです。
 
-- `in`: operand 1 should be a column or DB expression. Operand 2 can be either an array or a `Query` object.
-  It will generate an `IN` condition. If Operand 2 is an array, it will represent the range of the values
-  that the column or DB expression should be; If Operand 2 is a `Query` object, a sub-query will be generated
-  and used as the range of the column or DB expression. For example,
-  `['in', 'id', [1, 2, 3]]` will generate `id IN (1, 2, 3)`.
-  The method will properly quote the column name and escape values in the range.
-  The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
-  while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
+- `in`: オペランド 1 はカラム名または DB 式でなければなりません。
+  オペランド 2 は、配列または `Query` オブジェクトのどちらかを取ることが出来ます。
+  オペランド 2 が配列である場合は、その配列は、カラムまたは DB 式が該当すべき値域を表すものとされます。
+  オペランド 2 が `Query` オブジェクトである場合は、サブクエリが生成されて、カラムまたは DB 式の値域として使われます。
+  例えば、`['in', 'id', [1, 2, 3]]` は `id IN (1, 2, 3)` を生成します。
+  このメソッドは、カラム名を適切に引用符で囲み、値域の値をエスケープします。
+  `in` 演算子はまた複合カラムをもサポートしています。
+  その場合、オペランド 1 はカラム名の配列とし、オペランド 2 は配列の配列、または、複合カラムの値域を表す `Query` オブジェクトでなければなりません。
 
-- `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
+- `not in`: 生成される条件において `IN` が `NOT IN` に置き換えられる以外は、`in` と同じです。
 
-- `like`: operand 1 should be a column or DB expression, and operand 2 be a string or an array representing
-  the values that the column or DB expression should be like.
-  For example, `['like', 'name', 'tester']` will generate `name LIKE '%tester%'`.
-  When the value range is given as an array, multiple `LIKE` predicates will be generated and concatenated
-  using `AND`. For example, `['like', 'name', ['test', 'sample']]` will generate
-  `name LIKE '%test%' AND name LIKE '%sample%'`.
-  You may also provide an optional third operand to specify how to escape special characters in the values.
-  The operand should be an array of mappings from the special characters to their
-  escaped counterparts. If this operand is not provided, a default escape mapping will be used.
-  You may use `false` or an empty array to indicate the values are already escaped and no escape
-  should be applied. Note that when using an escape mapping (or the third operand is not provided),
-  the values will be automatically enclosed within a pair of percentage characters.
+- `like`: オペランド 1 はカラム名または DB 式、オペランド 2 はカラムまたは DB 式がマッチすべき値を示す文字列または配列でなければなりません。
+  例えば、`['like', 'name', 'tester']` は `name LIKE '%tester%'` を生成します。
+  値域が配列として与えられた場合は、複数の `LIKE` 述語が生成されて 'AND' によって結合されます。
+  例えば、`['like', 'name', ['test', 'sample']]` は `name LIKE '%test%' AND name LIKE '%sample%'` を生成します。
+  さらに、オプションである三番目のオペランドによって、値の中の特殊文字をエスケープする方法を指定することも出来ます。
+  このオペランド 3 は、特殊文字とそのエスケープ結果のマッピングを示す配列でなければなりません。
+  このオペランドが提供されない場合は、デフォルトのエスケープマッピングが使用されます。
+  `false` または空の配列を使って、値が既にエスケープ済みであり、それ以上エスケープを適用すべきでないことを示すことが出来ます。
+  エスケープマッピングを使用する場合 (または第三のオペランドが与えられない場合) は、値が自動的に一組のパーセント記号によって囲まれることに注意してください。
 
-  > Note: When using PostgreSQL you may also use [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
-  > instead of `like` for case-insensitive matching.
+  > Note|注意: PostgreSQL を使っている場合は、`like` の代りに、大文字と小文字を区別しない比較のための [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
 
-- `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
-  predicates when operand 2 is an array.
+- `or like`: オペランド 2 が配列である場合に `LIKE` 述語が `OR` によって結合される以外は、`like` 演算子と同じです。
 
-- `not like`: similar to the `like` operator except that `LIKE` is replaced with `NOT LIKE`
-  in the generated condition.
+- `not like`: 生成される条件において `LIKE` が `NOT LIKE` に置き換えられる以外は、`like` 演算子と同じです。
 
-- `or not like`: similar to the `not like` operator except that `OR` is used to concatenate
-  the `NOT LIKE` predicates.
+- `or not like`: `NOT LIKE` 述語が `OR` によって結合される以外は、`not like` 演算子と同じです。
 
-- `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
-  It will build a `EXISTS (sub-query)` expression.
+- `exists`: 要求される一つだけのオペランドは、サブクエリを表す [[yii\db\Query]] のインスタンスでなければなりません。
+  これは `EXISTS (sub-query)` という式を構築します。
 
-- `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
+- `not exists`: `exists` 演算子と同じで、`NOT EXISTS (sub-query)` という式を構築します。
 
-Additionally you can specify anything as operator:
+これらに加えて、どのようなものでも演算子として指定することが出来ます。
 
 ```php
-$userQuery = (new Query)->select('id')->from('user');
-$query->where(['>=', 'id', 10]);
+$query->select('id')
+    ->from('user')
+    ->where(['>=', 'id', 10]);
 ```
 
-It will result in:
+これは次の結果になります。
 
 ```sql
 SELECT id FROM user WHERE id >= 10;
 ```
 
-If you are building parts of condition dynamically it's very convenient to use `andWhere()` and `orWhere()`:
+条件の一部を動的に構築しようとする場合は、`andWhere()` と `orWhere()` を使うのが非常に便利です。
 
 ```php
 $status = 10;
@@ -286,40 +276,40 @@ if (!empty($search)) {
 }
 ```
 
-In case `$search` isn't empty the following SQL will be generated:
+`$search` が空でない場合は次の SQL が生成されます。
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 ```
 
-#### Building Filter Conditions
+#### フィルタの条件を構築する
 
-When building filter conditions based on user inputs, you usually want to specially handle "empty inputs"
-by ignoring them in the filters. For example, you have an HTML form that takes username and email inputs.
-If the user only enters something in the username input, you may want to build a query that only tries to
-match the entered username. You may use the `filterWhere()` method achieve this goal:
+ユーザの入力に基づいてフィルタの条件を構築する場合、普通は、「空の入力値」は特別扱いして、フィルタではそれを無視したいものです。
+例えば、ユーザ名とメールアドレスの入力欄を持つ HTML フォームがあるとします。
+ユーザがユーザ名の入力欄のみに何かを入力した場合は、入力されたユーザ名だけを検索条件とするクエリを作成したいでしょう。
+この目的を達するために `filterWhere()` メソッドを使うことが出来ます。
 
 ```php
-// $username and $email are from user inputs
+// $username と $email はユーザの入力による
 $query->filterWhere([
     'username' => $username,
     'email' => $email,
 ]);
 ```
 
-The `filterWhere()` method is very similar to `where()`. The main difference is that `filterWhere()`
-will remove empty values from the provided condition. So if `$email` is "empty", the resulting query
-will be `...WHERE username=:username`; and if both `$username` and `$email` are "empty", the query
-will have no `WHERE` part.
+`filterWhere()` メソッドは `where()` と非常によく似ています。
+主な相違点は、`filterWhere()` は与えられた条件から空の値を削除する、ということです。
+従って、`$email` が「空」である場合は、結果として生成されるクエリは `...WHERE username=:username` となります。
+そして、`$username` と `$email` が両方とも「空」である場合は、クエリは `WHERE` の部分を持ちません。
 
-A value is *empty* if it is null, an empty string, a string consisting of whitespaces, or an empty array.
+値が *空* であるのは、null、空文字列、空白文字だけの文字列、または、空配列である場合です。
 
-You may also use `andFilterWhere()` and `orFilterWhere()` to append more filter conditions.
+フィルタの条件を追加するために、`andFilterWhere()` と `orFilterWhere()` を使うことも出来ます。
 
 
 ### `ORDER BY`
 
-For ordering results `orderBy` and `addOrderBy` could be used:
+結果を並び替えるために `orderBy` と `addOrderBy` を使うことが出来ます。
 
 ```php
 $query->orderBy([
@@ -328,38 +318,38 @@ $query->orderBy([
 ]);
 ```
 
-Here we are ordering by `id` ascending and then by `name` descending.
+ここでは `id` の昇順、`name` の降順で並べ替えています。
 
-### `GROUP BY` and `HAVING`
+### `GROUP BY` と `HAVING`
 
-In order to add `GROUP BY` to generated SQL you can use the following:
+生成される SQL に `GROUP BY` を追加するためには、次のようにすることが出来ます。
 
 ```php
 $query->groupBy('id, status');
 ```
 
-If you want to add another field after using `groupBy`:
+`groupBy` を使った後に別のフィールドを追加したい場合は、
 
 ```php
 $query->addGroupBy(['created_at', 'updated_at']);
 ```
 
-To add a `HAVING` condition the corresponding `having` method and its `andHaving` and `orHaving` can be used. Parameters
-for these are similar to the ones for `where` methods group:
+`HAVING` 条件を追加したい場合は、それに対応する `having` メソッドおよび `andHaving` と `orHaving` を使うことが出来ます。
+これらのメソッドのパラメータは、`where` メソッドグループのそれと同様です。
 
 ```php
 $query->having(['status' => $status]);
 ```
 
-### `LIMIT` and `OFFSET`
+### `LIMIT` と `OFFSET`
 
-To limit result to 10 rows `limit` can be used:
+結果を 10 行に限定したいときは、`limit` を使うことが出来ます。
 
 ```php
 $query->limit(10);
 ```
 
-To skip 100 fist rows use:
+最初の 100 行をスキップしたい時は、こうします。
 
 ```php
 $query->offset(100);
@@ -367,13 +357,13 @@ $query->offset(100);
 
 ### `JOIN`
 
-The `JOIN` clauses are generated in the Query Builder by using the applicable join method:
+適切な結合メソッドを使って、クエリビルダで `JOIN` 句を生成することが出来ます。
 
 - `innerJoin()`
 - `leftJoin()`
 - `rightJoin()`
 
-This left join selects data from two related tables in one query:
+次の左外部結合では、二つの関連テーブルから一つのクエリでデータを取得しています。
 
 ```php
 $query->select(['user.name AS author', 'post.title as title'])
@@ -381,20 +371,21 @@ $query->select(['user.name AS author', 'post.title as title'])
     ->leftJoin('post', 'post.user_id = user.id');
 ```
 
-In the code, the `leftJoin()` method's first parameter
-specifies the table to join to. The second parameter defines the join condition.
+このコードにおいて、`leftJoin()` メソッドの最初のパラメータは、結合するテーブルを指定するものです。
+第二のパラメータは、結合の条件を定義しています。
 
-If your database application supports other join types, you can use those via the  generic `join` method:
+データベース製品がその他の結合タイプをサポートしている場合は、汎用の `join` メソッドによってそれを使うことが出来ます。
 
 ```php
 $query->join('FULL OUTER JOIN', 'post', 'post.user_id = user.id');
 ```
 
-The first argument is the join type to perform. The second is the table to join to, and the third is the condition.
+最初のパラメータが実行する結合タイプです。第二は結合するテーブル、第三は結合の条件です。
 
-Like `FROM`, you may also join with sub-queries. To do so, specify the sub-query as an array
-which must contain one element. The array value must be a `Query` object representing the sub-query,
-while the array key is the alias for the sub-query. For example,
+`FROM` と同様に、サブクエリを結合することも出来ます。
+そのためには、一つの要素を持つ配列としてサブクエリを指定します。
+配列の値はサブクエリを表す `Query` オブジェクトとし、配列のキーはサブクエリのエイリアスとしなければなりません。
+例えば、
 
 ```php
 $query->leftJoin(['u' => $subQuery], 'u.id=author_id');
@@ -403,8 +394,9 @@ $query->leftJoin(['u' => $subQuery], 'u.id=author_id');
 
 ### `UNION`
 
-`UNION` in SQL adds results of one query to results of another query. Columns returned by both queries should match.
-In Yii in order to build it you can first form two query objects and then use `union` method:
+SQL における `UNION` は、一つのクエリの結果を別のクエリの結果に追加するものです。
+両方のクエリによって返されるカラムが一致していなければなりません。
+Yii においてこれを構築するためには、最初に二つのクエリオブジェクトを作成し、次に `union` メソッドを使って連結します。
 
 ```php
 $query = new Query();
@@ -417,15 +409,15 @@ $query->union($anotherQuery);
 ```
 
 
-Batch Query
------------
+バッチクエリ
+------------
 
-When working with large amount of data, methods such as [[yii\db\Query::all()]] are not suitable
-because they require loading all data into the memory. To keep the memory requirement low, Yii
-provides the so-called batch query support. A batch query makes uses of data cursor and fetches
-data in batches.
+大量のデータを扱う場合は、[[yii\db\Query::all()]] のようなメソッドは適していません。
+なぜなら、それらのメソッドは、全てのデータをメモリ上に読み込むことを必要とするためです。
+必要なメモリ量を低く抑えるために、Yii はいわゆるバッチクエリのサポートを提供しています。
+バッチクエリはデータカーソルを利用して、バッチモードでデータを取得します。
 
-Batch query can be used like the following:
+バッチクエリは次のようにして使うことが出来ます。
 
 ```php
 use yii\db\Query;
@@ -435,26 +427,26 @@ $query = (new Query())
     ->orderBy('id');
 
 foreach ($query->batch() as $users) {
-    // $users is an array of 100 or fewer rows from the user table
+    // $users は user テーブルから取得した 100 以下の行の配列
 }
 
-// or if you want to iterate the row one by one
+// または、一行ずつ反復したい場合は
 foreach ($query->each() as $user) {
-    // $user represents one row of data from the user table
+    // $user は user テーブルから取得した一つの行を表す
 }
 ```
 
-The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object
-which implements the `Iterator` interface and thus can be used in the `foreach` construct.
-During the first iteration, a SQL query is made to the database. Data are since then fetched in batches
-in the iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
-You can change the batch size by passing the first parameter to the `batch()` or `each()` method.
+[[yii\db\Query::batch()]] メソッドと [[yii\db\Query::each()]] メソッドは [[yii\db\BatchQueryResult]] オブジェクトを返します。
+このオブジェクトは `Iterator` インタフェイスを実装しており、従って、`foreach` 構文の中で使うことが出来ます。
+初回の反復の際に、データベースに対する SQL クエリが作成されます。データは、その後、反復のたびにバッチモードで取得されます。
+既定では、バッチサイズは 100 であり、各バッチにおいて 100 行のデータが取得されます。
+`batch()` または `each()` メソッドに最初のパラメータを渡すことによって、バッチサイズを変更することが出来ます。
 
-Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory.
-If you process the data and then discard it right away, the batch query can help keep the memory usage under a limit.
+[[yii\db\Query::all()]] とは対照的に、バッチクエリは一度に 100 行のデータしかメモリに読み込みません。
+データを処理した後、すぐにデータを破棄するようにすれば、バッチクエリの助けを借りてメモリ消費量を限度以下に抑えることが出来ます。
 
-If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query
-will still keep the proper index. For example,
+[[yii\db\Query::indexBy()]] によってクエリ結果をあるカラムでインデックスするように指定している場合でも、バッチクエリは正しいインデックスを保持します。
+例えば、
 
 ```php
 use yii\db\Query;
@@ -464,7 +456,7 @@ $query = (new Query())
     ->indexBy('username');
 
 foreach ($query->batch() as $users) {
-    // $users is indexed by the "username" column
+    // $users は "username" カラムでインデックスされている
 }
 
 foreach ($query->each() as $username => $user) {
