@@ -6,6 +6,7 @@ Yii Framework 2 gii extension Change Log
 
 - Bug #5070: Gii controller generator should use controller class name instead of controller ID to specify new controller (qiangxue)
 - Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
+- Bug #6367: Added `yii\gii\generators\crud\Generator` to support customizing view path for the generated CRUD controller (qiangxue)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Enh #5613: Added `--overwrite` option to Gii console command to support overwriting all files (motin, qiangxue)
 
