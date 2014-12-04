@@ -256,7 +256,7 @@ $command->bindValue(':id', $_GET['id']);
 $post = $command->queryOne();
 ```
 
-プリペアドステートメントを使うもう一つの目的は (セキュリティの向上のほかに)、一度だけプリペアしたクエリを複数回実行することが出来るという点にあります。
+プリペアドステートメントを使うもう一つの目的は (セキュリティの向上のほかに)、一度だけ準備したクエリを複数回実行することが出来るという点にあります。
 
 ```php
 $command = $connection->createCommand('DELETE FROM post WHERE id=:id');
