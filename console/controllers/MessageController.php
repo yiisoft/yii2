@@ -8,7 +8,6 @@
 namespace yii\console\controllers;
 
 use Yii;
-use yii\base\ErrorException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
@@ -64,7 +63,7 @@ class MessageController extends Controller
             }
         }
         copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath);
-        $this->stdout("Configuration file template created at '{$filePath}'.\n\n");
+        $this->stdout("Configuration file template created at '{$filePath}'.\n\n", Console::FG_GREEN);
         return self::EXIT_CODE_NORMAL;
     }
 
@@ -382,7 +381,7 @@ class MessageController extends Controller
             sort($messages);
             ksort($existingMessages);
             if (array_keys($existingMessages) == $messages) {
-                $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n");
+                $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
                 return;
             }
             $merged = [];
@@ -452,7 +451,7 @@ return $array;
 EOD;
 
         file_put_contents($fileName, $content);
-        $this->stdout("Saved.\n\n");
+        $this->stdout("Translation saved.\n\n", Console::FG_GREEN);
     }
 
     /**
@@ -545,9 +544,9 @@ EOD;
         }
         if ($hasSomethingToWrite) {
             $poFile->save($file, $merged);
-            $this->stdout("Saved.\n");
+            $this->stdout("Translation saved.\n", Console::FG_GREEN);
         } else {
-            $this->stdout("Nothing to save.\n");
+            $this->stdout("Nothing to save.\n", Console::FG_GREEN);
         }
     }
 }
