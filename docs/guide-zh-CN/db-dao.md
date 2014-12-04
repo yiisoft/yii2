@@ -98,7 +98,7 @@ $connection = new \yii\db\Connection([
 $connection->open();
 ```
 
-小提示：如果在创建了连接后需要执行额外的 SQL 查询，可以添加以下代码到应用配置文件：
+>小提示：如果在创建了连接后需要执行额外的 SQL 查询，可以添加以下代码到应用配置文件：
 
 ```
 return [
@@ -117,34 +117,44 @@ return [
 ];
 ```
 
-SQL 基础查询
+##SQL 基础查询
 
 一旦有了连接实例就可以通过[[yii\db\Command]]执行 SQL 查询。
 
-SELECT 查询
-
+###SELECT 查询
 查询返回多行：
 
+```
 $command = $connection->createCommand('SELECT * FROM post');
 $posts = $command->queryAll();
+```
 返回单行：
-
+```
 $command = $connection->createCommand('SELECT * FROM post WHERE id=1');
 $post = $command->queryOne();
-查询多列值：
+```
 
+查询多行单值：
+```
 $command = $connection->createCommand('SELECT title FROM post');
 $titles = $command->queryColumn();
+```
 查询标量值/计算值：
 
+```
 $command = $connection->createCommand('SELECT COUNT(*) FROM post');
 $postCount = $command->queryScalar();
-UPDATE, INSERT, DELETE 更新、插入和删除等
+```
+
+###UPDATE, INSERT, DELETE 更新、插入和删除等
 
 如果执行 SQL 不返回任何数据可使用命令中的 execute 方法：
 
+```
 $command = $connection->createCommand('UPDATE post SET status=1 WHERE id=1');
 $command->execute();
+```
+
 选择以下考虑到引用了恰当表名和列名的语法是可能的：
 
 // INSERT
