@@ -43,6 +43,10 @@ class AssetConverter extends Component implements AssetConverterInterface
         'ts' => ['js', 'tsc --out {to} {from}'],
     ];
 
+    /**
+     * @var bool force converting?
+     */
+    public $force = false;
 
     /**
      * Converts a given asset file into a CSS or JS file.
@@ -58,7 +62,7 @@ class AssetConverter extends Component implements AssetConverterInterface
             if (isset($this->commands[$ext])) {
                 list ($ext, $command) = $this->commands[$ext];
                 $result = substr($asset, 0, $pos + 1) . $ext;
-                if (@filemtime("$basePath/$result") < filemtime("$basePath/$asset")) {
+                if ($this->force || (@filemtime("$basePath/$result") < filemtime("$basePath/$asset"))) {
                     $this->runCommand($command, $basePath, $asset, $result);
                 }
 
