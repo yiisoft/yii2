@@ -450,7 +450,7 @@ HTTP リクエストの数とこれらのファイルの全体としてのダウ
 3. 各グループの CSS ファイルを一つのファイルに結合/圧縮する。JavaScript ファイルに対しても同様にこれを行う。
 4. 各グループに対して新しいアセットバンドルを定義する。
    * [[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]] のプロパティに、それぞれ、結合された CSS ファイルと JavaScript ファイルをセットする。
-   * 各グループに属する元のアセットバンドルをカスタマイズして、[[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]] のプロパティを空っぽにし、[[yii\web\AssetBundle::depends|depends]] プロパティにグループのために作られた新しいバンドルを指定する。
+   * 各グループに属する元のアセットバンドルをカスタマイズして、[[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]] のプロパティを空にし、[[yii\web\AssetBundle::depends|depends]] プロパティにグループのために作られた新しいバンドルを指定する。
 
 この方法を使うと、ビューでアセットバンドルを登録したときに、元のバンドルが属するグループのための新しいアセットバンドルが自動的に登録されるようになります。
 そして、結果として、結合/圧縮されたアセットファイルが、元のファイルの代りに、ページにインクルードされます。
