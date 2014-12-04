@@ -144,14 +144,14 @@ class AssetController extends Controller
         $bundles = $this->loadBundles($this->bundles);
         $targets = $this->loadTargets($this->targets, $bundles);
         foreach ($targets as $name => $target) {
-            echo "Creating output bundle '{$name}':\n";
+            $this->stdout("Creating output bundle '{$name}':\n");
             if (!empty($target->js)) {
                 $this->buildTarget($target, 'js', $bundles);
             }
             if (!empty($target->css)) {
                 $this->buildTarget($target, 'css', $bundles);
             }
-            echo "\n";
+            $this->stdout("\n");
         }
 
         $targets = $this->adjustDependency($targets, $bundles);
@@ -165,7 +165,7 @@ class AssetController extends Controller
      */
     protected function loadConfiguration($configFile)
     {
-        echo "Loading configuration from '{$configFile}'...\n";
+        $this->stdout("Loading configuration from '{$configFile}'...\n");
         foreach (require($configFile) as $name => $value) {
             if (property_exists($this, $name) || $this->canSetProperty($name)) {
                 $this->$name = $value;
@@ -184,7 +184,7 @@ class AssetController extends Controller
      */
     protected function loadBundles($bundles)
     {
-        echo "Collecting source bundles information...\n";
+        $this->stdout("Collecting source bundles information...\n");
 
         $am = $this->getAssetManager();
         $result = [];
@@ -324,7 +324,7 @@ class AssetController extends Controller
      */
     protected function adjustDependency($targets, $bundles)
     {
-        echo "Creating new bundle configuration...\n";
+        $this->stdout("Creating new bundle configuration...\n");
 
         $map = [];
         foreach ($targets as $name => $target) {
@@ -423,7 +423,7 @@ EOD;
         if (!file_put_contents($bundleFile, $bundleFileContent)) {
             throw new Exception("Unable to write output bundle configuration at '{$bundleFile}'.");
         }
-        echo "Output bundle configuration created at '{$bundleFile}'.\n";
+        $this->stdout("Output bundle configuration created at '{$bundleFile}'.\n");
     }
 
     /**
@@ -437,14 +437,14 @@ EOD;
         if (empty($inputFiles)) {
             return;
         }
-        echo "  Compressing JavaScript files...\n";
+        $this->stdout("  Compressing JavaScript files...\n");
         if (is_string($this->jsCompressor)) {
             $tmpFile = $outputFile . '.tmp';
             $this->combineJsFiles($inputFiles, $tmpFile);
-            echo shell_exec(strtr($this->jsCompressor, [
+            $this->stdout(shell_exec(strtr($this->jsCompressor, [
                 '{from}' => escapeshellarg($tmpFile),
                 '{to}' => escapeshellarg($outputFile),
-            ]));
+            ])));
             @unlink($tmpFile);
         } else {
             call_user_func($this->jsCompressor, $this, $inputFiles, $outputFile);
@@ -452,7 +452,7 @@ EOD;
         if (!file_exists($outputFile)) {
             throw new Exception("Unable to compress JavaScript files into '{$outputFile}'.");
         }
-        echo "  JavaScript files compressed into '{$outputFile}'.\n";
+        $this->stdout("  JavaScript files compressed into '{$outputFile}'.\n");
     }
 
     /**
@@ -466,14 +466,14 @@ EOD;
         if (empty($inputFiles)) {
             return;
         }
-        echo "  Compressing CSS files...\n";
+        $this->stdout("  Compressing CSS files...\n");
         if (is_string($this->cssCompressor)) {
             $tmpFile = $outputFile . '.tmp';
             $this->combineCssFiles($inputFiles, $tmpFile);
-            echo shell_exec(strtr($this->cssCompressor, [
+            $this->stdout(shell_exec(strtr($this->cssCompressor, [
                 '{from}' => escapeshellarg($tmpFile),
                 '{to}' => escapeshellarg($outputFile),
-            ]));
+            ])));
             @unlink($tmpFile);
         } else {
             call_user_func($this->cssCompressor, $this, $inputFiles, $outputFile);
@@ -481,7 +481,7 @@ EOD;
         if (!file_exists($outputFile)) {
             throw new Exception("Unable to compress CSS files into '{$outputFile}'.");
         }
-        echo "  CSS files compressed into '{$outputFile}'.\n";
+        $this->stdout("  CSS files compressed into '{$outputFile}'.\n");
     }
 
     /**
@@ -656,7 +656,8 @@ EOD;
         if (!file_put_contents($configFile, $template)) {
             throw new Exception("Unable to write template file '{$configFile}'.");
         } else {
-            echo "Configuration file template created at '{$configFile}'.\n\n";
+            $this->stdout("Configuration file template created at '{$configFile}'.\n\n");
+            return self::EXIT_CODE_NORMAL;
         }
     }
 
