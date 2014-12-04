@@ -62,12 +62,12 @@ class AssetControllerTest extends TestCase
 
     /**
      * Creates test asset controller instance.
-     * @return AssetController
+     * @return AssetControllerMock
      */
     protected function createAssetController()
     {
         $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
-        $assetController = new AssetController('asset', $module);
+        $assetController = new AssetControllerMock('asset', $module);
         $assetController->interactive = false;
         $assetController->jsCompressor = 'cp {from} {to}';
         $assetController->cssCompressor = 'cp {from} {to}';
@@ -84,11 +84,8 @@ class AssetControllerTest extends TestCase
     protected function runAssetControllerAction($actionID, array $args = [])
     {
         $controller = $this->createAssetController();
-        ob_start();
-        ob_implicit_flush(false);
         $controller->run($actionID, $args);
-
-        return ob_get_clean();
+        return $controller->flushStdOutBuffer();
     }
 
     /**
@@ -456,4 +453,12 @@ EOL;
         $realPath = $this->invokeAssetControllerMethod('findRealPath', [$sourcePath]);
         $this->assertEquals($expectedRealPath, $realPath);
     }
+}
+
+/**
+ * Mock class for [[\yii\console\controllers\AssetController]]
+ */
+class AssetControllerMock extends AssetController
+{
+    use StdOutBufferControllerTrait;
 }
