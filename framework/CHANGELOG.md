@@ -57,7 +57,7 @@ Yii Framework 2 Change Log
 - Enh #4492: Support PostgreSQL-specific syntax for `QueryBuilder::alterColumn()` (qiangxue)
 - Enh #4643: Extra options specified in `yii\widgets\Breadcrumbs::links` will be treated as HTML attributes for the generated hyperlinks (qiangxue)
 - Enh #4739: Better display of exceptions when the response format is set as "raw" format (qiangxue)
-- Enh #4791: Added console output support and more colors for console commands (6pblcb, samdark, Ragazzo, klimov-paul)
+- Enh #4791: Added console output support and more colors for console commands (6pblcb, samdark, klimov-paul, Ragazzo)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 - Enh #5367: Added `yii\grid\DataColumn::encodeLabel` (SDKiller)
 - Enh #5480: Added defensive code to `yii\web\User::getIdentity()` to avoid potential infinite recursion (qiangxue)
