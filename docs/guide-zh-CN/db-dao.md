@@ -241,7 +241,7 @@ $command->execute();
 ```
 >提示，在执行前绑定变量，然后在每个执行中改变变量的值（一般用在循环中）比较高效.
 
-###事务
+##事务
 
 当你需要顺序执行多个相关的的`query`时，你可以把他们封装到一个事务中去保护数据一致性.Yii提供了一个简单的接口来实现事务操作.
 如下执行 SQL 事务查询语句：
@@ -301,7 +301,7 @@ Yii 提供了以下常量作为常用的隔离级别
 
 关于隔离级别[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
-###数据库复制和读写分离
+##数据库复制和读写分离
 
 很多数据库支持数据库复制 [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)来提高可用性和响应速度. 在数据库复制中，数据总是从*主服务器* 到 *从服务器*. 所有的插入和更新等写操作在主服务器执行，而读操作在从服务器执行.
 
@@ -431,9 +431,9 @@ $rows = $db->useMaster(function ($db) {
 ```
 你也可以设置`$db->enableSlaves` 为`false`来使所有查询都在主服务器上执行.
 
-###操作数据库模式
+##操作数据库模式
 
-####获得模式信息
+###获得模式信息
 
 你可以通过 [[yii\db\Schema]]实例来获取Schema信息:
 
@@ -448,7 +448,7 @@ $tables = $schema->getTableNames();
 ```
 更多信息请参考[[yii\db\Schema]]
 
-####修改模式
+###修改模式
 
 除了基础的 SQL 查询，[[yii\db\Command]]还包括一系列方法来修改数据库模式：
 
