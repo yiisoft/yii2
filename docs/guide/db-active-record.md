@@ -9,7 +9,7 @@ an Active Record instance corresponds to a row of that table, and an attribute o
 instance represents the value of a column in that row. Instead of writing raw SQL statements,
 you can work with Active Record in an object-oriented fashion to manipulate the data in database tables.
 
-For example, assume `Customer` is an Active Record class is associated with the `customer` table
+For example, assume `Customer` is an Active Record class which is associated with the `customer` table
 and `name` is a column of the `customer` table. You can write the following code to insert a new
 row into the `customer` table:
 
