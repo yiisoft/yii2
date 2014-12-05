@@ -307,6 +307,11 @@ yii.validation = (function ($) {
     };
 
     function getUploadedFiles(attribute, messages, options) {
+        // Skip validation if File API is not available
+        if (typeof File === "undefined") {
+            return [];
+        }
+        
         var files = $(attribute.input).get(0).files;
         if (!files) {
             messages.push(options.message);
