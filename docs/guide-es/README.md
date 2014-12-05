@@ -62,7 +62,7 @@ Conceptos clave
 
 * [Componentes](concept-components.md)
 * [Propiedades](concept-properties.md)
-* **TBD** [Eventos](concept-events.md)
+* [Eventos](concept-events.md)
 * [Comportamientos (Behaviors)](concept-behaviors.md)
 * [Configuraciones](concept-configurations.md)
 * [Alias](concept-aliases.md)
@@ -72,12 +72,16 @@ Conceptos clave
 
 
 Trabajar con bases de datos
------------------------------
+---------------------------
 
-* [Objeto de acceso a datos](db-dao.md) - Conexión a una base de datos, consultas básicas, transacciones y manipulación de esquemas
-* **TBD** [Constructor de consultas](db-query-builder.md) - Consulta de la base de datos utilizando una simple capa de abstracción
-* **TBD** [Active Record](db-active-record.md) - ORM Active Record, recuperación y manipulación de registros y definición de relaciones
-* **TBD** [Migraciones](db-migrations.md) - Control de versiones de bases de datos en el entorno de desarrollo en equipo
+* [Objeto de acceso a datos](db-dao.md) - Conexión a una base de datos, consultas básicas, transacciones y 
+  manipulación de esquemas
+* **TBD** [Constructor de consultas](db-query-builder.md) - Consulta de la base de datos utilizando una simple capa de 
+  abstracción
+* **TBD** [Active Record](db-active-record.md) - ORM Active Record, recuperación y manipulación de registros y 
+  definición de relaciones
+* **TBD** [Migraciones](db-migrations.md) - Control de versiones de bases de datos en el entorno de desarrollo en 
+  equipo
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
@@ -196,4 +200,3 @@ Clases auxiliares
 * **TBD** [Html](helper-html.md)
 * **TBD** [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
-
