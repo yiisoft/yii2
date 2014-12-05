@@ -433,31 +433,39 @@ $rows = $db->useMaster(function ($db) {
 
 ###操作数据库模式
 
-获得模式信息
+####获得模式信息
 
-如下获得[[yii\db\Schema]]实例：
+你可以通过 [[yii\db\Schema]]实例来获取Schema信息:
 
+```php
 $schema = $connection->getSchema();
+```
+
 该实例包括一系列方法来检索数据库多方面的信息：
 
+```php
 $tables = $schema->getTableNames();
-完整参考请核对[[yii\db\Schema]]。
+```
+更多信息请参考[[yii\db\Schema]]
 
-修改模式
+####修改模式
 
 除了基础的 SQL 查询，[[yii\db\Command]]还包括一系列方法来修改数据库模式：
 
-createTable, renameTable, dropTable, truncateTable
-addColumn, renameColumn, dropColumn, alterColumn
-addPrimaryKey, dropPrimaryKey
-addForeignKey, dropForeignKey
-createIndex, dropIndex
-如下使用它们：
+- 创建/重命名/删除/清空表
+- 增加/重命名/删除/修改字段
+- 增加/删除主键
+- 增加/删除外键
+- 创建/删除索引
 
-// 新建表
+使用示例:
+
+```php
+// 创建表
 $connection->createCommand()->createTable('post', [
     'id' => 'pk',
     'title' => 'string',
     'text' => 'text',
 ]);
-完整参考请核对 [[yii\db\Command]].
+```
+完整参考请查看[[yii\db\Command]].
