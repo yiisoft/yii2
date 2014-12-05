@@ -1,17 +1,14 @@
-Active Record
-=============
+アクティブレコード
+==================
 
-> Note: This section is under development.
+> Note|注意: この節はまだ執筆中です。
 
-[Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
-for accessing data stored in a database. An Active Record class is associated with a database table,
-an Active Record instance corresponds to a row of that table, and an attribute of an Active Record
-instance represents the value of a column in that row. Instead of writing raw SQL statements,
-you can work with Active Record in an object-oriented fashion to manipulate the data in database tables.
+[アクティブレコード](http://ja.wikipedia.org/wiki/Active_Record) は、データベースに保存されているデータにアクセスするために、オブジェクト指向のインタフェイスを提供するものです。
+アクティブレコードクラスはデータベーステーブルと関連付けられて、アクティブレコードのインスタンスがそのテーブルの行に対応し、アクティブレコードのインスタンスの属性がその行のカラムの値を表現します。
+生の SQL 文を書く代りに、アクティブレコードを使って、オブジェクト指向の流儀でデータベーステーブルのデータを操作することが出来ます。
 
-For example, assume `Customer` is an Active Record class is associated with the `customer` table
-and `name` is a column of the `customer` table. You can write the following code to insert a new
-row into the `customer` table:
+例えば、`Customer` が `customer` テーブルに関連付けられたアクティブレコードクラスであり、`name` が `customer` テーブルのカラムであると仮定しましょう。
+`customer` テーブルに新しい行を挿入するために次のコードを書くことが出来ます。
 
 ```php
 $customer = new Customer();
@@ -19,8 +16,7 @@ $customer->name = 'Qiang';
 $customer->save();
 ```
 
-The above code is equivalent to using the following raw SQL statement, which is less
-intuitive, more error prone, and may have compatibility problems for different DBMS:
+上記のコードは、次のように生の SQL 文を使うのと等価なものですが、生の SQL 文の方は、直感的でなく、間違いも生じやすく、また、DBMS の違いによる互換性の問題も生じ得ます。
 
 ```php
 $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
@@ -28,30 +24,29 @@ $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
 ])->execute();
 ```
 
-Below is the list of databases that are currently supported by Yii Active Record:
+下記が、現在 Yii のアクティブレコードによってサポートされているデータベースのリストです。
 
-* MySQL 4.1 or later: via [[yii\db\ActiveRecord]]
-* PostgreSQL 7.3 or later: via [[yii\db\ActiveRecord]]
-* SQLite 2 and 3: via [[yii\db\ActiveRecord]]
-* Microsoft SQL Server 2010 or later: via [[yii\db\ActiveRecord]]
-* Oracle: via [[yii\db\ActiveRecord]]
-* CUBRID 9.3 or later: via [[yii\db\ActiveRecord]] (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
-  the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
-* Sphnix: via [[yii\sphinx\ActiveRecord]], requires the `yii2-sphinx` extension
-* ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requires the `yii2-elasticsearch` extension
-* Redis 2.6.12 or later: via [[yii\redis\ActiveRecord]], requires the `yii2-redis` extension
-* MongoDB 1.3.0 or later: via [[yii\mongodb\ActiveRecord]], requires the `yii2-mongodb` extension
+* MySQL 4.1 以降: [[yii\db\ActiveRecord]] による。
+* PostgreSQL 7.3 以降: [[yii\db\ActiveRecord]] による。
+* SQLite 2 および 3: [[yii\db\ActiveRecord]] による。
+* Microsoft SQL Server 2010 以降: [[yii\db\ActiveRecord]] による。
+* Oracle: [[yii\db\ActiveRecord]] による。
+* CUBRID 9.3 以降: [[yii\db\ActiveRecord]] による。(cubrid PDO 拡張の [バグ](http://jira.cubrid.org/browse/APIS-658)
+  のために、値を引用符で囲む機能が動作しません。そのため、サーバだけでなくクライアントも CUBRID 9.3 が必要になります)
+* Sphnix: [[yii\sphinx\ActiveRecord]] による。`yii2-sphinx` エクステンションが必要。
+* ElasticSearch: [[yii\elasticsearch\ActiveRecord]] による。`yii2-elasticsearch` エクステンションが必要。
+* Redis 2.6.12 以降: [[yii\redis\ActiveRecord]] による。`yii2-redis` エクステンションが必要。
+* MongoDB 1.3.0 以降: [[yii\mongodb\ActiveRecord]] による。`yii2-mongodb` エクステンションが必要。
 
-As you can see, Yii provides Active Record support for relational databases as well as NoSQL databases.
-In this tutorial, we will mainly describe the usage of Active Record for relational databases.
-However, most content described here are also applicable to Active Record for NoSQL databases.
+ご覧のように、Yii はリレーショナルデータベースだけでなく NoSQL データベースに対してもアクティブレコードのサポートを提供しています。
+このチュートリアルでは、主としてリレーショナルデータベースのためのアクティブレコードの使用方法を説明します。
+しかし、ここで説明するほとんどの内容は NoSQL データベースのためのアクティブレコードにも適用することが出来るものです。
 
 
-Declaring Active Record Classes
-------------------------------
+アクティブレコードクラスを宣言する
+----------------------------------
 
-To declare an Active Record class you need to extend [[yii\db\ActiveRecord]] and implement
-the `tableName` method that returns the name of the database table associated with the class:
+アクティブレコードクラスを宣言するためには、[[yii\db\ActiveRecord]] を拡張して、クラスと関連付けられるデータベーステーブルの名前を返す `tableName` メソッドを実装する必要があります。
 
 ```php
 namespace app\models;
@@ -64,7 +59,7 @@ class Customer extends ActiveRecord
     const STATUS_DELETED = 'deleted';
     
     /**
-     * @return string the name of the table associated with this ActiveRecord class.
+     * @return string アクティブレコードクラスと関連付けられるデータベーステーブルの名前
      */
     public static function tableName()
     {
@@ -74,22 +69,22 @@ class Customer extends ActiveRecord
 ```
 
 
-Accessing Column Data
----------------------
+カラムのデータにアクセスする
+----------------------------
 
-Active Record maps each column of the corresponding database table row to an attribute in the Active Record
-object. An attribute behaves like a regular object public property. The name of an attribute is the same
-as the corresponding column name and is case-sensitive.
+アクティブレコードは、対応するデータベーステーブルの行の各カラムをアクティブレコードオブジェクトの属性に割り付けます。
+属性は通常のオブジェクトのパブリックなプロパティと同様の振る舞いをします。
+属性の名前は対応するから無名と同じであり、大文字と小文字を区別します。
 
-To read the value of a column, you can use the following syntax:
+カラムの値を読み出すために、次の構文を使用することが出来ます。
 
 ```php
-// "id" and "email" are the names of columns in the table associated with the $customer ActiveRecord object
+// "id" と "email" は、$customer アクティブレコードオブジェクトと関連付けられたテーブルのカラム名
 $id = $customer->id;
 $email = $customer->email;
 ```
 
-To change the value of a column, assign a new value to the associated property and save the object:
+カラムの値を変更するためには、関連付けられたプロパティに新しい値を代入して、オブジェクトを保存します。
 
 ```php
 $customer->email = 'jane@example.com';
@@ -97,12 +92,12 @@ $customer->save();
 ```
 
 
-Connecting to Database
+データベースに接続する
 ----------------------
 
-Active Record uses a [[yii\db\Connection|DB connection]] to exchange data with the database. By default,
-it uses the `db` [application component](structure-application-components.md) as the connection. As explained in [Database basics](db-dao.md),
-you may configure the `db` component in the application configuration file as follows,
+アクティブレコードは、データベースとの間でデータを交換するために [[yii\db\Connection|DB 接続]] を使用します。
+既定では、アクティブレコードは `db` [アプリケーションコンポーネント](structure-application-components.md) を接続として使用します。
+[データベースの基礎](db-dao.md) で説明したように、次のようにして、アプリケーションの構成情報ファイルの中で `db` コンポーネントを構成することが出来ます。
 
 ```php
 return [
@@ -117,8 +112,7 @@ return [
 ];
 ```
 
-If you are using multiple databases in your application and you want to use a different DB connection
-for your Active Record class, you may override the [[yii\db\ActiveRecord::getDb()|getDb()]] method:
+アプリケーションの中で複数のデータベースを使っており、アクティブレコードクラスのために異なる DB 接続を使いたい場合は、[[yii\db\ActiveRecord::getDb()|getDb()]] メソッドをオーバーライドすることが出来ます。
 
 ```php
 class Customer extends ActiveRecord
@@ -127,46 +121,46 @@ class Customer extends ActiveRecord
 
     public static function getDb()
     {
-        return \Yii::$app->db2;  // use the "db2" application component
+        return \Yii::$app->db2;  // "db2" アプリケーションコンポーネントを使用
     }
 }
 ```
 
 
-Querying Data from Database
----------------------------
+データベースにデータを問い合わせる
+----------------------------------
 
-Active Record provides two entry methods for building DB queries and populating data into Active Record instances:
+アクティブレコードは、DB クエリを構築してアクティブレコードインスタンスにデータを投入するために、二つの入力メソッドを提供しています。
 
  - [[yii\db\ActiveRecord::find()]]
  - [[yii\db\ActiveRecord::findBySql()]]
 
-Both methods return an [[yii\db\ActiveQuery]] instance, which extends [[yii\db\Query]], and thus supports the same set
-of flexible and powerful DB query building methods, such as `where()`, `join()`, `orderBy()`, etc. The following examples
-demonstrate some of the possibilities.
+この二つのメソッドは [[yii\db\ActiveQuery]] のインスタンスを返します。
+ [[yii\db\ActiveQuery]] は [[yii\db\Query]] を拡張したものであり、従って、[[yii\db\Query]] と同じ一連の柔軟かつ強力な DB クエリ構築メソッド、例えば、`where()`、`join()`、`orderBy()` 等を提供します。
+下記の例は、いくつかの可能性を示すものです。
 
 ```php
-// to retrieve all *active* customers and order them by their ID:
+// *アクティブ* な顧客を全て読み出して、その ID によって並べ替える
 $customers = Customer::find()
     ->where(['status' => Customer::STATUS_ACTIVE])
     ->orderBy('id')
     ->all();
 
-// to return a single customer whose ID is 1:
+// ID が 1 である一人の顧客を返す
 $customer = Customer::find()
     ->where(['id' => 1])
     ->one();
 
-// to return the number of *active* customers:
+// *アクティブ* な顧客の数を返す
 $count = Customer::find()
     ->where(['status' => Customer::STATUS_ACTIVE])
     ->count();
 
-// to index the result by customer IDs:
+// 結果を顧客 ID によってインデックスする
 $customers = Customer::find()->indexBy('id')->all();
-// $customers array is indexed by customer IDs
+// $customers 配列は顧客 ID によってインデックスされる
 
-// to retrieve customers using a raw SQL statement:
+// 生の SQL 文を使って顧客を読み出す
 $sql = 'SELECT * FROM customer';
 $customers = Customer::findBySql($sql)->all();
 ```
