@@ -154,9 +154,9 @@ $postCount = $command->queryScalar();
 $command = $connection->createCommand('UPDATE post SET status=1 WHERE id=1');
 $command->execute();
 ```
+你可以使用`insert`,`update`,`delete` 方法，这些方法会根据参数生成合适的SQL并执行.
 
-选择以下考虑到引用了恰当表名和列名的语法是可能的：
-
+```php
 // INSERT
 $connection->createCommand()->insert('user', [
     'name' => 'Sam',
@@ -175,20 +175,27 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 
 // DELETE
 $connection->createCommand()->delete('user', 'status = 0')->execute();
-引用的表名和列名
+```
 
-大多数时间都使用以下语法来引用表名和列名：
+###引用的表名和列名
 
-$sql = "SELECT COUNT([[$column]]) FROM {{$table}}";
+大多数时间都使用以下语法来安全地引用表名和列名：
+
+```php
+$sql = "SELECT COUNT([[$column]]) FROM {{table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
-In the code above [[X]] will be converted to properly quoted column name while {{Y}} will be converted to properly 以上代码[[X]] 会转变为引用恰当的列名，而{{Y}} 就转变为引用恰当的表名。
+```
+以上代码`[[$column]]` 会转变为引用恰当的列名，而`{{table}}` 就转变为引用恰当的表名。
+表名有个特殊的变量 {{%Y}} ，如果设置了表前缀使用该变体可以自动在表名前添加前缀：
 
-表名有个专用的变体 {{%Y}} ，如果设置了表前缀使用该变体可以自动在表名前添加前缀：
-
+```php
 $sql = "SELECT COUNT([[$column]]) FROM {{%$table}}";
 $rowCount = $connection->createCommand($sql)->queryScalar();
+```
+
 如果在配置文件如下设置了表前缀，以上代码将在 tbl_table 这个表查询结果：
 
+```php
 return [
     // ...
     'components' => [
@@ -199,21 +206,30 @@ return [
         ],
     ],
 ];
+```
+
 手工引用表名和列名的另一个选择是使用[[yii\db\Connection::quoteTableName()]] 和 [[yii\db\Connection::quoteColumnName()]]：
 
+```php
 $column = $connection->quoteColumnName($column);
 $table = $connection->quoteTableName($table);
 $sql = "SELECT COUNT($column) FROM $table";
 $rowCount = $connection->createCommand($sql)->queryScalar();
-预处理语句
+```
 
-为安全传递查询参数可以使用预处理语句：
+###预处理语句
 
+为安全传递查询参数可以使用预处理语句,首先应当使用`:placeholder`占位，再将变量绑定到对应占位符：
+
+```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
 $command->bindValue(':id', $_GET['id']);
 $post = $command->query();
+```
+
 另一种用法是准备一次预处理语句而执行多次查询：
 
+```php
 $command = $connection->createCommand('DELETE FROM post WHERE id=:id');
 $command->bindParam(':id', $id);
 
@@ -222,10 +238,15 @@ $command->execute();
 
 $id = 2;
 $command->execute();
-事务
+```
+>提示，在执行前绑定变量，然后在每个执行中改变变量的值（一般用在循环中）比较高效.
 
+###事务
+
+当你需要顺序执行多个相关的的`query`时，你可以把他们封装到一个事务中去保护数据一致性.Yii提供了一个简单的接口来实现事务操作.
 如下执行 SQL 事务查询语句：
 
+```php
 $transaction = $connection->beginTransaction();
 try {
     $connection->createCommand($sql1)->execute();
@@ -235,8 +256,12 @@ try {
 } catch(Exception $e) {
     $transaction->rollBack();
 }
+```
+我们通过[[yii\db\Connection::beginTransaction()|beginTransaction()]]开始一个事务，通过`try catch` 捕获异常.当执行成功，通过[[yii\db\Transaction::commit()|commit()]]提交事务并结束，当发生异常失败通过[[yii\db\Transaction::rollBack()|rollBack()]]进行事务回滚.
+
 如需要也可以嵌套多个事务：
 
+```php
 // 外部事务
 $transaction1 = $connection->beginTransaction();
 try {
@@ -255,7 +280,158 @@ try {
 } catch (Exception $e) {
     $transaction1->rollBack();
 }
-操作数据库模式
+```
+>注意你使用的数据库必须支持`Savepoints`才能正确地执行，以上代码在所有关系数据中都可以执行，但是只有支持`Savepoints`才能保证安全性。
+
+Yii 也支持为事务设置隔离级别`isolation levels`，当执行事务时会使用数据库默认的隔离级别，你也可以为事物指定隔离级别.
+Yii 提供了以下常量作为常用的隔离级别
+
+- [[\yii\db\Transaction::READ_UNCOMMITTED]] - 允许读取改变了的还未提交的数据,可能导致脏读、不可重复读和幻读
+- [[\yii\db\Transaction::READ_COMMITTED]] -  允许并发事务提交之后读取，可以避免脏读，可能导致重复读和幻读。
+- [[\yii\db\Transaction::REPEATABLE_READ]] - 对相同字段的多次读取结果一致，可导致幻读。
+- [[\yii\db\Transaction::SERIALIZABLE]] - 完全服从ACID的原则，确保不发生脏读、不可重复读和幻读。
+
+你可以使用以上常量或者使用一个string字符串命令，在对应数据库中执行该命令用以设置隔离级别，比如对于`postgres`有效的命令为`SERIALIZABLE READ ONLY DEFERRABLE`.
+
+>注意:某些数据库只能针对连接来设置事务隔离级别，所以你必须要为连接明确制定隔离级别.目前受影响的数据库:`MSSQL SQLite`
+
+>注意:SQLite 只支持两种事务隔离级别，所以你只能设置`READ UNCOMMITTED` 和 `SERIALIZABLE`.使用其他隔离级别会抛出异常.
+
+>注意:PostgreSQL 不允许在事务开始前设置隔离级别，所以你不能在事务开始时指定隔离级别.你可以在事务开始之后调用[[yii\db\Transaction::setIsolationLevel()]] 来设置.
+
+关于隔离级别[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+
+###数据库复制和读写分离
+
+很多数据库支持数据库复制 [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)来提高可用性和响应速度. 在数据库复制中，数据总是从*主服务器* 到 *从服务器*. 所有的插入和更新等写操作在主服务器执行，而读操作在从服务器执行.
+
+通过配置[[yii\db\Connection]]可以实现数据库复制和读写分离.
+
+```php
+[
+    'class' => 'yii\db\Connection',
+
+    // 配置主服务器
+    'dsn' => 'dsn for master server',
+    'username' => 'master',
+    'password' => '',
+
+    // 配置从服务器
+    'slaveConfig' => [
+        'username' => 'slave',
+        'password' => '',
+        'attributes' => [
+            // use a smaller connection timeout
+            PDO::ATTR_TIMEOUT => 10,
+        ],
+    ],
+
+    // 配置从服务器组
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
+    ],
+]
+```
+以上的配置实现了一主多从的结构，从服务器用以执行读查询，主服务器执行写入查询，读写分离的功能由后台代码自动完成.调用者无须关心.例如：
+
+```php
+// 使用以上配置创建数据库连接对象
+$db = Yii::createObject($config);
+
+// 通过从服务器执行查询操作
+$rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+
+// 通过主服务器执行更新操作
+$db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+```
+>注意:通过[[yii\db\Command::execute()]] 执行的查询被认为是写操作，所有使用[[yii\db\Command]]来执行的其他查询方法被认为是读操作.你可以通过`$db->slave`得到当前正在使用能够的从服务器.
+
+`Connection`组件支持从服务器的负载均衡和故障转移，当第一次执行读查询时，会随即选择一个从服务器进行连接，如果连接失败则又选择另一个，如果所有从服务器都不可用，则会连接主服务器。你可以配置[[yii\db\Connection::serverStatusCache|server status cache]]来记住那些不能连接的从服务器，使Yii 在一段时间[[yii\db\Connection::serverRetryInterval].内不会重复尝试连接那些根本不可用的从服务器.
+
+>注意:在上述配置中，每个从服务器连接超时时间被指定为10s. 如果在10s内不能连接，则被认为该服务器已经挂掉.你也可以自定义超时参数.
+
+你也可以配置多主多从的结构，例如:
+
+```php
+[
+    'class' => 'yii\db\Connection',
+
+    // 配置主服务器
+    'masterConfig' => [
+        'username' => 'master',
+        'password' => '',
+        'attributes' => [
+            // use a smaller connection timeout
+            PDO::ATTR_TIMEOUT => 10,
+        ],
+    ],
+
+    // 配置主服务器组
+    'masters' => [
+        ['dsn' => 'dsn for master server 1'],
+        ['dsn' => 'dsn for master server 2'],
+    ],
+
+    // 配置从服务器
+    'slaveConfig' => [
+        'username' => 'slave',
+        'password' => '',
+        'attributes' => [
+            // use a smaller connection timeout
+            PDO::ATTR_TIMEOUT => 10,
+        ],
+    ],
+
+    // 配置从服务器组
+    'slaves' => [
+        ['dsn' => 'dsn for slave server 1'],
+        ['dsn' => 'dsn for slave server 2'],
+        ['dsn' => 'dsn for slave server 3'],
+        ['dsn' => 'dsn for slave server 4'],
+    ],
+]
+```
+上述配置制定了2个主服务器和4个从服务器.`Connection`组件也支持主服务器的负载均衡和故障转移，与从服务器不同的是，如果所有主服务器都不可用，则会抛出异常.
+
+>注意:当你使用[[yii\db\Connection::masters|masters]]来配置一个或多个主服务器时，`Connection`中关于数据库连接的其他属性（例如：`dsn`, `username`, `password`）都会被忽略.
+
+事务默认使用主服务器的连接，并且在事务执行中的所有操作都会使用主服务器的连接，例如:
+
+```php
+// 在主服务器连接上开始事务
+$transaction = $db->beginTransaction();
+
+try {
+    // 所有的查询都在主服务器上执行
+    $rows = $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+    $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
+
+    $transaction->commit();
+} catch(\Exception $e) {
+    $transaction->rollBack();
+    throw $e;
+}
+```
+
+如果你想在从服务器上执行事务操作则必须要明确地指定，比如:
+
+```php
+$transaction = $db->slave->beginTransaction();
+```
+
+有时你想强制使用主服务器来执行读查询，你可以调用`seMaster()`方法.
+
+```php
+$rows = $db->useMaster(function ($db) {
+    return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
+});
+```
+你也可以设置`$db->enableSlaves` 为`false`来使所有查询都在主服务器上执行.
+
+###操作数据库模式
 
 获得模式信息
 
