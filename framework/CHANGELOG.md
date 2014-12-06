@@ -63,6 +63,7 @@ Yii Framework 2 Change Log
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 - Enh #5367: Added `yii\grid\DataColumn::encodeLabel` (SDKiller)
 - Enh #5480: Added defensive code to `yii\web\User::getIdentity()` to avoid potential infinite recursion (qiangxue)
+- Enh #5494: Added support for specifying a menu header as a configuration array in `yii\bootstrap\Dropdown` (hiltonjanfield, qiangxue) 
 - Enh #5503: Added support for `DateTimeImmutable` to Formatter (olegtsvetkov, cebe)
 - Enh #5587: `json_encode` is now used with `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE` where it makes sense, also
   it is now default for `Json::encode()` (samdark)

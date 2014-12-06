@@ -9,6 +9,7 @@ Yii Framework 2 bootstrap extension Change Log
 - Enh #4146: Added `yii\bootstrap\ButtonDropdown::$containerOptions` (samdark)
 - Enh #4181: Added `yii\bootstrap\Modal::$headerOptions` and `yii\bootstrap\Modal::$footerOptions` (tuxoff, samdark)
 - Enh #4450: Added `yii\bootstrap\Nav::renderDropdown()` (qiangxue)
+- Enh #5494: Added support for specifying a menu header as a configuration array in `yii\bootstrap\Dropdown` (hiltonjanfield, qiangxue) 
 - Enh #5735: Added `yii\bootstrap\Tabs::renderTabContent` to support manually rendering tab contents (RomeroMsk)
 - Enh #5799: `yii\bootstrap\ButtonGroup::buttons` can take all options that are supported by `yii\bootstrap\Button` (aleksanderd)
 - Chg #5874: Upgraded Twitter Bootstrap to 3.3.x (samdark)
