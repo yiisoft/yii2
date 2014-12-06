@@ -3,7 +3,7 @@ Jquery UI Widgets
 
 > Note: This section is under development.
 
-Yii includes support for the [jQuery UI](http://api.jqueryui.com/) library in an officail extension. jQuery UI is
+Yii includes support for the [jQuery UI](http://api.jqueryui.com/) library in an official extension. jQuery UI is
 a curated set of user interface interactions, effects, widgets, and themes built on top of the jQuery JavaScript Library.
 
 Installation
