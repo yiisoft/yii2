@@ -44,7 +44,7 @@
 yii = (function ($) {
     var pub = {
         /**
-         * List of scripts that can be loaded multiple times via AJAX requests. Each script can be represented
+         * List of JS or CSS URLs that can be loaded multiple times via AJAX requests. Each script can be represented
          * as either an absolute URL or a relative one.
          */
         reloadableScripts: [],
@@ -264,6 +264,7 @@ yii = (function ($) {
         var loadedScripts = $('script[src]').map(function () {
             return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
         }).toArray();
+
         $.ajaxPrefilter('script', function (options, originalOptions, xhr) {
             if (options.dataType == 'jsonp') {
                 return;
@@ -279,6 +280,20 @@ yii = (function ($) {
                     xhr.abort();
                 }
             }
+        });
+
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            var styleSheets = [];
+            $('link[rel=stylesheet]').each(function () {
+                if ($.inArray(this.href, pub.reloadableScripts) !== -1) {
+                    return;
+                }
+                if ($.inArray(this.href, styleSheets) == -1) {
+                    styleSheets.push(this.href)
+                } else {
+                    $(this).remove();
+                }
+            })
         });
     }
 
