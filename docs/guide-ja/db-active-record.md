@@ -165,93 +165,92 @@ $sql = 'SELECT * FROM customer';
 $customers = Customer::findBySql($sql)->all();
 ```
 
-> Tip: In the code above `Customer::STATUS_ACTIVE` is a constant defined in `Customer`. It is a good practice to
-  use meaningful constant names rather than hardcoded strings or numbers in your code.
+> Tip|ヒント: 上記のコードでは、`Customer::STATUS_ACTIVE` は `Customer` で定義されている定数です。
+  コードの中で、ハードコードされた文字列や数字ではなく、意味が分かる名前の定数を使用することは良い慣行です。
 
 
-Two shortcut methods are provided to return Active Record instances matching a primary key value or a set of
-column values: `findOne()` and `findAll()`. The former returns the first matching instance while the latter
-returns all of them. For example,
+プライマリキーの値または一連のカラムの値に合致するアクティブレコードのインスタンスを返すためのショートカットメソッドが二つ提供されています。
+すなわち、`findOne()` と `findAll()` です。
+前者は合致する最初のインスタンスを返し、後者は合致する全てのインスタンスを返します。
+例えば、
 
 ```php
-// to return a single customer whose ID is 1:
+// ID が 1 である顧客を一人返す
 $customer = Customer::findOne(1);
 
-// to return an *active* customer whose ID is 1:
+// ID が 1 である *アクティブ* な顧客を一人返す
 $customer = Customer::findOne([
     'id' => 1,
     'status' => Customer::STATUS_ACTIVE,
 ]);
 
-// to return customers whose ID is 1, 2 or 3:
+// ID が 1、2、または 3 である顧客を全て返す
 $customers = Customer::findAll([1, 2, 3]);
 
-// to return customers whose status is "deleted":
+// 状態が「削除済み」である顧客を全て返す
 $customer = Customer::findAll([
     'status' => Customer::STATUS_DELETED,
 ]);
 ```
 
-> Note: By default neither `findOne()` nor `one()` will add `LIMIT 1` to the query. This is fine and preferred
-  if you know the query will return only one or a few rows of data (e.g. if you are querying with some primary keys).
-  However, if the query may potentially return many rows of data, you should call `limit(1)` to improve the performance.
-  For example, `Customer::find()->where(['status' => Customer::STATUS_ACTIVE])->limit(1)->one()`.
+> Note: デフォルトでは、`findOne()` も `one()` も、クエリに `LIMIT 1` を追加しません。
+  クエリが一つだけまたは少数の行のデータしか返さないことが分かっている場合 (例えば、プライマリキーか何かでクエリをする場合) は、これで十分であり、また、この方が望ましいでしょう。
+  しかし、クエリが多数の行のデータを返す可能性がある場合は、パフォーマンスを向上させるために `limit(1)` を呼ぶべきです。
+  例えば、`Customer::find()->where(['status' => Customer::STATUS_ACTIVE])->limit(1)->one()` のように。
 
 
-### Retrieving Data in Arrays
+### データを配列に読み出す
 
-Sometimes when you are processing a large amount of data, you may want to use arrays to hold the data
-retrieved from database to save memory. This can be done by calling `asArray()`:
+大量のデータを処理する場合には、メモリ使用量を節約するために、データベースから取得したデータを配列に保持したいこともあるでしょう。
+これは、`asArray()` を呼ぶことによって実現できます。
 
 ```php
-// to return customers in terms of arrays rather than `Customer` objects:
+// 顧客を `Customer` オブジェクトでなく配列の形式で返す
 $customers = Customer::find()
     ->asArray()
     ->all();
-// each element of $customers is an array of name-value pairs
+// $customers の各要素は、「名前-値」のペアの配列
 ```
 
-Note that while this method saves memory and improves performance it is a step to a lower abstraction
-layer and you will loose some features that the active record layer has.
-Fetching data using asArray is nearly equal to running a normal query using the [query builder](db-dao.md).
-When using asArray the result will be returned as a simple array with no typecasting performed 
-so the result may contain string values for fields that are integer when accessed on the active record object.
+このメソッドはメモリを節約してパフォーマンスを向上させますが、低い抽象レイヤに向って一歩を踏み出すものであり、アクティブレコードのレイヤが持ついくつかの機能を失うことになるという点に注意してください。
+`asArray` を使ってデータを読み出すことは、[クエリビルダ](db-dao.md) を使って普通のクエリを実行するのと、ほとんど同じことです。
+`asArray` を使うと、結果は、型変換の実行を伴わない単純な配列になります。
+その結果、アクティブレコードオブジェクトでアクセスする場合には整数になるフィールドが、文字列の値を含むことがあり得ます。
 
-### Retrieving Data in Batches
+### データをバッチモードで読み出す
 
-In [Query Builder](db-query-builder.md), we have explained that you may use *batch query* to minimize your memory
-usage when querying a large amount of data from the database. You may use the same technique
-in Active Record. For example,
+[クエリビルダ](db-query-builder.md) において、大量のデータをデータベースから検索する場合に、メモリ使用量を最小化するために *バッチクエリ* を使うことが出来るということを説明しました。
+おなじテクニックをアクティブレコードでも使うことが出来ます。
+例えば、
 
 ```php
-// fetch 10 customers at a time
+// 一度に 10 人の顧客を読み出す
 foreach (Customer::find()->batch(10) as $customers) {
-    // $customers is an array of 10 or fewer Customer objects
+    // $customers は 10 以下の Customer オブジェクトの配列
 }
-// fetch 10 customers at a time and iterate them one by one
+// 一度に 10 人の顧客を読み出して、一人ずつ反復する
 foreach (Customer::find()->each(10) as $customer) {
-    // $customer is a Customer object
+    // $customer は Customer オブジェクト
 }
-// batch query with eager loading
+// いーがーローディングをするバッチクエリ
 foreach (Customer::find()->with('orders')->each() as $customer) {
 }
 ```
 
 
-Manipulating Data in Database
------------------------------
+データベースのデータを操作する
+------------------------------
 
-Active Record provides the following methods to insert, update and delete a single row in a table associated with
-a single Active Record instance:
+アクティブレコードは、一つのアクティブレコードインスタンスに関連付けられたテーブルの一行を挿入、更新または削除するために、次のメソッドを提供しています。
 
 - [[yii\db\ActiveRecord::save()|save()]]
 - [[yii\db\ActiveRecord::insert()|insert()]]
 - [[yii\db\ActiveRecord::update()|update()]]
 - [[yii\db\ActiveRecord::delete()|delete()]]
 
-Active Record also provides the following static methods that apply to a whole table associated with
-an Active Record class. Be extremely careful when using these methods as they affect the whole table.
-For example, `deleteAll()` will delete ALL rows in the table.
+アクティブレコードは、アクティブレコードクラスと関連付けられたテーブル全体に適用する、次の静的なメソッドを提供しています。
+これらのメソッドはテーブル全体に影響を与えますので、使用するときはこの上なく注意深くしなければなりません。
+例えば、`deleteAll()` はテーブルの全ての行を削除します。
 
 - [[yii\db\ActiveRecord::updateCounters()|updateCounters()]]
 - [[yii\db\ActiveRecord::updateAll()|updateAll()]]
@@ -259,78 +258,77 @@ For example, `deleteAll()` will delete ALL rows in the table.
 - [[yii\db\ActiveRecord::deleteAll()|deleteAll()]]
 
 
-The following examples show how to use these methods:
+次の例は、これらのメソッドの使用方法を示すものです。
 
 ```php
-// to insert a new customer record
+// 新しい customer のレコードを挿入する
 $customer = new Customer();
 $customer->name = 'James';
 $customer->email = 'james@example.com';
-$customer->save();  // equivalent to $customer->insert();
+$customer->save();  // $customer->insert() と等値
 
-// to update an existing customer record
+// 既存の customer のレコードを更新する
 $customer = Customer::findOne($id);
 $customer->email = 'james@example.com';
-$customer->save();  // equivalent to $customer->update();
+$customer->save();  // $customer->update() と等値
 
-// to delete an existing customer record
+// 既存の customer のレコードを削除する
 $customer = Customer::findOne($id);
 $customer->delete();
 
-// to delete several customers
+// いくつかの customer のレコードを削除する
 Customer::deleteAll('age > :age AND gender = :gender', [':age' => 20, ':gender' => 'M']);
 
-// to increment the age of ALL customers by 1
+// すべてのレコードの年齢に 1 を追加する
 Customer::updateAllCounters(['age' => 1]);
 ```
 
-> Info: The `save()` method will call either `insert()` or `update()`, depending on whether
-  the Active Record instance is new or not (internally it will check the value of [[yii\db\ActiveRecord::isNewRecord]]).
-  If an Active Record is instantiated via the `new` operator, calling `save()` will
-  insert a row in the table; calling `save()` on an active record fetched from the database will update the corresponding
-  row in the table.
+> Info|情報: `save()` メソッドは、アクティブレコードインスタンスが新しいものであるか否かに従って、`insert()` または `update()` を呼びます
+   (内部的には、[[yii\db\ActiveRecord::isNewRecord]] の値をチェックして判断します)。
+  アクティブレコードのインスタンスが `new` 演算子によって作成された場合は、`save()` を呼ぶと、テーブルに新しい行が挿入されます。
+  データベースから読み出されたアクティブレコードに対して `save()` を呼ぶと、テーブルの中の対応する行が更新されます。
 
 
-### Data Input and Validation
+### データの入力と検証
 
-Because Active Record extends from [[yii\base\Model]], it supports the same data input and validation features
-as described in [Model](structure-models.md). For example, you may declare validation rules by overwriting the
-[[yii\base\Model::rules()|rules()]] method; you may massively assign user input data to an Active Record instance;
-and you may call [[yii\base\Model::validate()|validate()]] to trigger data validation.
+アクティブレコードは [[yii\base\Model]] を拡張したものですので、[モデル](structure-models.md) で説明したのと同じデータ入力と検証の機能をサポートしています。
+例えば、[[yii\base\Model::rules()|rules()]] メソッドをオーバーライドして検証規則を宣言することが出来ます。
+アクティブレコードインスタンスにユーザの入力データを一括代入することも出来ます。
+また、[[yii\base\Model::validate()|validate()]] を呼んで、データ検証を実行させることも出来ます。
 
-When you call `save()`, `insert()` or `update()`, these methods will automatically call [[yii\base\Model::validate()|validate()]].
-If the validation fails, the corresponding data saving operation will be cancelled.
+`save()`、`insert()` または `update()` を呼ぶと、これらのメソッドが自動的に [[yii\base\Model::validate()|validate()]] を呼びます。
+検証が失敗すると、対応するデータ保存操作はキャンセルされます。
 
-The following example shows how to use an Active Record to collect/validate user input and save them into the database:
+次の例は、アクティブレコードを使ってユーザ入力を収集/検証してデータベースに保存する方法を示すものです。
 
 ```php
-// creating a new record
+// 新しいレコードを作成する
 $model = new Customer;
 if ($model->load(Yii::$app->request->post()) && $model->save()) {
-    // the user input has been collected, validated and saved
+    // ユーザ入力が収集、検証されて、保存された
 }
 
-// updating a record whose primary key is $id
+// プライマリキーが $id であるレコードを更新する
 $model = Customer::findOne($id);
 if ($model === null) {
     throw new NotFoundHttpException;
 }
 if ($model->load(Yii::$app->request->post()) && $model->save()) {
-    // the user input has been collected, validated and saved
+    // ユーザ入力が収集、検証されて、保存された
 }
 ```
 
 
-### Loading Default Values
+### デフォルト値を読み出す
 
-Your table columns may be defined with default values. Sometimes, you may want to pre-populate your
-Web form for an Active Record with these values. To do so, call the
-[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] method before rendering the form:
+テーブルのカラムの定義は、デフォルト値を含むことが出来ます。
+アクティブレコードのためのウェブフォームに、このデフォルト値を事前に代入しておきたい場合があるでしょう。
+そうするためには、フォームを表示する前に、[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] を呼びます。
 
 ```php
 $customer = new Customer();
 $customer->loadDefaultValues();
-// ... render HTML form for $customer ...
+// ... $customer の HTML フォームを表示する ...
 ```
 
 If you want to set some initial values for the attributes yourself you can override the `init()` method
