@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Bug #6305: `yii\i18n\Formatter::asParagraphs()` was not unicode-aware (samdark)
 - Bug #6311: Optimistic lock for ActiveRecord does not work as expected (qiangxue)
 - Bug #6367: Added `yii\gii\generators\crud\Generator` to support customizing view path for the generated CRUD controller (qiangxue)
+- Bug #6381: Client-side file validation should be disabled if the browser does not support it (Skysplit)
 - Bug: Gii console command help information does not contain global options (qiangxue)
 - Bug: `yii\web\UrlRule` was unable to create URLs for rules containing unicode characters (samdark)
 - Bug: `yii\web\AssetManager` should not publish disabled asset bundles (qiangxue)
