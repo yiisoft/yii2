@@ -74,14 +74,14 @@ Conceitos Chave
 Trabalhando com Banco de Dados
 ------------------------------
 
-* [Data Access Objects (DAO, Objeto de Acesso a Dados)](db-dao.md) - Estabelecendo uma conexão com o Banco de Dados, consultas básicas, transações e manipulação do esquema
-* [Query Builder (Construtor de Consulta)](db-query-builder.md) - Consultando o banco de dados usando uma camada de abstração simples
-* [Active Record](db-active-record.md) - Sobre o Active Record ORM, recuperando e manipulando registros e definindo relacionamentos
-* [Migrations (Migrações)](db-migrations.md) - Aplica controle de versão para seus banco de dados em um ambiente de desenvolvimento em equipe
+* [Data Access Objects (DAO, Objeto de Acesso a Dados)](db-dao.md)? Estabelecendo uma conexão com o Banco de Dados, consultas básicas, transações e manipulação do esquema
+* [Query Builder (Construtor de Consulta)](db-query-builder.md)? Consultando o banco de dados usando uma camada de abstração simples
+* [Active Record](db-active-record.md): Sobre o Active Record ORM, recuperando e manipulando registros e definindo relacionamentos
+* [Migrations (Migrações)](db-migrations.md): Aplica controle de versão para seus banco de dados em um ambiente de desenvolvimento em equipe
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* **TBD** [ElasticSearch](db-elasticsearch.md)
 
 
 Coletando Dados de Usuários
@@ -96,7 +96,7 @@ Coletando Dados de Usuários
 Exibindo Dados
 ---------------
 
-* [Formatando Dados](output-formatting.md)
+* [Formatando Dados](output-formatter.md)
 * **TBD** [Paginação](output-pagination.md)
 * **TBD** [Ordenação](output-sorting.md)
 * [Data Providers (Provedores de Dados)](output-data-providers.md)
@@ -125,7 +125,7 @@ Cache
 * [Cache HTTP](caching-http.md)
 
 
-Web Services com RESTful 
+Web Services RESTful 
 ------------------------
 
 * [Introdução](rest-quick-start.md)
@@ -151,7 +151,7 @@ Testes
 ------
 
 * [Visão Geral](test-overview.md)
-* [Configuração do ambiente de testes](test-endvironment-setup.md)
+* [Configuração do ambiente de testes](test-environment-setup.md)
 * [Testes Unitários](test-unit.md)
 * [Testes Funcionais](test-functional.md)
 * [Testes de Aceitação](test-acceptance.md)
@@ -184,16 +184,16 @@ Widgets
 * Menu: **TBD** link para a página de demonstração
 * LinkPager: **TBD** link para a página de demonstração
 * LinkSorter: **TBD** link para a página de demonstração
-* [Widgets do Bootstrap](bootstrap-widgets.md)
-* [Widgets do Jquery UI](jui-widgets.md)
+* [Widgets do Bootstrap](widget-bootstrap.md)
+* [Widgets do Jquery UI](widget-jui.md)
 
 
 Helpers
 -------
 
 * [Visão Geral](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
+* [ArrayHelper](helper-array.md)
+* [Html](helper-html.md)
+* [Url](helper-url.md)
 * **TBD** [Segurança](helper-security.md)
 

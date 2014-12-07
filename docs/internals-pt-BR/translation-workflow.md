@@ -54,7 +54,7 @@ build translation "../docs/guide" "../docs/guide-pt-BR" > report-guide-pt-BR.htm
 
 Antes de iniciar seus trabalhos de tradução certifique-se que o arquivo em qual
 irá trabalhar esteja disponível para ser traduzido. Para isso, acesse a
-[planilha no Google Docs](https://docs.google.com/spreadsheets/d/17JOpAjkJz2YZCjD6gWaUx32wskGRB-2CdFbed111iys/edit?usp=sharing).
+[planilha no Google Docs](https://docs.google.com/spreadsheets/d/1pAMe-qsKK0poEsQwGI2HLFmj4afKSkEUd_1qegU5YqQ).
 
 
 Regras e Observações
@@ -74,19 +74,27 @@ Regras e Observações
 
 - action — ação
 - application system - sistema
+- application template — template de aplicação
 - controller — controller (controlador)
 - eager loading — eager loading (carregamento na inicialização)
 - lazy loading — lazy loading (carregamento retardado)
 - model — model (modelo)
 - query builder — query builder (construtor de consulta)
 - view — view (visão)
+- note — observação
+- info — informação
+- tip — dica
+- warning - atenção
+- attribute label - label do atributo
+- inline action — ação inline
+- standalone action — ação standalone
 
 ### Termos Sem Tradução
 
 - active record
 - alias
 - cache
-- CamelCase
+- CamelCase, camel-case
 - core
 - framework
 - hash
@@ -94,4 +102,6 @@ Regras e Observações
 - id
 - runtime
 - widget
-
+- backend
+- frontend
+- web service
