@@ -346,7 +346,7 @@ of the active record class and set the values there. For example to set the defa
 public function init()
 {
     parent::init();
-    $this->status = 'active';
+    $this->status = self::STATUS_ACTIVE;
 }
 ```
 
