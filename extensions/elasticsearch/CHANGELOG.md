@@ -1,7 +1,7 @@
 Yii Framework 2 elasticsearch extension Change Log
 ==================================================
 
-2.0.1 under development
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #5662: Elasticsearch AR updateCounters() now uses explicitly `groovy` script for updating making it compatible with ES >1.3.0 (cebe)

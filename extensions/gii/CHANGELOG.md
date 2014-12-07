@@ -1,7 +1,7 @@
 Yii Framework 2 gii extension Change Log
 ========================================
 
-2.0.1 under development
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #5070: Gii controller generator should use controller class name instead of controller ID to specify new controller (qiangxue)

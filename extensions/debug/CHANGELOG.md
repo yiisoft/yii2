@@ -1,7 +1,7 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
-2.0.1 under development
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
