@@ -225,7 +225,7 @@ that accepts data directly:
 <?= Html::activeLabel($user, 'username', ['class' => 'label username'])
 ```
               
-In order to display form errors from a model or models as a summart you could use:
+In order to display form errors from a model or models as a summary you could use:
 
 ```php
 <?= Html::errorSummary($posts, ['class' => 'errors']) ?>
@@ -240,7 +240,7 @@ To display individual error:
 
 ### Names and values
         
-There are methods to get names, ids and values for input fields based on the model. These are mailly used internally
+There are methods to get names, ids and values for input fields based on the model. These are mainly used internally
 but could be handy sometimes:
 
 ```php
@@ -257,7 +257,7 @@ echo Html::getAttributeValue($post, 'title');
 echo Html::getAttributeValue($post, '[0]authors[0]');
 ```
 
-In the above first argument is the model while the second one is attribute expression. In its simplest for it's
+In the above first argument is the model while the second one is attribute expression. In its simplest form it's
 attribute name but it could be an attribute name prefixed and/or suffixed with array indexes which are mainly used
 for tabular input:
 
