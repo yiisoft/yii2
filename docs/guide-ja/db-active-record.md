@@ -331,72 +331,68 @@ $customer->loadDefaultValues();
 // ... $customer の HTML フォームを表示する ...
 ```
 
-If you want to set some initial values for the attributes yourself you can override the `init()` method
-of the active record class and set the values there. For example to set the default value for the `status` attribute:
+属性に対して何かの初期値を自分自身で設定したい場合は、アクティブレコードクラスの `init()` メソッドをオーバーライドして、そこで値を設定することが出来ます。
+例えば、`status` 属性のデフォルト値を設定したい場合は、
 
 ```php
 public function init()
 {
     parent::init();
-    $this->status = 'active';
+    $this->status = self::STATUS_ACTIVE;
 }
 ```
 
-Active Record Life Cycles
--------------------------
+アクティブレコードのライフサイクル
+----------------------------------
 
-It is important to understand the life cycles of Active Record when it is used to manipulate data in database.
-These life cycles are typically associated with corresponding events which allow you to inject code
-to intercept or respond to these events. They are especially useful for developing Active Record [behaviors](concept-behaviors.md).
+アクティブレコードがデータベースのデータの操作に使われるときのライフサイクルを理解しておくことは重要なことです。
+そのライフサイクルは、概して、対応するイベントと関連付けられており、それらのイベントに対して干渉したり反応したりするコードを注入できるようになっています。
+これらのイベントは特にアクティブレコードの [ビヘイビア](concept-behaviors.md) を開発するときに役に立ちます。
 
-When instantiating a new Active Record instance, we will have the following life cycles:
+アクティブレコードの新しいインスタンスを作成する場合は、次のライフサイクルを経ます。
 
-1. constructor
-2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
+1. コンストラクタ
+2. [[yii\db\ActiveRecord::init()|init()]]: [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] イベントをトリガ
 
-When querying data through the [[yii\db\ActiveRecord::find()|find()]] method, we will have the following life cycles
-for EVERY newly populated Active Record instance:
+[[yii\db\ActiveRecord::find()|find()]] メソッドによってデータを検索する場合は、新しくデータを投入されるアクティブレコードの全てが、それぞれ、次のライフサイクルを経ます。
 
-1. constructor
-2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
-3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event
+1. コンストラクタ
+2. [[yii\db\ActiveRecord::init()|init()]]: [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] イベントをトリガ
+3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] イベントをトリガ
 
-When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an ActiveRecord, we will have
-the following life cycles:
+[[yii\db\ActiveRecord::save()|save()]] を呼んで、アクティブレコードを挿入または更新する場合は、次のライフサイクルを経ます。
 
-1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event
-2. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event
-3. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event
-4. perform the actual data insertion or updating
-5. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event
+1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] イベントをトリガ
+2. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] イベントをトリガ
+3. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] または [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] イベントをトリガ
+4. 実際のデータ挿入または更新を実行
+5. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] または [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] イベントをトリガ
 
-And finally, when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an ActiveRecord, we will have
-the following life cycles:
+最後に、[[yii\db\ActiveRecord::delete()|delete()]] を呼んで、アクティブレコードを削除する場合は、次のライフサイクルを経ます。
 
-1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event
-2. perform the actual data deletion
-3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
+1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] イベントをトリガ
+2. 実際のデータ削除を実行
+3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] イベントをトリガ
 
 
-Working with Relational Data
-----------------------------
+リレーショナルデータを扱う
+--------------------------
 
-You can use ActiveRecord to also query a table's relational data (i.e., selection of data from Table A can also pull
-in related data from Table B). Thanks to ActiveRecord, the relational data returned can be accessed like a property
-of the ActiveRecord object associated with the primary table.
+テーブルのリレーショナルデータもアクティブレコードを使ってクエリすることが出来ます
+(すなわち、テーブル A のデータを選択すると、テーブル B の関連付けられたデータも一緒に取り込むことが出来ます)。
+アクティブレコードのおかげで、返されるリレーショナルデータは、プライマリテーブルと関連付けられたアクティブレコードオブジェクトのプロパティのようにアクセスすることが出来ます。
 
-For example, with an appropriate relation declaration, by accessing `$customer->orders` you may obtain
-an array of `Order` objects which represent the orders placed by the specified customer.
+例えば、適切なリレーションが宣言されていれば、`$customer->orders` にアクセスすることによって、指定された顧客が発行した注文を表す `Order` オブジェクトの配列を取得することが出来ます。
 
-To declare a relation, define a getter method which returns an [[yii\db\ActiveQuery]] object that has relation
-information about the relation context and thus will only query for related records. For example,
+リレーションを宣言するためには、[[yii\db\ActiveQuery]] オブジェクトを返すゲッターメソッドを定義します。そして、その [[yii\db\ActiveQuery]] オブジェクトは、リレーションのコンテキストに関する情報を持ち、従って関連するレコードだけをクエリするものとします。
+例えば、
 
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
     public function getOrders()
     {
-        // Customer has_many Order via Order.customer_id -> id
+        // Customer は Order.customer_id -> id によって、複数の Order を持つ
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
     }
 }
@@ -405,47 +401,44 @@ class Order extends \yii\db\ActiveRecord
 {
     public function getCustomer()
     {
-        // Order has_one Customer via Customer.id -> customer_id
+        // Order は Customer.id -> customer_id によって、一つの Customer を持つ
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
 ```
 
-The methods [[yii\db\ActiveRecord::hasMany()]] and [[yii\db\ActiveRecord::hasOne()]] used in the above
-are used to model the many-one relationship and one-one relationship in a relational database.
-For example, a customer has many orders, and an order has one customer.
-Both methods take two parameters and return an [[yii\db\ActiveQuery]] object:
+上記の例で使用されている [[yii\db\ActiveRecord::hasMany()]] と [[yii\db\ActiveRecord::hasOne()]] のメソッドは、リレーショナルデータベースにおける多対一と一対一の関係を表現するために使われます。
+例えば、顧客 (customer) は複数の注文 (order) を持ち、注文 (order) は一つの顧客 (customer)を持つ、という関係です。
+これらのメソッドはともに二つのパラメータを取り、[[yii\db\ActiveQuery]] オブジェクトを返します。
 
- - `$class`: the name of the class of the related model(s). This should be a fully qualified class name.
- - `$link`: the association between columns from the two tables. This should be given as an array.
-   The keys of the array are the names of the columns from the table associated with `$class`,
-   while the values of the array are the names of the columns from the declaring class.
-   It is a good practice to define relationships based on table foreign keys.
+ - `$class`: 関連するモデルのクラス名。これは完全修飾のクラス名でなければなりません。
+ - `$link`: 二つのテーブルに属するカラム間の関係。これは配列として与えられなければなりません。
+   配列のキーは、`$class` と関連付けられるテーブルにあるカラムの名前であり、配列の値はリレーションを宣言しているクラスのテーブルにあるカラムの名前です。
+   リレーションをテーブルの外部キーに基づいて定義するのが望ましい慣行です。
 
-After declaring relations, getting relational data is as easy as accessing a component property
-that is defined by the corresponding getter method:
+リレーションを宣言した後は、リレーショナルデータを取得することは、対応するゲッターメソッドで定義されているコンポーネントのプロパティを取得するのと同じように、とても簡単なことになります。
 
 ```php
-// get the orders of a customer
+// 顧客の注文を取得する
 $customer = Customer::findOne(1);
-$orders = $customer->orders;  // $orders is an array of Order objects
+$orders = $customer->orders;  // $orders は Order オブジェクトの配列
 ```
 
-Behind the scenes, the above code executes the following two SQL queries, one for each line of code:
+舞台裏では、上記のコードは、各行について一つずつ、次の二つの SQL クエリを実行します。
 
 ```sql
 SELECT * FROM customer WHERE id=1;
 SELECT * FROM order WHERE customer_id=1;
 ```
 
-> Tip: If you access the expression `$customer->orders` again, it will not perform the second SQL query again.
-The SQL query is only performed the first time when this expression is accessed. Any further
-accesses will only return the previously fetched results that are cached internally. If you want to re-query
-the relational data, simply unset the existing expression first: `unset($customer->orders);`.
+> Tip|情報: `$customer->orders` という式に再びアクセスした場合は、第二の SQL クエリはもう実行されません。
+  第二の SQL クエリは、この式が最初にアクセスされた時だけ実行されます。
+  二度目以降のアクセスでは、内部的にキャッシュされている以前に読み出した結果が返されるだけです。
+  リレーショナルデータを再クエリしたい場合は、単純に、まず既存の式を未設定状態に戻して (`unset($customer->orders);`) から、再度、`$customer->orders` にアクセスします。
 
-Sometimes, you may want to pass parameters to a relational query. For example, instead of returning
-all orders of a customer, you may want to return only big orders whose subtotal exceeds a specified amount.
-To do so, declare a `bigOrders` relation with the following getter method:
+場合によっては、リレーショナルクエリにパラメータを渡したいことがあります。
+例えば、顧客の注文を全て返す代りに、小計が指定した金額を超える大きな注文だけを返したいことがあるでしょう。
+そうするためには、次のようなゲッターメソッドで `bigOrders` リレーションを宣言します。
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -459,32 +452,28 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-Remember that `hasMany()` returns an [[yii\db\ActiveQuery]] object which allows you to customize the query by
-calling the methods of [[yii\db\ActiveQuery]].
+`hasMany()` が 返す [[yii\db\ActiveQuery]] は、[[yii\db\ActiveQuery]] のメソッドを呼ぶことでクエリをカスタマイズ出来るものであることを覚えておいてください。
 
-With the above declaration, if you access `$customer->bigOrders`, it will only return the orders
-whose subtotal is greater than 100. To specify a different threshold value, use the following code:
+上記の宣言によって、`$customer->bigOrders` にアクセスした場合は、小計が 100 以上である注文だけが返されることになります。
+異なる閾値を指定するためには、次のコードを使用します。
 
 ```php
 $orders = $customer->getBigOrders(200)->all();
 ```
 
-> Note: A relation method returns an instance of [[yii\db\ActiveQuery]]. If you access the relation like
-an attribute (i.e. a class property), the return value will be the query result of the relation, which could be an instance of [[yii\db\ActiveRecord]],
-an array of that, or null, depending on the multiplicity of the relation. For example, `$customer->getOrders()` returns
-an `ActiveQuery` instance, while `$customer->orders` returns an array of `Order` objects (or an empty array if
-the query results in nothing).
+> Note|注意: リレーションメソッドは [[yii\db\ActiveQuery]] のインスタンスを返します。
+リレーションを属性 (すなわち、クラスのプロパティ) としてアクセスした場合は、返り値はリレーションのクエリ結果となります。
+クエリ結果は、リレーションが複数のレコードを返すものか否かに応じて、[[yii\db\ActiveRecord]] の一つのインスタンス、またはその配列、または null となります。
+例えば、`$customer->getOrders()` は `ActiveQuery` のインスタンスを返し、`$customer->orders` は `Order` オブジェクトの配列 (またはクエリ結果が無い場合は空の配列) を返します。
 
 
-Relations with Junction Table
------------------------------
+連結テーブルを使うリレーション
+------------------------------
 
-Sometimes, two tables are related together via an intermediary table called a [junction table][]. To declare such relations,
-we can customize the [[yii\db\ActiveQuery]] object by calling its [[yii\db\ActiveQuery::via()|via()]] or
-[[yii\db\ActiveQuery::viaTable()|viaTable()]] method.
+場合によっては、二つのテーブルが [連結テーブル][] と呼ばれる中間的なテーブルによって関連付けられていることがあります。
+そのようなリレーションを宣言するために、[[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] メソッドを呼んで、[[yii\db\ActiveQuery]] オブジェクトをカスタマイズすることが出来ます。
 
-For example, if table `order` and table `item` are related via the junction table `order_item`,
-we can declare the `items` relation in the `Order` class like the following:
+例えば、テーブル `order` とテーブル `item` が連結テーブル `order_item` によって関連付けられている場合、`Order` クラスにおいて `items` リレーションを次のように宣言することが出来ます。
 
 ```php
 class Order extends \yii\db\ActiveRecord
@@ -497,9 +486,8 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-The [[yii\db\ActiveQuery::via()|via()]] method is similar to [[yii\db\ActiveQuery::viaTable()|viaTable()]] except that
-the first parameter of [[yii\db\ActiveQuery::via()|via()]] takes a relation name declared in the ActiveRecord class
-instead of the junction table name. For example, the above `items` relation can be equivalently declared as follows:
+[[yii\db\ActiveQuery::via()|via()]] メソッドは、最初のパラメータとして、結合テーブルの名前ではなく、アクティブレコードクラスで宣言されているリレーションの名前を取ること以外は、[[yii\db\ActiveQuery::viaTable()|viaTable()]] と同じです。
+例えば、上記の `items` リレーションは次のように宣言しても等値です。
 
 ```php
 class Order extends \yii\db\ActiveRecord
@@ -517,7 +505,7 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[junction table]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
+[連結テーブル]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
 
 
 Lazy and Eager Loading
