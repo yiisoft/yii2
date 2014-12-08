@@ -508,79 +508,79 @@ class Order extends \yii\db\ActiveRecord
 [連結テーブル]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
 
 
-Lazy and Eager Loading
-----------------------
+レイジーローディングとイーガーローディング
+------------------------------------------
 
-As described earlier, when you access the related objects for the first time, ActiveRecord will perform a DB query
-to retrieve the corresponding data and populate it into the related objects. No query will be performed
-if you access the same related objects again. We call this *lazy loading*. For example,
+前に述べたように、関連オブジェクトに最初にアクセスしたときに、アクティブレコードは DB クエリを実行して関連データを読み出し、それを関連オブジェクトに投入します。
+同じ関連オブジェクトに再度アクセスしても、クエリは実行されません。
+これを *レイジーローディング* と呼びます。
+例えば、
 
 ```php
-// SQL executed: SELECT * FROM customer WHERE id=1
+// 実行される SQL: SELECT * FROM customer WHERE id=1
 $customer = Customer::findOne(1);
-// SQL executed: SELECT * FROM order WHERE customer_id=1
+// 実行される SQL: SELECT * FROM order WHERE customer_id=1
 $orders = $customer->orders;
-// no SQL executed
+// SQL は実行されない
 $orders2 = $customer->orders;
 ```
 
-Lazy loading is very convenient to use. However, it may suffer from a performance issue in the following scenario:
+レイジーローディングは非常に使い勝手が良いものです。しかし、次のシナリオでは、パフォーマンスの問題を生じ得ます。
 
 ```php
-// SQL executed: SELECT * FROM customer LIMIT 100
+// 実行される SQL: SELECT * FROM customer WHERE id=1
 $customers = Customer::find()->limit(100)->all();
 
 foreach ($customers as $customer) {
-    // SQL executed: SELECT * FROM order WHERE customer_id=...
+    // 実行される SQL: SELECT * FROM order WHERE customer_id=...
     $orders = $customer->orders;
-    // ...handle $orders...
+    // ... $orders を処理 ...
 }
 ```
 
-How many SQL queries will be performed in the above code, assuming there are more than 100 customers in
-the database? 101! The first SQL query brings back 100 customers. Then for each customer, a SQL query
-is performed to bring back the orders of that customer.
+データベースに 100 人以上の顧客が登録されていると仮定した場合、上記のコードで何個の SQL クエリが実行されるでしようか?
+101 です。最初の SQL クエリが 100 人の顧客を返します。
+次に、100 人の顧客全てについて、それぞれ、顧客の注文を返すための SQL クエリが実行されます。
 
-To solve the above performance problem, you can use the so-called *eager loading* approach by calling [[yii\db\ActiveQuery::with()]]:
+上記のパフォーマンスの問題を解決するためには、[[yii\db\ActiveQuery::with()]] を呼んでいわゆる *イーガーローディング* を使うことが出来ます。
 
 ```php
-// SQL executed: SELECT * FROM customer LIMIT 100;
-//               SELECT * FROM orders WHERE customer_id IN (1,2,...)
+// 実行される SQL: SELECT * FROM customer LIMIT 100;
+//                 SELECT * FROM orders WHERE customer_id IN (1,2,...)
 $customers = Customer::find()->limit(100)
     ->with('orders')->all();
 
 foreach ($customers as $customer) {
-    // no SQL executed
+    // SQL は実行されない
     $orders = $customer->orders;
-    // ...handle $orders...
+    // ... $orders を処理 ...
 }
 ```
 
-As you can see, only two SQL queries are needed for the same task!
+ご覧のように、同じ仕事をするのに必要な SQL クエリがたった二つになります。
 
-> Info: In general, if you are eager loading `N` relations among which `M` relations are defined with `via()` or `viaTable()`,
-> a total number of `1+M+N` SQL queries will be performed: one query to bring back the rows for the primary table, one for
-> each of the `M` junction tables corresponding to the `via()` or `viaTable()` calls, and one for each of the `N` related tables.
+> Info|情報: 一般化して言うと、`N` 個のリレーションのうち `M` 個のリレーションが `via()` または `viaTable()` によって定義されている場合、この `N` 個のリレーションをイーガーロードしようとすると、合計で `1+M+N` 個の SQL クエリが実行されます。
+> 主たるテーブルの行を返すために一つ、`via()` または `viaTable()` の呼び出しに対応する `M` 個の連結テーブルのそれぞれに対して一つずつ、そして、`N` 個の関連テーブルのそれぞれに対して一つずつ、という訳です。
 
-> Note: When you are customizing `select()` with eager loading, make sure you include the columns that link
-> the related models. Otherwise, the related models will not be loaded. For example,
+> Note|注意: イーガーローディングで `select()` をカスタマイズしようとする場合は、関連モデルにリンクするカラムを必ず含めてください。
+> そうしないと、関連モデルは読み出されません。例えば、
 
 ```php
 $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-// $orders[0]->customer is always null. To fix the problem, you should do the following:
+// $orders[0]->customer は常に null になる。この問題を解決するためには、次のようにしなければならない。
 $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
 ```
 
-Sometimes, you may want to customize the relational queries on the fly. This can be
-done for both lazy loading and eager loading. For example,
+場合によっては、リレーショナルクエリをその場でカスタマイズしたいことがあるでしょう。
+これは、レイジーローディングでもイーガーローディングでも、可能です。例えば、
 
 ```php
 $customer = Customer::findOne(1);
-// lazy loading: SELECT * FROM order WHERE customer_id=1 AND subtotal>100
+// レイジーローディング: SELECT * FROM order WHERE customer_id=1 AND subtotal>100
 $orders = $customer->getOrders()->where('subtotal>100')->all();
 
-// eager loading: SELECT * FROM customer LIMIT 100
-//                SELECT * FROM order WHERE customer_id IN (1,2,...) AND subtotal>100
+// イーガーローディング: SELECT * FROM customer LIMIT 100
+//                       SELECT * FROM order WHERE customer_id IN (1,2,...) AND subtotal>100
 $customers = Customer::find()->limit(100)->with([
     'orders' => function($query) {
         $query->andWhere('subtotal>100');
@@ -589,11 +589,11 @@ $customers = Customer::find()->limit(100)->with([
 ```
 
 
-Inverse Relations
------------------
+逆リレーション
+--------------
 
-Relations can often be defined in pairs. For example, `Customer` may have a relation named `orders` while `Order` may have a relation
-named `customer`:
+リレーションは、たいていの場合、ペアで定義することが出来ます。
+例えば、`Customer` が `orders` という名前のリレーションを持ち、`Order` が `customer` という名前のリレーションを持つ、ということがあります。
 
 ```php
 class Customer extends ActiveRecord
@@ -615,25 +615,23 @@ class Order extends ActiveRecord
 }
 ```
 
-If we perform the following query, we would find that the `customer` of an order is not the same customer object
-that finds those orders, and accessing `customer->orders` will trigger one SQL execution while accessing
-the `customer` of an order will trigger another SQL execution:
+次に例示するクエリを実行すると、注文 (order) のリレーションとして取得した顧客 (customer) が、最初にその注文をリレーションとして取得した顧客とは別の Customer オブジェクトになってしまうことに気付くでしょう。
+また、`customer->orders` にアクセスすると一個の SQL が実行され、`order->customer` にアクセスするともう一つ別の SQL が実行されるということにも気付くでしょう。
 
 ```php
 // SELECT * FROM customer WHERE id=1
 $customer = Customer::findOne(1);
-// echoes "not equal"
+// "等しくない" がエコーされる
 // SELECT * FROM order WHERE customer_id=1
 // SELECT * FROM customer WHERE id=1
 if ($customer->orders[0]->customer === $customer) {
-    echo 'equal';
+    echo '等しい';
 } else {
-    echo 'not equal';
+    echo '等しくない';
 }
 ```
 
-To avoid the redundant execution of the last SQL statement, we could declare the inverse relations for the `customer`
-and the `orders` relations by calling the [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] method, like the following:
+冗長な最後の SQL 文の実行を避けるためには、次のように、[[yii\db\ActiveQuery::inverseOf()|inverseOf()]] メソッドを呼んで、`customer` と `oerders` のリレーションに対して逆リレーションを宣言することが出来ます。
 
 ```php
 class Customer extends ActiveRecord
@@ -646,109 +644,101 @@ class Customer extends ActiveRecord
 }
 ```
 
-Now if we execute the same query as shown above, we would get:
+こうすると、上記と同じクエリを実行したときに、次の結果を得ることが出来ます。
 
 ```php
 // SELECT * FROM customer WHERE id=1
 $customer = Customer::findOne(1);
-// echoes "equal"
+// "等しい" がエコーされる
 // SELECT * FROM order WHERE customer_id=1
 if ($customer->orders[0]->customer === $customer) {
-    echo 'equal';
+    echo '等しい';
 } else {
-    echo 'not equal';
+    echo '等しくない';
 }
 ```
 
-In the above, we have shown how to use inverse relations in lazy loading. Inverse relations also apply in
-eager loading:
+上記では、レイジーローディングにおいて逆リレーションを使う方法を示しました。
+逆リレーションはイーガーローディングにも適用されます。
 
 ```php
 // SELECT * FROM customer
 // SELECT * FROM order WHERE customer_id IN (1, 2, ...)
 $customers = Customer::find()->with('orders')->all();
-// echoes "equal"
+// "等しい" がエコーされる
 if ($customers[0]->orders[0]->customer === $customers[0]) {
-    echo 'equal';
+    echo '等しい';
 } else {
-    echo 'not equal';
+    echo '等しくない';
 }
 ```
 
-> Note: Inverse relation cannot be defined with a relation that involves pivoting tables.
-> That is, if your relation is defined with [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]],
-> you cannot call [[yii\db\ActiveQuery::inverseOf()]] further.
+> Note|注意: 逆リレーションはピボットテーブルを含むリレーションに対しては定義することが出来ません。
+> つまり、リレーションが [[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] によって定義されている場合は、[[yii\db\ActiveQuery::inverseOf()]] を追加で呼ぶことは出来ません。
 
 
-Joining with Relations
-----------------------
+リレーションを使ってテーブルを結合する
+--------------------------------------
 
-When working with relational databases, a common task is to join multiple tables and apply various
-query conditions and parameters to the JOIN SQL statement. Instead of calling [[yii\db\ActiveQuery::join()]]
-explicitly to build up the JOIN query, you may reuse the existing relation definitions and call
-[[yii\db\ActiveQuery::joinWith()]] to achieve this goal. For example,
+リレーショナルデータベースを扱う場合、複数のテーブルを結合して、JOIN SQL 文にさまざまなクエリ条件とパラメータを指定することは、ごく当り前の仕事です。
+その目的を達するために、[[yii\db\ActiveQuery::join()]] を明示的に呼んで JOIN クエリを構築する代りに、既存のリレーション定義を再利用して [[yii\db\ActiveQuery::joinWith()]] を呼ぶことが出来ます。
+例えば、
 
 ```php
-// find all orders and sort the orders by the customer id and the order id. also eager loading "customer"
+// 全ての注文を検索して、注文を顧客 ID と注文 ID でソートする。同時に "customer" をイーガーロードする。
 $orders = Order::find()->joinWith('customer')->orderBy('customer.id, order.id')->all();
-// find all orders that contain books, and eager loading "books"
+// 書籍を含む全ての注文を検索し、"books" をイーガーロードする。
 $orders = Order::find()->innerJoinWith('books')->all();
 ```
 
-In the above, the method [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] is a shortcut to [[yii\db\ActiveQuery::joinWith()|joinWith()]]
-with the join type set as `INNER JOIN`.
+上記において、[[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] メソッドは、結合タイプを `INNER JOIN` とする [[yii\db\ActiveQuery::joinWith()|joinWith()]] へのショートカットです。
 
-You may join with one or multiple relations; you may apply query conditions to the relations on-the-fly;
-and you may also join with sub-relations. For example,
+一個または複数のリレーションを結合することが出来ます。リレーションにクエリ条件をその場で適用することも出来ます。
+また、サブリレーションを結合することも出来ます。例えば、
 
 ```php
-// join with multiple relations
-// find the orders that contain books and were placed by customers who registered within the past 24 hours
+// 複数のリレーションを結合
+// 書籍を含む注文で、過去 24 時間以内に登録した顧客によって発行された注文を検索する
 $orders = Order::find()->innerJoinWith([
     'books',
     'customer' => function ($query) {
         $query->where('customer.created_at > ' . (time() - 24 * 3600));
     }
 ])->all();
-// join with sub-relations: join with books and books' authors
+// サブリレーションとの結合: 書籍および書籍の著者を結合
 $orders = Order::find()->joinWith('books.author')->all();
 ```
 
-Behind the scenes, Yii will first execute a JOIN SQL statement to bring back the primary models
-satisfying the conditions applied to the JOIN SQL. It will then execute a query for each relation
-and populate the corresponding related records.
+舞台裏では、Yii は最初に JOIN SQL 文を実行して、その JOIN SQL に適用された条件を満たす主たるモデルを取得します。
+そして、次にリレーションごとのクエリを実行して、対応する関連レコードを投入します。
 
-The difference between [[yii\db\ActiveQuery::joinWith()|joinWith()]] and [[yii\db\ActiveQuery::with()|with()]] is that
-the former joins the tables for the primary model class and the related model classes to retrieve
-the primary models, while the latter just queries against the table for the primary model class to
-retrieve the primary models.
+[[yii\db\ActiveQuery::joinWith()|joinWith()]] と [[yii\db\ActiveQuery::with()|with()]] の違いは、前者が主たるモデルクラスのテーブルと関連モデルクラスのテーブルを結合して主たるモデルを読み出すのに対して、後者は主たるモデルクラスのテーブルに対してだけクエリを実行して主たるモデルを読み出す、という点にあります。
 
-Because of this difference, you may apply query conditions that are only available to a JOIN SQL statement.
-For example, you may filter the primary models by the conditions on the related models, like the example
-above. You may also sort the primary models using columns from the related tables.
+この違いによって、[[yii\db\ActiveQuery::joinWith()|joinWith()]] では、JOIN SQL 文だけに指定できるクエリ条件を適用することが出来ます。
+例えば、上記の例のように、関連モデルに対する条件によって主たるモデルをフィルタすることが出来ます。
+主たるモデルを関連テーブルのカラムを使って並び替えることも出来ます。
 
-When using [[yii\db\ActiveQuery::joinWith()|joinWith()]], you are responsible to disambiguate column names.
-In the above examples, we use `item.id` and `order.id` to disambiguate the `id` column references
-because both of the order table and the item table contain a column named `id`.
+[[yii\db\ActiveQuery::joinWith()|joinWith()]] を使うときは、カラム名の曖昧さを解決することについて、あなたが責任を負わなければなりません。
+上記の例では、order テーブルと item テーブルがともに `id` という名前のカラムを持っているため、`item.id` と `order.id` を使って、`id` カラムの参照の曖昧さを解決しています。
 
-By default, when you join with a relation, the relation will also be eagerly loaded. You may change this behavior
-by passing the `$eagerLoading` parameter which specifies whether to eager load the specified relations.
+既定では、リレーションを結合すると、リレーションがイーガーロードされることにもなります。
+この既定の動作は、指定されたリレーションをイーガーロードするかどうかを規定する `$eagerLoading` パラメータを渡して、変更することが出来ます。
 
-And also by default, [[yii\db\ActiveQuery::joinWith()|joinWith()]] uses `LEFT JOIN` to join the related tables.
-You may pass it with the `$joinType` parameter to customize the join type. As a shortcut to the `INNER JOIN` type,
-you may use [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]].
+また、既定では、[[yii\db\ActiveQuery::joinWith()|joinWith()]] は関連テーブルを結合するのに `LEFT JOIN` を使います。
+結合タイプをカスタマイズするために `$joinType` パラメータを渡すことが出来ます。
+`INNER JOIN` タイプのためのショートカットとして、[[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] を使うことが出来ます。
 
-Below are some more examples,
+下記に、いくつかの例を追加します。
 
 ```php
-// find all orders that contain books, but do not eager load "books".
+// 書籍を含む注文を全て検索するが、"books" はイーガーロードしない。
 $orders = Order::find()->innerJoinWith('books', false)->all();
-// which is equivalent to the above
+// これも上と等値
 $orders = Order::find()->joinWith('books', false, 'INNER JOIN')->all();
 ```
 
-Sometimes when joining two tables, you may need to specify some extra condition in the ON part of the JOIN query.
-This can be done by calling the [[yii\db\ActiveQuery::onCondition()]] method like the following:
+二つのテーブルを結合するとき、場合によっては、JOIN クエリの ON の部分で何らかの追加条件を指定する必要があります。
+これは、次のように、[[yii\db\ActiveQuery::onCondition()]] メソッドを呼んで実現することが出来ます。
 
 ```php
 class User extends ActiveRecord
@@ -760,12 +750,11 @@ class User extends ActiveRecord
 }
 ```
 
-In the above, the [[yii\db\ActiveRecord::hasMany()|hasMany()]] method returns an [[yii\db\ActiveQuery]] instance,
-upon which [[yii\db\ActiveQuery::onCondition()|onCondition()]] is called
-to specify that only items whose `category_id` is 1 should be returned.
+上記においては、[[yii\db\ActiveRecord::hasMany()|hasMany()]] メソッドが [[yii\db\ActiveQuery]] のインスタンスを返しています。
+そして、それに対して [[yii\db\ActiveQuery::onCondition()|onCondition()]] が呼ばれて、`category_id` が 1 である品目だけが返されるべきことを指定しています。
 
-When you perform a query using [[yii\db\ActiveQuery::joinWith()|joinWith()]], the ON condition will be put in the ON part
-of the corresponding JOIN query. For example,
+[[yii\db\ActiveQuery::joinWith()|joinWith()]] を使ってクエリを実行すると、指定された ON 条件が対応する JOIN クエリの ON の部分に挿入されます。
+例えば、
 
 ```php
 // SELECT user.* FROM user LEFT JOIN item ON item.owner_id=user.id AND category_id=1
@@ -773,8 +762,8 @@ of the corresponding JOIN query. For example,
 $users = User::find()->joinWith('books')->all();
 ```
 
-Note that if you use eager loading via [[yii\db\ActiveQuery::with()]] or lazy loading, the on-condition will be put
-in the WHERE part of the corresponding SQL statement, because there is no JOIN query involved. For example,
+[[yii\db\ActiveQuery::with()]] を使ってイーガーロードする場合や、レイジーロードする場合には、JOIN クエリは使われないため、ON 条件が対応する SQL 文の WHERE の部分に挿入されることに注意してください。
+例えば、
 
 ```php
 // SELECT * FROM user WHERE id=10
@@ -784,17 +773,15 @@ $books = $user->books;
 ```
 
 
-Working with Relationships
---------------------------
+関連付けを扱う
+--------------
 
-ActiveRecord provides the following two methods for establishing and breaking a
-relationship between two ActiveRecord objects:
+アクティブレコードは、二つのアクティブレコードオブジェクト間の関連付けを確立および破棄するために、次の二つのメソッドを提供しています。
 
 - [[yii\db\ActiveRecord::link()|link()]]
 - [[yii\db\ActiveRecord::unlink()|unlink()]]
 
-For example, given a customer and a new order, we can use the following code to make the
-order owned by the customer:
+例えば、顧客と新しい注文があると仮定したとき、次のコードを使って、その注文をその顧客のものとすることが出来ます。
 
 ```php
 $customer = Customer::findOne(1);
@@ -803,17 +790,17 @@ $order->subtotal = 100;
 $customer->link('orders', $order);
 ```
 
-The [[yii\db\ActiveRecord::link()|link()]] call above will set the `customer_id` of the order to be the primary key
-value of `$customer` and then call [[yii\db\ActiveRecord::save()|save()]] to save the order into the database.
+上記の [[yii\db\ActiveRecord::link()|link()]] の呼び出しは、注文の `customer_id` に `$customer` のプライマリキーの値を設定し、[[yii\db\ActiveRecord::save()|save()]] を呼んで注文をデータベースに保存します。
 
 
-Cross-DBMS Relations
---------------------
+DBMS 間のリレーション
+---------------------
 
-ActiveRecord allows you to establish relationships between entities from different DBMS. For example: between a relational database table and MongoDB collection. Such a relation does not require any special code:
+アクティブレコードは、異なる DBMS に属するエンティティ間、例えば、リレーショナルデータベースのテーブルと MongoDB のコレクションの間に、リレーションを確立することを可能にしています。
+そのようなリレーションでも、何も特別なコードは必要ありません。
 
 ```php
-// Relational database Active Record
+// リレーショナルデータベースのアクティブレコード
 class Customer extends \yii\db\ActiveRecord
 {
     public static function tableName()
@@ -823,12 +810,12 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getComments()
     {
-        // Customer, stored in relational database, has many Comments, stored in MongoDB collection:
+        // リレーショナルデータベースに保存されている Customer は、MongoDB コレクションに保存されている複数の Comment を持つ
         return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
     }
 }
 
-// MongoDb Active Record
+// MongoDb のアクティブレコード
 class Comment extends \yii\mongodb\ActiveRecord
 {
     public static function collectionName()
@@ -838,34 +825,32 @@ class Comment extends \yii\mongodb\ActiveRecord
 
     public function getCustomer()
     {
-        // Comment, stored in MongoDB collection, has one Customer, stored in relational database:
+        // MongoDB コレクションに保存されている Comment は、リレーショナルデータベースに保存されている一つの Customer を持つ
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
 ```
 
-All Active Record features like eager and lazy loading, establishing and breaking a relationship and so on, are
-available for cross-DBMS relations.
+アクティブレコードの全ての機能、例えば、イーガーローディングやレイジーローディング、関連付けの確立や破棄などが、DBMS 間のリレーションでも利用可能です。
 
-> Note: do not forget Active Record solutions for different DBMS may have specific methods and features, which may not be
-  applied for cross-DBMS relations. For example: usage of [[yii\db\ActiveQuery::joinWith()]] will obviously not work with
-  relation to the MongoDB collection.
+> Note|注意: DBMS ごとのアクティブレコードの実装には、DBMS 固有のメソッドや機能が含まれる場合があり、そういうものは DBMS 間のリレーションには適用できないということを忘れないでください。
+  例えば、[[yii\db\ActiveQuery::joinWith()]] の使用が MongoDB コレクションに対するリレーションでは動作しないことは明白です。
 
 
-Scopes
-------
+スコープ
+--------
 
-When you call [[yii\db\ActiveRecord::find()|find()]] or [[yii\db\ActiveRecord::findBySql()|findBySql()]], it returns an
-[[yii\db\ActiveQuery|ActiveQuery]] instance.
-You may call additional query methods, such as [[yii\db\ActiveQuery::where()|where()]], [[yii\db\ActiveQuery::orderBy()|orderBy()]],
-to further specify the query conditions.
+[[yii\db\ActiveRecord::find()|find()]] または [[yii\db\ActiveRecord::findBySql()|findBySql()]] を呼ぶと、[[yii\db\ActiveQuery|ActiveQuery]] のインスタンスが返されます。
+そして、追加のクエリメソッド、例えば、[[yii\db\ActiveQuery::where()|where()]] や [[yii\db\ActiveQuery::orderBy()|orderBy()]] を呼んで、クエリ条件をさらに指定することが出来ます。
 
-It is possible that you may want to call the same set of query methods in different places. If this is the case,
-you should consider defining the so-called *scopes*. A scope is essentially a method defined in a custom query class that calls a set of query methods to modify the query object. You can then use a scope instead of calling a normal query method.
+別々の場所で同じ一連のクエリメソッドを呼びたいということがあり得ます。
+そのような場合には、いわゆる *スコープ* を定義することを検討すべきです。
+スコープは、本質的には、カスタムクエリクラスの中で定義されたメソッドであり、クエリオブジェクトを修正する一連のメソッドを呼ぶものです。
+スコープを定義しておくと、通常のクエリメソッドを呼ぶ代りに、スコープを使うことが出来るようになります。
 
-Two steps are required to define a scope. First, create a custom query class for your model and define the needed scope
-methods in this class. For example, create a `CommentQuery` class for the `Comment` model and define the `active()`
-scope method like the following:
+スコープを定義するためには二つのステップが必要です。
+最初に、モデルのためのカスタムクエリクラスを作成して、このクラスの中に必要なスコープメソッドを定義します。
+例えば、`Comment` モデルのために `CommentQuery` クラスを作成して、次のように、`active()` というスコープメソッドを定義します。
 
 ```php
 namespace app\models;
@@ -882,14 +867,14 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
-Important points are:
+重要な点は、以下の通りです。
 
-1. Class should extend from `yii\db\ActiveQuery` (or another `ActiveQuery` such as `yii\mongodb\ActiveQuery`).
-2. A method should be `public` and should return `$this` in order to allow method chaining. It may accept parameters.
-3. Check [[yii\db\ActiveQuery]] methods that are very useful for modifying query conditions.
+1. クラスは `yii\db\ActiveQuery` (または、`yii\mongodb\ActiveQuery` などの、その他の `ActiveQuery`) を拡張したものにしなければなりません。
+2. メソッドは `public` で、メソッドチェーンが出来るように `$this` を返さなければなりません。メソッドはパラメータを取ることが出来ます。
+3. クエリ条件を修正する方法については、[[yii\db\ActiveQuery]] のメソッド群を参照するのが非常に役に立ちます。
 
-Second, override [[yii\db\ActiveRecord::find()]] to use the custom query class instead of the regular [[yii\db\ActiveQuery|ActiveQuery]].
-For the example above, you need to write the following code:
+次に、[[yii\db\ActiveRecord::find()]] をオーバーライドして、通常の [[yii\db\ActiveQuery|ActiveQuery]] の代りに、カスタムクエリクラスを使うようにします。
+上記の例のためには、次のコードを書く必要があります。
 
 ```php
 namespace app\models;
@@ -909,14 +894,14 @@ class Comment extends ActiveRecord
 }
 ```
 
-That's it. Now you can use your custom scope methods:
+以上です。これで、カスタムスコープメソッドを使用することが出来ます。
 
 ```php
 $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
 
-You can also use scopes when defining relations. For example,
+リレーションを定義するときにもスコープを使用することが出来ます。例えば、
 
 ```php
 class Post extends \yii\db\ActiveRecord
@@ -929,7 +914,7 @@ class Post extends \yii\db\ActiveRecord
 }
 ```
 
-Or use the scopes on-the-fly when performing a relational query:
+または、リレーショナルクエリを実行するときに、その場でスコープを使うことも出来ます。
 
 ```php
 $posts = Post::find()->with([
@@ -939,10 +924,12 @@ $posts = Post::find()->with([
 ])->all();
 ```
 
-### Default Scope
+### デフォルトスコープ
 
-If you used Yii 1.1 before, you may know a concept called *default scope*. A default scope is a scope that
-applies to ALL queries. You can define a default scope easily by overriding [[yii\db\ActiveRecord::find()]]. For example,
+あなたが Yii 1.1 を前に使ったことがあれば、*デフォルトスコープ* と呼ばれる概念を知っているかも知れません。
+デフォルトスコープは、全てのクエリに適用されるスコープです。
+デフォルトスコープは、[[yii\db\ActiveRecord::find()]] をオーバライドすることによって、簡単に定義することが出来ます。
+例えば、
 
 ```php
 public static function find()
@@ -951,17 +938,15 @@ public static function find()
 }
 ```
 
-Note that all your queries should then not use [[yii\db\ActiveQuery::where()|where()]] but
-[[yii\db\ActiveQuery::andWhere()|andWhere()]] and [[yii\db\ActiveQuery::orWhere()|orWhere()]]
-to not override the default condition.
+ただし、すべてのクエリにおいて、デフォルトの条件を上書きしないために、[[yii\db\ActiveQuery::where()|where()]] を使わず、[[yii\db\ActiveQuery::andWhere()|andWhere()]] または [[yii\db\ActiveQuery::orWhere()|orWhere()]] を使うべきであることに注意してください。
 
 
-Transactional operations
----------------------
+トランザクション操作
+--------------------
 
-There are two ways of dealing with transactions while working with Active Record. First way is doing everything manually
-as described in the "transactions" section of "[Database basics](db-dao.md)". Another way is to implement the
-`transactions` method where you can specify which operations are to be wrapped into transactions on a per model scenario:
+アクティブレコードを扱う際には、二つの方法でトランザクション操作を処理することができます。
+最初の方法は、"[データベースの基礎](db-dao.md)" の「トランザクション」の項で説明したように、全てを手作業でやる方法です。
+もう一つの方法として、`transactions` メソッドを実装して、モデルのシナリオごとに、どの操作をトランザクションで囲むかを指定することが出来ます。
 
 ```php
 class Post extends \yii\db\ActiveRecord
@@ -971,47 +956,45 @@ class Post extends \yii\db\ActiveRecord
         return [
             'admin' => self::OP_INSERT,
             'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
-            // the above is equivalent to the following:
+            // 上は次と等値
             // 'api' => self::OP_ALL,
         ];
     }
 }
 ```
 
-In the above `admin` and `api` are model scenarios and the constants starting with `OP_` are operations that should
-be wrapped in transactions for these scenarios. Supported operations are `OP_INSERT`, `OP_UPDATE` and `OP_DELETE`.
-`OP_ALL` stands for all three.
+上記において、`admin` と `api` はモデルのシナリオであり、`OP_` で始まる定数は、これらのシナリオについてトランザクションで囲まれるべき操作を示しています。
+サポートされている操作は、`OP_INSERT`、`OP_UPDATE`、そして、`OP_DELETE` です。
+`OP_ALL` は三つ全てを示します。
 
-Such automatic transactions are especially useful if you're doing additional database changes in `beforeSave`,
-`afterSave`, `beforeDelete`, `afterDelete` and want to be sure that both succeeded before they are saved.
+このような自動的なトランザクションは、`beforeSave`、`afterSave`、`beforeDelete`、`afterDelete` によってデータベースに追加の変更を加えており、本体の変更と追加の変更の両方が成功した場合にだけデータベースにコミットしたい、というときに取り分けて有用です。
 
-Optimistic Locks
+楽観的ロック
+------------
+
+楽観的ロックは、複数のユーザが編集のために同一のレコードにアクセスすることを許容しつつ、発生しうる衝突を回避するものです。
+例えば、ユーザが (別のユーザが先にデータを修正したために) 陳腐化したデータに対してレコードの保存を試みた場合は、[[\yii\db\StaleObjectException]] 例外が投げられて、更新または削除はスキップされます。
+
+楽観的ロックは、`update()` と `delete()` メソッドだけでサポートされ、既定では使用されません。
+
+楽観的ロックを使用するためには、
+
+1. 各行のバージョン番号を保存するカラムを作成します。カラムのタイプは `BIGINT DEFAULT 0` でなければなりません。
+   `optimisticLock()` メソッドをオーバーライドして、このカラムの名前を返すようにします。
+2. ユーザ入力を収集するウェブフォームに、更新されるレコードのロックバージョンを保持する隠しフィールドを追加します。
+3. データ更新を行うコントローラアクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、衝突を解決するために必要なビジネスロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
+
+ダーティな属性
 --------------
 
-Optimistic locking allows multiple users to access the same record for edits and avoids
-potential conflicts. For example, when a user attempts to save the record upon some staled data
-(because another user has modified the data), a [[\yii\db\StaleObjectException]] exception will be thrown,
-and the update or deletion is skipped.
+属性は、データベースからロードされた後、または最後のデータ保存の後に値が変更されると、ダーティであると見なされます。
+そして、`save()`、`update()`、`insert()` などを呼んでレコードデータを保存するときは、ダーティな属性だけがデータベースに保存されます。
+ダーティな属性が無い場合は、保存すべきものは無いことになり、クエリは何も発行されません。
 
-Optimistic locking is only supported by `update()` and `delete()` methods and isn't used by default.
+参照
+----
 
-To use Optimistic locking:
+以下も参照してください。
 
-1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
-   Override the `optimisticLock()` method to return the name of this column.
-2. In the Web form that collects the user input, add a hidden field that stores
-   the lock version of the recording being updated.
-3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
-   and implement necessary business logic (e.g. merging the changes, prompting stated data)
-   to resolve the conflict.
-
-Dirty Attributes
---------------
-
-An attribute is considered dirty if its value was modified after the model was loaded from database or since the most recent data save. When saving record data by calling `save()`, `update()`, `insert()` etc. only dirty attributes are saved into the database. If there are no dirty attributes then there is nothing to be saved so no query will be issued at all.
-
-See also
---------
-
-- [Model](structure-models.md)
+- [モデル](structure-models.md)
 - [[yii\db\ActiveRecord]]
