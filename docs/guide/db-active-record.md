@@ -9,7 +9,7 @@ an Active Record instance corresponds to a row of that table, and an attribute o
 instance represents the value of a column in that row. Instead of writing raw SQL statements,
 you can work with Active Record in an object-oriented fashion to manipulate the data in database tables.
 
-For example, assume `Customer` is an Active Record class is associated with the `customer` table
+For example, assume `Customer` is an Active Record class which is associated with the `customer` table
 and `name` is a column of the `customer` table. You can write the following code to insert a new
 row into the `customer` table:
 
@@ -346,7 +346,7 @@ of the active record class and set the values there. For example to set the defa
 public function init()
 {
     parent::init();
-    $this->status = 'active';
+    $this->status = self::STATUS_ACTIVE;
 }
 ```
 
@@ -1020,9 +1020,9 @@ To use Optimistic locking:
 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
    Override the `optimisticLock()` method to return the name of this column.
 2. In the Web form that collects the user input, add a hidden field that stores
-   the lock version of the recording being updated.
+   the lock version of the record being updated.
 3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
-   and implement necessary business logic (e.g. merging the changes, prompting stated data)
+   and implement necessary business logic (e.g. merging the changes, prompting staled data)
    to resolve the conflict.
 
 Dirty Attributes
