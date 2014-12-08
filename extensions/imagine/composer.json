@@ -1,7 +1,7 @@
 {
     "name": "yiisoft/yii2-imagine",
     "description": "The Imagine integration for the Yii framework",
-    "keywords": ["yii", "imagine", "image", "helper"],
+    "keywords": ["yii2", "imagine", "image", "helper"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
@@ -19,11 +19,16 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "imagine/imagine": "v0.5.0"
+        "imagine/imagine": "0.5.*"
     },
     "autoload": {
         "psr-4": {
             "yii\\imagine\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
         }
     }
 }

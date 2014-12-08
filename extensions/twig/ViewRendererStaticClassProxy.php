@@ -1,9 +1,7 @@
 <?php
 /**
- * Twig ViewRendererStaticClassProxy class file.
- *
  * @link http://www.yiiframework.com/
- * @copyright Copyright &copy; 2008 Yii Software LLC
+ * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
 
@@ -17,27 +15,48 @@ namespace yii\twig;
  */
 class ViewRendererStaticClassProxy
 {
-	private $_staticClassName;
+    private $_staticClassName;
 
-    public function __construct($staticClassName) {
-		$this->_staticClassName = $staticClassName;
-	}
 
-	public function __get($property)
-	{
-		$class = new \ReflectionClass($this->_staticClassName);
-		return $class->getStaticPropertyValue($property);
-	}
+    /**
+     * @param string $staticClassName
+     */
+    public function __construct($staticClassName)
+    {
+        $this->_staticClassName = $staticClassName;
+    }
 
-	public function __set($property, $value)
-	{
-		$class = new \ReflectionClass($this->_staticClassName);
-		$class->setStaticPropertyValue($property, $value);
-		return $value;
-	}
+    /**
+     * @param string $property
+     * @return mixed
+     */
+    public function __get($property)
+    {
+        $class = new \ReflectionClass($this->_staticClassName);
 
-	public function __call($method, $arguments)
-	{
-		return call_user_func_array(array($this->_staticClassName, $method), $arguments);
-	}
+        return $class->getStaticPropertyValue($property);
+    }
+
+    /**
+     * @param string $property
+     * @param mixed $value
+     * @return mixed
+     */
+    public function __set($property, $value)
+    {
+        $class = new \ReflectionClass($this->_staticClassName);
+        $class->setStaticPropertyValue($property, $value);
+
+        return $value;
+    }
+
+    /**
+     * @param string $method
+     * @param array $arguments
+     * @return mixed
+     */
+    public function __call($method, $arguments)
+    {
+        return call_user_func_array([$this->_staticClassName, $method], $arguments);
+    }
 }

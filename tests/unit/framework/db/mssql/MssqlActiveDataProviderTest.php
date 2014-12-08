@@ -10,5 +10,5 @@ use yiiunit\framework\data\ActiveDataProviderTest;
  */
 class MssqlActiveDataProviderTest extends ActiveDataProviderTest
 {
-	public $driverName = 'sqlsrv';
+    public $driverName = 'sqlsrv';
 }

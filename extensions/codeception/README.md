@@ -41,20 +41,27 @@ and application destroy after each test. You can configure a mock application us
 `TestCase` is extended from `Codeception\TestCase\Case` so all methods and assertions are available.
 You may use codeception modules and fire events in your test, just use methods:
 
+Getting Codeception modules
+---------------------------
+
+If you want to use codeception modules and helpers in your unit tests, you can do it like this:
+
 ```php
 <?php
 #in your unit-test
 $this->getModule('CodeHelper'); #or some other module
 ```
 
-You also can use all guy methods by accessing guy instance like:
+You also can use all actor methods by accessing actor instance like:
 
 ```php
 <?php
-$this->codeGuy->someMethodFromModule();
+$this->unitTester->someMethodFromModule();
 ```
+Codeception events
+------------------
 
-to fire event do this:
+To fire event do this:
 
 ```php
 <?php
@@ -62,74 +69,152 @@ use Codeception\Event\TestEvent;
 
 public function testSomething()
 {
-	$this->fire('myevent', new TestEvent($this));
+    $this->fire('myevent', new TestEvent($this));
 }
 ```
 this event can be catched in modules and helpers. If your test is in the group, then event name will be followed by the groupname, 
 for example ```myevent.somegroup```.
+
+
+Special test method chaining
+----------------------------
 
 Execution of special tests methods is (for example on ```UserTest``` class):
 
 ```
 tests\unit\models\UserTest::setUpBeforeClass();
 
-	tests\unit\models\UserTest::_before();
+    tests\unit\models\UserTest::_before();
 
-		tests\unit\models\UserTest::setUp();
+        tests\unit\models\UserTest::setUp();
 
-			tests\unit\models\UserTest::testSomething();
+            tests\unit\models\UserTest::testSomething();
 
-		tests\unit\models\UserTest::tearDown();
+        tests\unit\models\UserTest::tearDown();
 
-	tests\unit\models\UserTest::_after();
+    tests\unit\models\UserTest::_after();
 
 tests\unit\models\UserTest::tearDownAfterClass();
 ```
 
 If you use special methods dont forget to call its parent.
 
+Customizing application config
+------------------------------
+
+You may need to specify different configuration files per test cases, to do this you can make it like the following:
+
 ```php
 <?php
 
 SomeConsoleTest extends \yii\codeception\TestCase
 {
-	// this is the config file to load as application config
-	public static $applicationConfig = '@app/config/web.php';
-
-	// this defines the application class to use for mock applications
-	protected $applicationClass = 'yii\web\Application';
+    // this is the config file to load as application config
+    public $appConfig = '@app/path/to/my/custom/config/for/test.php';
 }
 ```
 
-The `$applicationConfig` property may be set for all tests in a `_bootstrap.php` file like this:
+The `$appConfig` property could be an array or a valid alias, pointing to the file that returns a config array. You can specify
+application class in the config, for example for testing console commands or features you can create `_console.php` config under
+`tests/unit` directory like this:
 
 ```php
-<?php
-
-yii\codeception\TestCase::$applicationConfig = yii\helpers\ArrayHelper::merge(
-	require(__DIR__ . '/../../config/web.php'),
-	require(__DIR__ . '/../../config/codeception/unit.php')
+return yii\helpers\ArrayHelper::merge(
+    require(__DIR__ . '/../../config/console.php'),
+    require(__DIR__ . '/../_config.php'),
+    [
+        'class' => 'yii\console\Application',
+        'components' => [
+            //override console components if needed
+        ],
+    ]
 );
 ```
 
-Don't forget that you have to include autoload and Yii class in the `_bootstrap.php` file.
+and then just use your `ConsoleTestCase` like the following:
 
-You also can reconfigure some components for tests, for this purpose there is a `$config` property in the `TestCase` class.
+```php
+
+use \yii\codeception\TestCase;
+
+class ConsoleTestCase extends TestCase
+{
+    public $appConfig = '@tests/unit/_console.php';
+}
+```
+
+You can extend other console test cases from this basic `ConsoleTestCase`.
+
+Reconfiguring components for testing
+------------------------------------
+
+You can reconfigure a component for testing, for this purpose in your `setUp` method of your test case 
+you can do this for example:
 
 ```php
 <?php
 
-SomeOtherTest extends \yii\codeception\TestCase
+use \yii\codeception\TestCase;
+use Yii;
+
+class MailTest extends TestCase
 {
-	public $config = [
-		'components' => [
-			'mail' => [
-				'useFileTransport' => true,
-			],
-		]
-	];
+
+    protected function setUp()
+    {
+        // don't forget to call parent method that will setup Yii application
+        parent::setUp();
+
+        Yii::$app->mailer->fileTransportCallback = function ($mailer, $message) {
+            return 'testing_message.eml';
+        };
+    }
+
 }
 ```
+
+> **Tip**: You also can reconfigure Yii components and properties with method `Yii::configure()`.
+
+You don't need to worry about application instances and isolation because application will be created [each time](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L31) before any of test method will be executed in test case.
+You can mock application in a different way. For this purposes you have method [`mockApplication`](https://github.com/yiisoft/yii2/blob/master/extensions/codeception/TestCase.php#L55) available in your test case.
+This method creates new application instance and replaces old one with it and is handy when you need to create application with a config that is different from other test methods in the current test suite. For example:
+
+```php
+
+use \yii\codeception\TestCase;
+
+class SomeMyTest extends TestCase
+{
+
+    public function testOne()
+    {
+        ...
+    }
+
+    public function testTwo()
+    {
+        $this->mockApplication([
+            'language' => 'ru-RU',
+            'components' => [
+                'db' => [
+                    //your custom configuration here
+                ],
+            ],
+        ]);
+
+        //your expectations and assertions goes here
+    }
+
+    public function testThree()
+    {
+        ...
+    }
+
+}
+```
+
+Additional debug output
+-----------------------
 
 Because of Codeception buffers all output you can't make simple `var_dump()` in the TestCase, instead you need to use
 `Codeception\Util\Debug::debug()` function and then run test with `--debug` key, for example:
@@ -141,12 +226,12 @@ use Codeception\Util\Debug;
 
 SomeDebugTest extends \yii\codeception\TestCase
 {
-	public function testSmth()
-	{
-		Debug::debug('some string');
-		Debug::debug($someArray);
-		Debug::debug($someObject);
-	}
+    public function testSmth()
+    {
+        Debug::debug('some string');
+        Debug::debug($someArray);
+        Debug::debug($someObject);
+    }
 
 }
 ```
@@ -182,9 +267,9 @@ Then run command `php codecept.phar run --debug unit/SomeDebugTest` and you will
   
       [authTimeout] => 
       [autoRenewCookie] => 1
-      [idVar] => __id
-      [authTimeoutVar] => __expire
-      [returnUrlVar] => __returnUrl
+      [idParam] => __id
+      [authTimeoutParam] => __expire
+      [returnUrlParam] => __returnUrl
       [_access:yii\web\User:private] => Array
           (
           )
@@ -196,4 +281,4 @@ Then run command `php codecept.phar run --debug unit/SomeDebugTest` and you will
 
 ```
 
-For further instructions refer to the testing section in the [Yii Definitive Guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/testing.md).
+For further instructions refer to the testing section in the [Yii Definitive Guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-overview.md).

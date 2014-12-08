@@ -6,45 +6,46 @@ use yiiunit\extensions\authclient\TestCase;
 
 class BaseMethodTest extends TestCase
 {
-	/**
-	 * Creates test signature method instance.
-	 * @return \yii\authclient\signature\BaseMethod
-	 */
-	protected function createTestSignatureMethod()
-	{
-		$signatureMethod = $this->getMock('\yii\authclient\signature\BaseMethod', ['getName', 'generateSignature']);
-		$signatureMethod->expects($this->any())->method('getName')->will($this->returnValue('testMethodName'));
-		$signatureMethod->expects($this->any())->method('generateSignature')->will($this->returnValue('testSignature'));
-		return $signatureMethod;
-	}
+    /**
+     * Creates test signature method instance.
+     * @return \yii\authclient\signature\BaseMethod
+     */
+    protected function createTestSignatureMethod()
+    {
+        $signatureMethod = $this->getMock('\yii\authclient\signature\BaseMethod', ['getName', 'generateSignature']);
+        $signatureMethod->expects($this->any())->method('getName')->will($this->returnValue('testMethodName'));
+        $signatureMethod->expects($this->any())->method('generateSignature')->will($this->returnValue('testSignature'));
 
-	// Tests :
+        return $signatureMethod;
+    }
 
-	public function testGenerateSignature()
-	{
-		$signatureMethod = $this->createTestSignatureMethod();
+    // Tests :
 
-		$baseString = 'test_base_string';
-		$key = 'test_key';
+    public function testGenerateSignature()
+    {
+        $signatureMethod = $this->createTestSignatureMethod();
 
-		$signature = $signatureMethod->generateSignature($baseString, $key);
+        $baseString = 'test_base_string';
+        $key = 'test_key';
 
-		$this->assertNotEmpty($signature, 'Unable to generate signature!');
-	}
+        $signature = $signatureMethod->generateSignature($baseString, $key);
 
-	/**
-	 * @depends testGenerateSignature
-	 */
-	public function testVerify()
-	{
-		$signatureMethod = $this->createTestSignatureMethod();
+        $this->assertNotEmpty($signature, 'Unable to generate signature!');
+    }
 
-		$baseString = 'test_base_string';
-		$key = 'test_key';
-		$signature = 'unsigned';
-		$this->assertFalse($signatureMethod->verify($signature, $baseString, $key), 'Unsigned signature is valid!');
+    /**
+     * @depends testGenerateSignature
+     */
+    public function testVerify()
+    {
+        $signatureMethod = $this->createTestSignatureMethod();
 
-		$generatedSignature = $signatureMethod->generateSignature($baseString, $key);
-		$this->assertTrue($signatureMethod->verify($generatedSignature, $baseString, $key), 'Generated signature is invalid!');
-	}
+        $baseString = 'test_base_string';
+        $key = 'test_key';
+        $signature = 'unsigned';
+        $this->assertFalse($signatureMethod->verify($signature, $baseString, $key), 'Unsigned signature is valid!');
+
+        $generatedSignature = $signatureMethod->generateSignature($baseString, $key);
+        $this->assertTrue($signatureMethod->verify($generatedSignature, $baseString, $key), 'Generated signature is invalid!');
+    }
 }

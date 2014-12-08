@@ -40,52 +40,54 @@ use yii\authclient\OAuth2;
  */
 class YandexOAuth extends OAuth2
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $authUrl = 'https://oauth.yandex.ru/authorize';
-	/**
-	 * @inheritdoc
-	 */
-	public $tokenUrl = 'https://oauth.yandex.ru/token';
-	/**
-	 * @inheritdoc
-	 */
-	public $apiBaseUrl = 'https://login.yandex.ru';
+    /**
+     * @inheritdoc
+     */
+    public $authUrl = 'https://oauth.yandex.ru/authorize';
+    /**
+     * @inheritdoc
+     */
+    public $tokenUrl = 'https://oauth.yandex.ru/token';
+    /**
+     * @inheritdoc
+     */
+    public $apiBaseUrl = 'https://login.yandex.ru';
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function initUserAttributes()
-	{
-		return $this->api('info', 'GET');
-	}
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function apiInternal($accessToken, $url, $method, array $params)
-	{
-		if (!isset($params['format'])) {
-			$params['format'] = 'json';
-		}
-		$params['oauth_token'] = $accessToken->getToken();
-		return $this->sendRequest($method, $url, $params);
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function initUserAttributes()
+    {
+        return $this->api('info', 'GET');
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultName()
-	{
-		return 'yandex';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
+    {
+        if (!isset($params['format'])) {
+            $params['format'] = 'json';
+        }
+        $params['oauth_token'] = $accessToken->getToken();
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultTitle()
-	{
-		return 'Yandex';
-	}
+        return $this->sendRequest($method, $url, $params, $headers);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultName()
+    {
+        return 'yandex';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultTitle()
+    {
+        return 'Yandex';
+    }
 }

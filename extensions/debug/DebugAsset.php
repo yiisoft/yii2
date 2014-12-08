@@ -6,21 +6,24 @@
  */
 
 namespace yii\debug;
+
 use yii\web\AssetBundle;
 
 /**
+ * Debugger asset bundle
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class DebugAsset extends AssetBundle
 {
-	public $sourcePath = '@yii/debug/assets';
-	public $css = [
-		'main.css',
-		'toolbar.css',
-	];
-	public $depends = [
-		'yii\web\YiiAsset',
-		'yii\bootstrap\BootstrapAsset',
-	];
+    public $sourcePath = '@yii/debug/assets';
+    public $css = [
+        'main.css',
+        'toolbar.css',
+    ];
+    public $depends = [
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
+    ];
 }

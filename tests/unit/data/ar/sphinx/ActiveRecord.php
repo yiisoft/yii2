@@ -7,10 +7,10 @@ namespace yiiunit\data\ar\sphinx;
  */
 class ActiveRecord extends \yii\sphinx\ActiveRecord
 {
-	public static $db;
+    public static $db;
 
-	public static function getDb()
-	{
-		return self::$db;
-	}
+    public static function getDb()
+    {
+        return self::$db;
+    }
 }

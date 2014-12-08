@@ -26,20 +26,24 @@ use yii\helpers\Html;
  */
 class Slider extends Widget
 {
-	protected $clientEventMap = [
-		'change' => 'slidechange',
-		'create' => 'slidecreate',
-		'slide' => 'slide',
-		'start' => 'slidestart',
-		'stop' => 'slidestop',
-	];
+    /**
+     * @inheritDoc
+     */
+    protected $clientEventMap = [
+        'change' => 'slidechange',
+        'create' => 'slidecreate',
+        'slide' => 'slide',
+        'start' => 'slidestart',
+        'stop' => 'slidestop',
+    ];
 
-	/**
-	 * Executes the widget.
-	 */
-	public function run()
-	{
-		echo Html::tag('div', '', $this->options);
-		$this->registerWidget('slider', SliderAsset::className());
-	}
+
+    /**
+     * Executes the widget.
+     */
+    public function run()
+    {
+        echo Html::tag('div', '', $this->options);
+        $this->registerWidget('slider');
+    }
 }

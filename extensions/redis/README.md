@@ -2,24 +2,29 @@ Redis Cache, Session and ActiveRecord for Yii 2
 ===============================================
 
 This extension provides the [redis](http://redis.io/) key-value store support for the Yii2 framework.
-It includes a `Cache` and `Session` storage handler and implents the `ActiveRecord` pattern that allows
+It includes a `Cache` and `Session` storage handler and implements the `ActiveRecord` pattern that allows
 you to store active records in redis.
 
 To use this extension, you have to configure the Connection class in your application configuration:
 
 ```php
 return [
-	//....
-	'components' => [
+    //....
+    'components' => [
         'redis' => [
             'class' => 'yii\redis\Connection',
             'hostname' => 'localhost',
             'port' => 6379,
             'database' => 0,
         ],
-	]
+    ]
 ];
 ```
+
+Requirements
+------------
+
+At least redis version 2.6.12 is required for all components to work properly.
 
 Installation
 ------------
@@ -44,18 +49,18 @@ to the require section of your composer.json.
 Using the Cache component
 -------------------------
 
-To use the `Cache` component, in addtition to configuring the connection as described above,
+To use the `Cache` component, in addition to configuring the connection as described above,
 you also have to configure the `cache` component to be `yii\redis\Cache`:
 
 ```php
 return [
-	//....
-	'components' => [
-	    // ...
+    //....
+    'components' => [
+        // ...
         'cache' => [
             'class' => 'yii\redis\Cache',
         ],
-	]
+    ]
 ];
 ```
 
@@ -64,9 +69,9 @@ cache component (no connection application component needs to be configured in t
 
 ```php
 return [
-	//....
-	'components' => [
-	    // ...
+    //....
+    'components' => [
+        // ...
         'cache' => [
             'class' => 'yii\redis\Cache',
             'redis' => [
@@ -75,25 +80,25 @@ return [
                 'database' => 0,
             ],
         ],
-	]
+    ]
 ];
 ```
 
 Using the Session component
 ---------------------------
 
-To use the `Session` component, in addtition to configuring the connection as described above,
+To use the `Session` component, in addition to configuring the connection as described above,
 you also have to configure the `session` component to be `yii\redis\Session`:
 
 ```php
 return [
-	//....
-	'components' => [
-	    // ...
+    //....
+    'components' => [
+        // ...
         'session' => [
             'class' => 'yii\redis\Session',
         ],
-	]
+    ]
 ];
 ```
 
@@ -102,9 +107,9 @@ cache component (no connection application component needs to be configured in t
 
 ```php
 return [
-	//....
-	'components' => [
-	    // ...
+    //....
+    'components' => [
+        // ...
         'session' => [
             'class' => 'yii\redis\Session',
             'redis' => [
@@ -113,7 +118,7 @@ return [
                 'database' => 0,
             ],
         ],
-	]
+    ]
 ];
 ```
 
@@ -123,9 +128,9 @@ Using the redis ActiveRecord
 
 For general information on how to use yii's ActiveRecord please refer to the [guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/active-record.md).
 
-For defining a redis ActiveRecord class your record class needs to extend from `yii\redis\ActiveRecord` and
+For defining a redis ActiveRecord class your record class needs to extend from [[yii\redis\ActiveRecord]] and
 implement at least the `attributes()` method to define the attributes of the record.
-A primary key can be defined via [[primaryKey()]] which defaults to `id` if not specified.
+A primary key can be defined via [[yii\redis\ActiveRecord::primaryKey()]] which defaults to `id` if not specified.
 The primaryKey needs to be part of the attributes so make sure you have an `id` attribute defined if you do
 not specify your own primary key.
 
@@ -134,29 +139,29 @@ The following is an example model called `Customer`:
 ```php
 class Customer extends \yii\redis\ActiveRecord
 {
-     /**
-      * @return array the list of attributes for this record
-      */
-     public function attributes()
-     {
-         return ['id', 'name', 'address', 'registration_date'];
-     }
+    /**
+     * @return array the list of attributes for this record
+     */
+    public function attributes()
+    {
+        return ['id', 'name', 'address', 'registration_date'];
+    }
 
-     /**
-      * @return ActiveRelation defines a relation to the Order record (can be in other database, e.g. elasticsearch or sql)
-      */
-     public function getOrders()
-     {
-         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
-     }
+    /**
+     * @return ActiveQuery defines a relation to the Order record (can be in other database, e.g. elasticsearch or sql)
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
 
-     /**
-      * Defines a scope that modifies the `$query` to return only active(status = 1) customers
-      */
-     public static function active($query)
-     {
-         $query->andWhere(array('status' => 1));
-     }
+    /**
+     * Defines a scope that modifies the `$query` to return only active(status = 1) customers
+     */
+    public static function active($query)
+    {
+        $query->andWhere(['status' => 1]);
+    }
 }
 ```
 

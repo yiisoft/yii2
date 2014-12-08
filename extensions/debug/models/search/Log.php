@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\debug\models\search;
 
@@ -6,74 +11,77 @@ use yii\data\ArrayDataProvider;
 use yii\debug\components\search\Filter;
 
 /**
- * Log represents the model behind the search form about current request log.
+ * Search model for current request log.
+ *
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Mark Jebri <mark.github@yandex.ru>
+ * @since 2.0
  */
 class Log extends Base
 {
+    /**
+     * @var string ip attribute input search value
+     */
+    public $level;
+    /**
+     * @var string method attribute input search value
+     */
+    public $category;
+    /**
+     * @var integer message attribute input search value
+     */
+    public $message;
 
-	/**
-	 * @var string ip attribute input search value
-	 */
-	public $level;
 
-	/**
-	 * @var string method attribute input search value
-	 */
-	public $category;
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['level', 'message', 'category'], 'safe'],
+        ];
+    }
 
-	/**
-	 * @var integer message attribute input search value
-	 */
-	public $message;
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'level' => 'Level',
+            'category' => 'Category',
+            'message' => 'Message',
+        ];
+    }
 
-	public function rules()
-	{
-		return [
-			[['level', 'message', 'category'], 'safe'],
-		];
-	}
+    /**
+     * Returns data provider with filled models. Filter applied if needed.
+     *
+     * @param array $params an array of parameter values indexed by parameter names
+     * @param array $models data to return provider for
+     * @return \yii\data\ArrayDataProvider
+     */
+    public function search($params, $models)
+    {
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $models,
+            'pagination' => false,
+            'sort' => [
+                'attributes' => ['time', 'level', 'category', 'message'],
+            ],
+        ]);
 
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
-			'level' => 'Level',
-			'category' => 'Category',
-			'message' => 'Message',
-		];
-	}
+        if (!($this->load($params) && $this->validate())) {
+            return $dataProvider;
+        }
 
-	/**
-	 * Returns data provider with filled models. Filter applied if needed.
-	 * @param array $params
-	 * @param array $models
-	 * @return \yii\data\ArrayDataProvider
-	 */
-	public function search($params, $models)
-	{
-		$dataProvider = new ArrayDataProvider([
-			'allModels' => $models,
-			'pagination' => [
-				'pageSize' => 10,
-			],
-			'sort' => [
-				'attributes' => ['time', 'level', 'category', 'message'],
-			],
-		]);
+        $filter = new Filter();
+        $this->addCondition($filter, 'level');
+        $this->addCondition($filter, 'category', true);
+        $this->addCondition($filter, 'message', true);
+        $dataProvider->allModels = $filter->filter($models);
 
-		if (!($this->load($params) && $this->validate())) {
-			return $dataProvider;
-		}
-
-		$filter = new Filter();
-		$this->addCondition($filter, 'level');
-		$this->addCondition($filter, 'category', true);
-		$this->addCondition($filter, 'message', true);
-		$dataProvider->allModels = $filter->filter($models);
-
-		return $dataProvider;
-	}
-
+        return $dataProvider;
+    }
 }

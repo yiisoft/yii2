@@ -13,24 +13,24 @@ like the following:
 
 ```json
 {
-	"type": "yii2-extension",
-	"require": {
-		"yiisoft/yii2": "*"
-	},
-	...
+    "type": "yii2-extension",
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    ...
 }
 ```
 
-You may specify a bootstrap class in the `extra` section. The `init()` method of the class will be executed each time
+You may specify a bootstrapping class in the `extra` section. The `init()` method of the class will be executed each time
 the Yii 2 application is responding to a request. For example,
 
 ```json
 {
-	"type": "yii2-extension",
-	...,
-	"extra": {
-		"bootstrap": "yii\\jui\\Extension"
-	}
+    "type": "yii2-extension",
+    ...,
+    "extra": {
+        "bootstrap": "yii\\jui\\Extension"
+    }
 }
 ```
 
@@ -42,22 +42,22 @@ For example,
 
 ```json
 {
-	"name": "yiisoft/yii2-app-basic",
-	"type": "project",
-	...
-	"scripts": {
-		"post-create-project-cmd": [
-			"yii\\composer\\Installer::setPermission"
-		]
-	},
-	"extra": {
-		"writable": [
-			"runtime",
-			"web/assets"
-		],
-		"executable": [
-			"yii"
-		]
-	}
+    "name": "yiisoft/yii2-app-basic",
+    "type": "project",
+    ...
+    "scripts": {
+        "post-create-project-cmd": [
+            "yii\\composer\\Installer::setPermission"
+        ]
+    },
+    "extra": {
+        "writable": [
+            "runtime",
+            "web/assets"
+        ],
+        "executable": [
+            "yii"
+        ]
+    }
 }
 ```

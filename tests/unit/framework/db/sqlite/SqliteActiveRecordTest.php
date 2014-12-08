@@ -1,7 +1,6 @@
 <?php
 namespace yiiunit\framework\db\sqlite;
 
-use yiiunit\data\ar\Customer;
 use yiiunit\framework\db\ActiveRecordTest;
 
 /**
@@ -10,5 +9,5 @@ use yiiunit\framework\db\ActiveRecordTest;
  */
 class SqliteActiveRecordTest extends ActiveRecordTest
 {
-	protected $driverName = 'sqlite';
+    protected $driverName = 'sqlite';
 }

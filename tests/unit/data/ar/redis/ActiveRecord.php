@@ -7,8 +7,6 @@
 
 namespace yiiunit\data\ar\redis;
 
-use yii\redis\Connection;
-
 /**
  * ActiveRecord is ...
  *
@@ -17,10 +15,10 @@ use yii\redis\Connection;
  */
 class ActiveRecord extends \yii\redis\ActiveRecord
 {
-	public static $db;
+    public static $db;
 
-	public static function getDb()
-	{
-		return self::$db;
-	}
+    public static function getDb()
+    {
+        return self::$db;
+    }
 }

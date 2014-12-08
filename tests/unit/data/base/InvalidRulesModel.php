@@ -8,10 +8,10 @@ use yii\base\Model;
  */
 class InvalidRulesModel extends Model
 {
-	public function rules()
-	{
-		return [
-			['test'],
-		];
-	}
+    public function rules()
+    {
+        return [
+            ['test'],
+        ];
+    }
 }

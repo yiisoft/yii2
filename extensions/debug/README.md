@@ -33,12 +33,12 @@ Once the extension is installed, simply modify your application configuration as
 
 ```php
 return [
-	'preload' => ['debug'],
-	'modules' => [
-		'debug' => 'yii\debug\Module',
-		...
-	],
-	...
+    'bootstrap' => ['debug'],
+    'modules' => [
+        'debug' => 'yii\debug\Module',
+        // ...
+    ],
+    ...
 ];
 ```
 

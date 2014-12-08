@@ -17,11 +17,11 @@ use yii\base\UserException;
  */
 class Exception extends UserException
 {
-	/**
-	 * @return string the user-friendly name of this exception
-	 */
-	public function getName()
-	{
-		return 'Error';
-	}
+    /**
+     * @return string the user-friendly name of this exception
+     */
+    public function getName()
+    {
+        return 'Error';
+    }
 }

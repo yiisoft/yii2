@@ -4,24 +4,34 @@ namespace yiiunit\data\ar\mongodb\file;
 
 class CustomerFile extends ActiveRecord
 {
-	public static function collectionName()
-	{
-		return 'customer_fs';
-	}
+    /**
+     * @inheritdoc
+     */
+    public static function collectionName()
+    {
+        return 'customer_fs';
+    }
 
-	public function attributes()
-	{
-		return array_merge(
-			parent::attributes(),
-			[
-				'tag',
-				'status',
-			]
-		);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function attributes()
+    {
+        return array_merge(
+            parent::attributes(),
+            [
+                'tag',
+                'status',
+            ]
+        );
+    }
 
-	public static function activeOnly($query)
-	{
-		$query->andWhere(['status' => 2]);
-	}
+    /**
+     * @inheritdoc
+     * @return CustomerFileQuery
+     */
+    public static function find()
+    {
+        return new CustomerFileQuery(get_called_class());
+    }
 }

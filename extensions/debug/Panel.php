@@ -9,6 +9,7 @@ namespace yii\debug;
 
 use Yii;
 use yii\base\Component;
+use yii\helpers\Url;
 
 /**
  * Panel is a base class for debugger panel classes. It defines how data should be collected,
@@ -24,68 +25,84 @@ use yii\base\Component;
  */
 class Panel extends Component
 {
-	public $id;
-	public $tag;
-	/**
-	 * @var Module
-	 */
-	public $module;
-	public $data;
-	/**
-	 * @var array array of actions to add to the debug modules default controller.
-	 * This array will be merged with all other panels actions property.
-	 * See [[yii\base\Controller::actions()]] for the format.
-	 */
-	public $actions = [];
+    /**
+     * @var string panel unique identifier.
+     * It is set automatically by the container module.
+     */
+    public $id;
+    /**
+     * @var string request data set identifier.
+     */
+    public $tag;
+    /**
+     * @var Module
+     */
+    public $module;
+    /**
+     * @var mixed data associated with panel
+     */
+    public $data;
+    /**
+     * @var array array of actions to add to the debug modules default controller.
+     * This array will be merged with all other panels actions property.
+     * See [[\yii\base\Controller::actions()]] for the format.
+     */
+    public $actions = [];
 
-	/**
-	 * @return string name of the panel
-	 */
-	public function getName()
-	{
-		return '';
-	}
 
-	/**
-	 * @return string content that is displayed at debug toolbar
-	 */
-	public function getSummary()
-	{
-		return '';
-	}
+    /**
+     * @return string name of the panel
+     */
+    public function getName()
+    {
+        return '';
+    }
 
-	/**
-	 * @return string content that is displayed in debugger detail view
-	 */
-	public function getDetail()
-	{
-		return '';
-	}
+    /**
+     * @return string content that is displayed at debug toolbar
+     */
+    public function getSummary()
+    {
+        return '';
+    }
 
-	/**
-	 * Saves data to be later used in debugger detail view.
-	 * This method is called on every page where debugger is enabled.
-	 *
-	 * @return mixed data to be saved
-	 */
-	public function save()
-	{
-		return null;
-	}
+    /**
+     * @return string content that is displayed in debugger detail view
+     */
+    public function getDetail()
+    {
+        return '';
+    }
 
-	public function load($data)
-	{
-		$this->data = $data;
-	}
+    /**
+     * Saves data to be later used in debugger detail view.
+     * This method is called on every page where debugger is enabled.
+     *
+     * @return mixed data to be saved
+     */
+    public function save()
+    {
+        return null;
+    }
 
-	/**
-	 * @return string URL pointing to panel detail view
-	 */
-	public function getUrl()
-	{
-		return Yii::$app->getUrlManager()->createUrl($this->module->id . '/default/view', [
-			'panel' => $this->id,
-			'tag' => $this->tag,
-		]);
-	}
+    /**
+     * Loads data into the panel
+     *
+     * @param mixed $data
+     */
+    public function load($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+     * @return string URL pointing to panel detail view
+     */
+    public function getUrl()
+    {
+        return Url::toRoute(['/' . $this->module->id . '/default/view',
+            'panel' => $this->id,
+            'tag' => $this->tag,
+        ]);
+    }
 }

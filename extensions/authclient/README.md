@@ -1,7 +1,7 @@
 AuthClient Extension for Yii 2
 ==============================
 
-This extension adds [OpenID](http://openid.net/), [OAuth](http://oauth.net/) and [OAuth2](http://oauth.net/2/) consumers for the Yii 2 framework.
+This extension adds [OpenID](http://openid.net/), [OAuth](http://oauth.net/) and [OAuth2](http://oauth.net/2/) consumers for the Yii framework 2.0.
 
 
 Installation
@@ -32,7 +32,7 @@ It covers OpenID, OAuth1 and OAuth2 protocols.
 
 You need to setup auth client collection application component:
 
-```
+```php
 'components' => [
     'authClientCollection' => [
         'class' => 'yii\authclient\Collection',
@@ -53,7 +53,7 @@ You need to setup auth client collection application component:
 
 Then you need to add [[yii\authclient\AuthAction]] to some of your web controllers:
 
-```
+```php
 class SiteController extends Controller
 {
     public function actions()
@@ -63,7 +63,7 @@ class SiteController extends Controller
                 'class' => 'yii\authclient\AuthAction',
                 'successCallback' => [$this, 'successCallback'],
             ],
-        ]
+        ];
     }
 
     public function successCallback($client)
@@ -74,10 +74,10 @@ class SiteController extends Controller
 }
 ```
 
-You may use [[yii\authclient\widgets\Choice]] to compose auth client selection:
+You may use [[yii\authclient\widgets\AuthChoice]] to compose auth client selection:
 
-```
-<?= yii\authclient\widgets\Choice::widget([
+```php
+<?= yii\authclient\widgets\AuthChoice::widget([
      'baseAuthUrl' => ['site/auth']
 ]) ?>
 ```
@@ -119,7 +119,7 @@ Defining list of attributes, which external auth provider should return, depends
 
 Each auth client has "viewOptions" attribute. It is an array, which stores name-value pairs,
 which serve to compose client representation in the view.
-For example widget [[yii\authclient\widgets\Choice]] uses keys "popupWidth" and "popupHeight" to
+For example widget [[yii\authclient\widgets\AuthChoice]] uses keys "popupWidth" and "popupHeight" to
 determine the size of authentication popup window.
 
 
@@ -132,7 +132,8 @@ it may be not enough to access full external API functionality. This method is m
 fetch the external user account data.
 To use API calls, you need to setup [[yii\authclient\BaseOAuth::apiBaseUrl]] according to the
 API specification. Then you can call [[yii\authclient\BaseOAuth::api()]] method:
-```
+
+```php
 use yii\authclient\OAuth2;
 
 $client = new OAuth2;
@@ -155,12 +156,40 @@ Following predefined auth clients are available:
  - [[yii\authclient\clients\GoogleOAuth]] - [Google](https://www.google.com/) OAuth2 client
  - [[yii\authclient\clients\GoogleOpenId]] - [Google](https://www.google.com/) OpenID client
  - [[yii\authclient\clients\LinkedIn]] - [LinkedIn](http://www.linkedin.com/) OAuth2 client
- - [[yii\authclient\clients\LinkedIn]] - [LinkedIn](http://www.linkedin.com/) OAuth2 client
+ - [[yii\authclient\clients\Live]] - [Microsoft Live](http://live.com/) OAuth2 client
  - [[yii\authclient\clients\Twitter]] - [Twitter](https://twitter.com/) OAuth1 client
+ - [[yii\authclient\clients\VKontakte]] - [VKontakte](http://vk.com/) OAuth2 client
  - [[yii\authclient\clients\YandexOAuth]] - [Yandex](http://www.yandex.ru/) OAuth2 client
  - [[yii\authclient\clients\YandexOpenId]] - [Yandex](http://www.yandex.ru/) OpenID client
 
 Please, refer to the particular client class documentation for its actual usage.
+
+
+Customize auth clients
+----------------------
+
+All predefined auth clients have a default configuration like `authUrl`, `apiBaseUrl` and so on.
+However in some cases you may want to change these values in order to achieve some specific results.
+For example: using `yii\authclient\clients\Facebook` you may want the auth window appear in popup display
+mode, which is setup via `authUrl`:
+
+```php
+'components' => [
+    'authClientCollection' => [
+        'class' => 'yii\authclient\Collection',
+        'clients' => [
+            'facebook' => [
+                'class' => 'yii\authclient\clients\Facebook',
+                // Facebook login form will be displayed in 'popup' mode
+                'authUrl' => 'https://www.facebook.com/dialog/oauth?display=popup',
+                'clientId' => 'facebook_client_id',
+                'clientSecret' => 'facebook_client_secret',
+            ],
+        ],
+    ]
+    ...
+]
+```
 
 
 Creating your own auth clients
@@ -177,28 +206,28 @@ for your extension:
 At this stage you can determine auth client default name, title and view options, declaring
 corresponding methods:
 
-```
+```php
 use yii\authclient\OAuth2;
 
 class MyAuthClient extends OAuth2
 {
-	protected function defaultName()
-	{
-		return 'my_auth_client';
-	}
+    protected function defaultName()
+    {
+        return 'my_auth_client';
+    }
 
-	protected function defaultTitle()
-	{
-		return 'My Auth Client';
-	}
+    protected function defaultTitle()
+    {
+        return 'My Auth Client';
+    }
 
-	protected function defaultViewOptions()
-	{
-		return [
-			'popupWidth' => 800,
-			'popupHeight' => 500,
-		];
-	}
+    protected function defaultViewOptions()
+    {
+        return [
+            'popupWidth' => 800,
+            'popupHeight' => 500,
+        ];
+    }
 }
 ```
 
@@ -210,21 +239,21 @@ All you need is specify auth URL, by redeclaring "authUrl" field.
 You may also setup default required and/or optional attributes.
 For example:
 
-```
+```php
 use yii\authclient\OpenId;
 
 class MyAuthClient extends OpenId
 {
-	public $authUrl = 'https://www.my.com/openid/';
+    public $authUrl = 'https://www.my.com/openid/';
 
-	public $requiredAttributes = [
-		'contact/email',
-	];
+    public $requiredAttributes = [
+        'contact/email',
+    ];
 
-	public $optionalAttributes = [
-		'namePerson/first',
-		'namePerson/last',
-	];
+    public $optionalAttributes = [
+        'namePerson/first',
+        'namePerson/last',
+    ];
 }
 ```
 
@@ -238,21 +267,21 @@ You will need to specify:
 
 For example:
 
-```
+```php
 use yii\authclient\OAuth2;
 
 class MyAuthClient extends OAuth2
 {
-	public $authUrl = 'https://www.my.com/oauth2/auth';
+    public $authUrl = 'https://www.my.com/oauth2/auth';
 
-	public $tokenUrl = 'https://www.my.com/oauth2/token';
+    public $tokenUrl = 'https://www.my.com/oauth2/token';
 
-	public $apiBaseUrl = 'https://www.my.com/apis/oauth2/v1';
+    public $apiBaseUrl = 'https://www.my.com/apis/oauth2/v1';
 
-	protected function initUserAttributes()
-	{
-		return $this->api('userinfo', 'GET');
-	}
+    protected function initUserAttributes()
+    {
+        return $this->api('userinfo', 'GET');
+    }
 }
 ```
 
@@ -272,23 +301,23 @@ You will need to specify:
 
 For example:
 
-```
+```php
 use yii\authclient\OAuth1;
 
 class MyAuthClient extends OAuth1
 {
-	public $authUrl = 'https://www.my.com/oauth/auth';
+    public $authUrl = 'https://www.my.com/oauth/auth';
 
-	public $requestTokenUrl = 'https://www.my.com/oauth/request_token';
+    public $requestTokenUrl = 'https://www.my.com/oauth/request_token';
 
-	public $accessTokenUrl = 'https://www.my.com/oauth/access_token';
+    public $accessTokenUrl = 'https://www.my.com/oauth/access_token';
 
-	public $apiBaseUrl = 'https://www.my.com/apis/oauth/v1';
+    public $apiBaseUrl = 'https://www.my.com/apis/oauth/v1';
 
-	protected function initUserAttributes()
-	{
-		return $this->api('userinfo', 'GET');
-	}
+    protected function initUserAttributes()
+    {
+        return $this->api('userinfo', 'GET');
+    }
 }
 ```
 

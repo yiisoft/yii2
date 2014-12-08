@@ -7,13 +7,13 @@ use yiiunit\extensions\authclient\TestCase;
 
 class RsaSha1Test extends TestCase
 {
-	/**
-	 * Returns test public certificate string.
-	 * @return string public certificate string.
-	 */
-	protected function getTestPublicCertificate()
-	{
-		return '-----BEGIN CERTIFICATE-----
+    /**
+     * Returns test public certificate string.
+     * @return string public certificate string.
+     */
+    protected function getTestPublicCertificate()
+    {
+        return '-----BEGIN CERTIFICATE-----
 MIIDJDCCAo2gAwIBAgIJALCFAl3nj1ibMA0GCSqGSIb3DQEBBQUAMIGqMQswCQYD
 VQQGEwJOTDESMBAGA1UECAwJQW1zdGVyZGFtMRIwEAYDVQQHDAlBbXN0ZXJkYW0x
 DzANBgNVBAoMBlBpbVRpbTEPMA0GA1UECwwGUGltVGltMSswKQYDVQQDDCJkZXY1
@@ -32,15 +32,15 @@ AQUFAAOBgQB1/S46dWBECaOs4byCysFhzXw8qx8znJkSZcIdDilmg1kkfusXKi2S
 DiiFw5gDrc6Qp6WtPmVhxHUWl6O5bOG8lG0Dcppeed9454CGvBShmYdwC6vk0s7/
 gVdK2V4fYsUeT6u49ONshvJ/8xhHz2gGXeLWaqHwtK3Dl3S6TIDuoQ==
 -----END CERTIFICATE-----';
-	}
+    }
 
-	/**
-	 * Returns test private certificate string.
-	 * @return string private certificate string.
-	 */
-	protected function getTestPrivateCertificate()
-	{
-		return '-----BEGIN RSA PRIVATE KEY-----
+    /**
+     * Returns test private certificate string.
+     * @return string private certificate string.
+     */
+    protected function getTestPrivateCertificate()
+    {
+        return '-----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQDE0d63YwpBLxzxQAW887JALcGruAHkHu7Ui1oc7bCIMy+ud6rP
 gNmbFLw3GoGzQ8xhMmksZHsS07IfWRTDeisPHAqfgcApOZbyMyZUAL6+1ko4xAIP
 nQSia7l8M4nWgtgqifDCbFKAoPXuWSrYDOFtgSkBLH5xYyFPRc04nnHpoQIDAQAB
@@ -55,56 +55,56 @@ AalKMSRo+QVg/F0Kpenoa+f4aNtSc2GyriK6QbeU9b0iPZxsZBoXzD0NqlPucX8y
 IyvuagHJR379p4dePwJBAMCkYSATGdhYbeDfySWUro5K0QAvBNj8FuNJQ4rqUxz8
 8b+OXIyd5WlmuDRTDGJBTxAYeaioTuMCFWaZm4jG0I4=
 -----END RSA PRIVATE KEY-----';
-	}
+    }
 
-	// Tests :
+    // Tests :
 
-	public function testGenerateSignature()
-	{
-		$signatureMethod = new RsaSha1();
-		$signatureMethod->setPrivateCertificate($this->getTestPrivateCertificate());
-		$signatureMethod->setPublicCertificate($this->getTestPublicCertificate());
+    public function testGenerateSignature()
+    {
+        $signatureMethod = new RsaSha1();
+        $signatureMethod->setPrivateCertificate($this->getTestPrivateCertificate());
+        $signatureMethod->setPublicCertificate($this->getTestPublicCertificate());
 
-		$baseString = 'test_base_string';
-		$key = 'test_key';
+        $baseString = 'test_base_string';
+        $key = 'test_key';
 
-		$signature = $signatureMethod->generateSignature($baseString, $key);
-		$this->assertNotEmpty($signature, 'Unable to generate signature!');
-	}
+        $signature = $signatureMethod->generateSignature($baseString, $key);
+        $this->assertNotEmpty($signature, 'Unable to generate signature!');
+    }
 
-	/**
-	 * @depends testGenerateSignature
-	 */
-	public function testVerify()
-	{
-		$signatureMethod = new RsaSha1();
-		$signatureMethod->setPrivateCertificate($this->getTestPrivateCertificate());
-		$signatureMethod->setPublicCertificate($this->getTestPublicCertificate());
+    /**
+     * @depends testGenerateSignature
+     */
+    public function testVerify()
+    {
+        $signatureMethod = new RsaSha1();
+        $signatureMethod->setPrivateCertificate($this->getTestPrivateCertificate());
+        $signatureMethod->setPublicCertificate($this->getTestPublicCertificate());
 
-		$baseString = 'test_base_string';
-		$key = 'test_key';
-		$signature = 'unsigned';
-		$this->assertFalse($signatureMethod->verify($signature, $baseString, $key), 'Unsigned signature is valid!');
+        $baseString = 'test_base_string';
+        $key = 'test_key';
+        $signature = 'unsigned';
+        $this->assertFalse($signatureMethod->verify($signature, $baseString, $key), 'Unsigned signature is valid!');
 
-		$generatedSignature = $signatureMethod->generateSignature($baseString, $key);
-		$this->assertTrue($signatureMethod->verify($generatedSignature, $baseString, $key), 'Generated signature is invalid!');
-	}
+        $generatedSignature = $signatureMethod->generateSignature($baseString, $key);
+        $this->assertTrue($signatureMethod->verify($generatedSignature, $baseString, $key), 'Generated signature is invalid!');
+    }
 
-	public function testInitPrivateCertificate()
-	{
-		$signatureMethod = new RsaSha1();
+    public function testInitPrivateCertificate()
+    {
+        $signatureMethod = new RsaSha1();
 
-		$certificateFileName = __FILE__;
-		$signatureMethod->privateCertificateFile = $certificateFileName;
-		$this->assertEquals(file_get_contents($certificateFileName), $signatureMethod->getPrivateCertificate(), 'Unable to fetch private certificate from file!');
-	}
+        $certificateFileName = __FILE__;
+        $signatureMethod->privateCertificateFile = $certificateFileName;
+        $this->assertEquals(file_get_contents($certificateFileName), $signatureMethod->getPrivateCertificate(), 'Unable to fetch private certificate from file!');
+    }
 
-	public function testInitPublicCertificate()
-	{
-		$signatureMethod = new RsaSha1();
+    public function testInitPublicCertificate()
+    {
+        $signatureMethod = new RsaSha1();
 
-		$certificateFileName = __FILE__;
-		$signatureMethod->publicCertificateFile = $certificateFileName;
-		$this->assertEquals(file_get_contents($certificateFileName), $signatureMethod->getPublicCertificate(), 'Unable to fetch public certificate from file!');
-	}
+        $certificateFileName = __FILE__;
+        $signatureMethod->publicCertificateFile = $certificateFileName;
+        $this->assertEquals(file_get_contents($certificateFileName), $signatureMethod->getPublicCertificate(), 'Unable to fetch public certificate from file!');
+    }
 }

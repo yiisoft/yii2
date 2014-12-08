@@ -15,32 +15,31 @@ namespace yii\apidoc\models;
  */
 class MethodDoc extends FunctionDoc
 {
-	public $isAbstract;
-	public $isFinal;
+    public $isAbstract;
+    public $isFinal;
+    public $isStatic;
+    public $visibility;
+    // will be set by creating class
+    public $definedBy;
 
-	public $isStatic;
 
-	public $visibility;
+    /**
+     * @param \phpDocumentor\Reflection\ClassReflector\MethodReflector $reflector
+     * @param Context $context
+     * @param array $config
+     */
+    public function __construct($reflector = null, $context = null, $config = [])
+    {
+        parent::__construct($reflector, $context, $config);
 
-	// will be set by creating class
-	public $definedBy;
+        if ($reflector === null) {
+            return;
+        }
 
-	/**
-	 * @param \phpDocumentor\Reflection\ClassReflector\MethodReflector $reflector
-	 * @param array $config
-	 */
-	public function __construct($reflector = null, $config = [])
-	{
-		parent::__construct($reflector, $config);
+        $this->isAbstract = $reflector->isAbstract();
+        $this->isFinal = $reflector->isFinal();
+        $this->isStatic = $reflector->isStatic();
 
-		if ($reflector === null) {
-			return;
-		}
-
-		$this->isAbstract = $reflector->isAbstract();
-		$this->isFinal = $reflector->isFinal();
-		$this->isStatic = $reflector->isStatic();
-
-		$this->visibility = $reflector->getVisibility();
-	}
+        $this->visibility = $reflector->getVisibility();
+    }
 }

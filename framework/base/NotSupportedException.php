@@ -15,11 +15,11 @@ namespace yii\base;
  */
 class NotSupportedException extends Exception
 {
-	/**
-	 * @return string the user-friendly name of this exception
-	 */
-	public function getName()
-	{
-		return 'Not Supported';
-	}
+    /**
+     * @return string the user-friendly name of this exception
+     */
+    public function getName()
+    {
+        return 'Not Supported';
+    }
 }

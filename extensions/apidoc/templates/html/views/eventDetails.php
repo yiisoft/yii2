@@ -1,35 +1,51 @@
 <?php
 
-use yii\apidoc\helpers\Markdown;
+use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
-/**
- * @var ClassDoc $type
- * @var yii\web\View $this
- */
+use yii\helpers\ArrayHelper;
+
+/* @var $type ClassDoc */
+/* @var $this yii\web\View */
+/* @var $renderer \yii\apidoc\templates\html\ApiRenderer */
+
+$renderer = $this->context;
 
 $events = $type->getNativeEvents();
 if (empty($events)) {
-	return;
-} ?>
+    return;
+}
+ArrayHelper::multisort($events, 'name');
+?>
 <h2>Event Details</h2>
-<?php foreach($events as $event): ?>
-	<div class="detailHeader" id="<?= $event->name.'-detail' ?>">
-		<?php echo $event->name; ?>
-		<span class="detailHeaderTag">
-		event
-		<?php if(!empty($event->since)): ?>
-			(available since version <?= $event->since ?>)
-		<?php endif; ?>
-		</span>
-	</div>
 
-	<?php /*
-	<div class="signature">
-		<?php echo $event->trigger->signature; ?>
-	</div>*/ ?>
+<div class="event-doc">
+<?php foreach ($events as $event): ?>
+    <div class="detail-header h3" id="<?= $event->name.'-detail' ?>">
+        <a href="#" class="tool-link" title="go to top"><span class="glyphicon glyphicon-arrow-up"></span></a>
+        <?= $renderer->createSubjectLink($event, '<span class="glyphicon icon-hash"></span>', [
+            'title' => 'direct link to this method',
+            'class' => 'tool-link hash',
+        ]) ?>
 
-	<p><?= Markdown::process($event->description, $type); ?></p>
+        <?php if (($sourceUrl = $renderer->getSourceUrl($event->definedBy, $event->startLine)) !== null): ?>
+            <a href="<?= str_replace('/blob/', '/edit/', $sourceUrl) ?>" class="tool-link" title="edit on github"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a href="<?= $sourceUrl ?>" class="tool-link" title="view source on github"><span class="glyphicon glyphicon-eye-open"></span></a>
+        <?php endif; ?>
 
-	<?= $this->render('seeAlso', ['object' => $event]); ?>
+        <?= $event->name ?>
+        <span class="detail-header-tag small">
+        event
+        <?php if (!empty($event->since)): ?>
+            (available since version <?= $event->since ?>)
+        <?php endif; ?>
+        </span>
+    </div>
+
+    <div class="doc-description">
+        <?= ApiMarkdown::process($event->description, $type) ?>
+
+        <?= $this->render('seeAlso', ['object' => $event]) ?>
+    </div>
 
 <?php endforeach; ?>
+</div>

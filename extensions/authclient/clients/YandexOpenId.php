@@ -34,53 +34,54 @@ use yii\authclient\OpenId;
  */
 class YandexOpenId extends OpenId
 {
-	/**
-	 * @inheritdoc
-	 */
-	public $authUrl = 'http://openid.yandex.ru';
-	/**
-	 * @inheritdoc
-	 */
-	public $requiredAttributes = [
-		'namePerson',
-		'contact/email',
-	];
+    /**
+     * @inheritdoc
+     */
+    public $authUrl = 'http://openid.yandex.ru';
+    /**
+     * @inheritdoc
+     */
+    public $requiredAttributes = [
+        'namePerson',
+        'contact/email',
+    ];
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultNormalizeUserAttributeMap()
-	{
-		return [
-			'name' => 'namePerson',
-			'email' => 'contact/email',
-		];
-	}
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultViewOptions()
-	{
-		return [
-			'popupWidth' => 900,
-			'popupHeight' => 550,
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultNormalizeUserAttributeMap()
+    {
+        return [
+            'name' => 'namePerson',
+            'email' => 'contact/email',
+        ];
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultName()
-	{
-		return 'yandex';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultViewOptions()
+    {
+        return [
+            'popupWidth' => 900,
+            'popupHeight' => 550,
+        ];
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	protected function defaultTitle()
-	{
-		return 'Yandex';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function defaultName()
+    {
+        return 'yandex';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function defaultTitle()
+    {
+        return 'Yandex';
+    }
 }

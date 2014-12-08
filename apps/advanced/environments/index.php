@@ -9,30 +9,53 @@
  * return [
  *     'environment name' => [
  *         'path' => 'directory storing the local files',
- *         'writable' => [
+ *         'setWritable' => [
  *             // list of directories that should be set writable
+ *         ],
+ *         'setExecutable' => [
+ *             // list of directories that should be set executable
+ *         ],
+ *         'setCookieValidationKey' => [
+ *             // list of config files that need to be inserted with automatically generated cookie validation keys
+ *         ],
+ *         'createSymlink' => [
+ *             // list of symlinks to be created. Keys are symlinks, and values are the targets.
  *         ],
  *     ],
  * ];
  * ```
  */
 return [
-	'Development' => [
-		'path' => 'dev',
-		'writable' => [
-			// handled by composer.json already
-		],
-		'executable' => [
-			'yii',
-		],
-	],
-	'Production' => [
-		'path' => 'prod',
-		'writable' => [
-			// handled by composer.json already
-		],
-		'executable' => [
-			'yii',
-		],
-	],
+    'Development' => [
+        'path' => 'dev',
+        'setWritable' => [
+            'backend/runtime',
+            'backend/web/assets',
+            'frontend/runtime',
+            'frontend/web/assets',
+        ],
+        'setExecutable' => [
+            'yii',
+        ],
+        'setCookieValidationKey' => [
+            'backend/config/main-local.php',
+            'frontend/config/main-local.php',
+        ],
+    ],
+    'Production' => [
+        'path' => 'prod',
+        'setWritable' => [
+            'backend/runtime',
+            'backend/web/assets',
+            'frontend/runtime',
+            'frontend/web/assets',
+        ],
+        'setExecutable' => [
+            'yii',
+        ],
+        'setCookieValidationKey' => [
+            'backend/config/main-local.php',
+            'frontend/config/main-local.php',
+        ],
+    ],
 ];
