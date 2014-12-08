@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.2 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6404: advanced application template `Alert` widget was generating duplicate IDs in case of multiple flashes (SDKiller)
 
 
 2.0.1 December 07, 2014
