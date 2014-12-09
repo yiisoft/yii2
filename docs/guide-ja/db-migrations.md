@@ -62,23 +62,21 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-Notice that the class name is the same as the file name, and follows the pattern
-`m<timestamp>_<name>`, where:
+クラス名はファイル名と同じであり、`m<timestamp>_<name>` というパターンに従います。ここで、
 
-* `<timestamp>` refers to the UTC timestamp (in the
-format of `yymmdd_hhmmss`) when the migration is created,
-* `<name>` is taken from the command's `name` parameter.
+* `<timestamp>` は、マイグレーションが作成された (`yymmdd_hhmmss` という書式の) UTC タイムスタンプであり、
+* `<name>` は、コマンドの `name` パラメータから取られた文字列です。
 
-In the class, the `up()` method should contain the code implementing the actual database
-migration. In other words, the `up()` method executes code that actually changes the database. The `down()` method may contain code that reverts the changes made by `up()`.
+クラスの中では、`up()` メソッドが、実際のデータベースマイグレーションを実装するコードを含むべきメソッドです。
+言い換えると、`up()` メソッドが実際にデータベースを変更するコードを実行します。
+`down()` メソッドは、`up()` によって加えられた変更を取り消すコードを含むことが出来ます。
 
-Sometimes, it is impossible for the `down()` to undo the database migration. For example, if the migration deletes
-table rows or an entire table, that data cannot be recovered in the `down()` method. In such
-cases, the migration is called irreversible, meaning the database cannot be rolled back to
-a previous state. When a migration is irreversible, as in the above generated code, the `down()`
-method returns `false` to indicate that the migration cannot be reverted.
+場合によっては、`down()` がデータベースマイグレーションを取り消すことが出来ないことがあります。
+例えば、マイグレーションがテーブルの行やテーブル全体を削除した場合は、そのデータを `down()` メソッドで復旧することは出来ません。
+そのような場合には、マイグレーションは不可逆であると呼ばれ、データベースを以前の状態にロールバックすることは出来ません。
+マイグレーションが不可逆である場合は、生成された上記のコードのように、`down()` メソッドは `false` を返して、マイグレーションが取り消せないものであることを示します。
 
-As an example, let's show the migration for creating a news table.
+例として、新しいテーブルを作成するマイグレーションを示しましょう。
 
 ```php
 
@@ -103,30 +101,25 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-The base class [[\yii\db\Migration]] exposes a database connection via the `db`
-property. You can use it for manipulating data and the schema of a database.
+基底クラスである [[\yii\db\Migration]] が、データベース接続を `db` プロパティによって提供しています。
+これを使って、データベースのデータとスキーマを操作することが出来ます。
 
-The column types used in this example are abstract types that will be replaced
-by Yii with the corresponding types depending on your database management system.
-You can use them to write database independent migrations.
-For example `pk` will be replaced by `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
-for MySQL and `integer PRIMARY KEY AUTOINCREMENT NOT NULL` for sqlite.
-See documentation of [[yii\db\QueryBuilder::getColumnType()]] for more details and a list
-of available types. You may also use the constants defined in [[yii\db\Schema]] to
-define column types.
+この例で使われているカラムのタイプは抽象的なタイプであり、Yii によって、あなたが使用するデータベース管理システムに応じて、対応するタイプに置き換えられます。
+抽象的なタイプを使うと、データベースに依存しないマイグレーションを書くことが出来ます。
+例えば、`pk` は、MySQL では `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY` に置き換えられ、sqlite では `integer PRIMARY KEY AUTOINCREMENT NOT NULL` に置き換えられます。
+さらに詳細な説明と、利用可能なタイプについては、[[yii\db\QueryBuilder::getColumnType()]] のドキュメントを参照してください。
+また、カラムのタイプを定義するのに、[[yii\db\Schema]] で定義されている定数を使うことも出来ます。
 
-> Note: You can add constraints and other custom table options at the end of the table description by
-> specifying them as a simple string. For example, in the above migration, after the `content` attribute definition
-> you can write `'CONSTRAINT ...'` or other custom options.
+> Note|注意: テーブル定義の最後に、単純な文字列として指定された、制約やその他の特別なテーブルオプションを追加することが出来ます。
+> 例えば、上記のマイグレーションでは、`content` 属性の定義の後に、`'CONSTRAINT ...'` やその他の特別なオプションを書くことが出来ます。
 
 
-Transactional Migrations
-------------------------
+トランザクションを使うマイグレーション
+--------------------------------------
 
-While performing complex DB migrations, we usually want to make sure that each
-migration succeeds or fail as a whole so that the database maintains its
-consistency and integrity. In order to achieve this goal, we can exploit
-DB transactions. We use the special methods `safeUp` and `safeDown` for these purposes.
+複雑な DB マイグレーションを実行するときは、通常、データベースの一貫性と整合性を保つために、個々のマイグレーションが全体として成功または失敗することを保証する必要があります。
+この目的を達成するために、DB トランザクションを利用することが出来ます。
+この目的のためには、`safeUp` と `safeDown` という特別なメソッドを使います。
 
 ```php
 
@@ -158,178 +151,160 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-When your code uses more then one query it is recommended to use `safeUp` and `safeDown`.
+使用するクエリが一つだけでない場合は、`safeUp` と `safeDown` を使うことを推奨します。
 
-> Note: Not all DBMS support transactions. And some DB queries cannot be put
-> into a transaction. In this case, you will have to implement `up()` and
-> `down()`, instead. In the case of MySQL, some SQL statements may cause
-> [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html).
+> Note|注意: 全ての DBMS がトランザクションをサポートしている訳ではありません。
+> また、トランザクションに入れることが出来ない DB クエリもあります。
+> その場合には、代りに、`up()` と `down()` を実装しなければなりません。
+> また、MySQL の場合は、[暗黙のコミット](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html) を引き起こす SQL 文があります。
 
 
-Applying Migrations
--------------------
+マイグレーションを適用する
+--------------------------
 
-To apply all available new migrations (i.e., make the local database up-to-date),
-run the following command:
+利用できる全ての新しいマイグレーションを適用する (すなわち、ローカルのデータベースを最新の状態にする) ためには、次のコマンドを実行します。
 
 ```
 yii migrate
 ```
 
-The command will show the list of all new migrations. If you confirm you want to apply
-the migrations, it will run the `up()` method in every new migration class, one
-after another, in the order of the timestamp value in the class name.
+コマンドを実行すると、すべての新しいマイグレーションが一覧表示されます。
+マイグレーションを適用することを確認すると、クラス名のタイムスタンプの値の順に、一つずつ、すべての新しいマイグレーションクラスの `up()` メソッドが実行されます。
 
-After applying a migration, the migration tool will keep a record in a database
-table named `migration`. This allows the tool to identify which migrations
-have been applied and which have not. If the `migration` table does not exist,
-the tool will automatically create it in the database specified by the `db`
-[application component](structure-application-components.md).
+マイグレーションを適用した後に、マイグレーションツールは `migration` という名前のデータベーステーブルに記録を残します。
+これによって、ツールは、どのマイグレーションが適用済みで、どのマイグレーションが適用されていないかを特定することが出来ます。
+`migration` テーブルが存在しない場合は、ツールは `db` [アプリケーションコンポーネント](structure-application-components.md)によって指定されたデータベースの中にテーブルを自動的に作成します。
 
-Sometimes, we may only want to apply one or a few new migrations. We can use the
-following command:
+時として、新しいマイグレーションを一個また数個だけ適用したい場合があります。その場合は、次のコマンドを使うことが出来ます。
+
 
 ```
 yii migrate/up 3
 ```
 
-This command will apply the next 3 new migrations. Changing the value 3 will allow
-us to change the number of migrations to be applied.
+このコマンドは、次の新しいマイグレーションを 3 個適用します。3 という値を変更して、適用されるマイグレーションの数を変更することが出来ます。
 
-We can also migrate the database to a specific version with the following command:
+また、下記のコマンドを使って、特定のバージョンまでデータベースをマイグレートすることも可能です。
 
 ```
 yii migrate/to 101129_185401
 ```
 
-That is, we use the timestamp part of a migration name to specify the version
-that we want to migrate the database to. If there are multiple migrations between
-the last applied migration and the specified migration, all these migrations
-will be applied. If the specified migration has been applied before, then all
-migrations applied after it will be reverted (to be described in the next section).
+すなわち、マイグレーション名のタイムスタンプ部分を使って、データベースをマイグレートして到達したいバージョンを指定します。
+最後に適用されたマイグレーションと指定されたマイグレーションの間に複数のマイグレーションがある場合は、それらのマイグレーションがすべて適用されます。
+指定されたマイグレーションが適用済みである場合は、その後に適用されたすべてのマイグレーションが取り消されます (次の節で説明します)。
 
 
-Reverting Migrations
---------------------
+マイグレーションを取り消す
+--------------------------
 
-To revert the last migration step or several applied migrations, we can use the following
-command:
+適用された最後のマイグレーション (一個または複数個) を取り消したい場合は、下記のコマンドを使うことが出来ます。
+
 
 ```
 yii migrate/down [step]
 ```
 
-where the optional `step` parameter specifies how many migrations to be reverted
-back. It defaults to 1, meaning only the last applied migration will be reverted back.
+ここで、オプションの `step` パラメータは何個のマイグレーションを取り消すかを指定するものです。
+デフォルト値は 1 で、適用された最後のマイグレーションだけが取り消すされることを意味します。
 
-As we described before, not all migrations can be reverted. Trying to revert
-such migrations will throw an exception and stop the entire reverting process.
+前に説明したように、全てのマイグレーションが取り消せるとは限りません。
+取り消せないマイグレーションを取り消そうとすると例外が投げられて、取り消しのプロセス全体が終了させられます。
 
 
-Redoing Migrations
-------------------
+マイグレーションを再適用する
+----------------------------
 
-Redoing migrations means first reverting and then applying the specified migrations.
-This can be done with the following command:
+マイグレーションの再適用とは、指定されたマイグレーションを最初に取り消してから、再度適用することを意味します。
+これは次のコマンドによって実行することが出来ます。
 
 ```
 yii migrate/redo [step]
 ```
 
-where the optional `step` parameter specifies how many migrations to be redone.
-It defaults to 1, which means only the last migration will be redone.
+ここで、オプションの `step` パラメータは何個のマイグレーションを再適用するかを指定するものです。
+デフォルト値は 1 で、最後のマイグレーションだけが再適用されることを意味します。
 
 
-Showing Migration Information
------------------------------
+マイグレーション情報を表示する
+------------------------------
 
-Besides applying and reverting migrations, the migration tool can also display
-the migration history and the new migrations to be applied.
+マイグレーションを適用したり取り消したりする他に、マイグレーションツールはマイグレーションの履歴、および、まだ適用されていない新しいマイグレーションを表示することも出来ます。
+
 
 ```
 yii migrate/history [limit]
 yii migrate/new [limit]
 ```
 
-where the optional parameter `limit` specifies the number of migrations to be
-displayed. If `limit` is not specified, all available migrations will be displayed.
+ここで、オプションの `limit` パラメータは、何個のマイグレーションを表示するかを指定するものです。
+`limit` が指定されない場合は、利用可能な全てのマイグレーションが表示されます。
 
-The first command shows the migrations that have been applied, while the second
-command shows the migrations that have not been applied.
+最初のコマンドは適用済みのマイグレーションを表示し、第二のコマンドはまだ適用されていないマイグレーションを表示します。
 
 
-Modifying Migration History
----------------------------
+マイグレーション履歴を修正する
+------------------------------
 
-Sometimes, we may want to modify the migration history to a specific migration
-version without actually applying or reverting the relevant migrations. This
-often happens when developing a new migration. We can use the following command
-to achieve this goal.
+時として、実際には関係のあるマイグレーションを適用または取り消すことなく、マイグレーション履歴を特定のマイグレーションバージョンに修正したい場合があります。
+このことは新しいマイグレーションを開発するときにしばしば起ります。
+次のコマンドを使ってこの目的を達することが出来ます。
 
 ```
 yii migrate/mark 101129_185401
 ```
 
-This command is very similar to `yii migrate/to` command, except that it only
-modifies the migration history table to the specified version without applying
-or reverting the migrations.
+このコマンドは `yii migrate/to` コマンドと非常によく似ていますが、マイグレーションを適用または取り消すことなく、マイグレーション履歴テーブルを指定されたバージョンに修正することだけを行うという点で違っています。
 
 
-Customizing Migration Command
------------------------------
+マイグレーションコマンドをカスタマイズする
+------------------------------------------
 
-There are several ways to customize the migration command.
+マイグレーションコマンドをカスタマイズする方法がいくつかあります。
 
-### Use Command Line Options
+### コマンドラインオプションを使う
 
-The migration command comes with a few options that can be specified on the command
-line:
+マイグレーションコマンドには、コマンドラインで指定できるいくつかのオプションがあります。
 
-* `interactive`: boolean, specifies whether to perform migrations in an
-  interactive mode. Defaults to true, meaning the user will be prompted when
-  performing a specific migration. You may set this to false so the
-  migrations are performed as a background process.
+* `interactive`: 真偽値。マイグレーションを対話モードで実行するかどうかを指定します。
+  デフォルト値は true で、指定されたマイグレーションを実行するときに、ユーザは何らかの入力を促されます。
+  このオプションを false にセットして、マイグレーションがバックグラウンドプロセスとして実行されるようにすることが出来ます。
 
-* `migrationPath`: string, specifies the directory storing all migration class
-  files. This must be specified in terms of a path alias, and the corresponding
-  directory must exist. If not specified, it will use the `migrations`
-  sub-directory under the application base path.
+* `migrationPath`: 文字列。全てのマイグレーションクラスファイルを保存しているディレクトリを指定します。
+  このパスは、パスエイリアスの形式で指定されなければならず、また、対応するディレクトリが存在する必要があります。
+  このオプションが指定されない場合は、アプリケーションのベースパスの下の `migrations` サブディレクトリが使われます。
 
-* `migrationTable`: string, specifies the name of the database table for storing
-  migration history information. It defaults to `migration`. The table
-  structure is `version varchar(255) primary key, apply_time integer`.
+* `migrationTable`: 文字列。マイグレーション履歴の情報を保存するためのデータベーステーブル名を指定します。
+  デフォルト値は `migration` です。このテーブルは、`version varchar(255) primary key, apply_time integer` という構造を持ちます。
 
-* `db`: string, specifies the ID of the database [application component](structure-application-components.md).
-  Defaults to 'db'.
+* `db`: 文字列。データベース [アプリケーションコンポーネント](structure-application-components.md) の ID を指定します。
+  デフォルト値は 'db' です。
 
-* `templateFile`: string, specifies the path of the file to be served as the code
-  template for generating the migration classes. This must be specified in terms
-  of a path alias (e.g. `application.migrations.template`). If not set, an
-  internal template will be used. Inside the template, the token `{ClassName}`
-  will be replaced with the actual migration class name.
+* `templateFile`: 文字列。マイグレーションクラスを生成するためのコードテンプレートとして使われるファイルのパスを指定します。
+  このパスは、パスエイリアスの形式で指定しなければなりません (例えば、`application.migrations.template`)。
+  指定されない場合は、内部テンプレートが使用されます。
+  テンプレートの中の `{ClassName}` というトークンが実際のマイグレーションクラス名によって置き換えられます。
 
-To specify these options, execute the migrate command using the following format:
+これらのオプションを指定するためには、下記の書式を使って migrate コマンドを実行します。
 
 ```
 yii migrate/up --option1=value1 --option2=value2 ...
 ```
 
-For example, if we want to migrate a `forum` module whose migration files
-are located within the module's `migrations` directory, we can use the following
-command:
+例えば、`forum` モジュールのためのマイグレーションを実行するときに、マイグレーションファイルがモジュールの `migrations` ディレクトリに置かれている場合には、下記のコマンドを使うことが出来ます。
+
 
 ```
 yii migrate/up --migrationPath=@app/modules/forum/migrations
 ```
 
 
-### Configure Command Globally
+### コマンドをグローバルに構成する
 
-While command line options allow us to configure the migration command
-on-the-fly, sometimes we may want to configure the command once for all.
-For example, we may want to use a different table to store the migration history,
-or we may want to use a customized migration template. We can do so by modifying
-the console application's configuration file like the following,
+コマンドラインオプションを使ってマイグレーションコマンドをその場その場で構成することも出来ますが、場合によっては、一度にまとめてコマンドを構成しておきたいこともあります。
+例えば、マイグレーションの履歴を保存するのに別のテーブルを使用したいとか、カスタマイズしたマイグレーションテンプレートを使用したいとかです。
+そうするためには、コンソールアプリケーションの構成情報ファイルを以下のように修正します。
+
 
 ```php
 'controllerMap' => [
@@ -340,26 +315,23 @@ the console application's configuration file like the following,
 ]
 ```
 
-Now if we run the `migrate` command, the above configurations will take effect
-without requiring us to enter the command line options every time. Other command options
-can be also configured this way.
+これで、`migrate` コマンドを実行すると、上記の構成情報が効果を発揮して、毎回コマンドラインオプションを入力する必要がなくなります。
+その他のコマンドラインオプションも、このようにして構成することが出来ます。
 
 
-### Migrating with Multiple Databases
+### 複数のデータベースのマイグレーション
 
-By default, migrations will be applied to the database specified by the `db` [application component](structure-application-components.md).
-You may change it by specifying the `--db` option, for example,
+既定では、マイグレーションは `db` [アプリケーションコンポーネント](structure-application-components.md) によって指定されるデータベースに対して適用されます。
+これは、`--db` オプションを指定することによって変更することが出来ます。例えば、
 
 ```
 yii migrate --db=db2
 ```
 
-The above command will apply *all* migrations found in the default migration path to the `db2` database.
+上記のコマンドは、既定のマイグレーションパスに置かれている *全ての* マイグレーションを `db2` データベースに適用するものです。
 
-If your application works with multiple databases, it is possible that some migrations should be applied
-to one database while some others should be applied to another database. In this case, it is recommended that
-you create a base migration class for each different database and override the [[yii\db\Migration::init()]]
-method like the following,
+アプリケーションが複数のデータベースを扱っている場合は、いくつかのマイグレーションはあるデータベースに適用されなければならず、他のマイグレーションは別のデータベースに適用されなければならない、ということがあり得ます。
+そのような場合には、異なるデータベースごとに基底マイグレーションクラスを作成して、下記のように [[yii\db\Migration::init()]] メソッドをオーバーライドすることを推奨します。
 
 ```php
 public function init()
@@ -369,17 +341,16 @@ public function init()
 }
 ```
 
-To create a migration that should be applied to a particular database, simply extend from the corresponding
-base migration class. Now if you run the `yii migrate` command, each migration will be applied to its corresponding database.
+こうすると、特定のデータベースに適用されるべきマイグレーションを作成するためには、対応する基底マイグレーションクラスから拡張するだけで済みます。
+これで、`yii migrate` コマンドを実行すると、全てのマイグレーションはそれぞれ対応するデータベースに対して適用されるようになります。
 
-> Info: Because each migration uses a hardcoded DB connection, the `--db` option of the `migrate` command will
-  have no effect. Also note that the migration history will be stored in the default `db` database.
+> Info|情報: それぞれのマイグレーションはハードコードされた DB 接続を使用しますので、`migrate` コマンドの `--db` オプションは効果を持ちません。
+  また、マイグレーション履歴はデフォルトの `db` データベースに保存されることに注意してください。
 
-If you want to support changing the DB connection via the `--db` option, you may take the following alternative
-approach to work with multiple databases.
+`--db` オプションによる DB 接続の変更をサポートしたい場合は、次のような別の方法で複数のデータベースを扱うことが出来ます。
 
-For each database, create a migration path and save all corresponding migration classes there. To apply migrations,
-run the command as follows,
+それぞれのデータベースについて、マイグレーションパスを作成し、対応する全てのマイグレーションクラスをそこに保存します。
+マイグレーションを適用するためには、次のようなコマンドを実行します。
 
 ```
 yii migrate --migrationPath=@app/migrations/db1 --db=db1
@@ -387,4 +358,4 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 ...
 ```
 
-> Info: The above approach stores the migration history in different databases specified via the `--db` option.
+> Info|情報: 上記の方法では、マイグレーション履歴は `--db` オプションによって指定された別々のデータベースに保存されます。
