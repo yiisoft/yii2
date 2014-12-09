@@ -139,7 +139,7 @@
 - `frontend/config/main.php`
 - `frontend/config/main-local.php`
 
-Парамтры считываются в следующем порядке:
+Параметры считываются в следующем порядке:
 
 - `common/config/params.php`
 - `common/config/params-local.php`
