@@ -29,7 +29,7 @@ $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
 * MySQL 4.1 以降: [[yii\db\ActiveRecord]] による。
 * PostgreSQL 7.3 以降: [[yii\db\ActiveRecord]] による。
 * SQLite 2 および 3: [[yii\db\ActiveRecord]] による。
-* Microsoft SQL Server 2010 以降: [[yii\db\ActiveRecord]] による。
+* Microsoft SQL Server 2008 以降: [[yii\db\ActiveRecord]] による。
 * Oracle: [[yii\db\ActiveRecord]] による。
 * CUBRID 9.3 以降: [[yii\db\ActiveRecord]] による。(cubrid PDO 拡張の [バグ](http://jira.cubrid.org/browse/APIS-658)
   のために、値を引用符で囲む機能が動作しません。そのため、サーバだけでなくクライアントも CUBRID 9.3 が必要になります)

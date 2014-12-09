@@ -18,7 +18,7 @@ Yii はデフォルトで下記の DBMS をサポートしています。
 - [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。(cubrid PDO 拡張の [バグ](http://jira.cubrid.org/browse/APIS-658)
   のために、値を引用符で囲む機能が動作しません。そのため、サーバだけでなくクライアントも CUBRID 9.3 が必要になります)
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2005 以上。
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
 
 構成
