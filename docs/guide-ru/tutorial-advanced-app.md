@@ -39,7 +39,7 @@
     php /path/to/yii-application/init
     ```
 
-    Для производственных сервером удобно выполнять данную команду в неинтерактивном режиме.
+    Для производственных серверов удобно выполнять данную команду в неинтерактивном режиме.
 
     ```
     php /path/to/yii-application/init --env=Production overwrite=All
@@ -139,7 +139,7 @@
 - `frontend/config/main.php`
 - `frontend/config/main-local.php`
 
-Парамтры считываются в следующем порядке:
+Параметры считываются в следующем порядке:
 
 - `common/config/params.php`
 - `common/config/params-local.php`

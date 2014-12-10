@@ -302,11 +302,6 @@ For applications that require complex access control with dynamically updated au
 (i.e. admin panel) may need to be developed using APIs offered by `authManager`.
 
 
-> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in three files: `@app/rbac/items.php`, `@app/rbac/assignments.php` and `@app/rbac/rules.php`.
-  Make sure these files are writable by the Web server process if the authorization needs to be changed online.
-  Sometimes you will need to create these files manually.
-
-
 ### Using Rules
 
 As aforementioned, rules add additional constraint to roles and permissions. A rule is a class extending
