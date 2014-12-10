@@ -17,7 +17,9 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'just now' => 'przed chwilą',
+    'No help for unknown command "{command}".' => '@@Brak pomocy dla nieznanego polecenia "{command}".@@',
+    'No help for unknown sub-command "{command}".' => '@@Brak pomocy dla nieznanego pod-polecenia "{command}".@@',
+    'Unknown command "{command}".' => '@@Nieznane polecenie "{command}".@@',
     '(not set)' => '(brak wartości)',
     'An internal server error occurred.' => 'Wystąpił wewnętrzny błąd serwera.',
     'Are you sure you want to delete this item?' => 'Czy na pewno usunąć ten element?',
@@ -30,8 +32,6 @@ return [
     'Missing required arguments: {params}' => 'Brak wymaganych argumentów: {params}',
     'Missing required parameters: {params}' => 'Brak wymaganych parametrów: {params}',
     'No' => 'Nie',
-    'No help for unknown command "{command}".' => 'Brak pomocy dla nieznanego polecenia "{command}".',
-    'No help for unknown sub-command "{command}".' => 'Brak pomocy dla nieznanego pod-polecenia "{command}".',
     'No results found.' => 'Brak wyników.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Dozwolone są tylko pliki z następującymi typami MIME:  {mimeTypes}.',
     'Only files with these extensions are allowed: {extensions}.' => 'Dozwolone są tylko pliki z następującymi rozszerzeniami: {extensions}.',
@@ -51,7 +51,6 @@ return [
     'The verification code is incorrect.' => 'Kod weryfikacyjny jest nieprawidłowy.',
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Razem <b>{count, number}</b> {count, plural, one{rekord} few{rekordy} many{rekordów} other{rekordu}}.',
     'Unable to verify your data submission.' => 'Nie udało się zweryfikować przesłanych danych.',
-    'Unknown command "{command}".' => 'Nieznane polecenie "{command}".',
     'Unknown option: --{name}' => 'Nieznana opcja: --{name}',
     'Update' => 'Aktualizuj',
     'View' => 'Zobacz szczegóły',
@@ -64,6 +63,7 @@ return [
     'in {delta, plural, =1{a second} other{# seconds}}' => 'za {delta, plural, =1{sekundę} few{# sekundy} many{# sekund} other{# sekundy}}',
     'in {delta, plural, =1{a year} other{# years}}' => 'za {delta, plural, =1{rok} few{# lata} many{# lat} other{# dni}}',
     'in {delta, plural, =1{an hour} other{# hours}}' => 'za {delta, plural, =1{godzinę} few{# godziny} many{# godzin} other{# godziny}}',
+    'just now' => 'przed chwilą',
     'the input value' => 'wartość wejściowa',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" jest już w użyciu.',
     '{attribute} cannot be blank.' => '{attribute} nie może pozostać bez wartości.',
