@@ -17,7 +17,9 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'just now' => 'ravno zdaj',
+    'No help for unknown command "{command}".' => '@@Pomoči za neznani ukaz "{command}" ni mogoče najti.@@',
+    'No help for unknown sub-command "{command}".' => '@@Pomoči za neznani pod-ukaz "{command}" ni mogoče najti.@@',
+    'Unknown command "{command}".' => '@@Neznani ukaz "{command}".@@',
     '(not set)' => '(ni nastavljeno)',
     'An internal server error occurred.' => 'Prišlo je do notranje napake na strežniku.',
     'Are you sure you want to delete this item?' => 'Ste prepričani, da želite izbrisati ta element?',
@@ -30,8 +32,6 @@ return [
     'Missing required arguments: {params}' => 'Manjkajo zahtevani argumenti: {params}',
     'Missing required parameters: {params}' => 'Manjkajo zahtevani parametri: {params}',
     'No' => 'Ne',
-    'No help for unknown command "{command}".' => 'Pomoči za neznani ukaz "{command}" ni mogoče najti.',
-    'No help for unknown sub-command "{command}".' => 'Pomoči za neznani pod-ukaz "{command}" ni mogoče najti.',
     'No results found.' => 'Razultatov ni bilo mogoče najti.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Dovoljene so samo datoteke s temi MIME tipi: {mimeTypes}.',
     'Only files with these extensions are allowed: {extensions}.' => 'Dovoljene so samo datoteke s temi končnicami: {extensions}.',
@@ -51,7 +51,6 @@ return [
     'The verification code is incorrect.' => 'Koda za preverjanje je napačna.',
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Skupaj <b>{count, number}</b> {count, plural, one{element} two{elementa} few{elementi} other{elementov}}.',
     'Unable to verify your data submission.' => 'Preverjanje vaših poslanih podatkov ni uspelo.',
-    'Unknown command "{command}".' => 'Neznani ukaz "{command}".',
     'Unknown option: --{name}' => 'Neznana opcija: --{name}',
     'Update' => 'Posodobitev',
     'View' => 'Pogled',
@@ -64,6 +63,7 @@ return [
     'in {delta, plural, =1{a second} other{# seconds}}' => 'v {delta, plural, one{# sekundi} other{# sekundah}}',
     'in {delta, plural, =1{a year} other{# years}}' => 'v {delta, plural, one{# letu} other{# letih}}',
     'in {delta, plural, =1{an hour} other{# hours}}' => 'v {delta, plural, one{# uri} other{# urah}}',
+    'just now' => 'ravno zdaj',
     'the input value' => 'vhodna vrednost',
     '{attribute} "{value}" has already been taken.' => 'Atribut {attribute} "{value}" je že nastavljen.',
     '{attribute} cannot be blank.' => 'Atribut {attribute} ne more biti prazen',
