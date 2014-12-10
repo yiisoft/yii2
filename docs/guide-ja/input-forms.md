@@ -99,7 +99,7 @@ use yii\widgets\ActiveForm;
 ```
 
 これで、フォームのフィールドによって定義されたテンプレートに従って、`<label>`、`<input>` など、全てのタグが生成されます。
-これらのタグを自分で追加するためには、`Html` 経る派クラスを使うことが出来ます。
+これらのタグを自分で追加するためには、`Html` ヘルパクラスを使うことが出来ます。
 
 HTML5 のフィールドを使いたい場合は、次のように、インプットのタイプを直接に指定することが出来ます。
 
@@ -107,20 +107,18 @@ HTML5 のフィールドを使いたい場合は、次のように、インプ�
 <?= $form->field($model, 'email')->input('email') ?>
 ```
 
-モデルの属性を指定するためにもっと洗練された方法を使うことも出来ます。
-Specifying the attribute of the model can be done in more sophisticated ways. For example when an attribute may
-take an array value when uploading multiple files or selecting multiple items you may specify it by appending `[]`
-to the attribute name:
+モデルの属性を指定するためには、もっと洗練された方法を使うことも出来ます。
+例えば、複数のファイルをアップロードしたり、複数の項目を選択したりする場合に、属性の名前に `[]` を付けて、属性が配列の値を取り得ることを指定することが出来ます。
 
 ```php
-// allow multiple files to be uploaded:
+// 複数のファイルのアップロードを許可する
 echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
 
-// allow multiple items to be checked:
+// 複数の項目をチェックすることを許可する
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
 ```
 
-> **Tip**: in order to style required fields with asterisk you can use the following CSS:
+> **tip**|**ヒント**: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
 >
 ```css
 div.required label:after {
@@ -129,14 +127,14 @@ div.required label:after {
 }
 ```
 
-Handling multiple models with a single form
--------------------------------------------
+一つのフォームで複数のモデルを扱う
+----------------------------------
 
-Sometimes you need to handle multiple models of the same kind in a single form. For example, multiple settings where
-each setting is stored as name-value and is represented by `Setting` model. The
-following shows how to implement it with Yii.
+時として、一つのフォームで同じ種類の複数のモデルを扱わなければならないことがあります。
+例えば、それぞれが「名前-値」の形で保存され、`Setting` モデルとして表される複数の設定項目を扱うフォームです。
+以下に、これを Yii で実装する方法を示します。
 
-Let's start with controller action:
+コントローラアクションから始めましよう。
 
 ```php
 namespace app\controllers;
@@ -167,12 +165,12 @@ class SettingsController extends Controller
 }
 ```
 
-In the code above we're using `indexBy` when retrieving models from the database to populate an array indexed by model ids.
-These will be later used to identify form fields. `loadMultiple` fills multiple models with the form data coming from POST
-and `validateMultiple` validates all models at once. In order to skip validation when saving we're passing `false` as
-a parameter to `save`.
+上記のコードでは、データベースからモデルを読み出すときに `indexBy` を使って、モデルの ID でインデックスされた配列にモデルを代入しています。
+このインデックスが、後で、フォームフィールドを特定するために使われます。
+`loadMultiple` が POST から来るフォームデータを複数のモデルに代入し、`validateMultiple` が全てのモデルを一度に検証します。
+保存するときの検証をスキップするために、`save` のパラメータに `false` を渡しています。
 
-Now the form that's in `update` view:
+次に、`update` ビューにあるフォームです。
 
 ```php
 <?php
@@ -188,5 +186,6 @@ foreach ($settings as $index => $setting) {
 ActiveForm::end();
 ```
 
-Here for each setting we are rendering name and an input with a value. It is important to add a proper index
-to input name since that is how `loadMultiple` determines which model to fill with which values.
+ここで全ての設定項目について、それぞれ、名前と値を入れたインプットをレンダリングしています。
+インプットの名前に適切なインデックスを追加することが肝腎です。
+というのは、`loadMultiple` がそれを見て、どのモデルにどの値を代入するかを決定するからです。
