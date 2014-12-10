@@ -19,7 +19,7 @@ class BootstrapThemeAsset extends AssetBundle
 {
     public $sourcePath = '@bower/bootstrap/dist';
     public $css = [
-        'css/bootstrap-theme.css',
+        'css/bootstrap-theme.min.css',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset',
