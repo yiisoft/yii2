@@ -84,9 +84,9 @@ When you run your tests not in the same process where code coverage is collected
 related options, to be able to collect code coverage correctly. To setup remote code coverage you should follow [instructions](http://codeception.com/docs/11-Codecoverage)
 from codeception site.
 
-1. install Codeception c3 remote support `composer require "codeception/c3:*"`;
+1. install `Codeception c3` remote support `composer require "codeception/c3:*"`;
 
-2. copy c3.php file under your `web` directory and include;
+2. copy `c3.php` file under your `web` directory;
 
 3. include `c3.php` file in your `index-test.php` file before application run, so it can catch needed requests.
 
