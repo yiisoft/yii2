@@ -62,7 +62,7 @@ codecept run unit
 Code coverage support
 ---------------------
 
-By default, code coverage is disabled in `codeception.yaml` configuration file, you should uncomment needed rows to be able
+By default, code coverage is disabled in `codeception.yml` configuration file, you should uncomment needed rows to be able
 to collect code coverage. You can run your tests and collect coverage with the following command:
 
 ```
@@ -94,7 +94,7 @@ Configuration options that are used by remote code coverage:
 
 - c3_url: url pointing to entry script that includes `c3.php` file, so `Codeception` will be able to produce code coverage;
 - remote: whether to enable remote code coverage or not;
-- remote_config: path to the `codeception.yaml` configuration file, from the directory where `c3.php` file is located. This is needed
+- remote_config: path to the `codeception.yml` configuration file, from the directory where `c3.php` file is located. This is needed
   so that `Codeception` can create itself instance and collect code coverage correctly.
 
 By default `c3_url` and `remote_config` setup correctly, you only need to copy and include `c3.php` file in your `index-test.php`
