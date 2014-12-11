@@ -44,13 +44,10 @@ http://hostname/index.php?r=gii
 ```
 
 > Note: If you are accessing Gii from a machine other than localhost, the access will be denied by default
-> for security purpose. You can configure Gii to add the allowed IP addresses as follows,
+> for security purpose. You can configure Gii to add the allowed IP addresses. You have to modify the file `vendor/yiisoft/yii2-gii/Module.php` as follows,
 >
 ```php
-'gii' => [
-    'class' => 'yii\gii\Module',
-    'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
-],
+    public $allowedIPs = ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
 ```
 
 ![Gii](images/start-gii.png)
