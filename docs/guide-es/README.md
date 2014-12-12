@@ -106,7 +106,7 @@ Visualizar datos
 * **TBD** [Proveedores de datos](output-data-providers.md)
 * **TBD** [Widgets de datos](output-data-widgets.md)
 * **TBD** [Trabajar con scripts de cliente](output-client-scripts.md)
-* **TBD** [Utilización de temas](output-theming.md)
+* [Temas](output-theming.md)
 
 
 Seguridad
