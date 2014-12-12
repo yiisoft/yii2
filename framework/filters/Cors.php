@@ -49,6 +49,8 @@ use yii\web\Response;
  *                 'Access-Control-Allow-Credentials' => true,
  *                 // Allow OPTIONS caching
  *                 'Access-Control-Max-Age' => 3600,
+ *                 // Allow the X-Pagination-Current-Page header to be exposed to the browser.
+ *                 'Access-Control-Expose-Headers' => ['X-Pagination-Current-Page'],
  *             ],
  *
  *         ],
@@ -82,6 +84,7 @@ class Cors extends ActionFilter
         'Access-Control-Request-Headers' => ['*'],
         'Access-Control-Allow-Credentials' => null,
         'Access-Control-Max-Age' => 86400,
+        'Access-Control-Expose-Headers' => [],
     ];
 
 
@@ -167,6 +170,10 @@ class Cors extends ActionFilter
 
         if (isset($this->cors['Access-Control-Max-Age']) && Yii::$app->getRequest()->getIsOptions()) {
             $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
+        }
+
+        if (isset($this->cors['Access-Control-Expose-Headers'])) {
+            $responseHeaders['Access-Control-Expose-Headers'] = implode(', ', $this->cors['Access-Control-Expose-Headers']);
         }
 
         return $responseHeaders;
