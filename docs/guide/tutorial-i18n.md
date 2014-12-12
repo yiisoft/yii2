@@ -326,10 +326,10 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-        $this->registerTranslations();
+        self::registerTranslations();
     }
 
-    public function registerTranslations()
+    public static function registerTranslations()
     {
         Yii::$app->i18n->translations['modules/users/*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
@@ -345,6 +345,10 @@ class Module extends \yii\base\Module
 
     public static function t($category, $message, $params = [], $language = null)
     {
+        if (!isset(Yii::$app->i18n->translations['modules/users/*'])) {
+            self::registerTranslations();
+        }
+        
         return Yii::t('modules/users/' . $category, $message, $params, $language);
     }
 
