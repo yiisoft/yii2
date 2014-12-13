@@ -1,153 +1,140 @@
-Validating Input
-================
+入力を検証する
+==============
 
-As a rule of thumb, you should never trust the data received from end users and should always validate it
-before putting it to good use.
+大まかに言うなら、エンドユーザから受信したデータは決して信用せず、利用する前に検証しなければなりません。
 
-Given a [model](structure-models.md) populated with user inputs, you can validate the inputs by calling the
-[[yii\base\Model::validate()]] method. The method will return a boolean value indicating whether the validation
-succeeded or not. If not, you may get the error messages from the [[yii\base\Model::errors]] property. For example,
+[モデル](structure-models.md) にユーザの入力が投入されたら、モデルの [[yii\base\Model::validate()]] メソッドを呼んで入力を検証することが出来ます。
+このメソッドは検証が成功したか否かを示す真偽値を返します。
+検証が失敗した場合は、[[yii\base\Model::errors]] プロパティからエラーメッセージを取得することが出来ます。
+例えば、
 
 ```php
 $model = new \app\models\ContactForm;
 
-// populate model attributes with user inputs
+// モデルの属性にユーザ入力を投入する
 $model->attributes = \Yii::$app->request->post('ContactForm');
 
 if ($model->validate()) {
-    // all inputs are valid
+    // 全ての入力が有効
 } else {
-    // validation failed: $errors is an array containing error messages
+    // 検証が失敗。$errors はエラーメッセージを含む配列
     $errors = $model->errors;
 }
 ```
 
-Behind the scenes, the `validate()` method does the following steps to perform validation:
+舞台裏では、`validate()` メソッドが次のステップを踏んで検証を実行します。
 
-1. Determine which attributes should be validated by getting the attribute list from [[yii\base\Model::scenarios()]]
-   using the current [[yii\base\Model::scenario|scenario]]. These attributes are called *active attributes*.
-2. Determine which validation rules should be used by getting the rule list from [[yii\base\Model::rules()]]
-   using the current [[yii\base\Model::scenario|scenario]]. These rules are called *active rules*.
-3. Use each active rule to validate each active attribute associated with that rule. If the rule fails,
-   keep an error message for the attribute in the model.
+1. 現在の [[yii\base\Model::scenario|シナリオ]] を使って [[yii\base\Model::scenarios()]] から属性のリストを取得し、どの属性が検証されるべきかを決定します。
+   検証されるべき属性が *アクティブな属性* と呼ばれます。
+2. 現在の [[yii\base\Model::scenario|シナリオ]] を使って [[yii\base\Model::rules()]] から規則のリストを取得し、どの検証規則が使用されるべきかを決定します。
+   使用されるべき規則が *アクティブな規則* と呼ばれます。
+3. 全てのアクティブな規則を一つずつ使って、その規則に関連付けられた全てのアクティブな属性を一つずつ検証します。
+   検証が失敗したときは、属性に対するエラーメッセージをモデルの中に保存します。
 
 
-## Declaring Rules <a name="declaring-rules"></a>
+## 規則を宣言する <a name="declaring-rules"></a>
 
-To make `validate()` really work, you should declare validation rules for the attributes you plan to validate.
-This should be done by overriding the [[yii\base\Model::rules()]] method. The following example shows how
-the validation rules for the `ContactForm` model are declared:
+`validate()` を現実に動作させるためには、検証する予定の属性に対して検証規則を宣言しなければなりません。
+規則は [[yii\base\Model::rules()]] メソッドをオーバーライドすることで宣言します。
+次の例は、`ContactForm` モデルに対して検証規則を宣言する方法を示すものです。
 
 ```php
 public function rules()
 {
     return [
-        // the name, email, subject and body attributes are required
+        // 名前、メールアドレス、主題、本文が必須項目
         [['name', 'email', 'subject', 'body'], 'required'],
 
-        // the email attribute should be a valid email address
+        // email 属性は有効なメールアドレスでなければならない
         ['email', 'email'],
     ];
 }
 ```
 
-The [[yii\base\Model::rules()|rules()]] method should return an array of rules, each of which is an array
-of the following format:
+[[yii\base\Model::rules()|rules()]] メソッドは配列を返すべきものですが、配列の各要素は次の形式の配列でなければなりません。
 
 ```php
 [
-    // required, specifies which attributes should be validated by this rule.
-    // For a single attribute, you can use the attribute name directly
-    // without having it in an array instead of an array
-    ['attribute1', 'attribute2', ...],
+    // 必須。この規則によって検証されるべき属性を指定する。
+    // 属性が一つだけの場合は、配列の中に入れずに、属性の名前を直接に書いてもよい。
+    ['属性1', '属性2', ...],
 
-    // required, specifies the type of this rule.
-    // It can be a class name, validator alias, or a validation method name
-    'validator',
+    // 必須。この規則のタイプを指定する。
+    // クラス名、バリデータのエイリアス、または、検証メソッドの名前。
+    'バリデータ',
 
-    // optional, specifies in which scenario(s) this rule should be applied
-    // if not given, it means the rule applies to all scenarios
-    // You may also configure the "except" option if you want to apply the rule
-    // to all scenarios except the listed ones
-    'on' => ['scenario1', 'scenario2', ...],
+    // オプション。この規則が適用されるべき一つまたは複数のシナリオを指定する。
+    // 指定しない場合は、この規則が全てのシナリオに適用されることを意味する。
+    // "except" オプションを構成して、列挙したシナリオを除く全てのシナリオに
+    // この規則が適用されるべきことを指定することも出来る。
+    'on' => ['シナリオ1', 'シナリオ2', ...],
 
-    // optional, specifies additional configurations for the validator object
-    'property1' => 'value1', 'property2' => 'value2', ...
+    // オプション。バリデータオブジェクトに対する追加の構成情報を指定する。
+    'プロパティ1' => '値1', 'プロパティ2' => '値2', ...
 ]
 ```
 
-For each rule you must specify at least which attributes the rule applies to and what is the type of the rule.
-You can specify the rule type in one of the following forms:
+各規則について、最低限、規則がどの属性に適用されるか、そして、規則がどのタイプであるかを指定しなければなりません。
+規則のタイプは、次に挙げる形式のどれか一つを選ぶことが出来ます。
 
-* the alias of a core validator, such as `required`, `in`, `date`, etc. Please refer to
-  the [Core Validators](tutorial-core-validators.md) for the complete list of core validators.
-* the name of a validation method in the model class, or an anonymous function. Please refer to the
-  [Inline Validators](#inline-validators) subsection for more details.
-* a fully qualified validator class name. Please refer to the [Standalone Validators](#standalone-validators)
-  subsection for more details.
+* コアバリデータのエイリアス。例えば、`required`、`in`、`date`、等々。
+  コアバリデータの完全なリストは [コアバリデータ](tutorial-core-validators.md) を参照してください。
+* モデルクラス内の検証メソッドの名前、または無名関数。詳細は、[インラインバリデータ](#inline-validators) の項を参照してください。
+* 完全修飾のバリデータクラス名。詳細は [スタンドアロンバリデータ](#standalone-validators) の項を参照してください。
 
-A rule can be used to validate one or multiple attributes, and an attribute may be validated by one or multiple rules.
-A rule may be applied in certain [scenarios](structure-models.md#scenarios) only by specifying the `on` option.
-If you do not specify an `on` option, it means the rule will be applied to all scenarios.
+一つの規則は、一つまたは複数の属性を検証するために使用することが出来ます。
+そして、一つの属性は、一つまたは複数の規則によって検証され得ます。
+`on` オプションを指定することで、規則を特定の [シナリオ](structure-models.md#scenarios) においてのみ適用することが出来ます。
+`on` オプションを指定しない場合は、規則が全てのシナリオに適用されることになります。
 
-When the `validate()` method is called, it does the following steps to perform validation:
+`validate()` メソッドが呼ばれると、次のステップを踏んで検証が実行されます。
 
-1. Determine which attributes should be validated by checking the current [[yii\base\Model::scenario|scenario]]
-   against the scenarios declared in [[yii\base\Model::scenarios()]]. These attributes are the active attributes.
-2. Determine which rules should be applied by checking the current [[yii\base\Model::scenario|scenario]]
-   against the rules declared in [[yii\base\Model::rules()]]. These rules are the active rules.
-3. Use each active rule to validate each active attribute which is associated with the rule.
-   The validation rules are evaluated in the order they are listed.
+1. [[yii\base\Model::scenarios()]] で宣言されているシナリオを調べて、現在の [[yii\base\Model::scenario|シナリオ]] に該当するものを取り出し、どの属性が検証されるべきかを決定します。
+   検証されるべき属性が *アクティブな属性* です。
+2. [[yii\base\Model::rules()]] で宣言されている規則を調べて、現在の [[yii\base\Model::scenario|シナリオ]] に該当するものを取り出し、どの属性が規則が適用されるべきかを決定します。
+   適用されるべき規則が *アクティブな規則* と呼ばれます。
+3. 全てのアクティブな規則を一つずつ使って、その規則に関連付けられた全てのアクティブな属性を一つずつ検証します。
+   検証規則はリストに挙げられている順に評価されます。
 
-According to the above validation steps, an attribute will be validated if and only if it is
-an active attribute declared in `scenarios()` and is associated with one or multiple active rules
-declared in `rules()`.
+属性は、上記の検証ステップに従って、`scenarios()` でアクティブな属性であると宣言されており、かつ、`rules()` で宣言された一つまたは複数のアクティブな規則と関連付けられている場合に、また、その場合に限って、検証されます。
 
 
-### Customizing Error Messages <a name="customizing-error-messages"></a>
+### エラーメッセージをカスタマイズする <a name="customizing-error-messages"></a>
 
-Most validators have default error messages that will be added to the model being validated when its attributes
-fail the validation. For example, the [[yii\validators\RequiredValidator|required]] validator will add
-a message "Username cannot be blank." to a model when the `username` attribute fails the rule using this validator.
+たいていのバリデータはデフォルトのエラーメッセージを持っていて、属性の検証が失敗した場合にそれを検証対象のモデルに追加します。
+例えば、[[yii\validators\RequiredValidator|required]] バリデータは、このバリデータを使って `username` 属性を検証したとき、規則に合致しない場合は「ユーザ名は空ではいけません。」というエラーメッセージをモデルに追加します。
 
-You can customize the error message of a rule by specifying the `message` property when declaring the rule,
-like the following,
+規則のエラーメッセージは、次に示すように、規則を宣言するときに `message` プロパティを指定することによってカスタマイズすることが出来ます。
 
 ```php
 public function rules()
 {
     return [
-        ['username', 'required', 'message' => 'Please choose a username.'],
+        ['username', 'required', 'message' => 'ユーザ名を選んでください。'],
     ];
 }
 ```
 
-Some validators may support additional error messages to more precisely describe different causes of
-validation failures. For example, the [[yii\validators\NumberValidator|number]] validator supports
-[[yii\validators\NumberValidator::tooBig|tooBig]] and [[yii\validators\NumberValidator::tooSmall|tooSmall]]
-to describe the validation failure when the value being validated is too big and too small, respectively.
-You may configure these error messages like configuring other properties of validators in a validation rule.
+バリデータの中には、検証を失敗させたさまざまな原因をより詳しく説明するための追加のエラーメッセージをサポートしているものがあります。
+例えば、[[yii\validators\NumberValidator|number]] バリデータは、検証される値が大きすぎたり小さすぎたりしたときに検証の失敗を説明するために、それぞれ、[[yii\validators\NumberValidator::tooBig|tooBig]] および [[yii\validators\NumberValidator::tooSmall|tooSmall]] のメッセージをサポートしています。
+これらのエラーメッセージも、バリデータの他のプロパティと同様、検証規則の中で構成することが出来ます。
 
 
-### Validation Events <a name="validation-events"></a>
+### 検証のイベント <a name="validation-events"></a>
 
-When [[yii\base\Model::validate()]] is called, it will call two methods that you may override to customize
-the validation process:
+[[yii\base\Model::validate()]] は、呼び出されると、検証プロセスをカスタマイズするためにオーバーライドできる二つのメソッドを呼び出します。
 
-* [[yii\base\Model::beforeValidate()]]: the default implementation will trigger a [[yii\base\Model::EVENT_BEFORE_VALIDATE]]
-  event. You may either override this method or respond to this event to do some preprocessing work
-  (e.g. normalizing data inputs) before the validation occurs. The method should return a boolean value indicating
-  whether the validation should proceed or not.
-* [[yii\base\Model::afterValidate()]]: the default implementation will trigger a [[yii\base\Model::EVENT_AFTER_VALIDATE]]
-  event. You may either override this method or respond to this event to do some postprocessing work after
-  the validation is completed.
+* [[yii\base\Model::beforeValidate()]]: 既定の実装は [[yii\base\Model::EVENT_BEFORE_VALIDATE]] イベントをトリガするものです。
+  このメソッドをオーバーライドするか、または、イベントに反応して、検証が実行される前に、何らかの前処理 (例えば入力されたデータの正規化) をすることが出来ます。
+  このメソッドは、検証を続行すべきか否かを示す真偽値を返さなくてはなりません。
+* [[yii\base\Model::afterValidate()]]: 既定の実装は [[yii\base\Model::EVENT_AFTER_VALIDATE]] イベントをトリガするものです。
+  このメソッドをオーバーライドするか、または、イベントに反応して、検証が完了した後に、何らかの後処理をすることが出来ます。
 
 
-### Conditional Validation <a name="conditional-validation"></a>
+### 条件付きの検証 <a name="conditional-validation"></a>
 
-To validate attributes only when certain conditions apply, e.g. the validation of one attribute depends
-on the value of another attribute you can use the [[yii\validators\Validator::when|when]] property
-to define such conditions. For example,
+特定の条件が満たされる場合に限って属性を検証したい場合、例えば、ある属性の検証が他の属性の値に依存する場合には、[[yii\validators\Validator::when|when]] プロパティを使って、そのような条件を定義することが出来ます。
+例えば、
 
 ```php
 [
@@ -157,20 +144,20 @@ to define such conditions. For example,
 ]
 ```
 
-The [[yii\validators\Validator::when|when]] property takes a PHP callable with the following signature:
+[[yii\validators\Validator::when|when]] プロパティは、次のシグニチャを持つ PHP コーラブルを値として取ります。
 
 ```php
 /**
- * @param Model $model the model being validated
- * @param string $attribute the attribute being validated
- * @return boolean whether the rule should be applied
+ * @param Model $model 検証されるモデル
+ * @param string $attribute 検証される属性
+ * @return boolean 規則が適用されるか否か
  */
 function ($model, $attribute)
 ```
 
-If you also need to support client-side conditional validation, you should configure
-the [[yii\validators\Validator::whenClient|whenClient]] property which takes a string representing a JavaScript
-function whose return value determines whether to apply the rule or not. For example,
+クライアント側でも条件付きの検証をサポートする必要がある場合は、[[yii\validators\Validator::whenClient|whenClient]] プロパティを構成しなければなりません。
+このプロパティは、規則を適用すべきか否かを返す JavaScript 関数を表す文字列を値として取ります。
+例えば、
 
 ```php
 [
@@ -183,13 +170,13 @@ function whose return value determines whether to apply the rule or not. For exa
 ```
 
 
-### Data Filtering <a name="data-filtering"></a>
+### データのフィルタリング <a name="data-filtering"></a>
 
-User inputs often need to be filtered or preprocessed. For example, you may want to trim the spaces around the
-`username` input. You may use validation rules to achieve this goal.
+ユーザ入力をフィルタまたは前処理する必要があることがよくあります。
+例えば、`username` の入力値の前後にある空白を除去したいというような場合です。
+この目的を達するために検証規則を使うことが出来ます。
 
-The following examples shows how to trim the spaces in the inputs and turn empty inputs into nulls by using
-the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validators.md#default) core validators:
+次の例では、入力値の前後にある空白を除去して、空の入力値を null に変換することを、[trim](tutorial-core-validators.md#trim) および [default](tutorial-core-validators.md#default) のコアバリデータで行っています。
 
 ```php
 [
@@ -198,31 +185,29 @@ the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validat
 ]
 ```
 
-You may also use the more general [filter](tutorial-core-validators.md#filter) validator to perform more complex
-data filtering.
-
-As you can see, these validation rules do not really validate the inputs. Instead, they will process the values
-and save them back to the attributes being validated.
+もっと汎用的な [filter](tutorial-core-validators.md#filter) バリデータを使って、もっと複雑なデータフィルタリングをすることも出来ます。
+お判りのように、これらの検証規則は実際には入力を検証しません。そうではなくて、検証される属性の値を処理して書き戻すのです。
 
 
-### Handling Empty Inputs <a name="handling-empty-inputs"></a>
+### 空の入力値を扱う <a name="handling-empty-inputs"></a>
 
-When input data are submitted from HTML forms, you often need to assign some default values to the inputs
-if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
+HTML フォームから入力データが送信されたとき、入力値が空である場合には何らかのデフォルト値を割り当てなければならないことがよくあります。
+[default](tutorial-core-validators.md#default) バリデータを使ってそうすることが出来ます。
+例えば、
 
 ```php
 [
-    // set "username" and "email" as null if they are empty
+    // 空の時は "username" と "email" を null にする
     [['username', 'email'], 'default'],
 
-    // set "level" to be 1 if it is empty
+    // 空の時は "level" を 1 にする
     ['level', 'default', 'value' => 1],
 ]
 ```
 
-By default, an input is considered empty if its value is an empty string, an empty array or a null.
-You may customize the default empty detection logic by configuring the the [[yii\validators\Validator::isEmpty]] property
-with a PHP callable. For example,
+既定では、入力値が空であると見なされるのは、それが、空文字列であるか、空配列であるか、null であるときです。
+空を検知するこのデフォルトのロジックは、[[yii\validators\Validator::isEmpty]] プロパティを PHP コーラブルで構成することによって、カスタマイズすることが出来ます。
+例えば、
 
 ```php
 [
