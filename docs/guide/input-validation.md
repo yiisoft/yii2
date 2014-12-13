@@ -49,7 +49,7 @@ of the following format:
 [
     // required, specifies which attributes should be validated by this rule.
     // For a single attribute, you can use the attribute name directly
-    // without having it in an array instead of an array
+    // without having it in an array
     ['attribute1', 'attribute2', ...],
 
     // required, specifies the type of this rule.
