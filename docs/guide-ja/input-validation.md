@@ -1,7 +1,7 @@
 入力を検証する
 ==============
 
-大まかに言うなら、エンドユーザから受信したデータは決して信用せず、利用する前に検証しなければなりません。
+大まかに言うなら、エンドユーザから受信したデータは決して信用せず、利用する前に検証しなければならない、ということです。
 
 [モデル](structure-models.md) にユーザの入力が投入されたら、モデルの [[yii\base\Model::validate()]] メソッドを呼んで入力を検証することが出来ます。
 このメソッドは検証が成功したか否かを示す真偽値を返します。
@@ -207,35 +207,33 @@ HTML フォームから入力データが送信されたとき、入力値が空
 ]
 ```
 
-> Note: Most validators do not handle empty inputs if their [[yii\base\Validator::skipOnEmpty]] property takes
-  the default value true. They will simply be skipped during validation if their associated attributes receive empty
-  inputs. Among the [core validators](tutorial-core-validators.md), only the `captcha`, `default`, `filter`,
-  `required`, and `trim` validators will handle empty inputs.
+> Note|注意: たいていのバリデータは、[[yii\base\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
+  そのようなバリデータは、関連付けられた属性が空の入力値を受け取ったときは、検証の過程ではスキップされるだけになります。
+  [コアバリデータ](tutorial-core-validators.md) の中では、`captcha`、`default`、`filter`、`required`、そして `trim` だけが空の入力値を処理します。
 
 
-## Ad Hoc Validation <a name="ad-hoc-validation"></a>
+## 臨時の検証 <a name="ad-hoc-validation"></a>
 
-Sometimes you need to do *ad hoc validation* for values that are not bound to any model.
+時として、何らかのモデルに結び付けられていない値に対する *臨時の検証* を実行しなければならない場合があります。
 
-If you only need to perform one type of validation (e.g. validating email addresses), you may call
-the [[yii\validators\Validator::validate()|validate()]] method of the desired validator, like the following:
+実行する必要がある検証が一種類 (例えば、メールアドレスの検証) だけである場合は、使いたいバリデータの [[yii\validators\Validator::validate()|validate()]] メソッドを次のように呼び出すことが出来ます。
 
 ```php
 $email = 'test@example.com';
 $validator = new yii\validators\EmailValidator();
 
 if ($validator->validate($email, $error)) {
-    echo 'Email is valid.';
+    echo 'メールアドレスは有効。';
 } else {
     echo $error;
 }
 ```
 
-> Note: Not all validators support this type of validation. An example is the [unique](tutorial-core-validators.md#unique)
-  core validator which is designed to work with a model only.
+> Note|注意: 全てのバリデータがこの種の検証をサポートしている訳ではありません。
+  その一例が [unique](tutorial-core-validators.md#unique) コアバリデータであり、これはモデルとともに使用されることだけを念頭にして設計されています。
 
-If you need to perform multiple validations against several values, you can use [[yii\base\DynamicModel]]
-which supports declaring both attributes and rules on the fly. Its usage is like the following:
+いくつかの値に対して複数の検証を実行する必要がある場合は、属性と規則の両方をその場で宣言することが出来る [[yii\base\DynamicModel]] を使うことが出来ます。
+これは、次のような使い方をします。
 
 ```php
 public function actionSearch($name, $email)
@@ -246,18 +244,16 @@ public function actionSearch($name, $email)
     ]);
 
     if ($model->hasErrors()) {
-        // validation fails
+        // 検証が失敗
     } else {
-        // validation succeeds
+        // 検証が成功
     }
 }
 ```
 
-The [[yii\base\DynamicModel::validateData()]] method creates an instance of `DynamicModel`, defines the attributes
-using the given data (`name` and `email` in this example), and then calls [[yii\base\Model::validate()]]
-with the given rules.
+[[yii\base\DynamicModel::validateData()]] メソッドは `DynamicModel` のインスタンスを作成し、与えられた値 (この例では `name` と `email`) を使って属性を定義し、そして、与えられた規則で [[yii\base\Model::validate()]] を呼び出します。
 
-Alternatively, you may use the following more "classic" syntax to perform ad hoc data validation:
+別の選択肢として、次のように、もっと「クラシック」な構文を使って、臨時のデータ検証を実行することも出来ます。
 
 ```php
 public function actionSearch($name, $email)
@@ -268,21 +264,18 @@ public function actionSearch($name, $email)
         ->validate();
 
     if ($model->hasErrors()) {
-        // validation fails
+        // 検証が失敗
     } else {
-        // validation succeeds
+        // 検証が成功
     }
 }
 ```
 
-After validation, you can check if the validation succeeded or not by calling the
-[[yii\base\DynamicModel::hasErrors()|hasErrors()]] method, and then get the validation errors from the
-[[yii\base\DynamicModel::errors|errors]] property, like you do with a normal model.
-You may also access the dynamic attributes defined through the model instance, e.g.,
-`$model->name` and `$model->email`.
+検証を実行した後は、通常のモデルで行うのと同様に、検証が成功したか否かを [[yii\base\DynamicModel::hasErrors()|hasErrors()]] メソッドを呼んでチェックして、[[yii\base\DynamicModel::errors|errors]] プロパティから検証エラーを取得することが出来ます。
+また、このモデルのインスタンスによって定義された動的な属性に対しても、例えば `$model->name` や `$model->email` のようにして、アクセスすることが出来ます。
 
 
-## Creating Validators <a name="creating-validators"></a>
+## バリデータを作成する <a name="creating-validators"></a>
 
 Besides using the [core validators](tutorial-core-validators.md) included in the Yii releases, you may also
 create your own validators. You may create inline validators or standalone validators.
