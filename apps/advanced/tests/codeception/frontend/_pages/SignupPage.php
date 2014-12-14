@@ -20,7 +20,7 @@ class SignupPage extends BasePage
     {
         foreach ($signupData as $field => $value) {
             $inputType = $field === 'body' ? 'textarea' : 'input';
-            $this->actor->fillField($inputType . '[name="SignupForm[' . $field . ']"]', $value);
+            $this->actor->fillField($inputType . '[name="User[' . $field . ']"]', $value);
         }
         $this->actor->click('signup-button');
     }
