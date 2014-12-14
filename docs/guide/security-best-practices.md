@@ -120,7 +120,12 @@ Note that HtmlPurifier processing is quite heavy so consider adding caching.
 Avoiding CSRF
 -------------
 
-TBD
+TBD: what's CSRF, how it works, intro
+
+1. Follow HTTP specification i.e. GET should not change application state.
+2. Keep Yii CSRF protection enabled.
+
+TBD: how CSRF protection works
 
 
 Avoiding file exposure
