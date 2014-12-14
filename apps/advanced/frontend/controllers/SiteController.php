@@ -118,7 +118,7 @@ class SiteController extends Controller
 
     public function actionSignup()
     {
-        $model = new User(['scenario' => 'signup']);
+        $model = new User();
         if ($model->load(Yii::$app->request->post())
             && $model->save()
             && Yii::$app->getUser()->login($model)) {
