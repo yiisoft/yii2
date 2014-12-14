@@ -22,7 +22,6 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const SCENARIO_SIGNUP = 'signup';
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
@@ -73,23 +72,13 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
-        return [
-            self::SCENARIO_SIGNUP => ['username', 'email', 'password'],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function beforeSave($insert)
     {
         if (!parent::beforeSave($insert)) {
             return false;
         }
 
-        if ($this->scenario === self::SCENARIO_SIGNUP) {
+        if ($insert) {
             $this->generatePasswordHash();
             $this->generateAuthKey();
         }
