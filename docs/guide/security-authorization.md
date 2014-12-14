@@ -280,9 +280,11 @@ public function afterSave($insert, $changedAttributes)
 {
     parent::afterSave($insert, $changedAttributes);
 
-    $auth = Yii::$app->authManager;
-    $authorRole = $auth->getRole('author');
-    $auth->assign($authorRole, $this->getId());
+    if ($this->scenario === self::SCENARIO_SIGNUP) {
+        $auth = Yii::$app->authManager;
+        $authorRole = $auth->getRole('author');
+        $auth->assign($authorRole, $this->getId());
+    }
 }
 ```
 
