@@ -280,7 +280,7 @@ public function afterSave($insert, $changedAttributes)
 {
     parent::afterSave($insert, $changedAttributes);
 
-    if ($this->scenario === self::SCENARIO_SIGNUP && $insert) {
+    if ($insert) {
         $auth = Yii::$app->authManager;
         $authorRole = $auth->getRole('author');
         $auth->assign($authorRole, $this->getId());
