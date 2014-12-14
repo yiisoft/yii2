@@ -19,13 +19,14 @@ use yii\web\IdentityInterface;
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
- * @property string $password write-only password
  */
 class User extends ActiveRecord implements IdentityInterface
 {
     const SCENARIO_SIGNUP = 'signup';
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+
+    public $password;
 
     /**
      * @inheritdoc
@@ -77,6 +78,23 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             self::SCENARIO_SIGNUP => ['username', 'email', 'password'],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if ($this->scenario === self::SCENARIO_SIGNUP) {
+            $this->generatePasswordHash();
+            $this->generateAuthKey();
+        }
+
+        return true;
     }
 
     /**
@@ -178,12 +196,10 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates password hash from password and sets it to the model
-     *
-     * @param string $password
      */
-    public function setPassword($password)
+    public function generatePasswordHash()
     {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+        $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
     }
 
     /**
