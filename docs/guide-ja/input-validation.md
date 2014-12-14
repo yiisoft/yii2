@@ -277,27 +277,26 @@ public function actionSearch($name, $email)
 
 ## バリデータを作成する <a name="creating-validators"></a>
 
-Besides using the [core validators](tutorial-core-validators.md) included in the Yii releases, you may also
-create your own validators. You may create inline validators or standalone validators.
+Yii のリリースに含まれている [コアバリデータ](tutorial-core-validators.md) を使う以外に、あなた自身のバリデータを作成することも出来ます。
+インラインバリデータとスタンドアロンバリデータを作ることが出来ます。
 
 
-### Inline Validators <a name="inline-validators"></a>
+### インラインバリデータ <a name="inline-validators"></a>
 
-An inline validator is one defined in terms of a model method or an anonymous function. The signature of
-the method/function is:
+インラインバリデータは、モデルのメソッドまたは無名関数として定義されるバリデータです。
+メソッド/関数 のシグニチャは、
 
 ```php
 /**
- * @param string $attribute the attribute currently being validated
- * @param array $params the additional name-value pairs given in the rule
+ * @param string $attribute 現在検証されている属性
+ * @param array $params 規則に与えられる追加の「名前-値」のペア
  */
 function ($attribute, $params)
 ```
 
-If an attribute fails the validation, the method/function should call [[yii\base\Model::addError()]] to save
-the error message in the model so that it can be retrieved back later to present to end users.
+属性が健勝に失敗した場合は、メソッド/関数 は [[yii\base\Model::addError()]] を呼んでエラーメッセージをモデルに保存し、後で読み出してエンドユーザに示ことが出来るようにしなければなりません。
 
-Below are some examples:
+下記にいくつかの例を示します。
 
 ```php
 use yii\base\Model;
@@ -310,13 +309,13 @@ class MyForm extends Model
     public function rules()
     {
         return [
-            // an inline validator defined as the model method validateCountry()
+            // モデルメソッド validateCountry() として定義されるインラインバリデータ
             ['country', 'validateCountry'],
 
-            // an inline validator defined as an anonymous function
+            // 無名関数として定義されるインラインバリデータ
             ['token', function ($attribute, $params) {
                 if (!ctype_alnum($this->$attribute)) {
-                    $this->addError($attribute, 'The token must contain letters or digits.');
+                    $this->addError($attribute, 'トークンは英数字で構成しなければなりません。');
                 }
             }],
         ];
@@ -325,16 +324,15 @@ class MyForm extends Model
     public function validateCountry($attribute, $params)
     {
         if (!in_array($this->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'The country must be either "USA" or "Web".');
+            $this->addError($attribute, '国は "USA" または "Web" でなければなりません。');
         }
     }
 }
 ```
 
-> Note: By default, inline validators will not be applied if their associated attributes receive empty inputs
-  or if they have already failed some validation rules. If you want to make sure a rule is always applied,
-  you may configure the [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] and/or [[yii\validators\Validator::skipOnError|skipOnError]]
-  properties to be false in the rule declarations. For example:
+> Note|注意: 既定では、インラインバリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかの検証規則に失敗したりしている場合には、適用されません。
+> 規則が常に適用されることを保証したい場合は、規則の宣言において [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] および/または [[yii\validators\Validator::skipOnError|skipOnError]] のプロパティを false に設定することが出来ます。
+> 例えば、
 >
 > ```php
 > [
@@ -343,12 +341,12 @@ class MyForm extends Model
 > ```
 
 
-### Standalone Validators <a name="standalone-validators"></a>
+### スタンドアロンバリデータ <a name="standalone-validators"></a>
 
-A standalone validator is a class extending [[yii\validators\Validator]] or its child class. You may implement
-its validation logic by overriding the [[yii\validators\Validator::validateAttribute()]] method. If an attribute
-fails the validation, call [[yii\base\Model::addError()]] to save the error message in the model, like you do
-with [inline validators](#inline-validators). For example,
+スタンドアロンバリデータは、[[yii\validators\Validator]] またはその子クラスを拡張するクラスです。
+[[yii\validators\Validator::validateAttribute()]] メソッドをオーバーライドすることによって、その検証ロジックを実装することが出来ます。
+[インラインバリデータ](#inline-validators) でするのと同じように、属性が検証に失敗した場合は、[[yii\base\Model::addError()]] を呼んでエラーメッセージをモデルに保存します。
+例えば、
 
 ```php
 namespace app\components;
@@ -360,11 +358,12 @@ class CountryValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($model, $attribute, 'The country must be either "USA" or "Web".');
+            $this->addError($model, $attribute, '国は "USA" または "Web" でなければなりません。');
         }
     }
 }
 ```
+
 
 If you want your validator to support validating a value without a model, you should also override
 [[yii\validators\Validator::validate()]]. You may also override [[yii\validators\Validator::validateValue()]]
