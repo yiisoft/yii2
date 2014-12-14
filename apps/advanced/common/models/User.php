@@ -23,6 +23,7 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    const SCENARIO_SIGNUP = 'signup';
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
@@ -50,8 +51,31 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            ['username', 'filter', 'filter' => 'trim'],
+            ['username', 'required'],
+            ['username', 'unique', 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+
+            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'unique', 'message' => 'This email address has already been taken.'],
+
+            ['password', 'required'],
+            ['password', 'string', 'min' => 6],
+
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_SIGNUP => ['username', 'email', 'password'],
         ];
     }
 
