@@ -460,7 +460,7 @@ public function fields()
 > および `password_reset_token` を選んで除去しています。
 
 
-## 最善の慣行<a name="best-practices"></a>
+## ベストプラクティス<a name="best-practices"></a>
 
 モデルは、業務のデータ、規則、ロジックを表わす中心的なオブジェクトです。
 モデルは、さまざまな場所で再利用される必要がよくあります。
