@@ -467,13 +467,13 @@ $orders = $customer->getBigOrders(200)->all();
 例えば、`$customer->getOrders()` は `ActiveQuery` のインスタンスを返し、`$customer->orders` は `Order` オブジェクトの配列 (またはクエリ結果が無い場合は空の配列) を返します。
 
 
-連結テーブルを使うリレーション
+中間テーブルを使うリレーション
 ------------------------------
 
-場合によっては、二つのテーブルが [連結テーブル][] と呼ばれる中間的なテーブルによって関連付けられていることがあります。
+場合によっては、二つのテーブルが [中間テーブル][] と呼ばれる中間的なテーブルによって関連付けられていることがあります。
 そのようなリレーションを宣言するために、[[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] メソッドを呼んで、[[yii\db\ActiveQuery]] オブジェクトをカスタマイズすることが出来ます。
 
-例えば、テーブル `order` とテーブル `item` が連結テーブル `order_item` によって関連付けられている場合、`Order` クラスにおいて `items` リレーションを次のように宣言することが出来ます。
+例えば、テーブル `order` とテーブル `item` が中間テーブル `order_item` によって関連付けられている場合、`Order` クラスにおいて `items` リレーションを次のように宣言することが出来ます。
 
 ```php
 class Order extends \yii\db\ActiveRecord
@@ -505,7 +505,7 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[連結テーブル]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
+[中間テーブル]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
 
 
 レイジーローディングとイーガーローディング
@@ -560,7 +560,7 @@ foreach ($customers as $customer) {
 ご覧のように、同じ仕事をするのに必要な SQL クエリがたった二つになります。
 
 > Info|情報: 一般化して言うと、`N` 個のリレーションのうち `M` 個のリレーションが `via()` または `viaTable()` によって定義されている場合、この `N` 個のリレーションをイーガーロードしようとすると、合計で `1+M+N` 個の SQL クエリが実行されます。
-> 主たるテーブルの行を返すために一つ、`via()` または `viaTable()` の呼び出しに対応する `M` 個の連結テーブルのそれぞれに対して一つずつ、そして、`N` 個の関連テーブルのそれぞれに対して一つずつ、という訳です。
+> 主たるテーブルの行を返すために一つ、`via()` または `viaTable()` の呼び出しに対応する `M` 個の中間テーブルのそれぞれに対して一つずつ、そして、`N` 個の関連テーブルのそれぞれに対して一つずつ、という訳です。
 
 > Note|注意: イーガーローディングで `select()` をカスタマイズしようとする場合は、関連モデルにリンクするカラムを必ず含めてください。
 > そうしないと、関連モデルは読み出されません。例えば、
