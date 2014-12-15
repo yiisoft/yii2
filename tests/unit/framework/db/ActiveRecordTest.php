@@ -67,6 +67,16 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(4, $customer->status2);
     }
 
+    public function testSelectWithJoin()
+    {
+        $orders = Order::find()
+            ->select('*')
+            ->joinWith('customer')
+            ->where(['order.id' => 3])
+            ->one();
+        $this->assertEquals(3, $orders->id);
+    }
+
     public function testStatisticalFind()
     {
         // find count, sum, average, min, max, scalar
