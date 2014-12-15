@@ -199,7 +199,7 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 $connection->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
-テーブルとカラムの名前を引用符で囲む
+テーブルとカラムの名前を引用符で囲む <a name="quoting-table-and-column-names"></a>
 ------------------------------------
 
 テーブルとカラムの名前をクエリの中で安全に使えるようにするために、Yii にそれらの名前を引用符で適切に囲ませることが出来ます。
