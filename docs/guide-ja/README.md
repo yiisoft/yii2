@@ -112,7 +112,7 @@ All Rights Reserved.
 * **翻訳未着手** [権限](security-authorization.md)
 * **翻訳未着手** [パスワードを扱う](security-passwords.md)
 * **TBD** [Auth クライアント](security-auth-clients.md)
-* **TBD** [最善の慣行](security-best-practices.md)
+* **翻訳未着手** [最善の慣行](security-best-practices.md)
 
 
 キャッシュ
