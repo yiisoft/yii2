@@ -365,31 +365,30 @@ class CountryValidator extends Validator
 ```
 
 
-If you want your validator to support validating a value without a model, you should also override
-[[yii\validators\Validator::validate()]]. You may also override [[yii\validators\Validator::validateValue()]]
-instead of `validateAttribute()` and `validate()` because by default the latter two methods are implemented
-by calling `validateValue()`.
+あなたのバリデータで、モデル無しの値の検証をサポートしたい場合は、[[yii\validators\Validator::validate()]] もオーバーライドしなければなりません。
+または、`validateAttribute()` と `validate()` の代りに、[[yii\validators\Validator::validateValue()]] をオーバーライドしても構いません。
+と言うのは、前の二つは、デフォルトでは、`validateValue()` を呼び出すことによって実装されているからです。
 
 
-## Client-Side Validation <a name="client-side-validation"></a>
+## クライアント側での検証 <a name="client-side-validation"></a>
 
-Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
-it allows users to find out input errors faster and thus provides a better user experience. You may use or implement
-a validator that supports client-side validation *in addition to* server-side validation.
+エンドユーザが HTML フォームで値を入力する際には、JavaScript に基づくクライアント側での検証が提供されることが望まれます。
+というのは、クライアント側での検証は、ユーザが入力のエラーを早く見つけることが出来るようにすることによって、より良いユーザ体験を提供するものだからです。
+あなたも、サーバ側での検証 *に加えて* クライアント側での検証をサポートするバリデータを使用したり実装したりすることが出来ます。
 
-> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users with a better
-  experience. Similar to input data coming from end users, you should never trust client-side validation. For this reason,
-  you should always perform server-side validation by calling [[yii\base\Model::validate()]], as
-  described in the previous subsections.
+> Info|情報: クライアント側での検証は望ましいものですが、不可欠なものではありません。
+  その主たる目的は、ユーザにより良い体験を提供することにあります。
+  エンドユーザから来る入力値と同じように、クライアント側での検証を決して信用してはいけません。
+  この理由により、これまでの項で説明したように、常に [[yii\base\Model::validate()]] を呼び出してサーバ側での検証を実行しなければなりません。
 
 
-### Using Client-Side Validation <a name="using-client-side-validation"></a>
+### クライアント側での検証を使う <a name="using-client-side-validation"></a>
 
-Many [core validators](tutorial-core-validators.md) support client-side validation out-of-the-box. All you need to do
-is just use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
-rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
-client and server sides; the other uses the `validatePassword` inline validator which is only supported on the server
-side.
+多くの [コアバリデータ](tutorial-core-validators.md) は、そのままで、クライアント側での検証をサポートしています。
+あなたがする必要があるのは、[[yii\widgets\ActiveForm]] を使って HTML フォームを作るということだけです。
+例えば、下の `LoginForm` は二つの規則を宣言しています。
+一つは、[required](tutorial-core-validators.md#required) コアバリデータを使っていますが、これはクライアント側とサーバ側の両方でサポートされています。
+もう一つは `validatePassword` インラインバリデータを使っていますが、こちらはサーバ側でのみサポートされています。
 
 ```php
 namespace app\models;
@@ -405,10 +404,10 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
+            // username と password はともに必須
             [['username', 'password'], 'required'],
 
-            // password is validated by validatePassword()
+            // password は validatePassword() によって検証される
             ['password', 'validatePassword'],
         ];
     }
@@ -418,48 +417,42 @@ class LoginForm extends Model
         $user = User::findByUsername($this->username);
 
         if (!$user || !$user->validatePassword($this->password)) {
-            $this->addError('password', 'Incorrect username or password.');
+            $this->addError('password', 'ユーザ名またはパスワードが違います。');
         }
     }
 }
 ```
 
-The HTML form built by the following code contains two input fields `username` and `password`.
-If you submit the form without entering anything, you will find the error messages requiring you
-to enter something appear right away without any communication with the server.
+次のコードによって構築される HTML フォームは、`username` と `password` の二つの入力フィールドを含みます。
+何も入力せずにこのフォームを送信すると、何かを入力するように要求するエラーメッセージが、サーバと少しも交信することなく、ただちに表示されることに気付くでしょう。
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
     <?= $form->field($model, 'username') ?>
     <?= $form->field($model, 'password')->passwordInput() ?>
-    <?= Html::submitButton('Login') ?>
+    <?= Html::submitButton('ログイン') ?>
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-Behind the scene, [[yii\widgets\ActiveForm]] will read the validation rules declared in the model
-and generate appropriate JavaScript code for validators that support client-side validation. When a user
-changes the value of an input field or submit the form, the client-side validation JavaScript will be triggered.
+舞台裏では、[[yii\widgets\ActiveForm]] がモデルで宣言されている検証規則を読んで、クライアント側の検証をサポートするバリデータのために適切な JavaScript コードを生成します。
+ユーザが入力フィールドの値を変更したりフォームを送信したりすると、クライアント側の検証の JavaScript が起動されます。
 
-If you want to turn off client-side validation completely, you may configure the
-[[yii\widgets\ActiveForm::enableClientValidation]] property to be false. You may also turn off client-side
-validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
-property to be false.
+クライアント側の検証を完全に無効にしたい場合は、[[yii\widgets\ActiveForm::enableClientValidation]] プロパティを false に設定することが出来ます。
+また、個々の入力フィールドごとにクライアント側の検証を無効にしたい場合は、入力フィールドの [[yii\widgets\ActiveField::enableClientValidation]] プロパティを false に設定することも出来ます。
 
 
-### Implementing Client-Side Validation <a name="implementing-client-side-validation"></a>
+### クライアント側の検証を実装する <a name="implementing-client-side-validation"></a>
 
-To create a validator that supports client-side validation, you should implement the
-[[yii\validators\Validator::clientValidateAttribute()]] method which returns a piece of JavaScript code
-that performs the validation on the client side. Within the JavaScript code, you may use the following
-predefined variables:
+クライアント側の検証をサポートするバリデータを作成するためには、クライアント側での検証を実行する JavaScript コードを返す [[yii\validators\Validator::clientValidateAttribute()]] メソッドを実装しなければなりません。
+その JavaScript の中では、次の事前定義された変数を使用することが出来ます。
 
-- `attribute`: the name of the attribute being validated.
-- `value`: the value being validated.
-- `messages`: an array used to hold the validation error messages for the attribute.
-- `deferred`: an array which deferred objects can be pushed into (explained in the next subsection).
+- `attribute`: 検証される属性の名前。
+- `value`: 検証される値。
+- `messages`: 属性に対する検証のエラーメッセージを保持するために使用される配列。
+- `deferred`: Deferred オブジェクトをプッシュして入れることが出来る配列 (次の項で説明します)。
 
-In the following example, we create a `StatusValidator` which validates if an input is a valid status input
-against the existing status data. The validator supports both server side and client side validation.
+次の例では、既存のステータスのデータに含まれる有効な値が入力されたかどうかを検証する `StatusValidator` を作成します。
+このバリデータは、サーバ側とクライアント側の両方の検証をサポートします。
 
 ```php
 namespace app\components;
@@ -472,7 +465,7 @@ class StatusValidator extends Validator
     public function init()
     {
         parent::init();
-        $this->message = 'Invalid status input.';
+        $this->message = '無効なステータスが入力されました。';
     }
 
     public function validateAttribute($model, $attribute)
@@ -496,9 +489,9 @@ JS;
 }
 ```
 
-> Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
-> you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
-> write the validation rule like the following:
+> Tip|ヒント: 上記のコード例の主たる目的は、クライアント側の検証をサポートする方法を説明することにあります。
+> 実際の仕事では、[in](tutorial-core-validators.md#in) コアバリデータを使って、同じ目的を達することが出来ます。
+> 次のように検証規則を書けばよいのです。
 >
 > ```php
 > [
@@ -506,10 +499,10 @@ JS;
 > ]
 > ```
 
-### Deferred Validation <a name="deferred-validation"></a>
+### Deferred な検証 <a name="deferred-validation"></a>
 
-If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
-For example, to perform a custom AJAX validation, you can use the following code:
+非同期のクライアント側検証をサポートする必要がある場合は、[Defered オブジェクト](http://api.jquery.com/category/deferred-object/) を作成することが出来ます。
+例えば、AJAX による特別な検証を実行するために、次のコードを使うことが出来ます。
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -524,11 +517,11 @@ JS;
 }
 ```
 
-In the above, the `deferred` variable is provided by Yii, which is an array of Deferred objects. The `$.get()`
-jQuery method creates a Deferred object which is pushed to the `deferred` array.
+上のコードにおいて、`deferred` は Yii が提供する変数で、Deferred オブジェクトの配列です。
+jQuery の `$.get()` メソッドによって作成された Deferred オブジェクトが `deferred` 配列にプッシュされています。
 
-You can also explicitly create a Deferred object and call its `resolve()` method when the asynchronous callback
-is hit. The following example shows how to validate the dimensions of an uploaded image file on the client side.
+Deferred オブジェクトを明示的に作成して、非同期のコールバックが呼ばれたときに、Deferred オブジェクトの `resolve()` メソッドを呼ぶことも出来ます。
+次の例は、アップロードされる画像ファイルの大きさをクライアント側で検証する方法を示すものです。
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -538,7 +531,7 @@ public function clientValidateAttribute($model, $attribute, $view)
         var img = new Image();
         img.onload = function() {
             if (this.width > 150) {
-                messages.push('Image too wide!!');
+                messages.push('画像の幅が大きすぎます。');
             }
             def.resolve();
         }
@@ -553,11 +546,11 @@ JS;
 }
 ```
 
-> Note: The `resolve()` method must be called after the attribute has been validated. Otherwise the main form
-  validation will not complete.
+> Note|注意: 属性が検証された後に、`resolve()` メソッドを呼び出さなければなりません。
+  そうしないと、主たるフォームの検証が完了しません。
 
-For simplicity, the `deferred` array is equipped with a shortcut method `add()` which automatically creates a Deferred
-object and adds it to the `deferred` array. Using this method, you can simplify the above example as follows,
+簡潔に記述できるように、`deferred` 配列はショートカットメソッド `add()` を装備しており、このメソッドを使うと、自動的に Deferred オブジェクトを作成して `deferred` 配列に追加することが出来ます。
+このメソッドを使えば、上記の例は次のように簡潔に記すことが出来ます。
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -567,7 +560,7 @@ public function clientValidateAttribute($model, $attribute, $view)
             var img = new Image();
             img.onload = function() {
                 if (this.width > 150) {
-                    messages.push('Image too wide!!');
+	                messages.push('画像の幅が大きすぎます。');
                 }
                 def.resolve();
             }
@@ -582,15 +575,14 @@ JS;
 ```
 
 
-### AJAX Validation <a name="ajax-validation"></a>
+### AJAX 検証 <a name="ajax-validation"></a>
 
-Some validations can only be done on the server side, because only the server has the necessary information.
-For example, to validate if a username is unique or not, it is necessary to check the user table on the server side.
-You can use AJAX-based validation in this case. It will trigger an AJAX request in the background to validate the
-input while keeping the same user experience as the regular client-side validation.
+場合によっては、サーバだけが必要な情報を持っているために、サーバ側でしか検証が実行できないことがあります。
+例えば、ユーザ名がユニークであるか否かを検証するためには、サーバ側で user テーブルを調べることが必要になります。
+このような場合には、AJAX ベースの検証を使うことが出来ます。
+AJAX 検証は、通常のクライアント側での検証と同じユーザ体験を保ちながら、入力値を検証するためにバックグラウンドで AJAX リクエストを発行します。
 
-To enable AJAX validation for the whole form, you have to set the
-[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be a unique form identifier:
+AJAX 検証をフォーム全体に対して有効にするためには、[[yii\widgets\ActiveForm::enableAjaxValidation]] プロパティを `true` に設定して、`id` にフォームを特定するユニークな ID を設定しなければなりません。
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin([
@@ -599,11 +591,10 @@ To enable AJAX validation for the whole form, you have to set the
 ]); ?>
 ```
 
-You may also turn AJAX validation on or off for individual input fields by configuring their
-[[yii\widgets\ActiveField::enableAjaxValidation]] property.
+個別の入力フィールドについても、[[yii\widgets\ActiveField::enableAjaxValidation]] プロパティを設定して、AJAX 検証を有効にしたり無効にしたりすることが出来ます。
 
-You also need to prepare the server so that it can handle the AJAX validation requests.
-This can be achieved by a code snippet like the following in the controller actions:
+また、サーバ側では、AJAX 検証のリクエストを処理できるように準備しておく必要があります。
+これは、コントローラのアクションにおいて、次のようなコード断片を使用することで達成できます。
 
 ```php
 if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
@@ -612,8 +603,8 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 }
 ```
 
-The above code will check whether the current request is an AJAX. If yes, it will respond to
-this request by running the validation and returning the errors in JSON format.
+上記のコードは、現在のリクエストが AJAX であるかどうかをチェックします。
+もし AJAX であるなら、リクエストに応えて検証を実行し、エラーを JSON 形式で返します。
 
-> Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
-  However, the AJAX validation feature described here is more systematic and requires less coding effort.
+> Info|情報: AJAX 検証を実行するためには、[Deferred な検証](#deferred-validation) を使うことも出来ます。
+  しかし、ここで説明された AJAX 検証の機能の方がより体系化されており、コーディングの労力も少なくて済みます。
