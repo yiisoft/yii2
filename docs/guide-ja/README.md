@@ -89,7 +89,7 @@ All Rights Reserved.
 
 * [フォームを作成する](input-forms.md)
 * [入力を検証する](input-validation.md)
-* **翻訳中** [ファイルをアップロードする](input-file-upload.md)
+* [ファイルをアップロードする](input-file-upload.md)
 * **TBD** [複数モデルのためのデータ取得](input-multiple-models.md)
 
 
@@ -112,7 +112,7 @@ All Rights Reserved.
 * **翻訳未着手** [権限](security-authorization.md)
 * **翻訳未着手** [パスワードを扱う](security-passwords.md)
 * **TBD** [Auth クライアント](security-auth-clients.md)
-* **翻訳未着手** [最善の慣行](security-best-practices.md)
+* **翻訳未着手** [ベストプラクティス](security-best-practices.md)
 
 
 キャッシュ
@@ -184,8 +184,8 @@ RESTful ウェブサービス
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* [Bootstrap ウィジェット](widget-bootstrap.md)
-* [Jquery UI ウィジェット](widget-jui.md)
+* **翻訳未着手** [Bootstrap ウィジェット](widget-bootstrap.md)
+* **翻訳未着手** [Jquery UI ウィジェット](widget-jui.md)
 
 
 ヘルパ
