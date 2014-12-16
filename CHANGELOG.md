@@ -5,8 +5,8 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #6404: advanced application template `Alert` widget was generating duplicate IDs in case of multiple flashes (SDKiller)
+- Enh #6434: Added `yii\behaviors\SluggableBehavior::immutable` to support keeping the generated slug unchanged (trntv)
 - Enh #6467: `ActiveForm` will scroll to the nearest visible element when the first error input is hidden (newartix) 
-
 
 2.0.1 December 07, 2014
 -----------------------

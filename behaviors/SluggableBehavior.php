@@ -77,8 +77,9 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $value;
     /**
-     * @var boolean whether to generate new slug if it already filled but attribute was changed.
-     * If enabled behavior will not generate new slug after attributes in model was changed.
+     * @var boolean whether to generate a new slug if it has already been generated before.
+     * If true, the behavior will not generate a new slug even if [[attribute]] is changed.
+     * @since 2.0.2
      */
     public $immutable = false;
     /**
@@ -138,7 +139,7 @@ class SluggableBehavior extends AttributeBehavior
             $owner = $this->owner;
             if (!$owner->getIsNewRecord() && !empty($owner->{$this->slugAttribute})) {
                 $isNewSlug = false;
-                if(!$this->immutable){
+                if (!$this->immutable) {
                     foreach ($attributes as $attribute) {
                         if ($owner->isAttributeChanged($attribute)) {
                             $isNewSlug = true;
