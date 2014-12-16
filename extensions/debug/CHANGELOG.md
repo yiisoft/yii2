@@ -4,7 +4,7 @@ Yii Framework 2 debug extension Change Log
 2.0.2 under development
 -----------------------
 
-- no changes in this release.
+- Bug #4820: Fixed reading incomplete debug index data in case of high request concurrency (martingeorg, samdark)
 
 
 2.0.1 December 07, 2014
