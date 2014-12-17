@@ -60,15 +60,15 @@ All Rights Reserved.
 鍵となる概念
 ------------
 
-* **翻訳中** [コンポーネント](concept-components.md)
-* **翻訳中** [プロパティ](concept-properties.md)
-* **翻訳中** [イベント](concept-events.md)
-* **翻訳中** [ビヘイビア](concept-behaviors.md)
-* **翻訳中** [構成情報](concept-configurations.md)
-* **翻訳中** [エイリアス](concept-aliases.md)
-* **翻訳中** [クラスのオートロード](concept-autoloading.md)
-* **翻訳中** [サービスロケータ](concept-service-locator.md)
-* **翻訳中** [依存注入コンテナ](concept-di-container.md)
+* [コンポーネント](concept-components.md)
+* [プロパティ](concept-properties.md)
+* [イベント](concept-events.md)
+* [ビヘイビア](concept-behaviors.md)
+* [構成情報](concept-configurations.md)
+* [エイリアス](concept-aliases.md)
+* [クラスのオートロード](concept-autoloading.md)
+* [サービスロケータ](concept-service-locator.md)
+* [依存注入コンテナ](concept-di-container.md)
 
 
 データベースの取り扱い
