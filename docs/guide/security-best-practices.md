@@ -77,7 +77,20 @@ $userIDs = $connection
     ->queryColumn();
 ```
 
-If data is used to specify column names or table names it should be escaped. Yii has special syntax for such escaping
+If data is used to specify column names or table names the best thing to do is to allow only predefined set of values:
+ 
+```php
+function actionList($orderBy = null)
+{
+    if (!in_array($orderBy, ['name', 'status'])) {
+        throw new BadRequestHttpException('Only name and status are allowed to order by.')
+    }
+    
+    // ...
+}
+```
+
+In case it's not possible, table and column names should be escaped. Yii has special syntax for such escaping
 which allows doing it the same way for all databases it supports:
 
 ```php
