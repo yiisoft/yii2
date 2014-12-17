@@ -290,7 +290,17 @@ back to the attribute being validated.
   Note that if the filter cannot handle array input, you should set this property to be true. Otherwise some
   PHP error might occur.
 
-> Tip: If you want to trim input values, you may directly use [trim](#trim) validator.
+> Tip: If you want to trim input values, you may directly use the [trim](#trim) validator.
+
+> Tip: There are many PHP functions that have the signature expected for the `filter` callback.
+> For example to apply type casting (using e.g. [intval](http://php.net/manual/en/function.intval.php),
+> [boolval](http://php.net/manual/en/function.boolval.php), ...) to ensure a specific type for an attribute,
+> you can simply specify the function names of the filter without the need to wrap them in a closure:
+>
+> ```php
+> ['property', 'filter', 'filter' => 'boolval'],
+> ['property', 'filter', 'filter' => 'intval'],
+> ```
 
 
 ## [[yii\validators\ImageValidator|image]] <a name="image"></a>
