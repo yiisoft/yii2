@@ -39,6 +39,7 @@ Japanese
 
 - Nobuo Kihara 木原伸夫, [@softark](https://github.com/softark), softark@gmail.com
 - Tomoki Morita, [@jamband](https://github.com/jamband), tmsongbooks215@gmail.com
+- Hisateru Tanaka, [@tanakahisateru](https://github.com/tanakahisateru), tanakahisateru@gmail.com
 
 Russian
 -------
