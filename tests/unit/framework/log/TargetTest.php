@@ -75,6 +75,27 @@ class TargetTest extends TestCase
             $this->assertEquals('test' . $e, static::$messages[$i++][0]);
         }
     }
+
+    public function testFlushWithoutApp()
+    {
+        static::$messages = [];
+
+        $logger = new Logger();
+
+        $logger->dispatcher = new Dispatcher([
+            'logger' => $logger,
+            'targets' => [new TestTarget2(['logVars' => []])],
+        ]);
+
+        $app = \Yii::$app;
+        $logger->log('test', Logger::LEVEL_INFO);
+        \Yii::$app = null;    // Assumed as caused at the end of test case
+        $logger->flush(true); // Assumed as caused by process exiting
+        \Yii::$app = $app;
+
+        $this->assertEquals(1, count(static::$messages));
+        $this->assertContains('test', static::$messages[0]);
+    }
 }
 
 class TestTarget extends Target
@@ -88,6 +109,20 @@ class TestTarget extends Target
     public function export()
     {
         TargetTest::$messages = array_merge(TargetTest::$messages, $this->messages);
+        $this->messages = [];
+    }
+}
+
+class TestTarget2 extends Target
+{
+    /**
+     * Exports formatted messages to TargetTest::$messages.
+     */
+    public function export()
+    {
+        TargetTest::$messages = array_merge(TargetTest::$messages,
+            array_map([$this, 'formatMessage'], $this->messages)
+        );
         $this->messages = [];
     }
 }
