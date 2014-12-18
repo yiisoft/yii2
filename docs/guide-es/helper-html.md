@@ -11,7 +11,7 @@ conjunto de métodos estáticos para gestionar las etiquetas HTML usadas más co
 llamadas a la clase auxiliar Html.
 
 Lo fundamental <a name="basics"></a>
-----------------------------
+--------------
 
 Teniendo en cuenta que la construcción de HTML dinámico mediante la concatenación de cadenas de texto se complica 
 rápidamente, Yii proporciona un conjunto de métodos para manipular las opciones de etiquetas y la construcción de las 
@@ -275,7 +275,7 @@ echo Html::getAttributeName('dates[0]');
 ```
 
 Estilos y scripts
-----------------
+-----------------
 
 Existen dos métodos para generar etiquetas que envuelvan estilos y scripts incrustados (embebbed):
 
