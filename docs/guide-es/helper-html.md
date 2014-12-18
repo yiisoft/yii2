@@ -162,10 +162,10 @@ especifica directamente.
 Los métodos más genéricos son:
 
 ```php
-// type, input name, input value, options
+type, input name, input value, options
 <?= Html::input('text', 'username', $user->name, ['class' => $username]) ?>
 
-// type, model, model attribute name, options
+type, model, model attribute name, options
 <?= Html::activeInput('text', $user, 'name', ['class' => $username]) ?>
 ```
 
@@ -282,13 +282,13 @@ Existen dos métodos para generar etiquetas que envuelvan estilos y scripts incr
 ```php
 <?= Html::style('.danger { color: #f00; }') ?>
 
-// Genera
+Genera
 
 <style>.danger { color: #f00; }</style>
 
 <?= Html::script('alert("Hello!");', ['defer' => true]);
 
-// Genera
+Genera
 
 <script defer>alert("Hello!");</script>
 ```
@@ -298,7 +298,7 @@ Si se quiere enlazar un estilo externo desde un archivo CSS:
 ```php
 <?= Html::cssFile('@web/css/ie5.css', ['condition' => 'IE 5']) ?>
 
-// genera
+genera
 
 <!--[if IE 5]>
     <link href="http://example.com/css/ie5.css" />
@@ -351,7 +351,7 @@ Para generar una etiqueta de tipo imagen se puede usar el siguiente ejemplo:
 ```php
 <?= Html::img('@web/images/logo.png', ['alt' => 'My logo']) ?>
 
-// genera
+genera
 
 <img src="http://example.com/images/logo.png" alt="My logo" />
 ```
