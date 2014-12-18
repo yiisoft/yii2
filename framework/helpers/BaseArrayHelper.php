@@ -195,6 +195,15 @@ class BaseArrayHelper
         }
     }
 
+    public static function getValues($array, $keys, $defaults = [])
+    {
+        $result = [];
+        foreach ($keys as $key) {
+            $result[$key] = static::getValue($array, $key, isset($defaults[$key]) ? $defaults[$key] : null);
+        }
+        return $result;
+    }
+
     /**
      * Removes an item from an array and returns the value. If the key does not exist in the array, the default value
      * will be returned instead.
