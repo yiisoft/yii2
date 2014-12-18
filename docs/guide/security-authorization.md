@@ -202,9 +202,8 @@ return [
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
-> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in three files: `@app/rbac/items.php`, `@app/rbac/assignments.php` and `@app/rbac/rules.php`.
-  Make sure these files are writable by the Web server process if the authorization needs to be changed online.
-  Sometimes you will need to create these files manually.
+> Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in files under `@app/rbac/` directory. Make sure directory
+  and all the files in it are writable by the Web server process if permissions hierarchy needs to be changed online.
 
 
 ### Building Authorization Data
