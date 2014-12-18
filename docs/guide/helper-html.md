@@ -88,7 +88,6 @@ could be converted there and forth by using [[yii\helpers\Html::cssStyleFromArra
 [[yii\helpers\Html::cssStyleToArray()|cssStyleToArray()]]. The [[yii\helpers\Html::removeCssStyle()|removeCssStyle()]]
 method accepts an array of properties to remove. If it's going to be a single property it could be specified as string.
 
-    
 Encoding and decoding content <a name="encoding-and-decoding-content"></a>
 --------------------------------------------------------------------------
 
@@ -104,8 +103,7 @@ $userName = Html::encode($user->name);
 echo $userName;
 
 $decodedUserName = Html::decode($userName);
-```    
-
+```
 
 Forms
 -----
@@ -158,10 +156,10 @@ directly.
 The most generic methods are:
 
 ```php
-type, input name, input value, options
+// type, input name, input value, options
 <?= Html::input('text', 'username', $user->name, ['class' => $username]) ?>
 
-type, model, model attribute name, options
+// type, model, model attribute name, options
 <?= Html::activeInput('text', $user, 'name', ['class' => $username]) ?>
 ```
 
@@ -213,7 +211,6 @@ If not, use radio list:
 <?= Html::activeRadioList($user, 'role', ArrayHelper::map($roleModels, 'id', 'name')) ?>
 ```
 
-        
 ### Labels and errors
 
 
@@ -224,7 +221,7 @@ that accepts data directly:
 <?= Html::label('User name', 'username', ['class' => 'label username']) ?>
 <?= Html::activeLabel($user, 'username', ['class' => 'label username'])
 ```
-              
+
 In order to display form errors from a model or models as a summary you could use:
 
 ```php
@@ -236,10 +233,9 @@ To display individual error:
 ```php
 <?= Html::error($post, 'title', ['class' => 'error']) ?>
 ```
-           
 
 ### Names and values
-        
+
 There are methods to get names, ids and values for input fields based on the model. These are mainly used internally
 but could be handy sometimes:
 
@@ -271,8 +267,7 @@ In order to get attribute name without suffixes or prefixes one can use the foll
 // dates
 echo Html::getAttributeName('dates[0]');
 ```
-                
-    
+
 Styles and scripts
 ------------------
 
@@ -282,14 +277,14 @@ There two methods to generate tags wrapping embedded styles and scripts:
 ```php
 <?= Html::style('.danger { color: #f00; }') ?>
 
-Gives you
+// Gives you
 
 <style>.danger { color: #f00; }</style>
 
 
 <?= Html::script('alert("Hello!");', ['defer' => true]);
 
-Gives you
+// Gives you
 
 <script defer>alert("Hello!");</script>
 ```
@@ -299,7 +294,7 @@ If you want to link external style from CSS file:
 ```php
 <?= Html::cssFile('@web/css/ie5.css', ['condition' => 'IE 5']) ?>
 
-generates
+// generates
 
 <!--[if IE 5]>
     <link href="http://example.com/css/ie5.css" />
@@ -321,12 +316,12 @@ To link JavaScript file:
 
 Same as with CSS first argument specifies link to the file to be included. Options could be passed as the second argument.
 In options you can specify `condition` in the same way as in options for `cssFile`.
-    
+
 Links
 -----
 
 There's a method to generate hyperlink conveniently:
-  
+
 ```php
 <?= Html::a('Profile', ['user/view', 'id' => $id], ['class' => 'profile-link']) ?>
 ```
@@ -340,8 +335,7 @@ In you need to generate `mailto` link you can use the following code:
 ```php
 <?= Html::mailto('Contact us', 'admin@example.com') ?>
 ```
-        
-        
+
 Images
 ------
 
@@ -350,17 +344,17 @@ In order to generate image tag use the following:
 ```php
 <?= Html::img('@web/images/logo.png', ['alt' => 'My logo']) ?>
 
-generates
+// generates
 
 <img src="http://example.com/images/logo.png" alt="My logo" />
 ```
 
 Aside [aliases](concept-aliases.md) the first argument can accept routes, parameters and URLs. Same way as
 [Url::to()](helper-url.md) does.
-        
+
 Lists
 -----
-    
+
 Unordered list could be generated like the following:
 
 ```php
