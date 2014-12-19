@@ -73,29 +73,29 @@ the data provider. The displayed table is equipped with sorting and pagination f
 
 Yii grid consists of a number of columns. Depending on column type and settings these are able to present data differently.
 
-These are defined in the columns part of GridView configuration like the following:
+These are defined in the `columns` part of GridView configuration like the following:
 
 ```php
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        // A simple column defined by the data contained in $dataProvider.
-        // Data from the model's column1 will be used.
+        // Simple columns defined by the data contained in $dataProvider.
+        // Data from the model's column will be used.
         'id',
         'username',
         // More complex one.
         [
-            'class' => 'yii\grid\DataColumn', // can be omitted, default
+            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
             'value' => function ($data) {
-                return $data->name; //$data['name'] for array data, e.g. using SqlDataProvider.
+                return $data->name; // $data['name'] for array data, e.g. using SqlDataProvider.
             },
         ],
     ],
 ]);
 ```
 
-Note that if the columns part of the configuration isn't specified, Yii tries to show all possible data provider model columns.
+Note that if the `columns` part of the configuration isn't specified, Yii tries to show all possible columns of the data provider's model.
 
 ### Column classes
 
@@ -111,9 +111,9 @@ echo GridView::widget([
         ],
 ```
 
-In addition to column classes provided by Yii that we'll review below you can create your own column classes.
+In addition to column classes provided by Yii that we'll review below, you can create your own column classes.
 
-Each column class extends from [[\yii\grid\Column]] so there are some common options you can set while configuring
+Each column class extends from [[\yii\grid\Column]] so that there are some common options you can set while configuring
 grid columns.
 
 - `header` allows to set content for header row.
@@ -151,7 +151,7 @@ echo GridView::widget([
         ],
         [
             'attribute' => 'birthday',
-            'format' => ['date', 'Y-m-d']
+            'format' => ['date', 'php:Y-m-d']
         ],
     ],
 ]); 
@@ -159,7 +159,7 @@ echo GridView::widget([
 
 In the above, `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
 argument. In the second column definition, `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
-column is, again, passed as the first argument while 'Y-m-d' is used as the second argument value.
+column is, again, passed as the first argument while 'php:Y-m-d' is used as the second argument value.
 
 For a list of available formatters see the [section about Data Formatting](output-formatter.md).
 
