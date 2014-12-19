@@ -414,19 +414,19 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 
 > Info|情報: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#lazy-and-eager-loading) を参照してください。
 
-#### Using sql views for filtering, sorting and displaying data
+#### SQL ビューを使って、データのフィルタリング・並べ替え・表示をする
 
-There is also another approach that can be faster and more useful - sql views. For example, if we need to show the gridview 
-with users and their profiles, we can do so in this way:
+もう一つ別に、もっと高速で便利な手法があります。SQL ビューです。
+例えば、ユーザとユーザのプロファイルを一緒にグリッドビューに表示する必要がある場合、次のような SQL ビューを作成することが出来ます。
 
-```php
+```sql
 CREATE OR REPLACE VIEW vw_user_info AS
     SELECT user.*, user_profile.lastname, user_profile.firstname
     FROM user, user_profile
     WHERE user.id = user_profile.user_id
 ```
 
-Then you need to create the ActiveRecord that will be representing this view:
+そして、このビューを表す ActiveRecord を作成します。
 
 ```php
 
@@ -456,7 +456,7 @@ class UserView extends ActiveRecord
     public function rules()
     {
         return [
-            // define here your rules
+            // ここで規則を定義
         ];
     }
 
@@ -466,7 +466,7 @@ class UserView extends ActiveRecord
     public static function attributeLabels()
     {
         return [
-            // define here your attribute labels
+            // ここで属性のラベルを定義
         ];
     }
 
@@ -474,27 +474,23 @@ class UserView extends ActiveRecord
 }
 ```
 
-After that you can use this UserView active record with search models, without additional specification of sorting and filtering attributes.
-All attributes will be working out of the box. Note that this approach has several pros and cons:
+このようにした後は、この UserView アクティブレコードを検索用のモデルとともに使うことが出来ます。
+並べ替えやフィルタリングの属性を追加で定義する必要はありません。
+全ての属性がそのままで動作します。
+この手法にはいくつかの長所と短所があることに注意してください。
 
-- you don't need to specify different sorting and filtering conditions. Everything works out of the box;
-- it can be much faster because of the data size, count of sql queries performed (for each relation you will need an additional query);
-- since this is just a simple mapping UI on the sql view it lacks some domain logic that is in your entities, so if you have some methods like `isActive`,
-`isDeleted` or others that will influence the UI, you will need to duplicate them in this class too.
+- 並べ替えとフィルタリングの条件をいろいろと定義する必要はありません。全てそのままで動きます。- データサイズが小さく、実行される SQL クエリの数が少ない (通常なら全てのリレーションについて一つずつ必要になる追加のクエリが要らない) ため、非常に高速になり得ます。
+- これは SQL ビューにかぶせた単純な UI に過ぎないもので、エンティティに含まれるドメインロジックを欠いています。
+従って、`isActive` や `isDeleted` などのような UI に影響するメソッドがある場合は、それらをこのクラスの中に複製する必要があります。
 
 
-### Multiple GridViews on one page
+### 一つのページに複数のグリッドビュー
 
-You can use more than one GridView on a single page but some additional configuration is needed so that
-they do not interfere with each other.
-When using multiple instances of GridView you have to configure different parameter names for
-the generated sort and pagination links so that each GridView has its own individual sorting and pagination.
-You do so by setting the [[yii\data\Sort::sortParam|sortParam]] and [[yii\data\Pagination::pageParam|pageParam]]
-of the dataProvider's [[yii\data\BaseDataProvider::$sort|sort]] and [[yii\data\BaseDataProvider::$pagination|pagination]]
-instances.
+単一のページで二つ以上のグリッドビューを使うことが出来ますが、お互いが干渉しないように、追加の構成がいくつか必要になります。
+グリッドビューの複数のインスタンスを使う場合は、並べ替えとページネーションのリンクが違うパラメータ名を持って生成されるように構成して、それぞれのグリッドビューが独立した並べ替えとページネーションを持つことが出来るようにしなければなりません。
+そのためには、データプロバイダの [[yii\data\BaseDataProvider::$sort|sort]] と [[yii\data\BaseDataProvider::$pagination|pagination]] インスタンスの [[yii\data\Sort::sortParam|sortParam]] と [[yii\data\Pagination::pageParam|pageParam]] を設定します。
 
-Assume we want to list the `Post` and `User` models for which we have already prepared two data providers
-in `$userProvider` and `$postProvider`:
+`Post` と `User` のリストを表示するために、二つのプロバイダ、`$userProvider` と `$postProvider` を準備済みであると仮定します。
 
 ```php
 use yii\grid\GridView;
@@ -516,6 +512,6 @@ echo GridView::widget([
 ]);
 ```
 
-### Using GridView with Pjax
+### GridView を Pjax とともに使う
 
-TBD
+(内容未定)

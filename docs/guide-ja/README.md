@@ -100,7 +100,7 @@ All Rights Reserved.
 * **TBD** [ページネーション](output-pagination.md)
 * **TBD** [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)
-* **翻訳中** [データウィジェット](output-data-widgets.md)
+* [データウィジェット](output-data-widgets.md)
 * **翻訳中** [クライアントスクリプトを扱う](output-client-scripts.md)
 * **翻訳中** [テーマ](output-theming.md)
 
