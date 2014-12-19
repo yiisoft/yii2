@@ -87,6 +87,7 @@ return [
     'Unable to verify your data submission.' => 'Не вдалося перевірити передані дані.',
     'Unknown command "{command}".' => 'Невідома команда "{command}".',
     'Unknown option: --{name}' => 'Невідома опція : --{name}',
+    'Create' => 'Створити',
     'Update' => 'Редагувати',
     'View' => 'Перегляд',
     'Yes' => 'Так',
