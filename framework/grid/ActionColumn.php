@@ -21,7 +21,7 @@ use yii\helpers\Url;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => 'yii\grid\ActionColumn',
+ *         'class' => ActionColumn::className(),
  *         // you may configure additional properties here
  *     ],
  * ]
@@ -68,7 +68,7 @@ class ActionColumn extends Column
      * ```php
      * [
      *     'update' => function ($url, $model, $key) {
-     *         return $model->status == 'editable' ? Html::a('Update', $url) : '';
+     *         return $model->status === Post::STATUS_EDITABLE ? Html::a('Update', $url) : '';
      *     };
      * ],
      * ```
@@ -92,7 +92,7 @@ class ActionColumn extends Column
     }
 
     /**
-     * Initializes the default button rendering callbacks
+     * Initializes the default button rendering callbacks.
      */
     protected function initDefaultButtons()
     {
