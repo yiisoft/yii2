@@ -68,7 +68,7 @@ class ActionColumn extends Column
      * ```php
      * [
      *     'update' => function ($url, $model, $key) {
-     *         return $model->status === Post::STATUS_EDITABLE ? Html::a('Update', $url) : '';
+     *         return $model->status === 'editable' ? Html::a('Update', $url) : '';
      *     };
      * ],
      * ```
