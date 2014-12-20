@@ -412,7 +412,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
 > ```
 
-> Info|情報: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#lazy-and-eager-loading) を参照してください。
+> Info|情報: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
 
 #### SQL ビューを使って、データのフィルタリング・並べ替え・表示をする
 
@@ -501,12 +501,12 @@ $userProvider->sort->sortParam = 'user-sort';
 $postProvider->pagination->pageParam = 'post-page';
 $postProvider->sort->sortParam = 'post-sort';
 
-echo '<h1>Users</h1>';
+echo '<h1>ユーザ</h1>';
 echo GridView::widget([
     'dataProvider' => $userProvider,
 ]);
 
-echo '<h1>Posts</h1>';
+echo '<h1>投稿</h1>';
 echo GridView::widget([
     'dataProvider' => $postProvider,
 ]);
