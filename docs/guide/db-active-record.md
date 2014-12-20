@@ -700,7 +700,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 > you cannot call [[yii\db\ActiveQuery::inverseOf()]] further.
 
 
-Joining with Relations
+Joining with Relations <a name="joining-with-relations"></a>
 ----------------------
 
 When working with relational databases, a common task is to join multiple tables and apply various

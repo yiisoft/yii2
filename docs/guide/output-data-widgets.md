@@ -73,29 +73,29 @@ the data provider. The displayed table is equipped with sorting and pagination f
 
 Yii grid consists of a number of columns. Depending on column type and settings these are able to present data differently.
 
-These are defined in the columns part of GridView configuration like the following:
+These are defined in the `columns` part of GridView configuration like the following:
 
 ```php
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        // A simple column defined by the data contained in $dataProvider.
-        // Data from the model's column1 will be used.
+        // Simple columns defined by the data contained in $dataProvider.
+        // Data from the model's column will be used.
         'id',
         'username',
         // More complex one.
         [
-            'class' => 'yii\grid\DataColumn', // can be omitted, default
+            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
             'value' => function ($data) {
-                return $data->name; //$data['name'] for array data, e.g. using SqlDataProvider.
+                return $data->name; // $data['name'] for array data, e.g. using SqlDataProvider.
             },
         ],
     ],
 ]);
 ```
 
-Note that if the columns part of the configuration isn't specified, Yii tries to show all possible data provider model columns.
+Note that if the `columns` part of the configuration isn't specified, Yii tries to show all possible columns of the data provider's model.
 
 ### Column classes
 
@@ -111,9 +111,9 @@ echo GridView::widget([
         ],
 ```
 
-In addition to column classes provided by Yii that we'll review below you can create your own column classes.
+In addition to column classes provided by Yii that we'll review below, you can create your own column classes.
 
-Each column class extends from [[\yii\grid\Column]] so there are some common options you can set while configuring
+Each column class extends from [[\yii\grid\Column]] so that there are some common options you can set while configuring
 grid columns.
 
 - `header` allows to set content for header row.
@@ -151,7 +151,7 @@ echo GridView::widget([
         ],
         [
             'attribute' => 'birthday',
-            'format' => ['date', 'Y-m-d']
+            'format' => ['date', 'php:Y-m-d']
         ],
     ],
 ]); 
@@ -159,7 +159,7 @@ echo GridView::widget([
 
 In the above, `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
 argument. In the second column definition, `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
-column is, again, passed as the first argument while 'Y-m-d' is used as the second argument value.
+column is, again, passed as the first argument while 'php:Y-m-d' is used as the second argument value.
 
 For a list of available formatters see the [section about Data Formatting](output-formatter.md).
 
@@ -256,7 +256,7 @@ A common practice when using [active records](db-active-record.md) is to create 
 that provides needed functionality (it can be generated for you by Gii). This class defines the validation 
 rules for the search and provides a `search()` method that will return the data provider.
 
-To add the search capability for the `Post` model, we can create `PostSearch` like in the following example:
+To add the search capability for the `Post` model, we can create `PostSearch` like the following example:
 
 ```php
 <?php
@@ -419,14 +419,14 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > ```
 
 > Info: For more information on `joinWith` and the queries performed in the background, check the
-> [active record docs on eager and lazy loading](db-active-record.md#lazy-and-eager-loading).
+> [active record docs on joining with relations](db-active-record.md#joining-with-relations).
 
 #### Using sql views for filtering, sorting and displaying data
 
 There is also another approach that can be faster and more useful - sql views. For example, if we need to show the gridview 
 with users and their profiles, we can do so in this way:
 
-```php
+```sql
 CREATE OR REPLACE VIEW vw_user_info AS
     SELECT user.*, user_profile.lastname, user_profile.firstname
     FROM user, user_profile
@@ -485,7 +485,7 @@ After that you can use this UserView active record with search models, without a
 All attributes will be working out of the box. Note that this approach has several pros and cons:
 
 - you don't need to specify different sorting and filtering conditions. Everything works out of the box;
-- it can be much faster because of the data size, count of sql queries performed (for each relation you will need an additional query);
+- it can be much faster because of the data size, count of sql queries performed (for each relation you will not need any additional query);
 - since this is just a simple mapping UI on the sql view it lacks some domain logic that is in your entities, so if you have some methods like `isActive`,
 `isDeleted` or others that will influence the UI, you will need to duplicate them in this class too.
 

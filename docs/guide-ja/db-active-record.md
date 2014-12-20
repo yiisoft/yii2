@@ -677,7 +677,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 > つまり、リレーションが [[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] によって定義されている場合は、[[yii\db\ActiveQuery::inverseOf()]] を追加で呼ぶことは出来ません。
 
 
-リレーションを使ってテーブルを結合する
+リレーションを使ってテーブルを結合する <a name="joining-with-relations">
 --------------------------------------
 
 リレーショナルデータベースを扱う場合、複数のテーブルを結合して、JOIN SQL 文にさまざまなクエリ条件とパラメータを指定することは、ごく当り前の仕事です。
