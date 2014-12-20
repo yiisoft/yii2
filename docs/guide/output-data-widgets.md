@@ -256,7 +256,7 @@ A common practice when using [active records](db-active-record.md) is to create 
 that provides needed functionality (it can be generated for you by Gii). This class defines the validation 
 rules for the search and provides a `search()` method that will return the data provider.
 
-To add the search capability for the `Post` model, we can create `PostSearch` like in the following example:
+To add the search capability for the `Post` model, we can create `PostSearch` like the following example:
 
 ```php
 <?php
@@ -419,14 +419,14 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > ```
 
 > Info: For more information on `joinWith` and the queries performed in the background, check the
-> [active record docs on eager and lazy loading](db-active-record.md#lazy-and-eager-loading).
+> [active record docs on joining with relations](db-active-record.md#joining-with-relations).
 
 #### Using sql views for filtering, sorting and displaying data
 
 There is also another approach that can be faster and more useful - sql views. For example, if we need to show the gridview 
 with users and their profiles, we can do so in this way:
 
-```php
+```sql
 CREATE OR REPLACE VIEW vw_user_info AS
     SELECT user.*, user_profile.lastname, user_profile.firstname
     FROM user, user_profile
@@ -485,7 +485,7 @@ After that you can use this UserView active record with search models, without a
 All attributes will be working out of the box. Note that this approach has several pros and cons:
 
 - you don't need to specify different sorting and filtering conditions. Everything works out of the box;
-- it can be much faster because of the data size, count of sql queries performed (for each relation you will need an additional query);
+- it can be much faster because of the data size, count of sql queries performed (for each relation you will not need any additional query);
 - since this is just a simple mapping UI on the sql view it lacks some domain logic that is in your entities, so if you have some methods like `isActive`,
 `isDeleted` or others that will influence the UI, you will need to duplicate them in this class too.
 
