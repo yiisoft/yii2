@@ -195,6 +195,16 @@ class BaseArrayHelper
         }
     }
 
+    /**
+     * Retrieves the values of an array elements or object properties with the given keys or property names.
+     * See [[getValue()]] for parameters details.
+     *
+     * @see getValue()
+     * @param array $array array or object to extract value from
+     * @param array $keys array of key names of the array elements. See [[getValue()]]
+     * @param array $defaults array of default values to be returned if the specified array key does not exist
+     * @return array the value of the elements if found, default values otherwise
+     */
     public static function getValues($array, $keys, $defaults = [])
     {
         $result = [];
