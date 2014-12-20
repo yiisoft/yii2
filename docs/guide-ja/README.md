@@ -102,7 +102,7 @@ All Rights Reserved.
 * [データプロバイダ](output-data-providers.md)
 * [データウィジェット](output-data-widgets.md)
 * [クライアントスクリプトを扱う](output-client-scripts.md)
-* **翻訳中** [テーマ](output-theming.md)
+* [テーマ](output-theming.md)
 
 
 セキュリティ
