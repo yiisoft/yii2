@@ -20,7 +20,7 @@ if (!is_dir($frameworkPath)) {
     echo '<p>Please refer to the <abbr title="' . dirname(__FILE__) . '/README.md">README</abbr> on how to install Yii.</p>';
 }
 
-require_once($frameworkPath . '/requirements/YiiRequirementChecker.php');
+require($frameworkPath . '/requirements/YiiRequirementChecker.php');
 $requirementsChecker = new YiiRequirementChecker();
 
 $gdMemo = $imagickMemo = 'Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required for image CAPTCHA.';
