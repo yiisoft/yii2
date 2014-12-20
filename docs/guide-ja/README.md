@@ -101,7 +101,7 @@ All Rights Reserved.
 * **TBD** [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)
 * [データウィジェット](output-data-widgets.md)
-* **翻訳中** [クライアントスクリプトを扱う](output-client-scripts.md)
+* [クライアントスクリプトを扱う](output-client-scripts.md)
 * **翻訳中** [テーマ](output-theming.md)
 
 
