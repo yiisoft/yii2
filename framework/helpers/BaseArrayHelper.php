@@ -196,7 +196,7 @@ class BaseArrayHelper
     }
 
     /**
-     * Retrieves the values of an array elements or object properties with the given keys or property names.
+     * Retrieves the values of array elements or object properties with the given keys or property names.
      * See [[getValue()]] for parameters details.
      *
      * @see getValue()
