@@ -108,11 +108,11 @@ All Rights Reserved.
 セキュリティ
 ------------
 
-* **翻訳未着手** [認証](security-authentication.md)
-* **翻訳未着手** [権限](security-authorization.md)
-* **翻訳未着手** [パスワードを扱う](security-passwords.md)
+* [認証](security-authentication.md)
+* **翻訳中** [権限付与](security-authorization.md)
+* **翻訳中** [パスワードを扱う](security-passwords.md)
 * **TBD** [Auth クライアント](security-auth-clients.md)
-* **翻訳未着手** [ベストプラクティス](security-best-practices.md)
+* **翻訳中** [ベストプラクティス](security-best-practices.md)
 
 
 キャッシュ
