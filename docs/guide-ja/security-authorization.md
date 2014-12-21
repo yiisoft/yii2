@@ -1,21 +1,20 @@
-Authorization
-=============
+権限付与
+========
 
-> Note: This section is under development.
+> Note|注意: この節はまだ執筆中です。
 
-Authorization is the process of verifying that a user has enough permission to do something. Yii provides two authorization
-methods: Access Control Filter (ACF) and Role-Based Access Control (RBAC).
+権限付与は、ユーザが何かをするのに十分な許可を得ているか否かを確認するプロセスです。
+Yii は二つの権限付与の方法を提供しています。すなわち、アクセスコントロールフィルタ (ACF) と、ロールベースアクセスコントロール (RBAC) です。
 
 
-Access Control Filter
----------------------
+アクセスコントロールフィルタ (ACF)
+----------------------------------
 
-Access Control Filter (ACF) is a simple authorization method that is best used by applications that only need some
-simple access control. As its name indicates, ACF is an action filter that can be attached to a controller or a module
-as a behavior. ACF will check a set of [[yii\filters\AccessControl::rules|access rules]] to make sure the current user
-can access the requested action.
+アクセスコントロールフィルタ (ACF) は、何らかの単純なアクセス制御だけを必要とするアプリケーションで使うのに最も適した、単純な権限付与の方法です。
+その名前が示すように、ACF は、コントローラまたはモジュールにビヘイビアとしてアタッチすることが出来るアクションフィルタです。
+ACF は一連の [[yii\filters\AccessControl::rules|アクセス規則]] をチェックして、現在のユーザがリクエストしたアクションにアクセスすることが出来るかどうかを確認します。
 
-The code below shows how to use ACF which is implemented as [[yii\filters\AccessControl]]:
+下記のコードは、[[yii\filters\AccessControl]] として実装された ACF の使い方を示すものです。
 
 ```php
 use yii\filters\AccessControl;
@@ -47,71 +46,77 @@ class SiteController extends Controller
 }
 ```
 
-In the code above ACF is attached to the `site` controller as a behavior. This is the typical way of using an action
-filter. The `only` option specifies that the ACF should only be applied to `login`, `logout` and `signup` actions.
-The `rules` option specifies the [[yii\filters\AccessRule|access rules]], which reads as follows:
+上記のコードにおいて、ACF は `site` コントローラにビヘイビアとしてアタッチされています。
+これはアクションフィルタを使用する典型的な方法です。
+`only` オプションは、ACF が `login`、`logout`、`signup` のアクションにのみ適用されるべきであることを指定しています。
+`rules` オプションは [[yii\filters\AccessRule|アクセス規則]] を指定するものであり、以下のように読むことが出来ます。
 
-- Allow all guest (not yet authenticated) users to access 'login' and 'signup' actions. The `roles` option
-  contains a question mark `?` which is a special token recognized as "guests".
-- Allow authenticated users to access 'logout' action. The `@` character is another special token recognized as
-  authenticated users.
+- 全てのゲストユーザ (まだ認証されていないユーザ) に、'login' と 'singup' のアクションにアクセスすることを許可します。
+  `roles` オプションに疑問符 `?` が含まれていますが、これは「ゲスト」として認識される特殊なトークンです。
+- 認証されたユーザに、'logout' アクションにアクセスすることを許可します。
+  `@` という文字はもう一つの特殊なトークンで、認証されたユーザとして認識されるものです。
 
-When ACF performs authorization check, it will examine the rules one by one from top to bottom until it finds
-a match. The `allow` value of the matching rule will then be used to judge if the user is authorized. If none
-of the rules matches, it means the user is NOT authorized and ACF will stop further action execution.
+ACF が権限のチェックを実行するときには、規則を一つずつ上から下へ、適用されるものを見つけるまで調べます。
+そして、適用される規則の `allow` の値が、ユーザが権限を有するか否かを判断するのに使われます。
+適用される規則が一つもなかった場合は、ユーザが権限をもたないことを意味し、ACF はアクションの継続を中止します。
 
-By default, ACF does only of the followings when it determines a user is not authorized to access the current action:
+デフォルトでは、ユーザが現在のアクションにアクセスする権限を持っていないと判定した場合は、ACF は以下のことだけを行います。
 
-* If the user is a guest, it will call [[yii\web\User::loginRequired()]], which may redirect the browser to the login page.
-* If the user is already authenticated, it will throw a [[yii\web\ForbiddenHttpException]].
+* ユーザがゲストである場合は、[[yii\web\User::loginRequired()]] を呼び出します。
+  このメソッドで、ブラウザをログインページにリダイレクトすることが出来ます。
+* ユーザが既に認証されている場合は、[[yii\web\ForbiddenHttpException]] を投げます。
 
-You may customize this behavior by configuring the [[yii\filters\AccessControl::denyCallback]] property:
+この動作は、[[yii\filters\AccessControl::denyCallback]] プロパティを構成することによって、カスタマイズすることが出来ます。
 
 ```php
 [
     'class' => AccessControl::className(),
     'denyCallback' => function ($rule, $action) {
-        throw new \Exception('You are not allowed to access this page');
+        throw new \Exception('このページにアクセスする権限がありません。');
     }
 ]
 ```
 
-[[yii\filters\AccessRule|Access rules]] support many options. Below is a summary of the supported options.
-You may also extend [[yii\filters\AccessRule]] to create your own customized access rule classes.
+[[yii\filters\AccessRule|アクセス規則]] は多くのオプションをサポートしています。
+以下はサポートされているオプションの要約です。
+[[yii\filters\AccessRule]] を拡張して、あなた自身のカスタマイズしたアクセス規則のクラスを作ることも出来ます。
 
- * [[yii\filters\AccessRule::allow|allow]]: specifies whether this is an "allow" or "deny" rule.
+ * [[yii\filters\AccessRule::allow|allow]]: これが「許可」の規則であるか、「禁止」の規則であるかを指定します。
 
- * [[yii\filters\AccessRule::actions|actions]]: specifies which actions this rule matches. This should
-be an array of action IDs. The comparison is case-sensitive. If this option is empty or not set,
-it means the rule applies to all actions.
+ * [[yii\filters\AccessRule::actions|actions]]: どのアクションにこの規則が適用されるかを指定します。
+これはアクション ID の配列でなければなりません。
+比較は大文字と小文字を区別します。
+このオプションが空であるか指定されていない場合は、規則が全てのアクションに適用されることを意味します。
 
- * [[yii\filters\AccessRule::controllers|controllers]]: specifies which controllers this rule
-matches. This should be an array of controller IDs. The comparison is case-sensitive. If this option is
-empty or not set, it means the rule applies to all controllers.
+ * [[yii\filters\AccessRule::controllers|controllers]]: どのコントローラにこの規則が適用されるかを指定します。
+これはコントローラ ID の配列でなければなりません。
+比較は大文字と小文字を区別します。
+このオプションが空であるか指定されていない場合は、規則が全てのコントローラに適用されることを意味します。
 
- * [[yii\filters\AccessRule::roles|roles]]: specifies which user roles that this rule matches.
-Two special roles are recognized, and they are checked via [[yii\web\User::isGuest]]:
-     - `?`: matches a guest user (not authenticated yet)
-     - `@`: matches an authenticated user
-Using other role names requires RBAC (to be described in the next section), and [[yii\web\User::can()]] will be called.
-If this option is empty or not set, it means this rule applies to all roles.
+ * [[yii\filters\AccessRule::roles|roles]]: どのユーザロールにこの規則が適用されるかを指定します。
+   二つの特別なロールが認識されます。
+   これらは、[[yii\web\User::isGuest]] によって判断されます。
 
- * [[yii\filters\AccessRule::ips|ips]]: specifies which [[yii\web\Request::userIP|client IP addresses]] this rule matches.
-An IP address can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
-For example, '192.168.*' matches all IP addresses in the segment '192.168.'. If this option is empty or not set,
-it means this rule applies to all IP addresses.
+    - `?`: ゲストユーザ (まだ認証されていないユーザ) を意味します。
+    - `@`: 認証されたユーザを意味します。
 
- * [[yii\filters\AccessRule::verbs|verbs]]: specifies which request method (e.g. `GET`, `POST`) this rule matches.
-The comparison is case-insensitive.
+   その他のロール名を使う場合には、RBAC (次の節で説明します) が必要とされ、判断のために [[yii\web\User::can()]] が呼び出されます。
+   このオプションが空であるか指定されていない場合は、規則が全てのロールに適用されることを意味します。
 
- * [[yii\filters\AccessRule::matchCallback|matchCallback]]: specifies a PHP callable that should be called to determine
-if this rule should be applied.
+ * [[yii\filters\AccessRule::ips|ips]]: どの [[yii\web\Request::userIP|クライアントの IP アドレス]] にこの規則が適用されるかを指定します。
+IP アドレスは、最後にワイルドカード `*` を含むことが出来て、同じプレフィクスを持つ IP アドレスに合致させることが出来ます。
+例えば、'192.168.*' は、'192.168.' のセグメントに属する全ての IP アドレスに合致します。
+このオプションが空であるか指定されていない場合は、規則が全ての IP アドレスに適用されることを意味します。
 
- * [[yii\filters\AccessRule::denyCallback|denyCallback]]: specifies a PHP callable that should be called when this rule
-will deny the access.
+ * [[yii\filters\AccessRule::verbs|verbs]]: どのリクエストメソッド (例えば、`GET` や `POST`) にこの規則が適用されるかを指定します。
+比較は大文字と小文字を区別しません。
 
-Below is an example showing how to make use of the `matchCallback` option, which allows you to write arbitrary access
-check logic:
+ * [[yii\filters\AccessRule::matchCallback|matchCallback]]: この規則が適用されるべきか否かを決定するために呼び出されるべき PHP コーラブルを指定します。
+
+ * [[yii\filters\AccessRule::denyCallback|denyCallback]]: この規則がアクセスを禁止する場合に呼び出されるべき PHP コーラブルを指定します。
+
+下記は、`matchCallback` オプションを利用する方法を示す例です。
+このオプションによって、任意のアクセス制御ロジックを書くことが可能になります。
 
 ```php
 use yii\filters\AccessControl;
@@ -137,7 +142,7 @@ class SiteController extends Controller
         ];
     }
 
-    // Match callback called! This page can be accessed only each October 31st
+    // matchCallback が呼ばれる。このページは毎年10月31日だけアクセス出来ます。
     public function actionSpecialCallback()
     {
         return $this->render('happy-halloween');
