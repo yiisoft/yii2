@@ -33,7 +33,7 @@
 
         <h3>Conclusion</h3>
         <?php if ($summary['errors'] > 0): ?>
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
                 <strong>Unfortunately your server configuration does not satisfy the requirements by this application.<br>Please refer to the table below for detailed explanation.</strong>
             </div>
         <?php elseif ($summary['warnings'] > 0): ?>
@@ -51,7 +51,7 @@
         <table class="table table-bordered">
             <tr><th>Name</th><th>Result</th><th>Required By</th><th>Memo</th></tr>
             <?php foreach ($requirements as $requirement): ?>
-            <tr class="<?php echo $requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'error' : 'warning') ?>">
+            <tr class="<?php echo $requirement['condition'] ? 'success' : ($requirement['mandatory'] ? 'danger' : 'warning') ?>">
                 <td>
                 <?php echo $requirement['name'] ?>
                 </td>
