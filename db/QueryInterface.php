@@ -88,7 +88,7 @@ interface QueryInterface
      *
      * - `['type' => 1, 'status' => 2]` generates `(type = 1) AND (status = 2)`.
      * - `['id' => [1, 2, 3], 'status' => 2]` generates `(id IN (1, 2, 3)) AND (status = 2)`.
-     * - `['status' => null] generates `status IS NULL`.
+     * - `['status' => null]` generates `status IS NULL`.
      *
      * A condition in operator format generates the SQL expression according to the specified operator, which
      * can be one of the followings:
