@@ -271,29 +271,19 @@ After executing the command with `yii rbac/init` we'll get the following hierarc
 Author can create post, admin can update post and do everything author can.
 
 If your application allows user signup you need to assign roles to these new users once. For example, in order for all
-signed up users to become authors you in advanced application template you need to modify `frontend\models\SignupForm::signup()`
+signed up users to become authors you in advanced application template you need to create `common\models\User::afterSave()`
 as follows:
 
 ```php
-public function signup()
+public function afterSave($insert, $changedAttributes)
 {
-    if ($this->validate()) {
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        $user->save(false);
+    parent::afterSave($insert, $changedAttributes);
 
-        // the following three lines were added:
+    if ($insert) {
         $auth = Yii::$app->authManager;
         $authorRole = $auth->getRole('author');
-        $auth->assign($authorRole, $user->getId());
-
-        return $user;
+        $auth->assign($authorRole, $this->getId());
     }
-
-    return null;
 }
 ```
 
