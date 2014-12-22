@@ -33,7 +33,7 @@ In Yii, most probably you'll use [form validation](input-validation.md) to do al
 
 Escape output means that depending on context where we're using data it should be escaped i.e. in context of HTML you
 should escape `<`, `>` and alike special characters. In context of JavaScript or SQL it will be different set of characters.
-Since it's error-prone to escape everything automatically Yii provides various tools to perform escaping for different
+Since it's error-prone to escape everything manually Yii provides various tools to perform escaping for different
 contexts.
 
 Avoiding SQL injections
