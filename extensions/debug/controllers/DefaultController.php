@@ -152,9 +152,6 @@ class DefaultController extends Controller
                     if (isset($data[$id])) {
                         $panel->tag = $tag;
                         $panel->load($data[$id]);
-                    } else {
-                        // remove the panel since it has not received any data
-                        unset($this->module->panels[$id]);
                     }
                 }
                 $this->summary = $data['summary'];
