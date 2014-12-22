@@ -580,15 +580,16 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * The array values should be error messages. If an attribute has multiple errors,
      * these errors must be given in terms of an array.
      * You may use the result of {@link getErrors} as the value for this parameter.
+     * @since 2.0.2
      */
-    public function addErrors(Array $errors)
+    public function addErrors(array $errors)
     {
         foreach ($errors as $attribute => $error) {
             if (is_array($error)) {
                 foreach($error as $e) {
                     $this->addError($attribute, $e);
                 }
-            } else{
+            } else {
                 $this->addError($attribute, $error);
             }
         }
