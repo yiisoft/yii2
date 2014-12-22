@@ -1,0 +1,32 @@
+{
+    "name": "yiisoft/yii2-composer",
+    "description": "The composer plugin for Yii extension installer",
+    "keywords": ["yii2", "composer", "extension installer"],
+    "type": "composer-plugin",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "http://www.yiiframework.com/wiki/",
+        "irc": "irc://irc.freenode.net/yii",
+        "source": "https://github.com/yiisoft/yii2"
+    },
+    "authors": [
+        {
+            "name": "Qiang Xue",
+            "email": "qiang.xue@gmail.com"
+        }
+    ],
+    "require": {
+        "composer-plugin-api": "1.0.0"
+    },
+    "autoload": {
+        "psr-4": { "yii\\composer\\": "" }
+    },
+    "extra": {
+        "class": "yii\\composer\\Plugin",
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}

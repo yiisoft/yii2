@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+/**
+ * build script file.
+ *
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
+// fcgi doesn't have STDIN and STDOUT defined by default
+defined('STDIN') or define('STDIN', fopen('php://stdin', 'r'));
+defined('STDOUT') or define('STDOUT', fopen('php://stdout', 'w'));
+
+define('YII_DEBUG', true);
+
+$composerAutoload = [
+    __DIR__ . '/../vendor/autoload.php', // yii2 as the root package
+    __DIR__ . '/../../../autoload.php', // yii2-basic or yii2-advanced as the root package
+];
+
+foreach ($composerAutoload as $autoload) {
+    if (file_exists($autoload)) {
+        require($autoload);
+        $vendorPath = dirname($autoload);
+        break;
+    }
+}
+
+if (!isset($vendorPath)) {
+	echo "composer autoloader could not be found.\nYou should run `composer install` in repo root directory.\n";
+	exit(1);
+}
+require(__DIR__ . '/../framework/Yii.php');
+
+Yii::setAlias('@yii/build', __DIR__);
+
+$application = new yii\console\Application([
+	'id' => 'yii-build',
+	'basePath' => __DIR__,
+	'controllerNamespace' => 'yii\build\controllers',
+	'enableCoreCommands' => false,
+]);
+$application->run();

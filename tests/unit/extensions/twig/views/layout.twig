@@ -1,0 +1,16 @@
+{{ use('yii/web/JqueryAsset') }}
+{{ register_jquery_asset() }}
+{{ begin_page() }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="{{ app.charset }}"/>
+    <title>{{ html.encode(this.title) }}</title>
+    {{ head() }}
+</head>
+<body>
+{{ begin_body() }}
+    body
+{{ end_body() }}
+</body>
+{{ end_page() }}

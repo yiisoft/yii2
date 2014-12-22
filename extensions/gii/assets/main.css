@@ -1,0 +1,259 @@
+body {
+    padding-top: 70px;
+}
+
+.footer {
+    border-top: 1px solid #ddd;
+    margin-top: 30px;
+    padding: 15px 0 30px;
+}
+
+.jumbotron {
+    text-align: center;
+    background-color: transparent;
+}
+
+.jumbotron .btn {
+    font-size: 21px;
+    padding: 14px 24px;
+}
+
+.navbar-brand {
+    padding: 0;
+    margin: 0;
+}
+
+.default-index .generator {
+    min-height: 200px;
+    margin-bottom: 20px;
+}
+
+.list-group .glyphicon {
+    float: right;
+}
+
+.popover {
+    max-width: 400px;
+    width: 400px;
+}
+
+.hint-block {
+    display: none;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+.default-view .sticky-value {
+    padding: 6px 12px;
+    background: lightyellow;
+    white-space: pre;
+    word-wrap: break-word;
+}
+
+.default-view .form-group label.help {
+    border-bottom: 1px dashed #888;
+    cursor: help;
+}
+
+.default-view .modal-dialog {
+    width: 800px;
+}
+
+.default-view .modal-dialog .error {
+    color: #d9534f;
+}
+
+.default-view .modal-dialog .content {
+    background: #fafafa;
+    border-left: #eee 5px solid;
+    padding: 5px 10px;
+    overflow: auto;
+}
+
+.default-view .modal-dialog code {
+    background: transparent;
+}
+
+.default-view-files table .action {
+    width: 100px;
+}
+
+.default-view-files table .check {
+    width: 25px;
+    text-align: center;
+}
+
+.default-view-results pre {
+    overflow: auto;
+    background-color: #333;
+    max-height: 300px;
+    color: white;
+    padding: 10px;
+    border-radius: 0;
+    white-space: nowrap;
+}
+
+.default-view-results pre .error {
+    background: #FFE0E1;
+    color: black;
+    padding: 1px;
+}
+
+.default-view-results .alert pre {
+    background: white;
+}
+
+.default-diff pre {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+}
+
+.default-diff pre del {
+    background: pink;
+}
+
+.default-diff pre ins {
+    background: lightgreen;
+    text-decoration: none;
+}
+
+.Differences {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+}
+
+.Differences thead {
+    display: none;
+}
+
+.Differences tbody th {
+    text-align: right;
+    background: #FAFAFA;
+    padding: 1px 2px;
+    border-right: 1px solid #eee;
+    vertical-align: top;
+    font-size: 13px;
+    font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+    font-weight: normal;
+    color: #999;
+    width: 5px;
+}
+
+.Differences td {
+    padding: 1px 2px;
+    font-size: 13px;
+    font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+}
+
+.DifferencesSideBySide .ChangeInsert td.Left {
+    background: #dfd;
+}
+
+.DifferencesSideBySide .ChangeInsert td.Right {
+    background: #cfc;
+}
+
+.DifferencesSideBySide .ChangeDelete td.Left {
+    background: #f88;
+}
+
+.DifferencesSideBySide .ChangeDelete td.Right {
+    background: #faa;
+}
+
+.DifferencesSideBySide .ChangeReplace .Left {
+    background: #fe9;
+}
+
+.DifferencesSideBySide .ChangeReplace .Right {
+    background: #fd8;
+}
+
+.Differences ins, .Differences del {
+    text-decoration: none;
+}
+
+.DifferencesSideBySide .ChangeReplace ins, .DifferencesSideBySide .ChangeReplace del {
+    background: #fc0;
+}
+
+.Differences .Skipped {
+    background: #f7f7f7;
+}
+
+.DifferencesInline .ChangeReplace .Left,
+.DifferencesInline .ChangeDelete .Left {
+    background: #fdd;
+}
+
+.DifferencesInline .ChangeReplace .Right,
+.DifferencesInline .ChangeInsert .Right {
+    background: #dfd;
+}
+
+.DifferencesInline .ChangeReplace ins {
+    background: #9e9;
+}
+
+.DifferencesInline .ChangeReplace del {
+    background: #e99;
+}
+
+.DifferencesInline th[data-line-number]:before {
+    content: attr(data-line-number);
+}
+
+/* additional styles for typeahead.js, adapted from http://twitter.github.io/typeahead.js/examples/ */
+
+.twitter-typeahead {
+    display: block !important;
+}
+
+.tt-query {
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+    color: #999
+}
+
+.tt-dropdown-menu {
+    width: 422px;
+    margin-top: 2px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+}
+
+.tt-suggestion {
+    padding: 3px 20px;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+    margin: 0;
+}
+

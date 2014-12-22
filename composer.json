@@ -1,0 +1,145 @@
+{
+    "name": "yiisoft/yii2-dev",
+    "description": "Yii PHP Framework Version 2 - Development Package",
+    "keywords": [
+        "yii2",
+        "framework"
+    ],
+    "homepage": "http://www.yiiframework.com/",
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Qiang Xue",
+            "email": "qiang.xue@gmail.com",
+            "homepage": "http://www.yiiframework.com/",
+            "role": "Founder and project lead"
+        },
+        {
+            "name": "Alexander Makarov",
+            "email": "sam@rmcreative.ru",
+            "homepage": "http://rmcreative.ru/",
+            "role": "Core framework development"
+        },
+        {
+            "name": "Maurizio Domba",
+            "homepage": "http://mdomba.info/",
+            "role": "Core framework development"
+        },
+        {
+            "name": "Carsten Brandt",
+            "email": "mail@cebe.cc",
+            "homepage": "http://cebe.cc/",
+            "role": "Core framework development"
+        },
+        {
+            "name": "Timur Ruziev",
+            "email": "resurtm@gmail.com",
+            "homepage": "http://resurtm.com/",
+            "role": "Core framework development"
+        },
+        {
+            "name": "Paul Klimov",
+            "email": "klimov.paul@gmail.com",
+            "role": "Core framework development"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "http://www.yiiframework.com/wiki/",
+        "irc": "irc://irc.freenode.net/yii",
+        "source": "https://github.com/yiisoft/yii2"
+    },
+    "minimum-stability": "dev",
+    "replace": {
+        "yiisoft/yii2-apidoc": "self.version",
+        "yiisoft/yii2-authclient": "self.version",
+        "yiisoft/yii2-bootstrap": "self.version",
+        "yiisoft/yii2-codeception": "self.version",
+        "yiisoft/yii2-debug": "self.version",
+        "yiisoft/yii2-elasticsearch": "self.version",
+        "yiisoft/yii2-faker": "self.version",
+        "yiisoft/yii2-imagine": "self.version",
+        "yiisoft/yii2-gii": "self.version",
+        "yiisoft/yii2-jui": "self.version",
+        "yiisoft/yii2-mongodb": "self.version",
+        "yiisoft/yii2-redis": "self.version",
+        "yiisoft/yii2-smarty": "self.version",
+        "yiisoft/yii2-swiftmailer": "self.version",
+        "yiisoft/yii2-sphinx": "self.version",
+        "yiisoft/yii2-twig": "self.version",
+        "yiisoft/yii2": "self.version"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "ext-mbstring": "*",
+        "lib-pcre": "*",
+        "yiisoft/yii2-composer": "*",
+        "ezyang/htmlpurifier": "4.6.*",
+        "cebe/markdown": "~1.0.0",
+        "bower-asset/jquery": "2.1.*@stable | 1.11.*@stable",
+        "bower-asset/jquery.inputmask": "3.1.*",
+        "bower-asset/punycode": "1.3.*",
+        "bower-asset/yii2-pjax": "2.0.*",
+        "bower-asset/bootstrap": "3.3.* | 3.2.* | 3.1.*",
+        "bower-asset/jquery-ui": "1.11.*@stable",
+        "bower-asset/typeahead.js": "0.10.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "twig/twig": "*",
+        "smarty/smarty": "~3.1",
+        "imagine/imagine": "0.5.*",
+        "swiftmailer/swiftmailer": "*",
+        "fzaninotto/faker": "*",
+        "cebe/indent": "*"
+    },
+    "suggest": {
+        "phpdocumentor/reflection": "required by yii2-apidoc extension",
+        "ext-curl": "required by yii2-elasticsearch extension",
+        "ext-mongo": "required by yii2-mongo extension",
+        "ext-pdo": "required by yii2-sphinx extension",
+        "ext-pdo_mysql": "required by yii2-sphinx extension",
+        "fzaninotto/faker": "required by yii2-faker extension",
+        "imagine/imagine": "required by yii2-imagine extension",
+        "phpspec/php-diff": "required by yii2-gii extension",
+        "smarty/smarty": "required by yii2-smarty extension",
+        "swiftmailer/swiftmailer": "required by yii2-swiftmailer extension",
+        "twig/twig": "required by yii2-twig extension",
+        "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
+    },
+    "autoload": {
+        "psr-4": {
+            "yii\\": "framework/",
+            "yii\\apidoc\\": "extensions/apidoc/",
+            "yii\\authclient\\": "extensions/authclient/",
+            "yii\\bootstrap\\": "extensions/bootstrap/",
+            "yii\\codeception\\": "extensions/codeception/",
+            "yii\\debug\\": "extensions/debug/",
+            "yii\\elasticsearch\\": "extensions/elasticsearch/",
+            "yii\\faker\\": "extensions/faker/",
+            "yii\\gii\\": "extensions/gii/",
+            "yii\\imagine\\": "extensions/imagine/",
+            "yii\\jui\\": "extensions/jui/",
+            "yii\\mongodb\\": "extensions/mongodb/",
+            "yii\\redis\\": "extensions/redis/",
+            "yii\\smarty\\": "extensions/smarty/",
+            "yii\\swiftmailer\\": "extensions/swiftmailer/",
+            "yii\\sphinx\\": "extensions/sphinx/",
+            "yii\\twig\\": "extensions/twig/"
+        }
+    },
+    "bin": [
+        "framework/yii"
+    ],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        },
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
