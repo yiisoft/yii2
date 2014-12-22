@@ -109,7 +109,7 @@ All Rights Reserved.
 ------------
 
 * [認証](security-authentication.md)
-* **翻訳中** [権限付与](security-authorization.md)
+* [権限付与](security-authorization.md)
 * **翻訳中** [パスワードを扱う](security-passwords.md)
 * **TBD** [Auth クライアント](security-auth-clients.md)
 * **翻訳中** [ベストプラクティス](security-best-practices.md)
