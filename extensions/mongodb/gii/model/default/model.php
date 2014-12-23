@@ -1,11 +1,11 @@
 <?php
 /**
- * This is the template for generating the model class of a specified table.
+ * This is the template for generating the model class of a specified collection.
  */
 
 /* @var $this yii\web\View */
 /* @var $generator yii\mongodb\gii\model\Generator */
-/* @var $collectionName string full table name */
+/* @var $collectionName string full collection name */
 /* @var $attributes array list of attribute names */
 /* @var $className string class name */
 /* @var $labels string[] list of attribute labels (name => label) */

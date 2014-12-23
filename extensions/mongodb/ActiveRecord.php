@@ -111,7 +111,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      *
      * By default this method returns the class name as the collection name by calling [[Inflector::camel2id()]].
      * For example, 'Customer' becomes 'customer', and 'OrderItem' becomes
-     * 'order_item'. You may override this method if the table is not named after this convention.
+     * 'order_item'. You may override this method if the collection is not named after this convention.
      * @return string|array the collection name
      */
     public static function collectionName()
@@ -332,7 +332,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns a value indicating whether the given active record is the same as the current one.
-     * The comparison is made by comparing the table names and the primary key values of the two active records.
+     * The comparison is made by comparing the collection names and the primary key values of the two active records.
      * If one of the records [[isNewRecord|is new]] they are also considered not equal.
      * @param ActiveRecord $record record to compare to
      * @return boolean whether the two active records refer to the same row in the same Mongo collection.
