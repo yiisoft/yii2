@@ -4,7 +4,7 @@ Yii Framework 2 mongodb extension Change Log
 2.0.2 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6376: Fixed lazy load of relations to `yii\mongodb\file\ActiveRecord` (klimov-paul)
 
 
 2.0.1 December 07, 2014

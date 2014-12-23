@@ -70,6 +70,38 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function buildCursor($db = null)
+    {
+        if ($this->primaryModel !== null) {
+            // lazy loading
+            if ($this->via instanceof self) {
+                // via pivot collection
+                $viaModels = $this->via->findJunctionRows([$this->primaryModel]);
+                $this->filterByModels($viaModels);
+            } elseif (is_array($this->via)) {
+                // via relation
+                /* @var $viaQuery ActiveQuery */
+                list($viaName, $viaQuery) = $this->via;
+                if ($viaQuery->multiple) {
+                    $viaModels = $viaQuery->all();
+                    $this->primaryModel->populateRelation($viaName, $viaModels);
+                } else {
+                    $model = $viaQuery->one();
+                    $this->primaryModel->populateRelation($viaName, $model);
+                    $viaModels = $model === null ? [] : [$model];
+                }
+                $this->filterByModels($viaModels);
+            } else {
+                $this->filterByModels([$this->primaryModel]);
+            }
+        }
+
+        return parent::buildCursor($db);
+    }
+
+    /**
      * Executes query and returns all results as an array.
      * @param \yii\mongodb\Connection $db the Mongo connection used to execute the query.
      * If null, the Mongo connection returned by [[modelClass]] will be used.
