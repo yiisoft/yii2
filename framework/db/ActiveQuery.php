@@ -98,7 +98,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Constructor.
-     * @param array $modelClass the model class associated with this query
+     * @param string $modelClass the model class associated with this query
      * @param array $config configurations to be applied to the newly created query object
      */
     public function __construct($modelClass, $config = [])
