@@ -86,7 +86,7 @@ All of the content placed between [[yii\widgets\ActiveForm::begin()|ActiveForm::
 As with any widget, you can specify some options as to how the widget should be configured by passing an array to
 the `begin` method. In this case, an extra CSS class and identifying ID are passed to be used in the opening `<form>` tag.
 
-In order to create a form element in the form, along with the element's label, and any application JavaScript validation,
+In order to create a form element in the form, along with the element's label, and any applicable JavaScript validation,
 the [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] method of the Active Form widget is called.
 When the invocation of this method is echoed directly, the result is a regular (text) input.
 To customize the output, you can chain additional methods to this call:

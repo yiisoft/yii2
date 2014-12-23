@@ -96,7 +96,7 @@ All Rights Reserved.
 データの表示
 ------------
 
-* [データの書式設定](output-formatter.md)
+* [データのフォーマット](output-formatter.md)
 * **TBD** [ページネーション](output-pagination.md)
 * **TBD** [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)
@@ -109,10 +109,10 @@ All Rights Reserved.
 ------------
 
 * [認証](security-authentication.md)
-* [権限](security-authorization.md)
+* [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
 * **TBD** [Auth クライアント](security-auth-clients.md)
-* **TBD** [最善の慣行](security-best-practices.md)
+* [ベストプラクティス](security-best-practices.md)
 
 
 キャッシュ
@@ -128,49 +128,49 @@ All Rights Reserved.
 RESTful ウェブサービス
 ----------------------
 
-* [クイックスタート](rest-quick-start.md)
-* [リソース](rest-resources.md)
-* [コントローラ](rest-controllers.md)
-* [ルーティング](rest-routing.md)
-* [レスポンスの書式設定](rest-response-formatting.md)
-* [認証](rest-authentication.md)
-* [転送レート制限](rest-rate-limiting.md)
-* [バージョン管理](rest-versioning.md)
-* [エラー処理](rest-error-handling.md)
+* **翻訳未着手** [クイックスタート](rest-quick-start.md)
+* **翻訳未着手** [リソース](rest-resources.md)
+* **翻訳未着手** [コントローラ](rest-controllers.md)
+* **翻訳未着手** [ルーティング](rest-routing.md)
+* **翻訳未着手** [レスポンスの書式設定](rest-response-formatting.md)
+* **翻訳未着手** [認証](rest-authentication.md)
+* **翻訳未着手** [転送レート制限](rest-rate-limiting.md)
+* **翻訳未着手** [バージョン管理](rest-versioning.md)
+* **翻訳未着手** [エラー処理](rest-error-handling.md)
 
 
 開発ツール
 ----------
 
-* [デバッグツールバーとデバッガ](tool-debugger.md)
-* [Gii を使ってコードを生成する](tool-gii.md)
+* **翻訳未着手** [デバッグツールバーとデバッガ](tool-debugger.md)
+* **翻訳未着手** [Gii を使ってコードを生成する](tool-gii.md)
 * **TBD** [API ドキュメントを生成する](tool-api-doc.md)
 
 
 テスト
 ------
 
-* [概要](test-overview.md)
-* [テスト環境の構築](test-environment-setup.md)
-* [ユニットテスト](test-unit.md)
-* [機能テスト](test-functional.md)
-* [承認テスト](test-acceptance.md)
-* [フィクスチャ](test-fixtures.md)
+* **翻訳未着手** [概要](test-overview.md)
+* **翻訳未着手** [テスト環境の構築](test-environment-setup.md)
+* **翻訳未着手** [ユニットテスト](test-unit.md)
+* **翻訳未着手** [機能テスト](test-functional.md)
+* **翻訳未着手** [承認テスト](test-acceptance.md)
+* **翻訳未着手** [フィクスチャ](test-fixtures.md)
 
 
 スペシャルトピック
 ------------------
 
-* [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
-* [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
-* [コンソールコマンド](tutorial-console.md)
-* [コアのバリデータ](tutorial-core-validators.md)
-* [国際化](tutorial-i18n.md)
-* [メール](tutorial-mailing.md)
-* [パフォーマンスチューニング](tutorial-performance-tuning.md)
-* [共有ホスト環境](tutorial-shared-hosting.md)
-* [テンプレートエンジン](tutorial-template-engines.md)
-* [サードパーティのコードを扱う](tutorial-yii-integration.md)
+* **翻訳未着手** [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
+* **翻訳未着手** [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
+* **翻訳未着手** [コンソールコマンド](tutorial-console.md)
+* **翻訳未着手** [コアのバリデータ](tutorial-core-validators.md)
+* **翻訳未着手** [国際化](tutorial-i18n.md)
+* **翻訳未着手** [メール](tutorial-mailing.md)
+* **翻訳未着手** [パフォーマンスチューニング](tutorial-performance-tuning.md)
+* **翻訳未着手** [共有ホスト環境](tutorial-shared-hosting.md)
+* **翻訳未着手** [テンプレートエンジン](tutorial-template-engines.md)
+* **翻訳未着手** [サードパーティのコードを扱う](tutorial-yii-integration.md)
 
 
 ウィジェット
@@ -184,16 +184,16 @@ RESTful ウェブサービス
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* [Bootstrap ウィジェット](widget-bootstrap.md)
-* [Jquery UI ウィジェット](widget-jui.md)
+* **翻訳未着手** [Bootstrap ウィジェット](widget-bootstrap.md)
+* **翻訳未着手** [Jquery UI ウィジェット](widget-jui.md)
 
 
 ヘルパ
 ------
 
-* [概要](helper-overview.md)
-* [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* [Url](helper-url.md)
+* **翻訳未着手** [概要](helper-overview.md)
+* **翻訳未着手** [ArrayHelper](helper-array.md)
+* **翻訳未着手** [Html](helper-html.md)
+* **翻訳未着手** [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
 

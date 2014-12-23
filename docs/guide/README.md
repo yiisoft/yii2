@@ -112,7 +112,7 @@ Security
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
 * **TBD** [Auth Clients](security-auth-clients.md)
-* **TBD** [Best Practices](security-best-practices.md)
+* [Best Practices](security-best-practices.md)
 
 
 Caching

@@ -6,8 +6,24 @@ ou baixando um arquivo compactado. O primeiro modo é o preferido, já que permi
 que você instale novas [extensões](structure-extensions.md) ou atualize o
 Yii simplesmente executando um único comando.
 
-> Note: Ao contrário do Yii 1, as instalações padrão do Yii 2 resultam em
-tanto o framework quanto um esqueleto de aplicação sendo baixados e instalados.
+A instalação do Yii padrão resulta no download e instalação tanto do framework 
+quanto de um template de aplicação.
+Um template de aplicação é uma aplicação do Yii implementando algumas recursos básicos,
+como a autenticação, o formulário de contato, etc.
+Este código é organizado de uma forma recomendada. No entanto, ele pode servir 
+como ponto de partida para seus projetos.
+
+Nesta e nas próximas seções, iremos descrever como instalar o *Template Básico de 
+Aplicação* do Yii e como implementar novas funcionalidades em cima deste template.
+O Yii também fornece um outro template chamado de [Template Avançado de Aplicação](tutorial-advanced-app.md) que é melhor usado em uma equipe de desenvolvimento que desenvolvem 
+aplicações de multiplas camadas.
+
+> Informação: O Template Básico de Aplicação é adequado para o desenvolvimento de 
+cerca de 90% das aplicações Web. Este template difere do Template Avançado de 
+Aplicação principalmente na forma de como o seu código é organizado. Se você é 
+novo no Yii, recomendamos fortemente em escolher o Template Básico de Aplicação 
+pela sua simplicidade além de ter funcionalidades o suficiente.
+If you are new to Yii, we strongly recommend you stick to the Basic Application Template for its simplicity yet sufficient functionalities.
 
 
 Instalando via Composer <a name="installing-via-composer"></a>
@@ -39,15 +55,12 @@ o que permite gerenciar dependências via bower e npm package por meio do Compos
 Você apenas precisa rodar este comando uma vez. O segundo comando instala o Yii
 em um diretório chamado `basic`. Você pode escolher um diretório diferente se quiser.
 
-> Nota: Durante a instalação do Yii pode acontecer que o Composer peça suas 
-> credenciais de login do Github por ultrapassar taxa limite (rate-limit) da API do Github.
-> Isso é normal pois o Composer necessita obter muitas informações de todos os 
-> pacotes no Github.
-> Logando no Github incrementa a taxa limite (rate-limit) da API para que o Composer
-> possa continuar o seu trabalho. Para mais detalhes, por favor consulte a 
-> [documentação do Composer](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+> Observação: Durante a instalação, o Composer pode pedir suas credenciais de login 
+> do Github. Isto é normal, pelo fato do Composer precisar obter a taxa limite 
+> (rate-limit) da API para recuperar as informações de dependência de pacotes do
+> Github. Para mais detalhes, consulte a [documentação do Composer](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
 
-> Tip: Se você quiser instalar a última versão de desenvolvimento do Yii, você
+> Dica: Se você quiser instalar a última versão de desenvolvimento do Yii, você
 > pode usar o seguinte comando, que adiciona uma [opção de estabilidade](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
@@ -78,8 +91,9 @@ Outras Opções de Instalação <a name="other-installation-options"></a>
 
 As instruções de instalação acima mostram como instalar o Yii, que também cria
 uma aplicação Web básica que funciona imediatamente sem qualquer configuração ou 
-modificação (*out of the box*). Este método é um bom ponto de início para projetos 
-pequenos ou para quando você começar a aprender o Yii.
+modificação (*out of the box*). 
+Esta abordagem é um bom ponto de partida para a maioria dos projetos, seja ele 
+pequeno ou grande. É especialmente adequado se você acabou de começar a aprender Yii.
 
 No entanto, existem outras opções de instalação disponíveis:
 

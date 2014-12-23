@@ -680,7 +680,7 @@ http://localhost/index.php?r=site/page&view=about
 [[yii\web\ViewAction::viewPrefix]] を構成して、ビューを探すディレクトリを変更することが出来ます。
 
 
-## 最善の慣行 <a name="best-practices"></a>
+## ベストプラクティス <a name="best-practices"></a>
 
 ビューはエンドユーザが望む形式でモデルを表現することに対して責任を持ちます。一般的に、ビューは
 

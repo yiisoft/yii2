@@ -15,7 +15,7 @@ By default, Yii supports the following DBMS:
 - [CUBRID](http://www.cubrid.org/): version 9.3 or higher. (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
   the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2005 or higher.
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
 
 Configuration
@@ -194,7 +194,7 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 $connection->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
-Quoting Table and Column Names
+Quoting Table and Column Names <a name="quoting-table-and-column-names"></a>
 ------------------------------
 
 To make column and table names safe to use in queries, you can have Yii properly quote them for you:

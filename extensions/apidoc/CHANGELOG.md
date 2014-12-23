@@ -1,7 +1,13 @@
 Yii Framework 2 apidoc extension Change Log
 ===========================================
 
-2.0.1 under development
+2.0.2 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #5623: Fixed crash when a class contains a setter that has no arguments e.g. `setXyz()` (cebe)

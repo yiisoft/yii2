@@ -13,6 +13,9 @@ use yii\apidoc\helpers\PrettyPrinter;
 /**
  * Represents API documentation information for a `property`.
  *
+ * @property bool $isReadOnly If property is read only. This property is read-only.
+ * @property bool $isWriteOnly If property is write only. This property is read-only.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */

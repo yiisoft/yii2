@@ -4,6 +4,7 @@
 
 if (php --version | grep -i HipHop > /dev/null); then
   echo "mongodb does not work on HHVM currently, skipping"
+  exit 0
 else
   echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 fi

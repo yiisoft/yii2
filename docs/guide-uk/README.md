@@ -49,7 +49,7 @@ All Rights Reserved.
 
 * [Огляд](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
-* [Роутінг та створення URL](runtime-routing.md)
+* [Маршрутизація та створення URL](runtime-routing.md)
 * [Запити](runtime-requests.md)
 * [Відповіді](runtime-responses.md)
 * [Сесії та кукі](runtime-sessions-cookies.md)
@@ -112,7 +112,7 @@ All Rights Reserved.
 * [Авторизація](security-authorization.md)
 * [Робота з паролями](security-passwords.md)
 * **TBD** [Клієнти авторизації](security-auth-clients.md)
-* **TBD** [Кращі практики](security-best-practices.md)
+* [Кращі практики](security-best-practices.md)
 
 
 Кешування
@@ -131,7 +131,7 @@ RESTful веб-сервіси
 * [Швидкий старт](rest-quick-start.md)
 * [Ресурси](rest-resources.md)
 * [Контролери](rest-controllers.md)
-* [Роутінг](rest-routing.md)
+* [Маршрутизація](rest-routing.md)
 * [Форматування відповіді](rest-response-formatting.md)
 * [Аутентифікація](rest-authentication.md)
 * [Обмеження частоти запитів](rest-rate-limiting.md)
@@ -193,7 +193,7 @@ RESTful веб-сервіси
 
 * [Огляд](helper-overview.md)
 * [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
+* [Html](helper-html.md)
 * [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
 

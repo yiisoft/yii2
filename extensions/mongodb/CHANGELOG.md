@@ -1,7 +1,13 @@
 Yii Framework 2 mongodb extension Change Log
 ============================================
 
-2.0.1 under development
+2.0.2 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #6026: Fixed `yii\mongodb\ActiveRecord` saves `null` as `_id`, if attributes are empty (klimov-paul)

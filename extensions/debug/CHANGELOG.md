@@ -1,7 +1,14 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
-2.0.1 under development
+2.0.2 under development
+-----------------------
+
+- Bug #4820: Fixed reading incomplete debug index data in case of high request concurrency (martingeorg, samdark)
+- Chg #6572: Allow panels to stay even if they do not receive any debug data (qiangxue)
+
+
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)

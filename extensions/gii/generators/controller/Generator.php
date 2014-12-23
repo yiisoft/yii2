@@ -18,10 +18,8 @@ use yii\helpers\StringHelper;
  *
  * @property array $actionIDs An array of action IDs entered by the user. This property is read-only.
  * @property string $controllerFile The controller class file path. This property is read-only.
- * @property string $controllerID The controller ID (without the module ID prefix). This property is
- * read-only.
- * @property \yii\base\Module $module The module that the new controller belongs to. This property is
- * read-only.
+ * @property string $controllerID The controller ID. This property is read-only.
+ * @property string $controllerNamespace The namespace of the controller class. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -75,6 +73,7 @@ class Generator extends \yii\gii\Generator
             ['controllerClass', 'validateNewClass'],
             ['baseClass', 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
             ['actions', 'match', 'pattern' => '/^[a-z][a-z0-9\\-,\\s]*$/', 'message' => 'Only a-z, 0-9, dashes (-), spaces and commas are allowed.'],
+            ['viewPath', 'safe'],
         ]);
     }
 
@@ -219,6 +218,6 @@ class Generator extends \yii\gii\Generator
     public function getControllerNamespace()
     {
         $name = StringHelper::basename($this->controllerClass);
-        return ltrim(substr($this->controllerClass, 0, strlen($name) + 1), '\\');
+        return ltrim(substr($this->controllerClass, 0, - (strlen($name) + 1)), '\\');
     }
 }

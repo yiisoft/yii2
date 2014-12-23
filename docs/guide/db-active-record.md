@@ -9,7 +9,7 @@ an Active Record instance corresponds to a row of that table, and an attribute o
 instance represents the value of a column in that row. Instead of writing raw SQL statements,
 you can work with Active Record in an object-oriented fashion to manipulate the data in database tables.
 
-For example, assume `Customer` is an Active Record class is associated with the `customer` table
+For example, assume `Customer` is an Active Record class which is associated with the `customer` table
 and `name` is a column of the `customer` table. You can write the following code to insert a new
 row into the `customer` table:
 
@@ -33,7 +33,7 @@ Below is the list of databases that are currently supported by Yii Active Record
 * MySQL 4.1 or later: via [[yii\db\ActiveRecord]]
 * PostgreSQL 7.3 or later: via [[yii\db\ActiveRecord]]
 * SQLite 2 and 3: via [[yii\db\ActiveRecord]]
-* Microsoft SQL Server 2010 or later: via [[yii\db\ActiveRecord]]
+* Microsoft SQL Server 2008 or later: via [[yii\db\ActiveRecord]]
 * Oracle: via [[yii\db\ActiveRecord]]
 * CUBRID 9.3 or later: via [[yii\db\ActiveRecord]] (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
   the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
@@ -346,7 +346,7 @@ of the active record class and set the values there. For example to set the defa
 public function init()
 {
     parent::init();
-    $this->status = 'active';
+    $this->status = self::STATUS_ACTIVE;
 }
 ```
 
@@ -700,7 +700,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 > you cannot call [[yii\db\ActiveQuery::inverseOf()]] further.
 
 
-Joining with Relations
+Joining with Relations <a name="joining-with-relations"></a>
 ----------------------
 
 When working with relational databases, a common task is to join multiple tables and apply various
@@ -1020,9 +1020,9 @@ To use Optimistic locking:
 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
    Override the `optimisticLock()` method to return the name of this column.
 2. In the Web form that collects the user input, add a hidden field that stores
-   the lock version of the recording being updated.
+   the lock version of the record being updated.
 3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
-   and implement necessary business logic (e.g. merging the changes, prompting stated data)
+   and implement necessary business logic (e.g. merging the changes, prompting staled data)
    to resolve the conflict.
 
 Dirty Attributes

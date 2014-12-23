@@ -33,3 +33,4 @@ Gii をコード生成に使うと、ウェブ開発のプロセスの大部分�
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>
     - LinkedIn: <https://www.linkedin.com/groups/yii-framework-1483367>
+    - Stackoverflow: <http://stackoverflow.com/questions/tagged/yii2>

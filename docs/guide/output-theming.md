@@ -38,6 +38,17 @@ For example, with a configuration above a themed version of a view file `@app/vi
 `@app/themes/basic/site/index.php`. It basically replaces `@app/views` in `@app/views/site/index.php` with
 `@app/themes/basic`.
 
+In order to configure theme runtime you can use the following code before rendering a view. Typically it will be
+placed in controller:
+
+```php
+$this->getView()->theme = Yii::createObject([
+    'class' => '\yii\base\Theme',
+    'pathMap' => ['@app/views' => '@app/themes/basic'],
+    'baseUrl' => '@web/themes/basic',
+]);
+```
+
 ### Theming modules
 
 In order to theme modules, `pathMap` may look like the following:

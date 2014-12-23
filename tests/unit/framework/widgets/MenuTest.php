@@ -3,7 +3,6 @@
 namespace yiiunit\framework\widgets;
 
 use yii\widgets\Menu;
-use yii\widgets\Spaceless;
 
 /**
  * @group widgets
