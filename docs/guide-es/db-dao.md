@@ -180,7 +180,7 @@ $command->execute();
 ```
 
 De forma alternativa, se pueden usar los métodos `insert`, `update`, y `delete`. Estos métodos se encargarán de
-gestionar el entrecomillado de los nombres de la tablas y de las columnas que se usen en la consulta, y solo se
+gestionar el entrecomillado de los nombres de las tablas y de las columnas que se usen en la consulta, y solo se
 tendrá que proporcionar los valores necesarios.
 
 [[Se tiene que poner el enlace de documentación aquí.]]
