@@ -354,7 +354,7 @@ class Query extends Component implements QueryInterface
      * @param Connection|null $db
      * @return bool|string
      */
-    private function queryScalar($selectExpression, $db)
+    protected function queryScalar($selectExpression, $db)
     {
         $select = $this->select;
         $limit = $this->limit;
@@ -372,7 +372,7 @@ class Query extends Component implements QueryInterface
         if (empty($this->groupBy) && empty($this->union) && !$this->distinct) {
             return $command->queryScalar();
         } else {
-            return (new static)->select([$selectExpression])
+            return (new Query)->select([$selectExpression])
                 ->from(['c' => $this])
                 ->createCommand($command->db)
                 ->queryScalar();

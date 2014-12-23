@@ -4,7 +4,7 @@ Yii Framework 2 sphinx extension Change Log
 2.0.2 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6621: Creating sub query at `yii\sphinx\Query::queryScalar()` fixed (klimov-paul)
 
 
 2.0.1 December 07, 2014
