@@ -377,8 +377,11 @@ class Query extends Component implements QueryInterface
     {
         $selectFields = [];
         if (!empty($this->select)) {
-            foreach ($this->select as $fieldName) {
-                $selectFields[$fieldName] = true;
+            foreach ($this->select as $key => $fieldName) {
+                if(!is_array($fieldName))
+                    $selectFields[$fieldName] = true;
+                else
+                    $selectFields[$key] = $fieldName;
             }
         }
         return $selectFields;
