@@ -134,6 +134,7 @@ class Controller extends Component implements ViewContextInterface
         $modules = [];
         $runAction = true;
 
+        // call beforeAction on modules
         foreach ($this->getModules() as $module) {
             if ($module->beforeAction($action)) {
                 array_unshift($modules, $module);
@@ -145,16 +146,17 @@ class Controller extends Component implements ViewContextInterface
 
         $result = null;
 
-        if ($runAction) {
-            if ($this->beforeAction($action)) {
-                $result = $action->runWithParams($params);
-                $result = $this->afterAction($action, $result);
-            }
-        }
+        if ($runAction && $this->beforeAction($action)) {
+            // run the action
+            $result = $action->runWithParams($params);
 
-        foreach ($modules as $module) {
-            /* @var $module Module */
-            $result = $module->afterAction($action, $result);
+            $result = $this->afterAction($action, $result);
+
+            // call afterAction on modules
+            foreach ($modules as $module) {
+                /* @var $module Module */
+                $result = $module->afterAction($action, $result);
+            }
         }
 
         $this->action = $oldAction;
@@ -362,17 +364,29 @@ class Controller extends Component implements ViewContextInterface
      */
     public function render($view, $params = [])
     {
-        $output = $this->getView()->render($view, $params, $this);
+        $content = $this->getView()->render($view, $params, $this);
+        return $this->renderContent($content);
+    }
+
+    /**
+     * Renders a static string by applying a layout.
+     * @param string $content the static string being rendered
+     * @return string the rendering result of the layout with the given static string as the `$content` variable.
+     * If the layout is disabled, the string will be returned back.
+     * @since 2.0.1
+     */
+    public function renderContent($content)
+    {
         $layoutFile = $this->findLayoutFile($this->getView());
         if ($layoutFile !== false) {
-            return $this->getView()->renderFile($layoutFile, ['content' => $output], $this);
+            return $this->getView()->renderFile($layoutFile, ['content' => $content], $this);
         } else {
-            return $output;
+            return $content;
         }
     }
 
     /**
-     * Renders a view.
+     * Renders a view without applying layout.
      * This method differs from [[render()]] in that it does not apply any layout.
      * @param string $view the view name. Please refer to [[render()]] on how to specify a view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.

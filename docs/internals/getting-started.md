@@ -1,7 +1,7 @@
 Getting started with Yii2 development
 =====================================
 
-1. Clone your fork of yii2 `git clone git@github.com:<yourname>/yii2`.
+1. Clone your fork of yii2 `git clone git@github.com:<yourname>/yii2.git`.
 2. Change into the repo folder `cd yii2`.
 3. run `./build/build app/link basic` to install composer dependecies for the basic app.
    This command will install foreign composer packages as normal but will link the yii2 repo to
@@ -29,57 +29,6 @@ You can now execute unit tests by running `phpunit`.
 You may limit the tests to a group of tests you are working on e.g. to run only tests for the validators and redis
 `phpunit --group=validators,redis`.
 
-Functional and acceptance tests
--------------------------------
-
-In order to run functional and acceptance tests you need to install additional composer packages for the application you're going
-to test. Add the following four packages to your `composer.json` `require-dev` section: 
-
-```
-"yiisoft/yii2-codeception": "*",
-```
-
-For advanced application you may need `yiisoft/yii2-faker: *` as well.
-
-Then for the basic application template run `./build/build app/link basic`. For advanced template command is
-`./build/build app/link advanced`.
-
-After package installation is complete you can run the following for basic app:
-
-```
-cd apps/basic
-codecept build
-codecept run
-```
-
-For advanced application frontend it will be:
-
-```
-cd apps/advanced/frontend
-codecept build
-codecept run
-```
-
-Note that you need a running webserver in order to pass acceptance tests. That can be easily achieved with PHP's built-in
-webserver:
-
-```
-cd apps/advanced/frontend/www
-php -S 127.0.0.1:8080
-```
-
-Note that you should have Codeception and PHPUnit installed globally:
- 
-```
-composer global require "phpunit/phpunit=4.1.*"
-composer global require "codeception/codeception=2.0.*"
-composer global require "codeception/specify=*"
-composer global require "codeception/verify=*"
-```
-
-After running commands you'll see "Changed current directory to /your/global/composer/dir" message. If it's the
-first time you're installing a package globally you need to add `/your/global/composer/dir/vendor/bin/` to your `PATH`.
-
 Extensions
 ----------
 
@@ -89,3 +38,7 @@ Just add them to the `composer.json` as you would normally do e.g. add `"yiisoft
 Running `./build/build app/link basic` will install the extension and its dependecies and create
 a symlink to `extensions/redis` so you are not working the composer vendor dir but the yii2 repo directly.
 
+Functional and acceptance tests for applications
+------------------------------------------------
+
+See `apps/advanced/tests/README.md` and `apps/basic/tests/README.md` to learn about how to run Codeception tests.

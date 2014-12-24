@@ -2,8 +2,8 @@ Class Autoloading
 =================
 
 Yii relies on the [class autoloading mechanism](http://www.php.net/manual/en/language.oop5.autoload.php)
-to locate and include all required class files. It provides a high-performance class autoloader that is compliant to the
-[PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
+to locate and include all required class files. It provides a high-performance class autoloader that is compliant with the
+[PSR-4 standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md).
 The autoloader is installed when you include the `Yii.php` file.
 
 > Note: For simplicity of description, in this section we will only talk about autoloading of classes. However, keep in
@@ -27,14 +27,13 @@ For example, if a class name and namespace is `foo\bar\MyClass`, the [alias](con
 would be `@foo/bar/MyClass.php`. In order for this alias to be resolvable into a file path,
 either `@foo` or `@foo/bar` must be a [root alias](concept-aliases.md#defining-aliases).
 
-When using the [Basic Application Template](start-basic.md), you may put your classes under the top-level
+When using the [Basic Application Template](start-installation.md), you may put your classes under the top-level
 namespace `app` so that they can be autoloaded by Yii without the need of defining a new alias. This is because
 `@app` is a [predefined alias](concept-aliases.md#predefined-aliases), and a class name like `app\components\MyClass`
 can be resolved into the class file `AppBasePath/components/MyClass.php`, according to the algorithm just described.
 
 In the [Advanced Application Template](tutorial-advanced-app.md), each tier has its own root alias. For example,
-the front-end tier has a root alias `@frontend`, while the back-end tier `@backend`. As a result, you may
-put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
+the front-end tier has a root alias `@frontend`, while the back-end tier root alias is `@backend`. As a result, you may put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
 allow these classes to be autoloaded by the Yii autoloader.
 
 
@@ -43,7 +42,7 @@ Class Map <a name="class-map"></a>
 
 The Yii class autoloader supports the *class map* feature, which maps class names to the corresponding class file paths.
 When the autoloader is loading a class, it will first check if the class is found in the map. If so, the corresponding
-file path will be included directly without further check. This makes class autoloading super fast. In fact,
+file path will be included directly without further checks. This makes class autoloading super fast. In fact,
 all core Yii classes are autoloaded this way.
 
 You may add a class to the class map, stored in `Yii::$classMap`, using:
@@ -66,7 +65,7 @@ also install those.
 When using the Yii autoloader together with other autoloaders, you should include the `Yii.php` file
 *after* all other autoloaders are installed. This will make the Yii autoloader the first one responding to
 any class autoloading request. For example, the following code is extracted from
-the [entry script](structure-entry-scripts.md) of the [Basic Application Template](start-basic.md). The first
+the [entry script](structure-entry-scripts.md) of the [Basic Application Template](start-installation.md). The first
 line installs the Composer autoloader, while the second line installs the Yii autoloader:
 
 ```php

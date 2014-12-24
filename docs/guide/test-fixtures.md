@@ -279,7 +279,7 @@ Loading fixtures
 ----------------
 
 Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
-change this behavior with config or command options.
+change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
 
 To load fixture, run the following command:
 
@@ -291,23 +291,23 @@ The required `fixture_name` parameter specifies a fixture name which data will b
 Below are correct formats of this command:
 
 ```
-// load `users` fixture
+// load `User` fixture
 yii fixture/load User
 
 // same as above, because default action of "fixture" command is "load"
 yii fixture User
 
-// load several fixtures. Note that there should not be any whitespace between ",", it should be one string.
-yii fixture User,UserProfile
+// load several fixtures
+yii fixture User UserProfile
 
 // load all fixtures
-yii fixture/load all
+yii fixture/load "*"
 
 // same as above
-yii fixture all
+yii fixture "*"
 
-// load fixtures, but for other database connection.
-yii fixture User --db='customDbConnectionId'
+// load all fixtures except ones
+yii fixture "*" -DoNotLoadThisOne
 
 // load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
 yii fixture User --namespace='alias\my\custom\namespace'
@@ -327,14 +327,18 @@ To unload fixture, run the following command:
 // unload Users fixture, by default it will clear fixture storage (for example "users" table, or "users" collection if this is mongodb fixture).
 yii fixture/unload User
 
-// Unload several fixtures. Note that there should not be any whitespace between ",", it should be one string.
+// Unload several fixtures
 yii fixture/unload User,UserProfile
 
 // unload all fixtures
-yii fixture/unload all
+yii fixture/unload "*"
+
+// unload all fixtures except ones
+yii fixture/unload "*" -DoNotUnloadThisOne
+
 ```
 
-Same command options like: `db`, `namespace`, `globalFixtures` also can be applied to this command.
+Same command options like: `namespace`, `globalFixtures` also can be applied to this command.
 
 Configure Command Globally
 --------------------------
@@ -346,7 +350,6 @@ different migration path as follows:
 'controllerMap' => [
     'fixture' => [
         'class' => 'yii\console\controllers\FixtureController',
-        'db' => 'customDbConnectionId',
         'namespace' => 'myalias\some\custom\namespace',
         'globalFixtures' => [
             'some\name\space\Foo',

@@ -1,7 +1,7 @@
 使用数据库
 ======================
 
-本章节将介绍如何如何创建一个从数据表 `country` 中获取国家数据并显示出来的页面。为了实现这个目标，你将会配置一个数据库连接，创建一个[活动记录](db-active-record.md)类，并且创建一个[操作](structure-controllers.md)及一个[视图](structure-views.md)。
+本章节将介绍如何如何创建一个从数据表 `country` 中读取国家数据并显示出来的页面。为了实现这个目标，你将会配置一个数据库连接，创建一个[活动记录](db-active-record.md)类，并且创建一个[操作](structure-controllers.md)及一个[视图](structure-views.md)。
 
 贯穿整个章节，你将会学到：
 
@@ -16,7 +16,7 @@
 准备数据库 <a name="preparing-database"></a>
 --------------------
 
-首先创建一个名为 `yii2basic` 的数据库，应用将从这个数据库中获取数据。你可以创建 SQLite，MySQL，PostregSQL，MSSQL 或 Oracle 数据库，Yii 内置多种数据库支持。简单起见后面的内容将以 MySQL 为例做演示。
+首先创建一个名为 `yii2basic` 的数据库，应用将从这个数据库中读取数据。你可以创建 SQLite，MySQL，PostregSQL，MSSQL 或 Oracle 数据库，Yii 内置多种数据库支持。简单起见，后面的内容将以 MySQL 为例做演示。
 
 然后在数据库中创建一个名为 `country` 的表并插入简单的数据。可以执行下面的语句：
 
@@ -27,19 +27,19 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `Country` VALUES ('AU','Australia',18886000);
-INSERT INTO `Country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `Country` VALUES ('CA','Canada',1147000);
-INSERT INTO `Country` VALUES ('CN','China',1277558000);
-INSERT INTO `Country` VALUES ('DE','Germany',82164700);
-INSERT INTO `Country` VALUES ('FR','France',59225700);
-INSERT INTO `Country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `Country` VALUES ('IN','India',1013662000);
-INSERT INTO `Country` VALUES ('RU','Russia',146934000);
-INSERT INTO `Country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',18886000);
+INSERT INTO `country` VALUES ('BR','Brazil',170115000);
+INSERT INTO `country` VALUES ('CA','Canada',1147000);
+INSERT INTO `country` VALUES ('CN','China',1277558000);
+INSERT INTO `country` VALUES ('DE','Germany',82164700);
+INSERT INTO `country` VALUES ('FR','France',59225700);
+INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
+INSERT INTO `country` VALUES ('IN','India',1013662000);
+INSERT INTO `country` VALUES ('RU','Russia',146934000);
+INSERT INTO `country` VALUES ('US','United States',278357000);
 ```
 
-于是便有了一个名为 `yii2basic` 的数据库，在这个数据库中有一个包含三个字段的数据表 `country`，表中有十行数据。
+此时便有了一个名为 `yii2basic` 的数据库，在这个数据库中有一个包含三个字段的数据表 `country`，表中有十行数据。
 
 配置数据库连接 <a name="configuring-db-connection"></a>
 ---------------------------
@@ -62,7 +62,7 @@ return [
 
 `config/db/php` 是一个典型的基于文件的[配置](concept-configurations.md)工具。这个文件配置了数据库连接 [[yii\db\Connection]] 的创建和初始化参数，应用的 SQL 查询正是基于这个数据库。
 
-上面配置的数据库连接可以在应用中通过 `Yii::$app->db` 访问。
+上面配置的数据库连接可以在应用中通过 `Yii::$app->db` 表达式访问。
 
 > 补充：`config/db.php` 将被包含在应用配置文件 `config/web.php` 中，后者指定了整个[应用](structure-applications.md)如何初始化。请参考[配置](concept-configurations.md)章节了解更多信息。
 
@@ -70,7 +70,7 @@ return [
 创建活动记录 <a name="creating-active-record"></a>
 -------------------------
 
-创建一个继承自[活动记录](db-active-record.md)类的类 `Country`，把它放在 `models/Country.php`，去表示和获取 `country` 表的数据。
+创建一个继承自[活动记录](db-active-record.md)类的类 `Country`，把它放在 `models/Country.php` 文件，去代表和读取 `country` 表的数据。
 
 ```php
 <?php
@@ -86,7 +86,7 @@ class Country extends ActiveRecord
 
 这个 `Country` 类继承自 [[yii\db\ActiveRecord]]。你不用在里面写任何代码。只需要像现在这样，Yii 就能根据类名去猜测对应的数据表名。
 
-> 补充：如果类名和数据表名不能直接对应，可以重写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
+> 补充：如果类名和数据表名不能直接对应，可以覆写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
 
 使用 `Country` 类可以很容易地操作 `country` 表数据，就像这段代码：
 
@@ -107,7 +107,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> 补充：活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。除此之外你还可以使用另一种更原生的称做[数据访问对象](db-dao)的方法操作数据库数据。
+> 补充：活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。除此之外你还可以使用另一种更原生的被称做[数据访问对象](db-dao)的方法操作数据库数据。
 
 
 创建操作 <a name="creating-action"></a>
@@ -148,7 +148,7 @@ class CountryController extends Controller
 }
 ```
 
-把上面的代码保存在 `controllers/CountryController.php`。
+把上面的代码保存在 `controllers/CountryController.php` 文件中。
 
 `index` 操作调用了活动记录 `Country::find()` 方法，去生成查询语句并从 `country` 表中取回所有数据。为了限定每个请求所返回的国家数量，查询在 [[yii\data\Pagination]] 对象的帮助下进行分页。 `Pagination` 对象的使命主要有两点：
 
@@ -184,7 +184,7 @@ use yii\widgets\LinkPager;
 这个视图包含两部分用以显示国家数据。第一部分遍历国家数据并以无序 HTML 列表渲染出来。第二部分使用 [[yii\widgets\LinkPager]] 去渲染从操作中传来的分页信息。小部件 `LinkPager` 显示一个分页按钮的列表。点击任何一个按钮都会跳转到对应的分页。
 
 
-尝试下 <a name="trying-it-out"></a>
+试运行 <a name="trying-it-out"></a>
 -------------
 
 浏览器访问下面的 URL 看看能否工作：

@@ -18,7 +18,7 @@ class GeneratorsTest extends GiiTestCase
     {
         $generator = new ControllerGenerator();
         $generator->template = 'default';
-        $generator->controller = 'test';
+        $generator->controllerClass = 'test';
 
         if ($generator->validate()) {
             $generator->generate();

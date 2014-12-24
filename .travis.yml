@@ -7,12 +7,14 @@ php:
   - hhvm
   - hhvm-nightly
 
+env:
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
+
 # run build against hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
   fast_finish: true
   allow_failures:
-    - php: hhvm
     - php: hhvm-nightly
 
 services:
@@ -21,18 +23,35 @@ services:
   - elasticsearch
   - mongodb
 
+# faster builds on new travis setup not using sudo
+sudo: false
+
+# cache vendor dirs
+cache:
+  directories:
+#    - cubrid # caching cubrid breaks the build on a regular basis and has nearly no speedup
+    - vendor
+    - $HOME/.composer/cache
+
 # try running against postgres 9.3
 addons:
   postgresql: "9.3"
 
 install:
-  - composer self-update && composer --version
+  - travis_retry composer self-update && composer --version
+  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - composer install --prefer-dist
+  - travis_retry composer install --prefer-dist --no-interaction
   - tests/unit/data/travis/mongodb-setup.sh
-  - tests/unit/data/travis/apc-setup.sh
+# TODO: APC currently fails composer. https://github.com/composer/composer/issues/3405
+#  - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
+# print elasticsearch version
+  - curl http://localhost:9200
+# codeception
+  - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
 
@@ -49,15 +68,24 @@ script:
   - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
   - |
     if (php --version | grep -i HipHop > /dev/null); then
-      echo "skipping application tests on HHVM"
+      echo "Skipping basic application tests on HHVM"
     else
-      cd apps/basic && php vendor/bin/codecept run
-      cd ../advanced/backend && ../vendor/bin/codecept run
-      cd ../common && ../vendor/bin/codecept run
-      cd ../frontend && ../vendor/bin/codecept run
+      cd apps/basic/web
+      php -S localhost:8080 > /dev/null 2>&1 &
+      cd ../tests
+      codecept run
+    fi
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      echo "Skipping advanced application tests on HHVM"
+    else
+      cd apps/advanced
+      php -S localhost:8080 > /dev/null 2>&1 &
+      cd tests
+      codecept run
     fi
 
 after_script:
   - cd ../../..
-  - wget https://scrutinizer-ci.com/ocular.phar
+  - travis_retry wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

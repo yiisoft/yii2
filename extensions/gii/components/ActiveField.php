@@ -64,7 +64,7 @@ class ActiveField extends \yii\widgets\ActiveField
     public function autoComplete($data)
     {
         static $counter = 0;
-        $this->inputOptions['class'] .= ' typeahead-' . (++$counter);
+        $this->inputOptions['class'] .= ' typeahead typeahead-' . (++$counter);
         foreach ($data as &$item) {
             $item = ['word' => $item];
         }

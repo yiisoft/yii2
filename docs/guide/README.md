@@ -40,19 +40,19 @@ Application Structure
 * [Modules](structure-modules.md)
 * [Filters](structure-filters.md)
 * [Widgets](structure-widgets.md)
-* [Asset Bundles](structure-assets.md)
+* [Assets](structure-assets.md)
 * [Extensions](structure-extensions.md)
 
 
 Handling Requests
 -----------------
 
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Routing](runtime-routing.md)
-* **TBD** [Requests](runtime-requests.md)
-* **TBD** [Responses](runtime-responses.md)
-* **TBD** [Sessions and Cookies](runtime-sessions-cookies.md)
-* [URL Parsing and Generation](runtime-url-handling.md)
+* [Overview](runtime-overview.md)
+* [Bootstrapping](runtime-bootstrapping.md)
+* [Routing and URL Creation](runtime-routing.md)
+* [Requests](runtime-requests.md)
+* [Responses](runtime-responses.md)
+* [Sessions and Cookies](runtime-sessions-cookies.md)
 * [Handling Errors](runtime-handling-errors.md)
 * [Logging](runtime-logging.md)
 
@@ -74,14 +74,14 @@ Key Concepts
 Working with Databases
 ----------------------
 
-* [Data Access Objects](db-dao.md) - Connecting to a database, basic queries, transactions and schema manipulation
-* [Query Builder](db-query-builder.md) - Querying the database using a simple abstraction layer
-* [Active Record](db-active-record.md) - The active record ORM, retrieving and manipulating records and defining relations
-* [Migrations](db-migrations.md) - Version control your databases in a team development environment
+* [Data Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
+* [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
+* [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
+* [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* **TBD** [ElasticSearch](db-elasticsearch.md)
 
 
 Getting Data from Users
@@ -89,14 +89,14 @@ Getting Data from Users
 
 * [Creating Forms](input-forms.md)
 * [Validating Input](input-validation.md)
-* **TBD** [Uploading Files](input-file-upload.md)
+* [Uploading Files](input-file-upload.md)
 * **TBD** [Getting Data for Multiple Models](input-multiple-models.md)
 
 
 Displaying Data
 ---------------
 
-* **TBD** [Data Formatting](output-formatting.md)
+* [Data Formatting](output-formatter.md)
 * **TBD** [Pagination](output-pagination.md)
 * **TBD** [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
@@ -112,7 +112,7 @@ Security
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
 * **TBD** [Auth Clients](security-auth-clients.md)
-* **TBD** [Best Practices](security-best-practices.md)
+* [Best Practices](security-best-practices.md)
 
 
 Caching
@@ -151,6 +151,7 @@ Testing
 -------
 
 * [Overview](test-overview.md)
+* [Testing environment setup](test-environment-setup.md)
 * [Unit Tests](test-unit.md)
 * [Functional Tests](test-functional.md)
 * [Acceptance Tests](test-acceptance.md)
@@ -167,7 +168,7 @@ Special Topics
 * [Internationalization](tutorial-i18n.md)
 * [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
-* **TBD** [Shared Hosting Environment](tutorial-shared-hosting.md)
+* [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
 * [Working with Third-Party Code](tutorial-yii-integration.md)
 
@@ -175,14 +176,14 @@ Special Topics
 Widgets
 -------
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
+* GridView: **TBD** link to demo page
+* ListView: **TBD** link to demo page
+* DetailView: **TBD** link to demo page
+* ActiveForm: **TBD** link to demo page
+* Pjax: **TBD** link to demo page
+* Menu: **TBD** link to demo page
+* LinkPager: **TBD** link to demo page
+* LinkSorter: **TBD** link to demo page
 * [Bootstrap Widgets](widget-bootstrap.md)
 * [Jquery UI Widgets](widget-jui.md)
 
@@ -191,8 +192,8 @@ Helpers
 -------
 
 * [Overview](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
+* [ArrayHelper](helper-array.md)
+* [Html](helper-html.md)
+* [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
 

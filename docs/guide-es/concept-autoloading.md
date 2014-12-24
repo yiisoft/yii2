@@ -28,7 +28,7 @@ Por ejemplo, si el nombre de una clase es `foo\bar\MyClass`, el [alias](concept-
 archivo de la clase sería `@foo/bar/MyClass.php`. Para que este sea capaz de ser resuelto como una ruta de archivo, ya sea
 `@foo` o `@foo/bar` debe ser un [alias de raíz](concept-aliases.md#defining-aliases) (root alias).
 
-Cuando utilizas la [Plantilla de Aplicación Básica](start-basic.md), puede que pongas tus clases bajo el nivel superior
+Cuando utilizas la [Plantilla de Aplicación Básica](start-installation.md), puede que pongas tus clases bajo el nivel superior
 de espacio de nombres `app` para que de esta manera pueda ser automáticamente cargado por Yii sin tener la necesidad de
 definir un nuevo alias. Esto es porque `@app` es un [alias predefinido](concept-aliases.md#predefined-aliases), y el
 nombre de una clase tal como `app\components\MyClass` puede ser resuelto en el archivo de la clase `AppBasePath/components/MyClass.php`,
@@ -69,7 +69,7 @@ instalarlos.
 Cuando se utiliza el cargador de clases automático de Yii conjuntamente con otros autocargadores, deberías incluir el
 archivo `Yii.php` *después* de que todos los demás autocargadores se hayan instalado. Esto hará que el autocargador de
 Yii sea el primero en responder a cualquier petición de carga automática de clases. Por ejemplo, el siguiente código ha
-sido extraido del [script de entrada](structure-entry-scripts.md) de la [Plantilla de Aplicación Básica](start-basic.md).
+sido extraido del [script de entrada](structure-entry-scripts.md) de la [Plantilla de Aplicación Básica](start-installation.md).
 La primera línea instala el autocargador de Composer, mientras que la segunda línea instala el autocargador de Yii.
 
 ```php

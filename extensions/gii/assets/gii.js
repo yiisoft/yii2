@@ -148,11 +148,11 @@ yii.gii = (function ($) {
 
             // model generator: hide class name input when table name input contains *
             $('#model-generator #generator-tablename').change(function () {
-                $('#model-generator .field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
+                $('.field-generator-modelclass').toggle($(this).val().indexOf('*') == -1);
             }).change();
 
             // model generator: translate table name to model class
-            $('#generator-tablename').on('blur', function () {
+            $('#model-generator #generator-tablename').on('blur', function () {
                 var tableName = $(this).val();
                 if ($('#generator-modelclass').val()=='' && tableName && tableName.indexOf('*') === -1){
                     var modelClass='';

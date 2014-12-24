@@ -28,7 +28,7 @@ Yii 2.0 权威指南
 应用结构
 --------
 
-* **已定稿** [结构总览](structure-overview.md)
+* **已定稿** [结构概述](structure-overview.md)
 * **已定稿** [入口脚本](structure-entry-scripts.md)
 * **已定稿** [应用](structure-applications.md)
 * **已定稿** [应用组件](structure-application-components.md)
@@ -38,20 +38,20 @@ Yii 2.0 权威指南
 * **已定稿** [过滤器](structure-filters.md)
 * **已定稿** [小部件（Widget）](structure-widgets.md)
 * **已定稿** [模块（Module）](structure-modules.md)
-* **编撰中** [前端资源（Asset）](structure-assets.md)
+* **已定稿** [前端资源（Asset）](structure-assets.md)
 * **已定稿** [扩展（extensions）](structure-extensions.md)
 
 请求处理
 --------
 
-* **待定中** [引导（Bootstrapping）](runtime-bootstrapping.md)
-* **待定中** [路由（Routing）](runtime-routing.md)
-* **待定中** [请求（Request）](runtime-requests.md)
-* **待定中** [响应（Response）](runtime-responses.md)
-* **待定中** [Sessions（会话）和 Cookies](runtime-sessions-cookies.md)
-* **已定稿** [URL 解析和生成](runtime-url-handling.md)
-* **编撰中** [错误处理](runtime-handling-errors.md)
-* **编撰中** [日志](runtime-logging.md)
+* **已定稿** [运行概述](runtime-overview.md)
+* **已定稿** [引导（Bootstrapping）](runtime-bootstrapping.md)
+* **已定稿** [路由（Route）引导与创建 URL](runtime-routing.md)
+* **已定稿** [请求（Request）](runtime-requests.md)
+* **已定稿** [响应（Response）](runtime-responses.md)
+* **已定稿** [Sessions（会话）和 Cookies](runtime-sessions-cookies.md)
+* **已定稿** [错误处理](runtime-handling-errors.md)
+* **已定稿** [日志](runtime-logging.md)
 
 关键概念
 --------
@@ -62,7 +62,7 @@ Yii 2.0 权威指南
 * **已定稿** [行为（Behavior）](concept-behaviors.md)
 * **已定稿** [配置（Configurations）](concept-configurations.md)
 * **已定稿** [类自动加载（Autoloading）](concept-autoloading.md)
-* **已定稿** [别名（Alias）](concept-alias.md)
+* **已定稿** [别名（Alias）](concept-aliases.md)
 * **已定稿** [服务定位器（Service Locator）](concept-service-locator.md)
 * **已定稿** [依赖注入容器（DI Container）](concept-di-container.md)
 
@@ -89,7 +89,7 @@ Yii 2.0 权威指南
 显示数据
 --------
 
-* **待定中** [格式化输出数据](output-formatting.md)
+* **编撰中** [格式化输出数据](output-formatter.md)
 * **待定中** [分页（Pagination）](output-pagination.md)
 * **待定中** [排序（Sorting）](output-sorting.md)
 * **编撰中** [数据提供器](output-data-providers.md)
@@ -139,9 +139,10 @@ RESTful Web 服务
 -----
 
 * **编撰中** [概述](test-overview.md)
-* **待定中** [单元测试](test-unit.md)
-* **待定中** [功能测试](test-functional.md)
-* **待定中** [验收测试](test-acceptance.md)
+* **编撰中** [搭建测试环境](test-endvironment-setup.md)
+* **编撰中** [单元测试](test-unit.md)
+* **编撰中** [功能测试](test-functional.md)
+* **编撰中** [验收测试](test-acceptance.md)
 * **编撰中** [测试夹具](test-fixtures.md)
 
 

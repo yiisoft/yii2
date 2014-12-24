@@ -362,6 +362,16 @@ class UrlRuleTest extends TestCase
                     ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'http://en.example.com/post/a'],
                 ],
             ],
+            [
+                'with unicode',
+                [
+                    'pattern' => '/blog/search/<tag:[a-zA-Zа-яА-Я0-9\_\+\-]{1,255}>',
+                    'route' => 'blog/search',
+                ],
+                [
+                    ['blog/search', ['tag' => 'метра'], 'blog/search/%D0%BC%D0%B5%D1%82%D1%80%D0%B0'],
+                ],
+            ],
         ];
     }
 

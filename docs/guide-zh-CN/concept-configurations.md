@@ -17,7 +17,7 @@ $config = [
 $db = Yii::createObject($config);
 ```
 
-[[Yii::createObject()]] 方法接受一个配置并根据配置中指定的类名创建对象。对象实例化后，剩余的参数被用来初始化对象的属性，事件处理和行为。
+[[Yii::createObject()]] 方法接受一个配置数组并根据数组中指定的类名创建对象。对象实例化后，剩余的参数被用来初始化对象的属性，事件处理和行为。
 
 对于已存在的对象，可以使用 [[Yii::configure()]] 方法根据配置去初始化其属性，就像这样：
 
@@ -46,7 +46,8 @@ Yii::configure($object, $config);
 * `class` 元素指定了将要创建的对象的完全限定类名。
 * `propertyName` 元素指定了对象属性的初始值。键名是属性名，值是该属性对应的初始值。只有公共成员变量以及通过 getter/setter 定义的[属性](concept-properties.md)可以被配置。
 * `on eventName` 元素指定了附加到对象[事件](concept-events.md)上的句柄是什么。请注意，数组的键名由 `on ` 前缀加事件名组成。请参考[事件](concept-events.md)章节了解事件句柄格式。
-* `as behaviorName` 元素指定了附加到对象的[行为](concept-behaviors.md)。请注意，数组的键名由 `as ` 前缀加行为名组成。`$behaviorConfig` 表示创建行为的配置信息，格式与我们现在总体叙述的配置格式一样。
+* `as behaviorName` 元素指定了附加到对象的[行为](concept-behaviors.md)。请注意，数组的键名由 `as ` 前缀加行为名组成。`$behaviorConfig` 
+值表示创建行为的配置信息，格式与我们之前描述的配置格式一样。
 
 下面是一个配置了初始化属性值，事件句柄和行为的示例：
 
@@ -72,7 +73,7 @@ Yii 中的配置可以用在很多场景。本章开头我们展示了如何使�
 
 ### 应用的配置 <a name="application-configurations"></a>
 
-[应用](structure-applications.md)的配置可能是最复杂的配置之一。因为 [[yii\web\Application|application]] 类拥有很多可配置的属性和事件。更重要的是它的 [[yii\web\Application::components|components]] 属性可以接收配置数组并通过应用注册为组件。以下是一个针对[基础应用模板](start-basic.md)的应用配置概要：
+[应用](structure-applications.md)的配置可能是最复杂的配置之一。因为 [[yii\web\Application|application]] 类拥有很多可配置的属性和事件。更重要的是它的 [[yii\web\Application::components|components]] 属性可以接收配置数组并通过应用注册为组件。以下是一个针对[基础应用模板](start-installation.md)的应用配置概要：
 
 ```php
 $config = [
@@ -117,7 +118,7 @@ $config = [
 
 ### 小部件的配置 <a name="widget-configurations"></a>
 
-使用[小部件](structure-widgets.md)时，常常需要配置以便自定义其属性。 [[yii\base\Widget::widget()]] 和  [[yii\base\Widget::beginWidget()]] 方法都可以用来创建小部件。它们可以接受配置数组：
+使用[小部件](structure-widgets.md)时，常常需要配置以便自定义其属性。 [[yii\base\Widget::widget()]] 和  [[yii\base\Widget::begin()]] 方法都可以用来创建小部件。它们可以接受配置数组：
 
 ```php
 use yii\widgets\Menu;

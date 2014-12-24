@@ -148,7 +148,6 @@ class Extension extends \Twig_Extension
         if (isset($this->aliases[$className])) {
             return $this->aliases[$className];
         }
-        $resolvedClassName = null;
         foreach ($this->namespaces as $namespace) {
             $resolvedClassName = $namespace . '\\' . $className;
             if (class_exists($resolvedClassName)) {
@@ -160,7 +159,7 @@ class Extension extends \Twig_Extension
 
     public function addUses($args)
     {
-        foreach ((array)$args as $key => $value) {
+        foreach ((array) $args as $key => $value) {
             $value = str_replace('/', '\\', $value);
             if (is_int($key)) {
                 // namespace or class import

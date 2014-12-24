@@ -7,7 +7,6 @@
 
 namespace yii\bootstrap;
 
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -81,14 +80,11 @@ class ButtonGroup extends Widget
         $buttons = [];
         foreach ($this->buttons as $button) {
             if (is_array($button)) {
-                $label = ArrayHelper::getValue($button, 'label');
-                $options = ArrayHelper::getValue($button, 'options');
-                $buttons[] = Button::widget([
-                    'label' => $label,
-                    'options' => $options,
-                    'encodeLabel' => $this->encodeLabels,
-                    'view' => $this->getView()
-                ]);
+                $button['view'] = $this->getView();
+                if (!isset($button['encodeLabel'])) {
+                    $button['encodeLabel'] = $this->encodeLabels;
+                }
+                $buttons[] = Button::widget($button);
             } else {
                 $buttons[] = $button;
             }

@@ -23,8 +23,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * Returns a test configuration param from /data/config.php
-     * @param  string $name    params name
-     * @param  mixed  $default default value to use when param is not set.
+     * @param  string $name params name
+     * @param  mixed $default default value to use when param is not set.
      * @return mixed  the value of the configuration param
      */
     public static function getParam($name, $default = null)
@@ -39,34 +39,41 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * Populates Yii::$app with a new application
      * The application will be destroyed on tearDown() automatically.
-     * @param array  $config   The application configuration, if needed
+     * @param array $config The application configuration, if needed
      * @param string $appClass name of the application class to create
      */
     protected function mockApplication($config = [], $appClass = '\yii\console\Application')
     {
-        static $defaultConfig = [
+        new $appClass(ArrayHelper::merge([
             'id' => 'testapp',
             'basePath' => __DIR__,
-        ];
-        $defaultConfig['vendorPath'] = dirname(dirname(__DIR__)) . '/vendor';
-
-        new $appClass(ArrayHelper::merge($defaultConfig, $config));
+            'vendorPath' => $this->getVendorPath(),
+        ], $config));
     }
 
     protected function mockWebApplication($config = [], $appClass = '\yii\web\Application')
     {
-        static $defaultConfig = [
+        new $appClass(ArrayHelper::merge([
             'id' => 'testapp',
             'basePath' => __DIR__,
+            'vendorPath' => $this->getVendorPath(),
             'components' => [
                 'request' => [
                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ .'/index.php',
+                    'scriptUrl' => '/index.php',
                 ],
             ]
-        ];
-        $defaultConfig['vendorPath'] = dirname(dirname(__DIR__)) . '/vendor';
+        ], $config));
+    }
 
-        new $appClass(ArrayHelper::merge($defaultConfig, $config));
+    protected function getVendorPath()
+    {
+        $vendor = dirname(dirname(__DIR__)) . '/vendor';
+        if (!is_dir($vendor)) {
+            $vendor = dirname(dirname(dirname(dirname(__DIR__))));
+        }
+        return $vendor;
     }
 
     /**

@@ -27,7 +27,7 @@ use yii\helpers\ArrayHelper;
  *
  * ArrayDataProvider may be used in the following way:
  *
- * ~~~
+ * ```php
  * $query = new Query;
  * $provider = new ArrayDataProvider([
  *     'allModels' => $query->from('post')->all(),
@@ -40,7 +40,7 @@ use yii\helpers\ArrayHelper;
  * ]);
  * // get the posts in the current page
  * $posts = $provider->getModels();
- * ~~~
+ * ```
  *
  * Note: if you want to use the sorting feature, you must configure the [[sort]] property
  * so that the provider knows which columns can be sorted.

@@ -19,6 +19,7 @@
 return [
     '(not set)' => '(nessun valore)',
     'An internal server error occurred.' => 'Si è verificato un errore interno',
+    'Are you sure you want to delete this item?' => 'Sei sicuro di voler eliminare questo oggetto?',
     'Delete' => 'Elimina',
     'Error' => 'Errore',
     'File upload failed.' => 'Upload file fallito',

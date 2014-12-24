@@ -118,8 +118,18 @@ class DefaultController extends Controller
                 clearstatcache();
             }
             $indexFile = $this->module->dataPath . '/index.data';
-            if (is_file($indexFile) && is_readable($indexFile)) {
-                $this->_manifest = array_reverse(unserialize(file_get_contents($indexFile)), true);
+
+            $content = '';
+            $fp = @fopen($indexFile, 'r');
+            if ($fp !== false) {
+                @flock($fp, LOCK_SH);
+                $content = fread($fp, filesize($indexFile));
+                @flock($fp, LOCK_UN);
+                fclose($fp);
+            }
+
+            if ($content !== '') {
+                $this->_manifest = array_reverse(unserialize($content), true);
             } else {
                 $this->_manifest = [];
             }
@@ -142,9 +152,6 @@ class DefaultController extends Controller
                     if (isset($data[$id])) {
                         $panel->tag = $tag;
                         $panel->load($data[$id]);
-                    } else {
-                        // remove the panel since it has not received any data
-                        unset($this->module->panels[$id]);
                     }
                 }
                 $this->summary = $data['summary'];

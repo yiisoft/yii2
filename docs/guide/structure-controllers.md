@@ -84,8 +84,8 @@ ModuleID/ControllerID/ActionID
 ```
 
 So if a user requests with the URL `http://hostname/index.php?r=site/index`, the `index` action in the `site` controller
-will be executed. For more details how routes are resolved into actions, please refer to
-the [Routing](runtime-routing.md) section.
+will be executed. For more details on how routes are resolved into actions, please refer to
+the [Routing and URL Generation](runtime-routing.md) section.
 
 
 ## Creating Controllers <a name="creating-controllers"></a>
@@ -161,15 +161,13 @@ You may configure [[yii\base\Application::controllerMap|controller map]] in the
 ```php
 [
     'controllerMap' => [
-        [
-            // declares "account" controller using a class name
-            'account' => 'app\controllers\UserController',
+        // declares "account" controller using a class name
+        'account' => 'app\controllers\UserController',
 
-            // declares "article" controller using a configuration array
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        // declares "article" controller using a configuration array
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]

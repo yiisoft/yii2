@@ -47,7 +47,7 @@ abstract class Generator extends Model
      * @var string the name of the code template that the user has selected.
      * The value of this property is internally managed by this class.
      */
-    public $template;
+    public $template = 'default';
     /**
      * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
      */
@@ -262,7 +262,7 @@ abstract class Generator extends Model
      * @param array $answers
      * @param string $results this parameter receives a value from this method indicating the log messages
      * generated while saving the code files.
-     * @return boolean whether there is any error while saving the code files.
+     * @return boolean whether files are successfully saved without any error.
      */
     public function save($files, $answers, &$results)
     {
@@ -285,7 +285,7 @@ abstract class Generator extends Model
         $lines[] = "done!\n";
         $results = implode("\n", $lines);
 
-        return $hasError;
+        return !$hasError;
     }
 
     /**

@@ -38,12 +38,12 @@ abstract class BaseMessageControllerTest extends TestCase
 
     /**
      * Creates test message controller instance.
-     * @return MessageController message command instance.
+     * @return MessageControllerMock message command instance.
      */
     protected function createMessageController()
     {
         $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
-        $messageController = new MessageController('message', $module);
+        $messageController = new MessageControllerMock('message', $module);
         $messageController->interactive = false;
 
         return $messageController;
@@ -51,18 +51,15 @@ abstract class BaseMessageControllerTest extends TestCase
 
     /**
      * Emulates running of the message controller action.
-     * @param  string $actionId id of action to be run.
+     * @param  string $actionID id of action to be run.
      * @param  array  $args     action arguments.
      * @return string command output.
      */
-    protected function runMessageControllerAction($actionId, array $args = [])
+    protected function runMessageControllerAction($actionID, array $args = [])
     {
         $controller = $this->createMessageController();
-        ob_start();
-        ob_implicit_flush(false);
-        $controller->run($actionId, $args);
-
-        return ob_get_clean();
+        $controller->run($actionID, $args);
+        return $controller->flushStdOutBuffer();
     }
 
     /**
@@ -86,7 +83,7 @@ abstract class BaseMessageControllerTest extends TestCase
     protected function createSourceFile($content)
     {
         $fileName = $this->sourcePath . DIRECTORY_SEPARATOR . md5(uniqid()) . '.php';
-        file_put_contents($fileName, $content);
+        file_put_contents($fileName, "<?php\n" . $content);
         return $fileName;
     }
 
@@ -139,7 +136,7 @@ abstract class BaseMessageControllerTest extends TestCase
 
     public function testCreateTranslation()
     {
-        $category = 'test_category1';
+        $category = 'test.category1';
         $message = 'test message';
         $sourceFileContent = "Yii::t('{$category}', '{$message}');";
         $this->createSourceFile($sourceFileContent);
@@ -200,7 +197,7 @@ abstract class BaseMessageControllerTest extends TestCase
     /**
      * @depends testMerge
      */
-    public function testMarkObosoleteMessages()
+    public function testMarkObsoleteMessages()
     {
         $category = 'category';
 
@@ -223,7 +220,7 @@ abstract class BaseMessageControllerTest extends TestCase
     /**
      * @depends testMerge
      */
-    public function removeObosoleteMessages()
+    public function removeObsoleteMessages()
     {
         $category = 'category';
 
@@ -343,4 +340,9 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertArrayHasKey($message3, $messages2, "message3 not found in category2. Command output:\n\n" . $out);
         $this->assertArrayNotHasKey($message2, $messages2, "message2 found in category2. Command output:\n\n" . $out);
     }
+}
+
+class MessageControllerMock extends MessageController
+{
+    use StdOutBufferControllerTrait;
 }

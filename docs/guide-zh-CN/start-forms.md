@@ -1,7 +1,7 @@
 使用表单
 ==================
 
-本章节将介绍如何创建一个从用户那搜集数据的表单页。该页将显示一个包含 name 输入框和 email 输入框的表单。当搜集完这两部分信息后，页面将会显示用户输入的信息。
+本章节介绍如何创建一个让用户提交数据的表单页。该页将显示一个包含 name 输入框和 email 输入框的表单。当提交这两部分信息后，页面将会显示用户所输入的信息。
 
 为了实现这个目标，除了创建一个[操作](structure-controllers.md)和两个[视图](structure-views)外，还需要创建一个[模型](structure-models.md)。
 
@@ -39,16 +39,16 @@ class EntryForm extends Model
 }
 ```
 
-该类继承自 [[yii\base\Model]]，Yii 提供的一个基类，通常用来表示数据。
+该类继承自Yii 提供的一个基类 [[yii\base\Model]]，该基类通常用来表示数据。
 
-> 补充：[[yii\base\Model]] 被用于普通模型类的父类并与数据表**无关**。[[yii\db\ActiveRecord]] 通常是普通模型类的父类但与数据表有关联（译者注：[[yii\db\ActiveRecord]] 类其实也是继承自 [[yii\base\Model]]，增加了数据库处理）。
+> 补充：[[yii\base\Model]] 被用于普通模型类的父类并与数据表**无关**。[[yii\db\ActiveRecord]] 通常是普通模型类的父类但与数据表有关联（译注：[[yii\db\ActiveRecord]] 类其实也是继承自 [[yii\base\Model]]，增加了数据库处理）。
 
 `EntryForm` 类包含 `name` 和 `email` 两个公共成员，用来储存用户输入的数据。它还包含一个名为 `rules()` 的方法，用来返回数据验证规则的集合。上面声明的验证规则表示：
 
 * `name` 和 `email` 值都是必须的
-* `mail` 的值必须满足 email 地址验证
+* `email` 的值必须满足email规则验证
 
-如果你有一个从用户那搜集数据的 `EntryForm` 对象，你可以调用它的 [[yii\base\Model::validate()|validate()]] 方法触发数据验证。如果有数据验证失败，将把 [[yii\base\Model::hasErrors|hasErrors]] 属性设为 ture，想要知道具体发生什么错误就调用 [[yii\base\Model::getErrors|getErrors]]。
+如果你有一个处理用户提交数据的 `EntryForm` 对象，你可以调用它的 [[yii\base\Model::validate()|validate()]] 方法触发数据验证。如果有数据验证失败，将把 [[yii\base\Model::hasErrors|hasErrors]] 属性设为 ture，想要知道具体发生什么错误就调用 [[yii\base\Model::getErrors|getErrors]]。
 
 ```php
 <?php

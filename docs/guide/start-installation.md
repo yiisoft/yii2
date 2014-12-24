@@ -2,9 +2,20 @@ Installing Yii
 ==============
 
 You can install Yii in two ways, using [Composer](http://getcomposer.org/) or by downloading an archive file.
-The former is the preferred way, as it allows you to install new [extensions](extend-creating-extensions.md) or update Yii by simply running a single command.
+The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
 
-> Note: Unlike with Yii 1, standard installations of Yii 2 results in both the framework and an application skeleton being downloaded and installed.
+Standard installations of Yii result in both the framework and an application template being downloaded and installed.
+An application template is a working Yii application implementing some basic features, such as login, contact form, etc. 
+Its code is organized in a recommended way. Therefore, it can serve as a good starting point for your projects.
+    
+In this and the next few sections, we will describe how to install Yii with the so-called *Basic Application Template* and
+how to implement new features on top of this template. Yii also provides another template called
+the [Advanced Application Template](tutorial-advanced-app.md) which is better used in a team development environment
+to develop applications with multiple tiers.
+
+> Info: The Basic Application Template is suitable for developing 90 percent of Web applications. It differs
+  from the Advanced Application Template mainly in how their code is organized. If you are new to Yii, we strongly
+  recommend you stick to the Basic Application Template for its simplicity yet sufficient functionalities.
 
 
 Installing via Composer <a name="installing-via-composer"></a>
@@ -21,13 +32,23 @@ On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org
 Please refer to the [Composer Documentation](https://getcomposer.org/doc/) if you encounter any
 problems or want to learn more about Composer usage.
 
-With Composer installed, you can install Yii by running the following command under a Web-accessible folder:
+If you had Composer already installed before, make sure you use an up to date version. You can update Composer
+by running `composer self-update`.
 
+With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+
+    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-The above command installs Yii in a directory named `basic`.
+The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+which allows managing bower and npm package dependencies through Composer. You only need to run this command
+once for all. The second command installs Yii in a directory named `basic`. You can choose a different directory name if you want.
 
-> Tip: If you want to install the latest development version of Yii, you may use the following command,
+> Note: During the installation Composer may ask for your Github login credentials. This is normal because Composer 
+> needs to get enough API rate-limit to retrieve the dependent package information from Github. For more details, 
+> please refer to the [Composer documentation](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+
+> Tip: If you want to install the latest development version of Yii, you may use the following command instead,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
@@ -38,9 +59,9 @@ The above command installs Yii in a directory named `basic`.
 Installing from an Archive File <a name="installing-from-archive-file"></a>
 -------------------------------
 
-Installing Yii from an archive file involves two steps:
+Installing Yii from an archive file involves three steps:
 
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
+1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/).
 2. Unpack the downloaded file to a Web-accessible folder.
 3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
    (this is done automatically if you are installing Yii using Composer):
@@ -55,7 +76,8 @@ Other Installation Options <a name="other-installation-options"></a>
 --------------------------
 
 The above installation instructions show how to install Yii, which also creates a basic Web application that works out of the box.
-This approach is a good starting point for small projects, or for when you just start learning Yii.
+This approach is a good starting point for most projects, either small or big. It is especially suitable if you just
+start learning Yii.
 
 But there are other installation options available:
 
@@ -103,14 +125,14 @@ Configuring Web Servers <a name="configuring-web-servers"></a>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible the facebooks
+Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebooks
 [HHVM](http://hhvm.com/) however there are some edge cases where HHVM behaves different than native
 PHP so you have to take some extra care when using HHVM.
 
 On a production server, you may want to configure your Web server so that the application can be accessed
 via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
 requires pointing the document root of your Web server to the `basic/web` folder. You may also
-want to hide `index.php` from the URL, as described in the [URL Parsing and Generation](runtime-url-handling.md) section.
+want to hide `index.php` from the URL, as described in the [Routing and URL Creation](runtime-routing.md) section.
 In this subsection, you'll learn how to configure your Apache or Nginx server to achieve these goals.
 
 > Info: By setting `basic/web` as the document root, you also prevent end users from accessing
@@ -132,8 +154,8 @@ should replace `path/to/basic/web` with the actual path for `basic/web`.
 DocumentRoot "path/to/basic/web"
 
 <Directory "path/to/basic/web">
+    # use mod_rewrite for pretty URL support
     RewriteEngine on
-
     # If a directory or a file exists, use the request directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -147,9 +169,9 @@ DocumentRoot "path/to/basic/web"
 
 ### Recommended Nginx Configuration <a name="recommended-nginx-configuration"></a>
 
-You should have installed PHP as an [FPM SAPI](http://php.net/install.fpm) to use [Nginx](http://wiki.nginx.org/).
-Use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for `basic/web` and `mysite.local` with
-the actual hostname to serve.
+To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
+You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
+`basic/web` and `mysite.local` with the actual hostname to serve.
 
 ```
 server {

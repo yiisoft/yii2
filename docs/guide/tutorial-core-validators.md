@@ -97,7 +97,7 @@ is as specified by the `operator` property.
 
 ```php
 [
-    [['from', 'to'], 'date'],
+    [['from_date', 'to_date'], 'date'],
 ]
 ```
 
@@ -105,12 +105,21 @@ This validator checks if the input value is a date, time or datetime in a proper
 Optionally, it can convert the input value into a UNIX timestamp and store it in an attribute
 specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]].
 
-- `format`: the date/time format that the value being validated should be in. Please refer to the
-  [PHP manual about date_create_from_format()](http://www.php.net/manual/en/datetime.createfromformat.php)
-  for details about specifying the format string. The default value is `'Y-m-d'`.
+- `format`: the date/time format that the value being validated should be in. 
+   This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+   Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP 
+   `Datetime` class. Please refer to <http://php.net/manual/en/datetime.createfromformat.php> on supported formats.
+   If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
 - `timestampAttribute`: the name of the attribute to which this validator may assign the UNIX timestamp
   converted from the input date/time.
 
+In case the input is optional you may also want to add a default value filter in addition to the date validator
+to ensure empty input is stored as `NULL`. Other wise you may end up with dates like `0000-00-00` in your database
+or `1970-01-01` in the input field of a date picker.
+
+```php
+[['from_date', 'to_date'], 'default', 'value' => null],
+```
 
 ## [[yii\validators\DefaultValueValidator|default]] <a name="default"></a>
 
@@ -281,7 +290,17 @@ back to the attribute being validated.
   Note that if the filter cannot handle array input, you should set this property to be true. Otherwise some
   PHP error might occur.
 
-> Tip: If you want to trim input values, you may directly use [trim](#trim) validator.
+> Tip: If you want to trim input values, you may directly use the [trim](#trim) validator.
+
+> Tip: There are many PHP functions that have the signature expected for the `filter` callback.
+> For example to apply type casting (using e.g. [intval](http://php.net/manual/en/function.intval.php),
+> [boolval](http://php.net/manual/en/function.boolval.php), ...) to ensure a specific type for an attribute,
+> you can simply specify the function names of the filter without the need to wrap them in a closure:
+>
+> ```php
+> ['property', 'filter', 'filter' => 'boolval'],
+> ['property', 'filter', 'filter' => 'intval'],
+> ```
 
 
 ## [[yii\validators\ImageValidator|image]] <a name="image"></a>

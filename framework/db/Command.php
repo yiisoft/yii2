@@ -778,48 +778,29 @@ class Command extends Component
     }
 
     /**
-     * Returns the effective query cache information.
-     * @return array the current query cache information, or null if query cache is not used.
-     */
-    private function getQueryCacheInfo()
-    {
-        $info = $this->db->getQueryCacheInfo();
-        if (is_array($info)) {
-            if ($this->queryCacheDuration !== null) {
-                $info[1] = $this->queryCacheDuration;
-            }
-            if ($this->queryCacheDependency !== null) {
-                $info[2] = $this->queryCacheDependency;
-            }
-            if ($info[1] !== null && $info[1] >= 0) {
-                return $info;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
      * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
+     * @since 2.0.1 this method is protected (was private before).
      */
-    private function queryInternal($method, $fetchMode = null)
+    protected function queryInternal($method, $fetchMode = null)
     {
         $rawSql = $this->getRawSql();
 
         Yii::info($rawSql, 'yii\db\Command::query');
 
         if ($method !== '') {
-            $info = $this->getQueryCacheInfo();
+            $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
                 /* @var $cache \yii\caching\Cache */
                 $cache = $info[0];
                 $cacheKey = [
                     __CLASS__,
                     $method,
+                    $fetchMode,
                     $this->db->dsn,
                     $this->db->username,
                     $rawSql,

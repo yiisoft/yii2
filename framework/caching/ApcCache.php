@@ -55,7 +55,8 @@ class ApcCache extends Cache
      */
     protected function getValues($keys)
     {
-        return apc_fetch($keys);
+        $values = apc_fetch($keys);
+        return is_array($values) ? $values : [];
     }
 
     /**
@@ -80,7 +81,8 @@ class ApcCache extends Cache
      */
     protected function setValues($data, $duration)
     {
-        return array_keys(apc_store($data, null, $duration));
+        $result = apc_store($data, null, $duration);
+        return is_array($result) ? array_keys($result) : [];
     }
 
     /**
@@ -104,7 +106,8 @@ class ApcCache extends Cache
      */
     protected function addValues($data, $duration)
     {
-        return array_keys(apc_add($data, null, $duration));
+        $result = apc_add($data, null, $duration);
+        return is_array($result) ? array_keys($result) : [];
     }
 
     /**

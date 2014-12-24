@@ -189,7 +189,7 @@ class CommandTest extends DatabaseTestCase
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
         if ($this->driverName === 'mysql' || defined('HHVM_VERSION') && $this->driverName === 'sqlite') {
-            $this->assertEquals($boolCol, (int)$row['bool_col']);
+            $this->assertEquals($boolCol, (int) $row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
         }

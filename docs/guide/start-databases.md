@@ -3,7 +3,7 @@ Working with Databases
 
 This section will describe how to create a new page that displays country data fetched from
 a database table named `country`. To achieve this goal, you will configure a database connection,
-create an [Active Record](db-active-record.md) class, and define an [action](structure-controllers.md),
+create an [Active Record](db-active-record.md) class, define an [action](structure-controllers.md),
 and create a [view](structure-views.md).
 
 Through this tutorial, you will learn how to:
@@ -18,7 +18,7 @@ In particular, you should know how to create a database, and how to execute SQL 
 
 
 Preparing the Database <a name="preparing-database"></a>
---------------------
+----------------------
 
 To begin, create a database named `yii2basic`, from which you will fetch data in your application.
 You may create an SQLite, MySQL, PostgreSQL, MSSQL or Oracle database, as Yii has built-in support for many database applications. For simplicity, MySQL will be assumed in the following description.
@@ -100,7 +100,7 @@ class Country extends ActiveRecord
 The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it! With just the above code, 
 Yii will guess the associated table name from the class name. 
 
-> Inof: If no direct match can be made from the class name to the table name, you can
+> Info: If no direct match can be made from the class name to the table name, you can
 override the [[yii\db\ActiveRecord::tableName()]] method to explicitly specify the associated table name.
 
 Using the `Country` class, you can easily manipulate data in the `country` table, as shown in these snippets:
@@ -185,7 +185,7 @@ information to it.
 Creating a View <a name="creating-view"></a>
 ---------------
 
-Under the `views` directory, first create a sub-directory named `country`. This folder will used to hold all the
+Under the `views` directory, first create a sub-directory named `country`. This folder will be used to hold all the
 views rendered by the `country` controller. Within the `views/country` directory, create a file named `index.php`
 containing the following:
 
@@ -232,7 +232,7 @@ Observe more carefully and you will find that the URL in the browser also change
 http://hostname/index.php?r=country/index&page=2
 ```
 
-Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the ncessary functionality to paginate a data set:
+Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:
 
 * Initially, [[yii\data\Pagination|Pagination]] represents the first page, which reflects the country SELECT query
   with the clause `LIMIT 5 OFFSET 0`. As a result, the first five countries will be fetched and displayed.

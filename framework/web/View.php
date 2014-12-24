@@ -8,9 +8,9 @@
 namespace yii\web;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\InvalidConfigException;
-use yii\helpers\Url;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -269,7 +269,7 @@ class View extends \yii\base\View
     /**
      * Registers the named asset bundle.
      * All dependent asset bundles will be registered.
-     * @param string $name the name of the asset bundle.
+     * @param string $name the class name of the asset bundle (without the leading backslash)
      * @param integer|null $position if set, this forces a minimum position for javascript files.
      * This will adjust depending assets javascript file position or fail if requirement can not be met.
      * If this is null, asset bundles position settings will not be changed.
@@ -360,23 +360,27 @@ class View extends \yii\base\View
     /**
      * Registers a CSS file.
      * @param string $url the CSS file to be registered.
-     * @param array $depends the names of the asset bundles that this CSS file depends on
-     * @param array $options the HTML attributes for the link tag.
-     * Please refer to [[Html::cssFile()]] for supported options.
+     * @param array $options the HTML attributes for the link tag. Please refer to [[Html::cssFile()]] for
+     * the supported options. The following options are specially handled and are not treated as HTML attributes:
+     *
+     * - `depends`: array, specifies the names of the asset bundles that this CSS file depends on.
+     *
      * @param string $key the key that identifies the CSS script file. If null, it will use
      * $url as the key. If two CSS files are registered with the same key, the latter
      * will overwrite the former.
      */
-    public function registerCssFile($url, $depends = [], $options = [], $key = null)
+    public function registerCssFile($url, $options = [], $key = null)
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
+        $depends = ArrayHelper::remove($options, 'depends', []);
+
         if (empty($depends)) {
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
-            $am = $this->getAssetManager();
-            $am->bundles[$key] = new AssetBundle([
-                'css' => [Url::to($url)],
+            $this->getAssetManager()->bundles[$key] = new AssetBundle([
+                'baseUrl' => '',
+                'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
                 'depends' => (array) $depends,
             ]);
@@ -414,14 +418,14 @@ class View extends \yii\base\View
     /**
      * Registers a JS file.
      * @param string $url the JS file to be registered.
-     * @param array $depends the names of the asset bundles that this JS file depends on
-     * @param array $options the HTML attributes for the script tag. A special option
-     * named "position" is supported which specifies where the JS script tag should be inserted
-     * in a page. The possible values of "position" are:
+     * @param array $options the HTML attributes for the script tag. The following options are specially handled
+     * and are not treated as HTML attributes:
      *
-     * - [[POS_HEAD]]: in the head section
-     * - [[POS_BEGIN]]: at the beginning of the body section
-     * - [[POS_END]]: at the end of the body section. This is the default value.
+     * - `depends`: array, specifies the names of the asset bundles that this JS file depends on.
+     * - `position`: specifies where the JS script tag should be inserted in a page. The possible values are:
+     *     * [[POS_HEAD]]: in the head section
+     *     * [[POS_BEGIN]]: at the beginning of the body section
+     *     * [[POS_END]]: at the end of the body section. This is the default value.
      *
      * Please refer to [[Html::jsFile()]] for other supported options.
      *
@@ -429,18 +433,19 @@ class View extends \yii\base\View
      * $url as the key. If two JS files are registered with the same key, the latter
      * will overwrite the former.
      */
-    public function registerJsFile($url, $depends = [], $options = [], $key = null)
+    public function registerJsFile($url, $options = [], $key = null)
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
+        $depends = ArrayHelper::remove($options, 'depends', []);
+
         if (empty($depends)) {
-            $position = isset($options['position']) ? $options['position'] : self::POS_END;
-            unset($options['position']);
+            $position = ArrayHelper::remove($options, 'position', self::POS_END);
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
-            $am = $this->getAssetManager();
-            $am->bundles[$key] = new AssetBundle([
-                'js' => [Url::to($url)],
+            $this->getAssetManager()->bundles[$key] = new AssetBundle([
+                'baseUrl' => '',
+                'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
                 'depends' => (array) $depends,
             ]);

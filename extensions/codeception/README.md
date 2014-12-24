@@ -52,11 +52,11 @@ If you want to use codeception modules and helpers in your unit tests, you can d
 $this->getModule('CodeHelper'); #or some other module
 ```
 
-You also can use all guy methods by accessing guy instance like:
+You also can use all actor methods by accessing actor instance like:
 
 ```php
 <?php
-$this->codeGuy->someMethodFromModule();
+$this->unitTester->someMethodFromModule();
 ```
 Codeception events
 ------------------
@@ -281,4 +281,4 @@ Then run command `php codecept.phar run --debug unit/SomeDebugTest` and you will
 
 ```
 
-For further instructions refer to the testing section in the [Yii Definitive Guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/testing.md).
+For further instructions refer to the testing section in the [Yii Definitive Guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-overview.md).

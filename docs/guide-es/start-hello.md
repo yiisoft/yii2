@@ -101,7 +101,7 @@ Probándolo <a name="trying-it-out"></a>
 Después de crear la acción y la vista, puedes acceder a la nueva página abriendo el siguiente URL:
 
 ```
-http://hostname/index.php?r=site/say&mensaje=Hello+World
+http://hostname/index.php?r=site/say&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

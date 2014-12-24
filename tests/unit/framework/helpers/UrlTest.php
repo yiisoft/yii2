@@ -38,15 +38,15 @@ class UrlTest extends TestCase
      * Mocks controller action with parameters
      *
      * @param string $controllerId
-     * @param string $actionId
+     * @param string $actionID
      * @param string $moduleID
      * @param array  $params
      */
-    protected function mockAction($controllerId, $actionId, $moduleID = null, $params = [])
+    protected function mockAction($controllerId, $actionID, $moduleID = null, $params = [])
     {
         \Yii::$app->controller = $controller = new Controller($controllerId, \Yii::$app);
         $controller->actionParams = $params;
-        $controller->action = new Action($actionId, $controller);
+        $controller->action = new Action($actionID, $controller);
 
         if ($moduleID !== null) {
             $controller->module = new Module($moduleID);

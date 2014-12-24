@@ -1,7 +1,7 @@
 Application Components
 ======================
 
-Applications are [service locators](concept-service-locators.md). They host a set of the so-called
+Applications are [service locators](concept-service-locator.md). They host a set of the so-called
 *application components* that provide different services for processing requests. For example,
 the `urlManager` component is responsible for routing Web requests to appropriate controllers;
 the `db` component provides DB-related services; and so on.
@@ -87,20 +87,20 @@ like you do with normal application components. When you are configuring a core 
 if you do not specify its class, the default one will be used.
 
 * [[yii\web\AssetManager|assetManager]]: manages asset bundles and asset publishing.
-  Please refer to the [Managing Assets](output-assets.md) section for more details.
+  Please refer to the [Managing Assets](structure-assets.md) section for more details.
 * [[yii\db\Connection|db]]: represents a database connection through which you can perform DB queries.
   Note that when you configure this component, you must specify the component class as well as other required
   component properties, such as [[yii\db\Connection::dsn]].
   Please refer to the [Data Access Objects](db-dao.md) section for more details.
 * [[yii\base\Application::errorHandler|errorHandler]]: handles PHP errors and exceptions.
-  Please refer to the [Handling Errors](tutorial-handling-errors.md) section for more details.
-* [[yii\base\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
+  Please refer to the [Handling Errors](runtime-handling-errors.md) section for more details.
+* [[yii\i18n\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
   may be displayed with thousand separator, a date may be formatted in long format.
-  Please refer to the [Data Formatting](output-formatting.md) section for more details.
+  Please refer to the [Data Formatting](output-formatter.md) section for more details.
 * [[yii\i18n\I18N|i18n]]: supports message translation and formatting.
   Please refer to the [Internationalization](tutorial-i18n.md) section for more details.
 * [[yii\log\Dispatcher|log]]: manages log targets.
-  Please refer to the [Logging](tutorial-logging.md) section for more details.
+  Please refer to the [Logging](runtime-logging.md) section for more details.
 * [[yii\swiftmailer\Mailer|mail]]: supports mail composing and sending.
   Please refer to the [Mailing](tutorial-mailing.md) section for more details.
 * [[yii\base\Application::response|response]]: represents the response being sent to end users.
@@ -111,7 +111,7 @@ if you do not specify its class, the default one will be used.
   in [[yii\web\Application|Web applications]].
   Please refer to the [Sessions and Cookies](runtime-sessions-cookies.md) section for more details.
 * [[yii\web\UrlManager|urlManager]]: supports URL parsing and creation.
-  Please refer to the [URL Parsing and Generation](runtime-url-handling.md) section for more details.
+  Please refer to the [URL Parsing and Generation](runtime-routing.md) section for more details.
 * [[yii\web\User|user]]: represents the user authentication information. This component is only available
   in [[yii\web\Application|Web applications]]
   Please refer to the [Authentication](security-authentication.md) section for more details.

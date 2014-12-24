@@ -15,14 +15,14 @@ Yii 依靠[类自动加载机制](http://www.php.net/manual/en/language.oop5.aut
 * 每个类都必须保存为单独文件，且其完整路径能用以下算法取得：
 
 ```php
-// $className 是一个开头包含反斜杠的完整类名（译者注：请自行谷歌：fully qualified class name）
+// $className 是一个开头包含反斜杠的完整类名（译注：请自行谷歌：fully qualified class name）
 $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 ```
 
 举例来说，若某个类名为 `foo\bar\MyClass`，对应类的文件路径[别名](concept-aliases.md)会是 `@foo/bar/MyClass.php`。为了让该别名能被正确解析为文件路径，`@foo` 或 `@foo/bar`
 中的一个必须是[根别名](concept-aliases.md#defining-aliases)。
 
-当我们使用[基本应用模版](start-basic.md)时，可以把你的类放置在顶级命名空间 `app` 下，这样它们就可以被 Yii 自动加载，而无需定义一个新的别名。这是因为 `@app` 本身是一个[预定义别名](concept-aliases.md#predefined-aliases)，且类似于 `app\components\MyClass` 这样的类名，基于我们刚才所提到的算法，可以正确解析出 `AppBasePath/components/MyClass.php` 路径。
+当我们使用[基本应用模版](start-installation.md)时，可以把你的类放置在顶级命名空间 `app` 下，这样它们就可以被 Yii 自动加载，而无需定义一个新的别名。这是因为 `@app` 本身是一个[预定义别名](concept-aliases.md#predefined-aliases)，且类似于 `app\components\MyClass` 这样的类名，基于我们刚才所提到的算法，可以正确解析出 `AppBasePath/components/MyClass.php` 路径。
 
 在[高级应用模版](tutorial-advanced-app.md)里，每一逻辑层级会使用他自己的根别名。比如，前端层会使用 `@frontend` 而后端层会使用 `@backend`。因此，你可以把前端的类放在 `frontend` 命名空间，而后端的类放在 `backend`。 这样这些类就可以被 Yii 自动加载了。
 
@@ -46,7 +46,7 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 
 因为 Yii 完全支持 Composer 管理依赖包，所以推荐你也同时安装 Composer 的自动加载器，如果你用了一些自带自动加载器的第三方类库，你应该也安装下它们。
 
-当你同时使用其他自动加载器和 Yii 自动加载器时，应该在其他自动加载器安装成功**之后**，再包含 `Yii.php` 文件。这将使 Yii 成为第一个响应任何类自动加载请求的自动加载器。举例来说，以下代码提取自[基本应用模版](start-basic.md)的[入口脚本](structure-entry-scripts.md) 。第一行安装了 Composer 的自动加载器，第二行才是 Yii 的自动加载器：
+当你同时使用其他自动加载器和 Yii 自动加载器时，应该在其他自动加载器安装成功**之后**，再包含 `Yii.php` 文件。这将使 Yii 成为第一个响应任何类自动加载请求的自动加载器。举例来说，以下代码提取自[基本应用模版](start-installation.md)的[入口脚本](structure-entry-scripts.md) 。第一行安装了 Composer 的自动加载器，第二行才是 Yii 的自动加载器：
 
 ```php
 require(__DIR__ . '/../vendor/autoload.php');

@@ -52,7 +52,7 @@ All Rights Reserved.
 * **TBD** [Запросы](runtime-requests.md)
 * **TBD** [Ответы](runtime-responses.md)
 * **TBD** [Сессии и куки](runtime-sessions-cookies.md)
-* [Разбор и генерация URL](runtime-url-handling.md)
+* [Разбор и генерация URL](runtime-routing.md)
 * [Обработка ошибок](runtime-handling-errors.md)
 * [Логирование](runtime-logging.md)
 
@@ -76,7 +76,7 @@ All Rights Reserved.
 
 * [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
 * [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
-* [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и опредение связей.
+* [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
 * [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)

@@ -215,4 +215,34 @@ class InflectorTest extends TestCase
         $this->assertEquals('111th', Inflector::ordinalize('111'));
         $this->assertEquals('113th', Inflector::ordinalize('113'));
     }
+
+    public function testSentence()
+    {
+        $array = [];
+        $this->assertEquals('', Inflector::sentence($array));
+
+        $array = ['Spain'];
+        $this->assertEquals('Spain', Inflector::sentence($array));
+
+        $array = ['Spain', 'France'];
+        $this->assertEquals('Spain and France', Inflector::sentence($array));
+
+        $array = ['Spain', 'France', 'Italy'];
+        $this->assertEquals('Spain, France and Italy', Inflector::sentence($array));
+
+        $array = ['Spain', 'France', 'Italy', 'Germany'];
+        $this->assertEquals('Spain, France, Italy and Germany', Inflector::sentence($array));
+
+        $array = ['Spain', 'France'];
+        $this->assertEquals('Spain or France', Inflector::sentence($array, ' or '));
+
+        $array = ['Spain', 'France', 'Italy'];
+        $this->assertEquals('Spain, France or Italy', Inflector::sentence($array, ' or '));
+
+        $array = ['Spain', 'France'];
+        $this->assertEquals('Spain and France', Inflector::sentence($array, ' and ', ' or ', ' - '));
+
+        $array = ['Spain', 'France', 'Italy'];
+        $this->assertEquals('Spain - France or Italy', Inflector::sentence($array, ' and ', ' or ', ' - '));
+    }
 }

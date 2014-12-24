@@ -3,7 +3,7 @@ Query Builder and Query
 
 > Note: This section is under development.
 
-Yii provides a basic database access layer as described in the [Database basics](database-basics.md) section.
+Yii provides a basic database access layer as described in the [Database basics](db-dao.md) section.
 The database access layer provides a low-level way to interact with the database. While useful in some situations,
 it can be tedious and error-prone to write raw SQLs. An alternative approach is to use the Query Builder.
 The Query Builder provides an object-oriented vehicle for generating queries to be executed.
@@ -84,6 +84,15 @@ $query->select(['id', 'name'])
 When specifying columns, you may include the table prefixes or column aliases, e.g., `user.id`, `user.id AS user_id`.
 If you are using array to specify the columns, you may also use the array keys to specify the column aliases,
 e.g., `['user_id' => 'user.id', 'user_name' => 'user.name']`.
+
+Starting from version 2.0.1, you may also select sub-queries as columns. For example,
+ 
+```php
+$subQuery = (new Query)->select('COUNT(*)')->from('user');
+$query = (new Query)->select(['id', 'count' => $subQuery])->from('post');
+// $query represents the following SQL:
+// SELECT `id`, (SELECT COUNT(*) FROM `user`) AS `count` FROM `post`
+```
 
 To select distinct rows, you may call `distinct()`, like the following:
 
@@ -191,7 +200,7 @@ WHERE `id` IN (SELECT `id` FROM `user`)
 
 Another way to use the method is the operand format which is `[operator, operand1, operand2, ...]`.
 
-Operator can be one of the following:
+Operator can be one of the following (see also [[yii\db\QueryInterface::where()]]):
 
 - `and`: the operands should be concatenated together using `AND`. For example,
   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
@@ -252,8 +261,9 @@ Operator can be one of the following:
 Additionally you can specify anything as operator:
 
 ```php
-$userQuery = (new Query)->select('id')->from('user');
-$query->where(['>=', 'id', 10]);
+$query->select('id')
+    ->from('user')
+    ->where(['>=', 'id', 10]);
 ```
 
 It will result in:
@@ -285,7 +295,7 @@ WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 When building filter conditions based on user inputs, you usually want to specially handle "empty inputs"
 by ignoring them in the filters. For example, you have an HTML form that takes username and email inputs.
 If the user only enters something in the username input, you may want to build a query that only tries to
-match the entered username. You may use the `filterWhere()` method achieve this goal:
+match the entered username. You may use the `filterWhere()` method to achieve this goal:
 
 ```php
 // $username and $email are from user inputs

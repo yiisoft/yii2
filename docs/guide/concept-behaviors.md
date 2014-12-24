@@ -17,7 +17,6 @@ To define a behavior, create a class that extends [[yii\base\Behavior]], or exte
 ```php
 namespace app\components;
 
-use yii\base\Model;
 use yii\base\Behavior;
 
 class MyBehavior extends Behavior
@@ -45,7 +44,7 @@ class MyBehavior extends Behavior
 
 The above code defines the behavior class `app\components\MyBehavior`, with two properties--
 `prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]], and therefore supports defining [properties](concept-properties.md) via getters and setters.
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
 Because this class is a behavior, when it is attached to a component, that component will then also have the the `prop1` and `prop2` properties and the `foo()` method.
 
@@ -211,7 +210,7 @@ You can also call a *public* method of the behavior similarly:
 $component->foo();
 ```
 
-As you can see, although `$component` does not define `prop1` and `bar()`, they can be used as if they are part
+As you can see, although `$component` does not define `prop1` and `foo()`, they can be used as if they are part
 of the component definition due to the attached behavior.
 
 If two behaviors define the same property or method and they are both attached to the same component,
@@ -325,7 +324,7 @@ Behaviors can customize the code execution of a component by responding to its e
 
 When there can be name conflicts among different behaviors attached to the same component, the conflicts are
 automatically resolved by prioritizing the behavior attached to the component first.
-Name conflicts caused by different traits requires manually resolution by renaming the affected
+Name conflicts caused by different traits requires manual resolution by renaming the affected
 properties or methods.
 
 
@@ -333,5 +332,5 @@ properties or methods.
 
 Traits are much more efficient than behaviors as behaviors are objects that take both time and memory.
 
-IDEs are more friendly to traits as they are language construct.
+IDEs are more friendly to traits as they are a native language construct.
 

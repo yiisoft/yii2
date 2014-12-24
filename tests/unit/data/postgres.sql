@@ -35,6 +35,7 @@ CREATE TABLE "customer" (
   name varchar(128),
   address text,
   status integer DEFAULT 0,
+  bool_status boolean DEFAULT FALSE,
   profile_id integer
 );
 
@@ -109,8 +110,8 @@ CREATE TABLE "type" (
   blob_col bytea,
   numeric_col decimal(5,2) DEFAULT '33.22',
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
-  bool_col smallint NOT NULL,
-  bool_col2 smallint DEFAULT '1',
+  bool_col boolean NOT NULL,
+  bool_col2 boolean DEFAULT TRUE,
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   bit_col BIT(8) NOT NULL DEFAULT B'10000010'
 );
@@ -125,9 +126,9 @@ CREATE TABLE "bool_values" (
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');
 
-INSERT INTO "customer" (email, name, address, status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, 1);
-INSERT INTO "customer" (email, name, address, status) VALUES ('user2@example.com', 'user2', 'address2', 1);
-INSERT INTO "customer" (email, name, address, status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, 2);
+INSERT INTO "customer" (email, name, address, status, bool_status, profile_id) VALUES ('user1@example.com', 'user1', 'address1', 1, true, 1);
+INSERT INTO "customer" (email, name, address, status, bool_status) VALUES ('user2@example.com', 'user2', 'address2', 1, true);
+INSERT INTO "customer" (email, name, address, status, bool_status, profile_id) VALUES ('user3@example.com', 'user3', 'address3', 2, false, 2);
 
 INSERT INTO "category" (name) VALUES ('Books');
 INSERT INTO "category" (name) VALUES ('Movies');

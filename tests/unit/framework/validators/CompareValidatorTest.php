@@ -36,7 +36,7 @@ class CompareValidatorTest extends TestCase
             $val = new CompareValidator(['compareValue' => $value]);
             $val->operator = $op;
             foreach ($tests as $test) {
-                $this->assertEquals($test[1], $val->validate($test[0]));
+                $this->assertEquals($test[1], $val->validate($test[0]), "Testing $op");
             }
         }
     }
@@ -46,8 +46,8 @@ class CompareValidatorTest extends TestCase
         return [
             '===' => [
                 [$value, true],
-                [(string) $value, false],
-                [(float) $value, false],
+                [(string) $value, true],
+                [(float) $value, true],
                 [$value + 1, false],
             ],
             '!=' => [
@@ -59,8 +59,8 @@ class CompareValidatorTest extends TestCase
             ],
             '!==' => [
                 [$value, false],
-                [(string) $value, true],
-                [(float) $value, true],
+                [(string) $value, false],
+                [(float) $value, false],
                 [false, true],
             ],
             '>' => [

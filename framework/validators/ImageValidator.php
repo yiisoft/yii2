@@ -162,21 +162,21 @@ class ImageValidator extends FileValidator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         ValidationAsset::register($view);
-        $options = $this->getClientOptions($object, $attribute);
-        return 'yii.validation.image(attribute, messages, ' . json_encode($options) . ', deferred);';
+        $options = $this->getClientOptions($model, $attribute);
+        return 'yii.validation.image(attribute, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ', deferred);';
     }
 
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($object, $attribute)
+    protected function getClientOptions($model, $attribute)
     {
-        $options = parent::getClientOptions($object, $attribute);
+        $options = parent::getClientOptions($model, $attribute);
 
-        $label = $object->getAttributeLabel($attribute);
+        $label = $model->getAttributeLabel($attribute);
 
         if ($this->notImage !== null) {
             $options['notImage'] = Yii::$app->getI18n()->format($this->notImage, [
@@ -204,7 +204,7 @@ class ImageValidator extends FileValidator
             $options['minHeight'] = $this->minHeight;
             $options['underHeight'] = Yii::$app->getI18n()->format($this->underHeight, [
                 'attribute' => $label,
-                'limit' => $this->maxHeight
+                'limit' => $this->minHeight
             ], Yii::$app->language);
         }
 

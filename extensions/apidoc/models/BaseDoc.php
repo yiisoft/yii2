@@ -39,6 +39,11 @@ class BaseDoc extends Object
     public $tags = [];
 
 
+    /**
+     * Checks if doc has tag of a given name
+     * @param string $name tag name
+     * @return boolean if doc has tag of a given name
+     */
     public function hasTag($name)
     {
         foreach ($this->tags as $tag) {
@@ -49,6 +54,10 @@ class BaseDoc extends Object
         return false;
     }
 
+    /**
+     * Removes tag of a given name
+     * @param string $name
+     */
     public function removeTag($name)
     {
         foreach ($this->tags as $i => $tag) {
@@ -125,6 +134,11 @@ class BaseDoc extends Object
 //		return implode("", array_slice($lines, $this->startLine - 1, $this->endLine - $this->startLine + 1));
 //	}
 
+    /**
+     * Extracts first sentence out of text
+     * @param string $text
+     * @return string
+     */
     public static function extractFirstSentence($text)
     {
         if (mb_strlen($text) > 4 && ($pos = mb_strpos($text, '.', 4, 'utf-8')) !== false) {

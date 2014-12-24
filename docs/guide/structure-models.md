@@ -301,7 +301,7 @@ is associated with one or multiple active rules declared in `rules()`.
 ## Massive Assignment <a name="massive-assignment"></a>
 
 Massive assignment is a convenient way of populating a model with user inputs using a single line of code.
-It populates the attributes of a model by assigning the input data directly to the [[yii\base\Model::attributes]]
+It populates the attributes of a model by assigning the input data directly to the [[yii\base\Model::$attributes]]
 property. The following two pieces of code are equivalent, both trying to assign the form data submitted by end users
 to the attributes of the `ContactForm` model. Clearly, the former, which uses massive assignment, is much cleaner
 and less error prone than the latter:
@@ -395,7 +395,7 @@ In the first step, models are converted into arrays; in the second step, the arr
 target formats. You may just focus on the first step, because the second step can be achieved by generic
 data formatters, such as [[yii\web\JsonResponseFormatter]].
 
-The simplest way of converting a model into an array is to use the [[yii\base\Model::attributes]] property.
+The simplest way of converting a model into an array is to use the [[yii\base\Model::$attributes]] property.
 For example,
 
 ```php
@@ -403,11 +403,11 @@ $post = \app\models\Post::findOne(100);
 $array = $post->attributes;
 ```
 
-By default, the [[yii\base\Model::attributes]] property will return the values of *all* attributes
+By default, the [[yii\base\Model::$attributes]] property will return the values of *all* attributes
 declared in [[yii\base\Model::attributes()]].
 
 A more flexible and powerful way of converting a model into an array is to use the [[yii\base\Model::toArray()]]
-method. Its default behavior is the same as that of [[yii\base\Model::attributes]]. However, it allows you
+method. Its default behavior is the same as that of [[yii\base\Model::$attributes]]. However, it allows you
 to choose which data items, called *fields*, to be put in the resulting array and how they should be formatted.
 In fact, it is the default way of exporting models in RESTful Web service development, as described in
 the [Response Formatting](rest-response-formatting.md).
@@ -493,7 +493,7 @@ In summary, models
 You may usually consider the last recommendation above when you are developing large complex systems.
 In these systems, models could be very fat because they are used in many places and may thus contain many sets
 of rules and business logic. This often ends up in a nightmare in maintaining the model code
-because a single touch of the code could affect several different places. To make the mode code more maintainable,
+because a single touch of the code could affect several different places. To make the model code more maintainable,
 you may take the following strategy:
 
 * Define a set of base model classes that are shared by different [applications](structure-applications.md) or

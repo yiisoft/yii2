@@ -64,7 +64,7 @@ use yii\db\QueryTrait;
  * A relation is specified by [[link]] which represents the association between columns
  * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
  *
- * If a relation involves a pivot table, it may be specified by [[via()]].
+ * If a relation involves a junction table, it may be specified by [[via()]].
  * This methods may only be called in a relational context. Same is true for [[inverseOf()]], which
  * marks a relation as inverse of another relation.
  *
@@ -123,6 +123,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
             for ($i = 0; $i < $c;) {
                 $row[$dataRow[$i++]] = $dataRow[$i++];
             }
+
             $rows[] = $row;
         }
         if (!empty($rows)) {
@@ -304,6 +305,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @param string $type the type of the script to generate
      * @param string $columnName
+     * @throws NotSupportedException
      * @return array|bool|null|string
      */
     protected function executeScript($db, $type, $columnName = null)
@@ -311,8 +313,8 @@ class ActiveQuery extends Component implements ActiveQueryInterface
         if ($this->primaryModel !== null) {
             // lazy loading
             if ($this->via instanceof self) {
-                // via pivot table
-                $viaModels = $this->via->findPivotRows([$this->primaryModel]);
+                // via junction table
+                $viaModels = $this->via->findJunctionRows([$this->primaryModel]);
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation

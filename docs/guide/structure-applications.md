@@ -101,7 +101,7 @@ the method calls [[Yii::setAlias()]].
 
 This is a very useful property. It allows you to specify an array of components that should
 be run during the application [[yii\base\Application::bootstrap()|bootstrapping process]].
-For example, if you want a [module](structure-modules.md) to customize the [URL rules](runtime-url-handling.md),
+For example, if you want a [module](structure-modules.md) to customize the [URL rules](runtime-routing.md),
 you may list its ID as an element in this property.
 
 Each component listed in this property may be specified in one of the following formats:
@@ -140,7 +140,7 @@ For example,
 > Info: If a module ID is the same as an application component ID, the application component will be used during
   the bootstrapping process. If you want to use the module instead, you may specify it using an anonymous function
   like the following:
->```php
+> ```php
 [
     function () {
         return Yii::$app->getModule('user');
@@ -195,7 +195,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 #### [[yii\base\Application::components|components]] <a name="components"></a>
 
 This is the single most important property. It allows you to register a list of named components
-called [application components](#structure-application-components.md) that you can use in other places. For example,
+called [application components](structure-application-components.md) that you can use in other places. For example,
 
 ```php
 [
@@ -523,7 +523,7 @@ to insert your custom code via the event mechanism to intercept the request hand
 in the event handler, you may dynamically set the [[yii\base\Application::language]] property based on some parameters.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
 
 This event is triggered *after* an application finishes handling a request but *before* sending the response.
 The actual event name is `afterRequest`.
@@ -535,7 +535,7 @@ Note that the [[yii\web\Response|response]] component also triggers some events 
 response content to end users. Those events are triggered *after* this event.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
 
 This event is triggered *before* running every [controller action](structure-controllers.md).
 The actual event name is `beforeAction`.
@@ -561,7 +561,7 @@ triggering this event, followed by modules (if any), and finally controllers. If
 sets [[yii\base\ActionEvent::isValid]] to be `false`, all the following events will NOT be triggered.
 
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
+### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
 
 This event is triggered *after* running every [controller action](structure-controllers.md).
 The actual event name is `afterAction`.
@@ -588,6 +588,8 @@ followed by modules (if any), and finally applications.
 
 
 ## Application Lifecycle <a name="application-lifecycle"></a>
+
+![Application Lifecycle](images/application-lifecycle.png)
 
 When an [entry script](structure-entry-scripts.md) is being executed to handle a request,
 an application will undergo the following lifecycle:

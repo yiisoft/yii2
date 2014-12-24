@@ -1,0 +1,36 @@
+actor: Tester
+#coverage:
+#    #c3_url: http://localhost:8080/index-test.php/
+#    enabled: true
+#    #remote: true
+#    #remote_config: '../tests/codeception.yml'
+#    white_list:
+#        include:
+#            - ../models/*
+#            - ../controllers/*
+#            - ../commands/*
+#            - ../mail/*
+#    blacklist:
+#        include:
+#            - ../assets/*
+#            - ../config/*
+#            - ../runtime/*
+#            - ../vendor/*
+#            - ../views/*
+#            - ../web/*
+#            - ../tests/*
+paths:
+    tests: codeception
+    log: codeception/_output
+    data: codeception/_data
+    helpers: codeception/_support
+settings:
+    bootstrap: _bootstrap.php
+    suite_class: \PHPUnit_Framework_TestSuite
+    memory_limit: 1024M
+    log: true
+    colors: true
+config:
+    # the entry script URL (with host info) for functional and acceptance tests
+    # PLEASE ADJUST IT TO THE ACTUAL ENTRY SCRIPT URL
+    test_entry_url: http://localhost:8080/index-test.php

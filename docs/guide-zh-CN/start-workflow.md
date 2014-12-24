@@ -1,7 +1,7 @@
 运行应用
 ====================
 
-安装 Yii 后，就有了一个运行中的 Yii 应用，根据配置的不同，可以通过 `http://hostname/basic/web/index.php` 或 `http://hostname/index.php` 访问。本章节将介绍应用的内建功能，如何组织代码，以及一般情况下应用如何处理请求。
+安装 Yii 后，就有了一个可运行的 Yii 应用，根据配置的不同，可以通过 `http://hostname/basic/web/index.php` 或 `http://hostname/index.php` 访问。本章节将介绍应用的内建功能，如何组织代码，以及一般情况下应用如何处理请求。
 
 > 补充：为简单起见，在整个“入门”板块都假定你已经把 `basic/web` 设为 Web 服务器根目录并配置完毕，你访问应用的地址会是 `http://lostname/index.php` 或类似的。请按需调整 URL。
 
@@ -24,6 +24,7 @@
 ---------------------
 
 应用中最重要的目录和文件（假设应用根目录是 `basic`）：
+
 ```
 basic/                  应用根目录
     composer.json       Composer 配置文件, 描述包信息
@@ -58,7 +59,7 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 
 以下图表展示了一个应用如何处理请求：
 
-![请求生命周期](images/application-lifecycle.png)
+![请求生命周期](images/request-lifecycle.png)
 
 1. 用户向[入口脚本](structure-entry-scripts.md) `web/index.php` 发起请求。
 2. 入口脚本加载应用[配置](concept-configurations.md)并创建一个[应用](structure-applications.md)实例去处理请求。

@@ -29,7 +29,7 @@ forum/
 
 ### Module Classes <a name="module-classes"></a>
 
-Each module should have a module class which extends from [[yii\base\Module]]. The class should be located
+Each module should have a unique module class which extends from [[yii\base\Module]]. The class should be located
 directly under the module's [[yii\base\Module::basePath|base path]] and should be [autoloadable](concept-autoloading.md).
 When a module is being accessed, a single instance of the corresponding module class will be created.
 Like [application instances](structure-applications.md), module instances are used to share data and components
@@ -100,7 +100,7 @@ class PostController extends Controller
 ```
 
 You may customize the namespace of controller classes by configuring the [[yii\base\Module::controllerNamespace]]
-property. In case when some of the controllers are out of this namespace, you may make them accessible
+property. In case some of the controllers are outside of this namespace, you may make them accessible
 by configuring the [[yii\base\Module::controllerMap]] property, similar to [what you do in an application](structure-applications.md#controller-map).
 
 
@@ -162,7 +162,7 @@ $module = MyModuleClass::getInstance();
 
 where `MyModuleClass` refers to the name of the module class that you are interested in. The `getInstance()` method
 will return the currently requested instance of the module class. If the module is not requested, the method will
-return null. Note that You do not want to manually create a new instance of the module class because it will be
+return null. Note that you do not want to manually create a new instance of the module class because it will be
 different from the one created by Yii in response to a request.
 
 > Info: When developing a module, you should not assume the module will use a fixed ID. This is because a module
@@ -173,7 +173,7 @@ different from the one created by Yii in response to a request.
 You may also access the instance of a module using the following approaches:
 
 ```php
-// get the module whose ID is "forum"
+// get the child module whose ID is "forum"
 $module = \Yii::$app->getModule('forum');
 
 // get the module to which the currently requested controller belongs
@@ -183,7 +183,7 @@ $module = \Yii::$app->controller->module;
 The first approach is only useful when you know the module ID, while the second approach is best used when you
 know about the controllers being requested.
 
-Once getting hold of a module instance, you can access parameters or components registered with the module. For example,
+Once you have the module instance, you can access parameters and components registered with the module. For example,
 
 ```php
 $maxPostCount = $module->params['maxPostCount'];
@@ -195,7 +195,7 @@ $maxPostCount = $module->params['maxPostCount'];
 Some modules may need to be run for every request. The [[yii\debug\Module|debug]] module is such an example.
 To do so, list the IDs of such modules in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
 
-For example, the following application configuration makes sure the `debug` module is always load:
+For example, the following application configuration makes sure the `debug` module is always loaded:
 
 ```php
 [
@@ -235,9 +235,13 @@ class Module extends \yii\base\Module
 }
 ```
 
-For a controller within a nested module, its route should include the IDs of all its ancestor module.
+For a controller within a nested module, its route should include the IDs of all its ancestor modules.
 For example, the route `forum/admin/dashboard/index` represents the `index` action of the `dashboard` controller
 in the `admin` module which is a child module of the `forum` module.
+
+> Info: The [[yii\base\Module::getModule()|getModule()]] method only returns the child module directly belonging
+to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
+direct children and nested ones, indexed by their class names.
 
 
 ## Best Practices <a name="best-practices"></a>

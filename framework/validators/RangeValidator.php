@@ -66,7 +66,7 @@ class RangeValidator extends Validator
 
         $in = true;
 
-        foreach ((array)$value as $v) {
+        foreach ((is_array($value) ? $value : [$value]) as $v) {
             if (!in_array($v, $this->range, $this->strict)) {
                 $in = false;
                 break;
@@ -79,7 +79,7 @@ class RangeValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         $range = [];
         foreach ($this->range as $value) {
@@ -89,7 +89,7 @@ class RangeValidator extends Validator
             'range' => $range,
             'not' => $this->not,
             'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $object->getAttributeLabel($attribute),
+                'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language),
         ];
         if ($this->skipOnEmpty) {
@@ -101,6 +101,6 @@ class RangeValidator extends Validator
 
         ValidationAsset::register($view);
 
-        return 'yii.validation.range(value, messages, ' . json_encode($options) . ');';
+        return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 }

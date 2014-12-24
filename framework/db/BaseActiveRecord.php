@@ -210,9 +210,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
      *    Override this method to return the name of this column.
-     * 2. In the Web form that collects the user input, add a hidden field that stores
+     * 2. Add a `required` validation rule for the version column to ensure the version value is submitted.
+     * 3. In the Web form that collects the user input, add a hidden field that stores
      *    the lock version of the recording being updated.
-     * 3. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
+     * 4. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
      *    and implement necessary business logic (e.g. merging the changes, prompting stated data)
      *    to resolve the conflict.
      *
@@ -633,7 +634,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
-     * @throws \Exception in case update failed.
+     * @throws Exception in case update failed.
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -703,9 +704,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $condition = $this->getOldPrimaryKey(true);
         $lock = $this->optimisticLock();
         if ($lock !== null) {
-            if (!isset($values[$lock])) {
-                $values[$lock] = $this->$lock + 1;
-            }
+            $values[$lock] = $this->$lock + 1;
             $condition[$lock] = $this->$lock;
         }
         // We do not check the return value of updateAll() because it's possible
@@ -773,7 +772,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being deleted is outdated.
-     * @throws \Exception in case delete failed.
+     * @throws Exception in case delete failed.
      */
     public function delete()
     {
@@ -1138,15 +1137,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * to be the corresponding primary key value(s) in the other model.
      * The model with the foreign key will be saved into database without performing validation.
      *
-     * If the relationship involves a pivot table, a new row will be inserted into the
-     * pivot table which contains the primary key values from both models.
+     * If the relationship involves a junction table, a new row will be inserted into the
+     * junction table which contains the primary key values from both models.
      *
      * Note that this method requires that the primary key value is not null.
      *
      * @param string $name the case sensitive name of the relationship
      * @param ActiveRecordInterface $model the model to be linked with the current one.
-     * @param array $extraColumns additional column values to be saved into the pivot table.
-     * This parameter is only meaningful for a relationship involving a pivot table
+     * @param array $extraColumns additional column values to be saved into the junction table.
+     * This parameter is only meaningful for a relationship involving a junction table
      * (i.e., a relation set with [[ActiveRelationTrait::via()]] or `[[ActiveQuery::viaTable()]]`.)
      * @throws InvalidCallException if the method is unable to link two models.
      */
@@ -1232,6 +1231,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param string $name the case sensitive name of the relationship.
      * @param ActiveRecordInterface $model the model to be unlinked from the current one.
+     * You have to make sure that the model is really related with the current model as this method
+     * does not check this.
      * @param boolean $delete whether to delete the model that contains the foreign key.
      * If false, the model's foreign key will be set null and saved.
      * If true, the model containing the foreign key will be deleted.
@@ -1282,7 +1283,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } else {
             $p1 = $model->isPrimaryKey(array_keys($relation->link));
             $p2 = $this->isPrimaryKey(array_values($relation->link));
-            if ($p1 && $p2 || $p2) {
+            if ($p2) {
                 foreach ($relation->link as $a => $b) {
                     $model->$a = null;
                 }
@@ -1293,7 +1294,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                         if (($key = array_search($model->$a, $this->$b, false)) !== false) {
                             $values = $this->$b;
                             unset($values[$key]);
-                            $this->$b = $values;
+                            $this->$b = array_values($values);
                         }
                     } else {
                         $this->$b = null;
@@ -1348,6 +1349,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $nulls[$a] = null;
                 $condition[$a] = $this->$b;
             }
+            if (!empty($viaRelation->where)) {
+                $condition = ['and', $condition, $viaRelation->where];
+            }
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 if ($delete) {
@@ -1378,6 +1382,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 foreach ($relation->link as $a => $b) {
                     $nulls[$a] = null;
                     $condition[$a] = $this->$b;
+                }
+                if (!empty($relation->where)) {
+                    $condition = ['and', $condition, $relation->where];
                 }
                 if ($delete) {
                     $relatedModel::deleteAll($condition);
