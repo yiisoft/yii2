@@ -231,6 +231,12 @@ class BaseInflector
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
     ];
+    /**
+     * @var mixed Either a [[Transliterator]] or a string from which a [[Transliterator]]
+     * can be built for transliteration used by [[slug()]] when intl is available.
+     * @see http://php.net/manual/en/transliterator.transliterate.php
+     */
+    public static $transliterator = 'Any-Latin; NFKD';
 
 
     /**
@@ -437,7 +443,7 @@ class BaseInflector
     protected static function transliterate($string)
     {
         if (static::hasIntl()) {
-            return transliterator_transliterate('Any-Latin; NFKD', $string);
+            return transliterator_transliterate(static::$transliterator, $string);
         } else {
             return str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
         }
@@ -480,6 +486,51 @@ class BaseInflector
                 return $number . 'rd';
             default:
                 return $number . 'th';
+        }
+    }
+
+    /**
+     * Converts a list of words into a sentence.
+     *
+     * Special treatment is done for the last few words. For example,
+     *
+     * ```php
+     * $words = ['Spain', 'France'];
+     * echo Inflector::sentence($words);
+     * // output: Spain and France
+     *
+     * $words = ['Spain', 'France', 'Italy'];
+     * echo Inflector::sentence($words);
+     * // output: Spain, France and Italy
+     *
+     * $words = ['Spain', 'France', 'Italy'];
+     * echo Inflector::sentence($words, ' & ');
+     * // output: Spain, France & Italy
+     * ```
+     *
+     * @param array $words the words to be converted into an string
+     * @param string $twoWordsConnector the string connecting words when there are only two
+     * @param string $lastWordConnector the string connecting the last two words. If this is null, it will
+     * take the value of `$twoWordsConnector`.
+     * @param string $connector the string connecting words other than those connected by
+     * $lastWordConnector and $twoWordsConnector
+     * @return string the generated sentence
+     * @since 2.0.1
+     */
+    public static function sentence(array $words, $twoWordsConnector = ' and ', $lastWordConnector = null, $connector = ', ')
+    {
+        if ($lastWordConnector === null) {
+            $lastWordConnector = $twoWordsConnector;
+        }
+        switch (count($words)) {
+            case 0:
+                return '';
+            case 1:
+                return reset($words);
+            case 2:
+                return implode($twoWordsConnector, $words);
+            default:
+                return implode($connector, array_slice($words, 0, -1)) . $lastWordConnector . end($words);
         }
     }
 }

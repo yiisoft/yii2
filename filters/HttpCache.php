@@ -130,7 +130,6 @@ class HttpCache extends ActionFilter
 
         if ($this->validateCache($lastModified, $etag)) {
             $response->setStatusCode(304);
-
             return false;
         }
 
@@ -150,10 +149,14 @@ class HttpCache extends ActionFilter
      */
     protected function validateCache($lastModified, $etag)
     {
-        if ($lastModified !== null && (!isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) || @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) < $lastModified)) {
-            return false;
+        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+            // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
+            // http://tools.ietf.org/html/rfc7232#section-3.3
+            return $etag !== null && in_array($etag, Yii::$app->request->getEtags(), true);
+        } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+            return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
         } else {
-            return $etag === null || in_array($etag, Yii::$app->request->getEtags(), true);
+            return $etag === null && $lastModified === null;
         }
     }
 

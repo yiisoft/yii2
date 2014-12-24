@@ -151,6 +151,6 @@ class Captcha extends InputWidget
                 return 'gd';
             }
         }
-        throw new InvalidConfigException('GD with FreeType or ImageMagick PHP extensions are required.');
+        throw new InvalidConfigException('Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.');
     }
 }

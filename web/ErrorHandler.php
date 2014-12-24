@@ -69,6 +69,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         if (Yii::$app->has('response')) {
             $response = Yii::$app->getResponse();
+            $response->isSent = false;
         } else {
             $response = new Response();
         }
@@ -97,6 +98,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                     'exception' => $exception,
                 ]);
             }
+        } elseif ($response->format === Response::FORMAT_RAW) {
+            $response->data = $exception;
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
@@ -117,8 +120,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function convertExceptionToArray($exception)
     {
+        if (!YII_DEBUG && !$exception instanceof UserException && !$exception instanceof HttpException) {
+            $exception = new HttpException(500, 'There was an error at the server.');
+        }
+
         $array = [
-            'type' => get_class($exception),
             'name' => ($exception instanceof Exception || $exception instanceof ErrorException) ? $exception->getName() : 'Exception',
             'message' => $exception->getMessage(),
             'code' => $exception->getCode(),
@@ -126,12 +132,15 @@ class ErrorHandler extends \yii\base\ErrorHandler
         if ($exception instanceof HttpException) {
             $array['status'] = $exception->statusCode;
         }
-        if (YII_DEBUG && !$exception instanceof UserException) {
-            $array['file'] = $exception->getFile();
-            $array['line'] = $exception->getLine();
-            $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
-            if ($exception instanceof \yii\db\Exception) {
-                $array['error-info'] = $exception->errorInfo;
+        if (YII_DEBUG) {
+            $array['type'] = get_class($exception);
+            if (!$exception instanceof UserException) {
+                $array['file'] = $exception->getFile();
+                $array['line'] = $exception->getLine();
+                $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
+                if ($exception instanceof \yii\db\Exception) {
+                    $array['error-info'] = $exception->errorInfo;
+                }
             }
         }
         if (($prev = $exception->getPrevious()) !== null) {

@@ -81,7 +81,7 @@ class BaseUrl
      */
     public static function toRoute($route, $scheme = false)
     {
-        $route = (array)$route;
+        $route = (array) $route;
         $route[0] = static::normalizeRoute($route[0]);
 
         if ($scheme) {
@@ -318,5 +318,16 @@ class BaseUrl
         }
 
         return $url;
+    }
+
+    /**
+     * Returns a value indicating whether a URL is relative.
+     * A relative URL does not have host info part.
+     * @param string $url the URL to be checked
+     * @return boolean whether the URL is relative
+     */
+    public static function isRelative($url)
+    {
+        return strncmp($url, '//', 2) && strpos($url, '://') === false;
     }
 }

@@ -15,7 +15,7 @@ use yii\web\Response;
 /**
  * Cors filter implements [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
  * Make sure to read carefully what CORS does and does not. CORS do not secure your API,
- * but allow the developper to grant access to third party code (ajax calls from external domain)
+ * but allow the developer to grant access to third party code (ajax calls from external domain)
  *
  * You may use CORS filter by attaching it as a behavior to a controller or module, like the following,
  *
@@ -39,15 +39,17 @@ use yii\web\Response;
  *     return [
  *         'corsFilter' => [
  *             'class' => \yii\filters\Cors::className(),
- *             // restrict access to
- *             'Origin' => ['http://www.myserver.com', 'https://www.myserver.com'],
- *             'Access-Control-Request-Method' => ['POST', 'PUT'],
- *             // Allow only POST and PUT methods
- *             'Access-Control-Request-Headers' => ['X-Wsse'],
- *             // Allow only headers 'X-Wsse'
- *             'Access-Control-Allow-Credentials' => true,
- *             // Allow OPTIONS caching
- *             'Access-Control-Max-Age' => 3600,
+ *             'cors' => [
+ *                 // restrict access to
+ *                 'Origin' => ['http://www.myserver.com', 'https://www.myserver.com'],
+ *                 'Access-Control-Request-Method' => ['POST', 'PUT'],
+ *                 // Allow only POST and PUT methods
+ *                 'Access-Control-Request-Headers' => ['X-Wsse'],
+ *                 // Allow only headers 'X-Wsse'
+ *                 'Access-Control-Allow-Credentials' => true,
+ *                 // Allow OPTIONS caching
+ *                 'Access-Control-Max-Age' => 3600,
+ *             ],
  *
  *         ],
  *     ];
@@ -88,8 +90,8 @@ class Cors extends ActionFilter
      */
     public function beforeAction($action)
     {
-        $this->request = $this->request ? : Yii::$app->getRequest();
-        $this->response = $this->response ? : Yii::$app->getResponse();
+        $this->request = $this->request ?: Yii::$app->getRequest();
+        $this->response = $this->response ?: Yii::$app->getResponse();
 
         $this->overrideDefaultSettings($action);
 
@@ -118,7 +120,7 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Extract CORS headers fron the request
+     * Extract CORS headers from the request
      * @return array CORS headers to handle
      */
     public function extractHeaders()
@@ -127,7 +129,7 @@ class Cors extends ActionFilter
         $requestHeaders = array_keys($this->cors);
         foreach ($requestHeaders as $headerField) {
             $serverField = $this->headerizeToPhp($headerField);
-            $headerData = isset($_SERVER[$serverField])?$_SERVER[$serverField]:null;
+            $headerData = isset($_SERVER[$serverField]) ? $_SERVER[$serverField] : null;
             if ($headerData !== null) {
                 $headers[$headerField] = $headerData;
             }
@@ -146,7 +148,8 @@ class Cors extends ActionFilter
         // handle Origin
         if (isset($requestHeaders['Origin'])) {
             if ((in_array('*', $this->cors['Origin']) === true)
-             || (in_array($requestHeaders['Origin'], $this->cors['Origin']))) {
+                || (in_array($requestHeaders['Origin'], $this->cors['Origin']))
+            ) {
                 $responseHeaders['Access-Control-Allow-Origin'] = $requestHeaders['Origin'];
             }
         }
@@ -158,13 +161,11 @@ class Cors extends ActionFilter
             $responseHeaders['Access-Control-Allow-Methods'] = implode(', ', $this->cors['Access-Control-Request-Method']);
         }
 
-        if ($this->cors['Access-Control-Allow-Credentials'] === true) {
-            $responseHeaders['Access-Control-Allow-Credentials'] = 'true';
-        } elseif ($this->cors['Access-Control-Allow-Credentials'] === false) {
-            $responseHeaders['Access-Control-Allow-Credentials'] = 'false';
+        if (isset($this->cors['Access-Control-Allow-Credentials'])) {
+            $responseHeaders['Access-Control-Allow-Credentials'] = $this->cors['Access-Control-Allow-Credentials'] ? 'true' : 'false';
         }
 
-        if (($_SERVER['REQUEST_METHOD'] === 'OPTIONS') && ($this->cors['Access-Control-Max-Age'] !== null)) {
+        if (isset($this->cors['Access-Control-Max-Age']) && Yii::$app->getRequest()->getIsOptions()) {
             $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
         }
 
@@ -175,12 +176,12 @@ class Cors extends ActionFilter
      * Handle classic CORS request to avoid duplicate code
      * @param string $type the kind of headers we would handle
      * @param array $requestHeaders CORS headers request by client
-     * @param array $responseHeaders CORS response headers sent to the clinet
+     * @param array $responseHeaders CORS response headers sent to the client
      */
     protected function prepareAllowHeaders($type, $requestHeaders, &$responseHeaders)
     {
-        $requestHeaderField = 'Access-Control-Request-'.$type;
-        $responseHeaderField = 'Access-Control-Allow-'.$type;
+        $requestHeaderField = 'Access-Control-Request-' . $type;
+        $responseHeaderField = 'Access-Control-Allow-' . $type;
         if (isset($requestHeaders[$requestHeaderField])) {
             if (in_array('*', $this->cors[$requestHeaderField])) {
                 $responseHeaders[$responseHeaderField] = $this->headerize($requestHeaders[$requestHeaderField]);
@@ -203,7 +204,7 @@ class Cors extends ActionFilter
     /**
      * Adds the CORS headers to the response
      * @param Response $response
-     * @param array CORS headers which have been compouted
+     * @param array CORS headers which have been computed
      */
     public function addCorsHeaders($response, $headers)
     {
@@ -224,8 +225,8 @@ class Cors extends ActionFilter
      */
     protected function headerize($string)
     {
-        $headers = preg_split("/[\s,]+/", $string, -1, PREG_SPLIT_NO_EMPTY);
-        $headers = array_map(function($element) {
+        $headers = preg_split("/[\\s,]+/", $string, -1, PREG_SPLIT_NO_EMPTY);
+        $headers = array_map(function ($element) {
             return str_replace(' ', '-', ucwords(strtolower(str_replace(['_', '-'], [' ', ' '], $element))));
         }, $headers);
         return implode(', ', $headers);
@@ -240,6 +241,6 @@ class Cors extends ActionFilter
      */
     protected function headerizeToPhp($string)
     {
-        return 'HTTP_'.strtoupper(str_replace([' ', '-'], ['_', '_'], $string));
+        return 'HTTP_' . strtoupper(str_replace([' ', '-'], ['_', '_'], $string));
     }
 }

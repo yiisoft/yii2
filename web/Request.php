@@ -65,7 +65,6 @@ use yii\helpers\StringHelper;
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
  * @property string $rawBody The request body. This property is read-only.
- * @property string $rawCsrfToken The random token for CSRF validation. This property is read-only.
  * @property string $referrer URL referrer, null if not present. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
@@ -115,10 +114,16 @@ class Request extends \yii\base\Request
      */
     public $csrfParam = '_csrf';
     /**
-     * @var array the configuration of the CSRF cookie. This property is used only when [[enableCsrfValidation]] is true.
-     * @see Cookie
+     * @var array the configuration for creating the CSRF [[Cookie|cookie]]. This property is used only when
+     * both [[enableCsrfValidation]] and [[enableCsrfCookie]] are true.
      */
     public $csrfCookie = ['httpOnly' => true];
+    /**
+     * @var boolean whether to use cookie to persist CSRF token. If false, CSRF token will be stored
+     * in session under the name of [[csrfParam]]. Note that while storing CSRF tokens in session increases
+     * security, it requires starting a session for every page, which will degrade your site performance.
+     */
+    public $enableCsrfCookie = true;
     /**
      * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
      */
@@ -168,7 +173,7 @@ class Request extends \yii\base\Request
     /**
      * Resolves the current request into a route and the associated parameters.
      * @return array the first element is the route, and the second is the associated parameters.
-     * @throws HttpException if the request cannot be resolved.
+     * @throws NotFoundHttpException if the request cannot be resolved.
      */
     public function resolve()
     {
@@ -334,6 +339,15 @@ class Request extends \yii\base\Request
         }
 
         return $this->_rawBody;
+    }
+
+    /**
+     * Sets the raw HTTP request body, this method is mainly used by test scripts to simulate raw HTTP requests.
+     * @param $rawBody
+     */
+    public function setRawBody($rawBody)
+    {
+        $this->_rawBody = $rawBody;
     }
 
     private $_bodyParams;
@@ -1129,9 +1143,12 @@ class Request extends \yii\base\Request
         foreach ($this->getAcceptableLanguages() as $acceptableLanguage) {
             $acceptableLanguage = str_replace('_', '-', strtolower($acceptableLanguage));
             foreach ($languages as $language) {
-                $language = str_replace('_', '-', strtolower($language));
-                // en-us==en-us, en==en-us, en-us==en
-                if ($language === $acceptableLanguage || strpos($acceptableLanguage, $language . '-') === 0 || strpos($language, $acceptableLanguage . '-') === 0) {
+                $normalizedLanguage = str_replace('_', '-', strtolower($language));
+
+                if ($normalizedLanguage === $acceptableLanguage || // en-us==en-us
+                    strpos($acceptableLanguage, $normalizedLanguage . '-') === 0 || // en==en-us
+                    strpos($normalizedLanguage, $acceptableLanguage . '-') === 0) { // en-us==en
+
                     return $language;
                 }
             }
@@ -1215,29 +1232,6 @@ class Request extends \yii\base\Request
         return $cookies;
     }
 
-    /**
-     * @var Cookie
-     */
-    private $_csrfCookie;
-
-    /**
-     * Returns the unmasked random token used to perform CSRF validation.
-     * This token is typically sent via a cookie. If such a cookie does not exist, a new token will be generated.
-     * @return string the random token for CSRF validation.
-     * @see enableCsrfValidation
-     */
-    public function getRawCsrfToken()
-    {
-        if ($this->_csrfCookie === null) {
-            $this->_csrfCookie = $this->getCookies()->get($this->csrfParam);
-            if ($this->_csrfCookie === null || empty($this->_csrfCookie->value)) {
-                $this->_csrfCookie = $this->createCsrfCookie();
-                Yii::$app->getResponse()->getCookies()->add($this->_csrfCookie);
-            }
-        }
-        return $this->_csrfCookie->value;
-    }
-
     private $_csrfToken;
 
     /**
@@ -1246,22 +1240,56 @@ class Request extends \yii\base\Request
      * This token is a masked version of [[rawCsrfToken]] to prevent [BREACH attacks](http://breachattack.com/).
      * This token may be passed along via a hidden field of an HTML form or an HTTP header value
      * to support CSRF validation.
-     *
+     * @param boolean $regenerate whether to regenerate CSRF token. When this parameter is true, each time
+     * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
      * @return string the token used to perform CSRF validation.
      */
-    public function getCsrfToken()
+    public function getCsrfToken($regenerate = false)
     {
-        if ($this->_csrfToken === null) {
+        if ($this->_csrfToken === null || $regenerate) {
+            if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
+                $token = $this->generateCsrfToken();
+            }
             // the mask doesn't need to be very random
             $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
             $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, self::CSRF_MASK_LENGTH);
-
-            $token = $this->getRawCsrfToken();
             // The + sign may be decoded as blank space later, which will fail the validation
             $this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
         }
 
         return $this->_csrfToken;
+    }
+
+    /**
+     * Loads the CSRF token from cookie or session.
+     * @return string the CSRF token loaded from cookie or session. Null is returned if the cookie or session
+     * does not have CSRF token.
+     */
+    protected function loadCsrfToken()
+    {
+        if ($this->enableCsrfCookie) {
+            return $this->getCookies()->getValue($this->csrfParam);
+        } else {
+            return Yii::$app->getSession()->get($this->csrfParam);
+        }
+    }
+
+    /**
+     * Generates  an unmasked random token used to perform CSRF validation.
+     * @return string the random token for CSRF validation.
+     */
+    protected function generateCsrfToken()
+    {
+        $token = Yii::$app->getSecurity()->generateRandomString();
+        if ($this->enableCsrfCookie) {
+            $config = $this->csrfCookie;
+            $config['name'] = $this->csrfParam;
+            $config['value'] = $token;
+            Yii::$app->getResponse()->getCookies()->add(new Cookie($config));
+        } else {
+            Yii::$app->getSession()->set($this->csrfParam, $token);
+        }
+        return $token;
     }
 
     /**
@@ -1321,10 +1349,10 @@ class Request extends \yii\base\Request
         if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
             return true;
         }
-        $trueToken = $this->getCookies()->getValue($this->csrfParam);
-        $token = $this->getBodyParam($this->csrfParam);
 
-        return $this->validateCsrfTokenInternal($token, $trueToken)
+        $trueToken = $this->loadCsrfToken();
+
+        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
             || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
     }
 

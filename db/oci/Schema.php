@@ -141,6 +141,10 @@ EOD;
             return false;
         }
 
+        if (empty($columns)) {
+            return false;
+        }
+
         foreach ($columns as $column) {
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
@@ -208,6 +212,8 @@ EOD;
 
         $this->extractColumnType($c, $column['DATA_TYPE']);
         $this->extractColumnSize($c, $column['DATA_TYPE']);
+
+        $c->phpType = $this->getColumnPhpType($c);
 
         if (!$c->isPrimaryKey) {
             if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
@@ -298,6 +304,10 @@ EOD;
             } else {
                 $column->type = 'double';
             }
+        } elseif (strpos($dbType, 'BLOB') !== false) {
+            $column->type = 'binary';
+        } elseif (strpos($dbType, 'CLOB') !== false) {
+            $column->type = 'text';
         } else {
             $column->type = 'string';
         }

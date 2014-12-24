@@ -9,7 +9,7 @@ namespace yii\grid;
 
 use Yii;
 use Closure;
-use yii\base\Formatter;
+use yii\i18n\Formatter;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use yii\helpers\Html;
@@ -459,7 +459,7 @@ class GridView extends BaseListView
         } else {
             $options = $this->rowOptions;
         }
-        $options['data-key'] = is_array($key) ? json_encode($key) : (string)$key;
+        $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
 
         return Html::tag('tr', implode('', $cells), $options);
     }
@@ -522,8 +522,6 @@ class GridView extends BaseListView
             foreach ($model as $name => $value) {
                 $this->columns[] = $name;
             }
-        } else {
-            throw new InvalidConfigException('Unable to generate columns from the data. Please manually configure the "columns" property.');
         }
     }
 }

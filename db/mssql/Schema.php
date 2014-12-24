@@ -248,7 +248,7 @@ SELECT
     CONVERT(VARCHAR, [t2].[value]) AS comment
 FROM {$columnsTableName} AS [t1]
 LEFT OUTER JOIN [sys].[extended_properties] AS [t2] ON
-    [t1].[ordinal_position] = [t2].[minor_id] AND
+    [t2].[minor_id] = COLUMNPROPERTY(OBJECT_ID([t1].[TABLE_SCHEMA] + '.' + [t1].[TABLE_NAME]), [t1].[COLUMN_NAME], 'ColumnID') AND
     OBJECT_NAME([t2].[major_id]) = [t1].[table_name] AND
     [t2].[class] = 1 AND
     [t2].[class_desc] = 'OBJECT_OR_COLUMN' AND
@@ -344,7 +344,7 @@ JOIN {$keyColumnUsageTableName} AS [kcu1] ON
 JOIN {$keyColumnUsageTableName} AS [kcu2] ON
     [kcu2].[constraint_catalog] = [rc].[constraint_catalog] AND
     [kcu2].[constraint_schema] = [rc].[constraint_schema] AND
-    [kcu2].[constraint_name] = [rc].[constraint_name] AND
+    [kcu2].[constraint_name] = [rc].[unique_constraint_name] AND
     [kcu2].[ordinal_position] = [kcu1].[ordinal_position]
 WHERE [kcu1].[table_name] = :tableName
 SQL;

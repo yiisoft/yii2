@@ -56,7 +56,7 @@ class Controller extends \yii\base\Controller
      * @param \yii\base\Action $action the action to be bound with parameters
      * @param array $params the parameters to be bound to the action
      * @return array the valid parameters that the action can run with.
-     * @throws HttpException if there are missing or invalid parameters.
+     * @throws BadRequestHttpException if there are missing or invalid parameters.
      */
     public function bindActionParams($action, $params)
     {

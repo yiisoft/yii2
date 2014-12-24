@@ -183,7 +183,7 @@ class DbManager extends BaseManager
     {
         if (!$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
-                ->delete($this->itemChildTable, ['or', 'parent=:name', 'child=:name'], [':name' => $item->name])
+                ->delete($this->itemChildTable, ['or', '[[parent]]=:name', '[[child]]=:name'], [':name' => $item->name])
                 ->execute();
             $this->db->createCommand()
                 ->delete($this->assignmentTable, ['item_name' => $item->name])
@@ -285,7 +285,7 @@ class DbManager extends BaseManager
     {
         if (!$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
-                ->delete($this->itemTable, ['rule_name' => $rule->name])
+                ->update($this->itemTable, ['rule_name' => null], ['rule_name' => $rule->name])
                 ->execute();
         }
 
@@ -342,10 +342,14 @@ class DbManager extends BaseManager
      */
     public function getRolesByUser($userId)
     {
+        if (empty($userId)) {
+            return [];
+        }
+
         $query = (new Query)->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
-            ->where('a.item_name=b.name')
-            ->andWhere(['a.user_id' => (string)$userId]);
+            ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
+            ->andWhere(['a.user_id' => (string) $userId]);
 
         $roles = [];
         foreach ($query->all($this->db) as $row) {
@@ -381,9 +385,13 @@ class DbManager extends BaseManager
      */
     public function getPermissionsByUser($userId)
     {
+        if (empty($userId)) {
+            return [];
+        }
+
         $query = (new Query)->select('item_name')
             ->from($this->assignmentTable)
-            ->where(['user_id' => (string)$userId]);
+            ->where(['user_id' => (string) $userId]);
 
         $childrenList = $this->getChildrenList();
         $result = [];
@@ -469,8 +477,12 @@ class DbManager extends BaseManager
      */
     public function getAssignment($roleName, $userId)
     {
+        if (empty($userId)) {
+            return null;
+        }
+
         $row = (new Query)->from($this->assignmentTable)
-            ->where(['user_id' => (string)$userId, 'item_name' => $roleName])
+            ->where(['user_id' => (string) $userId, 'item_name' => $roleName])
             ->one($this->db);
 
         if ($row === false) {
@@ -489,9 +501,13 @@ class DbManager extends BaseManager
      */
     public function getAssignments($userId)
     {
+        if (empty($userId)) {
+            return [];
+        }
+
         $query = (new Query)
             ->from($this->assignmentTable)
-            ->where(['user_id' => (string)$userId]);
+            ->where(['user_id' => (string) $userId]);
 
         $assignments = [];
         foreach ($query->all($this->db) as $row) {
@@ -542,6 +558,16 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function removeChildren($parent)
+    {
+        return $this->db->createCommand()
+            ->delete($this->itemChildTable, ['parent' => $parent->name])
+            ->execute() > 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function hasChild($parent, $child)
     {
         return (new Query)
@@ -558,7 +584,7 @@ class DbManager extends BaseManager
         $query = (new Query)
             ->select(['name', 'type', 'description', 'rule_name', 'data', 'created_at', 'updated_at'])
             ->from([$this->itemTable, $this->itemChildTable])
-            ->where(['parent' => $name, 'name' => new Expression('child')]);
+            ->where(['parent' => $name, 'name' => new Expression('[[child]]')]);
 
         $children = [];
         foreach ($query->all($this->db) as $row) {
@@ -613,8 +639,12 @@ class DbManager extends BaseManager
      */
     public function revoke($role, $userId)
     {
+        if (empty($userId)) {
+            return false;
+        }
+
         return $this->db->createCommand()
-            ->delete($this->assignmentTable, ['user_id' => (string)$userId, 'item_name' => $role->name])
+            ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
             ->execute() > 0;
     }
 
@@ -623,8 +653,12 @@ class DbManager extends BaseManager
      */
     public function revokeAll($userId)
     {
+        if (empty($userId)) {
+            return false;
+        }
+
         return $this->db->createCommand()
-            ->delete($this->assignmentTable, ['user_id' => (string)$userId])
+            ->delete($this->assignmentTable, ['user_id' => (string) $userId])
             ->execute() > 0;
     }
 
