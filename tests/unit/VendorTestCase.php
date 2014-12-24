@@ -26,7 +26,7 @@ class VendorTestCase extends TestCase
         Yii::setAlias('@vendor', $vendorDir);
         $vendorAutoload = $vendorDir . '/autoload.php';
         if (file_exists($vendorAutoload)) {
-            require_once($vendorAutoload);
+            require($vendorAutoload);
         } else {
             throw new NotSupportedException("Vendor autoload file '{$vendorAutoload}' is missing.");
         }

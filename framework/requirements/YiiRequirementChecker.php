@@ -17,7 +17,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * Example:
  *
  * ~~~php
- * require_once('path/to/YiiRequirementChecker.php');
+ * require('path/to/YiiRequirementChecker.php');
  * $requirementsChecker = new YiiRequirementChecker();
  * $requirements = array(
  *     array(

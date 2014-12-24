@@ -537,7 +537,7 @@ abstract class BaseMigrateController extends Controller
     protected function createMigration($class)
     {
         $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-        require_once($file);
+        require($file);
 
         return new $class();
     }
