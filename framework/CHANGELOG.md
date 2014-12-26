@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #6434: Added `yii\behaviors\SluggableBehavior::immutable` to support keeping the generated slug unchanged (trntv)
 - Enh #6467: `ActiveForm` will scroll to the nearest visible element when the first error input is hidden (newartix)
 - Enh #6488: Support changing `yii\base\Theme::basePath` during runtime (qiangxue)
+- Enh #6618: Added Model::addErrors() (slavcodev, pana1990)
 - Chg #6427: In case of invalid route web application now throws exception with "Page not found" instead of "Invalid Route" (cebe, samdark)
 - Chg #6641: removed zero padding from ETag strings (DaSourcerer)
 
