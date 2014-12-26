@@ -520,7 +520,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function isAttributeChanged($name)
     {
         if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
-            return $this->_attributes[$name] !== $this->_oldAttributes[$name];
+            return $this->_attributes[$name] != $this->_oldAttributes[$name];
         } else {
             return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
         }
@@ -539,19 +539,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         $names = array_flip($names);
         $attributes = [];
-        if ($this->_oldAttributes === null) {
-            foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name])) {
-                    $attributes[$name] = $value;
-                }
-            }
-        } else {
-            foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
-                    $attributes[$name] = $value;
-                }
+        
+        foreach ($this->_attributes as $name => $value) {
+            if (isset($names[$name]) && $this->isAttributeChanged($name)) {
+                $attributes[$name] = $value;
             }
         }
+        
         return $attributes;
     }
 
