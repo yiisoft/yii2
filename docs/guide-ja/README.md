@@ -128,7 +128,7 @@ All Rights Reserved.
 RESTful ウェブサービス
 ----------------------
 
-* **翻訳中** [クイックスタート](rest-quick-start.md)
+* [クイックスタート](rest-quick-start.md)
 * **翻訳中** [リソース](rest-resources.md)
 * **翻訳中** [コントローラ](rest-controllers.md)
 * **翻訳中** [ルーティング](rest-routing.md)
