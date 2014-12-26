@@ -191,10 +191,10 @@ que você não vai querer criar uma nova instância manualmente da classe do mó
 pois será diferente do criado pelo Yii em resposta a uma requisição.
 
 > Informação: Ao desenvolver um módulo, você não deve assumir que o módulo usará 
-um ID fixo. Isto porque um módulo pode ser associado a um ID arbitrário quando 
-usado em uma aplicação ou dentro de outro módulo. A fim de obter o ID do módulo, 
-você deve usar a abordagem anterior para obter primeiramente a instância do módulo 
-e em seguida obter o ID através de `$module->id`.
+  um ID fixo. Isto porque um módulo pode ser associado a um ID arbitrário quando 
+  usado em uma aplicação ou dentro de outro módulo. A fim de obter o ID do módulo, 
+  você deve usar a abordagem anterior para obter primeiramente a instância do módulo 
+  e em seguida obter o ID através de `$module->id`.
 
 Você também pode acessar a instância do módulo usando as seguintes abordagens:
 
@@ -274,10 +274,10 @@ os IDs de todos os seus módulos ancestrais. Por exemplo, a rota
 `dashboard` no módulo `admin` que é um módulo filho do módulo `forum`.
 
 > Informação: O método [[yii\base\Module::getModule()|getModule()]] retorna apenas 
-o módulo filho diretamente pertencente ao seu módulo parente. A propriedade 
-[[yii\base\Application::loadedModules]] mantém uma lista dos módulos carregados, 
-incluindo os módulos filhos e parentes aninhados, indexados pelos seus nomes de 
-classes.
+  o módulo filho diretamente pertencente ao seu módulo parente. A propriedade 
+  [[yii\base\Application::loadedModules]] mantém uma lista dos módulos carregados, 
+  incluindo os módulos filhos e parentes aninhados, indexados pelos seus nomes de 
+  classes.
 
 
 ## Boas Práticas <a name="best-practices"></a>
