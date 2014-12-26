@@ -128,15 +128,15 @@ All Rights Reserved.
 RESTful ウェブサービス
 ----------------------
 
-* **翻訳未着手** [クイックスタート](rest-quick-start.md)
-* **翻訳未着手** [リソース](rest-resources.md)
-* **翻訳未着手** [コントローラ](rest-controllers.md)
-* **翻訳未着手** [ルーティング](rest-routing.md)
-* **翻訳未着手** [レスポンスの書式設定](rest-response-formatting.md)
-* **翻訳未着手** [認証](rest-authentication.md)
-* **翻訳未着手** [転送レート制限](rest-rate-limiting.md)
-* **翻訳未着手** [バージョン管理](rest-versioning.md)
-* **翻訳未着手** [エラー処理](rest-error-handling.md)
+* **翻訳中** [クイックスタート](rest-quick-start.md)
+* **翻訳中** [リソース](rest-resources.md)
+* **翻訳中** [コントローラ](rest-controllers.md)
+* **翻訳中** [ルーティング](rest-routing.md)
+* **翻訳中** [レスポンスの書式設定](rest-response-formatting.md)
+* **翻訳中** [認証](rest-authentication.md)
+* **翻訳中** [転送レート制限](rest-rate-limiting.md)
+* **翻訳中** [バージョン管理](rest-versioning.md)
+* **翻訳中** [エラー処理](rest-error-handling.md)
 
 
 開発ツール
