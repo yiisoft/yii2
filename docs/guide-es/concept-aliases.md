@@ -121,7 +121,7 @@ mientras que el resto de los alias están definidos en el constructor de la apli
 Alias en Extensiones <a name="extension-aliases"></a>
 --------------------
 
-Un alias se define automaticamente por cada [extension](structure-extensions.md) que ha sido instalada a través de Composer.
+Un alias se define automaticamente por cada [extensión](structure-extensions.md) que ha sido instalada a través de Composer.
 El alias es nombrado tras el `namespace` de raíz de la extensión instalada tal y como está declarada en su archivo `composer.json`,
 y representa el directorio raíz de la extensión. Por ejemplo, si instalas la extensión `yiisoft/yii2-jui`, tendrás
 automaticamente definido el alias `@yii/jui` durante la etapa [bootstrapping](runtime-bootstrapping.md) de la aplicación:
