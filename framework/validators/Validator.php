@@ -267,14 +267,14 @@ class Validator extends Component
         $result = $this->validateValue($value);
         if (empty($result)) {
             return true;
-        } else {
-            list($message, $params) = $result;
-            $params['attribute'] = Yii::t('yii', 'the input value');
-            $params['value'] = is_array($value) ? 'array()' : $value;
-            $error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
-
-            return false;
         }
+
+        list($message, $params) = $result;
+        $params['attribute'] = Yii::t('yii', 'the input value');
+        $params['value'] = is_array($value) ? 'array()' : $value;
+        $error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
+
+        return false;
     }
 
     /**

@@ -262,6 +262,29 @@ if (!$model && null === $event)
     throw new Exception('test');
 ```
 
+Prefer avoiding `else` after `return` where it makes sense.
+Use [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
+
+```php
+$result = $this->getResult();
+if (empty($result)) {
+  return true;
+} else {
+  // process result
+}
+```
+
+is better as
+
+```php
+$result = $this->getResult();
+if (empty($result)) {
+  return true;
+}
+
+// process result
+```
+
 #### switch
 
 Use the following formatting for switch:
