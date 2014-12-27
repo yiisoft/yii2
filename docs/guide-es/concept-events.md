@@ -3,7 +3,7 @@
 
 Los eventos permiten inyectar código dentro de otro código existente en ciertos puntos de ejecución. Se pueden adjuntar
 código personalizado a un evento, cuando se lance (triggered), el código se ejecutará automáticamente. Por ejemplo, un
-objeto `mailer` puede lanzar el evento `messageSent` cuando se envía un mensaje correctamente. Si se quiere rastrear
+objeto mailer puede lanzar el evento `messageSent` cuando se envía un mensaje correctamente. Si se quiere rastrear
 el correcto envío del mensaje, se puede, simplemente, añadir un código de seguimiento al evento `messageSent`.
 
 Yii introduce una clase base [[yii\base\Component]] para soportar eventos. Si una clase necesita lanzar un evento,
@@ -34,10 +34,11 @@ function ($event) {
 Un gestor de eventos puede obtener la siguiente información acerca de un evento ya sucedido mediante el parámetro
 `$event`:
 
-- [[yii\base\Event::name|event name]]
-- [[yii\base\Event::sender|event sender]]: el objeto desde el que se ha ejecutado `trigger()`
+- [[yii\base\Event::name|nombre del evento]]
+- [[yii\base\Event::sender|evento enviando]]: el objeto desde el que se ha ejecutado `trigger()`
 - [[yii\base\Event::data|custom data]]: los datos que se proporcionan al adjuntar el gestor de eventos
   (se explicará más adelante)
+
 
 Añadir Gestores de Eventos <a name="attaching-event-handlers"></a>
 --------------------------
@@ -95,7 +96,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 De forma predeterminada, cada nuevo gestor añadido se pone a la cola de la lista de gestores del evento. Por lo tanto,
 el gestor se ejecutará en el último lugar cuando se lance el evento. Para insertar un nuevo gestor al principio de la
 cola de gestores para que sea ejecutado primero, se debe llamar a [[yii\base\Component::on()]], pasando al cuarto
-parámetro `$append` el valor `false`:
+parámetro `$append` el valor false:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -135,10 +136,10 @@ Con el código anterior, cada llamada a `bar()` lanzará un evento llamado `hell
   Tercero, se puede ver que eventos soporta una clase simplemente revisando la declaración de constantes.
 
 A veces cuando se lanza un evento se puede querer pasar información adicional al gestor de eventos. Por ejemplo, un
-`mailer` puede querer enviar la información del mensaje para que los gestores del evento `messageSent` para que los
+mailer puede querer enviar la información del mensaje para que los gestores del evento `messageSent` para que los
 gestores puedan saber las particularidades del mensaje enviado. Para hacerlo, se puede proporcionar un objeto de tipo
 evento como segundo parámetro al método [[yii\base\Component::trigger()]]. El objeto de tipo evento debe ser una
-instancia de la clase [[yii\base\Event]] o de sus hijas. Por ejemplo:
+instancia de la clase [[yii\base\Event]] o de su clase hija. Por ejemplo:
 
 ```php
 namespace app\components;

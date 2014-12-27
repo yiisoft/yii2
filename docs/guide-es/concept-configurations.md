@@ -70,7 +70,7 @@ Las configuraciones se utilizan en muchos lugares en Yii. Al comienzo de esta se
 
 ### Configuraciones de aplicación <a name="application-configurations"></a>
 
-Configuración para una [aplicación](structure-applications.md) es probablemente una de las configuraciones más complejas. Esto se debe a que la clase [[yii\web\Application|application]] tiene un montón de propiedades y eventos configurables. Más importante aún, su propiedad [[yii\web\Application::components|components]] que puede recibir una gran variedad de configuraciones para crear componentes que se registran a través de la aplicación. Lo siguiente es un resumen del archivo de configuración de la aplicación para la [plantilla básica de la aplicación](start-installation.md).
+Configuración para una [aplicación](structure-applications.md) es probablemente una de las configuraciones más complejas. Esto se debe a que la clase [[yii\web\Application|aplicación]] tiene un montón de propiedades y eventos configurables. Más importante aún, su propiedad [[yii\web\Application::components|componentes]] que puede recibir una gran variedad de configuraciones para crear componentes que se registran a través de la aplicación. Lo siguiente es un resumen del archivo de configuración de la aplicación para la [plantilla básica de la aplicación](start-installation.md).
 
 ```php
 $config = [
@@ -137,7 +137,7 @@ Tenga en cuenta que debido a que el nombre de la clase ya está dado, la matriz 
 
 ## Archivos de Configuración <a name="configuration-files"></a>
 
-Cuando una configuración es muy compleja, una práctica común es almacenarla en uno o múltiples archivos PHP, conocidos como *Los archivos de configuración*. Un archivo de configuración devuelve un array de PHP que representa la configuración. Por ejemplo, es posible mantener una configuración de la aplicación en un archivo llamado `web.php`, como el siguiente,
+Cuando una configuración es muy compleja, una práctica común es almacenarla en uno o múltiples archivos PHP, conocidos como *archivos de configuración*. Un archivo de configuración devuelve un array de PHP que representa la configuración. Por ejemplo, es posible mantener una configuración de la aplicación en un archivo llamado `web.php`, como el siguiente,
 
 ```php
 return [
@@ -209,7 +209,8 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 Usted puede definir `YII_ENV` como uno de los valores siguientes:
 
-- `prod`: entorno de producción. La constante `YII_ENV_PROD` evaluará como verdadero. Este es el valor por defecto de `YII_ENV` si no lo define.
+- `prod`: entorno de producción. La constante `YII_ENV_PROD` evaluará como verdadero. 
+Este es el valor por defecto de `YII_ENV` si no esta definida.
 - `dev`: entorno de desarrollo. La constante `YII_ENV_DEV` evaluará como verdadero.
 - `test`: entorno de pruebas. La constante `YII_ENV_TEST` evaluará como verdadero.
 

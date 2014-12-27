@@ -18,7 +18,7 @@ Instalación
 Yii 2.0 adopta íntegramente [Composer](https://getcomposer.org/), el administrador de paquetes de facto de PHP.
 Tanto la instalación del núcleo del framework como las extensiones se manejan a través de Composer. Por favor consulta
 la sección [Comenzando con la Aplicación Básica](start-installation.md) para aprender a instalar Yii 2.0. Si quieres crear extensiones
-o transformar extensiones de Yii 1.1 para que sean compatibles con Yii 2.0, consulta la sección [Creando Extensiones](extend-creating-extensions.md) de la guía.
+o transformar extensiones de Yii 1.1 para que sean compatibles con Yii 2.0, consulta la sección [Creando Extensiones](structure-extensions.md#creating-extensions) de la guía.
 
 
 Requerimientos de PHP
@@ -148,7 +148,7 @@ como `yii\web\Request` puede ser auto-cargada. Si estás utilizando una librerí
 como Zend Framework, puedes definir un path alias `@Zend` que se refiera al directorio de instalación
 de ese framework. Una vez realizado esto, Yii será capaz de auto-cargar cualquier clase de Zend Framework también.
 
-Se puede encontrar más detalles del tema en la sección [Path Alias](concept-aliases.md).
+Se puede encontrar más detalles del tema en la sección [Alias](concept-aliases.md).
 
 
 Vistas
@@ -204,7 +204,7 @@ Ten en cuenta que dada la introducción de [[yii\base\Model::scenarios()|scenari
 En la mayoría de los casos, no necesitas sobrescribir [[yii\base\Model::scenarios()|scenarios()]] si el método [[yii\base\Model::rules()|rules()]]
 especifica completamente los escenarios que existirán, y si no hay necesidad de declarar atributos inseguros (`unsafe`).
 
-Para aprender más detalles de modelos, consulta la sección [Modelos](basic-models.md).
+Para aprender más detalles de modelos, consulta la sección [Modelos](structure-models.md).
 
 
 Controladores
@@ -271,7 +271,7 @@ aplicados a cualquier archivo de vista, incluso una vista renderizada fuera del 
 Además, el componente `CThemeManager` ya no existe. En cambio, `theme` es una propiedad configurable del componente `view`
 de la aplicación.
 
-Consulta la sección [Utilizando Themes](tutorial-theming.md) para más detalles.
+Consulta la sección [Utilizando Themes](output-theming.md) para más detalles.
 
 
 Aplicaciones de Consola
@@ -337,7 +337,7 @@ Al registrar un asset bundle a través de [[yii\web\AssetBundle::register()]], h
 vía Web. A diferencia de Yii 1, la página que registra el bundle contendrá automáticamente las referencias a los archivos
 JavaScript y CSS especificados en el bundle.
 
-Por favor, consulta la sección [Manejando Assets](output-assets.md) para más detalles.
+Por favor, consulta la sección [Manejando Assets](structure-assets.md) para más detalles.
 
 
 Helpers
@@ -469,6 +469,36 @@ Hay muchos otros cambios y mejoras con respecto a ActiveRecord. Por favor, consu
 la sección [Active Record](db-active-record.md) para más detalles.
 
 
+Active Record Behaviors
+-----------------------
+
+En 2.0, hemos disminuido la clase del comportamiento base `CActiveRecordBehavior`.Si desea crear un comportamiento Active Record, usted tendrá que extender directamente de `yii\base\Behavior`. Si la clase de comportamiento debe responder a algunos eventos propio, usted tiene que anular los métodos `events()` como el siguiente,
+
+```php
+namespace app\components;
+
+use yii\db\ActiveRecord;
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
+{
+    // ...
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
+        ];
+    }
+
+    public function beforeValidate($event)
+    {
+        // ...
+    }
+}
+```
+
+
 User e IdentityInterface
 ------------------------
 
@@ -494,11 +524,11 @@ En 1.1, tendrías que haber creado dos reglas diferentes para obtener el mismo r
 ]
 ```
 
-Por favor, consulta la sección [Documentación del Manejo de URLs](url.md) para más detalles.
+Por favor, consulta la sección [Documentación del Manejo de URLs](runtime-routing.md) para más detalles.
 
 Utilizando Yii 1.1 y 2.x juntos
 -------------------------------
 
 Si tienes código en Yii 1.1 que quisieras utilizar junto con Yii 2.0, por favor consulta
-la sección [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md).
+la sección [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md).
 
