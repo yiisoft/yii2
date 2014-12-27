@@ -14,6 +14,11 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
+ * BaseListView is a base class for widgets displaying data from data provider
+ * such as ListView and GridView.
+ *
+ * It provides features like sorting, paging and also filtering the data.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
