@@ -56,6 +56,166 @@ abstract class Schema extends Object
     const TYPE_MONEY = 'money';
 
     /**
+     * Specify type of field as pk
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function primaryKey($size = null)
+    {
+        return new SchemaType(self::TYPE_PK, $size);
+    }
+
+    /**
+     * Specify type of field as big primary key
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function bigPrimaryKey($size = null)
+    {
+        return new SchemaType(self::TYPE_BIGPK, $size);
+    }
+
+    /**
+     * Specify type of field as string
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function string($size = null)
+    {
+        return new SchemaType(self::TYPE_STRING, $size);
+    }
+
+    /**
+     * Specify type of field as text
+     * @param integer $size size of primary key
+     * @return SchemaType field params
+     */
+    public static function text($size = null)
+    {
+        return new SchemaType(self::TYPE_TEXT, $size);
+    }
+
+    /**
+     * Specify type of field as smallint
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function smallint($size = null)
+    {
+        return new SchemaType(self::TYPE_SMALLINT, $size);
+    }
+
+    /**
+     * Specify type of field as integer
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function integer($size = null)
+    {
+        return new SchemaType(self::TYPE_INTEGER, $size);
+    }
+
+    /**
+     * Specify type of field as bigint
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function bigint($size = null)
+    {
+        return new SchemaType(self::TYPE_BIGINT, $size);
+    }
+
+    /**
+     * Specify type of field as float
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function float($size = null)
+    {
+        return new SchemaType(self::TYPE_FLOAT, $size);
+    }
+
+    /**
+     * Specify type of field as decimal
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function decimal($size = null)
+    {
+        return new SchemaType(self::TYPE_DECIMAL, $size);
+    }
+
+    /**
+     * Specify type of field as datetime
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function datetime($size = null)
+    {
+        return new SchemaType(self::TYPE_DATETIME, $size);
+    }
+
+    /**
+     * Specify type of field as timestamp
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function timestamp($size = null)
+    {
+        return new SchemaType(self::TYPE_TIMESTAMP, $size);
+    }
+
+    /**
+     * Specify type of field as time
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function time($size = null)
+    {
+        return new SchemaType(self::TYPE_TIME, $size);
+    }
+
+    /**
+     * Specify type of field as date
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function date($size = null)
+    {
+        return new SchemaType(self::TYPE_DATE, $size);
+    }
+
+    /**
+     * Specify type of field as binary
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function binary($size = null)
+    {
+        return new SchemaType(self::TYPE_BINARY, $size);
+    }
+
+    /**
+     * Specify type of field as boolean
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function boolean($size = null)
+    {
+        return new SchemaType(self::TYPE_BOOLEAN, $size);
+    }
+
+    /**
+     * Specify type of field as money
+     * @param integer $size size of field
+     * @return SchemaType field params
+     */
+    public static function money($size = null)
+    {
+        return new SchemaType(self::TYPE_MONEY, $size);
+    }
+
+    /**
      * @var Connection the database connection
      */
     public $db;
