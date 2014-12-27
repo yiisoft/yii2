@@ -84,6 +84,16 @@ class SchemaType extends Object
     }
 
     /**
+     * Trick for use keyword as class method
+     */
+    public function __call($name, $args)
+    {
+        if ($name == "default") {
+            return call_user_func_array(array($this, "defaultValue"), $args);
+        }
+    }
+
+    /**
      * Set size of column
      * @param  integer $size size of column
      * @return SchemaType
