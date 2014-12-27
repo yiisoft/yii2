@@ -223,10 +223,20 @@ working with AR objects.
 In order to respond to user requests faster you can process heavy parts of the
 request later if there's no need for immediate response.
 
-- Cron jobs + console.
-- queues + handlers.
+There are two common ways to achieve it: cron job processing and specialized queues.
 
-TBD
+In the first case we need to save data which processing we want to do later to persistent storage
+such as database. A [console command](tutorial-console.md) that is run regularly via cron job queries
+database and processes data if there's any.
+
+The solution is OK for most cases but has one significant drawback. We aren't aware if there's data to
+process before we query database so we're either querying database quite often or have a slight delay
+between each data processing.
+
+This issue could be solved by queue and job servers such RabbitMQ, ActiveMQ, Amazon SQS and more.
+In this case instead of writing data to persistent storage you're queueing it via APIs provided
+by queue or job server. Processing is often put into job handler class. Job from the queue is executed
+right after all jobs before it are done.
 
 ### If nothing helps
 
