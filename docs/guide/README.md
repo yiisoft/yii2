@@ -195,5 +195,4 @@ Helpers
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
 
