@@ -93,12 +93,11 @@ public function fields()
 
 ### `extraFields()` をオーバーライドする<a name="overriding-extra-fields"></a>
 
-By default, [[yii\base\Model::extraFields()]] returns nothing, while [[yii\db\ActiveRecord::extraFields()]]
-returns the names of the relations that have been populated from DB.
+デフォルトでは、[[yii\base\Model::extraFields()]] は何も返しませんが、[[yii\db\ActiveRecord::extraFields()]] は DB から取得されたリレーションの名前を返します。
 
-The return data format of `extraFields()` is the same as that of `fields()`. Usually, `extraFields()`
-is mainly used to specify fields whose values are objects. For example, given the following field
-declaration,
+`extraFields()` によって返されるデータの形式は `fields()` のそれと同じです。
+通常、`extraFields()` は、主として、値がオブジェクトであるフィールドを指定するのに使用されます。
+例えば、次のようなフィールドの宣言があるとしましょう。
 
 ```php
 public function fields()
@@ -112,7 +111,7 @@ public function extraFields()
 }
 ```
 
-the request with `http://localhost/users?fields=id,email&expand=profile` may return the following JSON data:
+`http://localhost/users?fields=id,email&expand=profile` というリクエストは、次のような JSON データを返すことが出来ます。
 
 ```php
 [
@@ -129,16 +128,16 @@ the request with `http://localhost/users?fields=id,email&expand=profile` may ret
 ```
 
 
-## Links <a name="links"></a>
+## リンク <a name="links"></a>
 
-[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
-promotes that RESTful APIs should return information that allow clients to discover actions supported for the returned
-resources. The key of HATEOAS is to return a set of hyperlinks with relation information when resource data are served
-by the APIs.
+[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) は、Hypermedia as the Engine of Application State (アプリケーション状態のエンジンとしてのハイパーメディア) の略称です。
+HATEOAS は、RESTful API は自分が返すリソースについて、どのようなアクションがサポートされているかをクライアントが発見できるような情報を返すべきである、という概念です。
+HATEOAS のキーポイントは、リソースデータが API によって提供されるときには、関連する情報を一群のハイパーリンクによって返すべきである、ということです。
 
-Your resource classes may support HATEOAS by implementing the [[yii\web\Linkable]] interface. The interface
-contains a single method [[yii\web\Linkable::getLinks()|getLinks()]] which should return a list of [[yii\web\Link|links]].
-Typically, you should return at least the `self` link representing the URL to the resource object itself. For example,
+あなたのリソースクラスは、[[yii\web\Linkable]] インタフェイスを実装することによって、HATEOAS をサポートすることが出来ます。
+このインタフェイスは、[[yii\web\Link|リンク]] のリストを返すべき [[yii\web\Linkable::getLinks()|getLinks()]] メソッド一つだけを含みます。
+典型的には、少なくとも、リソースオブジェクトそのものへの URL を表現する `self` リンクを返さなければなりません。
+例えば、
 
 ```php
 use yii\db\ActiveRecord;
@@ -157,8 +156,8 @@ class User extends ActiveRecord implements Linkable
 }
 ```
 
-When a `User` object is returned in a response, it will contain a `_links` element representing the links related
-to the user, for example,
+`User` オブジェクトがレスポンスで返されるとき、レスポンスはそのユーザに関連するリンクを表現する `_links` 要素を含むことになります。
+例えば、
 
 ```
 {
@@ -172,15 +171,15 @@ to the user, for example,
 ```
 
 
-## Collections <a name="collections"></a>
+## コレクション <a name="collections"></a>
 
-Resource objects can be grouped into *collections*. Each collection contains a list of resource objects
-of the same type.
+リソースオブジェクトは *コレクション* としてグループ化することが出来ます。
+各コレクションは、同じ型のリソースのリストを含みます。
 
-While collections can be represented as arrays, it is usually more desirable to represent them
-as [data providers](output-data-providers.md). This is because data providers support sorting and pagination
-of resources, which is a commonly needed feature for RESTful APIs returning collections. For example,
-the following action returns a data provider about the post resources:
+コレクションは配列として表現することも可能ですが、通常は、[データプロバイダ](output-data-providers.md) として表現する方がより望ましい方法です。
+これは、データプロバイダがリソースの並べ替えとページネーションをサポートしているからです。
+並べ替えとページネーションは、コレクションを返す RESTful API にとっては、普通に必要とされる機能です。
+例えば、次のアクションは投稿のリソースについてデータプロバイダを返すものです。
 
 ```php
 namespace app\controllers;
@@ -200,14 +199,13 @@ class PostController extends Controller
 }
 ```
 
-When a data provider is being sent in a RESTful API response, [[yii\rest\Serializer]] will take out the current
-page of resources and serialize them as an array of resource objects. Additionally, [[yii\rest\Serializer]]
-will also include the pagination information by the following HTTP headers:
+データプロバイダが RESTful API のレスポンスで送信される場合は、[[yii\rest\Serializer]] が現在のページのリソースを取り出して、リソースオブジェクトの配列としてシリアライズします。
+それだけでなく、[[yii\rest\Serializer]] は次の HTTP ヘッダを使ってページネーション情報もレスポンスに含めます。
 
-* `X-Pagination-Total-Count`: The total number of resources;
-* `X-Pagination-Page-Count`: The number of pages;
-* `X-Pagination-Current-Page`: The current page (1-based);
-* `X-Pagination-Per-Page`: The number of resources in each page;
-* `Link`: A set of navigational links allowing client to traverse the resources page by page.
+* `X-Pagination-Total-Count`: リソースの総数
+* `X-Pagination-Page-Count`: ページ数
+* `X-Pagination-Current-Page`: 現在のページ (1 から始まる)
+* `X-Pagination-Per-Page`: 各ページのリソース数
+* `Link`: クライアントがリソースをページごとにたどることが出来るようにするための一群のナビゲーションリンク
 
-An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section.
+その一例を [クイックスタート](rest-quick-start.md#trying-it-out) の節で見ることが出来ます。
