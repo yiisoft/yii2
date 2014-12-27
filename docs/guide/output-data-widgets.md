@@ -6,6 +6,60 @@ Data widgets
 ListView
 --------
 
+The ListView widget is used to display data from data provider. Each data model is rendered using the view specified.
+Since it provides features such as pagination, sorting and filtering out of the box, it is handy both to display
+information to end user and to create data managing UI.
+
+A typical usage is as follows:
+
+```php
+use yii\widgets\ListView;
+use yii\data\ActiveDataProvider;
+
+$dataProvider = new ActiveDataProvider([
+    'query' => Post::find(),
+    'pagination' => [
+        'pageSize' => 20,
+    ],
+]);
+echo ListView::widget([
+    'dataProvider' => $dataProvider,
+    'itemView' => '_post',
+]);
+```
+
+The `_post` view could be the following:
+
+
+```php
+<?php
+use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
+?>
+<div class="post">
+    <h2><?= Html::encode($model->title) ?></h2>
+    
+    <?= HtmlPurifier::process($model->text) ?>    
+</div>
+```
+
+In the view above current data model is available as `$model`. Additionally the following are available:
+
+- `$key`: mixed, the key value associated with the data item.
+- `$index`: integer, the zero-based index of the data item in the items array returned by data provider.
+- `$widget`: ListView, this widget instance.
+
+If you need to pass additional data to each view use `$viewParams` like the following:
+
+```php
+echo ListView::widget([
+    'dataProvider' => $dataProvider,
+    'itemView' => '_post',
+    'viewParams' => [
+        'fullView' => true,
+    ],
+]);
+```
 
 
 DetailView
@@ -421,7 +475,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on joining with relations](db-active-record.md#joining-with-relations).
 
-#### Using sql views for filtering, sorting and displaying data
+#### Using SQL views for filtering, sorting and displaying data
 
 There is also another approach that can be faster and more useful - sql views. For example, if we need to show the gridview 
 with users and their profiles, we can do so in this way:
