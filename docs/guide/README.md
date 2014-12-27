@@ -98,7 +98,7 @@ Displaying Data
 
 * [Data Formatting](output-formatter.md)
 * [Pagination](output-pagination.md)
-* **TBD** [Sorting](output-sorting.md)
+* [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)
 * [Data Widgets](output-data-widgets.md)
 * [Working with Client Scripts](output-client-scripts.md)
