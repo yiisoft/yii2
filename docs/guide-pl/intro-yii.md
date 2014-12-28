@@ -11,7 +11,7 @@ Do czego Yii jest najlepsze ?
 
 Yii jest frameworkiem www ogólnego przeznaczenia, co znaczy że może być użyte do kodowania 
 wszystkich rodzajów aplikacji webowych używających PHP. Z uwagi na architekturę 
-opartą na komponentach i wyrafinowane wsparcie dla mechanizmów cache, jest on odpowiedni
+opartą na komponentach i wyrafinowane wsparcie dla mechanizmów buforowania, jest on odpowiedni
 do tworzenia wielkich aplikacji jak portale, fora, systemy zarządzania treścią (CMS),
 projekty komercyjne (e-sklepy), usługi webowe i inne.
 
