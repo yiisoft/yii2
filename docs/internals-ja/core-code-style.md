@@ -261,6 +261,29 @@ if (!$model && null === $event)
     throw new Exception('test');
 ```
 
+そうすることが合理的な場合は、`return` の後の `else` は出来れば避けてください。
+[ガード条件](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html) を使用しましょう。
+
+```php
+$result = $this->getResult();
+if (empty($result)) {
+  return true;
+} else {
+  // $result を処理
+}
+```
+
+これは、次の方が良いです。
+
+```php
+$result = $this->getResult();
+if (empty($result)) {
+  return true;
+}
+
+// $result を処理
+```
+
 #### switch
 
 switch には下記の書式を使用します。
