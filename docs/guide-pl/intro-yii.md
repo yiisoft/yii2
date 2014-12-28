@@ -22,6 +22,11 @@ Jeśli już znasz inny framework, możesz docenić następujące cechy:
 
 * Jak wiele frameworków, Yii implementuje architekturę MVC (model-widok-kontroller)
 i wspiera organizację kodu zgodną z tym wzorcem.
-* Yii opiera się na pomyśle że kod powinien być pisany prosto i elegancko
+* Yii opiera się na pomyśle że kod powinien być pisany prosto i elegancko. Yii nie próbuje przeprojektowywać 
+rzeczy tylko w celu dokładnego odwozowania wzorca projektowego.
+* Yii jest pełnym frameworkiem dostarczającym sprawdzone i gotowe do użycia funkcjonalności: konstruktory zapytań
+i ActiveRecord dla baz danych relacyjnych oraz NoSql; wsparcie dla RESTFull API; 
+wielostopniowe wsparcie dla buforowania; i więcej.
+* Yii jest niezwykle rozszerzalne. Możesz dostosować lub zmienić prawie każdy fragment rdzennego kodu.
 
 TBD 
