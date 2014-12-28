@@ -3,10 +3,10 @@ Actualizando desde Yii 1.1
 
 Existen muchas diferencias entre las versiones 1.1 y 2.0 de Yii ya que el framework fue completamente reescrito
 en su segunda versión.
-Como resultado, actualizar desde la versión 1.1 no es tan trivial como actualizar entre versiones menores. En esta
+Como resultado, actualizar a la versión 1.1 no es tan trivial como actualizar entre versiones menores. En esta
 guía encontrarás las diferencias más grandes entre estas dos versiones.
 
-Si no has utilizado Yii 1.1 antes, puedes saltar con seguridad esta sección e ir directamente a "[Comenzando con Yii](start-installation.md)".
+Si no has utilizado Yii 1.1 antes, puedes saltarte con seguridad esta sección e ir directamente a "[Comenzando con Yii](start-installation.md)".
 
 Es importante anotar que Yii 2.0 introduce más características de las que van a ser cubiertas en este resumen. Es altamente recomendado
 que leas a través de toda la guía definitiva para aprender acerca de todas ellas. Hay muchas posibilidades de que algo que hayas desarrollado anteriormente para extender Yii, sea ahora parte del núcleo de la librería.
@@ -30,13 +30,13 @@ Abajo hay un resumen de los mayores cambios en relación a PHP:
 
 - [Namespaces](http://php.net/manual/es/language.namespaces.php).
 - [Funciones anónimas](http://php.net/manual/es/functions.anonymous.php).
-- Sintáxis cortas de Arrays `[...elementos...]` es utilizado en vez de `array(...elementos...)`.
+- Sintáxis corta de Arrays `[...elementos...]` es utilizado en vez de `array(...elementos...)`.
 - Etiquetas cortas de `echo`. Ahora en las vistas se usa `<?=`. Esto se puede utilizar desde PHP 5.4.
 - [SPL - Biblioteca estándar de PHP](http://php.net/manual/es/book.spl.php).
 - [Enlace estático en tiempo de ejecución](http://php.net/manual/es/language.oop5.late-static-bindings.php).
 - [Fecha y Hora](http://php.net/manual/es/book.datetime.php).
 - [Traits](http://php.net/manual/es/language.oop5.traits.php).
-- [Internacionalización](http://php.net/manual/es/book.intl.php). Yii 2.0 utiliza la extensión `intl` de PHP
+- [intl](http://php.net/manual/es/book.intl.php). Yii 2.0 utiliza la extensión `intl` de PHP
   como soporte para internacionalización.
 
 
@@ -45,23 +45,23 @@ Namespace
 
 El cambio más obvio en Yii 2.0 es el uso de namespaces. Casi todas las clases del núcleo
 utilizan namespaces, ej., `yii\web\Request`. El prefijo "C" no se utiliza más en los nombre de clases.
-El esquema de nombre ahora utiliza la ruta de directorios. Por ejemplo, `yii\web\Request`
-indica que el archivo de la clase correspondiente es `web/Request.php`, en el directorio de Yii.
+El esquema de nombres ahora utiliza la estructura de directorios. Por ejemplo, `yii\web\Request`
+indica que el archivo de la clase correspondiente `web/Request.php` está bajo el directorio de Yii framework.
 
 (Puedes utilizar cualquier clase del núcleo sin necesidad de incluir el archivo que la contiene, gracias
 al autoloader de Yii.)
 
 
-Component y Object
+Componentes y Objectos
 ------------------
 
 Yii 2.0 parte la clase `CComponent` de 1.1 en dos clases: [[yii\base\Object]] y [[yii\base\Component]].
-La clase [[yii\base\Object|Object]] es una clase base que permite definir [propiedades de objecto](concept-properties.md)
+La clase [[yii\base\Object|Object]] es una clase base que permite definir [propiedades de object](concept-properties.md)
 a través de getters y setters. La clase [[yii\base\Component|Component]] extiende de [[yii\base\Object|Object]] y soporta
 [eventos](concept-events.md) y [comportamientos (behaviors)](concept-behaviors.md).
 
 Si tu clase no necesita utilizar las características de eventos o comportamientos, puedes considerar usar
-[[yii\base\Object|Object]] como clase base. Esto es usualmente en el caso de que las clases que representan sean
+[[yii\base\Object|Object]] como clase base. Esto es frecuente en el caso de que las clases que representan sean
 estructuras de datos básicas.
 
 
@@ -91,10 +91,10 @@ class MyClass extends \yii\base\Object
 }
 ```
 
-En el ejemplo de arriba, el último parámetro del constructor debe tomar una matriz de configuración
+En el ejemplo de arriba, el último parámetro del constructor debe tomar un array de configuración
 conteniendo pares clave-valor para la inicialización de las propiedades al final del mismo.
 Puedes sobrescribir el método [[yii\base\Object::init()|init()]] para realizar el trabajo de inicialización
-que debe ser hecho luego de que la configuración ha sido aplicada.
+que debe ser hecho después de que la configuración haya sido aplicada.
 
 Siguiendo esa convención, podrás crear y configurar nuevos objetos utilizando
 un array de configuración:
@@ -107,7 +107,7 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-Se puede encontrar mayor detalle acerca del tema en la sección [Configuración de objetos](concept-configurations.md).
+Se puede encontrar más detalles acerca del tema en la sección [Configuración de objetos](concept-configurations.md).
 
 
 Eventos
@@ -141,7 +141,7 @@ Por ejemplo, el alias `@yii` corresponde al directorio donde Yii se encuentra in
 están soportados en la mayor parte del núcleo. Por ejemplo, [[yii\caching\FileCache::cachePath]] puede tomar tanto
 una ruta de directorios normal como un alias.
 
-Un path alias está relacionado de cerca con un namespace. Se recomienda definir un path alias
+Un path alias está estrechamente relacionado con un namespace de la clase. Se recomienda definir un path alias
 por cada namespace raíz, y así poder utilizar el autolader de Yii sin otra configuración.
 Por ejemplo, debido a que `@yii` se refiere al directorio de instalación, una clase
 como `yii\web\Request` puede ser auto-cargada. Si estás utilizando una librería de terceros,
@@ -154,11 +154,11 @@ Se puede encontrar más detalles del tema en la sección [Alias](concept-aliases
 Vistas
 ------
 
-El cambio más significativo con respecto a las vistas en Yii 2 es que la variable especial `$this` (dentro de una vista) 
+El cambio más significativo con respecto a las vistas en Yii 2 es que la variable especial `$this` dentro de una vista
 ya no se refiere al controlador o widget actual.
 En vez de eso, `$this` ahora se refiere al objeto de la *vista*, un concepto nuevo introducido en Yii 2.0.
-El objeto *vista* es del tipo [[yii\web\View]], que representa la parte de las vistas en el patrón MVC.
-of the MVC pattern. Si quieres acceder al controlador o al widget correspondiente desde la propia vista,
+El objeto *vista* es del tipo [[yii\web\View]], que representa la parte de las vistas en el patrón MVC. Si
+quieres acceder al controlador o al widget correspondiente desde la propia vista,
 puedes utilizar `$this->context`.
 
 Para renderizar una vista parcial (partial) dentro de otra vista, se utiliza `$this->render()`, no `$this->renderPartial()`.
@@ -179,10 +179,10 @@ Modelos
 -------
 
 Yii 2.0 utiliza [[yii\base\Model]] como modelo base, algo similar a `CModel` en 1.1.
-La clase `CFormModel` ha sido descartada por completo. Ahora, en Yii 2 debes extender [[yii\base\Model]] para crear clases de modelos.
+La clase `CFormModel` ha sido descartada por completo. Ahora, en Yii 2 debes extender de [[yii\base\Model]] para crear clases de modelos basados en formularios.
 
 Yii 2.0 introduce un nuevo método llamado [[yii\base\Model::scenarios()|scenarios()]] para declarar escenarios soportados,
-y para indicar bajo qué escenario un atributo necesita ser validado, puede ser considerado seguro o no, etc. Por ejemplo:
+y para indicar bajo que escenario un atributo necesita ser validado, puede ser considerado seguro o no, etc. Por ejemplo:
 
 ```php
 public function scenarios()
@@ -259,19 +259,19 @@ ActiveForm::end();
 Consulta la sección [Widgets](structure-widgets.md) para más detalles.
 
 
-Themes
+Temas
 ------
 
-Los themes funcionan completamente diferente en Yii 2.0. Ahora están basados en un mecanismo de mapeo de rutas,
-que mapea la ruta de un archivo vista de origen a uno con un theme aplicado. Por ejemplo, si el path map de un theme es
-`['/web/views' => '/web/themes/basic']`, entonces la versión con el theme aplicado del archivo
-`/web/views/site/index.php` será `/web/themes/basic/site/index.php`. Por esta razón, ahora los themes pueden ser
-aplicados a cualquier archivo de vista, incluso una vista renderizada fuera del contexto de un controlador o widget.
+Los temas funcionan completamente diferente en Yii 2.0. Ahora están basados en un mecanismo de mapeo de rutas,
+que mapea la ruta de un archivo de la vista de origen a uno con un tema aplicado. Por ejemplo, si el path map de un tema es
+`['/web/views' => '/web/themes/basic']`, entonces la versión con el tema aplicado del archivo
+`/web/views/site/index.php` será `/web/themes/basic/site/index.php`. Por esta razón, ahora los temas pueden ser
+aplicados a cualquier archivo de la vista, incluso una vista renderizada fuera del contexto de un controlador o widget.
 
 Además, el componente `CThemeManager` ya no existe. En cambio, `theme` es una propiedad configurable del componente `view`
 de la aplicación.
 
-Consulta la sección [Utilizando Themes](output-theming.md) para más detalles.
+Consulta la sección [Temas](output-theming.md) para más detalles.
 
 
 Aplicaciones de Consola
@@ -304,7 +304,7 @@ Por favor, consulta la sección [Internacionalización](tutorial-i18n.md) para m
 Filtros de Acciones
 -------------------
 
-En Yii 2.0, los filtros de acciones son implementados a través de comportamientos (behaviors). Para definir un
+Los filtros de acciones son implementados a través de comportamientos (behaviors). Para definir un
 nuevo filtro personalizado, se debe extender de [[yii\base\ActionFilter]]. Para utilizar el filtro, conecta la clase del filtro
 al controlador como un comportamiento. Por ejemplo, para utilizar el filtro [[yii\filters\AccessControl]], deberías tener
 el siguiente código en el controlador:
@@ -331,8 +331,8 @@ Assets
 
 Yii 2.0 introduce un nuevo concepto llamado *asset bundle* que reemplaza el concepto de script package encontrado en Yii 1.1.
 
-Un asset bundle es una colección de assets (ej. archivos JavaScript, archivos CSS, imágenes, etc.) dentro de un directorio.
-Cada asset bundle está representada por una clase que extiende de [[yii\web\AssetBundle]].
+Un asset bundle es una colección de archivos assets (ej. archivos JavaScript, archivos CSS, imágenes, etc.) dentro de un directorio.
+Cada asset bundle está representado por una clase que extiende de [[yii\web\AssetBundle]].
 Al registrar un asset bundle a través de [[yii\web\AssetBundle::register()]], haces que los assets de dicho bundle sean accesibles
 vía Web. A diferencia de Yii 1, la página que registra el bundle contendrá automáticamente las referencias a los archivos
 JavaScript y CSS especificados en el bundle.
@@ -359,7 +359,7 @@ Formularios
 Yii 2.0 introduce el concepto de *campo* (field) para construir formularios utilizando [[yii\widgets\ActiveForm]]. Un campo (field)
 es un contenedor que consiste en una etiqueta, un input, un mensaje de error y/o texto de ayuda.
 Un campo es representado como un objeto [[yii\widgets\ActiveField|ActiveField]].
-Utilizando estos campos, puedes crear formularios más claramente que antes:
+Utilizando estos campos, puedes crear formularios más legibles que antes:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -379,7 +379,7 @@ Query Builder
 
 En Yii 1.1, la generación de consultas a la base de datos estaba dividida en varias clases, incluyendo `CDbCommand`,
 `CDbCriteria`, y `CDbCommandBuilder`. Yii 2.0 representa una consulta a la base de datos en términos de un objeto [[yii\db\Query|Query]]
-que puede ser convertido en una declaración SQL con la ayuda de [[yii\db\QueryBuilder|QueryBuilder]] detrás de escena.
+que puede ser convertido en una declaración SQL con la ayuda de [[yii\db\QueryBuilder|QueryBuilder]] detrás de la escena.
 Por ejemplo:
 
 ```php
@@ -409,7 +409,7 @@ y por lo tanto hereda todos los métodos de generación de consultas.
 Para comenzar a generar una consulta, llamas al método [[yii\db\ActiveRecord::find()]]:
 
 ```php
-// Para traer todos los clientes *activos* y ordenarlos por su ID:
+// Recibe todos los clientes *activos* y ordenardos por su ID:
 $customers = Customer::find()
     ->where(['status' => $active])
     ->orderBy('id')
@@ -431,27 +431,27 @@ class Customer extends \yii\db\ActiveRecord
 ```
 
 Ahora puedes utilizar `$customer->orders` para acceder a las órdenes de la tabla relacionada. También puedes utilizar el siguiente
-código para realizar una consulta 'al-vuelo' relacionada con una condición personalizada:
+código para realizar una consulta relacional 'al-vuelo' con una condición personalizada:
 
 ```php
 $orders = $customer->getOrders()->andWhere('status=1')->all();
 ```
 
-Cuando se utiliza la carga temprana de la relación, Yii 2.0 lo hace diferente de 1.1. En particular, en 1.1 una declaración JOIN
+Cuando se utiliza la carga temprana (eager loading) de la relación, Yii 2.0 lo hace diferente de 1.1. En particular, en 1.1 una declaración JOIN
 sería creada para seleccionar tanto los registros de la tabla primaria como los relacionados. En Yii 2.0, dos declaraciones SQL son ejecutadas
-sin utilizar un JOIN: la primera traer todos los modelos primarios, mientras que la segunda trae los registros relacionados
+sin utilizar un JOIN: la primera trae todos los modelos primarios, mientras que la segunda trae los registros relacionados
 utilizando como condición la clave primaria de los primarios.
 
 En vez de devolver objetos [[yii\db\ActiveRecord|ActiveRecord]], puedes conectar el método [[yii\db\ActiveQuery::asArray()|asArray()]]
 mientras generas una consulta que devuelve un gran número de registros. Esto causará que el resultado de la consulta sea devuelto como
-matrices (arrays), lo que puede reducir significativamente la necesidad de tiempo de CPU y memoria si el número de registros es grande.
+arrays, lo que puede reducir significativamente la necesidad de tiempo de CPU y memoria si el número de registros es grande.
 Por ejemplo:
 
 ```php
 $customers = Customer::find()->asArray()->all();
 ```
 
-Otro cambio es que ya no puedes definir valores por defecto a los atributos a través de propiedades publicas.
+Otro cambio es que ya no puedes definir valores por defecto a los atributos a través de propiedades públicas.
 Si lo necesitaras, debes definirlo en el método `init` de la clase del registro en cuestión.
 
 ```php
@@ -472,7 +472,7 @@ la sección [Active Record](db-active-record.md) para más detalles.
 Active Record Behaviors
 -----------------------
 
-En 2.0, hemos disminuido la clase del comportamiento base `CActiveRecordBehavior`.Si desea crear un comportamiento Active Record, usted tendrá que extender directamente de `yii\base\Behavior`. Si la clase de comportamiento debe responder a algunos eventos propio, usted tiene que anular los métodos `events()` como el siguiente,
+En 2.0, hemos disminuido la clase del comportamiento base `CActiveRecordBehavior`. Si desea crear un comportamiento Active Record, usted tendrá que extender directamente de `yii\base\Behavior`. Si la clase de comportamiento debe responder a algunos eventos propios, usted tiene que anular los métodos `events()` como se muestra a continuación,
 
 ```php
 namespace app\components;
@@ -503,7 +503,7 @@ User e IdentityInterface
 ------------------------
 
 La clase `CWebUser` de 1.1 es reemplazada por [[yii\web\User]], y la clase `CUserIdentity` ha dejado de existir.
-En cambio, ahora debes implementar [[yii\web\IdentityInterface]] lo que es mucho más directo para usar.
+En cambio, ahora debes implementar [[yii\web\IdentityInterface]] el cual es mucho más directo de usar.
 El template de Aplicación Avanzada provee un ejemplo así.
 
 Consulta las secciones [Autenticación](security-authentication.md), [Autorización](security-authorization.md), y [Template de Aplicación Avanzanda](tutorial-advanced-app.md) para más detalles.
@@ -513,7 +513,7 @@ Manejo de URLs
 --------------
 
 El manejo de URLs en Yii 2 es similar al de 1.1. Una mejora mayor es que el manejador actual ahora soporta parámetros opcionales.
-Por ejemplo, si tienes una regla declarada como a continuación, entonces coincidirá tanto con `post/popular` como `post/1/popular`. 
+Por ejemplo, si tienes una regla declarada como a continuación, entonces coincidirá tanto con `post/popular` como `post/1/popular`.
 En 1.1, tendrías que haber creado dos reglas diferentes para obtener el mismo resultado
 
 ```php
@@ -530,5 +530,5 @@ Utilizando Yii 1.1 y 2.x juntos
 -------------------------------
 
 Si tienes código en Yii 1.1 que quisieras utilizar junto con Yii 2.0, por favor consulta
-la sección [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md).
+la sección [Utilizando Yii 1.1 y 2.0 juntos](tutorial-yii-integration.md).
 
