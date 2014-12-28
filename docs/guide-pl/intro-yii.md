@@ -49,3 +49,5 @@ możesz sprawdzić uruchamiając tester wymagań `requirements.php` dołączony 
 Używanie Yii wymaga podstawowej wiedzy o programowaniu obiektowym w PHP (OOP), ponieważ Yii
 jest frameworkiem czysto obiektowym. Yii 2.0 wykorzystuje ostatnie udoskonalenia w PHP, jak 
 przestrzenie nazw i traity. Zrozumienie tych konstrukcji pomoże ci łatwiej zdecydować się na Yii 2.0.
+
+.
