@@ -74,34 +74,34 @@ public function behaviors()
 
 ## `ActiveController` を拡張する <a name="extending-active-controller"></a>
 
-If your controller class extends from [[yii\rest\ActiveController]], you should set
-its [[yii\rest\ActiveController::modelClass||modelClass]] property to be the name of the resource class
-that you plan to serve through this controller. The class must extend from [[yii\db\ActiveRecord]].
+コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass||modelClass]] プロパティにセットしなければなりません。
+リソースクラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
 
 
-### Customizing Actions <a name="customizing-actions"></a>
+### アクションをカスタマイズする <a name="customizing-actions"></a>
 
-By default, [[yii\rest\ActiveController]] provides the following actions:
+デフォルトでは、[[yii\rest\ActiveController]] は次のアクションを提供します。
 
-* [[yii\rest\IndexAction|index]]: list resources page by page;
-* [[yii\rest\ViewAction|view]]: return the details of a specified resource;
-* [[yii\rest\CreateAction|create]]: create a new resource;
-* [[yii\rest\UpdateAction|update]]: update an existing resource;
-* [[yii\rest\DeleteAction|delete]]: delete the specified resource;
-* [[yii\rest\OptionsAction|options]]: return the supported HTTP methods.
+* [[yii\rest\IndexAction|index]]: リソースをページごとに一覧する。
+* [[yii\rest\ViewAction|view]]: 指定したリソースの詳細を返す。
+* [[yii\rest\CreateAction|create]]: 新しいリソースを作成する。
+* [[yii\rest\UpdateAction|update]]: 既存のリソースを更新する。
+* [[yii\rest\DeleteAction|delete]]: 指定したりソースを削除する。
+* [[yii\rest\OptionsAction|options]]: サポートされている HTTP メソッドを返す。
 
-All these actions are declared through the [[yii\rest\ActiveController::actions()|actions()]] method.
-You may configure these actions or disable some of them by overriding the `actions()` method, like shown the following,
+これらのアクションは全て [[yii\rest\ActiveController::actions()|actions()]] メソッドによって宣言されます。
+`actions()` メソッドをオーバーライドすることによって、これらのアクションを構成したり、そのいくつかを無効化したりすることが出来ます。
+例えば、
 
 ```php
 public function actions()
 {
     $actions = parent::actions();
 
-    // disable the "delete" and "create" actions
+    // "delete" と "create" のアクションを無効にする
     unset($actions['delete'], $actions['create']);
 
-    // customize the data provider preparation with the "prepareDataProvider()" method
+    // データプロバイダの準備を "prepareDataProvider()" メソッドでカスタマイズする
     $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
 
     return $actions;
@@ -109,40 +109,39 @@ public function actions()
 
 public function prepareDataProvider()
 {
-    // prepare and return a data provider for the "index" action
+    // "index" アクションのためにデータプロバイダを準備して返す
 }
 ```
 
-Please refer to the class references for individual action classes to learn what configuration options are available.
+どういう構成オプションが利用できるかを学ぶためには、個々のアクションクラスのリファレンスを参照してください。
 
 
-### Performing Access Check <a name="performing-access-check"></a>
+### アクセスチェックを実行する <a name="performing-access-check"></a>
 
-When exposing resources through RESTful APIs, you often need to check if the current user has the permission
-to access and manipulate the requested resource(s). With [[yii\rest\ActiveController]], this can be done
-by overriding the [[yii\rest\ActiveController::checkAccess()|checkAccess()]] method like the following,
+RESTful API によってリソースを公開するときには、たいてい、現在のユーザがリクエストしているリソースにアクセスしたり操作したりする許可を持っているか否かをチェックする必要があります。
+これは、[[yii\rest\ActiveController]] を使う場合は、[[yii\rest\ActiveController::checkAccess()|checkAccess()]] メソッドを次のようにオーバーライドすることによって出来ます。
 
 ```php
 /**
- * Checks the privilege of the current user.
+ * 現在のユーザの特権をチェックする。
  *
- * This method should be overridden to check whether the current user has the privilege
- * to run the specified action against the specified data model.
- * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
+ * 現在のユーザが指定されたデータモデルに対して指定されたアクションを実行する特権を
+ * 有するか否かをチェックするためには、このメソッドをオーバーライドしなければなりません。
+ * ユーザが権限をもたない場合は、[[ForbiddenHttpException]] が投げられなければなりません。
  *
- * @param string $action the ID of the action to be executed
- * @param \yii\base\Model $model the model to be accessed. If null, it means no specific model is being accessed.
- * @param array $params additional parameters
- * @throws ForbiddenHttpException if the user does not have access
+ * @param string $action 実行されるアクションの ID。
+ * @param \yii\base\Model $model アクセスされるモデル。null の場合は、アクセスされる特定の特定がないことを意味する。
+ * @param array $params 追加のパラメータ
+ * @throws ForbiddenHttpException ユーザが権限をもたない場合
  */
 public function checkAccess($action, $model = null, $params = [])
 {
-    // check if the user can access $action and $model
-    // throw ForbiddenHttpException if access should be denied
+    // ユーザが $action と $model に対する権限を持つかどうかをチェック
+    // アクセスを拒否すべきときは ForbiddenHttpException を投げる
 }
 ```
 
-The `checkAccess()` method will be called by the default actions of [[yii\rest\ActiveController]]. If you create
-new actions and also want to perform access check, you should call this method explicitly in the new actions.
+`checkAccess()` メソッドは [[yii\rest\ActiveController]] のデフォルトのアクションから呼ばれます。
+新しいアクションを作成して、それに対してもアクセスチェックをしたい場合は、新しいアクションの中からこのメソッドを明示的に呼び出さなければなりません。
 
-> Tip: You may implement `checkAccess()` by using the [Role-Based Access Control (RBAC) component](security-authorization.md).
+> Tip|ヒント: [ロールベースアクセス制御 (RBAC) コンポーネント](security-authorization.md) を使って `checkAccess()` を実装することも可能です。
