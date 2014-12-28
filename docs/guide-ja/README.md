@@ -130,7 +130,7 @@ RESTful ウェブサービス
 
 * [クイックスタート](rest-quick-start.md)
 * [リソース](rest-resources.md)
-* **翻訳中** [コントローラ](rest-controllers.md)
+* [コントローラ](rest-controllers.md)
 * **翻訳中** [ルーティング](rest-routing.md)
 * **翻訳中** [レスポンスの書式設定](rest-response-formatting.md)
 * **翻訳中** [認証](rest-authentication.md)
