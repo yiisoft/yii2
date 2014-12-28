@@ -37,7 +37,7 @@ Wersje Yii
 Yii ma aktualnie (2014-12-28 - przyp tłumacza) rozpowszechniane dwie główne wersje: 1.1 i 2.0. Wersja 1.1 jest starszej generacji (PHP 5.1)
 i jest w fazie utrzymaniowej. Wersja 2.0 jest całkowiecie przepisaną wersją Yii uwzględniającą
 najnowsze technologie i protokoły, w tym Composer,PSR,przestrzenie nazw, traity i więcej.
-Wersja 2.0 reprezentuje aktualną generację frameworka i ortrzyma największe wsparcie programistów
+Wersja 2.0 reprezentuje aktualną generację frameworka i otrzyma największe wsparcie programistów
 przez najbliższe lata. Ten podręcznik jest wyłącznie o wersji 2.0.
 
 Wymagania i zależności
