@@ -3,7 +3,7 @@ Actualizando desde Yii 1.1
 
 Existen muchas diferencias entre las versiones 1.1 y 2.0 de Yii ya que el framework fue completamente reescrito
 en su segunda versión.
-Como resultado, actualizar a la versión 1.1 no es tan trivial como actualizar entre versiones menores. En esta
+Como resultado, actualizar desde la versión 1.1 no es tan trivial como actualizar entre versiones menores. En esta
 guía encontrarás las diferencias más grandes entre estas dos versiones.
 
 Si no has utilizado Yii 1.1 antes, puedes saltarte con seguridad esta sección e ir directamente a "[Comenzando con Yii](start-installation.md)".
@@ -45,7 +45,7 @@ Namespace
 
 El cambio más obvio en Yii 2.0 es el uso de namespaces. Casi todas las clases del núcleo
 utilizan namespaces, ej., `yii\web\Request`. El prefijo "C" no se utiliza más en los nombre de clases.
-El esquema de nombres ahora utiliza la estructura de directorios. Por ejemplo, `yii\web\Request`
+El esquema de nombres sigue la estructura de directorios. Por ejemplo, `yii\web\Request`
 indica que el archivo de la clase correspondiente `web/Request.php` está bajo el directorio de Yii framework.
 
 (Puedes utilizar cualquier clase del núcleo sin necesidad de incluir el archivo que la contiene, gracias
