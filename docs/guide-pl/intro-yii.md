@@ -27,6 +27,25 @@ rzeczy tylko w celu dokładnego odwozowania wzorca projektowego.
 * Yii jest pełnym frameworkiem dostarczającym sprawdzone i gotowe do użycia funkcjonalności: konstruktory zapytań
 i ActiveRecord dla baz danych relacyjnych oraz NoSql; wsparcie dla RESTFull API; 
 wielostopniowe wsparcie dla buforowania; i więcej.
-* Yii jest niezwykle rozszerzalne. Możesz dostosować lub zmienić prawie każdy fragment rdzennego kodu.
+* Yii jest niezwykle rozszerzalne. Możesz dostosować lub zmienić prawie każdy fragment rdzennego kodu. Możesz wykorzystać architekturę rozszerzeń, aby używać lub tworzyć łatwe do rozpowszechniania rozszerzenia.
+* Wysoka wydajność jest zawsze głównym celem w Yii.
 
-TBD 
+ 
+Wersje Yii
+==========
+
+Yii ma aktualnie dwie główne wersje: 1.1 i 2.0. Wersja 1.1 jest starszej generacji (PHP 5.1)
+i jest w fazie utrzymamniowej. Wersja 2.0 jest całkowiecie przepisaną wersją Yii uwzględniającą
+najnowsze technologie i protokoły, w tym Composer,PSR,przestrzenie nazw, traity i więcej.
+Wersja 2.0 reprezentuje aktualną generację frameworka i ortrzyma największe wsparcie programistów
+przez najbliższe lata. Ten podręcznik jest głównie o wersji 2.0.
+
+Wymagania i zależności
+======================
+
+Yii 2.0 wymaga PHP 5.4.0 lub nowszego. Dokładniejsze wymagania dla konkretnych funkcjonalności
+możesz sprawdzić uruchamiając tester wymagań `requirements.php` dołączony w każdym wydaniu Yii.
+
+Używanie Yii wymaga podstawowej wiedzy o programowaniu obiektowym w PHP (OOP), ponieważ Yii
+jest frameworkiem czysto obiektowym. Yii 2.0 wykorzystuje ostatnie udoskonalenia w PHP, jak 
+przestrzenie nazw i traity. Zrozumienie tych konstrukcji pomoże ci łatwiej zdecydować się na Yii 2.0.
