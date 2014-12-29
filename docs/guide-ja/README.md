@@ -133,8 +133,8 @@ RESTful ウェブサービス
 * [コントローラ](rest-controllers.md)
 * [ルーティング](rest-routing.md)
 * [レスポンス形式の設定](rest-response-formatting.md)
-* **翻訳中** [認証](rest-authentication.md)
-* **翻訳中** [転送レート制限](rest-rate-limiting.md)
+* [認証](rest-authentication.md)
+* [レート制限](rest-rate-limiting.md)
 * **翻訳中** [バージョン管理](rest-versioning.md)
 * **翻訳中** [エラー処理](rest-error-handling.md)
 
