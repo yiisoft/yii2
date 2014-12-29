@@ -47,7 +47,7 @@ public function actionView($id)
 具体的に言うと、次のフィルタがリストされた順に従って実行されます。
 
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: コンテントネゴシエーションをサポート。
-  [レスポンスの書式設定](rest-response-formatting.md) の節で説明します。
+  [レスポンス形式の設定](rest-response-formatting.md) の節で説明します。
 * [[yii\filters\VerbFilter|verbFilter]]: HTTP メソッドのバリデーションをサポート。
 * [[yii\filters\AuthMethod|authenticator]]: ユーザ認証をサポート。
   [認証](rest-authentication.md) の節で説明します。
