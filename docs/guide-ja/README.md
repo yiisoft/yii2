@@ -97,8 +97,8 @@ All Rights Reserved.
 ------------
 
 * [データのフォーマット](output-formatter.md)
-* **翻訳中** [ページネーション](output-pagination.md)
-* **翻訳中** [並べ替え](output-sorting.md)
+* [ページネーション](output-pagination.md)
+* [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)
 * [データウィジェット](output-data-widgets.md)
 * [クライアントスクリプトを扱う](output-client-scripts.md)
