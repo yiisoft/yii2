@@ -97,8 +97,8 @@ All Rights Reserved.
 ------------
 
 * [データのフォーマット](output-formatter.md)
-* **TBD** [ページネーション](output-pagination.md)
-* **TBD** [並べ替え](output-sorting.md)
+* **翻訳中** [ページネーション](output-pagination.md)
+* **翻訳中** [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)
 * [データウィジェット](output-data-widgets.md)
 * [クライアントスクリプトを扱う](output-client-scripts.md)
@@ -185,7 +185,7 @@ RESTful ウェブサービス
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
 * **翻訳未着手** [Bootstrap ウィジェット](widget-bootstrap.md)
-* **翻訳未着手** [Jquery UI ウィジェット](widget-jui.md)
+* **翻訳未着手** [jQuery UI ウィジェット](widget-jui.md)
 
 
 ヘルパ
@@ -195,5 +195,4 @@ RESTful ウェブサービス
 * **翻訳未着手** [ArrayHelper](helper-array.md)
 * **翻訳未着手** [Html](helper-html.md)
 * **翻訳未着手** [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
 

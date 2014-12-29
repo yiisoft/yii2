@@ -6,6 +6,61 @@
 ListView
 --------
 
+ListView ウィジェットは、データプロバイダからのデータを表示するのに使用されます。
+各データモデルは指定されたビューを使って表示されます。
+ListView は、特に何もしなくても、ページネーション、並べ替え、フィルタリングなどの機能を提供してくれますので、エンドユーザに情報を表示するためにも、データ管理 UI を作成するためにも、非常に便利なウィジェットです。
+
+典型的な使用方法は以下の通りです。
+
+```php
+use yii\widgets\ListView;
+use yii\data\ActiveDataProvider;
+
+$dataProvider = new ActiveDataProvider([
+    'query' => Post::find(),
+    'pagination' => [
+        'pageSize' => 20,
+    ],
+]);
+echo ListView::widget([
+    'dataProvider' => $dataProvider,
+    'itemView' => '_post',
+]);
+```
+
+`_post` ビューは次のようなものにすることが出来ます。
+
+
+```php
+<?php
+use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
+?>
+<div class="post">
+    <h2><?= Html::encode($model->title) ?></h2>
+    
+    <?= HtmlPurifier::process($model->text) ?>    
+</div>
+```
+
+上記のビューでは、現在のデータモデルを `$model` としてアクセスすることが出来ます。
+追加で次のものを利用することも出来ます。
+
+- `$key`: mixed - データアイテムと関連付けられたキーの値。
+- `$index`: integer - データプロバイダによって返されるアイテムの配列の 0 から始まるインデックス。
+- `$widget`: ListView - ウィジェットのインスタンス。
+
+追加のデータをビューに渡す必要がある場合は、次のように、`$viewParams` を使います。
+
+```php
+echo ListView::widget([
+    'dataProvider' => $dataProvider,
+    'itemView' => '_post',
+    'viewParams' => [
+        'fullView' => true,
+    ],
+]);
+```
 
 
 DetailView
