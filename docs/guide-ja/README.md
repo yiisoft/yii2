@@ -136,7 +136,7 @@ RESTful ウェブサービス
 * [認証](rest-authentication.md)
 * [レート制限](rest-rate-limiting.md)
 * [バージョン管理](rest-versioning.md)
-* **翻訳中** [エラー処理](rest-error-handling.md)
+* [エラー処理](rest-error-handling.md)
 
 
 開発ツール
