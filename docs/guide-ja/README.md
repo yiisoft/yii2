@@ -135,7 +135,7 @@ RESTful ウェブサービス
 * [レスポンス形式の設定](rest-response-formatting.md)
 * [認証](rest-authentication.md)
 * [レート制限](rest-rate-limiting.md)
-* **翻訳中** [バージョン管理](rest-versioning.md)
+* [バージョン管理](rest-versioning.md)
 * **翻訳中** [エラー処理](rest-error-handling.md)
 
 
