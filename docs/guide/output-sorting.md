@@ -3,7 +3,7 @@ Sorting
 
 Sometimes data to be displayed should be sorted according to one or several attributes. If you are using
 [data provider](output-data-providers.md) with one of the [data widgets](output-data-widgets.md) it is
-handled for you automatically. If not, you should create [[\yii\data\Sort]] instance in controller, configure it
+handled for you automatically. If not, you should create [[\yii\data\Sort]] instance in controller, configure it and
 apply it to the query and then pass it to the view where it can be used to create links to sort by attributes. 
 
 A typical usage example is as follows,
