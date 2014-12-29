@@ -46,7 +46,7 @@ Composer がインストールされたら、ウェブからアクセスでき�
 必要なら別のディレクトリ名を選ぶことも出来ます。
 
 > Note|注意: インストール実行中に Composer が あなたの Github のログイン認証情報を求めることがあるかも知れません。
-> これは、Comoser が依存パッケージの情報を Github から読み出すために十分な転送レートを必要とするためで、普通にあることです。
+> これは、Comoser が依存パッケージの情報を Github から読み出すために十分な API レートを必要とするためで、普通にあることです。
 > 詳細については、[Composer ドキュメント](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens) を参照してください。
 
 > Tip|ヒント: Yii の最新の開発バージョンをインストールしたい場合は、[stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability) を追加した次のコマンドを代りに使うことが出来ます。

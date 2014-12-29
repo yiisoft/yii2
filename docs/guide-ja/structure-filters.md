@@ -283,8 +283,8 @@ PageCache の使用に関する詳細は [ページキャッシュ](caching-page
 ### [[yii\filters\RateLimiter|RateLimiter]] <a name="rate-limiter"></a>
 
 RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88)
-に基づいて転送レート制限のアルゴリズムを実装するものです。主として RESTful API を実装するときに使用されます。
-このフィルタの使用に関する詳細は [転送レート制限](rest-rate-limiting.md) の節を参照してください。
+に基づいてレート制限のアルゴリズムを実装するものです。主として RESTful API を実装するときに使用されます。
+このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) の節を参照してください。
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <a name="verb-filter"></a>
