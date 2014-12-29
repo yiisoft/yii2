@@ -142,8 +142,8 @@ RESTful ウェブサービス
 開発ツール
 ----------
 
-* **翻訳未着手** [デバッグツールバーとデバッガ](tool-debugger.md)
-* **翻訳未着手** [Gii を使ってコードを生成する](tool-gii.md)
+* **翻訳中** [デバッグツールバーとデバッガ](tool-debugger.md)
+* **翻訳中** [Gii を使ってコードを生成する](tool-gii.md)
 * **TBD** [API ドキュメントを生成する](tool-api-doc.md)
 
 
