@@ -82,6 +82,11 @@ class UrlTest extends TestCase
         $this->assertEquals('http://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], true));
         $this->assertEquals('https://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], 'https'));
 
+        // alias support
+        \Yii::setAlias('@userView', 'user/view');
+        $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview', Url::toRoute('@userView'));
+        \Yii::setAlias('@userView', null);
+
         // In case there is no controller, an exception should be thrown for relative route
         $this->removeMockedAction();
 
@@ -97,6 +102,11 @@ class UrlTest extends TestCase
         $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', Url::to(['edit', 'id' => 20]));
         $this->assertEquals('/base/index.php?r=page%2Fedit', Url::to(['edit']));
         $this->assertEquals('/base/index.php?r=page%2Fview', Url::to(['']));
+
+        // alias support
+        \Yii::setAlias('@pageEdit', 'edit');
+        $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', Url::to(['@pageEdit', 'id' => 20]));
+        \Yii::setAlias('@pageEdit', null);
 
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', Url::to(['edit', 'id' => 20], true));
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit', Url::to(['edit'], true));
