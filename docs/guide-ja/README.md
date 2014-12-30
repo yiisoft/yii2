@@ -143,7 +143,7 @@ RESTful ウェブサービス
 ----------
 
 * [デバッグツールバーとデバッガ](tool-debugger.md)
-* **翻訳中** [Gii を使ってコードを生成する](tool-gii.md)
+* [Gii を使ってコードを生成する](tool-gii.md)
 * **TBD** [API ドキュメントを生成する](tool-api-doc.md)
 
 
