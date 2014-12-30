@@ -97,8 +97,8 @@ Exibindo Dados
 ---------------
 
 * [Formatando Dados](output-formatter.md)
-* **TBD** [Paginação](output-pagination.md)
-* **TBD** [Ordenação](output-sorting.md)
+* [Paginação](output-pagination.md)
+* [Ordenação](output-sorting.md)
 * [Data Providers (Provedores de Dados)](output-data-providers.md)
 * [Widgets de Dados](output-data-widgets.md)
 * [Trabalhando com Client Scripts](output-client-scripts.md)
@@ -185,7 +185,7 @@ Widgets
 * LinkPager: **TBD** link para a página de demonstração
 * LinkSorter: **TBD** link para a página de demonstração
 * [Widgets do Bootstrap](widget-bootstrap.md)
-* [Widgets do Jquery UI](widget-jui.md)
+* [Widgets do JQuery UI](widget-jui.md)
 
 
 Helpers
@@ -195,5 +195,3 @@ Helpers
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)
-* **TBD** [Segurança](helper-security.md)
-
