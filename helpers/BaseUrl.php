@@ -103,13 +103,16 @@ class BaseUrl
      * - If the route has no leading slash, it is considered to be a route relative
      *   to the current module and will be prepended with the module's uniqueId.
      *
+     * Starting from version 2.0.2, a route can also be specified as an alias. In this case, the alias
+     * will be converted into the actual route first before conducting the above transformation steps.
+     *
      * @param string $route the route. This can be either an absolute route or a relative route.
      * @return string normalized route suitable for UrlManager
      * @throws InvalidParamException a relative route is given while there is no active controller
      */
     protected static function normalizeRoute($route)
     {
-        $route = (string) $route;
+        $route = Yii::getAlias((string) $route);
         if (strncmp($route, '/', 1) === 0) {
             // absolute route
             return ltrim($route, '/');
