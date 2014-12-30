@@ -4,20 +4,20 @@ Clase auxiliar Html (Html helper)
 Todas las aplicaciones web generan grandes cantidades de marcado HTML (HTML markup). Si el marcado es estático, se
 puede realizar de forma efectiva
 [mezclando PHP y HTML en un mismo archivo](http://php.net/manual/es/language.basic-syntax.phpmode.php) pero cuando se
-generan dinámicamente empieza a complicarse su gestion sin ayuda extra. Yii proporciona esta ayuda que proporciona un
-conjunto de métodos estáticos para gestionar las etiquetas HTML usadas más comúnmente, sus opciones y contenidos.
+generan dinámicamente empieza a complicarse su gestión sin ayuda extra. Yii ofrece esta ayuda en forma de una clase auxiliar Html
+que proporciona un conjunto de métodos estáticos para gestionar las etiquetas HTML más comúnmente usadas, sus opciones y contenidos.
 
 > Nota: Si el marcado es casi estático, es preferible usar HTML directamente. No es necesario encapsularlo todo con
 llamadas a la clase auxiliar Html.
 
-Lo fundamental <a name="basics"></a>
---------------
+## Lo fundamental <a name="basics"></a>
+
 
 Teniendo en cuenta que la construcción de HTML dinámico mediante la concatenación de cadenas de texto se complica
 rápidamente, Yii proporciona un conjunto de métodos para manipular las opciones de etiquetas y la construcción de las
 mismas basadas en estas opciones.
 
-### Generación de etiquetas
+### Generación de etiquetas <a name="generating-tags"></a>
 
 El código de generación de etiquetas es similar al siguiente:
 
@@ -25,13 +25,13 @@ El código de generación de etiquetas es similar al siguiente:
 <?= Html::tag('p', Html::encode($user->name), ['class' => 'username']) ?>
 ```
 
-El primer argumento es el nombre de la etiqueta. El segundo es el contenido que se ubicara entre la etiqueta de
+El primer argumento es el nombre de la etiqueta. El segundo es el contenido que se ubicará entre la etiqueta de
 apertura y la de cierre. Hay que tener en cuenta que estamos usando `Html::encode`. Esto es debido a que el contenido
 no se codifica automáticamente para permitir usar HTML cuando se necesite. La tercera opción es un array de opciones
 HTML o, en otras palabras, los atributos de las etiquetas. En este array la clave representa el nombre del atributo
 como podría ser `class`, `href` o `target` y el valor es su valor.
 
-El código anterior generara el siguiente HTML:
+El código anterior generará el siguiente HTML:
 
 ```html
 <p class="username">samdark</p>
@@ -46,14 +46,14 @@ gestión adicional que se debe conocer:
 - Si un valor es `null`, el correspondiente atributo no se renderizará.
 - Los atributos cuyos valores son de tipo booleano serán tratados como
   [atributos booleanos](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
-- Los valores de los atributos se codificaran en HTML usando [[yii\helpers\Html::encode()|Html::encode()]].
+- Los valores de los atributos se codificarán en HTML usando [[yii\helpers\Html::encode()|Html::encode()]].
 - El atributo "data" puede recibir un array. En este caso, se "expandirá" y se renderizará una lista de atributos
   `data` ej. `'data' => ['id' => 1, 'name' => 'yii']` se convierte en `data-id="1" data-name="yii"`.
-- El atributo "data" puede recibir JSON. Se gestionará de la misma manera que un array ej.
+- El atributo "data" puede recibir un JSON. Se gestionará de la misma manera que un array ej.
   `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` se convierte en
   `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
 
-### Formación de clases y estilos dinámicamente
+### Formación de clases y estilos dinámicamente <a name="forming-css"></a>
 
 Cuando se construyen opciones para etiquetas HTML, a menudo nos encontramos con valores predeterminados que hay que
 modificar. Para añadir o eliminar clases CSS se puede usar el siguiente ejemplo:
@@ -89,15 +89,15 @@ corresponde a nombres y valores de la propiedad CSS correspondiente o a una cade
 `width: 100px; height: 200px;`. Estos formatos se pueden "hacer" y "deshacer" usando
 [[yii\helpers\Html::cssStyleFromArray()|cssStyleFromArray()]] y
 [[yii\helpers\Html::cssStyleToArray()|cssStyleToArray()]]. El método
-[[yii\helpers\Html::removeCssStyle()|removeCssStyle()]] un array de propiedades que se eliminarán. Si sólo se
-eliminará una propiedad, se puede especificar como una cadena de texto.
+[[yii\helpers\Html::removeCssStyle()|removeCssStyle()]] acepta un array de propiedades que se eliminarán. Si sólo se
+eliminara una propiedad, se puede especificar como una cadena de texto.
 
-Codificación y Descodificación de contenido <a name="encoding-and-decoding-content"></a>
--------------------------------------------
+## Codificación y Decodificación del contenido <a name="encoding-and-decoding-content"></a>
 
-Para que el contenido se muestre correctamente y de forma segura en caracteres especiales HTML el contenido debe ser
-codificado. En PHP esto se hace con [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) y
-[htmlspecialchars_decode](http://www.php.net/manual/en/function.htmlspecialchars-decode.php). El problema con el uso
+
+Para que el contenido se muestre correctamente y de forma segura con caracteres especiales HTML el contenido debe ser
+codificado. En PHP esto se hace con [htmlspecialchars](http://www.php.net/manual/es/function.htmlspecialchars.php) y
+[htmlspecialchars_decode](http://www.php.net/manual/es/function.htmlspecialchars-decode.php). El problema con el uso
 de estos métodos directamente es que se tiene que especificar la codificación y opciones extra cada vez. Ya que las
 opciones siempre son las mismas y la codificación debe coincidir con la de la aplicación para prevenir problemas de
 seguridad, Yii proporciona dos métodos simples y compactos:
@@ -109,26 +109,26 @@ echo $userName;
 $decodedUserName = Html::decode($userName);
 ```
 
-Formularios
------------
+## Formularios <a name="forms"></a>
+
 
 El trato con el marcado de formularios es una tarea repetitiva y propensa a errores. Por esto hay un grupo de métodos
 para ayudar a gestionarlos.
 
-> Nota: hay que considerar la opción de usar [[yii\widgets\ActiveForm|ActiveForm]] en caso que se gestionen
+> Nota: hay que considerar la opción de usar [[yii\widgets\ActiveForm|ActiveForm]] en caso de que se gestionen
 formularios que requieran validaciones.
 
-### Abrir y cerrar un formulario
+### Creando formularios <a name="creating-forms"></a>
 
-Se puede abrir un formulario con el metodo [[yii\helpers\Html::beginForm()|beginForm()]] como se muestra a
+Se puede abrir un formulario con el método [[yii\helpers\Html::beginForm()|beginForm()]] como se muestra a
 continuación:
 
 ```php
 <?= Html::beginForm(['order/update', 'id' => $id], 'post', ['enctype' => 'multipart/form-data']) ?>
 ```
 
-El primer argumento es la URL a la que se enviaran los datos del formulario. Se puede especificar en formato de ruta
-de Yii con los parámetros aceptados por [[yii\helpers\Url::to()|Url::to()]]. El segundo es el método que se usara.
+El primer argumento es la URL a la que se enviarán los datos del formulario. Se puede especificar en formato de ruta
+de Yii con los parámetros aceptados por [[yii\helpers\Url::to()|Url::to()]]. El segundo es el método que se usará.
 `post` es el método predeterminado. El tercero es un array de opciones para la etiqueta `form`. En este caso cambiamos
 el método de codificación del formulario de `data` en una petición POST a `multipart/form-data`. Esto se requiere
 cuando se quieren subir archivos.
@@ -139,7 +139,7 @@ El cierre de la etiqueta `form` es simple:
 <?= Html::endForm() ?>
 ```
 
-### Botones
+### Botones <a name="buttons"></a>
 
 Para generar botones se puede usar el siguiente código:
 
@@ -149,11 +149,11 @@ Para generar botones se puede usar el siguiente código:
 <?= Html::resetButton('Reset', ['class' => 'reset']) ?>
 ```
 
-El primer argumento para los tres métodos es el titulo del botón y el segundo son las opciones. El titulo no esta
+El primer argumento para los tres métodos es el título del botón y el segundo son las opciones. El título no está
 codificado pero si se usan datos recibidos por el usuario, deben codificarse mediante
 [[yii\helpers\Html::encode()|Html::encode()]].
 
-### Inputs
+### Inputs <a name="input-fields"></a>
 
 Hay dos grupos en los métodos input. Unos empiezan con `active` y se llaman inputs activos y los otros no empiezan
 así. Los inputs activos obtienen datos del modelo y del atributo especificado y los datos de los inputs normales se
@@ -169,7 +169,7 @@ type, model, model attribute name, options
 <?= Html::activeInput('text', $user, 'name', ['class' => $username]) ?>
 ```
 
-Si se conoce el tipo de input de antemano, es conveniente usar los atajos de métodos:
+Si se conoce el tipo de input de antemano, es conveniente usar los atajos de los métodos:
 
 - [[yii\helpers\Html::buttonInput()]]
 - [[yii\helpers\Html::submitInput()]]
@@ -201,7 +201,7 @@ Las listas desplegables (dropdown list) se pueden renderizar como se muestra a c
 ```
 
 El primer argumento es el nombre del input, el segundo es el valor seleccionado actualmente y el tercero es el array
-de pares clave-valor donde la clave es al lista de valores y el valor del array es la lista a mostrar.
+de pares clave-valor donde la clave es la lista de valores y el valor del array es la lista a mostrar.
 
 Si se quiere habilitar la selección múltiple, se puede usar la lista seleccionable (checkbox list):
 
@@ -217,17 +217,17 @@ Si no, se puede usar la lista de opciones (radio list):
 <?= Html::activeRadioList($user, 'role', ArrayHelper::map($roleModels, 'id', 'name')) ?>
 ```
 
-### Labels y errores
+### Etiquetas y Errores <a name="labels-and-errors"></a>
 
-De forma parecida que en los imputs hay dos métodos para generar labels. El activo que obtiene los datos del modelo y
-el no-activo que acepta datos directamente:
+De forma parecida que en los inputs hay dos métodos para generar etiquetas. El activo que obtiene los datos del modelo y
+el no-activo que acepta los datos directamente:
 
 ```php
 <?= Html::label('User name', 'username', ['class' => 'label username']) ?>
 <?= Html::activeLabel($user, 'username', ['class' => 'label username'])
 ```
 
-Para mostrar los errores de un modelo o más en forma de resumen:
+Para mostrar los errores del formulario de un modelo o modelos a modo de resumen puedes usar:
 
 ```php
 <?= Html::errorSummary($posts, ['class' => 'errors']) ?>
@@ -239,9 +239,9 @@ Para mostrar un error individual:
 <?= Html::error($post, 'title', ['class' => 'error']) ?>
 ```
 
-### Nombres y valores
+### Input Names y Values <a name="input-names-and-values"></a>
 
-Existen métodos para obtener nombres, IDs y valores para los campos de entrada (inputs) basados en el modelo. Estos se
+Existen métodos para obtener names, IDs y values para los campos de entrada (inputs) basados en el modelo. Estos se
 usan principalmente internamente pero a veces pueden resultar prácticos:
 
 ```php
@@ -258,7 +258,7 @@ echo Html::getAttributeValue($post, 'title');
 echo Html::getAttributeValue($post, '[0]authors[0]');
 ```
 
-En el ejemplo anterior, el primer argumento es el modelo y el segundo es el atributo de expresión. En su forma más
+En el ejemplo anterior, el primer argumento es el modelo y el segundo es un atributo de expresión. En su forma más
 simple es su nombre de atributo pero podría ser un nombre de atributo prefijado y/o añadido como sufijo con los
 indices de un array, esto se usa principalmente para mostrar inputs en formatos de tablas:
 
@@ -274,8 +274,8 @@ Para obtener el nombre de atributo sin sufijos o prefijos se puede usar el sigui
 echo Html::getAttributeName('dates[0]');
 ```
 
-Estilos y scripts
------------------
+## Estilos y scripts <a name="styles-and-scripts"></a>
+
 
 Existen dos métodos para generar etiquetas que envuelvan estilos y scripts incrustados (embebbed):
 
@@ -323,8 +323,8 @@ Es igual que con las CSS, el primer argumento especifica el enlace al fichero qu
 pueden pasar como segundo argumento. En las opciones se puede especificar `condition` del mismo modo que se puede usar
 para `cssFile`.
 
-Enlaces
--------
+## Enlaces <a name="hyperlinks"></a>
+
 
 Existe un método para generar hipervínculos a conveniencia:
 
@@ -332,9 +332,9 @@ Existe un método para generar hipervínculos a conveniencia:
 <?= Html::a('Profile', ['user/view', 'id' => $id], ['class' => 'profile-link']) ?>
 ```
 
-El primer argumento es el titulo. No está codificado por lo que si se usan datos enviados por el usuario se tienen que
+El primer argumento es el título. No está codificado por lo que si se usan datos enviados por el usuario se tienen que
 codificar usando `Html::encode()`. El segundo argumento es el que se introducirá en `href` de la etiqueta `<a`. Se
-puede revisar [Url::to()](helper-url.md) para obtener más detalles de los valores que acepta. El tercer argumento es
+puede consultar [Url::to()](helper-url.md) para obtener más detalles de los valores que acepta. El tercer argumento es
 un array de las propiedades de la etiqueta.
 
 Si se requiere generar enlaces de tipo `mailto` se puede usar el siguiente código:
@@ -343,8 +343,8 @@ Si se requiere generar enlaces de tipo `mailto` se puede usar el siguiente códi
 <?= Html::mailto('Contact us', 'admin@example.com') ?>
 ```
 
-Imagenes
---------
+## Imagenes <a name="images"></a>
+
 
 Para generar una etiqueta de tipo imagen se puede usar el siguiente ejemplo:
 
@@ -356,11 +356,11 @@ genera
 <img src="http://example.com/images/logo.png" alt="My logo" />
 ```
 
-Aparte de los [aliases](concept-aliases.md) el primer argumento puede aceptar rutas, parámetros y URLs. Del mismo modo
+Aparte de los [alias](concept-aliases.md) el primer argumento puede aceptar rutas, parámetros y URLs. Del mismo modo
 que [Url::to()](helper-url.md).
 
-Listas
-------
+## Listas <a name="lists"></a>
+
 
 Las listas desordenadas se puede generar como se muestra a continuación:
 
