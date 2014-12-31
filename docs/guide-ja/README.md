@@ -150,12 +150,12 @@ RESTful ウェブサービス
 テスト
 ------
 
-* **翻訳未着手** [概要](test-overview.md)
-* **翻訳未着手** [テスト環境の構築](test-environment-setup.md)
-* **翻訳未着手** [ユニットテスト](test-unit.md)
-* **翻訳未着手** [機能テスト](test-functional.md)
-* **翻訳未着手** [承認テスト](test-acceptance.md)
-* **翻訳未着手** [フィクスチャ](test-fixtures.md)
+* [概要](test-overview.md)
+* **翻訳中** [テスト環境の構築](test-environment-setup.md)
+* **翻訳中** [ユニットテスト](test-unit.md)
+* **翻訳中** [機能テスト](test-functional.md)
+* **翻訳中** [承認テスト](test-acceptance.md)
+* **翻訳中** [フィクスチャ](test-fixtures.md)
 
 
 スペシャルトピック
