@@ -451,7 +451,7 @@
             methods.validate.call($form);
         }, validationDelay ? validationDelay : 200);
     };
-    
+
     /**
      * Returns an array prototype with a shortcut method for adding a new deferred.
      * The context of the callback will be the deferred object so it can be resolved like ```this.resolve()```
@@ -495,14 +495,8 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                var $button = data.submitObject || $form.find(':submit:first');
                 // TODO: if the submission is caused by "change" event, it will not work
-                if ($button.length) {
-                    $button.click();
-                } else {
-                    // no submit button in the form
-                    $form.submit();
-                }
+                $form.submit();
             }
         } else {
             $.each(data.attributes, function () {
