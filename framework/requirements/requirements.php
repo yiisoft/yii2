@@ -2,9 +2,9 @@
 /**
  * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
  * These requirements are mandatory for any Yii application.
- *
- * @var YiiRequirementChecker $this
  */
+
+/* @var $this YiiRequirementChecker */
 return array(
     array(
         'name' => 'PHP version',
@@ -39,12 +39,34 @@ return array(
         'memo' => 'Required for multibyte encoding string processing.'
     ),
     array(
+        'name' => 'Mcrypt extension',
+        'mandatory' => false,
+        'condition' => extension_loaded('mcrypt'),
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
+        'memo' => 'Required by encrypt and decrypt methods.'
+    ),
+    array(
         'name' => 'Intl extension',
         'mandatory' => false,
         'condition' => $this->checkPhpExtensionVersion('intl', '1.0.2', '>='),
         'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
         'memo' => 'PHP Intl extension 1.0.2 or higher is required when you want to use advanced parameters formatting
-        in <code>Yii::t()</code>, <abbr title="Internationalized domain names">IDN</abbr>-feature of
+        in <code>Yii::t()</code>, non-latin languages with <code>Inflector::slug()</code>,
+        <abbr title="Internationalized domain names">IDN</abbr>-feature of
         <code>EmailValidator</code> or <code>UrlValidator</code> or the <code>yii\i18n\Formatter</code> class.'
+    ),
+    array(
+        'name' => 'Fileinfo extension',
+        'mandatory' => false,
+        'condition' => extension_loaded('fileinfo'),
+        'by' => '<a href="http://www.php.net/manual/en/book.fileinfo.php">File Information</a>',
+        'memo' => 'Required for files upload to detect correct file mime-types.'
+    ),
+    array(
+        'name' => 'DOM extension',
+        'mandatory' => false,
+        'condition' => extension_loaded('dom'),
+        'by' => '<a href="http://php.net/manual/en/book.dom.php">Document Object Model</a>',
+        'memo' => 'Required for REST API to send XML responses via <code>yii\web\XmlResponseFormatter</code>.'
     ),
 );

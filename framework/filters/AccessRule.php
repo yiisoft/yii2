@@ -11,7 +11,7 @@ use yii\base\Component;
 use yii\base\Action;
 use yii\web\User;
 use yii\web\Request;
-use yii\web\Controller;
+use yii\base\Controller;
 
 /**
  * This class represents an access rule defined by the [[AccessControl]] action filter
@@ -42,8 +42,8 @@ class AccessRule extends Component
      * - `?`: matches a guest user (not authenticated yet)
      * - `@`: matches an authenticated user
      *
-     * Using other role names requires RBAC (Role-Based Access Control), and
-     * [[User::can()]] will be called.
+     * If you are using RBAC (Role-Based Access Control), you may also specify role or permission names.
+     * In this case, [[User::can()]] will be called to check access.
      *
      * If this property is not set or empty, it means this rule applies to all roles.
      */
@@ -89,6 +89,7 @@ class AccessRule extends Component
      * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
      */
     public $denyCallback;
+
 
     /**
      * Checks whether the Web user is allowed to perform the specified action.

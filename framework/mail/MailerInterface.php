@@ -14,7 +14,7 @@ namespace yii\mail;
  * also support composition of the message body through the view rendering mechanism. For example,
  *
  * ~~~
- * Yii::$app->mail->compose('contact/html', ['contactForm' => $form])
+ * Yii::$app->mailer->compose('contact/html', ['contactForm' => $form])
  *     ->setFrom('from@domain.com')
  *     ->setTo($form->email)
  *     ->setSubject($form->subject)

@@ -2,33 +2,29 @@
 
 use yii\apidoc\templates\bootstrap\SideNavWidget;
 
-/**
- * @var yii\web\View $this
- * @var string $content
- */
+/* @var $this yii\web\View */
+/* @var $content string */
+/* @var $chapters array */
 
 $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
 
 <div class="row">
     <div class="col-md-2">
         <?php
-        asort($headlines);
         $nav = [];
-        foreach ($headlines as $file => $headline) {
-            if (basename($file) == 'README.md') {
-                $nav[] = [
-                    'label' => $headline,
-                    'url' => $this->context->generateGuideUrl($file),
-                    'active' => isset($currentFile) && ($file == $currentFile),
+        foreach ($chapters as $chapter) {
+            $items = [];
+            foreach($chapter['content'] as $chContent) {
+                $items[] = [
+                    'label' => $chContent['headline'],
+                    'url' => $this->context->generateGuideUrl($chContent['file']),
+                    'active' => isset($currentFile) && ($chContent['file'] == basename($currentFile)),
                 ];
-                unset($headlines[$file]);
             }
-        }
-        foreach ($headlines as $file => $headline) {
             $nav[] = [
-                'label' => $headline,
-                'url' => $this->context->generateGuideUrl($file),
-                'active' => isset($currentFile) && ($file == $currentFile),
+                'label' => $chapter['headline'],
+//                'url' => $this->context->generateGuideUrl($file),
+                'items' => $items,
             ];
         } ?>
         <?= SideNavWidget::widget([
@@ -39,6 +35,7 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
     </div>
     <div class="col-md-9 guide-content" role="main">
         <?= $content ?>
+        <div class="toplink"><a href="#" class="h1" title="go to top"><span class="glyphicon glyphicon-arrow-up"></a></div>
     </div>
 </div>
 

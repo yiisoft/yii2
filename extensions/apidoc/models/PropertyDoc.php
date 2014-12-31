@@ -13,6 +13,9 @@ use yii\apidoc\helpers\PrettyPrinter;
 /**
  * Represents API documentation information for a `property`.
  *
+ * @property bool $isReadOnly If property is read only. This property is read-only.
+ * @property bool $isWriteOnly If property is write only. This property is read-only.
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
@@ -20,23 +23,27 @@ class PropertyDoc extends BaseDoc
 {
     public $visibility;
     public $isStatic;
-
     public $type;
     public $types;
     public $defaultValue;
-
     // will be set by creating class
     public $getter;
     public $setter;
-
     // will be set by creating class
     public $definedBy;
 
+
+    /**
+     * @return bool if property is read only
+     */
     public function getIsReadOnly()
     {
         return $this->getter !== null && $this->setter === null;
     }
 
+    /**
+     * @return bool if property is write only
+     */
     public function getIsWriteOnly()
     {
         return $this->getter === null && $this->setter !== null;
@@ -72,11 +79,7 @@ class PropertyDoc extends BaseDoc
                 $this->type = $tag->getType();
                 $this->types = $tag->getTypes();
                 $this->description = ucfirst($tag->getDescription());
-                if (($pos = strpos($this->description, '.')) !== false) {
-                    $this->shortDescription = substr($this->description, 0, $pos + 1);
-                } else {
-                    $this->shortDescription = $this->description;
-                }
+                $this->shortDescription = BaseDoc::extractFirstSentence($this->description);
             }
         }
         if (empty($this->shortDescription) && $context !== null && !$hasInheritdoc) {

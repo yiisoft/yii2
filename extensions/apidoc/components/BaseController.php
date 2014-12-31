@@ -30,6 +30,12 @@ abstract class BaseController extends Controller
      */
     public $exclude;
 
+
+    /**
+     * Checks that target directory is valid. Asks questions in tricky cases.
+     * @param string $target
+     * @return boolean|string
+     */
     protected function normalizeTargetDir($target)
     {
         $target = rtrim(Yii::getAlias($target), '\\/');
@@ -51,6 +57,11 @@ abstract class BaseController extends Controller
         return $target;
     }
 
+    /**
+     * Finds files to process
+     * @param array $sourceDirs
+     * @return array|boolean list of files to process or false on failure
+     */
     protected function searchFiles($sourceDirs)
     {
         $this->stdout('Searching files to process... ');
@@ -80,8 +91,20 @@ abstract class BaseController extends Controller
         return $files;
     }
 
+    /**
+     * Finds files
+     *
+     * @param string $dir directory to search files in.
+     * @param array $except list of names to exclude from search.
+     * @return array files found.
+     */
     abstract protected function findFiles($dir, $except = []);
 
+    /**
+     * Loads context from cache
+     * @param string $location
+     * @return Context
+     */
     protected function loadContext($location)
     {
         $context = new Context();
@@ -98,6 +121,11 @@ abstract class BaseController extends Controller
         return $context;
     }
 
+    /**
+     * Writes context into cache file
+     * @param Context $context
+     * @param string $location
+     */
     protected function storeContext($context, $location)
     {
         $cacheFile = $location . '/cache/apidoc.data';
@@ -126,8 +154,8 @@ abstract class BaseController extends Controller
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        return array_merge(parent::options($actionId), ['template', 'exclude']);
+        return array_merge(parent::options($actionID), ['template', 'exclude']);
     }
 }

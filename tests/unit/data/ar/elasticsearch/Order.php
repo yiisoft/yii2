@@ -21,7 +21,7 @@ class Order extends ActiveRecord
 
     public function attributes()
     {
-        return ['id', 'customer_id', 'created_at', 'total'];
+        return ['id', 'customer_id', 'created_at', 'total', 'itemsArray'];
     }
 
     public function getCustomer()
@@ -34,10 +34,35 @@ class Order extends ActiveRecord
         return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
     }
 
+    /**
+     * A relation to Item defined via array valued attribute
+     */
+    public function getItemsByArrayValue()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'itemsArray'])->indexBy('id');
+    }
+
     public function getItems()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->via('orderItems')->orderBy('id');
+    }
+
+    public function getItemsIndexed()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems')->indexBy('id');
+    }
+
+    public function getItemsWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItemsWithNullFK');
+    }
+
+    public function getOrderItemsWithNullFK()
+    {
+        return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id']);
     }
 
     public function getItemsInOrder1()
@@ -56,12 +81,19 @@ class Order extends ActiveRecord
             })->orderBy('name');
     }
 
-//	public function getBooks()
-//	{
-//		return $this->hasMany('Item', ['id' => 'item_id'])
-//			->viaTable('order_item', ['order_id' => 'id'])
-//			->where(['category_id' => 1]);
-//	}
+    public function getBooks()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems')
+            ->where(['category_id' => 1]);
+    }
+
+    public function getBooksWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItemsWithNullFK')
+            ->where(['category_id' => 1]);
+    }
 
     public function beforeSave($insert)
     {
@@ -90,6 +122,5 @@ class Order extends ActiveRecord
                 ]
             ]
         ]);
-
     }
 }

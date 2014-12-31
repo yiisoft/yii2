@@ -146,7 +146,7 @@ interface ActiveRecordInterface
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
      *
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @return static|ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      */
     public static function find();
 
@@ -365,15 +365,15 @@ interface ActiveRecordInterface
      * to be the corresponding primary key value(s) in the other record.
      * The record with the foreign key will be saved into database without performing validation.
      *
-     * If the relationship involves a pivot table, a new row will be inserted into the
-     * pivot table which contains the primary key values from both records.
+     * If the relationship involves a junction table, a new row will be inserted into the
+     * junction table which contains the primary key values from both records.
      *
      * This method requires that the primary key value is not null.
      *
      * @param string $name the case sensitive name of the relationship.
      * @param static $model the record to be linked with the current one.
-     * @param array $extraColumns additional column values to be saved into the pivot table.
-     * This parameter is only meaningful for a relationship involving a pivot table
+     * @param array $extraColumns additional column values to be saved into the junction table.
+     * This parameter is only meaningful for a relationship involving a junction table
      * (i.e., a relation set with `[[ActiveQueryInterface::via()]]`.)
      */
     public function link($name, $model, $extraColumns = []);
@@ -391,4 +391,10 @@ interface ActiveRecordInterface
      * If true, the model containing the foreign key will be deleted.
      */
     public function unlink($name, $model, $delete = false);
+
+    /**
+     * Returns the connection used by this AR class.
+     * @return mixed the database connection used by this AR class.
+     */
+    public static function getDb();
 }

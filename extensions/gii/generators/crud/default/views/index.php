@@ -3,10 +3,8 @@
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 
-/**
- * @var yii\web\View $this
- * @var yii\gii\generators\crud\Generator $generator
- */
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\crud\Generator */
 
 $urlParams = $generator->generateUrlParams();
 $nameAttribute = $generator->getNameAttribute();
@@ -17,11 +15,9 @@ echo "<?php\n";
 use yii\helpers\Html;
 use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
 
-/**
- * @var yii\web\View $this
- * @var yii\data\ActiveDataProvider $dataProvider
-<?= !empty($generator->searchModelClass) ? " * @var " . ltrim($generator->searchModelClass, '\\') . " \$searchModel\n" : '' ?>
- */
+/* @var $this yii\web\View */
+<?= !empty($generator->searchModelClass) ? "/* @var \$searchModel " . ltrim($generator->searchModelClass, '\\') . " */\n" : '' ?>
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = <?= $generator->generateString(Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass)))) ?>;
 $this->params['breadcrumbs'][] = $this->title;

@@ -7,8 +7,6 @@
 
 namespace yii\helpers;
 
-use yii\base\Arrayable;
-
 /**
  * BaseVarDumper provides concrete implementation for [[VarDumper]].
  *
@@ -22,6 +20,7 @@ class BaseVarDumper
     private static $_objects;
     private static $_output;
     private static $_depth;
+
 
     /**
      * Displays a variable.
@@ -116,7 +115,7 @@ class BaseVarDumper
                     $spaces = str_repeat(' ', $level * 4);
                     self::$_output .= "$className#$id\n" . $spaces . '(';
                     foreach ((array) $var as $key => $value) {
-                        $keyDisplay = strtr(trim($key), ["\0" => ':']);
+                        $keyDisplay = strtr(trim($key), "\0", ':');
                         self::$_output .= "\n" . $spaces . "    [$keyDisplay] => ";
                         self::dumpInternal($value, $level + 1);
                     }
@@ -134,6 +133,8 @@ class BaseVarDumper
      *
      * This method is similar to `var_export()`. The main difference is that
      * it generates more compact string representation using short array syntax.
+     *
+     * It also handles objects by using the PHP functions serialize() and unserialize().
      *
      * PHP 5.4 or above is required to parse the exported value.
      *

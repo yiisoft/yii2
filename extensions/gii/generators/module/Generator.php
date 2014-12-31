@@ -26,6 +26,7 @@ class Generator extends \yii\gii\Generator
     public $moduleClass;
     public $moduleID;
 
+
     /**
      * @inheritdoc
      */
@@ -146,7 +147,7 @@ EOD;
         if (strpos($this->moduleClass, '\\') === false || Yii::getAlias('@' . str_replace('\\', '/', $this->moduleClass), false) === false) {
             $this->addError('moduleClass', 'Module class must be properly namespaced.');
         }
-        if (substr($this->moduleClass, -1, 1) == '\\') {
+        if (empty($this->moduleClass) || substr_compare($this->moduleClass, '\\', -1, 1) === 0) {
             $this->addError('moduleClass', 'Module class name must not be empty. Please enter a fully qualified class name. e.g. "app\\modules\\admin\\Module".');
         }
     }

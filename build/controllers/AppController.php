@@ -8,9 +8,7 @@
 namespace yii\build\controllers;
 
 use Yii;
-use yii\base\InvalidParamException;
 use yii\console\Controller;
-use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
@@ -23,6 +21,20 @@ use yii\helpers\FileHelper;
 class AppController extends Controller
 {
     public $defaultAction = 'link';
+
+    /**
+     * Properly removes symlinked directory under Windows, MacOS and Linux
+     *
+     * @param string $file path to symlink
+     */
+    protected function unlink($file)
+    {
+        if (is_dir($file) && DIRECTORY_SEPARATOR === '\\') {
+            rmdir($file);
+        } else {
+            unlink($file);
+        }
+    }
 
     /**
      * This command runs the following shell commands in the dev repo root:
@@ -43,13 +55,13 @@ class AppController extends Controller
         // cleanup
         if (is_link($link = "$appDir/vendor/yiisoft/yii2")) {
             $this->stdout("Removing symlink $link.\n");
-            unlink($link);
+            $this->unlink($link);
         }
         $extensions = $this->findDirs("$appDir/vendor/yiisoft");
         foreach($extensions as $ext) {
             if (is_link($link = "$appDir/vendor/yiisoft/yii2-$ext")) {
                 $this->stdout("Removing symlink $link.\n");
-                unlink($link);
+                $this->unlink($link);
             }
         }
 
@@ -77,6 +89,12 @@ class AppController extends Controller
         $this->stdout("done.\n");
     }
 
+    /**
+     * Finds linkable applications
+     *
+     * @param string $dir directory to search in
+     * @return array list of applications command can link
+     */
     protected function findDirs($dir)
     {
         $list = [];

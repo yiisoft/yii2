@@ -112,10 +112,12 @@ class Connection extends Component
      * @var \MongoClient Mongo client instance.
      */
     public $mongoClient;
+
     /**
      * @var Database[] list of Mongo databases
      */
     private $_databases = [];
+
 
     /**
      * Returns the Mongo collection with the given name.
@@ -146,7 +148,7 @@ class Connection extends Component
         if ($this->defaultDatabaseName === null) {
             if (isset($this->options['db'])) {
                 $this->defaultDatabaseName = $this->options['db'];
-            } elseif (preg_match('/^mongodb:\\/\\/.+\\/(.+)$/s', $this->dsn, $matches)) {
+            } elseif (preg_match('/^mongodb:\\/\\/.+\\/([^?&]+)/s', $this->dsn, $matches)) {
                 $this->defaultDatabaseName = $matches[1];
             } else {
                 throw new InvalidConfigException("Unable to determine default database name from dsn.");

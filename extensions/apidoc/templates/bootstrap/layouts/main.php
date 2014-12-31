@@ -1,13 +1,10 @@
 <?php
 
-use yii\apidoc\renderers\BaseRenderer;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Html;
 
-/**
- * @var yii\web\View $this
- */
+/* @var $this yii\web\View */
 
 \yii\apidoc\templates\bootstrap\assets\AssetBundle::register($this);
 
@@ -30,6 +27,7 @@ $this->beginPage();
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="language" content="en" />
+    <?= Html::csrfMetaTags() ?>
     <?php $this->head() ?>
     <title><?= Html::encode($this->context->pageTitle) ?></title>
 </head>
@@ -64,7 +62,7 @@ $this->beginPage();
     }
 
     if ($this->context->guideUrl !== null) {
-        $nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . BaseRenderer::GUIDE_PREFIX . 'README.html'];
+        $nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . $this->context->guidePrefix . 'README.html'];
     }
 
     echo Nav::widget([
@@ -93,9 +91,6 @@ JS
     $this->registerJs(<<<JS
 
 var searchBox = $('#searchbox');
-
-// focus the search field
-searchBox.focus();
 
 // search when typing in search field
 searchBox.on("keyup", function(event) {

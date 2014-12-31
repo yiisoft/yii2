@@ -57,6 +57,7 @@ class Captcha extends InputWidget
      */
     public $options = ['class' => 'form-control'];
 
+
     /**
      * Initializes the widget.
      */
@@ -114,9 +115,16 @@ class Captcha extends InputWidget
      */
     protected function getClientOptions()
     {
+        $route = $this->captchaAction;
+        if (is_array($route)) {
+            $route[CaptchaAction::REFRESH_GET_VAR] = 1;
+        } else {
+            $route = [$route, CaptchaAction::REFRESH_GET_VAR => 1];
+        }
+
         $options = [
-            'refreshUrl' => Url::to(['/' . $this->captchaAction, CaptchaAction::REFRESH_GET_VAR => 1]),
-            'hashKey' => "yiiCaptcha/{$this->captchaAction}",
+            'refreshUrl' => Url::toRoute($route),
+            'hashKey' => "yiiCaptcha/{$route[0]}",
         ];
 
         return $options;
@@ -143,6 +151,6 @@ class Captcha extends InputWidget
                 return 'gd';
             }
         }
-        throw new InvalidConfigException('GD with FreeType or ImageMagick PHP extensions are required.');
+        throw new InvalidConfigException('Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.');
     }
 }

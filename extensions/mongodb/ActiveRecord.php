@@ -7,6 +7,7 @@
 
 namespace yii\mongodb;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\db\StaleObjectException;
@@ -93,10 +94,11 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -109,7 +111,7 @@ abstract class ActiveRecord extends BaseActiveRecord
      *
      * By default this method returns the class name as the collection name by calling [[Inflector::camel2id()]].
      * For example, 'Customer' becomes 'customer', and 'OrderItem' becomes
-     * 'order_item'. You may override this method if the table is not named after this convention.
+     * 'order_item'. You may override this method if the collection is not named after this convention.
      * @return string|array the collection name
      */
     public static function collectionName()
@@ -144,12 +146,15 @@ abstract class ActiveRecord extends BaseActiveRecord
      * This method must be overridden by child classes to define available attributes.
      * Note: primary key attribute "_id" should be always present in returned array.
      * For example:
-     * ~~~
+     *
+     * ```php
      * public function attributes()
      * {
      *     return ['_id', 'name', 'address', 'status'];
      * }
-     * ~~~
+     * ```
+     *
+     * @throws \yii\base\InvalidConfigException if not implemented
      * @return array list of attribute names.
      */
     public function attributes()
@@ -217,15 +222,18 @@ abstract class ActiveRecord extends BaseActiveRecord
         if (empty($values)) {
             $currentAttributes = $this->getAttributes();
             foreach ($this->primaryKey() as $key) {
-                $values[$key] = isset($currentAttributes[$key]) ? $currentAttributes[$key] : null;
+                if (isset($currentAttributes[$key])) {
+                    $values[$key] = $currentAttributes[$key];
+                }
             }
         }
         $newId = static::getCollection()->insert($values);
         $this->setAttribute('_id', $newId);
         $values['_id'] = $newId;
 
-        $this->afterSave(true);
+        $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
 
         return true;
     }
@@ -241,7 +249,7 @@ abstract class ActiveRecord extends BaseActiveRecord
         }
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
-            $this->afterSave(false);
+            $this->afterSave(false, $values);
             return 0;
         }
         $condition = $this->getOldPrimaryKey(true);
@@ -260,10 +268,12 @@ abstract class ActiveRecord extends BaseActiveRecord
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
-        $this->afterSave(false);
+        $changedAttributes = [];
         foreach ($values as $name => $value) {
-            $this->setOldAttribute($name, $this->getAttribute($name));
+            $changedAttributes[$name] = $this->getOldAttribute($name);
+            $this->setOldAttribute($name, $value);
         }
+        $this->afterSave(false, $changedAttributes);
 
         return $rows;
     }
@@ -322,7 +332,7 @@ abstract class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns a value indicating whether the given active record is the same as the current one.
-     * The comparison is made by comparing the table names and the primary key values of the two active records.
+     * The comparison is made by comparing the collection names and the primary key values of the two active records.
      * If one of the records [[isNewRecord|is new]] they are also considered not equal.
      * @param ActiveRecord $record record to compare to
      * @return boolean whether the two active records refer to the same row in the same Mongo collection.

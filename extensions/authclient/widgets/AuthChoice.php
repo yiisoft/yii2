@@ -28,7 +28,7 @@ use yii\authclient\ClientInterface;
  * ~~~
  *
  * You can customize the widget appearance by using [[begin()]] and [[end()]] syntax
- * along with using method {@link clientLink()} or {@link createClientUrl()}.
+ * along with using method [[clientLink()]] or [[createClientUrl()]].
  * For example:
  *
  * ~~~php
@@ -40,7 +40,7 @@ use yii\authclient\ClientInterface;
  * ]); ?>
  * <ul>
  * <?php foreach ($authAuthChoice->getClients() as $client): ?>
- *     <li><?= $authAuthChoice->clientLink($client) ?></li>
+ *     <li><?php $authAuthChoice->clientLink($client) ?></li>
  * <?php endforeach; ?>
  * </ul>
  * <?php AuthChoice::end(); ?>
@@ -96,6 +96,7 @@ class AuthChoice extends Widget
      */
     private $_clients;
 
+
     /**
      * @param ClientInterface[] $clients auth providers
      */
@@ -142,7 +143,7 @@ class AuthChoice extends Widget
      */
     protected function defaultClients()
     {
-        /** @var $collection \yii\authclient\Collection */
+        /* @var $collection \yii\authclient\Collection */
         $collection = Yii::$app->get($this->clientCollection);
 
         return $collection->getClients();
@@ -224,10 +225,12 @@ class AuthChoice extends Widget
      */
     public function init()
     {
+        $view = Yii::$app->getView();
         if ($this->popupMode) {
-            $view = Yii::$app->getView();
             AuthChoiceAsset::register($view);
             $view->registerJs("\$('#" . $this->getId() . "').authchoice();");
+        } else {
+            AuthChoiceStyleAsset::register($view);
         }
         $this->options['id'] = $this->getId();
         echo Html::beginTag('div', $this->options);

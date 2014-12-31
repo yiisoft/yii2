@@ -10,6 +10,7 @@ namespace yii\elasticsearch;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\helpers\Json;
 
 /**
@@ -45,7 +46,6 @@ class Connection extends Component
      * @var array the active node. key of [[nodes]]. Will be randomly selected on [[open()]].
      */
     public $activeNode;
-
     // TODO http://www.elasticsearch.org/guide/en/elasticsearch/client/php-api/current/_configuration.html#_example_configuring_http_basic_auth
     public $auth = [];
     /**
@@ -60,6 +60,7 @@ class Connection extends Component
      * If not set, no explicit timeout will be set for curl.
      */
     public $dataTimeout = null;
+
 
     public function init()
     {
@@ -197,7 +198,6 @@ class Connection extends Component
     public function get($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
-
         return $this->httpRequest('GET', $this->createUrl($url, $options), $body, $raw);
     }
 
@@ -214,7 +214,6 @@ class Connection extends Component
     public function head($url, $options = [], $body = null)
     {
         $this->open();
-
         return $this->httpRequest('HEAD', $this->createUrl($url, $options), $body);
     }
 
@@ -232,7 +231,6 @@ class Connection extends Component
     public function post($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
-
         return $this->httpRequest('POST', $this->createUrl($url, $options), $body, $raw);
     }
 
@@ -250,7 +248,6 @@ class Connection extends Component
     public function put($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
-
         return $this->httpRequest('PUT', $this->createUrl($url, $options), $body, $raw);
     }
 
@@ -268,7 +265,6 @@ class Connection extends Component
     public function delete($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
-
         return $this->httpRequest('DELETE', $this->createUrl($url, $options), $body, $raw);
     }
 
@@ -318,7 +314,7 @@ class Connection extends Component
         $body = '';
 
         $options = [
-            CURLOPT_USERAGENT      => 'Yii Framework 2 ' . __CLASS__,
+            CURLOPT_USERAGENT      => 'Yii Framework ' . Yii::getVersion() . ' ' . __CLASS__,
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_HEADER         => false,
             // http://www.php.net/manual/en/function.curl-setopt.php#82418
@@ -326,7 +322,6 @@ class Connection extends Component
 
             CURLOPT_WRITEFUNCTION  => function ($curl, $data) use (&$body) {
                 $body .= $data;
-
                 return mb_strlen($data, '8bit');
             },
             CURLOPT_HEADERFUNCTION => function ($curl, $data) use (&$headers) {
@@ -335,7 +330,6 @@ class Connection extends Component
                         $headers[strtolower(substr($row, 0, $pos))] = trim(substr($row, $pos + 1));
                     }
                 }
-
                 return mb_strlen($data, '8bit');
             },
             CURLOPT_CUSTOMREQUEST  => $method,
@@ -368,7 +362,7 @@ class Connection extends Component
             $profile = false;
         }
 
-        Yii::trace("Sending request to elasticsearch node: $url\n$requestBody", __METHOD__);
+        Yii::trace("Sending request to elasticsearch node: $method $url\n$requestBody", __METHOD__);
         if ($profile !== false) {
             Yii::beginProfile($profile, __METHOD__);
         }
@@ -381,7 +375,7 @@ class Connection extends Component
                 'requestUrl' => $url,
                 'requestBody' => $requestBody,
                 'responseHeaders' => $headers,
-                'responseBody' => $body,
+                'responseBody' => $this->decodeErrorBody($body),
             ]);
         }
 
@@ -403,7 +397,7 @@ class Connection extends Component
                         'requestBody' => $requestBody,
                         'responseCode' => $responseCode,
                         'responseHeaders' => $headers,
-                        'responseBody' => $body,
+                        'responseBody' => $this->decodeErrorBody($body),
                     ]);
                 }
                 if (isset($headers['content-type']) && !strncmp($headers['content-type'], 'application/json', 16)) {
@@ -415,7 +409,7 @@ class Connection extends Component
                     'requestBody' => $requestBody,
                     'responseCode' => $responseCode,
                     'responseHeaders' => $headers,
-                    'responseBody' => $body,
+                    'responseBody' => $this->decodeErrorBody($body),
                 ]);
             }
         } elseif ($responseCode == 404) {
@@ -427,8 +421,26 @@ class Connection extends Component
                 'requestBody' => $requestBody,
                 'responseCode' => $responseCode,
                 'responseHeaders' => $headers,
-                'responseBody' => $body,
+                'responseBody' => $this->decodeErrorBody($body),
             ]);
+        }
+    }
+
+    /**
+     * Try to decode error information if it is valid json, return it if not.
+     * @param $body
+     * @return mixed
+     */
+    protected function decodeErrorBody($body)
+    {
+        try {
+            $decoded = Json::decode($body);
+            if (isset($decoded['error'])) {
+                $decoded['error'] = preg_replace('/\b\w+?Exception\[/', "<span style=\"color: red;\">\\0</span>\n               ", $decoded['error']);
+            }
+            return $decoded;
+        } catch(InvalidParamException $e) {
+            return $body;
         }
     }
 

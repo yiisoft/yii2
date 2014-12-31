@@ -52,3 +52,20 @@ or if you have enabled pretty URLs, you may use the following URL:
 ```
 http://localhost/path/to/index.php/gii
 ```
+
+Using the same configuration for your console application, you will also be able to access Gii via
+command line as follows,
+
+```
+# change path to your application's base path
+cd path/to/AppBasePath
+
+# show help information about Gii
+yii help gii
+
+# show help information about the model generator in Gii
+yii help gii/model
+
+# generate City model from city table
+yii gii/model --tableName=city --modelClass=City
+```

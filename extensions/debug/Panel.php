@@ -25,12 +25,22 @@ use yii\helpers\Url;
  */
 class Panel extends Component
 {
+    /**
+     * @var string panel unique identifier.
+     * It is set automatically by the container module.
+     */
     public $id;
+    /**
+     * @var string request data set identifier.
+     */
     public $tag;
     /**
      * @var Module
      */
     public $module;
+    /**
+     * @var mixed data associated with panel
+     */
     public $data;
     /**
      * @var array array of actions to add to the debug modules default controller.
@@ -38,6 +48,7 @@ class Panel extends Component
      * See [[\yii\base\Controller::actions()]] for the format.
      */
     public $actions = [];
+
 
     /**
      * @return string name of the panel

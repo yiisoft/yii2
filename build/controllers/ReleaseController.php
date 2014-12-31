@@ -8,6 +8,7 @@
 namespace yii\build\controllers;
 
 use Yii;
+use yii\base\Exception;
 use yii\console\Controller;
 
 /**
@@ -30,6 +31,8 @@ class ReleaseController extends Controller
      */
     public function actionPrepare($version)
     {
+        $this->resortChangelogs($version);
+        $this->mergeChangelogs($version);
         $this->closeChangelogs($version);
         $this->composerSetStability($version);
         $this->updateYiiVersion($version);
@@ -77,9 +80,95 @@ class ReleaseController extends Controller
         }
     }
 
+    protected function resortChangelogs($version)
+    {
+        foreach($this->getChangelogs() as $file) {
+            // split the file into relevant parts
+            list($start, $changelog, $end) = $this->splitChangelog($file, $version);
+            $changelog = $this->resortChangelog($changelog);
+            file_put_contents($file, implode("\n", array_merge($start, $changelog, $end)));
+        }
+    }
+
+    protected function mergeChangelogs($version)
+    {
+        $file = $this->getFrameworkChangelog();
+        // split the file into relevant parts
+        list($start, $changelog, $end) = $this->splitChangelog($file, $version);
+
+        $changelog = $this->resortChangelog($changelog);
+
+        $changelog[] = '';
+        $extensions = $this->getExtensionChangelogs();
+        asort($extensions);
+        foreach($extensions as $changelogFile) {
+            if (!preg_match('~extensions/([a-z]+)/CHANGELOG\\.md~', $changelogFile, $m)) {
+                throw new Exception("Illegal extension changelog file: " . $changelogFile);
+            }
+            list( , $extensionChangelog, ) = $this->splitChangelog($changelogFile, $version);
+            $name = $m[1];
+            $ucname = ucfirst($name);
+            $changelog[] = "### $ucname Extension (yii2-$name)";
+            $changelog = array_merge($changelog, $extensionChangelog);
+        }
+
+        file_put_contents($file, implode("\n", array_merge($start, $changelog, $end)));
+    }
+
+    /**
+     * Extract changelog content for a specific version
+     */
+    protected function splitChangelog($file, $version)
+    {
+        $lines = explode("\n", file_get_contents($file));
+
+        // split the file into relevant parts
+        $start = [];
+        $changelog = [];
+        $end = [];
+
+        $state = 'start';
+        foreach($lines as $l => $line) {
+            // starting from the changelogs headline
+            if (isset($lines[$l-2]) && strpos($lines[$l-2], $version) !== false &&
+                isset($lines[$l-1]) && strncmp($lines[$l-1], '---', 3) === 0) {
+                $state = 'changelog';
+            }
+            if ($state === 'changelog' && isset($lines[$l+1]) && strncmp($lines[$l+1], '---', 3) === 0) {
+                $state = 'end';
+            }
+            ${$state}[] = $line;
+        }
+        return [$start, $changelog, $end];
+    }
+
+    /**
+     * Ensure sorting of the changelog lines
+     */
+    protected function resortChangelog($changelog)
+    {
+        // cleanup whitespace
+        foreach($changelog as $i => $line) {
+            $changelog[$i] = rtrim($line);
+        }
+
+        // TODO sorting
+        return $changelog;
+    }
+
     protected function getChangelogs()
     {
-        return array_merge([YII_PATH . '/CHANGELOG.md'], glob(dirname(YII_PATH) . '/extensions/*/CHANGELOG.md'));
+        return array_merge([$this->getFrameworkChangelog()], $this->getExtensionChangelogs());
+    }
+
+    protected function getFrameworkChangelog()
+    {
+        return YII2_PATH . '/CHANGELOG.md';
+    }
+
+    protected function getExtensionChangelogs()
+    {
+        return glob(dirname(YII2_PATH) . '/extensions/*/CHANGELOG.md');
     }
 
     protected function composerSetStability($version)
@@ -99,9 +188,9 @@ class ReleaseController extends Controller
             '/"minimum-stability": "(.+?)",/',
             '"minimum-stability": "' . $stability . '",',
             [
-                dirname(YII_PATH) . '/apps/advanced/composer.json',
-                dirname(YII_PATH) . '/apps/basic/composer.json',
-                dirname(YII_PATH) . '/apps/benchmark/composer.json',
+                dirname(YII2_PATH) . '/apps/advanced/composer.json',
+                dirname(YII2_PATH) . '/apps/basic/composer.json',
+                dirname(YII2_PATH) . '/apps/benchmark/composer.json',
             ]
         );
     }
@@ -111,7 +200,7 @@ class ReleaseController extends Controller
         $this->sed(
             '/function getVersion\(\)\n    \{\n        return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
-            YII_PATH . '/BaseYii.php');
+            YII2_PATH . '/BaseYii.php');
     }
 
     protected function sed($pattern, $replace, $files)

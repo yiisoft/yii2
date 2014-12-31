@@ -41,6 +41,28 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate("5"));
     }
 
+    public function testValidateValueEmpty()
+    {
+        $val = new RangeValidator(['range' => range(10, 20, 1), 'skipOnEmpty' => false]);
+        $this->assertFalse($val->validate(null)); //row RangeValidatorTest.php:101
+        $this->assertFalse($val->validate('0'));
+        $this->assertFalse($val->validate(0));
+        $this->assertFalse($val->validate(''));
+        $val->allowArray = true;
+        $this->assertTrue($val->validate([]));
+    }
+
+    public function testValidateArrayValue()
+    {
+        $val = new RangeValidator(['range' => range(1, 10, 1)]);
+        $val->allowArray = true;
+        $this->assertTrue($val->validate([1, 2, 3, 4, 5]));
+        $this->assertTrue($val->validate([6, 7, 8, 9, 10]));
+        $this->assertFalse($val->validate([0, 1, 2]));
+        $this->assertFalse($val->validate([10, 11, 12]));
+        $this->assertTrue($val->validate(["1", "2", "3", 4, 5, 6]));
+    }
+
     public function testValidateValueStrict()
     {
         $val = new RangeValidator(['range' => range(1, 10, 1), 'strict' => true]);
@@ -50,6 +72,14 @@ class RangeValidatorTest extends TestCase
         $this->assertFalse($val->validate("1"));
         $this->assertFalse($val->validate("10"));
         $this->assertFalse($val->validate("5.5"));
+    }
+
+    public function testValidateArrayValueStrict()
+    {
+        $val = new RangeValidator(['range' => range(1, 10, 1), 'strict' => true]);
+        $val->allowArray = true;
+        $this->assertFalse($val->validate(["1", "2", "3", "4", "5", "6"]));
+        $this->assertFalse($val->validate(["1", "2", "3", 4, 5, 6]));
     }
 
     public function testValidateValueNot()

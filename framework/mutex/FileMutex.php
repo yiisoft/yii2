@@ -12,6 +12,29 @@ use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
 
 /**
+ * FileMutex implements mutex "lock" mechanism via local file system files.
+ * This component relies on PHP `flock()` function.
+ *
+ * Application configuration example:
+ *
+ * ```
+ * [
+ *     'components' => [
+ *         'mutex'=> [
+ *             'class' => 'yii\mutex\FileMutex'
+ *         ],
+ *     ],
+ * ]
+ * ```
+ *
+ * Note: this component can maintain the locks only for the single web server,
+ * it probably will not suffice to your in case you are using cloud server solution.
+ *
+ * Warning: due to `flock()` function nature this component is unreliable when
+ * using a multithreaded server API like ISAPI.
+ *
+ * @see Mutex
+ *
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */
@@ -35,10 +58,12 @@ class FileMutex extends Mutex
      * but read-only for other users.
      */
     public $dirMode = 0775;
+
     /**
      * @var resource[] stores all opened lock files. Keys are lock names and values are file handles.
      */
     private $_files = [];
+
 
     /**
      * Initializes mutex component implementation dedicated for UNIX, GNU/Linux, Mac OS X, and other UNIX-like
@@ -47,7 +72,7 @@ class FileMutex extends Mutex
      */
     public function init()
     {
-        if (stripos(php_uname('s'), 'win') === 0) {
+        if (DIRECTORY_SEPARATOR === '\\') {
             throw new InvalidConfigException('FileMutex does not have MS Windows operating system support.');
         }
         $this->mutexPath = Yii::getAlias($this->mutexPath);

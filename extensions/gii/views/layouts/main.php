@@ -3,10 +3,9 @@ use yii\bootstrap\NavBar;
 use yii\bootstrap\Nav;
 use yii\helpers\Html;
 
-/**
- * @var \yii\web\View $this
- * @var string $content
- */
+/* @var $this \yii\web\View */
+/* @var $content string */
+
 $asset = yii\gii\GiiAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
@@ -15,6 +14,7 @@ $asset = yii\gii\GiiAsset::register($this);
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
@@ -30,7 +30,7 @@ echo Nav::widget([
     'options' => ['class' => 'nav navbar-nav navbar-right'],
     'items' => [
         ['label' => 'Home', 'url' => ['default/index']],
-        ['label' => 'Help', 'url' => 'https://github.com/yiisoft/yii2/blob/master/docs/guide/gii.md'],
+        ['label' => 'Help', 'url' => 'http://www.yiiframework.com/doc-2.0/guide-tool-gii.html'],
         ['label' => 'Application', 'url' => Yii::$app->homeUrl],
     ],
 ]);

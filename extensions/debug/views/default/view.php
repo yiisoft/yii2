@@ -1,18 +1,15 @@
 <?php
+/* @var $this \yii\web\View */
+/* @var $summary array */
+/* @var $tag string */
+/* @var $manifest array */
+/* @var $panels \yii\debug\Panel[] */
+/* @var $activePanel \yii\debug\Panel */
 
 use yii\bootstrap\ButtonDropdown;
 use yii\bootstrap\ButtonGroup;
 use yii\helpers\Url;
 use yii\helpers\Html;
-
-/**
- * @var \yii\web\View $this
- * @var array $summary
- * @var string $tag
- * @var array $manifest
- * @var \yii\debug\Panel[] $panels
- * @var \yii\debug\Panel $activePanel
- */
 
 $this->title = 'Yii Debugger';
 ?>
@@ -66,6 +63,7 @@ $this->title = 'Yii Debugger';
                         echo ButtonGroup::widget([
                             'buttons' => [
                                 Html::a('All', ['index'], ['class' => 'btn btn-default']),
+                                Html::a('Latest', ['view', 'panel' => $activePanel->id], ['class' => 'btn btn-default']),
                                 ButtonDropdown::widget([
                                     'label' => 'Last 10',
                                     'options' => ['class' => 'btn-default'],

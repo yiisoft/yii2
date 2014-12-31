@@ -18,10 +18,8 @@ namespace yii\apidoc\models;
 class ClassDoc extends TypeDoc
 {
     public $parentClass;
-
     public $isAbstract;
     public $isFinal;
-
     /**
      * @var string[]
      */
@@ -29,7 +27,6 @@ class ClassDoc extends TypeDoc
     public $traits = [];
     // will be set by Context::updateReferences()
     public $subclasses = [];
-
     /**
      * @var EventDoc[]
      */
@@ -39,6 +36,10 @@ class ClassDoc extends TypeDoc
      */
     public $constants = [];
 
+
+    /**
+     * @inheritdoc
+     */
     public function findSubject($subjectName)
     {
         if (($subject = parent::findSubject($subjectName)) !== null) {
@@ -75,9 +76,7 @@ class ClassDoc extends TypeDoc
     }
 
     /**
-     * @param \phpDocumentor\Reflection\ClassReflector $reflector
-     * @param Context $context
-     * @param array $config
+     * @inheritdoc
      */
     public function __construct($reflector = null, $context = null, $config = [])
     {

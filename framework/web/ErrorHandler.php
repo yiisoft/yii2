@@ -69,11 +69,12 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         if (Yii::$app->has('response')) {
             $response = Yii::$app->getResponse();
+            $response->isSent = false;
         } else {
             $response = new Response();
         }
 
-        $useErrorView = $response->format === \yii\web\Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
+        $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
         if ($useErrorView && $this->errorAction !== null) {
             $result = Yii::$app->runAction($this->errorAction);
@@ -82,7 +83,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             } else {
                 $response->data = $result;
             }
-        } elseif ($response->format === \yii\web\Response::FORMAT_HTML) {
+        } elseif ($response->format === Response::FORMAT_HTML) {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' || YII_ENV_TEST) {
                 // AJAX request
                 $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';
@@ -97,6 +98,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                     'exception' => $exception,
                 ]);
             }
+        } elseif ($response->format === Response::FORMAT_RAW) {
+            $response->data = $exception;
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
@@ -117,8 +120,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function convertExceptionToArray($exception)
     {
+        if (!YII_DEBUG && !$exception instanceof UserException && !$exception instanceof HttpException) {
+            $exception = new HttpException(500, 'There was an error at the server.');
+        }
+
         $array = [
-            'type' => get_class($exception),
             'name' => ($exception instanceof Exception || $exception instanceof ErrorException) ? $exception->getName() : 'Exception',
             'message' => $exception->getMessage(),
             'code' => $exception->getCode(),
@@ -127,9 +133,14 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $array['status'] = $exception->statusCode;
         }
         if (YII_DEBUG) {
-            $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
-            if ($exception instanceof \yii\db\Exception) {
-                $array['error-info'] = $this->errorInfo;
+            $array['type'] = get_class($exception);
+            if (!$exception instanceof UserException) {
+                $array['file'] = $exception->getFile();
+                $array['line'] = $exception->getLine();
+                $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
+                if ($exception instanceof \yii\db\Exception) {
+                    $array['error-info'] = $exception->errorInfo;
+                }
             }
         }
         if (($prev = $exception->getPrevious()) !== null) {
@@ -156,11 +167,10 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function addTypeLinks($code)
     {
-        if (preg_match('/(.*?)::([^(]+)\((.*)\)/', $code, $matches)) {
+        if (preg_match('/(.*?)::([^(]+)/', $code, $matches)) {
             $class = $matches[1];
             $method = $matches[2];
-            $args = $matches[3];
-            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method) . '(' . $args . ')';
+            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method);
         } else {
             $class = $code;
             $text = $this->htmlEncode($class);
@@ -277,7 +287,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function isCoreFile($file)
     {
-        return $file === null || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
+        return $file === null || strpos(realpath($file), YII2_PATH . DIRECTORY_SEPARATOR) === 0;
     }
 
     /**

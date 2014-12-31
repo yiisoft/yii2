@@ -67,6 +67,7 @@ class Connection extends \yii\db\Connection
         'mysql' => 'yii\sphinx\Schema',    // MySQL
     ];
 
+
     /**
      * Obtains the schema information for the named index.
      * @param string $name index name.
@@ -109,7 +110,6 @@ class Connection extends \yii\db\Connection
      */
     public function createCommand($sql = null, $params = [])
     {
-        $this->open();
         $command = new Command([
             'db' => $this,
             'sql' => $sql,
@@ -127,5 +127,22 @@ class Connection extends \yii\db\Connection
     public function getLastInsertID($sequenceName = '')
     {
         throw new NotSupportedException('"' . __METHOD__ . '" is not supported.');
+    }
+
+    /**
+     * Escapes all special characters from 'MATCH' statement argument.
+     * Make sure you are using this method whenever composing 'MATCH' search statement.
+     * Note: this method does not perform quoting, you should place the result in the quotes
+     * an perform additional escaping for it manually, the best way to do it is using PDO parameter.
+     * @param string $str string to be escaped.
+     * @return string the properly escaped string.
+     */
+    public function escapeMatchValue($str)
+    {
+        return str_replace(
+            ['\\', '/', '"', '(', ')', '|', '-', '!', '@', '~', '&', '^', '$', '=', '>', '<', "\x00", "\n", "\r", "\x1a"],
+            ['\\\\', '\\/', '\\"', '\\(', '\\)', '\\|', '\\-', '\\!', '\\@', '\\~', '\\&', '\\^', '\\$', '\\=', '\\>', '\\<',  "\\x00", "\\n", "\\r", "\\x1a"],
+            $str
+        );
     }
 }

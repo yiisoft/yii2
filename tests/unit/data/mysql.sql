@@ -5,8 +5,10 @@
 
 DROP TABLE IF EXISTS `composite_fk` CASCADE;
 DROP TABLE IF EXISTS `order_item` CASCADE;
+DROP TABLE IF EXISTS `order_item_with_null_fk` CASCADE;
 DROP TABLE IF EXISTS `item` CASCADE;
 DROP TABLE IF EXISTS `order` CASCADE;
+DROP TABLE IF EXISTS `order_with_null_fk` CASCADE;
 DROP TABLE IF EXISTS `category` CASCADE;
 DROP TABLE IF EXISTS `customer` CASCADE;
 DROP TABLE IF EXISTS `profile` CASCADE;
@@ -61,6 +63,14 @@ CREATE TABLE `order` (
   CONSTRAINT `FK_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `order_with_null_fk` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11),
+  `created_at` int(11) NOT NULL,
+  `total` decimal(10,0) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `order_item` (
   `order_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL,
@@ -70,6 +80,14 @@ CREATE TABLE `order_item` (
   KEY `FK_order_item_item_id` (`item_id`),
   CONSTRAINT `FK_order_item_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_order_item_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `order_item_with_null_fk` (
+  `order_id` int(11),
+  `item_id` int(11),
+  `quantity` int(11) NOT NULL,
+  `subtotal` decimal(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `composite_fk` (
@@ -90,18 +108,22 @@ CREATE TABLE null_values (
 );
 
 CREATE TABLE `type` (
-  `int_col` int(11) NOT NULL,
-  `int_col2` int(11) DEFAULT '1',
+  `int_col` integer NOT NULL,
+  `int_col2` integer DEFAULT '1',
+  `smallint_col` smallint(1) DEFAULT '1',
   `char_col` char(100) NOT NULL,
   `char_col2` varchar(100) DEFAULT 'something',
   `char_col3` text,
+  `enum_col` enum('a', 'B'),
   `float_col` double(4,3) NOT NULL,
   `float_col2` double DEFAULT '1.23',
   `blob_col` blob,
   `numeric_col` decimal(5,2) DEFAULT '33.22',
   `time` timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   `bool_col` tinyint(1) NOT NULL,
-  `bool_col2` tinyint(1) DEFAULT '1'
+  `bool_col2` tinyint(1) DEFAULT '1',
+  `ts_default` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `bit_col` BIT(8) NOT NULL DEFAULT b'10000010'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `profile` (description) VALUES ('profile customer 1');
@@ -124,12 +146,23 @@ INSERT INTO `order` (customer_id, created_at, total) VALUES (1, 1325282384, 110.
 INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
 INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
+INSERT INTO `order_with_null_fk` (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO `order_with_null_fk` (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
+INSERT INTO `order_with_null_fk` (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
+
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
 INSERT INTO `order_item` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
+
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (1, 1, 1, 30.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (1, 2, 2, 40.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 4, 1, 10.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 5, 1, 15.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (2, 3, 1, 8.0);
+INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 
 /**

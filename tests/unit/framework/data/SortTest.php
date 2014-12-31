@@ -125,7 +125,8 @@ class SortTest extends TestCase
     public function testCreateUrl()
     {
         $manager = new UrlManager([
-            'baseUrl' => '/index.php',
+            'baseUrl' => '/',
+            'ScriptUrl' => '/index.php',
             'cache' => null,
         ]);
 
@@ -145,15 +146,16 @@ class SortTest extends TestCase
             'route' => 'site/index',
         ]);
 
-        $this->assertEquals('/index.php?r=site/index&sort=-age%2C-name', $sort->createUrl('age'));
-        $this->assertEquals('/index.php?r=site/index&sort=name%2Cage', $sort->createUrl('name'));
+        $this->assertEquals('/index.php?r=site%2Findex&sort=-age%2C-name', $sort->createUrl('age'));
+        $this->assertEquals('/index.php?r=site%2Findex&sort=name%2Cage', $sort->createUrl('name'));
     }
 
     public function testLink()
     {
         $this->mockApplication();
         $manager = new UrlManager([
-            'baseUrl' => '/index.php',
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
             'cache' => null,
         ]);
 
@@ -173,6 +175,6 @@ class SortTest extends TestCase
             'route' => 'site/index',
         ]);
 
-        $this->assertEquals('<a class="asc" href="/index.php?r=site/index&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>', $sort->link('age'));
+        $this->assertEquals('<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>', $sort->link('age'));
     }
 }

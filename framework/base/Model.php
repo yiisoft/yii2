@@ -83,6 +83,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     private $_scenario = self::SCENARIO_DEFAULT;
 
+
     /**
      * Returns the validation rules for attributes.
      *
@@ -310,28 +311,30 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function validate($attributeNames = null, $clearErrors = true)
     {
+        if ($clearErrors) {
+            $this->clearErrors();
+        }
+
+        if (!$this->beforeValidate()) {
+            return false;
+        }
+
         $scenarios = $this->scenarios();
         $scenario = $this->getScenario();
         if (!isset($scenarios[$scenario])) {
             throw new InvalidParamException("Unknown scenario: $scenario");
         }
 
-        if ($clearErrors) {
-            $this->clearErrors();
-        }
         if ($attributeNames === null) {
             $attributeNames = $this->activeAttributes();
         }
-        if ($this->beforeValidate()) {
-            foreach ($this->getActiveValidators() as $validator) {
-                $validator->validateAttributes($this, $attributeNames);
-            }
-            $this->afterValidate();
 
-            return !$this->hasErrors();
+        foreach ($this->getActiveValidators() as $validator) {
+            $validator->validateAttributes($this, $attributeNames);
         }
+        $this->afterValidate();
 
-        return false;
+        return !$this->hasErrors();
     }
 
     /**
@@ -382,7 +385,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if ($this->_validators === null) {
             $this->_validators = $this->createValidators();
         }
-
         return $this->_validators;
     }
 
@@ -401,7 +403,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $validators[] = $validator;
             }
         }
-
         return $validators;
     }
 
@@ -424,7 +425,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
             }
         }
-
         return $validators;
     }
 
@@ -433,17 +433,22 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * This is determined by checking if the attribute is associated with a
      * [[\yii\validators\RequiredValidator|required]] validation rule in the
      * current [[scenario]].
+     *
+     * Note that when the validator has a conditional validation applied using
+     * [[\yii\validators\RequiredValidator::$when|$when]] this method will return
+     * `false` regardless of the `when` condition because it may be called be
+     * before the model is loaded with data.
+     *
      * @param string $attribute attribute name
      * @return boolean whether the attribute is required
      */
     public function isAttributeRequired($attribute)
     {
         foreach ($this->getActiveValidators($attribute) as $validator) {
-            if ($validator instanceof RequiredValidator) {
+            if ($validator instanceof RequiredValidator && $validator->when === null) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -479,7 +484,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function getAttributeLabel($attribute)
     {
         $labels = $this->attributeLabels();
-
         return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute);
     }
 
@@ -568,6 +572,27 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function addError($attribute, $error = '')
     {
         $this->_errors[$attribute][] = $error;
+    }
+
+    /**
+     * Adds a list of errors.
+     * @param array $items a list of errors. The array keys must be attribute names.
+     * The array values should be error messages. If an attribute has multiple errors,
+     * these errors must be given in terms of an array.
+     * You may use the result of [[getErrors()]] as the value for this parameter.
+     * @since 2.0.2
+     */
+    public function addErrors(array $items)
+    {
+        foreach ($items as $attribute => $errors) {
+            if (is_array($errors)) {
+                foreach($errors as $error) {
+                    $this->addError($attribute, $error);
+                }
+            } else {
+                $this->addError($attribute, $errors);
+            }
+        }
     }
 
     /**
@@ -736,7 +761,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function load($data, $formName = null)
     {
         $scope = $formName === null ? $this->formName() : $formName;
-        if ($scope == '' && !empty($data)) {
+        if ($scope === '' && !empty($data)) {
             $this->setAttributes($data);
 
             return true;
@@ -759,25 +784,32 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @param array $models the models to be populated. Note that all models should have the same class.
      * @param array $data the data array. This is usually `$_POST` or `$_GET`, but can also be any valid array
      * supplied by end user.
-     * @return boolean whether the model is successfully populated with some data.
+     * @param string $formName the form name to be used for loading the data into the models.
+     * If not set, it will use the [[formName()]] value of the first model in `$models`.
+     * This parameter is available since version 2.0.1.
+     * @return boolean whether at least one of the models is successfully populated.
      */
-    public static function loadMultiple($models, $data)
+    public static function loadMultiple($models, $data, $formName = null)
     {
-        /** @var Model $model */
-        $model = reset($models);
-        if ($model === false) {
-            return false;
+        if ($formName === null) {
+            /* @var $first Model */
+            $first = reset($models);
+            if ($first === false) {
+                return false;
+            }
+            $formName = $first->formName();
         }
+
         $success = false;
-        $scope = $model->formName();
         foreach ($models as $i => $model) {
-            if ($scope == '') {
-                if (isset($data[$i])) {
-                    $model->setAttributes($data[$i]);
+            /* @var $model Model */
+            if ($formName == '') {
+                if (!empty($data[$i])) {
+                    $model->load($data[$i], '');
                     $success = true;
                 }
-            } elseif (isset($data[$scope][$i])) {
-                $model->setAttributes($data[$scope][$i]);
+            } elseif (!empty($data[$formName][$i])) {
+                $model->load($data[$formName][$i], '');
                 $success = true;
             }
         }
@@ -799,7 +831,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public static function validateMultiple($models, $attributeNames = null)
     {
         $valid = true;
-        /** @var Model $model */
+        /* @var $model Model */
         foreach ($models as $model) {
             $valid = $model->validate($attributeNames) && $valid;
         }
@@ -837,8 +869,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *     'email',
      *     'firstName' => 'first_name',
      *     'lastName' => 'last_name',
-     *     'fullName' => function () {
-     *         return $this->first_name . ' ' . $this->last_name;
+     *     'fullName' => function ($model) {
+     *         return $model->first_name . ' ' . $model->last_name;
      *     },
      * ];
      * ```
@@ -857,44 +889,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         $fields = $this->attributes();
 
         return array_combine($fields, $fields);
-    }
-
-    /**
-     * Determines which fields can be returned by [[toArray()]].
-     * This method will check the requested fields against those declared in [[fields()]] and [[extraFields()]]
-     * to determine which fields can be returned.
-     * @param array $fields the fields being requested for exporting
-     * @param array $expand the additional fields being requested for exporting
-     * @return array the list of fields to be exported. The array keys are the field names, and the array values
-     * are the corresponding object property names or PHP callables returning the field values.
-     */
-    protected function resolveFields(array $fields, array $expand)
-    {
-        $result = [];
-
-        foreach ($this->fields() as $field => $definition) {
-            if (is_integer($field)) {
-                $field = $definition;
-            }
-            if (empty($fields) || in_array($field, $fields, true)) {
-                $result[$field] = $definition;
-            }
-        }
-
-        if (empty($expand)) {
-            return $result;
-        }
-
-        foreach ($this->extraFields() as $field => $definition) {
-            if (is_integer($field)) {
-                $field = $definition;
-            }
-            if (in_array($field, $expand, true)) {
-                $result[$field] = $definition;
-            }
-        }
-
-        return $result;
     }
 
     /**

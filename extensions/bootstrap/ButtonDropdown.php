@@ -7,6 +7,7 @@
 
 namespace yii\bootstrap;
 
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -38,6 +39,15 @@ class ButtonDropdown extends Widget
      */
     public $label = 'Button';
     /**
+     * @var array the HTML attributes for the container tag. The following special options are recognized:
+     *
+     * - tag: string, defaults to "div", the name of the container tag.
+     *
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @since 2.0.1
+     */
+    public $containerOptions = [];
+    /**
      * @var array the HTML attributes of the button.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -59,12 +69,20 @@ class ButtonDropdown extends Widget
      */
     public $encodeLabel = true;
 
+
     /**
      * Renders the widget.
      */
     public function run()
     {
-        echo $this->renderButton() . "\n" . $this->renderDropdown();
+        Html::addCssClass($this->containerOptions, 'btn-group');
+        $options = $this->containerOptions;
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+
+        echo Html::beginTag($tag, $this->containerOptions);
+        echo "\n" . $this->renderButton();
+        echo "\n" . $this->renderDropdown();
+        echo "\n" . Html::endTag($tag);
         $this->registerPlugin('button');
     }
 

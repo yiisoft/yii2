@@ -23,13 +23,13 @@ use yii\di\Instance;
  *
  * The following example shows how you can configure the application to use DbCache:
  *
- * ~~~
+ * ```php
  * 'cache' => [
  *     'class' => 'yii\caching\DbCache',
  *     // 'db' => 'mydb',
  *     // 'cacheTable' => 'my_cache',
  * ]
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -71,6 +71,7 @@ class DbCache extends Cache
      * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
      */
     public $gcProbability = 100;
+
 
     /**
      * Initializes the DbCache component.

@@ -16,7 +16,7 @@ use yii\di\Instance;
  *
  * By default, Cache stores session data in a MongoDB collection named 'cache' inside the default database.
  * This collection is better to be pre-created with fields 'id' and 'expire' indexed.
- * The table name can be changed by setting [[cacheCollection]].
+ * The collection name can be changed by setting [[cacheCollection]].
  *
  * Please refer to [[\yii\caching\Cache]] for common cache operations that are supported by Cache.
  *
@@ -53,6 +53,7 @@ class Cache extends \yii\caching\Cache
      * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
      */
     public $gcProbability = 100;
+
 
     /**
      * Initializes the Cache component.

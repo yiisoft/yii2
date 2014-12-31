@@ -98,6 +98,7 @@ class Serializer extends Component
      */
     public $response;
 
+
     /**
      * @inheritdoc
      */
@@ -193,7 +194,7 @@ class Serializer extends Component
             '_meta' => [
                 'totalCount' => $pagination->totalCount,
                 'pageCount' => $pagination->getPageCount(),
-                'currentPage' => $pagination->getPage(),
+                'currentPage' => $pagination->getPage() + 1,
                 'perPage' => $pagination->getPageSize(),
             ],
         ];

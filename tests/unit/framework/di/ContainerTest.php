@@ -89,5 +89,15 @@ class ContainerTest extends TestCase
         $qux1 = $container->get('qux');
         $qux2 = $container->get('qux');
         $this->assertTrue($qux1 === $qux2);
+
+        // config
+        $container = new Container;
+        $container->set('qux', $Qux);
+        $qux = $container->get('qux', [], ['a' => 2]);
+        $this->assertEquals(2, $qux->a);
+        $qux = $container->get('qux', [3]);
+        $this->assertEquals(3, $qux->a);
+        $qux = $container->get('qux', [3, ['a' => 4]]);
+        $this->assertEquals(4, $qux->a);
     }
 }

@@ -5,6 +5,8 @@ There are many differences between versions 1.1 and 2.0 of Yii as the framework 
 As a result, upgrading from version 1.1 is not as trivial as upgrading between minor versions. In this guide you'll
 find the major differences between the two versions.
 
+If you have not used Yii 1.1 before, you can safely skip this section and turn directly to "[Getting started](start-installation.md)".
+
 Please note that Yii 2.0 introduces more new features than are covered in this summary. It is highly recommended
 that you read through the whole definitive guide to learn about them all. Chances are that
 some features you previously had to develop for yourself are now part of the core code.
@@ -15,9 +17,9 @@ Installation
 
 Yii 2.0 fully embraces [Composer](https://getcomposer.org/), the de facto PHP package manager. Installation
 of the core framework, as well as extensions, are handled through Composer. Please refer to
-the [Starting from Basic App](start-basic.md) section to learn how to install Yii 2.0. If you want to
+the [Installing Yii](start-installation.md) section to learn how to install Yii 2.0. If you want to
 create new extensions, or turn your existing 1.1 extensions into 2.0-compatible extensions, please refer to
-the [Creating Extensions](extend-creating-extensions.md) section of the guide.
+the [Creating Extensions](structure-extensions.md#creating-extensions) section of the guide.
 
 
 PHP Requirements
@@ -141,13 +143,13 @@ supported in most places in the Yii core code. For example, [[yii\caching\FileCa
 both a path alias and a normal directory path.
 
 A path alias is also closely related to a class namespace. It is recommended that a path
-alias be defined for each root namespace, thereby allowing you to use Yii the class autoloader without
+alias be defined for each root namespace, thereby allowing you to use Yii class autoloader without
 any further configuration. For example, because `@yii` refers to the Yii installation directory,
 a class like `yii\web\Request` can be autoloaded. If you use a third party library,
 such as the Zend Framework, you may define a path alias `@Zend` that refers to that framework's installation
 directory. Once you've done that, Yii will be able to autoload any class in that Zend Framework library, too.
 
-More on path aliases can be found in the [Path Aliases](concept-aliases.md) section.
+More on path aliases can be found in the [Aliases](concept-aliases.md) section.
 
 
 Views
@@ -156,7 +158,7 @@ Views
 The most significant change about views in Yii 2 is that the special variable `$this` in a view no longer refers to
 the current controller or widget. Instead, `$this` now refers to a *view* object, a new concept
 introduced in 2.0. The *view* object is of type [[yii\web\View]], which represents the view part
-of the MVC pattern. In you want to access the controller or widget in a view, you can use `$this->context`.
+of the MVC pattern. If you want to access the controller or widget in a view, you can use `$this->context`.
 
 To render a partial view within another view, you use `$this->render()`, not `$this->renderPartial()`. The call to `render` also now has to be explicitly echoed, as the `render()` method returns the rendering
 result, rather than directly displaying it. For example:
@@ -186,7 +188,7 @@ public function scenarios()
 {
     return [
         'backend' => ['email', 'role'],
-        'frontend' => ['email', '!name'],
+        'frontend' => ['email', '!role'],
     ];
 }
 ```
@@ -201,13 +203,13 @@ In most cases, you do not need to override [[yii\base\Model::scenarios()|scenari
 if the [[yii\base\Model::rules()|rules()]] method fully specifies the scenarios that will exist, and if there is no need to declare
 `unsafe` attributes.
 
-To learn more details about models, please refer to the [Models](basic-models.md) section.
+To learn more details about models, please refer to the [Models](structure-models.md) section.
 
 
 Controllers
 -----------
 
-Yii 2.0 uses [[yii\web\Controller]] as the base controller class, similar to `CWebController` in Yii 1.1.
+Yii 2.0 uses [[yii\web\Controller]] as the base controller class, which is similar to `CController` in Yii 1.1.
 [[yii\base\Action]] is the base class for action classes.
 
 The most obvious impact of these changes on your code is that a controller action should return the content
@@ -268,7 +270,7 @@ be applied to any view file, even a view rendered outside of the context of a co
 Also, there is no more `CThemeManager` component. Instead, `theme` is a configurable property of the `view`
 application component.
 
-Please refer to the [Theming](tutorial-theming.md) section for more details.
+Please refer to the [Theming](output-theming.md) section for more details.
 
 
 Console Applications
@@ -320,7 +322,7 @@ public function behaviors()
 }
 ```
 
-Please refer to the [Filtering](runtime-filtering.md) section for more details.
+Please refer to the [Filtering](structure-filters.md) section for more details.
 
 
 Assets
@@ -334,7 +336,7 @@ By registering an asset bundle via [[yii\web\AssetBundle::register()]], you make
 the assets in that bundle accessible via the Web. Unlike in Yii 1, the page registering the bundle will automatically
 contain the references to the JavaScript and CSS files specified in that bundle.
 
-Please refer to the [Managing Assets](output-assets.md) section for more details.
+Please refer to the [Managing Assets](structure-assets.md) section for more details.
 
 
 Helpers
@@ -347,7 +349,6 @@ Yii 2.0 introduces many commonly used static helper classes, including.
 * [[yii\helpers\StringHelper]]
 * [[yii\helpers\FileHelper]]
 * [[yii\helpers\Json]]
-* [[yii\helpers\Security]]
 
 Please refer to the [Helper Overview](helper-overview.md) section for more details.
 
@@ -441,14 +442,60 @@ records by filtering with the primary keys of the primary records.
 
 Instead of returning [[yii\db\ActiveRecord|ActiveRecord]] objects, you may chain the [[yii\db\ActiveQuery::asArray()|asArray()]]
 method when building a query to return a large number of records. This will cause the query result to be returned
-as arrays, which can significantly reduce the needed CPU time and memory if large number of records . For example,
+as arrays, which can significantly reduce the needed CPU time and memory if large number of records . For example:
 
 ```php
 $customers = Customer::find()->asArray()->all();
 ```
 
+Another change is that you can't define attribute default values through public properties anymore.
+If you need those, you should set them in the init method of your record class.
+
+```php
+public function init()
+{
+    parent::init();
+    $this->status = self::STATUS_NEW;
+}
+```
+
+There were some problems with overriding the constructor of an ActiveRecord class in 1.1. These are not present in
+version 2.0 anymore. Note that when adding parameters to the constructor you might have to override [[yii\db\ActiveRecord::instantiate()]].
+
 There are many other changes and enhancements to Active Record. Please refer to
 the [Active Record](db-active-record.md) section for more details.
+
+
+Active Record Behaviors
+-----------------------
+
+In 2.0, we have dropped the base behavior class `CActiveRecordBehavior`. If you want to create an Active Record Behavior,
+you will have to extend directly from `yii\base\Behavior`. If the behavior class needs to respond to some events
+of the owner, you have to override the `events()` method like the following,
+
+```php
+namespace app\components;
+
+use yii\db\ActiveRecord;
+use yii\base\Behavior;
+
+class MyBehavior extends Behavior
+{
+    // ...
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
+        ];
+    }
+
+    public function beforeValidate($event)
+    {
+        // ...
+    }
+}
+```
 
 
 User and IdentityInterface
@@ -458,7 +505,7 @@ The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
 is much more straightforward to use. The advanced application template provides such an example.
 
-Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Technique](tutorial-advanced-app.md) sections for more details.
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Template](tutorial-advanced-app.md) sections for more details.
 
 
 URL Management
@@ -477,11 +524,11 @@ the same goal.
 ]
 ```
 
-Please refer to the [Url manager docs](url.md) section for more details.
+Please refer to the [Url manager docs](runtime-routing.md) section for more details.
 
 Using Yii 1.1 and 2.x together
 ------------------------------
 
 If you have legacy Yii 1.1 code that you want to use together with Yii 2.0, please refer to
-the [Using Yii 1.1 and 2.0 Together](extend-using-v1-v2.md) section.
+the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md) section.
 

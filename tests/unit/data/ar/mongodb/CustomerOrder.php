@@ -15,12 +15,17 @@ class CustomerOrder extends ActiveRecord
             '_id',
             'number',
             'customer_id',
-            'items',
+            'item_ids',
         ];
     }
 
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['_id' => 'customer_id']);
+    }
+
+    public function getItems()
+    {
+        return $this->hasMany(Item::className(), ['_id' => 'item_ids']);
     }
 }

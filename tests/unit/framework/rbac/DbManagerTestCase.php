@@ -4,7 +4,6 @@ namespace yiiunit\framework\rbac;
 use Yii;
 use yii\console\Application;
 use yii\console\Controller;
-use yii\console\controllers\MigrateController;
 use yii\db\Connection;
 use yii\rbac\DbManager;
 
@@ -71,8 +70,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->auth = new DbManager(['db' => $this->getConnection()]);
-
+        $this->auth = $this->createManager();
     }
 
     protected function tearDown()
@@ -105,5 +103,13 @@ abstract class DbManagerTestCase extends ManagerTestCase
             static::$db = $db;
         }
         return static::$db;
+    }
+
+    /**
+     * @return \yii\rbac\ManagerInterface
+     */
+    protected function createManager()
+    {
+        return new DbManager(['db' => $this->getConnection()]);
     }
 }

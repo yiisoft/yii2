@@ -47,7 +47,7 @@ public function actionView($id)
 
 ## Filters <a name="filters"></a>
 
-Most RESTful API features provided by [[yii\rest\Controller]] are implemented in terms of [filters](runtime-filtering.md).
+Most RESTful API features provided by [[yii\rest\Controller]] are implemented in terms of [filters](structure-filters.md).
 In particular, the following filters will be executed in the order they are listed:
 
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: supports content negotiation, to be explained in
@@ -59,7 +59,7 @@ In particular, the following filters will be executed in the order they are list
   the [Rate Limiting](rest-rate-limiting.md) section.
 
 These named filters are declared in the [[yii\rest\Controller::behaviors()|behaviors()]] method.
-You may override this method to configure individual filters,  disable some of them, or add your own filters.
+You may override this method to configure individual filters, disable some of them, or add your own filters.
 For example, if you only want to use HTTP basic authentication, you may write the following code:
 
 ```php

@@ -170,6 +170,48 @@ class ModelTest extends TestCase
         $this->assertFalse($speaker->hasErrors());
     }
 
+    public function testAddErrors()
+    {
+        $singer = new Singer();
+
+        $errors = ['firstName' => ['Something is wrong!']];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $singer->addErrors(['firstName' => 'Something is wrong!']);
+        $this->assertEquals($singer->getErrors(), ['firstName' => ['Something is wrong!']]);
+
+        $singer->clearErrors();
+        $errors = ['firstName' => ['Something is wrong!', 'Totally wrong!']];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $errors = [
+            'firstName' => ['Something is wrong!'],
+            'lastName' => ['Another one!']
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $errors = [
+            'firstName' => ['Something is wrong!', 'Totally wrong!'],
+            'lastName' => ['Another one!']
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $errors = [
+            'firstName' => ['Something is wrong!', 'Totally wrong!'],
+            'lastName' => ['Another one!', 'Totally wrong!']
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+    }
+
     public function testArraySyntax()
     {
         $speaker = new Speaker();
@@ -216,7 +258,7 @@ class ModelTest extends TestCase
     public function testDefaultScenarios()
     {
         $singer = new Singer();
-        $this->assertEquals(['default' => ['lastName', 'underscore_style']], $singer->scenarios());
+        $this->assertEquals(['default' => ['lastName', 'underscore_style', 'test']], $singer->scenarios());
 
         $scenarios = [
             'default' => ['id', 'name', 'description'],
@@ -238,6 +280,13 @@ class ModelTest extends TestCase
         $singer = new Singer();
         $this->assertFalse($singer->isAttributeRequired('firstName'));
         $this->assertTrue($singer->isAttributeRequired('lastName'));
+
+        // attribute is not marked as required when a conditional validation is applied using `$when`.
+        // the condition should not be applied because this info may be retrieved before model is loaded with data
+        $singer->firstName = 'qiang';
+        $this->assertFalse($singer->isAttributeRequired('test'));
+        $singer->firstName = 'cebe';
+        $this->assertFalse($singer->isAttributeRequired('test'));
     }
 
     public function testCreateValidators()
