@@ -129,7 +129,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (isset($primaryKey[0])) {
                 $condition = [$primaryKey[0] => $condition];
             } else {
-                throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+                throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
         }
 
