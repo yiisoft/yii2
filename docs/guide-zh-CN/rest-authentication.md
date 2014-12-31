@@ -136,7 +136,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 After authentication is enabled as described above, for every API request, the requested controller
 will try to authenticate the user in its `beforeAction()` step.
-在上述认证启用后，对于每个API请求，请求控制器都会在它的`beforeAction()`步骤中对用户进行鉴权。
+在上述认证启用后，对于每个API请求，请求控制器都会在它的`beforeAction()`步骤中对用户进行认证。
 
 If authentication succeeds, the controller will perform other checks (such as rate limiting, authorization)
 and then run the action. The authenticated user identity information can be retrieved via `Yii::$app->user->identity`.
