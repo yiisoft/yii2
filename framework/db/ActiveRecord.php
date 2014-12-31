@@ -184,7 +184,7 @@ class ActiveRecord extends BaseActiveRecord
                 }
                 $condition = [$pk => $condition];
             } else {
-                throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+                throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
         }
 
@@ -420,25 +420,24 @@ class ActiveRecord extends BaseActiveRecord
             Yii::info('Model not inserted due to validation error.', __METHOD__);
             return false;
         }
-        $db = static::getDb();
-        if ($this->isTransactional(self::OP_INSERT)) {
-            $transaction = $db->beginTransaction();
-            try {
-                $result = $this->insertInternal($attributes);
-                if ($result === false) {
-                    $transaction->rollBack();
-                } else {
-                    $transaction->commit();
-                }
-            } catch (\Exception $e) {
-                $transaction->rollBack();
-                throw $e;
-            }
-        } else {
-            $result = $this->insertInternal($attributes);
+
+        if (!$this->isTransactional(self::OP_INSERT)) {
+            return $this->insertInternal($attributes);
         }
 
-        return $result;
+        $transaction = static::getDb()->beginTransaction();
+        try {
+            $result = $this->insertInternal($attributes);
+            if ($result === false) {
+                $transaction->rollBack();
+            } else {
+                $transaction->commit();
+            }
+            return $result;
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -538,25 +537,24 @@ class ActiveRecord extends BaseActiveRecord
             Yii::info('Model not updated due to validation error.', __METHOD__);
             return false;
         }
-        $db = static::getDb();
-        if ($this->isTransactional(self::OP_UPDATE)) {
-            $transaction = $db->beginTransaction();
-            try {
-                $result = $this->updateInternal($attributeNames);
-                if ($result === false) {
-                    $transaction->rollBack();
-                } else {
-                    $transaction->commit();
-                }
-            } catch (\Exception $e) {
-                $transaction->rollBack();
-                throw $e;
-            }
-        } else {
-            $result = $this->updateInternal($attributeNames);
+
+        if (!$this->isTransactional(self::OP_UPDATE)) {
+            return $this->updateInternal($attributeNames);
         }
 
-        return $result;
+        $transaction = static::getDb()->beginTransaction();
+        try {
+            $result = $this->updateInternal($attributeNames);
+            if ($result === false) {
+                $transaction->rollBack();
+            } else {
+                $transaction->commit();
+            }
+            return $result;
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -580,25 +578,23 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function delete()
     {
-        $db = static::getDb();
-        if ($this->isTransactional(self::OP_DELETE)) {
-            $transaction = $db->beginTransaction();
-            try {
-                $result = $this->deleteInternal();
-                if ($result === false) {
-                    $transaction->rollBack();
-                } else {
-                    $transaction->commit();
-                }
-            } catch (\Exception $e) {
-                $transaction->rollBack();
-                throw $e;
-            }
-        } else {
-            $result = $this->deleteInternal();
+        if (!$this->isTransactional(self::OP_DELETE)) {
+            return $this->deleteInternal();
         }
 
-        return $result;
+        $transaction = static::getDb()->beginTransaction();
+        try {
+            $result = $this->deleteInternal();
+            if ($result === false) {
+                $transaction->rollBack();
+            } else {
+                $transaction->commit();
+            }
+            return $result;
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -609,22 +605,23 @@ class ActiveRecord extends BaseActiveRecord
      */
     protected function deleteInternal()
     {
-        $result = false;
-        if ($this->beforeDelete()) {
-            // we do not check the return value of deleteAll() because it's possible
-            // the record is already deleted in the database and thus the method will return 0
-            $condition = $this->getOldPrimaryKey(true);
-            $lock = $this->optimisticLock();
-            if ($lock !== null) {
-                $condition[$lock] = $this->$lock;
-            }
-            $result = $this->deleteAll($condition);
-            if ($lock !== null && !$result) {
-                throw new StaleObjectException('The object being deleted is outdated.');
-            }
-            $this->setOldAttributes(null);
-            $this->afterDelete();
+        if (!$this->beforeDelete()) {
+            return false;
         }
+
+        // we do not check the return value of deleteAll() because it's possible
+        // the record is already deleted in the database and thus the method will return 0
+        $condition = $this->getOldPrimaryKey(true);
+        $lock = $this->optimisticLock();
+        if ($lock !== null) {
+            $condition[$lock] = $this->$lock;
+        }
+        $result = $this->deleteAll($condition);
+        if ($lock !== null && !$result) {
+            throw new StaleObjectException('The object being deleted is outdated.');
+        }
+        $this->setOldAttributes(null);
+        $this->afterDelete();
 
         return $result;
     }

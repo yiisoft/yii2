@@ -142,20 +142,20 @@ RESTful ウェブサービス
 開発ツール
 ----------
 
-* **翻訳未着手** [デバッグツールバーとデバッガ](tool-debugger.md)
-* **翻訳未着手** [Gii を使ってコードを生成する](tool-gii.md)
+* [デバッグツールバーとデバッガ](tool-debugger.md)
+* [Gii を使ってコードを生成する](tool-gii.md)
 * **TBD** [API ドキュメントを生成する](tool-api-doc.md)
 
 
 テスト
 ------
 
-* **翻訳未着手** [概要](test-overview.md)
-* **翻訳未着手** [テスト環境の構築](test-environment-setup.md)
-* **翻訳未着手** [ユニットテスト](test-unit.md)
-* **翻訳未着手** [機能テスト](test-functional.md)
-* **翻訳未着手** [承認テスト](test-acceptance.md)
-* **翻訳未着手** [フィクスチャ](test-fixtures.md)
+* [概要](test-overview.md)
+* [テスト環境の構築](test-environment-setup.md)
+* [ユニットテスト](test-unit.md)
+* [機能テスト](test-functional.md)
+* [承認テスト](test-acceptance.md)
+* **翻訳中** [フィクスチャ](test-fixtures.md)
 
 
 スペシャルトピック
