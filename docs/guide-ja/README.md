@@ -151,7 +151,7 @@ RESTful ウェブサービス
 ------
 
 * [概要](test-overview.md)
-* **翻訳中** [テスト環境の構築](test-environment-setup.md)
+* [テスト環境の構築](test-environment-setup.md)
 * **翻訳中** [ユニットテスト](test-unit.md)
 * **翻訳中** [機能テスト](test-functional.md)
 * **翻訳中** [承認テスト](test-acceptance.md)
