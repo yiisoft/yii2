@@ -1,14 +1,25 @@
 Filtros
 =======
 
-Os filtros são objetos que são executados antes e/ou depois das [ações do controller (controlador)](structure-controllers.md#actions). Por exemplo, um filtro de controle de acesso pode ser executado antes das ações para garantir que um determinado usuário final tenha autorização de acessá-lo; um filtro de compressão de conteúdo pode ser executado depois das ações para comprimir o conteúdo da resposta antes de enviá-los aos usuários finais.
+Os filtros são objetos que são executados antes e/ou depois das 
+[ações do controller (controlador)](structure-controllers.md#actions). Por exemplo, 
+um filtro de controle de acesso pode ser executado antes das ações para garantir 
+que um determinado usuário final tenha autorização de acessá-lo; um filtro de 
+compressão de conteúdo pode ser executado depois das ações para comprimir o 
+conteúdo da resposta antes de enviá-los aos usuários finais.
 
-Um filtro pode ser composto por um pré-filtro (lógicas de filtragem que são aplicadas *antes* que as ações) e/ou um pós-filtro (lógica aplicada *depois* que as ações).
+Um filtro pode ser composto por um pré-filtro (lógicas de filtragem que são 
+aplicadas *antes* que as ações) e/ou um pós-filtro (lógica aplicada *depois* 
+que as ações).
 
 
 ## Usando os Filtros <a name="using-filters"></a>
 
-Os filtros são, essencialmente, um tipo especial de [behaviors (comportamento)](concept-behaviors.md). No entanto, o uso dos filtros é igual ao [uso dos behaviors](concept-behaviors.md#attaching-behaviors). Você pode declarar os filtros em uma classe controller (controlador) sobrescrevendo o método [[yii\base\Controller::behaviors()|behaviors()]] conforme o exemplo a seguir:
+Os filtros são, essencialmente, um tipo especial de 
+[behaviors (comportamento)](concept-behaviors.md). No entanto, o uso dos filtros 
+é igual ao [uso dos behaviors](concept-behaviors.md#attaching-behaviors). Você 
+pode declarar os filtros em uma classe controller (controlador) sobrescrevendo o 
+método [[yii\base\Controller::behaviors()|behaviors()]] conforme o exemplo a seguir:
 
 ```php
 public function behaviors()
@@ -26,14 +37,29 @@ public function behaviors()
 }
 ```
 
-Por padrão, os filtros declarados em uma classe controller (controlador) serão aplicados em *todas* as ações deste controller (controlador). Você pode, no entanto, especificar explicitamente em quais ações os filtros serão aplicados pela configuração da propriedade [[yii\base\ActionFilter::only|only]]. No exemplo anterior, o filtro `HttpCache` só se aplica às ações `index` e `view`. Você também pode configurar a propriedade [[yii\base\ActionFilter::except|except]] para montar um blacklist, a fim de  barrar algumas ações que estão sendo filtradas.
+Por padrão, os filtros declarados em uma classe controller (controlador) serão 
+aplicados em *todas* as ações deste controller (controlador). Você pode, no 
+entanto, especificar explicitamente em quais ações os filtros serão aplicados 
+pela configuração da propriedade [[yii\base\ActionFilter::only|only]]. No exemplo 
+anterior, o filtro `HttpCache` só se aplica às ações `index` e `view`. Você também 
+pode configurar a propriedade [[yii\base\ActionFilter::except|except]] para montar 
+um blacklist, a fim de  barrar algumas ações que estão sendo filtradas.
 
-Além dos controllers (controladores), você também poderá declarar filtros em um [módulo](structure-modules.md) ou na [aplicação](structure-applications.md).
-Quando você faz isso, os filtros serão aplicados em *todos* as ações do controller (controlador) que pertençam a esse módulo ou a essa aplicação, a menos que você configure as propriedades [[yii\base\ActionFilter::only|only]] e [[yii\base\ActionFilter::except|except]] do filtro conforme descrito anteriormente.
+Além dos controllers (controladores), você também poderá declarar filtros em um 
+[módulo](structure-modules.md) ou na [aplicação](structure-applications.md).
+Quando você faz isso, os filtros serão aplicados em *todos* as ações do controller 
+(controlador) que pertençam a esse módulo ou a essa aplicação, a menos que você 
+configure as propriedades [[yii\base\ActionFilter::only|only]] e 
+[[yii\base\ActionFilter::except|except]] do filtro conforme descrito anteriormente.
 
-> Observação: Ao declarar os filtros em módulos ou em aplicações, você deve usar [rotas](structure-controllers.md#routes) ao invés de IDs das ações nas propriedades [[yii\base\ActionFilter::only|only]] e [[yii\base\ActionFilter::except|except]]. Isto porque os IDs das ações não podem, por si só, especificar totalmente as ações no escopo de um módulo ou de uma aplicação.
+> Observação: Ao declarar os filtros em módulos ou em aplicações, você deve usar 
+[rotas](structure-controllers.md#routes) ao invés de IDs das ações nas propriedades 
+[[yii\base\ActionFilter::only|only]] e [[yii\base\ActionFilter::except|except]]. 
+Isto porque os IDs das ações não podem, por si só, especificar totalmente as ações 
+no escopo de um módulo ou de uma aplicação.
 
-Quando muitos filtros são configurados para uma única ação, devem ser aplicados de acordo com as seguintes regras:
+Quando muitos filtros são configurados para uma única ação, devem ser aplicados 
+de acordo com as seguintes regras:
 
 * Pré-filtragem:
     - Aplica os filtros declarados na aplicação na ordem que foram listados no método `behaviors()`.
@@ -49,8 +75,14 @@ Quando muitos filtros são configurados para uma única ação, devem ser aplica
 
 ## Criando Filtros <a name="creating-filters"></a>
 
-Para criar um novo filtro de ação, deve estender a classe [[yii\base\ActionFilter]] e sobrescrever os métodos [[yii\base\ActionFilter::beforeAction()|beforeAction()]] e/ou [[yii\base\ActionFilter::afterAction()|afterAction()]]. O primeiro método será executado antes que uma ação seja executada enquanto o outro método será executado após uma ação seja executada. 
-O valor de retorno no método [[yii\base\ActionFilter::beforeAction()|beforeAction()]] determina se uma ação deve ser executada ou não. Se retornar `false`, os filtros subsequentes serão ignorados e a ação não será executada.
+Para criar um novo filtro de ação, deve estender a classe [[yii\base\ActionFilter]] 
+e sobrescrever os métodos [[yii\base\ActionFilter::beforeAction()|beforeAction()]] 
+e/ou [[yii\base\ActionFilter::afterAction()|afterAction()]]. O primeiro método 
+será executado antes que uma ação seja executada enquanto o outro método será 
+executado após uma ação seja executada. 
+O valor de retorno no método [[yii\base\ActionFilter::beforeAction()|beforeAction()]] 
+determina se uma ação deve ser executada ou não. Se retornar `false`, os filtros 
+subsequentes serão ignorados e a ação não será executada.
 
 O exemplo a seguir mostra um filtro que guarda o log do tempo de execução das ações:
 
@@ -82,15 +114,24 @@ class ActionTimeFilter extends ActionFilter
 
 ## Filtros Nativos <a name="core-filters"></a>
 
-O Yii fornece um conjunto de filtros que normalmente são usados, localizados sob o namespace `yii\filters`. A seguir, iremos realizar uma breve apresentação destes filtros.
+O Yii fornece um conjunto de filtros que normalmente são usados, localizados sob 
+o namespace `yii\filters`. A seguir, iremos realizar uma breve apresentação 
+destes filtros.
 
 
 ### [[yii\filters\AccessControl|AccessControl]] <a name="access-control"></a>
 
-O filtro AccessControl fornece um controle de acesso simples, baseado em um conjunto de [[yii\filters\AccessControl::rules|regras]].
-Em particular, antes que uma ação seja executada, o AccessControl analisará as regras listadas e localizará o primeiro que corresponda às variáveis do contexto atual (como o IP do usuário, o status do login, etc). A regra correspondente determinará se vai permitir ou não a execução da ação solicitada. Se nenhuma regra for localizada, o acesso será negado.
+O filtro AccessControl fornece um controle de acesso simples, baseado em um 
+conjunto de [[yii\filters\AccessControl::rules|regras]].
+Em particular, antes que uma ação seja executada, o AccessControl analisará as 
+regras listadas e localizará o primeiro que corresponda às variáveis do contexto 
+atual (como o IP do usuário, o status do login, etc). A regra correspondente 
+determinará se vai permitir ou não a execução da ação solicitada. Se nenhuma 
+regra for localizada, o acesso será negado.
 
-O exemplo a seguir mostra como faz para permitir aos usuários autenticados acessarem as ações `create` e `update` enquanto todos os outros não autenticados não consigam acessá-las. 
+O exemplo a seguir mostra como faz para permitir aos usuários autenticados 
+acessarem as ações `create` e `update` enquanto todos os outros não autenticados 
+não consigam acessá-las. 
 
 ```php
 use yii\filters\AccessControl;
@@ -114,14 +155,23 @@ public function behaviors()
 }
 ```
 
-De modo geral, para mais detalhes sobre o controle de acesso, por favor, consulte a seção [Autorização](security-authorization.md).
+De modo geral, para mais detalhes sobre o controle de acesso, por favor, consulte 
+a seção [Autorização](security-authorization.md).
 
 
 ### Métodos de Autenticação por Filtros <a name="auth-method-filters"></a>
 
-O método de autenticação por filtros são usados para autenticar um usuário usando vários métodos, tais como [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/). Todas estas classes de filtros estão localizadas sob o namespace `yii\filters\auth`.
+O método de autenticação por filtros são usados para autenticar um usuário usando 
+vários métodos, tais como 
+[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), 
+[OAuth 2](http://oauth.net/2/). Todas estas classes de filtros estão localizadas 
+sob o namespace `yii\filters\auth`.
 
-O exemplo a seguir mostra como você pode usar o filtro [[yii\filters\auth\HttpBasicAuth]] para autenticar um usuário usando um acesso baseado em token pelo método HTTP Basic Auth. Observe que, para isto funcionar, sua [[yii\web\User::identityClass|classe de identidade do usuário]] deve implementar o método [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]].
+O exemplo a seguir mostra como você pode usar o filtro 
+[[yii\filters\auth\HttpBasicAuth]] para autenticar um usuário usando um acesso 
+baseado em token pelo método HTTP Basic Auth. Observe que, para isto funcionar, 
+sua [[yii\web\User::identityClass|classe de identidade do usuário]] deve 
+implementar o método [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]].
 
 ```php
 use yii\filters\auth\HttpBasicAuth;
@@ -136,14 +186,19 @@ public function behaviors()
 }
 ```
 
-Os métodos de autenticação por filtros geralmente são utilizados na implementação de APIs RESTful. Para mais detalhes, por favor, consulte a seção RESTful [Autenticação](rest-authentication.md).
+Os métodos de autenticação por filtros geralmente são utilizados na implementação 
+de APIs RESTful. Para mais detalhes, por favor, consulte a seção RESTful 
+[Autenticação](rest-authentication.md).
 
 
 ### [[yii\filters\ContentNegotiator|ContentNegotiator]] <a name="content-negotiator"></a>
 
-O filtro ContentNegotiator suporta a identificação de formatos de respostas e o idioma da aplicação. Este filtro tentar determinar o formato de resposta e o idioma analisando os parâmetros `GET` e o `Accept` do cabeçalho HTTP.
+O filtro ContentNegotiator suporta a identificação de formatos de respostas e o 
+idioma da aplicação. Este filtro tentar determinar o formato de resposta e o 
+idioma analisando os parâmetros `GET` e o `Accept` do cabeçalho HTTP.
 
-No exemplo a seguir, o ContentNegotiator está sendo configurado para suportar os formatos de resposta JSON e XML, e os idiomas Inglês (Estados Unidos) e Alemão.
+No exemplo a seguir, o ContentNegotiator está sendo configurado para suportar os 
+formatos de resposta JSON e XML, e os idiomas Inglês (Estados Unidos) e Alemão.
 
 ```php
 use yii\filters\ContentNegotiator;
@@ -167,7 +222,14 @@ public function behaviors()
 }
 ```
 
-Os formatos de resposta e os idiomas muitas vezes precisam ser determinados muito mais cedo no [ciclo de vida da aplicação](structure-applications.md#application-lifecycle). Por este motivo, o ContentNegotiator foi projetado para ser usado de outras formas, onde pode ser usado tanto como um [componente de inicialização](structure-applications.md#bootstrap) quanto um filtro. Por exemplo, você pode configura-lo na [configuração da aplicação](structure-applications.md#application-configurations) conforme o exemplo a seguir:
+Os formatos de resposta e os idiomas muitas vezes precisam ser determinados muito 
+mais cedo no [ciclo de vida da aplicação](structure-applications.md#application-lifecycle). 
+Por este motivo, o ContentNegotiator foi projetado para ser usado de outras formas, 
+onde pode ser usado tanto como um 
+[componente de inicialização](structure-applications.md#bootstrap) quanto um filtro. 
+Por exemplo, você pode configura-lo na 
+[configuração da aplicação](structure-applications.md#application-configurations) 
+conforme o exemplo a seguir:
 
 ```php
 use yii\filters\ContentNegotiator;
@@ -190,12 +252,15 @@ use yii\web\Response;
 ];
 ```
 
-> Informação: Nos casos do formato de resposta e do idioma não serem determinados pela requisição, o primeiro formato e idioma listados em [[formats]] e [[languages]] serão utilizados.
+> Informação: Nos casos do formato de resposta e do idioma não serem determinados 
+  pela requisição, o primeiro formato e idioma listados em [[formats]] e 
+  [[languages]] serão utilizados.
 
 
 ### [[yii\filters\HttpCache|HttpCache]] <a name="http-cache"></a>
 
-O filtro HttpCache implementa no lado do cliente (client-side) o cache pela utilização dos parâmetros `Last-Modified` e `Etag` do cabeçalho HTTP.
+O filtro HttpCache implementa no lado do cliente (client-side) o cache pela 
+utilização dos parâmetros `Last-Modified` e `Etag` do cabeçalho HTTP.
 Por exemplo,
 
 ```php
@@ -216,12 +281,17 @@ public function behaviors()
 }
 ```
 
-Por favor, consulte a seção [Cache HTTP](caching-http.md) para mais detalhes sobre o uso do HttpCache.
+Por favor, consulte a seção [Cache HTTP](caching-http.md) para mais detalhes 
+sobre o uso do HttpCache.
 
 
 ### [[yii\filters\PageCache|PageCache]] <a name="page-cache"></a>
 
-O filtro PageCache implementa no lado do servidor (server-side) o cache das páginas. No exemplo a seguir, o PageCache é aplicado para a ação `index` guardar o cache da página inteira por no máximo 60 segundos ou até que a quantidade de registros na tabela `post` seja alterada. Este filtro também guarda diferentes versões da página, dependendo do idioma da aplicação escolhido.
+O filtro PageCache implementa no lado do servidor (server-side) o cache das 
+páginas. No exemplo a seguir, o PageCache é aplicado para a ação `index` guardar 
+o cache da página inteira por no máximo 60 segundos ou até que a quantidade de 
+registros na tabela `post` seja alterada. Este filtro também guarda diferentes 
+versões da página, dependendo do idioma da aplicação escolhido.
 
 ```php
 use yii\filters\PageCache;
@@ -246,18 +316,25 @@ public function behaviors()
 }
 ```
 
-Por favor, consulte a seção [Cache de Página](caching-page.md) para mais detalhes sobre o uso do PageCache.
+Por favor, consulte a seção [Cache de Página](caching-page.md) para mais 
+detalhes sobre o uso do PageCache.
 
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <a name="rate-limiter"></a>
 
-O filtro RateLimiter implementa um limitador de acesso baseado no [algoritmo do balde furado (leaky bucket)](http://en.wikipedia.org/wiki/Leaky_bucket).
-É usado principalmente na implementação de APIs RESTful. Por favor, consulte a seção [Limitador de Acesso](rest-rate-limiting.md) para mais detalhes sobre o uso deste filtro.
+O filtro RateLimiter implementa um limitador de acesso baseado no 
+[algoritmo do balde furado (leaky bucket)](http://en.wikipedia.org/wiki/Leaky_bucket).
+É usado principalmente na implementação de APIs RESTful. Por favor, consulte a 
+seção [Limitador de Acesso](rest-rate-limiting.md) para mais detalhes sobre o 
+uso deste filtro.
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <a name="verb-filter"></a>
 
-O filtro VerbFilter verifica se os métodos de requisição HTTP são permitidos para as ações solicitadas. Se não for, será lançada uma exceção HTTP 405. No exemplo a seguir, o VerbFilter é declarado para especificar um conjunto de métodos de requisição permitidos para as ações CRUD.
+O filtro VerbFilter verifica se os métodos de requisição HTTP são permitidos para 
+as ações solicitadas. Se não for, será lançada uma exceção HTTP 405. No exemplo 
+a seguir, o VerbFilter é declarado para especificar um conjunto de métodos de 
+requisição permitidos para as ações CRUD.
 
 ```php
 use yii\filters\VerbFilter;
@@ -281,10 +358,19 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <a name="cors"></a>
 
-O compartilhamento de recursos cross-origin [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) é um mecanismo que permite vários recursos (por exemplo, fontes, JavaScript, etc) na página Web sejam solicitados por outros domínios. Em particular, as chamadas AJAX do JavaScript podem usar o mecanismo XMLHttpRequest. Estas chamadas "cross-domain" são proibidas pelos navegadores Web, por desrespeitarem a politica de segurança de origem. 
-O CORS define um modo em que o navegador e o servidor possam interagir para determinar se deve ou não permitir as requisições cross-origin.
+O compartilhamento de recursos cross-origin 
+[CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) é um 
+mecanismo que permite vários recursos (por exemplo, fontes, JavaScript, etc) 
+na página Web sejam solicitados por outros domínios. Em particular, as chamadas 
+AJAX do JavaScript podem usar o mecanismo XMLHttpRequest. Estas chamadas 
+"cross-domain" são proibidas pelos navegadores Web, por desrespeitarem a 
+politica de segurança de origem. 
+O CORS define um modo em que o navegador e o servidor possam interagir para 
+determinar se deve ou não permitir as requisições cross-origin.
 
-O [[yii\filters\Cors|filtro Cors]] deve ser definido antes dos filtros de Autenticação/Autorização para garantir que os cabeçalhos CORS sejam sempre enviados.
+O [[yii\filters\Cors|filtro Cors]] deve ser definido antes dos filtros de 
+Autenticação/Autorização para garantir que os cabeçalhos CORS sejam sempre 
+enviados.
 
 ```php
 use yii\filters\Cors;
@@ -302,13 +388,23 @@ public function behaviors()
 
 A filtragem da classe Cors pode ser ajustado pela propriedade `cors`.
 
-* `cors['Origin']`: array usado para definir as origens permitidas. Pode ser `['*']` (qualquer um) ou `['http://www.myserver.net', 'http://www.myotherserver.com']`. O padrão é `['*']`.
-* `cors['Access-Control-Request-Method']`: array com os métodos de requisição permitidos, tais como `['GET', 'OPTIONS', 'HEAD']`. O padrão é `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
-* `cors['Access-Control-Request-Headers']`: array com os cabeçalhos permitidos. Pode ser `['*']` para todos os cabeçalhos ou um especifico como `['X-Request-With']`. O padrão é `['*']`.
-* `cors['Access-Control-Allow-Credentials']`: define se a requisição atual pode ser feita usando credenciais. Pode ser `true`, `false` ou `null` (não definida). O padrão é `null`.
-* `cors['Access-Control-Max-Age']`: define o tempo de vida do pré-processamento (pre-flight) da requisição. O padrão é `86400`.
+* `cors['Origin']`: array usado para definir as origens permitidas. Pode ser 
+  `['*']` (qualquer um) ou `['http://www.myserver.net', 'http://www.myotherserver.com']`.
+  O padrão é `['*']`.
+* `cors['Access-Control-Request-Method']`: array com os métodos de requisição 
+  permitidos, tais como `['GET', 'OPTIONS', 'HEAD']`. O padrão é 
+  `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
+* `cors['Access-Control-Request-Headers']`: array com os cabeçalhos permitidos. 
+  Pode ser `['*']` para todos os cabeçalhos ou um especifico como `['X-Request-With']`. 
+  O padrão é `['*']`.
+* `cors['Access-Control-Allow-Credentials']`: define se a requisição atual pode  
+  ser feita usando credenciais. Pode ser `true`, `false` ou `null` (não definida). 
+  O padrão é `null`.
+* `cors['Access-Control-Max-Age']`: define o tempo de vida do pré-processamento 
+  (pre-flight) da requisição. O padrão é `86400`.
 
-Por exemplo, permitindo CORS para a origem: `http://www.myserver.net` com os métodos `GET`, `HEAD` e `OPTIONS`:
+Por exemplo, permitindo CORS para a origem: `http://www.myserver.net` com os 
+métodos `GET`, `HEAD` e `OPTIONS`:
 
 ```php
 use yii\filters\Cors;
@@ -328,8 +424,9 @@ public function behaviors()
 }
 ```
 
-Você pode ajustar os cabeçalhos do CORS sobrescrevendo os parâmetros padrão para cada ação.
-Por exemplo, para adicionar o parâmetro `Access-Control-Allow-Credentials` somente na ação `login`, você poderia fazer conforme a seguir:
+Você pode ajustar os cabeçalhos do CORS sobrescrevendo os parâmetros padrão para 
+cada ação. Por exemplo, para adicionar o parâmetro `Access-Control-Allow-Credentials` 
+somente na ação `login`, você poderia fazer conforme a seguir:
 
 ```php
 use yii\filters\Cors;
