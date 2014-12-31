@@ -184,7 +184,7 @@ class ActiveRecord extends BaseActiveRecord
                 }
                 $condition = [$pk => $condition];
             } else {
-                throw new InvalidConfigException(get_called_class() . ' must have a primary key.');
+                throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
         }
 
