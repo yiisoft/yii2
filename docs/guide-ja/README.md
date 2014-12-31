@@ -155,7 +155,7 @@ RESTful ウェブサービス
 * [ユニットテスト](test-unit.md)
 * [機能テスト](test-functional.md)
 * [承認テスト](test-acceptance.md)
-* **翻訳中** [フィクスチャ](test-fixtures.md)
+* [フィクスチャ](test-fixtures.md)
 
 
 スペシャルトピック
