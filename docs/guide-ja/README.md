@@ -153,8 +153,8 @@ RESTful ウェブサービス
 * [概要](test-overview.md)
 * [テスト環境の構築](test-environment-setup.md)
 * [ユニットテスト](test-unit.md)
-* **翻訳中** [機能テスト](test-functional.md)
-* **翻訳中** [承認テスト](test-acceptance.md)
+* [機能テスト](test-functional.md)
+* [承認テスト](test-acceptance.md)
 * **翻訳中** [フィクスチャ](test-fixtures.md)
 
 
