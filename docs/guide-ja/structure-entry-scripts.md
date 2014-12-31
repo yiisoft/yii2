@@ -92,7 +92,7 @@ Yii は下記の三つの定数をサポートしています:
   `YII_DEBUG` の既定値は false です。
 * `YII_ENV`: どういう環境でアプリケーションが走るかを規定します。
   詳細については、[構成情報](concept-configurations.md#environment-constants) の節で説明されます。
-  `YII_ENV` の既定値は `'prod'` です。これはアプリケーションが実運用環境で走ることを意味します。
+  `YII_ENV` の既定値は `'prod'` です。これはアプリケーションが本番環境で走ることを意味します。
 * `YII_ENABLE_ERROR_HANDLER`: Yii によって提供されるエラーハンドラを有効にするかどうかを規定します。
   この定数の既定値は true です。
 
