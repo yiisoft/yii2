@@ -48,7 +48,7 @@ class AssetManager extends Component
      * The array values are the corresponding configurations. If a value is false, it means the corresponding asset
      * bundle is disabled and [[getBundle()]] should return null.
      *
-     * If this this property is false, it means the whole asset bundle feature is disabled and [[getBundle()]]
+     * If this property is false, it means the whole asset bundle feature is disabled and [[getBundle()]]
      * will always return null.
      *
      * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
