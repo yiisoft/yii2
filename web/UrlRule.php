@@ -131,6 +131,7 @@ class UrlRule extends Object implements UrlRuleInterface
         }
 
         $this->pattern = trim($this->pattern, '/');
+        $this->route = trim($this->route, '/');
 
         if ($this->host !== null) {
             $this->host = rtrim($this->host, '/');
@@ -150,7 +151,6 @@ class UrlRule extends Object implements UrlRuleInterface
             $this->pattern = '/' . $this->pattern . '/';
         }
 
-        $this->route = trim($this->route, '/');
         if (strpos($this->route, '<') !== false && preg_match_all('/<(\w+)>/', $this->route, $matches)) {
             foreach ($matches[1] as $name) {
                 $this->_routeParams[$name] = "<$name>";

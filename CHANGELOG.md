@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #6632: `yii\di\Container::get()` did not handle config parameter correctly when it is passed as a constructor parameter (qiangxue)
 - Bug #6648: Added explicit type casting to avoid dblib issues on SQL Server 2014 (o-rey)
 - Bug #6691: Fixed console help description parsing with UTF8 characters (cebe)
+- Bug #6717: Fixed issue with UrlManager not matching a route on url creation when it was prefixed with `/` and pattern was empty (cebe)
 - Enh #4502: Added alias support to URL route when calling `Url::toRoute()` and `Url::to()` (qiangxue, lynicidn)
 - Enh #6247: Logger and error handler are now using slightly less memory (stepanselyuk, samdark)
 - Enh #6434: Added `yii\behaviors\SluggableBehavior::immutable` to support keeping the generated slug unchanged (trntv)
