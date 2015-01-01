@@ -4,7 +4,7 @@ Yii Framework 2 bootstrap extension Change Log
 2.0.2 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6672: `yii\bootstrap\Dropdown` should register client event handlers (qiangxue)
 
 
 2.0.1 December 07, 2014

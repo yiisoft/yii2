@@ -60,6 +60,7 @@ class Dropdown extends Widget
     {
         echo $this->renderItems($this->items, $this->options);
         BootstrapPluginAsset::register($this->getView());
+        $this->registerClientEvents();
     }
 
     /**
