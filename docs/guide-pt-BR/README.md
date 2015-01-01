@@ -134,7 +134,7 @@ Web Services RESTful
 * [Roteamento](rest-routing.md)
 * [Formatando Respostas](rest-response-formatting.md)
 * [Autenticação](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
+* [Limitador de Acesso](rest-rate-limiting.md)
 * [Versionamento](rest-versioning.md)
 * [Tratamento de Erros](rest-error-handling.md)
 
