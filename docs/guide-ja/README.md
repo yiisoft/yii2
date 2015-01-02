@@ -161,16 +161,16 @@ RESTful ウェブサービス
 スペシャルトピック
 ------------------
 
-* **翻訳未着手** [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
-* **翻訳未着手** [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
-* **翻訳未着手** [コンソールコマンド](tutorial-console.md)
-* **翻訳未着手** [コアのバリデータ](tutorial-core-validators.md)
-* **翻訳未着手** [国際化](tutorial-i18n.md)
-* **翻訳未着手** [メール](tutorial-mailing.md)
-* **翻訳未着手** [パフォーマンスチューニング](tutorial-performance-tuning.md)
-* **翻訳未着手** [共有ホスト環境](tutorial-shared-hosting.md)
-* **翻訳未着手** [テンプレートエンジン](tutorial-template-engines.md)
-* **翻訳未着手** [サードパーティのコードを扱う](tutorial-yii-integration.md)
+* **翻訳中** [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
+* **翻訳中** [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
+* **翻訳中** [コンソールコマンド](tutorial-console.md)
+* **翻訳中** [コアのバリデータ](tutorial-core-validators.md)
+* **翻訳中** [国際化](tutorial-i18n.md)
+* **翻訳中** [メール](tutorial-mailing.md)
+* **翻訳中** [パフォーマンスチューニング](tutorial-performance-tuning.md)
+* **翻訳中** [共有ホスト環境](tutorial-shared-hosting.md)
+* **翻訳中** [テンプレートエンジン](tutorial-template-engines.md)
+* **翻訳中** [サードパーティのコードを扱う](tutorial-yii-integration.md)
 
 
 ウィジェット
