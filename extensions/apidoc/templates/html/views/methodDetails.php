@@ -17,7 +17,7 @@ if (empty($methods)) {
 }
 ArrayHelper::multisort($methods, 'name');
 ?>
-<h2>Method Details</h2>
+<h2>方法详情</h2>
 
 <div class="method-doc">
 <?php foreach ($methods as $method): ?>
@@ -39,7 +39,7 @@ ArrayHelper::multisort($methods, 'name');
             <?= $method->visibility ?>
             method
             <?php if (!empty($method->since)): ?>
-                (available since version <?= $method->since ?>)
+                （可用自版本 <?= $method->since ?>）
             <?php endif; ?>
         </span>
     </div>

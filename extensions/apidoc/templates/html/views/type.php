@@ -28,18 +28,18 @@ $renderer = $this->context;
     echo $type->name;
 ?></h1>
 <div id="nav">
-    <a href="index.html">All Classes</a>
+    <a href="/doc/api/2.0">所有类</a>
     <?php if (!($type instanceof InterfaceDoc) && !empty($type->properties)): ?>
-        | <a href="#properties">Properties</a>
+        | <a href="#properties">属性</a>
     <?php endif; ?>
     <?php if (!empty($type->methods)): ?>
-        | <a href="#methods">Methods</a>
+        | <a href="#methods">方法</a>
     <?php endif; ?>
     <?php if ($type instanceof ClassDoc && !empty($type->events)): ?>
-        | <a href="#events">Events</a>
+        | <a href="#events">事件</a>
     <?php endif; ?>
     <?php if ($type instanceof ClassDoc && !empty($type->constants)): ?>
-        | <a href="#constants">Constants</a>
+        | <a href="#constants">常量</a>
     <?php endif; ?>
 </div>
 
@@ -49,29 +49,29 @@ $renderer = $this->context;
         <col class="col-value" />
     </colgroup>
     <?php if ($type instanceof ClassDoc): ?>
-        <tr><th>Inheritance</th><td><?= $renderer->renderInheritance($type) ?></td></tr>
+        <tr><th>继承</th><td><?= $renderer->renderInheritance($type) ?></td></tr>
     <?php endif; ?>
     <?php if ($type instanceof ClassDoc && !empty($type->interfaces)): ?>
-        <tr><th>Implements</th><td><?= $renderer->renderInterfaces($type->interfaces) ?></td></tr>
+        <tr><th>实现</th><td><?= $renderer->renderInterfaces($type->interfaces) ?></td></tr>
     <?php endif; ?>
     <?php if (!($type instanceof InterfaceDoc) && !empty($type->traits)): ?>
-        <tr><th>Uses Traits</th><td><?= $renderer->renderTraits($type->traits) ?></td></tr>
+        <tr><th>使用特质</th><td><?= $renderer->renderTraits($type->traits) ?></td></tr>
     <?php endif; ?>
     <?php if ($type instanceof ClassDoc && !empty($type->subclasses)): ?>
-        <tr><th>Subclasses</th><td><?= $renderer->renderClasses($type->subclasses) ?></td></tr>
+        <tr><th>子类</th><td><?= $renderer->renderClasses($type->subclasses) ?></td></tr>
     <?php endif; ?>
     <?php if ($type instanceof InterfaceDoc && !empty($type->implementedBy)): ?>
-        <tr><th>Implemented by</th><td><?= $renderer->renderClasses($type->implementedBy) ?></td></tr>
+        <tr><th>实现由</th><td><?= $renderer->renderClasses($type->implementedBy) ?></td></tr>
     <?php endif; ?>
     <?php if ($type instanceof TraitDoc && !empty($type->usedBy)): ?>
-        <tr><th>Implemented by</th><td><?= $renderer->renderClasses($type->usedBy) ?></td></tr>
+        <tr><th>实现由</th><td><?= $renderer->renderClasses($type->usedBy) ?></td></tr>
     <?php endif; ?>
     <?php if (!empty($type->since)): ?>
-        <tr><th>Available since version</th><td><?= $type->since ?></td></tr>
+        <tr><th>可用自版本</th><td><?= $type->since ?></td></tr>
     <?php endif; ?>
     <?php if (($sourceUrl = $renderer->getSourceUrl($type)) !== null): ?>
         <tr>
-          <th>Source Code</th>
+          <th>源码</th>
           <td><a href="<?= $sourceUrl ?>"><?= $sourceUrl ?></a></td>
         </tr>
     <?php endif; ?>

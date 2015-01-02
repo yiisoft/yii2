@@ -18,9 +18,9 @@ if ($protected && count($type->getProtectedMethods()) == 0 || !$protected && cou
 } ?>
 
 <div class="summary doc-method">
-<h2><?= $protected ? 'Protected Methods' : 'Public Methods' ?></h2>
+<h2><?= $protected ? '受保护的方法' : '公共方法' ?></h2>
 
-<p><a href="#" class="toggle">Hide inherited methods</a></p>
+<p><a href="#" class="toggle">隐藏继承方法</a></p>
 
 <table class="summary-table table table-striped table-bordered table-hover">
 <colgroup>
@@ -29,7 +29,7 @@ if ($protected && count($type->getProtectedMethods()) == 0 || !$protected && cou
     <col class="col-defined" />
 </colgroup>
 <tr>
-  <th>Method</th><th>Description</th><th>Defined By</th>
+  <th>方法</th><th>描述</th><th>定义在</th>
 </tr>
 <?php
 $methods = $type->methods;

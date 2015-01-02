@@ -17,9 +17,9 @@ $events = $type->events;
 ArrayHelper::multisort($events, 'name');
 ?>
 <div class="summary doc-event">
-    <h2>Events</h2>
+    <h2>事件</h2>
 
-    <p><a href="#" class="toggle">Hide inherited events</a></p>
+    <p><a href="#" class="toggle">隐藏继承事件</a></p>
 
     <table class="summary-table table table-striped table-bordered table-hover">
     <colgroup>
@@ -29,7 +29,7 @@ ArrayHelper::multisort($events, 'name');
         <col class="col-defined" />
     </colgroup>
     <tr>
-        <th>Event</th><th>Type</th><th>Description</th><th>Defined By</th>
+        <th>事件</th><th>类型</th><th>描述</th><th>定义在</th>
     </tr>
     <?php foreach ($events as $event): ?>
     <tr<?= $event->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $event->name ?>">
@@ -38,7 +38,7 @@ ArrayHelper::multisort($events, 'name');
         <td>
             <?= ApiMarkdown::process($event->shortDescription, $event->definedBy, true) ?>
             <?php if (!empty($event->since)): ?>
-                (available since version <?= $event->since ?>)
+                （可用自版本 <?= $event->since ?>）
             <?php endif; ?>
         </td>
         <td><?= $renderer->createTypeLink($event->definedBy) ?></td>

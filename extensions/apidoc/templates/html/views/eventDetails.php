@@ -16,7 +16,7 @@ if (empty($events)) {
 }
 ArrayHelper::multisort($events, 'name');
 ?>
-<h2>Event Details</h2>
+<h2>事件详情</h2>
 
 <div class="event-doc">
 <?php foreach ($events as $event): ?>
@@ -36,7 +36,7 @@ ArrayHelper::multisort($events, 'name');
         <span class="detail-header-tag small">
         event
         <?php if (!empty($event->since)): ?>
-            (available since version <?= $event->since ?>)
+            （可用自版本 <?= $event->since ?>）
         <?php endif; ?>
         </span>
     </div>
