@@ -163,7 +163,7 @@ RESTful ウェブサービス
 
 * [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
-* **翻訳中** [コンソールコマンド](tutorial-console.md)
+* [コンソールコマンド](tutorial-console.md)
 * **翻訳中** [コアのバリデータ](tutorial-core-validators.md)
 * **翻訳中** [国際化](tutorial-i18n.md)
 * **翻訳中** [メール](tutorial-mailing.md)
