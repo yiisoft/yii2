@@ -162,7 +162,7 @@ RESTful ウェブサービス
 ------------------
 
 * [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
-* **翻訳中** [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
+* [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * **翻訳中** [コンソールコマンド](tutorial-console.md)
 * **翻訳中** [コアのバリデータ](tutorial-core-validators.md)
 * **翻訳中** [国際化](tutorial-i18n.md)
