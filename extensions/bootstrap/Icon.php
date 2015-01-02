@@ -45,6 +45,7 @@ class Icon extends \yii\base\Widget
      */
     public function init()
     {
+        parent::init();
         Html::addCssClass($this->options, 'glyphicon glyphicon-' . $this->icon);
     }
 
