@@ -23,4 +23,4 @@ Yii におけるユニットテストは、PHPUnit と Codeception (こちらは
 フレームワークのユニットテスト
 ------------------------------
 
-Yii フレームワーク自体に対するユニットテストを走らせたい場合は、"[Getting started with Yii2 development](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)" に従ってください。
+Yii フレームワーク自体に対するユニットテストを走らせたい場合は、"[Yii2 の開発を始めよう](https://github.com/yiisoft/yii2/blob/master/docs/internals-ja/getting-started.md)" に従ってください。
