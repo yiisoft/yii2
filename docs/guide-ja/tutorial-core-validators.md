@@ -240,63 +240,67 @@ function foo($model, $attribute) {
 ```php
 [
     // "primaryImage" が PNG、JPG、または GIF 形式のアップロードされた
-    // 画像ファイルであり、ファイルサイズが 1MB 未満であることを検証
+    // 画像ファイルであり、ファイルサイズが 1MB 以下であることを検証
     ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
 ]
 ```
 
-このバリデータは、入力が有効なアップロードされたファイルであることを検証します。
+このバリデータは、入力値がアップロードされた有効なファイルであることを検証します。
 
-- `extensions`: a list of file name extensions that are allowed to be uploaded. This can be either
-  an array or a string consisting of file extension names separated by space or comma (e.g. "gif, jpg").
-  Extension names are case-insensitive. Defaults to null, meaning all file name
-  extensions are allowed.
-- `mimeTypes`: a list of file MIME types that are allowed to be uploaded. This can be either an array
-  or a string consisting of file MIME types separated by space or comma (e.g. "image/jpeg, image/png").
-  Mime type names are case-insensitive. Defaults to null, meaning all MIME types are allowed.
-- `minSize`: the minimum number of bytes required for the uploaded file. Defaults to null, meaning no lower limit.
-- `maxSize`: the maximum number of bytes allowed for the uploaded file. Defaults to null, meaning no upper limit.
-- `maxFiles`: the maximum number of files that the given attribute can hold. Defaults to 1, meaning
-  the input must be a single uploaded file. If it is greater than 1, then the input must be an array
-  consisting of at most `maxFiles` number of uploaded files.
-- `checkExtensionByMimeType`: whether to check the file extension by the file's MIME type. If the extension produced by
-  MIME type check differs from the uploaded file extension, the file will be considered as invalid. Defaults to true,
-  meaning perform such check.
+- `extensions`: アップロードを許可されるファイル名拡張子のリスト。
+  リストは、配列、または、空白かカンマで区切られたファイル名拡張子からなる文字列 (例えば、"gif, jpg") で指定することが出来ます。
+  拡張子名は大文字と小文字を区別しません。
+  デフォルト値は null であり、すべてのファイル名拡張子が許可されることを意味します。
+- `mimeTypes`: アップロードを許可されるファイルの MIME タイプのリスト。
+  リストは、配列、または、空白かカンマで区切られたファイルの MIME タイプからなる文字列 (例えば、"image/jpeg, image/png") で指定することが出来ます。
+  MIME タイプ名は大文字と小文字を区別しません。
+  デフォルト値は null であり、すべての MIME タイプが許可されることを意味します。
+- `minSize`: アップロードされるファイルに要求される最小限のバイト数。
+  デフォルト値は null であり、下限値が無いことを意味します。
+- `maxSize`: アップロードされるファイルに許可される最大限のバイト数。
+  デフォルト値は null であり、上限値が無いことを意味します。
+- `maxFiles`: 指定された属性が保持しうる最大限のファイル数。
+  デフォルト値は 1 であり、入力値がアップロードされた一つだけのファイルでなければならないことを意味します。
+  この値が 2 以上である場合は、入力値は最大で `maxFiles` 数のアップロードされたファイルからなる配列でなければなりません。
+- `checkExtensionByMimeType`: ファイルの MIME タイプでファイル拡張子をチェックするか否か。
+  MIME タイプのチェックから導かれる拡張子がアップロードされたファイルの拡張子と違う場合に、そのファイルは無効であると見なされます。
+  デフォルト値は true であり、そのようなチェックが行われることを意味します。
 
-`FileValidator` is used together with [[yii\web\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
-section for complete coverage about uploading files and performing validation about the uploaded files.
+`FileValidator` は [[yii\web\UploadedFile]] と一緒に使用されます。
+ファイルのアップロードおよびアップロードされたファイルのバリデーションの実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
 
 
 ## [[yii\validators\FilterValidator|filter]] <a name="filter"></a>
 
 ```php
 [
-    // trim "username" and "email" inputs
+    // "username" と "email" の入力値をトリムする
     [['username', 'email'], 'filter', 'filter' => 'trim', 'skipOnArray' => true],
 
-    // normalize "phone" input
+    // "phone" の入力値を正規化する
     ['phone', 'filter', 'filter' => function ($value) {
-        // normalize phone input here
+        // 電話番号の入力値をここで正規化する
         return $value;
     }],
 ]
 ```
 
-This validator does not validate data. Instead, it applies a filter on the input value and assigns it
-back to the attribute being validated.
+このバリデータはデータを検証しません。
+代りに、入力値にフィルタを適用して、それを検証される属性に書き戻します。
 
-- `filter`: a PHP callback that defines a filter. This can be a global function name, an anonymous function, etc.
-  The function signature must be `function ($value) { return $newValue; }`. This property must be set.
-- `skipOnArray`: whether to skip the filter if the input value is an array. Defaults to false.
-  Note that if the filter cannot handle array input, you should set this property to be true. Otherwise some
-  PHP error might occur.
+- `filter`: フィルタを定義する PHP コールバック。
+  これには、グローバル関数の名前、無名関数などを指定することが出来ます。
+  関数のシグニチャは ``function ($value) { return $newValue; }` でなければなりません。
+  このプロパティは必須項目です。
+- `skipOnArray`: 入力値が配列である場合にフィルタをスキップするか否か。
+  デフォルト値は false。
+  フィルタが配列の入力を処理できない場合は、このプロパティを true に設定しなければなりません。
+  そうしないと、何らかの PHP エラーが生じ得ます。
 
-> Tip: If you want to trim input values, you may directly use the [trim](#trim) validator.
+> Tip|ヒント: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
 
-> Tip: There are many PHP functions that have the signature expected for the `filter` callback.
-> For example to apply type casting (using e.g. [intval](http://php.net/manual/en/function.intval.php),
-> [boolval](http://php.net/manual/en/function.boolval.php), ...) to ensure a specific type for an attribute,
-> you can simply specify the function names of the filter without the need to wrap them in a closure:
+> Tip|ヒント: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
+> 例えば、型キャストを適用して (例えば、[intval](http://php.net/manual/ja/function.intval.php) や [boolval](http://php.net/manual/ja/function.boolval.php) などを使って) 属性が特定の型になるように保証したい場合は、それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
 >
 > ```php
 > ['property', 'filter', 'filter' => 'boolval'],
@@ -308,7 +312,7 @@ back to the attribute being validated.
 
 ```php
 [
-    // checks if "primaryImage" is a valid image with proper size
+    // "primaryImage" が適切なサイズの有効な画像であることを検証
     ['primaryImage', 'image', 'extensions' => 'png, jpg',
         'minWidth' => 100, 'maxWidth' => 1000,
         'minHeight' => 100, 'maxHeight' => 1000,
