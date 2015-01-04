@@ -10,7 +10,7 @@ Yii Framework 2 smarty extension Change Log
 2.0.1 December 07, 2014
 -----------------------
 
-- Bug #5748: `{path` was generating absolute URLs instead of relative ones (samdark, motzel)
+- Bug [#5748](https://github.com/yiisoft/yii2/issues/5748): `{path` was generating absolute URLs instead of relative ones (samdark, motzel)
 
 
 2.0.0 October 12, 2014
@@ -22,7 +22,7 @@ Yii Framework 2 smarty extension Change Log
 2.0.0-rc September 27, 2014
 ---------------------------
 
-- Enh #4619 (samdark, hwmaier)
+- Enh [#4619](https://github.com/yiisoft/yii2/issues/4619) (samdark, hwmaier)
     - New functions:
         - `url` generates absolute URL.
         - `set` allows setting commonly used view parameters: `title`, `theme` and `layout`.

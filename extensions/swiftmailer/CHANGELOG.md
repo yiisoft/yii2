@@ -28,7 +28,7 @@ Yii Framework 2 swiftmailer extension Change Log
 2.0.0-beta April 13, 2014
 -------------------------
 
-- Bug #1817: Message charset not applied for alternative bodies (klimov-paul)
+- Bug [#1817](https://github.com/yiisoft/yii2/issues/1817): Message charset not applied for alternative bodies (klimov-paul)
 
 2.0.0-alpha, December 1, 2013
 -----------------------------
