@@ -25,6 +25,7 @@ use yii\web\Controller;
  * @property array $searchAttributes Searchable attributes. This property is read-only.
  * @property boolean|\yii\db\TableSchema $tableSchema This property is read-only.
  * @property string $viewPath The controller view path. This property is read-only.
+ * @property array $nameAttributes The names to consider model name attributes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -37,6 +38,10 @@ class Generator extends \yii\gii\Generator
     public $baseControllerClass = 'yii\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass = '';
+    public $nameAttributes = [
+        'name',
+        'title',
+    ];
 
 
     /**
@@ -203,7 +208,7 @@ class Generator extends \yii\gii\Generator
     public function getNameAttribute()
     {
         foreach ($this->getColumnNames() as $name) {
-            if (!strcasecmp($name, 'name') || !strcasecmp($name, 'title')) {
+            if (array_search(strtolower($name), $this->nameAttributes) !== false) {
                 return $name;
             }
         }
