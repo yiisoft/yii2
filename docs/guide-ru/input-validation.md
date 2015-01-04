@@ -1,87 +1,82 @@
-Validating Input
+Проверка входящих пользовательских данных
 ================
 
-As a rule of thumb, you should never trust the data received from end users and should always validate it
-before putting it to good use.
+Как правило, вы никогда не должны доверять данным, полученные от пользователей и всегда проверять их прежде чем работать с ними и добавлять в базу данных.
 
-Given a [model](structure-models.md) populated with user inputs, you can validate the inputs by calling the
-[[yii\base\Model::validate()]] method. The method will return a boolean value indicating whether the validation
-succeeded or not. If not, you may get the error messages from the [[yii\base\Model::errors]] property. For example,
+Учитывая [модель](structure-models.md) данных которые должен заполнить пользователь, можно проверить эти данные на валидность воспользовавшись методом `[[yii\base\Model::validate()]]`. Метод возвращает логическое значение с результатом валидации ложь/истина. Если данные не валидны, ошибку можно получить воспользовавшись методом  `[[yii\base\Model::errors]]`. Рассмотрим пример,
 
 ```php
 $model = new \app\models\ContactForm;
 
-// populate model attributes with user inputs
+// модель заполненая пользовательским данными
 $model->attributes = \Yii::$app->request->post('ContactForm');
 
 if ($model->validate()) {
-    // all inputs are valid
+    // все данные корректны
 } else {
-    // validation failed: $errors is an array containing error messages
+    // данные не корректны: $errors - массив содержащий сообщения об ощибках
     $errors = $model->errors;
 }
 ```
 
 
-## Declaring Rules <a name="declaring-rules"></a>
+## Правила проверки <a name="declaring-rules"></a>
 
-To make `validate()` really work, you should declare validation rules for the attributes you plan to validate.
-This should be done by overriding the [[yii\base\Model::rules()]] method. The following example shows how
-the validation rules for the `ContactForm` model are declared:
+Для того, чтобы  `validate()` действитьльно работала, нужно объявить правила проверки атрибутов, которые вы планируете проверить.
+Правила для проверки нужно указать в `[[yii\base\Model::rules()]]` методе. В следующем примере показано, как
+правила для проверки `ContactForm` модели, нужно объявлять:
 
 ```php
 public function rules()
 {
     return [
-        // the name, email, subject and body attributes are required
+        // атрибут required указывает, что name, email, subject, body обязательны для заполнения
         [['name', 'email', 'subject', 'body'], 'required'],
 
-        // the email attribute should be a valid email address
+        // атрибут email указывает, что в переменной email должен быть корректный адрес электронной почты
         ['email', 'email'],
     ];
 }
 ```
 
-The [[yii\base\Model::rules()|rules()]] method should return an array of rules, each of which is an array
-of the following format:
+Метод должен `[[yii\base\Model::rules()|rules()]]` возвращать массив правил, каждый из которых является массивом в следующем формате:
 
 ```php
 [
-    // required, specifies which attributes should be validated by this rule.
-    // For a single attribute, you can use the attribute name directly
-    // without having it in an array
+    // обязательный, указывает, какие атрибуты должны быть проверены по этому правилу.
+    // Для одного атрибута, вы можете использовать имя атрибута не создавая массив
     ['attribute1', 'attribute2', ...],
 
-    // required, specifies the type of this rule.
-    // It can be a class name, validator alias, or a validation method name
+    // обязательный, указывает тип правила.
+    // Это может быть имя класса, псевдоним валидатора, или метод для проверки
     'validator',
 
-    // optional, specifies in which scenario(s) this rule should be applied
-    // if not given, it means the rule applies to all scenarios
-    // You may also configure the "except" option if you want to apply the rule
-    // to all scenarios except the listed ones
+    // необязательный, указывает, в каком случае(ях) это правило должно применяться
+    // если не указан, это означает, что правило применяется ко всем сценариям
+    // Вы также можете настроить "except" этот вариан применяет правило ко всем
+    // сценариям кроме перечисленных
     'on' => ['scenario1', 'scenario2', ...],
 
-    // optional, specifies additional configurations for the validator object
+    // необязательный, задает дополнительные конфигурации для объекта validator
     'property1' => 'value1', 'property2' => 'value2', ...
 ]
 ```
 
-For each rule you must specify at least which attributes the rule applies to and what is the type of the rule.
-You can specify the rule type in one of the following forms:
+Для каждого правила необходимо указать, по крайней мере, какие атрибуты относится к этому правило и тип правила.
+Вы можете указать тип правила в одном из следующих форматов:
 
-* the alias of a core validator, such as `required`, `in`, `date`, etc. Please refer to
-  the [Core Validators](tutorial-core-validators.md) for the complete list of core validators.
-* the name of a validation method in the model class, or an anonymous function. Please refer to the
-  [Inline Validators](#inline-validators) subsection for more details.
-* a fully qualified validator class name. Please refer to the [Standalone Validators](#standalone-validators)
-  subsection for more details.
+* Псевдонимы основного валидатора, например `required`, `in`, `date` и другие. Пожалуйста, обратитесь к списку
+  [Основных валидаторов](tutorial-core-validators.md) за более подробной информацией.
+* Название методов проверки в моделе класса, или анонимную функцию. Пожалуйста, обратитесь к списку
+  [Встроенных валидаторов](#inline-validators) за более подробной информацией.
+* Полное имя класса валидатора. Пожалуйста, обратитесь к списку [Автономных валидаторов](#standalone-validators)
+  за более подробной информацией.
 
-A rule can be used to validate one or multiple attributes, and an attribute may be validated by one or multiple rules.
-A rule may be applied in certain [scenarios](structure-models.md#scenarios) only by specifying the `on` option.
-If you do not specify an `on` option, it means the rule will be applied to all scenarios.
+Правило может использоваться для проверки одного или нескольких атрибутов. Атрибут может быть проверен одним или несколькими правилами.
+Правило может быть применено в определенных [сценариях](structure-models.md#scenarios) только указав опцию `on`.
+Если вы не укажете опцию `on`, это означает, что правило будет применяться ко всем сценариям.
 
-When the `validate()` method is called, it does the following steps to perform validation:
+Когда вызывается  метод `validate()` для проверки, он выполняет следующие действия:
 
 1. Determine which attributes should be validated by getting the attribute list from [[yii\base\Model::scenarios()]]
    using the current [[yii\base\Model::scenario|scenario]]. These attributes are called *active attributes*.
