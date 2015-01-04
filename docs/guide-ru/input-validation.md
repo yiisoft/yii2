@@ -113,7 +113,7 @@ public function rules()
 Вы можете настроить эти сообщения об ошибках, как в настройках валидаторов, так и непосредственно в правила проверки.
 
 
-### Валидация Событий <a name="validation-events"></a>
+### События валидации <a name="validation-events"></a>
 
 Когда вызывается метод `[[yii\base\Model::validate()]]` он инициализирует вызов двух методов,
 которые можно переопределить, чтобы настроить процесс проверки:
@@ -123,11 +123,9 @@ public function rules()
 * `[[yii\base\Model::afterValidate()]]`: выполнение по умолчанию вызовет  `[[yii\base\Model::EVENT_AFTER_VALIDATE]]`
   событие. Вы можете либо переопределить этот метод или обрабатывать на это событие, чтобы сделать некоторую  постобработку данных(Например, отформатировать данные удобным для обработки образом), метод вызывает после проверки.
 
-### Conditional Validation <a name="conditional-validation"></a>
+### Условные валидации <a name="conditional-validation"></a>
 
-To validate attributes only when certain conditions apply, e.g. the validation of one attribute depends
-on the value of another attribute you can use the [[yii\validators\Validator::when|when]] property
-to define such conditions. For example,
+Для проверки атрибутов только при выполнении определенных условий, например если один атрибут зависит от значения другого атрибута можно использовать `[[yii\validators\Validator::when|when]]` свойство, чтобы определить такие условия. Например:
 
 ```php
 [
@@ -137,20 +135,20 @@ to define such conditions. For example,
 ]
 ```
 
-The [[yii\validators\Validator::when|when]] property takes a PHP callable with the following signature:
+Это свойство `[[yii\validators\Validator::when|when]]` принимает PHP callable функциию с следующим описанием:
 
 ```php
 /**
- * @param Model $model the model being validated
- * @param string $attribute the attribute being validated
- * @return boolean whether the rule should be applied
+ * @param Model $model модель используемая для проверки
+ * @param string $attribute атрибут для проверки
+ * @return boolean следует ли применять правило
  */
 function ($model, $attribute)
 ```
 
-If you also need to support client-side conditional validation, you should configure
-the [[yii\validators\Validator::whenClient|whenClient]] property which takes a string representing a JavaScript
-function whose return value determines whether to apply the rule or not. For example,
+Если вам нужна поддержка условной проверки на стороне клиента, вы должны настроить свойство метода
+`[[yii\validators\Validator::whenClient|whenClient]]` которое принимает строку, представляющую JavaScript 
+функцию, возвращаемое значение определяет, следует ли применять правило или нет. Например:
 
 ```php
 [
@@ -163,13 +161,15 @@ function whose return value determines whether to apply the rule or not. For exa
 ```
 
 
-### Data Filtering <a name="data-filtering"></a>
+### Фильтрация данных <a name="data-filtering"></a>
 
-User inputs often need to be filtered or preprocessed. For example, you may want to trim the spaces around the
-`username` input. You may use validation rules to achieve this goal.
+Пользователь частво вводит данные которые нужно предварительно отфильтровать или предварительно обработать.
+Например, вы хотите обрезать пробелы вокруг `username`. Вы можете использовать правила проверки для 
+достижения этой цели.
 
-The following examples shows how to trim the spaces in the inputs and turn empty inputs into nulls by using
-the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validators.md#default) core validators:
+В следующих примерах показано, как обрезать пробелы в входных данных и превратить пустые входные данные в NULL
+с помощью [trim](tutorial-core-validators.md#trim) и указать значения по умолчанию с помощью
+[default](tutorial-core-validators.md#default) основного валидатора:
 
 ```php
 [
@@ -178,11 +178,11 @@ the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validat
 ]
 ```
 
-You may also use the more general [filter](tutorial-core-validators.md#filter) validator to perform more complex
-data filtering.
+Вы также можете использовать более сложные фильтрации данных с помощью анонимной функции
+ подробнее об этом [filter](tutorial-core-validators.md#filter).
 
-As you can see, these validation rules do not really validate the inputs. Instead, they will process the values
-and save them back to the attributes being validated.
+Как видите, эти правила проверки на самом деле не проверяет входные данные. Вместо этого,
+они будут обрабатывают значения и обратно возвращать результат работы. Фильтры по сути выполняют предобработку входящих данных.
 
 
 ### Handling Empty Inputs <a name="handling-empty-inputs"></a>
