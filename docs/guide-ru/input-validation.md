@@ -113,19 +113,15 @@ public function rules()
 Вы можете настроить эти сообщения об ошибках, как в настройках валидаторов, так и непосредственно в правила проверки.
 
 
-### Validation Events <a name="validation-events"></a>
+### Валидация Событий <a name="validation-events"></a>
 
-When [[yii\base\Model::validate()]] is called, it will call two methods that you may override to customize
-the validation process:
+Когда вызывается метод `[[yii\base\Model::validate()]]` он инициализирует вызов двух методов,
+которые можно переопределить, чтобы настроить процесс проверки:
 
-* [[yii\base\Model::beforeValidate()]]: the default implementation will trigger a [[yii\base\Model::EVENT_BEFORE_VALIDATE]]
-  event. You may either override this method or respond to this event to do some preprocessing work
-  (e.g. normalizing data inputs) before the validation occurs. The method should return a boolean value indicating
-  whether the validation should proceed or not.
-* [[yii\base\Model::afterValidate()]]: the default implementation will trigger a [[yii\base\Model::EVENT_AFTER_VALIDATE]]
-  event. You may either override this method or respond to this event to do some postprocessing work after
-  the validation is completed.
-
+* `[[yii\base\Model::beforeValidate()]]`: выполнение по умолчанию вызовет `[[yii\base\Model::EVENT_BEFORE_VALIDATE]]`
+  событие. Вы можете переопределить этот метод, или обрабатывать это событие, чтобы сделать некоторую предобработку данных (например, форматирование входных данных), метод вызывается до начала проверки. Этот метод должен возвращать логическое значение, указывающее, следует ли продолжать проверку или нет.
+* `[[yii\base\Model::afterValidate()]]`: выполнение по умолчанию вызовет  `[[yii\base\Model::EVENT_AFTER_VALIDATE]]`
+  событие. Вы можете либо переопределить этот метод или обрабатывать на это событие, чтобы сделать некоторую  постобработку данных(Например, отформатировать данные удобным для обработки образом), метод вызывает после проверки.
 
 ### Conditional Validation <a name="conditional-validation"></a>
 
