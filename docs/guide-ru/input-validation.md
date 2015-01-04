@@ -73,8 +73,8 @@ public function rules()
   за более подробной информацией.
 
 Правило может использоваться для проверки одного или нескольких атрибутов. Атрибут может быть проверен одним или несколькими правилами.
-Правило может быть применено в определенных [сценариях](structure-models.md#scenarios) только указав опцию `on`.
-Если вы не укажете опцию `on`, это означает, что правило будет применяться ко всем сценариям.
+Правило может быть применено в определенных [сценариях](structure-models.md#scenarios) только указав свойство `on`.
+Если вы не укажите свойство `on`, это означает, что правило будет применяться ко всем сценариям.
 
 Когда вызывается  метод `validate()` для проверки, он выполняет следующие действия:
 
@@ -90,14 +90,12 @@ an active attribute declared in `scenarios()` and is associated with one or mult
 declared in `rules()`.
 
 
-### Customizing Error Messages <a name="customizing-error-messages"></a>
+### Настройка сообщений об ошибках <a name="customizing-error-messages"></a>
 
-Most validators have default error messages that will be added to the model being validated when its attributes
-fail the validation. For example, the [[yii\validators\RequiredValidator|required]] validator will add
-a message "Username cannot be blank." to a model when the `username` attribute fails the rule using this validator.
+Большинство валидаторов имеют сообщения об ошибках по умолчанию, которые будут добавлены к модели когда его атрибуты не проходят проверку.
+Например, `[[yii\validators\RequiredValidator|required]]` валидатор добавил к модели сообщение об ошибке "Имя пользователя не может быть пустым." когда атрибут `username` не удовлетворил правила этого валидатора. Проще говоря атрибут был не заполнен.
 
-You can customize the error message of a rule by specifying the `message` property when declaring the rule,
-like the following,
+Вы можете настроить сообщение об ошибке для каждого правила, указав свойство `message` при объявлении правила, следующим образом:
 
 ```php
 public function rules()
@@ -108,11 +106,11 @@ public function rules()
 }
 ```
 
-Some validators may support additional error messages to more precisely describe different causes of
-validation failures. For example, the [[yii\validators\NumberValidator|number]] validator supports
-[[yii\validators\NumberValidator::tooBig|tooBig]] and [[yii\validators\NumberValidator::tooSmall|tooSmall]]
-to describe the validation failure when the value being validated is too big and too small, respectively.
-You may configure these error messages like configuring other properties of validators in a validation rule.
+Некоторые валидаторы могут поддерживать дополнительные сообщения об ошибках, чтобы более точно описать причину ошибки.
+Например, `[[yii\validators\NumberValidator|number]]` валидатор поддерживает
+`[[yii\validators\NumberValidator::tooBig|tooBig]]` и `[[yii\validators\NumberValidator::tooSmall|tooSmall]]`
+для описания ошибки валидации, когда проверяемое значение является слишком большим и слишком маленьким, соответственно.
+Вы можете настроить эти сообщения об ошибках, как и настройка валидаторов, так и непосредственно в правила проверки.
 
 
 ### Validation Events <a name="validation-events"></a>
