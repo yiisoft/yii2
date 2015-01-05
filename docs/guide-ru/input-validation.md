@@ -426,10 +426,10 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
+            // username и password обязательны для заполнения
             [['username', 'password'], 'required'],
 
-            // password is validated by validatePassword()
+            // проверке пароля с помощью validatePassword()
             ['password', 'validatePassword'],
         ];
     }
@@ -439,15 +439,15 @@ class LoginForm extends Model
         $user = User::findByUsername($this->username);
 
         if (!$user || !$user->validatePassword($this->password)) {
-            $this->addError('password', 'Incorrect username or password.');
+            $this->addError('password', 'Неправильное имя пользователя или пароль.');
         }
     }
 }
 ```
 
-The HTML form built by the following code contains two input fields `username` and `password`.
-If you submit the form without entering anything, you will find the error messages requiring you
-to enter something appear right away without any communication with the server.
+HTML-форма построена с помощью следующего кода содержит поля для ввода `username` и `password`.
+Если вы отправите форму, не вводя ничего, вы получите сообщения об ошибках, требующих ввести данные.
+Сообщения появиться сразу, без обращения к серверу.
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -457,29 +457,29 @@ to enter something appear right away without any communication with the server.
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-Behind the scene, [[yii\widgets\ActiveForm]] will read the validation rules declared in the model
-and generate appropriate JavaScript code for validators that support client-side validation. When a user
-changes the value of an input field or submit the form, the client-side validation JavaScript will be triggered.
+Класс `[[yii\widgets\ActiveForm]]` будет читать правила проверки заявленных в модели и генерировать 
+соответствующий код JavaScript для валидаторов, которые поддерживают проверку на стороне клиента. 
+Когда пользователь изменяет значение поля ввода или отправляет форму, JavaScript на стороне клиента 
+будет срабатывать и проверять введеные данные.
 
-If you want to turn off client-side validation completely, you may configure the
-[[yii\widgets\ActiveForm::enableClientValidation]] property to be false. You may also turn off client-side
-validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
-property to be false.
+Если вы хотите отключить проверку на стороне клиента полностью, вы можете настроить свойство
+`[[yii\widgets\ActiveForm::enableClientValidation]]` установив значение false. Вы также можете отключить 
+проверку на стороне клиента отдельных полей ввода, настроив их с помощью свойства 
+`[[yii\widgets\ActiveField::enableClientValidation]]` установив значение false.
 
 
-### Implementing Client-Side Validation <a name="implementing-client-side-validation"></a>
+### Реализация проверки на стороне клиента <a name="implementing-client-side-validation"></a>
 
-To create a validator that supports client-side validation, you should implement the
-[[yii\validators\Validator::clientValidateAttribute()]] method which returns a piece of JavaScript code
-that performs the validation on the client side. Within the JavaScript code, you may use the following
-predefined variables:
+Чтобы создать валидатор, который поддерживает проверку на стороне клиента, вы должны реализовать
+`[[yii\validators\Validator::clientValidateAttribute()]]` метод возвращающий фрагмент кода JavaScript, 
+который выполняет проверку на стороне клиента. В JavaScript-коде, вы можете использовать следующие предопределенные переменные:
 
-- `attribute`: the name of the attribute being validated.
-- `value`: the value being validated.
-- `messages`: an array used to hold the validation error messages for the attribute.
+- `attribute`: имя атрибута для проверки.
+- `value`: проверяемое значение.
+- `messages`: массив, используемый для хранения сообщений об ошибках, проверки значения атрибута.
 - `deferred`: an array which deferred objects can be pushed into (explained in the next subsection).
 
-In the following example, we create a `StatusValidator` which validates if an input is a valid status input
+ В следующем примере мы создаем `StatusValidator` which validates if an input is a valid status input
 against the existing status data. The validator supports both server side and client side validation.
 
 ```php
@@ -517,9 +517,10 @@ JS;
 }
 ```
 
-> Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
-> you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
-> write the validation rule like the following:
+> Совет: приведенный выше код даётся, в основном, чтобы продемонстрировать, как осуществляется 
+> поддержка проверки на стороне клиента. На практике вы можете использовать 
+> [in](tutorial-core-validators.md#in) основные валидаторы для достижения той же цели. 
+> Вы можете написать проверку, как правило, например:
 >
 > ```php
 > [
