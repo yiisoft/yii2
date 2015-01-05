@@ -605,15 +605,16 @@ JS;
 ```
 
 
-### AJAX Validation <a name="ajax-validation"></a>
+### AJAX валидация <a name="ajax-validation"></a>
 
-Some validations can only be done on the server side, because only the server has the necessary information.
-For example, to validate if a username is unique or not, it is necessary to check the user table on the server side.
-You can use AJAX-based validation in this case. It will trigger an AJAX request in the background to validate the
-input while keeping the same user experience as the regular client-side validation.
+Некоторые проверки можно сделать только на стороне сервера, потому что только сервер имеет необходимую информацию.
+Например, чтобы проверить логин пользователя на уникальность, необходимо проверить логин в 
+базе данных на стороне сервера. Вы можете использовать проверку на основе AJAX в этом случае.
+Это вызовет AJAX-запрос в фоновом режиме, чтобы проверить логин пользователя, сохраняя при этом валидацию
+на стороне клиента. Выполняя её перед запросом к серверу.
 
-To enable AJAX validation for the whole form, you have to set the
-[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be a unique form identifier:
+Чтобы включить AJAX-валидацию для всей формы, Вы должны свойство 
+`[[yii\widgets\ActiveForm::enableAjaxValidation]]` выбрать как `true` и указать `id` формы:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin([
@@ -622,11 +623,11 @@ To enable AJAX validation for the whole form, you have to set the
 ]); ?>
 ```
 
-You may also turn AJAX validation on or off for individual input fields by configuring their
-[[yii\widgets\ActiveField::enableAjaxValidation]] property.
+Вы можете также включить AJAX валидацию или выключать для отдельных полей ввода, настроив их
+с помощью свойства `[[yii\widgets\ActiveField::enableAjaxValidation]]`.
 
-You also need to prepare the server so that it can handle the AJAX validation requests.
-This can be achieved by a code snippet like the following in the controller actions:
+Также необходимо подготовить сервер для обрабаботки AJAX-запросов валидации. Это может быть достигнуто путем 
+с помощью следующего фрагмента кода, в контроллере действий:
 
 ```php
 if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
@@ -635,8 +636,9 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 }
 ```
 
-The above code will check whether the current request is an AJAX. If yes, it will respond to
-this request by running the validation and returning the errors in JSON format.
+Приведенный выше код будет проверять, является ли текущий запрос AJAX. Если да, 
+он будет отвечать на этот запрос, предварительно выполнив проверку и возвратит ошибки в 
+случае их появления в формате JSON.
 
-> Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
-  However, the AJAX validation feature described here is more systematic and requires less coding effort.
+> Информация: Вы также можете использовать [Deferred Validation](#deferred-validation) AJAX валидации.
+Однако, AJAX-функция проверки, описанные здесь более системные и требует меньше усилий к написанию кода.
