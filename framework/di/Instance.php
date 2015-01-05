@@ -112,7 +112,7 @@ class Instance
         } elseif (is_array($reference)) {
             $class = isset($reference['class']) ? $reference['class'] : $type;
             if (!$container instanceof Container) {
-                $container = Yii::$app;
+                $container = Yii::$container;
             }
             unset($reference['class']);
             return $container->get($class, [], $reference);
