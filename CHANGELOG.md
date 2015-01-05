@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #6717: Fixed issue with UrlManager not matching a route on url creation when it was prefixed with `/` and pattern was empty (cebe)
 - Enh #4502: Added alias support to URL route when calling `Url::toRoute()` and `Url::to()` (qiangxue, lynicidn)
 - Enh #6247: Logger and error handler are now using slightly less memory (stepanselyuk, samdark)
+- Enh #6398: Added support for specifying dependent component in terms of a configuration array for classes such as `DbCache` (qiangxue)
 - Enh #6434: Added `yii\behaviors\SluggableBehavior::immutable` to support keeping the generated slug unchanged (trntv)
 - Enh #6467: `ActiveForm` will scroll to the nearest visible element when the first error input is hidden (newartix)
 - Enh #6488: Support changing `yii\base\Theme::basePath` during runtime (qiangxue)
