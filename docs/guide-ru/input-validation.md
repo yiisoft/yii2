@@ -528,10 +528,11 @@ JS;
 > ]
 > ```
 
-### Deferred Validation <a name="deferred-validation"></a>
+### Отложенная валидация <a name="deferred-validation"></a>
 
-If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
-For example, to perform a custom AJAX validation, you can use the following code:
+Если Вам необходимо выполнить асинхронную проверку на стороне клиента, вы можете создавать 
+[Deferred objects](http://api.jquery.com/category/deferred-object/). Например, чтобы выполнить 
+пользовательские AJAX проверки, вы можете использовать следующий код:
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -546,11 +547,12 @@ JS;
 }
 ```
 
-In the above, the `deferred` variable is provided by Yii, which is an array of Deferred objects. The `$.get()`
-jQuery method creates a Deferred object which is pushed to the `deferred` array.
+В примере выше переменная `deferred` предусмотреная Yii, которая является массивом Отложенных объектов.
+`$.get()` метод jQuery создает Отложенный объект, который помещается в массив `deferred`.
 
-You can also explicitly create a Deferred object and call its `resolve()` method when the asynchronous callback
-is hit. The following example shows how to validate the dimensions of an uploaded image file on the client side.
+Также можно явно создать Отложенный объект и вызвать его `resolve()` метод, тогда асинхронный 
+обратный вызов будет вызван. В следующем примере показано, как проверить размеры загружаемого файла изображения
+на стороне клиента.
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -575,11 +577,10 @@ JS;
 }
 ```
 
-> Note: The `resolve()` method must be called after the attribute has been validated. Otherwise the main form
-  validation will not complete.
+> Примечание: метод `resolve()` должен быть вызван после того, как атрибут был проверен. 
+В противном случае основная проверки формоы не будет завершена.
 
-For simplicity, the `deferred` array is equipped with a shortcut method `add()` which automatically creates a Deferred
-object and adds it to the `deferred` array. Using this method, you can simplify the above example as follows,
+Для простоты, `deferred` массив иммеет упрощенный метод `add()`, который автоматически создает Отложенный объект и добавляет его в `deferred` массив. Используя этот метод, вы можете упростить пример выше, следующим образом:
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
