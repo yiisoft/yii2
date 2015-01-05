@@ -299,8 +299,8 @@ public function actionSearch($name, $email)
 
 ### Встроенные Валидаторы <a name="inline-validators"></a>
 
-An inline validator is one defined in terms of a model method or an anonymous function. The signature of
-the method/function is:
+Встроенный валидатор наследует методы модели или использует анонимную функцию.
+Описание метода/функции:
 
 ```php
 /**
@@ -363,7 +363,7 @@ class MyForm extends Model
 
 ### Автономные валидаторы <a name="standalone-validators"></a>
 
-ААвтономный валидатор - это класс, расширяющий `[[yii\validators\Validator]]` или его дочерних класс.
+Автономный валидатор - это класс, расширяющий `[[yii\validators\Validator]]` или его дочерних класс.
 Вы можете реализовать свою логику проверки путем переопределения `[[yii\validators\Validator::validateAttribute()]]`
 метода. Если атрибут не прошл проверку, вызвать `[[yii\base\Model::addError()]]`, 
 чтобы сохранить сообщение об ошибке в модели, как это делают [встроенные валидаторы](#inline-validators). Например:
@@ -407,11 +407,12 @@ class CountryValidator extends Validator
 
 ### Использование валидации на стороне клиента <a name="using-client-side-validation"></a>
 
-Many [core validators](tutorial-core-validators.md) support client-side validation out-of-the-box. All you need to do
-is just use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
-rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
-client and server sides; the other uses the `validatePassword` inline validator which is only supported on the server
-side.
+Многие [основные валидаторы](tutorial-core-validators.md) поддерживают проверку на стороне клиента out-of-the-box.
+Все, что вам нужно сделать, это просто использовать `[[yii\widgets\ActiveForm]]` для построения HTML-форм.
+
+Например, `LoginForm` ниже объявляет два правила: один использует [required](tutorial-core-validators.md#required)
+основные валидаторы, который поддерживается на стороне клиента и сервера; другой использует `validatePassword`
+встроенный валидатор, который поддерживается только на стороне сервера.
 
 ```php
 namespace app\models;
