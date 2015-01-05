@@ -24,15 +24,15 @@ public function rules()
 
 ```php
 [
-    // データ型にかかわらず、"selected" が 0 または 1 であることを検証する
+    // データ型にかかわらず、"selected" が 0 または 1 であるかどうかチェック
     ['selected', 'boolean'],
 
-    // "deleted" が boolean 型であり、true か false であることを検証する
+    // "deleted" が boolean 型であり、true または false であるかどうかチェック
     ['deleted', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
 ]
 ```
 
-このバリデータは、入力値が真偽値であることを検証します。
+このバリデータは、入力値が真偽値であるかどうかをチェックします。
 
 - `trueValue`: *true* を表す値。デフォルト値は `'1'`。
 - `falseValue`: *false* を表す値。デフォルト値は `'0'`。
@@ -50,7 +50,7 @@ public function rules()
 ]
 ```
 
-このバリデータは、通常、[[yii\captcha\CaptchaAction]] および [[yii\captcha\Captcha]] と一緒に使われ、入力値が [[yii\captcha\Captcha|CAPTCHA]] ウィジェットによって表示された検証コードと同じであることを検証します。
+このバリデータは、通常、[[yii\captcha\CaptchaAction]] および [[yii\captcha\Captcha]] と一緒に使われ、入力値が [[yii\captcha\Captcha|CAPTCHA]] ウィジェットによって表示された検証コードと同じであることを確認します。
 
 - `caseSensitive`: 検証コードの比較で大文字と小文字を区別するかどうか。デフォルト値は false。
 - `captchaAction`: CAPTCHA 画像を表示する [[yii\captcha\CaptchaAction|CAPTCHA action]] に対応する [ルート](structure-controllers.md#routes)。デフォルト値は `'site/captcha'`。
@@ -61,10 +61,10 @@ public function rules()
 
 ```php
 [
-    // "password" 属性の値が "password_repeat" 属性の値と同じであることを検証する
+    // "password" 属性の値が "password_repeat" 属性の値と同じであるかどうか検証する
     ['password', 'compare'],
 
-    // "age" が 30 以上であることを検証する
+    // "age" が 30 以上であるかどうか検証する
     ['age', 'compare', 'compareValue' => 30, 'operator' => '>='],
 ]
 ```
@@ -96,7 +96,7 @@ public function rules()
 ]
 ```
 
-このバリデータは、入力値が正しい書式の date、time、または datetime であることを検証します。
+このバリデータは、入力値が正しい書式の date、time、または datetime であるかどうかをチェックします。
 オプションとして、入力値を UNIX タイムスタンプに変換して、[[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] によって指定された属性に保存することも出来ます。
 
 - `format`: 検証される値が従っているべき日付・時刻の書式。
@@ -144,19 +144,19 @@ function foo($model, $attribute) {
 }
 ```
 
-> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
+> Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
 ## [[yii\validators\NumberValidator|double]] <a name="double"></a>
 
 ```php
 [
-    // "salary" が実数であることを検証
+    // "salary" が実数であるかどうかチェック
     ['salary', 'double'],
 ]
 ```
 
-このバリデータは、入力値が実数値であることを検証します。
+このバリデータは、入力値が実数値であるかどうかをチェックします。
 [number](#number) バリデータと等価です。
 
 - `max`: 上限値 (その値を含む)。
@@ -169,12 +169,12 @@ function foo($model, $attribute) {
 
 ```php
 [
-    // "email" が有効なメールアドレスであることを検証
+    // "email" が有効なメールアドレスであるかどうかチェック
     ['email', 'email'],
 ]
 ```
 
-このバリデータは、入力値が有効なメールアドレスであることを検証します。
+このバリデータは、入力値が有効なメールアドレスであるかどうかをチェックします。
 
 - `allowName`: メールアドレスに表示名を許容するか否か (例えば、`John Smith <john.smith@example.com>`)。デフォルト値は false。
 - `checkDNS`: メールのドメインが存在して A または MX レコードを持っているかどうかをチェックするか否か。
@@ -213,13 +213,13 @@ function foo($model, $attribute) {
 ]
 ```
 
-このバリデータは、入力値がテーブルのカラムに存在することを検証します。
+このバリデータは、入力値がテーブルのカラムに存在するかどうかをチェックします。
 [アクティブレコード](db-active-record.md) モデルの属性に対してのみ働きます。
-一つのカラムに対しても、複数のカラムに対しても、バリデーションをサポートします。
+一つのカラムに対するバリデーションか、複数のカラムに対するバリデーションか、どちらかをサポートします。
 
 - `targetClass`: 検証される入力値を探すために使用される [アクティブレコード](db-active-record.md) クラスの名前。
   設定されていない場合は、現在検証されているモデルのクラスが使用されます。
-- `targetAttribute`: 入力値の存在を検証するために使用される `targetClass` の属性の名前。
+- `targetAttribute`: `targetClass` において、入力値の存在を検証するために使用される属性の名前。
   設定されていない場合は、現在検証されている属性の名前が使用されます。
   複数のカラムの存在を同時に検証するために配列を使うことが出来ます。
   配列の値は存在を検証するのに使用される属性であり、配列のキーはその値が検証される属性です。
@@ -240,12 +240,12 @@ function foo($model, $attribute) {
 ```php
 [
     // "primaryImage" が PNG、JPG、または GIF 形式のアップロードされた
-    // 画像ファイルであり、ファイルサイズが 1MB 以下であることを検証
+    // 画像ファイルであり、ファイルサイズが 1MB 以下であるかどうかチェック
     ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
 ]
 ```
 
-このバリデータは、入力値がアップロードされた有効なファイルであることを検証します。
+このバリデータは、入力値がアップロードされた有効なファイルであるかどうかをチェックします。
 
 - `extensions`: アップロードを許可されるファイル名拡張子のリスト。
   リストは、配列、または、空白かカンマで区切られたファイル名拡張子からなる文字列 (例えば、"gif, jpg") で指定することが出来ます。
@@ -320,210 +320,212 @@ function foo($model, $attribute) {
 ]
 ```
 
-This validator checks if the input value represents a valid image file. It extends from the [file](#file) validator
-and thus inherits all its properties. Besides, it supports the following additional properties specific for image
-validation purpose:
+このバリデータは、入力値が有効な画像ファイルであるかどうかをチェックします。
+これは [file](#file) バリデータを拡張するものであり、従って、そのプロパティの全てを継承しています。
+それに加えて、画像の検証の目的に特化した次のプロパティをサポートしています。
 
-- `minWidth`: the minimum width of the image. Defaults to null, meaning no lower limit.
-- `maxWidth`: the maximum width of the image. Defaults to null, meaning no upper limit.
-- `minHeight`: the minimum height of the image. Defaults to null, meaning no lower limit.
-- `maxHeight`: the maximum height of the image. Defaults to null, meaning no upper limit.
+- `minWidth`: 画像の幅の最小値。デフォルト値は null であり、下限値がないことを意味します。
+- `maxWidth`: 画像の幅の最大値。デフォルト値は null であり、上限値がないことを意味します。
+- `minHeight`: 画像の高さの最小値。デフォルト値は null であり、下限値がないことを意味します。
+- `maxHeight`: 画像の高さの最大値。デフォルト値は null であり、上限値がないことを意味します。
 
 
 ## [[yii\validators\RangeValidator|in]] <a name="in"></a>
 
 ```php
 [
-    // checks if "level" is 1, 2 or 3
+    // "level" が 1, 2 または 3 であるかどうかチェック
     ['level', 'in', 'range' => [1, 2, 3]],
 ]
 ```
 
-This validator checks if the input value can be found among the given list of values.
+このバリデータは、入力値が所与の値のリストにあるかどうかをチェックします。
 
-- `range`: a list of given values within which the input value should be looked for.
-- `strict`: whether the comparison between the input value and the given values should be strict
-  (both the type and value must be the same). Defaults to false.
-- `not`: whether the validation result should be inverted. Defaults to false. When this property is set true,
-  the validator checks if the input value is NOT among the given list of values.
-- `allowArray`: whether to allow the input value to be an array. When this is true and the input value is an array,
-  every element in the array must be found in the given list of values, or the validation would fail.
+- `range`: 与えられた値のリスト。この中に、入力値がなければならない。
+- `strict`: 入力値と所与の値の比較が厳密でなければならない (型と値の両方が同じでなければならない) かどうか。
+  デフォルト値は false。
+- `not`: 検証結果を反転すべきか否か。デフォルト値は false。
+  このプロパティが true に設定されているときは、入力値が所与の値のリストにない場合に検証が成功したとされます。
+- `allowArray`: 入力値が配列であることを許可するかどうか。
+  このプロパティが true であるときに、入力値が配列である場合は、配列の全ての要素が所与の値のリストにある必要があり、そうでなければ検証は失敗します。
 
 
 ## [[yii\validators\NumberValidator|integer]] <a name="integer"></a>
 
 ```php
 [
-    // checks if "age" is an integer
+    // "age" が整数であるかどうかチェック
     ['age', 'integer'],
 ]
 ```
 
-This validator checks if the input value is an integer.
+このバリデータは入力値が整数であるかどうかをチェックします。
 
-- `max`: the upper limit (inclusive) of the value. If not set, it means the validator does not check the upper limit.
-- `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
+- `max`: 上限値 (その値を含む)。設定されていないときは、バリデータは上限をチェックしません。
+- `min`: 下限値 (その値を含む)。設定されていないときは、バリデータは下限をチェックしません。
 
 
 ## [[yii\validators\RegularExpressionValidator|match]] <a name="match"></a>
 
 ```php
 [
-    // checks if "username" starts with a letter and contains only word characters
+    // "username" が英字から始まり、英字、数字、アンダーバーだけで構成されているかどうかチェック
     ['username', 'match', 'pattern' => '/^[a-z]\w*$/i']
 ]
 ```
 
-This validator checks if the input value matches the specified regular expression.
+このバリデータは、入力値が指定された正規表現に一致するかどうかをチェックします。
 
-- `pattern`: the regular expression that the input value should match. This property must be set,
-  or an exception will be thrown.
-- `not`: whether to invert the validation result. Defaults to false, meaning the validation succeeds
-   only if the input value matches the pattern. If this is set true, the validation is considered
-   successful only if the input value does NOT match the pattern.
+- `pattern`: 入寮値が一致すべき正規表現。このプロパティを設定することは必須です。そうしないと、例外が投げられます。
+- `not`: 検証結果を反転すべきかどうか。
+  デフォルト値は false で、入力値がパターンに一致したときにだけ検証が成功することを意味します。
+  このプロパティが true に設定されているときは、入力値がパターンに一致しない場合にだけ検証が成功したと見なされます。
 
 
 ## [[yii\validators\NumberValidator|number]] <a name="number"></a>
 
 ```php
 [
-    // checks if "salary" is a number
+    // "salary" が数値であるかどうかチェック
     ['salary', 'number'],
 ]
 ```
 
-This validator checks if the input value is a number. It is equivalent to the [double](#double) validator.
+このバリデータは、入力値が数値であるかどうかをチェックします。[double](#double) バリデータと等価です。
 
-- `max`: the upper limit (inclusive) of the value. If not set, it means the validator does not check the upper limit.
-- `min`: the lower limit (inclusive) of the value. If not set, it means the validator does not check the lower limit.
+- `max`: 上限値 (その値を含む)。設定されていないときは、バリデータは上限をチェックしません。
+- `min`: 下限値 (その値を含む)。設定されていないときは、バリデータは下限をチェックしません。
 
 
 ## [[yii\validators\RequiredValidator|required]] <a name="required"></a>
 
 ```php
 [
-    // checks if both "username" and "password" are not empty
+    // "username" と "password" がともに空ではないことをチェックする
     [['username', 'password'], 'required'],
 ]
 ```
 
-This validator checks if the input value is provided and not empty.
+このバリデータは、入力値が提供されており、空ではないことをチェックします。
 
-- `requiredValue`: the desired value that the input should be. If not set, it means the input should not be empty.
-- `strict`: whether to check data types when validating a value. Defaults to false.
-  When `requiredValue` is not set, if this property is true, the validator will check if the input value is
-  not strictly null; If this property is false, the validator will use a loose rule to determine a value is empty or not.
-  When `requiredValue` is set, the comparison between the input and `requiredValue` will also check data types
-  if this property is true.
+- `requiredValue`: 入力値として要求される値。
+  このプロパティが設定されていない場合は、入力値が空ではいけないことを意味します。
+- `strict`: 値を検証するときに、データ型をチェックするかどうか。デフォルト値は false。
+  `requiredValue` が設定されていない場合、このプロパティが true であるときは、バリデータは入力値が厳密な意味で null であるかどうかをチェックします。
+  一方、このプロパティが false であるときは、値が空か否かの判断に緩い規則を使います。
+  `requiredValue` が設定されている場合、このプロパティが true であるときは、入力値と `requiredValue` を比較するときに型のチェックを行います。
 
-> Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
+> Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
 ## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
 
 ```php
 [
-    // marks "description" to be a safe attribute
+    // "description" を安全な属性としてマーク
     ['description', 'safe'],
 ]
 ```
 
-This validator does not perform data validation. Instead, it is used to mark an attribute to be
-a [safe attribute](structure-models.md#safe-attributes).
+このバリデータは検証を実行しません。
+その代りに、このバリデータは、属性を [安全な属性](structure-models.md#safe-attributes) としてマークするために使われます。
 
 
 ## [[yii\validators\StringValidator|string]] <a name="string"></a>
 
 ```php
 [
-    // checks if "username" is a string whose length is between 4 and 24
+    // "username" が、長さが 4 以上 24 以下の文字列であるかどうかチェック
     ['username', 'string', 'length' => [4, 24]],
 ]
 ```
 
-This validator checks if the input value is a valid string with certain length.
+このバリデータは、入力値が一定の長さを持つ有効な文字列であるかどうかをチェックします。
 
-- `length`: specifies the length limit of the input string being validated. This can be specified
-   in one of the following forms:
-     * an integer: the exact length that the string should be of;
-     * an array of one element: the minimum length of the input string (e.g. `[8]`). This will overwrite `min`.
-     * an array of two elements: the minimum and maximum lengths of the input string (e.g. `[8, 128]`).
-     This will overwrite both `min` and `max`.
-- `min`: the minimum length of the input string. If not set, it means no minimum length limit.
-- `max`: the maximum length of the input string. If not set, it means no maximum length limit.
-- `encoding`: the encoding of the input string to be validated. If not set, it will use the application's
-  [[yii\base\Application::charset|charset]] value which defaults to `UTF-8`.
+- `length`: 検証される入力文字列の長さの制限を指定します。
+  これは、次のいずれかの形式で指定することが出来ます。
+     * 一つの整数: 文字列がちょうどその長さでなければならない、その長さ。
+     * 一つの要素を持つ配列: 入力文字列の長さの最小値 (例えば、`[8]`)。これは `min` を上書きします。
+     * 二つの要素を持つ配列: 入力文字列の長さの最小値と最大値 (例えば、`[8, 128]`)。これは `min` と `max` の両方を上書きします。
+- `min`: 入力文字列の長さの最小値。設定されていない時は、長さの下限値がないことを意味します。
+- `max`: 入力文字列の長さの最大値。設定されていない時は、長さの上限値がないことを意味します。
+- `encoding`: 検証される入力文字列の文字エンコーディング。設定されていない時は、アプリケーションの [[yii\base\Application::charset|charset]] の値が使われ、デフォルトでは `UTF-8` となります。
 
 
 ## [[yii\validators\FilterValidator|trim]] <a name="trim"></a>
 
 ```php
 [
-    // trims the white spaces surrounding "username" and "email"
+    // "username" と "email" の前後にあるホワイトスペースをトリムする
     [['username', 'email'], 'trim'],
 ]
 ```
 
-This validator does not perform data validation. Instead, it will trim the surrounding white spaces around
-the input value. Note that if the input value is an array, it will be ignored by this validator.
+このバリデータはデータの検証を実行しません。
+その代りに、入力値の前後にあるホワイトスペースをトリムします。
+入力値が配列であるときは、このバリデータによって無視されることに注意してください。
 
 
 ## [[yii\validators\UniqueValidator|unique]] <a name="unique"></a>
 
 ```php
 [
-    // a1 needs to be unique in the column represented by the "a1" attribute
+    // a1 の値が属性 "a1" で表されるカラムにおいてユニークである必要がある
     ['a1', 'unique'],
 
-    // a1 needs to be unique, but column a2 will be used to check the uniqueness of the a1 value
+    // a1 の値が属性 "a2" で表されるカラムにおいてユニークである必要がある
     ['a1', 'unique', 'targetAttribute' => 'a2'],
 
-    // a1 and a2 need to be unique together, and they both will receive error message
+    // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムにおいてユニークである必要がある
+    // 両者はともにエラーメッセージを受け取る
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 and a2 need to be unique together, only a1 will receive error message
+    // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムにおいてユニークである必要がある
+    // a1 のみがエラーメッセージを受け取る
     ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']],
 
-    // a1 needs to be unique by checking the uniqueness of both a2 and a3 (using a1 value)
+    // a2 の値が "a2" のカラム、a1 の値が "a3" のカラムにおいてユニークである必要がある
+    // a1 がエラーメッセージを受け取る
     ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 ]
 ```
 
-This validator checks if the input value is unique in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
-either a single column or multiple columns.
+このバリデータは、入力値がテーブルのカラムにおいてユニークであるかどうかをチェックします。
+[アクティブレコード](db-active-record.md) モデルの属性に対してのみ働きます。
+一つのカラムに対するバリデーションか、複数のカラムに対するバリデーションか、どちらかをサポートします。
 
-- `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
-  to look for the input value being validated. If not set, the class of the model currently being validated will be used.
-- `targetAttribute`: the name of the attribute in `targetClass` that should be used to validate the uniqueness
-  of the input value. If not set, it will use the name of the attribute currently being validated.
-  You may use an array to validate the uniqueness of multiple columns at the same time. The array values
-  are the attributes that will be used to validate the uniqueness, while the array keys are the attributes
-  whose values are to be validated. If the key and the value are the same, you can just specify the value.
-- `filter`: additional filter to be applied to the DB query used to check the uniqueness of the input value.
-  This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
-  on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
-  is the [[yii\db\Query|Query]] object that you can modify in the function.
+- `targetClass`: 検証される入力値を探すために使用される [アクティブレコード](db-active-record.md) クラスの名前。
+  設定されていない場合は、現在検証されているモデルのクラスが使用されます。
+- `targetAttribute`: `targetClass` において、入力値がユニークであることを検証するために使用される属性の名前。
+  設定されていない場合は、現在検証されている属性の名前が使用されます。
+  複数のカラムのユニーク性を同時に検証するために配列を使うことが出来ます。
+  配列の値はユニーク性を検証するのに使用される属性であり、配列のキーはその値が検証される属性です。
+  キーと値が同じ場合は、値だけを指定することが出来ます。
+- `filter`: 入力値のユニーク性をチェックするのに使用される DB クエリに適用される追加のフィルタ。
+  これには、文字列、または、追加のクエリ条件を表現する配列を使うことが出来ます
+  (クエリ条件の書式については、[[yii\db\Query::where()]] を参照してください)。
+  または、`function ($query)` というシグニチャを持つ無名関数でも構いません。
+  `$query` は関数の中で修正できる [[yii\db\Query|Query]] オブジェクトです。
 
 
 ## [[yii\validators\UrlValidator|url]] <a name="url"></a>
 
 ```php
 [
-    // checks if "website" is a valid URL. Prepend "http://" to the "website" attribute
-    // if it does not have a URI scheme
+    // "website" が有効な URL であるかどうかをチェック。
+    // URI スキームを持たない場合は、"website" 属性に "http://" を前置する
     ['website', 'url', 'defaultScheme' => 'http'],
 ]
 ```
 
-This validator checks if the input value is a valid URL.
+このバリデータは、入力値が有効な URL であるかどうかをチェックします。
 
-- `validSchemes`: an array specifying the URI schemes that should be considered valid. Defaults to `['http', 'https']`,
-  meaning both `http` and `https` URLs are considered to be valid.
-- `defaultScheme`: the default URI scheme to be prepended to the input if it does not have the scheme part.
-  Defaults to null, meaning do not modify the input value.
-- `enableIDN`: whether the validator should take into account IDN (internationalized domain names).
-  Defaults to false. Note that in order to use IDN validation you have to install and enable the `intl` PHP
-  extension, otherwise an exception would be thrown.
+- `validSchemes`: 有効と見なされるべき URI スキームを指定する配列。
+  デフォルト値は  `['http', 'https']` であり、`http` と `https` の URL がともに有効と見なされることを意味します。
+- `defaultScheme`: 入力値がスキームの部分を持たないときに前置されるデフォルトの URI スキーム。
+  デフォルト値は null であり、入力値を修正しないことを意味します。
+- `enableIDN`: バリデータが IDN (国際化ドメイン名) を考慮すべきか否か。
+  デフォルト値は false。
+  IDN のバリデーションを使用するためには、`intl` PHP 拡張をインストールして有効化する必要があることに注意してください。
+  そうしないと、例外が投げられます。
 
