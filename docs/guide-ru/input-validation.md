@@ -390,19 +390,21 @@ class CountryValidator extends Validator
 реализуются путем вызова `validateValue()`.
 
 
-## Client-Side Validation <a name="client-side-validation"></a>
+## Валидация на строне клиента <a name="client-side-validation"></a>
 
-Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
-it allows users to find out input errors faster and thus provides a better user experience. You may use or implement
-a validator that supports client-side validation *in addition to* server-side validation.
+Проверка на стороне клиента на основе JavaScript целесообразна, когда конечным пользователям вводят 
+входные данные через HTML-формы, так как эта проверка позволяет пользователям узнать, ошибки ввода 
+быстрее, и таким образом улучшает ваш пользовательский интерфейс. Вы можете использовать или 
+реализовать валидатор, который поддерживает валидацию на стороне клиента *в дополнение* к проверке на стороне сервера.
 
-> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users with a better
-  experience. Similar to input data coming from end users, you should never trust client-side validation. For this reason,
-  you should always perform server-side validation by calling [[yii\base\Model::validate()]], as
-  described in the previous subsections.
+> Информация: Проверка на стороне клиента желательна, но необязательна. Её основная цель заключается в 
+предоставлении пользователям более удобного интерфейса. Так как входных данных, поступающих от конечных 
+пользователей, вы никогда не должны доверять верификации на стороне клиента. По этой причине, вы всегда 
+должны выполнять верификацию на стороне сервера путем вызова `[[yii\base\Model::validate()]]`, 
+как описано в предыдущих пунктах.
 
 
-### Using Client-Side Validation <a name="using-client-side-validation"></a>
+### Использование валидации на стороне клиента <a name="using-client-side-validation"></a>
 
 Many [core validators](tutorial-core-validators.md) support client-side validation out-of-the-box. All you need to do
 is just use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
