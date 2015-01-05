@@ -78,16 +78,16 @@ public function rules()
 
 Когда вызывается  метод `validate()` для проверки, он выполняет следующие действия:
 
-1. Determine which attributes should be validated by getting the attribute list from [[yii\base\Model::scenarios()]]
-   using the current [[yii\base\Model::scenario|scenario]]. These attributes are called *active attributes*.
-2. Determine which validation rules should be used by getting the rule list from [[yii\base\Model::rules()]]
-   using the current [[yii\base\Model::scenario|scenario]]. These rules are called *active rules*.
-3. Use each active rule to validate each active attribute which is associated with the rule.
-   The validation rules are evaluated in the order they are listed.
+1. Определить, какие атрибуты должны проверяться путем получения списка атрибутов от `[[yii\base\Model::scenarios()]]`
+   используя текущий `[[yii\base\Model::scenario|scenario]]`. Эти атрибуты называются *активными атрибутами*.
+2. Определить, какие правила проверки должны использоваться, получив список правил от `[[yii\base\Model::rules()]]`
+   используя текущий `[[yii\base\Model::scenario|scenario]]`. Эти правила называются *активными правилами*.
+3. Каждое активное правило проверяет каждый активный атрибут, который ассоциируется с правилом.
+   Правила проверки вычисляются в том порядке, как они перечислены.
    
-According to the above validation steps, an attribute will be validated if and only if it is
-an active attribute declared in `scenarios()` and is associated with one or multiple active rules
-declared in `rules()`.
+Согластно вышеизложеным пунктам, атрибут будет проверяться, если и только если он является 
+активным атрибутом, объявленных в `scenarios()` и связан с одним или несколькими активными правилами, 
+объявленными в `rules()`.
 
 
 ### Настройка сообщений об ошибках <a name="customizing-error-messages"></a>
