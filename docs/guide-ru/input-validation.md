@@ -185,24 +185,25 @@ function ($model, $attribute)
 они будут обрабатывают значения и обратно возвращать результат работы. Фильтры по сути выполняют предобработку входящих данных.
 
 
-### Handling Empty Inputs <a name="handling-empty-inputs"></a>
+### Обработка пустых входных данных <a name="handling-empty-inputs"></a>
 
-When input data are submitted from HTML forms, you often need to assign some default values to the inputs
-if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
+Если входные данные представлены из HTML-формы, часто нужно присвоить некоторые значения 
+по умолчанию для входных данных, если они не заполнены. Вы можете сделать это с помощью 
+валидатора [default](tutorial-core-validators.md#default). Например:
 
 ```php
 [
-    // set "username" and "email" as null if they are empty
+    // установим "username" и "email" как NULL, если они пустые
     [['username', 'email'], 'default'],
 
-    // set "level" to be 1 if it is empty
+    // установим "level" как 1 если он пустой
     ['level', 'default', 'value' => 1],
 ]
 ```
 
-By default, an input is considered empty if its value is an empty string, an empty array or a null.
-You may customize the default empty detection logic by configuring the the [[yii\validators\Validator::isEmpty]] property
-with a PHP callable. For example,
+По умолчанию входные данные считаются пустыми, если их значением является пустая строка, пустой массив или null.
+Вы можете настроить значение по умолчанию с помощью свойства `[[yii\validators\Validator::isEmpty]]`
+используя анонимную функцию. Например:
 
 ```php
 [
@@ -212,18 +213,20 @@ with a PHP callable. For example,
 ]
 ```
 
-> Note: Most validators do not handle empty inputs if their [[yii\base\Validator::skipOnEmpty]] property takes
-  the default value true. They will simply be skipped during validation if their associated attributes receive empty
-  inputs. Among the [core validators](tutorial-core-validators.md), only the `captcha`, `default`, `filter`,
-  `required`, and `trim` validators will handle empty inputs.
+> Примечание: большинство валидаторов не обрабатывать пустые входные данные, если их 
+  `[[yii\base\Validator::skipOnEmpty]]` свойство принимает значение по умолчанию true.
+  Они просто будут пропущены во время проверки, если связанные с ними атрибуты являются пустыми.
+  Среди [Основных валидаторов](tutorial-core-validators.md), только `captcha`, `default`, `filter`,
+  `required`, и `trim` эти валидаторы будут обрабатывать пустые входные данные.
 
 
-## Ad Hoc Validation <a name="ad-hoc-validation"></a>
+## Специальная валидация <a name="ad-hoc-validation"></a>
 
-Sometimes you need to do *ad hoc validation* for values that are not bound to any model.
+Иногда вам нужно сделать специальную валидацию для значений, которые не связаны с какой-либо модели.
 
-If you only need to perform one type of validation (e.g. validating email addresses), you may call
-the [[yii\validators\Validator::validate()|validate()]] method of the desired validator, like the following:
+Если необходимо выполнить только один тип проверки (например, проверка адреса электронной почты),
+вы можете вызвать метод `[[yii\validators\Validator::validate()|validate()]]` нужного валидатора.
+Например:
 
 ```php
 $email = 'test@example.com';
@@ -236,8 +239,8 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note: Not all validators support this type of validation. An example is the [unique](tutorial-core-validators.md#unique)
-  core validator which is designed to work with a model only.
+> Примечание: Не все валидаторы поддерживают такой тип проверки. Примером может служить
+[unique](tutorial-core-validators.md#unique) валидатор, который предназначен для работы с моделью.
 
 If you need to perform multiple validations against several values, you can use [[yii\base\DynamicModel]]
 which supports declaring both attributes and rules on the fly. Its usage is like the following:
