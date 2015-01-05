@@ -290,13 +290,13 @@ You may also access the dynamic attributes defined through the model instance, e
 `$model->name` and `$model->email`.
 
 
-## Creating Validators <a name="creating-validators"></a>
+## Создание Валидаторов <a name="creating-validators"></a>
 
-Besides using the [core validators](tutorial-core-validators.md) included in the Yii releases, you may also
-create your own validators. You may create inline validators or standalone validators.
+Кроме того, используя [основные валидаторы](tutorial-core-validators.md), включенные в релизы Yii, вы также можете 
+создавать свои собственные валидаторы. Вы можете создавать встроенные валидаторов или автономные валидаторы.
 
 
-### Inline Validators <a name="inline-validators"></a>
+### Встроенные Валидаторы <a name="inline-validators"></a>
 
 An inline validator is one defined in terms of a model method or an anonymous function. The signature of
 the method/function is:
@@ -309,10 +309,11 @@ the method/function is:
 function ($attribute, $params)
 ```
 
-If an attribute fails the validation, the method/function should call [[yii\base\Model::addError()]] to save
-the error message in the model so that it can be retrieved back later to present to end users.
+Если атрибут не прошел проверку, метод/функция должна вызвать `[[yii\base\Model::addError()]]`, 
+чтобы сохранить сообщение об ошибке в модели, для того чтобы позже можно было получить сообщение об ошибке для 
+представления конечным пользователям.
 
-Below are some examples:
+Ниже приведены некоторые примеры:
 
 ```php
 use yii\base\Model;
@@ -325,13 +326,13 @@ class MyForm extends Model
     public function rules()
     {
         return [
-            // an inline validator defined as the model method validateCountry()
+            // встроенный валидатор определяется как модель метода validateCountry()
             ['country', 'validateCountry'],
 
-            // an inline validator defined as an anonymous function
+            // встроенный валидатор определяется как анонимная функция
             ['token', function ($attribute, $params) {
                 if (!ctype_alnum($this->$attribute)) {
-                    $this->addError($attribute, 'The token must contain letters or digits.');
+                    $this->addError($attribute, 'Токен должен содержать буквы или цифры.');
                 }
             }],
         ];
@@ -340,16 +341,17 @@ class MyForm extends Model
     public function validateCountry($attribute, $params)
     {
         if (!in_array($this->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'The country must be either "USA" or "Web".');
+            $this->addError($attribute, 'Страна должна быть либо "USA" или "Web".');
         }
     }
 }
 ```
 
-> Note: By default, inline validators will not be applied if their associated attributes receive empty inputs
-  or if they have already failed some validation rules. If you want to make sure a rule is always applied,
-  you may configure the [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] and/or [[yii\validators\Validator::skipOnError|skipOnError]]
-  properties to be false in the rule declarations. For example:
+> Примечание: по умолчанию, встроенные валидаторы не будет применяться, если связанные с ними атрибуты 
+получат пустые входные данные или, если они уже не смогли пройти некоторые правила валидации. 
+Если вы хотите, чтобы, что правило применялось всегда, вы можете настроить свойства
+`[[yii\validators\Validator::skipOnEmpty|skipOnEmpty]]` и/или `[[yii\validators\Validator::skipOnError|skipOnError]]`
+свойства false в правиле объявления. Например:
 >
 > ```php
 > [
@@ -358,12 +360,12 @@ class MyForm extends Model
 > ```
 
 
-### Standalone Validators <a name="standalone-validators"></a>
+### Автономные валидаторы <a name="standalone-validators"></a>
 
-A standalone validator is a class extending [[yii\validators\Validator]] or its child class. You may implement
-its validation logic by overriding the [[yii\validators\Validator::validateAttribute()]] method. If an attribute
-fails the validation, call [[yii\base\Model::addError()]] to save the error message in the model, like you do
-with [inline validators](#inline-validators). For example,
+ААвтономный валидатор - это класс, расширяющий `[[yii\validators\Validator]]` или его дочерних класс.
+Вы можете реализовать свою логику проверки путем переопределения `[[yii\validators\Validator::validateAttribute()]]`
+метода. Если атрибут не прошл проверку, вызвать `[[yii\base\Model::addError()]]`, 
+чтобы сохранить сообщение об ошибке в модели, как это делают [встроенные валидаторы](#inline-validators). Например:
 
 ```php
 namespace app\components;
@@ -375,16 +377,17 @@ class CountryValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($model, $attribute, 'The country must be either "USA" or "Web".');
+            $this->addError($model, $attribute, 'Страна должна быть либо "USA" или "Web".');
         }
     }
 }
 ```
 
-If you want your validator to support validating a value without a model, you should also override
-[[yii\validators\Validator::validate()]]. You may also override [[yii\validators\Validator::validateValue()]]
-instead of `validateAttribute()` and `validate()` because by default the latter two methods are implemented
-by calling `validateValue()`.
+Если вы хотите, чтобы ваш валидатор поддерживал проверку значений, без модели, также необходимо переопределить
+`[[yii\validators\Validator::validate()]]`. Вы можете также 
+переопределить `[[yii\validators\Validator::validateValue()]]`
+вместо `validateAttribute()` и `validate()`, потому что по умолчанию последние два метода 
+реализуются путем вызова `validateValue()`.
 
 
 ## Client-Side Validation <a name="client-side-validation"></a>
