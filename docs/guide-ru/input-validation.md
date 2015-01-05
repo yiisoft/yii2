@@ -242,8 +242,9 @@ if ($validator->validate($email, $error)) {
 > Примечание: Не все валидаторы поддерживают такой тип проверки. Примером может служить
 [unique](tutorial-core-validators.md#unique) валидатор, который предназначен для работы с моделью.
 
-If you need to perform multiple validations against several values, you can use [[yii\base\DynamicModel]]
-which supports declaring both attributes and rules on the fly. Its usage is like the following:
+Если необходимо выполнить несколько проверок в отношении нескольких значений, 
+вы можете использовать `[[yii\base\DynamicModel]]`, который поддерживает объявление, как 
+атрибутов так и правил " на лету". Его использование выглядит следующим образом:
 
 ```php
 public function actionSearch($name, $email)
@@ -254,18 +255,19 @@ public function actionSearch($name, $email)
     ]);
 
     if ($model->hasErrors()) {
-        // validation fails
+        // валидация завершилась с ошибкой
     } else {
-        // validation succeeds
+        // Валидация успешно выполнена
     }
 }
 ```
 
-The [[yii\base\DynamicModel::validateData()]] method creates an instance of `DynamicModel`, defines the attributes
-using the given data (`name` and `email` in this example), and then calls [[yii\base\Model::validate()]]
-with the given rules.
+Метод `[[yii\base\DynamicModel::validateData()]]` создает экземпляр `DynamicModel`, определяет 
+атрибуты, используя приведенные данные (`name` и `email` в этом примере), и затем вызывает
+`[[yii\base\Model::validate()]]`
+с данными правилами.
 
-Alternatively, you may use the following more "classic" syntax to perform ad hoc data validation:
+Кроме того, вы можете использовать следующий "классический" синтаксис для выполнения специальной проверки данных:
 
 ```php
 public function actionSearch($name, $email)
@@ -276,18 +278,17 @@ public function actionSearch($name, $email)
         ->validate();
 
     if ($model->hasErrors()) {
-        // validation fails
+        // валидация завершилась с ошибкой
     } else {
-        // validation succeeds
+        // Валидация успешно выполнена
     }
 }
 ```
-
-After validation, you can check if the validation succeeded or not by calling the
-[[yii\base\DynamicModel::hasErrors()|hasErrors()]] method, and then get the validation errors from the
-[[yii\base\DynamicModel::errors|errors]] property, like you do with a normal model.
-You may also access the dynamic attributes defined through the model instance, e.g.,
-`$model->name` and `$model->email`.
+После валидации, вы можете проверить, если проверка успешно выполнена или произошла ошибка вызвав 
+метод `[[yii\base\DynamicModel::hasErrors()|hasErrors()]]` и затем получить ошибки проверки вызвав
+метод `[[yii\base\DynamicModel::errors|errors]]` как это делают нормальные модели.
+Вы можете также получить доступ к динамическим атрибутам, определенным через экземпляр модели, например,
+`$model->name` и `$model->email`.
 
 
 ## Создание Валидаторов <a name="creating-validators"></a>
