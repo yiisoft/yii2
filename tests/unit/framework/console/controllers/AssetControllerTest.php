@@ -285,7 +285,15 @@ EOL;
 
         // Then :
         $this->assertTrue(file_exists($bundleFile), 'Unable to create output bundle file!');
-        $this->assertTrue(is_array(require($bundleFile)), 'Output bundle file has incorrect format!');
+        $compressedBundleConfig = require($bundleFile);
+        $this->assertTrue(is_array($compressedBundleConfig), 'Output bundle file has incorrect format!');
+        $this->assertCount(2, $compressedBundleConfig, 'Output bundle config contains wrong bundle count!');
+
+        $this->assertArrayHasKey($assetBundleClassName, $compressedBundleConfig, 'Source bundle is lost!');
+        $compressedAssetBundleConfig = $compressedBundleConfig[$assetBundleClassName];
+        $this->assertEmpty($compressedAssetBundleConfig['css'], 'Compressed bundle css is not empty!');
+        $this->assertEmpty($compressedAssetBundleConfig['js'], 'Compressed bundle js is not empty!');
+        $this->assertNotEmpty($compressedAssetBundleConfig['depends'], 'Compressed bundle dependency is invalid!');
 
         $compressedCssFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.css';
         $this->assertTrue(file_exists($compressedCssFileName), 'Unable to compress CSS files!');
