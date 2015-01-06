@@ -129,6 +129,10 @@ class YiiRequirementCheckerTest extends TestCase
 
     public function testCheckPhpExtensionVersion()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('Can not test this on HHVM.');
+        }
+
         $requirementsChecker = new YiiRequirementChecker();
 
         $this->assertFalse($requirementsChecker->checkPhpExtensionVersion('some_unexisting_php_extension', '0.1'), 'No fail while checking unexisting extension!');
