@@ -66,6 +66,37 @@ class AssetController extends Controller
      * ~~~
      *
      * File names can contain placeholder "{hash}", which will be filled by the hash of the resulting file.
+     *
+     * You may specify several target bundles in order to compress different groups of assets.
+     * In this case you should use 'depends' key to specify, which bundles should be covered with particular
+     * target bundle. You may leave 'depends' to be empty for single bundle, which will compress all remaining
+     * bundles in this case.
+     * For example:
+     *
+     * ~~~
+     * 'app\config\AllShared' => [
+     *     'js' => 'js/all-shared-{hash}.js',
+     *     'css' => 'css/all-shared-{hash}.css',
+     *     'depends' => [
+     *         // Include all assets shared between 'backend' and 'frontend'
+     *         'yii\web\YiiAsset',
+     *         'app\assets\SharedAsset',
+     *     ],
+     * ],
+     * 'app\config\AllBackEnd' => [
+     *     'js' => 'js/all-{hash}.js',
+     *     'css' => 'css/all-{hash}.css',
+     *     'depends' => [
+     *         // Include only 'backend' assets:
+     *         'app\assets\AdminAsset'
+     *     ],
+     * ],
+     * 'app\config\AllFrontEnd' => [
+     *     'js' => 'js/all-{hash}.js',
+     *     'css' => 'css/all-{hash}.css',
+     *     'depends' => [], // Include all remaining assets
+     * ],
+     * ~~~
      */
     public $targets = [];
     /**
