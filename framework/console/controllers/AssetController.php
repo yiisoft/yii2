@@ -12,6 +12,7 @@ use yii\console\Exception;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\VarDumper;
+use yii\web\AssetBundle;
 
 /**
  * Allows you to combine and compress your JavaScript and CSS files.
@@ -298,8 +299,10 @@ class AssetController extends Controller
 
         foreach ($target->depends as $name) {
             if (isset($bundles[$name])) {
-                foreach ($bundles[$name]->$type as $file) {
-                    $inputFiles[] = $bundles[$name]->basePath . '/' . $file;
+                if (!$this->isBundleExternal($bundles[$name])) {
+                    foreach ($bundles[$name]->$type as $file) {
+                        $inputFiles[] = $bundles[$name]->basePath . '/' . $file;
+                    }
                 }
             } else {
                 throw new Exception("Unknown bundle: '{$name}'");
@@ -352,9 +355,14 @@ class AssetController extends Controller
         }
 
         foreach ($map as $bundle => $target) {
+            $sourceBundle = $bundles[$bundle];
+            $depends = $sourceBundle->depends;
+            if (!$this->isBundleExternal($sourceBundle)) {
+                $depends[] = $target;
+            }
             $targets[$bundle] = Yii::createObject([
                 'class' => strpos($bundle, '\\') !== false ? $bundle : 'yii\\web\\AssetBundle',
-                'depends' => [$target],
+                'depends' => $depends,
             ]);
         }
 
@@ -402,12 +410,16 @@ class AssetController extends Controller
                     'css' => $target->css,
                 ];
             } else {
-                $array[$name] = [
-                    'sourcePath' => null,
-                    'js' => [],
-                    'css' => [],
-                    'depends' => $target->depends,
-                ];
+                if ($this->isBundleExternal($target)) {
+                    $array[$name] = $this->composeBundleConfig($target);
+                } else {
+                    $array[$name] = [
+                        'sourcePath' => null,
+                        'js' => [],
+                        'css' => [],
+                        'depends' => $target->depends,
+                    ];
+                }
             }
         }
         $array = VarDumper::export($array);
@@ -682,5 +694,25 @@ EOD;
             }
         }
         return implode(DIRECTORY_SEPARATOR, $realPathParts);
+    }
+
+    /**
+     * @param AssetBundle $bundle
+     * @return boolean whether asset bundle external or not.
+     */
+    private function isBundleExternal($bundle)
+    {
+        return (empty($bundle->sourcePath) && empty($bundle->basePath));
+    }
+
+    /**
+     * @param AssetBundle $bundle asset bundle instance.
+     * @return array bundle configuration.
+     */
+    private function composeBundleConfig($bundle)
+    {
+        $config = Yii::getObjectVars($bundle);
+        $config['class'] = get_class($bundle);
+        return $config;
     }
 }

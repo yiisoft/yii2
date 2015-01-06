@@ -95,7 +95,9 @@ class AssetControllerTest extends TestCase
      */
     protected function createCompressConfig(array $bundles)
     {
-        $className = $this->declareAssetBundleClass(['class' => 'AssetBundleAll']);
+        static $classNumber = 0;
+        $classNumber++;
+        $className = $this->declareAssetBundleClass(['class' => 'AssetBundleAll' . $classNumber]);
         $baseUrl = '/test';
         $config = [
             'bundles' => $bundles,
@@ -298,6 +300,73 @@ EOL;
         foreach ($jsFiles as $name => $content) {
             $this->assertContains($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
         }
+    }
+
+    /**
+     * @depends testActionCompress
+     *
+     * @see https://github.com/yiisoft/yii2/issues/5194
+     */
+    public function testCompressExternalAsset()
+    {
+        // Given :
+        $externalAssetConfig = [
+            'class' => 'ExternalAsset',
+            'sourcePath' => null,
+            'basePath' => null,
+            'js' => [
+                '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
+            ],
+            'css' => [
+                '//ajax.googleapis.com/css/libs/jquery/2.1.1/jquery.ui.min.css'
+            ],
+        ];
+        $externalAssetBundleClassName = $this->declareAssetBundleClass($externalAssetConfig);
+
+        $cssFiles = [
+            'css/test.css' => 'body {
+                padding-top: 20px;
+                padding-bottom: 60px;
+            }',
+        ];
+        $this->createAssetSourceFiles($cssFiles);
+        $jsFiles = [
+            'js/test.js' => "function test() {
+                alert('Test message');
+            }",
+        ];
+        $this->createAssetSourceFiles($jsFiles);
+        $regularAssetBundleClassName = $this->declareAssetBundleClass([
+            'class' => 'RegularAsset',
+            'css' => array_keys($cssFiles),
+            'js' => array_keys($jsFiles),
+            'depends' => [
+                $externalAssetBundleClassName
+            ],
+        ]);
+        $bundles = [
+            $regularAssetBundleClassName
+        ];
+        $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
+
+        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
+        $this->createCompressConfigFile($configFile, $bundles);
+
+        // When :
+        $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
+
+        // Then :
+        $this->assertTrue(file_exists($bundleFile), 'Unable to create output bundle file!');
+        $compressedBundleConfig = require($bundleFile);
+        $this->assertTrue(is_array($compressedBundleConfig), 'Output bundle file has incorrect format!');
+        $this->assertArrayHasKey($externalAssetBundleClassName, $compressedBundleConfig, 'External bundle is lost!');
+
+        $compressedExternalAssetConfig = $compressedBundleConfig[$externalAssetBundleClassName];
+        $this->assertEquals($externalAssetConfig['js'], $compressedExternalAssetConfig['js'], 'External bundle js is lost!');
+        $this->assertEquals($externalAssetConfig['css'], $compressedExternalAssetConfig['css'], 'External bundle css is lost!');
+
+        $compressedRegularAssetConfig = $compressedBundleConfig[$regularAssetBundleClassName];
+        $this->assertContains($externalAssetBundleClassName, $compressedRegularAssetConfig['depends'], 'Dependency on external bundle is lost!');
     }
 
     /**
