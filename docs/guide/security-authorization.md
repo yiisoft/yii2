@@ -152,7 +152,7 @@ Role based access control (RBAC)
 --------------------------------
 
 Role-Based Access Control (RBAC) provides a simple yet powerful centralized access control. Please refer to
-the [Wiki article](http://en.wikipedia.org/wiki/Role-based_access_control) for details about comparing RBAC
+the [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) for details about comparing RBAC
 with other more traditional access control schemes.
 
 Yii implements a General Hierarchical RBAC, following the [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
@@ -185,10 +185,12 @@ more special *tree* hierarchy. While a role can contain a permission, it is not 
 Before we set off to define authorization data and perform access checking, we need to configure the
 [[yii\base\Application::authManager|authManager]] application component. Yii provides two types of authorization managers:
 [[yii\rbac\PhpManager]] and [[yii\rbac\DbManager]]. The former uses a PHP script file to store authorization
-data, while the latter stores authorization data in database. You may consider using the former if your application
+data, while the latter stores authorization data in a database. You may consider using the former if your application
 does not require very dynamic role and permission management.
 
-The following code shows how to configure `authManager` in the application configuration:
+#### configuring authManager with `PhpManager`
+
+The following code shows how to configure the `authManager` in the application configuration using the [[yii\rbac\PhpManager]] class:
 
 ```php
 return [
@@ -207,6 +209,34 @@ The `authManager` can now be accessed via `\Yii::$app->authManager`.
 > Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in files under `@app/rbac/` directory. Make sure the directory
   and all the files in it are writable by the Web server process if permissions hierarchy needs to be changed online.
 
+#### configuring authManager with `DbManager`
+
+The following code shows how to configure the `authManager` in the application configuration using the [[yii\rbac\DbManager]] class:
+
+```php
+return [
+    // ...
+    'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+        // ...
+    ],
+];
+```
+
+`DbManager` uses four database tables to store its data: 
+
+- [[yii\rbac\DbManager::$itemTable|itemTable]]: the table for storing authorization items. Defaults to "auth_item".
+- [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: the table for storing authorization item hierarchy. Defaults to "auth_item_child".
+- [[yii\rbac\DbManager::$assignmentTable|assignmentTable]]: the table for storing authorization item assignments. Defaults to "auth_assignment".
+- [[yii\rbac\DbManager::$ruleTable|ruleTable]]: the table for storing rules. Defaults to "auth_rule".
+
+Before you can go on you need to create those tables in the database. To do this, you can use the migration stored in `@yii/rbac/migrations`:
+
+`yii migrate --migrationPath=@yii/rbac/migrations`
+
+The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
 ### Building Authorization Data
 
