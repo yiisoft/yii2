@@ -32,7 +32,7 @@ return [
 Basic usage
 -----------
 
-Once 'mailer' component is configured, you can use the following code to send an email message:
+Once the 'mailer' component is configured, you can use the following code to send an email message:
 
 ```php
 Yii::$app->mailer->compose()
@@ -44,7 +44,7 @@ Yii::$app->mailer->compose()
     ->send();
 ```
 
-In above example method `compose()` creates an instance of the mail message, which then is populated and sent.
+In the above example the method `compose()` creates an instance of the mail message, which then is populated and sent.
 You may put more complex logic in this process if needed:
 
 ```php
