@@ -29,13 +29,13 @@ use yii\test\BaseActiveFixture;
  */
 class ActiveFixture extends BaseActiveFixture
 {
-	/**
-	 * @var Connection|string the DB connection object or the application component ID of the DB connection.
-	 * After the DbFixture object is created, if you want to change this property, you should only assign it
-	 * with a DB connection object.
-	 */
-	public $db = 'elasticsearch';
-	/**
+    /**
+     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * After the DbFixture object is created, if you want to change this property, you should only assign it
+     * with a DB connection object.
+     */
+    public $db = 'elasticsearch';
+    /**
      * @var string the name of the index that this fixture is about. If this property is not set,
      * the name will be determined via [[modelClass]].
      * @see modelClass
@@ -66,14 +66,14 @@ class ActiveFixture extends BaseActiveFixture
         if (!isset($this->modelClass) && (!isset($this->index) || !isset($this->type))) {
             throw new InvalidConfigException('Either "modelClass" or "index" and "type" must be set.');
         }
-	    /* @var $modelClass ActiveRecord */
-	    $modelClass = $this->modelClass;
-	    if ($this->index === null) {
-		    $this->index = $modelClass::index();
-	    }
-	    if ($this->type === null) {
-		    $this->type = $modelClass::type();
-	    }
+        /* @var $modelClass ActiveRecord */
+        $modelClass = $this->modelClass;
+        if ($this->index === null) {
+            $this->index = $modelClass::index();
+        }
+        if ($this->type === null) {
+            $this->type = $modelClass::type();
+        }
     }
 
     /**
@@ -90,21 +90,21 @@ class ActiveFixture extends BaseActiveFixture
         $this->resetIndex();
         $this->data = [];
 
-	    $mapping = $this->db->createCommand()->getMapping($this->index, $this->type);
-	    if (isset($mapping[$this->index]['mappings'][$this->type]['_id']['path'])) {
-		    $idField = $mapping[$this->index]['mappings'][$this->type]['_id']['path'];
-	    } else {
-		    $idField = '_id';
-	    }
+        $mapping = $this->db->createCommand()->getMapping($this->index, $this->type);
+        if (isset($mapping[$this->index]['mappings'][$this->type]['_id']['path'])) {
+            $idField = $mapping[$this->index]['mappings'][$this->type]['_id']['path'];
+        } else {
+            $idField = '_id';
+        }
 
         foreach ($this->getData() as $alias => $row) {
-	        $options = [];
-	        $id = isset($row[$idField]) ? $row[$idField] : null;
+            $options = [];
+            $id = isset($row[$idField]) ? $row[$idField] : null;
 
-	        $response = $this->db->createCommand()->insert($this->index, $this->type, $row, $id, $options);
-	        if ($id === null) {
-		        $row[$idField] = $response['_id'];
-	        }
+            $response = $this->db->createCommand()->insert($this->index, $this->type, $row, $id, $options);
+            if ($id === null) {
+                $row[$idField] = $response['_id'];
+            }
             $this->data[$alias] = $row;
         }
     }
@@ -136,10 +136,10 @@ class ActiveFixture extends BaseActiveFixture
      */
     protected function resetIndex()
     {
-	    $this->db->createCommand([
-		    'index' => $this->index,
-		    'type' => $this->type,
-		    'queryParts' => ['query' => ['match_all' => new \stdClass()]],
-	    ])->deleteByQuery();
+        $this->db->createCommand([
+            'index' => $this->index,
+            'type' => $this->type,
+            'queryParts' => ['query' => ['match_all' => new \stdClass()]],
+        ])->deleteByQuery();
     }
 }
