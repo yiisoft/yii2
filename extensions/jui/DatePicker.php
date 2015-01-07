@@ -169,7 +169,7 @@ class DatePicker extends InputWidget
         } else {
             $value = $this->value;
         }
-        if ($value !== null) {
+        if (!empty($value)) {
             // format value according to dateFormat
             try {
                 $value = Yii::$app->formatter->asDate($value, $this->dateFormat);
