@@ -5,6 +5,7 @@ Yii Framework 2 jui extension Change Log
 -----------------------
 
 - Enh #6570: Datepicker now uses fallback to find language files, e.g. application language is `de-DE` and the translation files does not exists, it will use `de` instead (cebe)
+- Enh #6471: Datepicker will now show an empty field when value is an empty string (cebe)
 
 
 2.0.1 December 07, 2014

@@ -69,7 +69,7 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
             'query' => $query,
         ]);
 
-        if ($this->load($params) && !$this->validate()) {
+        if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
 

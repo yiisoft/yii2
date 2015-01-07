@@ -4,7 +4,8 @@ Yii Framework 2 authclient extension Change Log
 2.0.2 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6502: Fixed `\yii\authclient\OAuth2::refreshAccessToken()` does not save fetched token (sebathi)
+- Bug #6510: Fixed infinite redirect loop using default `\yii\authclient\AuthAction::cancelUrl` (klimov-paul)
 
 
 2.0.1 December 07, 2014

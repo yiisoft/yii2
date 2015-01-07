@@ -5,7 +5,6 @@ Yii Framework 2 gii extension Change Log
 -----------------------
 
 - Bug #6463: The Gii controller generator generates incorrect controller namespace (pana1990)
-- Enh #3665: Improved Gii CRUD generated code to support setting initial conditions via initializing search model (mdmunir, fsateler, samdark) 
 
 
 2.0.1 December 07, 2014

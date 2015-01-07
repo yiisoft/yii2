@@ -32,9 +32,10 @@ use yii\helpers\VarDumper;
 class DbTarget extends Target
 {
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
      * After the DbTarget object is created, if you want to change this property, you should only assign it
      * with a DB connection object.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db = 'db';
     /**

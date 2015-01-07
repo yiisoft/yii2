@@ -168,7 +168,7 @@ Temas especiales
 * **TBD** [Plantilla aplicación avanzada](tutorial-advanced-app.md)
 * **TBD** [Creación de una aplicación desde cero](tutorial-start-from-scratch.md)
 * **TBD** [Comandos de consola](tutorial-console.md)
-* **TBD** [Validadores de base](tutorial-core-validators.md)
+* [Validadores del núcleo](tutorial-core-validators.md)
 * **TBD** [Internacionalización](tutorial-i18n.md)
 * **TBD** [Envío de correos electrónicos](tutorial-mailing.md)
 * **TBD** [Mejora del rendimiento](tutorial-performance-tuning.md)
@@ -180,14 +180,14 @@ Temas especiales
 Widgets
 -------
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
+* GridView: **TBD** link to demo page
+* ListView: **TBD** link to demo page
+* DetailView: **TBD** link to demo page
+* ActiveForm: **TBD** link to demo page
+* Pjax: **TBD** link to demo page
+* Menu: **TBD** link to demo page
+* LinkPager: **TBD** link to demo page
+* LinkSorter: **TBD** link to demo page
 * **TBD** [Bootstrap Widgets](bootstrap-widgets.md)
 * **TBD** [Jquery UI Widgets](jui-widgets.md)
 
@@ -196,6 +196,6 @@ Clases auxiliares
 -----------------
 
 * [Información general](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
+* [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)
