@@ -330,7 +330,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
      * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
      *
-     * @param array $with the relations to be joined. Each array element represents a single relation.
+     * @param string|array $with the relations to be joined. Each array element represents a single relation.
      * The array keys are relation names, and the array values are the corresponding anonymous functions that
      * can be used to modify the relation queries on-the-fly. If a relation query does not need modification,
      * you may use the relation name as the array value. Sub-relations can also be specified (see [[with()]]).
