@@ -13,6 +13,7 @@ use Codeception\TestCase\Test;
 use yii\base\UnknownMethodException;
 use yii\base\UnknownPropertyException;
 use yii\test\ActiveFixture;
+use yii\test\BaseActiveFixture;
 use yii\test\FixtureTrait;
 
 /**
@@ -66,7 +67,7 @@ class TestCase extends Test
     public function __call($name, $params)
     {
         $fixture = $this->getFixture($name);
-        if ($fixture instanceof ActiveFixture) {
+        if ($fixture instanceof BaseActiveFixture) {
             return $fixture->getModel(reset($params));
         } else {
             throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
