@@ -100,7 +100,7 @@ Yii は `i18n` [アプリケーションコンポーネント](structure-applica
 - [[yii\i18n\DbMessageSource]] - データベースを使用
 
 
-> Note|訳注: 以下においては、メッセージ書式の理解を助けるために、コード例に原文にはない日本語への翻訳例 (とその出力結果) を追加しています。
+> Note|訳注: 以下においては、メッセージ書式の理解を助けるために、原文にはない日本語への翻訳例 (とその出力結果) をコードサンプルに追加しています。
 
 ### 名前付きプレースホルダ
 
@@ -296,41 +296,46 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 注意して欲しいのは、あなたの [[yii\base\Application::$sourceLanguage|ソース言語]] を `ru_RU` に設定しなければ、このロシア語のメッセージを `Yii::t()` の中に直接に書くことは出来ない、ということです。
 ただし、ソース言語を `ru_RU` に設定することは推奨されません。
 むしろ、このような文字列はメッセージファイルまたは (DB ソースが使われている場合は) メッセージデータベースに入れるべきです。
-Yii は翻訳された言語の文字列の複数形規則を使い、翻訳が入手できない場合にはソース言語の複数形規則に後退します。
+Yii は翻訳された言語の文字列にある複数形規則を使います。翻訳が入手できない場合にはソース言語の複数形規則にフォールバックします。
 
 あなたの言語について、どのような語形変化を指定すべきかを学習するためには、[unicode.org にある規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照してください。
 
-> Note|訳注: 最初のソースメッセージの日本語翻訳は以下のようなものになります。
+> Note|訳注: 上記のソースメッセージの日本語翻訳は以下のようなものになります。
 >
 > '猫は{n, plural, =0{いません} other{#匹います}}。'
 >
 > 日本語では単数形と複数形を区別しませんので、たいていの場合、`=0` と `other` を指定するだけで事足ります。
 > 横着をして、`{n, plural, ...}` を `{n, number}` に置き換えても、多分、大きな問題は生じないでしょう。
 
-#### Selections
+#### 選択肢
 
-You can select phrases based on keywords. The pattern in this case specifies how to map keywords to phrases and
-provides a default phrase.
+キーワードに基づいて表現を選択することが出来ます。
+この場合のパターンは、キーワードに対する表現の割り当てを指定し、デフォルトの表現を提供するものです。
 
 ```php
-echo \Yii::t('app', '{name} is {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
+echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
     'name' => 'Snoopy',
     'gender' => 'dog',
 ]);
 ```
 
-Will produce "Snoopy is dog and it loves Yii!".
+これは "Snoopy is a dog and it loves Yii!" となります。
 
-In the expression `female` and `male` are possible values. `other` handles values that do not match. Strings inside
-brackets are sub-expressions so could be just a string or a string with more placeholders.
+式の中で、`female` と `male` が `gender` が取り得る値であり、`other` がそれらに一致しない値を処理します。
+波括弧の中の文字列は下位の式であり、単なる文字列でも、さらにプレースホルダを持つ文字列でも構いません。
 
-### Specifying default translation
+> Note|訳注: 翻訳: '{name} は {gender} であり、{gender, select, female{彼女} male{彼} other{それ}}は Yii を愛しています。'
+>
+> 出力: 'Snoopy は dog であり、それは Yii を愛しています。'
 
-You can specify default translations that will be used as a fallback for categories that don't match any other translation.
-This translation should be marked with `*`. In order to do it add the following to the application config:
+### デフォルトのメッセージソースを指定する
+
+他のメッセージソースにマッチしないカテゴリのフォールバックとして使用されるデフォルトのメッセージソースを指定することが出来ます。
+このメッセージソースは `*` によってマークされなければなりません。
+そうするためには、アプリケーションの構成情報に次のように追加します。
 
 ```php
-//configure i18n component
+// i18n コンポーネントを構成する
 
 'i18n' => [
     'translations' => [
@@ -341,18 +346,18 @@ This translation should be marked with `*`. In order to do it add the following 
 ],
 ```
 
-Now you can use categories without configuring each one, which is similar to Yii 1.1 behavior.
-Messages for the category will be loaded from a file under the default translation `basePath` that is `@app/messages`:
+こうすることで、個別に構成することなくカテゴリを使うことが可能になり、Yii 1.1 の振る舞いと同じになります。
+カテゴリのメッセージは、デフォルトの翻訳の `basePath` すなわち `@app/messages` の下にあるファイルから読み込まれます。
 
 ```php
 echo Yii::t('not_specified_category', 'message from unspecified category');
 ```
 
-Message will be loaded from `@app/messages/<LanguageCode>/not_specified_category.php`.
+この場合、メッセージは `@app/messages/<LanguageCode>/not_specified_category.php` から読み込まれます。
 
-### Translating module messages
+### モジュールのメッセージを翻訳する
 
-If you want to translate messages for a module and avoid using a single translation file for all messages, you can do it like the following:
+モジュール用のメッセージを翻訳したいけれども、全てのメッセージに対して一つの翻訳ファイルを使うことは避けたい、という場合には、次のようにすることが出来ます。
 
 ```php
 <?php
@@ -393,12 +398,13 @@ class Module extends \yii\base\Module
 }
 ```
 
-In the example above we are using wildcard for matching and then filtering each category per needed file. Instead of using `fileMap` you can simply
-use convention of category mapping to the same named file and use `Module::t('validation', 'your custom validation message')` or `Module::t('form', 'some form label')` directly.
+上記の例では、マッチングのためにワイルドカードを使い、次に必要なファイルごとに各カテゴリをフィルタリングしています。
+`fileMap` を使わずに、カテゴリを同じ名前のファイルにマップする規約を使って済ませることも出来ます。
+以上のようにすれば、直接に `Module::t('validation', 'your custom validation message')` や `Module::t('form', 'some form label')` などを使用することが出来ます。
 
-### Translating widgets messages
+### ウィジェットのメッセージを翻訳する
 
-The same rule as applied for Modules above can be applied for widgets too, for example:
+モジュールに適用できる同じ規則をウィジェットにも適用することが出来ます。例えば、
 
 ```php
 <?php
@@ -443,9 +449,10 @@ class Menu extends Widget
 }
 ```
 
-Instead of using `fileMap` you can simply use convention of category mapping to the same named file and use `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` directly.
+`fileMap` を使わずに、カテゴリを同じ名前のファイルにマップする規約を使って済ませることも出来ます。
+これで、直接に `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` を使用することが出来ます。
 
-> **Note**: For widgets you also can use i18n views, same rules as for controllers are applied to them too.
+> **Note**|注意: ウィジェットのためには i18n ビューも使うことが出来ます。コントローラのための同じ規則がウィジェットにも適用されます。
 
 
 ### Translating framework messages
