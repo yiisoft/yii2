@@ -307,6 +307,34 @@ EOD;
         $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
     }
     
+    public function testGetClientOptionsWhenSelectorsSet()
+    {
+		$this->activeField->setClientOptionsEmpty(false);
+		$this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
+        $this->activeField->enableClientValidation = true;
+        
+        $this->activeField->selectors['input'] = $expectedInput = '#mycustomid';
+		$expectedId = 'mycustomid';
+		
+		$actualValue = $this->activeField->getClientOptions();
+        $this->assertTrue($expectedInput === $actualValue['input']);
+        $this->assertTrue($expectedId === $actualValue['id']);
+	}
+	
+	public function testBeginWhenSelectorsSet()
+	{
+		$this->activeField->setClientOptionsEmpty(false);
+		$this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
+        $this->activeField->enableClientValidation = true;
+        
+        $this->activeField->selectors['input'] = 'mycustomid';
+		
+		$expectedValue = '<div class="form-group field-mycustomid">';
+        $actualValue = $this->activeField->begin();
+        
+        $this->assertEquals($expectedValue, $actualValue);
+	}
+    
     /**
      * Helper methods
      */

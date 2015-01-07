@@ -213,7 +213,7 @@ class ActiveField extends Component
             }
         }
 
-        $inputID = Html::getInputId($this->model, $this->attribute);
+        $inputID = $this->getInputId();
         $attribute = Html::getAttributeName($this->attribute);
         $options = $this->options;
         $class = isset($options['class']) ? [$options['class']] : [];
@@ -764,7 +764,7 @@ class ActiveField extends Component
 
         $options = [];
 
-        $inputID = Html::getInputId($this->model, $this->attribute);
+        $inputID = $this->getInputId();
         $options['id'] = $inputID;
         $options['name'] = $this->attribute;
 
@@ -800,4 +800,12 @@ class ActiveField extends Component
             'error' => '.help-block',
         ]);
     }
+    
+    /**
+     * Returns the input id from [[selectors]] or [[Html::getInputId()]]
+     * @return string the input id
+     */
+	protected function getInputId() {
+		return (isset($this->selectors['input']) ? str_replace('#', '', $this->selectors['input'] : Html::getInputId($this->model, $this->attribute);
+	}
 }
