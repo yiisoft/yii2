@@ -100,7 +100,7 @@ Yii は `i18n` [アプリケーションコンポーネント](structure-applica
 - [[yii\i18n\DbMessageSource]] - データベースを使用
 
 
-> Info|情報: 以下においては、メッセージ書式の理解を助けるために、原文にはない日本語へのメッセージの翻訳例 (と出力結果) を追加している個所があります。
+> Note|訳注: 以下においては、メッセージ書式の理解を助けるために、コード例に原文にはない日本語への翻訳例 (とその出力結果) を追加しています。
 
 ### 名前付きプレースホルダ
 
@@ -113,7 +113,7 @@ echo \Yii::t('app', 'Hello, {username}!', [
     'username' => $username,
 ]);
 
-// 翻訳例: '{username} さん、こんにちは!'
+// 翻訳: '{username} さん、こんにちは!'
 ```
 
 パラメータへの代入には波括弧を使わないことに注意してください。
@@ -124,7 +124,7 @@ echo \Yii::t('app', 'Hello, {username}!', [
 $sum = 42;
 echo \Yii::t('app', 'Balance: {0}', $sum);
 
-// 翻訳例: '差引残高: {0}'
+// 翻訳: '差引残高: {0}'
 ```
 
 > **Tip**|ヒント: メッセージ文字列の意味が分らなくならないように努めて、あまりに多くの序数プレースホルダを使うことは避けてください。
@@ -134,7 +134,7 @@ echo \Yii::t('app', 'Balance: {0}', $sum);
 
 高度な機能を使うためには、[intl PHP 拡張](http://www.php.net/manual/ja/intro.intl.php) をインストールして有効にする必要があります。
 それをインストールして有効にして初めて、プレースホルダのための拡張構文を使うことが出来るようになります。
-すなわち、デフォルトの書式を意味する短い形式 `{placeholderName, argumentType}`、あるいは、書式のスタイルを指定できる完全な形式 `{placeholderName, argumentType, argumentStyle}` を使うことが出来るようになります。
+すなわち、デフォルトの書式を意味する短い形式 `{プレースホルダ名, タイプ}`、あるいは、書式のスタイルを指定できる完全な形式 `{プレースホルダ名, タイプ, スタイル}` を使うことが出来るようになります。
 
 完全なリファレンスは [ICU ウェブサイト](http://icu-project.org/apiref/icu4c/classMessageFormat.html) で入手可能ですが、以下においてはいくつかの例を示します。
 
@@ -144,8 +144,8 @@ echo \Yii::t('app', 'Balance: {0}', $sum);
 $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number}', $sum);
 
-// 翻訳例: '差引残高: {0, number}'
-// 出力例: '差引残高: 12,345'
+// 翻訳: '差引残高: {0, number}'
+// 出力: '差引残高: 12,345'
 ```
 
 内蔵のスタイル (`integer`、`currency`、`percent`) の一つを指定することが出来ます。
@@ -154,8 +154,8 @@ echo \Yii::t('app', 'Balance: {0, number}', $sum);
 $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number, currency}', $sum);
 
-// 翻訳例: '差引残高: {0, number, currency}'
-// 出力例: '差引残高: &yen; 12,345'
+// 翻訳: '差引残高: {0, number, currency}'
+// 出力: '差引残高: &yen; 12,345'
 ```
 
 または、カスタムパターンを指定することも出来ます。
@@ -164,8 +164,8 @@ echo \Yii::t('app', 'Balance: {0, number, currency}', $sum);
 $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 
-// 翻訳例: '差引残高: {0, number, ,000,000000}'
-// 出力例: '差引残高: 000,012345'
+// 翻訳: '差引残高: {0, number, ,000,000000}'
+// 出力: '差引残高: 000,012345'
 ```
 
 [書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html).
@@ -175,8 +175,8 @@ echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 ```php
 echo \Yii::t('app', 'Today is {0, date}', time());
 
-// 翻訳例: '今日は {0, date} です。'
-// 出力例: '今日は 2015/01/07 です。'
+// 翻訳: '今日は {0, date} です。'
+// 出力: '今日は 2015/01/07 です。'
 ```
 
 内蔵の書式は、`short`、`medium`、`long`、そして `full` です。
@@ -184,8 +184,8 @@ echo \Yii::t('app', 'Today is {0, date}', time());
 ```php
 echo \Yii::t('app', 'Today is {0, date, short}', time());
 
-// 翻訳例: '今日は {0, date, short} です。'
-// 出力例: '今日は 2015/01/07 です。'
+// 翻訳: '今日は {0, date, short} です。'
+// 出力: '今日は 2015/01/07 です。'
 ```
 
 カスタムパターンを指定することも出来ます。
@@ -193,8 +193,8 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 ```php
 echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 
-// 翻訳例: '今日は {0, date, yyyy-MM-dd} です。'
-// 出力例: '今日は 2015-01-07 です。'
+// 翻訳: '今日は {0, date, yyyy-MM-dd} です。'
+// 出力: '今日は 2015-01-07 です。'
 ```
 
 [書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
@@ -204,8 +204,8 @@ echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 ```php
 echo \Yii::t('app', 'It is {0, time}', time());
 
-// 翻訳例: '現在 {0, time} です。'
-// 出力例: '現在 22:37:47 です。'
+// 翻訳: '現在 {0, time} です。'
+// 出力: '現在 22:37:47 です。'
 ```
 
 内蔵の書式は、`short`、`medium`、`long`、そして `full` です。
@@ -213,8 +213,8 @@ echo \Yii::t('app', 'It is {0, time}', time());
 ```php
 echo \Yii::t('app', 'It is {0, time, short}', time());
 
-// 翻訳例: '現在 {0, time, short} です。'
-// 出力例: '現在 22:37 です。'
+// 翻訳: '現在 {0, time, short} です。'
+// 出力: '現在 22:37 です。'
 ```
 
 カスタムパターンを指定することも出来ます。
@@ -222,8 +222,8 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 ```php
 echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 
-// 翻訳例: '現在 {0, time, HH:mm} です。'
-// 出力例: '現在 22:37 です。'
+// 翻訳: '現在 {0, time, HH:mm} です。'
+// 出力: '現在 22:37 です。'
 ```
 
 [書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
@@ -234,8 +234,8 @@ echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 ```php
 echo \Yii::t('app', '{n, number} is spelled as {n, spellout}', ['n' => 12345]);
 
-// 翻訳例: '{n, number} は、文字で綴ると {n, spellout} です。'
-// 出力例: '12,345 は、文字で綴ると 一万二千三百四十五 です。'
+// 翻訳: '{n, number} は、文字で綴ると {n, spellout} です。'
+// 出力: '12,345 は、文字で綴ると 一万二千三百四十五 です。'
 ```
 
 #### 序数
@@ -246,9 +246,12 @@ echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
 
 これは、"You are the 42nd visitor here!" というメッセージになります。
 
-> Tip|ヒント: 上記のソースメッセージを、プレースホルダの書式指定を守って日本語に翻訳すると、'あなたはこのサイトの {n, ordinal} の訪問者です。' となります。
-> しかし、その出力結果は、'あなたはこのサイトの 第42 の訪問者です。' となり、意味は通じますが、日本語としては若干不自然なものになります。
-> この場合は、'あなたはこのサイトの {n} 番目の訪問者です。' のように、プレースホルダの書式も含めて全体を翻訳する方が良いでしょう。
+> Note|訳注: 上記のソースメッセージを、プレースホルダの書式指定を守って日本語に翻訳すると、'あなたはこのサイトの {n, ordinal} の訪問者です' となります。
+> しかし、その出力結果は、'あなたはこのサイトの 第42 の訪問者です' となり、意味は通じますが、日本語としては若干不自然なものになります。
+>
+> プレースホルダの書式指定は、翻訳時に変更することが可能であるだけでなく、進んで変更すべき場合すらあります。
+>
+> この場合も、'あなたはこのサイトの {n} 番目の訪問者です' のように、プレースホルダの書式も含めて全体を翻訳する方が良いでしょう。
 
 #### 継続時間
 
@@ -258,43 +261,51 @@ echo \Yii::t('app', 'You are here for {n, duration} already!', ['n' => 47]);
 
 これは、"You are here for 47 sec. already!" というメッセージになります。
 
-> Tip|ヒント: このソースメッセージを 'あなたはこのサイトに既に {n, duration} 滞在しています。' と翻訳した場合の出力結果は、'あなたはこのサイトに既に 47 滞在しています。' となります。
-> これも、プレースホルダの書式も含めて全体を翻訳し直す方が良いようです。
+> Note|訳注: このソースメッセージを 'あなたはこのサイトに既に {n, duration} の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に 47 の間滞在しています' となります。
+> ICU ライブラリのバグでしょうか。これも、プレースホルダの書式も含めて全体を翻訳し直す方が良いようです。
 
 
-#### Plurals
+#### 複数形
 
-Different languages have different ways to inflect plurals. Yii provides a convenient way for translating messages in
-different plural forms that works well even for very complex rules. Instead of dealing with the inflection rules directly
-it is sufficient to provide the translation of inflected words in certain situations only.
+言語によって、複数形の語形変化はさまざまに異なります。
+Yii は、さまざまな形式の複数形語形変化に対応したメッセージ翻訳のための便利な方法を提供しています。
+それは、非常に複雑な規則に対しても、十分に機能するものです。
+語形変化の規則を直接に処理する代りに、特定の状況における語形変化した言葉の翻訳を提供するだけで十分です。
 
 ```php
 echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
 ```
 
-Will give us
+結果は以下のようになります。
 
-- "There are no cats!" for `$n = 0`,
-- "There is one cat!" for `$n = 1`,
-- and "There are 42 cats!" for `$n = 42`.
+- `$n = 0` の場合は "There are no cats!"
+- `$n = 1` の場合は "There is one cat!"
+- そして `$n = 42` の場合は "There are 42 cats!"
 
-In the plural rule arguments above `=0` means exactly zero, `=1` stands for exactly one, and `other` is for any other number.
-`#` is replaced with the value of `n`. It's not that simple for languages other than English. Here's an example
-for Russian:
+上記の複数形規則の引数において、`=0` はぴったりゼロ、`=1` はぴったり 1、そして `other` はそれ以外の数を表します。
+`#` は `n` の値によって置き換えられます。
+英語以外の言語では、これほど単純ではありません。
+例えば、次はロシア語の例です。
 
 ```
 Здесь {n, plural, =0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
 ```
 
-In the above it's worth mentioning that `=1` matches exactly `n = 1` while `one` matches `21` or `101`.
+上の例について言及する価値があると思われるのは、`=1` が `n = 1` にぴったりと一致するのに対して、`one` が `21` や `101` などに一致する、ということです。
 
-Note, that you can not use the Russian example in `Yii::t()` directly if your
-[[yii\base\Application::$sourceLanguage|source language]] isn't set to `ru_RU`. This however is not recommended, instead such
-strings should go into message files or message database (in case DB source is used). Yii uses plural rules of the
-translated language strings and is falling back to plural rules of source language if translation isn't available.
+注意して欲しいのは、あなたの [[yii\base\Application::$sourceLanguage|ソース言語]] を `ru_RU` に設定しなければ、このロシア語のメッセージを `Yii::t()` の中に直接に書くことは出来ない、ということです。
+ただし、ソース言語を `ru_RU` に設定することは推奨されません。
+むしろ、このような文字列はメッセージファイルまたは (DB ソースが使われている場合は) メッセージデータベースに入れるべきです。
+Yii は翻訳された言語の文字列の複数形規則を使い、翻訳が入手できない場合にはソース言語の複数形規則に後退します。
 
-To learn which inflection forms you should specify for your language you can referrer to the
-[rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+あなたの言語について、どのような語形変化を指定すべきかを学習するためには、[unicode.org にある規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照してください。
+
+> Note|訳注: 最初のソースメッセージの日本語翻訳は以下のようなものになります。
+>
+> '猫は{n, plural, =0{いません} other{#匹います}}。'
+>
+> 日本語では単数形と複数形を区別しませんので、たいていの場合、`=0` と `other` を指定するだけで事足ります。
+> 横着をして、`{n, plural, ...}` を `{n, number}` に置き換えても、多分、大きな問題は生じないでしょう。
 
 #### Selections
 
