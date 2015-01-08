@@ -455,11 +455,12 @@ class Menu extends Widget
 > **Note**|注意: ウィジェットのためには i18n ビューも使うことが出来ます。コントローラのための同じ規則がウィジェットにも適用されます。
 
 
-### Translating framework messages
+### フレームワークメッセージを翻訳する
 
-Yii comes with default translation messages for validation errors and some other strings. These messages are all
-in the category `yii`. Sometimes you want to correct default framework message translation for your application.
-In order to do so configure the `i18n` [application component](structure-application-components.md) like the following:
+Yii には、バリデーションエラーとその他いくつかの文字列に対するデフォルトの翻訳メッセージが付属しています。
+これらのメッセージは、全て 'yii' というカテゴリの中にあります。
+場合によっては、あなたのアプリケーションのために、デフォルトのフレームワークメッセージの翻訳を修正したいことがあるでしょう。
+そうするためには、`i18n` [アプリケーションコンポーネント](structure-application-components.md) を以下のように構成してください。
 
 ```php
 'i18n' => [
@@ -473,17 +474,18 @@ In order to do so configure the `i18n` [application component](structure-applica
 ],
 ```
 
-Now you can place your adjusted translations to `@app/messages/<language>/yii.php`.
+これで、あなたの修正した翻訳を `@app/messages/<language>/yii.php` に置くことが出来ます。
 
-### Handling missing translations
+### 欠落している翻訳の処理
 
-If the translation is missing at the source, Yii displays the requested message content. Such behavior is very convenient
-in case your raw message is a valid verbose text. However, sometimes it is not enough.
-You may need to perform some custom processing of the situation, when requested translation is missing at the source.
-This can be achieved using the [[yii\i18n\MessageSource::EVENT_MISSING_TRANSLATION|missingTranslation]]-event of [[yii\i18n\MessageSource]].
+ソースに翻訳が欠落している場合でも、Yii はリクエストされたメッセージの内容を原文で表示します。
+このような振舞いは、原文のメッセージが正当かつ詳細なテキストである場合には、非常に好都合です。
+しかし、場合によっては、それだけでは十分ではありません。
+リクエストされた翻訳がソースに欠落しているときに、何らかの特別な処理を実行する必要がある場合もあります。
+そういう処理は、[[yii\i18n\MessageSource]] の [[yii\i18n\MessageSource::EVENT_MISSING_TRANSLATION|missingTranslation]] イベントを使うことによって達成できます。
 
-For example to mark all missing translations with something notable, so they can be easily found at the page we
-first we need to setup event handler. This can be done in the application configuration:
+例えば、全ての欠落している翻訳を簡単に見つけられるように、何か目立つマークを付けることにしましょう。
+最初にイベントハンドラをセットアップする必要がありますが、それはアプリケーションの構成によって行うことが出来ます。
 
 ```php
 'components' => [
@@ -503,7 +505,7 @@ first we need to setup event handler. This can be done in the application config
 ],
 ```
 
-Now we need to implement our own event handler:
+次に、私たち独自のイベントハンドラを実装する必要があります。
 
 ```php
 <?php
@@ -520,49 +522,43 @@ class TranslationEventHandler
 }
 ```
 
-If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event handler it will be displayed as the translation result.
+このイベントハンドラによって [[yii\i18n\MissingTranslationEvent::translatedMessage]] がセットされた場合は、それが翻訳結果として表示されます。
 
-> Attention: each message source handles its missing translations separately. If you are using several message sources
-> and wish them treat missing translation in the same way, you should assign corresponding event handler to each of them.
-
-
-Views
------
-
-Instead of translating messages as described in the last section,
-you can also use `i18n` in your views to provide support for different languages. For example, if you have a view `views/site/index.php` and
-you want to create a special version for russian language of it, you create a `ru-RU` folder under the view path of the current controller/widget and
-put the file for russian language as follows `views/site/ru-RU/index.php`. Yii will then load the file for the current language if it exists
-and fall back to the original view file if none was found.
-
-> **Note**: If language is specified as `en-US` and there are no corresponding views, Yii will try views under `en`
-> before using original ones.
+> Note|注意: 全てのメッセージソースは、欠落した翻訳をそれぞれ独自に処理します。
+> いくつかのメッセージソースを使っていて、それらが同じ方法で欠落した翻訳を取り扱うようにしたい場合は、対応するイベントハンドラを全てのメッセージソースそれぞれに割り当てなければなりません。
 
 
-Formatting Number and Date values
----------------------------------
+ビュー
+------
 
-See the [data formatter section](output-formatter.md) for details.
+前の項で説明したようなメッセージの翻訳の代りに、ビューの中で `i18n` を使ってさまざまな言語に対するサポートを提供することも出来ます。
+例えば、`views/site/index.php` というビューがあり、それのロシア語のための特別版を作りたい場合は、現在のコントローラ/ウィジェットのビューパスの下に `ru-RU` フォルダを作って、ロシア語のためのファイルを `views/site/ru-RU/index.php` として置きます。
+そうすると、Yii は、現在の言語のためのファイルが存在する場合はそれをロードし、何も見つからなかった場合はオリジナルのビューファイルにフォールバックします。
+
+> **Note**|注意: 言語が `en-US` と指定されている場合、対応するビューが無いと、Yii は `en` の下でビューを探して、そこにも無ければ、オリジナルのビューを使います。
 
 
-Setting up your PHP environment <a name="setup-environment"></a>
--------------------------------
+数値と日付の値を書式設定する
+----------------------------
 
-Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its internationalization features
-such as the number and date formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
-Both classes provides a fallback implementation that provides basic functionality in case intl is not installed.
-This fallback implementation however only works well for sites in english language and even there can not provide the
-rich set of features that is available with the PHP intl extension, so its installation is highly recommended.
+詳細は [データフォーマッタ](output-formatter.md) の節を参照してください。
 
-The [PHP intl extension](http://php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which
-provides the knowledge and formatting rules for all the different locales. According to this fact the formatting of dates and numbers
-and also the supported syntax available for message formatting differs between different versions of the ICU library that is compiled with
-you PHP binary.
 
-To ensure your website works with the same output in all environments it is recommended to install the PHP intl extension
-in all environments and verify that the version of the ICU library compiled with PHP is the same.
+PHP 環境をセットアップする <a name="setup-environment"></a>
+--------------------------
 
-To find out which version of ICU is used by PHP you can run the following script, which will give you the PHP and ICU version used.
+Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](http://php.net/manual/ja/book.intl.php) を使います。
+この二つのクラスは、`intl` がインストールされていない場合に備えて基本的な機能を提供するフォールバックを実装しています。
+だだし、このフォールバックの実装は、英語のサイトでのみ十分に機能するものであり、たとえ英語のサイトであっても、PHP intl 拡張によって利用可能になる一連の豊かな機能を提供できるものではありません。
+従って、PHP intl 拡張のインストールが強く推奨されます。
+
+[PHP intl 拡張](http://php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する [ICU ライブラリ](http://site.icu-project.org/) に基礎を置いています。
+この事実により、日付や数値の書式設定、また、メッセージのフォーマッティングで利用できる構文は、PHP バイナリとともにコンパイルされる ICU ライブラリのバージョンの違いによって異なってきます。
+
+あなたのウェブサイトが全ての環境で同じ出力をすることを確実にするために、全ての環境において PHP intl 拡張をインストールし、PHP とともにコンパイルされた ICU ライブラリのバージョンが同一であることを確認することが推奨されます。
+
+どのバージョンの ICU が PHP によって使われているかを知るために、次のスクリプトを走らせることが出来ます。
+このスクリプトは、使用されている PHP と ICU のバージョンを出力します。
 
 ```php
 <?php
@@ -570,12 +566,13 @@ echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
 ```
 
-We recommend an ICU version greater or equal to version ICU 49 to be able to use all the features described in this document.
-One major feature that is missing in Versions below 49 is the `#` placeholder in plural rules.
-See <http://site.icu-project.org/download> for a list of available ICU versions. Note that the version numbering has changed after the
-4.8 release so that the first digits are now merged: the sequence is ICU 4.8, ICU 49, ICU 50.
+このドキュメントで説明されている全ての機能を使うことが出来るように、ICU のバージョンが 49 以上であることを推奨します。
+49 未満のバージョンに欠落している主要な機能の一つが、複数形規則における `#` プレースホルダです。
+入手できる ICU バージョン については、<http://site.icu-project.org/download> を参照してください。
+バージョン番号の採番方式が 4.8 リリースの後に変更されて、最初の二つの数字が結合されたことに注意してください。
+すなわち、ICU 4.8、ICU 49、ICU 50 という順序です。
 
-Additionally the information in the time zone database shipped with the ICU library may be outdated. Please refer
-to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) for details
-on updating the time zone database. While for output formatting the ICU timezone database is used, the time zone database
-used by PHP may be relevant too. You can update it by installing the latest version of the [pecl package `timezonedb`](http://pecl.php.net/package/timezonedb).
+これに加えて、ICU ライブラリとともに出荷されるタイムゾーンデータベースの情報も古くなっている可能性があります。
+タイムゾーンデータベースの更新に関する詳細は [ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) を参照してください。
+出力の書式設定には ICU タイムゾーンデータベースが使用されますが、PHP によって使われるタイムゾーンデータベースも影響する可能性があります。
+PHP のタイムゾーンデータベースは、[`timezonedb` pecl パッケージ](http://pecl.php.net/package/timezonedb) の最新版をインストールすることによって更新することが出来ます。

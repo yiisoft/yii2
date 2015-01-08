@@ -165,7 +165,7 @@ RESTful ウェブサービス
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * [コンソールコマンド](tutorial-console.md)
 * [コアバリデータ](tutorial-core-validators.md)
-* **翻訳中** [国際化](tutorial-i18n.md)
+* [国際化](tutorial-i18n.md)
 * **翻訳中** [メール](tutorial-mailing.md)
 * **翻訳中** [パフォーマンスチューニング](tutorial-performance-tuning.md)
 * **翻訳中** [共有ホスト環境](tutorial-shared-hosting.md)
