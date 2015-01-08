@@ -407,7 +407,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Inner joins with the specified relations.
      * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
      * Please refer to [[joinWith()]] for detailed usage of this method.
-     * @param array $with the relations to be joined with
+     * @param string|array $with the relations to be joined with
      * @param boolean|array $eagerLoading whether to eager loading the relations
      * @return static the query object itself
      * @see joinWith()
