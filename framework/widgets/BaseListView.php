@@ -27,6 +27,7 @@ abstract class BaseListView extends Widget
     /**
      * @var array the HTML attributes for the container tag of the list view.
      * The "tag" element specifies the tag name of the container element and defaults to "div".
+     * If "tag" is false, it means no container element will be rendered.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
@@ -130,8 +131,13 @@ abstract class BaseListView extends Widget
         } else {
             $content = $this->renderEmpty();
         }
-        $tag = ArrayHelper::remove($this->options, 'tag', 'div');
-        echo Html::tag($tag, $content, $this->options);
+        $tag = ArrayHelper::remove($this->options, 'tag', null);
+        if ($tag === false) {
+            echo $content;
+        } else {
+            if ($tag === null) $tag = 'div';
+            echo Html::tag($tag, $content, $this->options);
+        }
     }
 
     /**
