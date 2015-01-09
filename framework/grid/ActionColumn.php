@@ -46,6 +46,9 @@ class ActionColumn extends Column
      * specified in [[buttons]]. For example, the token `{view}` will be replaced by the result of
      * the callback `buttons['view']`. If a callback cannot be found, the token will be replaced with an empty string.
      * @see buttons
+     * 
+     * As an example, to only have the view button active as you add the ActionColumn to your GridView you would use PHP 5.4+ array notation in the following way:
+     * ['class' => 'yii\grid\ActionColumn', 'template' => '{view}'], 
      */
     public $template = '{view} {update} {delete}';
     /**
