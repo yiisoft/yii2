@@ -45,6 +45,13 @@ class ActionColumn extends Column
      * in the context of action column). They will be replaced by the corresponding button rendering callbacks
      * specified in [[buttons]]. For example, the token `{view}` will be replaced by the result of
      * the callback `buttons['view']`. If a callback cannot be found, the token will be replaced with an empty string.
+     *
+     * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
+     *
+     * ```
+     * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
+     * ```
+     *
      * @see buttons
      */
     public $template = '{view} {update} {delete}';
