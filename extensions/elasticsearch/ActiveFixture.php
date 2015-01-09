@@ -100,6 +100,13 @@ class ActiveFixture extends BaseActiveFixture
         foreach ($this->getData() as $alias => $row) {
             $options = [];
             $id = isset($row[$idField]) ? $row[$idField] : null;
+            if ($idField === '_id') {
+                unset($row[$idField]);
+            }
+            if (isset($row['_parent'])) {
+                $options['parent'] = $row['_parent'];
+                unset($row['_parent']);
+            }
 
             try {
                 $response = $this->db->createCommand()->insert($this->index, $this->type, $row, $id, $options);
