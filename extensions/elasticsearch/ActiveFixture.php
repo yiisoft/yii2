@@ -111,6 +111,8 @@ class ActiveFixture extends BaseActiveFixture
             }
             $this->data[$alias] = $row;
         }
+        // ensure all data is flushed and immediately available in the test
+        $this->db->createCommand()->flushIndex($this->index);
     }
 
     /**
