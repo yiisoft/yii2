@@ -66,8 +66,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         // SQLite supports batch insert natively since 3.7.11
         // http://www.sqlite.org/releaselog/3_7_11.html
-        if (version_compare(\SQLite3::version()['versionString'], '3.7.11', '>=')) {
-            return parent::batchInsert($table, $columns, $rows);
+        if (extension_loaded('sqlite3')) {
+            if (version_compare(\SQLite3::version()['versionString'], '3.7.11', '>=')) {
+                return parent::batchInsert($table, $columns, $rows);
+            }
         }
 
         $schema = $this->db->getSchema();
