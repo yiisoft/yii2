@@ -99,7 +99,7 @@ $customer->save();
 > Note: Obviously, because column names become attribute names of the active record class directly, you
 > get attribute names with underscores if you have that kind of naming schema in your database. For example
 > a column `user_name` will be accessed as `$user->user_name` on the active record object. If you are concerned about code style
-> you should adopt your database naming schema to use camelCase too. However, camelCase if not a requirement, Yii can work
+> you should adopt your database naming schema to use camelCase too. However, camelCase is not a requirement, Yii can work
 > well with any other naming style.
 
 

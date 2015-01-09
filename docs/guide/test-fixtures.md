@@ -227,7 +227,6 @@ Summary
 
 > Note: This section is under development.
 
-Fixtures are important part of testing. Their main purpose is to set up the environment in a fixed/known state
 In the above, we have described how to define and use fixtures. Below we summarize the typical workflow
 of running unit tests related with DB:
 

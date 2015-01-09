@@ -1,8 +1,6 @@
 フィクスチャ
 ============
 
-> Note|注意: この節はまだ執筆中です。
-
 フィクスチャはテストの重要な部分です。
 フィクスチャの主な目的は、テストを期待されている方法で繰り返して実行できるように、環境を固定された既知の状態に設定することです。
 Yii は、フィクスチャを正確に定義して容易に使うことを可能にするフィクスチャフレームワークを提供しています。
@@ -41,6 +39,12 @@ class UserFixture extends ActiveFixture
 > Tip|ヒント: すべての `ActiveFixture` は、テストの目的のために DB テーブルを準備するものです。
 > [[yii\test\ActiveFixture::tableName]] プロパティまたは [[yii\test\ActiveFixture::modelClass]] プロパティを設定することによって、テーブルを指定することが出来ます。
 > 後者を使う場合は、`modelClass` によって指定される `ActiveRecord` クラスからテーブル名が取得されます。
+
+> Note|注意: [[yii\test\ActiveFixture]] は SQL データベースにのみ適しています。
+> NoSQL データベースのためには、Yii は以下の `ActiveFixture` クラスを提供しています。
+>
+> - Mongo DB: [[yii\mongodb\ActiveFixture]]
+> - Elasticsearch: [[yii\elasticsearch\ActiveFixture]] (バージョン 2.0.2 以降)
 
 
 `ActiveFixture` フィクスチャのフィクスチャデータは通常は `FixturePath/data/TableName.php` として配置されるファイルで提供されます。
@@ -91,6 +95,10 @@ class UserProfileFixture extends ActiveFixture
     public $depends = ['app\tests\fixtures\UserFixture'];
 }
 ```
+
+依存関係は、また、複数のフィクスチャが正しく定義された順序でロードされ、アンロードされることを保証します。
+上記の例では、全ての外部キー参照が存在することを保証するために `UserFixture` は常に `UserProfileFixture` の前にロードされます。
+また、同じ理由によって、`UserFixture` は常に `UserProfileFixture` がアンロードされた後でアンロードされます。
 
 上記では、DB テーブルに関してフィクスチャを定義する方法を示しました。
 DB と関係しないフィクスチャ (例えば、何らかのファイルやディレクトリに関するフィクスチャ) を定義するためには、より汎用的な基底クラス [[yii\test\Fixture]] から拡張して、[[yii\test\Fixture::load()|load()]] と [[yii\test\Fixture::unload()|unload()]] のメソッドをオーバーライドすることが出来ます。
@@ -232,7 +240,9 @@ data\
 Managing Fixtures
 =================
 
-// todo: this tutorial may be merged into test-fixture.md
+> Note: This section is under development.
+>
+> todo: this tutorial may be merged with the above part of test-fixtures.md
 
 Fixtures are important part of testing. Their main purpose is to populate you with data that needed by testing
 different cases. With this data using your tests becoming more efficient and useful.
