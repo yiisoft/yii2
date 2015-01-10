@@ -201,11 +201,17 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         if (isset($text)) {
             $message->setTextBody($text);
         } elseif (isset($html)) {
-            if (preg_match('|<body[^>]*>(.*?)</body>|is', $html, $match)) {
+            if (preg_match('~<body[^>]*>(.*?)</body>~is', $html, $match)) {
                 $html = $match[1];
             }
-            $html = preg_replace('|<style[^>]*>(.*?)</style>|is', '', $html);
-            $message->setTextBody(strip_tags($html));
+            // remove style and script
+            $html = preg_replace('~<((style|script))[^>]*>(.*?)</\1>~is', '', $html);
+            // strip all HTML tags and decoded HTML entities
+            $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, Yii::$app ? Yii::$app->charset : 'UTF-8');
+            // improve whitespace
+            $text = preg_replace("~^[ \t]+~m", '', trim($text));
+            $text = preg_replace('~\R\R+~mu', "\n\n", $text);
+            $message->setTextBody($text);
         }
         return $message;
     }
