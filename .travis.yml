@@ -56,7 +56,7 @@ install:
 before_script:
   # show some versions and env information
   - echo 'elasticsearch version ' && curl http://localhost:9200/
-  - php -r "echo INTL_ICU_VERSION;"
+  - php -r "echo INTL_ICU_VERSION . \"\n\";"
   - mysql --version
   - psql --version
 
