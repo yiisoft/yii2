@@ -38,8 +38,8 @@ class ApiIndexer extends Indexer
             $description = strip_tags($matches[1]);
         } elseif (preg_match('~<p>(.*?)</p>~s', $contents, $matches)) {
             $description = strip_tags($matches[1]);
-            if (mb_strlen($description) > 1000) { // TODO truncate by words
-                $description = mb_substr($description, 0, 1000) . '...';
+            if (mb_strlen($description, 'UTF-8') > 1000) { // TODO truncate by words
+                $description = mb_substr($description, 0, 1000, 'UTF-8') . '...';
             }
         } else {
             $description = '';
