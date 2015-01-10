@@ -1130,7 +1130,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         return $relation;
     }
 
-   /**
+    /**
      * Establishes the relationship between two models.
      *
      * The relationship is established by setting the foreign key value(s) in one model
