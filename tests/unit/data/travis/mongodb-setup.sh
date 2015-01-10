@@ -9,10 +9,10 @@ else
   echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 fi
 
-# show mongodb version
+echo "MongoDB Server version:"
 mongod --version
 
-# show mongo PHP extension version
+echo "MongoDB PHP Extension version:"
 php -i |grep mongo -4 |grep -2 Version
 
 # enable text search
