@@ -255,4 +255,4 @@ CODE;
 
         $this->assertMigrationHistory(['base', 'test1']);
     }
-} 
+}

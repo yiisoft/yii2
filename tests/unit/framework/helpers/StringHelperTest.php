@@ -99,25 +99,25 @@ class StringHelperTest extends TestCase
         $this->assertEquals('foo', StringHelper::basename('/bar/foo/'));
         $this->assertEquals('foo', StringHelper::basename('\\bar\\foo\\'));
     }
-    
+
     public function testTruncate()
     {
         $this->assertEquals('привет, я multibyte...', StringHelper::truncate('привет, я multibyte строка!', 20));
         $this->assertEquals('Не трогаем строку', StringHelper::truncate('Не трогаем строку', 20));
         $this->assertEquals('исполь!!!', StringHelper::truncate('используем восклицательные знаки', 6, '!!!'));
-        
+
         // With Html
         $this->assertEquals('<span>This is a test </span>...', StringHelper::truncate('<span>This is a test sentance</span>', 14, '...', null, true));
         $this->assertEquals('<span><img src="image.png" />This is a test </span>...', StringHelper::truncate('<span><img src="image.png" />This is a test sentance</span>', 14, '...', null, true));
     }
-    
+
     public function testTruncateWords()
     {
         $this->assertEquals('это тестовая multibyte строка', StringHelper::truncateWords('это тестовая multibyte строка', 5));
         $this->assertEquals('это тестовая multibyte...', StringHelper::truncateWords('это тестовая multibyte строка', 3));
         $this->assertEquals('это тестовая multibyte!!!', StringHelper::truncateWords('это тестовая multibyte строка', 3, '!!!'));
         $this->assertEquals('это строка с          неожиданными...', StringHelper::truncateWords('это строка с          неожиданными пробелами', 4));
-        
+
         // With Html
         $this->assertEquals('<span>This is a test</span>...', StringHelper::truncateWords('<span>This is a test sentance</span>', 4, '...', true));
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test sentance</span>', 4, '...', true));
