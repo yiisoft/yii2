@@ -32,6 +32,7 @@ return [
     'No help for unknown sub-command "{command}".' => 'ليس هناك مساعدة لأمر فرعي غير معروف "{command}".',
     'No results found.' => 'لم يتم العثور على نتائج',
     'Only files with these extensions are allowed: {extensions}.' => 'فقط الملفات التي تحمل هذه الصيغ مسموح بها: {extensions}.',
+    'Only files with these MIME types are allowed: {mimeTypes}.' => 'فقط الملفات من هذه الأنواع مسموح بها: {mimeTypes}.',
     'Page not found.' => 'لم يتم العثور على الصفحة',
     'Please fix the following errors:' => 'الرجاء تصحيح الأخطاء التالية:',
     'Please upload a file.' => 'الرجاء تحميل ملف.',
