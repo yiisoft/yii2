@@ -51,6 +51,10 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 
 > [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed or not. So to ensure your website works with the same output
 > in all environments it is recommended to install the PHP intl extension in all environments and verify that the version of the ICU library
 > is the same. See also: [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
+>
+> Note also that even if the intl extension is installed, formatting date and time values for years >=2038 or <=1901
+> on 32bit systems will fall back to the PHP implementation, which does not provide localized month and day names,
+> because intl uses a 32bit UNIX timestamp internally. On a 64bit system the intl formatter is used in all cases if installed.
 
 
 Configuring the formatter <a name="configuring-format"></a>

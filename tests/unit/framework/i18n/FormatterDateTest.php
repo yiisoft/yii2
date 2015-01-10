@@ -182,9 +182,7 @@ class FormatterDateTest extends TestCase
 
     public function testIntlDateRangeLow()
     {
-        if (PHP_INT_SIZE == 4) { // 32bit systems
-            $this->markTestSkipped('intl does not support high date ranges on 32bit systems.');
-        }
+        // intl does not support high date ranges on 32bit systems, the implementation uses a fallback to PHP formatter
         $this->testDateRangeLow();
     }
 
@@ -196,13 +194,12 @@ class FormatterDateTest extends TestCase
     {
         $this->assertSame('12-08-1922', $this->formatter->asDate('1922-08-12', 'dd-MM-yyyy'));
         $this->assertSame('14-01-1732', $this->formatter->asDate('1732-01-14', 'dd-MM-yyyy'));
+        $this->assertSame('01-01-0000', $this->formatter->asDate('0000-01-01', 'dd-MM-yyyy'));
     }
 
     public function testIntlDateRangeHigh()
     {
-        if (PHP_INT_SIZE == 4) { // 32bit systems
-            $this->markTestSkipped('intl does not support high date ranges on 32bit systems.');
-        }
+        // intl does not support high date ranges on 32bit systems, the implementation uses a fallback to PHP formatter
         $this->testDateRangeHigh();
     }
 
@@ -214,6 +211,7 @@ class FormatterDateTest extends TestCase
     {
         $this->assertSame('17-12-2048', $this->formatter->asDate('2048-12-17', 'dd-MM-yyyy'));
         $this->assertSame('17-12-3048', $this->formatter->asDate('3048-12-17', 'dd-MM-yyyy'));
+        $this->assertSame('31-12-9999', $this->formatter->asDate('9999-12-31', 'dd-MM-yyyy'));
     }
 
     private function buildDateSubIntervals($referenceDate, $intervals)
