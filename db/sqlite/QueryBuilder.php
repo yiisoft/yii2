@@ -66,6 +66,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         // SQLite supports batch insert natively since 3.7.11
         // http://www.sqlite.org/releaselog/3_7_11.html
+        $this->db->open(); // ensure pdo is not null
         if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
             return parent::batchInsert($table, $columns, $rows);
         }
