@@ -192,6 +192,10 @@ class FormatterDateTest extends TestCase
      */
     public function testDateRangeLow()
     {
+        // http://en.wikipedia.org/wiki/Year_2038_problem
+        $this->assertSame('13-12-1901', $this->formatter->asDate('1901-12-13', 'dd-MM-yyyy'));
+        $this->assertSame('12-12-1901', $this->formatter->asDate('1901-12-12', 'dd-MM-yyyy'));
+
         $this->assertSame('12-08-1922', $this->formatter->asDate('1922-08-12', 'dd-MM-yyyy'));
         $this->assertSame('14-01-1732', $this->formatter->asDate('1732-01-14', 'dd-MM-yyyy'));
         $this->assertSame('01-01-0000', $this->formatter->asDate('0000-01-01', 'dd-MM-yyyy'));
@@ -203,12 +207,16 @@ class FormatterDateTest extends TestCase
         $this->testDateRangeHigh();
     }
 
-        /**
+    /**
      * Test for dates after 2038
      * https://github.com/yiisoft/yii2/issues/3126
      */
     public function testDateRangeHigh()
     {
+        // http://en.wikipedia.org/wiki/Year_2038_problem
+        $this->assertSame('19-01-2038', $this->formatter->asDate('2038-01-19', 'dd-MM-yyyy'));
+        $this->assertSame('20-01-2038', $this->formatter->asDate('2038-01-20', 'dd-MM-yyyy'));
+
         $this->assertSame('17-12-2048', $this->formatter->asDate('2048-12-17', 'dd-MM-yyyy'));
         $this->assertSame('17-12-3048', $this->formatter->asDate('3048-12-17', 'dd-MM-yyyy'));
         $this->assertSame('31-12-9999', $this->formatter->asDate('9999-12-31', 'dd-MM-yyyy'));
