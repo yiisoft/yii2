@@ -198,7 +198,6 @@ class FormatterDateTest extends TestCase
 
         $this->assertSame('12-08-1922', $this->formatter->asDate('1922-08-12', 'dd-MM-yyyy'));
         $this->assertSame('14-01-1732', $this->formatter->asDate('1732-01-14', 'dd-MM-yyyy'));
-        $this->assertSame('01-01-0000', $this->formatter->asDate('0000-01-01', 'dd-MM-yyyy'));
     }
 
     public function testIntlDateRangeHigh()

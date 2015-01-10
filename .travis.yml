@@ -44,7 +44,6 @@ install:
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
   - tests/unit/data/travis/mongodb-setup.sh
-# TODO: APC currently fails composer. https://github.com/composer/composer/issues/3405
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
