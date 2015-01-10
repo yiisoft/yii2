@@ -9,6 +9,7 @@ Yii::setAlias('@yii/gii', __DIR__ . '/../../../../extensions/gii');
 
 /**
  * GiiTestCase is the base class for all gii related test cases
+ * @group gii
  */
 class GiiTestCase extends TestCase
 {
