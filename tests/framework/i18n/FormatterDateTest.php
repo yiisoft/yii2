@@ -398,6 +398,9 @@ class FormatterDateTest extends TestCase
             ['UTC'],
             ['Europe/Berlin'],
             ['America/Jamaica'],
+            // these two are near the International Date Line on different sides
+            ['Pacific/Kiritimati'],
+            ['Pacific/Honolulu'],
         ];
     }
 

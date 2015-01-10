@@ -7,9 +7,11 @@
 
 namespace yii\validators;
 
+use DateTimeInterface;
 use IntlDateFormatter;
 use Yii;
 use DateTime;
+use yii\base\Exception;
 use yii\helpers\FormatConverter;
 
 /**
@@ -60,8 +62,20 @@ class DateValidator extends Validator
      *
      * This can be the same attribute as the one being validated. If this is the case,
      * the original value will be overwritten with the timestamp value after successful validation.
+     * @see timestampAttributeFormat
      */
     public $timestampAttribute;
+    /**
+     * @var string the format to use when populating the [[timestampAttribute]].
+     * The format can be specified in the same way as for [[format]].
+     *
+     * If not set, [[timestampAttribute]] will receive a UNIX timestamp.
+     * If [[timestampAttribute]] is not set, this property will be ignored.
+     * @see format
+     * @see timestampAttribute
+     * @since 2.0.4
+     */
+    public $timestampAttributeFormat;
 
     /**
      * @var array map of short format names to IntlDateFormatter constant values.
@@ -120,7 +134,7 @@ class DateValidator extends Validator
      * Parses date string into UNIX timestamp
      *
      * @param string $value string representing date
-     * @return boolean|integer UNIX timestamp or false on failure
+     * @return integer|string|boolean a UNIX timestamp, a formatted datetime value or `false` on failure.
      */
     protected function parseDateValue($value)
     {
@@ -132,37 +146,93 @@ class DateValidator extends Validator
             $format = substr($format, 4);
         } else {
             if (extension_loaded('intl')) {
-                if (isset($this->_dateFormats[$format])) {
-                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $this->timeZone);
-                } else {
-                    $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone, null, $format);
-                }
-                // enable strict parsing to avoid getting invalid date values
-                $formatter->setLenient(false);
-
-                // There should not be a warning thrown by parse() but this seems to be the case on windows so we suppress it here
-                // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
-                $parsePos = 0;
-                $parsedDate = @$formatter->parse($value, $parsePos);
-                if ($parsedDate !== false && $parsePos === mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8')) {
-                    return $parsedDate;
-                }
-                return false;
+                return $this->parseDateValueIntl($value, $format);
             } else {
                 // fallback to PHP if intl is not installed
                 $format = FormatConverter::convertDateIcuToPhp($format, 'date');
             }
         }
-        $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($this->timeZone));
+        return $this->parseDateValuePHP($value, $format);
+    }
+
+    /**
+     * Parses a date value using the IntlDateFormatter::parse()
+     * @param string $value string representing date
+     * @param string $format the expected date format
+     * @return integer|string|boolean a UNIX timestamp, a formatted datetime value or `false` on failure.
+     */
+    private function parseDateValueIntl($value, $format)
+    {
+        if (isset($this->_dateFormats[$format])) {
+            $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, 'UTC');
+            $hasTimeInfo = false;
+        } else {
+            // if no time was provided in the format string set time to 0 to get a simple date timestamp
+            $hasTimeInfo = (strpbrk($format, 'ahHkKmsSA') !== false);
+            $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $hasTimeInfo ? $this->timeZone : 'UTC', null, $format);
+        }
+        // enable strict parsing to avoid getting invalid date values
+        $formatter->setLenient(false);
+
+        // There should not be a warning thrown by parse() but this seems to be the case on windows so we suppress it here
+        // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
+        $parsePos = 0;
+        $parsedDate = @$formatter->parse($value, $parsePos);
+        if ($parsedDate === false || $parsePos !== mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8')) {
+            return false;
+        }
+
+        if ($this->timestampAttributeFormat === null) {
+            return $parsedDate;
+//        } elseif ($hasTimeInfo) {
+//            $date = new DateTime();
+//            $date->setTimezone(new \DateTimeZone('UTC'));
+//            $date->setTimestamp($parsedDate);
+//            return $this->formatTimestamp($date, $this->timestampAttributeFormat);
+        } else {
+            $date = new DateTime();
+            $date->setTimezone(new \DateTimeZone('UTC'));
+            $date->setTimestamp($parsedDate);
+            return $this->formatTimestamp($date, $this->timestampAttributeFormat);
+        }
+    }
+
+    /**
+     * Parses a date value using the DateTime::createFromFormat()
+     * @param string $value string representing date
+     * @param string $format the expected date format
+     * @return integer|string|boolean a UNIX timestamp, a formatted datetime value or `false` on failure.
+     */
+    private function parseDateValuePHP($value, $format)
+    {
+        // if no time was provided in the format string set time to 0 to get a simple date timestamp
+        $hasTimeInfo = (strpbrk($format, 'HhGgis') !== false);
+
+        $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($hasTimeInfo ? $this->timeZone : 'UTC'));
         $errors = DateTime::getLastErrors();
         if ($date === false || $errors['error_count'] || $errors['warning_count']) {
             return false;
-        } else {
-            // if no time was provided in the format string set time to 0 to get a simple date timestamp
-            if (strpbrk($format, 'HhGgis') === false) {
-                $date->setTime(0, 0, 0);
-            }
-            return $date->getTimestamp();
         }
+
+        if (!$hasTimeInfo) {
+            $date->setTime(0, 0, 0);
+        }
+        return $this->timestampAttributeFormat === null ? $date->getTimestamp() : $this->formatTimestamp($date, $this->timestampAttributeFormat);
+    }
+
+    /**
+     * Formats a timestamp using the specified format
+     * @param DateTime $timestamp
+     * @param string $format
+     * @return string
+     */
+    private function formatTimestamp($timestamp, $format)
+    {
+        if (strncmp($format, 'php:', 4) === 0) {
+            $format = substr($format, 4);
+        } else {
+            $format = FormatConverter::convertDateIcuToPhp($format, 'date');
+        }
+        return $timestamp->format($format);
     }
 }
