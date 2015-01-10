@@ -70,7 +70,9 @@ class <?= $searchModelClass ?> extends <?= isset($modelAlias) ? $modelAlias : $m
         ]);
 
         if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
+            foreach ($this->errors as $attribute => $error) {
+                $this->$attribute = '';
+            }
         }
 
         <?= implode("\n        ", $searchConditions) ?>
