@@ -188,6 +188,10 @@ Before we set off to define authorization data and perform access checking, we n
 data, while the latter stores authorization data in database. You may consider using the former if your application
 does not require very dynamic role and permission management.
 
+`authManager` can be configured using both classes
+
+#### PhpManager to store in php files
+
 The following code shows how to configure `authManager` in the application configuration:
 
 ```php
@@ -201,12 +205,31 @@ return [
     ],
 ];
 ```
-
-The `authManager` can now be accessed via `\Yii::$app->authManager`.
-
 > Tip: By default, [[yii\rbac\PhpManager]] stores RBAC data in files under `@app/rbac/` directory. Make sure the directory
   and all the files in it are writable by the Web server process if permissions hierarchy needs to be changed online.
 
+#### DbManager to store in database
+
+The following code shows how to configure `authManager` in the application configuration:
+
+```php
+return [
+    // ...
+    'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+        // ...
+    ],
+];
+```
+
+After configuring the `authManager` its necessary to run the migrations
+
+`yii migrate --migrationPath=@yii/rbac/migrations`
+
+
+The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
 ### Building Authorization Data
 
