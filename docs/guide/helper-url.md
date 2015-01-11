@@ -69,13 +69,13 @@ to the above rules.
 Below are some examples of using this method:
 
 ```php
-// /index?r=site/index
+// /index.php?r=site/index
 echo Url::toRoute('site/index');
 
-// /index?r=site/index&src=ref1#name
+// /index.php?r=site/index&src=ref1#name
 echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
 echo Url::toRoute(['@postEdit', 'id' => 100]);
 
 // http://www.example.com/index.php?r=site/index
@@ -105,13 +105,13 @@ will be replaced with the specified one.
 Below are some usage examples:
 
 ```php
-// /index?r=site/index
+// /index.php?r=site/index
 echo Url::to(['site/index']);
 
-// /index?r=site/index&src=ref1#name
+// /index.php?r=site/index&src=ref1#name
 echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
 echo Url::to(['@postEdit', 'id' => 100]);
 
 // the currently requested URL
