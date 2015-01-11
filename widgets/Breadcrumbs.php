@@ -101,6 +101,15 @@ class Breadcrumbs extends Widget
      * ]
      * ```
      *
+     * Since 2.0.2 each individual link can override global [[encodeLabels]] param like the following:
+     *
+     * ```php
+     * [
+     *     'label' => '<strong>Hello!</strong>',
+     *     'encode' => false,
+     * ]
+     * ```
+     *
      */
     public $links = [];
     /**
@@ -150,8 +159,14 @@ class Breadcrumbs extends Widget
      */
     protected function renderItem($link, $template)
     {
+        $encodeLabel = $this->encodeLabels;
+        if (array_key_exists('encode', $link)) {
+            $encodeLabel = $link['encode'];
+            unset($link['encode']);
+        }
+
         if (array_key_exists('label', $link)) {
-            $label = $this->encodeLabels ? Html::encode($link['label']) : $link['label'];
+            $label = $encodeLabel ? Html::encode($link['label']) : $link['label'];
         } else {
             throw new InvalidConfigException('The "label" element is required for each link.');
         }
