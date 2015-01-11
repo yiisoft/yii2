@@ -106,6 +106,21 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals("<li>My-<br>Test-Label</li>\n", $unencodedValue);
     }
 
+    public function testEncodeOverride()
+    {
+        $link = ['label' => 'My-<br>Test-Label', 'encode' => false];
+        $method = $this->reflectMethod();
+        $result = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
+
+        $this->assertEquals("<li>My-<br>Test-Label</li>\n", $result);
+
+        //without encodeLabels
+        $this->breadcrumbs->encodeLabels = false;
+        $unencodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
+
+        $this->assertEquals("<li>My-<br>Test-Label</li>\n", $unencodedValue);
+    }
+
     public function testRenderItemWithLabelAndUrl()
     {
         $link = ['label' => 'My-<br>Test-Label', 'url' => 'http://localhost/yii2'];
