@@ -1,8 +1,8 @@
 Yii Framework 2 redis extension Change Log
 ==========================================
 
-2.0.2 under development
------------------------
+2.0.2 January 11, 2015
+----------------------
 
 - Bug #6547: Fixed redis connection to deal with large data in combination with `mget()` (pyurin)
 

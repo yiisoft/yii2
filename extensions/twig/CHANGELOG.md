@@ -1,8 +1,8 @@
 Yii Framework 2 twig extension Change Log
 =========================================
 
-2.0.2 under development
------------------------
+2.0.2 January 11, 2015
+----------------------
 
 - Bug #6464: `path` and `url` weren't resolving aliases (samdark, lynicidn)
 
