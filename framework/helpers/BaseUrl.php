@@ -342,4 +342,27 @@ class BaseUrl
     {
         return strncmp($url, '//', 2) && strpos($url, '://') === false;
     }
+
+    /**
+     * Creates URL from the current one by adding parameters specified.
+     *
+     * @param array $params associative array of parameters. If value is null, parameter will be removed.
+     * @param boolean|string $scheme the URI scheme to use in the generated URL:
+     *
+     * - `false` (default): generating a relative URL.
+     * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
+     * - string: generating an absolute URL with the specified scheme (either `http` or `https`).
+     *
+     * @return string the generated URL
+     *
+     * @since 2.0.2
+     */
+    public static function current(array $params = [], $scheme = false)
+    {
+        $currentParms = Yii::$app->controller->actionParams;
+        $currentParms[0] = Yii::$app->controller->getRoute();
+        $route = ArrayHelper::merge($currentParms, $params);
+
+        return static::toRoute($route, $scheme);
+    }
 }

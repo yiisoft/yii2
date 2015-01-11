@@ -94,6 +94,17 @@ class UrlTest extends TestCase
         Url::toRoute('site/view');
     }
 
+    public function testCurrent()
+    {
+        $this->mockAction('page', 'view', null, ['id' => 10, 'name' => 'test']);
+
+        $this->assertEquals('/base/index.php?r=page%2Fview&id=10&name=test', Url::current());
+
+        $this->assertEquals('/base/index.php?r=page%2Fview&id=20&name=test', Url::current(['id' => 20]));
+
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test', Url::current(['id' => null]));
+    }
+
     public function testTo()
     {
         // is an array: the first array element is considered a route, while the rest of the name-value
