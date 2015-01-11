@@ -344,9 +344,28 @@ class BaseUrl
     }
 
     /**
-     * Creates URL from the current one by adding parameters specified.
+     * Creates a URL by using the current route and the GET parameters.
      *
-     * @param array $params associative array of parameters. If value is null, parameter will be removed.
+     * You may modify or remove some of the GET parameters, or add additional query parameters through
+     * the `$params` parameter. In particular, if you specify a parameter to be null, then this parameter
+     * will be removed from the existing GET parameters; all other parameters specified in `$params` will
+     * be merged with the existing GET parameters. For example,
+     *
+     * ```php
+     * // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
+     *
+     * // /index.php?r=post/view&id=123&src=google
+     * echo Url::current();
+     *
+     * // /index.php?r=post/view&id=123
+     * echo Url::current(['src' => null]);
+     *
+     * // /index.php?r=post/view&id=100&src=google
+     * echo Url::current(['id' => 100]);
+     * ```
+     *
+     * @param array $params an associative array of parameters that will be merged with the current GET parameters.
+     * If a parameter value is null, the corresponding GET parameter will be removed.
      * @param boolean|string $scheme the URI scheme to use in the generated URL:
      *
      * - `false` (default): generating a relative URL.
@@ -354,15 +373,13 @@ class BaseUrl
      * - string: generating an absolute URL with the specified scheme (either `http` or `https`).
      *
      * @return string the generated URL
-     *
      * @since 2.0.2
      */
     public static function current(array $params = [], $scheme = false)
     {
-        $currentParms = Yii::$app->controller->actionParams;
-        $currentParms[0] = Yii::$app->controller->getRoute();
-        $route = ArrayHelper::merge($currentParms, $params);
-
+        $currentParams = Yii::$app->getRequest()->getQueryParams();
+        $currentParams[0] = Yii::$app->controller->getRoute();
+        $route = ArrayHelper::merge($currentParams, $params);
         return static::toRoute($route, $scheme);
     }
 }

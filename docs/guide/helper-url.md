@@ -130,6 +130,23 @@ echo Url::to('@web/images/logo.gif', true);
 echo Url::to('@web/images/logo.gif', 'https');
 ```
 
+Starting from version 2.0.3, you may use [[yii\helpers\Url::current()]] to create a URL based on the currently
+requested route and GET parameters. You may modify or remove some of the GET parameters or add new ones by
+passing a `$params` parameter to the method. For example,
+
+```php
+// assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
+
+// /index.php?r=post/view&id=123&src=google
+echo Url::current();
+
+// /index.php?r=post/view&id=123
+echo Url::current(['src' => null]);
+// /index.php?r=post/view&id=100&src=google
+echo Url::current(['id' => 100]);
+```
+
+
 ## Remember URLs <a name="remember-urls"></a>
 
 There are cases when you need to remember URL and afterwards use it during processing of the one of sequential requests.

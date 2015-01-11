@@ -96,7 +96,8 @@ class UrlTest extends TestCase
 
     public function testCurrent()
     {
-        $this->mockAction('page', 'view', null, ['id' => 10, 'name' => 'test']);
+        $this->mockAction('page', 'view', null, []);
+        \Yii::$app->request->setQueryParams(['id' => 10, 'name' => 'test']);
 
         $this->assertEquals('/base/index.php?r=page%2Fview&id=10&name=test', Url::current());
 
