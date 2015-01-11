@@ -373,7 +373,7 @@ class BaseUrl
      * - string: generating an absolute URL with the specified scheme (either `http` or `https`).
      *
      * @return string the generated URL
-     * @since 2.0.2
+     * @since 2.0.3
      */
     public static function current(array $params = [], $scheme = false)
     {
