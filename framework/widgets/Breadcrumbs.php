@@ -10,6 +10,7 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Widget;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -159,12 +160,7 @@ class Breadcrumbs extends Widget
      */
     protected function renderItem($link, $template)
     {
-        $encodeLabel = $this->encodeLabels;
-        if (array_key_exists('encode', $link)) {
-            $encodeLabel = $link['encode'];
-            unset($link['encode']);
-        }
-
+        $encodeLabel = $encode = ArrayHelper::remove($link, 'encode', $this->encodeLabels);
         if (array_key_exists('label', $link)) {
             $label = $encodeLabel ? Html::encode($link['label']) : $link['label'];
         } else {
