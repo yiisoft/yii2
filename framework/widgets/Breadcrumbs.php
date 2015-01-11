@@ -102,7 +102,7 @@ class Breadcrumbs extends Widget
      * ]
      * ```
      *
-     * Since 2.0.2 each individual link can override global [[encodeLabels]] param like the following:
+     * Since version 2.0.3 each individual link can override global [[encodeLabels]] param like the following:
      *
      * ```php
      * [
