@@ -52,13 +52,16 @@ class BaseUrl
      * - If the route has no leading slash (e.g. `site/index`), it is considered to be a route relative
      *   to the current module and will be prepended with the module's [[\yii\base\Module::uniqueId|uniqueId]].
      *
+     * Starting from version 2.0.2, a route can also be specified as an alias. In this case, the alias
+     * will be converted into the actual route first before conducting the above transformation steps.
+     *
      * Below are some examples of using this method:
      *
      * ```php
-     * // /index?r=site/index
+     * // /index.php?r=site/index
      * echo Url::toRoute('site/index');
      *
-     * // /index?r=site/index&src=ref1#name
+     * // /index.php?r=site/index&src=ref1#name
      * echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
      * // http://www.example.com/index.php?r=site/index
@@ -66,6 +69,9 @@ class BaseUrl
      *
      * // https://www.example.com/index.php?r=site/index
      * echo Url::toRoute('site/index', 'https');
+     *
+     * // /index.php?r=post/index     assume the alias "@posts" is defined as "post/index"
+     * echo Url::toRoute('@posts');
      * ```
      *
      * @param string|array $route use a string to represent a route (e.g. `index`, `site/index`),
@@ -154,11 +160,14 @@ class BaseUrl
      * Below are some examples of using this method:
      *
      * ```php
-     * // /index?r=site/index
+     * // /index.php?r=site/index
      * echo Url::to(['site/index']);
      *
-     * // /index?r=site/index&src=ref1#name
+     * // /index.php?r=site/index&src=ref1#name
      * echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
+     *
+     * // /index.php?r=post/index     assume the alias "@posts" is defined as "/post/index"
+     * echo Url::to(['@posts']);
      *
      * // the currently requested URL
      * echo Url::to();
