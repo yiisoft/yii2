@@ -192,7 +192,7 @@ RESTful ウェブサービス
 ------
 
 * [概要](helper-overview.md)
-* **翻訳未着手** [ArrayHelper](helper-array.md)
+* [ArrayHelper](helper-array.md)
 * **翻訳未着手** [Html](helper-html.md)
 * **翻訳未着手** [Url](helper-url.md)
 
