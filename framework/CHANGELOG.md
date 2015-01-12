@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #5457: `yii\web\Cors` should handle `Access-Control-Request-Headers` in a case-insensitive manner (qiangxue)
+- Bug #6553: DateValidator returned valid for date "2012-12-12foo" with intl extension enabled (gajahlemu)
 - Bug #6919: Fixed wrong namespaces under advanced application's TestCase classes (ivokund)
 - Bug #6940: `yii\web\Response::sendContentAsFile()` may not send correct `content-length` header (sadgnome)
 - Bug #6969: `yii\helpers\ArrayHelper::htmlEncode()` and `htmlDecode()` should not remove non-string data (qiangxue)

@@ -139,7 +139,12 @@ class DateValidator extends Validator
 
                 // There should not be a warning thrown by parse() but this seems to be the case on windows so we suppress it here
                 // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
-                return @$formatter->parse($value);
+                $parsePos = 0;
+                $parsedDate = @$formatter->parse($value, $parsePos);
+                if ($parsedDate !== false && $parsePos === strlen($value)) {
+                    return $parsedDate;
+                }
+                return false;
             } else {
                 // fallback to PHP if intl is not installed
                 $format = FormatConverter::convertDateIcuToPhp($format, 'date');

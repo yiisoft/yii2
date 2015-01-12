@@ -80,8 +80,9 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($val->validate('2013-09-13'));
         $this->assertFalse($val->validate('31.7.2013'));
         $this->assertFalse($val->validate('31-7-2013'));
-        $this->assertFalse($val->validate('asdasdfasfd'));
         $this->assertFalse($val->validate('20121212'));
+        $this->assertFalse($val->validate('asdasdfasfd'));
+        $this->assertFalse($val->validate('2012-12-12foo'));
         $this->assertFalse($val->validate(''));
         $this->assertFalse($val->validate(time()));
         $val->format = 'php:U';
@@ -99,6 +100,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($val->validate('31-7-2013'));
         $this->assertFalse($val->validate('20121212'));
         $this->assertFalse($val->validate('asdasdfasfd'));
+        $this->assertFalse($val->validate('2012-12-12foo'));
         $this->assertFalse($val->validate(''));
         $this->assertFalse($val->validate(time()));
         $val->format = 'dd.MM.yyyy';
@@ -178,6 +180,9 @@ class DateValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_date' => []]);
         $val->validateAttribute($model, 'attr_date');
         $this->assertTrue($model->hasErrors('attr_date'));
-
+        $val = new DateValidator(['format' => 'yyyy-MM-dd']);
+        $model = FakedValidationModel::createWithAttributes(['attr_date' => '2012-12-12foo']);
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertTrue($model->hasErrors('attr_date'));
     }
 }
