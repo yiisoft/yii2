@@ -147,6 +147,9 @@ echo Url::to(['post/index'], 'https');
 - ルートがスラッシュを全く含まない場合は、カレントコントローラのアクション ID であると見なされて、カレントコントローラの [[\yii\web\Controller::uniqueId|uniqueId]] の値が前置されます。
 - ルートが先頭にスラッシュを含まない場合は、カレントモジュールに対する相対ルートと見なされて、カレントモジュールの [[\yii\base\Module::uniqueId|uniqueId]] の値が前置されます。
 
+バージョン 2.0.2 以降では、[エイリアス](concept-aliases.md) の形式でルートを指定することが出来ます。
+その場合は、エイリアスが最初に実際のルートに変換され、そのルートが上記の規則に従って絶対的ルートに変換されます。
+
 例えば、カレントモジュールが `admin` であり、カレントコントローラが `post` であると仮定すると、
 
 ```php
@@ -163,6 +166,9 @@ echo Url::to(['post/index']);
 
 // 絶対ルート: /index.php?r=post/index
 echo Url::to(['/post/index']);
+
+// /index.php?r=post/index     エイリアス "@posts" が "/post/index" と定義されていると仮定
+echo Url::to(['@posts']);
 ```
 
 [[yii\helpers\Url::to()]] メソッドは、[[yii\web\UrlManager|URL マネージャ]] の
