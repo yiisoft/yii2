@@ -169,7 +169,7 @@ RESTful ウェブサービス
 * [メール送信](tutorial-mailing.md)
 * [パフォーマンスチューニング](tutorial-performance-tuning.md)
 * [共有ホスティング環境](tutorial-shared-hosting.md)
-* **翻訳中** [テンプレートエンジン](tutorial-template-engines.md)
+* [テンプレートエンジン](tutorial-template-engines.md)
 * **翻訳中** [サードパーティのコードを扱う](tutorial-yii-integration.md)
 
 
