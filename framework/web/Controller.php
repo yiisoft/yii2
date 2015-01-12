@@ -29,7 +29,6 @@ class Controller extends \yii\base\Controller
      */
     public $actionParams = [];
 
-
     /**
      * Renders a view in response to an AJAX request.
      *
@@ -40,13 +39,47 @@ class Controller extends \yii\base\Controller
      *
      * @param string $view the view name. Please refer to [[render()]] on how to specify a view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
+     * @param bool|array $unsetBundles the asset bundles to unset. The following options are possible:
+     * - if set to `false` no bundles will be unset. This is the default.
+     * - if set to `true` all bundles will be unset.
+     * - if set to an array, the list of specified bundles will be unset.
+     *   For example `['yii\web\YiiAsset', 'yii\web\JqueryAsset']`
+     *
      * @return string the rendering result.
      */
-    public function renderAjax($view, $params = [])
+    public function renderAjax($view, $params = [], $unsetBundles = false)
     {
-        return $this->getView()->renderAjax($view, $params, $this);
+        $this->validateBundles($unsetBundles);
+        return $this->getView()->renderAjax($view, $params, $unsetBundles, $this);
     }
 
+    /**
+     * Validate the asset bundles to be unset in the rendered view
+     *
+     * @param array|bool $unsetBundles the asset bundles to unset. 
+     * - if set to `false` no bundles will be unset.
+     * - if set to `true` all bundles will be unset.
+     * - if set to an array, the list of specified bundles will be unset.
+     *   For example `['yii\web\YiiAsset', 'yii\web\JqueryAsset']`
+     *
+     * @author: Kartik Visweswaran <kartikv2@gmail.com>
+     */
+    public function validateBundles($unsetBundles)
+    {
+        if ($unsetBundles === false || (!is_array($unsetBundles) && $unsetBundles !== true)) {
+            return;
+        }
+        Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($unsetBundles) {
+            if ($unsetBundles === true) {
+                $e->sender->assetBundles = [];
+                return;
+            }
+            foreach($unsetBundles as $bundle) {
+                unset($e->sender->assetBundles[$bundle]);
+            }
+        });
+    }
+    
     /**
      * Binds the parameters to the action.
      * This method is invoked by [[\yii\base\Action]] when it begins to run with the given parameters.
