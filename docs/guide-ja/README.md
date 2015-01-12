@@ -184,8 +184,8 @@ RESTful ウェブサービス
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* **翻訳未着手** [Bootstrap ウィジェット](widget-bootstrap.md)
-* **翻訳未着手** [jQuery UI ウィジェット](widget-jui.md)
+* [Bootstrap ウィジェット](widget-bootstrap.md)
+* [jQuery UI ウィジェット](widget-jui.md)
 
 
 ヘルパ
