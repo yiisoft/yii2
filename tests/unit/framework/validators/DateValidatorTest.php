@@ -178,6 +178,9 @@ class DateValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_date' => []]);
         $val->validateAttribute($model, 'attr_date');
         $this->assertTrue($model->hasErrors('attr_date'));
-
+        $val = new DateValidator(['format' => 'yyyy-MM-dd']);
+        $model = FakedValidationModel::createWithAttributes(['attr_date' => '2012-12-12foo']);
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertTrue($model->hasErrors('attr_date'));
     }
 }
