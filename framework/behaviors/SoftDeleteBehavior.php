@@ -6,15 +6,15 @@ use yii\db\BaseActiveRecord;
 use yii\base\ModelEvent;
 
 /**
- * SoftDeleteBehavior automatically aborts row hard deletion
- * in order to perform soft deletion (attribute change)
+ * SoftDeleteBehavior automatically aborts row hard deletion in order to perform soft deletion (attribute change)
+ * 
+ * Note that `$model->delete()` will **always** return false, when this behavior is attached to model.
  * 
  * If you want to hard delete row you ought to call
  * ```php
- * $model = Model::find()->one();
- * 
  * $model->deleteHard();
  * ```
+ * Which will trigger standard validation chain and perform row deletion.
  * 
  * @author Tomasz Romik <manetamajster@gmail.com>
  */
@@ -22,27 +22,30 @@ class SoftDeleteBehavior extends \yii\base\Behavior
 {
 
     /**
-     * @var string|array
+     * @var string|array List of attributes to be changed on soft deletion.
+     * Default value of this property is `['deleted', 'deleted_at' => time()]`,
+     * which means that `deleted` will receive default behavior value,
+     * and 'deleted_at' will be updated to current timestamp.
      */
     public $attributes = [];
 
     /**
-     * @var string
+     * @var string the attribute that determines whether row is soft deleted
      */
     public $deletedAttribute = 'deleted';
 
     /**
-     * @var string
+     * @var string the attribute that will receive timestamp of row soft deletion
      */
     public $deletedAtAttribute = 'deleted_at';
 
     /**
-     * @var mixed
+     * @var boolean|string|integer|callable the value that will be assigned to [[deletedAttribute]].
      */
     public $value = 1;
 
     /**
-     * @var boolean
+     * @var boolean if the attribute is true, hard deletion will be performed
      */
     protected $hard = false;
 
@@ -51,6 +54,8 @@ class SoftDeleteBehavior extends \yii\base\Behavior
      */
     public function init()
     {
+        parent::init();
+
         if (empty($this->attributes)) {
             $this->attributes = [$this->deletedAttribute, $this->deletedAtAttribute => time()];
         }
@@ -127,7 +132,6 @@ class SoftDeleteBehavior extends \yii\base\Behavior
 
     /**
      * Performs hard delete on the row
-     * 
      * @see \yii\db\BaseActiveRecord::delete()
      */
     public function deleteHard()
