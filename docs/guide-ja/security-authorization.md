@@ -190,7 +190,9 @@ Yii は二種類の権限付与マネージャを提供しています。すな�
 前者は権限付与データを保存するのに PHP スクリプトファイルを使いますが、後者は権限付与データをデータベースに保存します。
 あなたのアプリケーションが非常に動的なロールと許可の管理を必要とするのでなければ、前者を使うことを考慮するのが良いでしょう。
 
-次のコードは、アプリケーションの構成情報で `authManager` を構成する方法を示すものです。
+#### authManager を `PhpManager` で構成する
+
+次のコードは、アプリケーションの構成情報で [[yii\rbac\PhpManager]] クラスを使って `authManager` を構成する方法を示すものです。
 
 ```php
 return [
@@ -204,10 +206,41 @@ return [
 ];
 ```
 
-`authManager` は `\Yii::$app->authManager` によってアクセスすることが出来ます。
+これで `authManager` は `\Yii::$app->authManager` によってアクセスすることが出来るようになります。
 
 > Tip|ヒント: デフォルトでは、[[yii\rbac\PhpManager]] は RBAC データを `@app/rbac/` ディレクトリの下のファイルに保存します。
   権限の階層をオンラインで変更する必要がある場合は、必ず、ウェブサーバのプロセスがこのディレクトリとその中の全てのファイルに対する書き込み権限を有するようにしてください。
+
+#### authManager を `DbManager` で構成する
+
+次のコードは、アプリケーションの構成情報で [[yii\rbac\DbManager]] クラスを使って `authManager` を構成する方法を示すものです。
+
+
+```php
+return [
+    // ...
+    'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+        // ...
+    ],
+];
+```
+
+`DbManager` は四つのデータベーステーブルを使ってデータを保存します。
+
+- [[yii\rbac\DbManager::$itemTable|itemTable]]: 権限アイテムを保存するためのテーブル。デフォルトは "auth_item"。
+- [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: 権限アイテムの階層を保存するためのテーブル。デフォルトは "auth_item_child"。
+- [[yii\rbac\DbManager::$assignmentTable|assignmentTable]]: 権限アイテムの割り当てを保存するためのテーブル。デフォルトは "auth_assignment"。
+- [[yii\rbac\DbManager::$ruleTable|ruleTable]]: 規則を保存するためのテーブル。デフォルトは "auth_rule"。
+
+先に進む前にこれらのテーブルをデータベースに作成する必要があります。
+そのためには、`@yii/rbac/migrations` に保存されているマイグレーションを使うことが出来ます。
+
+`yii migrate --migrationPath=@yii/rbac/migrations`
+
+これで `authManager` は `\Yii::$app->authManager` によってアクセスすることが出来るようになります。
 
 
 ### 権限付与データを構築する

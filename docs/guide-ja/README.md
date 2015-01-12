@@ -169,8 +169,8 @@ RESTful ウェブサービス
 * [メール送信](tutorial-mailing.md)
 * [パフォーマンスチューニング](tutorial-performance-tuning.md)
 * [共有ホスティング環境](tutorial-shared-hosting.md)
-* **翻訳中** [テンプレートエンジン](tutorial-template-engines.md)
-* **翻訳中** [サードパーティのコードを扱う](tutorial-yii-integration.md)
+* [テンプレートエンジン](tutorial-template-engines.md)
+* [サードパーティのコードを扱う](tutorial-yii-integration.md)
 
 
 ウィジェット
@@ -184,8 +184,8 @@ RESTful ウェブサービス
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* **翻訳未着手** [Bootstrap ウィジェット](widget-bootstrap.md)
-* **翻訳未着手** [jQuery UI ウィジェット](widget-jui.md)
+* [Bootstrap ウィジェット](widget-bootstrap.md)
+* [jQuery UI ウィジェット](widget-jui.md)
 
 
 ヘルパ
