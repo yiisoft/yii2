@@ -170,7 +170,7 @@ RESTful ウェブサービス
 * [パフォーマンスチューニング](tutorial-performance-tuning.md)
 * [共有ホスティング環境](tutorial-shared-hosting.md)
 * [テンプレートエンジン](tutorial-template-engines.md)
-* **翻訳中** [サードパーティのコードを扱う](tutorial-yii-integration.md)
+* [サードパーティのコードを扱う](tutorial-yii-integration.md)
 
 
 ウィジェット
