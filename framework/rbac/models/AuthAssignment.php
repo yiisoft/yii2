@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\rbac\models;
 
@@ -6,14 +11,16 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
- * This is the model class for table "auth_assignment".
+ * This is the model class for role and permission assignment to users
  *
- * @property string $item_name
- * @property integer $user_id
- * @property integer $created_at
+ * @property string $item_name string the item name
+ * @property integer $user_id string|integer user ID (see [[\yii\web\User::id]])
+ * @property integer $created_at UNIX timestamp representing the assignment creation time
  *
- * @property User $user
- * @property AuthItem $itemName
+ * @property AuthItem $item
+ *
+ * @author Angel (Faryshta) Guevara <angeldelcaos@gmail.com>
+ * @since 2.0.2
  */
 class AuthAssignment extends \yii\rbac\ActiveRecord
 {
@@ -60,7 +67,7 @@ class AuthAssignment extends \yii\rbac\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getItemName()
+    public function getItem()
     {
         return $this->hasOne(AuthItem::className(), ['name' => 'item_name']);
     }
