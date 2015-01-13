@@ -77,6 +77,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * Defaults to 0777, meaning the directory can be read, written and executed by all users.
      */
     public $newDirMode = 0777;
+    /**
+     * @var array the list of table names to be ignored.
+     */
+    public $ignoreTables = [];
 
 
     /**
