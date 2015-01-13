@@ -13,8 +13,8 @@ use yii\behaviors\TimestampBehavior;
 /**
  * This is the model class for role and permission assignment to users
  *
- * @property string $item_name string the item name
- * @property integer $user_id string|integer user ID (see [[\yii\web\User::id]])
+ * @property string $item_name the item name
+ * @property string|integer $user_id user ID (see [[\yii\web\User::id]])
  * @property integer $created_at UNIX timestamp representing the assignment creation time
  *
  * @property AuthItem $item
