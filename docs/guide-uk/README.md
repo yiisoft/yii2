@@ -97,8 +97,8 @@ All Rights Reserved.
 ------------------
 
 * [Форматування даних](output-formatter.md)
-* **TBD** [Посторінкове розбиття](output-pagination.md)
-* **TBD** [Сортування](output-sorting.md)
+* [Посторінкове розбиття](output-pagination.md)
+* [Сортування](output-sorting.md)
 * [Провайдери даних](output-data-providers.md)
 * [Віджети даних](output-data-widgets.md)
 * [Робота з клієнтськими скриптами](output-client-scripts.md)
@@ -185,7 +185,7 @@ RESTful веб-сервіси
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
 * [Віджети Bootstrap](widget-bootstrap.md)
-* [Віджети Jquery UI](widget-jui.md)
+* [Віджети jQuery UI](widget-jui.md)
 
 
 Хелпери
@@ -195,5 +195,3 @@ RESTful веб-сервіси
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
-
