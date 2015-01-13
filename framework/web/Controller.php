@@ -49,35 +49,8 @@ class Controller extends \yii\base\Controller
      */
     public function renderAjax($view, $params = [], $unsetBundles = false)
     {
-        $this->validateBundles($unsetBundles);
+        View::validateBundles($unsetBundles);
         return $this->getView()->renderAjax($view, $params, $unsetBundles, $this);
-    }
-
-    /**
-     * Validate the asset bundles to be unset in the rendered view
-     *
-     * @param array|bool $unsetBundles the asset bundles to unset. 
-     * - if set to `false` no bundles will be unset.
-     * - if set to `true` all bundles will be unset.
-     * - if set to an array, the list of specified bundles will be unset.
-     *   For example `['yii\web\YiiAsset', 'yii\web\JqueryAsset']`
-     *
-     * @author: Kartik Visweswaran <kartikv2@gmail.com>
-     */
-    public function validateBundles($unsetBundles)
-    {
-        if ($unsetBundles === false || (!is_array($unsetBundles) && $unsetBundles !== true)) {
-            return;
-        }
-        Event::on(View::className(), View::EVENT_AFTER_RENDER, function ($e) use ($unsetBundles) {
-            if ($unsetBundles === true) {
-                $e->sender->assetBundles = [];
-                return;
-            }
-            foreach($unsetBundles as $bundle) {
-                unset($e->sender->assetBundles[$bundle]);
-            }
-        });
     }
     
     /**
