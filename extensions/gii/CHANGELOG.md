@@ -4,7 +4,7 @@ Yii Framework 2 gii extension Change Log
 2.0.3 under development
 -----------------------
 
-- no changes in this release.
+- Enh #6857: Added `yii\gii\Module::$ignoreTables` that allows you to ignore tables during model generation using `*` (thiagotalma)
 
 
 2.0.2 January 11, 2015
