@@ -30,7 +30,8 @@ abstract class ActiveRecord extends \yii\db\ActiveRecord
         $this->authManager = \Yii::$app->getAuthManager();
         if (!$this->authManager instanceof DbManager()) {
             throw InvalidConfigException(
-                'You need to configure the authManager component to use database.'
+                'You need to configure the "authManager" component '
+                . 'to use database.'
             );
         }
 
