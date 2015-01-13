@@ -60,14 +60,6 @@ class AuthAssignment extends \yii\rbac\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
-    {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getItemName()
     {
         return $this->hasOne(AuthItem::className(), ['name' => 'item_name']);
