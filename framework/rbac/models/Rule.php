@@ -18,12 +18,12 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $created_at UNIX timestamp representing the rule creation time
  * @property integer $updated_at UNIX timestamp representing the rule updating time
  *
- * @property AuthItem[] $items
+ * @property Item[] $items
  *
  * @author Angel (Faryshta) Guevara <angeldelcaos@gmail.com>
  * @since 2.0.2
  */
-class AuthRule extends \yii\rbac\ActiveRecord
+class Rule extends \yii\rbac\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -72,7 +72,7 @@ class AuthRule extends \yii\rbac\ActiveRecord
      */
     public function getItems()
     {
-        return $this->hasMany(AuthItem::className(), ['rule_name' => 'name'])
+        return $this->hasMany(Item::className(), ['rule_name' => 'name'])
             ->inverseOf('rule');
     }
 }

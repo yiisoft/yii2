@@ -21,15 +21,15 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $created_at UNIX timestamp representing the item creation time
  * @property integer $updated_at UNIX timestamp representing the item updating time
  *
- * @property AuthAssignment[] $assignments
- * @property AuthRule $rule
- * @property AuthItem[] $childrens
- * @property AuthItem[] $parents
+ * @property Assignment[] $assignments
+ * @property Rule $rule
+ * @property Item[] $childrens
+ * @property Item[] $parents
  *
  * @author Angel (Faryshta) Guevara <angeldelcaos@gmail.com>
  * @since 2.0.2
  */
-class AuthItem extends \yii\rbac\ActiveRecord
+class Item extends \yii\rbac\ActiveRecord
 {
     const TYPE_ROLE = 1;
     const TYPE_PERMISSION = 2;
@@ -86,7 +86,7 @@ class AuthItem extends \yii\rbac\ActiveRecord
     public function getAssignments()
     {
         return $this->hasMany(
-                AuthAssignment::className(), ['item_name' => 'name']
+                Assignment::className(), ['item_name' => 'name']
             )->inverseOf('item');
     }
 
@@ -95,7 +95,7 @@ class AuthItem extends \yii\rbac\ActiveRecord
      */
     public function getRule()
     {
-        return $this->hasOne(AuthRule::className(), ['name' => 'rule_name']);
+        return $this->hasOne(Rule::className(), ['name' => 'rule_name']);
     }
 
     /**
@@ -104,7 +104,7 @@ class AuthItem extends \yii\rbac\ActiveRecord
     public function getChildrens()
     {
         return $this->hasMany(self::className(), ['name' => 'child'])
-            ->viaTable(AuthChild::tableName(), ['parent' => 'name']);
+            ->viaTable(ItemChild::tableName(), ['parent' => 'name']);
     }
 
     /**
@@ -113,6 +113,6 @@ class AuthItem extends \yii\rbac\ActiveRecord
     public function getParents()
     {
         return $this->hasMany(self::className(), ['name' => 'parent'])
-            ->viaTable(AuthChild::tableName(), ['child' => 'name']);
+            ->viaTable(ItemChild::tableName(), ['child' => 'name']);
     }
 }

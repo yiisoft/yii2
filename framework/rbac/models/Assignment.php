@@ -17,12 +17,12 @@ use yii\behaviors\TimestampBehavior;
  * @property string|integer $user_id user ID (see [[\yii\web\User::id]])
  * @property integer $created_at UNIX timestamp representing the assignment creation time
  *
- * @property AuthItem $item
+ * @property Item $item
  *
  * @author Angel (Faryshta) Guevara <angeldelcaos@gmail.com>
  * @since 2.0.2
  */
-class AuthAssignment extends \yii\rbac\ActiveRecord
+class Assignment extends \yii\rbac\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -69,6 +69,6 @@ class AuthAssignment extends \yii\rbac\ActiveRecord
      */
     public function getItem()
     {
-        return $this->hasOne(AuthItem::className(), ['name' => 'item_name']);
+        return $this->hasOne(Item::className(), ['name' => 'item_name']);
     }
 }

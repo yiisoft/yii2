@@ -16,13 +16,13 @@ use yii\behaviors\TimestampBehavior;
  * @property string $parent
  * @property string $child
  *
- * @property AuthItem $parentItem
- * @property AuthItem $childItem
+ * @property Item $parentItem
+ * @property Item $childItem
  *
  * @author Angel (Faryshta) Guevara <angeldelcaos@gmail.com>
  * @since 2.0.2
  */
-class AuthItemChild extends \yii\rbac\ActiveRecord
+class ItemChild extends \yii\rbac\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -59,7 +59,7 @@ class AuthItemChild extends \yii\rbac\ActiveRecord
      */
     public function getParentItem()
     {
-        return $this->hasOne(AuthItem::className(), ['name' => 'parent']);
+        return $this->hasOne(Item::className(), ['name' => 'parent']);
     }
 
     /**
@@ -67,6 +67,6 @@ class AuthItemChild extends \yii\rbac\ActiveRecord
      */
     public function getChildItem()
     {
-        return $this->hasOne(AuthItem::className(), ['name' => 'child']);
+        return $this->hasOne(Item::className(), ['name' => 'child']);
     }
 }
