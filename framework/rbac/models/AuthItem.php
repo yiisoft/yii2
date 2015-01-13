@@ -11,7 +11,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 
 /**
- * This is the model class for table "auth_item".
+ * The items can either be roles or permissions.
  *
  * @property string $name the name of the item. This must be globally unique.
  * @property integer $type the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
@@ -21,9 +21,10 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $created_at UNIX timestamp representing the item creation time
  * @property integer $updated_at UNIX timestamp representing the item updating time
  *
- * @property AuthAssignment[] $authAssignments
- * @property AuthRule $ruleName
- * @property AuthItemChild[] $authItemChildren
+ * @property AuthAssignment[] $assignments
+ * @property AuthRule $rule
+ * @property AuthItem[] $childrens
+ * @property AuthItem[] $parents
  *
  * @author Angel (Faryshta) Guevara <angeldelcaos@gmail.com>
  * @since 2.0.2
