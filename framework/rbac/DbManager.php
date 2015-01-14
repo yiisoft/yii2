@@ -11,7 +11,8 @@ use Yii;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\db\Expression;
-use yii\base\InvalidCallException;
+use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\di\Instance;
 use yii\rbac\models\Assignment;
@@ -38,7 +39,7 @@ use yii\rbac\models\Rule as RuleModel;
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
-class DbManager extends extends Component implements ManagerInterface
+class DbManager extends Component implements ManagerInterface
 {
     /**
      * @var array a list of role names that are assigned to every user automatically without calling [[assign()]].
@@ -486,7 +487,7 @@ class DbManager extends extends Component implements ManagerInterface
         foreach (Item::findAll([
             'type' => Item::TYPE_PERMISSION,
             'name' => array_keys($result),
-        ]); as $permission) {
+        ]) as $permission) {
             $permissions[$permission->name] = $this->prepareItemData(
                 $permission
             );
@@ -776,7 +777,7 @@ class DbManager extends extends Component implements ManagerInterface
     public function removeAllRules()
     {
         if (!$this->supportsCascadeUpdate()) {
-            Itemm::updateAll('rule_name' => null);
+            Itemm::updateAll(['rule_name' => null]);
         }
 
         RuleModel::deleteAll();
