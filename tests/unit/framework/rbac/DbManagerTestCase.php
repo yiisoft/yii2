@@ -70,6 +70,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     protected function setUp()
     {
         parent::setUp();
+        $this->mockApplication(['db' => self::getConnection()]);
         $this->auth = $this->createManager();
     }
 
