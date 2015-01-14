@@ -17,7 +17,8 @@ use yii\di\Instance;
 use yii\rbac\models\Assignment;
 use yii\rbac\models\Item;
 use yii\rbac\models\ItemChild;
-use yii\rbac\models\Rule;
+// The ActiveRecord Rule
+use yii\rbac\models\Rule as RuleModel;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -84,14 +85,6 @@ class DbManager extends extends Component implements ManagerInterface
      */
     public function createRole($name)
     {
-        return new Role(['name' => $name]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function createRole($name)
-    {
         return new Item([
             'name' => $name,
             'type' => Item::TYPE_ROLE,
@@ -107,6 +100,48 @@ class DbManager extends extends Component implements ManagerInterface
             'name' => $name,
             'type' => Item::TYPE_PERMISSION,
         ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function add($object)
+    {
+        if ($object instanceof Item) {
+            return $this->addItem($object);
+        } elseif ($object instanceof Rule) {
+            return $this->addRule($object);
+        } else {
+            throw new InvalidParamException("Adding unsupported object type.");
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function remove($object)
+    {
+        if ($object instanceof Item) {
+            return $this->removeItem($object);
+        } elseif ($object instanceof Rule) {
+            return $this->removeRule($object);
+        } else {
+            throw new InvalidParamException("Removing unsupported object type.");
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function update($name, $object)
+    {
+        if ($object instanceof Item) {
+            return $this->updateItem($name, $object);
+        } elseif ($object instanceof Rule) {
+            return $this->updateRule($name, $object);
+        } else {
+            throw new InvalidParamException("Updating unsupported object type.");
+        }
     }
 
     /**
@@ -134,8 +169,12 @@ class DbManager extends extends Component implements ManagerInterface
      * @param Assignment[] $assignments the assignments to the specified user
      * @return boolean whether the operations can be performed by the user.
      */
-    protected function checkAccessRecursive($user, $item, $params, $assignments)
-    {
+    protected function checkAccessRecursive(
+        $user,
+        $item,
+        $params,
+        $assignments
+    ) {
         if ($item === null) {
             return false;
         }
@@ -151,12 +190,19 @@ class DbManager extends extends Component implements ManagerInterface
             return false;
         }
 
-        if (isset($assignments[$item->name]) || in_array($item->name, $this->defaultRoles)) {
+        if (isset($assignments[$item->name])
+            || in_array($item->name, $this->defaultRoles)
+        ) {
             return true;
         }
 
         foreach ($item->parents as $parent) {
-            if ($this->checkAccessRecursive($user, $parent, $params, $assignments)) {
+            if ($this->checkAccessRecursive(
+                $user,
+                $parent,
+                $params,
+                $assignments
+            )) {
                 return true;
             }
         }
@@ -169,24 +215,56 @@ class DbManager extends extends Component implements ManagerInterface
      */
     protected function getItem($name)
     {
-        $item = Item::findOne($name);
+        return $this->prepareItemData(Item::findOne($name));
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function getRole($name)
+    {
+        return $this->prepareItemData(Item::findOne([
+            'name' => $name,
+            'type' => Item::TYPE_ROLE,
+        ]));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPermission($name)
+    {
+        return $this->prepareItemData(Item::findOne([
+            'name' => $name,
+            'type' => Item::TYPE_PERMISSION,
+        ]));
+    }
+
+    /**
+     * Prepare the data attribute on an item
+     * @param Item $item
+     * @return Item once the data is prepared
+     */
+    protected function prepareItemData($item)
+    {
         if ($item === null) {
             return null;
         }
 
         if (!isset($item->data)
-            || ($data = @unserialize($row->data)) === false
+            || ($item->data = @unserialize($item->data)) === false
         ) {
             $item->data = null;
         }
 
         return $item;
     }
-
     /**
-     * Returns a value indicating whether the database supports cascading update and delete.
-     * The default implementation will return false for SQLite database and true for all other databases.
+     * Returns a value indicating whether the database supports cascading
+     * update and delete.
+     *
+     * The default implementation will return false for SQLite database
+     * and true for all other databases.
      * @return boolean whether the database supports cascading update and delete.
      */
     protected function supportsCascadeUpdate()
@@ -199,15 +277,8 @@ class DbManager extends extends Component implements ManagerInterface
      */
     protected function addItem($item)
     {
-        return (new Item([
-            'name' => $item->name,
-            'type' => $item->type,
-            'description' => $item->description,
-            'rule_name' => $item->rule_name,
-            'data' => $item->data === null ? null : serialize($item->data),
-            'created_at' => $item->created_at,
-            'updated_at' => $item->updated_at,
-        ]))->save();
+        $item->data = $item->data === null ? null : serialize($item->data);
+        return $item->save();
     }
 
     /**
@@ -232,9 +303,18 @@ class DbManager extends extends Component implements ManagerInterface
     protected function updateItem($name, $item)
     {
         if (!$this->supportsCascadeUpdate() && $item->name !== $name) {
-            ItemChild::updateAll(['parent' => $item->name], ['parent' => $name]);
-            ItemChild::updateAll(['child' => $item->name], ['child' => $name]);
-            Assignment::updateAll(['item_name' => $item->name], ['item_name' => $name]);
+            ItemChild::updateAll(
+                ['parent' => $item->name],
+                ['parent' => $name]
+            );
+            ItemChild::updateAll(
+                ['child' => $item->name],
+                ['child' => $name]
+            );
+            Assignment::updateAll(
+                ['item_name' => $item->name],
+                ['item_name' => $name]
+            );
         }
 
         return Item::updateAll(
@@ -255,7 +335,7 @@ class DbManager extends extends Component implements ManagerInterface
      */
     protected function addRule($rule)
     {
-        return (new Rule([
+        return (new RuleModel([
             'name' => $rule->name,
             'data' => serialize($rule),
         ]))->save();
@@ -267,10 +347,13 @@ class DbManager extends extends Component implements ManagerInterface
     protected function updateRule($name, $rule)
     {
         if (!$this->supportsCascadeUpdate() && $rule->name !== $name) {
-            Item::updateAll(['rule_name' => $rule->name], ['rule_name' => $name]);
+            Item::updateAll(
+                ['rule_name' => $rule->name],
+                ['rule_name' => $name]
+            );
         }
 
-        return Rule::updateAll(
+        return RuleModel::updateAll(
             [
                 'name' => $rule->name,
                 'data' => serialize($rule),
@@ -289,10 +372,13 @@ class DbManager extends extends Component implements ManagerInterface
     protected function removeRule($rule)
     {
         if (!$this->supportsCascadeUpdate()) {
-            Item::updateAll(['rule_name' => null], ['rule_name' => $rule->name]);
+            Item::updateAll(
+                ['rule_name' => null],
+                ['rule_name' => $rule->name]
+            );
         }
 
-        return Rule::deleteAll(['name' => $rule->name]) > 0;
+        return RuleModel::deleteAll(['name' => $rule->name]) > 0;
     }
 
     /**
@@ -300,19 +386,32 @@ class DbManager extends extends Component implements ManagerInterface
      */
     protected function getItems($type)
     {
-        $query = (new Query)
-            ->from($this->itemTable)
-            ->where(['type' => $type]);
-
         $items = [];
-        foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateItem($row);
+        foreach (Item::findAll(['type' => $type]) as $item) {
+            $items[$item->name] = $this->prepareItemData($item);
         }
 
         return $items;
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getRoles()
+    {
+        return $this->getItems(Item::TYPE_ROLE);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPermissions()
+    {
+        return $this->getItems(Item::TYPE_PERMISSION);
+    }
+
+    /**
+     * TODO
      * @inheritdoc
      */
     public function getRolesByUser($userId)
@@ -353,7 +452,9 @@ class DbManager extends extends Component implements ManagerInterface
             'type' => Item::TYPE_PERMISSION,
             'name' => array_keys($result),
         ]) as $permission) {
-            $permissions[$permission->name] = $permission;
+            $permissions[$permission->name] = $this->prepareItemData(
+                $permission
+            );
         }
 
         return $permissions;
@@ -386,7 +487,9 @@ class DbManager extends extends Component implements ManagerInterface
             'type' => Item::TYPE_PERMISSION,
             'name' => array_keys($result),
         ]); as $permission) {
-            $permissions[$permission->name] = $permission;
+            $permissions[$permission->name] = $this->prepareItemData(
+                $permission
+            );
         }
 
         return $permissions;
@@ -428,7 +531,7 @@ class DbManager extends extends Component implements ManagerInterface
      */
     public function getRule($name)
     {
-        $rule = Rule::findOne($name);
+        $rule = RuleModel::findOne($name);
         return $rule === null ? null : unserialize($rule->data);
     }
 
@@ -438,7 +541,7 @@ class DbManager extends extends Component implements ManagerInterface
     public function getRules()
     {
         $rules = [];
-        foreach (Rule::findAll() as $rule) {
+        foreach (RuleModel::findAll() as $rule) {
             $rules[$rule->name] = unserialize($rule->data);
         }
 
@@ -535,7 +638,7 @@ class DbManager extends extends Component implements ManagerInterface
         return ItemChild::findOne([
             'parent' => $parent->name,
             'child' => $child->name
-        ]) !== false;
+        ]) !== null;
     }
 
     /**
@@ -545,7 +648,7 @@ class DbManager extends extends Component implements ManagerInterface
     {
         $children = [];
         foreach (Item::findOne($name)->childrens as $child) {
-            $children[$child->name] = $child;
+            $children[$child->name] = $this->prepareItemData($child);
         }
 
         return $children;
@@ -619,7 +722,7 @@ class DbManager extends extends Component implements ManagerInterface
         Assignment::deleteAll();
         ItemChild::deleteAll();
         ItemTable::deleteAll();
-        Rule::deleteAll();
+        RuleModel::deleteAll();
     }
 
     /**
@@ -655,16 +758,13 @@ class DbManager extends extends Component implements ManagerInterface
                 return;
             }
 
-            $this->db->createCommand()
-                ->delete($this->itemChildTable, [
-                    'or',
-                    ['child' => $names],
-                    ['parent' => $names]
-                ])->execute();
+            ItemChild::deleteAll([
+                'or',
+                ['child' => $names],
+                ['parent' => $names]
+            ]);
 
-            $this->db->createCommand()
-                ->delete($this->assignmentTable, ['item_name' => $names])
-                ->execute();
+            Assignment::deleteAll(['item_name' => $names]);
         }
 
         Item::deleteAll(['type' => $type]);
@@ -679,7 +779,7 @@ class DbManager extends extends Component implements ManagerInterface
             Itemm::updateAll('rule_name' => null);
         }
 
-        Rule::deleteAll();
+        RuleModel::deleteAll();
     }
 
     /**
@@ -688,5 +788,32 @@ class DbManager extends extends Component implements ManagerInterface
     public function removeAllAssignments()
     {
         Assignment::deleteAll();
+    }
+
+    /**
+     * Executes the rule associated with the specified auth item.
+     *
+     * If the item does not specify a rule, this method will return true. Otherwise, it will
+     * return the value of [[Rule::execute()]].
+     *
+     * @param string|integer $user the user ID. This should be either an integer or a string representing
+     * the unique identifier of a user. See [[\yii\web\User::id]].
+     * @param Item $item the auth item that needs to execute its rule
+     * @param array $params parameters passed to [[ManagerInterface::checkAccess()]] and will be passed to the rule
+     * @return boolean the return value of [[Rule::execute()]]. If the auth item does not specify a rule, true will be returned.
+     * @throws InvalidConfigException if the auth item has an invalid rule.
+     */
+    protected function executeRule($user, $item, $params)
+    {
+        if ($item->rule_name === null) {
+            return true;
+        }
+
+        $rule = $this->getRule($item->rule_name);
+        if ($rule instanceof Rule) {
+            return $rule->execute($user, $item, $params);
+        } else {
+            throw new InvalidConfigException("Rule not found: {$item->ruleName}");
+        }
     }
 }
