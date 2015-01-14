@@ -44,7 +44,7 @@ interface QueryInterface
      * @param string $q the COUNT expression. Defaults to '*'.
      * @param Connection $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
-     * @return integer number of records
+     * @return integer number of records.
      */
     public function count($q = '*', $db = null);
 
