@@ -236,12 +236,12 @@ class ViewRenderer extends BaseViewRenderer
             $twigElement = null;
 
             switch ($func) {
-                // Just a name of function
-                case is_string($func):
+                // Just a valid callable
+                case is_callable($func):
                     $twigElement = new $classFunction($func);
                     break;
-                // Name of function + options array
-                case is_array($func) && is_string($func[0]) && isset($func[1]) && is_array($func[1]):
+                // Valid callable + options array
+                case is_array($func) && is_callable($func[0]) && isset($func[1]) && is_array($func[1]):
                     $twigElement = new $classFunction($func[0], $func[1]);
                     break;
             }
