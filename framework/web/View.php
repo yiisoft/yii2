@@ -548,4 +548,31 @@ class View extends \yii\base\View
 
         return empty($lines) ? '' : implode("\n", $lines);
     }
+
+    /**
+     * Validate the asset bundles to be unset in the rendered view
+     *
+     * @param array|bool $unsetBundles the asset bundles to unset. 
+     * - if set to `false` no bundles will be unset.
+     * - if set to `true` all bundles will be unset.
+     * - if set to an array, the list of specified bundles will be unset.
+     *   For example `['yii\web\YiiAsset', 'yii\web\JqueryAsset']`
+     *
+     * @author: Kartik Visweswaran <kartikv2@gmail.com>
+     */
+    public static function validateBundles($unsetBundles)
+    {
+        if ($unsetBundles === false || (!is_array($unsetBundles) && $unsetBundles !== true)) {
+            return;
+        }
+        \yii\base\Event::on(self::className(), self::EVENT_AFTER_RENDER, function ($e) use ($unsetBundles) {
+            if ($unsetBundles === true) {
+                $e->sender->assetBundles = [];
+                return;
+            }
+            foreach($unsetBundles as $bundle) {
+                unset($e->sender->assetBundles[$bundle]);
+            }
+        });
+    }
 }

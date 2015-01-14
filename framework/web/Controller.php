@@ -29,7 +29,6 @@ class Controller extends \yii\base\Controller
      */
     public $actionParams = [];
 
-
     /**
      * Renders a view in response to an AJAX request.
      *
@@ -40,13 +39,20 @@ class Controller extends \yii\base\Controller
      *
      * @param string $view the view name. Please refer to [[render()]] on how to specify a view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
+     * @param bool|array $unsetBundles the asset bundles to unset. The following options are possible:
+     * - if set to `false` no bundles will be unset. This is the default.
+     * - if set to `true` all bundles will be unset.
+     * - if set to an array, the list of specified bundles will be unset.
+     *   For example `['yii\web\YiiAsset', 'yii\web\JqueryAsset']`
+     *
      * @return string the rendering result.
      */
-    public function renderAjax($view, $params = [])
+    public function renderAjax($view, $params = [], $unsetBundles = false)
     {
-        return $this->getView()->renderAjax($view, $params, $this);
+        View::validateBundles($unsetBundles);
+        return $this->getView()->renderAjax($view, $params, $unsetBundles, $this);
     }
-
+    
     /**
      * Binds the parameters to the action.
      * This method is invoked by [[\yii\base\Action]] when it begins to run with the given parameters.
