@@ -29,7 +29,7 @@ class ItemChild extends \yii\rbac\ActiveRecord
      */
     public static function tableName()
     {
-        return $this->authManager->itemChildTable;
+        return Yii::$app->getAuthManager()->itemChildTable;
     }
 
     /**

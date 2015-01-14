@@ -29,7 +29,7 @@ class Assignment extends \yii\rbac\ActiveRecord
      */
     public static function tableName()
     {
-        return $this->authManager->assignmentTable;
+        return Yii::$app->getAuthManager()->assignmentTable;
     }
 
     /**

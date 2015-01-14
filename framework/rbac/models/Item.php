@@ -39,7 +39,7 @@ class Item extends \yii\rbac\ActiveRecord
      */
     public static function tableName()
     {
-        return $this->authManager->itemTable;
+        return Yii::$app->getAuthManager()->itemTable;
     }
 
     /**
