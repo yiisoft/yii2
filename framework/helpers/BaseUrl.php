@@ -378,7 +378,7 @@ class BaseUrl
     public static function current(array $params = [], $scheme = false)
     {
         $currentParams = Yii::$app->getRequest()->getQueryParams();
-        $currentParams[0] = Yii::$app->controller->getRoute();
+        $currentParams[0] = '/' . Yii::$app->controller->getRoute();
         $route = ArrayHelper::merge($currentParams, $params);
         return static::toRoute($route, $scheme);
     }
