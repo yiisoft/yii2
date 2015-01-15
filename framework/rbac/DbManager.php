@@ -722,7 +722,7 @@ class DbManager extends Component implements ManagerInterface
     {
         Assignment::deleteAll();
         ItemChild::deleteAll();
-        ItemTable::deleteAll();
+        Item::deleteAll();
         RuleModel::deleteAll();
     }
 
@@ -777,7 +777,7 @@ class DbManager extends Component implements ManagerInterface
     public function removeAllRules()
     {
         if (!$this->supportsCascadeUpdate()) {
-            Itemm::updateAll(['rule_name' => null]);
+            Item::updateAll(['rule_name' => null]);
         }
 
         RuleModel::deleteAll();
