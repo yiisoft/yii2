@@ -167,26 +167,48 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function addTypeLinks($code)
     {
-        if (preg_match('/(.*?)::([^(]+)/', $code, $matches)) {
-            $class = $matches[1];
+        if (preg_match('/(.*?)::([^(]+)/', $code, $matches))
+        {
+            $class  = $matches[1];
             $method = $matches[2];
-            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method);
-        } else {
-            $class = $code;
-            $text = $this->htmlEncode($class);
+            $text   = $this->htmlEncode($class) . '::' . $this->htmlEncode($method);
+        }
+        else
+        {
+            $class  = $code;
+            $method = null;
+            $text   = $this->htmlEncode($class);
         }
 
-        if (strpos($code, 'yii\\') !== 0) {
+        $url = $this->getTypeUrl($class, $method);
+
+        if (!$url) {
             return $text;
+        }
+
+        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
+    }
+
+    /**
+     * Returns the informational link URL for a given PHP type/class.
+     * @param string $class the type or class name.
+     * @param string|null $method the method name.
+     * @return string|null the informational link URL.
+     * @see addTypeLinks()
+     */
+    protected function getTypeUrl($class, $method)
+    {
+        if (strpos($class, 'yii\\') !== 0) {
+            return null;
         }
 
         $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
         $url = "http://www.yiiframework.com/doc-2.0/$page.html";
-        if (isset($method)) {
+        if ($method) {
             $url .= "#$method()-detail";
         }
 
-        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
+        return $url;
     }
 
     /**
