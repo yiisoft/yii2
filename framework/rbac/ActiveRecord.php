@@ -18,23 +18,23 @@ use yii\base\InvalidConfigException;
  */
 abstract class ActiveRecord extends \yii\db\ActiveRecord
 {
-    /**
-     * @var DbManager
-     */
-    protected $authManager;
+    public function __set($name, $value)
+    {
+         try {
+             parent::__set($name, $value);
+         } catch(\Exception $e) {
+             $name = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
+             $this->$name = $value;
+         }
+    }
 
-    /**
-     * @inheritdoc
-     */
-    public function init() {
-        $this->authManager = \Yii::$app->getAuthManager();
-        if (!$this->authManager instanceof DbManager) {
-            throw InvalidConfigException(
-                'You need to configure the "authManager" component '
-                . 'to use database.'
-            );
-        }
-
-        parent::init();
+    public function __get($name)
+    {
+         try {
+             return parent::__get($name);
+         } catch(\Exception $e) {
+             $name = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $name));
+             return $this->$name;
+         }
     }
 }
