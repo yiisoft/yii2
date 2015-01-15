@@ -15,3 +15,6 @@ the core developers.
 3. **[Adding new auth client support](https://github.com/yiisoft/yii2/issues/1652)**
    For better maintenability, we will not add any additional auth clients to the core extension. They should be done 
    in terms of user extensions. 
+4. **When using closures** it is recommended to **include all passed parameters** in the signature even if not all of them are
+   used. This way modifying or copying code is easier because all information is directly visible and it is not necessary to
+   look up which params are actually available in the documentation. ([#6584](https://github.com/yiisoft/yii2/pull/6584), [#6875](https://github.com/yiisoft/yii2/issues/6875))
