@@ -70,7 +70,13 @@ abstract class DbManagerTestCase extends ManagerTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication(['db' => self::getConnection()]);
+        if (Yii::$app === null) {
+            $this->mockApplication([
+                'components' => [
+                    'db' => static::getConnection(),
+                ],
+            ]);
+        }
         $this->auth = $this->createManager();
     }
 
