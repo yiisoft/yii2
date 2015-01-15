@@ -6,6 +6,7 @@ use yii\console\Application;
 use yii\console\Controller;
 use yii\db\Connection;
 use yii\rbac\DbManager;
+use yii\rbac\models\Item;
 
 /**
  * DbManagerTestCase
@@ -82,8 +83,8 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     protected function tearDown()
     {
-        parent::tearDown();
         $this->auth->removeAll();
+        parent::tearDown();
     }
 
     /**
