@@ -178,6 +178,11 @@ yii = (function ($) {
                     if (csrfParam) {
                         $form.append('<input name="' + csrfParam + '" value="' + pub.getCsrfToken() + '" type="hidden">');
                     }
+                    if (params && $.isPlainObject(params)) {
+                        $.each(params, function (idx, obj) {
+                            $form.append('<input name="' + idx + '" value="' + obj + '" type="hidden">');
+                        });
+                    }
                 }
                 $form.hide().appendTo('body');
             }
