@@ -428,7 +428,7 @@ class DbManager extends Component implements ManagerInterface
 
         $roles = [];
         foreach ($query->all($this->db) as $row) {
-            $roles[$row['name']] = $this->populateItem($row);
+            $roles[$row['name']] = $this->getItem($row['name']);
         }
         return $roles;
     }
@@ -473,7 +473,7 @@ class DbManager extends Component implements ManagerInterface
         $result = [];
         foreach (Assignment::findAll(['user_id' => $userId]) as $assignment) {
             $this->getChildrenRecursive(
-                $assignment->name,
+                $assignment->item_name,
                 $this->getChildrenList(),
                 $result
             );
@@ -504,7 +504,7 @@ class DbManager extends Component implements ManagerInterface
     protected function getChildrenList()
     {
         $parents = [];
-        foreach (ItemChild::findAll() as $ic) {
+        foreach (ItemChild::find()->all() as $ic) {
             $parents[$ic->parent][] = $ic->child;
         }
 
@@ -542,7 +542,7 @@ class DbManager extends Component implements ManagerInterface
     public function getRules()
     {
         $rules = [];
-        foreach (RuleModel::findAll() as $rule) {
+        foreach (RuleModel::find()->all() as $rule) {
             $rules[$rule->name] = unserialize($rule->data);
         }
 
