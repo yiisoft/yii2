@@ -39,6 +39,10 @@ class DbPanel extends Panel
      * @var array current database request timings
      */
     private $_timings;
+    /**
+     * @var array query types used
+     */
+    private $_types = [];
 
 
     /**
@@ -177,7 +181,12 @@ class DbPanel extends Panel
         $timing = ltrim($timing);
         preg_match('/^([a-zA-z]*)/', $timing, $matches);
 
-        return count($matches) ? $matches[0] : '';
+        if (count($matches)) {
+            $this->_types[$matches[0]] = $matches[0];
+            return $matches[0];
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -189,5 +198,15 @@ class DbPanel extends Panel
     public function isQueryCountCritical($count)
     {
         return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
+    }
+
+    /**
+     * Returns array query types
+     *
+     * @return array
+     */
+    public function getTypes()
+    {
+        return $this->_types;
     }
 }
