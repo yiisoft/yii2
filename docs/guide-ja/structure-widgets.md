@@ -172,7 +172,7 @@ public function run()
 [[yii\base\Widget::getViewPath()]] メソッドをオーバーライドして、ウィジェットのビューファイルを含むディレクトリをカスタマイズすることが出来ます。
 
 
-## 最善の慣行 <a name="best-practices"></a>
+## ベストプラクティス <a name="best-practices"></a>
 
 ウィジェットはビューのコードを再利用するためのオブジェクト指向の方法です。
 

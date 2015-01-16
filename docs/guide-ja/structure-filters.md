@@ -283,13 +283,13 @@ PageCache の使用に関する詳細は [ページキャッシュ](caching-page
 ### [[yii\filters\RateLimiter|RateLimiter]] <a name="rate-limiter"></a>
 
 RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88)
-に基づいて転送レート制限のアルゴリズムを実装するものです。主として RESTful API を実装するときに使用されます。
-このフィルタの使用に関する詳細は [転送レート制限](rest-rate-limiting.md) の節を参照してください。
+に基づいてレート制限のアルゴリズムを実装するものです。主として RESTful API を実装するときに使用されます。
+このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) の節を参照してください。
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <a name="verb-filter"></a>
 
-VerbFilter は、HTTP リクエストメソッドがリクエストされたアクションによって許可されているかどうかをチェックするものです。
+VerbFilter は、HTTP リクエストメソッド (HTTP 動詞) がリクエストされたアクションによって許可されているかどうかをチェックするものです。
 許可されていない場合は、HTTP 405 例外を投げます。
 次の例では、VerbFilter が宣言されて、CRUD アクションに対して許可されるメソッドの典型的なセットを規定しています。
 
@@ -341,7 +341,7 @@ Cors のフィルタリングは `cors` プロパティを使ってチューニ�
 
 * `cors['Origin']`: 許可される生成元を定義するのに使われる配列。
   `['*']` (すべて) または `['http://www.myserver.net'、'http://www.myotherserver.com']` などが設定可能。デフォルトは `['*']`。
-* `cors['Access-Control-Request-Method']`: 許可されるメソッドの配列。
+* `cors['Access-Control-Request-Method']`: 許可される HTTP 動詞の配列。
   たとえば、`['GET', 'OPTIONS', 'HEAD']`。デフォルトは `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`。
 * `cors['Access-Control-Request-Headers']`: 許可されるヘッダの配列。
   全てのヘッダを意味する `['*']` または特定のヘッダを示す `['X-Request-With']` が設定可能。デフォルトは `['*']`。

@@ -13,7 +13,7 @@ CWD=$(pwd)
 mkdir -p cubrid/$CUBRID_VERSION
 cd cubrid
 if (test -f $CUBRID_VERSION-linux.x86_64.tar.gz); then
-    echo "CUBRID is already installed"
+    echo "CUBRID is already downloaded"
 else
     wget http://ftp.cubrid.org/CUBRID_Engine/$CUBRID_VERSION-linux.x86_64.tar.gz -O $CUBRID_VERSION-linux.x86_64.tar.gz
 fi

@@ -44,19 +44,22 @@ install:
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
   - tests/unit/data/travis/mongodb-setup.sh
-# TODO: APC currently fails composer. https://github.com/composer/composer/issues/3405
-#  - tests/unit/data/travis/apc-setup.sh
+  - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
-# print elasticsearch version
-  - curl http://localhost:9200
 # codeception
   - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
 
 before_script:
+  # show some versions and env information
   - echo 'elasticsearch version ' && curl http://localhost:9200/
+  - php -r "echo INTL_ICU_VERSION . \"\n\";"
+  - mysql --version
+  - psql --version
+
+  # initialize databases
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - tests/unit/data/travis/sphinx-setup.sh

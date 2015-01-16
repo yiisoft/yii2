@@ -51,6 +51,10 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 
 > [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed or not. So to ensure your website works with the same output
 > in all environments it is recommended to install the PHP intl extension in all environments and verify that the version of the ICU library
 > is the same. See also: [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
+>
+> Note also that even if the intl extension is installed, formatting date and time values for years >=2038 or <=1901
+> on 32bit systems will fall back to the PHP implementation, which does not provide localized month and day names,
+> because intl uses a 32bit UNIX timestamp internally. On a 64bit system the intl formatter is used in all cases if installed.
 
 
 Configuring the formatter <a name="configuring-format"></a>
@@ -154,10 +158,10 @@ The format for number formatting can be adjusted using the [[yii\i18n\Formatter:
 For more advanced configuration, [[yii\i18n\Formatter::numberFormatterOptions]] and [[yii\i18n\Formatter::numberFormatterTextOptions]]
 can be used to configure the internally used [NumberFormatter class](http://php.net/manual/en/class.numberformatter.php)
 
-For example to adjust the maximum and minimum value of fraction digits you can configure this property like the following:
+For example, to adjust the maximum and minimum value of fraction digits, you can configure [[yii\i18n\Formatter::numberFormatterOptions]] property like the following:
 
 ```php
-[
+'numberFormatterOptions' => [
     NumberFormatter::MIN_FRACTION_DIGITS => 0,
     NumberFormatter::MAX_FRACTION_DIGITS => 2,
 ]
@@ -191,4 +195,4 @@ In addition to date, time and number formatting, Yii provides a set of other use
 For values that are `null` in PHP, the formatter class will print a placeholder instead of an empty string which
 defaults to `(not set)` translated to the current application language. You can configure the
 [[yii\i18n\Formatter::nullDisplay|nullDisplay]] property to set a custom placeholder.
-If you do not you want special handling for `null` values, you can set [[yii\i18n\Formatter::nullDisplay|nullDisplay]] to `null`.
+If you do not want special handling for `null` values, you can set [[yii\i18n\Formatter::nullDisplay|nullDisplay]] to `null`.

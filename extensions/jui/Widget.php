@@ -48,7 +48,7 @@ class Widget extends \yii\base\Widget
     public $clientEvents = [];
 
     /**
-     * @var array event names mapped to what should be specified in .on(
+     * @var array event names mapped to what should be specified in `.on()`.
      * If empty, it is assumed that event passed to clientEvents is prefixed with widget name.
      */
     protected $clientEventMap = [];

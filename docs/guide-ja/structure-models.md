@@ -396,7 +396,7 @@ $array = $post->attributes;
 このメソッドの既定の動作は [[yii\base\Model::$attributes]] のそれと同じものです。
 しかしながら、このメソッドを使うと、どのデータ項目 (*フィールド* と呼ばれます)
 を結果の配列に入れるか、そして、その項目にどのような書式を適用するかを選ぶことが出来ます。
-実際、[レスポンスの書式設定](rest-response-formatting.md) で説明されているように、RESTful
+実際、[レスポンス形式の設定](rest-response-formatting.md) で説明されているように、RESTful
 ウェブサービスの開発においては、これがモデルをエクスポートする既定の方法となっています。
 
 
@@ -441,13 +441,13 @@ public function fields()
     ];
 }
 
-// いくつかのフィールドを除去する方法。親の実装を継承しつつ、慎重に扱うべきフィールドは
+// いくつかのフィールドを除去する方法。親の実装を継承しつつ、公開すべきでないフィールドは
 // 除外したいときに適している。
 public function fields()
 {
     $fields = parent::fields();
 
-    // 慎重に扱うべき情報を含むフィールドを削除する
+    // 公開すべきでない情報を含むフィールドを削除する
     unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token']);
 
     return $fields;
@@ -455,12 +455,12 @@ public function fields()
 ```
 
 > Warning|警告: 既定ではモデルの全ての属性がエクスポートされる配列に含まれるため、データを精査して、
-> 慎重に扱うべき情報が含まれていないことを確認すべきです。そういう情報がある場合は、
+> 公開すべきでない情報が含まれていないことを確認すべきです。そういう情報がある場合は、
 > `fields()` をオーバーライドして、除去すべきです。上記の例では、`auth_key`、`password_hash`
 > および `password_reset_token` を選んで除去しています。
 
 
-## 最善の慣行<a name="best-practices"></a>
+## ベストプラクティス<a name="best-practices"></a>
 
 モデルは、業務のデータ、規則、ロジックを表わす中心的なオブジェクトです。
 モデルは、さまざまな場所で再利用される必要がよくあります。

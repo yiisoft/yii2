@@ -97,8 +97,8 @@ Exibindo Dados
 ---------------
 
 * [Formatando Dados](output-formatter.md)
-* **TBD** [Paginação](output-pagination.md)
-* **TBD** [Ordenação](output-sorting.md)
+* [Paginação](output-pagination.md)
+* [Ordenação](output-sorting.md)
 * [Data Providers (Provedores de Dados)](output-data-providers.md)
 * [Widgets de Dados](output-data-widgets.md)
 * [Trabalhando com Client Scripts](output-client-scripts.md)
@@ -112,7 +112,7 @@ Segurança
 * [Autorização](security-authorization.md)
 * [Trabalhando com Senhas](security-passwords.md)
 * **TBD** [Auth Clients](security-auth-clients.md)
-* **TBD** [Melhores Práticas](security-best-practices.md)
+* [Melhores Práticas](security-best-practices.md)
 
 
 Cache
@@ -134,7 +134,7 @@ Web Services RESTful
 * [Roteamento](rest-routing.md)
 * [Formatando Respostas](rest-response-formatting.md)
 * [Autenticação](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
+* [Limitador de Acesso](rest-rate-limiting.md)
 * [Versionamento](rest-versioning.md)
 * [Tratamento de Erros](rest-error-handling.md)
 
@@ -185,7 +185,7 @@ Widgets
 * LinkPager: **TBD** link para a página de demonstração
 * LinkSorter: **TBD** link para a página de demonstração
 * [Widgets do Bootstrap](widget-bootstrap.md)
-* [Widgets do Jquery UI](widget-jui.md)
+* [Widgets do JQuery UI](widget-jui.md)
 
 
 Helpers
@@ -195,5 +195,3 @@ Helpers
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)
-* **TBD** [Segurança](helper-security.md)
-

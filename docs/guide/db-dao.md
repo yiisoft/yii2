@@ -194,7 +194,7 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 $connection->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
-Quoting Table and Column Names
+Quoting Table and Column Names <a name="quoting-table-and-column-names"></a>
 ------------------------------
 
 To make column and table names safe to use in queries, you can have Yii properly quote them for you:

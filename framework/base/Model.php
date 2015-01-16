@@ -575,6 +575,27 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
+     * Adds a list of errors.
+     * @param array $items a list of errors. The array keys must be attribute names.
+     * The array values should be error messages. If an attribute has multiple errors,
+     * these errors must be given in terms of an array.
+     * You may use the result of [[getErrors()]] as the value for this parameter.
+     * @since 2.0.2
+     */
+    public function addErrors(array $items)
+    {
+        foreach ($items as $attribute => $errors) {
+            if (is_array($errors)) {
+                foreach($errors as $error) {
+                    $this->addError($attribute, $error);
+                }
+            } else {
+                $this->addError($attribute, $errors);
+            }
+        }
+    }
+
+    /**
      * Removes errors for all attributes or a single attribute.
      * @param string $attribute attribute name. Use null to remove errors for all attribute.
      */
@@ -740,7 +761,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function load($data, $formName = null)
     {
         $scope = $formName === null ? $this->formName() : $formName;
-        if ($scope == '' && !empty($data)) {
+        if ($scope === '' && !empty($data)) {
             $this->setAttributes($data);
 
             return true;

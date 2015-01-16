@@ -121,12 +121,33 @@ yii = (function ($) {
          * If the `data-method` attribute is not defined, the `href` attribute (if any) of the element
          * will be assigned to `window.location`.
          *
+         * Starting from version 2.0.3, the `data-params` attribute is also recognized when you specify
+         * `data-method`. The value of `data-params` should be a JSON representation of the data (name-value pairs)
+         * that should be submitted as hidden inputs. For example, you may use the following code to generate
+         * such a link:
+         *
+         * ```php
+         * use yii\helpers\Html;
+         * use yii\helpers\Json;
+         *
+         * echo Html::a('submit', ['site/foobar'], [
+         *     'data' => [
+         *         'method' => 'post',
+         *         'params' => [
+         *             'name1' => 'value1',
+         *             'name2' => 'value2',
+         *         ],
+         *     ],
+         * ];
+         * ```
+         *
          * @param $e the jQuery representation of the element
          */
         handleAction: function ($e) {
             var method = $e.data('method'),
                 $form = $e.closest('form'),
-                action = $e.attr('href');
+                action = $e.attr('href'),
+                params = $e.data('params');
 
             if (method === undefined) {
                 if (action && action != '#') {
@@ -167,12 +188,26 @@ yii = (function ($) {
                 activeFormData.submitObject = $e;
             }
 
+            // temporarily add hidden inputs according to data-params
+            if (params && $.isPlainObject(params)) {
+                $.each(params, function (idx, obj) {
+                    $form.append('<input name="' + idx + '" value="' + obj + '" type="hidden">');
+                });
+            }
+
             var oldMethod = $form.prop('method');
             $form.prop('method', method);
 
             $form.trigger('submit');
 
             $form.prop('method', oldMethod);
+
+            // remove the temporarily added hidden inputs
+            if (params && $.isPlainObject(params)) {
+                $.each(params, function (idx, obj) {
+                    $('input[name="' + idx + '"]', $form).remove();
+                });
+            }
 
             if (newForm) {
                 $form.remove();

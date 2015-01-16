@@ -161,6 +161,10 @@ or an *absolute* route which will be normalized according to the following rules
 - If the route has no leading slash, it is considered to be a route relative to the current module and 
   will be prepended with the [[\yii\base\Module::uniqueId|uniqueId]] value of the current module.
 
+Starting from version 2.0.2, you may specify a route in terms of an [alias](concept-aliases.md). If this is the case,
+the alias will first be converted into the actual route which will then be turned into an absolute route according
+to the above rules.
+
 For example, assume the current module is `admin` and the current controller is `post`,
 
 ```php
@@ -177,6 +181,9 @@ echo Url::to(['post/index']);
 
 // an absolute route: /index.php?r=post/index
 echo Url::to(['/post/index']);
+
+// /index.php?r=post/index     assume the alias "@posts" is defined as "/post/index"
+echo Url::to(['@posts']);
 ```
 
 The [[yii\helpers\Url::to()]] method is implemented by calling the [[yii\web\UrlManager::createUrl()|createUrl()]] 

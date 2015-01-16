@@ -4,14 +4,15 @@
 
 if (php --version | grep -i HipHop > /dev/null); then
   echo "mongodb does not work on HHVM currently, skipping"
+  exit 0
 else
   echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 fi
 
-# show mongodb version
+echo "MongoDB Server version:"
 mongod --version
 
-# show mongo PHP extension version
+echo "MongoDB PHP Extension version:"
 php -i |grep mongo -4 |grep -2 Version
 
 # enable text search

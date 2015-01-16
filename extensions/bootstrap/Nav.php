@@ -35,6 +35,7 @@ use yii\helpers\Html;
  *             ],
  *         ],
  *     ],
+ *     'options' => ['class' =>'nav-pills'], // set this to nav-tab to get tab-styled navigation
  * ]);
  * ```
  *

@@ -16,13 +16,13 @@ Locale and Language
 There are two languages defined in the Yii application: [[yii\base\Application::$sourceLanguage|source language]] and
 [[yii\base\Application::$language|target language]].
 
-Source language is the language original application messages are written in directly in the code such as:
+The source language is the language in which the original application messages are written directly in the code such as:
 
 ```php
 echo \Yii::t('app', 'I am a message!');
 ```
 
-The target language is the language that should be used to display the current page i.e. the language that original messages need
+The target language is the language that should be used to display the current page, i.e. the language that original messages need
 to be translated to. It is defined in the application configuration like the following:
 
 ```php
@@ -39,7 +39,7 @@ return [
 > recommended to keep this value. The reason is that it's easier to find people translating from
 > English to any language than from non-English to non-English.
 
-You may set the application language at runtime to set it to a language the user has chosen.
+You may set the application language at runtime to the language that the user has chosen.
 This has to be done at a point before any output is generated so that it affects all the output correctly.
 Therefor just change the application property to the desired value:
 
@@ -57,7 +57,7 @@ The format for the language/locale is `ll-CC` where `ll` is a two- or three-lett
 Message translation
 -------------------
 
-Message translation is used to translate messages that are output by an application to different languages
+Message translation is used to translate the messages that are output by an application to different languages
 so that users from different countries can use the application in their native language.
 
 The message translation feature in Yii works simply as finding a
@@ -98,14 +98,14 @@ In the above `app*` is a pattern that specifies which categories are handled by 
 handling everything that begins with `app`. Message files are located in `@app/messages`, the `messages` directory
 in your application directory. The [[yii\i18n\PhpMessageSource::fileMap|fileMap]] array
 defines which file is to be used for which category.
-Instead of configuring `fileMap` you can rely on convention which is to use the category name as the file name
+Instead of configuring `fileMap` you can rely on the convention which is to use the category name as the file name
 (e.g. category `app/error` will result in the file name `app/error.php` under the [[yii\i18n\PhpMessageSource::basePath|basePath]].
 
-When translating the message for `\Yii::t('app', 'This is a string to translate!')` and an application language `ru-RU`, Yii
+When translating the message for `\Yii::t('app', 'This is a string to translate!')` with the application language being `ru-RU`, Yii
 will first look for a file `@app/messages/ru-RU/app.php` to retrieve the list of available translations.
-If there is file `ru-RU` it will try `ru` as well before failing.
+If there is no such file under `ru-RU`, it will try `ru` as well before failing.
 
-Beside storing messages in PHP files (using [[yii\i18n\PhpMessageSource|PhpMessageSource]]) Yii provides two other
+Beside storing the messages in PHP files (using [[yii\i18n\PhpMessageSource|PhpMessageSource]]), Yii provides two other
 classes:
 
 - [[yii\i18n\GettextMessageSource]] that uses GNU Gettext MO or PO files.
@@ -133,15 +133,15 @@ $sum = 42;
 echo \Yii::t('app', 'Balance: {0}', $sum);
 ```
 
-> **Tip**: Try keep message strings meaningful and avoid using too many positional parameters. Remember that
-> translator has source string only so it should be obvious about what will replace each placeholder.
+> **Tip**: Try to keep the message strings meaningful and avoid using too many positional parameters. Remember that
+> the translator has only the source string, so it should be obvious about what will replace each placeholder.
 
 ### Advanced placeholder formatting
 
-In order to use advanced features you need to install and enable the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
-After installing and enabling it you will be able to use extended syntax for placeholders. Either short form
-`{placeholderName, argumentType}` that means default setting or full form `{placeholderName, argumentType, argumentStyle}`
-that allows you to specify formatting style.
+In order to use the advanced features you need to install and enable the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
+After installing and enabling it you will be able to use the extended syntax for placeholders: either the short form
+`{placeholderName, argumentType}` that uses the default style, or the full form `{placeholderName, argumentType, argumentStyle}`
+that allows you to specify the formatting style.
 
 A complete reference is available at the [ICU website](http://icu-project.org/apiref/icu4c/classMessageFormat.html) but we will show some examples in the following.
 
@@ -234,7 +234,7 @@ Will produce "You are here for 47 sec. already!".
 #### Plurals
 
 Different languages have different ways to inflect plurals. Yii provides a convenient way for translating messages in
-different plural forms that works well even for very complex rules. Instead of dealing with the inflection rules directly
+different plural forms that works well even for very complex rules. Instead of dealing with the inflection rules directly,
 it is sufficient to provide the translation of inflected words in certain situations only.
 
 ```php
@@ -247,7 +247,7 @@ Will give us
 - "There is one cat!" for `$n = 1`,
 - and "There are 42 cats!" for `$n = 42`.
 
-In the plural rule arguments above `=0` means exactly zero, `=1` stands for exactly one, and `other` is for any other number.
+In the plural rule arguments above, `=0` means exactly zero, `=1` stands for exactly one, and `other` is for any other number.
 `#` is replaced with the value of `n`. It's not that simple for languages other than English. Here's an example
 for Russian:
 
@@ -258,11 +258,11 @@ for Russian:
 In the above it's worth mentioning that `=1` matches exactly `n = 1` while `one` matches `21` or `101`.
 
 Note, that you can not use the Russian example in `Yii::t()` directly if your
-[[yii\base\Application::$sourceLanguage|source language]] isn't set to `ru_RU`. This however is not recommended, instead such
-strings should go into message files or message database (in case DB source is used). Yii uses plural rules of the
-translated language strings and is falling back to plural rules of source language if translation isn't available.
+[[yii\base\Application::$sourceLanguage|source language]] isn't set to `ru-RU`. This however is not recommended, instead such
+strings should go into message files or message database (in case DB source is used). Yii uses the plural rules of the
+translated language strings and is falling back to the plural rules of the source language if the translation isn't available.
 
-To learn which inflection forms you should specify for your language you can referrer to the
+To learn which inflection forms you should specify for your language, you can refeer to the
 [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
 #### Selections
@@ -271,16 +271,16 @@ You can select phrases based on keywords. The pattern in this case specifies how
 provides a default phrase.
 
 ```php
-echo \Yii::t('app', '{name} is {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
+echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
     'name' => 'Snoopy',
     'gender' => 'dog',
 ]);
 ```
 
-Will produce "Snoopy is dog and it loves Yii!".
+Will produce "Snoopy is a dog and it loves Yii!".
 
-In the expression `female` and `male` are possible values. `other` handles values that do not match. Strings inside
-brackets are sub-expressions so could be just a string or a string with more placeholders.
+In the expression above, `female` and `male` are possible values, while `other` handles values that do not match. A string inside
+the brackets is a sub-expression, so it could be a plain string or a string with nested placeholders in it.
 
 ### Specifying default translation
 
@@ -306,11 +306,11 @@ Messages for the category will be loaded from a file under the default translati
 echo Yii::t('not_specified_category', 'message from unspecified category');
 ```
 
-Message will be loaded from `@app/messages/<LanguageCode>/not_specified_category.php`.
+The message will be loaded from `@app/messages/<LanguageCode>/not_specified_category.php`.
 
 ### Translating module messages
 
-If you want to translate messages for a module and avoid using a single translation file for all messages, you can do it like the following:
+If you want to translate the messages for a module and avoid using a single translation file for all the messages, you can do it like the following:
 
 ```php
 <?php
@@ -351,8 +351,9 @@ class Module extends \yii\base\Module
 }
 ```
 
-In the example above we are using wildcard for matching and then filtering each category per needed file. Instead of using `fileMap` you can simply
-use convention of category mapping to the same named file and use `Module::t('validation', 'your custom validation message')` or `Module::t('form', 'some form label')` directly.
+In the example above we are using wildcard for matching and then filtering each category per needed file. Instead of using `fileMap`, you can simply
+use the convention of the category mapping to the same named file.
+Now you can use `Module::t('validation', 'your custom validation message')` or `Module::t('form', 'some form label')` directly.
 
 ### Translating widgets messages
 
@@ -401,16 +402,17 @@ class Menu extends Widget
 }
 ```
 
-Instead of using `fileMap` you can simply use convention of category mapping to the same named file and use `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` directly.
+Instead of using `fileMap` you can simply use the convention of the category mapping to the same named file.
+Now you can use `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` directly.
 
-> **Note**: For widgets you also can use i18n views, same rules as for controllers are applied to them too.
+> **Note**: For widgets you also can use i18n views, with the same rules as for controllers being applied to them too.
 
 
 ### Translating framework messages
 
-Yii comes with default translation messages for validation errors and some other strings. These messages are all
-in the category `yii`. Sometimes you want to correct default framework message translation for your application.
-In order to do so configure the `i18n` [application component](structure-application-components.md) like the following:
+Yii comes with the default translation messages for validation errors and some other strings. These messages are all
+in the category `yii`. Sometimes you want to correct the default framework message translation for your application.
+In order to do so, configure the `i18n` [application component](structure-application-components.md) like the following:
 
 ```php
 'i18n' => [
@@ -428,13 +430,13 @@ Now you can place your adjusted translations to `@app/messages/<language>/yii.ph
 
 ### Handling missing translations
 
-If the translation is missing at the source, Yii displays the requested message content. Such behavior is very convenient
+Even if the translation is missing from the source, Yii will display the requested message content. Such behavior is very convenient
 in case your raw message is a valid verbose text. However, sometimes it is not enough.
-You may need to perform some custom processing of the situation, when requested translation is missing at the source.
+You may need to perform some custom processing of the situation, when the requested translation is missing from the source.
 This can be achieved using the [[yii\i18n\MessageSource::EVENT_MISSING_TRANSLATION|missingTranslation]]-event of [[yii\i18n\MessageSource]].
 
-For example to mark all missing translations with something notable, so they can be easily found at the page we
-first we need to setup event handler. This can be done in the application configuration:
+For example, let us mark all the missing translations with something notable so that they can be easily found at the page.
+First we need to setup an event handler. This can be done in the application configuration:
 
 ```php
 'components' => [
@@ -473,8 +475,8 @@ class TranslationEventHandler
 
 If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event handler it will be displayed as the translation result.
 
-> Attention: each message source handles its missing translations separately. If you are using several message sources
-> and wish them treat missing translation in the same way, you should assign corresponding event handler to each of them.
+> Note: each message source handles its missing translations separately. If you are using several message sources
+> and wish them to treat the missing translations in the same way, you should assign the corresponding event handler to each of them.
 
 
 Views
@@ -482,8 +484,8 @@ Views
 
 Instead of translating messages as described in the last section,
 you can also use `i18n` in your views to provide support for different languages. For example, if you have a view `views/site/index.php` and
-you want to create a special version for russian language of it, you create a `ru-RU` folder under the view path of the current controller/widget and
-put the file for russian language as follows `views/site/ru-RU/index.php`. Yii will then load the file for the current language if it exists
+you want to create a special version for the Russian language, you create a `ru-RU` folder under the view path of the current controller/widget and
+put the file for the Russian language as `views/site/ru-RU/index.php`. Yii will then load the file for the current language if it exists
 and fall back to the original view file if none was found.
 
 > **Note**: If language is specified as `en-US` and there are no corresponding views, Yii will try views under `en`
@@ -501,8 +503,8 @@ Setting up your PHP environment <a name="setup-environment"></a>
 
 Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its internationalization features
 such as the number and date formatting of the [[yii\i18n\Formatter]] class and the message formatting using [[yii\i18n\MessageFormatter]].
-Both classes provides a fallback implementation that provides basic functionality in case intl is not installed.
-This fallback implementation however only works well for sites in english language and even there can not provide the
+Both classes provides a fallback implementation that provides basic functionality in case `intl` is not installed.
+This fallback implementation however only works well for sites in English language and even there can not provide the
 rich set of features that is available with the PHP intl extension, so its installation is highly recommended.
 
 The [PHP intl extension](http://php.net/manual/en/book.intl.php) is based on the [ICU library](http://site.icu-project.org/) which

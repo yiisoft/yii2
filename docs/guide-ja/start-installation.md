@@ -46,14 +46,14 @@ Composer がインストールされたら、ウェブからアクセスでき�
 必要なら別のディレクトリ名を選ぶことも出来ます。
 
 > Note|注意: インストール実行中に Composer が あなたの Github のログイン認証情報を求めることがあるかも知れません。
-> これは、Comoser が依存パッケージの情報を Github から読み出すために十分な転送レートを必要とするためで、普通にあることです。
+> これは、Comoser が依存パッケージの情報を Github から読み出すために十分な API レートを必要とするためで、普通にあることです。
 > 詳細については、[Composer ドキュメント](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens) を参照してください。
 
 > Tip|ヒント: Yii の最新の開発バージョンをインストールしたい場合は、[stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability) を追加した次のコマンドを代りに使うことが出来ます。
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 >
-> 開発バージョンは動いているあなたのコードを動かなくするかもしれませんので、実運用環境では使うべきでないことに注意してください。
+> 開発バージョンは動いているあなたのコードを動かなくするかもしれませんので、本番環境では使うべきでないことに注意してください。
 
 
 アーカイブファイルからインストールする<a name="installing-from-archive-file"></a>
@@ -123,14 +123,14 @@ Yii の最低必要条件を満たすように PHP のインストールを構�
 ウェブサーバを構成する<a name="configuring-web-servers"></a>
 ----------------------
 
-> Info|情報: もし Yii の試運転をしているだけで、実運用のサーバに配置する意図がないのであれば、当面、この項は飛ばしても構いません。
+> Info|情報: もし Yii の試運転をしているだけで、本番サーバに配置する意図がないのであれば、当面、この項は飛ばしても構いません。
 
 上記の説明に従ってインストールされたアプリケーションは、[Apache HTTP サーバ](http://httpd.apache.org/) と [Nginx HTTP サーバ](http://nginx.org/) のどちらでも、
 また、Windows、Mac OS X、Linux のどれでも、PHP 5.4 以上を走らせている環境であれば、そのままの状態で動作するはずです。
 Yii 2.0 は、また、facebook の [HHVM](http://hhvm.com/) とも互換性があります。
 ただし HHVM がネイティブの PHP とは異なる振舞いをする特殊なケースもいくつかありますので、HHVM を使うときはいくらか余分に注意を払う必要があります。
 
-実運用のサーバでは、`http://www.example.com/basic/web/index.php` の代りに `http://www.example.com/index.php` という URL
+本番用のサーバでは、`http://www.example.com/basic/web/index.php` の代りに `http://www.example.com/index.php` という URL
 でアプリケーションにアクセス出来るようにウェブサーバを設定したいと思うかもしれません。
 そういう設定をするためには、ウェブサーバのドキュメントルートを `basic/web` フォルダに向けることが必要になります。
 また、[ルーティングと URL 生成](runtime-routing.md) の節で述べられているように、URL から `index.php` を隠したいと思うかも知れません。

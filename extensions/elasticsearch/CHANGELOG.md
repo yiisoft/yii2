@@ -1,10 +1,16 @@
 Yii Framework 2 elasticsearch extension Change Log
 ==================================================
 
-2.0.2 under development
+2.0.3 under development
 -----------------------
 
 - no changes in this release.
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Enh: Added `ActiveFixture` class for testing fixture support for elasticsearch (cebe, viilveer)
 
 
 2.0.1 December 07, 2014

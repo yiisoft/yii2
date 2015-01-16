@@ -24,7 +24,7 @@ ksort($types);
 foreach ($types as $i => $class):
 ?>
     <tr>
-        <td><?= $this->context->typeLink($class, $class->name) ?></td>
+        <td><?= $this->context->createTypeLink($class, $class, $class->name) ?></td>
         <td><?= \yii\apidoc\helpers\ApiMarkdown::process($class->shortDescription, $class, true) ?></td>
     </tr>
 <?php endforeach; ?>

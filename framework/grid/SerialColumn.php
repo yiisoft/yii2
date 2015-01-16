@@ -27,6 +27,9 @@ namespace yii\grid;
  */
 class SerialColumn extends Column
 {
+    /**
+     * @inheritdoc
+     */
     public $header = '#';
 
 

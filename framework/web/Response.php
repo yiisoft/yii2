@@ -557,7 +557,6 @@ class Response extends \yii\base\Response
             ->setDefault('Accept-Ranges', 'bytes')
             ->setDefault('Expires', '0')
             ->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->setDefault('Content-Transfer-Encoding', 'binary')
             ->setDefault('Content-Disposition', "$disposition; filename=\"$attachmentName\"");
 
         if ($mimeType !== null) {

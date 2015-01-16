@@ -98,7 +98,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Constructor.
-     * @param array $modelClass the model class associated with this query
+     * @param string $modelClass the model class associated with this query
      * @param array $config configurations to be applied to the newly created query object
      */
     public function __construct($modelClass, $config = [])
@@ -330,7 +330,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * This method differs from [[with()]] in that it will build up and execute a JOIN SQL statement
      * for the primary table. And when `$eagerLoading` is true, it will call [[with()]] in addition with the specified relations.
      *
-     * @param array $with the relations to be joined. Each array element represents a single relation.
+     * @param string|array $with the relations to be joined. Each array element represents a single relation.
      * The array keys are relation names, and the array values are the corresponding anonymous functions that
      * can be used to modify the relation queries on-the-fly. If a relation query does not need modification,
      * you may use the relation name as the array value. Sub-relations can also be specified (see [[with()]]).
@@ -407,7 +407,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Inner joins with the specified relations.
      * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
      * Please refer to [[joinWith()]] for detailed usage of this method.
-     * @param array $with the relations to be joined with
+     * @param string|array $with the relations to be joined with
      * @param boolean|array $eagerLoading whether to eager loading the relations
      * @return static the query object itself
      * @see joinWith()

@@ -1,4 +1,4 @@
-Jquery UI Widgets
+jQuery UI Widgets
 =================
 
 > Note: This section is under development.

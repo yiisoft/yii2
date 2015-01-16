@@ -34,8 +34,9 @@ use yii\helpers\Json;
 abstract class Migration extends Component implements MigrationInterface
 {
     /**
-     * @var Connection|string the MongoDB connection object or the application component ID of the MongoDB connection
+     * @var Connection|array|string the MongoDB connection object or the application component ID of the MongoDB connection
      * that this migration should work with.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db = 'mongodb';
 

@@ -123,6 +123,48 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('/test/post/index?page=1', $url);
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/6717
+     */
+    public function testCreateUrlWithEmptyPattern()
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                '' => 'front/site/index',
+            ],
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+        ]);
+        $url = $manager->createUrl(['front/site/index']);
+        $this->assertEquals('/', $url);
+        $url = $manager->createUrl(['/front/site/index']);
+        $this->assertEquals('/', $url);
+        $url = $manager->createUrl(['front/site/index', 'page' => 1]);
+        $this->assertEquals('/?page=1', $url);
+        $url = $manager->createUrl(['/front/site/index', 'page' => 1]);
+        $this->assertEquals('/?page=1', $url);
+
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                '' => '/front/site/index',
+            ],
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+        ]);
+        $url = $manager->createUrl(['front/site/index']);
+        $this->assertEquals('/', $url);
+        $url = $manager->createUrl(['/front/site/index']);
+        $this->assertEquals('/', $url);
+        $url = $manager->createUrl(['front/site/index', 'page' => 1]);
+        $this->assertEquals('/?page=1', $url);
+        $url = $manager->createUrl(['/front/site/index', 'page' => 1]);
+        $this->assertEquals('/?page=1', $url);
+    }
+
     public function testCreateAbsoluteUrl()
     {
         $manager = new UrlManager([

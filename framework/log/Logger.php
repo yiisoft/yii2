@@ -138,7 +138,7 @@ class Logger extends Component
         $traces = [];
         if ($this->traceLevel > 0) {
             $count = 0;
-            $ts = debug_backtrace();
+            $ts = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             array_pop($ts); // remove the last trace since it would be the entry script, not very useful
             foreach ($ts as $trace) {
                 if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII2_PATH) !== 0) {

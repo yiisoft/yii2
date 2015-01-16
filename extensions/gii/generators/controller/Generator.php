@@ -218,6 +218,6 @@ class Generator extends \yii\gii\Generator
     public function getControllerNamespace()
     {
         $name = StringHelper::basename($this->controllerClass);
-        return ltrim(substr($this->controllerClass, 0, strlen($name) + 1), '\\');
+        return ltrim(substr($this->controllerClass, 0, - (strlen($name) + 1)), '\\');
     }
 }

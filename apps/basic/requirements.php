@@ -107,13 +107,6 @@ $requirements = array(
         'memo' => $imagickMemo,
     ),
     // PHP ini :
-    'phpSafeMode' => array(
-        'name' => 'PHP safe mode',
-        'mandatory' => false,
-        'condition' => $requirementsChecker->checkPhpIniOff("safe_mode"),
-        'by' => 'File uploading and console command execution',
-        'memo' => '"safe_mode" should be disabled at php.ini',
-    ),
     'phpExposePhp' => array(
         'name' => 'Expose PHP',
         'mandatory' => false,

@@ -406,7 +406,7 @@ class Connection extends Component
                 $length = $line + 2;
                 $data = '';
                 while ($length > 0) {
-                    if (($block = fread($this->_socket, $line + 2)) === false) {
+                    if (($block = fread($this->_socket, $length)) === false) {
                         throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
                     }
                     $data .= $block;

@@ -53,7 +53,7 @@ use yii\db\Expression;
  * timestamp to the specified attribute(s) and save them to the database. For example,
  *
  * ```php
- * $this->timestamp->touch('creation_time');
+ * $model->touch('creation_time');
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

@@ -6,8 +6,7 @@ Cuando una aplicación Yii empieza a procesar una URL solicitada, lo primero que
 [acción de controlador](structure-controllers.md) correspondiente para gestionar la petición. A este proceso se 
 le llama *enrutamiento*.
 
-El proceso inverso se llama *creación de URLs*, y crea una URL a partir de una ruta dada y unos parámetros de consulta 
-(query) asociados. Cuando posteriormente se solicita la URL creada, el proceso de enrutamiento puede resolverla y 
+El proceso inverso se llama *creación de URLs*, y crea una URL a partir de una ruta dada y unos parámetros de consulta (query) asociados. Cuando posteriormente se solicita la URL creada, el proceso de enrutamiento puede resolverla y 
 convertirla en la ruta original con los parámetros asociados.
 
 La principal pieza encargada del enrutamiento y de la creación de URLs es [[yii\web\UrlManager|URL manager]], que se 
@@ -20,7 +19,8 @@ Configurando el componente `urlManager` en la configuración de la aplicación, 
 reconocimiento arbitrario de formatos de URL sin modificar el código de la aplicación existente.  Por ejemplo, se 
 puede usar el siguiente código para crear una URL para la acción `post/view`:
 
-``` php use yii\helpers\Url;
+``` php 
+use yii\helpers\Url;
 
 // Url::to() llama a UrlManager::createUrl() para crear una URL
 $url = Url::to(['post/view', 'id' => 100]);
@@ -35,6 +35,7 @@ los parámetros.
 /index.php/post/100
 /posts/100
 ```
+
 
 ## Formatos de URL <a name="url-formats"></a>
 
@@ -85,11 +86,8 @@ acción. Empezando por la primera parte de la ruta, la aplicación, sigue los si
    módulo actual. Si está listado, se crea un modulo de acuerdo con la configuración encontrada en el listado de 
    módulos, y se seguirá el Paso 2 para gestionar la siguiente parte de la ruta bajo el contexto de la creación de un 
    nuevo módulo.
-4. Trata el ID como si se tratara de un ID de controlador y crea un objeto controlador. Sigue el siguiente paso con la 
-   parte restante de la ruta.
-5. El controlador busca el ID en su [[yii\base\Controller::actions()|action map]]. Si lo encuentra, crea una acción de 
-   acuerdo con la configuración encontrada en el mapa. De otra forma, el controlador intenta crear una acción en linea 
-   definida por un método de acción correspondiente al ID actual.
+4. Trata el ID como si se tratara de un ID de controlador y crea un objeto controlador. Sigue el siguiente paso con la    parte restante de la ruta.
+5. El controlador busca el ID en su [[yii\base\Controller::actions()|action map]]. Si lo encuentra, crea una acción de    acuerdo con la configuración encontrada en el mapa. De otra forma, el controlador intenta crear una acción en linea    definida por un método de acción correspondiente al ID actual.
 
 Si ocurre algún error entre alguno de los pasos anteriores, se lanzará una excepción de tipo 
 [[yii\web\NotFoundHttpException]], indicando el fallo de proceso de enrutamiento.
@@ -107,6 +105,7 @@ aplicación como en el siguiente ejemplo:
     'defaultRoute' => 'main/index',
 ];
 ```
+
 
 ### Ruta `catchAll` <a name="catchall-route"></a>
 
@@ -201,6 +200,7 @@ echo Url::to('@example');
 
 // una URL absoluta: http://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);```
+```
 
 Además del método `to()`, la clase auxiliar [[yii\helpers\Url]] también proporciona algunos otros métodos de creación 
 de URLs. Por ejemplo,
@@ -220,6 +220,7 @@ echo Url::canonical();
 // recuerda la actual URL solicitada y la recupera más tarde requestsUrl::remember();
 echo Url::previous();
 ```
+
 
 ## Uso de URLs Amigables <a name="using-pretty-urls"></a>
 
@@ -262,6 +263,7 @@ amigable. El resto de propiedades son opcionales. Sin embargo, la anterior confi
   para que identifique correctamente que script PHP debe ejecutarse cuando se solicita una URL que no lo especifique. 
   Si se usa el servidor Web Apache, se puede utilizar la configuración recomendada descrita en la sección de 
   [Instalación](start-installation.md#recommended-apache-configuration).
+
 
 ### Regalas de URL <a name="url-rules"></a>
 
@@ -314,6 +316,7 @@ se necesita a menudo cuando se quieren configurar otras propiedades de la regla 
 De forma predeterminada si no se especifica la opción `class` en la configuración de una regla, se utilizará la clase 
 predeterminada [[yii\web\UrlRule]].
 
+
 ### Parameters Asociativos <a name="named-parameters"></a>
 
 Una regla de URL puede asociarse a una determinado grupo de parámetros de consulta que se hayan sido especificados en 
@@ -364,6 +367,7 @@ Y cuando las se usen las reglas para crear URLs:
 - `Url::to(['post/index', 'category' => 'php'])` genera `/index.php/post/index?category=php` no usa ninguna de las 
    reglas. Hay que tener en cuenta que si no se aplica ninguna de las reglas, la URL se genera simplemente añadiendo 
    la parte de información de la ruta y todos los parámetros como parte de la consulta.
+
 
 ### Parametrización de Rutas <a name="parameterizing-routes"></a>
 
@@ -417,6 +421,7 @@ La regla anterior puede usarse para convertir o crear cualquiera de las siguient
 * `/index.php/posts/news`: `page` es 1, `tag` es `'news'`.
 
 Sin usar ningún parámetro opcional, se tendrían que crear 4 reglas para lograr el mismo resultado.
+
 
 ### Reglas con Nombres de Servidor <a name="rules-with-server-names"></a>
 
@@ -506,6 +511,7 @@ siguiente configuración contiene una regla de URL personalizada que usa el sufi
 ]
 ```
 
+
 ### Métodos HTTP <a name="http-methods"></a>
 
 Cuando se implementan APIs RESTful, normalmente se necesita que ciertas URLs se conviertan en otras de acuerdo con el 
@@ -531,6 +537,7 @@ convertirá en `post/view`.
   de controladores. Para conocer más detalles, se puede visitar la sección [Enrutamiento](rest-routing.md) acerca de 
   el desarrollo de APIs RESTful.
 
+
 ### Personalización de Reglas <a name="customizing-rules"></a>
 
 En los anteriores ejemplos, las reglas de URL se han declarado principalmente en términos de pares de patrón-ruta. 
@@ -553,6 +560,7 @@ array completo de configuración para especificar una regla. El siguiente ejempl
 
 > Información: De forma predeterminada si no se especifica una opción `class` para una configuración de regla, se 
   usará la clase predeterminada [[yii\web\UrlRule]].
+
 
 ### Adición de Reglas Dinámicamente <a name="adding-rules"></a>
 

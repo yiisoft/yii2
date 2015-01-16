@@ -54,8 +54,11 @@ use yii\helpers\Json;
 class DatePicker extends InputWidget
 {
     /**
-     * @var string the locale ID (eg 'fr', 'de') for the language to be used by the date picker.
+     * @var string the locale ID (e.g. 'fr', 'de', 'en-GB') for the language to be used by the date picker.
      * If this property is empty, then the current application language will be used.
+     *
+     * Since version 2.0.2 a fallback is used if the application language includes a locale part (e.g. `de-DE`) and the language
+     * file does not exist, it will fall back to using `de`.
      */
     public $language;
     /**
@@ -134,6 +137,10 @@ class DatePicker extends InputWidget
             $view = $this->getView();
             $bundle = DatePickerLanguageAsset::register($view);
             if ($bundle->autoGenerate) {
+                $fallbackLanguage = substr($language, 0, 2);
+                if ($fallbackLanguage !== $language && !file_exists(Yii::getAlias($bundle->sourcePath . "/ui/i18n/datepicker-$language.js"))) {
+                    $language = $fallbackLanguage;
+                }
                 $view->registerJsFile($bundle->baseUrl . "/ui/i18n/datepicker-$language.js", [
                     'depends' => [JuiAsset::className()],
                 ]);
@@ -162,7 +169,7 @@ class DatePicker extends InputWidget
         } else {
             $value = $this->value;
         }
-        if ($value !== null) {
+        if ($value !== null && $value !== '') {
             // format value according to dateFormat
             try {
                 $value = Yii::$app->formatter->asDate($value, $this->dateFormat);

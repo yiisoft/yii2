@@ -97,19 +97,21 @@ $cache = new FileCache([
 
 Por favor, presta atención a la documentación API para ver si una propiedad o el parámetro de un método soporta alias.
 
+
 Alias Predefinidos <a name="predefined-aliases"></a>
 ------------------
 
 Yii predefine un conjunto de alias para aliviar la necesidad de hacer referencia a rutas de archivo o URLs que son
 utilizadas regularmente. La siguiente es la lista de alias predefinidos por Yii:
 
-- `@yii`: el directorio donde el archivo `BaseYii.php` se encuentra (también llamado el directorio de la libreria).
+- `@yii`: el directorio donde el archivo `BaseYii.php` se encuentra (también llamado el directorio del framework).
 - `@app`: la [[yii\base\Application::basePath|ruta base]] de la aplicación que se está ejecutando actualmente.
-- `@runtime`: la [[yii\base\Application::runtimePath|ruta de ejecución]] (carpeta `runtime) de la aplicación que se `
-   está ejecutando actualmente.
-- `@vendor`: el [[yii\base\Application::vendorPath|directorio vendor de Composer].
+- `@runtime`: la [[yii\base\Application::runtimePath|ruta de ejecución]] de la aplicación en ejecución. Por defecto `@app/runtime`.
 - `@webroot`: el directorio raíz Web de la aplicación Web se está ejecutando actualmente.
-- `@web`: la URL base de la aplicación web se ejecuta actualmente.
+- `@web`: la URL base de la aplicación web se ejecuta actualmente. Tiene el mismo valor que [[yii\web\Request::baseUrl]].
+- `@vendor`: el [[yii\base\Application::vendorPath|directorio vendor de Composer]. Por defecto `@app/vendor`.
+- `@bower`, el directorio raíz que contiene [paquetes bower](http://bower.io/). Por defecto `@vendor/bower`.
+- `@npm`, el directorio raíz que contiene [paquetes npm](https://www.npmjs.org/). Por defecto `@vendor/npm`.
 
 El alias `@yii` se define cuando incluyes el archivo `Yii.php` en tu [script de entrada](structure-entry-scripts.md),
 mientras que el resto de los alias están definidos en el constructor de la aplicación cuando se aplica la
@@ -119,7 +121,7 @@ mientras que el resto de los alias están definidos en el constructor de la apli
 Alias en Extensiones <a name="extension-aliases"></a>
 --------------------
 
-Un alias se define automaticamente por cada [extension](structure-extensions.md) que ha sido instalada a través de Composer.
+Un alias se define automaticamente por cada [extensión](structure-extensions.md) que ha sido instalada a través de Composer.
 El alias es nombrado tras el `namespace` de raíz de la extensión instalada tal y como está declarada en su archivo `composer.json`,
 y representa el directorio raíz de la extensión. Por ejemplo, si instalas la extensión `yiisoft/yii2-jui`, tendrás
 automaticamente definido el alias `@yii/jui` durante la etapa [bootstrapping](runtime-bootstrapping.md) de la aplicación:

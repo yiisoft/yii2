@@ -29,7 +29,7 @@ $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
 * MySQL 4.1 以降: [[yii\db\ActiveRecord]] による。
 * PostgreSQL 7.3 以降: [[yii\db\ActiveRecord]] による。
 * SQLite 2 および 3: [[yii\db\ActiveRecord]] による。
-* Microsoft SQL Server 2010 以降: [[yii\db\ActiveRecord]] による。
+* Microsoft SQL Server 2008 以降: [[yii\db\ActiveRecord]] による。
 * Oracle: [[yii\db\ActiveRecord]] による。
 * CUBRID 9.3 以降: [[yii\db\ActiveRecord]] による。(cubrid PDO 拡張の [バグ](http://jira.cubrid.org/browse/APIS-658)
   のために、値を引用符で囲む機能が動作しません。そのため、サーバだけでなくクライアントも CUBRID 9.3 が必要になります)
@@ -90,6 +90,11 @@ $email = $customer->email;
 $customer->email = 'jane@example.com';
 $customer->save();
 ```
+
+> Note|注意: 自明なことですが、カラム名が直接にアクティブレコードクラスの属性名になりますので、データベースの命名スキーマでアンダースコアを使用している場合はアンダースコアを持つ属性名になります。
+> 例えば、`user_name` というカラムは、アクティブレコードのオブジェクトでは `$user->user_name` としてアクセスされることになります。
+> コードスタイルが気になるのであれば、データベースの命名スキーマも camelCase を使用しなければなりません。
+> しかしながら、camelCase の使用は要求されてはいません。Yii は他のどのような命名スタイルでも十分に動作します。
 
 
 データベースに接続する
@@ -166,7 +171,7 @@ $customers = Customer::findBySql($sql)->all();
 ```
 
 > Tip|ヒント: 上記のコードでは、`Customer::STATUS_ACTIVE` は `Customer` で定義されている定数です。
-  コードの中で、ハードコードされた文字列や数字ではなく、意味が分かる名前の定数を使用することは良い慣行です。
+  コードの中で、ハードコードされた文字列や数字ではなく、意味が分かる名前の定数を使用することは良いプラクティスです。
 
 
 プライマリキーの値または一連のカラムの値に合致するアクティブレコードのインスタンスを返すためのショートカットメソッドが二つ提供されています。
@@ -414,7 +419,7 @@ class Order extends \yii\db\ActiveRecord
  - `$class`: 関連するモデルのクラス名。これは完全修飾のクラス名でなければなりません。
  - `$link`: 二つのテーブルに属するカラム間の関係。これは配列として与えられなければなりません。
    配列のキーは、`$class` と関連付けられるテーブルにあるカラムの名前であり、配列の値はリレーションを宣言しているクラスのテーブルにあるカラムの名前です。
-   リレーションをテーブルの外部キーに基づいて定義するのが望ましい慣行です。
+   リレーションをテーブルの外部キーに基づいて定義するのが望ましいプラクティスです。
 
 リレーションを宣言した後は、リレーショナルデータを取得することは、対応するゲッターメソッドで定義されているコンポーネントのプロパティを取得するのと同じように、とても簡単なことになります。
 
@@ -467,13 +472,13 @@ $orders = $customer->getBigOrders(200)->all();
 例えば、`$customer->getOrders()` は `ActiveQuery` のインスタンスを返し、`$customer->orders` は `Order` オブジェクトの配列 (またはクエリ結果が無い場合は空の配列) を返します。
 
 
-連結テーブルを使うリレーション
+中間テーブルを使うリレーション
 ------------------------------
 
-場合によっては、二つのテーブルが [連結テーブル][] と呼ばれる中間的なテーブルによって関連付けられていることがあります。
+場合によっては、二つのテーブルが [中間テーブル][] と呼ばれる中間的なテーブルによって関連付けられていることがあります。
 そのようなリレーションを宣言するために、[[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] メソッドを呼んで、[[yii\db\ActiveQuery]] オブジェクトをカスタマイズすることが出来ます。
 
-例えば、テーブル `order` とテーブル `item` が連結テーブル `order_item` によって関連付けられている場合、`Order` クラスにおいて `items` リレーションを次のように宣言することが出来ます。
+例えば、テーブル `order` とテーブル `item` が中間テーブル `order_item` によって関連付けられている場合、`Order` クラスにおいて `items` リレーションを次のように宣言することが出来ます。
 
 ```php
 class Order extends \yii\db\ActiveRecord
@@ -505,7 +510,7 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[連結テーブル]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
+[中間テーブル]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
 
 
 レイジーローディングとイーガーローディング
@@ -560,7 +565,7 @@ foreach ($customers as $customer) {
 ご覧のように、同じ仕事をするのに必要な SQL クエリがたった二つになります。
 
 > Info|情報: 一般化して言うと、`N` 個のリレーションのうち `M` 個のリレーションが `via()` または `viaTable()` によって定義されている場合、この `N` 個のリレーションをイーガーロードしようとすると、合計で `1+M+N` 個の SQL クエリが実行されます。
-> 主たるテーブルの行を返すために一つ、`via()` または `viaTable()` の呼び出しに対応する `M` 個の連結テーブルのそれぞれに対して一つずつ、そして、`N` 個の関連テーブルのそれぞれに対して一つずつ、という訳です。
+> 主たるテーブルの行を返すために一つ、`via()` または `viaTable()` の呼び出しに対応する `M` 個の中間テーブルのそれぞれに対して一つずつ、そして、`N` 個の関連テーブルのそれぞれに対して一つずつ、という訳です。
 
 > Note|注意: イーガーローディングで `select()` をカスタマイズしようとする場合は、関連モデルにリンクするカラムを必ず含めてください。
 > そうしないと、関連モデルは読み出されません。例えば、
@@ -677,7 +682,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 > つまり、リレーションが [[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] によって定義されている場合は、[[yii\db\ActiveQuery::inverseOf()]] を追加で呼ぶことは出来ません。
 
 
-リレーションを使ってテーブルを結合する
+リレーションを使ってテーブルを結合する <a name="joining-with-relations">
 --------------------------------------
 
 リレーショナルデータベースを扱う場合、複数のテーブルを結合して、JOIN SQL 文にさまざまなクエリ条件とパラメータを指定することは、ごく当り前の仕事です。

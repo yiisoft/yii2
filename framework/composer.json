@@ -54,6 +54,7 @@
     "require": {
         "php": ">=5.4.0",
         "ext-mbstring": "*",
+        "ext-mcrypt": "*",
         "lib-pcre": "*",
         "yiisoft/yii2-composer": "*",
         "ezyang/htmlpurifier": "4.6.*",

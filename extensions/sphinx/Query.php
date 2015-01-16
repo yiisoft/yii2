@@ -367,6 +367,34 @@ class Query extends \yii\db\Query
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function queryScalar($selectExpression, $db)
+    {
+        $select = $this->select;
+        $limit = $this->limit;
+        $offset = $this->offset;
+
+        $this->select = [$selectExpression];
+        $this->limit = null;
+        $this->offset = null;
+        $command = $this->createCommand($db);
+
+        $this->select = $select;
+        $this->limit = $limit;
+        $this->offset = $offset;
+
+        if (empty($this->groupBy) && empty($this->union) && !$this->distinct) {
+            return $command->queryScalar();
+        } else {
+            return (new Query)->select([$selectExpression])
+                ->from(['c' => $this])
+                ->createCommand($command->db)
+                ->queryScalar();
+        }
+    }
+
+    /**
      * Creates a new Query object and copies its property values from an existing one.
      * The properties being copies are the ones to be used by query builders.
      * @param Query $from the source query object

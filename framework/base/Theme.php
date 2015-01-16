@@ -73,28 +73,11 @@ class Theme extends Component
 {
     /**
      * @var array the mapping between view directories and their corresponding themed versions.
-     * If not set, it will be initialized as a mapping from [[Application::basePath]] to [[basePath]].
      * This property is used by [[applyTo()]] when a view is trying to apply the theme.
      * Path aliases can be used when specifying directories.
+     * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
      */
     public $pathMap;
-
-
-    /**
-     * Initializes the theme.
-     * @throws InvalidConfigException if [[basePath]] is not set.
-     */
-    public function init()
-    {
-        parent::init();
-
-        if (empty($this->pathMap)) {
-            if (($basePath = $this->getBasePath()) === null) {
-                throw new InvalidConfigException('The "basePath" property must be set.');
-            }
-            $this->pathMap = [Yii::$app->getBasePath() => [$basePath]];
-        }
-    }
 
     private $_baseUrl;
 
@@ -142,11 +125,21 @@ class Theme extends Component
      * If there is no corresponding themed file, the original file will be returned.
      * @param string $path the file to be themed
      * @return string the themed file, or the original file if the themed version is not available.
+     * @throws InvalidConfigException if [[basePath]] is not set
      */
     public function applyTo($path)
     {
+        $pathMap = $this->pathMap;
+        if (empty($pathMap)) {
+            if (($basePath = $this->getBasePath()) === null) {
+                throw new InvalidConfigException('The "basePath" property must be set.');
+            }
+            $pathMap = [Yii::$app->getBasePath() => [$basePath]];
+        }
+
         $path = FileHelper::normalizePath($path);
-        foreach ($this->pathMap as $from => $tos) {
+
+        foreach ($pathMap as $from => $tos) {
             $from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);

@@ -140,7 +140,7 @@ abstract class ErrorHandler extends Component
             $exception = new ErrorException($message, $code, $code, $file, $line);
 
             // in case error appeared in __toString method we can't throw any exception
-            $trace = debug_backtrace(0);
+            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             array_shift($trace);
             foreach ($trace as $frame) {
                 if ($frame['function'] == '__toString') {

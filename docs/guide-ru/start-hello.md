@@ -76,7 +76,7 @@ use yii\helpers\Html;
 ```
 
 Представление `say` должно быть сохранено в файле `views/site/say.php`. Когда метод [[yii\web\Controller::render()|render()]]
-вызывается в действии, он будет искать PHP файл с именем вида `views/ControllerID/ActionID/ViewName.php`.
+вызывается в действии, он будет искать PHP файл с именем вида `views/ControllerID/ViewName.php`.
 
 Стоит отметить, что в коде выше параметр `message` [[yii\helpers\Html::encode()|экранируется для HTML]] перед выводом.
 Это обязательно так как параметр приходит от пользователя, который может попытаться провести

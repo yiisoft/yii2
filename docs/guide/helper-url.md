@@ -4,11 +4,10 @@ Url Helper
 Url helper provides a set of static methods for managing URLs.
 
 
-Getting common URLs
--------------------
+## Getting Common URLs <a name="getting-common-urls"></a>
 
 There are two methods you can use to get common URLs: home URL and base URL of the current request. In order to get
-home URL use the follwing:
+home URL use the following:
 
 ```php
 $relativeHomeUrl = Url::home();
@@ -29,8 +28,8 @@ $httpsAbsoluteBaseUrl = Url::base('https');
 
 The only parameter of the method works exactly the same as for `Url::home()`.
 
-Creating URLs
--------------
+
+## Creating URLs <a name="creating-urls"></a>
 
 In order to create URL to a given route use `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
 a URL:
@@ -62,15 +61,22 @@ route has none (e.g. `site/index` or `index`). A relative route will be converte
   and will be prepended with [[\yii\web\Controller::uniqueId]];
 - If the route has no leading slash (e.g. `site/index`), it is considered to be a route relative to the current module
   and will be prepended with the module's [[\yii\base\Module::uniqueId|uniqueId]].
+  
+Starting from version 2.0.2, you may specify a route in terms of an [alias](concept-aliases.md). If this is the case,
+the alias will first be converted into the actual route which will then be turned into an absolute route according
+to the above rules.
 
 Below are some examples of using this method:
 
 ```php
-// /index?r=site/index
+// /index.php?r=site/index
 echo Url::toRoute('site/index');
 
-// /index?r=site/index&src=ref1#name
+// /index.php?r=site/index&src=ref1#name
 echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
+
+// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+echo Url::toRoute(['@postEdit', 'id' => 100]);
 
 // http://www.example.com/index.php?r=site/index
 echo Url::toRoute('site/index', true);
@@ -99,11 +105,14 @@ will be replaced with the specified one.
 Below are some usage examples:
 
 ```php
-// /index?r=site/index
+// /index.php?r=site/index
 echo Url::to(['site/index']);
 
-// /index?r=site/index&src=ref1#name
+// /index.php?r=site/index&src=ref1#name
 echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
+
+// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+echo Url::to(['@postEdit', 'id' => 100]);
 
 // the currently requested URL
 echo Url::to();
@@ -121,8 +130,24 @@ echo Url::to('@web/images/logo.gif', true);
 echo Url::to('@web/images/logo.gif', 'https');
 ```
 
-Remember URL for future use
----------------------------
+Starting from version 2.0.3, you may use [[yii\helpers\Url::current()]] to create a URL based on the currently
+requested route and GET parameters. You may modify or remove some of the GET parameters or add new ones by
+passing a `$params` parameter to the method. For example,
+
+```php
+// assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
+
+// /index.php?r=post/view&id=123&src=google
+echo Url::current();
+
+// /index.php?r=post/view&id=123
+echo Url::current(['src' => null]);
+// /index.php?r=post/view&id=100&src=google
+echo Url::current(['id' => 100]);
+```
+
+
+## Remember URLs <a name="remember-urls"></a>
 
 There are cases when you need to remember URL and afterwards use it during processing of the one of sequential requests.
 It can be achieved in the following way:
@@ -145,8 +170,7 @@ $url = Url::previous();
 $productUrl = Url::previous('product');
 ```
                         
-Finding out if URL is relative
-------------------------------
+## Checking Relative URLs <a name="checking-relative-urls"></a>
 
 To find out if URL is relative i.e. it doesn't have host info part, you can use the following code:
                              

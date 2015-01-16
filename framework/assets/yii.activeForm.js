@@ -487,7 +487,7 @@
             updateSummary($form, messages);
 
             if (errorInputs.length) {
-                var top = $form.find(errorInputs.join(',')).first().offset().top;
+                var top = $form.find(errorInputs.join(',')).first().closest(':visible').offset().top;
                 var wtop = $(window).scrollTop();
                 if (top < wtop || top > wtop + $(window).height) {
                     $(window).scrollTop(top);

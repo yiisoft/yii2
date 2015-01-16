@@ -50,6 +50,9 @@ class OAuthToken extends Object
     private $_params = [];
 
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         if ($this->createTimestamp === null) {

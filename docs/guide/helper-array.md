@@ -3,14 +3,14 @@ ArrayHelper
 
 Additionally to [rich set of PHP array functions](http://php.net/manual/en/book.array.php) Yii array helper provides
 extra static methods allowing you to deal with arrays more efficiently.
-  
+
 
 ## Getting Values <a name="getting-values"></a>
 
 Retrieving values from an array, an object or a complex structure consisting of both using standard PHP is quite
-repetitive. You have to check if key exists with `isset` first, then if it does you're getting it, if not, 
+repetitive. You have to check if key exists with `isset` first, then if it does you're getting it, if not,
 providing default value:
- 
+
 ```php
 class User
 {
@@ -34,9 +34,9 @@ $value = ArrayHelper::getValue($array, 'foo.bar.name');
 
 First method argument is where we're getting value from. Second argument specifies how to get the data. It could be one
 of the following:
- 
+
 - Name of array key or object property to retrieve value from.
-- Set of dot separated array keys or object property names. The one we've used in the example above. 
+- Set of dot separated array keys or object property names. The one we've used in the example above.
 - A callback returning a value.
 
 The callback should be the following:
@@ -54,7 +54,7 @@ $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
 In case you want to get the value and then immediately remove it from array you can use `remove` method:
- 
+
 ```php
 $array = ['type' => 'A', 'options' => [1, 2]];
 $type = ArrayHelper::remove($array, 'type');
@@ -96,7 +96,7 @@ $ids = ArrayHelper::getColumn($array, 'id');
 ```
 
 The result will be `['123', '345']`.
- 
+
 If additional transformations are required or the way of getting value is complex, second argument could be specified
 as an anonymous function:
 
@@ -106,7 +106,7 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 });
 ```
 
-    
+
 ## Re-indexing Arrays <a name="reindexing-arrays"></a>
 
 In order to index an array according to a specified key, the `index` method can be used. The input array should be
@@ -114,7 +114,7 @@ multidimensional or an array of objects. The key can be a key name of the sub-ar
 an anonymous function which returns the key value given an array element.
 
 If a key value is null, the corresponding array element will be discarded and not put in the result. For example,
-     
+
 ```php
 $array = [
     ['id' => '123', 'data' => 'abc'],
@@ -133,13 +133,13 @@ $result = ArrayHelper::index($array, function ($element) {
 });
 ```
 
-    
-## Building Maps <a name="building-maps"></a>    
+
+## Building Maps <a name="building-maps"></a>
 
 In order to build a map (key-value pairs) from a multidimensional array or an array of objects you can use `map` method.
 The `$from` and `$to` parameters specify the key names or property names to set up the map. Optionally, one can further
 group the map according to a grouping field `$group`. For example,
-                       
+
 ```php
 $array = [
     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
@@ -167,9 +167,9 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 //     ],
 // ]
 ```
-    
-    
-## Multidimensional Sorting <a name="multidimensional-sorting"></a>    
+
+
+## Multidimensional Sorting <a name="multidimensional-sorting"></a>
 
 `multisort` method helps to sort an array of objects or nested arrays by one or several keys. For example,
 
@@ -200,19 +200,19 @@ ArrayHelper::multisort($data, function($item) {
     return isset($item['age']) ? ['age', 'name'] : 'name';
 });
 ```
-         
+
 Third argument is direction. In case of sorting by a single key it could be either `SORT_ASC` or
 `SORT_DESC`. If sorting by multiple values you can sort each value differently by providing an array of
 sort direction.
 
 Last argument is PHP sort flag that could take the same values as the ones passed to
 PHP [sort()](http://php.net/manual/en/function.sort.php).
-        
+
 
 ## Detecting Array Types <a name="detecting-array-types"></a>
-        
+
 It is handy to know whether an array is indexed or an associative. Here's an example:
-          
+
 ```php
 // no keys specified
 $indexed = ['Qiang', 'Paul'];
@@ -222,7 +222,7 @@ echo ArrayHelper::isIndexed($indexed);
 $associative = ['framework' => 'Yii', 'version' => '2.0'];
 echo ArrayHelper::isAssociative($associative);
 ```
-        
+
 
 ## HTML Encoding and Decoding Values <a name="html-encoding-values"></a>
 
@@ -235,26 +235,28 @@ $decoded = ArrayHelper::htmlDecode($data);
 
 Only values will be encoded by default. By passing second argument as `false` you can encode array's keys as well.
 Encoding will use application charset and could be changed via third argument.
-        
-        
+
+
 ## Merging Arrays <a name="merging-arrays"></a>
 
+```php
   /**
-     * Merges two or more arrays into one recursively.
-     * If each array has an element with the same string key value, the latter
-     * will overwrite the former (different from array_merge_recursive).
-     * Recursive merging will be conducted if both arrays have an element of array
-     * type and are having the same key.
-     * For integer-keyed elements, the elements from the latter array will
-     * be appended to the former array.
-     * @param array $a array to be merged to
-     * @param array $b array to be merged from. You can specify additional
-     * arrays via third argument, fourth argument etc.
-     * @return array the merged array (the original arrays are not changed.)
-     */
+    * Merges two or more arrays into one recursively.
+    * If each array has an element with the same string key value, the latter
+    * will overwrite the former (different from array_merge_recursive).
+    * Recursive merging will be conducted if both arrays have an element of array
+    * type and are having the same key.
+    * For integer-keyed elements, the elements from the latter array will
+    * be appended to the former array.
+    * @param array $a array to be merged to
+    * @param array $b array to be merged from. You can specify additional
+    * arrays via third argument, fourth argument etc.
+    * @return array the merged array (the original arrays are not changed.)
+    */
     public static function merge($a, $b)
-    
-    
+```
+
+
 ## Converting Objects to Arrays <a name="converting-objects-to-arrays"></a>
 
 Often you need to convert an object or an array of objects into an array. The most common case is converting active record
@@ -276,18 +278,18 @@ $data = ArrayHelper::toArray($post, [
 ]);
 ```
 
-The first argument contains the data we want to convert. In our case we're converting a `Post` AR model. 
+The first argument contains the data we want to convert. In our case we're converting a `Post` AR model.
 
-The second argument is conversion mapping per class. We're setting a mapping for `Post` model. 
+The second argument is conversion mapping per class. We're setting a mapping for `Post` model.
 Each mapping array contains a set of mappings. Each mapping could be:
- 
+
 - A field name to include as is.
 - A key-value pair of desired array key name and model column name to take value from.
 - A key-value pair of desired array key name and a callback which returns value.
 
 The result of conversion above will be:
-     
-     
+
+
 ```php
 [
     'id' => 123,

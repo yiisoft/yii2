@@ -53,7 +53,7 @@ class I18NTest extends TestCase
         // fallback to just langauge code with present exact match
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
     }
-    
+
     public function testDefaultSource()
     {
         $i18n = new I18N([

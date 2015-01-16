@@ -9,14 +9,14 @@ of Html helper which provides a set of static methods for handling commonly used
 > Note: If your markup is nearly static it's better to use HTML directly. There's no need to wrap absolutely everything
   with Html helper calls.
 
-Basics <a name="basics"></a>
-----------------------------
+
+## Basics <a name="basics"></a>
 
 Since building dynamic HTML by string concatenation is getting messy very fast, Yii provides a set of methods to
 manipulate tag options and build tags based on these options.
 
 
-### Generating tags
+### Generating Tags <a name="generating-tags"></a>
 
 The code generating a tag looks like the following:
 
@@ -39,7 +39,7 @@ In case you need just start tag or just closing tag you can use `Html::beginTag(
 
 Options are used in many methods of Html helper and various widgets. In all these cases there is some extra handling to
 know about:
- 
+
 - If a value is null, the corresponding attribute will not be rendered.
 - Attributes whose values are of boolean type will be treated as
   [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
@@ -49,12 +49,12 @@ know about:
 - The "data" attribute could receive JSON. It is handled the same way as array i.e.
   `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` becomes
   `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
-  
-### Forming class and style dynamically
+
+
+### Forming CSS Classes and Styles <a name="forming-css"></a>
 
 When building options for HTML tag we're often starting with defaults which we need to modify. In order to add or
 remove CSS class you can use the following:
-
 
 ```php
 $options = ['class' => 'btn btn-default'];
@@ -88,9 +88,8 @@ could be converted there and forth by using [[yii\helpers\Html::cssStyleFromArra
 [[yii\helpers\Html::cssStyleToArray()|cssStyleToArray()]]. The [[yii\helpers\Html::removeCssStyle()|removeCssStyle()]]
 method accepts an array of properties to remove. If it's going to be a single property it could be specified as string.
 
-    
-Encoding and decoding content <a name="encoding-and-decoding-content"></a>
---------------------------------------------------------------------------
+
+### Encoding and Decoding Content <a name="encoding-and-decoding-content"></a>
 
 In order for content to be displayed properly and securely in HTML special characters in the content should be encoded.
 In PHP it's done with [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) and
@@ -104,18 +103,18 @@ $userName = Html::encode($user->name);
 echo $userName;
 
 $decodedUserName = Html::decode($userName);
-```    
+```
 
 
-Forms
------
+## Forms <a name="forms"></a>
 
 Dealing with forms markup is quite repetitive and error prone. Because of that there is a group of methods to help
 dealing with them.
 
 > Note: consider using [[yii\widgets\ActiveForm|ActiveForm]] in case you deal with models and need validation.
 
-### Open and close a form
+
+### Creating Forms <a name="creating-forms"></a>
 
 Form could be opened with [[yii\helpers\Html::beginForm()|beginForm()]] method like the following:
 
@@ -134,7 +133,8 @@ Closing form tag is simple:
 <?= Html::endForm() ?>
 ```
 
-### Buttons
+
+### Buttons <a name="buttons"></a>
 
 In order to generate buttons you can use the following code:
 
@@ -148,12 +148,11 @@ First argument for all three methods is button title and the second one is optio
 getting data from end user, encode it with [[yii\helpers\Html::encode()|Html::encode()]].
 
 
-### Inputs
+### Input Fields <a name="input-fields"></a>
 
 There are two groups on input methods. The ones starting with `active` and called active inputs and the ones not starting
 with it. Active inputs are taking data from model and attribute specified while in case of regular input data is specified
 directly.
-
 
 The most generic methods are:
 
@@ -198,7 +197,7 @@ Dropdown list and list box could be rendered like the following:
 
 First argument is the name of the input, second is the value that's currently selected and third is key-value pairs where
 array key is list value and array value is list label.
- 
+
 If you want multiple choices to be selectable, checkbox list is a good match:
 
 ```php
@@ -213,9 +212,8 @@ If not, use radio list:
 <?= Html::activeRadioList($user, 'role', ArrayHelper::map($roleModels, 'id', 'name')) ?>
 ```
 
-        
-### Labels and errors
 
+### Labels and Errors <a name="labels-and-errors"></a>
 
 Same as inputs there are two methods for generating form labels. Active that's taking data from the model and non-active
 that accepts data directly:
@@ -224,7 +222,7 @@ that accepts data directly:
 <?= Html::label('User name', 'username', ['class' => 'label username']) ?>
 <?= Html::activeLabel($user, 'username', ['class' => 'label username'])
 ```
-              
+
 In order to display form errors from a model or models as a summary you could use:
 
 ```php
@@ -236,10 +234,10 @@ To display individual error:
 ```php
 <?= Html::error($post, 'title', ['class' => 'error']) ?>
 ```
-           
 
-### Names and values
-        
+
+### Input Names and Values <a name="input-names-and-values"></a>
+
 There are methods to get names, ids and values for input fields based on the model. These are mainly used internally
 but could be handy sometimes:
 
@@ -271,13 +269,11 @@ In order to get attribute name without suffixes or prefixes one can use the foll
 // dates
 echo Html::getAttributeName('dates[0]');
 ```
-                
-    
-Styles and scripts
-------------------
+
+
+## Styles and Scripts <a name="styles-and-scripts"></a>
 
 There two methods to generate tags wrapping embedded styles and scripts:
-
 
 ```php
 <?= Html::style('.danger { color: #f00; }') ?>
@@ -321,12 +317,12 @@ To link JavaScript file:
 
 Same as with CSS first argument specifies link to the file to be included. Options could be passed as the second argument.
 In options you can specify `condition` in the same way as in options for `cssFile`.
-    
-Links
------
+
+
+## Hyperlinks <a name="hyperlinks"></a>
 
 There's a method to generate hyperlink conveniently:
-  
+
 ```php
 <?= Html::a('Profile', ['user/view', 'id' => $id], ['class' => 'profile-link']) ?>
 ```
@@ -336,17 +332,16 @@ The first argument is the title. It's not encoded so if you're using data got fr
 what values it accepts. Third argument is array of tag properties.
 
 In you need to generate `mailto` link you can use the following code:
- 
+
 ```php
 <?= Html::mailto('Contact us', 'admin@example.com') ?>
 ```
-        
-        
-Images
-------
+
+
+## Images <a name="images"></a>
 
 In order to generate image tag use the following:
- 
+
 ```php
 <?= Html::img('@web/images/logo.png', ['alt' => 'My logo']) ?>
 
@@ -357,10 +352,10 @@ generates
 
 Aside [aliases](concept-aliases.md) the first argument can accept routes, parameters and URLs. Same way as
 [Url::to()](helper-url.md) does.
-        
-Lists
------
-    
+
+
+## Lists <a name="lists"></a>
+
 Unordered list could be generated like the following:
 
 ```php

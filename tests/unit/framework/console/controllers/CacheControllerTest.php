@@ -30,7 +30,7 @@ class CacheControllerTest extends TestCase
             'class' => 'yiiunit\framework\console\controllers\SilencedCacheController',
             'interactive' => false,
         ],[null, null]); //id and module are null
-        
+
         $databases = self::getParam('databases');
         $config = $databases[$this->driverName];
         $pdoDriver = 'pdo_' . $this->driverName;
@@ -38,7 +38,7 @@ class CacheControllerTest extends TestCase
         if (!extension_loaded('pdo') || !extension_loaded($pdoDriver)) {
             $this->markTestSkipped('pdo and ' . $pdoDriver . ' extensions are required.');
         }
-        
+
 
         $this->mockApplication([
             'components' => [
@@ -55,7 +55,7 @@ class CacheControllerTest extends TestCase
                 ],
             ],
         ]);
-        
+
         if(isset($config['fixture'])) {
             Yii::$app->db->open();
             $lines = explode(';', file_get_contents($config['fixture']));
@@ -79,7 +79,7 @@ class CacheControllerTest extends TestCase
         $this->assertFalse(Yii::$app->firstCache->get('secondKey'),'first cache data should be flushed');
         $this->assertEquals('thirdValue', Yii::$app->secondCache->get('thirdKey'), 'second cache data should not be flushed');
     }
-    
+
     public function testClearSchema()
     {
         $schema = Yii::$app->db->schema;

@@ -144,6 +144,9 @@ In order to solve these issues Yii introduces a simple environments concept. Eac
 by a set of files under the `environments` directory. The `init` command is used to switch between these. What it really does is
 copy everything from the environment directory over to the root directory where all applications are.
 
+By default there are two environments: `dev` and `prod`. First is for development. It has all the developer tools
+and debug turned on. Second is for server deployments. It has debug and developer tools turned off. 
+
 Typically environment contains application bootstrap files such as `index.php` and config files suffixed with
 `-local.php`. These are added to `.gitignore` and never added to source code repository.
 
