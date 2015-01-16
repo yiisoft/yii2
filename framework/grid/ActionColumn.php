@@ -87,6 +87,10 @@ class ActionColumn extends Column
      * If this property is not set, button URLs will be created using [[createUrl()]].
      */
     public $urlCreator;
+    /**
+     * @var string the filter cell content. Note that it will not be HTML-encoded.
+     */
+    public $filter;
 
 
     /**
@@ -167,5 +171,13 @@ class ActionColumn extends Column
                 return '';
             }
         }, $this->template);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function renderFilterCellContent()
+    {
+        return (null == $this->filter ? $this->grid->emptyCell : $this->filter);
     }
 }
