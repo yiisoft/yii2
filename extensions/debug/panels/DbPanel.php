@@ -41,6 +41,7 @@ class DbPanel extends Panel
     private $_timings;
     /**
      * @var array query types used
+     * @since 2.0.3
      */
     private $_types = [];
 
@@ -204,6 +205,7 @@ class DbPanel extends Panel
      * Returns array query types
      *
      * @return array
+     * @since 2.0.3
      */
     public function getTypes()
     {
