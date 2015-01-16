@@ -151,7 +151,7 @@ html,body{
 }
 .call-stack ul li .element-wrap{
     cursor: pointer;
-    padding: 15px 0;
+    padding: 20px 0;
 }
 .call-stack ul li.application .element-wrap{
     background-color: #fafafa;
@@ -244,6 +244,13 @@ html,body{
     font-size: 12px;
     font-family: Consolas, Courier New, monospace;
     display: inline;
+}
+.call-stack ul li .message{
+    display:inline-block;
+    width: 75%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: absolute;
 }
 @-moz-document url-prefix() {
     .call-stack ul li .code pre{
