@@ -65,7 +65,8 @@
         "bower-asset/yii2-pjax": ">=2.0.1"
     },
     "autoload": {
-        "psr-4": {"yii\\": ""}
+        "psr-4": {"yii\\": ""},
+        "classmap": ["Yii.php"]
     },
     "bin": [
         "yii"
