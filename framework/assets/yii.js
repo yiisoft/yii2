@@ -158,7 +158,7 @@ yii = (function ($) {
                 return;
             }
 
-            var newForm = !$form.length || action && action != '#';
+            var newForm = !$form.length;
             if (newForm) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
                     action = window.location.href;
@@ -197,9 +197,17 @@ yii = (function ($) {
 
             var oldMethod = $form.prop('method');
             $form.prop('method', method);
+            var oldAction = null;
+            if (action && action != '#') {
+                oldAction = $form.prop('action');
+                $form.prop('action', action);
+            }
 
             $form.trigger('submit');
 
+            if (oldAction != null) {
+                $form.prop('action', oldAction);
+            }
             $form.prop('method', oldMethod);
 
             // remove the temporarily added hidden inputs
