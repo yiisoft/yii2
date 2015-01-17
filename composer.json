@@ -128,7 +128,8 @@
             "yii\\swiftmailer\\": "extensions/swiftmailer/",
             "yii\\sphinx\\": "extensions/sphinx/",
             "yii\\twig\\": "extensions/twig/"
-        }
+        },
+        "classmap": ["framework/Yii.php"]
     },
     "bin": [
         "framework/yii"
