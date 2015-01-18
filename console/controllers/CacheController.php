@@ -195,7 +195,7 @@ class CacheController extends Controller
         $this->stdout("The following cache components were NOT found:\n\n", Console::FG_RED);
 
         foreach ($cachesNames as $name) {
-            $this->stdout("\t * $name \n", Console::FG_GREEN);
+            $this->stdout("\t* $name \n", Console::FG_GREEN);
         }
 
         $this->stdout("\n");
@@ -232,7 +232,7 @@ class CacheController extends Controller
         $this->stdout("The following cache components will be flushed:\n\n", Console::FG_YELLOW);
 
         foreach ($cachesNames as $name) {
-            $this->stdout("\t * $name \n", Console::FG_GREEN);
+            $this->stdout("\t* $name \n", Console::FG_GREEN);
         }
 
         return $this->confirm("\nFlush above cache components?");
