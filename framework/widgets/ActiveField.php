@@ -805,7 +805,8 @@ class ActiveField extends Component
      * Returns the input id from [[selectors]] or [[Html::getInputId()]]
      * @return string the input id
      */
-	protected function getInputId() {
-		return (isset($this->selectors['input']) ? str_replace('#', '', $this->selectors['input'] : Html::getInputId($this->model, $this->attribute);
-	}
+    protected function getInputId()
+    {
+        return isset($this->selectors['input']) ? str_replace('#', '', $this->selectors['input']) : Html::getInputId($this->model, $this->attribute);
+    }
 }
