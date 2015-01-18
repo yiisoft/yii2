@@ -111,7 +111,7 @@ Segurança
 * [Autenticação](security-authentication.md)
 * [Autorização](security-authorization.md)
 * [Trabalhando com Senhas](security-passwords.md)
-* **TBD** [Auth Clients](security-auth-clients.md)
+* [Auth Clients](security-auth-clients.md)
 * [Melhores Práticas](security-best-practices.md)
 
 
