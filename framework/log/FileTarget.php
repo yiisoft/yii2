@@ -31,6 +31,13 @@ class FileTarget extends Target
      */
     public $logFile;
     /**
+     * @var bool whether log files should be rotated when they reach a certain [[maxFileSize|maximum size]].
+     * Log rotation is enabled by default. This property allows you to disable it, when you have configured
+     * an external tools for log rotation on your server.
+     * @since 2.0.3
+     */
+    public $enableRotation = true;
+    /**
      * @var integer maximum log file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
      */
     public $maxFileSize = 10240; // in KB
@@ -101,10 +108,12 @@ class FileTarget extends Target
             throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");
         }
         @flock($fp, LOCK_EX);
-        // clear stat cache to ensure getting the real current file size and not a cached one
-        // this may result in rotating twice when cached file size is used on subsequent calls
-        clearstatcache();
-        if (@filesize($this->logFile) > $this->maxFileSize * 1024) {
+        if ($this->enableRotation) {
+            // clear stat cache to ensure getting the real current file size and not a cached one
+            // this may result in rotating twice when cached file size is used on subsequent calls
+            clearstatcache();
+        }
+        if ($this->enableRotation && @filesize($this->logFile) > $this->maxFileSize * 1024) {
             $this->rotateFiles();
             @flock($fp, LOCK_UN);
             @fclose($fp);
