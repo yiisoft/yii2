@@ -1,4 +1,4 @@
-Auth クライアント
+認証クライアント
 =================
 
 Yii は、[OpenID](http://openid.net/)、[OAuth](http://oauth.net/) または [OAuth2](http://oauth.net/2/) のコンシューマとして、外部サービスを使用して認証 および/または 権限付与を行うことを可能にする公式エクステンションを提供しています。
@@ -21,7 +21,7 @@ composer require --prefer-dist yiisoft/yii2-authclient "*"
 クライアントを構成する
 ---------------------
 
-エクステンションがインストールされた後に、Auth クライアントコレクションのアプリケーションコンポーネントをセットアップする必要があります。
+エクステンションがインストールされた後に、認証クライアントコレクションのアプリケーションコンポーネントをセットアップする必要があります。
 
 ```php
 'components' => [
@@ -95,7 +95,7 @@ FOREIGN KEY user_id REFERENCES auth(id);
 
 上記の SQL における `user` は、アドバンストアプリケーションテンプレートでユーザ情報を保存するために使われている標準的なテーブルです。
 全てのユーザはそれぞれ複数の外部サービスを使って認証できますので、全ての `user` レコードはそれぞれ複数の `auth` レコードと関連を持ち得ます。
-`auth` テーブルにおいて `client_name` は使用された認証プロバイダの名前であり、`client_id` はログイン成功後に外部サービスから提供される一意のユーザ識別子です。
+`auth` テーブルにおいて `source` は使用される認証プロバイダの名前であり、`source_id` はログイン成功後に外部サービスから提供される一意のユーザ識別子です。
 
 上記で作成されたテーブルを使って `Auth` モデルを生成することが出来ます。これ以上の修正は必要ありません。
 
@@ -164,8 +164,8 @@ class SiteController extends Controller
                     }
                 }
             }
-        } else { // user already logged in
-            if (!$auth) { // add auth provider
+        } else { // ユーザは既にログインしている
+            if (!$auth) { // 認証プロバイダを追加
                 $auth = new Auth([
                     'user_id' => Yii::$app->user->id,
                     'source' => $client->getId(),
@@ -182,44 +182,40 @@ class SiteController extends Controller
 `$client` インスタンスを通じて、外部サービスから受け取った情報を取得することが出来ます。
 私たちの例では、次のことをしようとしています。
 
-- ユーザがゲストであり、Auth にレコードが見つかった場合は、そのユーザをログインさせる。
-- ユーザがログインしており、Auth にレコードが見つかった場合は、If user is logged in and record found in auth then try connecting additional account (save its data into auth table).
-- If user is guest and record not found in auth then create new user and make a record in auth table. Then log in.
+- ユーザがゲストであり、auth にレコードが見つかった場合は、そのユーザをログインさせる。
+- ユーザがゲストであり、auth にレコードが見つからなかった場合は、新しいユーザを作成して、auth テーブルにレコードを作成する。そして、ログインさせる。
+- ユーザがログインしており、auth にレコードが見つからなかった場合は、追加のアカウントにも接続するようにする (そのデータを auth テーブルに保存する)。
 
-Although, all clients are different they shares same basic interface [[yii\authclient\ClientInterface]],
-which governs common API.
+全ての Auth クライアントには違いがありますが、同じインタフェイス  [[yii\authclient\ClientInterface]] を共有し、共通の API によって管理されます。
 
-Each client has some descriptive data, which can be used for different purposes:
+各クライアントは、異なる目的に使用できるいくつかの説明的なデータを持っています。
 
-- `id` - unique client id, which separates it from other clients, it could be used in URLs, logs etc.
-- `name` - external auth provider name, which this client is match too. Different auth clients
-  can share the same name, if they refer to the same external auth provider.
-  For example: clients for Google OpenID and Google OAuth have same name "google".
-  This attribute can be used inside the database, CSS styles and so on.
-- `title` - user friendly name for the external auth provider, it is used to present auth client
-  at the view layer.
+- `id` - クライアントを他のクライアントから区別する一意の ID。
+  URL やログに使うことが出来ます。
+- `name` - このクライアントが属する外部認証プロバイダの名前。
+  認証クライアントが異なっても、同じ外部認証プロバイダを参照している場合は、同じ名前になることがあります。
+  例えば、Google OpenID のクライアントと Google OAuth のクライアントは同じ名前 "google" を持ちます。
+  この属性は内部的にデータベースや CSS スタイルなどにおいて使用することが出来ます。
+- `title` - 外部認証プロバイダのユーザフレンドリな名前。ビューのレイヤにおいて認証クライアントを表示するのに使用されます。
 
-Each auth client has different auth flow, but all of them supports `getUserAttributes()` method,
-which can be invoked if authentication was successful.
+それぞれの認証クライアントは異なる認証フローを持ちますが、すべてのものが `getUserAttributes()` メソッドをサポートしており、認証が成功した後にこのメソッドを呼び出すことが出来ます。
 
-This method allows you to get information about external user account, such as ID, email address,
-full name, preferred language etc.
+このメソッドによって、外部のユーザアカウントの情報、例えば、ID、メールアドレス、フルネーム、優先される言語などを取得することが出来ます。
 
-Defining list of attributes, which external auth provider should return, depends on client type:
+外部認証プロバイダが返すべき属性を定義するリストは、クライアントのタイプに依存します。
 
-- [[yii\authclient\OpenId]]: combination of `requiredAttributes` and `optionalAttributes`.
-- [[yii\authclient\OAuth1]] and [[yii\authclient\OAuth2]]: field `scope`, note that different
-  providers use different formats for the scope.
+- [[yii\authclient\OpenId]]: `requiredAttributes` と `optionalAttributes` の組み合わせ。
+- [[yii\authclient\OAuth1]] と [[yii\authclient\OAuth2]]: `scope` フィールド。
+  プロバイダによってスコープの形式が異なることに注意。
 
-### Getting additional data via extra API calls
+### API 呼び出しによって追加のデータを取得する
 
-Both [[yii\authclient\OAuth1]] and [[yii\authclient\OAuth2]] provide method `api()`, which
-can be used to access external auth provider REST API. However this method is very basic and
-it may be not enough to access full external API functionality. This method is mainly used to
-fetch the external user account data.
+[[yii\authclient\OAuth1]] と [[yii\authclient\OAuth2]] は、ともに、`api()` メソッドをサポートしており、これによって外部認証プロバイダの REST API にアクセスすることが出来ます。
+ただし、このメソッドは非常に基本的なもので、外部 API の完全な機能にアクセスするためには、十分なものではありません。
+このメソッドは、主として、外部のユーザアカウントの情報を取得するために使用されます。
 
-To use API calls, you need to setup [[yii\authclient\BaseOAuth::apiBaseUrl]] according to the
-API specification. Then you can call [[yii\authclient\BaseOAuth::api()]] method:
+API の呼び出しを使用するためには、API の仕様に従って [[yii\authclient\BaseOAuth::apiBaseUrl]] をセットアップする必要があります。
+そうすれば [[yii\authclient\BaseOAuth::api()]] メソッドを呼ぶことが出来ます。
 
 ```php
 use yii\authclient\OAuth2;
@@ -232,10 +228,10 @@ $client->apiBaseUrl = 'https://www.googleapis.com/oauth2/v1';
 $userInfo = $client->api('userinfo', 'GET');
 ```
 
-Adding widget to login view
----------------------------
+ログインビューにウィジェットを追加する
+-------------------------------
 
-There's ready to use [[yii\authclient\widgets\AuthChoice]] widget to use in views:
+そのまま使える [[yii\authclient\widgets\AuthChoice]] ウィジェットをビューで使用することが出来ます。
 
 ```php
 <?= yii\authclient\widgets\AuthChoice::widget([
@@ -244,20 +240,18 @@ There's ready to use [[yii\authclient\widgets\AuthChoice]] widget to use in view
 ]) ?>
 ```
 
-Creating your own auth clients
+あなた自身の認証クライアントを作成する
 ------------------------------
 
-You may create your own auth client for any external auth provider, which supports
-OpenId or OAuth protocol. To do so, first of all, you need to find out which protocol is
-supported by the external auth provider, this will give you the name of the base class
-for your extension:
+どの外部認証プロバイダでも、あなた自身の認証クライアントを作成して、OpenID または OAuth プロトコルをサポートすることが出来ます。
+そうするためには、最初に、外部認証プロバイダによってどのプロトコルがサポートされているかを見出す必要があります。
+それによって、あなたのエクステンションの基底クラスの名前が決ります。
 
- - For OAuth 2 use [[yii\authclient\OAuth2]].
- - For OAuth 1/1.0a use [[yii\authclient\OAuth1]].
- - For OpenID use [[yii\authclient\OpenId]].
+ - OAuth 2 のためには [[yii\authclient\OAuth2]] を使います。
+ - OAuth 1/1.0a のためには [[yii\authclient\OAuth1]] を使います。
+ - OpenID のためには [[yii\authclient\OpenId]] を使います。
 
-At this stage you can determine auth client default name, title and view options, declaring
-corresponding methods:
+この段階で、対応するメソッドを宣言することによって、認証クライアントのデフォルトの名前、タイトル、および、ビューオプションを決定することが出来ます。
 
 ```php
 use yii\authclient\OAuth2;
@@ -284,7 +278,7 @@ class MyAuthClient extends OAuth2
 }
 ```
 
-Depending on actual base class, you will need to redeclare different fields and methods.
+使用する基底クラスによって、宣言し直さなければならないフィールドやメソッドが異なります。
 
 ### [[yii\authclient\OpenId]]
 

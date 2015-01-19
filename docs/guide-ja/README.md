@@ -111,7 +111,7 @@ All Rights Reserved.
 * [認証](security-authentication.md)
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
-* **翻訳中** [Auth クライアント](security-auth-clients.md)
+* **翻訳中** [認証クライアント](security-auth-clients.md)
 * [ベストプラクティス](security-best-practices.md)
 
 
