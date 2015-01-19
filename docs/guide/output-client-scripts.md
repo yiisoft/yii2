@@ -30,7 +30,7 @@ instead of adding a new one. If you don't provide it, the JS code itself will be
 An external script can be added like the following:
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js', ['depends' => [JqueryAsset::className()]]);
+$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ```
 
 The arguments for [[yii\web\View::registerJsFile()|registerJsFile()]] are similar to those for
