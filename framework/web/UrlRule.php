@@ -215,13 +215,13 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $pathInfo = $request->getPathInfo();
+        $path = $request->getPath();
         $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
-        if ($suffix !== '' && $pathInfo !== '') {
+        if ($suffix !== '' && $path !== '') {
             $n = strlen($suffix);
-            if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
-                $pathInfo = substr($pathInfo, 0, -$n);
-                if ($pathInfo === '') {
+            if (substr_compare($path, $suffix, -$n, $n) === 0) {
+                $path = substr($path, 0, -$n);
+                if ($path === '') {
                     // suffix alone is not allowed
                     return false;
                 }
@@ -231,10 +231,10 @@ class UrlRule extends Object implements UrlRuleInterface
         }
 
         if ($this->host !== null) {
-            $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
+            $path = strtolower($request->getHostInfo()) . ($path === '' ? '' : '/' . $path);
         }
 
-        if (!preg_match($this->pattern, $pathInfo, $matches)) {
+        if (!preg_match($this->pattern, $path, $matches)) {
             return false;
         }
         foreach ($this->defaults as $name => $value) {
