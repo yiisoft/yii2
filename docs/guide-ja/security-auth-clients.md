@@ -1,5 +1,5 @@
 認証クライアント
-=================
+================
 
 Yii は、[OpenID](http://openid.net/)、[OAuth](http://oauth.net/) または [OAuth2](http://oauth.net/2/) のコンシューマとして、外部サービスを使用して認証 および/または 権限付与を行うことを可能にする公式エクステンションを提供しています。
 
@@ -19,7 +19,7 @@ composer require --prefer-dist yiisoft/yii2-authclient "*"
 ```
 
 クライアントを構成する
----------------------
+----------------------
 
 エクステンションがインストールされた後に、認証クライアントコレクションのアプリケーションコンポーネントをセットアップする必要があります。
 
@@ -60,7 +60,7 @@ OpenID では、たいていの場合、何も設定しなくても動作しま�
 
 
 認証データを保存する
--------------------
+--------------------
 
 外部サービスによって認証されたユーザを認識するために、最初の認証のときに提供された ID を保存し、以後の認証のときにはそれをチェックする必要があります。
 ログインのオプションを外部サービスに限定するのは良いアイデアではありません。
@@ -101,7 +101,7 @@ FOREIGN KEY user_id REFERENCES auth(id);
 
 
 コントローラにアクションを追加する
---------------------------------
+----------------------------------
 
 次のステップでは、ウェブのコントローラ、典型的には `SiteController` に [[yii\authclient\AuthAction]] を追加します。
 
@@ -229,7 +229,7 @@ $userInfo = $client->api('userinfo', 'GET');
 ```
 
 ログインビューにウィジェットを追加する
--------------------------------
+--------------------------------------
 
 そのまま使える [[yii\authclient\widgets\AuthChoice]] ウィジェットをビューで使用することが出来ます。
 
@@ -241,7 +241,7 @@ $userInfo = $client->api('userinfo', 'GET');
 ```
 
 あなた自身の認証クライアントを作成する
-------------------------------
+--------------------------------------
 
 どの外部認証プロバイダでも、あなた自身の認証クライアントを作成して、OpenID または OAuth プロトコルをサポートすることが出来ます。
 そうするためには、最初に、外部認証プロバイダによってどのプロトコルがサポートされているかを見出す必要があります。
@@ -282,9 +282,9 @@ class MyAuthClient extends OAuth2
 
 ### [[yii\authclient\OpenId]]
 
-All you need is to specify auth URL, by redeclaring `authUrl` field.
-You may also setup default required and/or optional attributes.
-For example:
+必要なことは、`authUrl` フィールドを宣言し直して URL を指定することだけです。
+デフォルトの 必須属性 および/または オプション属性を設定することも可能です。
+例えば、
 
 ```php
 use yii\authclient\OpenId;
@@ -306,14 +306,14 @@ class MyAuthClient extends OpenId
 
 ### [[yii\authclient\OAuth2]]
 
-You will need to specify:
+以下のものを指定する必要があります。
 
-- Auth URL by redeclaring `authUrl` field.
-- Token request URL by redeclaring `tokenUrl` field.
-- API base URL by redeclaring `apiBaseUrl` field.
-- User attribute fetching strategy by redeclaring `initUserAttributes()` method.
+- 認証 URL - `authUrl` フィールド。
+- トークンリクエスト URL - `tokenUrl` フィールド。
+- API のベース URL - `apiBaseUrl` フィールド。
+- ユーザ属性取得ストラテジー - `initUserAttributes()` メソッド。
 
-For example:
+例えば、
 
 ```php
 use yii\authclient\OAuth2;
@@ -333,22 +333,22 @@ class MyAuthClient extends OAuth2
 }
 ```
 
-You may also specify default auth scopes.
+デフォルトの auth スコープを指定することも出来ます。
 
-> Note: Some OAuth providers may not follow OAuth standards clearly, introducing
-  differences, and may require additional efforts to implement clients for.
+> Note|注意: OAuth プロバイダの中には、OAuth の標準を厳格に遵守せず、標準と異なる仕様を導入しているものもあります。
+  そのようなものに対してクライアントを実装するためには、追加の労力が必要になることがあります。
 
 ### [[yii\authclient\OAuth1]]
 
-You will need to specify:
+以下のものを指定する必要があります。
 
-- Auth URL by redeclaring `authUrl` field.
-- Request token URL by redeclaring `requestTokenUrl` field.
-- Access token URL by redeclaring `accessTokenUrl` field.
-- API base URL by redeclaring `apiBaseUrl` field.
-- User attribute fetching strategy by redeclaring `initUserAttributes()` method.
+- 認証 URL - `authUrl` フィールド。
+- リクエストトークン URL - `requestTokenUrl` フィールド。
+- アクセストークン URL - `accessTokenUrl` フィールド。
+- API のベース URL - `apiBaseUrl` フィールド。
+- ユーザ属性取得ストラテジー - `initUserAttributes()` メソッド。
 
-For example:
+例えば、
 
 ```php
 use yii\authclient\OAuth1;
@@ -370,7 +370,7 @@ class MyAuthClient extends OAuth1
 }
 ```
 
-You may also specify default auth scopes.
+デフォルトの auth スコープを指定することも出来ます。
 
-> Note: Some OAuth providers may not follow OAuth standards clearly, introducing
-  differences, and may require additional efforts to implement clients for.
+> Note|注意: OAuth プロバイダの中には、OAuth の標準を厳格に遵守せず、標準と異なる仕様を導入しているものもあります。
+  そのようなものに対してクライアントを実装するためには、追加の労力が必要になることがあります。
