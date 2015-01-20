@@ -1,22 +1,20 @@
 データベースアクセスオブジェクト
 ================================
 
-> Note|注意: この節はまだ執筆中です。
+[PDO](http://www.php.net/manual/ja/book.pdo.php) の上に構築された Yii DAO (データベースアクセスオブジェクト) は、リレーショナルデータベースにアクセスするためのオブジェクト指向 API を提供するものです。
+これは、データベースにアクセスする他のもっと高度な方法、例えば [クエリビルダ](db-query-builder.md) や [アクティブレコード](db-active-record.md) の基礎でもあります。
 
-Yii は、PHP の [PDO](http://www.php.net/manual/ja/book.pdo.php) の上に構築されたデータベースアクセスレイヤを含んでいます。
-データベースアクセスオブジェクト (DAO) のインタフェイスは、統一された API を提供し、さまざまなデータベース製品間に存在する不統一のいくらかを解決します。
-アクティブレコードは、モデルを通じてのデータベースとの相互作用を提供し、クエリビルダは、動的なクエリの作成を支援します。
-一方、DAO はデータベースに対して直接に SQL を実行する単純で効率的な方法を提供します。
-実行すべきクエリが高価なものである場合、かつ/または、アプリケーションモデル (および対応するビジネスロジック) が必要でない場合に、あなたは DAO を使いたいと思うでしょう。
+Yii DAO を使うときは、主として素の SQL と PHP 配列を扱う必要があります。
+その結果として、Yii DAO はデータベースにアクセスする方法としては最も効率的なものになっています。
+しかし、SQL の構文はさまざまなデータベースによって異なる場合があり得ますので、Yii DAO を使用するということは、特定のデータベースに依存しないアプリケーションを作るためには追加の労力が必要になる、ということも同時に意味します。
 
-Yii はデフォルトで下記の DBMS をサポートしています。
+Yii は下記の DBMS のサポートを内蔵しています。
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/)
-- [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。(cubrid PDO 拡張の [バグ](http://jira.cubrid.org/browse/APIS-658)
-  のために、値を引用符で囲む機能が動作しません。そのため、サーバだけでなくクライアントも CUBRID 9.3 が必要になります)
+- [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
