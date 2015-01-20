@@ -65,10 +65,10 @@ class NumberValidator extends Validator
                 : Yii::t('yii', '{attribute} must be a number.');
         }
         if ($this->min !== null && $this->tooSmall === null) {
-            $this->tooSmall = Yii::t('yii', '{attribute} must be no less than {min}.');
+            $this->tooSmall = Yii::t('yii', '{attribute} must not be less than {min}.');
         }
         if ($this->max !== null && $this->tooBig === null) {
-            $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
+            $this->tooBig = Yii::t('yii', '{attribute} must not be greater than {max}.');
         }
     }
 
