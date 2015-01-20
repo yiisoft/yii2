@@ -18,7 +18,7 @@ use yii\caching\Cache;
  * UrlManager is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->urlManager`.
  *
- * You can modify its configuration by adding an array to your application config under `components`
+ * You can modify its configuration by adding an array to you@r application config under `components`
  * as it is shown in the following example:
  *
  * ~~~
@@ -57,7 +57,7 @@ class UrlManager extends Component
      */
     public $enableStrictParsing = false;
     /**
-     * @var array the rules for creating and parsing URLs when [[enablePrettyUrl]] is true.
+     * @var UrlRule[] the rules for creating and parsing URLs when [[enablePrettyUrl]] is true.
      * This property is used only if [[enablePrettyUrl]] is true. Each element in the array
      * is the configuration array for creating a single URL rule. The configuration will
      * be merged with [[ruleConfig]] first before it is used for creating the rule object.
@@ -228,7 +228,6 @@ class UrlManager extends Component
     {
         if ($this->enablePrettyUrl) {
             $pathInfo = $request->getPathInfo();
-            /* @var $rule UrlRule */
             foreach ($this->rules as $rule) {
                 if (($result = $rule->parseRequest($this, $request)) !== false) {
                     return $result;
@@ -309,7 +308,6 @@ class UrlManager extends Component
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
         if ($this->enablePrettyUrl) {
-            /* @var $rule UrlRule */
             foreach ($this->rules as $rule) {
                 if (($url = $rule->createUrl($this, $route, $params)) !== false) {
                     if (strpos($url, '://') !== false) {
