@@ -589,6 +589,7 @@ class QueryBuilder extends \yii\base\Object
      */
     public function getColumnType($type)
     {
+        $type = (string)$type;
         if (isset($this->typeMap[$type])) {
             return $this->typeMap[$type];
         } elseif (preg_match('/^(\w+)\((.+?)\)(.*)$/', $type, $matches)) {
