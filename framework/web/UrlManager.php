@@ -227,7 +227,7 @@ class UrlManager extends Component
     public function parseRequest($request)
     {
         if ($this->enablePrettyUrl) {
-            $pathInfo = $request->getPathInfo();
+            $path = $request->getPath();
             /* @var $rule UrlRule */
             foreach ($this->rules as $rule) {
                 if (($result = $rule->parseRequest($this, $request)) !== false) {
@@ -242,11 +242,11 @@ class UrlManager extends Component
             Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 
             $suffix = (string) $this->suffix;
-            if ($suffix !== '' && $pathInfo !== '') {
+            if ($suffix !== '' && $path !== '') {
                 $n = strlen($this->suffix);
-                if (substr_compare($pathInfo, $this->suffix, -$n, $n) === 0) {
-                    $pathInfo = substr($pathInfo, 0, -$n);
-                    if ($pathInfo === '') {
+                if (substr_compare($path, $this->suffix, -$n, $n) === 0) {
+                    $path = substr($path, 0, -$n);
+                    if ($path === '') {
                         // suffix alone is not allowed
                         return false;
                     }
@@ -256,7 +256,7 @@ class UrlManager extends Component
                 }
             }
 
-            return [$pathInfo, []];
+            return [$path, []];
         } else {
             Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
             $route = $request->getQueryParam($this->routeParam, '');

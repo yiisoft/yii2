@@ -60,6 +60,8 @@ use yii\helpers\StringHelper;
  * turned into upper case. This property is read-only.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
+ * @property string $path The requested route path. By default this will return the [[pathInfo path info]].
+ * This property is read-only.
  * @property integer $port Port number for insecure requests.
  * @property array $queryParams The request GET parameter values.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
@@ -721,6 +723,18 @@ class Request extends \yii\base\Request
         }
 
         return (string) $pathInfo;
+    }
+
+    /**
+     * The requested route path.
+     * By default this will return the [[getPathInfo() path info]].
+     * The starting and ending slashes are both removed.
+     *
+     * @return string the requested path.
+     */
+    public function getPath()
+    {
+        return $this->getPathInfo();
     }
 
     /**
