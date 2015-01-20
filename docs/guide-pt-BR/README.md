@@ -48,7 +48,7 @@ Tratamento de Requisições
 -------------------------
 
 * [Visão Geral](runtime-overview.md)
-* [Bootstrapping](runtime-bootstrapping.md)
+* [Inicialização (Bootstrapping)](runtime-bootstrapping.md)
 * [Roteamento e Criação de URL](runtime-routing.md)
 * [Requisições](runtime-requests.md)
 * [Respostas](runtime-responses.md)
