@@ -51,7 +51,7 @@ use yii\helpers\ArrayHelper;
  * ```php
  * use yii\bootstrap\ActiveForm;
  *
- * $form = ActiveForm::begin(['layout' => 'horizontal'])
+ * $form = ActiveForm::begin(['layout' => 'horizontal']);
  *
  * // Form field without label
  * echo $form->field($model, 'demo', [
