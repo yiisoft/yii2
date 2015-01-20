@@ -4,7 +4,7 @@ Yii Framework 2 smarty extension Change Log
 2.0.3 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6845: Fixed incorrect implementation of `{registerCssFile` and `{registerJsFile` (TomassunGitHub, samdark)
 
 
 2.0.2 January 11, 2015
