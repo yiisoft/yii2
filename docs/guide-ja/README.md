@@ -111,7 +111,7 @@ All Rights Reserved.
 * [認証](security-authentication.md)
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
-* **TBD** [Auth クライアント](security-auth-clients.md)
+* [認証クライアント](security-auth-clients.md)
 * [ベストプラクティス](security-best-practices.md)
 
 
@@ -195,4 +195,3 @@ RESTful ウェブサービス
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)
-
