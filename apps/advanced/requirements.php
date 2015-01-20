@@ -11,6 +11,8 @@
  */
 
 // you may need to adjust this path to the correct Yii framework path
+use yii\requirements\YiiRequirementChecker;
+
 $frameworkPath = dirname(__FILE__) . '/vendor/yiisoft/yii2';
 
 if (!is_dir($frameworkPath)) {

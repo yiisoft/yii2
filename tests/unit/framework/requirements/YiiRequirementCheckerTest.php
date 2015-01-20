@@ -2,6 +2,7 @@
 
 require_once(__DIR__.'/../../../../framework/requirements/YiiRequirementChecker.php');
 
+use yii\requirements\YiiRequirementChecker;
 use yiiunit\TestCase;
 
 /**

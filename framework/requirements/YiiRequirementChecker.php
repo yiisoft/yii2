@@ -5,6 +5,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\requirements;
+
 if (version_compare(PHP_VERSION, '4.3', '<')) {
     echo 'At least PHP 4.3 is required to run this script!';
     exit(1);
