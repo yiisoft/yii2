@@ -39,11 +39,6 @@ class DbPanel extends Panel
      * @var array current database request timings
      */
     private $_timings;
-    /**
-     * @var array query types used
-     * @since 2.0.3
-     */
-    private $_types = [];
 
 
     /**
@@ -182,12 +177,7 @@ class DbPanel extends Panel
         $timing = ltrim($timing);
         preg_match('/^([a-zA-z]*)/', $timing, $matches);
 
-        if (count($matches)) {
-            $this->_types[$matches[0]] = $matches[0];
-            return $matches[0];
-        } else {
-            return '';
-        }
+        return count($matches) ? $matches[0] : '';
     }
 
     /**
@@ -209,6 +199,13 @@ class DbPanel extends Panel
      */
     public function getTypes()
     {
-        return $this->_types;
+        return array_reduce(
+            $this->_models,
+            function ($result, $item) {
+                $result[$item['type']] = $item['type'];
+                return $result;
+            },
+            []
+        );
     }
 }
