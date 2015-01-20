@@ -190,4 +190,22 @@ class DbPanel extends Panel
     {
         return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
     }
+
+    /**
+     * Returns array query types
+     *
+     * @return array
+     * @since 2.0.3
+     */
+    public function getTypes()
+    {
+        return array_reduce(
+            $this->_models,
+            function ($result, $item) {
+                $result[$item['type']] = $item['type'];
+                return $result;
+            },
+            []
+        );
+    }
 }
