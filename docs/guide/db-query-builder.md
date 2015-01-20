@@ -184,6 +184,12 @@ results in this WHERE clause:
 WHERE (`status` IS NULL)
 ```
 
+If you need `IS NOT NULL` you can use the following:
+
+```php
+$query->where(['not', ['col' => null]]);
+```
+
 You can also create sub-queries with `Query` objects like the following,
 
 ```php
