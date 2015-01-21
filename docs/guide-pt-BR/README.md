@@ -161,7 +161,7 @@ Testes
 Tópicos Especiais
 -----------------
 
-* [Modelo de Aplicação Avançada](tutorial-advanced-app.md)
+* [Template Avançado de Aplicação](tutorial-advanced-app.md)
 * [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md)
 * [Comandos de Console](tutorial-console.md)
 * [Ferramentas de Validação Embutidas](tutorial-core-validators.md)
