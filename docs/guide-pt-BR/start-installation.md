@@ -23,7 +23,6 @@ cerca de 90% das aplicações Web. Este template difere do Template Avançado de
 Aplicação principalmente na forma de como o seu código é organizado. Se você é 
 novo no Yii, recomendamos fortemente em escolher o Template Básico de Aplicação 
 pela sua simplicidade além de ter funcionalidades o suficiente.
-If you are new to Yii, we strongly recommend you stick to the Basic Application Template for its simplicity yet sufficient functionalities.
 
 
 Instalando via Composer <a name="installing-via-composer"></a>
