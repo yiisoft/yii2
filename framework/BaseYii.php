@@ -512,7 +512,7 @@ class BaseYii
      * @param array $properties the property initial values given in terms of name-value pairs.
      * @return object the object itself
      */
-    public static function configure($object, $properties)
+    public static function configure($object, array $properties)
     {
         foreach ($properties as $name => $value) {
             $object->$name = $value;
