@@ -541,7 +541,7 @@ mais a classe `CUserIdentity`. Ao invés disso, você deve implementar a interfa
 aplicação avançado dá um exemplo disso.
 
 Por favor consulte as seções [Autenticação](security-authentication.md),
-[Autorização](security-authorization.md), e [Modelo de Aplicação Avançada](tutorial-advanced-app.md)
+[Autorização](security-authorization.md), e [Template Avançado de Aplicação](tutorial-advanced-app.md)
 para mais detalhes.
 
 
