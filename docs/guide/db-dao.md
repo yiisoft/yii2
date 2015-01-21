@@ -190,8 +190,8 @@ executing it multiple times with different parameters. For example,
 ```php
 $command = $db->createCommand('SELECT * FROM post WHERE id=:id');
 
-$post1 = $command->bindValue(':id', 1)->queryRow();
-$post2 = $command->bindValue(':id', 2)->queryRow();
+$post1 = $command->bindValue(':id', 1)->queryOne();
+$post2 = $command->bindValue(':id', 2)->queryOne();
 ```
 
 Because [[yii\db\Command::bindParam()|bindParam()]] supports binding parameters by references, the above code
@@ -202,10 +202,10 @@ $command = $db->createCommand('SELECT * FROM post WHERE id=:id')
               ->bindParam(':id', $id);
 
 $id = 1;
-$post1 = $command->queryRow();
+$post1 = $command->queryOne();
 
 $id = 2;
-$post2 = $command->queryRow();
+$post2 = $command->queryOne();
 ```
 
 Notice that you bind the placeholder to the `$id` variable before the execution, and then change the value of that variable 
