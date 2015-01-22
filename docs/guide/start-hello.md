@@ -102,7 +102,7 @@ Trying it Out <a name="trying-it-out"></a>
 After creating the action and the view, you may access the new page by accessing the following URL:
 
 ```
-http://hostname/index.php?r=site/say&message=Hello+World
+http://hostname/index.php?r=site/say?message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)
