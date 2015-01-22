@@ -270,7 +270,7 @@ For example,
 
 ```php
 // executes this SQL for MySQL: SELECT COUNT(`id`) FROM `employee`
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
+$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
@@ -301,7 +301,7 @@ when configuring the DB connection. For example,
 
 ```php
 // executes this SQL for MySQL: SELECT COUNT(`id`) FROM `tbl_employee`
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
+$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
@@ -347,7 +347,7 @@ The transaction is represented as a [[yii\db\Transaction]] object stored in the 
 the queries being executed are enclosed in a `try...catch...` block. If all queries are executed successfully,
 the [[yii\db\Transaction::commit()|commit()]] method is called to commit the transaction. Otherwise, an exception
 will be triggered and caught, and the [[yii\db\Transaction::rollBack()|rollBack()]] method is called to roll back
-the changes made the queries prior to that failed query in the transaction.
+the changes made by the queries prior to that failed query in the transaction.
 
 
 ### Specifying Isolation Levels <a name="specifying-isolation-levels"></a>
