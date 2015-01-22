@@ -167,7 +167,7 @@ objetivos.
   dados sensíveis que estão armazenados em diretórios irmãos de `basic/web`.
   Negar o acesso a estes outros diretórios é uma melhoria de segurança.
 
-> Informação: Se a sua explicação rodará em um ambiente de hospedagem compartilhada
+> Informação: Se a sua aplicação rodará em um ambiente de hospedagem compartilhada
   onde você não tem permissão para alterar a configuração do seu servidor Web,
   você ainda pode ajustar a estrutura de sua aplicação para uma melhor segurança.
   Por favor consulte a seção [Ambiente de Hospedagem Compartilhada](tutorial-shared-hosting.md)
