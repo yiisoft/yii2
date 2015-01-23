@@ -117,6 +117,7 @@ class TestCase extends Test
                 $config['class'] = 'yii\web\Application';
             }
 
+            Yii::$container = new Container();
             return Yii::createObject($config);
         } else {
             throw new InvalidConfigException('Please provide a configuration array to mock up an application.');
