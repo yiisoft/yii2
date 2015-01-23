@@ -251,11 +251,12 @@ $config = [
 ```php
 if ($event === null) {
     return new Event();
-} elseif ($event instanceof CoolEvent) {
-    return $event->instance();
-} else {
-    return null;
 }
+if ($event instanceof CoolEvent) {
+    return $event->instance();
+}
+return null;
+
 
 // the following is NOT allowed:
 if (!$model && null === $event)
