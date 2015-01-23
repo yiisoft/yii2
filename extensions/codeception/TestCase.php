@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use Codeception\TestCase\Test;
 use yii\base\UnknownMethodException;
 use yii\base\UnknownPropertyException;
+use yii\di\Container;
 use yii\test\ActiveFixture;
 use yii\test\BaseActiveFixture;
 use yii\test\FixtureTrait;
@@ -128,5 +129,6 @@ class TestCase extends Test
     protected function destroyApplication()
     {
         Yii::$app = null;
+        Yii::$container = new Container();
     }
 }
