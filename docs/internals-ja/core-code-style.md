@@ -250,11 +250,11 @@ $config = [
 ```php
 if ($event === null) {
     return new Event();
-} elseif ($event instanceof CoolEvent) {
-    return $event->instance();
-} else {
-    return null;
 }
+if ($event instanceof CoolEvent) {
+    return $event->instance();
+}
+return null;
 
 // 下記は許容されません:
 if (!$model && null === $event)
