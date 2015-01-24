@@ -525,7 +525,6 @@ class Generator extends \yii\gii\Generator
         }
         $tableNames = [];
         if (strpos($this->tableName, '*') !== false) {
-            $module = Yii::$app->controller->module;
             if (($pos = strrpos($this->tableName, '.')) !== false) {
                 $schema = substr($this->tableName, 0, $pos);
                 $pattern = '/^' . str_replace('*', '\w+', substr($this->tableName, $pos + 1)) . '$/';
@@ -535,10 +534,6 @@ class Generator extends \yii\gii\Generator
             }
 
             foreach ($db->schema->getTableNames($schema) as $table) {
-                if (in_array($table, $module->ignoreTables)) {
-                    continue;
-                }
-
                 if (preg_match($pattern, $table)) {
                     $tableNames[] = $schema === '' ? $table : ($schema . '.' . $table);
                 }
