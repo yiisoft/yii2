@@ -237,15 +237,14 @@ class Command extends Component
 
     /**
      * creates an index
-     * @param $index
-     * @param array $configuration
-     * @return mixed
+     * @param string $index index name.
+     * @param array $configuration index configuration.
+     * @return mixed the request result.
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-create-index.html
      */
     public function createIndex($index, $configuration = null)
     {
         $body = $configuration !== null ? Json::encode($configuration) : null;
-
         return $this->db->put([$index], [], $body);
     }
 

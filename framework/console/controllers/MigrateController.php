@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Exception;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 
@@ -64,8 +65,9 @@ class MigrateController extends BaseMigrateController
      */
     public $templateFile = '@yii/views/migration.php';
     /**
-     * @var Connection|string the DB connection object or the application
-     * component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection
+     * that this migration should work with.
+     * Starting from version 2.0.3, this can also be a configuration array for creating the object.
      */
     public $db = 'db';
 
@@ -92,12 +94,7 @@ class MigrateController extends BaseMigrateController
     {
         if (parent::beforeAction($action)) {
             if ($action->id !== 'create') {
-                if (is_string($this->db)) {
-                    $this->db = Yii::$app->get($this->db);
-                }
-                if (!$this->db instanceof Connection) {
-                    throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");
-                }
+                $this->db = Instance::ensure($this->db, Connection::className());
             }
             return true;
         } else {
