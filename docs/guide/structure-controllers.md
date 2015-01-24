@@ -10,7 +10,7 @@ into [views](structure-views.md), and finally generate outgoing responses.
 
 ## Actions <span id="actions"></span>
 
-Controllers are composed by *actions* which are the most basic units that end users can address and request for
+Controllers are composed of *actions* which are the most basic units that end users can address and request for
 execution. A controller can have one or multiple actions.
 
 The following example shows a `post` controller with two actions: `view` and `create`:
@@ -153,7 +153,7 @@ in `@app/controllers/admin/Post2CommentController.php`.
 
 You can configure [[yii\base\Application::controllerMap|controller map]] to overcome the constraints
 of the controller IDs and class names described above. This is mainly useful when you are using some
-third-party controllers which you do not control over their class names.
+third-party controllers which you do not have control over their class names.
 
 You may configure [[yii\base\Application::controllerMap|controller map]] in the
 [application configuration](structure-applications.md#application-configurations) like the following:
@@ -177,7 +177,7 @@ You may configure [[yii\base\Application::controllerMap|controller map]] in the
 ### Default Controller <span id="default-controller"></span>
 
 Each application has a default controller specified via the [[yii\base\Application::defaultRoute]] property.
-When a request does not specify a [route](#ids-routes), the route specified by this property will be used.
+When a request does not specify a [route](#routes), the route specified by this property will be used.
 For [[yii\web\Application|Web applications]], its value is `'site'`, while for [[yii\console\Application|console applications]],
 it is `help`. Therefore, if a URL is `http://hostname/index.php`, it means the `site` controller will handle the request.
 
@@ -284,7 +284,6 @@ As you can see, the `actions()` method should return an array whose keys are act
 action class names or [configurations](concept-configurations.md). Unlike inline actions, action IDs for standalone
 actions can contain arbitrary characters, as long as they are declared in the `actions()` method.
 
-
 To create a standalone action class, you should extend [[yii\base\Action]] or its child class, and implement
 a public method named `run()`. The role of the `run()` method is similar to that of an action method. For example,
 
@@ -309,8 +308,7 @@ class HelloWorldAction extends Action
 The return value of an action method or the `run()` method of a standalone action is significant. It stands
 for the result of the corresponding action.
 
-The return value can be a [response](runtime-responses.md) object which will be sent to as the response
-to end users.
+The return value can be a [response](runtime-responses.md) object which will be sent to the end user as the response.
 
 * For [[yii\web\Application|Web applications]], the return value can also be some arbitrary data which will
   be assigned to [[yii\web\Response::data]] and be further converted into a string representing the response body.
@@ -385,7 +383,7 @@ please refer to the [Console Commands](tutorial-console.md) section for more det
 ### Default Action <span id="default-action"></span>
 
 Each controller has a default action specified via the [[yii\base\Controller::defaultAction]] property.
-When a [route](#ids-routes) contains the controller ID only, it implies that the default action of
+When a [route](#routes) contains the controller ID only, it implies that the default action of
 the specified controller is requested.
 
 By default, the default action is set as `index`. If you want to change the default value, simply override
