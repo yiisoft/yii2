@@ -159,7 +159,7 @@ class ViewRenderer extends BaseViewRenderer
         if (count($methodInfo) === 2) {
             $alias = $methodInfo[1];
             if (isset($this->widgets['functions'][$alias])) {
-                if (($methodInfo[0] === '_widget_func') && (count($args) === 2)) {
+                if (($methodInfo[0] === '_widget_function') && (count($args) === 2)) {
                     return $this->widgetFunction($this->widgets['functions'][$alias], $args[0], $args[1]);
                 }
             } elseif (isset($this->widgets['blocks'][$alias])) {
