@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
 // コンテキストのプロパティを設定したり、コンテキストのセッターを呼んだり、その他のことをする。
 $this->title = 'Posts';
 ?>
-<!-- foreach、for などには、独立した PHP ブロックを使う方が良い -->
+<!-- foreach、for, if などには、独立した PHP ブロックを使う方が良い -->
 <?php foreach ($posts as $post): ?>
     <!-- インデントのレベルに注目 -->
     <h2><?= Html::encode($post['title']) ?></h2>
