@@ -55,7 +55,7 @@ The name after the `action` prefix maps to the action's ID.
 When it comes to naming your actions, you should understand how Yii treats action IDs. Action IDs are always
 referenced in lower case. If an action ID requires multiple words, they will be concatenated by dashes
 (e.g., `create-comment`). Action method names are mapped to action IDs by removing any dashes from the IDs,
-capitalizing the first letter in each word, and prefixing the resulting with `action`. For example,
+capitalizing the first letter in each word, and prefixing the resulting string with `action`. For example,
 the action ID `create-comment` corresponds to the action method name `actionCreateComment`.
 
 The action method in our example takes a parameter `$message`, whose value defaults to `"Hello"` (in exactly
@@ -74,7 +74,7 @@ Creating a View <a name="creating-view"></a>
 ---------------
 
 [Views](structure-views.md) are scripts you write to generate a response's content.
-For the "Hello" task, you will create a `say` view that prints the `message` parameter received from the action method, and passed by the action to the view:
+For the "Hello" task, you will create a `say` view that prints the `message` parameter received from the action method:
 
 ```php
 <?php
