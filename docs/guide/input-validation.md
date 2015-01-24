@@ -312,7 +312,7 @@ the method/function is:
 ```php
 /**
  * @param string $attribute the attribute currently being validated
- * @param array $params the additional name-value pairs given in the rule
+ * @param mixed $params the value of the "params" given in the rule
  */
 function ($attribute, $params)
 ```
