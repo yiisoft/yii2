@@ -52,7 +52,7 @@ class BaseHtmlPurifier
         if ($config instanceof \Closure) {
             call_user_func($config, $configInstance);
         }
-        static::config($configInstance);
+        static::configure($configInstance);
 
         return $purifier->purify($content);
     }
@@ -62,7 +62,7 @@ class BaseHtmlPurifier
      * @param \HTMLPurifier_Config $config
      * @since 2.0.3
      */
-    protected static function config($config)
+    protected static function configure($config)
     {
         
     }
