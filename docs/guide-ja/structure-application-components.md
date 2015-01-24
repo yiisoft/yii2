@@ -16,7 +16,7 @@
 また、`\Yii::$app->cache` を使って、[[yii\caching\Cache|プライマリキャッシュ]] を取得できます。
 
 アプリケーションコンポーネントは、上記の式を使ってアクセスされた最初の時に作成されます。
-二度目以降のアクセスでは、同じコンポーネントのインスタンスが返されます。
+二度目以降のアクセスでは、同じコンポーネントインスタンスが返されます。
 
 どのようなオブジェクトでも、アプリケーションコンポーネントとすることが可能です。
 [アプリケーションの構成情報](structure-applications.md#application-configurations) の中で [[yii\base\Application::components]] プロパティを構成することによって、アプリケーションコンポーネントを登録することが出来ます。
@@ -50,7 +50,7 @@
   多くの場合、必要なときにローカルなコンポーネントを作成して使用するだけで十分です。
 
 
-## コンポーネントをブートストラップに含める<span id="bootstrapping-components"></span>
+## コンポーネントをブートストラップに含める <span id="bootstrapping-components"></span>
 
 上述のように、アプリケーションコンポーネントは最初にアクセスされた時に初めてインスタンスが作成されます。
 リクエストの間に全くアクセスされなかった時は、インスタンスは作成されません。
@@ -87,8 +87,7 @@ Yii のアプリケーションがユーザリクエストを処理出来るの�
 * [[yii\web\AssetManager|assetManager]]: アセットバンドルとアセットの発行を管理します。
   詳細は [アセット](structure-assets.md) の節を参照してください。
 * [[yii\db\Connection|db]]: データベース接続を表します。これを通じて、DB クエリを実行することが出来ます。
-  このコンポーネントを構成するときは、コンポーネントのクラスはもちろん、
-  [[yii\db\Connection::dsn]] のような必須のコンポーネントプロパティを指定しなければならないことに注意してください。
+  このコンポーネントを構成するときは、コンポーネントのクラスはもちろん、[[yii\db\Connection::dsn]] のような必須のコンポーネントプロパティを指定しなければならないことに注意してください。
   詳細は [データアクセスオブジェクト](db-dao.md) の節を参照してください。
 * [[yii\base\Application::errorHandler|errorHandler]]: PHP のエラーと例外を処理します。
   詳細は [エラー処理](runtime-handling-errors.md) の節を参照してください。
@@ -106,12 +105,12 @@ Yii のアプリケーションがユーザリクエストを処理出来るの�
 * [[yii\base\Application::request|request]]: エンドユーザから受信したリクエストを表現します。
   詳細は [リクエスト](runtime-requests.md) の節を参照してください。
 * [[yii\web\Session|session]]: セッション情報を表現します。
-  このコンポーネントは、[[yii\web\Application|ウェブアプリケーション]] においてのみ利用できます。.
+  このコンポーネントは、[[yii\web\Application|ウェブアプリケーション]] においてのみ利用できます。
   詳細は [セッションとクッキー](runtime-sessions-cookies.md) の節を参照してください。
 * [[yii\web\UrlManager|urlManager]]: URL の解析と生成をサポートします。
   詳細は [ルーティング と URL 生成](runtime-routing.md) の節を参照してください。
 * [[yii\web\User|user]]: ユーザの認証情報を表現します。
-  このコンポーネントは、[[yii\web\Application|ウェブアプリケーション]] においてのみ利用できます。.
+  このコンポーネントは、[[yii\web\Application|ウェブアプリケーション]] においてのみ利用できます。
   詳細は [認証](security-authentication.md) の節を参照してください。
 * [[yii\web\View|view]]: ビューのレンダリングをサポートします。
   詳細は [ビュー](structure-views.md) の節を参照してください。
