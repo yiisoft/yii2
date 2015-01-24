@@ -85,7 +85,7 @@ Generating CRUD Code <a name="generating-crud"></a>
 
 CRUD stands for Create, Read, Update, and Delete, representing the four common tasks taken with data on most Web sites. To create CRUD functionality using Gii, select the "CRUD Generator" (by clicking the link on the Gii index page). For the "country" example, fill out the resulting form as follows:
 
-* Model Class: `app\models\Country`
+* Model Class: `app\models\Country` (Incorrect field app\models\Countries" in Model Class as shown in image below (![CRUD Generator]) and will result in error. Text shown here is correct.).
 * Search Model Class: `app\models\CountrySearch`
 * Controller Class: `app\controllers\CountryController`
 
