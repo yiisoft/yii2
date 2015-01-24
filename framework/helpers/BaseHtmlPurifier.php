@@ -52,7 +52,17 @@ class BaseHtmlPurifier
         if ($config instanceof \Closure) {
             call_user_func($config, $configInstance);
         }
+        static::config($configInstance);
 
         return $purifier->purify($content);
+    }
+
+    /**
+     * Allow the extended HtmlPurifier class to set some default config options.
+     * @param \HTMLPurifier_Config $config
+     */
+    protected static function config($config)
+    {
+        
     }
 }
