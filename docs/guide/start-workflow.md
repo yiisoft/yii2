@@ -7,7 +7,7 @@ upon your configuration. This section will introduce the application's built-in 
 how the code is organized, and how the application handles requests in general.
 
 > Info: For simplicity, throughout this "Getting Started" tutorial, it's assumed that you have set `basic/web`
-  as the document root of your Web server, and configured, the URL for accessing
+  as the document root of your Web server, and configured the URL for accessing
   your application to be `http://hostname/index.php` or something similar.
   For your needs, please adjust the URLs in our descriptions accordingly.
 
