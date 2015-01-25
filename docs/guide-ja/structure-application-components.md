@@ -73,7 +73,7 @@
 ```
 
 
-## コアアプリケーションコンポーネント<span id="core-application-components"></span>
+## コアアプリケーションコンポーネント <span id="core-application-components"></span>
 
 Yii は固定の ID とデフォルトの構成情報を持つ一連の *コア* アプリケーションコンポーネントを定義しています。
 例えば、[[yii\web\Application::request|request]] コンポーネントは、ユーザリクエストに関する情報を収集して、それを [ルート](runtime-routing.md) として解決するために使用されます。
