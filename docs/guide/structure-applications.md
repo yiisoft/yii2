@@ -505,7 +505,7 @@ handlers to these events in application configurations like the following,
 The use of the `on eventName` syntax is described in the [Configurations](concept-configurations.md#configuration-format)
 section.
 
-Alternatively, you may attach event handlers during the [bootstrapping process](runtime-bootstrapping.md) process
+Alternatively, you may attach event handlers during the [bootstrapping process](runtime-bootstrapping.md)
 after the application instance is created. For example,
 
 ```php
