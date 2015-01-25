@@ -9,7 +9,7 @@
 なお、簡潔さを重視して、ビューテンプレートまたはビューテンプレートファイルを単にビューと呼ぶことがよくあります。
 
 
-## ビューを作成する <a name="creating-views"></a>
+## ビューを作成する <span id="creating-views"></span>
 
 前述のように、ビューは HTML と PHP コードが混ざった単なる PHP スクリプトです。
 次に示すのは、ログインフォームを表示するビューです。
@@ -46,7 +46,7 @@ $this->title = 'ログイン';
   これは、ビューにドキュメントを付けるのにも良い方法です。
 
 
-### セキュリティ <a name="security"></a>
+### セキュリティ <span id="security"></span>
 
 HTML ページを生成するビューを作成するときは、エンドユーザから受け取るデータを表示する前にエンコード および/または フィルタすることが重要です。
 そうしなければ、あなたのアプリケーションは [クロスサイトスクリプティング](http://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%AD%E3%82%B9%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) 攻撃をこうむるおそれがあります。
@@ -81,7 +81,7 @@ use yii\helpers\HtmlPurifier;
   アプリケーションが高いパフォーマンスを要求する場合は、フィルター結果を [キャッシュ](caching-overview.md) することを考慮すべきです。
 
 
-### ビューを整理する <a name="organizing-views"></a>
+### ビューを整理する <span id="organizing-views"></span>
 
 [コントローラ](structure-controllers.md) や [モデル](structure-models.md) と同じように、ビューを整理するための規約があります。.
 
@@ -98,7 +98,7 @@ use yii\helpers\HtmlPurifier;
 メソッドをオーバーライドすることでカスタマイズすることが可能です。
 
 
-## ビューをレンダリングする <a name="rendering-views"></a>
+## ビューをレンダリングする <span id="rendering-views"></span>
 
 [コントローラ](structure-controllers.md) の中でも、[ウィジェット](structure-widgets.md) の中でも、または、その他のどんな場所でも、
 ビューをレンダリングするメソッドを呼ぶことによってビューをレンダリングすることが出来ます。
@@ -114,7 +114,7 @@ methodName($view, $params = [])
 ```
 
 
-### コントローラでのレンダリング <a name="rendering-in-controllers"></a>
+### コントローラでのレンダリング <span id="rendering-in-controllers"></span>
 
 [コントローラ](structure-controllers.md) の中では、ビューをレンダリングするために次のコントローラメソッドを呼ぶことが出来ます。
 
@@ -153,7 +153,7 @@ class PostController extends Controller
 ```
 
 
-### ウィジェットでのレンダリング <a name="rendering-in-widgets"></a>
+### ウィジェットでのレンダリング <span id="rendering-in-widgets"></span>
 
 [ウィジェット](structure-widgets.md) の中では、ビューをレンダリングするために、次のウィジェットメソッドを使用することが出来ます。
 
@@ -183,7 +183,7 @@ class ListWidget extends Widget
 ```
 
 
-### ビューでのレンダリング <a name="rendering-in-views"></a>
+### ビューでのレンダリング <span id="rendering-in-views"></span>
 
 [[yii\base\View|ビューコンポーネント]] によって提供される下記のメソッドのどれかを使うと、ビューの中で、別のビューをレンダリングすることが出来ます。
 
@@ -200,7 +200,7 @@ class ListWidget extends Widget
 ```
 
 
-### 他の場所でのレンダリング <a name="rendering-in-other-places"></a>
+### 他の場所でのレンダリング <span id="rendering-in-other-places"></span>
 
 場所がどこであれ、`Yii::$app->view` という式によって [[yii\base\View|ビュー]] アプリケーションコンポーネントにアクセスすることが出来ますから、
 前述の [[yii\base\View|ビュー]] コンポーネントメソッドを使ってビューをレンダリングすることが出来ます。
@@ -212,7 +212,7 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ```
 
 
-### 名前付きビュー <a name="named-views"></a>
+### 名前付きビュー <span id="named-views"></span>
 
 ビューをレンダリングするとき、ビューを指定するのには、ビューの名前か、ビューファイルのパス/エイリアスか、どちらかを使うことが出来ます。
 たいていの場合は、より簡潔で柔軟な前者を使います。
@@ -240,7 +240,7 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 一方、そのビューの中で `$this->render('_overview')` を呼ぶと、ビューファイル `@app/views/post/_overview.php` がレンダリングされることになります。
 
 
-### ビューの中でデータにアクセスする <a name="accessing-data-in-views"></a>
+### ビューの中でデータにアクセスする <span id="accessing-data-in-views"></span>
 
 ビューの中でデータにアクセスするためのアプローチが二つあります。「プッシュ」と「プル」です。
 
@@ -272,7 +272,7 @@ The controller ID is: <?= $this->context->id ?>
 ビューが共有されてさまざまな場所でレンダリングされる場合、その作業が面倒くさくなり、また、間違いも生じやすくなります。
 
 
-### ビューの間でデータを共有する <a name="sharing-data-among-views"></a>
+### ビューの間でデータを共有する <span id="sharing-data-among-views"></span>
 
 [[yii\base\View|ビューコンポーネント]] が提供する [[yii\base\View::params|params]] プロパティを使うと、ビューの間でデータを共有することが出来ます。
 
@@ -291,14 +291,14 @@ $this->params['breadcrumbs'][] = 'About Us';
 ```
 
 
-## レイアウト <a name="layouts"></a>
+## レイアウト <span id="layouts"></span>
 
 レイアウトは、複数のビューの共通部分をあらわす特殊なタイプのビューです。
 例えば、たいていのウェブアプリケーションでは、ページは共通のヘッダとフッタを持っています。
 すべてのビューで同じヘッダとフッタを繰り返すことも出来ますが、もっと良い方法は、そういうことはレイアウトの中で一度だけして、コンテンツビューのレンダリング結果をレイアウトの中の適切な場所に埋め込むことです。
 
 
-### レイアウトを作成する <a name="creating-layouts"></a>
+### レイアウトを作成する <span id="creating-layouts"></span>
 
 レイアウトもまたビューですので、通常のビューと同様な方法で作成することが出来ます。
 既定では、レイアウトは `@app/views/layouts` ディレクトリに保存されます。
@@ -356,7 +356,7 @@ use yii\helpers\Html;
   body の終了位置を目的とする登録された HTML コード (JavaScript など) によって置き換えられるプレースホルダを生成します。
 
 
-### レイアウトでデータにアクセスする <a name="accessing-data-in-layouts"></a>
+### レイアウトでデータにアクセスする <span id="accessing-data-in-layouts"></span>
 
 レイアウトの中では、事前定義された二つの変数、すなわち、`$this` と `$content` にアクセス出来ます。
 前者は、通常のビューにおいてと同じく、[[yii\base\View|ビュー]] コンポーネントを参照します。
@@ -367,7 +367,7 @@ use yii\helpers\Html;
 コンテンツビューからレイアウトにデータを渡す必要があるときは、[ビューの間でデータを共有する](#sharing-data-among-views) の項で説明されている方法を使うことが出来ます。
 
 
-### レイアウトを使う <a name="using-layouts"></a>
+### レイアウトを使う <span id="using-layouts"></span>
 
 [コントローラでのレンダリング](#rendering-in-controllers) の項で説明されているように、コントローラの中で
 [[yii\base\Controller::render()|render()]] メソッドを呼んでビューをレンダリングすると、レンダリング結果にレイアウトが適用されます。
@@ -418,7 +418,7 @@ class PostController extends Controller
 レイアウトの値がファイル拡張子を含んでいない場合は、デフォルト値である `.php` を使います。
 
 
-### 入れ子のレイアウト <a name="nested-layouts"></a>
+### 入れ子のレイアウト <span id="nested-layouts"></span>
 
 ときとして、あるレイアウトの中に別のレイアウトを入れたい場合があるでしょう。
 例えば、ウェブサイトの別々のセクションにおいて、違うレイアウトを使いたいけれども、
@@ -443,7 +443,7 @@ class PostController extends Controller
 上記のアプローチを使って、2レベル以上のレイアウトを入れ子にすることも出来ます。
 
 
-### ブロックを使う <a name="using-blocks"></a>
+### ブロックを使う <span id="using-blocks"></span>
 
 ブロックを使うと、ある場所でビューコンテンツを規定して、別の場所でそれを表示することが可能になります。
 ブロックはたいていはレイアウトと一緒に使われます。
@@ -504,7 +504,7 @@ class PostController extends Controller
 ```
 
 
-## ビューコンポーネントを使う <a name="using-view-components"></a>
+## ビューコンポーネントを使う <span id="using-view-components"></span>
 
 [[yii\base\View|ビューコンポーネント]] はビューに関連する多くの機能を提供します。
 ビューコンポーネントは、[[yii\base\View]] またはその子クラスの個別のインスタンスを作成することによっても取得できますが、たいていの場合は、`view` アプリケーションコンポーネントを主として使うことになるでしょう。
@@ -533,7 +533,7 @@ class PostController extends Controller
 次に挙げるマイナーではあっても有用な諸機能は、ウェブページを開発するときに頻繁に使用するでしょう。
 
 
-### ページタイトルを設定する <a name="setting-page-titles"></a>
+### ページタイトルを設定する <span id="setting-page-titles"></span>
 
 どんなウェブページにもタイトルが無ければなりません。通常、タイトルタグは [layout](#layouts) の中で表示されます。
 しかし、実際においては、多くの場合、タイトルはレイアウトではなくコンテンツビューで決められます。
@@ -554,7 +554,7 @@ $this->title = 'My page title';
 ```
 
 
-### メタタグを登録する <a name="registering-meta-tags"></a>
+### メタタグを登録する <span id="registering-meta-tags"></span>
 
 ウェブページは、通常、いろいろな関係者によって必要とされるさまざまなメタタグを生成する必要があります。
 ページタイトルと同じように、メタタグは `<head>` セクションに出現して、通常はレイアウトの中で生成されます。
@@ -585,7 +585,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => '面白いアラ�
 ```
 
 
-### リンクタグを登録する <a name="registering-link-tags"></a>
+### リンクタグを登録する <span id="registering-link-tags"></span>
 
 [メタタグ](#registering-meta-tags) と同じように、リンクタグも多くの場合において有用なものです。
 例えば、favicon をカスタマイズしたり、RSS フィードを指し示したり、OpenID を別のサーバに委任したり、等々。
@@ -611,7 +611,7 @@ $this->registerLinkTag([
 を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
 
 
-## ビューのイベント <a name="view-events"></a>
+## ビューのイベント <span id="view-events"></span>
 
 [[yii\base\View|ビューコンポーネント]] はビューをレンダリングする過程においていくつかのイベントをトリガします。
 これらのイベントに反応することによって、ビューにコンテンツを注入したり、エンドユーザに送信される前にレンダリング結果を加工したりすることが出来ます。
@@ -634,7 +634,7 @@ $this->registerLinkTag([
 ```
 
 
-## 静的なページをレンダリングする <a name="rendering-static-pages"></a>
+## 静的なページをレンダリングする <span id="rendering-static-pages"></span>
 
 静的なページというのは、主たるコンテンツのほとんどが静的なもので、コントローラからプッシュされる動的なデータにアクセスする必要がないページを指します。
 
@@ -680,7 +680,7 @@ http://localhost/index.php?r=site/page&view=about
 [[yii\web\ViewAction::viewPrefix]] を構成して、ビューを探すディレクトリを変更することが出来ます。
 
 
-## ベストプラクティス <a name="best-practices"></a>
+## ベストプラクティス <span id="best-practices"></span>
 
 ビューはエンドユーザが望む形式でモデルを表現することに対して責任を持ちます。一般的に、ビューは
 

@@ -206,7 +206,7 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 $connection->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
-Entrecomillado de los Nombres de las Tablas y las Columnas <a name="quoting-table-and-column-names"></a>
+Entrecomillado de los Nombres de las Tablas y las Columnas <span id="quoting-table-and-column-names"></span>
 ----------------------------------------------------------
 
 Para hacer que los nombres de las columnas y las tablas sean seguros para usarse en las consultas, se puede utilizar Yii

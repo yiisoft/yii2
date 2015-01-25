@@ -40,7 +40,7 @@ The following core helper classes are provided in the Yii releases:
 - VarDumper
 
 
-Customizing Helper Classes <a name="customizing-helper-classes"></a>
+Customizing Helper Classes <span id="customizing-helper-classes"></span>
 --------------------------
 
 To customize a core helper class (e.g. [[yii\helpers\ArrayHelper]]), you should create a new class extending

@@ -19,7 +19,7 @@ public function rules()
 
 Ниже мы опишем основные способы использования и свойства всех встроенных валидаторов.
 
-## [[yii\validators\BooleanValidator|boolean]] <a name="boolean"></a>
+## [[yii\validators\BooleanValidator|boolean]] <span id="boolean"></span>
 
 ```php
 [
@@ -41,7 +41,7 @@ public function rules()
 оставить свойство [[yii\validators\BooleanValidator::strict|strict]] равным false.
 
 
-## [[yii\captcha\CaptchaValidator|captcha]] <a name="captcha"></a>
+## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>
 
 ```php
 [
@@ -59,7 +59,7 @@ public function rules()
   что означает, что *input* обязателен.
 
 
-## [[yii\validators\CompareValidator|compare]] <a name="compare"></a>
+## [[yii\validators\CompareValidator|compare]] <span id="compare"></span>
 
 ```php
 [
@@ -92,7 +92,7 @@ public function rules()
      * `<=`: проверяет, что валидируемое значение меньше или равно тому, с которым происходит сравнение.
 
 
-## [[yii\validators\DateValidator|date]] <a name="date"></a>
+## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
 ```php
 [
@@ -110,7 +110,7 @@ public function rules()
   из строки даты/времени.
 
 
-## [[yii\validators\DefaultValueValidator|default]] <a name="default"></a>
+## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>
 
 ```php
 [
@@ -144,7 +144,7 @@ function foo($model, $attribute) {
   в секции [Пустые значения](input-validation.md#handling-empty-inputs).
 
 
-## [[yii\validators\NumberValidator|double]] <a name="double"></a>
+## [[yii\validators\NumberValidator|double]] <span id="double"></span>
 
 ```php
 [
@@ -160,7 +160,7 @@ function foo($model, $attribute) {
 - `min`: Нижний лимит (включительно) для значений. Если не установлен, валидатор не будет проверять нижний лимит.
 
 
-## [[yii\validators\EmailValidator|email]] <a name="email"></a>
+## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
 [
@@ -178,7 +178,7 @@ function foo($model, $attribute) {
   IDN-валидации вам нужно установить и включить PHP расширение `intl`, иначе будет выброшено исключение.
 
 
-## [[yii\validators\ExistValidator|exist]] <a name="exist"></a>
+## [[yii\validators\ExistValidator|exist]] <span id="exist"></span>
 
 ```php
 [
@@ -222,7 +222,7 @@ function foo($model, $attribute) {
   их в `targetAttribute` как массив.
 
 
-## [[yii\validators\FileValidator|file]] <a name="file"></a>
+## [[yii\validators\FileValidator|file]] <span id="file"></span>
 
 ```php
 [
@@ -255,7 +255,7 @@ function foo($model, $attribute) {
 [Загрузка файлов](input-file-upload.md) для более полного понимания загрузки и проверки файлов.
 
 
-## [[yii\validators\FilterValidator|filter]] <a name="filter"></a>
+## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
 
 ```php
 [
@@ -282,7 +282,7 @@ function foo($model, $attribute) {
 
 > Трюк: Если вы хотите удалить пробелы вокруг значений атрибута, вы можете использовать валидатор [trim](#trim).
 
-## [[yii\validators\ImageValidator|image]] <a name="image"></a>
+## [[yii\validators\ImageValidator|image]] <span id="image"></span>
 
 ```php
 [
@@ -304,7 +304,7 @@ function foo($model, $attribute) {
 - `maxHeight`: максимальная высота изображения. По умолчанию null, что значит, что нет верхнего лимита.
 
 
-## [[yii\validators\RangeValidator|in]] <a name="in"></a>
+## [[yii\validators\RangeValidator|in]] <span id="in"></span>
 
 ```php
 [
@@ -325,7 +325,7 @@ function foo($model, $attribute) {
   `range`.
 
 
-## [[yii\validators\NumberValidator|integer]] <a name="integer"></a>
+## [[yii\validators\NumberValidator|integer]] <span id="integer"></span>
 
 ```php
 [
@@ -340,7 +340,7 @@ function foo($model, $attribute) {
 - `min`: нижний лимит (включительно) для числа. Если не установлено, валидатор не будет проверять нижний лимит.
 
 
-## [[yii\validators\RegularExpressionValidator|match]] <a name="match"></a>
+## [[yii\validators\RegularExpressionValidator|match]] <span id="match"></span>
 
 ```php
 [
@@ -359,7 +359,7 @@ function foo($model, $attribute) {
    только если входящее значение НЕ совпадает с шаблоном.
 
 
-## [[yii\validators\NumberValidator|number]] <a name="number"></a>
+## [[yii\validators\NumberValidator|number]] <span id="number"></span>
 
 ```php
 [
@@ -374,7 +374,7 @@ function foo($model, $attribute) {
 - `min`: нижний лимит (включительно) для числа. Если не установлено, валидатор не будет проверять нижний лимит.
 
 
-## [[yii\validators\RequiredValidator|required]] <a name="required"></a>
+## [[yii\validators\RequiredValidator|required]] <span id="required"></span>
 
 ```php
 [
@@ -398,7 +398,7 @@ function foo($model, $attribute) {
   в секции [Пустые значения](input-validation.md#handling-empty-inputs).
 
 
-## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
+## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>
 
 ```php
 [
@@ -411,7 +411,7 @@ function foo($model, $attribute) {
 [безопасным атрибутом](structure-models.md#safe-attributes).
 
 
-## [[yii\validators\StringValidator|string]] <a name="string"></a>
+## [[yii\validators\StringValidator|string]] <span id="string"></span>
 
 ```php
 [
@@ -434,7 +434,7 @@ function foo($model, $attribute) {
   [[yii\base\Application::charset|charset]], которое по умолчанию установлено в `UTF-8`.
 
 
-## [[yii\validators\FilterValidator|trim]] <a name="trim"></a>
+## [[yii\validators\FilterValidator|trim]] <span id="trim"></span>
 
 ```php
 [
@@ -447,7 +447,7 @@ function foo($model, $attribute) {
 Помните, что если входящие данные являются массивом, то они будут проигнорированы этим валидатором.
 
 
-## [[yii\validators\UniqueValidator|unique]] <a name="unique"></a>
+## [[yii\validators\UniqueValidator|unique]] <span id="unique"></span>
 
 ```php
 [
@@ -490,7 +490,7 @@ function foo($model, $attribute) {
   где `$query` это объект [[yii\db\Query|Query]], который вы можете изменить в функции.
 
 
-## [[yii\validators\UrlValidator|url]] <a name="url"></a>
+## [[yii\validators\UrlValidator|url]] <span id="url"></span>
 
 ```php
 [

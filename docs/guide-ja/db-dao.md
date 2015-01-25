@@ -19,7 +19,7 @@ Yii は下記の DBMS のサポートを内蔵しています。
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
 
-## DB 接続を作成する <a name="creating-db-connections"></a>
+## DB 接続を作成する <span id="creating-db-connections"></span>
 
 データベースにアクセスするために、まずは、データベースに接続するために [[yii\db\Connection]] のインスタンスを作成する必要があります。
 
@@ -88,7 +88,7 @@ ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\
 > Info|情報: DB 接続のインスタンスを作成するとき、実際のデータベース接続は、最初の SQL を実行するか、[[yii\db\Connection::open()|open()]] メソッドを明示的に呼ぶかするまでは確立されません。
 
 
-## SQL クエリを実行する <a name="executing-sql-queries"></a>
+## SQL クエリを実行する <span id="executing-sql-queries"></span>
 
 いったんデータベース接続のインスタンスを得てしまえば、次の手順に従って SQL クエリを実行することが出来ます。
 
@@ -146,7 +146,7 @@ return [
 ```
 
 
-### パラメータをバインドする <a name="binding-parameters"></a>
+### パラメータをバインドする <span id="binding-parameters"></span>
 
 パラメータを持つ SQL から DB コマンドを作成するときは、SQL インジェクション攻撃を防止するために、ほとんど全ての場合においてパラメータをバインドする手法を用いるべきです。
 例えば、
@@ -207,7 +207,7 @@ $post2 = $command->queryOne();
 このやり方でクエリを実行すると、パラメータの値が違うごとに新しいクエリを実行するのに比べて、はるかに効率が良くすることが出来ます。
 
 
-### SELECT しないクエリを実行する <a name="non-select-queries"></a>
+### SELECT しないクエリを実行する <span id="non-select-queries"></span>
 
 今までのセクションで紹介した `queryXyz()` メソッドは、すべて、データベースからデータを取得する SELECT クエリを扱うものでした。
 データを返さないクエリのためには、代りに [[yii\db\Command::execute()]] メソッドを呼ばなければなりません。
@@ -250,7 +250,7 @@ $db->createCommand()->batchInsert('user', ['name', 'age'], [
 ])->execute();
 ```
 
-## テーブルとカラムの名前を引用符で囲む <a name="quoting-table-and-column-names"></a>
+## テーブルとカラムの名前を引用符で囲む <span id="quoting-table-and-column-names"></span>
 
 特定のデータベースに依存しないコードを書くときには、テーブルとカラムの名前を適切に引用符で囲むことが、たいてい、頭痛の種になります。
 データベースによって名前を引用符で囲む規則がさまざまに異なるからです。
@@ -268,7 +268,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
             ->queryScalar();
 ```
 
-### テーブルプレフィックスを使う <a name="using-table-prefix"></a>
+### テーブルプレフィックスを使う <span id="using-table-prefix"></span>
 
 あなたの DB テーブルのほとんどが何か共通のプレフィックスを持っている場合は、Yii DAO によってサポートされているテーブルプレフィックスの機能を使うことが出来ます。
 
@@ -297,7 +297,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
-## トランザクションを実行する <a name="performing-transactions"></a>
+## トランザクションを実行する <span id="performing-transactions"></span>
 
 一続きになった複数の関連するクエリを実行するときは、データの整合性を一貫性を保証するために、一連のクエリをトランザクションで囲む必要がある場合があります。
 一連のクエリのどの一つが失敗した場合でも、データベースは、何一つクエリが実行されなかったかのような状態へとロールバックされます。
@@ -339,7 +339,7 @@ try {
 そうでなければ、例外がトリガされてキャッチされ、[[yii\db\Transaction::rollBack()|rollBack()]] が呼ばれて、失敗したクエリに先行するクエリがトランザクションの中で行った変更がロールバックされます。
 
 
-### 分離レベルを指定する <a name="specifying-isolation-levels"></a>
+### 分離レベルを指定する <span id="specifying-isolation-levels"></span>
 
 Yii は、トランザクションの [分離レベル] の設定もサポートしています。
 デフォルトでは、新しいトランザクションを開始したときは、データベースシステムによって設定された分離レベルを使用します。
@@ -380,7 +380,7 @@ DBMS によっては、接続全体に対してのみ分離レベルの設定を
 
 [分離レベル]: http://ja.wikipedia.org/wiki/%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB
 
-### トランザクションを入れ子にする <a name="nesting-transactions"></a>
+### トランザクションを入れ子にする <span id="nesting-transactions"></span>
 
 あなたの DBMS が Savepoint をサポートしている場合は、次のように、複数のトランザクションを入れ子にすることが出来ます。
 
@@ -416,7 +416,7 @@ try {
 ```
 
 
-## レプリケーションと読み書きの分離 <a name="read-write-splitting"></a>
+## レプリケーションと読み書きの分離 <span id="read-write-splitting"></span>
 
 多くの DBMS は、データベースの可用性とサーバのレスポンスタイムを向上させるために、[データベースレプリケーション](http://ja.wikipedia.org/wiki/%E3%83%AC%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3#.E3.83.87.E3.83.BC.E3.82.BF.E3.83.99.E3.83.BC.E3.82.B9) をサポートしています。
 データベースレプリケーションによって、データはいわゆる *マスタサーバ* から *スレーブサーバ* に複製されます。
@@ -567,7 +567,7 @@ $rows = $db->useMaster(function ($db) {
 直接に `$db->enableSlaves` を false に設定して、全てのクエリをマスタ接続に向けることも出来ます。
 
 
-## データベーススキーマを扱う <a name="database-schema"></a>
+## データベーススキーマを扱う <span id="database-schema"></span>
 
 Yii DAO は、新しいテーブルを作ったり、テーブルからカラムを削除したりなど、データベーススキーマを操作することを可能にする一揃いのメソッドを提供しています。
 以下がそのソッドのリストです。

@@ -6,7 +6,7 @@
 この節では、アプリケーションの中でこのコンポーネントをどのように利用できるかを説明します。
 
 
-## リクエストのパラメータ <a name="request-parameters"></a>
+## リクエストのパラメータ <span id="request-parameters"></span>
 
 リクエストのパラメータを取得するためには、`request` コンポーネントの [[yii\web\Request::get()|get()]] および [[yii\web\Request::post()|post()]] メソッドを呼ぶことが出来ます。
 これらは、ぞれぞれ、`$_GET` と `$_POST` の値を返します。例えば、
@@ -55,7 +55,7 @@ $param = $request->getBodyParam('id');
   [[yii\web\Request::parsers]] プロパティを構成することによって、これらのパラメータが解析される方法をカスタマイズすることが出来ます。
 
 
-## リクエストメソッド <a name="request-methods"></a>
+## リクエストメソッド <span id="request-methods"></span>
 
 現在のリクエストに使用された HTTP メソッドは、`Yii::$app->request->method` という式によって取得することが出来ます。
 現在のメソッドが特定のタイプであるかどうかをチェックするための、一連の真偽値のプロパティも提供されています。
@@ -70,7 +70,7 @@ if ($request->isPost) { // リクエストメソッドは POST }
 if ($request->isPut)  { // リクエストメソッドは PUT }
 ```
 
-## リクエストの URL <a name="request-urls"></a>
+## リクエストの URL <span id="request-urls"></span>
 
 `request` コンポーネントは現在リクエストされている URL を調べるための方法を数多く提供しています。
 
@@ -88,7 +88,7 @@ if ($request->isPut)  { // リクエストメソッドは PUT }
 * [[yii\web\Request::serverPort|serverPort]]: 80 を返します。ウェブサーバによって使用されているポートです。
 
 
-## HTTP ヘッダ <a name="http-headers"></a> 
+## HTTP ヘッダ <span id="http-headers"></span> 
 
  [[yii\web\Request::headers]] プロパティによって返される [[yii\web\HeaderCollection|header コレクション]] を通じて、HTTP ヘッダ情報を取得することが出来ます。例えば、
 
@@ -119,7 +119,7 @@ if ($headers->has('User-Agent')) { // User-Agent ヘッダが在る }
 このフィルタは、上記で説明したプロパティとメソッドの上に、コンテントネゴシエーションを実装しています。
 
 
-## クライアント情報 <a name="client-information"></a>
+## クライアント情報 <span id="client-information"></span>
 
 クライアントマシンのホスト名と IP アドレスを、それぞれ、[[yii\web\Request::userHost|userHost]] と [[yii\web\Request::userIP|userIP]] によって取得することが出来ます。例えば、
 

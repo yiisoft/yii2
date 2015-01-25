@@ -5,7 +5,7 @@
 たとえば、 `@yii` というエイリアスは Yii フレームワークのインストールパスを表し、 `@web` は現在実行中の Web アプリケーションのベース URL を表します。
 
 
-エイリアスの定義 <a name="defining-aliases"></a>
+エイリアスの定義 <span id="defining-aliases"></span>
 ----------------
 
 [[Yii::setAlias()]] を呼び出すことにより、ファイルパスまたは URL のエイリアスを定義することができます。
@@ -47,7 +47,7 @@ return [
 ```
 
 
-エイリアスの解決 <a name="resolving-aliases"></a>
+エイリアスの解決 <span id="resolving-aliases"></span>
 -----------------
 
 [[Yii::getAlias()]] を呼び出して、ルートエイリアスが表すファイルパスまたはURLを解決することができます。
@@ -77,7 +77,7 @@ Yii::getAlias('@foo/bar/file.php');   // /path2/bar/file.php を表示
 もし `@foo/bar` がルートエイリアスとして定義されていなければ、最後のステートメントは `/path/to/foo/bar/file.php` を表示します。
 
 
-エイリアスの使用 <a name="using-aliases"></a>
+エイリアスの使用 <span id="using-aliases"></span>
 -------------
 
 エイリアスは、それをパスやURLに変換するための [[Yii::getAlias()​]] の呼び出しがなくても、Yiiの多くの場所でみられます。
@@ -95,7 +95,7 @@ $cache = new FileCache([
 プロパティやメソッドのパラメータがエイリアスをサポートしているかどうかは、API ドキュメントに注意を払ってください。
 
 
-事前定義されたエイリアス <a name="predefined-aliases"></a>
+事前定義されたエイリアス <span id="predefined-aliases"></span>
 ------------------
 
 Yii では、一般的に使用されるフ​​ァイルのパスと URL を簡単に参照できるよう、エイリアスのセットが事前に定義されています:
@@ -112,7 +112,7 @@ Yii では、一般的に使用されるフ​​ァイルのパスと URL を�
 `@yii` エイリアスは [エントリスクリプト](structure-entry-scripts.md) に `Yii.php` ファイルを読み込んだ時点で定義されます。
 エイリアスの残りの部分は、アプリケーションのコンストラクタ内で、アプリケーションの [構成情報](concept-configurations.md) を適用するときに定義されます。
 
-エクステンションのエイリアス <a name="extension-aliases"></a>
+エクステンションのエイリアス <span id="extension-aliases"></span>
 -----------------
 
 Composer でインストールされる各 [エクステンション](structure-extensions.md) ごとに、エイリアスが自動的に定義されます。

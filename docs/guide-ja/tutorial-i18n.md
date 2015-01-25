@@ -544,7 +544,7 @@ class TranslationEventHandler
 詳細は [データフォーマッタ](output-formatter.md) の節を参照してください。
 
 
-PHP 環境をセットアップする <a name="setup-environment"></a>
+PHP 環境をセットアップする <span id="setup-environment"></span>
 --------------------------
 
 Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](http://php.net/manual/ja/book.intl.php) を使います。

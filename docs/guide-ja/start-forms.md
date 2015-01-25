@@ -14,7 +14,7 @@
 * [ビュー](structure-views.md) の中で HTML フォームを構築する方法
 
 
-モデルを作成する <a name="creating-model"></a>
+モデルを作成する <span id="creating-model"></span>
 ----------------
 
 ユーザに入力してもらうデータは、下に示されているように `EntryForm` モデルクラスとして表現され、`models/EntryForm.php` というファイルに保存されます。
@@ -74,7 +74,7 @@ if ($model->validate()) {
 ```
 
 
-アクションを作成する <a name="creating-action"></a>
+アクションを作成する <span id="creating-action"></span>
 --------------------
 
 次に、この新しいモデルを使う `entry` アクションを `site` コントローラに作る必要があります。
@@ -127,7 +127,7 @@ class SiteController extends Controller
   実際の仕事では、[フォーム送信の諸問題](http://en.wikipedia.org/wiki/Post/Redirect/Get) を避けるために、[[yii\web\Controller::refresh()|refresh()]] または [[yii\web\Controller::redirect()|redirect()]] を使うことを考慮すべきです。
 
 
-ビューを作成する <a name="creating-views"></a>
+ビューを作成する <span id="creating-views"></span>
 ----------------
 
 最後に、`entry-confirm` と `entry` という名前の二つのビューファイルを作成します。
@@ -174,7 +174,7 @@ use yii\widgets\ActiveForm;
 インプットフィールドの後に、[[yii\helpers\Html::submitButton()]] メソッドが呼ばれて、送信ボタンを生成しています。
 
 
-試してみる <a name="trying-it-out"></a>
+試してみる <span id="trying-it-out"></span>
 ----------
 
 どのように動作するかを見るために、ブラウザで下記の URL をアクセスしてください。
@@ -194,7 +194,7 @@ http://hostname/index.php?r=site/entry
 ![データ入力の確認](images/start-entry-confirmation.png)
 
 
-### 魔法の説明<a name="magic-explained"></a>
+### 魔法の説明<span id="magic-explained"></span>
 
 あなたは、舞台裏で HTML フォームがどのように動いているのか、不思議に思うかも知れません。
 なぜなら、フォームが、ほとんど魔法のように、各インプットフィールドのラベルを表示し、データを正しく入力しなかった場合には、ページをリロードすることなく、エラーメッセージを表示するからです。
@@ -222,7 +222,7 @@ http://hostname/index.php?r=site/entry
   あなたは、将来のビュー開発を単純化するために、多くのビューコードを再利用可能なウィジェットに変換したいと思うことでしょう。
 
 
-まとめ <a name="summary"></a>
+まとめ <span id="summary"></span>
 ------
 
 ガイドのこの節においては、MVC デザインパターンの全ての部分に触れました。

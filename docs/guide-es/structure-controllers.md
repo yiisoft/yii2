@@ -8,7 +8,7 @@ los controladores analizarán los datos que entran en el `request`, los pasan a 
 modelos resultantes a las [vistas](structure-views.md), y finalmente generan los `responses` (respuestas) de salida.
 
 
-## Acciones <a name="actions"></a>
+## Acciones <span id="actions"></span>
 
 Los Controladores están compuestos por *acciones* que son las unidades más básicas a las que los usuarios pueden
 dirigirse y solicitar ejecución. Un controlador puede tener una o múltiples acciones.
@@ -62,7 +62,7 @@ el navegador a la acción `view` con el ID del modelo recientemente creado. De o
 la vista `create` a través de la cual el usuario puede completar los campos necesarios.
 
 
-## Routes <a name="routes"></a>
+## Routes <span id="routes"></span>
 
 Los usuarios ejecutan las acciones a través de las llamadas *routes* (rutas). una ruta es una cadena que consiste en las siguientes partes:
 
@@ -88,7 +88,7 @@ será ejecutado. Para más detalles acerca de cómo las son resueltas en accione
 la sección [Routing](runtime-routing.md).
 
 
-## Creando Controladores <a name="creating-controllers"></a>
+## Creando Controladores <span id="creating-controllers"></span>
 
 En [[yii\web\Application|aplicaciones Web]], los controladores deben extender de [[yii\web\Controller]] o cualquier
 clase hija. De forma similar los controladores de [[yii\console\Application|aplicaciones de consola]], deben extender
@@ -105,7 +105,7 @@ class SiteController extends Controller
 ```
 
 
-### IDs de Controladores <a name="controller-ids"></a>
+### IDs de Controladores <span id="controller-ids"></span>
 
 Normalmente, un controlador está diseñado para manejar los `requests` de acuerdo a un tipo de recurso.
 Por esta razón, los IDs de controladores son a menudo sustantivos de los tipos de recurso que están manejando.
@@ -119,7 +119,7 @@ Los guiones en un ID de controlador son utilizados para separar palabras, mientr
 organizar los controladores en sub-directorios.
 
 
-### Nombres de Clases de Controladores <a name="controller-class-naming"></a>
+### Nombres de Clases de Controladores <span id="controller-class-naming"></span>
 
 Los nombres de clases de controladores pueden ser derivados de los IDs de acuerdo a las siguientes reglas:
 
@@ -146,7 +146,7 @@ en `@app/controllers/admin/Post2CommentController.php`.
   tus controladores en varias categorías pero sin utilizar [módulos](structure-modules.md).
 
 
-### Controller Map <a name="controller-map"></a>
+### Controller Map <span id="controller-map"></span>
 
 Puedes configurar [[yii\base\Application::controllerMap|controller map]] (mapeo de controladores) para superar las restricciones
 de los IDs de controladores y sus nombres de clase descritos arriba. Esto es principalmente útil cuando estás utilizando un
@@ -173,7 +173,7 @@ Puedes configurar [[yii\base\Application::controllerMap|controller map]] en la
 ```
 
 
-### Controller por Defecto <a name="default-controller"></a>
+### Controller por Defecto <span id="default-controller"></span>
 
 Cada aplicación tiene un controlador por defecto especificado a través de la propiedad [[yii\base\Application::defaultRoute]].
 Cuando un `request` no especifica una [ruta](#ids-routes), se utilizará la ruta especificada en esta propiedad.
@@ -189,7 +189,7 @@ Puedes cambiar el controlador por defecto con la siguiente [configuración de la
 ```
 
 
-## Creando Acciones <a name="creating-actions"></a>
+## Creando Acciones <span id="creating-actions"></span>
 
 Crear acciones puede ser tan simple como definir un llamado *método de acción* en una clase controlador. Un método de acción es
 un método *public* cuyo nombre comienza con la palabra `action`. El valor de retorno de uno de estos métodos representa
@@ -215,7 +215,7 @@ class SiteController extends Controller
 ```
 
 
-### IDs de Acciones <a name="action-ids"></a>
+### IDs de Acciones <span id="action-ids"></span>
 
 Una acción está a menudo diseñada para realizar una manipulación particular de un recurso. Por esta razón,
 los IDs de acciones son usualmente verbos, como `view` (ver), `update` (actualizar), etc.
@@ -231,7 +231,7 @@ si no tienes intenciones de volver a utilizarlas. Las acciones independientes, p
 creadas para ser reutilizadas en otros controladores o para ser redistribuidas como [extensiones](structure-extensions.md).
 
 
-### Acciones en Línea <a name="inline-actions"></a>
+### Acciones en Línea <span id="inline-actions"></span>
 
 Como acciones en línea nos referimos a acciones que son definidas en términos de métodos como acabamos de describir.
 
@@ -254,7 +254,7 @@ si planeas reutilizar la misma acción en diferentes lugares, o quieres redistri
 deberías considerar definirla como un *acción independiente*.
 
 
-### Acciones Independientes <a name="standalone-actions"></a>
+### Acciones Independientes <span id="standalone-actions"></span>
 
 Las acciones independientes son acciones definidas en términos de clases de acción que extienden de [[yii\base\Action]] o cualquiera de sus clases hijas.
 Por ejemplo, en Yii se encuentran las clases [[yii\web\ViewAction]] y [[yii\web\ErrorAction]], de las cuales ambas son acciones independientes.
@@ -302,7 +302,7 @@ class HelloWorldAction extends Action
 ```
 
 
-### Resultados de Acción <a name="action-results"></a>
+### Resultados de Acción <span id="action-results"></span>
 
 El valor de retorno de una método de acción o del método `run()` de una acción independiente son significativos. Este se refiere
 al resultado de la acción correspondiente.
@@ -329,7 +329,7 @@ public function actionForward()
 ```
 
 
-### Parámetros de Acción <a name="action-parameters"></a>
+### Parámetros de Acción <span id="action-parameters"></span>
 
 Los métodos de acción para acciones en línea y el método `run()` de acciones independientes pueden tomar parámetros,
 llamados *parámetros de acción*. Sus valores son obtenidos del `request`. Para [[yii\web\Application|aplicaciones Web]],
@@ -381,7 +381,7 @@ Los ejemplos de arriba muestran principalmente como funcionan los parámetros de
 por favor consulta la sección [Comandos de Consola](tutorial-console.md) para más detalles.
 
 
-### Acción por Defecto <a name="default-action"></a>
+### Acción por Defecto <span id="default-action"></span>
 
 Cada controlador tiene una acción por defecto especificada a través de la propiedad [[yii\base\Controller::defaultAction]].
 Cuando una [ruta](#ids-routes) contiene sólo el ID del controlador, implica que se está solicitando la acción por defecto
@@ -407,7 +407,7 @@ class SiteController extends Controller
 ```
 
 
-## Ciclo de Vida del Controlador <a name="controller-lifecycle"></a>
+## Ciclo de Vida del Controlador <span id="controller-lifecycle"></span>
 
 Cuando se procesa un `request`, la [aplicación](structure-applications.md) creará un controlador
 basado en la [ruta](#routes) solicitada. El controlador entonces irá a través del siguiente ciclo de vida
@@ -433,7 +433,7 @@ para completar el `request`:
 6. La aplicación tomará el resultado de la acción y lo asignará al [response](runtime-responses.md).
 
 
-## Buenas Prácticas <a name="best-practices"></a>
+## Buenas Prácticas <span id="best-practices"></span>
 
 En una aplicación bien diseñada, los controladores son a menudo muy pequeños con cada acción conteniendo unas pocas líneas de código.
 Si tu controlador se torna muy complejo, es usualmente un indicador de que deberías realizar una refactorización y mover algo de

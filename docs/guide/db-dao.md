@@ -20,7 +20,7 @@ Yii DAO supports the following databases out of box:
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
 
-## Creating DB Connections <a name="creating-db-connections"></a>
+## Creating DB Connections <span id="creating-db-connections"></span>
 
 To access a database, you first need to connect to it by creating an instance of [[yii\db\Connection]]:
 
@@ -90,7 +90,7 @@ and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connectio
   you execute the first SQL or you call the [[yii\db\Connection::open()|open()]] method explicitly.
 
 
-## Executing SQL Queries <a name="executing-sql-queries"></a>
+## Executing SQL Queries <span id="executing-sql-queries"></span>
 
 Once you have a database connection instance, you can execute a SQL query by taking the following steps:
  
@@ -149,7 +149,7 @@ return [
 ```
 
 
-### Binding Parameters <a name="binding-parameters"></a>
+### Binding Parameters <span id="binding-parameters"></span>
 
 When creating a DB command from a SQL with parameters, you should almost always use the approach of binding parameters
 to prevent SQL injection attacks. For example,
@@ -213,7 +213,7 @@ before each subsequent execution (this is often done with loops). Executing quer
 more efficient than running a new query for every different parameter value. 
 
 
-### Executing Non-SELECT Queries <a name="non-select-queries"></a>
+### Executing Non-SELECT Queries <span id="non-select-queries"></span>
 
 The `queryXyz()` methods introduced in the previous sections all deal with SELECT queries which fetch data from databases.
 For queries that do not bring back data, you should call the [[yii\db\Command::execute()]] method instead. For example,
@@ -256,7 +256,7 @@ $db->createCommand()->batchInsert('user', ['name', 'age'], [
 ```
 
 
-## Quoting Table and Column Names <a name="quoting-table-and-column-names"></a>
+## Quoting Table and Column Names <span id="quoting-table-and-column-names"></span>
 
 When writing database-agnostic code, properly quote table and column names is often a headache because
 different databases have different name quoting rules. To overcome this problem, you may use the following
@@ -275,7 +275,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 ```
 
 
-### Using Table Prefix <a name="using-table-prefix"></a>
+### Using Table Prefix <span id="using-table-prefix"></span>
 
 If most of your DB tables use some common prefix in their tables, you may use the table prefix feature supported
 by Yii DAO.
@@ -306,7 +306,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 ```
 
 
-## Performing Transactions <a name="performing-transactions"></a>
+## Performing Transactions <span id="performing-transactions"></span>
 
 When running multiple related queries in a sequence, you may need to wrap them in a transaction to ensure the integrity
 and consistency of your database. If any of the queries fails, the database will be rolled back to the state as if
@@ -350,7 +350,7 @@ will be triggered and caught, and the [[yii\db\Transaction::rollBack()|rollBack(
 the changes made by the queries prior to that failed query in the transaction.
 
 
-### Specifying Isolation Levels <a name="specifying-isolation-levels"></a>
+### Specifying Isolation Levels <span id="specifying-isolation-levels"></span>
 
 Yii also supports setting [isolation levels] for your transactions. By default, when starting a new transaction,
 it will use the isolation level set by your database system. You can override the default isolation level as follows,
@@ -392,7 +392,7 @@ You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after 
 [isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
-### Nesting Transactions <a name="nesting-transactions"></a>
+### Nesting Transactions <span id="nesting-transactions"></span>
 
 If your DBMS supports Savepoint, you may nest multiple transactions like the following:
 
@@ -428,7 +428,7 @@ try {
 ```
 
 
-## Replication and Read-Write Splitting <a name="read-write-splitting"></a>
+## Replication and Read-Write Splitting <span id="read-write-splitting"></span>
 
 Many DBMS support [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
 to get better database availability and faster server response time. With database replication, data are replicated
@@ -587,7 +587,7 @@ $rows = $db->useMaster(function ($db) {
 You may also directly set `$db->enableSlaves` to be false to direct all queries to the master connection.
 
 
-## Working with Database Schema <a name="database-schema"></a>
+## Working with Database Schema <span id="database-schema"></span>
 
 Yii DAO provides a whole set of methods to let you manipulate database schema, such as creating new tables,
 dropping a column from a table, etc. These methods are listed as follows:

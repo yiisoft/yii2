@@ -15,7 +15,7 @@ bom trabalho.
   usados sem o Yii, referenciamos sob o termo de "pacote" ou "biblioteca".
 
 
-## Usando Extensões <a name="using-extensions"></a>
+## Usando Extensões <span id="using-extensions"></span>
 
 Para usar uma extensão, você precisa instalá-lo primeiro. A maioria das extensões 
 são distribuídas como pacotes do [Composer](https://getcomposer.org/) que podem 
@@ -80,7 +80,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
   [classe autoloader do Yii](concept-autoloading.md).
 
 
-### Instalando Extensões Manualmente <a name="installing-extensions-manually"></a>
+### Instalando Extensões Manualmente <span id="installing-extensions-manually"></span>
 
 Em algumas raras ocasiões, você pode querer instalar algumas ou todas extensões 
 manualmente, ao invés de depender do Composer.
@@ -108,7 +108,7 @@ você pode incluir o código a seguir na configuração de sua aplicação:
 ```
 
 
-## Criando Extensões <a name="creating-extensions"></a>
+## Criando Extensões <span id="creating-extensions"></span>
 
 Você pode considerar criar uma extensão quando você sentir a necessidade de 
 compartilhar o seu bom código para outras pessoas.
@@ -133,7 +133,7 @@ um pacote do Composer.
    e instalar suas extensões usando o Composer.
 
 
-### `composer.json` <a name="composer-json"></a>
+### `composer.json` <span id="composer-json"></span>
 
 Cada pacote do Composer deve ter um arquivo `composer.json` no diretório root. O 
 arquivo contém os metadados a respeito do pacote. Você pode achar a especificação 
@@ -181,7 +181,7 @@ O exemplo a seguir mostra o arquivo `composer.json` para a extensão `yiisoft/yi
 ```
 
 
-#### Nome do Pacote <a name="package-name"></a>
+#### Nome do Pacote <span id="package-name"></span>
 
 Cada pacote do Composer deve ter um nome que identifica unicamente o pacote 
 entre todos os outros. Os nomes dos pacotes devem seguir o formato 
@@ -197,7 +197,7 @@ de extensões em Yii 2, por exemplo, `myname/yii2-mywidget`. Isto permitirá que
 os usuários encontrem mais facilmente uma extensão Yii 2.
 
 
-#### Tipo de Pacote <a name="package-type"></a>
+#### Tipo de Pacote <span id="package-type"></span>
 
 É importante que você especifique o tipo de pacote de sua extensão como 
 `yii2-extension`, de modo que o pacote possa ser reconhecido como uma extensão 
@@ -210,7 +210,7 @@ aplicações Yii podem saber quais extensões estão instaladas (a informação 
 ser acessada através da propriedade [[yii\base\Application::extensions]]).
 
 
-#### Dependências <a name="dependencies"></a>
+#### Dependências <span id="dependencies"></span>
 
 Sua extensão depende do Yii (claro!). Sendo assim, você deve listar (`yiisoft/yii2`) 
 na entrada `require` do `composer.json`. Se sua extensão também depender de outras 
@@ -247,7 +247,7 @@ Estes dois diretórios podem ser referenciados para usar alias mais curtas como
 Para mais detalhes sobre o gerenciamento de asset, por favor, consulte a seção 
 [Assets](structure-assets.md#bower-npm-assets).
 
-#### Classe Autoloading <a name="class-autoloading"></a>
+#### Classe Autoloading <span id="class-autoloading"></span>
 
 Para que suas classes sejam carregadas automaticamente pela classe autoloader do 
 Yii ou da classe autoloader do Composer, você deve especificar a entrada `autoload` 
@@ -274,7 +274,7 @@ Por exemplo, a declaração acima do `autoload` corresponderá a uma alias chama
 `@yii/imagine`.
 
 
-### Práticas Recomendadas <a name="recommended-practices"></a>
+### Práticas Recomendadas <span id="recommended-practices"></span>
 
 Como as extensões são destinadas a serem usadas por outras pessoas, você precisará, 
 por muitas vezes, fazer um esforço extra durante o desenvolvimento. A seguir, 
@@ -282,7 +282,7 @@ apresentaremos algumas práticas comuns e recomendadas na criação de extensõe
 alta qualidade.
 
 
-#### Namespaces <a name="namespaces"></a>
+#### Namespaces <span id="namespaces"></span>
 
 Para evitar conflitos de nomes e criar classes autocarregáveis em sua extensão, 
 você deve usar namespaces e nomear as classes seguindo o 
@@ -298,7 +298,7 @@ Não use `yii`, `yii2` ou `yiisoft` como nome do seu vendor. Estes nomes são
 reservados para serem usados para o código nativo do Yii.
 
 
-#### Inicialização das Classes <a name="bootstrapping-classes"></a>
+#### Inicialização das Classes <span id="bootstrapping-classes"></span>
 
 As vezes, você pode querer que sua extensão execute algum código durante o 
 [processo de inicialização](runtime-bootstrapping.md) de uma aplicação. Por 
@@ -347,7 +347,7 @@ automaticamente a classe de inicialização e chamará o método
 inicialização para cada requisição.
 
 
-#### Trabalhando com Banco de Dados <a name="working-with-databases"></a>
+#### Trabalhando com Banco de Dados <span id="working-with-databases"></span>
 
 Sua extensão pode precisar acessar banco de dados. Não pressupunha que as 
 aplicações que usam sua extensão SEMPRE usam o `Yii::$db` como a conexão do 
@@ -367,7 +367,7 @@ alterações no esquema do banco de dados, você deve:
 - evitar o uso de [Active Record](db-active-record.md) nas migrations.
 
 
-#### Usando Assets <a name="using-assets"></a>
+#### Usando Assets <span id="using-assets"></span>
 
 Se sua extensão usar um widget ou um módulo, pode ter grandes chances de requerer 
 algum [assets](structure-assets.md) para funcionar.
@@ -388,7 +388,7 @@ usada com mais facilidade pelos usuários. Por favor, consulte a seção
 em geral.
 
 
-#### Internacionalização e Localização <a name="i18n-l10n"></a>
+#### Internacionalização e Localização <span id="i18n-l10n"></span>
 
 Sua extensão pode ser usada por aplicações que suportam diferentes idiomas! 
 Portanto, se sua extensão exibir conteúdo para os usuários finais, você deve 
@@ -404,7 +404,7 @@ tentar usar [internacionalização e localização](tutorial-i18n.md). Em partic
 Para mais detalhes, por favor, consulte a seção [Internacionalização](tutorial-i18n.md).
 
 
-#### Testes <a name="testing"></a>
+#### Testes <span id="testing"></span>
 
 Você quer que sua extensão execute com perfeição sem trazer problemas para outras 
 pessoas. Para alcançar este objetivo, você deve testar sua extensão antes de 
@@ -419,14 +419,14 @@ testes unitários, testes de aceitação e testes funcionais. Para mais detalhes
 por favor, consulte a seção [Testing](test-overview.md).
 
 
-#### Versionamento <a name="versioning"></a>
+#### Versionamento <span id="versioning"></span>
 
 Você deve dar para cada liberação de sua extensão um numero de versão (por exemplo, 
 `1.0.1`). Recomendamos que você siga a prática [versionamento semântico](http://semver.org) 
 ao determinar qual número de versão será usado.
 
 
-#### Liberando Versões <a name="releasing"></a>
+#### Liberando Versões <span id="releasing"></span>
 
 Para que outras pessoas saibam sobre sua extensão, você deve liberá-lo ao público.
 
@@ -468,7 +468,7 @@ a sua extensão:
   [estilo de codificação do framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
 
 
-## Extensões Nativas <a name="core-extensions"></a>
+## Extensões Nativas <span id="core-extensions"></span>
 
 O Yii fornece as seguintes extensões que são desenvolvidas e mantidas pela equipe 
 de desenvolvimento do Yii. Todos são registrados no [Packagist](https://packagist.org/) 

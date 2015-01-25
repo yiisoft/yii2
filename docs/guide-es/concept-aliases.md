@@ -6,7 +6,7 @@ en tu código. Un alias debe comenzar con un cáracter `@` para que así pueda s
 Por ejemplo, el alias `@yii` representa la ruta de instalación de la librería Yii, mientras que `@web` representa la
 URL base la aplicación que actualmente se está ejecutando.
 
-Definiendo Alias <a name="defining-aliases"></a>
+Definiendo Alias <span id="defining-aliases"></span>
 ----------------
 
 Puedes llamar a [[Yii::setAlias()]] para definir un alias para una determinada ruta de archivo o URL. Por ejemplo,
@@ -48,7 +48,7 @@ return [
 ```
 
 
-Resolución de Alias <a name="resolving-aliases"></a>
+Resolución de Alias <span id="resolving-aliases"></span>
 -------------------
 
 Puedes llamar [[Yii::getAlias()]] para resolver un alias de raíz en la ruta o URL que representa. El mismo método puede
@@ -80,7 +80,7 @@ Yii::getAlias('@foo/bar/file.php');   // muestra: /path2/bar/file.php
 Si `@foo/bar` no está definido como un alias de raíz, la última declaración mostraría `/path/to/foo/bar/file.php`.
 
 
-Usando Alias <a name="using-aliases"></a>
+Usando Alias <span id="using-aliases"></span>
 ------------
 
 Los alias son utilizados en muchos lugares en Yii sin necesidad de llamar [[Yii::getAlias()]] para convertirlos en rutas/URLs.
@@ -98,7 +98,7 @@ $cache = new FileCache([
 Por favor, presta atención a la documentación API para ver si una propiedad o el parámetro de un método soporta alias.
 
 
-Alias Predefinidos <a name="predefined-aliases"></a>
+Alias Predefinidos <span id="predefined-aliases"></span>
 ------------------
 
 Yii predefine un conjunto de alias para aliviar la necesidad de hacer referencia a rutas de archivo o URLs que son
@@ -118,7 +118,7 @@ mientras que el resto de los alias están definidos en el constructor de la apli
 [configuración](concept-configurations.md) de la aplicación.
 
 
-Alias en Extensiones <a name="extension-aliases"></a>
+Alias en Extensiones <span id="extension-aliases"></span>
 --------------------
 
 Un alias se define automaticamente por cada [extensión](structure-extensions.md) que ha sido instalada a través de Composer.

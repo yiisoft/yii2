@@ -22,7 +22,7 @@ Yii 提供了一整套用来简化实现 RESTful 风格的 Web Service 服务的
 你已经创建了 [[yii\db\ActiveRecord|ActiveRecord]] 类 `app\models\User` 来访问该用户数据.
 
 
-## 创建一个控制器 <a name="creating-controller"></a>
+## 创建一个控制器 <span id="creating-controller"></span>
 
 首先，创建一个控制器类 `app\controllers\UserController` 如下，
 
@@ -41,7 +41,7 @@ class UserController extends ActiveController
 作为 `app\models\User`， 控制器就能知道使用哪个模型去获取和处理数据。
 
 
-## 配置URL规则 <a name="configuring-url-rules"></a>
+## 配置URL规则 <span id="configuring-url-rules"></span>
 
 然后，修改有关在应用程序配置的`urlManager`组件的配置：
 
@@ -60,7 +60,7 @@ class UserController extends ActiveController
 用户的数据就能通过美化的 URL 和有意义的 http 动词进行访问和操作。
 
 
-## 尝试 <a name="trying-it-out"></a>
+## 尝试 <span id="trying-it-out"></span>
 
 随着以上所做的最小的努力，你已经完成了创建用于访问用户数据
 的 RESTful 风格的 API。你所创建的 API 包括：
@@ -158,7 +158,7 @@ Content-Type: application/xml
 > 你应该在 [响应格式](rest-response-formatting.md) 部分中过滤掉这些字段。
 
 
-## 总结 <a name="summary"></a>
+## 总结 <span id="summary"></span>
 
 使用 Yii 框架的 RESTful 风格的 API, 在控制器的操作中实现API末端，使用
 控制器来组织末端接口为一个单一的资源类型。

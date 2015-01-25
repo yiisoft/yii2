@@ -512,7 +512,7 @@ class TranslationEventHandler
 См. описание [форматирования дат](output-formatter.md).
 
 
-Настройка PHP-окружения <a name="setup-environment"></a>
+Настройка PHP-окружения <span id="setup-environment"></span>
 --------------------------------------------------------
 
 Для работы с большей частью функций интернационализации, Yii использует [PHP-расширение intl](http://php.net/manual/en/book.intl.php).

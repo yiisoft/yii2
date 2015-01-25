@@ -7,7 +7,7 @@
 しかし、モジュールは単独では配置できず、アプリケーションの中に存在しなければならないという点で [アプリケーション](structure-applications.md) とは異なります。
 
 
-## モジュールを作成する <a name="creating-modules"></a>
+## モジュールを作成する <span id="creating-modules"></span>
 
 モジュールは、モジュールの [[yii\base\Module::basePath|ベースパス]] と呼ばれるディレクトリとして組織されます。
 このディレクトリの中に、ちょうどアプリケーションの場合と同じように、`controllers`、`models`、`views`
@@ -27,7 +27,7 @@ forum/
 ```
 
 
-### モジュールクラス <a name="module-classes"></a>
+### モジュールクラス <span id="module-classes"></span>
 
 全てのモジュールは [[yii\base\Module]] から拡張したユニークなモジュールクラスを持たなければなりません。
 モジュールクラスは、モジュールの [[yii\base\Module::basePath|ベースパス]] 直下に配置されて [オートロード可能](concept-autoloading.md) になっていなければなりません。
@@ -78,7 +78,7 @@ return [
 ```
 
 
-### モジュール内のコントローラ <a name="controllers-in-modules"></a>
+### モジュール内のコントローラ <span id="controllers-in-modules"></span>
 
 モジュールの中でコントローラを作成するときは、コントローラクラスをモジュールクラスの名前空間の `controllers` サブ名前空間に置くことが規約です。
 このことは、同時に、コントローラのクラスファイルをモジュールの [[yii\base\Module::basePath|ベースパス]] 内の `controllers` ディレクトリに置くべきことをも意味します。
@@ -100,7 +100,7 @@ class PostController extends Controller
 これは、[アプリケーションでのコントローラマップ](structure-applications.md#controller-map) の場合と同様です。
 
 
-### モジュール内のビュー <a name="views-in-modules"></a>
+### モジュール内のビュー <span id="views-in-modules"></span>
 
 モジュール内のビューは、モジュールの [[yii\base\Module::basePath|ベースパス]] 内の `views` ディレクトリに置かれなくてはなりません。
 モジュール内のコントローラによってレンダリングされるビューは、ディレクトリ `views/ControllerID` の下に置きます。
@@ -112,7 +112,7 @@ class PostController extends Controller
 `layout` プロパティを構成しない場合は、アプリケーションのレイアウトが代りに使用されます。
 
 
-## モジュールを使う <a name="using-modules"></a>
+## モジュールを使う <span id="using-modules"></span>
 
 アプリケーションの中でモジュールを使うためには、アプリケーションの [[yii\base\Application::modules|modules]] プロパティのリストにそのモジュールを載せてアプリケーションを構成するだけで大丈夫です。
 次のコードは、[アプリケーションの構成情報](structure-applications.md#application-configurations) の中で `forum` モジュールを使うようにするものです。
@@ -133,7 +133,7 @@ class PostController extends Controller
 そして、対応する配列の値は、そのモジュールを作成するための [構成情報](concept-configurations.md) です。
 
 
-### ルート <a name="routes"></a>
+### ルート <span id="routes"></span>
 
 アプリケーションの中のコントローラをアクセスするのと同じように、[ルート](structure-controllers.md#routes) がモジュールの中のコントローラを指し示すために使われます。
 モジュール内のコントローラのルートは、モジュール ID で始まり、コントローラ ID、アクション ID と続くものでなければなりません。
@@ -142,7 +142,7 @@ class PostController extends Controller
 これは、`forum` というルートは `forum` モジュール内の `default` コントローラを表すという意味です。
 
 
-### モジュールにアクセスする <a name="accessing-modules"></a>
+### モジュールにアクセスする <span id="accessing-modules"></span>
 
 モジュール内において、モジュール ID や、モジュールのパラメータ、モジュールのコンポーネントなどにアクセスするために、[モジュールクラス](#module-classes) のインスタンスを取得する必要があることがよくあります。
 次の文を使ってそうすることが出来ます。
@@ -181,7 +181,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-### モジュールをブートストラップする <a name="bootstrapping-modules"></a>
+### モジュールをブートストラップする <span id="bootstrapping-modules"></span>
 
 いくつかのモジュールは、全てのリクエストで毎回走らせる必要があります。[[yii\debug\Module|デバッグ]] モジュールがその一例です。
 そうするためには、そのようなモジュールをアプリケーションの [[yii\base\Application::bootstrap|bootstrap]] プロパティのリストに挙げます。
@@ -201,7 +201,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-## 入れ子のモジュール <a name="nested-modules"></a>
+## 入れ子のモジュール <span id="nested-modules"></span>
 
 モジュールはレベルの制限無く入れ子にすることが出来ます。
 つまり、モジュールは別のモジュールを含むことが出来、その含まれたモジュールもさらに別のモジュールを含むことが出来ます。
@@ -236,7 +236,7 @@ class Module extends \yii\base\Module
 このリストには、直接の子と孫以下の両方のモジュールが含まれ、クラス名によってインデックスされています。
 
 
-## ベストプラクティス <a name="best-practices"></a>
+## ベストプラクティス <span id="best-practices"></span>
 
 モジュールは、それぞれ密接に関係する一連の機能を含む数個のグループに分割できるような、規模の大きなアプリケーションに最も適しています。
 そのような機能グループをそれぞれモジュールとして、特定の個人やチームによって開発することが出来ます。

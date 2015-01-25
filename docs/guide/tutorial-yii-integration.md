@@ -5,13 +5,13 @@ From time to time, you may need to use some third-party code in your Yii applica
 use Yii as a library in some third-party systems. In this section, we will show how to achieve these goals.
 
 
-Using Third-Party Libraries in Yii <a name="using-libs-in-yii"></a>
+Using Third-Party Libraries in Yii <span id="using-libs-in-yii"></span>
 ----------------------------------
 
 To use a third-party library in a Yii application, you mainly need to make sure the classes in the library
 are properly included or can be autoloaded.
 
-### Using Composer Packages <a name="using-composer-packages"></a>
+### Using Composer Packages <span id="using-composer-packages"></span>
 
 Many third-party libraries are released in terms of [Composer](https://getcomposer.org/) packages.
 You can install such libraries by taking the following two simple steps:
@@ -31,7 +31,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
 
-### Using Downloaded Libraries <a name="using-downloaded-libs"></a>
+### Using Downloaded Libraries <span id="using-downloaded-libs"></span>
 
 If a library is not released as a Composer package, you should follow its installation instructions to install it.
 In most cases, you will need to download a release file manually and unpack it in the `BasePath/vendor` directory,
@@ -70,7 +70,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-Using Yii in Third-Party Systems <a name="using-yii-in-others"></a>
+Using Yii in Third-Party Systems <span id="using-yii-in-others"></span>
 --------------------------------
 
 Because Yii provides many excellent features, sometimes you may want to use some of its features to support
@@ -117,7 +117,7 @@ Now you can use most features provided by Yii. For example, you can create Activ
 to work with databases.
 
 
-Using Yii 2 with Yii 1 <a name="using-both-yii2-yii1"></a>
+Using Yii 2 with Yii 1 <span id="using-both-yii2-yii1"></span>
 ----------------------
 
 If you were using Yii 1 previously, it is likely you have a running Yii 1 application. Instead of rewriting

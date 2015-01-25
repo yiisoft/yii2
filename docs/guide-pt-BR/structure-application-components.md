@@ -58,7 +58,7 @@ Por exemplo,
   simplesmente criar um componente local e utilizá-lo quando necessário.
 
 
-## Components de Inicialização <a name="bootstrapping-components"></a>
+## Components de Inicialização <span id="bootstrapping-components"></span>
 
 Conforme mencionado acima, um componente de aplicação só será instanciado quando
 ele estiver sendo acessado pela primeira vez. Se ele nunca for acessado durante
@@ -84,7 +84,7 @@ Por exemplo, a configuração de aplicação a seguir assegura-se que o componen
 ```
 
 
-## Componentes de Aplicação do Core <a name="core-application-components"></a>
+## Componentes de Aplicação do Core <span id="core-application-components"></span>
 
 O yii define um conjunto de componentes de aplicação do **core** com IDs fixos
 e configurações padrão. Por exemplo, o componente [[yii\web\Application::request|request]]

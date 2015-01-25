@@ -13,7 +13,7 @@ There are two types of applications: [[yii\web\Application|Web applications]] an
 Web requests while the latter console command requests.
 
 
-## Application Configurations <a name="application-configurations"></a>
+## Application Configurations <span id="application-configurations"></span>
 
 When an [entry script](structure-entry-scripts.md) creates an application, it will load
 a [configuration](concept-configurations.md) and apply it to the application, like the following:
@@ -35,7 +35,7 @@ very complex, they usually are kept in [configuration files](concept-configurati
 like the `web.php` file in the above example.
 
 
-## Application Properties <a name="application-properties"></a>
+## Application Properties <span id="application-properties"></span>
 
 There are many important application properties that you should configure in application configurations.
 These properties typically describe the environment that applications are running in.
@@ -43,20 +43,20 @@ For example, applications need to know how to load [controllers](structure-contr
 where to store temporary files, etc. In the following, we will summarize these properties.
 
 
-### Required Properties <a name="required-properties"></a>
+### Required Properties <span id="required-properties"></span>
 
 In any application, you should at least configure two properties: [[yii\base\Application::id|id]]
 and [[yii\base\Application::basePath|basePath]].
 
 
-#### [[yii\base\Application::id|id]] <a name="id"></a>
+#### [[yii\base\Application::id|id]] <span id="id"></span>
 
 The [[yii\base\Application::id|id]] property specifies a unique ID that differentiates an application
 from others. It is mainly used programmatically. Although not a requirement, for best interoperability
 it is recommended that you use alphanumeric characters only when specifying an application ID.
 
 
-#### [[yii\base\Application::basePath|basePath]] <a name="basePath"></a>
+#### [[yii\base\Application::basePath|basePath]] <span id="basePath"></span>
 
 The [[yii\base\Application::basePath|basePath]] property specifies the root directory of an application.
 It is the directory that contains all protected source code of an application system. Under this directory,
@@ -72,13 +72,13 @@ paths (e.g. the runtime path). For this reason, a path alias named `@app` is pre
 path. Derived paths may then be formed using this alias (e.g. `@app/runtime` to refer to the runtime directory).
 
 
-### Important Properties <a name="important-properties"></a>
+### Important Properties <span id="important-properties"></span>
 
 The properties described in this subsection often need to be configured because they differ across
 different applications.
 
 
-#### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
+#### [[yii\base\Application::aliases|aliases]] <span id="aliases"></span>
 
 This property allows you to define a set of [aliases](concept-aliases.md) in terms of an array.
 The array keys are alias names, and the array values are the corresponding path definitions.
@@ -97,7 +97,7 @@ This property is provided such that you can define aliases in terms of applicati
 the method calls [[Yii::setAlias()]].
 
 
-#### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
+#### [[yii\base\Application::bootstrap|bootstrap]] <span id="bootstrap"></span>
 
 This is a very useful property. It allows you to specify an array of components that should
 be run during the application [[yii\base\Application::bootstrap()|bootstrapping process]].
@@ -172,7 +172,7 @@ if (YII_ENV_DEV) {
   for each request, the same set of components need to be run. So use bootstrapping components judiciously.
 
 
-#### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
+#### [[yii\web\Application::catchAll|catchAll]] <span id="catchAll"></span>
 
 This property is supported by [[yii\web\Application|Web applications]] only. It specifies
 a [controller action](structure-controllers.md) which should handle all user requests. This is mainly
@@ -192,7 +192,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 ```
 
 
-#### [[yii\base\Application::components|components]] <a name="components"></a>
+#### [[yii\base\Application::components|components]] <span id="components"></span>
 
 This is the single most important property. It allows you to register a list of named components
 called [application components](structure-application-components.md) that you can use in other places. For example,
@@ -220,7 +220,7 @@ using the expression `\Yii::$app->ComponentID`.
 Please read the [Application Components](structure-application-components.md) section for details.
 
 
-#### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
+#### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
 This property allows you to map a controller ID to an arbitrary controller class. By default, Yii maps
 controller IDs to controller classes based on a [convention](#controllerNamespace) (e.g. the ID `post` would be mapped
@@ -246,7 +246,7 @@ The array keys of this property represent the controller IDs, while the array va
 controller class names or [configurations](concept-configurations.md).
 
 
-#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
+#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <span id="controllerNamespace"></span>
 
 This property specifies the default namespace under which controller classes should be located. It defaults to
 `app\controllers`. If a controller ID is `post`, by convention the corresponding controller class name (without
@@ -264,7 +264,7 @@ In case you want to break the convention as described above, you may configure t
 property.
 
 
-#### [[yii\base\Application::language|language]] <a name="language"></a>
+#### [[yii\base\Application::language|language]] <span id="language"></span>
 
 This property specifies the language in which the application should display content to end users.
 The default value of this property is `en`, meaning English. You should configure this property
@@ -281,7 +281,7 @@ For example, `en` stands for English, while `en-US` stands for English (United S
 More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
 
 
-#### [[yii\base\Application::modules|modules]] <a name="modules"></a>
+#### [[yii\base\Application::modules|modules]] <span id="modules"></span>
 
 This property specifies the [modules](structure-modules.md) that the application contains.
 
@@ -306,7 +306,7 @@ being the module IDs. For example,
 Please refer to the [Modules](structure-modules.md) section for more details.
 
 
-#### [[yii\base\Application::name|name]] <a name="name"></a>
+#### [[yii\base\Application::name|name]] <span id="name"></span>
 
 This property specifies the application name that may be displayed to end users. Unlike the
 [[yii\base\Application::id|id]] property which should take a unique value, the value of this property is mainly for
@@ -315,7 +315,7 @@ display purpose and does not need to be unique.
 You do not always need to configure this property if none of your code is using it.
 
 
-#### [[yii\base\Application::params|params]] <a name="params"></a>
+#### [[yii\base\Application::params|params]] <span id="params"></span>
 
 This property specifies an array of globally accessible application parameters. Instead of using hardcoded
 numbers and strings everywhere in your code, it is a good practice to define them as application parameters
@@ -341,7 +341,7 @@ Later if you decide to change the thumbnail size, you only need to modify it in 
 without touching any dependent code.
 
 
-#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
+#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <span id="sourceLanguage"></span>
 
 This property specifies the language that the application code is written in. The default value is `'en-US'`,
 meaning English (United States). You should configure this property if the text content in your code is not in English.
@@ -353,7 +353,7 @@ while `en-US` stands for English (United States).
 More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
 
 
-#### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
+#### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 This property is provided as an alternative way of setting the default time zone of PHP runtime.
 By configuring this property, you are essentially calling the PHP function
@@ -366,25 +366,25 @@ By configuring this property, you are essentially calling the PHP function
 ```
 
 
-#### [[yii\base\Application::version|version]] <a name="version"></a>
+#### [[yii\base\Application::version|version]] <span id="version"></span>
 
 This property specifies the version of the application. It defaults to `'1.0'`. You do not always need to configure
 this property if none of your code is using it.
 
 
-### Useful Properties <a name="useful-properties"></a>
+### Useful Properties <span id="useful-properties"></span>
 
 The properties described in this subsection are not commonly configured because their default values
 stipulate common conventions. However, you may still configure them in case you want to break the conventions.
 
 
-#### [[yii\base\Application::charset|charset]] <a name="charset"></a>
+#### [[yii\base\Application::charset|charset]] <span id="charset"></span>
 
 This property specifies the charset that the application uses. The default value is `'UTF-8'` which should
 be kept as is for most applications unless you are working with some legacy systems that use a lot of non-unicode data.
 
 
-#### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
+#### [[yii\base\Application::defaultRoute|defaultRoute]] <span id="defaultRoute"></span>
 
 This property specifies the [route](runtime-routing.md) that an application should use when a request
 does not specify one. The route may consist of child module ID, controller ID, and/or action ID.
@@ -400,7 +400,7 @@ For [[yii\console\Application|console applications]], the default value is `'hel
 without providing any arguments, it will display the help information.
 
 
-#### [[yii\base\Application::extensions|extensions]] <a name="extensions"></a>
+#### [[yii\base\Application::extensions|extensions]] <span id="extensions"></span>
 
 This property specifies the list of [extensions](structure-extensions.md) that are installed and used by the application.
 By default, it will take the array returned by the file `@vendor/yiisoft/extensions.php`. The `extensions.php` file
@@ -434,7 +434,7 @@ process, a `bootstrap` element may be specified with a bootstrapping class name 
 array. An extension may also define a few [aliases](concept-aliases.md).
 
 
-#### [[yii\base\Application::layout|layout]] <a name="layout"></a>
+#### [[yii\base\Application::layout|layout]] <span id="layout"></span>
 
 This property specifies the name of the default layout that should be used when rendering a [view](structure-views.md).
 The default value is `'main'`, meaning the layout file `main.php` under the [layout path](#layoutPath) should be used.
@@ -444,7 +444,7 @@ the default layout file can be represented as the path alias `@app/views/layouts
 You may configure this property to be `false` if you want to disable layout by default, although this is very rare.
 
 
-#### [[yii\base\Application::layoutPath|layoutPath]] <a name="layoutPath"></a>
+#### [[yii\base\Application::layoutPath|layoutPath]] <span id="layoutPath"></span>
 
 This property specifies the path where layout files should be looked for. The default value is
 the `layouts` sub-directory under the [view path](#viewPath). If the [view path](#viewPath) is taking
@@ -453,7 +453,7 @@ its default value, the default layout path can be represented as the path alias 
 You may configure it as a directory or a path [alias](concept-aliases.md).
 
 
-#### [[yii\base\Application::runtimePath|runtimePath]] <a name="runtimePath"></a>
+#### [[yii\base\Application::runtimePath|runtimePath]] <span id="runtimePath"></span>
 
 This property specifies the path where temporary files, such as log files, cache files, can be generated.
 The default value is the directory represented by the alias `@app/runtime`.
@@ -465,13 +465,13 @@ by end users because the temporary files under it may contain sensitive informat
 To simplify accessing to this path, Yii has predefined a path alias named `@runtime` for it.
 
 
-#### [[yii\base\Application::viewPath|viewPath]] <a name="viewPath"></a>
+#### [[yii\base\Application::viewPath|viewPath]] <span id="viewPath"></span>
 
 This property specifies the root directory where view files are located. The default value is the directory
 represented by the alias `@app/views`. You may configure it as a directory or a path [alias](concept-aliases.md).
 
 
-#### [[yii\base\Application::vendorPath|vendorPath]] <a name="vendorPath"></a>
+#### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
 This property specifies the vendor directory managed by [Composer](http://getcomposer.org). It contains
 all third party libraries used by your application, including the Yii framework. The default value is
@@ -483,13 +483,13 @@ this property, make sure you also adjust the Composer configuration accordingly.
 To simplify accessing to this path, Yii has predefined a path alias named `@vendor` for it.
 
 
-#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <a name="enableCoreCommands"></a>
+#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <span id="enableCoreCommands"></span>
 
 This property is supported by [[yii\console\Application|console applications]] only. It specifies
 whether the core commands included in the Yii release should be enabled. The default value is `true`.
 
 
-## Application Events <a name="application-events"></a>
+## Application Events <span id="application-events"></span>
 
 An application triggers several events during the lifecycle of handling an request. You may attach event
 handlers to these events in application configurations like the following,
@@ -514,7 +514,7 @@ after the application instance is created. For example,
 });
 ```
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <a name="beforeRequest"></a>
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <span id="beforeRequest"></span>
 
 This event is triggered *before* an application handles a request. The actual event name is `beforeRequest`.
 
@@ -523,7 +523,7 @@ to insert your custom code via the event mechanism to intercept the request hand
 in the event handler, you may dynamically set the [[yii\base\Application::language]] property based on some parameters.
 
 
-### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <span id="afterRequest"></span>
 
 This event is triggered *after* an application finishes handling a request but *before* sending the response.
 The actual event name is `afterRequest`.
@@ -535,7 +535,7 @@ Note that the [[yii\web\Response|response]] component also triggers some events 
 response content to end users. Those events are triggered *after* this event.
 
 
-### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <span id="beforeAction"></span>
 
 This event is triggered *before* running every [controller action](structure-controllers.md).
 The actual event name is `beforeAction`.
@@ -561,7 +561,7 @@ triggering this event, followed by modules (if any), and finally controllers. If
 sets [[yii\base\ActionEvent::isValid]] to be `false`, all the following events will NOT be triggered.
 
 
-### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
+### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <span id="afterAction"></span>
 
 This event is triggered *after* running every [controller action](structure-controllers.md).
 The actual event name is `afterAction`.
@@ -587,7 +587,7 @@ as for that of `beforeAction`. That is, controllers are the first objects trigge
 followed by modules (if any), and finally applications.
 
 
-## Application Lifecycle <a name="application-lifecycle"></a>
+## Application Lifecycle <span id="application-lifecycle"></span>
 
 ![Application Lifecycle](images/application-lifecycle.png)
 

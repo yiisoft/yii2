@@ -21,7 +21,7 @@
 * [[yii\base\Application::run()]] を呼んで、受け取ったリクエストを処理する。
 
 
-## ウェブアプリケーション<a name="web-applications"></a>
+## ウェブアプリケーション<span id="web-applications"></span>
 
 次に示すのが、[ベーシックウェブアプリケーションテンプレート](start-installation.md) のエントリスクリプトです。
 
@@ -45,7 +45,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## コンソールアプリケーション<a name="console-applications"></a>
+## コンソールアプリケーション<span id="console-applications"></span>
 
 同様に、下記がコンソールアプリケーションのエントリスクリプトです:le application:
 
@@ -81,7 +81,7 @@ exit($exitCode);
 ```
 
 
-## 定数を定義する<a name="defining-constants"></a>
+## 定数を定義する<span id="defining-constants"></span>
 
 グローバルな定数を定義するには、エントリスクリプトが最善の場所です。
 Yii は下記の三つの定数をサポートしています:

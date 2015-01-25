@@ -7,7 +7,7 @@
 に引き渡して、モデルが生成した結果を [ビュー](structure-views.md) に投入し、最終的に外に出て行くレスポンスを生成します。
 
 
-## アクション<a name="actions"></a>
+## アクション<span id="actions"></span>
 
 コントローラは *アクション* から構成されます。
 アクションは、エンドユーザがアドレスを指定して実行をリクエストできる最も基本的な構成単位です。
@@ -62,7 +62,7 @@ class PostController extends Controller
 どちらかが失敗したときは、ユーザが必要なデータを入力できるようにするための `create` ビューを表示します。
 
 
-## ルート<a name="routes"></a>
+## ルート<span id="routes"></span>
 
 エンドユーザは、いわゆる *ルート* によって、アクションのアドレスを指定します。
 ルートは、次の部分からなる文字列です。
@@ -88,7 +88,7 @@ ModuleID/ControllerID/ActionID
 ルートがどのようにしてアクションとして解決されるかについての詳細は、[ルーティングと URL 生成](runtime-routing.md) の節を参照してください。
 
 
-## コントローラを作成する<a name="creating-controllers"></a>
+## コントローラを作成する<span id="creating-controllers"></span>
 
 [[yii\web\Application|ウェブアプリケーション]] では、コントローラは [[yii\web\Controller]] またはその子クラスから派生させるべきものです。
 同様に、[[yii\console\Application|コンソールアプリケーション]] では、コントローラは [[yii\console\Controller]] またはその子クラスから派生させるべきものです。
@@ -105,7 +105,7 @@ class SiteController extends Controller
 ```
 
 
-### コントローラの ID<a name="controller-ids"></a>
+### コントローラの ID<span id="controller-ids"></span>
 
 通常、コントローラは特定の型のリソースに関するリクエストを処理するように設計されます。
 この理由により、たいていはコントローラが処理するリソースの型を示す名詞をコントローラの ID として使います。
@@ -121,7 +121,7 @@ class SiteController extends Controller
 フォワードスラッシュは、複数レベルのサブディレクトリの区切り文字として使われます (例えば、`panels/admin`)。
 
 
-### コントローラクラスの命名規則<a name="controller-class-naming"></a>
+### コントローラクラスの命名規則<span id="controller-class-naming"></span>
 
 コントローラクラスの名前は下記の規則に従ってコントローラの ID から導出することが出来ます。
 
@@ -148,7 +148,7 @@ class SiteController extends Controller
   この方法は、コントローラをいくつかのカテゴリに分けて整理したい、けれども [モジュール](structure-modules.md) は使いたくない、という場合に役立ちます。
 
 
-### コントローラマップ<a name="controller-map"></a>
+### コントローラマップ<span id="controller-map"></span>
 
 [[yii\base\Application::controllerMap|コントローラマップ]] を構成すると、上で述べたコントローラの ID とクラス名の制約を乗り越えることが出来ます。
 これは、主として、クラス名に対する制御が及ばないサードパーティのコントローラを使おうとする場合に有用です。
@@ -171,7 +171,7 @@ class SiteController extends Controller
 ```
 
 
-### デフォルトコントローラ<a name="default-controller"></a>
+### デフォルトコントローラ<span id="default-controller"></span>
 
 全てのアプリケーションは、それぞれ、[[yii\base\Application::defaultRoute]] プロパティを通じて規定されるデフォルトコントローラを持ちます。
 リクエストが [ルート](#ids-routes) を指定しない場合、このプロパティによって指定されたルートが使われます。
@@ -187,7 +187,7 @@ class SiteController extends Controller
 ```
 
 
-## アクションを作成する<a name="creating-actions"></a>
+## アクションを作成する<span id="creating-actions"></span>
 
 アクションの作成は、コントローラクラスの中にいわゆる *アクションメソッド* を定義するだけの簡単なことです。
 アクションメソッドとは、`action` という語で始まる名前を持つ *public* メソッドのことです。
@@ -214,7 +214,7 @@ class SiteController extends Controller
 ```
 
 
-### アクション ID<a name="action-ids"></a>
+### アクション ID<span id="action-ids"></span>
 
 アクションは、たいてい、あるリソースについて特定の操作を実行するように設計されます。
 この理由により、アクション ID は、通常、`view`、`update` などのような動詞になります。
@@ -231,7 +231,7 @@ class SiteController extends Controller
 として再配布されることを意図して作成されます。
 
 
-### インラインアクション<a name="inline-actions"></a>
+### インラインアクション<span id="inline-actions"></span>
 
 インラインアクションは、たった今説明したように、アクションメソッドとして定義されるアクションを指します。
 
@@ -254,7 +254,7 @@ class SiteController extends Controller
 しかし、同じアクションを別の場所で再利用する計画を持っていたり、また、アクションを再配布したいと思っていたりする場合は、アクションを *スタンドアロンアクション* として定義することを考慮すべきです。
 
 
-### スタンドアロンアクション<a name="standalone-actions"></a>
+### スタンドアロンアクション<span id="standalone-actions"></span>
 
 スタンドアロンアクションは、[[yii\base\Action]] またはその子クラスを拡張したクラスとして定義されるものです。
 例えば、Yii のリリースに [[yii\web\ViewAction]] と [[yii\web\ErrorAction]] が含まれていますが、これらは両方ともスタンドアロンアクションです。
@@ -302,7 +302,7 @@ class HelloWorldAction extends Action
 ```
 
 
-### アクションの結果<a name="action-results"></a>
+### アクションの結果<span id="action-results"></span>
 
 アクションメソッド、または、スタンドアロンアクションの `run()` メソッドの返り値は、重要な意味を持ちます。
 それは、対応するアクションの結果を表すものです。
@@ -325,7 +325,7 @@ public function actionForward()
 ```
 
 
-### アクションパラメータ<a name="action-parameters"></a>
+### アクションパラメータ<span id="action-parameters"></span>
 
 インラインアクションのアクションメソッドと、スタンドアロンアクションの `run()` メソッドは、*アクションパラメータ* と呼ばれる引数を取ることが出来ます。
 パラメータの値はリクエストから取得されます。
@@ -372,7 +372,7 @@ public function actionView(array $id, $version = null)
 コンソールアプリケーションについては、[コンソールコマンド](tutorial-console.md) の節で詳細を参照してください。
 
 
-### デフォルトアクション<a name="default-action"></a>
+### デフォルトアクション<span id="default-action"></span>
 
 すべてのコントローラは、それぞれ、[[yii\base\Controller::defaultAction]] によって規定されるデフォルトアクションを持ちます。
 [ルート](#ids-routes) がコントローラ ID のみを含む場合は、指定されたコントローラのデフォルトアクションがリクエストされたことを意味します。
@@ -397,7 +397,7 @@ class SiteController extends Controller
 ```
 
 
-## コントローラのライフサイクル<a name="controller-lifecycle"></a>
+## コントローラのライフサイクル<span id="controller-lifecycle"></span>
 
 リクエストを処理するときに、[アプリケーション](structure-applications.md) はリクエストされた [ルート](#routes) に基いてコントローラを作成します。
 そして、次に、コントローラはリクエストに応じるために以下のライフサイクルを経過します。
@@ -418,7 +418,7 @@ class SiteController extends Controller
 6. アプリケーションはアクションの結果を受け取り、それを [レスポンス](runtime-responses.md) に割り当てる。
 
 
-## ベストプラクティス<a name="best-practices"></a>
+## ベストプラクティス<span id="best-practices"></span>
 
 良く設計されたアプリケーションでは、コントローラはたいてい非常に軽いものになり、それぞれのアクションは数行のコードしか含まないものになります。
 あなたのコントローラが少々複雑になっている場合、そのことは、通常、コントローラをリファクタして、コードの一部を他のクラスに移動すべきことを示すものです。

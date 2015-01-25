@@ -15,7 +15,7 @@
 具体的に言えば、DB クライアントツールを用いてデータベースを作成する方法と、SQL 文を実行する方法を知っていなければなりません。
 
 
-データベースを準備する <a name="preparing-database"></a>
+データベースを準備する <span id="preparing-database"></span>
 ----------------------
 
 まず初めに、`yii2basic` という名前のデータベースを作成してください。このデータベースからアプリケーションにデータを読み出すことになります。
@@ -47,7 +47,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 この時点で、あなたは `yii2basic` という名前のデータベースを持ち、その中に三つのカラムを持つ `country` というテーブルがあり、`country` テーブルは 10 行のデータを持っている、ということになります。
 
 
-DB 接続を構成する <a name="configuring-db-connection"></a>
+DB 接続を構成する <span id="configuring-db-connection"></span>
 -----------------
 
 先に進む前に、[PDO](http://www.php.net/manual/en/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ (例えば、MySQL のための `pdo_mysql`) の両方をインストール済みであることを確認してください。
@@ -78,7 +78,7 @@ return [
   詳しい情報については、[構成情報](concept-configurations.md) の節を参照してください。
 
 
-アクティブレコードを作成する <a name="creating-active-record"></a>
+アクティブレコードを作成する <span id="creating-active-record"></span>
 ----------------------------
 
 `country` テーブルの中のデータを表現し取得するために、[アクティブレコード](db-active-record.md) から派生した `Country` という名前のクラスを作成し、それを `models/Country.php` というファイルに保存します。
@@ -124,7 +124,7 @@ $country->save();
 もう一つの方法として、[データアクセスオブジェクト](db-dao.md) と呼ばれる、より低レベルなデータアクセス方法を使ってデータベースを操作することも出来ます。
 
 
-アクションを作成する <a name="creating-action"></a>
+アクションを作成する <span id="creating-action"></span>
 --------------------
 
 国データをエンドユーザに公開するために、新しいアクションを作成する必要があります。
@@ -179,7 +179,7 @@ class CountryController extends Controller
 このとき、国データだけでなく、そのページネーション情報がビューに渡されます。
 
 
-ビューを作成する <a name="creating-view"></a>
+ビューを作成する <span id="creating-view"></span>
 ----------------
 
 最初に、`views` ディレクトリの下に `country` という名前のサブディレクトリを作ってください。
@@ -210,7 +210,7 @@ use yii\widgets\LinkPager;
 `LinkPager` ウィジェットはページボタンのリストを表示します。ボタンのどれかをクリックすると、対応するページの国データが更新表示されます。
 
 
-試してみる <a name="trying-it-out"></a>
+試してみる <span id="trying-it-out"></span>
 ----------
 
 上記のコード全てがどのように動作するかを見るために、ブラウザで下記の URL をアクセスします。
@@ -242,7 +242,7 @@ http://hostname/index.php?r=country/index&page=2
   こうして、新しい国のクエリは `LIMIT 5 OFFSET 5` という句を持ち、次の5つの国を表示のために返すことになります。
 
 
-まとめ <a name="summary"></a>
+まとめ <span id="summary"></span>
 ------
 
 この節では、データベースを扱う方法を学びました。

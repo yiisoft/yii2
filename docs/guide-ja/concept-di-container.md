@@ -6,7 +6,7 @@
 ここでは、主に Yii の提供する DI コンテナの使用方法を説明します。
 
 
-依存性注入 <a name="dependency-injection"></a>
+依存性注入 <span id="dependency-injection"></span>
 --------------------
 
 Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を提供します。これは、次の種類の依存性注入をサポートしています:
@@ -16,7 +16,7 @@ Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を�
 * PHP コーラブル·インジェクション
 
 
-### コンストラクタ·インジェクション <a name="constructor-injection"></a>
+### コンストラクタ·インジェクション <span id="constructor-injection"></span>
 
 DI コンテナは、コンストラクタパラメータの型ヒントの助けを借りた、コンストラクタ·インジェクションをサポートしています。
 型ヒントは、クラスやインタフェースが新しいオブジェクトの作成で使用されるさい、どれが依存であるのかということをコンテナに教えます。
@@ -38,7 +38,7 @@ $foo = new Foo($bar);
 ```
 
 
-### セッター/プロパティ·インジェクション <a name="setter-and-property-injection"></a>
+### セッター/プロパティ·インジェクション <span id="setter-and-property-injection"></span>
 
 セッター/プロパティ·インジェクションは、[構成情報](concept-configurations.md) を通してサポートされます。
 依存関係を登録するときや、新しいオブジェクトを作成するとき、コンテナが使用する構成情報を提供することができ、
@@ -71,7 +71,7 @@ $container->get('Foo', [], [
 ```
 
 
-### PHP コーラブル・インジェクション <a name="php-callable-injection"></a>
+### PHP コーラブル・インジェクション <span id="php-callable-injection"></span>
 
 この場合、コンテナは、登録された PHP のコーラブルオブジェクトを使用し、クラスの新しいインスタンスを構築します。
 コーラブルは、依存関係を解決し、新しく作成されたオブジェクトに適切にそれらを注入する責任があります。たとえば
@@ -85,7 +85,7 @@ $foo = $container->get('Foo');
 ```
 
 
-依存関係の登録 <a name="registering-dependencies"></a>
+依存関係の登録 <span id="registering-dependencies"></span>
 ------------------------
 
 あなたは、[[yii\di\Container::set()]] 使って依存関係を登録することができます。登録には依存関係の名前だけでなく、
@@ -149,7 +149,7 @@ $container->setSingleton('yii\db\Connection', [
 ```
 
 
-依存関係の解決 <a name="resolving-dependencies"></a>
+依存関係の解決 <span id="resolving-dependencies"></span>
 ----------------------
 
 依存関係を登録すると、新しいオブジェクトを作成するのに DI コンテナを使用することができ、
@@ -239,7 +239,7 @@ $lister = new UserLister($finder);
 ```
 
 
-実際の使いかた <a name="practical-usage"></a>
+実際の使いかた <span id="practical-usage"></span>
 ---------------
 
 あなたのアプリケーションの [エントリスクリプト](structure-entry-scripts.md) で `Yii.php` ファイルをインクルードするとき、
@@ -301,7 +301,7 @@ class HotelController extends Controller
 のインスタンスが作成され、コントローラのコンストラクタに3番目のパラメータとして注入されるようになります。
 
 
-依存関係を登録するときに <a name="when-to-register-dependencies"></a>
+依存関係を登録するときに <span id="when-to-register-dependencies"></span>
 -----------------------------
 
 依存関係は、新しいオブジェクトが作成されるとき必要とされるので、それらの登録は可能な限り早期に行われるべきです。
@@ -313,7 +313,7 @@ class HotelController extends Controller
   依存関係を登録することができます。
 
 
-まとめ <a name="summary"></a>
+まとめ <span id="summary"></span>
 -------
 
 依存性注入と [サービスロケータ](concept-service-locator.md) はともに、疎結合でよりテストしやすい方法でのソフトウェア構築を可能にする、

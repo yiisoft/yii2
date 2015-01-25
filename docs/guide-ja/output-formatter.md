@@ -59,7 +59,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // 出力: 2014/01/01
 > 64-bit のシステムでは、インストールされていれば、全ての場合に intl フォーマッタが使用されます。
 
 
-フォーマッタを構成する <a name="configuring-format"></a>
+フォーマッタを構成する <span id="configuring-format"></span>
 ----------------------
 
 フォーマットメソッドによって使われるデフォルトの書式は、[[yii\i18n\Formatter|フォーマッタクラス]] のプロパティを使って調整することが出来ます。
@@ -78,7 +78,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // 出力: 2014/01/01
 ],
 ```
 
-日時の値をフォーマットする <a name="date-and-time"></a>
+日時の値をフォーマットする <span id="date-and-time"></span>
 --------------------------
 
 フォーマッタクラスは日時の値をフォーマットするさまざまなメソッドを提供しています。すなわち、
@@ -118,7 +118,7 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
-### タイムゾーン <a name="time-zones"></a>
+### タイムゾーン <span id="time-zones"></span>
 
 日時の値をフォーマットするときに、Yii はその値を [[yii\i18n\Formatter::timeZone|設定されたタイムゾーン]] に変換します。
 従って、入力値は、タイムゾーンが明示的に指定されていなければ、UTC であると見なされます。
@@ -140,7 +140,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 21:41:00 JST'); // 21:41:00
 > [PHP 環境を国際化のために設定する](tutorial-i18n.md#setup-environment) も参照してください。
 
 
-数値をフォーマットする <a name="numbers"></a>
+数値をフォーマットする <span id="numbers"></span>
 ----------------------
 
 数値をフォーマットするために、フォーマッタクラスは次のメソッドを提供しています。
@@ -166,7 +166,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 21:41:00 JST'); // 21:41:00
 ]
 ```
 
-その他のフォーマッタ  <a name="other"></a>
+その他のフォーマッタ  <span id="other"></span>
 --------------------
 
 日付、時刻、そして、数値の他にも、Yii はさまざまな状況で使える一連のフォーマッタを提供しています。
@@ -185,7 +185,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 21:41:00 JST'); // 21:41:00
   デフォルトでは、`true` は `Yes`、`false` は `No` とレンダリングされ、現在のアプリケーションの言語に翻訳されます。
   この振る舞いは [[yii\i18n\Formatter::booleanFormat]] プロパティを構成して調整できます。
 
-`null` 値 <a name="null-values"></a>
+`null` 値 <span id="null-values"></span>
 ---------
 
 PHP において `null` である値に対して、フォーマッタクラスは空文字ではなくプレースホルダを表示します。

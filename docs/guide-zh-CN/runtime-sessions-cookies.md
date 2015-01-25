@@ -6,13 +6,13 @@ Sessions 和 Cookies
 可通过面向对象方式访问它们。
 
 
-## Sessions <a name="sessions"></a>
+## Sessions <span id="sessions"></span>
 
 和 [请求](runtime-requests.md) 和 [响应](runtime-responses.md)类似，
 默认可通过为[[yii\web\Session]] 实例的`session` [应用组件](structure-application-components.md) 来访问sessions。
 
 
-### 开启和关闭 Sessions <a name="opening-closing-sessions"></a>
+### 开启和关闭 Sessions <span id="opening-closing-sessions"></span>
 
 可使用以下代码来开启和关闭session。
 
@@ -36,7 +36,7 @@ $session->destroy();
 因为方法内部会先检查session是否已经开启。
 
 
-### 访问Session数据 <a name="access-session-data"></a>
+### 访问Session数据 <span id="access-session-data"></span>
 
 To access the data stored in session, you can do the following:
 可使用如下方式访问session中的数据：
@@ -121,7 +121,7 @@ $session['captcha.lifetime'] = 3600;
 而是将每个数组项变成有相同键前缀的session变量。
 
 
-### 自定义Session存储 <a name="custom-session-storage"></a>
+### 自定义Session存储 <span id="custom-session-storage"></span>
 
 [[yii\web\Session]] 类默认存储session数据为文件到服务器上，Yii提供以下session类实现不同的session存储方式：
 
@@ -171,7 +171,7 @@ CREATE TABLE session
   例如，如果 `session.hash_function=sha256` ，应使用长度为64而不是40的char类型。
 
 
-### Flash 数据 <a name="flash-data"></a>
+### Flash 数据 <span id="flash-data"></span>
 
 Flash数据是一种特别的session数据，它一旦在某个请求中设置后，只会在下次请求中有效，然后该数据就会自动被删除。
 常用于实现只需显示给终端用户一次的信息，如用户提交一个表单后显示确认信息。
@@ -220,14 +220,14 @@ $alerts = $session->getFlash('alerts');
   取决于你调用这两个方法的顺序。
 
 
-## Cookies <a name="cookies"></a>
+## Cookies <span id="cookies"></span>
 
 Yii使用 [[yii\web\Cookie]]对象来代表每个cookie，[[yii\web\Request]] 和 [[yii\web\Response]]
 通过名为'cookies'的属性维护一个cookie集合，前者的cookie 集合代表请求提交的cookies，
 后者的cookie集合表示发送给用户的cookies。
 
 
-### 读取 Cookies <a name="reading-cookies"></a>
+### 读取 Cookies <span id="reading-cookies"></span>
 
 当前请求的cookie信息可通过如下代码获取：
 
@@ -254,7 +254,7 @@ if (isset($cookies['language'])) ...
 ```
 
 
-### 发送 Cookies <a name="sending-cookies"></a>
+### 发送 Cookies <span id="sending-cookies"></span>
 
 You can send cookies to end users using the following code:
 可使用如下代码发送cookie到终端用户：
@@ -284,7 +284,7 @@ unset($cookies['language']);
 更多详情可阅读 [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
 
 
-### Cookie验证 <a name="cookie-validation"></a>
+### Cookie验证 <span id="cookie-validation"></span>
 
 在上两节中，当通过`request` 和 `response` 组件读取和发送cookie时，你会喜欢扩展的cookie验证的保障安全功能，它能
 使cookie不被客户端修改。该功能通过给每个cookie签发一个哈希字符串来告知服务端cookie是否在客户端被修改，

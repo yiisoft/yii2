@@ -10,7 +10,7 @@ HTTP キャッシュ
 * [[yii\filters\HttpCache::cacheControlHeader|Cache-Control]]
 
 
-## `Last-Modified` ヘッダ <a name="last-modified"></a>
+## `Last-Modified` ヘッダ <span id="last-modified"></span>
 
 `Last-Modified` ヘッダは、クライアントがそれをキャッシュする時から、ページが変更されたかどうかを示すために、タイムスタンプを使用しています。
 
@@ -46,7 +46,7 @@ public function behaviors()
 上記のコードは `index` アクションでのみ HTTP キャッシュを有効にしている状態です。投稿の最終更新時刻に基づいて `Last-Modified` を生成する必要があります。ブラウザが初めて `index` ページにアクセスすると、ページはサーバ上で生成されブラウザに送信されます。もしブラウザが再度同じページにアクセスし、その期間中に投稿に変更がない場合は、ブラウザはクライアントサイドにキャッシュしたものを使用するので、サーバはページを再生成することはありません。その結果、サーバサイドのレンダリング処理とページコンテンツの送信は両方ともスキップされます。
 
 
-## `ETag` ヘッダ <a name="etag"></a>
+## `ETag` ヘッダ <span id="etag"></span>
 
 "Entity Tag" (略して `ETag`) ヘッダはページコンテンツを表すためにハッシュを使用します。ページが変更された場合ハッシュも同様に変更されます。サーバサイドで生成されたハッシュとクライアントサイドで保持しているハッシュを比較することによって、ページが変更されたかどうか、また再送信するべきかどうかを決定します。
 
@@ -87,7 +87,7 @@ ETag はリクエスト毎に再評価する必要があるため、負荷の高
 
 > 注意: [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4) に準拠して `Etag` と `Last-Modified` ヘッダの両方を設定した場合、`HttpCache` はその両方とも送信します。また、もし `If-None-Match` ヘッダと `If-Modified-Since` ヘッダの両方を送信した場合は前者のみが尊重されます。
 
-## `Cache-Control` ヘッダ <a name="cache-control"></a>
+## `Cache-Control` ヘッダ <span id="cache-control"></span>
 
 `Cache-Control` ヘッダはページのための一般的なキャッシュポリシーを指定します。ヘッダ値に [[yii\filters\HttpCache::cacheControlHeader]] プロパティを設定することで、それを送ることができます。デフォルトでは、以下のヘッダーが送信されます:
 
@@ -95,11 +95,11 @@ ETag はリクエスト毎に再評価する必要があるため、負荷の高
 Cache-Control: public, max-age=3600
 ```
 
-## セッションキャッシュリミッタ<a name="session-cache-limiter"></a>
+## セッションキャッシュリミッタ<span id="session-cache-limiter"></span>
 
 ページでセッションを使用している場合、PHP はいくつかのキャッシュ関連の HTTP ヘッダ(PHP の設定ファイル内で指定されている session.cache_limiter など)を自動的に送信します。これらのヘッダは `HttpCache` で妨害したり、必要なキャッシュを無効にしたりできます。この動作を変更したい場合は [[yii\filters\HttpCache::sessionCacheLimiter]] プロパティを設定します。プロパティには `public`、`private`、`private_no_expire`、そして `nocache` などの文字列の値を使用することができます。これらの値についての説明は [session_cache_limiter()](http://www.php.net/manual/ja/function.session-cache-limiter.php) を参照してください。
 
 
-## SEO への影響 <a name="seo-implications"></a>
+## SEO への影響 <span id="seo-implications"></span>
 
 検索エンジンのボットはキャッシュヘッダを尊重する傾向があります。 クローラの中には、一定期間内に処理するドメインごとのページ数に制限を持っているものもあるため、キャッシュヘッダを導入して、処理の必要があるページ数を減らしてやると、サイトのインデックスの作成を促進できるかも知れません。

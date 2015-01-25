@@ -20,7 +20,7 @@ public function rules()
 以下では、全てのコアバリデータについて、主な使用方法とプロパティを説明します。
 
 
-## [[yii\validators\BooleanValidator|boolean]] <a name="boolean"></a>
+## [[yii\validators\BooleanValidator|boolean]] <span id="boolean"></span>
 
 ```php
 [
@@ -42,7 +42,7 @@ public function rules()
 > Note|注意: HTML フォームで送信されたデータ入力値は全て文字列であるため、通常は、[[yii\validators\BooleanValidator::strict|strict]] プロパティは false のままにすべきです。
 
 
-## [[yii\captcha\CaptchaValidator|captcha]] <a name="captcha"></a>
+## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>
 
 ```php
 [
@@ -57,7 +57,7 @@ public function rules()
 - `skipOnEmpty`: 入力値が空のときに検証をスキップできるかどうか。デフォルト値は false で、入力が必須であることを意味します。
   
 
-## [[yii\validators\CompareValidator|compare]] <a name="compare"></a>
+## [[yii\validators\CompareValidator|compare]] <span id="compare"></span>
 
 ```php
 [
@@ -88,7 +88,7 @@ public function rules()
      * `<=`: 検証される値が比較される値よりも小さいか等しいことを検証する。
 
 
-## [[yii\validators\DateValidator|date]] <a name="date"></a>
+## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
 ```php
 [
@@ -113,7 +113,7 @@ public function rules()
 [['from_date', 'to_date'], 'default', 'value' => null],
 ```
 
-## [[yii\validators\DefaultValueValidator|default]] <a name="default"></a>
+## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>
 
 ```php
 [
@@ -147,7 +147,7 @@ function foo($model, $attribute) {
 > Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
-## [[yii\validators\NumberValidator|double]] <a name="double"></a>
+## [[yii\validators\NumberValidator|double]] <span id="double"></span>
 
 ```php
 [
@@ -165,7 +165,7 @@ function foo($model, $attribute) {
   設定されていない場合は、バリデータが下限値をチェックしないことを意味します。
 
 
-## [[yii\validators\EmailValidator|email]] <a name="email"></a>
+## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
 [
@@ -185,7 +185,7 @@ function foo($model, $attribute) {
   IDN のバリデーションを使用するためには、`intl` PHP 拡張をインストールして有効化する必要があることに注意してください。そうしないと、例外が投げられます。
 
 
-## [[yii\validators\ExistValidator|exist]] <a name="exist"></a>
+## [[yii\validators\ExistValidator|exist]] <span id="exist"></span>
 
 ```php
 [
@@ -235,7 +235,7 @@ function foo($model, $attribute) {
   `targetAttribute` を配列で指定して複数のカラムに対して検証しようとしている場合は、このプロパティを true に設定することが出来ないことに注意してください。
 
 
-## [[yii\validators\FileValidator|file]] <a name="file"></a>
+## [[yii\validators\FileValidator|file]] <span id="file"></span>
 
 ```php
 [
@@ -270,7 +270,7 @@ function foo($model, $attribute) {
 ファイルのアップロードおよびアップロードされたファイルのバリデーションの実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
 
 
-## [[yii\validators\FilterValidator|filter]] <a name="filter"></a>
+## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
 
 ```php
 [
@@ -308,7 +308,7 @@ function foo($model, $attribute) {
 > ```
 
 
-## [[yii\validators\ImageValidator|image]] <a name="image"></a>
+## [[yii\validators\ImageValidator|image]] <span id="image"></span>
 
 ```php
 [
@@ -330,7 +330,7 @@ function foo($model, $attribute) {
 - `maxHeight`: 画像の高さの最大値。デフォルト値は null であり、上限値がないことを意味します。
 
 
-## [[yii\validators\RangeValidator|in]] <a name="in"></a>
+## [[yii\validators\RangeValidator|in]] <span id="in"></span>
 
 ```php
 [
@@ -350,7 +350,7 @@ function foo($model, $attribute) {
   このプロパティが true であるときに、入力値が配列である場合は、配列の全ての要素が所与の値のリストにある必要があり、そうでなければ検証は失敗します。
 
 
-## [[yii\validators\NumberValidator|integer]] <a name="integer"></a>
+## [[yii\validators\NumberValidator|integer]] <span id="integer"></span>
 
 ```php
 [
@@ -365,7 +365,7 @@ function foo($model, $attribute) {
 - `min`: 下限値 (その値を含む)。設定されていないときは、バリデータは下限をチェックしません。
 
 
-## [[yii\validators\RegularExpressionValidator|match]] <a name="match"></a>
+## [[yii\validators\RegularExpressionValidator|match]] <span id="match"></span>
 
 ```php
 [
@@ -382,7 +382,7 @@ function foo($model, $attribute) {
   このプロパティが true に設定されているときは、入力値がパターンに一致しない場合にだけ検証が成功したと見なされます。
 
 
-## [[yii\validators\NumberValidator|number]] <a name="number"></a>
+## [[yii\validators\NumberValidator|number]] <span id="number"></span>
 
 ```php
 [
@@ -397,7 +397,7 @@ function foo($model, $attribute) {
 - `min`: 下限値 (その値を含む)。設定されていないときは、バリデータは下限をチェックしません。
 
 
-## [[yii\validators\RequiredValidator|required]] <a name="required"></a>
+## [[yii\validators\RequiredValidator|required]] <span id="required"></span>
 
 ```php
 [
@@ -418,7 +418,7 @@ function foo($model, $attribute) {
 > Info|情報: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
 
 
-## [[yii\validators\SafeValidator|safe]] <a name="safe"></a>
+## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>
 
 ```php
 [
@@ -431,7 +431,7 @@ function foo($model, $attribute) {
 その代りに、このバリデータは、属性を [安全な属性](structure-models.md#safe-attributes) としてマークするために使われます。
 
 
-## [[yii\validators\StringValidator|string]] <a name="string"></a>
+## [[yii\validators\StringValidator|string]] <span id="string"></span>
 
 ```php
 [
@@ -452,7 +452,7 @@ function foo($model, $attribute) {
 - `encoding`: 検証される入力文字列の文字エンコーディング。設定されていない時は、アプリケーションの [[yii\base\Application::charset|charset]] の値が使われ、デフォルトでは `UTF-8` となります。
 
 
-## [[yii\validators\FilterValidator|trim]] <a name="trim"></a>
+## [[yii\validators\FilterValidator|trim]] <span id="trim"></span>
 
 ```php
 [
@@ -466,7 +466,7 @@ function foo($model, $attribute) {
 入力値が配列であるときは、このバリデータによって無視されることに注意してください。
 
 
-## [[yii\validators\UniqueValidator|unique]] <a name="unique"></a>
+## [[yii\validators\UniqueValidator|unique]] <span id="unique"></span>
 
 ```php
 [
@@ -508,7 +508,7 @@ function foo($model, $attribute) {
   `$query` は関数の中で修正できる [[yii\db\Query|Query]] オブジェクトです。
 
 
-## [[yii\validators\UrlValidator|url]] <a name="url"></a>
+## [[yii\validators\UrlValidator|url]] <span id="url"></span>
 
 ```php
 [

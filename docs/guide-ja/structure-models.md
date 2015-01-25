@@ -21,7 +21,7 @@
   通常は [[yii\base\Model]] がモデルの基底クラスとして推奨されます。
 
 
-## 属性<a name="attributes"></a>
+## 属性<span id="attributes"></span>
 
 モデルは業務のデータを *属性* の形式で表現します。
 全ての属性はそれぞれパブリックにアクセス可能なモデルのプロパティと同様なものです。
@@ -54,7 +54,7 @@ foreach ($model as $name => $value) {
 ```
 
 
-### 属性を定義する<a name="defining-attributes"></a>
+### 属性を定義する<span id="defining-attributes"></span>
 
 あなたのモデルが [[yii\base\Model]] を直接に拡張するものである場合、既定によって、全ての *static でない public な* メンバ変数は属性となります。
 例えば、次に示す `ContactForm` モデルは4つの属性、すなわち、`name`、`email`、`subject`、そして、`body` を持ちます。
@@ -82,7 +82,7 @@ class ContactForm extends Model
 `__get()` や `__set()` などのマジックメソッドをオーバーライドする必要があるかもしれないことに注意してください。
 
 
-### 属性のラベル <a name="attribute-labels"></a>
+### 属性のラベル <span id="attribute-labels"></span>
 
 属性の値を表示したり、入力してもらったりするときに、属性と関連付けられたラベルを表示する必要があることがよくあります。
 例えば、`firstName` という名前の属性を考えたとき、入力フォームやエラーメッセージのような箇所でエンドユーザに表示するときは、もっとユーザフレンドリーな `First Name` というラベルを表示したいと思うでしょう。
@@ -149,7 +149,7 @@ public function attributeLabels()
   しかし、たいていの場合、モデルの中でラベルを宣言する方が便利が良く、結果としてクリーンで再利用可能なコードになります。
 
 
-## シナリオ<a name="scenarios"></a>
+## シナリオ<span id="scenarios"></span>
 
 モデルはさまざまに異なる *シナリオ* で使用されます。
 例えば、`User` モデルはユーザログインの入力を収集するために使われますが、同時に、ユーザ登録の目的でも使われます。
@@ -222,7 +222,7 @@ class User extends ActiveRecord
 しかし、他の目的に使うことも可能です。例えば、現在のシナリオに基づいて異なる [属性のラベル](#attribute-labels) を宣言することも出来ます。
 
 
-## 検証規則<a name="validation-rules"></a>
+## 検証規則<span id="validation-rules"></span>
 
 モデルのデータをエンドユーザから受け取ったときは、データを検証して、それが一定の規則 (*検証規則*、あるいは、いわゆる *ビジネスルール*) を満たしていることを確認しなければなりません。
 `ContactForm` モデルを例に挙げるなら、全ての属性が空ではなく、`email` 属性が有効なメールアドレスを含んでいることを確認したいでしょう。
@@ -291,7 +291,7 @@ public function rules()
 の中で宣言されている一つまたは複数のアクティブな規則と結び付けられている場合であり、また、そのような場合だけです。
 
 
-## 一括代入<a name="massive-assignment"></a>
+## 一括代入<span id="massive-assignment"></span>
 
 一括代入は、一行のコードを書くだけで、ユーザの入力したデータをモデルに投入できる便利な方法です。
 一括代入は、入力されたデータを [[yii\base\Model::$attributes]] に直接に代入することによって、モデルの属性にデータを投入します。
@@ -313,7 +313,7 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 ```
 
 
-### 安全な属性<a name="safe-attributes"></a>
+### 安全な属性<span id="safe-attributes"></span>
 
 一括代入は、いわゆる *安全な属性*、すなわち、[[yii\base\Model::scenarios()]] においてモデルの現在の [[yii\base\Model::scenario|シナリオ]]
 のためにリストされている属性に対してのみ適用されます。
@@ -348,7 +348,7 @@ public function rules()
 ```
 
 
-### 安全でない属性<a name="unsafe-attributes"></a>
+### 安全でない属性<span id="unsafe-attributes"></span>
 
 上記で説明したように、[[yii\base\Model::scenarios()]] メソッドは二つの目的を持っています。
 すなわち、どの属性が検証されるべきかを決めることと、どの属性が安全であるかを決めることです。
@@ -373,7 +373,7 @@ $model->secret = $secret;
 ```
 
 
-## データのエクスポート <a name="data-exporting"></a>
+## データのエクスポート <span id="data-exporting"></span>
 
 モデルを他の形式にエクスポートする必要が生じることはよくあります。例えば、一群のモデルを JSON や
 Excel 形式に変換したい場合があるでしょう。
@@ -400,7 +400,7 @@ $array = $post->attributes;
 ウェブサービスの開発においては、これがモデルをエクスポートする既定の方法となっています。
 
 
-### フィールド<a name="fields"></a>
+### フィールド<span id="fields"></span>
 
 フィールドとは、単に、モデルの [[yii\base\Model::toArray()]] メソッドを呼ぶことによって取得される配列に含まれる名前付きの要素のことです。
 
@@ -460,7 +460,7 @@ public function fields()
 > および `password_reset_token` を選んで除去しています。
 
 
-## ベストプラクティス<a name="best-practices"></a>
+## ベストプラクティス<span id="best-practices"></span>
 
 モデルは、業務のデータ、規則、ロジックを表わす中心的なオブジェクトです。
 モデルは、さまざまな場所で再利用される必要がよくあります。

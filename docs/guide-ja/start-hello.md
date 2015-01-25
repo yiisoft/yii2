@@ -14,7 +14,7 @@
 3. アプリケーションがリクエストを [アクション](structure-controllers.md#creating-actions) に送付する仕組み
 
 
-アクションを作成する <a name="creating-action"></a>
+アクションを作成する <span id="creating-action"></span>
 --------------------
 
 「こんにちは」のタスクのために、リクエストから `message` パラメータを読んで、そのメッセージをユーザに表示して返す `say` [アクション](structure-controllers.md#creating-actions) を作ります。
@@ -68,7 +68,7 @@ Yii はコントローラクラスの中で、アクションのメソッドと�
 返された結果はアプリケーションによって受け取られ、ブラウザ上でエンドユーザに (完全な HTML ページの一部として) 表示されます。
 
 
-ビューを作成する <a name="creating-view"></a>
+ビューを作成する <span id="creating-view"></span>
 ----------------
 
 [ビュー](structure-views.md) は、レスポンスのコンテントを生成するために書かれるスクリプトです。
@@ -94,7 +94,7 @@ use yii\helpers\Html;
 そしてアプリケーションがこの結果をエンドユーザに対して出力します。
 
 
-試してみる <a name="trying-it-out"></a>
+試してみる <span id="trying-it-out"></span>
 ----------
 
 アクションとビューを作成したら、下記の URL で新しいページにアクセスすることが出来ます。
@@ -129,7 +129,7 @@ URL から `message` パラメータを省略すると、"こんにちは" を�
   例えば、`post-comment` というコントローラ ID に対応するコントローラクラスの名前は `PostCommentController` です。
 
 
-まとめ <a name="summary"></a>
+まとめ <span id="summary"></span>
 ------
 
 この節では、MVC デザインパターンのうちのコントローラとビューの部分に触れました。

@@ -498,7 +498,7 @@ Formatting Number and Date values
 See the [data formatter section](output-formatter.md) for details.
 
 
-Setting up your PHP environment <a name="setup-environment"></a>
+Setting up your PHP environment <span id="setup-environment"></span>
 -------------------------------
 
 Yii uses the [PHP intl extension](http://php.net/manual/en/book.intl.php) to provide most of its internationalization features

@@ -22,7 +22,7 @@ if ($model->validate()) {
 }
 ```
 
-## 規則を宣言する <a name="declaring-rules"></a>
+## 規則を宣言する <span id="declaring-rules"></span>
 
 `validate()` を現実に動作させるためには、検証する予定の属性に対してバリデーション規則を宣言しなければなりません。
 規則は [[yii\base\Model::rules()]] メソッドをオーバーライドすることで宣言します。
@@ -89,7 +89,7 @@ public function rules()
 属性は、上記のバリデーションのステップに従って、`scenarios()` でアクティブな属性であると宣言されており、かつ、`rules()` で宣言された一つまたは複数のアクティブな規則と関連付けられている場合に、また、その場合に限って、検証されます。
 
 
-### エラーメッセージをカスタマイズする <a name="customizing-error-messages"></a>
+### エラーメッセージをカスタマイズする <span id="customizing-error-messages"></span>
 
 たいていのバリデータはデフォルトのエラーメッセージを持っていて、属性のバリデーションが失敗した場合にそれを検証の対象であるモデルに追加します。
 例えば、[[yii\validators\RequiredValidator|required]] バリデータは、このバリデータを使って `username` 属性を検証したとき、規則に合致しない場合は「ユーザ名は空ではいけません。」というエラーメッセージをモデルに追加します。
@@ -110,7 +110,7 @@ public function rules()
 これらのエラーメッセージも、バリデータの他のプロパティと同様、バリデーション規則の中で構成することが出来ます。
 
 
-### バリデーションのイベント <a name="validation-events"></a>
+### バリデーションのイベント <span id="validation-events"></span>
 
 [[yii\base\Model::validate()]] は、呼び出されると、バリデーションプロセスをカスタマイズするためにオーバーライドできる二つのメソッドを呼び出します。
 
@@ -121,7 +121,7 @@ public function rules()
   このメソッドをオーバーライドするか、または、イベントに反応して、バリデーションが完了した後に、何らかの後処理をすることが出来ます。
 
 
-### 条件付きバリデーション <a name="conditional-validation"></a>
+### 条件付きバリデーション <span id="conditional-validation"></span>
 
 特定の条件が満たされる場合に限って属性を検証したい場合、例えば、ある属性のバリデーションが他の属性の値に依存する場合には、[[yii\validators\Validator::when|when]] プロパティを使って、そのような条件を定義することが出来ます。
 例えば、
@@ -160,7 +160,7 @@ function ($model, $attribute)
 ```
 
 
-### データのフィルタリング <a name="data-filtering"></a>
+### データのフィルタリング <span id="data-filtering"></span>
 
 ユーザ入力をフィルタまたは前処理する必要があることがよくあります。
 例えば、`username` の入力値の前後にある空白を除去したいというような場合です。
@@ -179,7 +179,7 @@ function ($model, $attribute)
 お分かりかと思いますが、これらのバリデーション規則は実際には入力を検証しません。そうではなくて、検証される属性の値を処理して書き戻すのです。
 
 
-### 空の入力値を扱う <a name="handling-empty-inputs"></a>
+### 空の入力値を扱う <span id="handling-empty-inputs"></span>
 
 HTML フォームから入力データが送信されたとき、入力値が空である場合には何らかのデフォルト値を割り当てなければならないことがよくあります。
 [default](tutorial-core-validators.md#default) バリデータを使ってそうすることが出来ます。
@@ -212,7 +212,7 @@ HTML フォームから入力データが送信されたとき、入力値が空
   [コアバリデータ](tutorial-core-validators.md) の中では、`captcha`、`default`、`filter`、`required`、そして `trim` だけが空の入力値を処理します。
 
 
-## アドホックなバリデーション <a name="ad-hoc-validation"></a>
+## アドホックなバリデーション <span id="ad-hoc-validation"></span>
 
 時として、何らかのモデルに結び付けられていない値に対する *アドホックなバリデーション* を実行しなければならない場合があります。
 
@@ -275,13 +275,13 @@ public function actionSearch($name, $email)
 また、このモデルのインスタンスによって定義された動的な属性に対しても、例えば `$model->name` や `$model->email` のようにして、アクセスすることが出来ます。
 
 
-## バリデータを作成する <a name="creating-validators"></a>
+## バリデータを作成する <span id="creating-validators"></span>
 
 Yii のリリースに含まれている [コアバリデータ](tutorial-core-validators.md) を使う以外に、あなた自身のバリデータを作成することも出来ます。
 インラインバリデータとスタンドアロンバリデータを作ることが出来ます。
 
 
-### インラインバリデータ <a name="inline-validators"></a>
+### インラインバリデータ <span id="inline-validators"></span>
 
 インラインバリデータは、モデルのメソッドまたは無名関数として定義されるバリデータです。
 メソッド/関数 のシグニチャは、
@@ -341,7 +341,7 @@ class MyForm extends Model
 > ```
 
 
-### スタンドアロンバリデータ <a name="standalone-validators"></a>
+### スタンドアロンバリデータ <span id="standalone-validators"></span>
 
 スタンドアロンバリデータは、[[yii\validators\Validator]] またはその子クラスを拡張するクラスです。
 [[yii\validators\Validator::validateAttribute()]] メソッドをオーバーライドすることによって、その検証ロジックを実装することが出来ます。
@@ -370,7 +370,7 @@ class CountryValidator extends Validator
 と言うのは、前の二つは、デフォルトでは、`validateValue()` を呼び出すことによって実装されているからです。
 
 
-## クライアント側でのバリデーション <a name="client-side-validation"></a>
+## クライアント側でのバリデーション <span id="client-side-validation"></span>
 
 エンドユーザが HTML フォームで値を入力する際には、JavaScript に基づくクライアント側でのバリデーションを提供することが望まれます。
 というのは、クライアント側でのバリデーションは、ユーザが入力のエラーを早く見つけることが出来るようにすることによって、より良いユーザ体験を提供するものだからです。
@@ -382,7 +382,7 @@ class CountryValidator extends Validator
   この理由により、これまでの項で説明したように、常に [[yii\base\Model::validate()]] を呼び出してサーバ側でのバリデーションを実行しなければなりません。
 
 
-### クライアント側でのバリデーションを使う <a name="using-client-side-validation"></a>
+### クライアント側でのバリデーションを使う <span id="using-client-side-validation"></span>
 
 多くの [コアバリデータ](tutorial-core-validators.md) は、そのままで、クライアント側でのバリデーションをサポートしています。
 あなたがする必要があるのは、[[yii\widgets\ActiveForm]] を使って HTML フォームを作るということだけです。
@@ -441,7 +441,7 @@ class LoginForm extends Model
 また、個々の入力フィールドごとにクライアント側のバリデーションを無効にしたい場合は、入力フィールドの [[yii\widgets\ActiveField::enableClientValidation]] プロパティを false に設定することも出来ます。
 
 
-### クライアント側バリデーションを実装する <a name="implementing-client-side-validation"></a>
+### クライアント側バリデーションを実装する <span id="implementing-client-side-validation"></span>
 
 クライアント側バリデーションをサポートするバリデータを作成するためには、クライアント側でのバリデーションを実行する JavaScript コードを返す [[yii\validators\Validator::clientValidateAttribute()]] メソッドを実装しなければなりません。
 その JavaScript の中では、次の事前定義された変数を使用することが出来ます。
@@ -499,7 +499,7 @@ JS;
 > ]
 > ```
 
-### Deferred バリデーション <a name="deferred-validation"></a>
+### Deferred バリデーション <span id="deferred-validation"></span>
 
 非同期のクライアント側バリデーションをサポートする必要がある場合は、[Defered オブジェクト](http://api.jquery.com/category/deferred-object/) を作成することが出来ます。
 例えば、AJAX によるカスタムバリデーションを実行するために、次のコードを使うことが出来ます。
@@ -575,7 +575,7 @@ JS;
 ```
 
 
-### AJAX バリデーション <a name="ajax-validation"></a>
+### AJAX バリデーション <span id="ajax-validation"></span>
 
 場合によっては、サーバだけが必要な情報を持っているために、サーバ側でしか検証が実行できないことがあります。
 例えば、ユーザ名がユニークであるか否かを検証するためには、サーバ側で user テーブルを調べることが必要になります。

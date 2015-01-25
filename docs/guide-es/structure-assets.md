@@ -11,13 +11,13 @@ de tener que buscar los archivos e incluirlos manualmente. Y cuando se actualice
 usará de forma automática la nueva versión de los archivos asset.
 En este tutorial, se describirá la poderosa capacidad que proporciona la gestión de assets en Yii.
 
-## Asset Bundles <a name="asset-bundles"></a>
+## Asset Bundles <span id="asset-bundles"></span>
 
 Yii gestiona los assets en unidades de *asset bundle*. Un asset bundle es simplemente un conjunto de assets
 localizados en un directorio. Cuando se registra un asset bundle en una [vista](structure-views.md), éste incluirá los
 archivos CSS y JavaScript del bundle en la página Web renderizada.
 
-## Definición de Asset Bundles <a name="defining-asset-bundles"></a>
+## Definición de Asset Bundles <span id="defining-asset-bundles"></span>
 
 Los asset bundles son descritos como clases PHP que extienden a [[yii\web\AssetBundle]]. El nombre del bundle es
 simplemente su correspondiente nombre de la classe PHP que debe ser [autocargable](concept-autoloading.md). En una
@@ -89,7 +89,7 @@ A continuación se explicarán más detalladamente las propiedades del [[yii\web
   directorio Web.
 Solo se usa si se especifica la propiedad [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
-### Ubicación de los Assets <a name="asset-locations"></a>
+### Ubicación de los Assets <span id="asset-locations"></span>
 
 Según la localización de los assets, se pueden clasificar como:
 
@@ -118,7 +118,7 @@ fuente, en directorios que no son accesibles para la Web, se tiene que especific
   por defecto por el [[yii\web\AssetManager|asset manager]] para guardar los archivos asset publicados temporalmente y
   pueden ser eliminados.
 
-### Dependencias de los Asset <a name="asset-dependencies"></a>
+### Dependencias de los Asset <span id="asset-dependencies"></span>
 
 Cuando se incluyen múltiples archivos CSS o JavaScript en una página Web, tienen que cumplir ciertas órdenes para
 evitar problemas de sobrescritura. Por ejemplo, si se usa un widget jQuery UI en una página Web, tenemos que
@@ -133,7 +133,7 @@ que los archivos de los dos bundles dependientes.
 Las dependencias son transitivas. Esto significa, que si un bundle A depende de un bundle B que depende de C, A
 dependerá de C, también.
 
-### Opciones de los Assets <a name="asset-options"></a>
+### Opciones de los Assets <span id="asset-options"></span>
 
 Se pueden especificar las propiedades [[yii\web\AssetBundle::cssOptions|cssOptions]] y
 [[yii\web\AssetBundle::jsOptions|jsOptions]] para personalizar la forma en que los archivos CSS y JavaScript serán
@@ -205,7 +205,7 @@ class FontAwesomeAsset extends AssetBundle
 El ejemplo anterior define un asset bundle para el ["fontawesome" package](http://fontawesome.io/). Especificando
 la opción de publicación `beforeCopy`, solo los subdirectorios `fonts` y `css` serán publicados.
 
-### Bower y NPM Assets <a name="bower-npm-assets"></a>
+### Bower y NPM Assets <span id="bower-npm-assets"></span>
 
 La mayoría de paquetes JavaScript/CSS se gestionan con [Bower](http://bower.io/) y/o [NPM](https://www.npmjs.org/).
 Si tu aplicación o extensión usa estos paquetes, se recomienda seguir los siguientes pasos para gestionar los assets en
@@ -223,7 +223,7 @@ Si tu aplicación o extensión usa estos paquetes, se recomienda seguir los sigu
   subdirectorio como valor del [[yii\web\AssetBundle::sourcePath|sourcePath]]. Por ejemplo, [[yii\web\JqueryAsset]]
   usa `@bower/jquery/dist` en vez de `@bower/jquery`.
 
-## Uso de Asset Bundles <a name="using-asset-bundles"></a>
+## Uso de Asset Bundles <span id="using-asset-bundles"></span>
 
 Para usar un asset bundle, debe registrarse con una [vista](structure-views.md) llamando al método
 [[yii\web\AssetBundle::register()]]. Por ejemplo, en plantilla de vista se puede registrar un asset bundle como en el
@@ -249,7 +249,7 @@ los archivos CSS y JavaScript listados en los bundles registrados. El orden de e
 las dependencias entre los bundles registrados y los otros assets listados en las propiedades
 [[yii\web\AssetBundle::css]] y [[yii\web\AssetBundle::js]].
 
-### Personalización de Asset Bundles <a name="customizing-asset-bundles"></a>
+### Personalización de Asset Bundles <span id="customizing-asset-bundles"></span>
 
 Yii gestiona los asset bundles a través de un componente de aplicación llamado `assetManager` que está implementado
 por [[yii\web\AssetManager]]. Configurando la propiedad [[yii\web\AssetManager::bundles]], se puede personalizar el
@@ -311,7 +311,7 @@ return [
 
 Además se pueden deshabilitar *todos* los asset bundles asignando `false` a [[yii\web\AssetManager::bundles]].
 
-### Mapeo de Assets (Asset Mapping) <a name="asset-mapping"></a>
+### Mapeo de Assets (Asset Mapping) <span id="asset-mapping"></span>
 
 A veces se puede querer "arreglar" rutas de archivos incorrectos/incompatibles usadas en múltiples asset bundles.
 Por ejemplo, el bundle A usa `jquery.min.js` con versión 1.11.1, y el bundle B usa `jquery.js` con versión 2.11.1.
@@ -343,7 +343,7 @@ Por ejemplo, un archivo asset `mi/ruta/a/jquery.js` concuerda con la clave `jque
 > Nota: Sólo los assets especificados usando rutas relativas están sujetos al mapeo de assets. Y las rutas de los
 assets destino deben ser tanto URLs absolutas o rutas relativas a [[yii\web\AssetManager::basePath]].
 
-### Publicación de Asset <a name="asset-publishing"></a>
+### Publicación de Asset <span id="asset-publishing"></span>
 
 Como se ha comentado anteriormente, si un asset bundle se encuentra en un directorio que no es accesible por la Web,
 este asset será copiado a un directorio Web cuando se registre el bundle con una vista. Este proceso se llama
@@ -371,7 +371,7 @@ return [
 Con la anterior configuración, el gestor de assets creará un enlace simbólico a la ruta de origen del asset bundle
 cuando éste sea publicado. Esto es más rápido que copiar archivos y también asegura que siempre estén actualizados.
 
-## Los Asset Bundles más Comunes <a name="common-asset-bundles"></a>
+## Los Asset Bundles más Comunes <span id="common-asset-bundles"></span>
 
 El código del núcleo de Yii tiene definidos varios asset bundles. Entre ellos, los siguientes bundles son los más
 usados y pueden referenciarse en códigos de aplicaciones o extensiones.
@@ -389,7 +389,7 @@ Si el código depende de jQuery, jQuery UI o Bootstrap, se pueden usar estos ass
 crear versiones propias. Si la configuración predeterminada de estos bundles no satisface las necesidades, se puede
 personalizar como se describe en la subsección [Personalización de Asset Bundles](#customizing-asset-bundles).
 
-## Conversión de Assets <a name="asset-conversion"></a>
+## Conversión de Assets <span id="asset-conversion"></span>
 
 En lugar de escribir código CSS y/o JavaScript directamente, los desarrolladores a menudo escriben código usando una
 sintaxis extendida y usan herramientas especiales para convertirlos en CSS/JavaScript. Por ejemplo, para código CSS se
@@ -464,7 +464,7 @@ de destino de los archivos asset.
   monitorear y convertir automáticamente los assets de sintaxis extendidas. En este caso, se deben listar los archivos
   CSS/JavaScript resultantes en lugar de los archivos de originales.
 
-## Combinación y Compresión de Assets <a name="combining-compressing-assets"></a>
+## Combinación y Compresión de Assets <span id="combining-compressing-assets"></span>
 
 Una página web puede incluir muchos archivos CSS y/o JavaScript. Para reducir el número de peticiones (requests)
 HTTP y el tamaño total de descarga de estos archivos, una práctica común es combinar y comprimir uno o
@@ -490,7 +490,7 @@ Usando este propuesta, cuando se registre un asset bundle en una vista, se gener
 asset bundle para el grupo al que pertenece el bundle original. Y como resultado, los archivos combinados/comprimidos
 se incluyen en la página, en lugar de los originales.
 
-### Un Example <a name="example"></a>
+### Un Example <span id="example"></span>
 
 Vamos a usar un ejemplo para explicar la propuesta anterior.
 
@@ -566,7 +566,7 @@ return [
 Es decir, el array de configuración del asset bundle se guarda en `asset-prod.php` para el modo de producción, y
 `assets-del.php` para los otros modos.
 
-### Uso del Comando `asset` <a name="using-asset-command"></a>
+### Uso del Comando `asset` <span id="using-asset-command"></span>
 
 Yii proporciona un comando de consola llamado `asset` para automatizar el enfoque descrito.
 

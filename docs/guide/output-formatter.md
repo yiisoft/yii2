@@ -57,7 +57,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 
 > because intl uses a 32bit UNIX timestamp internally. On a 64bit system the intl formatter is used in all cases if installed.
 
 
-Configuring the formatter <a name="configuring-format"></a>
+Configuring the formatter <span id="configuring-format"></span>
 -------------------------
 
 The default formats used by the formatter methods can be adjusted using the properties of the [[yii\i18n\Formatter|formatter class]].
@@ -76,7 +76,7 @@ For more details about the available properties check out the [[yii\i18n\Formatt
 ],
 ```
 
-Formatting Date and Time values <a name="date-and-time"></a>
+Formatting Date and Time values <span id="date-and-time"></span>
 -------------------------------
 
 The formatter class provides different methods for formatting date and time values. These are:
@@ -114,7 +114,7 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
-### Time zones <a name="time-zones"></a>
+### Time zones <span id="time-zones"></span>
 
 When formatting date and time values, Yii will convert them to the [[yii\i18n\Formatter::timeZone|configured time zone]].
 Therefore the input value is assumed to be in UTC unless a time zone is explicitly given. For this reason
@@ -138,7 +138,7 @@ identifier like the second example in the code above. You can set [[yii\i18n\For
 > See also: [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
 
 
-Formatting Numbers <a name="numbers"></a>
+Formatting Numbers <span id="numbers"></span>
 ------------------
 
 For formatting numeric values the formatter class provides the following methods:
@@ -167,7 +167,7 @@ For example, to adjust the maximum and minimum value of fraction digits, you can
 ]
 ```
 
-Other formatters  <a name="other"></a>
+Other formatters  <span id="other"></span>
 ----------------
 
 In addition to date, time and number formatting, Yii provides a set of other useful formatters for different situations:
@@ -189,7 +189,7 @@ In addition to date, time and number formatting, Yii provides a set of other use
   as `Yes` and `false` as `No`, translated to the current application language. You can adjust this by configuring
   the [[yii\i18n\Formatter::booleanFormat]] property.
 
-`null`-values <a name="null-values"></a>
+`null`-values <span id="null-values"></span>
 -------------
 
 For values that are `null` in PHP, the formatter class will print a placeholder instead of an empty string which

@@ -4,7 +4,7 @@ Url Helper
 Url helper provides a set of static methods for managing URLs.
 
 
-## Getting Common URLs <a name="getting-common-urls"></a>
+## Getting Common URLs <span id="getting-common-urls"></span>
 
 There are two methods you can use to get common URLs: home URL and base URL of the current request. In order to get
 home URL use the following:
@@ -29,7 +29,7 @@ $httpsAbsoluteBaseUrl = Url::base('https');
 The only parameter of the method works exactly the same as for `Url::home()`.
 
 
-## Creating URLs <a name="creating-urls"></a>
+## Creating URLs <span id="creating-urls"></span>
 
 In order to create URL to a given route use `Url::toRoute()` method. The method uses [[\yii\web\UrlManager]] to create
 a URL:
@@ -147,7 +147,7 @@ echo Url::current(['id' => 100]);
 ```
 
 
-## Remember URLs <a name="remember-urls"></a>
+## Remember URLs <span id="remember-urls"></span>
 
 There are cases when you need to remember URL and afterwards use it during processing of the one of sequential requests.
 It can be achieved in the following way:
@@ -170,7 +170,7 @@ $url = Url::previous();
 $productUrl = Url::previous('product');
 ```
                         
-## Checking Relative URLs <a name="checking-relative-urls"></a>
+## Checking Relative URLs <span id="checking-relative-urls"></span>
 
 To find out if URL is relative i.e. it doesn't have host info part, you can use the following code:
                              

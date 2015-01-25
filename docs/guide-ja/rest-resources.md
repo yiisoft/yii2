@@ -17,7 +17,7 @@ MVC の枠組の中では、リソースは [models](structure-models.md) とし
 リソースクラスが [[yii\base\Model]] から拡張しない場合は、全てのパブリックなメンバ変数が返されます。
 
 
-## フィールド <a name="fields"></a>
+## フィールド <span id="fields"></span>
 
 RESTful API のレスポンスにリソースを含めるとき、リソースは文字列にシリアライズされる必要があります。
 Yii はこのプロセスを二つのステップに分けます。
@@ -44,7 +44,7 @@ http://localhost/users?fields=id,email&expand=profile
 ```
 
 
-### fields()` をオーバーライドする <a name="overriding-fields"></a>
+### fields()` をオーバーライドする <span id="overriding-fields"></span>
 
 デフォルトでは、[[yii\base\Model::fields()]] は、モデルの全ての属性をフィールドとして返し、[[yii\db\ActiveRecord::fields()]] は、DB から投入された属性だけを返します。
 
@@ -91,7 +91,7 @@ public function fields()
 > および `password_reset_token` を選んで除去しています。
 
 
-### `extraFields()` をオーバーライドする<a name="overriding-extra-fields"></a>
+### `extraFields()` をオーバーライドする<span id="overriding-extra-fields"></span>
 
 デフォルトでは、[[yii\base\Model::extraFields()]] は何も返しませんが、[[yii\db\ActiveRecord::extraFields()]] は DB から取得されたリレーションの名前を返します。
 
@@ -128,7 +128,7 @@ public function extraFields()
 ```
 
 
-## リンク <a name="links"></a>
+## リンク <span id="links"></span>
 
 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) は、Hypermedia as the Engine of Application State (アプリケーション状態のエンジンとしてのハイパーメディア) の略称です。
 HATEOAS は、RESTful API は自分が返すリソースについて、どのようなアクションがサポートされているかをクライアントが発見できるような情報を返すべきである、という概念です。
@@ -171,7 +171,7 @@ class User extends ActiveRecord implements Linkable
 ```
 
 
-## コレクション <a name="collections"></a>
+## コレクション <span id="collections"></span>
 
 リソースオブジェクトは *コレクション* としてグループ化することが出来ます。
 各コレクションは、同じ型のリソースのリストを含みます。

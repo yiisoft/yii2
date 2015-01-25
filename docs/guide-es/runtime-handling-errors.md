@@ -15,7 +15,7 @@ El [[yii\web\ErrorHandler|error handler]] esta habilitado de forma predeterminad
 constante `YII_ENABLE_ERROR_HANDLER` con valor false en el
 [script de entrada (entry script)](structure-entry-scripts.md) de la aplicación.
 
-## Uso del Gestor de Errores <a name="using-error-handler"></a>
+## Uso del Gestor de Errores <span id="using-error-handler"></span>
 
 El [[yii\web\ErrorHandler|error handler]] se registra como un
 [componente de aplicación](structure-application-components.md) llamado `errorHandler`. Se puede configurar en la
@@ -61,7 +61,7 @@ use yii\web\NotFoundHttpException;
 throw new NotFoundHttpException();
 ```
 
-## Personalizar la Visualización de Errores <a name="customizing-error-display"></a>
+## Personalizar la Visualización de Errores <span id="customizing-error-display"></span>
 
 El [[yii\web\ErrorHandler|error handler]] ajusta la visualización del error conforme al valor de la constante
 `YII_DEBUG`. Cuando `YII_DEBUG` es `true` (es decir, en modo depuración (debug)), el gestor de errores mostrara las
@@ -85,7 +85,7 @@ Se pueden configurar las propiedades [[yii\web\ErrorHandler::errorView|errorView
 [[yii\web\ErrorHandler::exceptionView|exceptionView]] el gestor de errores para usar nuestros propias vistas para
 personalizar la visualización de los errores.
 
-### Uso de Acciones de Error <a name="using-error-actions"></a>
+### Uso de Acciones de Error <span id="using-error-actions"></span>
 
 Una mejor manera de personalizar la visualización de errores es usar un [acción](structure-controllers.md) de error
 dedicada. Para hacerlo, primero se debe configurar la propiedad [[yii\web\ErrorHandler::errorAction|errorAction]] del
@@ -153,7 +153,7 @@ a las siguientes variables si se define el error como un [[yii\web\ErrorAction]]
 > Información: Tanto la [plantilla de aplicación básica](start-installation.md) como la
   [plantilla de aplicación avanzada](tutorial-advanced-app.md), ya incorporan la acción de error y la vista de error.
 
-### Personalizar el Formato de Respuesta de Error <a name="error-format"></a>
+### Personalizar el Formato de Respuesta de Error <span id="error-format"></span>
 
 El gestor de errores muestra los errores de siguiente la configuración del formato de las
 [respuestas](runtime-responses.md). Si el [[yii\web\Response::format response format]] es `html`, se usará la vista de

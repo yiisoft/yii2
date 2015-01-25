@@ -40,7 +40,7 @@ echo Html::encode('Test > test');
 - VarDumper
 
 
-ヘルパクラスをカスタマイズする <a name="customizing-helper-classes"></a>
+ヘルパクラスをカスタマイズする <span id="customizing-helper-classes"></span>
 ------------------------------
 
 コアヘルパクラス (例えば [[yii\helpers\ArrayHelper]]) をカスタマイズするためには、そのヘルパに対応する基底クラス (例えば [[yii\helpers\BaseArrayHelper]]) を拡張するクラスを作成して、名前空間も含めて、対応する具象クラス (例えば [[yii\helpers\ArrayHelper]]) と同じ名前を付けます。

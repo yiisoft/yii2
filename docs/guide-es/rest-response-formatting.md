@@ -13,7 +13,7 @@ con el formato de la respuesta:
    componente de la aplicación [[yii\web\Response::formatters|response]].
 
 
-## Negociación de contenido (Content Negotiation) <a name="content-negotiation"></a>
+## Negociación de contenido (Content Negotiation) <span id="content-negotiation"></span>
 
 Yii soporta la negociación de contenido a través del filtro [[yii\filters\ContentNegotiator]]. La clase de controlador base
 del API RESTful [[yii\rest\Controller]] está equipada con este filtro bajo el nombre `contentNegotiator`.
@@ -81,7 +81,7 @@ Las claves de la propiedad `formats` son los tipos MIME soportados, mientras que
 los cuales deben ser soportados en [[yii\web\Response::formatters]].
 
 
-## Serialización de Datos <a name="data-serializing"></a>
+## Serialización de Datos <span id="data-serializing"></span>
 
 Como hemos descrito antes, [[yii\rest\Serializer]] es la pieza central responsable de convertir
 objetos recurso o colecciones en arrays. Reconoce objetos tanto implementando [[yii\base\ArrayableInterface]]

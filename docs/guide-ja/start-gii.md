@@ -12,7 +12,7 @@ Gii を使ってコードを自動生成することは、Gii のウェブペー
 * Gii によって生成されるコードをカスタマイズする方法
 
 
-Gii を開始する <a name="starting-gii"></a>
+Gii を開始する <span id="starting-gii"></span>
 --------------
 
 [Gii](tool-gii.md) は Yii の [モジュール](structure-modules.md) として提供されています。
@@ -57,7 +57,7 @@ http://hostname/index.php?r=gii
 ![Gii](images/start-gii.png)
 
 
-アクティブレコードのクラスを生成する <a name="generating-ar"></a>
+アクティブレコードのクラスを生成する <span id="generating-ar"></span>
 ------------------------------------
 
 Gii を使ってアクティブレコードのクラスを生成するためには、"Model Generator" を選びます
@@ -84,7 +84,7 @@ Gii を使うときに、既に同じファイルを作成していて、それ�
 既存のファイルがあった場合は、それが新しく生成されたコードで上書きされたことを示すメッセージも同じく表示されます。
 
 
-CRUD コードを生成する <a name="generating-crud"></a>
+CRUD コードを生成する <span id="generating-crud"></span>
 ---------------------
 
 CRUD は Create(作成)、Read(読出し)、Update(更新)、そして Delete(削除) を意味しており、ほとんどのウェブサイトでデータを扱うときによく用いられる4つのタスクを表しています。
@@ -106,7 +106,7 @@ Gii を使って CRUD 機能を作成するためには、"CRUD Generator" を�
 (以前のバージョンは フル機能の CRUD をサポートしていません。)
 
 
-試してみる <a name="trying-it-out"></a>
+試してみる <span id="trying-it-out"></span>
 ----------
 
 どのように動作するかを見るために、ブラウザを使って下記の URL にアクセスしてください。
@@ -137,7 +137,7 @@ http://hostname/index.php?r=country/index
   詳細については、[Gii](tool-gii.md) の節を参照してください。
 
 
-まとめ <a name="summary"></a>
+まとめ <span id="summary"></span>
 ------
 
 この節では、Gii を使ってコードを生成して、データベーステーブルに保存されているコンテントのための完全な CRUD 機能を実装する方法を学びました。

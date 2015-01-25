@@ -12,7 +12,7 @@
 この節では、レスポンスを構成してエンドユーザに送信する方法を説明します。
 
 
-## ステータスコード <a name="status-code"></a>
+## ステータスコード <span id="status-code"></span>
 
 レスポンスを作成するときに最初にすることの一つは、リクエストが成功裡に処理されたかどうかを記述することです。
 そのためには、[[yii\web\Response::statusCode]] プロパティに有効な [HTTP ステータスコード](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) の一つを設定します。
@@ -55,7 +55,7 @@ throw new \yii\web\HttpException(402);
 ```
 
 
-## HTTP ヘッダ <a name="http-headers"></a> 
+## HTTP ヘッダ <span id="http-headers"></span> 
 
 `response` コンポーネントの [[yii\web\Response::headers|ヘッダコレクション]] を操作することによって、HTTP ヘッダを送信することが出来ます。
 例えば、
@@ -77,7 +77,7 @@ $values = $headers->remove('Pragma');
   そして、新しく登録されたヘッダは、[[yii\web\Response::send()]] メソッドが呼ばれるまで送信されません。
 
 
-## レスポンスボディ <a name="response-body"></a>
+## レスポンスボディ <span id="response-body"></span>
 
 ほとんどのレスポンスは、エンドユーザに対して表示したい内容を示すボディを持っていなければなりません。
 
@@ -157,7 +157,7 @@ public function actionInfo()
   しかし、 [依存の注入](concept-di-container.md) を使えば、 共通の構成情報をあなたの新しいレスポンスオブジェクトに適用することが出来ます。
 
 
-## ブラウザのリダイレクト <a name="browser-redirection"></a>
+## ブラウザのリダイレクト <span id="browser-redirection"></span>
 
 ブラウザのリダイレクトは `Location` HTTP ヘッダの送信に依存しています。
 この機能は通常よく使われるものであるため、Yii はこれについて特別のサポートを提供しています。
@@ -196,7 +196,7 @@ public function actionOld()
 従って、あなたが ([[yii\web\YiiAsset]] アセットバンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
 
 
-## ファイルを送信する <a name="sending-files"></a>
+## ファイルを送信する <span id="sending-files"></span>
 
 ブラウザのリダイレクトと同じように、ファイルの送信という機能も特定の HTTP ヘッダに依存しています。
 Yii はさまざまなファイル送信の必要をサポートするための一連のメソッドを提供しています。それらはすべて、HTTP range ヘッダに対するサポートを内蔵しています。
@@ -235,7 +235,7 @@ public function actionDownload()
 - Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
-## レスポンスを送信する <a name="sending-response"></a>
+## レスポンスを送信する <span id="sending-response"></span>
 
 レスポンスの中のコンテントは、[[yii\web\Response::send()]] メソッドが呼ばれるまでは、エンドユーザに向けて送信されません。
 既定では、このメソッドは [[yii\base\Application::run()]] の最後で自動的に呼ばれます。

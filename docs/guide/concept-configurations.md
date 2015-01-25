@@ -33,7 +33,7 @@ Yii::configure($object, $config);
 Note that, in this case, the configuration array should not contain a `class` element.
 
 
-## Configuration Format <a name="configuration-format"></a>
+## Configuration Format <span id="configuration-format"></span>
 
 The format of a configuration can be formally described as:
 
@@ -76,14 +76,14 @@ Below is an example showing a configuration with initial property values, event 
 ```
 
 
-## Using Configurations <a name="using-configurations"></a>
+## Using Configurations <span id="using-configurations"></span>
 
 Configurations are used in many places in Yii. At the beginning of this section, we have shown how to 
 create an object according to a configuration by using [[Yii::createObject()]]. In this subsection, we will
 describe application configurations and widget configurations - two major usages of configurations.
 
 
-### Application Configurations <a name="application-configurations"></a>
+### Application Configurations <span id="application-configurations"></span>
 
 The configuration for an [application](structure-applications.md) is probably one of the most complex arrays in Yii.
 This is because the [[yii\web\Application|application]] class has a lot of configurable properties and events.
@@ -134,7 +134,7 @@ More details about configuring the `components` property of an application can b
 in the [Applications](structure-applications.md) section and the [Service Locator](concept-service-locator.md) section.
 
 
-### Widget Configurations <a name="widget-configurations"></a>
+### Widget Configurations <span id="widget-configurations"></span>
 
 When using [widgets](structure-widgets.md), you often need to use configurations to customize the widget properties.
 Both of the [[yii\base\Widget::widget()]] and [[yii\base\Widget::begin()]] methods can be used to create
@@ -159,7 +159,7 @@ The `items` property is also configured with menu items to be displayed.
 Note that because the class name is already given, the configuration array should NOT have the `class` key.
 
 
-## Configuration Files <a name="configuration-files"></a>
+## Configuration Files <span id="configuration-files"></span>
 
 When a configuration is very complex, a common practice is to store it in one or multiple PHP files, known as
 *configuration files*. A configuration file returns a PHP array representing the configuration.
@@ -212,7 +212,7 @@ $config = require('path/to/web.php');
 ```
 
 
-## Default Configurations <a name="default-configurations"></a>
+## Default Configurations <span id="default-configurations"></span>
 
 The [[Yii::createObject()]] method is implemented based on a [dependency injection container](concept-di-container.md).
 It allows you to specify a set of the so-called *default configurations* which will be applied to ALL instances of
@@ -232,7 +232,7 @@ Without using default configurations, you would have to configure `maxButtonCoun
 link pagers.
 
 
-## Environment Constants <a name="environment-constants"></a>
+## Environment Constants <span id="environment-constants"></span>
 
 Configurations often vary according to the environment in which an application runs. For example,
 in development environment, you may want to use a database named `mydb_dev`, while on production server

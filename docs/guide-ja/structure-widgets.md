@@ -19,7 +19,7 @@ use yii\jui\DatePicker;
 特定のウィジェットの使い方について学ぶ必要がある場合は、クラス API ドキュメントを参照してください。
 
 
-## ウィジェットを使う <a name="using-widgets"></a>
+## ウィジェットを使う <span id="using-widgets"></span>
 
 ウィジェットは主として [ビュー](structure-views.md) で使われます。
 ビューでウィジェットを使うためには、[[yii\base\Widget::widget()]] メソッドを使うことが出来ます。
@@ -69,7 +69,7 @@ use yii\helpers\Html;
 返されたウィジェットのインスタンスを使って、ウィジェットのコンテンツを構築することが出来ます。
 
 
-## ウィジェットを作成する <a name="creating-widgets"></a>
+## ウィジェットを作成する <span id="creating-widgets"></span>
 
 ウィジェットを作成するためには、[[yii\base\Widget]] を拡張して、[[yii\base\Widget::init()]] および/または [[yii\base\Widget::run()]] メソッドをオーバーライドします。
 通常、`init()` メソッドはウィジェットのプロパティを正規化するコードを含むべきものであり、`run()` メソッドはウィジェットのレンダリング結果を生成するコードを含むべきものです。
@@ -172,7 +172,7 @@ public function run()
 [[yii\base\Widget::getViewPath()]] メソッドをオーバーライドして、ウィジェットのビューファイルを含むディレクトリをカスタマイズすることが出来ます。
 
 
-## ベストプラクティス <a name="best-practices"></a>
+## ベストプラクティス <span id="best-practices"></span>
 
 ウィジェットはビューのコードを再利用するためのオブジェクト指向の方法です。
 

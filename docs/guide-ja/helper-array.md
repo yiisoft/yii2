@@ -4,7 +4,7 @@ ArrayHelper
 [PHP の充実した配列関数](http://php.net/manual/ja/book.array.php) への追加として、Yii の配列ヘルパは、配列をさらに効率的に扱うことを可能にするスタティックなメソッドを提供しています。
 
 
-## 値を取得する <a name="getting-values"></a>
+## 値を取得する <span id="getting-values"></span>
 
 配列、オブジェクト、またはその両方から成る複雑な構造から値を取得することは、標準的な PHP を使う場合、何度も繰り返さねばならない面倒くさい仕事です。
 最初に `isset` でキーの存在をチェックしなければならず、次に、キーが存在していれば値を取得し、存在していなければ、デフォルト値を提供しなければなりません。
@@ -63,7 +63,7 @@ $type = ArrayHelper::remove($array, 'type');
 `getValue` メソッドとは違って、`remove` は単純なキー名だけをサポートすることに注意してください。
 
 
-## キーの存在をチェックする <a name="checking-existence-of-keys"></a>
+## キーの存在をチェックする <span id="checking-existence-of-keys"></span>
 
 `ArrayHelper::keyExists` は、大文字と小文字を区別しないキーの比較をサポートすることを除いて、[array_key_exists](http://php.net/manual/ja/function.array-key-exists.php) と同じ動作をします。
 例えば、
@@ -82,7 +82,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 }
 ```
 
-## カラムを取得する <a name="retrieving-columns"></a>
+## カラムを取得する <span id="retrieving-columns"></span>
 
 データ行またはオブジェクトの配列から、あるカラムの値を取得する必要があることがよくあります。
 良くある例は、ID のリストの取得です。
@@ -106,7 +106,7 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 ```
 
 
-## 配列を再インデックスする <a name="reindexing-arrays"></a>
+## 配列を再インデックスする <span id="reindexing-arrays"></span>
 
 指定されたキーに従って配列にインデックスを付けるために、`index` メソッドを使うことが出来ます。
 入力値の配列は、多次元配列であるか、オブジェクトの配列でなければなりません。
@@ -134,7 +134,7 @@ $result = ArrayHelper::index($array, function ($element) {
 ```
 
 
-## マップを作成する <a name="building-maps"></a>
+## マップを作成する <span id="building-maps"></span>
 
 多次元配列またはオブジェクトの配列からマップ (キー-値 のペア) を作成するためには `map` メソッドを使うことが出来ます。
 `$from` と `$to` のパラメータで、マップを構成するキー名またはプロパティ名を指定します。
@@ -170,7 +170,7 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 ```
 
 
-## 多次元配列の並べ替え <a name="multidimensional-sorting"></a>
+## 多次元配列の並べ替え <span id="multidimensional-sorting"></span>
 
 `multisort` メソッドは、オブジェクトの配列または入れ子にされた配列を、一つまたは複数のキーによって並べ替えることを手助けします。
 例えば、
@@ -210,7 +210,7 @@ ArrayHelper::multisort($data, function($item) {
 最後の引数は並べ替えのフラグで、PHP の [sort()](http://php.net/manual/ja/function.sort.php) 関数に渡されるのと同じ値を取ることが出来ます。
 
 
-## 配列の型を検出する <a name="detecting-array-types"></a>
+## 配列の型を検出する <span id="detecting-array-types"></span>
 
 配列が添字配列であるか連想配列であるかを知ることが出来ると便利です。例を挙げましょう。
 
@@ -225,7 +225,7 @@ echo ArrayHelper::isAssociative($associative);
 ```
 
 
-## 値を HTML エンコード / デコードする <a name="html-encoding-values"></a>
+## 値を HTML エンコード / デコードする <span id="html-encoding-values"></span>
 
 文字列の配列の中にある特殊文字を HTML エンティティ にエンコード、または、HTML エンティティからデコードするために、下記の関数を使うことが出来ます。
 
@@ -239,7 +239,7 @@ $decoded = ArrayHelper::htmlDecode($data);
 エンコードにはアプリケーションの文字セットが使用されますが、三番目の引数によってそれを変更することも出来ます。
 
 
-## 配列をマージする <a name="merging-arrays"></a>
+## 配列をマージする <span id="merging-arrays"></span>
 
 ```php
   /**
@@ -256,7 +256,7 @@ $decoded = ArrayHelper::htmlDecode($data);
 ```
 
 
-## オブジェクトを配列に変換する <a name="converting-objects-to-arrays"></a>
+## オブジェクトを配列に変換する <span id="converting-objects-to-arrays"></span>
 
 オブジェクトまたはオブジェクトの配列を配列に変換する必要があることがよくあります。
 最もよくあるのは、REST API によってデータ配列を提供するなどの目的で、アクティブレコードモデルを変換する場合です。

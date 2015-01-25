@@ -33,7 +33,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 ```
 
 
-## URL 形式 <a name="url-formats"></a>
+## URL 形式 <span id="url-formats"></span>
 
 [[yii\web\UrlManager|URL マネージャ]] は二つの URL 形式、すなわち、デフォルトの URL 形式と、綺麗な URL 形式をサポートします。
 
@@ -49,7 +49,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 プロパティを ON/OFF することによって、他のアプリケーションコードを少しも変えることなく、切り替えることが出来ます。
 
 
-## ルーティング <a name="routing"></a>
+## ルーティング <span id="routing"></span>
 
 ルーティングは二つのステップを含みます。最初のステップでは、入ってくるリクエストが解析されて、ルートとそれに結び付いたクエリパラメータに分解されます。
 そして、第二のステップでは、解析されたルートに対応する [コントローラアクション](structure-controllers.md) がリクエストを処理するために生成されます。
@@ -81,7 +81,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 上記のステップの中で、何かエラーが発生すると、[[yii\web\NotFoundHttpException]] が投げられて、ルーティングのプロセスが失敗したことが示されます。
 
 
-### デフォルトルート <a name="default-route"></a>
+### デフォルトルート <span id="default-route"></span>
 
 リクエストから解析されたルートが空になった場合は、いわゆる *デフォルトルート* が代りに使用されることになります。
 既定では、デフォルトルートは `site/index` であり、`site` コントローラの `index` アクションを指します。
@@ -95,7 +95,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 ```
 
 
-### `catchAll` ルート <a name="catchall-route"></a>
+### `catchAll` ルート <span id="catchall-route"></span>
 
 たまには、ウェブアプリケーションを一時的にメンテナンスモードにして、全てのリクエストに対して同じ「お知らせ」のページを表示したいことがあるでしょう。
 この目的を達する方法はたくさんありますが、最も簡単な方法の一つは、次のように、アプリケーションの構成情報の中で [[yii\web\Application::catchAll]] プロパティを構成することです。
@@ -113,7 +113,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 [アクションのパラメータ](structure-controllers.md#action-parameters) を指定するものでなければなりません。
 
 
-## URL を生成する <a name="creating-urls"></a>
+## URL を生成する <span id="creating-urls"></span>
 
 Yii は、与えられたルートとそれに結び付けられるクエリパラメータからさまざまな URL を生成する
 [[yii\helpers\Url::to()]] というヘルパメソッドを提供しています。例えば、
@@ -215,7 +215,7 @@ echo Url::previous();
 ```
 
 
-## 綺麗な URL を使う <a name="using-pretty-urls"></a>
+## 綺麗な URL を使う <span id="using-pretty-urls"></span>
 
 綺麗な URL を使うためには、アプリケーションの構成情報の中で `urlManager` コンポーネントを次のように構成します。
 
@@ -250,7 +250,7 @@ echo Url::previous();
 もしあなたが Apache ウェブサーバを使うつもりなら、[インストール](start-installation.md#recommended-apache-configuration) の節で説明されている推奨設定を参照することが出来ます。
 
 
-### URL 規則 <a name="url-rules"></a>
+### URL 規則 <span id="url-rules"></span>
 
 URL 規則は [[yii\web\UrlRule]] またはその子クラスのインスタンスです。
 すべての URL 規則は、URL のパス情報の部分との照合に使われるパターン、ルート、そして、いくつかのクエリパラメータから構成されます。
@@ -299,7 +299,7 @@ URL 規則は、「パターン - ルート」のペアとして宣言する以�
 規則の構成情報で `class` を指定しない場合は、既定として、[[yii\web\UrlRule]] が使われます。
 
 
-### 名前付きパラメータ <a name="named-parameters"></a>
+### 名前付きパラメータ <span id="named-parameters"></span>
 
 URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定される、いくつかの名前付きクエリパラメータと結び付けることが出来ます。
 ここで、`ParamName` はパラメータ名を指定し、`RegExp` はパラメータの値との照合に使われるオプションの正規表現を指定するものです。
@@ -340,7 +340,7 @@ URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定さ�
   どの規則も当てはまらないため、URL は、単純に、ルートをパス情報とし、すべてのパラメータをクエリ文字列として追加して生成されます。
 
 
-### ルートをパラメータ化する <a name="parameterizing-routes"></a>
+### ルートをパラメータ化する <span id="parameterizing-routes"></span>
 
 URL 規則のルートにはパラメータ名を埋め込むことが出来ます。このことによって、URL 規則を複数のルートに合致させることが可能になっています。
 例えば、以下の規則は `controller` と `action` というパラメータをルートに埋め込んでいます。
@@ -388,7 +388,7 @@ URL 規則のルートにはパラメータ名を埋め込むことが出来ま�
 オプション扱いのパラメータを使わなければ、同じ結果を得るために 4 個の規則を作らなければならなかったところです。
 
 
-### サーバ名を持つ規則 <a name="rules-with-server-names"></a>
+### サーバ名を持つ規則 <span id="rules-with-server-names"></span>
 
 URL 規則のパターンには、ウェブサーバ名を含むことが出来ます。
 このことが役に立つのは、主として、あなたのアプリケーションがウェブサーバ名によって異なる動作をしなければならない場合です。
@@ -415,7 +415,7 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
 こうすれば、アプリケーションをどのようなディレクトリに配置しても、アプリケーションのコードを変更する必要がなくなります。
 
 
-### URL 接尾辞 <a name="url-suffixes"></a>
+### URL 接尾辞 <span id="url-suffixes"></span>
 
 さまざまな目的から URL に接尾辞を追加したいことがあるでしょう。
 例えば、静的な HTML ページに見えるように、`.html` を URL に追加したいかも知れません。
@@ -473,7 +473,7 @@ URL 規則にこのプロパティが設定されている場合は、それが 
 ```
 
 
-### HTTP メソッド <a name="http-methods"></a>
+### HTTP メソッド <span id="http-methods"></span>
 
 RESTful API を実装するときは、使用されている HTTP メソッドに応じて、同一の URL を異なるルートとして解析することが必要になる場合がよくあります。
 これは、規則のパターンにサポートされている HTTP メソッドを前置することによって、簡単に達成することが出来ます。
@@ -497,7 +497,7 @@ RESTful API を実装するときは、使用されている HTTP メソッド�
   詳細については、RESTful API 開発についての [ルーティング](rest-routing.md) の節を参照してください。
 
 
-### 規則をカスタマイズする <a name="customizing-rules"></a>
+### 規則をカスタマイズする <span id="customizing-rules"></span>
 
 これまでの例では、URL 規則は主として「パターン - ルート」のペアの形で宣言されています。これが通常使用される短縮形式です。
 特定のシナリオの下では、[[yii\web\UrlRule::suffix]] などのような、他のプロパティを構成して URL 規則をカスタマイズしたいこともあるでしょう。
@@ -519,7 +519,7 @@ RESTful API を実装するときは、使用されている HTTP メソッド�
 > Info|情報: 規則の構成情報で `class` を指定しない場合は、既定として、[[yii\web\UrlRule]] クラスが使われます。
   
 
-### 規則を動的に追加する <a name="adding-rules"></a>
+### 規則を動的に追加する <span id="adding-rules"></span>
 
 URL 規則は [[yii\web\UrlManager|URL マネージャ]] に動的に追加することが出来ます。
 このことは、再配布可能な [モジュール](structure-modules.md) が自分自身の URL 規則を管理する必要がある場合に、しばしば必要になります。
@@ -538,7 +538,7 @@ public function bootstrap($app)
 さらに、モジュールが [ブートストラップ](runtime-bootstrapping.md) の過程に関与できるように、それを [[yii\web\Application::bootstrap]] のリストに挙げなければならないことに注意してください。
 
 
-### 規則クラスを作成する <a name="creating-rules"></a>
+### 規則クラスを作成する <span id="creating-rules"></span>
 
 デフォルトの [[yii\web\UrlRule]] クラスはほとんどのプロジェクトに対して十分に柔軟なものであるというのは事実ですが、それでも、自分自身で規則クラスを作る必要があるような状況はあります。
 例えば、自動車ディーラーのウェブサイトにおいて、`/Manufacturer/Model` のような URL 形式をサポートしたいけれども、`Manufacturer` と `Model` は、両方とも、データベーステーブルに保存されている何らかのデータに合致するものでなければならない、というような場合です。
@@ -595,7 +595,7 @@ class CarUrlRule extends Object implements UrlRuleInterface
 ```
 
 
-## パフォーマンスに対する考慮 <a name="performance-consideration"></a>
+## パフォーマンスに対する考慮 <span id="performance-consideration"></span>
 
 複雑なウェブアプリケーションを開発するときは、リクエストの解析と URL 生成に要する時間を削減するために URL 規則を最適化することが重要になります。
 

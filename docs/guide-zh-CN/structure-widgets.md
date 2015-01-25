@@ -17,7 +17,7 @@ Yii提供许多优秀的小部件，比如[[yii\widgets\ActiveForm|active form]]
 接下来介绍小部件的基本知识，如果你想了解某个小部件请参考对应的类API文档。
 
 
-## 使用小部件 <a name="using-widgets"></a>
+## 使用小部件 <span id="using-widgets"></span>
 
 小部件基本上在[views](structure-views.md)中使用，在视图中可调用 [[yii\base\Widget::widget()]] 方法使用小部件。
 该方法使用 [配置](concept-configurations.md) 数组初始化小部件并返回小部件渲染后的结果。
@@ -64,8 +64,8 @@ use yii\helpers\Html;
 调用 [[yii\base\Widget::begin()]] 方法返回一个可组建小部件内容的小部件实例。
 
 
-## 创建小部件 <a name="creating-widgets"></a>
-## Creating Widgets <a name="creating-widgets"></a>
+## 创建小部件 <span id="creating-widgets"></span>
+## Creating Widgets <span id="creating-widgets"></span>
 
 继承 [[yii\base\Widget]] 类并覆盖 [[yii\base\Widget::init()]] 和/或
 [[yii\base\Widget::run()]] 方法可创建小部件。通常`init()` 方法处理小部件属性，
@@ -166,7 +166,7 @@ public function run()
 可以覆盖[[yii\base\Widget::getViewPath()]]方法自定义视图文件所在路径。
 
 
-## 最佳实践 <a name="best-practices"></a>
+## 最佳实践 <span id="best-practices"></span>
 
 小部件是面向对象方式来重用视图代码。
 

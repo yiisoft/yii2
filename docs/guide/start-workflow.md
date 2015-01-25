@@ -12,7 +12,7 @@ how the code is organized, and how the application handles requests in general.
   For your needs, please adjust the URLs in our descriptions accordingly.
 
 
-Functionality <a name="functionality"></a>
+Functionality <span id="functionality"></span>
 -------------
 
 The basic application installed contains four pages:
@@ -30,7 +30,7 @@ You should also see a toolbar at the bottom of the browser window.
 This is a useful [debugger tool](tool-debugger.md) provided by Yii to record and display a lot of debugging information, such as log messages, response statuses, the database queries run, and so on.
 
 
-Application Structure <a name="application-structure"></a>
+Application Structure <span id="application-structure"></span>
 ---------------------
 
 The most important directories and files in your application are (assuming the application's root directory is `basic`):
@@ -72,7 +72,7 @@ and dispatches the request to the MVC elements. [Widgets](structure-widgets.md) 
 to help build complex and dynamic user interface elements.
 
 
-Request Lifecycle <a name="request-lifecycle"></a>
+Request Lifecycle <span id="request-lifecycle"></span>
 -----------------
 
 The following diagram shows how an application handles a request.

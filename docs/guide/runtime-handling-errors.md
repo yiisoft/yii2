@@ -14,7 +14,7 @@ The [[yii\web\ErrorHandler|error handler]] is enabled by default. You may disabl
 `YII_ENABLE_ERROR_HANDLER` to be false in the [entry script](structure-entry-scripts.md) of your application.
 
 
-## Using Error Handler <a name="using-error-handler"></a>
+## Using Error Handler <span id="using-error-handler"></span>
 
 The [[yii\web\ErrorHandler|error handler]] is registered as an [application component](structure-application-components.md) named `errorHandler`.
 You may configure it in the application configuration like the following:
@@ -59,7 +59,7 @@ throw new NotFoundHttpException();
 ```
 
 
-## Customizing Error Display <a name="customizing-error-display"></a>
+## Customizing Error Display <span id="customizing-error-display"></span>
 
 The [[yii\web\ErrorHandler|error handler]] adjusts the error display according to the value of the constant `YII_DEBUG`.
 When `YII_DEBUG` is true (meaning in debug mode), the error handler will display exceptions with detailed call
@@ -80,7 +80,7 @@ You can configure the [[yii\web\ErrorHandler::errorView|errorView]] and [[yii\we
 properties of the error handler to use your own views to customize the error display.
 
 
-### Using Error Actions <a name="using-error-actions"></a>
+### Using Error Actions <span id="using-error-actions"></span>
 
 A better way of customizing the error display is to use dedicated error [actions](structure-controllers.md).
 To do so, first configure the [[yii\web\ErrorHandler::errorAction|errorAction]] property of the `errorHandler`
@@ -148,7 +148,7 @@ the following variables if the error action is defined as [[yii\web\ErrorAction]
 the error action and the error view are already defined for you.
 
 
-### Customizing Error Response Format <a name="error-format"></a>
+### Customizing Error Response Format <span id="error-format"></span>
 
 The error handler displays errors according to the format setting of the [response](runtime-responses.md).
 If the the [[yii\web\Response::format|response format]] is `html`, it will use the error or exception view

@@ -188,7 +188,7 @@ You may specify various container HTML options by passing arrays to:
 - `filterOptions`
 - `contentOptions`
 
-#### Data column <a name="data-column"></a>
+#### Data column <span id="data-column"></span>
 
 Data column is used for displaying and sorting data. It is the default column type so the specifying class could be omitted when
 using it.

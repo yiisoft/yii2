@@ -9,7 +9,7 @@
 Фильтр может состоять из *пре-фильтра* (фильтрующая логика применяется *перед* действиями) и/или
 *пост-фильтра* (логика, применяемая *после* действий).
 
-## Использование фильтров <a name="using-filters"></a>
+## Использование фильтров <span id="using-filters"></span>
 
 Фильтры являются особым видом [поведений](concept-behaviors.md). Их использование ничем не отличается от
 [использования поведений](concept-behaviors.md#attaching-behaviors). Вы можете объявлять фильтры в классе контроллера
@@ -58,7 +58,7 @@ public function behaviors()
     - Применяются фильтры объявленные в приложении, в порядке обратном, перечисленному в `behaviors()`.
 
 
-## Создание фильтров <a name="creating-filters"></a>
+## Создание фильтров <span id="creating-filters"></span>
 
 При создании нового фильтра действия, необходимо наследоваться от [[yii\base\ActionFilter]] и переопределить методы
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] и/или [[yii\base\ActionFilter::afterAction()|afterAction()]].
@@ -94,13 +94,13 @@ class ActionTimeFilter extends ActionFilter
 ```
 
 
-## Стандартные фильтры <a name="core-filters"></a>
+## Стандартные фильтры <span id="core-filters"></span>
 
 Yii предоставляет набор часто используемых фильтров, которые находятся, в основном, в пространстве имен `yii\filters`.
 Далее вы будете кратко ознакомлены с ними.
 
 
-### [[yii\filters\AccessControl|AccessControl]] <a name="access-control"></a>
+### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
 Фильтр `AccessControl` обеспечивает простое управление доступом, основанное на наборе правил [[yii\filters\AccessControl::rules|rules]].
 В частности, перед тем как действие начинает выполнение, фильтр `AccessControl` проверяет список указанных правил, пока не
@@ -136,7 +136,7 @@ public function behaviors()
 Более подробно об управлении доступом вы можете прочитать в разделе [Авторизация](security-authorization.md).
 
 
-### Фильтр метода аутентификации<a name="auth-method-filters"></a>
+### Фильтр метода аутентификации<span id="auth-method-filters"></span>
 
 Фильтр метода аутентификации используется для аутентификации пользователя различными способами, такими как
 [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/).
@@ -164,7 +164,7 @@ public function behaviors()
 RESTful, смотрите в разделе [Authentication](rest-authentication.md).
 
 
-### [[yii\filters\ContentNegotiator|ContentNegotiator]] <a name="content-negotiator"></a>
+### [[yii\filters\ContentNegotiator|ContentNegotiator]] <span id="content-negotiator"></span>
 
 ContentNegotiator поддерживает согласование формата ответа и языка приложения. Он пытается определить формат ответа
 и/или язык, путём проверки `GET` параметров и HTTP заголовка `Accept`.
@@ -225,7 +225,7 @@ use yii\web\Response;
 
 
 
-### [[yii\filters\HttpCache|HttpCache]] <a name="http-cache"></a>
+### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
 Фильтр HttpCache реализовывает кэширование на стороне клиента, используя HTTP заголовки `Last-Modified` и `Etag`:
 
@@ -250,7 +250,7 @@ public function behaviors()
 Подробнее об использовании HttpCache можно прочитать в разделе [HTTP Кэширование](caching-http.md).
 
 
-### [[yii\filters\PageCache|PageCache]] <a name="page-cache"></a>
+### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
 Фильтр PageCache реализует кэширование целых страниц на стороне сервера. В следующем примере PageCache применяется только
 в действии `index` для кэширования всей страницы в течение не более чем 60 секунд или пока количество записей в таблице `post`
@@ -282,14 +282,14 @@ public function behaviors()
 Подробнее об использовании PageCache читайте в разделе [Кэширование страниц](caching-page.md).
 
 
-### [[yii\filters\RateLimiter|RateLimiter]] <a name="rate-limiter"></a>
+### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 Ограничитель количества запросов в единицу времени *(RateLimiter)* реализует алгоритм ограничения запросов, основанный на
 [алгоритме leaky bucket](http://en.wikipedia.org/wiki/Leaky_bucket). В основном, он используется при создании RESTful API.
 Подробнее об использовании данного фильтра пожно прочитать в разделе [Ограничение запросов](rest-rate-limiting.md).
 
 
-### [[yii\filters\VerbFilter|VerbFilter]] <a name="verb-filter"></a>
+### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
 
 Фильтр по типу запроса *(VerbFilter)* проверяет, разрешено ли запросам HTTP выполнять затребованные ими действия.
 Если нет, то будет выброшено исключение HTTP с кодом 405. В следующем примере в фильтре по типу запроса указан обычный
@@ -315,7 +315,7 @@ public function behaviors()
 }
 ```
 
-### [[yii\filters\Cors|Cors]] <a name="cors"></a>
+### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
 Совместное использование разными источниками [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) - это
 механизм, который позволяет использовать различные ресурсы (шрифты, скрипты, и т.д.) с отличных от основного сайта доменов.

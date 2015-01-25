@@ -13,7 +13,7 @@ Au long de ce tutoriel, vous apprendrez comment :
 * Personnaliser le code généré par Gii
 
 
-Démarrer Gii <a name="starting-gii"></a>
+Démarrer Gii <span id="starting-gii"></span>
 ------------
 
 [Gii](tool-gii.md) est fourni dans Yii en tant que [module](structure-modules.md). Vous pouvez activer Gii en le 
@@ -60,7 +60,7 @@ http://hostname/index.php?r=gii
 ![Gii](images/start-gii.png)
 
 
-Générer une Classe Active Record <a name="generating-ar"></a>
+Générer une Classe Active Record <span id="generating-ar"></span>
 ---------------------------------
 
 Pour utiliser Gii pour générer une classe Active Record, sélectionnez le "Model Generator" (en cliquant sur le lien 
@@ -85,7 +85,7 @@ Ensuite, vous verrez une page de confirmation indiquant que le code a été gén
 existant, vous verrez également un message indiquant qu’il a été écrasé par le code nouvellement généré.
 
 
-Générer du Code CRUD <a name="generating-crud"></a>
+Générer du Code CRUD <span id="generating-crud"></span>
 --------------------
 
 CRUD signifie Create, Read, Update, and Delete (Créer, Lire, Mettre à Jour et Supprimer), représentant le quatre tâches
@@ -108,7 +108,7 @@ Si vous aviez précédemment créé les fichiers  `controllers/CountryController
 (Les versions précédentes n’avaient pas de fonctionnalités CRUD).
 
 
-Essayer <a name="trying-it-out"></a>
+Essayer <span id="trying-it-out"></span>
 -------------
 
 Pour voir comment ça fonctionne, utilisez votre navigateur pour accéder à l’URL suivant :
@@ -142,7 +142,7 @@ fonctionnalités sont implémentées, ou les personnaliser :
   à la section [Gii](tool-gii.md).
 
 
-Résumé <a name="summary"></a>
+Résumé <span id="summary"></span>
 -------
 
 Dans cette section, vous avez appris à utiliser Gii pour générer le code qui implémente une fonctionnalité CRUD 

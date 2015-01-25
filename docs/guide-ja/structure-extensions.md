@@ -9,7 +9,7 @@
 > Info|情報: 「エクステンション」という用語は Yii に限定されたソフトウェアパッケージを指すものとして使用します。
   Yii がなくても使用できる汎用のソフトウェアパッケージを指すためには、「パッケージ」または「ライブラリ」という用語を使うことにします。
 
-## エクステンションを使う <a name="using-extensions"></a>
+## エクステンションを使う <span id="using-extensions"></span>
 
 エクステンションを使うためには、先ずはそれをインストールする必要があります。
 ほとんどのエクステンションは [Composer](https://getcomposer.org/) のパッケージとして配布されていて、次の二つの簡単なステップをふめばインストールすることが出来ます。
@@ -65,7 +65,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 > Info|情報: エクステンションのクラスは [Yii クラスオートローダ](concept-autoloading.md) によってオートロードされます。
 
 
-### エクステンションを手作業でインストールする <a name="installing-extensions-manually"></a>
+### エクステンションを手作業でインストールする <span id="installing-extensions-manually"></span>
 
 あまり無いことですが、いくつかまたは全てのエクステンションを Composer に頼らずに手作業でインストールしたい場合があるかもしれません。
 そうするためには、次のようにしなければなりません。
@@ -90,7 +90,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 ```
 
 
-## エクステンションを作成する <a name="creating-extensions"></a>
+## エクステンションを作成する <span id="creating-extensions"></span>
 
 あなたの優れたコードを他の人々と共有する必要があると感じたときは、エクステンションを作成することを考慮するのが良いでしょう。
 エクステンションは、ヘルパクラス、ウィジェット、モジュールなど、どのようなコードでも含むことが出来ます。
@@ -108,7 +108,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
    そうすると、他のユーザがエクステンションを見つけて Composer を使ってインストールすることが出来るようになります。
 
 
-### `composer.json` <a name="composer-json"></a>
+### `composer.json` <span id="composer-json"></span>
 
 全ての Composer パッケージは、ルートディレクトリに `composer.json` というファイルを持たなければなりません。
 このファイルはパッケージに関するメタデータを含むものです。
@@ -156,7 +156,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 ```
 
 
-#### パッケージ名 <a name="package-name"></a>
+#### パッケージ名 <span id="package-name"></span>
 
 全ての Composer パッケージは、他の全てパッケージに対して唯一のものとして特定できるような名前を持たなければなりません。
 パッケージ名の形式は `vendorName/projectName` です。
@@ -168,7 +168,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 このようにすると、ユーザはパッケージが Yii 2 エクステンションであることをより容易に知ることが出来ます。
 
 
-#### パッケージタイプ <a name="package-type"></a>
+#### パッケージタイプ <span id="package-type"></span>
 
 パッケージがインストールされたときに Yii のエクステンションとして認識されるように、エクステンションのパッケージタイプを `yii2-extension` と指定することは重要なことです。
 
@@ -177,7 +177,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 (その情報には、[[yii\base\Application::extensions]] を通じてアクセス出来ます)。
 
 
-#### 依存パッケージ <a name="dependencies"></a>
+#### 依存パッケージ <span id="dependencies"></span>
 
 あなたのエクステンションは Yii に依存します (当然ですね)。
 ですから、`composer.json` の `require` エントリのリストにそれ (`yiisoft/yii2`) を挙げなければなりません。
@@ -207,7 +207,7 @@ Composer が Bower または NPM のパッケージをインストールする�
 アセット管理に関する詳細については、[アセット](structure-assets.md#bower-npm-assets) の節を参照してください。
 
 
-#### クラスのオートロード <a name="class-autoloading"></a>
+#### クラスのオートロード <span id="class-autoloading"></span>
 
 エクステンションのクラスが Yii のクラスオートローダまたは Composer のクラスオートローダによってオートロードされるように、下記に示すように、`composer.json` ファイルの `autoload` エントリを指定しなければなりません。
 
@@ -229,13 +229,13 @@ Composer が Bower または NPM のパッケージをインストールする�
 例えば、上記の `autoload` の宣言は、`@yii/imagine` という名前のエイリアスに対応することになります。
 
 
-### 推奨されるプラクティス <a name="recommended-practices"></a>
+### 推奨されるプラクティス <span id="recommended-practices"></span>
 
 エクステンションは他の人々によって使われることを意図したものですから、多くの場合、追加の開発努力が必要になります。
 以下に、高品質のエクステンションを作成するときによく用いられ、また推奨されるプラクティスのいくつかを紹介します。
 
 
-#### 名前空間 <a name="namespaces"></a>
+#### 名前空間 <span id="namespaces"></span>
 
 名前の衝突を避けて、エクステンションの中のクラスをオートロード可能にするために、名前空間を使うべきであり、エクステンションの中のクラスに
 [PSR-4 標準](http://www.php-fig.org/psr/psr-4/) または [PSR-0 標準](http://www.php-fig.org/psr/psr-0/) に従った名前を付けるべきです。
@@ -247,7 +247,7 @@ Composer が Bower または NPM のパッケージをインストールする�
 `yii`、`yii2` または `yiisoft` をベンダー名として使ってはいけません。これらの名前は、Yii のコアコードに使うために予約されています。
 
 
-#### ブートストラップクラス <a name="bootstrapping-classes"></a>
+#### ブートストラップクラス <span id="bootstrapping-classes"></span>
 
 場合によっては、アプリケーションが [ブートストラップ](runtime-bootstrapping.md) の段階にある間に、エクステンションに何らかのコードを実行させたい場合があるでしょう。
 例えば、エクステンションをアプリケーションの `beginRequest` イベントに反応させて、何らかの環境設定を調整したいことがあります。
@@ -289,7 +289,7 @@ class MyBootstrapClass implements BootstrapInterface
 が自動的にブートストラップクラスのインスタンスを作成し、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドを呼びます。
 
 
-#### データベースを扱う <a name="working-with-databases"></a>
+#### データベースを扱う <span id="working-with-databases"></span>
 
 あなたのエクステンションはデータベースにアクセスする必要があるかも知れません。
 エクステンションを使うアプリケーションが常に `Yii::$db` を DB 接続として使用すると仮定してはいけません。
@@ -304,7 +304,7 @@ class MyBootstrapClass implements BootstrapInterface
 - マイグレーションの中では [アクティブレコード](db-active-record.md) の使用を避ける。
 
 
-#### アセットを使う <a name="using-assets"></a>
+#### アセットを使う <span id="using-assets"></span>
 
 あなたのエクステンションがウィジェットかモジュールである場合は、動作するために何らかの [アセット](structure-assets.md) が必要である可能性が高いでしょう。
 例えば、モジュールは、画像、JavaScript、そして CSS を含むページをいくつか表示するでしょう。
@@ -318,7 +318,7 @@ class MyBootstrapClass implements BootstrapInterface
 アセットの取り扱い一般に関する詳細は [アセット](structure-assets.md) の節を参照してください。
 
 
-#### 国際化と地域化 <a name="i18n-l10n"></a>
+#### 国際化と地域化 <span id="i18n-l10n"></span>
 
 あなたのエクステンションは、さまざまな言語をサポートするアプリケーションによって使われるかもしれません。
 従って、あなたのエクステンションがエンドユーザにコンテンツを表示するものである場合は、それを [国際化](tutorial-i18n.md) するように努めるべきです。
@@ -331,7 +331,7 @@ class MyBootstrapClass implements BootstrapInterface
 詳細については、[国際化](tutorial-i18n.md) の節を参照してください。
 
 
-#### テスト <a name="testing"></a>
+#### テスト <span id="testing"></span>
 
 あなたは、あなたのエクステンションが他の人々に問題をもたらすことなく完璧に動作することを望むでしょう。
 この目的を達するためには、あなたのエクステンションを公開する前にテストすべきです。
@@ -342,13 +342,13 @@ Yii はテストのサポートを提供しており、それよって、ユニ�
 詳細については、[テスト](test-overview.md) の節を参照してください。
 
 
-#### バージョン管理 <a name="versioning"></a>
+#### バージョン管理 <span id="versioning"></span>
 
 エクステンションのリリースごとにバージョン番号 (例えば `1.0.1`) を付けるべきです。
 どのようなバージョン番号を付けるべきかを決定するときは、[セマンティックバージョニング](http://semver.org) のプラクティスに従うことを推奨します。
 
 
-#### リリース(公開) <a name="releasing"></a>
+#### リリース(公開) <span id="releasing"></span>
 
 他の人々にあなたのエクステンションを知ってもらうためには、それをリリース(公開)する必要があります。
 
@@ -374,7 +374,7 @@ Yii はテストのサポートを提供しており、それよって、ユニ�
   [コアフレームワークコードスタイル](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) を参照してください。
 
 
-## コアエクステンション <a name="core-extensions"></a>
+## コアエクステンション <span id="core-extensions"></span>
 
 Yii は下記のコアエクステンションを提供しています。これらは Yii 開発チームによって開発され保守されているものです。
 全て [Packagist](https://packagist.org/) に登録され、[エクステンションを使う](#using-extensions) の項で説明したように、簡単にインストールすることが出来ます。

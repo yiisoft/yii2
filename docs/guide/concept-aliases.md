@@ -6,7 +6,7 @@ For example, the alias `@yii` represents the installation path of the Yii framew
 the base URL for the currently running Web application.
 
 
-Defining Aliases <a name="defining-aliases"></a>
+Defining Aliases <span id="defining-aliases"></span>
 ----------------
 
 You can define an alias for a file path or URL by calling [[Yii::setAlias()]]:
@@ -48,7 +48,7 @@ return [
 ```
 
 
-Resolving Aliases <a name="resolving-aliases"></a>
+Resolving Aliases <span id="resolving-aliases"></span>
 -----------------
 
 You can call [[Yii::getAlias()]] to resolve a root alias into the file path or URL it represents.
@@ -80,7 +80,7 @@ Yii::getAlias('@foo/bar/file.php');   // displays: /path2/bar/file.php
 If `@foo/bar` is not defined as a root alias, the last statement would display `/path/to/foo/bar/file.php`.
 
 
-Using Aliases <a name="using-aliases"></a>
+Using Aliases <span id="using-aliases"></span>
 -------------
 
 Aliases are recognized in many places in Yii without needing to call [[Yii::getAlias()]] to convert
@@ -99,7 +99,7 @@ $cache = new FileCache([
 Please pay attention to the API documentation to see if a property or method parameter supports aliases.
 
 
-Predefined Aliases <a name="predefined-aliases"></a>
+Predefined Aliases <span id="predefined-aliases"></span>
 ------------------
 
 Yii predefines a set of aliases to easily reference commonly used file paths and URLs:
@@ -118,7 +118,7 @@ The `@yii` alias is defined when you include the `Yii.php` file in your [entry s
 [configuration](concept-configurations.md).
 
 
-Extension Aliases <a name="extension-aliases"></a>
+Extension Aliases <span id="extension-aliases"></span>
 -----------------
 
 An alias is automatically defined for each [extension](structure-extensions.md) that is installed via Composer.

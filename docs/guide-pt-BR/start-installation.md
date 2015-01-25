@@ -25,7 +25,7 @@ novo no Yii, recomendamos fortemente em escolher o Template Básico de Aplicaç�
 pela sua simplicidade além de ter funcionalidades o suficiente.
 
 
-Instalando via Composer <a name="installing-via-composer"></a>
+Instalando via Composer <span id="installing-via-composer"></span>
 -----------------------
 
 Se você já não tiver o Composer instalado, você pode fazê-lo seguindo as instruções
@@ -68,7 +68,7 @@ em um diretório chamado `basic`. Você pode escolher um diretório diferente se
 > uma vez que ela pode quebrar o seu código que está rodando.
 
 
-Instalando a partir de um Arquivo Compactado <a name="installing-from-archive-file"></a>
+Instalando a partir de um Arquivo Compactado <span id="installing-from-archive-file"></span>
 --------------------------------------------
 
 A instalação do Yii a partir de um arquivo compactado envolve três passos:
@@ -85,7 +85,7 @@ o Yii pelo Composer):
    ```
 
 
-Outras Opções de Instalação <a name="other-installation-options"></a>
+Outras Opções de Instalação <span id="other-installation-options"></span>
 ---------------------------
 
 As instruções de instalação acima mostram como instalar o Yii, que também cria
@@ -104,7 +104,7 @@ No entanto, existem outras opções de instalação disponíveis:
   [Modelo de Aplicação Avançada](tutorial-advanced-app.md).
 
 
-Verificando a Instalação <a name="verifying-installation"></a>
+Verificando a Instalação <span id="verifying-installation"></span>
 ------------------------
 
 Após a instalação, você pode usar o seu navegador para acessar a aplicação do Yii
@@ -140,7 +140,7 @@ e o driver do banco de dados correspondente (tal como `pdo_mysql` para bancos de
 dados MySQL), se a sua aplicação precisar de um banco de dados.
 
 
-Configurando os Servidores Web <a name="configuring-web-servers"></a>
+Configurando os Servidores Web <span id="configuring-web-servers"></span>
 ------------------------------
 
 > Informação: Você pode pular essa subseção se só estiver fazendo um test drive do Yii
@@ -174,7 +174,7 @@ objetivos.
   para mais detalhes.
 
 
-### Configuração do Apache Recomendada <a name="recommended-apache-configuration"></a>
+### Configuração do Apache Recomendada <span id="recommended-apache-configuration"></span>
 
 Use a seguinte configuração no arquivo `httpd.conf` do Apache ou em uma
 configuração de virtual host. Perceba que você pode deve substituir `path/to/basic/web`
@@ -198,7 +198,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Configuração do Nginx Recomendada <a name="recommended-nginx-configuration"></a>
+### Configuração do Nginx Recomendada <span id="recommended-nginx-configuration"></span>
 
 Você deve ter instalado o PHP como um [FPM SAPI](http://php.net/install.fpm) para
 usar o [Nginx](http://wiki.nginx.org/). Use a seguinte configuração do Nginx,

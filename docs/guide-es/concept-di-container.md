@@ -6,7 +6,7 @@ objetos dependientes. El [articulo de Martin](http://martinfowler.com/articles/i
 explicación de porque son útiles los contenedores de ID. A continuación explicaremos como usar el contenedor de ID que 
 proporciona Yii.
 
-Inyección de Dependencias <a name="dependency-injection"></a>
+Inyección de Dependencias <span id="dependency-injection"></span>
 -------------------------
 
 Yii proporciona la función de contenedor de ID mediante la clase [[yii\di\Container]]. Soporta los siguientes tipos 
@@ -16,7 +16,7 @@ de ID:
 * Inyección de setters y propiedades;
 * Inyección de [llamadas de retorno PHP](http://php.net/manual/es/language.types.callable.php);
 
-### Inyección de Constructores <a name="constructor-injection"></a>
+### Inyección de Constructores <span id="constructor-injection"></span>
 
 El contenedor de ID soporta inyección de constructores con la ayuda de los indicios (hint) de tipo para los parámetros del 
 constructor. Los indicios de tipo le proporcionan información al contenedor para saber cuáles son las clases o 
@@ -37,7 +37,7 @@ $bar = new Bar;
 $foo = new Foo($bar);
 ```
 
-### Inyección de Setters y Propiedades <a name="setter-and-property-injection"></a>
+### Inyección de Setters y Propiedades <span id="setter-and-property-injection"></span>
 
 La inyección de setters y propiedades se admite a través de [configuraciones](concept-configurations.md). Cuando se 
 registra una dependencia o se crea un nuevo objeto, se puede proporcionar una configuración que usará el contenedor 
@@ -69,7 +69,7 @@ $container->get('Foo', [], [
 ]);
 ```
 
-### Inyección de Llamadas de retorno PHP <a name="php-callable-injection"></a>
+### Inyección de Llamadas de retorno PHP <span id="php-callable-injection"></span>
 
 En este caso, el contenedor usará una llamada de retorno PHP registrada para construir una nueva instancia de una 
 clase. La llamada de retorno se responsabiliza de que dependencias debe inyectar al nuevo objeto creado. Por ejemplo,
@@ -82,7 +82,7 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-Registro de dependencias <a name="registering-dependencies"></a>
+Registro de dependencias <span id="registering-dependencies"></span>
 ------------------------
 
 Se puede usar [[yii\di\Container::set()]] para registrar dependencias. El registro requiere un nombre de dependencia 
@@ -150,7 +150,7 @@ $container->setSingleton('yii\db\Connection', [
 ]);
 ```
 
-Resolución de Dependencias <a name="resolving-dependencies"></a>
+Resolución de Dependencias <span id="resolving-dependencies"></span>
 --------------------------
 
 Una ves se hayan registrado las dependencias, se puede usar el contenedor de ID para crear nuevos objetos, y el 
@@ -238,7 +238,7 @@ $finder = new UserFinder($db);
 $lister = new UserLister($finder);
 ```
 
-Uso Practico <a name="practical-usage"></a>
+Uso Practico <span id="practical-usage"></span>
 ------------
 
 Yii crea un contenedor de ID cuando se incluye el archivo `Yii.php` en el 
@@ -300,7 +300,7 @@ instanciada. Esto se debe a que necesitamos indicar al contenedor de ID como tra
 Ahora si se accede al contenedor nuevamente, se creará una instancia de `app\components\BookingService` y se inyectará 
 a como tercer parámetro al constructor del controlador.
 
-Cuando Registrar Dependencias <a name="when-to-register-dependencies"></a>
+Cuando Registrar Dependencias <span id="when-to-register-dependencies"></span>
 -----------------------------
 
 El registro de dependencias debe hacerse lo antes posible debido a que las dependencias se necesitan cuando se crean 
@@ -311,7 +311,7 @@ nuevos objetos. A continuación se listan practicas recomendadas:
 * Siendo desarrolladores de una [extension](structure-extensions.md) redistribuible, podemos registrar dependencias en 
   la clase de boostraping de la extensión.
 
-Resumen <a name="summary"></a>
+Resumen <span id="summary"></span>
 -------
 
 Tanto la inyección de dependencias como el [localizador de servicios](concept-service-locator.md) son patrones de 

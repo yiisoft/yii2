@@ -10,7 +10,7 @@
 通例、一つのウェブルートしかありませんので、ベーシックアプリケーションテンプレートを使用することを推奨します。
 [Yii をインストールする](start-installation.md) の節を参照して、アプリケーションテンプレートをローカル環境にインストールしてください。
 
-### ウェブサーバのための追加設定 <a name="add-extras-for-webserver"></a>
+### ウェブサーバのための追加設定 <span id="add-extras-for-webserver"></span>
 
 使用されているウェブサーバが Apache である場合は、次の内容を持つ `.htaccess` ファイルを `web` (`index.php` があるディレクトリ) に追加する必要があります。
 
@@ -30,7 +30,7 @@ RewriteRule . index.php
 
 nginx の場合は、追加の構成ファイルは必要がない筈です。
 
-### ウェブルートの名前を変える <a name="renaming-webroot"></a>
+### ウェブルートの名前を変える <span id="renaming-webroot"></span>
 
 FTP またはその他の手段であなたの共有ホストに接続したとき、下記のようなディレクトリが見えれば、あなたはきっとラッキーです。
  

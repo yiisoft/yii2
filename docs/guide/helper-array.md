@@ -5,7 +5,7 @@ Additionally to [rich set of PHP array functions](http://php.net/manual/en/book.
 extra static methods allowing you to deal with arrays more efficiently.
 
 
-## Getting Values <a name="getting-values"></a>
+## Getting Values <span id="getting-values"></span>
 
 Retrieving values from an array, an object or a complex structure consisting of both using standard PHP is quite
 repetitive. You have to check if key exists with `isset` first, then if it does you're getting it, if not,
@@ -64,7 +64,7 @@ After executing the code `$array` will contain `['options' => [1, 2]]` and `$typ
 `getValue` method, `remove` supports simple key names only.
 
 
-## Checking Existence of Keys <a name="checking-existence-of-keys"></a>
+## Checking Existence of Keys <span id="checking-existence-of-keys"></span>
 
 `ArrayHelper::keyExists` works the same way as [array_key_exists](http://php.net/manual/en/function.array-key-exists.php)
 except that it also supports case-insensitive key comparison. For example,
@@ -83,7 +83,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 }
 ```
 
-## Retrieving Columns <a name="retrieving-columns"></a>
+## Retrieving Columns <span id="retrieving-columns"></span>
 
 Often you need to get a column of values from array of data rows or objects. Common example is getting a list of IDs.
 
@@ -107,7 +107,7 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 ```
 
 
-## Re-indexing Arrays <a name="reindexing-arrays"></a>
+## Re-indexing Arrays <span id="reindexing-arrays"></span>
 
 In order to index an array according to a specified key, the `index` method can be used. The input array should be
 multidimensional or an array of objects. The key can be a key name of the sub-array, a property name of object, or
@@ -134,7 +134,7 @@ $result = ArrayHelper::index($array, function ($element) {
 ```
 
 
-## Building Maps <a name="building-maps"></a>
+## Building Maps <span id="building-maps"></span>
 
 In order to build a map (key-value pairs) from a multidimensional array or an array of objects you can use `map` method.
 The `$from` and `$to` parameters specify the key names or property names to set up the map. Optionally, one can further
@@ -169,7 +169,7 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 ```
 
 
-## Multidimensional Sorting <a name="multidimensional-sorting"></a>
+## Multidimensional Sorting <span id="multidimensional-sorting"></span>
 
 `multisort` method helps to sort an array of objects or nested arrays by one or several keys. For example,
 
@@ -209,7 +209,7 @@ Last argument is PHP sort flag that could take the same values as the ones passe
 PHP [sort()](http://php.net/manual/en/function.sort.php).
 
 
-## Detecting Array Types <a name="detecting-array-types"></a>
+## Detecting Array Types <span id="detecting-array-types"></span>
 
 It is handy to know whether an array is indexed or an associative. Here's an example:
 
@@ -224,7 +224,7 @@ echo ArrayHelper::isAssociative($associative);
 ```
 
 
-## HTML Encoding and Decoding Values <a name="html-encoding-values"></a>
+## HTML Encoding and Decoding Values <span id="html-encoding-values"></span>
 
 In order to encode or decode special characters in an array of strings into HTML entities you can use the following:
 
@@ -237,7 +237,7 @@ Only values will be encoded by default. By passing second argument as `false` yo
 Encoding will use application charset and could be changed via third argument.
 
 
-## Merging Arrays <a name="merging-arrays"></a>
+## Merging Arrays <span id="merging-arrays"></span>
 
 ```php
   /**
@@ -257,7 +257,7 @@ Encoding will use application charset and could be changed via third argument.
 ```
 
 
-## Converting Objects to Arrays <a name="converting-objects-to-arrays"></a>
+## Converting Objects to Arrays <span id="converting-objects-to-arrays"></span>
 
 Often you need to convert an object or an array of objects into an array. The most common case is converting active record
 models in order to serve data arrays via REST API or use it otherwise. The following code could be used to do it:

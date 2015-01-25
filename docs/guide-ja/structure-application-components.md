@@ -50,7 +50,7 @@
   多くの場合、必要なときにローカルなコンポーネントを作成して使用するだけで十分です。
 
 
-## コンポーネントをブートストラップに含める<a name="bootstrapping-components"></a>
+## コンポーネントをブートストラップに含める<span id="bootstrapping-components"></span>
 
 上述のように、アプリケーションコンポーネントは最初にアクセスされた時に初めてインスタンスが作成されます。
 リクエストの間に全くアクセスされなかった時は、インスタンスは作成されません。
@@ -73,7 +73,7 @@
 ```
 
 
-## コアアプリケーションコンポーネント<a name="core-application-components"></a>
+## コアアプリケーションコンポーネント<span id="core-application-components"></span>
 
 Yii は固定の ID とデフォルトの構成情報を持つ一連の *コア* アプリケーションコンポーネントを定義しています。
 例えば、[[yii\web\Application::request|request]] コンポーネントは、ユーザリクエストに関する情報を収集して、それを [ルート](runtime-routing.md) として解決するために使用されます。

@@ -8,7 +8,7 @@
 フィルタは、前フィルタ (アクションの *前* に適用されるフィルタのロジック) および/または 後フィルタ (アクションの *後* に適用されるフィルタ) から構成されます。
 
 
-## フィルタを使用する <a name="using-filters"></a>
+## フィルタを使用する <span id="using-filters"></span>
 
 フィルタは、本質的には特別な種類の [ビヘイビア](concept-behaviors.md) です。
 したがって、フィルタを使うことは [ビヘイビアを使う](concept-behaviors.md#attaching-behaviors) ことと同じです。
@@ -57,7 +57,7 @@ public function behaviors()
     - アプリケーションで宣言されたフィルタを `behaviors()` にリストされた逆順で適用する。
 
 
-## フィルタを作成する <a name="creating-filters"></a>
+## フィルタを作成する <span id="creating-filters"></span>
 
 新しいアクションフィルタを作成するためには、[[yii\base\ActionFilter]] を拡張して、[[yii\base\ActionFilter::beforeAction()|beforeAction()]]
 および/または [[yii\base\ActionFilter::afterAction()|afterAction()]] メソッドをオーバーライドします。
@@ -93,13 +93,13 @@ class ActionTimeFilter extends ActionFilter
 ```
 
 
-## コアのフィルタ <a name="core-filters"></a>
+## コアのフィルタ <span id="core-filters"></span>
 
 Yii はよく使われる一連のフィルタを提供しており、それらは、主として `yii\filters` 名前空間の下にあります。
 以下では、それらのフィルタを簡単に紹介します。
 
 
-### [[yii\filters\AccessControl|AccessControl]] <a name="access-control"></a>
+### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
 AccessControl は、一組の [[yii\filters\AccessControl::rules|規則]] に基づいて、シンプルなアクセスコントロールを提供するものです。
 具体的に言うと、アクションが実行される前に、AccessControl はリストされた規則を調べて、現在のコンテキスト変数
@@ -135,7 +135,7 @@ public function behaviors()
 アクセスコントロール一般についての詳細は [権限](security-authorization.md) の節を参照してください。
 
 
-### 認証メソッドフィルタ <a name="auth-method-filters"></a>
+### 認証メソッドフィルタ <span id="auth-method-filters"></span>
 
 認証メソッドフィルタは、[HTTP Basic 認証](http://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC)、
 [OAuth 2](http://oauth.net/2/) など、様々なメソッドを使ってユーザを認証するために使われるものです。
@@ -163,7 +163,7 @@ public function behaviors()
 詳細については、RESTful の [認証](rest-authentication.md) の節を参照してください。
 
 
-### [[yii\filters\ContentNegotiator|ContentNegotiator]] <a name="content-negotiator"></a>
+### [[yii\filters\ContentNegotiator|ContentNegotiator]] <span id="content-negotiator"></span>
 
 ContentNegotiator は、レスポンス形式のネゴシエーションとアプリケーション言語のネゴシエーションをサポートします。
 このフィルタは `GET` パラメータと `Accept` HTTP ヘッダを調べることによって、レスポンス形式 および/または 言語を決定しようとします。
@@ -223,7 +223,7 @@ use yii\web\Response;
 
 
 
-### [[yii\filters\HttpCache|HttpCache]] <a name="http-cache"></a>
+### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
 HttpCache は `Last-Modified` および `Etag` の HTTP ヘッダを利用して、クライアントサイドのキャッシュを実装するものです。
 
@@ -248,7 +248,7 @@ public function behaviors()
 HttpCache に関する詳細は [HTTP キャッシュ](caching-http.md) の節を参照してください。
 
 
-### [[yii\filters\PageCache|PageCache]] <a name="page-cache"></a>
+### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
 PageCache はサーバサイドにおけるページ全体のキャッシュを実装するものです。
 次の例では、PageCache が `index` アクションに適用されて、最大 60 秒間、または、`post` テーブルのエントリ数が変化するまでの間、ページ全体をキャッシュしています。
@@ -280,14 +280,14 @@ public function behaviors()
 PageCache の使用に関する詳細は [ページキャッシュ](caching-page.md) の節を参照してください。
 
 
-### [[yii\filters\RateLimiter|RateLimiter]] <a name="rate-limiter"></a>
+### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88)
 に基づいてレート制限のアルゴリズムを実装するものです。主として RESTful API を実装するときに使用されます。
 このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) の節を参照してください。
 
 
-### [[yii\filters\VerbFilter|VerbFilter]] <a name="verb-filter"></a>
+### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
 
 VerbFilter は、HTTP リクエストメソッド (HTTP 動詞) がリクエストされたアクションによって許可されているかどうかをチェックするものです。
 許可されていない場合は、HTTP 405 例外を投げます。
@@ -313,7 +313,7 @@ public function behaviors()
 }
 ```
 
-### [[yii\filters\Cors|Cors]] <a name="cors"></a>
+### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
 クロスオリジンリソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブページにおいて、さまざまなリソース
 (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。

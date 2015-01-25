@@ -5,7 +5,7 @@ Adicionalmente al [rico conjunto de funciones para arrays de PHP](http://php.net
 métodos estáticos adicionales permitiendo trabajar con arrays de manera más eficiente.
 
 
-## Devolviendo Valores <a name="getting-values"></a>
+## Devolviendo Valores <span id="getting-values"></span>
 
 Recuperar valores de un array, un objeto o una estructura compleja usando PHP estándar es bastante
 repetitivo. Tienes que comprobar primero si una clave existe con `isset`, después devolver el valor si existe, si no,
@@ -64,7 +64,7 @@ Después de ejecutar el código el `$array` contendrá `['options' => [1, 2]]` y
 `getValue`, `remove` solo soporta nombres clave simples.
 
 
-## Comprobando la Existencia de Claves <a name="checking-existence-of-keys"></a>
+## Comprobando la Existencia de Claves <span id="checking-existence-of-keys"></span>
 
 `ArrayHelper::keyExists` funciona de la misma manera que [array_key_exists](http://php.net/manual/es/function.array-key-exists.php)
 excepto que también soporta case-insensitive para la comparación de claves. Por ejemplo,
@@ -83,7 +83,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 }
 ```
 
-## Recuperando Columnas <a name="retrieving-columns"></a>
+## Recuperando Columnas <span id="retrieving-columns"></span>
 
 A menudo necesitas obtener unos valores de una columna de las filas de datos u objetos de un array. Un ejemplo común es obtener una lista de IDs.
 
@@ -107,7 +107,7 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 ```
 
 
-## Re-indexar Arrays <a name="reindexing-arrays"></a>
+## Re-indexar Arrays <span id="reindexing-arrays"></span>
 
 Con el fin de indexar un array según una clave especificada, se puede usar el método `index`. La entrada del array debe ser
 multidimensional o un array de objetos. La clave puede ser un nombre clave del sub-array, un nombre de una propiedad del objeto, o
@@ -134,7 +134,7 @@ $result = ArrayHelper::index($array, function ($element) {
 ```
 
 
-## Construyendo Mapas (Maps) <a name="building-maps"></a>
+## Construyendo Mapas (Maps) <span id="building-maps"></span>
 
 Con el fin de construir un mapa (pareja clave-valor) de un array multidimensional o un array de objetos puedes usar el método `map`.
 Los parámetros `$from` y `$to`  especifican los nombres de las claves o los nombres de las propiedades que serán configuradas en el mapa. Opcionalmente, se puede
@@ -169,7 +169,7 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 ```
 
 
-## Ordenamiento Multidimensional <a name="multidimensional-sorting"></a>
+## Ordenamiento Multidimensional <span id="multidimensional-sorting"></span>
 
 El método `multisort` ayuda a ordenar un array de objetos o arrays anidados por una o varias claves. Por ejemplo,
 
@@ -209,7 +209,7 @@ El último argumento es un PHP sort flag que toma los mismos valores que los pas
 PHP [sort()](http://php.net/manual/es/function.sort.php).
 
 
-## Detectando Tipos de Array <a name="detecting-array-types"></a>
+## Detectando Tipos de Array <span id="detecting-array-types"></span>
 
 Es muy útil saber si un array es indexado o asociativo. He aquí un ejemplo:
 
@@ -224,7 +224,7 @@ echo ArrayHelper::isAssociative($associative);
 ```
 
 
-## Codificación y Decodificación de Valores HTML <a name="html-encoding-values"></a>
+## Codificación y Decodificación de Valores HTML <span id="html-encoding-values"></span>
 
 Con el fin de codificar o decodificar caracteres especiales en un array de strings con entidades HTML puedes usar lo siguiente:
 
@@ -237,7 +237,7 @@ Solo los valores se codifican por defecto. Pasando como segundo argumento `false
 La codificación utilizará el charset de la aplicación y podría ser cambiado pasandole un tercer argumento.
 
 
-## Fusionando Arrays <a name="merging-arrays"></a>
+## Fusionando Arrays <span id="merging-arrays"></span>
 
 ```php
   /**
@@ -257,7 +257,7 @@ La codificación utilizará el charset de la aplicación y podría ser cambiado 
 ```
 
 
-## Convirtiendo Objetos a Arrays <a name="converting-objects-to-arrays"></a>
+## Convirtiendo Objetos a Arrays <span id="converting-objects-to-arrays"></span>
 
 A menudo necesitas convertir un objeto o un array de objetos a un array. El caso más común es convertir los modelos de
 active record con el fin de servir los arrays de datos vía API REST o utilizarlos de otra manera. El siguiente código

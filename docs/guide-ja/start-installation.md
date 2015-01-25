@@ -18,7 +18,7 @@ Yii はもう一つ、[アドバンストアプリケーションテンプレー
   あなたが Yii は初めてだという場合は、シンプルでありながら十分な機能を持っているベーシックアプリケーションテンプレートに留まることを強く推奨します。
 
 
-Composer によるインストール <a name="installing-via-composer"></a>
+Composer によるインストール <span id="installing-via-composer"></span>
 ---------------------------
 
 まだ Composer をインストールしていない場合は、[getcomposer.org](https://getcomposer.org/download/) の指示に従ってインストールすることが出来ます。
@@ -56,7 +56,7 @@ Composer がインストールされたら、ウェブからアクセスでき�
 > 開発バージョンは動いているあなたのコードを動かなくするかもしれませんので、本番環境では使うべきでないことに注意してください。
 
 
-アーカイブファイルからインストールする <a name="installing-from-archive-file"></a>
+アーカイブファイルからインストールする <span id="installing-from-archive-file"></span>
 --------------------------------------
 
 アーカイブファイルから Yii をインストールするには、三つの手順を踏みます。
@@ -72,7 +72,7 @@ Composer がインストールされたら、ウェブからアクセスでき�
    ```
 
 
-他のインストールオプション <a name="other-installation-options"></a>
+他のインストールオプション <span id="other-installation-options"></span>
 --------------------------
 
 上記のインストール方法の説明は Yii のインストールの仕方を示すものですが、それは同時に、直ちに動作する基本的なウェブアプリケーションを作成するものでもあります。
@@ -87,7 +87,7 @@ Composer がインストールされたら、ウェブからアクセスでき�
   をインストールすることを考慮することが出来ます。
 
 
-インストールを検証する <a name="verifying-installation"></a>
+インストールを検証する <span id="verifying-installation"></span>
 ----------------------
 
 インストール完了後、インストールされた Yii アプリケーションにブラウザを使って下記の URL でアクセスすることが出来ます。
@@ -119,7 +119,7 @@ Yii の最低必要条件を満たすように PHP のインストールを構�
 また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](http://www.php.net/manual/ja/pdo.installation.php) および対応するデータベースドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
 
 
-ウェブサーバを構成する <a name="configuring-web-servers"></a>
+ウェブサーバを構成する <span id="configuring-web-servers"></span>
 ----------------------
 
 > Info|情報: もし Yii の試運転をしているだけで、本番サーバに配備する意図がないのであれば、当面、この項は飛ばしても構いません。
@@ -140,7 +140,7 @@ Yii 2.0 は、また、facebook の [HHVM](http://hhvm.com/) とも互換性が�
 詳細については、[共有ホスティング環境](tutorial-shared-hosting.md) の節を参照してください。
 
 
-### 推奨される Apache の構成 <a name="recommended-apache-configuration"></a>
+### 推奨される Apache の構成 <span id="recommended-apache-configuration"></span>
 
 下記の設定を Apache の `httpd.conf` ファイルまたはバーチャルホスト設定の中で使います。
 `path/to/basic/web` の部分を `basic/web` の実際のパスに置き換えなければならないことに注意してください。
@@ -163,7 +163,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### 推奨される Nginx の構成 <a name="recommended-nginx-configuration"></a>
+### 推奨される Nginx の構成 <span id="recommended-nginx-configuration"></span>
 
 [Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](http://jp1.php.net/install.fpm) としてインストールしなければなりません。
 下記の Nginx の設定を使うことができます。

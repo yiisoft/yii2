@@ -20,7 +20,7 @@ can specify what data may be returned via RESTful APIs. If the resource class do
 then all its public member variables will be returned.
 
 
-## Fields <a name="fields"></a>
+## Fields <span id="fields"></span>
 
 When including a resource in a RESTful API response, the resource needs to be serialized into a string.
 Yii breaks this process into two steps. First, the resource is converted into an array by [[yii\rest\Serializer]].
@@ -49,7 +49,7 @@ http://localhost/users?fields=id,email&expand=profile
 ```
 
 
-### Overriding `fields()` <a name="overriding-fields"></a>
+### Overriding `fields()` <span id="overriding-fields"></span>
 
 By default, [[yii\base\Model::fields()]] returns all model attributes as fields, while
 [[yii\db\ActiveRecord::fields()]] only returns the attributes which have been populated from DB.
@@ -96,7 +96,7 @@ public function fields()
 > to filter out `auth_key`, `password_hash` and `password_reset_token`.
 
 
-### Overriding `extraFields()` <a name="overriding-extra-fields"></a>
+### Overriding `extraFields()` <span id="overriding-extra-fields"></span>
 
 By default, [[yii\base\Model::extraFields()]] returns nothing, while [[yii\db\ActiveRecord::extraFields()]]
 returns the names of the relations that have been populated from DB.
@@ -134,7 +134,7 @@ the request with `http://localhost/users?fields=id,email&expand=profile` may ret
 ```
 
 
-## Links <a name="links"></a>
+## Links <span id="links"></span>
 
 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
 promotes that RESTful APIs should return information that allow clients to discover actions supported for the returned
@@ -177,7 +177,7 @@ to the user, for example,
 ```
 
 
-## Collections <a name="collections"></a>
+## Collections <span id="collections"></span>
 
 Resource objects can be grouped into *collections*. Each collection contains a list of resource objects
 of the same type.
