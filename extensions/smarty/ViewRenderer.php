@@ -99,7 +99,7 @@ class ViewRenderer extends BaseViewRenderer
         // Register function widgets specified in configuration array
         if (isset($this->widgets['functions'])) {
             foreach(($this->widgets['functions']) as $tag => $class) {
-                $this->smarty->registerPlugin('function', $tag, [$this, '_widget_func__' . $tag]);
+                $this->smarty->registerPlugin('function', $tag, [$this, '_widget_function__' . $tag]);
                 $this->smarty->registerClass($tag, $class);
             }
         }
