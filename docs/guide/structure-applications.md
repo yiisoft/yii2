@@ -26,7 +26,7 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 $config = require(__DIR__ . '/../config/web.php');
 
 // instantiate and configure the application
-(new yii\web\Application($config))->run();
+new yii\web\Application($config))->run();
 ```
 
 Like normal [configurations](concept-configurations.md), application configurations specify how
