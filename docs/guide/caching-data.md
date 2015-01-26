@@ -114,7 +114,7 @@ Yii supports a wide range of cache storage. The following is a summary:
 
 All cache components have the same base class [[yii\caching\Cache]] and thus support the following APIs:
 
-* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A false
+* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A `false`
   value will be returned if the data item is not found in the cache or is expired/invalidated.
 * [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
 * [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
@@ -190,7 +190,7 @@ enforcement (e.g. caching space is full and the oldest data are removed). To cha
 an expiration parameter when calling [[yii\caching\Cache::set()|set()]] to store a data item. The parameter
 indicates for how many seconds the data item can remain valid in the cache. When you call
 [[yii\caching\Cache::get()|get()]] to retrieve the data item, if it has passed the expiration time, the method
-will return false, indicating the data item is not found in the cache. For example,
+will return `false`, indicating the data item is not found in the cache. For example,
 
 ```php
 // keep the data in cache for at most 45 seconds
@@ -211,7 +211,7 @@ Besides expiration setting, cached data item may also be invalidated by changes 
 For example, [[yii\caching\FileDependency]] represents the dependency of a file's modification time.
 When this dependency changes, it means the corresponding file is modified. As a result, any outdated
 file content found in the cache should be invalidated and the [[yii\caching\Cache::get()|get()]] call
-should return false.
+should return `false`.
 
 Cache dependencies are represented as objects of [[yii\caching\Dependency]] descendant classes. When you call
 [[yii\caching\Cache::set()|set()]] to store a data item in the cache, you can pass along an associated cache

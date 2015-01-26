@@ -1,7 +1,8 @@
 Configurations
 ==============
 
-Configurations are widely used in Yii when creating new objects or initializing existing objects. Configurations usually include the class name of the object being created, and a list of initial values
+Configurations are widely used in Yii when creating new objects or initializing existing objects.
+Configurations usually include the class name of the object being created, and a list of initial values
 that should be assigned to the object's [properties](concept-properties.md). Configurations may also include a list of
 handlers that should be attached to the object's [events](concept-events.md) and/or a list of
 [behaviors](concept-behaviors.md) that should also be attached to the object.
@@ -20,7 +21,8 @@ $config = [
 $db = Yii::createObject($config);
 ```
 
-The [[Yii::createObject()]] method takes a configuration array as its argument, and creates an object by instantiating the class named in the configuration. When the object is instantiated, the rest of the configuration
+The [[Yii::createObject()]] method takes a configuration array as its argument, and creates an object by instantiating
+the class named in the configuration. When the object is instantiated, the rest of the configuration
 will be used to initialize the object's properties, event handlers, and behaviors.
 
 If you already have an object, you may use [[Yii::configure()]] to initialize the object's properties with

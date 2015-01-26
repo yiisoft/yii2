@@ -316,7 +316,8 @@ both have pros and cons. They are more like complements to each other rather tha
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
 can be considered as language-supported copy and paste. They do not support inheritance.
 
-Behaviors can be attached and detached to a component dynamically without requiring modification of the component class. To use a trait, you must modify the class using it.
+Behaviors can be attached and detached to a component dynamically without requiring modification of the component class.
+To use a trait, you must modify the code of the class using it.
 
 Behaviors are configurable while traits are not.
 
