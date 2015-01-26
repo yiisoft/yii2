@@ -55,7 +55,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta4"
+  php composer.phar global require "fxp/composer-asset-plugin:1.0.0"
   ```
 
   You also need to add the following code to your project's `composer.json` file:
