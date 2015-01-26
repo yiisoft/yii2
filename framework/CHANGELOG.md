@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #6919: Fixed wrong namespaces under advanced application's TestCase classes (ivokund)
+- Bug #6940: `yii\web\Response::sendContentAsFile()` may not send correct `content-length` header (sadgnome)
 - Bug #6969: `yii\helpers\ArrayHelper::htmlEncode()` and `htmlDecode()` should not remove non-string data (qiangxue)
 - Enh #5663: Added support for using `data-params` to specify additional form data to be submitted via the `data-method` approach (usualdesigner, qiangxue)
 - Enh #6106: Added ability to specify `encode` for each item of `yii\widgets\Breadcrumbs` (samdark, aleksanderd)
