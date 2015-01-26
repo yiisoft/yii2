@@ -16,6 +16,7 @@ use yii\apidoc\renderers\ApiRenderer as BaseApiRenderer;
 use yii\base\ViewContextInterface;
 use yii\helpers\Console;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 use yii\web\AssetManager;
 use yii\web\View;
 use Yii;
@@ -59,7 +60,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
         parent::init();
 
         if ($this->pageTitle === null) {
-            $this->pageTitle = 'Yii Framework 2.0 API Documentation'; // TODO guess page title
+            $this->pageTitle = 'Yii Framework 2.0 API Documentation';
         }
     }
 
@@ -101,7 +102,9 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
             Console::startProgress(0, $typeCount, 'Rendering files: ', false);
         }
         $done = 0;
+        $oldTitle = $this->pageTitle;
         foreach ($types as $type) {
+            $this->pageTitle = StringHelper::basename($type->name) . ", {$type->name} - $oldTitle";
             $fileContent = $this->renderWithLayout($this->typeView, [
                 'type' => $type,
                 'apiContext' => $context,
@@ -113,6 +116,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
                 Console::updateProgress(++$done, $typeCount);
             }
         }
+        $this->pageTitle = $oldTitle;
 
         $indexFileContent = $this->renderWithLayout($this->indexView, [
             'apiContext' => $context,
