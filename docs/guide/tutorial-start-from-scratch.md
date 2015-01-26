@@ -50,6 +50,6 @@ Use the Template
 That's all that's required to create a new Yii application template. Now you can create projects using your template:
 
 ```
-composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+composer global require "fxp/composer-asset-plugin:1.0.0"
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```
