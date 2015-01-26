@@ -340,9 +340,9 @@ Let's use some examples to illustrate how named parameters work. Assume we have 
 
 ```php
 [
+    'posts/<year:\d{4}>/<category>' => 'post/index',
     'posts' => 'post/index',
     'post/<id:\d+>' => 'post/view',
-    'posts/<year:\d{4}>/<category>' => 'post/index',
 ]
 ```
 
