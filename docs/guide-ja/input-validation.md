@@ -289,7 +289,7 @@ Yii のリリースに含まれている [コアバリデータ](tutorial-core-v
 ```php
 /**
  * @param string $attribute 現在検証されている属性
- * @param array $params 規則に与えられる追加の「名前-値」のペア
+ * @param mixed $params 規則に与えられる "params" の値
  */
 function ($attribute, $params)
 ```
