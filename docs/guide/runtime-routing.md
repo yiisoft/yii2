@@ -348,24 +348,23 @@ Let's use some examples to illustrate how named parameters work. Assume we have 
 
 When the rules are used to parse URLs:
 
-- `/index.php/posts` is parsed into the route `post/index` using the first rule;
+- `/index.php/posts` is parsed into the route `post/index` using the second rule;
 - `/index.php/posts/2014/php` is parsed into the route `post/index`, the `year` parameter whose value is 2014
-  and the `category` parameter whose value is `php` using the third rule;
+  and the `category` parameter whose value is `php` using the first rule;
 - `/index.php/post/100` is parsed into the route `post/view` and the `id` parameter whose value is 100 using
-  the second rule;
+  the third rule;
 - `/index.php/posts/php` will cause a [[yii\web\NotFoundHttpException]] when [[yii\web\UrlManager::enableStrictParsing]]
-  is true, because it matches none of the patterns. If [[yii\web\UrlManager::enableStrictParsing]] is false (the
+  is `true`, because it matches none of the patterns. If [[yii\web\UrlManager::enableStrictParsing]] is `false` (the
   default value), the path info part `posts/php` will be returned as the route.
  
 And when the rules are used to create URLs:
 
-- `Url::to(['post/index'])` creates `/index.php/posts` using the first rule;
-- `Url::to(['post/index', 'year' => 2014, 'category' => 'php'])` creates `/index.php/posts/2014/php` using the
-  third rule;
-- `Url::to(['post/view', 'id' => 100])` creates `/index.php/post/100` using the second rule;
-- `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` creates `/index.php/post/100?source=ad` using the second rule.
+- `Url::to(['post/index'])` creates `/index.php/posts` using the second rule;
+- `Url::to(['post/index', 'year' => 2014, 'category' => 'php'])` creates `/index.php/posts/2014/php` using the first rule;
+- `Url::to(['post/view', 'id' => 100])` creates `/index.php/post/100` using the third rule;
+- `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` creates `/index.php/post/100?source=ad` using the third rule.
   Because the `source` parameter is not specified in the rule, it is appended as a query parameter in the created URL.
-- `Url::to(['post/index', 'category' => 'php'])` creates `/index.php/post/index?category=php` using none of rules.
+- `Url::to(['post/index', 'category' => 'php'])` creates `/index.php/post/index?category=php` using none of the rules.
   Note that since none of the rules applies, the URL is created by simply appending the route as the path info
   and all parameters as the query string part.
    
