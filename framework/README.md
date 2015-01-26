@@ -13,7 +13,7 @@ Either run
 
 ```
 composer global require "fxp/composer-asset-plugin:1.0.0"
-composer require --prefer-dist "yiisoft/yii2 *"
+composer require yiisoft/yii2
 ```
 
 or add
