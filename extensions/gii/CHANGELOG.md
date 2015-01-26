@@ -1,6 +1,10 @@
 Yii Framework 2 gii extension Change Log
 ========================================
 
+2.0.? January 11, 2015 
+----------------------
+Bug #6824 Gii view.php creates HTML for Buttons incorrectly (apyii)
+
 2.0.3 under development
 -----------------------
 
