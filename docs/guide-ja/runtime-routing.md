@@ -315,26 +315,26 @@ URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定さ�
 
 ```php
 [
+    'posts/<year:\d{4}>/<category>' => 'post/index',
     'posts' => 'post/index',
     'post/<id:\d+>' => 'post/view',
-    'posts/<year:\d{4}>/<category>' => 'post/index',
 ]
 ```
 
 規則が URL 解析に使われる場合は、
 
-- `/index.php/posts` は、最初の規則を使って解析され、ルート `post/index` になります。
-- `/index.php/posts/2014/php` は、三番目の規則を使って解析され、ルートは `post/index`、`year` パラメータの値は 2014、そして、`category` パラメータの値は `php` となります。
-- `/index.php/post/100` は、二番目の規則を使って解析され、ルートが `post/view`、`id` パラメータの値が 100 となります。
+- `/index.php/posts` は、二番目の規則を使って解析され、ルート `post/index` になります。
+- `/index.php/posts/2014/php` は、最初の規則を使って解析され、ルートは `post/index`、`year` パラメータの値は 2014、そして、`category` パラメータの値は `php` となります。
+- `/index.php/post/100` は、三番目の規則を使って解析され、ルートが `post/view`、`id` パラメータの値が 100 となります。
 - `/index.php/posts/php` は、どのパターンにも合致しないため、[[yii\web\UrlManager::enableStrictParsing]] が true の場合は、[[yii\web\NotFoundHttpException]] を引き起こします。
   [[yii\web\UrlManager::enableStrictParsing]] が false (これが既定値です) の場合は、パス情報の部分である `posts/php` がルートとして返されることになります。
  
 規則が URL 生成に使われる場合は、
 
-- `Url::to(['post/index'])` は、最初の規則を使って、`/index.php/posts` を生成します。
-- `Url::to(['post/index', 'year' => 2014, 'category' => 'php'])` は、三番目の規則を使って、`/index.php/posts/2014/php` を生成します。
-- `Url::to(['post/view', 'id' => 100])` は、二番目の規則を使って、`/index.php/post/100` を生成します。
-- `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` も、二番目の規則を使って、`/index.php/post/100?source=ad` を生成します。
+- `Url::to(['post/index'])` は、二番目の規則を使って、`/index.php/posts` を生成します。
+- `Url::to(['post/index', 'year' => 2014, 'category' => 'php'])` は、最初の規則を使って、`/index.php/posts/2014/php` を生成します。
+- `Url::to(['post/view', 'id' => 100])` は、三番目の規則を使って、`/index.php/post/100` を生成します。
+- `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` も、三番目の規則を使って、`/index.php/post/100?source=ad` を生成します。
   `source` パラメータは規則の中で指定されていないので、クエリパラメータとして、生成される URL に追加されます。
 - `Url::to(['post/index', 'category' => 'php'])` は、どの規則も使わずに、`/index.php/post/index?category=php` を生成します。
   どの規則も当てはまらないため、URL は、単純に、ルートをパス情報とし、すべてのパラメータをクエリ文字列として追加して生成されます。

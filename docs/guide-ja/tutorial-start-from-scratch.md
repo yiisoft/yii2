@@ -54,6 +54,6 @@ Yii の新しいアプリケーションテンプレートを作成するのに�
 これで、あなたのテンプレートを使ってプロジェクトを作成することが出来ます。
 
 ```
-composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+composer global require "fxp/composer-asset-plugin:1.0.0"
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```
