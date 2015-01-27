@@ -90,7 +90,8 @@ Getting Data from Users
 * [Creating Forms](input-forms.md)
 * [Validating Input](input-validation.md)
 * [Uploading Files](input-file-upload.md)
-* **TBD** [Getting Data for Multiple Models](input-multiple-models.md)
+* [Collecting tabular input](input-tabular-input.md)
+* [Getting Data for Multiple Models](input-multiple-models.md)
 
 
 Displaying Data
