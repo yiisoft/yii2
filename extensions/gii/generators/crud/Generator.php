@@ -495,7 +495,7 @@ class Generator extends \yii\gii\Generator
             return $params;
         }
         if (count($pks) === 1) {
-            return ['@param ' . $table->columns[$pks[0]]->phpType . ' $id'];
+            return ['@param ' . $table->columns[$pks[0]]->phpType . ' $' . $pks[0]'];
         } else {
             $params = [];
             foreach ($pks as $pk) {
