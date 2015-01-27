@@ -432,12 +432,21 @@ class GridView extends BaseListView
         }
 
         if (empty($rows)) {
-            $colspan = count($this->columns);
-
-            return "<tbody>\n<tr><td colspan=\"$colspan\">" . $this->renderEmpty() . "</td></tr>\n</tbody>";
+            return "<tbody>\n" . $this->renderEmptyRow() . "\n</tbody>";
         } else {
             return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
         }
+    }
+
+
+    /**
+     * Renders a table empty row.
+     * @return string the rendering result
+     */
+    public function renderEmptyRow()
+    {
+        $td = Html::tag('td', $this->renderEmpty(), ['colspan' => count($this->columns)]);
+        return Html::tag('tr', $td, $this->rowOptions);
     }
 
     /**
