@@ -8,7 +8,6 @@ defined('FRONTEND_ENTRY_URL') or define('FRONTEND_ENTRY_URL', parse_url(\Codecep
 defined('FRONTEND_ENTRY_FILE') or define('FRONTEND_ENTRY_FILE', YII_APP_BASE_PATH . '/frontend/web/index-test.php');
 
 require_once(YII_APP_BASE_PATH . '/vendor/autoload.php');
-require_once(YII_APP_BASE_PATH . '/vendor/yiisoft/yii2/Yii.php');
 require_once(YII_APP_BASE_PATH . '/common/config/bootstrap.php');
 require_once(YII_APP_BASE_PATH . '/frontend/config/bootstrap.php');
 

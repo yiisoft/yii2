@@ -8,7 +8,6 @@ defined('YII_BACKEND_TEST_ENTRY_URL') or define('YII_BACKEND_TEST_ENTRY_URL', pa
 defined('YII_TEST_BACKEND_ENTRY_FILE') or define('YII_TEST_BACKEND_ENTRY_FILE', YII_APP_BASE_PATH . '/backend/web/index-test.php');
 
 require_once(YII_APP_BASE_PATH . '/vendor/autoload.php');
-require_once(YII_APP_BASE_PATH . '/vendor/yiisoft/yii2/Yii.php');
 require_once(YII_APP_BASE_PATH . '/common/config/bootstrap.php');
 require_once(YII_APP_BASE_PATH . '/backend/config/bootstrap.php');
 
