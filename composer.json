@@ -129,7 +129,7 @@
             "yii\\sphinx\\": "extensions/sphinx/",
             "yii\\twig\\": "extensions/twig/"
         },
-        "classmap": ["Yii.php"]
+        "classmap": ["framework/Yii.php"]
     },
     "bin": [
         "framework/yii"
