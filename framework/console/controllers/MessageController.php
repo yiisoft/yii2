@@ -387,7 +387,7 @@ class MessageController extends Controller
             $merged = [];
             $untranslated = [];
             foreach ($messages as $message) {
-                if (array_key_exists($message, $existingMessages) && strlen($existingMessages[$message]) > 0) {
+                if (array_key_exists($message, $existingMessages) && $existingMessages[$message] !== '') {
                     $merged[$message] = $existingMessages[$message];
                 } else {
                     $untranslated[] = $message;
@@ -499,7 +499,7 @@ EOD;
 
                 // merge existing message translations with new message translations
                 foreach ($msgs as $message) {
-                    if (array_key_exists($message, $existingMessages) && strlen($existingMessages[$message]) > 0) {
+                    if (array_key_exists($message, $existingMessages) && $existingMessages[$message] !== '') {
                         $merged[$category . chr(4) . $message] = $existingMessages[$message];
                     } else {
                         $notTranslatedYet[] = $message;
