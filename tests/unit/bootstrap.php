@@ -15,7 +15,6 @@ if (is_file($composerAutoload)) {
 } else {
     require_once(__DIR__ . '/../../../../autoload.php');
 }
-require_once(__DIR__ . '/../../framework/Yii.php');
 
 Yii::setAlias('@yiiunit', __DIR__);
 
