@@ -102,9 +102,7 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
             Console::startProgress(0, $typeCount, 'Rendering files: ', false);
         }
         $done = 0;
-        $oldTitle = $this->pageTitle;
         foreach ($types as $type) {
-            $this->pageTitle = StringHelper::basename($type->name) . ", {$type->name} - $oldTitle";
             $fileContent = $this->renderWithLayout($this->typeView, [
                 'type' => $type,
                 'apiContext' => $context,
@@ -116,7 +114,6 @@ class ApiRenderer extends BaseApiRenderer implements ViewContextInterface
                 Console::updateProgress(++$done, $typeCount);
             }
         }
-        $this->pageTitle = $oldTitle;
 
         $indexFileContent = $this->renderWithLayout($this->indexView, [
             'apiContext' => $context,
