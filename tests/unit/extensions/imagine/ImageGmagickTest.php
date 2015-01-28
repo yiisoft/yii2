@@ -26,4 +26,12 @@ class ImageGmagickTest extends AbstractImageTest
     {
         return true;
     }
+
+    /**
+     * @expectedException \Imagine\Exception\NotSupportedException
+     */
+    public function testFrame()
+    {
+        parent::testFrame();
+    }
 }

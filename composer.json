@@ -90,7 +90,7 @@
         "phpunit/phpunit": "3.7.*",
         "twig/twig": "*",
         "smarty/smarty": "~3.1",
-        "imagine/imagine": "0.5.*",
+        "imagine/imagine": "0.6.*",
         "swiftmailer/swiftmailer": "*",
         "fzaninotto/faker": "*",
         "cebe/indent": "*"
