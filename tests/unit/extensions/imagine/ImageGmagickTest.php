@@ -30,8 +30,8 @@ class ImageGmagickTest extends AbstractImageTest
     /**
      * @expectedException \Imagine\Exception\NotSupportedException
      */
-    public function testFrame()
+    public function testFrameAlpha()
     {
-        parent::testFrame();
+        parent::testFrameAlpha();
     }
 }
