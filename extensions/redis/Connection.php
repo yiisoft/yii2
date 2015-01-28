@@ -60,6 +60,10 @@ class Connection extends Component
      */
     public $unixSocket;
     /**
+     * Wheather to use permanent connection (STREAM_CLIENT_PERSISTENT)
+     */
+    public $pconnect = true;
+    /**
      * @var string the password for establishing DB connection. Defaults to null meaning no AUTH command is send.
      * See http://redis.io/commands/auth
      */
@@ -259,11 +263,16 @@ class Connection extends Component
         }
         $connection = ($this->unixSocket ?: $this->hostname . ':' . $this->port) . ', database=' . $this->database;
         \Yii::trace('Opening redis DB connection: ' . $connection, __METHOD__);
+        $flags = STREAM_CLIENT_CONNECT;
+        if ($this->pconnect){
+        	$flags |= STREAM_CLIENT_PERSISTENT;
+        }
         $this->_socket = @stream_socket_client(
             $this->unixSocket ? 'unix://' . $this->unixSocket : 'tcp://' . $this->hostname . ':' . $this->port,
             $errorNumber,
             $errorDescription,
-            $this->connectionTimeout ? $this->connectionTimeout : ini_get("default_socket_timeout")
+            $this->connectionTimeout ? $this->connectionTimeout : ini_get("default_socket_timeout"),
+        	$flags
         );
         if ($this->_socket) {
             if ($this->dataTimeout !== null) {
