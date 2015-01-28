@@ -41,7 +41,7 @@ class FilterValidator extends Validator
     public $filter;
     /**
      * @var boolean whether the filter should be skipped if an array input is given.
-     * If false and an array input is given, the filter will not be applied.
+     * If true and an array input is given, the filter will not be applied.
      */
     public $skipOnArray = false;
     /**
