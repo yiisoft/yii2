@@ -772,7 +772,19 @@ class BaseConsole
         static::stdout($message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:');
         $input = trim(static::stdin());
 
-        return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+        if (empty($input)) {
+            return $default;
+        }
+
+        if (!strcasecmp ($input, 'y') || !strcasecmp ($input, 'yes') ) {
+            return true;
+        }
+
+        if (!strcasecmp ($input, 'n') || !strcasecmp ($input, 'no') ) {
+            return false;
+        }
+
+        return self::confirm($message, $default);
     }
 
     /**
