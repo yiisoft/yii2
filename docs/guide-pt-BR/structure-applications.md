@@ -485,8 +485,8 @@ essa propriedade da seguinte forma:
 
 Como você pode ver, a propriedade recebe um array de especificações de extensões.
 Cada extensão é especificada com um array composto pelos elementos `name` e
-`version`. Se uma extensão precisa executar durante o processo de
-[inicialização](runtime-bootstrapping.md), um elemento `bootstrap` pode ser
+`version`. Se uma extensão precisa executar durante o 
+[processo de inicialização](runtime-bootstrapping.md), um elemento `bootstrap` pode ser
 especificado com um nome de uma classe de inicialização ou um array de
 [configuração](concept-configurations.md). Uma extensão também pode definir
 alguns [aliases](concept-aliases.md).
