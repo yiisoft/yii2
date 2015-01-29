@@ -17,6 +17,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\BaseFormatConverter;
 use yii\helpers\FormatConverter;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
@@ -628,6 +629,8 @@ class Formatter extends Component
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkTimeInfo ? [$timestamp, false] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
+                return $checkTimeInfo ? [$timestamp, true] : $timestamp;
+            }  elseif (($timestamp = DateTime::createFromFormat(BaseFormatConverter::convertDateIcuToPhp(Yii::$app->formatter->datetimeFormat), $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try custom set format
                 return $checkTimeInfo ? [$timestamp, true] : $timestamp;
             }
             // finally try to create a DateTime object with the value
