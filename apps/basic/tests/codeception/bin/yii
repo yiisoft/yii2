@@ -12,17 +12,7 @@ require_once __DIR__ . '/_bootstrap.php';
 
 $config = yii\helpers\ArrayHelper::merge(
     require(YII_APP_BASE_PATH . '/config/console.php'),
-    require(__DIR__ . '/../config/config.php'),
-    [
-        'controllerMap' => [
-            'fixture' => [
-                'class' => 'yii\faker\FixtureController',
-                'fixtureDataPath' => '@tests/codeception/fixtures',
-                'templatePath' => '@tests/codeception/templates',
-                'namespace' => 'tests\codeception\fixtures',
-            ],
-        ],
-    ]
+    require(__DIR__ . '/../config/config.php')
 );
 
 $application = new yii\console\Application($config);
