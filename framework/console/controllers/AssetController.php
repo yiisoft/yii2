@@ -625,7 +625,7 @@ EOD;
                 $inputUrlParts = explode('/', $inputUrl);
                 foreach ($inputUrlParts as $key => $inputUrlPart) {
                     if ($inputUrlPart == '..') {
-                        array_pop($outputUrlParts);
+                        array_push($outputUrlParts, $inputUrlPart);
                         unset($inputUrlParts[$key]);
                     }
                 }
