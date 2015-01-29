@@ -1212,10 +1212,18 @@ class Request extends \yii\base\Request
                 throw new InvalidConfigException(get_class($this) . '::cookieValidationKey must be configured with a secret key.');
             }
             foreach ($_COOKIE as $name => $value) {
-                if (is_string($value) && ($value = Yii::$app->getSecurity()->validateData($value, $this->cookieValidationKey)) !== false) {
+                if (!is_string($value)) {
+                    continue;
+                }
+                $data = Yii::$app->getSecurity()->validateData($value, $this->cookieValidationKey);
+                if ($data === false) {
+                    continue;
+                }
+                $data = @unserialize($data);
+                if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = new Cookie([
                         'name' => $name,
-                        'value' => @unserialize($value),
+                        'value' => $data[1],
                         'expire'=> null
                     ]);
                 }
@@ -1283,10 +1291,8 @@ class Request extends \yii\base\Request
     {
         $token = Yii::$app->getSecurity()->generateRandomString();
         if ($this->enableCsrfCookie) {
-            $config = $this->csrfCookie;
-            $config['name'] = $this->csrfParam;
-            $config['value'] = $token;
-            Yii::$app->getResponse()->getCookies()->add(new Cookie($config));
+            $cookie = $this->createCsrfCookie($token);
+            Yii::$app->getResponse()->getCookies()->add($cookie);
         } else {
             Yii::$app->getSession()->set($this->csrfParam, $token);
         }
@@ -1325,14 +1331,15 @@ class Request extends \yii\base\Request
     /**
      * Creates a cookie with a randomly generated CSRF token.
      * Initial values specified in [[csrfCookie]] will be applied to the generated cookie.
+     * @param string $token the CSRF token
      * @return Cookie the generated cookie
      * @see enableCsrfValidation
      */
-    protected function createCsrfCookie()
+    protected function createCsrfCookie($token)
     {
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
-        $options['value'] = Yii::$app->getSecurity()->generateRandomString();
+        $options['value'] = $token;
         return new Cookie($options);
     }
 
