@@ -203,7 +203,8 @@ class Pagination extends Object implements Linkable
      * Returns the number of items per page.
      * By default, this method will try to determine the page size by [[pageSizeParam]] in [[params]].
      * If the page size cannot be determined this way, [[defaultPageSize]] will be returned.
-     * @return integer the number of items per page.
+     * @return integer the number of items per page. If it is less than 1, it means the page size is infinite,
+     * and thus a single page contains all items.
      * @see pageSizeLimit
      */
     public function getPageSize()

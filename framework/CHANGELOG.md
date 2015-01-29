@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #6940: `yii\web\Response::sendContentAsFile()` may not send correct `content-length` header (sadgnome)
 - Bug #6969: `yii\helpers\ArrayHelper::htmlEncode()` and `htmlDecode()` should not remove non-string data (qiangxue)
 - Bug #7037: `yii\console\controllers\AssetController` now correctly handles relative image URLs if source and target CSS are under same directory (klimov-paul)
+- Bug #7074: `yii\data\ArrayDataProvider` did not correctly handle the case `Pagination::pageSize = 0` (kirsenn, qiangxue)
 - Enh #5663: Added support for using `data-params` to specify additional form data to be submitted via the `data-method` approach (usualdesigner, qiangxue)
 - Enh #6106: Added ability to specify `encode` for each item of `yii\widgets\Breadcrumbs` (samdark, aleksanderd)
 - Enh #6493: Added support for the `Access-Control-Expose-Headers` header by `yii\filters\Cors` (usualdesigner)
