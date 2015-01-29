@@ -466,6 +466,12 @@ EOL;
                 '/test/base/path/assets/output',
                 '.static-root-relative-class {background-image: url(\'/images/static_root_relative.png\');}',
             ],
+            [
+                '.published-relative-dir-class {background-image: url(../img/same_relative_dir.png);}',
+                '/test/base/path/assets/css',
+                '/test/base/path/assets/css',
+                '.published-relative-dir-class {background-image: url(../img/same_relative_dir.png);}',
+            ],
         ];
     }
 
