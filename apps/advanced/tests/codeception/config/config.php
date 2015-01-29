@@ -3,14 +3,12 @@
  * Application configuration shared by all applications and test types
  */
 return [
-    [
-        'controllerMap' => [
-            'fixture' => [
-                'class' => 'yii\faker\FixtureController',
-                'fixtureDataPath' => '@tests/codeception/common/fixtures/data',
-                'templatePath' => '@tests/codeception/common/templates/fixtures',
-                'namespace' => 'tests\codeception\common\fixtures',
-            ],
+    'controllerMap' => [
+        'fixture' => [
+            'class' => 'yii\faker\FixtureController',
+            'fixtureDataPath' => '@tests/codeception/common/fixtures/data',
+            'templatePath' => '@tests/codeception/common/templates/fixtures',
+            'namespace' => 'tests\codeception\common\fixtures',
         ],
     ],
     'components' => [
