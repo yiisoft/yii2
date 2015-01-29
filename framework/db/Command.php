@@ -162,6 +162,8 @@ class Command extends Component
             foreach ($this->params as $name => $value) {
                 if (is_string($value)) {
                     $params[$name] = $this->db->quoteValue($value);
+                } elseif ($value instanceof Expression) {
+                    $params[$name] = $this->db->quoteValue($value->expression);
                 } elseif ($value === null) {
                     $params[$name] = 'NULL';
                 } else {
