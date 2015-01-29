@@ -2,6 +2,8 @@
 
 use tests\codeception\_pages\LoginPage;
 
+/* @var $scenario Codeception\Scenario */
+
 $I = new FunctionalTester($scenario);
 $I->wantTo('ensure that login works');
 
