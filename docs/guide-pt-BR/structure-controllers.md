@@ -13,8 +13,8 @@ de saída.
 
 ## Actions (Ações) <span id="actions"></span>
 
-Os controllers são compostos por unidades básicas chamadas *ações* que podem ser
-tratados pelos usuários finais a fim de realizar a sua execução.
+Os controllers são compostos por unidades básicas chamadas de *ações* que podem 
+ser tratados pelos usuários finais a fim de realizar a sua execução.
 
 No exemplo a seguir mostra um controller `post` com duas ações: `view` e `create`:
 
@@ -163,7 +163,8 @@ categorias e não quiser usar [módulos](structure-modules.md).
 
 ### Mapeando Controllers <span id="controller-map"></span>
 
-Você pode configurar um [[yii\base\Application::controllerMap|mapeamento de controllers]] para superar as barreiras impostas pelos IDs de controllers e pelos nomes de classes
+Você pode configurar um [[yii\base\Application::controllerMap|mapeamento de controllers]] 
+para superar as barreiras impostas pelos IDs de controllers e pelos nomes de classes
 descritos acima. Isto é útil principalmente quando quiser esconder alguns controllers
 de terceiros na qual você não tem controle sobre seus nomes de classes.
 
@@ -331,7 +332,7 @@ O valor de retorno do método de ação ou do método `run()` de uma ação stan
 são importantes. Eles representam o resultado da ação correspondente.
 
 O valor de retorno pode ser um objeto de [resposta](runtime-responses.md) que 
-que enviará como resposta aos usuários finais.
+será enviado como resposta aos usuários finais.
 
 * Para [[yii\web\Application|aplicações Web]], o valor de retorno também poder
   ser algum dado arbitrário que será atribuído à propriedade [[yii\web\Response::data]] 
