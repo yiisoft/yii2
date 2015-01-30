@@ -127,6 +127,14 @@ class I18NTest extends TestCase
     }
 
     /**
+     * https://github.com/yiisoft/yii2/issues/7093
+     */
+    public function testRussianPlurals()
+    {
+        $this->assertEquals('На диване лежит 6 кошек!', $this->i18n->translate('test', 'There {n, plural, =0{no cats} =1{one cat} other{are # cats}} on lying on the sofa!', ['n' => 6], 'ru'));
+    }
+
+    /**
      * https://github.com/yiisoft/yii2/issues/2519
      */
     public function testMissingTranslationEvent()
