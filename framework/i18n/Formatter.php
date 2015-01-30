@@ -498,7 +498,7 @@ class Formatter extends Component
      * @throws InvalidConfigException if the date format is invalid.
      * @see datetimeFormat
      */
-    public function asDatetime($value, $format = null)
+    public function asDateTime($value, $format = null)
     {
         if ($format === null) {
             $format = $this->datetimeFormat;
