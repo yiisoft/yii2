@@ -1222,6 +1222,55 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         }
     }
+    
+    public function linkSync($name, $keys)
+    {
+        $relation = $this->getRelation($name);
+        if ($relation->via !== null) {
+            if ($this->getIsNewRecord()) {
+                throw new InvalidCallException('Unable to link a newly created model.');
+            }
+            if (is_array($relation->via)) {
+                /* @var $viaRelation ActiveQuery */
+                list($viaName, $viaRelation) = $relation->via;
+                $viaClass = $viaRelation->modelClass;
+                $viaTable = $viaClass::tableName();
+                // unset $viaName so that it can be reloaded to reflect the change
+                unset($this->_related[$viaName]);
+            } else {
+                $viaRelation = $relation->via;
+                $viaTable = reset($relation->via->from);
+            }
+            $columns = [];
+            foreach ($viaRelation->link as $a => $b) {
+                $columns[$a] = $this->$b;
+            }
+
+            $existing = (new Query)
+                ->select(reset($relation->link))
+                ->from($viaTable)
+                ->where($columns)
+                ->createCommand(static::getDb())->queryColumn();
+
+            $delete = array_diff($existing, $keys);
+            if (!empty($delete)) {
+                static::getDb()->createCommand()->delete($viaTable, 
+                    $columns + [reset($relation->link) => $delete]
+                )->execute();
+            }
+            
+            $insert = array_diff($keys, $existing);
+            if (!empty($insert)) {
+                foreach ($insert as &$ids) {
+                    $ids = [$this->primaryKey, $ids];
+                }
+                reset($viaRelation->link);
+                \Yii::$app->db->createCommand()
+                    ->batchInsert($viaTable, [key($viaRelation->link), reset($relation->link)], $insert)
+                    ->execute();
+            }
+        }
+    }
 
     /**
      * Destroys the relationship between two models.
