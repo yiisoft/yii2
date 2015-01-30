@@ -62,7 +62,7 @@ Composer がインストールされていれば、次のコマンドを使っ�
     php /path/to/yii-application/init --env=Production --overwrite=All
     ```
 
-2. 新しいデータベースを作成し、それに従って `common/config/main-local.php` の `components.db` の構成情報を修正します。
+2. 新しいデータベースを作成し、それに従って `common/config/main-local.php` の `components['db']` の構成情報を修正します。
 3. コンソールコマンド `yii migrate` でマイグレーションを適用します。
 4. ウェブサーバのドキュメントルートを設定します。
 
