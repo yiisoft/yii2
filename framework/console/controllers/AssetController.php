@@ -613,6 +613,9 @@ EOD;
             if (strpos($inputUrl, '/') === 0 || preg_match('/^https?:\/\//is', $inputUrl) || preg_match('/^data:/is', $inputUrl)) {
                 return $fullMatch;
             }
+            if ($inputFileRelativePathParts === $outputFileRelativePathParts) {
+                return $fullMatch;
+            }
 
             if (empty($outputFileRelativePathParts)) {
                 $outputUrlParts = [];

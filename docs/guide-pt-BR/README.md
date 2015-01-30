@@ -90,7 +90,8 @@ Coletando Dados de Usuários
 * [Criando Formulários](input-forms.md)
 * [Validação de Dados](input-validation.md)
 * [Upload de Arquivos](input-file-upload.md)
-* **TBD** [Coletando Dados de Múltiplos Modelos](input-multiple-models.md)
+* [Coletando Entradas Tabulares](input-tabular-input.md)
+* [Coletando Dados de Múltiplos Models](input-multiple-models.md)
 
 
 Exibindo Dados

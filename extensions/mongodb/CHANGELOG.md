@@ -4,7 +4,7 @@ Yii Framework 2 mongodb extension Change Log
 2.0.3 under development
 -----------------------
 
-- no changes in this release.
+- Bug #7010: Fixed `yii\mongodb\Query::select` now allows excluding fields (Sammaye, klimov-paul)
 
 
 2.0.2 January 11, 2015
