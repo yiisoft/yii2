@@ -241,9 +241,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function formName()
     {
-        $reflector = new ReflectionClass($this);
-
-        return $reflector->getShortName();
+        return self::className(false);
     }
 
     /**

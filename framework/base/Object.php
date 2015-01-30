@@ -7,6 +7,7 @@
 
 namespace yii\base;
 
+use ReflectionClass;
 use Yii;
 
 /**
@@ -78,11 +79,12 @@ class Object
 {
     /**
      * Returns the fully qualified name of this class.
+     * @param $fullyQualified bool whether to return a FQCN, defaults to true
      * @return string the fully qualified name of this class.
      */
-    public static function className()
+    public static function className($fullyQualified = true)
     {
-        return get_called_class();
+        return $fullyQualified ? get_called_class() : (new ReflectionClass(self::className()))->getShortName();
     }
 
     /**
