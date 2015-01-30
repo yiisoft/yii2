@@ -74,8 +74,8 @@ To customize the output, you can chain additional methods of [[yii\widgets\Activ
 ```
 
 This will create all the `<label>`, `<input>` and other tags according to the [[yii\widgets\ActiveField::$template|template]] defined by the form field.
-The name of the input field is determined automatically from the models [[yii\base\Model::formName()|form name] and attribute,
-e.g. the name for the input field for the `username` attribute in the above example will be `LoginForm[username]` which will result in an array
+The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name] and the attribute's name.
+For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
 of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
 
 Specifying the attribute of the model can be done in more sophisticated ways. For example when an attribute may
@@ -90,7 +90,7 @@ echo $form->field($model, 'uploadFile[]')->fileInput(['multiple'=>'multiple']);
 echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Item B', 'c' => 'Item C']);
 ```
 
-Additional HTML tags can be added using plain HTML or using the methods from the [[yii\helpers\Html|Html]]-helper
+Additional HTML tags can be added to the form using plain HTML or using the methods from the [[yii\helpers\Html|Html]]-helper
 class like it is done in the above example with [[yii\helpers\Html::submitButton()|Html::submitButton()]].
 
 
