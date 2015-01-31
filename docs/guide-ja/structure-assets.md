@@ -163,7 +163,7 @@ JavaScript ファイルをページの head セクションにインクルード
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
-既定では、アセットバンドルが発行されるときは、[[yii\web\AssetBundle::sourcePath]] で指定されたディレクトリの中にある全てのコンテンツが発行されます。
+既定では、アセットバンドルが発行されるときは、[[yii\web\AssetBundle::sourcePath]] で指定されたディレクトリの中にある全てのコンテントが発行されます。
 [[yii\web\AssetBundle::publishOptions|publishOptions]] プロパティを構成することによって、この振る舞いをカスタマイズすることが出来ます。
 例えば、[[yii\web\AssetBundle::sourcePath]] の一個または数個のサブディレクトリだけを発行するために、アセットバンドルクラスの中で下記のようにすることが出来ます。
 
