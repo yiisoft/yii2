@@ -139,7 +139,7 @@ class SiteController extends Controller
 一方、`admin/post2-comment` コントローラは `@app/controllers/admin/Post2CommentController.php` というエイリアスのファイルに保存されるべきものとなります。
 
 > Info|情報: 最後の例である `admin/post2-comment` は、どうすれば [[yii\base\Application::controllerNamespace|コントローラ名前空間]] のサブディレクトリにコントローラを置くことが出来るかを示しています。
-  この方法は、コントローラをいくつかのカテゴリに分けて整理したい、けれども [モジュール](structure-modules.md) は使いたくない、という場合に役立ちます。
+  この方法は、コントローラをいくつかのカテゴリに分けて編成したい、けれども [モジュール](structure-modules.md) は使いたくない、という場合に役立ちます。
 
 
 ### コントローラマップ <span id="controller-map"></span>

@@ -84,7 +84,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 ### デフォルトルート <span id="default-route"></span>
 
 リクエストから解析されたルートが空になった場合は、いわゆる *デフォルトルート* が代りに使用されることになります。
-既定では、デフォルトルートは `site/index` であり、`site` コントローラの `index` アクションを指します。
+デフォルトでは、デフォルトルートは `site/index` であり、`site` コントローラの `index` アクションを指します。
 デフォルトルートは、次のように、アプリケーションの構成情報の中でアプリケーションの [[yii\web\Application::defaultRoute|defaultRoute]] プロパティを構成することによって、カスタマイズすることが出来ます。
 
 ```php
@@ -296,7 +296,7 @@ URL 規則は、「パターン - ルート」のペアとして宣言する以�
 ]
 ```
 
-規則の構成情報で `class` を指定しない場合は、既定として、[[yii\web\UrlRule]] が使われます。
+規則の構成情報で `class` を指定しない場合は、デフォルトとして、[[yii\web\UrlRule]] が使われます。
 
 
 ### 名前付きパラメータ <span id="named-parameters"></span>
@@ -327,7 +327,7 @@ URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定さ�
 - `/index.php/posts/2014/php` は、最初の規則を使って解析され、ルートは `post/index`、`year` パラメータの値は 2014、そして、`category` パラメータの値は `php` となります。
 - `/index.php/post/100` は、三番目の規則を使って解析され、ルートが `post/view`、`id` パラメータの値が 100 となります。
 - `/index.php/posts/php` は、どのパターンにも合致しないため、[[yii\web\UrlManager::enableStrictParsing]] が true の場合は、[[yii\web\NotFoundHttpException]] を引き起こします。
-  [[yii\web\UrlManager::enableStrictParsing]] が false (これが既定値です) の場合は、パス情報の部分である `posts/php` がルートとして返されることになります。
+  [[yii\web\UrlManager::enableStrictParsing]] が false (これがデフォルト値です) の場合は、パス情報の部分である `posts/php` がルートとして返されることになります。
  
 規則が URL 生成に使われる場合は、
 
@@ -360,7 +360,7 @@ URL 規則のルートにはパラメータ名を埋め込むことが出来ま�
 
 > Info|情報: ルートをパラメータ化することによって、URL 規則の数を大幅に減らすことが可能になり、[[yii\web\UrlManager|URL マネージャ]] のパフォーマンスを目に見えて改善することが出来ます。
   
-既定では、規則の中で宣言されたパラメータは必須となります。
+デフォルトでは、規則の中で宣言されたパラメータは必須となります。
 リクエストされた URL が特定のパラメータを含まない場合や、URL が特定のパラメータなしで生成される場合には、規則は適用されません。
 パラメータのどれかをオプション扱いにしたい場合は、規則の [[yii\web\UrlRule::defaults|defaults]] プロパティを構成することが出来ます。
 このプロパティのリストに挙げられたパラメータはオプション扱いとなり、規定されなかった場合は指定された値を取るようになります。
@@ -516,7 +516,7 @@ RESTful API を実装するときは、使用されている HTTP メソッド�
 ]
 ```
 
-> Info|情報: 規則の構成情報で `class` を指定しない場合は、既定として、[[yii\web\UrlRule]] クラスが使われます。
+> Info|情報: 規則の構成情報で `class` を指定しない場合は、デフォルトとして、[[yii\web\UrlRule]] クラスが使われます。
   
 
 ### 規則を動的に追加する <span id="adding-rules"></span>

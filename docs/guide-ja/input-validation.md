@@ -114,10 +114,10 @@ public function rules()
 
 [[yii\base\Model::validate()]] は、呼び出されると、バリデーションプロセスをカスタマイズするためにオーバーライドできる二つのメソッドを呼び出します。
 
-* [[yii\base\Model::beforeValidate()]]: 既定の実装は [[yii\base\Model::EVENT_BEFORE_VALIDATE]] イベントをトリガするものです。
+* [[yii\base\Model::beforeValidate()]]: デフォルトの実装は [[yii\base\Model::EVENT_BEFORE_VALIDATE]] イベントをトリガするものです。
   このメソッドをオーバーライドするか、または、イベントに反応して、バリデーションが実行される前に、何らかの前処理 (例えば入力されたデータの正規化) をすることが出来ます。
   このメソッドは、バリデーションを続行すべきか否かを示す真偽値を返さなくてはなりません。
-* [[yii\base\Model::afterValidate()]]: 既定の実装は [[yii\base\Model::EVENT_AFTER_VALIDATE]] イベントをトリガするものです。
+* [[yii\base\Model::afterValidate()]]: デフォルトの実装は [[yii\base\Model::EVENT_AFTER_VALIDATE]] イベントをトリガするものです。
   このメソッドをオーバーライドするか、または、イベントに反応して、バリデーションが完了した後に、何らかの後処理をすることが出来ます。
 
 
@@ -195,7 +195,7 @@ HTML フォームから入力データが送信されたとき、入力値が空
 ]
 ```
 
-既定では、入力値が空であると見なされるのは、それが、空文字列であるか、空配列であるか、null であるときです。
+デフォルトでは、入力値が空であると見なされるのは、それが、空文字列であるか、空配列であるか、null であるときです。
 空を検知するこのデフォルトのロジックは、[[yii\validators\Validator::isEmpty]] プロパティを PHP コーラブルで構成することによって、カスタマイズすることが出来ます。
 例えば、
 
@@ -330,7 +330,7 @@ class MyForm extends Model
 }
 ```
 
-> Note|注意: 既定では、インラインバリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかのバリデーション規則に失敗したりしている場合には、適用されません。
+> Note|注意: デフォルトでは、インラインバリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかのバリデーション規則に失敗したりしている場合には、適用されません。
 > 規則が常に適用されることを保証したい場合は、規則の宣言において [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] および/または [[yii\validators\Validator::skipOnError|skipOnError]] のプロパティを false に設定することが出来ます。
 > 例えば、
 >

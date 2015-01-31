@@ -8,7 +8,7 @@ Yii はセッションとクッキーをオブジェクトとしてカプセル�
 
 ## セッション <span id="sessions"></span>
 
-[リクエスト](runtime-requests.md) や [レスポンス](runtime-responses.md) と同じように、既定では [[yii\web\Session]] のインスタンスである `session` [アプリケーションコンポーネント] によって、セッションにアクセスすることが出来ます。
+[リクエスト](runtime-requests.md) や [レスポンス](runtime-responses.md) と同じように、デフォルトでは [[yii\web\Session]] のインスタンスである `session` [アプリケーションコンポーネント] によって、セッションにアクセスすることが出来ます。
 
 
 ### セッションのオープンとクローズ <span id="opening-closing-sessions"></span>
@@ -121,7 +121,7 @@ $session['captcha.lifetime'] = 3600;
 
 ### カスタムセッションストレージ <span id="custom-session-storage"></span>
 
-既定の [[yii\web\Session]] クラスはセッションデータをサーバ上のファイルとして保存します。
+デフォルトの [[yii\web\Session]] クラスはセッションデータをサーバ上のファイルとして保存します。
 Yii は、また、さまざまなセッションストレージを実装する下記のクラスをも提供しています。
 
 * [[yii\web\DbSession]]: セッションデータをデータベーステーブルを使って保存する。

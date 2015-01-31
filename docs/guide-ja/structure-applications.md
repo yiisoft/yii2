@@ -214,7 +214,7 @@ if (YII_ENV_DEV) {
 #### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
 このプロパティは、コントローラ ID を任意のコントローラクラスに割り付けることを可能にするものです。
-既定では、Yii は [規約](#controllerNamespace) に基づいてコントローラ ID をコントローラクラスに割り付けます
+デフォルトでは、Yii は [規約](#controllerNamespace) に基づいてコントローラ ID をコントローラクラスに割り付けます
 (例えば、`post` という ID は `app\controllers\PostController` に割り付けられます)。
 このプロパティを構成することによって、特定のコントローラに対する規約を破ることが出来ます。
 下記の例では、`account` は `app\controllers\UserController` に割り付けられ、`article` は `app\controllers\PostController` に割り付けられることになります。
@@ -258,7 +258,7 @@ if (YII_ENV_DEV) {
 アプリケーションが多言語をサポートする必要があるときは、このプロパティを構成しなければなりません。
 
 このプロパティの値が、メッセージの翻訳、日付の書式、数字の書式などを含む [国際化](tutorial-i18n.md) のさまざまな側面を決定します。
-例えば、[[yii\jui\DatePicker]] ウィジェットは、どの言語でカレンダーを表示すべきか、そして日付をどのように書式設定すべきかを、既定では、このプロパティを使用して決定します。
+例えば、[[yii\jui\DatePicker]] ウィジェットは、どの言語でカレンダーを表示すべきか、そして日付をどのように書式設定すべきかを、デフォルトでは、このプロパティを使用して決定します。
 
 言語を指定するのには、[IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従うことが推奨されます。
 例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
