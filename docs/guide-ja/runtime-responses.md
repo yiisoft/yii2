@@ -177,7 +177,7 @@ public function actionOld()
 上記のコードでは、アクションメソッドが `redirect()` メソッドの結果を返しています。
 前に説明したように、アクションメソッドによって返されるレスポンスオブジェクトが、エンドユーザに送信されるレスポンスとして使用されることになります。
 
-アクションメソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、メソッドチェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテンツが追加されないことを保証すべきです。
+アクションメソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、メソッドチェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテントが追加されないことを保証すべきです。
 
 ```php
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
@@ -216,7 +216,7 @@ public function actionDownload()
 }
 ```
 
-ファイル送信メソッドをアクションメソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、レスポンスに余計なコンテンツが追加されないことを保証すべきです。
+ファイル送信メソッドをアクションメソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、レスポンスに余計なコンテントが追加されないことを保証すべきです。
 
 ```php
 \Yii::$app->response->sendFile('path/to/file.txt')->send();
