@@ -204,38 +204,4 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
-
-    /**
-     * Builds SQL for IN condition
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param array $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $column) {
-                if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
-                    $vs[] = $phName;
-                } else {
-                    $vs[] = 'NULL';
-                }
-            }
-            $vss[] = '(' . implode(', ', $vs) . ')';
-        }
-        foreach ($columns as $i => $column) {
-            if (strpos($column, '(') === false) {
-                $columns[$i] = $this->db->quoteColumnName($column);
-            }
-        }
-
-        return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
-    }
 }

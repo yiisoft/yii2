@@ -198,8 +198,8 @@ class QueryBuilderTest extends DatabaseTestCase
             // in
             [ ['in', 'id', [1, 2, 3]], '`id` IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
             [ ['not in', 'id', [1, 2, 3]], '`id` NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3] ],
-            [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '(`id`) IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
-            [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '(`id`) NOT IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
+            [ ['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '`id` IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
+            [ ['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '`id` NOT IN (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
 
             // exists
             [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT `id` FROM `users` WHERE `active`=:qp0)', [':qp0' => 1] ],
@@ -223,13 +223,16 @@ class QueryBuilderTest extends DatabaseTestCase
         ];
 
         switch ($this->driverName) {
-            default:
+            case 'mssql':
+            case 'sqlite':
                 $conditions = array_merge($conditions, [
                     [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '((`id` = :qp0 AND `name` = :qp1) OR (`id` = :qp2 AND `name` = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
                     [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '((`id` != :qp0 OR `name` != :qp1) AND (`id` != :qp2 OR `name` != :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
+                    //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0) AS a WHERE a.`id` = `id AND a.`name` = `name`)', [':qp0' => 1] ],
+                    //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT `id`, `name` FROM `users` WHERE `active`=:qp0) AS a WHERE a.`id` = `id` AND a.`name = `name`)', [':qp0' => 1] ],
                 ]);
                 break;
-            case 'pgsql':
+            default:
                 $conditions = array_merge($conditions, [
                     [ ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(`id`, `name`) IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
                     [ ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(`id`, `name`) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'] ],
