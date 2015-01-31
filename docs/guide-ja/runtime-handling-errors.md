@@ -9,7 +9,7 @@ Yii は、エラー処理を従来よりはるかに快適な経験にしてく�
 * エラーを表示するために専用の [コントローラアクション](structure-controllers.md#actions) を使うことがサポートされています。
 * さまざまなエラーレスポンス形式をサポートしています。
 
-[[yii\web\ErrorHandler|エラーハンドラ]] は既定で有効になっています。
+[[yii\web\ErrorHandler|エラーハンドラ]] はデフォルトで有効になっています。
 アプリケーションの [エントリスクリプト](structure-entry-scripts.md) において、定数 `YII_ENABLE_ERROR_HANDLER` を false と定義することによって、これを無効にすることが出来ます。
 
 
@@ -65,7 +65,7 @@ throw new NotFoundHttpException();
 > Info|情報: 例外が [[yii\base\UserException]] の子孫である場合は、`YII_DEBUG` の値の如何にかかわらず、コールスタックは表示されません。
 これは、この種の例外はユーザの誤操作によって引き起こされるものであり、開発者は何も修正する必要がないと考えられるからです。
 
-既定では、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [ビュー](structure-views.md) を使ってエラーを表示します。
+デフォルトでは、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [ビュー](structure-views.md) を使ってエラーを表示します。
 
 * `@yii/views/errorHandler/error.php`: エラーがコールスタック情報なしで表示されるべき場合に使用されます。
   `YII_DEBUG` が false の場合、これが表示される唯一のビューとなります。

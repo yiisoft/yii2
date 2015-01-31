@@ -109,7 +109,7 @@ class AppAsset extends AssetBundle
 アセットバンドルクラスを定義するときには [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティを指定しなければなりません。
 
 > Note|注意: `@webroot/assets` を [[yii\web\AssetBundle::sourcePath|ソースパス]] として使ってはいけません。
-  このディレクトリは、既定では、[[yii\web\AssetManager|アセットマネージャ]] がソースの配置場所から発行されたアセットファイルを保存する場所として使われます。
+  このディレクトリは、デフォルトでは、[[yii\web\AssetManager|アセットマネージャ]] がソースの配置場所から発行されたアセットファイルを保存する場所として使われます。
   このディレクトリの中のファイルはすべて一時的なものと見なされており、削除されることがあります。
 
 
@@ -157,13 +157,13 @@ public $cssOptions = ['noscript' => true];
 ```
 
 JavaScript ファイルをページの head セクションにインクルードするためには、次のオプションを使います
-(既定では、JavaScript ファイルは body セクションの最後にインクルードされます)。
+(デフォルトでは、JavaScript ファイルは body セクションの最後にインクルードされます)。
 
 ```php
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
-既定では、アセットバンドルが発行されるときは、[[yii\web\AssetBundle::sourcePath]] で指定されたディレクトリの中にある全てのコンテントが発行されます。
+デフォルトでは、アセットバンドルが発行されるときは、[[yii\web\AssetBundle::sourcePath]] で指定されたディレクトリの中にある全てのコンテントが発行されます。
 [[yii\web\AssetBundle::publishOptions|publishOptions]] プロパティを構成することによって、この振る舞いをカスタマイズすることが出来ます。
 例えば、[[yii\web\AssetBundle::sourcePath]] の一個または数個のサブディレクトリだけを発行するために、アセットバンドルクラスの中で下記のようにすることが出来ます。
 
@@ -328,7 +328,7 @@ return [
 既に述べたように、アセットバンドルがウェブからアクセス出来ないディレクトリに配置されている場合は、バンドルがビューに登録されるときに、アセットがウェブディレクトリにコピーされます。
 このプロセスは *アセット発行* と呼ばれ、[[yii\web\AssetManager|アセットマネージャ]] によって自動的に実行されます。
 
-既定では、アセットが発行されるディレクトリは `@webroot/assets` であり、`@web/assets` という URL に対応するものです。
+デフォルトでは、アセットが発行されるディレクトリは `@webroot/assets` であり、`@web/assets` という URL に対応するものです。
 この場所は、[[yii\web\AssetManager::basePath|basePath]] と [[yii\web\AssetManager::baseUrl|baseUrl]] のプロパティを構成してカスタマイズすることが出来ます。
 
 ファイルをコピーすることでアセットを発行する代りに、OS とウェブサーバが許容するなら、シンボリックリンクを使うことを考慮しても良いでしょう。
@@ -584,7 +584,7 @@ return [
 JavaScript ファイルは結合され、圧縮されて `js/all-{hash}.js` に保存されます。ここで {hash} は、結果として作られたファイルのハッシュで置き換えられるものです。
 
 `jsCompressor` と `cssCompressor` のオプションは、JavaScript と CSS の結合/圧縮を実行するコンソールコマンドまたは PHP コールバックを指定するものです。
-既定では、Yii は JavaScript ファイルの結合に [Closure Compiler](https://developers.google.com/closure/compiler/) を使い、CSS ファイルの結合に [YUI Compressor](https://github.com/yui/yuicompressor/) を使用します。
+デフォルトでは、Yii は JavaScript ファイルの結合に [Closure Compiler](https://developers.google.com/closure/compiler/) を使い、CSS ファイルの結合に [YUI Compressor](https://github.com/yui/yuicompressor/) を使用します。
 あなたの好みのツールを使うためには、手作業でツールをインストールしたり、オプションを調整したりしなければなりません。
 
 この構成情報ファイルを使い、`asset` コマンドを走らせて、アセットファイルを結合して圧縮し、同時に、新しいアセットバンドルの構成情報ファイル `assets-prod.php` を生成することが出来ます。

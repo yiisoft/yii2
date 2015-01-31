@@ -456,14 +456,14 @@ class PostController extends Controller
 <?php $this->endBlock(); ?>
 ```
 
-次に、レイアウトビューで、得ることが出来ればブロックをレンダリングし、ブロックが定義されていないときは何らかの既定のコンテントを表示します。
+次に、レイアウトビューで、得ることが出来ればブロックをレンダリングし、ブロックが定義されていないときは何らかのデフォルトのコンテントを表示します。
 
 ```php
 ...
 <?php if (isset($this->blocks['block1'])): ?>
     <?= $this->blocks['block1'] ?>
 <?php else: ?>
-    ... block1 の既定のコンテント ...
+    ... block1 のデフォルトのコンテント ...
 <?php endif; ?>
 
 ...
@@ -471,7 +471,7 @@ class PostController extends Controller
 <?php if (isset($this->blocks['block2'])): ?>
     <?= $this->blocks['block2'] ?>
 <?php else: ?>
-    ... block2 の既定のコンテント ...
+    ... block2 のデフォルトのコンテント ...
 <?php endif; ?>
 
 ...
@@ -479,7 +479,7 @@ class PostController extends Controller
 <?php if (isset($this->blocks['block3'])): ?>
     <?= $this->blocks['block3'] ?>
 <?php else: ?>
-    ... block3 の既定のコンテント ...
+    ... block3 のデフォルトのコンテント ...
 <?php endif; ?>
 ...
 ```

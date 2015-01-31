@@ -530,7 +530,7 @@ $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
 > Note|注意: [[yii\db\Connection::masters|masters]] プロパティを使って一つまたは複数のマスタを構成する場合は、データベース接続を定義する `Connection` オブジェクト自体のその他のプロパティ (例えば、`dsn`、`username`、`password`) は全て無視されます。
 
-既定では、トランザクションはマスタ接続を使用します。そして、トランザクション内では、全ての DB 操作はマスタ接続を使用します。
+デフォルトでは、トランザクションはマスタ接続を使用します。そして、トランザクション内では、全ての DB 操作はマスタ接続を使用します。
 例えば、
 
 ```php

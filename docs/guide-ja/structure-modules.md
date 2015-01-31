@@ -107,7 +107,7 @@ class PostController extends Controller
 例えば、コントローラクラスが `PostController` である場合、ディレクトリはモジュールの [[yii\base\Module::basePath|ベースパス]] の中の `views/post` となります。
 
 モジュールは、そのモジュールのコントローラによってレンダリングされるビューに適用される [レイアウト](structure-views.md#layouts) を指定することが出来ます。
-レイアウトは、既定では `views/layouts` ディレクトリに置かれなければならず、また、[[yii\base\Module::layout]] プロパティがレイアウトの名前を指すように構成しなければなりません。
+レイアウトは、デフォルトでは `views/layouts` ディレクトリに置かれなければならず、また、[[yii\base\Module::layout]] プロパティがレイアウトの名前を指すように構成しなければなりません。
 `layout` プロパティを構成しない場合は、アプリケーションのレイアウトが代りに使用されます。
 
 
@@ -137,7 +137,7 @@ class PostController extends Controller
 アプリケーションの中のコントローラをアクセスするのと同じように、[ルート](structure-controllers.md#routes) がモジュールの中のコントローラを指し示すために使われます。
 モジュール内のコントローラのルートは、モジュール ID で始まり、コントローラ ID、アクション ID と続くものでなければなりません。
 例えば、アプリケーションが `forum` という名前のモジュールを使用している場合、`forum/post/index` というルートは、`forum` モジュール内の `post` コントローラの `index` アクションを表します。
-ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (既定値は `default` です) が、どのコントローラ/アクションが使用されるべきかを決定します。
+ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (デフォルト値は `default` です) が、どのコントローラ/アクションが使用されるべきかを決定します。
 これは、`forum` というルートは `forum` モジュール内の `default` コントローラを表すという意味です。
 
 

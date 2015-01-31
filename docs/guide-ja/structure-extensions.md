@@ -19,7 +19,7 @@
 
 [Composer](https://getcomposer.org/) を持っていない場合は、それをインストールする必要があることに注意してください。
 
-既定では、Composer は [Packagist](https://packagist.org/) に登録されたパッケージをインストールします。
+デフォルトでは、Composer は [Packagist](https://packagist.org/) に登録されたパッケージをインストールします。
 Packagist はオープンソース Composer パッケージの最大のレポジトリであり、そこでエクステンションを探すことが出来ます。
 また、[自分自身のレポジトリを作成](https://getcomposer.org/doc/05-repositories.md#repository) して、それを使うように Composer を構成することも出来ます。
 これは、あなたがプライベートなエクステンションを開発していて、それを自分のプロジェクト間でのみ共有したい場合に役に立つ方法です。
@@ -201,7 +201,7 @@ Yii は [Composer アセットプラグイン](https://github.com/francoispluchi
 上記のコードは、エクステンションが `jquery` Bower パッケージに依存することを述べています。
 一般に、`composer.json` の中でBower パッケージを指すためには `bower-asset/PackageName` を使うことが出来ます。
 そして、NPM パッケージを指すためには `npm-asset/PackageName` を使うことが出来ます。
-Composer が Bower または NPM のパッケージをインストールする場合は、既定では、それぞれ、`@vendor/bower/PackageName` および `@vendor/npm/Packages` というディレクトリの下にパッケージの内容がインストールされます。
+Composer が Bower または NPM のパッケージをインストールする場合は、デフォルトでは、それぞれ、`@vendor/bower/PackageName` および `@vendor/npm/Packages` というディレクトリの下にパッケージの内容がインストールされます。
 この二つのディレクトリは、`@bower/PackageName` および `@npm/PackageName` という短いエイリアスを使って参照することも可能です。
 
 アセット管理に関する詳細については、[アセット](structure-assets.md#bower-npm-assets) の節を参照してください。
