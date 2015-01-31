@@ -6,9 +6,9 @@ Yii では、アセットは、ウェブページで参照できるファイル�
 アセットはウェブでアクセス可能なディレクトリに配置され、ウェブサーバによって直接に提供されます。
 
 たいていの場合、アセットはプログラム的に管理する方が望ましいものです。
-例えば、ページの中で [[yii\jui\DatePicker]] ウィジェットを使うとき、ウィジェットが必要な CSS と JavaScript のファイルを自動的にインクルードします。
+例えば、ページの中で [[yii\jui\DatePicker]] ウィジェットを使うとき、このウィジェットは必要な CSS と JavaScript のファイルを自動的にインクルードします。
 あなたに対して、手作業で必要なファイルを探してインクルードするように要求したりはしません。
-そして、ウィジェットを新しいバージョンにアップグレードしたときは、ウィジェットが自動的に新しいバージョンのアセットファイルを使用するようになります。
+そして、このウィジェットを新しいバージョンにアップグレードしたときは、自動的に新しいバージョンのアセットファイルが使用されるようになります。
 このチュートリアルでは、Yii によって提供される強力なアセット管理機能について説明します。
 
 
@@ -57,34 +57,29 @@ class AppAsset extends AssetBundle
 
 * [[yii\web\AssetBundle::sourcePath|sourcePath]]: このバンドルのアセットファイルを含むルートディレクトリを指定します。
   ルートディレクトリがウェブからアクセス可能でない場合に、このプロパティをセットしなければなりません。
-  ルートディレクトリがウェブからアクセス可能な場合は、このプロパティではなく、[[yii\web\AssetBundle::basePath|basePath]] と [[yii\web\AssetBundle::baseUrl|baseUrl]] のプロパティをセットすべきです。
+  そうでない場合は、代りに、[[yii\web\AssetBundle::basePath|basePath]] と [[yii\web\AssetBundle::baseUrl|baseUrl]] のプロパティをセットしなければなりません。
   [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
 * [[yii\web\AssetBundle::basePath|basePath]]: このバンドルのアセットファイルを含むウェブからアクセス可能なディレクトリを指定します。
   [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティをセットした場合は、[アセットマネージャ](#asset-manager) がバンドルに含まれるファイルをウェブからアクセス可能なディレクトリに発行して、その結果、このプロパティを上書きします。
-  アセットファイルが既にウェブからアクセス可能なディレクトリにあり、アセットの発行が必要でない場合に、このプロパティをセットすべきです。
+  アセットファイルが既にウェブからアクセス可能なディレクトリにあり、アセットの発行が必要でない場合に、このプロパティをセットしなければなりません。
   [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: [[yii\web\AssetBundle::basePath|basePath]] ディレクトリに対応する URL を指定します。
   [[yii\web\AssetBundle::basePath|basePath]] と同じように、[[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティをセットした場合は、[アセットマネージャ](#asset-manager) がアセットを発行して、その結果、このプロパティを上書きします。
   [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
 * [[yii\web\AssetBundle::js|js]]: このバンドルに含まれる JavaScript ファイルをリストする配列です。
-  ディレクトリの区切りとしてフォワードスラッシュ "/" だけを使うべきことに注意してください。
+  ディレクトリの区切りとしてフォワードスラッシュ "/" だけを使わなければならないことに注意してください。
   それぞれの JavaScript ファイルは、以下の二つの形式のどちらかによって指定することが出来ます。
   - ローカルの JavaScript ファイルを表す相対パス (例えば `js/main.js`)。
     実際のファイルのパスは、この相対パスの前に [[yii\web\AssetManager::basePath]] を付けることによって決定されます。
     また、実際の URL は、この相対パスの前に [[yii\web\AssetManager::baseUrl]] を付けることによって決定されます。
   - 外部の JavaScript ファイルを表す絶対 URL。
-    例えば、`http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` や
-    `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` など。
+    例えば、`http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` や `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` など。
 * [[yii\web\AssetBundle::css|css]]: このバンドルに含まれる CSS ファイルをリストする配列です。
   この配列の形式は、[[yii\web\AssetBundle::js|js]] の形式と同じです。
 * [[yii\web\AssetBundle::depends|depends]]: このバンドルが依存しているアセットバンドルの名前をリストする配列です
    (バンドルの依存関係については、すぐ後で説明します)。
-* [[yii\web\AssetBundle::jsOptions|jsOptions]]: [[yii\web\View::registerJsFile()]] メソッドに渡されるオプションを指定します。
-  このバンドルにある *全て* の JavaScript ファイルについて、それを登録するときに、このメソッドが指定されたオプションとともに呼ばれます。
-* [[yii\web\AssetBundle::cssOptions|cssOptions]]: [[yii\web\View::registerCssFile()]] メソッドに渡されるオプションを指定します。
-  このバンドルにある *全て* の CSS ファイルについて、それを登録するときに、このメソッドが指定されたオプションとともに呼ばれます。
-* [[yii\web\AssetBundle::publishOptions|publishOptions]]: [[yii\web\AssetManager::publish()]] メソッドに渡されるオプションを指定します。
-  ソースのアセットファイルをウェブディレクトリに発行するときに、このメソッドが指定されたオプションとともに呼ばれます。
+* [[yii\web\AssetBundle::jsOptions|jsOptions]]: このバンドルにある *全て* の JavaScript ファイルについて、それを登録するときに呼ばれる [[yii\web\View::registerJsFile()]] メソッドに渡されるオプションを指定します。
+* [[yii\web\AssetBundle::publishOptions|publishOptions]]: ソースのアセットファイルをウェブディレクトリに発行するときに呼ばれる [[yii\web\AssetManager::publish()]] メソッドに渡されるオプションを指定します。
   これは [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティを指定した場合にだけ使用されます。
 
 
@@ -105,8 +100,7 @@ class AppAsset extends AssetBundle
 アプリケーションに属するアセットは、不要なアセット発行プロセスを避けるために、ウェブディレクトリに置くことが推奨されます。
 前述の例において `AppAsset` が [[yii\web\AssetBundle::sourcePath|sourcePath]] ではなく [[yii\web\AssetBundle::basePath|basePath]] を指定しているのは、これが理由です。
 
-[エクステンション](structure-extensions.md) の場合は、アセットがソースコードと一緒にウェブからアクセス出来ないディレクトリに配置されているため、
-アセットバンドルクラスを定義するときには [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティを指定しなければなりません。
+[エクステンション](structure-extensions.md) の場合は、アセットがソースコードと一緒にウェブからアクセス出来ないディレクトリに配置されているため、アセットバンドルクラスを定義するときには [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティを指定しなければなりません。
 
 > Note|注意: `@webroot/assets` を [[yii\web\AssetBundle::sourcePath|ソースパス]] として使ってはいけません。
   このディレクトリは、デフォルトでは、[[yii\web\AssetManager|アセットマネージャ]] がソースの配置場所から発行されたアセットファイルを保存する場所として使われます。
@@ -128,10 +122,8 @@ class AppAsset extends AssetBundle
 
 ### アセットのオプション <span id="asset-options"></span>
 
-[[yii\web\AssetBundle::cssOptions|cssOptions]] および [[yii\web\AssetBundle::jsOptions|jsOptions]] のプロパティを指定して、
-CSS と JavaScript ファイルがページにインクルードされる方法をカスタマイズすることが出来ます。
-これらのプロパティの値は、[ビュー](structure-views.md) が CSS と JavaScript ファイルをインクルードするために、[[yii\web\View::registerCssFile()]] および
-[[yii\web\View::registerJsFile()]] メソッドを呼ぶときに、それぞれ、オプションとして引き渡されます。
+[[yii\web\AssetBundle::cssOptions|cssOptions]] および [[yii\web\AssetBundle::jsOptions|jsOptions]] のプロパティを指定して、CSS と JavaScript ファイルがページにインクルードされる方法をカスタマイズすることが出来ます。
+これらのプロパティの値は、[ビュー](structure-views.md) が CSS と JavaScript ファイルをインクルードするために、[[yii\web\View::registerCssFile()]] および [[yii\web\View::registerJsFile()]] メソッドを呼ぶときに、それぞれ、オプションとして引き渡されます。
 
 > Note|注意: バンドルクラスでセットしたオプションは、バンドルの中の *全て* の CSS/JavaScript ファイルに適用されます。
   いろいろなファイルに別々のオプションを使用したい場合は、別々のアセットバンドルを作成して、個々のバンドルの中では、一組のオプションを使うようにしなければなりません。
@@ -221,8 +213,7 @@ use app\assets\AppAsset;
 AppAsset::register($this);  // $this はビューオブジェクトを表す
 ```
 
-> Info|情報: [[yii\web\AssetBundle::register()]] メソッドは、[[yii\web\AssetBundle::basePath|basePath]] や
-  [[yii\web\AssetBundle::baseUrl|baseUrl]] など、発行されたアセットに関する情報を含むアセットバンドルオブジェクトを返します。
+> Info|情報: [[yii\web\AssetBundle::register()]] メソッドは、[[yii\web\AssetBundle::basePath|basePath]] や [[yii\web\AssetBundle::baseUrl|baseUrl]] など、発行されたアセットに関する情報を含むアセットバンドルオブジェクトを返します。
 
 他の場所でアセットバンドルを登録しようとするときは、必要とされるビューオブジェクトを提供しなければなりません。
 例えば、[ウィジェット](structure-widgets.md) クラスの中でアセットバンドルを登録するためには、`$this->view` によってビューオブジェクトを取得することが出来ます。
@@ -236,8 +227,7 @@ AppAsset::register($this);  // $this はビューオブジェクトを表す
 ### アセットバンドルをカスタマイズする <span id="customizing-asset-bundles"></span>
 
 Yii は、[[yii\web\AssetManager]] によって実装されている `assetManager` という名前のアプリケーションコンポーネントを通じてアセットバンドルを管理します。
-[[yii\web\AssetManager::bundles]] プロパティを構成することによって、アセットバンドルの振る舞いを
-カスタマイズすることが出来ます。
+[[yii\web\AssetManager::bundles]] プロパティを構成することによって、アセットバンドルの振る舞いをカスタマイズすることが出来ます。
 例えば、デフォルトの [[yii\web\JqueryAsset]] アセットバンドルはインストールされた jQuery の Bower パッケージにある `jquery.js` ファイルを使用します。
 あなたは、可用性とパフォーマンスを向上させるために、Google によってホストされたバージョンを使いたいと思うかも知れません。
 次のように、アプリケーションの構成情報で `assetManager` を構成することによって、それが達成できます。
@@ -460,8 +450,8 @@ HTTP リクエストの数とこれらのファイルの全体としてのダウ
 
 上記の方法をさらに説明するために一つの例を挙げましょう。
 
-あなたのアプリケーションが二つのページ、X と Y を持つと仮定します。ページ X はアセットバンドル A、B、C を使用し、
-ページ Y はアセットバンドル B、C、D を使用します。
+あなたのアプリケーションが二つのページ、X と Y を持つと仮定します。
+ページ X はアセットバンドル A、B、C を使用し、ページ Y はアセットバンドル B、C、D を使用します。
 
 これらのアセットバンドルを分割する方法は二つあります。一つは単一のグループを使用して全てのアセットバンドルを含める方法です。
 もう一つは、A をグループ X に入れ、D をグループ Y に入れ、そして、B と C をグループ S に入れる方法です。どちらが良いでしょう? 場合によります。
@@ -546,7 +536,7 @@ yii asset/template assets.php
 <?php
 /**
  * "yii asset" コンソールコマンドのための構成情報ファイル
- * コンソール環境では、'@webroot' や '@web' のように、パスエイリアスが存在しない場合があることに注意してください。
+ * コンソール環境では、'@webroot' や '@web' のように、存在しないパスエイリアスがあり得ることに注意してください。
  * これらの欠落したパスエイリアスは手作業で定義してください。
  */
 return [
@@ -585,7 +575,7 @@ JavaScript ファイルは結合され、圧縮されて `js/all-{hash}.js` に�
 
 `jsCompressor` と `cssCompressor` のオプションは、JavaScript と CSS の結合/圧縮を実行するコンソールコマンドまたは PHP コールバックを指定するものです。
 デフォルトでは、Yii は JavaScript ファイルの結合に [Closure Compiler](https://developers.google.com/closure/compiler/) を使い、CSS ファイルの結合に [YUI Compressor](https://github.com/yui/yuicompressor/) を使用します。
-あなたの好みのツールを使うためには、手作業でツールをインストールしたり、オプションを調整したりしなければなりません。
+あなたの好みのツールを使うためには、手作業でツールをインストールしたり、オプションを修正したりしなければなりません。
 
 この構成情報ファイルを使い、`asset` コマンドを走らせて、アセットファイルを結合して圧縮し、同時に、新しいアセットバンドルの構成情報ファイル `assets-prod.php` を生成することが出来ます。
  
