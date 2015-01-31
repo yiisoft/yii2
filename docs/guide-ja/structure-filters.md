@@ -5,7 +5,7 @@
 例えば、アクセスコントロールフィルタはアクションの前に走って、アクションが特定のエンドユーザだけにアクセスを許可するものであることを保証します。
 また、コンテント圧縮フィルタはアクションの後に走って、レスポンスのコンテントをエンドユーザに送出する前に圧縮します。
 
-フィルタは、前フィルタ (アクションの *前* に適用されるフィルタのロジック) および/または 後フィルタ (アクションの *後* に適用されるフィルタ) から構成されます。
+一つのフィルタは、前フィルタ (アクションの *前* に適用されるフィルタのロジック) および/または 後フィルタ (アクションの *後* に適用されるロジック) から構成することが出来ます。
 
 
 ## フィルタを使用する <span id="using-filters"></span>
@@ -36,11 +36,9 @@ public function behaviors()
 また、[[yii\base\ActionFilter::except|except]] プロパティを構成して、いくつかのアクションをフィルタされないように除外することも可能です。
 
 コントローラのほかに、[モジュール](structure-modules.md) または [アプリケーション](structure-applications.md) でもフィルタを宣言することが出来ます。
-そのようにした場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティを上で説明したように構成しない限り、
-そのフィルタは、モジュールまたはアプリケーションに属する *全て* のコントローラアクションに適用されます。
+そのようにした場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティを上で説明したように構成しない限り、そのフィルタは、モジュールまたはアプリケーションに属する *全て* のコントローラアクションに適用されます。
 
-> Note|注意: モジュールやアプリケーションでフィルタを宣言する場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]]
-のプロパティでは、アクション ID ではなく、[ルート](structure-controllers.md#routes) を使うべきです。
+> Note|注意: モジュールやアプリケーションでフィルタを宣言する場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティでは、アクション ID ではなく、[ルート](structure-controllers.md#routes) を使わなければなりません。
 なぜなら、モジュールやアプリケーションのスコープでは、アクション ID だけでは完全にアクションを指定することが出来ないからです。
 
 一つのアクションに複数のフィルタが構成されている場合、フィルタは下記で説明されている規則に従って適用されます。
@@ -59,8 +57,7 @@ public function behaviors()
 
 ## フィルタを作成する <span id="creating-filters"></span>
 
-新しいアクションフィルタを作成するためには、[[yii\base\ActionFilter]] を拡張して、[[yii\base\ActionFilter::beforeAction()|beforeAction()]]
-および/または [[yii\base\ActionFilter::afterAction()|afterAction()]] メソッドをオーバーライドします。
+新しいアクションフィルタを作成するためには、[[yii\base\ActionFilter]] を拡張して、[[yii\base\ActionFilter::beforeAction()|beforeAction()]] および/または [[yii\base\ActionFilter::afterAction()|afterAction()]] メソッドをオーバーライドします。
 前者はアクションが走る前に実行され、後者は走った後に実行されます。
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] の返り値が、アクションが実行されるべきか否かを決定します。
 返り値が false である場合、このフィルタの後に続くフィルタはスキップされ、アクションは実行を中止されます。
@@ -102,13 +99,11 @@ Yii はよく使われる一連のフィルタを提供しており、それら�
 ### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
 AccessControl は、一組の [[yii\filters\AccessControl::rules|規則]] に基づいて、シンプルなアクセスコントロールを提供するものです。
-具体的に言うと、アクションが実行される前に、AccessControl はリストされた規則を調べて、現在のコンテキスト変数
-(例えば、ユーザの IP アドレスや、ユーザのログイン状態など) に最初に合致するものを見つけます。
+具体的に言うと、アクションが実行される前に、AccessControl はリストされた規則を調べて、現在のコンテキスト変数 (例えば、ユーザの IP アドレスや、ユーザのログイン状態など) に最初に合致するものを見つけます。
 そして、合致した規則によって、リクエストされたアクションの実行を許可するか拒否するかを決定します。
 合致する規則がなかった場合は、アクセスは拒否されます。
 
-次の例は、認証されたユーザに対しては `create` と `update` のアクションへのアクセスを許可し、
-その他のすべてのユーザにはこれら二つのアクションに対するアクセスを拒否する仕方を示すものです。
+次の例は、認証されたユーザに対しては `create` と `update` のアクションへのアクセスを許可し、その他のすべてのユーザにはこれら二つのアクションに対するアクセスを拒否する仕方を示すものです。
 
 ```php
 use yii\filters\AccessControl;
@@ -143,8 +138,7 @@ public function behaviors()
 
 次の例は、[[yii\filters\auth\HttpBasicAuth]] の使い方を示すもので、HTTP Basic 認証に基づくアクセストークンを使ってユーザを認証しています。
 これを動作させるためには、あなたの [[yii\web\User::identityClass|ユーザアイデンティティクラス]]
-が [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] 
-メソッドを実装していなければならないことに注意してください。
+が [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] メソッドを実装していなければならないことに注意してください。
 
 ```php
 use yii\filters\auth\HttpBasicAuth;
@@ -192,8 +186,7 @@ public function behaviors()
 }
 ```
 
-レスポンス形式と言語は [アプリケーションのライフサイクル](structure-applications.md#application-lifecycle)
-のもっと早い段階で決定される必要があることがよくあります。
+レスポンス形式と言語は [アプリケーションのライフサイクル](structure-applications.md#application-lifecycle) のもっと早い段階で決定される必要があることがよくあります。
 このため、ContentNegotiator はフィルタの他に、[ブートストラップコンポーネント](structure-applications.md#bootstrap) としても使うことができるように設計されています。
 例えば、次のように、ContentNegotiator を [アプリケーションの構成情報](structure-applications.md#application-configurations) の中で構成することが出来ます。
 
@@ -218,14 +211,13 @@ use yii\web\Response;
 ];
 ```
 
-> Info|情報: 望ましいコンテントタイプと言語がリクエストからは決定できない場合は、[[formats]] および [[languages]]
-に挙げられている最初の形式と言語が使用されます。
+> Info|情報: 望ましいコンテントタイプと言語がリクエストから決定できない場合は、[[formats]] および [[languages]] に挙げられている最初の形式と言語が使用されます。
 
 
 
 ### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
-HttpCache は `Last-Modified` および `Etag` の HTTP ヘッダを利用して、クライアントサイドのキャッシュを実装するものです。
+HttpCache は `Last-Modified` および `Etag` の HTTP ヘッダを利用して、クライアント側のキャッシュを実装するものです。
 
 ```php
 use yii\filters\HttpCache;
@@ -250,7 +242,7 @@ HttpCache に関する詳細は [HTTP キャッシュ](caching-http.md) の節�
 
 ### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
-PageCache はサーバサイドにおけるページ全体のキャッシュを実装するものです。
+PageCache はサーバ側におけるページ全体のキャッシュを実装するものです。
 次の例では、PageCache が `index` アクションに適用されて、最大 60 秒間、または、`post` テーブルのエントリ数が変化するまでの間、ページ全体をキャッシュしています。
 さらに、このページキャッシュは、選択されたアプリケーションの言語に従って、違うバージョンのページを保存するようにしています。
 
@@ -282,8 +274,8 @@ PageCache の使用に関する詳細は [ページキャッシュ](caching-page
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
-RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88)
-に基づいてレート制限のアルゴリズムを実装するものです。主として RESTful API を実装するときに使用されます。
+RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88) に基づいてレート制限のアルゴリズムを実装するものです。
+主として RESTful API を実装するときに使用されます。
 このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) の節を参照してください。
 
 
@@ -291,7 +283,7 @@ RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia
 
 VerbFilter は、HTTP リクエストメソッド (HTTP 動詞) がリクエストされたアクションによって許可されているかどうかをチェックするものです。
 許可されていない場合は、HTTP 405 例外を投げます。
-次の例では、VerbFilter が宣言されて、CRUD アクションに対して許可されるメソッドの典型的なセットを規定しています。
+次の例では、VerbFilter が宣言されて、CRUD アクションに対して許可されるメソッドの典型的なセットを指定しています。
 
 ```php
 use yii\filters\VerbFilter;
@@ -315,8 +307,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-クロスオリジンリソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブページにおいて、さまざまなリソース
-(例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
+クロスオリジンリソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
 特に言えば、JavaScript の AJAX 呼出しが使用することが出来る XMLHttpRequest メカニズムです。
 このような「クロスドメイン｣のリクエストは、このメカニズムに拠らなければ、同一生成元のセキュリティポリシーによって、ウェブブラウザから禁止されるはずのものです。
 CORS は、ブラウザとサーバが交信して、クロスドメインのリクエストを許可するか否かを決定する方法を定義するものです。
