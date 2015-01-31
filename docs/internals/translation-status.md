@@ -42,28 +42,29 @@ concept-aliases.md                  | Yes
 concept-autoloading.md              | Yes
 concept-service-locator.md          | Yes
 concept-di-container.md             | Yes
-db-dao.md                           |
+db-dao.md                           | Yes
 db-query-builder.md                 |
 db-active-record.md                 |
 db-migrations.md                    |
 db-sphinx.md                        |
 db-redis.md                         |
 db-mongodb.md                       |
-db-elastic-search.md                |
-input-forms.md                      |
+db-elasticsearch.md                 |
+input-forms.md                      | Yes
 input-validation.md                 | Yes
-input-file-uploading.md             |
+input-file-upload.md                | Yes
 input-multiple-models.md            |
-output-formatting.md                |
-output-pagination.md                |
-output-sorting.md                   |
+input-tabular-input.md              |
+output-formatter.md                 | Yes
+output-pagination.md                | Yes
+output-sorting.md                   | Yes
 output-data-providers.md            |
 output-data-widgets.md              |
 output-theming.md                   |
 security-authentication.md          |
 security-authorization.md           |
 security-passwords.md               |
-security-auth-clients.md            |
+security-auth-clients.md            | Yes
 security-best-practices.md          |
 caching-overview.md                 | Yes
 caching-data.md                     | Yes
@@ -82,25 +83,24 @@ rest-error-handling.md              | Yes
 tool-debugger.md                    |
 tool-gii.md                         |
 tool-api-doc.md                     |
-test-overview.md                    |
+test-overview.md                    | Yes
 test-unit.md                        |
 test-functional.md                  |
 test-acceptance.md                  |
-test-fixtures.md                    |
+test-fixtures.md                    | Yes
 tutorial-advanced-app.md            |
 tutorial-start-from-scratch.md      |
 tutorial-console.md                 |
 tutorial-i18n.md                    |
 tutorial-mailing.md                 |
 tutorial-performance-tuning.md      |
-tutorial-shared-hosting.md          |
+tutorial-shared-hosting.md          | Yes
 tutorial-template-engines.md        |
 tutorial-core-validators.md         | Yes
 tutorial-yii-integration.md         | Yes
 widget-bootstrap.md                 |
 widget-jui.md                       |
 helper-overview.md                  |
-helper-array.md                     |
-helper-html.md                      |
-helper-url.md                       |
-helper-security.md                  |
+helper-array.md                     | Yes
+helper-html.md                      | Yes
+helper-url.md                       | Yes
