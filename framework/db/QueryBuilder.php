@@ -1067,22 +1067,7 @@ class QueryBuilder extends \yii\base\Object
         }
 
         if ($values instanceof Query) {
-            // sub-query
-            list($sql, $params) = $this->build($values, $params);
-            $column = (array) $column;
-            if (is_array($column)) {
-                foreach ($column as $i => $col) {
-                    if (strpos($col, '(') === false) {
-                        $column[$i] = $this->db->quoteColumnName($col);
-                    }
-                }
-                return '(' . implode(', ', $column) . ") $operator ($sql)";
-            } else {
-                if (strpos($column, '(') === false) {
-                    $column = $this->db->quoteColumnName($column);
-                }
-                return "$column $operator ($sql)";
-            }
+            return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
 
         $values = (array) $values;
@@ -1132,28 +1117,56 @@ class QueryBuilder extends \yii\base\Object
      * @param array $params
      * @return string SQL
      */
+    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
+    {
+        list($sql, $params) = $this->build($values, $params);
+        if (is_array($columns)) {
+            foreach ($columns as $i => $col) {
+                if (strpos($col, '(') === false) {
+                    $columns[$i] = $this->db->quoteColumnName($col);
+                }
+            }
+            return '(' . implode(', ', $columns) . ") $operator ($sql)";
+        } else {
+            if (strpos($columns, '(') === false) {
+                $columns = $this->db->quoteColumnName($columns);
+            }
+            return "$columns $operator ($sql)";
+        }
+    }
+
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
     protected function buildCompositeInCondition($operator, $columns, $values, &$params)
     {
-        $quotedColumns = [];
-        foreach ($columns as $i => $column) {
-            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
         $vss = [];
         foreach ($values as $value) {
             $vs = [];
-            foreach ($columns as $i => $column) {
+            foreach ($columns as $column) {
                 if (isset($value[$column])) {
                     $phName = self::PARAM_PREFIX . count($params);
                     $params[$phName] = $value[$column];
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
+                    $vs[] = $phName;
                 } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
+                    $vs[] = 'NULL';
                 }
             }
-            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
+            $vss[] = '(' . implode(', ', $vs) . ')';
+        }
+        foreach ($columns as $i => $column) {
+            if (strpos($column, '(') === false) {
+                $columns[$i] = $this->db->quoteColumnName($column);
+            }
         }
 
-        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
+        return '(' . implode(', ', $columns) . ") $operator (" . implode(', ', $vss) . ')';
     }
 
     /**
