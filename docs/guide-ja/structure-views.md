@@ -80,9 +80,9 @@ use yii\helpers\HtmlPurifier;
   アプリケーションが高いパフォーマンスを要求する場合は、フィルター結果を [キャッシュ](caching-overview.md) することを考慮すべきです。
 
 
-### ビューを整理する <span id="organizing-views"></span>
+### ビューを編成する <span id="organizing-views"></span>
 
-[コントローラ](structure-controllers.md) や [モデル](structure-models.md) と同じように、ビューを整理するための規約があります。.
+[コントローラ](structure-controllers.md) や [モデル](structure-models.md) と同じように、ビューを編成するための規約があります。.
 
 * コントローラによって表示されるビューは、デフォルトでは、ディレクトリ `@app/views/ControllerID` の下に置かれるべきものです。
   ここで、`ControllerID` は [コントローラ ID](structure-controllers.md#routes) を指します。

@@ -355,7 +355,7 @@ return [
 その中で、下記のバンドルはよく使われるものであり、あなたのアプリケーションやエクステンションのコードでも参照することが出来るものです。
 
 - [[yii\web\YiiAsset]]: 主として `yii.js` ファイルをインクルードするためのバンドルです。
-  このファイルはモジュール化された JavaScript のコードを組織化するメカニズムを実装しています。
+  このファイルはモジュール化された JavaScript のコードを編成するメカニズムを実装しています。
   また、`data-method` と `data-confirm` の属性に対する特別なサポートや、その他の有用な機能を提供します。
 - [[yii\web\JqueryAsset]]: jQuery の bower パッケージから `jquery.js` ファイルをインクルードします。
 - [[yii\bootstrap\BootstrapAsset]]: Twitter Bootstrap フレームワークから CSS ファイルをインクルードします。
