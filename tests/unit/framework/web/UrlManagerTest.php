@@ -84,6 +84,10 @@ class UrlManagerTest extends TestCase
         $url = $manager->createUrl(['post/index', 'page' => 1]);
         $this->assertEquals('/post/index?page=1', $url);
 
+        // rules with defaultAction
+        $url = $manager->createUrl(['/post', 'page' => 1]);
+        $this->assertEquals('/post?page=1', $url);
+
         // pretty URL with rules and suffix
         $manager = new UrlManager([
             'enablePrettyUrl' => true,
