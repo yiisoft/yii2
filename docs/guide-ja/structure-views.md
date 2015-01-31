@@ -4,8 +4,7 @@
 ビューは [MVC](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
 ビューはエンドユーザにデータを表示することに責任を持つコードです。
 ウェブアプリケーションにおいては、ビューは、通常、主として HTML コードと表示目的の PHP コードを含む PHP スクリプトファイルである、*ビューテンプレート* の形式で作成されます。
-そして、ビューテンプレートを管理する [[yii\web\View|ビュー]] [アプリケーションコンポーネント](structure-application-components.md) が、
-ビューの構築とレンダリングを助けるためによく使われるメソッドを提供します。
+そして、ビューテンプレートを管理する [[yii\web\View|ビュー]] [アプリケーションコンポーネント](structure-application-components.md) が、ビューの構築とレンダリングを助けるためによく使われるメソッドを提供します。
 なお、簡潔さを重視して、ビューテンプレートまたはビューテンプレートファイルを単にビューと呼ぶことがよくあります。
 
 
@@ -13,7 +12,7 @@
 
 前述のように、ビューは HTML と PHP コードが混ざった単なる PHP スクリプトです。
 次に示すのは、ログインフォームを表示するビューです。
-見ると分るように、PHP コードがタイトルやフォームなど動的なコンテンツを生成するのに使われ、HTML コードがそれらを編成して表示可能な HTML ページを作っています。
+ご覧のように、PHP コードがタイトルやフォームなど動的なコンテントを生成するのに使われ、HTML コードがそれらを編成して表示可能な HTML ページを作っています。
 
 ```php
 <?php
@@ -37,12 +36,12 @@ $this->title = 'ログイン';
 <?php ActiveForm::end(); ?>
 ```
 
-ビューの中でアクセスできる `$this` は、このビューテンプレートを管理しレンダリングしている [[yii\web\View|ビューコンポーネント]] を参照します。
+ビューの中では、このビューテンプレートを管理しレンダリングしている [[yii\web\View|ビューコンポーネント]] を参照する `$this` にアクセスすることが出来ます。
 
-`$this` 以外に、上記の例の `$model` のように、前もって定義された変数がビューの中にあることがあります。
-このような変数は、[コントローラ](structure-controllers.md) または [ビューのレンダリング](#rendering-views) をトリガするオブジェクトによってビューに *プッシュ* されたデータを表します。
+`$this` 以外に、上記の例の `$model` のように、事前に定義される変数をビューの中に置くことが出来ます。
+このような変数は、[ビューのレンダリング](#rendering-views) をトリガする [コントローラ](structure-controllers.md) などのオブジェクトによってビューに *プッシュ* されるデータを表します。
 
-> Tip|ヒント: 上の例では、事前に定義された変数は、IDE に認識されるように、ビューの先頭のコメントブロックの中にリストされています。
+> Tip|ヒント: 上の例では、事前に定義される変数は、IDE に認識されるように、ビューの先頭のコメントブロックの中にリストされています。
   これは、ビューにドキュメントを付けるのにも良い方法です。
 
 
@@ -64,8 +63,8 @@ use yii\helpers\Html;
 </div>
 ```
 
-HTML コンテンツを表示するためには、[[yii\helpers\HtmlPurifier]] を使って、最初にコンテンツをフィルタします。
-例えば、次のコードは、投稿のコンテンツを表示する前にフィルタしています。
+HTML コンテントを表示するためには、[[yii\helpers\HtmlPurifier]] を使って、最初にコンテントをフィルタします。
+例えば、次のコードは、投稿のコンテントを表示する前にフィルタしています。
 
 ```php
 <?php
@@ -85,23 +84,21 @@ use yii\helpers\HtmlPurifier;
 
 [コントローラ](structure-controllers.md) や [モデル](structure-models.md) と同じように、ビューを整理するための規約があります。.
 
-* コントローラによって表示されるビューは、既定では、ディレクトリ `@app/views/ControllerID` の下に置かれるべきものです。
+* コントローラによって表示されるビューは、デフォルトでは、ディレクトリ `@app/views/ControllerID` の下に置かれるべきものです。
   ここで、`ControllerID` は [コントローラ ID](structure-controllers.md#routes) を指します。
   例えば、コントローラクラスが `PostController` である場合、ディレクトリは `@app/views/post` となります。
   `PostCommentController` の場合は、ディレクトリは `@app/views/post-comment` です。
   また、コントローラがモジュールに属する場合は、ディレクトリは [[yii\base\Module::basePath|モジュールディレクトリ]] の下の `views/ControllerID` です。
-* [ウィジェット](structure-widgets.md) で表示されるビューは、既定では、`WidgetPath/views` ディレクトリの下に置かれるべきものです。
+* [ウィジェット](structure-widgets.md) で表示されるビューは、デフォルトでは、`WidgetPath/views` ディレクトリの下に置かれるべきものです。
   ここで、`WidgetPath` は、ウィジェットのクラスファイルを含んでいるディレクトリを指します。
 * 他のオブジェクトによって表示されるビューについても、ウィジェットの場合と同じ規約に従うことが推奨されます。
 
-これらの既定のビューディレクトリは、コントローラやウィジェットの [[yii\base\ViewContextInterface::getViewPath()]]
-メソッドをオーバーライドすることでカスタマイズすることが可能です。
+これらのデフォルトのビューディレクトリは、コントローラやウィジェットの [[yii\base\ViewContextInterface::getViewPath()]] メソッドをオーバーライドすることでカスタマイズすることが可能です。
 
 
 ## ビューをレンダリングする <span id="rendering-views"></span>
 
-[コントローラ](structure-controllers.md) の中でも、[ウィジェット](structure-widgets.md) の中でも、または、その他のどんな場所でも、
-ビューをレンダリングするメソッドを呼ぶことによってビューをレンダリングすることが出来ます。
+[コントローラ](structure-controllers.md) の中でも、[ウィジェット](structure-widgets.md) の中でも、または、その他のどんな場所でも、ビューをレンダリングするメソッドを呼ぶことによってビューをレンダリングすることが出来ます。
 これらのメソッドは、下記に示されるような類似のシグニチャを共有します。
 
 ```
@@ -157,7 +154,7 @@ class PostController extends Controller
 
 [ウィジェット](structure-widgets.md) の中では、ビューをレンダリングするために、次のウィジェットメソッドを使用することが出来ます。
 
-* [[yii\base\Widget::render()|render()]]: [名前付きのビュー](#named-views) をレンダリングする。
+* [[yii\base\Widget::render()|render()]]: [名前付きビュー](#named-views) をレンダリングする。
 * [[yii\base\Widget::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md) の形式で指定されたビューをレンダリングする。
 
 例えば、
@@ -187,7 +184,7 @@ class ListWidget extends Widget
 
 [[yii\base\View|ビューコンポーネント]] によって提供される下記のメソッドのどれかを使うと、ビューの中で、別のビューをレンダリングすることが出来ます。
 
-* [[yii\base\View::render()|render()]]: [名前付きのビュー](#named-views) をレンダリングする。
+* [[yii\base\View::render()|render()]]: [名前付きビュー](#named-views) をレンダリングする。
 * [[yii\web\View::renderAjax()|renderAjax()]]: [名前付きビュー](#named-views) をレンダリングし、登録されている全ての JS/CSS スクリプトおよびファイルを注入する。
   通常、AJAX ウェブリクエストに対するレスポンスにおいて使用される。
 * [[yii\base\View::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md) の形式で指定されたビューをレンダリングする。
@@ -202,8 +199,7 @@ class ListWidget extends Widget
 
 ### 他の場所でのレンダリング <span id="rendering-in-other-places"></span>
 
-場所がどこであれ、`Yii::$app->view` という式によって [[yii\base\View|ビュー]] アプリケーションコンポーネントにアクセスすることが出来ますから、
-前述の [[yii\base\View|ビュー]] コンポーネントメソッドを使ってビューをレンダリングすることが出来ます。
+場所がどこであれ、`Yii::$app->view` という式によって [[yii\base\View|ビュー]] アプリケーションコンポーネントにアクセスすることが出来ますから、前述の [[yii\base\View|ビュー]] コンポーネントメソッドを使ってビューをレンダリングすることが出来ます。
 例えば、
 
 ```php
@@ -229,15 +225,13 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
   アクティブなモジュールが無い場合は、`@app/views/ViewName` が使用されます。
   例えば、`/user/create` は、現在アクティブなモジュールが `user` である場合は、`@app/modules/user/views/user/create.php` へと解決されます。
   アクティブなモジュールが無い場合は、ビューファイルのパスは `@app/views/user/create.php` となります。
-* ビューが [[yii\base\View::context|コンテキスト]] を伴ってレンダリングされ、そのコンテキストが [[yii\base\ViewContextInterface]] を実装している場合は、
-  ビューファイルのパスは、コンテキストの [[yii\base\ViewContextInterface::getViewPath()|ビューパス]] をビュー名の前に置くことによって形成されます。
+* ビューが [[yii\base\View::context|コンテキスト]] を伴ってレンダリングされ、そのコンテキストが [[yii\base\ViewContextInterface]] を実装している場合は、ビューファイルのパスは、コンテキストの [[yii\base\ViewContextInterface::getViewPath()|ビューパス]] をビュー名の前に置くことによって形成されます。
   これは、主として、コントローラとウィジェットの中でレンダリングされるビューに当てはまります。
-  例えば、コンテキストが `SiteController` コントローラである場合、`site/about` は `@app/views/site/about.php` へと解決されます。
+  例えば、コンテキストが `SiteController` コントローラである場合、`about` は `@app/views/site/about.php` へと解決されます。
 * あるビューが別のビューの中でレンダリングされる場合は、後者のビューファイルを含んでいるディレクトリが前者のビュー名の前に置かれて、実際のビューファイルのパスが形成されます。
   例えば、`item` は、`@app/views/post/index.php` というビューの中でレンダリングされる場合、`@app/views/post/item` へと解決されます。
 
-上記の規則によると、コントローラ `app\controllers\PostController` の中で `$this->render('view')` を呼ぶと、実際には、ビューファイル `@app/views/post/view.php` がレンダリングされ、
-一方、そのビューの中で `$this->render('_overview')` を呼ぶと、ビューファイル `@app/views/post/_overview.php` がレンダリングされることになります。
+上記の規則によって、コントローラ `app\controllers\PostController` の中で `$this->render('view')` を呼ぶと、実際には、ビューファイル `@app/views/post/view.php` がレンダリングされ、一方、そのビューの中で `$this->render('_overview')` を呼ぶと、ビューファイル `@app/views/post/_overview.php` がレンダリングされることになります。
 
 
 ### ビューの中でデータにアクセスする <span id="accessing-data-in-views"></span>
@@ -245,8 +239,8 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ビューの中でデータにアクセスするためのアプローチが二つあります。「プッシュ」と「プル」です。
 
 ビューをレンダリングするメソッドに二番目のパラメータとしてデータを渡すのが「プッシュ」のアプローチです。
-データは、「名前-値」のペアの配列として表されなければなりません。
-ビューがレンダリングされるときに、PHP の `extract()` 関数がこの配列に対して呼び出され、ビューの中でこの配列から変数が抽出されます。
+データは、「名前-値」のペアの配列として表わされなければなりません。
+ビューがレンダリングされるときに、PHP の `extract()` 関数がこの配列に対して呼び出され、ビューの中で使う変数が抽出されます。
 例えば、次のコードはコントローラの中でビューをレンダリングしていますが、`report` ビューに二つの変数、すなわち、`$foo = 1` と `$bar = 2` をプッシュしています。
 
 ```php
@@ -295,19 +289,18 @@ $this->params['breadcrumbs'][] = 'About Us';
 
 レイアウトは、複数のビューの共通部分をあらわす特殊なタイプのビューです。
 例えば、たいていのウェブアプリケーションでは、ページは共通のヘッダとフッタを持っています。
-すべてのビューで同じヘッダとフッタを繰り返すことも出来ますが、もっと良い方法は、そういうことはレイアウトの中で一度だけして、コンテンツビューのレンダリング結果をレイアウトの中の適切な場所に埋め込むことです。
+すべてのビューで同じヘッダとフッタを繰り返すことも出来ますが、もっと良い方法は、そういうことはレイアウトの中で一度だけして、コンテントビューのレンダリング結果をレイアウトの中の適切な場所に埋め込むことです。
 
 
 ### レイアウトを作成する <span id="creating-layouts"></span>
 
 レイアウトもまたビューですので、通常のビューと同様な方法で作成することが出来ます。
-既定では、レイアウトは `@app/views/layouts` ディレクトリに保存されます。
-[モジュール](structure-modules.md) の中で使用されるレイアウトについては、[[yii\base\Module::basePath|モジュールディレクトリ]]
-の下の `views/layouts` ディレクトリに保存されるべきものとなります。
-既定のレイアウトディレクトリは、アプリケーションまたはモジュールの [[yii\base\Module::layoutPath]] プロパティを構成することでカスタマイズすることが出来ます。
+デフォルトでは、レイアウトは `@app/views/layouts` ディレクトリに保存されます。
+[モジュール](structure-modules.md) の中で使用されるレイアウトについては、[[yii\base\Module::basePath|モジュールディレクトリ]] の下の `views/layouts` ディレクトリに保存されるべきものとなります。
+デフォルトのレイアウトディレクトリは、アプリケーションまたはモジュールの [[yii\base\Module::layoutPath]] プロパティを構成することでカスタマイズすることが出来ます。
 
 次の例は、レイアウトがどのようなものであるかを示すものです。説明のために、レイアウトの中のコードを大幅に単純化していることに注意してください。
-実際には、ヘッドのタグやメインメニューなど、もっと多くのコンテンツを追加する必要があるでしょう。
+実際には、ヘッドのタグやメインメニューなど、もっと多くのコンテントを追加する必要があるでしょう。
 
 ```php
 <?php
@@ -336,47 +329,43 @@ use yii\helpers\Html;
 <?php $this->endPage() ?>
 ```
 
-見ると分かるように、レイアウトはすべてのページに共通な HTML タグを生成しています。`<body>` セクションの中でレイアウトが `$content` という変数をエコーしていますが、
-これは、コンテンツビューのレンダリング結果を表すものであり、[[yii\base\Controller::render()]] が呼ばれるときに、レイアウトにプッシュされるものです。
+ご覧のように、レイアウトはすべてのページに共通な HTML タグを生成しています。
+`<body>` セクションの中でレイアウトが `$content` という変数をエコーしていますが、これは、コンテントビューのレンダリング結果を表すものであり、[[yii\base\Controller::render()]] が呼ばれるときに、レイアウトにプッシュされるものです。
 
-上記のコードに示されているように、たいていのレイアウトは次に挙げるメソッドを呼び出すべきです。
-これらのメソッドは主としてレンダリングの過程に関するイベントをトリガして、他の場所で登録されたスクリプトやタグが、メソッドが呼ばれた場所に正しく注入されるようにするためのものです。
+上記のコードに示されているように、たいていのレイアウトは次に挙げるメソッドを呼び出さなければなりません。
+これらのメソッドは、主としてレンダリングの過程に関するイベントをトリガするもので、他の場所で登録されたスクリプトやタグが、メソッドが呼ばれた場所に正しく注入されるようにするためのものです。
 
-- [[yii\base\View::beginPage()|beginPage()]]: このメソッドがレイアウトの一番初めに呼ばれるべきです。
+- [[yii\base\View::beginPage()|beginPage()]]: このメソッドがレイアウトの冒頭で呼ばれなければなりません。
   これは、ページの開始を示す [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]] イベントをトリガします。
-- [[yii\base\View::endPage()|endPage()]]: このメソッドがレイアウトの最後で呼ばれるべきです。
+- [[yii\base\View::endPage()|endPage()]]: このメソッドがレイアウトの末尾で呼ばれなければなりません。
   これは、ページの終了を示す [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]] イベントをトリガします。
-- [[yii\web\View::head()|head()]]: このメソッドが HTML ページの `<head>` セクションの中で呼ばれるべきです。
+- [[yii\web\View::head()|head()]]: このメソッドが HTML ページの `<head>` セクションの中で呼ばれなければなりません。
   このメソッドは、ページのレンダリングが完了したときに、登録された head の HTML コード (リンクタグ、メタタグなど) に置き換えられるプレースホルダを生成します。
-- [[yii\web\View::beginBody()|beginBody()]]: このメソッドが `<body>` セクションの最初で呼ばれるべきです。
-  このメソッドは [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] イベントをトリガし、
-  body の開始位置を目的とする登録された HTML コード (JavaScript など) によって置き換えられるプレースホルダを生成します。
-- [[yii\web\View::endBody()|endBody()]]: このメソッドが `<body`> セクションの最後で呼ばれるべきです。
-  このメソッドは  [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]] イベントをトリガし、
-  body の終了位置を目的とする登録された HTML コード (JavaScript など) によって置き換えられるプレースホルダを生成します。
+- [[yii\web\View::beginBody()|beginBody()]]: このメソッドが `<body>` セクションの冒頭で呼ばれなければなりません。
+  このメソッドは [[yii\web\View::EVENT_BEGIN_BODY|EVENT_BEGIN_BODY]] イベントをトリガし、body の開始位置をターゲットとする登録された HTML コード (JavaScript など) によって置き換えられるプレースホルダを生成します。
+- [[yii\web\View::endBody()|endBody()]]: このメソッドが `<body`> セクションの末尾で呼ばれるなければなりません。
+  このメソッドは  [[yii\web\View::EVENT_END_BODY|EVENT_END_BODY]] イベントをトリガし、body の終了位置をターゲットとする登録された HTML コード (JavaScript など) によって置き換えられるプレースホルダを生成します。
 
 
 ### レイアウトでデータにアクセスする <span id="accessing-data-in-layouts"></span>
 
-レイアウトの中では、事前定義された二つの変数、すなわち、`$this` と `$content` にアクセス出来ます。
+レイアウトの中では、事前定義された二つの変数、すなわち、`$this` と `$content` にアクセスすることが出来ます。
 前者は、通常のビューにおいてと同じく、[[yii\base\View|ビュー]] コンポーネントを参照します。
-一方、後者は、コントローラの中で [[yii\base\Controller::render()|render()]] メソッドを呼ぶことによってレンダリングされる、
-コンテンツビューのレンダリング結果を含むものです。
+一方、後者は、コントローラの中で [[yii\base\Controller::render()|render()]] メソッドを呼ぶことによってレンダリングされる、コンテントビューのレンダリング結果を含むものです。
 
-レイアウトの中で他のデータにアクセスする必要があるときは、[ビューの中でデータにアクセスする](#accessing-data-in-views) の項で説明されている「プル」の方法を使う必要があります。
-コンテンツビューからレイアウトにデータを渡す必要があるときは、[ビューの間でデータを共有する](#sharing-data-among-views) の項で説明されている方法を使うことが出来ます。
+レイアウトの中でその他のデータにアクセスする必要があるときは、[ビューの中でデータにアクセスする](#accessing-data-in-views) の項で説明されている「プル」の方法を使う必要があります。
+コンテントビューからレイアウトにデータを渡す必要があるときは、[ビューの間でデータを共有する](#sharing-data-among-views) の項で説明されている方法を使うことが出来ます。
 
 
 ### レイアウトを使う <span id="using-layouts"></span>
 
-[コントローラでのレンダリング](#rendering-in-controllers) の項で説明されているように、コントローラの中で
-[[yii\base\Controller::render()|render()]] メソッドを呼んでビューをレンダリングすると、レンダリング結果にレイアウトが適用されます。
-既定では、`@app/views/layouts/main.php` というレイアウトが使用されます。
+[コントローラでのレンダリング](#rendering-in-controllers) の項で説明されているように、コントローラの中で [[yii\base\Controller::render()|render()]] メソッドを呼んでビューをレンダリングすると、レンダリング結果にレイアウトが適用されます。
+デフォルトでは、`@app/views/layouts/main.php` というレイアウトが使用されます。
 
 [[yii\base\Application::layout]] または [[yii\base\Controller::layout]] のどちらかを構成することによって、異なるレイアウトを使うことが出来ます。
 前者は全てのコントローラによって使用されるレイアウトを決定するものですが、後者は個々のコントローラについて前者をオーバーライドするものです。
 例えば、次のコードは、`post` コントローラがビューをレンダリングするときに `@app/views/layouts/post.php` をレイアウトとして使うようにするものです。
-その他のコントローラは、`layout` プロパティに触れられていないと仮定すると、引き続き既定の `@app/views/layouts/main.php` をレイアウトとして使います。
+その他のコントローラは、`layout` プロパティに触れられていないと仮定すると、引き続きデフォルトの `@app/views/layouts/main.php` をレイアウトとして使います。
  
 ```php
 namespace app\controllers;
@@ -397,10 +386,8 @@ class PostController extends Controller
 
 最初のステップで、Yii はレイアウトの値とコンテキストモジュールを決定します。
 
-- コントローラの [[yii\base\Controller::layout]] プロパティが null でないときは、それをレイアウトの値として使い、
-  コントローラの [[yii\base\Controller::module|モジュール]] をコンテキストモジュールとして使う。
-- [[yii\base\Controller::layout|layout]] が null のときは、コントローラの祖先となっている全てのモジュール
-  (アプリケーション自体も含む) を探して、[[yii\base\Module::layout|layout]] プロパティが null でない最初のモジュールを見つける。
+- コントローラの [[yii\base\Controller::layout]] プロパティが null でないときは、それをレイアウトの値として使い、コントローラの [[yii\base\Controller::module|モジュール]] をコンテキストモジュールとして使う。
+- [[yii\base\Controller::layout|layout]] が null のときは、コントローラの祖先となっている全てのモジュール (アプリケーション自体も含む) を探して、[[yii\base\Module::layout|layout]] プロパティが null でない最初のモジュールを見つける。
   見つかったモジュールとその [[yii\base\Module::layout|layout]] の値をコンテキストモジュールと選ばれたレイアウトの値とする。
   そのようなモジュールが見つからなかったときは、レイアウトは適用されないということを意味する。
 
@@ -409,10 +396,8 @@ class PostController extends Controller
 
 - パスエイリアス (例えば、`@app/views/layouts/main`)。
 - 絶対パス (例えば、`/main`): すなわち、スラッシュで始まるレイアウトの値の場合。
-  実際のレイアウトファイルはアプリケーションの [[yii\base\Application::layoutPath|レイアウトパス]]
-  (デフォルトでは `@app/views/layouts`) の下で探される。
-- 相対パス (例えば、`main`): 実際のレイアウトファイルはコンテキストモジュールの [[yii\base\Module::layoutPath|レイアウトパス]]
-  (デフォルトでは [[yii\base\Module::basePath|モジュールディレクトリ]] の下の `views/layouts` ディレクトリ) の下で探される。
+  実際のレイアウトファイルはアプリケーションの [[yii\base\Application::layoutPath|レイアウトパス]] (デフォルトでは `@app/views/layouts`) の下で探される。
+- 相対パス (例えば、`main`): 実際のレイアウトファイルはコンテキストモジュールの [[yii\base\Module::layoutPath|レイアウトパス]] (デフォルトでは [[yii\base\Module::basePath|モジュールディレクトリ]] の下の `views/layouts` ディレクトリ) の下で探される。
 - 真偽値 `false`: レイアウトは適用されない。
 
 レイアウトの値がファイル拡張子を含んでいない場合は、デフォルト値である `.php` を使います。
@@ -421,23 +406,19 @@ class PostController extends Controller
 ### 入れ子のレイアウト <span id="nested-layouts"></span>
 
 ときとして、あるレイアウトの中に別のレイアウトを入れたい場合があるでしょう。
-例えば、ウェブサイトの別々のセクションにおいて、違うレイアウトを使いたいけれども、
-それらのレイアウトは全て、全体としての HTML5 ページ構造を生成する同一の基本レイアウトを共有している、という場合です。
-この目的を達することは、次のように、子レイアウトの中で
-[[yii\base\View::beginContent()|beginContent()]] と [[yii\base\View::endContent()|endContent()]]
-を呼ぶことで可能になります。
+例えば、ウェブサイトの別々のセクションにおいて、違うレイアウトを使いたいけれども、それらのレイアウトは全て、全体としての HTML5 ページ構造を生成する同一の基本レイアウトを共有している、という場合です。
+この目的を達することは、次のように、子レイアウトの中で [[yii\base\View::beginContent()|beginContent()]] と [[yii\base\View::endContent()|endContent()]] を呼ぶことで可能になります。
 
 ```php
 <?php $this->beginContent('@app/views/layouts/base.php'); ?>
 
-... 子レイアウトのコンテンツをここに ...
+... 子レイアウトのコンテントをここに ...
 
 <?php $this->endContent(); ?>
 ```
 
-上のコードが示すように、子レイアウトのコンテンツは [[yii\base\View::beginContent()|beginContent()]] と
-[[yii\base\View::endContent()|endContent()]] によって囲まれなければなりません。
-[[yii\base\View::beginContent()|beginContent()]] に渡されるパラメータは、親レイアウトで何であるかを指定するものです。
+上のコードが示すように、子レイアウトのコンテントは [[yii\base\View::beginContent()|beginContent()]] と [[yii\base\View::endContent()|endContent()]] によって囲まれなければなりません。
+[[yii\base\View::beginContent()|beginContent()]] に渡されるパラメータは、親レイアウトが何であるかを指定するものです。
 レイアウトのファイルまたはエイリアスのどちらかを使うことが出来ます。
 
 上記のアプローチを使って、2レベル以上のレイアウトを入れ子にすることも出来ます。
@@ -445,24 +426,24 @@ class PostController extends Controller
 
 ### ブロックを使う <span id="using-blocks"></span>
 
-ブロックを使うと、ある場所でビューコンテンツを規定して、別の場所でそれを表示することが可能になります。
+ブロックを使うと、ある場所でビューコンテントを定義して、別の場所でそれを表示することが可能になります。
 ブロックはたいていはレイアウトと一緒に使われます。
-例えば、ブロックをコンテンツビューで定義して、それをレイアウトで表示する、ということが出来ます。
+例えば、ブロックをコンテントビューで定義して、それをレイアウトで表示する、ということが出来ます。
 
 [[yii\base\View::beginBlock()|beginBlock()]] と [[yii\base\View::endBlock()|endBlock()]] を呼んでブロックを定義します。
 すると、そのブロックを `$view->blocks[$blockID]` によってアクセス出来るようになります。
 ここで `$blockID` は、定義したときにブロックに割り当てたユニークな ID を指します。
 
-次の例は、どのようにブロックを使えば、レイアウトの特定の部分をコンテンツビューでカスタマイズすることが出来るかを示すものです。
+次の例は、どのようにブロックを使えば、レイアウトの特定の部分をコンテントビューでカスタマイズすることが出来るかを示すものです。
 
-最初に、コンテンツビューで、一つまたは複数のブロックを定義します。
+最初に、コンテントビューで、一つまたは複数のブロックを定義します。
 
 ```php
 ...
 
 <?php $this->beginBlock('block1'); ?>
 
-... block1 のコンテンツ ...
+... block1 のコンテント ...
 
 <?php $this->endBlock(); ?>
 
@@ -470,19 +451,19 @@ class PostController extends Controller
 
 <?php $this->beginBlock('block3'); ?>
 
-... block3 のコンテンツ ...
+... block3 のコンテント ...
 
 <?php $this->endBlock(); ?>
 ```
 
-次に、レイアウトビューで、得ることが出来ればブロックをレンダリングし、ブロックが定義されていないときは何らかの既定のコンテンツを表示します。
+次に、レイアウトビューで、得ることが出来ればブロックをレンダリングし、ブロックが定義されていないときは何らかの既定のコンテントを表示します。
 
 ```php
 ...
 <?php if (isset($this->blocks['block1'])): ?>
     <?= $this->blocks['block1'] ?>
 <?php else: ?>
-    ... block1 の既定のコンテンツ ...
+    ... block1 の既定のコンテント ...
 <?php endif; ?>
 
 ...
@@ -490,7 +471,7 @@ class PostController extends Controller
 <?php if (isset($this->blocks['block2'])): ?>
     <?= $this->blocks['block2'] ?>
 <?php else: ?>
-    ... block2 の既定のコンテンツ ...
+    ... block2 の既定のコンテント ...
 <?php endif; ?>
 
 ...
@@ -498,7 +479,7 @@ class PostController extends Controller
 <?php if (isset($this->blocks['block3'])): ?>
     <?= $this->blocks['block3'] ?>
 <?php else: ?>
-    ... block3 の既定のコンテンツ ...
+    ... block3 の既定のコンテント ...
 <?php endif; ?>
 ...
 ```
@@ -536,10 +517,10 @@ class PostController extends Controller
 ### ページタイトルを設定する <span id="setting-page-titles"></span>
 
 どんなウェブページにもタイトルが無ければなりません。通常、タイトルタグは [layout](#layouts) の中で表示されます。
-しかし、実際においては、多くの場合、タイトルはレイアウトではなくコンテンツビューで決められます。
-この問題を解決するために、[[yii\web\View]] は、タイトル情報をコンテンツビューからレイアウトに渡すための [[yii\web\View::title|title]] プロパティを提供しています。
+しかし、実際においては、多くの場合、タイトルはレイアウトではなくコンテントビューで決められます。
+この問題を解決するために、[[yii\web\View]] は、タイトル情報をコンテントビューからレイアウトに渡すための [[yii\web\View::title|title]] プロパティを提供しています。
 
-この機能を利用するためには、全てのコンテンツビューにおいて、次のようにタイトルを設定します。
+この機能を利用するためには、全てのコンテントビューにおいて、次のようにタイトルを設定します。
 
 ```php
 <?php
@@ -559,7 +540,7 @@ $this->title = 'My page title';
 ウェブページは、通常、いろいろな関係者によって必要とされるさまざまなメタタグを生成する必要があります。
 ページタイトルと同じように、メタタグは `<head>` セクションに出現して、通常はレイアウトの中で生成されます。
 
-どのようなメタタグを生成するかをコンテンツビューの中で指定したい場合は、下記のように、[[yii\web\View::registerMetaTag()]] をコンテンツビューの呼ぶことが出来ます。
+どのようなメタタグを生成するかをコンテントビューの中で指定したい場合は、下記のように、[[yii\web\View::registerMetaTag()]] をコンテントビューの呼ぶことが出来ます。
 
 ```php
 <?php
@@ -590,7 +571,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => '面白いアラ�
 [メタタグ](#registering-meta-tags) と同じように、リンクタグも多くの場合において有用なものです。
 例えば、favicon をカスタマイズしたり、RSS フィードを指し示したり、OpenID を別のサーバに委任したり、等々。
 リンクタグも、[[yii\web\View::registerLinkTag()]] を使って、メタタグと同じような方法で取り扱うことが出来ます。
-例えば、コンテンツビューにおいて、次のようにしてリンクタグを登録することが出来ます。
+例えば、コンテントビューにおいて、次のようにしてリンクタグを登録することが出来ます。
 
 ```php
 $this->registerLinkTag([
@@ -607,14 +588,13 @@ $this->registerLinkTag([
 <link title="Yii ライブニューズ" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
 ```
 
-[[yii\web\View::registerMetaTag()|registerMetaTags()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]]
-を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
+[[yii\web\View::registerMetaTag()|registerMetaTags()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
 
 
 ## ビューのイベント <span id="view-events"></span>
 
 [[yii\base\View|ビューコンポーネント]] はビューをレンダリングする過程においていくつかのイベントをトリガします。
-これらのイベントに反応することによって、ビューにコンテンツを注入したり、エンドユーザに送信される前にレンダリング結果を加工したりすることが出来ます。
+これらのイベントに反応することによって、ビューにコンテントを注入したり、エンドユーザに送信される前にレンダリング結果を加工したりすることが出来ます。
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: コントローラでファイルをレンダリングする前にトリガされます。
   このイベントのハンドラは、[[yii\base\ViewEvent::isValid]] を false にセットして、レンダリングのプロセスをキャンセルすることが出来ます。
@@ -636,7 +616,7 @@ $this->registerLinkTag([
 
 ## 静的なページをレンダリングする <span id="rendering-static-pages"></span>
 
-静的なページというのは、主たるコンテンツのほとんどが静的なもので、コントローラからプッシュされる動的なデータにアクセスする必要がないページを指します。
+静的なページというのは、主たるコンテントのほとんどが静的なもので、コントローラからプッシュされる動的なデータにアクセスする必要がないページを指します。
 
 静的なページは、そのコードをビューに置き、そして、コントローラで次のようなコードを使うと表示することが出来ます。
 
@@ -648,8 +628,8 @@ public function actionAbout()
 ```
 
 ウェブサイトが多くの静的なページを含んでいる場合、同じようなコードを何度も繰り返すのは非常に面倒くさいでしょう。
-この問題を解決するために、[[yii\web\ViewAction]] という [スタンドアロンアクション](structure-controllers.md#standalone-actions)
-をコントローラに導入することが出来ます。例えば、
+この問題を解決するために、[[yii\web\ViewAction]] という [スタンドアロンアクション](structure-controllers.md#standalone-actions) をコントローラに導入することが出来ます。
+例えば、
 
 ```php
 namespace app\controllers;
