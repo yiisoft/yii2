@@ -1113,7 +1113,7 @@ class QueryBuilder extends \yii\base\Object
      *
      * @param string $operator
      * @param array $columns
-     * @param array $values
+     * @param Query $values
      * @param array $params
      * @return string SQL
      */
