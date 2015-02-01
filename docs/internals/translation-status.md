@@ -52,8 +52,9 @@ db-mongodb.md                       |
 db-elasticsearch.md                 |
 input-forms.md                      |
 input-validation.md                 | Yes
-input-file-uploading.md             |
+input-file-upload.md                |
 input-multiple-models.md            |
+input-tabular-input.md              |
 output-formatter.md                 |
 output-pagination.md                |
 output-sorting.md                   |
