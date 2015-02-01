@@ -91,6 +91,8 @@ CRUD stands for Create, Read, Update, and Delete, representing the four common t
 
 ![CRUD Generator](images/start-gii-crud.png)
 
+Note, this picture has a mistake: the correct value of View Path is "@app/views/country", NOT "app\view\country".
+
 Next, click on the "Preview" button. You will see a list of files to be generated, as shown below.
 
 ![CRUD Generator Preview](images/start-gii-crud-preview.png)
