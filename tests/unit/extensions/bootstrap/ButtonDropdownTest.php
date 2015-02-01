@@ -3,6 +3,9 @@ namespace yiiunit\extensions\bootstrap;
 
 use yii\bootstrap\ButtonDropdown;
 
+/**
+ * @group bootstrap
+ */
 class ButtonDropdownTest extends BootstrapTestCase
 {
     public function testContainerOptions()
