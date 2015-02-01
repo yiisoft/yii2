@@ -49,12 +49,12 @@ db-migrations.md                    |
 db-sphinx.md                        |
 db-redis.md                         |
 db-mongodb.md                       |
-db-elastic-search.md                |
+db-elasticsearch.md                 |
 input-forms.md                      |
 input-validation.md                 | Yes
 input-file-uploading.md             |
 input-multiple-models.md            |
-output-formatting.md                |
+output-formatter.md                 |
 output-pagination.md                |
 output-sorting.md                   |
 output-data-providers.md            |
@@ -103,4 +103,3 @@ helper-overview.md                  |
 helper-array.md                     |
 helper-html.md                      |
 helper-url.md                       |
-helper-security.md                  |
