@@ -58,7 +58,7 @@ $param = $request->getBodyParam('id');
 ## リクエストメソッド <span id="request-methods"></span>
 
 現在のリクエストに使用された HTTP メソッドは、`Yii::$app->request->method` という式によって取得することが出来ます。
-現在のメソッドが特定のタイプであるかどうかをチェックするための、一連の真偽値のプロパティも提供されています。
+現在のメソッドが特定のタイプであるかどうかをチェックするための、一揃いの真偽値のプロパティも提供されています。
 例えば、
 
 ```php
@@ -80,8 +80,8 @@ if ($request->isPut)  { // リクエストメソッドは PUT }
 * [[yii\web\Request::absoluteUrl|absoluteUrl]]: `http://example.com/admin/index.php/product?id=100` を返します。
   ホスト情報の部分を含んだ URL です。
 * [[yii\web\Request::hostInfo|hostInfo]]: `http://example.com` を返します。URL のホスト情報の部分です。
-* [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。エントリスクリプトの後、かつ、クエスチョンマーク (クエリ文字列) の前の部分です。
-* [[yii\web\Request::queryString|queryString]]: `id=100` を返します。クエスチョンマークの後の部分です。
+* [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。エントリスクリプトの後、疑問符 (クエリ文字列) の前の部分です。
+* [[yii\web\Request::queryString|queryString]]: `id=100` を返します。疑問符の後の部分です。
 * [[yii\web\Request::baseUrl|baseUrl]]: `/admin` を返します。ホスト情報の後、かつ、エントリスクリプトの前の部分です。
 * [[yii\web\Request::scriptUrl|scriptUrl]]: `/admin/index.php` を返します。パス情報とクエリ文字列を省略した URL です。
 * [[yii\web\Request::serverName|serverName]]: `example.com` を返します。URL の中のホスト名です。
@@ -90,7 +90,7 @@ if ($request->isPut)  { // リクエストメソッドは PUT }
 
 ## HTTP ヘッダ <span id="http-headers"></span> 
 
- [[yii\web\Request::headers]] プロパティによって返される [[yii\web\HeaderCollection|header コレクション]] を通じて、HTTP ヘッダ情報を取得することが出来ます。例えば、
+[[yii\web\Request::headers]] プロパティによって返される [[yii\web\HeaderCollection|header コレクション]] を通じて、HTTP ヘッダ情報を取得することが出来ます。例えば、
 
 ```php
 // $headers は yii\web\HeaderCollection のオブジェクト

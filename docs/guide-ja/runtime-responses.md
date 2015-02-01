@@ -5,8 +5,7 @@
 レスポンスオブジェクトは、HTTP ステータスコード、HTTP ヘッダ、HTTP ボディなどの情報を含みます。
 ウェブアプリケーション開発の最終的な目的は、本質的には、さまざまなリクエストに対してそのようなレスポンスオブジェクトを作成することにあります。
 
-ほとんどの場合は、主として `response` [アプリケーションコンポーネント](structure-application-components.md) を使用すべきです。
-このコンポーネントは、デフォルトでは、[[yii\web\Response]] のインスタンスです。
+ほとんどの場合は、主として、デフォルトでは [[yii\web\Response]] のインスタンスである `response` [アプリケーションコンポーネント](structure-application-components.md) を使用すべきです。
 しかしながら、Yii は、以下で説明するように、あなた自身のレスポンスオブジェクトを作成してエンドユーザに送信することも許容しています。
 
 この節では、レスポンスを構成してエンドユーザに送信する方法を説明します。
@@ -22,7 +21,7 @@
 Yii::$app->response->statusCode = 200;
 ```
 
-けれども、たいていの場合、ステータスコードを明示的に設定する必要はありません。
+ただし、たいていの場合、ステータスコードを明示的に設定する必要はありません。
 これは、[[yii\web\Response::statusCode]] のデフォルト値が 200 であるからです。
 そして、リクエストが失敗したことを示したいときは、下記のように、適切な HTTP 例外を投げることが出来ます。
 
@@ -100,7 +99,7 @@ $response->data = ['message' => 'hello world'];
 
 Yii は下記の形式を初めからサポートしています。
 それぞれ、[[yii\web\ResponseFormatterInterface|フォーマッタ]] クラスとして実装されています。
-[[yii\web\Response::formatters]] プロパティを構成することで、これらのフォーマッタをカスタマイズしたり、または、新しいフォーマッタを追加することが出来ます。
+[[yii\web\Response::formatters]] プロパティを構成することで、これらのフォーマッタをカスタマイズしたり、新しいフォーマッタを追加したりすることが出来ます。
 
 * [[yii\web\Response::FORMAT_HTML|HTML]]: [[yii\web\HtmlResponseFormatter]] によって実装
 * [[yii\web\Response::FORMAT_XML|XML]]: [[yii\web\XmlResponseFormatter]] によって実装
@@ -177,7 +176,7 @@ public function actionOld()
 上記のコードでは、アクションメソッドが `redirect()` メソッドの結果を返しています。
 前に説明したように、アクションメソッドによって返されるレスポンスオブジェクトが、エンドユーザに送信されるレスポンスとして使用されることになります。
 
-アクションメソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、メソッドチェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテントが追加されないことを保証すべきです。
+アクションメソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、メソッドチェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
 
 ```php
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
@@ -191,7 +190,7 @@ public function actionOld()
 この問題を解決するために、[[yii\web\Response::redirect()]] メソッドは `X-Redirect` ヘッダにリダイレクト先 URL を値としてセットします。
 そして、クライアントサイドで、このヘッダの値を読み、それに応じてブラウザをリダイレクトする JavaScript を書くことが出来ます。
 
-> Info|情報: Yii には `yii.js` という JavaScript ファイルが付いています。
+> Info|情報: Yii には `yii.js` という JavaScript ファイルが付属しています。
 これは、よく使われる一連の JavaScript 機能を提供するもので、その中には `X-Redirect` ヘッダに基づくブラウザのリダイレクトも含まれています。
 従って、あなたが ([[yii\web\YiiAsset]] アセットバンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
 
@@ -216,7 +215,7 @@ public function actionDownload()
 }
 ```
 
-ファイル送信メソッドをアクションメソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、レスポンスに余計なコンテントが追加されないことを保証すべきです。
+ファイル送信メソッドをアクションメソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
 
 ```php
 \Yii::$app->response->sendFile('path/to/file.txt')->send();
@@ -254,5 +253,5 @@ public function actionDownload()
 [[yii\web\Response::send()]] メソッドが一度呼び出された後では、このメソッドに対する更なる呼び出しは無視されます。
 このことは、いったんレスポンスが送出された後では、それにコンテントを追加することは出来なくなる、ということを意味します。
 
-ごらんのように、the [[yii\web\Response::send()]] メソッドはいくつかの有用なイベントをトリガします。
+ごらんのように、[[yii\web\Response::send()]] メソッドはいくつかの有用なイベントをトリガします。
 これらのイベントに反応することによって、レスポンスを調整したり修飾したりすることが出来ます。

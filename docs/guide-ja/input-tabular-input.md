@@ -60,8 +60,6 @@ class SettingsController extends Controller
 
 次に、`update` ビューにあるフォームです。
 
-Now the form that's in `update` view:
-
 ```php
 <?php
 use yii\helpers\Html;
