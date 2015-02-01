@@ -42,7 +42,7 @@ concept-aliases.md                  | Yes
 concept-autoloading.md              | Yes
 concept-service-locator.md          | Yes
 concept-di-container.md             | Yes
-db-dao.md                           |
+db-dao.md                           | Yes
 db-query-builder.md                 |
 db-active-record.md                 |
 db-migrations.md                    |
