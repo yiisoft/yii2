@@ -3,6 +3,9 @@ namespace yiiunit\extensions\bootstrap;
 
 use yii\bootstrap\Collapse;
 
+/**
+ * @group bootstrap
+ */
 class CollapseTest extends BootstrapTestCase
 {
     public function testRender()
