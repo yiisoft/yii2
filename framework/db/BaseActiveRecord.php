@@ -240,17 +240,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return $this->_attributes[$name];
         } elseif ($this->hasAttribute($name)) {
             return null;
-        } else {
-            if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
-                return $this->_related[$name];
-            }
-            $value = parent::__get($name);
-            if ($value instanceof ActiveQueryInterface) {
-                return $this->_related[$name] = $value->findFor($name, $this);
-            } else {
-                return $value;
-            }
+        } elseif ($this->isRelationPopulated($name)) {
+            return $this->_related[$name];
         }
+
+        $value = parent::__get($name);
+        if ($value instanceof ActiveQueryInterface) {
+            return $this->_related[$name] = $value->findFor($name, $this);
+        }
+
+        return $value;
     }
 
     /**
@@ -293,7 +292,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->hasAttribute($name)) {
             unset($this->_attributes[$name]);
-        } elseif (array_key_exists($name, $this->_related)) {
+        } elseif ($this->isRelationPopulated($name)) {
             unset($this->_related[$name]);
         } elseif ($this->getRelation($name, false) === null) {
             parent::__unset($name);
