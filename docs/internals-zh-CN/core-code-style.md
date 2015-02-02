@@ -50,13 +50,13 @@ Class names MUST be declared in `StudlyCaps`. For example, `Controller`, `Model`
 
 The term "class" refers to all classes and interfaces here.
 
-- Classes should be named using `CamelCase`.
+- 类应该使用 `CamelCase` 命名。
 - The brace should always be written on the line underneath the class name.
 - Every class must have a documentation block that conforms to the PHPDoc.
 - All code in a class must be indented with a single tab.
-- There should be only one class in a single PHP file.
-- All classes should be namespaced.
-- Class name should match file name. Class namespace should match directory structure.
+- 一个单一的 PHP 文件只能有一个类。
+- 所有的类应该有命名空间。
+- 类名应该匹配文件名。类的命名空间应该匹配目录结构。
 
 ```php
 /**
@@ -71,7 +71,7 @@ class MyClass extends \yii\Object implements MyInterface
 ### 4.1. 常量
 
 Class constants MUST be declared in all upper case with underscore separators.
-For example:
+例如：
 
 ```php
 <?php
@@ -95,7 +95,7 @@ class Foo
   with first letter lowercase.
 - Use descriptive names. Variables such as `$i` and `$j` are better not to be used.
 
-For example:
+例如：
 
 ```php
 <?php
@@ -138,7 +138,7 @@ class Foo
 
 ### 4.5 Constructors
 
-- `__construct` should be used instead of PHP 4 style constructors.
+- `__construct` 应当被用来代替 PHP 4 风格的构造器。
 
 ## 5 PHP
 
@@ -168,15 +168,15 @@ public function save(Transaction $transaction, $argument2 = 100)
 
 ### 5.2 字符串
 
-- If string doesn't contain variables or single quotes, use single quotes.
+- 如果字符串不包含变量或单引号，用单引号。
 
 ```php
 $str = 'Like this.';
 ```
 
-- If string contains single quotes you can use double quotes to avoid extra escaping.
+- 如果字符串中包含单引号，你可以使用双引号，以避免额外的转义。
 
-#### Variable substitution
+#### 变量替换
 
 ```php
 $str1 = "Hello $username!";
@@ -207,19 +207,19 @@ $sql = "SELECT *"
 
 ### 5.3 数组
 
-For arrays we're using PHP 5.4 short array syntax.
+对于数组我们使用 PHP 5.4 的短数组语法。
 
 #### 数字索引
 
-- Do not use negative numbers as array indexes.
+- 不要使用负数作为数组索引。
 
-Use the following formatting when declaring array:
+声明数组时，请使用以下格式：
 
 ```php
 $arr = [3, 14, 15, 'Yii', 'Framework'];
 ```
 
-If there are too many elements for a single line:
+如果有一个单行太多的元素：
 
 ```php
 $arr = [
@@ -240,12 +240,12 @@ $config = [
 ];
 ```
 
-### 5.4 control statements
+### 5.4 控制语句
 
 - Control statement condition must have single space before and after parenthesis.
 - Operators inside of parenthesis should be separated by spaces.
-- Opening brace is on the same line.
-- Closing brace is on a new line.
+- 左大括号是在同一行。
+- 右大括号是在一个新行。
 - Always use braces for single line statements.
 
 ```php
@@ -264,7 +264,7 @@ if (!$model && null === $event)
 
 #### switch
 
-Use the following formatting for switch:
+switch 语句使用以下格式：
 
 ```php
 switch ($this->phpType) {
@@ -296,7 +296,7 @@ doIt('a', [
 ]);
 ```
 
-### 5.6 Anonymous functions (lambda) declarations
+### 5.6 匿名函数 (lambda) 的声明
 
 Note space between `function`/`use` tokens and open parenthesis:
 
@@ -322,10 +322,10 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 -------------
 
 - Refer to [phpDoc](http://phpdoc.org/) for documentation syntax.
-- Code without documentation is not allowed.
+- 不含文档的代码是不允许的。
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
-- There is no need to use `@return` if method does return nothing.
+- 如果方法不返回任何结果没必要使用 `@return` 。
 - All virtual properties in classes that extend from `yii\base\Object`
   are documented with an `@property` tag in the class doc block.
   These annotations are automatically generated from the `@return` or `@param`
