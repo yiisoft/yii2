@@ -1230,6 +1230,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if ($this->getIsNewRecord()) {
                 throw new InvalidCallException('Unable to link a newly created model.');
             }
+            
+            $diff = function($array1, $array2) {
+                $result = [];
+                foreach ($array1 as $value) {
+                    if (!in_array($value, $array2)) {
+                        $result[] = $value;
+                    }
+                }
+                return $result;
+            };
+            
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
                 list($viaName, $viaRelation) = $relation->via;
@@ -1241,32 +1252,45 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $viaRelation = $relation->via;
                 $viaTable = reset($relation->via->from);
             }
-            $columns = [];
+            $where = [];
             foreach ($viaRelation->link as $a => $b) {
-                $columns[$a] = $this->$b;
+                $where[$a] = $this->$b;
             }
 
             $existing = (new Query)
-                ->select(reset($relation->link))
+                ->select(array_values($relation->link))
                 ->from($viaTable)
-                ->where($columns)
-                ->createCommand(static::getDb())->queryColumn();
-
-            $delete = array_diff($existing, $keys);
-            if (!empty($delete)) {
-                static::getDb()->createCommand()->delete($viaTable, 
-                    $columns + [reset($relation->link) => $delete]
-                )->execute();
+                ->where($where)
+                ->createCommand(static::getDb())
+                ->queryAll();
+                
+            if (is_object($keys[0]) && $keys[0] instanceof self) { //Format an array of models
+                foreach ($keys as &$key) {
+                    $key = array_map(function($item) use (&$key) {
+                        return $key->$item;
+                    }, array_flip($relation->link));
+                }
+            } else if (!is_array($keys[0])) { //Format single keys
+                foreach ($keys as &$key) {
+                    $key = [reset($relation->link) => $key];
+                }
             }
             
-            $insert = array_diff($keys, $existing);
+            $delete = $diff($existing, $keys);
+            if (!empty($delete)) {
+                static::getDb()->createCommand()
+                    ->delete($viaTable, $where + call_user_func_array('array_merge_recursive', $delete))
+                    ->execute();
+            }
+
+            $insert = $diff($keys, $existing);
             if (!empty($insert)) {
-                foreach ($insert as &$ids) {
-                    $ids = [$this->primaryKey, $ids];
+                foreach ($insert as &$ins) {
+                    $ins = $ins + $where;
                 }
-                reset($viaRelation->link);
-                \Yii::$app->db->createCommand()
-                    ->batchInsert($viaTable, [key($viaRelation->link), reset($relation->link)], $insert)
+                $columns = array_keys(reset($insert));
+                static::getDb()->createCommand()
+                    ->batchInsert($viaTable, $columns, $insert)
                     ->execute();
             }
         }
