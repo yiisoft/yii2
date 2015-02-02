@@ -7,8 +7,8 @@
 
 namespace yii\db;
 
+use yii\base\Component;
 use yii\di\Instance;
-use \yii\base\Component;
 
 /**
  * Migration is the base class for representing a database migration.
