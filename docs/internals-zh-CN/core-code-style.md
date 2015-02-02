@@ -21,8 +21,8 @@ style as well.
 - 代码必须使用4个空格缩进，而不是 tabs。
 - 类名必须在 `StudlyCaps` 中声明。
 - Class constants MUST be declared in all upper case with underscore separators.
-- Method names MUST be declared in `camelCase`.
-- Property names MUST be declared in `camelCase`.
+- 方法名称必须以 `camelCase` 声明。
+- 属性名称必须以 `camelCase` 声明。
 - Property names MUST start with an initial underscore if they are private.
 - 始终使用 `elseif` 代替 `else if`。
 
