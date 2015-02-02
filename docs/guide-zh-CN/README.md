@@ -119,6 +119,7 @@ RESTful Web 服务
 
 * **已定稿** [快速入门](rest-quick-start.md)
 * **已定稿** [资源](rest-resources.md)
+* **已定稿** [控制器](rest-controllers.md)
 * **已定稿** [路由](rest-routing.md)
 * **已定稿** [格式化响应](rest-response-formatting.md)
 * **已定稿** [授权验证](rest-authentication.md)
