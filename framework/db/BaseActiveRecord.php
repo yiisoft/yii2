@@ -236,7 +236,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __get($name)
     {
-        if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
+        if (array_key_exists($name, $this->_attributes)) {
             return $this->_attributes[$name];
         } elseif ($this->hasAttribute($name)) {
             return null;
@@ -419,7 +419,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        return isset($this->_attributes[$name]) || in_array($name, $this->attributes());
+        return array_key_exists($this->_attributes[$name])
+            || in_array($name, $this->attributes());
     }
 
     /**
@@ -432,7 +433,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function getAttribute($name)
     {
-        return isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
+        return isset($this->_attributes[$name])
+            ? $this->_attributes[$name]
+            : null;
     }
 
     /**
@@ -447,7 +450,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($this->hasAttribute($name)) {
             $this->_attributes[$name] = $value;
         } else {
-            throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
+            throw new InvalidParamException(
+                get_class($this) . ' has no attribute named "' . $name . '".'
+            );
         }
     }
 
