@@ -229,7 +229,7 @@
 
         // manually trigger the validation of the attribute with the specified ID
         validateAttribute: function (id) {
-            var attribute = methods.find(id);
+            var attribute = methods.find.call(this, id);
             if (attribute != undefined) {
                 validateAttribute($(this), attribute, true);
             }
