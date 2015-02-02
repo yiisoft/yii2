@@ -146,7 +146,7 @@ class Query extends Component implements QueryInterface
      */
     protected function fetchRowsInternal($cursor, $all, $indexBy)
     {
-        $result = [];
+        $result = $all ? [] : false;
 
         foreach ($cursor as $row) {
             if ($all) {
