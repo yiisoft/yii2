@@ -147,8 +147,9 @@ class Query extends Component implements QueryInterface
     protected function fetchRowsInternal($cursor, $all, $indexBy)
     {
         $result = [];
-        if ($all) {
-            foreach ($cursor as $row) {
+
+        foreach ($cursor as $row) {
+            if ($all) {
                 if ($indexBy !== null) {
                     if (is_string($indexBy)) {
                         $key = $row[$indexBy];
@@ -159,12 +160,10 @@ class Query extends Component implements QueryInterface
                 } else {
                     $result[] = $row;
                 }
-            }
-        } else {
-            if ($cursor->hasNext()) {
-                $result = $cursor->getNext();
             } else {
-                $result = false;
+                $result = $row;
+
+                break;
             }
         }
 
