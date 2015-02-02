@@ -227,6 +227,14 @@
             return attribute;
         },
 
+        // manually trigger the validation of the attribute with the specified ID
+        validateAttribute: function (id) {
+            var attribute = methods.find(id);
+            if (attribute != undefined) {
+                validateAttribute($(this), attribute, true);
+            }
+        },
+
         // find an attribute config based on the specified attribute ID
         find: function (id) {
             var attributes = $(this).data('yiiActiveForm').attributes,
@@ -251,6 +259,7 @@
             return this.data('yiiActiveForm');
         },
 
+        // validate all applicable inputs in the form
         validate: function () {
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
@@ -413,9 +422,6 @@
                 }
             });
         }
-        $input.on('forceValidate.yiiActiveForm', function() {
-            validateAttribute($form, attribute, true);
-        });
     };
 
     var unwatchAttribute = function ($form, attribute) {

@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #7074: `yii\data\ArrayDataProvider` did not correctly handle the case `Pagination::pageSize = 0` (kirsenn, qiangxue)
 - Enh #5663: Added support for using `data-params` to specify additional form data to be submitted via the `data-method` approach (usualdesigner, qiangxue)
 - Enh #6106: Added ability to specify `encode` for each item of `yii\widgets\Breadcrumbs` (samdark, aleksanderd)
+- Enh #6361: Added `validateAttribute()` to `yii.activeForm.js` to support manually triggering data validation of an input (Alex-Code, qiang)
 - Enh #6493: Added support for the `Access-Control-Expose-Headers` header by `yii\filters\Cors` (usualdesigner)
 - Enh #6697: Added `yii\helpers\Url::current()` method that allows adding or removing parameters from current URL (samdark, callmez)
 - Enh #6852: Added `yii\helpers\BaseHtmlPurifier::helpers()` in order to be able to configure `HtmlPurifier` helper globally via subclassing (Alex-Code)
