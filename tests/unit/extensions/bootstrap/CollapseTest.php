@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\extensions\bootstrap;
 
 use yii\bootstrap\Collapse;
@@ -65,6 +66,104 @@ class CollapseTest extends BootstrapTestCase
 <div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapse-toggle" href="#w0-collapse4" data-toggle="collapse" data-parent="#w0">&lt;h1&gt;Collapsible Group Item #4&lt;/h1&gt;</a>
 </h4></div>
 <div id="w0-collapse4" class="panel-collapse collapse"><div class="panel-body"><h1>test content4</h1></div>
+</div></div>
+</div>
+
+HTML
+        , $output);
+
+        Collapse::$counter = 0;
+        $output = Collapse::widget([
+            'items' => [
+                [
+                    'label' => 'Collapsible Group Item #1',
+                    'content' => [
+                        'test content1',
+                        'test content2'
+                    ],
+                ],
+                [
+                    'label' => 'Collapsible Group Item #2',
+                    'content' => [
+                        'test content1',
+                        'test content2'
+                    ],
+                    'contentOptions' => [
+                        'class' => 'testContentOptions'
+                    ],
+                    'options' => [
+                        'class' => 'testClass',
+                        'id' => 'testId'
+                    ],
+                    'footer' => 'Footer'
+                ],
+                [
+                    'label' => '<h1>Collapsible Group Item #3</h1>',
+                    'content' => [
+                        '<h2>test content1</h2>',
+                        '<h2>test content2</h2>'
+                    ],
+                    'contentOptions' => [
+                        'class' => 'testContentOptions2'
+                    ],
+                    'options' => [
+                        'class' => 'testClass2',
+                        'id' => 'testId2'
+                    ],
+                    'encode' => false,
+                    'footer' => 'Footer2'
+                ],
+                [
+                    'label' => '<h1>Collapsible Group Item #4</h1>',
+                    'content' => [
+                        '<h2>test content1</h2>',
+                        '<h2>test content2</h2>'
+                    ],
+                    'contentOptions' => [
+                        'class' => 'testContentOptions3'
+                    ],
+                    'options' => [
+                        'class' => 'testClass3',
+                        'id' => 'testId3'
+                    ],
+                    'encode' => true,
+                    'footer' => 'Footer3'
+                ],
+            ]
+        ]);
+
+        $this->assertEquals(<<<HTML
+<div id="w0" class="panel-group">
+<div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapse-toggle" href="#w0-collapse1" data-toggle="collapse" data-parent="#w0">Collapsible Group Item #1</a>
+</h4></div>
+<div id="w0-collapse1" class="panel-collapse collapse"><ul class="list-group">
+<li class="list-group-item">test content1</li>
+<li class="list-group-item">test content2</li>
+</ul>
+</div></div>
+<div id="testId" class="testClass panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapse-toggle" href="#w0-collapse2" data-toggle="collapse" data-parent="#w0">Collapsible Group Item #2</a>
+</h4></div>
+<div id="w0-collapse2" class="testContentOptions panel-collapse collapse"><ul class="list-group">
+<li class="list-group-item">test content1</li>
+<li class="list-group-item">test content2</li>
+</ul>
+<div class="panel-footer">Footer</div>
+</div></div>
+<div id="testId2" class="testClass2 panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapse-toggle" href="#w0-collapse3" data-toggle="collapse" data-parent="#w0"><h1>Collapsible Group Item #3</h1></a>
+</h4></div>
+<div id="w0-collapse3" class="testContentOptions2 panel-collapse collapse"><ul class="list-group">
+<li class="list-group-item"><h2>test content1</h2></li>
+<li class="list-group-item"><h2>test content2</h2></li>
+</ul>
+<div class="panel-footer">Footer2</div>
+</div></div>
+<div id="testId3" class="testClass3 panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapse-toggle" href="#w0-collapse4" data-toggle="collapse" data-parent="#w0">&lt;h1&gt;Collapsible Group Item #4&lt;/h1&gt;</a>
+</h4></div>
+<div id="w0-collapse4" class="testContentOptions3 panel-collapse collapse"><ul class="list-group">
+<li class="list-group-item"><h2>test content1</h2></li>
+<li class="list-group-item"><h2>test content2</h2></li>
+</ul>
+<div class="panel-footer">Footer3</div>
 </div></div>
 </div>
 
