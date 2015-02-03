@@ -433,12 +433,12 @@ It is also possible to link to the Guide using the following syntax:
 - One-line comments should be started with `//` and not `#`.
 - One-line comment should be on its own line.
 
-Additional rules
+附加规则
 ----------------
 
 ### `=== []` vs `empty()`
 
-Use `empty()` where possible.
+在可能的情况下使用 `empty()` 。
 
 ### multiple return points
 
@@ -446,7 +446,7 @@ Return early when conditions nesting starts to get cluttered. If the method is s
 
 ### `self` vs. `static`
 
-Always use `static` except the following cases:
+始终使用 `static` 除下列情况：
 
 - accessing constants MUST be done via `self`: `self::MY_CONSTANT`
 - accessing private static properties MUST be done via `self`: `self::$_events`
