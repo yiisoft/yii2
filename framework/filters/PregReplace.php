@@ -36,12 +36,12 @@ use yii\base\ActionFilter;
  * ~~~
  *
  * @author Angel Guevara <angeldelcaos@gmail.com>
- * @since 2.0
+ * @since 2.0.3
  */
 class PregReplace extends ActionFilter
 {
     /**
-     * @var array set of rules in the form 'pattern' => 'replacemen'.
+     * @var array set of rules in the form 'pattern' => 'replacement'.
      */
     public $rules = [];
 
