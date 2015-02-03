@@ -1225,6 +1225,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     
     public function linkSync($name, $keys)
     {
+        if (empty($keys)) {
+            return;
+        }
+
         $relation = $this->getRelation($name);
         if ($relation->via !== null) {
             if ($this->getIsNewRecord()) {
