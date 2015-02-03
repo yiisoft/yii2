@@ -1,3 +1,6 @@
+# environment configuration
+/.env
+
 # yii console command
 /yii
 
