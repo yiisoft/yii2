@@ -17,10 +17,8 @@
 4. [[yii\base\Application::init()|init()]] が呼ばれます。
    そして `init()` が [[yii\base\Application::bootstrap()|bootstrap()]] を呼んで、ブートストラップコンポーネントを走らせます。
    - エクステンションマニフェストファイル `vendor/yiisoft/extensions.php` をインクルードします。
-   - エクステンションによって宣言された [ブートストラップコンポーネント](structure-extensions.md#bootstrapping-classes) を作成して走らせます。
-   - アプリケーションの [bootstrap プロパティ](structure-applications.md#bootstrap) に宣言されている
-     [アプリケーションコンポーネント](structure-application-components.md) および/または
-     [モジュール](structure-modules.md) を作成して走らせます。
+   - エクステンションによって宣言された [ブートストラップコンポーネント](structure-extensions.md#bootstrapping-classes) を作成して実行します。
+   - アプリケーションの [bootstrap プロパティ](structure-applications.md#bootstrap) に宣言されている [アプリケーションコンポーネント](structure-application-components.md) および/または [モジュール](structure-modules.md) を作成して実行します。
 
 ブートストラップの仕事は *全て* のリクエストを処理する前に、毎回しなければなりませんので、この過程を軽いものに保って可能な限り最適化することは非常に重要なことです。
 
@@ -29,10 +27,10 @@
 例えば、モジュールが追加の URL 解析規則を登録する必要がある場合は、モジュールを [bootstrap プロパティ](structure-applications.md#bootstrap) のリストに挙げなければなりません。
 なぜなら、URL 規則を使ってリクエストが解決される前に、新しい URL 規則を有効にしなければならないからです。
 
-実運用モードにおいては、[PHP OPCache] や [APC]  など、バイトコードキャッシュを有効にして、PHP ファイルをインクルードして解析するのに要する時間を最小化してください。
+本番運用モードにおいては、[PHP OPCache] や [APC]  など、バイトコードキャッシュを有効にして、PHP ファイルをインクルードして解析するのに要する時間を最小化してください。
 
 [PHP OPcache]: http://php.net/manual/ja/book.opcache.php
 [APC]: http://php.net/manual/ja/book.apc.php
 
 大規模なアプリケーションには、多数の小さな構成情報ファイルに分割された、非常に複雑なアプリケーション [構成情報](concept-configurations.md) を持つものがあります。
-そのような場合には、構成情報配列全体をキャッシュしておき、エントリスクリプトでアプリケーションのインスタンスを作成する前には、構成情報配列をキャッシュからロードするという方法を考慮してください。
+そのような場合には、構成情報配列全体をキャッシュしておき、エントリスクリプトでアプリケーションのインスタンスを作成する前に構成情報をロードするときには、配列全体を直接にキャッシュからロードするという方法を考慮してください。
