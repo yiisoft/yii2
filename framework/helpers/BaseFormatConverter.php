@@ -122,13 +122,14 @@ class BaseFormatConverter
         // http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
         // escaped text
         $escaped = [];
-        if (preg_match_all('/(?<!\')\'(.+?)\'/', $pattern, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all('/(?<!\')\'(.*?[^\'])\'(?!\')/', $pattern, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
+                $match[1] = str_replace('\'\'', '\'', $match[1]);
                 $escaped[$match[0]] = '\\'.implode('\\', str_split($match[1]));
             }
         }
         return strtr($pattern, array_merge($escaped, [
-            '\'\'' => '\'', // two single quotes produce one
+            '\'\'' => '\\\'', // two single quotes produce one
             'G' => '', // era designator like (Anno Domini)
             'Y' => 'o',     // 4digit year of "Week of Year"
             'y' => 'Y',     // 4digit year e.g. 2014
@@ -333,7 +334,7 @@ class BaseFormatConverter
         // http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
         // escaped text
         $escaped = [];
-        if (preg_match_all('/(?<!\')\'.+?\'/', $pattern, $matches)) {
+        if (preg_match_all('/(?<!\')\'.*?[^\']\'(?!\')/', $pattern, $matches)) {
             foreach ($matches[0] as $match) {
                 $escaped[$match] = $match;
             }
