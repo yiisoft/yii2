@@ -1225,10 +1225,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     
     public function linkSync($name, $keys)
     {
-        if (empty($keys)) {
-            return;
-        }
-
         $relation = $this->getRelation($name);
         if ($relation->via !== null) {
             if ($this->getIsNewRecord()) {
@@ -1268,15 +1264,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 ->createCommand(static::getDb())
                 ->queryAll();
                 
-            if (is_object($keys[0]) && $keys[0] instanceof self) { //Format an array of models
-                foreach ($keys as &$key) {
-                    $key = array_map(function($item) use (&$key) {
-                        return $key->$item;
-                    }, array_flip($relation->link));
-                }
-            } else if (!is_array($keys[0])) { //Format single keys
-                foreach ($keys as &$key) {
-                    $key = [reset($relation->link) => $key];
+            if (!empty($keys)) {
+                if (is_object($keys[0]) && $keys[0] instanceof self) { //Format an array of models
+                    foreach ($keys as &$key) {
+                        $key = array_map(function($item) use (&$key) {
+                            return $key->$item;
+                        }, array_flip($relation->link));
+                    }
+                } else if (!is_array($keys[0])) { //Format single keys
+                    foreach ($keys as &$key) {
+                        $key = [reset($relation->link) => $key];
+                    }
                 }
             }
             
