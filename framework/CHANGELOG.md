@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Enh #6896: Added `yii\log\FileTarget::$enableRotation` to allow disabling log rotation when external tools are configured for this (cebe)
 - Enh #7008: Removed extra white space in GridView filter cell (uran1980)
 - Enh #7051: Added support for preventing swapping values between different cookies (pavimus, qiangxue)
+- Enh #7150: FormatConverter for date formats now supports single quote escaping (brandonkelly)
 - Enh #7255: Added support to allow widgets that use text input to specify input types (qiangxue)
 - Enh #7269: `yii\console\controllers\BaseMigrateController` now throws exception if directory specified doesn't exist and action isn't `create` (lynicidn, samdark)
 - Enh #7301: Added checking for ICU version in requirements warning about plural problems when it is lower than 49 (sidtj)
