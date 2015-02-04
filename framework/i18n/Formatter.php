@@ -286,7 +286,20 @@ class Formatter extends Component
         }
         return $value;
     }
-
+    
+    /**
+     * Formats the value based on the given format type.
+     * @param mixed $value
+     * @param string|array $format
+     * @return string the formatted result or an empty string.
+     * @see Formatter::format()
+     */
+    public function asEmpty($value, $format)
+    {
+        $result = $this->format($value, $format);
+        return $result === $this->nullDisplay ? '' : $result;
+    }
+    
     /**
      * Formats the value as an HTML-encoded plain text.
      * @param string $value the value to be formatted.
