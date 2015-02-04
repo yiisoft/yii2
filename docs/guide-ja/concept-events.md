@@ -13,12 +13,12 @@ Yiiはイベントをサポートするために、 [[yii\base\Component]] と�
 イベントハンドラ <span id="event-handlers"></span>
 --------------
 
-イベントハンドラとは、関連するイベントがトリガされたときに実行される、 [PHP コールバック](http://www.php.net/manual/en/language.types.callable.php)
+イベントハンドラとは、関連するイベントがトリガされたときに実行される、 [PHP コールバック](http://www.php.net/manual/ja/language.types.callable.php)
 です。次のコールバックのいずれも使用可能です:
 
 - 文字列で指定されたグローバル PHP 関数 (括弧を除く) `'trim'` など
 - オブジェクトとメソッド名文字列の配列で指定された、オブジェクトのメソッド (括弧を除く) `[$object, 'methodName']` など
-- クラス名文字列とメソッド名文字列の配列で指定された、静的なクラスメソッド `[$class, 'methodName']` など
+- クラス名文字列とメソッド名文字列の配列で指定された、静的なクラスメソッド (括弧を除く) `['ClassName', 'methodName']` など
 - 無名関数 `function ($event) { ... }` など
 
 イベントハンドラのシグネチャはこのようになります:

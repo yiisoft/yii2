@@ -100,7 +100,7 @@ function ($event) {
 ビヘイビアのアタッチ <span id="attaching-behaviors"></span>
 -------------------
 
-[[yii\base\Component|component]] へのビヘイビアのアタッチは、静的にも動的にも可能です。実際は、前者のほうがより一般的ですが。
+[[yii\base\Component|コンポーネント]] へのビヘイビアのアタッチは、静的にも動的にも可能です。実際は、前者のほうがより一般的ですが。
 
 ビヘイビアを静的にアタッチするには、ビヘイビアをアタッチしたいコンポーネントクラスの [[yii\base\Component::behaviors()|behaviors()]] メソッドをオーバーライドします。
 [[yii\base\Component::behaviors()|behaviors()]] メソッドは、ビヘイビアの [構成](concept-configurations.md) のリストを返さなければなりません。
