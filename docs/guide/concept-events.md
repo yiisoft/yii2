@@ -18,7 +18,7 @@ when the event it is attached to is triggered. You can use any of the following 
 
 - a global PHP function specified as a string (without parentheses), e.g., `'trim'`;
 - an object method specified as an array of an object and a method name as a string (without parentheses), e.g., `[$object, 'methodName']`;
-- a static class method specified as an array of a class name and a method name as a string (without parentheses), e.g., `[$class, 'methodName']`;
+- a static class method specified as an array of a class name and a method name as a string (without parentheses), e.g., `['ClassName', 'methodName']`;
 - an anonymous function, e.g., `function ($event) { ... }`.
 
 The signature of an event handler is:
