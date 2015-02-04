@@ -577,6 +577,7 @@ class BaseHtml
      */
     public static function passwordInput($name, $value = null, $options = [])
     {
+        $options['value'] = isset($options['value']) ? $options['value'] : '';
         return static::input('password', $name, $value, $options);
     }
 
