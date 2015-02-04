@@ -13,7 +13,7 @@
  *             // list of directories that should be set writable
  *         ],
  *         'setExecutable' => [
- *             // list of directories that should be set executable
+ *             // list of files that should be set executable
  *         ],
  *         'setCookieValidationKey' => [
  *             // list of config files that need to be inserted with automatically generated cookie validation keys
