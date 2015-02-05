@@ -177,7 +177,7 @@ $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execu
 $connection->createCommand()->delete('user', 'status = 0')->execute();
 ```
 
-###引用的表名和列名
+###引用的表名和列名 <a name="quoting-table-and-column-names"></a>
 
 大多数时间都使用以下语法来安全地引用表名和列名：
 
