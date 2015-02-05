@@ -160,9 +160,11 @@ class User extends ActiveRecord implements Linkable
     "id": 100,
     "email": "user@example.com",
     // ...
-    "_links" => [
-        "self": "https://example.com/users/100"
-    ]
+    "_links" => {
+        "self": {
+            "href": "https://example.com/users/100"
+        }
+    }
 }
 ```
 

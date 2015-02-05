@@ -145,9 +145,11 @@ Cuando un objeto `User` es devuelto en una respuesta, puede contener un elemento
     "id": 100,
     "email": "user@example.com",
     // ...
-    "_links" => [
-        "self": "https://example.com/users/100"
-    ]
+    "_links" => {
+        "self": {
+            "href": "https://example.com/users/100"
+        }
+    }
 }
 ```
 

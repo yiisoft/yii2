@@ -136,9 +136,15 @@ Content-Type: application/json; charset=UTF-8
         ...
     ],
     "_links": {
-        "self": "http://localhost/users?page=1",
-        "next": "http://localhost/users?page=2",
-        "last": "http://localhost/users?page=50"
+        "self": {
+            "href": "http://localhost/users?page=1"
+        },
+        "next": {
+            "href": "http://localhost/users?page=2"
+        },
+        "last": {
+            "href": "http://localhost/users?page=50"
+        }
     },
     "_meta": {
         "totalCount": 1000,
