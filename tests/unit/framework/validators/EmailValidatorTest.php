@@ -95,6 +95,16 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('test@nonexistingsubdomain.example.com'));
         $validator->checkDNS = true;
         $this->assertFalse($validator->validate('test@nonexistingsubdomain.example.com'));
+
+        $validator->checkDNS = true;
+        $validator->allowName = true;
+        $emails = [
+            'ipetrov@gmail.com',
+            'Ivan Petrov <ipetrov@gmail.com>',
+        ];
+        foreach($emails as $email) {
+            $this->assertTrue($validator->validate($email),"Email: '$email' failed to validate(checkDNS=true, allowName=true)");
+        }
     }
 
     public function testValidateAttribute()
