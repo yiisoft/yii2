@@ -399,7 +399,7 @@ class Query extends Component implements QueryInterface
      *
      * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
      * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
-     * @return static the query object itself
+     * @return $this
      */
     public function select($columns, $option = null)
     {
@@ -414,7 +414,7 @@ class Query extends Component implements QueryInterface
     /**
      * Add more columns to the SELECT part of the query.
      * @param string|array $columns the columns to add to the select.
-     * @return static the query object itself
+     * @return $this
      * @see select()
      */
     public function addSelect($columns)
@@ -433,7 +433,7 @@ class Query extends Component implements QueryInterface
     /**
      * Sets the value indicating whether to SELECT DISTINCT or not.
      * @param boolean $value whether to SELECT DISTINCT or not.
-     * @return static the query object itself
+     * @return $this
      */
     public function distinct($value = true)
     {
@@ -455,7 +455,7 @@ class Query extends Component implements QueryInterface
      * Use a Query object to represent a sub-query. In this case, the corresponding array key will be used
      * as the alias for the sub-query.
      *
-     * @return static the query object itself
+     * @return $this
      */
     public function from($tables)
     {
@@ -478,7 +478,7 @@ class Query extends Component implements QueryInterface
      *
      * @param string|array $condition the conditions that should be put in the WHERE part.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      * @see andWhere()
      * @see orWhere()
      * @see QueryInterface::where()
@@ -496,7 +496,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      * @see where()
      * @see orWhere()
      */
@@ -517,7 +517,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      * @see where()
      * @see andWhere()
      */
@@ -636,7 +636,7 @@ class Query extends Component implements QueryInterface
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
-     * @return static the query object itself
+     * @return $this
      * @see addGroupBy()
      */
     public function groupBy($columns)
@@ -654,7 +654,7 @@ class Query extends Component implements QueryInterface
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
-     * @return static the query object itself
+     * @return $this
      * @see groupBy()
      */
     public function addGroupBy($columns)
@@ -675,7 +675,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the conditions to be put after HAVING.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      * @see andHaving()
      * @see orHaving()
      */
@@ -692,7 +692,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      * @see having()
      * @see orHaving()
      */
@@ -713,7 +713,7 @@ class Query extends Component implements QueryInterface
      * @param string|array $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      * @see having()
      * @see andHaving()
      */
@@ -732,7 +732,7 @@ class Query extends Component implements QueryInterface
      * Appends a SQL statement using UNION operator.
      * @param string|Query $sql the SQL statement to be appended using UNION
      * @param boolean $all TRUE if using UNION ALL and FALSE if using UNION
-     * @return static the query object itself
+     * @return $this
      */
     public function union($sql, $all = false)
     {
@@ -744,7 +744,7 @@ class Query extends Component implements QueryInterface
      * Sets the parameters to be bound to the query.
      * @param array $params list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
-     * @return static the query object itself
+     * @return $this
      * @see addParams()
      */
     public function params($params)
@@ -757,7 +757,7 @@ class Query extends Component implements QueryInterface
      * Adds additional parameters to be bound to the query.
      * @param array $params list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
-     * @return static the query object itself
+     * @return $this
      * @see params()
      */
     public function addParams($params)

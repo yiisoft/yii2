@@ -353,7 +353,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param string|array $joinType the join type of the relations specified in `$with`.
      * When this is a string, it applies to all relations specified in `$with`. Use an array
      * in the format of `relationName => joinType` to specify different join types for different relations.
-     * @return static the query object itself
+     * @return $this
      */
     public function joinWith($with, $eagerLoading = true, $joinType = 'LEFT JOIN')
     {
@@ -409,7 +409,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Please refer to [[joinWith()]] for detailed usage of this method.
      * @param string|array $with the relations to be joined with
      * @param boolean|array $eagerLoading whether to eager loading the relations
-     * @return static the query object itself
+     * @return $this
      * @see joinWith()
      */
     public function innerJoinWith($with, $eagerLoading = true)
@@ -603,7 +603,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * @param string|array $condition the ON condition. Please refer to [[Query::where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      */
     public function onCondition($condition, $params = [])
     {
@@ -618,7 +618,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param string|array $condition the new ON condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      * @see onCondition()
      * @see orOnCondition()
      */
@@ -639,7 +639,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param string|array $condition the new ON condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
-     * @return static the query object itself
+     * @return $this
      * @see onCondition()
      * @see andOnCondition()
      */
@@ -673,7 +673,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * in the [[primaryModel]] table.
      * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
-     * @return static
+     * @return $this
      * @see via()
      */
     public function viaTable($tableName, $link, callable $callable = null)
