@@ -173,10 +173,15 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Frees all session variables and destroys all data registered to a session.
+     * Frees all session variables and destroys all data registered to a session
+     * even for a closed or a not yet started session.
      */
     public function destroy()
     {
+        // start a previously closed or not yet started session so session_destroy() can handle it
+        if (!$this->getIsActive() && $this->getId()) {
+            @session_start();
+        }
         if ($this->getIsActive()) {
             @session_unset();
             @session_destroy();
@@ -203,15 +208,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function getHasSessionId()
     {
         if ($this->_hasSessionId === null) {
-            $name = $this->getName();
-            $request = Yii::$app->getRequest();
-            if (ini_get('session.use_cookies') && !empty($_COOKIE[$name])) {
-                $this->_hasSessionId = true;
-            } elseif (!ini_get('session.use_only_cookies') && ini_get('session.use_trans_sid')) {
-                $this->_hasSessionId = $request->get($name) !== null;
-            } else {
-                $this->_hasSessionId = false;
-            }
+            $this->_hasSessionId = $this->getRequestSessionIdInternal() !== null;
         }
 
         return $this->_hasSessionId;
@@ -229,13 +226,29 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Gets the session ID.
-     * This is a wrapper for [PHP session_id()](http://php.net/manual/en/function.session-id.php).
+     * Gets a session ID from the request or null if there is no session ID in the request
+     * @return string|null
+     */
+    private function getRequestSessionIdInternal()
+    {
+        $name = $this->getName();
+        $request = Yii::$app->getRequest();
+        if (ini_get('session.use_cookies') && !empty($_COOKIE[$name])) {
+            return $_COOKIE[$name];
+        }
+        if (!ini_get('session.use_only_cookies') && ini_get('session.use_trans_sid')) {
+            return $request->get($name);
+        }
+        return null;
+    }
+
+    /**
+     * Gets the session ID even the session hasn't yet started
      * @return string the current session ID
      */
     public function getId()
     {
-        return session_id();
+        return session_id() ?: ($this->getRequestSessionIdInternal() ?: '');
     }
 
     /**
@@ -678,7 +691,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      *
      * With the above code you can use the [bootstrap alert][] classes such as `success`, `info`, `danger`
      * as the flash message key to influence the color of the div.
-     * 
+     *
      * Note that if you use [[addFlash()]], `$message` will be an array, and you will have to adjust the above code.
      *
      * [bootstrap alert]: http://getbootstrap.com/components/#alerts
