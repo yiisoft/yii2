@@ -304,7 +304,7 @@ class ActiveField extends \yii\widgets\ActiveField
 
     /**
      * @param boolean $value whether to render a inline list
-     * @return static the field object itself
+     * @return $this
      * Make sure you call this method before [[checkboxList()]] or [[radioList()]] to have any effect.
      */
     public function inline($value = true)
