@@ -6,6 +6,8 @@ use yii\console\Application;
 use yii\console\Controller;
 use yii\db\Connection;
 use yii\rbac\DbManager;
+use yii\rbac\models\Assignment;
+use yii\rbac\models\Item;
 
 /**
  * DbManagerTestCase
@@ -70,13 +72,66 @@ abstract class DbManagerTestCase extends ManagerTestCase
     protected function setUp()
     {
         parent::setUp();
+        if (Yii::$app === null) {
+            $this->mockApplication([
+                'components' => [
+                    'db' => static::getConnection(),
+                    'authManager' => $this->createManager(),
+                ],
+            ]);
+        }
         $this->auth = $this->createManager();
     }
 
+    public function testCreateRole()
+    {
+        $role = $this->auth->createRole('admin');
+        $this->assertTrue($role instanceof Item);
+        $this->assertEquals(Item::TYPE_ROLE, $role->type);
+        $this->assertEquals('admin', $role->name);
+    }
+
+    public function testCreatePermission()
+    {
+        $permission = $this->auth->createPermission('edit post');
+        $this->assertTrue($permission instanceof Item);
+        $this->assertEquals(Item::TYPE_PERMISSION, $permission->type);
+        $this->assertEquals('edit post', $permission->name);
+    }
+
+    public function testGetRolesByUser()
+    {
+        $this->prepareData();
+        $roles = $this->auth->getRolesByUser('reader A');
+        $this->assertTrue(reset($roles) instanceof Item);
+        $this->assertEquals($roles['reader']->name, 'reader');
+    }
+
+    public function testGetPermissionsByRole()
+    {
+        $this->prepareData();
+        $roles = $this->auth->getPermissionsByRole('admin');
+        $expectedPermissions = ['createPost', 'updatePost', 'readPost', 'updateAnyPost'];
+        $this->assertEquals(count($roles), count($expectedPermissions));
+        foreach ($expectedPermissions as $permission) {
+            $this->assertTrue($roles[$permission] instanceof Item);
+        }
+    }
+
+    public function testGetPermissionsByUser()
+    {
+        $this->prepareData();
+        $roles = $this->auth->getPermissionsByUser('author B');
+        $expectedPermissions = ['createPost', 'updatePost', 'readPost'];
+        $this->assertEquals(count($roles), count($expectedPermissions));
+        foreach ($expectedPermissions as $permission) {
+            $this->assertTrue($roles[$permission] instanceof Item);
+        }
+    }
     protected function tearDown()
     {
-        parent::tearDown();
         $this->auth->removeAll();
+        parent::tearDown();
     }
 
     /**
