@@ -274,7 +274,7 @@ Por ejemplo,
 
 ```php
 // ejecuta esta SQL para MySQL: SELECT COUNT(`id`) FROM `employee`
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
+$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
             ->queryScalar();
 ```
 
