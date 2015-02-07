@@ -39,5 +39,4 @@ class SubJoin extends Query{
         $this->join[] = ['', $table];
         return $this->addParams($params);
     }
-
 }
