@@ -270,7 +270,7 @@ For example,
 
 ```php
 // executes this SQL for MySQL: SELECT COUNT(`id`) FROM `employee`
-$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
+$count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
             ->queryScalar();
 ```
 
