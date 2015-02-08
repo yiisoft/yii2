@@ -29,6 +29,15 @@ use yii\web\View;
  * ]);
  * ```
  *
+ * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
+ * method, for example like this:
+ *
+ * ```php
+ * <?= $form->field($model, 'from_date')->widget(\yii\jui\MaskedInput::classname(), [
+ *     'mask' => '999-999-9999',
+ * ]) ?>
+ * ```
+ *
  * The masked text field is implemented based on the
  * [jQuery input masked plugin](https://github.com/RobinHerbots/jquery.inputmask).
  *
