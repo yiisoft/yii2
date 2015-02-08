@@ -73,7 +73,7 @@ class Controller extends \yii\base\Controller
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
                 if ($param->isArray()) {
-                    $args[] = $actionParams[$name] = is_array($params[$name]) ? $params[$name] : [$params[$name]];
+                    $args[] = $actionParams[$name] = (array)$params[$name];
                 } elseif (!is_array($params[$name])) {
                     $args[] = $actionParams[$name] = $params[$name];
                 } else {

@@ -248,10 +248,7 @@ class MessageController extends Controller
         $this->stdout("Extracting messages from $coloredFileName...\n");
         $subject = file_get_contents($fileName);
         $messages = [];
-        if (!is_array($translator)) {
-            $translator = [$translator];
-        }
-        foreach ($translator as $currentTranslator) {
+        foreach ((array)$translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);
             array_shift($translatorTokens);
 
