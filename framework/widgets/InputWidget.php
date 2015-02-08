@@ -54,7 +54,7 @@ class InputWidget extends Widget
      */
     public function init()
     {
-        if (!$this->hasModel() && $this->name === null) {
+        if ($this->name === null && !$this->hasModel()) {
             throw new InvalidConfigException("Either 'name', or 'model' and 'attribute' properties must be specified.");
         }
         if (!isset($this->options['id'])) {
