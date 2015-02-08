@@ -401,7 +401,7 @@ class MessageController extends Controller
             }
             ksort($existingMessages);
             foreach ($existingMessages as $message => $translation) {
-                if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
+                if (!$removeUnused && !isset($merged[$message]) && !isset($todo[$message])) {
                     if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0) {
                         $todo[$message] = $translation;
                     } else {
@@ -515,7 +515,7 @@ EOD;
 
                 // add obsolete unused messages
                 foreach ($existingMessages as $message => $translation) {
-                    if (!isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message]) && !$removeUnused) {
+                    if (!$removeUnused && !isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message])) {
                         if (!empty($translation) && substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
                             $todos[$category . chr(4) . $message] = $translation;
                         } else {

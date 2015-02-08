@@ -203,7 +203,7 @@ class DbManager extends BaseManager
      */
     protected function updateItem($name, $item)
     {
-        if (!$this->supportsCascadeUpdate() && $item->name !== $name) {
+        if ($item->name !== $name && !$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
                 ->update($this->itemChildTable, ['parent' => $item->name], ['parent' => $name])
                 ->execute();
@@ -259,7 +259,7 @@ class DbManager extends BaseManager
      */
     protected function updateRule($name, $rule)
     {
-        if (!$this->supportsCascadeUpdate() && $rule->name !== $name) {
+        if ($rule->name !== $name && !$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
                 ->update($this->itemTable, ['rule_name' => $rule->name], ['rule_name' => $name])
                 ->execute();
