@@ -1,7 +1,7 @@
 クラスのオートローディング
 =================
 
-Yiiは、必要となるすべてのクラスファイルを、特定してインクルードするにあたり、 [クラスのオートローディングメカニズム](http://www.php.net/manual/en/language.oop5.autoload.php)
+Yiiは、必要となるすべてのクラスファイルを、特定してインクルードするにあたり、 [クラスのオートローディングメカニズム](http://www.php.net/manual/ja/language.oop5.autoload.php)
 を頼りにします。[PSR-4 標準](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md) に準拠した、高性能なクラスのオートローダーを提供します。
 このオートローダーは、あなたが `Yii.php` ファイルをインクルードするときにインストールされます。
 
