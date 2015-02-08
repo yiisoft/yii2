@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Enh #6697: Added `yii\helpers\Url::current()` method that allows adding or removing parameters from current URL (samdark, callmez)
 - Enh #6852: Added `yii\helpers\BaseHtmlPurifier::helpers()` in order to be able to configure `HtmlPurifier` helper globally via subclassing (Alex-Code)
 - Enh #6882: Added `yii\web\ErrorHandler::getTypeUrl()` in order to allow providing custom types/classes/methods URLs for subclasses (brandonkelly)
+- Enh #6883: `yii\base\ErrorHandler::logException()` is now public (samdark)
 - Enh #6896: Added `yii\log\FileTarget::$enableRotation` to allow disabling log rotation when external tools are configured for this (cebe)
 - Enh #7008: Removed extra white space in GridView filter cell (uran1980)
 - Enh #7051: Added support for preventing swapping values between different cookies (pavimus, qiangxue) 
