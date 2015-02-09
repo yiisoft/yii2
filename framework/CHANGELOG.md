@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #7037: `yii\console\controllers\AssetController` now correctly handles relative image URLs if source and target CSS are under same directory (klimov-paul)
 - Bug #7055: composite IN condition was not generated correctly for certain DBMS (nineinchnick) 
 - Bug #7074: `yii\data\ArrayDataProvider` did not correctly handle the case `Pagination::pageSize = 0` (kirsenn, qiangxue)
+- Enh #4710: Added `yii\web\AssetManager::appendTimestamp` to support cache busting for assets  (qiangxue)
 - Enh #5663: Added support for using `data-params` to specify additional form data to be submitted via the `data-method` approach (usualdesigner, qiangxue)
 - Enh #6106: Added ability to specify `encode` for each item of `yii\widgets\Breadcrumbs` (samdark, aleksanderd)
 - Enh #6361: Added `validateAttribute()` to `yii.activeForm.js` to support manually triggering data validation of an input (Alex-Code, qiang)
