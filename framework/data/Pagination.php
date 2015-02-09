@@ -232,7 +232,7 @@ class Pagination extends Object implements Linkable
             $this->_pageSize = null;
         } else {
             $value = (int) $value;
-            if ($validatePageSize && count($this->pageSizeLimit) === 2 && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
+            if ($validatePageSize && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1]) && count($this->pageSizeLimit) === 2) {
                 if ($value < $this->pageSizeLimit[0]) {
                     $value = $this->pageSizeLimit[0];
                 } elseif ($value > $this->pageSizeLimit[1]) {

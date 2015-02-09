@@ -470,7 +470,7 @@ class AssetManager extends Component
             if (!is_dir($dstDir)) {
                 symlink($src, $dstDir);
             }
-        } elseif (!is_dir($dstDir) || !empty($options['forceCopy']) || (!isset($options['forceCopy']) && $this->forceCopy)) {
+        } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
             $opts = [
                 'dirMode' => $this->dirMode,
                 'fileMode' => $this->fileMode,

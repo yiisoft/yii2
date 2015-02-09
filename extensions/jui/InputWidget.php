@@ -14,6 +14,15 @@ use yii\helpers\Html;
 /**
  * InputWidget is the base class for all jQuery UI input widgets.
  *
+ * Classes extending from this widget can be used in an [[yii\widgets\ActiveForm|ActiveForm]]
+ * using the [[yii\widgets\ActiveField::widget()|widget()]] method, for example like this:
+ *
+ * ```php
+ * <?= $form->field($model, 'from_date')->widget('WidgetClassName', [
+ *     // configure additional widget properties here
+ * ]) ?>
+ * ```
+ *
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
