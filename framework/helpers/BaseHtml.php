@@ -1909,6 +1909,6 @@ class BaseHtml
     public static function getInputId($model, $attribute)
     {
         $name = strtolower(static::getInputName($model, $attribute));
-        return str_replace(['[]', '][', '[', ']', ' '], ['', '-', '-', '', '-'], $name);
+        return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
     }
 }
