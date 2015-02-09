@@ -370,6 +370,30 @@ when it is being published. This is faster than file copying and can also ensure
 always up-to-date.
 
 
+### Cache Busting <span id="cache-busting"></span>
+
+For Web application running in production mode, it is a common practice to enable HTTP caching for assets and other
+static resources. A drawback of this practice is that whenever you modify an asset and deploy it to production, a user
+client may still use the old version due to the HTTP caching. To overcome this drawback, you may use the cache busting
+feature, which was introduced in version 2.0.3, by configuring [[yii\web\AssetManager]] like the following:
+  
+```php
+return [
+    // ...
+    'components' => [
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
+    ],
+];
+```
+
+By doing so, the URL of every published asset will be appended with its last modification timestamp. For example,
+the URL to `yii.js` may look like `/assets/5515a87c/yii.js?v=1423448645"`, where the parameter `v` represents the
+last modification timestamp of the `yii.js` file. Now if you modify an asset, its URL will be changed, too, which causes
+the client to fetch the latest version of the asset.
+
+
 ## Commonly Used Asset Bundles <span id="common-asset-bundles"></span>
 
 The core Yii code has defined many asset bundles. Among them, the following bundles are commonly used and may

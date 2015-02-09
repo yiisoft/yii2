@@ -150,6 +150,15 @@ class AssetManager extends Component
      * significantly degrade the performance.
      */
     public $forceCopy = false;
+    /**
+     * @var boolean whether to append a timestamp to the URL of every published asset. When this is true,
+     * the URL of a published asset may look like `/path/to/asset?v=timestamp`, where `timestamp` is the
+     * last modification time of the published asset file.
+     * You normally would want to set this property to true when you have enabled HTTP caching for assets,
+     * because it allows you to bust caching when the assets are updated.
+     * @since 2.0.3
+     */
+    public $appendTimestamp = false;
 
     private $_dummyBundles = [];
 
@@ -252,9 +261,22 @@ class AssetManager extends Component
     public function getAssetUrl($bundle, $asset)
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            return Url::isRelative($actualAsset) ? $this->baseUrl . '/' . $actualAsset : $actualAsset;
+            $asset = $actualAsset;
+            $basePath = $this->basePath;
+            $baseUrl = $this->baseUrl;
         } else {
-            return Url::isRelative($asset) ? $bundle->baseUrl . '/' . $asset : $asset;
+            $basePath = $bundle->basePath;
+            $baseUrl = $bundle->baseUrl;
+        }
+
+        if (!Url::isRelative($asset)) {
+            return $asset;
+        }
+
+        if ($this->appendTimestamp && ($timestamp = @filemtime("$basePath/$asset")) > 0) {
+            return "$baseUrl/$asset?v=$timestamp";
+        } else {
+            return "$baseUrl/$asset";
         }
     }
 
