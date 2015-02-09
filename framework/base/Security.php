@@ -20,7 +20,8 @@ use Yii;
  * - Data tampering prevention: [[hashData()]] and [[validateData()]]
  * - Password validation: [[generatePasswordHash()]] and [[validatePassword()]]
  *
- * > Note: this class requires 'mcrypt' PHP extension. For the highest security level PHP version >= 5.5.0 is recommended.
+ * > Note: this class requires 'OpenSSL' PHP extension for random key/string gneration on Windows and
+ * for encryption/decryption on all platforms. For the highest security level PHP version >= 5.5.0 is recommended.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
@@ -30,18 +31,13 @@ use Yii;
 class Security extends Component
 {
     /**
-     * Cipher algorithm for mcrypt module.
-     * AES has 128-bit block size and three key sizes: 128, 192 and 256 bits.
-     * mcrypt offers the Rijndael cipher with block sizes of 128, 192 and 256
-     * bits but only the 128-bit Rijndael is standardized in AES.
-     * So to use AES in mycrypt, specify `'rijndael-128'` cipher and mcrypt
-     * chooses the appropriate AES based on the length of the supplied key.
+     * Block cipher algorithm for encryption and decryption.
      */
-    const MCRYPT_CIPHER = 'rijndael-128';
+    const BLOCK_CIPHER = 'AES';
     /**
-     * Block cipher operation mode for mcrypt module.
+     * Block cipher operation mode.
      */
-    const MCRYPT_MODE = 'cbc';
+    const BLOCK_MODE = 'CBC';
     /**
      * Size in bytes of encryption key, message authentication key and KDF salt.
      */
@@ -142,36 +138,21 @@ class Security extends Component
     }
 
     /**
-     * Initializes the mcrypt module.
-     * @return resource the mcrypt module handle.
-     * @throws InvalidConfigException if mcrypt extension is not installed
-     * @throws Exception if mcrypt initialization fails
+     * Returns a string for use in the $method argument of openssl_en/decrypt functions.
+     *
+     * No checks are made. This function will produce nonsense that OpenSSL will reject
+     * if the cipher is not AES, the key size is not 16, 24 or 32, or if the mode is
+     * unsupported.
+     *
+     * Tbh, this is a foot gun. But we need it if we allow the user to change key size
+     * or block mode. And the user must override it top use a cipher other than AES.
+     *
+     * @return string OpenSSL cipher method.
      */
-    protected function getCryptModule()
+    protected function opensslCipher()
     {
-        if ($this->_cryptModule === null) {
-            if (!extension_loaded('mcrypt')) {
-                throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
-            }
-
-            $this->_cryptModule = @mcrypt_module_open(self::MCRYPT_CIPHER, '', self::MCRYPT_MODE, '');
-            if ($this->_cryptModule === false) {
-                $this->_cryptModule = null;
-                throw new Exception('Failed to initialize the mcrypt module.');
-            }
-        }
-
-        return $this->_cryptModule;
+        return static::BLOCK_CIPHER . '-' . (8 * static::KEY_SIZE) . '-' . static::BLOCK_MODE;
     }
-
-    public function __destruct()
-    {
-        if ($this->_cryptModule !== null) {
-            mcrypt_module_close($this->_cryptModule);
-            $this->_cryptModule = null;
-        }
-    }
-
 
     /**
      * Encrypts data.
@@ -186,8 +167,6 @@ class Security extends Component
      */
     protected function encrypt($data, $passwordBased, $secret, $info)
     {
-        $module = $this->getCryptModule();
-
         $keySalt = $this->generateRandomKey(self::KEY_SIZE);
         if ($passwordBased) {
             $key = $this->pbkdf2(self::KDF_HASH, $secret, $keySalt, $this->derivationIterations, self::KEY_SIZE);
@@ -196,11 +175,9 @@ class Security extends Component
         }
 
         $data = $this->addPadding($data);
-        $ivSize = mcrypt_enc_get_iv_size($module);
-        $iv = mcrypt_create_iv($ivSize, MCRYPT_DEV_URANDOM);
-        mcrypt_generic_init($module, $key, $iv);
-        $encrypted = mcrypt_generic($module, $data);
-        mcrypt_generic_deinit($module);
+        $ivSize = 16;
+        $iv = $this->generateRandomKey($ivSize);
+        $encrypted = openssl_encrypt($data, $this->opensslCipher(), $key, OPENSSL_RAW_DATA, $iv);
 
         $authKey = $this->hkdf(self::KDF_HASH, $key, null, self::AUTH_KEY_INFO, self::KEY_SIZE);
         $hashed = $this->hashData($iv . $encrypted, $authKey);
@@ -209,7 +186,7 @@ class Security extends Component
          * Output: [keySalt][MAC][IV][ciphertext]
          * - keySalt is KEY_SIZE bytes long
          * - MAC: message authentication code, length same as the output of MAC_HASH
-         * - IV: initialization vector, length set by CRYPT_CIPHER and CRYPT_MODE, mcrypt_enc_get_iv_size()
+         * - IV: initialization vector, length 16, i.e. the AES block size
          */
         return $keySalt . $hashed;
     }
@@ -238,13 +215,10 @@ class Security extends Component
             return false;
         }
 
-        $module = $this->getCryptModule();
-        $ivSize = mcrypt_enc_get_iv_size($module);
+        $ivSize = 16;
         $iv = StringHelper::byteSubstr($data, 0, $ivSize);
         $encrypted = StringHelper::byteSubstr($data, $ivSize, null);
-        mcrypt_generic_init($module, $key, $iv);
-        $decrypted = mdecrypt_generic($module, $encrypted);
-        mcrypt_generic_deinit($module);
+        $decrypted = openssl_decrypt($encrypted, $this->opensslCipher(), $key, OPENSSL_RAW_DATA, $iv);
 
         return $this->stripPadding($decrypted);
     }
@@ -256,8 +230,7 @@ class Security extends Component
      */
     protected function addPadding($data)
     {
-        $module = $this->getCryptModule();
-        $blockSize = mcrypt_enc_get_block_size($module);
+        $blockSize = 16;
         $pad = $blockSize - (StringHelper::byteLength($data) % $blockSize);
 
         return $data . str_repeat(chr($pad), $pad);
@@ -456,19 +429,72 @@ class Security extends Component
      *
      * @param integer $length the number of bytes to generate
      * @return string the generated random bytes
-     * @throws InvalidConfigException if mcrypt extension is not installed.
+     * @throws InvalidConfigException if OpenSSL extension is required (e.g. on Windows) but not installed.
      * @throws Exception on failure.
      */
     public function generateRandomKey($length = 32)
     {
-        if (!extension_loaded('mcrypt')) {
-            throw new InvalidConfigException('The mcrypt PHP extension is not installed.');
+        /*
+         * Strategy
+         *
+         * The most common platform is Linux, on which /dev/urandom is the best choice. Many other OSs
+         * implement a device called /dev/urandom for Linux compat and it is good too. So if there is
+         * a /dev/urandom then it is our first choice regardless of OS.
+         *
+         * Nearly all other modern Unix-like systems (the BSDs, Unixes and OS X) have a /dev/random
+         * that is a good choice. If we didn't get bytes from /dev/urandom then we try this next but
+         * only if the system is not Linux. Do not try to read /dev/random on Linux.
+         *
+         * Finally, OpenSSL can supply CSPR bytes. It is our last resort. On Windows this reads from
+         * CryptGenRandom, which is the right thing to do. On other systems that don't have a Unix-like
+         * /dev/u?random , it will deliver bytes from its own CSPRNG that is seeded from kernel sources
+         * of randomness. Even though it is fast, we don't generally prefer OpenSSL over /dev/u?random
+         * because an RNG in user space memory is undesirable.
+         *
+         * For background, see http://sockpuppet.org/blog/2014/02/25/safely-generate-random-numbers/
+         */
+
+        $bytes = '';
+
+        // If we are on Linux or any OS that mimics the Linux /dev/urandom device, e.g. FreeBSD or OS X,
+        // then read from /dev/urandom.
+        if (file_exists('/dev/urandom')) {
+            $handle = fopen('/dev/urandom', 'r');
+            if ($handle !== false) {
+                $bytes .= fread($handle, $length);
+                fclose($handle);
+            }
         }
-        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
-        if ($bytes === false) {
+
+        if (mb_strlen($bytes, '8bit') >= $length) {
+            return mb_substr($bytes, 0, $length, '8bit');
+        }
+
+        // If we are not on Linux and there is a /dev/random device then we have a BSD or Unix device
+        // that won't block. It's not safe to read from /dev/random on Linux.
+        if (php_uname('s') !== 'Linux' && file_exists('/dev/random')) {
+            $handle = fopen('/dev/random', 'r');
+            if ($handle !== false) {
+                $bytes .= fread($handle, $length);
+                fclose($handle);
+            }
+        }
+
+        if (mb_strlen($bytes, '8bit') >= $length) {
+            return mb_substr($bytes, 0, $length, '8bit');
+        }
+
+        if (!extension_loaded('openssl')) {
+            throw new InvalidConfigException('The OpenSSL PHP extension is not installed.');
+        }
+
+        $bytes .= openssl_random_pseudo_bytes($length, $cryptoStrong);
+
+        if (mb_strlen($bytes, '8bit') < $length || !$cryptoStrong) {
             throw new Exception('Unable to generate random bytes.');
         }
-        return $bytes;
+
+        return mb_substr($bytes, 0, $length, '8bit');
     }
 
     /**
@@ -477,7 +503,7 @@ class Security extends Component
      *
      * @param integer $length the length of the key in characters
      * @return string the generated random key
-     * @throws InvalidConfigException if mcrypt extension is not installed.
+     * @throws InvalidConfigException if OpenSSL extension is needed but not installed.
      * @throws Exception on failure.
      */
     public function generateRandomString($length = 32)
