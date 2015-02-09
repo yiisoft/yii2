@@ -305,7 +305,7 @@ class BaseFileHelper
         if (!is_dir($dir)) {
             return;
         }
-        if (!is_link($dir) || isset($options['traverseSymlinks']) && $options['traverseSymlinks']) {
+        if (isset($options['traverseSymlinks']) && $options['traverseSymlinks'] || !is_link($dir)) {
             if (!($handle = opendir($dir))) {
                 return;
             }
@@ -424,7 +424,7 @@ class BaseFileHelper
             }
         }
 
-        if (!is_dir($path) && !empty($options['only'])) {
+        if (!empty($options['only']) && !is_dir($path)) {
             if (($except = self::lastExcludeMatchingFromList($options['basePath'], $path, $options['only'])) !== null) {
                 // don't check PATTERN_NEGATIVE since those entries are not prefixed with !
                 return true;

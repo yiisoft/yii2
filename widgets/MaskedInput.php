@@ -29,6 +29,15 @@ use yii\web\View;
  * ]);
  * ```
  *
+ * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
+ * method, for example like this:
+ *
+ * ```php
+ * <?= $form->field($model, 'from_date')->widget(\yii\jui\MaskedInput::classname(), [
+ *     'mask' => '999-999-9999',
+ * ]) ?>
+ * ```
+ *
  * The masked text field is implemented based on the
  * [jQuery input masked plugin](https://github.com/RobinHerbots/jquery.inputmask).
  *
@@ -143,8 +152,8 @@ class MaskedInput extends InputWidget
     {
         $options = $this->clientOptions;
         foreach ($options as $key => $value) {
-            if (in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp', 'onKeyDown', 'onBeforeMask',
-                    'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex']) && !$value instanceof JsExpression
+            if (!$value instanceof JsExpression && in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp',
+                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'])
             ) {
                 $options[$key] = new JsExpression($value);
             }
