@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #7055: composite IN condition was not generated correctly for certain DBMS (nineinchnick)
 - Bug #7074: `yii\data\ArrayDataProvider` did not correctly handle the case `Pagination::pageSize = 0` (kirsenn, qiangxue)
 - Bug #7172: Fixed problem with EmailValidator which did not extract domain correctly for DNS check (nbogol)
+- Bug #7209: Html::getInputId() now also replaces `.` with `-` to ensure a valid ID is generated (omnilight)
 - Bug #7211: Query caching should properly deal with the case when query result is false (qiangxue)
 - Bug #7218: `yii\captcha\CaptchaAction` should send response in JSON format (InteLigent, qiangxue)
 - Bug #7226: `yii\web\Request::getEtag()` should strip off `-gzip` which may be added by Apache (mcd-php)
