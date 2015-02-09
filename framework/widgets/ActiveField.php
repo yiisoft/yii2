@@ -539,6 +539,10 @@ class ActiveField extends Component
      * If you have a list of data models, you may convert them into the format described above using
      * [[ArrayHelper::map()]].
      *
+     * ~~~
+     * <?= $form->field($model, 'category')->dropdownList(ArrayHelper::map($category_list,'id','category_name'),['prompt'=>'Select Category']) ?>
+     * ~~~
+     * 
      * Note, the values and labels will be automatically HTML-encoded by this method, and the blank spaces in
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
