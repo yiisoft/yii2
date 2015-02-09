@@ -10,9 +10,20 @@ namespace yii\apidoc\helpers;
 use cebe\jssearch\Indexer;
 use cebe\jssearch\tokenizer\StandardTokenizer;
 use cebe\jssearch\TokenizerInterface;
+use yii\helpers\StringHelper;
 
+/**
+ * ApiIndexer indexes framework API
+ */
 class ApiIndexer extends Indexer
 {
+    /**
+     * @param string $file
+     * @param string $contents
+     * @param string $basePath
+     * @param string $baseUrl
+     * @return array
+     */
     protected function generateFileInfo($file, $contents, $basePath, $baseUrl)
     {
         // create file entry
@@ -27,10 +38,7 @@ class ApiIndexer extends Indexer
         if (preg_match('~<div id="classDescription">\s*<strong>(.*?)</strong>~s', $contents, $matches)) {
             $description = strip_tags($matches[1]);
         } elseif (preg_match('~<p>(.*?)</p>~s', $contents, $matches)) {
-            $description = strip_tags($matches[1]);
-            if (mb_strlen($description) > 1000) { // TODO truncate by words
-                $description = mb_substr($description, 0, 1000) . '...';
-            }
+            $description = StringHelper::truncate(strip_tags($matches[1]), 1000, '...', 'UTF-8');
         } else {
             $description = '';
         }

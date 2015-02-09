@@ -1,9 +1,9 @@
 <?php
 
-use yii\apidoc\renderers\BaseRenderer;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Html;
+use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
 
@@ -30,7 +30,14 @@ $this->beginPage();
     <meta name="language" content="en" />
     <?= Html::csrfMetaTags() ?>
     <?php $this->head() ?>
-    <title><?= Html::encode($this->context->pageTitle) ?></title>
+    <title><?php if (isset($type)) {
+            echo Html::encode(StringHelper::basename($type->name) . ", {$type->name} - {$this->context->pageTitle}");
+        } elseif (isset($guideHeadline)) {
+            echo Html::encode("$guideHeadline - {$this->context->pageTitle}");
+        } else {
+            echo Html::encode($this->context->pageTitle);
+        }
+    ?></title>
 </head>
 <body>
 
@@ -63,7 +70,7 @@ $this->beginPage();
     }
 
     if ($this->context->guideUrl !== null) {
-        $nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . BaseRenderer::GUIDE_PREFIX . 'README.html'];
+        $nav[] = ['label' => 'Guide', 'url' => rtrim($this->context->guideUrl, '/') . '/' . $this->context->guidePrefix . 'README.html'];
     }
 
     echo Nav::widget([

@@ -170,6 +170,48 @@ class ModelTest extends TestCase
         $this->assertFalse($speaker->hasErrors());
     }
 
+    public function testAddErrors()
+    {
+        $singer = new Singer();
+
+        $errors = ['firstName' => ['Something is wrong!']];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $singer->addErrors(['firstName' => 'Something is wrong!']);
+        $this->assertEquals($singer->getErrors(), ['firstName' => ['Something is wrong!']]);
+
+        $singer->clearErrors();
+        $errors = ['firstName' => ['Something is wrong!', 'Totally wrong!']];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $errors = [
+            'firstName' => ['Something is wrong!'],
+            'lastName' => ['Another one!']
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $errors = [
+            'firstName' => ['Something is wrong!', 'Totally wrong!'],
+            'lastName' => ['Another one!']
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $errors = [
+            'firstName' => ['Something is wrong!', 'Totally wrong!'],
+            'lastName' => ['Another one!', 'Totally wrong!']
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals($singer->getErrors(), $errors);
+    }
+
     public function testArraySyntax()
     {
         $speaker = new Speaker();

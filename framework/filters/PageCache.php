@@ -91,8 +91,8 @@ class PageCache extends ActionFilter
      */
     public $variations;
     /**
-     * @var boolean whether to enable the fragment cache. You may use this property to turn on and off
-     * the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
+     * @var boolean whether to enable the page cache. You may use this property to turn on and off
+     * the page cache according to specific setting (e.g. enable page cache only for GET requests).
      */
     public $enabled = true;
     /**

@@ -13,7 +13,7 @@ use Yii;
 /**
  * OAuth1 serves as a client for the OAuth 1/1.0a flow.
  *
- * In oder to acquire access token perform following sequence:
+ * In order to acquire access token perform following sequence:
  *
  * ~~~
  * use yii\authclient\OAuth1;

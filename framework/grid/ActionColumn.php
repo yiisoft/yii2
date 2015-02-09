@@ -21,7 +21,7 @@ use yii\helpers\Url;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => 'yii\grid\ActionColumn',
+ *         'class' => ActionColumn::className(),
  *         // you may configure additional properties here
  *     ],
  * ]
@@ -45,6 +45,13 @@ class ActionColumn extends Column
      * in the context of action column). They will be replaced by the corresponding button rendering callbacks
      * specified in [[buttons]]. For example, the token `{view}` will be replaced by the result of
      * the callback `buttons['view']`. If a callback cannot be found, the token will be replaced with an empty string.
+     *
+     * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
+     *
+     * ```
+     * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
+     * ```
+     *
      * @see buttons
      */
     public $template = '{view} {update} {delete}';
@@ -68,7 +75,7 @@ class ActionColumn extends Column
      * ```php
      * [
      *     'update' => function ($url, $model, $key) {
-     *         return $model->status == 'editable' ? Html::a('Update', $url) : '';
+     *         return $model->status === 'editable' ? Html::a('Update', $url) : '';
      *     };
      * ],
      * ```
@@ -92,12 +99,12 @@ class ActionColumn extends Column
     }
 
     /**
-     * Initializes the default button rendering callbacks
+     * Initializes the default button rendering callbacks.
      */
     protected function initDefaultButtons()
     {
         if (!isset($this->buttons['view'])) {
-            $this->buttons['view'] = function ($url, $model) {
+            $this->buttons['view'] = function ($url, $model, $key) {
                 return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
                     'title' => Yii::t('yii', 'View'),
                     'data-pjax' => '0',
@@ -105,7 +112,7 @@ class ActionColumn extends Column
             };
         }
         if (!isset($this->buttons['update'])) {
-            $this->buttons['update'] = function ($url, $model) {
+            $this->buttons['update'] = function ($url, $model, $key) {
                 return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
                     'title' => Yii::t('yii', 'Update'),
                     'data-pjax' => '0',
@@ -113,7 +120,7 @@ class ActionColumn extends Column
             };
         }
         if (!isset($this->buttons['delete'])) {
-            $this->buttons['delete'] = function ($url, $model) {
+            $this->buttons['delete'] = function ($url, $model, $key) {
                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
                     'title' => Yii::t('yii', 'Delete'),
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),

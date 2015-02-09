@@ -30,8 +30,6 @@ class ActiveRelationTest extends MongoDbTestCase
      */
     protected function setUpTestRows()
     {
-        $customerCollection = $this->getConnection()->getCollection('customer');
-
         $customers = [];
         for ($i = 1; $i <= 5; $i++) {
             $customers[] = [
@@ -41,20 +39,39 @@ class ActiveRelationTest extends MongoDbTestCase
                 'status' => $i,
             ];
         }
-        $customerCollection->batchInsert($customers);
+        $customerCollection = $this->getConnection()->getCollection('customer');
+        $customers = $customerCollection->batchInsert($customers);
 
-        $customerOrderCollection = $this->getConnection()->getCollection('customer_order');
+        $items = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $items[] = [
+                'name' => 'name' . $i,
+                'price' => $i,
+            ];
+        }
+        $itemCollection = $this->getConnection()->getCollection('item');
+        $items = $itemCollection->batchInsert($items);
+
         $customerOrders = [];
-        foreach ($customers as $customer) {
+        foreach ($customers as $i => $customer) {
             $customerOrders[] = [
                 'customer_id' => $customer['_id'],
                 'number' => $customer['status'],
+                'item_ids' => [
+                    $items[$i]['_id'],
+                    $items[$i+5]['_id'],
+                ],
             ];
             $customerOrders[] = [
                 'customer_id' => $customer['_id'],
                 'number' => $customer['status'] + 100,
+                'item_ids' => [
+                    $items[$i]['_id'],
+                    $items[$i+5]['_id'],
+                ],
             ];
         }
+        $customerOrderCollection = $this->getConnection()->getCollection('customer_order');
         $customerOrderCollection->batchInsert($customerOrders);
     }
 
@@ -82,5 +99,16 @@ class ActiveRelationTest extends MongoDbTestCase
         $this->assertEquals((string) $orders[0]->customer->_id, (string) $orders[0]->customer_id);
         $this->assertTrue($orders[1]->customer instanceof Customer);
         $this->assertEquals((string) $orders[1]->customer->_id, (string) $orders[1]->customer_id);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/5411
+     *
+     * @depends testFindEager
+     */
+    public function testFindEagerHasManyByArrayKey()
+    {
+        $order = CustomerOrder::find()->where(['number' => 1])->with('items')->one();
+        $this->assertNotEmpty($order->items);
     }
 }

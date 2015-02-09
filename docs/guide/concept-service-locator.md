@@ -5,7 +5,7 @@ A service locator is an object that knows how to provide all sorts of services (
 might need. Within a service locator, each component exists as only a single instance, uniquely identified by an ID.
 You use the ID to retrieve a component from the service locator.
 
-In Yii, a service locator is simply an instance of [[yii\di\ServiceLocator]], or from a child class.
+In Yii, a service locator is simply an instance of [[yii\di\ServiceLocator]] or a child class.
 
 The most commonly used service locator in Yii is the *application* object, which can be accessed through
 `\Yii::$app`. The services it provides are called *application components*, such as the `request`, `response`, and

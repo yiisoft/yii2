@@ -66,7 +66,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         // SQLite supports batch insert natively since 3.7.11
         // http://www.sqlite.org/releaselog/3_7_11.html
-        if (version_compare(\SQLite3::version()['versionString'], '3.7.11', '>=')) {
+        $this->db->open(); // ensure pdo is not null
+        if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
             return parent::batchInsert($table, $columns, $rows);
         }
 
@@ -150,7 +151,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'PRAGMA foreign_keys='.(int)$check;
+        return 'PRAGMA foreign_keys='.(int) $check;
     }
 
     /**
@@ -290,5 +291,55 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
+    }
+
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
+    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
+    {
+        if (is_array($columns)) {
+            throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+        }
+        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
+    }
+
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
+    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
+    {
+        $quotedColumns = [];
+        foreach ($columns as $i => $column) {
+            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
+        }
+        $vss = [];
+        foreach ($values as $value) {
+            $vs = [];
+            foreach ($columns as $i => $column) {
+                if (isset($value[$column])) {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $params[$phName] = $value[$column];
+                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
+                } else {
+                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
+                }
+            }
+            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
+        }
+
+        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
     }
 }

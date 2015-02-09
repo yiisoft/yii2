@@ -16,6 +16,14 @@ namespace yii\base;
 class ViewEvent extends Event
 {
     /**
+     * @var string the view file being rendered.
+     */
+    public $viewFile;
+    /**
+     * @var array the parameter array passed to the [[View::render()]] method.
+     */
+    public $params;
+    /**
      * @var string the rendering result of [[View::renderFile()]].
      * Event handlers may modify this property and the modified output will be
      * returned by [[View::renderFile()]]. This property is only used

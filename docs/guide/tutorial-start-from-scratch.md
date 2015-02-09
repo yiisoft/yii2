@@ -3,13 +3,15 @@ Creating your own Application structure
 
 > Note: This section is under development.
 
-While the [basic](apps-basic.md) and [advanced](apps-advanced.md) application templates are great for most of your needs,
-you may want to create your own application template with which to start your projects.
+While the [basic](https://github.com/yiisoft/yii2/tree/master/apps/basic) and [advanced](https://github.com/yiisoft/yii2/tree/master/apps/advanced)
+application templates are great for most of your needs, you may want to create your own application template with which
+to start your projects.
 
-Application templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package. Any repository can be identified as a Composer package, making it installable via `create-project` Composer command.
+Application templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package.
+Any repository can be identified as a Composer package, making it installable via `create-project` Composer command.
 
-Since it's a bit too much to start building your entire template from scratch, it is better to use one of the built-in templates
-as a base. Let's use the basic template here.
+Since it's a bit too much to start building your entire template from scratch, it is better to use one of the built-in
+templates as a base. Let's use the basic template here.
 
 Clone the Basic Template
 ----------------------------------------
@@ -37,10 +39,10 @@ Next, actually modify the structure and contents of the application as you would
 Make a Package
 --------------
 
-With the template defined, create a Git repository from it, and push your files there. If you're going to open source your template, [Github](http://githumb.com) is the best place to host it. If you intend to keep your template non-collaborative, any Git repository site will do.
+With the template defined, create a Git repository from it, and push your files there. If you're going to open source your template, [Github](http://github.com) is the best place to host it. If you intend to keep your template non-collaborative, any Git repository site will do.
 
 Next, you need to register your package for Composer's sake. For public templates, the package should be registered at [Packagist](https://packagist.org/).
-For private templates, it is a bit more tricky to register the packge. For instructions, see the [Composer documentation](https://getcomposer.org/doc/05-repositories.md#hosting-your-own).
+For private templates, it is a bit more tricky to register the package. For instructions, see the [Composer documentation](https://getcomposer.org/doc/05-repositories.md#hosting-your-own).
 
 Use the Template
 ------
@@ -48,5 +50,6 @@ Use the Template
 That's all that's required to create a new Yii application template. Now you can create projects using your template:
 
 ```
-php composer.phar create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
+composer global require "fxp/composer-asset-plugin:1.0.0"
+composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```

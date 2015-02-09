@@ -5,9 +5,9 @@ namespace yiiunit\data\ar;
 /**
  * Model representing type table
  *
- * @property int $int_col
- * @property int $int_col2 DEFAULT 1
- * @property int $smallint_col DEFAULT 1
+ * @property integer $int_col
+ * @property integer $int_col2 DEFAULT 1
+ * @property integer $smallint_col DEFAULT 1
  * @property string $char_col
  * @property string $char_col2 DEFAULT 'something'
  * @property string $char_col3

@@ -92,6 +92,9 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSourceUrl($type, $line = null)
     {
         if (is_string($type)) {

@@ -5,19 +5,19 @@ From time to time, you may need to use some third-party code in your Yii applica
 use Yii as a library in some third-party systems. In this section, we will show how to achieve these goals.
 
 
-## Using Third-Party Libraries in Yii <a name="using-libs-in-yii"></a>
+Using Third-Party Libraries in Yii <span id="using-libs-in-yii"></span>
+----------------------------------
 
 To use a third-party library in a Yii application, you mainly need to make sure the classes in the library
 are properly included or can be autoloaded.
 
-
-### Using Composer Packages <a name="using-composer-packages"></a>
+### Using Composer Packages <span id="using-composer-packages"></span>
 
 Many third-party libraries are released in terms of [Composer](https://getcomposer.org/) packages.
 You can install such libraries by taking the following two simple steps:
 
 1. modify the `composer.json` file of your application and specify which Composer packages you want to install.
-2. run `php composer.phar install` to install the specified packages.
+2. run `composer install` to install the specified packages.
 
 The classes in the installed Composer packages can be autoloaded using the Composer autoloader. Make sure
 the [entry script](structure-entry-scripts.md) of your application contains the following lines to install
@@ -31,8 +31,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 ```
 
-
-### Using Downloaded Libraries <a name="using-downloaded-libs"></a>
+### Using Downloaded Libraries <span id="using-downloaded-libs"></span>
 
 If a library is not released as a Composer package, you should follow its installation instructions to install it.
 In most cases, you will need to download a release file manually and unpack it in the `BasePath/vendor` directory,
@@ -71,7 +70,8 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-## Using Yii in Third-Party Systems <a name="using-yii-in-others"></a>
+Using Yii in Third-Party Systems <span id="using-yii-in-others"></span>
+--------------------------------
 
 Because Yii provides many excellent features, sometimes you may want to use some of its features to support
 developing or enhancing 3rd-party systems, such as WordPress, Joomla, or applications developed using other PHP
@@ -82,10 +82,15 @@ take two steps: install Yii, and bootstrap Yii.
 If the third-party system uses Composer to manage its dependencies, you can simply run the following commands
 to install Yii:
 
-```
-php composer.phar require yiisoft/yii2-framework:*
-php composer.phar install
-```
+    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer require yiisoft/yii2
+    composer install
+
+The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+which allows managing bower and npm package dependencies through Composer. Even if you only want to use the database
+layer or other non-asset related features of Yii, this is required to install the Yii composer package.
+See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
+on Composer and solution to possible issues popping up during the installation.
 
 Otherwise, you can [download](http://www.yiiframework.com/download/) the Yii release file and unpack it in
 the `BasePath/vendor` directory.
@@ -101,26 +106,28 @@ new yii\web\Application($yiiConfig); // Do NOT call run() here
 
 As you can see, the code above is very similar to that in the [entry script](structure-entry-scripts.md) of
 a typical Yii application. The only difference is that after the application instance is created, the `run()` method
-is not called. This is because by calling `run()`, Yii will take over the control of the request handling workflow.
+is not called. This is because by calling `run()`, Yii will take over the control of the request handling workflow
+which is not needed in this case and already handled by the existing application.
 
 Like in a Yii application, you should configure the application instance based on the environment running
 the third-party system. For example, to use the [Active Record](db-active-record.md) feature, you need to configure
-the `db` application component with the DB connection setting used by the third-party system.
+the `db` [application component](structure-application-components.md) with the DB connection setting used by the third-party system.
 
 Now you can use most features provided by Yii. For example, you can create Active Record classes and use them
 to work with databases.
 
 
-## Using Yii 2 with Yii 1 <a name="using-both-yii2-yii1"></a>
+Using Yii 2 with Yii 1 <span id="using-both-yii2-yii1"></span>
+----------------------
 
 If you were using Yii 1 previously, it is likely you have a running Yii 1 application. Instead of rewriting
 the whole application in Yii 2, you may just want to enhance it using some of the features only available in Yii 2.
 This can be achieved as described below.
 
 > Note: Yii 2 requires PHP 5.4 or above. You should make sure that both your server and the existing application
-  support this.
+> support this.
 
-First, install Yii 2 in your existing application by following the instructions given in the last subsection.
+First, install Yii 2 in your existing application by following the instructions given in the [last subsection](#using-yii-in-others).
 
 Second, modify the entry script of the application as follows,
 
@@ -149,13 +156,14 @@ require($yii1path . '/YiiBase.php'); // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {
-    // copy-paste the code in YiiBase (1.x) here
+    // copy-paste the code from YiiBase (1.x) here
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-
 // register Yii2 autoloader via Yii1
 Yii::registerAutoloader(['Yii', 'autoload']);
+// create the dependency injection container
+Yii::$container = new yii\di\Container;
 ```
 
 That's all! Now in any part of your code, you can use `Yii::$app` to access the Yii 2 application instance, while

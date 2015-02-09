@@ -8,9 +8,72 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.0
+----------------------
+
+* Upgraded Twitter Bootstrap to [version 3.3.x](http://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
+  If you need to use an older version (i.e. stick with 3.2.x) you can specify that in your `composer.json` by
+  adding the following line in the `require` section:
+  
+  ```json
+  "bower-asset/bootstrap": "3.2.*",
+  ```
+
+Upgrade from Yii 2.0 RC
+-----------------------
+
+* If you've implemented `yii\rbac\ManagerInterface` you need to add implementation for new method `removeChildren()`.
+
+* The input dates for datetime formatting are now assumed to be in UTC unless a timezone is explicitly given.
+  Before, the timezone assumed for input dates was the default timezone set by PHP which is the same as `Yii::$app->timeZone`.
+  This causes trouble because the formatter uses `Yii::$app->timeZone` as the default values for output so no timezone conversion
+  was possible. If your timestamps are stored in the database without a timezone identifier you have to ensure they are in UTC or
+  add a timezone identifier explicitly.
+  
+* `yii\bootstrap\Collapse` is now encoding labels by default. `encode` item option and global `encodeLabels` property were
+ introduced to disable it. Keys are no longer used as labels. You need to remove keys and use `label` item option instead.
+ 
+* The `yii\base\View::beforeRender()` and `yii\base\View::afterRender()` methods have two extra parameters `$viewFile`
+  and `$params`. If you are overriding these methods, you should adjust the method signature accordingly.
+  
+* If you've used `asImage` formatter i.e. `Yii::$app->formatter->asImage($value, $alt);` you should change it
+  to `Yii::$app->formatter->asImage($value, ['alt' => $alt]);`.
+
+* Yii now requires `cebe/markdown` 1.0.0 or higher, which includes breaking changes in its internal API. If you extend the markdown class
+  you need to update your implementation. See <https://github.com/cebe/markdown/releases/tag/1.0.0-rc> for details.
+  If you just used the markdown helper class there is no need to change anything.
+
+* If you are using CUBRID DBMS, make sure to use at least version 9.3.0 as the server and also as the PDO extension.
+  Quoting of values is broken in prior versions and Yii has no reliable way to work around this issue.
+  A workaround that may have worked before has been removed in this release because it was not reliable.
+
 
 Upgrade from Yii 2.0 Beta
 -------------------------
+
+* If you are using Composer to upgrade Yii, you should run the following command first (once for all) to install
+  the composer-asset-plugin, *before* you update your project:
+
+  ```
+  php composer.phar global require "fxp/composer-asset-plugin:1.0.0"
+  ```
+
+  You also need to add the following code to your project's `composer.json` file:
+
+  ```json
+  "extra": {
+      "asset-installer-paths": {
+          "npm-asset-library": "vendor/npm",
+          "bower-asset-library": "vendor/bower"
+      }
+  }
+  ```
+  
+  It is also a good idea to upgrade composer itself to the latest version if you see any problems:
+  
+  ```
+  php composer.phar self-update
+  ```
 
 * If you used `clearAll()` or `clearAllAssignments()` of `yii\rbac\DbManager`, you should replace
   them with `removeAll()` and `removeAllAssignments()` respectively.
@@ -148,6 +211,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
 * Static helper `yii\helpers\Security` has been converted into an application component. You should change all usage of
   its methods to a new syntax, for example: instead of `yii\helpers\Security::hashData()` use `Yii::$app->getSecurity()->hashData()`.
+  The `generateRandomKey()` method now produces not an ASCII compatible output. Use `generateRandomString()` instead.
   Default encryption and hash parameters has been upgraded. If you need to decrypt/validate data that was encrypted/hashed
   before, use the following configuration of the 'security' component:
 
@@ -155,12 +219,7 @@ new ones save the following code as `convert.php` that should be placed in the s
   return [
       'components' => [
           'security' => [
-              'cryptBlockSize' => 16,
-              'cryptKeySize' => 24,
               'derivationIterations' => 1000,
-              'deriveKeyStrategy' => 'hmac', // for PHP version < 5.5.0
-              //'deriveKeyStrategy' => 'pbkdf2', // for PHP version >= 5.5.0
-              'useDeriveKeyUniqueSalt' => false,
           ],
           // ...
       ],
@@ -213,3 +272,68 @@ new ones save the following code as `convert.php` that should be placed in the s
 * `Html::radio()`, `Html::checkbox()`, `Html::radioList()`, `Html::checkboxList()` no longer generate the container
   tag around each radio/checkbox when you specify labels for them. You should manually render such container tags,
   or set the `item` option for `Html::radioList()`, `Html::checkboxList()` to generate the container tags.
+
+* The formatter class has been refactored to have only one class regardless whether PHP intl extension is installed or not.
+  Functionality of `yii\base\Formatter` has been merged into `yii\i18n\Formatter` and `yii\base\Formatter` has been
+  removed so you have to replace all usage of `yii\base\Formatter` with `yii\i18n\Formatter` in your code.
+  Also the API of the Formatter class has changed in many ways.
+  The signature of the following Methods has changed:
+
+  - `asDate`
+  - `asTime`
+  - `asDateTime`
+  - `asSize` has been split up into `asSize` and `asShortSize`
+  - `asCurrency`
+  - `asDecimal`
+  - `asPercent`
+  - `asScientific`
+
+  The following methods have been removed, this also means that the corresponding format which may be used by a
+  GridView or DetailView is not available anymore:
+
+  - `asNumber`
+  - `asDouble`
+
+  Also due to these changes some formatting defaults have changes so you have to check all your GridView and DetailView
+  configuration and make sure the formatting is displayed correctly.
+
+  The configuration for `asSize()` has changed. It now uses the configuration for the number formatting from intl
+  and only the base is configured using `$sizeFormatBase`.
+
+  The specification of the date and time formats is now using the ICU pattern format even if PHP intl extension is not installed.
+  You can prefix a date format with `php:` to use the old format of the PHP `date()`-function.
+
+* The DateValidator has been refactored to use the same format as the Formatter class now (see previous change).
+  When you use the DateValidator and did not specify a format it will now be what is configured in the formatter class instead of 'Y-m-d'.
+  To get the old behavior of the DateValidator you have to set the format explicitly in your validation rule:
+
+  ```php
+  ['attributeName', 'date', 'format' => 'php:Y-m-d'],
+  ```
+
+* `beforeValidate()`, `beforeValidateAll()`, `afterValidate()`, `afterValidateAll()`, `ajaxBeforeSend()` and `ajaxComplete()`
+  are removed from `ActiveForm`. The same functionality is now achieved via JavaScript event mechanism like the following:
+
+  ```js
+  $('#myform').on('beforeValidate', function (event, messages, deferreds) {
+      // called when the validation is triggered by submitting the form
+      // return false if you want to cancel the validation for the whole form
+  }).on('beforeValidateAttribute', function (event, attribute, messages, deferreds) {
+      // before validating an attribute
+      // return false if you want to cancel the validation for the attribute
+  }).on('afterValidateAttribute', function (event, attribute, messages) {
+      // ...
+  }).on('afterValidate', function (event, messages) {
+      // ...
+  }).on('beforeSubmit', function () {
+      // after all validations have passed
+      // you can do ajax form submission here
+      // return false if you want to stop form submission
+  });
+  ```
+
+* The signature of `View::registerJsFile()` and `View::registerCssFile()` has changed. The `$depends` and `$position`
+  paramaters have been merged into `$options`. The new signatures are as follows:
+  
+  - `registerJsFile($url, $options = [], $key = null)`
+  - `registerCssFile($url, $options = [], $key = null)`

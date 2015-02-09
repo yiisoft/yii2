@@ -12,6 +12,9 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
+ * The ListView widget is used to display data from data
+ * provider. Each data model is rendered using the view
+ * specified.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -101,7 +104,7 @@ class ListView extends BaseListView
         $options = $this->itemOptions;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         if ($tag !== false) {
-            $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
+            $options['data-key'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : (string) $key;
 
             return Html::tag($tag, $content, $options);
         } else {

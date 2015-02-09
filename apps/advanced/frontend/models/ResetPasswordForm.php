@@ -18,6 +18,7 @@ class ResetPasswordForm extends Model
      */
     private $_user;
 
+
     /**
      * Creates a form model given a token.
      *
@@ -56,7 +57,7 @@ class ResetPasswordForm extends Model
     public function resetPassword()
     {
         $user = $this->_user;
-        $user->password = $this->password;
+        $user->setPassword($this->password);
         $user->removePasswordResetToken();
 
         return $user->save();

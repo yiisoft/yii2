@@ -9,6 +9,7 @@ namespace yii\authclient;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -50,7 +51,23 @@ abstract class BaseClient extends Component implements ClientInterface
     private $_userAttributes;
     /**
      * @var array map used to normalize user attributes fetched from external auth service
-     * in format: rawAttributeName => normalizedAttributeName
+     * in format: normalizedAttributeName => sourceSpecification
+     * 'sourceSpecification' can be:
+     * - string, raw attribute name
+     * - array, pass to raw attribute value
+     * - callable, PHP callback, which should accept array of raw attributes and return normalized value.
+     *
+     * For example:
+     *
+     * ```php
+     * 'normalizeUserAttributeMap' => [
+     *      'about' => 'bio',
+     *      'language' => ['languages', 0, 'name'],
+     *      'fullName' => function ($attributes) {
+     *          return $attributes['firstName'] . ' ' . $attributes['lastName'];
+     *      },
+     *  ],
+     * ```
      */
     private $_normalizeUserAttributeMap;
     /**
@@ -229,13 +246,37 @@ abstract class BaseClient extends Component implements ClientInterface
     /**
      * Normalize given user attributes according to [[normalizeUserAttributeMap]].
      * @param array $attributes raw attributes.
+     * @throws InvalidConfigException on incorrect normalize attribute map.
      * @return array normalized attributes.
      */
     protected function normalizeUserAttributes($attributes)
     {
         foreach ($this->getNormalizeUserAttributeMap() as $normalizedName => $actualName) {
-            if (array_key_exists($actualName, $attributes)) {
-                $attributes[$normalizedName] = $attributes[$actualName];
+            if (is_scalar($actualName)) {
+                if (array_key_exists($actualName, $attributes)) {
+                    $attributes[$normalizedName] = $attributes[$actualName];
+                }
+            } else {
+                if (is_callable($actualName)) {
+                    $attributes[$normalizedName] = call_user_func($actualName, $attributes);
+                } elseif (is_array($actualName)) {
+                    $haystack = $attributes;
+                    $searchKeys = $actualName;
+                    $isFound = true;
+                    while (($key = array_shift($searchKeys)) !== null) {
+                        if (is_array($haystack) && array_key_exists($key, $haystack)) {
+                            $haystack = $haystack[$key];
+                        } else {
+                            $isFound = false;
+                            break;
+                        }
+                    }
+                    if ($isFound) {
+                        $attributes[$normalizedName] = $haystack;
+                    }
+                } else {
+                    throw new InvalidConfigException('Invalid actual name "' . gettype($actualName) . '" specified at "' . get_class($this) . '::normalizeUserAttributeMap"');
+                }
             }
         }
 

@@ -12,13 +12,14 @@ The preferred way to install the Yii framework is through [composer](http://getc
 Either run
 
 ```
-php composer.phar require --prefer-dist "yiisoft/yii2 *"
+composer global require "fxp/composer-asset-plugin:1.0.0"
+composer require yiisoft/yii2
 ```
 
 or add
 
 ```json
-"yiisoft/yii2": "*"
+"yiisoft/yii2": "*",
 ```
 
 to the require section of your composer.json.

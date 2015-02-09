@@ -39,6 +39,7 @@ class HtmlTest extends TestCase
     public function testEncode()
     {
         $this->assertEquals("a&lt;&gt;&amp;&quot;&#039;�", Html::encode("a<>&\"'\x80"));
+        $this->assertEquals('Sam &amp; Dark', Html::encode('Sam & Dark'));
     }
 
     public function testDecode()
@@ -140,8 +141,8 @@ class HtmlTest extends TestCase
 
     public function testButton()
     {
-        $this->assertEquals('<button>Button</button>', Html::button());
-        $this->assertEquals('<button name="test" value="value">content<></button>', Html::button('content<>', ['name' => 'test', 'value' => 'value']));
+        $this->assertEquals('<button type="button">Button</button>', Html::button());
+        $this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('content<>', ['name' => 'test', 'value' => 'value']));
         $this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', ['type' => 'submit', 'name' => 'test', 'value' => 'value', 'class' => "t"]));
     }
 

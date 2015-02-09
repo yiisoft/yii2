@@ -51,7 +51,7 @@ class SchemaTest extends DatabaseTestCase
         $schema->db->enableSchemaCache = true;
         $schema->db->schemaCache = new FileCache();
         $noCacheTable = $schema->getTableSchema('type', true);
-        $cachedTable = $schema->getTableSchema('type', true);
+        $cachedTable = $schema->getTableSchema('type', false);
         $this->assertEquals($noCacheTable, $cachedTable);
     }
 

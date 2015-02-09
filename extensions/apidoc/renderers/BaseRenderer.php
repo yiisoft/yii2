@@ -31,8 +31,12 @@ use yii\console\Controller;
  */
 abstract class BaseRenderer extends Component
 {
+    /**
+     * @deprecated since 2.0.1 use [[$guidePrefix]] instead which allows configuring this options
+     */
     const GUIDE_PREFIX = 'guide-';
 
+    public $guidePrefix = 'guide-';
     public $apiUrl;
     /**
      * @var Context the [[Context]] currently being rendered.
@@ -153,7 +157,8 @@ abstract class BaseRenderer extends Component
     }
 
     /**
-     * @param BaseDoc $context
+     * @param BaseDoc|string $context
+     * @return string
      */
     private function resolveNamespace($context)
     {
@@ -203,6 +208,6 @@ abstract class BaseRenderer extends Component
             $file = substr($file, 0, $pos);
         }
 
-        return rtrim($this->guideUrl, '/') . '/' . static::GUIDE_PREFIX . basename($file, '.md') . '.html' . $hash;
+        return rtrim($this->guideUrl, '/') . '/' . $this->guidePrefix . basename($file, '.md') . '.html' . $hash;
     }
 }

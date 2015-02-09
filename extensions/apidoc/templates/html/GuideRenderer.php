@@ -35,12 +35,15 @@ abstract class GuideRenderer extends BaseGuideRenderer
     private $_targetDir;
 
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
 
         if ($this->pageTitle === null) {
-            $this->pageTitle = 'Yii Framework 2.0 API Documentation'; // TODO guess page title
+            $this->pageTitle = 'The Definitive Guide to Yii 2.0';
         }
     }
 
@@ -65,9 +68,10 @@ abstract class GuideRenderer extends BaseGuideRenderer
     }
 
     /**
-     * Renders a given [[Context]].
+     * Renders a set of files given into target directory.
      *
-     * @param Controller $controller the apidoc controller instance. Can be used to control output.
+     * @param array $files
+     * @param string $targetDir
      */
     public function render($files, $targetDir)
     {
@@ -112,9 +116,14 @@ abstract class GuideRenderer extends BaseGuideRenderer
         }
     }
 
+    /**
+     * Given markdown file name generates resulting html file name
+     * @param string $file markdown file name
+     * @return string
+     */
     protected function generateGuideFileName($file)
     {
-        return static::GUIDE_PREFIX . basename($file, '.md') . '.html';
+        return $this->guidePrefix . basename($file, '.md') . '.html';
     }
 
     public function getGuideReferences()
@@ -128,9 +137,14 @@ abstract class GuideRenderer extends BaseGuideRenderer
 //		return $refs;
     }
 
+    /**
+     * Adds guide name to link URLs in markdown
+     * @param string $content
+     * @return string
+     */
     protected function fixMarkdownLinks($content)
     {
-        $content = preg_replace('/href\s*=\s*"([^"\/]+)\.md(#.*)?"/i', 'href="' . static::GUIDE_PREFIX . '\1.html\2"', $content);
+        $content = preg_replace('/href\s*=\s*"([^"\/]+)\.md(#.*)?"/i', 'href="' . $this->guidePrefix . '\1.html\2"', $content);
 
         return $content;
     }
@@ -146,9 +160,7 @@ abstract class GuideRenderer extends BaseGuideRenderer
     }
 
     /**
-     * Generate an url to a type in apidocs
-     * @param $typeName
-     * @return mixed
+     * @inheritdoc
      */
     public function generateApiUrl($typeName)
     {

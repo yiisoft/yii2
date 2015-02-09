@@ -1,4 +1,4 @@
-Advanced application template
+Advanced Application Template
 =============================
 
 > Note: This section is under development.
@@ -7,23 +7,42 @@ This template is for large projects developed in teams where the backend is divi
 to multiple servers etc. This application template also goes a bit further regarding features and provides essential
 database, signup and password restore out of the box.
 
+The following table compares the difference between the advanced and the basic application templates:
+
+
+| Feature  |  Basic  |  Advanced |
+|---|:---:|:---:|
+| Project structure |  ✓  |  ✓  |
+| Site controller |  ✓  |  ✓  |
+| User login/logout |   ✓  |  ✓  |
+| Forms  |   ✓  |  ✓  |
+| DB connection  |   ✓  |  ✓  |
+| Console command  |   ✓  |  ✓  |
+| Asset bundle  |   ✓  |  ✓  |
+| Codeception tests  |   ✓  |  ✓  |
+| Twitter Bootstrap  |  ✓   |  ✓  |
+| Front- and back-end apps  |    |  ✓  |
+| Ready to use User model |    |  ✓  |
+| User signup and password restore  |     |  ✓  |
+
+
 Installation
 ------------
 
 ### Install via Composer
 
-If you do not have [Composer](http://getcomposer.org/), you may download it from
-[http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
+If you do not have [Composer](http://getcomposer.org/), follow the instructions in the
+[Installing Yii](start-installation.md#installing-via-composer) section to install it.
 
-~~~
-curl -sS http://getcomposer.org/installer | php
-~~~
+With Composer installed, you can then install the application using the following commands:
 
-You can then install the application using the following command:
+    composer global require "fxp/composer-asset-plugin:1.0.0"
+    composer create-project --prefer-dist yiisoft/yii2-app-advanced yii-application
 
-~~~
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-advanced /path/to/yii-application
-~~~
+The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+which allows managing bower and npm package dependencies through Composer. You only need to run this command
+once for all. The second command installs the advanced application in a directory named `yii-application`.
+You can choose a different directory name if you want.
 
 Getting started
 ---------------
@@ -40,15 +59,17 @@ the installed application. You only need to do these once for all.
     Otherwise, in production execute `init` in non-interactive mode.
 
     ```
-    php /path/to/yii-application/init --env=Production overwrite=All
+    php /path/to/yii-application/init --env=Production --overwrite=All
     ```
 
-2. Create a new database and adjust the `components.db` configuration in `common/config/main-local.php` accordingly.
+2. Create a new database and adjust the `components['db']` configuration in `common/config/main-local.php` accordingly.
 3. Apply migrations with console command `yii migrate`.
 4. Set document roots of your web server:
 
 - for frontend `/path/to/yii-application/frontend/web/` and using the URL `http://frontend/`
 - for backend `/path/to/yii-application/backend/web/` and using the URL `http://backend/`
+
+To login into the application, you need to first sign up, with any of your email address, username and password. Then, you can login into the application with same email address and password at any time.
 
 Directory structure
 -------------------
@@ -65,8 +86,8 @@ Root directory contains a set of files.
 
 - `.gitignore` contains a list of directories ignored by git version system. If you need something never get to your source
   code repository, add it there.
-- `composer.json` - Composer config described in detail below.
-- `init` - initialization script described in "Composer config described in detail below".
+- `composer.json` - Composer config described in "Configuring Composer" below.
+- `init` - initialization script described in "Configuration and environments" below.
 - `init.bat` - same for Windows.
 - `LICENSE.md` - license info. Put your project license there. Especially when opensourcing.
 - `README.md` - basic info about installing template. Consider replacing it with information about your project and its
@@ -86,11 +107,13 @@ Predefined path aliases
 - `@console` - console directory.
 - `@runtime` - runtime directory of currently running web application.
 - `@vendor` - Composer vendor directory.
+- `@bower` - vendor directory that contains the [bower packages](http://bower.io/).
+- `@npm` - vendor directory that contains [npm packages](https://www.npmjs.org/).
 - `@web` - base URL of currently running web application.
 - `@webroot` - web root directory of currently running web application.
 
 The aliases specific to the directory structure of the advanced application
-(`@common`,  `@frontend`, `@backend`, and `@console`) are defined in `common/config/aliases.php`.
+(`@common`,  `@frontend`, `@backend`, and `@console`) are defined in `common/config/bootstrap.php`.
 
 
 Applications
@@ -120,6 +143,9 @@ There are multiple problems with a typical approach to configuration:
 In order to solve these issues Yii introduces a simple environments concept. Each environment is represented
 by a set of files under the `environments` directory. The `init` command is used to switch between these. What it really does is
 copy everything from the environment directory over to the root directory where all applications are.
+
+By default there are two environments: `dev` and `prod`. First is for development. It has all the developer tools
+and debug turned on. Second is for server deployments. It has debug and developer tools turned off. 
 
 Typically environment contains application bootstrap files such as `index.php` and config files suffixed with
 `-local.php`. These are added to `.gitignore` and never added to source code repository.
@@ -155,7 +181,7 @@ directory:
 {
     "name": "yiisoft/yii2-app-advanced",
     "description": "Yii 2 Advanced Application Template",
-    "keywords": ["yii", "framework", "advanced", "application template"],
+    "keywords": ["yii2", "framework", "advanced", "application template"],
     "homepage": "http://www.yiiframework.com/",
     "type": "project",
     "license": "BSD-3-Clause",
@@ -170,27 +196,23 @@ directory:
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
-        "yiisoft/yii2-swiftmailer": "*",
         "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*"
+        "yiisoft/yii2-swiftmailer": "*"
     },
-    "scripts": {
-        "post-create-project-cmd": [
-            "yii\\composer\\Installer::setPermission"
-        ]
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*",
+        "yiisoft/yii2-faker": "*"
+    },
+    "config": {
+        "process-timeout": 1800
     },
     "extra": {
-        "writable": [
-            "backend/runtime",
-            "backend/web/assets",
-
-            "console/runtime",
-            "console/migrations",
-
-            "frontend/runtime",
-            "frontend/web/assets"
-        ]
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
 ```
@@ -201,7 +223,7 @@ your project.
 Now the interesting part. You can add more packages your application needs to the `require` section.
 All these packages are coming from [packagist.org](https://packagist.org/) so feel free to browse the website for useful code.
 
-After your `composer.json` is changed you can run `php composer.phar update --prefer-dist`, wait till packages are downloaded and
+After your `composer.json` is changed you can run `composer update --prefer-dist`, wait till packages are downloaded and
 installed and then just use them. Autoloading of classes will be handled automatically.
 
 Creating links from backend to frontend

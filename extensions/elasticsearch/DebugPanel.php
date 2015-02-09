@@ -182,6 +182,9 @@ HTML;
         return $this->_timings = $timings;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function save()
     {
         $target = $this->module->logTarget;

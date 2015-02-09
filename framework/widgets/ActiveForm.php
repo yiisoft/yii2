@@ -15,7 +15,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use yii\web\JsExpression;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -106,6 +105,13 @@ class ActiveForm extends Widget
      */
     public $enableAjaxValidation = false;
     /**
+     * @var boolean whether to hook up yii.activeForm JavaScript plugin.
+     * This property must be set true if you want to support client validation and/or AJAX validation, or if you
+     * want to take advantage of the yii.activeForm plugin. When this is false, the form will not generate
+     * any JavaScript.
+     */
+    public $enableClientScript = true;
+    /**
      * @var array|string the URL for performing AJAX-based validation. This property will be processed by
      * [[Url::to()]]. Please refer to [[Url::to()]] for more details on how to configure this property.
      * If this property is not set, it will take the value of the form's action attribute.
@@ -132,11 +138,11 @@ class ActiveForm extends Widget
      */
     public $validateOnType = false;
     /**
-     * @var integer number of milliseconds that the validation should be delayed when an input field
-     * is changed or the user types in the field.
+     * @var integer number of milliseconds that the validation should be delayed when the user types in the field
+     * and [[validateOnType]] is set true.
      * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
      */
-    public $validationDelay = 200;
+    public $validationDelay = 500;
     /**
      * @var string the name of the GET parameter indicating the validation request is an AJAX request.
      */
@@ -146,84 +152,12 @@ class ActiveForm extends Widget
      */
     public $ajaxDataType = 'json';
     /**
-     * @var string|JsExpression a JS callback that will be called when the form is being submitted.
-     * The signature of the callback should be:
-     *
-     * ~~~
-     * function ($form) {
-     *     ...return false to cancel submission...
-     * }
-     * ~~~
-     */
-    public $beforeSubmit;
-    /**
-     * @var string|JsExpression a JS callback that is called before validating an attribute.
-     * The signature of the callback should be:
-     *
-     * ~~~
-     * function ($form, attribute, messages) {
-     *     ...return false to cancel the validation...
-     * }
-     * ~~~
-     */
-    public $beforeValidate;
-    /**
-     * @var string|JsExpression a JS callback that is called before any validation has run (Only called when the form is submitted).
-     * The signature of the callback should be:
-     *
-     * ~~~
-     * function ($form, data) {
-     *     ...return false to cancel the validation...
-     * }
-     * ~~~
-     */
-    public $beforeValidateAll;
-    /**
-     * @var string|JsExpression a JS callback that is called after validating an attribute.
-     * The signature of the callback should be:
-     *
-     * ~~~
-     * function ($form, attribute, messages) {
-     * }
-     * ~~~
-     */
-    public $afterValidate;
-    /**
-     * @var string|JsExpression a JS callback that is called after all validation has run (Only called when the form is submitted).
-     * The signature of the callback should be:
-     *
-     * ~~~
-     * function ($form, data, messages) {
-     * }
-     * ~~~
-     */
-    public $afterValidateAll;
-    /**
-     * @var string|JsExpression a JS pre-request callback function on AJAX-based validation.
-     * The signature of the callback should be:
-     *
-     * ~~~
-     * function ($form, jqXHR, textStatus) {
-     * }
-     * ~~~
-     */
-    public $ajaxBeforeSend;
-    /**
-     * @var string|JsExpression a JS callback to be called when the request finishes on AJAX-based validation.
-     * The signature of the callback should be:
-     *
-     * ~~~
-     * function ($form, jqXHR, textStatus) {
-     * }
-     * ~~~
-     */
-    public $ajaxComplete;
-    /**
      * @var array the client validation options for individual attributes. Each element of the array
      * represents the validation options for a particular attribute.
      * @internal
      */
     public $attributes = [];
+
     /**
      * @var ActiveField[] the ActiveField objects that are currently active
      */
@@ -253,12 +187,14 @@ class ActiveForm extends Widget
             throw new InvalidCallException('Each beginField() should have a matching endField() call.');
         }
 
-        $id = $this->options['id'];
-        $options = Json::encode($this->getClientOptions());
-        $attributes = Json::encode($this->attributes);
-        $view = $this->getView();
-        ActiveFormAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+        if ($this->enableClientScript) {
+            $id = $this->options['id'];
+            $options = Json::encode($this->getClientOptions());
+            $attributes = Json::encode($this->attributes);
+            $view = $this->getView();
+            ActiveFormAsset::register($view);
+            $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+        }
 
         echo Html::endForm();
     }
@@ -281,11 +217,6 @@ class ActiveForm extends Widget
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
-        }
-        foreach (['beforeSubmit', 'beforeValidate', 'beforeValidateAll', 'afterValidate', 'afterValidateAll', 'ajaxBeforeSend', 'ajaxComplete'] as $name) {
-            if (($value = $this->$name) !== null) {
-                $options[$name] = $value instanceof JsExpression ? $value : new JsExpression($value);
-            }
         }
 
         // only get the options that are different from the default ones (set in yii.activeForm.js)

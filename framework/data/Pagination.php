@@ -203,7 +203,8 @@ class Pagination extends Object implements Linkable
      * Returns the number of items per page.
      * By default, this method will try to determine the page size by [[pageSizeParam]] in [[params]].
      * If the page size cannot be determined this way, [[defaultPageSize]] will be returned.
-     * @return integer the number of items per page.
+     * @return integer the number of items per page. If it is less than 1, it means the page size is infinite,
+     * and thus a single page contains all items.
      * @see pageSizeLimit
      */
     public function getPageSize()
@@ -231,7 +232,7 @@ class Pagination extends Object implements Linkable
             $this->_pageSize = null;
         } else {
             $value = (int) $value;
-            if ($validatePageSize && count($this->pageSizeLimit) === 2 && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
+            if ($validatePageSize && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1]) && count($this->pageSizeLimit) === 2) {
                 if ($value < $this->pageSizeLimit[0]) {
                     $value = $this->pageSizeLimit[0];
                 } elseif ($value > $this->pageSizeLimit[1]) {
@@ -246,13 +247,16 @@ class Pagination extends Object implements Linkable
      * Creates the URL suitable for pagination with the specified page number.
      * This method is mainly called by pagers when creating URLs used to perform pagination.
      * @param integer $page the zero-based page number that the URL should point to.
+     * @param integer $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
      * @param boolean $absolute whether to create an absolute URL. Defaults to `false`.
      * @return string the created URL
      * @see params
      * @see forcePageParam
      */
-    public function createUrl($page, $absolute = false)
+    public function createUrl($page, $pageSize = null, $absolute = false)
     {
+        $page = (int) $page;
+        $pageSize = (int) $pageSize;
         if (($params = $this->params) === null) {
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
@@ -262,7 +266,9 @@ class Pagination extends Object implements Linkable
         } else {
             unset($params[$this->pageParam]);
         }
-        $pageSize = $this->getPageSize();
+        if ($pageSize <= 0) {
+            $pageSize = $this->getPageSize();
+        }
         if ($pageSize != $this->defaultPageSize) {
             $params[$this->pageSizeParam] = $pageSize;
         } else {
@@ -311,15 +317,15 @@ class Pagination extends Object implements Linkable
         $currentPage = $this->getPage();
         $pageCount = $this->getPageCount();
         $links = [
-            Link::REL_SELF => $this->createUrl($currentPage, $absolute),
+            Link::REL_SELF => $this->createUrl($currentPage, null, $absolute),
         ];
         if ($currentPage > 0) {
-            $links[self::LINK_FIRST] = $this->createUrl(0, $absolute);
-            $links[self::LINK_PREV] = $this->createUrl($currentPage - 1, $absolute);
+            $links[self::LINK_FIRST] = $this->createUrl(0, null, $absolute);
+            $links[self::LINK_PREV] = $this->createUrl($currentPage - 1, null, $absolute);
         }
         if ($currentPage < $pageCount - 1) {
-            $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, $absolute);
-            $links[self::LINK_LAST] = $this->createUrl($pageCount - 1, $absolute);
+            $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, null, $absolute);
+            $links[self::LINK_LAST] = $this->createUrl($pageCount - 1, null, $absolute);
         }
 
         return $links;

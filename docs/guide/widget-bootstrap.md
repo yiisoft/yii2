@@ -24,7 +24,6 @@ convenient way to include bootstrap assets in your pages with a single line adde
 public $depends = [
     'yii\web\YiiAsset',
     'yii\bootstrap\BootstrapAsset', // this line
-    // 'yii\bootstrap\BootstrapThemeAsset' // uncomment to apply bootstrap 2 style to bootstrap 3
 ];
 ```
 
@@ -58,7 +57,7 @@ Using the .less files of Bootstrap directly
 If you want to include the [Bootstrap css directly in your less files](http://getbootstrap.com/getting-started/#customizing)
 you may need to disable the original bootstrap css files to be loaded.
 You can do this by setting the css property of the [[yii\bootstrap\BootstrapAsset|BootstrapAsset]] to be empty.
-For this you need to configure the `assetManager` application component as follows:
+For this you need to configure the `assetManager` [application component](structure-application-components.md) as follows:
 
 ```php
     'assetManager' => [

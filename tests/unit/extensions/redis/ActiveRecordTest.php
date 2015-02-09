@@ -143,30 +143,6 @@ class ActiveRecordTest extends RedisTestCase
 
     }
 
-    public function testFindNullValues()
-    {
-        // https://github.com/yiisoft/yii2/issues/1311
-        $this->markTestSkipped('Redis does not store/find null values correctly.');
-    }
-
-    public function testUnlinkAll()
-    {
-        // https://github.com/yiisoft/yii2/issues/1311
-        $this->markTestSkipped('Redis does not store/find null values correctly.');
-    }
-
-    public function testUnlink()
-    {
-        // https://github.com/yiisoft/yii2/issues/1311
-        $this->markTestSkipped('Redis does not store/find null values correctly.');
-    }
-
-    public function testBooleanAttribute()
-    {
-        // https://github.com/yiisoft/yii2/issues/1311
-        $this->markTestSkipped('Redis does not store/find boolean values correctly.');
-    }
-
     public function testFindEagerViaRelationPreserveOrder()
     {
         $this->markTestSkipped('Redis does not support orderBy.');
@@ -175,6 +151,44 @@ class ActiveRecordTest extends RedisTestCase
     public function testFindEagerViaRelationPreserveOrderB()
     {
         $this->markTestSkipped('Redis does not support orderBy.');
+    }
+
+    /**
+     * overridden because null values are not part of the asArray result in redis
+     */
+    public function testFindAsArray()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+
+        // asArray
+        $customer = $customerClass::find()->where(['id' => 2])->asArray()->one();
+        $this->assertEquals([
+            'id' => 2,
+            'email' => 'user2@example.com',
+            'name' => 'user2',
+            'address' => 'address2',
+            'status' => 1,
+        ], $customer);
+
+        // find all asArray
+        $customers = $customerClass::find()->asArray()->all();
+        $this->assertEquals(3, count($customers));
+        $this->assertArrayHasKey('id', $customers[0]);
+        $this->assertArrayHasKey('name', $customers[0]);
+        $this->assertArrayHasKey('email', $customers[0]);
+        $this->assertArrayHasKey('address', $customers[0]);
+        $this->assertArrayHasKey('status', $customers[0]);
+        $this->assertArrayHasKey('id', $customers[1]);
+        $this->assertArrayHasKey('name', $customers[1]);
+        $this->assertArrayHasKey('email', $customers[1]);
+        $this->assertArrayHasKey('address', $customers[1]);
+        $this->assertArrayHasKey('status', $customers[1]);
+        $this->assertArrayHasKey('id', $customers[2]);
+        $this->assertArrayHasKey('name', $customers[2]);
+        $this->assertArrayHasKey('email', $customers[2]);
+        $this->assertArrayHasKey('address', $customers[2]);
+        $this->assertArrayHasKey('status', $customers[2]);
     }
 
     public function testStatisticalFind()
@@ -273,6 +287,7 @@ class ActiveRecordTest extends RedisTestCase
 
     public function testFindColumn()
     {
+        // TODO this test is duplicated because of missing orderBy support in redis
         $this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->column('name'));
         // TODO $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['name' => SORT_DESC])->column('name'));
     }

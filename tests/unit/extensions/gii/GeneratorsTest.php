@@ -11,6 +11,7 @@ use yii\gii\generators\module\Generator as ModuleGenerator;
 
 /**
  * GeneratorsTest checks that Gii generators aren't throwing any errors during generation
+ * @group gii
  */
 class GeneratorsTest extends GiiTestCase
 {
@@ -18,13 +19,12 @@ class GeneratorsTest extends GiiTestCase
     {
         $generator = new ControllerGenerator();
         $generator->template = 'default';
-        $generator->controller = 'test';
+        $generator->controllerClass = 'app\runtime\TestController';
 
-        if ($generator->validate()) {
-            $generator->generate();
-        } else {
-            print_r($generator->getErrors());
-        }
+        $valid = $generator->validate();
+        $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));
+
+        $this->assertNotEmpty($generator->generate());
     }
 
     public function testExtensionGenerator()
@@ -39,11 +39,10 @@ class GeneratorsTest extends GiiTestCase
         $generator->authorName = 'Alexander Makarov';
         $generator->authorEmail = 'sam@rmcreative.ru';
 
-        if ($generator->validate()) {
-            $generator->generate();
-        } else {
-            print_r($generator->getErrors());
-        }
+        $valid = $generator->validate();
+        $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));
+
+        $this->assertNotEmpty($generator->generate());
     }
 
     public function testModelGenerator()
@@ -53,15 +52,14 @@ class GeneratorsTest extends GiiTestCase
         $generator->tableName = 'profile';
         $generator->modelClass = 'Profile';
 
-        if ($generator->validate()) {
-            $files = $generator->generate();
-            $modelCode = $files[0]->content;
+        $valid = $generator->validate();
+        $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));
 
-            $this->assertTrue(strpos($modelCode, "'id' => 'ID'") !== false, "ID label should be there:\n" . $modelCode);
-            $this->assertTrue(strpos($modelCode, "'description' => 'Description',") !== false, "Description label should be there:\n" . $modelCode);
-        } else {
-            print_r($generator->getErrors());
-        }
+        $files = $generator->generate();
+        $modelCode = $files[0]->content;
+
+        $this->assertTrue(strpos($modelCode, "'id' => 'ID'") !== false, "ID label should be there:\n" . $modelCode);
+        $this->assertTrue(strpos($modelCode, "'description' => 'Description',") !== false, "Description label should be there:\n" . $modelCode);
     }
 
     public function testModuleGenerator()
@@ -71,11 +69,10 @@ class GeneratorsTest extends GiiTestCase
         $generator->moduleID = 'test';
         $generator->moduleClass = 'app\modules\test\Module';
 
-        if ($generator->validate()) {
-            $generator->generate();
-        } else {
-            print_r($generator->getErrors());
-        }
+        $valid = $generator->validate();
+        $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));
+
+        $this->assertNotEmpty($generator->generate());
     }
 
 
@@ -87,11 +84,10 @@ class GeneratorsTest extends GiiTestCase
         $generator->viewName = 'profile';
         $generator->viewPath = '@yiiunit/runtime';
 
-        if ($generator->validate()) {
-            $generator->generate();
-        } else {
-            print_r($generator->getErrors());
-        }
+        $valid = $generator->validate();
+        $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));
+
+        $this->assertNotEmpty($generator->generate());
     }
 
     public function testCRUDGenerator()
@@ -101,10 +97,9 @@ class GeneratorsTest extends GiiTestCase
         $generator->modelClass = 'yiiunit\extensions\gii\Profile';
         $generator->controllerClass = 'app\TestController';
 
-        if ($generator->validate()) {
-            $generator->generate();
-        } else {
-            print_r($generator->getErrors());
-        }
+        $valid = $generator->validate();
+        $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));
+
+        $this->assertNotEmpty($generator->generate());
     }
 }

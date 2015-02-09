@@ -10,6 +10,7 @@ namespace yii\rest;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
+use yii\web\ServerErrorHttpException;
 
 /**
  * CreateAction implements the API endpoint for creating a new model from the given data.
@@ -32,7 +33,7 @@ class CreateAction extends Action
     /**
      * Creates a new model.
      * @return \yii\db\ActiveRecordInterface the model newly created
-     * @throws \Exception if there is any error when creating the model
+     * @throws ServerErrorHttpException if there is any error when creating the model
      */
     public function run()
     {
@@ -51,6 +52,8 @@ class CreateAction extends Action
             $response->setStatusCode(201);
             $id = implode(',', array_values($model->getPrimaryKey(true)));
             $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
+        } elseif (!$model->hasErrors()) {
+            throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
         }
 
         return $model;

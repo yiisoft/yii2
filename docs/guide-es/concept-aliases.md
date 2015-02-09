@@ -6,7 +6,7 @@ en tu código. Un alias debe comenzar con un cáracter `@` para que así pueda s
 Por ejemplo, el alias `@yii` representa la ruta de instalación de la librería Yii, mientras que `@web` representa la
 URL base la aplicación que actualmente se está ejecutando.
 
-Definiendo Alias <a name="defining-aliases"></a>
+Definiendo Alias <span id="defining-aliases"></span>
 ----------------
 
 Puedes llamar a [[Yii::setAlias()]] para definir un alias para una determinada ruta de archivo o URL. Por ejemplo,
@@ -48,7 +48,7 @@ return [
 ```
 
 
-Resolución de Alias <a name="resolving-aliases"></a>
+Resolución de Alias <span id="resolving-aliases"></span>
 -------------------
 
 Puedes llamar [[Yii::getAlias()]] para resolver un alias de raíz en la ruta o URL que representa. El mismo método puede
@@ -80,7 +80,7 @@ Yii::getAlias('@foo/bar/file.php');   // muestra: /path2/bar/file.php
 Si `@foo/bar` no está definido como un alias de raíz, la última declaración mostraría `/path/to/foo/bar/file.php`.
 
 
-Usando Alias <a name="using-aliases"></a>
+Usando Alias <span id="using-aliases"></span>
 ------------
 
 Los alias son utilizados en muchos lugares en Yii sin necesidad de llamar [[Yii::getAlias()]] para convertirlos en rutas/URLs.
@@ -97,29 +97,31 @@ $cache = new FileCache([
 
 Por favor, presta atención a la documentación API para ver si una propiedad o el parámetro de un método soporta alias.
 
-Alias Predefinidos <a name="predefined-aliases"></a>
+
+Alias Predefinidos <span id="predefined-aliases"></span>
 ------------------
 
 Yii predefine un conjunto de alias para aliviar la necesidad de hacer referencia a rutas de archivo o URLs que son
 utilizadas regularmente. La siguiente es la lista de alias predefinidos por Yii:
 
-- `@yii`: el directorio donde el archivo `BaseYii.php` se encuentra (también llamado el directorio de la libreria).
+- `@yii`: el directorio donde el archivo `BaseYii.php` se encuentra (también llamado el directorio del framework).
 - `@app`: la [[yii\base\Application::basePath|ruta base]] de la aplicación que se está ejecutando actualmente.
-- `@runtime`: la [[yii\base\Application::runtimePath|ruta de ejecución]] (carpeta `runtime) de la aplicación que se `
-   está ejecutando actualmente.
-- `@vendor`: el [[yii\base\Application::vendorPath|directorio vendor de Composer].
+- `@runtime`: la [[yii\base\Application::runtimePath|ruta de ejecución]] de la aplicación en ejecución. Por defecto `@app/runtime`.
 - `@webroot`: el directorio raíz Web de la aplicación Web se está ejecutando actualmente.
-- `@web`: la URL base de la aplicación web se ejecuta actualmente.
+- `@web`: la URL base de la aplicación web se ejecuta actualmente. Tiene el mismo valor que [[yii\web\Request::baseUrl]].
+- `@vendor`: el [[yii\base\Application::vendorPath|directorio vendor de Composer]. Por defecto `@app/vendor`.
+- `@bower`, el directorio raíz que contiene [paquetes bower](http://bower.io/). Por defecto `@vendor/bower`.
+- `@npm`, el directorio raíz que contiene [paquetes npm](https://www.npmjs.org/). Por defecto `@vendor/npm`.
 
 El alias `@yii` se define cuando incluyes el archivo `Yii.php` en tu [script de entrada](structure-entry-scripts.md),
 mientras que el resto de los alias están definidos en el constructor de la aplicación cuando se aplica la
 [configuración](concept-configurations.md) de la aplicación.
 
 
-Alias en Extensiones <a name="extension-aliases"></a>
+Alias en Extensiones <span id="extension-aliases"></span>
 --------------------
 
-Un alias se define automaticamente por cada [extension](structure-extensions.md) que ha sido instalada a través de Composer.
+Un alias se define automaticamente por cada [extensión](structure-extensions.md) que ha sido instalada a través de Composer.
 El alias es nombrado tras el `namespace` de raíz de la extensión instalada tal y como está declarada en su archivo `composer.json`,
 y representa el directorio raíz de la extensión. Por ejemplo, si instalas la extensión `yiisoft/yii2-jui`, tendrás
 automaticamente definido el alias `@yii/jui` durante la etapa [bootstrapping](runtime-bootstrapping.md) de la aplicación:

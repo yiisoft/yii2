@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 SCRIPT=$(readlink -f "$0")
 CWD=$(dirname "$SCRIPT")
 

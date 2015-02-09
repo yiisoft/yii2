@@ -3,7 +3,7 @@ Query Builder and Query
 
 > Note: This section is under development.
 
-Yii provides a basic database access layer as described in the [Database basics](database-basics.md) section.
+Yii provides a basic database access layer as described in the [Database basics](db-dao.md) section.
 The database access layer provides a low-level way to interact with the database. While useful in some situations,
 it can be tedious and error-prone to write raw SQLs. An alternative approach is to use the Query Builder.
 The Query Builder provides an object-oriented vehicle for generating queries to be executed.
@@ -34,7 +34,7 @@ $rows = $command->queryAll();
 Query Methods
 -------------
 
-As you can see, [[yii\db\Query]] is the main player that you need to deal with. Behind the scene,
+As you can see, [[yii\db\Query]] is the main player that you need to deal with. Behind the scenes,
 `Query` is actually only responsible for representing various query information. The actual query
 building logic is done by [[yii\db\QueryBuilder]] when you call the `createCommand()` method,
 and the query execution is done by [[yii\db\Command]].
@@ -48,7 +48,7 @@ the query, execute it, and return the result. For example,
 - [[yii\db\Query::scalar()|scalar()]]: returns the first column in the first row of the result.
 - [[yii\db\Query::exists()|exists()]]: returns a value indicating whether the query results in anything.
 - [[yii\db\Query::count()|count()]]: returns the result of a `COUNT` query. Other similar methods
-  include `sum($q)`, `average($q)`, `max($q)`, `min($q)`, which support the so-called aggregational data query. `$q`
+  include `sum($q)`, `average($q)`, `max($q)` and `min($q)`, which support the so-called aggregational data query. The `$q`
   parameter is mandatory for these methods and can be either the column name or expression.
 
 
@@ -82,8 +82,17 @@ $query->select(['id', 'name'])
 > by commas, which is not what you want to see.
 
 When specifying columns, you may include the table prefixes or column aliases, e.g., `user.id`, `user.id AS user_id`.
-If you are using array to specify the columns, you may also use the array keys to specify the column aliases,
+If you are using an array to specify the columns, you may also use the array keys to specify the column aliases,
 e.g., `['user_id' => 'user.id', 'user_name' => 'user.name']`.
+
+Starting from version 2.0.1, you may also select sub-queries as columns. For example,
+ 
+```php
+$subQuery = (new Query)->select('COUNT(*)')->from('user');
+$query = (new Query)->select(['id', 'count' => $subQuery])->from('post');
+// $query represents the following SQL:
+// SELECT `id`, (SELECT COUNT(*) FROM `user`) AS `count` FROM `post`
+```
 
 To select distinct rows, you may call `distinct()`, like the following:
 
@@ -109,7 +118,7 @@ $query->select('u.*, p.*')->from(['user u', 'post p']);
 ```
 
 When the tables are specified as an array, you may also use the array keys as the table aliases
-(if a table does not need alias, do not use a string key). For example,
+(if a table does not need an alias, do not use a string key). For example,
 
 ```php
 $query->select('u.*, p.*')->from(['u' => 'user', 'p' => 'post']);
@@ -175,6 +184,12 @@ results in this WHERE clause:
 WHERE (`status` IS NULL)
 ```
 
+If you need `IS NOT NULL` you can use the following:
+
+```php
+$query->where(['not', ['col' => null]]);
+```
+
 You can also create sub-queries with `Query` objects like the following,
 
 ```php
@@ -191,7 +206,7 @@ WHERE `id` IN (SELECT `id` FROM `user`)
 
 Another way to use the method is the operand format which is `[operator, operand1, operand2, ...]`.
 
-Operator can be one of the following:
+Operator can be one of the following (see also [[yii\db\QueryInterface::where()]]):
 
 - `and`: the operands should be concatenated together using `AND`. For example,
   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
@@ -252,8 +267,9 @@ Operator can be one of the following:
 Additionally you can specify anything as operator:
 
 ```php
-$userQuery = (new Query)->select('id')->from('user');
-$query->where(['>=', 'id', 10]);
+$query->select('id')
+    ->from('user')
+    ->where(['>=', 'id', 10]);
 ```
 
 It will result in:
@@ -285,7 +301,7 @@ WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 When building filter conditions based on user inputs, you usually want to specially handle "empty inputs"
 by ignoring them in the filters. For example, you have an HTML form that takes username and email inputs.
 If the user only enters something in the username input, you may want to build a query that only tries to
-match the entered username. You may use the `filterWhere()` method achieve this goal:
+match the entered username. You may use the `filterWhere()` method to achieve this goal:
 
 ```php
 // $username and $email are from user inputs
@@ -392,7 +408,7 @@ $query->leftJoin(['u' => $subQuery], 'u.id=author_id');
 ### `UNION`
 
 `UNION` in SQL adds results of one query to results of another query. Columns returned by both queries should match.
-In Yii in order to build it you can first form two query objects and then use `union` method:
+In Yii in order to build it you can first form two query objects and then use the `union` method:
 
 ```php
 $query = new Query();
@@ -408,9 +424,9 @@ $query->union($anotherQuery);
 Batch Query
 -----------
 
-When working with large amount of data, methods such as [[yii\db\Query::all()]] are not suitable
+When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable
 because they require loading all data into the memory. To keep the memory requirement low, Yii
-provides the so-called batch query support. A batch query makes uses of data cursor and fetches
+provides the so-called batch query support. A batch query makes uses of the data cursor and fetches
 data in batches.
 
 Batch query can be used like the following:
@@ -434,12 +450,12 @@ foreach ($query->each() as $user) {
 
 The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object
 which implements the `Iterator` interface and thus can be used in the `foreach` construct.
-During the first iteration, a SQL query is made to the database. Data are since then fetched in batches
-in the iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
+During the first iteration, a SQL query is made to the database. Data are then fetched in batches
+in the remaining iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
 You can change the batch size by passing the first parameter to the `batch()` or `each()` method.
 
 Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory.
-If you process the data and then discard it right away, the batch query can help keep the memory usage under a limit.
+If you process the data and then discard it right away, the batch query can help reduce memory usage.
 
 If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query
 will still keep the proper index. For example,

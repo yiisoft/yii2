@@ -2,11 +2,10 @@ Atualizando a partir da Versão 1.1
 ==================================
 
 Existem muitas diferenças entre as versões 1.1 e 2.0 do Yii, uma vez que o
-framework foi completamente reescrito no 2.0. Por causa disso, atualizar a partir da
-versão 1.1 não é tão trivial quanto atualizar de versões menores. Neste guia
-você encontrará as principais diferenças entre as duas versões.
+framework foi completamente reescrito no 2.0. 
+Por causa disso, atualizar a partir da versão 1.1 não é tão trivial quanto atualizar de versões menores. Neste guia você encontrará as principais diferenças entre as duas versões.
 
-Se você nunca instalou o Yii 1.1 antes, você pode pular com segurança esta seção
+Se você nunca usou o Yii 1.1 antes, você pode pular com segurança esta seção
 e ir diretamente para "[Instalando o Yii](start-installation.md)".
 
 Por favor perceba que o Yii 2.0 introduz mais novas funcionalidades do que as que
@@ -20,11 +19,11 @@ Instalação
 ----------
 
 O Yii 2.0 adota plenamente o [Composer](https://getcomposer.org/), o gerenciador
-de pacotes PHP *de facto*. Tanto a instalação do núcleo do framework quanto das
+de pacotes PHP. Tanto a instalação do núcleo do framework quanto das
 extensões são gerenciados através do Composer. Por favor consulte a seção 
-[Começando a partir da Aplicação Básica](start-basic.md) para aprender como instalar
+[Instalando o Yii](start-installation.md) para aprender como instalar
 o Yii 2.0. Se você quiser criar novas extensões, ou tornar compatíveis as suas extensões
-existentes do 1.1 com o 2.0, por favor consulte a seção [Criando Extensões](extend-creating-extensions.md)
+existentes do 1.1 com o 2.0, por favor consulte a seção [Criando Extensões](structure-extensions.md#creating-extensions)
 do guia.
 
 
@@ -32,9 +31,9 @@ Requisitos do PHP
 -----------------
 
 O Yii 2.0 requer o PHP 5.4 ou superior, que é uma grande melhoria sobre a versão
-5.2 do PHP, que era exigida pelo Yii 1.1. Como resultado, existem muitas diferenças
-a nível de linguagem às quais você deveria prestar atenção. Segue abaixo um resumo
-das principais mudanças no que diz respeito ao PHP:
+5.2 do PHP, que era exigida pelo Yii 1.1. 
+Como resultado, existem muitas diferenças a nível de linguagem às quais você deveria prestar atenção. 
+Segue abaixo um resumo das principais mudanças no que diz respeito ao PHP:
 
 - [Namespaces](http://php.net/manual/pt_BR/language.namespaces.php).
 - [Funções anônimas](http://php.net/manual/pt_BR/functions.anonymous.php).
@@ -171,7 +170,7 @@ Framework, você pode definir um path alias `@Zend` que se refere ao diretório
 de instalação desse framework. Uma vez que você tenha feito isso, o Yii também
 poderá carregar automaticamente qualquer classe nessa biblioteca do Zend Framework.
 
-Você pode encontrar mais sobre *path aliases* na seção [Path Aliases](concept-aliases.md).
+Você pode encontrar mais sobre *path aliases* na seção [Aliases](concept-aliases.md).
 
 
 Views (Visões)
@@ -542,7 +541,7 @@ mais a classe `CUserIdentity`. Ao invés disso, você deve implementar a interfa
 aplicação avançado dá um exemplo disso.
 
 Por favor consulte as seções [Autenticação](security-authentication.md),
-[Autorização](security-authorization.md), e [Modelo de Aplicação Avançada](tutorial-advanced-app.md)
+[Autorização](security-authorization.md), e [Template Avançado de Aplicação](tutorial-advanced-app.md)
 para mais detalhes.
 
 
@@ -563,11 +562,10 @@ regrar para este mesmo fim.
 ]
 ```
 
-Por favor consulte a seção [documentação do url manager](url.md) para mais detalhes.
+Por favor consulte a seção da [documentação de gerenciamento de URL](runtime-routing.md) para mais detalhes.
 
 Utilizando o Yii 1.1 e o 2.x juntos
 -----------------------------------
 
-Se você tem código legado do Yii 1.1 que você quer manter para utilizar com o
-Yii 2.0, por favor consulte a seção [Usando Yii 1.1 e 2.0 juntos](extend-using-v1-v2.md).
-
+Se você tem código legado do Yii 1.1 que você queira manter para utilizar com o
+Yii 2.0, por favor, consulte a seção [Usando Yii 1.1 e 2.0 juntos](tutorial-yii-integration.md).

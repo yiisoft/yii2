@@ -12,6 +12,7 @@ use yii\console\Exception;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Console;
 
 /**
  * Manages application migrations.
@@ -144,7 +145,7 @@ class MigrateController extends BaseMigrateController
     protected function createMigrationHistoryTable()
     {
         $tableName = $this->db->schema->getRawTableName($this->migrationTable);
-        echo "Creating migration history table \"$tableName\"...";
+        $this->stdout("Creating migration history table \"$tableName\"...", Console::FG_YELLOW);
         $this->db->createCommand()->createTable($this->migrationTable, [
             'version' => 'varchar(180) NOT NULL PRIMARY KEY',
             'apply_time' => 'integer',
@@ -153,7 +154,7 @@ class MigrateController extends BaseMigrateController
             'version' => self::BASE_MIGRATION,
             'apply_time' => time(),
         ])->execute();
-        echo "done.\n";
+        $this->stdout("Done.\n", Console::FG_GREEN);
     }
 
     /**

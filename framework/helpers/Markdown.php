@@ -15,6 +15,7 @@ namespace yii\helpers;
  * ```php
  * $myHtml = Markdown::process($myText); // use original markdown flavor
  * $myHtml = Markdown::process($myText, 'gfm'); // use github flavored markdown
+ * $myHtml = Markdown::process($myText, 'extra'); // use markdown extra
  * ```
  *
  * You can configure multiple flavors using the [[$flavors]] property.

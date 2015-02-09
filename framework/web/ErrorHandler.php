@@ -69,6 +69,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         if (Yii::$app->has('response')) {
             $response = Yii::$app->getResponse();
+            $response->isSent = false;
         } else {
             $response = new Response();
         }
@@ -83,7 +84,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $response->data = $result;
             }
         } elseif ($response->format === Response::FORMAT_HTML) {
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' || YII_ENV_TEST) {
+            if (YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
                 // AJAX request
                 $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';
             } else {
@@ -97,6 +98,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                     'exception' => $exception,
                 ]);
             }
+        } elseif ($response->format === Response::FORMAT_RAW) {
+            $response->data = $exception;
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
@@ -170,20 +173,39 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method);
         } else {
             $class = $code;
+            $method = null;
             $text = $this->htmlEncode($class);
         }
 
-        if (strpos($code, 'yii\\') !== 0) {
+        $url = $this->getTypeUrl($class, $method);
+
+        if (!$url) {
             return $text;
+        }
+
+        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
+    }
+
+    /**
+     * Returns the informational link URL for a given PHP type/class.
+     * @param string $class the type or class name.
+     * @param string|null $method the method name.
+     * @return string|null the informational link URL.
+     * @see addTypeLinks()
+     */
+    protected function getTypeUrl($class, $method)
+    {
+        if (strpos($class, 'yii\\') !== 0) {
+            return null;
         }
 
         $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
         $url = "http://www.yiiframework.com/doc-2.0/$page.html";
-        if (isset($method)) {
+        if ($method) {
             $url .= "#$method()-detail";
         }
 
-        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
+        return $url;
     }
 
     /**

@@ -7,7 +7,7 @@ La première méthode est conseillée, étant donné qu'elle permet d'installer 
 > Remarque : Contrairement à Yii 1, les installations standards de Yii 2 auront pour résultat le téléchargement et l'installation du framework, ainsi que d'un squelette d'application.
 
 
-Installer via Composer <a name="installing-via-composer"></a>
+Installer via Composer <span id="installing-via-composer"></span>
 ----------------------
 
 Si vous n'avez pas déjà installé Composer, vous pouvez le faire en suivant les instructions sur le site [getcomposer.org](https://getcomposer.org/download/). 
@@ -33,7 +33,7 @@ Cette commande installera Yii dans le dossier `basic`.
 > Notez que la version de développement de Yii ne doit pas être utilisée en production, vu qu'elle pourrait *casser* votre code existant.
 
 
-Installer depuis une archive <a name="installing-from-archive-file"></a>
+Installer depuis une archive <span id="installing-from-archive-file"></span>
 ----------------------------
 
 Installer Yii depuis une archive se fait en deux étapes :
@@ -42,7 +42,7 @@ Installer Yii depuis une archive se fait en deux étapes :
 2. Décompressez l'archive dans un dossier accessible via le Web.
 
 
-Autres options d'installation <a name="other-installation-options"></a>
+Autres options d'installation <span id="other-installation-options"></span>
 -----------------------------
 
 Les instructions d'installation ci-dessus montrent comment installer Yii, ce qui installe également une application Web de base qui fonctionne *out of the box*. 
@@ -54,7 +54,7 @@ Mais il y a d'autres options d'installation disponibles :
 * Si vous voulez commencer par une application plus sophistiquée, mieux adaptée aux environnements d'équipe de développement, vous pouvez envisager l'installation du [Modèle d'application avancée](tutorial-advanced-app.md).
 
 
-Vérifier l'installation <a name="verifying-installation"></a>
+Vérifier l'installation <span id="verifying-installation"></span>
 -----------------------
 
 Après l'installation, vous pouvez utiliser votre navigateur pour accéder à l'application Yii avec l'URL suivante :
@@ -80,7 +80,7 @@ Vous devriez voir dans votre navigateur la page ci-dessus. Sinon, merci de véri
 Vous devez configurer votre installation de PHP afin qu'elle réponde aux exigences minimales de Yii. Le plus important étant que vous ayez PHP 5.4 ou plus. Si votre application a besoin d'une base de données, vous devez également installer l'[extension PHP PDO](http://www.php.net/manual/en/pdo.installation.php) ainsi qu'un pilote correspondant à votre système de base de données (par exemple `pdo_mysql` pour MySQL).
 
 
-Configuration du serveur Web <a name="configuring-web-servers"></a>
+Configuration du serveur Web <span id="configuring-web-servers"></span>
 ----------------------------
 
 > Remarque : Si vous voulez juste tester Yii sans intention de l'utiliser sur un serveur de production, vous pouvez ignorer ce paragraphe.
@@ -95,7 +95,7 @@ Vous pouvez également cacher `index.php` dans l'URL, comme décrit dans la part
 > Remarque: Si votre application s'exécute dans un environnement d'hébergement mutualisé où vous n'avez pas la permission de modifier la configuration du serveur Web, vous pouvez ajuster la structure de votre application pour une meilleure sécurité. Merci de lire la partie [Environnement d'hébergement mutualisé](tutorial-shared-hosting.md) pour en savoir plus.
 
 
-### Configuration Apache recommandée <a name="recommended-apache-configuration"></a>
+### Configuration Apache recommandée <span id="recommended-apache-configuration"></span>
 
 Utilisez la configuration suivante dans `httpd.conf`, ou dans la configuration de votre hôte virtuel. Notez que vous devez remplacer `path/to/basic/web` par le chemin vers le dossier `basic/web`.
 
@@ -117,7 +117,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Configuration Nginx recommandée <a name="recommended-nginx-configuration"></a>
+### Configuration Nginx recommandée <span id="recommended-nginx-configuration"></span>
 
 Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](http://php.net/install.fpm).
 Utilisez la configuration Nginx suivante, en remplaçant `path/to/basic/web` par le chemin vers le dossier `basic/web` et `mysite.local` par le nom d'hôte de votre serveur.

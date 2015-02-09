@@ -9,7 +9,7 @@ can respond to the [events](concept-events.md) triggered by the component, which
 code execution of the component.
 
 
-Defining Behaviors <a name="defining-behaviors"></a>
+Defining Behaviors <span id="defining-behaviors"></span>
 ------------------
 
 To define a behavior, create a class that extends [[yii\base\Behavior]], or extends a child class. For example:
@@ -44,7 +44,7 @@ class MyBehavior extends Behavior
 
 The above code defines the behavior class `app\components\MyBehavior`, with two properties--
 `prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]], and therefore supports defining [properties](concept-properties.md) via getters and setters.
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
 Because this class is a behavior, when it is attached to a component, that component will then also have the the `prop1` and `prop2` properties and the `foo()` method.
 
@@ -96,7 +96,7 @@ function ($event) {
 }
 ```
 
-Attaching Behaviors <a name="attaching-behaviors"></a>
+Attaching Behaviors <span id="attaching-behaviors"></span>
 -------------------
 
 You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former is more common in practice.
@@ -189,7 +189,7 @@ You may also attach behaviors through [configurations](concept-configurations.md
 For more details,
 please refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
-Using Behaviors <a name="using-behaviors"></a>
+Using Behaviors <span id="using-behaviors"></span>
 ---------------
 
 To use a behavior, first attach it to a [[yii\base\Component|component]] per the instructions above. Once a behavior is attached to a component, its usage is straightforward.
@@ -210,7 +210,7 @@ You can also call a *public* method of the behavior similarly:
 $component->foo();
 ```
 
-As you can see, although `$component` does not define `prop1` and `bar()`, they can be used as if they are part
+As you can see, although `$component` does not define `prop1` and `foo()`, they can be used as if they are part
 of the component definition due to the attached behavior.
 
 If two behaviors define the same property or method and they are both attached to the same component,
@@ -230,7 +230,7 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-Detaching Behaviors <a name="detaching-behaviors"></a>
+Detaching Behaviors <span id="detaching-behaviors"></span>
 -------------------
 
 To detach a behavior, call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
@@ -246,10 +246,10 @@ $component->detachBehaviors();
 ```
 
 
-Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
+Using `TimestampBehavior` <span id="using-timestamp-behavior"></span>
 -------------------------
 
-To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior  supports automatically
+To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior supports automatically
 updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved (e.g., on insert or update).
 
 First, attach this behavior to the [[yii\db\ActiveRecord|Active Record]] class that you plan to use:
@@ -303,7 +303,7 @@ to a specified attribute and save it to the database:
 $user->touch('login_time');
 ```
 
-Comparing Behaviors with Traits <a name="comparison-with-traits"></a>
+Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------
 
 While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
@@ -311,12 +311,13 @@ properties and methods to the primary class, they differ in many aspects. As exp
 both have pros and cons. They are more like complements to each other rather than alternatives.
 
 
-### Reasons to Use Behaviors <a name="pros-for-behaviors"></a>
+### Reasons to Use Behaviors <span id="pros-for-behaviors"></span>
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
 can be considered as language-supported copy and paste. They do not support inheritance.
 
-Behaviors can be attached and detached to a component dynamically without requiring modification of the component class. To use a trait, you must modify the class using it.
+Behaviors can be attached and detached to a component dynamically without requiring modification of the component class.
+To use a trait, you must modify the code of the class using it.
 
 Behaviors are configurable while traits are not.
 
@@ -324,13 +325,13 @@ Behaviors can customize the code execution of a component by responding to its e
 
 When there can be name conflicts among different behaviors attached to the same component, the conflicts are
 automatically resolved by prioritizing the behavior attached to the component first.
-Name conflicts caused by different traits requires manually resolution by renaming the affected
+Name conflicts caused by different traits requires manual resolution by renaming the affected
 properties or methods.
 
 
-### Reasons to Use Traits <a name="pros-for-traits"></a>
+### Reasons to Use Traits <span id="pros-for-traits"></span>
 
 Traits are much more efficient than behaviors as behaviors are objects that take both time and memory.
 
-IDEs are more friendly to traits as they are language construct.
+IDEs are more friendly to traits as they are a native language construct.
 

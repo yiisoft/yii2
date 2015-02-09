@@ -53,6 +53,7 @@ api/
             models/
                 User.php
                 Post.php
+            Module.php
         v2/
             controllers/
                 UserController.php
@@ -60,6 +61,7 @@ api/
             models/
                 User.php
                 Post.php
+            Module.php
 ```
 
 Your application configuration would look like:
@@ -68,10 +70,10 @@ Your application configuration would look like:
 return [
     'modules' => [
         'v1' => [
-            'basePath' => '@app/modules/v1',
+            'class' => 'app\modules\v1\Module',
         ],
         'v2' => [
-            'basePath' => '@app/modules/v2',
+            'class' => 'app\modules\v2\Module',
         ],
     ],
     'components' => [

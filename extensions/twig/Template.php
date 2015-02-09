@@ -20,10 +20,16 @@ abstract class Template extends \Twig_Template
     protected function getAttribute($object, $item, array $arguments = [], $type = \Twig_Template::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
     {
         // Twig uses isset() to check if attribute exists which does not work when attribute exists but is null
-        if ($object instanceof \yii\db\BaseActiveRecord) {
+        if ($object instanceof \yii\base\Model) {
             if ($type === \Twig_Template::METHOD_CALL) {
-                return $object->$item($arguments);
+                if ($this->env->hasExtension('sandbox')) {
+                    $this->env->getExtension('sandbox')->checkMethodAllowed($object, $item);
+                }
+                return call_user_func_array([$object, $item], $arguments);
             } else {
+                if ($this->env->hasExtension('sandbox')) {
+                    $this->env->getExtension('sandbox')->checkPropertyAllowed($object, $item);
+                }
                 return $object->$item;
             }
         }

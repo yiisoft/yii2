@@ -199,6 +199,7 @@ class UrlManager extends Component
                 $rule = ['route' => $rule];
                 if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
                     $rule['verb'] = explode(',', $matches[1]);
+                    // rules that do not apply for GET requests should not be use to create urls
                     if (!in_array('GET', $rule['verb'])) {
                         $rule['mode'] = UrlRule::PARSING_ONLY;
                     }
@@ -243,7 +244,7 @@ class UrlManager extends Component
             $suffix = (string) $this->suffix;
             if ($suffix !== '' && $pathInfo !== '') {
                 $n = strlen($this->suffix);
-                if (substr_compare($pathInfo, $this->suffix, -$n) === 0) {
+                if (substr_compare($pathInfo, $this->suffix, -$n, $n) === 0) {
                     $pathInfo = substr($pathInfo, 0, -$n);
                     if ($pathInfo === '') {
                         // suffix alone is not allowed

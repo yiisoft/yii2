@@ -26,7 +26,7 @@ if ($model->validate()) {
 3. 用每个激活规则去验证每个与之关联的激活特性。若失败，则记录下对应模型特性的错误信息。
 
 
-## 声明规则（Rules） <a name="declaring-rules"></a>
+## 声明规则（Rules） <span id="declaring-rules"></span>
 
 要让 `validate()` 方法起作用，你需要声明与需验证模型特性相关的验证规则。为此，需要重写 [[yii\base\Model::rules()]] 方法。下面的例子展示了如何声明用于验证 `ContactForm` 模型的相关验证规则：
 
@@ -47,61 +47,46 @@ public function rules()
 
 ```php
 [
-    // required, specifies which attributes should be validated by this rule.
-    // For a single attribute, you can use the attribute name directly
-    // without having it in an array instead of an array
+    // 必须项，用于指定那些模型特性需要通过此规则的验证。
+    // 对于只有一个特性的情况，可以直接写特性名，而不必用数组包裹。
     ['attribute1', 'attribute2', ...],
 
-    // required, specifies the type of this rule.
-    // It can be a class name, validator alias, or a validation method name
+    // 必填项，用于指定规则的类型。
+    // 它可以是类名，验证器昵称，或者是验证方法的名称。
     'validator',
 
-    // optional, specifies in which scenario(s) this rule should be applied
-    // if not given, it means the rule applies to all scenarios
-    // You may also configure the "except" option if you want to apply the rule
-    // to all scenarios except the listed ones
+    // 可选项，用于指定在场景（scenario）中，需要启用该规则
+    // 若不提供，则代表该规则适用于所有场景
+    // 若你需要提供除了某些特定场景以外的所有其他场景，你也可以配置 "except" 选项
     'on' => ['scenario1', 'scenario2', ...],
 
-    // optional, specifies additional configurations for the validator object
+    // 可选项，用于指定对该验证器对象的其他配置选项
     'property1' => 'value1', 'property2' => 'value2', ...
 ]
 ```
 
-For each rule you must specify at least which attributes the rule applies to and what is the type of the rule.
-You can specify the rule type in one of the following forms:
+对于每个规则，你至少需要指定该规则适用于哪些特性，以及本规则的类型是什么。你可以指定以下的规则类型之一：
 
-* the alias of a core validator, such as `required`, `in`, `date`, etc. Please refer to
-  the [Core Validators](tutorial-core-validators.md) for the complete list of core validators.
-* the name of a validation method in the model class, or an anonymous function. Please refer to the
-  [Inline Validators](#inline-validators) subsection for more details.
-* the name of a validator class. Please refer to the [Standalone Validators](#standalone-validators)
-  subsection for more details.
+* 核心验证器的昵称，比如 `required`、`in`、`date`，等等。请参考[核心验证器](tutorial-core-validators.md)章节查看完整的核心验证器列表。
+* 模型类中的某个验证方法的名称，或者一个匿名方法。请参考[行内验证器](#inline-validators)小节了解更多。
+* 验证器类的名称。请参考[独立验证器](#standalone-validators)小节了解更多。
 
-A rule can be used to validate one or multiple attributes, and an attribute may be validated by one or multiple rules.
-A rule may be applied in certain [scenarios](structure-models.md#scenarios) only by specifying the `on` option.
-If you do not specify an `on` option, it means the rule will be applied to all scenarios.
+一个规则可用于验证一个或多个模型特性，且一个特性可以被一个或多个规则所验证。一个规则可以施用于特定[场景（scenario）](structure-models.md#scenarios)，只要指定 `on` 选项。如果你不指定 `on` 选项，那么该规则会适配于所有场景。
 
-When the `validate()` method is called, it does the following steps to perform validation:
+当调用 `validate()` 方法时，它将运行以下几个具体的验证步骤：
 
-1. Determine which attributes should be validated by checking the current [[yii\base\Model::scenario|scenario]]
-   against the scenarios declared in [[yii\base\Model::scenarios()]]. These attributes are the active attributes.
-2. Determine which rules should be applied by checking the current [[yii\base\Model::scenario|scenario]]
-   against the rules declared in [[yii\base\Model::rules()]]. These rules are the active rules.
-3. Use each active rule to validate each active attribute which is associated with the rule.
+1. 检查从声明自 [[yii\base\Model::scenarios()]] 方法的场景中所挑选出的当前[[yii\base\Model::scenario|场景]]的信息，从而确定出那些特性需要被验证。这些特性被称为激活特性。
+2. 检查从声明自 [[yii\base\Model::rules()]] 方法的众多规则中所挑选出的适用于当前[[yii\base\Model::scenario|场景]]的规则，从而确定出需要验证哪些规则。这些规则被称为激活规则。
+3. 用每个激活规则去验证每个与之关联的激活特性。
 
-According to the above validation steps, an attribute will be validated if and only if it is
-an active attribute declared in `scenarios()` and is associated with one or multiple active rules
-declared in `rules()`.
+基于以上验证步骤，有且仅有声明在 `scenarios()` 方法里的激活特性，且它还必须与一或多个声明自 `rules()` 里的激活规则相关联才会被验证。
 
 
-### 自定义错误信息 <a name="customizing-error-messages"></a>
+### 自定义错误信息 <span id="customizing-error-messages"></span>
 
-Most validators have default error messages that will be added to the model being validated when its attributes
-fail the validation. For example, the [[yii\validators\RequiredValidator|required]] validator will add
-a message "Username cannot be blank." to a model when the `username` attribute fails the rule using this validator.
+大多数的验证器都有默认的错误信息，当模型的某个特性验证失败的时候，该错误信息会被返回给模型。比如，用 [[yii\validators\RequiredValidator|required]] 验证器的规则检验 `username` 特性失败的话，会返还给模型 "Username cannot be blank." 信息。
 
-You can customize the error message of a rule by specifying the `message` property when declaring the rule,
-like the following,
+你可以通过在声明规则的时候同时指定 `message` 属性，来定制某个规则的错误信息，比如这样：
 
 ```php
 public function rules()
@@ -112,32 +97,22 @@ public function rules()
 }
 ```
 
-Some validators may support additional error messages to more precisely describe different causes of
-validation failures. For example, the [[yii\validators\NumberValidator|number]] validator supports
-[[yii\validators\NumberValidator::tooBig|tooBig]] and [[yii\validators\NumberValidator::tooSmall|tooSmall]]
-to describe the validation failure when the value being validated is too big and too small, respectively.
-You may configure these error messages like configuring other properties of validators in a validation rule.
+一些验证器还支持用于针对不同原因的验证失败返回更加准确的额外错误信息。比如，[[yii\validators\NumberValidator|number]] 验证器就支持 [[yii\validators\NumberValidator::tooBig|tooBig]] 和 [[yii\validators\NumberValidator::tooSmall|tooSmall]] 两种错误消息用于分别返回输入值是太大还是太小。
+你也可以像配置验证器的其他属性一样配置它们俩各自的错误信息。
 
 
-### 验证事件 <a name="validation-events"></a>
+### 验证事件 <span id="validation-events"></span>
 
-When [[yii\base\Model::validate()]] is called, it will call two methods that you may override to customize
-the validation process:
+当调用 [[yii\base\Model::validate()]] 方法的过程里，它同时会调用两个特殊的方法，把它们重写掉可以实现自定义验证过程的目的：
 
-* [[yii\base\Model::beforeValidate()]]: the default implementation will trigger a [[yii\base\Model::EVENT_BEFORE_VALIDATE]]
-  event. You may either override this method or respond to this event to do some preprocessing work
-  (e.g. normalizing data inputs) before the validation occurs. The method should return a boolean value indicating
-  whether the validation should proceed or not.
-* [[yii\base\Model::afterValidate()]]: the default implementation will trigger a [[yii\base\Model::EVENT_AFTER_VALIDATE]]
-  event. You may either override this method or respond to this event to do some postprocessing work after
-  the validation is completed.
+* [[yii\base\Model::beforeValidate()]]：在默认的实现中会触发 [[yii\base\Model::EVENT_BEFORE_VALIDATE]] 事件。你可以重写该方法或者响应此事件，来在验证开始之前，先进行一些预处理的工作。（比如，标准化数据输入）该方法应该返回一个布尔值，用于标明验证是否通过。
+* [[yii\base\Model::afterValidate()]]：在默认的实现中会触发 [[yii\base\Model::EVENT_AFTER_VALIDATE]] 事件。你可以重写该方法或者响应此事件，来在验证结束之后，再进行一些收尾的工作。
 
 
-### 条件式验证 <a name="conditional-validation"></a>
+### 条件式验证 <span id="conditional-validation"></span>
 
-To validate attributes only when certain conditions apply, e.g. the validation of one attribute depends
-on the value of another attribute you can use the [[yii\validators\Validator::when|when]] property
-to define such conditions. For example,
+若要只在某些条件满足时，才验证相关特性，比如：是否验证某特性取决于另一特性的值，你可以通过
+[[yii\validators\Validator::when|when]] 属性来定义相关条件。举例而言，
 
 ```php
 [
@@ -147,20 +122,19 @@ to define such conditions. For example,
 ]
 ```
 
-The [[yii\validators\Validator::when|when]] property takes a PHP callable with the following signature:
+[[yii\validators\Validator::when|when]] 属性会读入一个如下所示结构的 PHP callable 函数对象：
 
 ```php
 /**
- * @param Model $model the model being validated
- * @param string $attribute the attribute being validated
- * @return boolean whether the rule should be applied
+ * @param Model $model 要验证的模型对象
+ * @param string $attribute 待测特性名
+ * @return boolean 返回是否启用该规则
  */
 function ($model, $attribute)
 ```
 
-If you also need to support client-side conditional validation, you should configure
-the [[yii\validators\Validator::whenClient|whenClient]] property which takes a string representing a JavaScript
-function whose return value determines whether to apply the rule or not. For example,
+若你需要支持客户端的条件验证，你应该配置
+[[yii\validators\Validator::whenClient|whenClient]] 属性，它会读入一条包含有 JavaScript 函数的字符串。这个函数将被用于确定该客户端验证规则是否被启用。比如，
 
 ```php
 [
@@ -173,13 +147,11 @@ function whose return value determines whether to apply the rule or not. For exa
 ```
 
 
-### 数据过滤 <a name="data-filtering"></a>
+### 数据预处理 <span id="data-filtering"></span>
 
-User inputs often need to be filtered or preprocessed. For example, you may want to trim the spaces around the
-`username` input. You may use validation rules to achieve this goal.
+用户输入经常需要进行数据过滤，或者叫预处理。比如你可能会需要先去掉 `username` 输入的收尾空格。你可以通过使用验证规则来实现此目的。
 
-The following examples shows how to trim the spaces in the inputs and turn empty inputs into nulls by using
-the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validators.md#default) core validators:
+下面的例子展示了如何去掉输入信息的首尾空格，并将空输入返回为 null。具体方法为通过调用 [trim](tutorial-core-validators.md#trim) 和 [default](tutorial-core-validators.md#default) 核心验证器：
 
 ```php
 [
@@ -188,31 +160,28 @@ the [trim](tutorial-core-validators.md#trim) and [default](tutorial-core-validat
 ]
 ```
 
-You may also use the more general [filter](tutorial-core-validators.md#filter) validator to perform more complex
-data filtering.
+也还可以用更加通用的 [filter（滤镜）](tutorial-core-validators.md#filter) 核心验证器来执行更加复杂的数据过滤。
 
-As you can see, these validation rules do not really validate the inputs. Instead, they will process the values
-and save them back to the attributes being validated.
+如你所见，这些验证规则并不真的对输入数据进行任何验证。而是，对输入数据进行一些处理，然后把它们存回当前被验证的模型特性。
 
 
-### 处理空输入 <a name="handling-empty-inputs"></a>
+### 处理空输入 <span id="handling-empty-inputs"></span>
 
-When input data are submitted from HTML forms, you often need to assign some default values to the inputs
-if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
+当输入数据是通过 HTML 表单，你经常会需要给空的输入项赋默认值。你可以通过调整
+[default](tutorial-core-validators.md#default) 验证器来实现这一点。举例来说，
 
 ```php
 [
-    // set "username" and "email" as null if they are empty
+    // 若 "username" 和 "email" 为空，则设为 null
     [['username', 'email'], 'default'],
 
-    // set "level" to be 1 if it is empty
+    // 若 "level" 为空，则设其为 1
     ['level', 'default', 'value' => 1],
 ]
 ```
 
-By default, an input is considered empty if its value is an empty string, an empty array or a null.
-You may customize the default empty detection logic by configuring the the [[yii\validators\Validator::isEmpty]] property
-with a PHP callable. For example,
+默认情况下，当输入项为空字符串，空数组，或 null 时，会被视为“空值”。你也可以通过配置
+[[yii\validators\Validator::isEmpty]] 属性来自定义空值的判定规则。比如，
 
 ```php
 [
@@ -222,35 +191,33 @@ with a PHP callable. For example,
 ]
 ```
 
-> Note: Most validators do not handle empty inputs if their [[yii\base\Validator::skipOnEmpty]] property takes
-  the default value true. They will simply be skipped during validation if their associated attributes receive empty
-  inputs. Among the [core validators](tutorial-core-validators.md), only the `captcha`, `default`, `filter`,
-  `required`, and `trim` validators will handle empty inputs.
+> 注意：对于绝大多数验证器而言，若其 [[yii\base\Validator::skipOnEmpty]] 属性为默认值
+true，则它们不会对空值进行任何处理。也就是当他们的关联特性接收到空值时，相关验证会被直接略过。在
+[核心验证器](tutorial-core-validators.md) 之中，只有 `captcha`（验证码），`default`（默认值），`filter`（滤镜），`required`（必填），以及 `trim`（去首尾空格），这几个验证器会处理空输入。
 
 
-## Ad Hoc Validation <a name="ad-hoc-validation"></a>
+## 临时验证 <span id="ad-hoc-validation"></span>
 
-Sometimes you need to do *ad hoc validation* for values that are not bound to any model.
+有时，你需要对某些没有绑定任何模型类的值进行 **临时验证**。
 
-If you only need to perform one type of validation (e.g. validating email addresses), you may call
-the [[yii\validators\Validator::validate()|validate()]] method of the desired validator, like the following:
+若你只需要进行一种类型的验证 (e.g. 验证邮箱地址)，你可以调用所需验证器的
+[[yii\validators\Validator::validate()|validate()]] 方法。像这样：
 
 ```php
 $email = 'test@example.com';
 $validator = new yii\validators\EmailValidator();
 
 if ($validator->validate($email, $error)) {
-    echo 'Email is valid.';
+    echo '有效的 Email 地址。';
 } else {
     echo $error;
 }
 ```
 
-> Note: Not all validators support such kind of validation. An example is the [unique](tutorial-core-validators.md#unique)
-  core validator which is designed to work with a model only.
+> 注意：不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，它的设计初衷就是只作用于模型类内部的。
 
-If you need to perform multiple validations against several values, you can use [[yii\base\DynamicModel]]
-which supports declaring both attributes and rules on the fly. Its usage is like the following:
+若你需要针对一系列值执行多项验证，你可以使用 [[yii\base\DynamicModel]]
+。它支持即时添加特性和验证规则的定义。它的使用规则是这样的：
 
 ```php
 public function actionSearch($name, $email)
@@ -261,18 +228,17 @@ public function actionSearch($name, $email)
     ]);
 
     if ($model->hasErrors()) {
-        // validation fails
+        // 验证失败
     } else {
-        // validation succeeds
+        // 验证成功
     }
 }
 ```
 
-The [[yii\base\DynamicModel::validateData()]] method creates an instance of `DynamicModel`, defines the attributes
-using the given data (`name` and `email` in this example), and then calls [[yii\base\Model::validate()]]
-with the given rules.
+[[yii\base\DynamicModel::validateData()]] 方法会创建一个 `DynamicModel` 的实例对象，并通过给定数据定义模型特性（以 `name` 和 `email` 为例），之后用给定规则调用
+[[yii\base\Model::validate()]] 方法。
 
-Alternatively, you may use the following more "classic" syntax to perform ad hoc data validation:
+除此之外呢，你也可以用如下的更加“传统”的语法来执行临时数据验证：
 
 ```php
 public function actionSearch($name, $email)
@@ -283,43 +249,39 @@ public function actionSearch($name, $email)
         ->validate();
 
     if ($model->hasErrors()) {
-        // validation fails
+        // 验证失败
     } else {
-        // validation succeeds
+        // 验证成功
     }
 }
 ```
 
-After validation, you can check if the validation succeeds or not by calling the
-[[yii\base\DynamicModel::hasErrors()|hasErrors()]] method, and then get the validation errors from the
-[[yii\base\DynamicModel::errors|errors]] property, like you do with a normal model.
-You may also access the dynamic attributes defined through the model instance, e.g.,
-`$model->name` and `$model->email`.
+验证之后你可以通过调用 [[yii\base\DynamicModel::hasErrors()|hasErrors()]]
+方法来检查验证通过与否，并通过 [[yii\base\DynamicModel::errors|errors]]
+属性获得验证的错误信息，过程与普通模型类一致。你也可以访问模型对象内定义的动态特性，就像：
+`$model->name` 和 `$model->email`。
 
 
-## 创建验证器（Validators） <a name="creating-validators"></a>
+## 创建验证器（Validators） <span id="creating-validators"></span>
 
-Besides using the [core validators](tutorial-core-validators.md) included in the Yii releases, you may also
-create your own validators. You may create inline validators or standalone validators.
+除了使用 Yii 的发布版里所包含的[核心验证器](tutorial-core-validators.md)之外，你也可以创建你自己的验证器。自定义的验证器可以是**行内验证器**，也可以是**独立验证器**。
 
 
-### 行内验证器（Inline Validators） <a name="inline-validators"></a>
+### 行内验证器（Inline Validators） <span id="inline-validators"></span>
 
-An inline validator is one defined in terms of a model method or an anonymous function. The signature of
-the method/function is:
+行内验证器是一种以模型方法或匿名函数的形式定义的验证器。这些方法/函数的结构如下：
 
 ```php
 /**
- * @param string $attribute the attribute currently being validated
- * @param array $params the additional name-value pairs given in the rule
+ * @param string $attribute 当前被验证的特性
+ * @param array $params 以名-值对形式提供的额外参数
  */
 function ($attribute, $params)
 ```
 
-If an attribute fails the validation, the method/function should call [[yii\base\Model::addError()]] to save
-the error message in the model so that it can be retrieved back later to present to end users.
+若某特性的验证失败了，该方法/函数应该调用 [[yii\base\Model::addError()]] 保存错误信息到模型内。这样这些错误就能在之后的操作中，被读取并展现给终端用户。
 
-Below are some examples:
+下面是一些例子：
 
 ```php
 use yii\base\Model;
@@ -332,13 +294,13 @@ class MyForm extends Model
     public function rules()
     {
         return [
-            // an inline validator defined as the model method validateCountry()
+            // 以模型方法 validateCountry() 形式定义的行内验证器
             ['country', 'validateCountry'],
 
-            // an inline validator defined as an anonymous function
+            // 以匿名函数形式定义的行内验证器
             ['token', function ($attribute, $params) {
                 if (!ctype_alnum($this->$attribute)) {
-                    $this->addError($attribute, 'The token must contain letters or digits.');
+                    $this->addError($attribute, '令牌本身必须包含字母或数字。');
                 }
             }],
         ];
@@ -346,17 +308,15 @@ class MyForm extends Model
 
     public function validateCountry($attribute, $params)
     {
-        if (!in_array($this->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'The country must be either "USA" or "Web".');
+        if (!in_array($this->$attribute, ['兲朝', '墙外'])) {
+            $this->addError($attribute, '国家必须为 "兲朝" 或 "墙外" 中的一个。');
         }
     }
 }
 ```
 
-> Note: By default, inline validators will not be applied if their associated attributes receive empty inputs
-  or if they have already failed some validation rules. If you want to make sure a rule is always applied,
-  you may configure the [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] and/or [[yii\validators\Validator::skipOnError|skipOnError]]
-  properties to be false in the rule declarations. For example:
+> 注意：缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。若你想要确保该验证器始终启用的话，你可以在定义规则时，酌情将 [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] 以及 [[yii\validators\Validator::skipOnError|skipOnError]]
+  属性设为 false，比如，
 > ```php
 [
     ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
@@ -364,12 +324,11 @@ class MyForm extends Model
 ```
 
 
-### 独立验证器（Standalone Validators） <a name="standalone-validators"></a>
+### 独立验证器（Standalone Validators） <span id="standalone-validators"></span>
 
-A standalone validator is a class extending [[yii\validators\Validator]] or its child class. You may implement
-its validation logic by overriding the [[yii\validators\Validator::validateAttribute()]] method. If an attribute
-fails the validation, call [[yii\base\Model::addError()]] to save the error message in the model, like you do
-with [inline validators](#inline-validators). For example,
+独立验证器是继承自 [[yii\validators\Validator]] 或其子类的类。你可以通过重写
+[[yii\validators\Validator::validateAttribute()]] 来实现它的验证规则。若特性验证失败，可以调用
+[[yii\base\Model::addError()]] 以保存错误信息到模型内，操作与 [inline validators](#inline-validators) 所需操作完全一样。比如，
 
 ```php
 namespace app\components;
@@ -380,38 +339,30 @@ class CountryValidator extends Validator
 {
     public function validateAttribute($model, $attribute)
     {
-        if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'The country must be either "USA" or "Web".');
+        if (!in_array($model->$attribute, ['兲朝', '墙外'])) {
+            $this->addError($attribute, '国家必须为 "兲朝" 或 "墙外" 中的一个。');
         }
     }
 }
 ```
 
-If you want your validator to support validating a value without a model, you should also override
-[[yii\validators\Validator::validate()]]. You may also override [[yii\validators\Validator::validateValue()]]
-instead of `validateAttribute()` and `validate()` because by default the latter two methods are implemented
-by calling `validateValue()`.
+若你想要验证器支持不使用 model 的数据验证，你还应该重写
+[[yii\validators\Validator::validate()]] 方法。你也可以通过重写
+[[yii\validators\Validator::validateValue()]] 方法替代
+`validateAttribute()` 和 `validate()`，因为默认状态下，后两者的实现使用过调用
+`validateValue()`实现的。
 
 
-## 客户端验证器（Client-Side Validation） <a name="client-side-validation"></a>
+## 客户端验证器（Client-Side Validation） <span id="client-side-validation"></span>
 
-Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
-it allows users to find out input errors faster and thus provides better user experience. You may use or implement
-a validator that supports client-side validation *in addition to* server-side validation.
+当终端用户通过 HTML 表单提供相关输入信息时，我们可能会需要用到基于 JavaScript 的客户端验证。因为，它可以让用户更快速的得到错误信息，也因此可以提供更好的用户体验。你可以使用或自己实现除服务器端验证之外，**还能额外**客户端验证功能的验证器。
 
-> Info: While client-side validation is desirable, it is not a must. It main purpose is to provider users better
-  experience. Like input data coming from end users, you should never trust client-side validation. For this reason,
-  you should always perform server-side validation by calling [[yii\base\Model::validate()]], like
-  described in the previous subsections.
+> 补充：尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 方法执行服务器端验证。
 
 
-### 使用客户端验证 <a name="using-client-side-validation"></a>
+### 使用客户端验证 <span id="using-client-side-validation"></span>
 
-Many [core validators](tutorial-core-validators.md) support client-side validation out-of-box. All you need to do
-is just to use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
-rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
-client and server sides; the other uses the `validatePassword` inline validator which is only supported on the server
-side.
+许多[核心验证器](tutorial-core-validators.md)都支持开箱即用的客户端验证。你只需要用 [[yii\widgets\ActiveForm]] 的方式构建 HTML 表单即可。比如，下面的 `LoginForm`（登录表单）声明了两个规则：其一为 [required](tutorial-core-validators.md#required) 核心验证器，它同时支持客户端与服务器端的验证；另一个则采用 `validatePassword` 行内验证器，它只支持服务器端。
 
 ```php
 namespace app\models;
@@ -427,10 +378,10 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
+            // username 和 password 都是必填项
             [['username', 'password'], 'required'],
 
-            // password is validated by validatePassword()
+            // 用 validatePassword() 验证 password
             ['password', 'validatePassword'],
         ];
     }
@@ -446,9 +397,7 @@ class LoginForm extends Model
 }
 ```
 
-The HTML form built by the following code contains two input fields `username` and `password`.
-If you submit the form without entering anything, you will find the error messages requiring you
-to enter something appear right away without any communication with the server.
+使用如下代码构建的 HTML 表单包含两个输入框 `username` 以及 `password`。如果你在没有输入任何东西之前提交表单，就会在没有任何与服务器端的通讯的情况下，立刻收到一个要求你填写空白项的错误信息。
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -458,29 +407,21 @@ to enter something appear right away without any communication with the server.
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-Behind the scene, [[yii\widgets\ActiveForm]] will read the validation rules declared in the model
-and generate appropriate JavaScript code for validators that support client-side validation. When a user
-changes the value of an input field or submit the form, the client-side validation JavaScript will be triggered.
+幕后的运作过程是这样的：[[yii\widgets\ActiveForm]] 会读取声明在模型类中的验证规则，并生成那些支持支持客户端验证的验证器所需的 JavaScript 代码。当用户修改输入框的值，或者提交表单时，就会触发相应的客户端验证 JS 代码。
 
-If you want to turn off client-side validation completely, you may configure the
-[[yii\widgets\ActiveForm::enableClientValidation]] property to be false. You may also turn off client-side
-validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
-property to be false.
+若你需要完全关闭客户端验证，你只需配置 [[yii\widgets\ActiveForm::enableClientValidation]] 属性为 false。你同样可以关闭各个输入框各自的客户端验证，只要把它们的 [[yii\widgets\ActiveField::enableClientValidation]] 属性设为 false。
 
 
-### 实现客户端验证 <a name="implementing-client-side-validation"></a>
+### 自己实现客户端验证 <span id="implementing-client-side-validation"></span>
 
-To create a validator that supports client-side validation, you should implement the
-[[yii\validators\Validator::clientValidateAttribute()]] method which returns a piece of JavaScript code
-that performs the validation on the client side. Within the JavaScript code, you may use the following
-predefined variables:
+要穿件一个支持客户端验证的验证器，你需要实现
+[[yii\validators\Validator::clientValidateAttribute()]] 方法，用于返回一段用于运行客户端验证的 JavaScript 代码。在这段 JavaScript 代码中，你可以使用以下预定义的变量：
 
-- `attribute`: the name of the attribute being validated.
-- `value`: the value being validated.
-- `messages`: an array used to hold the validation error messages for the attribute.
+- `attribute`：正在被验证的模型特性的名称。
+- `value`：进行验证的值。
+- `messages`：一个用于暂存模型特性的报错信息的数组。
 
-In the following example, we create a `StatusValidator` which validates if an input is a valid status input
-against the existing status data. The validator supports both server side and client side validation.
+在下面的例子里，我们会创建一个 `StatusValidator`，它会通过比对现有的状态数据，验证输入值是否为一个有效的状态。该验证器同时支持客户端以及服务器端验证。
 
 ```php
 namespace app\components;
@@ -493,7 +434,7 @@ class StatusValidator extends Validator
     public function init()
     {
         parent::init();
-        $this->message = 'Invalid status input.';
+        $this->message = '无效的状态输入。';
     }
 
     public function validateAttribute($model, $attribute)
@@ -517,9 +458,7 @@ JS;
 }
 ```
 
-> Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
-  you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
-  write the validation rule like the following:
+> 技巧：上述代码主要是演示了如何支持客户端验证。在具体实践中，你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来达到同样的目的。比如这样的验证规则：
 > ```php
 [
     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],

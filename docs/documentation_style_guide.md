@@ -27,6 +27,8 @@ Blocks use the Markdown `> Type: `. There are four block types:
 * `Info`, general information (an aside); not as strong as a "Note"
 * `Tip`, pro tips, extras, can be useful but may not be needed by everyone all the time
 
+The sentence after the colon should begin with a capital letter.
+
 ## References
 
 * Yii 2.0 or Yii 2 (not Yii2 or Yii2.0)

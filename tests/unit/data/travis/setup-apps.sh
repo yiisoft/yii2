@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 
 if (php --version | grep -i HipHop > /dev/null); then
   echo "skipping application setup on HHVM"

@@ -191,6 +191,6 @@ class HttpCache extends ActionFilter
      */
     protected function generateEtag($seed)
     {
-        return '"' . base64_encode(sha1($seed, true)) . '"';
+        return '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
     }
 }

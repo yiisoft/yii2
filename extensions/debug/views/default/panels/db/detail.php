@@ -7,14 +7,14 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 ?>
-<h1>Database Queries</h1>
+<h1><?= $panel->getName(); ?> Queries</h1>
 
 <?php
 
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'id' => 'db-panel-detailed-grid',
-    'options' => ['class' => 'detail-grid-view'],
+    'options' => ['class' => 'detail-grid-view table-responsive'],
     'filterModel' => $searchModel,
     'filterUrl' => $panel->getUrl(),
     'columns' => [
@@ -49,6 +49,7 @@ echo GridView::widget([
             'value' => function ($data) {
                 return Html::encode(mb_strtoupper($data['type'], 'utf8'));
             },
+            'filter' => $panel->getTypes(),
         ],
         [
             'attribute' => 'query',

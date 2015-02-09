@@ -281,4 +281,4 @@ Then run command `php codecept.phar run --debug unit/SomeDebugTest` and you will
 
 ```
 
-For further instructions refer to the testing section in the [Yii Definitive Guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/testing.md).
+For further instructions refer to the testing section in the [Yii Definitive Guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-overview.md).

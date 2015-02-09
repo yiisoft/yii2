@@ -7,8 +7,16 @@
 
 namespace yii\apidoc\templates\bootstrap;
 
+use yii\apidoc\models\TypeDoc;
+
+/**
+ * Common methods for renderers
+ */
 trait RendererTrait
 {
+    /**
+     * @var array official Yii extensions
+     */
     public $extensions = [
         'apidoc',
         'authclient',
@@ -29,6 +37,12 @@ trait RendererTrait
         'twig',
     ];
 
+    /**
+     * Returns nav TypeDocs
+     * @param TypeDoc $type typedoc to take category from
+     * @param TypeDoc[] $types TypeDocs to filter
+     * @return array
+     */
     public function getNavTypes($type, $types)
     {
         if ($type === null) {
@@ -38,6 +52,11 @@ trait RendererTrait
         return $this->filterTypes($types, $this->getTypeCategory($type));
     }
 
+    /**
+     * Returns category of TypeDoc
+     * @param TypeDoc $type
+     * @return string
+     */
     protected function getTypeCategory($type)
     {
         $extensions = $this->extensions;
@@ -60,6 +79,13 @@ trait RendererTrait
         return $navClasses;
     }
 
+    /**
+     * Returns types of a given class
+     *
+     * @param TypeDoc[] $types
+     * @param string $navClasses
+     * @return array
+     */
     protected function filterTypes($types, $navClasses)
     {
         switch ($navClasses) {

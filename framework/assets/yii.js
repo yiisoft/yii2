@@ -44,7 +44,7 @@
 yii = (function ($) {
     var pub = {
         /**
-         * List of scripts that can be loaded multiple times via AJAX requests. Each script can be represented
+         * List of JS or CSS URLs that can be loaded multiple times via AJAX requests. Each script can be represented
          * as either an absolute URL or a relative one.
          */
         reloadableScripts: [],
@@ -118,24 +118,53 @@ yii = (function ($) {
          * For other elements, either the containing form action or the current page URL will be used
          * as the form action URL.
          *
-         * If the `data-method` attribute is not defined, nothing will be done.
+         * If the `data-method` attribute is not defined, the `href` attribute (if any) of the element
+         * will be assigned to `window.location`.
+         *
+         * Starting from version 2.0.3, the `data-params` attribute is also recognized when you specify
+         * `data-method`. The value of `data-params` should be a JSON representation of the data (name-value pairs)
+         * that should be submitted as hidden inputs. For example, you may use the following code to generate
+         * such a link:
+         *
+         * ```php
+         * use yii\helpers\Html;
+         * use yii\helpers\Json;
+         *
+         * echo Html::a('submit', ['site/foobar'], [
+         *     'data' => [
+         *         'method' => 'post',
+         *         'params' => [
+         *             'name1' => 'value1',
+         *             'name2' => 'value2',
+         *         ],
+         *     ],
+         * ];
+         * ```
          *
          * @param $e the jQuery representation of the element
          */
         handleAction: function ($e) {
-            var method = $e.data('method');
+            var method = $e.data('method'),
+                $form = $e.closest('form'),
+                action = $e.attr('href'),
+                params = $e.data('params');
+
             if (method === undefined) {
+                if (action && action != '#') {
+                    window.location = action;
+                } else if ($e.is(':submit') && $form.length) {
+                    $form.trigger('submit');
+                }
                 return;
             }
 
-            var $form = $e.closest('form');
-            var action = $e.attr('href');
-            var newForm = !$form.length || action && action != '#';
+            var newForm = !$form.length;
             if (newForm) {
                 if (!action || !action.match(/(^\/|:\/\/)/)) {
                     action = window.location.href;
                 }
-                $form = $('<form method="' + method + '" action="' + action + '"></form>');
+                $form = $('<form method="' + method + '"></form>');
+                $form.prop('action', action);
                 var target = $e.prop('target');
                 if (target) {
                     $form.attr('target', target);
@@ -159,12 +188,34 @@ yii = (function ($) {
                 activeFormData.submitObject = $e;
             }
 
+            // temporarily add hidden inputs according to data-params
+            if (params && $.isPlainObject(params)) {
+                $.each(params, function (idx, obj) {
+                    $form.append('<input name="' + idx + '" value="' + obj + '" type="hidden">');
+                });
+            }
+
             var oldMethod = $form.prop('method');
             $form.prop('method', method);
+            var oldAction = null;
+            if (action && action != '#') {
+                oldAction = $form.prop('action');
+                $form.prop('action', action);
+            }
 
             $form.trigger('submit');
 
+            if (oldAction != null) {
+                $form.prop('action', oldAction);
+            }
             $form.prop('method', oldMethod);
+
+            // remove the temporarily added hidden inputs
+            if (params && $.isPlainObject(params)) {
+                $.each(params, function (idx, obj) {
+                    $('input[name="' + idx + '"]', $form).remove();
+                });
+            }
 
             if (newForm) {
                 $form.remove();
@@ -227,12 +278,14 @@ yii = (function ($) {
 
     function initDataMethods() {
         var handler = function (event) {
-            var $this = $(this);
-            // data-confirm requires data-method
-            if ($this.data('method') === undefined) {
+            var $this = $(this),
+                method = $this.data('method'),
+                message = $this.data('confirm');
+
+            if (method === undefined && message === undefined) {
                 return true;
             }
-            var message = $this.data('confirm');
+
             if (message !== undefined) {
                 pub.confirm(message, function () {
                     pub.handleAction($this);
@@ -254,6 +307,7 @@ yii = (function ($) {
         var loadedScripts = $('script[src]').map(function () {
             return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
         }).toArray();
+
         $.ajaxPrefilter('script', function (options, originalOptions, xhr) {
             if (options.dataType == 'jsonp') {
                 return;
@@ -269,6 +323,20 @@ yii = (function ($) {
                     xhr.abort();
                 }
             }
+        });
+
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            var styleSheets = [];
+            $('link[rel=stylesheet]').each(function () {
+                if ($.inArray(this.href, pub.reloadableScripts) !== -1) {
+                    return;
+                }
+                if ($.inArray(this.href, styleSheets) == -1) {
+                    styleSheets.push(this.href)
+                } else {
+                    $(this).remove();
+                }
+            })
         });
     }
 

@@ -5,6 +5,13 @@ This extension adds [Sphinx](http://sphinxsearch.com/docs) full text search engi
 It supports all Sphinx features including [Runtime Indexes](http://sphinxsearch.com/docs/current.html#rt-indexes).
 
 
+Requirements
+------------
+
+At least Sphinx version 2.0 is required. However, in order to use all extension features, Sphinx version 2.2 or
+higher is required.
+
+
 Installation
 ------------
 

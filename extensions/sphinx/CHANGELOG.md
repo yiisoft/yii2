@@ -1,8 +1,35 @@
 Yii Framework 2 sphinx extension Change Log
 ===========================================
 
-2.0.0-rc under development
---------------------------
+2.0.3 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Bug #6621: Creating sub query at `yii\sphinx\Query::queryScalar()` fixed (klimov-paul)
+
+
+2.0.1 December 07, 2014
+-----------------------
+
+- Bug #5601: Simple conditions in Query::where() and ActiveQuery::where() did not allow `yii\db\Expression` to be used as the value (cebe, stevekr)
+- Bug #5634: Fixed `yii\sphinx\QueryBuilder` does not support comparison operators (>,<,>= etc) in where specification (klimov-paul)
+- Bug #6164: Added missing support for `yii\db\Exression` to QueryBuilder `LIKE` conditions (cebe)
+- Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
+
+
+2.0.0 October 12, 2014
+----------------------
+
+- Enh #5211: `yii\sphinx\Query` now supports 'HAVING' (klimov-paul)
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #3668: Escaping of the special characters at 'MATCH' statement added (klimov-paul)
 - Bug #4018: AR relation eager loading does not work with db models (klimov-paul)
@@ -28,6 +55,7 @@ Yii Framework 2 sphinx extension Change Log
 - Chg #2146: Removed `ActiveRelation` class and moved the functionality to `ActiveQuery`.
              All relational queries are now directly served by `ActiveQuery` allowing to use
              custom scopes in relations (cebe)
+
 
 2.0.0-alpha, December 1, 2013
 -----------------------------

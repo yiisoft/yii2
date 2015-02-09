@@ -131,7 +131,7 @@ class User extends Component
      * @var string the session variable name used to store the value of absolute expiration timestamp of the authenticated state.
      * This is used when [[absoluteAuthTimeout]] is set.
      */
-    public $absoluteAuthTimeoutParam = '__absolute_expire';
+    public $absoluteAuthTimeoutParam = '__absoluteExpire';
     /**
      * @var string the session variable name used to store the value of [[returnUrl]].
      */
@@ -161,15 +161,18 @@ class User extends Component
      * Returns the identity object associated with the currently logged-in user.
      * When [[enableSession]] is true, this method may attempt to read the user's authentication data
      * stored in session and reconstruct the corresponding identity object, if it has not done so before.
+     * @param boolean $autoRenew whether to automatically renew authentication status if it has not been done so before.
+     * This is only useful when [[enableSession]] is true.
      * @return IdentityInterface|null the identity object associated with the currently logged-in user.
      * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
      */
-    public function getIdentity()
+    public function getIdentity($autoRenew = true)
     {
         if ($this->_identity === false) {
-            if ($this->enableSession) {
+            if ($this->enableSession && $autoRenew) {
+                $this->_identity = null;
                 $this->renewAuthStatus();
             } else {
                 return null;
@@ -420,10 +423,12 @@ class User extends Component
             $this->setReturnUrl($request->getUrl());
         }
         if ($this->loginUrl !== null) {
-            return Yii::$app->getResponse()->redirect($this->loginUrl);
-        } else {
-            throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
+            $loginUrl = (array)$this->loginUrl;
+            if ($loginUrl[0] !== Yii::$app->requestedRoute) {
+                return Yii::$app->getResponse()->redirect($this->loginUrl);
+            }
         }
+        throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
     }
 
     /**
@@ -536,7 +541,7 @@ class User extends Component
             $identity->getId(),
             $identity->getAuthKey(),
             $duration,
-        ]);
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $cookie->expire = time() + $duration;
         Yii::$app->getResponse()->getCookies()->add($cookie);
     }
@@ -611,7 +616,7 @@ class User extends Component
 
         $this->setIdentity($identity);
 
-        if (($this->authTimeout !== null || $this->absoluteAuthTimeout !== null) && $identity !== null) {
+        if ($identity !== null && ($this->authTimeout !== null || $this->absoluteAuthTimeout !== null)) {
             $expire = $this->authTimeout !== null ? $session->get($this->authTimeoutParam) : null;
             $expireAbsolute = $this->absoluteAuthTimeout !== null ? $session->get($this->absoluteAuthTimeoutParam) : null;
             if ($expire !== null && $expire < time() || $expireAbsolute !== null && $expireAbsolute < time()) {

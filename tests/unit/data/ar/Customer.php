@@ -36,6 +36,17 @@ class Customer extends ActiveRecord
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
     }
+
+    public function getExpensiveOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->andWhere('total > 50')->orderBy('id');
+    }
+
+    public function getExpensiveOrdersWithNullFK()
+    {
+        return $this->hasMany(OrderWithNullFK::className(), ['customer_id' => 'id'])->andWhere('total > 50')->orderBy('id');
+    }
+
     public function getOrdersWithNullFK()
     {
         return $this->hasMany(OrderWithNullFK::className(), ['customer_id' => 'id'])->orderBy('id');

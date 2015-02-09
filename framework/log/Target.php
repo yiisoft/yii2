@@ -204,7 +204,7 @@ abstract class Target extends Component
 
             $matched = empty($categories);
             foreach ($categories as $category) {
-                if ($message[2] === $category || !empty($category) && substr_compare($category, '*', -1) === 0 && strpos($message[2], rtrim($category, '*')) === 0) {
+                if ($message[2] === $category || !empty($category) && substr_compare($category, '*', -1, 1) === 0 && strpos($message[2], rtrim($category, '*')) === 0) {
                     $matched = true;
                     break;
                 }
@@ -213,7 +213,7 @@ abstract class Target extends Component
             if ($matched) {
                 foreach ($except as $category) {
                     $prefix = rtrim($category, '*');
-                    if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
+                    if (($message[2] === $category || $prefix !== $category) && strpos($message[2], $prefix) === 0) {
                         $matched = false;
                         break;
                     }
@@ -266,12 +266,20 @@ abstract class Target extends Component
             return call_user_func($this->prefix, $message);
         }
 
+        if (Yii::$app === null) {
+            return '';
+        }
+
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
         /* @var $user \yii\web\User */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
-        $userID = $user ? $user->getId(false) : '-';
+        if ($user && ($identity = $user->getIdentity(false))) {
+            $userID = $identity->getId();
+        } else {
+            $userID = '-';
+        }
 
         /* @var $session \yii\web\Session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;

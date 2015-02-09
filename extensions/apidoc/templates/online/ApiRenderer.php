@@ -54,11 +54,17 @@ class ApiRenderer extends \yii\apidoc\templates\html\ApiRenderer
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function generateApiUrl($typeName)
     {
         return strtolower(str_replace('\\', '-', $typeName));
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function generateFileName($typeName)
     {
         return $this->generateApiUrl($typeName) . '.html';

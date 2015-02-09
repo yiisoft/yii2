@@ -332,7 +332,7 @@ class BaseConsole
     /**
      * Returns the length of the string without ANSI color codes.
      * @param string $string the string to measure
-     * @return int the length of the string not counting ANSI format characters
+     * @return integer the length of the string not counting ANSI format characters
      */
     public static function ansiStrlen($string) {
         return mb_strlen(static::stripAnsiFormat($string));
@@ -737,8 +737,8 @@ class BaseConsole
 
         top:
         $input = $options['default']
-            ? static::input("$text [" . $options['default'] . ']: ')
-            : static::input("$text: ");
+            ? static::input("$text [" . $options['default'] . '] ')
+            : static::input("$text ");
 
         if (!strlen($input)) {
             if (isset($options['default'])) {
@@ -763,16 +763,28 @@ class BaseConsole
     /**
      * Asks user to confirm by typing y or n.
      *
-     * @param string $message to echo out before waiting for user input
+     * @param string $message to print out before waiting for user input
      * @param boolean $default this value is returned if no selection is made.
      * @return boolean whether user confirmed
      */
-    public static function confirm($message, $default = true)
+    public static function confirm($message, $default = false)
     {
-        echo $message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:';
-        $input = trim(static::stdin());
+        while (true) {
+            static::stdout($message . ' (yes|no) [' . ($default ? 'yes' : 'no') . ']:');
+            $input = trim(static::stdin());
 
-        return empty($input) ? $default : !strncasecmp($input, 'y', 1);
+            if (empty($input)) {
+                return $default;
+            }
+
+            if (!strcasecmp ($input, 'y') || !strcasecmp ($input, 'yes') ) {
+                return true;
+            }
+
+            if (!strcasecmp ($input, 'n') || !strcasecmp ($input, 'no') ) {
+                return false;
+            }
+        }
     }
 
     /**

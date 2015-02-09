@@ -37,6 +37,21 @@ class TypeDoc extends BaseDoc
     public $namespace;
 
 
+    /**
+     * Finds subject (method or property) by name
+     *
+     * If there is a property with the same as a method, the method will be returned if the name is not stated
+     * explicitly by prefixing with `$`.
+     *
+     * Example for method `attributes()` and property `$attributes` which both may exist:
+     *
+     * - `$subjectName = '$attributes'` finds a property or nothing.
+     * - `$subjectName = 'attributes()'` finds a method or nothing.
+     * - `$subjectName = 'attributes'` finds the method if it exists, if not it will find the property.
+     *
+     * @param $subjectName
+     * @return null|MethodDoc|PropertyDoc
+     */
     public function findSubject($subjectName)
     {
         if ($subjectName[0] != '$') {

@@ -24,12 +24,13 @@ if ($data === false) {
 ```
 
 
-## Cache Components <a name="cache-components"></a>
+## Cache Components <span id="cache-components"></span>
 
 Data caching relies on the so-called *cache components* which represent various cache storage,
 such as memory, files, databases.
 
-Cache components are usually registered as application components so that they can be globally configurable
+Cache components are usually registered as [application components](structure-application-components.md) so
+that they can be globally configurable
 and accessible. The following code shows how to configure the `cache` application component to use
 [memcached](http://memcached.org/) with two cache servers:
 
@@ -72,7 +73,7 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
   by default by many cache-dependent classes (e.g. [[yii\web\UrlManager]]).
 
 
-### Supported Cache Storage <a name="supported-cache-storage"></a>
+### Supported Cache Storage <span id="supported-cache-storage"></span>
 
 Yii supports a wide range of cache storage. The following is a summary:
 
@@ -109,11 +110,11 @@ Yii supports a wide range of cache storage. The following is a summary:
   or database-based cache storage to store data that is big and less frequently used (e.g. page content).
 
 
-## Cache APIs <a name="cache-apis"></a>
+## Cache APIs <span id="cache-apis"></span>
 
 All cache components have the same base class [[yii\caching\Cache]] and thus support the following APIs:
 
-* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A false
+* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A `false`
   value will be returned if the data item is not found in the cache or is expired/invalidated.
 * [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
 * [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
@@ -124,6 +125,10 @@ All cache components have the same base class [[yii\caching\Cache]] and thus sup
 * [[yii\caching\Cache::exists()|exists()]]: returns a value indicating whether the specified key is found in the cache.
 * [[yii\caching\Cache::delete()|delete()]]: removes a data item identified by a key from the cache.
 * [[yii\caching\Cache::flush()|flush()]]: removes all data items from the cache.
+
+> Note: Do not cache a `false` boolean value directly because the [[yii\caching\Cache::get()|get()]] method uses
+`false` return value to indicate the data item is not found in the cache. You may put `false` in an array and cache
+this array instead to avoid this problem.
 
 Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
 which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::mget()|mget()]]
@@ -139,7 +144,7 @@ $value2 = $cache['var2'];  // equivalent to: $value2 = $cache->get('var2');
 ```
 
 
-### Cache Keys <a name="cache-keys"></a>
+### Cache Keys <span id="cache-keys"></span>
 
 Each data item stored in cache is uniquely identified by a key. When you store a data item in cache,
 you have to specify a key for it. Later when you retrieve the data item from cache, you should provide
@@ -178,14 +183,14 @@ property. For example, in the application configuration you can write the follow
 To ensure interoperability, only alphanumeric characters should be used.
 
 
-### Cache Expiration <a name="cache-expiration"></a>
+### Cache Expiration <span id="cache-expiration"></span>
 
 A data item stored in a cache will remain there forever unless it is removed because of some caching policy
 enforcement (e.g. caching space is full and the oldest data are removed). To change this behavior, you can provide
 an expiration parameter when calling [[yii\caching\Cache::set()|set()]] to store a data item. The parameter
 indicates for how many seconds the data item can remain valid in the cache. When you call
 [[yii\caching\Cache::get()|get()]] to retrieve the data item, if it has passed the expiration time, the method
-will return false, indicating the data item is not found in the cache. For example,
+will return `false`, indicating the data item is not found in the cache. For example,
 
 ```php
 // keep the data in cache for at most 45 seconds
@@ -200,13 +205,13 @@ if ($data === false) {
 ```
 
 
-### Cache Dependencies <a name="cache-dependencies"></a>
+### Cache Dependencies <span id="cache-dependencies"></span>
 
 Besides expiration setting, cached data item may also be invalidated by changes of the so-called *cache dependencies*.
 For example, [[yii\caching\FileDependency]] represents the dependency of a file's modification time.
 When this dependency changes, it means the corresponding file is modified. As a result, any outdated
 file content found in the cache should be invalidated and the [[yii\caching\Cache::get()|get()]] call
-should return false.
+should return `false`.
 
 Cache dependencies are represented as objects of [[yii\caching\Dependency]] descendant classes. When you call
 [[yii\caching\Cache::set()|set()]] to store a data item in the cache, you can pass along an associated cache
@@ -236,7 +241,7 @@ Below is a summary of the available cache dependencies:
   the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
 
-## Query Caching <a name="query-caching"></a>
+## Query Caching <span id="query-caching"></span>
 
 Query caching is a special caching feature built on top of data caching. It is provided to cache the result
 of database queries.
@@ -262,7 +267,7 @@ Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-acti
   and are potentially more efficient.
 
 
-### Configurations <a name="query-caching-configs"></a>
+### Configurations <span id="query-caching-configs"></span>
 
 Query caching has three global configurable options through [[yii\db\Connection]]:
 
@@ -277,7 +282,7 @@ Query caching has three global configurable options through [[yii\db\Connection]
   It defaults to `'cache'`. Query caching is enabled only if there is a valid cache application component.
 
 
-### Usages <a name="query-caching-usages"></a>
+### Usages <span id="query-caching-usages"></span>
 
 You can use [[yii\db\Connection::cache()]] if you have multiple SQL queries that need to take advantage of
 query caching. The usage is as follows,
@@ -345,7 +350,7 @@ $result = $db->cache(function ($db) {
 ```
 
 
-### Limitations <a name="query-caching-limitations"></a>
+### Limitations <span id="query-caching-limitations"></span>
 
 Query caching does not work with query results that contain resource handlers. For example,
 when using the `BLOB` column type in some DBMS, the query result will return a resource

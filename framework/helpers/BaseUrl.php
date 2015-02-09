@@ -52,13 +52,16 @@ class BaseUrl
      * - If the route has no leading slash (e.g. `site/index`), it is considered to be a route relative
      *   to the current module and will be prepended with the module's [[\yii\base\Module::uniqueId|uniqueId]].
      *
+     * Starting from version 2.0.2, a route can also be specified as an alias. In this case, the alias
+     * will be converted into the actual route first before conducting the above transformation steps.
+     *
      * Below are some examples of using this method:
      *
      * ```php
-     * // /index?r=site/index
+     * // /index.php?r=site/index
      * echo Url::toRoute('site/index');
      *
-     * // /index?r=site/index&src=ref1#name
+     * // /index.php?r=site/index&src=ref1#name
      * echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
      * // http://www.example.com/index.php?r=site/index
@@ -66,6 +69,9 @@ class BaseUrl
      *
      * // https://www.example.com/index.php?r=site/index
      * echo Url::toRoute('site/index', 'https');
+     *
+     * // /index.php?r=post/index     assume the alias "@posts" is defined as "post/index"
+     * echo Url::toRoute('@posts');
      * ```
      *
      * @param string|array $route use a string to represent a route (e.g. `index`, `site/index`),
@@ -81,7 +87,7 @@ class BaseUrl
      */
     public static function toRoute($route, $scheme = false)
     {
-        $route = (array)$route;
+        $route = (array) $route;
         $route[0] = static::normalizeRoute($route[0]);
 
         if ($scheme) {
@@ -103,13 +109,16 @@ class BaseUrl
      * - If the route has no leading slash, it is considered to be a route relative
      *   to the current module and will be prepended with the module's uniqueId.
      *
+     * Starting from version 2.0.2, a route can also be specified as an alias. In this case, the alias
+     * will be converted into the actual route first before conducting the above transformation steps.
+     *
      * @param string $route the route. This can be either an absolute route or a relative route.
      * @return string normalized route suitable for UrlManager
      * @throws InvalidParamException a relative route is given while there is no active controller
      */
     protected static function normalizeRoute($route)
     {
-        $route = (string) $route;
+        $route = Yii::getAlias((string) $route);
         if (strncmp($route, '/', 1) === 0) {
             // absolute route
             return ltrim($route, '/');
@@ -151,11 +160,14 @@ class BaseUrl
      * Below are some examples of using this method:
      *
      * ```php
-     * // /index?r=site/index
+     * // /index.php?r=site/index
      * echo Url::to(['site/index']);
      *
-     * // /index?r=site/index&src=ref1#name
+     * // /index.php?r=site/index&src=ref1#name
      * echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
+     *
+     * // /index.php?r=post/index     assume the alias "@posts" is defined as "/post/index"
+     * echo Url::to(['@posts']);
      *
      * // the currently requested URL
      * echo Url::to();
@@ -318,5 +330,56 @@ class BaseUrl
         }
 
         return $url;
+    }
+
+    /**
+     * Returns a value indicating whether a URL is relative.
+     * A relative URL does not have host info part.
+     * @param string $url the URL to be checked
+     * @return boolean whether the URL is relative
+     */
+    public static function isRelative($url)
+    {
+        return strncmp($url, '//', 2) && strpos($url, '://') === false;
+    }
+
+    /**
+     * Creates a URL by using the current route and the GET parameters.
+     *
+     * You may modify or remove some of the GET parameters, or add additional query parameters through
+     * the `$params` parameter. In particular, if you specify a parameter to be null, then this parameter
+     * will be removed from the existing GET parameters; all other parameters specified in `$params` will
+     * be merged with the existing GET parameters. For example,
+     *
+     * ```php
+     * // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
+     *
+     * // /index.php?r=post/view&id=123&src=google
+     * echo Url::current();
+     *
+     * // /index.php?r=post/view&id=123
+     * echo Url::current(['src' => null]);
+     *
+     * // /index.php?r=post/view&id=100&src=google
+     * echo Url::current(['id' => 100]);
+     * ```
+     *
+     * @param array $params an associative array of parameters that will be merged with the current GET parameters.
+     * If a parameter value is null, the corresponding GET parameter will be removed.
+     * @param boolean|string $scheme the URI scheme to use in the generated URL:
+     *
+     * - `false` (default): generating a relative URL.
+     * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
+     * - string: generating an absolute URL with the specified scheme (either `http` or `https`).
+     *
+     * @return string the generated URL
+     * @since 2.0.3
+     */
+    public static function current(array $params = [], $scheme = false)
+    {
+        $currentParams = Yii::$app->getRequest()->getQueryParams();
+        $currentParams[0] = '/' . Yii::$app->controller->getRoute();
+        $route = ArrayHelper::merge($currentParams, $params);
+        return static::toRoute($route, $scheme);
     }
 }

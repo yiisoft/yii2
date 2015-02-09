@@ -37,6 +37,18 @@ use yii\helpers\Html;
  * ]);
  * ```
  *
+ * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
+ * method, for example like this:
+ *
+ * ```php
+ * <?= $form->field($model, 'from_date')->widget(\yii\jui\SliderInput::classname(), [
+ *     'clientOptions' => [
+ *         'min' => 1,
+ *         'max' => 10,
+ *     ],
+ * ]) ?>
+ * ```
+ *
  * @see http://api.jqueryui.com/slider/
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
@@ -93,6 +105,6 @@ class SliderInput extends InputWidget
             }';
         }
 
-        $this->registerWidget('slider', SliderAsset::className(), $this->containerOptions['id']);
+        $this->registerWidget('slider', $this->containerOptions['id']);
     }
 }

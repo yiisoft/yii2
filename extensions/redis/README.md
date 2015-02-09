@@ -2,7 +2,7 @@ Redis Cache, Session and ActiveRecord for Yii 2
 ===============================================
 
 This extension provides the [redis](http://redis.io/) key-value store support for the Yii2 framework.
-It includes a `Cache` and `Session` storage handler and implents the `ActiveRecord` pattern that allows
+It includes a `Cache` and `Session` storage handler and implements the `ActiveRecord` pattern that allows
 you to store active records in redis.
 
 To use this extension, you have to configure the Connection class in your application configuration:
@@ -87,7 +87,7 @@ return [
 Using the Session component
 ---------------------------
 
-To use the `Session` component, in addtition to configuring the connection as described above,
+To use the `Session` component, in addition to configuring the connection as described above,
 you also have to configure the `session` component to be `yii\redis\Session`:
 
 ```php

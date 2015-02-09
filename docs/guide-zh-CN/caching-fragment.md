@@ -19,11 +19,11 @@ if ($this->beginCache($id)) {
 和[[数据缓存]](caching-data.md)一样，每个片段缓存也需要全局唯一的 `$id` 标记。
 
 
-## 缓存选项 <a name="caching-options"></a>
+## 缓存选项 <span id="caching-options"></span>
 
 如果要为片段缓存指定额外配置项，请通过向 [[yii\base\View::beginCache()|beginCache()]] 方法第二个参数传递配置数组。在框架内部，该数组将被用来配置一个 [[yii\widget\FragmentCache]] 小部件用以实现片段缓存功能。
 
-### 过期时间（duration） <a name="duration"></a>
+### 过期时间（duration） <span id="duration"></span>
 
 或许片段缓存中最常用的一个配置选项就是 [[yii\widgets\FragmentCache::duration|duration]] 了。它指定了内容被缓存的秒数。以下代码缓存内容最多一小时：
 
@@ -39,7 +39,7 @@ if ($this->beginCache($id, ['duration' => 3600])) {
 如果该选项未设置，则默认为 0，永不过期。
 
 
-### 依赖 <a name="dependencies"></a>
+### 依赖 <span id="dependencies"></span>
 
 和[[数据缓存]](caching-data.md)一样，片段缓存的内容一样可以设置缓存依赖。例如一段被缓存的文章，是否重新缓存取决于它是否被修改过。
 
@@ -60,7 +60,7 @@ if ($this->beginCache($id, ['dependency' => $dependency])) {
 ```
 
 
-### 变化 <a name="variations"></a>
+### 变化 <span id="variations"></span>
 
 缓存的内容可能需要根据一些参数的更改而变化。例如一个 Web 应用支持多语言，同一段视图代码也许需要生成多个语言的内容。因此可以设置缓存根据应用当前语言而变化。
 
@@ -76,7 +76,7 @@ if ($this->beginCache($id, ['variations' => [Yii::$app->language]])) {
 ```
 
 
-### 开关 <a name="toggling-caching"></a>
+### 开关 <span id="toggling-caching"></span>
 
 有时你可能只想在特定条件下开启片段缓存。例如，一个显示表单的页面，可能只需要在初次请求时缓存表单（通过 GET 请求）。随后请求所显示（通过 POST 请求）的表单不该使用缓存，因为此时表单中可能包含用户输入内容。鉴于此种情况，可以使用 [[yii\widgets\FragmentCache::enabled|enabled]] 选项来指定缓存开关，如下所示：
 
@@ -90,7 +90,7 @@ if ($this->beginCache($id, ['enabled' => Yii::$app->request->isGet])) {
 ```
 
 
-## 缓存嵌套 <a name="nested-caching"></a>
+## 缓存嵌套 <span id="nested-caching"></span>
 
 片段缓存可以被嵌套使用。一个片段缓存可以被另一个包裹。例如，评论被缓存在里层，同时整个评论的片段又被缓存在外层的文章中。以下代码展示了片段缓存的嵌套使用：
 
@@ -114,10 +114,10 @@ if ($this->beginCache($id1)) {
 
 可以为嵌套的缓存设置不同的配置项。例如，内层缓存和外层缓存使用不同的过期时间。甚至当外层缓存的数据过期失效了，内层缓存仍然可能提供有效的片段缓存数据。但是，反之则不然。如果外层片段缓存没有过期而被视为有效，此时即使内层片段缓存已经失效，它也将继续提供同样的缓存副本。因此，你必须谨慎处理缓存嵌套中的过期时间和依赖，否则外层的片段很有可能返回的是不符合你预期的失效数据。
 
-> 译者注：外层的失效时间应该短于内层，外层的依赖条件应该低于内层，以确保最小的片段，返回的是最新的数据。
+> 译注：外层的失效时间应该短于内层，外层的依赖条件应该低于内层，以确保最小的片段，返回的是最新的数据。
 
 
-## 动态内容 <a name="dynamic-content"></a>
+## 动态内容 <span id="dynamic-content"></span>
 
 使用片段缓存时，可能会遇到一大段较为静态的内容中有少许动态内容的情况。例如，一个显示着菜单栏和当前用户名的页面头部。还有一种可能是缓存的内容可能包含每次请求都需要执行的 PHP 代码（例如注册资源包的代码）。这两个问题都可以使用**动态内容**功能解决。
 

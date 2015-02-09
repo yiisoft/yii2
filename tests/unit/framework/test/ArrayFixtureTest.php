@@ -15,7 +15,7 @@ class ArrayFixtureTest extends TestCase
 {
 
     /**
-     * @var \yii\test\ArrayFixture 
+     * @var \yii\test\ArrayFixture
      */
     private $_fixture;
 

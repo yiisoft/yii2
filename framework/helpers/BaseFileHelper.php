@@ -28,6 +28,11 @@ class BaseFileHelper
     const PATTERN_NEGATIVE = 16;
     const PATTERN_CASE_INSENSITIVE = 32;
 
+    /**
+     * @var string the path (or alias) of a PHP file containing MIME type information.
+     */
+    public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
+
 
     /**
      * Normalizes a file/directory path.
@@ -112,11 +117,13 @@ class BaseFileHelper
     /**
      * Determines the MIME type of the specified file.
      * This method will first try to determine the MIME type based on
-     * [finfo_open](http://php.net/manual/en/function.finfo-open.php). If this doesn't work, it will
-     * fall back to [[getMimeTypeByExtension()]].
+     * [finfo_open](http://php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
+     * it will fall back to [[getMimeTypeByExtension()]] when `$checkExtension` is true.
      * @param string $file the file name.
-     * @param string $magicFile name of the optional magic database file, usually something like `/path/to/magic.mime`.
-     * This will be passed as the second parameter to [finfo_open](http://php.net/manual/en/function.finfo-open.php).
+     * @param string $magicFile name of the optional magic database file (or alias), usually something like `/path/to/magic.mime`.
+     * This will be passed as the second parameter to [finfo_open()](http://php.net/manual/en/function.finfo-open.php)
+     * when the `fileinfo` extension is installed. If the MIME type is being determined based via [[getMimeTypeByExtension()]]
+     * and this is null, it will use the file specified by [[mimeMagicFile]].
      * @param boolean $checkExtension whether to use the file extension to determine the MIME type in case
      * `finfo_open()` cannot determine it.
      * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
@@ -124,6 +131,9 @@ class BaseFileHelper
      */
     public static function getMimeType($file, $magicFile = null, $checkExtension = true)
     {
+        if ($magicFile !== null) {
+            $magicFile = Yii::getAlias($magicFile);
+        }
         if (!extension_loaded('fileinfo')) {
             if ($checkExtension) {
                 return static::getMimeTypeByExtension($file, $magicFile);
@@ -149,8 +159,8 @@ class BaseFileHelper
      * Determines the MIME type based on the extension name of the specified file.
      * This method will use a local map between extension names and MIME types.
      * @param string $file the file name.
-     * @param string $magicFile the path of the file that contains all available MIME type information.
-     * If this is not set, the default file aliased by `@yii/helpers/mimeTypes.php` will be used.
+     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return string the MIME type. Null is returned if the MIME type cannot be determined.
      */
     public static function getMimeTypeByExtension($file, $magicFile = null)
@@ -171,8 +181,8 @@ class BaseFileHelper
      * Determines the extensions by given MIME type.
      * This method will use a local map between extension names and MIME types.
      * @param string $mimeType file MIME type.
-     * @param string $magicFile the path of the file that contains all available MIME type information.
-     * If this is not set, the default file aliased by `@yii/helpers/mimeTypes.php` will be used.
+     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return array the extensions corresponding to the specified MIME type
      */
     public static function getExtensionsByMimeType($mimeType, $magicFile = null)
@@ -185,15 +195,16 @@ class BaseFileHelper
 
     /**
      * Loads MIME types from the specified file.
-     * @param string $magicFile the file that contains MIME type information.
-     * If null, the file `@yii/helpers/mimeTypes.php` will be used.
+     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return array the mapping from file extensions to MIME types
      */
     protected static function loadMimeTypes($magicFile)
     {
         if ($magicFile === null) {
-            $magicFile = __DIR__ . '/mimeTypes.php';
+            $magicFile = static::$mimeMagicFile;
         }
+        $magicFile = Yii::getAlias($magicFile);
         if (!isset(self::$_mimeTypes[$magicFile])) {
             self::$_mimeTypes[$magicFile] = require($magicFile);
         }
@@ -294,7 +305,7 @@ class BaseFileHelper
         if (!is_dir($dir)) {
             return;
         }
-        if (!is_link($dir) || isset($options['traverseSymlinks']) && $options['traverseSymlinks']) {
+        if (isset($options['traverseSymlinks']) && $options['traverseSymlinks'] || !is_link($dir)) {
             if (!($handle = opendir($dir))) {
                 return;
             }
@@ -413,7 +424,7 @@ class BaseFileHelper
             }
         }
 
-        if (!is_dir($path) && !empty($options['only'])) {
+        if (!empty($options['only']) && !is_dir($path)) {
             if (($except = self::lastExcludeMatchingFromList($options['basePath'], $path, $options['only'])) !== null) {
                 // don't check PATTERN_NEGATIVE since those entries are not prefixed with !
                 return true;

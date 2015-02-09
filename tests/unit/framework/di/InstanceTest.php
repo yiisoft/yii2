@@ -8,6 +8,7 @@
 namespace yiiunit\framework\di;
 
 use yii\base\Component;
+use yii\db\Connection;
 use yii\di\Container;
 use yii\di\Instance;
 use yiiunit\TestCase;
@@ -28,5 +29,21 @@ class InstanceTest extends TestCase
         $this->assertTrue($instance->get($container) instanceof Component);
         $this->assertTrue(Instance::ensure($instance, $className, $container) instanceof Component);
         $this->assertTrue($instance->get($container) !== Instance::ensure($instance, $className, $container));
+    }
+
+    public function testEnsure()
+    {
+        $container = new Container;
+        $container->set('db', [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'test',
+        ]);
+
+        $this->assertTrue(Instance::ensure('db', 'yii\db\Connection', $container) instanceof Connection);
+        $this->assertTrue(Instance::ensure(new Connection, 'yii\db\Connection', $container) instanceof Connection);
+        $this->assertTrue(Instance::ensure([
+            'class' => 'yii\db\Connection',
+            'dsn' => 'test',
+        ], 'yii\db\Connection', $container) instanceof Connection);
     }
 }

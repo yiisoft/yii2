@@ -4,12 +4,12 @@ Views
 Views are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are code responsible for presenting data to end users. In a Web application, views are usually created
 in terms of *view templates* which are PHP script files containing mainly HTML code and presentational PHP code.
-They are managed by the [[yii\web\View|view]] application component which provides commonly used methods
+They are managed by the [[yii\web\View|view]] [application component](structure-application-components.md) which provides commonly used methods
 to facilitate view composition and rendering. For simplicity, we often call view templates or view template files
 as views.
 
 
-## Creating Views <a name="creating-views"></a>
+## Creating Views <span id="creating-views"></span>
 
 As aforementioned, a view is simply a PHP script mixed with HTML and PHP code. The following is the view
 that presents a login form. As you can see, PHP code is used to generate the dynamic content, such as the
@@ -42,13 +42,13 @@ and rendering this view template.
 
 Besides `$this`, there may be other predefined variables in a view, such as `$model` in the above
 example. These variables represent the data that are *pushed* into the view by [controllers](structure-controllers.md)
-or other objects whose trigger the [view rendering](#rendering-views).
+or other objects which trigger the [view rendering](#rendering-views).
 
 > Tip: The predefined variables are listed in a comment block at beginning of a view so that they can
   be recognized by IDEs. It is also a good way of documenting your views.
 
 
-### Security <a name="security"></a>
+### Security <span id="security"></span>
 
 When creating views that generate HTML pages, it is important that you encode and/or filter the data coming
 from end users before presenting them. Otherwise, your application may be subject to
@@ -84,7 +84,7 @@ use yii\helpers\HtmlPurifier;
   [caching](caching-overview.md) the filtering result if your application requires high performance.
 
 
-### Organizing Views <a name="organizing-views"></a>
+### Organizing Views <span id="organizing-views"></span>
 
 Like [controllers](structure-controllers.md) and [models](structure-models.md), there are conventions to organize views.
 
@@ -101,7 +101,7 @@ You may customize these default view directories by overriding the [[yii\base\Vi
 method of controllers or widgets.
 
 
-## Rendering Views <a name="rendering-views"></a>
+## Rendering Views <span id="rendering-views"></span>
 
 You can render views in [controllers](structure-controllers.md), [widgets](structure-widgets.md), or any
 other places by calling view rendering methods. These methods share a similar signature shown as follows,
@@ -116,7 +116,7 @@ methodName($view, $params = [])
 ```
 
 
-### Rendering in Controllers <a name="rendering-in-controllers"></a>
+### Rendering in Controllers <span id="rendering-in-controllers"></span>
 
 Within [controllers](structure-controllers.md), you may call the following controller methods to render views:
 
@@ -127,6 +127,8 @@ Within [controllers](structure-controllers.md), you may call the following contr
   and injects all registered JS/CSS scripts and files. It is usually used in response to AJAX Web requests.
 * [[yii\base\Controller::renderFile()|renderFile()]]: renders a view specified in terms of a view file path or
   [alias](concept-aliases.md).
+* [[yii\base\Controller::renderContent()|renderContent()]]: renders a static string by embedding it into
+  the currently applicable [layout](#layouts). This method is available since version 2.0.1.
 
 For example,
 
@@ -156,7 +158,7 @@ class PostController extends Controller
 ```
 
 
-### Rendering in Widgets <a name="rendering-in-widgets"></a>
+### Rendering in Widgets <span id="rendering-in-widgets"></span>
 
 Within [widgets](structure-widgets.md), you may call the following widget methods to render views.
 
@@ -187,7 +189,7 @@ class ListWidget extends Widget
 ```
 
 
-### Rendering in Views <a name="rendering-in-views"></a>
+### Rendering in Views <span id="rendering-in-views"></span>
 
 You can render a view within another view by calling one of the following methods provided by the [[yii\base\View|view component]]:
 
@@ -205,7 +207,7 @@ as the view being currently rendered. Remember that `$this` in a view refers to 
 ```
 
 
-### Rendering in Other Places <a name="rendering-in-other-places"></a>
+### Rendering in Other Places <span id="rendering-in-other-places"></span>
 
 In any place, you can get access to the [[yii\base\View|view]] application component by the expression
 `Yii::$app->view` and then call its aforementioned methods to render a view. For example,
@@ -216,7 +218,7 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ```
 
 
-### Named Views <a name="named-views"></a>
+### Named Views <span id="named-views"></span>
 
 When you render a view, you can specify the view using either a view name or a view file path/alias. In most cases,
 you would use the former because it is more concise and flexible. We call views specified using names as *named views*.
@@ -236,9 +238,9 @@ A view name is resolved into the corresponding view file path according to the f
 * If the view is rendered with a [[yii\base\View::context|context]] and the context implements [[yii\base\ViewContextInterface]],
   the view file path is formed by prefixing the [[yii\base\ViewContextInterface::getViewPath()|view path]] of the
   context to the view name. This mainly applies to the views rendered within controllers and widgets. For example,
-  `site/about` will be resolved into `@app/views/site/about.php` if the context is the controller `SiteController`.
+  `about` will be resolved into `@app/views/site/about.php` if the context is the controller `SiteController`.
 * If a view is rendered within another view, the directory containing the other view file will be prefixed to
-  the new view name to form the actual view file path. For example, `item` will be resolved into `@app/views/post/item`
+  the new view name to form the actual view file path. For example, `item` will be resolved into `@app/views/post/item.php`
   if it is being rendered in the view `@app/views/post/index.php`.
 
 According to the above rules, calling `$this->render('view')` in a controller `app\controllers\PostController` will
@@ -246,7 +248,7 @@ actually render the view file `@app/views/post/view.php`, while calling `$this->
 will render the view file `@app/views/post/_overview.php`.
 
 
-### Accessing Data in Views <a name="accessing-data-in-views"></a>
+### Accessing Data in Views <span id="accessing-data-in-views"></span>
 
 There are two approaches to access data within a view: push and pull.
 
@@ -264,7 +266,7 @@ echo $this->render('report', [
 ```
 
 The pull approach actively retrieves data from the [[yii\base\View|view component]] or other objects accessible
-in views (e.g. `Yii::$app`). Using the above code as an example, within the view you can get the controller object
+in views (e.g. `Yii::$app`). Using the code below as an example, within the view you can get the controller object
 by the expression `$this->context`. And as a result, it is possible for you to access any properties or methods
 of the controller in the `report` view, such as the controller ID shown in the following:
 
@@ -278,7 +280,7 @@ on context objects. Its drawback is that you need to manually build the data arr
 become tedious and error prone if a view is shared and rendered in different places.
 
 
-### Sharing Data among Views <a name="sharing-data-among-views"></a>
+### Sharing Data among Views <span id="sharing-data-among-views"></span>
 
 The [[yii\base\View|view component]] provides the [[yii\base\View::params|params]] property that you can use
 to share data among views.
@@ -300,7 +302,7 @@ passed along [[yii\base\View::params|params]]:
 ```
 
 
-## Layouts <a name="layouts"></a>
+## Layouts <span id="layouts"></span>
 
 Layouts are a special type of views that represent the common parts of multiple views. For example, the pages
 for most Web applications share the same page header and footer. While you can repeat the same page header and footer
@@ -308,7 +310,7 @@ in every view, a better way is to do this once in a layout and embed the renderi
 an appropriate place in the layout.
 
 
-### Creating Layouts <a name="creating-layouts"></a>
+### Creating Layouts <span id="creating-layouts"></span>
 
 Because layouts are also views, they can be created in the similar way as normal views. By default, layouts
 are stored in the directory `@app/views/layouts`. For layouts used within a [module](structure-modules.md),
@@ -369,7 +371,7 @@ the places where these methods are called.
   be replaced by the registered HTML code (e.g. JavaScript) targeted at the body end position.
 
 
-### Accessing Data in Layouts <a name="accessing-data-in-layouts"></a>
+### Accessing Data in Layouts <span id="accessing-data-in-layouts"></span>
 
 Within a layout, you have access to two predefined variables: `$this` and `$content`. The former refers to
 the [[yii\base\View|view]] component, like in normal views, while the latter contains the rendering result of a content
@@ -380,7 +382,7 @@ the [Accessing Data in Views](#accessing-data-in-views) subsection. If you want 
 to a layout, you may use the method described in the [Sharing Data among Views](#sharing-data-among-views) subsection.
 
 
-### Using Layouts <a name="using-layouts"></a>
+### Using Layouts <span id="using-layouts"></span>
 
 As described in the [Rendering in Controllers](#rendering-in-controllers) subsection, when you render a view
 by calling the [[yii\base\Controller::render()|render()]] method in a controller, a layout will be applied
@@ -415,7 +417,7 @@ In the first step, it determines the layout value and the context module:
 
 - If the [[yii\base\Controller::layout]] property of the controller is not null, use it as the layout value and
   the [[yii\base\Controller::module|module]] of the controller as the context module.
-- If [[yii\base\Controller::layout|layout]] is null, search through all ancestor modules of the controller and 
+- If [[yii\base\Controller::layout|layout]] is null, search through all ancestor modules (including the application itself) of the controller and 
   find the first module whose [[yii\base\Module::layout|layout]] property is not null. Use that module and
   its [[yii\base\Module::layout|layout]] value as the context module and the chosen layout value.
   If such a module cannot be found, it means no layout will be applied.
@@ -435,7 +437,7 @@ determined in the first step. The layout value can be:
 If the layout value does not contain a file extension, it will use the default one `.php`.
 
 
-### Nested Layouts <a name="nested-layouts"></a>
+### Nested Layouts <span id="nested-layouts"></span>
 
 Sometimes you may want to nest one layout in another. For example, in different sections of a Web site, you
 want to use different layouts, while all these layouts share the same basic layout that generates the overall
@@ -457,7 +459,7 @@ specifies what is the parent layout. It can be either a layout file or alias.
 Using the above approach, you can nest layouts in more than one levels.
 
 
-### Using Blocks <a name="using-blocks"></a>
+### Using Blocks <span id="using-blocks"></span>
 
 Blocks allow you to specify the view content in one place while displaying it in another. They are often used together
 with layouts. For example, you can define a block in a content view and display it in the layout.
@@ -518,7 +520,7 @@ not defined.
 ```
 
 
-## Using View Components <a name="using-view-components"></a>
+## Using View Components <span id="using-view-components"></span>
 
 [[yii\base\View|View components]] provides many view-related features. While you can get view components
 by creating individual instances of [[yii\base\View]] or its child class, in most cases you will mainly use
@@ -549,9 +551,9 @@ View components provide the following useful view-related features, each describ
 You may also frequently use the following minor yet useful features when you are developing Web pages.
 
 
-### Setting Page Titles <a name="setting-page-titles"></a>
+### Setting Page Titles <span id="setting-page-titles"></span>
 
-Every Web page should have a title. Normally the title tag is generated in a [layout](#layouts). However, in practice
+Every Web page should have a title. Normally the title tag is being displayed in a [layout](#layouts). However, in practice
 the title is often determined in content views rather than layouts. To solve this problem, [[yii\web\View]] provides
 the [[yii\web\View::title|title]] property for you to pass the title information from content views to layouts.
 
@@ -570,7 +572,7 @@ Then in the layout, make sure you have the following code in the `<head>` sectio
 ```
 
 
-### Registering Meta Tags <a name="registering-meta-tags"></a>
+### Registering Meta Tags <span id="registering-meta-tags"></span>
 
 Web pages usually need to generate various meta tags needed by different parties. Like page titles, meta tags
 appear in the `<head>` section and are usually generated in layouts.
@@ -585,8 +587,8 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => 'yii, framework, php'
 ```
 
 The above code will register a "keywords" meta tag with the view component. The registered meta tag is
-rendered after the layout finishes rendering. By then, the following HTML code will be inserted
-at the place where you call [[yii\web\View::head()]] in the layout and generate the following HTML code:
+rendered after the layout finishes rendering. The following HTML code will be generated and inserted
+at the place where you call [[yii\web\View::head()]] in the layout:
 
 ```php
 <meta name="keywords" content="yii, framework, php">
@@ -595,7 +597,7 @@ at the place where you call [[yii\web\View::head()]] in the layout and generate 
 Note that if you call [[yii\web\View::registerMetaTag()]] multiple times, it will register multiple meta tags,
 regardless whether the meta tags are the same or not.
 
-To make sure there is only a single instance of a meta tag type, you can specify a key when calling the method.
+To make sure there is only a single instance of a meta tag type, you can specify a key as a second parameter when calling the method.
 For example, the following code registers two "description" meta tags. However, only the second one will be rendered.
 
 ```html
@@ -604,9 +606,9 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 ```
 
 
-### Registering Link Tags <a name="registering-link-tags"></a>
+### Registering Link Tags <span id="registering-link-tags"></span>
 
-Like [meta tags](#adding-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
+Like [meta tags](#registering-meta-tags), link tags are useful in many cases, such as customizing favicon, pointing to
 RSS feed or delegating OpenID to another server. You can work with link tags in the similar way as meta tags
 by using [[yii\web\View::registerLinkTag()]]. For example, in a content view, you can register a link tag like follows,
 
@@ -626,17 +628,17 @@ The code above will result in
 ```
 
 Similar as [[yii\web\View::registerMetaTag()|registerMetaTags()]], you can specify a key when calling
-[[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generated repeated link tags.
+[[yii\web\View::registerLinkTag()|registerLinkTag()]] to avoid generating repeated link tags.
 
 
-## View Events <a name="view-events"></a>
+## View Events <span id="view-events"></span>
 
 [[yii\base\View|View components]] trigger several events during the view rendering process. You may respond
 to these events to inject content into views or process the rendering results before they are sent to end users.
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: triggered at the beginning of rendering a file
   in a controller. Handlers of this event may set [[yii\base\ViewEvent::isValid]] to be false to cancel the rendering process.
-- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: triggered by the call of [[yii\base\View::beginPage()]] in layouts.
+- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: triggered after rendering a file by the call of [[yii\base\View::afterRender()]].
   Handlers of this event may obtain the rendering result through [[yii\base\ViewEvent::output]] and may modify
   this property to change the rendering result.
 - [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: triggered by the call of [[yii\base\View::beginPage()]] in layouts.
@@ -653,12 +655,12 @@ For example, the following code injects the current date at the end of the page 
 ```
 
 
-## Rendering Static Pages <a name="rendering-static-pages"></a>
+## Rendering Static Pages <span id="rendering-static-pages"></span>
 
 Static pages refer to those Web pages whose main content are mostly static without the need of accessing
 dynamic data pushed from controllers.
 
-You can generate static pages using the code like the following in a controller:
+You can output static pages by putting their code in the view, and then using the code like the following in a controller:
 
 ```php
 public function actionAbout()
@@ -701,7 +703,7 @@ for this view under the directory `@app/views/site/pages`. You may configure [[y
 to change the directory for searching these views.
 
 
-## Best Practices <a name="best-practices"></a>
+## Best Practices <span id="best-practices"></span>
 
 Views are responsible for presenting models in the format that end users desire. In general, views
 

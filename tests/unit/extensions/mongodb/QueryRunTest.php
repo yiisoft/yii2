@@ -210,4 +210,73 @@ class QueryRunTest extends MongoDbTestCase
             ->all($connection);
         $this->assertEquals($rows, $rowsUppercase);
     }
+
+    public function testModify()
+    {
+        $connection = $this->getConnection();
+
+        $query = new Query();
+
+        $searchName = 'name5';
+        $newName = 'new name';
+        $row = $query->from('customer')
+            ->where(['name' => $searchName])
+            ->modify(['$set' => ['name' => $newName]], ['new' => false], $connection);
+        $this->assertEquals($searchName, $row['name']);
+
+        $searchName = 'name7';
+        $newName = 'new name';
+        $row = $query->from('customer')
+            ->where(['name' => $searchName])
+            ->modify(['$set' => ['name' => $newName]], ['new' => true], $connection);
+        $this->assertEquals($newName, $row['name']);
+
+        $row = $query->from('customer')
+            ->where(['name' => 'not existing name'])
+            ->modify(['$set' => ['name' => 'new name']], ['new' => false], $connection);
+        $this->assertNull($row);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/4879
+     *
+     * @depends testInCondition
+     */
+    public function testInConditionIgnoreKeys()
+    {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $rows = $query->from('customer')
+            /*->where([
+                'name' => [
+                    0 => 'name1',
+                    15 => 'name5'
+                ]
+            ])*/
+            ->where(['in', 'name', [
+                10 => 'name1',
+                15 => 'name5'
+            ]])
+            ->all($connection);
+        $this->assertEquals(2, count($rows));
+        $this->assertEquals('name1', $rows[0]['name']);
+        $this->assertEquals('name5', $rows[1]['name']);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/7010
+     */
+    public function testSelect()
+    {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $rows = $query->from('customer')
+            ->select(['name' => true, '_id' => false])
+            ->limit(1)
+            ->all($connection);
+        $row = array_pop($rows);
+        $this->assertArrayHasKey('name', $row);
+        $this->assertArrayNotHasKey('address', $row);
+        $this->assertArrayNotHasKey('_id', $row);
+    }
 }

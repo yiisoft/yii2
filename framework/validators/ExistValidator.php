@@ -81,7 +81,7 @@ class ExistValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
@@ -91,31 +91,31 @@ class ExistValidator extends Validator
             }
             $params = [];
             foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_integer($k) ? $object->$v : $object->$k;
+                $params[$v] = is_integer($k) ? $model->$v : $model->$k;
             }
         } else {
-            $params = [$targetAttribute => $object->$attribute];
+            $params = [$targetAttribute => $model->$attribute];
         }
 
         if (!$this->allowArray) {
             foreach ($params as $value) {
                 if (is_array($value)) {
-                    $this->addError($object, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+                    $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
 
                     return;
                 }
             }
         }
 
-        $targetClass = $this->targetClass === null ? get_class($object) : $this->targetClass;
+        $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $query = $this->createQuery($targetClass, $params);
 
-        if (is_array($object->$attribute)) {
-            if ($query->count("DISTINCT [[$targetAttribute]]") != count($object->$attribute)) {
-                $this->addError($object, $attribute, $this->message);
+        if (is_array($model->$attribute)) {
+            if ($query->count("DISTINCT [[$targetAttribute]]") != count($model->$attribute)) {
+                $this->addError($model, $attribute, $this->message);
             }
         } elseif (!$query->exists()) {
-            $this->addError($object, $attribute, $this->message);
+            $this->addError($model, $attribute, $this->message);
         }
     }
 
@@ -152,7 +152,7 @@ class ExistValidator extends Validator
     protected function createQuery($targetClass, $condition)
     {
         /* @var $targetClass \yii\db\ActiveRecordInterface */
-        $query = $targetClass::find()->where($condition);
+        $query = $targetClass::find()->andWhere($condition);
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);
         } elseif ($this->filter !== null) {

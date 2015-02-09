@@ -13,11 +13,11 @@ with response formatting:
    the [[yii\web\Response::formatters|response]] application component.
 
 
-## Content Negotiation <a name="content-negotiation"></a>
+## Content Negotiation <span id="content-negotiation"></span>
 
 Yii supports content negotiation via the [[yii\filters\ContentNegotiator]] filter. The RESTful API base
 controller class [[yii\rest\Controller]] is equipped with this filter under the name of `contentNegotiator`.
-The filer provides response format negotiation as well as language negotiation. For example, if a RESTful
+The filter provides response format negotiation as well as language negotiation. For example, if a RESTful
 API request contains the following header,
 
 ```
@@ -81,7 +81,7 @@ The keys of the `formats` property are the supported MIME types, while the value
 response format names which must be supported in [[yii\web\Response::formatters]].
 
 
-## Data Serializing <a name="data-serializing"></a>
+## Data Serializing <span id="data-serializing"></span>
 
 As we have described above, [[yii\rest\Serializer]] is the central piece responsible for converting resource
 objects or collections into arrays. It recognizes objects implementing [[yii\base\ArrayableInterface]] as
@@ -136,9 +136,15 @@ Content-Type: application/json; charset=UTF-8
         ...
     ],
     "_links": {
-        "self": "http://localhost/users?page=1",
-        "next": "http://localhost/users?page=2",
-        "last": "http://localhost/users?page=50"
+        "self": {
+            "href": "http://localhost/users?page=1"
+        },
+        "next": {
+            "href": "http://localhost/users?page=2"
+        },
+        "last": {
+            "href": "http://localhost/users?page=50"
+        }
     },
     "_meta": {
         "totalCount": 1000,

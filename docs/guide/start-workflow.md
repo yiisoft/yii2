@@ -7,12 +7,12 @@ upon your configuration. This section will introduce the application's built-in 
 how the code is organized, and how the application handles requests in general.
 
 > Info: For simplicity, throughout this "Getting Started" tutorial, it's assumed that you have set `basic/web`
-  as the document root of your Web server, and configured, the URL for accessing
+  as the document root of your Web server, and configured the URL for accessing
   your application to be `http://hostname/index.php` or something similar.
   For your needs, please adjust the URLs in our descriptions accordingly.
 
 
-Functionality <a name="functionality"></a>
+Functionality <span id="functionality"></span>
 -------------
 
 The basic application installed contains four pages:
@@ -30,7 +30,7 @@ You should also see a toolbar at the bottom of the browser window.
 This is a useful [debugger tool](tool-debugger.md) provided by Yii to record and display a lot of debugging information, such as log messages, response statuses, the database queries run, and so on.
 
 
-Application Structure <a name="application-structure"></a>
+Application Structure <span id="application-structure"></span>
 ---------------------
 
 The most important directories and files in your application are (assuming the application's root directory is `basic`):
@@ -72,12 +72,12 @@ and dispatches the request to the MVC elements. [Widgets](structure-widgets.md) 
 to help build complex and dynamic user interface elements.
 
 
-Request Lifecycle <a name="request-lifecycle"></a>
+Request Lifecycle <span id="request-lifecycle"></span>
 -----------------
 
 The following diagram shows how an application handles a request.
 
-![Request Lifecycle](images/application-lifecycle.png)
+![Request Lifecycle](images/request-lifecycle.png)
 
 1. A user makes a request to the [entry script](structure-entry-scripts.md) `web/index.php`.
 2. The entry script loads the application [configuration](concept-configurations.md) and creates

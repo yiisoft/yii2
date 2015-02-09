@@ -1,35 +1,30 @@
-Yii version numbering
-=====================
+Yii Versioning
+==============
 
-Releases
---------
+This document summarizes the versioning policy of Yii. In general, Yii follows the [Semantic Versioning](http://semver.org/).
 
-A.B.C
+## Patch Releases `2.x.Y`
+ 
+* Maintained on a branch named `2.x`
+* Mainly contain bug fixes and minor feature enhancements
+* No major features.
+* Must be 100% backward compatible to ensure worry-free upgrade. Only exception is security issues that may require breaking BC.
+* Release cycle is around 1 to 2 months.
+* No pre-releases (alpha, beta, RC) needed.
+* Should be merged back to master branch constantly (at least once every week manually).
 
-A = For Yii2 it's always 2.
-B = Major version. Non-BC changes with upgrade instructions.
-C = BC changes and additions.
 
-Release candidates
-------------------
+## Minor Releases `2.X.0`
 
-A.B.C-rc
-A.B.C-rc2
+* Developed on master branch
+* Mainly contain new features and bug fixes
+* Contain minor features and bug fixes merged from patch releases
+* May contain BC-breaking changes which are recorded in `UPGRADE-2.X.md` file
+* Release cycle is around 6 to 8 months
+* Require pre-releases: `2.X.0-alpha`, `2.X.0-beta`, `2.X.0-rc`
+* Requires major news releases and marketing effort.
 
-This is when we want to do a release candidate. RC number increments till we're getting a stable release with no
-critical bugs and backwards incompatibility reports.
 
-Alphas and betas
-----------------
+## Major Releases `X.0.0`
 
-A.B.C-alpha
-A.B.C-alpha2
-
-Alphas are unstable versions where significant bugs may and probably do exist. API isn't fixed yet and may be changed
-significantly. `alpha2` etc. may or may not be released based on overall stability of code and API.
-
-A.B.C-beta
-A.B.C-beta2
-
-Beta is more or less stable with less bugs and API instability than alphas. There still could be changes in API but
-there should be a significant reason for it.
+None in plan. 

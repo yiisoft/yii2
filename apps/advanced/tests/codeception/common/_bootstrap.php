@@ -6,9 +6,10 @@ defined('YII_APP_BASE_PATH') or define('YII_APP_BASE_PATH', dirname(dirname(dirn
 
 require_once(YII_APP_BASE_PATH . '/vendor/autoload.php');
 require_once(YII_APP_BASE_PATH . '/vendor/yiisoft/yii2/Yii.php');
-require(YII_APP_BASE_PATH . '/common/config/aliases.php');
+require_once(YII_APP_BASE_PATH . '/common/config/bootstrap.php');
 
 // set correct script paths
 $_SERVER['SERVER_NAME'] = 'localhost';
+$_SERVER['SERVER_PORT'] = '80';
 
 Yii::setAlias('@tests', dirname(dirname(__DIR__)));

@@ -35,6 +35,7 @@ use yii\helpers\Html;
  *             ],
  *         ],
  *     ],
+ *     'options' => ['class' =>'nav-pills'], // set this to nav-tab to get tab-styled navigation
  * ]);
  * ```
  *
@@ -171,12 +172,7 @@ class Nav extends Widget
                 if ($this->activateItems) {
                     $items = $this->isChildActive($items, $active);
                 }
-                $items = Dropdown::widget([
-                    'items' => $items,
-                    'encodeLabels' => $this->encodeLabels,
-                    'clientOptions' => false,
-                    'view' => $this->getView(),
-                ]);
+                $items = $this->renderDropdown($items, $item);
             }
         }
 
@@ -185,6 +181,24 @@ class Nav extends Widget
         }
 
         return Html::tag('li', Html::a($label, $url, $linkOptions) . $items, $options);
+    }
+
+    /**
+     * Renders the given items as a dropdown.
+     * This method is called to create sub-menus.
+     * @param array $items the given items. Please refer to [[Dropdown::items]] for the array structure.
+     * @param array $parentItem the parent item information. Please refer to [[items]] for the structure of this array.
+     * @return string the rendering result.
+     * @since 2.0.1
+     */
+    protected function renderDropdown($items, $parentItem)
+    {
+        return Dropdown::widget([
+            'items' => $items,
+            'encodeLabels' => $this->encodeLabels,
+            'clientOptions' => false,
+            'view' => $this->getView(),
+        ]);
     }
 
     /**

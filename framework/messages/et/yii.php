@@ -85,7 +85,7 @@ return array (
   '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} peab sisaldama vähemalt {min, number} {min, plural, one{märki} other{märki}}.',
   '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} tohib sisaldada maksimaalselt {max, number} {max, plural, one{märki} other{märki}}.',
   '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} peab sisaldama {length, number} {length, plural, one{märki} other{märki}}.',
-  '{delta, plural, =1{a day} other{# days}} ago' => 'delta, plural, =1{üks päev} other{# päeva}} tagasi',
+  '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{üks päev} other{# päeva}} tagasi',
   '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{üks minut} other{# minutit}} tagasi',
   '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{kuu aega} other{# kuud}} tagasi',
   '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{üks sekund} other{# sekundit}} tagasi',

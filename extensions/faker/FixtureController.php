@@ -14,13 +14,13 @@ use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 
 /**
- * This command manage fixtures creations based on given template.
+ * This command creates fixtures based on a given template.
  *
  * Fixtures are one of the important paths in unit testing. To speed up developers
  * work these fixtures can be generated automatically, based on prepared template.
- * This command is a simple wrapper for the fixtures library [Faker](https://github.com/fzaninotto/Faker).
+ * This command is a simple wrapper for the [Faker](https://github.com/fzaninotto/Faker) library.
  *
- * You should configure this command as follows (you can use any alias, not only "fixture"):
+ * You should configure your application as follows (you can use any alias, not only "fixture"):
  *
  * ~~~
  * 'controllerMap' => [
@@ -30,7 +30,7 @@ use yii\helpers\VarDumper;
  * ],
  * ~~~
  *
- * To start using this command you need to be familiar (read guide) for the Faker library and
+ * To start using the command you need to be familiar (read guide) with the Faker library and
  * generate fixtures template files, according to the given format:
  *
  * ```php
@@ -45,7 +45,7 @@ use yii\helpers\VarDumper;
  * ];
  * ```
  *
- * If you use callback as a attribute value, then it will be called as shown with three parameters:
+ * If you use callback as an attribute value it will be called with the following three parameters:
  *
  * - `$faker`: the Faker generator instance
  * - `$index`: the current fixture index. For example if user need to generate 3 fixtures for user table, it will be 0..2.
@@ -101,20 +101,20 @@ use yii\helpers\VarDumper;
  * //list all templates under specified template path
  * yii fixture/templates --templatePath='@app/path/to/my/custom/templates'
  * ~~~
- * 
+ *
  * You also can create your own data providers for custom tables fields, see Faker library guide for more info (https://github.com/fzaninotto/Faker);
  * After you created custom provider, for example:
  *
  * ~~~
  * class Book extends \Faker\Provider\Base
  * {
- * 
+ *
  *     public function title($nbWords = 5)
  *     {
  *         $sentence = $this->generator->sentence($nbWords);
  *         return mb_substr($sentence, 0, mb_strlen($sentence) - 1);
  *     }
- * 
+ *
  * }
  * ~~~
  *
@@ -131,12 +131,13 @@ use yii\helpers\VarDumper;
  *    ],
  * ~~~
  *
+ * @property \Faker\Generator $generator This property is read-only.
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0.0
  */
 class FixtureController extends \yii\console\controllers\FixtureController
 {
-
     /**
      * @var string Alias to the template path, where all tables templates are stored.
      */

@@ -160,7 +160,7 @@ class Application extends \yii\base\Application
         try {
             return (int)parent::runAction($route, $params);
         } catch (InvalidRouteException $e) {
-            throw new Exception(Yii::t('yii', 'Unknown command "{command}".', ['command' => $route]), 0, $e);
+            throw new Exception("Unknown command \"$route\".", 0, $e);
         }
     }
 

@@ -16,17 +16,22 @@ use yii\console\Exception;
 /**
  * Allows you to flush cache.
  *
- * ~~~
- * #see list of available components to flush
- * yii cache
- * 
- * #flush particular components specified by their names
- * yii cache/flush first second third
- * 
- * #flush all cache components that can be found in the system
- * yii cache/flush-all
- * ~~~
- * 
+ * see list of available components to flush:
+ *
+ *     yii cache
+ *
+ * flush particular components specified by their names:
+ *
+ *     yii cache/flush first second third
+ *
+ * flush all cache components that can be found in the system
+ *
+ *     yii cache/flush-all
+ *
+ * Note that the command uses cache components defined in your console application configuration file. If components
+ * configured are different from web application, web application cache won't be cleared. In order to fix it please
+ * duplicate web application cache components in console config. You can use any component names.
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -120,6 +125,45 @@ class CacheController extends Controller
     }
 
     /**
+     * Clears DB schema cache for a given connection component.
+     *
+     * ~~~
+     * # clears cache schema specified by component id: "db"
+     * yii cache/flush-schema db
+     * ~~~
+     *
+     * @param string $db id connection component
+     * @return int exit code
+     * @throws Exception
+     * @throws \yii\base\InvalidConfigException
+     *
+     * @since 2.0.1
+     */
+    public function actionFlushSchema($db = 'db')
+    {
+        $connection = Yii::$app->get($db, false);
+        if ($connection === null) {
+            $this->stdout("Unknown component \"$db\".\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        }
+
+        if (!$connection instanceof \yii\db\Connection) {
+            $this->stdout("\"$db\" component doesn't inherit \\yii\\db\\Connection.\n", Console::FG_RED);
+            return self::EXIT_CODE_ERROR;
+        } else if (!$this->confirm("Flush cache schema for \"$db\" connection?")) {
+            return static::EXIT_CODE_NORMAL;
+        }
+
+        try {
+            $schema = $connection->getSchema();
+            $schema->refresh();
+            $this->stdout("Schema cache for component \"$db\", was flushed.\n\n", Console::FG_GREEN);
+        } catch (\Exception $e) {
+            $this->stdout($e->getMessage() . "\n\n", Console::FG_RED);
+        }
+    }
+
+    /**
      * Notifies user that given caches are found and can be flushed.
      * @param array $caches array of cache component classes
      */
@@ -151,7 +195,7 @@ class CacheController extends Controller
         $this->stdout("The following cache components were NOT found:\n\n", Console::FG_RED);
 
         foreach ($cachesNames as $name) {
-            $this->stdout("\t * $name \n", Console::FG_GREEN);
+            $this->stdout("\t* $name \n", Console::FG_GREEN);
         }
 
         $this->stdout("\n");
@@ -188,7 +232,7 @@ class CacheController extends Controller
         $this->stdout("The following cache components will be flushed:\n\n", Console::FG_YELLOW);
 
         foreach ($cachesNames as $name) {
-            $this->stdout("\t * $name \n", Console::FG_GREEN);
+            $this->stdout("\t* $name \n", Console::FG_GREEN);
         }
 
         return $this->confirm("\nFlush above cache components?");
@@ -212,14 +256,24 @@ class CacheController extends Controller
 
             if ($component instanceof Cache) {
                 $caches[$name] = get_class($component);
-            } elseif (is_array($component) && isset($component['class']) && strpos($component['class'], 'Cache') !== false) {
+            } elseif (is_array($component) && isset($component['class']) && $this->isCacheClass($component['class'])) {
                 $caches[$name] = $component['class'];
-            } elseif (is_string($component) && strpos($component, 'Cache') !== false) {
+            } elseif (is_string($component) && $this->isCacheClass($component)) {
                 $caches[$name] = $component;
             }
         }
 
         return $caches;
+    }
+
+    /**
+     * Checks if given class is a Cache class.
+     * @param string $className class name.
+     * @return boolean
+     */
+    private function isCacheClass($className)
+    {
+        return is_subclass_of($className, Cache::className());
     }
 
 }

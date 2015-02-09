@@ -30,6 +30,22 @@ class Customer extends ActiveRecord
     /**
      * @return \yii\redis\ActiveQuery
      */
+    public function getExpensiveOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->andWhere("tonumber(redis.call('HGET','order' .. ':a:' .. pk, 'total')) > 50");
+    }
+
+    /**
+     * @return \yii\redis\ActiveQuery
+     */
+    public function getExpensiveOrdersWithNullFK()
+    {
+        return $this->hasMany(OrderWithNullFK::className(), ['customer_id' => 'id'])->andWhere("tonumber(redis.call('HGET','order' .. ':a:' .. pk, 'total')) > 50");
+    }
+
+    /**
+     * @return \yii\redis\ActiveQuery
+     */
     public function getOrdersWithNullFK()
     {
         return $this->hasMany(OrderWithNullFK::className(), ['customer_id' => 'id']);

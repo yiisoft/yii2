@@ -32,7 +32,6 @@ class ViewRenderer extends BaseViewRenderer
      * @var string the directory or path alias pointing to where Smarty compiled templates will be stored.
      */
     public $compilePath = '@runtime/Smarty/compile';
-
     /**
      * @var array Add additional directories to Smarty's search path for plugins.
      */
@@ -46,20 +45,19 @@ class ViewRenderer extends BaseViewRenderer
      */
     public $widgets = ['functions' => [], 'blocks' => []];
     /**
-     * @var Smarty The Smarty object used for rendering
-     */
-    protected $smarty;
-
-    /**
      * @var array additional Smarty options
      * @see http://www.smarty.net/docs/en/api.variables.tpl
      */
     public $options = [];
-
     /**
      * @var string extension class name
      */
     public $extensionClass = '\yii\smarty\Extension';
+
+    /**
+     * @var Smarty The Smarty object used for rendering
+     */
+    protected $smarty;
 
 
     /**
@@ -101,7 +99,7 @@ class ViewRenderer extends BaseViewRenderer
         // Register function widgets specified in configuration array
         if (isset($this->widgets['functions'])) {
             foreach(($this->widgets['functions']) as $tag => $class) {
-                $this->smarty->registerPlugin('function', $tag, [$this, '_widget_func__' . $tag]);
+                $this->smarty->registerPlugin('function', $tag, [$this, '_widget_function__' . $tag]);
                 $this->smarty->registerClass($tag, $class);
             }
         }
@@ -161,7 +159,7 @@ class ViewRenderer extends BaseViewRenderer
         if (count($methodInfo) === 2) {
             $alias = $methodInfo[1];
             if (isset($this->widgets['functions'][$alias])) {
-                if (($methodInfo[0] === '_widget_func') && (count($args) === 2)) {
+                if (($methodInfo[0] === '_widget_function') && (count($args) === 2)) {
                     return $this->widgetFunction($this->widgets['functions'][$alias], $args[0], $args[1]);
                 }
             } elseif (isset($this->widgets['blocks'][$alias])) {

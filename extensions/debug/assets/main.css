@@ -11,6 +11,13 @@ ul.trace {
     white-space: normal;
 }
 
+ul.assets {
+    margin: 2px 0 0 0;
+    padding: 0;
+    list-style: none;
+    white-space: normal;
+}
+
 .callout-danger {
     background-color: #fcf2f2;
     border-color: #dFb5b4;

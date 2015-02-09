@@ -3,7 +3,7 @@ Working with Databases
 
 This section will describe how to create a new page that displays country data fetched from
 a database table named `country`. To achieve this goal, you will configure a database connection,
-create an [Active Record](db-active-record.md) class, and define an [action](structure-controllers.md),
+create an [Active Record](db-active-record.md) class, define an [action](structure-controllers.md),
 and create a [view](structure-views.md).
 
 Through this tutorial, you will learn how to:
@@ -17,8 +17,8 @@ Note that in order to finish this section, you should have basic knowledge and e
 In particular, you should know how to create a database, and how to execute SQL statements using a DB client tool.
 
 
-Preparing the Database <a name="preparing-database"></a>
---------------------
+Preparing the Database <span id="preparing-database"></span>
+----------------------
 
 To begin, create a database named `yii2basic`, from which you will fetch data in your application.
 You may create an SQLite, MySQL, PostgreSQL, MSSQL or Oracle database, as Yii has built-in support for many database applications. For simplicity, MySQL will be assumed in the following description.
@@ -46,7 +46,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 
 At this point, you have a database named `yii2basic`, and within it a `country` table with three columns, containing ten rows of data.
 
-Configuring a DB Connection <a name="configuring-db-connection"></a>
+Configuring a DB Connection <span id="configuring-db-connection"></span>
 ---------------------------
 
 Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
@@ -79,7 +79,7 @@ The DB connection configured above can be accessed in the application code via t
   For more information, please refer to the [Configurations](concept-configurations.md) section.
 
 
-Creating an Active Record <a name="creating-active-record"></a>
+Creating an Active Record <span id="creating-active-record"></span>
 -------------------------
 
 To represent and fetch the data in the `country` table, create an [Active Record](db-active-record.md)-derived
@@ -126,7 +126,7 @@ $country->save();
 You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Data Access Objects](db-dao.md).
 
 
-Creating an Action <a name="creating-action"></a>
+Creating an Action <span id="creating-action"></span>
 ------------------
 
 To expose the country data to end users, you need to create a new action. Instead of placing the new action in the `site`
@@ -182,7 +182,7 @@ At the end of the code, the `index` action renders a view named `index`, and pas
 information to it.
 
 
-Creating a View <a name="creating-view"></a>
+Creating a View <span id="creating-view"></span>
 ---------------
 
 Under the `views` directory, first create a sub-directory named `country`. This folder will be used to hold all the
@@ -213,7 +213,7 @@ The `LinkPager` widget displays a list of page buttons. Clicking on any of them 
 in the corresponding page.
 
 
-Trying it Out <a name="trying-it-out"></a>
+Trying it Out <span id="trying-it-out"></span>
 -------------
 
 To see how all of the above code works, use your browser to access the following URL:
@@ -232,7 +232,7 @@ Observe more carefully and you will find that the URL in the browser also change
 http://hostname/index.php?r=country/index&page=2
 ```
 
-Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the ncessary functionality to paginate a data set:
+Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:
 
 * Initially, [[yii\data\Pagination|Pagination]] represents the first page, which reflects the country SELECT query
   with the clause `LIMIT 5 OFFSET 0`. As a result, the first five countries will be fetched and displayed.
@@ -245,7 +245,7 @@ Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the nc
   for display.
 
 
-Summary <a name="summary"></a>
+Summary <span id="summary"></span>
 -------
 
 In this section, you learned how to work with a database. You also learned how to fetch and display

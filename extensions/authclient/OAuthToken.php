@@ -35,6 +35,11 @@ class OAuthToken extends Object
      */
     public $tokenSecretParamKey = 'oauth_token_secret';
     /**
+     * @var integer object creation timestamp.
+     */
+    public $createTimestamp;
+
+    /**
      * @var string key in [[params]] array, which stores token expiration duration.
      * If not set will attempt to fetch its value automatically.
      */
@@ -46,10 +51,8 @@ class OAuthToken extends Object
 
 
     /**
-     * @var integer object creation timestamp.
+     * @inheritdoc
      */
-    public $createTimestamp;
-
     public function init()
     {
         if ($this->createTimestamp === null) {

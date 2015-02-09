@@ -26,7 +26,6 @@ class Extension
      * @var ViewRenderer
      */
     protected $viewRenderer;
-
     /**
      * @var Smarty
      */
@@ -78,7 +77,7 @@ class Extension
         array_unshift($params, $params['route']) ;
         unset($params['route']);
 
-        return Url::to($params, true);
+        return Url::to($params);
     }
 
     /**
@@ -86,7 +85,7 @@ class Extension
      *
      * Usage is the following:
      *
-     * {path route='blog/view' alias=$post.alias user=$user.id}
+     * {url route='blog/view' alias=$post.alias user=$user.id}
      *
      * where route is Yii route and the rest of parameters are passed as is.
      *
@@ -148,9 +147,10 @@ class Extension
             // Inject code to re-register widget tag during run-time
             return <<<PHP
 <?php
-    \$_smarty_tpl->getGlobal('_viewRenderer')->widgets['blocks']['$alias'] = '$class';
+    \$viewRenderer=\$_smarty_tpl->default_template_handler_func[0];
+    \$viewRenderer->widgets['blocks']['$alias'] = '$class';
     try {
-        \$_smarty_tpl->registerPlugin('block', '$alias', [\$_smarty_tpl->getGlobal('_viewRenderer'), '_widget_block__$alias']);
+        \$_smarty_tpl->registerPlugin('block', '$alias', [\$viewRenderer, '_widget_block__$alias']);
     }
     catch (SmartyException \$e) {
         /* Ignore already registered exception during first execution after compilation */
@@ -165,9 +165,10 @@ PHP;
             // Inject code to re-register widget tag during run-time
             return <<<PHP
 <?php
-    \$_smarty_tpl->getGlobal('_viewRenderer')->widgets['functions']['$alias'] = '$class';
+    \$viewRenderer=\$_smarty_tpl->default_template_handler_func[0];
+    \$viewRenderer->widgets['functions']['$alias'] = '$class';
     try {
-        \$_smarty_tpl->registerPlugin('function', '$alias', [\$_smarty_tpl->getGlobal('_viewRenderer'), '_widget_function__$alias']);
+        \$_smarty_tpl->registerPlugin('function', '$alias', [\$viewRenderer, '_widget_function__$alias']);
     }
     catch (SmartyException \$e) {
         /* Ignore already registered exception during first execution after compilation */
@@ -319,11 +320,11 @@ PHP;
 
         $url = ArrayHelper::remove($params, 'url');
         $key = ArrayHelper::remove($params, 'key', null);
-        $depends = ArrayHelper::remove($params, 'depends', null);
+        $position = ArrayHelper::remove($params, 'position');
         if (isset($params['position']))
-            $params['position'] = $this->getViewConstVal($params['position'], View::POS_END);
+            $params['position'] = $this->getViewConstVal($position, View::POS_END);
 
-        Yii::$app->getView()->registerJsFile($url, $depends, $params, $key);
+        Yii::$app->getView()->registerJsFile($url, $params, $key);
     }
 
     /**
@@ -379,9 +380,8 @@ PHP;
 
         $url = ArrayHelper::remove($params, 'url');
         $key = ArrayHelper::remove($params, 'key', null);
-        $depends = ArrayHelper::remove($params, 'depends', null);
 
-        Yii::$app->getView()->registerCssFile($url, $depends, $params, $key);
+        Yii::$app->getView()->registerCssFile($url, $params, $key);
     }
 
     /**

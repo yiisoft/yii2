@@ -34,8 +34,9 @@ use yii\helpers\Json;
 abstract class Migration extends Component implements MigrationInterface
 {
     /**
-     * @var Connection|string the MongoDB connection object or the application component ID of the MongoDB connection
+     * @var Connection|array|string the MongoDB connection object or the application component ID of the MongoDB connection
      * that this migration should work with.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db = 'mongodb';
 
@@ -89,7 +90,7 @@ abstract class Migration extends Component implements MigrationInterface
      */
     public function createIndex($collection, $columns, $options = [])
     {
-        echo "    > create index on " . $this->composeCollectionLogName($collection) . " (" . Json::encode((array)$columns) . empty($options) ? "" : ", " . Json::encode($options) . ") ...";
+        echo "    > create index on " . $this->composeCollectionLogName($collection) . " (" . Json::encode((array) $columns) . empty($options) ? "" : ", " . Json::encode($options) . ") ...";
         $time = microtime(true);
         $this->db->getCollection($collection)->createIndex($columns, $options);
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
@@ -102,7 +103,7 @@ abstract class Migration extends Component implements MigrationInterface
      */
     public function dropIndex($collection, $columns)
     {
-        echo "    > drop index on " . $this->composeCollectionLogName($collection) . " (" . Json::encode((array)$columns) . ") ...";
+        echo "    > drop index on " . $this->composeCollectionLogName($collection) . " (" . Json::encode((array) $columns) . ") ...";
         $time = microtime(true);
         $this->db->getCollection($collection)->dropIndex($columns);
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";

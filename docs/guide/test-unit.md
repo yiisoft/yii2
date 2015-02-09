@@ -17,3 +17,9 @@ Running basic and advanced template unit tests
 ----------------------------------------------
 
 Please refer to instructions provided in `apps/advanced/tests/README.md` and `apps/basic/tests/README.md`.
+
+Framework unit tests
+--------------------
+
+If you want to run unit tests for Yii framework itself follow
+"[Getting started with Yii2 development](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)".

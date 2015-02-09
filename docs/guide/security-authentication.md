@@ -83,4 +83,4 @@ public function beforeSave($insert)
 }
 ```
 
-The `validateAuthKey` method just needs to compare the `$authKey` variable, passed as parameter (itself retrieved from a cookie), with the value fetched from database.
+The `validateAuthKey` method just needs to compare the `$authKey` variable, passed as a parameter (itself retrieved from a cookie), with the value fetched from the database.

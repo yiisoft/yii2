@@ -10,7 +10,7 @@ namespace yii\db\cubrid;
 use yii\base\InvalidParamException;
 
 /**
- * QueryBuilder is the query builder for CUBRID databases (version 9.1.x and higher).
+ * QueryBuilder is the query builder for CUBRID databases (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

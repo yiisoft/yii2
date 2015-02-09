@@ -1,16 +1,46 @@
 Yii Framework 2 elasticsearch extension Change Log
 ==================================================
 
-2.0.0-rc under development
---------------------------
+2.0.3 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Enh: Added `ActiveFixture` class for testing fixture support for elasticsearch (cebe, viilveer)
+
+
+2.0.1 December 07, 2014
+-----------------------
+
+- Bug #5662: Elasticsearch AR updateCounters() now uses explicitly `groovy` script for updating making it compatible with ES >1.3.0 (cebe)
+- Bug #6065: `ActiveRecord::unlink()` was failing in some situations when working with relations via array valued attributes (cebe)
+- Enh #5758: Allow passing custom options to `ActiveRecord::update()` and `::delete()` including support for routing needed for updating records with parent relation (cebe)
+- Enh: Add support for optimistic locking (cebe)
+
+
+2.0.0 October 12, 2014
+----------------------
+
+- Enh #3381: Added ActiveRecord::arrayAttributes() to define attributes that should be treated as array when retrieved via `fields` (cebe)
+
+
+2.0.0-rc September 27, 2014
+---------------------------
 
 - Bug #3587: Fixed an issue with storing empty records (cebe)
 - Bug #4187: Elasticsearch dynamic scripting is disabled in 1.2.0, so do not use it in query builder (cebe)
-- Enh #3520: Added `unlinkAll()`-method to active record to remove all records of a model relation (NmDimas, samdark, cebe)
 - Enh #3527: Added `highlight` property to Query and ActiveRecord. (Borales)
 - Enh #4048: Added `init` event to `ActiveQuery` classes (qiangxue)
 - Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
 - Enh: Make error messages more readable in HTML output (cebe)
+- Enh: Added support for query stats (cebe)
+- Enh: Added support for query suggesters (cebe, tvdavid)
+- Enh: Added support for delete by query (cebe, tvdavid)
+- Chg #4451: Removed support for facets and replaced them with aggregations (cebe, tadaszelvys)
 - Chg: asArray in ActiveQuery is now equal to using the normal Query. This means, that the output structure has changed and `with` is supported anymore. (cebe)
 - Chg: Deletion of a record is now also considered successful if the record did not exist. (cebe)
 - Chg: Requirement changes: Yii now requires elasticsearch version 1.0 or higher (cebe)

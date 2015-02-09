@@ -15,19 +15,20 @@ use yii\helpers\Html;
 echo Html::encode('Test > test');
 ```
 
-> Note: To support [extending helper classes](#extending-helper-classes), Yii breaks each core helper class
+> Note: To support [customizing helper classes](#customizing-helper-classes), Yii breaks each core helper class
   into two classes: a base class (e.g. `BaseArrayHelper`) and a concrete class (e.g. `ArrayHelper`).
   When you use a helper, you should only use the concrete version and never use the base class.
 
 
-## Core Helper Classes
+Core Helper Classes
+-------------------
 
 The following core helper classes are provided in the Yii releases:
 
-- ArrayHelper
+- [ArrayHelper](helper-array.md)
 - Console
 - FileHelper
-- Html
+- [Html](helper-html.md)
 - HtmlPurifier
 - Image
 - Inflector
@@ -35,23 +36,25 @@ The following core helper classes are provided in the Yii releases:
 - Markdown
 - Security
 - StringHelper
-- Url
+- [Url](helper-url.md)
 - VarDumper
 
 
-## Extending Helper Classes
+Customizing Helper Classes <span id="customizing-helper-classes"></span>
+--------------------------
 
-To custom a core helper class (e.g. `yii\helpers\ArrayHelper`), you should extend from its corresponding base class
-(e.g. `yii\helpers\BaseArrayHelper`) and name your class the same as the corresponding concrete class
-(e.g. `yii\helpers\ArrayHelper`), including its namespace.
+To customize a core helper class (e.g. [[yii\helpers\ArrayHelper]]), you should create a new class extending
+from the helpers corresponding base class (e.g. [[yii\helpers\BaseArrayHelper]]) and name your class the same
+as the corresponding concrete class (e.g. [[yii\helpers\ArrayHelper]]), including its namespace. This class
+will then be set up to replace the original implementation of the framework.
 
 The following example shows how to customize the [[yii\helpers\ArrayHelper::merge()|merge()]] method of the
 [[yii\helpers\ArrayHelper]] class:
 
 ```php
-namespace yii\helpers;
+<?php
 
-use yii\helpers\BaseArrayHelper;
+namespace yii\helpers;
 
 class ArrayHelper extends BaseArrayHelper
 {
@@ -62,14 +65,16 @@ class ArrayHelper extends BaseArrayHelper
 }
 ```
 
-Save your class in a file named `ArrayHelper.php`. The file can be in any directory, such as `@app/components`.
+Save your class in a file named `ArrayHelper.php`. The file can be in any directory, for example `@app/components`.
 
 Next, in your application's [entry script](structure-entry-scripts.md), add the following line of code
-after including the `yii.php` file:
+after including the `yii.php` file to tell the [Yii class autoloader](concept-autoloading.md) to load your custom
+class instead of the original helper class from the framework:
 
 ```php
-Yii::$classMap['yii\helpers\ArrayHelper'] = 'path/to/ArrayHelper.php';
+Yii::$classMap['yii\helpers\ArrayHelper'] = '@app/components/ArrayHelper.php';
 ```
 
-The above line instructs the [Yii class autoloader](concept-autoloading.md) to load your version of the helper
-class, instead of the one included in the Yii releases.
+Note that customizing of helper classes is only useful if you want to change the behavior of an existing function
+of the helpers. If you want to add additional functions to use in your application you may better create a separate
+helper for that.

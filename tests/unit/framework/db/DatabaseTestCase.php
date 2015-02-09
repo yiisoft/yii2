@@ -11,7 +11,7 @@ abstract class DatabaseTestCase extends TestCase
     /**
      * @var Connection
      */
-    protected $db;
+    private $_db;
 
     protected function setUp()
     {
@@ -28,8 +28,8 @@ abstract class DatabaseTestCase extends TestCase
 
     protected function tearDown()
     {
-        if ($this->db) {
-            $this->db->close();
+        if ($this->_db) {
+            $this->_db->close();
         }
         $this->destroyApplication();
     }
@@ -41,8 +41,8 @@ abstract class DatabaseTestCase extends TestCase
      */
     public function getConnection($reset = true, $open = true)
     {
-        if (!$reset && $this->db) {
-            return $this->db;
+        if (!$reset && $this->_db) {
+            return $this->_db;
         }
         $config = $this->database;
         if (isset($config['fixture'])) {
@@ -52,11 +52,11 @@ abstract class DatabaseTestCase extends TestCase
             $fixture = null;
         }
         try {
-            $this->db = $this->prepareDatabase($config, $fixture, $open);
+            $this->_db = $this->prepareDatabase($config, $fixture, $open);
         } catch (\Exception $e) {
             $this->markTestSkipped("Something wrong when preparing database: " . $e->getMessage());
         }
-        return $this->db;
+        return $this->_db;
     }
 
     public function prepareDatabase($config, $fixture, $open = true)

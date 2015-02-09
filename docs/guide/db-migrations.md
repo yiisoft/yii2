@@ -3,8 +3,8 @@ Database Migration
 
 > Note: This section is under development.
 
-Like source code, the structure of a database evolves as a database-driven application is developed and maintained. For example, during development, a new table may be added; Or, after the application goes live, it may be discovered that an additional index is required. It is important to keep track of these structural database changes (called **migration**), just as changes to the source code is tracked using version control. If the source code and the database become out of sync, bugs will occur, or the whole application might break. For this reason, Yii provides a database migration
-tool that can keep track of database migration history, apply new migrations, or revert existing ones.
+Like source code, the structure of a database evolves as a database-driven application is developed and maintained. For example, during development, a new table may be added, or after the application goes live it may be discovered that an additional index is required. It is important to keep track of these structural database changes (called **migration**), just as changes to the source code is tracked using version control. If the source code and the database become out of sync, bugs will occur, or the whole application might break. For this reason, Yii provides a database migration
+tool that can keep track of your database migration history, apply new migrations, or revert existing ones.
 
 The following steps show how database migration is used by a team during development:
 
@@ -72,7 +72,7 @@ cases, the migration is called irreversible, meaning the database cannot be roll
 a previous state. When a migration is irreversible, as in the above generated code, the `down()`
 method returns `false` to indicate that the migration cannot be reverted.
 
-As an example, let's show the migration about creating a news table.
+As an example, let's show the migration for creating a news table.
 
 ```php
 
@@ -97,11 +97,11 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-The base class [[\yii\db\Migration]] exposes a database connection via `db`
-property. You can use it for manipulating data and schema of a database.
+The base class [[\yii\db\Migration]] exposes a database connection via the `db`
+property. You can use it for manipulating data and the schema of a database.
 
 The column types used in this example are abstract types that will be replaced
-by Yii with the corresponding types depended on your database management system.
+by Yii with the corresponding types depending on your database management system.
 You can use them to write database independent migrations.
 For example `pk` will be replaced by `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`
 for MySQL and `integer PRIMARY KEY AUTOINCREMENT NOT NULL` for sqlite.
@@ -110,7 +110,7 @@ of available types. You may also use the constants defined in [[yii\db\Schema]] 
 define column types.
 
 > Note: You can add constraints and other custom table options at the end of the table description by
-> specifying them as simple string. For example in the above migration, after `content` attribute definition
+> specifying them as a simple string. For example, in the above migration, after the `content` attribute definition
 > you can write `'CONSTRAINT ...'` or other custom options.
 
 
@@ -118,9 +118,9 @@ Transactional Migrations
 ------------------------
 
 While performing complex DB migrations, we usually want to make sure that each
-migration succeed or fail as a whole so that the database maintains the
+migration succeeds or fail as a whole so that the database maintains its
 consistency and integrity. In order to achieve this goal, we can exploit
-DB transactions. We could use special methods `safeUp` and `safeDown` for these purposes.
+DB transactions. We use the special methods `safeUp` and `safeDown` for these purposes.
 
 ```php
 
@@ -156,7 +156,7 @@ When your code uses more then one query it is recommended to use `safeUp` and `s
 
 > Note: Not all DBMS support transactions. And some DB queries cannot be put
 > into a transaction. In this case, you will have to implement `up()` and
-> `down()`, instead. And for MySQL, some SQL statements may cause
+> `down()`, instead. In the case of MySQL, some SQL statements may cause
 > [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html).
 
 
@@ -170,15 +170,15 @@ run the following command:
 yii migrate
 ```
 
-The command will show the list of all new migrations. If you confirm to apply
+The command will show the list of all new migrations. If you confirm you want to apply
 the migrations, it will run the `up()` method in every new migration class, one
 after another, in the order of the timestamp value in the class name.
 
 After applying a migration, the migration tool will keep a record in a database
 table named `migration`. This allows the tool to identify which migrations
-have been applied and which are not. If the `migration` table does not exist,
+have been applied and which have not. If the `migration` table does not exist,
 the tool will automatically create it in the database specified by the `db`
-application component.
+[application component](structure-application-components.md).
 
 Sometimes, we may only want to apply one or a few new migrations. We can use the
 following command:
@@ -187,7 +187,7 @@ following command:
 yii migrate/up 3
 ```
 
-This command will apply the 3 new migrations. Changing the value 3 will allow
+This command will apply the next 3 new migrations. Changing the value 3 will allow
 us to change the number of migrations to be applied.
 
 We can also migrate the database to a specific version with the following command:
@@ -206,7 +206,7 @@ migrations applied after it will be reverted (to be described in the next sectio
 Reverting Migrations
 --------------------
 
-To revert the last one or several applied migrations, we can use the following
+To revert the last migration step or several applied migrations, we can use the following
 command:
 
 ```
@@ -214,10 +214,10 @@ yii migrate/down [step]
 ```
 
 where the optional `step` parameter specifies how many migrations to be reverted
-back. It defaults to 1, meaning reverting back the last applied migration.
+back. It defaults to 1, meaning only the last applied migration will be reverted back.
 
 As we described before, not all migrations can be reverted. Trying to revert
-such migrations will throw an exception and stop the whole reverting process.
+such migrations will throw an exception and stop the entire reverting process.
 
 
 Redoing Migrations
@@ -231,7 +231,7 @@ yii migrate/redo [step]
 ```
 
 where the optional `step` parameter specifies how many migrations to be redone.
-It defaults to 1, meaning redoing the last migration.
+It defaults to 1, which means only the last migration will be redone.
 
 
 Showing Migration Information
@@ -276,13 +276,13 @@ There are several ways to customize the migration command.
 
 ### Use Command Line Options
 
-The migration command comes with four options that can be specified in command
+The migration command comes with a few options that can be specified on the command
 line:
 
 * `interactive`: boolean, specifies whether to perform migrations in an
   interactive mode. Defaults to true, meaning the user will be prompted when
-  performing a specific migration. You may set this to false should the
-  migrations be done in a background process.
+  performing a specific migration. You may set this to false so the
+  migrations are performed as a background process.
 
 * `migrationPath`: string, specifies the directory storing all migration class
   files. This must be specified in terms of a path alias, and the corresponding
@@ -293,7 +293,7 @@ line:
   migration history information. It defaults to `migration`. The table
   structure is `version varchar(255) primary key, apply_time integer`.
 
-* `db`: string, specifies the ID of the database application component.
+* `db`: string, specifies the ID of the database [application component](structure-application-components.md).
   Defaults to 'db'.
 
 * `templateFile`: string, specifies the path of the file to be served as the code
@@ -302,13 +302,13 @@ line:
   internal template will be used. Inside the template, the token `{ClassName}`
   will be replaced with the actual migration class name.
 
-To specify these options, execute the migrate command using the following format
+To specify these options, execute the migrate command using the following format:
 
 ```
 yii migrate/up --option1=value1 --option2=value2 ...
 ```
 
-For example, if we want to migrate for a `forum` module whose migration files
+For example, if we want to migrate a `forum` module whose migration files
 are located within the module's `migrations` directory, we can use the following
 command:
 
@@ -341,7 +341,7 @@ can be also configured this way.
 
 ### Migrating with Multiple Databases
 
-By default, migrations will be applied to the database specified by the `db` application component.
+By default, migrations will be applied to the database specified by the `db` [application component](structure-application-components.md).
 You may change it by specifying the `--db` option, for example,
 
 ```
@@ -366,10 +366,10 @@ public function init()
 To create a migration that should be applied to a particular database, simply extend from the corresponding
 base migration class. Now if you run the `yii migrate` command, each migration will be applied to its corresponding database.
 
-> Info: Because each migration uses hardcoded DB connection, the `--db` option of the `migrate` command will
+> Info: Because each migration uses a hardcoded DB connection, the `--db` option of the `migrate` command will
   have no effect. Also note that the migration history will be stored in the default `db` database.
 
-If you want to support changing DB connection via the `--db` option, you may take the following alternative
+If you want to support changing the DB connection via the `--db` option, you may take the following alternative
 approach to work with multiple databases.
 
 For each database, create a migration path and save all corresponding migration classes there. To apply migrations,

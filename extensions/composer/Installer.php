@@ -176,6 +176,9 @@ class Installer extends LibraryInstaller
     protected function saveExtensions(array $extensions)
     {
         $file = $this->vendorDir . '/' . self::EXTENSION_FILE;
+        if (!file_exists(dirname($file))) {
+            mkdir(dirname($file), 0777, true);
+        }
         $array = str_replace("'<vendor-dir>", '$vendorDir . \'', var_export($extensions, true));
         file_put_contents($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\n\nreturn $array;\n");
         // invalidate opcache of extensions.php if exists

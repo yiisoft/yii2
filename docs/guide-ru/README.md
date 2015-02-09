@@ -52,7 +52,7 @@ All Rights Reserved.
 * **TBD** [Запросы](runtime-requests.md)
 * **TBD** [Ответы](runtime-responses.md)
 * **TBD** [Сессии и куки](runtime-sessions-cookies.md)
-* [Разбор и генерация URL](runtime-url-handling.md)
+* [Разбор и генерация URL](runtime-routing.md)
 * [Обработка ошибок](runtime-handling-errors.md)
 * [Логирование](runtime-logging.md)
 
@@ -81,7 +81,7 @@ All Rights Reserved.
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* **TBD** [ElasticSearch](db-elasticsearch.md)
 
 
 Получение данных от пользователя
@@ -89,14 +89,14 @@ All Rights Reserved.
 
 * [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
-* **TBD** [Загрузка файлов](input-file-uploading.md)
+* **TBD** [Загрузка файлов](input-file-upload.md)
 * **TBD** [Работа с несколькими моделями](input-multiple-models.md)
 
 
 Отображение данных
 ------------------
 
-* **TBD** [Форматирование данных](output-formatting.md)
+* **TBD** [Форматирование данных](output-formatter.md)
 * **TBD** [Постраничная разбивка](output-pagination.md)
 * **TBD** [Сортировка](output-sorting.md)
 * [Провайдеры данных](output-data-providers.md)
@@ -191,8 +191,8 @@ All Rights Reserved.
 * Menu: link to demo page
 * LinkPager: link to demo page
 * LinkSorter: link to demo page
-* [Виджеты Bootstrap](bootstrap-widgets.md)
-* **TBD** [Виджеты Jquery UI](jui-widgets.md)
+* [Виджеты Bootstrap](widget-bootstrap.md)
+* **TBD** [Виджеты Jquery UI](widget-jui.md)
 
 
 Хелперы

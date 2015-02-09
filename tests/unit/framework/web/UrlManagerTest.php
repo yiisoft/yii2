@@ -84,6 +84,10 @@ class UrlManagerTest extends TestCase
         $url = $manager->createUrl(['post/index', 'page' => 1]);
         $this->assertEquals('/post/index?page=1', $url);
 
+        // rules with defaultAction
+        $url = $manager->createUrl(['/post', 'page' => 1]);
+        $this->assertEquals('/post?page=1', $url);
+
         // pretty URL with rules and suffix
         $manager = new UrlManager([
             'enablePrettyUrl' => true,
@@ -121,6 +125,48 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('http://en.example.com/test/post/1/sample+post', $url);
         $url = $manager->createUrl(['post/index', 'page' => 1]);
         $this->assertEquals('/test/post/index?page=1', $url);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/6717
+     */
+    public function testCreateUrlWithEmptyPattern()
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                '' => 'front/site/index',
+            ],
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+        ]);
+        $url = $manager->createUrl(['front/site/index']);
+        $this->assertEquals('/', $url);
+        $url = $manager->createUrl(['/front/site/index']);
+        $this->assertEquals('/', $url);
+        $url = $manager->createUrl(['front/site/index', 'page' => 1]);
+        $this->assertEquals('/?page=1', $url);
+        $url = $manager->createUrl(['/front/site/index', 'page' => 1]);
+        $this->assertEquals('/?page=1', $url);
+
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                '' => '/front/site/index',
+            ],
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+        ]);
+        $url = $manager->createUrl(['front/site/index']);
+        $this->assertEquals('/', $url);
+        $url = $manager->createUrl(['/front/site/index']);
+        $this->assertEquals('/', $url);
+        $url = $manager->createUrl(['front/site/index', 'page' => 1]);
+        $this->assertEquals('/?page=1', $url);
+        $url = $manager->createUrl(['/front/site/index', 'page' => 1]);
+        $this->assertEquals('/?page=1', $url);
     }
 
     public function testCreateAbsoluteUrl()

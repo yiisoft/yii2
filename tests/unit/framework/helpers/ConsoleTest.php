@@ -65,10 +65,10 @@ class ConsoleTest extends TestCase
         echo 'a';
         Console::endAnsiFormat();
         echo 'a';
-        $ouput = Console::stripAnsiFormat(ob_get_clean());
+        $output = Console::stripAnsiFormat(ob_get_clean());
         ob_implicit_flush(true);
-        // $output = str_replace("\033", 'X003', $ouput );// uncomment for debugging
-        $this->assertEquals(str_repeat('a', 25), $ouput);
+        // $output = str_replace("\033", 'X003', $output );// uncomment for debugging
+        $this->assertEquals(str_repeat('a', 25), $output);
     }
 
 /*	public function testScreenSize()

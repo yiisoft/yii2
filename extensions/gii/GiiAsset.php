@@ -17,30 +17,17 @@ use yii\web\AssetBundle;
  */
 class GiiAsset extends AssetBundle
 {
-    /**
-     * @inheritdoc
-     */
     public $sourcePath = '@yii/gii/assets';
-    /**
-     * @inheritdoc
-     */
     public $css = [
         'main.css',
-        'typeahead.js-bootstrap.css',
     ];
-    /**
-     * @inheritdoc
-     */
     public $js = [
         'gii.js',
-        'typeahead.js',
     ];
-    /**
-     * @inheritdoc
-     */
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
         'yii\bootstrap\BootstrapPluginAsset',
+        'yii\gii\TypeAheadAsset',
     ];
 }

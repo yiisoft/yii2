@@ -8,14 +8,13 @@ php:
   - hhvm-nightly
 
 env:
-  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.2.0.0001
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
 
 # run build against hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
   fast_finish: true
   allow_failures:
-    - php: hhvm
     - php: hhvm-nightly
 
 services:
@@ -30,29 +29,37 @@ sudo: false
 # cache vendor dirs
 cache:
   directories:
-    - cubrid
+#    - cubrid # caching cubrid breaks the build on a regular basis and has nearly no speedup
     - vendor
+    - $HOME/.composer/cache
 
 # try running against postgres 9.3
 addons:
   postgresql: "9.3"
 
 install:
-  - composer self-update && composer --version
+  - travis_retry composer self-update && composer --version
+  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - composer install --prefer-dist
+  - travis_retry composer install --prefer-dist --no-interaction
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
   - tests/unit/data/travis/cubrid-setup.sh
 # codeception
-  - composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
+  - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
 # basic and advanced application:
   - tests/unit/data/travis/setup-apps.sh
 
 before_script:
+  # show some versions and env information
   - echo 'elasticsearch version ' && curl http://localhost:9200/
+  - php -r "echo INTL_ICU_VERSION . \"\n\";"
+  - mysql --version
+  - psql --version
+
+  # initialize databases
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - tests/unit/data/travis/sphinx-setup.sh
@@ -83,5 +90,5 @@ script:
 
 after_script:
   - cd ../../..
-  - wget https://scrutinizer-ci.com/ocular.phar
+  - travis_retry wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover

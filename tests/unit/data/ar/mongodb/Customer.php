@@ -2,6 +2,8 @@
 
 namespace yiiunit\data\ar\mongodb;
 
+use yiiunit\data\ar\mongodb\file\CustomerFile;
+
 class Customer extends ActiveRecord
 {
     public static function collectionName()
@@ -17,12 +19,18 @@ class Customer extends ActiveRecord
             'email',
             'address',
             'status',
+            'file_id',
         ];
     }
 
     public function getOrders()
     {
         return $this->hasMany(CustomerOrder::className(), ['customer_id' => '_id']);
+    }
+
+    public function getFile()
+    {
+        return $this->hasOne(CustomerFile::className(), ['_id' => 'file_id']);
     }
 
     /**

@@ -150,14 +150,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
      * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
      * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
-     * will become 'varchar(255) not null'.
+     * will become 'varchar(255) not null'. You can also use PostgreSQL-specific syntax such as `SET NOT NULL`.
      * @return string the SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)
     {
+        // https://github.com/yiisoft/yii2/issues/4492
+        // http://www.postgresql.org/docs/9.1/static/sql-altertable.html
+        if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
+            $type = 'TYPE ' . $this->getColumnType($type);
+        }
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
-            . $this->db->quoteColumnName($column) . ' TYPE '
-            . $this->getColumnType($type);
+            . $this->db->quoteColumnName($column) . ' ' . $type;
     }
 
     /**

@@ -60,6 +60,9 @@ class Mail extends Base
     public $file;
 
 
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [

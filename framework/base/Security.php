@@ -85,7 +85,7 @@ class Security extends Component
      * The encrypted data includes a keyed message authentication code (MAC) so there is no need
      * to hash input or output data.
      * > Note: Avoid encrypting with passwords wherever possible. Nothing can protect against
-     * poor-quality or compromosed passwords.
+     * poor-quality or compromised passwords.
      * @param string $data the data to encrypt
      * @param string $password the password to use for encryption
      * @return string the encrypted data
@@ -98,7 +98,7 @@ class Security extends Component
     }
 
     /**
-     * Encrypts data using a cyptograhic key.
+     * Encrypts data using a cryptograhic key.
      * Derives keys for encryption and authentication from the input key using HKDF and a random salt,
      * which is very fast relative to [[encryptByPassword()]]. The input key must be properly
      * random -- use [[generateRandomKey()]] to generate keys.
@@ -176,7 +176,7 @@ class Security extends Component
     /**
      * Encrypts data.
      * @param string $data data to be encrypted
-     * @param bool $passwordBased set true to use password-based key derivation
+     * @param boolean $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
      * @param string $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
@@ -217,7 +217,7 @@ class Security extends Component
     /**
      * Decrypts data.
      * @param string $data encrypted data to be decrypted.
-     * @param bool $passwordBased set true to use password-based key derivation
+     * @param boolean $passwordBased set true to use password-based key derivation
      * @param string $secret the decryption password or key
      * @param string $info context/application specific information, @see encrypt()
      * @return bool|string the decrypted data or false on authentication failure
@@ -282,7 +282,7 @@ class Security extends Component
 
     /**
      * Derives a key from the given input key using the standard HKDF algorithm.
-     * Implements HKDF spcified in [RFC 5869](https://tools.ietf.org/html/rfc5869).
+     * Implements HKDF specified in [RFC 5869](https://tools.ietf.org/html/rfc5869).
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $inputKey the source key
@@ -290,9 +290,9 @@ class Security extends Component
      * @param string $info optional info to bind the derived key material to application-
      * and context-specific information, e.g. a user ID or API version, see
      * [RFC 5869](https://tools.ietf.org/html/rfc5869)
-     * @param int $length length of the output key in bytes. If 0, the output key is
+     * @param integer $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
-     * @throws InvalidParamException
+     * @throws InvalidParamException when HMAC generation fails.
      * @return string the derived key
      */
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
@@ -335,12 +335,12 @@ class Security extends Component
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $password the source password
      * @param string $salt the random salt
-     * @param int $iterations the number of iterations of the hash algorithm. Set as high as
+     * @param integer $iterations the number of iterations of the hash algorithm. Set as high as
      * possible to hinder dictionary password attacks.
-     * @param int $length length of the output key in bytes. If 0, the output key is
+     * @param integer $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
-     * @throws InvalidParamException
      * @return string the derived key
+     * @throws InvalidParamException when hash generation fails due to invalid params given.
      */
     public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {
@@ -398,8 +398,8 @@ class Security extends Component
      * cryptographic key.
      * @param boolean $rawHash whether the generated hash value is in raw binary format. If false, lowercase
      * hex digits will be generated.
-     * @throws InvalidConfigException
      * @return string the data prefixed with the keyed hash
+     * @throws InvalidConfigException when HMAC generation fails.
      * @see validateData()
      * @see generateRandomKey()
      * @see hkdf()
@@ -425,8 +425,8 @@ class Security extends Component
      * It indicates whether the hash value in the data is in binary format. If false, it means the hash value consists
      * of lowercase hex digits only.
      * hex digits will be generated.
-     * @throws InvalidConfigException
      * @return string the real data with the hash stripped off. False if the data is tampered.
+     * @throws InvalidConfigException when HMAC generation fails.
      * @see hashData()
      */
     public function validateData($data, $key, $rawHash = false)
@@ -455,8 +455,9 @@ class Security extends Component
      * @see generateRandomString() if you need a string.
      *
      * @param integer $length the number of bytes to generate
-     * @throws Exception on failure.
      * @return string the generated random bytes
+     * @throws InvalidConfigException if mcrypt extension is not installed.
+     * @throws Exception on failure.
      */
     public function generateRandomKey($length = 32)
     {
@@ -475,8 +476,9 @@ class Security extends Component
      * The string generated matches [A-Za-z0-9_-]+ and is transparent to URL-encoding.
      *
      * @param integer $length the length of the key in characters
-     * @throws Exception Exception on failure.
      * @return string the generated random key
+     * @throws InvalidConfigException if mcrypt extension is not installed.
+     * @throws Exception on failure.
      */
     public function generateRandomString($length = 32)
     {
@@ -513,11 +515,11 @@ class Security extends Component
      * therefore slows down a brute-force attack. For best protection against brute for attacks,
      * set it to the highest value that is tolerable on production servers. The time taken to
      * compute the hash doubles for every increment by one of $cost.
-     * @throws Exception on bad password parameter or cost parameter
-     * @throws InvalidConfigException
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
      * the output is always 60 ASCII characters, when set to 'password_hash' the output length
      * might increase in future versions of PHP (http://php.net/manual/en/function.password-hash.php)
+     * @throws Exception on bad password parameter or cost parameter.
+     * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see validatePassword()
      */
     public function generatePasswordHash($password, $cost = 13)
@@ -548,7 +550,7 @@ class Security extends Component
      * @param string $hash The hash to verify the password against.
      * @return boolean whether the password is correct.
      * @throws InvalidParamException on bad password or hash parameters or if crypt() with Blowfish hash is not available.
-     * @throws InvalidConfigException on unsupported password hash strategy is configured.
+     * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see generatePasswordHash()
      */
     public function validatePassword($password, $hash)
@@ -589,11 +591,11 @@ class Security extends Component
      *
      * @param integer $cost the cost parameter
      * @return string the random salt value.
-     * @throws InvalidParamException if the cost parameter is not between 4 and 31
+     * @throws InvalidParamException if the cost parameter is out of the range of 4 to 31.
      */
     protected function generateSalt($cost = 13)
     {
-        $cost = (int)$cost;
+        $cost = (int) $cost;
         if ($cost < 4 || $cost > 31) {
             throw new InvalidParamException('Cost must be between 4 and 31.');
         }

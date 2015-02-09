@@ -8,6 +8,7 @@
 namespace yii\sphinx;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\base\Object;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -38,6 +39,24 @@ class QueryBuilder extends Object
      */
     public $separator = " ";
 
+    /**
+     * @var array map of query condition to builder methods.
+     * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
+     */
+    protected $conditionBuilders = [
+        'AND' => 'buildAndCondition',
+        'OR' => 'buildAndCondition',
+        'BETWEEN' => 'buildBetweenCondition',
+        'NOT BETWEEN' => 'buildBetweenCondition',
+        'IN' => 'buildInCondition',
+        'NOT IN' => 'buildInCondition',
+        'LIKE' => 'buildLikeCondition',
+        'NOT LIKE' => 'buildLikeCondition',
+        'OR LIKE' => 'buildLikeCondition',
+        'OR NOT LIKE' => 'buildLikeCondition',
+        'NOT' => 'buildNotCondition',
+    ];
+
 
     /**
      * Constructor.
@@ -55,12 +74,19 @@ class QueryBuilder extends Object
      * @param Query $query the [[Query]] object from which the SQL statement will be generated
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
+     * @throws NotSupportedException if query contains 'join' option.
      * @return array the generated SQL statement (the first array element) and the corresponding
      * parameters to be bound to the SQL statement (the second array element). The parameters returned
      * include those provided in `$params`.
      */
     public function build($query, $params = [])
     {
+        $query = $query->prepare($this);
+
+        if (!empty($query->join)) {
+            throw new NotSupportedException('Build of "' . get_class($query) . '::join" is not supported.');
+        }
+
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
         $from = $query->from;
@@ -76,6 +102,7 @@ class QueryBuilder extends Object
             $this->buildWhere($query->from, $query->where, $params, $query->match),
             $this->buildGroupBy($query->groupBy),
             $this->buildWithin($query->within),
+            $this->buildHaving($query->from, $query->having, $params),
             $this->buildOrderBy($query->orderBy),
             $this->buildLimit($query->limit, $query->offset),
             $this->buildOption($query->options, $params),
@@ -419,6 +446,9 @@ class QueryBuilder extends Object
             if ($column instanceof Expression) {
                 $columns[$i] = $column->expression;
                 $params = array_merge($params, $column->params);
+            } elseif ($column instanceof Query) {
+                list($sql, $params) = $this->build($column, $params);
+                $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
                     $column = $this->db->quoteColumnName($column);
@@ -501,15 +531,7 @@ class QueryBuilder extends Object
         if (empty($condition)) {
             return '';
         }
-        $indexSchemas = [];
-        if (!empty($indexes)) {
-            foreach ($indexes as $indexName) {
-                $index = $this->db->getIndexSchema($indexName);
-                if ($index !== null) {
-                    $indexSchemas[] = $index;
-                }
-            }
-        }
+        $indexSchemas = $this->getIndexSchemas($indexes);
         $where = $this->buildCondition($indexSchemas, $condition, $params);
 
         return $where === '' ? '' : 'WHERE ' . $where;
@@ -522,6 +544,24 @@ class QueryBuilder extends Object
     public function buildGroupBy($columns)
     {
         return empty($columns) ? '' : 'GROUP BY ' . $this->buildColumns($columns);
+    }
+
+    /**
+     * @param string[] $indexes list of index names, which affected by query
+     * @param string|array $condition
+     * @param array $params the binding parameters to be populated
+     * @return string the HAVING clause built from [[Query::$having]].
+     */
+    public function buildHaving($indexes, $condition, &$params)
+    {
+        if (empty($condition)) {
+            return '';
+        }
+
+        $indexSchemas = $this->getIndexSchemas($indexes);
+        $having = $this->buildCondition($indexSchemas, $condition, $params);
+
+        return $having === '' ? '' : 'HAVING ' . $having;
     }
 
     /**
@@ -623,19 +663,6 @@ class QueryBuilder extends Object
      */
     public function buildCondition($indexes, $condition, &$params)
     {
-        static $builders = [
-            'AND' => 'buildAndCondition',
-            'OR' => 'buildAndCondition',
-            'BETWEEN' => 'buildBetweenCondition',
-            'NOT BETWEEN' => 'buildBetweenCondition',
-            'IN' => 'buildInCondition',
-            'NOT IN' => 'buildInCondition',
-            'LIKE' => 'buildLikeCondition',
-            'NOT LIKE' => 'buildLikeCondition',
-            'OR LIKE' => 'buildLikeCondition',
-            'OR NOT LIKE' => 'buildLikeCondition',
-        ];
-
         if (!is_array($condition)) {
             return (string) $condition;
         } elseif (empty($condition)) {
@@ -643,15 +670,14 @@ class QueryBuilder extends Object
         }
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
             $operator = strtoupper($condition[0]);
-            if (isset($builders[$operator])) {
-                $method = $builders[$operator];
+            if (isset($this->conditionBuilders[$operator])) {
+                $method = $this->conditionBuilders[$operator];
             } else {
                 $method = 'buildSimpleCondition';
             }
             array_shift($condition);
             return $this->$method($indexes, $operator, $condition, $params);
         } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-
             return $this->buildHashCondition($indexes, $condition, $params);
         }
     }
@@ -714,6 +740,32 @@ class QueryBuilder extends Object
     }
 
     /**
+     * Inverts an SQL expressions with `NOT` operator.
+     * @param IndexSchema[] $indexes list of indexes, which affected by query
+     * @param string $operator the operator to use for connecting the given operands
+     * @param array $operands the SQL expressions to connect.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     * @throws InvalidParamException if wrong number of operands have been given.
+     */
+    public function buildNotCondition($indexes, $operator, $operands, &$params)
+    {
+        if (count($operands) != 1) {
+            throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
+        }
+
+        $operand = reset($operands);
+        if (is_array($operand)) {
+            $operand = $this->buildCondition($indexes, $operand, $params);
+        }
+        if ($operand === '') {
+            return '';
+        }
+
+        return "$operator ($operand)";
+    }
+
+    /**
      * Creates an SQL expressions with the `BETWEEN` operator.
      * @param IndexSchema[] $indexes list of indexes, which affected by query
      * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
@@ -770,7 +822,7 @@ class QueryBuilder extends Object
         if ($values instanceof Query) {
             // sub-query
             list($sql, $params) = $this->build($values, $params);
-            $column = (array)$column;
+            $column = (array) $column;
             if (is_array($column)) {
                 foreach ($column as $i => $col) {
                     if (strpos($col, '(') === false) {
@@ -876,7 +928,9 @@ class QueryBuilder extends Object
 
         list($column, $values) = $operands;
 
-        $values = (array) $values;
+        if (!is_array($values)) {
+            $values = [$values];
+        }
 
         if (empty($values)) {
             return $operator === 'LIKE' || $operator === 'OR LIKE' ? '0=1' : '';
@@ -895,12 +949,54 @@ class QueryBuilder extends Object
 
         $parts = [];
         foreach ($values as $value) {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
+            if ($value instanceof Expression) {
+                foreach ($value->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $phName = $value->expression;
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
+            }
             $parts[] = "$column $operator $phName";
         }
 
         return implode($andor, $parts);
+    }
+
+    /**
+     * Creates an SQL expressions like `"column" operator value`.
+     * @param IndexSchema[] $indexes list of indexes, which affected by query
+     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @param array $operands contains two column names.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     * @throws InvalidParamException if count($operands) is not 2
+     */
+    public function buildSimpleCondition($indexes, $operator, $operands, &$params)
+    {
+        if (count($operands) !== 2) {
+            throw new InvalidParamException("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $value) = $operands;
+
+        if (strpos($column, '(') === false) {
+            $column = $this->db->quoteColumnName($column);
+        }
+
+        if ($value === null) {
+            return "$column $operator NULL";
+        } elseif ($value instanceof Expression) {
+            foreach ($value->params as $n => $v) {
+                $params[$n] = $v;
+            }
+            return "$column $operator {$value->expression}";
+        } else {
+            $phName = self::PARAM_PREFIX . count($params);
+            $params[$phName] = $value;
+            return "$column $operator $phName";
+        }
     }
 
     /**
@@ -1015,28 +1111,20 @@ class QueryBuilder extends Object
     }
 
     /**
-     * Creates an SQL expressions like `"column" operator value`.
-     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
-     * @param array $operands contains two column names.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if count($operands) is not 2
+     * @param array $indexes index names.
+     * @return IndexSchema[] index schemas.
      */
-    public function buildSimpleCondition($operator, $operands, &$params)
+    private function getIndexSchemas($indexes)
     {
-        if (count($operands) !== 2) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
+        $indexSchemas = [];
+        if (!empty($indexes)) {
+            foreach ($indexes as $indexName) {
+                $index = $this->db->getIndexSchema($indexName);
+                if ($index !== null) {
+                    $indexSchemas[] = $index;
+                }
+            }
         }
-
-        list($column, $value) = $operands;
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        $phName = self::PARAM_PREFIX . count($params);
-        $params[$phName] = $value === null ? 'NULL' : $value;
-
-        return "$column $operator $phName";
+        return $indexSchemas;
     }
 }

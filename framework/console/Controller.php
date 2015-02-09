@@ -27,6 +27,9 @@ use yii\helpers\Console;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
+ * @property string $help This property is read-only.
+ * @property string $helpSummary This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -483,7 +486,7 @@ class Controller extends \yii\base\Controller
      */
     protected function parseDocCommentSummary($reflection)
     {
-        $docLines = preg_split('~\R~', $reflection->getDocComment());
+        $docLines = preg_split('~\R~u', $reflection->getDocComment());
         if (isset($docLines[1])) {
             return trim($docLines[1], ' *');
         }

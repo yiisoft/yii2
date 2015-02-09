@@ -4,7 +4,7 @@
 别名用来表示文件路径和 URL，这样就避免了在代码中硬编码一些绝对路径和 URL。一个别名必须以 `@` 字符开头，以区别于传统的文件路径和 URL。Yii 预定义了大量可用的别名。例如，别名 `@yii` 指的是 Yii 框架本身的安装目录，而 `@web` 表示的是当前运行应用的根 URL。
 
 
-定义别名 <a name="defining-aliases"></a>
+定义别名 <span id="defining-aliases"></span>
 ----------------
 
 你可以调用 [[Yii::setAlias()]] 来给文件路径或 URL 定义别名：
@@ -19,7 +19,7 @@ Yii::setAlias('@bar', 'http://www.example.com');
 
 > 注意：别名所指向的文件路径或 URL 不一定是真实存在的文件或资源。
 
-可以通过在一个别名后面加斜杠 `/` 和一至多个路径分段生成新别名（无需调用 [[Yii::setAlias()]]）。我们把通过 [[Yii::setAlias()]] 定义的别名称为**根别名**，而用他们衍生出去的别名成为**衍生别名**。例如，`@foo` 就是跟别名，而 `@foo/bar/file.php` 是一个衍生别名。
+可以通过在一个别名后面加斜杠 `/` 和一至多个路径分段生成新别名（无需调用 [[Yii::setAlias()]]）。我们把通过 [[Yii::setAlias()]] 定义的别名称为**根别名**，而用他们衍生出去的别名成为**衍生别名**。例如，`@foo` 就是根别名，而 `@foo/bar/file.php` 是一个衍生别名。
 
 你还可以用别名去定义新别名（根别名与衍生别名均可）：
 
@@ -40,7 +40,7 @@ return [
 ```
 
 
-解析别名 <a name="resolving-aliases"></a>
+解析别名 <span id="resolving-aliases"></span>
 -----------------
 
 你可以调用 [[Yii::getAlias()]] 命令来解析根别名到对应的文件路径或 URL。同样的页面也可以用于解析衍生别名。例如：
@@ -67,7 +67,7 @@ echo Yii::getAlias('@foo/bar/file.php');   // 输出：/path2/bar/file.php
 若 `@foo/bar` 未被定义为根别名，最后一行语句会显示为 `/path/to/foo/bar/file.php`。
 
 
-使用别名 <a name="using-aliases"></a>
+使用别名 <span id="using-aliases"></span>
 -------------
 
 别名在 Yii 的很多地方都会被正确识别，无需调用 [[Yii::getAlias()]] 来把它们转换为路径/URL。例如，[[yii\caching\FileCache::cachePath]] 能同时接受文件路径或是指向文件路径的别名，因为通过 `@` 前缀能区分它们。
@@ -83,10 +83,10 @@ $cache = new FileCache([
 请关注 API 文档了解特定属性或方法参数是否支持别名。
 
 
-预定义的别名 <a name="predefined-aliases"></a>
+预定义的别名 <span id="predefined-aliases"></span>
 ------------------
 
-Yii 预定义了一系列别名来简化常用路径和 URL的使用：
+Yii 预定义了一系列别名来简化常用路径和 URL 的使用：
 
 - `@yii` - `BaseYii.php` 文件所在的目录（也被称为框架安装目录）
 - `@app` - 当前运行的应用 [[yii\base\Application::basePath|根路径（base path）]] 
@@ -98,7 +98,7 @@ Yii 预定义了一系列别名来简化常用路径和 URL的使用：
 `@yii` 别名是在[入口脚本](structure-entry-scripts.md)里包含 `Yii.php` 文件时定义的，其他的别名都是在[配置应用](concept-configurations.md)的时候，于应用的构造方法内定义的。
 
 
-扩展的别名 <a name="extension-aliases"></a>
+扩展的别名 <span id="extension-aliases"></span>
 -----------------
 
 每一个通过 Composer 安装的 [扩展](structure-extensions.md) 都自动添加了一个别名。该别名会以该扩展在 `composer.json` 文件中所声明的根命名空间为名，且他直接代指该包的根目录。例如，如果你安装有 `yiisoft/yii2-jui` 扩展，会自动得到 `@yii/jui` 别名，它定义于[引导启动](runtime-bootstrapping.md)阶段：

@@ -21,8 +21,11 @@ component's behavior:
                 ],
                 'twig' => [
                     'class' => 'yii\twig\ViewRenderer',
-                    //'cachePath' => '@runtime/Twig/cache',
-                    //'options' => [], /*  Array of twig options */
+                    'cachePath' => '@runtime/Twig/cache',
+                    // Array of twig options:
+                    'options' => [
+                        'auto_reload' => true,
+                    ],
                     'globals' => ['html' => '\yii\helpers\Html'],
                     'uses' => ['yii\bootstrap'],
                 ],
@@ -103,7 +106,7 @@ Class import:
 {{ use('/yii/widgets/ActiveForm') }}
 
 Aliased class import:
-{{ use({'alias' => '/app/widgets/MyWidget'}) }}
+{{ use({'alias' : '/app/widgets/MyWidget'}) }}
 ```
 
 #### Referencing other templates
@@ -112,7 +115,7 @@ There are two ways of referencing templates in `include` and `extends` statement
 
 ```
 {% include "comment.twig" %}
-{% extends "post.twig" %
+{% extends "post.twig" %}
 
 {% include "@app/views/snippets/avatar.twig" %}
 {% extends "@app/views/layouts/2columns.twig" %}

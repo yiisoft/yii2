@@ -60,14 +60,16 @@ use yii\db\ActiveRelationTrait;
  * A relation is specified by [[link]] which represents the association between columns
  * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
  *
- * If a relation involves a pivot table, it may be specified by [[via()]].
+ * If a relation involves a junction table, it may be specified by [[via()]].
  * This methods may only be called in a relational context. Same is true for [[inverseOf()]], which
  * marks a relation as inverse of another relation.
  *
- * > NOTE: elasticsearch limits the number of records returned by any query to 10 records by default.
+ * > Note: elasticsearch limits the number of records returned by any query to 10 records by default.
  * > If you expect to get more records you should specify limit explicitly in relation definition.
  * > This is also important for relations that use [[via()]] so that if via records are limited to 10
  * > the relations records can also not be more than 10.
+ *
+ * > Note: Currently [[with]] is not supported in combination with [[asArray]].
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -194,7 +196,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return null;
         }
         if ($this->asArray) {
-            // TODO implement with
+            // TODO implement with()
 //            /* @var $modelClass ActiveRecord */
 //            $modelClass = $this->modelClass;
 //            $model = $result['_source'];
@@ -230,7 +232,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function search($db = null, $options = [])
     {
         $result = $this->createCommand($db)->search($options);
-        // TODO implement with for asArray
+        // TODO implement with() for asArray
         if (!empty($result['hits']['hits']) && !$this->asArray) {
             $models = $this->createModels($result['hits']['hits']);
             if (!empty($this->with)) {

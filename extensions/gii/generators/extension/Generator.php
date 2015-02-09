@@ -231,7 +231,7 @@ EOD;
      */
     public function getKeywordsArrayJson()
     {
-        return json_encode(explode(',', $this->keywords));
+        return json_encode(explode(',', $this->keywords), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
     /**

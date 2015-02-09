@@ -66,14 +66,14 @@ class UrlValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
-        $value = $object->$attribute;
+        $value = $model->$attribute;
         $result = $this->validateValue($value);
         if (!empty($result)) {
-            $this->addError($object, $attribute, $result[0], $result[1]);
+            $this->addError($model, $attribute, $result[0], $result[1]);
         } elseif ($this->defaultScheme !== null && strpos($value, '://') === false) {
-            $object->$attribute = $this->defaultScheme . '://' . $value;
+            $model->$attribute = $this->defaultScheme . '://' . $value;
         }
     }
 
@@ -111,7 +111,7 @@ class UrlValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         if (strpos($this->pattern, '{schemes}') !== false) {
             $pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
@@ -122,7 +122,7 @@ class UrlValidator extends Validator
         $options = [
             'pattern' => new JsExpression($pattern),
             'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $object->getAttributeLabel($attribute),
+                'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language),
             'enableIDN' => (boolean) $this->enableIDN,
         ];

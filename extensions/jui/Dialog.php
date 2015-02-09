@@ -47,6 +47,6 @@ class Dialog extends Widget
     public function run()
     {
         echo Html::endTag('div') . "\n";
-        $this->registerWidget('dialog', DialogAsset::className());
+        $this->registerWidget('dialog');
     }
 }
