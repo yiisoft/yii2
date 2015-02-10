@@ -55,7 +55,7 @@ return [
 
 > Tip|ヒント: あなたのアプリケーションが複数のデータベースにアクセスする必要がある場合は、複数の DB アプリケーションコンポーネントを構成することが出来ます。
 
-DB 接続を構成するときは、つねに [[yii\db\Connection::dsn|dsn]] プロパティによってデータソース名 (DNS) を指定しなければなりません。
+DB 接続を構成するときは、つねに [[yii\db\Connection::dsn|dsn]] プロパティによってデータソース名 (DSN) を指定しなければなりません。
 DSN の形式はデータベースによってさまざまに異なります。
 詳細は [PHP マニュアル](http://www.php.net/manual/ja/function.PDO-construct.php) を参照して下さい。
 下記にいくつかの例を挙げます。
@@ -64,9 +64,9 @@ DSN の形式はデータベースによってさまざまに異なります。
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
 * CUBRID: `cubrid:dbname=demodb;host=localhost;port=33000`
-* MS SQL Server (via sqlsrv driver): `sqlsrv:Server=localhost;Database=mydatabase`
-* MS SQL Server (via dblib driver): `dblib:host=localhost;dbname=mydatabase`
-* MS SQL Server (via mssql driver): `mssql:host=localhost;dbname=mydatabase`
+* MS SQL Server (sqlsrv ドライバ経由): `sqlsrv:Server=localhost;Database=mydatabase`
+* MS SQL Server (dblib ドライバ経由): `dblib:host=localhost;dbname=mydatabase`
+* MS SQL Server (mssql ドライバ経由): `mssql:host=localhost;dbname=mydatabase`
 * Oracle: `oci:dbname=//localhost:1521/mydatabase`
 
 ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\Connection::driverName]] プロパティを構成して、Yii に実際のデータベースのタイプを知らせなければならないことに注意してください。
@@ -124,7 +124,7 @@ $count = $db->createCommand('SELECT COUNT(*) FROM post')
 
 > Note|注意: 精度を保つために、対応するデータベースカラムの型が数値である場合でも、データベースから取得されたデータは、全て文字列として表現されます。
 
-> Tip|ヒント: 接続を確立した直後に実行したい SQL がある場合 (例えば、タイムゾーンや文字セットを設定したい場合) は、[[yii\db\Connection::EVENT_AFTER_OPEN]] ハンドラの中でそれをすることが出来ます。
+> Tip|ヒント: 接続を確立した直後に SQL を実行する必要がある場合 (例えば、タイムゾーンや文字セットを設定したい場合) は、[[yii\db\Connection::EVENT_AFTER_OPEN]] ハンドラの中でそれをすることが出来ます。
 > 例えば、
 >
 ```php
@@ -166,7 +166,7 @@ SQL 文において、一つまたは複数のパラメータプレースホル�
 * [[yii\db\Command::bindValues()|bindValues()]]: 一回の呼び出しで複数のパラメータの値をバインドします。
 * [[yii\db\Command::bindParam()|bindParam()]]: [[yii\db\Command::bindValue()|bindValue()]] と似ていますが、パラメータを参照渡しでバインドすることもサポートしています。
 
-次の例はパラメータをバインドする別の方法を示すものです。
+次の例はパラメータをバインドする方法の選択肢を示すものです。
 
 ```php
 $params = [':id' => $_GET['id'], ':status' => 1];
@@ -204,7 +204,7 @@ $post2 = $command->queryOne();
 ```
 
 クエリの実行の前にプレースホルダを変数 `$id` にバインドし、そして、後に続く各回の実行の前にその変数の値を変更していること (これは、たいてい、ループで行います) に着目してください。
-このやり方でクエリを実行すると、パラメータの値が違うごとに新しいクエリを実行するのに比べて、はるかに効率が良くすることが出来ます。
+このやり方でクエリを実行すると、パラメータの値が違うごとに新しいクエリを実行するのに比べて、はるかに効率を良くすることが出来ます。
 
 
 ### SELECT しないクエリを実行する <span id="non-select-queries"></span>
@@ -299,7 +299,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 
 ## トランザクションを実行する <span id="performing-transactions"></span>
 
-一続きになった複数の関連するクエリを実行するときは、データの整合性を一貫性を保証するために、一連のクエリをトランザクションで囲む必要がある場合があります。
+一続きになった複数の関連するクエリを実行するときは、データの整合性と一貫性を保証するために、一連のクエリをトランザクションで囲む必要がある場合があります。
 一連のクエリのどの一つが失敗した場合でも、データベースは、何一つクエリが実行されなかったかのような状態へとロールバックされます。
 
 次のコードはトランザクションの典型的な使用方法を示すものです。
@@ -363,12 +363,13 @@ Yii は、最もよく使われる分離レベルのために、四つの定数�
 - [[\yii\db\Transaction::READ_COMMITTED]] - ダーティーリードを回避。
 - [[\yii\db\Transaction::REPEATABLE_READ]] - ダーティーリードと非再現リードを回避。
 - [[\yii\db\Transaction::SERIALIZABLE]] - 最も強いレベル。上記の問題を全て回避。
+
 分離レベルを指定するためには、上記の定数を使う以外に、あなたが使っている DBMS によってサポートされている有効な構文の文字列を使うことも出来ます。
 例えば、PostreSQL では、`SERIALIZABLE READ ONLY DEFERRABLE` を使うことが出来ます。
 
 DBMS によっては、接続全体に対してのみ分離レベルの設定を許容しているものがあることに注意してください。
-その場合、すべての後続のトランザクションは、指定しなくても、同じ分離レベルで実行されます。
-従って、この機能を使用するときは、相反する設定を避けるために、全てのトランザクションについて分離レベルを明示的に指定しなければなりません。
+その場合、すべての後続のトランザクションは、指定しなくても、それと同じ分離レベルで実行されます。
+従って、この機能を使用するときは、矛盾する設定を避けるために、全てのトランザクションについて分離レベルを明示的に指定しなければなりません。
 このチュートリアルを書いている時点では、これに該当する DBMS は MSSQL と SQLite だけです。
 
 > Note|注意: SQLite は、二つの分離レベルしかサポートしていません。すなわち、`READ UNCOMMITTED` と `SERIALIZABLE` しか使えません。
@@ -606,4 +607,4 @@ $table = $db->getTableSchema('post');
 ```
 
 このメソッドは、テーブルのカラム、プライマリキー、外部キーなどの情報を含む [[yii\db\TableSchema]] オブジェクトを返します。
-これらの情報は、主として [クエリビルダ](db-query-builder.md) や [アクティブレコード](db-active-record.md) によって利用されて、特定のデータベースに依存しないコードを書くことを助けてくれます。
+これらの情報は、主として [クエリビルダ](db-query-builder.md) や [アクティブレコード](db-active-record.md) によって利用されて、特定のデータベースに依存しないコードを書くことを助けてくれています。
