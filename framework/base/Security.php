@@ -69,8 +69,6 @@ class Security extends Component
      */
     public $passwordHashStrategy = 'crypt';
 
-    private $_cryptModule;
-
 
     /**
      * Encrypts data using a password.
@@ -217,8 +215,8 @@ class Security extends Component
 
         $ivSize = 16;
         $iv = StringHelper::byteSubstr($data, 0, $ivSize);
-        $encrypted = StringHelper::byteSubstr($data, $ivSize, null);
-        $decrypted = openssl_decrypt($encrypted, $this->opensslCipher(), $key, OPENSSL_RAW_DATA, $iv);
+        $encrypted = base64_encode(StringHelper::byteSubstr($data, $ivSize, null));
+        $decrypted = openssl_decrypt($encrypted, $this->opensslCipher(), $key, OPENSSL_ZERO_PADDING, $iv);
 
         return $this->stripPadding($decrypted);
     }
