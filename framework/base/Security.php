@@ -175,7 +175,8 @@ class Security extends Component
         $data = $this->addPadding($data);
         $ivSize = 16;
         $iv = $this->generateRandomKey($ivSize);
-        $encrypted = openssl_encrypt($data, $this->opensslCipher(), $key, OPENSSL_RAW_DATA, $iv);
+        $encrypted = openssl_encrypt($data, $this->opensslCipher(), $key, OPENSSL_ZERO_PADDING, $iv);
+        $encrypted = base64_decode($encrypted);
 
         $authKey = $this->hkdf(self::KDF_HASH, $key, null, self::AUTH_KEY_INFO, self::KEY_SIZE);
         $hashed = $this->hashData($iv . $encrypted, $authKey);
