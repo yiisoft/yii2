@@ -14,7 +14,8 @@
 - 一つのページでレコードを更新、作成、および、削除する
 
 前に説明した単一モデルのフォームとは対照的に、モデルの配列を扱うことになります。
-この配列がビューに渡されて、各モデルのためのインプットフィールドが表のような形式で表示され、そして、複数のモデルを一度にロードしたり検証したりするために [[yii\base\Model]] のヘルパメソッドを使用します。
+この配列がビューに渡されて、各モデルのためのインプットフィールドが表のような形式で表示されます。
+そして、複数のモデルを一度にロードしたり検証したりするために [[yii\base\Model]] のヘルパメソッドを使用します。
 
 - [[yii\base\Model::loadMultiple()|Model::loadMultiple()]] - 送信されたデータをモデルの配列にロードします。
 - [[yii\base\Model::validateMultiple()|Model::validateMultiple()]] - モデルの配列を検証します。
@@ -58,7 +59,7 @@ class SettingsController extends Controller
 [[yii\base\Model::loadMultiple()|Model::loadMultiple()]] が POST から来るフォームデータを複数のモデルに代入し、[[yii\base\Model::validateMultiple()|Model::validateMultiple()]] が全てのモデルを一度に検証します。
 保存するときには、`validateMultiple()` を使ってモデルの検証を済ませていますので、[[yii\db\ActiveRecord::save()|save()]] のパラメータに `false` を渡して、二度目の検証を実行しないようにしています。
 
-次に、`update` ビューにあるフォームです。
+次に、`update` ビューの中にあるフォームです。
 
 ```php
 <?php

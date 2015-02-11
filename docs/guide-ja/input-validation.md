@@ -41,7 +41,7 @@ public function rules()
 }
 ```
 
-[[yii\base\Model::rules()|rules()]] メソッドは配列を返すべきものですが、配列の各要素は次の形式の配列でなければなりません。
+[[yii\base\Model::rules()|rules()]] メソッドは規則の配列を返すべきものですが、その配列の各要素は次の形式の配列でなければなりません。
 
 ```php
 [
@@ -366,7 +366,7 @@ class CountryValidator extends Validator
 ```
 
 
-あなたのバリデータで、モデル無しの値の検証をサポートしたい場合は、[[yii\validators\Validator::validate()]] もオーバーライドしなければなりません。
+あなたのバリデータで、モデルを使わない値の検証をサポートしたい場合は、[[yii\validators\Validator::validate()]] もオーバーライドしなければなりません。
 または、`validateAttribute()` と `validate()` の代りに、[[yii\validators\Validator::validateValue()]] をオーバーライドしても構いません。
 と言うのは、前の二つは、デフォルトでは、`validateValue()` を呼び出すことによって実装されているからです。
 
@@ -452,7 +452,7 @@ class LoginForm extends Model
 - `messages`: 属性に対する検証のエラーメッセージを保持するために使用される配列。
 - `deferred`: Deferred オブジェクトをプッシュして入れることが出来る配列 (次の項で説明します)。
 
-次の例では、入力された値が既存のステータスのデータに含まれる有効な値であるかどうかを検証する `StatusValidator` を作成します。
+次の例では、入力された値が既存のステータスのデータに含まれる有効なステータス値であるかどうかを検証する `StatusValidator` を作成します。
 このバリデータは、サーバ側とクライアント側の両方の検証をサポートします。
 
 ```php

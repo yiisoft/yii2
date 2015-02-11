@@ -9,7 +9,7 @@ Yii におけるファイルのアップロードは、フォームモデル、�
 --------------------------------
 
 まず最初に、ファイルのアップロードを処理するモデルを作成する必要があります。
-次の内容を持つ `models/UploadForm.php` を作って作成してください。
+次の内容を持つ `models/UploadForm.php` を作成してください。
 
 ```php
 namespace app\models;
@@ -18,7 +18,7 @@ use yii\base\Model;
 use yii\web\UploadedFile;
 
 /**
- * UploadForm がアップロードのフォームの背後にあるモデルである。
+ * UploadForm : アップロードのフォームの背後にあるモデル
  */
 class UploadForm extends Model
 {
@@ -166,7 +166,7 @@ public function rules()
 
 画像をアップロードするときは、[[yii\validators\ImageValidator|ImageValidator]] が重宝するでしょう。
 このバリデータは、属性が有効な画像を受け取ったか否かを検証します。
-その画像は、[Imagine エクステンション](https://github.com/yiisoft/yii2/tree/master/extensions/imagine) によって、保存するか、または、処理することが出来ます。
+画像は、保存するか、または、[Imagine エクステンション](https://github.com/yiisoft/yii2/tree/master/extensions/imagine) によって処理することが出来ます。
 
 複数のファイルをアップロードする
 --------------------------------
