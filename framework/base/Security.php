@@ -136,35 +136,58 @@ class Security extends Component
     }
 
     /**
-     * Returns a string for use in the $method argument of openssl_en/decrypt functions.
+     * The cipher method, i.e. $method argument of openssl_en/decrypt() used in encrypt/decrypt methods.
      *
-     * No checks are made. This function will produce nonsense that OpenSSL will reject
-     * if the cipher is not AES, the key size is not 16, 24 or 32, or if the mode is
-     * unsupported.
-     *
-     * Tbh, this is a foot gun. But we need it if we allow the user to change key size
-     * or block mode. And the user must override it top use a cipher other than AES.
+     * To use a cipher other than AES you must override this method.
      *
      * @return string OpenSSL cipher method.
+     * @throws InvalidConfigException
      */
-    protected function opensslCipher()
+    protected function opensslMethod()
     {
+        if (strtoupper(static::BLOCK_CIPHER) !== 'AES' || !in_array(static::KEY_SIZE, [16, 24, 32])) {
+            throw new InvalidConfigException('Unsupported cipher');
+        }
+
         return static::BLOCK_CIPHER . '-' . (8 * static::KEY_SIZE) . '-' . static::BLOCK_MODE;
     }
 
     /**
+     * Cipher block size used in encrypt/decrypt methods.
+     *
+     * To use a cipher other than AES you must override this method.
+     *
+     * @return int Cipher block size in bytes.
+     * @throws InvalidConfigException
+     */
+    protected function cipherBlockSize()
+    {
+        if (strtoupper(static::BLOCK_CIPHER) !== 'AES') {
+            throw new InvalidConfigException('Unsupported cipher');
+        }
+
+        return 16;
+    }
+
+    /**
      * Encrypts data.
+     *
      * @param string $data data to be encrypted
      * @param boolean $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
      * @param string $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
+     *
      * @return string the encrypted data
-     * @throws Exception if PHP Mcrypt extension is not loaded or failed to be initialized
+     * @throws InvalidConfigException if PHP OpenSSL extension is not loaded or failed to be initialized
      * @see decrypt()
      */
     protected function encrypt($data, $passwordBased, $secret, $info)
     {
+        if (!extension_loaded('openssl')) {
+            throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
+        }
+
         $keySalt = $this->generateRandomKey(self::KEY_SIZE);
         if ($passwordBased) {
             $key = $this->pbkdf2(self::KDF_HASH, $secret, $keySalt, $this->derivationIterations, self::KEY_SIZE);
@@ -172,14 +195,10 @@ class Security extends Component
             $key = $this->hkdf(self::KDF_HASH, $secret, $keySalt, $info, self::KEY_SIZE);
         }
 
-        $ivSize = 16;
+        $ivSize = static::cipherBlockSize();
         $iv = $this->generateRandomKey($ivSize);
 
-//        $data = $this->addPadding($data);
-//        $encrypted = openssl_encrypt($data, $this->opensslCipher(), $key, OPENSSL_ZERO_PADDING, $iv);
-//        $encrypted = base64_decode($encrypted);
-
-        $encrypted = openssl_encrypt($data, $this->opensslCipher(), $key, OPENSSL_RAW_DATA, $iv);
+        $encrypted = openssl_encrypt($data, $this->opensslMethod(), $key, OPENSSL_RAW_DATA, $iv);
 
         $authKey = $this->hkdf(self::KDF_HASH, $key, null, self::AUTH_KEY_INFO, self::KEY_SIZE);
         $hashed = $this->hashData($iv . $encrypted, $authKey);
@@ -188,22 +207,29 @@ class Security extends Component
          * Output: [keySalt][MAC][IV][ciphertext]
          * - keySalt is KEY_SIZE bytes long
          * - MAC: message authentication code, length same as the output of MAC_HASH
-         * - IV: initialization vector, length 16, i.e. the AES block size
+         * - IV: initialization vector, length static::cipherBlockSize()
          */
         return $keySalt . $hashed;
     }
 
     /**
      * Decrypts data.
+     *
      * @param string $data encrypted data to be decrypted.
      * @param boolean $passwordBased set true to use password-based key derivation
      * @param string $secret the decryption password or key
      * @param string $info context/application specific information, @see encrypt()
+     *
      * @return bool|string the decrypted data or false on authentication failure
+     * @throws InvalidConfigException if PHP OpenSSL extension is not loaded or failed to be initialized
      * @see encrypt()
      */
     protected function decrypt($data, $passwordBased, $secret, $info)
     {
+        if (!extension_loaded('openssl')) {
+            throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
+        }
+
         $keySalt = StringHelper::byteSubstr($data, 0, self::KEY_SIZE);
         if ($passwordBased) {
             $key = $this->pbkdf2(self::KDF_HASH, $secret, $keySalt, $this->derivationIterations, self::KEY_SIZE);
@@ -217,47 +243,13 @@ class Security extends Component
             return false;
         }
 
-        $ivSize = 16;
+        $ivSize = static::cipherBlockSize();
         $iv = StringHelper::byteSubstr($data, 0, $ivSize);
         $encrypted = StringHelper::byteSubstr($data, $ivSize, null);
 
-//        $encrypted = base64_encode($encrypted);
-//        $decrypted = openssl_decrypt($encrypted, $this->opensslCipher(), $key, OPENSSL_ZERO_PADDING, $iv);
-//        $decrypted = $this->stripPadding($decrypted);
-
-        $decrypted = openssl_decrypt($encrypted, $this->opensslCipher(), $key, OPENSSL_RAW_DATA, $iv);
+        $decrypted = openssl_decrypt($encrypted, $this->opensslMethod(), $key, OPENSSL_RAW_DATA, $iv);
 
         return $decrypted;
-    }
-
-    /**
-     * Adds a padding to the given data (PKCS #7).
-     * @param string $data the data to pad
-     * @return string the padded data
-     */
-    protected function addPadding($data)
-    {
-        $blockSize = 16;
-        $pad = $blockSize - (StringHelper::byteLength($data) % $blockSize);
-
-        return $data . str_repeat(chr($pad), $pad);
-    }
-
-    /**
-     * Strips the padding from the given data.
-     * @param string $data the data to trim
-     * @return string the trimmed data
-     */
-    protected function stripPadding($data)
-    {
-        $end = StringHelper::byteSubstr($data, -1, null);
-        $last = ord($end);
-        $n = StringHelper::byteLength($data) - $last;
-        if (StringHelper::byteSubstr($data, $n, null) === str_repeat($end, $last)) {
-            return StringHelper::byteSubstr($data, 0, $n);
-        }
-
-        return false;
     }
 
     /**
@@ -560,7 +552,10 @@ class Security extends Component
         switch ($this->passwordHashStrategy) {
             case 'password_hash':
                 if (!function_exists('password_hash')) {
-                    throw new InvalidConfigException('Password hash key strategy "password_hash" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
+                    throw new InvalidConfigException(
+                        'Password hash key strategy "password_hash" requires PHP >= 5.5.0, '
+                        . 'either upgrade your environment or use another strategy.'
+                    );
                 }
                 /** @noinspection PhpUndefinedConstantInspection */
                 return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
@@ -582,7 +577,7 @@ class Security extends Component
      * @param string $password The password to verify.
      * @param string $hash The hash to verify the password against.
      * @return boolean whether the password is correct.
-     * @throws InvalidParamException on bad password or hash parameters or if crypt() with Blowfish hash is not available.
+     * @throws InvalidParamException on bad password/hash parameters or if crypt() with Blowfish hash is not available.
      * @throws InvalidConfigException when an unsupported password hash strategy is configured.
      * @see generatePasswordHash()
      */
@@ -592,14 +587,19 @@ class Security extends Component
             throw new InvalidParamException('Password must be a string and cannot be empty.');
         }
 
-        if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches) || $matches[1] < 4 || $matches[1] > 30) {
+        if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches)
+            || $matches[1] < 4 || $matches[1] > 30
+        ) {
             throw new InvalidParamException('Hash is invalid.');
         }
 
         switch ($this->passwordHashStrategy) {
             case 'password_hash':
                 if (!function_exists('password_verify')) {
-                    throw new InvalidConfigException('Password hash key strategy "password_hash" requires PHP >= 5.5.0, either upgrade your environment or use another strategy.');
+                    throw new InvalidConfigException(
+                        'Password hash key strategy "password_hash" requires PHP >= 5.5.0, '
+                        . 'either upgrade your environment or use another strategy.'
+                    );
                 }
                 return password_verify($password, $hash);
             case 'crypt':
