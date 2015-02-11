@@ -14,7 +14,7 @@ Using the Yii logging framework involves the following steps:
 In this section, we will mainly describe the first two steps.
 
 
-## Log Messages <a name="log-messages"></a>
+## Log Messages <span id="log-messages"></span>
 
 Recording log messages is as simple as calling one of the following logging methods:
 
@@ -56,7 +56,7 @@ enough messages are logged or when the application ends, the logger object will 
 [[yii\log\Dispatcher|message dispatcher]] to send recorded log messages to the registered [log targets](#log-targets).
 
 
-## Log Targets <a name="log-targets"></a>
+## Log Targets <span id="log-targets"></span>
 
 A log target is an instance of the [[yii\log\Target]] class or its child class. It filters the log messages by their
 severity levels and categories and then exports them to some medium. For example, a [[yii\log\DbTarget|database target]]
@@ -114,7 +114,7 @@ learn how to configure and use them.
 In the following, we will describe the features common to all log targets.
 
   
-### Message Filtering <a name="message-filtering"></a>
+### Message Filtering <span id="message-filtering"></span>
 
 For each log target, you can configure its [[yii\log\Target::levels|levels]] and 
 [[yii\log\Target::categories|categories]] properties to specify which severity levels and categories of the messages the target should process.
@@ -167,7 +167,7 @@ under the categories whose names match either `yii\db\*` or `yii\web\HttpExcepti
   the [[yii\web\NotFoundHttpException]] will cause an error message of category `yii\web\HttpException:404`.
 
 
-### Message Formatting <a name="message-formatting"></a>
+### Message Formatting <span id="message-formatting"></span>
 
 Log targets export the filtered log messages in a certain format. For example, if you install
 a log target of the class [[yii\log\FileTarget]], you may find a log message similar to the following in the
@@ -216,7 +216,7 @@ Or if you want to implement your own way of providing context information, you m
 [[yii\log\Target::getContextMessage()]] method.
 
 
-### Message Trace Level <a name="trace-level"></a>
+### Message Trace Level <span id="trace-level"></span>
 
 During development, it is often desirable to see where each log message is coming from. This can be achieved by
 configuring the [[yii\log\Dispatcher::traceLevel|traceLevel]] property of the `log` component like the following:
@@ -242,7 +242,7 @@ will be included.
 or when debugging an application.
 
 
-### Message Flushing and Exporting <a name="flushing-exporting"></a>
+### Message Flushing and Exporting <span id="flushing-exporting"></span>
 
 As aforementioned, log messages are maintained in an array by the [[yii\log\Logger|logger object]]. To limit the
 memory consumption by this array, the logger will flush the recorded messages to the [log targets](#log-targets)
@@ -302,7 +302,7 @@ return [
 > Note: Frequent message flushing and exporting will degrade the performance of your application.
 
 
-### Toggling Log Targets <a name="toggling-log-targets"></a>
+### Toggling Log Targets <span id="toggling-log-targets"></span>
 
 You can enable or disable a log target by configuring its [[yii\log\Target::enabled|enabled]] property.
 You may do so via the log target configuration or by the following PHP statement in your code:
@@ -333,7 +333,7 @@ return [
 ```
 
 
-### Creating New Targets <a name="new-targets"></a>
+### Creating New Targets <span id="new-targets"></span>
 
 Creating a new log target class is very simple. You mainly need to implement the [[yii\log\Target::export()]] method
 sending the content of the [[yii\log\Target::messages]] array to a designated medium. You may call the
@@ -341,7 +341,7 @@ sending the content of the [[yii\log\Target::messages]] array to a designated me
 log target classes included in the Yii release.
 
 
-## Performance Profiling <a name="performance-profiling"></a>
+## Performance Profiling <span id="performance-profiling"></span>
 
 Performance profiling is a special type of message logging that is used to measure the time taken by certain
 code blocks and find out what are the performance bottlenecks. For example, the [[yii\db\Command]] class uses

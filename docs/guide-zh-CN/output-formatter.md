@@ -52,7 +52,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // 输出: 1 января 2014 
 > 可参考： [为国际化设置PHP环境](tutorial-i18n.md#setup-environment).
 
 
-配置格式器 <a name="configuring-format"></a>
+配置格式器 <span id="configuring-format"></span>
 -------------------------
 
 可配置[[yii\i18n\Formatter|formatter class]]的属性来调整格式器方法的默认格式，
@@ -71,7 +71,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // 输出: 1 января 2014 
 ],
 ```
 
-格式化日期和时间 <a name="date-and-time"></a>
+格式化日期和时间 <span id="date-and-time"></span>
 -------------------------------
 
 格式器类为格式化日期和时间提供了多个方法：
@@ -107,7 +107,7 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
-### 时区 <a name="time-zones"></a>
+### 时区 <span id="time-zones"></span>
 
 当格式化日期和时间时，Yii会将它们转换为对应的 [[yii\i18n\Formatter::timeZone|configured time zone]] 时区，
 输入的值在没有指定时区时候会被当作UTC时间，因此，推荐存储所有的日期和时间为UTC而不是UNIX时间戳，UNIX通常也是UTC。
@@ -126,7 +126,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 > 也可参考：[为国际化设置PHP环境](tutorial-i18n.md#setup-environment).
 
 
-格式化数字 <a name="numbers"></a>
+格式化数字 <span id="numbers"></span>
 ------------------
 
 格式器类提供如下方法格式化数值：
@@ -154,7 +154,7 @@ For formatting numeric values the formatter class provides the following methods
 ]
 ```
 
-其他格式器  <a name="other"></a>
+其他格式器  <span id="other"></span>
 ----------------
 
 除了日期、时间和数字格式化外，Yii提供其他用途提供一些实用的格式器：
@@ -172,7 +172,7 @@ Additional to date, time and number formatting, Yii provides a set of other usef
 - [[yii\i18n\Formatter::asBoolean()|boolean]] - 值会格式化成布尔型值，默认情况下 `true` 对应 `Yes`，`false` 对应 `No`，
   可根据应用语言配置进行翻译，可以配置[[yii\i18n\Formatter::booleanFormat]]-属性来调整；
 
-`null`-值 <a name="null-values"></a>
+`null`-值 <span id="null-values"></span>
 -------------
 
 对于PHP的`null`值，格式器类会打印一个占位符而不是空字符串，空字符串默认会显示对应当前语言`(not set)`,

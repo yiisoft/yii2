@@ -4,14 +4,13 @@
 モジュールは、[モデル](structure-models.md)、[ビュー](structure-views.md)、[コントローラ](structure-controllers.md)、およびその他の支援コンポーネントから構成される自己充足的なソフトウェアのユニットです。
 モジュールが [アプリケーション](structure-applications.md) にインストールされている場合、エンドユーザはモジュールのコントローラにアクセスする事が出来ます。
 これらのことを理由として、モジュールは小さなアプリケーションと見なされることがよくあります。
-しかし、モジュールは単独では配置できず、アプリケーションの中に存在しなければならないという点で [アプリケーション](structure-applications.md) とは異なります。
+しかし、モジュールは単独では配備できず、アプリケーションの中に存在しなければならないという点で [アプリケーション](structure-applications.md) とは異なります。
 
 
-## モジュールを作成する <a name="creating-modules"></a>
+## モジュールを作成する <span id="creating-modules"></span>
 
-モジュールは、モジュールの [[yii\base\Module::basePath|ベースパス]] と呼ばれるディレクトリとして組織されます。
-このディレクトリの中に、ちょうどアプリケーションの場合と同じように、`controllers`、`models`、`views`
-のようなサブディレクトリが存在して、コントローラ、モデル、ビュー、その他のコードを収納しています。
+モジュールは、モジュールの [[yii\base\Module::basePath|ベースパス]] と呼ばれるディレクトリとして編成されます。
+このディレクトリの中に、ちょうどアプリケーションの場合と同じように、`controllers`、`models`、`views` のようなサブディレクトリが存在して、コントローラ、モデル、ビュー、その他のコードを収納しています。
 次の例は、モジュール内の中身を示すものです。
 
 ```
@@ -27,14 +26,14 @@ forum/
 ```
 
 
-### モジュールクラス <a name="module-classes"></a>
+### モジュールクラス <span id="module-classes"></span>
 
 全てのモジュールは [[yii\base\Module]] から拡張したユニークなモジュールクラスを持たなければなりません。
 モジュールクラスは、モジュールの [[yii\base\Module::basePath|ベースパス]] 直下に配置されて [オートロード可能](concept-autoloading.md) になっていなければなりません。
 モジュールがアクセスされたとき、対応するモジュールクラスの単一のインスタンスが作成されます。
 [アプリケーションのインスタンス](structure-applications.md) と同じように、モジュールのインスタンスは、モジュール内のコードがデータとコンポーネントを共有するために使用されます。
 
-次のコードは、モジュールクラスがどのように見えるかを示す例です。
+次のコードは、モジュールクラスがどのようなものかを示す例です。
 
 ```php
 namespace app\modules\forum;
@@ -51,8 +50,7 @@ class Module extends \yii\base\Module
 }
 ```
 
-`init` メソッドがモジュールのプロパティを初期化するためのコードをたくさん含む場合は、
-それを [構成情報](concept-configurations.md) の形で保存し、`init()` の中で次のコードを使って読み出すことも可能です。
+`init` メソッドがモジュールのプロパティを初期化するためのコードをたくさん含む場合は、それを [構成情報](concept-configurations.md) の形で保存し、`init()` の中で次のコードを使って読み出すことも可能です。
 
 ```php
 public function init()
@@ -78,7 +76,7 @@ return [
 ```
 
 
-### モジュール内のコントローラ <a name="controllers-in-modules"></a>
+### モジュール内のコントローラ <span id="controllers-in-modules"></span>
 
 モジュールの中でコントローラを作成するときは、コントローラクラスをモジュールクラスの名前空間の `controllers` サブ名前空間に置くことが規約です。
 このことは、同時に、コントローラのクラスファイルをモジュールの [[yii\base\Module::basePath|ベースパス]] 内の `controllers` ディレクトリに置くべきことをも意味します。
@@ -100,7 +98,7 @@ class PostController extends Controller
 これは、[アプリケーションでのコントローラマップ](structure-applications.md#controller-map) の場合と同様です。
 
 
-### モジュール内のビュー <a name="views-in-modules"></a>
+### モジュール内のビュー <span id="views-in-modules"></span>
 
 モジュール内のビューは、モジュールの [[yii\base\Module::basePath|ベースパス]] 内の `views` ディレクトリに置かれなくてはなりません。
 モジュール内のコントローラによってレンダリングされるビューは、ディレクトリ `views/ControllerID` の下に置きます。
@@ -108,11 +106,11 @@ class PostController extends Controller
 例えば、コントローラクラスが `PostController` である場合、ディレクトリはモジュールの [[yii\base\Module::basePath|ベースパス]] の中の `views/post` となります。
 
 モジュールは、そのモジュールのコントローラによってレンダリングされるビューに適用される [レイアウト](structure-views.md#layouts) を指定することが出来ます。
-レイアウトは、既定では `views/layouts` ディレクトリに置かれなければならず、また、[[yii\base\Module::layout]] プロパティがレイアウトの名前を指すように構成しなければなりません。
+レイアウトは、デフォルトでは `views/layouts` ディレクトリに置かれなければならず、また、[[yii\base\Module::layout]] プロパティがレイアウトの名前を指すように構成しなければなりません。
 `layout` プロパティを構成しない場合は、アプリケーションのレイアウトが代りに使用されます。
 
 
-## モジュールを使う <a name="using-modules"></a>
+## モジュールを使う <span id="using-modules"></span>
 
 アプリケーションの中でモジュールを使うためには、アプリケーションの [[yii\base\Application::modules|modules]] プロパティのリストにそのモジュールを載せてアプリケーションを構成するだけで大丈夫です。
 次のコードは、[アプリケーションの構成情報](structure-applications.md#application-configurations) の中で `forum` モジュールを使うようにするものです。
@@ -133,16 +131,16 @@ class PostController extends Controller
 そして、対応する配列の値は、そのモジュールを作成するための [構成情報](concept-configurations.md) です。
 
 
-### ルート <a name="routes"></a>
+### ルート <span id="routes"></span>
 
 アプリケーションの中のコントローラをアクセスするのと同じように、[ルート](structure-controllers.md#routes) がモジュールの中のコントローラを指し示すために使われます。
 モジュール内のコントローラのルートは、モジュール ID で始まり、コントローラ ID、アクション ID と続くものでなければなりません。
 例えば、アプリケーションが `forum` という名前のモジュールを使用している場合、`forum/post/index` というルートは、`forum` モジュール内の `post` コントローラの `index` アクションを表します。
-ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (既定値は `default` です) が、どのコントローラ/アクションが使用されるべきかを決定します。
+ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (デフォルト値は `default` です) が、どのコントローラ/アクションが使用されるべきかを決定します。
 これは、`forum` というルートは `forum` モジュール内の `default` コントローラを表すという意味です。
 
 
-### モジュールにアクセスする <a name="accessing-modules"></a>
+### モジュールにアクセスする <span id="accessing-modules"></span>
 
 モジュール内において、モジュール ID や、モジュールのパラメータ、モジュールのコンポーネントなどにアクセスするために、[モジュールクラス](#module-classes) のインスタンスを取得する必要があることがよくあります。
 次の文を使ってそうすることが出来ます。
@@ -151,11 +149,11 @@ class PostController extends Controller
 $module = MyModuleClass::getInstance();
 ```
 
-ここで `MyModuleClass` は、関心を持っているモジュールクラスの名前を指します。
+ここで `MyModuleClass` は、当該モジュールクラスの名前を指すものです。
 `getInstance()` メソッドは、現在リクエストされているモジュールクラスのインスタンスを返します。
 モジュールがリクエストされていない場合は、このメソッドは null を返します。
 モジュールクラスの新しいインスタンスを手動で作成しようとしてはいけないことに注意してください。
-そのインスタンスは、リクエストに対するレスポンスとして Yii によって作成されたインスタンスとは別のものになります。
+手動で作成したインスタンスは、リクエストに対するレスポンスとして Yii によって作成されたインスタンスとは別のものになります。
 
 > Info|情報: モジュールを開発するとき、モジュールが固定の ID を使うと仮定してはいけません。
   なぜなら、モジュールは、アプリケーションや他のモジュールの中で使うときに、任意の ID と結び付けることが出来るからです。
@@ -181,7 +179,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-### モジュールをブートストラップする <a name="bootstrapping-modules"></a>
+### モジュールをブートストラップする <span id="bootstrapping-modules"></span>
 
 いくつかのモジュールは、全てのリクエストで毎回走らせる必要があります。[[yii\debug\Module|デバッグ]] モジュールがその一例です。
 そうするためには、そのようなモジュールをアプリケーションの [[yii\base\Application::bootstrap|bootstrap]] プロパティのリストに挙げます。
@@ -201,7 +199,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-## 入れ子のモジュール <a name="nested-modules"></a>
+## 入れ子のモジュール <span id="nested-modules"></span>
 
 モジュールはレベルの制限無く入れ子にすることが出来ます。
 つまり、モジュールは別のモジュールを含むことが出来、その含まれたモジュールもさらに別のモジュールを含むことが出来ます。
@@ -220,7 +218,7 @@ class Module extends \yii\base\Module
 
         $this->modules = [
             'admin' => [
-                // ここはもっと短い名前空間の使用を考慮すべきだ!
+                // ここはもっと短い名前空間の使用を考慮すべきです
                 'class' => 'app\modules\forum\modules\admin\Module',
             ],
         ];
@@ -236,7 +234,7 @@ class Module extends \yii\base\Module
 このリストには、直接の子と孫以下の両方のモジュールが含まれ、クラス名によってインデックスされています。
 
 
-## ベストプラクティス <a name="best-practices"></a>
+## ベストプラクティス <span id="best-practices"></span>
 
 モジュールは、それぞれ密接に関係する一連の機能を含む数個のグループに分割できるような、規模の大きなアプリケーションに最も適しています。
 そのような機能グループをそれぞれモジュールとして、特定の個人やチームによって開発することが出来ます。

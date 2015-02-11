@@ -34,7 +34,7 @@
 
 Composer がインストールされていれば、次のコマンドを使ってアプリケーションをインストールすることが出来ます。
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+    composer global require "fxp/composer-asset-plugin:1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-advanced yii-application
 
 最初のコマンドは [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
@@ -62,7 +62,7 @@ Composer がインストールされていれば、次のコマンドを使っ�
     php /path/to/yii-application/init --env=Production --overwrite=All
     ```
 
-2. 新しいデータベースを作成し、それに従って `common/config/main-local.php` の `components.db` の構成情報を修正します。
+2. 新しいデータベースを作成し、それに従って `common/config/main-local.php` の `components['db']` の構成情報を修正します。
 3. コンソールコマンド `yii migrate` でマイグレーションを適用します。
 4. ウェブサーバのドキュメントルートを設定します。
 

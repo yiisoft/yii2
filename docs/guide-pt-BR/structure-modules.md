@@ -11,7 +11,7 @@ módulos diferem das [aplicações](structure-applications.md) pelo fato de não
 poderem ser implementados sozinhos e que devem residir dentro das aplicações.
 
 
-## Criando Módulos <a name="creating-modules"></a>
+## Criando Módulos <span id="creating-modules"></span>
 
 Um módulo é organizado como um diretório que é chamado de 
 [[yii\base\Module::basePath|caminho base]] do módulo. Dentro deste diretório, 
@@ -33,7 +33,7 @@ forum/
 ```
 
 
-### Classe do Módulo <a name="module-classes"></a>
+### Classe do Módulo <span id="module-classes"></span>
 
 Cada módulo deve ter uma única classe que estende de [[yii\base\Module]]. Esta 
 classe deve estar localizada diretamente sob o [[yii\base\Module::basePath|caminho base]] 
@@ -89,7 +89,7 @@ return [
 ```
 
 
-### Controllers em Módulos <a name="controllers-in-modules"></a>
+### Controllers em Módulos <span id="controllers-in-modules"></span>
 
 Ao criar controllers (controladores) em um módulo, uma convenção é colocar as 
 classes dos controllers (controladores) sob o sub-namespace `controllers` do 
@@ -117,7 +117,7 @@ torna-los acessíveis pela configuração da propriedade [[yii\base\Module::cont
 de forma similar ao [que você fez na aplicação](structure-applications.md#controller-map).
 
 
-### Views em Módulos <a name="views-in-modules"></a>
+### Views em Módulos <span id="views-in-modules"></span>
 
 As views (visões) devem ser colocadas no diretório `views` dentro do 
 [[yii\base\Module::basePath|caminho base]] do módulo. Para as views (visões) 
@@ -135,7 +135,7 @@ layout. Se você não configurar a propriedade `layout`, o layout da aplicação
 usada em seu lugar.
 
 
-## Usando os Módulos <a name="using-modules"></a>
+## Usando os Módulos <span id="using-modules"></span>
 
 Para usar um módulo em uma aplicação, basta configurar a aplicação, listando o 
 módulo na propriedade [[yii\base\Application::modules|modules]] da aplicação. O 
@@ -160,7 +160,7 @@ do array correspondente é uma [configuração](concept-configurations.md) para 
 criação do módulo.
 
 
-### Rotas <a name="routes"></a>
+### Rotas <span id="routes"></span>
 
 Assim como acessar os controllers (controladores) em uma aplicação, as 
 [rotas](structure-controllers.md#routes) são usadas para tratar os controllers 
@@ -174,7 +174,7 @@ então a propriedade [[yii\base\Module::defaultRoute]], na qual o valor padrão 
 que a rota `forum` representará o controller (controlador) `default` no módulo `forum`.
 
 
-### Acessando os Módulos <a name="accessing-modules"></a>
+### Acessando os Módulos <span id="accessing-modules"></span>
 
 Dentro de um módulo, você poderá precisar muitas vezes obter a instância do 
 [módulo da classe](#module-classes) para que você possa acessar o ID, os parâmetros, 
@@ -218,7 +218,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-### Inicializando os Módulos <a name="bootstrapping-modules"></a>
+### Inicializando os Módulos <span id="bootstrapping-modules"></span>
 
 Alguns módulos precisam ser executados a cada requisição. O módulo 
 [[yii\debug\Module|debug]] é um exemplo desta necessidade. Para isto, você deverá 
@@ -241,7 +241,7 @@ seja sempre carregado:
 ```
 
 
-## Módulos Aninhados <a name="nested-modules"></a>
+## Módulos Aninhados <span id="nested-modules"></span>
 
 Os módulos podem ser aninhados em níveis ilimitados. Isto é, um módulo pode conter 
 um outro módulo que pode conter ainda um outro módulo. Nós chamamos dos anteriores 
@@ -280,7 +280,7 @@ os IDs de todos os seus módulos ancestrais. Por exemplo, a rota
   classes.
 
 
-## Boas Práticas <a name="best-practices"></a>
+## Boas Práticas <span id="best-practices"></span>
 
 Os módulos são melhores usados em aplicações de larga escala, cujas características 
 podem ser divididas em vários grupos, cada um constituídas por um conjuntos de 

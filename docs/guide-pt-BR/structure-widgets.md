@@ -22,7 +22,7 @@ A seguir, iremos introduzir os conhecimentos básicos sobre os widgets. Por favo
 consulte a documentação de classes da API se você quiser saber mais sobre o uso de um determinado widget.
 
 
-## Usando Widgets <a name="using-widgets"></a>
+## Usando Widgets <span id="using-widgets"></span>
 
 Os widgets são usados principalmente nas [views (visões)](structure-views.md). 
 Você pode chamar o método [[yii\base\Widget::widget()]] para usar um widget em 
@@ -77,7 +77,7 @@ renderização de um widget, o método [[yii\base\Widget::begin()]] retorna uma
 instância do widget que pode ser usado para construir o seu conteúdo.
 
 
-## Criando Widgets <a name="creating-widgets"></a>
+## Criando Widgets <span id="creating-widgets"></span>
 
 Para criar um widget, estenda a classe [[yii\base\Widget]] e sobrescreva os 
 métodos [[yii\base\Widget::init()]] e/ou [[yii\base\Widget::run()]]. Normalmente, 
@@ -192,7 +192,7 @@ sobrescrever o método [[yii\base\Widget::getViewPath()]] para personalizar o
 diretório que conterá os arquivos de views (visões) do widget.
 
 
-## Boas Práticas <a name="best-practices"></a>
+## Boas Práticas <span id="best-practices"></span>
 
 Os widgets são uma maneira orientada a objetos de reutilizar códigos de view (visão).
 

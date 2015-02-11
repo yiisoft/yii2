@@ -22,7 +22,7 @@ if ($data === false) {
 ```
 
 
-## キャッシュコンポーネント <a name="cache-components"></a>
+## キャッシュコンポーネント <span id="cache-components"></span>
 
 データキャッシュはメモリ、ファイル、データベースなどさまざまなキャッシュストレージを表す、いわゆるキャッシュコンポーネントに依存しています。
 
@@ -64,24 +64,24 @@ if ($data === false) {
 > ヒント: キャッシュコンポーネントは複数登録することができます。`cache` という名前のコンポーネントはキャッシュに依存したクラスによってデフォルトで使用されています (例えば [[yii\web\UrlManager]] など) 。
 
 
-### サポートされているキャッシュストレージ <a name="supported-cache-storage"></a>
+### サポートされているキャッシュストレージ <span id="supported-cache-storage"></span>
 
 Yii はさまざまなキャッシュストレージをサポートしています。以下は概要です:
 
 * [[yii\caching\ApcCache]]: PHP の [APC](http://php.net/manual/ja/book.apc.php) 拡張モジュールを使用します。集中型の分厚いアプリケーションのキャッシュを扱うときには最速の一つとして考えることができます (例えば、サーバが 1 台であったり、専用のロードバランサを持っていない、など) 。
 * [[yii\caching\DbCache]]: キャッシュされたデータを格納するためにデータベースのテーブルを使用します。このキャッシュを使用するには [[yii\caching\DbCache::cacheTable]] で指定したテーブルを作成する必要があります。
 * [[yii\caching\DummyCache]]: 実際にはキャッシュを行わない、キャッシュの代替を提供します。このコンポーネントの目的は、キャッシュが利用できることをチェックするためのコードを簡略化することです。たとえば、開発中やサーバに実際のキャッシュサポートがない場合に、このキャッシュコンポーネントを使用することができます。そして、実際のキャッシュサポートが有効になったときに、対応するキャッシュコンポーネントに切替えて使用します。 どちらの場合も、`Yii::$app->cache` が null かも知れないと心配せずに、データを取得するために同じコード `Yii::$app->cache->get($key)` を使用できます。
-* [[yii\caching\FileCache]]: キャッシュされたデータを保存するために標準ファイルを使用します。これはページコンテンツなど大きなかたまりのデータに特に適しています。
+* [[yii\caching\FileCache]]: キャッシュされたデータを保存するために標準ファイルを使用します。これはページコンテントなど大きなかたまりのデータに特に適しています。
 * [[yii\caching\MemCache]]: PHP の [Memcache](http://php.net/manual/ja/book.memcache.php) と [Memcached](http://php.net/manual/ja/book.memcached.php) 拡張モジュールを使用します。分散型のアプリケーションでキャッシュを扱うときには最速の一つとして考えることができます (例えば、複数台のサーバ構成であったり、ロードバランサなど) 。
 * [[yii\redis\Cache]]: [Redis](http://redis.io/) の key-value ストアに基づいてキャッシュコンポーネントを実装しています。(Redis の バージョン 2.6.12 以降が必要です) 。
 * [[yii\caching\WinCache]]: PHP の [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([関連リンク](http://php.net/manual/ja/book.wincache.php)) 拡張モジュールを使用します。
 * [[yii\caching\XCache]]: PHP の [XCache](http://xcache.lighttpd.net/) 拡張モジュールを使用します。
 * [[yii\caching\ZendDataCache]]: キャッシュメディアして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) を使用します。
 
-> ヒント: 同じアプリケーション内で異なるキャッシュを使用することもできます。一般的なやり方として、小さくとも常に使用されるデータ (例えば、統計データなど) を格納する場合はメモリベースのキャッシュストレージを使用し、大きくて使用頻度の低いデータを格納する場合はファイルベース、またはデータベースのキャッシュストレージを使用します (例えば、ページコンテンツなど) 。
+> ヒント: 同じアプリケーション内で異なるキャッシュを使用することもできます。一般的なやり方として、小さくとも常に使用されるデータ (例えば、統計データなど) を格納する場合はメモリベースのキャッシュストレージを使用し、大きくて使用頻度の低いデータを格納する場合はファイルベース、またはデータベースのキャッシュストレージを使用します (例えば、ページコンテントなど) 。
 
 
-## キャッシュ API <a name="cache-apis"></a>
+## キャッシュ API <span id="cache-apis"></span>
 
 すべてのキャッシュコンポーネントが同じ基底クラス [[yii\caching\Cache]] を持っているので、以下の API をサポートしています。
 
@@ -107,7 +107,7 @@ $value2 = $cache['var2'];  // $value2 = $cache->get('var2'); と同等
 ```
 
 
-### キャッシュのキーについて <a name="cache-keys"></a>
+### キャッシュのキーについて <span id="cache-keys"></span>
 
 キャッシュに格納される各データは、一意のキーによって識別されるため、キャッシュ内にデータを格納するときはキーを指定する必要があります。あとでキャッシュからデータを取得するときは、それに対応するキーを用意する、といった感じです。
 
@@ -141,7 +141,7 @@ $value2 = $cache['var2'];  // $value2 = $cache->get('var2'); と同等
 相互運用性を確保するために、英数字のみを使用する必要があります。
 
 
-### キャッシュの有効期限 <a name="cache-expiration"></a>
+### キャッシュの有効期限 <span id="cache-expiration"></span>
 
 キャッシュに格納されたデータは、いくつかのキャッシュポリシー (例えば、キャッシュスペースがいっぱいになったときは最も古いデータが削除される、など) の実施で除去されない限り、永遠に残り続けます。この動作を変えるために [[yii\caching\Cache::set()|set()]] で有効期限パラメータを指定することができます。パラメータはキャッシュ内に何秒間有効であるかを示します。[[yii\caching\Cache::get()|get()]] でデータを取得する際に有効期限が切れていた場合は、キャッシュ内にデータが見つからなかったことを示す false が返されます。例えば、
 
@@ -158,10 +158,10 @@ if ($data === false) {
 ```
 
 
-### キャッシュの依存関係 <a name="cache-dependencies"></a>
+### キャッシュの依存関係 <span id="cache-dependencies"></span>
 
 
-有効期限の設定に加えて、キャッシュされたデータにはいわゆる *キャッシュの依存関係* の変化によって無効にすることもできます。例えば [[yii\caching\FileDependency]] はファイルの更新時刻の依存関係を表しています。依存関係が変更されたときに、対応するファイルが更新されることを意味しています。その結果、キャッシュ内で見つかった古いファイルのコンテンツは、無効とされるべきであり [[yii\caching\Cache::get()|get()]] は false を返します。
+有効期限の設定に加えて、キャッシュされたデータにはいわゆる *キャッシュの依存関係* の変化によって無効にすることもできます。例えば [[yii\caching\FileDependency]] はファイルの更新時刻の依存関係を表しています。依存関係が変更されたときに、対応するファイルが更新されることを意味しています。その結果、キャッシュ内で見つかった古いファイルのコンテントは、無効とされるべきであり [[yii\caching\Cache::get()|get()]] は false を返します。
 
 キャッシュの依存関係は [[yii\caching\Dependency]] 子孫クラスのオブジェクトとして表現されます。[[yii\caching\Cache::set()|set()]] でキャッシュにデータを格納する際に、関連するキャッシュの依存関係を知らせることができます。例えば、
 
@@ -188,7 +188,7 @@ $data = $cache->get($key);
 - [[yii\caching\TagDependency]]: 一つまたは複数のタグを持つキャッシュされたデータを関連付けます。[[yii\caching\TagDependency::invalidate()]] を呼び出すことによって指定されたタグ(複数可)と、キャッシュされたデータを無効にすることができます。
 
 
-## クエリキャッシュ <a name="query-caching"></a>
+## クエリキャッシュ <span id="query-caching"></span>
 
 クエリキャッシュは、データキャッシュ上に構築された特別なキャッシュ機能で、データベースのクエリ結果をキャッシュするために提供されています。
 
@@ -209,7 +209,7 @@ $result = $db->cache(function ($db) {
 > 情報: いくつかの DBMS (例えば [MySQL](http://dev.mysql.com/doc/refman/5.1/ja/query-cache.html)) でもデータベースのサーバサイドのクエリキャッシュをサポートしています。どちらのクエリキャッシュメカニズムも選べますが、前述した Yii のクエリキャッシュを使用することによって、キャッシュの依存関係を柔軟に指定できたり、潜在的にもより効率的でしょう。
 
 
-### 設定 <a name="query-caching-configs"></a>
+### 設定 <span id="query-caching-configs"></span>
 
 クエリキャッシュは [[yii\db\Connection]] を通して 3 つのグローバルな設定可能オプションがあります:
 
@@ -218,7 +218,7 @@ $result = $db->cache(function ($db) {
 * [[yii\db\Connection::queryCache|queryCache]]: これはキャッシュコンポーネントの ID を表します。デフォルトは `'cache'`。有効なキャッシュコンポーネントが存在する場合にのみ、クエリキャッシュが使用可能になります。
 
 
-### 使い方 <a name="query-caching-usages"></a>
+### 使い方 <span id="query-caching-usages"></span>
 
 クエリキャッシュを使用する必要がある複数の SQL クエリを持っている場合は [[yii\db\Connection::cache()]] を使用することができます。使い方としては以下のように、
 
@@ -281,7 +281,7 @@ $result = $db->cache(function ($db) {
 ```
 
 
-### 制約 <a name="query-caching-limitations"></a>
+### 制約 <span id="query-caching-limitations"></span>
 
 リソースハンドルを返すようなクエリにはクエリキャッシュは働きません。例えばいくつかの DBMS において BLOB 型のカラムを用いる場合、クエリ結果はカラムデータについてリソースハンドルを返します。
 

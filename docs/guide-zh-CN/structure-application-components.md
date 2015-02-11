@@ -44,7 +44,7 @@
   一般情况下可以在需要时再创建本地组件。
 
 
-## 引导启动组件 <a name="bootstrapping-components"></a>
+## 引导启动组件 <span id="bootstrapping-components"></span>
 
 上面提到一个应用组件只会在第一次访问时实例化，如果处理请求过程没有访问的话就不实例化。
 有时你想在每个请求处理过程都实例化某个组件即便它不会被访问，
@@ -67,7 +67,7 @@
 ```
 
 
-## 核心应用组件 <a name="core-application-components"></a>
+## 核心应用组件 <span id="core-application-components"></span>
 
 Yii 定义了一组固定ID和默认配置的 *核心* 组件，例如 [[yii\web\Application::request|request]] 组件
 用来收集用户请求并解析 [路由](runtime-routing.md)；

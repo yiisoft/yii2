@@ -248,10 +248,7 @@ class MessageController extends Controller
         $this->stdout("Extracting messages from $coloredFileName...\n");
         $subject = file_get_contents($fileName);
         $messages = [];
-        if (!is_array($translator)) {
-            $translator = [$translator];
-        }
-        foreach ($translator as $currentTranslator) {
+        foreach ((array)$translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);
             array_shift($translatorTokens);
 
@@ -387,7 +384,7 @@ class MessageController extends Controller
             $merged = [];
             $untranslated = [];
             foreach ($messages as $message) {
-                if (array_key_exists($message, $existingMessages) && strlen($existingMessages[$message]) > 0) {
+                if (array_key_exists($message, $existingMessages) && $existingMessages[$message] !== '') {
                     $merged[$message] = $existingMessages[$message];
                 } else {
                     $untranslated[] = $message;
@@ -401,7 +398,7 @@ class MessageController extends Controller
             }
             ksort($existingMessages);
             foreach ($existingMessages as $message => $translation) {
-                if (!isset($merged[$message]) && !isset($todo[$message]) && !$removeUnused) {
+                if (!$removeUnused && !isset($merged[$message]) && !isset($todo[$message])) {
                     if (!empty($translation) && strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0) {
                         $todo[$message] = $translation;
                     } else {
@@ -499,7 +496,7 @@ EOD;
 
                 // merge existing message translations with new message translations
                 foreach ($msgs as $message) {
-                    if (array_key_exists($message, $existingMessages) && strlen($existingMessages[$message]) > 0) {
+                    if (array_key_exists($message, $existingMessages) && $existingMessages[$message] !== '') {
                         $merged[$category . chr(4) . $message] = $existingMessages[$message];
                     } else {
                         $notTranslatedYet[] = $message;
@@ -515,7 +512,7 @@ EOD;
 
                 // add obsolete unused messages
                 foreach ($existingMessages as $message => $translation) {
-                    if (!isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message]) && !$removeUnused) {
+                    if (!$removeUnused && !isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message])) {
                         if (!empty($translation) && substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@') {
                             $todos[$category . chr(4) . $message] = $translation;
                         } else {

@@ -39,7 +39,7 @@ addons:
 
 install:
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction

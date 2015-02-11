@@ -8,7 +8,7 @@
 > Примітка: На відміну від Yii 1, після стандартного встановлення Yii 2 ми отримуємо як фреймворк, так і шаблон додатка.
 
 
-Встановлення за допомогою Composer <a name="installing-via-composer"></a>
+Встановлення за допомогою Composer <span id="installing-via-composer"></span>
 ----------------------------------
 
 Якщо у вас все ще не вставновлено Composer, то це можна зробити за допомогою інструкції на [getcomposer.org](https://getcomposer.org/download/).
@@ -48,7 +48,7 @@
 > виконання робочого коду.
 
 
-Встановлення з архіву <a name="installing-from-archive-file"></a>
+Встановлення з архіву <span id="installing-from-archive-file"></span>
 ---------------------
 
 Встановлення Yii з архіву складається з трьох кроків:
@@ -64,7 +64,7 @@
    ```
 
 
-Інші параметри встановлення <a name="other-installation-options"></a>
+Інші параметри встановлення <span id="other-installation-options"></span>
 ---------------------------
 
 Вище наведені інструкції по встановленню Yii, які також створюють базовий веб-додаток, готового до роботи.
@@ -78,7 +78,7 @@
   [разширений шаблон додатка](tutorial-advanced-app.md).
 
 
-Перевірка встановлення <a name="verifying-installation"></a>
+Перевірка встановлення <span id="verifying-installation"></span>
 ----------------------
 
 Після встановлення, ви можете перевірити за допомогою браузера свій встановлений додаток Yii за наступним URL:
@@ -109,7 +109,7 @@ http://localhost/basic/web/index.php
 (наприклад, `pdo_mysql` для MySQL).
 
 
-Налаштування веб серверів <a name="configuring-web-servers"></a>
+Налаштування веб серверів <span id="configuring-web-servers"></span>
 -------------------------
 
 > Інформація: можете пропустити даний підрозділ, якщо ви тільки розпочали знайомитися з фреймворком 
@@ -132,7 +132,7 @@ Yii 2.0 також сумісний із віртуальною машиною [
   додатка для покращення безпеки, як описано в розділі [Робота на shared хостингу](tutorial-shared-hosting.md).
 
 
-### Рекомендовані налаштування Apache <a name="recommended-apache-configuration"></a>
+### Рекомендовані налаштування Apache <span id="recommended-apache-configuration"></span>
 
 Додайте наступний код до файлу конфігурации Apache `httpd.conf` або в конфігураційний файл віртуального хоста. 
 Не забудьте замінити `path/to/basic/web` на коректний шлях до `basic/web`.
@@ -155,7 +155,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Рекомендовані налаштування Nginx <a name="recommended-nginx-configuration"></a>
+### Рекомендовані налаштування Nginx <span id="recommended-nginx-configuration"></span>
 
 Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](http://php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до `basic/web`,

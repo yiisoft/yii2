@@ -189,7 +189,7 @@ class QueryBuilder extends \yii\base\Object
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (!is_array($value) && isset($columns[$i]) && isset($columnSchemas[$columns[$i]])) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
@@ -1067,22 +1067,7 @@ class QueryBuilder extends \yii\base\Object
         }
 
         if ($values instanceof Query) {
-            // sub-query
-            list($sql, $params) = $this->build($values, $params);
-            $column = (array) $column;
-            if (is_array($column)) {
-                foreach ($column as $i => $col) {
-                    if (strpos($col, '(') === false) {
-                        $column[$i] = $this->db->quoteColumnName($col);
-                    }
-                }
-                return '(' . implode(', ', $column) . ") $operator ($sql)";
-            } else {
-                if (strpos($column, '(') === false) {
-                    $column = $this->db->quoteColumnName($column);
-                }
-                return "$column $operator ($sql)";
-            }
+            return $this->buildSubqueryInCondition($operator, $column, $values, $params);
         }
 
         $values = (array) $values;
@@ -1120,6 +1105,33 @@ class QueryBuilder extends \yii\base\Object
         } else {
             $operator = $operator === 'IN' ? '=' : '<>';
             return $column . $operator . reset($values);
+        }
+    }
+
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param Query $values
+     * @param array $params
+     * @return string SQL
+     */
+    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
+    {
+        list($sql, $params) = $this->build($values, $params);
+        if (is_array($columns)) {
+            foreach ($columns as $i => $col) {
+                if (strpos($col, '(') === false) {
+                    $columns[$i] = $this->db->quoteColumnName($col);
+                }
+            }
+            return '(' . implode(', ', $columns) . ") $operator ($sql)";
+        } else {
+            if (strpos($columns, '(') === false) {
+                $columns = $this->db->quoteColumnName($columns);
+            }
+            return "$columns $operator ($sql)";
         }
     }
 

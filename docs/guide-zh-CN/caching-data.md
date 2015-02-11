@@ -21,7 +21,7 @@ if ($data === false) {
 ```
 
 
-## 缓存组件 <a name="cache-components"></a>
+## 缓存组件 <span id="cache-components"></span>
 
 数据缓存需要**缓存组件**提供支持，它代表各种缓存存储器，例如内存，文件，数据库。
 
@@ -63,7 +63,7 @@ if ($data === false) {
 > Tip: 你可以注册多个缓存组件，很多依赖缓存的类默认调用名为 `cache` 的组件（例如 [[yii\web\UrlManager]]）。
 
 
-### 支持的缓存存储器 <a name="supported-cache-storage"></a>
+### 支持的缓存存储器 <span id="supported-cache-storage"></span>
 
 Yii 支持一系列缓存存储器，概况如下：
 
@@ -81,7 +81,7 @@ Yii 支持一系列缓存存储器，概况如下：
 > Tip: 你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器存储小而常用的数据（例如：统计数据），使用基于文件或数据库的缓存存储器存储大而不太常用的数据（例如：网页内容）。
 
 
-## 缓存 API <a name="cache-apis"></a>
+## 缓存 API <span id="cache-apis"></span>
 
 所有缓存组件都有同样的基类 [[yii\caching\Cache]] ，因此都支持如下 API：
 
@@ -105,7 +105,7 @@ $value2 = $cache['var2'];  // 等价于： $value2 = $cache->get('var2');
 ```
 
 
-### 缓存键 <a name="cache-keys"></a>
+### 缓存键 <span id="cache-keys"></span>
 
 存储在缓存中的每项数据都通过键作唯一识别。当你在缓存中存储一项数据时，必须为它指定一个键，稍后从缓存中取回数据时，也需要提供相应的键。
 
@@ -138,7 +138,7 @@ $value2 = $cache['var2'];  // 等价于： $value2 = $cache->get('var2');
 为了确保互通性，此处只能使用字母和数字。
 
 
-### 缓存过期 <a name="cache-expiration"></a>
+### 缓存过期 <span id="cache-expiration"></span>
 
 默认情况下，缓存中的数据会永久存留，除非它被某些缓存策略强制移除（例如：缓存空间已满，最老的数据会被移除）。要改变此特性，你可以在调用 [[yii\caching\Cache::set()|set()]] 存储一项数据时提供一个过期时间参数。该参数代表这项数据在缓存中可保持有效多少秒。当你调用 [[yii\caching\Cache::get()|get()]] 取回数据时，如果它已经过了超时时间，该方法将返回 false，表明在缓存中找不到这项数据。例如：
 
@@ -155,7 +155,7 @@ if ($data === false) {
 ```
 
 
-### 缓存依赖 <a name="cache-dependencies"></a>
+### 缓存依赖 <span id="cache-dependencies"></span>
 
 除了超时设置，缓存数据还可能受到**缓存依赖**的影响而失效。例如，[[yii\caching\FileDependency]] 代表对一个文件修改时间的依赖。这个依赖条件发生变化也就意味着相应的文件已经被修改。因此，缓存中任何过期的文件内容都应该被置为失效状态，对 [[yii\caching\Cache::get()|get()]] 的调用都应该返回 false。
 
@@ -184,7 +184,7 @@ $data = $cache->get($key);
 - [[yii\caching\GroupDependency]]：将一项缓存数据标记到一个组名，你可以通过调用 [[yii\caching\GroupDependency::invalidate()]] 一次性将相同组名的缓存全部置为失效状态。
 
 
-## 查询缓存 <a name="query-caching"></a>
+## 查询缓存 <span id="query-caching"></span>
 
 查询缓存是一个建立在数据缓存之上的特殊缓存特性。它用于缓存数据库查询的结果。
 
@@ -208,7 +208,7 @@ $db->endCache();
 > Info: 有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）也支持数据库服务器端的查询缓存。你可以选择使用任一查询缓存机制。上文所述的查询缓存的好处在于你可以指定更灵活的缓存依赖因此可能更加高效。
 
 
-### 配置 <a name="query-caching-configs"></a>
+### 配置 <span id="query-caching-configs"></span>
 
 查询缓存有两个通过 [[yii\db\Connection]] 设置的配置项：
 
@@ -216,7 +216,7 @@ $db->endCache();
 * [[yii\db\Connection::queryCache|queryCache]]: 缓存应用组件的 ID。默认为 `'cache'`。只有在设置了一个有效的缓存应用组件时，查询缓存才会有效。
 
 
-### 限制条件 <a name="query-caching-limitations"></a>
+### 限制条件 <span id="query-caching-limitations"></span>
 
 当查询结果中含有资源句柄时，查询缓存无法使用。例如，在有些 DBMS 中使用了 `BLOB` 列的时候，缓存结果会为该数据列返回一个资源句柄。
 

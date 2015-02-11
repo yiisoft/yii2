@@ -13,7 +13,7 @@ os arquivos view templates (modelos de visão) ou view template (modelo de visã
 apenas como views (visões).
 
 
-## Criando Views (Visões) <a name="creating-views"></a>
+## Criando Views (Visões) <span id="creating-views"></span>
 
 Como mencionado anteriormente, uma view (visão) é simplesmente um arquivo PHP 
 composto por HTML ou códigos PHP. A view (visão) a seguir, apresenta um formulário 
@@ -58,7 +58,7 @@ desencadeiam a [renderização da view (visão)](#rendering-views).
   uma ótima maneira de documentar suas views (visões).
 
 
-### Segurança <a name="security"></a>
+### Segurança <span id="security"></span>
 
 Ao criar views (visões) que geram páginas HTML, é importante que você codifique 
 ou filtre dados obtidos pelos usuários antes que os apresente. Caso contrário, 
@@ -98,7 +98,7 @@ use yii\helpers\HtmlPurifier;
   do resultado filtrado caso sua aplicação necessite de o máximo de performance. 
 
 
-### Organizando as Views (Visões) <a name="organizing-views"></a>
+### Organizando as Views (Visões) <span id="organizing-views"></span>
 
 Assim como os [controllers (controladores)](structure-controllers.md) e os 
 [models (modelos)](structure-models.md), existem convenções para organizar as 
@@ -122,7 +122,7 @@ o método [[yii\base\ViewContextInterface::getViewPath()]] dos controllers
 (controladores) ou dos widgets.
 
 
-## Renderizando Views (Visões) <a name="rendering-views"></a>
+## Renderizando Views (Visões) <span id="rendering-views"></span>
 
 A renderização das views (visões) podem ser feitas nos 
 [controllers (controladores)](structure-controllers.md), nos 
@@ -139,7 +139,7 @@ methodName($view, $params = [])
 ```
 
 
-### Renderização pelos Controllers (Controladores) <a name="rendering-in-controllers"></a>
+### Renderização pelos Controllers (Controladores) <span id="rendering-in-controllers"></span>
 
 Nos [controllers (controladores)](structure-controllers.md), você pode chamar os 
 seguintes métodos para renderizar as views (visões):
@@ -186,7 +186,7 @@ class PostController extends Controller
 ```
 
 
-### Renderização pelos Widgets <a name="rendering-in-widgets"></a>
+### Renderização pelos Widgets <span id="rendering-in-widgets"></span>
 
 Nos [widgets](structure-widgets.md), você pode chamar os seguintes métodos do 
 widget para renderizar views (visões).
@@ -219,7 +219,7 @@ class ListWidget extends Widget
 ```
 
 
-### Renderização pelas Views (Visões) <a name="rendering-in-views"></a>
+### Renderização pelas Views (Visões) <span id="rendering-in-views"></span>
 
 Você pode renderizar uma view dentro de outra view chamando um dos seguintes 
 métodos fornecidos pelo [[yii\base\View|componente da view]]:
@@ -241,7 +241,7 @@ Lembre-se que a `$this` da view (visão) refere-se ao componente da [[yii\base\V
 ```
 
 
-### Renderização por Outros Lugares <a name="rendering-in-other-places"></a>
+### Renderização por Outros Lugares <span id="rendering-in-other-places"></span>
 
 Em qualquer lugar, você pode acessar o componente de aplicação [[yii\base\View|view]] 
 pela expressão `Yii::$app->view` e chamar qualquer método mencionado anteriormente 
@@ -253,7 +253,7 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ```
 
 
-### Views (Visões) Nomeadas <a name="named-views"></a>
+### Views (Visões) Nomeadas <span id="named-views"></span>
 
 Ao renderizar uma view (visão), você pode especificar a view usando um nome ou o 
 caminho do arquivo/alias. Na maioria dos casos, você usará a primeira maneira, 
@@ -296,7 +296,7 @@ De acordo com as regras acima, ao chamar `$this->render('view')` em um controlle
 view, será renderizado o arquivo de visão `@app/views/post/_overview.php`.
 
 
-### Acessando Dados em Views (Visões) <a name="accessing-data-in-views"></a>
+### Acessando Dados em Views (Visões) <span id="accessing-data-in-views"></span>
 
 Existem duas abordagens para acessar dados em um view (visão): *push* e *pull*.
 
@@ -335,7 +335,7 @@ todo, o que poderia tornar-se tedioso e propenso a erros se uma view for
 compartilhada e renderizada em lugares diferentes.
 
 
-### Compartilhando Dados entre as Views (Visões) <a name="sharing-data-among-views"></a>
+### Compartilhando Dados entre as Views (Visões) <span id="sharing-data-among-views"></span>
 
 O [[yii\base\View|componente da view]] fornece a propriedade 
 [[yii\base\View::params|params]] que você pode usar para compartilhar dados entre 
@@ -359,7 +359,7 @@ propriedade [[yii\base\View::params|params]]:
 ```
 
 
-## Layouts <a name="layouts"></a>
+## Layouts <span id="layouts"></span>
 
 Os layouts são um tipo especial de views (visões) que representam as partes comuns 
 das views (visões). Por exemplo, a maioria das páginas de aplicações Web 
@@ -369,7 +369,7 @@ no layout e incorporar o resultado da renderização de uma view em um lugar
 apropriado no layout.
 
 
-### Criando Layouts <a name="creating-layouts"></a>
+### Criando Layouts <span id="creating-layouts"></span>
 
 Pelo fato dos layouts também serem views (visões), eles podem ser criados de 
 forma semelhante as views (visões) normais. Por padrão, os layouts são guardados 
@@ -440,7 +440,7 @@ inseridos nos locais onde estes métodos forem chamados.
   para a posição final do corpo do layout que foram registrados.
 
 
-### Acessando Dados nos Layouts <a name="accessing-data-in-layouts"></a>
+### Acessando Dados nos Layouts <span id="accessing-data-in-layouts"></span>
 
 Dentro de um layout, você tem acesso a duas variáveis predefinidas: `$this` e 
 `$content`. A primeira refere-se ao componente da [[yii\base\View|view]] como as 
@@ -455,7 +455,7 @@ passar os dados de um conteúdo da view em um layout, poderá usar o método des
 na subseção [Compartilhando Dados entre as Views (Visões)](#sharing-data-among-views).
 
 
-### Usando Layouts <a name="using-layouts"></a>
+### Usando Layouts <span id="using-layouts"></span>
 
 Como descrito na subseção [Renderização nos Controllers (Controladores)](#rendering-in-controllers), 
 quando você renderizar uma view (visão) chamando o método [[yii\base\Controller::render()|render()]] 
@@ -523,7 +523,7 @@ e o modulo de contexto obtidos na primeira etapa. O nome do layout pode ter:
 Caso o nome do layout não tiver uma extensão de arquivo, será usado um `.php` por padrão.
 
 
-### Layouts Aninhados <a name="nested-layouts"></a>
+### Layouts Aninhados <span id="nested-layouts"></span>
 
 Algumas vezes, você pode querer que um layout seja usado dentro de outro. Por 
 exemplo, você pode querer usar diferentes layouts para cada seção de um página 
@@ -550,7 +550,7 @@ pode ser tanto um arquivo do layout quanto uma alias.
 Usando a abordagem mencionada, poderá aninhar os layouts em mais de um nível.
 
 
-### Usando Blocos <a name="using-blocks"></a>
+### Usando Blocos <span id="using-blocks"></span>
 
 Os blocos lhe permitem especificar o conteúdo da view (visão) de um local e exibi-lo 
 em outro. Geralmente são usados em conjunto com os layouts. Por exemplo, você pode 
@@ -614,7 +614,7 @@ ou caso não esteja disponível exiba um conteúdo padrão.
 ```
 
 
-## Usando Componentes de View (Visão) <a name="using-view-components"></a>
+## Usando Componentes de View (Visão) <span id="using-view-components"></span>
 
 Os [[yii\base\View|componentes de view (visão)]] fornecem muitos recursos 
 relacionados às views (visões). Enquanto você pode obter os componentes de view 
@@ -655,7 +655,7 @@ Você também pode usar com frequência os seguintes recursos menos úteis quand
 estiver desenvolvendo suas páginas.
 
 
-### Configuração do Título da Página <a name="setting-page-titles"></a>
+### Configuração do Título da Página <span id="setting-page-titles"></span>
 
 Cada página deve ter um título. Normalmente, a tag do título é colocada no início 
 de um [layout](#layouts). Mas na prática, o título é muitas vezes determinado 
@@ -679,7 +679,7 @@ E no layout, verifique se você tem o seguinte código sob o elemento `<head>`:
 ```
 
 
-### Registrando os Meta Tags <a name="registering-meta-tags"></a>
+### Registrando os Meta Tags <span id="registering-meta-tags"></span>
 
 As páginas Web geralmente precisam gerar vários meta tags necessários para 
 diferentes fins. Assim como os títulos, os meta tags precisam estar na seção 
@@ -718,7 +718,7 @@ $this->registerMetaTag(['name' => 'description', 'content' => 'This website is a
 ```
 
 
-### Registrando as Tags Link <a name="registering-link-tags"></a>
+### Registrando as Tags Link <span id="registering-link-tags"></span>
 
 Assim como os [meta tags](#registering-meta-tags), as tags link são úteis em muitos 
 casos, tais como a personalização do favicon, apontamento de feed RSS ou delegar 
@@ -748,7 +748,7 @@ você pode especificar uma chave quando chamar o método
 tags link repetidas.
 
 
-## Eventos da View (Visão) <a name="view-events"></a>
+## Eventos da View (Visão) <span id="view-events"></span>
 
 [[yii\base\View|Os componentes de view (visão)]] disparam vários eventos durante 
 o processo de renderização da view (visão). Você pode usar estes eventos para 
@@ -782,7 +782,7 @@ Por exemplo, o código a seguir insere a data atual no final do corpo da página
 ```
 
 
-## Renderizando Páginas Estáticas <a name="rendering-static-pages"></a>
+## Renderizando Páginas Estáticas <span id="rendering-static-pages"></span>
 
 Páginas estáticas referem-se a páginas cujo principal conteúdo é na maior parte 
 estática, sem a necessidade de acessar conteúdos dinâmicos pelos controllers 
@@ -837,7 +837,7 @@ sob o diretório `@app/views/site/pages`. Você pode configurar a propriedade
 serão procuradas. 
 
 
-## Boas Práticas <a name="best-practices"></a>
+## Boas Práticas <span id="best-practices"></span>
 
 As views (visões) são os responsáveis por apresentar modelos no formato que os 
 usuários finais desejarem. Em geral, as view (visões):

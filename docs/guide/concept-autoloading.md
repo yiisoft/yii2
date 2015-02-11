@@ -10,16 +10,16 @@ The autoloader is installed when you include the `Yii.php` file.
   mind that the content we are describing here applies to autoloading of interfaces and traits as well.
 
 
-Using the Yii Autoloader <a name="using-yii-autoloader"></a>
+Using the Yii Autoloader <span id="using-yii-autoloader"></span>
 ------------------------
 
 To make use of the Yii class autoloader, you should follow two simple rules when creating and naming your classes:
 
-* Each class must be under a namespace (e.g. `foo\bar\MyClass`)
+* Each class must be under a [namespace](http://php.net/manual/en/language.namespaces.php) (e.g. `foo\bar\MyClass`)
 * Each class must be saved in an individual file whose path is determined by the following algorithm:
 
 ```php
-// $className is a fully qualified class name with the leading backslash
+// $className is a fully qualified class name without the leading backslash
 $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 ```
 
@@ -33,11 +33,12 @@ namespace `app` so that they can be autoloaded by Yii without the need of defini
 can be resolved into the class file `AppBasePath/components/MyClass.php`, according to the algorithm just described.
 
 In the [Advanced Application Template](tutorial-advanced-app.md), each tier has its own root alias. For example,
-the front-end tier has a root alias `@frontend`, while the back-end tier root alias is `@backend`. As a result, you may put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
+the front-end tier has a root alias `@frontend`, while the back-end tier root alias is `@backend`. As a result,
+you may put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
 allow these classes to be autoloaded by the Yii autoloader.
 
 
-Class Map <a name="class-map"></a>
+Class Map <span id="class-map"></span>
 ---------
 
 The Yii class autoloader supports the *class map* feature, which maps class names to the corresponding class file paths.
@@ -55,7 +56,7 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 [bootstrapping](runtime-bootstrapping.md) process so that the map is ready before your classes are used.
 
 
-Using Other Autoloaders <a name="using-other-autoloaders"></a>
+Using Other Autoloaders <span id="using-other-autoloaders"></span>
 -----------------------
 
 Because Yii embraces Composer as a package dependency manager, it is recommended that you also install
@@ -81,7 +82,7 @@ to be autoloadable.
   and include it in your [entry script](structure-entry-scripts.md).
 
 
-Autoloading Extension Classes <a name="autoloading-extension-classes"></a>
+Autoloading Extension Classes <span id="autoloading-extension-classes"></span>
 -----------------------------
 
 The Yii autoloader is capable of autoloading [extension](structure-extensions.md) classes. The sole requirement

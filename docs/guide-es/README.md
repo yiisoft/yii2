@@ -94,6 +94,7 @@ Obtener datos de los usuarios
 * **TBD** [Crear formularios](input-forms.md)
 * **TBD** [Validar datos](input-validation.md)
 * **TBD** [Subir archivos](input-file-upload.md)
+* **TBD** [Recogida de tabular input](input-tabular-input.md)
 * **TBD** [Obtener datos para múltiples modelos](input-multiple-models.md)
 
 

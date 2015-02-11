@@ -146,15 +146,6 @@ class Foo
 
 - All PHP types and values should be used lowercase. That includes `true`, `false`, `null` and `array`.
 
-Use the following format for associative arrays:
-
-```php
-$config = [
-    'name'  => 'Yii',
-    'options' => ['usePHP' => true],
-];
-```
-
 Changing type of an existing variable is considered as a bad practice. Try not to write such code unless it is really necessary.
 
 
@@ -251,11 +242,12 @@ $config = [
 ```php
 if ($event === null) {
     return new Event();
-} elseif ($event instanceof CoolEvent) {
-    return $event->instance();
-} else {
-    return null;
 }
+if ($event instanceof CoolEvent) {
+    return $event->instance();
+}
+return null;
+
 
 // the following is NOT allowed:
 if (!$model && null === $event)

@@ -48,7 +48,7 @@ Tratamento de Requisições
 -------------------------
 
 * [Visão Geral](runtime-overview.md)
-* [Bootstrapping](runtime-bootstrapping.md)
+* [Inicialização (Bootstrapping)](runtime-bootstrapping.md)
 * [Roteamento e Criação de URL](runtime-routing.md)
 * [Requisições](runtime-requests.md)
 * [Respostas](runtime-responses.md)
@@ -90,7 +90,8 @@ Coletando Dados de Usuários
 * [Criando Formulários](input-forms.md)
 * [Validação de Dados](input-validation.md)
 * [Upload de Arquivos](input-file-upload.md)
-* **TBD** [Coletando Dados de Múltiplos Modelos](input-multiple-models.md)
+* [Coletando Entradas Tabulares](input-tabular-input.md)
+* [Coletando Dados de Múltiplos Models](input-multiple-models.md)
 
 
 Exibindo Dados
@@ -161,7 +162,7 @@ Testes
 Tópicos Especiais
 -----------------
 
-* [Modelo de Aplicação Avançada](tutorial-advanced-app.md)
+* [Template Avançado de Aplicação](tutorial-advanced-app.md)
 * [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md)
 * [Comandos de Console](tutorial-console.md)
 * [Ferramentas de Validação Embutidas](tutorial-core-validators.md)

@@ -5,6 +5,8 @@ use yii\bootstrap\Tabs;
 
 /**
  * Tests for Tabs widget
+ *
+ * @group bootstrap
  */
 class TabsTest extends BootstrapTestCase
 {

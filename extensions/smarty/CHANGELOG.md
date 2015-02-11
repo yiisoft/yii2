@@ -4,7 +4,8 @@ Yii Framework 2 smarty extension Change Log
 2.0.3 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6845: Fixed incorrect implementation of `{registerCssFile` and `{registerJsFile` (TomassunGitHub, samdark)
+- Bug #6991: Fixed exception when using `{use class='yii\bootstrap\Nav' type='function'}` (ivanlemeshev)
 
 
 2.0.2 January 11, 2015

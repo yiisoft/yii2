@@ -13,7 +13,7 @@ with response formatting:
    この作業は、[[yii\web\Response::formatters|response]] アプリケーションコンポーネントに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
 
 
-## コンテントネゴシエーション <a name="content-negotiation"></a>
+## コンテントネゴシエーション <span id="content-negotiation"></span>
 
 Yii は [[yii\filters\ContentNegotiator]] フィルタによってコンテントネゴシエーションをサポートします。
 RESTful API の基底コントローラクラス [[yii\rest\Controller]] は `contentNegotiator` という名前でこのフィルタを持っています。
@@ -78,7 +78,7 @@ public function behaviors()
 このレスポンス形式名は、[[yii\web\Response::formatters]] の中でサポートされているものでなければなりません。
 
 
-## データのシリアライズ <a name="data-serializing"></a>
+## データのシリアライズ <span id="data-serializing"></span>
 
 上記で説明したように、[[yii\rest\Serializer]] が、リソースのオブジェクトやコレクションを配列に変換する際に、中心的な役割を果たします。
 `Serializer` は、[[yii\base\ArrayableInterface]] および [[yii\data\DataProviderInterface]] のインタフェイスを実装したオブジェクトを認識します。
@@ -131,9 +131,15 @@ Content-Type: application/json; charset=UTF-8
         ...
     ],
     "_links": {
-        "self": "http://localhost/users?page=1",
-        "next": "http://localhost/users?page=2",
-        "last": "http://localhost/users?page=50"
+        "self": {
+            "href": "http://localhost/users?page=1"
+        },
+        "next": {
+            "href": "http://localhost/users?page=2"
+        },
+        "last": {
+            "href": "http://localhost/users?page=50"
+        }
     },
     "_meta": {
         "totalCount": 1000,

@@ -20,7 +20,7 @@ if ($data === false) {
 ```
 
 
-## Componentes de Caché <a name="cache-components"></a>
+## Componentes de Caché <span id="cache-components"></span>
 
 El almacenamiento de datos en caché depende de los llamados *cache components* (componentes de caché) los cuales
 representan diferentes tipos de almacenamiento en caché, como por ejemplo en memoria, en archivos o en base de datos.
@@ -66,7 +66,7 @@ el código que utiliza la caché. Por ejemplo, podrías modificar la configuraci
 > Nota: Puedes registrar múltiples componentes de aplicación de caché. El componente llamado `cache` es usado por defecto por muchas clases caché-dependiente (ej. [[yii\web\UrlManager]]).
 
 
-### Almacenamientos de Caché Soportados <a name="supported-cache-storage"></a>
+### Almacenamientos de Caché Soportados <span id="supported-cache-storage"></span>
 
 Yii proporciona varios componentes de caché que pueden almacenar datos en diferentes medios. A continuación
 se muestra un listado con los componentes de caché disponibles:
@@ -84,7 +84,7 @@ se muestra un listado con los componentes de caché disponibles:
 > Nota: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
 
 
-## API de Caché <a name="cache-apis"></a>
+## API de Caché <span id="cache-apis"></span>
 
 Todos los componentes de almacenamiento de caché provienen de la misma clase "padre" [[yii\caching\Cache]] y por lo tanto soportan la siguiente API:
 
@@ -111,7 +111,7 @@ $value2 = $cache['var2'];  // equivalente a: $value2 = $cache->get('var2');
 ```
 
 
-### Claves de Caché <a name="cache-keys"></a>
+### Claves de Caché <span id="cache-keys"></span>
 
 Cada elemento de datos almacenado en caché se identifica por una clave. Cuando se almacena un elemento de datos en la memoria caché, se debe especificar una clave. Más tarde, cuando se recupera el elemento de datos de la memoria caché, se debe proporcionar la clave correspondiente.
 
@@ -144,7 +144,7 @@ Cuando en un mismo almacenamiento en caché es utilizado por diferentes aplicaci
 Para garantizar la interoperabilidad, deberían utilizarse sólo caracteres alfanuméricos.
 
 
-### Caducidad de Caché <a name="cache-expiration"></a>
+### Caducidad de Caché <span id="cache-expiration"></span>
 
 Un elemento de datos almacenado en la memoria caché permanecerá en ella para siempre, a menos que sea removida de alguna manera debido a alguna directiva de caché (ej. el espacio de almacenamiento en caché está lleno y los datos más antiguos se eliminan). Para cambiar este comportamiento, podrías proporcionar un parámetro de caducidad al llamar [[yii\caching\Cache::set()|set()]] para guardar el elemento de datos. El parámetro nos indica por cuántos segundos el elemento se mantendrá válido en memoria caché. Cuando llames [[yii\caching\Cache::get()|get()]] para recuperar el elemento, si el tiempo de caducidad ha pasado, el método devolverá `false`, indicando que el elemento de datos no ha sido encontrado en la memoria caché. Por ejemplo,
 
@@ -161,7 +161,7 @@ if ($data === false) {
 ```
 
 
-### Dependencias de Caché <a name="cache-dependencies"></a>
+### Dependencias de Caché <span id="cache-dependencies"></span>
 
 Además de configurar el tiempo de expiración, los datos almacenados en caché pueden también ser invalidados conforme a algunos cambios en la caché de dependencias. Por ejemplo, [[yii\caching\FileDependency]] representa la dependencia del tiempo de modificación del archivo. Cuando esta dependencia cambia, significa que el archivo correspondiente ha cambiado. Como resultado, cualquier contenido anticuado que sea encontrado en la caché debería ser invalidado y la llamada a [[yii\caching\Cache::get()|get()]] debería retornar falso.
 
@@ -191,7 +191,7 @@ Aquí abajo se muestra un sumario de las dependencias disponibles:
   con el mismo nombre del grupo a la vez llamando a [[yii\caching\TagDependency::invalidate()]].
 
 
-## Consultas en Caché <a name="query-caching"></a>
+## Consultas en Caché <span id="query-caching"></span>
 
 Las consultas en caché es una característica especial de caché construido sobre el almacenamiento de caché de datos. Se
 proporciona para almacenar en caché el resultado de consultas a la base de datos.
@@ -213,7 +213,7 @@ El almacenamiento en caché de consultas se puede usar para [DAO](db-dao.md), as
 > Nota: Algunos DBMS (ej. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
 
 
-### Configuraciones <a name="query-caching-configs"></a>
+### Configuraciones <span id="query-caching-configs"></span>
 
 Las consultas en caché tienen tres opciones configurables globales a través de [[yii\db\Connection]]:
 
@@ -224,7 +224,7 @@ Las consultas en caché tienen tres opciones configurables globales a través de
   Por defecto es `'cache'`. El almacenamiento en caché de consultas se habilita sólo si hay un componente de la aplicación de caché válida.
 
 
-### Usos <a name="query-caching-usages"></a>
+### Usos <span id="query-caching-usages"></span>
 
 Puedes usar [[yii\db\Connection::cache()]] si tienes multiples consultas SQL que necesitas a aprovechar el cacheo de consultas. El uso es de la siguiente manera,
 
@@ -287,7 +287,7 @@ $result = $db->cache(function ($db) {
 ```
 
 
-### Limitaciones <a name="query-caching-limitations"></a>
+### Limitaciones <span id="query-caching-limitations"></span>
 
 El almacenamiento en caché de consultas no funciona con los resultados de consulta que contienen controladores de recursos.
 Por ejemplo, cuando se utiliza el tipo de columna `BLOB` en algunos DBMS, el resultado de la consulta devolverá un recurso para manejar los datos de la columna.

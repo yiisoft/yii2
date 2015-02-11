@@ -23,7 +23,7 @@ Les scipts de démarrage effectuent principalement les tâches suivantes :
 * Appeler [[yii\base\Application::run()]] pour traiter la requête entrante.
 
 
-## Applications Web <a name="web-applications"></a>
+## Applications Web <span id="web-applications"></span>
 
 Ce qui suit est le code du script de démarrage du [Modèle Basique d'Application Web](start-installation.md).
 
@@ -47,7 +47,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## Applications Console <a name="console-applications"></a>
+## Applications Console <span id="console-applications"></span>
 
 De même, le code qui suit est le code du script de démarrage d'une application console :
 
@@ -83,7 +83,7 @@ exit($exitCode);
 ```
 
 
-## Définir des Constantes <a name="defining-constants"></a>
+## Définir des Constantes <span id="defining-constants"></span>
 
 Les scripts de démarrage sont l'endroit idéal pour définir des constantes globales. Yii supporte les trois constantes suivantes :
 

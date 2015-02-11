@@ -90,12 +90,12 @@ CREATE TABLE auth (
 );
 
 ALTER TABLE auth ADD CONSTRAINT fk-auth-user_id-user-id
-FOREIGN KEY user_id REFERENCES auth(id);
+FOREIGN KEY user_id REFERENCES user(id);
 ```
 
 In the SQL above `user` is a standard table that is used in advanced application template to store user
 info. Each user can authenticate using multiple external services therefore each `user` record can relate to
-multiple `auth` records. In the `auth` table `client_name` is the name of the auth provider used and `client_id` is
+multiple `auth` records. In the `auth` table `source` is the name of the auth provider used and `source_id` is
 unique user identificator that is provided by external service after successful login.
 
 Using tables created above we can generate `Auth` model. No further adjustments needed.
@@ -134,7 +134,7 @@ class SiteController extends Controller
                 $user = $auth->user;
                 Yii::$app->user->login($user);
             } else { // signup
-                if (User::find()->where(['email' => $attributes['email']])->exists()) {
+                if (isset($attributes['email']) && isset($attributes['username']) && User::find()->where(['email' => $attributes['email']])->exists()) {
                     Yii::$app->getSession()->setFlash('error', [
                         Yii::t('app', "User with the same email as in {client} account already exists but isn't linked to it. Login using email first to link it.", ['client' => $client->getTitle()]),
                     ]);
@@ -183,8 +183,8 @@ class SiteController extends Controller
 we can retrieve information received. In our case we'd like to:
  
 - If user is guest and record found in auth then log this user in.
-- If user is logged in and record found in auth then try connecting additional account (save its data into auth table).
 - If user is guest and record not found in auth then create new user and make a record in auth table. Then log in.
+- If user is logged in and record not found in auth then try connecting additional account (save its data into auth table).
 
 Although, all clients are different they shares same basic interface [[yii\authclient\ClientInterface]],
 which governs common API.

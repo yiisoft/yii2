@@ -13,7 +13,7 @@ aplicadas *antes* que as ações) e/ou um pós-filtro (lógica aplicada *depois*
 que as ações).
 
 
-## Usando os Filtros <a name="using-filters"></a>
+## Usando os Filtros <span id="using-filters"></span>
 
 Os filtros são, essencialmente, um tipo especial de 
 [behaviors (comportamento)](concept-behaviors.md). No entanto, o uso dos filtros 
@@ -73,7 +73,7 @@ de acordo com as seguintes regras:
     - Aplica os filtros declarados na aplicação na ordem inversa ao que foram listados no método `behaviors()`.
 
 
-## Criando Filtros <a name="creating-filters"></a>
+## Criando Filtros <span id="creating-filters"></span>
 
 Para criar um novo filtro de ação, deve estender a classe [[yii\base\ActionFilter]] 
 e sobrescrever os métodos [[yii\base\ActionFilter::beforeAction()|beforeAction()]] 
@@ -112,14 +112,14 @@ class ActionTimeFilter extends ActionFilter
 ```
 
 
-## Filtros Nativos <a name="core-filters"></a>
+## Filtros Nativos <span id="core-filters"></span>
 
 O Yii fornece um conjunto de filtros que normalmente são usados, localizados sob 
 o namespace `yii\filters`. A seguir, iremos realizar uma breve apresentação 
 destes filtros.
 
 
-### [[yii\filters\AccessControl|AccessControl]] <a name="access-control"></a>
+### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
 O filtro AccessControl fornece um controle de acesso simples, baseado em um 
 conjunto de [[yii\filters\AccessControl::rules|regras]].
@@ -159,7 +159,7 @@ De modo geral, para mais detalhes sobre o controle de acesso, por favor, consult
 a seção [Autorização](security-authorization.md).
 
 
-### Métodos de Autenticação por Filtros <a name="auth-method-filters"></a>
+### Métodos de Autenticação por Filtros <span id="auth-method-filters"></span>
 
 O método de autenticação por filtros são usados para autenticar um usuário usando 
 vários métodos, tais como 
@@ -191,7 +191,7 @@ de APIs RESTful. Para mais detalhes, por favor, consulte a seção RESTful
 [Autenticação](rest-authentication.md).
 
 
-### [[yii\filters\ContentNegotiator|ContentNegotiator]] <a name="content-negotiator"></a>
+### [[yii\filters\ContentNegotiator|ContentNegotiator]] <span id="content-negotiator"></span>
 
 O filtro ContentNegotiator suporta a identificação de formatos de respostas e o 
 idioma da aplicação. Este filtro tentar determinar o formato de resposta e o 
@@ -257,7 +257,7 @@ use yii\web\Response;
   [[languages]] serão utilizados.
 
 
-### [[yii\filters\HttpCache|HttpCache]] <a name="http-cache"></a>
+### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
 O filtro HttpCache implementa no lado do cliente (client-side) o cache pela 
 utilização dos parâmetros `Last-Modified` e `Etag` do cabeçalho HTTP.
@@ -285,7 +285,7 @@ Por favor, consulte a seção [Cache HTTP](caching-http.md) para mais detalhes
 sobre o uso do HttpCache.
 
 
-### [[yii\filters\PageCache|PageCache]] <a name="page-cache"></a>
+### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
 O filtro PageCache implementa no lado do servidor (server-side) o cache das 
 páginas. No exemplo a seguir, o PageCache é aplicado para a ação `index` guardar 
@@ -320,7 +320,7 @@ Por favor, consulte a seção [Cache de Página](caching-page.md) para mais
 detalhes sobre o uso do PageCache.
 
 
-### [[yii\filters\RateLimiter|RateLimiter]] <a name="rate-limiter"></a>
+### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 O filtro RateLimiter implementa um limitador de acesso baseado no 
 [algoritmo do balde furado (leaky bucket)](http://en.wikipedia.org/wiki/Leaky_bucket).
@@ -329,7 +329,7 @@ seção [Limitador de Acesso](rest-rate-limiting.md) para mais detalhes sobre o
 uso deste filtro.
 
 
-### [[yii\filters\VerbFilter|VerbFilter]] <a name="verb-filter"></a>
+### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
 
 O filtro VerbFilter verifica se os métodos de requisição HTTP são permitidos para 
 as ações solicitadas. Se não for, será lançada uma exceção HTTP 405. No exemplo 
@@ -356,7 +356,7 @@ public function behaviors()
 }
 ```
 
-### [[yii\filters\Cors|Cors]] <a name="cors"></a>
+### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
 O compartilhamento de recursos cross-origin 
 [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) é um 

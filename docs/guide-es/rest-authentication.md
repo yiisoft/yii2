@@ -111,7 +111,7 @@ y entonces ejecutar la acción. La identidad del usuario autenticado puede ser r
 Si la autenticación falla, una respuesta con estado HTTP 401 será devuelta junto con otras cabeceras apropiadas (tal como la cabecera para autenticación básica HTTP `WWW-Authenticate`).
 
 
-## Autorización <a name="authorization"></a>
+## Autorización <span id="authorization"></span>
 
 Después de que un usuario se ha autenticado, probablementer querrás comprobar si él o ella tiene los permisos para realizar
 la acción solicitada. Este proceso es llamado *autorización (authorization)* y está cubierto en detalle en la [Sección de Autorización](security-authorization.md).

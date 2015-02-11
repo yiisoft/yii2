@@ -26,7 +26,7 @@ Por favor, consulte a documentação relevante para mais detalhes sobre estes mo
 > [[yii\base\Model]], normalmente é a classe base preferível para um model.
 
 
-## Atributos <a name="attributes"></a>
+## Atributos <span id="attributes"></span>
 
 Os models representam dados de negócio por meio de *atributos*. Cada atributo é 
 uma propriedade publicamente acessível de um model. O método [[yii\base\Model::attributes()]] 
@@ -61,7 +61,7 @@ foreach ($model as $name => $value) {
 ```
 
 
-### Definindo Atributos <a name="defining-attributes"></a>
+### Definindo Atributos <span id="defining-attributes"></span>
 
 Por padrão, se a classe model estender diretamente de [[yii\base\Model]], todas 
 as suas variáveis públicas e não estáticas serão atributos. Por exemplo, a classe 
@@ -93,7 +93,7 @@ Observe que também poderá sobrescrever os métodos mágicos tais como `__get()
 de objetos.
 
 
-### Labels dos Atributos <a name="attribute-labels"></a>
+### Labels dos Atributos <span id="attribute-labels"></span>
 
 Ao exibir valores ou obter dados de entrada dos atributos, muitas vezes é necessário 
 exibir alguns labels associados aos atributos. Por exemplo, dado um atributo chamado 
@@ -170,7 +170,7 @@ frequentemente tornam-se mais convenientes e podem resultar um código mais limp
 e reutilizável.
 
 
-## Cenários <a name="scenarios"></a>
+## Cenários <span id="scenarios"></span>
 
 Um model (modelo) pode ser usado em diferentes *cenários*. Por exemplo, um model 
 `User` pode ser usado para obter dados de entrada de login, mas também pode ser 
@@ -253,7 +253,7 @@ Você pode, no entanto, usá-lo para outros fins. Por exemplo, você pode declar
 diferentes [labels para os atributos](#attribute-labels) baseados no cenário atual.
 
 
-## Regras de Validação <a name="validation-rules"></a>
+## Regras de Validação <span id="validation-rules"></span>
 
 Quando os dados para um model (modelo) são recebidos de usuários finais, devem ser 
 validados para garantir que satisfazem as regras (*regras de validação*, também 
@@ -332,7 +332,7 @@ Um atributo será validado, se e somente se, for um atributo ativo declarado no
 método `scenarios()` e estiver associado a uma ou várias regras declaradas no método `rules()`.
 
 
-## Atribuição em Massa <a name="massive-assignment"></a>
+## Atribuição em Massa <span id="massive-assignment"></span>
 
 Atribuição em massa é a forma conveniente para popular um model (modelo) com os 
 dados de entrada do usuário usando uma única linha de código.
@@ -358,7 +358,7 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 ```
 
 
-### Atributos Seguros <a name="safe-attributes"></a>
+### Atributos Seguros <span id="safe-attributes"></span>
 
 A atribuição em massa só se aplica aos chamados *safe attributes* (atributos seguros), 
 que são os atributos listados no [[yii\base\Model::scenarios()]] para o 
@@ -403,7 +403,7 @@ public function rules()
 ```
 
 
-### Atributos não Seguros <a name="unsafe-attributes"></a>
+### Atributos não Seguros <span id="unsafe-attributes"></span>
 
 Como descrito anteriormente, o método [[yii\base\Model::scenarios()]] serve para 
 dois propósitos: determinar quais atributos devem ser validados e quais atributos 
@@ -431,7 +431,7 @@ $model->secret = $secret;
 ```
 
 
-## Exportação de Dados <a name="data-exporting"></a>
+## Exportação de Dados <span id="data-exporting"></span>
 
 Muitas vezes os models (modelos) precisam ser exportados em diferentes tipos de 
 formatos. Por exemplo, você pode querer converter um conjunto de models (modelos) 
@@ -462,7 +462,7 @@ Na verdade, é a maneira padrão de exportação de models (modelos) no desenvol
 de Web services RESTful, como descrito na seção [Formatando Respostas](rest-response-formatting.md).
 
 
-### Campos <a name="fields"></a>
+### Campos <span id="fields"></span>
 
 Um campo é simplesmente um elemento nomeado no array obtido pela chamada do método 
 [[yii\base\Model::toArray()]] de um model (modelo).
@@ -530,7 +530,7 @@ public function fields()
 >campos `auth_key`, `password_hash` e `password_reset_token`.
 
 
-## Boas Práticas <a name="best-practices"></a>
+## Boas Práticas <span id="best-practices"></span>
 
 A representação dos dados, regras e lógicas de negócios estão centralizados nos 
 models (modelos). Muitas vezes precisam ser reutilizadas em lugares diferentes. 
@@ -568,7 +568,7 @@ estenderá a classe model (modelo) base que a corresponde. A classe model (model
 concreta irá conter apenas as regras e lógicas que são específicas de uma aplicação 
 ou módulo.
 
-Por exemplo, no [Modelo de Aplicação Avançada](tutorial-advanced-app.md), você 
+Por exemplo, no [Template Avançado de Aplicação](tutorial-advanced-app.md), você 
 pode definir uma classe model (modelo) base `common\models\Post`. Em seguida, 
 para a aplicação front-end, você define uma classe model (modelo) concreta 
 `frontend\models\Post` que estende de `common\models\Post`. E de forma similar 

@@ -13,7 +13,7 @@ only works for `GET` and `HEAD` requests. It can handle three kinds of cache-rel
 * [[yii\filters\HttpCache::cacheControlHeader|Cache-Control]]
 
 
-## `Last-Modified` Header <a name="last-modified"></a>
+## `Last-Modified` Header <span id="last-modified"></span>
 
 The `Last-Modified` header uses a timestamp to indicate if the page has been modified since the client caches it.
 
@@ -56,7 +56,7 @@ the server will not re-generate the page, and the browser will use the cached ve
 As a result, server-side rendering and page content transmission are both skipped.
 
 
-## `ETag` Header <a name="etag"></a>
+## `ETag` Header <span id="etag"></span>
 
 The "Entity Tag" (or `ETag` for short) header use a hash to represent the content of a page. If the page
 is changed, the hash will be changed as well. By comparing the hash kept on the client side with the hash
@@ -113,7 +113,7 @@ the cache if the page content has been modified.
   will be respected.
 
 
-## `Cache-Control` Header <a name="cache-control"></a>
+## `Cache-Control` Header <span id="cache-control"></span>
 
 The `Cache-Control` header specifies the general caching policy for pages. You may send it by configuring
 the [[yii\filters\HttpCache::cacheControlHeader]] property with the header value. By default, the following
@@ -123,7 +123,7 @@ header will be sent:
 Cache-Control: public, max-age=3600
 ```
 
-## Session Cache Limiter <a name="session-cache-limiter"></a>
+## Session Cache Limiter <span id="session-cache-limiter"></span>
 
 When a page uses session, PHP will automatically send some cache-related HTTP headers as specified in
 the `session.cache_limiter` PHP INI setting. These headers may interfere or disable the caching
@@ -135,7 +135,7 @@ these headers automatically. If you want to change this behavior, you should con
 for explanations about these values.
 
 
-## SEO Implications <a name="seo-implications"></a>
+## SEO Implications <span id="seo-implications"></span>
 
 Search engine bots tend to respect cache headers. Since some crawlers have a limit on how many pages
 per domain they process within a certain time span, introducing caching headers may help indexing your

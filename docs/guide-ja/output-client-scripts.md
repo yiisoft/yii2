@@ -31,7 +31,7 @@ ID を指定しない場合は、JS コードそれ自身が ID として扱わ�
 外部スクリプトは次のようにして追加することが出来ます。
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js', ['depends' => [JqueryAsset::className()]]);
+$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ```
 
 [[yii\web\View::registerJsFile()|registerJsFile()]] の引数は [[yii\web\View::registerCssFile()|registerCssFile()]] のそれと同じです。

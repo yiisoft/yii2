@@ -27,7 +27,7 @@ O trabalho principal dos scripts de entrada é o seguinte:
 * Chamar [[yii\base\Application::run()]] para processar as requisições que chegam.
 
 
-## Aplicações Web <a name="web-applications"></a>
+## Aplicações Web <span id="web-applications"></span>
 
 Este é o código no script de entrada para o [Modelo Básico de Aplicação Web](start-installation.md).
 
@@ -51,7 +51,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## Aplicações Console <a name="console-applications"></a>
+## Aplicações Console <span id="console-applications"></span>
 
 De forma semelhante, o seguinte é o código do script de entrada de uma aplicação
 do console:
@@ -88,7 +88,7 @@ exit($exitCode);
 ```
 
 
-## Definindo Constantes <a name="defining-constants"></a>
+## Definindo Constantes <span id="defining-constants"></span>
 
 Os scrips de entrada são o melhor lugar para definir as constantes globais. O
 Yii suporta as seguintes três constantes:

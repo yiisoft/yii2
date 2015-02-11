@@ -36,7 +36,7 @@ If you do not have [Composer](http://getcomposer.org/), follow the instructions 
 
 With Composer installed, you can then install the application using the following commands:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+    composer global require "fxp/composer-asset-plugin:1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-advanced yii-application
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -62,7 +62,7 @@ the installed application. You only need to do these once for all.
     php /path/to/yii-application/init --env=Production --overwrite=All
     ```
 
-2. Create a new database and adjust the `components.db` configuration in `common/config/main-local.php` accordingly.
+2. Create a new database and adjust the `components['db']` configuration in `common/config/main-local.php` accordingly.
 3. Apply migrations with console command `yii migrate`.
 4. Set document roots of your web server:
 

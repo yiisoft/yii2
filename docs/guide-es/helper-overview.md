@@ -40,7 +40,7 @@ Las siguientes clases helper del núcleo son proporcionadas en los releases de Y
 - VarDumper
 
 
-Personalizando Las Clases Helper <a name="customizing-helper-classes"></a>
+Personalizando Las Clases Helper <span id="customizing-helper-classes"></span>
 --------------------------------
 
 Para personalizar una clase helper del núcleo (ej. [[yii\helpers\ArrayHelper]]), deberías crear una nueva clase extendiendo

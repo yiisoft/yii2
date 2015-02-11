@@ -26,7 +26,7 @@ Yii::configure($object, $config);
 
 Tenga en cuenta que en este caso, la matriz de configuración no debe contener un elemento `class`.
 
-## Formato de Configuración <a name="configuration-format"></a>
+## Formato de Configuración <span id="configuration-format"></span>
 
 El formato de una configuración se puede describir formalmente como:
 
@@ -63,12 +63,12 @@ A continuación se muestra un ejemplo de una configuración con los valores de p
 ```
 
 
-## Usando Configuraciones <a name="using-configurations"></a>
+## Usando Configuraciones <span id="using-configurations"></span>
 
 Las configuraciones se utilizan en muchos lugares en Yii. Al comienzo de esta sección, hemos demostrado cómo crear un objeto según una configuración mediante el uso de [[Yii::CreateObject()]]. En este apartado, vamos a describir configuraciones de aplicaciones y configuraciones widget - dos principales usos de configuraciones.
 
 
-### Configuraciones de aplicación <a name="application-configurations"></a>
+### Configuraciones de aplicación <span id="application-configurations"></span>
 
 Configuración para una [aplicación](structure-applications.md) es probablemente una de las configuraciones más complejas. Esto se debe a que la clase [[yii\web\Application|aplicación]] tiene un montón de propiedades y eventos configurables. Más importante aún, su propiedad [[yii\web\Application::components|componentes]] que puede recibir una gran variedad de configuraciones para crear componentes que se registran a través de la aplicación. Lo siguiente es un resumen del archivo de configuración de la aplicación para la [plantilla básica de la aplicación](start-installation.md).
 
@@ -113,7 +113,7 @@ La configuración no tiene una clave `class`. Esto es porque se utiliza como sig
 Para más detalles sobre la configuración de la propiedad `components` de una aplicación se puede encontrar en la sección [Aplicación](structure-applications.md) y la sección [Localizador de Servicio](concept-service-locator.md).
 
 
-### Configuración Widget <a name="widget-configurations"></a>
+### Configuración Widget <span id="widget-configurations"></span>
 
 Cuando se utiliza [widgets](structure-widgets.md), a menudo es necesario utilizar las configuraciones para personalizar las propiedades de widgets. Tanto los metodos [[yii\base\Widget::widget()]] y [[yii\base\Widget::begin()]] pueden usarse para crear un widget. Toman un arreglo de configuración, como el siguiente,
 
@@ -135,7 +135,7 @@ El código anterior crea un widget `Menu` e inicializa su propiedad `activeItems
 Tenga en cuenta que debido a que el nombre de la clase ya está dado, la matriz de configuración no deben tener la clave `class`.
 
 
-## Archivos de Configuración <a name="configuration-files"></a>
+## Archivos de Configuración <span id="configuration-files"></span>
 
 Cuando una configuración es muy compleja, una práctica común es almacenarla en uno o múltiples archivos PHP, conocidos como *archivos de configuración*. Un archivo de configuración devuelve un array de PHP que representa la configuración. Por ejemplo, es posible mantener una configuración de la aplicación en un archivo llamado `web.php`, como el siguiente,
 
@@ -185,7 +185,7 @@ $config = require('path/to/web.php');
 ```
 
 
-## Configuraciones por Defecto <a name="default-configurations"></a>
+## Configuraciones por Defecto <span id="default-configurations"></span>
 
 El método [[Yii::createObject()]] es implementado en base a [contenedor de inyección de dependencia](concept-di-container.md). Le permite especificar un conjunto de los llamados *configuraciones predeterminadas* que se aplicarán a todos los casos de las clases especificadas cuando se crean utilizando [[Yii::createObject()]]. Las configuraciones por defecto se puede especificar llamando `Yii::$container->set()` en el código [bootstrapping](runtime-bootstrapping.md).
 
@@ -199,7 +199,7 @@ Por ejemplo, si desea personalizar [[yii\widgets\LinkPager]] para que TODO enlac
 
 Sin utilizar las configuraciones predeterminadas, usted tendría que configurar `maxButtonCount` en cada lugar en el que utiliza enlace paginador.
 
-## Constantes de Entorno <a name="environment-constants"></a>
+## Constantes de Entorno <span id="environment-constants"></span>
 
 Las configuraciones a menudo varían de acuerdo al entorno en que se ejecuta una aplicación. Por ejemplo, en el entorno de desarrollo, es posible que desee utilizar una base de datos llamada `mydb_dev`, mientras que en servidor de producción es posible que desee utilizar la base de datos `mydb_prod`. Para facilitar la conmutación de entornos, Yii proporciona una constante llamado `YII_ENV` que se puede definir en el [script de entrada](structure-entry-scripts.md) de su aplicación. Por ejemplo,
 

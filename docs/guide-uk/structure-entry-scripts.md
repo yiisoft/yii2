@@ -23,7 +23,7 @@
 * Викликають метод [[yii\base\Application::run()]] додатка для обробки вхідного запиту.
 
 
-## Веб додатки <a name="web-applications"></a>
+## Веб додатки <span id="web-applications"></span>
 
 Нижче наведений код вхідного скрипта для [базового шаблону додатка](start-installation.md).
 
@@ -47,7 +47,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ```
 
 
-## Консольні додатки <a name="console-applications"></a>
+## Консольні додатки <span id="console-applications"></span>
 
 Нижче наведений аналогічний код вхідного скрипта консольного додатка:
 
@@ -83,7 +83,7 @@ exit($exitCode);
 ```
 
 
-## Оголошення констант <a name="defining-constants"></a>
+## Оголошення констант <span id="defining-constants"></span>
 
 Вхідні скрипти є найкращим місцем для оголошення глобальних констант. Yii підтримує наступні три константи:
 

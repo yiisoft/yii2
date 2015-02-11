@@ -4,7 +4,7 @@ Yii Framework 2 jui extension Change Log
 2.0.3 under development
 -----------------------
 
-- no changes in this release.
+- Enh #7127: `name` or `model` and `attribute` are no longer required properties of `yii\jui\InputWidget` (nirvana-msu, cebe)
 
 
 2.0.2 January 11, 2015

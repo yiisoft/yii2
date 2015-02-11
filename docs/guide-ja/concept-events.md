@@ -10,7 +10,7 @@ Yiiはイベントをサポートするために、 [[yii\base\Component]] と�
 [[yii\base\Component]] もしくはその子クラスを継承する必要があります。
 
 
-イベントハンドラ <a name="event-handlers"></a>
+イベントハンドラ <span id="event-handlers"></span>
 --------------
 
 イベントハンドラとは、関連するイベントがトリガされたときに実行される、 [PHP コールバック](http://www.php.net/manual/en/language.types.callable.php)
@@ -36,7 +36,7 @@ function ($event) {
 - [[yii\base\Event::data|カスタムデータ]]: イベントハンドラを接続するときに提供されたデータ (後述)
 
 
-イベントハンドラのアタッチ <a name="attaching-event-handlers"></a>
+イベントハンドラのアタッチ <span id="attaching-event-handlers"></span>
 ------------------------
 
 イベントハンドラは [[yii\base\Component::on()]] を呼び出すことでアタッチできます。たとえば:
@@ -98,7 +98,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 }, $data, false);
 ```
 
-イベントのトリガー <a name="triggering-events"></a>
+イベントのトリガー <span id="triggering-events"></span>
 -----------------
 
 イベントは、 [[yii\base\Component::trigger()]] メソッドを呼び出すことでトリガされます。このメソッドには **イベント名** が必須で、
@@ -162,7 +162,7 @@ class Mailer extends Component
 アタッチされたハンドラがすべて呼び出されます。
 
 
-イベントハンドラのデタッチ <a name="detaching-event-handlers"></a>
+イベントハンドラのデタッチ <span id="detaching-event-handlers"></span>
 ------------------------
 
 イベントからハンドラを取り外すには、 [[yii\base\Component::off()]] メソッドを呼び出します。たとえば:
@@ -191,7 +191,7 @@ $foo->off(Foo::EVENT_HELLO);
 ```
 
 
-クラスレベル・イベントハンドラ <a name="class-level-event-handlers"></a>
+クラスレベル・イベントハンドラ <span id="class-level-event-handlers"></span>
 --------------------------
 
 ここまでの項では、 *インスタンスレベル* でのイベントにハンドラをアタッチする方法を説明してきました。
@@ -249,7 +249,7 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
-グローバル・イベント <a name="global-events"></a>
+グローバル・イベント <span id="global-events"></span>
 -------------
 
 Yiiは、実際に上記のイベントメカニズムに基づいたトリックである、いわゆる *グローバル・イベント* をサポートしています。
@@ -274,6 +274,6 @@ Yii::$app->trigger('bar', new Event(['sender' => new Foo]));
 ということです。その代わりに、ハンドラのアタッチとイベントのトリガはともに、(アプリケーションのインスタンスなど) シングルトンを
 介して行われます。
 
-しかし、グローバルイベントの名前空間はあらゆる部分から共有されているので、名前空間の整理 ("frontend.mail.sent"、"backend.mail.sent" など)
+しかし、グローバルイベントの名前空間はあらゆる部分から共有されているので、ある種の名前空間 ("frontend.mail.sent"、"backend.mail.sent" など)
 を導入するというような、賢いグローバルイベントの名前付けをする必要があります。
 

@@ -16,7 +16,7 @@ Usar el framework de registro de anotaciones de Yii involucra los siguientes pas
 
 En esta sección, se describirán principalmente los dos primeros pasos.
 
-## Anotación de Messages <a name="log-messages"></a>
+## Anotación de Messages <span id="log-messages"></span>
 
 Registrar mensajes de anotación es tan simple como llamar a uno de los siguientes métodos de registro de anotaciones.
 
@@ -60,7 +60,7 @@ linea anterior de código se llamara dentro de este método.
   finalizado, el objeto de registro llamará [[yii\log\Dispatcher|message dispatcher]] para enviar los mensajes de
   registro registrados a los [destiinos de registros](#log-targets).
 
-## Destino de Registros <a name="log-targets"></a>
+## Destino de Registros <span id="log-targets"></span>
 
 Un destino de registro es una instancia de la clase [[yii\log\Target]] o de una clase hija. Este filtra los
 mensajes de registro por sus niveles de severidad y sus categorías y después los exporta a algún medio. Por ejemplo,
@@ -120,7 +120,7 @@ información de configuración y uso.
 
 A continuación, se describirá las características más comunes de todos los destinos de registros.
 
-### Filtrado de Mensajes <a name="message-filtering"></a>
+### Filtrado de Mensajes <span id="message-filtering"></span>
 
 Se pueden configurar las propiedades [[yii\log\Target::levels|levels]] y [[yii\log\Target::categories|categories]]
 para cada destino de registros, con estas se especifican los niveles de severidad y las categorías de mensajes que
@@ -176,7 +176,7 @@ de advertencia de las categorías que coincidan con alguno de los siguientes pat
   ejemplo, la excepción [[yii\web\NotFoundHttpException]] causará un mensaje de error del tipo
   `yii\web\HttpException:404`.
 
-### Formato de los Mensajes <a name="message-formatting"></a>
+### Formato de los Mensajes <span id="message-formatting"></span>
 
 Los destinos exportan los mensajes de registro filtrados en cierto formato. Por ejemplo, is se instala un
 destino de registros de la calse [[yii\log\FileTarget]], encontraremos un registro similar en el archivo de
@@ -227,7 +227,7 @@ Se puede configurar `logVars` para que sea un array vacío para deshabilitar tot
 contexto. O si se desea implementar un método propio de proporcionar información de contexto se puede sobrescribir el
 método [[yii\log\Target::getContextMessage()]].
 
-### Nivel de Seguimiento de Mensajes <a name="trace-level"></a>
+### Nivel de Seguimiento de Mensajes <span id="trace-level"></span>
 
 Durante el desarrollo, a veces se quiere visualizar de donde proviene cada mensaje de registro. Se puede lograr
 configurando la propiedad [[yii\log\Dispatcher::traceLevel|traceLevel]] del componente `log` como en el siguiente
@@ -253,7 +253,7 @@ si `YII_DEBUG` está deshabilitado, no se incluirá información de la pila de l
 > Información: Obtener información de la pila de llamadas no es trivial. Por lo tanto, sólo se debe usar esta
   característica durante el desarrollo o cuando se depura la aplicación.
 
-### Liberación (Flushing) y Exportación de Mensajes <a name="flushing-exporting"></a>
+### Liberación (Flushing) y Exportación de Mensajes <span id="flushing-exporting"></span>
 
 Como se ha comentado anteriormente, los mensajes de registro se mantienen en un array por el
 [[yii\log\Logger|logger object]]. Para limitar el consumo de memoria de este array, el componente encargado del
@@ -315,7 +315,7 @@ return [
 
 > Nota: El uso frecuente de liberación y exportación puede degradar el rendimiento de la aplicación.
 
-### Conmutación de Destinos de Registros <a name="toggling-log-targets"></a>
+### Conmutación de Destinos de Registros <span id="toggling-log-targets"></span>
 
 Se puede habilitar o deshabilitar un destino de registro configuración su propiedad
 [[yii\log\Target::enabled|enabled]]. Esto se puede llevar a cabo a mediante la configuración del destino de
@@ -346,14 +346,14 @@ return [
 ];
 ```
 
-### Creación de Nuevos Destinos <a name="new-targets"></a>
+### Creación de Nuevos Destinos <span id="new-targets"></span>
 
 La creación de nuevas clases de destinos de registro es muy simple. Se necesita implementar el método
 [[yii\log\Target::export()]] enviando el contenido del array [[yii\log\Target::messages]] al medio designado. Se puede
 llamar al método [[yii\log\Target::formatMessage()]] para formatear los mensajes. Se pueden encontrar más detalles de
 destinos de registros en las clases incluidas en la distribución de Yii.
 
-## Perfilado de Rendimiento <a name="performance-profiling"></a>
+## Perfilado de Rendimiento <span id="performance-profiling"></span>
 
 El Perfilado de rendimiento es un tipo especial de registro de mensajes que se usa para medir el tiempo que tardan en
 ejecutarse ciertos bloques de código y encontrar donde están los cuellos de botella de rendimiento. Por ejemplo, la

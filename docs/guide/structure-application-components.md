@@ -51,7 +51,7 @@ For example,
   and use it when needed.
 
 
-## Bootstrapping Components <a name="bootstrapping-components"></a>
+## Bootstrapping Components <span id="bootstrapping-components"></span>
 
 As mentioned above, an application component will only be instantiated when it is being accessed the first time.
 If it is not accessed at all during a request, it will not be instantiated. Sometimes, however, you may want
@@ -74,7 +74,7 @@ For example, the following application configuration makes sure the `log` compon
 ```
 
 
-## Core Application Components <a name="core-application-components"></a>
+## Core Application Components <span id="core-application-components"></span>
 
 Yii defines a set of *core* application components with fixed IDs and default configurations. For example,
 the [[yii\web\Application::request|request]] component is used to collect information about

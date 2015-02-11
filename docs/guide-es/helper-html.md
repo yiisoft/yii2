@@ -10,14 +10,14 @@ que proporciona un conjunto de métodos estáticos para gestionar las etiquetas 
 > Nota: Si el marcado es casi estático, es preferible usar HTML directamente. No es necesario encapsularlo todo con
 llamadas a la clase auxiliar Html.
 
-## Lo fundamental <a name="basics"></a>
+## Lo fundamental <span id="basics"></span>
 
 
 Teniendo en cuenta que la construcción de HTML dinámico mediante la concatenación de cadenas de texto se complica
 rápidamente, Yii proporciona un conjunto de métodos para manipular las opciones de etiquetas y la construcción de las
 mismas basadas en estas opciones.
 
-### Generación de etiquetas <a name="generating-tags"></a>
+### Generación de etiquetas <span id="generating-tags"></span>
 
 El código de generación de etiquetas es similar al siguiente:
 
@@ -53,7 +53,7 @@ gestión adicional que se debe conocer:
   `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` se convierte en
   `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
 
-### Formación de clases y estilos dinámicamente <a name="forming-css"></a>
+### Formación de clases y estilos dinámicamente <span id="forming-css"></span>
 
 Cuando se construyen opciones para etiquetas HTML, a menudo nos encontramos con valores predeterminados que hay que
 modificar. Para añadir o eliminar clases CSS se puede usar el siguiente ejemplo:
@@ -92,7 +92,7 @@ corresponde a nombres y valores de la propiedad CSS correspondiente o a una cade
 [[yii\helpers\Html::removeCssStyle()|removeCssStyle()]] acepta un array de propiedades que se eliminarán. Si sólo se
 eliminara una propiedad, se puede especificar como una cadena de texto.
 
-## Codificación y Decodificación del contenido <a name="encoding-and-decoding-content"></a>
+## Codificación y Decodificación del contenido <span id="encoding-and-decoding-content"></span>
 
 
 Para que el contenido se muestre correctamente y de forma segura con caracteres especiales HTML el contenido debe ser
@@ -109,7 +109,7 @@ echo $userName;
 $decodedUserName = Html::decode($userName);
 ```
 
-## Formularios <a name="forms"></a>
+## Formularios <span id="forms"></span>
 
 
 El trato con el marcado de formularios es una tarea repetitiva y propensa a errores. Por esto hay un grupo de métodos
@@ -118,7 +118,7 @@ para ayudar a gestionarlos.
 > Nota: hay que considerar la opción de usar [[yii\widgets\ActiveForm|ActiveForm]] en caso de que se gestionen
 formularios que requieran validaciones.
 
-### Creando formularios <a name="creating-forms"></a>
+### Creando formularios <span id="creating-forms"></span>
 
 Se puede abrir un formulario con el método [[yii\helpers\Html::beginForm()|beginForm()]] como se muestra a
 continuación:
@@ -139,7 +139,7 @@ El cierre de la etiqueta `form` es simple:
 <?= Html::endForm() ?>
 ```
 
-### Botones <a name="buttons"></a>
+### Botones <span id="buttons"></span>
 
 Para generar botones se puede usar el siguiente código:
 
@@ -153,7 +153,7 @@ El primer argumento para los tres métodos es el título del botón y el segundo
 codificado pero si se usan datos recibidos por el usuario, deben codificarse mediante
 [[yii\helpers\Html::encode()|Html::encode()]].
 
-### Inputs <a name="input-fields"></a>
+### Inputs <span id="input-fields"></span>
 
 Hay dos grupos en los métodos input. Unos empiezan con `active` y se llaman inputs activos y los otros no empiezan
 así. Los inputs activos obtienen datos del modelo y del atributo especificado y los datos de los inputs normales se
@@ -217,7 +217,7 @@ Si no, se puede usar la lista de opciones (radio list):
 <?= Html::activeRadioList($user, 'role', ArrayHelper::map($roleModels, 'id', 'name')) ?>
 ```
 
-### Etiquetas y Errores <a name="labels-and-errors"></a>
+### Etiquetas y Errores <span id="labels-and-errors"></span>
 
 De forma parecida que en los inputs hay dos métodos para generar etiquetas. El activo que obtiene los datos del modelo y
 el no-activo que acepta los datos directamente:
@@ -239,7 +239,7 @@ Para mostrar un error individual:
 <?= Html::error($post, 'title', ['class' => 'error']) ?>
 ```
 
-### Input Names y Values <a name="input-names-and-values"></a>
+### Input Names y Values <span id="input-names-and-values"></span>
 
 Existen métodos para obtener names, IDs y values para los campos de entrada (inputs) basados en el modelo. Estos se
 usan principalmente internamente pero a veces pueden resultar prácticos:
@@ -274,7 +274,7 @@ Para obtener el nombre de atributo sin sufijos o prefijos se puede usar el sigui
 echo Html::getAttributeName('dates[0]');
 ```
 
-## Estilos y scripts <a name="styles-and-scripts"></a>
+## Estilos y scripts <span id="styles-and-scripts"></span>
 
 
 Existen dos métodos para generar etiquetas que envuelvan estilos y scripts incrustados (embebbed):
@@ -323,7 +323,7 @@ Es igual que con las CSS, el primer argumento especifica el enlace al fichero qu
 pueden pasar como segundo argumento. En las opciones se puede especificar `condition` del mismo modo que se puede usar
 para `cssFile`.
 
-## Enlaces <a name="hyperlinks"></a>
+## Enlaces <span id="hyperlinks"></span>
 
 
 Existe un método para generar hipervínculos a conveniencia:
@@ -343,7 +343,7 @@ Si se requiere generar enlaces de tipo `mailto` se puede usar el siguiente códi
 <?= Html::mailto('Contact us', 'admin@example.com') ?>
 ```
 
-## Imagenes <a name="images"></a>
+## Imagenes <span id="images"></span>
 
 
 Para generar una etiqueta de tipo imagen se puede usar el siguiente ejemplo:
@@ -359,7 +359,7 @@ genera
 Aparte de los [alias](concept-aliases.md) el primer argumento puede aceptar rutas, parámetros y URLs. Del mismo modo
 que [Url::to()](helper-url.md).
 
-## Listas <a name="lists"></a>
+## Listas <span id="lists"></span>
 
 
 Las listas desordenadas se puede generar como se muestra a continuación:

@@ -18,7 +18,7 @@ to develop applications with multiple tiers.
   recommend you stick to the Basic Application Template for its simplicity yet sufficient functionalities.
 
 
-Installing via Composer <a name="installing-via-composer"></a>
+Installing via Composer <span id="installing-via-composer"></span>
 -----------------------
 
 If you do not already have Composer installed, you may do so by following the instructions at
@@ -37,7 +37,7 @@ by running `composer self-update`.
 
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+    composer global require "fxp/composer-asset-plugin:1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -56,7 +56,7 @@ once for all. The second command installs Yii in a directory named `basic`. You 
 > Note that the development version of Yii should not be used for production as it may break your running code.
 
 
-Installing from an Archive File <a name="installing-from-archive-file"></a>
+Installing from an Archive File <span id="installing-from-archive-file"></span>
 -------------------------------
 
 Installing Yii from an archive file involves three steps:
@@ -72,7 +72,7 @@ Installing Yii from an archive file involves three steps:
    ```
 
 
-Other Installation Options <a name="other-installation-options"></a>
+Other Installation Options <span id="other-installation-options"></span>
 --------------------------
 
 The above installation instructions show how to install Yii, which also creates a basic Web application that works out of the box.
@@ -87,7 +87,7 @@ But there are other installation options available:
   you may consider installing the [Advanced Application Template](tutorial-advanced-app.md).
 
 
-Verifying the Installation <a name="verifying-installation"></a>
+Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
 After installation, you can use your browser to access the installed Yii application with the following URL:
@@ -117,7 +117,7 @@ the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a
 (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
-Configuring Web Servers <a name="configuring-web-servers"></a>
+Configuring Web Servers <span id="configuring-web-servers"></span>
 -----------------------
 
 > Info: You may skip this subsection for now if you are just test driving Yii with no intention
@@ -125,9 +125,9 @@ Configuring Web Servers <a name="configuring-web-servers"></a>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebooks
-[HHVM](http://hhvm.com/) however there are some edge cases where HHVM behaves different than native
-PHP so you have to take some extra care when using HHVM.
+Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebook's
+[HHVM](http://hhvm.com/). However, there are some edge cases where HHVM behaves different than native
+PHP, so you have to take some extra care when using HHVM.
 
 On a production server, you may want to configure your Web server so that the application can be accessed
 via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
@@ -144,7 +144,7 @@ to modify its Web server configuration, you may still adjust the structure of yo
 the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
 
 
-### Recommended Apache Configuration <a name="recommended-apache-configuration"></a>
+### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
 
 Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
 should replace `path/to/basic/web` with the actual path for `basic/web`.
@@ -167,7 +167,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Recommended Nginx Configuration <a name="recommended-nginx-configuration"></a>
+### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
 
 To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 

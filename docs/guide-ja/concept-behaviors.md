@@ -10,7 +10,7 @@
 ビヘイビアでコンポーネントの通常のコード実行をカスタマイズすることができます。
 
 
-ビヘイビアの定義 <a name="defining-behaviors"></a>
+ビヘイビアの定義 <span id="defining-behaviors"></span>
 ------------------
 
 ビヘイビアを定義するには、 [[yii\base\Behavior]] あるいは子クラスを継承するクラスを作成します。たとえば:
@@ -97,7 +97,7 @@ function ($event) {
 }
 ```
 
-ビヘイビアのアタッチ <a name="attaching-behaviors"></a>
+ビヘイビアのアタッチ <span id="attaching-behaviors"></span>
 -------------------
 
 [[yii\base\Component|component]] へのビヘイビアのアタッチは、静的にも動的にも可能です。実際は、前者のほうがより一般的ですが。
@@ -188,7 +188,7 @@ $component->attachBehaviors([
 
 詳しくは [構成情報](concept-configurations.md#configuration-format) セクションを参照してください。
 
-ビヘイビアの使用 <a name="using-behaviors"></a>
+ビヘイビアの使用 <span id="using-behaviors"></span>
 ---------------
 
 ビヘイビアを使用するには、まず上記の方法に従って [[yii\base\Component|コンポーネント]] にアタッチします。ビヘイビアがコンポーネントにアタッチされれば、その使用方法はシンプルです。
@@ -228,7 +228,7 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-ビヘイビアのデタッチ <a name="detaching-behaviors"></a>
+ビヘイビアのデタッチ <span id="detaching-behaviors"></span>
 -------------------
 
 ビヘイビアをデタッチするには、ビヘイビアに付けられた名前とともに [[yii\base\Component::detachBehavior()]] を呼び出します:
@@ -244,7 +244,7 @@ $component->detachBehaviors();
 ```
 
 
-`TimestampBehavior` の利用 <a name="using-timestamp-behavior"></a>
+`TimestampBehavior` の利用 <span id="using-timestamp-behavior"></span>
 -------------------------
 
 しめくくりに、[[yii\behaviors\TimestampBehavior]] を見てみましょう。このビヘイビアは、
@@ -300,7 +300,7 @@ echo $user->created_at;  // 現在のタイムスタンプが表示される
 $user->touch('login_time');
 ```
 
-ビヘイビアとトレイトの比較 <a name="comparison-with-traits"></a>
+ビヘイビアとトレイトの比較 <span id="comparison-with-traits"></span>
 ----------------------
 
 ビヘイビアは、主となるクラスにそのプロパティやメソッドを「注入する」という点で [トレイト](http://www.php.net/traits)
@@ -308,7 +308,7 @@ $user->touch('login_time');
 それらは代替手段というよりも、むしろ相互補完関係のようなものです。
 
 
-### ビヘイビアを使う理由 <a name="pros-for-behaviors"></a>
+### ビヘイビアを使う理由 <span id="pros-for-behaviors"></span>
 
 ビヘイビアは通常のクラスのように、継承をサポートしています。いっぽうトレイトは、
 言語サポートされたコピー&ペーストとみなすことができます。トレイトは継承をサポートしません。
@@ -324,7 +324,7 @@ $user->touch('login_time');
 別のトレイトが起こした名前競合の場合、影響を受けるプロパティやメソッドの名前変更による、手動での解決が必要です。
 
 
-### トレイトを使う理由 <a name="pros-for-traits"></a>
+### トレイトを使う理由 <span id="pros-for-traits"></span>
 
 ビヘイビアは時間もメモリも食うオブジェクトなので、トレイトはビヘイビアよりはるかに効率的です。
 

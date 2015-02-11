@@ -19,7 +19,7 @@ In the following, we will introduce the basic knowledge about widgets. Please re
 if you want to learn about the usage of a particular widget.
 
 
-## Using Widgets <a name="using-widgets"></a>
+## Using Widgets <span id="using-widgets"></span>
 
 Widgets are primarily used in [views](structure-views.md). You can call the [[yii\base\Widget::widget()]] method
 to use a widget in a view. The method takes a [configuration](concept-configurations.md) array for initializing
@@ -69,7 +69,7 @@ Note that unlike [[yii\base\Widget::widget()]] which returns the rendering resul
 [[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
 
 
-## Creating Widgets <a name="creating-widgets"></a>
+## Creating Widgets <span id="creating-widgets"></span>
 
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
 [[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that normalizes the widget
@@ -175,7 +175,7 @@ stands for the directory containing the widget class file. Therefore, the above 
 the [[yii\base\Widget::getViewPath()]] method to customize the directory containing the widget view files.
 
 
-## Best Practices <a name="best-practices"></a>
+## Best Practices <span id="best-practices"></span>
 
 Widgets are an object-oriented way of reusing view code.
 

@@ -23,7 +23,7 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 * リクエストされたアクションとリソースに関するユーザへの権限付与
 
 
-## コントローラクラスを作成する <a name="creating-controller"></a>
+## コントローラクラスを作成する <span id="creating-controller"></span>
 
 新しいコントローラクラスを作成する場合、コントローラクラスの命名規約は、リソースの型の名前を単数形で使う、というものです。
 例えば、ユーザの情報を提供するコントローラは `UserController` と名付けることが出来ます。
@@ -41,7 +41,7 @@ public function actionView($id)
 ```
 
 
-## フィルタ <a name="filters"></a>
+## フィルタ <span id="filters"></span>
 
 [[yii\rest\Controller]] によって提供される RESTful API 機能のほとんどは [フィルタ](structure-filters.md) の形で実装されています。
 具体的に言うと、次のフィルタがリストされた順に従って実行されます。
@@ -72,13 +72,13 @@ public function behaviors()
 ```
 
 
-## `ActiveController` を拡張する <a name="extending-active-controller"></a>
+## `ActiveController` を拡張する <span id="extending-active-controller"></span>
 
 コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass||modelClass]] プロパティにセットしなければなりません。
 リソースクラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
 
 
-### アクションをカスタマイズする <a name="customizing-actions"></a>
+### アクションをカスタマイズする <span id="customizing-actions"></span>
 
 デフォルトでは、[[yii\rest\ActiveController]] は次のアクションを提供します。
 
@@ -116,7 +116,7 @@ public function prepareDataProvider()
 どういう構成オプションが利用できるかを学ぶためには、個々のアクションクラスのリファレンスを参照してください。
 
 
-### アクセスチェックを実行する <a name="performing-access-check"></a>
+### アクセスチェックを実行する <span id="performing-access-check"></span>
 
 RESTful API によってリソースを公開するときには、たいてい、現在のユーザがリクエストしているリソースにアクセスしたり操作したりする許可を持っているか否かをチェックする必要があります。
 これは、[[yii\rest\ActiveController]] を使う場合は、[[yii\rest\ActiveController::checkAccess()|checkAccess()]] メソッドを次のようにオーバーライドすることによって出来ます。

@@ -51,6 +51,7 @@ class ClassmapController extends Controller
                 '/Yii.php',
                 '/BaseYii.php',
                 '/console/',
+                '/requirements/',
             ],
         ];
         $files = FileHelper::findFiles($root, $options);

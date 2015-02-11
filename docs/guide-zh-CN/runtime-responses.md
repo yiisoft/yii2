@@ -10,7 +10,7 @@
 在本节，将会描述如何构建响应和发送给终端用户。
 
 
-## 状态码 <a name="status-code"></a>
+## 状态码 <span id="status-code"></span>
 
 构建响应时，最先应做的是标识请求是否成功处理的状态，可通过设置
 [[yii\web\Response::statusCode]] 属性，该属性使用一个有效的
@@ -50,7 +50,7 @@ throw new \yii\web\HttpException(402);
 ```
 
 
-## HTTP 头部 <a name="http-headers"></a>
+## HTTP 头部 <span id="http-headers"></span>
 
 可在 `response` 组件中操控[[yii\web\Response::headers|header collection]]来发送HTTP头部信息，例如：
 
@@ -70,7 +70,7 @@ $values = $headers->remove('Pragma');
 > 补充: 头名称是大小写敏感的，在[[yii\web\Response::send()]]方法调用前新注册的头信息并不会发送给用户。
 
 
-## 响应主体 <a name="response-body"></a>
+## 响应主体 <span id="response-body"></span>
 
 大多是响应应有一个主体存放你想要显示给终端用户的内容。
 
@@ -143,7 +143,7 @@ public function actionInfo()
   可使用 [依赖注入](concept-di-container.md) 应用通用配置到你新的响应对象。
 
 
-## 浏览器跳转 <a name="browser-redirection"></a>
+## 浏览器跳转 <span id="browser-redirection"></span>
 
 浏览器跳转依赖于发送一个`Location` HTTP 头，因为该功能通常被使用，Yii提供对它提供了特别的支持。
 
@@ -177,7 +177,7 @@ public function actionOld()
   因此，如果你使用该JavaScript 文件(通过[[yii\web\YiiAsset]] 资源包注册)，就不需要编写AJAX跳转的代码。
 
 
-## 发送文件 <a name="sending-files"></a>
+## 发送文件 <span id="sending-files"></span>
 
 和浏览器跳转类似，文件发送是另一个依赖指定HTTP头的功能，Yii提供方法集合来支持各种文件发送需求，它们对HTTP头都有内置的支持。
 
@@ -212,7 +212,7 @@ Web应用可在服务器发送文件前结束，为使用该功能，可调用[[
 - Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
-## 发送响应 <a name="sending-response"></a>
+## 发送响应 <span id="sending-response"></span>
 
 在[[yii\web\Response::send()]] 方法调用前响应中的内容不会发送给用户，该方法默认在[[yii\base\Application::run()]]
 结尾自动调用，尽管如此，可以明确调用该方法强制立即发送响应。

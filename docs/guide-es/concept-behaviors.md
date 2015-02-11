@@ -10,7 +10,7 @@ comportamiento puede responder a [eventos](concept-events.md) disparados por el 
 o adaptar a la ejecución normal del código del componente.
 
 
-Definiendo comportamientos <a name="defining-behaviors"></a>
+Definiendo comportamientos <span id="defining-behaviors"></span>
 --------------------------
 
 Para definir un comportamiento, se debe crear una clase que exiende [[yii\base\Behavior]], o se extiende una clase hija. Por ejemplo:
@@ -95,7 +95,7 @@ function ($event) {
 ```
 
 
-Vinculando Comportamientos <a name="attaching-behaviors"></a>
+Vinculando Comportamientos <span id="attaching-behaviors"></span>
 --------------------------
 
 Puedes vincular un comportamiento a un [[yii\base\Component|componente]] ya sea estática o dinámicamente. La primera forma
@@ -189,7 +189,7 @@ También puedes asociar comportamientos a traves de [configuraciones](concept-co
 Para más detalles, por favor visita la sección [Configuraciones](concept-configurations.md#configuration-format).
 
 
-Usando comportamientos <a name="using-behaviors"></a>
+Usando comportamientos <span id="using-behaviors"></span>
 ----------------------
 
 Para poder utilizar un comportamiento, primero tienes que unirlo a un [[yii\base\Component|componente]] según las instrucciones anteriores. Una vez que un comportamiento ha sido vinculado a un componente, su uso es sencillo.
@@ -230,7 +230,7 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-Desasociar Comportamientos <a name="detaching-behaviors"></a>
+Desasociar Comportamientos <span id="detaching-behaviors"></span>
 --------------------------
 
 Para desasociar un comportamiento, puedes llamar el método [[yii\base\Component::detachBehavior()]] con el nombre con el
@@ -247,7 +247,7 @@ $component->detachBehaviors();
 ```
 
 
-Utilizando `TimestampBehavior` <a name="using-timestamp-behavior"></a>
+Utilizando `TimestampBehavior` <span id="using-timestamp-behavior"></span>
 -----------------------------
 
 Para terminar, vamos a echar un vistazo a [[yii\behaviors\TimestampBehavior]]. Este comportamiento soporta de forma
@@ -306,7 +306,7 @@ $user->touch('login_time');
 ```
 
 
-Comparación con Traits <a name="comparison-with-traits"></a>
+Comparación con Traits <span id="comparison-with-traits"></span>
 ----------------------
 
 Mientras que los comportamientos son similares a [traits](http://www.php.net/traits) en cuanto que ambos "inyectan" sus
@@ -314,7 +314,7 @@ métodos  y propiedades a la clase primaria, son diferentes en muchos aspectos. 
 tienen sus ventajas y desventajas. Son más como complementos el uno al otro en lugar de alternativas.
 
 
-### Razones para utilizar comportamientos <a name="pros-for-behaviors"></a>
+### Razones para utilizar comportamientos <span id="pros-for-behaviors"></span>
 
 Las clases de comportamientos, como todas las clases, soportan herencias. Traits, por otro lado, pueden ser
 considerados como un copia-y-pega de PHP. Ellos no soportan la herencia de clases.
@@ -331,7 +331,7 @@ automáticamente resuelto respetando al que ha sido asociado primero.
 El conflicto de nombres en traits requiere que manualmente sean resueltos cambiando el nombre de las propiedades o métodos afectados.
 
 
-### Razones para utilizar los Traits <a name="pros-for-traits"></a>
+### Razones para utilizar los Traits <span id="pros-for-traits"></span>
 
 Los Traits son mucho más eficientes que los comportamientos debido a que los últimos son objetos que consumen tiempo y
 memoria.

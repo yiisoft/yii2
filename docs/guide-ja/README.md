@@ -1,7 +1,7 @@
 Yii 2.0 決定版ガイド
 ====================
 
-このチュートリアルは [Yii ドキュメント規約](http://www.yiiframework.com/doc/terms/) の下にリリースされています。
+このチュートリアルは [Yii ドキュメント許諾条件](http://www.yiiframework.com/doc/terms/) の下にリリースされています。
 
 All Rights Reserved.
 
@@ -20,11 +20,11 @@ All Rights Reserved.
 
 * [Yii をインストールする](start-installation.md)
 * [アプリケーションを走らせる](start-workflow.md)
-* [「こんにちは」と言う](start-hello.md)
+* [こんにちは、と言う](start-hello.md)
 * [フォームを扱う](start-forms.md)
 * [データベースを扱う](start-databases.md)
 * [Gii でコードを生成する](start-gii.md)
-* [この先を見通す](start-looking-ahead.md)
+* [先を見通す](start-looking-ahead.md)
 
 
 アプリケーションの構造
@@ -78,10 +78,10 @@ All Rights Reserved.
 * [クエリビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
 * [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
 * [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョンコントロールを適用
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elasticsearch.md)
+* **未定** [Sphinx](db-sphinx.md)
+* **未定** [Redis](db-redis.md)
+* **未定** [MongoDB](db-mongodb.md)
+* **未定** [ElasticSearch](db-elasticsearch.md)
 
 
 ユーザからのデータ取得
@@ -90,7 +90,8 @@ All Rights Reserved.
 * [フォームを作成する](input-forms.md)
 * [入力を検証する](input-validation.md)
 * [ファイルをアップロードする](input-file-upload.md)
-* **TBD** [複数モデルのためのデータ取得](input-multiple-models.md)
+* [表形式インプットのデータ収集](input-tabular-input.md)
+* [複数モデルのデータ取得](input-multiple-models.md)
 
 
 データの表示
@@ -111,7 +112,7 @@ All Rights Reserved.
 * [認証](security-authentication.md)
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
-* **TBD** [Auth クライアント](security-auth-clients.md)
+* [認証クライアント](security-auth-clients.md)
 * [ベストプラクティス](security-best-practices.md)
 
 
@@ -144,7 +145,7 @@ RESTful ウェブサービス
 
 * [デバッグツールバーとデバッガ](tool-debugger.md)
 * [Gii を使ってコードを生成する](tool-gii.md)
-* **TBD** [API ドキュメントを生成する](tool-api-doc.md)
+* **未定** [API ドキュメントを生成する](tool-api-doc.md)
 
 
 テスト
@@ -152,7 +153,7 @@ RESTful ウェブサービス
 
 * [概要](test-overview.md)
 * [テスト環境の構築](test-environment-setup.md)
-* [ユニットテスト](test-unit.md)
+* [単体テスト](test-unit.md)
 * [機能テスト](test-functional.md)
 * [承認テスト](test-acceptance.md)
 * [フィクスチャ](test-fixtures.md)
@@ -176,14 +177,14 @@ RESTful ウェブサービス
 ウィジェット
 ------------
 
-* GridView: **TBD** link to demo page
-* ListView: **TBD** link to demo page
-* DetailView: **TBD** link to demo page
-* ActiveForm: **TBD** link to demo page
-* Pjax: **TBD** link to demo page
-* Menu: **TBD** link to demo page
-* LinkPager: **TBD** link to demo page
-* LinkSorter: **TBD** link to demo page
+* GridView: **未定** デモページへリンク
+* ListView: **未定** デモページへリンク
+* DetailView: **未定** デモページへリンク
+* ActiveForm: **未定** デモページへリンク
+* Pjax: **未定** デモページへリンク
+* Menu: **未定** デモページへリンク
+* LinkPager: **未定** デモページへリンク
+* LinkSorter: **未定** デモページへリンク
 * [Bootstrap ウィジェット](widget-bootstrap.md)
 * [jQuery UI ウィジェット](widget-jui.md)
 
@@ -195,4 +196,3 @@ RESTful ウェブサービス
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)
-

@@ -10,13 +10,13 @@ Yii はそのような手助けを Html ヘルパの形式で提供します。
 > 何でもかんでも Html ヘルパの呼び出しでラップする必要はありません。
 
 
-## 基礎 <a name="basics"></a>
+## 基礎 <span id="basics"></span>
 
 動的な HTML を文字列の連結によって構築していると、あっという間に乱雑なコードになります。
 そのため、Yii はタグのオプションを操作し、それらのオプションに基づいてタグを構築する一連のメソッドを提供します。
 
 
-### タグを生成する <a name="generating-tags"></a>
+### タグを生成する <span id="generating-tags"></span>
 
 タグを生成するコードは次のようなものです。
 
@@ -52,7 +52,7 @@ Yii はそのような手助けを Html ヘルパの形式で提供します。
   すなわち、`'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` は `data-params='{"id":1,"name":"yii"}' data-status="ok"` となります。
 
 
-### CSS のクラスとスタイルを形成する <a name="forming-css"></a>
+### CSS のクラスとスタイルを形成する <span id="forming-css"></span>
 
 HTML タグのオプションを構築する場合、たいていは、デフォルトの値から始めて必要な修正をする、という方法をとります。
 CSS クラスを追加または削除するために、次のコードを使用することが出来ます。
@@ -89,7 +89,7 @@ Html::removeCssStyle($options, ['width', 'height']);
 プロパティが一つだけである場合は、文字列で指定することも出来ます。
 
 
-### コンテントをエンコードおよびデコードする <a name="encoding-and-decoding-content"></a>
+### コンテントをエンコードおよびデコードする <span id="encoding-and-decoding-content"></span>
 
 コンテントが適切かつ安全に HTML として表示されるためには、コンテント内の特殊文字がエンコードされなければなりません。
 特殊文字のエンコードとデコードは、PHP では [htmlspecialchars](http://www.php.net/manual/ja/function.htmlspecialchars.php) と [htmlspecialchars_decode](http://www.php.net/manual/ja/function.htmlspecialchars-decode.php) によって行われます。
@@ -104,7 +104,7 @@ $decodedUserName = Html::decode($userName);
 ```
 
 
-## フォーム <a name="forms"></a>
+## フォーム <span id="forms"></span>
 
 フォームのマークアップを扱う仕事は、極めて面倒くさく、エラーを生じがちなものです。
 このため、フォームのマークアップの仕事を助けるための一群のメソッドがあります。
@@ -112,7 +112,7 @@ $decodedUserName = Html::decode($userName);
 > Note|注意: モデルを扱っており、バリデーションが必要である場合は、[[yii\widgets\ActiveForm|ActiveForm]] を使うことを検討してください。
 
 
-### フォームを作成する <a name="creating-forms"></a>
+### フォームを作成する <span id="creating-forms"></span>
 
 フォームを開始するためには、次のように [[yii\helpers\Html::beginForm()|beginForm()]] メソッドを使うことが出来ます。
 
@@ -134,7 +134,7 @@ $decodedUserName = Html::decode($userName);
 ```
 
 
-### ボタン <a name="buttons"></a>
+### ボタン <span id="buttons"></span>
 
 ボタンを生成するためには、次のコードを使うことが出来ます。
 
@@ -148,7 +148,7 @@ $decodedUserName = Html::decode($userName);
 タイトルはエンコードされませんので、エンドユーザからデータを取得する場合は [[yii\helpers\Html::encode()|Html::encode()]] を使ってエンコードしてください。
 
 
-### インプットフィールド <a name="input-fields"></a>
+### インプットフィールド <span id="input-fields"></span>
 
 インプットのメソッドには二つのグループがあります。
 一つは `active` から始まるものでアクティブインプットと呼ばれます。もう一方は `active` から始まらないものです。
@@ -213,7 +213,7 @@ $decodedUserName = Html::decode($userName);
 ```
 
 
-### ラベルとエラー <a name="labels-and-errors"></a>
+### ラベルとエラー <span id="labels-and-errors"></span>
 
 インプットと同じように、ラベルを生成するメソッドが二つあります。
 モデルからデータを取るアクティブなラベルと、データを直接受け入れるアクティブでないラベルです。
@@ -236,7 +236,7 @@ $decodedUserName = Html::decode($userName);
 ```
 
 
-### インプットの名前と値 <a name="input-names-and-values"></a>
+### インプットの名前と値 <span id="input-names-and-values"></span>
 
 モデルに基づいてインプットフィールドの名前、ID、値を取得するメソッドがあります。
 これらは主として内部的に使用されるものですが、場合によっては重宝します。
@@ -271,7 +271,7 @@ echo Html::getAttributeName('dates[0]');
 ```
 
 
-## スタイルとスクリプト <a name="styles-and-scripts"></a>
+## スタイルとスクリプト <span id="styles-and-scripts"></span>
 
 埋め込みのスタイルとスクリプトをラップするタグを生成するメソッドが二つあります。
 
@@ -321,7 +321,7 @@ CSS と同じように、最初の引数はインクルードされるファイ�
 オプションに置いて、`cssFile` のオプションと同じように、`condition` を指定することが出来ます。
 
 
-## ハイパーリンク <a name="hyperlinks"></a>
+## ハイパーリンク <span id="hyperlinks"></span>
 
 ハイパーリンクを手軽に生成できるメソッドがあります。
 
@@ -342,7 +342,7 @@ CSS と同じように、最初の引数はインクルードされるファイ�
 ```
 
 
-## 画像 <a name="images"></a>
+## 画像 <span id="images"></span>
 
 イメージタグを生成するためには次のようにします。
 
@@ -358,7 +358,7 @@ CSS と同じように、最初の引数はインクルードされるファイ�
 [Url::to()](helper-url.md) と同様です。
 
 
-## リスト <a name="lists"></a>
+## リスト <span id="lists"></span>
 
 順序なしリストは、次のようにして生成することが出来ます。
 

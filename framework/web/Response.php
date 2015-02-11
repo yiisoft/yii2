@@ -375,7 +375,7 @@ class Response extends \yii\base\Response
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
             if ($cookie->expire != 1  && isset($validationKey)) {
-                $value = Yii::$app->getSecurity()->hashData(serialize($value), $validationKey);
+                $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
@@ -475,9 +475,6 @@ class Response extends \yii\base\Response
             throw new HttpException(416, 'Requested range not satisfiable');
         }
 
-        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
-        $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $contentLength);
-
         list($begin, $end) = $range;
         if ($begin != 0 || $end != $contentLength - 1) {
             $this->setStatusCode(206);
@@ -487,6 +484,9 @@ class Response extends \yii\base\Response
             $this->setStatusCode(200);
             $this->content = $content;
         }
+
+        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;
 

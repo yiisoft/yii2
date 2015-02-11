@@ -4,7 +4,7 @@ Url ヘルパ
 Url ヘルパは URL を管理するための一連のスタティックメソッドを提供します。
 
 
-## よく使う URL を取得する <a name="getting-common-urls"></a>
+## よく使う URL を取得する <span id="getting-common-urls"></span>
 
 よく使う URL を取得するために使うことが出来るメソッドが二つあります。
 すなわち、ホーム URL と、現在のリクエストのベース URL を取得するメソッドです。
@@ -31,7 +31,7 @@ $httpsAbsoluteBaseUrl = Url::base('https');
 このメソッドの唯一のパラメータは、`Url::home()` の場合と全く同じ動作をします。
 
 
-## URL を生成する <a name="creating-urls"></a>
+## URL を生成する <span id="creating-urls"></span>
 
 与えられたルートへの URL を生成するためには、`Url::toRoute()` メソッドを使います。
 このメソッドは、[[\yii\web\UrlManager]] を使って URL を生成します。
@@ -150,7 +150,7 @@ echo Url::current(['id' => 100]);
 ```
 
 
-## URL を記憶する <a name="remember-urls"></a>
+## URL を記憶する <span id="remember-urls"></span>
 
 URL を記憶して、後に続く一連のリクエストの一つを処理するときに、記憶した URL を使わなければならないという場合があります。
 これは、次のようにして達成することが出来ます。
@@ -173,7 +173,7 @@ $url = Url::previous();
 $productUrl = Url::previous('product');
 ```
 
-## 相対 URL かどうかチェックする <a name="checking-relative-urls"></a>
+## 相対 URL かどうかチェックする <span id="checking-relative-urls"></span>
 
 URL が相対 URL であること、すなわち、URL がホスト情報の部分を持っていないことを確かめるために、次のコードを使うことが出来ます。
 
