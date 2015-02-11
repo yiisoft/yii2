@@ -195,7 +195,7 @@ class Security extends Component
             $key = $this->hkdf(self::KDF_HASH, $secret, $keySalt, $info, self::KEY_SIZE);
         }
 
-        $ivSize = static::cipherBlockSize();
+        $ivSize = $this->cipherBlockSize();
         $iv = $this->generateRandomKey($ivSize);
 
         $encrypted = openssl_encrypt($data, $this->opensslMethod(), $key, OPENSSL_RAW_DATA, $iv);
@@ -207,7 +207,7 @@ class Security extends Component
          * Output: [keySalt][MAC][IV][ciphertext]
          * - keySalt is KEY_SIZE bytes long
          * - MAC: message authentication code, length same as the output of MAC_HASH
-         * - IV: initialization vector, length static::cipherBlockSize()
+         * - IV: initialization vector, length $this->cipherBlockSize()
          */
         return $keySalt . $hashed;
     }
@@ -243,7 +243,7 @@ class Security extends Component
             return false;
         }
 
-        $ivSize = static::cipherBlockSize();
+        $ivSize = $this->cipherBlockSize();
         $iv = StringHelper::byteSubstr($data, 0, $ivSize);
         $encrypted = StringHelper::byteSubstr($data, $ivSize, null);
 
