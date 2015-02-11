@@ -6,6 +6,7 @@ Yii Framework 2 debug extension Change Log
 
 - Bug #6903: Fixed display issue with phpinfo() table (kalayda, cebe)
 - Enh #6890: Added ability to filter by query type (pana1990)
+- Enh #7222: Added RTL support for debug toolbar `<html dir="rtl">` (johonunu)
 
 
 2.0.2 January 11, 2015
