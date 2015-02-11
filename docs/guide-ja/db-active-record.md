@@ -74,7 +74,7 @@ class Customer extends ActiveRecord
 
 アクティブレコードは、対応するデータベーステーブルの行の各カラムをアクティブレコードオブジェクトの属性に割り付けます。
 属性は通常のオブジェクトのパブリックなプロパティと同様の振る舞いをします。
-属性の名前は対応するから無名と同じであり、大文字と小文字を区別します。
+属性の名前は対応するカラム名と同じであり、大文字と小文字を区別します。
 
 カラムの値を読み出すために、次の構文を使用することが出来ます。
 
@@ -135,14 +135,14 @@ class Customer extends ActiveRecord
 データベースにデータを問い合わせる
 ----------------------------------
 
-アクティブレコードは、DB クエリを構築してアクティブレコードインスタンスにデータを投入するために、二つの入力メソッドを提供しています。
+アクティブレコードは、DB クエリを構築してアクティブレコードインスタンスにデータを投入するために、二つの導入メソッドを提供しています。
 
  - [[yii\db\ActiveRecord::find()]]
  - [[yii\db\ActiveRecord::findBySql()]]
 
 この二つのメソッドは [[yii\db\ActiveQuery]] のインスタンスを返します。
  [[yii\db\ActiveQuery]] は [[yii\db\Query]] を拡張したものであり、従って、[[yii\db\Query]] と同じ一連の柔軟かつ強力な DB クエリ構築メソッド、例えば、`where()`、`join()`、`orderBy()` 等を提供します。
-下記の例は、いくつかの可能性を示すものです。
+下記の例は、いくつかの可能な使い方を示すものです。
 
 ```php
 // *アクティブ* な顧客を全て読み出して、その ID によって並べ替える
@@ -237,7 +237,7 @@ foreach (Customer::find()->batch(10) as $customers) {
 foreach (Customer::find()->each(10) as $customer) {
     // $customer は Customer オブジェクト
 }
-// いーがーローディングをするバッチクエリ
+// イーガーローディングをするバッチクエリ
 foreach (Customer::find()->with('orders')->each() as $customer) {
 }
 ```
@@ -253,7 +253,7 @@ foreach (Customer::find()->with('orders')->each() as $customer) {
 - [[yii\db\ActiveRecord::update()|update()]]
 - [[yii\db\ActiveRecord::delete()|delete()]]
 
-アクティブレコードは、アクティブレコードクラスと関連付けられたテーブル全体に適用する、次の静的なメソッドを提供しています。
+アクティブレコードは、また、アクティブレコードクラスと関連付けられたテーブル全体に適用する、次の静的なメソッドをも提供しています。
 これらのメソッドはテーブル全体に影響を与えますので、使用するときはこの上なく注意深くしなければなりません。
 例えば、`deleteAll()` はテーブルの全ての行を削除します。
 
@@ -270,12 +270,12 @@ foreach (Customer::find()->with('orders')->each() as $customer) {
 $customer = new Customer();
 $customer->name = 'James';
 $customer->email = 'james@example.com';
-$customer->save();  // $customer->insert() と等値
+$customer->save();  // $customer->insert() と等価
 
 // 既存の customer のレコードを更新する
 $customer = Customer::findOne($id);
 $customer->email = 'james@example.com';
-$customer->save();  // $customer->update() と等値
+$customer->save();  // $customer->update() と等価
 
 // 既存の customer のレコードを削除する
 $customer = Customer::findOne($id);
@@ -389,7 +389,7 @@ public function init()
 
 例えば、適切なリレーションが宣言されていれば、`$customer->orders` にアクセスすることによって、指定された顧客が発行した注文を表す `Order` オブジェクトの配列を取得することが出来ます。
 
-リレーションを宣言するためには、[[yii\db\ActiveQuery]] オブジェクトを返すゲッターメソッドを定義します。そして、その [[yii\db\ActiveQuery]] オブジェクトは、リレーションのコンテキストに関する情報を持ち、従って関連するレコードだけをクエリするものとします。
+リレーションを宣言するためには、[[yii\db\ActiveQuery]] オブジェクトを返すゲッターメソッドを定義します。そして、その [[yii\db\ActiveQuery]] オブジェクトに、リレーションのコンテキストに関する情報を持たせ、従って関連するレコードだけをクエリさせます。
 例えば、
 
 ```php
@@ -492,7 +492,7 @@ class Order extends \yii\db\ActiveRecord
 ```
 
 [[yii\db\ActiveQuery::via()|via()]] メソッドは、最初のパラメータとして、結合テーブルの名前ではなく、アクティブレコードクラスで宣言されているリレーションの名前を取ること以外は、[[yii\db\ActiveQuery::viaTable()|viaTable()]] と同じです。
-例えば、上記の `items` リレーションは次のように宣言しても等値です。
+例えば、上記の `items` リレーションは次のように宣言しても等価です。
 
 ```php
 class Order extends \yii\db\ActiveRecord
@@ -738,7 +738,7 @@ $orders = Order::find()->joinWith('books.author')->all();
 ```php
 // 書籍を含む注文を全て検索するが、"books" はイーガーロードしない。
 $orders = Order::find()->innerJoinWith('books', false)->all();
-// これも上と等値
+// これも上と等価
 $orders = Order::find()->joinWith('books', false, 'INNER JOIN')->all();
 ```
 
@@ -961,7 +961,7 @@ class Post extends \yii\db\ActiveRecord
         return [
             'admin' => self::OP_INSERT,
             'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
-            // 上は次と等値
+            // 上は次と等価
             // 'api' => self::OP_ALL,
         ];
     }
