@@ -4,7 +4,7 @@ Yii Framework 2 sphinx extension Change Log
 2.0.3 under development
 -----------------------
 
-- no changes in this release.
+- Bug #7198: `yii\sphinx\Query` no longer attempts to call snippets for the empty query result set (Hrumpa)
 
 
 2.0.2 January 11, 2015
