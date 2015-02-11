@@ -14,6 +14,8 @@ use yiiunit\TestCase;
  */
 class SecurityTest extends TestCase
 {
+    const CRYPT_VECTORS = 'old';
+
     /**
      * @var ExposedSecurity
      */
@@ -122,7 +124,7 @@ class SecurityTest extends TestCase
      * The output can then be used for testing compatibility of data encrypted in one
      * version of Yii and decrypted in another
      */
-    public function testGenerateVectors()
+    public function notestGenerateVectors()
     {
         $bin1024 =
            'badec0c7d9ca734e161a1df6ca4daa8cdbf6b3bbb60ec404b47a23226ec266b1
@@ -495,7 +497,7 @@ TEXT;
             ],
         ];
 
-        return $openssl;
+        return static::CRYPT_VECTORS === 'new' ? $openssl : $mcrypt;
     }
 
     /**
@@ -806,7 +808,7 @@ TEXT;
             ],
         ];
 
-        return $openssl;
+        return static::CRYPT_VECTORS === 'new' ? $openssl : $mcrypt;
     }
 
     /**
