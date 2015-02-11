@@ -172,11 +172,14 @@ class Security extends Component
             $key = $this->hkdf(self::KDF_HASH, $secret, $keySalt, $info, self::KEY_SIZE);
         }
 
-        $data = $this->addPadding($data);
         $ivSize = 16;
         $iv = $this->generateRandomKey($ivSize);
-        $encrypted = openssl_encrypt($data, $this->opensslCipher(), $key, OPENSSL_ZERO_PADDING, $iv);
-        $encrypted = base64_decode($encrypted);
+
+//        $data = $this->addPadding($data);
+//        $encrypted = openssl_encrypt($data, $this->opensslCipher(), $key, OPENSSL_ZERO_PADDING, $iv);
+//        $encrypted = base64_decode($encrypted);
+
+        $encrypted = openssl_encrypt($data, $this->opensslCipher(), $key, OPENSSL_RAW_DATA, $iv);
 
         $authKey = $this->hkdf(self::KDF_HASH, $key, null, self::AUTH_KEY_INFO, self::KEY_SIZE);
         $hashed = $this->hashData($iv . $encrypted, $authKey);
@@ -216,10 +219,15 @@ class Security extends Component
 
         $ivSize = 16;
         $iv = StringHelper::byteSubstr($data, 0, $ivSize);
-        $encrypted = base64_encode(StringHelper::byteSubstr($data, $ivSize, null));
-        $decrypted = openssl_decrypt($encrypted, $this->opensslCipher(), $key, OPENSSL_ZERO_PADDING, $iv);
+        $encrypted = StringHelper::byteSubstr($data, $ivSize, null);
 
-        return $this->stripPadding($decrypted);
+//        $encrypted = base64_encode($encrypted);
+//        $decrypted = openssl_decrypt($encrypted, $this->opensslCipher(), $key, OPENSSL_ZERO_PADDING, $iv);
+//        $decrypted = $this->stripPadding($decrypted);
+
+        $decrypted = openssl_decrypt($encrypted, $this->opensslCipher(), $key, OPENSSL_RAW_DATA, $iv);
+
+        return $decrypted;
     }
 
     /**
