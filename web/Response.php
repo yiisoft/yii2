@@ -920,7 +920,7 @@ class Response extends \yii\base\Response
      */
     protected function prepare()
     {
-        if ($this->stream !== null || $this->data === null) {
+        if ($this->stream !== null) {
             return;
         }
 
