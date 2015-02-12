@@ -33,7 +33,7 @@ use yii\web\View;
  * method, for example like this:
  *
  * ```php
- * <?= $form->field($model, 'from_date')->widget(\yii\jui\MaskedInput::classname(), [
+ * <?= $form->field($model, 'from_date')->widget(\yii\widgets\MaskedInput::classname(), [
  *     'mask' => '999-999-9999',
  * ]) ?>
  * ```
