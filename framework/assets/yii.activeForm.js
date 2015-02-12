@@ -426,7 +426,26 @@
                 });
                 $form.find(data.settings.errorSummary).hide().find('ul').html('');
             }, 1);
+        },
+
+        /**
+         * Updates error messages, input containers, and optionally summary as well.
+         * @param messages array the validation error messages
+         * @param summary whether to update summary as well.
+         */
+        updateMessages: function (messages, summary) {
+            var $form = $(this);
+            var data = $form.data('yiiActiveForm');
+            $.each(data.attributes, function () {
+                if (!this.cancelled) {
+                    updateInput($form, this, messages);
+                }
+            });
+            if (summary) {
+                updateSummary($form, messages);
+            }
         }
+
     };
 
     var watchAttribute = function ($form, attribute) {
