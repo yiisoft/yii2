@@ -189,3 +189,32 @@ html[dir=rtl] #yii-debug-toolbar {
     right: 31px;
     bottom: 4px;
 }
+
+html[dir=rtl] #yii-debug-toolbar .yii-debug-toolbar-block {
+    float: right;
+}
+
+html[dir=rtl] #yii-debug-toolbar .yii-debug-toolbar-block a, 
+html[dir=rtl] #yii-debug-toolbar .yii-debug-toolbar-block span.label{
+    unicode-bidi: bidi-override;
+}
+
+html[dir=rtl] #yii-debug-toolbar .yii-debug-toolbar-toggler,
+html[dir=rtl] #yii-debug-toolbar-min .yii-debug-toolbar-toggler{
+    left: 10px;
+    right: initial;
+}
+
+html[dir=rtl] #yii-debug-toolbar-min{
+    border-right: 1px solid #ccc;
+    border-left: initial;
+    border-top-right-radius:6px;
+    border-top-left-radius:initial;
+    left: 0px;
+    right: 0px;
+}
+
+html[dir=rtl] #yii-debug-toolbar-min #yii-debug-toolbar-logo{
+    left: 31px;
+    right: initial;
+}
