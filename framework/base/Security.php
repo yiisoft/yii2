@@ -31,30 +31,24 @@ use Yii;
 class Security extends Component
 {
     /**
-     * Block cipher algorithm for encryption and decryption.
+     * @var int AES encryption key size in bytes. Must be 16, 24 or 32.
      */
-    const BLOCK_CIPHER = 'AES';
+    public $keySize = 16;
     /**
-     * Block cipher operation mode.
+     * @var string Hash algorithm for key derivation. Recommend sha256, sha384 or sha512.
+     * @see hash_algos()
      */
-    const BLOCK_MODE = 'CBC';
+    public $kdfHash = 'sha256';
     /**
-     * Size in bytes of encryption key, message authentication key and KDF salt.
+     * @var string Hash algorithm for message authentication. Recommend sha256, sha384 or sha512.
+     * @see hash_algos()
      */
-    const KEY_SIZE = 16;
+    public $macHash = 'sha256';
     /**
-     * Hash algorithm for key derivation.
+     * @var string HKDF info value for derivation of message authentication key.
+     * @see hkdf()
      */
-    const KDF_HASH = 'sha256';
-    /**
-     * Hash algorithm for message authentication.
-     */
-    const MAC_HASH = 'sha256';
-    /**
-     * HKDF info value for derivation of message authentication key.
-     */
-    const AUTH_KEY_INFO = 'AuthorizationKey';
-
+    public $authKeyInfo = 'AuthorizationKey';
     /**
      * @var integer derivation iterations count.
      * Set as high as possible to hinder dictionary password attacks.
@@ -136,40 +130,6 @@ class Security extends Component
     }
 
     /**
-     * The cipher method, i.e. $method argument of openssl_en/decrypt() used in encrypt/decrypt methods.
-     *
-     * To use a cipher other than AES you must override this method.
-     *
-     * @return string OpenSSL cipher method.
-     * @throws InvalidConfigException
-     */
-    protected function opensslMethod()
-    {
-        if (strtoupper(static::BLOCK_CIPHER) !== 'AES' || !in_array(static::KEY_SIZE, [16, 24, 32])) {
-            throw new InvalidConfigException('Unsupported cipher');
-        }
-
-        return static::BLOCK_CIPHER . '-' . (8 * static::KEY_SIZE) . '-' . static::BLOCK_MODE;
-    }
-
-    /**
-     * Cipher block size used in encrypt/decrypt methods.
-     *
-     * To use a cipher other than AES you must override this method.
-     *
-     * @return int Cipher block size in bytes.
-     * @throws InvalidConfigException
-     */
-    protected function cipherBlockSize()
-    {
-        if (strtoupper(static::BLOCK_CIPHER) !== 'AES') {
-            throw new InvalidConfigException('Unsupported cipher');
-        }
-
-        return 16;
-    }
-
-    /**
      * Encrypts data.
      *
      * @param string $data data to be encrypted
@@ -179,7 +139,8 @@ class Security extends Component
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
      *
      * @return string the encrypted data
-     * @throws InvalidConfigException if PHP OpenSSL extension is not loaded or failed to be initialized
+     * @throws InvalidConfigException on OpenSSL not loaded
+     * @throws Exception on OpenSSL error
      * @see decrypt()
      */
     protected function encrypt($data, $passwordBased, $secret, $info)
@@ -188,26 +149,28 @@ class Security extends Component
             throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
         }
 
-        $keySalt = $this->generateRandomKey(self::KEY_SIZE);
+        $keySalt = $this->generateRandomKey($this->keySize);
         if ($passwordBased) {
-            $key = $this->pbkdf2(self::KDF_HASH, $secret, $keySalt, $this->derivationIterations, self::KEY_SIZE);
+            $key = $this->pbkdf2($this->kdfHash, $secret, $keySalt, $this->derivationIterations, $this->keySize);
         } else {
-            $key = $this->hkdf(self::KDF_HASH, $secret, $keySalt, $info, self::KEY_SIZE);
+            $key = $this->hkdf($this->kdfHash, $secret, $keySalt, $info, $this->keySize);
         }
 
-        $ivSize = $this->cipherBlockSize();
-        $iv = $this->generateRandomKey($ivSize);
+        $iv = $this->generateRandomKey(16);
 
-        $encrypted = openssl_encrypt($data, $this->opensslMethod(), $key, OPENSSL_RAW_DATA, $iv);
+        $encrypted = openssl_encrypt($data, 'AES-' . (8 * $this->keySize) . '-CBC', $key, OPENSSL_RAW_DATA, $iv);
+        if ($encrypted === false) {
+            throw new \yii\base\Exception('OpenSSL failure on encryption: ' . openssl_error_string());
+        }
 
-        $authKey = $this->hkdf(self::KDF_HASH, $key, null, self::AUTH_KEY_INFO, self::KEY_SIZE);
+        $authKey = $this->hkdf($this->kdfHash, $key, null, $this->authKeyInfo, $this->keySize);
         $hashed = $this->hashData($iv . $encrypted, $authKey);
 
         /*
          * Output: [keySalt][MAC][IV][ciphertext]
          * - keySalt is KEY_SIZE bytes long
          * - MAC: message authentication code, length same as the output of MAC_HASH
-         * - IV: initialization vector, length $this->cipherBlockSize()
+         * - IV: initialization vector, length 16
          */
         return $keySalt . $hashed;
     }
@@ -221,7 +184,8 @@ class Security extends Component
      * @param string $info context/application specific information, @see encrypt()
      *
      * @return bool|string the decrypted data or false on authentication failure
-     * @throws InvalidConfigException if PHP OpenSSL extension is not loaded or failed to be initialized
+     * @throws InvalidConfigException on OpenSSL not loaded
+     * @throws Exception on OpenSSL error
      * @see encrypt()
      */
     protected function decrypt($data, $passwordBased, $secret, $info)
@@ -230,24 +194,26 @@ class Security extends Component
             throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
         }
 
-        $keySalt = StringHelper::byteSubstr($data, 0, self::KEY_SIZE);
+        $keySalt = StringHelper::byteSubstr($data, 0, $this->keySize);
         if ($passwordBased) {
-            $key = $this->pbkdf2(self::KDF_HASH, $secret, $keySalt, $this->derivationIterations, self::KEY_SIZE);
+            $key = $this->pbkdf2($this->kdfHash, $secret, $keySalt, $this->derivationIterations, $this->keySize);
         } else {
-            $key = $this->hkdf(self::KDF_HASH, $secret, $keySalt, $info, self::KEY_SIZE);
+            $key = $this->hkdf($this->kdfHash, $secret, $keySalt, $info, $this->keySize);
         }
 
-        $authKey = $this->hkdf(self::KDF_HASH, $key, null, self::AUTH_KEY_INFO, self::KEY_SIZE);
-        $data = $this->validateData(StringHelper::byteSubstr($data, self::KEY_SIZE, null), $authKey);
+        $authKey = $this->hkdf($this->kdfHash, $key, null, $this->authKeyInfo, $this->keySize);
+        $data = $this->validateData(StringHelper::byteSubstr($data, $this->keySize, null), $authKey);
         if ($data === false) {
             return false;
         }
 
-        $ivSize = $this->cipherBlockSize();
-        $iv = StringHelper::byteSubstr($data, 0, $ivSize);
-        $encrypted = StringHelper::byteSubstr($data, $ivSize, null);
+        $iv = StringHelper::byteSubstr($data, 0, 16);
+        $encrypted = StringHelper::byteSubstr($data, 16, null);
 
-        $decrypted = openssl_decrypt($encrypted, $this->opensslMethod(), $key, OPENSSL_RAW_DATA, $iv);
+        $decrypted = openssl_decrypt($encrypted, 'AES-' . (8 * $this->keySize) . '-CBC', $key, OPENSSL_RAW_DATA, $iv);
+        if ($decrypted === false) {
+            throw new \yii\base\Exception('OpenSSL failure on decryption: ' . openssl_error_string());
+        }
 
         return $decrypted;
     }
@@ -379,9 +345,9 @@ class Security extends Component
      */
     public function hashData($data, $key, $rawHash = false)
     {
-        $hash = hash_hmac(self::MAC_HASH, $data, $key, $rawHash);
+        $hash = hash_hmac($this->macHash, $data, $key, $rawHash);
         if (!$hash) {
-            throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . self::MAC_HASH);
+            throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . $this->macHash);
         }
         return $hash . $data;
     }
@@ -403,16 +369,16 @@ class Security extends Component
      */
     public function validateData($data, $key, $rawHash = false)
     {
-        $test = @hash_hmac(self::MAC_HASH, '', '', $rawHash);
+        $test = @hash_hmac($this->macHash, '', '', $rawHash);
         if (!$test) {
-            throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . self::MAC_HASH);
+            throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . $this->macHash);
         }
         $hashLength = StringHelper::byteLength($test);
         if (StringHelper::byteLength($data) >= $hashLength) {
             $hash = StringHelper::byteSubstr($data, 0, $hashLength);
             $pureData = StringHelper::byteSubstr($data, $hashLength, null);
 
-            $calculatedHash = hash_hmac(self::MAC_HASH, $pureData, $key, $rawHash);
+            $calculatedHash = hash_hmac($this->macHash, $pureData, $key, $rawHash);
 
             if ($this->compareString($hash, $calculatedHash)) {
                 return $pureData;
