@@ -193,13 +193,7 @@ class Cors extends ActionFilter
             $responseHeaders[$responseHeaderField] = $this->headerize($requestHeaders[$requestHeaderField]);
         } else {
             $requestedData = preg_split("/[\\s,]+/", $requestHeaders[$requestHeaderField], -1, PREG_SPLIT_NO_EMPTY);
-            $acceptedData = [];
-            foreach ($requestedData as $req) {
-                $req = $this->headerize($req);
-                if (in_array($req, $this->cors[$requestHeaderField])) {
-                    $acceptedData[] = $req;
-                }
-            }
+            $acceptedData = array_uintersect($requestedData, $this->cors[$requestHeaderField], 'strcasecmp');
             if (!empty($acceptedData)) {
                 $responseHeaders[$responseHeaderField] = implode(', ', $acceptedData);
             }
