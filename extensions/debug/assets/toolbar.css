@@ -15,7 +15,7 @@
     background: rgb(246,246,246) url(data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAoCAYAAAA/tpB3AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB94BBQwuINct3v0AAAAjSURBVAjXY3j79u1/JgYGBgYkgpGRkYEYMSpKUGLK+/fvGQAaDAb6F86IsAAAAABJRU5ErkJggg==); /* generated using "cat assets/bg.png | base64" */
 }
 
-html[dir=rtl] #yii-debug-toolbar {
+*[dir=rtl] #yii-debug-toolbar {
     direction: ltr;
 }
 
