@@ -601,6 +601,7 @@ class Component extends Object
         foreach ($behaviors as $name => $behavior) {
             $this->attachBehaviorInternal($name, $behavior);
         }
+        return $this;
     }
 
     /**
