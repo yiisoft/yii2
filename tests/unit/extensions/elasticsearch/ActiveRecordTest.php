@@ -14,53 +14,49 @@ use yiiunit\data\ar\elasticsearch\Item;
 use yiiunit\data\ar\elasticsearch\OrderWithNullFK;
 use yiiunit\data\ar\elasticsearch\OrderItemWithNullFK;
 use yiiunit\TestCase;
+use yiiunit\data\ar\elasticsearch\Animal;
+use yiiunit\data\ar\elasticsearch\Dog;
+use yiiunit\data\ar\elasticsearch\Cat;
 
 /**
  * @group elasticsearch
  */
-class ActiveRecordTest extends ElasticSearchTestCase
-{
+class ActiveRecordTest extends ElasticSearchTestCase {
+
     use ActiveRecordTestTrait;
 
-    public function getCustomerClass()
-    {
+    public function getCustomerClass() {
         return Customer::className();
     }
 
-    public function getItemClass()
-    {
+    public function getItemClass() {
         return Item::className();
     }
 
-    public function getOrderClass()
-    {
+    public function getOrderClass() {
         return Order::className();
     }
 
-    public function getOrderItemClass()
-    {
+    public function getOrderItemClass() {
         return OrderItem::className();
     }
 
-    public function getOrderWithNullFKClass()
-    {
+    public function getOrderWithNullFKClass() {
         return OrderWithNullFK::className();
     }
-    public function getOrderItemWithNullFKmClass()
-    {
+
+    public function getOrderItemWithNullFKmClass() {
         return OrderItemWithNullFK::className();
     }
 
     /**
      * can be overridden to do things after save()
      */
-    public function afterSave()
-    {
+    public function afterSave() {
         $this->getConnection()->createCommand()->flushIndex('yiitest');
     }
 
-    public function setUp()
-    {
+    public function setUp() {
         parent::setUp();
 
         /* @var $db Connection */
@@ -79,7 +75,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
         OrderItem::setUpMapping($command);
         OrderWithNullFK::setUpMapping($command);
         OrderItemWithNullFK::setUpMapping($command);
-
+        Animal::setUpMapping($command);
+        
         $db->createCommand()->flushIndex('yiitest');
 
         $customer = new Customer();
@@ -183,11 +180,13 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
         $orderItem->save(false);
 
+        (new Cat())->save(false);
+        (new Dog())->save(false);
+
         $db->createCommand()->flushIndex('yiitest');
     }
 
-    public function testSaveNoChanges()
-    {
+    public function testSaveNoChanges() {
         // this should not fail with exception
         $customer = new Customer();
         // insert
@@ -196,8 +195,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $customer->save(false);
     }
 
-    public function testFindAsArray()
-    {
+    public function testFindAsArray() {
         // asArray
         $customer = Customer::find()->where(['id' => 2])->asArray()->one();
         $this->assertEquals([
@@ -207,11 +205,10 @@ class ActiveRecordTest extends ElasticSearchTestCase
             'address' => 'address2',
             'status' => 1,
 //            '_score' => 1.0
-        ], $customer['_source']);
+                ], $customer['_source']);
     }
 
-    public function testSearch()
-    {
+    public function testSearch() {
         $customers = Customer::find()->search()['hits'];
         $this->assertEquals(3, $customers['total']);
         $this->assertEquals(3, count($customers['hits']));
@@ -246,7 +243,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertArrayHasKey('status', $customers[2]['_source']);
 
         // TODO test asArray() + fields() + indexBy()
-
         // find by attributes
         $result = Customer::find()->where(['name' => 'user2'])->search()['hits'];
         $customer = reset($result['hits']);
@@ -267,20 +263,17 @@ class ActiveRecordTest extends ElasticSearchTestCase
 //        $this->assertEquals(2, $result['facets']['status_stats']['max']);
 //    }
 
-    public function testGetDb()
-    {
+    public function testGetDb() {
         $this->mockApplication(['components' => ['elasticsearch' => Connection::className()]]);
         $this->assertInstanceOf(Connection::className(), ActiveRecord::getDb());
     }
 
-    public function testGet()
-    {
+    public function testGet() {
         $this->assertInstanceOf(Customer::className(), Customer::get(1));
         $this->assertNull(Customer::get(5));
     }
 
-    public function testMget()
-    {
+    public function testMget() {
         $this->assertEquals([], Customer::mget([]));
 
         $records = Customer::mget([1]);
@@ -296,8 +289,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertInstanceOf(Customer::className(), $records[1]);
     }
 
-    public function testFindLazy()
-    {
+    public function testFindLazy() {
         /* @var $customer Customer */
         $customer = Customer::findOne(2);
         $orders = $customer->orders;
@@ -308,8 +300,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(2, $orders[0]->id);
     }
 
-    public function testFindEagerViaRelation()
-    {
+    public function testFindEagerViaRelation() {
         $orders = Order::find()->with('items')->orderBy('created_at')->all();
         $this->assertEquals(3, count($orders));
         $order = $orders[0];
@@ -320,8 +311,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(2, $order->items[1]->id);
     }
 
-    public function testInsertNoPk()
-    {
+    public function testInsertNoPk() {
         $this->assertEquals(['id'], Customer::primaryKey());
         $pkName = 'id';
 
@@ -346,8 +336,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertFalse($customer->isNewRecord);
     }
 
-    public function testInsertPk()
-    {
+    public function testInsertPk() {
         $pkName = 'id';
 
         $customer = new Customer;
@@ -366,8 +355,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertFalse($customer->isNewRecord);
     }
 
-    public function testUpdatePk()
-    {
+    public function testUpdatePk() {
         $pkName = 'id';
 
         $orderItem = Order::findOne([$pkName => 2]);
@@ -390,8 +378,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertNotNull(Order::findOne([$pkName => 13]));
     }
 
-    public function testFindLazyVia2()
-    {
+    public function testFindLazyVia2() {
         /* @var $this TestCase|ActiveRecordTestTrait */
         /* @var $order Order */
         $orderClass = $this->getOrderClass();
@@ -406,8 +393,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
      * Some PDO implementations(e.g. cubrid) do not support boolean values.
      * Make sure this does not affect AR layer.
      */
-    public function testBooleanAttribute()
-    {
+    public function testBooleanAttribute() {
         $db = $this->getConnection();
         Customer::deleteAll();
         Customer::setUpMapping($db->createCommand(), true);
@@ -443,24 +429,22 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(2, count($customers));
     }
 
-    public function testScriptFields()
-    {
+    public function testScriptFields() {
         $orderItems = OrderItem::find()->fields([
-            'quantity',
-            'subtotal',
-            'total' => [
-                'script' => "doc['quantity'].value * doc['subtotal'].value",
-                'lang' => 'groovy',
-            ]
-        ])->all();
+                    'quantity',
+                    'subtotal',
+                    'total' => [
+                        'script' => "doc['quantity'].value * doc['subtotal'].value",
+                        'lang' => 'groovy',
+                    ]
+                ])->all();
         $this->assertNotEmpty($orderItems);
-        foreach($orderItems as $item) {
+        foreach ($orderItems as $item) {
             $this->assertEquals($item->subtotal * $item->quantity, $item->total);
         }
     }
 
-    public function testFindAsArrayFields()
-    {
+    public function testFindAsArrayFields() {
         /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->asArray()->fields(['id', 'name'])->all();
@@ -482,8 +466,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertArrayNotHasKey('status', $customers[2]['fields']);
     }
 
-    public function testFindAsArraySourceFilter()
-    {
+    public function testFindAsArraySourceFilter() {
         /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->asArray()->source(['id', 'name'])->all();
@@ -505,9 +488,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertArrayNotHasKey('status', $customers[2]['_source']);
     }
 
-
-    public function testFindIndexBySource()
-    {
+    public function testFindIndexBySource() {
         $customerClass = $this->getCustomerClass();
         /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
@@ -534,8 +515,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         // indexBy callable + asArray
         $customers = Customer::find()->indexBy(function ($customer) {
-            return $customer->id . '-' . $customer->name;
-        })->fields('id', 'name')->all();
+                    return $customer->id . '-' . $customer->name;
+                })->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
         $this->assertTrue($customers['1-user1'] instanceof $customerClass);
         $this->assertTrue($customers['2-user2'] instanceof $customerClass);
@@ -557,8 +538,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertNull($customers['3-user3']->status);
     }
 
-    public function testFindIndexByAsArrayFields()
-    {
+    public function testFindIndexByAsArrayFields() {
         /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = Customer::find()->indexBy('name')->asArray()->fields('id', 'name')->all();
@@ -581,8 +561,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         // indexBy callable + asArray
         $customers = Customer::find()->indexBy(function ($customer) {
-            return reset($customer['fields']['id']) . '-' . reset($customer['fields']['name']);
-        })->asArray()->fields('id', 'name')->all();
+                    return reset($customer['fields']['id']) . '-' . reset($customer['fields']['name']);
+                })->asArray()->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
         $this->assertArrayHasKey('id', $customers['1-user1']['fields']);
         $this->assertArrayHasKey('name', $customers['1-user1']['fields']);
@@ -601,8 +581,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertArrayNotHasKey('status', $customers['3-user3']['fields']);
     }
 
-    public function testFindIndexByAsArray()
-    {
+    public function testFindIndexByAsArray() {
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
 
@@ -628,8 +607,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         // indexBy callable + asArray
         $customers = $customerClass::find()->indexBy(function ($customer) {
-            return $customer['_source']['id'] . '-' . $customer['_source']['name'];
-        })->asArray()->all();
+                    return $customer['_source']['id'] . '-' . $customer['_source']['name'];
+                })->asArray()->all();
         $this->assertEquals(3, count($customers));
         $this->assertArrayHasKey('id', $customers['1-user1']['_source']);
         $this->assertArrayHasKey('name', $customers['1-user1']['_source']);
@@ -648,8 +627,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertArrayHasKey('status', $customers['3-user3']['_source']);
     }
 
-    public function testAfterFindGet()
-    {
+    public function testAfterFindGet() {
         /* @var $customerClass BaseActiveRecord */
         $customerClass = $this->getCustomerClass();
 
@@ -670,14 +648,13 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals([
             [$customerClass, false, 1, false],
             [$customerClass, false, 2, false],
-        ], $afterFindCalls);
+                ], $afterFindCalls);
         $afterFindCalls = [];
 
         Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
     }
 
-    public function testFindEmptyPkCondition()
-    {
+    public function testFindEmptyPkCondition() {
         /* @var $this TestCase|ActiveRecordTestTrait */
         /* @var $orderItemClass \yii\db\ActiveRecordInterface */
         $orderItemClass = $this->getOrderItemClass();
@@ -705,15 +682,13 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(0, count($orderItems));
     }
 
-    public function testArrayAttributes()
-    {
+    public function testArrayAttributes() {
         $this->assertTrue(is_array(Order::findOne(1)->itemsArray));
         $this->assertTrue(is_array(Order::findOne(2)->itemsArray));
         $this->assertTrue(is_array(Order::findOne(3)->itemsArray));
     }
 
-    public function testArrayAttributeRelationLazy()
-    {
+    public function testArrayAttributeRelationLazy() {
         $order = Order::findOne(1);
         $items = $order->itemsByArrayValue;
         $this->assertEquals(2, count($items));
@@ -733,8 +708,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertTrue($items[5] instanceof Item);
     }
 
-    public function testArrayAttributeRelationEager()
-    {
+    public function testArrayAttributeRelationEager() {
         /* @var $order Order */
         $order = Order::find()->with('itemsByArrayValue')->where(['id' => 1])->one();
         $this->assertTrue($order->isRelationPopulated('itemsByArrayValue'));
@@ -758,8 +732,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertTrue($items[5] instanceof Item);
     }
 
-    public function testArrayAttributeRelationLink()
-    {
+    public function testArrayAttributeRelationLink() {
         /* @var $order Order */
         $order = Order::find()->where(['id' => 1])->one();
         $items = $order->itemsByArrayValue;
@@ -786,8 +759,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertTrue(isset($items[5]));
     }
 
-    public function testArrayAttributeRelationUnLink()
-    {
+    public function testArrayAttributeRelationUnLink() {
         /* @var $order Order */
         $order = Order::find()->where(['id' => 1])->one();
         $items = $order->itemsByArrayValue;
@@ -815,8 +787,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     /**
      * https://github.com/yiisoft/yii2/issues/6065
      */
-    public function testArrayAttributeRelationUnLinkBrokenArray()
-    {
+    public function testArrayAttributeRelationUnLinkBrokenArray() {
         /* @var $order Order */
         $order = Order::find()->where(['id' => 1])->one();
 
@@ -840,8 +811,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     /**
      * @expectedException \yii\base\NotSupportedException
      */
-    public function testArrayAttributeRelationUnLinkAll()
-    {
+    public function testArrayAttributeRelationUnLinkAll() {
         /* @var $order Order */
         $order = Order::find()->where(['id' => 1])->one();
         $items = $order->itemsByArrayValue;
@@ -861,16 +831,14 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(0, count($items));
     }
 
-    public function testUnlinkAll()
-    {
+    public function testUnlinkAll() {
         // not supported by elasticsearch
     }
 
     /**
      * @expectedException \yii\base\NotSupportedException
      */
-    public function testUnlinkAllAndConditionSetNull()
-    {
+    public function testUnlinkAllAndConditionSetNull() {
         /* @var $customerClass \yii\db\BaseActiveRecord */
         $customerClass = $this->getCustomerClass();
         /* @var $orderClass \yii\db\BaseActiveRecord */
@@ -890,8 +858,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     /**
      * @expectedException \yii\base\NotSupportedException
      */
-    public function testUnlinkAllAndConditionDelete()
-    {
+    public function testUnlinkAllAndConditionDelete() {
         /* @var $customerClass \yii\db\BaseActiveRecord */
         $customerClass = $this->getCustomerClass();
         /* @var $orderClass \yii\db\BaseActiveRecord */
@@ -906,6 +873,17 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(1, count($customer->expensiveOrdersWithNullFK));
         $this->assertEquals(3, $orderClass::find()->count());
         $customer->unlinkAll('expensiveOrdersWithNullFK', true);
+    }
+
+    public function testPopulateRecordCallWhenQueryingOnParentClass() {
+        (new Cat())->save(false);
+        (new Dog())->save(false);
+
+        $animal = Animal::find()->where(['type' => Dog::className()])->one();
+        $this->assertEquals('bark', $animal->getDoes());
+
+        $animal = Animal::find()->where(['type' => Cat::className()])->one();
+        $this->assertEquals('meow', $animal->getDoes());
     }
 
     // TODO test AR with not mapped PK

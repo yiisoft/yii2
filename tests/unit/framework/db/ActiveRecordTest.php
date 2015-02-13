@@ -14,6 +14,9 @@ use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\framework\db\cubrid\CubridActiveRecordTest;
+use yiiunit\data\ar\Animal;
+use yiiunit\data\ar\Dog;
+use yiiunit\data\ar\Cat;
 
 /**
  * @group db
@@ -670,5 +673,16 @@ class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, count($orders[0]->orderItems));
         $this->assertEquals(3, count($orders[1]->orderItems));
         $this->assertEquals(1, count($orders[2]->orderItems));
+    }
+    
+    public function testPopulateRecordCallWhenQueryingOnParentClass() {
+        (new Cat())->save(false);
+        (new Dog())->save(false);
+
+        $animal = Animal::find()->where(['type' => Dog::className()])->one();
+        $this->assertEquals('bark', $animal->getDoes());
+
+        $animal = Animal::find()->where(['type' => Cat::className()])->one();
+        $this->assertEquals('meow', $animal->getDoes());
     }
 }
