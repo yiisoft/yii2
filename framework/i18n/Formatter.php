@@ -1071,6 +1071,22 @@ class Formatter extends Component
 
 
     /**
+     * Formats the value as a color badge.
+     * @param string $value the value to be formatted. Must be in the format of '#xxxxxx'
+     * @param boolean $showHex whether to display the hexa value. Default to false.
+     * @return string the formatted result.
+     */
+    public function asColor($value, $showHex = false)
+    {
+        $content = "";
+        if ($showHex) {
+            $content = "&nbsp;".$value;
+        }
+        return Html::tag("span", "&nbsp;",["class"=>"badge", "style"=>"background-color: $value"]).$content;
+    }
+    
+    
+    /**
      * Given the value in bytes formats number part of the human readable form.
      *
      * @param string|integer|float $value value in bytes to be formatted.
