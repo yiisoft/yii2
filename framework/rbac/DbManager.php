@@ -885,7 +885,7 @@ class DbManager extends BaseManager
 
         $data = $this->cache->get($this->cacheKey);
         if (is_array($data) && isset($data[0], $data[1], $data[2])) {
-            list ($this->items, $this->rules, $this->parents) = unserialize($data);
+            list ($this->items, $this->rules, $this->parents) = $data;
             return;
         }
 
