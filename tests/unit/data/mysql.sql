@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS `profile` CASCADE;
 DROP TABLE IF EXISTS `null_values` CASCADE;
 DROP TABLE IF EXISTS `type` CASCADE;
 DROP TABLE IF EXISTS `constraints` CASCADE;
+DROP TABLE IF EXISTS `animal` CASCADE;
 
 CREATE TABLE `constraints`
 (
@@ -125,6 +126,15 @@ CREATE TABLE `type` (
   `ts_default` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `bit_col` BIT(8) NOT NULL DEFAULT b'10000010'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `animal` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `type` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `animal` (`type`) VALUES ('yiiunit\data\ar\Cat');
+INSERT INTO `animal` (`type`) VALUES ('yiiunit\data\ar\Dog');
 
 INSERT INTO `profile` (description) VALUES ('profile customer 1');
 INSERT INTO `profile` (description) VALUES ('profile customer 3');

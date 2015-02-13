@@ -5,26 +5,27 @@ namespace yiiunit\extensions\mongodb;
 use yii\mongodb\ActiveQuery;
 use yiiunit\data\ar\mongodb\ActiveRecord;
 use yiiunit\data\ar\mongodb\Customer;
+use yiiunit\data\ar\mongodb\Animal;
+use yiiunit\data\ar\mongodb\Dog;
+use yiiunit\data\ar\mongodb\Cat;
 
 /**
  * @group mongodb
  */
-class ActiveRecordTest extends MongoDbTestCase
-{
+class ActiveRecordTest extends MongoDbTestCase {
+
     /**
      * @var array[] list of test rows.
      */
     protected $testRows = [];
 
-    protected function setUp()
-    {
+    protected function setUp() {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
         $this->setUpTestRows();
     }
 
-    protected function tearDown()
-    {
+    protected function tearDown() {
         $this->dropCollection(Customer::collectionName());
         parent::tearDown();
     }
@@ -32,8 +33,7 @@ class ActiveRecordTest extends MongoDbTestCase
     /**
      * Sets up test rows.
      */
-    protected function setUpTestRows()
-    {
+    protected function setUpTestRows() {
         $collection = $this->getConnection()->getCollection('customer');
         $rows = [];
         for ($i = 1; $i <= 10; $i++) {
@@ -50,8 +50,7 @@ class ActiveRecordTest extends MongoDbTestCase
 
     // Tests :
 
-    public function testFind()
-    {
+    public function testFind() {
         // find one
         $result = Customer::find();
         $this->assertTrue($result instanceof ActiveQuery);
@@ -86,8 +85,8 @@ class ActiveRecordTest extends MongoDbTestCase
         // find count, sum, average, min, max, distinct
         $this->assertEquals(10, Customer::find()->count());
         $this->assertEquals(1, Customer::find()->where(['status' => 2])->count());
-        $this->assertEquals((1+10)/2*10, Customer::find()->sum('status'));
-        $this->assertEquals((1+10)/2, Customer::find()->average('status'));
+        $this->assertEquals((1 + 10) / 2 * 10, Customer::find()->sum('status'));
+        $this->assertEquals((1 + 10) / 2, Customer::find()->average('status'));
         $this->assertEquals(1, Customer::find()->min('status'));
         $this->assertEquals(10, Customer::find()->max('status'));
         $this->assertEquals(range(1, 10), Customer::find()->distinct('status'));
@@ -107,14 +106,13 @@ class ActiveRecordTest extends MongoDbTestCase
 
         // indexBy callable
         $customers = Customer::find()->indexBy(function ($customer) {
-            return $customer->status . '-' . $customer->status;
-        })->all();
+                    return $customer->status . '-' . $customer->status;
+                })->all();
         $this->assertTrue($customers['1-1'] instanceof Customer);
         $this->assertTrue($customers['2-2'] instanceof Customer);
     }
 
-    public function testInsert()
-    {
+    public function testInsert() {
         $record = new Customer;
         $record->name = 'new name';
         $record->email = 'new email';
@@ -132,8 +130,7 @@ class ActiveRecordTest extends MongoDbTestCase
     /**
      * @depends testInsert
      */
-    public function testUpdate()
-    {
+    public function testUpdate() {
         $record = new Customer;
         $record->name = 'new name';
         $record->email = 'new email';
@@ -165,8 +162,7 @@ class ActiveRecordTest extends MongoDbTestCase
     /**
      * @depends testInsert
      */
-    public function testDelete()
-    {
+    public function testDelete() {
         // delete
         $record = new Customer;
         $record->name = 'new name';
@@ -194,8 +190,7 @@ class ActiveRecordTest extends MongoDbTestCase
         $this->assertEquals(0, count($records));
     }
 
-    public function testUpdateAllCounters()
-    {
+    public function testUpdateAllCounters() {
         $this->assertEquals(1, Customer::updateAllCounters(['status' => 10], ['status' => 10]));
 
         $record = Customer::findOne(['status' => 10]);
@@ -205,8 +200,7 @@ class ActiveRecordTest extends MongoDbTestCase
     /**
      * @depends testUpdateAllCounters
      */
-    public function testUpdateCounters()
-    {
+    public function testUpdateCounters() {
         $record = Customer::findOne($this->testRows[9]);
 
         $originalCounter = $record->status;
@@ -221,8 +215,7 @@ class ActiveRecordTest extends MongoDbTestCase
     /**
      * @depends testUpdate
      */
-    public function testUpdateNestedAttribute()
-    {
+    public function testUpdateNestedAttribute() {
         $record = new Customer;
         $record->name = 'new name';
         $record->email = 'new email';
@@ -248,8 +241,7 @@ class ActiveRecordTest extends MongoDbTestCase
      * @depends testFind
      * @depends testInsert
      */
-    public function testQueryByIntegerField()
-    {
+    public function testQueryByIntegerField() {
         $record = new Customer;
         $record->name = 'new name';
         $record->status = 7;
@@ -264,20 +256,19 @@ class ActiveRecordTest extends MongoDbTestCase
         $this->assertEquals(7, $rowRefreshed->status);
     }
 
-    public function testModify()
-    {
+    public function testModify() {
         $searchName = 'name7';
         $newName = 'new name';
 
         $customer = Customer::find()
-            ->where(['name' => $searchName])
-            ->modify(['$set' => ['name' => $newName]], ['new' => true]);
+                ->where(['name' => $searchName])
+                ->modify(['$set' => ['name' => $newName]], ['new' => true]);
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals($newName, $customer->name);
 
         $customer = Customer::find()
-            ->where(['name' => 'not existing name'])
-            ->modify(['$set' => ['name' => $newName]], ['new' => false]);
+                ->where(['name' => 'not existing name'])
+                ->modify(['$set' => ['name' => $newName]], ['new' => false]);
         $this->assertNull($customer);
     }
 
@@ -286,12 +277,23 @@ class ActiveRecordTest extends MongoDbTestCase
      *
      * @see https://github.com/yiisoft/yii2/issues/6026
      */
-    public function testInsertEmptyAttributes()
-    {
+    public function testInsertEmptyAttributes() {
         $record = new Customer();
         $record->save(false);
 
         $this->assertTrue($record->_id instanceof \MongoId);
         $this->assertFalse($record->isNewRecord);
     }
+
+    public function testPopulateRecordCallWhenQueryingOnParentClass() {
+        (new Cat())->save(false);
+        (new Dog())->save(false);
+
+        $animal = Animal::find()->where(['type' => Dog::className()])->one();
+        $this->assertEquals('bark', $animal->getDoes());
+
+        $animal = Animal::find()->where(['type' => Cat::className()])->one();
+        $this->assertEquals('meow', $animal->getDoes());
+    }
+
 }
