@@ -129,8 +129,8 @@ class BaseHtml
      */
     public static function tag($name, $content = '', $options = [])
     {
-        $html = "<$name" . static::renderTagAttributes($options) . '>';
-        return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
+        $html = "<$name" . static::renderTagAttributes($options);
+        return isset(static::$voidElements[strtolower($name)]) ? $html . ' />' : "$html>$content</$name>";
     }
 
     /**
