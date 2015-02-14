@@ -43,6 +43,10 @@ use yii\helpers\Html;
  *                  ],
  *             ],
  *         ],
+ *         [
+ *              'label' => 'External link',
+ *              'url => ['//other/route']
+ *         ]
  *     ],
  * ]);
  * ```
@@ -171,8 +175,15 @@ class Tabs extends Widget
                     Html::addCssClass($options, 'active');
                     Html::addCssClass($headerOptions, 'active');
                 }
-                $linkOptions['data-toggle'] = 'tab';
-                $header = Html::a($label, '#' . $options['id'], $linkOptions);
+
+                // allow tabs with external links (if content should not be called by inline ajax)
+                if(isset($item['url'])){ 
+                    $header = Html::a($label, $item['url'], $linkOptions);
+                }else{
+                    $linkOptions['data-toggle'] = 'tab';
+                    $header = Html::a($label, '#' . $options['id'], $linkOptions);                    
+                }                  
+                
                 if ($this->renderTabContent) {
                     $panes[] = Html::tag('div', isset($item['content']) ? $item['content'] : '', $options);
                 }
