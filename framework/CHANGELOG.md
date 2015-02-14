@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.3 under development
 -----------------------
 
+- Bug #7271: Classes that call `*::populateRecord()` after retrieving data from ddbb call now the method on the class of the model returned by `*::instantiate()`. (jlorente)
 - Bug #5457: `yii\web\Cors` should handle `Access-Control-Request-Headers` in a case-insensitive manner (qiangxue)
 - Bug #6919: Fixed wrong namespaces under advanced application's TestCase classes (ivokund)
 - Bug #6940: `yii\web\Response::sendContentAsFile()` may not send correct `content-length` header (sadgnome)

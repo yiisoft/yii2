@@ -14,12 +14,16 @@ use yiiunit\data\ar\elasticsearch\Item;
 use yiiunit\data\ar\elasticsearch\OrderWithNullFK;
 use yiiunit\data\ar\elasticsearch\OrderItemWithNullFK;
 use yiiunit\TestCase;
+use yiiunit\data\ar\elasticsearch\Animal;
+use yiiunit\data\ar\elasticsearch\Dog;
+use yiiunit\data\ar\elasticsearch\Cat;
 
 /**
  * @group elasticsearch
  */
 class ActiveRecordTest extends ElasticSearchTestCase
 {
+
     use ActiveRecordTestTrait;
 
     public function getCustomerClass()
@@ -46,6 +50,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
     {
         return OrderWithNullFK::className();
     }
+
     public function getOrderItemWithNullFKmClass()
     {
         return OrderItemWithNullFK::className();
@@ -79,6 +84,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         OrderItem::setUpMapping($command);
         OrderWithNullFK::setUpMapping($command);
         OrderItemWithNullFK::setUpMapping($command);
+        Animal::setUpMapping($command);
 
         $db->createCommand()->flushIndex('yiitest');
 
@@ -183,6 +189,9 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $orderItem->setAttributes(['order_id' => 3, 'item_id' => 2, 'quantity' => 1, 'subtotal' => 40.0], false);
         $orderItem->save(false);
 
+        (new Cat())->save(false);
+        (new Dog())->save(false);
+        
         $db->createCommand()->flushIndex('yiitest');
     }
 
@@ -207,7 +216,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
             'address' => 'address2',
             'status' => 1,
 //            '_score' => 1.0
-        ], $customer['_source']);
+                ], $customer['_source']);
     }
 
     public function testSearch()
@@ -246,7 +255,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertArrayHasKey('status', $customers[2]['_source']);
 
         // TODO test asArray() + fields() + indexBy()
-
         // find by attributes
         $result = Customer::find()->where(['name' => 'user2'])->search()['hits'];
         $customer = reset($result['hits']);
@@ -446,15 +454,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
     public function testScriptFields()
     {
         $orderItems = OrderItem::find()->fields([
-            'quantity',
-            'subtotal',
-            'total' => [
-                'script' => "doc['quantity'].value * doc['subtotal'].value",
-                'lang' => 'groovy',
-            ]
-        ])->all();
+                    'quantity',
+                    'subtotal',
+                    'total' => [
+                        'script' => "doc['quantity'].value * doc['subtotal'].value",
+                        'lang' => 'groovy',
+                    ]
+                ])->all();
         $this->assertNotEmpty($orderItems);
-        foreach($orderItems as $item) {
+        foreach ($orderItems as $item) {
             $this->assertEquals($item->subtotal * $item->quantity, $item->total);
         }
     }
@@ -505,7 +513,6 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertArrayNotHasKey('status', $customers[2]['_source']);
     }
 
-
     public function testFindIndexBySource()
     {
         $customerClass = $this->getCustomerClass();
@@ -534,8 +541,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         // indexBy callable + asArray
         $customers = Customer::find()->indexBy(function ($customer) {
-            return $customer->id . '-' . $customer->name;
-        })->fields('id', 'name')->all();
+                    return $customer->id . '-' . $customer->name;
+                })->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
         $this->assertTrue($customers['1-user1'] instanceof $customerClass);
         $this->assertTrue($customers['2-user2'] instanceof $customerClass);
@@ -581,8 +588,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         // indexBy callable + asArray
         $customers = Customer::find()->indexBy(function ($customer) {
-            return reset($customer['fields']['id']) . '-' . reset($customer['fields']['name']);
-        })->asArray()->fields('id', 'name')->all();
+                    return reset($customer['fields']['id']) . '-' . reset($customer['fields']['name']);
+                })->asArray()->fields('id', 'name')->all();
         $this->assertEquals(3, count($customers));
         $this->assertArrayHasKey('id', $customers['1-user1']['fields']);
         $this->assertArrayHasKey('name', $customers['1-user1']['fields']);
@@ -628,8 +635,8 @@ class ActiveRecordTest extends ElasticSearchTestCase
 
         // indexBy callable + asArray
         $customers = $customerClass::find()->indexBy(function ($customer) {
-            return $customer['_source']['id'] . '-' . $customer['_source']['name'];
-        })->asArray()->all();
+                    return $customer['_source']['id'] . '-' . $customer['_source']['name'];
+                })->asArray()->all();
         $this->assertEquals(3, count($customers));
         $this->assertArrayHasKey('id', $customers['1-user1']['_source']);
         $this->assertArrayHasKey('name', $customers['1-user1']['_source']);
@@ -670,7 +677,7 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals([
             [$customerClass, false, 1, false],
             [$customerClass, false, 2, false],
-        ], $afterFindCalls);
+                ], $afterFindCalls);
         $afterFindCalls = [];
 
         Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
@@ -906,6 +913,15 @@ class ActiveRecordTest extends ElasticSearchTestCase
         $this->assertEquals(1, count($customer->expensiveOrdersWithNullFK));
         $this->assertEquals(3, $orderClass::find()->count());
         $customer->unlinkAll('expensiveOrdersWithNullFK', true);
+    }
+
+    public function testPopulateRecordCallWhenQueryingOnParentClass()
+    {
+        $animal = Animal::find()->where(['type' => Dog::className()])->one();
+        $this->assertEquals('bark', $animal->getDoes());
+
+        $animal = Animal::find()->where(['type' => Cat::className()])->one();
+        $this->assertEquals('meow', $animal->getDoes());
     }
 
     // TODO test AR with not mapped PK
