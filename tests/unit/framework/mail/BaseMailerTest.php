@@ -262,8 +262,8 @@ TEXT
         $message = $mailer->compose([
             'html' => $htmlViewName,
         ]);
-        $this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
-        $this->assertEquals($expectedTextRendering, $message->_textBody, 'Unable to render text!');
+        $this->assertEqualsWithoutLE($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
+        $this->assertEqualsWithoutLE($expectedTextRendering, $message->_textBody, 'Unable to render text!');
     }
 
     public function testUseFileTransport()

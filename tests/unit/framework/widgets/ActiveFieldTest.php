@@ -56,7 +56,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
 EOD;
 
         $actualValue = $this->activeField->render();
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
     /**
@@ -82,7 +82,7 @@ EOD;
 EOD;
 
         $actualValue = $this->activeField->render($content);
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
     public function testBeginHasErros()
@@ -231,7 +231,7 @@ EOD;
 </select>
 EOD;
         $this->activeField->listBox(["1" => "Item One", "2" => "Item 2"]);
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
     }
 
 
