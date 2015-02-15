@@ -203,12 +203,7 @@ foreach ($posts as $post) {
 
 ### Composer オートローダを最適化する
 
-現代的な PHP アプリケーションでは、オートローダの性能が非常に重要です。
-``` php composer.phar dumpautoload -o ``` を使って Composer のオートローダを最適化するのが最大の性能を引き出す方法です。
-ただし、最適化を適用するのはアプリケーション開発者の責務です。
-
-php composer.phar dumpautoload -o
-
+全体としてのパフォーマンスを改善するために、`composer dumpautoload -o` を実行して、Composer のオートローダを最適化することが出来ます。
 
 ### バックグラウンドでデータを処理する
 
