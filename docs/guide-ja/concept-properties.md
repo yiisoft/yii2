@@ -21,7 +21,7 @@ $object->label = trim($label);
   これは、コアクラスに getter または setter があれば、それをプロパティのように使用できることを意味します。
 
 getter メソッドは、名前が `get` で始まるメソッドで、setter メソッドは、`set` で始まるメソッドです。
-`get` または `set` プレフィクスの後の名前で、プロパティ名を定義します。次のコードに示すように、たとえば、`getLabel()` という getter と `setLabel()` という setter は、
+`get` または `set` 接頭辞の後の名前で、プロパティ名を定義します。次のコードに示すように、たとえば、`getLabel()` という getter と `setLabel()` という setter は、
 `label` という名前のプロパティを定義します:
 
 ```php
