@@ -218,11 +218,9 @@ foreach ($posts as $post) {
 Note that you can use array notation even if `asArray` wasn't specified and you're
 working with AR objects.
 
-### Composer Atuoloader Optimization
-The autoloader's performance is really important in modern PHP applications. Optimizing Composer's autoloader using ``` php composer.phar dumpautoload -o ``` is the way to have maximum performance. But it is the responsibility of the application developer to apply the optimization.
+### Composer autoloader optimization
 
-
-php composer.phar dumpautoload -o
+In order to improve overall performance you can execute `composer dumpautoload -o` to optimize Composer autoloader.
 
 ### Processing data in background
 
