@@ -56,7 +56,7 @@ $this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\J
 
 ### CSS を登録する
 
-[[yii\web\View::registerCss()|registerCss()]] またはr [[yii\web\View::registerCssFile()|registerCssFile()]] を使って CSS を登録することが出来ます。
+[[yii\web\View::registerCss()|registerCss()]] または [[yii\web\View::registerCssFile()|registerCssFile()]] を使って CSS を登録することが出来ます。
 前者は CSS のコードブロックを登録し、後者は外部 CSS ファイルを登録します。
 例えば、
 
