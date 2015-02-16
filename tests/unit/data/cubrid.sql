@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "null_values";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "constraints";
+DROP TABLE IF EXISTS "animal";
 
 CREATE TABLE "constraints"
 (
