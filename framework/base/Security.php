@@ -31,9 +31,26 @@ use Yii;
 class Security extends Component
 {
     /**
-     * @var int AES encryption key size in bytes. Must be 16, 24 or 32.
+     * @var string The cipher to use for encryption and decryption.
      */
-    public $keySize = 16;
+    public $cipher = 'AES-128-CBC';
+    /**
+     * @var array[] Look-up table of block sizes and key sizes for each supported OpenSSL cipher.
+     *
+     * In each element, the key is one of the ciphers supported by OpenSSL (@see openssl_get_cipher_methods()).
+     * The value is an array of two integers, the first is the cipher's block size in bytes and the second is
+     * the key size in bytes.
+     *
+     * > Warning: All OpenSSL ciphers that we recommend are in the default value, i.e. AES in CBC mode.
+     *
+     * > Note: Yii's encryption protocol uses the same size for cipher key, HMAC signature key and key
+     * derivation salt.
+     */
+    public $allowedCiphers = [
+        'AES-128-CBC' => [16, 16],
+        'AES-192-CBC' => [16, 24],
+        'AES-256-CBC' => [16, 32],
+    ];
     /**
      * @var string Hash algorithm for key derivation. Recommend sha256, sha384 or sha512.
      * @see hash_algos()
@@ -148,29 +165,34 @@ class Security extends Component
         if (!extension_loaded('openssl')) {
             throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
         }
-
-        $keySalt = $this->generateRandomKey($this->keySize);
-        if ($passwordBased) {
-            $key = $this->pbkdf2($this->kdfHash, $secret, $keySalt, $this->derivationIterations, $this->keySize);
-        } else {
-            $key = $this->hkdf($this->kdfHash, $secret, $keySalt, $info, $this->keySize);
+        if (!isset($this->allowedCiphers[$this->cipher][0], $this->allowedCiphers[$this->cipher][1])) {
+            throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
         }
 
-        $iv = $this->generateRandomKey(16);
+        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
 
-        $encrypted = openssl_encrypt($data, 'AES-' . (8 * $this->keySize) . '-CBC', $key, OPENSSL_RAW_DATA, $iv);
+        $keySalt = $this->generateRandomKey($keySize);
+        if ($passwordBased) {
+            $key = $this->pbkdf2($this->kdfHash, $secret, $keySalt, $this->derivationIterations, $keySize);
+        } else {
+            $key = $this->hkdf($this->kdfHash, $secret, $keySalt, $info, $keySize);
+        }
+
+        $iv = $this->generateRandomKey($blockSize);
+
+        $encrypted = openssl_encrypt($data, $this->cipher, $key, OPENSSL_RAW_DATA, $iv);
         if ($encrypted === false) {
             throw new \yii\base\Exception('OpenSSL failure on encryption: ' . openssl_error_string());
         }
 
-        $authKey = $this->hkdf($this->kdfHash, $key, null, $this->authKeyInfo, $this->keySize);
+        $authKey = $this->hkdf($this->kdfHash, $key, null, $this->authKeyInfo, $keySize);
         $hashed = $this->hashData($iv . $encrypted, $authKey);
 
         /*
          * Output: [keySalt][MAC][IV][ciphertext]
          * - keySalt is KEY_SIZE bytes long
          * - MAC: message authentication code, length same as the output of MAC_HASH
-         * - IV: initialization vector, length 16
+         * - IV: initialization vector, length $blockSize
          */
         return $keySalt . $hashed;
     }
@@ -193,24 +215,29 @@ class Security extends Component
         if (!extension_loaded('openssl')) {
             throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
         }
-
-        $keySalt = StringHelper::byteSubstr($data, 0, $this->keySize);
-        if ($passwordBased) {
-            $key = $this->pbkdf2($this->kdfHash, $secret, $keySalt, $this->derivationIterations, $this->keySize);
-        } else {
-            $key = $this->hkdf($this->kdfHash, $secret, $keySalt, $info, $this->keySize);
+        if (!isset($this->allowedCiphers[$this->cipher][0], $this->allowedCiphers[$this->cipher][1])) {
+            throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
         }
 
-        $authKey = $this->hkdf($this->kdfHash, $key, null, $this->authKeyInfo, $this->keySize);
-        $data = $this->validateData(StringHelper::byteSubstr($data, $this->keySize, null), $authKey);
+        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
+
+        $keySalt = StringHelper::byteSubstr($data, 0, $keySize);
+        if ($passwordBased) {
+            $key = $this->pbkdf2($this->kdfHash, $secret, $keySalt, $this->derivationIterations, $keySize);
+        } else {
+            $key = $this->hkdf($this->kdfHash, $secret, $keySalt, $info, $keySize);
+        }
+
+        $authKey = $this->hkdf($this->kdfHash, $key, null, $this->authKeyInfo, $keySize);
+        $data = $this->validateData(StringHelper::byteSubstr($data, $keySize, null), $authKey);
         if ($data === false) {
             return false;
         }
 
-        $iv = StringHelper::byteSubstr($data, 0, 16);
-        $encrypted = StringHelper::byteSubstr($data, 16, null);
+        $iv = StringHelper::byteSubstr($data, 0, $blockSize);
+        $encrypted = StringHelper::byteSubstr($data, $blockSize, null);
 
-        $decrypted = openssl_decrypt($encrypted, 'AES-' . (8 * $this->keySize) . '-CBC', $key, OPENSSL_RAW_DATA, $iv);
+        $decrypted = openssl_decrypt($encrypted, $this->cipher, $key, OPENSSL_RAW_DATA, $iv);
         if ($decrypted === false) {
             throw new \yii\base\Exception('OpenSSL failure on decryption: ' . openssl_error_string());
         }
