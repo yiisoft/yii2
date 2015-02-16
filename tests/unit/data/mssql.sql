@@ -105,6 +105,17 @@ CREATE TABLE [dbo].[type] (
 	[bool_col2] [tinyint] DEFAULT '1'
 );
 
+CREATE TABLE [dbo].[animal] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[type] [varchar](255) NOT NULL,
+	CONSTRAINT [PK_animal] PRIMARY KEY CLUSTERED (
+		[id] ASC
+	) ON [PRIMARY]
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO [dbo].[animal] (type) VALUES ('yiiunit\data\ar\Cat');
+INSERT INTO [dbo].[animal] (type) VALUES ('yiiunit\data\ar\Dog');
+
 INSERT INTO [dbo].[profile] ([description]) VALUES ('profile customer 1');
 INSERT INTO [dbo].[profile] ([description]) VALUES ('profile customer 3');
 

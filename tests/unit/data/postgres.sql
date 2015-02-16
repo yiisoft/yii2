@@ -123,6 +123,16 @@ CREATE TABLE "bool_values" (
   default_false boolean not null default false
 );
 
+
+CREATE TABLE `animal` (
+  id serial primary key,
+  type varchar(255) not null
+);
+
+INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Cat');
+INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Dog');
+
+
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');
 

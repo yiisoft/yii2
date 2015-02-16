@@ -108,6 +108,15 @@ CREATE TABLE "type" (
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE "animal" (
+  id INTEGER NOT NULL,
+  type VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Cat');
+INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Dog');
+
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');
 
