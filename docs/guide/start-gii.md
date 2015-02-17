@@ -1,8 +1,8 @@
 Generating Code with Gii
 ========================
 
-This section will describe how to use [Gii](tool-gii.md) to automatically generate  code
-that implements some common Web site features. Using Gii to auto-generate code is simply a matter of entering the right information per to the instructions shown on the Gii Web pages.
+This section will describe how to use [Gii](tool-gii.md) to automatically generate code
+that implements some common Web site features. Using Gii to auto-generate code is simply a matter of entering the right information per the instructions shown on the Gii Web pages.
 
 Through this tutorial, you will learn how to:
 
