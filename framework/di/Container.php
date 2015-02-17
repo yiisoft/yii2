@@ -161,10 +161,6 @@ class Container extends Component
 
             if ($concrete === $class) {
                 $object = $this->build($class, $params, $config);
-
-                if ($object instanceof ConfiguratorInterface) {
-                    $object = $object->build();
-                }
             } else {
                 $object = $this->get($concrete, $params, $config);
             }
@@ -177,6 +173,10 @@ class Container extends Component
         if (array_key_exists($class, $this->_singletons)) {
             // singleton
             $this->_singletons[$class] = $object;
+        }
+
+        if ($object instanceof ConfiguratorInterface) {
+            $object = $object->build();
         }
 
         return $object;
