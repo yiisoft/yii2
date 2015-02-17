@@ -161,6 +161,10 @@ class Container extends Component
 
             if ($concrete === $class) {
                 $object = $this->build($class, $params, $config);
+
+                if ($object instanceof ConfiguratorInterface) {
+                    $object = $object->build();
+                }
             } else {
                 $object = $this->get($concrete, $params, $config);
             }
