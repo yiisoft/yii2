@@ -7,7 +7,7 @@ Internationalization (I18N) refers to the process of designing a software applic
 various languages and regions without engineering changes. For Web applications, this is of particular importance
 because the potential users may be worldwide.
 
-Yii offers several tools that help with internationalisation of a website such as message translation and
+Yii offers several tools that help with internationalization of a website such as message translation and
 number- and date-formatting.
 
 Locale and Language

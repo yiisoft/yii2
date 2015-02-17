@@ -28,14 +28,6 @@ class HtmlTest extends TestCase
         ]);
     }
 
-    public function assertEqualsWithoutLE($expected, $actual)
-    {
-        $expected = str_replace("\r\n", "\n", $expected);
-        $actual = str_replace("\r\n", "\n", $actual);
-
-        $this->assertEquals($expected, $actual);
-    }
-
     public function testEncode()
     {
         $this->assertEquals("a&lt;&gt;&amp;&quot;&#039;�", Html::encode("a<>&\"'\x80"));

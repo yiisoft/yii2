@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS "type" CASCADE;
 DROP TABLE IF EXISTS "null_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
+DROP TABLE IF EXISTS "animal" CASCADE;
 
 CREATE TABLE "constraints"
 (
@@ -122,6 +123,16 @@ CREATE TABLE "bool_values" (
   default_true bool not null default true,
   default_false boolean not null default false
 );
+
+
+CREATE TABLE `animal` (
+  id serial primary key,
+  type varchar(255) not null
+);
+
+INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Cat');
+INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Dog');
+
 
 INSERT INTO "profile" (description) VALUES ('profile customer 1');
 INSERT INTO "profile" (description) VALUES ('profile customer 3');

@@ -218,6 +218,10 @@ foreach ($posts as $post) {
 Note that you can use array notation even if `asArray` wasn't specified and you're
 working with AR objects.
 
+### Composer autoloader optimization
+
+In order to improve overall performance you can execute `composer dumpautoload -o` to optimize Composer autoloader.
+
 ### Processing data in background
 
 In order to respond to user requests faster you can process heavy parts of the

@@ -8,6 +8,7 @@
 namespace yii\rbac;
 
 use Yii;
+use yii\caching\Cache;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\db\Expression;
@@ -58,7 +59,44 @@ class DbManager extends BaseManager
      * @var string the name of the table storing rules. Defaults to "auth_rule".
      */
     public $ruleTable = '{{%auth_rule}}';
-
+    /**
+     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the followings:
+     *
+     * - an application component ID (e.g. `cache`)
+     * - a configuration array
+     * - a [[yii\caching\Cache]] object
+     *
+     * When this is not set, it means caching is not enabled.
+     *
+     * Note that by enabling RBAC cache, all auth items, rules and auth item parent-child relationships will
+     * be cached and loaded into memory. This will improve the performance of RBAC permission check. However,
+     * it does require extra memory and as a result may not be appropriate if your RBAC system contains too many
+     * auth items. You should seek other RBAC implementations (e.g. RBAC based on Redis storage) in this case.
+     *
+     * Also note that if you modify RBAC items, rules or parent-child relationships from outside of this component,
+     * you have to manually call [[invalidateCache()]] to ensure data consistency.
+     *
+     * @since 2.0.3
+     */
+    public $cache;
+    /**
+     * @var string the key used to store RBAC data in cache
+     * @see cache
+     * @since 2.0.3
+     */
+    public $cacheKey = 'rbac';
+    /**
+     * @var Item[] all auth items (name => Item)
+     */
+    protected $items;
+    /**
+     * @var Rule[] all auth rules (name => Rule)
+     */
+    protected $rules;
+    /**
+     * @var array auth item parent-child relationships (childName => list of parents)
+     */
+    protected $parents;
 
     /**
      * Initializes the application component.
@@ -68,6 +106,9 @@ class DbManager extends BaseManager
     {
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
+        if ($this->cache !== null) {
+            $this->cache = Instance::ensure($this->cache, Cache::className());
+        }
     }
 
     /**
@@ -76,7 +117,54 @@ class DbManager extends BaseManager
     public function checkAccess($userId, $permissionName, $params = [])
     {
         $assignments = $this->getAssignments($userId);
-        return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
+        $this->loadFromCache();
+        if ($this->items !== null) {
+            return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
+        } else {
+            return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
+        }
+    }
+
+    /**
+     * Performs access check for the specified user based on the data loaded from cache.
+     * This method is internally called by [[checkAccess()]] when [[cache]] is enabled.
+     * @param string|integer $user the user ID. This should can be either an integer or a string representing
+     * the unique identifier of a user. See [[\yii\web\User::id]].
+     * @param string $itemName the name of the operation that need access check
+     * @param array $params name-value pairs that would be passed to rules associated
+     * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
+     * which holds the value of `$userId`.
+     * @param Assignment[] $assignments the assignments to the specified user
+     * @return boolean whether the operations can be performed by the user.
+     * @since 2.0.3
+     */
+    protected function checkAccessFromCache($user, $itemName, $params, $assignments)
+    {
+        if (!isset($this->items[$itemName])) {
+            return false;
+        }
+
+        $item = $this->items[$itemName];
+
+        Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
+
+        if (!$this->executeRule($user, $item, $params)) {
+            return false;
+        }
+
+        if (isset($assignments[$itemName]) || in_array($itemName, $this->defaultRoles)) {
+            return true;
+        }
+
+        if (!empty($this->parents[$itemName])) {
+            foreach ($this->parents[$itemName] as $parent) {
+                if ($this->checkAccessRecursive($user, $parent, $params, $assignments)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -126,6 +214,10 @@ class DbManager extends BaseManager
      */
     protected function getItem($name)
     {
+        if (!empty($this->items[$name])) {
+            return $this->items[$name];
+        }
+
         $row = (new Query)->from($this->itemTable)
             ->where(['name' => $name])
             ->one($this->db);
@@ -174,6 +266,8 @@ class DbManager extends BaseManager
                 'updated_at' => $item->updatedAt,
             ])->execute();
 
+        $this->invalidateCache();
+
         return true;
     }
 
@@ -194,6 +288,8 @@ class DbManager extends BaseManager
         $this->db->createCommand()
             ->delete($this->itemTable, ['name' => $item->name])
             ->execute();
+
+        $this->invalidateCache();
 
         return true;
     }
@@ -228,6 +324,8 @@ class DbManager extends BaseManager
                 'name' => $name,
             ])->execute();
 
+        $this->invalidateCache();
+
         return true;
     }
 
@@ -250,6 +348,8 @@ class DbManager extends BaseManager
                 'created_at' => $rule->createdAt,
                 'updated_at' => $rule->updatedAt,
             ])->execute();
+
+        $this->invalidateCache();
 
         return true;
     }
@@ -276,6 +376,8 @@ class DbManager extends BaseManager
                 'name' => $name,
             ])->execute();
 
+        $this->invalidateCache();
+
         return true;
     }
 
@@ -293,6 +395,8 @@ class DbManager extends BaseManager
         $this->db->createCommand()
             ->delete($this->ruleTable, ['name' => $rule->name])
             ->execute();
+
+        $this->invalidateCache();
 
         return true;
     }
@@ -451,6 +555,10 @@ class DbManager extends BaseManager
      */
     public function getRule($name)
     {
+        if ($this->rules !== null) {
+            return isset($this->rules[$name]) ? $this->rules[$name] : null;
+        }
+
         $row = (new Query)->select(['data'])
             ->from($this->ruleTable)
             ->where(['name' => $name])
@@ -463,6 +571,10 @@ class DbManager extends BaseManager
      */
     public function getRules()
     {
+        if ($this->rules !== null) {
+            return $this->rules;
+        }
+
         $query = (new Query)->from($this->ruleTable);
 
         $rules = [];
@@ -543,6 +655,8 @@ class DbManager extends BaseManager
             ->insert($this->itemChildTable, ['parent' => $parent->name, 'child' => $child->name])
             ->execute();
 
+        $this->invalidateCache();
+
         return true;
     }
 
@@ -551,9 +665,13 @@ class DbManager extends BaseManager
      */
     public function removeChild($parent, $child)
     {
-        return $this->db->createCommand()
+        $result = $this->db->createCommand()
             ->delete($this->itemChildTable, ['parent' => $parent->name, 'child' => $child->name])
             ->execute() > 0;
+
+        $this->invalidateCache();
+
+        return $result;
     }
 
     /**
@@ -561,9 +679,13 @@ class DbManager extends BaseManager
      */
     public function removeChildren($parent)
     {
-        return $this->db->createCommand()
+        $result = $this->db->createCommand()
             ->delete($this->itemChildTable, ['parent' => $parent->name])
             ->execute() > 0;
+
+        $this->invalidateCache();
+
+        return $result;
     }
 
     /**
@@ -672,6 +794,7 @@ class DbManager extends BaseManager
         $this->db->createCommand()->delete($this->itemChildTable)->execute();
         $this->db->createCommand()->delete($this->itemTable)->execute();
         $this->db->createCommand()->delete($this->ruleTable)->execute();
+        $this->invalidateCache();
     }
 
     /**
@@ -716,6 +839,8 @@ class DbManager extends BaseManager
         $this->db->createCommand()
             ->delete($this->itemTable, ['type' => $type])
             ->execute();
+
+        $this->invalidateCache();
     }
 
     /**
@@ -730,6 +855,8 @@ class DbManager extends BaseManager
         }
 
         $this->db->createCommand()->delete($this->ruleTable)->execute();
+
+        $this->invalidateCache();
     }
 
     /**
@@ -738,5 +865,50 @@ class DbManager extends BaseManager
     public function removeAllAssignments()
     {
         $this->db->createCommand()->delete($this->assignmentTable)->execute();
+    }
+
+    public function invalidateCache()
+    {
+        if ($this->cache !== null) {
+            $this->cache->delete($this->cacheKey);
+            $this->items = null;
+            $this->rules = null;
+            $this->parents = null;
+        }
+    }
+
+    public function loadFromCache()
+    {
+        if ($this->items !== null || !$this->cache instanceof Cache) {
+            return;
+        }
+
+        $data = $this->cache->get($this->cacheKey);
+        if (is_array($data) && isset($data[0], $data[1], $data[2])) {
+            list ($this->items, $this->rules, $this->parents) = $data;
+            return;
+        }
+
+        $query = (new Query)->from($this->itemTable);
+        $this->items = [];
+        foreach ($query->all($this->db) as $row) {
+            $this->items[$row['name']] = $this->populateItem($row);
+        }
+
+        $query = (new Query)->from($this->ruleTable);
+        $this->rules = [];
+        foreach ($query->all($this->db) as $row) {
+            $this->rules[$row['name']] = unserialize($row['data']);
+        }
+
+        $query = (new Query)->from($this->itemChildTable);
+        $this->parents = [];
+        foreach ($query->all($this->db) as $row) {
+            if (isset($this->items[$row['child']])) {
+                $this->parents[$row['child']][] = $row['parent'];
+            }
+        }
+
+        $this->cache->set($this->cacheKey, [$this->items, $this->rules, $this->parents]);
     }
 }
