@@ -2,7 +2,7 @@
 namespace yiiunit\extensions\bootstrap;
 
 use yii\bootstrap\Tabs;
-
+use yii\helpers\Html;
 /**
  * Tests for Tabs widget
  *
@@ -36,7 +36,10 @@ class TabsTest extends BootstrapTestCase
                         ['label' => 'Page4', 'content' => 'Page4'],
                         ['label' => 'Page5', 'content' => 'Page5'],
                     ]
-                ]
+                ],
+                [
+                    'label' => $extAnchor='External link', 'url' => $extUrl=['//other/route'],
+                ],                
             ]
         ]);
 
@@ -65,6 +68,7 @@ class TabsTest extends BootstrapTestCase
             "id=\"$page3\"",
             "id=\"$page4\"",
             "id=\"$page5\"",
+            Html::a($extAnchor,$extUrl),
         ];
 
         foreach ($shouldContain as $string) {
