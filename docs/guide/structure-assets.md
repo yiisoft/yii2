@@ -665,19 +665,17 @@ the last subsection.
   You can use the excellent task runner tool [grunt](http://gruntjs.com/) to achieve the same goal.
 
 
-### Dividing asset bundles into groups <span id="using-asset-groups"></span>
+### Grouping Asset Bundles <span id="grouping-asset-bundles"></span>
 
-Sometimes compressing all JavaScript and CSS files into the single one is not a good option. For example: imagine your
-application has a separated "front end" and "back end", each of which has its own JavaScript and CSS files dedicated
-to their representation. In such case combining of all files into a single one does not makes sense, cause it will produce
-extra network traffic: while accessing "front end", "back end" files source code will be loaded too, and vice versa.
-
-While running `asset` command you can specify more then one target bundle, each per each bundle group you with to create.
-In order to specify, which particular bundles should be compressed into particular group use `depends` key of the target
-bundle configuration array. Just list class names of the bundles, which should be combined into the single one, there.
-You may leave `depends` key blank for the one of the target bundles, in this case it will include all remaining source bundles.
-
-Such configuration may look like following:
+In the last subsection, we have explained how to combine all asset bundles into a single one in order to minimize
+the HTTP requests for asset files referenced in an application. This is not always desirable in practice. For example,
+imagine your application has a "front end" as well as a "back end", each of which uses a different set of JavaScript 
+and CSS files. In this case, combining all asset bundles from both ends into a single one does not make sense, 
+because the asset bundles for the "front end" are not used by the "back end" and it would be a waste of network
+bandwidth to send the "back end" assets when a "front end" page is requested.
+ 
+To solve the above problem, you can divide asset bundles into groups and combine asset bundles for each group.
+The following configuration shows how you can group asset bundles: 
 
 ```php
 return [
@@ -711,5 +709,9 @@ return [
 ];
 ```
 
-> Note: Watch for the source asset bundle dependency! If you not careful, target bundles, which you suppose to be independent,
-  may actually depends on each other.
+As you can see, the asset bundles are divided into three groups: `allShared`, `allBackEnd` and `allFrontEnd`.
+They each depends on an appropriate set of asset bundles. For example, `allBackEnd` depends on `app\assets\AdminAsset`.
+When running `asset` command with this configuration, it will combine asset bundles according to the above specification.
+
+> Info: You may leave the `depends` configuration empty for one of the target bundle. By doing so, that particular
+  asset bundle will depend on all of the remaining asset bundles that other target bundles do not depend on.
