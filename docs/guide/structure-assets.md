@@ -663,3 +663,53 @@ the last subsection.
 
 > Info: Using the `asset` command is not the only option to automate the asset combining and compressing process.
   You can use the excellent task runner tool [grunt](http://gruntjs.com/) to achieve the same goal.
+
+
+### Dividing asset bundles into groups <span id="using-asset-groups"></span>
+
+Sometimes compressing all JavaScript and CSS files into the single one is not a good option. For example: imagine your
+application has a separated "front end" and "back end", each of which has its own JavaScript and CSS files dedicated
+to their representation. In such case combining of all files into a single one does not makes sense, cause it will produce
+extra network traffic: while accessing "front end", "back end" files source code will be loaded too, and vice versa.
+
+While running `asset` command you can specify more then one target bundle, each per each bundle group you with to create.
+In order to specify, which particular bundles should be compressed into particular group use `depends` key of the target
+bundle configuration array. Just list class names of the bundles, which should be combined into the single one, there.
+You may leave `depends` key blank for the one of the target bundles, in this case it will include all remaining source bundles.
+
+Such configuration may look like following:
+
+```php
+return [
+    ...
+    // Specify output bundles with groups:
+    'targets' => [
+        'allShared' => [
+            'js' => 'js/all-shared-{hash}.js',
+            'css' => 'css/all-shared-{hash}.css',
+            'depends' => [
+                // Include all assets shared between 'backend' and 'frontend'
+                'yii\web\YiiAsset',
+                'app\assets\SharedAsset',
+            ],
+        ],
+        'allBackEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [
+                // Include only 'backend' assets:
+                'app\assets\AdminAsset'
+            ],
+        ],
+        'allFrontEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [], // Include all remaining assets
+        ],
+    ],
+    ...
+];
+```
+
+> Note: Watch for the source asset bundle dependency! If you not careful, target bundles, which you suppose to be independent,
+  may actually depends on each other.

@@ -74,7 +74,7 @@ class AssetController extends Controller
      * For example:
      *
      * ~~~
-     * 'app\config\AllShared' => [
+     * 'allShared' => [
      *     'js' => 'js/all-shared-{hash}.js',
      *     'css' => 'css/all-shared-{hash}.css',
      *     'depends' => [
@@ -83,7 +83,7 @@ class AssetController extends Controller
      *         'app\assets\SharedAsset',
      *     ],
      * ],
-     * 'app\config\AllBackEnd' => [
+     * 'allBackEnd' => [
      *     'js' => 'js/all-{hash}.js',
      *     'css' => 'css/all-{hash}.css',
      *     'depends' => [
@@ -91,7 +91,7 @@ class AssetController extends Controller
      *         'app\assets\AdminAsset'
      *     ],
      * ],
-     * 'app\config\AllFrontEnd' => [
+     * 'allFrontEnd' => [
      *     'js' => 'js/all-{hash}.js',
      *     'css' => 'css/all-{hash}.css',
      *     'depends' => [], // Include all remaining assets
