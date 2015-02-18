@@ -257,7 +257,6 @@ echo $this->render('report', [
 
 ```php
 The controller ID is: <?= $this->context->id ?>
-?>
 ```
 
 通常は「プッシュ」アプローチが、ビューでデータにアクセスする方法として推奨されます。

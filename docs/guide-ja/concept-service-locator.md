@@ -81,3 +81,30 @@ return [
 ];
 ```
 
+コンポーネントが複雑なものである場合に、構成の複雑さを隠蔽する追加のクラスを作成するのは良いアイデアです。
+
+```php
+class FacebookSDK {
+    public static function service($config) {
+        return function() use $config {
+             // ここでオブジェクトを構築する
+             return $object;
+        };
+    }
+}
+```
+
+これを次のように使うことが出来ます。
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'facebook' => FacebookSDK::service([
+            'secret' => 'theverysecret',
+            // ...
+        ]),
+    ],
+];
+```
