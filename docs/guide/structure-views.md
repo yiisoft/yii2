@@ -272,7 +272,6 @@ of the controller in the `report` view, such as the controller ID shown in the f
 
 ```php
 The controller ID is: <?= $this->context->id ?>
-?>
 ```
 
 The push approach is usually the preferred way of accessing data in views, because it makes views less dependent
