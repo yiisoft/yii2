@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Exception;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 
@@ -92,12 +93,7 @@ class MigrateController extends BaseMigrateController
     {
         if (parent::beforeAction($action)) {
             if ($action->id !== 'create') {
-                if (is_string($this->db)) {
-                    $this->db = Yii::$app->get($this->db);
-                }
-                if (!$this->db instanceof Connection) {
-                    throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");
-                }
+                $this->db = Instance::ensure($this->db, Connection::className());
             }
             return true;
         } else {

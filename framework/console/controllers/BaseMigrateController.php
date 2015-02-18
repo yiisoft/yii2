@@ -59,7 +59,7 @@ abstract class BaseMigrateController extends Controller
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
      * @param \yii\base\Action $action the action to be executed.
-     * @throws Exception if db component isn't configured
+     * @throws Exception if migrationPath is not directory and action not create.
      * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
@@ -67,6 +67,9 @@ abstract class BaseMigrateController extends Controller
         if (parent::beforeAction($action)) {
             $path = Yii::getAlias($this->migrationPath);
             if (!is_dir($path)) {
+                if ($action->id !== 'create') {
+                    throw new Exception("\nMigration failed. Invalid config param: migrationPath is not directory.\n");
+                }
                 FileHelper::createDirectory($path);
             }
             $this->migrationPath = $path;
