@@ -39,9 +39,9 @@ return array(
         'memo' => 'Required for multibyte encoding string processing.'
     ),
     array(
-        'name' => 'Mcrypt extension',
+        'name' => 'OpenSSL extension',
         'mandatory' => false,
-        'condition' => extension_loaded('mcrypt'),
+        'condition' => extension_loaded('openssl'),
         'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-base-security.html">Security Component</a>',
         'memo' => 'Required by encrypt and decrypt methods.'
     ),

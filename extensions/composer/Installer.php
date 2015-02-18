@@ -269,11 +269,11 @@ EOF
 
     protected static function generateRandomString()
     {
-        if (!extension_loaded('mcrypt')) {
-            throw new \Exception('The mcrypt PHP extension is required by Yii2.');
+        if (!extension_loaded('openssl')) {
+            throw new \Exception('The OpenSSL PHP extension is required by Yii2.');
         }
         $length = 32;
-        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        $bytes = openssl_random_pseudo_bytes($length);
         return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
     }
 }
