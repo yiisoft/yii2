@@ -212,7 +212,11 @@ class Menu extends Widget
                     '{items}' => $this->renderItems($item['items']),
                 ]);
             }
-            $lines[] = Html::tag($tag, $menu, $options);
+            if($tag){
+                $lines[] = Html::tag($tag, $menu, $options);    
+            }else{
+                $lines[] = $menu;
+            }
         }
 
         return implode("\n", $lines);
