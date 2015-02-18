@@ -1630,7 +1630,7 @@ class BaseHtml
                     }
                 }
             } elseif ($value !== null) {
-                $html .= " $name=\"" . static::encode($value) . '"';
+                $html .= " $name=\"" . (strtolower($name) === 'src' ? $value : static::encode($value)) . '"';
             }
         }
 
