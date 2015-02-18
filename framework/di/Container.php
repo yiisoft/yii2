@@ -175,10 +175,6 @@ class Container extends Component
             $this->_singletons[$class] = $object;
         }
 
-        if ($object instanceof ConfiguratorInterface) {
-            $object = $object->build();
-        }
-
         return $object;
     }
 
