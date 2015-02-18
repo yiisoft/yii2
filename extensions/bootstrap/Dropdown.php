@@ -17,7 +17,7 @@ use yii\helpers\Url;
  *
  * For example,
  *
- * ```html+php
+ * ```php
  * <div class="dropdown">
  *     <a href="#" data-toggle="dropdown" class="dropdown-toggle">Label <b class="caret"></b></a>
  *     <?php
