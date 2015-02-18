@@ -48,7 +48,7 @@ class CollapseTest extends BootstrapTestCase
             ]
         ]);
 
-        $this->assertEquals(<<<HTML
+        $this->assertEqualsWithoutLE(<<<HTML
 <div id="w0" class="panel-group">
 <div class="panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a class="collapse-toggle" href="#w0-collapse1" data-toggle="collapse" data-parent="#w0">Collapsible Group Item #1</a>
 </h4></div>
