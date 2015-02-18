@@ -503,7 +503,7 @@ abstract class Generator extends Model
                 $ph = '';
                 foreach ($placeholders as $key => $placeholder) {
                     $ph .= "'" . $key . "' => ";
-                    $ph .= "Yii::t('" . $this->messageCategory . "', '" . $placeholder . "')";
+                    $ph .= "Yii::t('" . $this->messageCategory . "', '" . $placeholder . "'),";
                 }
                 $ph = ", [\n" . $spaces . $ph . "\n]";
             } else {
