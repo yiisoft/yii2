@@ -81,3 +81,31 @@ return [
     ],
 ];
 ```
+
+In complex cases it's a good idea to create extra class to hide configuration complexity:
+
+```php
+class FacebookSDK {
+    public static function service($config) {
+        return function() use $config {
+             // build the object here
+             return $object;
+        };
+    }
+}
+```
+
+It could be used as follows:
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'facebook' => FacebookSDK::service([
+            'secret' => 'theverysecret',
+            // ...
+        ]),
+    ],
+];
+```
