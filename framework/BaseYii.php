@@ -10,6 +10,7 @@ namespace yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
+use yii\di\ConfiguratorInterface;
 use yii\log\Logger;
 use yii\di\Container;
 
@@ -337,11 +338,13 @@ class BaseYii
     public static function createObject($type, array $params = [])
     {
         if (is_string($type)) {
-            return static::$container->get($type, $params);
+            $object = static::$container->get($type, $params);
+            return $object instanceof ConfiguratorInterface ? $object->build() : $object;
         } elseif (is_array($type) && isset($type['class'])) {
             $class = $type['class'];
             unset($type['class']);
-            return static::$container->get($class, $params, $type);
+            $object = static::$container->get($class, $params, $type);
+            return $object instanceof ConfiguratorInterface ? $object->build() : $object;
         } elseif (is_callable($type, true)) {
             return call_user_func($type, $params);
         } elseif (is_array($type)) {
