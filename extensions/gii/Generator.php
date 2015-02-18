@@ -499,13 +499,13 @@ abstract class Generator extends Model
             // If there are placeholders, use them
             if (!empty($placeholders)) {
 //                $ph = ', ' . VarDumper::export($placeholders);
-				$spaces = str_repeat(' ', 4);
-				$ph = '';
-				foreach ($placeholders as $key => $placeholder) {
-					$ph .= "'" . $key . "' => ";
-					$ph .= "Yii::t('" . $this->messageCategory . "', '" . $placeholder . "')";
-				}
-				$ph = ", [\n" . $spaces . $ph . "\n]";
+                $spaces = str_repeat(' ', 4);
+                $ph = '';
+                foreach ($placeholders as $key => $placeholder) {
+                    $ph .= "'" . $key . "' => ";
+                    $ph .= "Yii::t('" . $this->messageCategory . "', '" . $placeholder . "')";
+                }
+                $ph = ", [\n" . $spaces . $ph . "\n]";
             } else {
                 $ph = '';
             }
