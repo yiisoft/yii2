@@ -133,12 +133,21 @@ Note that HtmlPurifier processing is quite heavy so consider adding caching.
 Avoiding CSRF
 -------------
 
-TBD: what's CSRF, how it works, intro
+CSRF is an abbreviation for cross-site request forgery. The idea is that many applications assume that requests coming
+from a user browser are made by the user himself. It could be false.
+
+For example, `an.example.com` website has `/logout` URL that, when accessed using a simple GET, logs user out. As long
+as it's requested by the user itself everything is OK but one day bad guys are somehow posting
+`<img src="http://an.example.com/logout">` on a forum user visits frequently. Browser doesn't make any difference between
+requesting an image or requesting a page so when user opens a page with such `img` tag he's being logged out from
+`an.example.com`.
+
+That's the basic idea. One can say that logging user out is nothing serious. Well, sending POST isn't much trickier.
+
+In order to avoid CSRF you should always:
 
 1. Follow HTTP specification i.e. GET should not change application state.
 2. Keep Yii CSRF protection enabled.
-
-TBD: how CSRF protection works
 
 
 Avoiding file exposure
