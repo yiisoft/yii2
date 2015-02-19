@@ -265,7 +265,7 @@ amigable. El resto de propiedades son opcionales. Sin embargo, la anterior confi
   [Instalación](start-installation.md#recommended-apache-configuration).
 
 
-### Regalas de URL <span id="url-rules"></span>
+### Reglas de URL <span id="url-rules"></span>
 
 Una regla de URL es una instancia de [[yii\web\UrlRule]] o de una clase hija. Cada URL consiste en un patrón utilizado 
 para cotejar la parte de información de ruta de las URLs, una ruta, y algunos parámetros de consulta. Una URL puede 
@@ -321,7 +321,7 @@ predeterminada [[yii\web\UrlRule]].
 
 Una regla de URL puede asociarse a una determinado grupo de parámetros de consulta que se hayan sido especificados en 
 el patrón con el formato `<ParamName:RegExp>`, donde `ParamName` especifica el nombre del parámetro y `RegExp` es una 
-expresión regular opcional que se usa para encontrara los valores de los parámetros. Si no se especifica `RegExp` 
+expresión regular opcional que se usa para encontrar los valores de los parámetros. Si no se especifica `RegExp` 
 significa que el parámetro debe ser una cadena de texto sin ninguna barra.
 
 > Nota: Solo se pueden especificar expresiones regulares para los parámetros. La parte restante del patrón se 
