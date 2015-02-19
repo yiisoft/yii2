@@ -45,6 +45,7 @@ class BaseHtml
         'track' => 1,
         'wbr' => 1,
     ];
+
     /**
      * @var array the preferred order of attributes in a tag. This mainly affects the order of the attributes
      * that are rendered by [[renderTagAttributes()]].
@@ -79,7 +80,16 @@ class BaseHtml
         'rel',
         'media',
     ];
-
+    
+    /**
+     * @var array attributes specially handled when receiving an array value. In this case,
+     * the array will be "expanded" and a list data attributes will be rendered. For example,
+     * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
+     * `data-id="1" data-name="yii"`.
+     * Additionally `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` will be rendered as:
+     * `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
+     */
+    public static $expandableAttributes = ['data'];
 
     /**
      * Encodes special characters into HTML entities.
@@ -1589,7 +1599,7 @@ class BaseHtml
      *
      * The values of attributes will be HTML-encoded using [[encode()]].
      *
-     * The "data" attribute is specially handled when it is receiving an array value. In this case,
+     * The [[expandableAttributes]] are specially handled when receiving an array value. In this case,
      * the array will be "expanded" and a list data attributes will be rendered. For example,
      * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
      * `data-id="1" data-name="yii"`.
@@ -1600,6 +1610,7 @@ class BaseHtml
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
      * in a tag. If there is no attribute, an empty string will be returned.
+     * @see [[expandableAttributes]]
      */
     public static function renderTagAttributes($attributes)
     {
@@ -1619,7 +1630,9 @@ class BaseHtml
                 if ($value) {
                     $html .= " $name";
                 }
-            } elseif (is_array($value) && $name === 'data') {
+            } elseif (is_array($value)
+                && in_array($name, static::$expandableAttributes, true)
+            ) {
                 foreach ($value as $n => $v) {
                     if (is_array($v)) {
                         $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
