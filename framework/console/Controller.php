@@ -488,7 +488,7 @@ class Controller extends \yii\base\Controller
     {
         $docLines = preg_split('~\R~u', $reflection->getDocComment());
         if (isset($docLines[1])) {
-            return trim($docLines[1], ' *');
+            return trim($docLines[1], "\x09 *");
         }
         return '';
     }
