@@ -76,16 +76,43 @@ $container->get('Foo', [], [
 ### PHP Callable Injection <span id="php-callable-injection"></span>
 
 In this case, the container will use a registered PHP callable to build new instances of a class.
+Each time when [[yii\di\Container::get()]] is called, the corresponding callable will be invoked.
 The callable is responsible to resolve the dependencies and inject them appropriately to the newly
 created objects. For example,
 
 ```php
 $container->set('Foo', function () {
-    return new Foo(new Bar);
+    $foo = new Foo(new Bar);
+    // ... other initializations ...
+    return $foo;
 });
 
 $foo = $container->get('Foo');
 ```
+
+To hide the complex logic for building a new object, you may use a static class method to return the PHP
+callable. For example,
+
+```php
+class FooBuilder
+{
+    public static function build()
+    {
+        return function () {
+            $foo = new Foo(new Bar);
+            // ... other initializations ...
+            return $foo;
+       };        
+    }
+}
+
+$container->set('Foo', FooBuilder::build());
+
+$foo = $container->get('Foo');
+```
+
+As you can see, the PHP callable is returned by the `FooBuilder::build()` method. By doing so, the person
+who wants to configure the `Foo` class no longer needs to be aware of how it is built.
 
 
 Registering Dependencies <span id="registering-dependencies"></span>
