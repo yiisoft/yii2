@@ -78,14 +78,13 @@ class ColumnSchema extends Object
      */
     public $comment;
 
-
     /**
-     * Converts the input value according to [[phpType]] after retrieval from the database.
-     * If the value is null or an [[Expression]], it will not be converted.
-     * @param mixed $value input value
-     * @return mixed converted value
+     * Converts values on DB reads and writes in same way.
+     *
+     * @param $value
+     * @return bool|float|int|null|resource|string
      */
-    public function phpTypecast($value)
+    public function typecast($value)
     {
         if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY) {
             return null;
@@ -109,6 +108,17 @@ class ColumnSchema extends Object
     }
 
     /**
+     * Converts the input value according to [[phpType]] after retrieval from the database.
+     * If the value is null or an [[Expression]], it will not be converted.
+     * @param mixed $value input value
+     * @return mixed converted value
+     */
+    public function phpTypecast($value)
+    {
+        return $this->typecast($value);
+    }
+
+    /**
      * Converts the input value according to [[type]] and [[dbType]] for use in a db query.
      * If the value is null or an [[Expression]], it will not be converted.
      * @param mixed $value input value
@@ -119,6 +129,6 @@ class ColumnSchema extends Object
     {
         // the default implementation does the same as casting for PHP but it should be possible
         // to override this with annotation of explicit PDO type.
-        return $this->phpTypecast($value);
+        return $this->typecast($value);
     }
 }
