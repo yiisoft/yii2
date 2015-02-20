@@ -74,16 +74,43 @@ $container->get('Foo', [], [
 ### PHP コーラブル・インジェクション <span id="php-callable-injection"></span>
 
 この場合、コンテナは、登録された PHP のコーラブルを使用して、クラスの新しいインスタンスを構築します。
-コーラブルは、依存関係を解決し、新しく作成されたオブジェクトに適切に依存を注入する責務を負います。
+[[yii\di\Container::get()]] が呼ばれるたびに、対応するコーラブルが起動されます。
+このコーラブルが、依存関係を解決し、新しく作成されたオブジェクトに適切に依存を注入する役目を果たします。
 たとえば
 
 ```php
 $container->set('Foo', function () {
-    return new Foo(new Bar);
+    $foo = new Foo(new Bar);
+    // ... その他の初期化 ...
+    return $foo;
 });
 
 $foo = $container->get('Foo');
 ```
+
+新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、PHP コーラブルを返すスタティックなクラスメソッドを使うことが出来ます。
+例えば、
+
+```php
+class FooBuilder
+{
+    public static function build()
+    {
+        return function () {
+            $foo = new Foo(new Bar);
+            // ... その他の初期化 ...
+            return $foo;
+       };
+    }
+}
+
+$container->set('Foo', FooBuilder::build());
+
+$foo = $container->get('Foo');
+```
+
+ご覧のように、PHP コーラブルが `FooBuilder::build()` メソッドによって返されています。
+このようにすれば、`Foo` クラスを構成しようとする人は、`Foo` がどのように構築されるかを気にする必要はもうなくなります。
 
 
 依存関係の登録 <span id="registering-dependencies"></span>
