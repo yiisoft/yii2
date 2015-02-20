@@ -139,4 +139,111 @@ be sorted.
 Implementing your own custom data provider
 ------------------------------------------
 
-TBD
+Yii allows you to introduce your own custom data providers. In order to do it you need to implement the following
+`protected` methods:
+                                                   
+- `prepareModels` that prepares the data models that will be made available in the current page and returns them as an array.
+- `prepareKeys` that accepts an array of currently available data models and returns keys associated with them.
+- `prepareTotalCount` that returns a value indicating the total number of data models in the data provider.
+
+Below is an example of a data provider that reads CSV efficiently:
+
+```php
+<?php
+class CsvDataProvider extends \yii\data\BaseDataProvider
+{
+    /**
+     * @var string name of the file to read
+     */
+    public $filename;
+    
+    /**
+     * @var string|callable name of the key column or a callable returning it
+     */
+    public $key;
+    
+    /**
+     * @var SplFileObject
+     */
+    protected $fileObject; // SplFileObject is very convenient for seeking to particular line in a file
+    
+ 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        
+        // open file
+        $this->fileObject = new SplFileObject($this->filename);
+    }
+ 
+    /**
+     * @inheritdoc
+     */
+    protected function prepareModels()
+    {
+        $models = [];
+        $pagination = $this->getPagination();
+ 
+        if ($pagination === false) {
+            // in case there's no pagination, read all lines
+            while (!$this->fileObject->eof()) {
+                $models[] = $this->fileObject->fgetcsv();
+                $this->fileObject->next();
+            }
+        } else {
+            // in case there's pagination, read only a single page
+            $pagination->totalCount = $this->getTotalCount();
+            $this->fileObject->seek($pagination->getOffset());
+            $limit = $pagination->getLimit();
+ 
+            for ($count = 0; $count < $limit; ++$count) {
+                $models[] = $this->fileObject->fgetcsv();
+                $this->fileObject->next();
+            }
+        }
+ 
+        return $models;
+    }
+ 
+    /**
+     * @inheritdoc
+     */
+    protected function prepareKeys($models)
+    {
+        if ($this->key !== null) {
+            $keys = [];
+ 
+            foreach ($models as $model) {
+                if (is_string($this->key)) {
+                    $keys[] = $model[$this->key];
+                } else {
+                    $keys[] = call_user_func($this->key, $model);
+                }
+            }
+ 
+            return $keys;
+        } else {
+            return array_keys($models);
+        }
+    }
+ 
+    /**
+     * @inheritdoc
+     */
+    protected function prepareTotalCount()
+    {
+        $count = 0;
+ 
+        while (!$this->fileObject->eof()) {
+            $this->fileObject->next();
+            ++$count;
+        }
+ 
+        return $count;
+    }
+}
+```
+ 
