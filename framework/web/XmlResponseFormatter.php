@@ -57,13 +57,11 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
             $this->contentType .= '; charset=' . $charset;
         }
         $response->getHeaders()->set('Content-Type', $this->contentType);
-        if ($response->data !== null) {
-            $dom = new DOMDocument($this->version, $charset);
-            $root = new DOMElement($this->rootTag);
-            $dom->appendChild($root);
-            $this->buildXml($root, $response->data);
-            $response->content = $dom->saveXML();
-        }
+        $dom = new DOMDocument($this->version, $charset);
+        $root = new DOMElement($this->rootTag);
+        $dom->appendChild($root);
+        $this->buildXml($root, $response->data);
+        $response->content = $dom->saveXML();
     }
 
     /**
