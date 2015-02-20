@@ -72,6 +72,11 @@ $container->get('Foo', [], [
 ]);
 ```
 
+> Info: The [[yii\di\Container::get()]] method takes its third parameter as a configuration array that should
+  be applied to the object being created. If the class implements the [[yii\base\Configurable]] interface (e.g.
+  [[yii\base\Object]]), the configuration array will be passed as the last parameter to the class constructor;
+  otherwise, the configuration will be applied *after* the object is created.
+
 
 ### PHP Callable Injection <span id="php-callable-injection"></span>
 
