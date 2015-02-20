@@ -7,21 +7,7 @@
 
 namespace yiiunit\framework\web;
 
-use yii\base\Object;
 use yii\web\JsonResponseFormatter;
-use yii\web\Response;
-
-class Post extends Object
-{
-    public $id;
-    public $title;
-
-    public function __construct($id, $title)
-    {
-        $this->id = $id;
-        $this->title = $title;
-    }
-}
 
 /**
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -29,57 +15,24 @@ class Post extends Object
  *
  * @group web
  */
-class JsonResponseFormatterTest extends \yiiunit\TestCase
+class JsonResponseFormatterTest extends FormatterTest
 {
     /**
-     * @var Response
+     * @return JsonResponseFormatter
      */
-    public $response;
-    /**
-     * @var JsonResponseFormatter
-     */
-    public $formatter;
-
-    protected function setUp()
+    protected function getFormatterInstance()
     {
-        $this->mockApplication();
-        $this->response = new Response;
-        $this->formatter = new JsonResponseFormatter;
-    }
-
-    /**
-     * @param mixed  $data the data to be formatted
-     * @param string $json the expected JSON body
-     * @dataProvider formatScalarDataProvider
-     */
-    public function testFormatScalar($data, $json)
-    {
-        $this->response->data = $data;
-        $this->formatter->format($this->response);
-        $this->assertEquals($json, $this->response->content);
+        return new JsonResponseFormatter();
     }
 
     public function formatScalarDataProvider()
     {
         return [
-            [null, 'null'],
             [1, 1],
             ['abc', '"abc"'],
             [true, 'true'],
             ["<>", '"<>"'],
         ];
-    }
-
-    /**
-     * @param mixed  $data the data to be formatted
-     * @param string $json the expected JSON body
-     * @dataProvider formatArrayDataProvider
-     */
-    public function testFormatArrays($data, $json)
-    {
-        $this->response->data = $data;
-        $this->formatter->format($this->response);
-        $this->assertEquals($json, $this->response->content);
     }
 
     public function formatArrayDataProvider()
@@ -104,18 +57,6 @@ class JsonResponseFormatterTest extends \yiiunit\TestCase
                 true,
             ], '{"a":1,"b":"abc","c":[2,"<>"],"0":true}'],
         ];
-    }
-
-    /**
-     * @param mixed  $data the data to be formatted
-     * @param string $json the expected JSON body
-     * @dataProvider formatObjectDataProvider
-     */
-    public function testFormatObjects($data, $json)
-    {
-        $this->response->data = $data;
-        $this->formatter->format($this->response);
-        $this->assertEquals($json, $this->response->content);
     }
 
     public function formatObjectDataProvider()
