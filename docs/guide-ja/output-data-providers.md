@@ -130,4 +130,110 @@ $models = $dataProvider->getModels();
 あなた自身のカスタムデータプロバイダを実装する
 ----------------------------------------------
 
-(内容未定)
+Yii はあなた自身のカスタムデータプロバイダを導入することを許容しています。
+そうするためには、下記の `protected` メソッドを実装する必要があります。
+                                                   
+- `prepareModels` - 現在のページで利用できるデータモデルを準備して、それを配列として返します。
+- `prepareKeys` - 現在利用できるデータモデルの配列を受け取って、それと関連付けられるキーの配列を返します。
+- `prepareTotalCount` - データプロバイダにあるデータモデルの総数を示す値を返します。
+
+下記は、CSV ファイルを効率的に読み出すデータプロバイダのサンプルです。
+
+```php
+<?php
+class CsvDataProvider extends \yii\data\BaseDataProvider
+{
+    /**
+     * @var string 読み出すファイルの名前
+     */
+    public $filename;
+    
+    /**
+     * @var string|callable キーカラムの名前またはそれを返すコーラブル
+     */
+    public $key;
+    
+    /**
+     * @var SplFileObject
+     */
+    protected $fileObject; // ファイルの特定の行までシークするのに SplFileObject が非常に便利
+    
+ 
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        
+        // ファイルを開く
+        $this->fileObject = new SplFileObject($this->filename);
+    }
+ 
+    /**
+     * @inheritdoc
+     */
+    protected function prepareModels()
+    {
+        $models = [];
+        $pagination = $this->getPagination();
+ 
+        if ($pagination === false) {
+            // ページネーションが無い場合、全ての行を読む
+            while (!$this->fileObject->eof()) {
+                $models[] = $this->fileObject->fgetcsv();
+                $this->fileObject->next();
+            }
+        } else {
+            // ページネーションがある場合、一つのページだけを読む
+            $pagination->totalCount = $this->getTotalCount();
+            $this->fileObject->seek($pagination->getOffset());
+            $limit = $pagination->getLimit();
+ 
+            for ($count = 0; $count < $limit; ++$count) {
+                $models[] = $this->fileObject->fgetcsv();
+                $this->fileObject->next();
+            }
+        }
+ 
+        return $models;
+    }
+ 
+    /**
+     * @inheritdoc
+     */
+    protected function prepareKeys($models)
+    {
+        if ($this->key !== null) {
+            $keys = [];
+ 
+            foreach ($models as $model) {
+                if (is_string($this->key)) {
+                    $keys[] = $model[$this->key];
+                } else {
+                    $keys[] = call_user_func($this->key, $model);
+                }
+            }
+ 
+            return $keys;
+        } else {
+            return array_keys($models);
+        }
+    }
+ 
+    /**
+     * @inheritdoc
+     */
+    protected function prepareTotalCount()
+    {
+        $count = 0;
+ 
+        while (!$this->fileObject->eof()) {
+            $this->fileObject->next();
+            ++$count;
+        }
+ 
+        return $count;
+    }
+}
+```
