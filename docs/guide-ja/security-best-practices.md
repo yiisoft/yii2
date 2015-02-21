@@ -15,13 +15,13 @@
 ### 入力をフィルタする
 
 入力をフィルタするとは、入力値は決して安全なものであると見なさず、取得した値が実際に許可さていれる値に含まれるか否かを常にチェックしなければならない、ということを意味します。
-つまり、並べ替えが三つのフィールド `title`、`created_at` および `status` によって実行され、フィールドの値がインプットによって提供されるものであることを知っている場合、取得した値を受信するその場でチェックする方が良い、ということです。
+例えば、並べ替えが三つのフィールド `title`、`created_at` および `status` によって実行され、フィールドの名前がユーザの入力によって提供されるものであることを知っている場合、取得した値を受信するその場でチェックする方が良い、ということです。
 基本的な PHP の形式では、次のようなコードになります。
 
 ```php
 $sortBy = $_GET['sort'];
 if (!in_array($sortBy, ['title', 'created_at', 'status'])) {
-	throw new Exception('Invalid sort value.');
+	throw new Exception('sort の値が不正です。');
 }
 ```
 
@@ -83,7 +83,7 @@ $userIDs = $connection
 function actionList($orderBy = null)
 {
     if (!in_array($orderBy, ['name', 'status'])) {
-        throw new BadRequestHttpException('名前とステータスだけを並べ替えに使うことが出来ます。')
+        throw new BadRequestHttpException('name と status だけを並べ替えに使うことが出来ます。')
     }
     
     // ...
