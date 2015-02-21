@@ -15,8 +15,8 @@ There are two main principles when it comes to security no matter which applicat
 ### Filter input
 
 Filter input means that input should never be considered safe and you should always check if the value you've got is
-actually among allowed ones i.e. if we know that sorting could be done by three fields `title`, `created_at` and `status`
-and the field could be supplied via used input it's better to check the value we've got right where we're receiving it.
+actually among allowed ones. For example, if we know that sorting could be done by three fields `title`, `created_at` and `status`
+and the field could be supplied via user input, it's better to check the value we've got right where we're receiving it.
 In terms of basic PHP that would look like the following:
 
 ```php
