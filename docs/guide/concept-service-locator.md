@@ -63,7 +63,7 @@ If you call [[yii\di\ServiceLocator::get()]] with an invalid ID, an exception wi
 Because service locators are often being created with [configurations](concept-configurations.md),
 a writable property named [[yii\di\ServiceLocator::setComponents()|components]] is provided. This allows you 
 to configure and register multiple components at once. The following code shows a configuration array
-that can be used to configure a service locator (e.g. an [application](structure-applications.md) with 
+that can be used to configure a service locator (e.g. an [application](structure-applications.md)) with 
 the "db", "cache" and "search" components:
 
 ```php
