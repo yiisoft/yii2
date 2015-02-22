@@ -379,7 +379,6 @@ class Response extends \yii\base\Response
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
-        $this->getCookies()->removeAll();
     }
 
     /**
