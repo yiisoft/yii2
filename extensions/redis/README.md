@@ -5,6 +5,38 @@ This extension provides the [redis](http://redis.io/) key-value store support fo
 It includes a `Cache` and `Session` storage handler and implements the `ActiveRecord` pattern that allows
 you to store active records in redis.
 
+This repository is a git submodule of <https://github.com/yiisoft/yii2>.
+Please submit issue reports and pull requests to the main repository.
+For license information check the [LICENSE](LICENSE.md)-file.
+
+Requirements
+------------
+
+At least redis version 2.6.12 is required for all components to work properly.
+
+Installation
+------------
+
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+
+Either run
+
+```
+php composer.phar require --prefer-dist yiisoft/yii2-redis
+```
+
+or add
+
+```json
+"yiisoft/yii2-redis": "~2.0.0"
+```
+
+to the require section of your composer.json.
+
+
+Configuration
+-------------
+
 To use this extension, you have to configure the Connection class in your application configuration:
 
 ```php
@@ -20,31 +52,6 @@ return [
     ]
 ];
 ```
-
-Requirements
-------------
-
-At least redis version 2.6.12 is required for all components to work properly.
-
-Installation
-------------
-
-The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
-
-Either run
-
-```
-php composer.phar require --prefer-dist yiisoft/yii2-redis "*"
-```
-
-or add
-
-```json
-"yiisoft/yii2-redis": "*"
-```
-
-to the require section of your composer.json.
-
 
 Using the Cache component
 -------------------------

@@ -5,6 +5,9 @@ This extension provides a debugger for Yii 2 applications. When this extension i
 a debugger toolbar will appear at the bottom of every page. The extension also provides
 a set of standalone pages to display more detailed debug information.
 
+This repository is a git submodule of <https://github.com/yiisoft/yii2>.
+Please submit issue reports and pull requests to the main repository.
+For license information check the [LICENSE](LICENSE.md)-file.
 
 Installation
 ------------
@@ -14,13 +17,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist yiisoft/yii2-debug "*"
+php composer.phar require --prefer-dist yiisoft/yii2-debug
 ```
 
 or add
 
 ```
-"yiisoft/yii2-debug": "*"
+"yiisoft/yii2-debug": "~2.0.0"
 ```
 
 to the require section of your `composer.json` file.
