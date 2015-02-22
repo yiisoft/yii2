@@ -107,7 +107,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 ## 権限付与 <span id="authorization"></span>
 
-ユーザが認証された後、リクエストされたリソースに対してリクエストされたアクションを実行する許可を彼または彼女が持っているかどうかをチェックしたい場合があるでしょう。
+ユーザが認証された後、おそらくは、リクエストされたリソースに対してリクエストされたアクションを実行する許可を彼または彼女が持っているかどうかをチェックしたいでしょう。
 *権限付与* と呼ばれるこのプロセスについては、[権限付与](security-authorization.md) のセクションで詳細に説明されています。
 
 あなたのコントローラが [[yii\rest\ActiveController]] から拡張したものである場合は、[[yii\rest\Controller::checkAccess()|checkAccess()]] メソッドをオーバーライドして権限付与のチェックを実行することが出来ます。
