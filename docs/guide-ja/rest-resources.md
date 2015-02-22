@@ -2,7 +2,7 @@
 ========
 
 RESTful API は、つまるところ、*リソース* にアクセスし、それを操作するものです。
-MVC の枠組の中では、リソースは [models](structure-models.md) として見ることが出来ます。
+MVC の枠組の中では、リソースは [モデル](structure-models.md) として見ることが出来ます。
 
 リソースをどのように表現すべきかについて制約がある訳ではありませんが、Yii においては、通常は、次のような理由によって、リソースを [[yii\base\Model]] またはその子クラス (例えば [[yii\db\ActiveRecord]]) のオブジェクトとして表現することになります。
 
@@ -13,8 +13,8 @@ MVC の枠組の中では、リソースは [models](structure-models.md) とし
 * [[yii\db\ActiveRecord]] は DB データのアクセスと操作に対する強力なサポートを提供しています。
   リソースデータがデータベースに保存されているときは、アクティブレコードが最適の選択です。
 
-この節では、主として、[[yii\base\Model]] クラス (またはその子クラス) から拡張したリソースクラスにおいて、どのデータを RESTful API を通じて返すことが出来るかを指定する方法を説明します。
-リソースクラスが [[yii\base\Model]] から拡張しない場合は、全てのパブリックなメンバ変数が返されます。
+この節では、主として、[[yii\base\Model]] クラス (またはその子クラス) から拡張したリソースクラスにおいて、RESTful API を通じて返すことが出来るデータを指定する方法を説明します。
+リソースクラスが [[yii\base\Model]] から拡張したものでない場合は、全てのパブリックなメンバ変数が返されます。
 
 
 ## フィールド <span id="fields"></span>
@@ -93,7 +93,7 @@ public function fields()
 
 ### `extraFields()` をオーバーライドする<span id="overriding-extra-fields"></span>
 
-デフォルトでは、[[yii\base\Model::extraFields()]] は何も返しませんが、[[yii\db\ActiveRecord::extraFields()]] は DB から取得されたリレーションの名前を返します。
+デフォルトでは、[[yii\base\Model::extraFields()]] は何も返さず、[[yii\db\ActiveRecord::extraFields()]] は DB から取得されたリレーションの名前を返します。
 
 `extraFields()` によって返されるデータの形式は `fields()` のそれと同じです。
 通常、`extraFields()` は、主として、値がオブジェクトであるフィールドを指定するのに使用されます。
