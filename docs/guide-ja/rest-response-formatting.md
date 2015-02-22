@@ -2,8 +2,6 @@
 ====================
 
 RESTful API のリクエストを処理するとき、アプリケーションは、通常、レスポンス形式の設定に関して次のステップを踏みます。
-When handling a RESTful API request, an application usually takes the following steps that are related
-with response formatting:
 
 1. レスポンス形式に影響するさまざまな要因、例えば、メディアタイプ、言語、バージョンなどを決定します。
    このプロセスは [コンテントネゴシエーション](http://en.wikipedia.org/wiki/Content_negotiation) としても知られるものです。

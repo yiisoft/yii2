@@ -30,7 +30,7 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 
 新しいアクションを作成する仕方はウェブアプリケーションの場合とほぼ同じです。
 唯一の違いは、`render()` メソッドを呼んでビューを使って結果を表示する代りに、RESTful アクションの場合はデータを直接に返す、という点です。
-[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンスオブジェクト]] が、下のデータからリクエストされた形式への変換を処理します。
+[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンスオブジェクト]] が、元のデータからリクエストされた形式への変換を処理します。
 例えば、
 
 ```php
@@ -82,11 +82,11 @@ public function behaviors()
 
 デフォルトでは、[[yii\rest\ActiveController]] は次のアクションを提供します。
 
-* [[yii\rest\IndexAction|index]]: リソースをページごとに一覧する。
-* [[yii\rest\ViewAction|view]]: 指定したリソースの詳細を返す。
+* [[yii\rest\IndexAction|index]]: リソースをページごとにリストする。
+* [[yii\rest\ViewAction|view]]: 指定されたリソースの詳細を返す。
 * [[yii\rest\CreateAction|create]]: 新しいリソースを作成する。
 * [[yii\rest\UpdateAction|update]]: 既存のリソースを更新する。
-* [[yii\rest\DeleteAction|delete]]: 指定したりソースを削除する。
+* [[yii\rest\DeleteAction|delete]]: 指定されたりソースを削除する。
 * [[yii\rest\OptionsAction|options]]: サポートされている HTTP メソッドを返す。
 
 これらのアクションは全て [[yii\rest\ActiveController::actions()|actions()]] メソッドによって宣言されます。
@@ -130,7 +130,7 @@ RESTful API によってリソースを公開するときには、たいてい�
  * ユーザが権限をもたない場合は、[[ForbiddenHttpException]] が投げられなければなりません。
  *
  * @param string $action 実行されるアクションの ID。
- * @param \yii\base\Model $model アクセスされるモデル。null の場合は、アクセスされる特定の特定がないことを意味する。
+ * @param \yii\base\Model $model アクセスされるモデル。null の場合は、アクセスされる特定のモデルが無いことを意味する。
  * @param array $params 追加のパラメータ
  * @throws ForbiddenHttpException ユーザが権限をもたない場合
  */
