@@ -291,7 +291,7 @@
                     $form.trigger(event, [this, msg, deferreds]);
                     if (event.result !== false) {
                         if (this.validate) {
-                            this.validate(this, getValue($form, this), msg, deferreds);
+                            this.validate(this, getValue($form, this), msg, deferreds, $form);
                         }
                         if (this.enableAjaxValidation) {
                             needAjaxValidation = true;

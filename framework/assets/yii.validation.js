@@ -233,6 +233,14 @@ yii.validation = (function ($) {
             }
         },
 
+        trim: function ($form, attribute, options) {
+            var $input = $form.find(attribute.input);
+            var value = $input.val();
+            if (!options.skipOnEmpty || !pub.isEmpty(value)) {
+                $input.val($.trim(value));
+            }
+        },
+
         captcha: function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
