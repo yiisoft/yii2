@@ -43,6 +43,10 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
+  # install php extensions
+  - pear config-set preferred_state beta
+  - printf "\n" | pecl install imagick 
+  - printf "\n" | pecl install gmagick 
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
