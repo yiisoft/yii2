@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Enh #7051: Added support for preventing swapping values between different cookies (pavimus, qiangxue) 
 - Enh #7255: Added support to allow widgets that use text input to specify input types (qiangxue)
 - Enh #7269: `yii\console\controllers\BaseMigrateController` now throws exception if directory specified doesn't exist and action isn't `create` (lynicidn, samdark)
+- Enh #7332: Added ability to remove `yii\widgets\Menu` container tag by setting `options['tag']` to `false` (dynasource, samdark)
 - Enh #7357: Refactored `yii\db\ColumnSchema` by adding `typecast()` method to decouple `phpTypecast()` from `dbTypecast()` (mcd-php, qiangxue)
 - Enh #7361: The `trim` validator now works on the client side too (qiangxue)
 - Enh: Added support to `yii\di\Container` to instantiate and configure an object that implements `yii\base\Configurable` (qiangxue) 
