@@ -66,9 +66,14 @@ before_script:
   - mongo yii2test --eval 'db.addUser("travis", "test");'
 # basic and advanced application:
   - tests/unit/data/travis/init-apps.sh
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+    fi
+
 
 script:
-  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata
   - |
     if (php --version | grep -i HipHop > /dev/null); then
       echo "Skipping basic application tests on HHVM"
@@ -89,6 +94,9 @@ script:
     fi
 
 after_script:
-  - cd ../../..
-  - travis_retry wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      cd ../../.. 
+      travis_retry wget https://scrutinizer-ci.com/ocular.phar
+      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    fi

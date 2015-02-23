@@ -266,7 +266,7 @@ EOD;
         $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
         $this->activeField->enableClientValidation = true;
         $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages, deferred) {return true;}";
+        $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {return true;}";
         $this->assertEquals($expectedJsExpression, $actualValue['validate']);
 
         $this->assertTrue(!isset($actualValue['validateOnChange']));
@@ -301,7 +301,7 @@ EOD;
         }
 
         $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages, deferred) {if ((function (attribute, value) "
+        $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {if ((function (attribute, value) "
             . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
 
         $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
