@@ -11,7 +11,8 @@ $data = $cache->get($key);
 
 if ($data === false) {
 
-    // $data no ha sido encontrada en caché, calcularla desde cero
+    // $data no ha sido encontrada en la caché, calcularla desde cero
+
     // guardar $data en caché para así recuperarla la próxima vez
     $cache->set($key, $data);
 }
@@ -63,7 +64,7 @@ el código que utiliza la caché. Por ejemplo, podrías modificar la configuraci
 ],
 ```
 
-> Nota: Puedes registrar múltiples componentes de aplicación de caché. El componente llamado `cache` es usado por defecto por muchas clases caché-dependiente (ej. [[yii\web\UrlManager]]).
+> Consejo: Puedes registrar múltiples componentes de aplicación de caché. El componente llamado `cache` es usado por defecto por muchas clases caché-dependiente (ej. [[yii\web\UrlManager]]).
 
 
 ### Almacenamientos de Caché Soportados <span id="supported-cache-storage"></span>
@@ -81,7 +82,7 @@ se muestra un listado con los componentes de caché disponibles:
 * [[yii\caching\XCache]]: utiliza la extensión de PHP [XCache](http://xcache.lighttpd.net/).
 * [[yii\caching\ZendDataCache]]: utiliza [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
 
-> Nota: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
+> Consejo: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
 
 
 ## API de Caché <span id="cache-apis"></span>
@@ -98,6 +99,10 @@ Todos los componentes de almacenamiento de caché provienen de la misma clase "p
 * [[yii\caching\Cache::exists()|exists()]]: devuelve un valor que indica si la clave especificada se encuentra en la memoria caché.
 * [[yii\caching\Cache::delete()|delete()]]: elimina un elemento de datos identificado por una clave de la caché.
 * [[yii\caching\Cache::flush()|flush()]]: elimina todos los elementos de datos de la cache.
+
+> Nota: No Almacenes el valor boolean `false` en caché directamente porque el método [[yii\caching\Cache::get()|get()]] devuelve
+el valor `false` para indicar que el dato no ha sido encontrado en la caché. Puedes poner `false` dentro de un array y cachear
+este array para evitar este problema.
 
 Algunos sistemas de almacenamiento de caché, como por ejemplo MemCache, APC, pueden recuperar múltiples valores almacenados en modo de lote (batch), lo que puede reducir considerablemente la sobrecarga que implica la recuperación de datos almacenados en la caché. Las API [[yii\caching\Cache::mget()|mget()]] y  [[yii\caching\Cache::madd()|madd()]]
 se proporcionan para utilizar esta característica. En el caso de que el sistema de memoria caché no lo soportara, ésta sería simulada.
@@ -163,7 +168,7 @@ if ($data === false) {
 
 ### Dependencias de Caché <span id="cache-dependencies"></span>
 
-Además de configurar el tiempo de expiración, los datos almacenados en caché pueden también ser invalidados conforme a algunos cambios en la caché de dependencias. Por ejemplo, [[yii\caching\FileDependency]] representa la dependencia del tiempo de modificación del archivo. Cuando esta dependencia cambia, significa que el archivo correspondiente ha cambiado. Como resultado, cualquier contenido anticuado que sea encontrado en la caché debería ser invalidado y la llamada a [[yii\caching\Cache::get()|get()]] debería retornar falso.
+Además de configurar el tiempo de caducidad, los datos almacenados en caché pueden también ser invalidados conforme a algunos cambios en la caché de dependencias. Por ejemplo, [[yii\caching\FileDependency]] representa la dependencia del tiempo de modificación del archivo. Cuando esta dependencia cambia, significa que el archivo correspondiente ha cambiado. Como resultado, cualquier contenido anticuado que sea encontrado en la caché debería ser invalidado y la llamada a [[yii\caching\Cache::get()|get()]] debería retornar falso.
 
 Una dependencia es representada como una instancia de [[yii\caching\Dependency]] o su clase hija. Cuando llamas [[yii\caching\Cache::set()|set()]] para almacenar un elemento de datos en la caché, puedes pasar el objeto de dependencia asociado. Por ejemplo,
 
@@ -196,7 +201,7 @@ Aquí abajo se muestra un sumario de las dependencias disponibles:
 Las consultas en caché es una característica especial de caché construido sobre el almacenamiento de caché de datos. Se
 proporciona para almacenar en caché el resultado de consultas a la base de datos.
 
-Las consultas en caché requieren una [[yii\db\Connection|conexión a BD]] y un componente de aplicación caché válido. El uso básico de las consultas en memoria caché es el siguiente, asumiendo que `db` es una instancia de [[yii\db\Connection]]:
+Las consultas en caché requieren una [[yii\db\Connection|DB connection]] y un componente de aplicación caché válido. El uso básico de las consultas en memoria caché es el siguiente, asumiendo que `db` es una instancia de [[yii\db\Connection]]:
 
 ```php
 $result = $db->cache(function ($db) {
@@ -208,7 +213,13 @@ $result = $db->cache(function ($db) {
 });
 ```
 
-El almacenamiento en caché de consultas se puede usar para [DAO](db-dao.md), así como para [ActiveRecord](db-active-record.md).
+El cacheo de consultas puede ser usado tanto para [DAO](db-dao.md) como para [ActiveRecord](db-active-record.md):
+
+```php
+$result = Customer::getDb()->cache(function ($db) {
+    return Customer::find()->where(['id' => 1])->one();
+});
+```
 
 > Nota: Algunos DBMS (ej. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) también soporta el almacenamiento en caché desde el mismo servidor de la BD. Puedes optar por utilizar cualquiera de los mecanismos de memoria caché. El almacenamiento en caché de consultas previamente descrito tiene la ventaja que de que se puede especificar dependencias de caché de una forma flexible y son potencialmente mucho más eficientes.
 
