@@ -72,7 +72,7 @@ foreach ($files as $file) {
     }
 }
 
-$callbacks = ['setCookieValidationKey', 'setWritable', 'setExecutable'];
+$callbacks = ['setCookieValidationKey', 'setWritable', 'setExecutable', 'setParams'];
 foreach ($callbacks as $callback) {
     if (!empty($env[$callback])) {
         $callback($root, $env[$callback]);
@@ -117,7 +117,6 @@ function copyFile($root, $source, $target, &$all, $params)
         } else {
             echo "      exist $target\n";
             echo "            ...overwrite? [Yes|No|All|Quit] ";
-
 
             $answer = !empty($params['overwrite']) ? $params['overwrite'] : trim(fgets(STDIN));
             if (!strncasecmp($answer, 'q', 1)) {
@@ -201,5 +200,37 @@ function createSymlink($links)
         if (!is_link($link)) {
             symlink($target, $link);
         }
+    }
+}
+
+function setParams($root, $paths)
+{
+    foreach ($paths as $file) {
+        echo '   set params in ' . $file . PHP_EOL;
+        $filePath = $root . DIRECTORY_SEPARATOR . $file;
+        $fileContent = file_get_contents($filePath);
+
+        preg_match_all('/{{(.*?)}}/', $fileContent, $params);
+
+        if (isset($params[1])) {
+            $params[0] = array_unique($params[0]);
+            $params[1] = array_unique($params[1]);
+
+            foreach ($params[1] as $key => $param) {
+                if (strpos($param, '|') !== false) {
+                    $param = explode('|', $param);
+                    echo '      value of ' . $param[0] . ' (' . $param[1] . '): ';
+                    $answer = trim(fgets(\STDIN));
+                    if (!$answer) {
+                        $answer = $param[1];
+                    }
+                } else {
+                    echo '      value of ' . $param . ': ';
+                    $answer = trim(fgets(\STDIN));
+                }
+                $fileContent = str_replace($params[0][$key], $answer, $fileContent);
+            }
+        }
+        file_put_contents($filePath, $fileContent);
     }
 }
