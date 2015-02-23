@@ -259,7 +259,13 @@ $result = $db->cache(function ($db) {
 });
 ```
 
-Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-active-record.md).
+Query caching can be used for [DAO](db-dao.md) as well as [ActiveRecord](db-active-record.md):
+
+```php
+$result = Customer::getDb()->cache(function ($db) {
+    return Customer::find()->where(['id' => 1])->one();
+});
+```
 
 > Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
   also support query caching on the DB server side. You may choose to use either query caching mechanism.
