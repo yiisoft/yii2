@@ -222,8 +222,8 @@ Creating your own generators
 ----------------------------
 
 Open the folder of any generator and you will see two files `form.php` and `Generator.php`.
-One is the form, the second is the generator class. For create your own generator, you need to create or
-override these classes in any folder. Again as in the previous paragraph customize configuration:
+One is the form, the second is the generator class. In order to create your own generator, you need to create or
+override these classes in any folder. Again as in the previous paragraph customize the configuration:
 
 ```php
 //config/web.php for basic app
