@@ -44,9 +44,15 @@ install:
 # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
   # install php extensions
-  - pear config-set preferred_state beta
-  - printf "\n" | pecl install imagick 
-  - printf "\n" | pecl install gmagick 
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      echo "Skipping imagick and gmagick tests on HHVM"
+    else
+      pear config-set preferred_state beta
+      printf "\n" | pecl install imagick
+      # gmagick is not installed on travis currently
+      #printf "\n" | pecl install gmagick
+    fi
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
