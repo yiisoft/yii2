@@ -148,7 +148,7 @@
         validationDelay: 500,
         // whether to enable AJAX-based validation.
         enableAjaxValidation: false,
-        // function (attribute, value, messages), the client-side validation function.
+        // function (attribute, value, messages, deferred, $form), the client-side validation function.
         validate: undefined,
         // status of the input field, 0: empty, not entered before, 1: validated, 2: pending validation, 3: validating
         status: 0,
