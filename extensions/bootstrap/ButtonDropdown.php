@@ -37,7 +37,7 @@ class ButtonDropdown extends Widget
     /**
      * @var string the button label
      */
-    public $label = 'Button';
+    public $label = '';
     /**
      * @var array the HTML attributes for the container tag. The following special options are recognized:
      *
@@ -68,6 +68,10 @@ class ButtonDropdown extends Widget
      * @var boolean whether the label should be HTML-encoded.
      */
     public $encodeLabel = true;
+    /**
+     * @var string the button icon
+     */
+    public $icon;
 
 
     /**
@@ -93,9 +97,9 @@ class ButtonDropdown extends Widget
     protected function renderButton()
     {
         Html::addCssClass($this->options, 'btn');
-        $label = $this->label;
-        if ($this->encodeLabel) {
-            $label = Html::encode($label);
+        $label = $this->encodeLabel ? Html::encode($this->label) : $this->label;
+        if (!empty($this->icon)) {
+            $label = $this->icon . ' ' . $label;
         }
         if ($this->split) {
             $options = $this->options;

@@ -53,6 +53,7 @@ class Collapse extends Widget
      * - content: string, required, the content (HTML) of the group
      * - options: array, optional, the HTML attributes of the group
      * - contentOptions: optional, the HTML attributes of the group's content
+     * - icon: optional, icon for the header
      */
     public $items = [];
 
@@ -123,6 +124,10 @@ class Collapse extends Widget
             $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
             if ($encodeLabel) {
                 $header = Html::encode($header);
+            }
+            $icon = ArrayHelper::getValue($item, 'icon');
+            if (!empty($icon)) {
+                $header = $icon . ' ' . $header;
             }
 
             $headerToggle = Html::a($header, '#' . $id, [

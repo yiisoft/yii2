@@ -54,6 +54,7 @@ class Nav extends Widget
      * menu item which can be either a string or an array with the following structure:
      *
      * - label: string, required, the nav item label.
+     * - icon: string, optional, html for the item icon.
      * - url: optional, the item's URL. Defaults to "#".
      * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
      * - linkOptions: array, optional, the HTML attributes of the item's link.
@@ -147,11 +148,17 @@ class Nav extends Widget
         if (is_string($item)) {
             return $item;
         }
-        if (!isset($item['label'])) {
-            throw new InvalidConfigException("The 'label' option is required.");
+        if (!isset($item['label']) && !isset($item['icon'])) {
+            throw new InvalidConfigException("The 'label' or 'icon' option is required.");
         }
         $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
-        $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
+        $label = ArrayHelper::getValue($item, 'label', '');
+        $label = $encodeLabel ? Html::encode($label) : $label;
+        $icon = ArrayHelper::getValue($item, 'icon');
+        if (!empty($icon)) {
+            $label = $icon . ' ' . $label;
+        }
+
         $options = ArrayHelper::getValue($item, 'options', []);
         $items = ArrayHelper::getValue($item, 'items');
         $url = ArrayHelper::getValue($item, 'url', '#');

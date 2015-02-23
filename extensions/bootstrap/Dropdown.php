@@ -41,6 +41,7 @@ class Dropdown extends Widget
      * or an array representing a single menu with the following structure:
      *
      * - label: string, required, the label of the item link
+     * - icon: string, optional, html for the item icon.
      * - url: string|array, optional, the url of the item link. This will be processed by [[Url::to()]].
      *   If not set, the item will be treated as a menu header when the item has no sub-menu.
      * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
@@ -97,11 +98,17 @@ class Dropdown extends Widget
                 $lines[] = $item;
                 continue;
             }
-            if (!array_key_exists('label', $item)) {
-                throw new InvalidConfigException("The 'label' option is required.");
+            if (!array_key_exists('label', $item) && !array_key_exists('icon', $item)) {
+                throw new InvalidConfigException("The 'label' or 'icon' option is required.");
             }
             $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
-            $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
+            $label = ArrayHelper::getValue($item, 'label', '');
+            $label = $encodeLabel ? Html::encode($label) : $label;
+            $icon = ArrayHelper::getValue($item, 'icon');
+            if (!empty($icon)) {
+                $label = $icon . ' ' . $label;
+            }
+
             $itemOptions = ArrayHelper::getValue($item, 'options', []);
             $linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
             $linkOptions['tabindex'] = '-1';

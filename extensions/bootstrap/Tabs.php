@@ -58,6 +58,7 @@ class Tabs extends Widget
      * tab with the following structure:
      *
      * - label: string, required, the tab header label.
+     * - icon: string, optional, html for the tab header icon.
      * - encode: boolean, optional, whether this label should be HTML-encoded. This param will override
      *   global `$this->encodeLabels` param.
      * - headerOptions: array, optional, the HTML attributes of the tab header.
@@ -142,11 +143,17 @@ class Tabs extends Widget
         }
 
         foreach ($this->items as $n => $item) {
-            if (!array_key_exists('label', $item)) {
-                throw new InvalidConfigException("The 'label' option is required.");
+            if (!array_key_exists('label', $item) && !array_key_exists('icon', $item)) {
+                throw new InvalidConfigException("The 'label' or 'icon' option is required.");
             }
             $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
-            $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
+            $label = ArrayHelper::getValue($item, 'label', '');
+            $label = $encodeLabel ? Html::encode($label) : $label;
+            $icon = ArrayHelper::getValue($item, 'icon');
+            if (!empty($icon)) {
+                $label = $icon . ' ' . $label;
+            }
+
             $headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', []));
             $linkOptions = array_merge($this->linkOptions, ArrayHelper::getValue($item, 'linkOptions', []));
 
