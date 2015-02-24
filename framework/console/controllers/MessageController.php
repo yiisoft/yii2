@@ -205,7 +205,7 @@ class MessageController extends Controller
 
                 $db->createCommand()
                    ->insert($sourceMessageTable, ['category' => $category, 'message' => $m])->execute();
-                $lastID = $db->getLastInsertID();
+                $lastID = $db->getLastInsertID($db->getSchema()->getTableSchema($sourceMessageTable)->sequenceName);
                 foreach ($languages as $language) {
                     $db->createCommand()
                        ->insert($messageTable, ['id' => $lastID, 'language' => $language])->execute();
