@@ -90,7 +90,6 @@ class Dropdown extends Widget
         $lines = [];
         foreach ($items as $i => $item) {
             if (isset($item['visible']) && !$item['visible']) {
-                unset($items[$i]);
                 continue;
             }
             if (is_string($item)) {
