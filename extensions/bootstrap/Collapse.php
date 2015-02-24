@@ -81,7 +81,7 @@ class Collapse extends Widget
             Html::beginTag('div', $this->options),
             $this->renderItems(),
             Html::endTag('div')
-        ]);
+        ]) . "\n";
     }
 
     /**

@@ -110,7 +110,7 @@ class Progress extends Widget
             Html::beginTag('div', $this->options),
             $this->renderProgress(),
             Html::endTag('div')
-        ]);
+        ]) . "\n";
     }
 
     /**

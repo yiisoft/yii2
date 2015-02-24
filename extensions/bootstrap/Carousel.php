@@ -88,7 +88,7 @@ class Carousel extends Widget
             $this->renderItems(),
             $this->renderControls(),
             Html::endTag('div')
-        ]);
+        ]) . "\n";
     }
 
     /**
