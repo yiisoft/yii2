@@ -227,6 +227,12 @@ $result = $db->cache(function ($db) {
 ```
 クエリキャッシュは [DAO](db-dao.md) だけではなく [アクティブレコード](db-active-record.md) でも使用することができます。
 
+```php
+$result = Customer::getDb()->cache(function ($db) {
+    return Customer::find()->where(['id' => 1])->one();
+});
+```
+
 > 情報: いくつかの DBMS (例えば [MySQL](http://dev.mysql.com/doc/refman/5.1/ja/query-cache.html)) でもデータベースのサーバサイドのクエリキャッシュをサポートしています。
   どちらのクエリキャッシュメカニズムも選べますが、前述した Yii のクエリキャッシュにはキャッシュの依存を柔軟に指定できるという利点があり、潜在的にはより効率的でしょう。
 
