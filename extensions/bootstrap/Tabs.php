@@ -123,8 +123,8 @@ class Tabs extends Widget
      */
     public function run()
     {
-        echo $this->renderItems();
         $this->registerPlugin('tab');
+        return $this->renderItems();
     }
 
     /**

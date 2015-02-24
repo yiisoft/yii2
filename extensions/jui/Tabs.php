@@ -106,10 +106,13 @@ class Tabs extends Widget
     {
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
-        echo Html::beginTag($tag, $options) . "\n";
-        echo $this->renderItems() . "\n";
-        echo Html::endTag($tag) . "\n";
+        $out = Html::beginTag($tag, $options) . "\n";
+        $out .= $this->renderItems() . "\n";
+        $out .= Html::endTag($tag) . "\n";
+
         $this->registerWidget('tabs');
+
+        return $out;
     }
 
     /**
