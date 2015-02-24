@@ -8,6 +8,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.2
+----------------------
+
+Starting from version 2.0.3 Yii `Security` component relies on OpenSSL crypto lib instead of Mcrypt. The reason is that
+Mcrypt is abandoned and isn't maintained for years. Therefore your PHP should be compiled with OpenSSL support. Most
+probably there's nothing to worry because it is quite typical.
+
 Upgrade from Yii 2.0.0
 ----------------------
 
