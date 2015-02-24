@@ -458,8 +458,8 @@ class Security extends Component
             }
         }
 
-        if (mb_strlen($bytes, '8bit') >= $length) {
-            return mb_substr($bytes, 0, $length, '8bit');
+        if (StringHelper::byteLength($bytes) >= $length) {
+            return StringHelper::byteSubstr($bytes, 0, $length);
         }
 
         // If we are not on Linux and there is a /dev/random device then we have a BSD or Unix device
@@ -472,8 +472,8 @@ class Security extends Component
             }
         }
 
-        if (mb_strlen($bytes, '8bit') >= $length) {
-            return mb_substr($bytes, 0, $length, '8bit');
+        if (StringHelper::byteLength($bytes) >= $length) {
+            return StringHelper::byteSubstr($bytes, 0, $length);
         }
 
         if (!extension_loaded('openssl')) {
@@ -482,11 +482,11 @@ class Security extends Component
 
         $bytes .= openssl_random_pseudo_bytes($length, $cryptoStrong);
 
-        if (mb_strlen($bytes, '8bit') < $length || !$cryptoStrong) {
+        if (StringHelper::byteLength($bytes) < $length || !$cryptoStrong) {
             throw new Exception('Unable to generate random bytes.');
         }
 
-        return mb_substr($bytes, 0, $length, '8bit');
+        return StringHelper::byteSubstr($bytes, 0, $length);
     }
 
     /**
