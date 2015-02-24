@@ -56,6 +56,11 @@ class Dropdown extends Widget
      * @var boolean whether the labels for header items should be HTML-encoded.
      */
     public $encodeLabels = true;
+    /**
+     * @var array the HTML attributes for submenu container tags.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $submenuOptions;
 
 
     /**
@@ -64,6 +69,10 @@ class Dropdown extends Widget
      */
     public function init()
     {
+        if ($this->submenuOptions === null) {
+            $this->submenuOptions = $this->options;
+        }
+        
         parent::init();
         Html::addCssClass($this->options, 'dropdown-menu');
     }
@@ -113,10 +122,8 @@ class Dropdown extends Widget
                     $content = Html::a($label, $url, $linkOptions);
                 }
             } else {
-                $submenuOptions = $options;
-                unset($submenuOptions['id']);
                 $content = Html::a($label, $url === null ? '#' : $url, $linkOptions)
-                    . $this->renderItems($item['items'], $submenuOptions);
+                    . $this->renderItems($item['items'], $this->submenuOptions);
                 Html::addCssClass($itemOptions, 'dropdown-submenu');
             }
 
