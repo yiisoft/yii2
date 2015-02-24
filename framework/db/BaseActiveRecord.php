@@ -94,7 +94,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @inheritdoc
-     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
+     * @return static|null ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
     public static function findOne($condition)
     {
