@@ -80,6 +80,14 @@ class BaseHtml
         'media',
     ];
 
+    /**
+     * @var array list of tag attributes that should be specially handled when their values are of array type.
+     * In particular, if the value of the `data` attribute is `['name' => 'xyz', 'age' => 13]`, two attributes
+     * will be generated instead of one: `data-name="xyz" data-age="13"`.
+     * @since 2.0.3
+     */
+    public static $dataAttributes = ['data', 'data-ng', 'ng'];
+
 
     /**
      * Encodes special characters into HTML entities.
@@ -1621,13 +1629,17 @@ class BaseHtml
                 if ($value) {
                     $html .= " $name";
                 }
-            } elseif (is_array($value) && $name === 'data') {
-                foreach ($value as $n => $v) {
-                    if (is_array($v)) {
-                        $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
-                    } else {
-                        $html .= " $name-$n=\"" . static::encode($v) . '"';
+            } elseif (is_array($value)) {
+                if (in_array($name, static::$dataAttributes)) {
+                    foreach ($value as $n => $v) {
+                        if (is_array($v)) {
+                            $html .= " $name-$n='" . Json::encode($v, JSON_HEX_APOS) . "'";
+                        } else {
+                            $html .= " $name-$n=\"" . static::encode($v) . '"';
+                        }
                     }
+                } else {
+                    $html .= " $name='" . Json::encode($value, JSON_HEX_APOS) . "'";
                 }
             } elseif ($value !== null) {
                 $html .= " $name=\"" . static::encode($value) . '"';
