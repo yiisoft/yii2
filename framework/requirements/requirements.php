@@ -56,6 +56,17 @@ return array(
         <code>EmailValidator</code> or <code>UrlValidator</code> or the <code>yii\i18n\Formatter</code> class.'
     ),
     array(
+        'name' => 'ICU version',
+        'mandatory' => false,
+        'condition' => version_compare(INTL_ICU_VERSION, '49', '>='),
+        'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
+        'memo' => 'ICU 49.0 or higher is required when you want to use <code>#</code> placeholder in plural rules
+        (for example, plural in
+        <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
+        Formatter::asRelativeTime()</a>) in the <code>yii\i18n\Formatter</code> class. Your current ICU version is ' .
+        INTL_ICU_VERSION . '.'
+    ),
+    array(
         'name' => 'Fileinfo extension',
         'mandatory' => false,
         'condition' => extension_loaded('fileinfo'),
