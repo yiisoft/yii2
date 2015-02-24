@@ -80,7 +80,7 @@ echo Html::tag('div', 'Pwede na', $options);
 $options = ['style' => ['width' => '100px', 'height' => '100px']];
 
 // style="width: 100px; height: 200px; position: absolute;" となる
-Html::addCssStyle($options, 'height: 200px; positon: absolute;');
+Html::addCssStyle($options, 'height: 200px; position: absolute;');
 
 // style="position: absolute;" となる
 Html::removeCssStyle($options, ['width', 'height']);
