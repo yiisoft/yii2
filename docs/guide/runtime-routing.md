@@ -378,7 +378,7 @@ routes. For example, the following rules embed `controller` and `action` paramet
 [
     '<controller:(post|comment)>/<id:\d+>/<action:(create|update|delete)>' => '<controller>/<action>',
     '<controller:(post|comment)>/<id:\d+>' => '<controller>/view',
-    '<controller:(post|comment)>s' => '<controller>/index',
+    '<controller:(post|comment)>' => '<controller>/index',
 ]
 ```
 
