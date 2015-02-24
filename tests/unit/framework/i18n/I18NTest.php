@@ -141,6 +141,10 @@ class I18NTest extends TestCase
 
         $msg = '{n, plural, =0{Нет комментариев} =1{# комментарий} one{# комментарий} few{# комментария} many{# комментариев} other{# комментария}}';
         $this->assertEquals('5 комментариев', \Yii::t('app', $msg, ['n' => 5]));
+        $this->assertEquals('3 комментария', \Yii::t('app', $msg, ['n' => 3]));
+        $this->assertEquals('1 комментарий', \Yii::t('app', $msg, ['n' => 1]));
+        $this->assertEquals('21 комментарий', \Yii::t('app', $msg, ['n' => 21]));
+        $this->assertEquals('Нет комментариев', \Yii::t('app', $msg, ['n' => 0]));
     }
 
     /**
