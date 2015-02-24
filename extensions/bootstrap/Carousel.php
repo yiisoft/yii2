@@ -81,12 +81,14 @@ class Carousel extends Widget
      */
     public function run()
     {
-        echo Html::beginTag('div', $this->options) . "\n";
-        echo $this->renderIndicators() . "\n";
-        echo $this->renderItems() . "\n";
-        echo $this->renderControls() . "\n";
-        echo Html::endTag('div') . "\n";
         $this->registerPlugin('carousel');
+        return implode("\n", [
+            Html::beginTag('div', $this->options),
+            $this->renderIndicators(),
+            $this->renderItems(),
+            $this->renderControls(),
+            Html::endTag('div')
+        ]) . "\n";
     }
 
     /**
