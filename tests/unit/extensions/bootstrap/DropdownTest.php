@@ -41,7 +41,7 @@ class DropdownTest extends BootstrapTestCase
 
         $expected = <<<EXPECTED
 <ul id="w0" class="dropdown-menu"><li class="dropdown-header">Page1</li>
-<li class="dropdown-submenu"><a href="#" tabindex="-1">Dropdown1</a><ul class="dropdown-menu"><li class="dropdown-header">Page2</li>
+<li class="dropdown-submenu"><a href="#" tabindex="-1">Dropdown1</a><ul><li class="dropdown-header">Page2</li>
 <li class="dropdown-header">Page3</li></ul></li></ul>
 EXPECTED;
 
