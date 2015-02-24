@@ -126,7 +126,7 @@ class Menu extends Widget
     /**
      * @var array the HTML attributes for the menu's container tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "ul", the tag name of the item container tags. Set to null to disable container tag.
+     * - tag: string, defaults to "ul", the tag name of the item container tags. Set to false to disable container tag.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
