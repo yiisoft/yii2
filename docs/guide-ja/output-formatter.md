@@ -150,6 +150,8 @@ echo Yii::$app->formatter->asTime('2014-10-06 21:41:00 JST'); // 21:41:00
 - [[yii\i18n\Formatter::asPercent()|percent]] - 値は百分率としてフォーマットされます。例えば `42%`。
 - [[yii\i18n\Formatter::asScientific()|scientific]] - 値は科学記法による数値としてフォーマットされます。例えば `4.2E4`。
 - [[yii\i18n\Formatter::asCurrency()|currency]] - 値は通貨の値としてフォーマットされます。例えば `£420.00`。
+  この関数が正しく働くためには、`en_GB` や `en_US` のように、ロケールが国コードを含んでいる必要があります。
+  なぜなら、この場合は言語だけでは曖昧になるからです。
 - [[yii\i18n\Formatter::asSize()|size]] - バイト数である値が人間にとって読みやすいサイズとしてフォーマットされます。例えば `410 キビバイト`。
 - [[yii\i18n\Formatter::asShortSize()|shortSize]] - [[yii\i18n\Formatter::asSize()|size]] の短いバージョンです。例えば `410 KiB`。
 
