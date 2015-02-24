@@ -76,10 +76,12 @@ class Collapse extends Widget
      */
     public function run()
     {
-        echo Html::beginTag('div', $this->options) . "\n";
-        echo $this->renderItems() . "\n";
-        echo Html::endTag('div') . "\n";
         $this->registerPlugin('collapse');
+        return implode("\n", [
+            Html::beginTag('div', $this->options),
+            $this->renderItems(),
+            Html::endTag('div')
+        ]);
     }
 
     /**
