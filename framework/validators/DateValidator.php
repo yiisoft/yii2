@@ -10,6 +10,7 @@ namespace yii\validators;
 use IntlDateFormatter;
 use Yii;
 use DateTime;
+use yii\base\Exception;
 use yii\helpers\FormatConverter;
 
 /**
@@ -57,8 +58,20 @@ class DateValidator extends Validator
      * @var string the name of the attribute to receive the parsing result.
      * When this property is not null and the validation is successful, the named attribute will
      * receive the parsing result.
+     * @see timestampAttributeFormat
      */
     public $timestampAttribute;
+    /**
+     * @var string the format to use when populating the [[timestampAttribute]].
+     * The format can be specified in the same way as for [[format]].
+     *
+     * If not set, [[timestampAttribute]] will receive a UNIX timestamp.
+     * If [[timestampAttribute]] is not set, this property will be ignored.
+     * @see format
+     * @see timestampAttribute
+     * @since 2.0.2
+     */
+    public $timestampAttributeFormat;
 
     /**
      * @var array map of short format names to IntlDateFormatter constant values.
@@ -101,8 +114,30 @@ class DateValidator extends Validator
         if ($timestamp === false) {
             $this->addError($model, $attribute, $this->message, []);
         } elseif ($this->timestampAttribute !== null) {
-            $model->{$this->timestampAttribute} = $timestamp;
+            if ($this->timestampAttributeFormat !== null) {
+                $model->{$this->timestampAttribute} = $this->formatTimestamp($timestamp, $this->timestampAttributeFormat);
+            } else {
+                $model->{$this->timestampAttribute} = $timestamp;
+            }
         }
+    }
+
+    /**
+     * Formats a timestamp using the specified format
+     * @param integer $timestamp
+     * @param string $format
+     * @return string
+     * @since 2.0.2
+     */
+    private function formatTimestamp($timestamp, $format)
+    {
+        if (strncmp($format, 'php:', 4) === 0) {
+            $format = substr($format, 4);
+        } else {
+            $format = FormatConverter::convertDateIcuToPhp($format, 'date');
+        }
+        // TODO does not respect timezone settings correctly
+        return date($format, $timestamp);
     }
 
     /**
