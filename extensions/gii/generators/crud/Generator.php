@@ -245,8 +245,20 @@ class Generator extends \yii\gii\Generator
                 foreach ($column->enumValues as $enumValue) {
                     $dropDownOptions[$enumValue] = Inflector::humanize($enumValue);
                 }
+
+                if ($this->enableI18N) {
+                    $string = '[ ';
+                    foreach ($dropDownOptions as $key => $option) {
+                        $string .= "'" . $key . "' => ";
+                        $string .= "Yii::t('" . $this->messageCategory . "', '" . $option . "'), ";
+                    }
+                    $string .= ' ]';
+                } else {
+                    $string = VarDumper::export($dropDownOptions);
+                }
+
                 return "\$form->field(\$model, '$attribute')->dropDownList("
-                    . preg_replace("/\n\s*/", ' ', VarDumper::export($dropDownOptions)).", ['prompt' => ''])";
+                    . preg_replace("/\n\s*/", ' ', $string).", ['prompt' => ''])";
             } elseif ($column->phpType !== 'string' || $column->size === null) {
                 return "\$form->field(\$model, '$attribute')->$input()";
             } else {
