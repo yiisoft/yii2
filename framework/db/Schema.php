@@ -494,6 +494,7 @@ abstract class Schema extends Object
             'bigint' => 'integer',
             'boolean' => 'boolean',
             'float' => 'double',
+            'double' => 'double',
             'binary' => 'resource',
         ];
         if (isset($typeMap[$column->type])) {
