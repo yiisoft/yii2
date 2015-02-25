@@ -32,6 +32,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_INTEGER => 'integer',
         Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float',
+        Schema::TYPE_DOUBLE => 'double',
         Schema::TYPE_DECIMAL => 'decimal(10,0)',
         Schema::TYPE_DATETIME => 'datetime',
         Schema::TYPE_TIMESTAMP => 'timestamp',
