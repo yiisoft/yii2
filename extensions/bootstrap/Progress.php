@@ -105,12 +105,10 @@ class Progress extends Widget
      */
     public function run()
     {
+        echo Html::beginTag('div', $this->options) . "\n";
+        echo $this->renderProgress() . "\n";
+        echo Html::endTag('div') . "\n";
         BootstrapAsset::register($this->getView());
-        return implode("\n", [
-            Html::beginTag('div', $this->options),
-            $this->renderProgress(),
-            Html::endTag('div')
-        ]) . "\n";
     }
 
     /**
