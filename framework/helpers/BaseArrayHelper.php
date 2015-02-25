@@ -168,10 +168,11 @@ class BaseArrayHelper
      * `function($array, $defaultValue)`.
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
+     * @param string $delimiter the delimiter character for the key, defaults to a dot (.)
      * @return mixed the value of the element if found, default value otherwise
      * @throws InvalidParamException if $array is neither an array nor an object.
      */
-    public static function getValue($array, $key, $default = null)
+    public static function getValue($array, $key, $default = null, $delimiter = '.')
     {
         if ($key instanceof \Closure) {
             return $key($array, $default);
@@ -181,8 +182,8 @@ class BaseArrayHelper
             return $array[$key];
         }
 
-        if (($pos = strrpos($key, '.')) !== false) {
-            $array = static::getValue($array, substr($key, 0, $pos), $default);
+        if (($pos = strrpos($key, $delimiter)) !== false) {
+            $array = static::getValue($array, substr($key, 0, $pos), $default, $delimiter);
             $key = substr($key, $pos + 1);
         }
 
