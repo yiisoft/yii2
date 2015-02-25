@@ -115,8 +115,8 @@ class Nav extends Widget
      */
     public function run()
     {
+        echo $this->renderItems();
         BootstrapAsset::register($this->getView());
-        return $this->renderItems();
     }
 
     /**
