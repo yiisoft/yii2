@@ -24,6 +24,7 @@ Yii Framework 2 debug extension Change Log
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
 - Enh #6113: Improved configuration and request UI (schmunk42)
 - Enh: Made `DefaultController::getManifest()` more robust against corrupt files (cebe)
+- Enh: Improved configuration and request UI (schmunk42)
 
 
 2.0.0 October 12, 2014
