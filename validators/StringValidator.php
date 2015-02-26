@@ -28,18 +28,23 @@ class StringValidator extends Validator
      *   This will overwrite [[min]].
      * - an array of two elements: the minimum and maximum lengths that the value should be of.
      *   For example, `[8, 128]`. This will overwrite both [[min]] and [[max]].
+     * @see tooShort for the customized message for a too short string.
+     * @see tooLong for the customized message for a too long string.
+     * @see notEqual for the customized message for a string that does not match desired length.
      */
     public $length;
     /**
      * @var integer maximum length. If not set, it means no maximum length limit.
+     * @see tooLong for the customized message for a too long string.
      */
     public $max;
     /**
      * @var integer minimum length. If not set, it means no minimum length limit.
+     * @see tooShort for the customized message for a too short string.
      */
     public $min;
     /**
-     * @var string user-defined error message used when the value is not a string
+     * @var string user-defined error message used when the value is not a string.
      */
     public $message;
     /**
