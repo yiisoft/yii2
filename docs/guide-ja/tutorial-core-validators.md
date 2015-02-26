@@ -53,7 +53,7 @@ public function rules()
 このバリデータは、通常、[[yii\captcha\CaptchaAction]] および [[yii\captcha\Captcha]] と一緒に使われ、入力値が [[yii\captcha\Captcha|CAPTCHA]] ウィジェットによって表示された検証コードと同じであることを確認します。
 
 - `caseSensitive`: 検証コードの比較で大文字と小文字を区別するかどうか。デフォルト値は false。
-- `captchaAction`: CAPTCHA 画像を表示する [[yii\captcha\CaptchaAction|CAPTCHA action]] に対応する [ルート](structure-controllers.md#routes)。デフォルト値は `'site/captcha'`。
+- `captchaAction`: CAPTCHA 画像を表示する [[yii\captcha\CaptchaAction|CAPTCHA アクション]] に対応する [ルート](structure-controllers.md#routes)。デフォルト値は `'site/captcha'`。
 - `skipOnEmpty`: 入力値が空のときに検証をスキップできるかどうか。デフォルト値は false で、入力が必須であることを意味します。
   
 
@@ -99,14 +99,14 @@ public function rules()
 このバリデータは、入力値が正しい書式の date、time、または datetime であるかどうかをチェックします。
 オプションとして、入力値を UNIX タイムスタンプに変換して、[[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] によって指定された属性に保存することも出来ます。
 
-- `format`: 検証される値が従っているべき日付・時刻の書式。
-  これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) で記述されている日付・時刻のパターンを使うことが出来ます。
+- `format`: 検証される値が従っているべき日付/時刻の書式。
+  これには [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) で記述されている日付/時刻のパターンを使うことが出来ます。
   あるいは、PHP の `Datetime` クラスによって認識される書式に接頭辞 `php:` を付けた文字列でも構いません。
   サポートされている書式については、<http://php.net/manual/ja/datetime.createfromformat.php> を参照してください。
   このプロパティが設定されていないときは、`Yii::$app->formatter->dateFormat` の値を取ります。
-- `timestampAttribute`: このバリデータが入力された日付・時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
+- `timestampAttribute`: このバリデータが入力された日付/時刻から変換した UNIX タイムスタンプを代入することが出来る属性の名前。
 
-入力が必須でない場合には、date バリデータに加えて、default バリデータ (フィルタ) を追加すれば、空の入力値が `NULL` として保存されることを保証することが出来ます。
+入力が必須でない場合には、date バリデータに加えて、default バリデータ (デフォルト値フィルタ) を追加すれば、空の入力値が `NULL` として保存されることを保証することが出来ます。
 そうしないと、データベースに `0000-00-00` という日付が保存されたり、デートピッカーの入力フィールドが `1970-01-01` になったりしてしまいます。
 
 ```php
@@ -176,7 +176,7 @@ function foo($model, $attribute) {
 
 このバリデータは、入力値が有効なメールアドレスであるかどうかをチェックします。
 
-- `allowName`: メールアドレスに表示名を許容するか否か (例えば、`John Smith <john.smith@example.com>`)。デフォルト値は false。
+- `allowName`: メールアドレスに表示名 (例えば、`John Smith <john.smith@example.com>`) を許容するか否か。デフォルト値は false。
 - `checkDNS`: メールのドメインが存在して A または MX レコードを持っているかどうかをチェックするか否か。
   このチェックは、メールアドレスが実際には有効なものでも、一時的な DNS の問題によって失敗する場合があることに注意してください。
   デフォルト値は false。
@@ -241,7 +241,7 @@ function foo($model, $attribute) {
 [
     // "primaryImage" が PNG、JPG、または GIF 形式のアップロードされた
     // 画像ファイルであり、ファイルサイズが 1MB 以下であるかどうかチェック
-    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024*1024],
+    ['primaryImage', 'file', 'extensions' => ['png', 'jpg', 'gif'], 'maxSize' => 1024*1024],
 ]
 ```
 
@@ -267,7 +267,7 @@ function foo($model, $attribute) {
   デフォルト値は true であり、そのようなチェックが行われることを意味します。
 
 `FileValidator` は [[yii\web\UploadedFile]] と一緒に使用されます。
-ファイルのアップロードおよびアップロードされたファイルのバリデーションの実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
+ファイルのアップロードおよびアップロードされたファイルの検証の実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
 
 
 ## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
@@ -300,7 +300,7 @@ function foo($model, $attribute) {
 > Tip|ヒント: 入力値をトリムしたい場合は、[trim](#trim) バリデータを直接使うことが出来ます。
 
 > Tip|ヒント: `filter` のコールバックに期待されるシグニチャを持つ PHP 関数が多数存在します。
-> 例えば、型キャストを適用して (例えば、[intval](http://php.net/manual/ja/function.intval.php) や [boolval](http://php.net/manual/ja/function.boolval.php) などを使って) 属性が特定の型になるように保証したい場合は、それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
+> 例えば、([intval](http://php.net/manual/ja/function.intval.php) や [boolval](http://php.net/manual/ja/function.boolval.php) などを使って) 型キャストを適用し、属性が特定の型になるように保証したい場合は、それらの関数をクロージャで包む必要はなく、単にフィルタの関数名を指定するだけで十分です。
 >
 > ```php
 > ['property', 'filter', 'filter' => 'boolval'],
@@ -376,7 +376,7 @@ function foo($model, $attribute) {
 
 このバリデータは、入力値が指定された正規表現に一致するかどうかをチェックします。
 
-- `pattern`: 入寮値が一致すべき正規表現。このプロパティを設定することは必須です。そうしないと、例外が投げられます。
+- `pattern`: 入力値が一致すべき正規表現。このプロパティを設定することは必須です。そうしないと、例外が投げられます。
 - `not`: 検証結果を反転すべきかどうか。
   デフォルト値は false で、入力値がパターンに一致したときにだけ検証が成功することを意味します。
   このプロパティが true に設定されているときは、入力値がパターンに一致しない場合にだけ検証が成功したと見なされます。
