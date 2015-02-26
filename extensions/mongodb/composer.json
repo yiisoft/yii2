@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "~2.0.0",
+        "yiisoft/yii2": "*",
         "ext-mongo": ">=1.5.0"
     },
     "autoload": {
