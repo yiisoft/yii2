@@ -12,7 +12,6 @@
         "irc": "irc://irc.freenode.net/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "~2.0.0",
@@ -26,6 +25,7 @@
         "yiisoft/yii2-faker": "~2.0.0"
     },
     "config": {
+        "preferred-install": "dist",
         "process-timeout": 1800
     },
     "scripts": {
