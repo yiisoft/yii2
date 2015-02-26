@@ -296,7 +296,7 @@ EOD;
 <option value="value  2">text&nbsp;&nbsp;2</option>
 </select>
 EOD;
-        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2(), ['encodeSpaces' => true]));
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2(), ['encode' => true]));
         $expected = <<<EOD
 <select name="test" size="4">
 <option value="value1">text1</option>
@@ -499,7 +499,7 @@ EOD;
             'groups' => [
                 'group12' => ['class' => 'group'],
             ],
-            'encodeSpaces' => true,
+            'encode' => true,
         ];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
 
