@@ -1157,7 +1157,7 @@ class BaseHtml
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        if (!isset($options['maxlength'])) {
+        if (!isset($options['maxlength']) || $options['maxlength'] !== true) {
             return static::activeInput('text', $model, $attribute, $options);
         }
 
