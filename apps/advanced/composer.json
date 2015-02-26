@@ -25,6 +25,7 @@
         "yiisoft/yii2-faker": "~2.0.0"
     },
     "config": {
+        "preferred-install": "dist",
         "process-timeout": 1800
     },
     "extra": {
