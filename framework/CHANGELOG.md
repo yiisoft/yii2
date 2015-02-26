@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #7271: `ActiveRecord::populateRecord()` should be called in late binding approach (jlorente)
 - Bug #7258: Response was sending HTML content type when formatter was set to JSON or XML, nulls were handled wrong (slavcodev, samdark)
 - Bug #7358: Fix trimming PHPDoc prefix with TAB indent in `yii\console\Controller::parseDocCommentSummary()` (gugglegum)
+- Bug #7383: Fix precision loss in log timestamps when using `yii\log\DBTarget` (samdark)
 - Bug #7425: `yii\widgets\ActiveField::radio()` should not generate the label twice (justinvoelker)
 - Enh #3168: Improved the performance of `yii\rbac\DbManager::checkAccess()` by caching mechanism (qiangxue)
 - Enh #3723: `yii\filters\PageCache` now supports caching response headers as well as non-HTML response content (qiangxue)
