@@ -5,7 +5,7 @@ Yii provides a powerful logging framework that is highly customizable and extens
 can easily log various types of messages, filter them, and gather them at different targets, such as files, databases,
 emails. 
 
-Using the Yii logging framework involves the following steps of work:
+Using the Yii logging framework involves the following steps:
  
 * Record [log messages](#log-messages) at various places in your code;
 * Configure [log targets](#log-targets) in the application configuration to filter and export log messages;
@@ -14,7 +14,7 @@ Using the Yii logging framework involves the following steps of work:
 In this section, we will mainly describe the first two steps.
 
 
-## Log Messages <a name="log-messages"></a>
+## Log Messages <span id="log-messages"></span>
 
 Recording log messages is as simple as calling one of the following logging methods:
 
@@ -39,7 +39,7 @@ it will be exported as a string by calling [[yii\helpers\VarDumper::export()]].
 To better organize and filter log messages, it is recommended that you specify an appropriate category for each
 log message. You may choose a hierarchical naming scheme for categories, which will make it easier for 
 [log targets](#log-targets) to filter messages based on their categories. A simple yet effective naming scheme
-is to use the PHP magic constant `__METHOD__` as category names. This is also the approach used in the core 
+is to use the PHP magic constant `__METHOD__` for the category names. This is also the approach used in the core 
 Yii framework code. For example,
 
 ```php
@@ -47,20 +47,20 @@ Yii::trace('start calculating average revenue', __METHOD__);
 ```
 
 The `__METHOD__` constant evaluates as the name of the method (prefixed with the fully qualified class name) where 
-the constant appears. For example, it equals to the string `'app\controllers\RevenueController::calculate'` if 
+the constant appears. For example, it is equal to the string `'app\controllers\RevenueController::calculate'` if 
 the above line of code is called within this method.
 
 > Info: The logging methods described above are actually shortcuts to the [[yii\log\Logger::log()|log()]] method 
 of the [[yii\log\Logger|logger object]] which is a singleton accessible through the expression `Yii::getLogger()`. When
-enough messages are logged or when the application ends, the logger object will call a  
+enough messages are logged or when the application ends, the logger object will call a 
 [[yii\log\Dispatcher|message dispatcher]] to send recorded log messages to the registered [log targets](#log-targets).
 
 
-## Log Targets <a name="log-targets"></a>
+## Log Targets <span id="log-targets"></span>
 
-A log target is an instance of [[yii\log\Target]] class or its child class. It filters the log messages by their
-severity levels and categories and then exports them to some medium. For example, a  [[yii\log\DbTarget|database target]]
-exports the filtered log messages to a database table, while a [[yii\log\EmailTarget|email target]] exports
+A log target is an instance of the [[yii\log\Target]] class or its child class. It filters the log messages by their
+severity levels and categories and then exports them to some medium. For example, a [[yii\log\DbTarget|database target]]
+exports the filtered log messages to a database table, while an [[yii\log\EmailTarget|email target]] exports
 the log messages to specified email addresses.
 
 You can register multiple log targets in an application by configuring them through the `log` [application component](structure-application-components.md)
@@ -114,7 +114,7 @@ learn how to configure and use them.
 In the following, we will describe the features common to all log targets.
 
   
-### Message Filtering <a name="message-filtering"></a>
+### Message Filtering <span id="message-filtering"></span>
 
 For each log target, you can configure its [[yii\log\Target::levels|levels]] and 
 [[yii\log\Target::categories|categories]] properties to specify which severity levels and categories of the messages the target should process.
@@ -167,9 +167,9 @@ under the categories whose names match either `yii\db\*` or `yii\web\HttpExcepti
   the [[yii\web\NotFoundHttpException]] will cause an error message of category `yii\web\HttpException:404`.
 
 
-### Message Formatting <a name="message-formatting"></a>
+### Message Formatting <span id="message-formatting"></span>
 
-Log targets export the filtered log messages in certain format. For example, if you install
+Log targets export the filtered log messages in a certain format. For example, if you install
 a log target of the class [[yii\log\FileTarget]], you may find a log message similar to the following in the
 `runtime/log/app.log` file:
 
@@ -185,7 +185,7 @@ Timestamp [IP address][User ID][Session ID][Severity Level][Category] Message Te
 
 You may customize this format by configuring the [[yii\log\Target::prefix]] property which takes a PHP callable
 returning a customized message prefix. For example, the following code configures a log target to prefix each
-log message with the current user ID (IP address and Session ID are removed for privacy reason).
+log message with the current user ID (IP address and Session ID are removed for privacy reasons).
 
 ```php
 [
@@ -216,7 +216,7 @@ Or if you want to implement your own way of providing context information, you m
 [[yii\log\Target::getContextMessage()]] method.
 
 
-### Message Trace Level <a name="trace-level"></a>
+### Message Trace Level <span id="trace-level"></span>
 
 During development, it is often desirable to see where each log message is coming from. This can be achieved by
 configuring the [[yii\log\Dispatcher::traceLevel|traceLevel]] property of the `log` component like the following:
@@ -242,11 +242,11 @@ will be included.
 or when debugging an application.
 
 
-### Message Flushing and Exporting <a name="flushing-exporting"></a>
+### Message Flushing and Exporting <span id="flushing-exporting"></span>
 
 As aforementioned, log messages are maintained in an array by the [[yii\log\Logger|logger object]]. To limit the
 memory consumption by this array, the logger will flush the recorded messages to the [log targets](#log-targets)
-each time the array accumulates certain number of log messages. You can customize this number by configuring
+each time the array accumulates a certain number of log messages. You can customize this number by configuring
 the [[yii\log\Dispatcher::flushInterval|flushInterval]] property of the `log` component:
 
 
@@ -280,7 +280,7 @@ Because of the flushing and exporting level setting, by default when you call `Y
 method, you will NOT see the log message immediately in the log targets. This could be a problem for some long-running
 console applications. To make each log message appear immediately in the log targets, you should set both
 [[yii\log\Dispatcher::flushInterval|flushInterval]] and [[yii\log\Target::exportInterval|exportInterval]] to be 1,
-like shown below:
+as shown below:
 
 ```php
 return [
@@ -302,7 +302,7 @@ return [
 > Note: Frequent message flushing and exporting will degrade the performance of your application.
 
 
-### Toggling Log Targets <a name="toggling-log-targets"></a>
+### Toggling Log Targets <span id="toggling-log-targets"></span>
 
 You can enable or disable a log target by configuring its [[yii\log\Target::enabled|enabled]] property.
 You may do so via the log target configuration or by the following PHP statement in your code:
@@ -311,7 +311,7 @@ You may do so via the log target configuration or by the following PHP statement
 Yii::$app->log->targets['file']->enabled = false;
 ```
 
-The above code requires you to name a target as `file`, like shown below by using string keys in the
+The above code requires you to name a target as `file`, as shown below by using string keys in the
 `targets` array:
 
 ```php
@@ -333,7 +333,7 @@ return [
 ```
 
 
-### Creating New Targets <a name="new-targets"></a>
+### Creating New Targets <span id="new-targets"></span>
 
 Creating a new log target class is very simple. You mainly need to implement the [[yii\log\Target::export()]] method
 sending the content of the [[yii\log\Target::messages]] array to a designated medium. You may call the
@@ -341,7 +341,7 @@ sending the content of the [[yii\log\Target::messages]] array to a designated me
 log target classes included in the Yii release.
 
 
-## Performance Profiling <a name="performance-profiling"></a>
+## Performance Profiling <span id="performance-profiling"></span>
 
 Performance profiling is a special type of message logging that is used to measure the time taken by certain
 code blocks and find out what are the performance bottlenecks. For example, the [[yii\db\Command]] class uses

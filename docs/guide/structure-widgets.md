@@ -19,12 +19,12 @@ In the following, we will introduce the basic knowledge about widgets. Please re
 if you want to learn about the usage of a particular widget.
 
 
-## Using Widgets <a name="using-widgets"></a>
+## Using Widgets <span id="using-widgets"></span>
 
 Widgets are primarily used in [views](structure-views.md). You can call the [[yii\base\Widget::widget()]] method
 to use a widget in a view. The method takes a [configuration](concept-configurations.md) array for initializing
 the widget and returns the rendering result of the widget. For example, the following code inserts a date picker
-widget which is configured to use Russian language and keep the input in the `from_date` attribute of `$model`.
+widget which is configured to use the Russian language and keep the input in the `from_date` attribute of `$model`.
 
 ```php
 <?php
@@ -69,7 +69,7 @@ Note that unlike [[yii\base\Widget::widget()]] which returns the rendering resul
 [[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
 
 
-## Creating Widgets <a name="creating-widgets"></a>
+## Creating Widgets <span id="creating-widgets"></span>
 
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
 [[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that normalizes the widget
@@ -138,7 +138,7 @@ class HelloWidget extends Widget
 }
 ```
 
-As you can see, PHP output buffer is started in `init()` so that any output between the calls of `init()` and `run()`
+As you can see, PHP's output buffer is started in `init()` so that any output between the calls of `init()` and `run()`
 can be captured, processed and returned in `run()`.
 
 > Info: When you call [[yii\base\Widget::begin()]], a new instance of the widget will be created and the `init()` method
@@ -175,7 +175,7 @@ stands for the directory containing the widget class file. Therefore, the above 
 the [[yii\base\Widget::getViewPath()]] method to customize the directory containing the widget view files.
 
 
-## Best Practices <a name="best-practices"></a>
+## Best Practices <span id="best-practices"></span>
 
 Widgets are an object-oriented way of reusing view code.
 
@@ -189,4 +189,4 @@ which can be utilized to solve the problem.
 
 When a widget contains view code only, it is very similar to a [view](structure-views.md). In fact, in this case,
 their only difference is that a widget is a redistributable class, while a view is just a plain PHP script
-that you would prefer to keep it within your application.
+that you would prefer to keep within your application.

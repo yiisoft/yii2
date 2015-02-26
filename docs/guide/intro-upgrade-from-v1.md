@@ -149,7 +149,7 @@ a class like `yii\web\Request` can be autoloaded. If you use a third party libra
 such as the Zend Framework, you may define a path alias `@Zend` that refers to that framework's installation
 directory. Once you've done that, Yii will be able to autoload any class in that Zend Framework library, too.
 
-More on path aliases can be found in the [Path Aliases](concept-aliases.md) section.
+More on path aliases can be found in the [Aliases](concept-aliases.md) section.
 
 
 Views
@@ -505,7 +505,7 @@ The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
 is much more straightforward to use. The advanced application template provides such an example.
 
-Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Technique](tutorial-advanced-app.md) sections for more details.
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Application Template](tutorial-advanced-app.md) sections for more details.
 
 
 URL Management
@@ -524,7 +524,7 @@ the same goal.
 ]
 ```
 
-Please refer to the [Url manager docs](runtime-url-handling.md) section for more details.
+Please refer to the [Url manager docs](runtime-routing.md) section for more details.
 
 Using Yii 1.1 and 2.x together
 ------------------------------

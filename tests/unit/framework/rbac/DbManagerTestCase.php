@@ -34,7 +34,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         }
 
         ob_start();
-        $result = Yii::$app->runAction('migrate/up', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
+        $result = Yii::$app->runAction($route, $params);
         echo "Result is ".$result;
         if ($result !== Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();

@@ -11,10 +11,10 @@ Através desse tutorial, você irá aprender a:
 * Customizar o código gerado pelo Gii
 
 
-Começando a usar o Gii <a name="starting-gii"></a>
+Começando a usar o Gii <span id="starting-gii"></span>
 ------------
 
-[Gii](tool-gii.md) é fornecido com o Yii como um [módulo](structure-modules.md). Você pode habilitar o Gii ao configurá-lo na propriedade [[yii\base\Application::modules|modules]] da aplicação. Dependendo de como você criou sua aplicação, você pode já encontrar o seguinte código no arquivo de configuração `config/web.php`:
+O [Gii](tool-gii.md) é fornecido com o Yii como um [módulo](structure-modules.md). Você pode habilitar o Gii ao configurá-lo na propriedade [[yii\base\Application::modules|modules]] da aplicação. Dependendo de como você criou sua aplicação, você pode já encontrar o seguinte código no arquivo de configuração `config/web.php`:
 
 ```php
 $config = [ ... ];
@@ -52,7 +52,7 @@ http://hostname/index.php?r=gii
 ![Gii](images/start-gii.png)
 
 
-Gerando uma classe Active Record <a name="generating-ar"></a>
+Gerando uma classe Active Record <span id="generating-ar"></span>
 ---------------------------------
 
 Para usar o Gii para gerar uma classe Active Record, selecione o "Model Generator" clicando no link na página inicial do Gii. Preencha o formulário como indicado abaixo:
@@ -68,15 +68,15 @@ Ao usar o Gii, se você já havia criado o mesmo arquivo e pretende sobrescrevê
 
 ![Pré-visualização do Gerador de Modelo](images/start-gii-model-preview.png)
 
-Quando estiver sobrescrevendo um arquivo, marque a caixa próxima a "sobrescrever" e clique no botão "Gerar". Se estiver criando um arquivo novo, apenas clique em "Gerar".
+Quando estiver sobrescrevendo um arquivo, marque a caixa próxima a "overwrite" (sobrescrever) e clique no botão "Generate". Se estiver criando um arquivo novo, apenas clique em "Generate".
 
 Em seguida, você verá uma página de confirmação indicando que o código foi gerado com sucesso. Se você já tinha um arquivo, também verá uma mensagem indicando que ele foi sobrescrito com o novo código.
 
 
-Gerando código CRUD <a name="generating-crud"></a>
+Gerando código CRUD <span id="generating-crud"></span>
 --------------------
 
-CRUD corresponde a Create, Read, Update, and Delete (criar, ler, atualizar e apagar), representando as quatro tarefas comuns feitas com os dados na maioria dos sites. Para criar funcionalidades CRUD usando o Gii, selecione "Gerador CRUD" clicando no link na página inicial do Gii. Seguindo o exemplo "country", preencha o formulário com as seguintes informações:
+CRUD corresponde a Create, Read, Update, and Delete (criar, ler, atualizar e apagar), representando as quatro tarefas comuns feitas com os dados na maioria dos sites. Para criar funcionalidades CRUD usando o Gii, selecione "CRUD Generator" clicando no link na página inicial do Gii. Seguindo o exemplo "country", preencha o formulário com as seguintes informações:
 
 * Classe do Modelo: `app\models\Country`
 * Classe da Busca: `app\models\CountrySearch`
@@ -92,7 +92,7 @@ Se você criou anteriormente os arquivos `controllers/CountryController.php` e
 `views/country/index.php` (na seção de banco de dados deste guia), marque a caixa "overwrite" para substitui-los. (As versões anteriores não tinham suporte completo às operações CRUD.)
 
 
-Checando os resultados <a name="trying-it-out"></a>
+Checando os resultados <span id="trying-it-out"></span>
 -------------
 
 Para ver como ficou, use seu navegador para acessar a seguinte URL:
@@ -116,10 +116,10 @@ Essa é uma lista de arquivos gerados pelo Gii, caso você queira investigar com
 * Modelo: `models/Country.php` e `models/CountrySearch.php`
 * Views: `views/country/*.php`
 
-> Info: o Gii é projetado para ser uma ferramenta altamente adaptável e extensível. Usando-o sabiamente, você irá acelerar o desenvolvimento da sua aplicação. Para mais detalhes, por favor siga para a seção [Gii](tool-gii.md).
+> Informação: o Gii é projetado para ser uma ferramenta altamente adaptável e extensível. Usando-o sabiamente, você irá acelerar o desenvolvimento da sua aplicação. Para mais detalhes, por favor siga para a seção [Gii](tool-gii.md).
 
 
-Resumo <a name="summary"></a>
+Resumo <span id="summary"></span>
 -------
 
 Nessa seção, você aprendeu a usar o Gii para gerar código que implementa funcionalidades CRUD para o conteúdo guardado em uma tabela do banco de dados.

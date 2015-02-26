@@ -58,20 +58,19 @@ $label = $object->label;
 $object->label = 'abc';
 ```
 
-A property defined by a getter without a setter is *read only*. Trying to assign a value to such property will cause
+A property defined by a getter without a setter is *read only*. Trying to assign a value to such a property will cause
 an [[yii\base\InvalidCallException|InvalidCallException]]. Similarly, a property defined by a setter without a getter
-is *write only*, and trying to read such property will also cause an exception. It is not common to have write-only
+is *write only*, and trying to read such a property will also cause an exception. It is not common to have write-only
 properties.
 
 There are several special rules for, and limitations on, the properties defined via getters and setters:
 
 * The names of such properties are *case-insensitive*. For example, `$object->label` and `$object->Label` are the same.
   This is because method names in PHP are case-insensitive.
-* If the name of such property is the same as a class member variable, the latter will take precedence.
+* If the name of such a property is the same as a class member variable, the latter will take precedence.
   For example, if the above `Foo` class has a member variable `label`, then the assignment `$object->label = 'abc'`
   will affect the *member variable* 'label'; that line would not call the  `setLabel()` setter method.
-* These properties do not support visibility. It makes no difference for the visibility of a property
-  if the defining getter or setter method is public, protected or private.
+* These properties do not support visibility. It makes no difference to the defining getter or setter method if the property is public, protected or private.
 * The properties can only be defined by *non-static* getters and/or setters. Static methods will not be treated in the same manner.
 
-Returning back to the problem described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned, `trim()` now only needs to be invoked within the setter `setLabel()`. And if a new requirement comes that requires the label to be initially capitalized, the `setLabel()` method can quickly be modified without touching any other code. The one change will universally affect every assignment to `label`.
+Returning back to the problem described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned, `trim()` now only needs to be invoked within the setter `setLabel()`. And if a new requirement makes it necesary that the label be initially capitalized, the `setLabel()` method can quickly be modified without touching any other code. The one change will universally affect every assignment to `label`.

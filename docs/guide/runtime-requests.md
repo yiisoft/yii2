@@ -7,7 +7,7 @@ request object via the `request` [application component](structure-application-c
 of [[yii\web\Request]], by default. In this section, we will describe how you can make use of this component in your applications.
 
 
-## Request Parameters <a name="request-parameters"></a>
+## Request Parameters <span id="request-parameters"></span>
 
 To get request parameters, you can call [[yii\web\Request::get()|get()]] and [[yii\web\Request::post()|post()]] methods
 of the `request` component. They return the values of `$_GET` and `$_POST`, respectively. For example,
@@ -35,7 +35,7 @@ $name = $request->post('name', '');
 ```
 
 > Info: Instead of directly accessing `$_GET` and `$_POST` to retrieve the request parameters, it is recommended
-  that you get them via the `request` component like shown above. This will make writing tests easier because
+  that you get them via the `request` component as shown above. This will make writing tests easier because
   you can create a mock request component with faked request data.
 
 When implementing [RESTful APIs](rest-quick-start.md), you often need to retrieve parameters that are submitted
@@ -57,7 +57,7 @@ $param = $request->getBodyParam('id');
   You can customize the way how these parameters are parsed by configuring the [[yii\web\Request::parsers]] property.
   
 
-## Request Methods <a name="request-methods"></a>
+## Request Methods <span id="request-methods"></span>
 
 You can get the HTTP method used by the current request via the expression `Yii::$app->request->method`.
 A whole set of boolean properties are also provided for you to check if the current method is of certain type.
@@ -72,7 +72,7 @@ if ($request->isPost) { // the request method is POST }
 if ($request->isPut)  { // the request method is PUT }
 ```
 
-## Request URLs <a name="request-urls"></a>
+## Request URLs <span id="request-urls"></span>
 
 The `request` component provides many ways of inspecting the currently requested URL. 
 
@@ -93,7 +93,7 @@ parts of this URL as summarized in the following:
 * [[yii\web\Request::serverPort|serverPort]]: returns 80, which is the port used by the Web server.
 
 
-## HTTP Headers <a name="http-headers"></a> 
+## HTTP Headers <span id="http-headers"></span> 
 
 You can get the HTTP header information through the [[yii\web\HeaderCollection|header collection]] returned 
 by the [[yii\web\Request::headers]] property. For example,
@@ -108,13 +108,13 @@ $accept = $headers->get('Accept');
 if ($headers->has('User-Agent')) { // there is User-Agent header }
 ```
 
-The `request` component also provides support for quickly accessing some commonly used headers, including
+The `request` component also provides support for quickly accessing some commonly used headers, including:
 
 * [[yii\web\Request::userAgent|userAgent]]: returns the value of the `User-Agent` header.
 * [[yii\web\Request::contentType|contentType]]: returns the value of the `Content-Type` header which indicates
   the MIME type of the data in the request body.
 * [[yii\web\Request::acceptableContentTypes|acceptableContentTypes]]: returns the content MIME types acceptable by users.
-  The returned types ordered by the quality score. Types with the highest scores will be returned first.
+  The returned types are ordered by their quality score. Types with the highest scores will be returned first.
 * [[yii\web\Request::acceptableLanguages|acceptableLanguages]]: returns the languages acceptable by users.
   The returned languages are ordered by their preference level. The first element represents the most preferred language.
 
@@ -125,10 +125,10 @@ and returns the most appropriate language.
 
 > Tip: You may also use the [[yii\filters\ContentNegotiator|ContentNegotiator]] filter to dynamically determine 
   what content type and language should be used in the response. The filter implements the content negotiation
-  on top the properties and methods described above.
+  on top of the properties and methods described above.
 
 
-## Client Information <a name="client-information"></a>
+## Client Information <span id="client-information"></span>
 
 You can get the host name and IP address of the client machine through [[yii\web\Request::userHost|userHost]]
 and [[yii\web\Request::userIP|userIP]], respectively. For example,

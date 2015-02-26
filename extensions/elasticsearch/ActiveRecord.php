@@ -10,8 +10,10 @@ namespace yii\elasticsearch;
 use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\BaseActiveRecord;
+use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\Json;
@@ -244,7 +246,7 @@ class ActiveRecord extends BaseActiveRecord
      * The primaryKey for elasticsearch documents is the `_id` field by default. This field is not part of the
      * ActiveRecord attributes so you should never add `_id` to the list of [[attributes()|attributes]].
      *
-     * You may overide this method to define the primary key name when you have defined
+     * You may override this method to define the primary key name when you have defined
      * [path mapping](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-id-field.html)
      * for the `_id` field so that it is part of the `_source` and thus part of the [[attributes()|attributes]].
      *
@@ -447,6 +449,115 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
+     * @inheritdoc
+     *
+     * @param boolean $runValidation whether to perform validation before saving the record.
+     * If the validation fails, the record will not be inserted into the database.
+     * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
+     * meaning all attributes that are loaded from DB will be saved.
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters. These are among others:
+     *
+     * - `routing` define shard placement of this record.
+     * - `parent` by giving the primaryKey of another record this defines a parent-child relation
+     * - `timeout` timeout waiting for a shard to become available.
+     * - `replication` the replication type for the delete/index operation (sync or async).
+     * - `consistency` the write consistency of the index/delete operation.
+     * - `refresh` refresh the relevant primary and replica shards (not the whole index) immediately after the operation occurs, so that the updated document appears in search results immediately.
+     * - `detect_noop` this parameter will become part of the request body and will prevent the index from getting updated when nothing has changed.
+     *
+     * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html#_parameters_3)
+     * for more details on these options.
+     *
+     * The following parameters are Yii specific:
+     *
+     * - `optimistic_locking` set this to `true` to enable optimistic locking, avoid updating when the record has changed since it
+     *   has been loaded from the database. Yii will set the `version` parameter to the value stored in [[version]].
+     *   See the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/optimistic-concurrency-control.html) for details.
+     *
+     *   Make sure the record has been fetched with a [[version]] before. This is only the case
+     *   for records fetched via [[get()]] and [[mget()]] by default. For normal queries, the `_version` field has to be fetched explicitly.
+     *
+     * @return integer|boolean the number of rows affected, or false if validation fails
+     * or [[beforeSave()]] stops the updating process.
+     * @throws StaleObjectException if optimistic locking is enabled and the data being updated is outdated.
+     * @throws InvalidParamException if no [[version]] is available and optimistic locking is enabled.
+     * @throws Exception in case update failed.
+    */
+    public function update($runValidation = true, $attributeNames = null, $options = [])
+    {
+        if ($runValidation && !$this->validate($attributeNames)) {
+            return false;
+        }
+        return $this->updateInternal($attributeNames, $options);
+    }
+
+    /**
+     * @see update()
+     * @param array $attributes attributes to update
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters. See [[update()]] for details.
+     * @return integer|boolean the number of rows affected, or false if validation fails
+     * or [[beforeSave()]] stops the updating process.
+     * @throws StaleObjectException if optimistic locking is enabled and the data being updated is outdated.
+     * @throws InvalidParamException if no [[version]] is available and optimistic locking is enabled.
+     * @throws Exception in case update failed.
+     */
+    protected function updateInternal($attributes = null, $options = [])
+    {
+        if (!$this->beforeSave(false)) {
+            return false;
+        }
+        $values = $this->getDirtyAttributes($attributes);
+        if (empty($values)) {
+            $this->afterSave(false, $values);
+            return 0;
+        }
+
+        if (isset($options['optimistic_locking']) && $options['optimistic_locking']) {
+            if ($this->_version === null) {
+                throw new InvalidParamException('Unable to use optimistic locking on a record that has no version set. Refer to the docs of ActiveRecord::update() for details.');
+            }
+            $options['version'] = $this->_version;
+            unset($options['optimistic_locking']);
+        }
+
+        try {
+            $result = static::getDb()->createCommand()->update(
+                static::index(),
+                static::type(),
+                $this->getOldPrimaryKey(false),
+                $values,
+                $options
+            );
+        } catch(Exception $e) {
+            // HTTP 409 is the response in case of failed optimistic locking
+            // http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/optimistic-concurrency-control.html
+            if (isset($e->errorInfo['responseCode']) && $e->errorInfo['responseCode'] == 409) {
+                throw new StaleObjectException('The object being updated is outdated.', $e->errorInfo, $e->getCode(), $e);
+            }
+            throw $e;
+        }
+
+        if (is_array($result) && isset($result['_version'])) {
+            $this->_version = $result['_version'];
+        }
+
+        $changedAttributes = [];
+        foreach ($values as $name => $value) {
+            $changedAttributes[$name] = $this->getOldAttribute($name);
+            $this->setOldAttribute($name, $value);
+        }
+        $this->afterSave(false, $changedAttributes);
+
+        if ($result === false) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
      * Updates all records whos primary keys are given.
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
@@ -464,7 +575,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $pkName = static::primaryKey()[0];
         if (count($condition) == 1 && isset($condition[$pkName])) {
-            $primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
+            $primaryKeys = (array)$condition[$pkName];
         } else {
             $primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
         }
@@ -524,7 +635,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $pkName = static::primaryKey()[0];
         if (count($condition) == 1 && isset($condition[$pkName])) {
-            $primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
+            $primaryKeys = (array)$condition[$pkName];
         } else {
             $primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
         }
@@ -572,6 +683,76 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
+     * @inheritdoc
+     *
+     * @param array $options options given in this parameter are passed to elasticsearch
+     * as request URI parameters. These are among others:
+     *
+     * - `routing` define shard placement of this record.
+     * - `parent` by giving the primaryKey of another record this defines a parent-child relation
+     * - `timeout` timeout waiting for a shard to become available.
+     * - `replication` the replication type for the delete/index operation (sync or async).
+     * - `consistency` the write consistency of the index/delete operation.
+     * - `refresh` refresh the relevant primary and replica shards (not the whole index) immediately after the operation occurs, so that the updated document appears in search results immediately.
+     *
+     * Please refer to the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete.html)
+     * for more details on these options.
+     *
+     * The following parameters are Yii specific:
+     *
+     * - `optimistic_locking` set this to `true` to enable optimistic locking, avoid updating when the record has changed since it
+     *   has been loaded from the database. Yii will set the `version` parameter to the value stored in [[version]].
+     *   See the [elasticsearch documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete.html#delete-versioning) for details.
+     *
+     *   Make sure the record has been fetched with a [[version]] before. This is only the case
+     *   for records fetched via [[get()]] and [[mget()]] by default. For normal queries, the `_version` field has to be fetched explicitly.
+     *
+     * @return integer|boolean the number of rows deleted, or false if the deletion is unsuccessful for some reason.
+     * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
+     * @throws StaleObjectException if optimistic locking is enabled and the data being deleted is outdated.
+     * @throws Exception in case delete failed.
+     */
+    public function delete($options = [])
+    {
+        if (!$this->beforeDelete()) {
+            return false;
+        }
+        if (isset($options['optimistic_locking']) && $options['optimistic_locking']) {
+            if ($this->_version === null) {
+                throw new InvalidParamException('Unable to use optimistic locking on a record that has no version set. Refer to the docs of ActiveRecord::delete() for details.');
+            }
+            $options['version'] = $this->_version;
+            unset($options['optimistic_locking']);
+        }
+
+        try {
+            $result = static::getDb()->createCommand()->delete(
+                static::index(),
+                static::type(),
+                $this->getOldPrimaryKey(false),
+                $options
+            );
+        } catch(Exception $e) {
+            // HTTP 409 is the response in case of failed optimistic locking
+            // http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/optimistic-concurrency-control.html
+            if (isset($e->errorInfo['responseCode']) && $e->errorInfo['responseCode'] == 409) {
+                throw new StaleObjectException('The object being deleted is outdated.', $e->errorInfo, $e->getCode(), $e);
+            }
+            throw $e;
+        }
+
+        $this->setOldAttributes(null);
+
+        $this->afterDelete();
+
+        if ($result === false) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    /**
      * Deletes rows in the table using the provided conditions.
      * WARNING: If you do not specify any condition, this method will delete ALL rows in the table.
      *
@@ -590,7 +771,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $pkName = static::primaryKey()[0];
         if (count($condition) == 1 && isset($condition[$pkName])) {
-            $primaryKeys = is_array($condition[$pkName]) ? $condition[$pkName] : [$condition[$pkName]];
+            $primaryKeys = (array)$condition[$pkName];
         } else {
             $primaryKeys = static::find()->where($condition)->column($pkName); // TODO check whether this works with default pk _id
         }
@@ -627,6 +808,17 @@ class ActiveRecord extends BaseActiveRecord
         }
 
         return $n;
+    }
+
+    /**
+     * This method has no effect in Elasticsearch ActiveRecord.
+     *
+     * Elasticsearch ActiveRecord uses [native Optimistic locking](http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/optimistic-concurrency-control.html).
+     * See [[update()]] for more details.
+     */
+    public function optimisticLock()
+    {
+        return null;
     }
 
     /**

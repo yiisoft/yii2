@@ -94,9 +94,9 @@ interface ActiveRecordInterface
     public static function isPrimaryKey($keys);
 
     /**
-     * Creates an [[ActiveQueryInterface|ActiveQuery]] instance for query purpose.
+     * Creates an [[ActiveQueryInterface]] instance for query purpose.
      *
-     * The returned [[ActiveQueryInterface|ActiveQuery]] instance can be further customized by calling
+     * The returned [[ActiveQueryInterface]] instance can be further customized by calling
      * methods defined in [[ActiveQueryInterface]] before `one()` or `all()` is called to return
      * populated ActiveRecord instances. For example,
      *
@@ -146,7 +146,7 @@ interface ActiveRecordInterface
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
      *
-     * @return static|ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface]] instance.
      */
     public static function find();
 
@@ -178,7 +178,7 @@ interface ActiveRecordInterface
      * ```
      *
      * @param mixed $condition primary key value or a set of column values
-     * @return static ActiveRecord instance matching the condition, or null if nothing matches.
+     * @return static|null ActiveRecord instance matching the condition, or null if nothing matches.
      */
     public static function findOne($condition);
 

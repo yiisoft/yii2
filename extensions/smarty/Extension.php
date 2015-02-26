@@ -77,7 +77,7 @@ class Extension
         array_unshift($params, $params['route']) ;
         unset($params['route']);
 
-        return Url::to($params, true);
+        return Url::to($params);
     }
 
     /**
@@ -85,7 +85,7 @@ class Extension
      *
      * Usage is the following:
      *
-     * {path route='blog/view' alias=$post.alias user=$user.id}
+     * {url route='blog/view' alias=$post.alias user=$user.id}
      *
      * where route is Yii route and the rest of parameters are passed as is.
      *
@@ -320,11 +320,11 @@ PHP;
 
         $url = ArrayHelper::remove($params, 'url');
         $key = ArrayHelper::remove($params, 'key', null);
-        $depends = ArrayHelper::remove($params, 'depends', null);
+        $position = ArrayHelper::remove($params, 'position');
         if (isset($params['position']))
-            $params['position'] = $this->getViewConstVal($params['position'], View::POS_END);
+            $params['position'] = $this->getViewConstVal($position, View::POS_END);
 
-        Yii::$app->getView()->registerJsFile($url, $depends, $params, $key);
+        Yii::$app->getView()->registerJsFile($url, $params, $key);
     }
 
     /**
@@ -380,9 +380,8 @@ PHP;
 
         $url = ArrayHelper::remove($params, 'url');
         $key = ArrayHelper::remove($params, 'key', null);
-        $depends = ArrayHelper::remove($params, 'depends', null);
 
-        Yii::$app->getView()->registerCssFile($url, $depends, $params, $key);
+        Yii::$app->getView()->registerCssFile($url, $params, $key);
     }
 
     /**

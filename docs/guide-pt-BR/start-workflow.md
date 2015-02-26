@@ -7,17 +7,17 @@ dependendo da sua configuração. Esta seção introduzirá a funcionalidade emb
 da aplicação, como o código é organizado, e como a aplicação manuseia as requisições
 em geral.
 
-> Info: Por questões de simpicidade, por todo este tutorial de "Primeiros Passos"
+> Info: Por questões de simplicidade, por todo este tutorial de "Primeiros Passos"
   assume-se que você definiu `basic/web` como a raiz de documentos do seu
   servidor Web, e configurou a URL de acesso de sua aplicação como `http://hostname/index.php`
   ou algo semelhantes. Por favor ajuste as URLs em nossas descrições às suas
   necessidades.
 
 
-Funcionalidade <a name="functionality"></a>
+Funcionalidade <span id="functionality"></span>
 --------------
 
-A aplicação básica contém quatro páginas:
+A aplicação básica instalada contém quatro páginas:
 
 * A página inicial, exibida quando você acessa a URL `http://hostname/index.php`,
 * a página "About" (Sobre),
@@ -36,7 +36,7 @@ registrar e exibir várias informações de depuração, tais como mensagens de 
 status de respostas, as consultas de banco de dados executadas, e assim por diante.
 
 
-Estrutura da Aplicação <a name="application-structure"></a>
+Estrutura da Aplicação <span id="application-structure"></span>
 ----------------------
 
 Os diretórios e arquivos mais importantes em sua aplicação são (assumindo que
@@ -65,7 +65,7 @@ Em geral, os arquivos na aplicação podem ser divididos em dois tipos: aqueles 
 diretamente via HTTP (ou seja, em um navegador), enquanto os segundos não podem
 e nem deveriam.
 
-O Yii implementa o padrão de projeto [modelo-visão-controlador (MVC)](http://wikipedia.org/wiki/Model-view-controller),
+O Yii implementa o padrão de arquitetura [modelo-visão-controlador (MVC)](http://wikipedia.org/wiki/Model-view-controller),
 que se reflete na organização de diretórios acima. O diretório `models` contém
 todas as [classes de modelos](structure-models.md), o diretório `views` contém todos
 os [scripts de visões](structure-views.md), e o diretório `controllers` contém
@@ -77,21 +77,21 @@ O diagrama a seguir demonstra a estrutura estática de uma aplicação.
 
 Cada aplicação tem um script de entrada `web/index.php` que é o único script PHP
 acessível pela Web na aplicação. O script de entrada recebe uma requisição e
-cria uma instância da [aplicação](structure-applications.md) para manejá-la.
+cria uma instância da [aplicação](structure-applications.md) para gerenciá-la.
 A [aplicação](structure-applications.md) resolve a requisição com a ajuda de seus
 [componentes](concept-components.md), e despacha a requisição para os elementos
 do MVC. São usados [Widgets](structure-widgets.md) nas [views](structure-views.md)
 para ajudar a construir elementos de interface de usuário complexos e dinâmicos.
 
 
-Ciclo de Vida da Requisição <a name="request-lifecycle"></a>
+Ciclo de Vida da Requisição <span id="request-lifecycle"></span>
 ---------------------------
 
 O diagrama a seguir demonstra como uma aplicação gerencia uma requisição.
 
 ![Ciclo de Vida da Requisição](images/request-lifecycle.png)
 
-1. Um usuário faz uma requisiçao ao [script de entrada](structure-entry-scripts.md) `web/index.php`.
+1. Um usuário faz uma requisição ao [script de entrada](structure-entry-scripts.md) `web/index.php`.
 2. O script de entrada carrega a [configuração](concept-configurations.md) da
    aplicação e cria uma instância da [aplicação](structure-applications.md) para
    gerenciar a requisição.
@@ -99,8 +99,8 @@ O diagrama a seguir demonstra como uma aplicação gerencia uma requisição.
    componente de aplicação [request](runtime-requests.md).
 4. A aplicação cria uma instância de um [controller](structure-controllers.md)
    para gerenciar a requisição.
-5. O controller cria uma instância da [action](structure-controllers.md) (ação)
-   e aplica os filtros da ação.
+5. O controller cria uma instância de um [action](structure-controllers.md) (ação)
+   e aplica os filtros para a ação.
 6. Se qualquer filtro falhar, a ação é cancelada.
 7. Se todos os filtros passarem, a ação é executada.
 8. A ação carrega um modelo de dados, possivelmente a partir de um banco de dados.

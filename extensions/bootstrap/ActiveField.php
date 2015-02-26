@@ -51,7 +51,7 @@ use yii\helpers\ArrayHelper;
  * ```php
  * use yii\bootstrap\ActiveForm;
  *
- * $form = ActiveForm::begin(['layout' => 'horizontal'])
+ * $form = ActiveForm::begin(['layout' => 'horizontal']);
  *
  * // Form field without label
  * echo $form->field($model, 'demo', [
@@ -71,17 +71,17 @@ use yii\helpers\ArrayHelper;
  * ]);
  *
  * // With 'default' layout you would use 'template' to size a specific field:
- * // echo $form->field($model, 'demo', [
- * //     'template' => '{label} <div class="row"><div class="col-sm-4">{input}{error}{hint}</div></div>'
- * // ]);
+ * echo $form->field($model, 'demo', [
+ *     'template' => '{label} <div class="row"><div class="col-sm-4">{input}{error}{hint}</div></div>'
+ * ]);
  *
- *  // Input group
- *  echo $form->field($model, 'demo', [
- *      'inputTemplate' => '<div class="input-group"><span class="input-group-addon">@</span>{input}</div>',
- *  ]);
+ * // Input group
+ * echo $form->field($model, 'demo', [
+ *     'inputTemplate' => '<div class="input-group"><span class="input-group-addon">@</span>{input}</div>',
+ * ]);
  *
- *  ActiveForm::end();
- *  ```
+ * ActiveForm::end();
+ * ```
  *
  * @see \yii\bootstrap\ActiveForm
  * @see http://getbootstrap.com/css/#forms

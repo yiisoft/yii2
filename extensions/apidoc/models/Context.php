@@ -36,6 +36,11 @@ class Context extends Component
     public $errors = [];
 
 
+    /**
+     * Returning TypeDoc for a type given
+     * @param string $type
+     * @return null|ClassDoc|InterfaceDoc|TraitDoc
+     */
     public function getType($type)
     {
         $type = ltrim($type, '\\');
@@ -50,6 +55,10 @@ class Context extends Component
         return null;
     }
 
+    /**
+     * Adds file to context
+     * @param string $fileName
+     */
     public function addFile($fileName)
     {
         $this->files[$fileName] = sha1_file($fileName);
@@ -71,6 +80,9 @@ class Context extends Component
         }
     }
 
+    /**
+     * Updates references
+     */
     public function updateReferences()
     {
         // update all subclass references
@@ -208,7 +220,8 @@ class Context extends Component
 
     /**
      * @param MethodDoc $method
-     * @param ClassDoc $parent
+     * @param ClassDoc $class
+     * @return mixed
      */
     private function inheritMethodRecursive($method, $class)
     {
@@ -286,7 +299,7 @@ class Context extends Component
                 } else {
                     $class->properties[$propertyName] = new PropertyDoc(null, $this, [
                         'name' => $propertyName,
-                        'definedBy' => $class->name,
+                        'definedBy' => $method->definedBy,
                         'sourceFile' => $class->sourceFile,
                         'visibility' => 'public',
                         'isStatic' => false,
@@ -315,7 +328,7 @@ class Context extends Component
                     $param = $this->getFirstNotOptionalParameter($method);
                     $class->properties[$propertyName] = new PropertyDoc(null, $this, [
                         'name' => $propertyName,
-                        'definedBy' => $class->name,
+                        'definedBy' => $method->definedBy,
                         'sourceFile' => $class->sourceFile,
                         'visibility' => 'public',
                         'isStatic' => false,

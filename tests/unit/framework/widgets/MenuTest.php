@@ -3,7 +3,6 @@
 namespace yiiunit\framework\widgets;
 
 use yii\widgets\Menu;
-use yii\widgets\Spaceless;
 
 /**
  * @group widgets
@@ -36,7 +35,7 @@ class MenuTest extends \yiiunit\TestCase
             ]
         ]);
 
-        $this->assertEquals(<<<HTML
+        $this->assertEqualsWithoutLE(<<<HTML
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
 HTML
@@ -60,7 +59,7 @@ HTML
             ]
         ]);
 
-        $this->assertEquals(<<<HTML
+        $this->assertEqualsWithoutLE(<<<HTML
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
 HTML

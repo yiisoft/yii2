@@ -180,6 +180,16 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
     }
 
     /**
+     * Populates the cookie collection from an array.
+     * @param array $array the cookies to populate from
+     * @since 2.0.3
+     */
+    public function fromArray(array $array)
+    {
+        $this->_cookies = $array;
+    }
+
+    /**
      * Returns whether there is a cookie with the specified name.
      * This method is required by the SPL interface `ArrayAccess`.
      * It is implicitly called when you use something like `isset($collection[$name])`.

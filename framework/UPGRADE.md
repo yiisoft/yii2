@@ -8,6 +8,22 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.2
+----------------------
+
+Starting from version 2.0.3 Yii `Security` component relies on OpenSSL crypto lib instead of Mcrypt. The reason is that
+Mcrypt is abandoned and isn't maintained for years. Therefore your PHP should be compiled with OpenSSL support. Most
+probably there's nothing to worry because it is quite typical.
+
+If you've extended `yii\base\Security` to override any of the config constants you have to update your code:
+
+    - `MCRYPT_CIPHER` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `MCRYPT_MODE` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `KEY_SIZE` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `KDF_HASH` — now `$kdfHash`.
+    - `MAC_HASH` — now `$macHash`.
+    - `AUTH_KEY_INFO` — now `$authKeyInfo`.
+
 Upgrade from Yii 2.0.0
 ----------------------
 
@@ -55,7 +71,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta3"
+  php composer.phar global require "fxp/composer-asset-plugin:1.0.0"
   ```
 
   You also need to add the following code to your project's `composer.json` file:

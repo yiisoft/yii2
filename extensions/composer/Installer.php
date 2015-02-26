@@ -176,6 +176,9 @@ class Installer extends LibraryInstaller
     protected function saveExtensions(array $extensions)
     {
         $file = $this->vendorDir . '/' . self::EXTENSION_FILE;
+        if (!file_exists(dirname($file))) {
+            mkdir(dirname($file), 0777, true);
+        }
         $array = str_replace("'<vendor-dir>", '$vendorDir . \'', var_export($extensions, true));
         file_put_contents($file, "<?php\n\n\$vendorDir = dirname(__DIR__);\n\nreturn $array;\n");
         // invalidate opcache of extensions.php if exists
@@ -266,11 +269,11 @@ EOF
 
     protected static function generateRandomString()
     {
-        if (!extension_loaded('mcrypt')) {
-            throw new \Exception('The mcrypt PHP extension is required by Yii2.');
+        if (!extension_loaded('openssl')) {
+            throw new \Exception('The OpenSSL PHP extension is required by Yii2.');
         }
         $length = 32;
-        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        $bytes = openssl_random_pseudo_bytes($length);
         return strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
     }
 }

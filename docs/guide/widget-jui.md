@@ -1,10 +1,29 @@
-Jquery UI Widgets
+jQuery UI Widgets
 =================
 
 > Note: This section is under development.
 
-Out of the box, Yii includes support for the [jQuery UI](http://api.jqueryui.com/) library. jQuery UI is a curated set
-of user interface interactions, effects, widgets, and themes built on top of the jQuery JavaScript Library.
+Yii includes support for the [jQuery UI](http://api.jqueryui.com/) library in an official extension. jQuery UI is
+a curated set of user interface interactions, effects, widgets, and themes built on top of the jQuery JavaScript Library.
+
+Installation
+------------
+
+The preferred way to install the extension is through [composer](http://getcomposer.org/download/).
+
+Either run
+
+```
+php composer.phar require --prefer-dist yiisoft/yii2-jui "*"
+```
+
+or add
+
+```
+"yiisoft/yii2-jui": "*"
+```
+
+to the require section of your `composer.json` file.
 
 Yii widgets
 -----------

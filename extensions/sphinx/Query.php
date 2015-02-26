@@ -321,7 +321,7 @@ class Query extends \yii\db\Query
      */
     protected function fillUpSnippets($rows)
     {
-        if ($this->snippetCallback === null) {
+        if ($this->snippetCallback === null || empty($rows)) {
             return $rows;
         }
         $snippetSources = call_user_func($this->snippetCallback, $rows);
@@ -364,6 +364,34 @@ class Query extends \yii\db\Query
         return $connection->createCommand()
             ->callSnippets($from, $source, $match, $this->snippetOptions)
             ->queryColumn();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function queryScalar($selectExpression, $db)
+    {
+        $select = $this->select;
+        $limit = $this->limit;
+        $offset = $this->offset;
+
+        $this->select = [$selectExpression];
+        $this->limit = null;
+        $this->offset = null;
+        $command = $this->createCommand($db);
+
+        $this->select = $select;
+        $this->limit = $limit;
+        $this->offset = $offset;
+
+        if (empty($this->groupBy) && empty($this->union) && !$this->distinct) {
+            return $command->queryScalar();
+        } else {
+            return (new Query)->select([$selectExpression])
+                ->from(['c' => $this])
+                ->createCommand($command->db)
+                ->queryScalar();
+        }
     }
 
     /**

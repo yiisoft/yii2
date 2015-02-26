@@ -230,6 +230,11 @@ class QueryRunTest extends MongoDbTestCase
             ->where(['name' => $searchName])
             ->modify(['$set' => ['name' => $newName]], ['new' => true], $connection);
         $this->assertEquals($newName, $row['name']);
+
+        $row = $query->from('customer')
+            ->where(['name' => 'not existing name'])
+            ->modify(['$set' => ['name' => 'new name']], ['new' => false], $connection);
+        $this->assertNull($row);
     }
 
     /**
@@ -256,5 +261,22 @@ class QueryRunTest extends MongoDbTestCase
         $this->assertEquals(2, count($rows));
         $this->assertEquals('name1', $rows[0]['name']);
         $this->assertEquals('name5', $rows[1]['name']);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/7010
+     */
+    public function testSelect()
+    {
+        $connection = $this->getConnection();
+        $query = new Query;
+        $rows = $query->from('customer')
+            ->select(['name' => true, '_id' => false])
+            ->limit(1)
+            ->all($connection);
+        $row = array_pop($rows);
+        $this->assertArrayHasKey('name', $row);
+        $this->assertArrayNotHasKey('address', $row);
+        $this->assertArrayNotHasKey('_id', $row);
     }
 }

@@ -14,8 +14,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
-if (!extension_loaded('mcrypt')) {
-    die('The mcrypt PHP extension is required by Yii2.');
+if (!extension_loaded('openssl')) {
+    die('The OpenSSL PHP extension is required by Yii2.');
 }
 
 $params = getParams();
@@ -187,7 +187,7 @@ function setCookieValidationKey($root, $paths)
         echo "   generate cookie validation key in $file\n";
         $file = $root . '/' . $file;
         $length = 32;
-        $bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+        $bytes = openssl_random_pseudo_bytes($length);
         $key = strtr(substr(base64_encode($bytes), 0, $length), '+/=', '_-.');
         $content = preg_replace('/(("|\')cookieValidationKey("|\')\s*=>\s*)(""|\'\')/', "\\1'$key'", file_get_contents($file));
         file_put_contents($file, $content);

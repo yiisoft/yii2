@@ -58,7 +58,7 @@ If you are using `enableStrictParsing` URL manager option, add the following to 
 ```
 
 > Note: the debugger stores information about each request in the `@runtime/debug` directory. If you have problems using
-> The debugger such as weird error messages when using it or the toolbar not showing up or not showing any requests, check
+> the debugger, such as weird error messages when using it, or the toolbar not showing up or not showing any requests, check
 > whether the web server has enough permissions to access this directory and the files located inside.
 
 

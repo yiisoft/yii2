@@ -4,10 +4,10 @@
 Yii se traduce en muchos idiomas con el fin de ser útil para desarrolladores de aplicaciones e internacionales.
 Dos áreas principales donde la contribución es muy bienvenida son la documentación y los mensajes del framework.
 
-Mensajes del Framework 
+Mensajes del Framework
 ----------------------
 
-El framework tiene dos tipos de mensajes: excepciones que están destinadas al desarrollador y nunca se traducen, y mensajes 
+El framework tiene dos tipos de mensajes: excepciones que están destinadas al desarrollador y nunca se traducen, y mensajes
 que en realidad son visibles para el usuario final, tales como errores de validación.
 
 El orden para comenzar con la traducción de mensajes:
@@ -54,5 +54,7 @@ Los bloques han de ser traducidos, las traducciones se muestran a continuación 
 * `Tip` : `Consejo`
 
 > Aclaraciones :
-* Sólo mencionar una vez entre paréntesis la palabra original en su primera aparición en el texto o en el fichero README.md .
+* Sólo mencionar una vez entre paréntesis la palabra original en su primera aparición en el texto o en el fichero README.md,
+evitando redundancias. Ejemplo: vista(view), controlador(controller), etc.
 * Si una palabra se refiere a un concepto o acción se aplicará la traducción, si por el contrario se refiere a un tipo de dato de php o del framework no se debe traducir.
+* El equipo de traductores hemos escogido el Español-latino para elaborar las traducciones de las guías en Español, eviten usar expresiones o palabras autóctonas de su región para un mayor acercamiento al resto de hispano hablantes.

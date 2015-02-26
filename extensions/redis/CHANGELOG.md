@@ -1,10 +1,24 @@
 Yii Framework 2 redis extension Change Log
 ==========================================
 
-2.0.1 under development
+2.0.3 under development
+-----------------------
+
+- no changes in this release.
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Bug #6547: Fixed redis connection to deal with large data in combination with `mget()` (pyurin)
+
+
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #4745: value of simple string returns was ignored by redis client and `true` is returned instead, now only `OK` will result in a `true` while all other values are returned as is (cebe)
+- Enh #3714: Added support for connecting to redis server using a unix socket (savvot, robregonm)
+
 
 2.0.0 October 12, 2014
 ----------------------

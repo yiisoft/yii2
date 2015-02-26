@@ -92,6 +92,12 @@ class ViewRendererTest extends TestCase
         $this->assertFalse(strpos($content, 'extends1 block') !== false, 'extends1 block should not be there:' . $content);
     }
 
+    public function testUse()
+    {
+        $view = $this->mockView();
+        $view->renderFile('@yiiunit/extensions/smarty/views/use.tpl');
+    }
+
     /**
      * @return View
      */

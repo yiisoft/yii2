@@ -28,7 +28,7 @@ Yii::configure($object, $config);
 请注意，如果配置一个已存在的对象，那么配置数组中不应该包含指定类名的 `class` 元素。
 
 
-## 配置的格式 <a name="configuration-format"></a>
+## 配置的格式 <span id="configuration-format"></span>
 
 一个配置的格式可以描述为以下形式：
 
@@ -71,9 +71,9 @@ Yii::configure($object, $config);
 Yii 中的配置可以用在很多场景。本章开头我们展示了如何使用 [[Yii::creatObject()]] 根据配置信息创建对象。本小节将介绍配置的两种主要用法 —— 配置应用与配置小部件。
 
 
-### 应用的配置 <a name="application-configurations"></a>
+### 应用的配置 <span id="application-configurations"></span>
 
-[应用](structure-applications.md)的配置可能是最复杂的配置之一。因为 [[yii\web\Application|application]] 类拥有很多可配置的属性和事件。更重要的是它的 [[yii\web\Application::components|components]] 属性可以接收配置数组并通过应用注册为组件。以下是一个针对[基础应用模板](start-basic.md)的应用配置概要：
+[应用](structure-applications.md)的配置可能是最复杂的配置之一。因为 [[yii\web\Application|application]] 类拥有很多可配置的属性和事件。更重要的是它的 [[yii\web\Application::components|components]] 属性可以接收配置数组并通过应用注册为组件。以下是一个针对[基础应用模板](start-installation.md)的应用配置概要：
 
 ```php
 $config = [
@@ -116,7 +116,7 @@ $config = [
 更多关于应用 `components` 属性配置的信息可以查阅[应用](structure-applications.md)以及[服务定位器](concept-service-locator.md)章节。
 
 
-### 小部件的配置 <a name="widget-configurations"></a>
+### 小部件的配置 <span id="widget-configurations"></span>
 
 使用[小部件](structure-widgets.md)时，常常需要配置以便自定义其属性。 [[yii\base\Widget::widget()]] 和  [[yii\base\Widget::begin()]] 方法都可以用来创建小部件。它们可以接受配置数组：
 
@@ -138,7 +138,7 @@ echo Menu::widget([
 请注意，代码中已经给出了类名 `yii\widgets\Menu'，配置数组**不应该**再包含 `class` 键。
 
 
-## 配置文件 <a name="configuration-files"></a>
+## 配置文件 <span id="configuration-files"></span>
 
 当配置的内容十分复杂，通用做法是将其存储在一或多个 PHP 文件中，这些文件被称为**配置文件**。一个配置文件返回的是 PHP 数组。例如，像这样把应用配置信息存储在名为 `web.php` 的文件中：
 
@@ -188,7 +188,7 @@ $config = require('path/to/web.php');
 ```
 
 
-## 默认配置 <a name="default-configurations"></a>
+## 默认配置 <span id="default-configurations"></span>
 
 [[Yii::createObject()]] 方法基于[依赖注入容器](concept-di-container.md)实现。使用 [[Yii::creatObject()]] 创建对象时，可以附加一系列**默认配置**到指定类的任何实例。默认配置还可以在[入口脚本](runtime-bootstrapping.md)中调用 `Yii::$container->set()` 来定义。
 
@@ -203,7 +203,7 @@ $config = require('path/to/web.php');
 不使用默认配置的话，你就得在任何使用分页器的地方，都配置 `maxButtonCount` 的值。
 
 
-## 环境常量 <a name="environment-constants"></a>
+## 环境常量 <span id="environment-constants"></span>
 
 配置经常要随着应用运行的不同环境更改。例如在开发环境中，你可能使用名为 `mydb_dev` 的数据库，而生产环境则使用 `mydb_prod` 数据库。为了便于切换使用环境，Yii 提供了一个定义在入口脚本中的 `YII_ENV` 常量。如下：
 

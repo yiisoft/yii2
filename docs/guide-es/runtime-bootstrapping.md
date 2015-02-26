@@ -12,7 +12,7 @@ Registra el [[yii\base\Application::errorHandler|error handler]].
 Inicializa las propiedades de aplicación usando la configuración de la aplicación dada.
 Llama a [[yii\base\Application::init()|init()]] que a su vez llama a [[yii\base\Application::bootstrap()|bootstrap()]] para ejecutar componentes de bootstrapping.
 Incluye el archivo de manifiesto de extensiones ‘vendor/yiisoft/extensions.php’
-Crea y ejecuta [compoentenes de bootstrap](structure-extensions.md#bootstrapping-classes) declarados por las extensiones. 
+Crea y ejecuta [componentes de bootstrap](structure-extensions.md#bootstrapping-classes) declarados por las extensiones. 
 Crea y ejecuta [componentes de aplicación](structure-application-components.md) y/o [módulos](structure-modules.md) que se declaran en la [propiedad bootstrap](structure-applications.md#bootstrap) de la aplicación.
 
 Debido a que el trabajo de bootstrapping se tiene que ejecutar antes de gestionar *todas* las peticiones, es muy importante mantener este proceso ligero y optimizado lo máximo que sea posible.

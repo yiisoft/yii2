@@ -136,7 +136,10 @@ class DateValidator extends Validator
                 }
                 // enable strict parsing to avoid getting invalid date values
                 $formatter->setLenient(false);
-                return $formatter->parse($value);
+
+                // There should not be a warning thrown by parse() but this seems to be the case on windows so we suppress it here
+                // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
+                return @$formatter->parse($value);
             } else {
                 // fallback to PHP if intl is not installed
                 $format = FormatConverter::convertDateIcuToPhp($format, 'date');

@@ -12,7 +12,7 @@
    [[yii\web\Response::formatters|response]].
 
 
-## Согласование содержимого <a name="content-negotiation"></a>
+## Согласование содержимого <span id="content-negotiation"></span>
 
 Yii поддерживает согласование содержимого с помощью фильтра [yii\filters\ContentNegotiator]]. Базовый класс
 контроллера RESTful API - [[yii\rest\Controller]] - использует этот фильтр под именем `contentNegotiator`.
@@ -80,7 +80,7 @@ public function behaviors()
 форматов ответа, которые установлены в [[yii\web\Response::formatters]].
 
 
-## Сериализация данных <a name="data-serializing"></a>
+## Сериализация данных <span id="data-serializing"></span>
 
 Как уже описывалось выше, [[yii\rest\Serializer]] - это центральное место, отвечающее за конвертацию объектов ресурсов
 или коллекций в массивы. Он реализует интерфейсы [[yii\base\ArrayableInterface]] и [[yii\data\DataProviderInterface]].
@@ -136,9 +136,15 @@ Content-Type: application/json; charset=UTF-8
         ...
     ],
     "_links": {
-        "self": "http://localhost/users?page=1",
-        "next": "http://localhost/users?page=2",
-        "last": "http://localhost/users?page=50"
+        "self": {
+            "href": "http://localhost/users?page=1"
+        },
+        "next": {
+            "href": "http://localhost/users?page=2"
+        },
+        "last": {
+            "href": "http://localhost/users?page=50"
+        }
     },
     "_meta": {
         "totalCount": 1000,

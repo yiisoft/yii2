@@ -10,7 +10,7 @@ Deploying basic application
 Since there's typically only one webroot it is recommended to use basic application template. Refer to
 [Installing Yii chapter](start-installation.md) and install application template locally.
 
-### Add extras for webserver <a name="add-extras-for-webserver"></a>
+### Add extras for webserver <span id="add-extras-for-webserver"></span>
 
 If webserver used is Apache you'll need to add `.htaccess` file with the following content to `web`
 (where `index.php` is):
@@ -31,7 +31,7 @@ RewriteRule . index.php
 
 In case of nginx you should not need any extra config files.
 
-### Renaming webroot <a name="renaming-webroot"></a>
+### Renaming webroot <span id="renaming-webroot"></span>
 
 If after connecting to your shared hosting via FTP or by other means you're seeing something like the following, you're
 most probably lucky.

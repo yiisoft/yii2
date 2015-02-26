@@ -14,7 +14,7 @@ Preparing environment
 
 A well configured environment to run PHP application really matters. In order to get maximum performance:
 
-- Always use latest stable PHP version. Each major release brings significant performance improvements and reduced
+- Always use the latest stable PHP version. Each major release brings significant performance improvements and reduced
   memory usage.
 - Use [APC](http://ru2.php.net/apc) for PHP 5.4 and less or [Opcache](http://php.net/opcache) for PHP 5.5 and more. It
   gives a very good performance boost.
@@ -26,8 +26,8 @@ Preparing framework for production
 
 First thing you should do before deploying your application to production environment
 is to disable debug mode. A Yii application runs in debug mode if the constant
-`YII_DEBUG` is defined as `true` in `index.php` so to disable debug the following
-should be in your `index.php`:
+`YII_DEBUG` is defined as `true` in `index.php`.
+So, in order to disable debug mode, the following should be in your `index.php`:
 
 ```php
 defined('YII_DEBUG') or define('YII_DEBUG', false);
@@ -43,7 +43,7 @@ Enabling the PHP opcode cache improves any PHP application performance and lower
 memory usage significantly. Yii is no exception. It was tested with both
 [PHP 5.5 OPcache](http://php.net/manual/en/book.opcache.php) and
 [APC PHP extension](http://php.net/manual/en/book.apc.php). Both cache
-and optimize PHP intermediate code and avoid the time spent in parsing PHP
+optimize PHP intermediate code and avoid the time spent in parsing PHP
 scripts for every incoming request.
 
 ### Turning on ActiveRecord database schema caching
@@ -90,7 +90,7 @@ In order to learn how it can be achieved, refer to [assets](structure-assets.md)
 ### Using better storage for sessions
 
 By default PHP uses files to handle sessions. It is OK for development and
-small projects but when it comes to handling concurrent requests it's better to
+small projects. But when it comes to handling concurrent requests, it's better to
 switch to another storage such as database. You can do so by configuring your
 application via `config/web.php`:
 
@@ -101,11 +101,11 @@ return [
         'session' => [
             'class' => 'yii\web\DbSession',
 
-            // Set the following if want to use DB component other than
+            // Set the following if you want to use DB component other than
             // default 'db'.
             // 'db' => 'mydb',
 
-            // To override default session table set the following
+            // To override default session table, set the following
             // 'sessionTable' => 'my_session',
         ],
     ],
@@ -114,7 +114,7 @@ return [
 
 You can use `CacheSession` to store sessions using cache. Note that some
 cache storage such as memcached has no guarantee that session data will not
-be lost leading to unexpected logouts.
+be lost, and it would lead to unexpected logouts.
 
 If you have [Redis](http://redis.io/) on your server, it's highly recommended as session storage.
 
@@ -132,7 +132,7 @@ If a whole page remains relative static, we can use the page caching approach to
 save the rendering cost for the whole page.
 
 
-### Leveraging HTTP to save processing time and bandwidth
+### Leveraging HTTP caching to save processing time and bandwidth
 
 Leveraging HTTP caching saves both processing time, bandwidth and resources significantly. It can be implemented by
 sending either `ETag` or `Last-Modified` header in your application response. If browser is implemented according to
@@ -211,28 +211,42 @@ In the view you should access fields of each individual record from `$posts` as 
 
 ```php
 foreach ($posts as $post) {
-    echo $post['title']."<br>";
+    echo $post['title'] . "<br>";
 }
 ```
 
 Note that you can use array notation even if `asArray` wasn't specified and you're
 working with AR objects.
 
+### Composer autoloader optimization
+
+In order to improve overall performance you can execute `composer dumpautoload -o` to optimize Composer autoloader.
+
 ### Processing data in background
 
 In order to respond to user requests faster you can process heavy parts of the
 request later if there's no need for immediate response.
 
-- Cron jobs + console.
-- queues + handlers.
+There are two common ways to achieve it: cron job processing and specialized queues.
 
-TBD
+In the first case we need to save the data that we want to process later to a persistent storage
+such as database. A [console command](tutorial-console.md) that is run regularly via cron job queries
+database and processes data if there's any.
+
+The solution is OK for most cases but has one significant drawback. We aren't aware if there's data to
+process before we query database, so we're either querying database quite often or have a slight delay
+between each data processing.
+
+This issue could be solved by queue and job servers such RabbitMQ, ActiveMQ, Amazon SQS and more.
+In this case instead of writing data to persistent storage you're queueing it via APIs provided
+by queue or job server. Processing is often put into job handler class. Job from the queue is executed
+right after all jobs before it are done.
 
 ### If nothing helps
 
 If nothing helps, never assume what may fix performance problem. Always profile your code instead before changing
 anything. The following tools may be helpful:
 
-- [Yii debug toolbar and debugger](module-debug.md)
+- [Yii debug toolbar and debugger](tool-debugger.md)
 - [XDebug profiler](http://xdebug.org/docs/profiler)
 - [XHProf](http://www.php.net/manual/en/book.xhprof.php)

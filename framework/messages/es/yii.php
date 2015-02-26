@@ -34,7 +34,7 @@ return [
     'No results found.' => 'No se encontraron resultados.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Sólo se aceptan archivos con los siguientes tipos MIME: {mimeTypes}.',
     'Only files with these extensions are allowed: {extensions}.' => 'Sólo se aceptan archivos con las siguientes extensiones: {extensions}',
-    'Page not found.' => 'Página no entontrada.',
+    'Page not found.' => 'Página no encontrada.',
     'Please fix the following errors:' => 'Por favor corrija los siguientes errores:',
     'Please upload a file.' => 'Por favor suba un archivo.',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Mostrando <b>{begin, number}-{end, number}</b> de <b>{totalCount, number}</b> {totalCount, plural, one{elemento} other{elementos}}.',

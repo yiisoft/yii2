@@ -10,7 +10,7 @@ HTTP 缓存
 * [[yii\filters\HttpCache::cacheControlHeader|Cache-Control]]
 
 
-## `Last-Modified` 头 <a name="last-modified"></a>
+## `Last-Modified` 头 <span id="last-modified"></span>
 
 `Last-Modified` 头使用时间戳标明页面自上次客户端缓存后是否被修改过。
 
@@ -46,7 +46,7 @@ public function behaviors()
 上述代码表明 HTTP 缓存只在 `index` 操作时启用。它会基于页面最后修改时间生成一个 `Last-Modified` HTTP 头。当浏览器第一次访问 `index` 页时，服务器将会生成页面并发送至客户端浏览器。之后客户端浏览器在页面没被修改期间访问该页，服务器将不会重新生成页面，浏览器会使用之前客户端缓存下来的内容。因此服务端渲染和内容传输都将省去。
 
 
-## `ETag` 头 <a name="etag"></a>
+## `ETag` 头 <span id="etag"></span>
 
 “Entity Tag”（实体标签，简称 ETag）使用一个哈希值表示页面内容。如果页面被修改过，哈希值也会随之改变。通过对比客户端的哈希值和服务器端生成的哈希值，浏览器就能判断页面是否被修改过，进而决定是否应该重新传输内容。
 
@@ -90,7 +90,7 @@ ETag 相比 `Last-Modified` 能实现更复杂和更精确的缓存策略。例�
 
 
 
-## `Cache-Control` 头 <a name="cache-control"></a>
+## `Cache-Control` 头 <span id="cache-control"></span>
 
 `Cache-Control` 头指定了页面的常规缓存策略。可以通过配置 [[yii\filters\HttpCache::cacheControlHeader]] 属性发送相应的头信息。默认发送以下头：
 
@@ -98,12 +98,12 @@ ETag 相比 `Last-Modified` 能实现更复杂和更精确的缓存策略。例�
 Cache-Control: public, max-age=3600
 ```
 
-## 会话缓存限制器 <a name="session-cache-limiter"></a>
+## 会话缓存限制器 <span id="session-cache-limiter"></span>
 
 当页面使 session 时，PHP 将会按照 PHP.INI 中所设置的 `session.cache_limiter` 值自动发送一些缓存相关的 HTTP 头。这些 HTTP 头有可能会干扰你原本设置的 `HttpCache` 或让其失效。为了避免此问题，默认情况下 `HttpCache` 禁止自动发送这些头。想改变这一行为，可以配置 [[yii\filters\HttpCache::sessionCacheLimiter]] 属性。该属性接受一个字符串值，包括 `public`，`private`，`private_no_expire`，和 `nocache`。请参考 PHP 手册中的[缓存限制器](http://www.php.net/manual/en/function.session-cache-limiter.php)了解这些值的含义。
 
 
-## SEO 影响 <a name="seo-implications"></a>
+## SEO 影响 <span id="seo-implications"></span>
 
 搜索引擎趋向于遵循站点的缓存头。因为一些爬虫的抓取频率有限制，启用缓存头可以可以减少重复请求数量，增加爬虫抓取效率（译者：大意如此，但搜索引擎的排名规则不了解，好的缓存策略应该是可以为用户体验加分的）。
 

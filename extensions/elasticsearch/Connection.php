@@ -137,6 +137,9 @@ class Connection extends Component
      */
     public function close()
     {
+        if ($this->activeNode === null) {
+            return;
+        }
         Yii::trace('Closing connection to elasticsearch. Active node was: '
             . $this->nodes[$this->activeNode]['http_address'], __CLASS__);
         $this->activeNode = null;
@@ -198,7 +201,6 @@ class Connection extends Component
     public function get($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
-
         return $this->httpRequest('GET', $this->createUrl($url, $options), $body, $raw);
     }
 
@@ -215,7 +217,6 @@ class Connection extends Component
     public function head($url, $options = [], $body = null)
     {
         $this->open();
-
         return $this->httpRequest('HEAD', $this->createUrl($url, $options), $body);
     }
 
@@ -233,7 +234,6 @@ class Connection extends Component
     public function post($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
-
         return $this->httpRequest('POST', $this->createUrl($url, $options), $body, $raw);
     }
 
@@ -251,7 +251,6 @@ class Connection extends Component
     public function put($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
-
         return $this->httpRequest('PUT', $this->createUrl($url, $options), $body, $raw);
     }
 
@@ -269,7 +268,6 @@ class Connection extends Component
     public function delete($url, $options = [], $body = null, $raw = false)
     {
         $this->open();
-
         return $this->httpRequest('DELETE', $this->createUrl($url, $options), $body, $raw);
     }
 
@@ -319,7 +317,7 @@ class Connection extends Component
         $body = '';
 
         $options = [
-            CURLOPT_USERAGENT      => 'Yii Framework ' . Yii::getVersion() . __CLASS__,
+            CURLOPT_USERAGENT      => 'Yii Framework ' . Yii::getVersion() . ' ' . __CLASS__,
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_HEADER         => false,
             // http://www.php.net/manual/en/function.curl-setopt.php#82418
@@ -327,7 +325,6 @@ class Connection extends Component
 
             CURLOPT_WRITEFUNCTION  => function ($curl, $data) use (&$body) {
                 $body .= $data;
-
                 return mb_strlen($data, '8bit');
             },
             CURLOPT_HEADERFUNCTION => function ($curl, $data) use (&$headers) {
@@ -336,7 +333,6 @@ class Connection extends Component
                         $headers[strtolower(substr($row, 0, $pos))] = trim(substr($row, $pos + 1));
                     }
                 }
-
                 return mb_strlen($data, '8bit');
             },
             CURLOPT_CUSTOMREQUEST  => $method,

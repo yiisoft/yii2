@@ -51,14 +51,14 @@ Por exemplo,
 ]
 ```
 
-> Info: Embora você possa registrar quantos componentes de aplicação você quiser,
+> Informação: Embora você possa registrar quantos componentes de aplicação você quiser,
   você deveria fazer isso com juízo. Componentes de aplicação são como variáveis
   globais. Usar componentes de aplicação demais pode tornar seu código
   potencialmente mais difícil de testar e manter. Em muitos casos, você pode
   simplesmente criar um componente local e utilizá-lo quando necessário.
 
 
-## Components de Inicialização <a name="bootstrapping-components"></a>
+## Components de Inicialização <span id="bootstrapping-components"></span>
 
 Conforme mencionado acima, um componente de aplicação só será instanciado quando
 ele estiver sendo acessado pela primeira vez. Se ele nunca for acessado durante
@@ -84,7 +84,7 @@ Por exemplo, a configuração de aplicação a seguir assegura-se que o componen
 ```
 
 
-## Componentes de Aplicação do Core <a name="core-application-components"></a>
+## Componentes de Aplicação do Core <span id="core-application-components"></span>
 
 O yii define um conjunto de componentes de aplicação do **core** com IDs fixos
 e configurações padrão. Por exemplo, o componente [[yii\web\Application::request|request]]
@@ -132,7 +132,7 @@ se você não especificar sua classe, a padrão será utilizada.
   só está disponível em [[yii\web\Application|aplicações Web]]. Por favor consulte
   a seção [Sessões e Cookies](runtime-sessions-cookies.md) para mais detalhes.
 * [[yii\web\UrlManager|urlManager]]: suporta a análise e criação de URLs. Por
-  favor consulte a seção [Análise e Geração de URLs](runtime-url-handling.md)
+  favor consulte a seção [Análise e Geração de URLs](runtime-routing.md)
   para mais detalhes.
 * [[yii\web\User|user]]: representa as informações de autenticação do usuário.
   Esse componente só está disponível em [[yii\web\Application|aplicações Web]].

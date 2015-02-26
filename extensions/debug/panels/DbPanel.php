@@ -16,6 +16,8 @@ use yii\debug\models\search\Db;
  * Debugger panel that collects and displays database queries performed.
  *
  * @property array $profileLogs This property is read-only.
+ * @property string $summaryName Short name of the panel, which will be use in summary. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -187,5 +189,23 @@ class DbPanel extends Panel
     public function isQueryCountCritical($count)
     {
         return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
+    }
+
+    /**
+     * Returns array query types
+     *
+     * @return array
+     * @since 2.0.3
+     */
+    public function getTypes()
+    {
+        return array_reduce(
+            $this->_models,
+            function ($result, $item) {
+                $result[$item['type']] = $item['type'];
+                return $result;
+            },
+            []
+        );
     }
 }

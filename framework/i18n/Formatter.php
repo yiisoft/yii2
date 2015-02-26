@@ -35,6 +35,9 @@ use yii\helpers\Html;
  * the [PHP intl extension](http://php.net/manual/en/book.intl.php) has to be installed.
  * Most of the methods however work also if the PHP intl extension is not installed by providing
  * a fallback implementation. Without intl month and day names are in English only.
+ * Note that even if the intl extension is installed, formatting date and time values for years >=2038 or <=1901
+ * on 32bit systems will fall back to the PHP implementation because intl uses a 32bit UNIX timestamp internally.
+ * On a 64bit system the intl formatter is used in all cases if installed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Enrica Ruedin <e.ruedin@guggach.com>
@@ -64,16 +67,28 @@ class Formatter extends Component
      */
     public $locale;
     /**
-     * @var string the timezone to use for formatting time and date values.
+     * @var string the time zone to use for formatting time and date values.
+     *
      * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
      * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
-     * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
+     * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available time zones.
      * If this property is not set, [[\yii\base\Application::timeZone]] will be used.
      *
-     * Note that the input timezone is assumed to be UTC always if no timezone is included in the input date value.
-     * Make sure to store datetime values in UTC in your database.
+     * Note that the default time zone for input data is assumed to be UTC by default if no time zone is included in the input date value.
+     * If you store your data in a different time zone in the database, you have to adjust [[defaultTimeZone]] accordingly.
      */
     public $timeZone;
+    /**
+     * @var string the time zone that is assumed for input values if they do not include a time zone explicitly.
+     *
+     * The value must be a valid time zone identifier, e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
+     * Please refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available time zones.
+     *
+     * It defaults to `UTC` so you only have to adjust this value if you store datetime values in another time zone in your database.
+     *
+     * @since 2.0.1
+     */
+    public $defaultTimeZone = 'UTC';
     /**
      * @var string the default format string to be used to format a [[asDate()|date]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
@@ -310,7 +325,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
-        return str_replace('<p></p>', '', '<p>' . preg_replace('/\R{2,}/', "</p>\n<p>", Html::encode($value)) . '</p>');
+        return str_replace('<p></p>', '', '<p>' . preg_replace('/\R{2,}/u', "</p>\n<p>", Html::encode($value)) . '</p>');
     }
 
     /**
@@ -402,7 +417,7 @@ class Formatter extends Component
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @param string $format the format used to convert the value into a date string.
@@ -434,7 +449,7 @@ class Formatter extends Component
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @param string $format the format used to convert the value into a date string.
@@ -466,7 +481,7 @@ class Formatter extends Component
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @param string $format the format used to convert the value into a date string.
@@ -507,7 +522,7 @@ class Formatter extends Component
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @param string $format the format used to convert the value into a date string.
@@ -517,28 +532,43 @@ class Formatter extends Component
      */
     private function formatDateTimeValue($value, $format, $type)
     {
-        $timestamp = $this->normalizeDatetimeValue($value);
+        $timeZone = $this->timeZone;
+        // avoid time zone conversion for date-only values
+        if ($type === 'date') {
+            list($timestamp, $hasTimeInfo) = $this->normalizeDatetimeValue($value, true);
+            if (!$hasTimeInfo) {
+                $timeZone = $this->defaultTimeZone;
+            }
+        } else {
+            $timestamp = $this->normalizeDatetimeValue($value);
+        }
         if ($timestamp === null) {
             return $this->nullDisplay;
         }
 
-        if ($this->_intlLoaded) {
+        // intl does not work with dates >=2038 or <=1901 on 32bit machines, fall back to PHP
+        $year = $timestamp->format('Y');
+        if ($this->_intlLoaded && !(PHP_INT_SIZE == 4 && ($year <= 1901 || $year >= 2038))) {
             if (strncmp($format, 'php:', 4) === 0) {
                 $format = FormatConverter::convertDatePhpToIcu(substr($format, 4));
             }
             if (isset($this->_dateFormats[$format])) {
                 if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $this->timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], IntlDateFormatter::NONE, $timeZone);
                 } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $this->timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, $this->_dateFormats[$format], $timeZone);
                 } else {
-                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $this->timeZone);
+                    $formatter = new IntlDateFormatter($this->locale, $this->_dateFormats[$format], $this->_dateFormats[$format], $timeZone);
                 }
             } else {
-                $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $this->timeZone, null, $format);
+                $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, $timeZone, null, $format);
             }
             if ($formatter === null) {
                 throw new InvalidConfigException(intl_get_error_message());
+            }
+            // make IntlDateFormatter work with DateTimeImmutable
+            if ($timestamp instanceof \DateTimeImmutable) {
+                $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
             }
             return $formatter->format($timestamp);
         } else {
@@ -547,8 +577,12 @@ class Formatter extends Component
             } else {
                 $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
             }
-            if ($this->timeZone != null) {
-                $timestamp->setTimezone(new DateTimeZone($this->timeZone));
+            if ($timeZone != null) {
+                if ($timestamp instanceof \DateTimeImmutable) {
+                    $timestamp = $timestamp->setTimezone(new DateTimeZone($timeZone));
+                } else {
+                    $timestamp->setTimezone(new DateTimeZone($timeZone));
+                }
             }
             return $timestamp->format($format);
         }
@@ -562,35 +596,48 @@ class Formatter extends Component
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
-     * @return DateTime the normalized datetime value
+     * @param boolean $checkTimeInfo whether to also check if the date/time value has some time information attached.
+     * Defaults to `false`. If `true`, the method will then return an array with the first element being the normalized
+     * timestamp and the second a boolean indicating whether the timestamp has time information or it is just a date value.
+     * This parameter is available since version 2.0.1.
+     * @return DateTime|array the normalized datetime value.
+     * Since version 2.0.1 this may also return an array if `$checkTimeInfo` is true.
+     * The first element of the array is the normalized timestamp and the second is a boolean indicating whether
+     * the timestamp has time information or it is just a date value.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      */
-    protected function normalizeDatetimeValue($value)
+    protected function normalizeDatetimeValue($value, $checkTimeInfo = false)
     {
+        // checking for DateTime and DateTimeInterface is not redundant, DateTimeInterface is only in PHP>5.5
         if ($value === null || $value instanceof DateTime || $value instanceof DateTimeInterface) {
             // skip any processing
-            return $value;
+            return $checkTimeInfo ? [$value, true] : $value;
         }
         if (empty($value)) {
             $value = 0;
         }
         try {
-            if (is_numeric($value)) { // process as unix timestamp
+            if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
                 if (($timestamp = DateTime::createFromFormat('U', $value, new DateTimeZone('UTC'))) === false) {
                     throw new InvalidParamException("Failed to parse '$value' as a UNIX timestamp.");
                 }
-                return $timestamp;
-            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone('UTC'))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
-                return $timestamp;
-            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone('UTC'))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
-                return $timestamp;
+                return $checkTimeInfo ? [$timestamp, true] : $timestamp;
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
+                return $checkTimeInfo ? [$timestamp, false] : $timestamp;
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
+                return $checkTimeInfo ? [$timestamp, true] : $timestamp;
             }
             // finally try to create a DateTime object with the value
-            $timestamp = new DateTime($value, new DateTimeZone('UTC'));
-            return $timestamp;
+            if ($checkTimeInfo) {
+                $timestamp = new DateTime($value, new DateTimeZone($this->defaultTimeZone));
+                $info = date_parse($value);
+                return [$timestamp, !($info['hour'] === false && $info['minute'] === false && $info['second'] === false)];
+            } else {
+                return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
+            }
         } catch(\Exception $e) {
             throw new InvalidParamException("'$value' is not a valid date time value: " . $e->getMessage()
                 . "\n" . print_r(DateTime::getLastErrors(), true), $e->getCode(), $e);
@@ -604,7 +651,7 @@ class Formatter extends Component
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
      * @return string the formatted result.
@@ -632,7 +679,7 @@ class Formatter extends Component
      *
      * - an integer representing a UNIX timestamp
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
-     *   The timestamp is assumed to be in UTC unless a timezone is explicitly given.
+     *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
      *
@@ -662,16 +709,16 @@ class Formatter extends Component
                     return $this->nullDisplay;
                 }
             } else {
-                $timezone = new DateTimeZone($this->timeZone);
+                $timeZone = new DateTimeZone($this->timeZone);
 
                 if ($referenceTime === null) {
-                    $dateNow = new DateTime('now', $timezone);
+                    $dateNow = new DateTime('now', $timeZone);
                 } else {
                     $dateNow = $this->normalizeDatetimeValue($referenceTime);
-                    $dateNow->setTimezone($timezone);
+                    $dateNow->setTimezone($timeZone);
                 }
 
-                $dateThen = $timestamp->setTimezone($timezone);
+                $dateThen = $timestamp->setTimezone($timeZone);
 
                 $interval = $dateThen->diff($dateNow);
             }
@@ -1097,7 +1144,7 @@ class Formatter extends Component
     /**
      * Creates a number formatter based on the given type and format.
      *
-     * You may overide this method to create a number formatter based on patterns.
+     * You may override this method to create a number formatter based on patterns.
      *
      * @param integer $style the type of the number formatter.
      * Values: NumberFormatter::DECIMAL, ::CURRENCY, ::PERCENT, ::SCIENTIFIC, ::SPELLOUT, ::ORDINAL

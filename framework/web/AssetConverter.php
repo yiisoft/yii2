@@ -42,6 +42,13 @@ class AssetConverter extends Component implements AssetConverterInterface
         'coffee' => ['js', 'coffee -p {from} > {to}'],
         'ts' => ['js', 'tsc --out {to} {from}'],
     ];
+    /**
+     * @var boolean whether the source asset file should be converted even if its result already exists.
+     * You may want to set this to be `true` during the development stage to make sure the converted
+     * assets are always up-to-date. Do not set this to true on production servers as it will
+     * significantly degrade the performance.
+     */
+    public $forceConvert = false;
 
 
     /**
@@ -58,7 +65,7 @@ class AssetConverter extends Component implements AssetConverterInterface
             if (isset($this->commands[$ext])) {
                 list ($ext, $command) = $this->commands[$ext];
                 $result = substr($asset, 0, $pos + 1) . $ext;
-                if (@filemtime("$basePath/$result") < filemtime("$basePath/$asset")) {
+                if ($this->forceConvert || @filemtime("$basePath/$result") < filemtime("$basePath/$asset")) {
                     $this->runCommand($command, $basePath, $asset, $result);
                 }
 

@@ -106,10 +106,13 @@ class Tabs extends Widget
     {
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
-        echo Html::beginTag($tag, $options) . "\n";
-        echo $this->renderItems() . "\n";
-        echo Html::endTag($tag) . "\n";
+        $out = Html::beginTag($tag, $options) . "\n";
+        $out .= $this->renderItems() . "\n";
+        $out .= Html::endTag($tag) . "\n";
+
         $this->registerWidget('tabs');
+
+        return $out;
     }
 
     /**
@@ -128,8 +131,8 @@ class Tabs extends Widget
             if (isset($item['url'])) {
                 $url = Url::to($item['url']);
             } else {
-                if (!isset($item['content'])) {
-                    throw new InvalidConfigException("The 'content' or 'url' option is required.");
+                if (!array_key_exists('content', $item)) {
+                    throw new InvalidConfigException("Either the 'content' or 'url' option is required.");
                 }
                 $options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
                 $tag = ArrayHelper::remove($options, 'tag', 'div');

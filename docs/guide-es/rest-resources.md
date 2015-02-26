@@ -12,7 +12,7 @@ Mientras que no hay restricción a cómo representar un recurso, en YII usualmen
 En esta sección, vamos principalmente a describir como la clase con recursos que extiende de [[yii\base\Model]] (o sus clases hijas) puede especificar qué datos puede ser devueltos vía las APIs RESTful. Si la clase de los recursos no extiende de [[yii\base\Model]], entonces todas las variables públicas miembro serán devueltas.
 
 
-## Campos (fields) <a name="fields"></a>
+## Campos (fields) <span id="fields"></span>
 
 Cuando incluimos un recurso en una respuesta de la API RESTful, el recurso necesita ser serializado en una cadena.
 Yii divide este proceso en dos pasos. Primero, el recurso es convertido en un array por [[yii\rest\Serializer]].
@@ -37,7 +37,7 @@ http://localhost/users?fields=id,email&expand=profile
 ```
 
 
-### Sobreescribiendo `fields()` <a name="overriding-fields"></a>
+### Sobreescribiendo `fields()` <span id="overriding-fields"></span>
 
 Por defecto, [[yii\base\Model::fields()]] devuelve todos los atributos de los modelos como si fueran campos, mientras [[yii\db\ActiveRecord::fields()]] sólo devuelve los atributos que tengan datos en la base de datos.
 
@@ -79,7 +79,7 @@ public function fields()
 > quitar `auth_key`, `password_hash` y `password_reset_token`.
 
 
-### Sobreescribiendo `extraFields()` <a name="overriding-extra-fields"></a>
+### Sobreescribiendo `extraFields()` <span id="overriding-extra-fields"></span>
 
 Por defecto, [[yii\base\Model::extraFields()]] no devuelve nada, mientras que [[yii\db\ActiveRecord::extraFields()]] devuelve los nombres de las relaciones que tienen datos (populated) obtenidos de la base de datos.
 
@@ -114,7 +114,7 @@ la petición `http://localhost/users?fields=id,email&expand=profile` puede devol
 ```
 
 
-## Enlaces (Links) <a name="links"></a>
+## Enlaces (Links) <span id="links"></span>
 
 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), es una abreviación de Hipermedia es el Motor del Estado de la Aplicación (Hypermedia as the Engine of Application State), promueve que las APIs RESTfull devuelvan información que permita a los clientes descubrir las acciones que soportan los recursos devueltos. El sentido de HATEOAS es devolver un conjunto de hiperenlaces con relación a la información, cuando los datos de los recursos son servidos por las APIs.
 
@@ -145,14 +145,16 @@ Cuando un objeto `User` es devuelto en una respuesta, puede contener un elemento
     "id": 100,
     "email": "user@example.com",
     // ...
-    "_links" => [
-        "self": "https://example.com/users/100"
-    ]
+    "_links" => {
+        "self": {
+            "href": "https://example.com/users/100"
+        }
+    }
 }
 ```
 
 
-## Colecciones <a name="collections"></a>
+## Colecciones <span id="collections"></span>
 
 Los objetos de los recursos pueden ser agrupados en  *collections*. Cada colección contiene una lista de recursos objeto del mismo tipo.
 

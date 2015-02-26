@@ -273,7 +273,8 @@ class Query extends Component implements QueryInterface
      * Make sure you properly quote column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given (or null), the `db` application component will be used.
-     * @return integer number of records
+     * @return integer|string number of records. The result may be a string depending on the
+     * underlying database engine and to support integer values higher than a 32bit PHP integer can handle.
      */
     public function count($q = '*', $db = null)
     {
@@ -286,7 +287,7 @@ class Query extends Component implements QueryInterface
      * Make sure you properly quote column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return mixed the sum of the specified column values
+     * @return mixed the sum of the specified column values.
      */
     public function sum($q, $db = null)
     {
@@ -354,7 +355,7 @@ class Query extends Component implements QueryInterface
      * @param Connection|null $db
      * @return bool|string
      */
-    private function queryScalar($selectExpression, $db)
+    protected function queryScalar($selectExpression, $db)
     {
         $select = $this->select;
         $limit = $this->limit;

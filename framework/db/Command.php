@@ -651,9 +651,9 @@ class Command extends Component
      * The method will properly quote the table and column names.
      * @param string $name the name of the foreign key constraint.
      * @param string $table the table that the foreign key constraint will be added to.
-     * @param string $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
+     * @param string|array $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
      * @param string $refTable the table that the foreign key references to.
-     * @param string $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
+     * @param string|array $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
      * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @return Command the command object itself
@@ -784,6 +784,7 @@ class Command extends Component
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
+     * @since 2.0.1 this method is protected (was private before).
      */
     protected function queryInternal($method, $fetchMode = null)
     {
@@ -799,13 +800,15 @@ class Command extends Component
                 $cacheKey = [
                     __CLASS__,
                     $method,
+                    $fetchMode,
                     $this->db->dsn,
                     $this->db->username,
                     $rawSql,
                 ];
-                if (($result = $cache->get($cacheKey)) !== false) {
+                $result = $cache->get($cacheKey);
+                if (is_array($result) && isset($result[0])) {
                     Yii::trace('Query result served from cache', 'yii\db\Command::query');
-                    return $result;
+                    return $result[0];
                 }
             }
         }
@@ -835,7 +838,7 @@ class Command extends Component
         }
 
         if (isset($cache, $cacheKey, $info)) {
-            $cache->set($cacheKey, $result, $info[1], $info[2]);
+            $cache->set($cacheKey, [$result], $info[1], $info[2]);
             Yii::trace('Saved query result in cache', 'yii\db\Command::query');
         }
 

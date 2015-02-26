@@ -24,7 +24,7 @@ All Rights Reserved.
 * [Робота з формами](start-forms.md)
 * [Робота з базами даних](start-databases.md)
 * [Генерація коду за допомогою Gii](start-gii.md)
-* [Що далі?](start-looking-ahead.md)
+* [Наступні кроки](start-looking-ahead.md)
 
 
 Структура додатка
@@ -35,24 +35,24 @@ All Rights Reserved.
 * [Додатки](structure-applications.md)
 * [Компоненти додатка](structure-application-components.md)
 * [Контролери](structure-controllers.md)
-* [Представлення](structure-views.md)
 * [Моделі](structure-models.md)
-* **TBD** [Фільтри](structure-filters.md)
-* **TBD** [Віджети](structure-widgets.md)
-* **TBD** [Модулі](structure-modules.md)
+* [Представлення](structure-views.md)
+* [Модулі](structure-modules.md)
+* [Фільтри](structure-filters.md)
+* [Віджети](structure-widgets.md)
 * [Ресурси](structure-assets.md)
-* **TBD** [Розширення](structure-extensions.md)
+* [Розширення](structure-extensions.md)
 
 
 Обробка запитів
 ---------------
 
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Роутінг](runtime-routing.md)
-* **TBD** [Запити](runtime-requests.md)
-* **TBD** [Відповіді](runtime-responses.md)
-* **TBD** [Сесії та кукі](runtime-sessions-cookies.md)
-* [Розбір та генерація URL](runtime-url-handling.md)
+* [Огляд](runtime-overview.md)
+* [Bootstrapping](runtime-bootstrapping.md)
+* [Маршрутизація та створення URL](runtime-routing.md)
+* [Запити](runtime-requests.md)
+* [Відповіді](runtime-responses.md)
+* [Сесії та кукі](runtime-sessions-cookies.md)
 * [Обробка помилок](runtime-handling-errors.md)
 * [Логування](runtime-logging.md)
 
@@ -74,10 +74,10 @@ All Rights Reserved.
 Робота з базами даних
 ---------------------
 
-* [Обʼєкти доступу до даних (DAO)](db-dao.md) - Зʼєднання з базою даних, прості запити, транзакції і робота зі схемою.
-* [Конструктор запитів](db-query-builder.md) - Запити до бази даних через простий шар абстракції.
-* [Active Record](db-active-record.md) - Отримання обʼєктів AR, робота з ними та визначення звʼязків.
-* [Міграції](db-migrations.md) - Контроль версій схеми даних при роботі в команді.
+* [Обʼєкти доступу до даних (DAO)](db-dao.md) - Зʼєднання з базою даних, прості запити, транзакції і робота зі схемою
+* [Конструктор запитів](db-query-builder.md) - Запити до бази даних через простий шар абстракції
+* [Active Record](db-active-record.md) - Отримання обʼєктів AR, робота з ними та визначення звʼязків
+* [Міграції](db-migrations.md) - Контроль версій схеми даних при роботі в команді
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
@@ -88,19 +88,20 @@ All Rights Reserved.
 -------------------------------
 
 * [Створення форм](input-forms.md)
-* [Валідація](input-validation.md)
-* **TBD** [Завантаження файлів](input-file-uploading.md)
+* [Валідація вводу](input-validation.md)
+* [Завантаження файлів](input-file-uploading.md)
 * **TBD** [Робота з декількома моделями](input-multiple-models.md)
 
 
 Відображення даних
 ------------------
 
-* **TBD** [Форматування даних](output-formatting.md)
-* **TBD** [Посторінкове розбиття](output-pagination.md)
-* **TBD** [Сортування](output-sorting.md)
+* [Форматування даних](output-formatter.md)
+* [Посторінкове розбиття](output-pagination.md)
+* [Сортування](output-sorting.md)
 * [Провайдери даних](output-data-providers.md)
-* [Віджети для даних](output-data-widgets.md)
+* [Віджети даних](output-data-widgets.md)
+* [Робота з клієнтськими скриптами](output-client-scripts.md)
 * [Темізація](output-theming.md)
 
 
@@ -111,29 +112,29 @@ All Rights Reserved.
 * [Авторизація](security-authorization.md)
 * [Робота з паролями](security-passwords.md)
 * **TBD** [Клієнти авторизації](security-auth-clients.md)
-* **TBD** [Кращі практики](security-best-practices.md)
+* [Кращі практики](security-best-practices.md)
 
 
 Кешування
 ---------
 
 * [Огляд](caching-overview.md)
-* [Кешуванная даних](caching-data.md)
-* [Кешуванная фрагментів](caching-fragment.md)
-* [Кешуванная сторінок](caching-page.md)
-* [HTTP кешуванная](caching-http.md)
+* [Кешування даних](caching-data.md)
+* [Кешування фрагментів](caching-fragment.md)
+* [Кешування сторінок](caching-page.md)
+* [HTTP кешування](caching-http.md)
 
 
-Веб-сервіси REST
-----------------
+RESTful веб-сервіси
+-------------------
 
 * [Швидкий старт](rest-quick-start.md)
 * [Ресурси](rest-resources.md)
 * [Контролери](rest-controllers.md)
-* [Роутінг](rest-routing.md)
+* [Маршрутизація](rest-routing.md)
 * [Форматування відповіді](rest-response-formatting.md)
 * [Аутентифікація](rest-authentication.md)
-* [Обмеження кількості запитів](rest-rate-limiting.md)
+* [Обмеження частоти запитів](rest-rate-limiting.md)
 * [Версіонування](rest-versioning.md)
 * [Обробка помилок](rest-error-handling.md)
 
@@ -150,57 +151,47 @@ All Rights Reserved.
 ----------
 
 * [Огляд](test-overview.md)
-* **TBD** [Модульні тести](test-unit.md)
-* **TBD** [Функціональні тести](test-functional.md)
-* **TBD** [Приймальні тести](test-acceptance.md)
+* [Налаштування середовища тестування](test-environment-setup.md)
+* [Модульні тести](test-unit.md)
+* [Функціональні тести](test-functional.md)
+* [Приймальні тести](test-acceptance.md)
 * [Фікстури](test-fixtures.md)
-
-
-Розширення Yii
---------------
-
-* [Створення розширень](extend-creating-extensions.md)
-* [Розширення коду фреймворку](extend-customizing-core.md)
-* [Використання сторонніх бібліотек](extend-using-libs.md)
-* **TBD** [Інтеграція Yii в сторонні системи](extend-embedding-in-others.md)
-* **TBD** [Одночасне використання Yii 1.1 та 2.0](extend-using-v1-v2.md)
-* [Використання Composer](extend-using-composer.md)
 
 
 Спеціальні теми
 ---------------
 
-* [Шаблон додатка advanced](tutorial-advanced-app.md)
+* [Розширений шаблон додатка](tutorial-advanced-app.md)
 * [Створення додатка з нуля](tutorial-start-from-scratch.md)
 * [Консольні команди](tutorial-console.md)
+* [Основні валідатори](tutorial-core-validators.md)
 * [Інтернаціонализація](tutorial-i18n.md)
-* [Відправка пошти](tutorial-mailing.md)
+* [Робота з поштою](tutorial-mailing.md)
 * [Вдосконалення продуктивності](tutorial-performance-tuning.md)
-* **TBD** [Робота на shared хостингу](tutorial-shared-hosting.md)
+* [Робота на shared хостингу](tutorial-shared-hosting.md)
 * [Шаблонізатори](tutorial-template-engines.md)
+* [Робота із стороннім кодом](tutorial-yii-integration.md)
 
 
 Віджети
 -------
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
-* [Віджети Bootstrap](bootstrap-widgets.md)
-* **TBD** [Віджети Jquery UI](jui-widgets.md)
+* GridView: **TBD** link to demo page
+* ListView: **TBD** link to demo page
+* DetailView: **TBD** link to demo page
+* ActiveForm: **TBD** link to demo page
+* Pjax: **TBD** link to demo page
+* Menu: **TBD** link to demo page
+* LinkPager: **TBD** link to demo page
+* LinkSorter: **TBD** link to demo page
+* [Віджети Bootstrap](widget-bootstrap.md)
+* [Віджети jQuery UI](widget-jui.md)
 
 
 Хелпери
 -------
 
 * [Огляд](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
-
+* [ArrayHelper](helper-array.md)
+* [Html](helper-html.md)
+* [Url](helper-url.md)

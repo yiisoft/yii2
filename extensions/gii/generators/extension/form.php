@@ -5,7 +5,7 @@
 ?>
 <div class="alert alert-info">
     Please read the
-    <?= \yii\helpers\Html::a('Extension Guidelines', 'https://github.com/yiisoft/yii2/blob/master/docs/guide/structure-extensions.md', ['target'=>'new']) ?>
+    <?= \yii\helpers\Html::a('Extension Guidelines', 'http://www.yiiframework.com/doc-2.0/guide-structure-extensions.html', ['target'=>'new']) ?>
     before creating an extension.
 </div>
 <div class="module-form">

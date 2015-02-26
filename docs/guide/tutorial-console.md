@@ -7,7 +7,7 @@ Yii has full featured support for console applications, whose structure is very 
 consists of one or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment. Each controller can also have one or more actions, just like web controllers.
 
 
-Usage <a name="usage"></a>
+Usage <span id="usage"></span>
 -----
 
 You execute a console controller action using the following syntax:
@@ -30,7 +30,7 @@ In the above `yii` is the console application entry script which is described be
 > glob that will be replaced by all file names of the current directory.
 
 
-Entry script <a name="entry-script"></a>
+Entry script <span id="entry-script"></span>
 ------------
 
 The console application entry script is equivalent to the `index.php` bootstrap file used for the web application.
@@ -65,7 +65,7 @@ not want to see a stack trace on error, and/or if you want to improve the overal
 templates, the console application entry script has debugging enabled by default to provide a more developer-friendly environment.
 
 
-Configuration <a name="configuration"></a>
+Configuration <span id="configuration"></span>
 -------------
 
 As can be seen in the code above, the console application uses its own configuration file, named `console.php`. In this file
@@ -85,7 +85,7 @@ parts into a separate file, and including this file in both of the application c
 > ```
 
 
-Creating your own console commands <a name="create-command"></a>
+Creating your own console commands <span id="create-command"></span>
 ----------------------------------
 
 ### Console Controller and Action

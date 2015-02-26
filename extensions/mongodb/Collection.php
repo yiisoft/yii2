@@ -213,9 +213,7 @@ class Collection extends Object
      */
     public function createIndex($columns, $options = [])
     {
-        if (!is_array($columns)) {
-            $columns = [$columns];
-        }
+        $columns = (array)$columns;
         $keys = $this->normalizeIndexKeys($columns);
         $token = $this->composeLogToken('createIndex', [$keys, $options]);
         $options = array_merge(['w' => 1], $options);
@@ -258,9 +256,7 @@ class Collection extends Object
      */
     public function dropIndex($columns)
     {
-        if (!is_array($columns)) {
-            $columns = [$columns];
-        }
+        $columns = (array)$columns;
         $keys = $this->normalizeIndexKeys($columns);
         $token = $this->composeLogToken('dropIndex', [$keys]);
         Yii::info($token, __METHOD__);

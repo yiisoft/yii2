@@ -1,22 +1,22 @@
-Dizendo "Hello World"
+Como Fazer um "Hello World"
 =====================
 
-Esta seção descreve como criar uma nova página de "Hello World" em sua aplicação.
+Esta seção descreve como criar uma nova página de "Hello" em sua aplicação.
 Para atingir este objetivo, você criará uma [ação](structure-controllers.md#creating-actions)
 (action) e uma [visão](structure-views.md) (view):
 
 * A aplicação enviará a requisição de página para a ação
-* e a ação por sua vez renderizará a view que mostra as palavras "Hello World"
+* e a ação por sua vez renderizará a view que mostra as palavras "Hello"
   para o usuário final.
 
-Através deste tutorial, você aprenderá as seguintes três coisas:
+Através deste tutorial, você aprenderá três coisas:
 
 1. Como criar uma [ação](structure-controllers.md) para responder às requisições,
 2. como criar uma [visão](structure-views.md) para compor o conteúdo da resposta, e
 3. como uma aplicação envia as requisições para as [ações](structure-controllers.md#creating-actions).
 
 
-Criando uma Ação <a name="creating-action"></a>
+Criando uma Ação <span id="creating-action"></span>
 ----------------
 
 Para a tarefa "Hello", você criará uma [ação](structure-controllers.md#creating-actions)
@@ -24,9 +24,9 @@ Para a tarefa "Hello", você criará uma [ação](structure-controllers.md#creat
 para o usuário. Se a requisição não fornecer um parâmetro `message`, a ação
 exibirá a mensagem padrão "Hello".
 
-> Info: [Ações](structure-controllers.md#creating-actions) são os objetos aos
-  quais os usuários podem se referir diretamente para execução. As ações são
-  agrupadas em [controladores](structure-controllers.md) (controllers). O resultado
+> Informação: [Ações](structure-controllers.md#creating-actions) são os objetos aos
+  quais os usuários finais podem se referir diretamente para execução. As ações são
+  agrupadas nos [controladores](structure-controllers.md) (controllers). O resultado
   da execução de uma ação é a resposta que o usuário final receberá.
 
 As ações devem ser declaradas em [controladores](structure-controllers.md). Por
@@ -65,7 +65,7 @@ para os IDs das ações removendo-se os hífens dos IDs, colocando em maiúsculo
 primeira letra de cada palavra, e prefixando o resultado com `action`. Por exemplo,
 o ID de ação `create-comment` corresponde ao método de ação `actionCreateComment`.
 
-O método de ação no nosso exemplo recebe um parâmetro `$message`, cujo valor
+O método de ação em nosso exemplo recebe um parâmetro `$message`, cujo valor
 padrão é "Hello" (exatamente da mesma forma que você define um valor padrão para
   qualquer argumento de função ou método no PHP). Quando a aplicação recebe a
 requisição e determina que a ação `say` é responsável por tratar a requisição,
@@ -81,10 +81,10 @@ será recebido pela aplicação, e exibido para o usuário final no navegador (c
 parte de uma págian HTML completa).
 
 
-Criando uma Visão <a name="creating-view"></a>
+Criando uma Visão <span id="creating-view"></span>
 -----------------
 
-[Visões](structure-views.md) são scripts que você escreve para gerar o conteúdo
+As [visões](structure-views.md) são scripts que você escreve para gerar o conteúdo
 de uma resposta. Para a tarefa "Hello", você criará uma visão `say` que imprime o
 parâmetro `message` recebido do método da ação, e passado pela ação para a visão:
 
@@ -111,7 +111,7 @@ O conteúdo impresso pelo script da visão será retornado à aplicação como o
 da resposta. A aplicação, por sua vez, retornará este resultado para o usuário final.
 
 
-Testando <a name="trying-it-out"></a>
+Testando <span id="trying-it-out"></span>
 --------
 
 Após criar a ação e a visão, você pode acessar a nova página através da seguinte URL:
@@ -129,7 +129,7 @@ Se você omitir o parâmetro `message` na URL, você veria a página exibindo so
 "Hello". Isso é porque `message` é passado como um parâmetro para o método `actionSay()`,
 e quando ele é omitido, o valor padrão `"Hello"` será usado ao invés dele.
 
-> Info: A nova página compartilha o mesmo cabeçalho e rodapé de outras páginas
+> Informação: A nova página compartilha o mesmo cabeçalho e rodapé de outras páginas
   porque o método [[yii\web\Controller::render()|render()]] irá automaticamente
   incluir o resultado da visão `say` em um [layout](structure-views.md#layouts) 
   que neste caso está localizado em `views/layouts/main.php`.
@@ -144,7 +144,7 @@ instanciada para fazer o trabalho. No caso deste exemplo, a rota `site/say` ser�
 resolvida como a classe de controlador `SiteController` e a ação `say`. Como
 resultado, o método `SiteController::actionSay()` será chamado para tratar a requisição.
 
-> Info: Assim como as ações, os controladores também possuem IDs que os identificam
+> Informação: Assim como as ações, os controladores também possuem IDs que os identificam
   de maneira única em uma aplicação. Os IDs de controladores seguem as mesmas regras
   de nomenclatura que os IDs de ações. Os nomes das classes de controlllers
   derivam dos IDs de controladores removendo-se os hífens dos IDs, convertendo a
@@ -153,11 +153,11 @@ resultado, o método `SiteController::actionSay()` será chamado para tratar a r
   de controlador `PostCommentController`.
 
 
-Resumo <a name="summary"></a>
+Resumo <span id="summary"></span>
 ------
 
 Nesta seção, você tocou as partes do controlador (controller) e da visão (view)
-do padrão de projeto MVC. Você criou uma ação (action) como parte de um controlador
+do padrão de arquitetura MVC. Você criou uma ação (action) como parte de um controlador
 para tratar uma requisição específica. E você também criou uma visão para compor
 o conteúdo da resposta. Neste exemplo simples acima, nenhum modelo (model) foi
 utilizado, já que os único dado sendo exibido foi o parâmetro `message`.

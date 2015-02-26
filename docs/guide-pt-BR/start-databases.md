@@ -12,15 +12,15 @@ Através deste tutorial, você aprenderá como:
 * Configurar uma conexão de BD
 * Definir uma classe de Active Record
 * Consultar dados usando a classe de Active Record
-* Exibir dados em uma view de modo paginado
+* Exibir dados em uma view de forma paginada
 
 Perceba que para terminar essa seção, você deve ter conhecimento e experiência
 básica usando bancos de dados. Em particular, você deveria saber como criar um
-banco de dados, e como executar declarações SQL usando uma ferramente de cliente
+banco de dados, e como executar instruções SQL usando uma ferramenta de cliente
 de BD.
 
 
-Preparando o Banco de Dados <a name="preparing-database"></a>
+Preparando o Banco de Dados <span id="preparing-database"></span>
 ---------------------------
 
 Para começar, crie um banco de dados chamado `yii2basic`, a partir do qual você
@@ -54,7 +54,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 Neste ponto, você tem um banco de dados chamado `yii2basic`, e dentro dele uma
 tabela `country` com três colunas, contendo dez linhas de dados.
 
-Configurando uma Conexão do BD <a name="configuring-db-connection"></a>
+Configurando uma Conexão do BD <span id="configuring-db-connection"></span>
 ------------------------------
 
 Antes de prosseguir, certifique-se de que você possui instalados tanto a
@@ -86,12 +86,12 @@ através da qual você pode fazer consultas de SQL ao banco de dados subjacente.
 A conexão de BD configurada acima pode ser acessada no código da aplicação
 através da expressão `Yii::$app->db`.
 
-> Info: O arquivo `config/db.php` será incluso pela configuração principal da
+> Informação: O arquivo `config/db.php` será incluso pela configuração principal da
   aplicação `config/web.php`, que especifica como a instância da [aplicação](structure-applications.md)
   deverá ser inicializada. Para mais informações, por favor consulte a seção sobre [Configurações](concept-configurations.md).
 
 
-Criando um Active Record <a name="creating-active-record"></a>
+Criando um Active Record <span id="creating-active-record"></span>
 ------------------------
 
 Para representar e buscar os dados da tabela `country`, crie uma classe que
@@ -114,7 +114,7 @@ A classe `Country` estende de [[yii\db\ActiveRecord]]. Você não precisa escrev
 nenhum código nela! Só com o código acima, o Yii adivinhará o nome da tabela
 associada a partir do nome da classe.
 
-> Info: Se não houver nenhuma correspondência direta do nome da classe com o nome
+> Informação: Se não houver nenhuma correspondência direta do nome da classe com o nome
   da tabela, você pode sobrescrever o método [[yii\db\ActiveRecord::tableName()]] 
   para especificar explicitamente o nome da tabela associada.
 
@@ -138,14 +138,14 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info: O Active Record é uma maneira poderosa de acessar e manipular os dados
-  do banco de dados de um modo orientado a objeto. Você pode encontrar informações
+> Informação: O Active Record é uma maneira poderosa de acessar e manipular os dados
+  do banco de dados de uma forma orientada a objeto. Você pode encontrar informações
   mais detalhadas na seção [Active Record](db-active-record.md). Alternativamente,
   você também pode interagir com o banco de dados usando um método de acesso aos
   dados de baixo nível chamado [Data Access Objects](db-dao.md).
 
 
-Criando uma Action <a name="creating-action"></a>
+Criando uma Action <span id="creating-action"></span>
 ------------------
 
 Para expor os dados de países aos usuários finais, você precisaria de uma nova
@@ -205,7 +205,7 @@ No final do código, a action `index` renderiza uma view chamada `index`, e pass
 para ela os dados dos países bem como as informações de paginação.
 
 
-Criando uma View <a name="creating-view"></a>
+Criando uma View <span id="creating-view"></span>
 ----------------
 
 Dentro do diretório `views`, primeiro crie um sub-diretório chamado `country`.
@@ -239,10 +239,10 @@ lista de botões para as páginas. Ao clicar em qualquer um deles atualizará
 os dados dos países com a página correspondente.
 
 
-Testando <a name="trying-it-out"></a>
+Testando <span id="trying-it-out"></span>
 --------
 
-Para verificar se todo o código acima funciona, use o seu navegador para
+Para verificar se todo os códigos acima funcionam, use o seu navegador para
 acessar a seguinte URL:
 
 ```
@@ -278,7 +278,7 @@ a funcionalidade necessária para paginar um conjunto de dados:
   próximos cinco países para a exibição.
 
 
-Resumo <a name="summary"></a>
+Resumo <span id="summary"></span>
 ------
 
 Nesta seção, você aprendeu como trabalhar com um banco de dados. Você também

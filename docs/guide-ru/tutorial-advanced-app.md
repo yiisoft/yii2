@@ -19,7 +19,7 @@
 
 Если Composer установлен, вы можете установить приложение используя следующие команды:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
     composer create-project --prefer-dist yiisoft/yii2-app-advanced yii-application
 
 Первая команда установит плагин [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
@@ -39,7 +39,7 @@
     php /path/to/yii-application/init
     ```
 
-    Для производственных сервером удобно выполнять данную команду в неинтерактивном режиме.
+    Для производственных серверов удобно выполнять данную команду в неинтерактивном режиме.
 
     ```
     php /path/to/yii-application/init --env=Production overwrite=All
@@ -139,7 +139,7 @@
 - `frontend/config/main.php`
 - `frontend/config/main-local.php`
 
-Парамтры считываются в следующем порядке:
+Параметры считываются в следующем порядке:
 
 - `common/config/params.php`
 - `common/config/params-local.php`
@@ -162,7 +162,7 @@
 {
     "name": "yiisoft/yii2-app-advanced",
     "description": "Yii 2 Advanced Application Template",
-    "keywords": ["yii", "framework", "advanced", "application template"],
+    "keywords": ["yii2", "framework", "advanced", "application template"],
     "homepage": "http://www.yiiframework.com/",
     "type": "project",
     "license": "BSD-3-Clause",
@@ -177,27 +177,23 @@
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
-        "yiisoft/yii2-swiftmailer": "*",
         "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*"
+        "yiisoft/yii2-swiftmailer": "*"
     },
-    "scripts": {
-        "post-create-project-cmd": [
-            "yii\\composer\\Installer::setPermission"
-        ]
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*",
+        "yiisoft/yii2-faker": "*"
+    },
+    "config": {
+        "process-timeout": 1800
     },
     "extra": {
-        "writable": [
-            "backend/runtime",
-            "backend/web/assets",
-
-            "console/runtime",
-            "console/migrations",
-
-            "frontend/runtime",
-            "frontend/web/assets"
-        ]
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
 ```

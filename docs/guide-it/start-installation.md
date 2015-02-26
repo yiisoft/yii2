@@ -8,7 +8,7 @@ semplicemente eseguendo un comando.
 > Nota: diversamente da Yii 1, le installazioni standard di Yii 2 comportano il download e l'installazione sia del framework che dello scheletro dell'applicazione
 
 
-Installazione via Composer <a name="installing-via-composer"></a>
+Installazione via Composer <span id="installing-via-composer"></span>
 --------------------------
 
 Se non hai già installato Composer puoi farlo seguendo le istruzioni al sito 
@@ -27,7 +27,7 @@ Se hai già Composer installato assicurati di avere una versione aggiornata. Puo
 
 Una volta installato Composer, puoi installare Yii eseguendo questo comando in una directory accessbile via web:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Il primo comando installa il [plugin composer asset](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -49,7 +49,7 @@ installa Yii in una directory di nome `basic`. Puoi scegliere un nome diverso, s
 > il tuo codice.
 
 
-Installazione da un archivio <a name="installing-from-archive-file"></a>
+Installazione da un archivio <span id="installing-from-archive-file"></span>
 ----------------------------
 
 L'installazione da un archivio compresso comporta tre passaggi:
@@ -65,7 +65,7 @@ L'installazione da un archivio compresso comporta tre passaggi:
    ```
 
 
-Altre modalità di installazione <a name="other-installation-options"></a>
+Altre modalità di installazione <span id="other-installation-options"></span>
 -------------------------------
 
 Le istruzioni sopra elencate mostrano come installare Yii, e creano inoltre un'applicazione web base funzionante.
@@ -79,7 +79,7 @@ Ma ci sono altre opzioni disponibili per l'installazione:
   [template di applicazione avanzata](tutorial-advanced-app.md).
 
 
-Verifica dell'installazione <a name="verifying-installation"></a>
+Verifica dell'installazione <span id="verifying-installation"></span>
 ---------------------------
 
 Dopo l'installazione puoi usare il tuo browser per accedere all'applicazione Yii installata con l'URL seguente:
@@ -110,7 +110,7 @@ PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](http://
 di database di PDO (come ad esempio `pdo_mysql` per i database MySQL), se la tua applicazione richiede un database.
 
 
-Configurazione del webserver <a name="configuring-web-servers"></a>
+Configurazione del webserver <span id="configuring-web-servers"></span>
 ----------------------------
 
 > Informazione: puoi saltare questa parte per ora se stai solo provando Yii e non hai intenzione di installarlo su un server di produzione.
@@ -135,7 +135,7 @@ configurazione del webserver, ma dovrai comunque correggere la struttura della t
 riferimento alla sezione [ambienti di hosting condiviso](tutorial-shared-hosting.md) per maggiori dettagli.
 
 
-### Configurazione consigliata di Apache <a name="recommended-apache-configuration"></a>
+### Configurazione consigliata di Apache <span id="recommended-apache-configuration"></span>
 
 Usa questa configurazione nel file `httpd.conf` di Apache o nella definizione del tuo *VirtualHost*. Tieni presente che dovrai
 modificare `path/to/basic/web` con il percorso reale della tua `basic/web`.
@@ -158,7 +158,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Configurazione consigliata di Nginx <a name="recommended-nginx-configuration"></a>
+### Configurazione consigliata di Nginx <span id="recommended-nginx-configuration"></span>
 
 Devi aver installato PHP con il demone [FPM](http://php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
 Usa questa configurazione per Nginx, sostituendo `path/to/basic/web` con il percorso reale di `basic/web` e `mysite.local` con

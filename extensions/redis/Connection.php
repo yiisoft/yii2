@@ -16,6 +16,8 @@ use yii\helpers\Inflector;
  *
  * By default it assumes there is a redis server running on localhost at port 6379 and uses the database number 0.
  *
+ * It is possible to connect to a redis server using [[hostname]] and [[port]] or using a [[unixSocket]].
+ *
  * It also supports [the AUTH command](http://redis.io/commands/auth) of redis.
  * When the server needs authentication, you can set the [[password]] property to
  * authenticate with the server after connect.
@@ -42,12 +44,21 @@ class Connection extends Component
 
     /**
      * @var string the hostname or ip address to use for connecting to the redis server. Defaults to 'localhost'.
+     * If [[unixSocket]] is specified, hostname and port will be ignored.
      */
     public $hostname = 'localhost';
     /**
      * @var integer the port to use for connecting to the redis server. Default port is 6379.
+     * If [[unixSocket]] is specified, hostname and port will be ignored.
      */
     public $port = 6379;
+    /**
+     * @var string the unix socket path (e.g. `/var/run/redis/redis.sock`) to use for connecting to the redis server.
+     * This can be used instead of [[hostname]] and [[port]] to connect to the server using a unix socket.
+     * If a unix socket path is specified, [[hostname]] and [[port]] will be ignored.
+     * @since 2.0.1
+     */
+    public $unixSocket;
     /**
      * @var string the password for establishing DB connection. Defaults to null meaning no AUTH command is send.
      * See http://redis.io/commands/auth
@@ -246,10 +257,10 @@ class Connection extends Component
         if ($this->_socket !== null) {
             return;
         }
-        $connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
+        $connection = ($this->unixSocket ?: $this->hostname . ':' . $this->port) . ', database=' . $this->database;
         \Yii::trace('Opening redis DB connection: ' . $connection, __METHOD__);
         $this->_socket = @stream_socket_client(
-            'tcp://' . $this->hostname . ':' . $this->port,
+            $this->unixSocket ? 'unix://' . $this->unixSocket : 'tcp://' . $this->hostname . ':' . $this->port,
             $errorNumber,
             $errorDescription,
             $this->connectionTimeout ? $this->connectionTimeout : ini_get("default_socket_timeout")
@@ -277,7 +288,7 @@ class Connection extends Component
     public function close()
     {
         if ($this->_socket !== null) {
-            $connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
+            $connection = ($this->unixSocket ?: $this->hostname . ':' . $this->port) . ', database=' . $this->database;
             \Yii::trace('Closing DB connection: ' . $connection, __METHOD__);
             $this->executeCommand('QUIT');
             stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
@@ -395,7 +406,7 @@ class Connection extends Component
                 $length = $line + 2;
                 $data = '';
                 while ($length > 0) {
-                    if (($block = fread($this->_socket, $line + 2)) === false) {
+                    if (($block = fread($this->_socket, $length)) === false) {
                         throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
                     }
                     $data .= $block;

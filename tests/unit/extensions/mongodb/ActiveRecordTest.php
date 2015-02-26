@@ -5,6 +5,10 @@ namespace yiiunit\extensions\mongodb;
 use yii\mongodb\ActiveQuery;
 use yiiunit\data\ar\mongodb\ActiveRecord;
 use yiiunit\data\ar\mongodb\Customer;
+use yiiunit\data\ar\mongodb\Animal;
+use yiiunit\data\ar\mongodb\Dog;
+use yiiunit\data\ar\mongodb\Cat;
+
 
 /**
  * @group mongodb
@@ -274,6 +278,11 @@ class ActiveRecordTest extends MongoDbTestCase
             ->modify(['$set' => ['name' => $newName]], ['new' => true]);
         $this->assertTrue($customer instanceof Customer);
         $this->assertEquals($newName, $customer->name);
+
+        $customer = Customer::find()
+            ->where(['name' => 'not existing name'])
+            ->modify(['$set' => ['name' => $newName]], ['new' => false]);
+        $this->assertNull($customer);
     }
 
     /**
@@ -288,5 +297,17 @@ class ActiveRecordTest extends MongoDbTestCase
 
         $this->assertTrue($record->_id instanceof \MongoId);
         $this->assertFalse($record->isNewRecord);
+    }
+    
+    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+    {
+        (new Cat())->save(false);
+        (new Dog())->save(false);
+
+        $animal = Animal::find()->where(['type' => Dog::className()])->one();
+        $this->assertEquals('bark', $animal->getDoes());
+
+        $animal = Animal::find()->where(['type' => Cat::className()])->one();
+        $this->assertEquals('meow', $animal->getDoes());
     }
 }

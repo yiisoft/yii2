@@ -53,7 +53,7 @@ class I18NTest extends TestCase
         // fallback to just langauge code with present exact match
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
     }
-    
+
     public function testDefaultSource()
     {
         $i18n = new I18N([
@@ -124,6 +124,27 @@ class I18NTest extends TestCase
     public function testMissingTranslationFormatting()
     {
         $this->assertEquals('1 item', $this->i18n->translate('test', '{0, number} {0, plural, one{item} other{items}}', 1, 'hu'));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/7093
+     */
+    public function testRussianPlurals()
+    {
+        $this->assertEquals('На диване лежит 6 кошек!', $this->i18n->translate('test', 'There {n, plural, =0{no cats} =1{one cat} other{are # cats}} on lying on the sofa!', ['n' => 6], 'ru'));
+    }
+
+    public function testUsingSourceLanguageForMissingTranslation()
+    {
+        \Yii::$app->sourceLanguage = 'ru';
+        \Yii::$app->language = 'en';
+
+        $msg = '{n, plural, =0{Нет комментариев} =1{# комментарий} one{# комментарий} few{# комментария} many{# комментариев} other{# комментария}}';
+        $this->assertEquals('5 комментариев', \Yii::t('app', $msg, ['n' => 5]));
+        $this->assertEquals('3 комментария', \Yii::t('app', $msg, ['n' => 3]));
+        $this->assertEquals('1 комментарий', \Yii::t('app', $msg, ['n' => 1]));
+        $this->assertEquals('21 комментарий', \Yii::t('app', $msg, ['n' => 21]));
+        $this->assertEquals('Нет комментариев', \Yii::t('app', $msg, ['n' => 0]));
     }
 
     /**

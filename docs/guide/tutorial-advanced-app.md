@@ -1,4 +1,4 @@
-Advanced application template
+Advanced Application Template
 =============================
 
 > Note: This section is under development.
@@ -6,6 +6,25 @@ Advanced application template
 This template is for large projects developed in teams where the backend is divided from the frontend, application is deployed
 to multiple servers etc. This application template also goes a bit further regarding features and provides essential
 database, signup and password restore out of the box.
+
+The following table compares the difference between the advanced and the basic application templates:
+
+
+| Feature  |  Basic  |  Advanced |
+|---|:---:|:---:|
+| Project structure |  ✓  |  ✓  |
+| Site controller |  ✓  |  ✓  |
+| User login/logout |   ✓  |  ✓  |
+| Forms  |   ✓  |  ✓  |
+| DB connection  |   ✓  |  ✓  |
+| Console command  |   ✓  |  ✓  |
+| Asset bundle  |   ✓  |  ✓  |
+| Codeception tests  |   ✓  |  ✓  |
+| Twitter Bootstrap  |  ✓   |  ✓  |
+| Front- and back-end apps  |    |  ✓  |
+| Ready to use User model |    |  ✓  |
+| User signup and password restore  |     |  ✓  |
+
 
 Installation
 ------------
@@ -17,7 +36,7 @@ If you do not have [Composer](http://getcomposer.org/), follow the instructions 
 
 With Composer installed, you can then install the application using the following commands:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+    composer global require "fxp/composer-asset-plugin:1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-advanced yii-application
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -40,10 +59,10 @@ the installed application. You only need to do these once for all.
     Otherwise, in production execute `init` in non-interactive mode.
 
     ```
-    php /path/to/yii-application/init --env=Production overwrite=All
+    php /path/to/yii-application/init --env=Production --overwrite=All
     ```
 
-2. Create a new database and adjust the `components.db` configuration in `common/config/main-local.php` accordingly.
+2. Create a new database and adjust the `components['db']` configuration in `common/config/main-local.php` accordingly.
 3. Apply migrations with console command `yii migrate`.
 4. Set document roots of your web server:
 
@@ -125,6 +144,9 @@ In order to solve these issues Yii introduces a simple environments concept. Eac
 by a set of files under the `environments` directory. The `init` command is used to switch between these. What it really does is
 copy everything from the environment directory over to the root directory where all applications are.
 
+By default there are two environments: `dev` and `prod`. First is for development. It has all the developer tools
+and debug turned on. Second is for server deployments. It has debug and developer tools turned off. 
+
 Typically environment contains application bootstrap files such as `index.php` and config files suffixed with
 `-local.php`. These are added to `.gitignore` and never added to source code repository.
 
@@ -159,7 +181,7 @@ directory:
 {
     "name": "yiisoft/yii2-app-advanced",
     "description": "Yii 2 Advanced Application Template",
-    "keywords": ["yii", "framework", "advanced", "application template"],
+    "keywords": ["yii2", "framework", "advanced", "application template"],
     "homepage": "http://www.yiiframework.com/",
     "type": "project",
     "license": "BSD-3-Clause",
@@ -174,27 +196,23 @@ directory:
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "*",
-        "yiisoft/yii2-swiftmailer": "*",
         "yiisoft/yii2-bootstrap": "*",
-        "yiisoft/yii2-debug": "*",
-        "yiisoft/yii2-gii": "*"
+        "yiisoft/yii2-swiftmailer": "*"
     },
-    "scripts": {
-        "post-create-project-cmd": [
-            "yii\\composer\\Installer::setPermission"
-        ]
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*",
+        "yiisoft/yii2-faker": "*"
+    },
+    "config": {
+        "process-timeout": 1800
     },
     "extra": {
-        "writable": [
-            "backend/runtime",
-            "backend/web/assets",
-
-            "console/runtime",
-            "console/migrations",
-
-            "frontend/runtime",
-            "frontend/web/assets"
-        ]
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
 ```

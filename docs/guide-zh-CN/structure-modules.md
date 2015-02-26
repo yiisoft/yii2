@@ -8,7 +8,7 @@
 模块不能单独部署，必须属于某个应用主体。
 
 
-## 创建模块 <a name="creating-modules"></a>
+## 创建模块 <span id="creating-modules"></span>
 
 模块被组织成一个称为[[yii\base\Module::basePath|base path]]的目录，
 在该目录中有子目录如`controllers`, `models`, `views` 分别为对应控制器，模型，视图和其他代码，和应用非常类似。
@@ -27,10 +27,10 @@ forum/
 ```
 
 
-### 模块类 <a name="module-classes"></a>
+### 模块类 <span id="module-classes"></span>
 
 每个模块都有一个继承[[yii\base\Module]]的模块类，该类文件直接放在模块的[[yii\base\Module::basePath|base path]]目录下，
-并且能被 [自动加载](concept-autoloading.md)。当一个模块被访问，和 [application instances](structure-applications.md)
+并且能被 [自动加载](concept-autoloading.md)。当一个模块被访问，和 [应用主体实例](structure-applications.md)
 类似会创建该模块类唯一实例，模块实例用来帮模块内代码共享数据和组件。
 
 以下示例一个模块类大致定义：
@@ -77,7 +77,7 @@ return [
 ```
 
 
-### 模块中的控制器 <a name="controllers-in-modules"></a>
+### 模块中的控制器 <span id="controllers-in-modules"></span>
 
 创建模块的控制器时，惯例是将控制器类放在模块类命名空间的`controllers`子命名空间中，
 也意味着要将控制器类文件放在模块[[yii\base\Module::basePath|base path]]目录中的`controllers`子目录中。
@@ -99,7 +99,7 @@ class PostController extends Controller
 这类似于 [应用主体配置](structure-applications.md#controller-map) 所做的。
 
 
-### 模块中的视图 <a name="views-in-modules"></a>
+### 模块中的视图 <span id="views-in-modules"></span>
 
 视图应放在模块的[[yii\base\Module::basePath|base path]]对应目录下的 `views` 目录，
 对于模块中控制器对应的视图文件应放在 `views/ControllerID` 目录下，
@@ -111,7 +111,7 @@ class PostController extends Controller
 如果没有配置 `layout` 属性名，默认会使用应用的布局。
 
 
-## 使用模块 <a name="using-modules"></a>
+## 使用模块 <span id="using-modules"></span>
 
 要在应用中使用模块，只需要将模块加入到应用主体配置的[[yii\base\Application::modules|modules]]属性的列表中，
 如下代码的[应用主体配置](structure-applications.md#application-configurations) 使用 `forum` 模块:
@@ -131,7 +131,7 @@ class PostController extends Controller
 它标识该应用中唯一的模块，数组的值为用来创建模块的 [配置](concept-configurations.md)。
 
 
-### 路由 <a name="routes"></a>
+### 路由 <span id="routes"></span>
 
 和访问应用的控制器类似，[路由](structure-controllers.md#routes) 也用在模块中控制器的寻址，
 模块中控制器的路由必须以模块ID开始，接下来为控制器ID和操作ID。
@@ -140,7 +140,7 @@ class PostController extends Controller
 也就是说路由 `forum` 可能代表 `forum` 模块的 `default` 控制器。
 
 
-### 访问模块 <a name="accessing-modules"></a>
+### 访问模块 <span id="accessing-modules"></span>
 
 在模块中，可能经常需要获取[模块类](#module-classes)的实例来访问模块ID，模块参数，模块组件等，
 可以使用如下语句来获取：
@@ -174,7 +174,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-### 引导启动模块 <a name="bootstrapping-modules"></a>
+### 引导启动模块 <span id="bootstrapping-modules"></span>
 
 有些模块在每个请求下都有运行， [[yii\debug\Module|debug]] 模块就是这种，
 为此将这种模块加入到应用主体的 [[yii\base\Application::bootstrap|bootstrap]] 属性中。
@@ -194,7 +194,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ```
 
 
-## 模块嵌套 <a name="nested-modules"></a>
+## 模块嵌套 <span id="nested-modules"></span>
 
 模块可无限级嵌套，也就是说，模块可以包含另一个包含模块的模块，我们称前者为*父模块*，后者为*子模块*，
 子模块必须在父模块的[[yii\base\Module::modules|modules]]属性中申明，例如：
@@ -222,7 +222,7 @@ class Module extends \yii\base\Module
 在模块`forum`中子模块`admin`中`dashboard`控制器的`index`操作。
 
 
-## 最佳实践 <a name="best-practices"></a>
+## 最佳实践 <span id="best-practices"></span>
 
 模块在大型项目中常备使用，这些项目的特性可分组，每个组包含一些强相关的特性，
 每个特性组可以做成一个模块由特定的开发人员和开发组来开发和维护。

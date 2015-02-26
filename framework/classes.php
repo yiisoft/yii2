@@ -210,7 +210,6 @@ return [
   'yii\rbac\PhpManager' => YII2_PATH . '/rbac/PhpManager.php',
   'yii\rbac\Role' => YII2_PATH . '/rbac/Role.php',
   'yii\rbac\Rule' => YII2_PATH . '/rbac/Rule.php',
-  'yii\requirements\YiiRequirementChecker' => YII2_PATH . '/requirements/YiiRequirementChecker.php',
   'yii\rest\Action' => YII2_PATH . '/rest/Action.php',
   'yii\rest\ActiveController' => YII2_PATH . '/rest/ActiveController.php',
   'yii\rest\Controller' => YII2_PATH . '/rest/Controller.php',

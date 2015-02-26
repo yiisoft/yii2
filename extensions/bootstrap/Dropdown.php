@@ -10,10 +10,26 @@ namespace yii\bootstrap;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Dropdown renders a Bootstrap dropdown menu component.
  *
+ * For example,
+ *
+ * ```php
+ * <div class="dropdown">
+ *     <a href="#" data-toggle="dropdown" class="dropdown-toggle">Label <b class="caret"></b></a>
+ *     <?php
+ *         echo Dropdown::widget([
+ *             'items' => [
+ *                 ['label' => 'DropdownA', 'url' => '/'],
+ *                 ['label' => 'DropdownB', 'url' => '#'],
+ *             ],
+ *         ]);
+ *     ?>
+ * </div>
+ * ```
  * @see http://getbootstrap.com/javascript/#dropdowns
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
  * @since 2.0
@@ -25,7 +41,8 @@ class Dropdown extends Widget
      * or an array representing a single menu with the following structure:
      *
      * - label: string, required, the label of the item link
-     * - url: string, optional, the url of the item link. Defaults to "#".
+     * - url: string|array, optional, the url of the item link. This will be processed by [[Url::to()]].
+     *   If not set, the item will be treated as a menu header when the item has no sub-menu.
      * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
      * - linkOptions: array, optional, the HTML attributes of the item link.
      * - options: array, optional, the HTML attributes of the item.
@@ -40,11 +57,6 @@ class Dropdown extends Widget
      */
     public $encodeLabels = true;
 
-    /**
-     * @var array the HTML attributes for the widget container tag.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
-     */
-    protected $_containerOptions = [];
 
     /**
      * Initializes the widget.
@@ -54,7 +66,6 @@ class Dropdown extends Widget
     {
         parent::init();
         Html::addCssClass($this->options, 'dropdown-menu');
-        $this->_containerOptions = $this->options;
     }
 
     /**
@@ -62,45 +73,56 @@ class Dropdown extends Widget
      */
     public function run()
     {
-        echo $this->renderItems($this->items);
         BootstrapPluginAsset::register($this->getView());
+        $this->registerClientEvents();
+        return $this->renderItems($this->items, $this->options);
     }
 
     /**
      * Renders menu items.
      * @param array $items the menu items to be rendered
+     * @param array $options the container HTML attributes
      * @return string the rendering result.
      * @throws InvalidConfigException if the label option is not specified in one of the items.
      */
-    protected function renderItems($items)
+    protected function renderItems($items, $options = [])
     {
         $lines = [];
         foreach ($items as $i => $item) {
             if (isset($item['visible']) && !$item['visible']) {
-                unset($items[$i]);
                 continue;
             }
             if (is_string($item)) {
                 $lines[] = $item;
                 continue;
             }
-            if (!isset($item['label'])) {
+            if (!array_key_exists('label', $item)) {
                 throw new InvalidConfigException("The 'label' option is required.");
             }
             $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
             $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
-            $options = ArrayHelper::getValue($item, 'options', []);
+            $itemOptions = ArrayHelper::getValue($item, 'options', []);
             $linkOptions = ArrayHelper::getValue($item, 'linkOptions', []);
             $linkOptions['tabindex'] = '-1';
-            $content = Html::a($label, ArrayHelper::getValue($item, 'url', '#'), $linkOptions);
-            if (!empty($item['items'])) {
-                unset($this->_containerOptions['id']);
-                $content .= $this->renderItems($item['items']);
-                Html::addCssClass($options, 'dropdown-submenu');
+            $url = array_key_exists('url', $item) ? $item['url'] : null;
+            if (empty($item['items'])) {
+                if ($url === null) {
+                    $content = $label;
+                    Html::addCssClass($itemOptions, 'dropdown-header');
+                } else {
+                    $content = Html::a($label, $url, $linkOptions);
+                }
+            } else {
+                $submenuOptions = $options;
+                unset($submenuOptions['id']);
+                $content = Html::a($label, $url === null ? '#' : $url, $linkOptions)
+                    . $this->renderItems($item['items'], $submenuOptions);
+                Html::addCssClass($itemOptions, 'dropdown-submenu');
             }
-            $lines[] = Html::tag('li', $content, $options);
+
+            $lines[] = Html::tag('li', $content, $itemOptions);
         }
 
-        return Html::tag('ul', implode("\n", $lines), $this->_containerOptions);
+        return Html::tag('ul', implode("\n", $lines), $options);
     }
 }

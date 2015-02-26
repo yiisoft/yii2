@@ -1,7 +1,20 @@
 Yii Framework 2 authclient extension Change Log
 ===============================================
 
-2.0.1 under development
+2.0.3 under development
+-----------------------
+
+- Enh #6892: Default value of `yii\authclient\clients\Twitter::$authUrl` changed to 'authenticate', allowing usage of previous logged user without request an access (kotchuprik)
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Bug #6502: Fixed `\yii\authclient\OAuth2::refreshAccessToken()` does not save fetched token (sebathi)
+- Bug #6510: Fixed infinite redirect loop using default `\yii\authclient\AuthAction::cancelUrl` (klimov-paul)
+
+
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #6000: Fixed CCS for `yii\authclient\widgets\AuthChoice` does not loaded if `popupMode` disabled (klimov-paul)

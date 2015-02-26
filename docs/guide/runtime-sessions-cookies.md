@@ -1,19 +1,19 @@
 Sessions and Cookies
 ====================
 
-Sessions and cookies allow data to be persisted across multiple user requests. In plain PHP, you may access them
+Sessions and cookies allow data to be persisted across multiple user requests. In plain PHP you may access them
 through the global variables `$_SESSION` and `$_COOKIE`, respectively. Yii encapsulates sessions and cookies as objects
-and thus allows you to access them in an object-oriented fashion with additional nice enhancements.
+and thus allows you to access them in an object-oriented fashion with additional useful enhancements.
 
 
-## Sessions <a name="sessions"></a>
+## Sessions <span id="sessions"></span>
 
 Like [requests](runtime-requests.md) and [responses](runtime-responses.md), you can get access to sessions via
 the `session` [application component](structure-application-components.md) which is an instance of [[yii\web\Session]],
 by default.
 
 
-### Opening and Closing Sessions <a name="opening-closing-sessions"></a>
+### Opening and Closing Sessions <span id="opening-closing-sessions"></span>
 
 To open and close a session, you can do the following:
 
@@ -33,11 +33,11 @@ $session->close();
 $session->destroy();
 ```
 
-You can call the [[yii\web\Session::open()|open()]] and [[yii\web\Session::close()|close()]] multiple times
-without causing errors. This is because internally the methods will first check if the session is already opened.
+You can call [[yii\web\Session::open()|open()]] and [[yii\web\Session::close()|close()]] multiple times
+without causing errors; internally the methods will first check if the session is already open.
 
 
-### Accessing Session Data <a name="access-session-data"></a>
+### Accessing Session Data <span id="access-session-data"></span>
 
 To access the data stored in session, you can do the following:
 
@@ -102,7 +102,7 @@ $session = Yii::$app->session;
 $_SESSION['captcha']['number'] = 5;
 $_SESSION['captcha']['lifetime'] = 3600;
 
-// get the whole array out first, modify it and then save it back
+// get the whole array first, modify it and then save it back
 $captcha = $session['captcha'];
 $captcha['number'] = 5;
 $captcha['lifetime'] = 3600;
@@ -114,7 +114,7 @@ $session['captcha'] = new \ArrayObject;
 $session['captcha']['number'] = 5;
 $session['captcha']['lifetime'] = 3600;
 
-// store array data by keys with common prefix
+// store array data by keys with a common prefix
 $session['captcha.number'] = 5;
 $session['captcha.lifetime'] = 3600;
 ```
@@ -124,7 +124,7 @@ an array as a single session variable, you store each array element as a session
 key prefix with other array elements.
 
 
-### Custom Session Storage <a name="custom-session-storage"></a>
+### Custom Session Storage <span id="custom-session-storage"></span>
 
 The default [[yii\web\Session]] class stores session data as files on the server. Yii also provides the following
 session classes implementing different session storage:
@@ -134,16 +134,16 @@ session classes implementing different session storage:
 * [[yii\redis\Session]]: stores session data using [redis](http://redis.io/) as the storage medium.
 * [[yii\mongodb\Session]]: stores session data in a [MongoDB](http://www.mongodb.org/).
 
-All these session classes support the same set of API methods. As a result, you can switch to use a different
-session storage without the need to modify your application code that uses session.
+All these session classes support the same set of API methods. As a result, you can switch to a different
+session storage class without the need to modify your application code that uses sessions.
 
 > Note: If you want to access session data via `$_SESSION` while using custom session storage, you must make
-  sure that the session is already started by [[yii\web\Session::open()]]. This is because custom session storage
+  sure that the session has already been started by [[yii\web\Session::open()]]. This is because custom session storage
   handlers are registered within this method.
 
 To learn how to configure and use these component classes, please refer to their API documentation. Below is
-an example showing how to configure [[yii\web\DbSession]] in the application configuration to use database table
-as session storage:
+an example showing how to configure [[yii\web\DbSession]] in the application configuration to use a database table
+for session storage:
 
 ```php
 return [
@@ -168,18 +168,18 @@ CREATE TABLE session
 )
 ```
 
-where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type that can be used for some popular DBMS:
+where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB types that can be used for some popular DBMS:
 
 - MySQL: LONGBLOB
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
 > Note: According to the php.ini setting of `session.hash_function`, you may need to adjust
-  the length of the `id` column. For example, if `session.hash_function=sha256`, you should use
+  the length of the `id` column. For example, if `session.hash_function=sha256`, you should use a
   length 64 instead of 40.
 
 
-### Flash Data <a name="flash-data"></a>
+### Flash Data <span id="flash-data"></span>
 
 Flash data is a special kind of session data which, once set in one request, will only be available during
 the next request and will be automatically deleted afterwards. Flash data is most commonly used to implement
@@ -207,7 +207,7 @@ $result = $session->hasFlash('postDeleted');
 Like regular session data, you can store arbitrary data as flash data.
 
 When you call [[yii\web\Session::setFlash()]], it will overwrite any existing flash data that has the same name.
-To append new flash data to the existing one(s) of the same name, you may call [[yii\web\Session::addFlash()]] instead.
+To append new flash data to an existing message of the same name, you may call [[yii\web\Session::addFlash()]] instead.
 For example:
 
 ```php
@@ -231,7 +231,7 @@ $alerts = $session->getFlash('alerts');
   the invocation of these two methods.
 
 
-## Cookies <a name="cookies"></a>
+## Cookies <span id="cookies"></span>
 
 Yii represents each cookie as an object of [[yii\web\Cookie]]. Both [[yii\web\Request]] and [[yii\web\Response]]
 maintain a collection of cookies via the property named `cookies`. The cookie collection in the former represents
@@ -239,12 +239,12 @@ the cookies submitted in a request, while the cookie collection in the latter re
 be sent to the user.
 
 
-### Reading Cookies <a name="reading-cookies"></a>
+### Reading Cookies <span id="reading-cookies"></span>
 
 You can get the cookies in the current request using the following code:
 
 ```php
-// get the cookie collection (yii\web\CookieCollection) from "request" component
+// get the cookie collection (yii\web\CookieCollection) from the "request" component
 $cookies = Yii::$app->request->cookies;
 
 // get the "language" cookie value. If the cookie does not exist, return "en" as the default value.
@@ -266,12 +266,12 @@ if (isset($cookies['language'])) ...
 ```
 
 
-### Sending Cookies <a name="sending-cookies"></a>
+### Sending Cookies <span id="sending-cookies"></span>
 
 You can send cookies to end users using the following code:
 
 ```php
-// get the cookie collection (yii\web\CookieCollection) from "response" component
+// get the cookie collection (yii\web\CookieCollection) from the "response" component
 $cookies = Yii::$app->response->cookies;
 
 // add a new cookie to the response to be sent
@@ -287,21 +287,21 @@ unset($cookies['language']);
 ```
 
 Besides the [[yii\web\Cookie::name|name]], [[yii\web\Cookie::value|value]] properties shown in the above
-examples, the [[yii\web\Cookie]] class also defines other properties to fully represent all possible information
-of cookies, such as [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. You may configure these
+examples, the [[yii\web\Cookie]] class also defines other properties to fully represent all available cookie 
+information, such as [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. You may configure these
 properties as needed to prepare a cookie and then add it to the response's cookie collection.
 
-> Note: For better security, the default value of [[yii\web\Cookie::httpOnly]] is set true. This helps mitigate
-the risk of client side script accessing the protected cookie (if the browser supports it). You may read
+> Note: For better security, the default value of [[yii\web\Cookie::httpOnly]] is set to true. This helps mitigate
+the risk of a client side script accessing the protected cookie (if the browser supports it). You may read
 the [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
 
 
-### Cookie Validation <a name="cookie-validation"></a>
+### Cookie Validation <span id="cookie-validation"></span>
 
-When you are reading and sending cookies through the `request` and `response` components like shown in the last
+When you are reading and sending cookies through the `request` and `response` components as shown in the last
 two subsections, you enjoy the added security of cookie validation which protects cookies from being modified
 on the client side. This is achieved by signing each cookie with a hash string, which allows the application to
-tell if a cookie is modified on the client side or not. If so, the cookie will NOT be accessible through the
+tell if a cookie has been modified on the client side. If so, the cookie will NOT be accessible through the
 [[yii\web\Request::cookies|cookie collection]] of the `request` component.
 
 > Note: Cookie validation only protects cookie values from being modified. If a cookie fails the validation, 
@@ -327,4 +327,4 @@ return [
 ```
 
 > Info: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] is critical to your application's security.
-  It should only be known to people you trust. Do not store it in version control system.
+  It should only be known to people you trust. Do not store it in the version control system.

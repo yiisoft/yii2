@@ -6,7 +6,7 @@ before putting it to good use.
 
 Given a [model](structure-models.md) populated with user inputs, you can validate the inputs by calling the
 [[yii\base\Model::validate()]] method. The method will return a boolean value indicating whether the validation
-succeeds or not. If not, you may get the error messages from the [[yii\base\Model::errors]] property. For example,
+succeeded or not. If not, you may get the error messages from the [[yii\base\Model::errors]] property. For example,
 
 ```php
 $model = new \app\models\ContactForm;
@@ -22,17 +22,8 @@ if ($model->validate()) {
 }
 ```
 
-Behind the scene, the `validate()` method does the following steps to perform validation:
 
-1. Determine which attributes should be validated by getting the attribute list from [[yii\base\Model::scenarios()]]
-   using the current [[yii\base\Model::scenario|scenario]]. These attributes are called *active attributes*.
-2. Determine which validation rules should be used by getting the rule list from [[yii\base\Model::rules()]]
-   using the current [[yii\base\Model::scenario|scenario]]. These rules are called *active rules*.
-3. Use each active rule to validate each active attribute associated with that rule. If the rule fails,
-   keep an error message for the attribute in the model.
-
-
-## Declaring Rules <a name="declaring-rules"></a>
+## Declaring Rules <span id="declaring-rules"></span>
 
 To make `validate()` really work, you should declare validation rules for the attributes you plan to validate.
 This should be done by overriding the [[yii\base\Model::rules()]] method. The following example shows how
@@ -58,7 +49,7 @@ of the following format:
 [
     // required, specifies which attributes should be validated by this rule.
     // For a single attribute, you can use the attribute name directly
-    // without having it in an array instead of an array
+    // without having it in an array
     ['attribute1', 'attribute2', ...],
 
     // required, specifies the type of this rule.
@@ -92,19 +83,19 @@ If you do not specify an `on` option, it means the rule will be applied to all s
 
 When the `validate()` method is called, it does the following steps to perform validation:
 
-1. Determine which attributes should be validated by checking the current [[yii\base\Model::scenario|scenario]]
-   against the scenarios declared in [[yii\base\Model::scenarios()]]. These attributes are the active attributes.
-2. Determine which rules should be applied by checking the current [[yii\base\Model::scenario|scenario]]
-   against the rules declared in [[yii\base\Model::rules()]]. These rules are the active rules.
+1. Determine which attributes should be validated by getting the attribute list from [[yii\base\Model::scenarios()]]
+   using the current [[yii\base\Model::scenario|scenario]]. These attributes are called *active attributes*.
+2. Determine which validation rules should be used by getting the rule list from [[yii\base\Model::rules()]]
+   using the current [[yii\base\Model::scenario|scenario]]. These rules are called *active rules*.
 3. Use each active rule to validate each active attribute which is associated with the rule.
    The validation rules are evaluated in the order they are listed.
-
+   
 According to the above validation steps, an attribute will be validated if and only if it is
 an active attribute declared in `scenarios()` and is associated with one or multiple active rules
 declared in `rules()`.
 
 
-### Customizing Error Messages <a name="customizing-error-messages"></a>
+### Customizing Error Messages <span id="customizing-error-messages"></span>
 
 Most validators have default error messages that will be added to the model being validated when its attributes
 fail the validation. For example, the [[yii\validators\RequiredValidator|required]] validator will add
@@ -129,7 +120,7 @@ to describe the validation failure when the value being validated is too big and
 You may configure these error messages like configuring other properties of validators in a validation rule.
 
 
-### Validation Events <a name="validation-events"></a>
+### Validation Events <span id="validation-events"></span>
 
 When [[yii\base\Model::validate()]] is called, it will call two methods that you may override to customize
 the validation process:
@@ -143,7 +134,7 @@ the validation process:
   the validation is completed.
 
 
-### Conditional Validation <a name="conditional-validation"></a>
+### Conditional Validation <span id="conditional-validation"></span>
 
 To validate attributes only when certain conditions apply, e.g. the validation of one attribute depends
 on the value of another attribute you can use the [[yii\validators\Validator::when|when]] property
@@ -183,7 +174,7 @@ function whose return value determines whether to apply the rule or not. For exa
 ```
 
 
-### Data Filtering <a name="data-filtering"></a>
+### Data Filtering <span id="data-filtering"></span>
 
 User inputs often need to be filtered or preprocessed. For example, you may want to trim the spaces around the
 `username` input. You may use validation rules to achieve this goal.
@@ -205,7 +196,7 @@ As you can see, these validation rules do not really validate the inputs. Instea
 and save them back to the attributes being validated.
 
 
-### Handling Empty Inputs <a name="handling-empty-inputs"></a>
+### Handling Empty Inputs <span id="handling-empty-inputs"></span>
 
 When input data are submitted from HTML forms, you often need to assign some default values to the inputs
 if they are empty. You can do so by using the [default](tutorial-core-validators.md#default) validator. For example,
@@ -238,7 +229,7 @@ with a PHP callable. For example,
   `required`, and `trim` validators will handle empty inputs.
 
 
-## Ad Hoc Validation <a name="ad-hoc-validation"></a>
+## Ad Hoc Validation <span id="ad-hoc-validation"></span>
 
 Sometimes you need to do *ad hoc validation* for values that are not bound to any model.
 
@@ -256,7 +247,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note: Not all validators support such kind of validation. An example is the [unique](tutorial-core-validators.md#unique)
+> Note: Not all validators support this type of validation. An example is the [unique](tutorial-core-validators.md#unique)
   core validator which is designed to work with a model only.
 
 If you need to perform multiple validations against several values, you can use [[yii\base\DynamicModel]]
@@ -300,20 +291,20 @@ public function actionSearch($name, $email)
 }
 ```
 
-After validation, you can check if the validation succeeds or not by calling the
+After validation, you can check if the validation succeeded or not by calling the
 [[yii\base\DynamicModel::hasErrors()|hasErrors()]] method, and then get the validation errors from the
 [[yii\base\DynamicModel::errors|errors]] property, like you do with a normal model.
 You may also access the dynamic attributes defined through the model instance, e.g.,
 `$model->name` and `$model->email`.
 
 
-## Creating Validators <a name="creating-validators"></a>
+## Creating Validators <span id="creating-validators"></span>
 
 Besides using the [core validators](tutorial-core-validators.md) included in the Yii releases, you may also
 create your own validators. You may create inline validators or standalone validators.
 
 
-### Inline Validators <a name="inline-validators"></a>
+### Inline Validators <span id="inline-validators"></span>
 
 An inline validator is one defined in terms of a model method or an anonymous function. The signature of
 the method/function is:
@@ -321,7 +312,7 @@ the method/function is:
 ```php
 /**
  * @param string $attribute the attribute currently being validated
- * @param array $params the additional name-value pairs given in the rule
+ * @param mixed $params the value of the "params" given in the rule
  */
 function ($attribute, $params)
 ```
@@ -375,7 +366,7 @@ class MyForm extends Model
 > ```
 
 
-### Standalone Validators <a name="standalone-validators"></a>
+### Standalone Validators <span id="standalone-validators"></span>
 
 A standalone validator is a class extending [[yii\validators\Validator]] or its child class. You may implement
 its validation logic by overriding the [[yii\validators\Validator::validateAttribute()]] method. If an attribute
@@ -404,22 +395,22 @@ instead of `validateAttribute()` and `validate()` because by default the latter 
 by calling `validateValue()`.
 
 
-## Client-Side Validation <a name="client-side-validation"></a>
+## Client-Side Validation <span id="client-side-validation"></span>
 
 Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
-it allows users to find out input errors faster and thus provides better user experience. You may use or implement
+it allows users to find out input errors faster and thus provides a better user experience. You may use or implement
 a validator that supports client-side validation *in addition to* server-side validation.
 
-> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users better
-  experience. Like input data coming from end users, you should never trust client-side validation. For this reason,
-  you should always perform server-side validation by calling [[yii\base\Model::validate()]], like
+> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users with a better
+  experience. Similar to input data coming from end users, you should never trust client-side validation. For this reason,
+  you should always perform server-side validation by calling [[yii\base\Model::validate()]], as
   described in the previous subsections.
 
 
-### Using Client-Side Validation <a name="using-client-side-validation"></a>
+### Using Client-Side Validation <span id="using-client-side-validation"></span>
 
-Many [core validators](tutorial-core-validators.md) support client-side validation out-of-box. All you need to do
-is just to use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
+Many [core validators](tutorial-core-validators.md) support client-side validation out-of-the-box. All you need to do
+is just use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
 rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
 client and server sides; the other uses the `validatePassword` inline validator which is only supported on the server
 side.
@@ -479,7 +470,7 @@ validation of individual input fields by configuring their [[yii\widgets\ActiveF
 property to be false.
 
 
-### Implementing Client-Side Validation <a name="implementing-client-side-validation"></a>
+### Implementing Client-Side Validation <span id="implementing-client-side-validation"></span>
 
 To create a validator that supports client-side validation, you should implement the
 [[yii\validators\Validator::clientValidateAttribute()]] method which returns a piece of JavaScript code
@@ -539,7 +530,7 @@ JS;
 > ]
 > ```
 
-### Deferred Validation <a name="deferred-validation"></a>
+### Deferred Validation <span id="deferred-validation"></span>
 
 If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
 For example, to perform a custom AJAX validation, you can use the following code:
@@ -590,7 +581,7 @@ JS;
   validation will not complete.
 
 For simplicity, the `deferred` array is equipped with a shortcut method `add()` which automatically creates a Deferred
-object and add it to the `deferred` array. Using this method, you can simplify the above example as follows,
+object and adds it to the `deferred` array. Using this method, you can simplify the above example as follows,
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -615,7 +606,7 @@ JS;
 ```
 
 
-### AJAX Validation <a name="ajax-validation"></a>
+### AJAX Validation <span id="ajax-validation"></span>
 
 Some validations can only be done on the server side, because only the server has the necessary information.
 For example, to validate if a username is unique or not, it is necessary to check the user table on the server side.
@@ -623,7 +614,7 @@ You can use AJAX-based validation in this case. It will trigger an AJAX request 
 input while keeping the same user experience as the regular client-side validation.
 
 To enable AJAX validation for the whole form, you have to set the
-[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be unique form identifier:
+[[yii\widgets\ActiveForm::enableAjaxValidation]] property to be `true` and specify `id` to be a unique form identifier:
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin([
@@ -636,7 +627,7 @@ You may also turn AJAX validation on or off for individual input fields by confi
 [[yii\widgets\ActiveField::enableAjaxValidation]] property.
 
 You also need to prepare the server so that it can handle the AJAX validation requests.
-This can be achieved by a code snippet like the following in controller actions:
+This can be achieved by a code snippet like the following in the controller actions:
 
 ```php
 if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {

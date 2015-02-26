@@ -12,7 +12,7 @@
 Как можно догадаться по названию, первый тип в основном занимается обработкой веб запросов, в то время как последний - консольных команд.
 
 
-## Конфигурации приложения <a name="application-configurations"></a>
+## Конфигурации приложения <span id="application-configurations"></span>
 
 Когда [входной скрипт](structure-entry-scripts.md) создаёт приложение, он загрузит [конфигурацию](concept-configurations.md)
 и применит её к приложению, например:
@@ -33,27 +33,27 @@ $config = require(__DIR__ . '/../config/web.php');
 [конфигурационных файлов](concept-configurations.md#configuration-files), например, `web.php` - файл в приведённом выше примере.
 
 
-## Свойства приложений <a name="application-properties"></a>
+## Свойства приложений <span id="application-properties"></span>
 
 Существует много важных свойств приложения, которые вы настраиваете в конфигурациях приложения. Эти свойства обычно
 описывают окружение, в котором работает приложение. Например, приложение должно знать каким образом загружать [контроллеры](structure-controllers.md),
 где хранить временные файлы, и т. д. Ниже мы рассмотрим данные свойства.
 
 
-### Обязательные свойства <a name="required-properties"></a>
+### Обязательные свойства <span id="required-properties"></span>
 
 В любом приложении, вы должны настроить минимум два свойства: [[yii\base\Application::id|id]]
 и [[yii\base\Application::basePath|basePath]].
 
 
-#### [[yii\base\Application::id|id]] <a name="id"></a>
+#### [[yii\base\Application::id|id]] <span id="id"></span>
 
 Свойство [[yii\base\Application::id|id]] это уникальный индекс приложения, который отличает его от других приложений.
 В основном это используется внутрисистемно. Хоть это и не обязательно, но для лучшей совместимости рекомендуется использовать
 буквенно-цифровые символы при указании индекса приложения.
 
 
-#### [[yii\base\Application::basePath|basePath]] <a name="basePath"></a>
+#### [[yii\base\Application::basePath|basePath]] <span id="basePath"></span>
 
 Свойство [[yii\base\Application::basePath|basePath]] указывает на корневую директорию приложения. Эта директория содержит
 весь защищенный исходный код приложения. В данной директории обычно могут находится поддиректории `models`, `views`,
@@ -69,12 +69,12 @@ $config = require(__DIR__ . '/../config/web.php');
 времененную дирректорию runtime).
 
 
-### Важные свойства <a name="important-properties"></a>
+### Важные свойства <span id="important-properties"></span>
 
 Свойства, указанные в этом подразделе, часто нуждаются в преднастройке т.к. они разнятся от приложения к приложению.
 
 
-#### [[yii\base\Application::aliases|aliases]] <a name="aliases"></a>
+#### [[yii\base\Application::aliases|aliases]] <span id="aliases"></span>
 
 Это свойство позволяет настроить вам множество [псевдонимов](concept-aliases.md) в рамках массива.
 Ключами массива являются имена псевдонимов, а значениями массива - соответствующие значения пути. Например,
@@ -92,7 +92,7 @@ $config = require(__DIR__ . '/../config/web.php');
 а не вызовов метода [[Yii::setAlias()]].
 
 
-#### [[yii\base\Application::bootstrap|bootstrap]] <a name="bootstrap"></a>
+#### [[yii\base\Application::bootstrap|bootstrap]] <span id="bootstrap"></span>
 
 
 Данное свойство является очень удобным, оно позволяет указать массив компонентов, которые должны быть загружены
@@ -135,7 +135,7 @@ ID в качестве элемента данного свойства.
 > Info: Если ID модуля такой же, как идентификатор компонента приложения, то в процессе [начальной загрузки](runtime-bootstrapping.md)
 > будет использован компонент приложения. Если Вы вместо этого хотите использовать модуль, то можете указать его при
 > помощи анонимной функции похожей на эту:
->```php
+> ```php
 [
     function () {
         return Yii::$app->getModule('user');
@@ -165,7 +165,7 @@ if (YII_ENV_DEV) {
 быть загружено. Таким образом вы должны использовать начальную загрузку разумно.
 
 
-#### [[yii\web\Application::catchAll|catchAll]] <a name="catchAll"></a>
+#### [[yii\web\Application::catchAll|catchAll]] <span id="catchAll"></span>
 
 Данное свойство поддерживается только [[yii\web\Application|веб приложениями]]. Оно указывает
 [действие контроллера](structure-controllers.md), которое должно обрабатывать все входящие запросы от пользователя.
@@ -187,7 +187,7 @@ if (YII_ENV_DEV) {
 ```
 
 
-#### [[yii\base\Application::components|components]] <a name="components"></a>
+#### [[yii\base\Application::components|components]] <span id="components"></span>
 
 Данное свойство является наиболее важным. Оно позволяет вам зарегистрировать список именованных компонентов, называемых
 [компоненты приложения](#structure-application-components.md), которые Вы можете использовать в других местах.
@@ -216,7 +216,7 @@ if (YII_ENV_DEV) {
 Более подробная информация приведена в разделе [Компоненты приложения](structure-application-components.md).
 
 
-#### [[yii\base\Application::controllerMap|controllerMap]] <a name="controllerMap"></a>
+#### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
 Данное свойство позволяет вам задавать соответствия(mapping) между ID контроллера и произвольным классом контроллера.
 По-умолчанию, Yii задает соответствие между ID контроллера и его классом согласно данному [соглашению](#controllerNamespace)
@@ -243,7 +243,7 @@ if (YII_ENV_DEV) {
 классов(полное название класса с пространством имен) контроллера или [конфигурация](concept-configurations.md).
 
 
-#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <a name="controllerNamespace"></a>
+#### [[yii\base\Application::controllerNamespace|controllerNamespace]] <span id="controllerNamespace"></span>
 
 Данное свойство указывает пространство имен, в котором по умолчанию должны находится названия классов контроллеров.
 По-умолчанию значение равно `app\controllers`. Если ID контроллера `post`, то согласно соглашению, соответствующий класс
@@ -259,7 +259,7 @@ if (YII_ENV_DEV) {
 В случае, если вы хотите переопределить соответствия как описано выше, вы можете настроить свойство [controllerMap](#controllerMap).
 
 
-#### [[yii\base\Application::language|language]] <a name="language"></a>
+#### [[yii\base\Application::language|language]] <span id="language"></span>
 
 Данное свойство указывает язык приложения, на котором содержимое страницы должно быть отображено конечному пользователю.
 По-умолчанию значение данного свойства равно `en`, что означает "Английский". Если ваше приложение должно поддерживать
@@ -276,7 +276,7 @@ if (YII_ENV_DEV) {
 Более детальная информация приведена в разделе [Интернационализация](tutorial-i18n.md).
 
 
-#### [[yii\base\Application::modules|modules]] <a name="modules"></a>
+#### [[yii\base\Application::modules|modules]] <span id="modules"></span>
 
 Данное свойство указывает [модули](structure-modules.md), которые содержаться в приложении.
 
@@ -301,7 +301,7 @@ ID модулей. Например,
 Более детальная информация приведена в разделе [Модули](structure-modules.md).
 
 
-#### [[yii\base\Application::name|name]] <a name="name"></a>
+#### [[yii\base\Application::name|name]] <span id="name"></span>
 
 Свойство указывает название приложения, которое может быть показано конечным пользователям. В отличие от
 свойства [[yii\base\Application::id|id]], которое должно быть уникальным, значение данного свойства нужно в
@@ -310,7 +310,7 @@ ID модулей. Например,
 Если ваш код не использует данное свойство, то вы можете не настраивать его.
 
 
-#### [[yii\base\Application::params|params]] <a name="params"></a>
+#### [[yii\base\Application::params|params]] <span id="params"></span>
 
 Данное свойство указывает массив глобально доступных параметров приложения. Вместо того, чтобы использовать
 жестко фиксированные числа и строки в вашем коде, лучше объявить их параметрами приложения в едином месте и 
@@ -335,7 +335,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 приложения, не касаясь зависимого кода.
 
 
-#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <a name="sourceLanguage"></a>
+#### [[yii\base\Application::sourceLanguage|sourceLanguage]] <span id="sourceLanguage"></span>
 
 Данное свойство указывает язык на котором написан код приложения. По-умолчанию значение равно `'en-US'`, что означает
 "Английский" (США). Вы должны настроить данное свойство соответствующим образом, если содержимое в вашем коде является не
@@ -347,7 +347,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Более детальная информация приведена в разделе [Интернационализация](tutorial-i18n.md).
 
 
-#### [[yii\base\Application::timeZone|timeZone]] <a name="timeZone"></a>
+#### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 Данное свойство предоставляет альтернативный способ установки временной зоны в процессе работы приложения.
 Путем указания данного свойства, вы по существу вызываете PHP функцию 
@@ -360,27 +360,27 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 ]
 ```
 
-#### [[yii\base\Application::version|version]] <a name="version"></a>
+#### [[yii\base\Application::version|version]] <span id="version"></span>
 
 Данное свойство указывает версию приложения. По-умолчанию значение равно `'1.0'`. Вы можете не настраивать это свойство, если
 ваш код не использует его.
 
 
-### Полезные свойства <a name="useful-properties"></a>
+### Полезные свойства <span id="useful-properties"></span>
 
 Свойства, указанные в данном подразделе, не являются часто конфигурируемыми, т. к. их значения по умолчанию
 соответствуют общепринятым соглашениям. Однако, вы можете их настроить, если вам нужно использовать другие
 соглашения.
 
 
-#### [[yii\base\Application::charset|charset]] <a name="charset"></a>
+#### [[yii\base\Application::charset|charset]] <span id="charset"></span>
 
 Свойство указывает кодировку, которую использует приложение. По-умолчанию значение равно `'UTF-8'`, которое должно быть
 оставлено как есть для большинства приложения, только если вы не работаете с устаревшим кодом, который использует большее
 количество данных не юникода.
 
 
-#### [[yii\base\Application::defaultRoute|defaultRoute]] <a name="defaultRoute"></a>
+#### [[yii\base\Application::defaultRoute|defaultRoute]] <span id="defaultRoute"></span>
 
 Свойство указывает [маршрут](runtime-routing.md), который должно использовать приложение, когда он не указан
 во входящем запросе. Маршрут может состоять из ID модуля, ID контроллера и/или ID действия. Например, `help`,
@@ -396,7 +396,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 выполните команду `yii` без аргументов, вам будет отображена справочная информация.
 
 
-#### [[yii\base\Application::extensions|extensions]] <a name="extensions"></a>
+#### [[yii\base\Application::extensions|extensions]] <span id="extensions"></span>
 
 Данное свойство указывает список [расширений](structure-extensions.md), которые установлены и используются приложением.
 По-умолчанию, значением данного свойства будет массив, полученный из файла `@vendor/yiisoft/extensions.php`. Файл `extensions.php`
@@ -430,7 +430,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Расширение также может определять несколько [псевдонимов](concept-aliases.md).
 
 
-#### [[yii\base\Application::layout|layout]] <a name="layout"></a>
+#### [[yii\base\Application::layout|layout]] <span id="layout"></span>
 
 Данное свойство указывает имя шаблона по умолчанию, который должен быть использовать при формировании [представлений](structure-views.md).
 Значение по умолчанию равно `'main'`, означающее, что должен быть использован шаблон `main.php` в [папке шаблонов](#layoutPath).
@@ -440,7 +440,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Для отключения использования шаблона, вы можете указать данное свойство как `false`, хотя это используется очень редко.
 
 
-#### [[yii\base\Application::layoutPath|layoutPath]] <a name="layoutPath"></a>
+#### [[yii\base\Application::layoutPath|layoutPath]] <span id="layoutPath"></span>
 
 Свойство указывает путь, по которому следует искать шаблоны. Значение по умолчанию равно `layouts`, означающее подпапку
 в [папке представлений](#viewPath). Если значение [папки представлений](#viewPath) является значением по умолчанию, то
@@ -449,7 +449,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Вы можете настроить данное свойство как папку так и как [псевдоним](concept-aliases.md).
 
 
-#### [[yii\base\Application::runtimePath|runtimePath]] <a name="runtimePath"></a>
+#### [[yii\base\Application::runtimePath|runtimePath]] <span id="runtimePath"></span>
 
 Свойство указывает путь, по которому хранятся временные файлы, такие как: лог файлы, кэш файлы.
 По-умолчанию значение равно папке, которая представлена псевдонимом пути `@app/runtime`.
@@ -461,13 +461,13 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Для упрощения работы с данной папкой, Yii предоставляет предопределенный псевдоним пути `@runtime`.
 
 
-#### [[yii\base\Application::viewPath|viewPath]] <a name="viewPath"></a>
+#### [[yii\base\Application::viewPath|viewPath]] <span id="viewPath"></span>
 
 Данное свойство указывает базовую папку,где содержаться все файлы представлений. Значение по умолчанию представляет
 собой псевдоним `@app/views`. Вы можете настроить данное свойство как папку так и как [псевдоним](concept-aliases.md).
 
 
-#### [[yii\base\Application::vendorPath|vendorPath]] <a name="vendorPath"></a>
+#### [[yii\base\Application::vendorPath|vendorPath]] <span id="vendorPath"></span>
 
 Свойство указывает папку сторонних библиотек, которые используются и управляются [Composer](http://getcomposer.org).
 Она содержит все сторонние библиотеки используемые приложением, включая Yii фреймворк. Значение по умолчанию
@@ -479,13 +479,13 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Для упрощения работы с данной папкой, Yii предоставляет предопределенный псевдоним пути `@vendor`.
 
 
-#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <a name="enableCoreCommands"></a>
+#### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <span id="enableCoreCommands"></span>
 
 Данное свойство поддерживается только [[yii\console\Application|консольными приложениями]]. Оно указывает
 нужно ли использовать встроенные в Yii консольные команды. Значение по умолчанию равно `true`.
 
 
-## События приложения <a name="application-events"></a>
+## События приложения <span id="application-events"></span>
 
 В течение жизненного цикла приложения, возникает несколько событий. Вы можете назначать обработчики событий в
 конфигурации приложения следующим образом:
@@ -509,7 +509,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 });
 ```
 
-### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <a name="beforeRequest"></a>
+### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <span id="beforeRequest"></span>
 
 Данное событие возникает *до* того как приложение начинает обрабатывать входящий запрос. 
 Настоящее имя события - `beforeRequest`.
@@ -520,7 +520,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 от некоторых параметров.
 
 
-### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <a name="afterRequest"></a>
+### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <span id="afterRequest"></span>
 
 Данное событие возникает *после* того как приложение заканчивает обработку запроса, но *до* того как произойдет 
 отправка ответа. Настоящее имя события - `afterRequest`.
@@ -532,7 +532,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 конечному пользователю. Эти события возникают *после* текущего события.
 
 
-### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <a name="beforeAction"></a>
+### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <span id="beforeAction"></span>
 
 Событие возникает *до* того как будет выполнено [действие контроллера](structure-controllers.md).
 Настоящее имя события - `beforeAction`.
@@ -559,7 +559,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 свойство [[yii\base\ActionEvent::isValid]] равным `false`, все последующие события не возникнут.
 
 
-### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <a name="afterAction"></a>
+### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <span id="afterAction"></span>
 
 Событие возникает *после* выполнения [действия контроллера](structure-controllers.md).
 Настоящее имя события - `afterAction`.
@@ -586,7 +586,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 и наконец в приложениях.
 
 
-## Жизненный цикл приложения <a name="application-lifecycle"></a>
+## Жизненный цикл приложения <span id="application-lifecycle"></span>
 
 Когда [входной скрипт](structure-entry-scripts.md) выполняется для обработки запроса, приложение
 будет развиваться согласно следующему жизненному циклу:

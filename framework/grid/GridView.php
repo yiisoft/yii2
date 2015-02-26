@@ -522,8 +522,6 @@ class GridView extends BaseListView
             foreach ($model as $name => $value) {
                 $this->columns[] = $name;
             }
-        } else {
-            throw new InvalidConfigException('Unable to generate columns from the data. Please manually configure the "columns" property.');
         }
     }
 }

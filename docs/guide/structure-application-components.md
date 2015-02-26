@@ -51,7 +51,7 @@ For example,
   and use it when needed.
 
 
-## Bootstrapping Components <a name="bootstrapping-components"></a>
+## Bootstrapping Components <span id="bootstrapping-components"></span>
 
 As mentioned above, an application component will only be instantiated when it is being accessed the first time.
 If it is not accessed at all during a request, it will not be instantiated. Sometimes, however, you may want
@@ -74,7 +74,7 @@ For example, the following application configuration makes sure the `log` compon
 ```
 
 
-## Core Application Components <a name="core-application-components"></a>
+## Core Application Components <span id="core-application-components"></span>
 
 Yii defines a set of *core* application components with fixed IDs and default configurations. For example,
 the [[yii\web\Application::request|request]] component is used to collect information about
@@ -111,7 +111,7 @@ if you do not specify its class, the default one will be used.
   in [[yii\web\Application|Web applications]].
   Please refer to the [Sessions and Cookies](runtime-sessions-cookies.md) section for more details.
 * [[yii\web\UrlManager|urlManager]]: supports URL parsing and creation.
-  Please refer to the [URL Parsing and Generation](runtime-url-handling.md) section for more details.
+  Please refer to the [URL Parsing and Generation](runtime-routing.md) section for more details.
 * [[yii\web\User|user]]: represents the user authentication information. This component is only available
   in [[yii\web\Application|Web applications]]
   Please refer to the [Authentication](security-authentication.md) section for more details.

@@ -1,11 +1,24 @@
 Yii Framework 2 sphinx extension Change Log
 ===========================================
 
-2.0.1 under development
+2.0.3 under development
+-----------------------
+
+- Bug #7198: `yii\sphinx\Query` no longer attempts to call snippets for the empty query result set (Hrumpa)
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Bug #6621: Creating sub query at `yii\sphinx\Query::queryScalar()` fixed (klimov-paul)
+
+
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #5601: Simple conditions in Query::where() and ActiveQuery::where() did not allow `yii\db\Expression` to be used as the value (cebe, stevekr)
 - Bug #5634: Fixed `yii\sphinx\QueryBuilder` does not support comparison operators (>,<,>= etc) in where specification (klimov-paul)
+- Bug #6164: Added missing support for `yii\db\Exression` to QueryBuilder `LIKE` conditions (cebe)
 - Enh #5223: Query builder now supports selecting sub-queries as columns (qiangxue)
 
 

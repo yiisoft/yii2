@@ -1,12 +1,28 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
-2.0.1 under development
+2.0.3 under development
+-----------------------
+
+- Bug #6903: Fixed display issue with phpinfo() table (kalayda, cebe)
+- Bug #7222: Debug toolbar wasn't displayed properly in rtl pages (mohammadhosain, johonunu, samdark)
+- Enh #6890: Added ability to filter by query type (pana1990)
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- Bug #4820: Fixed reading incomplete debug index data in case of high request concurrency (martingeorg, samdark)
+- Chg #6572: Allow panels to stay even if they do not receive any debug data (qiangxue)
+
+
+2.0.1 December 07, 2014
 -----------------------
 
 - Bug #5402: Debugger was not loading when there were closures in asset classes (samdark)
 - Bug #5745: Gii and debug modules may cause 404 exception when the route contains dashes (qiangxue)
 - Enh #5600: Allow configuring debug panels in `yii\debug\Module::panels` as panel class name strings (qiangxue)
+- Enh #6113: Improved configuration and request UI (schmunk42)
 - Enh: Made `DefaultController::getManifest()` more robust against corrupt files (cebe)
 - Enh: Improved configuration and request UI (schmunk42)
 

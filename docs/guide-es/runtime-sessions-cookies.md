@@ -4,12 +4,12 @@ Sesiones (Sessions) y Cookies
 Las sesiones y las cookies permiten la persistencia de datos a través de múltiples peticiones de usuario. En PHP plano, debes acceder a ellos a través de las variables globales `$_SESSION` y `$_COOKIE`, respectivamente. Yii encapsula las sesiones y las cookies como objetos y por lo tanto te permite acceder a ellos de manera orientada a objetos con estupendas mejoras adicionales.
 
 
-## Sesiones <a name="sessions"></a>
+## Sesiones <span id="sessions"></span>
 
 Como las [peticiones](runtime-requests.md) y las [respuestas](runtime-responses.md), puedes acceder a las sesiones vía el [componente de la aplicación](structure-application-components.md) `session`  el cual es una instancia de [[yii\web\Session]], por defecto.
 
 
-### Abriendo y cerrando sesiones <a name="opening-closing-sessions"></a>
+### Abriendo y cerrando sesiones <span id="opening-closing-sessions"></span>
 
 Para abrir y cerrar una sesión, puedes hacer lo siguiente:
 
@@ -32,7 +32,7 @@ $session->destroy();
 Puedes llamar a [[yii\web\Session::open()|open()]] y [[yii\web\Session::close()|close()]] múltiples veces sin causar errores. Esto ocurre porque internamente los métodos verificarán primero si la sesión está ya abierta.
 
 
-### Accediendo a los datos de sesión <a name="access-session-data"></a>
+### Accediendo a los datos de sesión <span id="access-session-data"></span>
 
 Para acceder a los datos almacenados en sesión, puedes hacer lo siguiente:
 
@@ -114,7 +114,7 @@ $session['captcha.lifetime'] = 3600;
 Para un mejor rendimiento y legibilidad del código, recomendamos la última solución. Es decir, en vez de almacenar un array como una única variable de sesión, almacena cada elemento del array como una variable de sesión que comparta el mismo prefijo clave con otros elementos del array.
 
 
-### Personalizar el almacenamiento de sesión <a name="custom-session-storage"></a>
+### Personalizar el almacenamiento de sesión <span id="custom-session-storage"></span>
 
 Por defecto la clase [[yii\web\Session]] almacena los datos de sesión como ficheros en el servidor. Yii también provee de las siguientes clases de sesión que implementan diferentes almacenamientos de sesión:
 
@@ -161,7 +161,7 @@ donde 'BLOB' se refiere al BLOB-type de tu DBMS preferida. Abajo está el tipo B
 > Nota: De acuerdo con la configuración de php.ini `session.hash_function`, puedes necesitar ajustar el tamaño de la columna `id`. Por ejemplo, si `session.hash_function=sha256`, deberías usar el tamaño 64 en vez de 40.
 
 
-### Flash Data <a name="flash-data"></a>
+### Flash Data <span id="flash-data"></span>
 
 Flash data es una clase especial de datos de sesión que, una vez se inicialice en la primera petición, estará sólo disponible durante la siguiente petición y automáticamente se borrará después. Flash data es comúnmente usado para implementar mensajes que deberían ser mostrados una vez a usuarios finales, tal como mostrar un mensaje de confirmación después de que un usuario envíe un formulario con éxito.
 
@@ -207,13 +207,13 @@ $alerts = $session->getFlash('alerts');
   del mismo nombre. Esto ocurre porque el último método elimina el flash data dentro del array así que puedes añadir un nuevo flash data con el mismo nombre. Como resultado, cuando llamas a [[yii\web\Session::getFlash()]], puedes encontrarte algunas veces que te está devolviendo un array mientras que otras veces te está devolviendo un string, esto depende del orden que invoques a estos dos métodos.
 
 
-## Cookies <a name="cookies"></a>
+## Cookies <span id="cookies"></span>
 
 Yii representa cada cookie como un objeto de [[yii\web\Cookie]]. Tanto [[yii\web\Request]] como [[yii\web\Response]]
 mantienen una colección de cookies vía la propiedad de llamada `cookies`. La colección de cookie en la antigua representación son enviadas en una petición, mientras la colección de cookie en esta última representa las cookies que van a ser enviadas al usuario.
 
 
-### Leyendo Cookies <a name="reading-cookies"></a>
+### Leyendo Cookies <span id="reading-cookies"></span>
 
 Puedes recuperar las cookies en la petición actual usando el siguiente código:
 
@@ -240,7 +240,7 @@ if (isset($cookies['language'])) ...
 ```
 
 
-### Enviando Cookies <a name="sending-cookies"></a>
+### Enviando Cookies <span id="sending-cookies"></span>
 
 Puedes enviar cookies a usuarios finales usando el siguiente código:
 
@@ -265,7 +265,7 @@ Además de [[yii\web\Cookie::name|name]], [[yii\web\Cookie::value|value]] las pr
 > Nota: Para mayor seguridad, el valor por defecto de [[yii\web\Cookie::httpOnly]] es true. Esto ayuda a mitigar el riesgo del acceso a la cookie protegida por script desde el lado del cliente (si el navegador lo soporta). Puedes leer el [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) para más detalles.
 
 
-### Validación de la Cookie <a name="cookie-validation"></a>
+### Validación de la Cookie <span id="cookie-validation"></span>
 
 Cuando estás leyendo y enviando cookies a través de los componentes `request` y `response` como mostramos en las dos últimas subsecciones, cuentas con el añadido de seguridad de la validación de cookies el cual protege las cookies de ser modificadas en el lado del cliente. Esto se consigue con la firma de cada cookie con una cadena hash, el cual permite a la aplicación saber si una cookie ha sido modificada en el lado del cliente o no. Si es así, la cookie no será accesible a través de [[yii\web\Request::cookies|cookie collection]] del componente `request`.
 

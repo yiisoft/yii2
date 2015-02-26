@@ -91,6 +91,15 @@ class FixtureController extends Controller
     public function actionLoad()
     {
         $fixturesInput = func_get_args();
+        if ($fixturesInput === []) {
+            $this->stdout($this->getHelpSummary() . "\n");
+
+            $helpCommand = Console::ansiFormat("yii help fixture", [Console::FG_CYAN]);
+            $this->stdout("Use $helpCommand to get usage info.\n");
+
+            return self::EXIT_CODE_NORMAL;
+        }
+
         $filtered = $this->filterFixtures($fixturesInput);
         $except = $filtered['except'];
 

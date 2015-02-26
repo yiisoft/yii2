@@ -114,7 +114,7 @@ class User extends ActiveRecord implements IdentityInterface
 (такими, как заголовок `WWW-Authenticate` для HTTP Basic Auth).
 
 
-## Авторизация <a name="authorization"></a>
+## Авторизация <span id="authorization"></span>
 
 После аутентификации пользователя вы, вероятно, захотите проверить, есть ли у него или у неё разрешение на выполнение запрошенного
 действия с запрошенным ресурсом. Этот процесс называется *авторизацией* и подробно описан

@@ -177,14 +177,34 @@ class Extension extends \Twig_Extension
         }
     }
 
+    /**
+     * Generates relative URL
+     *
+     * @param string $path the parameter to be used to generate a valid URL
+     * @param array $args arguments
+     * @return string the generated relative URL
+     */
     public function path($path, $args = [])
     {
-        return Url::to(array_merge([$path], $args));
+        if ($args !== []) {
+            $path = array_merge([$path], $args);
+        }
+        return Url::to($path);
     }
 
+    /**
+     * Generates absolute URL
+     *
+     * @param string $path the parameter to be used to generate a valid URL
+     * @param array $args arguments
+     * @return string the generated absolute URL
+     */
     public function url($path, $args = [])
     {
-        return Url::to(array_merge([$path], $args), true);
+        if ($args !== []) {
+            $path = array_merge([$path], $args);
+        }
+        return Url::to($path, true);
     }
 
     public function setProperty($object, $property, $value)

@@ -12,7 +12,7 @@ objects and send them to end users as we will explain in the following.
 In this section, we will describe how to compose and send responses to end users. 
 
 
-## Status Code <a name="status-code"></a>
+## Status Code <span id="status-code"></span>
 
 One of the first things you would do when building a response is to state whether the request is successfully handled.
 This is done by setting the [[yii\web\Response::statusCode]] property which can take one of the valid
@@ -55,7 +55,7 @@ throw new \yii\web\HttpException(402);
 ```
 
 
-## HTTP Headers <a name="http-headers"></a> 
+## HTTP Headers <span id="http-headers"></span> 
 
 You can send HTTP headers by manipulating the [[yii\web\Response::headers|header collection]] in the `response` component.
 For example,
@@ -69,7 +69,7 @@ $headers->add('Pragma', 'no-cache');
 // set a Pragma header. Any existing Pragma headers will be discarded.
 $headers->set('Pragma', 'no-cache');
 
-// remove Pragma header(s) and return the removed Pragma header values in array
+// remove Pragma header(s) and return the removed Pragma header values in an array
 $values = $headers->remove('Pragma');
 ```
 
@@ -77,7 +77,7 @@ $values = $headers->remove('Pragma');
   the [[yii\web\Response::send()]] method is called.
 
 
-## Response Body <a name="response-body"></a>
+## Response Body <span id="response-body"></span>
 
 Most responses should have a body which gives the content that you want to show to end users.
 
@@ -107,7 +107,7 @@ You can customize these formatters or add new ones by configuring the [[yii\web\
 * [[yii\web\Response::FORMAT_JSONP|JSONP]]: implemented by [[yii\web\JsonResponseFormatter]].
 * [[yii\web\Response::FORMAT_RAW|RAW]]: use this format if you want to send the response directly without applying any formatting.
 
-While response body can be set explicitly as shown above, in most cases you may set it implicitly by the return value
+While the response body can be set explicitly as shown above, in most cases you may set it implicitly by the return value
 of [action](structure-controllers.md) methods. A common use case is like the following:
  
 ```php
@@ -120,7 +120,7 @@ public function actionIndex()
 The `index` action above returns the rendering result of the `index` view. The return value will be taken
 by the `response` component, formatted and then sent to end users.
 
-Because by default, the response format is as [[yii\web\Response::FORMAT_HTML|HTML]], you should only return a string
+Because by default the response format is [[yii\web\Response::FORMAT_HTML|HTML]], you should only return a string
 in an action method. If you want to use a different response format, you should set it first before returning the data.
 For example,
 
@@ -154,13 +154,13 @@ public function actionInfo()
 
 > Note: If you are creating your own response objects, you will not be able to take advantage of the configurations
   that you set for the `response` component in the application configuration. You can, however, use 
-  [dependency injection](concept-di-container.md) to apply common configuration to your new response objects.
+  [dependency injection](concept-di-container.md) to apply a common configuration to your new response objects.
 
 
-## Browser Redirection <a name="browser-redirection"></a>
+## Browser Redirection <span id="browser-redirection"></span>
 
 Browser redirection relies on sending a `Location` HTTP header. Because this feature is commonly used, Yii provides
-some special supports for it.
+some special support for it.
 
 You can redirect the user browser to a URL by calling the [[yii\web\Response::redirect()]] method. The method
 sets the appropriate `Location` header with the given URL and returns the response object itself. In an action method,
@@ -177,7 +177,7 @@ In the above code, the action method returns the result of the `redirect()` meth
 object returned by an action method will be used as the response sending to end users.
 
 In places other than an action method, you should call [[yii\web\Response::redirect()]] directly followed by 
-a call to the [[yii\web\Response::send()]] method to ensure no extra content will be appended to the response.
+a chained call to the [[yii\web\Response::send()]] method to ensure no extra content will be appended to the response.
 
 ```php
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
@@ -188,8 +188,8 @@ a call to the [[yii\web\Response::send()]] method to ensure no extra content wil
   code 301 to tell the browser that the resource has been *permanently* relocated.
 
 When the current request is an AJAX request, sending a `Location` header will not automatically cause the browser
-redirection. To solve this problem, the [[yii\web\Response::redirect()]] method sets an `X-Redirect` header with 
-the redirection URL as its value. On the client side you may write JavaScript code to read this header value and
+to redirect. To solve this problem, the [[yii\web\Response::redirect()]] method sets an `X-Redirect` header with 
+the redirection URL as its value. On the client side, you may write JavaScript code to read this header value and
 redirect the browser accordingly.
 
 > Info: Yii comes with a `yii.js` JavaScript file which provides a set of commonly used JavaScript utilities,
@@ -197,14 +197,14 @@ redirect the browser accordingly.
   (by registering the [[yii\web\YiiAsset]] asset bundle), you do not need to write anything to support AJAX redirection.
 
 
-## Sending Files <a name="sending-files"></a>
+## Sending Files <span id="sending-files"></span>
 
 Like browser redirection, file sending is another feature that relies on specific HTTP headers. Yii provides
-a set of methods to support various file sending needs. They all have built-in support for HTTP range header.
+a set of methods to support various file sending needs. They all have built-in support for the HTTP range header.
 
-* [[yii\web\Response::sendFile()]]: sends an existing file to client.
-* [[yii\web\Response::sendContentAsFile()]]: sends a text string as a file to client.
-* [[yii\web\Response::sendStreamAsFile()]]: sends an existing file stream as a file to client. 
+* [[yii\web\Response::sendFile()]]: sends an existing file to a client.
+* [[yii\web\Response::sendContentAsFile()]]: sends a text string as a file to a client.
+* [[yii\web\Response::sendStreamAsFile()]]: sends an existing file stream as a file to a client. 
 
 These methods have the same method signature with the response object as the return value. If the file
 to be sent is very big, you should consider using [[yii\web\Response::sendStreamAsFile()]] because it is more
@@ -237,7 +237,7 @@ for some popular Web servers:
 - Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
-## Sending Response <a name="sending-response"></a>
+## Sending Response <span id="sending-response"></span>
 
 The content in a response is not sent to the user until the [[yii\web\Response::send()]] method is called.
 By default, this method will be called automatically at the end of [[yii\base\Application::run()]]. You can, however,

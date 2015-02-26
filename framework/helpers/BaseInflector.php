@@ -515,6 +515,7 @@ class BaseInflector
      * @param string $connector the string connecting words other than those connected by
      * $lastWordConnector and $twoWordsConnector
      * @return string the generated sentence
+     * @since 2.0.1
      */
     public static function sentence(array $words, $twoWordsConnector = ' and ', $lastWordConnector = null, $connector = ', ')
     {

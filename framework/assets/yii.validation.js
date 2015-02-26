@@ -233,6 +233,14 @@ yii.validation = (function ($) {
             }
         },
 
+        trim: function ($form, attribute, options) {
+            var $input = $form.find(attribute.input);
+            var value = $input.val();
+            if (!options.skipOnEmpty || !pub.isEmpty(value)) {
+                $input.val($.trim(value));
+            }
+        },
+
         captcha: function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
@@ -307,6 +315,11 @@ yii.validation = (function ($) {
     };
 
     function getUploadedFiles(attribute, messages, options) {
+        // Skip validation if File API is not available
+        if (typeof File === "undefined") {
+            return [];
+        }
+        
         var files = $(attribute.input).get(0).files;
         if (!files) {
             messages.push(options.message);

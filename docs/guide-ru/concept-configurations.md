@@ -33,7 +33,7 @@ Yii::configure($object, $config);
 Обратите внимание, что в этом случае массив с конфигурацией не должен содержать ключ `class`.
 
 
-## Формат конфигурации <a name="configuration-format"></a>
+## Формат конфигурации <span id="configuration-format"></span>
 
 Формат конфигурации выглядит следующим образом:
 
@@ -77,7 +77,7 @@ Yii::configure($object, $config);
 ```
 
 
-## Использование конфигурации <a name="using-configurations"></a>
+## Использование конфигурации <span id="using-configurations"></span>
 
 Конфигурации повсеместно используются в Yii. В самом начале данной главы мы узнали как
 создать объект с необходимыми параметрами используя метод [[Yii::createObject()]].
@@ -85,13 +85,13 @@ Yii::configure($object, $config);
 использования конфигурации. 
 
 
-### Конфигурация приложения <a name="application-configurations"></a>
+### Конфигурация приложения <span id="application-configurations"></span>
 
 Конфигурация [приложения](structure-applications.md), пожалуй, самая сложная из используемых в фреймворке.
 Причина в том, что класс [[yii\web\Application|application]] содержит большое количество конфигурируемых
 свойств и событий. Более того, свойство приложения [[yii\web\Application::components|components]]
 может принимать массив с конфигурацией для создания компонентов, регистрируемых на уровне приложения.
-Пример конфигурации приложения для [шаблона приложения basic](start-basic.md).
+Пример конфигурации приложения для [шаблона приложения basic](start-installation.md).
 
 ```php
 $config = [
@@ -136,7 +136,7 @@ $config = [
 [приложения](structure-applications.md) и [Service Locator](concept-service-locator.md).
 
 
-### Конфигурации виджетов <a name="widget-configurations"></a>
+### Конфигурации виджетов <span id="widget-configurations"></span>
 
 При использовании [виджетов](structure-widgets.md) часто возникает необходимость изменить параметры виджета с помощью
 конфигурации. Для создания виджета можно использовать два метода: [[yii\base\Widget::widget()]] и 
@@ -161,7 +161,7 @@ echo Menu::widget([
 Обратите внимание что параметр `class` НЕ передается, так как полное имя уже указано.
 
 
-## Конфигурационные файлы <a name="configuration-files"></a>
+## Конфигурационные файлы <span id="configuration-files"></span>
 
 Если конфигурация очень сложная, то её, как правило, разделяют по нескольким PHP файлам. Такие файлы называют
 *Конфигурационными файлами*. Конфигурационный файл возвращает массив PHP являющийся конфигурацией.
@@ -215,7 +215,7 @@ $config = require('path/to/web.php');
 ```
 
 
-## Значения конфигурации по умолчанию <a name="default-configurations"></a>
+## Значения конфигурации по умолчанию <span id="default-configurations"></span>
 
 Метод [[Yii::createObject()]] реализован с использованием [dependency injection container](concept-di-container.md).
 Это позволяет задавать так называемые *значения конфигурации по умолчанию*, которые будут применены ко ВСЕМ экземплярам классов во время их инициализации методом [[Yii::createObject()]]. Значения конфигурации по умолчанию указываются с помощью метода `Yii::$container->set()` на этапе [предварительной загрузки](runtime-bootstrapping.md).
@@ -233,7 +233,7 @@ $config = require('path/to/web.php');
 задавать значение `maxButtonCount`.
 
 
-## Константы окружения <a name="environment-constants"></a>
+## Константы окружения <span id="environment-constants"></span>
 
 Конфигурации могут различаться в зависимости от режима, в котором происходит запуск приложения. Например,
 в окружении разработчика (development) вы используете базу данных `mydb_dev`, а в эксплуатационном (production) окружении

@@ -172,6 +172,7 @@ class User extends Component
     {
         if ($this->_identity === false) {
             if ($this->enableSession && $autoRenew) {
+                $this->_identity = null;
                 $this->renewAuthStatus();
             } else {
                 return null;
@@ -615,7 +616,7 @@ class User extends Component
 
         $this->setIdentity($identity);
 
-        if (($this->authTimeout !== null || $this->absoluteAuthTimeout !== null) && $identity !== null) {
+        if ($identity !== null && ($this->authTimeout !== null || $this->absoluteAuthTimeout !== null)) {
             $expire = $this->authTimeout !== null ? $session->get($this->authTimeoutParam) : null;
             $expireAbsolute = $this->absoluteAuthTimeout !== null ? $session->get($this->absoluteAuthTimeoutParam) : null;
             if ($expire !== null && $expire < time() || $expireAbsolute !== null && $expireAbsolute < time()) {

@@ -98,10 +98,16 @@ class BaseStringHelper
      * @param integer $length How many characters from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.
      * @param string $encoding The charset to use, defaults to charset currently used by application.
+     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
+     * This parameter is available since version 2.0.1.
      * @return string the truncated string.
      */
-    public static function truncate($string, $length, $suffix = '...', $encoding = null)
+    public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
+        if ($asHtml) {
+            return self::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
+        }
+        
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
             return trim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
         } else {
@@ -115,16 +121,72 @@ class BaseStringHelper
      * @param string $string The string to truncate.
      * @param integer $count How many words from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.
+     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
+     * This parameter is available since version 2.0.1.
      * @return string the truncated string.
      */
-    public static function truncateWords($string, $count, $suffix = '...')
+    public static function truncateWords($string, $count, $suffix = '...', $asHtml = false)
     {
+        if ($asHtml) {
+            return self::truncateHtml($string, $count, $suffix);
+        }
+
         $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
         if (count($words) / 2 > $count) {
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
         } else {
             return $string;
         }
+    }
+    
+    /**
+     * Truncate a string while preserving the HTML.
+     * 
+     * @param string $string The string to truncate
+     * @param integer $count
+     * @param string $suffix String to append to the end of the truncated string.
+     * @param string|boolean $encoding
+     * @return string
+     * @since 2.0.1
+     */
+    protected static function truncateHtml($string, $count, $suffix, $encoding = false)
+    {
+        $config = \HTMLPurifier_Config::create(null);
+        $lexer = \HTMLPurifier_Lexer::create($config);
+        $tokens = $lexer->tokenizeHTML($string, $config, null);
+        $openTokens = 0;
+        $totalCount = 0;
+        $truncated = [];
+        foreach ($tokens as $token) {
+            if ($token instanceof \HTMLPurifier_Token_Start) { //Tag begins
+                $openTokens++;
+                $truncated[] = $token;
+            } else if ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
+                if (false === $encoding) {
+                    $token->data = self::truncateWords($token->data, $count - $totalCount, '');
+                    $currentCount = str_word_count($token->data);
+                } else {
+                    $token->data = self::truncate($token->data, $count - $totalCount, '', $encoding) . ' ';
+                    $currentCount = mb_strlen($token->data, $encoding);
+                }
+                $totalCount += $currentCount;
+                if (1 === $currentCount) {
+                    $token->data = ' ' . $token->data;
+                }
+                $truncated[] = $token;
+            } else if ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
+                $openTokens--;
+                $truncated[] = $token;
+            } else if ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
+                $truncated[] = $token;
+            }
+            if (0 === $openTokens && $totalCount >= $count) {
+                break;
+            }
+        }
+        $context = new \HTMLPurifier_Context();
+        $generator = new \HTMLPurifier_Generator($config, $context);
+        return $generator->generateFromTokens($truncated) . $suffix;
     }
 
     /**

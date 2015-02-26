@@ -73,7 +73,7 @@ class ConfigPanel extends Panel
         $pinfo = ob_get_contents();
         ob_end_clean();
         $phpinfo = preg_replace('%^.*<body>(.*)</body>.*$%ms', '$1', $pinfo);
-        $phpinfo = str_replace('<table ', '<div class="table-responsive"><table class="table table-condensed table-bordered table-striped table-hover config-php-info-table"', $phpinfo);
+        $phpinfo = str_replace('<table', '<div class="table-responsive"><table class="table table-condensed table-bordered table-striped table-hover config-php-info-table" ', $phpinfo);
         $phpinfo = str_replace('</table>', '</table></div>', $phpinfo);
         return $phpinfo;
     }

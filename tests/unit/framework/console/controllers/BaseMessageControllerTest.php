@@ -38,12 +38,12 @@ abstract class BaseMessageControllerTest extends TestCase
 
     /**
      * Creates test message controller instance.
-     * @return MessageController message command instance.
+     * @return MessageControllerMock message command instance.
      */
     protected function createMessageController()
     {
         $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
-        $messageController = new MessageController('message', $module);
+        $messageController = new MessageControllerMock('message', $module);
         $messageController->interactive = false;
 
         return $messageController;
@@ -58,11 +58,8 @@ abstract class BaseMessageControllerTest extends TestCase
     protected function runMessageControllerAction($actionID, array $args = [])
     {
         $controller = $this->createMessageController();
-        ob_start();
-        ob_implicit_flush(false);
         $controller->run($actionID, $args);
-
-        return ob_get_clean();
+        return $controller->flushStdOutBuffer();
     }
 
     /**
@@ -86,7 +83,7 @@ abstract class BaseMessageControllerTest extends TestCase
     protected function createSourceFile($content)
     {
         $fileName = $this->sourcePath . DIRECTORY_SEPARATOR . md5(uniqid()) . '.php';
-        file_put_contents($fileName, $content);
+        file_put_contents($fileName, "<?php\n" . $content);
         return $fileName;
     }
 
@@ -343,4 +340,9 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertArrayHasKey($message3, $messages2, "message3 not found in category2. Command output:\n\n" . $out);
         $this->assertArrayNotHasKey($message2, $messages2, "message2 found in category2. Command output:\n\n" . $out);
     }
+}
+
+class MessageControllerMock extends MessageController
+{
+    use StdOutBufferControllerTrait;
 }
