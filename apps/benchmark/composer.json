@@ -12,12 +12,11 @@
 		"irc": "irc://irc.freenode.net/yii",
 		"source": "https://github.com/yiisoft/yii2"
 	},
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "~2.0.0"
+    },
 	"config": {
 	  "vendor-dir": "protected/vendor"
-	},
-	"minimum-stability": "dev",
-	"require": {
-		"php": ">=5.4.0",
-		"yiisoft/yii2": "~2.0.0"
 	}
 }
