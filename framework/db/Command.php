@@ -805,9 +805,10 @@ class Command extends Component
                     $this->db->username,
                     $rawSql,
                 ];
-                if (($result = $cache->get($cacheKey)) !== false) {
+                $result = $cache->get($cacheKey);
+                if (is_array($result) && isset($result[0])) {
                     Yii::trace('Query result served from cache', 'yii\db\Command::query');
-                    return $result;
+                    return $result[0];
                 }
             }
         }
@@ -837,7 +838,7 @@ class Command extends Component
         }
 
         if (isset($cache, $cacheKey, $info)) {
-            $cache->set($cacheKey, $result, $info[1], $info[2]);
+            $cache->set($cacheKey, [$result], $info[1], $info[2]);
             Yii::trace('Saved query result in cache', 'yii\db\Command::query');
         }
 
