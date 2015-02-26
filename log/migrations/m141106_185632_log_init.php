@@ -65,7 +65,7 @@ class m141106_185632_log_init extends Migration
                 'id' => Schema::TYPE_BIGPK,
                 'level' => Schema::TYPE_INTEGER,
                 'category' => Schema::TYPE_STRING,
-                'log_time' => Schema::TYPE_FLOAT,
+                'log_time' => Schema::TYPE_DOUBLE,
                 'prefix' => Schema::TYPE_TEXT,
                 'message' => Schema::TYPE_TEXT,
             ], $tableOptions);
