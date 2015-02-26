@@ -37,12 +37,37 @@ class DropdownTest extends BootstrapTestCase
                     ]
                 ]
             ]
+        ) . "\n" . Dropdown::widget(
+            [
+                'options' => [
+                    'role' => 'menu',
+                ],
+                'submenuOptions' => [
+                    'class' => 'dropdown-submenu',
+                ],
+                'items' => [
+                    [
+                        'label' => 'Page6',
+                        'content' => 'Page6',
+                    ],
+                    [
+                        'label' => 'Dropdown3',
+                        'items' => [
+                            ['label' => 'Page7', 'content' => 'Page7'],
+                            ['label' => 'Page8', 'content' => 'Page8'],
+                        ]
+                    ],
+                ]
+            ]
         );
 
         $expected = <<<EXPECTED
 <ul id="w0" class="dropdown-menu"><li class="dropdown-header">Page1</li>
 <li class="dropdown-submenu"><a href="#" tabindex="-1">Dropdown1</a><ul><li class="dropdown-header">Page2</li>
 <li class="dropdown-header">Page3</li></ul></li></ul>
+<ul id="w1" class="dropdown-menu" role="menu"><li class="dropdown-header">Page6</li>
+<li class="dropdown-submenu"><a href="#" tabindex="-1">Dropdown3</a><ul class="dropdown-submenu"><li class="dropdown-header">Page7</li>
+<li class="dropdown-header">Page8</li></ul></li></ul>
 EXPECTED;
 
         $this->assertEqualsWithoutLE($expected, $out);
