@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Exception;
 use yii\console\Controller;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yii\web\AssetBundle;
 
@@ -326,6 +327,11 @@ class AssetController extends Controller
     protected function buildTarget($target, $type, $bundles)
     {
         $tempFile = $target->basePath . '/' . strtr($target->$type, ['{hash}' => 'temp']);
+        if (!is_file($tempFile)) {
+            FileHelper::createDirectory(dirname($tempFile), 0755, true);
+            touch($tempFile);
+        }
+
         $inputFiles = [];
 
         foreach ($target->depends as $name) {
