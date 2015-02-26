@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.3 under development
 -----------------------
 
+- Enh #7440: Added auto `maxlength` html attribute in `yii\helpers\BaseHtml::activeTextInput()`, based in the string validator max value (llfm)
 - Bug #6919: Fixed wrong namespaces under advanced application's TestCase classes (ivokund)
 - Bug #6940: `yii\web\Response::sendContentAsFile()` may not send correct `content-length` header (sadgnome)
 - Bug #6969: `yii\helpers\ArrayHelper::htmlEncode()` and `htmlDecode()` should not remove non-string data (qiangxue)

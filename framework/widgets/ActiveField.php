@@ -42,6 +42,7 @@ class ActiveField extends Component
      * The following special options are recognized:
      *
      * - tag: the tag name of the container element. Defaults to "div".
+     * - maxlength: if `true`, the value will be based in the string validator max value of the attribute if any.
      *
      * If you set a custom `id` for the container element, you may need to adjust the [[$selectors]] accordingly.
      *

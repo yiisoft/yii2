@@ -1157,6 +1157,16 @@ class BaseHtml
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
+        if (isset($options['maxlength']) && $options['maxlength'] === true) {
+            $attrName = Html::getAttributeName($attribute);
+            foreach ($model->getActiveValidators($attrName) as $validator) {
+                if ($validator instanceof \yii\validators\StringValidator && $validator->max !== null) {
+                    $options['maxlength'] = $validator->max;
+                    break;
+                }
+            }
+        }
+
         return static::activeInput('text', $model, $attribute, $options);
     }
 
