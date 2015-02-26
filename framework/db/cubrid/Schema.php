@@ -36,8 +36,8 @@ class Schema extends \yii\db\Schema
         'decimal' => self::TYPE_DECIMAL,
         'float' => self::TYPE_FLOAT,
         'real' => self::TYPE_FLOAT,
-        'double' => self::TYPE_FLOAT,
-        'double precision' => self::TYPE_FLOAT,
+        'double' => self::TYPE_DOUBLE,
+        'double precision' => self::TYPE_DOUBLE,
         'monetary' => self::TYPE_MONEY,
         // Date/Time data types
         'date' => self::TYPE_DATE,

@@ -38,7 +38,7 @@ class Schema extends \yii\db\Schema
         'integer' => self::TYPE_INTEGER,
         'bigint' => self::TYPE_BIGINT,
         'float' => self::TYPE_FLOAT,
-        'double' => self::TYPE_FLOAT,
+        'double' => self::TYPE_DOUBLE,
         'real' => self::TYPE_FLOAT,
         'decimal' => self::TYPE_DECIMAL,
         'numeric' => self::TYPE_DECIMAL,

@@ -180,7 +180,7 @@ class SchemaTest extends DatabaseTestCase
                 'defaultValue' => null,
             ],
             'float_col' => [
-                'type' => 'float',
+                'type' => 'double',
                 'dbType' => 'double(4,3)',
                 'phpType' => 'double',
                 'allowNull' => false,
@@ -192,7 +192,7 @@ class SchemaTest extends DatabaseTestCase
                 'defaultValue' => null,
             ],
             'float_col2' => [
-                'type' => 'float',
+                'type' => 'double',
                 'dbType' => 'double',
                 'phpType' => 'double',
                 'allowNull' => true,
