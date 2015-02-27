@@ -735,8 +735,10 @@ class BaseHtml
      *
      * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
      *   except that the array keys represent the optgroup labels specified in $items.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
-     *   Defaults to `true`.
+     *   Defaults to `true`. This option is available since 2.0.3.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -785,8 +787,10 @@ class BaseHtml
      * - unselect: string, the value that will be submitted when no option is selected.
      *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
      *   mode, we can still obtain the posted unselect value.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
-     *   Defaults to `true`.
+     *   Defaults to `true`. This option is available since 2.0.3.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1373,8 +1377,10 @@ class BaseHtml
      *
      * - groups: array, the attributes for the optgroup tags. The structure of this is similar to that of 'options',
      *   except that the array keys represent the optgroup labels specified in $items.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
-     *   Defaults to `true`.
+     *   Defaults to `true`. This option is available since 2.0.3.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1423,8 +1429,10 @@ class BaseHtml
      * - unselect: string, the value that will be submitted when no option is selected.
      *   When this attribute is set, a hidden field will be generated so that if no option is selected in multiple
      *   mode, we can still obtain the posted unselect value.
+     * - encodeSpaces: bool, whether to encode spaces in option prompt and option value with `&nbsp;` character.
+     *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
-     *   Defaults to `true`.
+     *   Defaults to `true`. This option is available since 2.0.3.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -1558,22 +1566,27 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         $lines = [];
+        $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
         if (isset($tagOptions['prompt'])) {
             $prompt = $encode ? static::encode($tagOptions['prompt']) : $tagOptions['prompt'];
+            if ($encodeSpaces) {
+                $prompt = str_replace(' ', '&nbsp;', $prompt);
+            }
             $lines[] = static::tag('option', $prompt, ['value' => '']);
         }
 
         $options = isset($tagOptions['options']) ? $tagOptions['options'] : [];
         $groups = isset($tagOptions['groups']) ? $tagOptions['groups'] : [];
         unset($tagOptions['prompt'], $tagOptions['options'], $tagOptions['groups']);
+        $options['encodeSpaces'] = ArrayHelper::getValue($options, 'encodeSpaces', $encodeSpaces);
         $options['encode'] = ArrayHelper::getValue($options, 'encode', $encode);
 
         foreach ($items as $key => $value) {
             if (is_array($value)) {
                 $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
                 $groupAttrs['label'] = $key;
-                $attrs = ['options' => $options, 'groups' => $groups, 'encode' => $encode];
+                $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode];
                 $content = static::renderSelectOptions($selection, $value, $attrs);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
             } else {
@@ -1582,7 +1595,11 @@ class BaseHtml
                 $attrs['selected'] = $selection !== null &&
                         (!is_array($selection) && !strcmp($key, $selection)
                         || is_array($selection) && in_array($key, $selection));
-                $lines[] = static::tag('option', ($encode ? static::encode($value) : $value), $attrs);
+                $text = $encode ? static::encode($value) : $value;
+                if ($encodeSpaces) {
+                    $text = str_replace(' ', '&nbsp;', $text);
+                }
+                $lines[] = static::tag('option', $text, $attrs);
             }
         }
 
