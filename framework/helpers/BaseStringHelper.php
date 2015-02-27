@@ -249,13 +249,10 @@ class BaseStringHelper
         $result = [];
         foreach (explode($delimiter, $string) as $value) {
             $value = $trim ? trim($value) : $value;
-            if ($skipEmpty) {
-                if (static::byteLength($value)) {
-                    $result[] = $value;
-                }
-            } else {
-                $result[] = $value;
+            if ($skipEmpty && !static::byteLength($value)) {
+                continue;
             }
+            $result[] = $value;
         }
         return $result;
     }
