@@ -1180,7 +1180,7 @@ class BaseHtml
     {
         if (isset($options['maxlength']) && $options['maxlength'] === true) {
             unset($options['maxlength']);
-            $attrName = Html::getAttributeName($attribute);
+            $attrName = static::getAttributeName($attribute);
             foreach ($model->getActiveValidators($attrName) as $validator) {
                 if ($validator instanceof StringValidator && $validator->max !== null) {
                     $options['maxlength'] = $validator->max;
