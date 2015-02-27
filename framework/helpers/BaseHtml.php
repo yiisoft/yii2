@@ -10,6 +10,7 @@ namespace yii\helpers;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\db\ActiveRecordInterface;
+use yii\validators\StringValidator;
 use yii\web\Request;
 use yii\base\Model;
 
@@ -1167,22 +1168,26 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * The following special options are recognized:
+     *
+     * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
+     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     *   This is available since version 2.0.3.
+     *
      * @return string the generated input tag
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        if (!isset($options['maxlength'])) {
-            return static::activeInput('text', $model, $attribute, $options);
-        }
-
-        $attrName = Html::getAttributeName($attribute);
-        foreach ($model->getActiveValidators($attrName) as $validator) {
-            if ($validator instanceof \yii\validators\StringValidator && $validator->max !== null) {
-                $options['maxlength'] = $validator->max;
-                break;
+        if (isset($options['maxlength']) && $options['maxlength'] === true) {
+            unset($options['maxlength']);
+            $attrName = Html::getAttributeName($attribute);
+            foreach ($model->getActiveValidators($attrName) as $validator) {
+                if ($validator instanceof StringValidator && $validator->max !== null) {
+                    $options['maxlength'] = $validator->max;
+                    break;
+                }
             }
         }
-
         return static::activeInput('text', $model, $attribute, $options);
     }
 
