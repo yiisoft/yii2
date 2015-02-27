@@ -240,21 +240,23 @@ class BaseStringHelper
      *
      * @param string $string
      * @param string $delimiter
-     * @param bool $trim Whether to trim each element
-     * @param bool $skipEmpty Whether to skip empty strings between delimiters
+     * @param boolean $trim Whether to trim each element
+     * @param boolean $skipEmpty Whether to skip empty strings between delimiters
      * @return array
      */
-    public static function explode ($string, $delimiter = ',', $trim = true, $skipEmpty = false)
+    public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false)
     {
-        $res = [];
-        foreach (explode($delimiter, $string) as $v) {
-            $v = $trim ? trim($v) : $v;
+        $result = [];
+        foreach (explode($delimiter, $string) as $value) {
+            $value = $trim ? trim($value) : $value;
             if ($skipEmpty) {
-                if (static::byteLength($v)) array_push($res, $v);
+                if (static::byteLength($value)) {
+                    $result[] = $value;
+                }
             } else {
-                array_push($res, $v);
+                $result[] = $value;
             }
         }
-        return $res;
+        return $result;
     }
 }
