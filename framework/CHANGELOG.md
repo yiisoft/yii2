@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.3 under development
 -----------------------
 
+- Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements
 - Bug #5457: `yii\web\Cors` should handle `Access-Control-Request-Headers` in a case-insensitive manner (qiangxue)
 - Bug #6919: Fixed wrong namespaces under advanced application's TestCase classes (ivokund)
 - Bug #6940: `yii\web\Response::sendContentAsFile()` may not send correct `content-length` header (sadgnome)

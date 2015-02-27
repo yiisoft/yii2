@@ -234,4 +234,27 @@ class BaseStringHelper
             return mb_strtolower(mb_substr($string, -$bytes, null, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
     }
+
+    /**
+     * Explodes string to array, optionally trims values and skip empty
+     *
+     * @param string $string
+     * @param string $delimiter
+     * @param bool $trim Whether to trim each element
+     * @param bool $skipEmpty Whether to skip empty strings between delimiters
+     * @return array
+     */
+    public static function explode ($string, $delimiter = ',', $trim = true, $skipEmpty = false)
+    {
+        $res = [];
+        foreach (explode($delimiter, $string) as $v) {
+            $v = $trim ? trim($v) : $v;
+            if ($skipEmpty) {
+                if (static::byteLength($v)) array_push($res, $v);
+            } else {
+                array_push($res, $v);
+            }
+        }
+        return $res;
+    }
 }
