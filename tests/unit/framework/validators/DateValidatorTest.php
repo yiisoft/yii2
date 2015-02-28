@@ -185,4 +185,17 @@ class DateValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_date');
         $this->assertTrue($model->hasErrors('attr_date'));
     }
+
+    public function testIntlMultibyteString()
+    {
+        $val = new DateValidator(['format' => 'dd MMM yyyy', 'locale' => 'de_DE']);
+        $model = FakedValidationModel::createWithAttributes(['attr_date' => '12 Mai 2014']);
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertFalse($model->hasErrors('attr_date'));
+
+        $val = new DateValidator(['format' => 'dd MMM yyyy', 'locale' => 'ru_RU']);
+        $model = FakedValidationModel::createWithAttributes(['attr_date' => '12 мая 2014']);
+        $val->validateAttribute($model, 'attr_date');
+        $this->assertFalse($model->hasErrors('attr_date'));
+    }
 }
