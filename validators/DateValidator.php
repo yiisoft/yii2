@@ -141,7 +141,7 @@ class DateValidator extends Validator
                 // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
                 $parsePos = 0;
                 $parsedDate = @$formatter->parse($value, $parsePos);
-                if ($parsedDate !== false && $parsePos === strlen($value)) {
+                if ($parsedDate !== false && $parsePos === mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8')) {
                     return $parsedDate;
                 }
                 return false;
