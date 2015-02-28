@@ -297,7 +297,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
   - `asDate`
   - `asTime`
-  - `asDateTime`
+  - `asDatetime`
   - `asSize` has been split up into `asSize` and `asShortSize`
   - `asCurrency`
   - `asDecimal`
