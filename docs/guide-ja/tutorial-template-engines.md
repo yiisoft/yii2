@@ -78,7 +78,7 @@ Twig の基礎を学ぶための最善のリソースは、[twig.sensiolabs.org]
 {{ myObject.my_function({'a' : 'b'}) }}
 ```
 
-結果を必要としない場合は、`void` ラッパーを使うべきです。
+結果を必要としない場合は、`void` ラッパーを使わなければなりません。
 
 ```
 {{ void(my_function({'a' : 'b'})) }}
