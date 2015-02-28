@@ -37,6 +37,16 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('d.m.y', FormatConverter::convertDateIcuToPhp('short', 'date', 'de-DE'));
     }
 
+    public function testEscapedIcuToPhp()
+    {
+        $this->assertEquals('\\o\\\'\\c\\l\\o\\c\\k', FormatConverter::convertDateIcuToPhp('\'o\'\'clock\''));
+    }
+
+    public function testEscapedIcuToJui()
+    {
+        $this->assertEquals('\'o\'\'clock\'', FormatConverter::convertDateIcuToJui('\'o\'\'clock\''));
+    }
+
     public function testIntlOneDigitIcu()
     {
         $formatter = new Formatter(['locale' => 'en-US']);
