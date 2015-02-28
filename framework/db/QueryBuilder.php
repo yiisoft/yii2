@@ -1094,7 +1094,7 @@ class QueryBuilder extends \yii\base\Object
                 foreach ($value->params as $n => $v) {
                     $params[$n] = $v;
                 }
-            } else {
+            } elseif (gettype($value) !== 'integer' && gettype($value) !== 'double') {
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = $value;
                 $values[$i] = $phName;
