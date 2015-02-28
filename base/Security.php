@@ -450,7 +450,7 @@ class Security extends Component
 
         // If we are on Linux or any OS that mimics the Linux /dev/urandom device, e.g. FreeBSD or OS X,
         // then read from /dev/urandom.
-        if (file_exists('/dev/urandom')) {
+        if (@file_exists('/dev/urandom')) {
             $handle = fopen('/dev/urandom', 'r');
             if ($handle !== false) {
                 $bytes .= fread($handle, $length);
@@ -464,7 +464,7 @@ class Security extends Component
 
         // If we are not on Linux and there is a /dev/random device then we have a BSD or Unix device
         // that won't block. It's not safe to read from /dev/random on Linux.
-        if (php_uname('s') !== 'Linux' && file_exists('/dev/random')) {
+        if (php_uname('s') !== 'Linux' && @file_exists('/dev/random')) {
             $handle = fopen('/dev/random', 'r');
             if ($handle !== false) {
                 $bytes .= fread($handle, $length);
