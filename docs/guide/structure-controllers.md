@@ -443,5 +443,5 @@ In summary, controllers
 * may access the [request](runtime-requests.md) data;
 * may call methods of [models](structure-models.md) and other service components with request data;
 * may use [views](structure-views.md) to compose responses;
-* should NOT process the request data - this should be done in [models](structure-models.md);
+* should NOT process the request data - this should be done in [the model layer](structure-models.md);
 * should avoid embedding HTML or other presentational code - this is better done in [views](structure-views.md).
