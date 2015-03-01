@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.3 under development
 -----------------------
 
+- Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire)
 - Bug #5457: `yii\web\Cors` should handle `Access-Control-Request-Headers` in a case-insensitive manner (qiangxue)
 - Bug #6553: DateValidator returned valid for date "2012-12-12foo" with intl extension enabled (gajahlemu)
 - Bug #6919: Fixed wrong namespaces under advanced application's TestCase classes (ivokund)
