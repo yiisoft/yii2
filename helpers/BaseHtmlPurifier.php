@@ -64,6 +64,5 @@ class BaseHtmlPurifier
      */
     protected static function configure($config)
     {
-        
     }
 }
