@@ -1,8 +1,8 @@
 Yii Framework 2 gii extension Change Log
 ========================================
 
-2.0.3 under development
------------------------
+2.0.3 March 01, 2015
+--------------------
 
 - Chg #7328: Changed the way CRUD generator translates "Create X". Now it's a whole string because of translation difficulties (samdark)
 

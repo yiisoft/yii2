@@ -21,6 +21,7 @@ return [
   'yii\base\Behavior' => YII2_PATH . '/base/Behavior.php',
   'yii\base\BootstrapInterface' => YII2_PATH . '/base/BootstrapInterface.php',
   'yii\base\Component' => YII2_PATH . '/base/Component.php',
+  'yii\base\Configurable' => YII2_PATH . '/base/Configurable.php',
   'yii\base\Controller' => YII2_PATH . '/base/Controller.php',
   'yii\base\DynamicModel' => YII2_PATH . '/base/DynamicModel.php',
   'yii\base\ErrorException' => YII2_PATH . '/base/ErrorException.php',

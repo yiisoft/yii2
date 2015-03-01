@@ -65,7 +65,8 @@ use yii\web\Request;
  * statement for fetching the current page of data. This property is read-only.
  * @property integer $page The zero-based current page number.
  * @property integer $pageCount Number of pages. This property is read-only.
- * @property integer $pageSize The number of items per page.
+ * @property integer $pageSize The number of items per page. If it is less than 1, it means the page size is
+ * infinite, and thus a single page contains all items.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

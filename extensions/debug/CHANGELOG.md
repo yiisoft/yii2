@@ -1,8 +1,8 @@
 Yii Framework 2 debug extension Change Log
 ==========================================
 
-2.0.3 under development
------------------------
+2.0.3 March 01, 2015
+--------------------
 
 - Bug #6903: Fixed display issue with phpinfo() table (kalayda, cebe)
 - Bug #7222: Debug toolbar wasn't displayed properly in rtl pages (mohammadhosain, johonunu, samdark)
