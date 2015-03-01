@@ -229,7 +229,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {
         if (is_array($columns)) {
-            throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+            throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
         }
         return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
     }
