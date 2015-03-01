@@ -155,7 +155,7 @@ RESTful ウェブサービス
 * [テスト環境の構築](test-environment-setup.md)
 * [単体テスト](test-unit.md)
 * [機能テスト](test-functional.md)
-* [承認テスト](test-acceptance.md)
+* [受入テスト](test-acceptance.md)
 * [フィクスチャ](test-fixtures.md)
 
 
