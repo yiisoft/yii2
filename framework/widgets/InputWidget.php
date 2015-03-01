@@ -32,7 +32,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class InputWidget extends Widget
+abstract class InputWidget extends Widget
 {
     /**
      * @var Model the data model that this widget is associated with.

@@ -95,7 +95,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends Object
+abstract class Component extends Object
 {
     /**
      * @var array the attached event handlers (event name => handlers)

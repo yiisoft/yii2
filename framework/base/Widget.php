@@ -22,7 +22,7 @@ use ReflectionClass;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Widget extends Component implements ViewContextInterface
+abstract class Widget extends Component implements ViewContextInterface
 {
     /**
      * @var integer a counter used to generate [[id]] for widgets.
