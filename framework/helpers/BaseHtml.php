@@ -840,6 +840,16 @@ class BaseHtml
      *   This option is ignored if `item` option is set.
      * - separator: string, the HTML code that separates items.
      * - itemOptions: array, the options for generating the radio button tag using [[checkbox()]].
+     * - options: array, the attributes for specific items in `items`. The array keys must be valid `items` values,
+     *   and the array values are the extra attributes for the corresponding checkbox tags. For example,
+     *
+     *   ~~~
+     *   [
+     *       'value1' => ['disabled' => true],
+     *       'value2' => ['label' => 'value 2'],
+     *   ];
+     *   ~~~
+     *
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
@@ -863,10 +873,12 @@ class BaseHtml
 
         $formatter = isset($options['item']) ? $options['item'] : null;
         $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
+        $subItemsOptions = isset($options['options']) ? $options['options'] : [];
         $encode = !isset($options['encode']) || $options['encode'];
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
+            $specificOptions = array_key_exists($value, $subItemsOptions) ? $subItemsOptions[$value] : [];
             $checked = $selection !== null &&
                 (!is_array($selection) && !strcmp($value, $selection)
                     || is_array($selection) && in_array($value, $selection));
@@ -876,7 +888,7 @@ class BaseHtml
                 $lines[] = static::checkbox($name, $checked, array_merge($itemOptions, [
                     'value' => $value,
                     'label' => $encode ? static::encode($label) : $label,
-                ]));
+                ], $specificOptions));
             }
             $index++;
         }
@@ -891,7 +903,8 @@ class BaseHtml
         $separator = isset($options['separator']) ? $options['separator'] : "\n";
 
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
+        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'],
+                $options['item'], $options['itemOptions'], $options['options']);
 
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
@@ -911,6 +924,16 @@ class BaseHtml
      *   This option is ignored if `item` option is set.
      * - separator: string, the HTML code that separates items.
      * - itemOptions: array, the options for generating the radio button tag using [[radio()]].
+     * - options: array, the attributes for specific items in `items`. The array keys must be valid `items` values,
+     *   and the array values are the extra attributes for the corresponding radio tags. For example,
+     *
+     *   ~~~
+     *   [
+     *       'value1' => ['disabled' => true],
+     *       'value2' => ['label' => 'value 2'],
+     *   ];
+     *   ~~~
+     *
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
@@ -931,9 +954,11 @@ class BaseHtml
         $encode = !isset($options['encode']) || $options['encode'];
         $formatter = isset($options['item']) ? $options['item'] : null;
         $itemOptions = isset($options['itemOptions']) ? $options['itemOptions'] : [];
+        $subItemsOptions = isset($options['options']) ? $options['options'] : [];
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
+            $specificOptions = array_key_exists($value, $subItemsOptions) ? $subItemsOptions[$value] : [];
             $checked = $selection !== null &&
                 (!is_array($selection) && !strcmp($value, $selection)
                     || is_array($selection) && in_array($value, $selection));
@@ -943,7 +968,7 @@ class BaseHtml
                 $lines[] = static::radio($name, $checked, array_merge($itemOptions, [
                     'value' => $value,
                     'label' => $encode ? static::encode($label) : $label,
-                ]));
+                ], $specificOptions));
             }
             $index++;
         }
@@ -957,7 +982,8 @@ class BaseHtml
         }
 
         $tag = isset($options['tag']) ? $options['tag'] : 'div';
-        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'], $options['item'], $options['itemOptions']);
+        unset($options['tag'], $options['unselect'], $options['encode'], $options['separator'],
+                $options['item'], $options['itemOptions'], $options['options']);
 
         return $hidden . static::tag($tag, implode($separator, $lines), $options);
     }
