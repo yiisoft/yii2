@@ -1,8 +1,14 @@
 Yii Framework 2 authclient extension Change Log
 ===============================================
 
-2.0.3 under development
+2.0.4 under development
 -----------------------
+
+- no changes in this release.
+
+
+2.0.3 March 01, 2015
+--------------------
 
 - Enh #6892: Default value of `yii\authclient\clients\Twitter::$authUrl` changed to 'authenticate', allowing usage of previous logged user without request an access (kotchuprik)
 
