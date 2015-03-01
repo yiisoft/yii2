@@ -4,7 +4,9 @@ Testing
 Testing is an important part of software development. Whether we are aware of it or not, we conduct testing continuously.
 For example, when we write a class in PHP, we may debug it step by step or simply use echo or die statements to verify
 the implementation works according to our initial plan. In the case of a web application, we're entering some test data
-in forms to ensure the page interacts with us as expected. The testing process could be automated so that each time when we need to verify something, we just need to call up the code that does it for us. The code that verifies the result matches
+in forms to ensure the page interacts with us as expected.
+
+The testing process could be automated so that each time when we need to verify something, we just need to call up the code that does it for us. The code that verifies the result matches
 what we've planned is called test and the process of its creation and further execution is known as automated testing,
 which is the main topic of these testing chapters.
 
