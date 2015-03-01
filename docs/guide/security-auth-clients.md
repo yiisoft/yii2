@@ -203,7 +203,8 @@ Each auth client has different auth flow, but all of them supports `getUserAttri
 which can be invoked if authentication was successful.
 
 This method allows you to get information about external user account, such as ID, email address,
-full name, preferred language etc.
+full name, preferred language etc. Note that for each provider fields available may vary in both existence and
+names.
 
 Defining list of attributes, which external auth provider should return, depends on client type:
 
