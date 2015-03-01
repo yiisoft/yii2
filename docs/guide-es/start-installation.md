@@ -26,7 +26,7 @@ Si ya tienes composer instalado asegurate que esté actualizado ejecutando `comp
 Teniendo Composer instalado, puedes instalar Yii ejecutando los siguientes comandos en un directorio accesible vía Web:
 Nota: es posible que en al ejecutar el primer comando te pida tu username 
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
+    composer global require "fxp/composer-asset-plugin:1.0.0"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 El comando anterior instala Yii dentro del directorio `basic`.
