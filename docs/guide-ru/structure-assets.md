@@ -86,6 +86,9 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   [[yii\web\AssetBundle::basePath|basePath]]. Like [[yii\web\AssetBundle::basePath|basePath]],
   if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property, the [asset manager](#asset-manager)
   will publish the assets and overwrite this property accordingly. [Path aliases](concept-aliases.md) can be used here.
+
+* [[yii\web\AssetBundle::baseUrl|baseUrl]]: определяет/задаёт URL соответствующий директории [[yii\web\AssetBundle::basePath|basePath]]. Также как и для [[yii\web\AssetBundle::basePath|basePath]], если Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]], [Менеджер ресурсов](#asset-manager) опубликует ресурсы и перезапишет это свойство соответственно. Здесь могут быть использованы [Псевдонимы путей](concept-aliases.md).
+
 * [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. Note that only
   forward slash "/" should be used as directory separators. Each JavaScript file can be specified in one of the
   following two formats:
@@ -95,6 +98,10 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   - an absolute URL representing an external JavaScript file. For example,
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
+
+* [[yii\web\AssetBundle::js|js]]: массив перечисляющий JavaScript файлы содержащиеся в данном комплекте. Здесь forward slash "/" может быть использован только как разделитель директорий. Каждый JavaScript файл может быть задан в одном из следующих форматов:
+  - относительный путь представленный локальным JavaScript файлом (например `js/main.js`).
+
 * [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
   is the same as that of [[yii\web\AssetBundle::js|js]].
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
