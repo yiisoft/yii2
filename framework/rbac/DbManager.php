@@ -760,7 +760,7 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function revoke($role, $userId)
+    public function revoke($item, $userId)
     {
         if (empty($userId)) {
             return false;
