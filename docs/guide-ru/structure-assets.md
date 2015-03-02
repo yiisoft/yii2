@@ -24,14 +24,17 @@ JavaScript files in the bundle in the rendered Web page.
 Yii управляет ресурсами в единице *asset bundle*. Комплект ресурсов это простая коллекция/набор ресурсов расположенных в директории. Когда Вы регистрируете комплект ресурсов в [представлении](structure-views.md), это включит набор CSS и JavaScript файлов в отображаемую Web страницу.
 
 
-## Defining Asset Bundles <span id="defining-asset-bundles"></span>
+## Defining Asset Bundles Задание Комплекта Ресурсов<span id="defining-asset-bundles"></span>
 
 Asset bundles are specified as PHP classes extending from [[yii\web\AssetBundle]]. The name of a bundle is simply
 its corresponding fully qualified PHP class name (without the leading backslash). An asset bundle class should
 be [autoloadable](concept-autoloading.md). It usually specifies where the assets are located, what CSS and 
 JavaScript files the bundle contains, and how the bundle depends on other bundles.
 
+Комплект ресурсов определяется как PHP класс расширяющийся от [[yii\web\AssetBundle]]. ...(без начальной косой черты). Это обычно указывает где ресурсы находятся, какие CSS и JavaScript файлы содержит комплект, и как комплект зависит от других комплектов.
+
 The following code defines the main asset bundle used by [the basic application template](start-installation.md):
+Следующий код определяет основной комплект ресурсов используемый в [шаблоне базового приложения](start-installation.md):
 
 ```php
 <?php
