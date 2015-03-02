@@ -236,23 +236,25 @@ class BaseStringHelper
     }
 
     /**
-     * Explodes string to array, optionally trims values and skip empty
+     * Explodes string to array, optionally trims values, skip empty
      *
      * @param string $string
-     * @param string $delimiter
-     * @param boolean $trim Whether to trim each element
-     * @param boolean $skipEmpty Whether to skip empty strings between delimiters
+     * @param string $delimiter Default is ','
+     * @param mixed $trim Whether to trim each element. Can be:
+     *                    true - to normal trim
+     *                    string - will be passed as a second argument to trim function
+     *                    callable - will be called for each value instead of trim. Takes the only argument - value.
+     * @param boolean $skipEmpty Whether to skip empty strings between delimiters. Default is false.
      * @return array
      */
-    public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false)
-    {
-        $result = [];
-        foreach (explode($delimiter, $string) as $value) {
-            $value = $trim ? trim($value) : $value;
-            if ($skipEmpty && $value === '') {
-                continue;
-            }
-            $result[] = $value;
+    public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false) {
+        $result = explode($delimiter, $string);
+        if ($trim) {
+            $result = array_map($trim === true ? 'trim' : (is_callable($trim) ? $trim : function($v) use ($trim) {return trim($v, $trim);}), $result);
+        }
+        if ($skipEmpty) {
+            // Wrapped with array_values to make array keys sequential after empty values removing
+            $result = array_values(array_filter($result));
         }
         return $result;
     }
