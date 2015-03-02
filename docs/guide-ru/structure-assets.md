@@ -72,13 +72,16 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   set the [[yii\web\AssetBundle::basePath|basePath]] property and [[yii\web\AssetBundle::baseUrl|baseUrl]], instead.
   [Path aliases](concept-aliases.md) can be used here.
 
-: определяет/задаёт корневую директорию содержащую файлы ресурса в этом комплекте. Это свойство должно быть установлено если корневая директория не доступна из Web. В противном случае, Вы должны установить [[yii\web\AssetBundle::basePath|basePath]] свойство и [[yii\web\AssetBundle::baseUrl|baseUrl]] свойство вместо текущего. Здесь могут быть использованы [Псевдонимы путей](concept-aliases.md)
+* [[yii\web\AssetBundle::sourcePath|sourcePath]]: определяет/задаёт корневую директорию содержащую файлы ресурса в этом комплекте. Это свойство должно быть установлено если корневая директория не доступна из Web. В противном случае, Вы должны установить [[yii\web\AssetBundle::basePath|basePath]] свойство и [[yii\web\AssetBundle::baseUrl|baseUrl]] свойство вместо текущего. Здесь могут быть использованы [Псевдонимы путей](concept-aliases.md).
 
 * [[yii\web\AssetBundle::basePath|basePath]]: specifies a Web-accessible directory that contains the asset files in
   this bundle. When you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property,
   the [asset manager](#asset-manager) will publish the assets in this bundle to a Web-accessible directory
   and overwrite this property accordingly. You should set this property if your asset files are already in
   a Web-accessible directory and do not need asset publishing. [Path aliases](concept-aliases.md) can be used here.
+
+* [[yii\web\AssetBundle::basePath|basePath]]: определяет/задаёт Web доступную директорию которая содержит файлы ресурсов в текущем комплекте. Когда Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]], [Менеджер ресурсов](#asset-manager) опубликует ресурсы текущего комплекта в Web доступную директорию и перезапишет соответственно это свойство. Вы должны установить это свойство если Ваши файлы ресурсов уже в Web доступной директории и не нужно опубликовывать ресурсы. Здесь могут быть использованы [Псевдонимы путей](concept-aliases.md).
+
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: specifies the URL corresponding to the directory
   [[yii\web\AssetBundle::basePath|basePath]]. Like [[yii\web\AssetBundle::basePath|basePath]],
   if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property, the [asset manager](#asset-manager)
