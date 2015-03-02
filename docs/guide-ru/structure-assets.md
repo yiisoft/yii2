@@ -107,10 +107,19 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
 
 * [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
   is the same as that of [[yii\web\AssetBundle::js|js]].
+
+* [[yii\web\AssetBundle::css|css]]: массив, перечисляющий CSS файлы, содержащиеся в данном комплекте. Формат этого массива такой же, как и у [[yii\web\AssetBundle::js|js]].
+
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
   (to be explained shortly).
+
+* [[yii\web\AssetBundle::depends|depends]]: массив, перечисляющий имена комплектов ресурсов, от которых зависит данный комплект.
+
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: specifies the options that will be passed to the
   [[yii\web\View::registerJsFile()]] method when it is called to register *every* JavaScript file in this bundle.
+
+* [[yii\web\AssetBundle::jsOptions|jsOptions]]: определяет/задаёт параметры которые будут относится к методу [[yii\web\View::registerJsFile()]], <b>когда он будет вызван регистрацией *every* JavaScript файла в данном комплекте.</b>
+
 * [[yii\web\AssetBundle::cssOptions|cssOptions]]: specifies the options that will be passed to the
   [[yii\web\View::registerCssFile()]] method when it is called to register *every* CSS file in this bundle.
 * [[yii\web\AssetBundle::publishOptions|publishOptions]]: specifies the options that will be passed to the
