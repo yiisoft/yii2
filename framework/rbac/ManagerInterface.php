@@ -171,20 +171,20 @@ interface ManagerInterface
     /**
      * Assigns a role to a user.
      *
-     * @param Role $role
+     * @param Item $item
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
-     * @return Assignment the role assignment information.
-     * @throws \Exception if the role has already been assigned to the user
+     * @return Assignment the item assignment information.
+     * @throws \Exception if the item has already been assigned to the user
      */
-    public function assign($role, $userId);
+    public function assign($item, $userId);
 
     /**
-     * Revokes a role from a user.
-     * @param Role $role
+     * Revokes an RBAC Item from a user.
+     * @param Item $item
      * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
      * @return boolean whether the revoking is successful
      */
-    public function revoke($role, $userId);
+    public function revoke($Item, $userId);
 
     /**
      * Revokes all roles from a user.
