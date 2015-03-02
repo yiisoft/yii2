@@ -34,6 +34,7 @@ JavaScript files the bundle contains, and how the bundle depends on other bundle
 Комплект ресурсов определяется как PHP класс расширяющийся от [[yii\web\AssetBundle]]. ...(без начальной косой черты). Это обычно указывает где ресурсы находятся, какие CSS и JavaScript файлы содержит комплект, и как комплект зависит от других комплектов.
 
 The following code defines the main asset bundle used by [the basic application template](start-installation.md):
+
 Следующий код определяет основной комплект ресурсов используемый в [шаблоне базового приложения](start-installation.md):
 
 ```php
@@ -63,6 +64,8 @@ The above `AppAsset` class specifies that the asset files are located under the 
 corresponds to the URL `@web`; the bundle contains a single CSS file `css/site.css` and no JavaScript file;
 the bundle depends on two other bundles: [[yii\web\YiiAsset]] and [[yii\bootstrap\BootstrapAsset]]. More detailed
 explanation about the properties of [[yii\web\AssetBundle]] can be found in the following:
+
+В коде выше класс `AppAsset` указывает что файлы ресурса находятся в директории `@webroot` , которой соответствует URL `@web`; комплект содержит единственный CSS файл `css/site.css` и не содержит JavaScript файлов; комплект зависит от двух других комплектов: [[yii\web\YiiAsset]] и [[yii\bootstrap\BootstrapAsset]]. Более детальное объяснение о свойствах [[yii\web\AssetBundle]] может быть найдено ниже:
 
 * [[yii\web\AssetBundle::sourcePath|sourcePath]]: specifies the root directory that contains the asset files in
   this bundle. This property should be set if the root directory is not Web accessible. Otherwise, you should
