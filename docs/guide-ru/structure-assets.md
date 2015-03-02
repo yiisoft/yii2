@@ -71,6 +71,8 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   this bundle. This property should be set if the root directory is not Web accessible. Otherwise, you should
   set the [[yii\web\AssetBundle::basePath|basePath]] property and [[yii\web\AssetBundle::baseUrl|baseUrl]], instead.
   [Path aliases](concept-aliases.md) can be used here.
+определяет/задаёт корневую директорию содержащую файлы ресурса в этом комплекте. Это свойство должно быть установлено если корневая директория не доступна из Web. В противном случае, Вы должны установить [[yii\web\AssetBundle::basePath|basePath]] свойство и [[yii\web\AssetBundle::baseUrl|baseUrl]] свойство вместо текущего.
+
 * [[yii\web\AssetBundle::basePath|basePath]]: specifies a Web-accessible directory that contains the asset files in
   this bundle. When you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property,
   the [asset manager](#asset-manager) will publish the assets in this bundle to a Web-accessible directory
