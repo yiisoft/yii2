@@ -99,8 +99,11 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 
-* [[yii\web\AssetBundle::js|js]]: массив перечисляющий JavaScript файлы содержащиеся в данном комплекте. Здесь forward slash "/" может быть использован только как разделитель директорий. Каждый JavaScript файл может быть задан в одном из следующих форматов:
-  - относительный путь представленный локальным JavaScript файлом (например `js/main.js`).
+* [[yii\web\AssetBundle::js|js]]: массив перечисляющий JavaScript файлы содержащиеся в данном комплекте. Заметьте, что только левая косая черта (forward slash) "/" может быть использована, как разделитель директорий. Каждый JavaScript файл может быть задан в одном из следующих форматов:
+  - относительный путь, представленный локальным JavaScript файлом (например `js/main.js`). Актуальный путь файла может быть определён путём добавления [[yii\web\AssetManager::basePath]] к относительному пути, и актуальный URL файла может быть определён путём добавления [[yii\web\AssetManager::baseUrl]] к относительному пути.
+  - абсолютный URL, представленный внешним JavaScript файлом. Например,
+    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` или
+    `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 
 * [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
   is the same as that of [[yii\web\AssetBundle::js|js]].
