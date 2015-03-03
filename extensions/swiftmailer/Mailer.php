@@ -81,6 +81,11 @@ class Mailer extends BaseMailer
     public $messageClass = 'yii\swiftmailer\Message';
 
     /**
+     * @var \Swift_Plugins_Logger Any implementation of the Swift_Plugins_Logger interface.
+     */
+    private $_logger;
+
+    /**
      * @var \Swift_Mailer Swift mailer instance.
      */
     private $_swiftMailer;
@@ -171,11 +176,19 @@ class Mailer extends BaseMailer
                 if (is_array($plugin) && isset($plugin['class'])) {
                     $plugin = $this->createSwiftObject($plugin);
                 }
+
+                if ($plugin instanceof \Swift_Plugins_Logger) {
+                    $this->_logger = $plugin;
+                }
                 $transport->registerPlugin($plugin);
             }
         }
 
         return $transport;
+    }
+
+    public function getLogger() {
+        return $this->_logger;
     }
 
     /**
