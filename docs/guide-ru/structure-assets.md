@@ -170,6 +170,8 @@ For [extensions](structure-extensions.md), because their assets are located toge
 in directories that are not Web accessible, you have to specify the [[yii\web\AssetBundle::sourcePath|sourcePath]]
 property when defining asset bundle classes for them.
 
+Для [расширений](structure-extensions.md), в связи с тем, что их ресурсы располагаются вместе с их исходным кодом в директориях, которые не являются веб-доступными, необходимо указать свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] при определении класса комплекта ресурсов для них.
+
 > Note: Do not use `@webroot/assets` as the [[yii\web\AssetBundle::sourcePath|source path]].
   This directory is used by default by the [[yii\web\AssetManager|asset manager]] to save the asset files
   published from their source location. Any content in this directory is considered temporarily and may be subject
