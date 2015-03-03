@@ -201,12 +201,14 @@ Asset dependencies are transitive. This means if bundle A depends on B which dep
 Зависимости ресурсов являются <b>переходными/транзитивными/зависимыми/наследуемыми</b>. Это значит, что если комплект А зависит от В который зависит от С, А тоже зависит от С.
 
 
-### Asset Options <span id="asset-options"></span>
+### Asset Options - Параметры ресурсов <span id="asset-options"></span>
 
 You can specify the [[yii\web\AssetBundle::cssOptions|cssOptions]] and [[yii\web\AssetBundle::jsOptions|jsOptions]]
 properties to customize the way that CSS and JavaScript files are included in a page. The values of these properties
 will be passed to the [[yii\web\View::registerCssFile()]] and [[yii\web\View::registerJsFile()]] methods, respectively, when
 they are called by the [view](structure-views.md) to include CSS and JavaScript files.
+
+Вы можете задать свойства [[yii\web\AssetBundle::cssOptions|cssOptions]] и [[yii\web\AssetBundle::jsOptions|jsOptions]] и настроить CSS и JavaScript файлы включенные в страницу. Значения этих свойств будут приняты методами [[yii\web\View::registerCssFile()]] и [[yii\web\View::registerJsFile()]] соответственно, когда они (методы) вызываются [представление](structure-views.md) включает CSS и JavaScript файлы.
 
 > Note: The options you set in a bundle class apply to *every* CSS/JavaScript file in the bundle. If you want to
   use different options for different files, you should create separate asset bundles, and use one set of options
