@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.4 under development
 -----------------------
 
-- no changes in this release.
+- Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 
 
 2.0.3 March 01, 2015

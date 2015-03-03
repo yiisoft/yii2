@@ -934,7 +934,9 @@ class Response extends \yii\base\Response
                 throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatterInterface.");
             }
         } elseif ($this->format === self::FORMAT_RAW) {
-            $this->content = $this->data;
+            if ($this->data !== null) {
+                $this->content = $this->data;
+            }
         } else {
             throw new InvalidConfigException("Unsupported response format: {$this->format}");
         }
