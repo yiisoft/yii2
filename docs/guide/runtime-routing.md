@@ -275,7 +275,7 @@ The rest of the properties are optional. However, their configuration shown abov
 
 A URL rule is an instance of [[yii\web\UrlRule]] or its child class. Each URL rule consists of a pattern used 
 for matching the path info part of URLs, a route, and a few query parameters. A URL rule can be used to parse a request
-if its pattern matches the requested URL and a URL rule can be used to create a URL if its route and query parameter 
+if its pattern matches the requested URL. A URL rule can be used to create a URL if its route and query parameter 
 names match those that are given. 
 
 When the pretty URL format is enabled, the [[yii\web\UrlManager|URL manager]] uses the URL rules declared in its
