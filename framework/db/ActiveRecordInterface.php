@@ -220,7 +220,7 @@ interface ActiveRecordInterface
      * ```
      *
      * @param mixed $condition primary key value or a set of column values
-     * @return array an array of ActiveRecord instance, or an empty array if nothing matches.
+     * @return static[] an array of ActiveRecord instance, or an empty array if nothing matches.
      */
     public static function findAll($condition);
 

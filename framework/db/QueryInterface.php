@@ -69,7 +69,7 @@ interface QueryInterface
      * }
      * ~~~
      *
-     * @return static the query object itself
+     * @return $this
      */
     public function indexBy($column);
 
@@ -154,7 +154,7 @@ interface QueryInterface
      *   following SQL expression: `id >= 10`.
      *
      * @param string|array $condition the conditions that should be put in the WHERE part.
-     * @return static the query object itself
+     * @return 4this
      * @see andWhere()
      * @see orWhere()
      */
@@ -165,7 +165,7 @@ interface QueryInterface
      * The new condition and the existing one will be joined using the 'AND' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this
      * @see where()
      * @see orWhere()
      */
@@ -176,7 +176,7 @@ interface QueryInterface
      * The new condition and the existing one will be joined using the 'OR' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this
      * @see where()
      * @see andWhere()
      */
@@ -187,7 +187,7 @@ interface QueryInterface
      *
      * @param array $condition the conditions that should be put in the WHERE part. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this
      * @see andFilterWhere()
      * @see orFilterWhere()
      */
@@ -198,7 +198,7 @@ interface QueryInterface
      * The new condition and the existing one will be joined using the 'AND' operator.
      * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this
      * @see filterWhere()
      * @see orFilterWhere()
      */
@@ -209,7 +209,7 @@ interface QueryInterface
      * The new condition and the existing one will be joined using the 'OR' operator.
      * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this
      * @see filterWhere()
      * @see andFilterWhere()
      */
@@ -222,7 +222,7 @@ interface QueryInterface
      * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
-     * @return static the query object itself
+     * @return $this
      * @see addOrderBy()
      */
     public function orderBy($columns);
@@ -234,7 +234,7 @@ interface QueryInterface
      * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
-     * @return static the query object itself
+     * @return $this
      * @see orderBy()
      */
     public function addOrderBy($columns);
@@ -242,14 +242,14 @@ interface QueryInterface
     /**
      * Sets the LIMIT part of the query.
      * @param integer $limit the limit. Use null or negative value to disable limit.
-     * @return static the query object itself
+     * @return $this
      */
     public function limit($limit);
 
     /**
      * Sets the OFFSET part of the query.
      * @param integer $offset the offset. Use null or negative value to disable offset.
-     * @return static the query object itself
+     * @return $this
      */
     public function offset($offset);
 }

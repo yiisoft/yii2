@@ -67,7 +67,7 @@ class Command extends \yii\db\Command
      * @param string $index the index that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the index
-     * @return static the command object itself
+     * @return $this
      */
     public function batchInsert($index, $columns, $rows)
     {
@@ -94,7 +94,7 @@ class Command extends \yii\db\Command
      *
      * @param string $index the index that new rows will be replaced into.
      * @param array $columns the column data (name => value) to be replaced into the index.
-     * @return static the command object itself
+     * @return $this
      */
     public function replace($index, $columns)
     {
@@ -121,7 +121,7 @@ class Command extends \yii\db\Command
      * @param string $index the index that new rows will be replaced.
      * @param array $columns the column names
      * @param array $rows the rows to be batch replaced in the index
-     * @return static the command object itself
+     * @return $this
      */
     public function batchReplace($index, $columns, $rows)
     {
@@ -149,7 +149,7 @@ class Command extends \yii\db\Command
      * refer to [[Query::where()]] on how to specify condition.
      * @param array $params the parameters to be bound to the command
      * @param array $options list of options in format: optionName => optionValue
-     * @return static the command object itself
+     * @return $this
      */
     public function update($index, $columns, $condition = '', $params = [], $options = [])
     {
@@ -161,7 +161,7 @@ class Command extends \yii\db\Command
     /**
      * Creates a SQL command for truncating a runtime index.
      * @param string $index the index to be truncated. The name will be properly quoted by the method.
-     * @return static the command object itself
+     * @return $this
      */
     public function truncateIndex($index)
     {
@@ -177,7 +177,7 @@ class Command extends \yii\db\Command
      * It could be either a single string or array of strings.
      * @param string $match the full-text query to build snippets for.
      * @param array $options list of options in format: optionName => optionValue
-     * @return static the command object itself
+     * @return $this
      */
     public function callSnippets($index, $source, $match, $options = [])
     {
@@ -192,7 +192,7 @@ class Command extends \yii\db\Command
      * @param string $index the name of the index from which to take the text processing settings
      * @param string $text the text to break down to keywords.
      * @param boolean $fetchStatistic whether to return document and hit occurrence statistics
-     * @return static the command object itself
+     * @return $this
      */
     public function callKeywords($index, $text, $fetchStatistic = false)
     {

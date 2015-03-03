@@ -63,7 +63,7 @@ class YiiRequirementChecker
      * @param array|string $requirements requirements to be checked.
      * If an array, it is treated as the set of requirements;
      * If a string, it is treated as the path of the file, which contains the requirements;
-     * @return static self instance.
+     * @return $this
      */
     function check($requirements)
     {
@@ -108,7 +108,7 @@ class YiiRequirementChecker
 
     /**
      * Performs the check for the Yii core requirements.
-     * @return YiiRequirementChecker self instance.
+     * @return $this
      */
     function checkYii()
     {

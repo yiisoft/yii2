@@ -139,7 +139,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * ~~~
      *
      * Warning: this option should NOT be used with [[asArray]] at the same time!
-     * @return static the query object itself
+     * @return $this
      */
     public function snippetByModel()
     {

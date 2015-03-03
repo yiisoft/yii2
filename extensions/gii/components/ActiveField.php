@@ -47,7 +47,7 @@ class ActiveField extends \yii\widgets\ActiveField
 
     /**
      * Makes field remember its value between page reloads
-     * @return static the field object itself
+     * @return $this
      */
     public function sticky()
     {
@@ -59,7 +59,7 @@ class ActiveField extends \yii\widgets\ActiveField
     /**
      * Makes field auto completable
      * @param array $data auto complete data (array of callables or scalars)
-     * @return static the field object itself
+     * @return $this
      */
     public function autoComplete($data)
     {

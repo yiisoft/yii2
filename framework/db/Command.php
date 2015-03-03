@@ -101,7 +101,7 @@ class Command extends Component
      * If this is not set, the value of [[Connection::queryCacheDuration]] will be used instead.
      * Use 0 to indicate that the cached data will never expire.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query result.
-     * @return static the command object itself
+     * @return $this
      */
     public function cache($duration = null, $dependency = null)
     {
@@ -112,7 +112,7 @@ class Command extends Component
 
     /**
      * Disables query cache for this command.
-     * @return static the command object itself
+     * @return $this
      */
     public function noCache()
     {
@@ -133,7 +133,7 @@ class Command extends Component
      * Specifies the SQL statement to be executed.
      * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
      * @param string $sql the SQL statement to be set.
-     * @return static this command instance
+     * @return $this
      */
     public function setSql($sql)
     {
@@ -239,7 +239,7 @@ class Command extends Component
      * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @param integer $length length of the data type
      * @param mixed $driverOptions the driver-specific options
-     * @return static the current command being executed
+     * @return $this
      * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
      */
     public function bindParam($name, &$value, $dataType = null, $length = null, $driverOptions = null)
@@ -281,7 +281,7 @@ class Command extends Component
      * placeholders, this will be the 1-indexed position of the parameter.
      * @param mixed $value The value to bind to the parameter
      * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-     * @return static the current command being executed
+     * @return $this
      * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
      */
     public function bindValue($name, $value, $dataType = null)
@@ -304,7 +304,7 @@ class Command extends Component
      * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
      * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
      * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
-     * @return static the current command being executed
+     * @return $this
      */
     public function bindValues($values)
     {

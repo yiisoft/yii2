@@ -247,7 +247,7 @@ class ActiveField extends Component
      * @param array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
      * using [[Html::encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * @return static the field object itself
+     * @return $this
      */
     public function label($label = null, $options = [])
     {
@@ -280,7 +280,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the error element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function error($options = [])
     {
@@ -304,7 +304,7 @@ class ActiveField extends Component
      *
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function hint($content, $options = [])
     {
@@ -323,7 +323,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function input($type, $options = [])
     {
@@ -349,7 +349,7 @@ class ActiveField extends Component
      *
      * Note that if you set a custom `id` for the input element, you may need to adjust the value of [[selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function textInput($options = [])
     {
@@ -374,7 +374,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function hiddenInput($options = [])
     {
@@ -394,7 +394,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function passwordInput($options = [])
     {
@@ -414,7 +414,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function fileInput($options = [])
     {
@@ -436,7 +436,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the textarea element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function textarea($options = [])
     {
@@ -470,7 +470,7 @@ class ActiveField extends Component
      * @param boolean $enclosedByLabel whether to enclose the radio within the label.
      * If true, the method will still use [[template]] to layout the checkbox and the error message
      * except that the radio is enclosed by the label tag.
-     * @return static the field object itself
+     * @return $this
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
@@ -516,7 +516,7 @@ class ActiveField extends Component
      * @param boolean $enclosedByLabel whether to enclose the checkbox within the label.
      * If true, the method will still use [[template]] to layout the checkbox and the error message
      * except that the checkbox is enclosed by the label tag.
-     * @return static the field object itself
+     * @return $this
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
@@ -571,7 +571,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function dropDownList($items, $options = [])
     {
@@ -618,7 +618,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @return static the field object itself
+     * @return $this
      */
     public function listBox($items, $options = [])
     {
@@ -653,7 +653,7 @@ class ActiveField extends Component
      * where $index is the zero-based index of the checkbox in the whole list; $label
      * is the label for the checkbox; and $name, $value and $checked represent the name,
      * value and the checked status of the checkbox input.
-     * @return static the field object itself
+     * @return $this
      */
     public function checkboxList($items, $options = [])
     {
@@ -686,7 +686,7 @@ class ActiveField extends Component
      * where $index is the zero-based index of the radio button in the whole list; $label
      * is the label for the radio button; and $name, $value and $checked represent the name,
      * value and the checked status of the radio button input.
-     * @return static the field object itself
+     * @return $this
      */
     public function radioList($items, $options = [])
     {
@@ -718,7 +718,7 @@ class ActiveField extends Component
      *
      * @param string $class the widget class name
      * @param array $config name-value pairs that will be used to initialize the widget
-     * @return static the field object itself
+     * @return $this
      */
     public function widget($class, $config = [])
     {
