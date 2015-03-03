@@ -180,17 +180,21 @@ property when defining asset bundle classes for them.
 > Примечание: Не используйте `@webroot/assets` как [[yii\web\AssetBundle::sourcePath|source path]]. Эта директория используется по умолчанию <b>менеджером ресурсов</b> [[yii\web\AssetManager|asset manager]] для сохранения файлов ресурсов, опубликованных из их исходного месторасположения. Любое содержимое этой директории расценивается как временное и может быть удалено.
   
 
-### Asset Dependencies <span id="asset-dependencies"></span>
+### Asset Dependencies - Зависимости ресурсов <span id="asset-dependencies"></span>
 
 When you include multiple CSS or JavaScript files in a Web page, they have to follow a certain order to avoid
 overriding issues. For example, if you are using a jQuery UI widget in a Web page, you have to make sure
 the jQuery JavaScript file is included before the jQuery UI JavaScript file. We call such ordering the dependencies
 among assets.
 
+Когда Вы включаете несколько CSS или JavaScript файлов в Web страницу, они должны следовать в определенном порядке, <b> чтобы избежать переопределения при выдаче</b>. Например, если Вы используете виджет jQuery UI в Web странице, вы должны убедиться, что jQuery JavaScript файл был включен до jQuery UI JavaScript файла. Мы называем такой порядок зависимостью между ресурсами.
+
 Asset dependencies are mainly specified through the [[yii\web\AssetBundle::depends]] property.
 In the `AppAsset` example, the asset bundle depends on two other asset bundles: [[yii\web\YiiAsset]] and
 [[yii\bootstrap\BootstrapAsset]], which means the CSS and JavaScript files in `AppAsset` will be included *after*
 those files in the two dependent bundles.
+
+Зависимости ресурсов в основном указываются через свойство [[yii\web\AssetBundle::depends]]. Например в `AppAsset`, комплект ресурсов зависит от двух других комплектов ресурсов: [[yii\web\YiiAsset]] и [[yii\bootstrap\BootstrapAsset]], которые обозначают, что CSS и JavaScript файлы `AppAsset` будут включены *после* файлов этих двух <b>зависимых</b> комплектов.
 
 Asset dependencies are transitive. This means if bundle A depends on B which depends on C, A will depend on C, too.
 
