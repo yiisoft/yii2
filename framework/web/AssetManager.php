@@ -64,11 +64,11 @@ class AssetManager extends Component
      */
     public $bundles = [];
     /**
-     * @return string the root directory storing the published asset files.
+     * @var string the root directory storing the published asset files.
      */
     public $basePath = '@webroot/assets';
     /**
-     * @return string the base URL through which the published asset files can be accessed.
+     * @var string the base URL through which the published asset files can be accessed.
      */
     public $baseUrl = '@web/assets';
     /**
