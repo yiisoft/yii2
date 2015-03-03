@@ -30,7 +30,7 @@ to the require section of your `composer.json` file.
 Usage
 -----
 
-Fhe following
+The following
 single line of code in a view file would render a [JQuery UI DatePicker](http://api.jqueryui.com/datepicker/) widget:
 
 ```php
