@@ -245,7 +245,7 @@ public $cssOptions = ['noscript' => true];
 To include a JavaScript file in the head section of a page (by default, JavaScript files are included at the end
 of the body section), use the following option:
 
-Для включения JavaScript файла в head раздел страницы (по умолчанию, JavaScript файлы включаются в конец раздела body), используйте следующий параметр:
+Для включения JavaScript файла в head раздел страницы (по умолчанию, JavaScript файлы включаются в конец раздела body) используйте следующий параметр:
 
 
 ```php
@@ -256,6 +256,8 @@ By default, when an asset bundle is being published, all contents in the directo
 will be published. You can customize this behavior by configuring the [[yii\web\AssetBundle::publishOptions|publishOptions]] 
 property. For example, to publish only one or a few subdirectories of [[yii\web\AssetBundle::sourcePath]], 
 you can do the following in the asset bundle class:
+
+По умолчанию, когда комплект ресурсов публикуется, всё содержимое в заданной директории [[yii\web\AssetBundle::sourcePath]] будет опубликовано. Вы можете настроить это поведение сконфигурировав свойство [[yii\web\AssetBundle::publishOptions|publishOptions]]. Например, опубликовать одну или несколько поддиректорий [[yii\web\AssetBundle::sourcePath]] в классе комплекта ресурсов Вы можете в следующим образом:
 
 ```php
 <?php
@@ -284,16 +286,23 @@ class FontAwesomeAsset extends AssetBundle
 The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
 the `beforeCopy` publishing option, only the `fonts` and `css` subdirectories will be published.
 
+В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
 
-### Bower and NPM Assets <span id="bower-npm-assets"></span>
+
+### Bower and NPM Assets - Bower и NPM Ресурсы<span id="bower-npm-assets"></span>
 
 Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/).
 If your application or extension is using such a package, it is recommended that you follow these steps to manage
 the assets in the library:
 
+Большинство JavaScript/CSS пакетов управляются [Bower](http://bower.io/) и/или [NPM](https://www.npmjs.org/).
+Если Вашим приложением или расширением используется такой пакет, то рекомендуется следовать следующим этапам для управления ресурсами в библиотеке:
+
 1. Modify the `composer.json` file of your application or extension and list the package in the `require` entry.
    You should use `bower-asset/PackageName` (for Bower packages) or `npm-asset/PackageName` (for NPM packages)
    to refer to the library.
+1. Исправить файл `composer.json` Вашего приложения или расширения и включить пакет в список в раздел `require`. Следует использовать `bower-asset/PackageName` (для Bower пакетов) или `npm-asset/PackageName` (для NPM пакетов) для обращения к библиотеке.
+
 2. Create an asset bundle class and list the JavaScript/CSS files that you plan to use in your application or extension.
    You should specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property as `@bower/PackageName` or `@npm/PackageName`.
    This is because Composer will install the Bower or NPM package in the directory corresponding to this alias.
