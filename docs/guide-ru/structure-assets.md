@@ -158,9 +158,13 @@ it means any assets listed using relative paths will be considered as source ass
 it means those assets are published assets (you should therefore specify [[yii\web\AssetBundle::basePath|basePath]] and
 [[yii\web\AssetBundle::baseUrl|baseUrl]] to let Yii know where they are located).
 
+При определении класса комплекта ресурсов, если Вы указываете свойство [[yii\web\AssetBundle::sourcePath|sourcePath]], это будет значить, что любые перечисленные ресурсы, используя относительные пути, будут рассматриваться как исходные ресурсы.
+
 It is recommended that you place assets belonging to an application in a Web directory to avoid the unnecessary asset
 publishing process. This is why `AppAsset` in the prior example specifies [[yii\web\AssetBundle::basePath|basePath]]
 instead of [[yii\web\AssetBundle::sourcePath|sourcePath]].
+
+Рекомендуется размещать ресурсы, принадлежащие приложению, в Web директорию, для того чтобы избежать <b>ненужного/лишнего</b> процесса публикации ресурсов. Вот почему `AppAsset` в предыдущем примере задаёт [[yii\web\AssetBundle::basePath|basePath]] вместо [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
 For [extensions](structure-extensions.md), because their assets are located together with their source code
 in directories that are not Web accessible, you have to specify the [[yii\web\AssetBundle::sourcePath|sourcePath]]
