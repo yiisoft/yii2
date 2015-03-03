@@ -198,6 +198,8 @@ those files in the two dependent bundles.
 
 Asset dependencies are transitive. This means if bundle A depends on B which depends on C, A will depend on C, too.
 
+Зависимости ресурсов являются <b>переходными/транзитивными/зависимыми/наследуемыми</b>. Это значит, что если комплект А зависит от В который зависит от С, А тоже зависит от С.
+
 
 ### Asset Options <span id="asset-options"></span>
 
