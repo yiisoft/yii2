@@ -136,12 +136,22 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
 
 Assets, based on their location, can be classified as:
 
+Ресурсы, в зависимости от их расположения, могут быть классифицированы как:
+
 * source assets: the asset files are located together with PHP source code which cannot be directly accessed via Web.
   In order to use source assets in a page, they should be copied to a Web directory and turned into the so-called
   published assets. This process is called *asset publishing* which will be described in detail shortly.
+
+* исходные ресурсы: файлы ресурсов расположенные вместе с исходным кодом PHP, которые не могут быть непосредственно доступны через Web. Для того, чтобы использовать исходные ресурсы на странице, они должны быть скопированы в Web директорию и превратиться в так называемые опубликованные ресурсы. Этот процесс называется *публикацией ресурсов*, который более подробно будет описан в ближайшее время.
+
 * published assets: the asset files are located in a Web directory and can thus be directly accessed via Web.
+
+* опубликованные ресурсы: файлы ресурсов расположенные в Web директории и, таким образом, могут быть напрямую доступны через Web.
+
 * external assets: the asset files are located on a Web server that is different from the one hosting your Web
   application.
+
+* внешние ресурсы: файлы ресорсов расположенные на другом Web сервере, отличного от веб-хостинга вашего приложения.
 
 When defining an asset bundle class, if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property,
 it means any assets listed using relative paths will be considered as source assets. If you do not specify this property,
