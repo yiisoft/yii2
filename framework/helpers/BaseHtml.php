@@ -496,6 +496,11 @@ class BaseHtml
         }
         $options['name'] = $name;
         $options['value'] = $value === null ? null : (string) $value;
+        if(isset($options['ng-model']) && $options['value'] !== null) {
+            if(isset($options['ng-init']) && $options['ng-init'] === true ) {
+                $options['ng-init'] = "{$options['ng-model']}='{$options['value']}'";
+            }
+        }
         return static::tag('input', '', $options);
     }
 
