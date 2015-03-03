@@ -177,6 +177,8 @@ property when defining asset bundle classes for them.
   published from their source location. Any content in this directory is considered temporarily and may be subject
   to removal.
 
+> Примечание: Не используйте `@webroot/assets` как [[yii\web\AssetBundle::sourcePath|source path]]. Эта директория используется по умолчанию <b>менеджером ресурсов</b> [[yii\web\AssetManager|asset manager]] для сохранения файлов ресурсов, опубликованных из их исходного месторасположения. Любое содержимое этой директории расценивается как временное и может быть удалено.
+  
 
 ### Asset Dependencies <span id="asset-dependencies"></span>
 
