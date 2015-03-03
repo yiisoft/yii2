@@ -213,14 +213,20 @@ they are called by the [view](structure-views.md) to include CSS and JavaScript 
 > Note: The options you set in a bundle class apply to *every* CSS/JavaScript file in the bundle. If you want to
   use different options for different files, you should create separate asset bundles, and use one set of options
   in each bundle.
+  
+> Примечание: Параметры, заданные в комплекте класса применяются для *каждого* CSS/JavaScript-файла в комплекте. Если Вы хотите использовать различные параметры для разных файлов, Вы должны создать раздельные комплекты ресурсов, и использовать одну установку параметров для каждого комплекта.
 
 For example, to conditionally include a CSS file for browsers that are IE9 or below, you can use the following option:
+
+Например, условно включим CSS файл для браузера IE9 или ниже. Для этого Вы можете использовать следующий параметр:
 
 ```php
 public $cssOptions = ['condition' => 'lte IE9'];
 ```
 
 This will cause a CSS file in the bundle to be included using the following HTML tags:
+
+Это вызовет CSS файл из комплекта, который будет включен в страницу используя следующие HTML теги:
 
 ```html
 <!--[if lte IE9]>
@@ -230,12 +236,17 @@ This will cause a CSS file in the bundle to be included using the following HTML
 
 To wrap the generated CSS link tags within `<noscript>`, you can configure `cssOptions` as follows,
 
+Для того чтобы обернуть созданную CSS ссылку в тег `<noscript>`, Вы можете настроить `cssOptions` следующим образом:
+
 ```php
 public $cssOptions = ['noscript' => true];
 ```
 
 To include a JavaScript file in the head section of a page (by default, JavaScript files are included at the end
 of the body section), use the following option:
+
+Для включения JavaScript файла в head раздел страницы (по умолчанию, JavaScript файлы включаются в конец раздела body), используйте следующий параметр:
+
 
 ```php
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
