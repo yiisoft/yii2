@@ -1,4 +1,4 @@
-Assets Ресурсы
+Assets - Ресурсы
 ======
 
 An asset in Yii is a file that may be referenced in a Web page. It can be a CSS file, a JavaScript file, an image
@@ -15,7 +15,7 @@ provided in Yii.
 Часто желательно управлять ресурсами программно. Для примера, когда вы используете виджет [[yii\jui\DatePicker]] на странице, это автоматически включит необходимые и CSS и JavaScript файлы, вместо того чтобы спрашивать вас в ручную найти эти файлы и включить их. И когда Вы обновляете виджет до новой версии, это будет автоматически использовать новую версию файлов ресурса. <i><b>В этом руководстве Вам будет описана вся мощь управления ресурсом возможность способность предоставленная в Yii.</b></i>В этом руководстве Вам будет описана мощная возможность управления ресурсами представленная в Yii.
 
 
-## Asset Bundles Комплект ресурсов<span id="asset-bundles"></span>
+## Asset Bundles - Комплект ресурсов<span id="asset-bundles"></span>
 
 Yii manages assets in the unit of *asset bundle*. An asset bundle is simply a collection of assets located
 in a directory. When you register an asset bundle in a [view](structure-views.md), it will include the CSS and
@@ -24,7 +24,7 @@ JavaScript files in the bundle in the rendered Web page.
 Yii управляет ресурсами в единице *asset bundle*. Комплект ресурсов это простая коллекция/набор ресурсов расположенных в директории. Когда Вы регистрируете комплект ресурсов в [представлении](structure-views.md), это включит набор CSS и JavaScript файлов в отображаемую Web страницу.
 
 
-## Defining Asset Bundles Задание Комплекта Ресурсов<span id="defining-asset-bundles"></span>
+## Defining Asset Bundles - Задание Комплекта Ресурсов<span id="defining-asset-bundles"></span>
 
 Asset bundles are specified as PHP classes extending from [[yii\web\AssetBundle]]. The name of a bundle is simply
 its corresponding fully qualified PHP class name (without the leading backslash). An asset bundle class should
@@ -122,12 +122,17 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
 
 * [[yii\web\AssetBundle::cssOptions|cssOptions]]: specifies the options that will be passed to the
   [[yii\web\View::registerCssFile()]] method when it is called to register *every* CSS file in this bundle.
+
+* [[yii\web\AssetBundle::cssOptions|cssOptions]]: определяет/задаёт параметры которые будут приняты методом [[yii\web\View::registerCssFile()]], <b>когда он будет вызван регистрацией *every* CSS файла в данном комплекте.</b>
+
 * [[yii\web\AssetBundle::publishOptions|publishOptions]]: specifies the options that will be passed to the
   [[yii\web\AssetManager::publish()]] method when it is called to publish source asset files to a Web directory.
   This is only used if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property.
 
+* [[yii\web\AssetBundle::publishOptions|publishOptions]]: определяет/задаёт параметры которые будут приняты методом [[yii\web\AssetManager::publish()]], <b>когда он будет вызван опубликуются исходные файлы ресурсов в Web директории.</b>
 
-### Asset Locations <span id="asset-locations"></span>
+
+### Asset Locations - Расположение ресурсов<span id="asset-locations"></span>
 
 Assets, based on their location, can be classified as:
 
