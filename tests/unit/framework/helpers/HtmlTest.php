@@ -374,6 +374,16 @@ EOD;
                 return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, ['value' => $value]));
             }
         ]));
+
+        $expected = <<<EOD
+<div><label><input type="checkbox" name="test[]" value="value1" disabled> text1</label>
+<label><input type="checkbox" name="test[]" value="value2" checked> text2</label></div>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', ['value2'], $this->getDataItems(), [
+            'options' => [
+                'value1' => ['disabled' => true],
+            ]
+        ]));
     }
 
     public function testRadioList()
@@ -409,6 +419,16 @@ EOD;
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
             }
+        ]));
+
+        $expected = <<<EOD
+<div><label><input type="radio" name="test" value="value1" disabled> text1</label>
+<label><input type="radio" name="test" value="value2" checked> text2</label></div>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['value2'], $this->getDataItems(), [
+            'options' => [
+                'value1' => ['disabled' => true],
+            ]
         ]));
     }
 
