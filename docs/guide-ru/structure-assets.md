@@ -1,4 +1,4 @@
-Assets - Ресурсы
+Assets - Ресурсы (Черновой вариант)
 ======
 
 An asset in Yii is a file that may be referenced in a Web page. It can be a CSS file, a JavaScript file, an image
