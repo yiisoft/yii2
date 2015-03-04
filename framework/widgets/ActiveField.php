@@ -636,7 +636,7 @@ class ActiveField extends Component
      * The selection of the checkbox list is taken from the value of the model attribute.
      * @param array $items the data item used to generate the checkboxes.
      * The array values are the labels, while the array keys are the corresponding checkbox values.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
+     * Note that the values will NOT be HTML-encoded, while the labels will.
      * @param array $options options (name => config) for the checkbox list. The following options are specially handled:
      *
      * - unselect: string, the value that should be submitted when none of the checkboxes is selected.
@@ -669,7 +669,7 @@ class ActiveField extends Component
      * The selection of the radio buttons is taken from the value of the model attribute.
      * @param array $items the data item used to generate the radio buttons.
      * The array values are the labels, while the array keys are the corresponding radio values.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
+     * Note that the values will NOT be HTML-encoded, while the labels will.
      * @param array $options options (name => config) for the radio button list. The following options are specially handled:
      *
      * - unselect: string, the value that should be submitted when none of the radio buttons is selected.
