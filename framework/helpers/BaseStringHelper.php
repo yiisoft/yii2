@@ -241,7 +241,7 @@ class BaseStringHelper
      * @param string $string
      * @param string $delimiter Default is ','
      * @param mixed $trim Whether to trim each element. Can be:
-     *                    true - to normal trim
+     *                    boolean - to normal trim
      *                    string - will be passed as a second argument to trim function
      *                    callable - will be called for each value instead of trim. Takes the only argument - value.
      * @param boolean $skipEmpty Whether to skip empty strings between delimiters. Default is false.
