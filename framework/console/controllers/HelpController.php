@@ -205,7 +205,7 @@ class HelpController extends Controller
             }
             foreach ($commands as $command => $description) {
                 $this->stdout("- " . $this->ansiFormat($command, Console::FG_YELLOW));
-                $this->stdout(str_repeat(' ', $len + 3 - strlen($command)) . $description);
+                $this->stdout(str_repeat(' ', $len + 5 - strlen($command)) . $description);
                 $this->stdout("\n");
 
                 $result = Yii::$app->createController($command);
@@ -215,11 +215,11 @@ class HelpController extends Controller
                     if (!empty($actions)) {
                         $prefix = $controller->getUniqueId();
                         foreach ($actions as $action) {
-                            $string = $prefix . '/' . $action;
+                            $string = '  ' . $prefix . '/' . $action;
                             $this->stdout("  " . $this->ansiFormat($string, Console::FG_GREEN));
                             $summary = $controller->getActionHelpSummary($controller->createAction($action));
                             if ($summary !== '') {
-                                $this->stdout(str_repeat(' ', $len + 3 - strlen($string)) . $summary);
+                                $this->stdout(str_repeat(' ', $len + 5 - strlen($string)) . $summary);
                             }
                             $this->stdout("\n");
                         }
