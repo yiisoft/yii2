@@ -187,13 +187,46 @@ class HelpController extends Controller
             $this->stdout("\nThe following commands are available:\n\n", Console::BOLD);
             $len = 0;
             foreach ($commands as $command => $description) {
-                if (($l = strlen($command)) > $len) {
-                    $len = $l;
+                $result = Yii::$app->createController($command);
+                if ($result !== false) {
+                    list($controller, $actionID) = $result;
+                    $actions = $this->getActions($controller);
+                    if (!empty($actions)) {
+                        $prefix = $controller->getUniqueId();
+                        foreach ($actions as $action) {
+                            if (($l = strlen($prefix . '/' . $action)) > $len) {
+                                $len = $l;
+                            }
+                        }
+                    }
+                } else {
+                    if (($l = strlen($command)) > $len) {
+                        $len = $l;
+                    }
                 }
             }
             foreach ($commands as $command => $description) {
                 $this->stdout("- " . $this->ansiFormat($command, Console::FG_YELLOW));
                 $this->stdout(str_repeat(' ', $len + 3 - strlen($command)) . $description);
+                $this->stdout("\n");
+
+                $result = Yii::$app->createController($command);
+                if ($result !== false) {
+                    list($controller, $actionID) = $result;
+                    $actions = $this->getActions($controller);
+                    if (!empty($actions)) {
+                        $prefix = $controller->getUniqueId();
+                        foreach ($actions as $action) {
+                            $string = $prefix . '/' . $action;
+                            $this->stdout("  " . $this->ansiFormat($string, Console::FG_GREEN));
+                            $summary = $controller->getActionHelpSummary($controller->createAction($action));
+                            if ($summary !== '') {
+                                $this->stdout(str_repeat(' ', $len + 3 - strlen($string)) . $summary);
+                            }
+                            $this->stdout("\n");
+                        }
+                    }
+                }
                 $this->stdout("\n");
             }
             $scriptName = $this->getScriptName();
