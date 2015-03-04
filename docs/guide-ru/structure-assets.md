@@ -301,32 +301,45 @@ the assets in the library:
 1. Modify the `composer.json` file of your application or extension and list the package in the `require` entry.
    You should use `bower-asset/PackageName` (for Bower packages) or `npm-asset/PackageName` (for NPM packages)
    to refer to the library.
-1. Исправить файл `composer.json` Вашего приложения или расширения и включить пакет в список в раздел `require`. Следует использовать `bower-asset/PackageName` (для Bower пакетов) или `npm-asset/PackageName` (для NPM пакетов) для обращения к библиотеке.
+1. Исправить файл `composer.json` Вашего приложения или расширения и включить пакет в список в раздел `require`. Следует использовать `bower-asset/PackageName` (для Bower пакетов) или `npm-asset/PackageName` (для NPM пакетов) для обращения к соответствующей библиотеке.
 
 2. Create an asset bundle class and list the JavaScript/CSS files that you plan to use in your application or extension.
    You should specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property as `@bower/PackageName` or `@npm/PackageName`.
+
+2. Создать класс комплекта ресурсов и перечислить JavaScript/CSS файлы, которые Вы планируете использовать в Вашем приложении или расширении. Вы должны задать свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] как `@bower/PackageName` или `@npm/PackageName`.
+
    This is because Composer will install the Bower or NPM package in the directory corresponding to this alias.
+   
+   Это происходит потому, что Composer устанавливает Bower или NPM пакет в директорию, соответствующую этому псевдониму.
 
 > Note: Some packages may put all their distributed files in a subdirectory. If this is the case, you should specify
   the subdirectory as the value of [[yii\web\AssetBundle::sourcePath|sourcePath]]. For example, [[yii\web\JqueryAsset]]
   uses `@bower/jquery/dist` instead of `@bower/jquery`.
+  
+> Примечание: В некоторых пакетах файлы дистрибутива могут находиться в поддиректории. В этом случае, Вы должны задать поддиреторию как значение [[yii\web\AssetBundle::sourcePath|sourcePath]]. Например, [[yii\web\JqueryAsset]] использует `@bower/jquery/dist` вместо `@bower/jquery`.
 
 
-## Using Asset Bundles <span id="using-asset-bundles"></span>
+## Using Asset Bundles - Использование Комплекта Ресурсов<span id="using-asset-bundles"></span>
 
 To use an asset bundle, register it with a [view](structure-views.md) by calling the [[yii\web\AssetBundle::register()]]
 method. For example, in a view template you can register an asset bundle like the following:
 
+Для использования комплекта ресурсов, регистрируйте его в [представлении](structure-views.md) вызывая метод [[yii\web\AssetBundle::register()]]. Например, комплект ресурсов в представлении может быть зарегистрирован следующим образом:
+
 ```php
 use app\assets\AppAsset;
-AppAsset::register($this);  // $this represents the view object
+AppAsset::register($this);  // $this - представляет собой объект представления
 ```
 
 > Info: The [[yii\web\AssetBundle::register()]] method returns an asset bundle object containing the information
   about the published assets, such as [[yii\web\AssetBundle::basePath|basePath]] or [[yii\web\AssetBundle::baseUrl|baseUrl]].
+  
+> Для справки: Метод [[yii\web\AssetBundle::register()]] возвращает объект комплекта ресурсов, содержащий информацию о публикуемых ресурсах, таких как [[yii\web\AssetBundle::basePath|basePath]] или [[yii\web\AssetBundle::baseUrl|baseUrl]].
 
 If you are registering an asset bundle in other places, you should provide the needed view object. For example,
 to register an asset bundle in a [widget](structure-widgets.md) class, you can get the view object by `$this->view`.
+
+Если Вы регистрируете комплект ресурсов в других местах, Вы должны обеспечить необходимый объект представления. Например, при регистрации комплекта ресурсов в классе [widget](structure-widgets.md), Вы можете взять за объект представления `$this->view`.
 
 When an asset bundle is registered with a view, behind the scenes Yii will register all its dependent asset bundles.
 And if an asset bundle is located in a directory inaccessible through the Web, it will be published to a Web directory.
@@ -335,14 +348,17 @@ listed in the registered bundles. The order of these tags is determined by the d
 the registered bundles and the order of the assets listed in the [[yii\web\AssetBundle::css]] and [[yii\web\AssetBundle::js]]
 properties.
 
+Когда комплект ресурсов регистрируется в представлении, Yii зарегистрирует все зависимые от него комплекты ресурсов. И, если комплект ресурсов расположен в директории не доступной из Web, то он будет опубликован в Web директории. Затем, когда представление отображает страницу, сгенерируются теги `<link>` и `<script>` для CSS и JavaScript файлов, перечисленные в регистрируемых комплектах. Порядок этих тегов определён зависимостью среди регистрируемых комплектов, и последовательность ресурсов перечислена в [[yii\web\AssetBundle::css]] и [[yii\web\AssetBundle::js]] свойствах.
 
-### Customizing Asset Bundles <span id="customizing-asset-bundles"></span>
+### Customizing Asset Bundles - Настройка Комплекта Ресурсов <span id="customizing-asset-bundles"></span>
 
 Yii manages asset bundles through an application component named `assetManager` which is implemented by [[yii\web\AssetManager]].
 By configuring the [[yii\web\AssetManager::bundles]] property, it is possible to customize the behavior of an asset bundle.
 For example, the default [[yii\web\JqueryAsset]] asset bundle uses the `jquery.js` file from the installed
 jquery Bower package. To improve the availability and performance, you may want to use a version hosted by Google.
 This can be achieved by configuring `assetManager` in the application configuration like the following:
+
+Yii управляет комплектами ресурсов через компонент приложения называемый `assetManager`, который реализован в [[yii\web\AssetManager]].
 
 ```php
 return [
@@ -351,7 +367,7 @@ return [
         'assetManager' => [
             'bundles' => [
                 'yii\web\JqueryAsset' => [
-                    'sourcePath' => null,   // do not publish the bundle
+                    'sourcePath' => null,   // do not publish the bundle - не публиковать комплект
                     'js' => [
                         '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
                     ]
@@ -365,6 +381,8 @@ return [
 You can configure multiple asset bundles similarly through [[yii\web\AssetManager::bundles]]. The array keys
 should be the class names (without the leading backslash) of the asset bundles, and the array values should
 be the corresponding [configuration arrays](concept-configurations.md).
+
+Можно сконфигурировать несколько комплектов ресурсов аналогично через [[yii\web\AssetManager::bundles]]. Ключи массива должны быть именами класса (без впереди стоящей обратной косой черты) комплектов ресурсов, а значения массивов должны соответствовать [конфигурации массивов](concept-configurations.md).
 
 > Tip: You can conditionally choose which assets to use in an asset bundle. The following example shows how
 > to use `jquery.js` in the development environment and `jquery.min.js` otherwise:
