@@ -523,13 +523,17 @@ the client to fetch the latest version of the asset.
 <b>Делая так, к URL каждого опубликованного ресурса будет добавляться временная метка его последней модификации.</b> Например, URL для `yii.js` может выглядеть как `/assets/5515a87c/yii.js?v=1423448645"`, где параметр `v` представляет собой временную метку последней модификации файла `yii.js`. Теперь если изменить ресурс, его URL тоже будет изменен, это означает что клиент получит последнюю версию ресурса.
 
 
-## Commonly Used Asset Bundles <span id="common-asset-bundles"></span>
+## Commonly Used Asset Bundles - Обычное Использование Комплекта Ресурсов<span id="common-asset-bundles"></span>
 
 The core Yii code has defined many asset bundles. Among them, the following bundles are commonly used and may
 be referenced in your application or extension code.
 
+Код ядра Yii содержит большое количество комплектов ресурсов. Среди них, следующие комплекты широко используются и могут упоминаться в Вашем приложении или коде расширения:
+
 - [[yii\web\YiiAsset]]: It mainly includes the `yii.js` file which implements a mechanism of organizing JavaScript code
   in modules. It also provides special support for `data-method` and `data-confirm` attributes and other useful features.
+- [[yii\web\YiiAsset]]: Основной включенный `yii.js` файл который реализует механизм организации JavaScript кода в модулях. Также обеспечивает специальную поддержку для `data-method` и `data-confirm` атрибутов и содержит другие полезные функции.
+
 - [[yii\web\JqueryAsset]]: It includes the `jquery.js` file from the jQuery Bower package.
 - [[yii\bootstrap\BootstrapAsset]]: It includes the CSS file from the Twitter Bootstrap framework.
 - [[yii\bootstrap\BootstrapPluginAsset]]: It includes the JavaScript file from the Twitter Bootstrap framework for
