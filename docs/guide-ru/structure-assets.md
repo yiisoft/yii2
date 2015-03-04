@@ -495,12 +495,14 @@ when it is being published. This is faster than file copying and can also ensure
 always up-to-date.
 С конфигурацией, установленной выше, менеджер ресурсов будет создавать символические ссылки на исходные пути комплекта ресурсов когда он будет публиковаться. Это быстрее, чем копирование файлов, а также может гарантировать, что опубликованные ресурсы всегда up-to-date <b>(обновлённые/свежие)</b>.
 
-### Cache Busting <span id="cache-busting"></span>
+### Cache Busting - Перебор Кэша<span id="cache-busting"></span>
 
 For Web application running in production mode, it is a common practice to enable HTTP caching for assets and other
 static resources. A drawback of this practice is that whenever you modify an asset and deploy it to production, a user
 client may still use the old version due to the HTTP caching. To overcome this drawback, you may use the cache busting
 feature, which was introduced in version 2.0.3, by configuring [[yii\web\AssetManager]] like the following:
+
+Для Web приложения запущенного в режиме продакшена, нормальная практика разрешить HTTP кэширование для ресурсов и других статичных источников. Недостаток такой практики в том, что всякий раз, когда изменяется ресурс и разворачивается продакшен, пользователь может по-прежнему использовать старую версию ресурса вследствие HTTP кэширования. Чтобы избежать этого, можно использовать возможность перебора кэша, которая была добавлена в версии 2.0.3, для этого можно настроить [[yii\web\AssetManager]] следующим образом:
   
 ```php
 return [
@@ -517,6 +519,8 @@ By doing so, the URL of every published asset will be appended with its last mod
 the URL to `yii.js` may look like `/assets/5515a87c/yii.js?v=1423448645"`, where the parameter `v` represents the
 last modification timestamp of the `yii.js` file. Now if you modify an asset, its URL will be changed, too, which causes
 the client to fetch the latest version of the asset.
+
+<b>Делая так, к URL каждого опубликованного ресурса будет добавляться временная метка его последней модификации.</b> Например, URL для `yii.js` может выглядеть как `/assets/5515a87c/yii.js?v=1423448645"`, где параметр `v` представляет собой временную метку последней модификации файла `yii.js`. Теперь если изменить ресурс, его URL тоже будет изменен, это означает что клиент получит последнюю версию ресурса.
 
 
 ## Commonly Used Asset Bundles <span id="common-asset-bundles"></span>
