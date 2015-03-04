@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
+- Enh #7530: Improved default values for `Sort` link labels in a `ListView` when used with an `ActiveDataProvider` (cebe)
 
 
 2.0.3 March 01, 2015
