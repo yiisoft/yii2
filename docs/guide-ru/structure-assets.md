@@ -386,7 +386,9 @@ be the corresponding [configuration arrays](concept-configurations.md).
 
 > Tip: You can conditionally choose which assets to use in an asset bundle. The following example shows how
 > to use `jquery.js` in the development environment and `jquery.min.js` otherwise:
->
+> Совет: Можно условно выбрать какой из ресурсов будет использован в комплекте ресурсов. Следующий пример показывает как можно использовать в разработке окружения `jquery.js` или `jquery.min.js` в противном случае:
+
+
 > ```php
 > 'yii\web\JqueryAsset' => [
 >     'js' => [
@@ -399,6 +401,9 @@ You can disable one or multiple asset bundles by associating `false` with the na
 that you want to disable. When you register a disabled asset bundle with a view, none of its dependent bundles
 will be registered, and the view also will not include any of the assets in the bundle in the page it renders.
 For example, to disable [[yii\web\JqueryAsset]], you can use the following configuration:
+
+Можно запретить один или несколько комплектов ресурсов связав `false` с именами комплектов ресурсов, которые Вы хотите сделать недоступными. Когда Вы регистрируете недоступный комплект ресурсов в представлении, обратите внимание, что зависимость комплектов будет зарегистрирована, и представление также не включит ни один из ресурсов комплекта в отображаемую страницу. Например, для запрета [[yii\web\JqueryAsset]] можно использовать следующую конфигурацию: 
+
 
 ```php
 return [
@@ -415,13 +420,17 @@ return [
 
 You can also disable *all* asset bundles by setting [[yii\web\AssetManager::bundles]] as `false`.
 
+Можно также запретить *все* комплекты ресурсов, установив [[yii\web\AssetManager::bundles]] как `false`.
 
-### Asset Mapping <span id="asset-mapping"></span>
+
+### Asset Mapping - Привязка ресурсов<span id="asset-mapping"></span>
 
 Sometimes you may want to "fix" incorrect/incompatible asset file paths used in multiple asset bundles. For example,
 bundle A uses `jquery.min.js` version 1.11.1, and bundle B uses `jquery.js` version 2.1.1. While you can
 fix the problem by customizing each bundle, an easier way is to use the *asset map* feature to map incorrect assets
 to the desired ones. To do so, configure the [[yii\web\AssetManager::assetMap]] property like the following:
+
+Иногда необходимо "зафиксировать" неверный/несоответствующий путь файла ресурса, используемый в некоторых комплектах ресурсов. Например, комплект А использует `jquery.min.js` версии 1.11.1, а комплект В использует `jquery.js` версии 2.1.1. Раньше Вы фиксировали проблему настраивая каждый комплект, но более простой способ - использовать *asset map* возможность, чтобы найти неверные ресурсы и исправить их. Сделать это можно, сконфигурировав свойство [[yii\web\AssetManager::assetMap]] следующим образом:
 
 ```php
 return [
@@ -443,22 +452,32 @@ If any of the keys are found to be the last part of an asset file (which is pref
 if available), the corresponding value will replace the asset and be registered with the view.
 For example, the asset file `my/path/to/jquery.js` matches the key `jquery.js`.
 
+Ключи [[yii\web\AssetManager::assetMap|assetMap]] это имена ресурсов, которые Вы хотите зафиксировать, а значения это требуемые пути ресурсов. Когда регистрируется комплект ресурсов в представлении, каждый соответствующий файл ресурса в [[yii\web\AssetBundle::css|css]] или [[yii\web\AssetBundle::js|js]] массивах будет рассмотрен в соответствии с этой привязкой. <b>Если какой либо из ключей найден как последняя часть файла ресурса (который начинается с [[yii\web\AssetBundle::sourcePath]] по возможности), то соответствующее значение заменит ресурс и будет зарегистрировано в представлении</b>. Например, файл ресурса `my/path/to/jquery.js` соответствует ключу `jquery.js`.
+
 > Note: Only assets specified using relative paths are subject to asset mapping. The target asset paths
   should be either absolute URLs or paths relative to [[yii\web\AssetManager::basePath]].
+  
+> Примечание: Ресурсы заданные только с использованием относительного пути могут быть предметом привязки ресурсов. Пути ресурсов должны быть абсолютные URLs или путь относительно [[yii\web\AssetManager::basePath]].
 
 
-### Asset Publishing <span id="asset-publishing"></span>
+### Asset Publishing - Публикация Ресурсов<span id="asset-publishing"></span>
 
 As aforementioned, if an asset bundle is located in a directory that is not Web accessible, its assets will be copied
 to a Web directory when the bundle is being registered with a view. This process is called *asset publishing*, and is done
 automatically by the [[yii\web\AssetManager|asset manager]].
 
+Как уже было сказано выше, если комплект ресурсов располагается в директории которая не доступна из Web, эти ресурсы будут скопированы в Web директорию когда комплект будет зарегистрирован в представлении. Этот процесс называется *публикацией ресурсов*, его автоматически выполняет [[yii\web\AssetManager|asset manager]].
+
 By default, assets are published to the directory `@webroot/assets` which corresponds to the URL `@web/assets`.
 You may customize this location by configuring the [[yii\web\AssetManager::basePath|basePath]] and
 [[yii\web\AssetManager::baseUrl|baseUrl]] properties.
 
+По умолчанию, ресурсы публикуются в директорию `@webroot/assets` которая соответствует URL `@web/assets`. Можно настроить это местоположение сконфигурировав свойства [[yii\web\AssetManager::basePath|basePath]] и [[yii\web\AssetManager::baseUrl|baseUrl]].
+
 Instead of publishing assets by file copying, you may consider using symbolic links, if your OS and Web server allow.
 This feature can be enabled by setting [[yii\web\AssetManager::linkAssets|linkAssets]] to be true.
+
+Вместо публикации ресурсов путём копирования файлов, можно рассмотреть использование символических ссылок, если Ваша операционная система или Web сервер это разрешают. Эта функция может быть включена путем установки [[yii\web\AssetManager::linkAssets|linkAssets]] в true.
 
 ```php
 return [
@@ -474,7 +493,7 @@ return [
 With the above configuration, the asset manager will create a symbolic link to the source path of an asset bundle
 when it is being published. This is faster than file copying and can also ensure that the published assets are
 always up-to-date.
-
+С конфигурацией, установленной выше, менеджер ресурсов будет создавать символические ссылки на исходные пути комплекта ресурсов когда он будет публиковаться. Это быстрее, чем копирование файлов, а также может гарантировать, что опубликованные ресурсы всегда up-to-date <b>(обновлённые/свежие)</b>.
 
 ### Cache Busting <span id="cache-busting"></span>
 
