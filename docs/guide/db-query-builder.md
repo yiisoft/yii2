@@ -1,35 +1,41 @@
-Query Builder and Query
-=======================
+Query Builder
+=============
 
 > Note: This section is under development.
 
-Yii provides a basic database access layer as described in the [Database basics](db-dao.md) section.
-The database access layer provides a low-level way to interact with the database. While useful in some situations,
-it can be tedious and error-prone to write raw SQLs. An alternative approach is to use the Query Builder.
-The Query Builder provides an object-oriented vehicle for generating queries to be executed.
+Built on top of [Database Access Objects](db-dao.md), query builder allows you to construct a SQL statement
+in a programmatic way. Compared to writing raw SQLs, using query builder will help you write more readable 
+SQL-related code and generate more secure SQL statements.  
 
-A typical usage of the query builder looks like the following:
+The following code may give you an idea how query builder works in general:
 
 ```php
 $rows = (new \yii\db\Query())
-    ->select('id, name')
+    ->select('id, email')
     ->from('user')
+    ->where(['name' => 'Smith'])
     ->limit(10)
     ->all();
-
-// which is equivalent to the following code:
-
-$query = (new \yii\db\Query())
-    ->select('id, name')
-    ->from('user')
-    ->limit(10);
-
-// Create a command. You can get the actual SQL using $command->sql
-$command = $query->createCommand();
-
-// Execute the command:
-$rows = $command->queryAll();
 ```
+
+It generates and executes the following SQL statement:
+
+```sql
+SELECT `id`, `email` 
+FROM `user`
+WHERE `name` = :name
+LIMIT 10
+```
+
+where the `:name` parameter is bound with the `Smith` string. As you can see, query builder will properly quote
+the column and table names, depending on the underlying DBMS. And it will use parameter binding to bind parameter
+values.
+
+> Info: In most cases, you will deal with [[yii\db\Query]] instead of [[yii\db\QueryBuilder]]. The former provides
+  a DBMS-independent representation of query construct, while the latter is DBMS-dependent and is responsible for
+  converting a [[yii\db\Query]] object into a suitable SQL statement. In the above code, the conversion process
+  happens when you call the `all()` method.
+
 
 Query Methods
 -------------
