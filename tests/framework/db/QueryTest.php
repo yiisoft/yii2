@@ -235,5 +235,23 @@ class QueryTest extends DatabaseTestCase
 
         $count = (new Query)->from('customer')->having(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
+	}
+
+    /**
+     * The combination of multiple tables in from and a join may cause problems in MySQL
+     * See https://github.com/yiisoft/yii2/pull/6545#issuecomment-67263973
+     */
+    public function testFromWithJoin()
+    {
+        if ($this->driverName === 'sqlite') {
+            return; // sqlite does not support this kind of syntax at all.
+        }
+
+        $query = (new Query)
+            ->from(['customer', 'profile'])
+            ->join('LEFT JOIN', 'order', 'customer.id = order.customer_id');
+
+        $this->assertEquals(8, count($query->all($this->getConnection())));
     }
 }
+
