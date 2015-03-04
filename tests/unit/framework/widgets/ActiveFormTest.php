@@ -15,6 +15,7 @@ class ActiveFormTest extends \yiiunit\TestCase
 {
     protected function setUp()
     {
+        parent::setUp();
         $this->mockApplication();
     }
 
