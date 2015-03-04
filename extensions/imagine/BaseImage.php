@@ -118,7 +118,7 @@ class BaseImage
      * $obj->crop('path\to\image.jpg', 200, 200, $point);
      * ~~~
      *
-     * @param string $filename the image file path or path alias.
+     * @param string|array $filename the image file path or path alias.
      * @param integer $width the crop width
      * @param integer $height the crop height
      * @param array $start the starting point. This must be an array with two elements representing `x` and `y` coordinates.
@@ -131,8 +131,7 @@ class BaseImage
             throw new InvalidParamException('$start must be an array of two elements.');
         }
 
-        return static::getImagine()
-            ->open(Yii::getAlias($filename))
+        return static::open($filename)
             ->copy()
             ->crop(new Point($start[0], $start[1]), new Box($width, $height));
     }
@@ -140,7 +139,7 @@ class BaseImage
     /**
      * Creates a thumbnail image. The function differs from `\Imagine\Image\ImageInterface::thumbnail()` function that
      * it keeps the aspect ratio of the image.
-     * @param string $filename the image file path or path alias.
+     * @param string|array $filename the image file path or path alias.
      * @param integer $width the width in pixels to create the thumbnail
      * @param integer $height the height in pixels to create the thumbnail
      * @param string $mode
@@ -149,7 +148,7 @@ class BaseImage
     public static function thumbnail($filename, $width, $height, $mode = ManipulatorInterface::THUMBNAIL_OUTBOUND)
     {
         $box = new Box($width, $height);
-        $img = static::getImagine()->open(Yii::getAlias($filename));
+        $img = static::open($filename);
 
         if (($img->getSize()->getWidth() <= $box->getWidth() && $img->getSize()->getHeight() <= $box->getHeight()) || (!$box->getWidth() && !$box->getHeight())) {
             return $img->copy();
@@ -179,7 +178,7 @@ class BaseImage
 
     /**
      * Adds a watermark to an existing image.
-     * @param string $filename the image file path or path alias.
+     * @param string|array $filename the image file path or path alias.
      * @param string $watermarkFilename the file path or path alias of the watermark image.
      * @param array $start the starting point. This must be an array with two elements representing `x` and `y` coordinates.
      * @return ImageInterface
@@ -191,7 +190,7 @@ class BaseImage
             throw new InvalidParamException('$start must be an array of two elements.');
         }
 
-        $img = static::getImagine()->open(Yii::getAlias($filename));
+        $img = static::open($filename);
         $watermark = static::getImagine()->open(Yii::getAlias($watermarkFilename));
         $img->paste($watermark, new Point($start[0], $start[1]));
 
@@ -200,7 +199,7 @@ class BaseImage
 
     /**
      * Draws a text string on an existing image.
-     * @param string $filename the image file path or path alias.
+     * @param string|array $filename the image file path or path alias.
      * @param string $text the text to write to the image
      * @param string $fontFile the file path or path alias
      * @param array $start the starting position of the text. This must be an array with two elements representing `x` and `y` coordinates.
@@ -223,7 +222,7 @@ class BaseImage
         $fontColor = ArrayHelper::getValue($fontOptions, 'color', 'fff');
         $fontAngle = ArrayHelper::getValue($fontOptions, 'angle', 0);
 
-        $img = static::getImagine()->open(Yii::getAlias($filename));
+        $img = static::open($filename);
         $font = static::getImagine()->font(Yii::getAlias($fontFile), $fontSize, new Color($fontColor));
 
         $img->draw()->text($text, $font, new Point($start[0], $start[1]), $fontAngle);
@@ -233,7 +232,7 @@ class BaseImage
 
     /**
      * Adds a frame around of the image. Please note that the image size will increase by `$margin` x 2.
-     * @param string $filename the full path to the image file
+     * @param string|array $filename the full path to the image file
      * @param integer $margin the frame size to add around the image
      * @param string $color the frame color
      * @param integer $alpha the alpha value of the frame.
@@ -241,7 +240,7 @@ class BaseImage
      */
     public static function frame($filename, $margin = 20, $color = '666', $alpha = 100)
     {
-        $img = static::getImagine()->open(Yii::getAlias($filename));
+        $img = static::open($filename);
 
         $size = $img->getSize();
 
@@ -255,5 +254,26 @@ class BaseImage
         $image->paste($img, $pasteTo);
 
         return $image;
+    }
+
+    public static function binary($string)
+    {
+        return array('binary', $string);
+    }
+
+    public static function resource($resource)
+    {
+        return array('resource', $resource);
+    }
+
+    protected static function open($data)
+    {
+        if (is_array($data) && $data[0] === 'binary') {
+            return static::getImagine()->load($data[1]);
+        } elseif (is_array($data) && $data[0] === 'resource') {
+            return static::getImagine()->read($data[1]);
+        } else {
+            return static::getImagine()->open(Yii::getAlias($data));
+        }
     }
 }
