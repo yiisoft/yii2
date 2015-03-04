@@ -199,10 +199,8 @@ class HelpController extends Controller
                             }
                         }
                     }
-                } else {
-                    if (($l = strlen($command)) > $len) {
-                        $len = $l;
-                    }
+                } elseif (($l = strlen($command)) > $len) {
+                    $len = $l;
                 }
             }
             foreach ($commands as $command => $description) {
@@ -226,8 +224,8 @@ class HelpController extends Controller
                             $this->stdout("\n");
                         }
                     }
+                    $this->stdout("\n");
                 }
-                $this->stdout("\n");
             }
             $scriptName = $this->getScriptName();
             $this->stdout("\nTo see the help of each command, enter:\n", Console::BOLD);
