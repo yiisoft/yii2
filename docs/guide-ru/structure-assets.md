@@ -535,10 +535,17 @@ be referenced in your application or extension code.
 - [[yii\web\YiiAsset]]: Основной включенный `yii.js` файл который реализует механизм организации JavaScript кода в модулях. Также обеспечивает специальную поддержку для `data-method` и `data-confirm` атрибутов и содержит другие полезные функции.
 
 - [[yii\web\JqueryAsset]]: It includes the `jquery.js` file from the jQuery Bower package.
+- [[yii\web\JqueryAsset]]: Включает `jquery.js` файл из jQuery Bower пакета.
+
 - [[yii\bootstrap\BootstrapAsset]]: It includes the CSS file from the Twitter Bootstrap framework.
+- [[yii\bootstrap\BootstrapAsset]]: Включает CSS файл из Twitter Bootstrap фреймворка.
+
 - [[yii\bootstrap\BootstrapPluginAsset]]: It includes the JavaScript file from the Twitter Bootstrap framework for
   supporting Bootstrap JavaScript plugins.
+- [[yii\bootstrap\BootstrapPluginAsset]]: Включает JavaScript файл из Twitter Bootstrap фреймворка для поддержки Bootstrap JavaScript плагинов.
+
 - [[yii\jui\JuiAsset]]: It includes the CSS and JavaScript files from the jQuery UI library.
+- [[yii\jui\JuiAsset]]: Включает CSS и JavaScript файлы из jQuery UI библиотеки.
 
 If your code depends on jQuery, jQuery UI or Bootstrap, you should use these predefined asset bundles rather than
 creating your own versions. If the default setting of these bundles do not satisfy your needs, you may customize them 
