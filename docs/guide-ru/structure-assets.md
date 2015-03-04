@@ -350,7 +350,7 @@ properties.
 
 Когда комплект ресурсов регистрируется в представлении, Yii зарегистрирует все зависимые от него комплекты ресурсов. И, если комплект ресурсов расположен в директории не доступной из Web, то он будет опубликован в Web директории. Затем, когда представление отображает страницу, сгенерируются теги `<link>` и `<script>` для CSS и JavaScript файлов, перечисленные в регистрируемых комплектах. Порядок этих тегов определён зависимостью среди регистрируемых комплектов, и последовательность ресурсов перечислена в [[yii\web\AssetBundle::css]] и [[yii\web\AssetBundle::js]] свойствах.
 
-### Customizing Asset Bundles - Настройка Комплекта Ресурсов <span id="customizing-asset-bundles"></span>
+### Customizing Asset Bundles - Настройка Комплектов Ресурсов <span id="customizing-asset-bundles"></span>
 
 Yii manages asset bundles through an application component named `assetManager` which is implemented by [[yii\web\AssetManager]].
 By configuring the [[yii\web\AssetManager::bundles]] property, it is possible to customize the behavior of an asset bundle.
@@ -532,7 +532,7 @@ be referenced in your application or extension code.
 
 - [[yii\web\YiiAsset]]: It mainly includes the `yii.js` file which implements a mechanism of organizing JavaScript code
   in modules. It also provides special support for `data-method` and `data-confirm` attributes and other useful features.
-- [[yii\web\YiiAsset]]: Основной включенный `yii.js` файл который реализует механизм организации JavaScript кода в модулях. Также обеспечивает специальную поддержку для `data-method` и `data-confirm` атрибутов и содержит другие полезные функции.
+- [[yii\web\YiiAsset]]: Включает основной `yii.js` файл который реализует механизм организации JavaScript кода в модулях. Также обеспечивает специальную поддержку для `data-method` и `data-confirm` атрибутов и содержит другие полезные функции.
 
 - [[yii\web\JqueryAsset]]: It includes the `jquery.js` file from the jQuery Bower package.
 - [[yii\web\JqueryAsset]]: Включает `jquery.js` файл из jQuery Bower пакета.
@@ -551,14 +551,20 @@ If your code depends on jQuery, jQuery UI or Bootstrap, you should use these pre
 creating your own versions. If the default setting of these bundles do not satisfy your needs, you may customize them 
 as described in the [Customizing Asset Bundle](#customizing-asset-bundles) subsection. 
 
+Если Ваш код зависит от jQuery, jQuery UI или Bootstrap, Вам необходимо использовать эти предопределенные комплекты ресурсов, а не создавать свои собственные варианты. Если параметры по умолчанию этих комплектов не удовлетворяют Вашим нуждам, Вы можете настроить их как описано в подразделе [Настройка Комплектов Ресурсов](#customizing-asset-bundles).
 
-## Asset Conversion <span id="asset-conversion"></span>
+
+## Asset Conversion - Преобразование Ресурсов<span id="asset-conversion"></span>
 
 Instead of directly writing CSS and/or JavaScript code, developers often write them in some extended syntax and
 use special tools to convert it into CSS/JavaScript. For example, for CSS code you may use [LESS](http://lesscss.org/)
 or [SCSS](http://sass-lang.com/); and for JavaScript you may use [TypeScript](http://www.typescriptlang.org/).
 
+Вместо того, чтобы напрямую писать CSS и/или JavaScript код, разработчики часто пишут его в некотором <b>расширенном синтаксисе</b> и используют специальные инструменты конвертации в CSS/JavaScript. Например, для CSS кода можно использовать [LESS](http://lesscss.org/) или [SCSS](http://sass-lang.com/); а для JavaScript можно использовать [TypeScript](http://www.typescriptlang.org/).
+
 You can list the asset files in extended syntax in the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties of an asset bundle. For example,
+
+Можно перечислить файлы ресурсов в <b>расширенном синтаксисе</b> в [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойствах из комплекта ресурсов. Например,
 
 ```php
 class AppAsset extends AssetBundle
@@ -583,8 +589,12 @@ run the pre-processor tools to convert assets in recognized extended syntax into
 finally renders a page, it will include the CSS/JavaScript files in the page, instead of the original assets
 in extended syntax.
 
+Когда Вы регистрируете такой комплект ресурсов в представлении, [[yii\web\AssetManager|asset manager]] автоматически запустит нужные инструменты препроцессора и конвертирует ресурсы в CSS/JavaScript, если их расширенный синтаксис распознан. Когда представление окончательно отобразит страницу, в неё будут включены файлы CSS/JavaScript, вместо оригинальных ресурсов в расширенном синтаксисе.
+
 Yii uses the file name extensions to identify which extended syntax an asset is in. By default it recognizes
 the following syntax and file name extensions:
+
+Yii использует имена файлов расширений для идентификации расширенного синтаксиса внутри ресурса. По умолчанию признаны следующий синтаксис и имена файлов расширений:
 
 - [LESS](http://lesscss.org/): `.less`
 - [SCSS](http://sass-lang.com/): `.scss`
@@ -595,8 +605,12 @@ the following syntax and file name extensions:
 Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](http://lesscss.org/)
 you should install the `lessc` pre-processor command.
 
+Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](http://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
+
 You can customize the pre-processor commands and the supported extended syntax by configuring
 [[yii\web\AssetManager::converter]] like the following:
+
+Вы можете настроить команды препроцессора и поддерживать расширенный сиснтаксис сконфигурировав [[yii\web\AssetManager::converter]] следующим образом:
 
 ```php
 return [
@@ -619,40 +633,71 @@ The array keys are the file extension names (without leading dot), and the array
 asset file extension names and the commands for performing the asset conversion. The tokens `{from}` and `{to}`
 in the commands will be replaced with the source asset file paths and the target asset file paths.
 
+В примере выше, Вы задали поддержку расширенного синтаксиса через [[yii\web\AssetConverter::commands]] свойство.
+Ключи массива это имена файлов расширений (без ведущей точки), а значения массива это образующийся файл ресурса имён расширений и команд для выполнения конвертации ресурса. Маркеры `{from}` и `{to}` в командах будут заменены исходным путём файла ресурсов и соответственно путём назначения файла ресурсов.
+
+
+
 > Info: There are other ways of working with assets in extended syntax, besides the one described above.
   For example, you can use build tools such as [grunt](http://gruntjs.com/) to monitor and automatically
   convert assets in extended syntax. In this case, you should list the resulting CSS/JavaScript files in
   asset bundles rather than the original files.
+  
+> Примечание: Существуют другие способы работы с ресурсами расширенного синтаксиса, кроме того, который указан выше.
+Например, Вы можете использовать инструменты построения, такие как [grunt](http://gruntjs.com/) для отслеживания и автоматической конвертации ресурсов расширенного синтаксиса. В этом случае, Вы должны перечислить конечные CSS/JavaScript файлы в комплекте ресурсов вместо исходных файлов.
 
 
-## Combining and Compressing Assets <span id="combining-compressing-assets"></span>
+## Combining and Compressing Assets - Объединение и Сжатие Ресурсов<span id="combining-compressing-assets"></span>
 
 A Web page can include many CSS and/or JavaScript files. To reduce the number of HTTP requests and the overall
 download size of these files, a common practice is to combine and compress multiple CSS/JavaScript files into 
-one or very few files, and then include these compressed files instead of the original ones in the Web pages.  
+one or very few files, and then include these compressed files instead of the original ones in the Web pages.
+
+Web страница может включать много CSS и/или JavaScript файлов. Чтобы сократить количество HTTP запросов и общий размер загрузки этих файлов, общепринятой практикой является объединение и сжатие нескольких CSS/JavaScript файлов в один или в меньшее количество, а затем включение этих сжатых файлов вместо исходных в Web страницы.
  
 > Info: Combining and compressing assets is usually needed when an application is in production mode. 
   In development mode, using the original CSS/JavaScript files is often more convenient for debugging purposes.
+  
+> Примечание: Комбинирование и сжатие ресурсов обычно необходимо, когда приложение находится в режиме продакшена.
+В режиме разработки, использование исходных CSS/JavaScript файлов часто более удобно для целей отладки.
 
 In the following, we introduce an approach to combine and compress asset files without the need to modify
 your existing application code.
 
+Далее, Мы представим подход комбинирования и сжатия файлов ресурса без необходимости изменения Вашего существующего кода приложения.
+
 1. Find all the asset bundles in your application that you plan to combine and compress.
+Найдите все комплекты ресурсов в Вашем приложении, которые Вы планируете скомбинировать и сжать.
+
 2. Divide these bundles into one or a few groups. Note that each bundle can only belong to a single group.
+Распределите эти комплекты в одну или несколько групп. Обратите внимание, что каждый комплект может принадлежать только одной группе.
+
 3. Combine/compress the CSS files in each group into a single file. Do this similarly for the JavaScript files.
+Скомбинируйте/сожмите CSS файлы в каждой группе в один файл. Сделайте тоже самое для JavaScript файлов.
+
 4. Define a new asset bundle for each group:
+Определите новый комплект ресурсов для каждой группы:
+
    * Set the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties to be
      the combined CSS and JavaScript files, respectively.
+
+* Установите [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойства. Соответствующие CSS и JavaScript файлы будут скомбинированы.
+
    * Customize the asset bundles in each group by setting their [[yii\web\AssetBundle::css|css]] and 
      [[yii\web\AssetBundle::js|js]] properties to be empty, and setting their [[yii\web\AssetBundle::depends|depends]]
      property to be the new asset bundle created for the group.
+
+* Настройте комплекты ресурсов в каждой группе, установив их [[yii\web\AssetBundle::css|css]] и 
+     [[yii\web\AssetBundle::js|js]] свойства как пустые, и установите их [[yii\web\AssetBundle::depends|depends]] свойство как новый комплект ресурсов, созданный для группы.
 
 Using this approach, when you register an asset bundle in a view, it causes the automatic registration of
 the new asset bundle for the group that the original bundle belongs to. And as a result, the combined/compressed 
 asset files are included in the page, instead of the original ones.
 
+Используя этот подход, при регистрации комплекта ресурсов в представлении, автоматически регистрируется новый комплект ресурсов для группы, к которому исходный комплект принадлежит. В результате скомбинированные/сжатые файлы ресурсов включаются в страницу вместо исходных.
 
-### An Example <span id="example"></span>
+
+### An Example - Пример <span id="example"></span>
 
 Let's use an example to further explain the above approach. 
 
