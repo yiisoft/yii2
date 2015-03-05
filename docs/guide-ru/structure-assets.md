@@ -1,10 +1,12 @@
 Assets - Ресурсы (Черновой вариант)
 ======
 
+<!--
 An asset in Yii is a file that may be referenced in a Web page. It can be a CSS file, a JavaScript file, an image
 or video file, etc. Assets are located in Web-accessible directories and are directly served by Web servers.
+-->
 
-Ресурс в Yii это файл который может быть задан в Web странице. Это может быть CSS файл, JavaScript файл, изображение или видео файл и т.д. Ресурсы располагаются в Web доступных директориях <i><b>и непосредственно обслуживаемые Web серверами</b></i>.
+Ресурс в Yii это файл который может быть задан в Web странице. Это может быть CSS файл, JavaScript файл, изображение или видео файл и т.д. Ресурсы располагаются в Web доступных директориях и обслуживаются непосредственно Web серверами.
 
 It is often preferable to manage assets programmatically. For example, when you use the [[yii\jui\DatePicker]] widget
 in a page, it will automatically include the required CSS and JavaScript files, instead of asking you to manually
@@ -12,7 +14,7 @@ find these files and include them. And when you upgrade the widget to a new vers
 the new version of the asset files. In this tutorial, we will describe the powerful asset management capability
 provided in Yii.
 
-Часто желательно управлять ресурсами программно. Для примера, когда вы используете виджет [[yii\jui\DatePicker]] на странице, это автоматически включит необходимые и CSS и JavaScript файлы, вместо того чтобы спрашивать вас в ручную найти эти файлы и включить их. И когда Вы обновляете виджет до новой версии, это будет автоматически использовать новую версию файлов ресурса. <i><b>В этом руководстве Вам будет описана вся мощь управления ресурсом возможность способность предоставленная в Yii.</b></i>В этом руководстве Вам будет описана мощная возможность управления ресурсами представленная в Yii.
+Желательно, управлять ресурсами программно. Например, используя виджет [[yii\jui\DatePicker]] в странице, автоматически включаются необходимые CSS и JavaScript файлы, вместо того чтобы просить Вас в ручную найти эти файлы и включить их. И когда Вы обновляете виджет до новой версии, будут автоматически использованны новые версии файлов-ресурсов. В этом руководстве будет описана мощная возможность управления ресурсами представленная в Yii.
 
 
 ## Asset Bundles - Комплект ресурсов<span id="asset-bundles"></span>
