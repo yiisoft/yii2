@@ -479,6 +479,11 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 > and wish them to treat the missing translations in the same way, you should assign the corresponding event handler to each of them.
 
 
+### Using the `message` command <a name="message-command"></a>
+
+TDB
+
+
 Views
 -----
 

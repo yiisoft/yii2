@@ -1,10 +1,32 @@
 Console applications
 ====================
 
-> Note: This section is under development.
+Besides the rich features for building web applications, Yii also has full featured support for console applications
+which are mainly used to create background and maintainance tasks that need to be performed for a website.
 
-Yii has full featured support for console applications, whose structure is very similar to a Yii web application. A console application
-consists of one or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment. Each controller can also have one or more actions, just like web controllers.
+The structure of console applications is very similar to a Yii web application. It consists of one
+or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment.
+Each controller can also have one or more actions, just like web controllers.
+
+Both Application templates already have a console application with them.
+You can run it by calling the `yii` script, which is located in the base directory of the repository. 
+This will give you a list of available commands when you run it without any further parameters:
+
+![Running ./yii command for help output](images/tutorial-console-help.png)
+
+As you can see in the screenshot, Yii has already defined a set of commands that are available by default:
+
+- [yii\console\controllers\AssetController|AssetController] - Allows you to combine and compress your JavaScript and CSS files.
+  You can learn more about this command in the [Assets Section](structure-assets.md#using-the-asset-command).
+- [yii\console\controllers\CacheController|CacheController] - Allows you to flush application caches.
+- [yii\console\controllers\FixtureController|FixtureController] - Manages fixture data loading and unloading for testing purposes.
+  This command is described in more detail in the [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
+- [yii\console\controllers\HelpController|HelpController] - Provides help information about console commands, this is the default command
+  and prints what you have seen in the above output.
+- [yii\console\controllers\MessageController|MessageController] - Extracts messages to be translated from source files.
+  To learn more about this command, please refer to the [I18N Section](tutorial-i18n.md#message-command).
+- [yii\console\controllers\MigrateController|MigrateController] - Manages application migrations.
+  Database migrations are described in more detail in the [Database Migration Section](db-migrations.md).
 
 
 Usage <span id="usage"></span>
@@ -16,22 +38,23 @@ You execute a console controller action using the following syntax:
 yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
 ```
 
-For example, the [[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]]
-with [[yii\console\controllers\MigrateController::$migrationTable|MigrateController::$migrationTable]] set can
-be called from command line like so:
+In the above, `<route>` refers to the route to the controller action. The options will populate the class
+properties and arguments are the parameters of the action method.
+
+For example, the [[yii\console\controllers\MigrateController::actionUp()|MigrateController::actionUp()]]
+with [[yii\console\controllers\MigrateController::$migrationTable|MigrateController::$migrationTable]] set to `migrations`
+and a limit of 5 migrations can be called like so:
 
 ```
-yii migrate/create --migrationTable=my_migration
+yii migrate/up 5 --migrationTable=migrations
 ```
 
-In the above `yii` is the console application entry script which is described below.
-
-> **Note**: When using `*` in console don't forget to quote it as `"*"` in order to avoid executing it as a shell
+> **Note**: When using `*` in console, don't forget to quote it as `"*"` in order to avoid executing it as a shell
 > glob that will be replaced by all file names of the current directory.
 
 
-Entry script <span id="entry-script"></span>
-------------
+The entry script <span id="entry-script"></span>
+----------------
 
 The console application entry script is equivalent to the `index.php` bootstrap file used for the web application.
 The console entry script is typically called `yii`, and located in your application's root directory.
