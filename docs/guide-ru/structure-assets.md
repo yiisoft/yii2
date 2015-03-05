@@ -776,6 +776,10 @@ There is one final trick to make the above approach work more smoothly. Instead 
 application configuration file, you may put the bundle customization array in a separate file and conditionally
 include this file in the application configuration. For example,
 
+Есть еще один трюк, чтобы сделать работу вышеуказанного подхода более отлаженной.
+
+
+
 ```php
 return [
     'components' => [
@@ -789,14 +793,20 @@ return [
 That is, the asset bundle configuration array is saved in `assets-prod.php` for production mode, and
 `assets-dev.php` for non-production mode.
 
+То есть, массив конфигурации комплекта ресурсов сохраняется в `assets-prod.php` для режима продакшена, и в `assets-dev.php` для режима не продакшена.
 
-### Using the `asset` Command <span id="using-asset-command"></span>
+
+### Using the `asset` Command - Использование команды `asset`<span id="using-asset-command"></span>
 
 Yii provides a console command named `asset` to automate the approach that we just described.
+
+Yii предоставляет консольную команду с именем `asset` для автоматизации подхода, который мы только что описали.
 
 To use this command, you should first create a configuration file to describe what asset bundles should
 be combined and how they should be grouped. You can use the `asset/template` sub-command to generate
 a template first and then modify it to fit for your needs.
+
+Чтобы использовать эту команду, Вы должны сначала создать файл конфигурации для описания того, как комплекты ресурсов должны быть скомбинированны и как они должны быть сгруппированны. Затем Вы можете использовать подкомманду `asset/template`, чтобы сгенерировать первый шаблон и затем отредактировать его под свои нужды.
 
 ```
 yii asset/template assets.php
@@ -804,24 +814,33 @@ yii asset/template assets.php
 
 The command generates a file named `assets.php` in the current directory. The content of this file looks like the following:
 
+Данная команда сгенерирует файл с именем `assets.php` в текущей директории. Содержание этого файла можно увидеть ниже:
+
 ```php
 <?php
 /**
  * Configuration file for the "yii asset" console command.
+ * Файл конфигурации команды консоли "yii asset".
  * Note that in the console environment, some path aliases like '@webroot' and '@web' may not exist.
+ * Обратите внимание, что в консольной среде, некоторые псевдонимы путей такие как "@webroot' и '@web " не могут существовать/быть использованы.
  * Please define these missing path aliases.
+ * Пожалуйста, определите эти отсутствующие псевдонимы путей.
  */
 return [
     // Adjust command/callback for JavaScript files compressing:
+    // Настроить команду/обратный вызов для сжатия файлов JavaScript:
     'jsCompressor' => 'java -jar compiler.jar --js {from} --js_output_file {to}',
     // Adjust command/callback for CSS files compressing:
+    // Настроить команду/обратный вызов для сжатия файлов CSS:
     'cssCompressor' => 'java -jar yuicompressor.jar --type css {from} -o {to}',
     // The list of asset bundles to compress:
+    // Список комплектов ресурсов для сжатия:
     'bundles' => [
         // 'yii\web\YiiAsset',
         // 'yii\web\JqueryAsset',
     ],
     // Asset bundle for compression output:
+    // Комплект ресурса после сжатия:
     'targets' => [
         'all' => [
             'class' => 'yii\web\AssetBundle',
@@ -832,6 +851,7 @@ return [
         ],
     ],
     // Asset manager configuration:
+    // Настройка менеджера ресурсов:
     'assetManager' => [
     ],
 ];
@@ -841,20 +861,29 @@ You should modify this file and specify which bundles you plan to combine in the
 option you should specify how the bundles should be divided into groups. You can specify one or multiple groups, 
 as aforementioned.
 
+Вы должны изменить этот файл и указать какие комплекты вы планируете совместить в `bundles` параметре. В параметре `targets` вы должны указать как комплекты должны быть поделены в группы. Вы можете указать одну или несколько групп, как уже было сказано выше.
+
 > Note: Because the alias `@webroot` and `@web` are not available in the console application, you should
   explicitly define them in the configuration.
+  
+> Примечание: Так как псевдонимы путей `@webroot` и `@web` не могут быть использованны в консольном приложении, Вы должны явно задать их в файле конфигурации.
 
 JavaScript files are combined, compressed and written to `js/all-{hash}.js` where {hash} is replaced with the hash of
 the resulting file.
+
+JavaScript файлы объеденены, сжаты и записаны в `js/all-{hash}.js`, где {hash} перенесён из хэша результирующего файла.
 
 The `jsCompressor` and `cssCompressor` options specify the console commands or PHP callbacks for performing
 JavaScript and CSS combining/compressing. By default, Yii uses [Closure Compiler](https://developers.google.com/closure/compiler/) 
 for combining JavaScript files and [YUI Compressor](https://github.com/yui/yuicompressor/) for combining CSS files. 
 You should install those tools manually or adjust these options to use your favorite tools.
 
+Параметры `jsCompressor` и `cssCompressor` указывают на консольные команды или обратный вызов PHP, выполняющие JavaScript и CSS объединение/сжатие. По умолчанию, Yii использует [Closure Compiler](https://developers.google.com/closure/compiler/) для объединения JavaScript файлов и [YUI Compressor](https://github.com/yui/yuicompressor/) для объединения CSS файлов. Вы должны установить эти инструменты вручную или настроить данные параметры, чтобы использовать ваши любимые инструменты.
 
 With the configuration file, you can run the `asset` command to combine and compress the asset files
 and then generate a new asset bundle configuration file `assets-prod.php`:
+
+Вы можете запустить команду `asset`, с файлом конфигурации, для объединения и сжатия файлов ресурса и затем создать новый файл конфигурации комплекта ресурса `assets-prod.php`:
  
 ```
 yii asset assets.php config/assets-prod.php
@@ -863,12 +892,17 @@ yii asset assets.php config/assets-prod.php
 The generated configuration file can be included in the application configuration, like described in
 the last subsection.
 
+Сгенерированный файл конфигурации может быть включен в конфигурацию приложения как описано в последнем подразделе.
+
 
 > Info: Using the `asset` command is not the only option to automate the asset combining and compressing process.
   You can use the excellent task runner tool [grunt](http://gruntjs.com/) to achieve the same goal.
+  
+> Для справки: Использовать команду `asset` можно не только в целях автоматизации процесса объединения и сжатия.  	
+Вы можете использовать отличный инструмент запуска приложений [grunt](http://gruntjs.com/) для достижения той же цели.
 
 
-### Grouping Asset Bundles <span id="grouping-asset-bundles"></span>
+### Grouping Asset Bundles - Группировка Комплектов Ресурсов <span id="grouping-asset-bundles"></span>
 
 In the last subsection, we have explained how to combine all asset bundles into a single one in order to minimize
 the HTTP requests for asset files referenced in an application. This is not always desirable in practice. For example,
@@ -876,20 +910,26 @@ imagine your application has a "front end" as well as a "back end", each of whic
 and CSS files. In this case, combining all asset bundles from both ends into a single one does not make sense, 
 because the asset bundles for the "front end" are not used by the "back end" and it would be a waste of network
 bandwidth to send the "back end" assets when a "front end" page is requested.
- 
+
+В последнем подразделе, мы поясним как объединять все комплекты ресурсов в единый в целях минимизации HTTP запросов для файлов ресурсов упоминавшихся в приложении. Это не всегда желательно на практике. Например, представьте себе, что Ваше приложение содержит "front end" а также и "back end", каждый из которых использует свой набор JavaScript и CSS файлов. В этом случае, объединение всех комплектов ресурсов с обеих сторон в один не имеет смысла, потому, что комплекты ресурсов для "front end" не используются в "back end" и будет бесполезной тратой траффика отправлять "back end" ресурсы когда страница из "front end" будет запрошена.
+
 To solve the above problem, you can divide asset bundles into groups and combine asset bundles for each group.
 The following configuration shows how you can group asset bundles: 
+
+Для решения вышеуказанной проблемы, вы можете разделить комплекты по группам и объединить комплекты ресурсов для каждой группы. Следующая конфигурация показывает, как Вы можете объединять комплекты ресурсов:
 
 ```php
 return [
     ...
     // Specify output bundles with groups:
+    // Укажите выходной комплект для групп:
     'targets' => [
         'allShared' => [
             'js' => 'js/all-shared-{hash}.js',
             'css' => 'css/all-shared-{hash}.css',
             'depends' => [
                 // Include all assets shared between 'backend' and 'frontend'
+                // Включаем все ресурсы поделённые между 'backend' и 'frontend'
                 'yii\web\YiiAsset',
                 'app\assets\SharedAsset',
             ],
@@ -899,13 +939,14 @@ return [
             'css' => 'css/all-{hash}.css',
             'depends' => [
                 // Include only 'backend' assets:
+                // Включаем только 'backend' ресурсы:
                 'app\assets\AdminAsset'
             ],
         ],
         'allFrontEnd' => [
             'js' => 'js/all-{hash}.js',
             'css' => 'css/all-{hash}.css',
-            'depends' => [], // Include all remaining assets
+            'depends' => [], // Include all remaining assets - Включаем все оставшиеся ресурсы
         ],
     ],
     ...
@@ -916,5 +957,9 @@ As you can see, the asset bundles are divided into three groups: `allShared`, `a
 They each depends on an appropriate set of asset bundles. For example, `allBackEnd` depends on `app\assets\AdminAsset`.
 When running `asset` command with this configuration, it will combine asset bundles according to the above specification.
 
+Как вы можете видеть, комплекты ресурсов поделены на три группы: `allShared`, `allBackEnd` и `allFrontEnd`. Каждая из которых зависит от соответствующего набора комплектов ресурсов. Например, `allBackEnd` зависит от `app\assets\AdminAsset`. При запуске команды `asset` с данной конфигурацией, будут объединены комплекты ресурсов согласно приведенной выше спецификации.
+
 > Info: You may leave the `depends` configuration empty for one of the target bundle. By doing so, that particular
   asset bundle will depend on all of the remaining asset bundles that other target bundles do not depend on.
+
+> Для справки: Вы можете оставить `depends` конфигурацию пустой для одного из намеченных комплектов. Поступая таким образом, данный комплект ресурсов будет зависить от всех остальных комплектов ресурсов, от которых другие целевые комплекты не зависят.
