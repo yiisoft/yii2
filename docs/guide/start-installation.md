@@ -1,7 +1,7 @@
 Installing Yii
 ==============
 
-You can install Yii in two ways, using [Composer](http://getcomposer.org/) or by downloading an archive file.
+You can install Yii in two ways, using the [Composer](http://getcomposer.org/) package manager or by downloading an archive file.
 The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
 
 Standard installations of Yii result in both the framework and an application template being downloaded and installed.
