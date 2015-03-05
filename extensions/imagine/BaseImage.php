@@ -256,16 +256,38 @@ class BaseImage
         return $image;
     }
 
+    /**
+     * Use this method in case you want to load the image from the binary string.
+     * @param string $string containing binary data to be used to load the image data from.
+     * @return array to be passed to one of this methods as a `$filename` argument: [[crop()]], [[thumbnail()]],
+     * [[watermark()]], [[text()]], or [[frame()]].
+     * @since 2.0.4
+     */
     public static function binary($string)
     {
         return array('binary', $string);
     }
 
+    /**
+     * Use this method in case you want to load the image from the stream resource.
+     * @param resource $resource handle to be used to load the image data from.
+     * @return array to be passed to one of this methods as a `$filename` argument: [[crop()]], [[thumbnail()]],
+     * [[watermark()]], [[text()]], or [[frame()]].
+     * @since 2.0.4
+     */
     public static function resource($resource)
     {
         return array('resource', $resource);
     }
 
+    /**
+     * Loads an image from the binary string, the stream resource, or by the given filename/alias string.
+     * This is an internal helper method.
+     * @param string|resource $data to be used to load the image. Could be the binary string, the stream resource,
+     * or filename/path alias.
+     * @return ImageInterface
+     * @since 2.0.4
+     */
     protected static function open($data)
     {
         if (is_array($data) && $data[0] === 'binary') {
