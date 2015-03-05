@@ -701,7 +701,11 @@ asset files are included in the page, instead of the original ones.
 
 Let's use an example to further explain the above approach. 
 
-Assume your application has two pages, X and Y. Page X uses asset bundles A, B and C, while Page Y uses asset bundles B, C and D. 
+Давайте рассмотрим пример, чтобы объяснить вышеуказанный подход.
+
+Assume your application has two pages, X and Y. Page X uses asset bundles A, B and C, while Page Y uses asset bundles B, C and D.
+
+Предположим, ваше приложение имеет две страницы, X и Y. Страница X использует комплект ресурсов A, B и C, в то время как страница Y используеткомплект ресурсов, B, C и D.
 
 You have two ways to divide these asset bundles. One is to use a single group to include all asset bundles, the
 other is to put A in Group X, D in Group Y, and (B, C) in Group S. Which one is better? It depends. The first way
@@ -710,14 +714,21 @@ more effective. On the other hand, because the single group contains all bundles
 JavaScript files will be bigger and thus increase the initial file transmission time. For simplicity in this example, 
 we will use the first way, i.e., use a single group to contain all bundles.
 
+У Вас есть два пути чтобы разделить эти комплекты ресурсов. Первый - использовать одну группу включающую в себя все комплекты ресурсов. Другой путь - положить комплект А в группу Х, D в группу Y, а (B, C) в группу S. Какой из этих вариантов лучше? Это зависит. Первый способ имеет то преимущество, что в обоих страницах одинаково скомбинированы файлы CSS и JavaScript, что делает HTTP кэширование более эффективным. С другой стороны, поскольку одна группа содержит все комплекты, размер в скомбинированных CSS и JavaScript файлов будет больше, и таким образом увеличится время отдачи файла <i><b>(загрузки страницы)</b></i>. Для простоты в этом примере, мы будем использовать первый способ, то есть, использовать единую группу, содержащую все пакеты.
+
 > Info: Dividing asset bundles into groups is not trivial task. It usually requires analysis about the real world
   traffic data of various assets on different pages. At the beginning, you may start with a single group for simplicity. 
+  
+> Примечание: Разделение комплекта ресурсов на группы это не тривиальная задача. Это, как правило, требует анализа о реальном мире трафика данных различных ресурсов на разных страницах. В начале, вы можете начать с одной группы, для простоты.
 
 Use existing tools (e.g. [Closure Compiler](https://developers.google.com/closure/compiler/), 
 [YUI Compressor](https://github.com/yui/yuicompressor/)) to combine and compress CSS and JavaScript files in 
 all the bundles. Note that the files should be combined in the order that satisfies the dependencies among the bundles. 
 For example, if Bundle A depends on B which depends on both C and D, then you should list the asset files starting 
 from C and D, followed by B and finally A. 
+
+Используйте существующие инструменты (например [Closure Compiler](https://developers.google.com/closure/compiler/), 
+[YUI Compressor](https://github.com/yui/yuicompressor/)) для комбинирования и сжатия CSS и JavaScript файлов во всех комплектах. Обратите внимание, что файлы должны быть объединены в том порядке, который удовлетворяет зависимости между комплектами. Например, если комплект A зависит от В который зависит от С и D, то Вы должны перечислить файлы ресурсов начиная с С и D, затем B и только после того А.
 
 After combining and compressing, we get one CSS file and one JavaScript file. Assume they are named as 
 `all-xyz.css` and `all-xyz.js`, where `xyz` stands for a timestamp or a hash that is used to make the file name unique
