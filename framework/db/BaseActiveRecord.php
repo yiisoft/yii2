@@ -713,6 +713,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $values[$lock] = $this->$lock + 1;
             $condition[$lock] = $this->$lock;
         }
+        $options = $this->getCommandOptions();
         // We do not check the return value of updateAll() because it's possible
         // that the UPDATE statement doesn't change anything and thus returns 0.
         $rows = $this->updateAll($values, $condition);

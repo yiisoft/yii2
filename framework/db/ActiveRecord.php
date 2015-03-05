@@ -455,6 +455,7 @@ class ActiveRecord extends BaseActiveRecord
             }
         }
         $db = static::getDb();
+        $options = $this->getCommandOptions();
         $command = $db->createCommand()->insert($this->tableName(), $values);
         if (!$command->execute()) {
             return false;
