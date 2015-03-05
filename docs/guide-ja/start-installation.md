@@ -181,7 +181,7 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
-    access_log  /path/to/basic/log/access.log main;
+    access_log  /path/to/basic/log/access.log;
     error_log   /path/to/basic/log/error.log;
 
     location / {
