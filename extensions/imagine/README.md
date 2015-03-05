@@ -43,6 +43,16 @@ use yii\imagine\Image;
 Image::frame('path/to/image.jpg', 5, '666', 0)
     ->rotate(-8)
     ->save('path/to/destination/image.jpg', ['quality' => 50]);
+
+// stream resource, uses \Imagine\Image\ImagineInterface::read()
+$file = fopen('path/to/image.jpg', 'r');
+Image::thumbnail(Image::resource($file), 150, 100)
+    ->save('path/to/destination/image.jpg');
+
+// binary string, uses \Imagine\Image\ImagineInterface::load()
+$data = file_get_contents('path/to/image.jpg');
+Image::thumbnail(Image::binary($data), 100, 150)
+    ->save('path/to/destination/image.jpg');
 ```
 
 Note that each `Image` method returns an instance of `\Imagine\Image\ImageInterface`.
