@@ -143,19 +143,23 @@ public function rules()
 public function rules()
 {
     return [
-        [['file'], 'file', 'extensions' => 'gif, jpg',],
+        [['file'], 'file', 'extensions' => 'gif, jpg'],
     ];
 }
 ```
 
-ただし、ファイル拡張子が検証されるだけで、実際のファイルの中身は検証されないことを憶えておいてください。
-ファイルの中身も検証するためには、`FileValidator` の `mimeType` プロパティを使います。
+デフォルトでは、ファイルのコンテントの MIME タイプが指定された拡張子に対応するものであるかどうかが検証されます。
+例えば、`gif` に対しては `image/gif`、`jpg` に対しては `image/jpeg` であるかどうかが検証されます。
+
+MIME タイプの中には、`file` バリデータによって使われている PHP fileinfo 拡張では適切に検知することが出来ないものがあることに注意してください。
+例えば、`csv` ファイルは `text/csv` ではなく `text/plain` として検知されます。
+このような振る舞いを避けるために、`checkExtensionByMimeType` を `false` に設定して、MIME タイプを手動で指定することが出来ます。
 
 ```php
 public function rules()
 {
     return [
-        [['file'], 'file', 'extensions' => 'jpg, png', 'mimeTypes' => 'image/jpeg, image/png',],
+        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/plain'],
     ];
 }
 ```
