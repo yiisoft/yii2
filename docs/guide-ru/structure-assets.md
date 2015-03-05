@@ -401,7 +401,8 @@ For example, the default [[yii\web\JqueryAsset]] asset bundle uses the `jquery.j
 jquery Bower package. To improve the availability and performance, you may want to use a version hosted by Google.
 This can be achieved by configuring `assetManager` in the application configuration like the following:
 -->
-Yii управляет комплектами ресурсов через компонент приложения называемый `assetManager`, который реализован в [[yii\web\AssetManager]].
+Yii управляет комплектами ресурсов через компонент приложения называемый `assetManager`, который реализован в [[yii\web\AssetManager]]. Путём настройки свойства [[yii\web\AssetManager::bundles]], возможно настроить поведение комплекта ресурсов. Например, комплект ресурсов [[yii\web\JqueryAsset]] по умолчанию использует `jquery.js` файл из установленного jquery Bower пакета. Для повышения доступности и производительности, можно использовать версию jquery на Google хостинге.
+Это может быть достигнуто, настроив `assetManager` в конфигурации приложения следующим образом:
 
 ```php
 return [
@@ -410,7 +411,7 @@ return [
         'assetManager' => [
             'bundles' => [
                 'yii\web\JqueryAsset' => [
-                    'sourcePath' => null,   // do not publish the bundle - не публиковать комплект
+                    'sourcePath' => null,   // не опубликовывать комплект
                     'js' => [
                         '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
                     ]
@@ -421,16 +422,18 @@ return [
 ];
 ```
 
+<!--
 You can configure multiple asset bundles similarly through [[yii\web\AssetManager::bundles]]. The array keys
 should be the class names (without the leading backslash) of the asset bundles, and the array values should
 be the corresponding [configuration arrays](concept-configurations.md).
-
+-->
 Можно сконфигурировать несколько комплектов ресурсов аналогично через [[yii\web\AssetManager::bundles]]. Ключи массива должны быть именами класса (без впереди стоящей обратной косой черты) комплектов ресурсов, а значения массивов должны соответствовать [конфигурации массивов](concept-configurations.md).
 
+<!--
 > Tip: You can conditionally choose which assets to use in an asset bundle. The following example shows how
 > to use `jquery.js` in the development environment and `jquery.min.js` otherwise:
-> Совет: Можно условно выбрать какой из ресурсов будет использован в комплекте ресурсов. Следующий пример показывает как можно использовать в разработке окружения `jquery.js` или `jquery.min.js` в противном случае:
-
+-->
+> Совет: Можно условно выбрать, какой из ресурсов будет использован в комплекте ресурсов. Следующий пример показывает, как можно использовать в разработке окружения `jquery.js` или `jquery.min.js` в противном случае:
 
 > ```php
 > 'yii\web\JqueryAsset' => [
@@ -440,12 +443,13 @@ be the corresponding [configuration arrays](concept-configurations.md).
 > ],
 > ```
 
+<!--
 You can disable one or multiple asset bundles by associating `false` with the names of the asset bundles
 that you want to disable. When you register a disabled asset bundle with a view, none of its dependent bundles
 will be registered, and the view also will not include any of the assets in the bundle in the page it renders.
 For example, to disable [[yii\web\JqueryAsset]], you can use the following configuration:
-
-Можно запретить один или несколько комплектов ресурсов связав `false` с именами комплектов ресурсов, которые Вы хотите сделать недоступными. Когда Вы регистрируете недоступный комплект ресурсов в представлении, обратите внимание, что зависимость комплектов будет зарегистрирована, и представление также не включит ни один из ресурсов комплекта в отображаемую страницу. Например, для запрета [[yii\web\JqueryAsset]] можно использовать следующую конфигурацию: 
+-->
+Можно запретить один или несколько комплектов ресурсов, связав `false` с именами комплектов ресурсов, которые Вы хотите сделать недоступными. Когда Вы регистрируете недоступный комплект ресурсов в представлении, обратите внимание, что зависимость комплектов будет зарегистрирована, и представление также не включит ни один из ресурсов комплекта в отображаемую страницу. Например, для запрета [[yii\web\JqueryAsset]] можно использовать следующую конфигурацию: 
 
 
 ```php
@@ -461,18 +465,20 @@ return [
 ];
 ```
 
+<!--
 You can also disable *all* asset bundles by setting [[yii\web\AssetManager::bundles]] as `false`.
-
+-->
 Можно также запретить *все* комплекты ресурсов, установив [[yii\web\AssetManager::bundles]] как `false`.
 
 
-### Asset Mapping - Привязка ресурсов<span id="asset-mapping"></span>
-
+### Привязка ресурсов<span id="asset-mapping"></span>
+<!-- Asset Mapping -->
+<!-- ПРОВЕРЯТЬ С ЭТОГО АБЗАЦА
 Sometimes you may want to "fix" incorrect/incompatible asset file paths used in multiple asset bundles. For example,
 bundle A uses `jquery.min.js` version 1.11.1, and bundle B uses `jquery.js` version 2.1.1. While you can
 fix the problem by customizing each bundle, an easier way is to use the *asset map* feature to map incorrect assets
 to the desired ones. To do so, configure the [[yii\web\AssetManager::assetMap]] property like the following:
-
+-->
 Иногда необходимо "зафиксировать" неверный/несоответствующий путь файла ресурса, используемый в некоторых комплектах ресурсов. Например, комплект А использует `jquery.min.js` версии 1.11.1, а комплект В использует `jquery.js` версии 2.1.1. Раньше Вы фиксировали проблему настраивая каждый комплект, но более простой способ - использовать *asset map* возможность, чтобы найти неверные ресурсы и исправить их. Сделать это можно, сконфигурировав свойство [[yii\web\AssetManager::assetMap]] следующим образом:
 
 ```php
