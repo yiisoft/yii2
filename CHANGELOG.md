@@ -7,6 +7,8 @@ Yii Framework 2 Change Log
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
 - Enh #7562: `yii help` now lists all sub-commands by default (callmez)
+- Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
+
 
 2.0.3 March 01, 2015
 --------------------

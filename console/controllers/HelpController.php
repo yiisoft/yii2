@@ -210,7 +210,8 @@ class HelpController extends Controller
             }
             foreach ($commands as $command => $description) {
                 $this->stdout('- ' . $this->ansiFormat($command, Console::FG_YELLOW));
-                $this->stdout(str_repeat(' ', $len + 5 - strlen($command)) . $description);
+                $this->stdout(str_repeat(' ', $len + 4 - strlen($command)));
+                $this->stdout(Console::wrapText($description, $len + 4 + 2), Console::BOLD);
                 $this->stdout("\n");
 
                 $result = Yii::$app->createController($command);
@@ -228,7 +229,8 @@ class HelpController extends Controller
                             }
                             $summary = $controller->getActionHelpSummary($controller->createAction($action));
                             if ($summary !== '') {
-                                $this->stdout(str_repeat(' ', $len + 5 - strlen($string)) . $summary);
+                                $this->stdout(str_repeat(' ', $len + 4 - strlen($string)));
+                                $this->stdout(Console::wrapText($summary, $len + 4 + 2));
                             }
                             $this->stdout("\n");
                         }
@@ -263,14 +265,24 @@ class HelpController extends Controller
         if (!empty($actions)) {
             $this->stdout("\nSUB-COMMANDS\n\n", Console::BOLD);
             $prefix = $controller->getUniqueId();
+
+            $maxlen = 5;
+            foreach ($actions as $action) {
+                $len = strlen($prefix.'/'.$action) + 2 + ($action === $controller->defaultAction ? 10 : 0);
+                if ($maxlen < $len) {
+                    $maxlen = $len;
+                }
+            }
             foreach ($actions as $action) {
                 $this->stdout('- ' . $this->ansiFormat($prefix.'/'.$action, Console::FG_YELLOW));
+                $len = strlen($prefix.'/'.$action) + 2;
                 if ($action === $controller->defaultAction) {
                     $this->stdout(' (default)', Console::FG_GREEN);
+                    $len += 10;
                 }
                 $summary = $controller->getActionHelpSummary($controller->createAction($action));
                 if ($summary !== '') {
-                    $this->stdout(': ' . $summary);
+                    $this->stdout(str_repeat(' ', $maxlen - $len + 2) . Console::wrapText($summary, $maxlen + 2));
                 }
                 $this->stdout("\n");
             }
