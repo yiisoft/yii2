@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
-
+- Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
 
 2.0.3 March 01, 2015
 --------------------
