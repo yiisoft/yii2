@@ -733,9 +733,13 @@ from C and D, followed by B and finally A.
 After combining and compressing, we get one CSS file and one JavaScript file. Assume they are named as 
 `all-xyz.css` and `all-xyz.js`, where `xyz` stands for a timestamp or a hash that is used to make the file name unique
 to avoid HTTP caching problems.
+
+После объединения и сжатия, Вы получите один CSS файл и один JavaScript файл. Предположим, они названы как `all-xyz.css` и `all-xyz.js`, где `xyz` это временная метка или хэш, используется, чтобы создать уникальное имя файла чтобы избежать проблем с кэшированием HTTP.
  
 We are at the last step now. Configure the [[yii\web\AssetManager|asset manager]] as follows in the application
 configuration:
+ 	
+Сейчас мы находимся на последнем шаге. Настройте [[yii\web\AssetManager|asset manager]] как показано ниже в конфигурации вашего приложения:
 
 ```php
 return [
@@ -764,6 +768,9 @@ changes the default behavior of each bundle. In particular, Bundle A, B, C and D
 They now all depend on the `all` bundle which contains the combined `all-xyz.css` and `all-xyz.js` files.
 Consequently, for Page X, instead of including the original source files from Bundle A, B and C, only these
 two combined files will be included; the same thing happens to Page Y.
+
+Как объяснено в подразделе [Настройка Комплектов Ресурсов](#customizing-asset-bundles), приведенная выше конфигурация
+изменяет поведение по умолчанию каждого комплекта. В частности, комплект A, B, C и D не имеют больше никаких файлов ресурсов. Теперь они все зависят от `all` комплекта который содержит скомбинированные `all-xyz.css` и `all-xyz.js` файлы.
 
 There is one final trick to make the above approach work more smoothly. Instead of directly modifying the
 application configuration file, you may put the bundle customization array in a separate file and conditionally
