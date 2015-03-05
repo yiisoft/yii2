@@ -7,7 +7,15 @@ Built on top of [Database Access Objects](db-dao.md), query builder allows you t
 in a programmatic way. Compared to writing raw SQLs, using query builder will help you write more readable 
 SQL-related code and generate more secure SQL statements.  
 
-The following code may give you an idea how query builder works in general:
+Using query builder usually involves two steps:
+
+1. Build a [[yii\db\Query]] object to represent different parts (e.g. `SELECT`, `FROM`) of a SELECT SQL statement.
+2. Execute a query method (e.g. `all()`) of [[yii\db\Query]].
+
+Behind the scene, [[yii\db\QueryBuilder]] is invoked in the second step to convert a [[yii\db\Query]] object into
+a SQL statement for the particular DBMS. 
+
+The following code shows a typical use case of query builder:
 
 ```php
 $rows = (new \yii\db\Query())
@@ -27,45 +35,54 @@ WHERE `name` = :name
 LIMIT 10
 ```
 
-where the `:name` parameter is bound with the `Smith` string. As you can see, query builder will properly quote
-the column and table names, depending on the underlying DBMS. And it will use parameter binding to bind parameter
-values.
-
-> Info: In most cases, you will deal with [[yii\db\Query]] instead of [[yii\db\QueryBuilder]]. The former provides
-  a DBMS-independent representation of query construct, while the latter is DBMS-dependent and is responsible for
-  converting a [[yii\db\Query]] object into a suitable SQL statement. In the above code, the conversion process
-  happens when you call the `all()` method.
+where the `:name` parameter is bound with the string `'Smith'`. Depending on the DBMS being used, query builder
+will properly quote the column and table names and bind parameter values to the generated SQL statement.
 
 
-Query Methods
--------------
+## Query Methods <span id="query-methods"></span>
 
-As you can see, [[yii\db\Query]] is the main player that you need to deal with. Behind the scenes,
-`Query` is actually only responsible for representing various query information. The actual query
-building logic is done by [[yii\db\QueryBuilder]] when you call the `createCommand()` method,
-and the query execution is done by [[yii\db\Command]].
+[[yii\db\Query]] provides a whole set of methods for different query purposes:
 
-For convenience, [[yii\db\Query]] provides a set of commonly used query methods that will build
-the query, execute it, and return the result. For example,
-
-- [[yii\db\Query::all()|all()]]: builds the query, executes it and returns all results as an array.
+- [[yii\db\Query::all()|all()]]: returns an array of rows with each row being an associative array of name-value pairs.
 - [[yii\db\Query::one()|one()]]: returns the first row of the result.
 - [[yii\db\Query::column()|column()]]: returns the first column of the result.
-- [[yii\db\Query::scalar()|scalar()]]: returns the first column in the first row of the result.
-- [[yii\db\Query::exists()|exists()]]: returns a value indicating whether the query results in anything.
-- [[yii\db\Query::count()|count()]]: returns the result of a `COUNT` query. Other similar methods
-  include `sum($q)`, `average($q)`, `max($q)` and `min($q)`, which support the so-called aggregational data query. The `$q`
-  parameter is mandatory for these methods and can be either the column name or expression.
+- [[yii\db\Query::scalar()|scalar()]]: returns a scalar value located at the first row and first column of the result.
+- [[yii\db\Query::exists()|exists()]]: returns a value indicating whether the query contains any result.
+- [[yii\db\Query::count()|count()]]: returns the result of a `COUNT` query.
+- Other aggregation query methods, including [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
+  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]]. The `$q` parameter is mandatory for these methods 
+  and can be either a column name or a DB expression.
+
+All of the above methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
+should be used to perform a DB query. If you omit this parameter, the `db` application component will be used
+as the DB connection.
+
+Given a [[yii\db\Query]], you can create a [[yii\db\Command]] and further work with this command object. For example,
+
+```php
+$command = (new \yii\db\Query())
+    ->select('id, email')
+    ->from('user')
+    ->where(['name' => 'Smith'])
+    ->limit(10)
+    ->createCommand();
+    
+// show the SQL statement
+echo $command->sql;
+// returns all rows of the query result
+$rows= $command->queryAll();
+```
 
 
-Building Query
---------------
+## Building Queries <span id="building-queries"></span>
 
-In the following, we will explain how to build various clauses in a SQL statement. For simplicity,
-we use `$query` to represent a [[yii\db\Query]] object.
+To build a [[yii\db\Query]] object, you call different query building methods to specify different parts of
+a SQL statement. The names of these methods resemble the SQL keywords used in the corresponding parts of the SQL
+statement. For example, to specify the `FROM` part, you would call the `from()` method. In the following, we will
+describe in detail the usage of each query building method.
 
 
-### `SELECT`
+### `SELECT` <span id="select"></span>
 
 In order to form a basic `SELECT` query, you need to specify what columns to select and from what table:
 
@@ -106,7 +123,7 @@ To select distinct rows, you may call `distinct()`, like the following:
 $query->select('user_id')->distinct()->from('post');
 ```
 
-### `FROM`
+### `FROM` <span id="from"></span>
 
 To specify which table(s) to select data from, call `from()`:
 
@@ -139,7 +156,7 @@ $query->select('*')->from(['u' => $subQuery]);
 ```
 
 
-### `WHERE`
+### `WHERE` <span id="where"></span>
 
 Usually data is selected based upon certain criteria. Query Builder has some useful methods to specify these, the most powerful of which being `where`. It can be used in multiple ways.
 
@@ -327,7 +344,7 @@ A value is *empty* if it is null, an empty string, a string consisting of whites
 You may also use `andFilterWhere()` and `orFilterWhere()` to append more filter conditions.
 
 
-### `ORDER BY`
+### `ORDER BY` <span id="order-by"></span>
 
 For ordering results `orderBy` and `addOrderBy` could be used:
 
@@ -426,9 +443,11 @@ $anotherQuery->select('id, type, name')->from('user')->limit(10);
 $query->union($anotherQuery);
 ```
 
+## Indexing Query Results <span id="indexing-query-results"></span>
 
-Batch Query
------------
+TBD
+
+## Batch Query <span id="batch-query"></span>
 
 When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable
 because they require loading all data into the memory. To keep the memory requirement low, Yii
