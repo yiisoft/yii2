@@ -685,6 +685,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
+     * Options for Command and QueryBuilder beyond standard SQL.
+     * For NoSQL DB's and custom storage engines.
+     * @return array
+     */
+    public function getCommandOptions() { return []; }
+
+    /**
      * @see update()
      * @param array $attributes attributes to update
      * @return integer number of rows updated
