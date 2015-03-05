@@ -716,9 +716,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $condition[$lock] = $this->$lock;
         }
         $options = $this->getCommandOptions();
+        $params = [];
         // We do not check the return value of updateAll() because it's possible
         // that the UPDATE statement doesn't change anything and thus returns 0.
-        $rows = $this->updateAll($values, $condition, [], $options);
+        $rows = $this->updateAll($values, $condition, $params, $options);
 
         if ($lock !== null && !$rows) {
             throw new StaleObjectException('The object being updated is outdated.');
