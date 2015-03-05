@@ -194,7 +194,11 @@ class HelpController extends Controller
                     if (!empty($actions)) {
                         $prefix = $controller->getUniqueId();
                         foreach ($actions as $action) {
-                            if (($l = strlen($prefix . '/' . $action)) > $len) {
+                            $string = $prefix . '/' . $action;
+                            if ($action === $controller->defaultAction) {
+                                $string .= ' (default)';
+                            }
+                            if (($l = strlen($string)) > $len) {
                                 $len = $l;
                             }
                         }
@@ -217,6 +221,10 @@ class HelpController extends Controller
                         foreach ($actions as $action) {
                             $string = '  ' . $prefix . '/' . $action;
                             $this->stdout("  " . $this->ansiFormat($string, Console::FG_GREEN));
+                            if ($action === $controller->defaultAction) {
+                                $string .= ' (default)';
+                                $this->stdout(' (default)', Console::FG_YELLOW);
+                            }
                             $summary = $controller->getActionHelpSummary($controller->createAction($action));
                             if ($summary !== '') {
                                 $this->stdout(str_repeat(' ', $len + 5 - strlen($string)) . $summary);
