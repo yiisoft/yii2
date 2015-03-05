@@ -1,30 +1,30 @@
-Assets - Ресурсы (Черновой вариант)
+<!-- Assets ---> Ресурсы (Черновой вариант)
 ======
 
 <!--
 An asset in Yii is a file that may be referenced in a Web page. It can be a CSS file, a JavaScript file, an image
 or video file, etc. Assets are located in Web-accessible directories and are directly served by Web servers.
 -->
-
 Ресурс в Yii это файл который может быть задан в Web странице. Это может быть CSS файл, JavaScript файл, изображение или видео файл и т.д. Ресурсы располагаются в Web доступных директориях и обслуживаются непосредственно Web серверами.
 
+<!--
 It is often preferable to manage assets programmatically. For example, when you use the [[yii\jui\DatePicker]] widget
 in a page, it will automatically include the required CSS and JavaScript files, instead of asking you to manually
 find these files and include them. And when you upgrade the widget to a new version, it will automatically use
 the new version of the asset files. In this tutorial, we will describe the powerful asset management capability
 provided in Yii.
+-->
+Желательно, управлять ресурсами программно. Например, при использовании виджета [[yii\jui\DatePicker]] в странице, автоматически включаются необходимые CSS и JavaScript файлы, вместо того чтобы просить Вас в ручную найти эти файлы и включить их. И когда Вы обновляете виджет до новой версии, будут автоматически использованны новые версии файлов-ресурсов. В этом руководстве будет описана мощная возможность управления ресурсами представленная в Yii.
 
-Желательно, управлять ресурсами программно. Например, используя виджет [[yii\jui\DatePicker]] в странице, автоматически включаются необходимые CSS и JavaScript файлы, вместо того чтобы просить Вас в ручную найти эти файлы и включить их. И когда Вы обновляете виджет до новой версии, будут автоматически использованны новые версии файлов-ресурсов. В этом руководстве будет описана мощная возможность управления ресурсами представленная в Yii.
 
+## <!--Asset Bundles --> Комплекты ресурсов <span id="asset-bundles"></span>
 
-## Asset Bundles - Комплект ресурсов<span id="asset-bundles"></span>
-
+<!--
 Yii manages assets in the unit of *asset bundle*. An asset bundle is simply a collection of assets located
 in a directory. When you register an asset bundle in a [view](structure-views.md), it will include the CSS and
 JavaScript files in the bundle in the rendered Web page.
-
-Yii управляет ресурсами в единице *asset bundle*. Комплект ресурсов это простая коллекция/набор ресурсов расположенных в директории. Когда Вы регистрируете комплект ресурсов в [представлении](structure-views.md), это включит набор CSS и JavaScript файлов в отображаемую Web страницу.
-
+-->
+Yii управляет ресурсами как единицей *комплекта ресурсов*. Комплект ресурсов - это простой набор ресурсов расположенных в директории. Когда Вы регистрируете комплект ресурсов в [представлении](structure-views.md), в отображаемой Web странице включается набор CSS и JavaScript файлов.
 
 ## Defining Asset Bundles - Задание Комплекта Ресурсов<span id="defining-asset-bundles"></span>
 
