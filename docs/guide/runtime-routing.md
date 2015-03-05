@@ -240,7 +240,7 @@ To use pretty URLs, configure the `urlManager` component in the application conf
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'rules' => [
                 // ...
             ],
