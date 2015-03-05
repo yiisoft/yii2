@@ -199,16 +199,16 @@ class Component extends Object
     }
 
     /**
-     * Checks if a property value is null.
+     * Checks if a property value is set.
      * This method will check in the following order and act accordingly:
      *
-     *  - a property defined by a setter: return whether the property value is null
-     *  - a property of a behavior: return whether the property value is null
+     *  - a property defined by a setter: return whether the property value is set
+     *  - a property of a behavior: return whether the property value is set
      *
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `isset($component->property)`.
      * @param string $name the property name or the event name
-     * @return boolean whether the named property is null
+     * @return boolean whether the named property is set
      */
     public function __isset($name)
     {
