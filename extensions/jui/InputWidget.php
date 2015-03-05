@@ -8,7 +8,6 @@
 namespace yii\jui;
 
 use yii\base\Model;
-use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 
 /**

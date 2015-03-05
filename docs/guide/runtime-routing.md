@@ -42,7 +42,7 @@ The [[yii\web\UrlManager|URL manager]] supports two URL formats: the default URL
 
 The default URL format uses a query parameter named `r` to represent the route and normal query parameters 
 to represent the query parameters associated with the route. For example, the URL `/index.php?r=post/view&id=100` represents 
-the route `post/view` and the `id` query parameter 100. The default URL format does not require any configuration about 
+the route `post/view` and the `id` query parameter 100. The default URL format does not require any configuration of 
 the [[yii\web\UrlManager|URL manager]] and works in any Web server setup.
 
 The pretty URL format uses the extra path following the entry script name to represent the route and the associated 
@@ -275,7 +275,7 @@ The rest of the properties are optional. However, their configuration shown abov
 
 A URL rule is an instance of [[yii\web\UrlRule]] or its child class. Each URL rule consists of a pattern used 
 for matching the path info part of URLs, a route, and a few query parameters. A URL rule can be used to parse a request
-if its pattern matches the requested URL and a URL rule can be used to create a URL if its route and query parameter 
+if its pattern matches the requested URL. A URL rule can be used to create a URL if its route and query parameter 
 names match those that are given. 
 
 When the pretty URL format is enabled, the [[yii\web\UrlManager|URL manager]] uses the URL rules declared in its

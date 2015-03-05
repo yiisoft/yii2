@@ -125,7 +125,7 @@ CREATE TABLE "bool_values" (
 );
 
 
-CREATE TABLE `animal` (
+CREATE TABLE "animal" (
   id serial primary key,
   type varchar(255) not null
 );

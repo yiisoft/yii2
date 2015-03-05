@@ -141,18 +141,24 @@ It is wise to validate the type of file uploaded. FileValidator has the property
 public function rules()
 {
     return [
-        [['file'], 'file', 'extensions' => 'gif, jpg',],
+        [['file'], 'file', 'extensions' => 'gif, jpg'],
     ];
 }
 ```
 
-Keep in mind that only the file extension will be validated, but not the actual file content. In order to validate the content as well, use the `mimeTypes` property of `FileValidator`:
+By default it will validate against file content mime type corresponding to extension specified. For gif it will be
+`image/gif`, for `jpg` it will be `image/jpeg`.
+
+
+Note that some mime types can't be detected properly by PHP's fileinfo extension that is used by `file` validator. For
+example, `csv` files are detected as `text/plain` instead of `text/csv`. You can turn off such behavior by setting
+`checkExtensionByMimeType` to `false` and specifying mime types manually:
 
 ```php
 public function rules()
 {
     return [
-        [['file'], 'file', 'extensions' => 'jpg, png', 'mimeTypes' => 'image/jpeg, image/png',],
+        [['file'], 'file', 'checkExtensionByMimeType' => false, 'extensions' => 'csv', 'mimeTypes' => 'text/plain'],
     ];
 }
 ```
