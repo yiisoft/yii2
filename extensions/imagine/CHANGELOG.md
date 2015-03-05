@@ -4,7 +4,7 @@ Yii Framework 2 imagine extension Change Log
 2.0.4 under development
 -----------------------
 
-- no changes in this release.
+- Enh #6371: image to be used can now be loaded from the stream resource or binary string (resurtm)
 
 
 2.0.3 March 01, 2015
