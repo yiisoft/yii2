@@ -265,7 +265,7 @@ class BaseImage
      */
     public static function binary($string)
     {
-        return array('binary', $string);
+        return ['binary', $string];
     }
 
     /**
@@ -277,7 +277,7 @@ class BaseImage
      */
     public static function resource($resource)
     {
-        return array('resource', $resource);
+        return ['resource', $resource];
     }
 
     /**
