@@ -227,4 +227,13 @@ class StringHelperTest extends TestCase
         $this->assertTrue(StringHelper::endsWith('string', 'nG', false));
         $this->assertTrue(StringHelper::endsWith('BüЯйΨ', 'ÜяЙΨ', false));
     }
+
+    public function testExplode()
+    {
+        $this->assertEquals(['It', 'is', 'a first', 'test'], StringHelper::explode("It, is, a first, test"));
+        $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::explode("It+ is+ a second+ test", '+'));
+        $this->assertEquals(['Save', '', '', 'empty trimmed string'], StringHelper::explode("Save, ,, empty trimmed string", ','));
+        $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode("Здесь我 multibyte我 строка", '我'));
+        $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode("Disable,  trim  ,,,here but ignore empty", ',', false, true));
+    }
 }
