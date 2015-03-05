@@ -146,10 +146,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param array $attributes attribute values (name-value pairs) to be saved into the table
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params ['qp0'=>'value'] for prepared statements. NB: & - by reference
+     * @param array $options For NoSQL and custom DB engines
      * @return integer the number of rows updated
      * @throws NotSupportedException if not overrided
      */
-    public static function updateAll($attributes, $condition = '')
+    public static function updateAll($attributes, $condition = '', &$params = [], $options = [])
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported.');
     }
@@ -716,7 +718,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $options = $this->getCommandOptions();
         // We do not check the return value of updateAll() because it's possible
         // that the UPDATE statement doesn't change anything and thus returns 0.
-        $rows = $this->updateAll($values, $condition);
+        $rows = $this->updateAll($values, $condition, [], $options);
 
         if ($lock !== null && !$rows) {
             throw new StaleObjectException('The object being updated is outdated.');

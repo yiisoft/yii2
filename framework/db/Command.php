@@ -410,12 +410,13 @@ class Command extends Component
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
+     * @param array $options for NoSQL databases and/or engine-specific extras
      * @return Command the command object itself
      */
-    public function insert($table, $columns)
+    public function insert($table, $columns, $options = [])
     {
         $params = [];
-        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params, $options);
 
         return $this->setSql($sql)->bindValues($params);
     }
@@ -463,11 +464,12 @@ class Command extends Component
      * @param string|array $condition the condition that will be put in the WHERE part. Please
      * refer to [[Query::where()]] on how to specify condition.
      * @param array $params the parameters to be bound to the command
+     * @param array $options for NoSQL databases and/or engine-specific extras
      * @return Command the command object itself
      */
-    public function update($table, $columns, $condition = '', $params = [])
+    public function update($table, $columns, $condition = '', $params = [], $options = [])
     {
-        $sql = $this->db->getQueryBuilder()->update($table, $columns, $condition, $params);
+        $sql = $this->db->getQueryBuilder()->update($table, $columns, $condition, $params, $options);
 
         return $this->setSql($sql)->bindValues($params);
     }
