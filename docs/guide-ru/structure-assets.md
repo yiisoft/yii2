@@ -28,16 +28,17 @@ Yii управляет ресурсами как единицей *компле�
 
 ## Задание Комплекта Ресурсов<span id="defining-asset-bundles"></span>
 <!-- Defining Asset Bundles -->
+<!--
 Asset bundles are specified as PHP classes extending from [[yii\web\AssetBundle]]. The name of a bundle is simply
 its corresponding fully qualified PHP class name (without the leading backslash). An asset bundle class should
 be [autoloadable](concept-autoloading.md). It usually specifies where the assets are located, what CSS and 
 JavaScript files the bundle contains, and how the bundle depends on other bundles.
-
-Комплект ресурсов определяется как PHP класс расширяющийся от [[yii\web\AssetBundle]]. ...(без начальной косой черты). Это обычно указывает где ресурсы находятся, какие CSS и JavaScript файлы содержит комплект, и как комплект зависит от других комплектов.
-
+-->
+Комплект ресурсов определяется как PHP класс расширяющийся от [[yii\web\AssetBundle]]. Имя комплекта соответствует полному имени PHP класса (без ведущей обратной косой черты - backslash "\"). Класс комплекта ресурсов должен быть в состоянии [возможности автозагрузки](concept-autoloading.md). При задании комплекта ресурсов обычно указывается где ресурсы находятся, какие CSS и JavaScript файлы содержит комплект, и как комплект зависит от других комплектов.
+<!--
 The following code defines the main asset bundle used by [the basic application template](start-installation.md):
-
-Следующий код определяет основной комплект ресурсов используемый в [шаблоне базового приложения](start-installation.md):
+-->
+Следующий код задаёт основной комплект ресурсов используемый в [шаблоне базового приложения](start-installation.md):
 
 ```php
 <?php
@@ -61,36 +62,39 @@ class AppAsset extends AssetBundle
     ];
 }
 ```
-
+<!--
 The above `AppAsset` class specifies that the asset files are located under the `@webroot` directory which
 corresponds to the URL `@web`; the bundle contains a single CSS file `css/site.css` and no JavaScript file;
 the bundle depends on two other bundles: [[yii\web\YiiAsset]] and [[yii\bootstrap\BootstrapAsset]]. More detailed
 explanation about the properties of [[yii\web\AssetBundle]] can be found in the following:
-
-В коде выше класс `AppAsset` указывает что файлы ресурса находятся в директории `@webroot` , которой соответствует URL `@web`; комплект содержит единственный CSS файл `css/site.css` и не содержит JavaScript файлов; комплект зависит от двух других комплектов: [[yii\web\YiiAsset]] и [[yii\bootstrap\BootstrapAsset]]. Более детальное объяснение о свойствах [[yii\web\AssetBundle]] может быть найдено ниже:
-
+-->
+В коде выше класс `AppAsset` указывает, что файлы ресурса находятся в директории `@webroot`, которой соответствует URL `@web`; комплект содержит единственный CSS файл `css/site.css` и не содержит JavaScript файлов; комплект зависит от двух других комплектов: [[yii\web\YiiAsset]] и [[yii\bootstrap\BootstrapAsset]]. Более детальное объяснение о свойствах [[yii\web\AssetBundle]] может быть найдено ниже:
+<!--
 * [[yii\web\AssetBundle::sourcePath|sourcePath]]: specifies the root directory that contains the asset files in
   this bundle. This property should be set if the root directory is not Web accessible. Otherwise, you should
   set the [[yii\web\AssetBundle::basePath|basePath]] property and [[yii\web\AssetBundle::baseUrl|baseUrl]], instead.
   [Path aliases](concept-aliases.md) can be used here.
+-->
+* [[yii\web\AssetBundle::sourcePath|sourcePath]]: задаёт корневую директорию содержащую файлы ресурса в этом комплекте. Это свойство должно быть установлено если корневая директория не доступна из Web. В противном случае, Вы должны установить [[yii\web\AssetBundle::basePath|basePath]] свойство и [[yii\web\AssetBundle::baseUrl|baseUrl]] свойство вместо текущего. Здесь могут быть использованы [псевдонимы путей](concept-aliases.md).
 
-* [[yii\web\AssetBundle::sourcePath|sourcePath]]: определяет/задаёт корневую директорию содержащую файлы ресурса в этом комплекте. Это свойство должно быть установлено если корневая директория не доступна из Web. В противном случае, Вы должны установить [[yii\web\AssetBundle::basePath|basePath]] свойство и [[yii\web\AssetBundle::baseUrl|baseUrl]] свойство вместо текущего. Здесь могут быть использованы [Псевдонимы путей](concept-aliases.md).
-
+<!--
 * [[yii\web\AssetBundle::basePath|basePath]]: specifies a Web-accessible directory that contains the asset files in
   this bundle. When you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property,
   the [asset manager](#asset-manager) will publish the assets in this bundle to a Web-accessible directory
   and overwrite this property accordingly. You should set this property if your asset files are already in
   a Web-accessible directory and do not need asset publishing. [Path aliases](concept-aliases.md) can be used here.
+-->
+* [[yii\web\AssetBundle::basePath|basePath]]: задаёт Web доступную директорию, которая содержит файлы ресурсов текущего комплекта. Когда Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] [Менеджер ресурсов](#asset-manager) опубликует ресурсы текущего комплекта в Web доступную директорию и перезапишет соответственно данное свойство. Вы должны задать данное свойство если Ваши файлы ресурсов уже в Web доступной директории и не нужно опубликовывать ресурсы. Здесь могут быть использованы [псевдонимы путей](concept-aliases.md).
 
-* [[yii\web\AssetBundle::basePath|basePath]]: определяет/задаёт Web доступную директорию которая содержит файлы ресурсов в текущем комплекте. Когда Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]], [Менеджер ресурсов](#asset-manager) опубликует ресурсы текущего комплекта в Web доступную директорию и перезапишет соответственно это свойство. Вы должны установить это свойство если Ваши файлы ресурсов уже в Web доступной директории и не нужно опубликовывать ресурсы. Здесь могут быть использованы [Псевдонимы путей](concept-aliases.md).
-
+<!--
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: specifies the URL corresponding to the directory
   [[yii\web\AssetBundle::basePath|basePath]]. Like [[yii\web\AssetBundle::basePath|basePath]],
   if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property, the [asset manager](#asset-manager)
   will publish the assets and overwrite this property accordingly. [Path aliases](concept-aliases.md) can be used here.
+-->
+* [[yii\web\AssetBundle::baseUrl|baseUrl]]: задаёт URL соответствующий директории [[yii\web\AssetBundle::basePath|basePath]]. Также как и для [[yii\web\AssetBundle::basePath|basePath]], если Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] [Менеджер ресурсов](#asset-manager) опубликует ресурсы и перезапишет это свойство соответственно. Здесь могут быть использованы [псевдонимы путей](concept-aliases.md).
 
-* [[yii\web\AssetBundle::baseUrl|baseUrl]]: определяет/задаёт URL соответствующий директории [[yii\web\AssetBundle::basePath|basePath]]. Также как и для [[yii\web\AssetBundle::basePath|basePath]], если Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]], [Менеджер ресурсов](#asset-manager) опубликует ресурсы и перезапишет это свойство соответственно. Здесь могут быть использованы [Псевдонимы путей](concept-aliases.md).
-
+<!--
 * [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. Note that only
   forward slash "/" should be used as directory separators. Each JavaScript file can be specified in one of the
   following two formats:
@@ -100,135 +104,155 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   - an absolute URL representing an external JavaScript file. For example,
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-
-* [[yii\web\AssetBundle::js|js]]: массив перечисляющий JavaScript файлы содержащиеся в данном комплекте. Заметьте, что только левая косая черта (forward slash) "/" может быть использована, как разделитель директорий. Каждый JavaScript файл может быть задан в одном из следующих форматов:
-  - относительный путь, представленный локальным JavaScript файлом (например `js/main.js`). Актуальный путь файла может быть определён путём добавления [[yii\web\AssetManager::basePath]] к относительному пути, и актуальный URL файла может быть определён путём добавления [[yii\web\AssetManager::baseUrl]] к относительному пути.
-  - абсолютный URL, представленный внешним JavaScript файлом. Например,
+-->
+* [[yii\web\AssetBundle::js|js]]: массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте. Заметьте, что только прямая косая черта (forward slash - "/") может быть использована, как разделитель директорий. Каждый JavaScript файл может быть задан в одном из следующих форматов:
+- относительный путь, представленный локальным JavaScript файлом (например `js/main.js`). Актуальный путь файла может быть определён путём добавления [[yii\web\AssetManager::basePath]] к относительному пути, и актуальный URL файла может быть определён путём добавления [[yii\web\AssetManager::baseUrl]] к относительному пути.
+- абсолютный URL, представленный внешним JavaScript файлом. Например,
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` или
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 
+<!--
 * [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
   is the same as that of [[yii\web\AssetBundle::js|js]].
-
+-->
 * [[yii\web\AssetBundle::css|css]]: массив, перечисляющий CSS файлы, содержащиеся в данном комплекте. Формат этого массива такой же, как и у [[yii\web\AssetBundle::js|js]].
 
+<!--
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
   (to be explained shortly).
-
+-->
 * [[yii\web\AssetBundle::depends|depends]]: массив, перечисляющий имена комплектов ресурсов, от которых зависит данный комплект.
 
+<!--
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: specifies the options that will be passed to the
   [[yii\web\View::registerJsFile()]] method when it is called to register *every* JavaScript file in this bundle.
+-->
+* [[yii\web\AssetBundle::jsOptions|jsOptions]]: задаёт параметры, которые будут относится к методу [[yii\web\View::registerJsFile()]], когда он вызывается для регистрации *каждого* JavaScript файла данного комплекта.
 
-* [[yii\web\AssetBundle::jsOptions|jsOptions]]: определяет/задаёт параметры которые будут относится к методу [[yii\web\View::registerJsFile()]], <b>когда он будет вызван регистрацией *every* JavaScript файла в данном комплекте.</b>
-
+<!--
 * [[yii\web\AssetBundle::cssOptions|cssOptions]]: specifies the options that will be passed to the
   [[yii\web\View::registerCssFile()]] method when it is called to register *every* CSS file in this bundle.
+-->
+* [[yii\web\AssetBundle::cssOptions|cssOptions]]: задаёт параметры, которые будут приняты методом [[yii\web\View::registerCssFile()]], когда он вызывается для регистрации *каждого* CSS файла данного комплекта.
 
-* [[yii\web\AssetBundle::cssOptions|cssOptions]]: определяет/задаёт параметры которые будут приняты методом [[yii\web\View::registerCssFile()]], <b>когда он будет вызван регистрацией *every* CSS файла в данном комплекте.</b>
-
+<!--
 * [[yii\web\AssetBundle::publishOptions|publishOptions]]: specifies the options that will be passed to the
   [[yii\web\AssetManager::publish()]] method when it is called to publish source asset files to a Web directory.
   This is only used if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property.
+-->
+* [[yii\web\AssetBundle::publishOptions|publishOptions]]: задаёт параметры, которые будут приняты методом [[yii\web\AssetManager::publish()]], когда метод будет вызван, опубликуются исходные файлы ресурсов в Web директории. Этот параметр используется только в том случае, если задаётся свойство [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
-* [[yii\web\AssetBundle::publishOptions|publishOptions]]: определяет/задаёт параметры которые будут приняты методом [[yii\web\AssetManager::publish()]], <b>когда он будет вызван опубликуются исходные файлы ресурсов в Web директории.</b>
 
+### Расположение ресурсов<span id="asset-locations"></span>
 
-### Asset Locations - Расположение ресурсов<span id="asset-locations"></span>
-
+<!-- Asset Locations  -->
+<!--
 Assets, based on their location, can be classified as:
-
+-->
 Ресурсы, в зависимости от их расположения, могут быть классифицированы как:
 
+<!--
 * source assets: the asset files are located together with PHP source code which cannot be directly accessed via Web.
   In order to use source assets in a page, they should be copied to a Web directory and turned into the so-called
   published assets. This process is called *asset publishing* which will be described in detail shortly.
+-->
+* исходные ресурсы: файлы ресурсов, расположенные вместе с исходным кодом PHP, которые не могут быть непосредственно доступны через Web. Для того, чтобы использовать исходные ресурсы на странице, они должны быть скопированы в Web директорию и превратиться в так называемые опубликованные ресурсы. Этот процесс называется *публикацией ресурсов*, который более подробно будет описан в ближайшее время.
 
-* исходные ресурсы: файлы ресурсов расположенные вместе с исходным кодом PHP, которые не могут быть непосредственно доступны через Web. Для того, чтобы использовать исходные ресурсы на странице, они должны быть скопированы в Web директорию и превратиться в так называемые опубликованные ресурсы. Этот процесс называется *публикацией ресурсов*, который более подробно будет описан в ближайшее время.
-
+<!--
 * published assets: the asset files are located in a Web directory and can thus be directly accessed via Web.
+-->
+* опубликованные ресурсы: файлы ресурсов, расположенные в Web директории и, таким образом, могут быть напрямую доступны через Web.
 
-* опубликованные ресурсы: файлы ресурсов расположенные в Web директории и, таким образом, могут быть напрямую доступны через Web.
-
+<!--
 * external assets: the asset files are located on a Web server that is different from the one hosting your Web
   application.
+-->
+* внешние ресурсы: файлы ресурсов, расположенные на другом Web сервере, отличного от веб-хостинга вашего приложения.
 
-* внешние ресурсы: файлы ресорсов расположенные на другом Web сервере, отличного от веб-хостинга вашего приложения.
-
+<!--
 When defining an asset bundle class, if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property,
 it means any assets listed using relative paths will be considered as source assets. If you do not specify this property,
 it means those assets are published assets (you should therefore specify [[yii\web\AssetBundle::basePath|basePath]] and
 [[yii\web\AssetBundle::baseUrl|baseUrl]] to let Yii know where they are located).
+-->
+При определении класса комплекта ресурсов, если Вы задаёте свойство [[yii\web\AssetBundle::sourcePath|sourcePath]], это означает, что любые перечисленные ресурсы, используя относительные пути, будут рассматриваться как исходные ресурсы. Если Вы не задаёте данное свойство, это означает, что эти ресурсы - это опубликованные ресурсы (в этом случае Вам следует указать [[yii\web\AssetBundle::basePath|basePath]] и [[yii\web\AssetBundle::baseUrl|baseUrl]], чтобы дать знать Yii где ресурсы располагаются).
 
-При определении класса комплекта ресурсов, если Вы указываете свойство [[yii\web\AssetBundle::sourcePath|sourcePath]], это будет значить, что любые перечисленные ресурсы, используя относительные пути, будут рассматриваться как исходные ресурсы.
-
+<!--
 It is recommended that you place assets belonging to an application in a Web directory to avoid the unnecessary asset
 publishing process. This is why `AppAsset` in the prior example specifies [[yii\web\AssetBundle::basePath|basePath]]
 instead of [[yii\web\AssetBundle::sourcePath|sourcePath]].
+-->
+Рекомендуется размещать ресурсы, принадлежащие приложению, в Web директорию, для того, чтобы избежать не нужного процесса публикации ресурсов. Вот почему `AppAsset` в предыдущем примере задаёт [[yii\web\AssetBundle::basePath|basePath]] вместо [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
-Рекомендуется размещать ресурсы, принадлежащие приложению, в Web директорию, для того чтобы избежать <b>ненужного/лишнего</b> процесса публикации ресурсов. Вот почему `AppAsset` в предыдущем примере задаёт [[yii\web\AssetBundle::basePath|basePath]] вместо [[yii\web\AssetBundle::sourcePath|sourcePath]].
-
+<!--
 For [extensions](structure-extensions.md), because their assets are located together with their source code
 in directories that are not Web accessible, you have to specify the [[yii\web\AssetBundle::sourcePath|sourcePath]]
 property when defining asset bundle classes for them.
+-->
+Для [расширений](structure-extensions.md), в связи с тем, что их ресурсы располагаются вместе с их исходным кодом в директориях, которые не являются веб-доступными, необходимо указать свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] при задании класса комплекта ресурсов для них.
 
-Для [расширений](structure-extensions.md), в связи с тем, что их ресурсы располагаются вместе с их исходным кодом в директориях, которые не являются веб-доступными, необходимо указать свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] при определении класса комплекта ресурсов для них.
-
+<!--
 > Note: Do not use `@webroot/assets` as the [[yii\web\AssetBundle::sourcePath|source path]].
   This directory is used by default by the [[yii\web\AssetManager|asset manager]] to save the asset files
   published from their source location. Any content in this directory is considered temporarily and may be subject
   to removal.
-
-> Примечание: Не используйте `@webroot/assets` как [[yii\web\AssetBundle::sourcePath|source path]]. Эта директория используется по умолчанию <b>менеджером ресурсов</b> [[yii\web\AssetManager|asset manager]] для сохранения файлов ресурсов, опубликованных из их исходного месторасположения. Любое содержимое этой директории расценивается как временное и может быть удалено.
+-->
+> Примечание: Не используйте `@webroot/assets` как [[yii\web\AssetBundle::sourcePath|source path]]. Эта директория по умолчанию используется менеджером ресурсов [[yii\web\AssetManager|asset manager]] для сохранения файлов ресурсов, опубликованных из их исходного месторасположения. Любое содержимое этой директории расценивается как временное и может быть удалено.
   
 
-### Asset Dependencies - Зависимости ресурсов <span id="asset-dependencies"></span>
-
+### Зависимости ресурсов <span id="asset-dependencies"></span>
+<!-- Asset Dependencies  -->
+<!--
 When you include multiple CSS or JavaScript files in a Web page, they have to follow a certain order to avoid
 overriding issues. For example, if you are using a jQuery UI widget in a Web page, you have to make sure
 the jQuery JavaScript file is included before the jQuery UI JavaScript file. We call such ordering the dependencies
 among assets.
+-->
 
 Когда Вы включаете несколько CSS или JavaScript файлов в Web страницу, они должны следовать в определенном порядке, <b> чтобы избежать переопределения при выдаче</b>. Например, если Вы используете виджет jQuery UI в Web странице, вы должны убедиться, что jQuery JavaScript файл был включен до jQuery UI JavaScript файла. Мы называем такой порядок зависимостью между ресурсами.
-
+<!--
 Asset dependencies are mainly specified through the [[yii\web\AssetBundle::depends]] property.
 In the `AppAsset` example, the asset bundle depends on two other asset bundles: [[yii\web\YiiAsset]] and
 [[yii\bootstrap\BootstrapAsset]], which means the CSS and JavaScript files in `AppAsset` will be included *after*
 those files in the two dependent bundles.
+-->
+Зависимости ресурсов в основном указываются через свойство [[yii\web\AssetBundle::depends]]. Например в `AppAsset`, комплект ресурсов зависит от двух других комплектов ресурсов: [[yii\web\YiiAsset]] и [[yii\bootstrap\BootstrapAsset]], что обозначает, что CSS и JavaScript файлы `AppAsset` будут включены *после* файлов этих двух комплектов зависимостей.
 
-Зависимости ресурсов в основном указываются через свойство [[yii\web\AssetBundle::depends]]. Например в `AppAsset`, комплект ресурсов зависит от двух других комплектов ресурсов: [[yii\web\YiiAsset]] и [[yii\bootstrap\BootstrapAsset]], которые обозначают, что CSS и JavaScript файлы `AppAsset` будут включены *после* файлов этих двух <b>зависимых</b> комплектов.
-
+<!--
 Asset dependencies are transitive. This means if bundle A depends on B which depends on C, A will depend on C, too.
+-->
+Зависимости ресурсов являются также зависимыми. Это значит, что если комплект А зависит от В, который зависит от С, то А тоже зависит от С.
 
-Зависимости ресурсов являются <b>переходными/транзитивными/зависимыми/наследуемыми</b>. Это значит, что если комплект А зависит от В который зависит от С, А тоже зависит от С.
+### Параметры ресурсов <span id="asset-options"></span>
+<!-- Asset Options  -->
 
-
-### Asset Options - Параметры ресурсов <span id="asset-options"></span>
-
+<!--
 You can specify the [[yii\web\AssetBundle::cssOptions|cssOptions]] and [[yii\web\AssetBundle::jsOptions|jsOptions]]
 properties to customize the way that CSS and JavaScript files are included in a page. The values of these properties
 will be passed to the [[yii\web\View::registerCssFile()]] and [[yii\web\View::registerJsFile()]] methods, respectively, when
 they are called by the [view](structure-views.md) to include CSS and JavaScript files.
+-->
+Вы можете задать свойства [[yii\web\AssetBundle::cssOptions|cssOptions]] и [[yii\web\AssetBundle::jsOptions|jsOptions]], чтобы настроить путь для включения CSS и JavaScript файлов в страницу. Значения этих свойств будут приняты методами [[yii\web\View::registerCssFile()]] и [[yii\web\View::registerJsFile()]] соответственно, когда они (методы) вызываются [представлением](structure-views.md) происходит включение CSS и JavaScript файлов.
 
-Вы можете задать свойства [[yii\web\AssetBundle::cssOptions|cssOptions]] и [[yii\web\AssetBundle::jsOptions|jsOptions]] и настроить CSS и JavaScript файлы включенные в страницу. Значения этих свойств будут приняты методами [[yii\web\View::registerCssFile()]] и [[yii\web\View::registerJsFile()]] соответственно, когда они (методы) вызываются [представление](structure-views.md) включает CSS и JavaScript файлы.
-
+<!--
 > Note: The options you set in a bundle class apply to *every* CSS/JavaScript file in the bundle. If you want to
   use different options for different files, you should create separate asset bundles, and use one set of options
   in each bundle.
-  
+-->
 > Примечание: Параметры, заданные в комплекте класса применяются для *каждого* CSS/JavaScript-файла в комплекте. Если Вы хотите использовать различные параметры для разных файлов, Вы должны создать раздельные комплекты ресурсов, и использовать одну установку параметров для каждого комплекта.
 
+<!--
 For example, to conditionally include a CSS file for browsers that are IE9 or below, you can use the following option:
-
+-->
 Например, условно включим CSS файл для браузера IE9 или ниже. Для этого Вы можете использовать следующий параметр:
 
 ```php
 public $cssOptions = ['condition' => 'lte IE9'];
 ```
-
+<!--
 This will cause a CSS file in the bundle to be included using the following HTML tags:
-
-Это вызовет CSS файл из комплекта, который будет включен в страницу используя следующие HTML теги:
+-->
+Это вызовет CSS файл из комплекта, который будет включен в страницу, используя следующие HTML теги:
 
 ```html
 <!--[if lte IE9]>
@@ -236,30 +260,32 @@ This will cause a CSS file in the bundle to be included using the following HTML
 <![endif]-->
 ```
 
+<!--
 To wrap the generated CSS link tags within `<noscript>`, you can configure `cssOptions` as follows,
-
+-->
 Для того чтобы обернуть созданную CSS ссылку в тег `<noscript>`, Вы можете настроить `cssOptions` следующим образом:
 
 ```php
 public $cssOptions = ['noscript' => true];
 ```
 
+<!--
 To include a JavaScript file in the head section of a page (by default, JavaScript files are included at the end
 of the body section), use the following option:
-
+-->
 Для включения JavaScript файла в head раздел страницы (по умолчанию, JavaScript файлы включаются в конец раздела body) используйте следующий параметр:
-
 
 ```php
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
+<!--
 By default, when an asset bundle is being published, all contents in the directory specified by [[yii\web\AssetBundle::sourcePath]]
 will be published. You can customize this behavior by configuring the [[yii\web\AssetBundle::publishOptions|publishOptions]] 
 property. For example, to publish only one or a few subdirectories of [[yii\web\AssetBundle::sourcePath]], 
 you can do the following in the asset bundle class:
-
-По умолчанию, когда комплект ресурсов публикуется, всё содержимое в заданной директории [[yii\web\AssetBundle::sourcePath]] будет опубликовано. Вы можете настроить это поведение сконфигурировав свойство [[yii\web\AssetBundle::publishOptions|publishOptions]]. Например, опубликовать одну или несколько поддиректорий [[yii\web\AssetBundle::sourcePath]] в классе комплекта ресурсов Вы можете в следующим образом:
+-->
+По умолчанию, когда комплект ресурсов публикуется, всё содержимое в заданной директории [[yii\web\AssetBundle::sourcePath]] будет опубликовано. Вы можете настроить это поведение, сконфигурировав свойство [[yii\web\AssetBundle::publishOptions|publishOptions]]. Например, опубликовать одну или несколько поддиректорий [[yii\web\AssetBundle::sourcePath]] в классе комплекта ресурсов Вы можете в следующим образом:
 
 ```php
 <?php
@@ -285,81 +311,96 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
+<!--
 The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
 the `beforeCopy` publishing option, only the `fonts` and `css` subdirectories will be published.
-
+-->
 В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
 
 
-### Bower and NPM Assets - Bower и NPM Ресурсы<span id="bower-npm-assets"></span>
+### Bower и NPM Ресурсы<span id="bower-npm-assets"></span>
+<!-- Bower and NPM Assets -->
 
+<!--
 Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/).
 If your application or extension is using such a package, it is recommended that you follow these steps to manage
 the assets in the library:
-
+-->
 Большинство JavaScript/CSS пакетов управляются [Bower](http://bower.io/) и/или [NPM](https://www.npmjs.org/).
-Если Вашим приложением или расширением используется такой пакет, то рекомендуется следовать следующим этапам для управления ресурсами в библиотеке:
+Если Вашим приложением или расширением используется такой пакет, то рекомендуется следовать следующим этапам для управления ресурсами библиотеки:
 
+<!--
 1. Modify the `composer.json` file of your application or extension and list the package in the `require` entry.
    You should use `bower-asset/PackageName` (for Bower packages) or `npm-asset/PackageName` (for NPM packages)
    to refer to the library.
+-->
 1. Исправить файл `composer.json` Вашего приложения или расширения и включить пакет в список в раздел `require`. Следует использовать `bower-asset/PackageName` (для Bower пакетов) или `npm-asset/PackageName` (для NPM пакетов) для обращения к соответствующей библиотеке.
 
+<!--
 2. Create an asset bundle class and list the JavaScript/CSS files that you plan to use in your application or extension.
    You should specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property as `@bower/PackageName` or `@npm/PackageName`.
-
+-->
 2. Создать класс комплекта ресурсов и перечислить JavaScript/CSS файлы, которые Вы планируете использовать в Вашем приложении или расширении. Вы должны задать свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] как `@bower/PackageName` или `@npm/PackageName`.
 
+<!--
    This is because Composer will install the Bower or NPM package in the directory corresponding to this alias.
-   
-   Это происходит потому, что Composer устанавливает Bower или NPM пакет в директорию, соответствующую этому псевдониму.
-
+-->
+   Это происходит потому, что Composer устанавливает Bower или NPM пакет в директорию, соответствующую этим псевдонимам.
+ 
+<!--
 > Note: Some packages may put all their distributed files in a subdirectory. If this is the case, you should specify
   the subdirectory as the value of [[yii\web\AssetBundle::sourcePath|sourcePath]]. For example, [[yii\web\JqueryAsset]]
   uses `@bower/jquery/dist` instead of `@bower/jquery`.
-  
+-->
 > Примечание: В некоторых пакетах файлы дистрибутива могут находиться в поддиректории. В этом случае, Вы должны задать поддиреторию как значение [[yii\web\AssetBundle::sourcePath|sourcePath]]. Например, [[yii\web\JqueryAsset]] использует `@bower/jquery/dist` вместо `@bower/jquery`.
 
 
-## Using Asset Bundles - Использование Комплекта Ресурсов<span id="using-asset-bundles"></span>
+## Использование Комплекта Ресурсов<span id="using-asset-bundles"></span>
+<!-- Using Asset Bundles -->
 
+<!--
 To use an asset bundle, register it with a [view](structure-views.md) by calling the [[yii\web\AssetBundle::register()]]
 method. For example, in a view template you can register an asset bundle like the following:
-
-Для использования комплекта ресурсов, регистрируйте его в [представлении](structure-views.md) вызывая метод [[yii\web\AssetBundle::register()]]. Например, комплект ресурсов в представлении может быть зарегистрирован следующим образом:
+-->
+Для использования комплекта ресурсов, зарегистрируйте его в [представлении](structure-views.md) вызвав метод [[yii\web\AssetBundle::register()]]. Например, комплект ресурсов в представлении может быть зарегистрирован следующим образом:
 
 ```php
 use app\assets\AppAsset;
 AppAsset::register($this);  // $this - представляет собой объект представления
 ```
 
+<!--
 > Info: The [[yii\web\AssetBundle::register()]] method returns an asset bundle object containing the information
   about the published assets, such as [[yii\web\AssetBundle::basePath|basePath]] or [[yii\web\AssetBundle::baseUrl|baseUrl]].
-  
+-->
 > Для справки: Метод [[yii\web\AssetBundle::register()]] возвращает объект комплекта ресурсов, содержащий информацию о публикуемых ресурсах, таких как [[yii\web\AssetBundle::basePath|basePath]] или [[yii\web\AssetBundle::baseUrl|baseUrl]].
 
+<!--
 If you are registering an asset bundle in other places, you should provide the needed view object. For example,
 to register an asset bundle in a [widget](structure-widgets.md) class, you can get the view object by `$this->view`.
+-->
+Если Вы регистрируете комплект ресурсов в других местах (т.е. не в представлении), Вы должны обеспечить необходимый объект представления. Например, при регистрации комплекта ресурсов в классе [widget](structure-widgets.md), Вы можете взять за объект представления `$this->view`.
 
-Если Вы регистрируете комплект ресурсов в других местах, Вы должны обеспечить необходимый объект представления. Например, при регистрации комплекта ресурсов в классе [widget](structure-widgets.md), Вы можете взять за объект представления `$this->view`.
-
+<!--
 When an asset bundle is registered with a view, behind the scenes Yii will register all its dependent asset bundles.
 And if an asset bundle is located in a directory inaccessible through the Web, it will be published to a Web directory.
 Later, when the view renders a page, it will generate `<link>` and `<script>` tags for the CSS and JavaScript files
 listed in the registered bundles. The order of these tags is determined by the dependencies among
 the registered bundles and the order of the assets listed in the [[yii\web\AssetBundle::css]] and [[yii\web\AssetBundle::js]]
 properties.
+-->
+Когда комплект ресурсов регистрируется в представлении, Yii регистрирует все зависимые от него комплекты ресурсов. И, если комплект ресурсов расположен в директории не доступной из Web, то он будет опубликован в Web директории. Затем, когда представление отображает страницу, сгенерируются теги `<link>` и `<script>` для CSS и JavaScript файлов, перечисленных в регистрируемых комплектах. Порядок этих тегов определён зависимостью среди регистрируемых комплектов, и последовательность ресурсов перечислена в [[yii\web\AssetBundle::css]] и [[yii\web\AssetBundle::js]] свойствах.
 
-Когда комплект ресурсов регистрируется в представлении, Yii зарегистрирует все зависимые от него комплекты ресурсов. И, если комплект ресурсов расположен в директории не доступной из Web, то он будет опубликован в Web директории. Затем, когда представление отображает страницу, сгенерируются теги `<link>` и `<script>` для CSS и JavaScript файлов, перечисленные в регистрируемых комплектах. Порядок этих тегов определён зависимостью среди регистрируемых комплектов, и последовательность ресурсов перечислена в [[yii\web\AssetBundle::css]] и [[yii\web\AssetBundle::js]] свойствах.
+### Настройка Комплектов Ресурсов <span id="customizing-asset-bundles"></span>
+<!-- Customizing Asset Bundles -->
 
-### Customizing Asset Bundles - Настройка Комплектов Ресурсов <span id="customizing-asset-bundles"></span>
-
+<!--
 Yii manages asset bundles through an application component named `assetManager` which is implemented by [[yii\web\AssetManager]].
 By configuring the [[yii\web\AssetManager::bundles]] property, it is possible to customize the behavior of an asset bundle.
 For example, the default [[yii\web\JqueryAsset]] asset bundle uses the `jquery.js` file from the installed
 jquery Bower package. To improve the availability and performance, you may want to use a version hosted by Google.
 This can be achieved by configuring `assetManager` in the application configuration like the following:
-
+-->
 Yii управляет комплектами ресурсов через компонент приложения называемый `assetManager`, который реализован в [[yii\web\AssetManager]].
 
 ```php
