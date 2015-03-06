@@ -219,7 +219,7 @@ echo Url::previous();
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'rules' => [
                 // ...
             ],

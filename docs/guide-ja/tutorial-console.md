@@ -1,13 +1,33 @@
 コンソールアプリケーション
 ==========================
 
-> Note|注意: この節はまだ執筆中です。
+ウェブアプリケーションを構築するための豊富な機能に加えて、Yii はコンソールアプリケーションのためのフル装備のサポートを持っています。
+コンソールアプリケーションは、主として、ウェブサイトのために実行する必要のあるバックグラウンドのタスクやメンテナンスのタスクを作成するために使われるものです。
 
-Yii はフル機能のコンソールアプリケーションをサポートしています。
 コンソールアプリケーションの構造は Yii のウェブアプリケーションのそれと非常に良く似ています。
 コンソールアプリケーションは一つまたは複数の [[yii\console\Controller]] クラスから構成されます。
 コントローラはコンソール環境ではしばしば「コマンド」と呼ばれます。
 また、各コントローラは、ウェブのコントローラと全く同じように、一つまたは複数のアクションを持つことが出来ます。
+
+アプリケーションテンプレートは、両方とも、既にコンソールアプリケーションを持っています。
+レポジトリのベースディレクトリにある `yii` スクリプトを呼び出すことによって、コンソールアプリケーションを実行することが出来ます。
+このスクリプトは、何もパラメータを追加せずに実行すると、利用できるコマンドの一覧を表示します。
+
+![./yii コマンドを実行してヘルプを表示する](images/tutorial-console-help.png)
+
+スクリーンショットに表示されているように、デフォルトで利用できる一連のコマンドが Yii によって既に定義されています。
+
+- [yii\console\controllers\AssetController|AssetController] - JavaScript と CSS ファイルを結合して圧縮することが出来ます。
+  このコマンドについては、[アセットの節](structure-assets.md#using-the-asset-command) でさらに学習することが出来ます。
+- [yii\console\controllers\CacheController|CacheController] - アプリケーションのキャッシュをフラッシュすることが出来ます。
+- [yii\console\controllers\FixtureController|FixtureController] - テストのために、フィクスチャデータのロードとアンロードを管理します。
+  このコマンドについては [テストのフィクスチャの節](test-fixtures.md#managing-fixtures) で詳細に説明されています。
+- [yii\console\controllers\HelpController|HelpController] - コンソールコマンドについてのヘルプ情報を提供します。
+  これがデフォルトのコマンドであり、上のスクリーンショットで見た出力を表示するものです。
+- [yii\console\controllers\MessageController|MessageController] - ソースファイルから翻訳すべきメッセージを抽出します。
+  このコマンドについてさらに学習するためには、[国際化の節](tutorial-i18n.md#message-command) を参照してください。
+- [yii\console\controllers\MigrateController|MigrateController] - アプリケーションのマイグレーションを管理します。
+  データベースのマイグレーションについては、[データベースのマイグレーションの節](db-migrations.md) で詳しく説明されています。
 
 
 使用方法 <span id="usage"></span>
@@ -19,15 +39,14 @@ Yii はフル機能のコンソールアプリケーションをサポートし�
 yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
 ```
 
-例えば、[[yii\console\controllers\MigrateController::$migrationTable|MigrateController::$migrationTable]] を指定して [[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]] をコマンドラインから呼び出すためには、次のようにします。
+上記において、`<route>` はコントローラアクションへのルートを示すものです。
+オプション (options) はクラスのプロパティに代入され、引数 (arguments) はアクションメソッドのパラメータとなります。
+
+例えば、[[yii\console\controllers\MigrateController::$migrationTable|MigrateController::$migrationTable]] として `migrations` を指定し、マイグレーションの上限を 5 と指定して [[yii\console\controllers\MigrateController::actionUp()|MigrateController::actionUp()]] を呼び出すためには、次のようにします。
 
 ```
-yii migrate/create --migrationTable=my_migration
+yii migrate/up 5 --migrationTable=migrations
 ```
-
-上記において `yii` はコンソールアプリケーションのエントリスクリプトです。
-これについては下で説明します。
-
 > **注意**: コンソールで `*` を使う場合は、`"*"` として引用符号で囲むことを忘れないでください。
 > これは、`*` をカレントディレクトリの全てのファイル名に置き換えられるシェルのグロブとして実行してしまうことを避けるためです。
 
