@@ -473,13 +473,13 @@ You can also disable *all* asset bundles by setting [[yii\web\AssetManager::bund
 
 ### Привязка ресурсов<span id="asset-mapping"></span>
 <!-- Asset Mapping -->
-<!-- ПРОВЕРЯТЬ С ЭТОГО АБЗАЦА
+<!--
 Sometimes you may want to "fix" incorrect/incompatible asset file paths used in multiple asset bundles. For example,
 bundle A uses `jquery.min.js` version 1.11.1, and bundle B uses `jquery.js` version 2.1.1. While you can
 fix the problem by customizing each bundle, an easier way is to use the *asset map* feature to map incorrect assets
 to the desired ones. To do so, configure the [[yii\web\AssetManager::assetMap]] property like the following:
 -->
-Иногда необходимо "зафиксировать" неверный/несоответствующий путь файла ресурса, используемый в некоторых комплектах ресурсов. Например, комплект А использует `jquery.min.js` версии 1.11.1, а комплект В использует `jquery.js` версии 2.1.1. Раньше Вы фиксировали проблему настраивая каждый комплект, но более простой способ - использовать *asset map* возможность, чтобы найти неверные ресурсы и исправить их. Сделать это можно, сконфигурировав свойство [[yii\web\AssetManager::assetMap]] следующим образом:
+Иногда необходимо исправить пути до файлов ресурсов, в нескольких комплектах ресурсов. Например, комплект А использует `jquery.min.js` версии 1.11.1, а комплект В использует `jquery.js` версии 2.1.1. Раньше Вы могли решить данную проблему, настраивая каждый комплект ресурсов по отдельности, но более простой способ - использовать *asset map* возможность, чтобы найти неверные ресурсы и исправить их. Сделать это можно, сконфигурировав свойство [[yii\web\AssetManager::assetMap]] следующим образом:
 
 ```php
 return [
@@ -493,39 +493,44 @@ return [
     ],
 ];
 ```
-
+<!--
 The keys of [[yii\web\AssetManager::assetMap|assetMap]] are the asset names that you want to fix, and the values
 are the desired asset paths. When you register an asset bundle with a view, each relative asset file in its
 [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] arrays will be examined against this map.
 If any of the keys are found to be the last part of an asset file (which is prefixed with [[yii\web\AssetBundle::sourcePath]]
 if available), the corresponding value will replace the asset and be registered with the view.
 For example, the asset file `my/path/to/jquery.js` matches the key `jquery.js`.
+-->
+Ключи [[yii\web\AssetManager::assetMap|assetMap]] - это имена ресурсов, которые Вы хотите исправить, а значения - это требуемые пути для ресурсов. Когда регистрируется комплект ресурсов в представлении, каждый соответствующий файл ресурса в [[yii\web\AssetBundle::css|css]] или [[yii\web\AssetBundle::js|js]] массивах будет рассмотрен в соответствии с этой привязкой. И, если какой-либо из ключей найден, как последняя часть пути до файла ресурса (путь на который начинается с [[yii\web\AssetBundle::sourcePath]] по возможности), то соответствующее значение заменит ресурс и будет зарегистрировано в представлении. Например, путь до файла ресурса `my/path/to/jquery.js` - это соответствует ключу `jquery.js`.
 
-Ключи [[yii\web\AssetManager::assetMap|assetMap]] это имена ресурсов, которые Вы хотите зафиксировать, а значения это требуемые пути ресурсов. Когда регистрируется комплект ресурсов в представлении, каждый соответствующий файл ресурса в [[yii\web\AssetBundle::css|css]] или [[yii\web\AssetBundle::js|js]] массивах будет рассмотрен в соответствии с этой привязкой. <b>Если какой либо из ключей найден как последняя часть файла ресурса (который начинается с [[yii\web\AssetBundle::sourcePath]] по возможности), то соответствующее значение заменит ресурс и будет зарегистрировано в представлении</b>. Например, файл ресурса `my/path/to/jquery.js` соответствует ключу `jquery.js`.
-
+<!--
 > Note: Only assets specified using relative paths are subject to asset mapping. The target asset paths
   should be either absolute URLs or paths relative to [[yii\web\AssetManager::basePath]].
-  
-> Примечание: Ресурсы заданные только с использованием относительного пути могут быть предметом привязки ресурсов. Пути ресурсов должны быть абсолютные URLs или путь относительно [[yii\web\AssetManager::basePath]].
+--> 
+> Примечание: Ресурсы заданные только с использованием относительного пути могут использоваться в привязке ресурсов. Пути ресурсов должны быть абсолютные URLs или путь относительно [[yii\web\AssetManager::basePath]].
 
 
-### Asset Publishing - Публикация Ресурсов<span id="asset-publishing"></span>
+### Публикация Ресурсов<span id="asset-publishing"></span>
+<!-- Asset Publishing -->
 
+<!--
 As aforementioned, if an asset bundle is located in a directory that is not Web accessible, its assets will be copied
 to a Web directory when the bundle is being registered with a view. This process is called *asset publishing*, and is done
 automatically by the [[yii\web\AssetManager|asset manager]].
+--> 
+Как уже было сказано выше, если комплект ресурсов располагается в директории которая не доступна из Web, эти ресурсы будут скопированы в Web директорию, когда комплект будет зарегистрирован в представлении. Этот процесс называется *публикацией ресурсов*, его автоматически выполняет [[yii\web\AssetManager|asset manager]].
 
-Как уже было сказано выше, если комплект ресурсов располагается в директории которая не доступна из Web, эти ресурсы будут скопированы в Web директорию когда комплект будет зарегистрирован в представлении. Этот процесс называется *публикацией ресурсов*, его автоматически выполняет [[yii\web\AssetManager|asset manager]].
-
+<!--
 By default, assets are published to the directory `@webroot/assets` which corresponds to the URL `@web/assets`.
 You may customize this location by configuring the [[yii\web\AssetManager::basePath|basePath]] and
 [[yii\web\AssetManager::baseUrl|baseUrl]] properties.
-
+--> 
 По умолчанию, ресурсы публикуются в директорию `@webroot/assets` которая соответствует URL `@web/assets`. Можно настроить это местоположение сконфигурировав свойства [[yii\web\AssetManager::basePath|basePath]] и [[yii\web\AssetManager::baseUrl|baseUrl]].
 
+<!--
 Instead of publishing assets by file copying, you may consider using symbolic links, if your OS and Web server allow.
 This feature can be enabled by setting [[yii\web\AssetManager::linkAssets|linkAssets]] to be true.
-
+-->
 Вместо публикации ресурсов путём копирования файлов, можно рассмотреть использование символических ссылок, если Ваша операционная система или Web сервер это разрешают. Эта функция может быть включена путем установки [[yii\web\AssetManager::linkAssets|linkAssets]] в true.
 
 ```php
@@ -539,19 +544,23 @@ return [
 ];
 ```
 
+<!--
 With the above configuration, the asset manager will create a symbolic link to the source path of an asset bundle
 when it is being published. This is faster than file copying and can also ensure that the published assets are
 always up-to-date.
-С конфигурацией, установленной выше, менеджер ресурсов будет создавать символические ссылки на исходные пути комплекта ресурсов когда он будет публиковаться. Это быстрее, чем копирование файлов, а также может гарантировать, что опубликованные ресурсы всегда up-to-date <b>(обновлённые/свежие)</b>.
+-->
+С конфигурацией, установленной выше, менеджер ресурсов будет создавать символические ссылки на исходные пути комплекта ресурсов когда он будет публиковаться. Это быстрее, чем копирование файлов, а также может гарантировать, что опубликованные ресурсы всегда up-to-date(обновлённые/свежие).
 
-### Cache Busting - Перебор Кэша<span id="cache-busting"></span>
+### Перебор Кэша<span id="cache-busting"></span>
+<!-- Cache Busting -->
 
+<!--
 For Web application running in production mode, it is a common practice to enable HTTP caching for assets and other
 static resources. A drawback of this practice is that whenever you modify an asset and deploy it to production, a user
 client may still use the old version due to the HTTP caching. To overcome this drawback, you may use the cache busting
 feature, which was introduced in version 2.0.3, by configuring [[yii\web\AssetManager]] like the following:
-
-Для Web приложения запущенного в режиме продакшена, нормальная практика разрешить HTTP кэширование для ресурсов и других статичных источников. Недостаток такой практики в том, что всякий раз, когда изменяется ресурс и разворачивается продакшен, пользователь может по-прежнему использовать старую версию ресурса вследствие HTTP кэширования. Чтобы избежать этого, можно использовать возможность перебора кэша, которая была добавлена в версии 2.0.3, для этого можно настроить [[yii\web\AssetManager]] следующим образом:
+-->
+Для Web приложения запущенного в режиме продакшена, считается нормальной практикой разрешить HTTP кэширование для ресурсов и других статичных источников. Недостаток такой практики в том, что всякий раз, когда изменяется ресурс и разворачивается продакшен, пользователь может по-прежнему использовать старую версию ресурса вследствие HTTP кэширования. Чтобы избежать этого, можно использовать возможность перебора кэша, которая была добавлена в версии 2.0.3, для этого можно настроить [[yii\web\AssetManager]] следующим образом:
   
 ```php
 return [
@@ -564,55 +573,71 @@ return [
 ];
 ```
 
+<!--
 By doing so, the URL of every published asset will be appended with its last modification timestamp. For example,
 the URL to `yii.js` may look like `/assets/5515a87c/yii.js?v=1423448645"`, where the parameter `v` represents the
 last modification timestamp of the `yii.js` file. Now if you modify an asset, its URL will be changed, too, which causes
 the client to fetch the latest version of the asset.
+-->
+Делая таким образом, к URL каждого опубликованного ресурса будет добавляться временная метка его последней модификации. Например, URL для `yii.js` может выглядеть как `/assets/5515a87c/yii.js?v=1423448645"`, где параметр `v` представляет собой временную метку последней модификации файла `yii.js`. Теперь если изменить ресурс, его URL тоже будет изменен, это означает что клиент получит последнюю версию ресурса.
 
-<b>Делая так, к URL каждого опубликованного ресурса будет добавляться временная метка его последней модификации.</b> Например, URL для `yii.js` может выглядеть как `/assets/5515a87c/yii.js?v=1423448645"`, где параметр `v` представляет собой временную метку последней модификации файла `yii.js`. Теперь если изменить ресурс, его URL тоже будет изменен, это означает что клиент получит последнюю версию ресурса.
 
+## Обычное Использование Комплекта Ресурсов<span id="common-asset-bundles"></span>
+<!-- Commonly Used Asset Bundles -->
 
-## Commonly Used Asset Bundles - Обычное Использование Комплекта Ресурсов<span id="common-asset-bundles"></span>
-
+<!--
 The core Yii code has defined many asset bundles. Among them, the following bundles are commonly used and may
 be referenced in your application or extension code.
-
+-->
 Код ядра Yii содержит большое количество комплектов ресурсов. Среди них, следующие комплекты широко используются и могут упоминаться в Вашем приложении или коде расширения:
-
+<!--
 - [[yii\web\YiiAsset]]: It mainly includes the `yii.js` file which implements a mechanism of organizing JavaScript code
   in modules. It also provides special support for `data-method` and `data-confirm` attributes and other useful features.
+-->
 - [[yii\web\YiiAsset]]: Включает основной `yii.js` файл который реализует механизм организации JavaScript кода в модулях. Также обеспечивает специальную поддержку для `data-method` и `data-confirm` атрибутов и содержит другие полезные функции.
 
+<!--
 - [[yii\web\JqueryAsset]]: It includes the `jquery.js` file from the jQuery Bower package.
+-->
 - [[yii\web\JqueryAsset]]: Включает `jquery.js` файл из jQuery Bower пакета.
 
+<!--
 - [[yii\bootstrap\BootstrapAsset]]: It includes the CSS file from the Twitter Bootstrap framework.
+-->
 - [[yii\bootstrap\BootstrapAsset]]: Включает CSS файл из Twitter Bootstrap фреймворка.
 
+<!--
 - [[yii\bootstrap\BootstrapPluginAsset]]: It includes the JavaScript file from the Twitter Bootstrap framework for
   supporting Bootstrap JavaScript plugins.
+-->
 - [[yii\bootstrap\BootstrapPluginAsset]]: Включает JavaScript файл из Twitter Bootstrap фреймворка для поддержки Bootstrap JavaScript плагинов.
 
+<!--
 - [[yii\jui\JuiAsset]]: It includes the CSS and JavaScript files from the jQuery UI library.
+-->
 - [[yii\jui\JuiAsset]]: Включает CSS и JavaScript файлы из jQuery UI библиотеки.
 
+<!--
 If your code depends on jQuery, jQuery UI or Bootstrap, you should use these predefined asset bundles rather than
 creating your own versions. If the default setting of these bundles do not satisfy your needs, you may customize them 
 as described in the [Customizing Asset Bundle](#customizing-asset-bundles) subsection. 
-
+-->
 Если Ваш код зависит от jQuery, jQuery UI или Bootstrap, Вам необходимо использовать эти предопределенные комплекты ресурсов, а не создавать свои собственные варианты. Если параметры по умолчанию этих комплектов не удовлетворяют Вашим нуждам, Вы можете настроить их как описано в подразделе [Настройка Комплектов Ресурсов](#customizing-asset-bundles).
 
 
-## Asset Conversion - Преобразование Ресурсов<span id="asset-conversion"></span>
+## Преобразование Ресурсов<span id="asset-conversion"></span>
+<!-- Asset Conversion -->
 
+<!--
 Instead of directly writing CSS and/or JavaScript code, developers often write them in some extended syntax and
 use special tools to convert it into CSS/JavaScript. For example, for CSS code you may use [LESS](http://lesscss.org/)
 or [SCSS](http://sass-lang.com/); and for JavaScript you may use [TypeScript](http://www.typescriptlang.org/).
-
+-->
 Вместо того, чтобы напрямую писать CSS и/или JavaScript код, разработчики часто пишут его в некотором <b>расширенном синтаксисе</b> и используют специальные инструменты конвертации в CSS/JavaScript. Например, для CSS кода можно использовать [LESS](http://lesscss.org/) или [SCSS](http://sass-lang.com/); а для JavaScript можно использовать [TypeScript](http://www.typescriptlang.org/).
 
+<!--
 You can list the asset files in extended syntax in the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties of an asset bundle. For example,
-
+-->
 Можно перечислить файлы ресурсов в <b>расширенном синтаксисе</b> в [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойствах из комплекта ресурсов. Например,
 
 ```php
@@ -633,17 +658,19 @@ class AppAsset extends AssetBundle
 }
 ```
 
+<!--
 When you register such an asset bundle with a view, the [[yii\web\AssetManager|asset manager]] will automatically
 run the pre-processor tools to convert assets in recognized extended syntax into CSS/JavaScript. When the view
 finally renders a page, it will include the CSS/JavaScript files in the page, instead of the original assets
 in extended syntax.
-
+-->
 Когда Вы регистрируете такой комплект ресурсов в представлении, [[yii\web\AssetManager|asset manager]] автоматически запустит нужные инструменты препроцессора и конвертирует ресурсы в CSS/JavaScript, если их расширенный синтаксис распознан. Когда представление окончательно отобразит страницу, в неё будут включены файлы CSS/JavaScript, вместо оригинальных ресурсов в расширенном синтаксисе.
 
+<!--
 Yii uses the file name extensions to identify which extended syntax an asset is in. By default it recognizes
 the following syntax and file name extensions:
-
-Yii использует имена файлов расширений для идентификации расширенного синтаксиса внутри ресурса. По умолчанию признаны следующий синтаксис и имена файлов расширений:
+-->
+Yii использует имена расширений файлов для идентификации расширенного синтаксиса внутри ресурса. По умолчанию признаны следующие синтаксисы и имена расширений файлов:
 
 - [LESS](http://lesscss.org/): `.less`
 - [SCSS](http://sass-lang.com/): `.scss`
@@ -651,9 +678,10 @@ Yii использует имена файлов расширений для и�
 - [CoffeeScript](http://coffeescript.org/): `.coffee`
 - [TypeScript](http://www.typescriptlang.org/): `.ts`
 
+<!--
 Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](http://lesscss.org/)
 you should install the `lessc` pre-processor command.
-
+-->
 Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](http://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
 
 You can customize the pre-processor commands and the supported extended syntax by configuring
