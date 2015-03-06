@@ -334,12 +334,11 @@ the assets in the library:
    You should use `bower-asset/PackageName` (for Bower packages) or `npm-asset/PackageName` (for NPM packages)
    to refer to the library.
 -->
-1. Исправить файл `composer.json` Вашего приложения или расширения и включить пакет в список в раздел `require`. Следует использовать `bower-asset/PackageName` (для Bower пакетов) или `npm-asset/PackageName` (для NPM пакетов) для обращения к соответствующей библиотеке.
-
 <!--
 2. Create an asset bundle class and list the JavaScript/CSS files that you plan to use in your application or extension.
    You should specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property as `@bower/PackageName` or `@npm/PackageName`.
 -->
+1. Исправить файл `composer.json` Вашего приложения или расширения и включить пакет в список в раздел `require`. Следует использовать `bower-asset/PackageName` (для Bower пакетов) или `npm-asset/PackageName` (для NPM пакетов) для обращения к соответствующей библиотеке.
 2. Создать класс комплекта ресурсов и перечислить JavaScript/CSS файлы, которые Вы планируете использовать в Вашем приложении или расширении. Вы должны задать свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] как `@bower/PackageName` или `@npm/PackageName`.
 
 <!--
@@ -750,34 +749,29 @@ your existing application code.
 <!--
 1. Find all the asset bundles in your application that you plan to combine and compress.
 -->
-1. Найдите все комплекты ресурсов в Вашем приложении, которые Вы планируете скомбинировать и сжать.
-
 <!--
 2. Divide these bundles into one or a few groups. Note that each bundle can only belong to a single group.
 -->
-2. Распределите эти комплекты в одну или несколько групп. Обратите внимание, что каждый комплект может принадлежать только одной группе.
-
 <!--
 3. Combine/compress the CSS files in each group into a single file. Do this similarly for the JavaScript files.
 -->
-3. Скомбинируйте/сожмите CSS файлы каждой группы в один файл. Сделайте то же самое для JavaScript файлов.
-
 <!--
 4. Define a new asset bundle for each group:
 -->
-4. Определите новый комплект ресурсов для каждой группы:
-
 <!--
 * Set the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties to be
      the combined CSS and JavaScript files, respectively.
 -->
-* Или установите [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойства. Соответствующие CSS и JavaScript файлы будут объединены.
-
 <!--
    * Customize the asset bundles in each group by setting their [[yii\web\AssetBundle::css|css]] and 
      [[yii\web\AssetBundle::js|js]] properties to be empty, and setting their [[yii\web\AssetBundle::depends|depends]]
      property to be the new asset bundle created for the group.
 -->
+1. Найдите все комплекты ресурсов в Вашем приложении, которые Вы планируете скомбинировать и сжать.
+2. Распределите эти комплекты в одну или несколько групп. Обратите внимание, что каждый комплект может принадлежать только одной группе.
+3. Скомбинируйте/сожмите CSS файлы каждой группы в один файл. Сделайте то же самое для JavaScript файлов.
+4. Определите новый комплект ресурсов для каждой группы:
+* Или установите [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойства. Соответствующие CSS и JavaScript файлы будут объединены.
 * Или настройте комплекты ресурсов каждой группы, установив их [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойства как пустые, и установите их [[yii\web\AssetBundle::depends|depends]] свойство как новый комплект ресурсов, созданный для группы.
 
 <!--
