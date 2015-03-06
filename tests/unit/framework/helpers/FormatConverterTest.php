@@ -62,4 +62,13 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('24.8.2014', $formatter->asDate('2014-8-24', 'php:d.n.Y'));
         $this->assertEquals('24.8.2014', $formatter->asDate('2014-8-24', 'd.M.yyyy'));
     }
+
+    public function testIntlUtf8Ru()
+    {
+        $this->assertEquals('d M Y \г.', FormatConverter::convertDateIcuToPhp('dd MMM y \'г\'.', 'date', 'ru-RU'));
+        $this->assertEquals('dd M yy \'г\'.', FormatConverter::convertDateIcuToJui('dd MMM y \'г\'.', 'date', 'ru-RU'));
+
+        $formatter = new Formatter(['locale' => 'ru-RU']);
+        $this->assertEquals('24 авг 2014 г.', $formatter->asDate('2014-8-24', 'dd MMM y \'г\'.'));
+    }
 }

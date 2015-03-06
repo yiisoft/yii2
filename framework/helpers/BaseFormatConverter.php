@@ -125,7 +125,7 @@ class BaseFormatConverter
         if (preg_match_all('/(?<!\')\'(.*?[^\'])\'(?!\')/', $pattern, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $match[1] = str_replace('\'\'', '\'', $match[1]);
-                $escaped[$match[0]] = '\\'.implode('\\', str_split($match[1]));
+                $escaped[$match[0]] = '\\'.implode('\\', preg_split('//u', $match[1], -1, PREG_SPLIT_NO_EMPTY));
             }
         }
         return strtr($pattern, array_merge($escaped, [
