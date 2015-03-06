@@ -4,232 +4,223 @@ Query Builder
 > Note: This section is under development.
 
 Built on top of [Database Access Objects](db-dao.md), query builder allows you to construct a SQL statement
-in a programmatic way. Compared to writing raw SQLs, using query builder will help you write more readable 
-SQL-related code and generate more secure SQL statements.  
+in a programmatic and DBMS-agnostic way. Compared to writing raw SQLs, using query builder will help you write 
+more readable SQL-related code and generate more secure SQL statements.  
 
 Using query builder usually involves two steps:
 
 1. Build a [[yii\db\Query]] object to represent different parts (e.g. `SELECT`, `FROM`) of a SELECT SQL statement.
-2. Execute a query method (e.g. `all()`) of [[yii\db\Query]].
+2. Execute a query method (e.g. `all()`) of [[yii\db\Query]] to retrieve data from the database.
 
-Behind the scene, [[yii\db\QueryBuilder]] is invoked in the second step to convert a [[yii\db\Query]] object into
-a SQL statement for the particular DBMS. 
-
-The following code shows a typical use case of query builder:
+The following code shows a typical way of using query builder:
 
 ```php
 $rows = (new \yii\db\Query())
-    ->select('id, email')
+    ->select(['id', 'email'])
     ->from('user')
-    ->where(['name' => 'Smith'])
+    ->where(['last_name' => 'Smith'])
     ->limit(10)
     ->all();
 ```
 
-It generates and executes the following SQL statement:
+The above code generates and executes the following SQL statement, where the `:last_name` parameter is bound with the
+string `'Smith'`.
 
 ```sql
 SELECT `id`, `email` 
 FROM `user`
-WHERE `name` = :name
+WHERE `last_name` = :last_name
 LIMIT 10
 ```
 
-where the `:name` parameter is bound with the string `'Smith'`. Depending on the DBMS being used, query builder
-will properly quote the column and table names and bind parameter values to the generated SQL statement.
-
-
-## Query Methods <span id="query-methods"></span>
-
-[[yii\db\Query]] provides a whole set of methods for different query purposes:
-
-- [[yii\db\Query::all()|all()]]: returns an array of rows with each row being an associative array of name-value pairs.
-- [[yii\db\Query::one()|one()]]: returns the first row of the result.
-- [[yii\db\Query::column()|column()]]: returns the first column of the result.
-- [[yii\db\Query::scalar()|scalar()]]: returns a scalar value located at the first row and first column of the result.
-- [[yii\db\Query::exists()|exists()]]: returns a value indicating whether the query contains any result.
-- [[yii\db\Query::count()|count()]]: returns the result of a `COUNT` query.
-- Other aggregation query methods, including [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
-  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]]. The `$q` parameter is mandatory for these methods 
-  and can be either a column name or a DB expression.
-
-All of the above methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
-should be used to perform a DB query. If you omit this parameter, the `db` application component will be used
-as the DB connection.
-
-Given a [[yii\db\Query]], you can create a [[yii\db\Command]] and further work with this command object. For example,
-
-```php
-$command = (new \yii\db\Query())
-    ->select('id, email')
-    ->from('user')
-    ->where(['name' => 'Smith'])
-    ->limit(10)
-    ->createCommand();
-    
-// show the SQL statement
-echo $command->sql;
-// returns all rows of the query result
-$rows= $command->queryAll();
-```
+> Info: You usually mainly work with [[yii\db\Query]] instead of [[yii\db\QueryBuilder]]. The latter is invoked
+  by the former implicitly when you call one of the query methods. [[yii\db\QueryBuilder]] is the class responsible
+  for generating DBMS-dependent SQL statements (e.g. quoting table/column names differently) from DBMS-independent
+  [[yii\db\Query]] objects.
 
 
 ## Building Queries <span id="building-queries"></span>
 
 To build a [[yii\db\Query]] object, you call different query building methods to specify different parts of
 a SQL statement. The names of these methods resemble the SQL keywords used in the corresponding parts of the SQL
-statement. For example, to specify the `FROM` part, you would call the `from()` method. In the following, we will
-describe in detail the usage of each query building method.
+statement. For example, to specify the `FROM` part of a SQL statement, you would call the `from()` method.
+All the query building methods return the query object itself, which allows you to chain multiple calls together.
+
+In the following, we will describe the usage of each query building method.
 
 
-### `SELECT` <span id="select"></span>
+### [[yii\db\Query::select()|select()]] <span id="select"></span>
 
-In order to form a basic `SELECT` query, you need to specify what columns to select and from what table:
-
-```php
-$query->select('id, name')
-    ->from('user');
-```
-
-Select options can be specified as a comma-separated string, as in the above, or as an array.
-The array syntax is especially useful when forming the selection dynamically:
-
-```php
-$query->select(['id', 'name'])
-    ->from('user');
-```
-
-> Info: You should always use the array format if your `SELECT` clause contains SQL expressions.
-> This is because a SQL expression like `CONCAT(first_name, last_name) AS full_name` may contain commas.
-> If you list it together with other columns in a string, the expression may be split into several parts
-> by commas, which is not what you want to see.
-
-When specifying columns, you may include the table prefixes or column aliases, e.g., `user.id`, `user.id AS user_id`.
-If you are using an array to specify the columns, you may also use the array keys to specify the column aliases,
-e.g., `['user_id' => 'user.id', 'user_name' => 'user.name']`.
-
-Starting from version 2.0.1, you may also select sub-queries as columns. For example,
+The [[yii\db\Query::select()|select()]] method specifies the `SELECT` fragment of a SQL statement. You can specify 
+columns to be selected in either an array or a string, like the following. The column names being selected will 
+be automatically quoted when the SQL statement is being generated from a query object.
  
 ```php
-$subQuery = (new Query)->select('COUNT(*)')->from('user');
-$query = (new Query)->select(['id', 'count' => $subQuery])->from('post');
-// $query represents the following SQL:
+$query->select(['id', 'email'])->...
+
+// equivalent to:
+
+$query->select('id, email')->...
+```
+
+The column names being selected may include table prefixes and/or column aliases, like you do when writing raw SQLs. 
+For example,
+
+```php
+$query->select(['user.id AS user_id', 'email'])->...
+
+// equivalent to:
+
+$query->select('user.id AS user_id, email')->...
+```
+
+If you are using the array format to specify columns, you can also use the array keys to specify the column aliases.
+For example, the above code can be rewritten as follows,
+
+```php
+$query->select(['user_id' => 'user.id', 'email'])->...
+```
+
+If you do not call the [[yii\db\Query::select()|select()]] method when building a query, `*` will be selected, which
+means selecting *all* columns.
+
+Besides column names, you can also select DB expressions. You must use the array format when selecting a DB expression
+that contains commas to avoid incorrect automatic name quoting. For example,
+
+```php
+$query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email'])->... 
+```
+
+Starting from version 2.0.1, you may also select sub-queries. You should specify each sub-query in terms of 
+a [[yii\db\Query]] object. For example,
+ 
+```php
+$subQuery = (new Query())->select('COUNT(*)')->from('user');
+
 // SELECT `id`, (SELECT COUNT(*) FROM `user`) AS `count` FROM `post`
+$query = (new Query())->select(['id', 'count' => $subQuery])->from('post');
 ```
 
-To select distinct rows, you may call `distinct()`, like the following:
+To select distinct rows, you may call [[yii\db\Query::distinct()|distinct()]], like the following:
 
 ```php
-$query->select('user_id')->distinct()->from('post');
+// SELECT DISTINCT `user_id` ...
+$query->select('user_id')->distinct()->...
 ```
 
-### `FROM` <span id="from"></span>
 
-To specify which table(s) to select data from, call `from()`:
+### [[yii\db\Query::from()|from()]] <span id="from"></span>
+
+The [[yii\db\Query::from()|from()]] method specifies the `FROM` fragment of a SQL statement. For example,
 
 ```php
-$query->select('*')->from('user');
+// SELECT * FROM `user`
+$query->from('user');
 ```
 
-You may specify multiple tables using a comma-separated string or an array.
-Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
-The method will automatically quote the table names unless it contains some parenthesis
-(which means the table is given as a sub-query or DB expression). For example,
+You can specify the table(s) being selected from in either a string or an array. The table names may contain
+schema prefixes and/or table aliases, like you do when writing raw SQLs. For example,
 
 ```php
-$query->select('u.*, p.*')->from(['user u', 'post p']);
+$query->from(['public.user u', 'public.post p']);
+
+// equivalent to:
+
+$query->from('public.user u, public.post p');
 ```
 
-When the tables are specified as an array, you may also use the array keys as the table aliases
-(if a table does not need an alias, do not use a string key). For example,
+If you are using the array format, you can also use the array keys to specify the table aliases, like the following:
 
 ```php
-$query->select('u.*, p.*')->from(['u' => 'user', 'p' => 'post']);
+$query->from(['u' => 'public.user', 'p' => 'public.post']);
 ```
 
-You may specify a sub-query using a `Query` object. In this case, the corresponding array key will be used
-as the alias for the sub-query.
+Besides table names, you can also select from sub-queries by specifying them in terms of [[yii\db\Query]] objects.
+For example,
 
 ```php
 $subQuery = (new Query())->select('id')->from('user')->where('status=1');
-$query->select('*')->from(['u' => $subQuery]);
+
+// SELECT * FROM (SELECT `id` FROM `user` WHERE status=1) u 
+$query->from(['u' => $subQuery]);
 ```
 
 
-### `WHERE` <span id="where"></span>
+### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
-Usually data is selected based upon certain criteria. Query Builder has some useful methods to specify these, the most powerful of which being `where`. It can be used in multiple ways.
+The [[yii\db\Query::where()|where()]] method specifies the `WHERE` fragment of a SQL statement. You can use one of
+the three formats to specify a `WHERE` condition:
 
-The simplest way to apply a condition is to use a string:
+- string format, e.g., `'status=1'`
+- hash format, e.g. `['status' => 1, 'type' => 2]`
+- operator format, e.g. `['like', 'name', 'test']`
+
+
+#### String Format <span id="string-format"></span>
+
+String format is best used to specify very simple conditions. It works as if you are writing a raw SQL. For example,
 
 ```php
-$query->where('status=:status', [':status' => $status]);
+$query->...->where('status=1')->...
+
+// or use parameter binding to bind dynamic parameter values
+$query->...->where('status=:status', [':status' => $status])->...
 ```
 
-When using strings, make sure you're binding the query parameters, not creating a query by string concatenation. The above approach is safe to use, the following is not:
-
+Do NOT embed variables directly in the condition like the following, especially if the variable values come from 
+end user inputs, because this will make your application subject to SQL injection attacks.
+ 
 ```php
-$query->where("status=$status"); // Dangerous!
+// Dangerous! Do NOT do this unless you are very certain $status must be an integer.
+$query->...->where("status=$status")->...
 ```
 
-Instead of binding the status value immediately, you can do so using `params` or `addParams`:
+When using parameter binding, you may call [[yii\db\Query::params()|params()]] or [[yii\db\Query::addParams()|addParams()]]
+to specify parameters separately.
 
 ```php
-$query->where('status=:status');
-$query->addParams([':status' => $status]);
+$query->...->where('status=:status')
+    ->addParams([':status' => $status])->...
 ```
 
-Multiple conditions can simultaneously be set in `where` using the *hash format*:
+
+#### Hash Format <span id="hash-format"></span>
+
+Hash format is best used to specify multiple `AND`-concatenated sub-conditions each being a simple equality assertion.
+It is written as an array whose keys are column names and values the corresponding values that the columns should be.
+For example,
 
 ```php
-$query->where([
+// ...WHERE (`status` = 10) AND (`type` IS NULL) AND (`id` IN (4, 8, 15))
+$query->...->where([
     'status' => 10,
-    'type' => 2,
-    'id' => [4, 8, 15, 16, 23, 42],
-]);
+    'type' => null,
+    'id' => [4, 8, 15],
+])->...
 ```
 
-That code will generate the following SQL:
+As you can see, the query builder is intelligent enough to properly handle values that are nulls or arrays.
 
-```sql
-WHERE (`status` = 10) AND (`type` = 2) AND (`id` IN (4, 8, 15, 16, 23, 42))
-```
-
-NULL is a special value in databases, and is handled smartly by the Query Builder. This code:
+You can also use sub-queries with hash format like the following:
 
 ```php
-$query->where(['status' => null]);
+$userQuery = (new Query())->select('id')->from('user');
+
+// ...WHERE `id` IN (SELECT `id` FROM `user`)
+$query->...->where(['id' => $userQuery])->...
 ```
 
-results in this WHERE clause:
 
-```sql
-WHERE (`status` IS NULL)
-```
+#### Operator Format <span id="operator-format"></span>
 
-If you need `IS NOT NULL` you can use the following:
+Operator format allows you to specify arbitrary conditions in a programmatic way. It takes the following format:
 
 ```php
-$query->where(['not', ['col' => null]]);
+[operator, operand1, operand2, ...]
 ```
 
-You can also create sub-queries with `Query` objects like the following,
-
-```php
-$userQuery = (new Query)->select('id')->from('user');
-$query->where(['id' => $userQuery]);
-```
-
-which will generate the following SQL:
-
-```sql
-WHERE `id` IN (SELECT `id` FROM `user`)
-```
-
-
-Another way to use the method is the operand format which is `[operator, operand1, operand2, ...]`.
-
-Operator can be one of the following (see also [[yii\db\QueryInterface::where()]]):
+where the operands can each be specified in string format, hash format or operator format recursively, while
+the operator can be one of the followings:
 
 - `and`: the operands should be concatenated together using `AND`. For example,
   `['and', 'id=1', 'id=2']` will generate `id=1 AND id=2`. If an operand is an array,
@@ -287,44 +278,40 @@ Operator can be one of the following (see also [[yii\db\QueryInterface::where()]
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
-Additionally you can specify anything as operator:
+- `>`, `<=`, or any other valid DB operator that takes two operands: the first operand must be a column name
+  while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
 
-```php
-$query->select('id')
-    ->from('user')
-    ->where(['>=', 'id', 10]);
-```
 
-It will result in:
+#### Appending Conditions <span id="appending-conditions"></span>
 
-```sql
-SELECT id FROM user WHERE id >= 10;
-```
-
-If you are building parts of condition dynamically it's very convenient to use `andWhere()` and `orWhere()`:
+You can use [[yii\db\Query::andWhere()|andWhere()]] or [[yii\db\Query::orWhere()|orWhere()]] to append
+additional conditions to an existing one. You can call them multiple times to append multiple conditions
+separately. For example,
 
 ```php
 $status = 10;
 $search = 'yii';
 
 $query->where(['status' => $status]);
+
 if (!empty($search)) {
     $query->andWhere(['like', 'title', $search]);
 }
 ```
 
-In case `$search` isn't empty the following SQL will be generated:
+If `$search` is not empty, the following SQL statement will be generated:
 
 ```sql
-WHERE (`status` = 10) AND (`title` LIKE '%yii%')
+... WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 ```
 
-#### Building Filter Conditions
 
-When building filter conditions based on user inputs, you usually want to specially handle "empty inputs"
-by ignoring them in the filters. For example, you have an HTML form that takes username and email inputs.
-If the user only enters something in the username input, you may want to build a query that only tries to
-match the entered username. You may use the `filterWhere()` method to achieve this goal:
+#### Filter Conditions <span id="filter-conditions"></span>
+
+When building `WHERE` conditions based on input from end users, you usually want to ignore those empty input values.
+For example, in a search form that allows you to search by username and email, you would like to ignore the username/email
+condition if the user does not enter anything in the username/email input field. You can achieve this goal by
+using the [[yii\db\Query::filterWhere()|filterWhere()]] method:
 
 ```php
 // $username and $email are from user inputs
@@ -334,17 +321,18 @@ $query->filterWhere([
 ]);
 ```
 
-The `filterWhere()` method is very similar to `where()`. The main difference is that `filterWhere()`
-will remove empty values from the provided condition. So if `$email` is "empty", the resulting query
-will be `...WHERE username=:username`; and if both `$username` and `$email` are "empty", the query
-will have no `WHERE` part.
+The only difference between [[yii\db\Query::filterWhere()|filterWhere()]] and [[yii\db\Query::where()|where()]] 
+is that the former will ignore empty values provided in the condition in [hash format](#hash-format). So if `$email`
+is empty while `$username` is not, the above code will result in the SQL `...WHERE username=:username`.
 
-A value is *empty* if it is null, an empty string, a string consisting of whitespaces, or an empty array.
+> Info: A value is considered empty if it is null, an empty array, an empty string or a string consisting of whitespaces only.
 
-You may also use `andFilterWhere()` and `orFilterWhere()` to append more filter conditions.
+Like [[yii\db\Query::andWhere()|andWhere()]] and [[yii\db\Query::orWhere()|orWhere()]], you can also use
+[[yii\db\Query::andFilterWhere()|andFilterWhere()]] and [[yii\db\Query::orFilterWhere()|orFilterWhere()]]
+to append additional filter conditions to the existing one.
 
 
-### `ORDER BY` <span id="order-by"></span>
+### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
 For ordering results `orderBy` and `addOrderBy` could be used:
 
@@ -357,7 +345,8 @@ $query->orderBy([
 
 Here we are ordering by `id` ascending and then by `name` descending.
 
-### `GROUP BY` and `HAVING`
+
+### [[yii\db\Query::groupBy()|groupBy()]] and [[yii\db\Query::having()|having()]] <span id="group-by-having"></span>
 
 In order to add `GROUP BY` to generated SQL you can use the following:
 
@@ -378,7 +367,7 @@ for these are similar to the ones for `where` methods group:
 $query->having(['status' => $status]);
 ```
 
-### `LIMIT` and `OFFSET`
+### [[yii\db\Query::limit()|limit()]] and [[yii\db\Query::offset()|offset()]] <span id="limit-offset"></span>
 
 To limit result to 10 rows `limit` can be used:
 
@@ -392,7 +381,7 @@ To skip 100 fist rows use:
 $query->offset(100);
 ```
 
-### `JOIN`
+### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 The `JOIN` clauses are generated in the Query Builder by using the applicable join method:
 
@@ -428,7 +417,7 @@ $query->leftJoin(['u' => $subQuery], 'u.id=author_id');
 ```
 
 
-### `UNION`
+### [[yii\db\Query::union()|union()]] <span id="union"></span>
 
 `UNION` in SQL adds results of one query to results of another query. Columns returned by both queries should match.
 In Yii in order to build it you can first form two query objects and then use the `union` method:
@@ -442,6 +431,60 @@ $anotherQuery->select('id, type, name')->from('user')->limit(10);
 
 $query->union($anotherQuery);
 ```
+
+
+## Query Methods <span id="query-methods"></span>
+
+[[yii\db\Query]] provides a whole set of methods for different query purposes:
+
+- [[yii\db\Query::all()|all()]]: returns an array of rows with each row being an associative array of name-value pairs.
+- [[yii\db\Query::one()|one()]]: returns the first row of the result.
+- [[yii\db\Query::column()|column()]]: returns the first column of the result.
+- [[yii\db\Query::scalar()|scalar()]]: returns a scalar value located at the first row and first column of the result.
+- [[yii\db\Query::exists()|exists()]]: returns a value indicating whether the query contains any result.
+- [[yii\db\Query::count()|count()]]: returns the result of a `COUNT` query.
+- Other aggregation query methods, including [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
+  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]]. The `$q` parameter is mandatory for these methods 
+  and can be either a column name or a DB expression.
+
+All of the above methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
+should be used to perform a DB query. If you omit this parameter, the `db` application component will be used
+as the DB connection. Below is another example using the `count()` query method:
+
+```php
+// executes SQL: SELECT COUNT(*) FROM `user` WHERE `last_name`=:last_name
+$count = (new \yii\db\Query())
+    ->from('user')
+    ->where(['last_name' => 'Smith'])
+    ->count();
+```
+
+When you call a query method of [[yii\db\Query]], it actually does the following work internally:
+
+* Call [[yii\db\QueryBuilder]] to generate a SQL statement based on the current construct of [[yii\db\Query]];
+* Create a [[yii\db\Command]] object with the generated SQL statement;
+* Call a query method (e.g. `queryAll()`) of [[yii\db\Command]] to execute the SQL statement and retrieve the data.
+
+Sometimes, you may want to examine or use the SQL statement built from a [[yii\db\Query]] object. You can
+achieve this goal with the following code: 
+
+```php
+$command = (new \yii\db\Query())
+    ->select(['id', 'email'])
+    ->from('user')
+    ->where(['last_name' => 'Smith'])
+    ->limit(10)
+    ->createCommand();
+    
+// show the SQL statement
+echo $command->sql;
+// show the parameters to be bound
+print_r($command->params);
+
+// returns all rows of the query result
+$rows = $command->queryAll();
+```
+
 
 ## Indexing Query Results <span id="indexing-query-results"></span>
 
