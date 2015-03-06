@@ -101,9 +101,7 @@
             $grid.find('form.gridview-filter-form').remove();
             var $form = $('<form action="' + url + '" method="get" class="gridview-filter-form" style="display:none" data-pjax></form>').appendTo($grid);
             $.each(data, function (name, value) {
-                if (value !== '') {
-                    $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
-                }
+                $form.append($('<input type="hidden" name="t" value="" />').attr('name', name).val(value));
             });
             
             event = $.Event(gridEvents.beforeFilter);
