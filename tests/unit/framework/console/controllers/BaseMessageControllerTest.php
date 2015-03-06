@@ -99,9 +99,10 @@ abstract class BaseMessageControllerTest extends TestCase
      * Loads messages
      *
      * @param string $category
+     * @param boolean $shouldExist if file should exist
      * @return array
      */
-    abstract protected function loadMessages($category);
+    abstract protected function loadMessages($category, $shouldExist = true);
 
     /**
      * @return array default config
@@ -338,6 +339,43 @@ abstract class BaseMessageControllerTest extends TestCase
         $messages2 = $this->loadMessages($category2);
         $this->assertArrayHasKey($message1, $messages1, "message1 not found in category1. Command output:\n\n" . $out);
         $this->assertArrayHasKey($message3, $messages2, "message3 not found in category2. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message2, $messages2, "message2 found in category2. Command output:\n\n" . $out);
+    }
+
+    public function testIgnoreCategories()
+    {
+        $category1 = 'category1';
+        $category2 = 'category2';
+
+        $message1 = 'message1';
+        $message2 = 'message2';
+        $message3 = 'message3';
+
+        $this->saveConfigFile($this->getConfig(['ignoreCategories' => ['category2']]));
+
+        // Generate initial translation
+        $sourceFileContent = "Yii::t('{$category1}', '{$message1}'); Yii::t('{$category2}', '{$message2}');";
+        $source = $this->createSourceFile($sourceFileContent);
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        unlink($source);
+
+        $messages1 = $this->loadMessages($category1);
+        $messages2 = $this->loadMessages($category2, false);
+
+        $this->assertArrayHasKey($message1, $messages1, "message1 not found in category1. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message2, $messages2, "message2 found in category2. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message3, $messages2, "message3 found in category2. Command output:\n\n" . $out);
+
+        // Change source code, run translation again
+        $sourceFileContent = "Yii::t('{$category1}', '{$message1}'); Yii::t('{$category2}', '{$message3}');";
+        $source = $this->createSourceFile($sourceFileContent);
+        $out .= "\n" . $this->runMessageControllerAction('extract', [$this->configFileName]);
+        unlink($source);
+
+        $messages1 = $this->loadMessages($category1);
+        $messages2 = $this->loadMessages($category2, false);
+        $this->assertArrayHasKey($message1, $messages1, "message1 not found in category1. Command output:\n\n" . $out);
+        $this->assertArrayNotHasKey($message3, $messages2, "message3 not found in category2. Command output:\n\n" . $out);
         $this->assertArrayNotHasKey($message2, $messages2, "message2 found in category2. Command output:\n\n" . $out);
     }
 }

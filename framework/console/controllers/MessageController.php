@@ -91,6 +91,7 @@ class MessageController extends Controller
             'removeUnused' => false,
             'sort' => false,
             'format' => 'php',
+            'ignoreCategories' => [],
         ], require($configFile));
 
         if (!isset($config['sourcePath'], $config['languages'])) {
@@ -117,7 +118,7 @@ class MessageController extends Controller
 
         $messages = [];
         foreach ($files as $file) {
-            $messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator']));
+            $messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator'], $config['ignoreCategories']));
         }
         if (in_array($config['format'], ['php', 'po'])) {
             foreach ($config['languages'] as $language) {
@@ -240,9 +241,10 @@ class MessageController extends Controller
      *
      * @param string $fileName name of the file to extract messages from
      * @param string $translator name of the function used to translate messages
+     * @param array $ignoreCategories message categories to ignore
      * @return array
      */
-    protected function extractMessages($fileName, $translator)
+    protected function extractMessages($fileName, $translator, $ignoreCategories = [])
     {
         $coloredFileName = Console::ansiFormat($fileName, [Console::FG_CYAN]);
         $this->stdout("Extracting messages from $coloredFileName...\n");
@@ -276,10 +278,12 @@ class MessageController extends Controller
                             $category = stripcslashes($buffer[0][1]);
                             $category = mb_substr($category, 1, mb_strlen($category) - 2);
 
-                            $message = stripcslashes($buffer[2][1]);
-                            $message = mb_substr($message, 1, mb_strlen($message) - 2);
+                            if (!in_array($category, $ignoreCategories, true)) {
+                                $message = stripcslashes($buffer[2][1]);
+                                $message = mb_substr($message, 1, mb_strlen($message) - 2);
 
-                            $messages[$category][] = $message;
+                                $messages[$category][] = $message;
+                            }
                         } else {
                             // invalid call or dynamic call we can't extract
 
