@@ -734,91 +734,110 @@ one or very few files, and then include these compressed files instead of the or
 -->
 Web страница может включать много CSS и/или JavaScript файлов. Чтобы сократить количество HTTP запросов и общий размер загрузки этих файлов, общепринятой практикой является объединение и сжатие нескольких CSS/JavaScript файлов в один или в более меньшее количество, а затем включение этих сжатых файлов вместо исходных в Web страницы.
  
+<!--
 > Info: Combining and compressing assets is usually needed when an application is in production mode. 
   In development mode, using the original CSS/JavaScript files is often more convenient for debugging purposes.
-  
+-->
 > Примечание: Комбинирование и сжатие ресурсов обычно необходимо, когда приложение находится в режиме продакшена.
-В режиме разработки, использование исходных CSS/JavaScript файлов часто более удобно для целей отладки.
+В режиме разработки, использование исходных CSS/JavaScript файлов часто более удобно для отладочных целей.
 
+<!--
 In the following, we introduce an approach to combine and compress asset files without the need to modify
 your existing application code.
+-->
+Далее, мы представим подход комбинирования и сжатия файлов ресурсов без необходимости изменения Вашего существующего кода приложения.
 
-Далее, Мы представим подход комбинирования и сжатия файлов ресурса без необходимости изменения Вашего существующего кода приложения.
-
+<!--
 1. Find all the asset bundles in your application that you plan to combine and compress.
-Найдите все комплекты ресурсов в Вашем приложении, которые Вы планируете скомбинировать и сжать.
+-->
+1. Найдите все комплекты ресурсов в Вашем приложении, которые Вы планируете скомбинировать и сжать.
 
+<!--
 2. Divide these bundles into one or a few groups. Note that each bundle can only belong to a single group.
-Распределите эти комплекты в одну или несколько групп. Обратите внимание, что каждый комплект может принадлежать только одной группе.
+-->
+2. Распределите эти комплекты в одну или несколько групп. Обратите внимание, что каждый комплект может принадлежать только одной группе.
 
+<!--
 3. Combine/compress the CSS files in each group into a single file. Do this similarly for the JavaScript files.
-Скомбинируйте/сожмите CSS файлы в каждой группе в один файл. Сделайте тоже самое для JavaScript файлов.
+-->
+3. Скомбинируйте/сожмите CSS файлы каждой группы в один файл. Сделайте то же самое для JavaScript файлов.
 
+<!--
 4. Define a new asset bundle for each group:
-Определите новый комплект ресурсов для каждой группы:
+-->
+4. Определите новый комплект ресурсов для каждой группы:
 
-   * Set the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties to be
+<!--
+* Set the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties to be
      the combined CSS and JavaScript files, respectively.
+-->
+* Или установите [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойства. Соответствующие CSS и JavaScript файлы будут объединены.
 
-* Установите [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойства. Соответствующие CSS и JavaScript файлы будут скомбинированы.
-
+<!--
    * Customize the asset bundles in each group by setting their [[yii\web\AssetBundle::css|css]] and 
      [[yii\web\AssetBundle::js|js]] properties to be empty, and setting their [[yii\web\AssetBundle::depends|depends]]
      property to be the new asset bundle created for the group.
+-->
+* Или настройте комплекты ресурсов каждой группы, установив их [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойства как пустые, и установите их [[yii\web\AssetBundle::depends|depends]] свойство как новый комплект ресурсов, созданный для группы.
 
-* Настройте комплекты ресурсов в каждой группе, установив их [[yii\web\AssetBundle::css|css]] и 
-     [[yii\web\AssetBundle::js|js]] свойства как пустые, и установите их [[yii\web\AssetBundle::depends|depends]] свойство как новый комплект ресурсов, созданный для группы.
-
+<!--
 Using this approach, when you register an asset bundle in a view, it causes the automatic registration of
 the new asset bundle for the group that the original bundle belongs to. And as a result, the combined/compressed 
 asset files are included in the page, instead of the original ones.
-
+-->
 Используя этот подход, при регистрации комплекта ресурсов в представлении, автоматически регистрируется новый комплект ресурсов для группы, к которому исходный комплект принадлежит. В результате скомбинированные/сжатые файлы ресурсов включаются в страницу вместо исходных.
 
+### Пример <span id="example"></span>
+<!-- An Example -->
 
-### An Example - Пример <span id="example"></span>
-
+<!--
 Let's use an example to further explain the above approach. 
-
+-->
 Давайте рассмотрим пример, чтобы объяснить вышеуказанный подход.
 
+<!--
 Assume your application has two pages, X and Y. Page X uses asset bundles A, B and C, while Page Y uses asset bundles B, C and D.
+-->
+Предположим, ваше приложение имеет две страницы, X и Y. Страница X использует комплект ресурсов A, B и C, в то время, как страница Y использует комплект ресурсов, B, C и D.
 
-Предположим, ваше приложение имеет две страницы, X и Y. Страница X использует комплект ресурсов A, B и C, в то время как страница Y используеткомплект ресурсов, B, C и D.
-
+<!--
 You have two ways to divide these asset bundles. One is to use a single group to include all asset bundles, the
 other is to put A in Group X, D in Group Y, and (B, C) in Group S. Which one is better? It depends. The first way
 has the advantage that both pages share the same combined CSS and JavaScript files, which makes HTTP caching
 more effective. On the other hand, because the single group contains all bundles, the size of the combined CSS and 
 JavaScript files will be bigger and thus increase the initial file transmission time. For simplicity in this example, 
 we will use the first way, i.e., use a single group to contain all bundles.
+-->
+У Вас есть два пути, чтобы разделить эти комплекты ресурсов. Первый - использовать одну группу, включающую в себя все комплекты ресурсов. Другой путь - положить комплект А в группу Х, D в группу Y, а (B, C) в группу S. Какой из этих вариантов лучше? Это зависит. Первый способ имеет преимущество в том, что в обоих страницах одинаково скомбинированы файлы CSS и JavaScript, что делает HTTP кэширование более эффективным. С другой стороны, поскольку одна группа содержит все комплекты, размер скомбинированных CSS и JavaScript файлов будет больше, и таким образом увеличится время отдачи файла (загрузки страницы). Для простоты в этом примере, мы будем использовать первый способ, то есть использовать единую группу, содержащую все пакеты.
 
-У Вас есть два пути чтобы разделить эти комплекты ресурсов. Первый - использовать одну группу включающую в себя все комплекты ресурсов. Другой путь - положить комплект А в группу Х, D в группу Y, а (B, C) в группу S. Какой из этих вариантов лучше? Это зависит. Первый способ имеет то преимущество, что в обоих страницах одинаково скомбинированы файлы CSS и JavaScript, что делает HTTP кэширование более эффективным. С другой стороны, поскольку одна группа содержит все комплекты, размер в скомбинированных CSS и JavaScript файлов будет больше, и таким образом увеличится время отдачи файла <i><b>(загрузки страницы)</b></i>. Для простоты в этом примере, мы будем использовать первый способ, то есть, использовать единую группу, содержащую все пакеты.
-
+<!--
 > Info: Dividing asset bundles into groups is not trivial task. It usually requires analysis about the real world
   traffic data of various assets on different pages. At the beginning, you may start with a single group for simplicity. 
-  
-> Примечание: Разделение комплекта ресурсов на группы это не тривиальная задача. Это, как правило, требует анализа о реальном мире трафика данных различных ресурсов на разных страницах. В начале, вы можете начать с одной группы, для простоты.
+-->
+> Примечание: Разделение комплекта ресурсов на группы это не тривиальная задача. Это, как правило, требует анализа реальных данных о трафике различных ресурсов на разных страницах. В начале вы можете начать с одной группы, для простоты.
 
+<!--
 Use existing tools (e.g. [Closure Compiler](https://developers.google.com/closure/compiler/), 
 [YUI Compressor](https://github.com/yui/yuicompressor/)) to combine and compress CSS and JavaScript files in 
 all the bundles. Note that the files should be combined in the order that satisfies the dependencies among the bundles. 
 For example, if Bundle A depends on B which depends on both C and D, then you should list the asset files starting 
 from C and D, followed by B and finally A. 
-
+-->
 Используйте существующие инструменты (например [Closure Compiler](https://developers.google.com/closure/compiler/), 
-[YUI Compressor](https://github.com/yui/yuicompressor/)) для комбинирования и сжатия CSS и JavaScript файлов во всех комплектах. Обратите внимание, что файлы должны быть объединены в том порядке, который удовлетворяет зависимости между комплектами. Например, если комплект A зависит от В который зависит от С и D, то Вы должны перечислить файлы ресурсов начиная с С и D, затем B и только после того А.
+[YUI Compressor](https://github.com/yui/yuicompressor/)) для объединения и сжатия CSS и JavaScript файлов во всех комплектах. Обратите внимание, что файлы должны быть объединены в том порядке, который удовлетворяет зависимости между комплектами. Например, если комплект A зависит от В, который зависит от С и D, то Вы должны перечислить файлы ресурсов начиная с С и D, затем B, и только после этого А.
 
+<!--
 After combining and compressing, we get one CSS file and one JavaScript file. Assume they are named as 
 `all-xyz.css` and `all-xyz.js`, where `xyz` stands for a timestamp or a hash that is used to make the file name unique
 to avoid HTTP caching problems.
+-->
+После объединения и сжатия, Вы получите один CSS файл и один JavaScript файл. Предположим, они названы как `all-xyz.css` и `all-xyz.js`, где `xyz` это временная метка или хэш, который используется, чтобы создать уникальное имя файла, чтобы избежать проблем с HTTP кэшированием.
 
-После объединения и сжатия, Вы получите один CSS файл и один JavaScript файл. Предположим, они названы как `all-xyz.css` и `all-xyz.js`, где `xyz` это временная метка или хэш, используется, чтобы создать уникальное имя файла чтобы избежать проблем с кэшированием HTTP.
- 
+<!--
 We are at the last step now. Configure the [[yii\web\AssetManager|asset manager]] as follows in the application
 configuration:
- 	
-Сейчас мы находимся на последнем шаге. Настройте [[yii\web\AssetManager|asset manager]] как показано ниже в конфигурации вашего приложения:
+-->	
+Сейчас мы находимся на последнем шаге. Настройте [[yii\web\AssetManager|asset manager]] в конфигурации вашего приложения, как показано ниже:
 
 ```php
 return [
@@ -842,21 +861,22 @@ return [
 ];
 ```
 
+<!--
 As explained in the [Customizing Asset Bundles](#customizing-asset-bundles) subsection, the above configuration
 changes the default behavior of each bundle. In particular, Bundle A, B, C and D no longer have any asset files.
 They now all depend on the `all` bundle which contains the combined `all-xyz.css` and `all-xyz.js` files.
 Consequently, for Page X, instead of including the original source files from Bundle A, B and C, only these
 two combined files will be included; the same thing happens to Page Y.
-
+-->
 Как объяснено в подразделе [Настройка Комплектов Ресурсов](#customizing-asset-bundles), приведенная выше конфигурация
-изменяет поведение по умолчанию каждого комплекта. В частности, комплект A, B, C и D не имеют больше никаких файлов ресурсов. Теперь они все зависят от `all` комплекта который содержит скомбинированные `all-xyz.css` и `all-xyz.js` файлы.
+изменяет поведение по умолчанию каждого комплекта. В частности, комплекты A, B, C и D не имеют больше никаких файлов ресурсов. Теперь они все зависят от `all` комплекта, который содержит скомбинированные `all-xyz.css` и `all-xyz.js` файлы. Следовательно, для страницы X, вместо включения исходных файлов ресурсов из комплектов A, B и C, только два этих объединённых файла будут включены, то же самое произойдёт и со страницей Y.
 
+<!--
 There is one final trick to make the above approach work more smoothly. Instead of directly modifying the
 application configuration file, you may put the bundle customization array in a separate file and conditionally
 include this file in the application configuration. For example,
-
-Есть еще один трюк, чтобы сделать работу вышеуказанного подхода более отлаженной.
-
+-->
+Есть еще один трюк, чтобы сделать работу вышеуказанного подхода более отлаженной. Вместо изменения конфигурационного файла приложения напрямую, можно поставить комплект массива настроек в отдельный файл, и условно включить этот файл в конфигурацию приложения. Например,
 
 
 ```php
@@ -869,56 +889,54 @@ return [
 ];
 ```
 
+<!--
 That is, the asset bundle configuration array is saved in `assets-prod.php` for production mode, and
 `assets-dev.php` for non-production mode.
+-->
+То есть, массив конфигурации комплекта ресурсов сохраняется в `assets-prod.php` для режима продакшена, и в `assets-dev.php` для режима не продакшена (разработки).
 
-То есть, массив конфигурации комплекта ресурсов сохраняется в `assets-prod.php` для режима продакшена, и в `assets-dev.php` для режима не продакшена.
 
+### Использование команды `asset`<span id="using-asset-command"></span>
+<!-- Using the `asset` Command -->
 
-### Using the `asset` Command - Использование команды `asset`<span id="using-asset-command"></span>
-
+<!--
 Yii provides a console command named `asset` to automate the approach that we just described.
-
+-->
 Yii предоставляет консольную команду с именем `asset` для автоматизации подхода, который мы только что описали.
 
+<!--
 To use this command, you should first create a configuration file to describe what asset bundles should
 be combined and how they should be grouped. You can use the `asset/template` sub-command to generate
 a template first and then modify it to fit for your needs.
-
-Чтобы использовать эту команду, Вы должны сначала создать файл конфигурации для описания того, как комплекты ресурсов должны быть скомбинированны и как они должны быть сгруппированны. Затем Вы можете использовать подкомманду `asset/template`, чтобы сгенерировать первый шаблон и затем отредактировать его под свои нужды.
+-->
+Чтобы использовать эту команду, Вы должны сначала создать файл конфигурации для описания того, как комплекты ресурсов должны быть скомбинированны, и как они должны быть сгруппированы. Затем Вы можете использовать подкомманду `asset/template`, чтобы сгенерировать первый шаблон и затем отредактировать его под свои нужды.
 
 ```
 yii asset/template assets.php
 ```
 
+<!--
 The command generates a file named `assets.php` in the current directory. The content of this file looks like the following:
-
+-->
 Данная команда сгенерирует файл с именем `assets.php` в текущей директории. Содержание этого файла можно увидеть ниже:
 
 ```php
 <?php
 /**
- * Configuration file for the "yii asset" console command.
  * Файл конфигурации команды консоли "yii asset".
- * Note that in the console environment, some path aliases like '@webroot' and '@web' may not exist.
- * Обратите внимание, что в консольной среде, некоторые псевдонимы путей такие как "@webroot' и '@web " не могут существовать/быть использованы.
- * Please define these missing path aliases.
- * Пожалуйста, определите эти отсутствующие псевдонимы путей.
+ * Обратите внимание, что в консольной среде, некоторые псевдонимы путей, такие как "@webroot' и '@web ", не могут быть      * использованы.
+ * Пожалуйста, определите отсутствующие псевдонимы путей.
  */
 return [
-    // Adjust command/callback for JavaScript files compressing:
     // Настроить команду/обратный вызов для сжатия файлов JavaScript:
     'jsCompressor' => 'java -jar compiler.jar --js {from} --js_output_file {to}',
-    // Adjust command/callback for CSS files compressing:
     // Настроить команду/обратный вызов для сжатия файлов CSS:
     'cssCompressor' => 'java -jar yuicompressor.jar --type css {from} -o {to}',
-    // The list of asset bundles to compress:
     // Список комплектов ресурсов для сжатия:
     'bundles' => [
         // 'yii\web\YiiAsset',
         // 'yii\web\JqueryAsset',
     ],
-    // Asset bundle for compression output:
     // Комплект ресурса после сжатия:
     'targets' => [
         'all' => [
@@ -929,85 +947,90 @@ return [
             'css' => 'css/all-{hash}.css',
         ],
     ],
-    // Asset manager configuration:
     // Настройка менеджера ресурсов:
     'assetManager' => [
     ],
 ];
 ```
 
+<!--
 You should modify this file and specify which bundles you plan to combine in the `bundles` option. In the `targets` 
 option you should specify how the bundles should be divided into groups. You can specify one or multiple groups, 
 as aforementioned.
+-->
+Вы должны изменить этот файл и указать в `bundles` параметре, какие комплекты Вы планируете объединить. В параметре `targets` вы должны указать, как комплекты должны быть поделены в группы. Вы можете указать одну или несколько групп, как уже было сказано выше.
 
-Вы должны изменить этот файл и указать какие комплекты вы планируете совместить в `bundles` параметре. В параметре `targets` вы должны указать как комплекты должны быть поделены в группы. Вы можете указать одну или несколько групп, как уже было сказано выше.
-
+<!--
 > Note: Because the alias `@webroot` and `@web` are not available in the console application, you should
   explicitly define them in the configuration.
-  
+-->
 > Примечание: Так как псевдонимы путей `@webroot` и `@web` не могут быть использованны в консольном приложении, Вы должны явно задать их в файле конфигурации.
 
+<!--
 JavaScript files are combined, compressed and written to `js/all-{hash}.js` where {hash} is replaced with the hash of
 the resulting file.
+-->
+JavaScript файлы объединены, сжаты и записаны в `js/all-{hash}.js`, где {hash} перенесён из хэша результирующего файла.
 
-JavaScript файлы объеденены, сжаты и записаны в `js/all-{hash}.js`, где {hash} перенесён из хэша результирующего файла.
-
+<!--
 The `jsCompressor` and `cssCompressor` options specify the console commands or PHP callbacks for performing
 JavaScript and CSS combining/compressing. By default, Yii uses [Closure Compiler](https://developers.google.com/closure/compiler/) 
 for combining JavaScript files and [YUI Compressor](https://github.com/yui/yuicompressor/) for combining CSS files. 
 You should install those tools manually or adjust these options to use your favorite tools.
+-->
+Параметры `jsCompressor` и `cssCompressor` указывают на консольные команды или обратный вызов PHP, выполняющие JavaScript и CSS объединение/сжатие. По умолчанию Yii использует [Closure Compiler](https://developers.google.com/closure/compiler/) для объединения JavaScript файлов и [YUI Compressor](https://github.com/yui/yuicompressor/) для объединения CSS файлов. Вы должны установить эти инструменты вручную или настроить данные параметры, чтобы использовать ваши любимые инструменты.
 
-Параметры `jsCompressor` и `cssCompressor` указывают на консольные команды или обратный вызов PHP, выполняющие JavaScript и CSS объединение/сжатие. По умолчанию, Yii использует [Closure Compiler](https://developers.google.com/closure/compiler/) для объединения JavaScript файлов и [YUI Compressor](https://github.com/yui/yuicompressor/) для объединения CSS файлов. Вы должны установить эти инструменты вручную или настроить данные параметры, чтобы использовать ваши любимые инструменты.
-
+<!--
 With the configuration file, you can run the `asset` command to combine and compress the asset files
 and then generate a new asset bundle configuration file `assets-prod.php`:
-
-Вы можете запустить команду `asset`, с файлом конфигурации, для объединения и сжатия файлов ресурса и затем создать новый файл конфигурации комплекта ресурса `assets-prod.php`:
+-->
+Вы можете запустить команду `asset` с файлом конфигурации для объединения и сжатия файлов ресурсов, а затем создать новый файл конфигурации комплекта ресурса `assets-prod.php`:
  
 ```
 yii asset assets.php config/assets-prod.php
 ```
 
+<!--
 The generated configuration file can be included in the application configuration, like described in
 the last subsection.
+-->
+Сгенерированный файл конфигурации может быть включен в конфигурацию приложения, как описано в последнем подразделе.
 
-Сгенерированный файл конфигурации может быть включен в конфигурацию приложения как описано в последнем подразделе.
-
-
+<!--
 > Info: Using the `asset` command is not the only option to automate the asset combining and compressing process.
   You can use the excellent task runner tool [grunt](http://gruntjs.com/) to achieve the same goal.
-  
-> Для справки: Использовать команду `asset` можно не только в целях автоматизации процесса объединения и сжатия.  	
-Вы можете использовать отличный инструмент запуска приложений [grunt](http://gruntjs.com/) для достижения той же цели.
+-->  
+> Для справки: Команда `asset` является не единственной опцией для автоматического процесса объединения и сжатия ресурсов.	
+Вы можете также использовать такой замечательный инструмент запуска приложений как [grunt](http://gruntjs.com/) для достижения той же цели.
 
+### Группировка Комплектов Ресурсов <span id="grouping-asset-bundles"></span>
+<!-- Grouping Asset Bundles -->
 
-### Grouping Asset Bundles - Группировка Комплектов Ресурсов <span id="grouping-asset-bundles"></span>
-
+<!--
 In the last subsection, we have explained how to combine all asset bundles into a single one in order to minimize
 the HTTP requests for asset files referenced in an application. This is not always desirable in practice. For example,
 imagine your application has a "front end" as well as a "back end", each of which uses a different set of JavaScript 
 and CSS files. In this case, combining all asset bundles from both ends into a single one does not make sense, 
 because the asset bundles for the "front end" are not used by the "back end" and it would be a waste of network
 bandwidth to send the "back end" assets when a "front end" page is requested.
+-->
+В последнем подразделе, мы пояснили, как объединять все комплекты ресурсов в единый в целях минимизации HTTP запросов для файлов ресурсов, упоминавшихся в приложении. Это не всегда желательно на практике. Например, представьте себе, что Ваше приложение содержит "front end", а также и "back end", каждый из которых использует свой набор JavaScript и CSS файлов. В этом случае, объединение всех комплектов ресурсов с обеих сторон в один не имеет смысла потому, что комплекты ресурсов для "front end" не используются в "back end", и это будет бесполезной тратой трафика - отправлять "back end" ресурсы, когда страница из "front end" будет запрошена.
 
-В последнем подразделе, мы поясним как объединять все комплекты ресурсов в единый в целях минимизации HTTP запросов для файлов ресурсов упоминавшихся в приложении. Это не всегда желательно на практике. Например, представьте себе, что Ваше приложение содержит "front end" а также и "back end", каждый из которых использует свой набор JavaScript и CSS файлов. В этом случае, объединение всех комплектов ресурсов с обеих сторон в один не имеет смысла, потому, что комплекты ресурсов для "front end" не используются в "back end" и будет бесполезной тратой траффика отправлять "back end" ресурсы когда страница из "front end" будет запрошена.
-
+<!--
 To solve the above problem, you can divide asset bundles into groups and combine asset bundles for each group.
 The following configuration shows how you can group asset bundles: 
-
+-->
 Для решения вышеуказанной проблемы, вы можете разделить комплекты по группам и объединить комплекты ресурсов для каждой группы. Следующая конфигурация показывает, как Вы можете объединять комплекты ресурсов:
 
 ```php
 return [
     ...
-    // Specify output bundles with groups:
     // Укажите выходной комплект для групп:
     'targets' => [
         'allShared' => [
             'js' => 'js/all-shared-{hash}.js',
             'css' => 'css/all-shared-{hash}.css',
             'depends' => [
-                // Include all assets shared between 'backend' and 'frontend'
                 // Включаем все ресурсы поделённые между 'backend' и 'frontend'
                 'yii\web\YiiAsset',
                 'app\assets\SharedAsset',
@@ -1017,7 +1040,6 @@ return [
             'js' => 'js/all-{hash}.js',
             'css' => 'css/all-{hash}.css',
             'depends' => [
-                // Include only 'backend' assets:
                 // Включаем только 'backend' ресурсы:
                 'app\assets\AdminAsset'
             ],
@@ -1025,20 +1047,22 @@ return [
         'allFrontEnd' => [
             'js' => 'js/all-{hash}.js',
             'css' => 'css/all-{hash}.css',
-            'depends' => [], // Include all remaining assets - Включаем все оставшиеся ресурсы
+            'depends' => [], // Включаем все оставшиеся ресурсы
         ],
     ],
     ...
 ];
 ```
 
+<!--
 As you can see, the asset bundles are divided into three groups: `allShared`, `allBackEnd` and `allFrontEnd`.
 They each depends on an appropriate set of asset bundles. For example, `allBackEnd` depends on `app\assets\AdminAsset`.
 When running `asset` command with this configuration, it will combine asset bundles according to the above specification.
+-->
+Как вы можете видеть, комплекты ресурсов поделены на три группы: `allShared`, `allBackEnd` и `allFrontEnd`. Каждая из которых зависит от соответствующего набора комплектов ресурсов. Например, `allBackEnd` зависит от `app\assets\AdminAsset`. При запуске команды `asset` с данной конфигурацией будут объединены комплекты ресурсов согласно приведенной выше спецификации.
 
-Как вы можете видеть, комплекты ресурсов поделены на три группы: `allShared`, `allBackEnd` и `allFrontEnd`. Каждая из которых зависит от соответствующего набора комплектов ресурсов. Например, `allBackEnd` зависит от `app\assets\AdminAsset`. При запуске команды `asset` с данной конфигурацией, будут объединены комплекты ресурсов согласно приведенной выше спецификации.
-
+<!--
 > Info: You may leave the `depends` configuration empty for one of the target bundle. By doing so, that particular
   asset bundle will depend on all of the remaining asset bundles that other target bundles do not depend on.
-
-> Для справки: Вы можете оставить `depends` конфигурацию пустой для одного из намеченных комплектов. Поступая таким образом, данный комплект ресурсов будет зависить от всех остальных комплектов ресурсов, от которых другие целевые комплекты не зависят.
+-->
+> Для справки: Вы можете оставить `depends` конфигурацию пустой для одного из намеченных комплектов. Поступая таким образом, данный комплект ресурсов будет зависеть от всех остальных комплектов ресурсов, от которых другие целевые комплекты не зависят.
