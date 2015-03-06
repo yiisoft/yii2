@@ -77,7 +77,7 @@
         "lib-pcre": "*",
         "yiisoft/yii2-composer": "*",
         "ezyang/htmlpurifier": "4.6.*",
-        "cebe/markdown": "~1.0.0",
+        "cebe/markdown": "~1.0.0 | ~1.1.0",
         "bower-asset/jquery": "2.1.*@stable | 1.11.*@stable",
         "bower-asset/jquery.inputmask": "3.1.*",
         "bower-asset/punycode": "1.3.*",

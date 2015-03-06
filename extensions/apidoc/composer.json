@@ -25,7 +25,7 @@
         "phpdocumentor/reflection-docblock": ">2.0.1",
         "nikic/php-parser": "0.9.*",
         "cebe/js-search": "*",
-        "cebe/markdown": "~1.0.0",
+        "cebe/markdown": "~1.0.0 | ~1.1.0",
         "cebe/markdown-latex": "~1.0.0"
     },
     "autoload": {

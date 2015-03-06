@@ -8,7 +8,7 @@ Yii Framework 2 Change Log
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
 - Enh #7562: `yii help` now lists all sub-commands by default (callmez)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
-
+- Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
 
 2.0.3 March 01, 2015
 --------------------
