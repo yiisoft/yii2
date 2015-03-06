@@ -36,21 +36,21 @@ All Rights Reserved.
 * [Компоненты приложения](structure-application-components.md)
 * [Контроллеры](structure-controllers.md)
 * [Представления](structure-views.md)
-* [Модели](structure-models.md)
-* **TBD** [Фильтры](structure-filters.md)
-* **TBD** [Виджеты](structure-widgets.md)
-* **TBD** [Модули](structure-modules.md)
-* [Ресурсы](structure-assets.md)
-* **TBD** [Расширения](structure-extensions.md)
+* **TBD** [Модели](structure-models.md)
+* [Фильтры](structure-filters.md)
+* [Виджеты](structure-widgets.md)
+* [Модули](structure-modules.md)
+* **TBD** [Ресурсы](structure-assets.md)
+* [Расширения](structure-extensions.md)
 
 
 Обработка запросов
 ------------------
 
-* **TBD** [Bootstrapping](runtime-bootstrapping.md)
-* **TBD** [Роутинг](runtime-routing.md)
-* **TBD** [Запросы](runtime-requests.md)
-* **TBD** [Ответы](runtime-responses.md)
+* [Bootstrapping](runtime-bootstrapping.md)
+* [Роутинг](runtime-routing.md)
+* [Запросы](runtime-requests.md)
+* [Ответы](runtime-responses.md)
 * **TBD** [Сессии и куки](runtime-sessions-cookies.md)
 * [Разбор и генерация URL](runtime-routing.md)
 * [Обработка ошибок](runtime-handling-errors.md)
@@ -74,10 +74,10 @@ All Rights Reserved.
 Работа с базами данных
 ----------------------
 
-* [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
-* [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
-* [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
-* [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
+* **TBD** [Объекты доступа к данным (DAO)](db-dao.md) - Соединение с базой данных, простые запросы, транзакции и работа со схемой.
+* **TBD** [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
+* **TBD** [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
+* **TBD** [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
@@ -87,7 +87,7 @@ All Rights Reserved.
 Получение данных от пользователя
 --------------------------------
 
-* [Создание форм](input-forms.md)
+* **TBD** [Создание форм](input-forms.md)
 * [Валидация](input-validation.md)
 * **TBD** [Загрузка файлов](input-file-upload.md)
 * **TBD** [Работа с несколькими моделями](input-multiple-models.md)
@@ -97,19 +97,19 @@ All Rights Reserved.
 ------------------
 
 * **TBD** [Форматирование данных](output-formatter.md)
-* **TBD** [Постраничная разбивка](output-pagination.md)
-* **TBD** [Сортировка](output-sorting.md)
-* [Провайдеры данных](output-data-providers.md)
-* [Виджеты для данных](output-data-widgets.md)
-* [Темизация](output-theming.md)
+*  [Постраничная разбивка](output-pagination.md)
+* [Сортировка](output-sorting.md)
+* **TBD** [Провайдеры данных](output-data-providers.md)
+* **TBD** [Виджеты для данных](output-data-widgets.md)
+* **TBD** [Темизация](output-theming.md)
 
 
 Безопасность
 ------------
 
-* [Аутентификация](security-authentication.md)
-* [Авторизация](security-authorization.md)
-* [Работа с паролями](security-passwords.md)
+* **TBD** [Аутентификация](security-authentication.md)
+* **TBD** [Авторизация](security-authorization.md)
+* **TBD** [Работа с паролями](security-passwords.md)
 * **TBD** [Клиенты авторизации](security-auth-clients.md)
 * **TBD** [Лучшие практики](security-best-practices.md)
 
@@ -141,43 +141,43 @@ All Rights Reserved.
 Инструменты разработчика
 ------------------------
 
-* [Отладочная панель и отладчик](tool-debugger.md)
-* [Генерация кода с Gii](tool-gii.md)
+* **TBD** [Отладочная панель и отладчик](tool-debugger.md)
+* **TBD** [Генерация кода с Gii](tool-gii.md)
 * **TBD** [Генератор документации API](tool-api-doc.md)
 
 
 Тестирование
 ------------
 
-* [Обзор](test-overview.md)
+* **TBD** [Обзор](test-overview.md)
 * **TBD** [Модульные тесты](test-unit.md)
 * **TBD** [Функциональные тесты](test-functional.md)
 * **TBD** [Приёмочные тесты](test-acceptance.md)
-* [Фикстуры](test-fixtures.md)
+* **TBD** [Фикстуры](test-fixtures.md)
 
 
 Расширение Yii
 --------------
 
-* [Создание расширений](extend-creating-extensions.md)
-* [Расширение кода фреймворка](extend-customizing-core.md)
-* [Использование сторонних библиотек](extend-using-libs.md)
+* **TBD** [Создание расширений](extend-creating-extensions.md)
+* **TBD** [Расширение кода фреймворка](extend-customizing-core.md)
+* **TBD** [Использование сторонних библиотек](extend-using-libs.md)
 * **TBD** [Интеграция Yii в сторонние системы](extend-embedding-in-others.md)
 * **TBD** [Одновременное использование Yii 1.1 и 2.0](extend-using-v1-v2.md)
-* [Использование Composer](extend-using-composer.md)
+* **TBD** [Использование Composer](extend-using-composer.md)
 
 
 Специальные темы
 ----------------
 
 * [Шаблон приложения advanced](tutorial-advanced-app.md)
-* [Создание приложения с нуля](tutorial-start-from-scratch.md)
-* [Консольные команды](tutorial-console.md)
+* **TBD** [Создание приложения с нуля](tutorial-start-from-scratch.md)
+* **TBD** [Консольные команды](tutorial-console.md)
 * [Интернационализация](tutorial-i18n.md)
-* [Отправка почты](tutorial-mailing.md)
-* [Улучшение производительности](tutorial-performance-tuning.md)
+* **TBD** [Отправка почты](tutorial-mailing.md)
+* **TBD** [Улучшение производительности](tutorial-performance-tuning.md)
 * **TBD** [Работа на shared хостинге](tutorial-shared-hosting.md)
-* [Шаблонизаторы](tutorial-template-engines.md)
+* **TBD** [Шаблонизаторы](tutorial-template-engines.md)
 
 
 Виджеты
@@ -191,15 +191,15 @@ All Rights Reserved.
 * Menu: link to demo page
 * LinkPager: link to demo page
 * LinkSorter: link to demo page
-* [Виджеты Bootstrap](widget-bootstrap.md)
+* **TBD** [Виджеты Bootstrap](widget-bootstrap.md)
 * **TBD** [Виджеты Jquery UI](widget-jui.md)
 
 
 Хелперы
 -------
 
-* [Обзор](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
+* **TBD** [Обзор](helper-overview.md)
+* [ArrayHelper](helper-array.md)
 * **TBD** [Html](helper-html.md)
 * **TBD** [Url](helper-url.md)
 * **TBD** [Security](helper-security.md)
