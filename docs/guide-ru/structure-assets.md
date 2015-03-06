@@ -684,10 +684,11 @@ you should install the `lessc` pre-processor command.
 -->
 Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](http://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
 
+<!--
 You can customize the pre-processor commands and the supported extended syntax by configuring
 [[yii\web\AssetManager::converter]] like the following:
-
-Вы можете настроить команды препроцессора и поддерживать расширенный сиснтаксис сконфигурировав [[yii\web\AssetManager::converter]] следующим образом:
+-->
+Вы можете настроить команды препроцессора и поддерживать расширенный синтаксис сконфигурировав [[yii\web\AssetManager::converter]] следующим образом:
 
 ```php
 return [
@@ -705,32 +706,33 @@ return [
 ];
 ```
 
+<!--
 In the above, we specify the supported extended syntax via the [[yii\web\AssetConverter::commands]] property.
 The array keys are the file extension names (without leading dot), and the array values are the resulting
 asset file extension names and the commands for performing the asset conversion. The tokens `{from}` and `{to}`
 in the commands will be replaced with the source asset file paths and the target asset file paths.
-
+-->
 В примере выше, Вы задали поддержку расширенного синтаксиса через [[yii\web\AssetConverter::commands]] свойство.
-Ключи массива это имена файлов расширений (без ведущей точки), а значения массива это образующийся файл ресурса имён расширений и команд для выполнения конвертации ресурса. Маркеры `{from}` и `{to}` в командах будут заменены исходным путём файла ресурсов и соответственно путём назначения файла ресурсов.
+Ключи массива - это имена расширений файлов (без ведущей точки), а значения массива - это образующийся файл ресурса имён расширений и команд для выполнения конвертации ресурса. Маркеры `{from}` и `{to}` в командах будут заменены соответственно исходным путём файла ресурсов и путём назначения файла ресурсов.
 
-
-
+<!--
 > Info: There are other ways of working with assets in extended syntax, besides the one described above.
   For example, you can use build tools such as [grunt](http://gruntjs.com/) to monitor and automatically
   convert assets in extended syntax. In this case, you should list the resulting CSS/JavaScript files in
   asset bundles rather than the original files.
-  
+-->
 > Примечание: Существуют другие способы работы с ресурсами расширенного синтаксиса, кроме того, который указан выше.
 Например, Вы можете использовать инструменты построения, такие как [grunt](http://gruntjs.com/) для отслеживания и автоматической конвертации ресурсов расширенного синтаксиса. В этом случае, Вы должны перечислить конечные CSS/JavaScript файлы в комплекте ресурсов вместо исходных файлов.
 
+## Объединение и Сжатие Ресурсов<span id="combining-compressing-assets"></span>
+<!-- Combining and Compressing Assets -->
 
-## Combining and Compressing Assets - Объединение и Сжатие Ресурсов<span id="combining-compressing-assets"></span>
-
+<!--
 A Web page can include many CSS and/or JavaScript files. To reduce the number of HTTP requests and the overall
 download size of these files, a common practice is to combine and compress multiple CSS/JavaScript files into 
 one or very few files, and then include these compressed files instead of the original ones in the Web pages.
-
-Web страница может включать много CSS и/или JavaScript файлов. Чтобы сократить количество HTTP запросов и общий размер загрузки этих файлов, общепринятой практикой является объединение и сжатие нескольких CSS/JavaScript файлов в один или в меньшее количество, а затем включение этих сжатых файлов вместо исходных в Web страницы.
+-->
+Web страница может включать много CSS и/или JavaScript файлов. Чтобы сократить количество HTTP запросов и общий размер загрузки этих файлов, общепринятой практикой является объединение и сжатие нескольких CSS/JavaScript файлов в один или в более меньшее количество, а затем включение этих сжатых файлов вместо исходных в Web страницы.
  
 > Info: Combining and compressing assets is usually needed when an application is in production mode. 
   In development mode, using the original CSS/JavaScript files is often more convenient for debugging purposes.
