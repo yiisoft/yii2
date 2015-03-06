@@ -99,10 +99,9 @@ abstract class BaseMessageControllerTest extends TestCase
      * Loads messages
      *
      * @param string $category
-     * @param boolean $shouldExist if file should exist
      * @return array
      */
-    abstract protected function loadMessages($category, $shouldExist = true);
+    abstract protected function loadMessages($category);
 
     /**
      * @return array default config

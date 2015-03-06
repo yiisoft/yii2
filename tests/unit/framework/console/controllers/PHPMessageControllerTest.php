@@ -70,7 +70,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     /**
      * @inheritdoc
      */
-    protected function loadMessages($category, $shouldExist = true)
+    protected function loadMessages($category)
     {
         if (defined('HHVM_VERSION')) {
             // https://github.com/facebook/hhvm/issues/1447
@@ -79,10 +79,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
 
         $messageFilePath = $this->getMessageFilePath($category);
 
-        if ($shouldExist) {
-            static::assertTrue(file_exists($messageFilePath), "There's no message file $messageFilePath that should exist!");
-        } else {
-            static::assertFalse(file_exists($messageFilePath), "There's message file $messageFilePath that should not exist!");
+        if (!file_exists($messageFilePath)) {
             return [];
         }
         return require $messageFilePath;

@@ -74,13 +74,10 @@ class POMessageControllerTest extends BaseMessageControllerTest
     /**
      * @inheritdoc
      */
-    protected function loadMessages($category, $shouldExist = true)
+    protected function loadMessages($category)
     {
         $messageFilePath = $this->getMessageFilePath();
-        if ($shouldExist) {
-            static::assertTrue(file_exists($messageFilePath), "There's no message file $messageFilePath that should exist!");
-        } else {
-            static::assertFalse(file_exists($messageFilePath), "There's message file $messageFilePath that should not exist!");
+        if (!file_exists($messageFilePath)) {
             return [];
         }
 
