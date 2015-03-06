@@ -221,6 +221,31 @@ EOD;
         $this->activeField->hiddenInput();
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
+    
+    public function testIssue2990() {
+        // https://github.com/yiisoft/yii2/issues/2990
+        $expectedValue = <<<EOD
+<div class="form-group field-dynamicmodel-attributename">
+<label class="control-label" for="dynamicmodel-attributename">Attribute Name</label>
+<input type="hidden" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]">
+
+<div class="help-block"></div>
+</div>
+EOD;
+        $this->activeField->hiddenInput(['renderAllParts' => true]);
+        $this->assertEquals($expectedValue, $this->activeField->render());
+        
+        $expectedValue = <<<EOD
+<div class="form-group field-dynamicmodel-attributename">
+
+<input type="hidden" id="dynamicmodel-attributename" class="form-control" name="DynamicModel[attributeName]">
+
+
+</div>
+EOD;
+        $this->activeField->hiddenInput();
+        $this->assertEquals($expectedValue, $this->activeField->render());
+    }
 
     public function testListBox()
     {
