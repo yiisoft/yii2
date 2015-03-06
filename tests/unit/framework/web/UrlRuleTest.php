@@ -372,6 +372,17 @@ class UrlRuleTest extends TestCase
                     ['blog/search', ['tag' => 'метра'], 'blog/search/%D0%BC%D0%B5%D1%82%D1%80%D0%B0'],
                 ],
             ],
+            [
+                'host info + defaults', // https://github.com/yiisoft/yii2/issues/6871
+                [
+                    'pattern' => 'http://example.com/<page>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                ],
+                [
+                    ['post/index', ['page' => 1], 'http://example.com/1'],
+                ],
+            ],
         ];
     }
 
