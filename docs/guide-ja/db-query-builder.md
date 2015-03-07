@@ -1,8 +1,6 @@
 クエリビルダ
 ============
 
-> Note|注意: この節はまだ執筆中です。
-
 [データベースアクセスオブジェクト](db-dao.md) の上に構築されているクエリビルダは、SQL 文をプログラム的に、かつ、DBMS の違いを意識せずに作成することを可能にしてくれます。
 クエリビルダを使うと、生の SQL を書くことに比べて、より読みやすい SQL 関連のコードを書き、より安全な SQL 文を生成することが容易になります。
 
@@ -48,34 +46,34 @@ LIMIT 10
 
 ### [[yii\db\Query::select()|select()]] <span id="select"></span>
 
-[[yii\db\Query::select()|select()]] メソッドは、SQL 文の `SELECT` の部分を定義します。
+[[yii\db\Query::select()|select()]] メソッドは、SQL 文の `SELECT` 句を定義します。
 選択されるカラムは、次のように、配列または文字列として指定することが出来ます。
 選択されるカラムの名前は、クエリオブジェクトから SQL 文が生成されるときに、自動的に引用符で囲まれます。
 
 ```php
-$query->select(['id', 'email'])->...
+$query->select(['id', 'email']);
 
 // 次と等価
 
-$query->select('id, email')->...
+$query->select('id, email');
 ```
 
 選択されるカラム名は、生の SQL を書くときにするように、テーブル接頭辞 および/または カラムのエイリアスを含むことが出来ます。
 例えば、
 
 ```php
-$query->select(['user.id AS user_id', 'email'])->...
+$query->select(['user.id AS user_id', 'email']);
 
 // 次と等価
 
-$query->select('user.id AS user_id, email')->...
+$query->select('user.id AS user_id, email');
 ```
 
 カラムを指定するのに配列形式を使っている場合は、配列のキーを使ってカラムのエイリアスを指定することも出来ます。
 例えば、上記のコードは次のように書くことが出来ます。
 
 ```php
-$query->select(['user_id' => 'user.id', 'email'])->...
+$query->select(['user_id' => 'user.id', 'email']);
 ```
 
 クエリを構築するときに [[yii\db\Query::select()|select()]] メソッドを呼ばなかった場合は、`*` がセレクトされます。
@@ -86,7 +84,7 @@ $query->select(['user_id' => 'user.id', 'email'])->...
 例えば、
 
 ```php
-$query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email'])->... 
+$query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email']);
 ```
 
 バージョン 2.0.1 以降では、サブクエリもセレクトすることが出来ます。
@@ -104,13 +102,13 @@ $query = (new Query())->select(['id', 'count' => $subQuery])->from('post');
 
 ```php
 // SELECT DISTINCT `user_id` ...
-$query->select('user_id')->distinct()->...
+$query->select('user_id')->distinct();
 ```
 
 
 ### [[yii\db\Query::from()|from()]] <span id="from"></span>
 
-[[yii\db\Query::from()|from()]] メソッドは、SQL 文の `FROM` の部分を定義します。例えば、
+[[yii\db\Query::from()|from()]] メソッドは、SQL 文の `FROM` 句を定義します。例えば、
 
 ```php
 // SELECT * FROM `user`
@@ -147,7 +145,7 @@ $query->from(['u' => $subQuery]);
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
-[[yii\db\Query::where()|where()]] メソッドは、SQL 文の `WHERE` の部分を定義します。
+[[yii\db\Query::where()|where()]] メソッドは、SQL 文の `WHERE` 句を定義します。
 `WHERE` の条件を指定するために、次の三つの形式から一つを選んで使うことが出来ます。
 
 - 文字列形式、例えば、`'status=1'`
@@ -162,10 +160,10 @@ $query->from(['u' => $subQuery]);
 例えば、
 
 ```php
-$query->...->where('status=1')->...
+$query->where('status=1');
 
 // あるいは、パラメータバインディングを使って、動的にパラメータをバインドする
-$query->...->where('status=:status', [':status' => $status])->...
+$query->where('status=:status', [':status' => $status]);
 ```
 
 次のように、条件式に変数を直接に埋め込んではいけません。
@@ -173,14 +171,14 @@ $query->...->where('status=:status', [':status' => $status])->...
 
 ```php
 // 危険! $status が整数であることが絶対に確実でなければ、してはいけない。
-$query->...->where("status=$status")->...
+$query->where("status=$status");
 ```
 
 パラメータバインディングを使う場合は、[[yii\db\Query::params()|params()]] または [[yii\db\Query::addParams()|addParams()]] を使って、パラメータの指定を分離することが出来ます。
 
 ```php
-$query->...->where('status=:status')
-    ->addParams([':status' => $status])->...
+$query->where('status=:status')
+    ->addParams([':status' => $status]);
 ```
 
 
@@ -192,11 +190,11 @@ $query->...->where('status=:status')
 
 ```php
 // ...WHERE (`status` = 10) AND (`type` IS NULL) AND (`id` IN (4, 8, 15))
-$query->...->where([
+$query->where([
     'status' => 10,
     'type' => null,
     'id' => [4, 8, 15],
-])->...
+]);
 ```
 
 ご覧のように、クエリビルダは頭が良いので、null や配列である値も、適切に処理します。
@@ -207,7 +205,7 @@ $query->...->where([
 $userQuery = (new Query())->select('id')->from('user');
 
 // ...WHERE `id` IN (SELECT `id` FROM `user`)
-$query->...->where(['id' => $userQuery])->...
+$query->where(['id' => $userQuery]);
 ```
 
 #### 演算子形式 <span id="operator-format"></span>
@@ -320,104 +318,165 @@ $query->filterWhere([
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
-結果を並び替えるために `orderBy` と `addOrderBy` を使うことが出来ます。
+[[yii\db\Query::orderBy()|orderBy()]] メソッドは SQL 文の `ORDER BY` 句を指定します。例えば、
+
 
 ```php
+// ... ORDER BY `id` ASC, `name` DESC
 $query->orderBy([
     'id' => SORT_ASC,
     'name' => SORT_DESC,
 ]);
 ```
 
-ここでは `id` の昇順、`name` の降順で並べ替えています。
+上記のコードにおいて、配列のキーはカラム名であり、配列の値は並べ替えの方向です。
+PHP の定数 `SORT_ASC` は昇順、`SORT_DESC` は降順を指定するものです。
 
-### [[yii\db\Query::groupBy()|groupBy()]] と [[yii\db\Query::having()|having()]] <span id="group-by-having"></span>
-
-生成される SQL に `GROUP BY` を追加するためには、次のようにすることが出来ます。
-
-```php
-$query->groupBy('id, status');
-```
-
-`groupBy` を使った後に別のフィールドを追加したい場合は、
-
-```php
-$query->addGroupBy(['created_at', 'updated_at']);
-```
-
-`HAVING` 条件を追加したい場合は、それに対応する `having` メソッドおよび `andHaving` と `orHaving` を使うことが出来ます。
-これらのメソッドのパラメータは、`where` メソッドグループのそれと同様です。
-
-```php
-$query->having(['status' => $status]);
-```
-
-### [[yii\db\Query::limit()|limit()]] と [[yii\db\Query::offset()|offset()]] <span id="limit-offset"></span>
-
-結果を 10 行に限定したいときは、`limit` を使うことが出来ます。
-
-```php
-$query->limit(10);
-```
-
-最初の 100 行をスキップしたい時は、こうします。
-
-```php
-$query->offset(100);
-```
-
-### [[yii\db\Query::join()|join()]] <span id="join"></span>
-
-クエリビルダで `JOIN` 句を生成するために、次の結合メソッドを適用することが出来ます。
-
-- `innerJoin()`
-- `leftJoin()`
-- `rightJoin()`
-
-次の例では、左外部結合を使って二つの関連するテーブルから一つのクエリでデータを取得しています。
-
-```php
-$query->select(['user.name AS author', 'post.title as title'])
-    ->from('user')
-    ->leftJoin('post', 'post.user_id = user.id');
-```
-
-このコードにおいて、`leftJoin()` メソッドの最初のパラメータは、結合するテーブルを指定するものです。
-第二のパラメータは、結合の条件を定義しています。
-
-データベース製品がその他の結合タイプをサポートしている場合は、汎用の `join` メソッドによってそれを使うことが出来ます。
-
-```php
-$query->join('FULL OUTER JOIN', 'post', 'post.user_id = user.id');
-```
-
-最初のパラメータが実行する結合タイプです。第二は結合するテーブル、第三は結合の条件です。
-
-`FROM` と同様に、サブクエリを結合することも出来ます。
-そのためには、一つだけの要素を持つ配列としてサブクエリを指定します。
-配列の値はサブクエリを表す `Query` オブジェクトとし、配列のキーはサブクエリのエイリアスとしなければなりません。
+`ORDER BY` が単純なカラム名だけを含む場合は、生の SQL を書くときにするように、文字列を使って指定することが出来ます。
 例えば、
 
 ```php
-$query->leftJoin(['u' => $subQuery], 'u.id=author_id');
+$query->orderBy('id ASC, name DESC');
 ```
+
+> Note|注意: `ORDER BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。
+
+[[yii\db\Query::addOrderBy()|addOrderBy()]] を呼んで、`ORDER BY' 句にカラムを追加することが出来ます。
+例えば、
+
+```php
+$query->orderBy('id ASC')
+    ->addOrderBy('name DESC');
+```
+
+### [[yii\db\Query::groupBy()|groupBy()]] <span id="group-by"></span>
+
+[[yii\db\Query::groupBy()|groupBy()]] メソッドは SQL 文の `GROUP BY` 句を指定します。
+例えば、
+
+```php
+// ... GROUP BY `id`, `status`
+$query->groupBy(['id', 'status']);
+```
+
+`GROUP BY` が単純なカラム名だけを含む場合は、生の SQL を書くときにするように、文字列を使って指定することが出来ます。
+例えば、
+
+```php
+$query->groupBy('id, status']);
+```
+
+> Note|注意: `GROUP BY` が何らかの DB 式を含む場合は、配列形式を使わなければなりません。
+ 
+[[yii\db\Query::addGroupBy()|addGroupBy()]] を呼んで、`GROUP BY` 句にカラムを追加することが出来ます。
+例えば、
+
+```php
+$query->groupBy(['id', 'status'])
+    ->addGroupBy('age');
+```
+
+
+### [[yii\db\Query::having()|having()]] <span id="having"></span>
+
+[[yii\db\Query::having()|having()]] メソッドは SQL 文の `HAVING` 句を指定します。
+このメソッドが取る条件は、[where()](#where) と同じ方法で指定することが出来ます。
+例えば、
+
+```php
+// ... HAVING `status` = 1
+$query->having(['status' => 1]);
+```
+
+条件を指定する方法の詳細については、[where()](#where) のドキュメントを参照してください。
+
+[[yii\db\Query::andHaving()|andHaving()]] または [[yii\db\Query::orHaving()|orHaving()]] を呼んで、`HAVING` 句に条件を追加することが出来ます。
+例えば、
+
+```php
+// ... HAVING (`status` = 1) AND (`age` > 30)
+$query->having(['status' => 1])
+    ->andHaving(['>', 'age', 30]);
+```
+
+
+### [[yii\db\Query::limit()|limit()]] と [[yii\db\Query::offset()|offset()]] <span id="limit-offset"></span>
+
+[[yii\db\Query::limit()|limit()]] と [[yii\db\Query::offset()|offset()]] のメソッドは、SQL 文の `LIMIT` と `OFFSET` 句を指定します。
+例えば、
+ 
+```php
+// ... LIMIT 10 OFFSET 20
+$query->limit(10)->offset(20);
+```
+
+無効な上限やオフセット (例えば、負の数) を指定した場合は、無視されます。
+
+> Info|情報: `LIMIT` と `OFFSET` をサポートしていない DBMS (例えば MSSQL) に対しては、クエリビルダが `LIMIT`/`OFFSET` の振る舞いをエミュレートする SQL 文を生成します。
+
+
+### [[yii\db\Query::join()|join()]] <span id="join"></span>
+
+[[yii\db\Query::join()|join()]] メソッドは SQL 文の `JOIN` 句を指定します。例えば、
+ 
+```php
+// ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
+$query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
+```
+
+[[yii\db\Query::join()|join()]] メソッドは、四つのパラメータを取ります。
+ 
+- `$type`: 結合のタイプ、例えば、`'INNER JOIN'`、`'LEFT JOIN'`。
+- `$table`: 結合されるテーブルの名前。
+- `$on`: オプション。結合条件、すなわち、`ON` 句。
+   条件の指定方法の詳細については、[where()](#where) を参照してください。
+- `$params`: オプション。結合条件にバインドされるパラメータ。
+
+`INNER JOIN`、`LEFT JOIN` および `RIGHT JOIN` を指定するためには、それぞれ、次のショートカットメソッドを使うことが出来ます。
+
+- [[yii\db\Query::innerJoin()|innerJoin()]]
+- [[yii\db\Query::leftJoin()|leftJoin()]]
+- [[yii\db\Query::rightJoin()|rightJoin()]]
+
+例えば、
+
+```php
+$query->leftJoin('post', 'post.user_id = user.id');
+```
+
+複数のテーブルを結合するためには、テーブルごとに一回ずつ、上記の結合メソッドを複数回呼び出します。
+
+テーブルを結合することに加えて、サブクエリを結合することも出来ます。
+そうするためには、結合されるべきサブクエリを [[yii\db\Query]] オブジェクトとして指定します。
+例えば、
+
+```php
+$subQuery = (new \yii\db\Query())->from('post');
+$query->leftJoin(['u' => $subQuery], 'u.id = author_id');
+```
+
+この場合、サブクエリを配列に入れて、配列のキーを使ってエイリアスを指定しなければなりません。
 
 
 ### [[yii\db\Query::union()|union()]] <span id="union"></span>
 
-SQL における `UNION` は、一つのクエリの結果を別のクエリの結果に追加するものです。
-両方のクエリによって返されるカラムが一致していなければなりません。
-Yii においてこれを構築するためには、最初に二つのクエリオブジェクトを作成し、次に `union` メソッドを使って連結します。
+[[yii\db\Query::union()|union()]] メソッドは SQL 文の `UNION` 句を指定します。例えば、
 
 ```php
-$query = new Query();
-$query->select("id, category_id as type, name")->from('post')->limit(10);
+$query1 = (new \yii\db\Query())
+    ->select("id, category_id AS type, name")
+    ->from('post')
+    ->limit(10);
 
-$anotherQuery = new Query();
-$anotherQuery->select('id, type, name')->from('user')->limit(10);
+$query2 = (new \yii\db\Query())
+    ->select('id, type, name')
+    ->from('user')
+    ->limit(10);
 
-$query->union($anotherQuery);
+$query1->union($query2);
 ```
+
+[[yii\db\Query::union()|union()]] を複数回呼んで、`UNION` 句をさらに追加することが出来ます。
 
 
 ## クエリメソッド <span id="query-methods"></span>
@@ -475,7 +534,33 @@ $rows = $command->queryAll();
 
 ## クエリ結果をインデックスする <span id="indexing-query-results"></span>
 
-(内容未定)
+[[yii\db\Query::all()|all()]] を呼ぶと、結果の行は連続した整数でインデックスされた配列で返されます。
+場合によっては、違う方法でインデックスしたいことがあるでしょう。
+例えば、特定のカラムの値や、何らかの式の値によってインデックスするなどです。
+この目的は、[[yii\db\Query::all()|all()]] の前に [[yii\db\Query::indexBy()|indexBy()]] を呼ぶことによって達成することが出来ます。
+例えば、
+
+```php
+// [100 => ['id' => 100, 'username' => '...', ...], 101 => [...], 103 => [...], ...] を返す
+$query = (new \yii\db\Query())
+    ->from('user')
+    ->limit(10)
+    ->indexBy('id')
+    ->all();
+```
+
+式の値によってインデックスするためには、[[yii\db\Query::indexBy()|indexBy()]] メソッドに無名関数を渡します。
+
+```php
+$query = (new \yii\db\Query())
+    ->from('user')
+    ->indexBy(function ($row) {
+        return $row['id'] . $row['username'];
+    })->all();
+```
+
+この無名関数は、現在の行データを含む `$row` というパラメータを取り、現在の行のインデックス値として使われるスカラ値を返さなくてはなりません。
+
 
 ## バッチクエリ <span id="batch-query"></span>
 
@@ -516,9 +601,7 @@ foreach ($query->each() as $user) {
 例えば、
 
 ```php
-use yii\db\Query;
-
-$query = (new Query())
+$query = (new \yii\db\Query())
     ->from('user')
     ->indexBy('username');
 
