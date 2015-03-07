@@ -43,7 +43,7 @@ concept-autoloading.md              | Yes
 concept-service-locator.md          | Yes
 concept-di-container.md             | Yes
 db-dao.md                           | Yes
-db-query-builder.md                 |
+db-query-builder.md                 | Yes
 db-active-record.md                 |
 db-migrations.md                    |
 db-sphinx.md                        |
