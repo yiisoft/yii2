@@ -5,6 +5,7 @@ Yii Framework 2 bootstrap extension Change Log
 -----------------------
 
 - Bug #5984: `yii\bootstrap\Activefield::checkbox()` caused browser to link label to the wrong input (cebe)
+- Enh: Added `ActionColumn::$buttonOptions` for defining HTML options to be added to the default buttons (cebe)
 
 
 2.0.3 March 01, 2015
