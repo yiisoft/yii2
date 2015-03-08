@@ -178,7 +178,8 @@ methods for this purpose:
 
 Both methods can take one of the following parameter formats:
 
-- a scalar value: the value is treated as the desired primary key value to be looked for.
+- a scalar value: the value is treated as the desired primary key value to be looked for. Yii will determine 
+  automatically which column is the primary key column by reading database schema information.
 - an array of scalar values: the array is treated as the desired primary key values to be looked for.
 - an associative array: the keys are column names and the values are the corresponding desired column values to 
   be looked for. Please refer to [Hash Format](db-query-builder.md#hash-format) for more details.
@@ -225,78 +226,103 @@ Do not call extra query building methods after calling [[yii\db\ActiveRecord::qu
 will be ignored.
 
 
-## Accessing Column Data
+## Accessing Data <span id="accessing-data"></span>
 
-Active Record maps each column of the corresponding database table row to an attribute in the Active Record
-object. An attribute behaves like a regular object public property. The name of an attribute is the same
-as the corresponding column name and is case-sensitive.
-
-To read the value of a column, you can use the following syntax:
+As aforementioned, the data brought back from the database are populated into Active Record instances, and
+each row of the query result corresponds to a single Active Record instance. You can access the column values
+by accessing the attributes of the Active Record instances, for example,
 
 ```php
-// "id" and "email" are the names of columns in the table associated with the $customer ActiveRecord object
+// "id" and "email" are the names of columns in the "customer" table
+$customer = Customer::findOne(123);
 $id = $customer->id;
 $email = $customer->email;
 ```
 
-To change the value of a column, assign a new value to the associated property and save the object:
+> Note: The Active Record attributes are named after the associated table columns in a case-sensitive manner.
+  Yii automatically defines an attribute in Active Record for every column of the associated table.
+  You should NOT redeclare any of the attributes. 
+
+Because Active Record attributes are named after table columns, you may find you are writing PHP code like
+`$customer->first_name`, which uses underscores to separate words in attribute names if your table columns are
+named in this way. If you are concerned about code style consistency, you should rename your table columns accordingly
+(to use camelCase, for example.)
+
+
+### Data Transformation <span id="data-transformation"></span>
+
+It often happens that the data being entered and/or displayed are in a different format from the one used in
+storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
+(which is not a good design, though), while in most cases you would like to manipulate birthdays as strings in
+the format of `'YYYY/MM/DD'`. To achieve this goal, you can define data transformation methods in the `Customer`
+Active Record class like the following:
 
 ```php
-$customer->email = 'jane@example.com';
-$customer->save();
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public function getBirthdayText()
+    {
+        return date('Y/m/d', $this->birthday);
+    }
+    
+    public function setBirthdayText($value)
+    {
+        $this->birthday = strtotime($value);
+    }
+}
 ```
 
-> Note: Obviously, because column names become attribute names of the active record class directly, you
-> get attribute names with underscores if you have that kind of naming schema in your database. For example
-> a column `user_name` will be accessed as `$user->user_name` on the active record object. If you are concerned about code style
-> you should adopt your database naming schema to use camelCase too. However, camelCase is not a requirement, Yii can work
-> well with any other naming style.
+Now in your PHP code, instead of accessing `$customer->birthday`, you would access `$customer->birthdayText`, which
+will allow you to input and display customer birthdays in the format of `'YYYY/MM/DD'`.
 
 
-## Advanced Data Query Methods
+### Retrieving Data in Arrays <span id="data-in-arrays"></span>
 
-### Retrieving Data in Arrays
-
-Sometimes when you are processing a large amount of data, you may want to use arrays to hold the data
-retrieved from database to save memory. This can be done by calling `asArray()`:
+While retrieving data in terms of Active Record objects is convenient and flexible, it is not always desirable
+when you have to bring back a large amount of data due to the big memory footprint. In this case, you can retrieve
+data using PHP arrays by calling [[yii\db\ActiveQuery::asArray()|asArray()]] before executing a query method:
 
 ```php
-// to return customers in terms of arrays rather than `Customer` objects:
+// return all customers
+// each customer is returned as an associative array
 $customers = Customer::find()
     ->asArray()
     ->all();
-// each element of $customers is an array of name-value pairs
 ```
 
-Note that while this method saves memory and improves performance it is a step to a lower abstraction
-layer and you will loose some features that the active record layer has.
-Fetching data using asArray is nearly equal to running a normal query using the [query builder](db-dao.md).
-When using asArray the result will be returned as a simple array with no typecasting performed 
-so the result may contain string values for fields that are integer when accessed on the active record object.
+> Note: While this method saves memory and improves performance, it is closer to the lower DB abstraction layer
+  and you will lose most of the Active Record features. A very important distinction lies in the data type of
+  the column values. When you return data in Active Record instances, column values will be automatically typecast
+  according to the actual column types; on the other hand when you return data in arrays, column values will be
+  strings (since they are the result of PDO without any processing), regardless their actual column types.
+   
 
-### Retrieving Data in Batches
+### Retrieving Data in Batches <span id="data-in-batches"></span>
 
 In [Query Builder](db-query-builder.md), we have explained that you may use *batch query* to minimize your memory
-usage when querying a large amount of data from the database. You may use the same technique
-in Active Record. For example,
+usage when querying a large amount of data from the database. You may use the same technique in Active Record. For example,
 
 ```php
 // fetch 10 customers at a time
 foreach (Customer::find()->batch(10) as $customers) {
     // $customers is an array of 10 or fewer Customer objects
 }
+
 // fetch 10 customers at a time and iterate them one by one
 foreach (Customer::find()->each(10) as $customer) {
     // $customer is a Customer object
 }
+
 // batch query with eager loading
 foreach (Customer::find()->with('orders')->each() as $customer) {
+    // $customer is a Customer object
 }
 ```
 
 
-Manipulating Data in Database
------------------------------
+## Manipulating Data in Database
 
 Active Record provides the following methods to insert, update and delete a single row in a table associated with
 a single Active Record instance:
