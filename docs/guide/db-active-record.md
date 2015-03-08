@@ -7,7 +7,7 @@ Active Record
 for accessing and manipulating data stored in databases. An Active Record class is associated with a database table,
 an Active Record instance corresponds to a row of that table, and an *attribute* of an Active Record
 instance represents the value of a particular column in that row. Instead of writing raw SQL statements,
-you would access Active Record attributes and call Active Record methods to access and manipulate the data stored 
+you would access Active Record attributes and call Active Record methods to access and manipulate the data stored
 in database tables.
 
 For example, assume `Customer` is an Active Record class which is associated with the `customer` table
@@ -38,7 +38,7 @@ Yii provides the Active Record support for the following relational databases:
 * Oracle: via [[yii\db\ActiveRecord]]
 * CUBRID 9.3 or later: via [[yii\db\ActiveRecord]] (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
   the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
-* Sphnix: via [[yii\sphinx\ActiveRecord]], requires the `yii2-sphinx` extension
+* Sphinx: via [[yii\sphinx\ActiveRecord]], requires the `yii2-sphinx` extension
 * ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requires the `yii2-elasticsearch` extension
 
 Additionally, Yii also supports using Active Record with the following NoSQL databases:
@@ -67,7 +67,7 @@ class Customer extends ActiveRecord
 {
     const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
-    
+
     /**
      * @return string the name of the table associated with this ActiveRecord class.
      */
@@ -79,7 +79,7 @@ class Customer extends ActiveRecord
 ```
 
 Active Record instances are considered as [models](structure-models.md). For this reason, we usually put Active Record
-classes under the `app\models` namespace (or other namespaces for keeping model classes). 
+classes under the `app\models` namespace (or other namespaces for keeping model classes).
 
 Because [[yii\db\ActiveRecord]] extends from [[yii\base\Model]], it inherits *all* [model](structure-models.md) features,
 such as attributes, validation rules, data serialization, etc.
@@ -87,8 +87,8 @@ such as attributes, validation rules, data serialization, etc.
 
 ## Connecting to Databases <span id="db-connection"></span>
 
-By default, Active Record uses the `db` [application component](structure-application-components.md) 
-as the [[yii\db\Connection|DB connection]] to access and manipulate the database data. As explained in 
+By default, Active Record uses the `db` [application component](structure-application-components.md)
+as the [[yii\db\Connection|DB connection]] to access and manipulate the database data. As explained in
 [Database Access Objects](db-dao.md), you can configure the `db` component in the application configuration like shown
 below,
 
@@ -105,7 +105,7 @@ return [
 ];
 ```
 
-If you want to use a different database connection other than the `db` component, you should override 
+If you want to use a different database connection other than the `db` component, you should override
 the [[yii\db\ActiveRecord::getDb()|getDb()]] method:
 
 ```php
@@ -116,7 +116,7 @@ class Customer extends ActiveRecord
     public static function getDb()
     {
         // use the "db2" application component
-        return \Yii::$app->db2;  
+        return \Yii::$app->db2;
     }
 }
 ```
@@ -180,9 +180,9 @@ Both methods can take one of the following parameter formats:
 
 - a scalar value: the value is treated as the desired primary key value to be looked for.
 - an array of scalar values: the array is treated as the desired primary key values to be looked for.
-- an associative array: the keys are column names and the values are the corresponding desired column values to 
+- an associative array: the keys are column names and the values are the corresponding desired column values to
   be looked for. Please refer to [Hash Format](db-query-builder.md#hash-format) for more details.
-  
+
 The following code shows how theses methods can be used:
 
 ```php
@@ -208,7 +208,7 @@ $customer = Customer::findAll([
 ]);
 ```
 
-> Note: Neither [[yii\db\ActiveRecord::findOne()]] nor [[yii\db\ActiveQuery::one()]] will add `LIMIT 1` to 
+> Note: Neither [[yii\db\ActiveRecord::findOne()]] nor [[yii\db\ActiveQuery::one()]] will add `LIMIT 1` to
   the generated SQL statement. If your query may return many rows of data, you should call `limit(1)` explicitly
   to improve the performance, e.g., `Customer::find()->limit(1)->one()`.
 
@@ -271,7 +271,7 @@ $customers = Customer::find()
 Note that while this method saves memory and improves performance it is a step to a lower abstraction
 layer and you will loose some features that the active record layer has.
 Fetching data using asArray is nearly equal to running a normal query using the [query builder](db-dao.md).
-When using asArray the result will be returned as a simple array with no typecasting performed 
+When using asArray the result will be returned as a simple array with no typecasting performed
 so the result may contain string values for fields that are integer when accessed on the active record object.
 
 ### Retrieving Data in Batches
