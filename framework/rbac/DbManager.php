@@ -447,7 +447,7 @@ class DbManager extends BaseManager
      */
     public function getRolesByUser($userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId===null || $userId === false) {
             return [];
         }
 
@@ -490,7 +490,7 @@ class DbManager extends BaseManager
      */
     public function getPermissionsByUser($userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId===null || $userId === false) {
             return [];
         }
 
@@ -590,7 +590,7 @@ class DbManager extends BaseManager
      */
     public function getAssignment($roleName, $userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId===null || $userId === false) {
             return null;
         }
 
@@ -614,7 +614,7 @@ class DbManager extends BaseManager
      */
     public function getAssignments($userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId===null || $userId === false) {
             return [];
         }
 
@@ -762,7 +762,7 @@ class DbManager extends BaseManager
      */
     public function revoke($role, $userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId===null || $userId === false) {
             return false;
         }
 
@@ -776,7 +776,7 @@ class DbManager extends BaseManager
      */
     public function revokeAll($userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId===null || $userId === false) {
             return false;
         }
 
