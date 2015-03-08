@@ -512,7 +512,29 @@ You can call [[yii\db\Query::union()|union()]] multiple times to append more `UN
   [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]]. The `$q` parameter is mandatory for these methods 
   and can be either a column name or a DB expression.
 
-All of the above methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
+For example,
+
+```php
+// SELECT `id`, `email` FROM `user`
+$rows = (new \yii\db\Query())
+    ->select(['id', 'email'])
+    ->from('user')
+    ->all();
+    
+// SELECT * FROM `user` WHERE `username` LIKE `%test%`
+$row = (new \yii\db\Query())
+    ->from('user')
+    ->where(['like', 'username', 'test'])
+    ->one();
+```
+
+> Note: The [[yii\db\Query::one()|one()]] method only returns the first row of the query result. It does NOT
+  add `LIMIT 1` to the generated SQL statement. This is fine and preferred if you know the query will return only one 
+  or a few rows of data (e.g. if you are querying with some primary keys). However, if the query may potentially 
+  result in many rows of data, you should call `limit(1)` explicitly to improve the performance, e.g.,
+  `(new \yii\db\Query())->from('user')->limit(1)->one()`.
+
+All these query methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
 should be used to perform a DB query. If you omit this parameter, the `db` application component will be used
 as the DB connection. Below is another example using the `count()` query method:
 

@@ -4,10 +4,11 @@ Active Record
 > Note: This section is under development.
 
 [Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
-for accessing data stored in a database. An Active Record class is associated with a database table,
-an Active Record instance corresponds to a row of that table, and an attribute of an Active Record
-instance represents the value of a column in that row. Instead of writing raw SQL statements,
-you can work with Active Record in an object-oriented fashion to manipulate the data in database tables.
+for accessing and manipulating data stored in databases. An Active Record class is associated with a database table,
+an Active Record instance corresponds to a row of that table, and an *attribute* of an Active Record
+instance represents the value of a particular column in that row. Instead of writing raw SQL statements,
+you would access Active Record attributes and call Active Record methods to access and manipulate the data stored 
+in database tables.
 
 For example, assume `Customer` is an Active Record class which is associated with the `customer` table
 and `name` is a column of the `customer` table. You can write the following code to insert a new
@@ -19,16 +20,16 @@ $customer->name = 'Qiang';
 $customer->save();
 ```
 
-The above code is equivalent to using the following raw SQL statement, which is less
-intuitive, more error prone, and may have compatibility problems for different DBMS:
+The above code is equivalent to using the following raw SQL statement for MySQL, which is less
+intuitive, more error prone, and may even have compatibility problems if you are using a different kind of database:
 
 ```php
-$db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
+$db->createCommand('INSERT INTO `customer` (`name`) VALUES (:name)', [
     ':name' => 'Qiang',
 ])->execute();
 ```
 
-Below is the list of databases that are currently supported by Yii Active Record:
+Yii provides the Active Record support for the following relational databases:
 
 * MySQL 4.1 or later: via [[yii\db\ActiveRecord]]
 * PostgreSQL 7.3 or later: via [[yii\db\ActiveRecord]]
@@ -39,19 +40,23 @@ Below is the list of databases that are currently supported by Yii Active Record
   the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
 * Sphnix: via [[yii\sphinx\ActiveRecord]], requires the `yii2-sphinx` extension
 * ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requires the `yii2-elasticsearch` extension
+
+Additionally, Yii also supports using Active Record with the following NoSQL databases:
+
 * Redis 2.6.12 or later: via [[yii\redis\ActiveRecord]], requires the `yii2-redis` extension
 * MongoDB 1.3.0 or later: via [[yii\mongodb\ActiveRecord]], requires the `yii2-mongodb` extension
 
-As you can see, Yii provides Active Record support for relational databases as well as NoSQL databases.
 In this tutorial, we will mainly describe the usage of Active Record for relational databases.
 However, most content described here are also applicable to Active Record for NoSQL databases.
 
 
-Declaring Active Record Classes
-------------------------------
+## Declaring Active Record Classes <span id="declaring-ar-classes"></span>
 
-To declare an Active Record class you need to extend [[yii\db\ActiveRecord]] and implement
-the `tableName` method that returns the name of the database table associated with the class:
+To get started, declare an Active Record class by extending [[yii\db\ActiveRecord]]. Because each Active Record
+class is associated with a database table, in this class you should override the [[yii\db\ActiveRecord::tableName()|tableName()]]
+method to specify which table the class is associated with.
+
+In the following example, we declare an Active Record class named `Customer` for the `customer` database table.
 
 ```php
 namespace app\models;
@@ -60,8 +65,8 @@ use yii\db\ActiveRecord;
 
 class Customer extends ActiveRecord
 {
-    const STATUS_ACTIVE = 'active';
-    const STATUS_DELETED = 'deleted';
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
     
     /**
      * @return string the name of the table associated with this ActiveRecord class.
@@ -73,9 +78,154 @@ class Customer extends ActiveRecord
 }
 ```
 
+Active Record instances are considered as [models](structure-models.md). For this reason, we usually put Active Record
+classes under the `app\models` namespace (or other namespaces for keeping model classes). 
 
-Accessing Column Data
----------------------
+Because [[yii\db\ActiveRecord]] extends from [[yii\base\Model]], it inherits *all* [model](structure-models.md) features,
+such as attributes, validation rules, data serialization, etc.
+
+
+## Connecting to Databases <span id="db-connection"></span>
+
+By default, Active Record uses the `db` [application component](structure-application-components.md) 
+as the [[yii\db\Connection|DB connection]] to access and manipulate the database data. As explained in 
+[Database Access Objects](db-dao.md), you can configure the `db` component in the application configuration like shown
+below,
+
+```php
+return [
+    'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=testdb',
+            'username' => 'demo',
+            'password' => 'demo',
+        ],
+    ],
+];
+```
+
+If you want to use a different database connection other than the `db` component, you should override 
+the [[yii\db\ActiveRecord::getDb()|getDb()]] method:
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public static function getDb()
+    {
+        // use the "db2" application component
+        return \Yii::$app->db2;  
+    }
+}
+```
+
+
+## Querying Data <span id="querying-data"></span>
+
+After declaring an Active Record class, you can use it to query data from the corresponding database table.
+The process usually takes the following three steps:
+
+1. Create a new query object by calling the [[yii\db\ActiveRecord::find()]] method;
+2. Build the query object by calling [query building methods](db-query-builder.md#building-queries);
+3. Call a [query method](db-query-builder.md#query-methods) to retrieve data in terms ofActive Record instances.
+
+As you can see, this is very similar to the procedure with [query builder](db-query-builder.md). The only difference
+is that instead of using the `new` operator to create a query object, you call [[yii\db\ActiveRecord::find()]]
+to return a new query object which is of class [[yii\db\ActiveQuery]].
+
+Below are some examples showing how to use Active Query to query data:
+
+```php
+// return a single customer whose ID is 123
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::find()
+    ->where(['id' => 123])
+    ->one();
+
+// return all active customers and order them by their IDs
+// SELECT * FROM `customer` WHERE `status` = 1 ORDER BY `id`
+$customers = Customer::find()
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->orderBy('id')
+    ->all();
+
+// return the number of active customers
+// SELECT COUNT(*) FROM `customer` WHERE `status` = 1
+$count = Customer::find()
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->count();
+
+// return all active customers in an array indexed by customer IDs
+// SELECT * FROM `customer`
+$customers = Customer::find()
+    ->indexBy('id')
+    ->all();
+```
+
+In the above, `$customer` is a `Customer` object while `$customers` is an array of `Customer` objects. They are
+all populated with the data retrieved from the `customer` table.
+
+> Info: Because [[yii\db\ActiveQuery]] extends from [[yii\db\Query]], you can use *all* query building methods and
+  query methods as described in the Section [Query Builder](db-query-builder.md).
+
+Because it is a common task to query by primary key values or a set of column values, Yii provides two shortcut
+methods for this purpose:
+
+- [[yii\db\ActiveRecord::findOne()]]: returns a single Active Record instance populated with the first row of the query result.
+- [[yii\db\ActiveRecord::findAll()]]: returns an array of Active Record instances populated with *all* query result.
+
+Both methods can take one of the following parameter formats:
+
+- a scalar value: the value is treated as the desired primary key value to be looked for.
+- an array of scalar values: the array is treated as the desired primary key values to be looked for.
+- an associative array: the keys are column names and the values are the corresponding desired column values to 
+  be looked for. Please refer to [Hash Format](db-query-builder.md#hash-format) for more details.
+  
+The following code shows how theses methods can be used:
+
+```php
+// returns a single customer whose ID is 123
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::findOne(123);
+
+// returns customers whose ID is 100, 101, 123 or 124
+// SELECT * FROM `customer` WHERE `id` IN (100, 101, 123, 124)
+$customers = Customer::findAll([1, 2, 3]);
+
+// returns an active customer whose ID is 123
+// SELECT * FROM `customer` WHERE `id` = 123 AND `status` = 1
+$customer = Customer::findOne([
+    'id' => 123,
+    'status' => Customer::STATUS_ACTIVE,
+]);
+
+// returns all inactive customers
+// SELECT * FROM `customer` WHERE `status` = 0
+$customer = Customer::findAll([
+    'status' => Customer::STATUS_INACTIVE,
+]);
+```
+
+> Note: Neither [[yii\db\ActiveRecord::findOne()]] nor [[yii\db\ActiveQuery::one()]] will add `LIMIT 1` to 
+  the generated SQL statement. If your query may return many rows of data, you should call `limit(1)` explicitly
+  to improve the performance, e.g., `Customer::find()->limit(1)->one()`.
+
+Besides using query building methods, you can also write raw SQLs to query data and populate the results into
+Active Record objects. You can do so by calling the [[yii\db\ActiveRecord::queryBySql()]] method:
+
+```php
+// returns all inactive customers
+$sql = 'SELECT * FROM customer WHERE status=:status';
+$customers = Customer::findBySql($sql, [':status' => Customer::STATUS_INACTIVE])->all();
+```
+
+Do not call extra query building methods after calling [[yii\db\ActiveRecord::queryBySql()|queryBySql()]] as they
+will be ignored.
+
+
+## Accessing Column Data
 
 Active Record maps each column of the corresponding database table row to an attribute in the Active Record
 object. An attribute behaves like a regular object public property. The name of an attribute is the same
@@ -103,112 +253,7 @@ $customer->save();
 > well with any other naming style.
 
 
-Connecting to Database
-----------------------
-
-Active Record uses a [[yii\db\Connection|DB connection]] to exchange data with the database. By default,
-it uses the `db` [application component](structure-application-components.md) as the connection. As explained in [Database basics](db-dao.md),
-you may configure the `db` component in the application configuration file as follows,
-
-```php
-return [
-    'components' => [
-        'db' => [
-            'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=testdb',
-            'username' => 'demo',
-            'password' => 'demo',
-        ],
-    ],
-];
-```
-
-If you are using multiple databases in your application and you want to use a different DB connection
-for your Active Record class, you may override the [[yii\db\ActiveRecord::getDb()|getDb()]] method:
-
-```php
-class Customer extends ActiveRecord
-{
-    // ...
-
-    public static function getDb()
-    {
-        return \Yii::$app->db2;  // use the "db2" application component
-    }
-}
-```
-
-
-Querying Data from Database
----------------------------
-
-Active Record provides two entry methods for building DB queries and populating data into Active Record instances:
-
- - [[yii\db\ActiveRecord::find()]]
- - [[yii\db\ActiveRecord::findBySql()]]
-
-Both methods return an [[yii\db\ActiveQuery]] instance, which extends [[yii\db\Query]], and thus supports the same set
-of flexible and powerful DB query building methods, such as `where()`, `join()`, `orderBy()`, etc. The following examples
-demonstrate some of the possibilities.
-
-```php
-// to retrieve all *active* customers and order them by their ID:
-$customers = Customer::find()
-    ->where(['status' => Customer::STATUS_ACTIVE])
-    ->orderBy('id')
-    ->all();
-
-// to return a single customer whose ID is 1:
-$customer = Customer::find()
-    ->where(['id' => 1])
-    ->one();
-
-// to return the number of *active* customers:
-$count = Customer::find()
-    ->where(['status' => Customer::STATUS_ACTIVE])
-    ->count();
-
-// to index the result by customer IDs:
-$customers = Customer::find()->indexBy('id')->all();
-// $customers array is indexed by customer IDs
-
-// to retrieve customers using a raw SQL statement:
-$sql = 'SELECT * FROM customer';
-$customers = Customer::findBySql($sql)->all();
-```
-
-> Tip: In the code above `Customer::STATUS_ACTIVE` is a constant defined in `Customer`. It is a good practice to
-  use meaningful constant names rather than hardcoded strings or numbers in your code.
-
-
-Two shortcut methods are provided to return Active Record instances matching a primary key value or a set of
-column values: `findOne()` and `findAll()`. The former returns the first matching instance while the latter
-returns all of them. For example,
-
-```php
-// to return a single customer whose ID is 1:
-$customer = Customer::findOne(1);
-
-// to return an *active* customer whose ID is 1:
-$customer = Customer::findOne([
-    'id' => 1,
-    'status' => Customer::STATUS_ACTIVE,
-]);
-
-// to return customers whose ID is 1, 2 or 3:
-$customers = Customer::findAll([1, 2, 3]);
-
-// to return customers whose status is "deleted":
-$customer = Customer::findAll([
-    'status' => Customer::STATUS_DELETED,
-]);
-```
-
-> Note: By default neither `findOne()` nor `one()` will add `LIMIT 1` to the query. This is fine and preferred
-  if you know the query will return only one or a few rows of data (e.g. if you are querying with some primary keys).
-  However, if the query may potentially return many rows of data, you should call `limit(1)` to improve the performance.
-  For example, `Customer::find()->where(['status' => Customer::STATUS_ACTIVE])->limit(1)->one()`.
-
+## Advanced Data Query Methods
 
 ### Retrieving Data in Arrays
 
