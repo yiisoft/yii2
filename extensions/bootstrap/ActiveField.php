@@ -376,6 +376,9 @@ class ActiveField extends \yii\widgets\ActiveField
                 $label = Html::encode($this->model->getAttributeLabel($attribute));
             }
         }
+        if (!isset($options['for'])) {
+            $options['for'] = Html::getInputId($this->model, $this->attribute);
+        }
         $this->parts['{beginLabel}'] = Html::beginTag('label', $options);
         $this->parts['{endLabel}'] = Html::endTag('label');
         $this->parts['{labelTitle}'] = $label;
