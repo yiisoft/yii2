@@ -181,7 +181,7 @@ class ActiveField extends Component
     {
         if ($content === null) {
             if (!isset($this->parts['{input}'])) {
-                $this->parts['{input}'] = Html::activeTextInput($this->model, $this->attribute, $this->inputOptions);
+                $this->parts['{input}'] = Html::activeInput($this->inputOptions['type'], $this->model, $this->attribute, $this->inputOptions);
             }
             if (!isset($this->parts['{label}'])) {
                 $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $this->labelOptions);
