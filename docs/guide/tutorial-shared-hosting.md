@@ -54,7 +54,7 @@ In order to run Yii, your webserver must meet its requirements. The very minimum
 Deploying an advanced application
 ---------------------------------
 
-Deploying an advanced application to shared hosting is a bit trickier than a basic application because it has two webroots, which shared hosting webservers don't support. We will need to adjust the file structure.
+Deploying an advanced application to shared hosting is a bit trickier than a basic application because it has two webroots, which shared hosting webservers don't support. We will need to adjust the directory structure.
 
 ### Move entry scripts into single webroot
 
