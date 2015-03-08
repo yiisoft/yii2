@@ -24,7 +24,7 @@ The webroot in our basic application template is named `web`. Before uploading t
 
 ### FTP root directory is writeable
 
-If you can write to the root level directory i.e. where `config`, `logs` and `www` are, then upload upload `assets`, `commands` etc. as is to the root level directory.
+If you can write to the root level directory i.e. where `config`, `logs` and `www` are, then upload `assets`, `commands` etc. as is to the root level directory.
 
 ### Add extras for webserver <span id="add-extras-for-webserver"></span>
 
