@@ -1141,4 +1141,15 @@ trait ActiveRecordTestTrait
         $this->assertTrue(isset($items[4]));
         $this->assertTrue(isset($items[5]));
     }
+
+    public function testEagerLoadingWithViaRelation()
+    {
+        /* @var $this TestCase|ActiveRecordTestTrait */
+
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+        /** @var $customer \yii\db\ActiveRecord $customer */
+        $customer = $customerClass::find()->where(['id' => 1])->with(['categories'])->one();
+        $this->assertTrue($customer->isRelationPopulated('categories'));
+    }
 }

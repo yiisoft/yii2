@@ -37,6 +37,21 @@ class Customer extends ActiveRecord
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
     }
 
+    public function getOrderItems2()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])->via('orders');
+    }
+
+    public function getItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])->via('orderItems2');
+    }
+
+    public function getCategories()
+    {
+        return $this->hasMany(Category::className(), ['id' => 'category_id'])->via('items');
+    }
+
     public function getExpensiveOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->andWhere('total > 50')->orderBy('id');
