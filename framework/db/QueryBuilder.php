@@ -688,7 +688,7 @@ class QueryBuilder extends \yii\base\Object
             $table = reset($tables);
             $joins[$i] = "$joinType $table";
             if (isset($join[2])) {
-                $condition = $this->buildCondition($join[2], $params);
+                $condition = $this->buildOnCondition($join[2], $params);
                 if ($condition !== '') {
                     $joins[$i] .= ' ON ' . $condition;
                 }
@@ -696,6 +696,35 @@ class QueryBuilder extends \yii\base\Object
         }
 
         return implode($this->separator, $joins);
+    }
+
+    /**
+     * Links two columns in a JOIN statement
+     *
+     * @param array $on
+     * @param array $params
+     *
+     * @return string
+     */
+    public function buildOnCondition($on, &$params)
+    {
+        if(!is_array($on)
+            || !isset($on[0])
+            || count($on) < 2
+            || (is_string($on[0])
+                && isset($this->conditionBuilders[strtoupper($on[0])]))
+        ) {
+            // Traditional condition
+            return $this->buildCondition($on, $params);
+        }
+
+        // Link btw two columns
+        list($leftColumn, $rightColumn) = $on;
+        $link = $this->db->quoteColumnName($leftColumn)
+            .   ' = '
+            .   $this->db->quoteColumnName($rightColumn);
+
+        return $link;
     }
 
     /**
