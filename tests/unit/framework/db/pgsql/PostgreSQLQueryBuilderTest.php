@@ -99,6 +99,14 @@ class PostgreSQLQueryBuilderTest extends QueryBuilderTest
             [ ['not ilike', 'name', ['heyho', 'abc']], '"name" NOT ILIKE :qp0 AND "name" NOT ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
             [ ['or ilike', 'name', ['heyho', 'abc']], '"name" ILIKE :qp0 OR "name" ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
             [ ['or not ilike', 'name', ['heyho', 'abc']], '"name" NOT ILIKE :qp0 OR "name" NOT ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+
+            //in integer array
+            [['in integer array', 'id', 1], '"id" @> ARRAY[:qp0]::integer[]', [':qp0' => 1]],
+            [['in integer array', 'id', [2, 3]], '"id" @> ARRAY[:qp0,:qp1]::integer[]', [':qp0' => 2, ':qp1' => 3]],
+
+            //in text array
+            [['in text array', 'name', 'alex'], '"name" @> ARRAY[:qp0]::text[]', [':qp0' => 'alex']],
+            [['in text array', 'name', ['alex', 'john']], '"name" @> ARRAY[:qp0,:qp1]::text[]', [':qp0' => 'alex', ':qp1' => 'john']],
         ]);
     }
 
