@@ -193,7 +193,7 @@ $customer = Customer::findOne(123);
 
 // returns customers whose ID is 100, 101, 123 or 124
 // SELECT * FROM `customer` WHERE `id` IN (100, 101, 123, 124)
-$customers = Customer::findAll([1, 2, 3]);
+$customers = Customer::findAll([100, 101, 123, 124]);
 
 // returns an active customer whose ID is 123
 // SELECT * FROM `customer` WHERE `id` = 123 AND `status` = 1
