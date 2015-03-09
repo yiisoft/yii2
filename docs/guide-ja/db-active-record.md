@@ -4,8 +4,9 @@
 > Note|注意: この節はまだ執筆中です。
 
 [アクティブレコード](http://ja.wikipedia.org/wiki/Active_Record) は、データベースに保存されているデータにアクセスするために、オブジェクト指向のインタフェイスを提供するものです。
-アクティブレコードクラスはデータベーステーブルと関連付けられて、アクティブレコードのインスタンスがそのテーブルの行に対応し、アクティブレコードのインスタンスの属性がその行のカラムの値を表現します。
-生の SQL 文を書く代りに、アクティブレコードを使って、オブジェクト指向の流儀でデータベーステーブルのデータを操作することが出来ます。
+アクティブレコードクラスはデータベーステーブルと関連付けられます。
+アクティブレコードのインスタンスはそのテーブルの行に対応し、アクティブレコードのインスタンスの属性がその行のカラムの値を表現します。
+データベーステーブルに保存されたデータにアクセスしたり、データを操作したりするために、生の SQL 文を書くのではなく、アクティブレコードの属性にアクセスしたり、アクティブレコードのメソッドを使ったりするのです。
 
 例えば、`Customer` が `customer` テーブルに関連付けられたアクティブレコードクラスであり、`name` が `customer` テーブルのカラムであると仮定しましょう。
 `customer` テーブルに新しい行を挿入するために次のコードを書くことが出来ます。
@@ -16,15 +17,16 @@ $customer->name = 'Qiang';
 $customer->save();
 ```
 
-上記のコードは、次のように生の SQL 文を使うのと等価なものですが、生の SQL 文の方は、直感的でなく、間違いも生じやすく、また、DBMS の違いによる互換性の問題も生じ得ます。
+上記のコードは、MySQL では、次のように生の SQL 文を使うのと等価なものです。
+しかし、生の SQL 文の方は、直感的でなく、間違いも生じやすく、また、別の種類のデータベースを使う場合には、互換性の問題も生じ得ます。
 
 ```php
-$db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
+$db->createCommand('INSERT INTO `customer` (`name`) VALUES (:name)', [
     ':name' => 'Qiang',
 ])->execute();
 ```
 
-下記が、現在 Yii のアクティブレコードによってサポートされているデータベースのリストです。
+Yii は次のリレーショナルデータベースに対して、アクティブレコードのサポートを提供しています。
 
 * MySQL 4.1 以降: [[yii\db\ActiveRecord]] による。
 * PostgreSQL 7.3 以降: [[yii\db\ActiveRecord]] による。
@@ -33,12 +35,14 @@ $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
 * Oracle: [[yii\db\ActiveRecord]] による。
 * CUBRID 9.3 以降: [[yii\db\ActiveRecord]] による。(cubrid PDO 拡張の [バグ](http://jira.cubrid.org/browse/APIS-658)
   のために、値を引用符で囲む機能が動作しません。そのため、サーバだけでなくクライアントも CUBRID 9.3 が必要になります)
-* Sphnix: [[yii\sphinx\ActiveRecord]] による。`yii2-sphinx` エクステンションが必要。
+* Sphinx: [[yii\sphinx\ActiveRecord]] による。`yii2-sphinx` エクステンションが必要。
 * ElasticSearch: [[yii\elasticsearch\ActiveRecord]] による。`yii2-elasticsearch` エクステンションが必要。
+
+これらに加えて、Yii は次の NoSQL データベースに対しても、アクティブレコードの使用をサポートしています。
+
 * Redis 2.6.12 以降: [[yii\redis\ActiveRecord]] による。`yii2-redis` エクステンションが必要。
 * MongoDB 1.3.0 以降: [[yii\mongodb\ActiveRecord]] による。`yii2-mongodb` エクステンションが必要。
 
-ご覧のように、Yii はリレーショナルデータベースだけでなく NoSQL データベースに対してもアクティブレコードのサポートを提供しています。
 このチュートリアルでは、主としてリレーショナルデータベースのためのアクティブレコードの使用方法を説明します。
 しかし、ここで説明するほとんどの内容は NoSQL データベースのためのアクティブレコードにも適用することが出来るものです。
 
@@ -46,7 +50,10 @@ $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
 アクティブレコードクラスを宣言する
 ----------------------------------
 
-アクティブレコードクラスを宣言するためには、[[yii\db\ActiveRecord]] を拡張して、クラスと関連付けられるデータベーステーブルの名前を返す `tableName` メソッドを実装する必要があります。
+まずは、[[yii\db\ActiveRecord]] を拡張してアクティブレコードクラスを宣言するところから始めましょう。
+すべてのアクティブレコードクラスはデータベーステーブルと関連付けられますので、クラスの中で [[yii\db\ActiveRecord::tableName()|tableName()]] メソッドをオーバーライドして、どのテーブルが関連付けられるかを指定しなければなりません。
+
+次の例では、`customer` というデータベーステーブルのための `Customer` という名前のアクティブレコードクラスを宣言しています。
 
 ```php
 namespace app\models;
@@ -55,11 +62,11 @@ use yii\db\ActiveRecord;
 
 class Customer extends ActiveRecord
 {
-    const STATUS_ACTIVE = 'active';
-    const STATUS_DELETED = 'deleted';
+    const STATUS_INACTIVE = 0;
+    const STATUS_ACTIVE = 1;
     
     /**
-     * @return string アクティブレコードクラスと関連付けられるデータベーステーブルの名前
+     * @return string このアクティブレコードクラスと関連付けられるテーブルの名前
      */
     public static function tableName()
     {
@@ -68,6 +75,147 @@ class Customer extends ActiveRecord
 }
 ```
 
+アクティブレコードのインスタンスは [モデル](structure-models.md) であると見なされます。
+この理由により、私たちは通常 `app\models` 名前空間 (あるいはモデルクラスを保管するための他の名前空間) の下にアクティブレコードクラスを置きます。
+
+[[yii\db\ActiveRecord]] は [[yii\base\Model]] から拡張していますので、属性、検証規則、データのシリアライゼーションなど、[モデル](structure-models.md) が持つ *全ての* 機能を継承しています。
+
+
+## データベースに接続する <span id="db-connection"></span>
+
+デフォルトでは、アクティブレコードは、`db` [アプリケーションコンポーネント](structure-application-components.md) を [[yii\db\Connection|DB 接続]] として使用して、データベースのデータにアクセスしたり操作したりします。
+[データベースアクセスオブジェクト](db-dao.md) で説明したように、次のようにして、アプリケーションの構成情報ファイルの中で `db` コンポーネントを構成することが出来ます。
+
+```php
+return [
+    'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=testdb',
+            'username' => 'demo',
+            'password' => 'demo',
+        ],
+    ],
+];
+```
+
+アクティブレコードクラスのために `db` とは異なるデータベース接続を使いたい場合は、[[yii\db\ActiveRecord::getDb()|getDb()]] メソッドをオーバーライドしなければなりません。
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public static function getDb()
+    {
+        // "db2" アプリケーションコンポーネントを使用
+        return \Yii::$app->db2;
+    }
+}
+```
+
+## データをクエリする <span id="querying-data"></span>
+
+アクティブレコードクラスを宣言した後、それを使って対応するデータベーステーブルからデータをクエリすることが出来ます。
+このプロセスは通常次の三つのステップを踏みます。
+
+1. [[yii\db\ActiveRecord::find()]] メソッドを呼んで、新しいクエリオブジェクトを作成する。
+2. [クエリ構築メソッド](db-query-builder.md#building-queries) を呼んで、クエリオブジェクトを構築する。
+3. [クエリメソッド](db-query-builder.md#query-methods) を呼んで、アクティブレコードのインスタンスの形でデータを取得する。
+
+ご覧のように、このプロセスは [クエリビルダ](db-query-builder.md) による手続きと非常によく似ています。
+唯一の違いは、`new` 演算子を使ってクエリオブジェクトを生成する代りに、[[yii\db\ActiveRecord::find()]] を呼んで  [[yii\db\ActiveQuery]] クラスであるクエリオブジェクトを返すという点です。
+
+以下の例は、アクティブクエリを使ってデータをクエリする方法を示すものです。
+
+```php
+// ID が 123 である一人の顧客を返す
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::find()
+    ->where(['id' => 123])
+    ->one();
+
+// アクティブな全ての顧客を返して、ID によって並べる
+// SELECT * FROM `customer` WHERE `status` = 1 ORDER BY `id`
+$customers = Customer::find()
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->orderBy('id')
+    ->all();
+
+// アクティブな顧客の数を返す
+// SELECT COUNT(*) FROM `customer` WHERE `status` = 1
+$count = Customer::find()
+    ->where(['status' => Customer::STATUS_ACTIVE])
+    ->count();
+
+// アクティブな全ての顧客を顧客IDによってインデックスされた配列として返す
+// SELECT * FROM `customer`
+$customers = Customer::find()
+    ->indexBy('id')
+    ->all();
+```
+
+上記において、`$customer` は `Customer` オブジェクトであり、`$customers` は `Customer` オブジェクトの配列です。
+これらは全て `customer` テーブルから取得されたデータを投入されます。
+
+> Info|情報: [[yii\db\ActiveQuery]] は [[yii\db\Query]] から拡張しているため、[クエリビルダ](db-query-builder.md) の節で説明されたクエリ構築メソッドとクエリメソッドの *全て* を使うことが出来ます。
+
+プライマリキーの値や一群のカラムの値でクエリをすることはよく行われる仕事ですので、Yii はこの目的のために、二つのショートカットメソッドを提供しています。
+
+- [[yii\db\ActiveRecord::findOne()]]: クエリ結果の最初の行を一つのアクティブレコードインスタンスに投入して返す。
+- [[yii\db\ActiveRecord::findAll()]]: *全ての* クエリ結果をアクティブレコードインスタンスの配列に投入して返す。
+
+どちらのメソッドも、次のパラメータ形式のどれかを取ることが出来ます。
+
+- スカラ値: 値は検索時に求められるプライマリキーの値として扱われます。
+  Yii は、データベースのスキーマ情報を読んで、どのカラムがプライマリキーのカラムであるかを自動的に判断します。
+- スカラ値の配列: 配列は検索時に求められるプライマリキーの値の配列として扱われます。
+- 連想配列: キーはカラム名であり、値は検索時に求められる対応するカラムの値です。
+  詳細については、[ハッシュ形式](db-query-builder.md#hash-format) を参照してください。
+
+次のコードは、これらのメソッドの使用方法を示すものです。
+
+```php
+// ID が 123 である一人の顧客を返す
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::findOne(123);
+
+// ID が 100, 101, 123, 124 のどれかである顧客を全て返す
+// SELECT * FROM `customer` WHERE `id` IN (100, 101, 123, 124)
+$customers = Customer::findAll([1, 2, 3]);
+
+// ID が 123 であるアクティブな顧客を返す
+// SELECT * FROM `customer` WHERE `id` = 123 AND `status` = 1
+$customer = Customer::findOne([
+    'id' => 123,
+    'status' => Customer::STATUS_ACTIVE,
+]);
+
+// アクティブでない全ての顧客を返す
+// SELECT * FROM `customer` WHERE `status` = 0
+$customer = Customer::findAll([
+    'status' => Customer::STATUS_INACTIVE,
+]);
+```
+
+> Note|注意: [[yii\db\ActiveRecord::findOne()]] も [[yii\db\ActiveQuery::one()]] も、生成される SQL 文に `LIMIT 1` を追加しません。
+あなたのクエリが多数のデータ行を返すかもしれない場合は、パフォーマンスを向上させるために、例えば `Customer::find()->limit(1)->one()` のように、`limit(1)` を明示的に呼ぶべきです。
+。
+
+Besides using query building methods, you can also write raw SQLs to query data and populate the results into
+Active Record objects. You can do so by calling the [[yii\db\ActiveRecord::queryBySql()]] method:
+
+```php
+// returns all inactive customers
+$sql = 'SELECT * FROM customer WHERE status=:status';
+$customers = Customer::findBySql($sql, [':status' => Customer::STATUS_INACTIVE])->all();
+```
+
+Do not call extra query building methods after calling [[yii\db\ActiveRecord::queryBySql()|queryBySql()]] as they
+will be ignored.
+
+
+[kihara]
 
 カラムのデータにアクセスする
 ----------------------------
@@ -96,40 +244,6 @@ $customer->save();
 > コードスタイルが気になるのであれば、データベースの命名スキーマも camelCase を使用しなければなりません。
 > しかしながら、camelCase の使用は要求されてはいません。Yii は他のどのような命名スタイルでも十分に動作します。
 
-
-データベースに接続する
-----------------------
-
-アクティブレコードは、データベースとの間でデータを交換するために [[yii\db\Connection|DB 接続]] を使用します。
-デフォルトでは、アクティブレコードは `db` [アプリケーションコンポーネント](structure-application-components.md) を接続として使用します。
-[データベースの基礎](db-dao.md) で説明したように、次のようにして、アプリケーションの構成情報ファイルの中で `db` コンポーネントを構成することが出来ます。
-
-```php
-return [
-    'components' => [
-        'db' => [
-            'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=testdb',
-            'username' => 'demo',
-            'password' => 'demo',
-        ],
-    ],
-];
-```
-
-アプリケーションの中で複数のデータベースを使っており、アクティブレコードクラスのために異なる DB 接続を使いたい場合は、[[yii\db\ActiveRecord::getDb()|getDb()]] メソッドをオーバーライドすることが出来ます。
-
-```php
-class Customer extends ActiveRecord
-{
-    // ...
-
-    public static function getDb()
-    {
-        return \Yii::$app->db2;  // "db2" アプリケーションコンポーネントを使用
-    }
-}
-```
 
 
 データベースにデータを問い合わせる
