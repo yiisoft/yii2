@@ -31,6 +31,13 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
+     * @var array the list of hosts that are allowed to access this module.
+     * Each array element is a hostname that will be resolved to an IP address that is compared 
+     * with the IP address of the user. A use case is to use a dynamic DNS (DDNS) to allow access.
+     * The default value is `[]`.
+     */
+    public $allowedHosts = [];
+    /**
      * @inheritdoc
      */
     public $controllerNamespace = 'yii\debug\controllers';
@@ -194,6 +201,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
         $ip = Yii::$app->getRequest()->getUserIP();
         foreach ($this->allowedIPs as $filter) {
             if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
+                return true;
+            }
+        }
+        foreach ($this->allowedHosts as $hostname) {
+            $filter = gethostbyname($hostname);
+            if ($filter === $ip) {
                 return true;
             }
         }
