@@ -235,13 +235,11 @@ $email = $customer->email;
 コードスタイルの一貫性が気になるのであれば、テーブルのカラム名を (例えば camelCase を使う名前に) 変更しなければなりません。
 
 
-### Data Transformation <span id="data-transformation"></span>
+### データ変換 <span id="data-transformation"></span>
 
-It often happens that the data being entered and/or displayed are in a different format from the one used in
-storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
-(which is not a good design, though), while in most cases you would like to manipulate birthdays as strings in
-the format of `'YYYY/MM/DD'`. To achieve this goal, you can define data transformation methods in the `Customer`
-Active Record class like the following:
+入力または表示されるデータの形式が、データベースにデータを保存するときに使われるものと異なる場合がよくあります。
+例えば、データベースでは顧客の誕生日を UNIX タイムスタンプで保存している (まあ、あまり良い設計ではありませんが) けれども、ほとんどの場合において誕生日を `'YYYY/MM/DD'` という形式の文字列として操作したい、というような場合です。
+この目的を達するために、次のように、`Customer` アクティブレコードクラスにおいてデータ変換メソッドを定義することが出来ます。
 
 ```php
 class Customer extends ActiveRecord
@@ -260,117 +258,33 @@ class Customer extends ActiveRecord
 }
 ```
 
-Now in your PHP code, instead of accessing `$customer->birthday`, you would access `$customer->birthdayText`, which
-will allow you to input and display customer birthdays in the format of `'YYYY/MM/DD'`.
+このようにすれば、PHP コードにおいて、`$customer->birthday` にアクセスする代りに、`$customer->birthdayText` にアクセスすれば、顧客の誕生日を `'YYYY/MM/DD'` の形式で入力および表示することが出来ます。
 
 
 [kihara]
 
-カラムの値を変更するためには、関連付けられたプロパティに新しい値を代入して、オブジェクトを保存します。
+
+### データを配列に取得する <span id="data-in-arrays"></span>
+
+データをアクティブレコードオブジェクトの形で取得するのは便利であり柔軟ですが、大きなメモリ使用量を要するために、大量のデータを取得しなければならない場合は、必ずしも望ましい方法ではありません。
+そういう場合は、クエリメソッドを実行する前に [[yii\db\ActiveQuery::asArray()|asArray()]] を呼ぶことによって、PHP 配列を使ってデータを取得することが出来ます。
 
 ```php
-$customer->email = 'jane@example.com';
-$customer->save();
-```
-
-> Note|注意: 自明なことですが、カラム名が直接にアクティブレコードクラスの属性名になりますので、データベースの命名スキーマでアンダースコアを使用している場合はアンダースコアを持つ属性名になります。
-> 例えば、`user_name` というカラムは、アクティブレコードのオブジェクトでは `$user->user_name` としてアクセスされることになります。
-> コードスタイルが気になるのであれば、データベースの命名スキーマも camelCase を使用しなければなりません。
-> しかしながら、camelCase の使用は要求されてはいません。Yii は他のどのような命名スタイルでも十分に動作します。
-
-
-
-データベースにデータを問い合わせる
-----------------------------------
-
-アクティブレコードは、DB クエリを構築してアクティブレコードインスタンスにデータを投入するために、二つの導入メソッドを提供しています。
-
- - [[yii\db\ActiveRecord::find()]]
- - [[yii\db\ActiveRecord::findBySql()]]
-
-この二つのメソッドは [[yii\db\ActiveQuery]] のインスタンスを返します。
- [[yii\db\ActiveQuery]] は [[yii\db\Query]] を拡張したものであり、従って、[[yii\db\Query]] と同じ一連の柔軟かつ強力な DB クエリ構築メソッド、例えば、`where()`、`join()`、`orderBy()` 等を提供します。
-下記の例は、いくつかの可能な使い方を示すものです。
-
-```php
-// *アクティブ* な顧客を全て読み出して、その ID によって並べ替える
-$customers = Customer::find()
-    ->where(['status' => Customer::STATUS_ACTIVE])
-    ->orderBy('id')
-    ->all();
-
-// ID が 1 である一人の顧客を返す
-$customer = Customer::find()
-    ->where(['id' => 1])
-    ->one();
-
-// *アクティブ* な顧客の数を返す
-$count = Customer::find()
-    ->where(['status' => Customer::STATUS_ACTIVE])
-    ->count();
-
-// 結果を顧客 ID によってインデックスする
-$customers = Customer::find()->indexBy('id')->all();
-// $customers 配列は顧客 ID によってインデックスされる
-
-// 生の SQL 文を使って顧客を読み出す
-$sql = 'SELECT * FROM customer';
-$customers = Customer::findBySql($sql)->all();
-```
-
-> Tip|ヒント: 上記のコードでは、`Customer::STATUS_ACTIVE` は `Customer` で定義されている定数です。
-  コードの中で、ハードコードされた文字列や数字ではなく、意味が分かる名前の定数を使用することは良いプラクティスです。
-
-
-プライマリキーの値または一連のカラムの値に合致するアクティブレコードのインスタンスを返すためのショートカットメソッドが二つ提供されています。
-すなわち、`findOne()` と `findAll()` です。
-前者は合致する最初のインスタンスを返し、後者は合致する全てのインスタンスを返します。
-例えば、
-
-```php
-// ID が 1 である顧客を一人返す
-$customer = Customer::findOne(1);
-
-// ID が 1 である *アクティブ* な顧客を一人返す
-$customer = Customer::findOne([
-    'id' => 1,
-    'status' => Customer::STATUS_ACTIVE,
-]);
-
-// ID が 1、2、または 3 である顧客を全て返す
-$customers = Customer::findAll([1, 2, 3]);
-
-// 状態が「削除済み」である顧客を全て返す
-$customer = Customer::findAll([
-    'status' => Customer::STATUS_DELETED,
-]);
-```
-
-> Note: デフォルトでは、`findOne()` も `one()` も、クエリに `LIMIT 1` を追加しません。
-  クエリが一つだけまたは少数の行のデータしか返さないことが分かっている場合 (例えば、プライマリキーか何かでクエリをする場合) は、これで十分であり、また、この方が望ましいでしょう。
-  しかし、クエリが多数の行のデータを返す可能性がある場合は、パフォーマンスを向上させるために `limit(1)` を呼ぶべきです。
-  例えば、`Customer::find()->where(['status' => Customer::STATUS_ACTIVE])->limit(1)->one()` のように。
-
-
-### データを配列に読み出す
-
-大量のデータを処理する場合には、メモリ使用量を節約するために、データベースから取得したデータを配列に保持したいこともあるでしょう。
-これは、`asArray()` を呼ぶことによって実現できます。
-
-```php
-// 顧客を `Customer` オブジェクトでなく配列の形式で返す
+// すべての顧客を返す
+// 各顧客は連想配列として返される
 $customers = Customer::find()
     ->asArray()
     ->all();
-// $customers の各要素は、「名前-値」のペアの配列
 ```
 
-このメソッドはメモリを節約してパフォーマンスを向上させますが、低い抽象レイヤに向って一歩を踏み出すものであり、アクティブレコードのレイヤが持ついくつかの機能を失うことになるという点に注意してください。
-`asArray` を使ってデータを読み出すことは、[クエリビルダ](db-dao.md) を使って普通のクエリを実行するのと、ほとんど同じことです。
-`asArray` を使うと、結果は、型変換の実行を伴わない単純な配列になります。
-その結果、アクティブレコードオブジェクトでアクセスする場合には整数になるフィールドが、文字列の値を含むことがあり得ます。
+> Note|注意: このメソッドはメモリを節約してパフォーマンスを向上させますが、低レベルの DB 抽象レイヤに近いものであり、あなたはアクティブレコードの機能をほとんど失うことになります。
+  非常に重要な違いがカラムの値のデータタイプにあります。
+  アクティブレコードインスタンスとしてデータを返す場合、カラムの値は実際のカラムの型に従って自動的に型キャストされます。
+  一方、配列としてデータを返す場合は、実際のカラムの型に関係なく、カラムの値は文字列になります。
+  なぜなら、何も処理をしない場合の PDO の結果は文字列だからです。
 
-### データをバッチモードで読み出す
+
+### データをバッチモードで取得する <span id="data-in-batches"></span>
 
 [クエリビルダ](db-query-builder.md) において、大量のデータをデータベースから検索する場合に、メモリ使用量を最小化するために *バッチクエリ* を使うことが出来るということを説明しました。
 おなじテクニックをアクティブレコードでも使うことが出来ます。
