@@ -43,16 +43,16 @@ class IpAddressValidator extends Validator
     public $ipv4 = true;
 
     /**
-     * @var boolean|string whether address may be CIDR subnet
+     * @var boolean|string whether address can be a CIDR subnet
      *     boolean - normal behaviour
-     *     string  - value 'only' to validate only address with a CIDR
+     *     string  - value 'only' to validate only the addresses with a CIDR
      */
     public $subnet = false;
 
     /**
-     * @var boolean whether to add the prefix with smallest length (32 for IPv4 and 128 for IPv6)
+     * @var boolean whether to add the prefix with the smallest length (32 for IPv4 and 128 for IPv6)
      * to an address without it.
-     * Works only when attribute 'subnet' is not false.
+     * Works only when attribute [[subnet]] is not false.
      * @see subnet
      */
     public $normalize = false;
@@ -65,7 +65,7 @@ class IpAddressValidator extends Validator
     public $exclude = false;
 
     /**
-     * @var boolean whether to expand an IPv6 address to full notation format
+     * @var boolean whether to expand an IPv6 address to the full notation format
      */
     public $expandV6 = false;
 
@@ -143,7 +143,7 @@ class IpAddressValidator extends Validator
 
     /**
      * @var string user-defined error message is used when validation fails due to IP address
-     * is not on the [[allowedRanges]] list, or is in the [[deniedRanges]] list
+     * is not on the [[allowedRanges]] list, or is on the [[deniedRanges]] list
      * @see allowedRanges
      * @see deniedRanges
      */
@@ -152,7 +152,7 @@ class IpAddressValidator extends Validator
     /**
      * @var array temporary variable contains the last error messages until they are processed
      */
-    protected $tempMessages;
+    protected $tempMessage;
 
     /**
      * @inheritdoc
@@ -160,16 +160,9 @@ class IpAddressValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->message === null) {
-            if ($this->subnet) {
-                $this->message = Yii::t('app', '{attribute} is not a valid IP subnet');
-            } else {
-                $this->message = Yii::t('app', '{attribute} is not a valid IP address');
-            }
-        }
 
         if (!$this->ipv4 && !$this->ipv6) {
-            throw new InvalidConfigException('Both IPv4 and IPv6 checks can not be disabled at same time');
+            throw new InvalidConfigException('Both IPv4 and IPv6 checks can not be disabled at the same time');
         }
 
         if (!defined('AF_INET6') && $this->ipv6) {
@@ -311,16 +304,18 @@ class IpAddressValidator extends Validator
      * Checks whether IP address can be used according to [[deniedRanges]] and [[allowedRanges]] lists
      * and [[rangesOrder]] option.
      *
-     * When [[rangesOrder]] is [[RANGE_ORDER_ALLOWED_DENIED]] - checks all [[allowedRanges]], at least one must
-     * match or will return false. Next checks all [[deniedRanges]], if one of them matched - will return false.
-     * At last, if $ip is not in [[allowedRanges]] nor in [[deniedRanges]] - will return false.
+     * When [[rangesOrder]] is [[RANGE_ORDER_ALLOWED_DENIED]] - checks all the [[allowedRanges]], at least one must
+     * match or the method will return false. Then all the [[deniedRanges]] are checked, if one of them
+     * matched the method will return false.
+     * At last, if $ip is not on the [[allowedRanges]] nor on the [[deniedRanges]] the method will return false.
      *
-     * When [[RANGE_ORDER_DENIED_ALLOWED]] - checks all [[deniedRanges]] and [[allowedRanges]].
-     * If the value is in the [[deniedRanges]] will return false, unless it is also present in [[allowedRanges]].
-     * If not found in the both of lists - will return true.
+     * When [[RANGE_ORDER_DENIED_ALLOWED]] - checks all the [[deniedRanges]] and the [[allowedRanges]].
+     * If the value is on the [[deniedRanges]] will return false, unless it is also present on the [[allowedRanges]].
+     * If it is not found on any of the lists the method will return true.
      *
-     * Tip: it is useful to use [[RANGE_ORDER_ALLOWED_DENIED]], when need to deny a less specific subnet and
-     * allow a more specific one. Example below will cause passing `192.168.1.1`, but `192.168.2.1` will be denied:
+     * Tip: it is useful to use [[RANGE_ORDER_ALLOWED_DENIED]], when it is necessary to deny a less specific subnet and
+     * to allow a more specific one. The example below will result in passing `192.168.1.1`,
+     * but `192.168.2.1` will be denied:
      *
      * ```
      * [
@@ -328,7 +323,6 @@ class IpAddressValidator extends Validator
      *      'allowedRanges' => ['192.168.1.0/24']
      * ]
      * ```
-     *
      *
      * @param $ip string
      * @return boolean
@@ -437,7 +431,7 @@ class IpAddressValidator extends Validator
     }
 
     /**
-     * Sets temporary error message for current validation and returns false
+     * Sets a temporary error message for the current validation and returns false
      *
      * @param $message string
      * @return boolean always false
@@ -449,7 +443,7 @@ class IpAddressValidator extends Validator
     }
 
     /**
-     * Removes temp message
+     * Removes the temp message
      *
      * @return mixed the removed temporary message. Null if the temp message does not exist.
      */
