@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.4 under development
 -----------------------
 
-- Enh #3506: Added `\yii\validators\IpAddressValidator` to perform validation of IP addresses and ssubnets (SilverFire)
+- Enh #3506: Added `\yii\validators\IpAddressValidator` to perform validation of IP addresses and subnets (SilverFire)
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
 - Enh #7562: `yii help` now lists all sub-commands by default (callmez)

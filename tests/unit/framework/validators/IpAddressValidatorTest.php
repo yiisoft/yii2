@@ -25,8 +25,12 @@ class IpAddressValidatorTest extends TestCase
 
     public function testAssureMessageSetOnInit()
     {
-        $val = new IpAddressValidator();
-        $this->assertTrue(is_string($val->message));
+        $val = new IpAddressValidator([
+            'allowedRanges' => '10.0.0.1',
+            'deniedRanges' => ['10.0.0.2']
+        ]);
+        $this->assertTrue(is_array($val->allowedRanges));
+        $this->assertTrue(is_array($val->deniedRanges));
     }
 
     public function testValidateValue()
@@ -84,6 +88,35 @@ class IpAddressValidatorTest extends TestCase
         $this->assertFalse($validator->validate(true));
     }
 
+    public function testValidateRange()
+    {
+        $validator = new IpAddressValidator([
+            'allowedRanges' => ['10.0.1.0/24'],
+        ]);
+        $this->assertTrue($validator->validate('10.0.1.2'));
+        $this->assertFalse($validator->validate('192.5.1.1'));
+        $this->assertFalse($validator->validate('2001:db0:1:2::7'));
+
+        $validator->allowedRanges = ['10.0.1.0/24', '2001:db0:1:2::/64', '127.0.0.1'];
+        $this->assertTrue($validator->validate('2001:db0:1:2::7'));
+        $this->assertTrue($validator->validate('10.0.1.2'));
+        $this->assertFalse($validator->validate('10.0.3.2'));
+
+        $validator->deniedRanges = ['10.0.0.0/8', '2001:db0::/32'];
+        $this->assertFalse($validator->validate('2001:db0:1:2::7'));
+        $this->assertFalse($validator->validate('10.0.1.2'));
+        $this->assertTrue($validator->validate('127.0.0.1'));
+
+        $validator->rangesOrder = IpAddressValidator::RANGE_ORDER_ALLOWED_DENIED;
+        $validator->subnet = true;
+        $this->assertTrue($validator->validate('10.0.1.2'));
+        $this->assertTrue($validator->validate('2001:db0:1:2::7'));
+        $this->assertTrue($validator->validate('127.0.0.1'));
+        $this->assertTrue($validator->validate('10.0.1.28/28'));
+        $this->assertFalse($validator->validate('10.2.2.2'));
+        $this->assertTrue($validator->validate('10.0.1.1/22')); // bad test
+    }
+
     public function testValidateAttribute()
     {
         $validator = new IpAddressValidator();
@@ -110,5 +143,18 @@ class IpAddressValidatorTest extends TestCase
         $validator->validateAttribute($model, 'attr_ip');
         $this->assertFalse($model->hasErrors('attr_ip'));
         $this->assertEquals('fa01::1/64', $model->attr_ip);
+
+        $validator->expandV6 = true;
+
+        $model->attr_ip = 'fa01::1/64';
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertFalse($model->hasErrors('attr_ip'));
+        $this->assertEquals('fa01:0000:0000:0000:0000:0000:0000:0001/64', $model->attr_ip);
+
+        $model->attr_ip = 'fa01::2/614';
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertTrue($model->hasErrors('attr_ip'));
+        $this->assertEquals('fa01::2/614', $model->attr_ip);
+        $this->assertEquals('attr_ip contains wrong subnet mask', $model->getFirstError('attr_ip'));
     }
 }
