@@ -322,93 +322,121 @@ foreach (Customer::find()->with('orders')->each() as $customer) {
 ```
 
 
-## Manipulating Data in Database
+## Saving Data <span id="inserting-updating-data"></span>
 
-Active Record provides the following methods to insert, update and delete a single row in a table associated with
-a single Active Record instance:
+Using Active Record, you can easily save data to database by taking the following steps:
 
-- [[yii\db\ActiveRecord::save()|save()]]
-- [[yii\db\ActiveRecord::insert()|insert()]]
-- [[yii\db\ActiveRecord::update()|update()]]
-- [[yii\db\ActiveRecord::delete()|delete()]]
+1. Prepare an Active Record instance
+2. Assign new values to Active Record attributes
+3. Call [[yii\db\ActiveRecord::save()]] to save the data into database.
 
-Active Record also provides the following static methods that apply to a whole table associated with
-an Active Record class. Be extremely careful when using these methods as they affect the whole table.
-For example, `deleteAll()` will delete ALL rows in the table.
-
-- [[yii\db\ActiveRecord::updateCounters()|updateCounters()]]
-- [[yii\db\ActiveRecord::updateAll()|updateAll()]]
-- [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]]
-- [[yii\db\ActiveRecord::deleteAll()|deleteAll()]]
-
-
-The following examples show how to use these methods:
+For example,
 
 ```php
-// to insert a new customer record
+// insert a new row of data
 $customer = new Customer();
 $customer->name = 'James';
 $customer->email = 'james@example.com';
-$customer->save();  // equivalent to $customer->insert();
+$customer->save();
 
-// to update an existing customer record
-$customer = Customer::findOne($id);
-$customer->email = 'james@example.com';
-$customer->save();  // equivalent to $customer->update();
-
-// to delete an existing customer record
-$customer = Customer::findOne($id);
-$customer->delete();
-
-// to delete several customers
-Customer::deleteAll('age > :age AND gender = :gender', [':age' => 20, ':gender' => 'M']);
-
-// to increment the age of ALL customers by 1
-Customer::updateAllCounters(['age' => 1]);
+// update an existing row of data
+$customer = Customer::findOne(123);
+$customer->email = 'james@newexample.com';
+$customer->save();
 ```
 
-> Info: The `save()` method will call either `insert()` or `update()`, depending on whether
-  the Active Record instance is new or not (internally it will check the value of [[yii\db\ActiveRecord::isNewRecord]]).
-  If an Active Record is instantiated via the `new` operator, calling `save()` will
-  insert a row in the table; calling `save()` on an active record fetched from the database will update the corresponding
-  row in the table.
+The [[yii\db\ActiveRecord::save()|save()]] method can either insert or update a row of data, depending on the state
+of the Active Record instance. If the instance is newly created via the `new` operator, calling 
+[[yii\db\ActiveRecord::save()|save()]] will cause insertion of a new row; If the instance is the result of a query method,
+calling [[yii\db\ActiveRecord::save()|save()]] will update the row associated with the instance. 
 
-
-### Data Input and Validation
-
-Because Active Record extends from [[yii\base\Model]], it supports the same data input and validation features
-as described in [Model](structure-models.md). For example, you may declare validation rules by overwriting the
-[[yii\base\Model::rules()|rules()]] method; you may massively assign user input data to an Active Record instance;
-and you may call [[yii\base\Model::validate()|validate()]] to trigger data validation.
-
-When you call `save()`, `insert()` or `update()`, these methods will automatically call [[yii\base\Model::validate()|validate()]].
-If the validation fails, the corresponding data saving operation will be cancelled.
-
-The following example shows how to use an Active Record to collect/validate user input and save them into the database:
+You can differentiate the two states of an Active Record instance by checking its 
+[[yii\db\ActiveRecord::isNewRecord|isNewRecord]] property value. This property is also used by 
+[[yii\db\ActiveRecord::save()|save()]] internally as follows:
 
 ```php
-// creating a new record
-$model = new Customer;
-if ($model->load(Yii::$app->request->post()) && $model->save()) {
-    // the user input has been collected, validated and saved
-}
-
-// updating a record whose primary key is $id
-$model = Customer::findOne($id);
-if ($model === null) {
-    throw new NotFoundHttpException;
-}
-if ($model->load(Yii::$app->request->post()) && $model->save()) {
-    // the user input has been collected, validated and saved
+public function save($runValidation = true, $attributeNames = null)
+{
+    if ($this->getIsNewRecord()) {
+        return $this->insert($runValidation, $attributeNames);
+    } else {
+        return $this->update($runValidation, $attributeNames) !== false;
+    }
 }
 ```
 
+> Tip: You can call [[yii\db\ActiveRecord::insert()|insert()]] or [[yii\db\ActiveRecord::update()|update()]]
+  directly to insert or update a row.
+  
 
-### Loading Default Values
+### Data Validation <span id="data-validation"></span>
 
-Your table columns may be defined with default values. Sometimes, you may want to pre-populate your
-Web form for an Active Record with these values. To do so, call the
-[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] method before rendering the form:
+Because [[yii\db\ActiveRecord]] extends from [[yii\base\Model]], it shares the same [data validation](input-validation.md) feature.
+You can declare validation rules by overriding the [[yii\db\ActiveRecord::rules()|rules()]] method and perform 
+data validation by calling the [[yii\db\ActiveRecord::validate()|validate()]] method.
+
+When you call [[yii\db\ActiveRecord::save()|save()]], by default it will call [[yii\db\ActiveRecord::validate()|validate()]]
+automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return false,
+and you can check the [[yii\db\ActiveRecord::errors|errors]] property to retrieve the validation error messages.  
+
+> Tip: If you are certain that your data do not need validation (e.g., the data comes from trustable sources),
+  you can call `save(false)` to skip the validation.
+
+
+### Massive Assignment <span id="massive-assignment"></span>
+
+Like normal [models](structure-models.md), Active Record instances also enjoy the [massive assignment feature](structure-models.md#massive-assignment).
+Using this feature, you can assign values to multiple attributes of an Active Record instance in a single PHP statement,
+like shown below. Do remember that only [safe attributes](structure-models.md#safe-attributes) can be massively assigned, though.
+
+```php
+$values = [
+    'name' => 'James',
+    'email' => 'james@example.com',
+];
+
+$customer = new Customer();
+
+$customer->attributes = $values;
+$customer->save();
+```
+
+
+### Updating Counters <span id="updating-counters"></span>
+
+It is a common task to increment or decrement a column in a database table. We call such columns as counter columns.
+You can use [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] to update one or multiple counter columns.
+For example,
+
+```php
+$post = Post::findOne(100);
+
+// UPDATE `post` SET `view_count` = `view_count` + 1 WHERE `id` = 100
+$post->updateCounters(['view_count' => 1]);
+```
+
+> Note: If you use [[yii\db\ActiveRecord::save()]] to update a counter column, you may end up with inaccurate result,
+  because it is likely the same counter is being saved by multiple requests which read and write the same counter value.
+
+
+### Dirty Attributes <span id="dirty-attributes"></span>
+
+When you call [[yii\db\ActiveRecord::save()|save()]] to save an Active Record instance, only *dirty attributes*
+are being saved. An attribute is considered *dirty* if its value has been modified since the Active Record instance
+was newly created or fetched from database. Note that data validation will be performed regardless if the Active Record 
+instance has dirty attributes or not.
+
+Active Record automatically maintains the list of dirty attributes. You can call [[yii\db\ActiveRecord::getDirtyAttributes()]] 
+to get the dirty attribute values. You can also call [[yii\db\ActiveRecord::markAttributeDirty()]] to explicitly mark 
+an attribute as dirty.
+
+
+### Default Attribute Values <span id="default-attribute-values"></span>
+
+Some of your table columns may have default values defined in the database. Sometimes, you may want to pre-populate your
+Web form for an Active Record instance with these default values. To avoid writing the same default values again,
+you can call [[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] to populate the DB-defined default values
+into the corresponding Active Record attributes:
 
 ```php
 $customer = new Customer();
@@ -416,19 +444,48 @@ $customer->loadDefaultValues();
 // ... render HTML form for $customer ...
 ```
 
-If you want to set some initial values for the attributes yourself you can override the `init()` method
-of the active record class and set the values there. For example to set the default value for the `status` attribute:
+
+### Updating Multiple Rows <span id="updating-multiple-rows"></span>
+
+The methods described above all work on individual Active Record instances, causing inserting or updating of individual
+table rows. To update multiple rows simultaneously, you should call [[yii\db\ActiveRecord::updateAll()|updateAll()]], instead,
+which is a static method.
 
 ```php
-public function init()
-{
-    parent::init();
-    $this->status = self::STATUS_ACTIVE;
-}
+// UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com`
+Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
 ```
 
-Active Record Life Cycles
--------------------------
+Similarly, you can call [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] to update counter columns of
+multiple rows at the same time.
+
+```php
+// UPDATE `customer` SET `age` = `age` + 1
+Customer::updateAllCounters(['age' => 1]);
+```
+
+
+## Deleting Data <span id="deleting-data"></span>
+
+To delete a single row of data, first retrieve the Active Record instance corresponding to that row and then call
+the [[yii\db\ActiveRecord::delete()]] method.
+
+```php
+$customer = Customer::findOne(123);
+$customer->delete();
+```
+
+You can call [[yii\db\ActiveRecord::deleteAll()]] to delete multiple or all rows of data. For example,
+
+```php
+Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
+```
+
+> Note: Be very careful when calling [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] because it may totally
+  erase all data from your table if you make a mistake in specifying the condition.
+
+
+## Active Record Life Cycles
 
 It is important to understand the life cycles of Active Record when it is used to manipulate data in database.
 These life cycles are typically associated with corresponding events which allow you to inject code
@@ -463,8 +520,7 @@ the following life cycles:
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
 
 
-Working with Relational Data
-----------------------------
+## Working with Relational Data
 
 You can use ActiveRecord to also query a table's relational data (i.e., selection of data from Table A can also pull
 in related data from Table B). Thanks to ActiveRecord, the relational data returned can be accessed like a property
@@ -561,8 +617,7 @@ an `ActiveQuery` instance, while `$customer->orders` returns an array of `Order`
 the query results in nothing).
 
 
-Relations with Junction Table
------------------------------
+### Relations with Junction Table
 
 Sometimes, two tables are related together via an intermediary table called a [junction table][]. To declare such relations,
 we can customize the [[yii\db\ActiveQuery]] object by calling its [[yii\db\ActiveQuery::via()|via()]] or
@@ -605,8 +660,7 @@ class Order extends \yii\db\ActiveRecord
 [junction table]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
 
 
-Lazy and Eager Loading
-----------------------
+### Lazy and Eager Loading
 
 As described earlier, when you access the related objects for the first time, ActiveRecord will perform a DB query
 to retrieve the corresponding data and populate it into the related objects. No query will be performed
@@ -686,8 +740,7 @@ $customers = Customer::find()->limit(100)->with([
 ```
 
 
-Inverse Relations
------------------
+### Inverse Relations
 
 Relations can often be defined in pairs. For example, `Customer` may have a relation named `orders` while `Order` may have a relation
 named `customer`:
@@ -777,8 +830,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 > you cannot call [[yii\db\ActiveQuery::inverseOf()]] further.
 
 
-Joining with Relations <span id="joining-with-relations"></span>
-----------------------
+### Joining with Relations <span id="joining-with-relations"></span>
 
 When working with relational databases, a common task is to join multiple tables and apply various
 query conditions and parameters to the JOIN SQL statement. Instead of calling [[yii\db\ActiveQuery::join()]]

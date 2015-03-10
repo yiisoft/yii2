@@ -147,7 +147,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @return integer the number of rows updated
-     * @throws NotSupportedException if not overrided
+     * @throws NotSupportedException if not overridden
      */
     public static function updateAll($attributes, $condition = '')
     {
