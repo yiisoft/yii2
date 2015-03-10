@@ -72,7 +72,7 @@ foreach ($files as $file) {
     }
 }
 
-$callbacks = ['setCookieValidationKey', 'setWritable', 'setExecutable'];
+$callbacks = ['setCookieValidationKey', 'setWritable', 'setExecutable', 'createSymlink'];
 foreach ($callbacks as $callback) {
     if (!empty($env[$callback])) {
         $callback($root, $env[$callback]);
@@ -194,12 +194,11 @@ function setCookieValidationKey($root, $paths)
     }
 }
 
-function createSymlink($links)
-{
+function createSymlink($root, $links) {
     foreach ($links as $link => $target) {
-        echo "    symlink $target as $link\n";
-        if (!is_link($link)) {
-            symlink($target, $link);
-        }
+        echo "      symlink " . $root . "/" . $target . " " . $root . "/" . $link . "\n";
+        //first removing folders to avoid errors if the folder already exists
+        @rmdir($root . "/" . $link);
+        @symlink($root . "/" . $target, $root . "/" . $link);
     }
 }
