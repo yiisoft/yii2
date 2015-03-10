@@ -106,6 +106,14 @@ $requirements = array(
         'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-captcha-captcha.html">Captcha</a>',
         'memo' => $imagickMemo,
     ),
+    // Security
+    array(		
+        'name' => 'OpenSSL PHP extension',		
+        'mandatory' => false,		
+        'condition' => extension_loaded('openssl'),		
+        'by' => '<a href="http://www.yiiframework.com/doc-2.0/yii-base-security.html">Security</a>',		
+        'memo' => 'Required by encrypt and decrypt methods.'		
+    ),
     // PHP ini :
     'phpExposePhp' => array(
         'name' => 'Expose PHP',
