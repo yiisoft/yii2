@@ -182,7 +182,7 @@ $customer = Customer::findOne(123);
 
 // ID が 100, 101, 123, 124 のどれかである顧客を全て返す
 // SELECT * FROM `customer` WHERE `id` IN (100, 101, 123, 124)
-$customers = Customer::findAll([1, 2, 3]);
+$customers = Customer::findAll([100, 101, 123, 124]);
 
 // ID が 123 であるアクティブな顧客を返す
 // SELECT * FROM `customer` WHERE `id` = 123 AND `status` = 1
@@ -202,35 +202,69 @@ $customer = Customer::findAll([
 あなたのクエリが多数のデータ行を返すかもしれない場合は、パフォーマンスを向上させるために、例えば `Customer::find()->limit(1)->one()` のように、`limit(1)` を明示的に呼ぶべきです。
 。
 
-Besides using query building methods, you can also write raw SQLs to query data and populate the results into
-Active Record objects. You can do so by calling the [[yii\db\ActiveRecord::queryBySql()]] method:
+クエリ構築メソッドを使う以外に、生の SQL を書いてデータをクエリして結果をアクティブレコードオブジェクトに投入することも出来ます。
+[[yii\db\ActiveRecord::queryBySql()]] メソッドを呼ぶことによってそうすることが出来ます。
 
 ```php
-// returns all inactive customers
+// アクティブでない全ての顧客を返す
 $sql = 'SELECT * FROM customer WHERE status=:status';
 $customers = Customer::findBySql($sql, [':status' => Customer::STATUS_INACTIVE])->all();
 ```
-
-Do not call extra query building methods after calling [[yii\db\ActiveRecord::queryBySql()|queryBySql()]] as they
-will be ignored.
+[[yii\db\ActiveRecord::queryBySql()|queryBySql()]] を呼んだ後では、無視されますので、クエリ構築メソッドを追加で呼び出してはいけません。
 
 
-[kihara]
+## データにアクセスする <span id="accessing-data"></span>
 
-カラムのデータにアクセスする
-----------------------------
-
-アクティブレコードは、対応するデータベーステーブルの行の各カラムをアクティブレコードオブジェクトの属性に割り付けます。
-属性は通常のオブジェクトのパブリックなプロパティと同様の振る舞いをします。
-属性の名前は対応するカラム名と同じであり、大文字と小文字を区別します。
-
-カラムの値を読み出すために、次の構文を使用することが出来ます。
+既に述べたように、データベースから取得されたデータはアクティブレコードのインスタンスに投入されます。
+そして、クエリ結果の各行がアクティブレコードの一つのインスタンスに対応します。
+アクティブレコードインスタンスの属性にアクセスすることによって、カラムの値にアクセスすることが出来ます。
+例えば、
 
 ```php
-// "id" と "email" は、$customer アクティブレコードオブジェクトと関連付けられたテーブルのカラム名
+// "id" と "email" は "customer" テーブルのカラム名
+$customer = Customer::findOne(123);
 $id = $customer->id;
 $email = $customer->email;
 ```
+
+> Note|注意: アクティブレコードの属性の名前は、関連付けられたテーブルのカラムの名前に従って、大文字と小文字を区別して名付けられます。
+  Yii は、関連付けられたテーブルの全てのカラムに対して、アクティブレコードの属性を自動的に定義します。
+  これらの属性は、すべて、再宣言してはいけません。
+
+アクティブレコードの属性はテーブルのカラムに従って命名されるため、テーブルのカラム名がアンダースコアで単語を分ける方法で命名されている場合は、`$customer->first_name` のような属性名を使って PHP コードを書くことになります。
+コードスタイルの一貫性が気になるのであれば、テーブルのカラム名を (例えば camelCase を使う名前に) 変更しなければなりません。
+
+
+### Data Transformation <span id="data-transformation"></span>
+
+It often happens that the data being entered and/or displayed are in a different format from the one used in
+storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
+(which is not a good design, though), while in most cases you would like to manipulate birthdays as strings in
+the format of `'YYYY/MM/DD'`. To achieve this goal, you can define data transformation methods in the `Customer`
+Active Record class like the following:
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public function getBirthdayText()
+    {
+        return date('Y/m/d', $this->birthday);
+    }
+    
+    public function setBirthdayText($value)
+    {
+        $this->birthday = strtotime($value);
+    }
+}
+```
+
+Now in your PHP code, instead of accessing `$customer->birthday`, you would access `$customer->birthdayText`, which
+will allow you to input and display customer birthdays in the format of `'YYYY/MM/DD'`.
+
+
+[kihara]
 
 カラムの値を変更するためには、関連付けられたプロパティに新しい値を代入して、オブジェクトを保存します。
 
