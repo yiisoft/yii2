@@ -114,11 +114,11 @@ class Module extends ServiceLocator
     /**
      * @var string the root directory that contains view files for this module
      */
-    private $_viewPath;
+    protected $viewPath;
     /**
      * @var string the root directory that contains layout view files for this module.
      */
-    private $_layoutPath;
+    protected $layoutPath;
     /**
      * @var array child modules of this module
      */
@@ -243,10 +243,10 @@ class Module extends ServiceLocator
      */
     public function getViewPath()
     {
-        if ($this->_viewPath !== null) {
-            return $this->_viewPath;
+        if ($this->viewPath !== null) {
+            return $this->viewPath;
         } else {
-            return $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
+            return $this->viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
         }
     }
 
@@ -257,7 +257,7 @@ class Module extends ServiceLocator
      */
     public function setViewPath($path)
     {
-        $this->_viewPath = Yii::getAlias($path);
+        $this->viewPath = Yii::getAlias($path);
     }
 
     /**
@@ -266,10 +266,10 @@ class Module extends ServiceLocator
      */
     public function getLayoutPath()
     {
-        if ($this->_layoutPath !== null) {
-            return $this->_layoutPath;
+        if ($this->layoutPath !== null) {
+            return $this->layoutPath;
         } else {
-            return $this->_layoutPath = $this->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
+            return $this->layoutPath = $this->getViewPath() . DIRECTORY_SEPARATOR . 'layouts';
         }
     }
 
@@ -280,7 +280,7 @@ class Module extends ServiceLocator
      */
     public function setLayoutPath($path)
     {
-        $this->_layoutPath = Yii::getAlias($path);
+        $this->layoutPath = Yii::getAlias($path);
     }
 
     /**
