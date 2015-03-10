@@ -422,13 +422,17 @@ $post->updateCounters(['view_count' => 1]);
 ### Dirty Attributes <span id="dirty-attributes"></span>
 
 When you call [[yii\db\ActiveRecord::save()|save()]] to save an Active Record instance, only *dirty attributes*
-are being saved. An attribute is considered *dirty* if its value has been modified since the Active Record instance
-was newly created or fetched from database. Note that data validation will be performed regardless if the Active Record 
+are being saved. An attribute is considered *dirty* if its value has been modified since it was loaded from DB or
+saved to DB most recently. Note that data validation will be performed regardless if the Active Record 
 instance has dirty attributes or not.
 
-Active Record automatically maintains the list of dirty attributes. You can call [[yii\db\ActiveRecord::getDirtyAttributes()]] 
-to get the dirty attribute values. You can also call [[yii\db\ActiveRecord::markAttributeDirty()]] to explicitly mark 
-an attribute as dirty.
+Active Record automatically maintains the list of dirty attributes. It does so by maintaining an older version of
+the attribute values and comparing them with the latest one. You can call [[yii\db\ActiveRecord::getDirtyAttributes()]] 
+to get the attributes that are currently dirty. You can also call [[yii\db\ActiveRecord::markAttributeDirty()]] 
+to explicitly mark an attribute as dirty.
+
+If you are interested in the attribute values prior to their most recent modification, you may call 
+[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] or [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 
 
 ### Default Attribute Values <span id="default-attribute-values"></span>
@@ -441,7 +445,7 @@ into the corresponding Active Record attributes:
 ```php
 $customer = new Customer();
 $customer->loadDefaultValues();
-// ... render HTML form for $customer ...
+// $customer->xyz will be assigned the default value declared when defining the "xyz" column
 ```
 
 
@@ -485,39 +489,125 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
   erase all data from your table if you make a mistake in specifying the condition.
 
 
-## Active Record Life Cycles
+## Active Record Life Cycles <span id="ar-life-cycles"></span>
 
-It is important to understand the life cycles of Active Record when it is used to manipulate data in database.
-These life cycles are typically associated with corresponding events which allow you to inject code
-to intercept or respond to these events. They are especially useful for developing Active Record [behaviors](concept-behaviors.md).
+It is important to understand the life cycles of Active Record when it is used for different purposes.
+During each life cycle, a certain sequence of methods will be invoked, and you can override these methods
+to get a chance to customize the life cycle. You can also respond to certain Active Record events triggered 
+during a life cycle to inject your custom code. These events are especially useful when you are developing 
+Active Record [behaviors](concept-behaviors.md) which need to customize Active Record life cycles.
 
-When instantiating a new Active Record instance, we will have the following life cycles:
+In the following, we will summarize various Active Record life cycles and the methods/events that are involved
+in the life cycles.
 
-1. constructor
-2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
 
-When querying data through the [[yii\db\ActiveRecord::find()|find()]] method, we will have the following life cycles
-for EVERY newly populated Active Record instance:
+### New Instance Life Cycle <span id="new-instance-life-cycle"></span>
 
-1. constructor
-2. [[yii\db\ActiveRecord::init()|init()]]: will trigger an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event
-3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event
+When creating a new Active Record instance via the `new` operator, the following life cycle will happen:
 
-When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an ActiveRecord, we will have
-the following life cycles:
+1. class constructor;
+2. [[yii\db\ActiveRecord::init()|init()]]: triggers an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event.
 
-1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event
-2. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event
-3. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event
-4. perform the actual data insertion or updating
-5. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event
 
-And finally, when calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an ActiveRecord, we will have
-the following life cycles:
+### Querying Data Life Cycle <span id="querying-data-life-cycle"></span>
 
-1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event
+When querying data through one of the [querying methods](#querying-data), each newly populated Active Record will
+undergo the following life cycle:
+
+1. class constructor.
+2. [[yii\db\ActiveRecord::init()|init()]]: triggers an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event.
+3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: triggers an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event.
+
+
+### Saving Data Life Cycle <span id="saving-data-life-cycle"></span>
+
+When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an Active Record instance, the following
+life cycle will happen:
+
+1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: triggers 
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns false
+   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+2. Performs data validation. If data validation fails, the steps after Step 3 will be skipped. 
+3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: triggers 
+   an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event.
+4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: triggers 
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] 
+   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns false
+   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+5. Performs the actual data insertion or updating;
+6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: triggers
+   an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 
+   or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event.
+   
+
+### Deleting Data Life Cycle <span id="deleting-data-life-cycle"></span>
+
+When calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an Active Record instance, the following
+life cycle will happen:
+
+1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: triggers
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns false
+   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
 2. perform the actual data deletion
-3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: will trigger an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event
+3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: triggers
+   an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
+
+
+> Note: Calling any of the following methods will NOT initiate any of the above life cycles:
+>
+> - [[yii\db\ActiveRecord::updateAll()]] 
+> - [[yii\db\ActiveRecord::deleteAll()]]
+> - [[yii\db\ActiveRecord::updateCounters()]] 
+> - [[yii\db\ActiveRecord::updateAllCounters()]] 
+
+
+## Transactional Operations <span id="transactional-operations"></span>
+
+There are two ways of dealing with transactions while working with Active Record. First way is doing everything manually
+as described in the "transactions" section of "[Database basics](db-dao.md)". Another way is to implement the
+`transactions` method where you can specify which operations are to be wrapped into transactions on a per model scenario:
+
+```php
+class Post extends \yii\db\ActiveRecord
+{
+    public function transactions()
+    {
+        return [
+            'admin' => self::OP_INSERT,
+            'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
+            // the above is equivalent to the following:
+            // 'api' => self::OP_ALL,
+        ];
+    }
+}
+```
+
+In the above `admin` and `api` are model scenarios and the constants starting with `OP_` are operations that should
+be wrapped in transactions for these scenarios. Supported operations are `OP_INSERT`, `OP_UPDATE` and `OP_DELETE`.
+`OP_ALL` stands for all three.
+
+Such automatic transactions are especially useful if you're doing additional database changes in `beforeSave`,
+`afterSave`, `beforeDelete`, `afterDelete` and want to be sure that both succeeded before they are saved.
+
+
+## Optimistic Locks <span id="optimistic-locks"></span>
+
+Optimistic locking allows multiple users to access the same record for edits and avoids
+potential conflicts. For example, when a user attempts to save the record upon some staled data
+(because another user has modified the data), a [[\yii\db\StaleObjectException]] exception will be thrown,
+and the update or deletion is skipped.
+
+Optimistic locking is only supported by `update()` and `delete()` methods and isn't used by default.
+
+To use Optimistic locking:
+
+1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
+   Override the `optimisticLock()` method to return the name of this column.
+2. In the Web form that collects the user input, add a hidden field that stores
+   the lock version of the record being updated.
+3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
+   and implement necessary business logic (e.g. merging the changes, prompting staled data)
+   to resolve the conflict.
 
 
 ## Working with Relational Data
@@ -1104,63 +1194,3 @@ Note that all your queries should then not use [[yii\db\ActiveQuery::where()|whe
 [[yii\db\ActiveQuery::andWhere()|andWhere()]] and [[yii\db\ActiveQuery::orWhere()|orWhere()]]
 to not override the default condition.
 
-
-Transactional operations
----------------------
-
-There are two ways of dealing with transactions while working with Active Record. First way is doing everything manually
-as described in the "transactions" section of "[Database basics](db-dao.md)". Another way is to implement the
-`transactions` method where you can specify which operations are to be wrapped into transactions on a per model scenario:
-
-```php
-class Post extends \yii\db\ActiveRecord
-{
-    public function transactions()
-    {
-        return [
-            'admin' => self::OP_INSERT,
-            'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
-            // the above is equivalent to the following:
-            // 'api' => self::OP_ALL,
-        ];
-    }
-}
-```
-
-In the above `admin` and `api` are model scenarios and the constants starting with `OP_` are operations that should
-be wrapped in transactions for these scenarios. Supported operations are `OP_INSERT`, `OP_UPDATE` and `OP_DELETE`.
-`OP_ALL` stands for all three.
-
-Such automatic transactions are especially useful if you're doing additional database changes in `beforeSave`,
-`afterSave`, `beforeDelete`, `afterDelete` and want to be sure that both succeeded before they are saved.
-
-Optimistic Locks
---------------
-
-Optimistic locking allows multiple users to access the same record for edits and avoids
-potential conflicts. For example, when a user attempts to save the record upon some staled data
-(because another user has modified the data), a [[\yii\db\StaleObjectException]] exception will be thrown,
-and the update or deletion is skipped.
-
-Optimistic locking is only supported by `update()` and `delete()` methods and isn't used by default.
-
-To use Optimistic locking:
-
-1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
-   Override the `optimisticLock()` method to return the name of this column.
-2. In the Web form that collects the user input, add a hidden field that stores
-   the lock version of the record being updated.
-3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
-   and implement necessary business logic (e.g. merging the changes, prompting staled data)
-   to resolve the conflict.
-
-Dirty Attributes
---------------
-
-An attribute is considered dirty if its value was modified after the model was loaded from database or since the most recent data save. When saving record data by calling `save()`, `update()`, `insert()` etc. only dirty attributes are saved into the database. If there are no dirty attributes then there is nothing to be saved so no query will be issued at all.
-
-See also
---------
-
-- [Model](structure-models.md)
-- [[yii\db\ActiveRecord]]
