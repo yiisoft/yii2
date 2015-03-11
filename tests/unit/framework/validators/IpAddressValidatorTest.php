@@ -19,7 +19,7 @@ class IpAddressValidatorTest extends TestCase
     public function testInitException()
     {
         $this->setExpectedException('yii\base\InvalidConfigException',
-            'Both IPv4 and IPv6 checks can not be disabled at same time');
+            'Both IPv4 and IPv6 checks can not be disabled at the same time');
         new IpAddressValidator(['ipv4' => false, 'ipv6' => false]);
     }
 

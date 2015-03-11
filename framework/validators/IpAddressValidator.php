@@ -150,11 +150,6 @@ class IpAddressValidator extends Validator
     public $notInRange = "{attribute} is not in the allowed range";
 
     /**
-     * @var array temporary variable contains the last error messages until they are processed
-     */
-    protected $tempMessage;
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -184,10 +179,11 @@ class IpAddressValidator extends Validator
     protected function validateValue($value)
     {
         $result = $this->validateSubnet($value);
-        if ($result !== false) {
-            return null;
+        if (is_array($result)) {
+            $result[1] = array_merge(['ip' => is_array($value) ? 'array()' : $value], $result[1]);
+            return $result;
         } else {
-            return [$this->removeTempMessage(), []];
+            return null;
         }
     }
 
@@ -199,8 +195,9 @@ class IpAddressValidator extends Validator
         $value = $model->$attribute;
 
         $result = $this->validateSubnet($value);
-        if ($result === false) {
-            $this->addError($model, $attribute, $this->removeTempMessage());
+        if (is_array($result)) {
+            $result[1] = array_merge(['ip' => is_array($value) ? 'array()' : $value], $result[1]);
+            $this->addError($model, $attribute, $result[0], $result[1]);
         } else {
             $model->$attribute = $result;
         }
@@ -210,12 +207,15 @@ class IpAddressValidator extends Validator
      * Validates an IPv4/IPv6 address or subnet
      *
      * @param $ip string
-     * @return boolean|string
+     * @return string|array
+     *  string - the validation was successful;
+     *  array  - an error occurred during the validation.
+     * Array[0] contains the text of an error, array[1] contains values for the placeholders in the error message
      */
     public function validateSubnet($ip)
     {
         if (!is_string($ip)) {
-            return $this->setTempMessage($this->wrongIp);
+            return [$this->wrongIp, []];
         }
 
         $exclude = null;
@@ -229,29 +229,29 @@ class IpAddressValidator extends Validator
         }
 
         if ($this->subnet === 'only' && $cidr == null) {
-            return $this->setTempMessage($this->noSubnet);
+            return [$this->noSubnet, []];
         }
         if (!$this->subnet && $cidr !== null) {
-            return $this->setTempMessage($this->hasSubnet);
+            return [$this->hasSubnet, []];
         }
         if ($this->exclude === false && $exclude !== null) {
-            return $this->setTempMessage($this->wrongIp);
+            return [$this->wrongIp, []];
         }
 
         if ($this->getIpVersion($ip) == 6) {
             if ($cidr !== null) {
                 if ($cidr > static::IPV6_ADDRESS_LENGTH || $cidr < 0) {
-                    return $this->setTempMessage($this->wrongCidr);
+                    return [$this->wrongCidr, []];
                 }
             } elseif ($this->normalize) {
                 $cidr = static::IPV6_ADDRESS_LENGTH;
             }
 
             if (!$this->ipv6) {
-                return $this->setTempMessage($this->ipv6NotAllowed);
+                return [$this->ipv6NotAllowed, []];
             }
             if (!$this->validate6($ip)) {
-                return $this->setTempMessage($this->wrongIp);
+                return [$this->wrongIp, []];
             }
 
             if ($this->expandV6) {
@@ -260,22 +260,22 @@ class IpAddressValidator extends Validator
         } else {
             if ($cidr !== null) {
                 if ($cidr > static::IPV4_ADDRESS_LENGTH || $cidr < 0) {
-                    return $this->setTempMessage($this->wrongCidr);
+                    return [$this->wrongCidr, []];
                 }
             } elseif ($this->normalize) {
                 $cidr = static::IPV4_ADDRESS_LENGTH;
             }
 
             if (!$this->ipv4) {
-                return $this->setTempMessage($this->ipv4NotAllowed);
+                return [$this->ipv4NotAllowed, []];
             }
             if (!$this->validate4($ip)) {
-                return $this->setTempMessage($this->wrongIp);
+                return [$this->wrongIp, []];
             }
         }
 
         if (!$this->checkRanges($ip)) {
-            return $this->setTempMessage($this->notInRange);
+            return [$this->notInRange, []];
         }
 
         $result = $exclude . $ip;
@@ -428,29 +428,5 @@ class IpAddressValidator extends Validator
             }
             return $result;
         }
-    }
-
-    /**
-     * Sets a temporary error message for the current validation and returns false
-     *
-     * @param $message string
-     * @return boolean always false
-     */
-    public function setTempMessage($message)
-    {
-        $this->tempMessage = $message;
-        return false;
-    }
-
-    /**
-     * Removes the temp message
-     *
-     * @return mixed the removed temporary message. Null if the temp message does not exist.
-     */
-    public function removeTempMessage()
-    {
-        $value = $this->tempMessage;
-        $this->tempMessage = null;
-        return $value;
     }
 }
