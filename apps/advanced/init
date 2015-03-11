@@ -116,14 +116,17 @@ function copyFile($root, $source, $target, &$all, $params)
             echo "  overwrite $target\n";
         } else {
             echo "      exist $target\n";
-            echo "            ...overwrite? [Yes|No|All|Quit] ";
+            echo "            ...overwrite? [Yes|No|All|Diff|Quit] ";
 
 
             $answer = !empty($params['overwrite']) ? $params['overwrite'] : trim(fgets(STDIN));
             if (!strncasecmp($answer, 'q', 1)) {
                 return false;
             } else {
-                if (!strncasecmp($answer, 'y', 1)) {
+                if (!strncasecmp($answer, 'd', 1)) {
+                    system('diff -u ' . $root . '/' . $source . ' ' . $root . '/' . $target);
+                    return copyFile($root, $source, $target, $all, $params);
+                } else if (!strncasecmp($answer, 'y', 1)) {
                     echo "  overwrite $target\n";
                 } else {
                     if (!strncasecmp($answer, 'a', 1)) {
