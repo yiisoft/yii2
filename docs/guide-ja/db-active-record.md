@@ -261,9 +261,6 @@ class Customer extends ActiveRecord
 このようにすれば、PHP コードにおいて、`$customer->birthday` にアクセスする代りに、`$customer->birthdayText` にアクセスすれば、顧客の誕生日を `'YYYY/MM/DD'` の形式で入力および表示することが出来ます。
 
 
-[kihara]
-
-
 ### データを配列に取得する <span id="data-in-arrays"></span>
 
 データをアクティブレコードオブジェクトの形で取得するのは便利であり柔軟ですが、大きなメモリ使用量を要するために、大量のデータを取得しなければならない場合は、必ずしも望ましい方法ではありません。
@@ -305,85 +302,112 @@ foreach (Customer::find()->with('orders')->each() as $customer) {
 ```
 
 
-データベースのデータを操作する
-------------------------------
+## データを保存する <span id="inserting-updating-data"></span>
 
-アクティブレコードは、一つのアクティブレコードインスタンスに関連付けられたテーブルの一行を挿入、更新または削除するために、次のメソッドを提供しています。
+アクティブレコードを使えば、次のステップを踏んで簡単にデータをデータベースに保存することが出来ます。
 
-- [[yii\db\ActiveRecord::save()|save()]]
-- [[yii\db\ActiveRecord::insert()|insert()]]
-- [[yii\db\ActiveRecord::update()|update()]]
-- [[yii\db\ActiveRecord::delete()|delete()]]
+1. アクティブレコードのインスタンスを準備する
+2. アクティブレコードの属性に新しい値を割り当てる
+3. [[yii\db\ActiveRecord::save()]] を呼んでデータをデータベースに保存する
 
-アクティブレコードは、また、アクティブレコードクラスと関連付けられたテーブル全体に適用する、次の静的なメソッドをも提供しています。
-これらのメソッドはテーブル全体に影響を与えますので、使用するときはこの上なく注意深くしなければなりません。
-例えば、`deleteAll()` はテーブルの全ての行を削除します。
+例えば、
 
-- [[yii\db\ActiveRecord::updateCounters()|updateCounters()]]
-- [[yii\db\ActiveRecord::updateAll()|updateAll()]]
-- [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]]
-- [[yii\db\ActiveRecord::deleteAll()|deleteAll()]]
-
-
-次の例は、これらのメソッドの使用方法を示すものです。
-
-```php
-// 新しい customer のレコードを挿入する
+// 新しいデータ行を挿入する
 $customer = new Customer();
 $customer->name = 'James';
 $customer->email = 'james@example.com';
-$customer->save();  // $customer->insert() と等価
+$customer->save();
 
-// 既存の customer のレコードを更新する
-$customer = Customer::findOne($id);
-$customer->email = 'james@example.com';
-$customer->save();  // $customer->update() と等価
-
-// 既存の customer のレコードを削除する
-$customer = Customer::findOne($id);
-$customer->delete();
-
-// いくつかの customer のレコードを削除する
-Customer::deleteAll('age > :age AND gender = :gender', [':age' => 20, ':gender' => 'M']);
-
-// すべてのレコードの年齢に 1 を追加する
-Customer::updateAllCounters(['age' => 1]);
+// 既存のデータ行を更新する
+$customer = Customer::findOne(123);
+$customer->email = 'james@newexample.com';
+$customer->save();
 ```
 
-> Info|情報: `save()` メソッドは、アクティブレコードインスタンスが新しいものであるか否かに従って、`insert()` または `update()` を呼びます
-   (内部的には、[[yii\db\ActiveRecord::isNewRecord]] の値をチェックして判断します)。
-  アクティブレコードのインスタンスが `new` 演算子によって作成された場合は、`save()` を呼ぶと、テーブルに新しい行が挿入されます。
-  データベースから読み出されたアクティブレコードに対して `save()` を呼ぶと、テーブルの中の対応する行が更新されます。
+[[yii\db\ActiveRecord::save()|save()]] メソッドは、アクティブレコードインスタンスの状態に従って、データ行を挿入するか、または、更新することが出来ます。
+インスタンスが `new` 演算子によって新しく作成されたものである場合は、[[yii\db\ActiveRecord::save()|save()]] を呼び出すと、新しい行が挿入されます。
+インスタンスがクエリメソッドの結果である場合は、[[yii\db\ActiveRecord::save()|save()]] を呼び出すと、そのインスタンスと関連付けられた行が更新されます。
 
-
-### データの入力と検証
-
-アクティブレコードは [[yii\base\Model]] を拡張したものですので、[モデル](structure-models.md) で説明したのと同じデータ入力と検証の機能をサポートしています。
-例えば、[[yii\base\Model::rules()|rules()]] メソッドをオーバーライドして検証規則を宣言することが出来ます。
-アクティブレコードインスタンスにユーザの入力データを一括代入することも出来ます。
-また、[[yii\base\Model::validate()|validate()]] を呼んで、データ検証を実行させることも出来ます。
-
-`save()`、`insert()` または `update()` を呼ぶと、これらのメソッドが自動的に [[yii\base\Model::validate()|validate()]] を呼びます。
-検証が失敗すると、対応するデータ保存操作はキャンセルされます。
-
-次の例は、アクティブレコードを使ってユーザ入力を収集/検証してデータベースに保存する方法を示すものです。
+アクティブレコードインスタンスの二つの状態は、その [[yii\db\ActiveRecord::isNewRecord|isNewRecord]] プロパティの値をチェックすることによって区別することが出来ます。
+下記のように、このプロパティは [[yii\db\ActiveRecord::save()|save()]] によっても内部的に使用されています。
 
 ```php
-// 新しいレコードを作成する
-$model = new Customer;
-if ($model->load(Yii::$app->request->post()) && $model->save()) {
-    // ユーザ入力が収集、検証されて、保存された
-}
-
-// プライマリキーが $id であるレコードを更新する
-$model = Customer::findOne($id);
-if ($model === null) {
-    throw new NotFoundHttpException;
-}
-if ($model->load(Yii::$app->request->post()) && $model->save()) {
-    // ユーザ入力が収集、検証されて、保存された
+public function save($runValidation = true, $attributeNames = null)
+{
+    if ($this->getIsNewRecord()) {
+        return $this->insert($runValidation, $attributeNames);
+    } else {
+        return $this->update($runValidation, $attributeNames) !== false;
+    }
 }
 ```
+
+> Tip|ヒント: [[yii\db\ActiveRecord::insert()|insert()]] または [[yii\db\ActiveRecord::update()|update()]] を直接に呼んでも、行を挿入または更新することが出来ます。
+
+
+### データの検証 <span id="data-validation"></span>
+
+[[yii\db\ActiveRecord]] は [[yii\base\Model]] を拡張したものですので、同じ [データ検証](input-validation.md) 機能を共有しています。
+例えば、[[yii\base\Model::rules()|rules()]] メソッドをオーバーライドして検証規則を宣言することが出来ます。
+[[yii\db\ActiveRecord::rules()|rules()]] メソッドをオーバーライドすることによって検証規則を宣言し、m[[yii\db\ActiveRecord::validate()|validate()]] メソッドを呼不ことによってテータの検証を実行することが出来ます。
+
+[[yii\db\ActiveRecord::save()|save()]] を呼ぶと、デフォルトでは [[yii\db\ActiveRecord::validate()|validate()]] を自動的に呼びます。
+検証が通った時だけ、実際にデータが保存されます。
+検証が通らなかった時は単に false が返され、[[yii\db\ActiveRecord::errors|errors]] プロパティをチェックして検証エラーメッセージを取得することが出来ます。
+
+> Tip|情報: データが検証を必要としないことが確実である場合 (例えば、データが信頼できるソースに由来するものである場合) は、検証をスキップするために `save(false)` を呼ぶことが出来ます。
+
+
+### 一括代入 <span id="massive-assignment"></span>
+
+通常の [モデル](structure-models.md) と同じように、アクティブレコードのインスタンスも  [一括代入機能](structure-models.md#massive-assignment) を享受することが出来ます。
+この機能を使うと、下記で示されているように、一つの PHP 文で、アクティブレコードインスタンスの複数の属性に値を割り当てることが出来ます。
+ただし、[安全な属性](structure-models.md#safe-attributes) だけが一括代入が可能であることを記憶しておいてください。
+
+```php
+$values = [
+    'name' => 'James',
+    'email' => 'james@example.com',
+];
+
+$customer = new Customer();
+
+$customer->attributes = $values;
+$customer->save();
+```
+
+
+### カウンタを更新する <span id="updating-counters"></span>
+
+It is a common task to increment or decrement a column in a database table. We call such columns as counter columns.
+You can use [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] to update one or multiple counter columns.
+For example,
+
+```php
+$post = Post::findOne(100);
+
+// UPDATE `post` SET `view_count` = `view_count` + 1 WHERE `id` = 100
+$post->updateCounters(['view_count' => 1]);
+```
+
+> Note: If you use [[yii\db\ActiveRecord::save()]] to update a counter column, you may end up with inaccurate result,
+  because it is likely the same counter is being saved by multiple requests which read and write the same counter value.
+
+
+### Dirty Attributes <span id="dirty-attributes"></span>
+
+When you call [[yii\db\ActiveRecord::save()|save()]] to save an Active Record instance, only *dirty attributes*
+are being saved. An attribute is considered *dirty* if its value has been modified since it was loaded from DB or
+saved to DB most recently. Note that data validation will be performed regardless if the Active Record 
+instance has dirty attributes or not.
+
+Active Record automatically maintains the list of dirty attributes. It does so by maintaining an older version of
+the attribute values and comparing them with the latest one. You can call [[yii\db\ActiveRecord::getDirtyAttributes()]] 
+to get the attributes that are currently dirty. You can also call [[yii\db\ActiveRecord::markAttributeDirty()]] 
+to explicitly mark an attribute as dirty.
+
+If you are interested in the attribute values prior to their most recent modification, you may call 
+[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] or [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 
 
 ### デフォルト値を読み出す
