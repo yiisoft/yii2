@@ -51,6 +51,7 @@ class Validator extends Component
      * @var array list of built-in validators (name => class or configuration)
      */
     public static $builtInValidators = [
+        'atLeastOne' => 'yii\validators\AtLeastOneValidator',
         'boolean' => 'yii\validators\BooleanValidator',
         'captcha' => 'yii\captcha\CaptchaValidator',
         'compare' => 'yii\validators\CompareValidator',
