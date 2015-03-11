@@ -22,7 +22,7 @@ public function action<?= Inflector::id2camel(trim(basename($generator->viewName
         }
     }
 
-    return $this->render('<?= $generator->viewName ?>', [
+    return $this->render('<?= basename($generator->viewName) ?>', [
         'model' => $model,
     ]);
 }
