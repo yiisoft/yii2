@@ -592,14 +592,19 @@ Such automatic transactions are especially useful if you're doing additional dat
 
 ## Optimistic Locks <span id="optimistic-locks"></span>
 
-Optimistic locking allows multiple users to access the same record for edits and avoids
-potential conflicts. For example, when a user attempts to save the record upon some staled data
-(because another user has modified the data), a [[\yii\db\StaleObjectException]] exception will be thrown,
-and the update or deletion is skipped.
+Optimistic locking is a way to prevent conflicts that may occur when a single row of data is being
+updated by multiple users. For example, both user A and user B are editing the same wiki article
+at the same time. After user A saves his edits, user B clicks on the "Save" button in an attempt to
+save his edits as well. Because user B was actually working on an outdated version of the article,
+it would be desirable to have a way to prevent him from saving the article and show him some hint message.
 
-Optimistic locking is only supported by `update()` and `delete()` methods and isn't used by default.
+Optimistic locking solves the above problem by using a column to record the version number of each row.
+When a row is being saved with an outdated version number, a [[yii\db\StaleObjectException]] exception
+will be thrown, which prevents the row from being saved. Optimistic locking is only supported when you
+update or delete an existing row of data using [[yii\db\ActiveRecord::update()]] or [[yii\db\ActiveRecord::delete()]],
+respectively.
 
-To use Optimistic locking:
+To use optimistic locking,
 
 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
    Override the `optimisticLock()` method to return the name of this column.
