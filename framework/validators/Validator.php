@@ -41,6 +41,7 @@ use yii\base\NotSupportedException;
  * - `trim`: [[FilterValidator]]
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
+ * - `ip`: [[IpAddressValidator]]
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -79,6 +80,7 @@ class Validator extends Component
         ],
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
+        'ip' => 'yii\validators\IpAddressValidator',
     ];
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
