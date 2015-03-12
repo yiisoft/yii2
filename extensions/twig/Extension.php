@@ -180,14 +180,17 @@ class Extension extends \Twig_Extension
     /**
      * Generates relative URL
      *
-     * @param string $path the parameter to be used to generate a valid URL
+     * @param string|array $path the parameter to be used to generate a valid URL
      * @param array $args arguments
      * @return string the generated relative URL
      */
-    public function path($path, $args = [])
+    public function path($path, $args = null)
     {
-        if ($args !== []) {
-            $path = array_merge([$path], $args);
+        if ($args !== null) {
+            if (!is_array($path)) {
+                $path = [$path];
+            }
+            $path = array_merge($path, $args);
         }
         return Url::to($path);
     }
@@ -195,14 +198,17 @@ class Extension extends \Twig_Extension
     /**
      * Generates absolute URL
      *
-     * @param string $path the parameter to be used to generate a valid URL
+     * @param string|array $path the parameter to be used to generate a valid URL
      * @param array $args arguments
      * @return string the generated absolute URL
      */
-    public function url($path, $args = [])
+    public function url($path, $args = null)
     {
-        if ($args !== []) {
-            $path = array_merge([$path], $args);
+        if ($args !== null) {
+            if (!is_array($path)) {
+                $path = [$path];
+            }
+            $path = array_merge($path, $args);
         }
         return Url::to($path, true);
     }

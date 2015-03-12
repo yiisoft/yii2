@@ -112,6 +112,53 @@ class ViewRendererTest extends DatabaseTestCase
         $view->renderFile('@yiiunit/extensions/twig/views/nulls.twig', ['order' => $order]);
     }
 
+    public function testUrls()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'request' => [
+                    'hostInfo' => 'http://localhost',
+                    'baseUrl' => '/test',
+                ],
+                'urlManager' => [
+                    'enablePrettyUrl' => true,
+                    'showScriptName' => false,
+                    'rules' => [
+                        '/' => 'site/index',
+                    ],
+                ],
+            ],
+        ]);
+        $view = $this->mockView();
+        $results = json_decode($view->renderFile('@yiiunit/extensions/twig/views/urls.twig'), true);
+
+        // path('/site/index', {})
+        $this->assertEquals('/test/', $results['path_no_params']);
+        // path('/site/index', { page: 2 })
+        $this->assertEquals('/test/?page=2', $results['path_with_params']);
+        // path(['/site/index'])
+        $this->assertEquals('/test/', $results['path_no_params_array']);
+        // path(['/site/index'], { page: 2 })
+        $this->assertEquals('/test/?page=2', $results['path_with_params_array']);
+        // path('@web/css/style.css')
+        $this->assertEquals('/test/css/style.css', $results['path_use_alias']);
+        // path('/site/index')
+        $this->assertEquals('/site/index', $results['path_as_is']);
+
+        // url('/site/index', {})
+        $this->assertEquals('http://localhost/test/', $results['url_no_params']);
+        // url('/site/index', { page: 2 })
+        $this->assertEquals('http://localhost/test/?page=2', $results['url_with_params']);
+        // url(['/site/index'])
+        $this->assertEquals('http://localhost/test/', $results['url_no_params_array']);
+        // url(['/site/index'], { page: 2 })
+        $this->assertEquals('http://localhost/test/?page=2', $results['url_with_params_array']);
+        // url('@web/css/style.css')
+        $this->assertEquals('http://localhost/test/css/style.css', $results['url_use_alias']);
+        // url('/site/index')
+        $this->assertEquals('http://localhost/site/index', $results['url_as_is']);
+    }
+
     /**
      * Mocks view instance
      * @return View
