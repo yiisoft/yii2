@@ -67,8 +67,8 @@ class ArrayHelper extends BaseArrayHelper
 
 将你的类保存在一个名为 `ArrayHelper.php` 的文件中。该文件可以在任何目录，例如 `@app/components`。
 
-接下来，在你的应用程序 [entry script](structure-entry-scripts.md) 中，在包含 `yii.php` 文件后面
-添加以下代码行，用 [Yii class autoloader](concept-autoloading.md) 加载自定义类
+接下来，在你的应用程序 [entry script](structure-entry-scripts.md) 处，在引入的 `yii.php` 文件后面
+添加以下代码行，用 [Yii class autoloader](concept-autoloading.md) 来加载自定义类
 代替框架的原始助手类：
 
 ```php
