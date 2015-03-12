@@ -561,14 +561,40 @@ life cycle will happen:
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
 
-## Transactional Operations <span id="transactional-operations"></span>
+## Working with Transactions <span id="transactional-operations"></span>
 
-There are two ways of dealing with transactions while working with Active Record. First way is doing everything manually
-as described in the "transactions" section of "[Database basics](db-dao.md)". Another way is to implement the
-`transactions` method where you can specify which operations are to be wrapped into transactions on a per model scenario:
+There are two ways of using [transactions](db-dao.md#performing-transactions) while working with Active Record. 
+
+The first way is to explicitly enclose Active Record method calls in a transactional block, like shown below,
 
 ```php
-class Post extends \yii\db\ActiveRecord
+$customer = Customer::findOne(123);
+
+Customer::getDb()->transaction(function($db) use ($customer) {
+    $customer->id = 200;
+    $customer->save();
+    // ...other DB operations...
+});
+
+// or alternatively
+
+$transaction = Customer::getDb()->beginTransaction();
+try {
+    $customer->id = 200;
+    $customer->save();
+    // ...other DB operations...
+    $transaction->commit();
+} catch(\Exception $e) {
+    $transaction->rollBack();
+    throw $e;
+}
+```
+
+The second way is to list the DB operations that require transactional support in the [[yii\db\ActiveRecord::transactions()]]
+method. For example,
+
+```php
+class Customer extends ActiveRecord
 {
     public function transactions()
     {
@@ -582,12 +608,16 @@ class Post extends \yii\db\ActiveRecord
 }
 ```
 
-In the above `admin` and `api` are model scenarios and the constants starting with `OP_` are operations that should
-be wrapped in transactions for these scenarios. Supported operations are `OP_INSERT`, `OP_UPDATE` and `OP_DELETE`.
-`OP_ALL` stands for all three.
+The [[yii\db\ActiveRecord::transactions()]] method should return an array whose keys are [scenario](structure-models.md#scenarios)
+names and values the corresponding operations that should be enclosed within transactions. You should use the following
+constants to refer to different DB operations:
 
-Such automatic transactions are especially useful if you're doing additional database changes in `beforeSave`,
-`afterSave`, `beforeDelete`, `afterDelete` and want to be sure that both succeeded before they are saved.
+* [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: insertion operation performed by [[yii\db\ActiveRecord::insert()|insert()]];
+* [[yii\db\ActiveRecord::OP_UPDATE|OP_UPDATE]]: update operation performed by [[yii\db\ActiveRecord::update()|update()]];
+* [[yii\db\ActiveRecord::OP_DELETE|OP_DELETE]]: deletion operation performed by [[yii\db\ActiveRecord::delete()|delete()]].
+
+Use `|` operators to concatenate the above constants to indicate multiple operations. You may also use the shortcut
+constant [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] to refer to all three operations above.
 
 
 ## Optimistic Locks <span id="optimistic-locks"></span>
@@ -606,85 +636,149 @@ respectively.
 
 To use optimistic locking,
 
-1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
-   Override the `optimisticLock()` method to return the name of this column.
-2. In the Web form that collects the user input, add a hidden field that stores
-   the lock version of the record being updated.
-3. In the controller action that does the data updating, try to catch the [[\yii\db\StaleObjectException]]
-   and implement necessary business logic (e.g. merging the changes, prompting staled data)
-   to resolve the conflict.
-
-
-## Working with Relational Data
-
-You can use ActiveRecord to also query a table's relational data (i.e., selection of data from Table A can also pull
-in related data from Table B). Thanks to ActiveRecord, the relational data returned can be accessed like a property
-of the ActiveRecord object associated with the primary table.
-
-For example, with an appropriate relation declaration, by accessing `$customer->orders` you may obtain
-an array of `Order` objects which represent the orders placed by the specified customer.
-
-To declare a relation, define a getter method which returns an [[yii\db\ActiveQuery]] object that has relation
-information about the relation context and thus will only query for related records. For example,
+1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
+   The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
+2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
+3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
+4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
+   exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
+   
+For example, assume the version column is named as `version`. You can implement optimistic locking with the code like
+the following.
 
 ```php
-class Customer extends \yii\db\ActiveRecord
+// ------ view code -------
+
+use yii\helpers\Html;
+
+// ...other input fields
+echo Html::activeHiddenField($model, 'version');
+
+
+// ------ controller code -------
+
+use yii\db\StaleObjectException;
+
+public function actionUpdate($id)
+{
+    $model = $this->findModel($id);
+
+    try {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', <?= $urlParams ?>]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    } catch (StaleObjectException $e) {
+        // logic to resolve the conflict
+    }
+}
+```
+
+
+## Working with Relational Data <span id="relational-data"></span>
+
+Besides working with individual database tables, Active Record is also capable of bringing together related data,
+making them readily accessible through the primary data. For example, the customer data is related with the order
+data because one customer may have placed one or multiple orders. With appropriate declaration of this relation,
+you may be able to access a customer's order information using the expression `$customer->orders` which gives
+back the customer's order information in terms of an array of `Order` Active Record instances.
+
+
+### Declaring Relations <span id="declaring-relations"></span>
+
+To work with relational data using Active Record, you first need to declare relations in Active Record classes.
+The task is as simple as declaring a *relation method* for every interested relation, like the following,
+
+```php
+class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        // Customer has_many Order via Order.customer_id -> id
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
     }
 }
 
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        // Order has_one Customer via Customer.id -> customer_id
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
 ```
 
-The methods [[yii\db\ActiveRecord::hasMany()]] and [[yii\db\ActiveRecord::hasOne()]] used in the above
-are used to model the many-one relationship and one-one relationship in a relational database.
-For example, a customer has many orders, and an order has one customer.
-Both methods take two parameters and return an [[yii\db\ActiveQuery]] object:
+In the above code, we have declared an `orders` relation for the `Customer` class, and a `customer` relation
+for the `Order` class. 
 
- - `$class`: the name of the class of the related model(s). This should be a fully qualified class name.
- - `$link`: the association between columns from the two tables. This should be given as an array.
-   The keys of the array are the names of the columns from the table associated with `$class`,
-   while the values of the array are the names of the columns from the declaring class.
-   It is a good practice to define relationships based on table foreign keys.
+Each relation method must be named as `getXyz`. We call `xyz` (the first letter is in lower case) the *relation name*.
+Note that relation names are *case sensitive*.
 
-After declaring relations, getting relational data is as easy as accessing a component property
-that is defined by the corresponding getter method:
+While declaring a relation, you should specify the following information:
 
-```php
-// get the orders of a customer
-$customer = Customer::findOne(1);
-$orders = $customer->orders;  // $orders is an array of Order objects
-```
+- the multiplicity of the relation: specified by calling either [[yii\db\ActiveRecord::hasMany()|hasMany()]]
+  or [[yii\db\ActiveRecord::hasOne()|hasOne()]]. In the above example you may easily read in the relation 
+  declarations that a customer has many orders while an order only has one customer.
+- the name of the related Active Record class: specified as the first parameter to 
+  either [[yii\db\ActiveRecord::hasMany()|hasMany()]] or [[yii\db\ActiveRecord::hasOne()|hasOne()]].
+  A recommended practice is to call `Xyz::className()` to get the class name string so that you can receive
+  IDE auto-completion support as well as error detection at compiling stage. 
+- the link between the two types of data: specifies the column(s) through which the two types of data are related.
+  The array values are the columns of the primary data (represented by the Active Record class that you are declaring
+  relations), while the array keys are the columns of the related data.
+  
 
-Behind the scenes, the above code executes the following two SQL queries, one for each line of code:
+### Accessing Relational Data <span id="accessing-relational-data"></span>
 
-```sql
-SELECT * FROM customer WHERE id=1;
-SELECT * FROM order WHERE customer_id=1;
-```
-
-> Tip: If you access the expression `$customer->orders` again, it will not perform the second SQL query again.
-The SQL query is only performed the first time when this expression is accessed. Any further
-accesses will only return the previously fetched results that are cached internally. If you want to re-query
-the relational data, simply unset the existing expression first: `unset($customer->orders);`.
-
-Sometimes, you may want to pass parameters to a relational query. For example, instead of returning
-all orders of a customer, you may want to return only big orders whose subtotal exceeds a specified amount.
-To do so, declare a `bigOrders` relation with the following getter method:
+After declaring relations, you can access relational data through relation names. This is just like accessing
+an object [property](concept-properties.md) defined by the relation method. For this reason, we call it *relation property*.
+For example,
 
 ```php
-class Customer extends \yii\db\ActiveRecord
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::findOne(123);
+
+// SELECT * FROM `order` WHERE `customer_id` = 123
+// $orders is an array of Order objects
+$orders = $customer->orders;
+```
+
+> Info: When you declare a relation named `xyz` via a getter method `getXyz()`, you will be able to access
+  `xyz` like an object [property](concept-properties.md). Note that the name is case sensitive.
+  
+If a relation is declared with [[yii\db\ActiveRecord::hasMany()|hasMany()]], accessing this relation property
+will return an array of the related Active Record instances; if a relation is declared with 
+[[yii\db\ActiveRecord::hasOne()|hasOne()]], accessing the relation property will return the related
+Active Record instance or null if no related data is found.
+
+When you access a relation property for the first time, a SQL statement will be executed, like shown in the
+above example. If the same property is access again, the previous result will be returned and no extra SQL
+statement will be executed. To enforce a re-execution of the SQL statement, you should unset the relation property
+first: `unset($customer->orders)`.
+
+
+### Dynamic Relational Query <span id="dynamic-relational-query"></span>
+
+Because a relation method returns an instance of [[yii\db\ActiveQuery]], you can further build this query
+using query building methods before performing DB query. For example,
+
+```php
+$customer = Customer::findOne(123);
+
+// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+$orders = $customer->getOrders()
+    ->where(['>', 'subtotal', 200])
+    ->orderBy('id')
+    ->all();
+```
+
+Sometimes you may even want to parameterize a relation declaration so that you can more easily perform
+dynamic relational query. For example, you may declare a `bigOrders` relation as follows, 
+
+```php
+class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
@@ -695,34 +789,38 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-Remember that `hasMany()` returns an [[yii\db\ActiveQuery]] object which allows you to customize the query by
-calling the methods of [[yii\db\ActiveQuery]].
-
-With the above declaration, if you access `$customer->bigOrders`, it will only return the orders
-whose subtotal is greater than 100. To specify a different threshold value, use the following code:
+Then you will be able to perform the following relational queries:
 
 ```php
+// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getBigOrders(200)->all();
+
+// SELECT * FROM `order` WHERE `subtotal` > 100 ORDER BY `id`
+$orders = $customer->bigOrders;
 ```
 
-> Note: A relation method returns an instance of [[yii\db\ActiveQuery]]. If you access the relation like
-an attribute (i.e. a class property), the return value will be the query result of the relation, which could be an instance of [[yii\db\ActiveRecord]],
-an array of that, or null, depending on the multiplicity of the relation. For example, `$customer->getOrders()` returns
-an `ActiveQuery` instance, while `$customer->orders` returns an array of `Order` objects (or an empty array if
-the query results in nothing).
+> Note: While a relation method returns a [[yii\db\ActiveQuery]] instance, accessing a relation property will either
+  return a [[yii\db\ActiveRecord]] instance or an array of that. This is different from a normal object 
+  [property](concept-properties.md) whose property value is of the same type as the defining getter method.
+  
+Unlike accessing a relation property, each time you perform a dynamic relational query via a relation method, 
+a SQL statement will be executed, even if the same dynamic relational query is performed before.
+  
 
+### Relations via a Junction Table <span id="junction-table"></span>
 
-### Relations with Junction Table
+In database modelling, when the multiplicity between two related tables is many-to-many, 
+a [junction table](https://en.wikipedia.org/wiki/Junction_table) is usually introduced. For example, the `order`
+table and the `item` table may be related via a junction table named `order_item`. One order will then correspond
+to multiple order items, while one product item will also correspond to multiple order items.
 
-Sometimes, two tables are related together via an intermediary table called a [junction table][]. To declare such relations,
-we can customize the [[yii\db\ActiveQuery]] object by calling its [[yii\db\ActiveQuery::via()|via()]] or
-[[yii\db\ActiveQuery::viaTable()|viaTable()]] method.
-
-For example, if table `order` and table `item` are related via the junction table `order_item`,
-we can declare the `items` relation in the `Order` class like the following:
+When declaring such relations, you would call either [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]]
+to specify the junction table. The difference between [[yii\db\ActiveQuery::via()|via()]] and [[yii\db\ActiveQuery::viaTable()|viaTable()]]
+is that the former specifies the junction table in terms of an existing relation name while the latter directly
+the junction table. For example,
 
 ```php
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
     public function getItems()
     {
@@ -732,12 +830,10 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-The [[yii\db\ActiveQuery::via()|via()]] method is similar to [[yii\db\ActiveQuery::viaTable()|viaTable()]] except that
-the first parameter of [[yii\db\ActiveQuery::via()|via()]] takes a relation name declared in the ActiveRecord class
-instead of the junction table name. For example, the above `items` relation can be equivalently declared as follows:
+or alternatively,
 
 ```php
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
@@ -752,10 +848,20 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[junction table]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
+The usage of relations declared with a junction table is the same as normal relations. For example,
+
+```php
+// SELECT * FROM `order` WHERE `id` = 100
+$order = Order::findOne(100);
+
+// SELECT * FROM `order_item` WHERE `order_id` = 100
+// SELECT * FROM `item` WHERE `item_id` IN (...)
+// returns an array of Item objects
+$items = $order->items;
+```
 
 
-### Lazy and Eager Loading
+### Lazy Loading and Eager Loading <span id="lazy-eager-loading"></span>
 
 As described earlier, when you access the related objects for the first time, ActiveRecord will perform a DB query
 to retrieve the corresponding data and populate it into the related objects. No query will be performed
