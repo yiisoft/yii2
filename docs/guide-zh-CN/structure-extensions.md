@@ -1,35 +1,35 @@
-À©Õ¹
+æ‰©å±•
 ==========
 
-À©Õ¹ÊÇ¿ÉÔÙ·¢ĞĞµÄÈí¼ş°ü£¬×¨ÃÅÉè¼ÆÓÃÔÚYiiÓ¦ÓÃÖĞ£¬²¢¾ßÓĞ¿ÉËæÊ±µ÷ÓÃµÄÌØµã¡£ÀıÈç£¬
-ÔÚÓ¦ÓÃµÄÃ¿¸öÒ³Ãæµ×²¿Îª [yiisoft/yii2-debug](tool-debugger.md) À©Õ¹Ôö¼ÓÒ»¸ö·½±ãµ÷ÊÔµÄ¹¤¾ßÀ¸
-Õâ»áÊ¹µÃÄã¸ü¼ÓÈİÒ×ÕÆÎÕÕâĞ©Ò³ÃæÊÇÈçºÎÉú³ÉµÄ¡£Äã¿ÉÒÔÔËÓÃÀ©Õ¹Ä£¿éÀ´¼ÓËÙÄãµÄ¿ª·¢½ø³ÌÄãÒ²¿ÉÒÔ½«´úÂë´ò°ü³ÉÀ©Õ¹ÎÄ¼şĞÎÊ½£¬
-À´ÓëÆäËûÈË¹²ÏíÄãµÄ¹¤×÷³É¹û.
+æ‰©å±•æ˜¯å¯å†å‘è¡Œçš„è½¯ä»¶åŒ…ï¼Œä¸“é—¨è®¾è®¡ç”¨åœ¨Yiiåº”ç”¨ä¸­ï¼Œå¹¶å…·æœ‰å¯éšæ—¶è°ƒç”¨çš„ç‰¹ç‚¹ã€‚ä¾‹å¦‚ï¼Œ
+åœ¨åº”ç”¨çš„æ¯ä¸ªé¡µé¢åº•éƒ¨ä¸º [yiisoft/yii2-debug](tool-debugger.md) æ‰©å±•å¢åŠ ä¸€ä¸ªæ–¹ä¾¿è°ƒè¯•çš„å·¥å…·æ 
+è¿™ä¼šä½¿å¾—ä½ æ›´åŠ å®¹æ˜“æŒæ¡è¿™äº›é¡µé¢æ˜¯å¦‚ä½•ç”Ÿæˆçš„ã€‚ä½ å¯ä»¥è¿ç”¨æ‰©å±•æ¨¡å—æ¥åŠ é€Ÿä½ çš„å¼€å‘è¿›ç¨‹ä½ ä¹Ÿå¯ä»¥å°†ä»£ç æ‰“åŒ…æˆæ‰©å±•æ–‡ä»¶å½¢å¼ï¼Œ
+æ¥ä¸å…¶ä»–äººå…±äº«ä½ çš„å·¥ä½œæˆæœ.
 
-> ÌáÊ¾ĞÅÏ¢: ÎÒÃÇÓÃÊõÓï "extension" À´ÌØÖ¸ Yii ÌØ¶¨Èí¼ş°ü¡£¶ÔÓÚÄÇĞ©ÎŞĞè Yii ¾ÍÄÜÊ¹ÓÃµÄÍ¨ÓÃÈí¼ş°ü
-  ÎÒÃÇ»áÓÃ¡±°ü¡±»ò¡±¿â¡±ÕâÑùµÄÊõÓïÀ´±íÊ¾ËüÃÇ¡£
+> æç¤ºä¿¡æ¯: æˆ‘ä»¬ç”¨æœ¯è¯­ "extension" æ¥ç‰¹æŒ‡ Yii ç‰¹å®šè½¯ä»¶åŒ…ã€‚å¯¹äºé‚£äº›æ— éœ€ Yii å°±èƒ½ä½¿ç”¨çš„é€šç”¨è½¯ä»¶åŒ…
+  æˆ‘ä»¬ä¼šç”¨â€åŒ…â€æˆ–â€åº“â€è¿™æ ·çš„æœ¯è¯­æ¥è¡¨ç¤ºå®ƒä»¬ã€‚
 
 
-## ÔËÓÃÀ©Õ¹ <a name="using-extensions"></a>
+## è¿ç”¨æ‰©å±• <a name="using-extensions"></a>
 
-ÎªÁËÊ¹ÓÃÀ©Õ¹£¬ÄãÊ×ÏÈĞèÒª°²×°Ëü¡£´ó²¿·ÖÀ©Õ¹ÎÄ¼ş»áÓÃ [Composer](https://getcomposer.org/)
-°üÀ´²¿Êğ£¬Composer °ü¿ÉÒÔÓÃÒÔÏÂÁ½¸ö¼òµ¥µÄ²½Öè°²×°£º
+ä¸ºäº†ä½¿ç”¨æ‰©å±•ï¼Œä½ é¦–å…ˆéœ€è¦å®‰è£…å®ƒã€‚å¤§éƒ¨åˆ†æ‰©å±•æ–‡ä»¶ä¼šç”¨ [Composer](https://getcomposer.org/)
+åŒ…æ¥éƒ¨ç½²ï¼ŒComposer åŒ…å¯ä»¥ç”¨ä»¥ä¸‹ä¸¤ä¸ªç®€å•çš„æ­¥éª¤å®‰è£…ï¼š
 
-1. ÒÆ³ıÄãÓ¦ÓÃÖĞµÄ `composer.json` ÎÄ¼ş£¬²¢Ö¸¶¨ÄãÒª°²×°µÄÀ©Õ¹ÎÄ¼ş (Composer packages)¡£
-2. ÔËĞĞ `composer install` À´°²×°Ö¸¶¨µÄÀ©Õ¹ÎÄ¼ş¡£
+1. ç§»é™¤ä½ åº”ç”¨ä¸­çš„ `composer.json` æ–‡ä»¶ï¼Œå¹¶æŒ‡å®šä½ è¦å®‰è£…çš„æ‰©å±•æ–‡ä»¶ (Composer packages)ã€‚
+2. è¿è¡Œ `composer install` æ¥å®‰è£…æŒ‡å®šçš„æ‰©å±•æ–‡ä»¶ã€‚
 
-ÌáÊ¾£ºÈç¹ûÃ»ÓĞµÄ»°ÄãĞèÒª°²×° [Composer](https://getcomposer.org/)¡£
+æç¤ºï¼šå¦‚æœæ²¡æœ‰çš„è¯ä½ éœ€è¦å®‰è£… [Composer](https://getcomposer.org/)ã€‚
 
-Ä¬ÈÏÇé¿öÏÂ£¬Composer °²×°°ü×¢²áÔÚ [Packagist](https://packagist.org/) - ×î´óµÄ¿ªÔ´
-Composer °ü¿â¡£Äã¿ÉÒÔ¶ÔÕÕ×Å¿´Ò»ÏÂ Packagist À©Õ¹¡£You may also
+é»˜è®¤æƒ…å†µä¸‹ï¼ŒComposer å®‰è£…åŒ…æ³¨å†Œåœ¨ [Packagist](https://packagist.org/) - æœ€å¤§çš„å¼€æº
+Composer åŒ…åº“ã€‚ä½ å¯ä»¥å¯¹ç…§ç€çœ‹ä¸€ä¸‹ Packagist æ‰©å±•ã€‚You may also
 [create your own repository](https://getcomposer.org/doc/05-repositories.md#repository) and configure Composer
 to use it. This is useful if you are developing closed open extensions and want to share within your projects.
 
 Extensions installed by Composer are stored in the `BasePath/vendor` directory, where `BasePath` refers to the
-application's [base path](structure-applications.md#basePath).  Because Composer is a dependency manager, Èç¹û
-°²×°Ò»¸ö°ü£¬Ò²Òª°²×°ËüËùÓĞµÄ¸½Êô°ü¡£
+application's [base path](structure-applications.md#basePath).  Because Composer is a dependency manager, å¦‚æœ
+å®‰è£…ä¸€ä¸ªåŒ…ï¼Œä¹Ÿè¦å®‰è£…å®ƒæ‰€æœ‰çš„é™„å±åŒ…ã€‚
 
-ÀıÈç£¬ÎªÁË°²×° `yiisoft/yii2-imagine` À©Õ¹£¬°´ÈçÏÂ·½Ê½ĞŞ¸Ä `composer.json` ÎÄ¼ş£º
+ä¾‹å¦‚ï¼Œä¸ºäº†å®‰è£… `yiisoft/yii2-imagine` æ‰©å±•ï¼ŒæŒ‰å¦‚ä¸‹æ–¹å¼ä¿®æ”¹ `composer.json` æ–‡ä»¶ï¼š
 
 ```json
 {
@@ -43,15 +43,15 @@ application's [base path](structure-applications.md#basePath).  Because Composer
 }
 ```
 
-°²×°Íê³Éºó£¬ĞèÒª²é¿´ `BasePath/vendor` ÏÂµÄ `yiisoft/yii2-imagine` Ä¿Â¼¡£Í¬Ê±ĞèÒª²é¿´
-°üº¬°²×°¸½Êô°üµÄ `imagine/imagine` Ä¿Â¼¡£
+å®‰è£…å®Œæˆåï¼Œéœ€è¦æŸ¥çœ‹ `BasePath/vendor` ä¸‹çš„ `yiisoft/yii2-imagine` ç›®å½•ã€‚åŒæ—¶éœ€è¦æŸ¥çœ‹
+åŒ…å«å®‰è£…é™„å±åŒ…çš„ `imagine/imagine` ç›®å½•ã€‚
 
-> ÌáÊ¾ĞÅÏ¢£º`yiisoft/yii2-imagine` ÊÇÓÉ Yii ÍÅ¶Ó¿ª·¢ºÍÎ¬»¤µÄÒ»¸öºËĞÄÀ©Õ¹¡£All
+> æç¤ºä¿¡æ¯ï¼š`yiisoft/yii2-imagine` æ˜¯ç”± Yii å›¢é˜Ÿå¼€å‘å’Œç»´æŠ¤çš„ä¸€ä¸ªæ ¸å¿ƒæ‰©å±•ã€‚All
   core extensions are hosted on [Packagist](https://packagist.org/) and named like `yiisoft/yii2-xyz`, where `xyz`
   varies for different extensions.
 
-Now you can use the installed extensions like they are part of your application. ÏÂÃæµÄÀı×ÓÕ¹Ê¾ÁË
-ÈçºÎÔËÓÃÓÉ `yiisoft/yii2-imagine` À©Õ¹Ìá¹©µÄ `yii\imagine\Image` Àà£º
+Now you can use the installed extensions like they are part of your application. ä¸‹é¢çš„ä¾‹å­å±•ç¤ºäº†
+å¦‚ä½•è¿ç”¨ç”± `yiisoft/yii2-imagine` æ‰©å±•æä¾›çš„ `yii\imagine\Image` ç±»ï¼š
 
 ```php
 use Yii;
@@ -62,20 +62,20 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     ->save(Yii::getAlias('@runtime/thumb-test-image.jpg'), ['quality' => 50]);
 ```
 
-> ÌáÊ¾ĞÅÏ¢£ºÀ©Õ¹ÀàÓÉ [Yii class autoloader](concept-autoloading.md) ×Ô¶¯¼ÓÔØ¡£
+> æç¤ºä¿¡æ¯ï¼šæ‰©å±•ç±»ç”± [Yii class autoloader](concept-autoloading.md) è‡ªåŠ¨åŠ è½½ã€‚
 
 
-### ÊÖ¶¯°²×°À©Õ¹ <a name="installing-extensions-manually"></a>
+### æ‰‹åŠ¨å®‰è£…æ‰©å±• <a name="installing-extensions-manually"></a>
 
-Ä³Ğ©ÌØÊâÇé¿öÏÂ£¬¿ÉÄÜĞèÒªÊÖ¶¯°²×°²¿·Ö»òÈ«²¿À©Õ¹£¬¶ø²»ÊÇÒÀ¿¿ Composer¡£
-·½·¨ÈçÏÂ
+æŸäº›ç‰¹æ®Šæƒ…å†µä¸‹ï¼Œå¯èƒ½éœ€è¦æ‰‹åŠ¨å®‰è£…éƒ¨åˆ†æˆ–å…¨éƒ¨æ‰©å±•ï¼Œè€Œä¸æ˜¯ä¾é  Composerã€‚
+æ–¹æ³•å¦‚ä¸‹
 
-1. ÏÂÔØÀ©Õ¹´æµµÎÄ¼ş²¢½âÑ¹µ½ `vendor` Ä¿Â¼¡£
-2. Èç¹ûÓĞµÄ»°£¬°²×°ÓÉÀ©Õ¹Ìá¹©µÄÀà×Ô¶¯¼ÓÔØÆ÷¡£
-3. ÏÂÔØ²¢°´ÕÕËµÃ÷°²×°ËùÓĞÏà¹ØÀ©Õ¹ÎÄ¼ş¡£
+1. ä¸‹è½½æ‰©å±•å­˜æ¡£æ–‡ä»¶å¹¶è§£å‹åˆ° `vendor` ç›®å½•ã€‚
+2. å¦‚æœæœ‰çš„è¯ï¼Œå®‰è£…ç”±æ‰©å±•æä¾›çš„ç±»è‡ªåŠ¨åŠ è½½å™¨ã€‚
+3. ä¸‹è½½å¹¶æŒ‰ç…§è¯´æ˜å®‰è£…æ‰€æœ‰ç›¸å…³æ‰©å±•æ–‡ä»¶ã€‚
 
-Èç¹ûÒ»¸öÀ©Õ¹Ã»ÓĞÒ»¸ö×Ô¶¯ÔØÈëµÄÀàµ«ÊÇ×ñÑ­ [PSR-4 standard](http://www.php-fig.org/psr/psr-4/),
-Äã¿ÉÒÔÓÃyiiÌá¹©µÄ×Ô¶¯ÔØÈëÀàÈ¥ÔØÈëÕâ¸öÀ©Õ¹Àà¡£All you need to do is just to
+å¦‚æœä¸€ä¸ªæ‰©å±•æ²¡æœ‰ä¸€ä¸ªè‡ªåŠ¨è½½å…¥çš„ç±»ä½†æ˜¯éµå¾ª [PSR-4 standard](http://www.php-fig.org/psr/psr-4/),
+ä½ å¯ä»¥ç”¨yiiæä¾›çš„è‡ªåŠ¨è½½å…¥ç±»å»è½½å…¥è¿™ä¸ªæ‰©å±•ç±»ã€‚All you need to do is just to
 declare a [root alias](concept-aliases.md#defining-aliases) for the extension root directory. For example,
 assuming you have installed an extension in the directory `vendor/mycompany/myext`, and the extension classes
 are under the `myext` namespace, then you can include the following code in your application configuration:
@@ -89,15 +89,15 @@ are under the `myext` namespace, then you can include the following code in your
 ```
 
 
-## ´´½¨À©Õ¹ <a name="creating-extensions"></a>
+## åˆ›å»ºæ‰©å±• <a name="creating-extensions"></a>
 
-Èç¹ûÄãÏëºÍ±ğÈË¹²Ïí×Ô¼ºµÄ´úÂë£¬¿ÉÒÔ¿¼ÂÇ´´½¨Ò»¸öÀ©Õ¹¡£
-Õâ¸öÀ©Õ¹ÄÜ¹»ÈİÄÉÈÎºÎ´úÂë£¬ÀıÈçÒ»¸öÖúÊÖÀà£¬a widget, a module, etc.
+å¦‚æœä½ æƒ³å’Œåˆ«äººå…±äº«è‡ªå·±çš„ä»£ç ï¼Œå¯ä»¥è€ƒè™‘åˆ›å»ºä¸€ä¸ªæ‰©å±•ã€‚
+è¿™ä¸ªæ‰©å±•èƒ½å¤Ÿå®¹çº³ä»»ä½•ä»£ç ï¼Œä¾‹å¦‚ä¸€ä¸ªåŠ©æ‰‹ç±»ï¼Œa widget, a module, etc.
 
 It is recommended that you create an extension in terms of a [Composer package](https://getcomposer.org/) so that
 it can be more easily installed and used by other users, liked described in the last subsection.
 
-°´ÕÕÏÂ±ß²½ÖèÎª Composer °ü´´½¨Ò»¸öÀ©Õ¹¡£
+æŒ‰ç…§ä¸‹è¾¹æ­¥éª¤ä¸º Composer åŒ…åˆ›å»ºä¸€ä¸ªæ‰©å±•ã€‚
 
 1. Create a project for your extension and host it on a VCS repository, such as [github.com](https://github.com).
    The development and maintenance work about the extension should be done on this repository.
@@ -109,9 +109,9 @@ it can be more easily installed and used by other users, liked described in the 
 
 ### `composer.json` <a name="composer-json"></a>
 
-Ã¿Ò»¸ö Composer package µÄ¸ùÄ¿Â¼°ü¶¼±ØĞë°üº¬Ò»¸ö `composer.json` ÎÄ¼ş¡£The file contains the metadata about
-the package. ¿ÉÒÔÔÚ [Composer Manual](https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup) ÊÖ²áÄÚÕÒµ½ÓĞ¹Ø¸ÃÎÄ¼şÍêÕûµÄËµÃ÷¡£
-ÏÂ±ßÀı×ÓÕ¹Ê¾ÁË `composer.json` ÎÄ¼şµÄ `yiisoft/yii2-imagine` À©Õ¹£º
+æ¯ä¸€ä¸ª Composer package çš„æ ¹ç›®å½•åŒ…éƒ½å¿…é¡»åŒ…å«ä¸€ä¸ª `composer.json` æ–‡ä»¶ã€‚The file contains the metadata about
+the package. å¯ä»¥åœ¨ [Composer Manual](https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup) æ‰‹å†Œå†…æ‰¾åˆ°æœ‰å…³è¯¥æ–‡ä»¶å®Œæ•´çš„è¯´æ˜ã€‚
+ä¸‹è¾¹ä¾‹å­å±•ç¤ºäº† `composer.json` æ–‡ä»¶çš„ `yiisoft/yii2-imagine` æ‰©å±•ï¼š
 
 ```json
 {
@@ -156,8 +156,8 @@ the package. ¿ÉÒÔÔÚ [Composer Manual](https://getcomposer.org/doc/01-basic-usage
 
 #### Package Name <a name="package-name"></a>
 
-Ã¿Ò»¸ö Composer °üµÄÃû³ÆÖĞ¶¼ĞèÒª°üº¬Ò»¸öÎ¨Ò»±êÊ¶£¬ÒÔ±ãÈİÒ×Ê¶±ğ¡£
-The format of package names is `vendorName/projectName`. ÀıÈç£¬in the package name `yiisoft/yii2-imagine`,
+æ¯ä¸€ä¸ª Composer åŒ…çš„åç§°ä¸­éƒ½éœ€è¦åŒ…å«ä¸€ä¸ªå”¯ä¸€æ ‡è¯†ï¼Œä»¥ä¾¿å®¹æ˜“è¯†åˆ«ã€‚
+The format of package names is `vendorName/projectName`. ä¾‹å¦‚ï¼Œin the package name `yiisoft/yii2-imagine`,
 the vendor name and the project name are `yiisoft` and `yii2-imagine`, respectively.
 
 Do NOT use `yiisoft` as vendor name as it is reserved for use by the Yii core code.
@@ -171,15 +171,15 @@ We recommend you prefix `yii2-` to the project name for packages representing Yi
 It is important that you specify the package type of your extension as `yii2-extension` so that the package can
 be recognized as a Yii extension when being installed.
 
-µ±ÓÃ»§ÔËĞĞ `composer install` À´°²×°À©Õ¹£¬`vendor/yiisoft/extensions.php`ÎÄ¼ş
-½«±»×Ô¶¯¸üĞÂ£¬°üÀ¨¶ÔĞÂÀ©Õ¹¡£´ÓÕâ¸öÎÄ¼şÖĞ£¬¿ÉÒÔÖªµÀ Yii Ó¦ÓÃ
-°²×°ÁËÄÄĞ©À©Õ¹ (the information can be accessed via [[yii\base\Application::extensions]].
+å½“ç”¨æˆ·è¿è¡Œ `composer install` æ¥å®‰è£…æ‰©å±•ï¼Œ`vendor/yiisoft/extensions.php`æ–‡ä»¶
+å°†è¢«è‡ªåŠ¨æ›´æ–°ï¼ŒåŒ…æ‹¬å¯¹æ–°æ‰©å±•ã€‚ä»è¿™ä¸ªæ–‡ä»¶ä¸­ï¼Œå¯ä»¥çŸ¥é“ Yii åº”ç”¨
+å®‰è£…äº†å“ªäº›æ‰©å±• (the information can be accessed via [[yii\base\Application::extensions]].
 
 
 #### Dependencies <a name="dependencies"></a>
 
-ÄúµÄÀ©Õ¹ÒÀÀµÓÚ Yii (of course)¡£So you should list it (`yiisoft/yii2`) in the `require` entry in `composer.json`.
-Èç¹ûÄúµÄÀ©Õ¹ÒÀÀµÓÚÆäËüÀ©Õ¹»òÕßµÚÈı·½¿â£¬ÄãÒ²Òª½«ËüÃÇÂŞÁĞ³öÀ´¡£
+æ‚¨çš„æ‰©å±•ä¾èµ–äº Yii (of course)ã€‚So you should list it (`yiisoft/yii2`) in the `require` entry in `composer.json`.
+å¦‚æœæ‚¨çš„æ‰©å±•ä¾èµ–äºå…¶å®ƒæ‰©å±•æˆ–è€…ç¬¬ä¸‰æ–¹åº“ï¼Œä½ ä¹Ÿè¦å°†å®ƒä»¬ç½—åˆ—å‡ºæ¥ã€‚
 Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependent package. Use stable
 dependencies when your extension is released in a stable version.
 
@@ -197,19 +197,19 @@ simply list the dependency in `composer.json` like the following:
 }
 ```
 
-ÉÏÃæµÄ´úÂëÖĞÖ¸³ö´ËÀ©Õ¹ÒÀÀµÓÚ `jquery` Bower package¡£Ò»°ãÀ´Ëµ£¬you can use
+ä¸Šé¢çš„ä»£ç ä¸­æŒ‡å‡ºæ­¤æ‰©å±•ä¾èµ–äº `jquery` Bower packageã€‚ä¸€èˆ¬æ¥è¯´ï¼Œyou can use
 `bower-asset/PackageName` to refer to a Bower package in `composer.json`, and use `npm-asset/PackageName`
 to refer to a NPM package. When Composer installs a Bower or NPM package, by default the package content will be
 installed under the `@vendor/bower/PackageName` and `@vendor/npm/Packages` directories, respectively.
 These two directories can also be referred to using the shorter aliases `@bower/PackageName` and `@npm/PackageName`.
 
-¸ü¶à¹ØÓÚ×ÊÔ´¹ÜÀíµÄÏ¸½Ú£¬Çë²Î¿¼ [Assets](structure-assets.md#bower-npm-assets) ²¿·Ö¡£
+æ›´å¤šå…³äºèµ„æºç®¡ç†çš„ç»†èŠ‚ï¼Œè¯·å‚è€ƒ [Assets](structure-assets.md#bower-npm-assets) éƒ¨åˆ†ã€‚
 
 
 #### Class Autoloading <a name="class-autoloading"></a>
 
 In order for your classes to be autoloaded by the Yii class autoloader or the Composer class autoloader,
-you should specify the `autoload` entry in the `composer.json` file, ÈçÏÂ£º
+you should specify the `autoload` entry in the `composer.json` file, å¦‚ä¸‹ï¼š
 
 ```json
 {
@@ -225,9 +225,9 @@ you should specify the `autoload` entry in the `composer.json` file, ÈçÏÂ£º
 
 You may list one or multiple root namespaces and their corresponding file paths.
 
-µ±ÔÚÒ»¸öÓ¦ÓÃÖĞ°²×°Ò»¸öÀ©Õ¹Ê±£¬Yii will create for each listed root namespace
+å½“åœ¨ä¸€ä¸ªåº”ç”¨ä¸­å®‰è£…ä¸€ä¸ªæ‰©å±•æ—¶ï¼ŒYii will create for each listed root namespace
 an [alias](concept-aliases.md#extension-aliases) that refers to the directory corresponding to the namespace.
-ÀıÈç£¬the above `autoload` declaration will correspond to an alias named `@yii/imagine`.
+ä¾‹å¦‚ï¼Œthe above `autoload` declaration will correspond to an alias named `@yii/imagine`.
 
 
 ### Recommended Practices <a name="recommended-practices"></a>
@@ -236,9 +236,9 @@ Because extensions are meant to be used by other people, you often need to take 
 we introduce some common and recommended practices in creating high quality extensions.
 
 
-#### ÃüÃû¿Õ¼ä <a name="namespaces"></a>
+#### å‘½åç©ºé—´ <a name="namespaces"></a>
 
-ÎªÁË±ÜÃâÃû×Ö³åÍ»ºÍÊ¹µÃÀ©Õ¹ÀïµÄÀàÄÜ×Ô¶¯¼ÓÔØ£¬you should use namespaces and
+ä¸ºäº†é¿å…åå­—å†²çªå’Œä½¿å¾—æ‰©å±•é‡Œçš„ç±»èƒ½è‡ªåŠ¨åŠ è½½ï¼Œyou should use namespaces and
 name the classes in your extension by following the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) or
 [PSR-0 standard](http://www.php-fig.org/psr/psr-0/).
 
@@ -246,18 +246,18 @@ You class namespaces should start with `vendorName\extensionName`, where `extens
 in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
 extension, we use `yii\imagine` as the namespace its classes.
 
-²»Òª½« `yii`, `yii2` or `yiisoft` ×÷Îª vendor Ãû³Æ¡£ÕâĞ©Ãû³ÆÊÇ±£Áô¸ø Yii ºËĞÄ´úÂëÊ¹ÓÃµÄ¡£
+ä¸è¦å°† `yii`, `yii2` or `yiisoft` ä½œä¸º vendor åç§°ã€‚è¿™äº›åç§°æ˜¯ä¿ç•™ç»™ Yii æ ¸å¿ƒä»£ç ä½¿ç”¨çš„ã€‚
 
 
 #### Bootstrapping Classes <a name="bootstrapping-classes"></a>
 
-Ä³Ğ©Ê±ºò£¬you may want your extension to execute some code during the [bootstrapping process](runtime-bootstrapping.md)
-stage of an application. ÀıÈç£¬your extension may want to respond to the application's `beginRequest` event
+æŸäº›æ—¶å€™ï¼Œyou may want your extension to execute some code during the [bootstrapping process](runtime-bootstrapping.md)
+stage of an application. ä¾‹å¦‚ï¼Œyour extension may want to respond to the application's `beginRequest` event
 to adjust some environment settings. While you can instruct users of the extension to explicitly attach your event
-handler in the extension to the `beginRequest` event, ×îºÃÄÜ¹»½«Õâ¸ö¹ı³Ì×Ô¶¯»¯¡£
+handler in the extension to the `beginRequest` event, æœ€å¥½èƒ½å¤Ÿå°†è¿™ä¸ªè¿‡ç¨‹è‡ªåŠ¨åŒ–ã€‚
 
-ÎªÁËÊµÏÖÕâÒ»Ä¿±ê£¬you can create a so-called *bootstrapping class* by implementing [[yii\base\BootstrapInterface]].
-ÀıÈç£¬
+ä¸ºäº†å®ç°è¿™ä¸€ç›®æ ‡ï¼Œyou can create a so-called *bootstrapping class* by implementing [[yii\base\BootstrapInterface]].
+ä¾‹å¦‚ï¼Œ
 
 ```php
 namespace myname\mywidget;
@@ -288,29 +288,29 @@ You then list this class in the `composer.json` file of your extension like foll
 }
 ```
 
-µ±ÔÚÒ»¸öÓ¦ÓÃÖĞ°²×°Ò»¸öÀ©Õ¹Ê±£¬Yii will automatically instantiate the bootstrapping class
+å½“åœ¨ä¸€ä¸ªåº”ç”¨ä¸­å®‰è£…ä¸€ä¸ªæ‰©å±•æ—¶ï¼ŒYii will automatically instantiate the bootstrapping class
 and call its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method during the bootstrapping process for
 every request.
 
 
 #### Working with Databases <a name="working-with-databases"></a>
 
-ÄãµÄÀ©Õ¹¿ÉÄÜĞèÒª·ÃÎÊÊı¾İ¿â¡£Do not assume that the applications that use your extension will always
-use `Yii::$db` as the DB connection. ·´¶ø£¬you should declare a `db` property for the classes that require DB access.
+ä½ çš„æ‰©å±•å¯èƒ½éœ€è¦è®¿é—®æ•°æ®åº“ã€‚Do not assume that the applications that use your extension will always
+use `Yii::$db` as the DB connection. åè€Œï¼Œyou should declare a `db` property for the classes that require DB access.
 The property will allow users of your extension to customize which DB connection they would like your extension to use.
-¾Ù¸öÀı×Ó£¬you may refer to the [[yii\caching\DbCache]] class and see how it declares and uses the `db` property.
+ä¸¾ä¸ªä¾‹å­ï¼Œyou may refer to the [[yii\caching\DbCache]] class and see how it declares and uses the `db` property.
 
-Èç¹ûÄãµÄÀ©Õ¹ĞèÒª´´½¨Ò»¸öÏêÏ¸µÄ DB tables »òÕß Òª¸Ä±ä DB schema£¬ĞèÒª
+å¦‚æœä½ çš„æ‰©å±•éœ€è¦åˆ›å»ºä¸€ä¸ªè¯¦ç»†çš„ DB tables æˆ–è€… è¦æ”¹å˜ DB schemaï¼Œéœ€è¦
 
-- Ìá¹© [migrations](db-migrations.md) À´²Ù¿Ø DB schema£¬¶ø²»ÊÇÊ¹ÓÃÆÕÍ¨µÄ SQL ÎÄ¼ş£»
-- ³¢ÊÔÈÃÇ¨ÒÆÄÜ¹»ÊÊÓ¦²»Í¬µÄ DBMS£»
-- ±ÜÃâÊ¹ÓÃ migrations ÖĞµÄ [Active Record](db-active-record.md)¡£
+- æä¾› [migrations](db-migrations.md) æ¥æ“æ§ DB schemaï¼Œè€Œä¸æ˜¯ä½¿ç”¨æ™®é€šçš„ SQL æ–‡ä»¶ï¼›
+- å°è¯•è®©è¿ç§»èƒ½å¤Ÿé€‚åº”ä¸åŒçš„ DBMSï¼›
+- é¿å…ä½¿ç”¨ migrations ä¸­çš„ [Active Record](db-active-record.md)ã€‚
 
 
 #### Using Assets <a name="using-assets"></a>
 
-Èç¹ûÄãµÄÀ©Õ¹ÊÇ a widget »òÕß a module£¬chances are that it may require some [assets](structure-assets.md) to work.
-ÀıÈç£¬¿ÉÄÜ»áÏÔÊ¾Ò»Ğ©°üº¬ images, JavaScript, and CSS µÄÒ³Ãæ¡£Because the files of an
+å¦‚æœä½ çš„æ‰©å±•æ˜¯ a widget æˆ–è€… a moduleï¼Œchances are that it may require some [assets](structure-assets.md) to work.
+ä¾‹å¦‚ï¼Œå¯èƒ½ä¼šæ˜¾ç¤ºä¸€äº›åŒ…å« images, JavaScript, and CSS çš„é¡µé¢ã€‚Because the files of an
 extension are all under the same directory which is not Web accessible when installed in an application, you have
 two choices to make the asset files directly accessible via Web:
 
@@ -324,7 +324,7 @@ Please refer to the [Assets](structure-assets.md) section for more details about
 
 #### Internationalization and Localization <a name="i18n-l10n"></a>
 
-Your extension may be used by applications supporting different languages! Òò´Ë£¬if your extension displays
+Your extension may be used by applications supporting different languages! å› æ­¤ï¼Œif your extension displays
 content to end users, you should try to [internationalize and localize](tutorial-i18n.md) it. In particular,
 
 - If the extension displays messages intended for end users, the messages should be wrapped into `Yii::t()`
@@ -333,66 +333,66 @@ content to end users, you should try to [internationalize and localize](tutorial
 - If the extension displays numbers, dates, etc., they should be formatted using [[yii\i18n\Formatter]] with
   appropriate formatting rules.
 
-ÁË½â¸ü¶àÏ¸½Ú£¬Çë²Î¿¼ [Internationalization](tutorial-i18n.md) ²¿·ÖµÄÄÚÈİ¡£
+äº†è§£æ›´å¤šç»†èŠ‚ï¼Œè¯·å‚è€ƒ [Internationalization](tutorial-i18n.md) éƒ¨åˆ†çš„å†…å®¹ã€‚
 
 
-#### ²âÊÔ <a name="testing"></a>
+#### æµ‹è¯• <a name="testing"></a>
 
-Èç¹ûÄãÏëÒªÈÃÄãµÄÀ©Õ¹Ã»ÓĞºó¹ËÖ®ÓÇµØÍêÃÀÔËĞĞ¡£ÎªÁË´ïµ½Õâ¸öÄ¿µÄ£¬ÄãÓ¦¸Ã
-ÔÚ·¢²¼À©Õ¹Ç°ÏÈ²âÊÔËü¡£
+å¦‚æœä½ æƒ³è¦è®©ä½ çš„æ‰©å±•æ²¡æœ‰åé¡¾ä¹‹å¿§åœ°å®Œç¾è¿è¡Œã€‚ä¸ºäº†è¾¾åˆ°è¿™ä¸ªç›®çš„ï¼Œä½ åº”è¯¥
+åœ¨å‘å¸ƒæ‰©å±•å‰å…ˆæµ‹è¯•å®ƒã€‚
 
 It is recommended that you create various test cases to cover your extension code rather than relying on manual tests.
-Ã¿´ÎÔÚÄã·¢²¼ĞÂ°æ±¾µÄÀ©Õ¹Ö®Ç°£¬ÄãÓ¦¸Ã¼òµ¥µØÔËĞĞÕâĞ©²âÊÔ°¸Àı
-everything is in good shape. Yii Ìá¹©ÁË²âÊÔÖ§³Ö£¬¿ÉÒÔ°ïÄã¸üÈİÒ×Ğ´µ¥Ôª²âÊÔ£¬
-ÑéÊÕ²âÊÔºÍ¹¦ÄÜ²âÊÔ¡£¸ü¶àÏêÏ¸ÄÚÈİ£¬Çë²Î¿¼ [Testing](test-overview.md) ²¿·Ö¡£
+æ¯æ¬¡åœ¨ä½ å‘å¸ƒæ–°ç‰ˆæœ¬çš„æ‰©å±•ä¹‹å‰ï¼Œä½ åº”è¯¥ç®€å•åœ°è¿è¡Œè¿™äº›æµ‹è¯•æ¡ˆä¾‹
+everything is in good shape. Yii æä¾›äº†æµ‹è¯•æ”¯æŒï¼Œå¯ä»¥å¸®ä½ æ›´å®¹æ˜“å†™å•å…ƒæµ‹è¯•ï¼Œ
+éªŒæ”¶æµ‹è¯•å’ŒåŠŸèƒ½æµ‹è¯•ã€‚æ›´å¤šè¯¦ç»†å†…å®¹ï¼Œè¯·å‚è€ƒ [Testing](test-overview.md) éƒ¨åˆ†ã€‚
 
 
 #### Versioning <a name="versioning"></a>
 
-ÄãÓ¦¸Ã¸øÃ¿¸öÀ©Õ¹µÄ·¢²¼ÅäÖÃÒ»¸ö°æ±¾ºÅ (e.g. `1.0.1`)¡£We recommend you follow the
+ä½ åº”è¯¥ç»™æ¯ä¸ªæ‰©å±•çš„å‘å¸ƒé…ç½®ä¸€ä¸ªç‰ˆæœ¬å· (e.g. `1.0.1`)ã€‚We recommend you follow the
 [semantic versioning](http://semver.org) practice when determining what version numbers should be used.
 
 
 #### Releasing <a name="releasing"></a>
 
-ÎªÁËÈÃÆäËûÈËÖªµÀÄãµÄ°æ±¾£¬ÄãĞèÒª½«Ëü¹«Ö®ÓÚÖÚ¡£
+ä¸ºäº†è®©å…¶ä»–äººçŸ¥é“ä½ çš„ç‰ˆæœ¬ï¼Œä½ éœ€è¦å°†å®ƒå…¬ä¹‹äºä¼—ã€‚
 
-Èç¹ûÕâÊÇÄãµÚÒ»´Î·¢²¼Ò»¸öÀ©Õ¹£¬ÄãÓ¦¸ÃÏÈÔÚ Composer ¿âÀï×¢²á£¬±ÈÈç
-[Packagist](https://packagist.org/)¡£ After that, all you need to do is simply creating a release tag (e.g. `v1.0.1`)
+å¦‚æœè¿™æ˜¯ä½ ç¬¬ä¸€æ¬¡å‘å¸ƒä¸€ä¸ªæ‰©å±•ï¼Œä½ åº”è¯¥å…ˆåœ¨ Composer åº“é‡Œæ³¨å†Œï¼Œæ¯”å¦‚
+[Packagist](https://packagist.org/)ã€‚ After that, all you need to do is simply creating a release tag (e.g. `v1.0.1`)
 on the VCS repository of your extension and notify the Composer repository about the new release. People will
 then be able to find the new release, and install or update the extension through the Composer repository.
 
-ÔÚÄãÀ©Õ¹µÄ°æ±¾ÖĞ£¬³ıÁË´úÂëÎÄ¼şÍâÄã»¹ĞèÒª×¢ÒâÒÔÏÂ¼¸µã
-À´°ïÖúÆäËüÈËÁË½âºÍÊ¹ÓÃÄãµÄÀ©Õ¹£º
+åœ¨ä½ æ‰©å±•çš„ç‰ˆæœ¬ä¸­ï¼Œé™¤äº†ä»£ç æ–‡ä»¶å¤–ä½ è¿˜éœ€è¦æ³¨æ„ä»¥ä¸‹å‡ ç‚¹
+æ¥å¸®åŠ©å…¶å®ƒäººäº†è§£å’Œä½¿ç”¨ä½ çš„æ‰©å±•ï¼š
 
-* ÔÚ°ü¸ùÄ¿Â¼ÀïµÄ readme ÎÄ¼ş£ºËüÃèÊöÁËÄãµÄÀ©Õ¹¹¦ÄÜÒÔ¼°ÈçºÎ°²×°ºÍÊ¹ÓÃ.
+* åœ¨åŒ…æ ¹ç›®å½•é‡Œçš„ readme æ–‡ä»¶ï¼šå®ƒæè¿°äº†ä½ çš„æ‰©å±•åŠŸèƒ½ä»¥åŠå¦‚ä½•å®‰è£…å’Œä½¿ç”¨.
   We recommend you write it in [Markdown](http://daringfireball.net/projects/markdown/) format and name the file
   as `readme.md`.
-* ÔÚ°ü¸ùÄ¿Â¼ÖĞ¸üĞÂÈÕÖ¾ÎÄ¼ş£ºËüÁĞ³öÁËÃ¿¸ö°æ±¾Ëù×öµÄ±ä»¯¡£ÎÄ¼ş
-  ¿ÉÒÔ±»Ğ´³É Markdown ¸ñÊ½²¢ÃüÃûÎª `changelog.md`¡£
-* ÔÚ°ü¸ùÄ¿Â¼ÏÂÉı¼¶ÎÄ¼ş£ºËüÌá¹©ÁËÓĞ¹ØÈçºÎ´Ó¾É°æ±¾Éı¼¶
-  µÄËµÃ÷¡£¸ÃÎÄ¼ş¿ÉÒÔ±»Ğ´³É Markdown ¸ñÊ½²¢ÃüÃûÎª `upgrade.md`¡£
-* ½Ì³Ì£¬demos, screenshots, etc.: these are needed if your extension provides many features that cannot be
+* åœ¨åŒ…æ ¹ç›®å½•ä¸­æ›´æ–°æ—¥å¿—æ–‡ä»¶ï¼šå®ƒåˆ—å‡ºäº†æ¯ä¸ªç‰ˆæœ¬æ‰€åšçš„å˜åŒ–ã€‚æ–‡ä»¶
+  å¯ä»¥è¢«å†™æˆ Markdown æ ¼å¼å¹¶å‘½åä¸º `changelog.md`ã€‚
+* åœ¨åŒ…æ ¹ç›®å½•ä¸‹å‡çº§æ–‡ä»¶ï¼šå®ƒæä¾›äº†æœ‰å…³å¦‚ä½•ä»æ—§ç‰ˆæœ¬å‡çº§
+  çš„è¯´æ˜ã€‚è¯¥æ–‡ä»¶å¯ä»¥è¢«å†™æˆ Markdown æ ¼å¼å¹¶å‘½åä¸º `upgrade.md`ã€‚
+* æ•™ç¨‹ï¼Œdemos, screenshots, etc.: these are needed if your extension provides many features that cannot be
   fully covered in the readme file.
-* API documentation:ÄãµÄ´úÂëÓ¦¸ÃºÃºÃµØ¼ÇÂ¼ÏÂÀ´¡£
-  Äã¿ÉÒÔ²Î¿¼ [Object class file](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
-  À´Ñ§Ï°ÈçºÎ¼ÇÂ¼´úÂë¡£
+* API documentation:ä½ çš„ä»£ç åº”è¯¥å¥½å¥½åœ°è®°å½•ä¸‹æ¥ã€‚
+  ä½ å¯ä»¥å‚è€ƒ [Object class file](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
+  æ¥å­¦ä¹ å¦‚ä½•è®°å½•ä»£ç ã€‚
 
-> ÌáÊ¾ĞÅÏ¢£ºÄã´úÂëÖĞµÄ×¢ÊÍ¿ÉÒÔĞ´³É Markdown ¸ñÊ½¡£`yiisoft/yii2-apidoc` À©Õ¹ÎªÄãÌá¹©ÁËÒ»
-  ¸ö»ùÓÚ´úÂë×¢ÊÍÉú³ÉµÄÍêÃÀ API ÎÄµµ¹¤¾ß¡£
+> æç¤ºä¿¡æ¯ï¼šä½ ä»£ç ä¸­çš„æ³¨é‡Šå¯ä»¥å†™æˆ Markdown æ ¼å¼ã€‚`yiisoft/yii2-apidoc` æ‰©å±•ä¸ºä½ æä¾›äº†ä¸€
+  ä¸ªåŸºäºä»£ç æ³¨é‡Šç”Ÿæˆçš„å®Œç¾ API æ–‡æ¡£å·¥å…·ã€‚
 
-> ÌáÊ¾ĞÅÏ¢£ºËäÈ»²»ÊÇ±ØĞëµÄ£¬ÎÒÃÇÈÔ½¨ÒéÄãµÄÓ¦±£³ÖÍ³Ò»µÄ´úÂë·ç¸ñ¡£¿ÉÒÔ
-  ²Î¿¼ [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style)¡£
+> æç¤ºä¿¡æ¯ï¼šè™½ç„¶ä¸æ˜¯å¿…é¡»çš„ï¼Œæˆ‘ä»¬ä»å»ºè®®ä½ çš„åº”ä¿æŒç»Ÿä¸€çš„ä»£ç é£æ ¼ã€‚å¯ä»¥
+  å‚è€ƒ [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style)ã€‚
 
 
 ## Core Extensions <a name="core-extensions"></a>
 
-Yii Ìá¹©ÁËÒÔÏÂºËĞÄÀ©Õ¹£¬ÕâĞ©À©Õ¹ÊÇÓÉ Yii ¿ª·¢ÍÅ¶ÓÎ¬»¤ºÍ¿ª·¢¡£ËüÃÇ¶¼ÊÇÔÚ
-[Packagist](https://packagist.org/) ×¢²áµÄ²¢ÇÒ¿ÉÒÔºÜÈİÒ×µÄ±»°²×°ÔÚ
-[Using Extensions](#using-extensions) ²¿·ÖÖĞ¡£
+Yii æä¾›äº†ä»¥ä¸‹æ ¸å¿ƒæ‰©å±•ï¼Œè¿™äº›æ‰©å±•æ˜¯ç”± Yii å¼€å‘å›¢é˜Ÿç»´æŠ¤å’Œå¼€å‘ã€‚å®ƒä»¬éƒ½æ˜¯åœ¨
+[Packagist](https://packagist.org/) æ³¨å†Œçš„å¹¶ä¸”å¯ä»¥å¾ˆå®¹æ˜“çš„è¢«å®‰è£…åœ¨
+[Using Extensions](#using-extensions) éƒ¨åˆ†ä¸­ã€‚
 
 - [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc):
-  Ìá¹©Ò»¸ö¿ÉÀ©Õ¹²¢ÇÒÊÇ¸ßĞÔÄÜµÄ API ÎÄµµÉú³ÉÆ÷¡£It is also used to generate the core
+  æä¾›ä¸€ä¸ªå¯æ‰©å±•å¹¶ä¸”æ˜¯é«˜æ€§èƒ½çš„ API æ–‡æ¡£ç”Ÿæˆå™¨ã€‚It is also used to generate the core
   framework API documentation.
 - [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient):
   provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.

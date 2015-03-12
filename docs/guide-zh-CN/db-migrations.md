@@ -1,45 +1,45 @@
-Êı¾İ¿âÇ¨ÒÆ
+æ•°æ®åº“è¿ç§»
 ==================
 
-> ×¢Òâ£ºÕâ²¿·ÖÕıÔÚ¿ª·¢ÖĞ¡£
+> æ³¨æ„ï¼šè¿™éƒ¨åˆ†æ­£åœ¨å¼€å‘ä¸­ã€‚
 
-ÈçÔ´´úÂë£¬Êı¾İ¿â½á¹¹Ñİ±ä³ÉÎªÒ»¸öÊı¾İ¿âÇı¶¯³ÌĞòÀ´½øĞĞ¿ª·¢ÓëÎ¬»¤¡£ÀıÈç£¬ÔÚ¿ª·¢¹ı³ÌÖĞ£¬¿ÉÒÔÌí¼ÓÒ»¸öĞÂ±í£¬or after the application goes live it may be discovered that an additional index is required. It is important to keep track of these structural database changes (called **migration**), just as changes to the source code is tracked using version control. If the source code and the database become out of sync, bugs will occur, or the whole application might break. For this reason, Yii provides a database migration
+å¦‚æºä»£ç ï¼Œæ•°æ®åº“ç»“æ„æ¼”å˜æˆä¸ºä¸€ä¸ªæ•°æ®åº“é©±åŠ¨ç¨‹åºæ¥è¿›è¡Œå¼€å‘ä¸ç»´æŠ¤ã€‚ä¾‹å¦‚ï¼Œåœ¨å¼€å‘è¿‡ç¨‹ä¸­ï¼Œå¯ä»¥æ·»åŠ ä¸€ä¸ªæ–°è¡¨ï¼Œor after the application goes live it may be discovered that an additional index is required. It is important to keep track of these structural database changes (called **migration**), just as changes to the source code is tracked using version control. If the source code and the database become out of sync, bugs will occur, or the whole application might break. For this reason, Yii provides a database migration
 tool that can keep track of your database migration history, apply new migrations, or revert existing ones.
 
-ÏÂÁĞ²½ÖèÏÔÊ¾ÁËÒ»¸öÍÅ¶ÓÔÚ¿ª·¢¹ı³ÌÖĞÈçºÎ½øĞĞ database migration£º
+ä¸‹åˆ—æ­¥éª¤æ˜¾ç¤ºäº†ä¸€ä¸ªå›¢é˜Ÿåœ¨å¼€å‘è¿‡ç¨‹ä¸­å¦‚ä½•è¿›è¡Œ database migrationï¼š
 
-1. Tim ´´½¨ÁËÒ»¸öĞÂµÄ migration (Èç´´½¨Ò»¸öĞÂ±í£¬¸ü¸ÄÒ»¸öÁĞ¶¨Òå£¬µÈ)¡£
-2. Tim Ïò°æ±¾¿ØÖÆÏµÍ³Ìá½»ÁËÒ»¸öĞÂµÄ migration (Èç Git, Mercurial)¡£
-3. Doug ´Ó°æ±¾¿ØÖÆÏµÍ³ÖĞ¸üĞÂÁË×Ô¼ºµÄ×ÊÁÏ¿â²¢½ÓÊÕĞÂµÄ migration¡£
-4. Doug ½« migration Ó¦ÓÃµ½×Ô¼º±¾µØ¿ª·¢µÄÊı¾İ¿â£¬´Ó¶øÍ¬²½ËûµÄÊı¾İ¿âÀ´·´Ó³ Tim Ëù×öµÄ¸ü¸Ä¡£
+1. Tim åˆ›å»ºäº†ä¸€ä¸ªæ–°çš„ migration (å¦‚åˆ›å»ºä¸€ä¸ªæ–°è¡¨ï¼Œæ›´æ”¹ä¸€ä¸ªåˆ—å®šä¹‰ï¼Œç­‰)ã€‚
+2. Tim å‘ç‰ˆæœ¬æ§åˆ¶ç³»ç»Ÿæäº¤äº†ä¸€ä¸ªæ–°çš„ migration (å¦‚ Git, Mercurial)ã€‚
+3. Doug ä»ç‰ˆæœ¬æ§åˆ¶ç³»ç»Ÿä¸­æ›´æ–°äº†è‡ªå·±çš„èµ„æ–™åº“å¹¶æ¥æ”¶æ–°çš„ migrationã€‚
+4. Doug å°† migration åº”ç”¨åˆ°è‡ªå·±æœ¬åœ°å¼€å‘çš„æ•°æ®åº“ï¼Œä»è€ŒåŒæ­¥ä»–çš„æ•°æ®åº“æ¥åæ˜  Tim æ‰€åšçš„æ›´æ”¹ã€‚
 
-Yii Í¨¹ı `yii migrate` ÃüÁîĞĞ¹¤¾ßÀ´Ö§³Ö database migration¡£´Ë¹¤¾ßÖ§³Ö£º
+Yii é€šè¿‡ `yii migrate` å‘½ä»¤è¡Œå·¥å…·æ¥æ”¯æŒ database migrationã€‚æ­¤å·¥å…·æ”¯æŒï¼š
 
-* ´´½¨ĞÂµÄ migrations
+* åˆ›å»ºæ–°çš„ migrations
 * Applying, reverting, and redoing migrations
 * Showing migration history and new migrations
 
 Creating Migrations
 -------------------
 
-Èç¹ûÏëÒª´´½¨Ò»¸öĞÂµÄ migration£¬ÔËĞĞÒÔÏÂÃüÁî£º
+å¦‚æœæƒ³è¦åˆ›å»ºä¸€ä¸ªæ–°çš„ migrationï¼Œè¿è¡Œä»¥ä¸‹å‘½ä»¤ï¼š
 
 ```
 yii migrate/create <name>
 ```
 
-The required `name` parameter specifies a very brief description of the migration. ÀıÈç£¬Èç¹û migration ´´½¨Ò»¸öÃûÎª *news* µÄĞÂ±í£¬Ó¦¸ÃÊ¹ÓÃÈçÏÂÃüÁî£º
+The required `name` parameter specifies a very brief description of the migration. ä¾‹å¦‚ï¼Œå¦‚æœ migration åˆ›å»ºä¸€ä¸ªåä¸º *news* çš„æ–°è¡¨ï¼Œåº”è¯¥ä½¿ç”¨å¦‚ä¸‹å‘½ä»¤ï¼š
 
 ```
 yii migrate/create create_news_table
 ```
 
 As you'll shortly see, the `name` parameter
-is used as part of a PHP class name in the migration. Òò´Ë£¬Ó¦¸ÃÖ»°üº¬×ÖÄ¸£¬
-Êı×ÖºÍ/»òÏÂ»®Ïß¡£
+is used as part of a PHP class name in the migration. å› æ­¤ï¼Œåº”è¯¥åªåŒ…å«å­—æ¯ï¼Œ
+æ•°å­—å’Œ/æˆ–ä¸‹åˆ’çº¿ã€‚
 
-ÉÏÃæµÄÃüÁî½«´´½¨Ò»¸ö
-ÃûÎª `m101129_185401_create_news_table.php` µÄĞÂÎÄ¼ş¡£¸ÃÎÄ¼ş½«±»´´½¨ÔÚ `@app/migrations` Ä¿Â¼ÖĞ¡£Æğ³õ£¬migration ÎÄ¼şÓÃÏÂÃæ´úÂëÀ´Éú³É£º
+ä¸Šé¢çš„å‘½ä»¤å°†åˆ›å»ºä¸€ä¸ª
+åä¸º `m101129_185401_create_news_table.php` çš„æ–°æ–‡ä»¶ã€‚è¯¥æ–‡ä»¶å°†è¢«åˆ›å»ºåœ¨ `@app/migrations` ç›®å½•ä¸­ã€‚èµ·åˆï¼Œmigration æ–‡ä»¶ç”¨ä¸‹é¢ä»£ç æ¥ç”Ÿæˆï¼š
 
 ```php
 class m101129_185401_create_news_table extends \yii\db\Migration
@@ -56,8 +56,8 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-×¢ÒâºÍÀàÃûÏàÍ¬µÄÎÄ¼şÃû£¬²¢ÇÒ×ñÑ­
-`m<timestamp>_<name>` Ä£Ê½£¬where:
+æ³¨æ„å’Œç±»åç›¸åŒçš„æ–‡ä»¶åï¼Œå¹¶ä¸”éµå¾ª
+`m<timestamp>_<name>` æ¨¡å¼ï¼Œwhere:
 
 * `<timestamp>` refers to the UTC timestamp (in the
 format of `yymmdd_hhmmss`) when the migration is created,
@@ -66,13 +66,13 @@ format of `yymmdd_hhmmss`) when the migration is created,
 In the class, the `up()` method should contain the code implementing the actual database
 migration. In other words, the `up()` method executes code that actually changes the database. The `down()` method may contain code that reverts the changes made by `up()`.
 
-Sometimes, it is impossible for the `down()` to undo the database migration. ÀıÈç£¬if the migration deletes
+Sometimes, it is impossible for the `down()` to undo the database migration. ä¾‹å¦‚ï¼Œif the migration deletes
 table rows or an entire table, that data cannot be recovered in the `down()` method. In such
 cases, the migration is called irreversible, meaning the database cannot be rolled back to
 a previous state. When a migration is irreversible, as in the above generated code, the `down()`
 method returns `false` to indicate that the migration cannot be reverted.
 
-×÷ÎªÒ»¸öÀı×Ó£¬ÈÃÎÒÃÇÀ´Õ¹Ê¾ migration ÊÇÈçºÎ´´½¨Ò»¸öĞÂ±íµÄ¡£
+ä½œä¸ºä¸€ä¸ªä¾‹å­ï¼Œè®©æˆ‘ä»¬æ¥å±•ç¤º migration æ˜¯å¦‚ä½•åˆ›å»ºä¸€ä¸ªæ–°è¡¨çš„ã€‚
 
 ```php
 
@@ -97,8 +97,8 @@ class m101129_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-»ùÀà [[\yii\db\Migration]] Í¨¹ı `db` ÊôĞÔ
-Õ¹Ê¾Êı¾İ¿âµÄÁ´½Ó¡£You can use it for manipulating data and the schema of a database.
+åŸºç±» [[\yii\db\Migration]] é€šè¿‡ `db` å±æ€§
+å±•ç¤ºæ•°æ®åº“çš„é“¾æ¥ã€‚You can use it for manipulating data and the schema of a database.
 
 The column types used in this example are abstract types that will be replaced
 by Yii with the corresponding types depending on your database management system.
@@ -117,9 +117,9 @@ define column types.
 Transactional Migrations
 ------------------------
 
-µ±½øĞĞ¸´ÔÓµÄ DB migrations Ê±£¬we usually want to make sure that each
+å½“è¿›è¡Œå¤æ‚çš„ DB migrations æ—¶ï¼Œwe usually want to make sure that each
 migration succeeds or fail as a whole so that the database maintains its
-consistency and integrity. ÎªÁËÊµÏÖÕâÒ»Ä¿±ê£¬¿ÉÒÔÓ¦ÓÃ
+consistency and integrity. ä¸ºäº†å®ç°è¿™ä¸€ç›®æ ‡ï¼Œå¯ä»¥åº”ç”¨
 DB transactions. We use the special methods `safeUp` and `safeDown` for these purposes.
 
 ```php
@@ -163,25 +163,25 @@ When your code uses more then one query it is recommended to use `safeUp` and `s
 Applying Migrations
 -------------------
 
-ÎªÁËÓ¦ÓÃËùÓĞµÄ¿ÉÓÃµÄĞÂ migrations (i.e., make the local database up-to-date),
-ÔËĞĞÈçÏÂÃüÁî£º
+ä¸ºäº†åº”ç”¨æ‰€æœ‰çš„å¯ç”¨çš„æ–° migrations (i.e., make the local database up-to-date),
+è¿è¡Œå¦‚ä¸‹å‘½ä»¤ï¼š
 
 ```
 yii migrate
 ```
 
-¸ÃÃüÁî½«ÏÔÊ¾ËùÓĞµÄĞÂµÄ migrations ÁĞ±í¡£Èç¹ûÄãÈ·¶¨ÏëÒªÓ¦ÓÃ
-migrations£¬¿ÉÒÔÔÚÃ¿Ò»¸öĞÂµÄ migration ÀàÖĞÔËĞĞ `up()` ·½·¨£¬Ò»¸ö
-½ÓÒ»¸ö£¬°´ÕÕÀàÃûÖĞµÄ timestamp ÖµµÄË³Ğò¡£
+è¯¥å‘½ä»¤å°†æ˜¾ç¤ºæ‰€æœ‰çš„æ–°çš„ migrations åˆ—è¡¨ã€‚å¦‚æœä½ ç¡®å®šæƒ³è¦åº”ç”¨
+migrationsï¼Œå¯ä»¥åœ¨æ¯ä¸€ä¸ªæ–°çš„ migration ç±»ä¸­è¿è¡Œ `up()` æ–¹æ³•ï¼Œä¸€ä¸ª
+æ¥ä¸€ä¸ªï¼ŒæŒ‰ç…§ç±»åä¸­çš„ timestamp å€¼çš„é¡ºåºã€‚
 
-Ó¦ÓÃ migration Ö®ºó£¬migration ¹¤¾ß½«»áÔÚ `migration` ±íÖĞ
-×öÒ»¸ö¼ÇÂ¼¡£This allows the tool to identify which migrations
+åº”ç”¨ migration ä¹‹åï¼Œmigration å·¥å…·å°†ä¼šåœ¨ `migration` è¡¨ä¸­
+åšä¸€ä¸ªè®°å½•ã€‚This allows the tool to identify which migrations
 have been applied and which have not. If the `migration` table does not exist,
 the tool will automatically create it in the database specified by the `db`
 [application component](structure-application-components.md).
 
-ÓĞÊ±£¬ÎÒÃÇ¿ÉÄÜ»áĞèÒªÓ¦ÓÃÒ»¸ö»ò¼¸¸öĞÂ migrations¡£¿ÉÒÔÊ¹ÓÃ
-ÈçÏÂÃüÁî£º
+æœ‰æ—¶ï¼Œæˆ‘ä»¬å¯èƒ½ä¼šéœ€è¦åº”ç”¨ä¸€ä¸ªæˆ–å‡ ä¸ªæ–° migrationsã€‚å¯ä»¥ä½¿ç”¨
+å¦‚ä¸‹å‘½ä»¤ï¼š
 
 ```
 yii migrate/up 3
@@ -190,7 +190,7 @@ yii migrate/up 3
 This command will apply the next 3 new migrations. Changing the value 3 will allow
 us to change the number of migrations to be applied.
 
-¿ÉÒÔÊ¹ÓÃÈçÏÂÃüÁî½«Êı¾İ¿âÇ¨ÒÆ³ÉÌØ¶¨°æ±¾£º
+å¯ä»¥ä½¿ç”¨å¦‚ä¸‹å‘½ä»¤å°†æ•°æ®åº“è¿ç§»æˆç‰¹å®šç‰ˆæœ¬ï¼š
 
 ```
 yii migrate/to 101129_185401
@@ -206,8 +206,8 @@ migrations applied after it will be reverted (to be described in the next sectio
 Reverting Migrations
 --------------------
 
-To revert the last migration step or several applied migrations, ¿ÉÒÔÊ¹ÓÃÈçÏÂ
-ÃüÁî£º
+To revert the last migration step or several applied migrations, å¯ä»¥ä½¿ç”¨å¦‚ä¸‹
+å‘½ä»¤ï¼š
 
 ```
 yii migrate/down [step]
@@ -216,7 +216,7 @@ yii migrate/down [step]
 where the optional `step` parameter specifies how many migrations to be reverted
 back. It defaults to 1, meaning only the last applied migration will be reverted back.
 
-ÕıÈçÎÒÃÇÖ®Ç°ËùÃèÊö£¬²»ÊÇËùÓĞµÄ migrations ¿ÉÒÔ±»»Ö¸´¡£Trying to revert
+æ­£å¦‚æˆ‘ä»¬ä¹‹å‰æ‰€æè¿°ï¼Œä¸æ˜¯æ‰€æœ‰çš„ migrations å¯ä»¥è¢«æ¢å¤ã€‚Trying to revert
 such migrations will throw an exception and stop the entire reverting process.
 
 
@@ -224,7 +224,7 @@ Redoing Migrations
 ------------------
 
 Redoing migrations means first reverting and then applying the specified migrations.
-¿ÉÒÔÓÃÈçÏÂÃüÁîÀ´Íê³É£º
+å¯ä»¥ç”¨å¦‚ä¸‹å‘½ä»¤æ¥å®Œæˆï¼š
 
 ```
 yii migrate/redo [step]
@@ -237,8 +237,8 @@ It defaults to 1, which means only the last migration will be redone.
 Showing Migration Information
 -----------------------------
 
-³ıÁËÓ¦ÓÃºÍ»Ö¸´ migrations£¬migration ¹¤¾ßÒ²¿ÉÒÔÏÔÊ¾
-ÀúÊ· migration ºÍÒªÓ¦ÓÃµÄĞÂµÄ migrations¡£
+é™¤äº†åº”ç”¨å’Œæ¢å¤ migrationsï¼Œmigration å·¥å…·ä¹Ÿå¯ä»¥æ˜¾ç¤º
+å†å² migration å’Œè¦åº”ç”¨çš„æ–°çš„ migrationsã€‚
 
 ```
 yii migrate/history [limit]
@@ -248,8 +248,8 @@ yii migrate/new [limit]
 where the optional parameter `limit` specifies the number of migrations to be
 displayed. If `limit` is not specified, all available migrations will be displayed.
 
-µÚÒ»¸öÃüÁîÊÇÏÔÊ¾ÒÑ¾­Ó¦ÓÃµÄ migrations£¬µÚ¶ş¸öÃüÁî
-ÏÔÊ¾»¹Î´Ó¦ÓÃµÄ migrations ¡£
+ç¬¬ä¸€ä¸ªå‘½ä»¤æ˜¯æ˜¾ç¤ºå·²ç»åº”ç”¨çš„ migrationsï¼Œç¬¬äºŒä¸ªå‘½ä»¤
+æ˜¾ç¤ºè¿˜æœªåº”ç”¨çš„ migrations ã€‚
 
 
 Modifying Migration History
@@ -257,14 +257,14 @@ Modifying Migration History
 
 Sometimes, we may want to modify the migration history to a specific migration
 version without actually applying or reverting the relevant migrations. This
-often happens when developing a new migration. ÎÒÃÇ¿ÉÒÔÊ¹ÓÃÈçÏÂÃüÁî
-À´ÊµÏÖÕâÒ»Ä¿±ê¡£
+often happens when developing a new migration. æˆ‘ä»¬å¯ä»¥ä½¿ç”¨å¦‚ä¸‹å‘½ä»¤
+æ¥å®ç°è¿™ä¸€ç›®æ ‡ã€‚
 
 ```
 yii migrate/mark 101129_185401
 ```
 
-´ËÃüÁîÓë `yii migrate/to` ÃüÁî·Ç³£ÏàËÆ£¬except that it only
+æ­¤å‘½ä»¤ä¸ `yii migrate/to` å‘½ä»¤éå¸¸ç›¸ä¼¼ï¼Œexcept that it only
 modifies the migration history table to the specified version without applying
 or reverting the migrations.
 
@@ -272,7 +272,7 @@ or reverting the migrations.
 Customizing Migration Command
 -----------------------------
 
-ÓĞ¼¸ÖÖÖÆ¶¨ migration µÄÃüÁî¡£
+æœ‰å‡ ç§åˆ¶å®š migration çš„å‘½ä»¤ã€‚
 
 ### Use Command Line Options
 
@@ -308,9 +308,9 @@ To specify these options, execute the migrate command using the following format
 yii migrate/up --option1=value1 --option2=value2 ...
 ```
 
-ÀıÈç£¬if we want to migrate a `forum` module whose migration files
-are located within the module's `migrations` directory, ÎÒÃÇ¿ÉÒÔÊ¹ÓÃÈçÏÂ
-ÃüÁî£º
+ä¾‹å¦‚ï¼Œif we want to migrate a `forum` module whose migration files
+are located within the module's `migrations` directory, æˆ‘ä»¬å¯ä»¥ä½¿ç”¨å¦‚ä¸‹
+å‘½ä»¤ï¼š
 
 ```
 yii migrate/up --migrationPath=@app/modules/forum/migrations
@@ -320,9 +320,9 @@ yii migrate/up --migrationPath=@app/modules/forum/migrations
 ### Configure Command Globally
 
 While command line options allow us to configure the migration command
-on-the-fly, ÓĞÊ±ÎÒÃÇ¿ÉÄÜĞèÒªÍ¨¹ıÅäÖÃÃüÁîÒ»ÀÍÓÀÒİ¡£
-ÀıÈç£¬ÎÒÃÇ¿ÉÄÜĞèÒªÊ¹ÓÃ²»Í¬µÄ±íÀ´´æ´¢ÀúÊ· migrations£¬
-»òÕßÎÒÃÇ¿ÉÄÜĞèÒªÊ¹ÓÃ×Ô¶¨ÒåµÄ migrations Ä£°å¡£We can do so by modifying
+on-the-fly, æœ‰æ—¶æˆ‘ä»¬å¯èƒ½éœ€è¦é€šè¿‡é…ç½®å‘½ä»¤ä¸€åŠ³æ°¸é€¸ã€‚
+ä¾‹å¦‚ï¼Œæˆ‘ä»¬å¯èƒ½éœ€è¦ä½¿ç”¨ä¸åŒçš„è¡¨æ¥å­˜å‚¨å†å² migrationsï¼Œ
+æˆ–è€…æˆ‘ä»¬å¯èƒ½éœ€è¦ä½¿ç”¨è‡ªå®šä¹‰çš„ migrations æ¨¡æ¿ã€‚We can do so by modifying
 the console application's configuration file like the following,
 
 ```php
@@ -334,15 +334,15 @@ the console application's configuration file like the following,
 ]
 ```
 
-ÏÖÔÚÈç¹ûÎÒÃÇÔËĞĞ `migrate` ÃüÁî£¬²»ĞèÒªÃ¿´Î¶¼½øÈëÃüÁîĞĞ
-ÉÏÃæµÄÅäÖÃÒ²½«ÉúĞ§¡£ÆäËüÃüÁîÑ¡Ïî
-Ò²¿ÉÒÔÓÃÕâÖÖ·½·¨½øĞĞÅäÖÃ¡£
+ç°åœ¨å¦‚æœæˆ‘ä»¬è¿è¡Œ `migrate` å‘½ä»¤ï¼Œä¸éœ€è¦æ¯æ¬¡éƒ½è¿›å…¥å‘½ä»¤è¡Œ
+ä¸Šé¢çš„é…ç½®ä¹Ÿå°†ç”Ÿæ•ˆã€‚å…¶å®ƒå‘½ä»¤é€‰é¡¹
+ä¹Ÿå¯ä»¥ç”¨è¿™ç§æ–¹æ³•è¿›è¡Œé…ç½®ã€‚
 
 
 ### Migrating with Multiple Databases
 
 By default, migrations will be applied to the database specified by the `db` [application component](structure-application-components.md).
-You may change it by specifying the `--db` option, ÀıÈç£¬
+You may change it by specifying the `--db` option, ä¾‹å¦‚ï¼Œ
 
 ```
 yii migrate --db=db2
@@ -350,7 +350,7 @@ yii migrate --db=db2
 
 The above command will apply *all* migrations found in the default migration path to the `db2` database.
 
-Èç¹ûÄãµÄÓ¦ÓÃ³ÌĞòÊ¹ÓÃ¶à¸öÊı¾İ¿â£¬it is possible that some migrations should be applied
+å¦‚æœä½ çš„åº”ç”¨ç¨‹åºä½¿ç”¨å¤šä¸ªæ•°æ®åº“ï¼Œit is possible that some migrations should be applied
 to one database while some others should be applied to another database. In this case, it is recommended that
 you create a base migration class for each different database and override the [[yii\db\Migration::init()]]
 method like the following,
@@ -364,16 +364,16 @@ public function init()
 ```
 
 To create a migration that should be applied to a particular database, simply extend from the corresponding
-base migration class. ÏÖÔÚÈç¹ûÄãÔËĞĞ `yii migrate` ÃüÁî£¬Ã¿Ò»¸ö migration ½«±»Ó¦ÓÃµ½ÆäÏàÓ¦µÄÊı¾İ¿âÖĞ¡£
+base migration class. ç°åœ¨å¦‚æœä½ è¿è¡Œ `yii migrate` å‘½ä»¤ï¼Œæ¯ä¸€ä¸ª migration å°†è¢«åº”ç”¨åˆ°å…¶ç›¸åº”çš„æ•°æ®åº“ä¸­ã€‚
 
-> ×¢Òâ£ºBecause each migration uses a hardcoded DB connection, the `--db` option of the `migrate` command will
+> æ³¨æ„ï¼šBecause each migration uses a hardcoded DB connection, the `--db` option of the `migrate` command will
   have no effect. Also note that the migration history will be stored in the default `db` database.
 
-Èç¹ûÄãÏëÍ¨¹ı `--db` Ñ¡Ïî¸ü¸Ä DB Á´½Ó£¬Äã¿ÉÒÔ²ÉÓÃÈçÏÂ·½·¨
-Ê¹¶à¸öÊı¾İ¿âÒ»Æğ¹¤×÷¡£
+å¦‚æœä½ æƒ³é€šè¿‡ `--db` é€‰é¡¹æ›´æ”¹ DB é“¾æ¥ï¼Œä½ å¯ä»¥é‡‡ç”¨å¦‚ä¸‹æ–¹æ³•
+ä½¿å¤šä¸ªæ•°æ®åº“ä¸€èµ·å·¥ä½œã€‚
 
-¶ÔÓÚÃ¿¸öÊı¾İ¿â£¬Ìí¼ÓÒ»¸öÇ¨ÒÆÂ·¾¶£¬ÔÚÕâÀï±£´æËùÓĞÏà¹ØµÄÇ¨ÒÆÀà¡£ÎªÁËÓ¦ÓÃ migrations£¬
-ÔËĞĞÈçÏÂÃüÁî£¬
+å¯¹äºæ¯ä¸ªæ•°æ®åº“ï¼Œæ·»åŠ ä¸€ä¸ªè¿ç§»è·¯å¾„ï¼Œåœ¨è¿™é‡Œä¿å­˜æ‰€æœ‰ç›¸å…³çš„è¿ç§»ç±»ã€‚ä¸ºäº†åº”ç”¨ migrationsï¼Œ
+è¿è¡Œå¦‚ä¸‹å‘½ä»¤ï¼Œ
 
 ```
 yii migrate --migrationPath=@app/migrations/db1 --db=db1
@@ -381,4 +381,4 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 ...
 ```
 
-> ×¢Òâ£ºThe above approach stores the migration history in different databases specified via the `--db` option.
+> æ³¨æ„ï¼šThe above approach stores the migration history in different databases specified via the `--db` option.

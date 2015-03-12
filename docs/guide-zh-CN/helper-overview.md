@@ -1,13 +1,13 @@
 Helpers
 =======
 
-> ×¢Òâ£ºÕâ²¿·ÖÕıÔÚ¿ª·¢ÖĞ¡£
+> æ³¨æ„ï¼šè¿™éƒ¨åˆ†æ­£åœ¨å¼€å‘ä¸­ã€‚
 
-Yii Ìá¹©Ğí¶àÀàÀ´¼ò»¯³£¼û±àÂë£¬Èç¶Ô×ÖÌõ´®»òÊı×éµÄ²Ù×÷£¬
-HTML ´úÂëÉú³É£¬µÈµÈ¡£ÕâĞ©ÖúÊÖÀà±»±àĞ´ÔÚÃüÃû¿Õ¼ä `yii\helpers` ÏÂ£¬²¢ÇÒ
-È«ÊÇ¾²Ì¬Àà £¨¾ÍÊÇËµËüÃÇÖ»°üº¬¾²Ì¬ÊôĞÔºÍ¾²Ì¬·½·¨£¬¶øÇÒ²»ÄÜÊµÀı»¯£©¡£
+Yii æä¾›è®¸å¤šç±»æ¥ç®€åŒ–å¸¸è§ç¼–ç ï¼Œå¦‚å¯¹å­—æ¡ä¸²æˆ–æ•°ç»„çš„æ“ä½œï¼Œ
+HTML ä»£ç ç”Ÿæˆï¼Œç­‰ç­‰ã€‚è¿™äº›åŠ©æ‰‹ç±»è¢«ç¼–å†™åœ¨å‘½åç©ºé—´ `yii\helpers` ä¸‹ï¼Œå¹¶ä¸”
+å…¨æ˜¯é™æ€ç±» ï¼ˆå°±æ˜¯è¯´å®ƒä»¬åªåŒ…å«é™æ€å±æ€§å’Œé™æ€æ–¹æ³•ï¼Œè€Œä¸”ä¸èƒ½å®ä¾‹åŒ–ï¼‰ã€‚
 
-¿ÉÒÔÍ¨¹ıµ÷ÓÃÆäÖĞÒ»¸ö¾²Ì¬·½·¨À´Ê¹ÓÃÖúÊÖÀà£¬ÈçÏÂ£º
+å¯ä»¥é€šè¿‡è°ƒç”¨å…¶ä¸­ä¸€ä¸ªé™æ€æ–¹æ³•æ¥ä½¿ç”¨åŠ©æ‰‹ç±»ï¼Œå¦‚ä¸‹ï¼š
 
 ```php
 use yii\helpers\Html;
@@ -15,15 +15,15 @@ use yii\helpers\Html;
 echo Html::encode('Test > test');
 ```
 
-> ×¢Òâ£ºÎªÁËÖ§³Ö [customizing helper classes](#customizing-helper-classes)£¬Yii ½«Ã¿Ò»¸öÖúÊÖÀà
-  ·Ö¸ô³ÉÁ½¸öÀà£ºÒ»¸ö»ùÀà (e.g. `BaseArrayHelper`) ºÍÒ»¸ö concrete Àà (e.g. `ArrayHelper`).
-  µ±Ê¹ÓÃÖúÊÖÀàÊ±£¬Ó¦¸Ã½öÊ¹ÓÃ concrete Àà°æ±¾¶ø²»Ê¹ÓÃ»ùÀà¡£
+> æ³¨æ„ï¼šä¸ºäº†æ”¯æŒ [customizing helper classes](#customizing-helper-classes)ï¼ŒYii å°†æ¯ä¸€ä¸ªåŠ©æ‰‹ç±»
+  åˆ†éš”æˆä¸¤ä¸ªç±»ï¼šä¸€ä¸ªåŸºç±» (e.g. `BaseArrayHelper`) å’Œä¸€ä¸ª concrete ç±» (e.g. `ArrayHelper`).
+  å½“ä½¿ç”¨åŠ©æ‰‹ç±»æ—¶ï¼Œåº”è¯¥ä»…ä½¿ç”¨ concrete ç±»ç‰ˆæœ¬è€Œä¸ä½¿ç”¨åŸºç±»ã€‚
 
 
 Core Helper Classes
 -------------------
 
-Yii ·¢²¼°æÖĞÌá¹©ÒÔÏÂºËĞÄÖúÊÖÀà£º
+Yii å‘å¸ƒç‰ˆä¸­æä¾›ä»¥ä¸‹æ ¸å¿ƒåŠ©æ‰‹ç±»ï¼š
 
 - [ArrayHelper](helper-array.md)
 - Console
@@ -45,11 +45,11 @@ Customizing Helper Classes <span id="customizing-helper-classes"></span>
 
 To customize a core helper class (e.g. [[yii\helpers\ArrayHelper]]), you should create a new class extending
 from the helpers corresponding base class (e.g. [[yii\helpers\BaseArrayHelper]]) and name your class the same
-as the corresponding concrete class (e.g. [[yii\helpers\ArrayHelper]]), °üÀ¨ËüµÄÃüÃû¿Õ¼ä¡£This class
+as the corresponding concrete class (e.g. [[yii\helpers\ArrayHelper]]), åŒ…æ‹¬å®ƒçš„å‘½åç©ºé—´ã€‚This class
 will then be set up to replace the original implementation of the framework.
 
-ÏÂÃæÊ¾ÀıÏÔÊ¾ÁËÈçºÎ×Ô¶¨Òå [[yii\helpers\ArrayHelper]] ÀàµÄ
-[[yii\helpers\ArrayHelper::merge()|merge()]] ·½·¨£º
+ä¸‹é¢ç¤ºä¾‹æ˜¾ç¤ºäº†å¦‚ä½•è‡ªå®šä¹‰ [[yii\helpers\ArrayHelper]] ç±»çš„
+[[yii\helpers\ArrayHelper::merge()|merge()]] æ–¹æ³•ï¼š
 
 ```php
 <?php
@@ -65,7 +65,7 @@ class ArrayHelper extends BaseArrayHelper
 }
 ```
 
-½«ÄãµÄÀà±£´æÔÚÒ»¸öÃûÎª `ArrayHelper.php` µÄÎÄ¼şÖĞ¡£¸ÃÎÄ¼ş¿ÉÒÔÔÚÈÎºÎÄ¿Â¼£¬ÀıÈç `@app/components`¡£
+å°†ä½ çš„ç±»ä¿å­˜åœ¨ä¸€ä¸ªåä¸º `ArrayHelper.php` çš„æ–‡ä»¶ä¸­ã€‚è¯¥æ–‡ä»¶å¯ä»¥åœ¨ä»»ä½•ç›®å½•ï¼Œä¾‹å¦‚ `@app/components`ã€‚
 
 Next, in your application's [entry script](structure-entry-scripts.md), add the following line of code
 after including the `yii.php` file to tell the [Yii class autoloader](concept-autoloading.md) to load your custom
@@ -76,5 +76,5 @@ Yii::$classMap['yii\helpers\ArrayHelper'] = '@app/components/ArrayHelper.php';
 ```
 
 Note that customizing of helper classes is only useful if you want to change the behavior of an existing function
-of the helpers. Èç¹ûÄãÏëÎªÄãµÄÓ¦ÓÃ³ÌĞòÌí¼Ó¸½¼Ó¹¦ÄÜ£¬×îºÃÎªËü´´½¨Ò»¸öµ¥¶ÀµÄ
-ÖúÊÖÀà¡£
+of the helpers. å¦‚æœä½ æƒ³ä¸ºä½ çš„åº”ç”¨ç¨‹åºæ·»åŠ é™„åŠ åŠŸèƒ½ï¼Œæœ€å¥½ä¸ºå®ƒåˆ›å»ºä¸€ä¸ªå•ç‹¬çš„
+åŠ©æ‰‹ç±»ã€‚

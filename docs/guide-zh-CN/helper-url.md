@@ -1,13 +1,13 @@
 Url Helper
 ==========
 
-Url ÖúÊÖÌá¹©ÁËÒ»×é¾²Ì¬·½·¨À´¹ÜÀí URLs¡£
+Url åŠ©æ‰‹æä¾›äº†ä¸€ç»„é™æ€æ–¹æ³•æ¥ç®¡ç† URLsã€‚
 
 
 ## Getting Common URLs <span id="getting-common-urls"></span>
 
-ÕâÓĞÁ½ÖÖ·½·¨Äã¿ÉÒÔ»ñµÃ¹«¹² URLs£ºhome URL ºÍµ±Ç°ÇëÇóµÄ base URL ¡£°´ÈçÏÂ·½·¨¿ÉÒÔ»ñµÃ
-home URL £º
+è¿™æœ‰ä¸¤ç§æ–¹æ³•ä½ å¯ä»¥è·å¾—å…¬å…± URLsï¼šhome URL å’Œå½“å‰è¯·æ±‚çš„ base URL ã€‚æŒ‰å¦‚ä¸‹æ–¹æ³•å¯ä»¥è·å¾—
+home URL ï¼š
 
 ```php
 $relativeHomeUrl = Url::home();
@@ -15,8 +15,8 @@ $absoluteHomeUrl = Url::home(true);
 $httpsAbsoluteHomeUrl = Url::home('https');
 ```
 
-Èç¹ûÃ»ÓĞ²ÎÊı´«µİ£¬Éú³ÉµÄ URL ÊÇÏà¶ÔÂ·¾¶¡£Äã¼´¿ÉÒÔÍ¨¹ı `true` »ñÈ¡µ±Ç° URL µÄ
-schema Ò²¿ÉÒÔÖ¸¶¨ÓÃ (`https`, `http`) ÖĞµÄÄÄ¸ö¡£
+å¦‚æœæ²¡æœ‰å‚æ•°ä¼ é€’ï¼Œç”Ÿæˆçš„ URL æ˜¯ç›¸å¯¹è·¯å¾„ã€‚ä½ å³å¯ä»¥é€šè¿‡ `true` è·å–å½“å‰ URL çš„
+schema ä¹Ÿå¯ä»¥æŒ‡å®šç”¨ (`https`, `http`) ä¸­çš„å“ªä¸ªã€‚
 
 To get base URL of the current request use the following:
  
@@ -31,22 +31,22 @@ The only parameter of the method works exactly the same as for `Url::home()`.
 
 ## Creating URLs <span id="creating-urls"></span>
 
-In order to create URL to a given route use `Url::toRoute()` method. ´Ë·½·¨Ê¹ÓÃ [[\yii\web\UrlManager]] À´´´½¨
-Ò»¸ö URL£º
+In order to create URL to a given route use `Url::toRoute()` method. æ­¤æ–¹æ³•ä½¿ç”¨ [[\yii\web\UrlManager]] æ¥åˆ›å»º
+ä¸€ä¸ª URLï¼š
 
 ```php
 $url = Url::toRoute(['product/view', 'id' => 42]);
 ```
  
 You may specify the route as a string, e.g., `site/index`. You may also use an array if you want to specify additional
-query parameters for the URL being created. Êı×éµÄ¸ñÊ½±ØĞë°´ÈçÏÂ·½Ê½£º
+query parameters for the URL being created. æ•°ç»„çš„æ ¼å¼å¿…é¡»æŒ‰å¦‚ä¸‹æ–¹å¼ï¼š
 
 ```php
 // generates: /index.php?r=site/index&param1=value1&param2=value2
 ['site/index', 'param1' => 'value1', 'param2' => 'value2']
 ```
 
-Èç¹ûÄãÏëÓÃÃª´´½¨Ò»¸ö URL £¬¿ÉÒÔÊ¹ÓÃ `#` ×÷ÎªÊı×éµÄÒ»¸ö²ÎÊı¡£ÀıÈç£¬
+å¦‚æœä½ æƒ³ç”¨é”šåˆ›å»ºä¸€ä¸ª URL ï¼Œå¯ä»¥ä½¿ç”¨ `#` ä½œä¸ºæ•°ç»„çš„ä¸€ä¸ªå‚æ•°ã€‚ä¾‹å¦‚ï¼Œ
 
 ```php
 // generates: /index.php?r=site/index&param1=value1#name
@@ -62,11 +62,11 @@ route has none (e.g. `site/index` or `index`). A relative route will be converte
 - If the route has no leading slash (e.g. `site/index`), it is considered to be a route relative to the current module
   and will be prepended with the module's [[\yii\base\Module::uniqueId|uniqueId]].
   
-´Ó°æ±¾ 2.0.2 ¿ªÊ¼£¬you may specify a route in terms of an [alias](concept-aliases.md). Èç¹ûÊÇÕâÖÖÇé¿ö£¬
+ä»ç‰ˆæœ¬ 2.0.2 å¼€å§‹ï¼Œyou may specify a route in terms of an [alias](concept-aliases.md). å¦‚æœæ˜¯è¿™ç§æƒ…å†µï¼Œ
 the alias will first be converted into the actual route which will then be turned into an absolute route according
 to the above rules.
 
-ÏÂÃæÊÇÒ»Ğ©Ê¹ÓÃ¸Ã·½·¨µÄÀı×Ó£º
+ä¸‹é¢æ˜¯ä¸€äº›ä½¿ç”¨è¯¥æ–¹æ³•çš„ä¾‹å­ï¼š
 
 ```php
 // /index.php?r=site/index
@@ -85,10 +85,10 @@ echo Url::toRoute('site/index', true);
 echo Url::toRoute('site/index', 'https');
 ```
 
-ÓĞÁíÒ»¸ö·½·¨ `Url::to()` ºÍ [[toRoute()]] ·½·¨·Ç³£ÏàËÆ¡£The only difference is that this method
-requires a route to be specified as an array only. Èç¹û¸ø³öÒ»¸ö×Ö·û´®£¬½«±»ÊÓÎªÒ»¸ö URL¡£
+æœ‰å¦ä¸€ä¸ªæ–¹æ³• `Url::to()` å’Œ [[toRoute()]] æ–¹æ³•éå¸¸ç›¸ä¼¼ã€‚The only difference is that this method
+requires a route to be specified as an array only. å¦‚æœç»™å‡ºä¸€ä¸ªå­—ç¬¦ä¸²ï¼Œå°†è¢«è§†ä¸ºä¸€ä¸ª URLã€‚
 
-µÚÒ»¸ö²ÎÊı¿ÉÄÜÊÇ£º
+ç¬¬ä¸€ä¸ªå‚æ•°å¯èƒ½æ˜¯ï¼š
          
 - an array: [[toRoute()]] will be called to generate the URL. For example:
   `['site/index']`, `['post/index', 'page' => 2]`. Please refer to [[toRoute()]] for more details
@@ -102,7 +102,7 @@ When `$scheme` is specified (either a string or true), an absolute URL with host
 [[\yii\web\UrlManager::hostInfo]]) will be returned. If `$url` is already an absolute URL, its scheme
 will be replaced with the specified one.
 
-ÏÂÃæÊÇÒ»Ğ©ÓÃ·¨µÄÊ¾Àı£º
+ä¸‹é¢æ˜¯ä¸€äº›ç”¨æ³•çš„ç¤ºä¾‹ï¼š
 
 ```php
 // /index.php?r=site/index
@@ -130,9 +130,9 @@ echo Url::to('@web/images/logo.gif', true);
 echo Url::to('@web/images/logo.gif', 'https');
 ```
 
-´Ó°æ±¾ 2.0.3 ¿ªÊ¼£¬you may use [[yii\helpers\Url::current()]] to create a URL based on the currently
+ä»ç‰ˆæœ¬ 2.0.3 å¼€å§‹ï¼Œyou may use [[yii\helpers\Url::current()]] to create a URL based on the currently
 requested route and GET parameters. You may modify or remove some of the GET parameters or add new ones by
-passing a `$params` parameter to the method. ÀıÈç£¬
+passing a `$params` parameter to the method. ä¾‹å¦‚ï¼Œ
 
 ```php
 // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
@@ -150,7 +150,7 @@ echo Url::current(['id' => 100]);
 ## Remember URLs <span id="remember-urls"></span>
 
 There are cases when you need to remember URL and afterwards use it during processing of the one of sequential requests.
-Ëü¿ÉÒÔÍ¨¹ıÒÔÏÂ·½Ê½À´ÊµÏÖ£º
+å®ƒå¯ä»¥é€šè¿‡ä»¥ä¸‹æ–¹å¼æ¥å®ç°ï¼š
  
 ```php
 // Remember current URL 
@@ -170,9 +170,9 @@ $url = Url::previous();
 $productUrl = Url::previous('product');
 ```
                         
-## ¼ì²éÏà¶Ô URLs <span id="checking-relative-urls"></span>
+## æ£€æŸ¥ç›¸å¯¹ URLs <span id="checking-relative-urls"></span>
 
-To find out if URL is relative i.e. it doesn't have host info part, Äã¿ÉÒÔÊ¹ÓÃÈçÏÂ´úÂë£º
+To find out if URL is relative i.e. it doesn't have host info part, ä½ å¯ä»¥ä½¿ç”¨å¦‚ä¸‹ä»£ç ï¼š
                              
 ```php
 $isRelative = Url::isRelative('test/it');
