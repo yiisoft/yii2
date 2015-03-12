@@ -40,13 +40,13 @@ Yii 发布版中提供以下核心助手类：
 - VarDumper
 
 
-Customizing Helper Classes <span id="customizing-helper-classes"></span>
+自定义助手类 <span id="customizing-helper-classes"></span>
 --------------------------
 
-To customize a core helper class (e.g. [[yii\helpers\ArrayHelper]]), you should create a new class extending
-from the helpers corresponding base class (e.g. [[yii\helpers\BaseArrayHelper]]) and name your class the same
-as the corresponding concrete class (e.g. [[yii\helpers\ArrayHelper]]), 包括它的命名空间。This class
-will then be set up to replace the original implementation of the framework.
+如果想要自定义一个核心助手类 (例如 [[yii\helpers\ArrayHelper]])，你应该创建一个新的类继承
+helpers对应的基类 (例如 [[yii\helpers\BaseArrayHelper]]) 并同样的命
+名你的这个类 (例如 [[yii\helpers\ArrayHelper]])，包括它的命名空间。这个类
+会用来替换框架最初的实现。
 
 下面示例显示了如何自定义 [[yii\helpers\ArrayHelper]] 类的
 [[yii\helpers\ArrayHelper::merge()|merge()]] 方法：
@@ -67,14 +67,14 @@ class ArrayHelper extends BaseArrayHelper
 
 将你的类保存在一个名为 `ArrayHelper.php` 的文件中。该文件可以在任何目录，例如 `@app/components`。
 
-Next, in your application's [entry script](structure-entry-scripts.md), add the following line of code
-after including the `yii.php` file to tell the [Yii class autoloader](concept-autoloading.md) to load your custom
-class instead of the original helper class from the framework:
+接下来，在你的应用程序 [entry script](structure-entry-scripts.md) 中，在包含 `yii.php` 文件后面
+添加以下代码行，用 [Yii class autoloader](concept-autoloading.md) 加载自定义类
+代替框架的原始助手类：
 
 ```php
 Yii::$classMap['yii\helpers\ArrayHelper'] = '@app/components/ArrayHelper.php';
 ```
 
-Note that customizing of helper classes is only useful if you want to change the behavior of an existing function
-of the helpers. 如果你想为你的应用程序添加附加功能，最好为它创建一个单独的
+注意，自定义助手类仅仅用于如果你想要更改 helpers
+现有的函数的行为。如果你想为你的应用程序添加附加功能，最好为它创建一个单独的
 助手类。
