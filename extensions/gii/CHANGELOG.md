@@ -4,7 +4,7 @@ Yii Framework 2 gii extension Change Log
 2.0.4 under development
 -----------------------
 
-- no changes in this release.
+- Bug #6667: Gii form generator rendering mistake view (pana1990)
 
 
 2.0.3 March 01, 2015
