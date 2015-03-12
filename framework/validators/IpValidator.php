@@ -11,13 +11,13 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * IpAddressValidator validates that the attribute value is a valid IPv4/IPv6 address or subnet.
+ * IpValidator validates that the attribute value is a valid IPv4/IPv6 address or subnet.
  * May change attribute's value if normalization is enabled.
  *
  * @author SilverFire <d.naumenko.a@gmail.com>
  * @since 2.0.4
  */
-class IpAddressValidator extends Validator
+class IpValidator extends Validator
 {
     /**
      * @const integer the length of IPv6 address in bits
@@ -29,8 +29,17 @@ class IpAddressValidator extends Validator
      */
     const IPV4_ADDRESS_LENGTH = 32;
 
-    const RANGE_ORDER_ALLOWED_DENIED = 0;
-    const RANGE_ORDER_DENIED_ALLOWED = 1;
+    /**
+     * @const integer is used to change check order by [[isAllowed]]
+     * @see isAllowed
+     */
+    const ORDER_ALLOW_DENY = 0;
+
+    /**
+     * @const integer is used to change check order by [[isAllowed]]
+     * @see isAllowed
+     */
+    const ORDER_DENY_ALLOW = 1;
 
     /**
      * @var boolean whether support of IPv6 addresses is enabled
@@ -44,8 +53,8 @@ class IpAddressValidator extends Validator
 
     /**
      * @var boolean|string whether address can be a CIDR subnet
-     *     boolean - normal behaviour
-     *     string  - value 'only' to validate only the addresses with a CIDR
+     *   boolean - whether an IP address with the CIDR subnet notation will be able to pass the validation
+     *   string  - value 'only' to validate only the addresses with the CIDR
      */
     public $subnet = false;
 
@@ -53,16 +62,17 @@ class IpAddressValidator extends Validator
      * @var boolean whether to add the prefix with the smallest length (32 for IPv4 and 128 for IPv6)
      * to an address without it.
      * Works only when attribute [[subnet]] is not false.
+     * Example: `10.0.1.5` will normalized to `10.0.1.5/32`, `2008:db0::1` will be normalized to `2008:db0::1/128`
      * @see subnet
      */
     public $normalize = false;
 
     /**
-     * @var boolean|string whether address may have an exclude-character at the beginning
+     * @var boolean|string whether address may have an negation-character at the beginning
      *   boolean - character "!" will be used
      *   string - passed character will be used
      */
-    public $exclude = false;
+    public $negationChar = false;
 
     /**
      * @var boolean whether to expand an IPv6 address to the full notation format
@@ -70,10 +80,10 @@ class IpAddressValidator extends Validator
     public $expandV6 = false;
 
     /**
-     * @var int the order of ranges rules. Used by [[checkRanges]]
-     * @see checkRanges
+     * @var int the order of ranges rules. Used by [[isAllowed]]
+     * @see isAllowed
      */
-    public $rangesOrder = self::RANGE_ORDER_DENIED_ALLOWED;
+    public $order = self::ORDER_DENY_ALLOW;
 
     /**
      * @var string|array IPv4 or IPv6 ranges that are allowed to use. For example:
@@ -82,9 +92,9 @@ class IpAddressValidator extends Validator
      * ['10.0.0.0/8', '192.168.1.1', '2001:ab::/64', '2001:ac::2:1']
      * ```
      *
-     * @see checkAllowed
+     * @see isAllowed
      */
-    public $allowedRanges = null;
+    public $allow = null;
 
     /**
      * @var string|array IPv4 or IPv6 ranges that are prohibited to use. For example:
@@ -93,9 +103,9 @@ class IpAddressValidator extends Validator
      * ['10.0.0.0/24', '192.168.2.1', '2001:ab::/32', '2001:ac::1:2']
      * ```
      *
-     * @see checkAllowed
+     * @see isAllowed
      */
-    public $deniedRanges = null;
+    public $deny = null;
 
     /**
      * @var string Regexp-pattern to validate IPv4 address
@@ -143,9 +153,9 @@ class IpAddressValidator extends Validator
 
     /**
      * @var string user-defined error message is used when validation fails due to IP address
-     * is not on the [[allowedRanges]] list, or is on the [[deniedRanges]] list
-     * @see allowedRanges
-     * @see deniedRanges
+     * is not on the [[allow]] list, or is on the [[deny]] list
+     * @see allow
+     * @see deny
      */
     public $notInRange = "{attribute} is not in the allowed range";
 
@@ -164,12 +174,12 @@ class IpAddressValidator extends Validator
             throw new InvalidConfigException('IPv6 validation can not be used. PHP is compiled without IPv6');
         }
 
-        if (!empty($this->allowedRanges) && !is_array($this->allowedRanges)) {
-            $this->allowedRanges = (array)$this->allowedRanges;
+        if (!empty($this->allow) && !is_array($this->allow)) {
+            $this->allow = (array)$this->allow;
         }
 
-        if (!empty($this->deniedRanges) && !is_array($this->deniedRanges)) {
-            $this->deniedRanges = (array)$this->deniedRanges;
+        if (!empty($this->deny) && !is_array($this->deny)) {
+            $this->deny = (array)$this->deny;
         }
     }
 
@@ -218,12 +228,12 @@ class IpAddressValidator extends Validator
             return [$this->wrongIp, []];
         }
 
-        $exclude = null;
+        $negation = null;
         $cidr = null;
 
-        $exclude_character = is_string($this->exclude) ? preg_quote($this->exclude, '/') : '!';
-        if (preg_match("/^($exclude_character?)(.+?)(\/(\d+))?$/", $ip, $matches)) {
-            $exclude = ($matches[1] !== '') ? $matches[1] : null;
+        $negationChar = is_string($this->negationChar) ? preg_quote($this->negationChar, '/') : '!';
+        if (preg_match("/^($negationChar?)(.+?)(\/(\d+))?$/", $ip, $matches)) {
+            $negation = ($matches[1] !== '') ? $matches[1] : null;
             $ip = $matches[2];
             $cidr = isset($matches[4]) ? $matches[4] : null;
         }
@@ -234,7 +244,7 @@ class IpAddressValidator extends Validator
         if (!$this->subnet && $cidr !== null) {
             return [$this->hasSubnet, []];
         }
-        if ($this->exclude === false && $exclude !== null) {
+        if ($this->negationChar === false && $negation !== null) {
             return [$this->wrongIp, []];
         }
 
@@ -274,11 +284,11 @@ class IpAddressValidator extends Validator
             }
         }
 
-        if (!$this->checkRanges($ip)) {
+        if (!$this->isAllowed($ip)) {
             return [$this->notInRange, []];
         }
 
-        $result = $exclude . $ip;
+        $result = $negation . $ip;
 
         if ($this->subnet) {
             $result .= "/$cidr";
@@ -301,45 +311,45 @@ class IpAddressValidator extends Validator
     }
 
     /**
-     * Checks whether IP address can be used according to [[deniedRanges]] and [[allowedRanges]] lists
-     * and [[rangesOrder]] option.
+     * Checks whether IP address can be used according to [[deny]] and [[allow]] lists
+     * and [[order]] option.
      *
-     * When [[rangesOrder]] is [[RANGE_ORDER_ALLOWED_DENIED]] - checks all the [[allowedRanges]], at least one must
-     * match or the method will return false. Then all the [[deniedRanges]] are checked, if one of them
+     * When [[order]] is [[ORDER_ALLOW_DENY]] - checks all the [[allow]], at least one must
+     * match or the method will return false. Then all the [[deny]] are checked, if one of them
      * matched the method will return false.
-     * At last, if $ip is not on the [[allowedRanges]] nor on the [[deniedRanges]] the method will return false.
+     * At last, if $ip is not on the [[allow]] nor on the [[deny]] the method will return false.
      *
-     * When [[RANGE_ORDER_DENIED_ALLOWED]] - checks all the [[deniedRanges]] and the [[allowedRanges]].
-     * If the value is on the [[deniedRanges]] will return false, unless it is also present on the [[allowedRanges]].
+     * When [[ORDER_DENY_ALLOW]] - checks all the [[deny]] and the [[allow]].
+     * If the value is on the [[deny]] will return false, unless it is also present on the [[allow]].
      * If it is not found on any of the lists the method will return true.
      *
-     * Tip: it is useful to use [[RANGE_ORDER_ALLOWED_DENIED]], when it is necessary to deny a less specific subnet and
+     * Tip: it is useful to use [[ORDER_ALLOW_DENY]], when it is necessary to deny a less specific subnet and
      * to allow a more specific one. The example below will result in passing `192.168.1.1`,
      * but `192.168.2.1` will be denied:
      *
      * ```
      * [
-     *      'deniedRanges' => ['192.168.0.0/16'],
-     *      'allowedRanges' => ['192.168.1.0/24']
+     *      'deny' => ['192.168.0.0/16'],
+     *      'allow' => ['192.168.1.0/24']
      * ]
      * ```
      *
      * @param $ip string
      * @return boolean
-     * @see rangesOrder
+     * @see order
      */
-    public function checkRanges($ip)
+    public function isAllowed($ip)
     {
         $denied = false;
         $allowed = true;
-        if (!empty($this->deniedRanges) && $this->isIpInRange($ip, $this->deniedRanges)) {
+        if (!empty($this->deny) && $this->isIpInRange($ip, $this->deny)) {
             $denied = true;
         }
-        if (!empty($this->allowedRanges) && !$this->isIpInRange($ip, $this->allowedRanges)) {
+        if (!empty($this->allow) && !$this->isIpInRange($ip, $this->allow)) {
             $allowed = false;
         }
 
-        return $this->rangesOrder === self::RANGE_ORDER_DENIED_ALLOWED ? (!$denied && $allowed) : (!$denied || $allowed);
+        return $this->order === self::ORDER_DENY_ALLOW ? (!$denied && $allowed) : (!$denied || $allowed);
     }
 
     /**

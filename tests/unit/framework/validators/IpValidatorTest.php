@@ -1,14 +1,14 @@
 <?php
 namespace yiiunit\framework\validators;
 
-use yii\validators\IpAddressValidator;
+use yii\validators\IpValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
 /**
  * @group validators
  */
-class IpAddressValidatorTest extends TestCase
+class IpValidatorTest extends TestCase
 {
     protected function setUp()
     {
@@ -20,22 +20,22 @@ class IpAddressValidatorTest extends TestCase
     {
         $this->setExpectedException('yii\base\InvalidConfigException',
             'Both IPv4 and IPv6 checks can not be disabled at the same time');
-        new IpAddressValidator(['ipv4' => false, 'ipv6' => false]);
+        new IpValidator(['ipv4' => false, 'ipv6' => false]);
     }
 
     public function testAssureMessageSetOnInit()
     {
-        $val = new IpAddressValidator([
-            'allowedRanges' => '10.0.0.1',
-            'deniedRanges' => ['10.0.0.2']
+        $val = new IpValidator([
+            'allow' => '10.0.0.1',
+            'deny' => ['10.0.0.2']
         ]);
-        $this->assertTrue(is_array($val->allowedRanges));
-        $this->assertTrue(is_array($val->deniedRanges));
+        $this->assertTrue(is_array($val->allow));
+        $this->assertTrue(is_array($val->deny));
     }
 
     public function testValidateValue()
     {
-        $validator = new IpAddressValidator();
+        $validator = new IpValidator();
 
         $this->assertTrue($validator->validate('192.168.10.11'));
         $this->assertTrue($validator->validate('2008:fa::1'));
@@ -74,7 +74,7 @@ class IpAddressValidatorTest extends TestCase
         $this->assertFalse($validator->validate('192.168.5.32/af'));
         $this->assertFalse($validator->validate('192.168.5.32/11/12'));
 
-        $validator->exclude = true;
+        $validator->negationChar = true;
 
         $this->assertTrue($validator->validate('!192.168.5.32/32'));
         $this->assertTrue($validator->validate('!2008:fa::0:1/64'));
@@ -90,24 +90,24 @@ class IpAddressValidatorTest extends TestCase
 
     public function testValidateRange()
     {
-        $validator = new IpAddressValidator([
-            'allowedRanges' => ['10.0.1.0/24'],
+        $validator = new IpValidator([
+            'allow' => ['10.0.1.0/24'],
         ]);
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertFalse($validator->validate('192.5.1.1'));
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
 
-        $validator->allowedRanges = ['10.0.1.0/24', '2001:db0:1:2::/64', '127.0.0.1'];
+        $validator->allow = ['10.0.1.0/24', '2001:db0:1:2::/64', '127.0.0.1'];
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertFalse($validator->validate('10.0.3.2'));
 
-        $validator->deniedRanges = ['10.0.0.0/8', '2001:db0::/32'];
+        $validator->deny = ['10.0.0.0/8', '2001:db0::/32'];
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
         $this->assertFalse($validator->validate('10.0.1.2'));
         $this->assertTrue($validator->validate('127.0.0.1'));
 
-        $validator->rangesOrder = IpAddressValidator::RANGE_ORDER_ALLOWED_DENIED;
+        $validator->order = IpValidator::ORDER_ALLOW_DENY;
         $validator->subnet = true;
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
@@ -119,7 +119,7 @@ class IpAddressValidatorTest extends TestCase
 
     public function testValidateAttribute()
     {
-        $validator = new IpAddressValidator();
+        $validator = new IpValidator();
         $model = new FakedValidationModel();
 
         $model->attr_ip = '8.8.8.8';
