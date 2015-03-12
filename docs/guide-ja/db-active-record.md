@@ -379,9 +379,10 @@ $customer->save();
 
 ### カウンタを更新する <span id="updating-counters"></span>
 
-It is a common task to increment or decrement a column in a database table. We call such columns as counter columns.
-You can use [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] to update one or multiple counter columns.
-For example,
+データベーステーブルのあるカラムの値を増加・減少させるのは、よくある仕事です。
+私たちはそのようなカラムをカウンタカラムと呼んでいます。
+[[yii\db\ActiveRecord::updateCounters()|updateCounters()]] を使って一つまたは複数のカウンタカラムを更新することが出来ます。
+例えば、
 
 ```php
 $post = Post::findOne(100);
@@ -390,84 +391,182 @@ $post = Post::findOne(100);
 $post->updateCounters(['view_count' => 1]);
 ```
 
-> Note: If you use [[yii\db\ActiveRecord::save()]] to update a counter column, you may end up with inaccurate result,
-  because it is likely the same counter is being saved by multiple requests which read and write the same counter value.
+> Note|注意: カウンタカラムを更新するのに [[yii\db\ActiveRecord::save()]] を使うと、不正確な結果になってしまう場合があります。
+というのは、同じカウンタの値を読み書きする複数のリクエストによって、同一のカウンタが保存される可能性があるからです。
 
 
-### Dirty Attributes <span id="dirty-attributes"></span>
+### ダーティな属性 <span id="dirty-attributes"></span>
 
-When you call [[yii\db\ActiveRecord::save()|save()]] to save an Active Record instance, only *dirty attributes*
-are being saved. An attribute is considered *dirty* if its value has been modified since it was loaded from DB or
-saved to DB most recently. Note that data validation will be performed regardless if the Active Record 
-instance has dirty attributes or not.
+[[yii\db\ActiveRecord::save()|save()]] を呼んでアクティブレコードインスタンスを保存すると、*ダーティな属性* だけが保存されます。
+属性は、DB からロードされた後、または、最後に保存された後にその値が変更されると、*ダーティ* であると見なされます。
+ただし、データ検証は、アクティブレコードインスタンスがダーティな属性を持っているかどうかに関係なく実施されることに注意してください。
 
-Active Record automatically maintains the list of dirty attributes. It does so by maintaining an older version of
-the attribute values and comparing them with the latest one. You can call [[yii\db\ActiveRecord::getDirtyAttributes()]] 
-to get the attributes that are currently dirty. You can also call [[yii\db\ActiveRecord::markAttributeDirty()]] 
-to explicitly mark an attribute as dirty.
+アクティブレコードはダーティな属性のリストを自動的に保守します。
+そうするために、一つ前のバージョンの属性値を保持して、最新のバージョンと比較します。
+[[yii\db\ActiveRecord::getDirtyAttributes()]] を呼ぶと、現在ダーティである属性を取得することが出来ます。
+また、[[yii\db\ActiveRecord::markAttributeDirty()]] を呼んで、ある属性をダーティであると明示的にマークすることも出来ます。
 
-If you are interested in the attribute values prior to their most recent modification, you may call 
-[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] or [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
+最新の修正を受ける前の属性値を知りたい場合は、[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] または [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]] を呼ぶことが出来ます。
 
 
-### デフォルト値を読み出す
+### デフォルト属性値 <span id="default-attribute-values"></span>
 
-テーブルのカラムの定義は、デフォルト値を含むことが出来ます。
-アクティブレコードのためのウェブフォームに、このデフォルト値を事前に代入しておきたい場合があるでしょう。
-そうするためには、フォームを表示する前に、[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] を呼びます。
+あなたのテーブルのカラムの中には、データベースでデフォルト値が定義されているものもあるかも知れません。
+そして、場合によっては、アクティブレコードインスタンスのウェブフォームに、そういうデフォルト値をあらかじめ投入したいことがあるでしょう。
+同じデフォルト値を繰り返して書くことを避けるために、[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] を呼んで、DB で定義されたデフォルト値を対応するアクティブレコードの属性に投入することが出来ます。
 
 ```php
 $customer = new Customer();
 $customer->loadDefaultValues();
-// ... $customer の HTML フォームを表示する ...
+// $customer->xyz には、"xyz" カラムを定義するときに宣言されたデフォルト値が割り当てられる
 ```
 
-属性に対して何かの初期値を自分自身で設定したい場合は、アクティブレコードクラスの `init()` メソッドをオーバーライドして、そこで値を設定することが出来ます。
-例えば、`status` 属性のデフォルト値を設定したい場合は、
+
+### 複数の行を更新する <span id="updating-multiple-rows"></span>
+
+上述のメソッドは、すべて、個別のアクティブレコードインスタンスに対して作用し、個別のテーブル行を挿入したり更新したりするものです。
+複数の行を同時に更新するためには、代りに、スタティックなメソッドである [[yii\db\ActiveRecord::updateAll()|updateAll()]] を呼ばなければなりません。
 
 ```php
-public function init()
+// UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com`
+Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
+```
+
+同様に、[[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] を呼んで、複数の行のカウンタカラムを同時に更新することが出来ます。
+
+```php
+// UPDATE `customer` SET `age` = `age` + 1
+Customer::updateAllCounters(['age' => 1]);
+```
+
+
+## データを削除する <span id="deleting-data"></span>
+
+一行のデータを削除するためには、最初にその行に対応するアクティブレコードインスタンスを取得して、次に [[yii\db\ActiveRecord::delete()]] メソッドを呼びます。
+
+```php
+$customer = Customer::findOne(123);
+$customer->delete();
+```
+
+[[yii\db\ActiveRecord::deleteAll()]] を呼んで、複数またはすべてのデータ行を削除することが出来ます。例えば、
+
+```php
+Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
+```
+
+> Note|注意: [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] を呼ぶときは、十分に注意深くしてください。
+  なぜなら、条件の指定を間違うと、あなたのテーブルからすべてのデータを完全に消し去ってしまうことになるからです。
+
+
+## アクティブレコードのライフサイクル <span id="ar-life-cycles"></span>
+
+アクティブレコードがさまざまな目的で使用される場合のそれぞれのライフサイクルを理解しておくことは重要なことです。
+それぞれのライフサイクルにおいては、特定の一続きのメソッドが呼び出されます。
+そして、これらのメソッドをオーバーライドして、ライフサイクルをカスタマイズするチャンスを得ることが出来ます。
+また、ライフサイクルの中でトリガされる特定のアクティブレコードイベントに反応して、あなたのカスタムコードを挿入することも出来ます。
+これらのイベントが特に役に立つのは、アクティブレコードのライフサイクルをカスタマイズする必要のあるアクティブレコード [ビヘイビア](concept-behaviors.md) を開発する際です。
+
+次に、さまざまなアクティブレコードのライフサイクルと、そのライフサイクルに含まれるメソッドやイベントを要約します。
+
+
+### 新しいインスタンスのライフサイクル <span id="new-instance-life-cycle"></span>
+
+`new` 演算子によって新しいアクティブレコードインスタンスを作成する場合は、次のライフサイクルを経ます。
+
+1. クラスのコンストラクタ。
+2. [[yii\db\ActiveRecord::init()|init()]]: [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] イベントをトリガ。
+
+
+### データをクエリする際のライフサイクル <span id="querying-data-life-cycle"></span>
+
+
+[クエリメソッド](#querying-data) のどれか一つによってデータをクエリする場合は、新しくデータを投入されるアクティブレコードは次のライフサイクルを経ます。
+
+1. クラスのコンストラクタ。
+2. [[yii\db\ActiveRecord::init()|init()]]: [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] イベントをトリガ。
+3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] イベントをトリガ。
+
+
+### データを保存する際のライフサイクル <span id="saving-data-life-cycle"></span>
+
+[[yii\db\ActiveRecord::save()|save()]] を呼んでアクティブレコードインスタンスを挿入または更新する場合は、次のライフサイクルを経ます。
+
+1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] イベントをトリガ。
+   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合、残りのステップはスキップされる。
+2. データ検証を実行。データ検証が失敗した場合、3 以降のステップはスキップされる。
+3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] イベントをトリガ。
+4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] または [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] イベントをトリガ。
+   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合、残りのステップはスキップされる。
+5. 実際のデータの挿入または更新を実行する。
+6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] または [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] イベントをトリガ。
+   
+
+### データを削除する際のライフサイクル <span id="deleting-data-life-cycle"></span>
+
+[[yii\db\ActiveRecord::delete()|delete()]] を呼んでアクティブレコードインスタンスを削除する際は、次のライフサイクルを経ます。
+
+1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] イベントをトリガ。
+   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合は、残りのステップはスキップされる。
+2. 実際のデータの削除を実行する。
+3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] イベントをトリガ。
+
+
+> Note|注意: 次のメソッドは、どれを呼んでも、上記のライフサイクルを開始させません。
+>
+> - [[yii\db\ActiveRecord::updateAll()]] 
+> - [[yii\db\ActiveRecord::deleteAll()]]
+> - [[yii\db\ActiveRecord::updateCounters()]] 
+> - [[yii\db\ActiveRecord::updateAllCounters()]] 
+
+
+## トランザクション操作 <span id="transactional-operations"></span>
+
+アクティブレコードを扱う際には、二つの方法でトランザクション操作を処理することができます。
+最初の方法は、"[データベースの基礎](db-dao.md)" の「トランザクション」の項で説明したように、全てを手作業でやる方法です。
+もう一つの方法として、`transactions` メソッドを実装して、モデルのシナリオごとに、どの操作をトランザクションで囲むかを指定することが出来ます。
+
+```php
+class Post extends \yii\db\ActiveRecord
 {
-    parent::init();
-    $this->status = self::STATUS_ACTIVE;
+    public function transactions()
+    {
+        return [
+            'admin' => self::OP_INSERT,
+            'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
+            // 上は次と等価
+            // 'api' => self::OP_ALL,
+        ];
+    }
 }
 ```
 
-アクティブレコードのライフサイクル
-----------------------------------
+上記において、`admin` と `api` はモデルのシナリオであり、`OP_` で始まる定数は、これらのシナリオについてトランザクションで囲まれるべき操作を示しています。
+サポートされている操作は、`OP_INSERT`、`OP_UPDATE`、そして、`OP_DELETE` です。
+`OP_ALL` は三つ全てを示します。
 
-アクティブレコードがデータベースのデータの操作に使われるときのライフサイクルを理解しておくことは重要なことです。
-そのライフサイクルは、概して、対応するイベントと関連付けられており、それらのイベントに対して干渉したり反応したりするコードを注入できるようになっています。
-これらのイベントは特にアクティブレコードの [ビヘイビア](concept-behaviors.md) を開発するときに役に立ちます。
-
-アクティブレコードの新しいインスタンスを作成する場合は、次のライフサイクルを経ます。
-
-1. コンストラクタ
-2. [[yii\db\ActiveRecord::init()|init()]]: [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] イベントをトリガ
-
-[[yii\db\ActiveRecord::find()|find()]] メソッドによってデータを検索する場合は、新しくデータを投入されるアクティブレコードの全てが、それぞれ、次のライフサイクルを経ます。
-
-1. コンストラクタ
-2. [[yii\db\ActiveRecord::init()|init()]]: [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] イベントをトリガ
-3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] イベントをトリガ
-
-[[yii\db\ActiveRecord::save()|save()]] を呼んで、アクティブレコードを挿入または更新する場合は、次のライフサイクルを経ます。
-
-1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] イベントをトリガ
-2. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] イベントをトリガ
-3. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] または [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] イベントをトリガ
-4. 実際のデータ挿入または更新を実行
-5. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] または [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] イベントをトリガ
-
-最後に、[[yii\db\ActiveRecord::delete()|delete()]] を呼んで、アクティブレコードを削除する場合は、次のライフサイクルを経ます。
-
-1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] イベントをトリガ
-2. 実際のデータ削除を実行
-3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] イベントをトリガ
+このような自動的なトランザクションは、`beforeSave`、`afterSave`、`beforeDelete`、`afterDelete` によってデータベースに追加の変更を加えており、本体の変更と追加の変更の両方が成功した場合にだけデータベースにコミットしたい、というときに取り分けて有用です。
 
 
-リレーショナルデータを扱う
---------------------------
+## 楽観的ロック <span id="optimistic-locks"></span>
+
+楽観的ロックは、一つのデータ行が複数のユーザによって更新されるときに発生しうる衝突を回避するための方法です。
+例えば、ユーザ A と ユーザ B が 同時に同じ wiki 記事を編集しており、ユーザ A が自分の編集結果を保存した後に、ユーザ B も自分の編集結果を保存しようとして「保存」ボタンをクリックする場合を考えてください。
+ユーザ B は、実際には古くなったバージョンの記事に対する操作をしようとしていますので、彼が記事を保存するのを防止して、彼に何らかのヒントメッセージを表示する方策を取ることが望まれます。
+
+楽観的ロックは、あるカラムを使って各行のバージョン番号を記録するという方法によって、上記の問題を解決します。
+行が古くなったバージョン番号とともに保存されようとすると、[[yii\db\StaleObjectException]] 例外が投げられて、行が保存されるのが防止されます。
+楽観的ロックは、 [[yii\db\ActiveRecord::update()]] または [[yii\db\ActiveRecord::delete()]] メソッドを使って既存の行を更新または削除しようとする場合にだけサポートされます。
+
+楽観的ロックを使用するためには、次のようにします。
+
+1. 各行のバージョン番号を保存するカラムを作成します。カラムのタイプは `BIGINT DEFAULT 0` でなければなりません。
+   `optimisticLock()` メソッドをオーバーライドして、このカラムの名前を返すようにします。
+2. ユーザ入力を収集するウェブフォームに、更新されるレコードのロックバージョンを保持する隠しフィールドを追加します。
+3. データ更新を行うコントローラアクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、衝突を解決するために必要なビジネスロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
+
+
+## リレーショナルデータを扱う
 
 テーブルのリレーショナルデータもアクティブレコードを使ってクエリすることが出来ます
 (すなわち、テーブル A のデータを選択すると、テーブル B の関連付けられたデータも一緒に取り込むことが出来ます)。
@@ -558,8 +657,7 @@ $orders = $customer->getBigOrders(200)->all();
 例えば、`$customer->getOrders()` は `ActiveQuery` のインスタンスを返し、`$customer->orders` は `Order` オブジェクトの配列 (またはクエリ結果が無い場合は空の配列) を返します。
 
 
-中間テーブルを使うリレーション
-------------------------------
+### 中間テーブルを使うリレーション
 
 場合によっては、二つのテーブルが [中間テーブル][] と呼ばれる中間的なテーブルによって関連付けられていることがあります。
 そのようなリレーションを宣言するために、[[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] メソッドを呼んで、[[yii\db\ActiveQuery]] オブジェクトをカスタマイズすることが出来ます。
@@ -599,8 +697,7 @@ class Order extends \yii\db\ActiveRecord
 [中間テーブル]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
 
 
-レイジーローディングとイーガーローディング
-------------------------------------------
+### レイジーローディングとイーガーローディング
 
 前に述べたように、関連オブジェクトに最初にアクセスしたときに、アクティブレコードは DB クエリを実行して関連データを読み出し、それを関連オブジェクトに投入します。
 同じ関連オブジェクトに再度アクセスしても、クエリは実行されません。
@@ -680,8 +777,7 @@ $customers = Customer::find()->limit(100)->with([
 ```
 
 
-逆リレーション
---------------
+### 逆リレーション
 
 リレーションは、たいていの場合、ペアで定義することが出来ます。
 例えば、`Customer` が `orders` という名前のリレーションを持ち、`Order` が `customer` という名前のリレーションを持つ、ということがあります。
@@ -768,8 +864,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 > つまり、リレーションが [[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] によって定義されている場合は、[[yii\db\ActiveQuery::inverseOf()]] を追加で呼ぶことは出来ません。
 
 
-リレーションを使ってテーブルを結合する <a name="joining-with-relations">
---------------------------------------
+### リレーションを使ってテーブルを結合する <a name="joining-with-relations">
 
 リレーショナルデータベースを扱う場合、複数のテーブルを結合して、JOIN SQL 文にさまざまなクエリ条件とパラメータを指定することは、ごく当り前の仕事です。
 その目的を達するために、[[yii\db\ActiveQuery::join()]] を明示的に呼んで JOIN クエリを構築する代りに、既存のリレーション定義を再利用して [[yii\db\ActiveQuery::joinWith()]] を呼ぶことが出来ます。
@@ -1031,61 +1126,3 @@ public static function find()
 
 ただし、すべてのクエリにおいて、デフォルトの条件を上書きしないために、[[yii\db\ActiveQuery::where()|where()]] を使わず、[[yii\db\ActiveQuery::andWhere()|andWhere()]] または [[yii\db\ActiveQuery::orWhere()|orWhere()]] を使うべきであることに注意してください。
 
-
-トランザクション操作
---------------------
-
-アクティブレコードを扱う際には、二つの方法でトランザクション操作を処理することができます。
-最初の方法は、"[データベースの基礎](db-dao.md)" の「トランザクション」の項で説明したように、全てを手作業でやる方法です。
-もう一つの方法として、`transactions` メソッドを実装して、モデルのシナリオごとに、どの操作をトランザクションで囲むかを指定することが出来ます。
-
-```php
-class Post extends \yii\db\ActiveRecord
-{
-    public function transactions()
-    {
-        return [
-            'admin' => self::OP_INSERT,
-            'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
-            // 上は次と等価
-            // 'api' => self::OP_ALL,
-        ];
-    }
-}
-```
-
-上記において、`admin` と `api` はモデルのシナリオであり、`OP_` で始まる定数は、これらのシナリオについてトランザクションで囲まれるべき操作を示しています。
-サポートされている操作は、`OP_INSERT`、`OP_UPDATE`、そして、`OP_DELETE` です。
-`OP_ALL` は三つ全てを示します。
-
-このような自動的なトランザクションは、`beforeSave`、`afterSave`、`beforeDelete`、`afterDelete` によってデータベースに追加の変更を加えており、本体の変更と追加の変更の両方が成功した場合にだけデータベースにコミットしたい、というときに取り分けて有用です。
-
-楽観的ロック
-------------
-
-楽観的ロックは、複数のユーザが編集のために同一のレコードにアクセスすることを許容しつつ、発生しうる衝突を回避するものです。
-例えば、ユーザが (別のユーザが先にデータを修正したために) 陳腐化したデータに対してレコードの保存を試みた場合は、[[\yii\db\StaleObjectException]] 例外が投げられて、更新または削除はスキップされます。
-
-楽観的ロックは、`update()` と `delete()` メソッドだけでサポートされ、デフォルトでは使用されません。
-
-楽観的ロックを使用するためには、
-
-1. 各行のバージョン番号を保存するカラムを作成します。カラムのタイプは `BIGINT DEFAULT 0` でなければなりません。
-   `optimisticLock()` メソッドをオーバーライドして、このカラムの名前を返すようにします。
-2. ユーザ入力を収集するウェブフォームに、更新されるレコードのロックバージョンを保持する隠しフィールドを追加します。
-3. データ更新を行うコントローラアクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、衝突を解決するために必要なビジネスロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
-
-ダーティな属性
---------------
-
-属性は、データベースからロードされた後、または最後のデータ保存の後に値が変更されると、ダーティであると見なされます。
-そして、`save()`、`update()`、`insert()` などを呼んでレコードデータを保存するときは、ダーティな属性だけがデータベースに保存されます。
-ダーティな属性が無い場合は、保存すべきものは無いことになり、クエリは何も発行されません。
-
-参照
-----
-
-以下も参照してください。
-
-- [モデル](structure-models.md)
-- [[yii\db\ActiveRecord]]
