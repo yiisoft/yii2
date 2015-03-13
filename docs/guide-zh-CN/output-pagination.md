@@ -5,11 +5,11 @@
 几部分，每个部分都包含一些数据列表并且一次只显示一部分。这些部分被称为
 分页，例如 pagination。
   
-如果你使用 [data provider](output-data-providers.md) 和 [data widgets](output-data-widgets.md) 中之一
-pagination 已经为你自动排序。否则，你需要创建 [[\yii\data\Pagination]]
+如果你使用 [data provider](output-data-providers.md) 和 [data widgets](output-data-widgets.md) 中之一，
+pagination 已经为你自动分页。否则，你需要创建 [[\yii\data\Pagination]]
 对象，为其填充数据例如 [[\yii\data\Pagination::$totalCount|total item count]]，
-[[\yii\data\Pagination::$pageSize|page size]] 和 [[\yii\data\Pagination::$page|current page]]，apply
-it to the query and then feed it to [[\yii\widgets\LinkPager|link pager]].
+[[\yii\data\Pagination::$pageSize|page size]] 和 [[\yii\data\Pagination::$page|current page]]，在
+查询中使用它并且填充到 [[\yii\widgets\LinkPager|link pager]]。
 
 
 首先在 controller action，我们创建 pagination 对象并且为其填充数据：
