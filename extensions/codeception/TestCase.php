@@ -108,7 +108,7 @@ class TestCase extends Test
         if (is_string($config)) {
             $configFile = Yii::getAlias($config);
             if (!is_file($configFile)) {
-                throw new InvalidConfigException("The application configuration file does not exist: $config");
+                throw new InvalidConfigException("The application configuration file does not exist: $configFile");
             }
             $config = require($configFile);
         }
