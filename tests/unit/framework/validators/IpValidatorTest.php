@@ -59,7 +59,7 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($validator->validate('2008:fa::1'));
 
         $validator->ipv6 = true;
-        $validator->subnet = true;
+        $validator->subnet = null;
 
         $this->assertTrue($validator->validate('192.168.5.32/11'));
         $this->assertTrue($validator->validate('192.168.5.32/32'));
@@ -73,6 +73,13 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($validator->validate('192.168.5.32/33'));
         $this->assertFalse($validator->validate('192.168.5.32/af'));
         $this->assertFalse($validator->validate('192.168.5.32/11/12'));
+
+        $validator->subnet = true;
+        $this->assertTrue($validator->validate('10.0.0.1/24'));
+        $this->assertTrue($validator->validate('10.0.0.1/0'));
+        $this->assertTrue($validator->validate('2008:db0::1/64'));
+        $this->assertFalse($validator->validate('2008:db0::1'));
+        $this->assertFalse($validator->validate('10.0.0.1'));
 
         $validator->negationChar = true;
 
@@ -108,7 +115,7 @@ class IpValidatorTest extends TestCase
         $this->assertTrue($validator->validate('127.0.0.1'));
 
         $validator->order = IpValidator::ORDER_ALLOW_DENY;
-        $validator->subnet = true;
+        $validator->subnet = null;
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
         $this->assertTrue($validator->validate('127.0.0.1'));
@@ -128,7 +135,7 @@ class IpValidatorTest extends TestCase
         $this->assertEquals('8.8.8.8', $model->attr_ip);
 
         $validator->normalize = true;
-        $validator->subnet = true;
+        $validator->subnet = null;
 
         $validator->validateAttribute($model, 'attr_ip');
         $this->assertFalse($model->hasErrors('attr_ip'));

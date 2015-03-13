@@ -52,9 +52,10 @@ class IpValidator extends Validator
     public $ipv4 = true;
 
     /**
-     * @var boolean|string whether address can be a CIDR subnet
-     *   boolean - whether an IP address with the CIDR subnet notation will be able to pass the validation
-     *   string  - value 'only' to validate only the addresses with the CIDR
+     * @var boolean whether the address can be a CIDR subnet
+     *    true - the subnet is required
+     *   false - the address can not have the subnet
+     *    null - ths subnet is optional
      */
     public $subnet = false;
 
@@ -94,7 +95,7 @@ class IpValidator extends Validator
      *
      * @see isAllowed
      */
-    public $allow = null;
+    public $allow;
 
     /**
      * @var string|array IPv4 or IPv6 ranges that are prohibited to use. For example:
@@ -105,7 +106,7 @@ class IpValidator extends Validator
      *
      * @see isAllowed
      */
-    public $deny = null;
+    public $deny;
 
     /**
      * @var string Regexp-pattern to validate IPv4 address
@@ -238,10 +239,10 @@ class IpValidator extends Validator
             $cidr = isset($matches[4]) ? $matches[4] : null;
         }
 
-        if ($this->subnet === 'only' && $cidr == null) {
+        if ($this->subnet === true && $cidr === null) {
             return [$this->noSubnet, []];
         }
-        if (!$this->subnet && $cidr !== null) {
+        if ($this->subnet === false && $cidr !== null) {
             return [$this->hasSubnet, []];
         }
         if ($this->negationChar === false && $negation !== null) {
@@ -290,7 +291,7 @@ class IpValidator extends Validator
 
         $result = $negation . $ip;
 
-        if ($this->subnet) {
+        if ($this->subnet !== false) {
             $result .= "/$cidr";
         }
 
@@ -342,10 +343,10 @@ class IpValidator extends Validator
     {
         $denied = false;
         $allowed = true;
-        if (!empty($this->deny) && $this->isIpInRange($ip, $this->deny)) {
+        if (!empty($this->deny) && $this->inRange($ip, $this->deny)) {
             $denied = true;
         }
-        if (!empty($this->allow) && !$this->isIpInRange($ip, $this->allow)) {
+        if (!empty($this->allow) && !$this->inRange($ip, $this->allow)) {
             $allowed = false;
         }
 
@@ -390,9 +391,9 @@ class IpValidator extends Validator
      *
      * @param $ip string an IPv4 or IPv6 address
      * @param $ranges string|array allowed subnets in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
-     * @return bool
+     * @return boolean
      */
-    public function isIpInRange($ip, $ranges)
+    public function inRange($ip, $ranges)
     {
         $ranges = (array)$ranges;
         $ipVersion = $this->getIpVersion($ip);
