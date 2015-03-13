@@ -1,11 +1,11 @@
 Acceptance Tests
 ================
 
-> ×¢Òâ£ºÕâ²¿·ÖÕıÔÚ¿ª·¢ÖĞ¡£
+> æ³¨æ„ï¼šè¿™éƒ¨åˆ†æ­£åœ¨å¼€å‘ä¸­ã€‚
 
 - http://codeception.com/docs/04-AcceptanceTests
 
-ÔËĞĞ»ù´¡ºÍ¸ß¼¶Ä£¿éµÄÑéÊÕ²âÊÔ
+è¿è¡ŒåŸºç¡€å’Œé«˜çº§æ¨¡å—çš„éªŒæ”¶æµ‹è¯•
 ----------------------------------------------------
 
-Çë²Î¿¼ `apps/advanced/tests/README.md` ºÍ `apps/basic/tests/README.md` Ìá¹©µÄËµÃ÷¡£
+è¯·å‚è€ƒ `apps/advanced/tests/README.md` å’Œ `apps/basic/tests/README.md` æä¾›çš„è¯´æ˜ã€‚
