@@ -59,7 +59,7 @@ return [
     'Missing required parameters: {params}' => 'فاقد پارامترهای مورد نیاز: {params}',
     'No' => 'خیر',
     'No results found.' => 'نتیجه‌ای یافت نشد.',
-    'Only files with these extensions are allowed: {extensions}.' => 'فقط فایل‌های با این پسوندها مجاز هستند: {extentions}.',
+    'Only files with these extensions are allowed: {extensions}.' => 'فقط فایل‌های با این پسوندها مجاز هستند: {extensions}.',
     'Page not found.' => 'صفحه‌ای یافت نشد.',
     'Please fix the following errors:' => 'لطفاً خطاهای زیر را رفع نمائید:',
     'Please upload a file.' => 'لطفاً یک فایل آپلود کنید.',
