@@ -15,12 +15,12 @@ use yii\helpers\Html;
 echo Html::encode('Test > test');
 ```
 
-> 注意：为了支持 [customizing helper classes](#customizing-helper-classes)，Yii 将每一个助手类
+> 注意：为了支持 [自定义助手类](#customizing-helper-classes)，Yii 将每一个助手类
   分隔成两个类：一个基类 (例如 `BaseArrayHelper`) 和一个 concrete 类 (例如 `ArrayHelper`).
   当使用助手类时，应该仅使用 concrete 类版本而不使用基类。
 
 
-Core Helper Classes
+核心助手类
 -------------------
 
 Yii 发布版中提供以下核心助手类：
@@ -60,21 +60,21 @@ class ArrayHelper extends BaseArrayHelper
 {
     public static function merge($a, $b)
     {
-        // your custom implementation
+        // 你自定义的实现
     }
 }
 ```
 
 将你的类保存在一个名为 `ArrayHelper.php` 的文件中。该文件可以在任何目录，例如 `@app/components`。
 
-接下来，在你的应用程序 [entry script](structure-entry-scripts.md) 处，在引入的 `yii.php` 文件后面
-添加以下代码行，用 [Yii class autoloader](concept-autoloading.md) 来加载自定义类
+接下来，在你的应用程序 [入口脚本](structure-entry-scripts.md) 处，在引入的 `yii.php` 文件后面
+添加以下代码行，用 [Yii 自动加载器](concept-autoloading.md) 来加载自定义类
 代替框架的原始助手类：
 
 ```php
 Yii::$classMap['yii\helpers\ArrayHelper'] = '@app/components/ArrayHelper.php';
 ```
 
-注意，自定义助手类仅仅用于如果你想要更改 helpers
+注意，自定义助手类仅仅用于如果你想要更改助手类中
 现有的函数的行为。如果你想为你的应用程序添加附加功能，最好为它创建一个单独的
 助手类。
