@@ -1,12 +1,6 @@
 Yii 2 Benchmark Application
 ===========================
 
-**NOTE** Yii 2 and the relevant applications and extensions are still under heavy
-development. We may make significant changes without prior notices. Please do not
-use them for production. Please consider using [Yii v1.1](https://github.com/yiisoft/yii)
-if you have a project to be deployed for production soon.
-
-
 Yii 2 Benchmark Application is an application built to demonstrate the minimal overhead
 introduced by the Yii framework. The application contains a single page which only renders
 the "hello world" string.
@@ -36,23 +30,24 @@ INSTALLATION
 If you do not have [Composer](http://getcomposer.org/), you may download it from
 [http://getcomposer.org/](http://getcomposer.org/) or run the following command on Linux/Unix/MacOS:
 
-~~~
+```
 curl -s http://getcomposer.org/installer | php
-~~~
+mv composer.phar /usr/local/bin/composer
+```
 
 You can then install the Bootstrap Application using the following command:
 
-~~~
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-benchmark yii-benchmark
-~~~
+```
+composer global require "fxp/composer-asset-plugin:1.0.0"
+composer create-project --prefer-dist yiisoft/yii2-app-benchmark yii-benchmark
+```
 
 Now you should be able to access the benchmark page using the URL
 
-~~~
+```
 http://localhost/yii-benchmark/index.php/site/hello
-~~~
+```
 
 In the above, we assume `yii-benchmark` is directly under the document root of your Web server.
 
-Note that in order to install some dependencies you must have `php_openssl` extension enabled.
-
+Note that in order to install some dependencies you must have PHP with OpenSSL support.
