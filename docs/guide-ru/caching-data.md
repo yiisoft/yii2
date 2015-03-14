@@ -248,7 +248,13 @@ $result = $db->cache(function ($db) {
 });
 ```
 
-Кэширование запросов может быть использованно как для [DAO](db-dao.md), так и для [ActiveRecord](db-active-record.md).
+Кэширование запросов может быть использованно как для [DAO](db-dao.md), так и для [ActiveRecord](db-active-record.md):
+
+```php
+$result = Customer::getDb()->cache(function ($db) {
+    return Customer::find()->where(['id' => 1])->one();
+});
+```
 
 > Информация: Некоторые СУБД (например, [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)) поддерживают
   кэширование запросов на стороне сервера БД. Вы можете использовать любой механизм кэширования запросов. Кэширование 
