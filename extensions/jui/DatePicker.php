@@ -45,6 +45,7 @@ use yii\helpers\Json;
  * <?= $form->field($model, 'from_date')->widget(\yii\jui\DatePicker::classname(), [
  *     //'language' => 'ru',
  *     //'dateFormat' => 'yyyy-MM-dd',
+ *    'options'=>['class'=>'form-control'],
  * ]) ?>
  * ```
  *
