@@ -520,11 +520,36 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
 
-## トランザクション操作 <span id="transactional-operations"></span>
+## トランザクションを扱う <span id="transactional-operations"></span>
 
-アクティブレコードを扱う際には、二つの方法でトランザクション操作を処理することができます。
-最初の方法は、"[データベースの基礎](db-dao.md)" の「トランザクション」の項で説明したように、全てを手作業でやる方法です。
-もう一つの方法として、`transactions` メソッドを実装して、モデルのシナリオごとに、どの操作をトランザクションで囲むかを指定することが出来ます。
+アクティブレコードを扱う際には、二つの方法で [トランザクション](db-dao.md#performing-transactions) を処理することができます。
+
+最初の方法は、次に示すように、アクティブレコードのメソッドの呼び出しを明示的にトランザクションのブロックで囲む方法です。
+
+```php
+$customer = Customer::findOne(123);
+
+Customer::getDb()->transaction(function($db) use ($customer) {
+    $customer->id = 200;
+    $customer->save();
+    // ... 他の DB 操作 ...
+});
+
+// あるいは、別の方法
+
+$transaction = Customer::getDb()->beginTransaction();
+try {
+    $customer->id = 200;
+    $customer->save();
+    // ... 他の DB 操作 ...
+    $transaction->commit();
+} catch(\Exception $e) {
+    $transaction->rollBack();
+    throw $e;
+}
+```
+
+第二の方法は、トランザクションのサポートが必要な DB 操作を [[yii\db\ActiveRecord::transactions()]] メソッドに列挙するという方法です。
 
 ```php
 class Post extends \yii\db\ActiveRecord
@@ -541,11 +566,15 @@ class Post extends \yii\db\ActiveRecord
 }
 ```
 
-上記において、`admin` と `api` はモデルのシナリオであり、`OP_` で始まる定数は、これらのシナリオについてトランザクションで囲まれるべき操作を示しています。
-サポートされている操作は、`OP_INSERT`、`OP_UPDATE`、そして、`OP_DELETE` です。
-`OP_ALL` は三つ全てを示します。
+[[yii\db\ActiveRecord::transactions()]] メソッドは、キーが [scenario](structure-models.md#scenarios) の名前であり、値がトランザクションで囲まれるべき操作である配列を返さなくてはなりません。
+次の定数を使って、異なる DB 操作を参照しなければなりません。
 
-このような自動的なトランザクションは、`beforeSave`、`afterSave`、`beforeDelete`、`afterDelete` によってデータベースに追加の変更を加えており、本体の変更と追加の変更の両方が成功した場合にだけデータベースにコミットしたい、というときに取り分けて有用です。
+* [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: [[yii\db\ActiveRecord::insert()|insert()]] によって実行される挿入の操作。
+* [[yii\db\ActiveRecord::OP_UPDATE|OP_UPDATE]]: [[yii\db\ActiveRecord::update()|update()]] によって実行される更新の操作。
+* [[yii\db\ActiveRecord::OP_DELETE|OP_DELETE]]: [[yii\db\ActiveRecord::delete()|delete()]] によって実行される削除の操作。
+
+複数の操作を示すためには、`|` を使って上記の定数を連結してください。
+ショートカット定数 [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] を使って、上記の三つの操作すべてを示すことも出来ます。
 
 
 ## 楽観的ロック <span id="optimistic-locks"></span>
@@ -560,78 +589,140 @@ class Post extends \yii\db\ActiveRecord
 
 楽観的ロックを使用するためには、次のようにします。
 
-1. 各行のバージョン番号を保存するカラムを作成します。カラムのタイプは `BIGINT DEFAULT 0` でなければなりません。
-   `optimisticLock()` メソッドをオーバーライドして、このカラムの名前を返すようにします。
-2. ユーザ入力を収集するウェブフォームに、更新されるレコードのロックバージョンを保持する隠しフィールドを追加します。
-3. データ更新を行うコントローラアクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、衝突を解決するために必要なビジネスロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
+1. アクティブレコードクラスと関連付けられている DB テーブルに、各行のバージョン番号を保存するカラムを作成します。
+   カラムは長倍精度整数 (big integer) タイプでなければなりません (MySQL では `BIGINT DEFAULT 0` です)。
+2.  [[yii\db\ActiveRecord::optimisticLock()]] メソッドをオーバーライドして、このカラムの名前を返すようにします。
+3. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
+3. アクティブレコードを使って行の更新を行うコントローラアクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、衝突を解決するために必要なビジネスロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
 
-
-## リレーショナルデータを扱う
-
-テーブルのリレーショナルデータもアクティブレコードを使ってクエリすることが出来ます
-(すなわち、テーブル A のデータを選択すると、テーブル B の関連付けられたデータも一緒に取り込むことが出来ます)。
-アクティブレコードのおかげで、返されるリレーショナルデータは、プライマリテーブルと関連付けられたアクティブレコードオブジェクトのプロパティのようにアクセスすることが出来ます。
-
-例えば、適切なリレーションが宣言されていれば、`$customer->orders` にアクセスすることによって、指定された顧客が発行した注文を表す `Order` オブジェクトの配列を取得することが出来ます。
-
-リレーションを宣言するためには、[[yii\db\ActiveQuery]] オブジェクトを返すゲッターメソッドを定義します。そして、その [[yii\db\ActiveQuery]] オブジェクトに、リレーションのコンテキストに関する情報を持たせ、従って関連するレコードだけをクエリさせます。
-例えば、
+例えば、バージョン番号のカラムが `version` と名付けられているとすると、次のようなコードによって楽観的ロックを実装することが出来ます。
 
 ```php
-class Customer extends \yii\db\ActiveRecord
+// ------ ビューのコード -------
+
+use yii\helpers\Html;
+
+// ... 他の入力フィールド
+echo Html::activeHiddenField($model, 'version');
+
+
+// ------ コントローラのコード -------
+
+use yii\db\StaleObjectException;
+
+public function actionUpdate($id)
+{
+    $model = $this->findModel($id);
+
+    try {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', <?= $urlParams ?>]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
+    } catch (StaleObjectException $e) {
+        // 衝突を解決するロジック
+    }
+}
+```
+
+
+## リレーショナルデータを扱う <span id="relational-data"></span>
+
+個々のデータベーステーブルを扱うだけでなく、アクティブレコードは関連したテーブルのデータも一緒に読み出して、主たるデータを通して簡単にアクセス出来るようにすることが出来ます。
+例えば、一人の顧客は一つまたは複数の注文を発することがあり得ますので、顧客のデータは注文のデータと関連を持っていることになります。
+このリレーションが適切に宣言されていれば、`$customer->orders` という式を使って顧客の注文情報にアクセスすることが出来ます。`$customer->orders` は、顧客の注文情報を `Order` アクティブレコードインスタンスの配列として返してくれます。
+
+
+### リレーションを宣言する <span id="declaring-relations"></span>
+
+アクティブレコードを使ってリレーショナルデータを扱うためには、最初に、アクティブレコードクラスの中でリレーションを宣言する必要があります。
+これは、以下のように、関心のあるそれぞれのリレーションについて *リレーションメソッド* を宣言するだけの簡単な作業です。
+
+```php
+class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        // Customer は Order.customer_id -> id によって、複数の Order を持つ
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
     }
 }
 
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        // Order は Customer.id -> customer_id によって、一つの Customer を持つ
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
 ```
 
-上記の例で使用されている [[yii\db\ActiveRecord::hasMany()]] と [[yii\db\ActiveRecord::hasOne()]] のメソッドは、リレーショナルデータベースにおける多対一と一対一の関係を表現するために使われます。
-例えば、顧客 (customer) は複数の注文 (order) を持ち、注文 (order) は一つの顧客 (customer)を持つ、という関係です。
-これらのメソッドはともに二つのパラメータを取り、[[yii\db\ActiveQuery]] オブジェクトを返します。
+上記のコードでは、`Customer` クラスのために `orders` リレーションを宣言し、`Order` クラスのために `customer` リレーションを宣言しています。
 
- - `$class`: 関連するモデルのクラス名。これは完全修飾のクラス名でなければなりません。
- - `$link`: 二つのテーブルに属するカラム間の関係。これは配列として与えられなければなりません。
-   配列のキーは、`$class` と関連付けられるテーブルにあるカラムの名前であり、配列の値はリレーションを宣言しているクラスのテーブルにあるカラムの名前です。
-   リレーションをテーブルの外部キーに基づいて定義するのが望ましいプラクティスです。
+各リレーションメソッドは `getXyz` という名前にしなければなりません。
+ここで `xyz` (最初の文字は小文字です) が *リレーション名* と呼ばれます。
+リレーション名は *大文字と小文字を区別する* ことに注意してください。
 
-リレーションを宣言した後は、リレーショナルデータを取得することは、対応するゲッターメソッドで定義されているコンポーネントのプロパティを取得するのと同じように、とても簡単なことになります。
+リレーションを宣言する際には、次の情報を指定しなければなりません。
 
-```php
-// 顧客の注文を取得する
-$customer = Customer::findOne(1);
-$orders = $customer->orders;  // $orders は Order オブジェクトの配列
-```
+- リレーションの多重性: [[yii\db\ActiveRecord::hasMany()|hasMany()]] または [[yii\db\ActiveRecord::hasOne()|hasOne()]] のどちらかを呼ぶことによって指定されます。
+  上記の例では、リレーションの宣言において、顧客は複数の注文を持つが、一方、注文は一人の顧客しか持たないということが容易に読み取れます。
+- 関連するアクティブレコードクラスの名前: [[yii\db\ActiveRecord::hasMany()|hasMany()]] または [[yii\db\ActiveRecord::hasOne()|hasOne()]] の最初のパラメータとして指定されます。
+  クラス名を取得するのに `Xyz::className()` を呼ぶのが推奨されるプラクティスです。
+  そうすれば、IDE の自動補完のサポートを得ることことが出来るだけでなく、コンパイル段階でエラーを検出することが出来ます。
+- 二つのデータタイプ間のリンク: 二つのデータタイプの関連付けに用いられるカラムを指定します。
+  配列の値は主たるデータ (リレーションを宣言しているアクティブレコードクラスによって表されるデータ) のカラムであり、配列のキーは関連するデータのカラムです。
 
-舞台裏では、上記のコードは、各行について一つずつ、次の二つの SQL クエリを実行します。
 
-```sql
-SELECT * FROM customer WHERE id=1;
-SELECT * FROM order WHERE customer_id=1;
-```
+### リレーショナルデータにアクセスする <span id="accessing-relational-data"></span>
 
-> Tip|情報: `$customer->orders` という式に再びアクセスした場合は、第二の SQL クエリはもう実行されません。
-  第二の SQL クエリは、この式が最初にアクセスされた時だけ実行されます。
-  二度目以降のアクセスでは、内部的にキャッシュされている以前に読み出した結果が返されるだけです。
-  リレーショナルデータを再クエリしたい場合は、単純に、まず既存の式を未設定状態に戻して (`unset($customer->orders);`) から、再度、`$customer->orders` にアクセスします。
-
-場合によっては、リレーショナルクエリにパラメータを渡したいことがあります。
-例えば、顧客の注文を全て返す代りに、小計が指定した金額を超える大きな注文だけを返したいことがあるでしょう。
-そうするためには、次のようなゲッターメソッドで `bigOrders` リレーションを宣言します。
+リレーションを宣言した後は、リレーション名を通じてリレーショナルデータにアクセスすることが出来ます。
+これは、リレーションメソッドによって定義されるオブジェクト [プロパティ](concept-properties.md) にアクセスするのと同様です。
+このため、これを *リレーションプロパティ* と呼びます。
+例えば、
 
 ```php
-class Customer extends \yii\db\ActiveRecord
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::findOne(123);
+
+// SELECT * FROM `order` WHERE `customer_id` = 123
+// $orders is an array of Order objects
+$orders = $customer->orders;
+```
+
+> Info|情報: `xyz` という名前のリレーションを getter メソッド `getXyz()` によって宣言すると、`xyz` をオブジェクト [プロパティ](concept-properties.md) のようにアクセスすることが出来るようになります。
+  名前は大文字と小文字を区別することに注意してください。
+
+リレーションが [[yii\db\ActiveRecord::hasMany()|hasMany()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスの配列が返されます。
+リレーションが [[yii\db\ActiveRecord::hasOne()|hasOne()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスか、関連付けられたデータが見つからないときは null が返されます。
+
+リレーションプロパティに最初にアクセスしたときは、上記の例で示されているように、SQL 文が実行されます。
+同じプロパティに再びアクセスしたときは、以前の結果が返されて、SQL 文が追加で実行されることはありません。
+SQL 文の再実行を強制するためには、まず、リレーションプロパティの割り当てを解除 (unset) します : `unset($customer->orders)`。
+
+
+### 動的なリレーショナルクエリ <span id="dynamic-relational-query"></span>
+
+リレーションメソッドは [[yii\db\ActiveQuery]] のインスタンスを返すため、DB クエリを実行する前に、クエリ構築メソッドを使ってこのクエリを更に修正することが出来ます。
+例えば、
+
+```php
+$customer = Customer::findOne(123);
+
+// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
+$orders = $customer->getOrders()
+    ->where(['>', 'subtotal', 200])
+    ->orderBy('id')
+    ->all();
+```
+
+さらに進んで、もっと簡単に動的なリレーショナルクエリを実行できるように、リレーションの宣言をパラメータ化したい場合もあるでしょう。
+例えば、`bigOrders` リレーションを下記のように宣言することが出来ます。
+
+```php
+class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
@@ -642,30 +733,35 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-`hasMany()` が 返す [[yii\db\ActiveQuery]] は、[[yii\db\ActiveQuery]] のメソッドを呼ぶことでクエリをカスタマイズ出来るものであることを覚えておいてください。
-
-上記の宣言によって、`$customer->bigOrders` にアクセスした場合は、小計が 100 以上である注文だけが返されることになります。
-異なる閾値を指定するためには、次のコードを使用します。
+これによって、次のリレーショナルクエリを実行することが出来るようになります。
 
 ```php
+// SELECT * FROM `order` WHERE `subtotal` > 200 ORDER BY `id`
 $orders = $customer->getBigOrders(200)->all();
+
+// SELECT * FROM `order` WHERE `subtotal` > 100 ORDER BY `id`
+$orders = $customer->bigOrders;
 ```
 
-> Note|注意: リレーションメソッドは [[yii\db\ActiveQuery]] のインスタンスを返します。
-リレーションを属性 (すなわち、クラスのプロパティ) としてアクセスした場合は、返り値はリレーションのクエリ結果となります。
-クエリ結果は、リレーションが複数のレコードを返すものか否かに応じて、[[yii\db\ActiveRecord]] の一つのインスタンス、またはその配列、または null となります。
-例えば、`$customer->getOrders()` は `ActiveQuery` のインスタンスを返し、`$customer->orders` は `Order` オブジェクトの配列 (またはクエリ結果が無い場合は空の配列) を返します。
+> Note|注意: リレーションメソッドが [[yii\db\ActiveQuery]] インスタンスを返すのに対して、リレーションプロパティにアクセスすると [[yii\db\ActiveRecord]] のインスタンスまたはその配列が返されます。
+  この点は通常のオブジェクト [プロパティ](concept-properties.md) と異なります。
+  通常のオブジェクトプロパティは、プロパティを定義する getter メソッドと同じ型の値を持ちます。
+
+リレーショナルプロパティにアクセスする場合と異なって、リレーショナルメソッドを使って動的なリレーショナルクエリを実行する場合は、前に同じ動的リレーショナルクエリが実行されている場合であっても、毎回、SQL 文が実行されます。
 
 
-### 中間テーブルを使うリレーション
+### 中間テーブルによるリレーション <span id="junction-table"></span>
 
-場合によっては、二つのテーブルが [中間テーブル][] と呼ばれる中間的なテーブルによって関連付けられていることがあります。
-そのようなリレーションを宣言するために、[[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] メソッドを呼んで、[[yii\db\ActiveQuery]] オブジェクトをカスタマイズすることが出来ます。
+データベースの設計において、二つの関連するテーブル間の多重性が many-to-many である場合は、[中間テーブル](https://en.wikipedia.org/wiki/Junction_table) が通常は導入されます。
+例えば、`order` テーブルと `item` テーブルは、`order_item` と言う名前の中間テーブルによって関連付けることが出来ます。
+このようにすれば、一つの注文を複数の商品に対応させ、また、一つの商品を複数の注文に対応させることが出来ます。
 
-例えば、テーブル `order` とテーブル `item` が中間テーブル `order_item` によって関連付けられている場合、`Order` クラスにおいて `items` リレーションを次のように宣言することが出来ます。
+このようなリレーションを宣言するときは、[[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] のどちらかを呼んで中間テーブルを指定します。
+[[yii\db\ActiveQuery::via()|via()]] と [[yii\db\ActiveQuery::viaTable()|viaTable()]] の違いは、前者が既存のリレーション名の形式で中間テーブルを指定するのに対して、後者は中間テーブルを直接に指定する、という点です。
+例えば、
 
 ```php
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
     public function getItems()
     {
@@ -675,11 +771,10 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[[yii\db\ActiveQuery::via()|via()]] メソッドは、最初のパラメータとして、結合テーブルの名前ではなく、アクティブレコードクラスで宣言されているリレーションの名前を取ること以外は、[[yii\db\ActiveQuery::viaTable()|viaTable()]] と同じです。
-例えば、上記の `items` リレーションは次のように宣言しても等価です。
+あるいは、また、
 
 ```php
-class Order extends \yii\db\ActiveRecord
+class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
@@ -694,10 +789,21 @@ class Order extends \yii\db\ActiveRecord
 }
 ```
 
-[中間テーブル]: https://en.wikipedia.org/wiki/Junction_table "Junction table on Wikipedia"
+中間テーブルを使って宣言されたリレーションの使い方は、通常のリレーションと同じです。
+例えば、
+
+```php
+// SELECT * FROM `order` WHERE `id` = 100
+$order = Order::findOne(100);
+
+// SELECT * FROM `order_item` WHERE `order_id` = 100
+// SELECT * FROM `item` WHERE `item_id` IN (...)
+// 商品オブジェクトの配列を返す
+$items = $order->items;
+```
 
 
-### レイジーローディングとイーガーローディング
+### レイジーローディングとイーガーローディング <span id="lazy-eager-loading"></span>
 
 前に述べたように、関連オブジェクトに最初にアクセスしたときに、アクティブレコードは DB クエリを実行して関連データを読み出し、それを関連オブジェクトに投入します。
 同じ関連オブジェクトに再度アクセスしても、クエリは実行されません。
