@@ -754,8 +754,8 @@ will return an array of the related Active Record instances; if a relation is de
 Active Record instance or null if no related data is found.
 
 When you access a relation property for the first time, a SQL statement will be executed, like shown in the
-above example. If the same property is access again, the previous result will be returned and no extra SQL
-statement will be executed. To enforce a re-execution of the SQL statement, you should unset the relation property
+above example. If the same property is accessed again, the previous result will be returned without re-executing
+the SQL statement. To force re-executing the SQL statement, you should unset the relation property
 first: `unset($customer->orders)`.
 
 
@@ -848,7 +848,7 @@ class Order extends ActiveRecord
 }
 ```
 
-The usage of relations declared with a junction table is the same as normal relations. For example,
+The usage of relations declared with a junction table is the same as that of normal relations. For example,
 
 ```php
 // SELECT * FROM `order` WHERE `id` = 100
@@ -863,93 +863,213 @@ $items = $order->items;
 
 ### Lazy Loading and Eager Loading <span id="lazy-eager-loading"></span>
 
-As described earlier, when you access the related objects for the first time, ActiveRecord will perform a DB query
-to retrieve the corresponding data and populate it into the related objects. No query will be performed
-if you access the same related objects again. We call this *lazy loading*. For example,
+In [Accessing Relational Data](#accessing-relational-data), we explained that you can access a relation property
+of an Active Record instance like accessing a normal object property. A SQL statement will be executed only when
+you access the relation property the first time. We call such relational data accessing method *lazy loading*.
+For example,
 
 ```php
-// SQL executed: SELECT * FROM customer WHERE id=1
-$customer = Customer::findOne(1);
-// SQL executed: SELECT * FROM order WHERE customer_id=1
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::findOne(123);
+
+// SELECT * FROM `order` WHERE `customer_id` = 123
 $orders = $customer->orders;
+
 // no SQL executed
 $orders2 = $customer->orders;
 ```
 
-Lazy loading is very convenient to use. However, it may suffer from a performance issue in the following scenario:
+Lazy loading is very convenient to use. However, it may suffer from a performance issue when you need to access
+the same relation property of multiple Active Record instances. Consider the following code example. How many 
+SQL statements will be executed?
 
 ```php
-// SQL executed: SELECT * FROM customer LIMIT 100
+// SELECT * FROM `customer` LIMIT 100
 $customers = Customer::find()->limit(100)->all();
 
 foreach ($customers as $customer) {
-    // SQL executed: SELECT * FROM order WHERE customer_id=...
+    // SELECT * FROM `order` WHERE `customer_id` = ...
     $orders = $customer->orders;
-    // ...handle $orders...
 }
 ```
 
-How many SQL queries will be performed in the above code, assuming there are more than 100 customers in
-the database? 101! The first SQL query brings back 100 customers. Then for each customer, a SQL query
-is performed to bring back the orders of that customer.
+As you can see from the code comment above, there are 101 SQL statements being executed! This is because each
+time you access the `orders` relation property of a different `Customer` object in the for-loop, a SQL statement 
+will be executed.
 
-To solve the above performance problem, you can use the so-called *eager loading* approach by calling [[yii\db\ActiveQuery::with()]]:
+To solve this performance problem, you can use the so-called *eager loading* approach as shown below,
 
 ```php
-// SQL executed: SELECT * FROM customer LIMIT 100;
-//               SELECT * FROM orders WHERE customer_id IN (1,2,...)
-$customers = Customer::find()->limit(100)
-    ->with('orders')->all();
+// SELECT * FROM `customer` LIMIT 100;
+// SELECT * FROM `orders` WHERE `customer_id` IN (...)
+$customers = Customer::find()
+    ->with('orders')
+    ->limit(100)
+    ->all();
 
 foreach ($customers as $customer) {
     // no SQL executed
     $orders = $customer->orders;
-    // ...handle $orders...
 }
 ```
 
-As you can see, only two SQL queries are needed for the same task!
+By calling [[yii\db\ActiveQuery::with()]], you instruct Active Record to bring back the orders for the first 100
+customers in one single SQL statement. As a result, you reduce the number of the executed SQL statements from 101 to 2!
 
-> Info: In general, if you are eager loading `N` relations among which `M` relations are defined with `via()` or `viaTable()`,
-> a total number of `1+M+N` SQL queries will be performed: one query to bring back the rows for the primary table, one for
-> each of the `M` junction tables corresponding to the `via()` or `viaTable()` calls, and one for each of the `N` related tables.
+You can eagerly load one or multiple relations. You can even eagerly load *nested relations*. A nest relation is a relation
+is declared within a related Active Record class. For example,  `Customer` is related with `Order` through the `orders`
+relation, and `Order` is related with `Item` through the `items` relation. When querying for `Customer`, you can eagerly
+load `items` using the nested relation notation `orders.items`. 
 
-> Note: When you are customizing `select()` with eager loading, make sure you include the columns that link
-> the related models. Otherwise, the related models will not be loaded. For example,
+The following code shows different usage of [[yii\db\ActiveQuery::with()|with()]]. We assume the `Customer` class
+has two relations `orders` and `country`, while the `Order` class has one relation `items`.
 
 ```php
-$orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-// $orders[0]->customer is always null. To fix the problem, you should do the following:
-$orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
+// eager loading both "orders" and "country"
+$customers = Customer::find()->with('orders', 'country')->all();
+// equivalent to the array syntax below
+$customers = Customer::find()->with(['orders', 'country'])->all();
+// no SQL executed 
+$orders= $customers[0]->orders;
+// no SQL executed 
+$country = $customers[0]->country;
+
+// eager loading "orders" and the nested relation "orders.items"
+$customers = Customer::find()->with('orders.items')->all();
+// access the items of the first order of the first customer
+// no SQL executed
+$items = $customers[0]->orders[0]->items;
 ```
 
-Sometimes, you may want to customize the relational queries on the fly. This can be
-done for both lazy loading and eager loading. For example,
+You can eagerly load deeply nested relations, such as `a.b.c.d`. All parent relations will be eagerly loaded.
+That is, when you call [[yii\db\ActiveQuery::with()|with()]] using `a.b.c.d`, you will be eagerly load
+`a`, `a.b`, `a.b.c` and `a.b.c.d`.  
+
+> Info: In general, when eagerly loading `N` relations among which `M` relations are defined with a 
+  [junction table](#junction-table), a total number of `N+M+1` SQL statements will be executed.
+  Note that a nested relation `a.b.c.d` counts as 4 relations.
+
+When eagerly loading a relation, you can customize the corresponding relational query using an anonymous function.
+For example,
 
 ```php
-$customer = Customer::findOne(1);
-// lazy loading: SELECT * FROM order WHERE customer_id=1 AND subtotal>100
-$orders = $customer->getOrders()->where('subtotal>100')->all();
-
-// eager loading: SELECT * FROM customer LIMIT 100
-//                SELECT * FROM order WHERE customer_id IN (1,2,...) AND subtotal>100
-$customers = Customer::find()->limit(100)->with([
-    'orders' => function($query) {
-        $query->andWhere('subtotal>100');
+// find customers and bring back together their country and active orders
+// SELECT * FROM `customer`
+// SELECT * FROM `country` WHERE `id` IN (...)
+// SELECT * FROM `order` WHERE `customer_id` IN (...) AND `status` = 1
+$customers = Customer::find()->with([
+    'country',
+    'orders' => function ($query) {
+        $query->andWhere(['status' => Order::STATUS_ACTIVE]);
     },
 ])->all();
 ```
 
+When customizing the relational query for a relation, you should specify the relation name as an array key
+and use an anonymous function as the corresponding array value. The anonymous function will receive a `$query` parameter
+which represents the [[yii\db\ActiveQuery]] object used to perform the relational query for the relation.
+In the code example above, we are modifying the relational query by appending an additional condition about order status.
 
-### Inverse Relations
+> Note: If you call [[yii\db\Query::select()|select()]] while eagerly loading relations, you have to make sure
+> the columns referenced in the relation declarations are being selected. Otherwise, the related models may not 
+> be loaded properly. For example,
+>
+> ```php
+> $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
+> // $orders[0]->customer is always null. To fix the problem, you should do the following:
+> $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
+> ```
 
-Relations can often be defined in pairs. For example, `Customer` may have a relation named `orders` while `Order` may have a relation
-named `customer`:
+
+### Joining with Relations <span id="joining-with-relations"></span>
+
+> Note: The content described in this subsection is only applicable to relational databases, such as 
+  MySQL, PostgreSQL, etc.
+
+The relational queries that we have described so far only reference the primary table columns when 
+querying for the primary data. In reality we often need to reference columns in the related tables. For example,
+we may want to bring back the customers who have at least one active order. To solve this problem, we can
+build a join query like the following:
+
+```php
+// SELECT `customer`.* FROM `customer`
+// LEFT JOIN `order` ON `order`.`customer_id` = `customer`.`id`
+// WHERE `order`.`status` = 1
+// 
+// SELECT * FROM `order` WHERE `customer_id` IN (...)
+$customers = Customer::find()
+    ->select('customer.*')
+    ->leftJoin('order', '`order`.`customer_id` = `customer`.`id`')
+    ->where(['order.status' => Order::STATUS_ACTIVE])
+    ->with('orders')
+    ->all();
+```
+
+> Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements. 
+  A common practice is to prefix column names with their corresponding table names.
+
+However, a better approaches is to exploit the existing relation declarations by calling [[yii\db\ActiveQuery::joinWith()]]:
+
+```php
+$customers = Customer::find()
+    ->joinWith('orders')
+    ->where(['order.status' => Order::STATUS_ACTIVE])
+    ->all();
+```
+
+Both approaches execute the same set of SQL statements. The latter approach is much cleaner and drier, though. 
+
+By default, [[yii\db\ActiveQuery::joinWith()|joinWith()]] will use `LEFT JOIN` to join the primary table with the 
+related table. You can specify a different join type (e.g. `RIGHT JOIN`) via its third parameter `$joinType`. If
+the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]], instead.
+
+Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
+If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as false. 
+
+Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
+queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
+and [[yii\db\ActiveQuery::joinWith()|joinWith()]]. For example,
+
+```php
+$customers = Customer::find()->joinWith([
+    'orders' => function ($query) {
+        $query->andWhere(['>', 'subtotal', 100);
+    },
+])->with('country')
+    ->all();
+```
+
+Sometimes when joining two tables, you may need to specify some extra conditions in the `ON` part of the JOIN query.
+This can be done by calling the [[yii\db\ActiveQuery::onCondition()]] method like the following:
+
+```php
+// SELECT `customer`.* FROM `customer`
+// LEFT JOIN `order` ON `order`.`customer_id` = `customer`.`id` AND `order`.`status` = 1 
+// 
+// SELECT * FROM `order` WHERE `customer_id` IN (...)
+$customers = Customer::find()->joinWith([
+    'orders' => function ($query) {
+        $query->onCondition(['order.status' => Order::STATUS_ACTIVE]);
+    },
+])->all();
+```
+
+This above query brings back *all* customers, and for each customer it brings back all active orders.
+Note that this differs from our earlier example which only brings back customers who have at least one active orders.
+
+> Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[[[yii\db\ActiveQuery::onCondition()|onCondition()]],
+  the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
+  JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
+
+
+### Inverse Relations <span id="inverse-relations"></span>
+
+Relation declarations are often reciprocal between two Active Record classes. For example, `Customer` is related 
+to `Order` via the `orders` relation, and `Order` is related back to `Customer` via the `customer` relation.
 
 ```php
 class Customer extends ActiveRecord
 {
-    ....
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
@@ -958,7 +1078,6 @@ class Customer extends ActiveRecord
 
 class Order extends ActiveRecord
 {
-    ....
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
@@ -966,30 +1085,33 @@ class Order extends ActiveRecord
 }
 ```
 
-If we perform the following query, we would find that the `customer` of an order is not the same customer object
-that finds those orders, and accessing `customer->orders` will trigger one SQL execution while accessing
-the `customer` of an order will trigger another SQL execution:
+Now consider the following piece of code:
 
 ```php
-// SELECT * FROM customer WHERE id=1
-$customer = Customer::findOne(1);
-// echoes "not equal"
-// SELECT * FROM order WHERE customer_id=1
-// SELECT * FROM customer WHERE id=1
-if ($customer->orders[0]->customer === $customer) {
-    echo 'equal';
-} else {
-    echo 'not equal';
-}
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::findOne(123);
+
+// SELECT * FROM `order` WHERE `customer_id` = 123
+$order = $customer->orders[0];
+
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer2 = $order->customer;
+
+// displays "not the same"
+echo $customer2 === $customer ? 'same' : 'not the same';
 ```
 
-To avoid the redundant execution of the last SQL statement, we could declare the inverse relations for the `customer`
-and the `orders` relations by calling the [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] method, like the following:
+We would think `$customer` and `$customer2` are the same, but they are not! Actually they do contain the same
+customer data, but they are different objects. When accessing `$order->customer`, an extra SQL statement
+is executed to populate a new object `$customer2`.
+
+To avoid the redundant execution of the last SQL statement in the above example, we should tell Yii that
+`customer` is an *inverse relation* of `orders` by calling the [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] method
+like shown below:
 
 ```php
 class Customer extends ActiveRecord
 {
-    ....
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
@@ -997,145 +1119,28 @@ class Customer extends ActiveRecord
 }
 ```
 
-Now if we execute the same query as shown above, we would get:
+With this modified relation declaration, we will have:
 
 ```php
-// SELECT * FROM customer WHERE id=1
-$customer = Customer::findOne(1);
-// echoes "equal"
-// SELECT * FROM order WHERE customer_id=1
-if ($customer->orders[0]->customer === $customer) {
-    echo 'equal';
-} else {
-    echo 'not equal';
-}
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::findOne(123);
+
+// SELECT * FROM `order` WHERE `customer_id` = 123
+$order = $customer->orders[0];
+
+// No SQL will be executed
+$customer2 = $order->customer;
+
+// displays "same"
+echo $customer2 === $customer ? 'same' : 'not the same';
 ```
 
-In the above, we have shown how to use inverse relations in lazy loading. Inverse relations also apply in
-eager loading:
-
-```php
-// SELECT * FROM customer
-// SELECT * FROM order WHERE customer_id IN (1, 2, ...)
-$customers = Customer::find()->with('orders')->all();
-// echoes "equal"
-if ($customers[0]->orders[0]->customer === $customers[0]) {
-    echo 'equal';
-} else {
-    echo 'not equal';
-}
-```
-
-> Note: Inverse relation cannot be defined with a relation that involves pivoting tables.
-> That is, if your relation is defined with [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]],
-> you cannot call [[yii\db\ActiveQuery::inverseOf()]] further.
+> Note: Inverse relations cannot be defined for relations involving a [junction table](#junction-table).
+  That is, if a relation is defined with [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]],
+  you should not call [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] further.
 
 
-### Joining with Relations <span id="joining-with-relations"></span>
-
-When working with relational databases, a common task is to join multiple tables and apply various
-query conditions and parameters to the JOIN SQL statement. Instead of calling [[yii\db\ActiveQuery::join()]]
-explicitly to build up the JOIN query, you may reuse the existing relation definitions and call
-[[yii\db\ActiveQuery::joinWith()]] to achieve this goal. For example,
-
-```php
-// find all orders and sort the orders by the customer id and the order id. also eager loading "customer"
-$orders = Order::find()->joinWith('customer')->orderBy('customer.id, order.id')->all();
-// find all orders that contain books, and eager loading "books"
-$orders = Order::find()->innerJoinWith('books')->all();
-```
-
-In the above, the method [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] is a shortcut to [[yii\db\ActiveQuery::joinWith()|joinWith()]]
-with the join type set as `INNER JOIN`.
-
-You may join with one or multiple relations; you may apply query conditions to the relations on-the-fly;
-and you may also join with sub-relations. For example,
-
-```php
-// join with multiple relations
-// find the orders that contain books and were placed by customers who registered within the past 24 hours
-$orders = Order::find()->innerJoinWith([
-    'books',
-    'customer' => function ($query) {
-        $query->where('customer.created_at > ' . (time() - 24 * 3600));
-    }
-])->all();
-// join with sub-relations: join with books and books' authors
-$orders = Order::find()->joinWith('books.author')->all();
-```
-
-Behind the scenes, Yii will first execute a JOIN SQL statement to bring back the primary models
-satisfying the conditions applied to the JOIN SQL. It will then execute a query for each relation
-and populate the corresponding related records.
-
-The difference between [[yii\db\ActiveQuery::joinWith()|joinWith()]] and [[yii\db\ActiveQuery::with()|with()]] is that
-the former joins the tables for the primary model class and the related model classes to retrieve
-the primary models, while the latter just queries against the table for the primary model class to
-retrieve the primary models.
-
-Because of this difference, you may apply query conditions that are only available to a JOIN SQL statement.
-For example, you may filter the primary models by the conditions on the related models, like the example
-above. You may also sort the primary models using columns from the related tables.
-
-When using [[yii\db\ActiveQuery::joinWith()|joinWith()]], you are responsible to disambiguate column names.
-In the above examples, we use `item.id` and `order.id` to disambiguate the `id` column references
-because both of the order table and the item table contain a column named `id`.
-
-By default, when you join with a relation, the relation will also be eagerly loaded. You may change this behavior
-by passing the `$eagerLoading` parameter which specifies whether to eager load the specified relations.
-
-And also by default, [[yii\db\ActiveQuery::joinWith()|joinWith()]] uses `LEFT JOIN` to join the related tables.
-You may pass it with the `$joinType` parameter to customize the join type. As a shortcut to the `INNER JOIN` type,
-you may use [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]].
-
-Below are some more examples,
-
-```php
-// find all orders that contain books, but do not eager load "books".
-$orders = Order::find()->innerJoinWith('books', false)->all();
-// which is equivalent to the above
-$orders = Order::find()->joinWith('books', false, 'INNER JOIN')->all();
-```
-
-Sometimes when joining two tables, you may need to specify some extra condition in the ON part of the JOIN query.
-This can be done by calling the [[yii\db\ActiveQuery::onCondition()]] method like the following:
-
-```php
-class User extends ActiveRecord
-{
-    public function getBooks()
-    {
-        return $this->hasMany(Item::className(), ['owner_id' => 'id'])->onCondition(['category_id' => 1]);
-    }
-}
-```
-
-In the above, the [[yii\db\ActiveRecord::hasMany()|hasMany()]] method returns an [[yii\db\ActiveQuery]] instance,
-upon which [[yii\db\ActiveQuery::onCondition()|onCondition()]] is called
-to specify that only items whose `category_id` is 1 should be returned.
-
-When you perform a query using [[yii\db\ActiveQuery::joinWith()|joinWith()]], the ON condition will be put in the ON part
-of the corresponding JOIN query. For example,
-
-```php
-// SELECT user.* FROM user LEFT JOIN item ON item.owner_id=user.id AND category_id=1
-// SELECT * FROM item WHERE owner_id IN (...) AND category_id=1
-$users = User::find()->joinWith('books')->all();
-```
-
-Note that if you use eager loading via [[yii\db\ActiveQuery::with()]] or lazy loading, the on-condition will be put
-in the WHERE part of the corresponding SQL statement, because there is no JOIN query involved. For example,
-
-```php
-// SELECT * FROM user WHERE id=10
-$user = User::findOne(10);
-// SELECT * FROM item WHERE owner_id=10 AND category_id=1
-$books = $user->books;
-```
-
-
-Working with Relationships
---------------------------
+## Saving Relational Data <span id="saving-relational-data"></span>
 
 ActiveRecord provides the following two methods for establishing and breaking a
 relationship between two ActiveRecord objects:
@@ -1157,8 +1162,7 @@ The [[yii\db\ActiveRecord::link()|link()]] call above will set the `customer_id`
 value of `$customer` and then call [[yii\db\ActiveRecord::save()|save()]] to save the order into the database.
 
 
-Cross-DBMS Relations
---------------------
+## Cross-DBMS Relations <span id="cross-dbms-relations"></span> 
 
 ActiveRecord allows you to establish relationships between entities from different DBMS. For example: between a relational database table and MongoDB collection. Such a relation does not require any special code:
 
