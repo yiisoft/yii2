@@ -6,10 +6,10 @@
 分页。
   
 如果你使用 [数据提供者](output-data-providers.md) 和 [数据小部件](output-data-widgets.md) 中之一，
-pagination 已经为你自动分页。否则，你需要创建 [[\yii\data\Pagination]]
-对象，为其填充数据例如 [[\yii\data\Pagination::$totalCount|total item count]]，
-[[\yii\data\Pagination::$pageSize|page size]] 和 [[\yii\data\Pagination::$page|current page]]，在
-查询中使用它并且填充到 [[\yii\widgets\LinkPager|link pager]]。
+分页已经自动为你整理。否则，你需要创建 [[\yii\data\Pagination]]
+对象为其填充数据，例如 [[\yii\data\Pagination::$totalCount|总记录数]]，
+[[\yii\data\Pagination::$pageSize|每页数量]] 和 [[\yii\data\Pagination::$page|当前页码]]，在
+查询中使用它并且填充到 [[\yii\widgets\LinkPager|链接分页]]。
 
 
 首先在控制器的动作中，我们创建分页对象并且为其填充数据：
