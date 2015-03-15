@@ -1,8 +1,6 @@
 Active Record
 =============
 
-> Note: This section is under development.
-
 [Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
 for accessing and manipulating data stored in databases. An Active Record class is associated with a database table,
 an Active Record instance corresponds to a row of that table, and an *attribute* of an Active Record
@@ -1140,34 +1138,81 @@ echo $customer2 === $customer ? 'same' : 'not the same';
   you should not call [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] further.
 
 
-## Saving Relational Data <span id="saving-relational-data"></span>
+## Saving Relations <span id="saving-relations"></span>
 
-ActiveRecord provides the following two methods for establishing and breaking a
-relationship between two ActiveRecord objects:
-
-- [[yii\db\ActiveRecord::link()|link()]]
-- [[yii\db\ActiveRecord::unlink()|unlink()]]
-
-For example, given a customer and a new order, we can use the following code to make the
-order owned by the customer:
+When working with relational data, you often need to establish relationships between different data or destroy
+existing relationships. This requires setting proper values for the columns that define the relations. Using Active Record,
+you may end up writing the code like the following:
 
 ```php
-$customer = Customer::findOne(1);
+$customer = Customer::findOne(123);
 $order = new Order();
 $order->subtotal = 100;
-$customer->link('orders', $order);
+// ...
+
+// setting the attribute that defines the "customer" relation in Order
+$order->customer_id = $customer->id;
+$order->save();
 ```
 
-The [[yii\db\ActiveRecord::link()|link()]] call above will set the `customer_id` of the order to be the primary key
-value of `$customer` and then call [[yii\db\ActiveRecord::save()|save()]] to save the order into the database.
-
-
-## Cross-DBMS Relations <span id="cross-dbms-relations"></span> 
-
-ActiveRecord allows you to establish relationships between entities from different DBMS. For example: between a relational database table and MongoDB collection. Such a relation does not require any special code:
+Active Record provides the [[yii\db\ActiveRecord::link()|link()]] method that allows you to accomplish this task more nicely:
 
 ```php
-// Relational database Active Record
+$customer = Customer::findOne(123);
+$order = new Order();
+$order->subtotal = 100;
+// ...
+
+$order->link('customer', $customer);
+```
+
+The [[yii\db\ActiveRecord::link()|link()]] method requires you to specify the relation name and the target Active Record
+instance that the relationship should be established with. The method will modify the values of the attributes that
+link two Active Record instances and save them to the database. In the above example, it will set the `customer_id`
+attribute of the `Order` instance to be the value of the `id` attribute of the `Customer` instance and then save it
+to the database.
+
+> Note: You cannot link two newly created Active Record instances.
+
+The benefit of using [[yii\db\ActiveRecord::link()|link()]] is even more obvious when a relation is defined via
+a [junction table](#junction-table). For example, you may use the following code to link an `Order` instance
+with an `Item` instance:
+
+```php
+$order->link('items', $item);
+```
+
+The above code will automatically insert a row in the `order_item` junction table to relate the order with the item.
+
+> Info: The [[yii\db\ActiveRecord::link()|link()]] method will NOT perform any data validation while
+  saving the affected Active Record instance. It is your responsibility to validate any input data before
+  calling this method.
+
+The opposite operation to [[yii\db\ActiveRecord::link()|link()]] is [[yii\db\ActiveRecord::unlink()|unlink()]]
+which breaks an existing relationship between two Active Record instances. For example,
+
+```php
+$customer = Customer::find()->with('orders')->all();
+$customer->unlink('orders', $customer->orders[0]);
+```
+
+By default, the [[yii\db\ActiveRecord::unlink()|unlink()]] method will set the foreign key value(s) that specify
+the existing relationship to be null. You may, however, choose to delete the table row that contains the foreign key value
+by passing the `$delete` parameter as true to the method.
+ 
+When a junction table is involved in a relation, calling [[yii\db\ActiveRecord::unlink()|unlink()]] will cause
+the foreign keys in the junction table to be cleared, or the deletion of the corresponding row in the junction table
+if `$delete` is true.
+
+
+## Cross-Database Relations <span id="cross-database-relations"></span> 
+
+Active Record allows you to declare relations between Active Record classes that are powered by different databases.
+The databases can be of different types (e.g. MySQL and PostgreSQL, or MS SQL and MongoDB), and they can run on 
+different servers. You can use the same syntax to perform relational queries. For example,
+
+```php
+// Customer is associated with the "customer" table in a relational database (e.g. MySQL)
 class Customer extends \yii\db\ActiveRecord
 {
     public static function tableName()
@@ -1177,12 +1222,12 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getComments()
     {
-        // Customer, stored in relational database, has many Comments, stored in MongoDB collection:
+        // a customer has many comments
         return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
     }
 }
 
-// MongoDb Active Record
+// Comment is associated with the "comment" collection in a MongoDB database
 class Comment extends \yii\mongodb\ActiveRecord
 {
     public static function collectionName()
@@ -1192,120 +1237,98 @@ class Comment extends \yii\mongodb\ActiveRecord
 
     public function getCustomer()
     {
-        // Comment, stored in MongoDB collection, has one Customer, stored in relational database:
+        // a comment has one customer
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
+
+$customers = Customer::find()->with('comments')->all();
 ```
 
-All Active Record features like eager and lazy loading, establishing and breaking a relationship and so on, are
-available for cross-DBMS relations.
-
-> Note: do not forget Active Record solutions for different DBMS may have specific methods and features, which may not be
-  applied for cross-DBMS relations. For example: usage of [[yii\db\ActiveQuery::joinWith()]] will obviously not work with
-  relation to the MongoDB collection.
+You can use most of the relational query features that have been described in this section. 
+ 
+> Note: Usage of [[yii\db\ActiveQuery::joinWith()|joinWith()]] is limited to databases that allow cross-database JOIN queries.
+  For this reason, you cannot use this method in the above example because MongoDB does not support JOIN.
 
 
-Scopes
-------
+## Customizing Query Classes <span id="customizing-query-classes"></span>
 
-When you call [[yii\db\ActiveRecord::find()|find()]] or [[yii\db\ActiveRecord::findBySql()|findBySql()]], it returns an
-[[yii\db\ActiveQuery|ActiveQuery]] instance.
-You may call additional query methods, such as [[yii\db\ActiveQuery::where()|where()]], [[yii\db\ActiveQuery::orderBy()|orderBy()]],
-to further specify the query conditions.
-
-It is possible that you may want to call the same set of query methods in different places. If this is the case,
-you should consider defining the so-called *scopes*. A scope is essentially a method defined in a custom query class that calls a set of query methods to modify the query object. You can then use a scope instead of calling a normal query method.
-
-Two steps are required to define a scope. First, create a custom query class for your model and define the needed scope
-methods in this class. For example, create a `CommentQuery` class for the `Comment` model and define the `active()`
-scope method like the following:
-
-```php
-namespace app\models;
-
-use yii\db\ActiveQuery;
-
-class CommentQuery extends ActiveQuery
-{
-    public function active($state = true)
-    {
-        $this->andWhere(['active' => $state]);
-        return $this;
-    }
-}
-```
-
-Important points are:
-
-1. Class should extend from `yii\db\ActiveQuery` (or another `ActiveQuery` such as `yii\mongodb\ActiveQuery`).
-2. A method should be `public` and should return `$this` in order to allow method chaining. It may accept parameters.
-3. Check [[yii\db\ActiveQuery]] methods that are very useful for modifying query conditions.
-
-Second, override [[yii\db\ActiveRecord::find()]] to use the custom query class instead of the regular [[yii\db\ActiveQuery|ActiveQuery]].
-For the example above, you need to write the following code:
-
+By default, all Active Record queries are supported by [[yii\db\ActiveQuery]]. To use a customized query class
+in an Active Record class, you should override the [[yii\db\ActiveRecord::find()]] method and return an instance
+of your customized query class. For example,
+ 
 ```php
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use yii\db\ActiveQuery;
 
 class Comment extends ActiveRecord
 {
-    /**
-     * @inheritdoc
-     * @return CommentQuery
-     */
     public static function find()
     {
         return new CommentQuery(get_called_class());
     }
 }
+
+class CommentQuery extends ActiveQuery
+{
+    // ...
+}
 ```
 
-That's it. Now you can use your custom scope methods:
+Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`) 
+with `Comment`, you will be working with an instance of `CommentQuery` instead of `ActiveQuery`.
 
+> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
+  so that the Active Record classes can be kept clean.
+
+You can customize a query class in many creative ways to improve your query building experience. For example,
+you can define new query building methods in a customized query class: 
+
+```php
+class CommentQuery extends ActiveQuery
+{
+    public function active($state = true)
+    {
+        return $this->andWhere(['active' => $state]);
+    }
+}
+```
+
+> Note: Instead of calling [[yii\db\ActiveQuery::where()|where()]], you usually should call
+  [[yii\db\ActiveQuery::andWhere()|andWhere()]] or [[yii\db\ActiveQuery::orWhere()|orWhere()]] to append additional
+  conditions when defining new query building methods so that any existing conditions are not overwritten.
+
+This allows you to write query building code like the following:
+ 
 ```php
 $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
 
-You can also use scopes when defining relations. For example,
+You can also use the new query building methods when defining relations about `Comment` or performing relational query:
 
 ```php
-class Post extends \yii\db\ActiveRecord
+class Customer extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['post_id' => 'id'])->active();
-
+        return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
     }
 }
-```
 
-Or use the scopes on-the-fly when performing a relational query:
+$customers = Customer::find()->with('activeComments')->all();
 
-```php
-$posts = Post::find()->with([
+// or alternatively
+ 
+$customers = Customer::find()->with([
     'comments' => function($q) {
         $q->active();
     }
 ])->all();
 ```
 
-### Default Scope
-
-If you used Yii 1.1 before, you may know a concept called *default scope*. A default scope is a scope that
-applies to ALL queries. You can define a default scope easily by overriding [[yii\db\ActiveRecord::find()]]. For example,
-
-```php
-public static function find()
-{
-    return parent::find()->where(['deleted' => false]);
-}
-```
-
-Note that all your queries should then not use [[yii\db\ActiveQuery::where()|where()]] but
-[[yii\db\ActiveQuery::andWhere()|andWhere()]] and [[yii\db\ActiveQuery::orWhere()|orWhere()]]
-to not override the default condition.
+> Info: In Yii 1.1, there is a concept called *scope*. Scope is no longer directly supported in Yii 2.0,
+  and you should use customized query classes and query methods to achieve the same goal.
 

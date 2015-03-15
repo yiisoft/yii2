@@ -44,7 +44,7 @@ concept-service-locator.md          | Yes
 concept-di-container.md             | Yes
 db-dao.md                           | Yes
 db-query-builder.md                 | Yes
-db-active-record.md                 |
+db-active-record.md                 | Yes
 db-migrations.md                    |
 db-sphinx.md                        |
 db-redis.md                         |

@@ -1154,7 +1154,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
-                throw new InvalidCallException('Unable to link models: both models must NOT be newly created.');
+                throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
             }
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
@@ -1194,7 +1194,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $p2 = $this->isPrimaryKey(array_values($relation->link));
             if ($p1 && $p2) {
                 if ($this->getIsNewRecord() && $model->getIsNewRecord()) {
-                    throw new InvalidCallException('Unable to link models: both models are newly created.');
+                    throw new InvalidCallException('Unable to link models: at most one model can be newly created.');
                 } elseif ($this->getIsNewRecord()) {
                     $this->bindModels(array_flip($relation->link), $this, $model);
                 } else {
@@ -1205,7 +1205,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             } elseif ($p2) {
                 $this->bindModels($relation->link, $model, $this);
             } else {
-                throw new InvalidCallException('Unable to link models: the link does not involve any primary key.');
+                throw new InvalidCallException('Unable to link models: the link defining the relation does not involve any primary key.');
             }
         }
 
