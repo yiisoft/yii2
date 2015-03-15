@@ -53,6 +53,23 @@ class VKontakte extends OAuth2
      */
     public $apiBaseUrl = 'https://api.vk.com/method';
 
+    /**
+     * @inheritdoc
+     */
+    public function  fetchAccessToken($authCode, array $params = []) {
+        $defaultParams = [
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'code' => $authCode,
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => $this->getReturnUrl(),
+        ];
+        $response = $this->sendRequest('POST', $this->tokenUrl, array_merge($defaultParams, $params));
+        $token = $this->createToken(['params' => $response]);
+        $this->setAccessToken($token);
+        $this->setUserAttributes( array_merge( $this->getUserAttributes(), ['email' => $response['email']] ));
+        return $token;
+    }
 
     /**
      * @inheritdoc
