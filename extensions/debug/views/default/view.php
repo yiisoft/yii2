@@ -43,7 +43,7 @@ $this->title = 'Yii Debugger';
                 </div>
             </div>
             <div class="col-lg-10 col-md-10">
-                <div class="callout callout-danger">
+                <div class="callout callout-primary">
                     <?php
                         $count = 0;
                         $items = [];
@@ -61,12 +61,13 @@ $this->title = 'Yii Debugger';
                             }
                         }
                         echo ButtonGroup::widget([
+                            'options'=>['class'=>'btn-group-sm'],
                             'buttons' => [
                                 Html::a('All', ['index'], ['class' => 'btn btn-default']),
                                 Html::a('Latest', ['view', 'panel' => $activePanel->id], ['class' => 'btn btn-default']),
                                 ButtonDropdown::widget([
                                     'label' => 'Last 10',
-                                    'options' => ['class' => 'btn-default'],
+                                    'options' => ['class' => 'btn-default btn-sm'],
                                     'dropdown' => ['items' => $items],
                                 ]),
                             ],
