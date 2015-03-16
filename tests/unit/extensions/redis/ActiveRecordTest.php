@@ -367,4 +367,23 @@ class ActiveRecordTest extends RedisTestCase
         $query->filterWhere(['and', ['like', 'name', ''], ['like', 'title', ''], ['id' => 1], ['not', ['like', 'name', '']]]);
         $this->assertEquals(['and', ['id' => 1]], $query->where);
     }
+
+    public function testAutoIncrement()
+    {
+        $customer = new Customer();
+        $customer->setAttributes(['id' => 4, 'email' => 'user4@example.com', 'name' => 'user4', 'address' => 'address4', 'status' => 1, 'profile_id' => null], false);
+        $customer->save(false);
+        $customer = new Customer();
+        $customer->setAttributes(['email' => 'user5@example.com', 'name' => 'user5', 'address' => 'address5', 'status' => 1, 'profile_id' => null], false);
+        $customer->save(false);
+
+        $customer = Customer::findOne(4);
+        $this->assertNotNull($customer);
+        $this->assertEquals('user4', $customer->name);
+
+        $customer = Customer::findOne(5);
+        $this->assertNotNull($customer);
+        $this->assertEquals('user5', $customer->name);
+
+    }
 }
