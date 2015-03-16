@@ -31,13 +31,15 @@ class IpValidator extends Validator
 
     /**
      * @const integer is used to change check order by [[isAllowed]]
-     * @see isAllowed
+     * @see isAllowed()
+     * @see order
      */
     const ORDER_ALLOW_DENY = 0;
 
     /**
      * @const integer is used to change check order by [[isAllowed]]
-     * @see isAllowed
+     * @see isAllowed()
+     * @see order
      */
     const ORDER_DENY_ALLOW = 1;
 
@@ -81,8 +83,31 @@ class IpValidator extends Validator
     public $expandV6 = false;
 
     /**
+     * The property is used by [[isAllowed]] method to determine the order of checks
+     * of the IP address according to [[deny]] and [[allow]] lists.
+     *
+     * When [[order]] is [[ORDER_ALLOW_DENY]] - first all the [[allow]] will be checked, and at least one must
+     * match or the validation will fail. Then all the [[deny]] are checked, if one of them
+     * matched the validation will fail.
+     * At last, if address is not on the [[allow]] nor on the [[deny]] the validation will also fail.
+     *
+     * When [[order]] is [[ORDER_DENY_ALLOW]] - method [[isAllowed]] checks all the [[deny]] and the [[allow]].
+     * If the value is on the [[deny]] the validation will fail, unless it is also present on the [[allow]].
+     * If it is not found on any of the lists the validation will be passed.
+     *
+     * Tip: it is useful to use [[ORDER_ALLOW_DENY]], when it is necessary to deny a less specific subnet and
+     * to allow a more specific one. The example below will result in passing `192.168.1.1`,
+     * but `192.168.2.1` will be denied:
+     *
+     * ```
+     * [
+     *      'deny' => ['192.168.0.0/16'],
+     *      'allow' => ['192.168.1.0/24']
+     * ]
+     * ```
+     *
      * @var int the order of ranges rules. Used by [[isAllowed]]
-     * @see isAllowed
+     * @see isAllowed()
      */
     public $order = self::ORDER_DENY_ALLOW;
 
@@ -93,7 +118,7 @@ class IpValidator extends Validator
      * ['10.0.0.0/8', '192.168.1.1', '2001:ab::/64', '2001:ac::2:1']
      * ```
      *
-     * @see isAllowed
+     * @see isAllowed()
      */
     public $allow;
 
@@ -104,7 +129,7 @@ class IpValidator extends Validator
      * ['10.0.0.0/24', '192.168.2.1', '2001:ab::/32', '2001:ac::1:2']
      * ```
      *
-     * @see isAllowed
+     * @see isAllowed()
      */
     public $deny;
 
@@ -312,28 +337,8 @@ class IpValidator extends Validator
     }
 
     /**
-     * Checks whether IP address can be used according to [[deny]] and [[allow]] lists
-     * and [[order]] option.
-     *
-     * When [[order]] is [[ORDER_ALLOW_DENY]] - checks all the [[allow]], at least one must
-     * match or the method will return false. Then all the [[deny]] are checked, if one of them
-     * matched the method will return false.
-     * At last, if $ip is not on the [[allow]] nor on the [[deny]] the method will return false.
-     *
-     * When [[ORDER_DENY_ALLOW]] - checks all the [[deny]] and the [[allow]].
-     * If the value is on the [[deny]] will return false, unless it is also present on the [[allow]].
-     * If it is not found on any of the lists the method will return true.
-     *
-     * Tip: it is useful to use [[ORDER_ALLOW_DENY]], when it is necessary to deny a less specific subnet and
-     * to allow a more specific one. The example below will result in passing `192.168.1.1`,
-     * but `192.168.2.1` will be denied:
-     *
-     * ```
-     * [
-     *      'deny' => ['192.168.0.0/16'],
-     *      'allow' => ['192.168.1.0/24']
-     * ]
-     * ```
+     * The method checks, if the IP address is allowed according to
+     * the [[allow]] and [[deny]] lists, and the [[order]] property.
      *
      * @param $ip string
      * @return boolean
