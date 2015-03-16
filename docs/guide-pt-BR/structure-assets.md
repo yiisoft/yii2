@@ -452,6 +452,31 @@ o caminho fonte de um asset bundle quando estiver sendo publicado. Isto é mais
 rápido que a cópia de arquivos e também pode garantir que os assets publicados 
 estejam sempre atualizados.
 
+### Cache Busting <span id="cache-busting"></span>
+
+Para aplicações Web que estam rodando no modo produção, é uma prática comum habilitar
+o cache HTTP paraassets e outros recursos estáticos. A desvantagem desta prática é que 
+sempre que você modificar um asset e implantá-lo em produção, um cliente pode ainda
+estar usando a versão antiga, devido ao cache HTTP. Para superar esta desvantagem, 
+você pode utilizar o recurso cache busting, que foi implementado na versão 2.0.3, 
+configurando o [[yii\web\AssetManager]] como mostrado a seguir:
+  
+```php
+return [
+    // ...
+    'components' => [
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
+    ],
+];
+```
+
+Ao fazer isto, a URL de cada asset publicado será anexada ao seu último horário de 
+modificação. Por exemplo, a URL do `yii.js` pode parecer com `/assets/5515a87c/yii.js?v=1423448645"`,
+onde o parâmetro `V` representa o último horário de modificação do arquivo `yii.js`.
+Agora se você modificar um asset, a sua URL será alterada, fazendo com que o cliente
+busque a versão mais recente do asset.
 
 ## Asset Bundles de Uso Comum <span id="common-asset-bundles"></span>
 
@@ -771,3 +796,59 @@ conforme descrito na última subseção.
 > Informação: O uso do comando `asset` não é a única opção para automatizar o 
   processo de combinação e compressão de asset. Você pode usar a excelente 
   ferramenta chamada [grunt](http://gruntjs.com/) para atingir o mesmo objetivo.
+
+### Agrupando Asset Bundles <span id="grouping-asset-bundles"></span>
+
+Na última subseção, nós explicamos como combinar todos os asset bundles em um
+único bundle, a fim de minimizar as requisições HTTP de arquivos de asset referenciados
+em uma aplicação. Porém, isto nem sempre é desejável na prática. Por exemplo, imagine 
+que sua aplicação possua um "front end", bem como um "back end", cada um possuindo um 
+conjunto diferente de JavaScript e CSS. Neste caso, combinando todos os asset bundles
+de ambas as extremidades em um único bundle não faz sentido, porque os asset bundles 
+pata o "front end" não são utilizados pelo "back end" e seria um desperdício de uso 
+de banda de rede para enviar os assets do "back end" quando uma página de "front end"
+for solicitada.
+
+Para resolver este problema, você pode dividir asset bundles e, grupos e combinar 
+asset bundles para cada grupo. A configuração a seguir mostra como pode agrupar 
+os asset bundles:
+
+```php
+return [
+    ...
+    // Especifique o bundle de saída com os grupos:
+    'targets' => [
+        'allShared' => [
+            'js' => 'js/all-shared-{hash}.js',
+            'css' => 'css/all-shared-{hash}.css',
+            'depends' => [
+                // Inclua todos os asset que serão compartilhados entre o 'backend' e o 'frontend'
+                'yii\web\YiiAsset',
+                'app\assets\SharedAsset',
+            ],
+        ],
+        'allBackEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [
+                // Inclua apenas os assets do 'backend':
+                'app\assets\AdminAsset'
+            ],
+        ],
+        'allFrontEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [], // Inclua todos os asset restantes
+        ],
+    ],
+    ...
+];
+```
+
+Como você pode ver, os asset bundles são divididos em três grupos: `allShared`, `allBackEnd` e `allFrontEnd`.
+Cada um deles dependem de um conjunto de asset bundles. Por exemplo, o `allBackEnd` depende de `app\assets\AdminAsset`.
+Ao executar o comando `asset` com essa configuração, será combinado os asset bundles de acordo com as especificações acima.
+
+> Informação: Voce pode deixar a configuração `depends` em branco para um determinado bundle.
+Ao fazer isso, esse asset bundle dependerá de todos os asset bundles restantes que outros
+determinados bundles não dependam.
