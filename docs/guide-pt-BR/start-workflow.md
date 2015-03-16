@@ -35,6 +35,10 @@ Essa é uma [ferramenta de depuração](tool-debugger.md) fornecida pelo Yii par
 registrar e exibir várias informações de depuração, tais como mensagens de logs,
 status de respostas, as consultas de banco de dados executadas, e assim por diante.
 
+Além da aplicação Web, existe um script console chamado `yii`, que está localizado
+na pasta base da aplicação.
+Este script pode ser usado para executar rotinas em segundo plano e tarefas de
+manutenção da aplicação, descritas na [seção Comandos de Console](tutoral-console.md).
 
 Estrutura da Aplicação <span id="application-structure"></span>
 ----------------------
