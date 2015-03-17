@@ -7,6 +7,7 @@
 
 namespace yii\authclient\widgets;
 
+use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use Yii;
 use yii\helpers\Url;
@@ -170,6 +171,7 @@ class AuthChoice extends Widget
      * @param ClientInterface $client external auth client instance.
      * @param string $text link text, if not set - default value will be generated.
      * @param array $htmlOptions link HTML options.
+     * @throws InvalidConfigException on wrong configuration.
      */
     public function clientLink($client, $text = null, array $htmlOptions = [])
     {
@@ -180,16 +182,29 @@ class AuthChoice extends Widget
         if (!array_key_exists('class', $htmlOptions)) {
             $htmlOptions['class'] = 'auth-link ' . $client->getName();
         }
-        if ($this->popupMode) {
-            $viewOptions = $client->getViewOptions();
-            if (isset($viewOptions['popupWidth'])) {
-                $htmlOptions['data-popup-width'] = $viewOptions['popupWidth'];
+
+        $viewOptions = $client->getViewOptions();
+        if (empty($viewOptions['widget'])) {
+            if ($this->popupMode) {
+                if (isset($viewOptions['popupWidth'])) {
+                    $htmlOptions['data-popup-width'] = $viewOptions['popupWidth'];
+                }
+                if (isset($viewOptions['popupHeight'])) {
+                    $htmlOptions['data-popup-height'] = $viewOptions['popupHeight'];
+                }
             }
-            if (isset($viewOptions['popupHeight'])) {
-                $htmlOptions['data-popup-height'] = $viewOptions['popupHeight'];
+            echo Html::a($text, $this->createClientUrl($client), $htmlOptions);
+        } else {
+            $widgetConfig = $viewOptions['widget'];
+            if (!isset($widgetConfig['class'])) {
+                throw new InvalidConfigException('Widget config "class" parameter is missing');
             }
+            /* @var $widgetClass Widget */
+            $widgetClass = $widgetConfig['class'];
+            unset($widgetConfig['class']);
+            $widgetConfig['client'] = $client;
+            echo $widgetClass::widget($widgetConfig);
         }
-        echo Html::a($text, $this->createClientUrl($client), $htmlOptions);
     }
 
     /**
