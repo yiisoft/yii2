@@ -81,6 +81,37 @@ class BaseFormatConverter
         'full'   => 0, // IntlDateFormatter::FULL,
     ];
 
+    /**
+     * Converts the ICU short patterns `short`, `medium`, `long` and `full` into a full ICU pattern.
+     *
+     * @param string $pattern an ICU short pattern.
+     * @param string $type 'date', 'time', or 'datetime'.
+     * @param string $locale the locale to use for converting the patterns.
+     * If not given, `Yii::$app->language` will be used.
+     * @return string|false The converted date format pattern, or false if the pattern could not be converted because
+     * the intl extension is not loaded. If the pattern is not an ICU short pattern, it will be returned unmodified.
+     */
+    public static function convertIcuShortFormatToPattern($pattern, $type = 'date', $locale = null)
+    {
+        if (!isset(self::$_icuShortFormats[$pattern])) {
+            return $pattern;
+        }
+        if (extension_loaded('intl')) {
+            if ($locale === null) {
+                $locale = Yii::$app->language;
+            }
+            if ($type === 'date') {
+                $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
+            } elseif ($type === 'time') {
+                $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
+            } else {
+                $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
+            }
+            return $formatter->getPattern();
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Converts a date format pattern from [ICU format][] to [php date() function format][].
@@ -102,23 +133,11 @@ class BaseFormatConverter
      */
     public static function convertDateIcuToPhp($pattern, $type = 'date', $locale = null)
     {
-        if (isset(self::$_icuShortFormats[$pattern])) {
-            if (extension_loaded('intl')) {
-                if ($locale === null) {
-                    $locale = Yii::$app->language;
-                }
-                if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
-                } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
-                } else {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
-                }
-                $pattern = $formatter->getPattern();
-            } else {
-                return static::$phpFallbackDatePatterns[$pattern][$type];
-            }
+        $fullPattern = static::convertIcuShortFormatToPattern($pattern, $type, $locale);
+        if ($fullPattern === false) {
+            return static::$phpFallbackDatePatterns[$pattern][$type];
         }
+        $pattern = $fullPattern;
         // http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
         // escaped text
         $escaped = [];
@@ -314,23 +333,11 @@ class BaseFormatConverter
      */
     public static function convertDateIcuToJui($pattern, $type = 'date', $locale = null)
     {
-        if (isset(self::$_icuShortFormats[$pattern])) {
-            if (extension_loaded('intl')) {
-                if ($locale === null) {
-                    $locale = Yii::$app->language;
-                }
-                if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
-                } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
-                } else {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
-                }
-                $pattern = $formatter->getPattern();
-            } else {
-                return static::$juiFallbackDatePatterns[$pattern][$type];
-            }
+        $fullPattern = static::convertIcuShortFormatToPattern($pattern, $type, $locale);
+        if ($fullPattern === false) {
+            return static::$juiFallbackDatePatterns[$pattern][$type];
         }
+        $pattern = $fullPattern;
         // http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
         // escaped text
         $escaped = [];

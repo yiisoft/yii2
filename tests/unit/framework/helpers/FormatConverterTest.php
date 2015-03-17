@@ -37,6 +37,12 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('d.m.y', FormatConverter::convertDateIcuToPhp('short', 'date', 'de-DE'));
     }
 
+    public function testIntlIcuToJuiShortForm()
+    {
+        $this->assertEquals('m/d/y', FormatConverter::convertDateIcuToJui('short', 'date', 'en-US'));
+        $this->assertEquals('dd.mm.y', FormatConverter::convertDateIcuToJui('short', 'date', 'de-DE'));
+    }
+
     public function testEscapedIcuToPhp()
     {
         $this->assertEquals('l, F j, Y \\a\\t g:i:s a T', FormatConverter::convertDateIcuToPhp('EEEE, MMMM d, y \'at\' h:mm:ss a zzzz'));
