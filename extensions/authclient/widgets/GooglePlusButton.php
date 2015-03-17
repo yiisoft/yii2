@@ -21,7 +21,7 @@ use yii\web\View;
  * @see https://developers.google.com/+/web/signin/
  *
  * @property \yii\authclient\clients\GooglePlus $client auth client instance.
- * @property string|array $callback
+ * @property string|array $callback callback JavaScript function name or URL config.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -37,13 +37,13 @@ class GooglePlusButton extends AuthChoiceItem
      * @var string|array name of the JavaScript function, which should be used as sign-in callback.
      * If blank default one will be generated: it will redirect page to the auth action using auth result
      * as GET parameters.
-     * You may pass an array configuration of the URL here, which
-     * will be used creating default callback.
+     * You may pass an array configuration of the URL here, which will be used creating such
+     * default callback.
      */
     private $_callback;
 
     /**
-     * @param string $callback
+     * @param string|array $callback callback JavaScript function name or URL config.
      */
     public function setCallback($callback)
     {
@@ -51,7 +51,7 @@ class GooglePlusButton extends AuthChoiceItem
     }
 
     /**
-     * @return string
+     * @return string callback JavaScript function name.
      */
     public function getCallback()
     {

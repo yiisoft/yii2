@@ -29,6 +29,20 @@ namespace yii\authclient\clients;
  * ]
  * ~~~
  *
+ * You may customize [[yii\authclient\widgets\GooglePlusButton]] appearance using 'widget' key at [[viewOptions]]:
+ *
+ * ~~~php
+ * 'google' => [
+ *     ...
+ *     'viewOptions' => [
+ *         'class' => 'yii\authclient\widgets\GooglePlusButton',
+ *         'buttonHtmlOptions' => [
+ *             'data-approvalprompt' => 'force'
+ *         ],
+ *     ],
+ * ],
+ * ~~~
+ *
  * @see GoogleOAuth
  * @see yii\authclient\widgets\GooglePlusButton
  * @see https://developers.google.com/+/web/signin

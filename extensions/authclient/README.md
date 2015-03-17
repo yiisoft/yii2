@@ -42,7 +42,9 @@ You need to setup auth client collection application component:
         'class' => 'yii\authclient\Collection',
         'clients' => [
             'google' => [
-                'class' => 'yii\authclient\clients\GoogleOpenId'
+                'class' => 'yii\authclient\clients\GoogleOAuth',
+                'clientId' => 'google_client_id',
+                'clientSecret' => 'google_client_secret',
             ],
             'facebook' => [
                 'class' => 'yii\authclient\clients\Facebook',
@@ -158,7 +160,7 @@ Following predefined auth clients are available:
  - [[yii\authclient\clients\Facebook]] - [Facebook](https://www.facebook.com/) OAuth2 client.
  - [[yii\authclient\clients\GitHub]] - [GitHub](https://github.com/) OAuth2 client.
  - [[yii\authclient\clients\GoogleOAuth]] - [Google](https://www.google.com/) OAuth2 client.
- - [[yii\authclient\clients\GoogleOpenId]] - [Google](https://www.google.com/) OpenID client.
+ - [[yii\authclient\clients\GooglePlus]] - [Google](https://www.google.com/) OAuth2-hybrid client.
  - [[yii\authclient\clients\LinkedIn]] - [LinkedIn](http://www.linkedin.com/) OAuth2 client.
  - [[yii\authclient\clients\Live]] - [Microsoft Live](http://live.com/) OAuth2 client.
  - [[yii\authclient\clients\Twitter]] - [Twitter](https://twitter.com/) OAuth1 client.

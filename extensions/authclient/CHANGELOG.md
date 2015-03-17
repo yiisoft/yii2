@@ -4,7 +4,7 @@ Yii Framework 2 authclient extension Change Log
 2.0.4 under development
 -----------------------
 
-- no changes in this release.
+- Enh #7754: New client `yii\authclient\clients\GooglePlus` added to support Google recommended auth flow (klimov-paul)
 
 
 2.0.3 March 01, 2015
