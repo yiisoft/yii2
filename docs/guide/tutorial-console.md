@@ -194,15 +194,15 @@ It's a good practice to define meaningful constants for your controller in case 
 Yii console supports formatted output that is automatically degraded to non-formatted one if it's not supported
 by terminal running the command.
 
-Outputting formatted strings is simple. Here's how to output some bold text:
+Outputting strings is simple. Here's how to output some text:
 
 ```php
-$this->stdout("Hello?\n", Console::BOLD);
+$this->stdout("Hello?\n");
 ```
 
-If you need to build string dynamically combining multiple styles it's better to use `ansiFormat`:
+You can add format to the output combining multiple styles with `ansiFormat`:
 
 ```php
-$name = $this->ansiFormat('Alex', Console::FG_YELLOW);
-echo "Hello, my name is $name.";
+$name = $this->ansiFormat('Alex', [Console::FG_YELLOW, Console::BOLD]);
+$this->stdout("Hello, my name is $name.");
 ```
