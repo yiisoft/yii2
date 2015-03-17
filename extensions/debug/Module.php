@@ -31,7 +31,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
-     * @var string the namespace that controller classes are in.
+     * @inheritdoc
      */
     public $controllerNamespace = 'yii\debug\controllers';
     /**
@@ -60,6 +60,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * You may want to enable the debug logs if you want to investigate how the debug module itself works.
      */
     public $enableDebugLogs = false;
+
 
     /**
      * Returns Yii logo ready to use in `<img src="`
@@ -100,6 +101,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         foreach ($this->panels as $id => $config) {
+            if (is_string($config)) {
+                $config = ['class' => $config];
+            }
             $config['module'] = $this;
             $config['id'] = $id;
             $this->panels[$id] = Yii::createObject($config);
@@ -120,7 +124,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
         $app->getUrlManager()->addRules([
             $this->id => $this->id,
-            $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
+            $this->id . '/<controller:[\w\-]+>/<action:[\w\-]+>' => $this->id . '/<controller>/<action>',
         ], false);
     }
 
@@ -175,7 +179,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'tag' => $this->logTarget->tag,
         ]);
         echo '<div id="yii-debug-toolbar" data-url="' . $url . '" style="display:none"></div>';
-        /** @var View $view */
+        /* @var $view View */
         $view = $event->sender;
         echo '<style>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.css') . '</style>';
         echo '<script>' . $view->renderPhpFile(__DIR__ . '/assets/toolbar.js') . '</script>';
@@ -193,8 +197,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 return true;
             }
         }
-        Yii::warning('Access to debugger is denied due to IP address restriction. The requested IP is ' . $ip, __METHOD__);
-
+        Yii::warning('Access to debugger is denied due to IP address restriction. The requesting IP address is ' . $ip, __METHOD__);
         return false;
     }
 
@@ -209,6 +212,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'log' => ['class' => 'yii\debug\panels\LogPanel'],
             'profiling' => ['class' => 'yii\debug\panels\ProfilingPanel'],
             'db' => ['class' => 'yii\debug\panels\DbPanel'],
+            'assets' => ['class' => 'yii\debug\panels\AssetPanel'],
             'mail' => ['class' => 'yii\debug\panels\MailPanel'],
         ];
     }

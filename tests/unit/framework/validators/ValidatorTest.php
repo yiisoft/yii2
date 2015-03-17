@@ -33,7 +33,7 @@ class ValidatorTest extends TestCase
     public function testCreateValidator()
     {
         $model = FakedValidationModel::createWithAttributes(['attr_test1' => 'abc', 'attr_test2' => '2013']);
-        /** @var NumberValidator $numberVal */
+        /* @var $numberVal NumberValidator */
         $numberVal = TestValidator::createValidator('number', $model, ['attr_test1']);
         $this->assertInstanceOf(NumberValidator::className(), $numberVal);
         $numberVal = TestValidator::createValidator('integer', $model, ['attr_test2']);
@@ -57,9 +57,10 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(BooleanValidator::className(), $val);
         $this->assertSame(['a', 'b'], $val->on);
         $this->assertSame(['c', 'd', 'e'], $val->except);
-        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a']);
+        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
         $this->assertInstanceOf(InlineValidator::className(), $val);
         $this->assertSame('inlineVal', $val->method);
+        $this->assertSame(['foo' => 'bar'], $val->params);
     }
 
     public function testValidate()

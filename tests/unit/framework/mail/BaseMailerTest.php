@@ -18,7 +18,7 @@ class BaseMailerTest extends TestCase
     {
         $this->mockApplication([
             'components' => [
-                'mail' => $this->createTestMailComponent(),
+                'mailer' => $this->createTestMailComponent(),
             ]
         ]);
         $filePath = $this->getTestFilePath();
@@ -59,7 +59,7 @@ class BaseMailerTest extends TestCase
      */
     protected function getTestMailComponent()
     {
-        return Yii::$app->get('mail');
+        return Yii::$app->get('mailer');
     }
 
     // Tests :
@@ -208,6 +208,62 @@ class BaseMailerTest extends TestCase
         $message = $mailer->compose($htmlViewName);
         $this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html by direct view!');
         $this->assertEquals(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
+    }
+
+    public function htmlAndPlainProvider()
+    {
+        return [
+            [
+                1,
+                'HTML <b>view file</b> content <a href="http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef">http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef</a>',
+                'HTML view file content http://yiifresh.com/index.php?r=site%2Freset-password&token=abcdef',
+            ],
+            [
+                2, <<<HTML
+<html><head><style type="text/css">.content{color: #112345;}</style><title>TEST</title></head>
+<body>
+    <style type="text/css">.content{color: #112345;}</style>
+    <p> First paragraph
+    second line
+
+     <a href="http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef">http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef</a>
+
+     </p><script type="text/javascript">alert("hi")</script>
+
+<p>Test Lorem ipsum...</p>
+</body>
+</html>
+HTML
+,                <<<TEXT
+First paragraph
+second line
+
+http://yiifresh.com/index.php?r=site%2Freset-password&token=abcdef
+
+Test Lorem ipsum...
+TEXT
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider htmlAndPlainProvider
+     */
+    public function testComposePlainTextFallback($i, $htmlViewFileContent, $expectedTextRendering)
+    {
+        $mailer = $this->getTestMailComponent();
+        $mailer->htmlLayout = false;
+        $mailer->textLayout = false;
+
+        $htmlViewName = 'test_html_view' . $i; // $i is needed to generate different view files to ensure it works on HHVM
+        $htmlViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $htmlViewName . '.php';
+        file_put_contents($htmlViewFileName, $htmlViewFileContent);
+
+        $message = $mailer->compose([
+            'html' => $htmlViewName,
+        ]);
+        $this->assertEqualsWithoutLE($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
+        $this->assertEqualsWithoutLE($expectedTextRendering, $message->_textBody, 'Unable to render text!');
     }
 
     public function testUseFileTransport()
@@ -384,6 +440,10 @@ class Message extends BaseMessage
 
     public function toString()
     {
-        return var_export($this, true);
+        $mailer = $this->mailer;
+        $this->mailer = null;
+        $s = var_export($this, true);
+        $this->mailer = $mailer;
+        return $s;
     }
 }

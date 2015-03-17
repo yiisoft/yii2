@@ -67,6 +67,7 @@ class Cache extends \yii\caching\Cache
      */
     public $redis = 'redis';
 
+
     /**
      * Initializes the redis Cache component.
      * This method will initialize the [[redis]] property to make sure it refers to a valid redis connection.

@@ -29,6 +29,7 @@ class Controller extends \yii\base\Controller
      */
     public $actionParams = [];
 
+
     /**
      * Renders a view in response to an AJAX request.
      *
@@ -55,7 +56,7 @@ class Controller extends \yii\base\Controller
      * @param \yii\base\Action $action the action to be bound with parameters
      * @param array $params the parameters to be bound to the action
      * @return array the valid parameters that the action can run with.
-     * @throws HttpException if there are missing or invalid parameters.
+     * @throws BadRequestHttpException if there are missing or invalid parameters.
      */
     public function bindActionParams($action, $params)
     {
@@ -72,7 +73,7 @@ class Controller extends \yii\base\Controller
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
                 if ($param->isArray()) {
-                    $args[] = $actionParams[$name] = is_array($params[$name]) ? $params[$name] : [$params[$name]];
+                    $args[] = $actionParams[$name] = (array)$params[$name];
                 } elseif (!is_array($params[$name])) {
                     $args[] = $actionParams[$name] = $params[$name];
                 } else {
@@ -105,7 +106,7 @@ class Controller extends \yii\base\Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($this->enableCsrfValidation && Yii::$app->errorHandler->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
+            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
             return true;
@@ -171,6 +172,8 @@ class Controller extends \yii\base\Controller
      * // stop executing this action and redirect to last visited page
      * return $this->goBack();
      * ```
+     *
+     * For this function to work you have to [[User::setReturnUrl()|set the return URL]] in appropriate places before.
      *
      * @param string|array $defaultUrl the default return URL in case it was not set previously.
      * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.

@@ -26,6 +26,7 @@ class OptionsAction extends \yii\base\Action
      */
     public $resourceOptions = ['GET', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 
+
     /**
      * Responds to the OPTIONS request.
      * @param string $id

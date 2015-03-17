@@ -73,7 +73,7 @@ use yii\db\ActiveRelationTrait;
  * A relation is specified by [[link]] which represents the association between columns
  * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
  *
- * If a relation involves a pivot table, it may be specified by [[via()]].
+ * If a relation involves a junction table, it may be specified by [[via()]].
  * This methods may only be called in a relational context. Same is true for [[inverseOf()]], which
  * marks a relation as inverse of another relation.
  *
@@ -84,6 +84,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 {
     use ActiveQueryTrait;
     use ActiveRelationTrait;
+
+    /**
+     * @event Event an event that is triggered when the query is initialized via [[init()]].
+     */
+    const EVENT_INIT = 'init';
 
     /**
      * @var string the SQL statement to be executed for retrieving AR records.
@@ -101,6 +106,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->modelClass = $modelClass;
         parent::__construct($config);
+    }
+
+    /**
+     * Initializes the object.
+     * This method is called at the end of the constructor. The default implementation will trigger
+     * an [[EVENT_INIT]] event. If you override this method, make sure you call the parent implementation at the end
+     * to ensure triggering of the event.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
     }
 
     /**
@@ -175,9 +192,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             if ($this->asArray) {
                 $model = $row;
             } else {
-                /** @var $class ActiveRecord */
+                /* @var $class ActiveRecord */
                 $class = $this->modelClass;
                 $model = $class::instantiate($row);
+                $class = get_class($model);
                 $class::populateRecord($model, $row);
             }
             if (!empty($this->with)) {
@@ -208,11 +226,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             // lazy loading a relational query
             if ($this->via instanceof self) {
                 // via pivot index
-                $viaModels = $this->via->findPivotRows([$this->primaryModel]);
+                $viaModels = $this->via->findJunctionRows([$this->primaryModel]);
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /** @var ActiveQuery $viaQuery */
+                /* @var $viaQuery ActiveQuery */
                 list($viaName, $viaQuery) = $this->via;
                 if ($viaQuery->multiple) {
                     $viaModels = $viaQuery->all();
@@ -231,12 +249,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $this->setConnection($db);
         $db = $this->getConnection();
 
-        $params = $this->params;
         if ($this->sql === null) {
-            list ($this->sql, $params) = $db->getQueryBuilder()->build($this);
+            list ($sql, $params) = $db->getQueryBuilder()->build($this);
+        } else {
+            $sql = $this->sql;
+            $params = $this->params;
         }
 
-        return $db->createCommand($this->sql, $params);
+        return $db->createCommand($sql, $params);
     }
 
     /**
@@ -275,7 +295,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $from = $this->from;
         if ($from === null) {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::indexName();
             $from = [$tableName];

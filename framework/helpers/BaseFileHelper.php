@@ -8,6 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 
 /**
@@ -25,6 +26,13 @@ class BaseFileHelper
     const PATTERN_ENDSWITH = 4;
     const PATTERN_MUSTBEDIR = 8;
     const PATTERN_NEGATIVE = 16;
+    const PATTERN_CASE_INSENSITIVE = 32;
+
+    /**
+     * @var string the path (or alias) of a PHP file containing MIME type information.
+     */
+    public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
+
 
     /**
      * Normalizes a file/directory path.
@@ -41,14 +49,14 @@ class BaseFileHelper
      */
     public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
     {
-        $path = rtrim(strtr($path, ['/' => $ds, '\\' => $ds]), $ds);
+        $path = rtrim(strtr($path, '/\\', $ds . $ds), $ds);
         if (strpos($ds . $path, "{$ds}.") === false && strpos($path, "{$ds}{$ds}") === false) {
             return $path;
         }
         // the path may contain ".", ".." or double slashes, need to clean them up
         $parts = [];
         foreach (explode($ds, $path) as $part) {
-            if ($part === '..' && !empty($parts)) {
+            if ($part === '..' && !empty($parts) && end($parts) !== '..') {
                 array_pop($parts);
             } elseif ($part === '.' || $part === '' && !empty($parts)) {
                 continue;
@@ -56,7 +64,8 @@ class BaseFileHelper
                 $parts[] = $part;
             }
         }
-        return implode($ds, $parts);
+        $path = implode($ds, $parts);
+        return $path === '' ? '.' : $path;
     }
 
     /**
@@ -108,56 +117,98 @@ class BaseFileHelper
     /**
      * Determines the MIME type of the specified file.
      * This method will first try to determine the MIME type based on
-     * [finfo_open](http://php.net/manual/en/function.finfo-open.php). If this doesn't work, it will
-     * fall back to [[getMimeTypeByExtension()]].
+     * [finfo_open](http://php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
+     * it will fall back to [[getMimeTypeByExtension()]] when `$checkExtension` is true.
      * @param string $file the file name.
-     * @param string $magicFile name of the optional magic database file, usually something like `/path/to/magic.mime`.
-     * This will be passed as the second parameter to [finfo_open](http://php.net/manual/en/function.finfo-open.php).
+     * @param string $magicFile name of the optional magic database file (or alias), usually something like `/path/to/magic.mime`.
+     * This will be passed as the second parameter to [finfo_open()](http://php.net/manual/en/function.finfo-open.php)
+     * when the `fileinfo` extension is installed. If the MIME type is being determined based via [[getMimeTypeByExtension()]]
+     * and this is null, it will use the file specified by [[mimeMagicFile]].
      * @param boolean $checkExtension whether to use the file extension to determine the MIME type in case
      * `finfo_open()` cannot determine it.
      * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
+     * @throws InvalidConfigException when the `fileinfo` PHP extension is not installed and `$checkExtension` is `false`.
      */
     public static function getMimeType($file, $magicFile = null, $checkExtension = true)
     {
-        if (function_exists('finfo_open')) {
-            $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
-            if ($info) {
-                $result = finfo_file($info, $file);
-                finfo_close($info);
-                if ($result !== false) {
-                    return $result;
-                }
+        if ($magicFile !== null) {
+            $magicFile = Yii::getAlias($magicFile);
+        }
+        if (!extension_loaded('fileinfo')) {
+            if ($checkExtension) {
+                return static::getMimeTypeByExtension($file, $magicFile);
+            } else {
+                throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
+            }
+        }
+        $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
+
+        if ($info) {
+            $result = finfo_file($info, $file);
+            finfo_close($info);
+
+            if ($result !== false) {
+                return $result;
             }
         }
 
-        return $checkExtension ? static::getMimeTypeByExtension($file) : null;
+        return $checkExtension ? static::getMimeTypeByExtension($file, $magicFile) : null;
     }
 
     /**
      * Determines the MIME type based on the extension name of the specified file.
      * This method will use a local map between extension names and MIME types.
      * @param string $file the file name.
-     * @param string $magicFile the path of the file that contains all available MIME type information.
-     * If this is not set, the default file aliased by `@yii/util/mimeTypes.php` will be used.
+     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return string the MIME type. Null is returned if the MIME type cannot be determined.
      */
     public static function getMimeTypeByExtension($file, $magicFile = null)
     {
-        static $mimeTypes = [];
-        if ($magicFile === null) {
-            $magicFile = __DIR__ . '/mimeTypes.php';
-        }
-        if (!isset($mimeTypes[$magicFile])) {
-            $mimeTypes[$magicFile] = require($magicFile);
-        }
+        $mimeTypes = static::loadMimeTypes($magicFile);
+
         if (($ext = pathinfo($file, PATHINFO_EXTENSION)) !== '') {
             $ext = strtolower($ext);
-            if (isset($mimeTypes[$magicFile][$ext])) {
-                return $mimeTypes[$magicFile][$ext];
+            if (isset($mimeTypes[$ext])) {
+                return $mimeTypes[$ext];
             }
         }
 
         return null;
+    }
+
+    /**
+     * Determines the extensions by given MIME type.
+     * This method will use a local map between extension names and MIME types.
+     * @param string $mimeType file MIME type.
+     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
+     * @return array the extensions corresponding to the specified MIME type
+     */
+    public static function getExtensionsByMimeType($mimeType, $magicFile = null)
+    {
+        $mimeTypes = static::loadMimeTypes($magicFile);
+        return array_keys($mimeTypes, mb_strtolower($mimeType, 'utf-8'), true);
+    }
+
+    private static $_mimeTypes = [];
+
+    /**
+     * Loads MIME types from the specified file.
+     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
+     * @return array the mapping from file extensions to MIME types
+     */
+    protected static function loadMimeTypes($magicFile)
+    {
+        if ($magicFile === null) {
+            $magicFile = static::$mimeMagicFile;
+        }
+        $magicFile = Yii::getAlias($magicFile);
+        if (!isset(self::$_mimeTypes[$magicFile])) {
+            self::$_mimeTypes[$magicFile] = require($magicFile);
+        }
+        return self::$_mimeTypes[$magicFile];
     }
 
     /**
@@ -188,6 +239,7 @@ class BaseFileHelper
      *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
      *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
      *   both '/' and '\' in the paths.
+     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
      * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   If the callback returns false, the copy operation for the sub-directory or file will be cancelled.
@@ -207,6 +259,11 @@ class BaseFileHelper
         $handle = opendir($src);
         if ($handle === false) {
             throw new InvalidParamException('Unable to open directory: ' . $src);
+        }
+        if (!isset($options['basePath'])) {
+            // this should be done only once
+            $options['basePath'] = realpath($src);
+            $options = self::normalizeOptions($options);
         }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
@@ -237,25 +294,39 @@ class BaseFileHelper
     /**
      * Removes a directory (and all its content) recursively.
      * @param string $dir the directory to be deleted recursively.
+     * @param array $options options for directory remove. Valid options are:
+     *
+     * - traverseSymlinks: boolean, whether symlinks to the directories should be traversed too.
+     *   Defaults to `false`, meaning the content of the symlinked directory would not be deleted.
+     *   Only symlink would be removed in that default case.
      */
-    public static function removeDirectory($dir)
+    public static function removeDirectory($dir, $options = [])
     {
-        if (!is_dir($dir) || !($handle = opendir($dir))) {
+        if (!is_dir($dir)) {
             return;
         }
-        while (($file = readdir($handle)) !== false) {
-            if ($file === '.' || $file === '..') {
-                continue;
+        if (isset($options['traverseSymlinks']) && $options['traverseSymlinks'] || !is_link($dir)) {
+            if (!($handle = opendir($dir))) {
+                return;
             }
-            $path = $dir . DIRECTORY_SEPARATOR . $file;
-            if (is_file($path)) {
-                unlink($path);
-            } else {
-                static::removeDirectory($path);
+            while (($file = readdir($handle)) !== false) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+                $path = $dir . DIRECTORY_SEPARATOR . $file;
+                if (is_dir($path)) {
+                    static::removeDirectory($path, $options);
+                } else {
+                    unlink($path);
+                }
             }
+            closedir($handle);
         }
-        closedir($handle);
-        rmdir($dir);
+        if (is_link($dir)) {
+            unlink($dir);
+        } else {
+            rmdir($dir);
+        }
     }
 
     /**
@@ -286,6 +357,7 @@ class BaseFileHelper
      * - only: array, list of patterns that the file paths should match if they are to be returned. Directory paths are not checked against them.
      *   Same pattern matching rules as in the "except" option are used.
      *   If a file path matches a pattern in both "only" and "except", it will NOT be returned.
+     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
      * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
      * @return array files found under the directory. The file list is sorted.
      * @throws InvalidParamException if the dir is invalid.
@@ -297,22 +369,9 @@ class BaseFileHelper
         }
         $dir = rtrim($dir, DIRECTORY_SEPARATOR);
         if (!isset($options['basePath'])) {
+            // this should be done only once
             $options['basePath'] = realpath($dir);
-            // this should also be done only once
-            if (isset($options['except'])) {
-                foreach ($options['except'] as $key => $value) {
-                    if (is_string($value)) {
-                        $options['except'][$key] = self::parseExcludePattern($value);
-                    }
-                }
-            }
-            if (isset($options['only'])) {
-                foreach ($options['only'] as $key => $value) {
-                    if (is_string($value)) {
-                        $options['only'][$key] = self::parseExcludePattern($value);
-                    }
-                }
-            }
+            $options = self::normalizeOptions($options);
         }
         $list = [];
         $handle = opendir($dir);
@@ -365,7 +424,7 @@ class BaseFileHelper
             }
         }
 
-        if (!is_dir($path) && !empty($options['only'])) {
+        if (!empty($options['only']) && !is_dir($path)) {
             if (($except = self::lastExcludeMatchingFromList($options['basePath'], $path, $options['only'])) !== null) {
                 // don't check PATTERN_NEGATIVE since those entries are not prefixed with !
                 return true;
@@ -429,7 +488,12 @@ class BaseFileHelper
             }
         }
 
-        return fnmatch($pattern, $baseName, 0);
+        $fnmatchFlags = 0;
+        if ($flags & self::PATTERN_CASE_INSENSITIVE) {
+            $fnmatchFlags |= FNM_CASEFOLD;
+        }
+
+        return fnmatch($pattern, $baseName, $fnmatchFlags);
     }
 
     /**
@@ -478,7 +542,12 @@ class BaseFileHelper
             }
         }
 
-        return fnmatch($pattern, $name, FNM_PATHNAME);
+        $fnmatchFlags = FNM_PATHNAME;
+        if ($flags & self::PATTERN_CASE_INSENSITIVE) {
+            $fnmatchFlags |= FNM_CASEFOLD;
+        }
+
+        return fnmatch($pattern, $name, $fnmatchFlags);
     }
 
     /**
@@ -499,7 +568,7 @@ class BaseFileHelper
     {
         foreach (array_reverse($excludes) as $exclude) {
             if (is_string($exclude)) {
-                $exclude = self::parseExcludePattern($exclude);
+                $exclude = self::parseExcludePattern($exclude, false);
             }
             if (!isset($exclude['pattern']) || !isset($exclude['flags']) || !isset($exclude['firstWildcard'])) {
                 throw new InvalidParamException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
@@ -526,19 +595,26 @@ class BaseFileHelper
     /**
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
      * @param string $pattern
+     * @param boolean $caseSensitive
+     * @throws \yii\base\InvalidParamException
      * @return array with keys: (string) pattern, (int) flags, (int|boolean)firstWildcard
-     * @throws InvalidParamException if the pattern is not a string.
      */
-    private static function parseExcludePattern($pattern)
+    private static function parseExcludePattern($pattern, $caseSensitive)
     {
         if (!is_string($pattern)) {
             throw new InvalidParamException('Exclude/include pattern must be a string.');
         }
+
         $result = [
             'pattern' => $pattern,
             'flags' => 0,
             'firstWildcard' => false,
         ];
+
+        if (!$caseSensitive) {
+            $result['flags'] |= self::PATTERN_CASE_INSENSITIVE;
+        }
+
         if (!isset($pattern[0])) {
             return $result;
         }
@@ -547,10 +623,8 @@ class BaseFileHelper
             $result['flags'] |= self::PATTERN_NEGATIVE;
             $pattern = StringHelper::byteSubstr($pattern, 1, StringHelper::byteLength($pattern));
         }
-        $len = StringHelper::byteLength($pattern);
-        if ($len && StringHelper::byteSubstr($pattern, -1, 1) == '/') {
+        if (StringHelper::byteLength($pattern) && StringHelper::byteSubstr($pattern, -1, 1) == '/') {
             $pattern = StringHelper::byteSubstr($pattern, 0, -1);
-            $len--;
             $result['flags'] |= self::PATTERN_MUSTBEDIR;
         }
         if (strpos($pattern, '/') === false) {
@@ -580,5 +654,31 @@ class BaseFileHelper
         };
 
         return array_reduce($wildcards, $wildcardSearch, false);
+    }
+
+    /**
+     * @param array $options raw options
+     * @return array normalized options
+     */
+    private static function normalizeOptions(array $options)
+    {
+        if (!array_key_exists('caseSensitive', $options)) {
+            $options['caseSensitive'] = true;
+        }
+        if (isset($options['except'])) {
+            foreach ($options['except'] as $key => $value) {
+                if (is_string($value)) {
+                    $options['except'][$key] = self::parseExcludePattern($value, $options['caseSensitive']);
+                }
+            }
+        }
+        if (isset($options['only'])) {
+            foreach ($options['only'] as $key => $value) {
+                if (is_string($value)) {
+                    $options['only'][$key] = self::parseExcludePattern($value, $options['caseSensitive']);
+                }
+            }
+        }
+        return $options;
     }
 }

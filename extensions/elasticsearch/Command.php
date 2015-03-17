@@ -8,6 +8,7 @@
 namespace yii\elasticsearch;
 
 use yii\base\Component;
+use yii\base\InvalidCallException;
 use yii\helpers\Json;
 
 /**
@@ -38,10 +39,11 @@ class Command extends Component
      * @var array list of arrays or json strings that become parts of a query
      */
     public $queryParts;
-
     public $options = [];
 
+
     /**
+     * Sends a request to the _search API and returns the result
      * @param array $options
      * @return mixed
      */
@@ -64,6 +66,55 @@ class Command extends Component
     }
 
     /**
+     * Sends a request to the delete by query
+     * @param array $options
+     * @return mixed
+     */
+    public function deleteByQuery($options = [])
+    {
+        if (!isset($this->queryParts['query'])) {
+            throw new InvalidCallException('Can not call deleteByQuery when no query is given.');
+        }
+        $query = [
+            'query' => $this->queryParts['query'],
+        ];
+        if (isset($this->queryParts['filter'])) {
+            $query['filter'] = $this->queryParts['filter'];
+        }
+        $query = Json::encode($query);
+        $url = [
+            $this->index !== null ? $this->index : '_all',
+            $this->type !== null ? $this->type : '_all',
+            '_query'
+        ];
+
+        return $this->db->delete($url, array_merge($this->options, $options), $query);
+    }
+
+    /**
+     * Sends a request to the _suggest API and returns the result
+     * @param string|array $suggester the suggester body
+     * @param array $options
+     * @return mixed
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
+     */
+    public function suggest($suggester, $options = [])
+    {
+        if (empty($suggester)) {
+            $suggester = '{}';
+        }
+        if (is_array($suggester)) {
+            $suggester = Json::encode($suggester);
+        }
+        $url = [
+            $this->index !== null ? $this->index : '_all',
+            '_suggest'
+        ];
+
+        return $this->db->post($url, array_merge($this->options, $options), $suggester);
+    }
+
+    /**
      * Inserts a document into an index
      * @param string $index
      * @param string $type
@@ -75,7 +126,11 @@ class Command extends Component
      */
     public function insert($index, $type, $data, $id = null, $options = [])
     {
-        $body = is_array($data) ? Json::encode($data) : $data;
+        if (empty($data)) {
+            $body = '{}';
+        } else {
+            $body = is_array($data) ? Json::encode($data) : $data;
+        }
 
         if ($id !== null) {
             return $this->db->put([$index, $type, $id], $options, $body);
@@ -165,11 +220,18 @@ class Command extends Component
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-update.html
      */
-//	public function update($index, $type, $id, $data, $options = [])
-//	{
-//		// TODO implement
-////		return $this->db->delete([$index, $type, $id], $options);
-//	}
+    public function update($index, $type, $id, $data, $options = [])
+    {
+        $body = [
+            'doc' => empty($data) ? new \stdClass() : $data,
+        ];
+        if (isset($options["detect_noop"])) {
+            $body["detect_noop"] = $options["detect_noop"];
+            unset($options["detect_noop"]);
+        }
+
+        return $this->db->post([$index, $type, $id, '_update'], $options, Json::encode($body));
+    }
 
     // TODO bulk http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-bulk.html
 
@@ -315,7 +377,7 @@ class Command extends Component
     {
         $body = $mapping !== null ? (is_string($mapping) ? $mapping : Json::encode($mapping)) : null;
 
-        return $this->db->put([$index, $type, '_mapping'], $options, $body);
+        return $this->db->put([$index, '_mapping', $type], $options, $body);
     }
 
     /**
@@ -326,7 +388,7 @@ class Command extends Component
      */
     public function getMapping($index = '_all', $type = '_all')
     {
-        return $this->db->get([$index, $type, '_mapping']);
+        return $this->db->get([$index, '_mapping', $type]);
     }
 
     /**
@@ -337,7 +399,7 @@ class Command extends Component
      */
     public function deleteMapping($index, $type)
     {
-        return $this->db->delete([$index, $type]);
+        return $this->db->delete([$index, '_mapping', $type]);
     }
 
     /**
@@ -346,10 +408,11 @@ class Command extends Component
      * @return mixed
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/indices-get-field-mapping.html
      */
-    public function getFieldMapping($index, $type = '_all')
-    {
-        return $this->db->put([$index, $type, '_mapping']);
-    }
+//    public function getFieldMapping($index, $type = '_all')
+//    {
+//		// TODO implement
+//        return $this->db->put([$index, $type, '_mapping']);
+//    }
 
     /**
      * @param $options

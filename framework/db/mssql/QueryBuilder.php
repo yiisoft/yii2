@@ -29,52 +29,91 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float',
+        Schema::TYPE_DOUBLE => 'float',
         Schema::TYPE_DECIMAL => 'decimal',
         Schema::TYPE_DATETIME => 'datetime',
         Schema::TYPE_TIMESTAMP => 'timestamp',
         Schema::TYPE_TIME => 'time',
         Schema::TYPE_DATE => 'date',
-        Schema::TYPE_BINARY => 'binary',
+        Schema::TYPE_BINARY => 'binary(1)',
         Schema::TYPE_BOOLEAN => 'bit',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
-//	public function update($table, $columns, $condition, &$params)
-//	{
-//		return '';
-//	}
-
-//	public function delete($table, $condition, &$params)
-//	{
-//		return '';
-//	}
 
     /**
-     * @param integer $limit
-     * @param integer $offset
-     * @return string the LIMIT and OFFSET clauses built from [[\yii\db\Query::$limit]].
+     * @inheritdoc
      */
-    public function buildLimit($limit, $offset = 0)
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
-        $hasOffset = $this->hasOffset($offset);
-        $hasLimit = $this->hasLimit($limit);
-        if ($hasOffset || $hasLimit) {
-            // http://technet.microsoft.com/en-us/library/gg699618.aspx
-            $sql = 'OFFSET ' . ($hasOffset ? $offset : '0') . ' ROWS';
-            if ($hasLimit) {
-                $sql .= " FETCH NEXT $limit ROWS ONLY";
-            }
+        if (!$this->hasOffset($offset) && !$this->hasLimit($limit)) {
+            $orderBy = $this->buildOrderBy($orderBy);
+            return $orderBy === '' ? $sql : $sql . $this->separator . $orderBy;
+        }
 
-            return $sql;
+        if ($this->isOldMssql()) {
+            return $this->oldbuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         } else {
-            return '';
+            return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         }
     }
 
-//	public function resetSequence($table, $value = null)
-//	{
-//		return '';
-//	}
+    /**
+     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
+     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
+     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
+     * @param integer $limit the limit number. See [[Query::limit]] for more details.
+     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     */
+    protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    {
+        $orderBy = $this->buildOrderBy($orderBy);
+        if ($orderBy === '') {
+            // ORDER BY clause is required when FETCH and OFFSET are in the SQL
+            $orderBy = 'ORDER BY (SELECT NULL)';
+        }
+        $sql .= $this->separator . $orderBy;
+
+        // http://technet.microsoft.com/en-us/library/gg699618.aspx
+        $offset = $this->hasOffset($offset) ? $offset : '0';
+        $sql .= $this->separator . "OFFSET $offset ROWS";
+        if ($this->hasLimit($limit)) {
+            $sql .= $this->separator . "FETCH NEXT $limit ROWS ONLY";
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
+     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
+     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
+     * @param integer $limit the limit number. See [[Query::limit]] for more details.
+     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
+     */
+    protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    {
+        $orderBy = $this->buildOrderBy($orderBy);
+        if ($orderBy === '') {
+            // ROW_NUMBER() requires an ORDER BY clause
+            $orderBy = 'ORDER BY (SELECT NULL)';
+        }
+
+        $sql = preg_replace('/^([\s(])*SELECT(\s+DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ($orderBy),", $sql);
+
+        if ($this->hasLimit($limit)) {
+            $sql = "SELECT TOP $limit * FROM ($sql) sub";
+        } else {
+            $sql = "SELECT * FROM ($sql) sub";
+        }
+        if ($this->hasOffset($offset)) {
+            $sql .= $this->separator . "WHERE rowNum > $offset";
+        }
+
+        return $sql;
+    }
 
     /**
      * Builds a SQL statement for renaming a DB table.
@@ -103,7 +142,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Builds a SQL statement for changing the definition of a column.
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
      * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
      * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
@@ -138,5 +177,93 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $enable = $check ? 'CHECK' : 'NOCHECK';
 
         return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
+    }
+
+    /**
+     * Returns an array of column names given model name
+     *
+     * @param string $modelClass name of the model class
+     * @return array|null array of column names
+     */
+    protected function getAllColumnNames($modelClass = null)
+    {
+        if (!$modelClass) {
+            return null;
+        }
+        /* @var $model \yii\db\ActiveRecord */
+        $model = new $modelClass;
+        $schema = $model->getTableSchema();
+        $columns = array_keys($schema->columns);
+        return $columns;
+    }
+
+    /**
+     * @var boolean whether MSSQL used is old.
+     */
+    private $_oldMssql;
+
+    /**
+     * @return boolean whether the version of the MSSQL being used is older than 2012.
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    protected function isOldMssql()
+    {
+        if ($this->_oldMssql === null) {
+            $pdo = $this->db->getSlavePdo();
+            $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+            $this->_oldMssql = $version[0] < 11;
+        }
+        return $this->_oldMssql;
+    }
+
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
+    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
+    {
+        if (is_array($columns)) {
+            throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
+        }
+        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
+    }
+
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
+    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
+    {
+        $quotedColumns = [];
+        foreach ($columns as $i => $column) {
+            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
+        }
+        $vss = [];
+        foreach ($values as $value) {
+            $vs = [];
+            foreach ($columns as $i => $column) {
+                if (isset($value[$column])) {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $params[$phName] = $value[$column];
+                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
+                } else {
+                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
+                }
+            }
+            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
+        }
+
+        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
     }
 }

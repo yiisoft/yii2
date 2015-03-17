@@ -4,14 +4,20 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  - 7.0
   - hhvm
+  - hhvm-nightly
 
-# run build against PHP 5.6 and hhvm but allow them to fail
+env:
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
+
+# run build against hhvm but allow them to fail
 # http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
+  fast_finish: true
   allow_failures:
-    - php: hhvm
-    - php: 5.6
+    - php: hhvm-nightly
+    - php: 7.0
 
 services:
   - redis-server
@@ -19,50 +25,90 @@ services:
   - elasticsearch
   - mongodb
 
+# faster builds on new travis setup not using sudo
+sudo: false
+
+# cache vendor dirs
+cache:
+  directories:
+#    - cubrid # caching cubrid breaks the build on a regular basis and has nearly no speedup
+    - vendor
+    - $HOME/.composer/cache
+
+# try running against postgres 9.3
+addons:
+  postgresql: "9.3"
+
 install:
-  - composer self-update && composer --version
+  - travis_retry composer self-update && composer --version
+  - travis_retry composer global require "fxp/composer-asset-plugin:1.0.0"
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - composer install --prefer-dist
+  - travis_retry composer install --prefer-dist --no-interaction
+  # install php extensions
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      echo "Skipping imagick and gmagick tests on HHVM"
+    else
+      pear config-set preferred_state beta
+      printf "\n" | pecl install imagick
+      # gmagick is not installed on travis currently
+      #printf "\n" | pecl install gmagick
+    fi
   - tests/unit/data/travis/mongodb-setup.sh
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
-  - tests/unit/data/travis/cubrid-setup.sh
-# basic application:
-  - composer install --dev --prefer-dist -d apps/basic
-  - cd apps/basic && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
-  - php vendor/bin/codecept build && cd ../..
-# advanced application:
-  - composer install --dev --prefer-dist -d apps/advanced
-  - cd apps/advanced && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
-  - ./init --env=Development
-  - sed -i s/root/travis/ common/config/main-local.php
-  - cd backend && php ../vendor/bin/codecept build
-  - cd ../common && php ../vendor/bin/codecept build
-  - cd ../frontend && php ../vendor/bin/codecept build && cd ../../..
- # boot server
-  - cd apps && php -S localhost:8080 > /dev/null 2>&1 &
+#  - tests/unit/data/travis/cubrid-setup.sh
+# codeception
+  - travis_retry composer global require "codeception/codeception=2.0.*" "codeception/specify=*" "codeception/verify=*"
+# basic and advanced application:
+  - tests/unit/data/travis/setup-apps.sh
 
 before_script:
+  # show some versions and env information
   - echo 'elasticsearch version ' && curl http://localhost:9200/
+  - php -r "echo INTL_ICU_VERSION . \"\n\";"
+  - mysql --version
+  - psql --version
+
+  # initialize databases
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
   - tests/unit/data/travis/sphinx-setup.sh
   - mongo yii2test --eval 'db.addUser("travis", "test");'
-  - mysql -e 'CREATE DATABASE yii2_advanced_acceptance;';
-  - mysql -e 'CREATE DATABASE yii2_advanced_functional;';
-  - mysql -e 'CREATE DATABASE yii2_advanced_unit;';
-  - cd apps/advanced/frontend/tests/acceptance && php yii migrate --interactive=0
-  - cd ../functional && php yii migrate --interactive=0
-  - cd ../unit && php yii migrate --interactive=0 && cd ../../../../..
+# basic and advanced application:
+  - tests/unit/data/travis/init-apps.sh
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+    fi
+
 
 script:
-  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
-  - cd apps/basic && php vendor/bin/codecept run
-  - cd ../advanced/backend && ../vendor/bin/codecept run
-  - cd ../common && ../vendor/bin/codecept run
-  - cd ../frontend && ../vendor/bin/codecept run
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      echo "Skipping basic application tests on HHVM"
+    else
+      cd apps/basic/web
+      php -S localhost:8080 > /dev/null 2>&1 &
+      cd ../tests
+      codecept run
+    fi
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      echo "Skipping advanced application tests on HHVM"
+    else
+      cd apps/advanced
+      php -S localhost:8080 > /dev/null 2>&1 &
+      cd tests
+      codecept run
+    fi
 
 after_script:
-  - cd ../../..
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      cd ../../.. 
+      travis_retry wget https://scrutinizer-ci.com/ocular.phar
+      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    fi

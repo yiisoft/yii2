@@ -7,6 +7,7 @@
 
 namespace yii\mongodb\file;
 
+use Yii;
 use yii\base\InvalidParamException;
 use yii\db\StaleObjectException;
 use yii\web\UploadedFile;
@@ -46,10 +47,11 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
 {
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -127,8 +129,9 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
         $this->setAttribute('_id', $newId);
         $values['_id'] = $newId;
 
-        $this->afterSave(true);
+        $changedAttributes = array_fill_keys(array_keys($values), null);
         $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
 
         return true;
     }
@@ -144,7 +147,7 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
         }
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
-            $this->afterSave(false);
+            $this->afterSave(false, $values);
             return 0;
         }
 
@@ -196,10 +199,12 @@ abstract class ActiveRecord extends \yii\mongodb\ActiveRecord
             }
         }
 
-        $this->afterSave(false);
+        $changedAttributes = [];
         foreach ($values as $name => $value) {
-            $this->setOldAttribute($name, $this->getAttribute($name));
+            $changedAttributes[$name] = $this->getOldAttribute($name);
+            $this->setOldAttribute($name, $value);
         }
+        $this->afterSave(false, $changedAttributes);
 
         return $rows;
     }

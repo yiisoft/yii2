@@ -124,6 +124,10 @@ class Container extends Component
      * You may provide constructor parameters (`$params`) and object configurations (`$config`)
      * that will be used during the creation of the instance.
      *
+     * If the class implements [[\yii\base\Configurable]], the `$config` parameter will be passed as the last
+     * parameter to the class constructor; Otherwise, the configuration will be applied *after* the object is
+     * instantiated.
+     *
      * Note that if the class is declared to be singleton by calling [[setSingleton()]],
      * the same instance of the class will be returned each time this method is called.
      * In this case, the constructor parameters and object configurations will be used
@@ -277,7 +281,7 @@ class Container extends Component
      */
     public function has($class)
     {
-        return isset($this->_singletons[$class]);
+        return isset($this->_definitions[$class]);
     }
 
     /**
@@ -350,20 +354,23 @@ class Container extends Component
      */
     protected function build($class, $params, $config)
     {
-        /** @var ReflectionClass $reflection */
+        /* @var $reflection ReflectionClass */
         list ($reflection, $dependencies) = $this->getDependencies($class);
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
         }
 
-        if (!empty($dependencies) && is_a($class, 'yii\base\Object', true)) {
+        $dependencies = $this->resolveDependencies($dependencies, $reflection);
+        if (empty($config)) {
+            return $reflection->newInstanceArgs($dependencies);
+        }
+
+        if (!empty($dependencies) && $reflection->implementsInterface('yii\base\Configurable')) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
-            $dependencies = $this->resolveDependencies($dependencies, $reflection);
             return $reflection->newInstanceArgs($dependencies);
         } else {
-            $dependencies = $this->resolveDependencies($dependencies, $reflection);
             $object = $reflection->newInstanceArgs($dependencies);
             foreach ($config as $name => $value) {
                 $object->$name = $value;

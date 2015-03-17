@@ -13,7 +13,7 @@ use yii\db\Expression;
 /**
  * TimestampBehavior automatically fills the specified attributes with the current timestamp.
  *
- * To use TimestampBehavior, simply insert the following code to your ActiveRecord class:
+ * To use TimestampBehavior, insert the following code to your ActiveRecord class:
  *
  * ```php
  * use yii\behaviors\TimestampBehavior;
@@ -31,7 +31,7 @@ use yii\db\Expression;
  * with the timestamp when the AR object is being updated. The timestamp value is obtained by `time()`.
  *
  * If your attribute names are different or you want to use a different way of calculating the timestamp,
- * you may configure the [[attributes]] and [[value]] properties like the following:
+ * you may configure the [[createdAtAttribute]], [[updatedAtAttribute]] and [[value]] properties like the following:
  *
  * ```php
  * use yii\db\Expression;
@@ -39,42 +39,43 @@ use yii\db\Expression;
  * public function behaviors()
  * {
  *     return [
- *         'timestamp' => [
+ *         [
  *             'class' => TimestampBehavior::className(),
- *             'attributes' => [
- *                 ActiveRecord::EVENT_BEFORE_INSERT => 'creation_time',
- *                 ActiveRecord::EVENT_BEFORE_UPDATE => 'update_time',
- *             ],
+ *             'createdAtAttribute' => 'create_time',
+ *             'updatedAtAttribute' => 'update_time',
  *             'value' => new Expression('NOW()'),
  *         ],
  *     ];
  * }
  * ```
  *
+ * In case you use an [[Expression]] object as in the example above, the attribute will not hold the timestamp value, but
+ * the Expression object itself after the record has been saved. If you need the value from DB afterwards you should call
+ * the [[\yii\db\ActiveRecord::refresh()|refresh()]] method of the record.
+ *
  * TimestampBehavior also provides a method named [[touch()]] that allows you to assign the current
  * timestamp to the specified attribute(s) and save them to the database. For example,
  *
  * ```php
- * $this->timestamp->touch('creation_time');
+ * $model->touch('creation_time');
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  */
 class TimestampBehavior extends AttributeBehavior
 {
     /**
-     * @var array list of attributes that are to be automatically filled with timestamps.
-     * The array keys are the ActiveRecord events upon which the attributes are to be filled with timestamps,
-     * and the array values are the corresponding attribute(s) to be updated. You can use a string to represent
-     * a single attribute, or an array to represent a list of attributes.
-     * The default setting is to update both of the `created_at` and `updated_at` attributes upon AR insertion,
-     * and update the `updated_at` attribute upon AR updating.
+     * @var string the attribute that will receive timestamp value
+     * Set this property to false if you do not want to record the creation time.
      */
-    public $attributes = [
-        BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
-        BaseActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
-    ];
+    public $createdAtAttribute = 'created_at';
+    /**
+     * @var string the attribute that will receive timestamp value.
+     * Set this property to false if you do not want to record the update time.
+     */
+    public $updatedAtAttribute = 'updated_at';
     /**
      * @var callable|Expression The expression that will be used for generating the timestamp.
      * This can be either an anonymous function that returns the timestamp value,
@@ -82,6 +83,22 @@ class TimestampBehavior extends AttributeBehavior
      * If not set, it will use the value of `time()` to set the attributes.
      */
     public $value;
+
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        if (empty($this->attributes)) {
+            $this->attributes = [
+                BaseActiveRecord::EVENT_BEFORE_INSERT => [$this->createdAtAttribute, $this->updatedAtAttribute],
+                BaseActiveRecord::EVENT_BEFORE_UPDATE => $this->updatedAtAttribute,
+            ];
+        }
+    }
 
     /**
      * @inheritdoc

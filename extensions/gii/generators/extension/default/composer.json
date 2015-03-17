@@ -10,6 +10,9 @@
             "email": "<?= $generator->authorEmail ?>"
         }
     ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
     "autoload": {
         "psr-4": {
             "<?= str_replace('\\','\\\\',$generator->namespace) ?>": ""

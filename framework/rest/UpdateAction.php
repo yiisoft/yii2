@@ -10,6 +10,7 @@ namespace yii\rest;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveRecord;
+use yii\web\ServerErrorHttpException;
 
 /**
  * UpdateAction implements the API endpoint for updating a model.
@@ -23,20 +24,17 @@ class UpdateAction extends Action
      * @var string the scenario to be assigned to the model before it is validated and updated.
      */
     public $scenario = Model::SCENARIO_DEFAULT;
-    /**
-     * @var boolean whether to start a DB transaction when saving the model.
-     */
-    public $transactional = true;
+
 
     /**
      * Updates an existing model.
      * @param string $id the primary key of the model.
      * @return \yii\db\ActiveRecordInterface the model being updated
-     * @throws \Exception if there is any error when updating the model
+     * @throws ServerErrorHttpException if there is any error when updating the model
      */
     public function run($id)
     {
-        /** @var ActiveRecord $model */
+        /* @var $model ActiveRecord */
         $model = $this->findModel($id);
 
         if ($this->checkAccess) {
@@ -45,20 +43,8 @@ class UpdateAction extends Action
 
         $model->scenario = $this->scenario;
         $model->load(Yii::$app->getRequest()->getBodyParams(), '');
-
-        if ($this->transactional && $model instanceof ActiveRecord) {
-            if ($model->validate()) {
-                $transaction = $model->getDb()->beginTransaction();
-                try {
-                    $model->update(false);
-                    $transaction->commit();
-                } catch (\Exception $e) {
-                    $transaction->rollback();
-                    throw $e;
-                }
-            }
-        } else {
-            $model->save();
+        if ($model->save() === false && !$model->hasErrors()) {
+            throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }
 
         return $model;

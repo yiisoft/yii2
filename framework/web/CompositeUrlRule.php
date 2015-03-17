@@ -24,6 +24,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
      */
     protected $rules = [];
 
+
     /**
      * Creates the URL rules that should be contained within this composite rule.
      * @return UrlRuleInterface[] the URL rules
@@ -45,7 +46,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     public function parseRequest($manager, $request)
     {
         foreach ($this->rules as $rule) {
-            /** @var \yii\web\UrlRule $rule */
+            /* @var $rule \yii\web\UrlRule */
             if (($result = $rule->parseRequest($manager, $request)) !== false) {
                 Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
 
@@ -62,7 +63,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     public function createUrl($manager, $route, $params)
     {
         foreach ($this->rules as $rule) {
-            /** @var \yii\web\UrlRule $rule */
+            /* @var $rule \yii\web\UrlRule */
             if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
                 return $url;
             }

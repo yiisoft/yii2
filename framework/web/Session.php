@@ -43,7 +43,8 @@ use yii\base\InvalidParamException;
  * useful for displaying confirmation messages. To use flash messages, simply
  * call methods such as [[setFlash()]], [[getFlash()]].
  *
- * @property array $allFlashes Flash messages (key => message). This property is read-only.
+ * @property array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
+ * is read-only.
  * @property array $cookieParams The session cookie parameters. This property is read-only.
  * @property integer $count The number of session variables. This property is read-only.
  * @property string $flash The key identifying the flash message. Note that flash messages and normal session
@@ -79,12 +80,14 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var \SessionHandlerInterface|array an object implementing the SessionHandlerInterface or a configuration array. If set, will be used to provide persistency instead of build-in methods.
      */
     public $handler;
+
     /**
      * @var array parameter-value pairs to override default session cookie parameters that are used for session_set_cookie_params() function
      * Array may have the following possible keys: 'lifetime', 'path', 'domain', 'secure', 'httponly'
      * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
      */
     private $_cookieParams = ['httponly' => true];
+
 
     /**
      * Initializes the application component.
@@ -202,9 +205,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if ($this->_hasSessionId === null) {
             $name = $this->getName();
             $request = Yii::$app->getRequest();
-            if (ini_get('session.use_cookies') && !empty($_COOKIE[$name])) {
+            if (!empty($_COOKIE[$name]) && ini_get('session.use_cookies')) {
                 $this->_hasSessionId = true;
-            } elseif (!ini_get('use_only_cookies') && ini_get('use_trans_sid')) {
+            } elseif (!ini_get('session.use_only_cookies') && ini_get('session.use_trans_sid')) {
                 $this->_hasSessionId = $request->get($name) !== null;
             } else {
                 $this->_hasSessionId = false;
@@ -226,6 +229,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
+     * Gets the session ID.
+     * This is a wrapper for [PHP session_id()](http://php.net/manual/en/function.session-id.php).
      * @return string the current session ID
      */
     public function getId()
@@ -234,6 +239,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
+     * Sets the session ID.
+     * This is a wrapper for [PHP session_id()](http://php.net/manual/en/function.session-id.php).
      * @param string $value the session ID for the current session
      */
     public function setId($value)
@@ -254,6 +261,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
+     * Gets the name of the current session.
+     * This is a wrapper for [PHP session_name()](http://php.net/manual/en/function.session-name.php).
      * @return string the current session name
      */
     public function getName()
@@ -262,6 +271,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
+     * Sets the name for the current session.
+     * This is a wrapper for [PHP session_name()](http://php.net/manual/en/function.session-name.php).
      * @param string $value the session name for the current session, must be an alphanumeric string.
      * It defaults to "PHPSESSID".
      */
@@ -271,6 +282,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
+     * Gets the current session save path.
+     * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
      * @return string the current session save path, defaults to '/tmp'.
      */
     public function getSavePath()
@@ -279,6 +292,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
+     * Sets the current session save path.
+     * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
      * @param string $value the current session save path. This can be either a directory name or a path alias.
      * @throws InvalidParamException if the path is not a valid directory
      */
@@ -294,7 +309,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * @return array the session cookie parameters.
-     * @see http://us2.php.net/manual/en/function.session-get-cookie-params.php
+     * @see http://php.net/manual/en/function.session-get-cookie-params.php
      */
     public function getCookieParams()
     {
@@ -507,6 +522,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getIterator()
     {
+        $this->open();
         return new SessionIterator;
     }
 
@@ -516,6 +532,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getCount()
     {
+        $this->open();
         return count($_SESSION);
     }
 
@@ -539,7 +556,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function get($key, $defaultValue = null)
     {
         $this->open();
-
         return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
     }
 
@@ -591,7 +607,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function has($key)
     {
         $this->open();
-
         return isset($_SESSION[$key]);
     }
 
@@ -604,9 +619,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $counters = $this->get($this->flashParam, []);
         if (is_array($counters)) {
             foreach ($counters as $key => $count) {
-                if ($count) {
+                if ($count > 0) {
                     unset($counters[$key], $_SESSION[$key]);
-                } else {
+                } elseif ($count == 0) {
                     $counters[$key]++;
                 }
             }
@@ -619,12 +634,16 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Returns a flash message.
-     * A flash message is available only in the current request and the next request.
      * @param string $key the key identifying the flash message
      * @param mixed $defaultValue value to be returned if the flash message does not exist.
      * @param boolean $delete whether to delete this flash message right after this method is called.
-     * If false, the flash message will be automatically deleted after the next request.
-     * @return mixed the flash message
+     * If false, the flash message will be automatically deleted in the next request.
+     * @return mixed the flash message or an array of messages if addFlash was used
+     * @see setFlash()
+     * @see addFlash()
+     * @see hasFlash()
+     * @see getAllFlashes()
+     * @see removeFlash()
      */
     public function getFlash($key, $defaultValue = null, $delete = false)
     {
@@ -633,6 +652,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             $value = $this->get($key, $defaultValue);
             if ($delete) {
                 $this->removeFlash($key);
+            } elseif ($counters[$key] < 0) {
+                // mark for deletion in the next request
+                $counters[$key] = 1;
+                $_SESSION[$this->flashParam] = $counters;
             }
 
             return $value;
@@ -643,44 +666,119 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Returns all flash messages.
-     * @return array flash messages (key => message).
+     *
+     * You may use this method to display all the flash messages in a view file:
+     *
+     * ```php
+     * <?php
+     * foreach(Yii::$app->session->getAllFlashes() as $key => $message) {
+     *     echo '<div class="alert alert-' . $key . '">' . $message . '</div>';
+     * } ?>
+     * ```
+     *
+     * With the above code you can use the [bootstrap alert][] classes such as `success`, `info`, `danger`
+     * as the flash message key to influence the color of the div.
+     * 
+     * Note that if you use [[addFlash()]], `$message` will be an array, and you will have to adjust the above code.
+     *
+     * [bootstrap alert]: http://getbootstrap.com/components/#alerts
+     *
+     * @param boolean $delete whether to delete the flash messages right after this method is called.
+     * If false, the flash messages will be automatically deleted in the next request.
+     * @return array flash messages (key => message or key => [message1, message2]).
+     * @see setFlash()
+     * @see addFlash()
+     * @see getFlash()
+     * @see hasFlash()
+     * @see removeFlash()
      */
-    public function getAllFlashes()
+    public function getAllFlashes($delete = false)
     {
         $counters = $this->get($this->flashParam, []);
         $flashes = [];
         foreach (array_keys($counters) as $key) {
-            if (isset($_SESSION[$key])) {
+            if (array_key_exists($key, $_SESSION)) {
                 $flashes[$key] = $_SESSION[$key];
+                if ($delete) {
+                    unset($counters[$key], $_SESSION[$key]);
+                } elseif ($counters[$key] < 0) {
+                    // mark for deletion in the next request
+                    $counters[$key] = 1;
+                }
+            } else {
+                unset($counters[$key]);
             }
         }
+
+        $_SESSION[$this->flashParam] = $counters;
 
         return $flashes;
     }
 
     /**
-     * Stores a flash message.
-     * A flash message is available only in the current request and the next request.
+     * Sets a flash message.
+     * A flash message will be automatically deleted after it is accessed in a request and the deletion will happen
+     * in the next request.
+     * If there is already an existing flash message with the same key, it will be overwritten by the new one.
      * @param string $key the key identifying the flash message. Note that flash messages
      * and normal session variables share the same name space. If you have a normal
      * session variable using the same name, its value will be overwritten by this method.
      * @param mixed $value flash message
+     * @param boolean $removeAfterAccess whether the flash message should be automatically removed only if
+     * it is accessed. If false, the flash message will be automatically removed after the next request,
+     * regardless if it is accessed or not. If true (default value), the flash message will remain until after
+     * it is accessed.
+     * @see getFlash()
+     * @see addFlash()
+     * @see removeFlash()
      */
-    public function setFlash($key, $value = true)
+    public function setFlash($key, $value = true, $removeAfterAccess = true)
     {
         $counters = $this->get($this->flashParam, []);
-        $counters[$key] = 0;
+        $counters[$key] = $removeAfterAccess ? -1 : 0;
         $_SESSION[$key] = $value;
         $_SESSION[$this->flashParam] = $counters;
     }
 
     /**
+     * Adds a flash message.
+     * If there are existing flash messages with the same key, the new one will be appended to the existing message array.
+     * @param string $key the key identifying the flash message.
+     * @param mixed $value flash message
+     * @param boolean $removeAfterAccess whether the flash message should be automatically removed only if
+     * it is accessed. If false, the flash message will be automatically removed after the next request,
+     * regardless if it is accessed or not. If true (default value), the flash message will remain until after
+     * it is accessed.
+     * @see getFlash()
+     * @see setFlash()
+     * @see removeFlash()
+     */
+    public function addFlash($key, $value = true, $removeAfterAccess = true)
+    {
+        $counters = $this->get($this->flashParam, []);
+        $counters[$key] = $removeAfterAccess ? -1 : 0;
+        $_SESSION[$this->flashParam] = $counters;
+        if (empty($_SESSION[$key])) {
+            $_SESSION[$key] = [$value];
+        } else {
+            if (is_array($_SESSION[$key])) {
+                $_SESSION[$key][] = $value;
+            } else {
+                $_SESSION[$key] = [$_SESSION[$key], $value];
+            }
+        }
+    }
+
+    /**
      * Removes a flash message.
-     * Note that flash messages will be automatically removed after the next request.
      * @param string $key the key identifying the flash message. Note that flash messages
      * and normal session variables share the same name space.  If you have a normal
      * session variable using the same name, it will be removed by this method.
      * @return mixed the removed flash message. Null if the flash message does not exist.
+     * @see getFlash()
+     * @see setFlash()
+     * @see addFlash()
+     * @see removeAllFlashes()
      */
     public function removeFlash($key)
     {
@@ -697,6 +795,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Note that flash messages and normal session variables share the same name space.
      * If you have a normal session variable using the same name, it will be removed
      * by this method.
+     * @see getFlash()
+     * @see setFlash()
+     * @see addFlash()
+     * @see removeFlash()
      */
     public function removeAllFlashes()
     {
@@ -708,9 +810,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Returns a value indicating whether there is a flash message associated with the specified key.
-     * @param string $key key identifying the flash message
-     * @return boolean whether the specified flash message exists
+     * Returns a value indicating whether there are flash messages associated with the specified key.
+     * @param string $key key identifying the flash message type
+     * @return boolean whether any flash messages exist under specified key
      */
     public function hasFlash($key)
     {

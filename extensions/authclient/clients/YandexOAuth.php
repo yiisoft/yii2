@@ -53,6 +53,7 @@ class YandexOAuth extends OAuth2
      */
     public $apiBaseUrl = 'https://login.yandex.ru';
 
+
     /**
      * @inheritdoc
      */
@@ -64,14 +65,14 @@ class YandexOAuth extends OAuth2
     /**
      * @inheritdoc
      */
-    protected function apiInternal($accessToken, $url, $method, array $params)
+    protected function apiInternal($accessToken, $url, $method, array $params, array $headers)
     {
         if (!isset($params['format'])) {
             $params['format'] = 'json';
         }
         $params['oauth_token'] = $accessToken->getToken();
 
-        return $this->sendRequest($method, $url, $params);
+        return $this->sendRequest($method, $url, $params, $headers);
     }
 
     /**

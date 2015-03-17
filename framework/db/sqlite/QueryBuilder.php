@@ -7,6 +7,7 @@
 
 namespace yii\db\sqlite;
 
+use yii\db\Connection;
 use yii\db\Exception;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
@@ -31,6 +32,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_INTEGER => 'integer',
         Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float',
+        Schema::TYPE_DOUBLE => 'double',
         Schema::TYPE_DECIMAL => 'decimal(10,0)',
         Schema::TYPE_DATETIME => 'datetime',
         Schema::TYPE_TIMESTAMP => 'timestamp',
@@ -40,6 +42,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
+
 
     /**
      * Generates a batch INSERT SQL statement.
@@ -62,14 +65,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows)
     {
-        if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
+        // SQLite supports batch insert natively since 3.7.11
+        // http://www.sqlite.org/releaselog/3_7_11.html
+        $this->db->open(); // ensure pdo is not null
+        if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
+            return parent::batchInsert($table, $columns, $rows);
+        }
+
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
         } else {
             $columnSchemas = [];
-        }
-
-        foreach ($columns as $i => $name) {
-            $columns[$i] = $this->db->quoteColumnName($name);
         }
 
         $values = [];
@@ -77,10 +84,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $vs = [];
             foreach ($row as $i => $value) {
                 if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
-                    $value = $columnSchemas[$columns[$i]]->typecast($value);
+                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
-                    $value = $this->db->quoteValue($value);
+                    $value = $schema->quoteValue($value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
@@ -91,7 +98,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $values[] = implode(', ', $vs);
         }
 
-        return 'INSERT INTO ' . $this->db->quoteTableName($table)
+        foreach ($columns as $i => $name) {
+            $columns[$i] = $schema->quoteColumnName($name);
+        }
+
+        return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
     }
 
@@ -113,7 +124,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             if ($value === null) {
                 $key = reset($table->primaryKey);
                 $tableName = $db->quoteTableName($tableName);
-                $value = $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
+                    return $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                });
             } else {
                 $value = (int) $value - 1;
             }
@@ -139,7 +152,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+        return 'PRAGMA foreign_keys='.(int) $check;
     }
 
     /**
@@ -279,5 +292,55 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
+    }
+
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
+    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
+    {
+        if (is_array($columns)) {
+            throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+        }
+        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
+    }
+
+    /**
+     * Builds SQL for IN condition
+     *
+     * @param string $operator
+     * @param array $columns
+     * @param array $values
+     * @param array $params
+     * @return string SQL
+     */
+    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
+    {
+        $quotedColumns = [];
+        foreach ($columns as $i => $column) {
+            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
+        }
+        $vss = [];
+        foreach ($values as $value) {
+            $vs = [];
+            foreach ($columns as $i => $column) {
+                if (isset($value[$column])) {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $params[$phName] = $value[$column];
+                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
+                } else {
+                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
+                }
+            }
+            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
+        }
+
+        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
     }
 }

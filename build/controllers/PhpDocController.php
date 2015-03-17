@@ -22,12 +22,12 @@ use yii\helpers\FileHelper;
 class PhpDocController extends Controller
 {
     public $defaultAction = 'property';
-
     /**
      * @var boolean whether to update class docs directly. Setting this to false will just output docs
      * for copy and paste.
      */
     public $updateFiles = true;
+
 
     /**
      * Generates `@property` annotations in class files from getters and setters
@@ -37,7 +37,7 @@ class PhpDocController extends Controller
      *
      * See https://github.com/yiisoft/yii2/wiki/Core-framework-code-style#documentation for details.
      *
-     * @param string $root the directory to parse files from. Defaults to YII_PATH.
+     * @param string $root the directory to parse files from. Defaults to YII2_PATH.
      */
     public function actionProperty($root = null)
     {
@@ -68,7 +68,7 @@ class PhpDocController extends Controller
     /**
      * Fix some issues with PHPdoc in files
      *
-     * @param string $root the directory to parse files from. Defaults to YII_PATH.
+     * @param string $root the directory to parse files from. Defaults to YII2_PATH.
      */
     public function actionFix($root = null)
     {
@@ -85,6 +85,7 @@ class PhpDocController extends Controller
 
             $this->fixFileDoc($lines);
             $this->fixDocBlockIndentation($lines);
+            $lines = array_values($this->fixLineSpacing($lines));
 
             $newContent = implode("\n", $lines);
             if ($sha !== sha1($newContent)) {
@@ -102,16 +103,16 @@ class PhpDocController extends Controller
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        return array_merge(parent::options($actionId), ['updateFiles']);
+        return array_merge(parent::options($actionID), ['updateFiles']);
     }
 
     protected function findFiles($root)
     {
         $except = [];
         if ($root === null) {
-            $root = dirname(YII_PATH);
+            $root = dirname(YII2_PATH);
             $extensionPath = "$root/extensions";
             foreach (scandir($extensionPath) as $extension) {
                 if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
@@ -125,6 +126,8 @@ class PhpDocController extends Controller
                 '/build/',
                 '/docs/',
                 '/extensions/apidoc/helpers/PrettyPrinter.php',
+                '/extensions/apidoc/helpers/ApiIndexer.php',
+                '/extensions/apidoc/helpers/ApiMarkdownLaTeX.php',
                 '/extensions/codeception/TestCase.php',
                 '/extensions/codeception/DbTestCase.php',
                 '/extensions/composer/',
@@ -133,6 +136,7 @@ class PhpDocController extends Controller
                 '/extensions/twig/TwigSimpleFileLoader.php',
                 '/framework/BaseYii.php',
                 '/framework/Yii.php',
+                'assets/',
                 'tests/',
                 'vendor/',
             ];
@@ -160,6 +164,9 @@ class PhpDocController extends Controller
         return FileHelper::findFiles($root, $options);
     }
 
+    /**
+     * Fix file PHPdoc
+     */
     protected function fixFileDoc(&$lines)
     {
         // find namespace
@@ -167,12 +174,15 @@ class PhpDocController extends Controller
         $namespaceLine = '';
         $contentAfterNamespace = false;
         foreach($lines as $i => $line) {
-            if (substr(trim($line), 0, 9) === 'namespace') {
-                $namespace = $i;
-                $namespaceLine = trim($line);
-            } elseif ($namespace !== false && trim($line) !== '') {
-                $contentAfterNamespace = $i;
-                break;
+            $line = trim($line);
+            if (!empty($line)) {
+                if (strncmp($line, 'namespace', 9) === 0) {
+                    $namespace = $i;
+                    $namespaceLine = $line;
+                } elseif ($namespace !== false) {
+                    $contentAfterNamespace = $i;
+                    break;
+                }
             }
         }
 
@@ -251,6 +261,116 @@ class PhpDocController extends Controller
         }
     }
 
+    /**
+     * Fixes line spacing code style for properties and constants
+     */
+    protected function fixLineSpacing($lines)
+    {
+        $propertiesOnly = false;
+        // remove blank lines between properties
+        $skip = true;
+        foreach($lines as $i => $line) {
+            if (strpos($line, 'class ') !== false) {
+                $skip = false;
+            }
+            if ($skip) {
+                continue;
+            }
+            if (trim($line) === '') {
+                unset($lines[$i]);
+            } elseif (ltrim($line)[0] !== '*' && strpos($line, 'function ') !== false) {
+                break;
+            } elseif (trim($line) === '}') {
+                $propertiesOnly = true;
+                break;
+            }
+        }
+        $lines = array_values($lines);
+
+        // add back some
+        $endofUse = false;
+        $endofConst = false;
+        $endofPublic = false;
+        $endofProtected = false;
+        $endofPrivate = false;
+        $skip = true;
+        $level = 0; // track array properties
+        $property = '';
+        foreach($lines as $i => $line) {
+            if (strpos($line, 'class ') !== false) {
+                $skip = false;
+            }
+            if ($skip) {
+                continue;
+            }
+
+            // check for multi line array
+            if ($level > 0) {
+                ${'endof'.$property} = $i;
+            }
+
+            $line = trim($line);
+            if (strncmp($line, 'public $', 8) === 0 || strncmp($line, 'public static $', 15) === 0) {
+                $endofPublic = $i;
+                $property = 'Public';
+                $level = 0;
+            } elseif (strncmp($line, 'protected $', 11) === 0 || strncmp($line, 'protected static $', 18) === 0) {
+                $endofProtected = $i;
+                $property = 'Protected';
+                $level = 0;
+            } elseif (strncmp($line, 'private $', 9) === 0 || strncmp($line, 'private static $', 16) === 0) {
+                $endofPrivate = $i;
+                $property = 'Private';
+                $level = 0;
+            } elseif (substr($line,0 , 6) === 'const ') {
+                $endofConst = $i;
+                $property = false;
+            } elseif (substr($line,0 , 4) === 'use ') {
+                $endofUse = $i;
+                $property = false;
+            } elseif (!empty($line) && $line[0] === '*') {
+                $property = false;
+            } elseif (!empty($line) && $line[0] !== '*' && strpos($line, 'function ') !== false || $line === '}') {
+                break;
+            }
+
+            // check for multi line array
+            if ($property !== false && strncmp($line, "'SQLSTATE[", 10) !== 0) {
+                $level += substr_count($line, '[') - substr_count($line, ']');
+            }
+        }
+
+        $endofAll = false;
+        foreach(['Private', 'Protected', 'Public', 'Const', 'Use'] as $var) {
+            if (${'endof'.$var} !== false) {
+                $endofAll = ${'endof'.$var};
+                break;
+            }
+        }
+
+//        $this->checkPropertyOrder($lineInfo);
+        $result = [];
+        foreach($lines as $i => $line) {
+            $result[] = $line;
+            if (!($propertiesOnly && $i === $endofAll)) {
+                if ($i === $endofUse || $i === $endofConst || $i === $endofPublic ||
+                    $i === $endofProtected || $i === $endofPrivate) {
+                    $result[] = '';
+                }
+                if ($i === $endofAll) {
+                    $result[] = '';
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    protected function checkPropertyOrder($lineInfo)
+    {
+        // TODO
+    }
+
     protected function updateClassPropertyDocs($file, $className, $propertyDoc)
     {
         $ref = new \ReflectionClass($className);
@@ -272,13 +392,15 @@ class PhpDocController extends Controller
 
         // TODO move these checks to different action
         $lines = explode("\n", $newDoc);
-        if (trim($lines[1]) == '*' || substr(trim($lines[1]), 0, 3) == '* @') {
+        $firstLine = trim($lines[1]);
+        if ($firstLine === '*' || strncmp($firstLine, '* @', 3) === 0) {
             $this->stderr("[WARN] Class $className has no short description.\n", Console::FG_YELLOW, Console::BOLD);
         }
         foreach ($lines as $line) {
-            if (substr(trim($line), 0, 9) == '* @since ') {
+            $line = trim($line);
+            if (strncmp($line, '* @since ', 9) === 0) {
                 $seenSince = true;
-            } elseif (substr(trim($line), 0, 10) == '* @author ') {
+            } elseif (strncmp($line, '* @author ', 10) === 0) {
                 $seenAuthor = true;
             }
         }
@@ -347,13 +469,14 @@ class PhpDocController extends Controller
         $propertyPart = false;
         $propertyPosition = false;
         foreach ($lines as $i => $line) {
-            if (substr(trim($line), 0, 12) == '* @property ') {
+            $line = trim($line);
+            if (strncmp($line, '* @property ', 12) === 0) {
                 $propertyPart = true;
-            } elseif ($propertyPart && trim($line) == '*') {
+            } elseif ($propertyPart && $line == '*') {
                 $propertyPosition = $i;
                 $propertyPart = false;
             }
-            if (substr(trim($line), 0, 10) == '* @author ' && $propertyPosition === false) {
+            if (strncmp($line, '* @author ', 10) === 0 && $propertyPosition === false) {
                 $propertyPosition = $i - 1;
                 $propertyPart = false;
             }
@@ -414,11 +537,11 @@ class PhpDocController extends Controller
             $gets = $this->match(
                 '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content']);
+                $class['content'], true);
             $sets = $this->match(
                 '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content']);
+                $class['content'], true);
             // check for @property annotations in getter and setter
             $properties = $this->match(
                 '#\* @(?<kind>property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
@@ -498,15 +621,24 @@ class PhpDocController extends Controller
         return [$className, $phpdoc];
     }
 
-    protected function match($pattern, $subject)
+    protected function match($pattern, $subject, $split = false)
     {
         $sets = [];
-        preg_match_all($pattern . 'suU', $subject, $sets, PREG_SET_ORDER);
-        foreach ($sets as &$set)
-            foreach ($set as $i => $match)
-                if (is_numeric($i) /*&& $i != 0*/)
-                    unset($set[$i]);
+        // split subject by double newlines because regex sometimes has problems with matching
+        // in the complete set of methods
+        // example: yii\di\ServiceLocator setComponents() is not recognized in the whole but in
+        // a part of the class.
+        $parts = $split ? explode("\n\n", $subject) : [$subject];
+        foreach($parts as $part) {
+            preg_match_all($pattern . 'suU', $part, $matches, PREG_SET_ORDER);
+            foreach ($matches as &$set) {
+                foreach ($set as $i => $match)
+                    if (is_numeric($i) /*&& $i != 0*/)
+                        unset($set[$i]);
 
+                $sets[] = $set;
+            }
+        }
         return $sets;
     }
 

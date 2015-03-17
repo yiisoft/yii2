@@ -16,6 +16,8 @@ use yii\debug\models\search\Db;
  * Debugger panel that collects and displays database queries performed.
  *
  * @property array $profileLogs This property is read-only.
+ * @property string $summaryName Short name of the panel, which will be use in summary. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -28,15 +30,16 @@ class DbPanel extends Panel
      * the execution is considered taking critical number of DB queries.
      */
     public $criticalQueryThreshold;
+
     /**
      * @var array db queries info extracted to array as models, to use with data provider.
      */
     private $_models;
-
     /**
      * @var array current database request timings
      */
     private $_timings;
+
 
     /**
      * @inheritdoc
@@ -44,6 +47,14 @@ class DbPanel extends Panel
     public function getName()
     {
         return 'Database';
+    }
+
+    /**
+     * @return string short name of the panel, which will be use in summary.
+     */
+    public function getSummaryName()
+    {
+        return 'DB';
     }
 
     /**
@@ -141,7 +152,7 @@ class DbPanel extends Panel
             $timings = $this->calculateTimings();
 
             foreach ($timings as $seq => $dbTiming) {
-                $this->_models[] = 	[
+                $this->_models[] = [
                     'type' => $this->getQueryType($dbTiming['info']),
                     'query' => $dbTiming['info'],
                     'duration' => ($dbTiming['duration'] * 1000), // in milliseconds
@@ -156,7 +167,7 @@ class DbPanel extends Panel
     }
 
     /**
-     * Returns databse query type.
+     * Returns database query type.
      *
      * @param string $timing timing procedure string
      * @return string query type such as select, insert, delete, etc.
@@ -178,5 +189,23 @@ class DbPanel extends Panel
     public function isQueryCountCritical($count)
     {
         return (($this->criticalQueryThreshold !== null) && ($count > $this->criticalQueryThreshold));
+    }
+
+    /**
+     * Returns array query types
+     *
+     * @return array
+     * @since 2.0.3
+     */
+    public function getTypes()
+    {
+        return array_reduce(
+            $this->_models,
+            function ($result, $item) {
+                $result[$item['type']] = $item['type'];
+                return $result;
+            },
+            []
+        );
     }
 }

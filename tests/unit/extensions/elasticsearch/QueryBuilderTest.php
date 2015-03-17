@@ -49,7 +49,7 @@ class QueryBuilderTest extends ElasticSearchTestCase
     public function testYiiCanBeFoundByQuery()
     {
         $this->prepareDbData();
-        $queryParts = ['field' => ['title' => 'yii']];
+        $queryParts = ['term' => ['title' => 'yii']];
         $query = new Query();
         $query->from('yiitest', 'article');
         $query->query = $queryParts;

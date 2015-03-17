@@ -41,7 +41,7 @@ class FilterValidator extends Validator
     public $filter;
     /**
      * @var boolean whether the filter should be skipped if an array input is given.
-     * If false and an array input is given, the filter will not be applied.
+     * If true and an array input is given, the filter will not be applied.
      */
     public $skipOnArray = false;
     /**
@@ -49,6 +49,7 @@ class FilterValidator extends Validator
      * be applied when the value being validated is empty.
      */
     public $skipOnEmpty = false;
+
 
     /**
      * @inheritdoc
@@ -64,11 +65,30 @@ class FilterValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
-        $value = $object->$attribute;
+        $value = $model->$attribute;
         if (!$this->skipOnArray || !is_array($value)) {
-            $object->$attribute = call_user_func($this->filter, $value);
+            $model->$attribute = call_user_func($this->filter, $value);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clientValidateAttribute($model, $attribute, $view)
+    {
+        if ($this->filter !== 'trim') {
+            return null;
+        }
+
+        $options = [];
+        if ($this->skipOnEmpty) {
+            $options['skipOnEmpty'] = 1;
+        }
+
+        ValidationAsset::register($view);
+
+        return 'yii.validation.trim($form, attribute, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 }

@@ -40,16 +40,16 @@ class QueryTest extends ElasticSearchTestCase
         $this->assertEquals(['name', 'status'], $query->fields);
 
         $result = $query->one($this->getConnection());
-        $this->assertEquals(2, count($result['_source']));
-        $this->assertArrayHasKey('status', $result['_source']);
-        $this->assertArrayHasKey('name', $result['_source']);
+        $this->assertEquals(2, count($result['fields']));
+        $this->assertArrayHasKey('status', $result['fields']);
+        $this->assertArrayHasKey('name', $result['fields']);
         $this->assertArrayHasKey('_id', $result);
 
         $query->fields([]);
         $this->assertEquals([], $query->fields);
 
         $result = $query->one($this->getConnection());
-        $this->assertEquals([], $result['_source']);
+        $this->assertArrayNotHasKey('fields', $result);
         $this->assertArrayHasKey('_id', $result);
 
         $query->fields(null);

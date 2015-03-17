@@ -72,8 +72,9 @@ class ActiveDataProvider extends BaseDataProvider
      */
     public $key;
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
      * If not set, the default DB connection will be used.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db;
 
@@ -128,7 +129,7 @@ class ActiveDataProvider extends BaseDataProvider
 
             return $keys;
         } elseif ($this->query instanceof ActiveQueryInterface) {
-            /** @var \yii\db\ActiveRecord $class */
+            /* @var $class \yii\db\ActiveRecord */
             $class = $this->query->modelClass;
             $pks = $class::primaryKey();
             if (count($pks) === 1) {
@@ -171,7 +172,7 @@ class ActiveDataProvider extends BaseDataProvider
     {
         parent::setSort($value);
         if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQueryInterface) {
-            /** @var Model $model */
+            /* @var $model Model */
             $model = new $this->query->modelClass;
             foreach ($model->attributes() as $attribute) {
                 $sort->attributes[$attribute] = [

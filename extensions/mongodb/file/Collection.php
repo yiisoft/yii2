@@ -28,10 +28,12 @@ class Collection extends \yii\mongodb\Collection
      * @var \MongoGridFS Mongo GridFS collection instance.
      */
     public $mongoCollection;
+
     /**
      * @var \yii\mongodb\Collection file chunks Mongo collection.
      */
     private $_chunkCollection;
+
 
     /**
      * Returns the Mongo collection for the file chunks.

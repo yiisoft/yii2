@@ -1,4 +1,10 @@
 <?php
+/* @var $panel yii\debug\panels\ProfilingPanel */
+/* @var $searchModel yii\debug\models\search\Profile */
+/* @var $dataProvider yii\data\ArrayDataProvider */
+/* @var $time integer */
+/* @var $memory integer */
+
 use yii\grid\GridView;
 use yii\helpers\Html;
 
@@ -9,7 +15,7 @@ use yii\helpers\Html;
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'id' => 'profile-panel-detailed-grid',
-    'options' => ['class' => 'detail-grid-view'],
+    'options' => ['class' => 'detail-grid-view table-responsive'],
     'filterModel' => $searchModel,
     'filterUrl' => $panel->getUrl(),
     'columns' => [

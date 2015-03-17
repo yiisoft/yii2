@@ -27,9 +27,9 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * language negotiation based on the value of the GET parameter [[languageParam]] and the `Accept-Language` HTTP header.
  * If a match is found, the [[\yii\base\Application::language]] property will be set as the chosen language.
  *
- * You may use ContentNegotiator as a bootstrap component as well as an action filter.
+ * You may use ContentNegotiator as a bootstrapping component as well as an action filter.
  *
- * The following code shows how you can use ContentNegotiator as a bootstrap component. Note that in this case,
+ * The following code shows how you can use ContentNegotiator as a bootstrapping component. Note that in this case,
  * the content negotiation applies to the whole application.
  *
  * ```php
@@ -89,7 +89,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      * @var string the name of the GET parameter that specifies the response format.
      * Note that if the specified format does not exist in [[formats]], a [[UnsupportedMediaTypeHttpException]]
      * exception will be thrown.  If the parameter value is empty or if this property is null,
-     * the response format will be determined based on the `Accept` HTTP header.
+     * the response format will be determined based on the `Accept` HTTP header only.
      * @see formats
      */
     public $formatParam = '_format';
@@ -97,7 +97,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      * @var string the name of the GET parameter that specifies the [[\yii\base\Application::language|application language]].
      * Note that if the specified language does not match any of [[languages]], the first language in [[languages]]
      * will be used. If the parameter value is empty or if this property is null,
-     * the application language will be determined based on the `Accept-Language` HTTP header.
+     * the application language will be determined based on the `Accept-Language` HTTP header only.
      * @see languages
      */
     public $languageParam = '_lang';

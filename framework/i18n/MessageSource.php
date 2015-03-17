@@ -40,6 +40,7 @@ class MessageSource extends Component
 
     private $_messages = [];
 
+
     /**
      * Initializes this component.
      */

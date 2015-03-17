@@ -37,8 +37,8 @@ class EmailValidator extends Validator
      */
     public $allowName = false;
     /**
-     * @var boolean whether to check whether the emails domain exists and has either an A or MX record.
-     * Be aware of the fact that this check can fail due to temporary DNS problems even if the email address is
+     * @var boolean whether to check whether the email's domain exists and has either an A or MX record.
+     * Be aware that this check can fail due to temporary DNS problems even if the email address is
      * valid and an email would be deliverable. Defaults to false.
      */
     public $checkDNS = false;
@@ -49,6 +49,7 @@ class EmailValidator extends Validator
      * otherwise an exception would be thrown.
      */
     public $enableIDN = false;
+
 
     /**
      * @inheritdoc
@@ -72,7 +73,7 @@ class EmailValidator extends Validator
         // make sure string length is limited to avoid DOS attacks
         if (!is_string($value) || strlen($value) >= 320) {
             $valid = false;
-        } elseif (!preg_match('/^(.*<?)(.*)@(.*)(>?)$/', $value, $matches)) {
+        } elseif (!preg_match('/^(.*<?)(.*)@(.*?)(>?)$/', $value, $matches)) {
             $valid = false;
         } else {
             $domain = $matches[3];
@@ -91,14 +92,14 @@ class EmailValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         $options = [
             'pattern' => new JsExpression($this->pattern),
             'fullPattern' => new JsExpression($this->fullPattern),
             'allowName' => $this->allowName,
             'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $object->getAttributeLabel($attribute),
+                'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language),
             'enableIDN' => (boolean) $this->enableIDN,
         ];

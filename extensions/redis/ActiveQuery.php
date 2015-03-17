@@ -64,7 +64,7 @@ use yii\db\QueryTrait;
  * A relation is specified by [[link]] which represents the association between columns
  * of different tables; and the multiplicity of the relation is indicated by [[multiple]].
  *
- * If a relation involves a pivot table, it may be specified by [[via()]].
+ * If a relation involves a junction table, it may be specified by [[via()]].
  * This methods may only be called in a relational context. Same is true for [[inverseOf()]], which
  * marks a relation as inverse of another relation.
  *
@@ -77,6 +77,11 @@ class ActiveQuery extends Component implements ActiveQueryInterface
     use ActiveQueryTrait;
     use ActiveRelationTrait;
 
+    /**
+     * @event Event an event that is triggered when the query is initialized via [[init()]].
+     */
+    const EVENT_INIT = 'init';
+
 
     /**
      * Constructor.
@@ -87,6 +92,18 @@ class ActiveQuery extends Component implements ActiveQueryInterface
     {
         $this->modelClass = $modelClass;
         parent::__construct($config);
+    }
+
+    /**
+     * Initializes the object.
+     * This method is called at the end of the constructor. The default implementation will trigger
+     * an [[EVENT_INIT]] event. If you override this method, make sure you call the parent implementation at the end
+     * to ensure triggering of the event.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
     }
 
     /**
@@ -106,6 +123,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
             for ($i = 0; $i < $c;) {
                 $row[$dataRow[$i++]] = $dataRow[$i++];
             }
+
             $rows[] = $row;
         }
         if (!empty($rows)) {
@@ -148,9 +166,10 @@ class ActiveQuery extends Component implements ActiveQueryInterface
         if ($this->asArray) {
             $model = $row;
         } else {
-            /** @var ActiveRecord $class */
+            /* @var $class ActiveRecord */
             $class = $this->modelClass;
             $model = $class::instantiate($row);
+            $class = get_class($model);
             $class::populateRecord($model, $row);
         }
         if (!empty($this->with)) {
@@ -175,7 +194,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
     public function count($q = '*', $db = null)
     {
         if ($this->where === null) {
-            /** @var ActiveRecord $modelClass */
+            /* @var $modelClass ActiveRecord */
             $modelClass = $this->modelClass;
             if ($db === null) {
                 $db = $modelClass::getDb();
@@ -287,6 +306,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @param string $type the type of the script to generate
      * @param string $columnName
+     * @throws NotSupportedException
      * @return array|bool|null|string
      */
     protected function executeScript($db, $type, $columnName = null)
@@ -294,12 +314,12 @@ class ActiveQuery extends Component implements ActiveQueryInterface
         if ($this->primaryModel !== null) {
             // lazy loading
             if ($this->via instanceof self) {
-                // via pivot table
-                $viaModels = $this->via->findPivotRows([$this->primaryModel]);
+                // via junction table
+                $viaModels = $this->via->findJunctionRows([$this->primaryModel]);
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /** @var ActiveQuery $viaQuery */
+                /* @var $viaQuery ActiveQuery */
                 list($viaName, $viaQuery) = $this->via;
                 if ($viaQuery->multiple) {
                     $viaModels = $viaQuery->all();
@@ -319,7 +339,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
             throw new NotSupportedException('orderBy is currently not supported by redis ActiveRecord.');
         }
 
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
 
         if ($db === null) {
@@ -361,7 +381,7 @@ class ActiveQuery extends Component implements ActiveQueryInterface
             $pks = [$this->where];
         }
 
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
 
         if ($type == 'Count') {

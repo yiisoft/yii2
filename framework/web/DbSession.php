@@ -38,9 +38,10 @@ use yii\di\Instance;
 class DbSession extends Session
 {
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
      * After the DbSession object is created, if you want to change this property, you should only assign it
      * with a DB connection object.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db = 'db';
     /**
@@ -65,8 +66,13 @@ class DbSession extends Session
      *
      * When using DbSession in a production server, we recommend you create a DB index for the 'expire'
      * column in the session table to improve the performance.
+     *
+     * Note that according to the php.ini setting of `session.hash_function`, you may need to adjust
+     * the length of the `id` column. For example, if `session.hash_function=sha256`, you should use
+     * length 64 instead of 40.
      */
     public $sessionTable = '{{%session}}';
+
 
     /**
      * Initializes the DbSession component.

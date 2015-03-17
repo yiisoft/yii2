@@ -9,6 +9,7 @@ namespace yii\apidoc\renderers;
 
 use Yii;
 use yii\apidoc\helpers\ApiMarkdown;
+use yii\apidoc\helpers\ApiMarkdownLaTeX;
 use yii\apidoc\models\BaseDoc;
 use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\ConstDoc;
@@ -30,8 +31,12 @@ use yii\console\Controller;
  */
 abstract class BaseRenderer extends Component
 {
+    /**
+     * @deprecated since 2.0.1 use [[$guidePrefix]] instead which allows configuring this options
+     */
     const GUIDE_PREFIX = 'guide-';
 
+    public $guidePrefix = 'guide-';
     public $apiUrl;
     /**
      * @var Context the [[Context]] currently being rendered.
@@ -41,13 +46,13 @@ abstract class BaseRenderer extends Component
      * @var Controller the apidoc controller instance. Can be used to control output.
      */
     public $controller;
-
     public $guideUrl;
-    public $guideReferences = [];
+
 
     public function init()
     {
         ApiMarkdown::$renderer = $this;
+        ApiMarkdownLaTeX::$renderer = $this;
     }
 
     /**
@@ -69,8 +74,8 @@ abstract class BaseRenderer extends Component
         $links = [];
         foreach ($types as $type) {
             $postfix = '';
-            if (!is_object($type)) {
-                if (substr($type, -2, 2) == '[]') {
+            if (is_string($type)) {
+                if (!empty($type) && substr_compare($type, '[]', -2, 2) === 0) {
                     $postfix = '[]';
                     $type = substr($type, 0, -2);
                 }
@@ -83,7 +88,7 @@ abstract class BaseRenderer extends Component
                     ltrim($type, '\\');
                 }
             }
-            if (!is_object($type)) {
+            if (is_string($type)) {
                 $linkText = ltrim($type, '\\');
                 if ($title !== null) {
                     $linkText = $title;
@@ -108,7 +113,7 @@ abstract class BaseRenderer extends Component
                 } else {
                     $links[] = $type;
                 }
-            } else {
+            } elseif ($type instanceof BaseDoc) {
                 $linkText = $type->name;
                 if ($title !== null) {
                     $linkText = $title;
@@ -152,7 +157,8 @@ abstract class BaseRenderer extends Component
     }
 
     /**
-     * @param BaseDoc $context
+     * @param BaseDoc|string $context
+     * @return string
      */
     private function resolveNamespace($context)
     {
@@ -196,6 +202,12 @@ abstract class BaseRenderer extends Component
      */
     public function generateGuideUrl($file)
     {
-        return rtrim($this->guideUrl, '/') . '/' . static::GUIDE_PREFIX . basename($file, '.md') . '.html';
+        $hash = '';
+        if (($pos = strpos($file, '#')) !== false) {
+            $hash = substr($file, $pos);
+            $file = substr($file, 0, $pos);
+        }
+
+        return rtrim($this->guideUrl, '/') . '/' . $this->guidePrefix . basename($file, '.md') . '.html' . $hash;
     }
 }

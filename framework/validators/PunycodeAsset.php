@@ -17,8 +17,8 @@ use yii\web\AssetBundle;
  */
 class PunycodeAsset extends AssetBundle
 {
-    public $sourcePath = '@yii/assets';
+    public $sourcePath = '@bower/punycode';
     public $js = [
-        'punycode/punycode.js',
+        'punycode.js',
     ];
 }

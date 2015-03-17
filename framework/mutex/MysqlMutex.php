@@ -11,6 +11,26 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
+ * MysqlMutex implements mutex "lock" mechanism via MySQL locks.
+ *
+ * Application configuration example:
+ *
+ * ```
+ * [
+ *     'components' => [
+ *         'db'=> [
+ *             'class' => 'yii\db\Connection',
+ *             'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
+ *         ]
+ *         'mutex'=> [
+ *             'class' => 'yii\mutex\MysqlMutex',
+ *         ],
+ *     ],
+ * ]
+ * ```
+ *
+ * @see Mutex
+ *
  * @author resurtm <resurtm@gmail.com>
  * @since 2.0
  */
@@ -37,7 +57,7 @@ class MysqlMutex extends DbMutex
      */
     protected function acquireLock($name, $timeout = 0)
     {
-        return (boolean) $this->db
+        return (bool) $this->db
             ->createCommand('SELECT GET_LOCK(:name, :timeout)', [':name' => $name, ':timeout' => $timeout])
             ->queryScalar();
     }
@@ -50,7 +70,7 @@ class MysqlMutex extends DbMutex
      */
     protected function releaseLock($name)
     {
-        return (boolean) $this->db
+        return (bool) $this->db
             ->createCommand('SELECT RELEASE_LOCK(:name)', [':name' => $name])
             ->queryScalar();
     }

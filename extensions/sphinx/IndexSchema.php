@@ -40,6 +40,7 @@ class IndexSchema extends Object
      */
     public $columns = [];
 
+
     /**
      * Gets the named column metadata.
      * This is a convenient method for retrieving a named column even if it does not exist.

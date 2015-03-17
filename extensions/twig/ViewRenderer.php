@@ -10,7 +10,6 @@ namespace yii\twig;
 use Yii;
 use yii\base\View;
 use yii\base\ViewRenderer as BaseViewRenderer;
-use yii\helpers\Url;
 
 /**
  * TwigViewRenderer allows you to use Twig templates in views.
@@ -23,7 +22,8 @@ use yii\helpers\Url;
 class ViewRenderer extends BaseViewRenderer
 {
     /**
-     * @var string the directory or path alias pointing to where Twig cache will be stored.
+     * @var string the directory or path alias pointing to where Twig cache will be stored. Set to false to disable
+     * templates cache.
      */
     public $cachePath = '@runtime/Twig/cache';
     /**
@@ -54,11 +54,12 @@ class ViewRenderer extends BaseViewRenderer
     public $filters = [];
     /**
      * @var array Custom extensions.
-     * Example: `['Twig_Extension_Sandbox', 'Twig_Extension_Text']`
+     * Example: `['Twig_Extension_Sandbox', new \Twig_Extension_Text()]`
      */
     public $extensions = [];
     /**
      * @var array Twig lexer options.
+     *
      * Example: Smarty-like syntax:
      * ```php
      * [
@@ -71,9 +72,24 @@ class ViewRenderer extends BaseViewRenderer
      */
     public $lexerOptions = [];
     /**
-     * @var \Twig_Environment twig environment object that do all rendering twig templates
+     * @var array namespaces and classes to import.
+     *
+     * Example:
+     *
+     * ```php
+     * [
+     *     'yii\bootstrap',
+     *     'app\assets',
+     *     \yii\bootstrap\NavBar::className(),
+     * ]
+     * ```
+     */
+    public $uses = [];
+    /**
+     * @var \Twig_Environment twig environment object that renders twig templates
      */
     public $twig;
+
 
     public function init()
     {
@@ -82,12 +98,7 @@ class ViewRenderer extends BaseViewRenderer
             'charset' => Yii::$app->charset,
         ], $this->options));
 
-        // Adding custom extensions
-        if (!empty($this->extensions)) {
-            foreach ($this->extensions as $extension) {
-                $this->twig->addExtension(new $extension());
-            }
-        }
+        $this->twig->setBaseTemplateClass('yii\twig\Template');
 
         // Adding custom globals (objects or static classes)
         if (!empty($this->globals)) {
@@ -104,25 +115,19 @@ class ViewRenderer extends BaseViewRenderer
             $this->addFilters($this->filters);
         }
 
+        $this->addExtensions([new Extension($this->uses)]);
+
         // Adding custom extensions
         if (!empty($this->extensions)) {
             $this->addExtensions($this->extensions);
         }
 
-        // Change lexer syntax
+        $this->twig->addGlobal('app', \Yii::$app);
+
+        // Change lexer syntax (must be set after other settings)
         if (!empty($this->lexerOptions)) {
             $this->setLexerOptions($this->lexerOptions);
         }
-
-        // Adding global 'void' function (usage: {{void(App.clientScript.registerScriptFile(...))}})
-        $this->twig->addFunction('void', new \Twig_Function_Function(function ($argument) {
-        }));
-
-        $this->twig->addFunction('path', new \Twig_Function_Function(function ($path, $args = []) {
-            return Url::to(array_merge([$path], $args));
-        }));
-
-        $this->twig->addGlobal('app', \Yii::$app);
     }
 
     /**
@@ -140,9 +145,28 @@ class ViewRenderer extends BaseViewRenderer
     public function render($view, $file, $params)
     {
         $this->twig->addGlobal('this', $view);
-        $this->twig->setLoader(new TwigSimpleFileLoader(dirname($file)));
+        $loader = new \Twig_Loader_Filesystem(dirname($file));
+        $this->addAliases($loader, Yii::$aliases);
+        $this->twig->setLoader($loader);
 
         return $this->twig->render(pathinfo($file, PATHINFO_BASENAME), $params);
+    }
+
+    /**
+     * Adds aliases
+     *
+     * @param \Twig_Loader_Filesystem $loader
+     * @param array $aliases
+     */
+    protected function addAliases($loader, $aliases)
+    {
+        foreach ($aliases as $alias => $path) {
+            if (is_array($path)) {
+                $this->addAliases($loader, $path);
+            } elseif (is_string($path) && is_dir($path)) {
+                $loader->addPath($path, substr($alias, 1));
+            }
+        }
     }
 
     /**
@@ -184,7 +208,7 @@ class ViewRenderer extends BaseViewRenderer
     public function addExtensions($extensions)
     {
         foreach ($extensions as $extName) {
-            $this->twig->addExtension(new $extName());
+            $this->twig->addExtension(is_object($extName) ? $extName : new $extName());
         }
     }
 

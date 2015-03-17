@@ -23,7 +23,7 @@ use yii\web\Request;
  *
  * A typical usage example is as follows,
  *
- * ~~~
+ * ```php
  * function actionIndex()
  * {
  *     $sort = new Sort([
@@ -48,18 +48,18 @@ use yii\web\Request;
  *          'sort' => $sort,
  *     ]);
  * }
- * ~~~
+ * ```
  *
  * View:
  *
- * ~~~
+ * ```php
  * // display links leading to sort actions
  * echo $sort->link('name') . ' | ' . $sort->link('age');
  *
  * foreach ($models as $model) {
  *     // display $model here
  * }
- * ~~~
+ * ```
  *
  * In the above, we declare two [[attributes]] that support sorting: name and age.
  * We pass the sort information to the Article query so that the query results are
@@ -81,12 +81,11 @@ class Sort extends Object
      * Defaults to false, which means each time the data can only be sorted by one attribute.
      */
     public $enableMultiSort = false;
-
     /**
      * @var array list of attributes that are allowed to be sorted. Its syntax can be
      * described using the following example:
      *
-     * ~~~
+     * ```php
      * [
      *     'age',
      *     'name' => [
@@ -96,19 +95,19 @@ class Sort extends Object
      *         'label' => 'Name',
      *     ],
      * ]
-     * ~~~
+     * ```
      *
      * In the above, two attributes are declared: "age" and "name". The "age" attribute is
      * a simple attribute which is equivalent to the following:
      *
-     * ~~~
+     * ```php
      * 'age' => [
      *     'asc' => ['age' => SORT_ASC],
      *     'desc' => ['age' => SORT_DESC],
      *     'default' => SORT_ASC,
      *     'label' => Inflector::camel2words('age'),
      * ]
-     * ~~~
+     * ```
      *
      * The "name" attribute is a composite attribute:
      *
@@ -137,12 +136,12 @@ class Sort extends Object
      * @var array the order that should be used when the current request does not specify any order.
      * The array keys are attribute names and the array values are the corresponding sort directions. For example,
      *
-     * ~~~
+     * ```php
      * [
      *     'name' => SORT_ASC,
      *     'created_at' => SORT_DESC,
      * ]
-     * ~~~
+     * ```
      *
      * @see attributeOrders
      */
@@ -174,6 +173,7 @@ class Sort extends Object
      * the "urlManager" application component will be used.
      */
     public $urlManager;
+
 
     /**
      * Normalizes the [[attributes]] property.

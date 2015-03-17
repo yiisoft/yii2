@@ -5,23 +5,14 @@ This extension provides the [elasticsearch](http://www.elasticsearch.org/) integ
 It includes basic querying/search support and also implements the `ActiveRecord` pattern that allows you to store active
 records in elasticsearch.
 
-To use this extension, you have to configure the Connection class in your application configuration:
+This repository is a git submodule of <https://github.com/yiisoft/yii2>.
+Please submit issue reports and pull requests to the main repository.
+For license information check the [LICENSE](LICENSE.md)-file.
 
-```php
-return [
-	//....
-	'components' => [
-        'elasticsearch' => [
-            'class' => 'yii\elasticsearch\Connection',
-            'nodes' => [
-                ['http_address' => '127.0.0.1:9200'],
-                // configure more hosts if you have a cluster
-            ],
-        ],
-	]
-];
-```
+Requirements
+------------
 
+elasticsearch version 1.0 or higher is required.
 
 Installation
 ------------
@@ -31,17 +22,36 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist yiisoft/yii2-elasticsearch "*"
+php composer.phar require --prefer-dist yiisoft/yii2-elasticsearch
 ```
 
 or add
 
 ```json
-"yiisoft/yii2-elasticsearch": "*"
+"yiisoft/yii2-elasticsearch": "~2.0.0"
 ```
 
 to the require section of your composer.json.
 
+Configuration
+-------------
+
+To use this extension, you have to configure the Connection class in your application configuration:
+
+```php
+return [
+    //....
+    'components' => [
+        'elasticsearch' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => '127.0.0.1:9200'],
+                // configure more hosts if you have a cluster
+            ],
+        ],
+    ]
+];
+```
 
 Using the Query
 ---------------
@@ -55,7 +65,7 @@ TBD
 Using the ActiveRecord
 ----------------------
 
-For general information on how to use yii's ActiveRecord please refer to the [guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/active-record.md).
+For general information on how to use yii's ActiveRecord please refer to the [guide](https://github.com/yiisoft/yii2/blob/master/docs/guide/db-active-record.md).
 
 For defining an elasticsearch ActiveRecord class your record class needs to extend from [[yii\elasticsearch\ActiveRecord]] and
 implement at least the [[yii\elasticsearch\ActiveRecord::attributes()|attributes()]] method to define the attributes of the record.
@@ -140,19 +150,19 @@ $customer->save();
 
 $customer = Customer::get(1); // get a record by pk
 $customers = Customer::mget([1,2,3]); // get multiple records by pk
-$customer = Customer::find()->where(['name' => 'test'])->one(); // find by query
+$customer = Customer::find()->where(['name' => 'test'])->one(); // find by query, note that you need to configure mapping for this field in order to find records properly
 $customers = Customer::find()->active()->all(); // find all by query (using the `active` scope)
 
-// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-field-query.html
-$result = Article::find()->query(["field" => ["title" => "yii"]])->all(); // articles whose title contains "yii"
+// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-match-query.html
+$result = Article::find()->query(["match" => ["title" => "yii"]])->all(); // articles whose title contains "yii"
 
 // http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-flt-query.html
 $query = Article::find()->query([
-	"fuzzy_like_this" => [
-		"fields" => ["title", "description"],
-		"like_text" => "This query will return articles that are similar to this text :-)",
-        "max_query_terms" : 12
-	]
+    "fuzzy_like_this" => [
+        "fields" => ["title", "description"],
+        "like_text" => "This query will return articles that are similar to this text :-)",
+        "max_query_terms" => 12
+    ]
 ]);
 
 $query->all(); // gives you all the documents
@@ -175,19 +185,19 @@ Add the following to you application config to enable it (if you already have th
 enabled, it is sufficient to just add the panels configuration):
 
 ```php
-	// ...
-	'bootstrap' => ['debug'],
-	'modules' => [
-		'debug' => [
-			'class' => 'yii\\debug\\Module',
-			'panels' => [
-				'elasticsearch' => [
-					'class' => 'yii\\elasticsearch\\DebugPanel',
-				],
-			],
-		],
-	],
-	// ...
+    // ...
+    'bootstrap' => ['debug'],
+    'modules' => [
+        'debug' => [
+            'class' => 'yii\\debug\\Module',
+            'panels' => [
+                'elasticsearch' => [
+                    'class' => 'yii\\elasticsearch\\DebugPanel',
+                ],
+            ],
+        ],
+    ],
+    // ...
 ```
 
 ![elasticsearch DebugPanel](images/README-debug.png)

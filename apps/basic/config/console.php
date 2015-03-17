@@ -8,9 +8,11 @@ $db = require(__DIR__ . '/db.php');
 return [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'gii'],
     'controllerNamespace' => 'app\commands',
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'modules' => [
+        'gii' => 'yii\gii\Module',
+    ],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',

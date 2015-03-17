@@ -12,7 +12,10 @@ use yii\authclient\OAuth2;
 /**
  * GoogleOAuth allows authentication via Google OAuth.
  *
- * In order to use Google OAuth you must register your application at <https://code.google.com/apis/console#access>.
+ * In order to use Google OAuth you must create a project at <https://console.developers.google.com/project>
+ * and setup its credentials at <https://console.developers.google.com/project/[yourProjectId]/apiui/credential>.
+ * In order to enable using scopes for retrieving user attributes, you should also enable Google+ API at
+ * <https://console.developers.google.com/project/[yourProjectId]/apiui/api/plus>
  *
  * Example application configuration:
  *
@@ -32,8 +35,7 @@ use yii\authclient\OAuth2;
  * ]
  * ~~~
  *
- * @see https://code.google.com/apis/console#access
- * @see https://developers.google.com/google-apps/contacts/v3/
+ * @see https://console.developers.google.com/project
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -51,7 +53,8 @@ class GoogleOAuth extends OAuth2
     /**
      * @inheritdoc
      */
-    public $apiBaseUrl = 'https://www.googleapis.com/oauth2/v1';
+    public $apiBaseUrl = 'https://www.googleapis.com/plus/v1';
+
 
     /**
      * @inheritdoc
@@ -61,8 +64,8 @@ class GoogleOAuth extends OAuth2
         parent::init();
         if ($this->scope === null) {
             $this->scope = implode(' ', [
-                'https://www.googleapis.com/auth/userinfo.profile',
-                'https://www.googleapis.com/auth/userinfo.email',
+                'profile',
+                'email',
             ]);
         }
     }
@@ -72,7 +75,7 @@ class GoogleOAuth extends OAuth2
      */
     protected function initUserAttributes()
     {
-        return $this->api('userinfo', 'GET');
+        return $this->api('people/me', 'GET');
     }
 
     /**

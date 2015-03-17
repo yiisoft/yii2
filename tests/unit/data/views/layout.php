@@ -1,8 +1,6 @@
 <?php
-/**
- * @var \yii\web\View $this
- * @var string $content
- */
+/* @var $this \yii\web\View */
+/* @var $content string */
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>

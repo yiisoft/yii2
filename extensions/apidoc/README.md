@@ -3,6 +3,10 @@ API documentation generator for Yii 2
 
 This extension provides an API documentation generator for the Yii framework 2.0.
 
+This repository is a git submodule of <https://github.com/yiisoft/yii2>.
+Please submit issue reports and pull requests to the main repository.
+For license information check the [LICENSE](LICENSE.md)-file.
+
 Installation
 ------------
 
@@ -11,13 +15,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist yiisoft/yii2-apidoc "*"
+php composer.phar require --prefer-dist yiisoft/yii2-apidoc
 ```
 
 or add
 
 ```json
-"yiisoft/yii2-apidoc": "*"
+"yiisoft/yii2-apidoc": "~2.0.0"
 ```
 
 to the require section of your composer.json.
@@ -42,22 +46,58 @@ Simple usage for stand alone guide documentation:
 vendor/bin/apidoc guide source/docs ./output
 ```
 
-You can combine them to generate class API and guide doc in one place:
+You can combine them to generate class API and guide documentation in one place:
 
 ```
-# first generate guide docs to allow links from code to guide you may skip this if you do not need these.
-vendor/bin/apidoc guide source/docs ./output
-# second generate API docs
+# generate API docs
 vendor/bin/apidoc api source/directory ./output
-# third run guide docs again to have class links enabled
+# generate the guide (order is important to allow the guide to link to the apidoc)
 vendor/bin/apidoc guide source/docs ./output
 ```
 
-By default the `bootstrap` template will be used. You can choose a different templates with the `--template=name` parameter.
+By default the `bootstrap` template will be used. You can choose a different template with the `--template=name` parameter.
 Currently there is only the `bootstrap` template available.
 
-You may also add the `yii\apidoc\commands\RenderController` to your console application class map and
-run it inside of your applications console app.
+You may also add the `yii\apidoc\commands\ApiController` and `GuideController` to your console application command map
+and run them inside of your applications console app.
+
+### Advanced usage
+
+The following script can be used to generate API documentation and guide in different directories and also multiple guides
+in different languages (like it is done on yiiframework.com):
+
+```sh
+#!/bin/sh
+
+# set these paths to match your environment
+YII_PATH=~/dev/yiisoft/yii2
+APIDOC_PATH=~/dev/yiisoft/yii2/extensions/apidoc
+OUTPUT=yii2docs
+
+cd $APIDOC_PATH
+./apidoc api $YII_PATH/framework/,$YII_PATH/extensions $OUTPUT/api --guide=../guide-en --guidePrefix= --interactive=0
+./apidoc guide $YII_PATH/docs/guide    $OUTPUT/guide-en --apiDocs=../api --guidePrefix= --interactive=0
+./apidoc guide $YII_PATH/docs/guide-ru $OUTPUT/guide-ru --apiDocs=../api --guidePrefix= --interactive=0
+# repeat the last line for more languages
+```
+
+### Creating a PDF of the guide
+
+You need `pdflatex` and GNU `make` for this.
+
+```
+vendor/bin/apidoc guide source/docs ./output --template=pdf
+cd ./output
+make pdf
+```
+
+If all runs without errors the PDF will be `guide.pdf` in the `output` dir.
+
+Special Markdown Syntax
+-----------------------
+
+We have a special Syntax for linking to classes in the API documentation.
+See the [code style guide](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md#markdown) for details.
 
 Creating your own templates
 ---------------------------

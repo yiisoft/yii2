@@ -1,8 +1,7 @@
 <?php
-/**
- * @var \Exception $exception
- * @var \yii\web\ErrorHandler $handler
- */
+/* @var $this \yii\web\View */
+/* @var $exception \Exception */
+/* @var $handler \yii\web\ErrorHandler */
 ?>
 <?php if (method_exists($this, 'beginPage')) $this->beginPage(); ?>
 <!doctype html>
@@ -12,12 +11,16 @@
     <meta charset="utf-8"/>
 
     <title><?php
+        $name = $handler->getExceptionName($exception);
         if ($exception instanceof \yii\web\HttpException) {
-            echo (int) $exception->statusCode . ' ' . $handler->htmlEncode($exception->getName());
-        } elseif ($exception instanceof \yii\base\Exception) {
-            echo $handler->htmlEncode($exception->getName() . ' – ' . get_class($exception));
+            echo (int) $exception->statusCode . ' ' . $handler->htmlEncode($name);
         } else {
-            echo $handler->htmlEncode(get_class($exception));
+            $name = $handler->getExceptionName($exception);
+            if ($name !== null) {
+                echo $handler->htmlEncode($name . ' – ' . get_class($exception));
+            } else {
+                echo $handler->htmlEncode(get_class($exception));
+            }
         }
     ?></title>
 
@@ -83,6 +86,12 @@ html,body{
     font-size: 20px;
     line-height: 1.25;
 }
+.header pre{
+    margin: 10px 0;
+    overflow-y: scroll;
+    font-family: Courier, monospace;
+    font-size: 14px;
+}
 
 /* previous exceptions */
 .header .previous{
@@ -100,8 +109,8 @@ html,body{
     filter: progid:DXImageTransform.Microsoft.BasicImage(mirror=1);
     font-size: 26px;
     position: absolute;
-    margin-top: -5px;
-    margin-left: -25px;
+    margin-top: -3px;
+    margin-left: -30px;
     color: #e51717;
 }
 .header .previous h2{
@@ -125,6 +134,11 @@ html,body{
 .header .previous p{
     font-size: 14px;
     color: #aaa;
+}
+.header .previous pre{
+    font-family: Courier, monospace;
+    font-size: 14px;
+    margin: 10px 0;
 }
 
 /* call stack */
@@ -331,15 +345,22 @@ html,body{
                 if ($exception instanceof \yii\web\HttpException) {
                     echo '<span>' . $handler->createHttpStatusLink($exception->statusCode, $handler->htmlEncode($exception->getName())) . '</span>';
                     echo ' &ndash; ' . $handler->addTypeLinks(get_class($exception));
-                } elseif ($exception instanceof \yii\base\Exception) {
-                    echo '<span>' . $handler->htmlEncode($exception->getName()) . '</span>';
-                    echo ' &ndash; ' . $handler->addTypeLinks(get_class($exception));
                 } else {
-                    echo '<span>' . $handler->htmlEncode(get_class($exception)) . '</span>';
+                    $name = $handler->getExceptionName($exception);
+                    if ($name !== null) {
+                        echo '<span>' . $handler->htmlEncode($name) . '</span>';
+                        echo ' &ndash; ' . $handler->addTypeLinks(get_class($exception));
+                    } else {
+                        echo '<span>' . $handler->htmlEncode(get_class($exception)) . '</span>';
+                    }
                 }
             ?></h1>
         <?php endif; ?>
         <h2><?= nl2br($handler->htmlEncode($exception->getMessage())) ?></h2>
+
+        <?php if ($exception instanceof \yii\db\Exception && !empty($exception->errorInfo)) {
+            echo '<pre>Error Info: ' . print_r($exception->errorInfo, true) . '</pre>';
+        } ?>
 
         <?= $handler->renderPreviousExceptions($exception) ?>
     </div>

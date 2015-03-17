@@ -2,28 +2,39 @@
 
 use yii\apidoc\templates\bootstrap\SideNavWidget;
 
-/**
- * @var yii\web\View $this
- * @var string $content
- */
+/* @var $this yii\web\View */
+/* @var $content string */
+/* @var $chapters array */
 
-$this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
+if (isset($currentFile)) {
+    foreach ($chapters as $chapter) {
+        foreach ($chapter['content'] as $chContent) {
+            if ($chContent['file'] == basename($currentFile)) {
+                $guideHeadline = "{$chContent['headline']} - {$chapter['headline']}";
+            }
+        }
+    }
+}
+
+$this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php', isset($guideHeadline) ? ['guideHeadline' => $guideHeadline] : []); ?>
 
 <div class="row">
     <div class="col-md-2">
         <?php
-        asort($headlines);
         $nav = [];
-        $nav[] = [
-            'label' => 'Index',
-            'url' => $this->context->generateGuideUrl('index.md'),
-            'active' => isset($currentFile) && (basename($currentFile) == 'index.md'),
-        ];
-        foreach ($headlines as $file => $headline) {
+        foreach ($chapters as $chapter) {
+            $items = [];
+            foreach($chapter['content'] as $chContent) {
+                $items[] = [
+                    'label' => $chContent['headline'],
+                    'url' => $this->context->generateGuideUrl($chContent['file']),
+                    'active' => isset($currentFile) && ($chContent['file'] == basename($currentFile)),
+                ];
+            }
             $nav[] = [
-                'label' => $headline,
-                'url' => $this->context->generateGuideUrl($file),
-                'active' => isset($currentFile) && ($file == $currentFile),
+                'label' => $chapter['headline'],
+//                'url' => $this->context->generateGuideUrl($file),
+                'items' => $items,
             ];
         } ?>
         <?= SideNavWidget::widget([
@@ -34,6 +45,7 @@ $this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
     </div>
     <div class="col-md-9 guide-content" role="main">
         <?= $content ?>
+        <div class="toplink"><a href="#" class="h1" title="go to top"><span class="glyphicon glyphicon-arrow-up"></a></div>
     </div>
 </div>
 

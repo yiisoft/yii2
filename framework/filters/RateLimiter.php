@@ -77,9 +77,9 @@ class RateLimiter extends ActionFilter
                 $action
             );
         } elseif ($user) {
-            Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.');
+            Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.', __METHOD__);
         } else {
-            Yii::info('Rate limit skipped: user not logged in.');
+            Yii::info('Rate limit skipped: user not logged in.', __METHOD__);
         }
         return true;
     }
@@ -110,7 +110,7 @@ class RateLimiter extends ActionFilter
             throw new TooManyRequestsHttpException($this->errorMessage);
         } else {
             $user->saveAllowance($request, $action, $allowance - 1, $current);
-            $this->addRateLimitHeaders($response, $limit, 0, (int) (($limit - $allowance) * $window / $limit));
+            $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance) * $window / $limit));
         }
     }
 

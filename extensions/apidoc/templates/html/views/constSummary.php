@@ -4,11 +4,9 @@ use yii\apidoc\helpers\ApiMarkdown;
 use yii\apidoc\models\ClassDoc;
 use yii\helpers\ArrayHelper;
 
-/**
- * @var ClassDoc $type
- * @var yii\web\View $this
- * @var \yii\apidoc\templates\html\ApiRenderer $renderer
- */
+/* @var $type ClassDoc */
+/* @var $this yii\web\View */
+/* @var $renderer \yii\apidoc\templates\html\ApiRenderer */
 
 $renderer = $this->context;
 
@@ -35,7 +33,7 @@ ArrayHelper::multisort($constants, 'name');
     </tr>
     <?php foreach ($constants as $constant): ?>
         <tr<?= $constant->definedBy != $type->name ? ' class="inherited"' : '' ?> id="<?= $constant->name ?>">
-          <td><?= $constant->name ?><a name="<?= $constant->name ?>-detail"></a></td>
+          <td id="<?= $constant->name ?>-detail"><?= $constant->name ?></td>
           <td><?= $constant->value ?></td>
           <td><?= ApiMarkdown::process($constant->shortDescription . "\n" . $constant->description, $constant->definedBy, true) ?></td>
           <td><?= $renderer->createTypeLink($constant->definedBy) ?></td>

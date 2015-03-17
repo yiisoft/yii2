@@ -34,6 +34,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
      */
     private $_cookies = [];
 
+
     /**
      * Constructor.
      * @param array $cookies the cookies that this collection initially contains. This should be
@@ -176,6 +177,16 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
     public function toArray()
     {
         return $this->_cookies;
+    }
+
+    /**
+     * Populates the cookie collection from an array.
+     * @param array $array the cookies to populate from
+     * @since 2.0.3
+     */
+    public function fromArray(array $array)
+    {
+        $this->_cookies = $array;
     }
 
     /**

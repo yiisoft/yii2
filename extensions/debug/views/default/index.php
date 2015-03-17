@@ -1,16 +1,13 @@
 <?php
+/* @var $this \yii\web\View */
+/* @var $manifest array */
+/* @var $searchModel \yii\debug\models\search\Debug */
+/* @var $dataProvider ArrayDataProvider */
+/* @var $panels \yii\debug\Panel[] */
 
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\data\ArrayDataProvider;
-
-/**
- * @var \yii\web\View $this
- * @var array $manifest
- * @var \yii\debug\models\search\Debug $searchModel
- * @var ArrayDataProvider $dataProvider
- * @var \yii\debug\Panel[] $panels
- */
 
 $this->title = 'Yii Debugger';
 ?>
@@ -35,7 +32,15 @@ $this->title = 'Yii Debugger';
 if (isset($this->context->module->panels['db']) && isset($this->context->module->panels['request'])) {
 
     echo "			<h1>Available Debug Data</h1>";
-    $timeFormatter = extension_loaded('intl') ? Yii::createObject(['class' => 'yii\i18n\Formatter']) : Yii::$app->formatter;
+
+    $codes = [];
+    foreach ($manifest as $tag => $vals) {
+        if (!empty($vals['statusCode'])) {
+            $codes[] = $vals['statusCode'];
+        }
+    }
+    $codes = array_unique($codes, SORT_NUMERIC);
+    $statusCodes = !empty($codes) ? array_combine($codes, $codes) : null;
 
     echo GridView::widget([
         'dataProvider' => $dataProvider,
@@ -60,9 +65,10 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
             ],
             [
                 'attribute' => 'time',
-                'value' => function ($data) use ($timeFormatter) {
-                    return $timeFormatter->asDateTime($data['time'], 'short');
+                'value' => function ($data) {
+                    return '<span class="nowrap">' . Yii::$app->formatter->asDatetime($data['time'], 'short') . '</span>';
                 },
+                'format' => 'html',
             ],
             'ip',
             [
@@ -106,7 +112,7 @@ if (isset($this->context->module->panels['db']) && isset($this->context->module-
             ],
             [
                 'attribute' => 'statusCode',
-                'filter' => [200 => 200, 404 => 404, 403 => 403, 500 => 500],
+                'filter' => $statusCodes,
                 'label' => 'Status code'
             ],
         ],

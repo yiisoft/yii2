@@ -21,7 +21,8 @@ use yii\helpers\Json;
  * getter and setter. See [[getAccessToken()]] and [[setAccessToken()]] for details.
  * @property array $curlOptions CURL options. This property is read-only.
  * @property string $returnUrl Return URL.
- * @property signature\BaseMethod $signatureMethod Signature method instance. This property is read-only.
+ * @property signature\BaseMethod $signatureMethod Signature method instance. Note that the type of this
+ * property differs in getter and setter. See [[getSignatureMethod()]] and [[setSignatureMethod()]] for details.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -38,12 +39,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      */
     public $version = '1.0';
     /**
-     * @var string URL, which user will be redirected after authentication at the OAuth provider web site.
-     * Note: this should be absolute URL (with http:// or https:// leading).
-     * By default current URL will be used.
-     */
-    private $_returnUrl;
-    /**
      * @var string API base URL.
      */
     public $apiBaseUrl;
@@ -55,9 +50,16 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @var string auth request scope.
      */
     public $scope;
+
+    /**
+     * @var string URL, which user will be redirected after authentication at the OAuth provider web site.
+     * Note: this should be absolute URL (with http:// or https:// leading).
+     * By default current URL will be used.
+     */
+    private $_returnUrl;
     /**
      * @var array cURL request options. Option values from this field will overwrite corresponding
-     * values from {@link defaultCurlOptions()}.
+     * values from [[defaultCurlOptions()]].
      */
     private $_curlOptions = [];
     /**
@@ -68,6 +70,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @var signature\BaseMethod|array signature method instance or its array configuration.
      */
     private $_signatureMethod = [];
+
 
     /**
      * @param string $returnUrl return URL
@@ -85,7 +88,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if ($this->_returnUrl === null) {
             $this->_returnUrl = $this->defaultReturnUrl();
         }
-
         return $this->_returnUrl;
     }
 
@@ -154,7 +156,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
     }
 
     /**
-     * Composes default {@link returnUrl} value.
+     * Composes default [[returnUrl]] value.
      * @return string return URL.
      */
     protected function defaultReturnUrl()
@@ -167,15 +169,17 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $method request type.
      * @param string $url request URL.
      * @param array $params request params.
+     * @param array $headers additional request headers.
      * @return array response.
      * @throws Exception on failure.
      */
-    protected function sendRequest($method, $url, array $params = [])
+    protected function sendRequest($method, $url, array $params = [], array $headers = [])
     {
         $curlOptions = $this->mergeCurlOptions(
             $this->defaultCurlOptions(),
             $this->getCurlOptions(),
             [
+                CURLOPT_HTTPHEADER => $headers,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_URL => $url,
             ],
@@ -197,8 +201,8 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if ($errorNumber > 0) {
             throw new Exception('Curl error requesting "' .  $url . '": #' . $errorNumber . ' - ' . $errorMessage);
         }
-        if ($responseHeaders['http_code'] != 200) {
-            throw new Exception('Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
+        if (strncmp($responseHeaders['http_code'], '20', 2) !== 0) {
+            throw new InvalidResponseException($responseHeaders, $response, 'Request failed with code: ' . $responseHeaders['http_code'] . ', message: ' . $response);
         }
 
         return $this->processResponse($response, $this->determineContentTypeByHeaders($responseHeaders));
@@ -220,10 +224,13 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         while (!empty($args)) {
             $next = array_shift($args);
             foreach ($next as $k => $v) {
-                $res[$k] = $v;
+                if (is_array($v) && !empty($res[$k]) && is_array($res[$k])) {
+                    $res[$k] = array_merge($res[$k], $v);
+                } else {
+                    $res[$k] = $v;
+                }
             }
         }
-
         return $res;
     }
 
@@ -282,7 +289,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 throw new Exception('Unknown response type "' . $contentType . '".');
             }
         }
-
         return $response;
     }
 
@@ -302,7 +308,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 $result[$key] = $this->convertXmlToArray($value);
             }
         }
-
         return $result;
     }
 
@@ -324,7 +329,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 return self::CONTENT_TYPE_XML;
             }
         }
-
         return self::CONTENT_TYPE_AUTO;
     }
 
@@ -344,7 +348,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if (preg_match('/^<.*>$/is', $rawContent)) {
             return self::CONTENT_TYPE_XML;
         }
-
         return self::CONTENT_TYPE_AUTO;
     }
 
@@ -358,7 +361,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if (!array_key_exists('class', $signatureMethodConfig)) {
             $signatureMethodConfig['class'] = signature\HmacSha1::className();
         }
-
         return Yii::createObject($signatureMethodConfig);
     }
 
@@ -372,7 +374,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if (!array_key_exists('class', $tokenConfig)) {
             $tokenConfig['class'] = OAuthToken::className();
         }
-
         return Yii::createObject($tokenConfig);
     }
 
@@ -390,7 +391,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
             $url .= '&';
         }
         $url .= http_build_query($params, '', '&', PHP_QUERY_RFC3986);
-
         return $url;
     }
 
@@ -417,7 +417,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
                 $token = $this->refreshAccessToken($token);
             }
         }
-
         return $token;
     }
 
@@ -432,7 +431,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         $session = Yii::$app->getSession();
         $key = $this->getStateKeyPrefix() . $key;
         $session->set($key, $value);
-
         return $this;
     }
 
@@ -446,7 +444,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         $session = Yii::$app->getSession();
         $key = $this->getStateKeyPrefix() . $key;
         $value = $session->get($key);
-
         return $value;
     }
 
@@ -460,7 +457,6 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         $session = Yii::$app->getSession();
         $key = $this->getStateKeyPrefix() . $key;
         $session->remove($key);
-
         return true;
     }
 
@@ -478,10 +474,11 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $apiSubUrl API sub URL, which will be append to [[apiBaseUrl]], or absolute API URL.
      * @param string $method request method.
      * @param array $params request parameters.
+     * @param array $headers additional request headers.
      * @return array API response
      * @throws Exception on failure.
      */
-    public function api($apiSubUrl, $method = 'GET', array $params = [])
+    public function api($apiSubUrl, $method = 'GET', array $params = [], array $headers = [])
     {
         if (preg_match('/^https?:\\/\\//is', $apiSubUrl)) {
             $url = $apiSubUrl;
@@ -492,8 +489,7 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
         if (!is_object($accessToken) || !$accessToken->getIsValid()) {
             throw new Exception('Invalid access token.');
         }
-
-        return $this->apiInternal($accessToken, $url, $method, $params);
+        return $this->apiInternal($accessToken, $url, $method, $params, $headers);
     }
 
     /**
@@ -519,8 +515,9 @@ abstract class BaseOAuth extends BaseClient implements ClientInterface
      * @param string $url absolute API URL.
      * @param string $method request method.
      * @param array $params request parameters.
+     * @param array $headers additional request headers.
      * @return array API response.
      * @throws Exception on failure.
      */
-    abstract protected function apiInternal($accessToken, $url, $method, array $params);
+    abstract protected function apiInternal($accessToken, $url, $method, array $params, array $headers);
 }

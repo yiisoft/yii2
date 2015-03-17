@@ -79,6 +79,7 @@ class Selectable extends Widget
      */
     public $itemOptions = [];
 
+
     /**
      * Renders the widget.
      */
@@ -89,7 +90,7 @@ class Selectable extends Widget
         echo Html::beginTag($tag, $options) . "\n";
         echo $this->renderItems() . "\n";
         echo Html::endTag($tag) . "\n";
-        $this->registerWidget('selectable', SelectableAsset::className());
+        $this->registerWidget('selectable');
     }
 
     /**
@@ -104,7 +105,7 @@ class Selectable extends Widget
             $options = $this->itemOptions;
             $tag = ArrayHelper::remove($options, 'tag', 'li');
             if (is_array($item)) {
-                if (!isset($item['content'])) {
+                if (!array_key_exists('content', $item)) {
                     throw new InvalidConfigException("The 'content' option is required.");
                 }
                 $options = array_merge($options, ArrayHelper::getValue($item, 'options', []));

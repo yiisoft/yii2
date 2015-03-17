@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Exception;
 use yii\base\ErrorException;
 use yii\base\UserException;
+use yii\helpers\VarDumper;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -68,11 +69,12 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         if (Yii::$app->has('response')) {
             $response = Yii::$app->getResponse();
+            $response->isSent = false;
         } else {
             $response = new Response();
         }
 
-        $useErrorView = $response->format === \yii\web\Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
+        $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
         if ($useErrorView && $this->errorAction !== null) {
             $result = Yii::$app->runAction($this->errorAction);
@@ -81,8 +83,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
             } else {
                 $response->data = $result;
             }
-        } elseif ($response->format === \yii\web\Response::FORMAT_HTML) {
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' || YII_ENV_TEST) {
+        } elseif ($response->format === Response::FORMAT_HTML) {
+            if (YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
                 // AJAX request
                 $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';
             } else {
@@ -96,6 +98,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                     'exception' => $exception,
                 ]);
             }
+        } elseif ($response->format === Response::FORMAT_RAW) {
+            $response->data = $exception;
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
@@ -116,8 +120,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function convertExceptionToArray($exception)
     {
+        if (!YII_DEBUG && !$exception instanceof UserException && !$exception instanceof HttpException) {
+            $exception = new HttpException(500, 'There was an error at the server.');
+        }
+
         $array = [
-            'type' => get_class($exception),
             'name' => ($exception instanceof Exception || $exception instanceof ErrorException) ? $exception->getName() : 'Exception',
             'message' => $exception->getMessage(),
             'code' => $exception->getCode(),
@@ -126,7 +133,15 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $array['status'] = $exception->statusCode;
         }
         if (YII_DEBUG) {
-            $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
+            $array['type'] = get_class($exception);
+            if (!$exception instanceof UserException) {
+                $array['file'] = $exception->getFile();
+                $array['line'] = $exception->getLine();
+                $array['stack-trace'] = explode("\n", $exception->getTraceAsString());
+                if ($exception instanceof \yii\db\Exception) {
+                    $array['error-info'] = $exception->errorInfo;
+                }
+            }
         }
         if (($prev = $exception->getPrevious()) !== null) {
             $array['previous'] = $this->convertExceptionToArray($prev);
@@ -152,27 +167,45 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function addTypeLinks($code)
     {
-        if (preg_match('/(.*?)::([^(]+)\((.*)\)/', $code, $matches)) {
+        if (preg_match('/(.*?)::([^(]+)/', $code, $matches)) {
             $class = $matches[1];
             $method = $matches[2];
-            $args = $matches[3];
-            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method) . '(' . $args . ')';
+            $text = $this->htmlEncode($class) . '::' . $this->htmlEncode($method);
         } else {
             $class = $code;
+            $method = null;
             $text = $this->htmlEncode($class);
         }
 
-        if (strpos($code, 'yii\\') !== 0) {
+        $url = $this->getTypeUrl($class, $method);
+
+        if (!$url) {
             return $text;
+        }
+
+        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
+    }
+
+    /**
+     * Returns the informational link URL for a given PHP type/class.
+     * @param string $class the type or class name.
+     * @param string|null $method the method name.
+     * @return string|null the informational link URL.
+     * @see addTypeLinks()
+     */
+    protected function getTypeUrl($class, $method)
+    {
+        if (strpos($class, 'yii\\') !== 0) {
+            return null;
         }
 
         $page = $this->htmlEncode(strtolower(str_replace('\\', '-', $class)));
         $url = "http://www.yiiframework.com/doc-2.0/$page.html";
-        if (isset($method)) {
-            $url .= "#$method-detail";
+        if ($method) {
+            $url .= "#$method()-detail";
         }
 
-        return '<a href="' . $url . '" target="_blank">' . $text . '</a>';
+        return $url;
     }
 
     /**
@@ -259,7 +292,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $request = '';
         foreach (['_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV'] as $name) {
             if (!empty($GLOBALS[$name])) {
-                $request .= '$' . $name . ' = ' . var_export($GLOBALS[$name], true) . ";\n\n";
+                $request .= '$' . $name . ' = ' . VarDumper::export($GLOBALS[$name]) . ";\n\n";
             }
         }
 
@@ -273,7 +306,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function isCoreFile($file)
     {
-        return $file === null || strpos(realpath($file), YII_PATH . DIRECTORY_SEPARATOR) === 0;
+        return $file === null || strpos(realpath($file), YII2_PATH . DIRECTORY_SEPARATOR) === 0;
     }
 
     /**
@@ -338,8 +371,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
         foreach ($args as $key => $value) {
             $count++;
-            if($count>=5) {
-                if($count>5) {
+            if ($count>=5) {
+                if ($count>5) {
                     unset($args[$key]);
                 } else {
                     $args[$key] = '...';
@@ -363,7 +396,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = '[' . $this->argumentsToString($value) . ']';
             } elseif ($value === null) {
                 $args[$key] = '<span class="keyword">null</span>';
-            } elseif(is_resource($value)) {
+            } elseif (is_resource($value)) {
                 $args[$key] = '<span class="keyword">resource</span>';
             } else {
                 $args[$key] = '<span class="number">' . $value . '</span>';
@@ -378,5 +411,18 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $out = implode(", ", $args);
 
         return $out;
+    }
+
+    /**
+     * Returns human-readable exception name
+     * @param \Exception $exception
+     * @return string human-readable exception name or null if it cannot be determined
+     */
+    public function getExceptionName($exception)
+    {
+        if ($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\InvalidCallException || $exception instanceof \yii\base\InvalidParamException || $exception instanceof \yii\base\UnknownMethodException) {
+            return $exception->getName();
+        }
+        return null;
     }
 }

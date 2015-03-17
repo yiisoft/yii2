@@ -26,7 +26,7 @@ use yii\base\Event;
  * public function behaviors()
  * {
  *     return [
- *         'attributeStamp' => [
+ *         [
  *             'class' => AttributeBehavior::className(),
  *             'attributes' => [
  *                 ActiveRecord::EVENT_BEFORE_INSERT => 'attribute1',
@@ -74,6 +74,7 @@ class AttributeBehavior extends Behavior
      */
     public $value;
 
+
     /**
      * @inheritdoc
      */
@@ -92,7 +93,10 @@ class AttributeBehavior extends Behavior
             $attributes = (array) $this->attributes[$event->name];
             $value = $this->getValue($event);
             foreach ($attributes as $attribute) {
-                $this->owner->$attribute = $value;
+                // ignore attribute names which are not string (e.g. when set by TimestampBehavior::updatedAtAttribute)
+                if (is_string($attribute)) {
+                    $this->owner->$attribute = $value;
+                }
             }
         }
     }

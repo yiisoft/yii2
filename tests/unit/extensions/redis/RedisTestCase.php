@@ -15,7 +15,7 @@ abstract class RedisTestCase extends TestCase
 {
     protected function setUp()
     {
-        $databases = $this->getParam('databases');
+        $databases = self::getParam('databases');
         $params = isset($databases['redis']) ? $databases['redis'] : null;
         if ($params === null) {
             $this->markTestSkipped('No redis server connection configured.');
@@ -36,7 +36,7 @@ abstract class RedisTestCase extends TestCase
      */
     public function getConnection($reset = true)
     {
-        $databases = $this->getParam('databases');
+        $databases = self::getParam('databases');
         $params = isset($databases['redis']) ? $databases['redis'] : [];
         $db = new Connection($params);
         if ($reset) {

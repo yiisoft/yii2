@@ -83,6 +83,10 @@ class UrlRule extends Object implements UrlRuleInterface
      * If it is [[CREATION_ONLY]], the rule is for URL creation only.
      */
     public $mode;
+    /**
+     * @var boolean a value indicating if parameters should be url encoded.
+     */
+    public $encodeParams = true;
 
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
@@ -127,6 +131,7 @@ class UrlRule extends Object implements UrlRuleInterface
         }
 
         $this->pattern = trim($this->pattern, '/');
+        $this->route = trim($this->route, '/');
 
         if ($this->host !== null) {
             $this->host = rtrim($this->host, '/');
@@ -146,7 +151,6 @@ class UrlRule extends Object implements UrlRuleInterface
             $this->pattern = '/' . $this->pattern . '/';
         }
 
-        $this->route = trim($this->route, '/');
         if (strpos($this->route, '<') !== false && preg_match_all('/<(\w+)>/', $this->route, $matches)) {
             foreach ($matches[1] as $name) {
                 $this->_routeParams[$name] = "<$name>";
@@ -181,7 +185,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (isset($this->_routeParams[$name])) {
                     $tr2["<$name>"] = "(?P<$name>$pattern)";
                 } else {
-                    $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#";
+                    $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#u";
                 }
             }
         }
@@ -215,7 +219,7 @@ class UrlRule extends Object implements UrlRuleInterface
         $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
-            if (substr($pathInfo, -$n) === $suffix) {
+            if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
                 $pathInfo = substr($pathInfo, 0, -$n);
                 if ($pathInfo === '') {
                     // suffix alone is not allowed
@@ -310,7 +314,7 @@ class UrlRule extends Object implements UrlRuleInterface
         // match params in the pattern
         foreach ($this->_paramRules as $name => $rule) {
             if (isset($params[$name]) && !is_array($params[$name]) && ($rule === '' || preg_match($rule, $params[$name]))) {
-                $tr["<$name>"] = urlencode($params[$name]);
+                $tr["<$name>"] = $this->encodeParams ? urlencode($params[$name]) : $params[$name];
                 unset($params[$name]);
             } elseif (!isset($this->defaults[$name]) || isset($params[$name])) {
                 return false;

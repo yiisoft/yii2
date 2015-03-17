@@ -68,6 +68,7 @@ class FileCache extends Cache
      */
     public $dirMode = 0775;
 
+
     /**
      * Initializes this component by ensuring the existence of the cache path.
      */
@@ -212,7 +213,7 @@ class FileCache extends Cache
      * @param boolean $force whether to enforce the garbage collection regardless of [[gcProbability]].
      * Defaults to false, meaning the actual deletion happens with the probability as specified by [[gcProbability]].
      * @param boolean $expiredOnly whether to removed expired cache files only.
-     * If true, all cache files under [[cachePath]] will be removed.
+     * If false, all cache files under [[cachePath]] will be removed.
      */
     public function gc($force = false, $expiredOnly = true)
     {
@@ -239,10 +240,16 @@ class FileCache extends Cache
                 if (is_dir($fullPath)) {
                     $this->gcRecursive($fullPath, $expiredOnly);
                     if (!$expiredOnly) {
-                        @rmdir($fullPath);
+                        if (!@rmdir($fullPath)) {
+                            $error = error_get_last();
+                            Yii::warning("Unable to remove directory '{$fullPath}': {$error['message']}", __METHOD__);
+                        }
                     }
                 } elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
-                    @unlink($fullPath);
+                    if (!@unlink($fullPath)) {
+                        $error = error_get_last();
+                        Yii::warning("Unable to remove file '{$fullPath}': {$error['message']}", __METHOD__);
+                    }
                 }
             }
             closedir($handle);

@@ -44,10 +44,12 @@ class ActiveFixture extends BaseActiveFixture
      * name of the table associated with this fixture. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
+
     /**
      * @var TableSchema the table schema for the table associated with this fixture
      */
     private $_table;
+
 
     /**
      * @inheritdoc
@@ -63,6 +65,7 @@ class ActiveFixture extends BaseActiveFixture
     /**
      * Loads the fixture.
      *
+     * The default implementation will first clean up the table by calling [[resetTable()]].
      * It will then populate the table with the data returned by [[getData()]].
      *
      * If you override this method, you should consider calling the parent implementation
@@ -70,10 +73,9 @@ class ActiveFixture extends BaseActiveFixture
      */
     public function load()
     {
-        parent::load();
-
+        $this->resetTable();
+        $this->data = [];
         $table = $this->getTableSchema();
-
         foreach ($this->getData() as $alias => $row) {
             $this->db->createCommand()->insert($table->fullName, $row)->execute();
             if ($table->sequenceName !== null) {
@@ -86,17 +88,6 @@ class ActiveFixture extends BaseActiveFixture
             }
             $this->data[$alias] = $row;
         }
-    }
-
-    /**
-     * Unloads the fixture.
-     *
-     * The default implementation will clean up the table by calling [[resetTable()]].
-     */
-    public function unload()
-    {
-        $this->resetTable();
-        parent::unload();
     }
 
     /**
@@ -147,7 +138,7 @@ class ActiveFixture extends BaseActiveFixture
         $db = $this->db;
         $tableName = $this->tableName;
         if ($tableName === null) {
-            /** @var \yii\db\ActiveRecord $modelClass */
+            /* @var $modelClass \yii\db\ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
         }

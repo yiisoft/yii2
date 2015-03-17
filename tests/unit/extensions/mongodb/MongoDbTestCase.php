@@ -34,7 +34,7 @@ class MongoDbTestCase extends TestCase
         if (!extension_loaded('mongo')) {
             $this->markTestSkipped('mongo extension required.');
         }
-        $config = $this->getParam('mongodb');
+        $config = self::getParam('mongodb');
         if (!empty($config)) {
             $this->mongoDbConfig = $config;
         }
@@ -58,11 +58,10 @@ class MongoDbTestCase extends TestCase
     {
         $baseNameSpace = 'yii/mongodb';
         $basePath = realpath(__DIR__. '/../../../../extensions/mongodb');
-        $files = FileHelper::findFiles($basePath);
-        foreach ($files as $file) {
-            $classRelativePath = str_replace($basePath, '', $file);
-            $classFullName = str_replace(['/', '.php'], ['\\', ''], $baseNameSpace . $classRelativePath);
-            Yii::$classMap[$classFullName] = $file;
+
+        $alias = '@' . $baseNameSpace;
+        if (!in_array($alias, Yii::$aliases)) {
+            Yii::setAlias($alias, $basePath);
         }
     }
 

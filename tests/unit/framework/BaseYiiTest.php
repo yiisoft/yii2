@@ -26,7 +26,7 @@ class BaseYiiTest extends TestCase
 
     public function testAlias()
     {
-        $this->assertEquals(YII_PATH, Yii::getAlias('@yii'));
+        $this->assertEquals(YII2_PATH, Yii::getAlias('@yii'));
 
         Yii::$aliases = [];
         $this->assertFalse(Yii::getAlias('@yii', false));

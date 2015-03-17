@@ -94,9 +94,9 @@ interface ActiveRecordInterface
     public static function isPrimaryKey($keys);
 
     /**
-     * Creates an [[ActiveQueryInterface|ActiveQuery]] instance for query purpose.
+     * Creates an [[ActiveQueryInterface]] instance for query purpose.
      *
-     * The returned [[ActiveQueryInterface|ActiveQuery]] instance can be further customized by calling
+     * The returned [[ActiveQueryInterface]] instance can be further customized by calling
      * methods defined in [[ActiveQueryInterface]] before `one()` or `all()` is called to return
      * populated ActiveRecord instances. For example,
      *
@@ -146,7 +146,7 @@ interface ActiveRecordInterface
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
      *
-     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface]] instance.
      */
     public static function find();
 
@@ -178,19 +178,23 @@ interface ActiveRecordInterface
      * ```
      *
      * @param mixed $condition primary key value or a set of column values
-     * @return static ActiveRecord instance matching the condition, or null if nothing matches.
+     * @return static|null ActiveRecord instance matching the condition, or null if nothing matches.
      */
     public static function findOne($condition);
 
     /**
-     * Returns a list of active record models that match the specified primary key value or a set of column values.
+     * Returns a list of active record models that match the specified primary key value(s) or a set of column values.
      *
      * The method accepts:
      *
-     *  - a scalar value (integer or string): query by a single primary key value and return the
-     *    corresponding record (or null if not found).
-     *  - an array of name-value pairs: query by a set of attribute values and return a single record
-     *    matching all of them (or null if not found).
+     *  - a scalar value (integer or string): query by a single primary key value and return an array containing the
+     *    corresponding record (or an empty array if not found).
+     *  - an array of scalar values (integer or string): query by a list of primary key values and return the
+     *    corresponding records (or an empty array if none was found).
+     *    Note that an empty condition will result in an empty result as it will be interpreted as a search for
+     *    primary keys and not an empty `WHERE` condition.
+     *  - an array of name-value pairs: query by a set of attribute values and return an array of records
+     *    matching all of them (or an empty array if none was found).
      *
      * Note that this method will automatically call the `all()` method and return an array of
      * [[ActiveRecordInterface|ActiveRecord]] instances. For example,
@@ -361,15 +365,15 @@ interface ActiveRecordInterface
      * to be the corresponding primary key value(s) in the other record.
      * The record with the foreign key will be saved into database without performing validation.
      *
-     * If the relationship involves a pivot table, a new row will be inserted into the
-     * pivot table which contains the primary key values from both records.
+     * If the relationship involves a junction table, a new row will be inserted into the
+     * junction table which contains the primary key values from both records.
      *
      * This method requires that the primary key value is not null.
      *
      * @param string $name the case sensitive name of the relationship.
      * @param static $model the record to be linked with the current one.
-     * @param array $extraColumns additional column values to be saved into the pivot table.
-     * This parameter is only meaningful for a relationship involving a pivot table
+     * @param array $extraColumns additional column values to be saved into the junction table.
+     * This parameter is only meaningful for a relationship involving a junction table
      * (i.e., a relation set with `[[ActiveQueryInterface::via()]]`.)
      */
     public function link($name, $model, $extraColumns = []);
@@ -387,4 +391,10 @@ interface ActiveRecordInterface
      * If true, the model containing the foreign key will be deleted.
      */
     public function unlink($name, $model, $delete = false);
+
+    /**
+     * Returns the connection used by this AR class.
+     * @return mixed the database connection used by this AR class.
+     */
+    public static function getDb();
 }

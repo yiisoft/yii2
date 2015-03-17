@@ -18,6 +18,7 @@ class ConstDoc extends BaseDoc
     public $definedBy;
     public $value;
 
+
     /**
      * @param \phpDocumentor\Reflection\ClassReflector\ConstantReflector $reflector
      * @param Context $context

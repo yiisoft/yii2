@@ -34,6 +34,7 @@ class ExpressionDependency extends Dependency
      */
     public $params;
 
+
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method returns the result of the PHP expression.

@@ -48,6 +48,7 @@ class GoogleOpenId extends OpenId
         'pref/language',
     ];
 
+
     /**
      * @inheritdoc
      */

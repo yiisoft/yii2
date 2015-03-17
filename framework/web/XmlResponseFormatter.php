@@ -45,6 +45,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $itemTag = 'item';
 
+
     /**
      * Formats the specified response.
      * @param Response $response the response to be formatted.
@@ -56,11 +57,13 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
             $this->contentType .= '; charset=' . $charset;
         }
         $response->getHeaders()->set('Content-Type', $this->contentType);
-        $dom = new DOMDocument($this->version, $charset);
-        $root = new DOMElement($this->rootTag);
-        $dom->appendChild($root);
-        $this->buildXml($root, $response->data);
-        $response->content = $dom->saveXML();
+        if ($response->data !== null) {
+            $dom = new DOMDocument($this->version, $charset);
+            $root = new DOMElement($this->rootTag);
+            $dom->appendChild($root);
+            $this->buildXml($root, $response->data);
+            $response->content = $dom->saveXML();
+        }
     }
 
     /**

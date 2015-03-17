@@ -33,7 +33,7 @@ class ColumnSchema extends Object
     public $type;
     /**
      * @var string the PHP type of this column. Possible PHP types include:
-     * string, boolean, integer, double.
+     * `string`, `boolean`, `integer`, `double`.
      */
     public $phpType;
     /**
@@ -78,13 +78,40 @@ class ColumnSchema extends Object
      */
     public $comment;
 
+
     /**
-     * Converts the input value according to [[phpType]].
+     * Converts the input value according to [[phpType]] after retrieval from the database.
      * If the value is null or an [[Expression]], it will not be converted.
      * @param mixed $value input value
      * @return mixed converted value
      */
-    public function typecast($value)
+    public function phpTypecast($value)
+    {
+        return $this->typecast($value);
+    }
+
+    /**
+     * Converts the input value according to [[type]] and [[dbType]] for use in a db query.
+     * If the value is null or an [[Expression]], it will not be converted.
+     * @param mixed $value input value
+     * @return mixed converted value. This may also be an array containing the value as the first element
+     * and the PDO type as the second element.
+     */
+    public function dbTypecast($value)
+    {
+        // the default implementation does the same as casting for PHP, but it should be possible
+        // to override this with annotation of explicit PDO type.
+        return $this->typecast($value);
+    }
+
+    /**
+     * Converts the input value according to [[phpType]] after retrieval from the database.
+     * If the value is null or an [[Expression]], it will not be converted.
+     * @param mixed $value input value
+     * @return mixed converted value
+     * @since 2.0.3
+     */
+    protected function typecast($value)
     {
         if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY) {
             return null;
@@ -93,12 +120,15 @@ class ColumnSchema extends Object
             return $value;
         }
         switch ($this->phpType) {
+            case 'resource':
             case 'string':
                 return is_resource($value) ? $value : (string) $value;
             case 'integer':
-                return (integer) $value;
+                return (int) $value;
             case 'boolean':
-                return (boolean) $value;
+                return (bool) $value;
+            case 'double':
+                return (double) $value;
         }
 
         return $value;

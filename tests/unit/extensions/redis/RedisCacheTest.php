@@ -22,7 +22,7 @@ class RedisCacheTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        $databases = $this->getParam('databases');
+        $databases = self::getParam('databases');
         $params = isset($databases['redis']) ? $databases['redis'] : null;
         if ($params === null) {
             $this->markTestSkipped('No redis server connection configured.');
@@ -85,6 +85,30 @@ class RedisCacheTest extends CacheTestCase
         $this->assertFalse($cache->get($key));
         $cache->set($key, $data);
         $this->assertTrue($cache->get($key) === $data);
+    }
+
+    /**
+     * Store a megabyte and see how it goes
+     * https://github.com/yiisoft/yii2/issues/6547
+     */
+    public function testReallyLargeData()
+    {
+        $cache = $this->getCacheInstance();
+
+        $keys = [];
+        for($i = 1; $i < 16; $i++) {
+            $key = 'realbigdata' . $i;
+            $data = str_repeat('X', 100 * 1024); // 100 KB
+            $keys[$key] = $data;
+
+//            $this->assertTrue($cache->get($key) === false); // do not display 100KB in terminal if this fails :)
+            $cache->set($key, $data);
+        }
+        $values = $cache->mget(array_keys($keys));
+        foreach($keys as $key => $value) {
+            $this->assertArrayHasKey($key, $values);
+            $this->assertTrue($values[$key] === $value);
+        }
     }
 
     public function testMultiByteGetAndSet()

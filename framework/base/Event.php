@@ -50,6 +50,7 @@ class Event extends Object
 
     private static $_events = [];
 
+
     /**
      * Attaches an event handler to a class-level event.
      *
@@ -74,11 +75,19 @@ class Event extends Object
      * @param callable $handler the event handler.
      * @param mixed $data the data to be passed to the event handler when the event is triggered.
      * When the event handler is invoked, this data can be accessed via [[Event::data]].
+     * @param boolean $append whether to append new event handler to the end of the existing
+     * handler list. If false, the new handler will be inserted at the beginning of the existing
+     * handler list.
      * @see off()
      */
-    public static function on($class, $name, $handler, $data = null)
+    public static function on($class, $name, $handler, $data = null, $append = true)
     {
-        self::$_events[$name][ltrim($class, '\\')][] = [$handler, $data];
+        $class = ltrim($class, '\\');
+        if ($append || empty(self::$_events[$name][$class])) {
+            self::$_events[$name][$class][] = [$handler, $data];
+        } else {
+            array_unshift(self::$_events[$name][$class], [$handler, $data]);
+        }
     }
 
     /**
@@ -101,7 +110,6 @@ class Event extends Object
         }
         if ($handler === null) {
             unset(self::$_events[$name][$class]);
-
             return true;
         } else {
             $removed = false;

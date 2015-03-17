@@ -160,6 +160,14 @@ _MSG_
         $result = $formatter->fallbackFormat($pattern, [], 'en-US');
         $this->assertEquals($pattern, $result, $formatter->getErrorMessage());
     }
+
+    public function testGridViewMessage()
+    {
+        $pattern = 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.';
+        $formatter = new FallbackMessageFormatter();
+        $result = $formatter->fallbackFormat($pattern, ['begin' => 1, 'end' => 5, 'totalCount' => 10], 'en-US');
+        $this->assertEquals('Showing <b>1-5</b> of <b>10</b> items.', $result);
+    }
 }
 
 class FallbackMessageFormatter extends MessageFormatter

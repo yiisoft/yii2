@@ -7,6 +7,7 @@
 
 namespace yii\db\mysql;
 
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -23,20 +24,22 @@ class Schema extends \yii\db\Schema
      */
     public $typeMap = [
         'tinyint' => self::TYPE_SMALLINT,
-        'bit' => self::TYPE_SMALLINT,
+        'bit' => self::TYPE_INTEGER,
         'smallint' => self::TYPE_SMALLINT,
         'mediumint' => self::TYPE_INTEGER,
         'int' => self::TYPE_INTEGER,
         'integer' => self::TYPE_INTEGER,
         'bigint' => self::TYPE_BIGINT,
         'float' => self::TYPE_FLOAT,
-        'double' => self::TYPE_FLOAT,
+        'double' => self::TYPE_DOUBLE,
         'real' => self::TYPE_FLOAT,
         'decimal' => self::TYPE_DECIMAL,
         'numeric' => self::TYPE_DECIMAL,
         'tinytext' => self::TYPE_TEXT,
         'mediumtext' => self::TYPE_TEXT,
         'longtext' => self::TYPE_TEXT,
+        'longblob' => self::TYPE_BINARY,
+        'blob' => self::TYPE_BINARY,
         'text' => self::TYPE_TEXT,
         'varchar' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
@@ -48,6 +51,7 @@ class Schema extends \yii\db\Schema
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
     ];
+
 
     /**
      * Quotes a table name for use in a query.
@@ -123,7 +127,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadColumnSchema($info)
     {
-        $column = new ColumnSchema;
+        $column = $this->createColumnSchema();
 
         $column->name = $info['Field'];
         $column->allowNull = $info['Null'] === 'YES';
@@ -132,11 +136,11 @@ class Schema extends \yii\db\Schema
         $column->comment = $info['Comment'];
 
         $column->dbType = $info['Type'];
-        $column->unsigned = strpos($column->dbType, 'unsigned') !== false;
+        $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
 
         $column->type = self::TYPE_STRING;
         if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
-            $type = $matches[1];
+            $type = strtolower($matches[1]);
             if (isset($this->typeMap[$type])) {
                 $column->type = $this->typeMap[$type];
             }
@@ -168,8 +172,14 @@ class Schema extends \yii\db\Schema
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        if ($column->type !== 'timestamp' || $info['Default'] !== 'CURRENT_TIMESTAMP') {
-            $column->defaultValue = $column->typecast($info['Default']);
+        if (!$column->isPrimaryKey) {
+            if ($column->type === 'timestamp' && $info['Default'] === 'CURRENT_TIMESTAMP') {
+                $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
+            } elseif (isset($type) && $type === 'bit') {
+                $column->defaultValue = bindec(trim($info['Default'],'b\''));
+            } else {
+                $column->defaultValue = $column->phpTypecast($info['Default']);
+            }
         }
 
         return $column;
@@ -183,13 +193,14 @@ class Schema extends \yii\db\Schema
      */
     protected function findColumns($table)
     {
-        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
+        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteTableName($table->fullName);
         try {
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
             $previous = $e->getPrevious();
-            if ($previous instanceof \PDOException && $previous->getCode() == '42S02') {
+            if ($previous instanceof \PDOException && strpos($previous->getMessage(), 'SQLSTATE[42S02') !== false) {
                 // table does not exist
+                // https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_bad_table_error
                 return false;
             }
             throw $e;
@@ -215,7 +226,7 @@ class Schema extends \yii\db\Schema
      */
     protected function getCreateTableSql($table)
     {
-        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteSimpleTableName($table->name))->queryOne();
+        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteTableName($table->fullName))->queryOne();
         if (isset($row['Create Table'])) {
             $sql = $row['Create Table'];
         } else {

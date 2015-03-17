@@ -10,6 +10,8 @@ namespace yii\codeception;
 use yii\test\InitDbFixture;
 
 /**
+ * Base class for database test cases
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

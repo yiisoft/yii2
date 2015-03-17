@@ -25,6 +25,7 @@ class InlineAction extends Action
      */
     public $actionMethod;
 
+
     /**
      * @param string $id the ID of this action
      * @param Controller $controller the controller that owns this action

@@ -50,6 +50,6 @@ class ColumnSchemaTest extends SphinxTestCase
         $columnSchema = new ColumnSchema();
         $columnSchema->type = $type;
         $columnSchema->phpType = $phpType;
-        $this->assertEquals($expectedResult, $columnSchema->typecast($value));
+        $this->assertEquals($expectedResult, $columnSchema->phpTypecast($value));
     }
 }

@@ -14,6 +14,8 @@ use yii\elasticsearch\Command;
  */
 class OrderItem extends ActiveRecord
 {
+    public $total;
+
     public function attributes()
     {
         return ['order_id', 'item_id', 'quantity', 'subtotal'];

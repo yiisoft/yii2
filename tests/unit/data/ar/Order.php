@@ -32,12 +32,29 @@ class Order extends ActiveRecord
         return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
     }
 
+    public function getOrderItemsWithNullFK()
+    {
+        return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id']);
+    }
+
     public function getItems()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->via('orderItems', function ($q) {
                 // additional query configuration
             })->orderBy('item.id');
+    }
+
+    public function getItemsIndexed()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems')->indexBy('id');
+    }
+
+    public function getItemsWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->viaTable('order_item_with_null_fk', ['order_id' => 'id']);
     }
 
     public function getItemsInOrder1()
@@ -59,7 +76,28 @@ class Order extends ActiveRecord
     public function getBooks()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems')
+            ->where(['category_id' => 1]);
+    }
+
+    public function getBooksWithNullFK()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItemsWithNullFK')
+            ->where(['category_id' => 1]);
+    }
+
+    public function getBooksViaTable()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id'])
+            ->where(['category_id' => 1]);
+    }
+
+    public function getBooksWithNullFKViaTable()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->viaTable('order_item_with_null_fk', ['order_id' => 'id'])
             ->where(['category_id' => 1]);
     }
 

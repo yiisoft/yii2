@@ -49,6 +49,7 @@ class Command extends \yii\db\Command
      */
     public $db;
 
+
     /**
      * Creates a batch INSERT command.
      * For example,
@@ -191,7 +192,7 @@ class Command extends \yii\db\Command
      * @param string $index the name of the index from which to take the text processing settings
      * @param string $text the text to break down to keywords.
      * @param boolean $fetchStatistic whether to return document and hit occurrence statistics
-     * @return string the SQL statement for call keywords.
+     * @return static the command object itself
      */
     public function callKeywords($index, $text, $fetchStatistic = false)
     {

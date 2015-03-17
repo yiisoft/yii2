@@ -7,9 +7,6 @@
 
 namespace yii\filters\auth;
 
-use Yii;
-use yii\web\UnauthorizedHttpException;
-
 /**
  * HttpBasicAuth is an action filter that supports the HTTP Basic authentication method.
  *
@@ -70,14 +67,14 @@ class HttpBasicAuth extends AuthMethod
             if ($username !== null || $password !== null) {
                 $identity = call_user_func($this->auth, $username, $password);
                 if ($identity !== null) {
-                    $user->setIdentity($identity);
+                    $user->switchIdentity($identity);
                 } else {
                     $this->handleFailure($response);
                 }
                 return $identity;
             }
         } elseif ($username !== null) {
-            $identity = $user->loginByAccessToken($username);
+            $identity = $user->loginByAccessToken($username, get_class($this));
             if ($identity === null) {
                 $this->handleFailure($response);
             }
@@ -90,9 +87,8 @@ class HttpBasicAuth extends AuthMethod
     /**
      * @inheritdoc
      */
-    public function handleFailure($response)
+    public function challenge($response)
     {
         $response->getHeaders()->set('WWW-Authenticate', "Basic realm=\"{$this->realm}\"");
-        throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
     }
 }

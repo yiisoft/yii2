@@ -1,10 +1,9 @@
 <?php
-/**
- * @var \yii\web\View $this
- * @var \yii\debug\Panel[] $panels
- * @var string $tag
- * @var string $position
- */
+/* @var $this \yii\web\View */
+/* @var $panels \yii\debug\Panel[] */
+/* @var $tag string */
+/* @var $position string */
+
 use yii\helpers\Url;
 
 $minJs = <<<EOD

@@ -43,7 +43,7 @@ class CollectionTest extends MongoDbTestCase
         $files = $this->findAll($collection);
         $this->assertEquals(1, count($files));
 
-        /** @var $file \MongoGridFSFile */
+        /* @var $file \MongoGridFSFile */
         $file = $files[0];
         $this->assertEquals($filename, $file->getFilename());
         $this->assertEquals(file_get_contents($filename), $file->getBytes());
@@ -60,7 +60,7 @@ class CollectionTest extends MongoDbTestCase
         $files = $this->findAll($collection);
         $this->assertEquals(1, count($files));
 
-        /** @var $file \MongoGridFSFile */
+        /* @var $file \MongoGridFSFile */
         $file = $files[0];
         $this->assertEquals($bytes, $file->getBytes());
     }

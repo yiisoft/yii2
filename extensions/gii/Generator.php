@@ -11,6 +11,7 @@ use Yii;
 use ReflectionClass;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\helpers\VarDumper;
 use yii\web\View;
 
 /**
@@ -46,7 +47,7 @@ abstract class Generator extends Model
      * @var string the name of the code template that the user has selected.
      * The value of this property is internally managed by this class.
      */
-    public $template;
+    public $template = 'default';
     /**
      * @var boolean whether the strings will be generated using `Yii::t()` or normal strings.
      */
@@ -56,6 +57,7 @@ abstract class Generator extends Model
      * Defaults to `app`.
      */
     public $messageCategory = 'app';
+
 
     /**
      * @return string name of the code generator
@@ -260,7 +262,7 @@ abstract class Generator extends Model
      * @param array $answers
      * @param string $results this parameter receives a value from this method indicating the log messages
      * generated while saving the code files.
-     * @return boolean whether there is any error while saving the code files.
+     * @return boolean whether files are successfully saved without any error.
      */
     public function save($files, $answers, &$results)
     {
@@ -283,7 +285,7 @@ abstract class Generator extends Model
         $lines[] = "done!\n";
         $results = implode("\n", $lines);
 
-        return $hasError;
+        return !$hasError;
     }
 
     /**
@@ -309,7 +311,7 @@ abstract class Generator extends Model
      */
     public function render($template, $params = [])
     {
-        $view = new View;
+        $view = new View();
         $params['generator'] = $this;
 
         return $view->renderFile($this->getTemplatePath() . '/' . $template, $params, $this);
@@ -496,9 +498,7 @@ abstract class Generator extends Model
         if ($this->enableI18N) {
             // If there are placeholders, use them
             if (!empty($placeholders)) {
-                $search = ['array (', ')'];
-                $replace = ['[', ']'];
-                $ph = ', ' . str_replace($search, $replace, var_export($placeholders, true));
+                $ph = ', ' . VarDumper::export($placeholders);
             } else {
                 $ph = '';
             }

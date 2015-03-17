@@ -4,10 +4,8 @@ use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
 
-/**
- * @var ClassDoc[]|InterfaceDoc[]|TraitDoc[] $types
- * @var yii\web\View $this
- */
+/* @var $types ClassDoc[]|InterfaceDoc[]|TraitDoc[] */
+/* @var $this yii\web\View */
 
 ?><h1>Class Reference</h1>
 
@@ -26,7 +24,7 @@ ksort($types);
 foreach ($types as $i => $class):
 ?>
     <tr>
-        <td><?= $this->context->typeLink($class, $class->name) ?></td>
+        <td><?= $this->context->createTypeLink($class, $class, $class->name) ?></td>
         <td><?= \yii\apidoc\helpers\ApiMarkdown::process($class->shortDescription, $class, true) ?></td>
     </tr>
 <?php endforeach; ?>

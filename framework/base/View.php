@@ -72,7 +72,7 @@ class View extends Component
      */
     public $defaultExtension = 'php';
     /**
-     * @var Theme|array the theme object or the configuration array for creating the theme object.
+     * @var Theme|array|string the theme object or the configuration for creating the theme object.
      * If not set, it means theming is not enabled.
      */
     public $theme;
@@ -113,6 +113,8 @@ class View extends Component
             if (!isset($this->theme['class'])) {
                 $this->theme['class'] = 'yii\base\Theme';
             }
+            $this->theme = Yii::createObject($this->theme);
+        } elseif (is_string($this->theme)) {
             $this->theme = Yii::createObject($this->theme);
         }
     }
@@ -204,7 +206,7 @@ class View extends Component
      * Otherwise, it will simply include the view file as a normal PHP file, capture its output and
      * return it as a string.
      *
-     * @param string $viewFile the view file. This can be either a file path or a path alias.
+     * @param string $viewFile the view file. This can be either an absolute file path or an alias of it.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @param object $context the context that the view should use for rendering the view. If null,
      * existing [[context]] will be used.
@@ -231,20 +233,20 @@ class View extends Component
         $output = '';
         $this->_viewFiles[] = $viewFile;
 
-        if ($this->beforeRender()) {
+        if ($this->beforeRender($viewFile, $params)) {
             Yii::trace("Rendering view file: $viewFile", __METHOD__);
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             if (isset($this->renderers[$ext])) {
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
                     $this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
                 }
-                /** @var ViewRenderer $renderer */
+                /* @var $renderer ViewRenderer */
                 $renderer = $this->renderers[$ext];
                 $output = $renderer->render($this, $viewFile, $params);
             } else {
                 $output = $this->renderPhpFile($viewFile, $params);
             }
-            $this->afterRender($output);
+            $this->afterRender($viewFile, $params, $output);
         }
 
         array_pop($this->_viewFiles);
@@ -265,11 +267,16 @@ class View extends Component
      * This method is invoked right before [[renderFile()]] renders a view file.
      * The default implementation will trigger the [[EVENT_BEFORE_RENDER]] event.
      * If you override this method, make sure you call the parent implementation first.
+     * @param string $viewFile the view file to be rendered.
+     * @param array $params the parameter array passed to the [[render()]] method.
      * @return boolean whether to continue rendering the view file.
      */
-    public function beforeRender()
+    public function beforeRender($viewFile, $params)
     {
-        $event = new ViewEvent;
+        $event = new ViewEvent([
+            'viewFile' => $viewFile,
+            'params' => $params,
+        ]);
         $this->trigger(self::EVENT_BEFORE_RENDER, $event);
 
         return $event->isValid;
@@ -279,14 +286,19 @@ class View extends Component
      * This method is invoked right after [[renderFile()]] renders a view file.
      * The default implementation will trigger the [[EVENT_AFTER_RENDER]] event.
      * If you override this method, make sure you call the parent implementation first.
+     * @param string $viewFile the view file being rendered.
+     * @param array $params the parameter array passed to the [[render()]] method.
      * @param string $output the rendering result of the view file. Updates to this parameter
      * will be passed back and returned by [[renderFile()]].
      */
-    public function afterRender(&$output)
+    public function afterRender($viewFile, $params, &$output)
     {
         if ($this->hasEventHandlers(self::EVENT_AFTER_RENDER)) {
-            $event = new ViewEvent;
-            $event->output = $output;
+            $event = new ViewEvent([
+                'viewFile' => $viewFile,
+                'params' => $params,
+                'output' => $output,
+            ]);
             $this->trigger(self::EVENT_AFTER_RENDER, $event);
             $output = $event->output;
         }
@@ -444,7 +456,7 @@ class View extends Component
     {
         $properties['id'] = $id;
         $properties['view'] = $this;
-        /** @var FragmentCache $cache */
+        /* @var $cache FragmentCache */
         $cache = FragmentCache::begin($properties);
         if ($cache->getCachedContent() !== false) {
             $this->endCache();

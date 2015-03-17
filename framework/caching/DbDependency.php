@@ -37,6 +37,7 @@ class DbDependency extends Dependency
      */
     public $params = [];
 
+
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method returns the value of the global state.

@@ -39,7 +39,7 @@ use yii\helpers\Html;
  *             'label' => 'Ajax tab',
  *             'url' => ['ajax/content'],
  *         ],
- *     ),
+ *     ],
  *     'options' => ['tag' => 'div'],
  *     'itemOptions' => ['tag' => 'div'],
  *     'headerOptions' => ['class' => 'my-class'],
@@ -98,6 +98,7 @@ class Tabs extends Widget
      */
     public $encodeLabels = true;
 
+
     /**
      * Renders the widget.
      */
@@ -105,10 +106,13 @@ class Tabs extends Widget
     {
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
-        echo Html::beginTag($tag, $options) . "\n";
-        echo $this->renderItems() . "\n";
-        echo Html::endTag($tag) . "\n";
-        $this->registerWidget('tabs', TabsAsset::className());
+        $out = Html::beginTag($tag, $options) . "\n";
+        $out .= $this->renderItems() . "\n";
+        $out .= Html::endTag($tag) . "\n";
+
+        $this->registerWidget('tabs');
+
+        return $out;
     }
 
     /**
@@ -127,8 +131,8 @@ class Tabs extends Widget
             if (isset($item['url'])) {
                 $url = Url::to($item['url']);
             } else {
-                if (!isset($item['content'])) {
-                    throw new InvalidConfigException("The 'content' or 'url' option is required.");
+                if (!array_key_exists('content', $item)) {
+                    throw new InvalidConfigException("Either the 'content' or 'url' option is required.");
                 }
                 $options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
                 $tag = ArrayHelper::remove($options, 'tag', 'div');

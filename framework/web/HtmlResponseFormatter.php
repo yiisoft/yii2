@@ -24,6 +24,7 @@ class HtmlResponseFormatter extends Component implements ResponseFormatterInterf
      */
     public $contentType = 'text/html';
 
+
     /**
      * Formats the specified response.
      * @param Response $response the response to be formatted.
@@ -34,6 +35,8 @@ class HtmlResponseFormatter extends Component implements ResponseFormatterInterf
             $this->contentType .= '; charset=' . $response->charset;
         }
         $response->getHeaders()->set('Content-Type', $this->contentType);
-        $response->content = $response->data;
+        if ($response->data !== null) {
+            $response->content = $response->data;
+        }
     }
 }

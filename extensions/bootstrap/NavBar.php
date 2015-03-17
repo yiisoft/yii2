@@ -56,15 +56,16 @@ class NavBar extends Widget
      */
     public $containerOptions = [];
     /**
-     * @var string the text of the brand. Note that this is not HTML-encoded.
+     * @var string|boolean the text of the brand of false if it's not used. Note that this is not HTML-encoded.
      * @see http://getbootstrap.com/components/#navbar
      */
-    public $brandLabel;
+    public $brandLabel = false;
     /**
-     * @param array|string $url the URL for the brand's hyperlink tag. This parameter will be processed by [[Url::to()]]
-     * and will be used for the "href" attribute of the brand link. If not set, [[\yii\web\Application::homeUrl]] will be used.
+     * @param array|string|boolean $url the URL for the brand's hyperlink tag. This parameter will be processed by [[Url::to()]]
+     * and will be used for the "href" attribute of the brand link. Default value is false that means
+     * [[\yii\web\Application::homeUrl]] will be used.
      */
-    public $brandUrl;
+    public $brandUrl = false;
     /**
      * @var array the HTML attributes of the brand link.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -84,6 +85,7 @@ class NavBar extends Widget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $innerContainerOptions = [];
+
 
     /**
      * Initializes the widget.
@@ -114,9 +116,9 @@ class NavBar extends Widget
             $this->containerOptions['id'] = "{$this->options['id']}-collapse";
         }
         echo $this->renderToggleButton();
-        if ($this->brandLabel !== null) {
+        if ($this->brandLabel !== false) {
             Html::addCssClass($this->brandOptions, 'navbar-brand');
-            echo Html::a($this->brandLabel, $this->brandUrl === null ? Yii::$app->homeUrl : $this->brandUrl, $this->brandOptions);
+            echo Html::a($this->brandLabel, $this->brandUrl === false ? Yii::$app->homeUrl : $this->brandUrl, $this->brandOptions);
         }
         echo Html::endTag('div');
         Html::addCssClass($this->containerOptions, 'collapse');

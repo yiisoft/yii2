@@ -7,6 +7,7 @@
 
 namespace yii\redis;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Inflector;
@@ -50,10 +51,11 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
-        return new ActiveQuery(get_called_class());
+        return Yii::createObject(ActiveQuery::className(), [get_called_class()]);
     }
 
     /**
@@ -99,38 +101,45 @@ class ActiveRecord extends BaseActiveRecord
         if ($runValidation && !$this->validate($attributes)) {
             return false;
         }
-        if ($this->beforeSave(true)) {
-            $db = static::getDb();
-            $values = $this->getDirtyAttributes($attributes);
-            $pk = [];
-            //			if ($values === []) {
-            foreach ($this->primaryKey() as $key) {
-                $pk[$key] = $values[$key] = $this->getAttribute($key);
-                if ($pk[$key] === null) {
-                    $pk[$key] = $values[$key] = $db->executeCommand('INCR', [static::keyPrefix() . ':s:' . $key]);
-                    $this->setAttribute($key, $values[$key]);
+        if (!$this->beforeSave(true)) {
+            return false;
+        }
+        $db = static::getDb();
+        $values = $this->getDirtyAttributes($attributes);
+        $pk = [];
+        foreach ($this->primaryKey() as $key) {
+            $pk[$key] = $values[$key] = $this->getAttribute($key);
+            if ($pk[$key] === null) {
+                $pk[$key] = $values[$key] = $db->executeCommand('INCR', [static::keyPrefix() . ':s:' . $key]);
+                $this->setAttribute($key, $values[$key]);
+            }
+        }
+        // save pk in a findall pool
+        $db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
+
+        $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
+        // save attributes
+        $setArgs = [$key];
+        foreach ($values as $attribute => $value) {
+            // only insert attributes that are not null
+            if ($value !== null) {
+                if (is_bool($value)) {
+                    $value = (int) $value;
                 }
+                $setArgs[] = $attribute;
+                $setArgs[] = $value;
             }
-            //			}
-            // save pk in a findall pool
-            $db->executeCommand('RPUSH', [static::keyPrefix(), static::buildKey($pk)]);
-
-            $key = static::keyPrefix() . ':a:' . static::buildKey($pk);
-            // save attributes
-            $args = [$key];
-            foreach ($values as $attribute => $value) {
-                $args[] = $attribute;
-                $args[] = $value;
-            }
-            $db->executeCommand('HMSET', $args);
-
-            $this->afterSave(true);
-            $this->setOldAttributes($values);
-
-            return true;
         }
 
-        return false;
+        if (count($setArgs) > 1) {
+            $db->executeCommand('HMSET', $setArgs);
+        }
+
+        $changedAttributes = array_fill_keys(array_keys($values), null);
+        $this->setOldAttributes($values);
+        $this->afterSave(true, $changedAttributes);
+
+        return true;
     }
 
     /**
@@ -158,26 +167,44 @@ class ActiveRecord extends BaseActiveRecord
             $pk = static::buildKey($pk);
             $key = static::keyPrefix() . ':a:' . $pk;
             // save attributes
-            $args = [$key];
+            $delArgs = [$key];
+            $setArgs = [$key];
             foreach ($attributes as $attribute => $value) {
                 if (isset($newPk[$attribute])) {
                     $newPk[$attribute] = $value;
                 }
-                $args[] = $attribute;
-                $args[] = $value;
+                if ($value !== null) {
+                    if (is_bool($value)) {
+                        $value = (int) $value;
+                    }
+                    $setArgs[] = $attribute;
+                    $setArgs[] = $value;
+                } else {
+                    $delArgs[] = $attribute;
+                }
             }
             $newPk = static::buildKey($newPk);
             $newKey = static::keyPrefix() . ':a:' . $newPk;
             // rename index if pk changed
             if ($newPk != $pk) {
                 $db->executeCommand('MULTI');
-                $db->executeCommand('HMSET', $args);
+                if (count($setArgs) > 1) {
+                    $db->executeCommand('HMSET', $setArgs);
+                }
+                if (count($delArgs) > 1) {
+                    $db->executeCommand('HDEL', $delArgs);
+                }
                 $db->executeCommand('LINSERT', [static::keyPrefix(), 'AFTER', $pk, $newPk]);
                 $db->executeCommand('LREM', [static::keyPrefix(), 0, $pk]);
                 $db->executeCommand('RENAME', [$key, $newKey]);
                 $db->executeCommand('EXEC');
             } else {
-                $db->executeCommand('HMSET', $args);
+                if (count($setArgs) > 1) {
+                    $db->executeCommand('HMSET', $setArgs);
+                }
+                if (count($delArgs) > 1) {
+                    $db->executeCommand('HDEL', $delArgs);
+                }
             }
             $n++;
         }
@@ -233,19 +260,18 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function deleteAll($condition = null)
     {
+        $pks = self::fetchPks($condition);
+        if (empty($pks)) {
+            return 0;
+        }
+
         $db = static::getDb();
         $attributeKeys = [];
-        $pks = self::fetchPks($condition);
         $db->executeCommand('MULTI');
         foreach ($pks as $pk) {
             $pk = static::buildKey($pk);
             $db->executeCommand('LREM', [static::keyPrefix(), 0, $pk]);
             $attributeKeys[] = static::keyPrefix() . ':a:' . $pk;
-        }
-        if (empty($attributeKeys)) {
-            $db->executeCommand('EXEC');
-
-            return 0;
         }
         $db->executeCommand('DEL', $attributeKeys);
         $result = $db->executeCommand('EXEC');

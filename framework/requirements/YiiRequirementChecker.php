@@ -199,7 +199,7 @@ class YiiRequirementChecker
             return false;
         }
 
-        return ((integer) $value == 1 || strtolower($value) == 'on');
+        return ((int) $value == 1 || strtolower($value) == 'on');
     }
 
     /**
@@ -244,7 +244,7 @@ class YiiRequirementChecker
             return 0;
         }
         if (is_numeric($verboseSize)) {
-            return (integer) $verboseSize;
+            return (int) $verboseSize;
         }
         $sizeUnit = trim($verboseSize, '0123456789');
         $size = str_replace($sizeUnit, '', $verboseSize);
@@ -287,7 +287,6 @@ class YiiRequirementChecker
             $minCheckResult = true;
         }
         if ($max !== null) {
-            var_dump($postMaxSize, $uploadMaxFileSize, $max);
             $maxCheckResult = $this->compareByteSize($postMaxSize, $max, '<=') && $this->compareByteSize($uploadMaxFileSize, $max, '<=');
         } else {
             $maxCheckResult = true;

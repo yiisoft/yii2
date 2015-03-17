@@ -23,13 +23,13 @@ use yii\di\Instance;
  *
  * The following example shows how you can configure the application to use DbCache:
  *
- * ~~~
+ * ```php
  * 'cache' => [
  *     'class' => 'yii\caching\DbCache',
  *     // 'db' => 'mydb',
  *     // 'cacheTable' => 'my_cache',
  * ]
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -37,9 +37,10 @@ use yii\di\Instance;
 class DbCache extends Cache
 {
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
      * After the DbCache object is created, if you want to change this property, you should only assign it
      * with a DB connection object.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db = 'db';
     /**
@@ -71,6 +72,7 @@ class DbCache extends Cache
      * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
      */
     public $gcProbability = 100;
+
 
     /**
      * Initializes the DbCache component.

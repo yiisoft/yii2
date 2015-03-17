@@ -11,7 +11,6 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'console\controllers',
-    'modules' => [],
     'components' => [
         'log' => [
             'targets' => [

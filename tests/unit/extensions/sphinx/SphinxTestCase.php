@@ -48,10 +48,16 @@ class SphinxTestCase extends TestCase
         if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
             $this->markTestSkipped('pdo and pdo_mysql extension are required.');
         }
-        $config = $this->getParam('sphinx');
+        $config = self::getParam('sphinx');
         if (!empty($config)) {
             $this->sphinxConfig = $config['sphinx'];
             $this->dbConfig = $config['db'];
+        }
+        // check whether sphinx is running and skip tests if not.
+        if (preg_match('/host=([\w\d.]+)/i', $this->sphinxConfig['dsn'], $hm) && preg_match('/port=(\d+)/i', $this->sphinxConfig['dsn'], $pm)) {
+            if (!@stream_socket_client($hm[1] . ':' . $pm[1], $errorNumber, $errorDescription, 0.5)) {
+                $this->markTestSkipped('No Sphinx searchd running at ' . $hm[1] . ':' . $pm[1] . ' : ' . $errorNumber . ' - ' . $errorDescription);
+            }
         }
         $this->mockApplication();
         static::loadClassMap();

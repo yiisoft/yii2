@@ -23,17 +23,17 @@ class ClassmapController extends Controller
 
     /**
      * Creates a class map for the core Yii classes.
-     * @param string $root    the root path of Yii framework. Defaults to YII_PATH.
-     * @param string $mapFile the file to contain the class map. Defaults to YII_PATH . '/classes.php'.
+     * @param string $root    the root path of Yii framework. Defaults to YII2_PATH.
+     * @param string $mapFile the file to contain the class map. Defaults to YII2_PATH . '/classes.php'.
      */
     public function actionCreate($root = null, $mapFile = null)
     {
         if ($root === null) {
-            $root = YII_PATH;
+            $root = YII2_PATH;
         }
         $root = FileHelper::normalizePath($root);
         if ($mapFile === null) {
-            $mapFile = YII_PATH . '/classes.php';
+            $mapFile = YII2_PATH . '/classes.php';
         }
         $options = [
             'filter' => function ($path) {
@@ -51,6 +51,7 @@ class ClassmapController extends Controller
                 '/Yii.php',
                 '/BaseYii.php',
                 '/console/',
+                '/requirements/',
             ],
         ];
         $files = FileHelper::findFiles($root, $options);
@@ -60,7 +61,7 @@ class ClassmapController extends Controller
                 throw new Exception("Something wrong: $file\n");
             }
             $path = str_replace('\\', '/', substr($file, strlen($root)));
-            $map[$path] = "  'yii" . substr(str_replace('/', '\\', $path), 0, -4) . "' => YII_PATH . '$path',";
+            $map[$path] = "  'yii" . substr(str_replace('/', '\\', $path), 0, -4) . "' => YII2_PATH . '$path',";
         }
         ksort($map);
         $map = implode("\n", $map);

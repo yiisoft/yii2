@@ -5,6 +5,10 @@ namespace yiiunit\extensions\mongodb;
 use yii\mongodb\ActiveQuery;
 use yiiunit\data\ar\mongodb\ActiveRecord;
 use yiiunit\data\ar\mongodb\Customer;
+use yiiunit\data\ar\mongodb\Animal;
+use yiiunit\data\ar\mongodb\Dog;
+use yiiunit\data\ar\mongodb\Cat;
+
 
 /**
  * @group mongodb
@@ -262,5 +266,48 @@ class ActiveRecordTest extends MongoDbTestCase
         $rowRefreshed = Customer::find()->where(['status' => $row->status])->one();
         $this->assertNotEmpty($rowRefreshed);
         $this->assertEquals(7, $rowRefreshed->status);
+    }
+
+    public function testModify()
+    {
+        $searchName = 'name7';
+        $newName = 'new name';
+
+        $customer = Customer::find()
+            ->where(['name' => $searchName])
+            ->modify(['$set' => ['name' => $newName]], ['new' => true]);
+        $this->assertTrue($customer instanceof Customer);
+        $this->assertEquals($newName, $customer->name);
+
+        $customer = Customer::find()
+            ->where(['name' => 'not existing name'])
+            ->modify(['$set' => ['name' => $newName]], ['new' => false]);
+        $this->assertNull($customer);
+    }
+
+    /**
+     * @depends testInsert
+     *
+     * @see https://github.com/yiisoft/yii2/issues/6026
+     */
+    public function testInsertEmptyAttributes()
+    {
+        $record = new Customer();
+        $record->save(false);
+
+        $this->assertTrue($record->_id instanceof \MongoId);
+        $this->assertFalse($record->isNewRecord);
+    }
+    
+    public function testPopulateRecordCallWhenQueryingOnParentClass() 
+    {
+        (new Cat())->save(false);
+        (new Dog())->save(false);
+
+        $animal = Animal::find()->where(['type' => Dog::className()])->one();
+        $this->assertEquals('bark', $animal->getDoes());
+
+        $animal = Animal::find()->where(['type' => Cat::className()])->one();
+        $this->assertEquals('meow', $animal->getDoes());
     }
 }

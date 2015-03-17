@@ -1,0 +1,5 @@
+{{ json_encode('echo') | raw }}
+{{ void(json_encode('silence')) }}
+
+{% set var = json_encode('variable') %}
+{{ json_encode(var) | raw }}

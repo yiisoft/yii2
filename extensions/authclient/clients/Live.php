@@ -53,6 +53,7 @@ class Live extends OAuth2
      */
     public $apiBaseUrl = 'https://apis.live.net/v5.0';
 
+
     /**
      * @inheritdoc
      */

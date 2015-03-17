@@ -7,6 +7,7 @@
 
 namespace yii\db\pgsql;
 
+use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 
@@ -26,50 +27,86 @@ class Schema extends \yii\db\Schema
     /**
      * @var array mapping from physical column types (keys) to abstract
      * column types (values)
+     * @see http://www.postgresql.org/docs/current/static/datatype.html#DATATYPE-TABLE
      */
     public $typeMap = [
-        'abstime' => self::TYPE_TIMESTAMP,
-        'bit' => self::TYPE_STRING,
+        'bit' => self::TYPE_INTEGER,
+        'bit varying' => self::TYPE_INTEGER,
+        'varbit' => self::TYPE_INTEGER,
+
         'bool' => self::TYPE_BOOLEAN,
         'boolean' => self::TYPE_BOOLEAN,
+
         'box' => self::TYPE_STRING,
-        'character' => self::TYPE_STRING,
-        'bytea' => self::TYPE_BINARY,
-        'char' => self::TYPE_STRING,
-        'cidr' => self::TYPE_STRING,
         'circle' => self::TYPE_STRING,
-        'date' => self::TYPE_DATE,
-        'real' => self::TYPE_FLOAT,
-        'decimal' => self::TYPE_DECIMAL,
-        'double precision' => self::TYPE_DECIMAL,
+        'point' => self::TYPE_STRING,
+        'line' => self::TYPE_STRING,
+        'lseg' => self::TYPE_STRING,
+        'polygon' => self::TYPE_STRING,
+        'path' => self::TYPE_STRING,
+
+        'character' => self::TYPE_STRING,
+        'char' => self::TYPE_STRING,
+        'character varying' => self::TYPE_STRING,
+        'varchar' => self::TYPE_STRING,
+        'text' => self::TYPE_TEXT,
+
+        'bytea' => self::TYPE_BINARY,
+
+        'cidr' => self::TYPE_STRING,
         'inet' => self::TYPE_STRING,
+        'macaddr' => self::TYPE_STRING,
+
+        'real' => self::TYPE_FLOAT,
+        'float4' => self::TYPE_FLOAT,
+        'double precision' => self::TYPE_DOUBLE,
+        'float8' => self::TYPE_DOUBLE,
+        'decimal' => self::TYPE_DECIMAL,
+        'numeric' => self::TYPE_DECIMAL,
+
+        'money' => self::TYPE_MONEY,
+
         'smallint' => self::TYPE_SMALLINT,
+        'int2' => self::TYPE_SMALLINT,
         'int4' => self::TYPE_INTEGER,
-        'int8' => self::TYPE_BIGINT,
+        'int' => self::TYPE_INTEGER,
         'integer' => self::TYPE_INTEGER,
         'bigint' => self::TYPE_BIGINT,
-        'interval' => self::TYPE_STRING,
-        'json' => self::TYPE_STRING,
-        'line' => self::TYPE_STRING,
-        'macaddr' => self::TYPE_STRING,
-        'money' => self::TYPE_MONEY,
-        'name' => self::TYPE_STRING,
-        'numeric' => self::TYPE_STRING,
+        'int8' => self::TYPE_BIGINT,
         'oid' => self::TYPE_BIGINT, // should not be used. it's pg internal!
-        'path' => self::TYPE_STRING,
-        'point' => self::TYPE_STRING,
-        'polygon' => self::TYPE_STRING,
-        'text' => self::TYPE_TEXT,
+
+        'smallserial' => self::TYPE_SMALLINT,
+        'serial2' => self::TYPE_SMALLINT,
+        'serial4' => self::TYPE_INTEGER,
+        'serial' => self::TYPE_INTEGER,
+        'bigserial' => self::TYPE_BIGINT,
+        'serial8' => self::TYPE_BIGINT,
+        'pg_lsn' => self::TYPE_BIGINT,
+
+        'date' => self::TYPE_DATE,
+        'interval' => self::TYPE_STRING,
         'time without time zone' => self::TYPE_TIME,
+        'time' => self::TYPE_TIME,
+        'time with time zone' => self::TYPE_TIME,
+        'timetz' => self::TYPE_TIME,
         'timestamp without time zone' => self::TYPE_TIMESTAMP,
+        'timestamp' => self::TYPE_TIMESTAMP,
         'timestamp with time zone' => self::TYPE_TIMESTAMP,
-        'time with time zone' => self::TYPE_TIMESTAMP,
+        'timestamptz' => self::TYPE_TIMESTAMP,
+        'abstime' => self::TYPE_TIMESTAMP,
+
+        'tsquery' => self::TYPE_STRING,
+        'tsvector' => self::TYPE_STRING,
+        'txid_snapshot' => self::TYPE_STRING,
+
         'unknown' => self::TYPE_STRING,
+
         'uuid' => self::TYPE_STRING,
-        'bit varying' => self::TYPE_STRING,
-        'character varying' => self::TYPE_STRING,
+        'json' => self::TYPE_STRING,
+        'jsonb' => self::TYPE_STRING,
         'xml' => self::TYPE_STRING
     ];
+
 
     /**
      * Creates a query builder for the PostgreSQL database.
@@ -127,29 +164,6 @@ class Schema extends \yii\db\Schema
         } else {
             return null;
         }
-    }
-
-    /**
-     * Determines the PDO type for the given PHP data value.
-     * @param mixed $data the data whose PDO type is to be determined
-     * @return integer the PDO type
-     * @see http://www.php.net/manual/en/pdo.constants.php
-     */
-    public function getPdoType($data)
-    {
-        // php type => PDO type
-        static $typeMap = [
-            // https://github.com/yiisoft/yii2/issues/1115
-            // Cast boolean to integer values to work around problems with PDO casting false to string '' https://bugs.php.net/bug.php?id=33876
-            'boolean' => \PDO::PARAM_INT,
-            'integer' => \PDO::PARAM_INT,
-            'string' => \PDO::PARAM_STR,
-            'resource' => \PDO::PARAM_LOB,
-            'NULL' => \PDO::PARAM_NULL,
-        ];
-        $type = gettype($data);
-
-        return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
     }
 
     /**
@@ -366,16 +380,25 @@ SQL;
         foreach ($columns as $column) {
             $column = $this->loadColumnSchema($column);
             $table->columns[$column->name] = $column;
-            if ($column->isPrimaryKey === true) {
+            if ($column->isPrimaryKey) {
                 $table->primaryKey[] = $column->name;
                 if ($table->sequenceName === null && preg_match("/nextval\\('\"?\\w+\"?\.?\"?\\w+\"?'(::regclass)?\\)/", $column->defaultValue) === 1) {
                     $table->sequenceName = preg_replace(['/nextval/', '/::/', '/regclass/', '/\'\)/', '/\(\'/'], '', $column->defaultValue);
                 }
-            }
-
-            if ($column->defaultValue) {
-                if (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches) || preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
+                $column->defaultValue = null;
+            } elseif ($column->defaultValue) {
+                if ($column->type === 'timestamp' && $column->defaultValue === 'now()') {
+                    $column->defaultValue = new Expression($column->defaultValue);
+                } elseif ($column->type === 'boolean') {
+                        $column->defaultValue = ($column->defaultValue === 'true');
+                } elseif (stripos($column->dbType, 'bit') === 0 || stripos($column->dbType, 'varbit') === 0) {
+                    $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
+                } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
+                } elseif (preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
+                    $column->defaultValue = $column->phpTypecast($matches[1]);
+                } else {
+                    $column->defaultValue = $column->phpTypecast($column->defaultValue);
                 }
             }
         }
@@ -390,19 +413,19 @@ SQL;
      */
     protected function loadColumnSchema($info)
     {
-        $column = new ColumnSchema();
+        $column = $this->createColumnSchema();
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];
         $column->comment = $info['column_comment'];
         $column->dbType = $info['data_type'];
         $column->defaultValue = $info['column_default'];
-        $column->enumValues = explode(',', str_replace(["''"], ["'"], $info['enum_values']));
+        $column->enumValues = ($info['enum_values'] !== null) ? explode(',', str_replace(["''"], ["'"], $info['enum_values'])) : null;
         $column->unsigned = false; // has no meaning in PG
         $column->isPrimaryKey = $info['is_pkey'];
         $column->name = $info['column_name'];
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
-        $column->size = $info['size'];
+        $column->size = $info['size'] === null ? null : (int) $info['size'];
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {

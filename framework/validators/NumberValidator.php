@@ -29,10 +29,12 @@ class NumberValidator extends Validator
     public $integerOnly = false;
     /**
      * @var integer|float upper limit of the number. Defaults to null, meaning no upper limit.
+     * @see tooBig for the customized message used when the number is too big.
      */
     public $max;
     /**
      * @var integer|float lower limit of the number. Defaults to null, meaning no lower limit.
+     * @see tooSmall for the customized message used when the number is too small.
      */
     public $min;
     /**
@@ -52,6 +54,7 @@ class NumberValidator extends Validator
      * that matches floating numbers with optional exponential part (e.g. -1.23e-10).
      */
     public $numberPattern = '/^\s*[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/';
+
 
     /**
      * @inheritdoc
@@ -74,22 +77,22 @@ class NumberValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($object, $attribute)
+    public function validateAttribute($model, $attribute)
     {
-        $value = $object->$attribute;
+        $value = $model->$attribute;
         if (is_array($value)) {
-            $this->addError($object, $attribute, $this->message);
+            $this->addError($model, $attribute, $this->message);
             return;
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
         if (!preg_match($pattern, "$value")) {
-            $this->addError($object, $attribute, $this->message);
+            $this->addError($model, $attribute, $this->message);
         }
         if ($this->min !== null && $value < $this->min) {
-            $this->addError($object, $attribute, $this->tooSmall, ['min' => $this->min]);
+            $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->min]);
         }
         if ($this->max !== null && $value > $this->max) {
-            $this->addError($object, $attribute, $this->tooBig, ['max' => $this->max]);
+            $this->addError($model, $attribute, $this->tooBig, ['max' => $this->max]);
         }
     }
 
@@ -116,9 +119,9 @@ class NumberValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
-        $label = $object->getAttributeLabel($attribute);
+        $label = $model->getAttributeLabel($attribute);
 
         $options = [
             'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),

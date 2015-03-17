@@ -53,6 +53,7 @@ class GitHub extends OAuth2
      */
     public $apiBaseUrl = 'https://api.github.com';
 
+
     /**
      * @inheritdoc
      */

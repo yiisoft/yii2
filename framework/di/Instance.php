@@ -57,6 +57,7 @@ class Instance
      */
     public $id;
 
+
     /**
      * Constructor.
      * @param string $id the component ID
@@ -91,13 +92,14 @@ class Instance
      *
      * // returns Yii::$app->db
      * $db = Instance::ensure('db', Connection::className());
-     * // or
-     * $instance = Instance::of('db');
-     * $db = Instance::ensure($instance, Connection::className());
+     * // returns an instance of Connection using the given configuration
+     * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::className());
      * ```
      *
-     * @param object|string|static $reference an object or a reference to the desired object.
+     * @param object|string|array|static $reference an object or a reference to the desired object.
      * You may specify a reference in terms of a component ID or an Instance object.
+     * Starting from version 2.0.2, you may also pass in a configuration array for creating the object.
+     * If the "class" value is not specified in the configuration array, it will use the value of `$type`.
      * @param string $type the class/interface name to be checked. If null, type check will not be performed.
      * @param ServiceLocator|Container $container the container. This will be passed to [[get()]].
      * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
@@ -107,6 +109,13 @@ class Instance
     {
         if ($reference instanceof $type) {
             return $reference;
+        } elseif (is_array($reference)) {
+            $class = isset($reference['class']) ? $reference['class'] : $type;
+            if (!$container instanceof Container) {
+                $container = Yii::$container;
+            }
+            unset($reference['class']);
+            return $container->get($class, [], $reference);
         } elseif (empty($reference)) {
             throw new InvalidConfigException('The required component is not specified.');
         }

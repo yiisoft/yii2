@@ -23,6 +23,7 @@ class Filter extends Component
      */
     protected $rules = [];
 
+
     /**
      * Adds data filtering rule.
      *
@@ -67,7 +68,7 @@ class Filter extends Component
             if (isset($this->rules[$name])) {
                 // check all rules for a given attribute
                 foreach ($this->rules[$name] as $rule) {
-                    /** @var MatcherInterface $rule */
+                    /* @var $rule MatcherInterface */
                     if (!$rule->match($value)) {
                         return false;
                     }

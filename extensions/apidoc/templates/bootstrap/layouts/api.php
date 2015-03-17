@@ -4,16 +4,14 @@ use yii\apidoc\templates\bootstrap\ApiRenderer;
 use yii\apidoc\templates\bootstrap\SideNavWidget;
 use yii\helpers\StringHelper;
 
-/**
- * @var yii\web\View $this
- * @var array $types
- * @var string $content
- */
+/* @var $this yii\web\View */
+/* @var $types array */
+/* @var $content string */
 
-/** @var ApiRenderer $renderer */
+/** @var $renderer ApiRenderer */
 $renderer = $this->context;
 
-$this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php'); ?>
+$this->beginContent('@yii/apidoc/templates/bootstrap/layouts/main.php', isset($type) ? ['type' => $type] : []); ?>
 
 <div class="row">
     <div class="col-md-3">

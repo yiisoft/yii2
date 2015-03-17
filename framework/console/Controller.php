@@ -16,7 +16,7 @@ use yii\helpers\Console;
 /**
  * Controller is the base class of console command classes.
  *
- * A controller consists of one or several actions known as sub-commands.
+ * A console controller consists of one or several actions known as sub-commands.
  * Users call a console command by specifying the corresponding route which identifies a controller action.
  * The `yii` program is used when calling a console command, like the following:
  *
@@ -24,21 +24,30 @@ use yii\helpers\Console;
  * yii <route> [--param1=value1 --param2 ...]
  * ~~~
  *
+ * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
+ * See [[options()]] for details.
+ *
+ * @property string $help This property is read-only.
+ * @property string $helpSummary This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Controller extends \yii\base\Controller
 {
+    const EXIT_CODE_NORMAL = 0;
+    const EXIT_CODE_ERROR = 1;
+
     /**
      * @var boolean whether to run the command interactively.
      */
     public $interactive = true;
-
     /**
      * @var boolean whether to enable ANSI color in the output.
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
+
 
     /**
      * Returns a value indicating whether ANSI color is enabled.
@@ -49,9 +58,9 @@ class Controller extends \yii\base\Controller
      * @param resource $stream the stream to check.
      * @return boolean Whether to enable ANSI style in output.
      */
-    public function isColorEnabled($stream = STDOUT)
+    public function isColorEnabled($stream = \STDOUT)
     {
-        return $this->color ===  null ? Console::streamSupportsAnsiColors($stream) : $this->color;
+        return $this->color === null ? Console::streamSupportsAnsiColors($stream) : $this->color;
     }
 
     /**
@@ -79,7 +88,6 @@ class Controller extends \yii\base\Controller
                 }
             }
         }
-
         return parent::runAction($id, $params);
     }
 
@@ -145,7 +153,6 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
         return $string;
     }
 
@@ -171,7 +178,6 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
         return Console::stdout($string);
     }
 
@@ -192,13 +198,12 @@ class Controller extends \yii\base\Controller
      */
     public function stderr($string)
     {
-        if ($this->isColorEnabled(STDERR)) {
+        if ($this->isColorEnabled(\STDERR)) {
             $args = func_get_args();
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
-
-        return fwrite(STDERR, $string);
+        return fwrite(\STDERR, $string);
     }
 
     /**
@@ -264,12 +269,245 @@ class Controller extends \yii\base\Controller
      * Note that the values setting via options are not available
      * until [[beforeAction()]] is being called.
      *
-     * @param string $actionId the action id of the current request
+     * @param string $actionID the action id of the current request
      * @return array the names of the options valid for the action
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        // $id might be used in subclass to provide options specific to action id
+        // $actionId might be used in subclasses to provide options specific to action id
         return ['color', 'interactive'];
+    }
+
+    /**
+     * Returns one-line short summary describing this controller.
+     *
+     * You may override this method to return customized summary.
+     * The default implementation returns first line from the PHPDoc comment.
+     *
+     * @return string
+     */
+    public function getHelpSummary()
+    {
+        return $this->parseDocCommentSummary(new \ReflectionClass($this));
+    }
+
+    /**
+     * Returns help information for this controller.
+     *
+     * You may override this method to return customized help.
+     * The default implementation returns help information retrieved from the PHPDoc comment.
+     * @return string
+     */
+    public function getHelp()
+    {
+        return $this->parseDocCommentDetail(new \ReflectionClass($this));
+    }
+
+    /**
+     * Returns a one-line short summary describing the specified action.
+     * @param Action $action action to get summary for
+     * @return string a one-line short summary describing the specified action.
+     */
+    public function getActionHelpSummary($action)
+    {
+        return $this->parseDocCommentSummary($this->getActionMethodReflection($action));
+    }
+
+    /**
+     * Returns the detailed help information for the specified action.
+     * @param Action $action action to get help for
+     * @return string the detailed help information for the specified action.
+     */
+    public function getActionHelp($action)
+    {
+        return $this->parseDocCommentDetail($this->getActionMethodReflection($action));
+    }
+
+    /**
+     * Returns the help information for the anonymous arguments for the action.
+     * The returned value should be an array. The keys are the argument names, and the values are
+     * the corresponding help information. Each value must be an array of the following structure:
+     *
+     * - required: boolean, whether this argument is required.
+     * - type: string, the PHP type of this argument.
+     * - default: string, the default value of this argument
+     * - comment: string, the comment of this argument
+     *
+     * The default implementation will return the help information extracted from the doc-comment of
+     * the parameters corresponding to the action method.
+     *
+     * @param Action $action
+     * @return array the help information of the action arguments
+     */
+    public function getActionArgsHelp($action)
+    {
+        $method = $this->getActionMethodReflection($action);
+        $tags = $this->parseDocCommentTags($method);
+        $params = isset($tags['param']) ? (array) $tags['param'] : [];
+
+        $args = [];
+        foreach ($method->getParameters() as $i => $reflection) {
+            $name = $reflection->getName();
+            $tag = isset($params[$i]) ? $params[$i] : '';
+            if (preg_match('/^([^\s]+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
+                $type = $matches[1];
+                $comment = $matches[3];
+            } else {
+                $type = null;
+                $comment = $tag;
+            }
+            if ($reflection->isDefaultValueAvailable()) {
+                $args[$name] = [
+                    'required' => false,
+                    'type' => $type,
+                    'default' => $reflection->getDefaultValue(),
+                    'comment' => $comment,
+                ];
+            } else {
+                $args[$name] = [
+                    'required' => true,
+                    'type' => $type,
+                    'default' => null,
+                    'comment' => $comment,
+                ];
+            }
+        }
+        return $args;
+    }
+
+    /**
+     * Returns the help information for the options for the action.
+     * The returned value should be an array. The keys are the option names, and the values are
+     * the corresponding help information. Each value must be an array of the following structure:
+     *
+     * - type: string, the PHP type of this argument.
+     * - default: string, the default value of this argument
+     * - comment: string, the comment of this argument
+     *
+     * The default implementation will return the help information extracted from the doc-comment of
+     * the properties corresponding to the action options.
+     *
+     * @param Action $action
+     * @return array the help information of the action options
+     */
+    public function getActionOptionsHelp($action)
+    {
+        $optionNames = $this->options($action->id);
+        if (empty($optionNames)) {
+            return [];
+        }
+
+        $class = new \ReflectionClass($this);
+        $options = [];
+        foreach ($class->getProperties() as $property) {
+            $name = $property->getName();
+            if (!in_array($name, $optionNames, true)) {
+                continue;
+            }
+            $defaultValue = $property->getValue($this);
+            $tags = $this->parseDocCommentTags($property);
+            if (isset($tags['var']) || isset($tags['property'])) {
+                $doc = isset($tags['var']) ? $tags['var'] : $tags['property'];
+                if (is_array($doc)) {
+                    $doc = reset($doc);
+                }
+                if (preg_match('/^([^\s]+)(.*)/s', $doc, $matches)) {
+                    $type = $matches[1];
+                    $comment = $matches[2];
+                } else {
+                    $type = null;
+                    $comment = $doc;
+                }
+                $options[$name] = [
+                    'type' => $type,
+                    'default' => $defaultValue,
+                    'comment' => $comment,
+                ];
+            } else {
+                $options[$name] = [
+                    'type' => null,
+                    'default' => $defaultValue,
+                    'comment' => '',
+                ];
+            }
+        }
+        return $options;
+    }
+
+    private $_reflections = [];
+
+    /**
+     * @param Action $action
+     * @return \ReflectionMethod
+     */
+    protected function getActionMethodReflection($action)
+    {
+        if (!isset($this->_reflections[$action->id])) {
+            if ($action instanceof InlineAction) {
+                $this->_reflections[$action->id] = new \ReflectionMethod($this, $action->actionMethod);
+            } else {
+                $this->_reflections[$action->id] = new \ReflectionMethod($action, 'run');
+            }
+        }
+        return $this->_reflections[$action->id];
+    }
+
+    /**
+     * Parses the comment block into tags.
+     * @param \Reflector $reflection the comment block
+     * @return array the parsed tags
+     */
+    protected function parseDocCommentTags($reflection)
+    {
+        $comment = $reflection->getDocComment();
+        $comment = "@description \n" . strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($comment, '/'))), "\r", '');
+        $parts = preg_split('/^\s*@/m', $comment, -1, PREG_SPLIT_NO_EMPTY);
+        $tags = [];
+        foreach ($parts as $part) {
+            if (preg_match('/^(\w+)(.*)/ms', trim($part), $matches)) {
+                $name = $matches[1];
+                if (!isset($tags[$name])) {
+                    $tags[$name] = trim($matches[2]);
+                } elseif (is_array($tags[$name])) {
+                    $tags[$name][] = trim($matches[2]);
+                } else {
+                    $tags[$name] = [$tags[$name], trim($matches[2])];
+                }
+            }
+        }
+        return $tags;
+    }
+
+    /**
+     * Returns the first line of docblock.
+     *
+     * @param \Reflector $reflection
+     * @return string
+     */
+    protected function parseDocCommentSummary($reflection)
+    {
+        $docLines = preg_split('~\R~u', $reflection->getDocComment());
+        if (isset($docLines[1])) {
+            return trim($docLines[1], "\t *");
+        }
+        return '';
+    }
+
+    /**
+     * Returns full description from the docblock.
+     *
+     * @param \Reflector $reflection
+     * @return string
+     */
+    protected function parseDocCommentDetail($reflection)
+    {
+        $comment = strtr(trim(preg_replace('/^\s*\**( |\t)?/m', '', trim($reflection->getDocComment(), '/'))), "\r", '');
+        if (preg_match('/^\s*@\w+/m', $comment, $matches, PREG_OFFSET_CAPTURE)) {
+            $comment = trim(substr($comment, 0, $matches[0][1]));
+        }
+        if ($comment !== '') {
+            return rtrim(Console::renderColoredString(Console::markdownToAnsi($comment)));
+        }
+        return '';
     }
 }

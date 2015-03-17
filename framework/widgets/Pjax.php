@@ -85,6 +85,7 @@ class Pjax extends Widget
      */
     public $clientOptions;
 
+
     /**
      * @inheritdoc
      */
@@ -152,7 +153,7 @@ class Pjax extends Widget
     {
         $headers = Yii::$app->getRequest()->getHeaders();
 
-        return $headers->get('X-Pjax') && $headers->get('X-Pjax-Container') === '#' . $this->getId();
+        return $headers->get('X-Pjax') && $headers->get('X-Pjax-Container') === '#' . $this->options['id'];
     }
 
     /**

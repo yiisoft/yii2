@@ -30,6 +30,7 @@ abstract class Rule extends Object
      */
     public $updatedAt;
 
+
     /**
      * Executes the rule.
      *

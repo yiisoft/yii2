@@ -19,7 +19,7 @@ use yii\mail\BaseMailer;
  * ~~~
  * 'components' => [
  *     ...
- *     'mail' => [
+ *     'mailer' => [
  *         'class' => 'yii\swiftmailer\Mailer',
  *         'transport' => [
  *             'class' => 'Swift_SmtpTransport',
@@ -57,7 +57,7 @@ use yii\mail\BaseMailer;
  * To send an email, you may use the following code:
  *
  * ~~~
- * Yii::$app->mail->compose('contact/html', ['contactForm' => $form])
+ * Yii::$app->mailer->compose('contact/html', ['contactForm' => $form])
  *     ->setFrom('from@domain.com')
  *     ->setTo($form->email)
  *     ->setSubject($form->subject)
@@ -79,6 +79,7 @@ class Mailer extends BaseMailer
      * @var string message default class name.
      */
     public $messageClass = 'yii\swiftmailer\Message';
+
     /**
      * @var \Swift_Mailer Swift mailer instance.
      */
@@ -87,6 +88,7 @@ class Mailer extends BaseMailer
      * @var \Swift_Transport|array Swift transport instance or its array configuration.
      */
     private $_transport = [];
+
 
     /**
      * @return array|\Swift_Mailer Swift mailer instance or array configuration.
@@ -162,7 +164,7 @@ class Mailer extends BaseMailer
             $plugins = $config['plugins'];
             unset($config['plugins']);
         }
-        /** @var \Swift_MailTransport $transport */
+        /* @var $transport \Swift_MailTransport */
         $transport = $this->createSwiftObject($config);
         if (isset($plugins)) {
             foreach ($plugins as $plugin) {

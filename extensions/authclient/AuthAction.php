@@ -11,6 +11,7 @@ use yii\base\Action;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\helpers\Url;
 use yii\web\Response;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -18,9 +19,10 @@ use Yii;
 
 /**
  * AuthAction performs authentication via different auth clients.
- * It supports [[OpenId]], [[OAuth1] and [[OAuth2]] client types.
+ * It supports [[OpenId]], [[OAuth1]] and [[OAuth2]] client types.
  *
  * Usage:
+ *
  * ~~~
  * class SiteController extends Controller
  * {
@@ -85,6 +87,12 @@ class AuthAction extends Action
      */
     public $successCallback;
     /**
+     * @var string name or alias of the view file, which should be rendered in order to perform redirection.
+     * If not set default one will be used.
+     */
+    public $redirectView;
+
+    /**
      * @var string the redirect url after successful authorization.
      */
     private $_successUrl = '';
@@ -92,11 +100,7 @@ class AuthAction extends Action
      * @var string the redirect url after unsuccessful authorization (e.g. user canceled).
      */
     private $_cancelUrl = '';
-    /**
-     * @var string name or alias of the view file, which should be rendered in order to perform redirection.
-     * If not set default one will be used.
-     */
-    public $redirectView;
+
 
     /**
      * @param string $url successful URL.
@@ -139,7 +143,7 @@ class AuthAction extends Action
     }
 
     /**
-     * Creates default {@link successUrl} value.
+     * Creates default [[successUrl]] value.
      * @return string success URL value.
      */
     protected function defaultSuccessUrl()
@@ -148,12 +152,12 @@ class AuthAction extends Action
     }
 
     /**
-     * Creates default {@link cancelUrl} value.
+     * Creates default [[cancelUrl]] value.
      * @return string cancel URL value.
      */
     protected function defaultCancelUrl()
     {
-        return Yii::$app->getRequest()->getAbsoluteUrl();
+        return Url::to(Yii::$app->getUser()->loginUrl);
     }
 
     /**
@@ -163,7 +167,7 @@ class AuthAction extends Action
     {
         if (!empty($_GET[$this->clientIdGetParamName])) {
             $clientId = $_GET[$this->clientIdGetParamName];
-            /** @var \yii\authclient\Collection $collection */
+            /* @var $collection \yii\authclient\Collection */
             $collection = Yii::$app->get($this->clientCollection);
             if (!$collection->hasClient($clientId)) {
                 throw new NotFoundHttpException("Unknown auth client '{$clientId}'");
@@ -236,7 +240,7 @@ class AuthAction extends Action
     }
 
     /**
-     * Redirect to the URL. If URL is null, {@link successUrl} will be used.
+     * Redirect to the URL. If URL is null, [[successUrl]] will be used.
      * @param string $url URL to redirect.
      * @return \yii\web\Response response instance.
      */
@@ -249,7 +253,7 @@ class AuthAction extends Action
     }
 
     /**
-     * Redirect to the {@link cancelUrl} or simply close the popup window.
+     * Redirect to the [[cancelUrl]] or simply close the popup window.
      * @param string $url URL to redirect.
      * @return \yii\web\Response response instance.
      */

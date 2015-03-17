@@ -8,6 +8,8 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidParamException;
+use yii\db\Connection;
+use yii\db\Exception;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -17,62 +19,59 @@ use yii\base\InvalidParamException;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
-    private $_sql;
+    /**
+     * @var array mapping from abstract column types (keys) to physical column types (values).
+     */
+    public $typeMap = [
+        Schema::TYPE_PK => 'NUMBER(10) NOT NULL PRIMARY KEY',
+        Schema::TYPE_BIGPK => 'NUMBER(20) NOT NULL PRIMARY KEY',
+        Schema::TYPE_STRING => 'VARCHAR2(255)',
+        Schema::TYPE_TEXT => 'CLOB',
+        Schema::TYPE_SMALLINT => 'NUMBER(5)',
+        Schema::TYPE_INTEGER => 'NUMBER(10)',
+        Schema::TYPE_BIGINT => 'NUMBER(20)',
+        Schema::TYPE_FLOAT => 'NUMBER',
+        Schema::TYPE_DOUBLE => 'NUMBER',
+        Schema::TYPE_DECIMAL => 'NUMBER',
+        Schema::TYPE_DATETIME => 'TIMESTAMP',
+        Schema::TYPE_TIMESTAMP => 'TIMESTAMP',
+        Schema::TYPE_TIME => 'TIMESTAMP',
+        Schema::TYPE_DATE => 'DATE',
+        Schema::TYPE_BINARY => 'BLOB',
+        Schema::TYPE_BOOLEAN => 'NUMBER(1)',
+        Schema::TYPE_MONEY => 'NUMBER(19,4)',
+    ];
+
 
     /**
      * @inheritdoc
      */
-    public function build($query, $params = [])
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
-        $query->prepareBuild($this);
-
-        $params = empty($params) ? $query->params : array_merge($params, $query->params);
-
-        $clauses = [
-            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($query->from, $params),
-            $this->buildJoin($query->join, $params),
-            $this->buildWhere($query->where, $params),
-            $this->buildGroupBy($query->groupBy),
-            $this->buildHaving($query->having, $params),
-            $this->buildOrderBy($query->orderBy),
-        ];
-        $this->_sql = implode($this->separator, array_filter($clauses));
-
-        $this->_sql = $this->buildLimit($query->limit, $query->offset);
-
-        $union = $this->buildUnion($query->union, $params);
-        if ($union !== '') {
-            $this->_sql = "{$this->_sql}{$this->separator}$union";
+        $orderBy = $this->buildOrderBy($orderBy);
+        if ($orderBy !== '') {
+            $sql .= $this->separator . $orderBy;
         }
 
-        return [$this->_sql, $params];
-    }
-
-    public function buildLimit($limit, $offset)
-    {
         $filters = [];
-        if ($this->hasOffset($offset) > 0) {
+        if ($this->hasOffset($offset)) {
             $filters[] = 'rowNumId > ' . $offset;
         }
-
         if ($this->hasLimit($limit)) {
             $filters[] = 'rownum <= ' . $limit;
         }
+        if (empty($filters)) {
+            return $sql;
+        }
 
-        if (!empty($filters)) {
-            $filter = implode(' and ', $filters);
-
-            return <<<EOD
-WITH USER_SQL AS ({$this->_sql}),
+        $filter = implode(' AND ', $filters);
+        return <<<EOD
+WITH USER_SQL AS ($sql),
     PAGINATION AS (SELECT USER_SQL.*, rownum as rowNumId FROM USER_SQL)
 SELECT *
 FROM PAGINATION
 WHERE $filter
 EOD;
-        } else {
-            return $this->_sql;
-        }
     }
 
     /**
@@ -92,7 +91,7 @@ EOD;
      *
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The {@link getColumnType} method will be invoked to convert abstract column type (if any)
+     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
      * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
      * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
@@ -132,11 +131,33 @@ EOD;
         if ($value !== null) {
             $value = (int) $value;
         } else {
-            $value = (int) $this->db->createCommand("SELECT MAX(\"{$tableSchema->primaryKey}\") FROM \"{$tableSchema->name}\"")->queryScalar();
-            $value++;
+            // use master connection to get the biggest PK value
+            $value = $this->db->useMaster(function (Connection $db) use ($tableSchema) {
+                return $db->createCommand("SELECT MAX(\"{$tableSchema->primaryKey}\") FROM \"{$tableSchema->name}\"")->queryScalar();
+            }) + 1;
         }
 
         return "DROP SEQUENCE \"{$tableSchema->name}_SEQ\";"
             . "CREATE SEQUENCE \"{$tableSchema->name}_SEQ\" START WITH {$value} INCREMENT BY 1 NOMAXVALUE NOCACHE";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
+    {
+        $sql = 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' ADD CONSTRAINT ' . $this->db->quoteColumnName($name)
+            . ' FOREIGN KEY (' . $this->buildColumns($columns) . ')'
+            . ' REFERENCES ' . $this->db->quoteTableName($refTable)
+            . ' (' . $this->buildColumns($refColumns) . ')';
+        if ($delete !== null) {
+            $sql .= ' ON DELETE ' . $delete;
+        }
+        if ($update !== null) {
+            throw new Exception('Oracle does not support ON UPDATE clause.');
+        }
+
+        return $sql;
     }
 }

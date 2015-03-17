@@ -27,6 +27,11 @@ class GuideController extends BaseController
      * @var string path or URL to the api docs to allow links to classes and properties/methods.
      */
     public $apiDocs;
+    /**
+     * @var string prefix to prepend to all output file names generated for the guide.
+     */
+    public $guidePrefix = 'guide-';
+
 
     /**
      * Renders API documentation files
@@ -42,14 +47,27 @@ class GuideController extends BaseController
             return 1;
         }
 
-        $renderer->guideUrl = './';
+        if ($renderer->guideUrl === null) {
+            $renderer->guideUrl = './';
+        }
+        $renderer->guidePrefix = $this->guidePrefix;
 
         // setup reference to apidoc
         if ($this->apiDocs !== null) {
-            $renderer->apiUrl = $this->apiDocs;
-            $renderer->apiContext = $this->loadContext($this->apiDocs);
+            $path = $this->apiDocs;
+            if ($renderer->apiUrl === null) {
+                $renderer->apiUrl = $path;
+            }
+            // use relative paths relative to targetDir
+            if (strncmp($path, '.', 1) === 0) {
+                $renderer->apiContext = $this->loadContext("$targetDir/$path");
+            } else {
+                $renderer->apiContext = $this->loadContext($path);
+            }
         } elseif (file_exists($targetDir . '/cache/apidoc.data')) {
-            $renderer->apiUrl = './';
+            if ($renderer->apiUrl === null) {
+                $renderer->apiUrl = './';
+            }
             $renderer->apiContext = $this->loadContext($targetDir);
         } else {
             $renderer->apiContext = new Context();
@@ -66,26 +84,20 @@ class GuideController extends BaseController
 
         $this->stdout('Publishing images...');
         foreach ($sourceDirs as $source) {
-            FileHelper::copyDirectory(rtrim($source, '/\\') . '/images', $targetDir . '/images');
+            $imageDir = rtrim($source, '/\\') . '/images';
+            if (file_exists($imageDir)) {
+                FileHelper::copyDirectory($imageDir, $targetDir . '/images');
+            }
         }
         $this->stdout('done.' . PHP_EOL, Console::FG_GREEN);
-
-        // generate api references.txt
-        $references = [];
-        foreach ($files as $file) {
-            $references[] = basename($file, '.md');
-        }
-        file_put_contents($targetDir . '/guide-references.txt', implode("\n", $references));
     }
+
 
     /**
      * @inheritdoc
      */
     protected function findFiles($path, $except = [])
     {
-        if (empty($except)) {
-            $except = ['README.md'];
-        }
         $path = FileHelper::normalizePath($path);
         $options = [
             'only' => ['*.md'],
@@ -114,8 +126,8 @@ class GuideController extends BaseController
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
-        return array_merge(parent::options($actionId), ['apiDocs']);
+        return array_merge(parent::options($actionID), ['apiDocs', 'guidePrefix']);
     }
 }

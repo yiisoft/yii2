@@ -48,6 +48,7 @@ class GettextMoFile extends GettextFile
      */
     public $useBigEndian = false;
 
+
     /**
      * Loads messages from an MO file.
      * @param string $filePath file path
@@ -107,8 +108,8 @@ class GettextMoFile extends GettextFile
             $id = $this->readString($fileHandle, $sourceLengths[$i], $sourceOffsets[$i]);
             $separatorPosition = strpos($id, chr(4));
 
-            if (($context && $separatorPosition !== false && substr($id, 0, $separatorPosition) === $context) ||
-                (!$context && $separatorPosition === false)) {
+
+            if ((!$context && $separatorPosition === false) || ($context && $separatorPosition !== false && strncmp($id, $context, $separatorPosition) === 0)) {
                 if ($separatorPosition !== false) {
                     $id = substr($id, $separatorPosition+1);
                 }

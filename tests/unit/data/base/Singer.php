@@ -8,8 +8,9 @@ use yii\base\Model;
  */
 class Singer extends Model
 {
-    public $fistName;
+    public $firstName;
     public $lastName;
+    public $test;
 
     public function rules()
     {
@@ -17,6 +18,7 @@ class Singer extends Model
             [['lastName'], 'default', 'value' => 'Lennon'],
             [['lastName'], 'required'],
             [['underscore_style'], 'yii\captcha\CaptchaValidator'],
+            [['test'], 'required', 'when' => function($model) { return $model->firstName === 'cebe'; }],
         ];
     }
 }

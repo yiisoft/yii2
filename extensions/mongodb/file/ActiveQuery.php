@@ -40,6 +40,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     use ActiveQueryTrait;
     use ActiveRelationTrait;
 
+    /**
+     * @event Event an event that is triggered when the query is initialized via [[init()]].
+     */
+    const EVENT_INIT = 'init';
+
 
     /**
      * Constructor.
@@ -50,6 +55,50 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->modelClass = $modelClass;
         parent::__construct($config);
+    }
+
+    /**
+     * Initializes the object.
+     * This method is called at the end of the constructor. The default implementation will trigger
+     * an [[EVENT_INIT]] event. If you override this method, make sure you call the parent implementation at the end
+     * to ensure triggering of the event.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function buildCursor($db = null)
+    {
+        if ($this->primaryModel !== null) {
+            // lazy loading
+            if ($this->via instanceof self) {
+                // via pivot collection
+                $viaModels = $this->via->findJunctionRows([$this->primaryModel]);
+                $this->filterByModels($viaModels);
+            } elseif (is_array($this->via)) {
+                // via relation
+                /* @var $viaQuery ActiveQuery */
+                list($viaName, $viaQuery) = $this->via;
+                if ($viaQuery->multiple) {
+                    $viaModels = $viaQuery->all();
+                    $this->primaryModel->populateRelation($viaName, $viaModels);
+                } else {
+                    $model = $viaQuery->one();
+                    $this->primaryModel->populateRelation($viaName, $model);
+                    $viaModels = $model === null ? [] : [$model];
+                }
+                $this->filterByModels($viaModels);
+            } else {
+                $this->filterByModels([$this->primaryModel]);
+            }
+        }
+
+        return parent::buildCursor($db);
     }
 
     /**
@@ -94,9 +143,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             if ($this->asArray) {
                 $model = $row;
             } else {
-                /** @var ActiveRecord $class */
+                /* @var $class ActiveRecord */
                 $class = $this->modelClass;
                 $model = $class::instantiate($row);
+                $class = get_class($model);
                 $class::populateRecord($model, $row);
             }
             if (!empty($this->with)) {
@@ -121,7 +171,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function getCollection($db = null)
     {
-        /** @var ActiveRecord $modelClass */
+        /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();

@@ -46,6 +46,7 @@ class YandexOpenId extends OpenId
         'contact/email',
     ];
 
+
     /**
      * @inheritdoc
      */

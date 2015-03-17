@@ -16,9 +16,9 @@ namespace yii\apidoc\models;
 class InterfaceDoc extends TypeDoc
 {
     public $parentInterfaces = [];
-
     // will be set by Context::updateReferences()
     public $implementedBy = [];
+
 
     /**
      * @param \phpDocumentor\Reflection\InterfaceReflector $reflector

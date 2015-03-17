@@ -53,17 +53,19 @@ class DbMessageSource extends MessageSource
     const CACHE_KEY_PREFIX = 'DbMessageSource';
 
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
      * After the DbMessageSource object is created, if you want to change this property, you should only assign
      * it with a DB connection object.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db = 'db';
     /**
-     * @var Cache|string the cache object or the application component ID of the cache object.
+     * @var Cache|array|string the cache object or the application component ID of the cache object.
      * The messages data will be cached using this cache object. Note, this property has meaning only
      * in case [[cachingDuration]] set to non-zero value.
      * After the DbMessageSource object is created, if you want to change this property, you should only assign
      * it with a cache object.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $cache = 'cache';
     /**
@@ -84,6 +86,7 @@ class DbMessageSource extends MessageSource
      * @var boolean whether to enable caching translated messages
      */
     public $enableCaching = false;
+
 
     /**
      * Initializes the DbMessageSource component.
@@ -141,7 +144,7 @@ class DbMessageSource extends MessageSource
     {
         $mainQuery = new Query();
         $mainQuery->select(['t1.message message', 't2.translation translation'])
-            ->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
+            ->from(["$this->sourceMessageTable t1", "$this->messageTable t2"])
             ->where('t1.id = t2.id AND t1.category = :category AND t2.language = :language')
             ->params([':category' => $category, ':language' => $language]);
 
@@ -149,9 +152,9 @@ class DbMessageSource extends MessageSource
         if ($fallbackLanguage != $language) {
             $fallbackQuery = new Query();
             $fallbackQuery->select(['t1.message message', 't2.translation translation'])
-                ->from([$this->sourceMessageTable . ' t1', $this->messageTable . ' t2'])
+                ->from(["$this->sourceMessageTable t1", "$this->messageTable t2"])
                 ->where('t1.id = t2.id AND t1.category = :category AND t2.language = :fallbackLanguage')
-                ->andWhere('t2.id NOT IN (SELECT id FROM '.$this->messageTable.' WHERE language = :language)')
+                ->andWhere("t2.id NOT IN (SELECT id FROM $this->messageTable WHERE language = :language)")
                 ->params([':category' => $category, ':language' => $language, ':fallbackLanguage' => $fallbackLanguage]);
 
             $mainQuery->union($fallbackQuery, true);

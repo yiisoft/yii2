@@ -4,11 +4,9 @@ use yii\apidoc\models\ClassDoc;
 use yii\apidoc\models\InterfaceDoc;
 use yii\apidoc\models\TraitDoc;
 
-/**
- * @var ClassDoc[]|InterfaceDoc[]|TraitDoc[] $types
- * @var yii\web\View $this
- * @var \yii\apidoc\templates\html\ApiRenderer $renderer
- */
+/* @var $types ClassDoc[]|InterfaceDoc[]|TraitDoc[] */
+/* @var $this yii\web\View */
+/* @var $renderer \yii\apidoc\templates\html\ApiRenderer */
 
 $renderer = $this->context;
 

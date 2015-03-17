@@ -43,6 +43,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     private $_models;
     private $_totalCount;
 
+
     /**
      * Prepares the data models that will be made available in the current page.
      * @return array the available data models

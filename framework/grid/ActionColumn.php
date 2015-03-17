@@ -21,7 +21,7 @@ use yii\helpers\Url;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => 'yii\grid\ActionColumn',
+ *         'class' => ActionColumn::className(),
  *         // you may configure additional properties here
  *     ],
  * ]
@@ -45,6 +45,13 @@ class ActionColumn extends Column
      * in the context of action column). They will be replaced by the corresponding button rendering callbacks
      * specified in [[buttons]]. For example, the token `{view}` will be replaced by the result of
      * the callback `buttons['view']`. If a callback cannot be found, the token will be replaced with an empty string.
+     *
+     * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
+     *
+     * ```
+     * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
+     * ```
+     *
      * @see buttons
      */
     public $template = '{view} {update} {delete}';
@@ -54,13 +61,24 @@ class ActionColumn extends Column
      * signature:
      *
      * ```php
-     * function ($url, $model) {
+     * function ($url, $model, $key) {
      *     // return the button HTML code
      * }
      * ```
      *
-     * where `$url` is the URL that the column creates for the button, and `$model` is the model object
-     * being rendered for the current row.
+     * where `$url` is the URL that the column creates for the button, `$model` is the model object
+     * being rendered for the current row, and `$key` is the key of the model in the data provider array.
+     *
+     * You can add further conditions to the button, for example only display it, when the model is
+     * editable (here assuming you have a status field that indicates that):
+     *
+     * ```php
+     * [
+     *     'update' => function ($url, $model, $key) {
+     *         return $model->status === 'editable' ? Html::a('Update', $url) : '';
+     *     };
+     * ],
+     * ```
      */
     public $buttons = [];
     /**
@@ -69,6 +87,12 @@ class ActionColumn extends Column
      * If this property is not set, button URLs will be created using [[createUrl()]].
      */
     public $urlCreator;
+    /**
+     * @var array html options to be applied to the [[initDefaultButtons()|default buttons]].
+     * @since 2.0.4
+     */
+    public $buttonOptions = [];
+
 
     /**
      * @inheritdoc
@@ -80,34 +104,34 @@ class ActionColumn extends Column
     }
 
     /**
-     * Initializes the default button rendering callbacks
+     * Initializes the default button rendering callbacks.
      */
     protected function initDefaultButtons()
     {
         if (!isset($this->buttons['view'])) {
-            $this->buttons['view'] = function ($url, $model) {
-                return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+            $this->buttons['view'] = function ($url, $model, $key) {
+                return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, array_merge([
                     'title' => Yii::t('yii', 'View'),
                     'data-pjax' => '0',
-                ]);
+                ], $this->buttonOptions));
             };
         }
         if (!isset($this->buttons['update'])) {
-            $this->buttons['update'] = function ($url, $model) {
-                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+            $this->buttons['update'] = function ($url, $model, $key) {
+                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, array_merge([
                     'title' => Yii::t('yii', 'Update'),
                     'data-pjax' => '0',
-                ]);
+                ], $this->buttonOptions));
             };
         }
         if (!isset($this->buttons['delete'])) {
-            $this->buttons['delete'] = function ($url, $model) {
-                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+            $this->buttons['delete'] = function ($url, $model, $key) {
+                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, array_merge([
                     'title' => Yii::t('yii', 'Delete'),
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                     'data-method' => 'post',
                     'data-pjax' => '0',
-                ]);
+                ], $this->buttonOptions));
             };
         }
     }
@@ -143,7 +167,7 @@ class ActionColumn extends Column
             if (isset($this->buttons[$name])) {
                 $url = $this->createUrl($name, $model, $key, $index);
 
-                return call_user_func($this->buttons[$name], $url, $model);
+                return call_user_func($this->buttons[$name], $url, $model, $key);
             } else {
                 return '';
             }

@@ -9,7 +9,6 @@ namespace yii\elasticsearch;
 
 use Yii;
 use yii\base\Component;
-use yii\base\NotSupportedException;
 use yii\db\QueryInterface;
 use yii\db\QueryTrait;
 
@@ -58,12 +57,51 @@ class Query extends Component implements QueryInterface
 
     /**
      * @var array the fields being retrieved from the documents. For example, `['id', 'name']`.
-     * If not set, it means retrieving all fields. An empty array will result in no fields being
-     * retrieved. This means that only the primaryKey of a record will be available in the result.
+     * If not set, this option will not be applied to the query and no fields will be returned.
+     * In this case the `_source` field will be returned by default which can be configured using [[source]].
+     * Setting this to an empty array will result in no fields being retrieved, which means that only the primaryKey
+     * of a record will be available in the result.
+     *
+     * For each field you may also add an array representing a [script field]. Example:
+     *
+     * ```php
+     * $query->fields = [
+     *     'id',
+     *     'name',
+     *     'value_times_two' => [
+     *         'script' => "doc['my_field_name'].value * 2",
+     *     ],
+     *     'value_times_factor' => [
+     *         'script' => "doc['my_field_name'].value * factor",
+     *         'params' => [
+     *             'factor' => 2.0
+     *         ],
+     *     ],
+     * ]
+     * ```
+     *
+     * > Note: Field values are [always returned as arrays] even if they only have one value.
+     *
+     * [always returned as arrays]: http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_return_values.html#_return_values
+     * [script field]: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-script-fields.html
+     *
      * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-fields.html#search-request-fields
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-script-fields.html
      * @see fields()
+     * @see source
      */
     public $fields;
+    /**
+     * @var array this option controls how the `_source` field is returned from the documents. For example, `['id', 'name']`
+     * means that only the `id` and `name` field should be returned from `_source`.
+     * If not set, it means retrieving the full `_source` field unless [[fields]] are specified.
+     * Setting this option to `false` will disable return of the `_source` field, this means that only the primaryKey
+     * of a record will be available in the result.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-source-filtering.html
+     * @see source()
+     * @see fields
+     */
+    public $source;
     /**
      * @var string|array The index to retrieve data from. This can be a string representing a single index
      * or a an array of multiple indexes. If this is not set, indexes are being queried.
@@ -93,10 +131,32 @@ class Query extends Component implements QueryInterface
      * the elasticsearch [Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html).
      */
     public $filter;
+    /**
+     * @var array The highlight part of this search query. This is an array that allows to highlight search results
+     * on one or more fields.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-request-highlighting.html
+     */
+    public $highlight;
+    /**
+     * @var array List of aggregations to add to this query.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-aggregations.html
+     */
+    public $aggregations = [];
+    /**
+     * @var array the 'stats' part of the query. An array of groups to maintain a statistics aggregation for.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#stats-groups
+     */
+    public $stats = [];
+    /**
+     * @var array list of suggesters to add to this query.
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
+     */
+    public $suggest = [];
 
-    public $facets = [];
 
-
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -137,25 +197,20 @@ class Query extends Component implements QueryInterface
             return [];
         }
         $rows = $result['hits']['hits'];
-        if ($this->indexBy === null && $this->fields === null) {
+        if ($this->indexBy === null) {
             return $rows;
         }
         $models = [];
         foreach ($rows as $key => $row) {
-            if ($this->fields !== null) {
-                $row['_source'] = isset($row['fields']) ? $row['fields'] : [];
-                unset($row['fields']);
-            }
             if ($this->indexBy !== null) {
                 if (is_string($this->indexBy)) {
-                    $key = $row['_source'][$this->indexBy];
+                    $key = isset($row['fields'][$this->indexBy]) ? reset($row['fields'][$this->indexBy]) : $row['_source'][$this->indexBy];
                 } else {
                     $key = call_user_func($this->indexBy, $row);
                 }
             }
             $models[$key] = $row;
         }
-
         return $models;
     }
 
@@ -173,10 +228,6 @@ class Query extends Component implements QueryInterface
             return false;
         }
         $record = reset($result['hits']['hits']);
-        if ($this->fields !== null) {
-            $record['_source'] = isset($record['fields']) ? $record['fields'] : [];
-            unset($record['fields']);
-        }
 
         return $record;
     }
@@ -195,45 +246,36 @@ class Query extends Component implements QueryInterface
     public function search($db = null, $options = [])
     {
         $result = $this->createCommand($db)->search($options);
-        if (!empty($result['hits']['hits']) && ($this->indexBy === null || $this->fields === null)) {
+        if (!empty($result['hits']['hits']) && $this->indexBy !== null) {
             $rows = [];
             foreach ($result['hits']['hits'] as $key => $row) {
-                if ($this->fields !== null) {
-                    $row['_source'] = isset($row['fields']) ? $row['fields'] : [];
-                    unset($row['fields']);
-                }
-                if ($this->indexBy !== null) {
-                    if (is_string($this->indexBy)) {
-                        $key = $row['_source'][$this->indexBy];
-                    } else {
-                        $key = call_user_func($this->indexBy, $row);
-                    }
+                if (is_string($this->indexBy)) {
+                    $key = isset($row['fields'][$this->indexBy]) ? $row['fields'][$this->indexBy] : $row['_source'][$this->indexBy];
+                } else {
+                    $key = call_user_func($this->indexBy, $row);
                 }
                 $rows[$key] = $row;
             }
             $result['hits']['hits'] = $rows;
         }
-
         return $result;
     }
-
-    // TODO add query stats http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#stats-groups
 
     // TODO add scroll/scan http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-search-type.html#scan
 
     /**
      * Executes the query and deletes all matching documents.
      *
-     * This will not run facet queries.
+     * Everything except query and filter will be ignored.
      *
      * @param Connection $db the database connection used to execute the query.
      * If this parameter is not given, the `elasticsearch` application component will be used.
-     * @return array the query results. If the query results in nothing, an empty array will be returned.
+     * @param array $options The options given with this query.
+     * @return array the query results.
      */
-    public function delete($db = null)
+    public function delete($db = null, $options = [])
     {
-        // TODO implement http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/docs-delete-by-query.html
-        throw new NotSupportedException('Delete by query is not implemented yet.');
+        return $this->createCommand($db)->deleteByQuery($options);
     }
 
     /**
@@ -247,12 +289,17 @@ class Query extends Component implements QueryInterface
      */
     public function scalar($field, $db = null)
     {
-        $record = self::one($db); // TODO limit fields to the one required
-        if ($record !== false && isset($record['_source'][$field])) {
-            return $record['_source'][$field];
-        } else {
-            return null;
+        $record = self::one($db);
+        if ($record !== false) {
+            if ($field === '_id') {
+                return $record['_id'];
+            } elseif (isset($record['_source'][$field])) {
+                return $record['_source'][$field];
+            } elseif (isset($record['fields'][$field])) {
+                return count($record['fields'][$field]) == 1 ? reset($record['fields'][$field]) : $record['fields'][$field];
+            }
         }
+        return null;
     }
 
     /**
@@ -265,14 +312,20 @@ class Query extends Component implements QueryInterface
     public function column($field, $db = null)
     {
         $command = $this->createCommand($db);
-        $command->queryParts['fields'] = [$field];
+        $command->queryParts['_source'] = [$field];
         $result = $command->search();
         if (empty($result['hits']['hits'])) {
             return [];
         }
         $column = [];
         foreach ($result['hits']['hits'] as $row) {
-            $column[] = isset($row['fields'][$field]) ? $row['fields'][$field] : null;
+            if (isset($row['fields'][$field])) {
+                $column[] = $row['fields'][$field];
+            } elseif (isset($row['_source'][$field])) {
+                $column[] = $row['_source'][$field];
+            } else {
+                $column[] = null;
+            }
         }
         return $column;
     }
@@ -289,6 +342,7 @@ class Query extends Component implements QueryInterface
         // TODO consider sending to _count api instead of _search for performance
         // only when no facety are registerted.
         // http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-count.html
+        // http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/_search_requests.html
 
         $options = [];
         $options['search_type'] = 'count';
@@ -308,136 +362,71 @@ class Query extends Component implements QueryInterface
     }
 
     /**
-     * Adds a facet search to this query.
-     * @param string $name the name of this facet
-     * @param string $type the facet type. e.g. `terms`, `range`, `histogram`...
-     * @param string|array $options the configuration options for this facet. Can be an array or a json string.
+     * Adds a 'stats' part to the query.
+     * @param array $groups an array of groups to maintain a statistics aggregation for.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search.html#stats-groups
      */
-    public function addFacet($name, $type, $options)
+    public function stats($groups)
     {
-        $this->facets[$name] = [$type => $options];
+        $this->stats = $groups;
         return $this;
     }
 
     /**
-     * The `terms facet` allow to specify field facets that return the N most frequent terms.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+     * Sets a highlight parameters to retrieve from the documents.
+     * @param array $highlight array of parameters to highlight results.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-highlighting.html
      */
-    public function addTermFacet($name, $options)
+    public function highlight($highlight)
     {
-        return $this->addFacet($name, 'terms', $options);
+        $this->highlight = $highlight;
+        return $this;
     }
 
     /**
-     * Range facet allows to specify a set of ranges and get both the number of docs (count) that fall
-     * within each range, and aggregated data either based on the field, or using another field.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+     * Adds an aggregation to this query.
+     * @param string $name the name of the aggregation
+     * @param string $type the aggregation type. e.g. `terms`, `range`, `histogram`...
+     * @param string|array $options the configuration options for this aggregation. Can be an array or a json string.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-range-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-aggregations.html
      */
-    public function addRangeFacet($name, $options)
+    public function addAggregation($name, $type, $options)
     {
-        return $this->addFacet($name, 'range', $options);
+        $this->aggregations[$name] = [$type => $options];
+        return $this;
     }
 
     /**
-     * The histogram facet works with numeric data by building a histogram across intervals of the field values.
-     * Each value is "rounded" into an interval (or placed in a bucket), and statistics are provided per
-     * interval/bucket (count and total).
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+     * Adds an aggregation to this query.
+     *
+     * This is an alias for [[addAggregation]].
+     *
+     * @param string $name the name of the aggregation
+     * @param string $type the aggregation type. e.g. `terms`, `range`, `histogram`...
+     * @param string|array $options the configuration options for this aggregation. Can be an array or a json string.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-histogram-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-aggregations.html
      */
-    public function addHistogramFacet($name, $options)
+    public function addAgg($name, $type, $options)
     {
-        return $this->addFacet($name, 'histogram', $options);
+        return $this->addAggregation($name, $type, $options);
     }
 
     /**
-     * A specific histogram facet that can work with date field types enhancing it over the regular histogram facet.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
+     * Adds a suggester to this query.
+     * @param string $name the name of the suggester
+     * @param string|array $definition the configuration options for this suggester. Can be an array or a json string.
      * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-date-histogram-facet.html
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
      */
-    public function addDateHistogramFacet($name, $options)
+    public function addSuggester($name, $definition)
     {
-        return $this->addFacet($name, 'date_histogram', $options);
+        $this->suggest[$name] = $definition;
+        return $this;
     }
-
-    /**
-     * A filter facet (not to be confused with a facet filter) allows you to return a count of the hits matching the filter.
-     * The filter itself can be expressed using the Query DSL.
-     * @param string $name the name of this facet
-     * @param string $filter the query in Query DSL
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-filter-facet.html
-     */
-    public function addFilterFacet($name, $filter)
-    {
-        return $this->addFacet($name, 'filter', $filter);
-    }
-
-    /**
-     * A facet query allows to return a count of the hits matching the facet query.
-     * The query itself can be expressed using the Query DSL.
-     * @param string $name the name of this facet
-     * @param string $query the query in Query DSL
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-query-facet.html
-     */
-    public function addQueryFacet($name, $query)
-    {
-        return $this->addFacet($name, 'query', $query);
-    }
-
-    /**
-     * Statistical facet allows to compute statistical data on a numeric fields. The statistical data include count,
-     * total, sum of squares, mean (average), minimum, maximum, variance, and standard deviation.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-statistical-facet.html
-     */
-    public function addStatisticalFacet($name, $options)
-    {
-        return $this->addFacet($name, 'statistical', $options);
-    }
-
-    /**
-     * The `terms_stats` facet combines both the terms and statistical allowing to compute stats computed on a field,
-     * per term value driven by another field.
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-terms-stats-facet.html
-     */
-    public function addTermsStatsFacet($name, $options)
-    {
-        return $this->addFacet($name, 'terms_stats', $options);
-    }
-
-    /**
-     * The `geo_distance` facet is a facet providing information for ranges of distances from a provided `geo_point`
-     * including count of the number of hits that fall within each range, and aggregation information (like `total`).
-     * @param string $name the name of this facet
-     * @param array $options additional option. Please refer to the elasticsearch documentation for details.
-     * @return static the query object itself
-     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets-geo-distance-facet.html
-     */
-    public function addGeoDistanceFacet($name, $options)
-    {
-        return $this->addFacet($name, 'geo_distance', $options);
-    }
-
-    // TODO add suggesters http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html
 
     // TODO add validate query http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-validate.html
 
@@ -493,6 +482,22 @@ class Query extends Component implements QueryInterface
             $this->fields = $fields;
         } else {
             $this->fields = func_get_args();
+        }
+        return $this;
+    }
+
+    /**
+     * Sets the source filtering, specifying how the `_source` field of the document should be returned.
+     * @param array $source the source patterns to be selected.
+     * @return static the query object itself
+     * @see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-source-filtering.html
+     */
+    public function source($source)
+    {
+        if (is_array($source) || $source === null) {
+            $this->source = $source;
+        } else {
+            $this->source = func_get_args();
         }
         return $this;
     }

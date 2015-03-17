@@ -12,7 +12,7 @@ use Yii;
 /**
  * GettextMessageSource represents a message source that is based on GNU Gettext.
  *
- * Each GettextMessageSource instance represents the message tranlations
+ * Each GettextMessageSource instance represents the message translations
  * for a single domain. And each message category represents a message context
  * in Gettext. Translated messages are stored as either a MO or PO file,
  * depending on the [[useMoFile]] property value.
@@ -47,6 +47,7 @@ class GettextMessageSource extends MessageSource
      * @var boolean
      */
     public $useBigEndian = false;
+
 
     /**
      * Loads the message translation for the specified language and category.
@@ -98,9 +99,9 @@ class GettextMessageSource extends MessageSource
     {
         $messageFile = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;
         if ($this->useMoFile) {
-            $messageFile .= static::MO_FILE_EXT;
+            $messageFile .= self::MO_FILE_EXT;
         } else {
-            $messageFile .= static::PO_FILE_EXT;
+            $messageFile .= self::PO_FILE_EXT;
         }
 
         return $messageFile;

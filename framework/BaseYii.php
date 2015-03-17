@@ -20,7 +20,7 @@ defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
 /**
  * This constant defines the framework installation directory.
  */
-defined('YII_PATH') or define('YII_PATH', __DIR__);
+defined('YII2_PATH') or define('YII2_PATH', __DIR__);
 /**
  * This constant defines whether the application should be in debug mode or not. Defaults to false.
  */
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.0-dev';
+        return '2.0.4-dev';
     }
 
     /**
@@ -199,8 +199,8 @@ class BaseYii
      * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
      * It may contain the forward slash '/' which serves as boundary character when performing
      * alias translation by [[getAlias()]].
-     * @param string $path the path corresponding to the alias. Trailing '/' and '\' characters
-     * will be trimmed. This can be
+     * @param string $path the path corresponding to the alias. If this is null, the alias will
+     * be removed. Trailing '/' and '\' characters will be trimmed. This can be
      *
      * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
      * - a URL (e.g. `http://www.yiiframework.com`)
@@ -263,6 +263,8 @@ class BaseYii
      * Example: When aliases `@yii` and `@yii/bootstrap` are defined, classes in the `yii\bootstrap` namespace
      * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
      * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
+     *
+     * Also the [guide section on autoloading](guide:concept-autoloading).
      *
      * @param string $className the fully qualified class name without a leading backslash "\"
      * @throws UnknownClassException if the class does not exist in the class file

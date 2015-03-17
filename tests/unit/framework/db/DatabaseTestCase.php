@@ -11,12 +11,12 @@ abstract class DatabaseTestCase extends TestCase
     /**
      * @var Connection
      */
-    protected $db;
+    private $_db;
 
     protected function setUp()
     {
         parent::setUp();
-        $databases = $this->getParam('databases');
+        $databases = self::getParam('databases');
         $this->database = $databases[$this->driverName];
         $pdo_database = 'pdo_'.$this->driverName;
 
@@ -28,42 +28,56 @@ abstract class DatabaseTestCase extends TestCase
 
     protected function tearDown()
     {
-        if ($this->db) {
-            $this->db->close();
+        if ($this->_db) {
+            $this->_db->close();
         }
         $this->destroyApplication();
     }
 
     /**
-     * @param  boolean            $reset whether to clean up the test database
-     * @param  boolean            $open  whether to open and populate test database
+     * @param  boolean $reset whether to clean up the test database
+     * @param  boolean $open  whether to open and populate test database
      * @return \yii\db\Connection
      */
     public function getConnection($reset = true, $open = true)
     {
-        if (!$reset && $this->db) {
-            return $this->db;
+        if (!$reset && $this->_db) {
+            return $this->_db;
         }
-        $db = new \yii\db\Connection;
-        $db->dsn = $this->database['dsn'];
-        if (isset($this->database['username'])) {
-            $db->username = $this->database['username'];
-            $db->password = $this->database['password'];
+        $config = $this->database;
+        if (isset($config['fixture'])) {
+            $fixture = $config['fixture'];
+            unset($config['fixture']);
+        } else {
+            $fixture = null;
         }
-        if (isset($this->database['attributes'])) {
-            $db->attributes = $this->database['attributes'];
+        try {
+            $this->_db = $this->prepareDatabase($config, $fixture, $open);
+        } catch (\Exception $e) {
+            $this->markTestSkipped("Something wrong when preparing database: " . $e->getMessage());
         }
-        if ($open) {
-            $db->open();
-            $lines = explode(';', file_get_contents($this->database['fixture']));
+        return $this->_db;
+    }
+
+    public function prepareDatabase($config, $fixture, $open = true)
+    {
+        if (!isset($config['class'])) {
+            $config['class'] = 'yii\db\Connection';
+        }
+        /* @var $db \yii\db\Connection */
+        $db = \Yii::createObject($config);
+        if (!$open) {
+            return $db;
+        }
+        $db->open();
+        if ($fixture !== null) {
+            $lines = explode(';', file_get_contents($fixture));
             foreach ($lines as $line) {
                 if (trim($line) !== '') {
                     $db->pdo->exec($line);
                 }
             }
         }
-        $this->db = $db;
-
         return $db;
     }
 }

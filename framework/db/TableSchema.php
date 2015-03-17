@@ -59,6 +59,7 @@ class TableSchema extends Object
      */
     public $columns = [];
 
+
     /**
      * Gets the named column metadata.
      * This is a convenient method for retrieving a named column even if it does not exist.
@@ -86,9 +87,7 @@ class TableSchema extends Object
      */
     public function fixPrimaryKey($keys)
     {
-        if (!is_array($keys)) {
-            $keys = [$keys];
-        }
+        $keys = (array)$keys;
         $this->primaryKey = $keys;
         foreach ($this->columns as $column) {
             $column->isPrimaryKey = false;

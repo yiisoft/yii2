@@ -124,18 +124,20 @@ trait ActiveQueryTrait
                 $models[$key] = $row;
             }
         } else {
-            /** @var ActiveRecord $class */
+            /* @var $class ActiveRecord */
             $class = $this->modelClass;
             if ($this->indexBy === null) {
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
-                    $class::populateRecord($model, $row);
+                    $modelClass = get_class($model);
+                    $modelClass::populateRecord($model, $row);
                     $models[] = $model;
                 }
             } else {
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
-                    $class::populateRecord($model, $row);
+                    $modelClass = get_class($model);
+                    $modelClass::populateRecord($model, $row);
                     if (is_string($this->indexBy)) {
                         $key = $model->{$this->indexBy};
                     } else {
@@ -159,11 +161,11 @@ trait ActiveQueryTrait
     {
         $primaryModel = new $this->modelClass;
         $relations = $this->normalizeRelations($primaryModel, $with);
-        /** @var ActiveQuery $relation */
+        /* @var $relation ActiveQuery */
         foreach ($relations as $name => $relation) {
             if ($relation->asArray === null) {
                 // inherit asArray from primary query
-                $relation->asArray = $this->asArray;
+                $relation->asArray($this->asArray);
             }
             $relation->populateRelation($name, $models);
         }

@@ -34,7 +34,6 @@ class ViewAction extends Action
      * @var string the name of the GET parameter that contains the requested view name.
      */
     public $viewParam = 'view';
-
     /**
      * @var string the name of the default view when [[\yii\web\ViewAction::$viewParam]] GET parameter is not provided
      * by user. Defaults to 'index'. This should be in the format of 'path/to/view', similar to that given in the
@@ -42,7 +41,6 @@ class ViewAction extends Action
      * @see \yii\web\ViewAction::$viewPrefix
      */
     public $defaultView = 'index';
-
     /**
      * @var string a string to be prefixed to the user-specified view name to form a complete view name.
      * For example, if a user requests for `tutorial/chap1`, the corresponding view name will
@@ -51,7 +49,6 @@ class ViewAction extends Action
      * @see \yii\base\View::findViewFile()
      */
     public $viewPrefix = 'pages';
-
     /**
      * @var mixed the name of the layout to be applied to the requested view.
      * This will be assigned to [[\yii\base\Controller::$layout]] before the view is rendered.
@@ -59,6 +56,7 @@ class ViewAction extends Action
      * If false, no layout will be applied.
      */
     public $layout;
+
 
     /**
      * Runs the action.

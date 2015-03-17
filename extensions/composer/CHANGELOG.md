@@ -1,11 +1,41 @@
 Yii Framework 2 composer extension Change Log
 =============================================
 
-2.0.0-rc under development
---------------------------
+2.0.4 under development
+-----------------------
 
 - no changes in this release.
 
+
+2.0.3 March 01, 2015
+--------------------
+
+- no changes in this release.
+
+
+2.0.2 January 11, 2015
+----------------------
+
+- no changes in this release.
+
+
+2.0.1 December 07, 2014
+-----------------------
+
+- no changes in this release.
+
+
+2.0.0 October 12, 2014
+----------------------
+
+- no changes in this release.
+
+
+2.0.0-rc September 27, 2014
+---------------------------
+
+- Bug #3438: Fixed support for non-lowercase package names (cebe)
+- Chg: Added `yii\composer\Installer::postCreateProject()` and modified the syntax of calling installer methods in composer.json (qiangxue)
 
 2.0.0-beta April 13, 2014
 -------------------------

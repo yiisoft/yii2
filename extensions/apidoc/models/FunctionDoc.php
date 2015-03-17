@@ -30,6 +30,7 @@ class FunctionDoc extends BaseDoc
     public $returnTypes;
     public $isReturnByReference;
 
+
     /**
      * @param \phpDocumentor\Reflection\FunctionReflector $reflector
      * @param Context $context
