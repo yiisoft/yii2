@@ -85,7 +85,7 @@ class BaseArrayHelper
                 }
             }
             if ($object instanceof Arrayable) {
-                $result = $object->toArray();
+                $result = $object->toArray([], [], $recursive);
             } else {
                 $result = [];
                 foreach ($object as $key => $value) {
