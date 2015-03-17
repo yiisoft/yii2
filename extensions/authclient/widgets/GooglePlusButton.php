@@ -9,7 +9,6 @@ namespace yii\authclient\widgets;
 
 use yii\authclient\clients\GooglePlus;
 use yii\base\InvalidConfigException;
-use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
@@ -21,17 +20,14 @@ use yii\web\View;
  * @see GooglePlus
  * @see https://developers.google.com/+/web/signin/
  *
+ * @property \yii\authclient\clients\GooglePlus $client auth client instance.
  * @property string|array $callback
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class GooglePlusButton extends Widget
+class GooglePlusButton extends AuthChoiceItem
 {
-    /**
-     * @var GooglePlus google auth client instance.
-     */
-    public $client;
     /**
      * @var array button tag HTML options, which will be merged with the default ones.
      */
@@ -94,9 +90,10 @@ class GooglePlusButton extends Widget
     protected function generateCallback($url = [])
     {
         if (empty($url)) {
-            $url = ['auth', 'authclient' => $this->client->id];
+            $url = $this->authChoice->createClientUrl($this->client);
+        } else {
+            $url = Url::to($url);
         }
-        $url = Url::to($url);
         if (strpos($url, '?') === false) {
             $url .= '?';
         } else {

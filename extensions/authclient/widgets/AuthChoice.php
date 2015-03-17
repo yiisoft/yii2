@@ -50,6 +50,8 @@ use yii\authclient\ClientInterface;
  * This widget supports following keys for [[ClientInterface::getViewOptions()]] result:
  *  - popupWidth - integer width of the popup window in pixels.
  *  - popupHeight - integer height of the popup window in pixels.
+ *  - widget - configuration for the widget, which should be used to render a client link;
+ *    such widget should be a subclass of [[AuthChoiceItem]].
  *
  * @see \yii\authclient\AuthAction
  *
@@ -201,8 +203,12 @@ class AuthChoice extends Widget
             }
             /* @var $widgetClass Widget */
             $widgetClass = $widgetConfig['class'];
+            if (!(is_subclass_of($widgetClass, AuthChoiceItem::className()))) {
+                throw new InvalidConfigException('Item widget class must be subclass of "' . AuthChoiceItem::className() . '"');
+            }
             unset($widgetConfig['class']);
             $widgetConfig['client'] = $client;
+            $widgetConfig['authChoice'] = $this;
             echo $widgetClass::widget($widgetConfig);
         }
     }
