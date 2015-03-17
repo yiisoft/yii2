@@ -7,7 +7,7 @@
 
 namespace yii\authclient\widgets;
 
-use yii\authclient\clients\GoogleOAuth;
+use yii\authclient\clients\GooglePlus;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -15,10 +15,10 @@ use yii\helpers\Url;
 use yii\web\View;
 
 /**
- * GoogleSignInButton renders Google+ sign-in button.
- * This widget is designed to interact with [[GoogleOAuth]].
+ * GooglePlusButton renders Google+ sign-in button.
+ * This widget is designed to interact with [[GooglePlus]].
  *
- * @see GoogleOAuth
+ * @see GooglePlus
  * @see https://developers.google.com/+/web/signin/
  *
  * @property string|array $callback
@@ -26,10 +26,10 @@ use yii\web\View;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-class GoogleSignInButton extends Widget
+class GooglePlusButton extends Widget
 {
     /**
-     * @var GoogleOAuth google auth client instance.
+     * @var GooglePlus google auth client instance.
      */
     public $client;
     /**
@@ -72,8 +72,8 @@ class GoogleSignInButton extends Widget
      */
     public function init()
     {
-        if (!($this->client instanceof GoogleOAuth)) {
-            throw new InvalidConfigException('"' . $this->className() . '::client" must be instance of "' . GoogleOAuth::className() . '"');
+        if (!($this->client instanceof GooglePlus)) {
+            throw new InvalidConfigException('"' . $this->className() . '::client" must be instance of "' . GooglePlus::className() . '"');
         }
     }
 
@@ -86,7 +86,12 @@ class GoogleSignInButton extends Widget
         return $this->renderButton();
     }
 
-    protected function generateCallback($url = null)
+    /**
+     * Generates JavaScript callback function, which will be used to handle auth response.
+     * @param array $url auth callback URL.
+     * @return string JavaScript function name.
+     */
+    protected function generateCallback($url = [])
     {
         if (empty($url)) {
             $url = ['auth', 'authclient' => $this->client->id];
@@ -102,9 +107,21 @@ class GoogleSignInButton extends Widget
         $js = <<<JS
 function $callbackName(authResult) {
     var urlParams = [];
-    for (var propName in authResult) {
-        urlParams.push(encodeURIComponent(propName) + '=' + encodeURIComponent(authResult[propName]));
+
+    if (authResult['code']) {
+        urlParams.push('code=' + encodeURIComponent(authResult['code']));
+    } else if (authResult['error']) {
+        urlParams.push('error=' + encodeURIComponent(authResult['error']));
+        urlParams.push('error_description=' + encodeURIComponent(authResult['error_description']));
+    } else {
+        for (var propName in authResult) {
+            var propValue = authResult[propName];
+            if (typeof propValue != 'object') {
+                urlParams.push(encodeURIComponent(propName) + '=' + encodeURIComponent(propValue));
+            }
+        }
     }
+
     window.location = '$url' + urlParams.join('&');
 }
 JS;
@@ -142,6 +159,9 @@ JS;
                 'data-cookiepolicy' => 'single_host_origin',
                 'data-requestvisibleactions' => null,
                 'data-scope' => $this->client->scope,
+                'data-accesstype' => 'offline',
+                'data-width' => 'iconOnly',
+                //'data-approvalprompt' => 'force',
             ],
             $this->buttonHtmlOptions
         );
