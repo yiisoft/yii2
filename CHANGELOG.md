@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #7603: Fixed escape characters in `FormatConverter` to work with unicode characters (maddoger, cebe)
 - Bug #7656: Fixed `yii\rbac\DbManager::getRolesByUser()` and `yii\rbac\PhpManager::getRolesByUser()` to return roles only (samdark)
 - Bug #7757: Fix fetching tables schema for oci and mysql when PDO::ATTR_CASE is set (nineinchnick)
+- Bug #7761: Fixed formatting one digit month in date formatter using ICU format `L` (nkovacs)
 - Bug #7775: Added more strict check on controller IDs when they are being used to create controller instances on Windows (Bhoft, qiangxue)
 - Bug #7831: Add order when fetching database table names and constraints (nineinchnick)
 - Bug #7846: Fixed `yii\base\Model` does not recognize scenario declared by rules using 'except' (klimov-paul)
