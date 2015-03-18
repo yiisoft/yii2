@@ -64,7 +64,7 @@ class OpenIdTest extends TestCase
 
     public function testDiscover()
     {
-        $url = 'https://www.google.com/accounts/o8/id';
+        $url = 'http://openid.yandex.ru';
         $client = new OpenId();
         $info = $client->discover($url);
         $this->assertNotEmpty($info);

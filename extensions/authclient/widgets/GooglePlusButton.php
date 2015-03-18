@@ -158,7 +158,6 @@ JS;
                 'data-scope' => $this->client->scope,
                 'data-accesstype' => 'offline',
                 'data-width' => 'iconOnly',
-                //'data-approvalprompt' => 'force',
             ],
             $this->buttonHtmlOptions
         );
