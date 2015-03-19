@@ -10,6 +10,7 @@ namespace yii\redis;
 use yii\base\Component;
 use yii\db\Exception;
 use yii\helpers\Inflector;
+use yii\base\ErrorException;
 
 /**
  * The redis connection class is used to establish a connection to a [redis](http://redis.io/) server.
@@ -291,9 +292,14 @@ class Connection extends Component
             $connection = ($this->unixSocket ?: $this->hostname . ':' . $this->port) . ', database=' . $this->database;
             \Yii::trace('Closing DB connection: ' . $connection, __METHOD__);
             $this->executeCommand('QUIT');
-            stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
-            $this->_socket = null;
+            $this->releaseSocket();
         }
+    }
+
+    protected function releaseSocket()
+    {
+        stream_socket_shutdown($this->_socket, STREAM_SHUT_RDWR);
+        $this->_socket = null;
     }
 
     /**
@@ -370,9 +376,19 @@ class Connection extends Component
         }
 
         \Yii::trace("Executing Redis Command: {$name}", __METHOD__);
-        fwrite($this->_socket, $command);
-
-        return $this->parseResponse(implode(' ', $params));
+        try {
+            fwrite($this->_socket, $command);
+            return $this->parseResponse(implode(' ', $params));
+        }
+        catch (ErrorException $e) {
+            \Yii::warning("Got error: '" . $e->getMessage() . "', reinit connection", __METHOD__);
+            // handle network errors such as broken pipe
+            $this->releaseSocket(); // don't send QUIT - socket already broken
+            $this->open();
+            // don't catch second exception - it means connection reinit doesn't take effect
+            fwrite($this->_socket, $command);
+            return $this->parseResponse(implode(' ', $params));
+        }
     }
 
     /**
@@ -383,7 +399,7 @@ class Connection extends Component
     private function parseResponse($command)
     {
         if (($line = fgets($this->_socket)) === false) {
-            throw new Exception("Failed to read from socket.\nRedis command was: " . $command);
+            throw new NetworkException("Failed to read from socket.\nRedis command was: " . $command);
         }
         $type = $line[0];
         $line = mb_substr($line, 1, -2, '8bit');
@@ -427,3 +443,9 @@ class Connection extends Component
         }
     }
 }
+
+/**
+ * Report a socket error
+ */
+class NetworkException extends ErrorException
+{}
