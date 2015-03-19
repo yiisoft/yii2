@@ -23,9 +23,12 @@
         var url = e.getAttribute('data-url');
         ajax(url, {
             success: function (xhr) {
-                var div = document.createElement('div');
+                var div = document.createElement('div'),
+                parentNode = e.parentNode;
                 div.innerHTML = xhr.responseText;
-                e.parentNode.replaceChild(div, e);
+                if (parentNode !== null) {
+                    parentNode.replaceChild(div, e);
+                }
                 if (window.localStorage) {
                     var pref = localStorage.getItem('yii-debug-toolbar');
                     if (pref == 'minimized') {
