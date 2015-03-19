@@ -84,12 +84,13 @@ class m150101_185401_create_news_table extends Migration
 Each database migration is defined as a PHP class extending from [[yii\db\Migration]]. The migration
 class name is automatically generated in the format of `m<YYMMDD_HHMMSS>_<Name>`, where
 
-* `<YYMMDD_HHMMSS>` refers to the UTC datetime when the migration creation command is executed.
+* `<YYMMDD_HHMMSS>` refers to the UTC datetime at which the migration creation command is executed.
 * `<Name>` is the same as the value of the `name` argument that you provide to the command.
 
-In the migration class, you are expected to write code in the `up()` method to make changes to the database structure.
-You may also want to write code in the `down()` method to revert the changes made by the `up()` method.
-The following code shows how you implement the migration class to create a `news` table: 
+In the migration class, you are expected to write code in the `up()` method that makes changes to the database structure.
+You may also want to write code in the `down()` method to revert the changes made by `up()`. The `up` method is invoked
+when you upgrade the database with this migration, while the `down()` method is invoked when you downgrade the database.
+The following code shows how you may implement the migration class to create a `news` table: 
 
 ```php
 
@@ -141,16 +142,22 @@ to `Schema::TYPE_STRING` to specify that the column cannot be null.
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
 
-While performing complex DB migrations, we usually want to make sure that each
-migration succeeds or fail as a whole so that the database maintains its
-consistency and integrity. In order to achieve this goal, we can exploit
-DB transactions. We use the special methods `safeUp` and `safeDown` for these purposes.
+While performing complex DB migrations, it is important to ensure each migration to either succeed or fail as a whole
+so that the database can maintain integrity and consistency. To achieve this goal, it is recommended that you 
+enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions).
+ 
+An even easier way of implementing transactional migrations is to put migration code in the `safeUp()` and `safeDown()` 
+methods. These two methods differ from `up()` and `down()` in that they are enclosed implicitly in a transaction.
+As a result, if any operation in these methods fails, all prior operations will be rolled back automatically.
+
+In the following example, besides creating the `news` table we also insert an initial row into this table.
 
 ```php
 
 use yii\db\Schema;
+use yii\db\Migration;
 
-class m101129_185401_create_news_table extends \yii\db\Migration
+class m150101_185401_create_news_table extends Migration
 {
     public function safeUp()
     {
@@ -159,121 +166,112 @@ class m101129_185401_create_news_table extends \yii\db\Migration
             'title' => Schema::TYPE_STRING . ' NOT NULL',
             'content' => Schema::TYPE_TEXT,
         ]);
-
-        $this->createTable('user', [
-            'id' => 'pk',
-            'login' => Schema::TYPE_STRING . ' NOT NULL',
-            'password' => Schema::TYPE_STRING . ' NOT NULL',
+        
+        $this->insert('news', [
+            'title' => 'test 1',
+            'content' => 'content 1',
         ]);
     }
 
     public function safeDown()
     {
+        $this->delete('news', ['id' => 1]);
         $this->dropTable('news');
-        $this->dropTable('user');
     }
-
 }
 ```
 
-When your code uses more then one query it is recommended to use `safeUp` and `safeDown`.
+Note that usually when you perform multiple DB operations in `safeUp()`, you should reverse their execution order 
+in `safeDown()`. In the above example we first create the table and then insert a row in `safeUp()`; while
+in `safeDown()` we first delete the row and then drop the table.
 
-> Note: Not all DBMS support transactions. And some DB queries cannot be put
-> into a transaction. In this case, you will have to implement `up()` and
-> `down()`, instead. In the case of MySQL, some SQL statements may cause
-> [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html).
+> Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
+  please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). If this is the case,
+  you should still implement `up()` and `down()`, instead.
 
 
-Applying Migrations
--------------------
+## Applying Migrations <span id="applying-migrations"></span>
 
-To apply all available new migrations (i.e., make the local database up-to-date),
-run the following command:
+To upgrade a database to its latest structure, you should apply all available new migrations using the following command:
 
 ```
 yii migrate
 ```
 
-The command will show the list of all new migrations. If you confirm you want to apply
-the migrations, it will run the `up()` method in every new migration class, one
-after another, in the order of the timestamp value in the class name.
+This command will list all migrations that have not been applied so far. If you confirm that you want to apply
+these migrations, it will run the `up()` or `safeUp()` method in every new migration class, one after another, 
+in the order of their timestamp values. If any of the migrations fails, the command will quit without applying
+the rest of the migrations.
 
-After applying a migration, the migration tool will keep a record in a database
-table named `migration`. This allows the tool to identify which migrations
-have been applied and which have not. If the `migration` table does not exist,
-the tool will automatically create it in the database specified by the `db`
-[application component](structure-application-components.md).
+For each migration that has been successfully applied, the command will insert a row into a database table named 
+`migration` to record the successful application of the migration. This will allow the migration tool to identify
+which migrations have been applied and which have not.
 
-Sometimes, we may only want to apply one or a few new migrations. We can use the
-following command:
-
-```
-yii migrate/up 3
-```
-
-This command will apply the next 3 new migrations. Changing the value 3 will allow
-us to change the number of migrations to be applied.
-
-We can also migrate the database to a specific version with the following command:
+> Info: The migration tool will automatically create the `migration` table in the database specified by
+  the [[yii\console\controllers\MigrateController::db|db]] option of the command. By default, the database
+  is specified by the `db` [application component](structure-application-components.md).
+  
+Sometimes, you may only want to apply one or a few new migrations, instead of all available migrations.
+You can do so by specifying the number of migrations that you want to apply when running the command.
+For example, the following command will try to apply the next three available migrations:
 
 ```
-yii migrate/to 101129_185401
+yii migrate 3
 ```
 
-That is, we use the timestamp part of a migration name to specify the version
-that we want to migrate the database to. If there are multiple migrations between
-the last applied migration and the specified migration, all these migrations
-will be applied. If the specified migration has been applied before, then all
-migrations applied after it will be reverted (to be described in the next section).
-
-
-Reverting Migrations
---------------------
-
-To revert the last migration step or several applied migrations, we can use the following
-command:
+You can also explicitly specify a particular migration to which the database should be migrated
+by using the `migrate/to` command in one of the following formats:
 
 ```
-yii migrate/down [step]
+yii migrate/to 150101_185401                      # using timestamp to specify the migration
+yii migrate/to "2015-01-01 18:54:01"              # using a string that can be parsed by strtotime()
+yii migrate/to m150101_185401_create_news_table   # using full name
+yii migrate/to 1392853618                         # using UNIX timestamp
 ```
 
-where the optional `step` parameter specifies how many migrations to be reverted
-back. It defaults to 1, meaning only the last applied migration will be reverted back.
+If there are any unapplied migrations earlier than the specified one, they will all be applied before the specified
+migration is applied.
 
-As we described before, not all migrations can be reverted. Trying to revert
-such migrations will throw an exception and stop the entire reverting process.
+If the specified migration has already been applied before, any later applied migrations will be reverted.
 
 
-Redoing Migrations
-------------------
+## Reverting Migrations <span id="reverting-migrations"></span>
 
-Redoing migrations means first reverting and then applying the specified migrations.
-This can be done with the following command:
+To revert (undo) one or multiple migrations that have been applied before, you can run the following command:
 
 ```
-yii migrate/redo [step]
+yii migrate/down     # revert the most recently applied migration
+yii migrate/down 3   # revert the most 3 recently applied migrations
 ```
 
-where the optional `step` parameter specifies how many migrations to be redone.
-It defaults to 1, which means only the last migration will be redone.
+> Note: Not all migrations are reversible. Trying to revert such migrations will cause an error and stop the
+  entire reverting process.
 
 
-Showing Migration Information
------------------------------
+## Redoing Migrations <span id="redoing-migrations"></span>
 
-Besides applying and reverting migrations, the migration tool can also display
-the migration history and the new migrations to be applied.
+Redoing migrations means first reverting the specified migrations and then applying again. This can be done
+as follows:
 
 ```
-yii migrate/history [limit]
-yii migrate/new [limit]
+yii migrate/redo        # redo the last applied migration 
+yii migrate/redo 3      # redo the last 3 applied migrations
 ```
 
-where the optional parameter `limit` specifies the number of migrations to be
-displayed. If `limit` is not specified, all available migrations will be displayed.
 
-The first command shows the migrations that have been applied, while the second
-command shows the migrations that have not been applied.
+## Listing Migrations <span id="listing-migrations"></span>
+
+To list which migrations have been applied and which are not, you may use the following commands:
+
+```
+yii migrate/history     # showing the last 10 applied migrations
+yii migrate/history 5   # showing the last 5 applied migrations
+yii migrate/history all # showing all applied migrations
+
+yii migrate/new         # showing the first 10 new migrations
+yii migrate/new 5       # showing the first 5 new migrations
+yii migrate/new all     # showing all new migrations
+```
 
 
 Modifying Migration History
