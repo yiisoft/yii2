@@ -110,6 +110,30 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Generates a sub-join SQL statement from a [[SubJoin]] object.
+     * @param SubJoin $subJoin the [[SubJoin]] object from which the SQL statement will be generated.
+     * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
+     * be included in the result with the additional parameters generated during the query building process.
+     * @return array the generated SQL statement (the first array element) and the corresponding
+     * parameters to be bound to the SQL statement (the second array element). The parameters returned
+     * include those provided in `$params`.
+     */
+    public function buildSubJoin($subJoin, $params = [])
+    {
+        $subJoin = $subJoin->prepare($this);
+
+        $params = empty($params) ? $subJoin->params : array_merge($params, $subJoin->params);
+
+        $clauses = [
+            $this->buildJoin($subJoin->join, $params),
+        ];
+
+        $sql = implode($this->separator, array_filter($clauses));
+
+        return [$sql, $params];
+    }
+
+    /**
      * Creates an INSERT SQL statement.
      * For example,
      *
@@ -708,7 +732,10 @@ class QueryBuilder extends \yii\base\Object
     private function quoteTableNames($tables, &$params)
     {
         foreach ($tables as $i => $table) {
-            if ($table instanceof Query) {
+            if ($table instanceof SubJoin) {
+                list($sql, $params) = $this->buildSubJoin($table, $params);
+                $tables[$i] = "($sql)";
+            } elseif ($table instanceof Query) {
                 list($sql, $params) = $this->build($table, $params);
                 $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
             } elseif (is_string($i)) {
