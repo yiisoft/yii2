@@ -13,7 +13,7 @@ use yii\authclient\OpenId;
  * @deprecated
  *
  * Warning: this class is deprecated since Google is shutting down OpenID protocol support!
- * Use [[GoogleOAuth]] or [[GooglePlus]] instead.
+ * Use [[GoogleOAuth]] or [[GoogleHybrid]] instead.
  *
  * GoogleOpenId allows authentication via Google OpenId.
  * Unlike Google OAuth you do not need to register your application anywhere in order to use Google OpenId.

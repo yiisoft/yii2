@@ -7,7 +7,7 @@
 
 namespace yii\authclient\widgets;
 
-use yii\authclient\clients\GooglePlus;
+use yii\authclient\clients\GoogleHybrid;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -15,12 +15,12 @@ use yii\web\View;
 
 /**
  * GooglePlusButton renders Google+ sign-in button.
- * This widget is designed to interact with [[GooglePlus]].
+ * This widget is designed to interact with [[GoogleHybrid]].
  *
- * @see GooglePlus
+ * @see GoogleHybrid
  * @see https://developers.google.com/+/web/signin/
  *
- * @property \yii\authclient\clients\GooglePlus $client auth client instance.
+ * @property GoogleHybrid $client auth client instance.
  * @property string|array $callback callback JavaScript function name or URL config.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -68,8 +68,8 @@ class GooglePlusButton extends AuthChoiceItem
      */
     public function init()
     {
-        if (!($this->client instanceof GooglePlus)) {
-            throw new InvalidConfigException('"' . $this->className() . '::client" must be instance of "' . GooglePlus::className() . '"');
+        if (!($this->client instanceof GoogleHybrid)) {
+            throw new InvalidConfigException('"' . $this->className() . '::client" must be instance of "' . GoogleHybrid::className() . '"');
         }
     }
 
