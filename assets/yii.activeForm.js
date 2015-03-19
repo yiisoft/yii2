@@ -416,7 +416,10 @@
             });
         }
         if (attribute.validateOnType) {
-            $input.on('keyup.yiiActiveForm', function () {
+            $input.on('keyup.yiiActiveForm', function (e) {
+                if ($.inArray(e.which, [16, 17, 18, 37, 38, 39, 40]) !== -1 ) {
+                    return;
+                }
                 if (attribute.value !== getValue($form, attribute)) {
                     validateAttribute($form, attribute, false, attribute.validationDelay);
                 }
