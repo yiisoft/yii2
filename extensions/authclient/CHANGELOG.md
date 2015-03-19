@@ -4,6 +4,7 @@ Yii Framework 2 authclient extension Change Log
 2.0.4 under development
 -----------------------
 
+- Enh #6743: Icon for Google at `yii\authclient\widgets\AuthChoice` fixed to follow the Google Brand guidelines (klimov-paul)
 - Enh #7754: New client `yii\authclient\clients\GooglePlus` added to support Google recommended auth flow (klimov-paul)
 
 
