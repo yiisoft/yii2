@@ -4,6 +4,7 @@ Yii Framework 2 authclient extension Change Log
 2.0.4 under development
 -----------------------
 
+- Bug #7224: Fixed incorrect POST fields composition at `yii\authclient\OAuth1` (klimov-paul)
 - Enh #6743: Icon for Google at `yii\authclient\widgets\AuthChoice` fixed to follow the Google Brand guidelines (klimov-paul)
 - Enh #7754: New client `yii\authclient\clients\GooglePlus` added to support Google recommended auth flow (klimov-paul)
 - Chg: #7754: `yii\authclient\clients\GoogleOpenId` is now deprecated because this auth method is no longer supported by Google as of April 20, 2015 (klimov-paul)
