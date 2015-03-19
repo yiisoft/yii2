@@ -4,7 +4,7 @@ Yii Framework 2 debug extension Change Log
 2.0.4 under development
 -----------------------
 
-- no changes in this release.
+- Enh #7655: Added ability to filter access by hostname (thiagotalma)
 
 
 2.0.3 March 01, 2015
