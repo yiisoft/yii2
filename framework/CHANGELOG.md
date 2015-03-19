@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 - Bug #7603: Fixed escape characters in `FormatConverter` to work with unicode characters (maddoger, cebe)
 - Enh #6895: Added `ignoreCategories` config option for message command to ignore categories specified (samdark)
+- Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
 - Enh #7530: Improved default values for `yii\data\Sort` link labels in a `ListView` when used with an `ActiveDataProvider` (cebe)
 - Enh #7562: `yii help` now lists all sub-commands by default (callmez)
