@@ -45,7 +45,7 @@ concept-di-container.md             | Yes
 db-dao.md                           | Yes
 db-query-builder.md                 | Yes
 db-active-record.md                 | Yes
-db-migrations.md                    |
+db-migrations.md                    | Yes
 db-sphinx.md                        |
 db-redis.md                         |
 db-mongodb.md                       |

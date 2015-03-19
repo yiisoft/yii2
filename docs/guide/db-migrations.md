@@ -1,8 +1,6 @@
 Database Migration
 ==================
 
-> Note: This section is under development.
-
 During the course of developing and maintaining a database-driven application, the structure of the database
 being used evolves just like the source code does. For example, during the development of an application, 
 a new table may be found necessary; after the application is deployed to production, it may be discovered
@@ -190,6 +188,44 @@ in `safeDown()` we first delete the row and then drop the table.
   you should still implement `up()` and `down()`, instead.
 
 
+### Database Accessing Methods <span id="db-accessing-methods"></span>
+
+The base migration class [[yii\db\Migration]] provides a set of methods to let you access and manipulate databases.
+You may find these methods are named similarly as the [DAO methods](db-dao.md) provided by the [[yii\db\Command]] class. 
+For example, the [[yii\db\Migration::createTable()]] method allows you to create a new table, 
+just like [[yii\db\Command::createTable()]] does. 
+
+The benefit of using the methods provided by [[yii\db\Migration]] is that you do not need to explicitly 
+create [[yii\db\Command]] instances and the execution of each method will automatically display useful messages 
+telling you what database operations are done and how long they take.
+
+Below is the list of all these database accessing methods:
+
+* [[yii\db\Migration::execute()|execute()]]: executing a SQL statement
+* [[yii\db\Migration::insert()|insert()]]: inserting a single row
+* [[yii\db\Migration::batchInsert()|batchInsert()]]: inserting multiple rows
+* [[yii\db\Migration::update()|update()]]: updating rows
+* [[yii\db\Migration::delete()|delete()]]: deleting rows
+* [[yii\db\Migration::createTable()|createTable()]]: creating a table
+* [[yii\db\Migration::renameTable()|renameTable()]]: renaming a table
+* [[yii\db\Migration::dropTable()|dropTable()]]: removing a table
+* [[yii\db\Migration::truncateTable()|truncateTable()]]: removing all rows in a table
+* [[yii\db\Migration::addColumn()|addColumn()]]: adding a column
+* [[yii\db\Migration::renameColumn()|renameColumn()]]: renaming a column
+* [[yii\db\Migration::dropColumn()|dropColumn()]]: removing a column
+* [[yii\db\Migration::alterColumn()|alterColumn()]]: altering a column
+* [[yii\db\Migration::addPrimaryKey()|addPrimaryKey()]]: adding a primary key
+* [[yii\db\Migration::dropPrimaryKey()|dropPrimaryKey()]]: removing a primary key
+* [[yii\db\Migration::addForeignKey()|addForeignKey()]]: adding a foreign key
+* [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: removing a foreign key
+* [[yii\db\Migration::createIndex()|createIndex()]]: creating an index
+* [[yii\db\Migration::dropIndex()|dropIndex()]]: removing an index
+
+> Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
+  to display extra message about retrieving data from a database. It is also because you can use the powerful
+  [Query Builder](db-query-builder.md) to build and run complex queries.
+
+
 ## Applying Migrations <span id="applying-migrations"></span>
 
 To upgrade a database to its latest structure, you should apply all available new migrations using the following command:
@@ -258,6 +294,8 @@ yii migrate/redo        # redo the last applied migration
 yii migrate/redo 3      # redo the last 3 applied migrations
 ```
 
+> Note: If a migration is not reversible, you will not be able to redo it.
+
 
 ## Listing Migrations <span id="listing-migrations"></span>
 
@@ -274,128 +312,127 @@ yii migrate/new all     # showing all new migrations
 ```
 
 
-Modifying Migration History
----------------------------
+## Modifying Migration History <span id="modifying-migration-history"></span>
 
-Sometimes, we may want to modify the migration history to a specific migration
-version without actually applying or reverting the relevant migrations. This
-often happens when developing a new migration. We can use the following command
-to achieve this goal.
+Instead of actually applying or reverting migrations, sometimes you may simply want to mark that your database
+has been upgraded to a particular migration. This often happens when you manually change the database to a particular
+state and you do not want the migration(s) for that change to be re-applied later. You can achieve this goal with
+the following command:
 
 ```
-yii migrate/mark 101129_185401
+yii migrate/mark 150101_185401                      # using timestamp to specify the migration
+yii migrate/mark "2015-01-01 18:54:01"              # using a string that can be parsed by strtotime()
+yii migrate/mark m150101_185401_create_news_table   # using full name
+yii migrate/mark 1392853618                         # using UNIX timestamp
 ```
 
-This command is very similar to `yii migrate/to` command, except that it only
-modifies the migration history table to the specified version without applying
-or reverting the migrations.
+The command will modify the `migration` table by adding or deleting certain rows to indicate that the database
+has been applied migrations to the specified one. No migrations will be applied or reverted by this command.
 
 
-Customizing Migration Command
------------------------------
+## Customizing Migrations <span id="customizing-migrations"></span>
 
 There are several ways to customize the migration command.
 
-### Use Command Line Options
 
-The migration command comes with a few options that can be specified on the command
-line:
+### Using Command Line Options <span id="using-command-line-options"></span>
 
-* `interactive`: boolean, specifies whether to perform migrations in an
-  interactive mode. Defaults to true, meaning the user will be prompted when
-  performing a specific migration. You may set this to false so the
-  migrations are performed as a background process.
+The migration command comes with a few command-line options that can be used to customize its behaviors:
 
-* `migrationPath`: string, specifies the directory storing all migration class
-  files. This must be specified in terms of a path alias, and the corresponding
-  directory must exist. If not specified, it will use the `migrations`
-  sub-directory under the application base path.
+* `interactive`: boolean (defaults to true), specifies whether to perform migrations in an interactive mode. 
+  When this is true, the user will be prompted before the command performs certain actions.
+  You may want to set this to false if the command is being used in a background process.
 
-* `migrationTable`: string, specifies the name of the database table for storing
-  migration history information. It defaults to `migration`. The table
-  structure is `version varchar(255) primary key, apply_time integer`.
+* `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration 
+  class files. This can be specified as either a directory path or a path [alias](concept-aliases.md). 
+  Note that the directory must exist, or the command may trigger an error.
 
-* `db`: string, specifies the ID of the database [application component](structure-application-components.md).
-  Defaults to 'db'.
+* `migrationTable`: string (defaults to `migration`), specifies the name of the database table for storing
+  migration history information. The table will be automatically created by the command if it does not exist.
+  You may also manually create it using the structure `version varchar(255) primary key, apply_time integer`.
 
-* `templateFile`: string, specifies the path of the file to be served as the code
-  template for generating the migration classes. This must be specified in terms
-  of a path alias (e.g. `application.migrations.template`). If not set, an
-  internal template will be used. Inside the template, the token `{ClassName}`
-  will be replaced with the actual migration class name.
+* `db`: string (defaults to `db`), specifies the ID of the database [application component](structure-application-components.md).
+  It represents the database that will be migrated using this command.
 
-To specify these options, execute the migrate command using the following format:
+* `templateFile`: string (defaults to `@yii/views/migration.php`), specifies the path of the template file
+  that is used for generating skeleton migration class files. This can be specified as either a file path
+  or a path [alias](concept-aliases.md). The template file is a PHP script in which you can use a predefined variable
+  named `$className` to get the migration class name.
 
-```
-yii migrate/up --option1=value1 --option2=value2 ...
-```
+The following example shows how you can use these options.
 
 For example, if we want to migrate a `forum` module whose migration files
 are located within the module's `migrations` directory, we can use the following
 command:
 
 ```
-yii migrate/up --migrationPath=@app/modules/forum/migrations
+# migrate the migrations in a forum module non-interactively
+yii migrate --migrationPath=@app/modules/forum/migrations --interactive=0
 ```
 
 
-### Configure Command Globally
+### Configuring Command Globally <span id="configuring-command-globally"></span>
 
-While command line options allow us to configure the migration command
-on-the-fly, sometimes we may want to configure the command once for all.
-For example, we may want to use a different table to store the migration history,
-or we may want to use a customized migration template. We can do so by modifying
-the console application's configuration file like the following,
+Instead of entering the same option values every time you run the migration command, you may configure it
+once for all in the application configuration like shown below:
 
 ```php
-'controllerMap' => [
-    'migrate' => [
-        'class' => 'yii\console\controllers\MigrateController',
-        'migrationTable' => 'my_custom_migrate_table',
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationTable' => 'backend_migration',
+        ],
     ],
-]
+];
 ```
 
-Now if we run the `migrate` command, the above configurations will take effect
-without requiring us to enter the command line options every time. Other command options
-can be also configured this way.
+With the above configuration, each time you run the migration command, the `backend_migration` table
+will be used to record the migration history. You no longer need to specify it via the `migrationTable`
+command-line option.
 
 
-### Migrating with Multiple Databases
+## Migrating Multiple Databases <span id="migrating-multiple-databases"></span>
 
-By default, migrations will be applied to the database specified by the `db` [application component](structure-application-components.md).
-You may change it by specifying the `--db` option, for example,
+By default, migrations are applied to the same database specified by the `db` [application component](structure-application-components.md).
+If you want them to be applied to a different database, you may specify the `db` command-line option like shown below,
 
 ```
 yii migrate --db=db2
 ```
 
-The above command will apply *all* migrations found in the default migration path to the `db2` database.
+The above command will apply migrations to the `db2` database.
 
-If your application works with multiple databases, it is possible that some migrations should be applied
-to one database while some others should be applied to another database. In this case, it is recommended that
-you create a base migration class for each different database and override the [[yii\db\Migration::init()]]
-method like the following,
+Sometimes it may happen that you want to apply *some* of the migrations to one database, while some others to another
+database. To achieve this goal, when implementing a migration class you should explicitly specify the DB component
+ID that the migration would use, like the following:
 
 ```php
-public function init()
+use yii\db\Schema;
+use yii\db\Migration;
+
+class m150101_185401_create_news_table extends Migration
 {
-    $this->db = 'db2';
-    parent::init();
+    public function init()
+    {
+        $this->db = 'db2';
+        parent::init();
+    }
 }
 ```
 
-To create a migration that should be applied to a particular database, simply extend from the corresponding
-base migration class. Now if you run the `yii migrate` command, each migration will be applied to its corresponding database.
+The above migration will be applied to `db2`, even if you specify a different database through the `db` command-line
+option. Note that the migration history will still be recorded in the database specified by the `db` command-line option.
 
-> Info: Because each migration uses a hardcoded DB connection, the `--db` option of the `migrate` command will
-  have no effect. Also note that the migration history will be stored in the default `db` database.
+If you have multiple migrations that use the same database, it is recommended that you create a base migration class
+with the above `init()` code. Then each migration class can extend from this base class.
 
-If you want to support changing the DB connection via the `--db` option, you may take the following alternative
-approach to work with multiple databases.
+> Tip: Besides setting the [[yii\db\Migration::db|db]] property, you can also operate on different databases
+  by creating new database connections to them in your migration classes. You then use the [DAO methods](db-dao.md)
+  with these connections to manipulate different databases.
 
-For each database, create a migration path and save all corresponding migration classes there. To apply migrations,
-run the command as follows,
+Another strategy that you can take to migrate multiple databases is to keep migrations for different databases in
+different migration paths. Then you can migrate these databases in separate commands like the following:
 
 ```
 yii migrate --migrationPath=@app/migrations/db1 --db=db1
@@ -403,4 +440,5 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 ...
 ```
 
-> Info: The above approach stores the migration history in different databases specified via the `--db` option.
+The first command will apply migrations in `@app/migrations/db1` to the `db1` database, the second command
+will apply migrations in `@app/migrations/db2` to `db2`, and so on.
