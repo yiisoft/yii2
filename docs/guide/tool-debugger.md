@@ -68,7 +68,7 @@ Logging and profiling are simple but powerful tools that may help you to underst
 framework and the application. These tools are useful for development and production environments alike.
 
 While in a production environment, you should log only significantly important  messages manually, as described in
-[logging guide section](logging.md). It hurts performance too much to continue to log all messages in production.
+[logging guide section](runtime-logging.md). It hurts performance too much to continue to log all messages in production.
 
 In a development environment, the more logging the better, and it's especially useful to record the execution trace.
 
