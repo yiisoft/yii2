@@ -4,7 +4,7 @@ Yii Framework 2 composer extension Change Log
 2.0.4 under development
 -----------------------
 
-- no changes in this release.
+- Bug #7735: Composer failed to install extensions with multiple base paths in "psr-4" autoload section (cebe)
 
 
 2.0.3 March 01, 2015

@@ -121,6 +121,11 @@ class Installer extends LibraryInstaller
 
         if (!empty($autoload['psr-4'])) {
             foreach ($autoload['psr-4'] as $name => $path) {
+                if (is_array($path)) {
+                    // ignore psr-4 autoload specifications with multiple search paths
+                    // we can not convert them into aliases as they are ambiguous
+                    continue;
+                }
                 $name = str_replace('\\', '/', trim($name, '\\'));
                 if (!$fs->isAbsolutePath($path)) {
                     $path = $this->vendorDir . '/' . $package->getPrettyName() . '/' . $path;
