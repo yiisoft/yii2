@@ -57,6 +57,9 @@ class DateValidator extends Validator
      * @var string the name of the attribute to receive the parsing result.
      * When this property is not null and the validation is successful, the named attribute will
      * receive the parsing result.
+     *
+     * This can be the same attribute as the one being validated. If this is the case,
+     * the original value will be overwritten with the timestamp value after validation.
      */
     public $timestampAttribute;
 

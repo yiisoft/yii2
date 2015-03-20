@@ -111,14 +111,19 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
    `Datetime` class. Please refer to <http://php.net/manual/en/datetime.createfromformat.php> on supported formats.
    If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
 - `timestampAttribute`: the name of the attribute to which this validator may assign the UNIX timestamp
-  converted from the input date/time.
+  converted from the input date/time. This can be the same attribute as the one being validated. If this is the case,
+  the original value will be overwritten with the timestamp value after validation.
+  See ["Handling date input with the DatePicker"](widget-jui#datepicker-date-input) for a usage example.
 
-In case the input is optional you may also want to add a default value filter in addition to the date validator
+In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
 to ensure empty input is stored as `NULL`. Other wise you may end up with dates like `0000-00-00` in your database
 or `1970-01-01` in the input field of a date picker.
 
 ```php
-[['from_date', 'to_date'], 'default', 'value' => null],
+[
+    [['from_date', 'to_date'], 'default', 'value' => null],
+    [['from_date', 'to_date'], 'date'],
+],
 ```
 
 ## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>

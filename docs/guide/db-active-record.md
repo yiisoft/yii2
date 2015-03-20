@@ -275,6 +275,10 @@ class Customer extends ActiveRecord
 Now in your PHP code, instead of accessing `$customer->birthday`, you would access `$customer->birthdayText`, which
 will allow you to input and display customer birthdays in the format of `'YYYY/MM/DD'`.
 
+> Tipp: the above shows an easy approach to achieve data transformation in general. For date values Yii provides a better
+> way using the [DateValidator](tutorial-core-validators.md#date) and a DatePicker widget, which is described in the
+> [JUI Widgets section](widget-jui#datepicker-date-input).
+
 
 ### Retrieving Data in Arrays <span id="data-in-arrays"></span>
 
