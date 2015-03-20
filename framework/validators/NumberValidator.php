@@ -96,6 +96,7 @@ class NumberValidator extends Validator
         }
         if (is_string($value)) {
            $this->integerOnly ? settype($value, 'integer') : settype($value, 'float');
+           $model->$attribute = $value;
         }
     }
 
