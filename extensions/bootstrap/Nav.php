@@ -26,7 +26,7 @@ use yii\helpers\Html;
  *             'linkOptions' => [...],
  *         ],
  *         [
- *             'label' => 'Dropdown',
+ *             'label' => 'Dropdown', // shows dropdown menu item
  *             'items' => [
  *                  ['label' => 'Level 1 - Dropdown A', 'url' => '#'],
  *                  '<li class="divider"></li>',
@@ -34,6 +34,9 @@ use yii\helpers\Html;
  *                  ['label' => 'Level 1 - Dropdown B', 'url' => '#'],
  *             ],
  *         ],
+ *        [
+           'label' => 'Logout', 'url'=> '#', 'visible'=>!Yii::$app->user->isGuest // only visible when user is logged-in
+          ],
  *     ],
  *     'options' => ['class' =>'nav-pills'], // set this to nav-tab to get tab-styled navigation
  * ]);
