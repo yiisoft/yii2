@@ -584,12 +584,13 @@ class Module extends ServiceLocator
      * ```php
      * public function beforeAction($action)
      * {
-     *     if (parent::beforeAction($action)) {
-     *         // your custom code here
-     *         return true;  // or false if needed
-     *     } else {
+     *     if (!parent::beforeAction($action)) {
      *         return false;
      *     }
+     * 
+     *     // your custom code here
+     * 
+     *     return true; // or false to throw error
      * }
      * ```
      *
