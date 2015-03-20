@@ -94,6 +94,9 @@ class NumberValidator extends Validator
         if ($this->max !== null && $value > $this->max) {
             $this->addError($model, $attribute, $this->tooBig, ['max' => $this->max]);
         }
+        if (is_string($value)) {
+           $this->integerOnly ? settype($value, 'integer') : settype($value, 'float');
+        }
     }
 
     /**
