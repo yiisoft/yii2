@@ -191,7 +191,7 @@ It's a good practice to define meaningful constants for your controller in case 
 
 ### Formatting and colors
 
-Yii console supports formatted output that is automatically degraded to non-formatted one if it's not supported
+The [yii\helper\Console](structure-assets.md#using-the-asset-command) supports formatted output that is automatically degraded to non-formatted one if it's not supported
 by terminal running the command.
 
 Outputting formatted strings is simple. Here's how to output some bold text:
