@@ -65,15 +65,20 @@ abstract class AbstractImageTest extends VendorTestCase
         $this->assertTrue(file_exists($this->runtimeWatermarkFile));
     }
 
-    public function testFrame()
+    public function testFrame($alpha = 100)
     {
         $frameSize = 5;
         $original = Image::getImagine()->open($this->imageFile);
         $originalSize = $original->getSize();
-        $img = Image::frame($this->imageFile, $frameSize, '666', 0);
+        $img = Image::frame($this->imageFile, $frameSize, '666', $alpha);
         $size = $img->getSize();
 
         $this->assertEquals($size->getWidth(), $originalSize->getWidth() + ($frameSize * 2));
+    }
+
+    public function testFrameAlpha()
+    {
+        $this->testFrame(0);
     }
 
     public function testThumbnail()

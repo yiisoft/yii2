@@ -7,9 +7,9 @@
 
 namespace yii\imagine;
 
+use Imagine\Image\Palette\RGB;
 use Yii;
 use Imagine\Image\Box;
-use Imagine\Image\Color;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\ManipulatorInterface;
@@ -158,7 +158,7 @@ class BaseImage
         $img = $img->thumbnail($box, $mode);
 
         // create empty image to preserve aspect ratio of thumbnail
-        $thumb = static::getImagine()->create($box, new Color('FFF', 100));
+        $thumb = static::getImagine()->create($box, (new RGB())->color('FFF', 100));
 
         // calculate points
         $size = $img->getSize();
@@ -224,7 +224,7 @@ class BaseImage
         $fontAngle = ArrayHelper::getValue($fontOptions, 'angle', 0);
 
         $img = static::getImagine()->open(Yii::getAlias($filename));
-        $font = static::getImagine()->font(Yii::getAlias($fontFile), $fontSize, new Color($fontColor));
+        $font = static::getImagine()->font(Yii::getAlias($fontFile), $fontSize, (new RGB())->color($fontColor, 100));
 
         $img->draw()->text($text, $font, new Point($start[0], $start[1]), $fontAngle);
 
@@ -246,7 +246,7 @@ class BaseImage
         $size = $img->getSize();
 
         $pasteTo = new Point($margin, $margin);
-        $padColor = new Color($color, $alpha);
+        $padColor = (new RGB())->color($color, $alpha);
 
         $box = new Box($size->getWidth() + ceil($margin * 2), $size->getHeight() + ceil($margin * 2));
 
