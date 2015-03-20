@@ -86,7 +86,7 @@ Besides column names, you can also select DB expressions. You must use the array
 that contains commas to avoid incorrect automatic name quoting. For example,
 
 ```php
-$query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email']); 
+$query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
 Starting from version 2.0.1, you may also select sub-queries. You should specify each sub-query in terms of 
