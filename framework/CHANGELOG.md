@@ -965,6 +965,7 @@ Yii Framework 2 Change Log
 - Enh #8268: Allow `yii\db\QueryBuilder` to recognize more variations of `limit` and `offset` values (tino415, qiangxue)
 - Enh: `yii\i18n\Formatter` now shows more information about errors which occured when formatting values (cebe)
 - Enh #7593: Created a new core validator AtLeastOneValidator (slinstj)
+- Enh #7593: Created a new core validator AtLeastValidator (slinstj)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting `yii\db\IntegrityException` for oci (nineinchnick)
