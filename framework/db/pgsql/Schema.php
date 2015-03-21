@@ -7,9 +7,10 @@
 
 namespace yii\db\pgsql;
 
+use Yii;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
+use yii\db\pgsql\ColumnSchema;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
@@ -115,6 +116,15 @@ class Schema extends \yii\db\Schema
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
+    }
+
+    /**
+     * @return \yii\db\pgsql\ColumnSchema
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function createColumnSchema()
+    {
+        return Yii::createObject('yii\db\pgsql\ColumnSchema');
     }
 
     /**
@@ -323,7 +333,9 @@ SELECT
     d.nspname AS table_schema,
     c.relname AS table_name,
     a.attname AS column_name,
-    t.typname AS data_type,
+    a.attndims AS array_dimension,
+    t.typdelim AS delimiter,
+    COALESCE(te.typname, t.typname) AS data_type,
     a.attlen AS character_maximum_length,
     pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
     a.atttypmod AS modifier,
@@ -363,6 +375,7 @@ FROM
     LEFT JOIN pg_attribute a ON a.attrelid = c.oid
     LEFT JOIN pg_attrdef ad ON a.attrelid = ad.adrelid AND a.attnum = ad.adnum
     LEFT JOIN pg_type t ON a.atttypid = t.oid
+    LEFT JOIN pg_type te ON t.typelem != 0 AND t.typelem = te.oid
     LEFT JOIN pg_namespace d ON d.oid = c.relnamespace
     LEFT join pg_constraint ct on ct.conrelid=c.oid and ct.contype='p'
 WHERE
@@ -426,6 +439,8 @@ SQL;
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
         $column->size = $info['size'] === null ? null : (int) $info['size'];
+        $column->dimension = (int) $info['array_dimension'];
+        $column->delimiter = $info['delimiter'];
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {
