@@ -1,0 +1,14 @@
+{
+    "path_no_params": "{{ path('/site/index', {}) }}",
+    "path_with_params": "{{ path('/site/index', { page: 2 }) }}",
+    "path_no_params_array": "{{ path(['/site/index']) }}",
+    "path_with_params_array": "{{ path(['/site/index'], { page: 2 }) }}",
+    "path_use_alias": "{{ path('@web/css/style.css') }}",
+    "path_as_is": "{{ path('/site/index') }}",
+    "url_no_params": "{{ url('/site/index', {}) }}",
+    "url_with_params": "{{ url('/site/index', { page: 2 }) }}",
+    "url_no_params_array": "{{ url(['/site/index']) }}",
+    "url_with_params_array": "{{ url(['/site/index'], { page: 2 }) }}",
+    "url_use_alias": "{{ url('@web/css/style.css') }}",
+    "url_as_is": "{{ url('/site/index') }}"
+}
