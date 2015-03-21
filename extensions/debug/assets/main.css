@@ -18,13 +18,16 @@ ul.assets {
     white-space: normal;
 }
 
-.callout-danger {
-    background-color: #fcf2f2;
-    border-color: #dFb5b4;
-}
 .callout {
     margin: 0 0 10px 0;
     padding: 5px;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+
+.callout-primary {
+    border-left-color: #337ab7;
 }
 
 .list-group .glyphicon {
