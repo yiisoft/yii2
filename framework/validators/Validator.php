@@ -21,6 +21,7 @@ use yii\base\NotSupportedException;
  * Validator declares a set of [[builtInValidators|built-in validators] which can
  * be referenced using short names. They are listed as follows:
  *
+ * - `atLeast`: [[AtLeastValidator]]
  * - `boolean`: [[BooleanValidator]]
  * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
@@ -51,7 +52,7 @@ class Validator extends Component
      * @var array list of built-in validators (name => class or configuration)
      */
     public static $builtInValidators = [
-        'atLeastOne' => 'yii\validators\AtLeastOneValidator',
+        'atLeast' => 'yii\validators\AtLeastValidator',
         'boolean' => 'yii\validators\BooleanValidator',
         'captcha' => 'yii\captcha\CaptchaValidator',
         'compare' => 'yii\validators\CompareValidator',

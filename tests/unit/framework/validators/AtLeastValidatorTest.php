@@ -1,7 +1,7 @@
 <?php
 namespace yiiunit\framework\validators;
 
-use yii\validators\AtLeastOneValidator;
+use yii\validators\AtLeastValidator;
 use yii\base\InvalidConfigException;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
@@ -21,22 +21,22 @@ class AtLeastOneValidatorTest extends TestCase
     {
         $model = new FakedValidationModel;
 
-        $val = new AtLeastOneValidator(['validateWith' => 'attr2']);
+        $val = new AtLeastValidator(['with' => 'attr2']);
         $model->attr1 = null;
         $model->attr2 = null;
         $val->validateAttribute($model, 'attr1');
         $this->assertCount(2, $model->getErrors(), 'Model should have 2 error attributes.');
 
-        $val = new AtLeastOneValidator(['validateWith' => 'attr2']);
+        $val = new AtLeastValidator(['with' => 'attr2']);
         $model->attr1 = '';
         $model->attr2 = [];
         $model->clearErrors();
         $val->validateAttribute($model, 'attr1');
         $this->assertCount(2, $model->getErrors(), 'Model should have 2 error attributes.');
 
-        $val = new AtLeastOneValidator([
-            'validateWith' => 'attr2',
-            'errorAttributes'=>'attr1',
+        $val = new AtLeastValidator([
+            'with' => 'attr2',
+            'errorIn'=>'attr1',
         ]);
         $model->attr1 = null;
         $model->attr2 = null;
@@ -45,9 +45,9 @@ class AtLeastOneValidatorTest extends TestCase
         $this->assertCount(1, $model->getErrors(), 'Model should have 1 error attribute.');
         $this->assertCount(0, $model->getErrors('attr2'), 'Attr2 should have no error.');
 
-        $val = new AtLeastOneValidator([
-            'validateWith' => ['attr2', 'attr3'],
-            'errorAttributes'=> ['attr2', 'attr3'],
+        $val = new AtLeastValidator([
+            'with' => ['attr2', 'attr3'],
+            'errorIn'=> ['attr2', 'attr3'],
         ]);
         $model->attr1 = null;
         $model->attr2 = null;
@@ -57,21 +57,66 @@ class AtLeastOneValidatorTest extends TestCase
         $this->assertCount(2, $model->getErrors(), 'Model should have 2 error attributes.');
         $this->assertCount(0, $model->getErrors('attr1'), 'Attr1 should have no error.');
 
-        $val = new AtLeastOneValidator(['validateWith' => 'attr2']);
+        $val = new AtLeastValidator([
+            'with' => ['attr2', 'attr3'],
+            'min' => 1,
+            'errorIn'=> ['attr2', 'attr3'],
+        ]);
+        $model->attr1 = 1;
+        $model->attr2 = null;
+        $model->attr3 = null;
+        $model->clearErrors();
+        $val->validateAttribute($model, 'attr1');
+        $this->assertCount(0, $model->getErrors(), 'Model should have 0 error attributes.');
+
+        $val = new AtLeastValidator([
+            'with' => ['attr2', 'attr3'],
+            'min' => 2,
+        ]);
+        $model->attr1 = 1;
+        $model->attr2 = 2;
+        $model->attr3 = null;
+        $model->clearErrors();
+        $val->validateAttribute($model, 'attr1');
+        $this->assertCount(0, $model->getErrors(), 'Model should have 0 error attributes.');
+
+        $val = new AtLeastValidator([
+            'with' => ['attr2', 'attr3'],
+            'min' => 2,
+        ]);
+        $model->attr1 = 1;
+        $model->attr2 = 2;
+        $model->attr3 = 3;
+        $model->clearErrors();
+        $val->validateAttribute($model, 'attr1');
+        $this->assertCount(0, $model->getErrors(), 'Model should have 0 error attributes.');
+
+        $val = new AtLeastValidator([
+            'with' => ['attr2', 'attr3'],
+            'min' => 2,
+        ]);
+        $model->attr1 = null;
+        $model->attr2 = null;
+        $model->attr3 = null;
+        $model->clearErrors();
+        $val->validateAttribute($model, 'attr1');
+        $this->assertCount(3, $model->getErrors(), 'Model should have 3 error attributes.');
+
+        $val = new AtLeastValidator(['with' => 'attr2']);
         $model->attr1 = 1;
         $model->attr2 = null;
         $model->clearErrors();
         $val->validateAttribute($model, 'attr1');
         $this->assertCount(0, $model->getErrors(), 'Model should have 0 error attributes.');
 
-        $val = new AtLeastOneValidator(['validateWith' => 'attr2']);
+        $val = new AtLeastValidator(['with' => 'attr2']);
         $model->attr1 = null;
         $model->attr2 = 1;
         $model->clearErrors();
         $val->validateAttribute($model, 'attr1');
         $this->assertCount(0, $model->getErrors(), 'Model should have 0 error attributes.');
 
-        $val = new AtLeastOneValidator(['validateWith' => 'attr2']);
+        $val = new AtLeastValidator(['with' => 'attr2']);
         $model->attr1 = 1;
         $model->attr2 = 2;
         $model->clearErrors();
@@ -79,11 +124,11 @@ class AtLeastOneValidatorTest extends TestCase
         $this->assertCount(0, $model->getErrors(), 'Model should have 0 error attributes.');
 
         try {
-            new AtLeastOneValidator();
-            $this->fail('Exception should have been thrown at this time. Lack of the `validateWith` param.');
+            new AtLeastValidator();
+            $this->fail('Exception should have been thrown at this time. Lack of the `with` param.');
         } catch (\Exception $e) {
             $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
-            $this->assertEquals('Param "validateWith" can not be null', $e->getMessage());
+            $this->assertEquals('Param "with" can not be null', $e->getMessage());
         }
     }
 }
