@@ -206,7 +206,7 @@ Then inside the view file you can use the following code:
 Testing and debugging
 ---------------------
 
-A developer often has to check, what actual emails are sent by the application, what was their content and so on.
+A developer often has to check what actual emails are sent by the application, what was their content and so on.
 Such ability is granted by Yii via `yii\mail\BaseMailer::useFileTransport`. If enabled, this option enforces
 saving mail message data into the local files instead of regular sending. These files will be saved under
 `yii\mail\BaseMailer::fileTransportPath`, which is '@runtime/mail' by default.
@@ -218,6 +218,45 @@ This mechanism may prove itself, while debugging application or running unit tes
 
 > Note: the mail message file content is composed via `\yii\mail\MessageInterface::toString()`, so it depends on the actual
   mail extension you are using in your application.
+
+### Activating a logger
+Sometimes `yii\mail\BaseMailer::useFileTransport` is not enough. For example, a developer
+may need see the logs to figure out what happen when e-mails are sent for actual recipients.
+This is where the logger come in!
+
+Firstly, in your application configuration:
+```php
+'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            ...
+            'useFileTransport' => false,
+            'transport' => [
+                ...
+                'plugins' => [
+                    [
+                        'class' => 'Swift_Plugins_LoggerPlugin',
+                        'constructArgs' => [new Swift_Plugins_Loggers_ArrayLogger],
+                    ],
+                ],
+            ],
+        ],
+```
+
+Any implementation of the `Swift_Plugin_Logger` can be used. The `Swift_Plugins_Loggers_ArrayLogger` implementation allows to get the
+logs in a specific point of your application execution. (Please, refer to the Swift Mailer
+[documentation](http://swiftmailer.org/docs/plugins.html#logger-plugin) for details).
+
+Now, you can get the logs this way:
+
+```php
+$mailer = Yii::$app->mailer;
+$logger = $mailer->getLogger();
+
+$mailer->compose()...
+        ->send();
+
+$myLogs = $logger->dump();
+```
 
 
 Creating your own mail solution

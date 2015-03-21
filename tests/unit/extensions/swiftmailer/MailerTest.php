@@ -117,6 +117,35 @@ class MailerTest extends VendorTestCase
         $this->assertContains(':' . $pluginClass . ':', print_r($transport, true), 'Plugin not added');
     }
 
+    /**
+     * @depends testConfigureTransportConstruct
+     */
+    public function testConfigureTransportWithLoggerPlugins()
+    {
+        $mailer = new Mailer();
+
+        $pluginClass = 'Swift_Plugins_LoggerPlugin';
+        $loggerClass = 'Swift_Plugins_Loggers_ArrayLogger';
+
+        $transportConfig = [
+            'class' => 'Swift_SmtpTransport',
+            'plugins' => [
+                [
+                    'class' => $pluginClass,
+                    'constructArgs' => [
+                        new $loggerClass,
+                    ],
+                ],
+            ],
+        ];
+        $mailer->setTransport($transportConfig);
+        $transport = $mailer->getTransport();
+        $logger = $mailer->getLogger();
+        $this->assertTrue(is_object($transport), 'Unable to setup transport via config!');
+        $this->assertContains(':' . $pluginClass . ':', print_r($transport, true), 'Plugin not added');
+        $this->assertEquals($pluginClass, get_class($logger), 'Invalid logger class!');
+    }
+
     public function testGetSwiftMailer()
     {
         $mailer = new Mailer();
