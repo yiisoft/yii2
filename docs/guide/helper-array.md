@@ -1,7 +1,7 @@
 ArrayHelper
 ===========
 
-Additionally to [rich set of PHP array functions](http://php.net/manual/en/book.array.php) Yii array helper provides
+Additionally to the [rich set of PHP array functions](http://php.net/manual/en/book.array.php), the Yii array helper provides
 extra static methods allowing you to deal with arrays more efficiently.
 
 
