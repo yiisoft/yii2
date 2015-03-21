@@ -22,7 +22,8 @@ use yii\helpers\Html;
  *         [
  *             'label' => 'One',
  *             'content' => 'Anim pariatur cliche...',
- *             'active' => true
+ *             'active' => true,
+ *             'visible' => true
  *         ],
  *         [
  *             'label' => 'Two',
@@ -65,6 +66,7 @@ class Tabs extends Widget
      * - content: string, optional, the content (HTML) of the tab pane.
      * - options: array, optional, the HTML attributes of the tab pane container.
      * - active: boolean, optional, whether the item tab header and pane should be visible or not.
+     * - visible: boolean, optional, whether the item tab header and pane should be rendered or not.
      * - items: array, optional, can be used instead of `content` to specify a dropdown items
      *   configuration array. Each item can hold three extra keys, besides the above ones:
      *     * active: boolean, optional, whether the item tab header and pane should be visible or not.
@@ -145,6 +147,9 @@ class Tabs extends Widget
             if (!array_key_exists('label', $item)) {
                 throw new InvalidConfigException("The 'label' option is required.");
             }
+            if (isset($item['visible']) && !$item['visible']) {
+                continue;
+            }
             $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
             $label = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $headerOptions = array_merge($this->headerOptions, ArrayHelper::getValue($item, 'headerOptions', []));
@@ -213,7 +218,7 @@ class Tabs extends Widget
         $itemActive = false;
 
         foreach ($items as $n => &$item) {
-            if (is_string($item)) {
+            if (is_string($item) || (isset($item['visible']) && !$item['visible'])) {
                 continue;
             }
             if (!array_key_exists('content', $item)) {
