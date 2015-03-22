@@ -178,7 +178,7 @@ class Schema extends \yii\db\Schema
         }
         $sql = <<<EOD
 SELECT table_name, table_schema FROM information_schema.tables
-WHERE table_schema=:schema AND table_type='BASE TABLE'
+WHERE table_schema=:schema AND table_type IN ('BASE TABLE', 'VIEW', 'FOREIGN TABLE')
 EOD;
         $command = $this->db->createCommand($sql);
         $command->bindParam(':schema', $schema);
