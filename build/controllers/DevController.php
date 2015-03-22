@@ -115,18 +115,18 @@ class DevController extends Controller
         }
 
         // cleanup
-        $this->stdout("cleaning up application vendor directory...\n", Console::BOLD);
+        $this->stdout("cleaning up application '$app' vendor directory...\n", Console::BOLD);
         $this->cleanupVendorDir($appDir);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // composer update
-        $this->stdout("updating composer...\n", Console::BOLD);
+        $this->stdout("updating composer for app '$app'...\n", Console::BOLD);
         chdir($appDir);
         passthru('composer update --prefer-dist');
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // link directories
-        $this->stdout("linking framework and extensions to vendor dir...\n", Console::BOLD);
+        $this->stdout("linking framework and extensions to '$app' app vendor dir...\n", Console::BOLD);
         $this->linkFrameworkAndExtensions($appDir, $base);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
@@ -161,18 +161,18 @@ class DevController extends Controller
         }
 
         // cleanup
-        $this->stdout("cleaning up extension vendor directory...\n", Console::BOLD);
+        $this->stdout("cleaning up extension '$extension' vendor directory...\n", Console::BOLD);
         $this->cleanupVendorDir($extensionDir);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // composer update
-        $this->stdout("updating composer...\n", Console::BOLD);
+        $this->stdout("updating composer for extension '$extension'...\n", Console::BOLD);
         chdir($extensionDir);
         passthru('composer update --prefer-dist');
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // link directories
-        $this->stdout("linking framework and extensions to vendor dir...\n", Console::BOLD);
+        $this->stdout("linking framework and extensions to '$extension' vendor dir...\n", Console::BOLD);
         $this->linkFrameworkAndExtensions($extensionDir, $base);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
