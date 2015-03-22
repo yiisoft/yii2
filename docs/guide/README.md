@@ -79,9 +79,9 @@ Working with Databases
 * [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
 * [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
-* **TBD** [Redis](db-redis.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
-* **TBD** [ElasticSearch](db-elasticsearch.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
 
 
 Getting Data from Users
