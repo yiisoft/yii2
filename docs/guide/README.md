@@ -78,7 +78,7 @@ Working with Databases
 * [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
 * [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
 * [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
-* **TBD** [Sphinx](db-sphinx.md)
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
 * **TBD** [ElasticSearch](db-elasticsearch.md)
