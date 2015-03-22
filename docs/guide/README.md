@@ -80,7 +80,7 @@ Working with Databases
 * [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
 * **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
 * **TBD** [ElasticSearch](db-elasticsearch.md)
 
 
