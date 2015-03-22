@@ -185,7 +185,7 @@ Widgets
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* [Bootstrap Widgets](widget-bootstrap.md)
+* [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
 * [jQuery UI Widgets](widget-jui.md)
 
 
