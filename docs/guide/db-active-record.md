@@ -212,7 +212,7 @@ $customer = Customer::findAll([
   to improve the performance, e.g., `Customer::find()->limit(1)->one()`.
 
 Besides using query building methods, you can also write raw SQLs to query data and populate the results into
-Active Record objects. You can do so by calling the [[yii\db\ActiveRecord::queryBySql()]] method:
+Active Record objects. You can do so by calling the [[yii\db\ActiveRecord::findBySql()]] method:
 
 ```php
 // returns all inactive customers
@@ -220,7 +220,7 @@ $sql = 'SELECT * FROM customer WHERE status=:status';
 $customers = Customer::findBySql($sql, [':status' => Customer::STATUS_INACTIVE])->all();
 ```
 
-Do not call extra query building methods after calling [[yii\db\ActiveRecord::queryBySql()|queryBySql()]] as they
+Do not call extra query building methods after calling [[yii\db\ActiveRecord::findBySql()|findBySql()]] as they
 will be ignored.
 
 
@@ -1010,7 +1010,7 @@ $customers = Customer::find()
 > Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements. 
   A common practice is to prefix column names with their corresponding table names.
 
-However, a better approaches is to exploit the existing relation declarations by calling [[yii\db\ActiveQuery::joinWith()]]:
+However, a better approach is to exploit the existing relation declarations by calling [[yii\db\ActiveQuery::joinWith()]]:
 
 ```php
 $customers = Customer::find()

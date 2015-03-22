@@ -30,7 +30,7 @@ application views, the following should be in your application config file:
 In the above, `pathMap` defines a map of original paths to themed paths while `baseUrl` defines the base URL for
 resources referenced by theme files.
 
-In our case `pathMap` is `['@app/views' => '@app/themes/basic']`. That means that every view in `@app/views` will be
+In our case, `pathMap` is `['@app/views' => '@app/themes/basic']`. That means that every view in `@app/views` will be
 first searched under `@app/themes/basic` and if a view exists in the theme directory it will be used instead of the
 original view.
 
@@ -38,8 +38,8 @@ For example, with a configuration above a themed version of a view file `@app/vi
 `@app/themes/basic/site/index.php`. It basically replaces `@app/views` in `@app/views/site/index.php` with
 `@app/themes/basic`.
 
-In order to configure theme runtime you can use the following code before rendering a view. Typically it will be
-placed in controller:
+In order to configure a theme at runtime, you can use the following code before rendering a view. Typically, it will be
+placed in a controller:
 
 ```php
 $this->getView()->theme = Yii::createObject([

@@ -78,10 +78,10 @@ Working with Databases
 * [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
 * [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
 * [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elasticsearch.md)
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
 
 
 Getting Data from Users
@@ -112,7 +112,7 @@ Security
 * [Authentication](security-authentication.md)
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
-* [Auth Clients](security-auth-clients.md)
+* [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
 * [Best Practices](security-best-practices.md)
 
 
@@ -143,8 +143,8 @@ RESTful Web Services
 Development Tools
 -----------------
 
-* [Debug Toolbar and Debugger](tool-debugger.md)
-* [Generating Code using Gii](tool-gii.md)
+* [Debug Toolbar and Debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
+* [Generating Code using Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
 * **TBD** [Generating API Documentation](tool-api-doc.md)
 
 
@@ -185,8 +185,8 @@ Widgets
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* [Bootstrap Widgets](widget-bootstrap.md)
-* [jQuery UI Widgets](widget-jui.md)
+* [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
+* [jQuery UI Widgets](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 
 
 Helpers
