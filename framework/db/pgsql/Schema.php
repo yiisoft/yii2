@@ -177,8 +177,10 @@ class Schema extends \yii\db\Schema
             $schema = $this->defaultSchema;
         }
         $sql = <<<EOD
-SELECT table_name, table_schema FROM information_schema.tables
-WHERE table_schema=:schema AND table_type IN ('BASE TABLE', 'VIEW', 'FOREIGN TABLE')
+SELECT c.relname AS table_name
+FROM pg_class c
+INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
+WHERE ns.nspname = :schema AND c.relkind IN ('r','v','m','f')
 EOD;
         $command = $this->db->createCommand($sql);
         $command->bindParam(':schema', $schema);
