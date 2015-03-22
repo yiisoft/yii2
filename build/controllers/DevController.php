@@ -130,6 +130,7 @@ class DevController extends Controller
         $this->linkFrameworkAndExtensions($appDir, $base);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
+        return 0;
     }
 
     /**
@@ -175,6 +176,7 @@ class DevController extends Controller
         $this->linkFrameworkAndExtensions($extensionDir, $base);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
+        return 0;
     }
 
 
