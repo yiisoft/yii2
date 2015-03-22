@@ -3,7 +3,7 @@ Creating your own Application structure
 
 > Note: This section is under development.
 
-While the [basic](https://github.com/yiisoft/yii2/tree/master/apps/basic) and [advanced](https://github.com/yiisoft/yii2/tree/master/apps/advanced)
+While the [basic](https://github.com/yiisoft/yii2-app-basic) and [advanced](https://github.com/yiisoft/yii2-app-advanced)
 application templates are great for most of your needs, you may want to create your own application template with which
 to start your projects.
 
