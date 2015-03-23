@@ -294,11 +294,12 @@ SQL;
     {
         if ($schema === '') {
             $sql = <<<SQL
-SELECT table_name as table_schema FROM user_tables
+SELECT table_name FROM user_tables
 UNION ALL
-SELECT view_name AS table_name as table_schema FROM user_views
+SELECT view_name AS table_name FROM user_views
 UNION ALL
-SELECT mview_name AS table_name as table_schema FROM user_mviews
+SELECT mview_name AS table_name FROM user_mviews
+ORDER BY table_name
 SQL;
             $command = $this->db->createCommand($sql);
         } else {
@@ -306,6 +307,7 @@ SQL;
 SELECT object_name AS table_name
 FROM all_objects
 WHERE object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW') AND owner=:schema
+ORDER BY object_name
 SQL;
             $command = $this->db->createCommand($sql, [':schema' => $schema]);
         }
