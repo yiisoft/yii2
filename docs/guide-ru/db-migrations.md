@@ -1,5 +1,5 @@
 <!--Database Migration-->
-Перенос/Миграция Базы Данных
+Миграции Базы Данных
 ==================
 
 During the course of developing and maintaining a database-driven application, the structure of the database
@@ -128,6 +128,8 @@ In the migration class, you are expected to write code in the `up()` method that
 You may also want to write code in the `down()` method to revert the changes made by `up()`. The `up` method is invoked
 when you upgrade the database with this migration, while the `down()` method is invoked when you downgrade the database.
 The following code shows how you may implement the migration class to create a `news` table: 
+
+В классе миграции, вы должны прописать код в методе `up()` когда делаете изменения в структуре базы данных.
 
 ```php
 
