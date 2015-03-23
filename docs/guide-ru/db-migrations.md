@@ -90,7 +90,7 @@ The above command will create a new PHP class file named `m150101_185401_create_
 in the `@app/migrations` directory. The file contains the following code which mainly declares
 a migration class `m150101_185401_create_news_table` with the skeleton code:
 
-Приведенная выше команда создаст новый PHP класс с именем файла `m150101_185401_create_news_table.php` в директории `@app/migrations`. 
+Приведенная выше команда создаст новый PHP класс с именем файла `m150101_185401_create_news_table.php` в директории `@app/migrations`. Файл содержит следующий код, который главным образом декларирует класс миграции `m150101_185401_create_news_table` с каркасом кода:
 
 ```php
 <?php
@@ -114,6 +114,8 @@ class m150101_185401_create_news_table extends Migration
 
 Each database migration is defined as a PHP class extending from [[yii\db\Migration]]. The migration
 class name is automatically generated in the format of `m<YYMMDD_HHMMSS>_<Name>`, where
+
+Каждая миграция базы данных определяется как PHP класс расширяющийся от [[yii\db\Migration]]. Имя класса миграции автоматически создается в формате `m<YYMMDD_HHMMSS>_<Name>` (`m<ГодМесяцДень_ЧасыМинутыСекунды>_<Имя>`), где
 
 * `<YYMMDD_HHMMSS>` refers to the UTC datetime at which the migration creation command is executed.
 * `<Name>` is the same as the value of the `name` argument that you provide to the command.
