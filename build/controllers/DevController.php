@@ -8,6 +8,7 @@
 namespace yii\build\controllers;
 
 use Yii;
+use yii\base\InvalidParamException;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -75,6 +76,33 @@ class DevController extends Controller
         }
 
         return 0;
+    }
+
+    /**
+     * Runs a command in all extension and application directories
+     *
+     * Can be used to run e.g. `git pull`.
+     *
+     *     ./build/build dev/run git pull
+     *
+     * @param string $command the command to run
+     */
+    public function actionRun($command)
+    {
+        $command = implode(' ', func_get_args());
+
+        // root of the dev repo
+        $base = dirname(dirname(__DIR__));
+        $dirs = $this->listSubDirs("$base/extensions");
+        $dirs = array_merge($dirs, $this->listSubDirs("$base/apps"));
+        asort($dirs);
+
+        foreach($dirs as $dir) {
+            $displayDir = substr($dir, strlen($base));
+            $this->stdout("Running '$command' in $displayDir...\n", Console::BOLD);
+            passthru($command);
+            $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
+        }
     }
 
     /**
@@ -232,6 +260,29 @@ class DevController extends Controller
         } else {
             unlink($file);
         }
+    }
+
+    protected function listSubDirs($dir)
+    {
+        $list = [];
+        $handle = opendir($dir);
+        if ($handle === false) {
+            throw new InvalidParamException("Unable to open directory: $dir");
+        }
+        while (($file = readdir($handle)) !== false) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+            // ignore hidden directories
+            if ($file[0] === '.') {
+                continue;
+            }
+            if (is_dir("$dir/$file")) {
+                $list[] = "$dir/$file";
+            }
+        }
+        closedir($handle);
+        return $list;
     }
 
     /**
