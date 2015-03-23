@@ -54,11 +54,11 @@ Yii предоставляет набор инструментов миграц�
 * применить миграции повторно;
 * показать историю и статус миграции;
 
-
+<!--
 All these tools are accessible through the command `yii migrate`. In this section we will describe in detail
 how to accomplish various tasks using these tools. You may also get the usage of each tool via the help
 command `yii help migrate`.
-
+-->
 Все эти инструменты доступны через команду `yii migrate`. В этом разделе мы опишем подробно, как выполнять различные задачи, используя эти инструменты. Вы также можете сами посмотреть как использовать каждый отдельный инструмент при помощи команды `yii help migrate`.
 
 ## Создание миграций <span id="creating-migrations"></span>
@@ -86,11 +86,12 @@ yii migrate/create create_news_table
 -->
 > Примечание: Поскольку аргумент `name` будет использован как часть имени класса создавамой миграции, он должен содержать только буквы, цифры и/или символы подчеркивания.
 
+<!--
 The above command will create a new PHP class file named `m150101_185401_create_news_table.php`
 in the `@app/migrations` directory. The file contains the following code which mainly declares
 a migration class `m150101_185401_create_news_table` with the skeleton code:
-
-Приведенная выше команда создаст новый PHP класс с именем файла `m150101_185401_create_news_table.php` в директории `@app/migrations`. Файл содержит следующий код, который главным образом декларирует класс миграции `m150101_185401_create_news_table` с каркасом кода:
+-->
+Приведенная выше команда создаст новый PHP класс с именем файла `m150101_185401_create_news_table.php` в директории `@app/migrations`. Файл содержит следующий код, который главным образом декларирует класс миграции `m150101_185401_create_news_table` с следующим каркасом кода:
 
 ```php
 <?php
@@ -111,14 +112,17 @@ class m150101_185401_create_news_table extends Migration
     }
 }
 ```
-
+<!--
 Each database migration is defined as a PHP class extending from [[yii\db\Migration]]. The migration
 class name is automatically generated in the format of `m<YYMMDD_HHMMSS>_<Name>`, where
-
+-->
 Каждая миграция базы данных определяется как PHP класс расширяющийся от [[yii\db\Migration]]. Имя класса миграции автоматически создается в формате `m<YYMMDD_HHMMSS>_<Name>` (`m<ГодМесяцДень_ЧасыМинутыСекунды>_<Имя>`), где
-
+<!--
 * `<YYMMDD_HHMMSS>` refers to the UTC datetime at which the migration creation command is executed.
 * `<Name>` is the same as the value of the `name` argument that you provide to the command.
+-->
+* `<YYMMDD_HHMMSS>` относится к UTC дате-времени при котором команда создания миграции была выполнена.
+* `<Name>` тоже самое значение аргумента `name` которое вы прописываете в команду.
 
 In the migration class, you are expected to write code in the `up()` method that makes changes to the database structure.
 You may also want to write code in the `down()` method to revert the changes made by `up()`. The `up` method is invoked
