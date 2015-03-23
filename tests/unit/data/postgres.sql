@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS "null_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
+DROP VIEW IF EXISTS "animal_view";
 
 CREATE TABLE "constraints"
 (
@@ -129,6 +130,8 @@ CREATE TABLE "animal" (
   id serial primary key,
   type varchar(255) not null
 );
+
+CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
 INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Cat');
 INSERT INTO "animal" (type) VALUES ('yiiunit\data\ar\Dog');
