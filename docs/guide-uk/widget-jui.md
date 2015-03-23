@@ -63,7 +63,7 @@ php composer.phar require --prefer-dist yiisoft/yii2-jui "*"
 - Компонент додатку [formatter](output-formatter.md), який відповідає за формат дати, що відображається користувачеві.
 - [DateValidator](tutorial-core-validators.md#date), який перевіряє що ввів користувач і конвертує в мітку часу Unix.
 
-Спершу ми додамо до поле введення вибору дати до формі, використовуючи метод [[yii\widgets\ActiveField::widget()|widget()]] поля форми:
+Спершу ми додамо поле вибору дати до форми, використовуючи метод [[yii\widgets\ActiveField::widget()|widget()]] поле форми:
 
 ```php
 <?= $form->field($model, 'deadline')->widget(\yii\jui\DatePicker::className(), [
