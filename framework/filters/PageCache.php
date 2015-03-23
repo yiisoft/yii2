@@ -106,6 +106,13 @@ class PageCache extends ActionFilter
      * [[\yii\web\Application::view]] will be used.
      */
     public $view;
+    /**
+     * @var boolean|array a boolean value indicating whether to cache all cookies, or an array of
+     * cookie names indicating which cookies can be cached. Be very careful with caching cookies, because
+     * it may leak sensitive or private data stored in cookies to unwanted users.
+     * @since 2.0.4
+     */
+    public $cacheCookies = false;
 
 
     /**
@@ -196,8 +203,20 @@ class PageCache extends ActionFilter
             'statusCode' => $response->statusCode,
             'statusText' => $response->statusText,
             'headers' => $response->getHeaders()->toArray(),
-            'cookies' => $response->getCookies()->toArray(),
         ];
+        if (!empty($this->cacheCookies)) {
+            $cookies = $response->getCookies()->toArray();
+            if (is_array($this->cacheCookies)) {
+                $filtered = [];
+                foreach ($this->cacheCookies as $name) {
+                    if (isset($cookies[$name])) {
+                        $filtered[$name] = $cookies[$name];
+                    }
+                }
+                $cookies = $filtered;
+            }
+            $data['cookies'] = $cookies;
+        }
         $this->cache->set($this->calculateCacheKey(), $data);
         echo ob_get_clean();
     }
