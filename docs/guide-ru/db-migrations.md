@@ -11,16 +11,21 @@ you to keep track of database changes in terms of *database migrations* which ar
 with the source code.
 
 В связи с тем, что изменение структуры базы данных часто требует изменение исходного кода, yii поддерживает так
-называемую возможность *миграции базы данных*, которая позволяет отслеживать изменения в базе данных при помощи терминов
-*миграции базы данных* которые являются системой контроля версий вместе с исходным кодом.
+называемую возможность *миграции базы данных*, которая позволяет отслеживать изменения в базе данных при помощи терминов *миграции базы данных* которые являются системой контроля версий вместе с исходным кодом.
 
-The following steps show how database migration can be used by a team during development:
+<!--The following steps show how database migration can be used by a team during development:-->
+Следующие шаги показывают, как миграция базы данных может быть использована командой в процессе разработки:
 
 1. Tim creates a new migration (e.g. creates a new table, changes a column definition, etc.).
 2. Tim commits the new migration into the source control system (e.g. Git, Mercurial).
 3. Doug updates his repository from the source control system and receives the new migration.
 4. Doug applies the migration to his local development database, thereby synchronizing his database 
    to reflect the changes that Tim has made.
+
+1. Тим создает новую миграцию (например, создается новая таблица или изменяется определение столбца и т.п.).
+2. Тим фиксирует новую миграцию в системе управления версиями (например, в Git, Mercurial).
+3. Даг обновляет свой репозиторий из системы контроля версий и получает новую миграцию.
+4. Даг применяет миграции к своей локальной базе данных, тем самым синхронизируя свою базу данных, для того чтобы отразить изменения, которые сделал Тим.
 
 And the following steps show how to deploy a new release with database migrations to production:
 
