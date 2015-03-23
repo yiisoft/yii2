@@ -78,10 +78,10 @@ All Rights Reserved.
 * [Конструктор запитів](db-query-builder.md) - Запити до бази даних через простий шар абстракції
 * [Active Record](db-active-record.md) - Отримання обʼєктів AR, робота з ними та визначення звʼязків
 * [Міграції](db-migrations.md) - Контроль версій схеми даних при роботі в команді
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
 
 
 Отримання даних від користувача
@@ -90,7 +90,8 @@ All Rights Reserved.
 * [Створення форм](input-forms.md)
 * [Валідація вводу](input-validation.md)
 * [Завантаження файлів](input-file-uploading.md)
-* **TBD** [Робота з декількома моделями](input-multiple-models.md)
+* [Збір табличного вводу](input-tabular-input.md)
+* [Робота з декількома моделями](input-multiple-models.md)
 
 
 Відображення даних
@@ -111,7 +112,7 @@ All Rights Reserved.
 * [Аутентифікація](security-authentication.md)
 * [Авторизація](security-authorization.md)
 * [Робота з паролями](security-passwords.md)
-* **TBD** [Клієнти авторизації](security-auth-clients.md)
+* [Клієнти авторизації](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
 * [Кращі практики](security-best-practices.md)
 
 
@@ -142,8 +143,8 @@ RESTful веб-сервіси
 Інструменти розробника
 ----------------------
 
-* [Відладочна панель та відладчик](tool-debugger.md)
-* [Генерація коду з Gii](tool-gii.md)
+* [Відладочна панель та відладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
+* [Генерація коду з Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
 * **TBD** [Генератор документації API](tool-api-doc.md)
 
 
@@ -184,8 +185,8 @@ RESTful веб-сервіси
 * Menu: **TBD** link to demo page
 * LinkPager: **TBD** link to demo page
 * LinkSorter: **TBD** link to demo page
-* [Віджети Bootstrap](widget-bootstrap.md)
-* [Віджети jQuery UI](widget-jui.md)
+* [Віджети Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
+* [Віджети jQuery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 
 
 Хелпери

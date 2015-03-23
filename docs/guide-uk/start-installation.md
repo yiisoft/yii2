@@ -1,9 +1,9 @@
 Встановлення Yii
 ================
 
-Ви можете встановити Yii двома шляхами: використовуючи [Composer](http://getcomposer.org/) або завантаживши архів.
-Перший варіант э бажанішим, тому що дозволить встановити всі нові [розширення](structure-extensions.md)
-або оновити Yii однією командою.
+Ви можете встановити Yii двома шляхами: використовуючи менеджер пакетів [Composer](http://getcomposer.org/) 
+або завантаживши архів. Перший варіант э бажанішим, тому що дозволить встановити всі нові 
+[розширення](structure-extensions.md) або оновити Yii однією командою.
 
 > Примітка: На відміну від Yii 1, після стандартного встановлення Yii 2 ми отримуємо як фреймворк, так і шаблон додатка.
 
@@ -173,7 +173,7 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
-    access_log  /path/to/basic/log/access.log main;
+    access_log  /path/to/basic/log/access.log;
     error_log   /path/to/basic/log/error.log;
 
     location / {
