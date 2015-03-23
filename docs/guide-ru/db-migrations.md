@@ -15,59 +15,82 @@ with the source code.
 
 <!--The following steps show how database migration can be used by a team during development:-->
 Следующие шаги показывают, как миграция базы данных может быть использована командой в процессе разработки:
-
+<!--
 1. Tim creates a new migration (e.g. creates a new table, changes a column definition, etc.).
 2. Tim commits the new migration into the source control system (e.g. Git, Mercurial).
 3. Doug updates his repository from the source control system and receives the new migration.
 4. Doug applies the migration to his local development database, thereby synchronizing his database 
    to reflect the changes that Tim has made.
-
+-->
 1. Тим создает новую миграцию (например, создается новая таблица или изменяется определение столбца и т.п.).
 2. Тим фиксирует новую миграцию в системе управления версиями (например, в Git, Mercurial).
 3. Даг обновляет свой репозиторий из системы контроля версий и получает новую миграцию.
 4. Даг применяет миграции к своей локальной базе данных, тем самым синхронизируя свою базу данных, для того чтобы отразить изменения, которые сделал Тим.
 
-And the following steps show how to deploy a new release with database migrations to production:
-
+<!--And the following steps show how to deploy a new release with database migrations to production:-->
+И следующие шаги показывают, как развернуть новый релиз с миграциями баз данных в режиме продакшена:
+<!--
 1. Scott creates a release tag for the project repository that contains some new database migrations.
 2. Scott updates the source code on the production server to the release tag.
 3. Scott applies any accumulated database migrations to the production database.
+-->
+1. Скотт создает тег версии проекта репозитория, который содержит некоторые новые миграции базы данных.
+2. Скотт обновляет исходный код на рабочем сервере<b>, чтобы освободить тег.</b>
+3. Скотт применяет любую из накопленных миграций базы данных в рабочую базу данных.
 
-Yii provides a set of migration command line tools that allow you to:
+<!--Yii provides a set of migration command line tools that allow you to:-->
+Yii предоставляет набор инструментов миграции для командной строки, которые позволяют:
 
+<!--
 * create new migrations;
 * apply migrations;
 * revert migrations;
 * re-apply migrations;
 * show migration history and status.
+-->
+* создавать новые миграции;
+* применять миграции;
+* отменить миграции;
+* применить миграции повторно;
+* показать историю и статус миграции;
+
 
 All these tools are accessible through the command `yii migrate`. In this section we will describe in detail
 how to accomplish various tasks using these tools. You may also get the usage of each tool via the help
 command `yii help migrate`.
 
+Все эти инструменты доступны через команду `yii migrate`. В этом разделе мы опишем подробно, как выполнять различные задачи, используя эти инструменты. Вы также можете сами посмотреть как использовать каждый отдельный инструмент при помощи команды `yii help migrate`.
 
-## Creating Migrations <span id="creating-migrations"></span>
+## Создание миграций <span id="creating-migrations"></span>
+<!-- Creating Migrations -->
+<!--To create a new migration, run the following command:-->
 
-To create a new migration, run the following command:
+Чтобы создать новую миграцию, выполните следующую команду:
 
 ```
 yii migrate/create <name>
 ```
-
+<!--
 The required `name` argument gives a brief description about the new migration. For example, if 
 the migration is about creating a new table named *news*, you may use the name `create_news_table`
 and run the following command:
+-->
+Требуемый аргумент `name` дает краткое описание новой миграции. Например, если миграция о создании новой таблицы с именем *news*, Вы можете использовать имя `create_news_table` и выполнить следующую команду:
 
 ```
 yii migrate/create create_news_table
 ```
-
+<!--
 > Note: Because the `name` argument will be used as part of the generated migration class name,
   it should only contain letters, digits, and/or underscore characters.
+-->
+> Примечание: Поскольку аргумент `name` будет использован как часть имени класса создавамой миграции, он должен содержать только буквы, цифры и/или символы подчеркивания.
 
 The above command will create a new PHP class file named `m150101_185401_create_news_table.php`
 in the `@app/migrations` directory. The file contains the following code which mainly declares
 a migration class `m150101_185401_create_news_table` with the skeleton code:
+
+Приведенная выше команда создаст новый PHP класс с именем файла `m150101_185401_create_news_table.php` в директории `@app/migrations`. 
 
 ```php
 <?php
