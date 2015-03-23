@@ -146,6 +146,10 @@ class BaseArrayHelper
      * or `$array->x` is neither an array nor an object, the default value will be returned.
      * Note that if the array already has an element `x.y.z`, then its value will be returned
      * instead of going through the sub-arrays.
+     * 
+     * If a sub-array has a key with a dot (.) `['values' => ['key.1' => 'value']]` it can be retrieved
+     * by specifying an array of key names. So if the key specified is `['values', 'key.1']` the returned value would
+     * be `$array['values']['key.1']`.
      *
      * Below are some usage examples,
      *
@@ -160,15 +164,22 @@ class BaseArrayHelper
      * });
      * // using dot format to retrieve the property of embedded object
      * $street = \yii\helpers\ArrayHelper::getValue($users, 'address.street');
+     * // using an array of keys to retrieve the value
+     * $array = [
+     *   'versions' => [
+     *     '1.0' => 'value1',
+     *     '2.0' => 'value2'
+     *   ]
+     * ];
+     * $value = \yii\helpers\ArrayHelper::getValue($array, ['versions', '1.0']);
      * ~~~
      *
      * @param array|object $array array or object to extract value from
-     * @param string|\Closure|array $key key name of the array element, or property name of the object,
+     * @param string|\Closure|array $key key name of the array element, an array of keys or property name of the object,
      * or an anonymous function returning the value. The anonymous function signature should be:
      * `function($array, $defaultValue)`.
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
-     * @param string $delimiter the delimiter character for the key, defaults to a dot (.)
      * @return mixed the value of the element if found, default value otherwise
      * @throws InvalidParamException if $array is neither an array nor an object.
      */
