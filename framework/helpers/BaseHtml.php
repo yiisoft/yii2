@@ -1303,6 +1303,8 @@ class BaseHtml
         }
         if (!array_key_exists('uncheck', $options)) {
             $options['uncheck'] = '0';
+        } else if (false === $options['uncheck']) {
+            unset($options['uncheck']);
         }
         if (!array_key_exists('label', $options)) {
             $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
@@ -1352,6 +1354,8 @@ class BaseHtml
         }
         if (!array_key_exists('uncheck', $options)) {
             $options['uncheck'] = '0';
+        } else if (false === $options['uncheck']) {
+            unset($options['uncheck']);
         }
         if (!array_key_exists('label', $options)) {
             $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
