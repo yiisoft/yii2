@@ -167,6 +167,8 @@ The base migration class [[yii\db\Migration]] exposes a database connection via 
 property. You can use it to manipulate the database schema using the methods as described in 
 [Working with Database Schema](db-dao.md#database-schema).
 
+Базовый класс миграций [[yii\db\Migration]] предоставляет подключение к базе данных через свойство [[yii\db\Migration::db|db]]
+
 Rather than using physical types, when creating a table or column you should use *abstract types*
 so that your migrations are independent of specific DBMS. The [[yii\db\Schema]] class defines
 a set of constants to represent the supported abstract types. These constants are named in the format
