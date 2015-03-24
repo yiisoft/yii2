@@ -1,7 +1,7 @@
 <!--Database Migration-->
 Миграции Баз Данных
 ==================
-
+<!-- ПЕРЕВЕСТИ
 During the course of developing and maintaining a database-driven application, the structure of the database
 being used evolves just like the source code does. For example, during the development of an application, 
 a new table may be found necessary; after the application is deployed to production, it may be discovered
@@ -9,7 +9,7 @@ that an index should be created to improve the query performance; and so on. Bec
 often requires some source code changes, Yii supports the so-called *database migration* feature that allows
 you to keep track of database changes in terms of *database migrations* which are version-controlled together
 with the source code.
-
+-->
 В связи с тем, что изменение структуры базы данных часто требует изменение исходного кода, yii поддерживает так
 называемую возможность *миграции базы данных*, которая позволяет отслеживать изменения в базе данных при помощи терминов *миграции базы данных* которые являются системой контроля версий вместе с исходным кодом.
 
@@ -28,7 +28,7 @@ with the source code.
 4. Даг применяет миграции к своей локальной базе данных, тем самым синхронизируя свою базу данных, для того чтобы отразить изменения, которые сделал Тим.
 
 <!--And the following steps show how to deploy a new release with database migrations to production:-->
-И следующие шаги показывают, как развернуть новый релиз с миграциями баз данных в режиме продакшена:
+И следующие шаги показывают, как развернуть новый релиз с миграциями баз данных в режиме продакшена (в рабочем режиме):
 <!--
 1. Scott creates a release tag for the project repository that contains some new database migrations.
 2. Scott updates the source code on the production server to the release tag.
@@ -75,7 +75,7 @@ The required `name` argument gives a brief description about the new migration. 
 the migration is about creating a new table named *news*, you may use the name `create_news_table`
 and run the following command:
 -->
-Требуемый аргумент `name` дает краткое описание новой миграции. Например, если миграция о создании новой таблицы с именем *news*, Вы можете использовать имя `create_news_table` и выполнить следующую команду:
+Требуемый аргумент `name` даёт краткое описание новой миграции. Например, если миграция о создании новой таблицы с именем *news*, Вы можете использовать имя `create_news_table` и выполнить следующую команду:
 
 ```
 yii migrate/create create_news_table
@@ -122,15 +122,17 @@ class name is automatically generated in the format of `m<YYMMDD_HHMMSS>_<Name>`
 * `<Name>` is the same as the value of the `name` argument that you provide to the command.
 -->
 * `<YYMMDD_HHMMSS>` относится к UTC дате-времени при котором команда создания миграции была выполнена.
-* `<Name>` тоже самое значение аргумента `name` которое вы прописываете в команду.
+* `<Name>` это тоже самое значение аргумента `name` которое вы прописываете в команду.
 
+<!--
 In the migration class, you are expected to write code in the `up()` method that makes changes to the database structure.
 You may also want to write code in the `down()` method to revert the changes made by `up()`. The `up` method is invoked
 when you upgrade the database with this migration, while the `down()` method is invoked when you downgrade the database.
 The following code shows how you may implement the migration class to create a `news` table: 
-
+-->
 В классе миграции, вы должны прописать код в методе `up()` когда делаете изменения в структуре базы данных. 
-Вы также можете написать код в методе `down()` чтобы отменить изменения, сделанные `up()`.
+Вы также можете написать код в методе `down()`, чтобы отменить сделанные `up()` изменения. Метод `up` вызывается для обновления базы данных с помощью данной миграции, а метод `down()` вызывается для отката изменений базы данных.
+Следующий код показывает как можно реализовать класс миграции, чтобы создать таблицу `news`:
 
 ```php
 
