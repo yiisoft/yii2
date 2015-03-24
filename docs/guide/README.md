@@ -162,7 +162,7 @@ Testing
 Special Topics
 --------------
 
-* [Advanced Application Template](tutorial-advanced-app.md)
+* [Advanced Application Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
 * [Core Validators](tutorial-core-validators.md)
