@@ -202,6 +202,7 @@ to `Schema::TYPE_STRING` to specify that the column cannot be null.
 ### Транзакции Миграций <span id="transactional-migrations"></span>
 <!-- Transactional Migrations -->
 
+<!--
 While performing complex DB migrations, it is important to ensure each migration to either succeed or fail as a whole
 so that the database can maintain integrity and consistency. To achieve this goal, it is recommended that you 
 enclose the DB operations of each migration in a [transaction](db-dao.md#performing-transactions).
@@ -209,14 +210,16 @@ enclose the DB operations of each migration in a [transaction](db-dao.md#perform
 An even easier way of implementing transactional migrations is to put migration code in the `safeUp()` and `safeDown()` 
 methods. These two methods differ from `up()` and `down()` in that they are enclosed implicitly in a transaction.
 As a result, if any operation in these methods fails, all prior operations will be rolled back automatically.
+-->
 
+При выполнении сложных миграций баз данных, важно обеспечить каждую миграцию либо успехом, либо ошибкой, в целом так, чтобы база данных могла поддерживать целостность и непротиворечивость. Для достижения данной цели рекомендуется, заключить операции базы данных каждой миграции в [транзакции](db-dao.md#performing-transactions).
 
-При выполнении сложных миграций БД, важно обеспечить каждого миграции на успех или неудачу в целом так, что база данных может поддерживать целостность и непротиворечивость. Для достижения данной цели рекомендуется, чтобы вы заключите дБ деятельности каждого миграции в транзакции.
+Самый простой способ реализации транзакций миграций это прописать код миграций в методы `safeUp()` и `safeDown()`. Эти два метода отличаются от методов `up()` и `down()` тем, что они неявно заключены в транзакции. В результате, если какая-либо операция в этих методах не удается, все предыдущие операции будут отменены автоматически.
 
-Еще более простой способ осуществления транзакций миграций поставить миграционный кодекс в safeUp() и safeDown() методы. Эти два метода отличаются друг от вверх() и вниз() в том, что они заключены неявно в транзакции. В результате, если какая-либо операция в этих методах не удается, все предыдущие операции будут отменены автоматически.
-
-
+<!--
 In the following example, besides creating the `news` table we also insert an initial row into this table.
+-->
+В следующем примере, помимо создания таблицы `news` мы также вставляем в этой таблице начальную строку.
 
 ```php
 
