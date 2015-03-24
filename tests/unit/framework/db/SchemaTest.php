@@ -38,6 +38,16 @@ class SchemaTest extends DatabaseTestCase
         }
     }
 
+    public function testGetTableSchemasWithAttrCase()
+    {
+        $db = $this->getConnection(false);
+        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $this->assertEquals(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
+
+        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $this->assertEquals(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
+    }
+
     public function testGetNonExistingTableSchema()
     {
         $this->assertNull($this->getConnection()->schema->getTableSchema('nonexisting_table'));
