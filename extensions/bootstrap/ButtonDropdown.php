@@ -103,8 +103,7 @@ class ButtonDropdown extends Widget
             $options = $this->options;
             $this->options['data-toggle'] = 'dropdown';
             Html::addCssClass($this->options, 'dropdown-toggle');
-            $id_dropdown_toggle = $this->options['id'];
-            $this->options['id'] = $id_dropdown_toggle.'_carpet';
+            $this->options['id'] .= '_caret'
             $splitButton = Button::widget([
                 'label' => '<span class="caret"></span>',
                 'encodeLabel' => false,
