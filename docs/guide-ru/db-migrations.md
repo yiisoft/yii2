@@ -265,19 +265,26 @@ in `safeDown()` we first delete the row and then drop the table.
 
 ### Методы доступа к базе данных <span id="db-accessing-methods"></span>
 <!-- Database Accessing Methods -->
+<!--
 The base migration class [[yii\db\Migration]] provides a set of methods to let you access and manipulate databases.
 You may find these methods are named similarly as the [DAO methods](db-dao.md) provided by the [[yii\db\Command]] class. 
 For example, the [[yii\db\Migration::createTable()]] method allows you to create a new table, 
 just like [[yii\db\Command::createTable()]] does.
-
-
-
+-->
+Базовый класс миграции [[yii\db\Migration]] предоставляет набор методов, которые позволяют Вам получить доступ и управлять базами данных. Вы можете найти эти методы, их названия аналогичны [методам DAO](db-dao.md), предоставленным в классе [[yii\db\Command]].
+Например, метод [[yii\db\Migration::createTable()]] позволяет создать новую таблицу, подобно методу [[yii\db\Command::createTable()]].
+<!--
 The benefit of using the methods provided by [[yii\db\Migration]] is that you do not need to explicitly 
 create [[yii\db\Command]] instances and the execution of each method will automatically display useful messages 
 telling you what database operations are done and how long they take.
+-->
+Преимущество методов, описанных при помощи [[yii\db\Migration]] заключается в том, что Вам не нужно явно создавать экземпляр/копию [[yii\db\Command]] и исполнение каждого метода будет автоматически отображать полезные сообщения
+говорящие вам, что операции с базой данных выполняются и сколько они идут.
+<!--
+Below is the list of all these database accessing methods:-->
+Ниже представлен список всех этих методов доступа к базам данных:
 
-Below is the list of all these database accessing methods:
-
+<!--
 * [[yii\db\Migration::execute()|execute()]]: executing a SQL statement
 * [[yii\db\Migration::insert()|insert()]]: inserting a single row
 * [[yii\db\Migration::batchInsert()|batchInsert()]]: inserting multiple rows
@@ -297,6 +304,27 @@ Below is the list of all these database accessing methods:
 * [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: removing a foreign key
 * [[yii\db\Migration::createIndex()|createIndex()]]: creating an index
 * [[yii\db\Migration::dropIndex()|dropIndex()]]: removing an index
+-->
+
+* [[yii\db\Migration::execute()|execute()]]: выполнение SQL инструкции
+* [[yii\db\Migration::insert()|insert()]]: вставка одной строки
+* [[yii\db\Migration::batchInsert()|batchInsert()]]: вставка нескольких строк
+* [[yii\db\Migration::update()|update()]]: обновление строк
+* [[yii\db\Migration::delete()|delete()]]: удаление строк
+* [[yii\db\Migration::createTable()|createTable()]]: создание таблицы
+* [[yii\db\Migration::renameTable()|renameTable()]]: переименование таблицы
+* [[yii\db\Migration::dropTable()|dropTable()]]: удаление таблицы
+* [[yii\db\Migration::truncateTable()|truncateTable()]]: удаление всех строк в таблице
+* [[yii\db\Migration::addColumn()|addColumn()]]: добавление столбца
+* [[yii\db\Migration::renameColumn()|renameColumn()]]: переименование столбца
+* [[yii\db\Migration::dropColumn()|dropColumn()]]: удаление столбца
+* [[yii\db\Migration::alterColumn()|alterColumn()]]: изменения столбца
+* [[yii\db\Migration::addPrimaryKey()|addPrimaryKey()]]: добавление первичного ключа
+* [[yii\db\Migration::dropPrimaryKey()|dropPrimaryKey()]]: удаление первичного ключа
+* [[yii\db\Migration::addForeignKey()|addForeignKey()]]: добавление внешнего ключа
+* [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: удаление внешнего ключа
+* [[yii\db\Migration::createIndex()|createIndex()]]: создание индекса
+* [[yii\db\Migration::dropIndex()|dropIndex()]]: удаление индекса
 
 > Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
   to display extra message about retrieving data from a database. It is also because you can use the powerful
