@@ -249,22 +249,28 @@ class m150101_185401_create_news_table extends Migration
     }
 }
 ```
-
+<!--
 Note that usually when you perform multiple DB operations in `safeUp()`, you should reverse their execution order 
 in `safeDown()`. In the above example we first create the table and then insert a row in `safeUp()`; while
 in `safeDown()` we first delete the row and then drop the table.
+-->
+Обратите внимание, что обычно при выполнении нескольких операций в базе данных при помощи метода `safeUp()`, вы должны реализовать обратный порядок исполнения в методе `safeDown()`. В приведенном выше примере мы сначала создали таблицу, а затем вставили строку в `safeUp()`; а в `safeDown()` мы сначала удаляем строку и затем удаляем таблицу.
 
+<!--
 > Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
   please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). If this is the case,
   you should still implement `up()` and `down()`, instead.
+-->
+> Примечание: Не все СУБД поддерживают транзакции. И некоторые запросы к базам данных не могут быть введены в транзакции. Для различных примеров, пожалуйста, обратитесь к [негласным обязательствам](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). В этом случае вместо этих методов вы должны реализовать методы `up()` и `down()`.
 
-
-### Database Accessing Methods <span id="db-accessing-methods"></span>
-
+### Методы доступа к базе данных <span id="db-accessing-methods"></span>
+<!-- Database Accessing Methods -->
 The base migration class [[yii\db\Migration]] provides a set of methods to let you access and manipulate databases.
 You may find these methods are named similarly as the [DAO methods](db-dao.md) provided by the [[yii\db\Command]] class. 
 For example, the [[yii\db\Migration::createTable()]] method allows you to create a new table, 
-just like [[yii\db\Command::createTable()]] does. 
+just like [[yii\db\Command::createTable()]] does.
+
+
 
 The benefit of using the methods provided by [[yii\db\Migration]] is that you do not need to explicitly 
 create [[yii\db\Command]] instances and the execution of each method will automatically display useful messages 
