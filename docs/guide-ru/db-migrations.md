@@ -155,11 +155,13 @@ class m150101_185401_create_news_table extends \yii\db\Migration
 
 }
 ```
-
+<!--
 > Info: Not all migrations are reversible. For example, if the `up()` method deletes a row of a table, you may
   not be able to recover this row in the `down()` method. Sometimes, you may be just too lazy to implement 
   the `down()`, because it is not very common to revert database migrations. In this case, you should return
   `false` in the `down()` method to indicate that the migration is not reversible.
+-->
+> Для справки: Не все миграции являются обратимыми. Например, если метод `up()` удаляет строку из таблицы, возможно что у вас уже не будет возможности вернуть эту строку методом `down()`. Иногда Вам может быть просто слишком лень реализовывать метод `down()`, в связи с тем, что это не очень распространнено - откатывать миграции базы данных. В этом случае вы должны в методе `down()` вернуть `false`, чтобы указать, что миграция не является обратимой.
 
 The base migration class [[yii\db\Migration]] exposes a database connection via the [[yii\db\Migration::db|db]]
 property. You can use it to manipulate the database schema using the methods as described in 
