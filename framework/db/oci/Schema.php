@@ -126,7 +126,7 @@ inner join ALL_OBJECTS B ON b.owner = a.owner and ltrim(B.OBJECT_NAME) = ltrim(A
 LEFT JOIN all_col_comments com ON (A.owner = com.owner AND A.table_name = com.table_name AND A.column_name = com.column_name)
 WHERE
     a.owner = :schemaName
-    and (b.object_type IN ('TABLE', 'VIEW'))
+    and b.object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
     and b.object_name = :tableName
 ORDER by a.column_id
 SQL;
