@@ -210,6 +210,12 @@ An even easier way of implementing transactional migrations is to put migration 
 methods. These two methods differ from `up()` and `down()` in that they are enclosed implicitly in a transaction.
 As a result, if any operation in these methods fails, all prior operations will be rolled back automatically.
 
+
+При выполнении сложных миграций БД, важно обеспечить каждого миграции на успех или неудачу в целом так, что база данных может поддерживать целостность и непротиворечивость. Для достижения данной цели рекомендуется, чтобы вы заключите дБ деятельности каждого миграции в транзакции.
+
+Еще более простой способ осуществления транзакций миграций поставить миграционный кодекс в safeUp() и safeDown() методы. Эти два метода отличаются друг от вверх() и вниз() в том, что они заключены неявно в транзакции. В результате, если какая-либо операция в этих методах не удается, все предыдущие операции будут отменены автоматически.
+
+
 In the following example, besides creating the `news` table we also insert an initial row into this table.
 
 ```php
