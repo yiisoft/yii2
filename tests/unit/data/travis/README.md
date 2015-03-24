@@ -12,9 +12,5 @@ The scripts are:
    Prepare test environment for basic and advanced application
  - [`memcache-setup.sh`](memcache-setup.sh)
    Compiles and installs the [memcache pecl extension](http://pecl.php.net/package/memcache)
- - [`mongodb-setup.sh`](mongodb-setup.sh)
-   Enables Mongo DB PHP extension
  - [`setup-apps.sh`](setup-apps.sh)
    Prepare test environment for basic and advanced application
- - [`sphinx-setup.sh`](sphinx-setup.sh)
-   Prepares the [Sphinx](http://sphinxsearch.com/) server instances by installing the server and attaching it to MySQL

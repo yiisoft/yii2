@@ -56,9 +56,6 @@ before_script:
   - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
-  # TODO: remove sphinx, when moved to extension
-  - tests/unit/data/travis/sphinx-setup.sh
-
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
