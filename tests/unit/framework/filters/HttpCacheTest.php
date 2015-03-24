@@ -52,6 +52,10 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->assertTrue($method->invoke($httpCache, 1, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 1, '"foos"'));
         $this->assertFalse($method->invoke($httpCache, null, null));
+
+        $_SERVER['HTTP_IF_NONE_MATCH'] = '*';
+        $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
+        $this->assertFalse($method->invoke($httpCache, 0, null));
     }
 
     /**
