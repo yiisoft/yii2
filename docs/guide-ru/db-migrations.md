@@ -163,12 +163,14 @@ class m150101_185401_create_news_table extends \yii\db\Migration
 -->
 > Для справки: Не все миграции являются обратимыми. Например, если метод `up()` удаляет строку из таблицы, возможно что у вас уже не будет возможности вернуть эту строку методом `down()`. Иногда Вам может быть просто слишком лень реализовывать метод `down()`, в связи с тем, что это не очень распространнено - откатывать миграции базы данных. В этом случае вы должны в методе `down()` вернуть `false`, чтобы указать, что миграция не является обратимой.
 
+<!--
 The base migration class [[yii\db\Migration]] exposes a database connection via the [[yii\db\Migration::db|db]]
 property. You can use it to manipulate the database schema using the methods as described in 
 [Working with Database Schema](db-dao.md#database-schema).
-
+-->
 Базовый класс миграций [[yii\db\Migration]] предоставляет подключение к базе данных через свойство [[yii\db\Migration::db|db]]. Вы можете использовать его для манипулирования схемой базы данных используя методы описанные в [Работа со схемой базы данных](db-dao.md#database-schema).
 
+<!--
 Rather than using physical types, when creating a table or column you should use *abstract types*
 so that your migrations are independent of specific DBMS. The [[yii\db\Schema]] class defines
 a set of constants to represent the supported abstract types. These constants are named in the format
@@ -176,15 +178,27 @@ of `TYPE_<Name>`. For example, `TYPE_PK` refers to auto-incremental primary key 
 refers to a string type. When a migration is applied to a particular database, the abstract types
 will be translated into the corresponding physical types. In the case of MySQL, `TYPE_PK` will be turned
 into `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, while `TYPE_STRING` becomes `varchar(255)`.
+-->
+Вместо использования физических типов, при создании таблицы или столбца следует использовать *абстрактные типы*
+для того чтобы ваша миграция являлась независимой от конкретной СУБД. Класс [[yii\db\Schema]] определяет набор констант для предоставления поддержки абстрактных типов. Эти константы называются в следующем формате `TYPE_<Name>`. Например,
+`TYPE_PK` относится к типу автоинкремента (AUTO_INCREMENT) первичного ключа;
+`TYPE_STRING` относится к строковому типу.
+Когда миграция применяется к конкретной базе данных, абстрактные типы будут переведены в соответствующие физические типы.
+В случае с MySQL, `TYPE_PK` будет превращено в `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, а `TYPE_STRING` станет `varchar(255)`.
 
+<!--
 You can append additional constraints when using abstract types. In the above example, ` NOT NULL` is appended
 to `Schema::TYPE_STRING` to specify that the column cannot be null.
+-->
+Вы можете добавить дополнительные ограничения при использовании абстрактных типов. В приведенном выше примере, ` NOT NULL` добавляется к `Schema::TYPE_STRING` чтобы указать, что столбец не может быть NULL.
 
 > Info: The mapping between abstract types and physical types is specified by 
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
 
+> Для справки: Сопоставление абстрактных типов и физических типов определяется свойством [[yii\db\QueryBuilder::$typeMap|$typeMap]] в каждом конкретном `QueryBuilder` классе.
 
-### Transactional Migrations <span id="transactional-migrations"></span>
+### Транзакции Миграций <span id="transactional-migrations"></span>
+<!-- Transactional Migrations -->
 
 While performing complex DB migrations, it is important to ensure each migration to either succeed or fail as a whole
 so that the database can maintain integrity and consistency. To achieve this goal, it is recommended that you 
