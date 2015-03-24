@@ -8,9 +8,5 @@ The scripts are:
    Installs and configures the [apc pecl extension](http://pecl.php.net/package/apc)
  - [`cubrid-setup.sh`](cubrid-setup.sh)
    Prepares the [CUBRID](http://www.cubrid.org/) server instance by installing the server and PHP PDO driver
- - [`init-apps.sh`](init-apps.sh)
-   Prepare test environment for basic and advanced application
  - [`memcache-setup.sh`](memcache-setup.sh)
    Compiles and installs the [memcache pecl extension](http://pecl.php.net/package/memcache)
- - [`setup-apps.sh`](setup-apps.sh)
-   Prepare test environment for basic and advanced application
