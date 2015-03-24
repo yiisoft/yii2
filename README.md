@@ -22,13 +22,8 @@ DIRECTORY STRUCTURE
 -------------------
 
 ```
-apps/                ready-to-use application templates
-    advanced/        a template suitable for building sophisticated Web applications
-    basic/           a template suitable for building simple Web applications
-    benchmark/       an application demonstrating the performance of Yii
 build/               internally used build tools
 docs/                documentation
-extensions/          extensions
 framework/           core framework code
 tests/               tests of the core framework code
 ```
