@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #7530: Improved default values for `yii\data\Sort` link labels in a `ListView` when used with an `ActiveDataProvider` (cebe)
 - Enh #7562: `yii help` now lists all sub-commands by default (callmez)
 - Enh #7571: HTTP status 500 and "An internal server error occurred." are now returned in case there was an exception in layout and `YII_DEBUG` is false (samdark)
+- Enh #7593: Created a new core validator AtLeastValidator (slinstj)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
 
