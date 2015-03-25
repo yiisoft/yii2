@@ -118,4 +118,12 @@ class Order extends ActiveRecord
             return false;
         }
     }
+
+    public function attributeLabels()
+    {
+        return [
+            'customer_id' => 'Customer',
+            'total' => 'Invoice Total',
+        ];
+    }
 }

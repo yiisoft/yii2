@@ -9,16 +9,21 @@ use yii\db\Query;
 use yii\widgets\Breadcrumbs;
 use yii\widgets\LinkSorter;
 use yii\widgets\ListView;
-use yiiunit\data\ar\elasticsearch\Order;
+use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Order;
+use yiiunit\framework\db\DatabaseTestCase;
 
 /**
  * @group widgets
  */
-class LinkSorterTest extends \yiiunit\TestCase
+class LinkSorterTest extends DatabaseTestCase
 {
+    protected $driverName = 'sqlite';
+
     protected function setUp()
     {
         parent::setUp();
+        ActiveRecord::$db = $this->getConnection();
         $this->mockWebApplication();
         $this->breadcrumbs = new Breadcrumbs();
     }
