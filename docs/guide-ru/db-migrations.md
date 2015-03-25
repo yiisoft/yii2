@@ -519,13 +519,19 @@ has been applied migrations to the specified one. No migrations will be applied 
 -->
 * `interactive`: логический тип - boolean (по умолчанию true). Указывает, следует ли выполнять миграцию в интерактивном режиме. Если это значение является - true, то пользователю будет выдан запрос, перед выполнением командой определенных действий. Вы можете установить это значение в false если команда используется в фоновом режиме.
 
+<!--
 * `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration 
   class files. This can be specified as either a directory path or a path [alias](concept-aliases.md). 
   Note that the directory must exist, or the command may trigger an error.
+-->
+* `migrationPath`: строка - string (по умолчанию `@app/migrations`). Указывает каталог для хранения всех файлов классов миграций. Этот параметр может быть определён либо как путь до директории, либо как [псевдоним](concept-aliases.md). Обратите внимание, что данный каталог должен существовать, иначе команда будет выдавать ошибку.
 
+<!--
 * `migrationTable`: string (defaults to `migration`), specifies the name of the database table for storing
   migration history information. The table will be automatically created by the command if it does not exist.
   You may also manually create it using the structure `version varchar(255) primary key, apply_time integer`.
+-->
+* `migrationTable`: строка - string (по умолчанию `migration`). Определяет имя таблицы в базе данных в которой хранится информация о истории миграций.
 
 * `db`: string (defaults to `db`), specifies the ID of the database [application component](structure-application-components.md).
   It represents the database that will be migrated using this command.
