@@ -162,6 +162,8 @@ $customers = Customer::find()
     ->all();
 ```
 
+> Info: Because Yii2 does not import all models automatically, you have to add `use app\models\Customer;` before your controller class' definition, in order to be able to access `Customer` model in above example. Failing to do so will result in PHP Fatal Error `Class 'app\controllers\Customer' not found`.
+
 In the above, `$customer` is a `Customer` object while `$customers` is an array of `Customer` objects. They are
 all populated with the data retrieved from the `customer` table.
 
