@@ -23,12 +23,12 @@ fi
     cd ../..
 
 
-# setting cubrid env
+echo "setting cubrid env"
 CUBRID=$CWD/cubrid/$CUBRID_VERSION/CUBRID
 CUBRID_DATABASES=$CUBRID/databases
 CUBRID_LANG=en_US
 
-ld_lib_path=`printenv LD_LIBRARY_PATH`
+ld_lib_path=`printenv LD_LIBRARY_PATH` || echo "LD_LIBRARY_PATH is empty"
 if [ "$ld_lib_path" = "" ]
 then
     LD_LIBRARY_PATH=$CUBRID/lib
@@ -49,6 +49,7 @@ export LIBPATH
 export PATH
 
 # start cubrid
+echo "starting cubrid..."
 cubrid service start
 # create and start the demo db
 $CUBRID/demo/make_cubrid_demo.sh
