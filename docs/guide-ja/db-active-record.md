@@ -1,8 +1,5 @@
 アクティブレコード
 ==================
-
-> Note|注意: この節はまだ執筆中です。
-
 [アクティブレコード](http://ja.wikipedia.org/wiki/Active_Record) は、データベースに保存されているデータにアクセスするために、オブジェクト指向のインタフェイスを提供するものです。
 アクティブレコードクラスはデータベーステーブルと関連付けられます。
 アクティブレコードのインスタンスはそのテーブルの行に対応し、アクティブレコードのインスタンスの属性がその行のカラムの値を表現します。
@@ -699,8 +696,8 @@ $orders = $customer->orders;
 リレーションが [[yii\db\ActiveRecord::hasOne()|hasOne()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスか、関連付けられたデータが見つからないときは null が返されます。
 
 リレーションプロパティに最初にアクセスしたときは、上記の例で示されているように、SQL 文が実行されます。
-同じプロパティに再びアクセスしたときは、以前の結果が返されて、SQL 文が追加で実行されることはありません。
-SQL 文の再実行を強制するためには、まず、リレーションプロパティの割り当てを解除 (unset) します : `unset($customer->orders)`。
+その同じプロパティに再びアクセスしたときは、SQL 文を再実行することなく、以前の結果が返されます。
+SQL 文の再実行を強制するためには、まず、リレーションプロパティの割り当てを解除 (unset) しなければなりません : `unset($customer->orders)`。
 
 
 ### 動的なリレーショナルクエリ <span id="dynamic-relational-query"></span>
@@ -805,172 +802,195 @@ $items = $order->items;
 
 ### レイジーローディングとイーガーローディング <span id="lazy-eager-loading"></span>
 
-前に述べたように、関連オブジェクトに最初にアクセスしたときに、アクティブレコードは DB クエリを実行して関連データを読み出し、それを関連オブジェクトに投入します。
-同じ関連オブジェクトに再度アクセスしても、クエリは実行されません。
-これを *レイジーローディング* と呼びます。
+[リレーショナルデータにアクセスする](#accessing-relational-data) で説明したように、通常のオブジェクトプロパティにアクセスするのと同じように、アクティブレコードインスタンスのリレーションプロパティにアクセスすることが出来ます。
+SQL 文は、リレーションプロパティに最初にアクセスするときにだけ実行されます。
+このようなリレーショナルデータのアクセス方法を *レイジーローディング* と呼びます。
 例えば、
 
 ```php
-// 実行される SQL: SELECT * FROM customer WHERE id=1
-$customer = Customer::findOne(1);
-// 実行される SQL: SELECT * FROM order WHERE customer_id=1
+// SELECT * FROM `customer` WHERE `id` = 123
+$customer = Customer::findOne(123);
+
+// SELECT * FROM `order` WHERE `customer_id` = 123
 $orders = $customer->orders;
+
 // SQL は実行されない
 $orders2 = $customer->orders;
 ```
 
-レイジーローディングは非常に使い勝手が良いものです。しかし、次のシナリオでは、パフォーマンスの問題を生じ得ます。
+レイジーローディングは非常に使い勝手が良いものです。
+しかし、複数のアクティブレコードインスタンスの同じリレーションプロパティにアクセスする必要がある場合は、パフォーマンスの問題を生じ得ます。
+次のコードサンプルを考えて見てください。実行される SQL 文の数はいくらになるでしょう?
 
 ```php
-// 実行される SQL: SELECT * FROM customer WHERE id=1
+// SELECT * FROM `customer` LIMIT 100
 $customers = Customer::find()->limit(100)->all();
 
 foreach ($customers as $customer) {
-    // 実行される SQL: SELECT * FROM order WHERE customer_id=...
+    // SELECT * FROM `order` WHERE `customer_id` = ...
     $orders = $customer->orders;
-    // ... $orders を処理 ...
 }
 ```
 
-データベースに 100 人以上の顧客が登録されていると仮定した場合、上記のコードで何個の SQL クエリが実行されるでしようか?
-101 です。最初の SQL クエリが 100 人の顧客を返します。
-次に、100 人の顧客全てについて、それぞれ、顧客の注文を返すための SQL クエリが実行されます。
+上のコードのコメントから判るように、実行される SQL 文は 101 にもなります。
+これは、for ループの中で、異なる `Customer` オブジェクトの `orders` リレーションにアクセスするたびに、SQL 文が一つ実行されることになるからです。
 
-上記のパフォーマンスの問題を解決するためには、[[yii\db\ActiveQuery::with()]] を呼んでいわゆる *イーガーローディング* を使うことが出来ます。
+このパフォーマンスの問題を解決するために、次に示すように、いわゆる *イーガーローディング* の手法を使うことが出来ます。
 
 ```php
-// 実行される SQL: SELECT * FROM customer LIMIT 100;
-//                 SELECT * FROM orders WHERE customer_id IN (1,2,...)
-$customers = Customer::find()->limit(100)
-    ->with('orders')->all();
+// SELECT * FROM `customer` LIMIT 100;
+// SELECT * FROM `orders` WHERE `customer_id` IN (...)
+$customers = Customer::find()
+    ->with('orders')
+    ->limit(100)
+    ->all();
 
 foreach ($customers as $customer) {
     // SQL は実行されない
     $orders = $customer->orders;
-    // ... $orders を処理 ...
 }
 ```
 
-ご覧のように、同じ仕事をするのに必要な SQL クエリがたった二つになります。
+ここでは、[[yii\db\ActiveQuery::with()]] を呼ぶことによって、最初の 100 人の顧客の注文をたった一つの SQL 文で返すように、アクティブレコードに指示をしています。
+結果として、実行される SQL 文の数は 101 から 2 に減ります。
 
-> Info|情報: 一般化して言うと、`N` 個のリレーションのうち `M` 個のリレーションが `via()` または `viaTable()` によって定義されている場合、この `N` 個のリレーションをイーガーロードしようとすると、合計で `1+M+N` 個の SQL クエリが実行されます。
-> 主たるテーブルの行を返すために一つ、`via()` または `viaTable()` の呼び出しに対応する `M` 個の中間テーブルのそれぞれに対して一つずつ、そして、`N` 個の関連テーブルのそれぞれに対して一つずつ、という訳です。
+イーガーローディングは、一つだけでなく、複数のリレーションに対しても使うことが出来ます。
+さらには、*ネストされたリレーション* でさえ、イーガーロードすることが出来ます。
+ネストされたリレーションというのは、関連するアクティブレコードの中で宣言されているリレーションです。
+例えば、`Cutomer` が `orders` リレーションによって `Order` と関連しており、`Order` が `items` リレーションによって `Item` と関連している場合です。
+`Customer` に対するクエリを実行するときに、ネストされたリレーションの記法である `orders.items` を使って、`items` をイーガーロードすることが出来ます。
 
-> Note|注意: イーガーローディングで `select()` をカスタマイズしようとする場合は、関連モデルにリンクするカラムを必ず含めてください。
-> そうしないと、関連モデルは読み出されません。例えば、
+次のコードは、[[yii\db\ActiveQuery::with()|with()]] のさまざまな使い方を示すものです。
+ここでは、`Customer` クラスは `orders` と `country` という二つのリレーションを持っており、また、`Order` クラスは `items` という一つのリレーションを持っていると仮定しています。
 
 ```php
-$orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-// $orders[0]->customer は常に null になる。この問題を解決するためには、次のようにしなければならない。
-$orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
+// "orders" と "country" の両方をイーガーロードする
+$customers = Customer::find()->with('orders', 'country')->all();
+// これは下の配列記法と等価
+$customers = Customer::find()->with(['orders', 'country'])->all();
+// SQL は実行されない
+$orders= $customers[0]->orders;
+// SQL は実行されない
+$country = $customers[0]->country;
+
+// "orders" リレーションと、ネストされた "orders.items" をイーガーロード
+$customers = Customer::find()->with('orders.items')->all();
+// 最初の顧客の、最初の注文の品目にアクセスする
+// SQL は実行されない
+$items = $customers[0]->orders[0]->items;
 ```
 
-場合によっては、リレーショナルクエリをその場でカスタマイズしたいことがあるでしょう。
-これは、レイジーローディングでもイーガーローディングでも、可能です。例えば、
+深くネストされたリレーション、たとえば `a.b.c.c` をイーガーロードすることも出来ます。
+このとき、すべての親リレーションもイーガーロードされます。
+つまり、`a.b.c.d` を使って [[yii\db\ActiveQuery::with()|with()]] を呼ぶと、`a`、`a.b`、`a.b.c` そして `a.b.c.d` をイーガーロードすることになります。
+
+> Info|情報: 一般化して言うと、`N` 個のリレーションのうち `M` 個のリレーションが [中間テーブル](#junction-table) によって定義されている場合、この `N` 個のリレーションをイーガーロードしようとすると、合計で `1+M+N` 個の SQL クエリが実行されます。
+  ネストされたリレーション `a.b.c.d` は 4 個のリレーションとして数えられることに注意してください。
+
+リレーションをイーガーロードするときに、対応するリレーショナルクエリを無名関数を使ってカスタマイズすることが出来ます。
+例えば、
 
 ```php
-$customer = Customer::findOne(1);
-// レイジーローディング: SELECT * FROM order WHERE customer_id=1 AND subtotal>100
-$orders = $customer->getOrders()->where('subtotal>100')->all();
-
-// イーガーローディング: SELECT * FROM customer LIMIT 100
-//                       SELECT * FROM order WHERE customer_id IN (1,2,...) AND subtotal>100
-$customers = Customer::find()->limit(100)->with([
-    'orders' => function($query) {
-        $query->andWhere('subtotal>100');
+// 顧客を検索し、その国とアクティブな注文を同時に返す
+// SELECT * FROM `customer`
+// SELECT * FROM `country` WHERE `id` IN (...)
+// SELECT * FROM `order` WHERE `customer_id` IN (...) AND `status` = 1
+$customers = Customer::find()->with([
+    'country',
+    'orders' => function ($query) {
+        $query->andWhere(['status' => Order::STATUS_ACTIVE]);
     },
 ])->all();
 ```
 
+リレーションのためのリレーショナルクエリをカスタマイズするときは、リレーション名を配列のキーとし、対応する値に無名関数を使わなければなりません。
+無名関数が受け取る `$query` パラメータは、リレーションのためのリレーショナルクエリを実行するのに使用される [[yii\db\ActiveQuery]] オブジェクトを表します。
+上のコード例では、注文の状態に関する条件を追加して、リレーショナルクエリを修正しています。
 
-### 逆リレーション
-
-リレーションは、たいていの場合、ペアで定義することが出来ます。
-例えば、`Customer` が `orders` という名前のリレーションを持ち、`Order` が `customer` という名前のリレーションを持つ、ということがあります。
-
-```php
-class Customer extends ActiveRecord
-{
-    ....
-    public function getOrders()
-    {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
-    }
-}
-
-class Order extends ActiveRecord
-{
-    ....
-    public function getCustomer()
-    {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
-    }
-}
-```
-
-次に例示するクエリを実行すると、注文 (order) のリレーションとして取得した顧客 (customer) が、最初にその注文をリレーションとして取得した顧客とは別の Customer オブジェクトになってしまうことに気付くでしょう。
-また、`customer->orders` にアクセスすると一個の SQL が実行され、`order->customer` にアクセスするともう一つ別の SQL が実行されるということにも気付くでしょう。
-
-```php
-// SELECT * FROM customer WHERE id=1
-$customer = Customer::findOne(1);
-// "等しくない" がエコーされる
-// SELECT * FROM order WHERE customer_id=1
-// SELECT * FROM customer WHERE id=1
-if ($customer->orders[0]->customer === $customer) {
-    echo '等しい';
-} else {
-    echo '等しくない';
-}
-```
-
-冗長な最後の SQL 文の実行を避けるためには、次のように、[[yii\db\ActiveQuery::inverseOf()|inverseOf()]] メソッドを呼んで、`customer` と `oerders` のリレーションに対して逆リレーションを宣言することが出来ます。
-
-```php
-class Customer extends ActiveRecord
-{
-    ....
-    public function getOrders()
-    {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
-    }
-}
-```
-
-こうすると、上記と同じクエリを実行したときに、次の結果を得ることが出来ます。
-
-```php
-// SELECT * FROM customer WHERE id=1
-$customer = Customer::findOne(1);
-// "等しい" がエコーされる
-// SELECT * FROM order WHERE customer_id=1
-if ($customer->orders[0]->customer === $customer) {
-    echo '等しい';
-} else {
-    echo '等しくない';
-}
-```
-
-上記では、レイジーローディングにおいて逆リレーションを使う方法を示しました。
-逆リレーションはイーガーローディングにも適用されます。
-
-```php
-// SELECT * FROM customer
-// SELECT * FROM order WHERE customer_id IN (1, 2, ...)
-$customers = Customer::find()->with('orders')->all();
-// "等しい" がエコーされる
-if ($customers[0]->orders[0]->customer === $customers[0]) {
-    echo '等しい';
-} else {
-    echo '等しくない';
-}
-```
-
-> Note|注意: 逆リレーションはピボットテーブルを含むリレーションに対しては定義することが出来ません。
-> つまり、リレーションが [[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] によって定義されている場合は、[[yii\db\ActiveQuery::inverseOf()]] を追加で呼ぶことは出来ません。
-
+> Note|注意: リレーションをイーガーロードするときに [[yii\db\Query::select()|select()]] を呼ぶ場合は、リレーションの宣言で参照されているカラムが選択されるように注意しなければなりません。
+> そうしないと、リレーションのモデルが正しくロードされないことがあります。
+> 例えば、
+>
+> ```php
+> $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
+> // この場合、$orders[0]->customer は常に null になります。
+> // 問題を修正するためには、次のようにしなければなりません。
+> $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
+> ```
 
 ### リレーションを使ってテーブルを結合する <a name="joining-with-relations">
+
+> Note|注意: この項で説明されていることは、MySQL、PostgreSQL など、リレーショナルデータベースに対してのみ適用されます。
+
+ここまで説明してきたリレーショナルクエリは、主たるデータを検索する際に主テーブルのカラムだけを参照するものでした。
+現実には、関連するテーブルのカラムを参照しなければならない場合がよくあります。
+例えば、少なくとも一つのアクティブな注文を持つ顧客を取得したい、というような場合です。
+この問題を解決するためには、以下のようにして、テーブルを結合するクエリを構築することが出来ます。
+
+```php
+// SELECT `customer`.* FROM `customer`
+// LEFT JOIN `order` ON `order`.`customer_id` = `customer`.`id`
+// WHERE `order`.`status` = 1
+// 
+// SELECT * FROM `order` WHERE `customer_id` IN (...)
+$customers = Customer::find()
+    ->select('customer.*')
+    ->leftJoin('order', '`order`.`customer_id` = `customer`.`id`')
+    ->where(['order.status' => Order::STATUS_ACTIVE])
+    ->with('orders')
+    ->all();
+```
+
+> Note|注意: JOIN SQL 文を含むリレーショナルクエリを構築する場合は、カラム名の曖昧さを解消することが重要です。
+  カラム名に対応するテーブル名をプレフィクスするのが慣例です。
+
+しかしながら、もっと良いのは、[[yii\db\ActiveQuery::joinWith()]] を呼んで、既にあるリレーションの宣言を利用するという手法です。
+
+```php
+$customers = Customer::find()
+    ->joinWith('orders')
+    ->where(['order.status' => Order::STATUS_ACTIVE])
+    ->all();
+```
+
+どちらの方法でも、実行される SQL 文のセットは同じです。
+けれども、後者の方がはるかに明快で簡潔です。
+
+デフォルトでは、[[yii\db\ActiveQuery::joinWith()|joinWith()]] は `LEFT JOIN` を使って、関連するテーブルを主テーブルに結合します。
+第三のパラメータ `$joinType` によって異なる結合タイプ (例えば `RIGHT JOIN`) を指定することが出来ます。
+指定したい結合タイプが `INNER JOIN` である場合は、代りに、[[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] を呼ぶだけで済ませることが出来ます。
+
+デフォルトでは、[[yii\db\ActiveQuery::joinWith()|joinWith()]] を呼ぶと、リレーションのデータが [イーガーロード](#lazy-eager-loading) されます。
+リレーションのデータを読み取りたくない場合は、第二のパラメータ `$eagerLoading` を false に指定することが出来ます。
+
+[[yii\db\ActiveQuery::with()|with()]] と同じように、一つまたは複数のリレーションを結合したり、リレーションクエリをその場でカスタマイズしたり、ネストされたリレーションを結合したりすることが出来ます。
+また、[[yii\db\ActiveQuery::with()|with()]] と [[yii\db\ActiveQuery::joinWith()|joinWith()]] を混ぜて使用することも出来ます。
+例えば、
+
+```php
+$customers = Customer::find()->joinWith([
+    'orders' => function ($query) {
+        $query->andWhere(['>', 'subtotal', 100);
+    },
+])->with('country')
+    ->all();
+```
+
+Sometimes when joining two tables, you may need to specify some extra conditions in the `ON` part of the JOIN query.
+This can be done by calling the [[yii\db\ActiveQuery::onCondition()]] method like the following:
+
+```php
+// SELECT `customer`.* FROM `customer`
+// LEFT JOIN `order` ON `order`.`customer_id` = `customer`.`id` AND `order`.`status` = 1 
+// 
+// SELECT * FROM `order` WHERE `customer_id` IN (...)
+$customers = Customer::find()->joinWith([
+    'orders' => function ($query) {
+        $query->onCondition(['order.status' => Order::STATUS_ACTIVE]);
+    },
+])->all();
+```
+
 
 リレーショナルデータベースを扱う場合、複数のテーブルを結合して、JOIN SQL 文にさまざまなクエリ条件とパラメータを指定することは、ごく当り前の仕事です。
 その目的を達するために、[[yii\db\ActiveQuery::join()]] を明示的に呼んで JOIN クエリを構築する代りに、既存のリレーション定義を再利用して [[yii\db\ActiveQuery::joinWith()]] を呼ぶことが出来ます。
@@ -1063,6 +1083,93 @@ $user = User::findOne(10);
 // SELECT * FROM item WHERE owner_id=10 AND category_id=1
 $books = $user->books;
 ```
+
+### 逆リレーション
+
+リレーションは、たいていの場合、ペアで定義することが出来ます。
+例えば、`Customer` が `orders` という名前のリレーションを持ち、`Order` が `customer` という名前のリレーションを持つ、ということがあります。
+
+```php
+class Customer extends ActiveRecord
+{
+    ....
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+
+class Order extends ActiveRecord
+{
+    ....
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+}
+```
+
+次に例示するクエリを実行すると、注文 (order) のリレーションとして取得した顧客 (customer) が、最初にその注文をリレーションとして取得した顧客とは別の Customer オブジェクトになってしまうことに気付くでしょう。
+また、`customer->orders` にアクセスすると一個の SQL が実行され、`order->customer` にアクセスするともう一つ別の SQL が実行されるということにも気付くでしょう。
+
+```php
+// SELECT * FROM customer WHERE id=1
+$customer = Customer::findOne(1);
+// "等しくない" がエコーされる
+// SELECT * FROM order WHERE customer_id=1
+// SELECT * FROM customer WHERE id=1
+if ($customer->orders[0]->customer === $customer) {
+    echo '等しい';
+} else {
+    echo '等しくない';
+}
+```
+
+冗長な最後の SQL 文の実行を避けるためには、次のように、[[yii\db\ActiveQuery::inverseOf()|inverseOf()]] メソッドを呼んで、`customer` と `oerders` のリレーションに対して逆リレーションを宣言することが出来ます。
+
+```php
+class Customer extends ActiveRecord
+{
+    ....
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+    }
+}
+```
+
+こうすると、上記と同じクエリを実行したときに、次の結果を得ることが出来ます。
+
+```php
+// SELECT * FROM customer WHERE id=1
+$customer = Customer::findOne(1);
+// "等しい" がエコーされる
+// SELECT * FROM order WHERE customer_id=1
+if ($customer->orders[0]->customer === $customer) {
+    echo '等しい';
+} else {
+    echo '等しくない';
+}
+```
+
+上記では、レイジーローディングにおいて逆リレーションを使う方法を示しました。
+逆リレーションはイーガーローディングにも適用されます。
+
+```php
+// SELECT * FROM customer
+// SELECT * FROM order WHERE customer_id IN (1, 2, ...)
+$customers = Customer::find()->with('orders')->all();
+// "等しい" がエコーされる
+if ($customers[0]->orders[0]->customer === $customers[0]) {
+    echo '等しい';
+} else {
+    echo '等しくない';
+}
+```
+
+> Note|注意: 逆リレーションはピボットテーブルを含むリレーションに対しては定義することが出来ません。
+> つまり、リレーションが [[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] によって定義されている場合は、[[yii\db\ActiveQuery::inverseOf()]] を追加で呼ぶことは出来ません。
+
 
 
 関連付けを扱う
