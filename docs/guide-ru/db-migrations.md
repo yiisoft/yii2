@@ -635,8 +635,11 @@ option. Note that the migration history will still be recorded in the database s
 -->
 Вышеуказанная миграция будет применена к `db2` даже если указать другую базу данных через параметр `db` командной строки. Обратите внимание, что история миграций в этом случае будет записана в базу данных, указанную в параметре `db` командной строки.
 
+<!--
 If you have multiple migrations that use the same database, it is recommended that you create a base migration class
 with the above `init()` code. Then each migration class can extend from this base class.
+-->
+Если у вас есть несколько миграций, которые используют ту же другую базу данных, то рекомендуется создать базовый класс миграций выше кода `init()`. Затем каждый класс миграции может расширяться от этого базового класса.
 
 > Tip: Besides setting the [[yii\db\Migration::db|db]] property, you can also operate on different databases
   by creating new database connections to them in your migration classes. You then use the [DAO methods](db-dao.md)
