@@ -28,7 +28,7 @@ sudo: false
 # cache vendor dirs
 cache:
   directories:
-    - cubrid/9.30
+    - cubrid/9.3.0
     - vendor
     - $HOME/.composer/cache
 
