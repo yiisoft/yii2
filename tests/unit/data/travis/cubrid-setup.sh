@@ -16,12 +16,10 @@ if (test -f $CUBRID_VERSION-linux.x86_64.tar.gz); then
     echo "CUBRID is already downloaded"
 else
     wget http://ftp.cubrid.org/CUBRID_Engine/$CUBRID_VERSION-linux.x86_64.tar.gz -O $CUBRID_VERSION-linux.x86_64.tar.gz
-fi
-
     cd $CUBRID_VERSION
     tar xzf ../../$CUBRID_VERSION-linux.x86_64.tar.gz
     cd ../..
-
+fi
 
 echo "setting cubrid env"
 CUBRID=$CWD/cubrid/$CUBRID_VERSION/CUBRID
