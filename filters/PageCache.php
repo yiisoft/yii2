@@ -113,6 +113,13 @@ class PageCache extends ActionFilter
      * @since 2.0.4
      */
     public $cacheCookies = false;
+    /**
+     * @var boolean|array a boolean value indicating whether to cache all HTTP headers, or an array of
+     * HTTP header names (case-insensitive) indicating which HTTP headers can be cached.
+     * Note if your HTTP headers contain sensitive information, you should white-list which headers can be cached.
+     * @since 2.0.4
+     */
+    public $cacheHeaders = true;
 
 
     /**
@@ -182,10 +189,12 @@ class PageCache extends ActionFilter
             $response->statusText = $data['statusText'];
         }
         if (isset($data['headers']) && is_array($data['headers'])) {
-            $response->getHeaders()->fromArray($data['headers']);
+            $headers = $response->getHeaders()->toArray();
+            $response->getHeaders()->fromArray(array_merge($data['headers'], $headers));
         }
         if (isset($data['cookies']) && is_array($data['cookies'])) {
-            $response->getCookies()->fromArray($data['cookies']);
+            $cookies = $response->getCookies()->toArray();
+            $response->getCookies()->fromArray(array_merge($data['cookies'], $cookies));
         }
     }
 
@@ -202,8 +211,21 @@ class PageCache extends ActionFilter
             'version' => $response->version,
             'statusCode' => $response->statusCode,
             'statusText' => $response->statusText,
-            'headers' => $response->getHeaders()->toArray(),
         ];
+        if (!empty($this->cacheHeaders)) {
+            $headers = $response->getHeaders()->toArray();
+            if (is_array($this->cacheHeaders)) {
+                $filtered = [];
+                foreach ($this->cacheHeaders as $name) {
+                    $name = strtolower($name);
+                    if (isset($headers[$name])) {
+                        $filtered[$name] = $headers[$name];
+                    }
+                }
+                $headers = $filtered;
+            }
+            $data['headers'] = $headers;
+        }
         if (!empty($this->cacheCookies)) {
             $cookies = $response->getCookies()->toArray();
             if (is_array($this->cacheCookies)) {
