@@ -330,31 +330,47 @@ Below is the list of all these database accessing methods:-->
   to display extra message about retrieving data from a database. It is also because you can use the powerful
   [Query Builder](db-query-builder.md) to build and run complex queries.
 
+> Примечание: [[yii\db\Migration]] не предоставляет методы запросов к базе данных. Это потому, что обычно не требуется отображать дополнительные сообщения об извлечении данных из базы данных. Это также, потому, что можно использовать более мощный [Построитель Запросов](db-query-builder.md) для построения и выполнения сложных запросов.
 
-## Applying Migrations <span id="applying-migrations"></span>
-
+## Применение Миграций <span id="applying-migrations"></span>
+<!-- Applying Migrations -->
+<!--
 To upgrade a database to its latest structure, you should apply all available new migrations using the following command:
+-->
+Для обновления базы данных до последней структуры, вы должны применить все новые миграции, используя следующую команду:
 
 ```
 yii migrate
 ```
-
+<!--
 This command will list all migrations that have not been applied so far. If you confirm that you want to apply
 these migrations, it will run the `up()` or `safeUp()` method in every new migration class, one after another, 
 in the order of their timestamp values. If any of the migrations fails, the command will quit without applying
 the rest of the migrations.
+-->
+Эта команда выведет список всех миграций, которые не применялись до сих пор. Если вы подтвердите, что вы хотите применить эти миграций, то этим самым запустите метод `up()` или `safeUp()` в каждом новом классе миграции, один за другим, в порядке их временного значения timestamp.
 
+<!--
 For each migration that has been successfully applied, the command will insert a row into a database table named 
 `migration` to record the successful application of the migration. This will allow the migration tool to identify
 which migrations have been applied and which have not.
+-->
+Для каждой миграции которая была успешно проведена, эта команда будет вставлять строку в таблицу базы данных с именем
+`migration` записав успешное проведение миграции. Это позволяет инструменту миграции выявлять какие миграции были применены, а какие - нет.
 
+<!--
 > Info: The migration tool will automatically create the `migration` table in the database specified by
   the [[yii\console\controllers\MigrateController::db|db]] option of the command. By default, the database
   is specified by the `db` [application component](structure-application-components.md).
-  
+-->
+> Примечание: Инструмент миграции автоматически создаст таблицу `migration` в базе данных указанной в параметре [[yii\console\controllers\MigrateController::db|db]]. По умолчанию база данных определяется как [компонент приложения](structure-application-components.md) `db`.
+
+<!--
 Sometimes, you may only want to apply one or a few new migrations, instead of all available migrations.
 You can do so by specifying the number of migrations that you want to apply when running the command.
 For example, the following command will try to apply the next three available migrations:
+-->
+Иногда, необходимо применить одну или несколько новых миграций, вместо всех доступных миграций. Это возможно сделать, указав, при выполнении команды, количество миграций, которые необходимо применить. Например, следующая команда будет пытаться применить следующие три доступные миграции:
 
 ```
 yii migrate 3
@@ -363,11 +379,22 @@ yii migrate 3
 You can also explicitly specify a particular migration to which the database should be migrated
 by using the `migrate/to` command in one of the following formats:
 
+Также можно явно указать конкретную миграцию, которая должна быть применена к базе данных, это можно сделать при помощи команды `migrate/to` в одном из следующих форматов:
+
+<!--
 ```
 yii migrate/to 150101_185401                      # using timestamp to specify the migration
 yii migrate/to "2015-01-01 18:54:01"              # using a string that can be parsed by strtotime()
 yii migrate/to m150101_185401_create_news_table   # using full name
 yii migrate/to 1392853618                         # using UNIX timestamp
+```
+-->
+
+```
+yii migrate/to 150101_185401                      # используя временную метку определяющую миграцию
+yii migrate/to "2015-01-01 18:54:01"              # используя строку, которая может быть получена путем использования функции strtotime()
+yii migrate/to m150101_185401_create_news_table   # используя полное имя
+yii migrate/to 1392853618                         # используя временную метку UNIX
 ```
 
 If there are any unapplied migrations earlier than the specified one, they will all be applied before the specified
