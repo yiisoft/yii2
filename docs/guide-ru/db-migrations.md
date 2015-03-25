@@ -396,43 +396,67 @@ yii migrate/to "2015-01-01 18:54:01"              # используя стро�
 yii migrate/to m150101_185401_create_news_table   # используя полное имя
 yii migrate/to 1392853618                         # используя временную метку UNIX
 ```
-
+<!--
 If there are any unapplied migrations earlier than the specified one, they will all be applied before the specified
 migration is applied.
 
 If the specified migration has already been applied before, any later applied migrations will be reverted.
-
+-->
+Если раньше имелись какие-либо не применённые миграции, до указанной конкретной миграции, то все они будут применены до данной миграции.
+А если указанная миграция уже применялась ранее, то любые более поздние версии данной прикладной миграции будут отменены.
 
 ## Reverting Migrations <span id="reverting-migrations"></span>
-
+<!-- Откат Миграций -->
+<!--
 To revert (undo) one or multiple migrations that have been applied before, you can run the following command:
+-->
+Чтобы откатить (отменить) одну или несколько миграций, которые применялись ранее, нужно запустить следующую команду:
 
+<!--
 ```
 yii migrate/down     # revert the most recently applied migration
 yii migrate/down 3   # revert the most 3 recently applied migrations
 ```
+-->
+```
+yii migrate/down     # отменяет самую последнюю применёную миграцию
+yii migrate/down 3   # отменяет 3 последних применённых миграции
+```
 
+<!--
 > Note: Not all migrations are reversible. Trying to revert such migrations will cause an error and stop the
   entire reverting process.
+-->
 
+> Примечание: Не все миграции являются обратимыми. При попытке отката таких миграций произойдёт ошибка и остановится весь процесс отката.
 
-## Redoing Migrations <span id="redoing-migrations"></span>
-
+## Перезагрузка Миграций <span id="redoing-migrations"></span>
+<!-- Redoing Migrations -->
+<!--
 Redoing migrations means first reverting the specified migrations and then applying again. This can be done
 as follows:
+-->
+Под перезагрузкой миграций подразумевается, сначала последовательный откат определённых миграций, а потом применение их снова. Это может быть сделано следующим образом:
 
 ```
-yii migrate/redo        # redo the last applied migration 
-yii migrate/redo 3      # redo the last 3 applied migrations
+yii migrate/redo        # перезагрузить последнюю применённую миграцию
+yii migrate/redo 3      # перезагрузить 3 последние применённые миграции
 ```
 
+<!--
 > Note: If a migration is not reversible, you will not be able to redo it.
+-->
+> Примечание: Если миграция не является обратимой, Вы не сможете её перезагрузить.
 
 
-## Listing Migrations <span id="listing-migrations"></span>
-
+## Список Миграций <span id="listing-migrations"></span>
+<!-- Listing Migrations -->
+<!--
 To list which migrations have been applied and which are not, you may use the following commands:
+ -->
+Чтобы посмотреть какие миграции были применены, а какие нет, используйте следующие команды:
 
+<!--
 ```
 yii migrate/history     # showing the last 10 applied migrations
 yii migrate/history 5   # showing the last 5 applied migrations
@@ -442,10 +466,20 @@ yii migrate/new         # showing the first 10 new migrations
 yii migrate/new 5       # showing the first 5 new migrations
 yii migrate/new all     # showing all new migrations
 ```
+-->
 
+```
+yii migrate/history     # показать последних 10 применённых миграций
+yii migrate/history 5   # показать последних 5 применённых миграций
+yii migrate/history all # показать все применённые миграции
 
-## Modifying Migration History <span id="modifying-migration-history"></span>
+yii migrate/new         # показать первых 10 новых миграций
+yii migrate/new 5       # показать первых 5 новых миграций
+yii migrate/new all     # показать все новые миграции
+```
 
+## Изменение Истории Миграций <span id="modifying-migration-history"></span>
+<!-- Modifying Migration History -->
 Instead of actually applying or reverting migrations, sometimes you may simply want to mark that your database
 has been upgraded to a particular migration. This often happens when you manually change the database to a particular
 state and you do not want the migration(s) for that change to be re-applied later. You can achieve this goal with
