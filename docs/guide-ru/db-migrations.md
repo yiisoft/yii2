@@ -606,11 +606,14 @@ yii migrate --db=db2
 <!--
 The above command will apply migrations to the `db2` database.
 -->
-Приведенная выше команда применит миграцию к базе данных `db2`.
+Приведенная выше команда применит миграции к базе данных `db2`.
 
+<!--
 Sometimes it may happen that you want to apply *some* of the migrations to one database, while some others to another
 database. To achieve this goal, when implementing a migration class you should explicitly specify the DB component
 ID that the migration would use, like the following:
+-->
+Иногда может случиться так, что Вы захотите применить *некоторые* из миграций к одной базе данных, а некоторые другие к другой базе данных. Для достижения этой цели, при реализации класса миграции, необходимо явно указать идентификатор ID компонента базы данных, который миграция будет использовать, следующим образом:
 
 ```php
 use yii\db\Schema;
@@ -626,8 +629,11 @@ class m150101_185401_create_news_table extends Migration
 }
 ```
 
+<!--
 The above migration will be applied to `db2`, even if you specify a different database through the `db` command-line
 option. Note that the migration history will still be recorded in the database specified by the `db` command-line option.
+-->
+Вышеуказанная миграция будет применена к `db2` даже если указать другую базу данных через параметр `db` командной строки. Обратите внимание, что история миграций в этом случае будет записана в базу данных, указанную в параметре `db` командной строки.
 
 If you have multiple migrations that use the same database, it is recommended that you create a base migration class
 with the above `init()` code. Then each migration class can extend from this base class.
