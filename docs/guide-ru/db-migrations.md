@@ -524,39 +524,55 @@ has been applied migrations to the specified one. No migrations will be applied 
   class files. This can be specified as either a directory path or a path [alias](concept-aliases.md). 
   Note that the directory must exist, or the command may trigger an error.
 -->
-* `migrationPath`: строка - string (по умолчанию `@app/migrations`). Указывает каталог для хранения всех файлов классов миграций. Этот параметр может быть определён либо как путь до директории, либо как [псевдоним](concept-aliases.md). Обратите внимание, что данный каталог должен существовать, иначе команда будет выдавать ошибку.
+* `migrationPath`: строка - string (по умолчанию `@app/migrations`). Указывает каталог для хранения всех файлов классов миграций. Этот параметр может быть определён либо как путь до директории, либо как [псевдоним](concept-aliases.md) пути. Обратите внимание, что данный каталог должен существовать, иначе команда будет выдавать ошибку.
 
 <!--
 * `migrationTable`: string (defaults to `migration`), specifies the name of the database table for storing
   migration history information. The table will be automatically created by the command if it does not exist.
   You may also manually create it using the structure `version varchar(255) primary key, apply_time integer`.
 -->
-* `migrationTable`: строка - string (по умолчанию `migration`). Определяет имя таблицы в базе данных в которой хранится информация о истории миграций.
+* `migrationTable`: строка - string (по умолчанию `migration`). Определяет имя таблицы в базе данных в которой хранится информация о истории миграций. Эта таблица будет автоматически создана командой миграции, если её не существует. Вы также можете создать её вручную, используя структуру `version varchar(255) primary key, apply_time integer`.
 
+<!--
 * `db`: string (defaults to `db`), specifies the ID of the database [application component](structure-application-components.md).
   It represents the database that will be migrated using this command.
+-->
+* `db`: строка - string (по умолчанию `db`). Определяет ID базы данных [компонента приложения](structure-application-components.md).
+Этот параметр представляет собой базу данных, которая подвергается миграциям при помощи команды миграций.
 
+<!--
 * `templateFile`: string (defaults to `@yii/views/migration.php`), specifies the path of the template file
   that is used for generating skeleton migration class files. This can be specified as either a file path
   or a path [alias](concept-aliases.md). The template file is a PHP script in which you can use a predefined variable
   named `$className` to get the migration class name.
+-->
+* `templateFile`: строка - string (по умолчанию `@yii/views/migration.php`). Указывает путь до файла шаблона, который используется для формирования скелета класса файлов миграции. Этот параметр может быть определён либо как путь до файла, либо как [псевдоним](concept-aliases.md) пути. Файл шаблона - это PHP скрипт, в котором можно использовать предопределенную переменную с именем `$className` для того, чтобы получить имя класса миграции.
 
+<!--
 The following example shows how you can use these options.
+-->
+В следующем примере показано, как можно использовать эти параметры.
 
+<!--
 For example, if we want to migrate a `forum` module whose migration files
 are located within the module's `migrations` directory, we can use the following
 command:
+-->
+Например, если мы хотим перенести модуль `forum`, чьи файлы миграций
+расположены в каталоге `migrations` данного модуля, для этого мы можем использовать следующую команду:
 
 ```
-# migrate the migrations in a forum module non-interactively
+# неинтерактивная миграция модуля форума
 yii migrate --migrationPath=@app/modules/forum/migrations --interactive=0
 ```
 
-
-### Configuring Command Globally <span id="configuring-command-globally"></span>
-
+### Глобальная Настройка Комманд <span id="configuring-command-globally"></span>
+<!-- Configuring Command Globally -->
+<!--
 Instead of entering the same option values every time you run the migration command, you may configure it
 once for all in the application configuration like shown below:
+-->
+Вместо того чтобы каждый раз вводить одинаковые значения параметров миграции, когда вы запускаете команду миграции, можно настроить её раз и навсегда в конфигурации приложения, как показано ниже:
 
 ```php
 return [
@@ -568,14 +584,15 @@ return [
     ],
 ];
 ```
-
+<!--
 With the above configuration, each time you run the migration command, the `backend_migration` table
 will be used to record the migration history. You no longer need to specify it via the `migrationTable`
 command-line option.
+-->
+С приведённой выше конфигурацией, каждый раз при запуске команды миграции, таблица `backend_migration` будет использованна для записи истории миграций. И Вам больше не нужно указывать её через параметр `migrationTable` в командной строке.
 
-
-## Migrating Multiple Databases <span id="migrating-multiple-databases"></span>
-
+## Миграции Нескольких Баз Данных <span id="migrating-multiple-databases"></span>
+<!--Migrating Multiple Databases-->
 By default, migrations are applied to the same database specified by the `db` [application component](structure-application-components.md).
 If you want them to be applied to a different database, you may specify the `db` command-line option like shown below,
 
