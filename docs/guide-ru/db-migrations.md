@@ -591,16 +591,22 @@ command-line option.
 -->
 С приведённой выше конфигурацией, каждый раз при запуске команды миграции, таблица `backend_migration` будет использованна для записи истории миграций. И Вам больше не нужно указывать её через параметр `migrationTable` в командной строке.
 
-## Миграции Нескольких Баз Данных <span id="migrating-multiple-databases"></span>
+## Миграции в Несколько Баз Данных <span id="migrating-multiple-databases"></span>
 <!--Migrating Multiple Databases-->
+<!--
 By default, migrations are applied to the same database specified by the `db` [application component](structure-application-components.md).
 If you want them to be applied to a different database, you may specify the `db` command-line option like shown below,
+-->
+По умолчанию, миграции применяются для базы данных, указанной в `db` [компоненте приложения](structure-application-components.md).
+Если Вы хотите применить миграцию к другой базе данных, Вы можете определить параметр `db` в командной строке как показано ниже,
 
 ```
 yii migrate --db=db2
 ```
-
+<!--
 The above command will apply migrations to the `db2` database.
+-->
+Приведенная выше команда применит миграцию к базе данных `db2`.
 
 Sometimes it may happen that you want to apply *some* of the migrations to one database, while some others to another
 database. To achieve this goal, when implementing a migration class you should explicitly specify the DB component
