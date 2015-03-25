@@ -480,34 +480,44 @@ yii migrate/new all     # показать все новые миграции
 
 ## Изменение Истории Миграций <span id="modifying-migration-history"></span>
 <!-- Modifying Migration History -->
+<!--
 Instead of actually applying or reverting migrations, sometimes you may simply want to mark that your database
 has been upgraded to a particular migration. This often happens when you manually change the database to a particular
 state and you do not want the migration(s) for that change to be re-applied later. You can achieve this goal with
 the following command:
+-->
+Вместо применения или отката миграций, есть возможность просто отметить, что база данных была обновлена до определенной миграции. Это часто используется при ручном изменении базы данных в конкретное состояние и Вам не нужно применять миграции для того, чтобы это изменение было повторно применено позже. Этой цели можно добиться с помощью следующей команды:
 
 ```
-yii migrate/mark 150101_185401                      # using timestamp to specify the migration
-yii migrate/mark "2015-01-01 18:54:01"              # using a string that can be parsed by strtotime()
-yii migrate/mark m150101_185401_create_news_table   # using full name
-yii migrate/mark 1392853618                         # using UNIX timestamp
+yii migrate/mark 150101_185401                      # используя временную метку определённой миграции
+yii migrate/mark "2015-01-01 18:54:01"              # используя строку, которая может быть получена путем использования функции strtotime()
+yii migrate/mark m150101_185401_create_news_table   # используя полное имя
+yii migrate/mark 1392853618                         # используя временную метку UNIX
 ```
-
+<!--
 The command will modify the `migration` table by adding or deleting certain rows to indicate that the database
 has been applied migrations to the specified one. No migrations will be applied or reverted by this command.
+-->
+Эта команда изменит таблицу `migration` добавив или удалив определенные строки, тем самым указав, что к базе данных была применена указанная миграция. Никаких миграций не будет применяться или отменяться по этой команде.
 
 
-## Customizing Migrations <span id="customizing-migrations"></span>
+## Настройка Миграций <span id="customizing-migrations"></span>
+<!--Customizing Migrations-->
+<!--There are several ways to customize the migration command.-->
 
-There are several ways to customize the migration command.
+Есть несколько способов настроить команду миграции.
 
+### Используя Параметры Командной Строки<span id="using-command-line-options"></span>
+<!-- Using Command Line Options -->
+<!--The migration command comes with a few command-line options that can be used to customize its behaviors:-->
 
-### Using Command Line Options <span id="using-command-line-options"></span>
-
-The migration command comes with a few command-line options that can be used to customize its behaviors:
-
+В команду миграций входит несколько параметров командной строки, которые могут использоваться, для того чтобы настроить поведение миграции:
+<!--
 * `interactive`: boolean (defaults to true), specifies whether to perform migrations in an interactive mode. 
   When this is true, the user will be prompted before the command performs certain actions.
   You may want to set this to false if the command is being used in a background process.
+-->
+* `interactive`: логический тип - boolean (по умолчанию true). Указывает, следует ли выполнять миграцию в интерактивном режиме. Если это значение является - true, то пользователю будет выдан запрос, перед выполнением командой определенных действий. Вы можете установить это значение в false если команда используется в фоновом режиме.
 
 * `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration 
   class files. This can be specified as either a directory path or a path [alias](concept-aliases.md). 
