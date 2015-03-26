@@ -284,7 +284,7 @@ class User extends Component
             return;
         }
 
-        $data = json_decode($value, true);
+        $data = is_string($value)?json_decode($value, true):$value;
         if (count($data) !== 3 || !isset($data[0], $data[1], $data[2])) {
             return;
         }
