@@ -641,12 +641,18 @@ with the above `init()` code. Then each migration class can extend from this bas
 -->
 Если у вас есть несколько миграций, которые используют ту же другую базу данных, то рекомендуется создать базовый класс миграций выше кода `init()`. Затем каждый класс миграции может расширяться от этого базового класса.
 
+<!--
 > Tip: Besides setting the [[yii\db\Migration::db|db]] property, you can also operate on different databases
   by creating new database connections to them in your migration classes. You then use the [DAO methods](db-dao.md)
   with these connections to manipulate different databases.
+-->
+> Совет: Кроме установки свойства [[yii\db\Migration::db|db]], Вы также можете работать с разными базами данных путем создания нового соединения с конкретной базой данных в классе Вашей миграции. Можно использовать [DAO методы](db-dao.md) с этими соединениями для манипулирования различными базами данных.
 
+<!--
 Another strategy that you can take to migrate multiple databases is to keep migrations for different databases in
 different migration paths. Then you can migrate these databases in separate commands like the following:
+-->
+Другая стратегия, которую Вы можете выбрать, чтобы перенести (мигрировать) несколько баз данных - это сохранить миграции различных баз данных в разные директории. Затем вы можете перенести эти базы данных в нужные базы следующими командами:
 
 ```
 yii migrate --migrationPath=@app/migrations/db1 --db=db1
@@ -654,5 +660,8 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 ...
 ```
 
+<!--
 The first command will apply migrations in `@app/migrations/db1` to the `db1` database, the second command
 will apply migrations in `@app/migrations/db2` to `db2`, and so on.
+-->
+Первая команда применит миграции в директории `@app/migrations/db1` к базе данных `db1`, а вторая команда применит миграции в директории `@app/migrations/db2` к база данных `db2` и так далее.
