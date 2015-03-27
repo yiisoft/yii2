@@ -1695,16 +1695,27 @@ class BaseHtml
     }
 
     /**
-     * Adds a CSS class to the specified options.
-     * If the CSS class is already in the options, it will not be added again.
+     * Adds a CSS class (or a set of space / tab separated classes) to the specified options.
+     * If the CSS class already exists in the options, it will not be added again.
      * @param array $options the options to be modified.
-     * @param string $class the CSS class to be added
+     * @param string $class the CSS class(es) to be added. You can add multiple
+     * classes separated with a whitespace (space / tab).
+     * @author Kartik Visweswaran <kartikv2@gmail.com>
      */
     public static function addCssClass(&$options, $class)
     {
+        if (preg_match('/\s/', $class)) {
+            $class = trim(preg_replace('/\s+/', ' ', $class));
+            $classes = explode(' ', $class);
+            foreach ($classes as $c) {
+                static::addCssClass($options, $c);
+            }
+            return;
+        }
         if (isset($options['class'])) {
+            $options['class'] = trim(preg_replace('/\s+/', ' ', $options['class']));
             $classes = ' ' . $options['class'] . ' ';
-            if (strpos($classes, ' ' . $class . ' ') === false) {
+            if (strpos( $classes, ' ' . $class . ' ') === false) {
                 $options['class'] .= ' ' . $class;
             }
         } else {
