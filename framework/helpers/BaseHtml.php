@@ -1715,7 +1715,7 @@ class BaseHtml
         if (isset($options['class'])) {
             $options['class'] = trim(preg_replace('/\s+/', ' ', $options['class']));
             $classes = ' ' . $options['class'] . ' ';
-            if (strpos( $classes, ' ' . $class . ' ') === false) {
+            if (strpos($classes, ' ' . $class . ' ') === false) {
                 $options['class'] .= ' ' . $class;
             }
         } else {
