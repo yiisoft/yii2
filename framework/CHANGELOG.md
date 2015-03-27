@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.4 under development
 -----------------------
 
+- Bug #6642: Fixed confirm dialog on submit button, it was fired twice (pana1990)
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 - Bug #7603: Fixed escape characters in `FormatConverter` to work with unicode characters (maddoger, cebe)
 - Bug #7775: Added more strict check on controller IDs when they are being used to create controller instances on Windows (Bhoft, qiangxue)
