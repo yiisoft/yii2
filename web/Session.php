@@ -208,7 +208,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             if (!empty($_COOKIE[$name]) && ini_get('session.use_cookies')) {
                 $this->_hasSessionId = true;
             } elseif (!ini_get('session.use_only_cookies') && ini_get('session.use_trans_sid')) {
-                $this->_hasSessionId = $request->get($name) !== null;
+                $this->_hasSessionId = $request->get($name) != '';
             } else {
                 $this->_hasSessionId = false;
             }
