@@ -645,7 +645,7 @@ To use optimistic locking,
 4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
-For example, assume the version column is named as `version`. you can implement optimistic locking with the code like
+For example, assume the version column is named as `version`. You can implement optimistic locking with the code like
 the following.
 
 ```php
