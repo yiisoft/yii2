@@ -1713,7 +1713,7 @@ class BaseHtml
             }
             return;
         }
-        elseif (preg_match('/\s/', $class)) {
+        if (preg_match('/\s/', $class)) {
             if ($clean) {
                 $class = trim(preg_replace('/\s+/', ' ', $class));
             }
