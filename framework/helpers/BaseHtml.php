@@ -1698,22 +1698,35 @@ class BaseHtml
      * Adds a CSS class (or a set of space / tab separated classes) to the specified options.
      * If the CSS class already exists in the options, it will not be added again.
      * @param array $options the options to be modified.
-     * @param string $class the CSS class(es) to be added. You can add multiple
-     * classes separated with a whitespace (space / tab).
+     * @param string|array $class the CSS class(es) to be added. You can add multiple
+     * classes either as an array OR separated with a whitespace (space / tab).
+     * @param bool whether to clean and sanitize whitespaces in the input. If set to true,
+     * the method will replace all whitespaces (tab, space, newlines) to single space and trim
+     * whitespaces from beginning and end of the generated options['class'].
      * @author Kartik Visweswaran <kartikv2@gmail.com>
      */
-    public static function addCssClass(&$options, $class)
+    public static function addCssClass(&$options, $class, $clean = false)
     {
-        if (preg_match('/\s/', $class)) {
-            $class = trim(preg_replace('/\s+/', ' ', $class));
+        if (is_array($class)) {
+            foreach ($class as $c) {
+                static::addCssClass($options, $c, $clean);
+            }
+            return;
+        }
+        elseif (preg_match('/\s/', $class)) {
+            if ($clean) {
+                $class = trim(preg_replace('/\s+/', ' ', $class));
+            }
             $classes = explode(' ', $class);
             foreach ($classes as $c) {
-                static::addCssClass($options, $c);
+                static::addCssClass($options, $c, $clean);
             }
             return;
         }
         if (isset($options['class'])) {
-            $options['class'] = trim(preg_replace('/\s+/', ' ', $options['class']));
+            if ($clean) {
+                $options['class'] = trim(preg_replace('/\s+/', ' ', $options['class']));
+            }
             $classes = ' ' . $options['class'] . ' ';
             if (strpos($classes, ' ' . $class . ' ') === false) {
                 $options['class'] .= ' ' . $class;
