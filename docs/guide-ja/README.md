@@ -78,9 +78,9 @@ All Rights Reserved.
 * [クエリビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
 * [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
 * [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョンコントロールを適用
-* **未定** [Sphinx](db-sphinx.md)
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ja/README.md)
 * **未定** [Redis](db-redis.md)
-* **未定** [MongoDB](db-mongodb.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ja/README.md)
 * **未定** [ElasticSearch](db-elasticsearch.md)
 
 
@@ -112,7 +112,7 @@ All Rights Reserved.
 * [認証](security-authentication.md)
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
-* [認証クライアント](security-auth-clients.md)
+* [認証クライアント](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ja/README.md)
 * [ベストプラクティス](security-best-practices.md)
 
 
@@ -185,7 +185,7 @@ RESTful ウェブサービス
 * Menu: **未定** デモページへリンク
 * LinkPager: **未定** デモページへリンク
 * LinkSorter: **未定** デモページへリンク
-* [Bootstrap ウィジェット](widget-bootstrap.md)
+* [Bootstrap ウィジェット](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ja/README.md)
 * [jQuery UI ウィジェット](widget-jui.md)
 
 

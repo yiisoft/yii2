@@ -3,7 +3,7 @@
 
 > Note|注意: この節はまだ執筆中です。
 
-[ベーシック](https://github.com/yiisoft/yii2/tree/master/apps/basic) と [アドバンスト](https://github.com/yiisoft/yii2/tree/master/apps/advanced) のアプリケーションテンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
+[ベーシック](https://github.com/yiisoft/yii2-app-basic) と [アドバンスト](https://github.com/yiisoft/yii2-app-advanced) のアプリケーションテンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
 
 Yii におけるアプリケーションテンプレートは、`composer.json` ファイルを含み、Composer パッケージとして登録されたレポジトリであるに過ぎません。
 どのようなレポジトリでも、Composer パッケージとして特定し、`create-project` Composer コマンドによってインストール可能なものにすることが出来ます。

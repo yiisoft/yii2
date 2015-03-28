@@ -84,7 +84,7 @@ $query->select(['user_id' => 'user.id', 'email']);
 例えば、
 
 ```php
-$query->select(["CONCAT(first_name, ' ', last_name]) AS full_name", 'email']);
+$query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
 バージョン 2.0.1 以降では、サブクエリもセレクトすることが出来ます。
