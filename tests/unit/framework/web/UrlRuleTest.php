@@ -693,6 +693,18 @@ class UrlRuleTest extends TestCase
                     ['post/1/a', false],
                 ],
             ],
+            [
+                'host info + defaults', // https://github.com/yiisoft/yii2/issues/6871
+                [
+                    'pattern' => 'http://en.example.com/<page>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                ],
+                [
+                    ['', 'post/index', ['page' => 1]],
+                    ['2', 'post/index', ['page' => 2]],
+                ],
+            ],
         ];
     }
 }
