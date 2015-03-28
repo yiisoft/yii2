@@ -200,14 +200,14 @@ $customer = Customer::findAll([
   例えば `Customer::find()->limit(1)->one()` のように。
 
 クエリ構築メソッドを使う以外に、生の SQL を書いてデータをクエリして結果をアクティブレコードオブジェクトに投入することも出来ます。
-そうするためには [[yii\db\ActiveRecord::queryBySql()]] メソッドを呼ぶことが出来ます。
+そうするためには [[yii\db\ActiveRecord::findBySql()]] メソッドを呼ぶことが出来ます。
 
 ```php
 // アクティブでない全ての顧客を返す
 $sql = 'SELECT * FROM customer WHERE status=:status';
 $customers = Customer::findBySql($sql, [':status' => Customer::STATUS_INACTIVE])->all();
 ```
-[[yii\db\ActiveRecord::queryBySql()|queryBySql()]] を呼んだ後は、追加でクエリ構築メソッドを呼び出してはいけません。呼んでも無視されます。
+[[yii\db\ActiveRecord::findBySql()|findBySql()]] を呼んだ後は、追加でクエリ構築メソッドを呼び出してはいけません。呼んでも無視されます。
 
 
 ## データにアクセスする <span id="accessing-data"></span>
