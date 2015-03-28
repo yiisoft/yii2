@@ -79,9 +79,9 @@ All Rights Reserved.
 * [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
 * [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョンコントロールを適用
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ja/README.md)
-* **未定** [Redis](db-redis.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ja/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ja/README.md)
-* **未定** [ElasticSearch](db-elasticsearch.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-ja/README.md)
 
 
 ユーザからのデータ取得
@@ -143,8 +143,8 @@ RESTful ウェブサービス
 開発ツール
 ----------
 
-* [デバッグツールバーとデバッガ](tool-debugger.md)
-* [Gii を使ってコードを生成する](tool-gii.md)
+* [デバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
+* [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
 * **未定** [API ドキュメントを生成する](tool-api-doc.md)
 
 
@@ -162,7 +162,7 @@ RESTful ウェブサービス
 スペシャルトピック
 ------------------
 
-* [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
+* [アドバンストアプリケーションテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * [コンソールコマンド](tutorial-console.md)
 * [コアバリデータ](tutorial-core-validators.md)
@@ -186,7 +186,7 @@ RESTful ウェブサービス
 * LinkPager: **未定** デモページへリンク
 * LinkSorter: **未定** デモページへリンク
 * [Bootstrap ウィジェット](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ja/README.md)
-* [jQuery UI ウィジェット](widget-jui.md)
+* [jQuery UI ウィジェット](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ja/README.md)
 
 
 ヘルパ
