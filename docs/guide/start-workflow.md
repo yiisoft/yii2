@@ -31,7 +31,7 @@ This is a useful [debugger tool](tool-debugger.md) provided by Yii to record and
 
 Additionally to the web application, there is a console script called `yii`, which is located in the applications base directory.
 This script can be used to run background and maintainance tasks for the application, which are described
-in the [Console Application Section](tutoral-console.md).
+in the [Console Application Section](tutorial-console.md).
 
 
 Application Structure <span id="application-structure"></span>
