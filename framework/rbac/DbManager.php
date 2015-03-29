@@ -27,8 +27,8 @@ use yii\di\Instance;
  *
  * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
  *
- * You may change the names of the three tables used to store the authorization data by setting [[itemTable]],
- * [[itemChildTable]] and [[assignmentTable]].
+ * You may change the names of the tables used to store the authorization and rule data by setting [[itemTable]],
+ * [[itemChildTable]], [[assignmentTable]] and [[ruleTable]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
