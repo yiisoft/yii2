@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Enh #7636: `yii\web\Session::getHasSessionId()` uses a more lenient way to check if session ID is provided in URL (robsch)
 - Enh #7850: Added `yii\filters\PageCache::cacheCookies` and `cacheHeaders` to allow selectively caching cookies and HTTP headers (qiangxue)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
+- Enh #7896: Intelligent and more correct Html::addCssClass to allow more correct parsing of whitespaces (kartikv)
 - Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
 
 
