@@ -293,20 +293,20 @@ SQL;
     protected function findTableNames($schema = '')
     {
         if ($schema === '') {
-            $sql = <<<EOD
+            $sql = <<<SQL
 SELECT table_name as table_schema FROM user_tables
 UNION ALL
 SELECT view_name AS table_name as table_schema FROM user_views
 UNION ALL
 SELECT mview_name AS table_name as table_schema FROM user_mviews
-EOD;
+SQL;
             $command = $this->db->createCommand($sql);
         } else {
-            $sql = <<<EOD
+            $sql = <<<SQL
 SELECT object_name AS table_name
 FROM all_objects
 WHERE object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW') AND owner=:schema
-EOD;
+SQL;
             $command = $this->db->createCommand($sql, [':schema' => $schema]);
         }
 
