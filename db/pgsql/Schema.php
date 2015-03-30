@@ -180,7 +180,7 @@ class Schema extends \yii\db\Schema
 SELECT c.relname AS table_name
 FROM pg_class c
 INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
-WHERE ns.nspname = :schema AND c.relkind IN ('r','v','m','f')
+WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
 ORDER BY c.relname
 SQL;
         $command = $this->db->createCommand($sql, [':schemaName' => $schema]);
