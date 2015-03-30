@@ -8,7 +8,12 @@ Yii Framework 2 Change Log
 - Bug #6871: Fixed the bug that using defaults and hostnames in URL rules may cause an out-of-range index issue (qiangxue)
 - Bug #7529: Fixed `yii\web\Response::sendContentAsFile()` that was broken in 2.0.3 (samdark)
 - Bug #7603: Fixed escape characters in `FormatConverter` to work with unicode characters (maddoger, cebe)
+- Bug #7757: Fix fetching tables schema for oci and mysql when PDO::ATTR_CASE is set (nineinchnick)
 - Bug #7775: Added more strict check on controller IDs when they are being used to create controller instances on Windows (Bhoft, qiangxue)
+- Bug: Fixed fetching columns definition and composite foreign keys for oci (nineinchnick)
+- Bug: Removed column's autoIncrement detection from oci (nineinchnick)
+- Bug: Fixed creating raw sql (for logging) by skipping object and resource params (nineinchnick)
+- Bug: Fixed Schema::getLastInsertID() by quoting sequence name (nineinchnick)
 - Enh #6895: Added `ignoreCategories` config option for message command to ignore categories specified (samdark)
 - Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
@@ -18,6 +23,8 @@ Yii Framework 2 Change Log
 - Enh #7636: `yii\web\Session::getHasSessionId()` uses a more lenient way to check if session ID is provided in URL (robsch)
 - Enh #7850: Added `yii\filters\PageCache::cacheCookies` and `cacheHeaders` to allow selectively caching cookies and HTTP headers (qiangxue)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
+- Enh: Implement batchInsert for oci (nineinchnick)
+- Enh: Detecting IntegrityException for oci (nineinchnick)
 - Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
 
 
