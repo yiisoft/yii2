@@ -391,7 +391,7 @@ SQL;
         $sql = <<<SQL
 SELECT [t].[table_name]
 FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
-WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'BASE TABLE'
+WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
 SQL;
 
         return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();

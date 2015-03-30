@@ -126,7 +126,7 @@ inner join ALL_OBJECTS B ON b.owner = a.owner and ltrim(B.OBJECT_NAME) = ltrim(A
 LEFT JOIN all_col_comments com ON (A.owner = com.owner AND A.table_name = com.table_name AND A.column_name = com.column_name)
 WHERE
     a.owner = :schemaName
-    and (b.object_type IN ('TABLE', 'VIEW'))
+    and b.object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
     and b.object_name = :tableName
 ORDER by a.column_id
 SQL;
@@ -294,14 +294,18 @@ SQL;
     {
         if ($schema === '') {
             $sql = <<<SQL
-SELECT table_name FROM user_tables
+SELECT table_name as table_schema FROM user_tables
+UNION ALL
+SELECT view_name AS table_name as table_schema FROM user_views
+UNION ALL
+SELECT mview_name AS table_name as table_schema FROM user_mviews
 SQL;
             $command = $this->db->createCommand($sql);
         } else {
             $sql = <<<SQL
-SELECT object_name as table_name
+SELECT object_name AS table_name
 FROM all_objects
-WHERE object_type = 'TABLE' AND owner=:schema
+WHERE object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW') AND owner=:schema
 SQL;
             $command = $this->db->createCommand($sql, [':schema' => $schema]);
         }
