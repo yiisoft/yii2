@@ -253,22 +253,23 @@ SQL;
     protected function findConstraints($table)
     {
         $sql = <<<SQL
-SELECT D.constraint_type as CONSTRAINT_TYPE, C.COLUMN_NAME, C.position, D.r_constraint_name,
-        E.table_name as table_ref, f.column_name as column_ref,
-        C.table_name
+SELECT D.CONSTRAINT_NAME, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
+        E.TABLE_NAME AS TABLE_REF, F.COLUMN_NAME AS COLUMN_REF,
+        C.TABLE_NAME
 FROM ALL_CONS_COLUMNS C
-INNER JOIN ALL_constraints D on D.OWNER = C.OWNER and D.constraint_name = C.constraint_name
-LEFT JOIN ALL_constraints E on E.OWNER = D.r_OWNER and E.constraint_name = D.r_constraint_name
-LEFT JOIN ALL_cons_columns F on F.OWNER = E.OWNER and F.constraint_name = E.constraint_name and F.position = c.position
+INNER JOIN ALL_CONSTRAINTS D ON D.OWNER = C.OWNER AND D.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+LEFT JOIN ALL_CONSTRAINTS E ON E.OWNER = D.R_OWNER AND E.CONSTRAINT_NAME = D.R_CONSTRAINT_NAME
+LEFT JOIN ALL_CONS_COLUMNS F ON F.OWNER = E.OWNER AND F.CONSTRAINT_NAME = E.CONSTRAINT_NAME AND F.POSITION = C.POSITION
 WHERE C.OWNER = :schemaName
-   AND C.table_name = :tableName
-   AND D.constraint_type = 'R'
-ORDER BY d.constraint_name, c.position
+   AND C.TABLE_NAME = :tableName
+   AND D.CONSTRAINT_TYPE = 'R'
+ORDER BY D.CONSTRAINT_NAME, C.POSITION
 SQL;
         $command = $this->db->createCommand($sql, [
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
         ]);
+        $constraints = [];
         foreach ($command->queryAll() as $row) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
