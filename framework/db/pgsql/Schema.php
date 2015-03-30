@@ -243,7 +243,7 @@ SQL;
     /**
      * Gets information about given table unique indexes.
      * @param TableSchema $table the table metadata
-     * @return array with index names, columns and if it is an expression tree
+     * @return array with index and column names
      */
     protected function getUniqueIndexInformation($table)
     {
@@ -253,21 +253,15 @@ SQL;
         $sql = <<<SQL
 SELECT
     i.relname as indexname,
-    ARRAY(
-        SELECT pg_get_indexdef(idx.indexrelid, k + 1, True)
-        FROM generate_subscripts(idx.indkey, 1) AS k
-        ORDER BY k
-    ) AS indexcolumns,
-    idx.indexprs IS NOT NULL AS indexprs
+    pg_get_indexdef(idx.indexrelid, k + 1, TRUE) AS columnname
 FROM pg_index idx
+INNER JOIN generate_subscripts(idx.indkey, 1) AS k ON 1=1
 INNER JOIN pg_class i ON i.oid = idx.indexrelid
 INNER JOIN pg_class c ON c.oid = idx.indrelid
 INNER JOIN pg_namespace ns ON c.relnamespace = ns.oid
-WHERE idx.indisprimary != True
-AND idx.indisunique = True
-AND c.relname = {$tableName}
-AND ns.nspname = {$tableSchema}
-;
+WHERE idx.indisprimary = FALSE AND idx.indisunique = TRUE
+AND c.relname = {$tableName} AND ns.nspname = {$tableSchema}
+ORDER BY i.relname, k
 SQL;
 
         return $this->db->createCommand($sql)->queryAll();
@@ -289,21 +283,11 @@ SQL;
      */
     public function findUniqueIndexes($table)
     {
-        $indexes = $this->getUniqueIndexInformation($table);
         $uniqueIndexes = [];
 
-        foreach ($indexes as $index) {
-            $indexName = $index['indexname'];
-
-            if ($index['indexprs']) {
-                // Index is an expression like "lower(colname::text)"
-                $indexColumns = preg_replace("/.*\(([^\:]+).*/mi", "$1", $index['indexcolumns']);
-            } else {
-                $indexColumns = array_map('trim', explode(',', str_replace(['{', '}', '"', '\\'], '', $index['indexcolumns'])));
-            }
-
-            $uniqueIndexes[$indexName] = $indexColumns;
-
+        $rows = $this->getUniqueIndexInformation($table);
+        foreach ($rows as $row) {
+            $uniqueIndexes[$row['indexname']][] = $row['columnname'];
         }
 
         return $uniqueIndexes;
