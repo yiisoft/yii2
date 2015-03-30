@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #7603: Fixed escape characters in `FormatConverter` to work with unicode characters (maddoger, cebe)
 - Bug #7757: Fix fetching tables schema for oci and mysql when PDO::ATTR_CASE is set (nineinchnick)
 - Bug #7775: Added more strict check on controller IDs when they are being used to create controller instances on Windows (Bhoft, qiangxue)
+- Bug #7831: Add order when fetching database table names and constraints (nineinchnick)
 - Bug #7867: Fixed findUniqueIndexes not to perform any processing on unique index on function for pgsql (nineinchnick)
 - Bug #7868: Fixed fetching columns definition and composite foreign keys for oci (nineinchnick)
 - Bug #7868: Removed column's autoIncrement detection from oci (nineinchnick)
