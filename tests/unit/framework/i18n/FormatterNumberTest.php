@@ -250,6 +250,35 @@ class FormatterNumberTest extends TestCase
         $this->formatter->currencyCode = 'EUR';
         $this->assertSame('123,00 €', $this->formatter->asCurrency('123'));
 
+        $this->formatter->locale = 'de-DE';
+        $this->formatter->currencyCode = null;
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->formatter->currencyCode = 'USD';
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->formatter->currencyCode = 'EUR';
+        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+
+        // default russian currency symbol
+        $this->formatter->locale = 'ru-RU';
+        $this->formatter->currencyCode = null;
+        $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
+        $this->formatter->currencyCode = 'RUR';
+        $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
+
+        // custom currency symbol
+        $this->formatter->currencyCode = null;
+        $this->formatter->numberFormatterSymbols = [
+            NumberFormatter::CURRENCY_SYMBOL => '₽',
+        ];
+        $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123'));
+        $this->formatter->currencyCode = 'RUR';
+        $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123'));
+        $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123', 'EUR'));
+
         // empty input
         $this->assertSame("0", $this->formatter->asInteger(false));
         $this->assertSame("0", $this->formatter->asInteger(""));
