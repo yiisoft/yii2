@@ -654,7 +654,7 @@ the following.
 use yii\helpers\Html;
 
 // ...other input fields
-echo Html::activeHiddenField($model, 'version');
+echo Html::activeHiddenInput($model, 'version');
 
 
 // ------ controller code -------
