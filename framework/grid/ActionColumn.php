@@ -110,28 +110,31 @@ class ActionColumn extends Column
     {
         if (!isset($this->buttons['view'])) {
             $this->buttons['view'] = function ($url, $model, $key) {
-                return Html::a('<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>', $url, array_merge([
+                $options = array_merge([
                     'title' => Yii::t('yii', 'View'),
                     'data-pjax' => '0',
-                ], $this->buttonOptions));
+                ], $this->buttonOptions);
+                return Html::a('<span class="glyphicon glyphicon-eye-open" aria-label="' . $options['title'] . '"></span>', $url, $options);
             };
         }
         if (!isset($this->buttons['update'])) {
             $this->buttons['update'] = function ($url, $model, $key) {
-                return Html::a('<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>', $url, array_merge([
+                $options = array_merge([
                     'title' => Yii::t('yii', 'Update'),
                     'data-pjax' => '0',
-                ], $this->buttonOptions));
+                ], $this->buttonOptions);
+                return Html::a('<span class="glyphicon glyphicon-pencil" aria-label="' . $options['title'] . '"></span>', $url, $options);
             };
         }
         if (!isset($this->buttons['delete'])) {
             $this->buttons['delete'] = function ($url, $model, $key) {
-                return Html::a('<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>', $url, array_merge([
+                $options = array_merge([
                     'title' => Yii::t('yii', 'Delete'),
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                     'data-method' => 'post',
                     'data-pjax' => '0',
-                ], $this->buttonOptions));
+                ], $this->buttonOptions);
+                return Html::a('<span class="glyphicon glyphicon-trash" aria-label="' . $options['title'] . '"></span>', $url, $options);
             };
         }
     }
