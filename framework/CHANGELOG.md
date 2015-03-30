@@ -24,10 +24,11 @@ Yii Framework 2 Change Log
 - Enh #7636: `yii\web\Session::getHasSessionId()` uses a more lenient way to check if session ID is provided in URL (robsch)
 - Enh #7833: Support (materialized) views and foreign tables along normal tables when fetching table schema (nineinchnick)
 - Enh #7850: Added `yii\filters\PageCache::cacheCookies` and `cacheHeaders` to allow selectively caching cookies and HTTP headers (qiangxue)
+- Enh #7867: Implemented findUniqueIndexes for oci and mssql (nineinchnick)
+- Enh #7912: Added `aria-label` to ActionColumn buttons (LAV45, samdark)
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting IntegrityException for oci (nineinchnick)
-- Enh #7867: Implemented findUniqueIndexes for oci and mssql (nineinchnick)
 - Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
 
 
