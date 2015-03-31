@@ -122,7 +122,7 @@ class m150101_185401_create_news_table extends \yii\db\Migration
 MySQL の場合は、`TYPE_PK` は `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY` に変換され、`TYPE_STRING` は `varchar(255)` となります。
 
 抽象型を使用するときに、付随的な制約を追加することが出来ます。
-上記の例では、`Schema::TYPE_STRING` に ` NOT NULL` を追加して、このカラムが null を許容しないことを指定することが出来ます。
+上記の例では、`Schema::TYPE_STRING` に ` NOT NULL` を追加して、このカラムが null を許容しないことを指定しています。
 
 > Info|情報: 抽象型と物理型の対応関係は、それぞれの `QueryBuilder` の具象クラスの [[yii\db\QueryBuilder::$typeMap|$typeMap]] プロパティによって定義されています。
 
