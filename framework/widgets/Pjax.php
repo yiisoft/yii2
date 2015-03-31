@@ -55,11 +55,19 @@ class Pjax extends Widget
      */
     public $linkSelector;
     /**
+     * @var boolean whether to enable auto generated link selector.
+     */
+    public $enableLinkSelector = true;
+    /**
      * @var string the jQuery selector of the forms whose submissions should trigger pjax requests.
      * If not set, all forms with `data-pjax` attribute within the enclosed content of Pjax will trigger pjax requests.
      * Note that if the response to the pjax request is a full page, a normal request will be sent again.
      */
     public $formSelector;
+    /**
+     * @var boolean whether to enable auto generated form selector.
+     */
+    public $enableFormSelector = true;
     /**
      * @var boolean whether to enable push state.
      */
@@ -167,12 +175,20 @@ class Pjax extends Widget
         $this->clientOptions['timeout'] = $this->timeout;
         $this->clientOptions['scrollTo'] = $this->scrollTo;
         $options = Json::encode($this->clientOptions);
-        $linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
-        $formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
+        $js = '';
+        if ($this->enableLinkSelector) {
+            $linkSelector = Json::encode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
+            $js .= "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
+        }
+        if ($this->enableFormSelector) {
+            $formSelector = Json::encode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
+            $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
+        }
         $view = $this->getView();
         PjaxAsset::register($view);
-        $js = "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
-        $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
-        $view->registerJs($js);
+
+        if ($js) {
+            $view->registerJs($js);
+        }
     }
 }
