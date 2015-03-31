@@ -438,6 +438,7 @@ class AssetManager extends Component
                     echo 'Manual create linkAssets in windows command prompt<br />mklink /J '.$dstFile.' '.$src;
                     exit;
                 }
+                symlink($src, $dstFile);
             }
         } elseif (@filemtime($dstFile) < @filemtime($src)) {
             copy($src, $dstFile);
@@ -477,6 +478,7 @@ class AssetManager extends Component
                     echo 'Manual create linkAssets in windows command prompt<br />mklink /J '.$dstDir.' '.$src; //msajko
                     exit;
                 }
+                symlink($src, $dstDir);
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
             $opts = [
