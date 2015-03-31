@@ -1261,7 +1261,7 @@ class Request extends \yii\base\Request
             }
             // the mask doesn't need to be very random
             $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, self::CSRF_MASK_LENGTH);
+            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, static::CSRF_MASK_LENGTH);
             // The + sign may be decoded as blank space later, which will fail the validation
             $this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
         }
@@ -1324,7 +1324,7 @@ class Request extends \yii\base\Request
      */
     public function getCsrfTokenFromHeader()
     {
-        $key = 'HTTP_' . str_replace('-', '_', strtoupper(self::CSRF_HEADER));
+        $key = 'HTTP_' . str_replace('-', '_', strtoupper(static::CSRF_HEADER));
         return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
     }
 
@@ -1345,7 +1345,7 @@ class Request extends \yii\base\Request
 
     /**
      * Performs the CSRF validation.
-     * The method will compare the CSRF token obtained from a cookie and from a POST field.
+     * The method will compare the CSRF token obtained from a cookie and from a POST field or HTTP header.
      * If they are different, a CSRF attack is detected and a 400 HTTP exception will be raised.
      * This method is called in [[Controller::beforeAction()]].
      * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
@@ -1375,11 +1375,11 @@ class Request extends \yii\base\Request
     {
         $token = base64_decode(str_replace('.', '+', $token));
         $n = StringHelper::byteLength($token);
-        if ($n <= self::CSRF_MASK_LENGTH) {
+        if ($n <= static::CSRF_MASK_LENGTH) {
             return false;
         }
-        $mask = StringHelper::byteSubstr($token, 0, self::CSRF_MASK_LENGTH);
-        $token = StringHelper::byteSubstr($token, self::CSRF_MASK_LENGTH, $n - self::CSRF_MASK_LENGTH);
+        $mask = StringHelper::byteSubstr($token, 0, static::CSRF_MASK_LENGTH);
+        $token = StringHelper::byteSubstr($token, static::CSRF_MASK_LENGTH, $n - static::CSRF_MASK_LENGTH);
         $token = $this->xorTokens($mask, $token);
 
         return $token === $trueToken;
