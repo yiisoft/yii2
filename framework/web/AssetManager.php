@@ -433,7 +433,11 @@ class AssetManager extends Component
 
         if ($this->linkAssets) {
             if (!is_file($dstFile)) {
-                symlink($src, $dstFile);
+                $symlink= @ symlink($src, $dstFile);
+                if(!$symlink && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+                    echo 'Manual create linkAssets in windows command prompt<br />mklink /J '.$dstFile.' '.$src;
+                    exit;
+                }
             }
         } elseif (@filemtime($dstFile) < @filemtime($src)) {
             copy($src, $dstFile);
@@ -468,7 +472,11 @@ class AssetManager extends Component
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
-                symlink($src, $dstDir);
+                $symlink= @ symlink($src, $dstDir);
+                if(!$symlink && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
+                    echo 'Manual create linkAssets in windows command prompt<br />mklink /J '.$dstDir.' '.$src; //msajko
+                    exit;
+                }
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
             $opts = [
