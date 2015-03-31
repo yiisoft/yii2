@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #7868: Removed column's autoIncrement detection from oci (nineinchnick)
 - Bug #7868: Fixed creating raw sql (for logging) by skipping object and resource params (nineinchnick)
 - Bug #7868: Fixed Schema::getLastInsertID() by quoting sequence name (nineinchnick)
+- Enh #6442: Improved error message on `FileHelper::createDirectory()` to include the path name of the directory (cebe)
 - Enh #6895: Added `ignoreCategories` config option for message command to ignore categories specified (samdark)
 - Enh #6975: Pressing arrows while focused in inputs of Active Form with `validateOnType` enabled no longer triggers validation (slinstj)
 - Enh #7488: Added `StringHelper::explode` to perform explode with trimming and skipping of empty elements (SilverFire, nineinchnick, creocoder, samdark)
