@@ -28,7 +28,7 @@ sudo: false
 # cache vendor dirs
 cache:
   directories:
-    - cubrid/9.3.0
+#    - cubrid/9.3.0
     - vendor
     - $HOME/.composer/cache
 
@@ -44,7 +44,7 @@ install:
   - travis_retry composer install --prefer-dist --no-interaction
   - tests/unit/data/travis/apc-setup.sh
   - tests/unit/data/travis/memcache-setup.sh
-  - tests/unit/data/travis/cubrid-setup.sh
+#  - tests/unit/data/travis/cubrid-setup.sh
 
 before_script:
   # show some versions and env information
@@ -63,7 +63,7 @@ before_script:
 
 
 script:
-  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
 
 after_script:
   - |
