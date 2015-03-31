@@ -10,6 +10,9 @@ how the code is organized, and how the application handles requests in general.
   as the document root of your Web server, and configured the URL for accessing
   your application to be `http://hostname/index.php` or something similar.
   For your needs, please adjust the URLs in our descriptions accordingly.
+  
+Note that unlike framework itself, after application template is installed it's all yours. You're free to add or delete
+code and overall modify it as you need.
 
 
 Functionality <span id="functionality"></span>
