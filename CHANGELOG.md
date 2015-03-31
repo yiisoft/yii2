@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Enh: Added `yii\helper\Console::wrapText()` method to wrap indented text by console window width and used it in `yii help` command (cebe)
 - Enh: Implement batchInsert for oci (nineinchnick)
 - Enh: Detecting IntegrityException for oci (nineinchnick)
+- Chg #7924: Migrations in history are now ordered by time applied allowing to roll back in reverse order no matter how these were applied (samdark)
 - Chg: Updated dependency to `cebe/markdown` to version `1.1.x` (cebe)
 
 
