@@ -434,11 +434,11 @@ class AssetManager extends Component
         if ($this->linkAssets) {
             if (!is_file($dstFile)) {
                 $symlink= @ symlink($src, $dstFile);
-                if(!$symlink && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
-                    echo 'Manual create linkAssets in windows command prompt<br />mklink /J '.$dstFile.' '.$src;
-                    exit;
+                if (!$symlink && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    exec('mklink /J '.$dstFile.' '.$src);
+                } else {
+                    symlink($src, $dstFile);
                 }
-                symlink($src, $dstFile);
             }
         } elseif (@filemtime($dstFile) < @filemtime($src)) {
             copy($src, $dstFile);
@@ -474,11 +474,11 @@ class AssetManager extends Component
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
                 $symlink= @ symlink($src, $dstDir);
-                if(!$symlink && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
-                    echo 'Manual create linkAssets in windows command prompt<br />mklink /J '.$dstDir.' '.$src; //msajko
-                    exit;
+                if (!$symlink && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    exec('mklink /J '.$dstDir.' '.$src);
+                } else {
+                    symlink($src, $dstDir);
                 }
-                symlink($src, $dstDir);
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
             $opts = [
