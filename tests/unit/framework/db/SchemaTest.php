@@ -24,6 +24,8 @@ class SchemaTest extends DatabaseTestCase
         $this->assertTrue(in_array('order', $tables));
         $this->assertTrue(in_array('order_item', $tables));
         $this->assertTrue(in_array('type', $tables));
+        $this->assertTrue(in_array('animal', $tables));
+        $this->assertTrue(in_array('animal_view', $tables));
     }
 
     public function testGetTableSchemas()
