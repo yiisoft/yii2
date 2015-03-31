@@ -604,7 +604,7 @@ class Post extends \yii\db\ActiveRecord
 use yii\helpers\Html;
 
 // ... 他の入力フィールド
-echo Html::activeHiddenField($model, 'version');
+echo Html::activeHiddenInput($model, 'version');
 
 
 // ------ コントローラのコード -------
