@@ -434,10 +434,12 @@ class AssetManager extends Component
         if ($this->linkAssets) {
             if (!is_file($dstFile)) {
                 $symlink= @ symlink($src, $dstFile);
-                if (!$symlink && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                    exec('mklink /J '.$dstFile.' '.$src);
-                } else {
-                    symlink($src, $dstFile);
+                if (!$symlink) {
+                    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                        copy($src, $dstFile);
+                    } else {
+                        symlink($src, $dstFile);
+                    }
                 }
             }
         } elseif (@filemtime($dstFile) < @filemtime($src)) {
@@ -474,10 +476,12 @@ class AssetManager extends Component
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
                 $symlink= @ symlink($src, $dstDir);
-                if (!$symlink && strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                    exec('mklink /J '.$dstDir.' '.$src);
-                } else {
-                    symlink($src, $dstDir);
+                if (!$symlink)
+                    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                        exec('mklink /J '.$dstDir.' '.$src);
+                    } else {
+                        symlink($src, $dstDir);
+                    }
                 }
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
