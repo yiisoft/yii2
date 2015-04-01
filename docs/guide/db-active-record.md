@@ -1035,7 +1035,7 @@ and [[yii\db\ActiveQuery::joinWith()|joinWith()]]. For example,
 ```php
 $customers = Customer::find()->joinWith([
     'orders' => function ($query) {
-        $query->andWhere(['>', 'subtotal', 100);
+        $query->andWhere(['>', 'subtotal', 100]);
     },
 ])->with('country')
     ->all();
