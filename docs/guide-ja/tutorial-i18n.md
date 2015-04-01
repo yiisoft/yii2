@@ -546,7 +546,7 @@ TBD
 数値と日付の値を書式設定する
 ----------------------------
 
-詳細は [データフォーマッタ](output-formatter.md) の節を参照してください。
+詳細は [データフォーマッタ](output-formatting.md) の節を参照してください。
 
 
 PHP 環境をセットアップする <span id="setup-environment"></span>

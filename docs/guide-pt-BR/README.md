@@ -97,7 +97,7 @@ Coletando Dados de Usuários
 Exibindo Dados
 ---------------
 
-* [Formatando Dados](output-formatter.md)
+* [Formatando Dados](output-formatting.md)
 * [Paginação](output-pagination.md)
 * [Ordenação](output-sorting.md)
 * [Data Providers (Provedores de Dados)](output-data-providers.md)

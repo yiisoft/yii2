@@ -97,7 +97,7 @@ Getting Data from Users
 Displaying Data
 ---------------
 
-* [Data Formatting](output-formatter.md)
+* [Data Formatting](output-formatting.md)
 * [Pagination](output-pagination.md)
 * [Sorting](output-sorting.md)
 * [Data Providers](output-data-providers.md)

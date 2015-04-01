@@ -96,7 +96,7 @@ All Rights Reserved.
 Отображение данных
 ------------------
 
-* **TBD** [Форматирование данных](output-formatter.md)
+* **TBD** [Форматирование данных](output-formatting.md)
 *  [Постраничная разбивка](output-pagination.md)
 * [Сортировка](output-sorting.md)
 * **TBD** [Провайдеры данных](output-data-providers.md)
