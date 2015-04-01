@@ -292,16 +292,16 @@ yii.validation = (function ($) {
                     valid = value !== compareValue;
                     break;
                 case '>':
-                    valid = parseFloat(value) > parseFloat(compareValue);
+                    valid = value > compareValue;
                     break;
                 case '>=':
-                    valid = parseFloat(value) >= parseFloat(compareValue);
+                    valid = value >= compareValue;
                     break;
                 case '<':
-                    valid = parseFloat(value) < parseFloat(compareValue);
+                    valid = value < compareValue;
                     break;
                 case '<=':
-                    valid = parseFloat(value) <= parseFloat(compareValue);
+                    valid = value <= compareValue;
                     break;
                 default:
                     valid = false;
