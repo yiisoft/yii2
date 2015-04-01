@@ -55,7 +55,7 @@ input-validation.md                 | Yes
 input-file-upload.md                |
 input-multiple-models.md            |
 input-tabular-input.md              |
-output-formatting.md                 |
+output-formatting.md                |
 output-pagination.md                |
 output-sorting.md                   |
 output-data-providers.md            |
