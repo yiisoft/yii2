@@ -93,6 +93,10 @@ abstract class BaseListView extends Widget
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
+    /**
+     * @var string html tag which is list view
+     */
+    private $_tag;
 
     /**
      * Renders the data models.
@@ -114,6 +118,8 @@ abstract class BaseListView extends Widget
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
+        $this->_tag = ArrayHelper::remove($this->options, 'tag', 'div');
+        echo Html::beginTag($this->_tag, $this->options);
     }
 
     /**
@@ -130,8 +136,7 @@ abstract class BaseListView extends Widget
         } else {
             $content = $this->renderEmpty();
         }
-        $tag = ArrayHelper::remove($this->options, 'tag', 'div');
-        echo Html::tag($tag, $content, $this->options);
+        echo $content . Html::endTag($this->_tag);
     }
 
     /**
