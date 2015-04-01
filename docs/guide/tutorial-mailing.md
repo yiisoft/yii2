@@ -8,7 +8,7 @@ only the content composition functionality and basic interface. Actual mail send
 be provided by the extension, because different projects may require its different implementation and
 it usually depends on the external services and libraries.
 
-For the most common cases you can use [yii2-swiftmailer](https://github.com/yiisoft/yii2/tree/master/extensions/swiftmailer) official extension.
+For the most common cases you can use [yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer) official extension.
 
 
 Configuration
