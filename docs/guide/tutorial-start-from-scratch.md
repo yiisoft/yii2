@@ -4,10 +4,10 @@ Creating your own Application structure
 > Note: This section is under development.
 
 While the [basic](https://github.com/yiisoft/yii2-app-basic) and [advanced](https://github.com/yiisoft/yii2-app-advanced)
-application templates are great for most of your needs, you may want to create your own application template with which
+project templates are great for most of your needs, you may want to create your own project template with which
 to start your projects.
 
-Application templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package.
+Project templates in Yii are simply repositories containing a `composer.json` file, and registered as a Composer package.
 Any repository can be identified as a Composer package, making it installable via `create-project` Composer command.
 
 Since it's a bit too much to start building your entire template from scratch, it is better to use one of the built-in
@@ -47,7 +47,7 @@ For private templates, it is a bit more tricky to register the package. For inst
 Use the Template
 ------
 
-That's all that's required to create a new Yii application template. Now you can create projects using your template:
+That's all that's required to create a new Yii project template. Now you can create projects using your template:
 
 ```
 composer global require "fxp/composer-asset-plugin:1.0.0"

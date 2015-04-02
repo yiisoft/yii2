@@ -153,7 +153,7 @@ During the bootstrapping process, each component will be instantiated. If the co
 implements [[yii\base\BootstrapInterface]], its [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method
 will also be called.
 
-Another practical example is in the application configuration for the [Basic Application Template](start-installation.md),
+Another practical example is in the application configuration for the [Basic Project Template](start-installation.md),
 where the `debug` and `gii` modules are configured as bootstrapping components when the application is running
 in development environment,
 

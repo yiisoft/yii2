@@ -25,7 +25,7 @@ Entry scripts mainly do the following work:
 
 ## Web Applications <span id="web-applications"></span>
 
-The following is the code in the entry script for the [Basic Web Application Template](start-installation.md).
+The following is the code in the entry script for the [Basic Web Project Template](start-installation.md).
 
 ```php
 <?php

@@ -106,7 +106,7 @@ class DevController extends Controller
     }
 
     /**
-     * This command installs an application template in the `apps` directory and links the framework and extensions
+     * This command installs a project template in the `apps` directory and links the framework and extensions
      *
      * It basically runs the following commands in the dev repo root:
      *
@@ -120,6 +120,7 @@ class DevController extends Controller
      *
      * @param string $app the application name e.g. `basic` or `advanced`.
      * @param string $repo url of the git repo to clone if it does not already exist.
+     * @return int return code
      */
     public function actionApp($app, $repo = null)
     {
