@@ -99,4 +99,11 @@ class PostgreSQLSchemaTest extends SchemaTest
         $this->assertSame(true, $table->getColumn('default_true')->defaultValue);
         $this->assertSame(false, $table->getColumn('default_false')->defaultValue);
     }
+
+    public function testFindSchemaNames()
+    {
+        $schema = $this->getConnection()->schema;
+
+        $this->assertEquals(3, count($schema->getSchemaNames()));
+    }
 }
